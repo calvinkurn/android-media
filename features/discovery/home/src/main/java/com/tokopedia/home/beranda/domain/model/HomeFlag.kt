@@ -4,11 +4,35 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 class HomeFlag {
-    @SerializedName("hasTokopoints")
-    @Expose
-    var hasTokopoints: Boolean = true
+    companion object {
+        val DYNAMIC_ICON_WRAP_STRING = "dynamic_icon_wrap"
+        val HAS_RECOM_NAV_BUTTON_STRING = "has_recom_nav_button"
+        val HAS_TOKOPOINTS_STRING = "has_tokopoints"
+    }
+    enum class TYPE {
+        DYNAMIC_ICON_WRAP, HAS_TOKOPOINTS, HAS_RECOM_NAV_BUTTON;
 
-    @SerializedName("hasRecomNavButton")
+        override fun toString(): String {
+            return when(this){
+                DYNAMIC_ICON_WRAP -> DYNAMIC_ICON_WRAP_STRING
+                HAS_RECOM_NAV_BUTTON -> HAS_RECOM_NAV_BUTTON_STRING
+                HAS_TOKOPOINTS -> HAS_TOKOPOINTS_STRING
+            }
+        }
+    }
+
+    @SerializedName("flags")
     @Expose
-    var hasRecomNavButton: Boolean = true
+    var flags: List<Flags> = listOf()
+
+    fun getFlag(type: TYPE): Boolean{
+        return flags.find { it.name == type.toString() }?.isActive ?: false
+    }
 }
+
+data class Flags(
+    @SerializedName("name")
+    var name: String = "",
+    @SerializedName("is_active")
+    var isActive: Boolean
+)

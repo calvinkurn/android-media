@@ -2,7 +2,7 @@ package com.tokopedia.shop.sort.data.source.cloud;
 
 import androidx.collection.ArrayMap;
 
-import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.network.data.model.response.DataResponse;
 import com.tokopedia.shop.sort.data.source.cloud.api.ShopAceApi;
 import com.tokopedia.shop.sort.data.source.cloud.model.ShopProductSort;
 import com.tokopedia.shop.sort.data.source.cloud.model.ShopProductSortList;

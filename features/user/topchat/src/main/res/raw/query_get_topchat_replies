@@ -1,5 +1,7 @@
-query get_chat_replies($msgId: Int!, $page: Int!) {
-  chatReplies(msgId: $msgId, page: $page) {
+query get_chat_replies($msgId: Int!, $beforeReplyTime: String) {
+  status
+  chatReplies(msgId: $msgId, beforeReplyTime: $beforeReplyTime, isTextOnly: true) {
+    minReplyTime
     block {
       blockedUntil
       isBlocked
@@ -7,6 +9,7 @@ query get_chat_replies($msgId: Int!, $page: Int!) {
     }
     hasNext
     textareaReply
+    attachmentIDs
     contacts {
       role
       userId
@@ -16,6 +19,9 @@ query get_chat_replies($msgId: Int!, $page: Int!) {
       tag
       thumbnail
       domain
+      isOfficial
+      isGold
+      badge
       status {
         timestamp
         timestampStr

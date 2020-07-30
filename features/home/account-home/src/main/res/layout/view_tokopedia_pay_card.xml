@@ -14,14 +14,14 @@
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/dp_16">
+        android:padding="@dimen/dp_14">
 
         <TextView
             android:id="@+id/label_tokopedia_pay"
             style="@style/TextView.TitleMedium.Bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/label_tokopedia_pay_title"
+            android:text="@string/label_tokopedia_pay_title_new"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -45,119 +45,180 @@
                 style="@style/TextView.Micro.Green"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/label_tokopedia_pay_see_all" />
+                android:text="@string/label_tokopedia_pay_action" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/layout_left"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toStartOf="@+id/layout_right"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/label_tokopedia_pay">
+
+            <ImageView
+                android:id="@+id/card_icon_left"
+                android:layout_width="@dimen/dp_60"
+                android:layout_height="@dimen/dp_60"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/dp_8"
+                android:padding="0dp"
+                app:layout_constraintEnd_toEndOf="@+id/text_amount_left"
+                app:layout_constraintStart_toStartOf="@+id/text_amount_left"
+                app:layout_constraintTop_toBottomOf="@+id/label_tokopedia_pay" />
+
+            <TextView
+                android:id="@+id/text_amount_left"
+                style="@style/TextView.Small.Bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/dp_8"
+                android:textAlignment="center"
+                android:textSize="@dimen/sp_13"
+                app:layout_constraintEnd_toStartOf="@+id/text_amount_right"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/card_icon_left"
+                tools:text="Rp 2.000.000" />
+
+            <TextView
+                android:id="@+id/text_desc_left"
+                style="@style/TextView.Micro.BlackDisabled"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/dp_4"
+                app:layout_constraintEnd_toEndOf="@+id/text_amount_left"
+                app:layout_constraintStart_toStartOf="@+id/text_amount_left"
+                app:layout_constraintTop_toBottomOf="@+id/text_amount_left"
+                tools:text="@string/label_tokopedia_pay_wallet" />
+
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:id="@+id/layout_right"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="2"
+            android:orientation="vertical"
+            android:visibility="visible"
+            app:layout_constraintEnd_toStartOf="@+id/layout_centre"
+            app:layout_constraintStart_toEndOf="@+id/layout_left"
             app:layout_constraintTop_toBottomOf="@+id/label_tokopedia_pay">
 
-            <LinearLayout
-                android:id="@+id/layout_left"
-                android:layout_width="0dp"
+            <ImageView
+                android:id="@+id/card_icon_right"
+                android:layout_width="@dimen/dp_60"
+                android:layout_height="@dimen/dp_60"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/dp_8"
+                android:padding="0dp"
+                app:layout_constraintEnd_toEndOf="@+id/text_amount_right"
+                app:layout_constraintStart_toStartOf="@+id/text_amount_right"
+                app:layout_constraintTop_toBottomOf="@+id/label_tokopedia_pay" />
+
+            <TextView
+                android:id="@+id/text_amount_right"
+                style="@style/TextView.Small.Bold"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/dp_8"
+                android:textAlignment="center"
+                android:textSize="@dimen/sp_13"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/text_amount_left"
+                app:layout_constraintTop_toBottomOf="@+id/card_icon_right"
+                tools:text="Rp 68.43.02046" />
 
-                <ImageView
-                    android:id="@+id/card_icon_left"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="8dp"
-                    android:padding="0dp"
-                    app:layout_constraintEnd_toEndOf="@+id/text_amount_left"
-                    app:layout_constraintStart_toStartOf="@+id/text_amount_left"
-                    app:layout_constraintTop_toBottomOf="@+id/label_tokopedia_pay" />
-
-                <TextView
-                    android:id="@+id/text_amount_left"
-                    style="@style/TextView.Small.Bold"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="8dp"
-                    android:textAlignment="center"
-                    app:layout_constraintEnd_toStartOf="@+id/text_amount_right"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/card_icon_left"
-                    tools:text="Rp 2.000.000" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/dp_4"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="@+id/text_amount_right"
+                app:layout_constraintStart_toStartOf="@+id/text_amount_right"
+                app:layout_constraintTop_toBottomOf="@+id/text_amount_right">
 
                 <TextView
-                    android:id="@+id/text_desc_left"
+                    android:id="@+id/text_desc_right"
                     style="@style/TextView.Micro.BlackDisabled"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginTop="4dp"
-                    app:layout_constraintEnd_toEndOf="@+id/text_amount_left"
-                    app:layout_constraintStart_toStartOf="@+id/text_amount_left"
-                    app:layout_constraintTop_toBottomOf="@+id/text_amount_left"
-                    tools:text="@string/label_tokopedia_pay_wallet" />
+                    android:text="@string/label_tokopedia_pay_deposit"
+                    app:layout_constraintEnd_toEndOf="@+id/text_amount_right"
+                    app:layout_constraintStart_toStartOf="@+id/text_amount_right"
+                    app:layout_constraintTop_toBottomOf="@+id/text_amount_right" />
 
             </LinearLayout>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_centre"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/layout_right"
+            app:layout_constraintTop_toBottomOf="@+id/label_tokopedia_pay">
+
+            <ImageView
+                android:id="@+id/card_icon_centre"
+                android:layout_width="@dimen/dp_60"
+                android:layout_height="@dimen/dp_60"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/dp_8"
+                android:padding="0dp"
+                app:layout_constraintEnd_toEndOf="@+id/text_amount_right"
+                app:layout_constraintStart_toStartOf="@+id/text_amount_right"
+                app:layout_constraintTop_toBottomOf="@+id/label_tokopedia_pay" />
+
+            <TextView
+                android:id="@+id/text_amount_centre"
+                style="@style/TextView.Small.Bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/dp_8"
+                android:textAlignment="center"
+                android:textSize="@dimen/sp_13"
+                tools:text="Rp 200.000" />
 
             <LinearLayout
-                android:id="@+id/layout_right"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:id="@+id/card_icon_right"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="8dp"
-                    android:padding="0dp"
-                    app:layout_constraintEnd_toEndOf="@+id/text_amount_right"
-                    app:layout_constraintStart_toStartOf="@+id/text_amount_right"
-                    app:layout_constraintTop_toBottomOf="@+id/label_tokopedia_pay" />
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/dp_4"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="@+id/text_amount_right"
+                app:layout_constraintStart_toStartOf="@+id/text_amount_right"
+                app:layout_constraintTop_toBottomOf="@+id/text_amount_right">
 
                 <TextView
-                    android:id="@+id/text_amount_right"
-                    style="@style/TextView.Small.Bold"
+                    android:id="@+id/text_desc_centre"
+                    style="@style/TextView.Micro.BlackDisabled"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginTop="8dp"
+                    android:gravity="center_horizontal"
+                    android:text="@string/label_tokopedia_pay_deposit"
                     android:textAlignment="center"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toEndOf="@+id/text_amount_left"
-                    app:layout_constraintTop_toBottomOf="@+id/card_icon_right"
-                    tools:text="Rp 2.000.000" />
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="4dp"
-                    android:orientation="horizontal"
                     app:layout_constraintEnd_toEndOf="@+id/text_amount_right"
                     app:layout_constraintStart_toStartOf="@+id/text_amount_right"
-                    app:layout_constraintTop_toBottomOf="@+id/text_amount_right">
-
-                    <TextView
-                        android:id="@+id/text_desc_right"
-                        style="@style/TextView.Micro.BlackDisabled"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:text="@string/label_tokopedia_pay_deposit"
-                        app:layout_constraintEnd_toEndOf="@+id/text_amount_right"
-                        app:layout_constraintStart_toStartOf="@+id/text_amount_right"
-                        app:layout_constraintTop_toBottomOf="@+id/text_amount_right" />
-
-                </LinearLayout>
-
+                    app:layout_constraintTop_toBottomOf="@+id/text_amount_right"
+                    tools:text="OVO Paylater" />
 
             </LinearLayout>
+
 
         </LinearLayout>
 

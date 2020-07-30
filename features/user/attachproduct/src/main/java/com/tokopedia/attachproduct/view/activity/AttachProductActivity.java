@@ -6,15 +6,16 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant;
 import com.tokopedia.attachproduct.R;
 import com.tokopedia.attachproduct.resultmodel.ResultProduct;
 import com.tokopedia.attachproduct.view.fragment.AttachProductFragment;
 import com.tokopedia.attachproduct.view.presenter.AttachProductContract;
 
 import java.util.ArrayList;
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 /**
  * Created by Hendri on 13/02/18.

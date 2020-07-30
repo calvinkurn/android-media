@@ -21,6 +21,15 @@
                     android:pathPattern="@string/path_dynamic_features_install"/>
             </intent-filter>
         </activity>
+
+        <service android:name=".service.DFDownloadService" />
+
+        <service
+            android:name=".service.DFDownloadJobService"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+
+        <receiver android:name=".service.DFBroadcastReceiver"/>
+
     </application>
 
 </manifest>

@@ -1,25 +1,25 @@
 package com.tokopedia.core.app;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.core.content.ContextCompat;
-import androidx.appcompat.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 
-import com.tkpd.library.utils.KeyboardHandler;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
+import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.core.util.RouterUtils;
 import com.tokopedia.core2.R;
-import com.tokopedia.core.router.discovery.BrowseProductRouter;
-import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
-import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 /**
  * Created by Nisie on 31/08/15.
@@ -30,6 +30,9 @@ import com.tokopedia.core.util.SessionHandler;
  */
 @Deprecated
 public abstract class TActivity extends BaseActivity {
+
+    private final static String CART_ACTIVITY_NEW
+            = "com.tokopedia.purchase_platform.features.cart.view.CartActivity";
 
     protected FrameLayout parentView;
     protected Toolbar toolbar;
@@ -84,25 +87,13 @@ public abstract class TActivity extends BaseActivity {
         return true;
     }
 
-    public static boolean onCartOptionSelected(Context context) {
-        if (!SessionHandler.isV4Login(context)) {
-            Intent intent = ((TkpdCoreRouter) MainApplication.getAppContext()).getLoginIntent
-                    (context);
-            context.startActivity(intent);
-        } else {
-            context.startActivity(TransactionCartRouter.createInstanceCartActivity(context));
-        }
-        return true;
-    }
-
     private Boolean onCartOptionSelected() {
-
-        if (!SessionHandler.isV4Login(getBaseContext())) {
-            Intent intent = ((TkpdCoreRouter) MainApplication.getAppContext()).getLoginIntent
-                    (this);
+        UserSessionInterface userSession = new UserSession(this);
+        if (!userSession.isLoggedIn()) {
+            Intent intent = RouteManager.getIntent(this, ApplinkConst.LOGIN);
             startActivity(intent);
         } else {
-            startActivity(TransactionCartRouter.createInstanceCartActivity(this));
+            startActivity(RouterUtils.getActivityIntent(this, CART_ACTIVITY_NEW));
         }
         return true;
     }
@@ -115,10 +106,6 @@ public abstract class TActivity extends BaseActivity {
 
     public void inflateView(int layoutId) {
         if (parentView != null) getLayoutInflater().inflate(layoutId, parentView);
-    }
-
-    public void hideToolbar() {
-        getSupportActionBar().hide();
     }
 
     protected void setLightToolbarStyle() {
@@ -146,6 +133,6 @@ public abstract class TActivity extends BaseActivity {
 
     // for global nav purpose
     protected boolean isLightToolbarThemes() {
-        return GlobalConfig.isCustomerApp();
+        return !GlobalConfig.isSellerApp();
     }
 }

@@ -2,7 +2,7 @@ package com.tokopedia.instantdebitbca.data.view.utils
 
 import android.os.Build
 
-import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.config.GlobalConfig
 
 import java.net.Inet4Address
 import java.net.InetAddress

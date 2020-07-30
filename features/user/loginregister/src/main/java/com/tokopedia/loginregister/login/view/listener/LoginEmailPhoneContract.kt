@@ -3,16 +3,20 @@ package com.tokopedia.loginregister.login.view.listener
 import android.content.Context
 import androidx.fragment.app.Fragment
 import com.facebook.AccessToken
-import com.tokopedia.loginregister.ticker.domain.pojo.TickerInfoPojo
 import com.facebook.CallbackManager
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
+import com.tokopedia.loginregister.common.data.model.DynamicBannerDataModel
 import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel
+import com.tokopedia.loginregister.login.domain.StatusFingerprint
+import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.StatusPinData
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber
+import com.tokopedia.loginregister.ticker.domain.pojo.TickerInfoPojo
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
-import java.util.ArrayList
+import java.util.*
 
 /**
  * @author by nisie on 18/01/19.
@@ -32,11 +36,13 @@ interface LoginEmailPhoneContract {
 
         fun onSuccessLogin()
 
+        fun onSuccessLoginEmail()
+
         fun showLoadingDiscover()
 
         fun dismissLoadingDiscover()
 
-        fun onErrorDiscoverLogin(errorMessage: String)
+        fun onErrorDiscoverLogin(throwable: Throwable)
 
         fun onSuccessDiscoverLogin(providers: ArrayList<DiscoverItemViewModel>)
 
@@ -54,11 +60,17 @@ interface LoginEmailPhoneContract {
 
         fun onErrorLoginFacebook(email: String): Function1<Throwable, Unit>
 
+        fun onSuccessLoginFacebookPhone(): Function1<LoginTokenPojo, Unit>
+
+        fun onErrorLoginFacebookPhone(): Function1<Throwable, Unit>
+
         fun onErrorLoginGoogle(email: String?): Function1<Throwable, Unit>
 
         fun onSuccessGetUserInfo(): Function1<ProfilePojo, Unit>
 
         fun onErrorGetUserInfo(): Function1<Throwable, Unit>
+
+        fun onSuccessGetUserInfoAddPin(): Function1<ProfilePojo, Unit>
 
         fun onGoToCreatePassword(): Function2<String, String, Unit>
 
@@ -82,7 +94,7 @@ interface LoginEmailPhoneContract {
 
         fun onEmailExist(email: String)
 
-        fun showNotRegisteredEmailDialog(email: String)
+        fun showNotRegisteredEmailDialog(email: String, isPending: Boolean)
 
         fun onBackPressed()
 
@@ -91,6 +103,18 @@ interface LoginEmailPhoneContract {
         fun onSuccessGetTickerInfo(listTickerInfo: List<TickerInfoPojo>)
 
         fun onErrorGetTickerInfo(error: Throwable)
+
+        fun onGetDynamicBannerSuccess(dynamicBannerDataModel: DynamicBannerDataModel)
+
+        fun onGetDynamicBannerError(throwable: Throwable)
+
+        fun onErrorCheckStatusFingerprint(e: Throwable)
+
+        fun onSuccessCheckStatusFingerprint(data: StatusFingerprint)
+
+        fun goToFingerprintRegisterPage()
+
+        fun getFingerprintConfig(): Boolean
     }
 
     interface Presenter : CustomerPresenter<View> {
@@ -102,16 +126,28 @@ interface LoginEmailPhoneContract {
 
         fun getUserInfo()
 
+        fun getUserInfoAddPin()
+
+        fun getUserInfoFingerprint()
+
         fun discoverLogin(context: Context)
 
-        fun checkLoginEmailPhone(emailPhone: String)
-
         fun loginFacebook(context: Context, accessToken: AccessToken, email: String)
+
+        fun loginFacebookPhone(context: Context, accessToken: AccessToken, phone: String)
 
         fun reloginAfterSQ(validateToken: String)
 
         fun getTickerInfo()
 
         fun checkStatusPin(onSuccess: (StatusPinData) -> kotlin.Unit, onError: (kotlin.Throwable) -> kotlin.Unit)
+
+        fun checkStatusFingerprint()
+
+        fun registerCheck(id: String, onSuccess: (RegisterCheckData) -> kotlin.Unit, onError: (kotlin.Throwable) -> kotlin.Unit)
+
+        fun removeFingerprintData()
+
+        fun getDynamicBanner(page: String)
     }
 }

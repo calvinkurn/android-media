@@ -41,5 +41,8 @@ internal val live = Url(
         TIKET = "https://tiket.tokopedia.com/",
         IMT = "https://imt.tokopedia.com/",
         LAKU6 = "https://www.laku6.com",
-        SELLER = "https://seller.tokopedia.com/"
+        SELLER = "https://seller.tokopedia.com/",
+        PLAY = "https://chat.tokopedia.com",
+        WS_PLAY = "wss://groupchat.tokopedia.com",
+        HUB = "https://hub.tokopedia.com/"
 )

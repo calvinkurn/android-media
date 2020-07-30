@@ -2,7 +2,7 @@ package com.tokopedia.topchat.chattemplate.data.repository;
 
 import com.google.gson.JsonObject;
 import com.tokopedia.topchat.chattemplate.data.factory.TemplateChatFactory;
-import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateViewModel;
+import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateUiModel;
 
 import java.util.HashMap;
 
@@ -21,12 +21,12 @@ public class TemplateRepositoryImpl implements TemplateRepository {
     }
 
     @Override
-    public Observable<GetTemplateViewModel> getTemplate(HashMap<String, Object> parameters) {
+    public Observable<GetTemplateUiModel> getTemplate(HashMap<String, Object> parameters) {
         return templateChatFactory.createCloudGetTemplateDataSource().getTemplate(parameters);
     }
 
     @Override
-    public Observable<GetTemplateViewModel> setAvailabilityTemplate(JsonObject parameters, boolean isSeller) {
+    public Observable<GetTemplateUiModel> setAvailabilityTemplate(JsonObject parameters, boolean isSeller) {
         return templateChatFactory.createCloudSetTemplateDataSource().setTemplate(parameters, isSeller);
     }
 }

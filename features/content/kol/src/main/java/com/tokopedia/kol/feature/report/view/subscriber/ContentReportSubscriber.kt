@@ -6,8 +6,8 @@ import com.tokopedia.kol.R
 import com.tokopedia.kol.feature.report.data.entity.SendReportResponse
 import com.tokopedia.kol.feature.report.domain.usecase.SendReportUseCase
 import com.tokopedia.kol.feature.report.view.listener.ContentReportContract
-import com.tokopedia.kotlin.extensions.view.debugTrace
 import rx.Subscriber
+import timber.log.Timber
 
 /**
  * @author by milhamj on 15/11/18.
@@ -41,8 +41,7 @@ class ContentReportSubscriber(val view: ContentReportContract.View?)
     }
 
     override fun onError(e: Throwable?) {
-        e?.debugTrace()
-
+        Timber.d(e)
         view?.run {
             hideLoading()
             onErrorSendReport(ErrorHandler.getErrorMessage(view.getContext(), e))

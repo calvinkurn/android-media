@@ -1,9 +1,10 @@
 package com.tokopedia.chat_common.presenter
 
+import androidx.annotation.StringRes
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
-import com.tokopedia.chat_common.R
+import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_END_TYPING
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_READ_MESSAGE
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE
@@ -27,10 +28,10 @@ abstract class BaseChatPresenter<T : BaseChatContract.View> constructor(
     protected var networkMode: Int = MODE_WEBSOCKET
 
     override fun mappingEvent(webSocketResponse: WebSocketResponse, messageId: String) {
-        val pojo: ChatSocketPojo = Gson().fromJson(webSocketResponse.getData(), ChatSocketPojo::class.java)
+        val pojo: ChatSocketPojo = Gson().fromJson(webSocketResponse.jsonObject, ChatSocketPojo::class.java)
         if (pojo.msgId.toString() != messageId) return
 
-        when (webSocketResponse.getCode()) {
+        when (webSocketResponse.code) {
             EVENT_TOPCHAT_TYPING -> view.onReceiveStartTypingEvent()
             EVENT_TOPCHAT_END_TYPING -> view.onReceiveStopTypingEvent()
             EVENT_TOPCHAT_READ_MESSAGE -> view.onReceiveReadEvent()
@@ -62,8 +63,6 @@ abstract class BaseChatPresenter<T : BaseChatContract.View> constructor(
             } else {
                 sendMessageWithApi(messageId, sendMessage, startTime)
             }
-        } else {
-            showErrorSnackbar((R.string.error_empty_product))
         }
     }
 
@@ -73,7 +72,7 @@ abstract class BaseChatPresenter<T : BaseChatContract.View> constructor(
 
     abstract fun sendMessageWithApi(messageId: String, sendMessage: String, startTime: String)
 
-    abstract fun showErrorSnackbar(stringId: Int)
+    abstract fun showErrorSnackbar(@StringRes stringId: Int)
 
     abstract fun isUploading(): Boolean
 

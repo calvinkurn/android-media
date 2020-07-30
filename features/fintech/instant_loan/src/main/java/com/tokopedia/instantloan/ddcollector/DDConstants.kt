@@ -7,7 +7,7 @@ import com.tokopedia.instantloan.ddcollector.DDConstants.Constant.REQUIRE
 
 object DDConstants {
 
-    enum class DDComponents private constructor(private val component: String) {
+    enum class DDComponents constructor(private val component: String) {
         GET_ACCOUNTS(REQUIRE + PERMISSION_ENUM_SEPARATOR + Manifest.permission.GET_ACCOUNTS),
         WRITE_EXTERNAL_STORAGE(REQUIRE + PERMISSION_ENUM_SEPARATOR + Manifest.permission.WRITE_EXTERNAL_STORAGE),
         ACCESS_COARSE_LOCATION(REQUIRE + PERMISSION_ENUM_SEPARATOR + Manifest.permission.ACCESS_COARSE_LOCATION),

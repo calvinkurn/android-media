@@ -49,7 +49,7 @@ class PlayBackgroundHelper(
     }
 
     fun setEmptyBackground() {
-        activity.window?.setBackgroundDrawable(MethodChecker.getDrawable(activity, R.color.black))
+        activity.window?.setBackgroundDrawable(MethodChecker.getDrawable(activity, com.tokopedia.design.R.color.black))
     }
 
     fun setDefaultBackground() {

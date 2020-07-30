@@ -1,7 +1,7 @@
 package com.tokopedia.topads.common.data.util;
 
 import com.google.gson.Gson;
-import com.tokopedia.abstraction.common.data.model.response.BaseResponseError;
+import com.tokopedia.network.data.model.response.BaseResponseError;
 import com.tokopedia.cacheapi.util.CacheApiResponseValidator;
 
 import okhttp3.Response;

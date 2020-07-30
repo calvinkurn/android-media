@@ -8,7 +8,7 @@ import com.tokopedia.abstraction.Actions.interfaces.ActionCreator;
 import com.tokopedia.abstraction.Actions.interfaces.ActionDataProvider;
 import com.tokopedia.abstraction.Actions.interfaces.ActionExecutor;
 import com.tokopedia.abstraction.Actions.interfaces.ActionUIDelegate;
-import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.network.data.model.response.DataResponse;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.referral.data.ReferralCodeEntity;

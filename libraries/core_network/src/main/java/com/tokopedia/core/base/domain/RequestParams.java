@@ -1,11 +1,8 @@
 package com.tokopedia.core.base.domain;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -47,14 +44,6 @@ public class RequestParams {
 
     public void putObject(String key, Object object) {
         parameters.put(key, object);
-    }
-
-    public void putJsonArray(String key, JsonArray object){
-        parameters.put(key, object);
-    }
-
-    public void putListLong(String key, List<Long> longList){
-        parameters.put(key, longList);
     }
 
     public int getInt(String key, int defaultValue) {
@@ -105,24 +94,8 @@ public class RequestParams {
         }
     }
 
-    public List<Long> getListLong(String key, List<Long> defaultValue){
-        final Object object = parameters.get(key);
-        if (object == null) {
-            return defaultValue;
-        }
-        try {
-            return (List<Long>) object;
-        } catch (ClassCastException e) {
-            return defaultValue;
-        }
-    }
-
     public Object getObject(String key) {
         return parameters.get(key);
-    }
-
-    public void clearValue(String key) {
-        parameters.remove(key);
     }
 
     public TKPDMapParam<String, Object> getParameters() {

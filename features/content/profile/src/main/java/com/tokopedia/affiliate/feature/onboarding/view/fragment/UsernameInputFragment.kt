@@ -111,7 +111,7 @@ class UsernameInputFragment : BottomSheetDialogFragment(), UsernameInputContract
         super.onDestroy()
     }
 
-    override fun onDismiss(dialog: DialogInterface?) {
+    override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
         onDismissListener?.invoke()
     }

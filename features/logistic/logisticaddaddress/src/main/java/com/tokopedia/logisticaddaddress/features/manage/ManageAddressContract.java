@@ -2,7 +2,7 @@ package com.tokopedia.logisticaddaddress.features.manage;
 
 import android.content.DialogInterface;
 
-import com.tokopedia.logisticaddaddress.adapter.AddressViewModel;
+import com.tokopedia.logisticaddaddress.features.manage.adapter.AddressUiModel;
 import com.tokopedia.logisticdata.data.entity.address.AddressModel;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 
@@ -23,7 +23,7 @@ public interface ManageAddressContract {
 
         void openFormAddressView(AddressModel data);
 
-        void showData(List<AddressViewModel> data, boolean hasNext);
+        void showData(List<AddressUiModel> data, boolean hasNext);
 
         void showLoadingView();
 

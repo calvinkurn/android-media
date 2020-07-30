@@ -10,15 +10,20 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix.typefactory.BannerMixTypeFactory
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix.typefactory.BannerMixTypeFactoryImpl
 
-class BannerItemAdapter(val bannerMixTypeFactoryImpl: BannerMixTypeFactoryImpl,
+class BannerItemAdapter(var bannerMixTypeFactoryImpl: BannerMixTypeFactoryImpl,
                         val layoutType: String,
                         val grids: Array<DynamicHomeChannel.Grid>,
                         val channel: DynamicHomeChannel.Channels,
                         val homeCategoryListener: HomeCategoryListener,
-                        val visitables: List<Visitable<BannerMixTypeFactory>>): BaseAdapter<BannerMixTypeFactoryImpl>(bannerMixTypeFactoryImpl, visitables){
+                        val visitablesInitial: List<Visitable<BannerMixTypeFactory>>): BaseAdapter<BannerMixTypeFactoryImpl>(bannerMixTypeFactoryImpl, visitablesInitial){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<out Visitable<*>> {
         val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
         return bannerMixTypeFactoryImpl.createViewHolder(view, viewType)
+    }
+
+    fun setItems(visitables: List<Visitable<*>>) {
+        this.visitables = visitables
+        notifyDataSetChanged()
     }
 }

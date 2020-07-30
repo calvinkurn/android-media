@@ -1,39 +1,39 @@
 package com.tokopedia.kotlin.extensions.view
 
-import androidx.annotation.DrawableRes
 import android.widget.ImageView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import androidx.annotation.DrawableRes
 import com.tokopedia.kotlin.extensions.R
+import com.tokopedia.utils.image.ImageUtils
+import com.tokopedia.utils.resources.DrawableUtils
 
 /**
  * @author by milhamj on 30/11/18.
  */
 
-fun ImageView.loadImage(url: String, resId: Int = R.drawable.ic_loading_image) {
-    ImageHandler.loadImage2(this, url, resId)
+fun ImageView.loadImage(url: String, resId: Int = R.drawable.ic_loading_placeholder) {
+    ImageUtils.loadImage2(this, url, resId)
 }
 
 fun ImageView.loadImageCircle(url: String) {
-    ImageHandler.loadImageCircle2(context, this, url)
+    ImageUtils.loadImageCircle2(context, this, url)
 }
 
 fun ImageView.loadImageRounded(url: String, radius: Float = 5.0f) {
-    ImageHandler.loadImageRounded2(context, this, url, radius)
+    ImageUtils.loadImageRounded2(context, this, url, radius)
 }
 
 fun ImageView.loadImageWithoutPlaceholder(@DrawableRes drawableId: Int) {
-    ImageHandler.loadImageWithIdWithoutPlaceholder(this, drawableId)
+    ImageUtils.loadImageWithIdWithoutPlaceholder(this, drawableId)
 }
 
 fun ImageView.loadImageWithoutPlaceholder(url: String) {
-    ImageHandler.loadImageWithoutPlaceholderAndError( this, url)
+    ImageUtils.loadImageWithoutPlaceholderAndError( this, url)
 }
 
 fun ImageView.loadImageDrawable(@DrawableRes drawableId: Int) {
-    this.setImageDrawable(MethodChecker.getDrawable(context, drawableId))
+    this.setImageDrawable(DrawableUtils.getDrawable(context, drawableId))
 }
 
 fun ImageView.clearImage() {
-    ImageHandler.clearImage(this)
+    ImageUtils.clearImage(this)
 }

@@ -8,4 +8,8 @@ data class Comment (
     var fmt: String = "",
     @SerializedName("value")
     var value: Int = 0
-)
+) {
+    fun copy(): Comment {
+        return Comment(fmt, value)
+    }
+}

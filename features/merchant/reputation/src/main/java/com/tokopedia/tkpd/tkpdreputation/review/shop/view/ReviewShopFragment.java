@@ -3,30 +3,27 @@ package com.tokopedia.tkpd.tkpdreputation.review.shop.view;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.DividerItemDecoration;
+
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
-import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.UriUtil;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.core.router.productdetail.PdpRouter;
-import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.imagepreview.ImagePreviewActivity;
+import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.tkpd.tkpdreputation.R;
-import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking;
 import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTrackingConstant;
 import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent;
@@ -123,7 +120,7 @@ public class ReviewShopFragment extends BaseListFragment<ReviewShopModelContent,
         DaggerReputationComponent
                 .builder()
                 .reputationModule(new ReputationModule())
-                .appComponent(((MainApplication) getActivity().getApplication()).getAppComponent())
+                .baseAppComponent(((BaseMainApplication) requireContext().getApplicationContext()).getBaseAppComponent())
                 .build()
                 .inject(this);
         shopReviewPresenter.attachView(this);
@@ -146,12 +143,8 @@ public class ReviewShopFragment extends BaseListFragment<ReviewShopModelContent,
 
     @Override
     public void onGoToProfile(String reviewerId, int adapterPosition) {
-    		onGoToProfileTracking(adapterPosition);
-        if (getActivity().getApplicationContext() instanceof ReputationRouter) {
-            startActivity(((ReputationRouter) getActivity().getApplicationContext())
-                    .getTopProfileIntent(getActivity(),
-                            String.valueOf(reviewerId)));
-        }
+        onGoToProfileTracking(adapterPosition);
+        startActivity(RouteManager.getIntent(getActivity(), ApplinkConst.PROFILE, String.valueOf(reviewerId)));
     }
 
     protected void onGoToProfileTracking(int adapterPosition) {
@@ -178,7 +171,7 @@ public class ReviewShopFragment extends BaseListFragment<ReviewShopModelContent,
 
     @Override
     public void onGoToShopInfo(String shopId) {
-        Intent intent = ((ReputationRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), shopId);
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.SHOP, shopId);
         startActivity(intent);
     }
 
@@ -235,7 +228,7 @@ public class ReviewShopFragment extends BaseListFragment<ReviewShopModelContent,
 
     @Override
     public void onErrorDeleteReview(Throwable e) {
-        NetworkErrorHelper.showCloseSnackbar(getActivity(), ErrorHandler.getErrorMessage(e));
+        NetworkErrorHelper.showCloseSnackbar(getActivity(), ErrorHandler.getErrorMessage(getContext(), e));
     }
 
     @Override
@@ -246,7 +239,7 @@ public class ReviewShopFragment extends BaseListFragment<ReviewShopModelContent,
     @Override
     public void onErrorPostLikeDislike(Throwable e, String reviewId, int likeStatus) {
         ((ReviewProductAdapter) getAdapter()).updateLikeStatusError(reviewId, likeStatus);
-        NetworkErrorHelper.showCloseSnackbar(getActivity(), ErrorHandler.getErrorMessage(e));
+        NetworkErrorHelper.showCloseSnackbar(getActivity(), ErrorHandler.getErrorMessage(getContext(), e));
     }
 
     @Override

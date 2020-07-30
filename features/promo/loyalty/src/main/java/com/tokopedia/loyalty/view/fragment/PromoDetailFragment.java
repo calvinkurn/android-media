@@ -4,10 +4,6 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import com.google.android.material.snackbar.Snackbar;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,11 +13,17 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.loyalty.R;
 import com.tokopedia.loyalty.di.component.PromoDetailComponent;
@@ -147,7 +149,7 @@ public class PromoDetailFragment extends BaseDaggerFragment implements
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_promo_detail, container, false);
 
-        this.refreshHandler = new RefreshHandler(getActivity(), view, this);
+        this.refreshHandler = new RefreshHandler(getActivity(), view.findViewById(R.id.swipe_refresh_layout), this);
 
         this.rlContainerLayout = view.findViewById(R.id.container);
         this.llPromoDetailBottomLayout = view.findViewById(R.id.ll_promo_detail_bottom_layout);
@@ -251,6 +253,7 @@ public class PromoDetailFragment extends BaseDaggerFragment implements
 
     @Override
     public void onItemPromoCodeCopyClipboardClicked(String promoName, String promoCode) {
+        promoDetailPresenter.cachePromoCodeData(promoCode, getResources());
         this.promoDetailAnalytics.userClickCopyIcon(promoName);
         String message = getString(R.string.voucher_code_copy_to_clipboard);
 
@@ -293,10 +296,7 @@ public class PromoDetailFragment extends BaseDaggerFragment implements
 
     @Override
     public void onWebViewLinkClicked(String url) {
-        if (getActivity().getApplication() instanceof LoyaltyModuleRouter) {
-            LoyaltyModuleRouter loyaltyModuleRouter = (LoyaltyModuleRouter) getActivity().getApplication();
-            loyaltyModuleRouter.actionOpenGeneralWebView(getActivity(), url);
-        }
+        RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW, url);
     }
 
 
@@ -323,10 +323,10 @@ public class PromoDetailFragment extends BaseDaggerFragment implements
                 if (getActivity().getApplication() instanceof LoyaltyModuleRouter) {
                     LoyaltyModuleRouter loyaltyModuleRouter = (LoyaltyModuleRouter) getActivity().getApplication();
 
-                    if (!TextUtils.isEmpty(appLink) && RouteManager.isSupportApplink(getActivity(),appLink)) {
+                    if (!TextUtils.isEmpty(appLink) && RouteManager.isSupportApplink(getActivity(), appLink)) {
                         RouteManager.route(getActivity(), appLink);
                     } else {
-                        loyaltyModuleRouter.actionOpenGeneralWebView(getActivity(), redirectUrl);
+                        RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW, redirectUrl);
                     }
                 }
             }

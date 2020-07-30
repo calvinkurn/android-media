@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container_umrah_gallery_three_images"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="@dimen/dp_16"
+    android:layout_marginTop="@dimen/dp_12"
+    android:layout_marginRight="@dimen/dp_16"
+    android:foreground="?attr/selectableItemBackgroundBorderless"
+    app:cardCornerRadius="@dimen/dp_8"
+    app:cardUseCompatPadding="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tg_umrah_gallery_three_image_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_12"
+            android:layout_marginTop="@dimen/dp_12"
+            android:textColor="@color/Neutral_N700"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="heading_5"
+            tools:text="Perjalanan Umroh" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tg_umrah_gallery_three_image_sub_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_12"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tg_umrah_gallery_three_image_title"
+            app:typographyType="body_3"
+            tools:text="20 Nov - 29 Nov 2018" />
+
+        <androidx.constraintlayout.helper.widget.Flow
+            android:id="@+id/flow_umrah_gallery"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/tg_umrah_gallery_three_image_sub_title"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:constraint_referenced_ids="card_umrah_gallery_three_image_first,card_umrah_gallery_three_image_second,card_umrah_gallery_three_image_third"
+            app:flow_wrapMode="aligned"
+            app:flow_verticalAlign="center"
+            app:flow_horizontalStyle="spread"
+            app:flow_horizontalGap="@dimen/dp_6"
+            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginLeft="@dimen/dp_12"
+            android:layout_marginRight="@dimen/dp_12"
+            android:paddingBottom="@dimen/dp_12"
+            />
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_umrah_gallery_three_image_first"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/dp_120"
+            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginRight="@dimen/dp_1"
+            android:layout_marginBottom="@dimen/dp_12"
+            app:cardCornerRadius="@dimen/dp_8"
+            app:cardElevation="0dp"
+            tools:ignore="MissingConstraints"
+            >
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iw_umrah_gallery_three_image_first"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_120"
+                android:scaleType="centerCrop"
+              />
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_umrah_gallery_three_image_second"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/dp_120"
+            android:layout_marginLeft="@dimen/dp_1"
+            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginRight="@dimen/dp_1"
+            android:layout_marginBottom="@dimen/dp_12"
+            app:cardCornerRadius="@dimen/dp_8"
+            app:cardElevation="0dp"
+            tools:ignore="MissingConstraints"
+            >
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iw_umrah_gallery_three_image_second"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_120"
+                android:scaleType="centerCrop"
+                />
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_umrah_gallery_three_image_third"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/dp_120"
+            android:layout_marginLeft="@dimen/dp_1"
+            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginBottom="@dimen/dp_12"
+            app:cardCornerRadius="@dimen/dp_8"
+            app:cardElevation="0dp"
+            tools:ignore="MissingConstraints"
+            >
+
+            <FrameLayout
+                android:id="@+id/fr_plus"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iw_umrah_gallery_three_image_third"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_120"
+                    android:scaleType="centerCrop"
+                    />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tg_umrah_gallery_three_next_label"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_120"
+                    android:layout_gravity="center"
+                    android:background="@drawable/umrah_rounded_gallery_foreground"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:visibility="invisible"
+                    app:typographyType="heading_6"
+                    app:typographyWeight="bold"
+                    tools:text="+5" />
+            </FrameLayout>
+        </androidx.cardview.widget.CardView>
+
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tg_umrah_gallery_three_image_desc"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/dp_12"
+            android:layout_marginBottom="@dimen/dp_12"
+            android:layout_marginTop="@dimen/dp_12"
+            app:typographyType="body_3"
+            app:layout_constraintTop_toBottomOf="@+id/flow_umrah_gallery"
+            tools:text="Alhamdulillah ibadah umroh kami berjalan dengan lancar tanpa halangan berarti." />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

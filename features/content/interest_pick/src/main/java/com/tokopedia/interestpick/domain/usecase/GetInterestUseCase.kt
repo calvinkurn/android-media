@@ -14,6 +14,7 @@ import javax.inject.Inject
 /**
  * @author by milhamj on 07/09/18.
  */
+@Deprecated("use GetInterestPickUseCase.kt instead", ReplaceWith("GetInterestPickUseCase"))
 class GetInterestUseCase @Inject constructor(@ApplicationContext val context: Context,
                                              val graphqlUseCase: GraphqlUseCase) {
     fun execute(subscriber: Subscriber<GraphqlResponse>) {

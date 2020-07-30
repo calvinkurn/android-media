@@ -1,0 +1,27 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.emoney">
+
+    <application>
+        <activity
+            android:name=".view.activity.EmoneyCheckBalanceActivity"
+            android:label="@string/emoney_toolbar_title_etoll_check_balance"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="stateAlwaysHidden">
+
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_digital"
+                    android:path="@string/path_emoney"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+
+        </activity>
+    </application>
+
+</manifest>

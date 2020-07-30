@@ -5,7 +5,10 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.inbox.R;
@@ -26,8 +29,7 @@ public class CreateResCenterActivity extends BasePresenterActivity<CreateResCent
     private static Intent getApplinkIntent(Context context, String orderId) {
         if (context.getApplicationContext() instanceof ResolutionRouter) {
             if (GlobalConfig.isSellerApp()){
-                return ((ResolutionRouter) context.getApplicationContext()).getSellerWebViewIntent(context,
-                        String.format(ResolutionUrl.RESO_CREATE, orderId));
+                return RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW, String.format(ResolutionUrl.RESO_CREATE, orderId));
             } else {
                 return ((ResolutionRouter) context.getApplicationContext()).getApplinkIntent(context,
                         String.format(ResolutionUrl.RESO_APPLINK + ResolutionUrl.HOSTNAME + ResolutionUrl.RESO_CREATE, orderId));

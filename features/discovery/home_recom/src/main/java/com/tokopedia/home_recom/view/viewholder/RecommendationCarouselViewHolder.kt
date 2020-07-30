@@ -1,55 +1,101 @@
 package com.tokopedia.home_recom.view.viewholder
 
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.carouselproductcard.CarouselProductCardListener
+import com.tokopedia.carouselproductcard.CarouselProductCardView
 import com.tokopedia.home_recom.R
-import com.tokopedia.home_recom.model.datamodel.RecommendationCarouselItemDataModel
 import com.tokopedia.home_recom.model.datamodel.RecommendationCarouselDataModel
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.home_recom.model.datamodel.RecommendationCarouselItemDataModel
+import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.topads.sdk.utils.ImpresionTask
 
 /**
  * Created by lukas on 21/05/2019
  *
  * A class for holder view Recommendation Carousel
  */
-class RecommendationCarouselViewHolder(view: View) : AbstractViewHolder<RecommendationCarouselDataModel>(view) {
+class RecommendationCarouselViewHolder(val view: View) : AbstractViewHolder<RecommendationCarouselDataModel>(view) {
 
     private val title: TextView by lazy { view.findViewById<TextView>(R.id.title) }
     private val seeMore: TextView by lazy { view.findViewById<TextView>(R.id.see_more) }
-    private val recyclerView: RecyclerView by lazy { view.findViewById<RecyclerView>(R.id.list) }
+    private val recyclerView: CarouselProductCardView by lazy { view.findViewById<CarouselProductCardView>(R.id.list) }
     private val list = mutableListOf<RecommendationCarouselItemDataModel>()
+
+    companion object {
+        private const val className = "com.tokopedia.home_recom.view.viewholder.RecommendationCarouselViewHolder"
+    }
+
     override fun bind(element: RecommendationCarouselDataModel) {
         title.text = element.title
-        seeMore.setOnClickListener { RouteManager.route(itemView.context, element.appLinkSeeMore) }
+        seeMore.visibility = if(element.appLinkSeeMore.isEmpty()) View.GONE else View.VISIBLE
+        seeMore.setOnClickListener {
+            RouteManager.route(itemView.context, element.appLinkSeeMore)
+        }
         setupRecyclerView(element)
     }
 
     private fun setupRecyclerView(dataModel: RecommendationCarouselDataModel){
-        list.clear()
-        list.addAll(dataModel.products)
-        recyclerView.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
-        recyclerView.adapter = object : RecyclerView.Adapter<RecommendationCarouselItemViewHolder>() {
-            override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecommendationCarouselItemViewHolder {
-                val view = LayoutInflater.from(parent.context).inflate(RecommendationCarouselItemDataModel.LAYOUT, parent, false)
-                return RecommendationCarouselItemViewHolder(view)
-            }
+        val products = dataModel.products
+        recyclerView.bindCarouselProductCardViewGrid(
+                carouselProductCardOnItemClickListener = object : CarouselProductCardListener.OnItemClickListener {
+                    override fun onItemClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
+                        val productRecommendation = products.getOrNull(carouselProductCardPosition) ?: return
+                        productRecommendation.listener.onProductClick(
+                                productRecommendation.productItem,
+                                productRecommendation.productItem.type,
+                                productRecommendation.parentPosition,
+                                carouselProductCardPosition)
+                        if (productRecommendation.productItem.isTopAds) {
+                            ImpresionTask(className).execute(productRecommendation.productItem.clickUrl)
+                        }
+                    }
+                },
+                carouselProductCardOnItemImpressedListener = object : CarouselProductCardListener.OnItemImpressedListener {
+                    override fun getImpressHolder(carouselProductCardPosition: Int): ImpressHolder? {
+                        return products.getOrNull(carouselProductCardPosition)?.productItem
+                    }
 
-            override fun getItemCount(): Int = list.size
+                    override fun onItemImpressed(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
+                        val productRecommendation = products.getOrNull(carouselProductCardPosition) ?: return
+                        if(productRecommendation.productItem.isTopAds){
+                            ImpresionTask(className).execute(productRecommendation.productItem.trackerImageUrl)
+                        }
+                        productRecommendation.listener.onProductImpression(productRecommendation.productItem)
+                    }
+                },
+                productCardModelList = products.map {
+                    ProductCardModel(
+                            slashedPrice = it.productItem.slashedPrice,
+                            productName = it.productItem.name,
+                            formattedPrice = it.productItem.price,
+                            productImageUrl = it.productItem.imageUrl,
+                            isTopAds = it.productItem.isTopAds,
+                            discountPercentage = it.productItem.discountPercentage.toString(),
+                            reviewCount = it.productItem.countReview,
+                            ratingCount = it.productItem.rating,
+                            shopLocation = it.productItem.location,
+                            isWishlistVisible = true,
+                            isWishlisted = it.productItem.isWishlist,
+                            shopBadgeList = it.productItem.badgesUrl.map {
+                                ProductCardModel.ShopBadge(imageUrl = it
+                                        ?: "")
+                            },
+                            freeOngkir = ProductCardModel.FreeOngkir(
+                                    isActive = it.productItem.isFreeOngkirActive,
+                                    imageUrl = it.productItem.freeOngkirImageUrl
+                            ),
+                            labelGroupList = it.productItem.labelGroupList.map { recommendationLabel ->
+                                ProductCardModel.LabelGroup(
+                                        title = recommendationLabel.title, position = recommendationLabel.position, type = recommendationLabel.type
+                                )
+                            }
+                    )
+                }
 
-            override fun onBindViewHolder(holder: RecommendationCarouselItemViewHolder, position: Int) {
-                holder.bind(list[position])
-            }
-        }
-    }
-
-    fun updateWishlist(position: Int, isWishlist: Boolean){
-        list[position].productItem.isWishlist = isWishlist
-        recyclerView.adapter?.notifyItemChanged(position)
+        )
     }
 }

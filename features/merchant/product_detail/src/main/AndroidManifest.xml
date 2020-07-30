@@ -9,7 +9,8 @@
 
         <activity android:name=".view.activity.ProductDetailActivity"
             android:label="@string/title_activity_product_detail"
-            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:configChanges="uiMode"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
 
             <intent-filter android:autoVerify="true">
@@ -53,6 +54,11 @@
 
         <activity android:name=".view.activity.ProductFullDescriptionTabActivity"
             android:label="@string/label_product_desc"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"/>
+
+        <activity android:name=".imagepreview.view.activity.ImagePreviewPdpActivity"
+            android:label="@string/label_image_preview_pdp"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"/>
 

@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/spacing_lvl4">
+
+    <com.elyeproj.loaderviewlibrary.LoaderImageView
+        android:id="@+id/imageThumbnail"
+        android:layout_width="@dimen/product_manage_list_image_size"
+        android:layout_height="@dimen/product_manage_list_image_size"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:corners="16" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/textTitle"
+        app:layout_constraintTop_toTopOf="@id/imageThumbnail"
+        app:layout_constraintLeft_toRightOf="@id/imageThumbnail"
+        android:layout_marginLeft="@dimen/product_manage_title_shimmer_horizontal_spacing"
+        android:layout_marginStart="@dimen/product_manage_title_shimmer_horizontal_spacing"
+        android:layout_width="@dimen/product_manage_title_shimmer_width"
+        android:layout_height="@dimen/product_manage_text_shimmer_height"
+        app:corners="16" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/textTitleSecondLine"
+        app:layout_constraintTop_toBottomOf="@id/textTitle"
+        app:layout_constraintLeft_toLeftOf="@id/textTitle"
+        android:layout_marginTop="@dimen/product_manage_shimmer_vertical_spacing"
+        android:layout_width="@dimen/product_manage_text_shimmer_width"
+        android:layout_height="@dimen/product_manage_text_shimmer_height"
+        app:corners="16" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/textPrice"
+        app:layout_constraintTop_toBottomOf="@id/textTitleSecondLine"
+        app:layout_constraintLeft_toLeftOf="@id/textTitleSecondLine"
+        android:layout_marginTop="@dimen/product_manage_shimmer_vertical_spacing"
+        android:layout_width="@dimen/product_manage_text_shimmer_width_short"
+        android:layout_height="@dimen/product_manage_text_shimmer_height"
+        app:corners="16" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/textLabel"
+        app:layout_constraintTop_toBottomOf="@id/textPrice"
+        app:layout_constraintLeft_toLeftOf="@id/textPrice"
+        android:layout_marginTop="@dimen/product_manage_shimmer_vertical_spacing"
+        android:layout_width="@dimen/product_manage_text_shimmer_width"
+        android:layout_height="@dimen/product_manage_text_shimmer_height"
+        app:corners="16"/>
+
+    <com.elyeproj.loaderviewlibrary.LoaderImageView
+        android:id="@+id/btnCTA"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_lvl3"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        app:layout_constraintTop_toBottomOf="@id/textLabel"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:corners="16" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderImageView
+        android:id="@+id/imageThumbnail2"
+        android:layout_width="@dimen/product_manage_list_image_size"
+        android:layout_height="@dimen/product_manage_list_image_size"
+        android:layout_marginTop="@dimen/product_manage_image_shimmer_vertical_spacing"
+        app:layout_constraintTop_toBottomOf="@id/btnCTA"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:corners="16" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/textTitle2"
+        app:layout_constraintTop_toTopOf="@id/imageThumbnail2"
+        app:layout_constraintLeft_toRightOf="@id/imageThumbnail2"
+        android:layout_marginLeft="@dimen/product_manage_title_shimmer_horizontal_spacing"
+        android:layout_marginStart="@dimen/product_manage_title_shimmer_horizontal_spacing"
+        android:layout_width="@dimen/product_manage_title_shimmer_width"
+        android:layout_height="@dimen/product_manage_text_shimmer_height"
+        app:corners="16" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/textTitleSecondLine2"
+        app:layout_constraintTop_toBottomOf="@id/textTitle2"
+        app:layout_constraintLeft_toLeftOf="@id/textTitle2"
+        android:layout_marginTop="@dimen/product_manage_shimmer_vertical_spacing"
+        android:layout_width="@dimen/product_manage_text_shimmer_width"
+        android:layout_height="@dimen/product_manage_text_shimmer_height"
+        app:corners="16" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/textPrice2"
+        app:layout_constraintTop_toBottomOf="@id/textTitleSecondLine2"
+        app:layout_constraintLeft_toLeftOf="@id/textTitleSecondLine2"
+        android:layout_marginTop="@dimen/product_manage_shimmer_vertical_spacing"
+        android:layout_width="@dimen/product_manage_text_shimmer_width_short"
+        android:layout_height="@dimen/product_manage_text_shimmer_height"
+        app:corners="16" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/textLabel2"
+        app:layout_constraintTop_toBottomOf="@id/textPrice2"
+        app:layout_constraintLeft_toLeftOf="@id/textPrice2"
+        android:layout_marginTop="@dimen/product_manage_shimmer_vertical_spacing"
+        android:layout_width="@dimen/product_manage_text_shimmer_width"
+        android:layout_height="@dimen/product_manage_text_shimmer_height"
+        app:corners="16"/>
+
+    <com.elyeproj.loaderviewlibrary.LoaderImageView
+        android:id="@+id/btnCTA2"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_lvl3"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        app:layout_constraintTop_toBottomOf="@id/textLabel2"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:corners="16" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderImageView
+        android:id="@+id/imageThumbnail3"
+        android:layout_width="@dimen/product_manage_list_image_size"
+        android:layout_height="@dimen/product_manage_list_image_size"
+        android:layout_marginTop="@dimen/product_manage_image_shimmer_vertical_spacing"
+        app:layout_constraintTop_toBottomOf="@id/btnCTA2"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:corners="16" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/textTitle3"
+        app:layout_constraintTop_toTopOf="@id/imageThumbnail3"
+        app:layout_constraintLeft_toRightOf="@id/imageThumbnail3"
+        android:layout_marginLeft="@dimen/product_manage_title_shimmer_horizontal_spacing"
+        android:layout_marginStart="@dimen/product_manage_title_shimmer_horizontal_spacing"
+        android:layout_width="@dimen/product_manage_title_shimmer_width"
+        android:layout_height="@dimen/product_manage_text_shimmer_height"
+        app:corners="16" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/textTitleSecondLine3"
+        app:layout_constraintTop_toBottomOf="@id/textTitle3"
+        app:layout_constraintLeft_toLeftOf="@id/textTitle3"
+        android:layout_marginTop="@dimen/product_manage_shimmer_vertical_spacing"
+        android:layout_width="@dimen/product_manage_text_shimmer_width"
+        android:layout_height="@dimen/product_manage_text_shimmer_height"
+        app:corners="16" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/textPrice3"
+        app:layout_constraintTop_toBottomOf="@id/textTitleSecondLine3"
+        app:layout_constraintLeft_toLeftOf="@id/textTitleSecondLine3"
+        android:layout_marginTop="@dimen/product_manage_shimmer_vertical_spacing"
+        android:layout_width="@dimen/product_manage_text_shimmer_width_short"
+        android:layout_height="@dimen/product_manage_text_shimmer_height"
+        app:corners="16" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/textLabel3"
+        app:layout_constraintTop_toBottomOf="@id/textPrice3"
+        app:layout_constraintLeft_toLeftOf="@id/textPrice3"
+        android:layout_marginTop="@dimen/product_manage_shimmer_vertical_spacing"
+        android:layout_width="@dimen/product_manage_text_shimmer_width"
+        android:layout_height="@dimen/product_manage_text_shimmer_height"
+        app:corners="16"/>
+
+    <com.elyeproj.loaderviewlibrary.LoaderImageView
+        android:id="@+id/btnCTA3"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_lvl3"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        app:layout_constraintTop_toBottomOf="@id/textLabel3"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:corners="16" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderImageView
+        android:id="@+id/imageThumbnail4"
+        android:layout_width="@dimen/product_manage_list_image_size"
+        android:layout_height="@dimen/product_manage_list_image_size"
+        android:layout_marginTop="@dimen/product_manage_image_shimmer_vertical_spacing"
+        app:layout_constraintTop_toBottomOf="@id/btnCTA3"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:corners="16" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/textTitle4"
+        app:layout_constraintTop_toTopOf="@id/imageThumbnail4"
+        app:layout_constraintLeft_toRightOf="@id/imageThumbnail4"
+        android:layout_marginLeft="@dimen/product_manage_title_shimmer_horizontal_spacing"
+        android:layout_marginStart="@dimen/product_manage_title_shimmer_horizontal_spacing"
+        android:layout_width="@dimen/product_manage_title_shimmer_width"
+        android:layout_height="@dimen/product_manage_text_shimmer_height"
+        app:corners="16" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/textTitleSecondLine4"
+        app:layout_constraintTop_toBottomOf="@id/textTitle4"
+        app:layout_constraintLeft_toLeftOf="@id/textTitle4"
+        android:layout_marginTop="@dimen/product_manage_shimmer_vertical_spacing"
+        android:layout_width="@dimen/product_manage_text_shimmer_width"
+        android:layout_height="@dimen/product_manage_text_shimmer_height"
+        app:corners="16" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/textPrice4"
+        app:layout_constraintTop_toBottomOf="@id/textTitleSecondLine4"
+        app:layout_constraintLeft_toLeftOf="@id/textTitleSecondLine4"
+        android:layout_marginTop="@dimen/product_manage_shimmer_vertical_spacing"
+        android:layout_width="@dimen/product_manage_text_shimmer_width_short"
+        android:layout_height="@dimen/product_manage_text_shimmer_height"
+        app:corners="16" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/textLabel4"
+        app:layout_constraintTop_toBottomOf="@id/textPrice4"
+        app:layout_constraintLeft_toLeftOf="@id/textPrice4"
+        android:layout_marginTop="@dimen/product_manage_shimmer_vertical_spacing"
+        android:layout_width="@dimen/product_manage_text_shimmer_width"
+        android:layout_height="@dimen/product_manage_text_shimmer_height"
+        app:corners="16"/>
+
+    <com.elyeproj.loaderviewlibrary.LoaderImageView
+        android:id="@+id/btnCTA4"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_lvl3"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        app:layout_constraintTop_toBottomOf="@id/textLabel4"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:corners="16" />
+</androidx.constraintlayout.widget.ConstraintLayout>

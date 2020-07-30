@@ -7,17 +7,18 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import com.google.android.material.snackbar.Snackbar;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
@@ -292,7 +293,7 @@ public class PromoListFragment extends BaseDaggerFragment implements IPromoListV
     }
 
     protected void initView(View view) {
-        refreshHandler = new RefreshHandler(getActivity(), view, this);
+        refreshHandler = new RefreshHandler(getActivity(), view.findViewById(R.id.swipe_refresh_layout), this);
         adapter = new PromoListAdapter(new ArrayList<PromoData>(), this);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         rvPromoList.setLayoutManager(layoutManager);
@@ -321,8 +322,10 @@ public class PromoListFragment extends BaseDaggerFragment implements IPromoListV
             }
         }
 
-        quickSingleFilterView.renderFilter(quickFilterItemList);
-        quickSingleFilterView.setDefaultItem(quickFilterItemList.get(indexAutoSelectCategoryFilter));
+        if (quickFilterItemList.size() > 0) {
+            quickSingleFilterView.renderFilter(quickFilterItemList);
+            quickSingleFilterView.setDefaultItem(quickFilterItemList.get(indexAutoSelectCategoryFilter));
+        }
         quickSingleFilterView.setListener(new QuickSingleFilterView.ActionListener() {
             @Override
             public void selectFilter(String typeFilter) {
@@ -436,6 +439,12 @@ public class PromoListFragment extends BaseDaggerFragment implements IPromoListV
         }
 
         bottomSheetViewInfoPromoCode.show();
+    }
+
+    @Override
+    public void cachePromoCode(String promoCode) {
+        dPresenter.cachePromoCodeData(promoCode, getResources());
+
     }
 
     private void handleErrorEmptyState(String message) {

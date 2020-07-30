@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/llChatVoucherContainer"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/vgVoucherView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:baselineAligned="false"
+        android:gravity="center_vertical"
+        android:minHeight="@dimen/dp_topchat_50"
+        android:orientation="horizontal"
+        android:weightSum="1">
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="0.5"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="@dimen/spacing_lvl3">
+
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvVoucherTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:layout_gravity="center_vertical"
+                android:singleLine="false"
+                android:textColor="@color/Neutral_N700"
+                app:typographyType="body_2"
+                app:typographyWeight="reguler"
+                tools:text="Gratis Ongkir\n20rb" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvVoucherSubtitle"
+                style="@style/TextView.Micro10"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tvVoucherTitle"
+                android:layout_marginTop="@dimen/spacing_lvl1"
+                android:textColor="@color/Neutral_N700"
+                android:visibility="gone"
+                app:typographyType="small"
+                tools:text="Next Day (Rp 25.000)" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvVoucherDesc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tvVoucherSubtitle"
+                android:layout_marginTop="@dimen/dp_topchat_3"
+                android:textColor="@color/Neutral_N700"
+                android:textSize="@dimen/fontSize_lvl1"
+                app:typographyType="small"
+                tools:text="*Min Pembelian 300Rb" />
+
+        </RelativeLayout>
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/iv_voucher_type"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="end"
+                android:scaleType="fitXY" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="@dimen/spacing_lvl3">
+
+                <Button
+                    android:id="@+id/btnUseVoucher"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:background="@drawable/bg_voucher_button"
+                    android:minWidth="@dimen/dp_topchat_76"
+                    android:minHeight="@dimen/spacing_lvl5"
+                    android:paddingLeft="@dimen/dp_topchat_12"
+                    android:paddingTop="@dimen/spacing_lvl2"
+                    android:paddingRight="@dimen/dp_topchat_12"
+                    android:paddingBottom="@dimen/spacing_lvl2"
+                    android:text="@string/use_voucher"
+                    android:textAllCaps="false"
+                    android:textColor="@color/text_color_voucher_button"
+                    android:textSize="@dimen/fontSize_lvl2"
+                    android:textStyle="bold" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tvCode"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentBottom="true"
+                    android:gravity="end"
+                    android:singleLine="true"
+                    android:textColor="@color/white"
+                    app:typographyType="small"
+                    app:typographyWeight="bold"
+                    tools:text="LGOFFICIFO" />
+
+            </RelativeLayout>
+
+        </FrameLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/llReadStatusContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_topchat_chat_voucher_read_status"
+        android:gravity="end|center_vertical"
+        android:orientation="horizontal"
+        android:paddingTop="@dimen/spacing_lvl2"
+        android:paddingEnd="@dimen/spacing_lvl4"
+        android:paddingRight="@dimen/spacing_lvl4"
+        android:paddingBottom="@dimen/spacing_lvl2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/iv_thumbnail"
+        app:layout_constraintTop_toBottomOf="@+id/tv_price"
+        tools:ignore="RtlSymmetry">
+
+        <include layout="@layout/item_chatcommon_chat_read_status_attachment" />
+
+    </LinearLayout>
+</LinearLayout>

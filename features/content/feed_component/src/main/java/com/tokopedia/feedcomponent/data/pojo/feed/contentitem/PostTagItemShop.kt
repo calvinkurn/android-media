@@ -7,4 +7,8 @@ data class PostTagItemShop(
         @SerializedName("shopID")
         @Expose
         val shopId: String = ""
-)
+) {
+        fun copy(): PostTagItemShop {
+                return PostTagItemShop(shopId)
+        }
+}

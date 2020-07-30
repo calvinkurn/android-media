@@ -9,6 +9,9 @@ public interface SearchConstant {
     String FROM_APP_SHORTCUTS = "FROM_APP_SHORTCUTS" ;
 
     String SEARCH_RESULT_TRACE = "search_result_trace";
+    String SEARCH_RESULT_PLT_PREPARE_METRICS = "search_result_plt_prepare_metrics";
+    String SEARCH_RESULT_PLT_NETWORK_METRICS = "search_result_plt_network_metrics";
+    String SEARCH_RESULT_PLT_RENDER_METRICS = "search_result_plt_render_metrics";
 
     String SEARCH_VIEW_MODEL_FACTORY = "search_view_model_factory";
 
@@ -32,7 +35,8 @@ public interface SearchConstant {
 
     interface Wishlist {
         String WISHLIST_STATUS_UPDATED_POSITION = "wishlistUpdatedPosition";
-        String WIHSLIST_STATUS_IS_WISHLIST = "isWishlist";
+        String WISHLIST_STATUS_IS_WISHLIST = "isWishlist";
+        String WISHLIST_PRODUCT_ID = "product_id";
         String PRODUCT_WISHLIST_URL = "product_wishlist_url";
         String PRODUCT_WISHLIST_URL_USE_CASE = "product_wishlist_url_use_case";
     }
@@ -87,6 +91,7 @@ public interface SearchConstant {
         String ADS_SOURCE = "search";
         String SEARCH_SHOP_VIEW_MODEL_FACTORY = "search_shop_view_model_factory";
         int SHOP_PRODUCT_PREVIEW_ITEM_MAX_COUNT = 3;
+        int HEADLINE_PRODUCT_COUNT = 3;
     }
 
     interface ShopStatus {
@@ -117,12 +122,6 @@ public interface SearchConstant {
         String CART_LOCAL_CACHE = "CART_LOCAL_CACHE";
     }
 
-    interface GCM {
-        String GCM_ID = "gcm_id";
-        String GCM_STORAGE = "GCM_STORAGE";
-        String GCM_LOCAL_CACHE = "GCM_LOCAL_CACHE";
-    }
-
     interface ActiveTab {
         String PRODUCT = "product";
         String SHOP = "shop";
@@ -133,5 +132,22 @@ public interface SearchConstant {
     interface FreeOngkir {
         String FREE_ONGKIR_LOCAL_CACHE_NAME = "SEARCH_PRODUCT_FREE_ONGKIR";
         String FREE_ONGKIR_SHOW_CASE_ALREADY_SHOWN = "FREE_ONGKIR_SHOW_CASE_ALREADY_SHOWN";
+    }
+
+    interface SimilarSearch {
+        String QUERY = "SIMILAR_SEARCH_QUERY";
+    }
+
+    interface Advertising {
+        String ADVERTISING_ID = "ADVERTISINGID";
+        String KEY_ADVERTISING_ID = "KEY_ADVERTISINGID";
+        String ADVERTISING_LOCAL_CACHE = "ADVERTISING_LOCAL_CACHE";
+        String APP_CLIENT_ID = "appClientId";
+    }
+
+    interface ABTestRemoteConfigKey {
+        String AB_TEST_KEY_COMMA_VS_FULL_STAR = "Comma vs Full Star";
+        String AB_TEST_VARIANT_FULL_STAR = "Full Star";
+        String AB_TEST_VARIANT_COMMA_STAR = "Comma Star";
     }
 }

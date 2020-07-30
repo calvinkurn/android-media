@@ -1,5 +1,7 @@
 package com.tokopedia.tkpd;
 
+import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
@@ -12,52 +14,70 @@ import android.media.AudioAttributes;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import androidx.appcompat.app.AppCompatDelegate;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.content.ContextCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
+import com.chuckerteam.chucker.api.Chucker;
+import com.chuckerteam.chucker.api.ChuckerCollector;
 import com.crashlytics.android.Crashlytics;
 import com.facebook.FacebookSdk;
 import com.facebook.soloader.SoLoader;
 import com.github.anrwatchdog.ANRError;
 import com.github.anrwatchdog.ANRWatchDog;
+import com.github.moduth.blockcanary.BlockCanary;
+import com.github.moduth.blockcanary.BlockCanaryContext;
 import com.google.firebase.FirebaseApp;
 import com.moengage.inapp.InAppManager;
 import com.moengage.inapp.InAppMessage;
 import com.moengage.inapp.InAppTracker;
 import com.moengage.push.PushManager;
 import com.moengage.pushbase.push.MoEPushCallBacks;
-import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common.network.util.NetworkClient;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.container.AppsflyerAnalytics;
 import com.tokopedia.core.analytics.container.GTMAnalytics;
 import com.tokopedia.core.analytics.container.MoengageAnalytics;
+import com.tokopedia.core.database.CoreLegacyDbFlowDatabase;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.cpm.CharacterPerMinuteActivityLifecycleCallbacks;
-import com.tokopedia.cpm.CharacterPerMinuteInterface;
+import com.tokopedia.developer_options.stetho.StethoUtil;
+import com.tokopedia.device.info.DeviceInfo;
 import com.tokopedia.graphql.data.GraphqlClient;
-import com.tokopedia.logger.LogWrapper;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
-import com.tokopedia.navigation_common.category.CategoryNavigationConfig;
+import com.tokopedia.notifications.data.AmplificationDataSource;
+import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
 import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubscriber;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
+import com.tokopedia.shakedetect.ShakeDetectManager;
+import com.tokopedia.shakedetect.ShakeSubscriber;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
+import com.tokopedia.tkpd.nfc.NFCSubscriber;
 import com.tokopedia.tkpd.timber.TimberWrapper;
+import com.tokopedia.tkpd.timber.LoggerActivityLifecycleCallbacks;
+import com.tokopedia.tkpd.utils.BetaSignActivityLifecycleCallbacks;
 import com.tokopedia.tkpd.utils.CacheApiWhiteList;
 import com.tokopedia.tkpd.utils.CustomPushListener;
-import com.tokopedia.tkpd.utils.DeviceUtil;
-import com.tokopedia.tkpd.utils.UIBlockDebugger;
+import com.tokopedia.tkpd.utils.SessionActivityLifecycleCallbacks;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.url.TokopediaUrl;
+import com.tokopedia.weaver.WeaveInterface;
+import com.tokopedia.weaver.Weaver;
+import com.tokopedia.weaver.WeaverFirebaseConditionCheck;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -69,7 +89,9 @@ import java.security.cert.X509Certificate;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
-import kotlin.jvm.functions.Function1;
+import timber.log.Timber;
+
+import static com.tokopedia.unifyprinciples.GetTypefaceKt.getTypeface;
 
 /**
  * Created by ricoharisin on 11/11/16.
@@ -77,14 +99,19 @@ import kotlin.jvm.functions.Function1;
 
 public class ConsumerMainApplication extends ConsumerRouterApplication implements
         MoEPushCallBacks.OnMoEPushNavigationAction,
-        InAppManager.InAppMessageListener,
-        CharacterPerMinuteInterface {
+        InAppManager.InAppMessageListener {
 
     private final String NOTIFICATION_CHANNEL_NAME = "Promo";
+    private final String NOTIFICATION_CHANNEL_NAME_BTS_ONE = "Promo BTS 1";
+    private final String NOTIFICATION_CHANNEL_NAME_BTS_TWO = "Promo BTS 2";
     private final String NOTIFICATION_CHANNEL_ID = "custom_sound";
+    private final String NOTIFICATION_CHANNEL_ID_BTS_ONE = "custom_sound_bts_one";
+    private final String NOTIFICATION_CHANNEL_ID_BTS_TWO = "custom_sound_bts_two";
     private final String NOTIFICATION_CHANNEL_DESC = "notification channel for custom sound.";
+    private final String NOTIFICATION_CHANNEL_DESC_BTS_ONE = "notification channel for custom sound with BTS tone";
+    private final String NOTIFICATION_CHANNEL_DESC_BTS_TWO = "notification channel for custom sound with different BTS tone";
 
-    CharacterPerMinuteActivityLifecycleCallbacks callback;
+    GratificationSubscriber gratificationSubscriber;
 
     // Used to load the 'native-lib' library on application startup.
     static {
@@ -94,12 +121,99 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
     @Override
     public void onCreate() {
-        UIBlockDebugger.init(this);
-        com.tokopedia.akamai_bot_lib.UtilsKt.initAkamaiBotManager(this);
-        setVersionCode();
-
+        if (!isMainProcess()) {
+            return;
+        }
+        initConfigValues();
         initializeSdk();
+        initRemoteConfig();
+        TokopediaUrl.Companion.init(this); // generate base url
 
+        TrackApp.initTrackApp(this);
+        TrackApp.getInstance().registerImplementation(TrackApp.GTM, GTMAnalytics.class);
+        TrackApp.getInstance().registerImplementation(TrackApp.APPSFLYER, AppsflyerAnalytics.class);
+        TrackApp.getInstance().registerImplementation(TrackApp.MOENGAGE, MoengageAnalytics.class);
+        TrackApp.getInstance().initializeAllApis();
+        createAndCallPreSeq();
+        super.onCreate();
+
+        createAndCallPostSeq();
+        createAndCallFontLoad();
+
+        registerActivityLifecycleCallbacks();
+
+    }
+
+    private void registerActivityLifecycleCallbacks() {
+        registerActivityLifecycleCallbacks(new ShakeSubscriber(getApplicationContext(), new ShakeDetectManager.Callback() {
+            @Override
+            public void onShakeDetected(boolean isLongShake) {
+                openShakeDetectCampaignPage(isLongShake);
+            }
+        }));
+        registerActivityLifecycleCallbacks(new BetaSignActivityLifecycleCallbacks());
+        registerActivityLifecycleCallbacks(new LoggerActivityLifecycleCallbacks());
+        registerActivityLifecycleCallbacks(new NFCSubscriber());
+        registerActivityLifecycleCallbacks(new ViewInspectorSubscriber());
+        registerActivityLifecycleCallbacks(new SessionActivityLifecycleCallbacks());
+    }
+
+    private void createAndCallPreSeq(){
+        //don't convert to lambda does not work in kit kat
+        WeaveInterface preWeave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Boolean execute() {
+                return executePreCreateSequence();
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutine(preWeave, new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_SEQ1_ASYNC, remoteConfig));
+    }
+
+    private void createAndCallPostSeq(){
+        //don't convert to lambda does not work in kit kat
+        WeaveInterface postWeave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Boolean execute() {
+                return executePostCreateSequence();
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutine(postWeave, new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_SEQ2_ASYNC, remoteConfig));
+    }
+
+    private void createAndCallFontLoad(){
+        //don't convert to lambda does not work in kit kat
+        WeaveInterface fontWeave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Boolean execute() {
+                return loadFontsInBg();
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutine(fontWeave, new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_SEQ5_ASYNC, remoteConfig));
+    }
+
+    @NotNull
+    private Boolean loadFontsInBg(){
+        getTypeface(context, "NunitoSansExtraBold.ttf");
+        getTypeface(context, "RobotoRegular.ttf");
+        getTypeface(context, "RobotoBold.ttf");
+        return true;
+    }
+
+    @NotNull
+    private Boolean executePreCreateSequence(){
+        initReact();
+        com.tokopedia.akamai_bot_lib.UtilsKt.initAkamaiBotManager(ConsumerMainApplication.this);
+        PersistentCacheManager.init(ConsumerMainApplication.this);
+        Chucker.registerDefaultCrashHandler(new ChuckerCollector(ConsumerMainApplication.this, false));
+        FpmLogger.init(ConsumerMainApplication.this);
+        return true;
+    }
+
+    private void initConfigValues(){
+        setVersionCode();
         GlobalConfig.VERSION_NAME = BuildConfig.VERSION_NAME;
         GlobalConfig.DEBUG = BuildConfig.DEBUG;
         GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
@@ -114,34 +228,28 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         com.tokopedia.config.GlobalConfig.HOME_ACTIVITY_CLASS_NAME = MainParentActivity.class.getName();
         com.tokopedia.config.GlobalConfig.DEEPLINK_HANDLER_ACTIVITY_CLASS_NAME = DeeplinkHandlerActivity.class.getName();
         com.tokopedia.config.GlobalConfig.DEEPLINK_ACTIVITY_CLASS_NAME = DeepLinkActivity.class.getName();
-        com.tokopedia.config.GlobalConfig.DEVICE_ID = DeviceUtil.getDeviceId(this);
-
-        TokopediaUrl.Companion.init(this); // generate base url
-
+        if(com.tokopedia.config.GlobalConfig.DEBUG) {
+            com.tokopedia.config.GlobalConfig.DEVICE_ID = DeviceInfo.getAndroidId(this);
+        }
         generateConsumerAppNetworkKeys();
+    }
 
-        TrackApp.initTrackApp(this);
+    private void initGqlNWClient(){
+        GraphqlClient.init(getApplicationContext());
+        NetworkClient.init(getApplicationContext());
+    }
 
-        TrackApp.getInstance().registerImplementation(TrackApp.GTM, GTMAnalytics.class);
-        TrackApp.getInstance().registerImplementation(TrackApp.APPSFLYER, AppsflyerAnalytics.class);
-        TrackApp.getInstance().registerImplementation(TrackApp.MOENGAGE, MoengageAnalytics.class);
-        TrackApp.getInstance().initializeAllApis();
-
-        PersistentCacheManager.init(this);
-
-        super.onCreate();
-        initReact();
-
-        MoEPushCallBacks.getInstance().setOnMoEPushNavigationAction(this);
-        InAppManager.getInstance().setInAppListener(this);
-
+    @NotNull
+    private Boolean executePostCreateSequence(){
+        StethoUtil.initStetho(ConsumerMainApplication.this);
+        MoEPushCallBacks.getInstance().setOnMoEPushNavigationAction(ConsumerMainApplication.this);
+        InAppManager.getInstance().setInAppListener(ConsumerMainApplication.this);
         IntentFilter intentFilter1 = new IntentFilter(Constants.ACTION_BC_RESET_APPLINK);
-        LocalBroadcastManager.getInstance(this).registerReceiver(new ApplinkResetReceiver(), intentFilter1);
+        LocalBroadcastManager.getInstance(ConsumerMainApplication.this).registerReceiver(new ApplinkResetReceiver(), intentFilter1);
         initCacheApi();
         createCustomSoundNotificationChannel();
         PushManager.getInstance().setMessageListener(new CustomPushListener());
-        GraphqlClient.init(getApplicationContext());
-        NetworkClient.init(getApplicationContext());
+
 
         if (!com.tokopedia.config.GlobalConfig.DEBUG) {
             // do not replace with method reference "Crashlytics::logException", will not work in dynamic feature
@@ -153,21 +261,52 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
             }).start();
         }
 
-        if (callback == null) {
-            callback = new CharacterPerMinuteActivityLifecycleCallbacks(this);
-        }
-        registerActivityLifecycleCallbacks(callback);
-
-        LogWrapper.init(this);
-        if (LogWrapper.instance != null) {
-            LogWrapper.instance.setLogentriesToken(TimberWrapper.LOGENTRIES_TOKEN);
-        }
-        TimberWrapper.init(this);
-
+        TimberWrapper.init(ConsumerMainApplication.this);
         initializeAbTestVariant();
+        gratificationSubscriber = new GratificationSubscriber(getApplicationContext());
+        registerActivityLifecycleCallbacks(gratificationSubscriber);
+        getAmplificationPushData();
+        initBlockCanary();
+        return true;
+    }
 
-        GratificationSubscriber subscriber = new GratificationSubscriber(getApplicationContext());
-        registerActivityLifecycleCallbacks(subscriber);
+    private void getAmplificationPushData() {
+        /*
+         * Amplification of push notification.
+         * fetch all of cm_push_notification's
+         * push notification data that aren't rendered yet.
+         * then, put all of push_data into local storage.
+         * */
+        if (getAmplificationRemoteConfig()) {
+            try {
+                AmplificationDataSource.invoke(ConsumerMainApplication.this);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private Boolean getAmplificationRemoteConfig() {
+        return remoteConfig.getBoolean(RemoteConfigKey.ENABLE_AMPLIFICATION, true);
+    }
+
+    private void openShakeDetectCampaignPage(boolean isLongShake) {
+        Intent intent = RouteManager.getIntent(getApplicationContext(), ApplinkConstInternalPromo.PROMO_CAMPAIGN_SHAKE_LANDING, Boolean.toString(isLongShake));
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        getApplicationContext().startActivity(intent);
+    }
+
+    private boolean isMainProcess() {
+        ActivityManager manager = ContextCompat.getSystemService(this, ActivityManager.class);
+
+        if (manager == null || manager.getRunningAppProcesses() == null) return false;
+
+        for (ActivityManager.RunningAppProcessInfo processInfo : manager.getRunningAppProcesses()) {
+            if (processInfo.pid == android.os.Process.myPid()) {
+                return BuildConfig.APPLICATION_ID.equals(processInfo.processName);
+            }
+        }
+        return false;
     }
 
     @Override
@@ -177,13 +316,17 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         TrackApp.getInstance().delete();
         TrackApp.deleteInstance();
         TokopediaUrl.Companion.deleteInstance();
-        unregisterActivityLifecycleCallbacks(callback);
+        CoreLegacyDbFlowDatabase.reset();
     }
 
     @Override
     public void onLowMemory() {
         super.onLowMemory();
-        unregisterActivityLifecycleCallbacks(callback);
+        CoreLegacyDbFlowDatabase.reset();
+    }
+
+    public void initBlockCanary(){
+        BlockCanary.install(context, new BlockCanaryContext()).start();
     }
 
     private void createCustomSoundNotificationChannel() {
@@ -200,6 +343,28 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
             NotificationManager notificationManager = (NotificationManager) getSystemService(
                     NOTIFICATION_SERVICE);
             notificationManager.createNotificationChannel(mChannel);
+
+            // Create the NotificationChannel
+            mChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID_BTS_ONE,
+                    NOTIFICATION_CHANNEL_NAME_BTS_ONE, NotificationManager.IMPORTANCE_DEFAULT);
+            mChannel.setDescription(NOTIFICATION_CHANNEL_DESC_BTS_ONE);
+            att = new AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+                    .build();
+            mChannel.setSound(Uri.parse("android.resource://" + getPackageName() + "/" +
+                    R.raw.tokopedia_bts_one), att);
+            notificationManager.createNotificationChannel(mChannel);
+
+            // Create the NotificationChannel
+            mChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID_BTS_TWO,
+                    NOTIFICATION_CHANNEL_NAME_BTS_TWO, NotificationManager.IMPORTANCE_DEFAULT);
+            mChannel.setDescription(NOTIFICATION_CHANNEL_DESC_BTS_TWO);
+            att = new AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+                    .build();
+            mChannel.setSound(Uri.parse("android.resource://" + getPackageName() + "/" +
+                    R.raw.tokopedia_bts_two), att);
+            notificationManager.createNotificationChannel(mChannel);
         }
     }
 
@@ -208,7 +373,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
             FirebaseApp.initializeApp(this);
             FacebookSdk.sdkInitialize(this);
         } catch (Exception e) {
-            e.printStackTrace();
+
         }
     }
 
@@ -217,7 +382,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         Long timestampAbTest = sharedPreferences.getLong(AbTestPlatform.Companion.getKEY_SP_TIMESTAMP_AB_TEST(), 0);
         RemoteConfigInstance.initAbTestPlatform(this);
         Long current = new Date().getTime();
-
         if (current >= timestampAbTest + TimeUnit.HOURS.toMillis(1)) {
             RemoteConfigInstance.getInstance().getABTestPlatform().fetch(getRemoteConfigListener());
         }
@@ -244,7 +408,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
     @Override
     public boolean onClick(@Nullable String screenName, @Nullable Bundle extras, @Nullable Uri deepLinkUri) {
-        CommonUtils.dumper("GAv4 MOE NGGAGE on notif click " + deepLinkUri + " bundle " + extras);
+        Timber.d("GAv4 MOE NGGAGE on notif click " + deepLinkUri + " bundle " + extras);
         return handleClick(screenName, extras, deepLinkUri);
     }
 
@@ -289,7 +453,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
                 startActivity(intent);
 
             } else {
-                CommonUtils.dumper("FCM entered no one");
+                Timber.d("FCM entered no one");
             }
 
             return true;
@@ -299,7 +463,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     }
 
     private void initReact() {
-        SoLoader.init(this, false);
+        SoLoader.init(ConsumerMainApplication.this, false);
     }
 
     private void initCacheApi() {
@@ -321,18 +485,38 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     }
 
     public boolean checkAppSignature() {
-        PackageInfo info = null;
         try {
-            info = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNATURES);
+            PackageInfo info;
+            boolean signatureValid = false;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                info = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNING_CERTIFICATES);
+                if (null != info && info.signingInfo.getApkContentsSigners().length > 0) {
+                    byte[] rawCertNative = bytesFromJNI();
+                    // handle if the library is failing
+                    if (rawCertNative == null) {
+                        return true;
+                    }
+                    byte[] rawCertJava = info.signingInfo.getApkContentsSigners()[0].toByteArray();
+                    signatureValid = getInfoFromBytes(rawCertJava).equals(getInfoFromBytes(rawCertNative));
+                }
+            } else {
+                info = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNATURES);
+                if (null != info && info.signatures.length > 0) {
+                    byte[] rawCertNative = bytesFromJNI();
+                    // handle if the library is failing
+                    if (rawCertNative == null) {
+                        return true;
+                    }
+                    byte[] rawCertJava = info.signatures[0].toByteArray();
+                    signatureValid = getInfoFromBytes(rawCertJava).equals(getInfoFromBytes(rawCertNative));
+                }
+            }
+            if (!signatureValid) {
+                Timber.w("P1#APP_SIGNATURE_FAILED#'certJava!=certNative'");
+            }
+            return signatureValid;
         } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-        if (null != info && info.signatures.length > 0) {
-            byte[] rawCertJava = info.signatures[0].toByteArray();
-            byte[] rawCertNative = bytesFromJNI();
-
-            return getInfoFromBytes(rawCertJava).equals(getInfoFromBytes(rawCertNative));
-        } else {
+            Timber.w("P1#APP_SIGNATURE_FAILED#'PackageManager.NameNotFoundException'");
             return false;
         }
     }
@@ -359,13 +543,11 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
                 md = MessageDigest.getInstance("MD5");
                 md.update(bytes);
                 byte[] byteArray = md.digest();
-                //String hash_key = new String(Base64.encode(md.digest(), 0));
                 sb.append("MD5: ").append(bytesToString(byteArray)).append("\n");
                 md.reset();
                 md = MessageDigest.getInstance("SHA");
                 md.update(bytes);
                 byteArray = md.digest();
-                //String hash_key = new String(Base64.encode(md.digest(), 0));
                 sb.append("SHA1: ").append(bytesToString(byteArray)).append("\n");
                 md.reset();
                 md = MessageDigest.getInstance("SHA256");
@@ -379,7 +561,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
             sb.append("\n");
         } catch (CertificateException e) {
-            // e.printStackTrace();
+
         }
         return sb.toString();
     }
@@ -405,45 +587,12 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     }
 
     @Override
-    public void saveCPM(@NonNull String cpm) {
-        PersistentCacheManager.instance.put(CharacterPerMinuteInterface.KEY, cpm, TimeUnit.MINUTES.toMillis(1));
-    }
-
-    @Override
-    public String getCPM() {
-        return PersistentCacheManager.instance.getString(CharacterPerMinuteInterface.KEY);
-    }
-
-    @Override
-    public boolean isEnable() {
-        return getBooleanRemoteConfig("android_customer_typing_tracker_enabled", false);
-    }
-
-
-    @Override
-    public void setCategoryAbTestingConfig() {
-        CategoryNavigationConfig.INSTANCE.updateCategoryConfig(getApplicationContext(),
-                // do not replace with method reference "this::openNewBelanja", will not work in dynamic feature
-                new Function1<Context, Intent>() {
-                    @Override
-                    public Intent invoke(Context context) {
-                        return ConsumerMainApplication.this.openNewBelanja(context);
-                    }
-                },
-                // do not replace with method reference "this::openOldBelanja", will not work in dynamic feature
-                new Function1<Context, Intent>() {
-                    @Override
-                    public Intent invoke(Context context) {
-                        return ConsumerMainApplication.this.openOldBelanja(context);
-                    }
-                });
-    }
-
-    Intent openNewBelanja(Context context) {
-        return null;
-    }
-
-    Intent openOldBelanja(Context context) {
-        return null;
+    public void onNewIntent(Context context, Intent intent) {
+        super.onNewIntent(context, intent);
+        if(gratificationSubscriber != null){
+            if(context instanceof Activity) {
+                gratificationSubscriber.onNewIntent((Activity) context, intent);
+            }
+        }
     }
 }

@@ -1,0 +1,23 @@
+query ace_search_product($params: String!) {
+  ace_search_product(params: $params) {
+    data {
+      products {
+        name
+        id
+        imageURL
+        price
+        priceInt
+        freeOngkir {
+          isActive
+        }
+        isStockEmpty
+        shop {
+          id
+          name
+          url
+          location
+        }
+      }
+    }
+  }
+}

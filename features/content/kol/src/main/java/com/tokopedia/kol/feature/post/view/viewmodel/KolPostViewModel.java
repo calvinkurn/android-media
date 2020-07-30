@@ -1,8 +1,6 @@
 package com.tokopedia.kol.feature.post.view.viewmodel;
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel;
-import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactory;
 
 import java.util.List;
 
@@ -10,7 +8,7 @@ import java.util.List;
  * @author by nisie on 10/27/17.
  */
 
-public class KolPostViewModel extends BaseKolViewModel implements Visitable<KolPostTypeFactory> {
+public class KolPostViewModel extends BaseKolViewModel {
     public final static int DEFAULT_ID = -1;
 
     public final static String TYPE_YOUTUBE = "youtube";
@@ -145,11 +143,6 @@ public class KolPostViewModel extends BaseKolViewModel implements Visitable<KolP
 
     public List<TrackingViewModel> getTrackingViewModel() {
         return trackingViewModel;
-    }
-
-    @Override
-    public int type(KolPostTypeFactory typeFactory) {
-        return typeFactory.type(this);
     }
 }
 

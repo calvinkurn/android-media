@@ -1,15 +1,12 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview;
 
 import android.text.TextUtils;
-
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.ReputationRepository;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview.SendReviewRequestModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview.SendReviewSubmitDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageUpload;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,10 +23,8 @@ public class SendReviewSubmitUseCase extends UseCase<SendReviewSubmitDomain> {
     private static final String PARAM_POST_KEY = "post_key";
     private static final String PARAM_FILE_UPLOADED = "file_uploaded";
 
-    public SendReviewSubmitUseCase(ThreadExecutor threadExecutor,
-                                   PostExecutionThread postExecutionThread,
-                                   ReputationRepository reputationRepository) {
-        super(threadExecutor, postExecutionThread);
+    public SendReviewSubmitUseCase(ReputationRepository reputationRepository) {
+        super();
         this.reputationRepository = reputationRepository;
     }
 

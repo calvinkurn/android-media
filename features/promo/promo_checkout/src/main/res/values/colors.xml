@@ -22,4 +22,7 @@
     <color name="promo_timer_color_bg">#f8f8f8</color>
     <color name="promo_timer_color_progress">#16ea212d</color>
     <color name="discounted_red_color">#ea212d</color>
+    <color name="promo_color_promocode">#fa591d</color>
+    <color name="promo_ticket_initial_bg">#ffebee</color>
+    <color name="promo_ticket_colorshadow">#e2e2e2</color>
 </resources>

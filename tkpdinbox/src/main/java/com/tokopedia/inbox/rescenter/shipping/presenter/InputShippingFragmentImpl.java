@@ -444,7 +444,7 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
                         try {
                             file = ImageUploadHandler.writeImageToTkpdPath(ImageUploadHandler.compressImage(attachmentResCenterDB.getImagePath()));
                         } catch (IOException e) {
-                            throw new RuntimeException(context.getString(com.tokopedia.core2.R.string.error_upload_image));
+                            throw new RuntimeException(context.getString(com.tokopedia.inbox.R.string.error_upload_image));
                         }
                         RequestBody userId = RequestBody.create(MediaType.parse("text/plain"),
                                 networkCalculator.getContent().get(NetworkCalculator.USER_ID));

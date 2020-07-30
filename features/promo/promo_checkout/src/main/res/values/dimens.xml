@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="button_dp_132">132dp</dimen>
+    <dimen name="promo_ticket_offset">158dp</dimen>
+    <dimen name="promo_ticket_container_width">274dp</dimen>
 </resources>

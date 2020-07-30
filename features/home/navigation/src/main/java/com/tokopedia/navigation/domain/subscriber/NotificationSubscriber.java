@@ -1,7 +1,7 @@
 package com.tokopedia.navigation.domain.subscriber;
 
 import com.tokopedia.navigation.data.entity.NotificationEntity;
-import com.tokopedia.navigation.data.mapper.NotificationMapper;
+import com.tokopedia.navigation.data.mapper.NotificationRequestMapper;
 import com.tokopedia.navigation.presentation.view.MainParentView;
 
 import rx.Subscriber;
@@ -27,7 +27,7 @@ public class NotificationSubscriber extends Subscriber<NotificationEntity> {
     public void onNext(NotificationEntity notificationEntity) {
         if (notificationEntity != null)
             this.mainParentView.renderNotification(
-                NotificationMapper.notificationMapper(
+                NotificationRequestMapper.notificationMapper(
                         notificationEntity.getNotifications(),
                         notificationEntity.getNotifcenterUnread(),
                         notificationEntity.getFeed(),

@@ -14,69 +14,46 @@ import com.tokopedia.applink.DeeplinkMapper;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.SessionApplinkModule;
 import com.tokopedia.applink.SessionApplinkModuleLoader;
-import com.tokopedia.changepassword.common.applink.ChangePasswordDeeplinkModule;
-import com.tokopedia.changepassword.common.applink.ChangePasswordDeeplinkModuleLoader;
-import com.tokopedia.chatbot.applink.ChatbotApplinkModule;
-import com.tokopedia.chatbot.applink.ChatbotApplinkModuleLoader;
-import com.tokopedia.config.GlobalConfig;
-import com.tokopedia.contact_us.applink.CustomerCareApplinkModule;
-import com.tokopedia.contact_us.applink.CustomerCareApplinkModuleLoader;
-import com.tokopedia.core.util.RouterUtils;
-import com.tokopedia.sellerapp.SellerRouterApplication;
-import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.deeplink.CoreDeeplinkModule;
-import com.tokopedia.core.deeplink.CoreDeeplinkModuleLoader;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.createpost.view.applink.CreatePostModule;
+import com.tokopedia.createpost.view.applink.CreatePostModuleLoader;
 import com.tokopedia.developer_options.presentation.applink.RNDevOptionsApplinkModule;
 import com.tokopedia.developer_options.presentation.applink.RNDevOptionsApplinkModuleLoader;
 import com.tokopedia.flashsale.management.applink.FlashsaleDeeplinkModule;
 import com.tokopedia.flashsale.management.applink.FlashsaleDeeplinkModuleLoader;
 import com.tokopedia.gm.applink.GMApplinkModule;
 import com.tokopedia.gm.applink.GMApplinkModuleLoader;
-import com.tokopedia.inbox.deeplink.InboxDeeplinkModule;
-import com.tokopedia.inbox.deeplink.InboxDeeplinkModuleLoader;
+import com.tokopedia.homecredit.applink.HomeCreditAppLinkModule;
+import com.tokopedia.homecredit.applink.HomeCreditAppLinkModuleLoader;
 import com.tokopedia.loginregister.common.applink.LoginRegisterApplinkModule;
 import com.tokopedia.loginregister.common.applink.LoginRegisterApplinkModuleLoader;
+import com.tokopedia.logisticorder.applink.TrackingAppLinkModule;
+import com.tokopedia.logisticorder.applink.TrackingAppLinkModuleLoader;
 import com.tokopedia.phoneverification.applink.PhoneVerificationApplinkModule;
 import com.tokopedia.phoneverification.applink.PhoneVerificationApplinkModuleLoader;
-import com.tokopedia.power_merchant.subscribe.applink.PowerMerchantSubscribeDeeplinkModule;
-import com.tokopedia.power_merchant.subscribe.applink.PowerMerchantSubscribeDeeplinkModuleLoader;
 import com.tokopedia.product.detail.applink.ProductDetailApplinkModule;
 import com.tokopedia.product.detail.applink.ProductDetailApplinkModuleLoader;
-import com.tokopedia.profile.applink.ProfileApplinkModule;
-import com.tokopedia.profile.applink.ProfileApplinkModuleLoader;
 import com.tokopedia.seller.applink.SellerApplinkModule;
 import com.tokopedia.seller.applink.SellerApplinkModuleLoader;
 import com.tokopedia.sellerapp.SplashScreenActivity;
 import com.tokopedia.sellerapp.applink.SellerappAplinkModule;
 import com.tokopedia.sellerapp.applink.SellerappAplinkModuleLoader;
 import com.tokopedia.sellerapp.deeplink.presenter.DeepLinkAnalyticsImpl;
-import com.tokopedia.shop.applink.ShopAppLinkModule;
-import com.tokopedia.shop.applink.ShopAppLinkModuleLoader;
-import com.tokopedia.talk.common.applink.InboxTalkApplinkModule;
-import com.tokopedia.talk.common.applink.InboxTalkApplinkModuleLoader;
-import com.tokopedia.tkpd.tkpdreputation.applink.ReputationApplinkModule;
-import com.tokopedia.tkpd.tkpdreputation.applink.ReputationApplinkModuleLoader;
 import com.tokopedia.topads.applink.TopAdsApplinkModule;
 import com.tokopedia.topads.applink.TopAdsApplinkModuleLoader;
-import com.tokopedia.topads.auto.internal.AutoAdsLinkModule;
-import com.tokopedia.topads.auto.internal.AutoAdsLinkModuleLoader;
-import com.tokopedia.topads.dashboard.data.applink.TopAdsDashboardApplinkModule;
-import com.tokopedia.topads.dashboard.data.applink.TopAdsDashboardApplinkModuleLoader;
 import com.tokopedia.topchat.deeplink.TopChatAppLinkModule;
 import com.tokopedia.topchat.deeplink.TopChatAppLinkModuleLoader;
 import com.tokopedia.track.TrackApp;
-import com.tokopedia.tracking.applink.TrackingAppLinkModule;
-import com.tokopedia.tracking.applink.TrackingAppLinkModuleLoader;
-import com.tokopedia.transaction.applink.TransactionApplinkModule;
-import com.tokopedia.transaction.applink.TransactionApplinkModuleLoader;
-import com.tokopedia.updateinactivephone.applink.ChangeInactivePhoneApplinkModule;
-import com.tokopedia.updateinactivephone.applink.ChangeInactivePhoneApplinkModuleLoader;
+import com.tokopedia.updateinactivephone.common.applink.ChangeInactivePhoneApplinkModule;
+import com.tokopedia.updateinactivephone.common.applink.ChangeInactivePhoneApplinkModuleLoader;
 import com.tokopedia.url.TokopediaUrl;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.useridentification.applink.UserIdentificationApplinkModule;
 import com.tokopedia.useridentification.applink.UserIdentificationApplinkModuleLoader;
+import com.tokopedia.webview.WebViewApplinkModule;
+import com.tokopedia.webview.WebViewApplinkModuleLoader;
 
 import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP;
 
@@ -85,32 +62,22 @@ import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPE
  */
 @DeepLinkHandler({
         SellerApplinkModule.class,
-        TopAdsDashboardApplinkModule.class,
         TopAdsApplinkModule.class,
-        TransactionApplinkModule.class,
         GMApplinkModule.class,
         SellerappAplinkModule.class,
-        InboxDeeplinkModule.class,
-        ShopAppLinkModule.class,
-        ProfileApplinkModule.class,
         TrackingAppLinkModule.class,
         TopChatAppLinkModule.class,
-        CoreDeeplinkModule.class,
-        CustomerCareApplinkModule.class,
-        ReputationApplinkModule.class,
         SessionApplinkModule.class,
         ProductDetailApplinkModule.class,
-        InboxTalkApplinkModule.class,
         LoginRegisterApplinkModule.class,
         ChangeInactivePhoneApplinkModule.class,
         PhoneVerificationApplinkModule.class,
-        ChangePasswordDeeplinkModule.class,
         UserIdentificationApplinkModule.class,
-        ChatbotApplinkModule.class,
-        PowerMerchantSubscribeDeeplinkModule.class,
-        AutoAdsLinkModule.class,
         FlashsaleDeeplinkModule.class,
-        RNDevOptionsApplinkModule.class
+        CreatePostModule.class,
+        RNDevOptionsApplinkModule.class,
+        WebViewApplinkModule.class,
+        HomeCreditAppLinkModule.class
 })
 /* **
  * Navigation will via RouteManager -> manifest instead.
@@ -123,32 +90,22 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
     public static DeepLinkDelegate getDelegateInstance() {
         return new DeepLinkDelegate(
                 new SellerApplinkModuleLoader(),
-                new TopAdsDashboardApplinkModuleLoader(),
                 new TopAdsApplinkModuleLoader(),
-                new TransactionApplinkModuleLoader(),
                 new GMApplinkModuleLoader(),
                 new SellerappAplinkModuleLoader(),
-                new InboxDeeplinkModuleLoader(),
-                new ShopAppLinkModuleLoader(),
-                new ProfileApplinkModuleLoader(),
                 new TrackingAppLinkModuleLoader(),
                 new TopChatAppLinkModuleLoader(),
-                new CoreDeeplinkModuleLoader(),
-                new CustomerCareApplinkModuleLoader(),
-                new ReputationApplinkModuleLoader(),
                 new SessionApplinkModuleLoader(),
                 new ProductDetailApplinkModuleLoader(),
-                new InboxTalkApplinkModuleLoader(),
                 new LoginRegisterApplinkModuleLoader(),
                 new ChangeInactivePhoneApplinkModuleLoader(),
                 new PhoneVerificationApplinkModuleLoader(),
-                new ChangePasswordDeeplinkModuleLoader(),
                 new UserIdentificationApplinkModuleLoader(),
-                new ChatbotApplinkModuleLoader(),
-                new PowerMerchantSubscribeDeeplinkModuleLoader(),
-                new AutoAdsLinkModuleLoader(),
                 new FlashsaleDeeplinkModuleLoader(),
-                new RNDevOptionsApplinkModuleLoader()
+                new CreatePostModuleLoader(),
+                new RNDevOptionsApplinkModuleLoader(),
+                new WebViewApplinkModuleLoader(),
+                new HomeCreditAppLinkModuleLoader()
         );
     }
 
@@ -158,8 +115,9 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
         DeepLinkDelegate deepLinkDelegate = getDelegateInstance();
         DeepLinkAnalyticsImpl presenter = new DeepLinkAnalyticsImpl();
         if (getIntent() != null) {
-            if (!SessionHandler.isV4Login(this) || !SessionHandler.isUserHasShop(this)) {
-                if (SessionHandler.isV4Login(this)) {
+            UserSessionInterface userSession = new UserSession(this);
+            if (!userSession.isLoggedIn() || !userSession.hasShop()) {
+                if (userSession.isLoggedIn()) {
                     startActivity(moveToCreateShop(this));
                 } else {
                     startActivity(new Intent(this, SplashScreenActivity.class));

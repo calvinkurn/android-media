@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import com.tokopedia.core.network.retrofit.response.BaseResponseError;
+import com.tokopedia.network.data.model.response.BaseResponseError;
 
 import java.io.IOException;
 

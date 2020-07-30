@@ -8,12 +8,11 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.abstraction.AbstractionRouter
+import androidx.fragment.app.Fragment
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -21,10 +20,8 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.Dialog
-import com.tokopedia.design.component.ToasterError
-import com.tokopedia.merchantvoucher.MerchantVoucherModuleRouter
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.merchantvoucher.R
 import com.tokopedia.merchantvoucher.analytic.MerchantVoucherTracking
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherStatusTypeDef
@@ -35,6 +32,7 @@ import com.tokopedia.merchantvoucher.voucherDetail.presenter.MerchantVoucherDeta
 import com.tokopedia.merchantvoucher.voucherDetail.presenter.MerchantVoucherDetailView
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListFragment
 import com.tokopedia.shop.common.di.ShopCommonModule
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_merchant_voucher_detail.*
 import kotlinx.android.synthetic.main.partial_merchant_voucher_detail_loading.*
 import javax.inject.Inject
@@ -76,8 +74,8 @@ class MerchantVoucherDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        voucherId = arguments!!.getInt(MerchantVoucherDetailFragment.EXTRA_VOUCHER_ID)
-        merchantVoucherViewModel = arguments!!.getParcelable(MerchantVoucherDetailFragment.EXTRA_VOUCHER)
+        voucherId = arguments!!.getInt(EXTRA_VOUCHER_ID)
+        merchantVoucherViewModel = arguments!!.getParcelable(EXTRA_VOUCHER)
         voucherShopId = arguments!!.getString(EXTRA_SHOP_ID)
         super.onCreate(savedInstanceState)
         activity?.run {
@@ -93,7 +91,7 @@ class MerchantVoucherDetailFragment : BaseDaggerFragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         loadVoucherDetail()
-        tvSeeCart.setOnClickListener { it ->
+        tvSeeCart.setOnClickListener {
             if (RouteManager.isSupportApplink(context!!, ApplinkConst.CART)) {
                 val intent = RouteManager.getIntent(context!!, ApplinkConst.CART)
                 intent?.run {
@@ -101,8 +99,8 @@ class MerchantVoucherDetailFragment : BaseDaggerFragment(),
                 }
             }
         }
-        btnUseVoucher.setOnClickListener { _ ->
-            merchantVoucherTracking?.clickUseVoucherFromDetail()
+        btnUseVoucher.setOnClickListener {
+            merchantVoucherTracking?.clickUseVoucherFromDetail(voucherId.toString())
 
             //TOGGLE_MVC_ON use voucher is not ready, so we use copy instead. Keep below code for future release
             /*if (!presenter.isLogin()) {
@@ -121,11 +119,12 @@ class MerchantVoucherDetailFragment : BaseDaggerFragment(),
                 copyVoucherCodeToClipboard()
                 val snackbar = Snackbar.make(findViewById(android.R.id.content), getString(R.string.title_voucher_code_copied),
                         Snackbar.LENGTH_LONG)
-                snackbar.setAction(activity!!.getString(R.string.close), View.OnClickListener { snackbar.dismiss() })
+                snackbar.setAction(activity!!.getString(R.string.close)) { snackbar.dismiss() }
                 snackbar.setActionTextColor(Color.WHITE)
                 snackbar.show()
             }
         }
+        btnUseVoucher.hide()
     }
 
     private fun copyVoucherCodeToClipboard() {
@@ -157,14 +156,13 @@ class MerchantVoucherDetailFragment : BaseDaggerFragment(),
     override fun onErrorUseVoucher(e: Throwable) {
         hideUseMerchantVoucherLoading()
         activity?.run {
-            ToasterError.make(this.findViewById(android.R.id.content),
-                    ErrorHandler.getErrorMessage(this, e), BaseToaster.LENGTH_LONG)
-                    .setAction(this.getString(R.string.retry)) { _ ->
-                        merchantVoucherViewModel?.let {
-                            showUseMerchantVoucherLoading()
-                            presenter.useMerchantVoucher(it.voucherCode, voucherId)
-                        }
-                    }.show()
+            Toaster.make(findViewById(android.R.id.content), ErrorHandler.getErrorMessage(this, e),
+                    Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.retry), View.OnClickListener {
+                merchantVoucherViewModel?.let {
+                    showUseMerchantVoucherLoading()
+                    presenter.useMerchantVoucher(it.voucherCode, voucherId)
+                }
+            })
         }
     }
 

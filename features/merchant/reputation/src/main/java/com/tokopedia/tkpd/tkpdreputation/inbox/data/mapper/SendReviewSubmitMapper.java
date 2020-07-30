@@ -2,13 +2,10 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper;
 
 import android.text.TextUtils;
 
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.network.ErrorMessageException;
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.core.network.retrofit.response.TkpdResponse;
-import com.tokopedia.tkpd.tkpdreputation.R;
+import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.sendreview.SendReviewSubmitPojo;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview.SendReviewSubmitDomain;
+import com.tokopedia.tkpd.tkpdreputation.network.ErrorMessageException;
 
 import retrofit2.Response;
 import rx.functions.Func1;
@@ -17,9 +14,9 @@ import rx.functions.Func1;
  * @author by nisie on 9/5/17.
  */
 
-public class SendReviewSubmitMapper implements Func1<Response<TkpdResponse>, SendReviewSubmitDomain> {
+public class SendReviewSubmitMapper implements Func1<Response<TokopediaWsV4Response>, SendReviewSubmitDomain> {
     @Override
-    public SendReviewSubmitDomain call(Response<TkpdResponse> response) {
+    public SendReviewSubmitDomain call(Response<TokopediaWsV4Response> response) {
         if (response.isSuccessful()) {
             if ((!response.body().isNullData()
                     && response.body().getErrorMessageJoined().equals(""))
@@ -36,7 +33,10 @@ public class SendReviewSubmitMapper implements Func1<Response<TkpdResponse>, Sen
                 }
             }
         } else {
-            String messageError = ErrorHandler.getErrorMessage(response);
+            String messageError = "";
+            if (response.body() != null) {
+                messageError = response.body().getErrorMessageJoined();
+            }
             if (!TextUtils.isEmpty(messageError)) {
                 throw new ErrorMessageException(messageError);
             } else {

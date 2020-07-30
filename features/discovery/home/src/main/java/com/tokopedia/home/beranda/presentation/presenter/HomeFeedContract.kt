@@ -3,8 +3,8 @@ package com.tokopedia.home.beranda.presentation.presenter
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.listener.BaseListViewListener
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
-import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeFeedTypeFactory
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeFeedViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationVisitable
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
 
@@ -16,10 +16,10 @@ object HomeFeedContract {
 
     interface Presenter : CustomerPresenter<View>
 
-    interface View : BaseListViewListener<Visitable<HomeFeedTypeFactory>> {
-        fun onProductImpression(homeFeedViewModel: HomeFeedViewModel, position: Int)
-        fun onProductClick(homeFeedViewModel: HomeFeedViewModel, position: Int)
-        fun onWishlistClick(homeFeedViewModel: HomeFeedViewModel, position: Int, isAddWishlist: Boolean, responseWishlist: ((Boolean, Throwable?) -> Unit))
+    interface View : BaseListViewListener<HomeRecommendationVisitable> {
+        fun onProductImpression(homeRecommendationItemDataModel: HomeRecommendationItemDataModel, position: Int)
+        fun onProductClick(homeRecommendationItemDataModel: HomeRecommendationItemDataModel, position: Int)
+        fun onProductThreeDotsClick(homeRecommendationItemDataModel: HomeRecommendationItemDataModel, position: Int)
         fun getTrackingQueue(): TrackingQueue
         fun getTabName(): String
     }

@@ -7,10 +7,11 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.topchat.chatroom.domain.mapper.TopChatRoomGetExistingChatMapper
 import rx.Subscriber
 
-class GetChatSubscriber(val onErrorGetChat: (Throwable) -> Unit,
-                        val onSuccess: (ChatroomViewModel) -> Unit,
-                        val mapper: TopChatRoomGetExistingChatMapper = TopChatRoomGetExistingChatMapper()
-                        ) : Subscriber<GraphqlResponse>() {
+class GetChatSubscriber(
+        val onErrorGetChat: (Throwable) -> Unit,
+        val onSuccess: (ChatroomViewModel) -> Unit,
+        val mapper: TopChatRoomGetExistingChatMapper = TopChatRoomGetExistingChatMapper()
+) : Subscriber<GraphqlResponse>() {
     override fun onNext(graphqlResponse: GraphqlResponse) {
         handleError(graphqlResponse, GetExistingChatPojo::class.java,
                 routingOnNext(graphqlResponse), onErrorGetChat)

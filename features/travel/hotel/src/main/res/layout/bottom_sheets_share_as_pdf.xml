@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_email_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/layout_lvl2"/>
+
+    <View
+        android:id="@+id/divider_list"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/hotel_1dp"
+        android:background="@color/hotel_divider_color_gray" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingTop="@dimen/layout_lvl2"
+        android:paddingBottom="@dimen/layout_lvl2">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/hotel_share_title_email"
+            app:typographyType="body_3"
+            android:textColor="@color/hotel_black_disable_38"/>
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/ev_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:lines="1"
+            android:maxLines="1" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/ev_error_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/hotel_3dp"
+            android:layout_marginLeft="@dimen/hotel_3dp"
+            android:visibility="gone"
+            app:typographyType="body_3"
+            android:textColor="@color/Neutral_N700_96"
+            tools:visibility="visible"
+            tools:text="lalalala"/>
+
+        <LinearLayout
+            android:id="@+id/container_add_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/layout_lvl2"
+            android:orientation="horizontal">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="@dimen/hotel_20dp"
+                android:layout_height="@dimen/hotel_20dp"
+                app:srcCompat="@drawable/ic_facility_add" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/layout_lvl1"
+                android:layout_marginLeft="@dimen/layout_lvl1"
+                android:text="@string/hotel_share_add_email"
+                android:textColor="@color/Green_G500"
+                app:typographyType="body_2" />
+
+        </LinearLayout>
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btn_send_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/layout_lvl3"
+            android:enabled="false"
+            android:text="@string/button_send"
+            app:unifyButtonSize="large"
+            app:unifyButtonType="main"/>
+
+    </LinearLayout>
+
+</LinearLayout>

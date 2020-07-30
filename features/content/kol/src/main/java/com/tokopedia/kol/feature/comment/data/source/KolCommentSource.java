@@ -3,7 +3,7 @@ package com.tokopedia.kol.feature.comment.data.source;
 import android.content.Context;
 import android.content.res.Resources;
 
-import com.tokopedia.abstraction.common.data.model.request.GraphqlRequest;
+import com.tokopedia.kol.common.data.model.request.GraphqlRequest;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.kol.R;
 import com.tokopedia.kol.common.data.source.api.KolApi;

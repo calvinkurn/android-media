@@ -36,7 +36,7 @@ class AttachInvoiceFragment : BaseListFragment<InvoiceViewModel, AttachInvoiceLi
     lateinit var activity: AttachInvoiceContract.Activity
     private var swipeRefreshLayout: SwipeRefreshLayout? = null
     private lateinit var invoiceSearch: SearchInputView
-    private lateinit var invoices: List<InvoiceViewModel>
+    private val invoices: ArrayList<InvoiceViewModel> by lazy { ArrayList<InvoiceViewModel>() }
     private var hasNextPage: Boolean = false
     private val EMPTY_STRING = ""
 
@@ -47,7 +47,7 @@ class AttachInvoiceFragment : BaseListFragment<InvoiceViewModel, AttachInvoiceLi
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_attach_invoice, container, false)
         invoiceSearch = view.findViewById(R.id.search_input_view)
-        swipeRefreshLayout = view?.findViewById(R.id.swipe_refresh_layout)
+        swipeRefreshLayout = view?.findViewById(com.tokopedia.imagepicker.R.id.swipe_refresh_layout)
         val recyclerView = super.getRecyclerView(view)
         if (recyclerView is VerticalRecyclerView) {
             recyclerView.clearItemDecoration()
@@ -55,8 +55,8 @@ class AttachInvoiceFragment : BaseListFragment<InvoiceViewModel, AttachInvoiceLi
 
         invoiceSearch.setListener(object : SearchInputView.Listener {
             override fun onSearchSubmitted(text: String?) {
-                if (invoices.isNotEmpty()){
-                    val filteredList = invoices.filter { it.productTopName.contains(text.toString(), true) || it.invoiceNumber.contains(text.toString(),true) }
+                if (invoices.isNotEmpty()) {
+                    val filteredList = invoices.filter { it.productTopName.contains(text.toString(), true) || it.invoiceNumber.contains(text.toString(), true) }
                     isLoadingInitialData = true
                     renderList(filteredList, false)
                 }
@@ -118,7 +118,7 @@ class AttachInvoiceFragment : BaseListFragment<InvoiceViewModel, AttachInvoiceLi
     }
 
     override fun addInvoicesToList(invoices: List<InvoiceViewModel>, hasNextPage: Boolean) {
-        this.invoices = invoices
+        this.invoices.addAll(invoices)
         this.hasNextPage = hasNextPage
         renderList(invoices, hasNextPage)
     }

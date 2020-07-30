@@ -1,0 +1,21 @@
+{
+  "data": {
+    "notifications": {
+      "chat": {
+        "unreads": 3,
+        "unreadsSeller": 0,
+        "unreadsUser": 3
+      },
+      "sellerOrderStatus": {
+        "newOrder": 16,
+        "readyToShip": 10,
+        "shipped": 146,
+        "arriveAtDestination": 0
+      }
+    },
+    "notifcenter_unread": {
+      "notif_unread": "0",
+      "notif_unread_int": 0
+    }
+  }
+}

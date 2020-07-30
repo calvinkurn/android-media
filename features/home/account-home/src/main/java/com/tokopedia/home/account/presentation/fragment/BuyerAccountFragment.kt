@@ -2,21 +2,24 @@ package com.tokopedia.home.account.presentation.fragment
 
 import android.content.Intent
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
-import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.design.component.ToasterError
+import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
+import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
+import com.tokopedia.discovery.common.manager.showProductCardOptions
+import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.home.account.AccountConstants
 import com.tokopedia.home.account.R
@@ -26,17 +29,17 @@ import com.tokopedia.home.account.di.component.DaggerBuyerAccountComponent
 import com.tokopedia.home.account.presentation.BuyerAccount
 import com.tokopedia.home.account.presentation.adapter.AccountTypeFactory
 import com.tokopedia.home.account.presentation.adapter.buyer.BuyerAccountAdapter
+import com.tokopedia.home.account.presentation.util.AccountHomeErrorHandler
 import com.tokopedia.home.account.presentation.viewmodel.RecommendationProductViewModel
 import com.tokopedia.home.account.presentation.viewmodel.base.BuyerViewModel
 import com.tokopedia.navigation_common.listener.FragmentListener
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.track.TrackApp
-import com.tokopedia.trackingoptimizer.TrackingQueue
-
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_buyer_account.*
-
 import javax.inject.Inject
 
 /**
@@ -47,12 +50,16 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
     @Inject
     lateinit var presenter: BuyerAccount.Presenter
 
+    @Inject
+    lateinit var remoteConfig: RemoteConfig
+
     private val adapter:BuyerAccountAdapter = BuyerAccountAdapter(AccountTypeFactory(this), arrayListOf())
-    private var snackBar: Snackbar? = null
     private var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null
     private var fpmBuyer: PerformanceMonitoring? = null
     private var layoutManager: StaggeredGridLayoutManager = StaggeredGridLayoutManager(
             DEFAULT_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
+
+    private var shouldRefreshOnResume = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -103,10 +110,16 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
 
     override fun onResume() {
         super.onResume()
-        scrollToTop()
-        context?.let {
-            GraphqlClient.init(it)
-            getData()
+
+        if (shouldRefreshOnResume) {
+            scrollToTop()
+            context?.let {
+                GraphqlClient.init(it)
+                getData()
+            }
+        }
+        else {
+            shouldRefreshOnResume = true
         }
     }
 
@@ -121,14 +134,14 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
             model.items?.let {
                 adapter.clearAllElements()
                 adapter.setElement(it)
-
-                snackBar?.dismiss()
-                snackBar = null
+                try{
+                    Toaster.snackBar.dismiss()
+                } catch (e: Exception){}
             }
         } else {
             context?.let {
                 adapter.clearAllElements()
-                adapter.setElement(StaticBuyerModelGenerator.getModel(it, null))
+                adapter.setElement(StaticBuyerModelGenerator.getModel(it, null, remoteConfig))
             }
         }
 
@@ -150,25 +163,23 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
 
     override fun showError(message: String) {
         if (view != null && userVisibleHint) {
-            snackBar = ToasterError.make(view, message)
-            snackBar?.let {
-                it.setAction(getString(R.string.title_try_again)) { getData() }
-                it.show()
+            view?.let {
+                Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
+                        getString(R.string.title_try_again), View.OnClickListener { getData() })
             }
         }
-
         fpmBuyer?.run { stopTrace() }
     }
 
-    override fun showError(e: Throwable) {
+    override fun showError(e: Throwable, errorCode: String) {
         if (view != null && context != null && userVisibleHint) {
-            snackBar = ToasterError.make(view, ErrorHandler.getErrorMessage(context, e))
-            snackBar?.let {
-                it.setAction(getString(R.string.title_try_again)) { getData() }
-                it.show()
+            val message = "${ErrorHandler.getErrorMessage(context, e)} ($errorCode)"
+            view?.let {
+                Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
+                        getString(R.string.title_try_again), View.OnClickListener { getData() })
             }
         }
-
+        AccountHomeErrorHandler.logExceptionToCrashlytics(e, userSession.userId, userSession.email, errorCode)
         fpmBuyer?.run { stopTrace() }
     }
 
@@ -184,6 +195,10 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
         }
     }
 
+    override fun isLightThemeStatusBar(): Boolean {
+        return false
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         presenter.detachView()
@@ -195,7 +210,9 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
 
     override fun onProductRecommendationClicked(product: RecommendationItem, adapterPosition: Int, widgetTitle: String) {
         sendProductClickTracking(product, adapterPosition, widgetTitle)
-        if (product.isTopAds) ImpresionTask().execute(product.clickUrl)
+        activity?.let {
+            if (product.isTopAds) ImpresionTask(it::class.qualifiedName).execute(product.clickUrl)
+        }
 
         RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, product.productId.toString()).run {
             putExtra(PDP_EXTRA_UPDATED_POSITION, adapterPosition)
@@ -205,8 +222,8 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
 
     override fun onProductRecommendationImpression(product: RecommendationItem, adapterPosition: Int) {
         sendProductImpressionTracking(getTrackingQueue(), product, adapterPosition)
-        if (product.isTopAds) {
-            ImpresionTask().execute(product.trackerImageUrl)
+        activity?.let {
+            if (product.isTopAds) ImpresionTask(it::class.qualifiedName).execute(product.trackerImageUrl)
         }
     }
 
@@ -220,6 +237,22 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
                 presenter.removeWishlist(product, callback)
             }
         }
+    }
+
+    override fun onProductRecommendationThreeDotsClicked(product: RecommendationItem, adapterPosition: Int) {
+        shouldRefreshOnResume = false
+
+        showProductCardOptions(
+                this,
+                ProductCardOptionsModel(
+                        hasWishlist = true,
+                        isWishlisted = product.isWishlist,
+                        productId = product.productId.toString(),
+                        isTopAds = product.isTopAds,
+                        topAdsWishlistUrl = product.wishlistUrl,
+                        productPosition = adapterPosition
+                )
+        )
     }
 
     override fun hideLoadMoreLoading() {
@@ -245,6 +278,67 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
                 val position = data.getIntExtra(PDP_EXTRA_UPDATED_POSITION, -1)
                 updateWishlist(wishlistStatusFromPdp, position)
             }
+        }
+
+        handleProductCardOptionsActivityResult(requestCode, resultCode, data, object: ProductCardOptionsWishlistCallback {
+            override fun onReceiveWishlistResult(productCardOptionsModel: ProductCardOptionsModel) {
+                handleWishlistAction(productCardOptionsModel)
+            }
+        })
+    }
+
+    private fun handleWishlistAction(productCardOptionsModel: ProductCardOptionsModel) {
+        sendProductWishlistClickTracking(!productCardOptionsModel.isWishlisted)
+
+        if (productCardOptionsModel.wishlistResult.isSuccess)
+            handleWishlistActionSuccess(productCardOptionsModel)
+        else
+            handleWishlistActionError()
+    }
+
+    private fun handleWishlistActionSuccess(productCardOptionsModel: ProductCardOptionsModel) {
+        val recommendationItem = adapter.list.getOrNull(productCardOptionsModel.productPosition) as? RecommendationProductViewModel ?: return
+        recommendationItem.product.isWishlist = productCardOptionsModel.wishlistResult.isAddWishlist
+
+        if (productCardOptionsModel.wishlistResult.isAddWishlist)
+            showSuccessAddWishlist()
+        else
+            showSuccessRemoveWishlist()
+    }
+
+    private fun showSuccessAddWishlist() {
+        view?.let {
+            Toaster.make(
+                    it,
+                    getString(com.tokopedia.wishlist.common.R.string.msg_success_add_wishlist),
+                    Snackbar.LENGTH_LONG,
+                    Toaster.TYPE_NORMAL,
+                    getString(R.string.account_go_to_wishlist),
+                    View.OnClickListener {
+                        RouteManager.route(activity, ApplinkConst.WISHLIST)
+                    }
+            )
+        }
+    }
+
+    private fun showSuccessRemoveWishlist() {
+        view?.let {
+            Toaster.make(
+                    it,
+                    getString(com.tokopedia.wishlist.common.R.string.msg_success_remove_wishlist),
+                    Snackbar.LENGTH_LONG,
+                    Toaster.TYPE_NORMAL
+            )
+        }
+    }
+
+    private fun handleWishlistActionError() {
+        view?.let {
+            Toaster.make(
+                    it,
+                    ErrorHandler.getErrorMessage(activity, null),
+                    Snackbar.LENGTH_LONG,
+                    Toaster.TYPE_ERROR)
         }
     }
 
@@ -301,6 +395,7 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
         private const val PDP_EXTRA_PRODUCT_ID = "product_id"
         private const val PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition"
         private const val REQUEST_FROM_PDP = 394
+        private const val className: String = "com.tokopedia.home.account.presentation.fragment.BuyerAccountFragment"
 
         private val DEFAULT_SPAN_COUNT = 2
 

@@ -2,12 +2,12 @@ package com.tokopedia.withdraw.view.fragment;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.PorterDuff;
+import android.net.Uri;
 import android.os.Bundle;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
 import android.text.Editable;
 import android.text.Html;
 import android.text.Spannable;
@@ -21,7 +21,6 @@ import android.text.style.ClickableSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -37,10 +36,13 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.network.URLGenerator;
 import com.tokopedia.abstraction.common.utils.view.EventsWatcher;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
@@ -48,11 +50,7 @@ import com.tokopedia.abstraction.common.utils.view.PropertiesEventsWatcher;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
-import com.tokopedia.cachemanager.PersistentCacheManager;
-import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
-import com.tokopedia.design.component.ToasterError;
-import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.design.intdef.CurrencyEnum;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.design.text.watcher.AfterTextWatcher;
@@ -69,19 +67,21 @@ import com.tokopedia.withdraw.constant.WithdrawConstant;
 import com.tokopedia.withdraw.di.DaggerWithdrawComponent;
 import com.tokopedia.withdraw.di.WithdrawComponent;
 import com.tokopedia.withdraw.domain.model.BankAccount;
+import com.tokopedia.withdraw.domain.model.WithdrawalRequest;
 import com.tokopedia.withdraw.domain.model.premiumAccount.CheckEligible;
+import com.tokopedia.withdraw.domain.model.premiumAccount.CopyWriting;
 import com.tokopedia.withdraw.domain.model.premiumAccount.Data;
 import com.tokopedia.withdraw.domain.model.validatePopUp.ValidatePopUpWithdrawal;
-import com.tokopedia.withdraw.view.activity.WithdrawPasswordActivity;
+import com.tokopedia.withdraw.view.WithdrawalFragmentCallback;
 import com.tokopedia.withdraw.view.adapter.BankAdapter;
 import com.tokopedia.withdraw.view.decoration.SpaceItemDecoration;
+import com.tokopedia.withdraw.view.listener.ToolbarUpdater;
 import com.tokopedia.withdraw.view.listener.WithdrawContract;
 import com.tokopedia.withdraw.view.presenter.WithdrawPresenter;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -93,7 +93,6 @@ import rx.functions.Func1;
 import rx.subscriptions.CompositeSubscription;
 
 import static com.tokopedia.abstraction.common.utils.GraphqlHelper.streamToString;
-import static com.tokopedia.withdraw.constant.WithdrawConstant.WEB_REKENING_PREMIUM_URL;
 
 public class WithdrawFragment extends BaseDaggerFragment implements WithdrawContract.View {
 
@@ -105,6 +104,9 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     private static final long SHOW_CASE_DELAY = 500;
 
 
+    private static final int REKENING_ACCOUNT_APPROVED_IN = 4;
+    private static final int REQUEST_WITHDRAWAL_SALDO = 1201;
+
     private int SELLER_STATE = 2;
     private int BUYER_STATE = 1;
     private TkpdHintTextInputLayout wrapperTotalWithdrawal;
@@ -112,8 +114,6 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     private TextView withdrawButton;
     private View withdrawAll;
     private BankAdapter bankAdapter;
-    private Snackbar snackBarInfo;
-    private Snackbar snackBarError;
     private EditText totalWithdrawal;
     private View loadingLayout;
 
@@ -160,8 +160,14 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     private CheckEligible checkEligible;
     private final String PARAM_HEADER_GC_TOKEN = "X-User-Token";
 
+    private int rekeningAccountStatus;
+
 
     private TextView tvEmptySaldo;
+
+    private String WITHDRAWAL_REQUEST_OUT_STATE = "WITHDRAWAL_OUT_STATE";
+    private WithdrawalRequest withdrawalRequest;
+    private WithdrawalFragmentCallback withdrawalFragmentCallback;
 
     @Override
     protected String getScreenName() {
@@ -195,6 +201,14 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         return fragment;
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (savedInstanceState != null && savedInstanceState.containsKey(WITHDRAWAL_REQUEST_OUT_STATE)) {
+            withdrawalRequest = savedInstanceState.getParcelable(WITHDRAWAL_REQUEST_OUT_STATE);
+        }
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -215,10 +229,6 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
                 }
             }
         });
-
-        BottomSheetDialog confirmPassword = new BottomSheetDialog(getActivity());
-        View confirmPasswordView = getLayoutInflater().inflate(R.layout.layout_confirm_password, null);
-        confirmPassword.setContentView(confirmPasswordView);
 
         bankRecyclerView = view.findViewById(R.id.recycler_view_bank);
         withdrawButton = view.findViewById(R.id.withdraw_button);
@@ -273,7 +283,6 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
             showTicker();
         }
 
-        saldoValueTV.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(buyerSaldoBalance, false));
 
         SpaceItemDecoration itemDecoration = new SpaceItemDecoration((int) getActivity().getResources().getDimension(R.dimen.dp_16)
                 , MethodChecker.getDrawable(getActivity(), R.drawable.swd_divider));
@@ -282,14 +291,14 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
 
         withdrawButton.setOnClickListener(v -> {
             KeyboardHandler.hideSoftKeyboard(getActivity());
-            float balance;
+            long balance;
             if (currentState == SELLER_STATE) {
                 balance = sellerSaldoBalance;
             } else {
                 balance = buyerSaldoBalance;
             }
-            presenter.doWithdraw(
-                    String.valueOf((int) balance),
+            presenter.validateWithdraw(
+                    String.valueOf(balance),
                     totalWithdrawal.getText().toString(),
                     bankAdapter.getSelectedBank()
             );
@@ -297,13 +306,18 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         });
 
 
+        long displayBalance;
         if (buyerSaldoBalance == 0 || buyerSaldoBalance < DEFAULT_MIN_FOR_SELECTED_BANK) {
+            displayBalance = sellerSaldoBalance;
+            saldoTitleTV.setText(getString(R.string.saldo_seller));
             currentState = SELLER_STATE;
             sellerWithdrawal = true;
             tabLayout.getTabAt(1).select();
             bankAdapter.setCurrentTab(1);
             checkForEmptyView(1);
         } else {
+            displayBalance = buyerSaldoBalance;
+            saldoTitleTV.setText(getString(R.string.saldo_refund));
             currentState = BUYER_STATE;
             sellerWithdrawal = false;
             tabLayout.getTabAt(0).select();
@@ -311,6 +325,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
             checkForEmptyView(0);
         }
 
+        saldoValueTV.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(displayBalance, true));
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -371,25 +386,6 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         });
         addObserverToWithdrawalEditText(totalWithdrawal);
 
-        snackBarError = ToasterError.make(getActivity().findViewById(android.R.id.content),
-                "", BaseToaster.LENGTH_LONG)
-                .setAction(getActivity().getString(R.string.title_close), new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        analytics.eventClickCloseErrorMessage();
-                        snackBarError.dismiss();
-                    }
-                });
-
-        snackBarInfo = ToasterNormal.make(getActivity().findViewById(android.R.id.content),
-                "", BaseToaster.LENGTH_LONG)
-                .setAction(getActivity().getString(R.string.title_close), new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        snackBarInfo.dismiss();
-                    }
-                });
-
         presenter.getWithdrawForm();
         presenter.getPremiumAccountData();
         tvWithDrawInfo.setText(createTermsAndConditionSpannable());
@@ -403,7 +399,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
             tvEmptySaldo.setText(R.string.swd_refund_empty_msg);
             editableGroup.setVisibility(View.GONE);
             emptyScreenGroup.setVisibility(View.VISIBLE);
-        }else if(currentTab == 1 && sellerSaldoBalance == 0){
+        } else if (currentTab == 1 && sellerSaldoBalance == 0) {
             tvEmptySaldo.setText(R.string.swd_penghasilan_empty_msg);
             editableGroup.setVisibility(View.GONE);
             emptyScreenGroup.setVisibility(View.VISIBLE);
@@ -427,7 +423,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
             sellerWithdrawal = false;
 
             saldoTitleTV.setText(getString(R.string.saldo_refund));
-            saldoValueTV.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(buyerSaldoBalance, false));
+            saldoValueTV.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(buyerSaldoBalance, true));
         }
     }
 
@@ -443,7 +439,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
             sellerWithdrawal = true;
             currentState = SELLER_STATE;
             saldoTitleTV.setText(getString(R.string.saldo_seller));
-            saldoValueTV.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(sellerSaldoBalance, false));
+            saldoValueTV.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(sellerSaldoBalance, true));
         }
     }
 
@@ -455,7 +451,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
                 long withdrawal = (long) StringUtils.convertToNumeric(text, false);
                 long min = getMinTransferForCurrentBank();
                 long max = getMaxTransferForCurrentBank();
-                float deposit;
+                long deposit;
                 if (currentState == SELLER_STATE) {
                     deposit = sellerSaldoBalance;
                 } else {
@@ -633,8 +629,9 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
 
     @Override
     public void showError(String error) {
-        snackBarError.setText(error);
-        snackBarError.show();
+        Toaster.INSTANCE.make(getView(), error, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.title_close),v->{
+            analytics.eventClickCloseErrorMessage();
+        });
     }
 
     @Override
@@ -662,21 +659,6 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     }
 
     @Override
-    public void showConfirmPassword() {
-        analytics.eventClickWithdrawal();
-        Intent intent = new Intent(getActivity(), WithdrawPasswordActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putString(WithdrawPasswordActivity.BUNDLE_WITHDRAW, totalWithdrawal.getText().toString());
-        bundle.putBoolean(WithdrawPasswordActivity.BUNDLE_IS_SELLER_WITHDRAWAL, sellerWithdrawal);
-        bundle.putParcelable(WithdrawPasswordActivity.BUNDLE_BANK, bankAdapter.getSelectedBank());
-        if (checkEligible != null && checkEligible.getData() != null
-                && checkEligible.getData().getProgram() != null)
-            bundle.putString(WithdrawPasswordActivity.BUNDLE_IS_PROGRAM_NAME, checkEligible.getData().getProgram());
-        intent.putExtras(bundle);
-        startActivityForResult(intent, CONFIRM_PASSWORD_INTENT);
-    }
-
-    @Override
     public void showConfirmationDialog(ValidatePopUpWithdrawal validatePopUpWithdrawal) {
         if (validatePopUpWithdrawal.getData().isNeedShow()) {
             alertDialog = getConfirmationDialog(validatePopUpWithdrawal.getData().getTitle(),
@@ -686,7 +668,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
                         public void onClick(View v) {
                             int viewId = v.getId();
                             if (viewId == R.id.continue_btn) {
-                                showConfirmPassword();
+                                openUserVerificationScreen();
                                 alertDialog.cancel();
                             } else {
                                 alertDialog.cancel();
@@ -696,7 +678,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
                     }).create();
             alertDialog.show();
         } else
-            showConfirmPassword();
+            openUserVerificationScreen();
     }
 
     @Override
@@ -704,37 +686,32 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         Data data = checkEligible.getData();
         this.checkEligible = checkEligible;
         this.isRegisterForProgram = data.isIsPowerWD();
-        boolean isShown = PersistentCacheManager.instance
-                .get(WithdrawConstant.KEY_PREMIUM_ACCOUNT_NEW_TAG, boolean.class, false);
+        boolean isClicked = WithdrawConstant.isRekeningPremiumWidgetClicked(getContext());
         if (data != null && data.isIsPowerMerchant()) {
-            if (!isShown) {
+            rekeningAccountStatus = data.getStatusInt();
+            if (!isClicked) {
                 premiumAccountView.findViewById(R.id.tv_baru_tag).setVisibility(View.VISIBLE);
             } else
                 premiumAccountView.findViewById(R.id.tv_baru_tag).setVisibility(View.GONE);
-
             premiumAccountView.setVisibility(View.VISIBLE);
-            if (data.isIsPowerWD()) {
-                if (data.getWdPoints() == 0) {
-                    setProgramStatus(getString(R.string.active_bri_Account, data.getProgram()),
-                            getString(R.string.withdrawal_info));
-                } else {
-                    setProgramStatus(getString(R.string.active_bri_Account_point,
-                            data.getProgram(), data.getWdPoints()),
-                            getString(R.string.withdraw_help));
-                }
+            CopyWriting copyWriting = checkEligible.getData().getCopyWriting();
+            if (copyWriting != null) {
+                ((TextView) premiumAccountView.findViewById(R.id.tv_rekeningTitle))
+                        .setText(copyWriting.getTitle());
+                setProgramStatus(copyWriting.getSubtitle(), copyWriting.getCta());
+                premiumAccountView.findViewById(R.id.tv_briProgramButton).setTag(copyWriting);
             } else {
-                if (data.getStatusInt() == 0)
-                    setProgramStatus(getString(R.string.withdraw_with_more),
-                            getString(R.string.bri_cek));
-                else
-                    setProgramStatus(getString(R.string.account_in_progress, data.getProgram()),
-                            getString(R.string.bri_cek));
+                premiumAccountView.setVisibility(View.GONE);
             }
+
             premiumAccountView.findViewById(R.id.tv_briProgramButton)
                     .setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            handleProgramWidgetClick();
+                            if (v.getTag() != null && v.getTag() instanceof CopyWriting) {
+                                CopyWriting copyWriting = (CopyWriting) v.getTag();
+                                handleProgramWidgetClick(copyWriting);
+                            }
                         }
                     });
 
@@ -750,38 +727,50 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
                 .setText(btnText);
     }
 
-    private void handleProgramWidgetClick() {
-        briProgramBottomSheet = CloseableBottomSheetDialog.createInstanceRounded(getActivity());
-        View view = getLayoutInflater().inflate(R.layout.swd_program_tarik_saldo, null, true);
-        if (isRegisterForProgram) {
-            ((TextView) view.findViewById(R.id.tv_wdProgramTitle))
-                    .setText(getString(R.string.swd_program_tarik_saldo));
-            ((TextView) view.findViewById(R.id.tv_wdProgramDescription))
-                    .setText(getString(R.string.swd_program_tarik_saldo_description));
-            ((TextView) view.findViewById(R.id.wdProgramContinue))
-                    .setText(getString(R.string.swd_program_tarik_btn));
-            analytics.eventClickInfo();
-        } else {
-            ((TextView) view.findViewById(R.id.tv_wdProgramTitle))
-                    .setText(getString(R.string.swd_rekening_premium));
-            ((TextView) view.findViewById(R.id.tv_wdProgramDescription))
-                    .setText(getString(R.string.swd_rekening_premium_description));
-            ((TextView) view.findViewById(R.id.wdProgramContinue))
-                    .setText(getString(R.string.swd_rekening_premium_btn));
-            analytics.eventClickJoinNow();
-        }
+    private void handleProgramWidgetClick(CopyWriting copyWriting) {
+        analytics.eventOnPremiumProgramWidgetClick();
+        if (rekeningAccountStatus == REKENING_ACCOUNT_APPROVED_IN) {
+            briProgramBottomSheet = CloseableBottomSheetDialog.createInstanceRounded(getActivity());
+            View view = getLayoutInflater().inflate(R.layout.swd_program_tarik_saldo, null, true);
+            if (isRegisterForProgram) {
+                ((TextView) view.findViewById(R.id.tv_wdProgramTitle))
+                        .setText(getString(R.string.swd_rekening_premium));
+                ((TextView) view.findViewById(R.id.tv_wdProgramDescription))
+                        .setText(getString(R.string.swd_rekening_premium_description));
+                ((TextView) view.findViewById(R.id.wdProgramContinue))
+                        .setText(getString(R.string.swd_rekening_premium_btn));
 
-        view.findViewById(R.id.wdProgramContinue).setOnClickListener(v -> {
-            briProgramBottomSheet.dismiss();
-            RouteManager.route(getContext(), String.format("%s?url=%s",
-                    ApplinkConst.WEBVIEW, WEB_REKENING_PREMIUM_URL));
-            analytics.eventClickGotoDashboard();
-        });
-        briProgramBottomSheet.setContentView(view);
-        briProgramBottomSheet.show();
+                analytics.eventClickInfo();
+            } else {
+
+                ((TextView) view.findViewById(R.id.tv_wdProgramTitle))
+                        .setText(getString(R.string.swd_rekening_premium));
+                ((TextView) view.findViewById(R.id.tv_wdProgramDescription))
+                        .setText(getString(R.string.swd_program_tarik_saldo_description));
+                ((TextView) view.findViewById(R.id.wdProgramContinue))
+                        .setText(getString(R.string.swd_program_tarik_btn));
+                analytics.eventClickJoinNow();
+            }
+            view.findViewById(R.id.wdProgramContinue).setOnClickListener(v -> {
+                WithdrawConstant.saveRekeningPremiumWidgetClicked(getContext());
+                briProgramBottomSheet.dismiss();
+                openRekeningAccountWebLink(copyWriting.getUrl());
+            });
+            briProgramBottomSheet.setContentView(view);
+            briProgramBottomSheet.show();
+        } else {
+            openRekeningAccountWebLink(copyWriting.getUrl());
+        }
     }
 
-    public AlertDialog.Builder getConfirmationDialog(String heading, String description, View.OnClickListener onClickListener) {
+    private void openRekeningAccountWebLink(String url) {
+        String resultGenerateUrl = URLGenerator.generateURLSessionLogin(
+                Uri.encode(url), userSession.getDeviceId(), userSession.getUserId());
+        RouteManager.route(getContext(), resultGenerateUrl);
+        analytics.eventClickGotoDashboard();
+    }
+
+    private AlertDialog.Builder getConfirmationDialog(String heading, String description, View.OnClickListener onClickListener) {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.confirmation_dialog, null);
@@ -829,6 +818,10 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
+            case REQUEST_WITHDRAWAL_SALDO:
+                if (resultCode == Activity.RESULT_OK)
+                    onVerificationCompleted(data);
+                break;
             case BANK_INTENT:
                 if (resultCode == Activity.RESULT_OK) {
                     presenter.refreshBankList();
@@ -861,11 +854,9 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
                         dialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.tkpd_main_green));
                     }
 
-                }
-                else if (resultCode == WithdrawConstant.ResultCode.GOTO_SALDO_DETAIL_PAGE){
+                } else if (resultCode == WithdrawConstant.ResultCode.GOTO_SALDO_DETAIL_PAGE) {
                     getActivity().finish();
-                }
-                else if(resultCode == WithdrawConstant.ResultCode.GOTO_TOKOPEDIA_HOME_PAGE){
+                } else if (resultCode == WithdrawConstant.ResultCode.GOTO_TOKOPEDIA_HOME_PAGE) {
                     getActivity().finish();
                     RouteManager.route(getContext(), ApplinkConst.HOME, "");
                 }
@@ -914,4 +905,79 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         bottomSheet.show();
     }
 
+    @Override
+    public void openUserVerificationScreen() {
+        analytics.eventClickWithdrawal();
+        createWithdrawalRequest();
+        int OTP_TYPE_ADD_BANK_ACCOUNT = 120;
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalGlobal.COTP);
+        Bundle bundle = new Bundle();
+        bundle.putString(ApplinkConstInternalGlobal.PARAM_EMAIL, userSession.getEmail());
+        bundle.putString(ApplinkConstInternalGlobal.PARAM_MSISDN, userSession.getPhoneNumber());
+        bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true);
+        bundle.putInt(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_TYPE_ADD_BANK_ACCOUNT);
+        bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, true);
+        intent.putExtras(bundle);
+        startActivityForResult(intent, REQUEST_WITHDRAWAL_SALDO);
+    }
+
+    private void createWithdrawalRequest() {
+        String program = "";
+        if (checkEligible != null && checkEligible.getData() != null
+                && checkEligible.getData().getProgram() != null)
+            program = checkEligible.getData().getProgram();
+        long withdrawal = (long) StringUtils.convertToNumeric(totalWithdrawal.getText().toString(),
+                false);
+        withdrawalRequest = new WithdrawalRequest(
+                userSession.getEmail(),
+                withdrawal, bankAdapter.getSelectedBank(),
+                sellerWithdrawal, userSession.getUserId()
+                , program);
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        if (withdrawalRequest != null)
+            outState.putParcelable(WITHDRAWAL_REQUEST_OUT_STATE, withdrawalRequest);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onVerificationCompleted(Intent data) {
+        if (data.hasExtra(ApplinkConstInternalGlobal.PARAM_UUID)) {
+            String uuid = data.getStringExtra(ApplinkConstInternalGlobal.PARAM_UUID);
+            completeWithdrawalWithVerificationCode(uuid);
+        }
+    }
+
+    @Override
+    public void completeWithdrawalWithVerificationCode(String verificationCodeStr) {
+        presenter.doWithdrawal(withdrawalRequest.getWithdrawal(),
+                withdrawalRequest.getBankAccount(),
+                verificationCodeStr,
+                withdrawalRequest.isSellerWithdrawal(),
+                withdrawalRequest.getProgramName());
+    }
+
+    @Override
+    public void openWithdrawalSuccessScreen(BankAccount bankAccount, String message, long amount) {
+        analytics.eventClickWithdrawalConfirm(getString(R.string.label_analytics_success_withdraw));
+        withdrawalFragmentCallback.openSuccessFragment(bankAccount, message, amount);
+        ((ToolbarUpdater) getActivity()).updateToolbar(getActivity().getResources().getString(R.string.sucs_pg_ttl),
+                R.drawable.ic_action_back);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof WithdrawalFragmentCallback) {
+            withdrawalFragmentCallback = (WithdrawalFragmentCallback) context;
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        withdrawalFragmentCallback = null;
+    }
 }

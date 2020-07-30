@@ -4,7 +4,7 @@ import android.app.Activity;
 import androidx.appcompat.app.AlertDialog;
 import android.text.TextUtils;
 
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.nps.R;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -65,8 +65,7 @@ public class SimpleAppRatingDialog extends AppRatingDialog {
 
     @Override
     protected boolean isDialogNeedToBeShown() {
-        if(remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_SHOW_SIMPLE_APP_RATING, false)
-                && PersistentCacheManager.instance.isExpired(HIDE_SIMPLE_APP_RATING)) {
+        if(remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_SHOW_SIMPLE_APP_RATING, false)) {
             Integer appRatingVersion = cacheHandler.getInt(KEY_APP_RATING_VERSION);
             return appRatingVersion == null || appRatingVersion == -1;
         }

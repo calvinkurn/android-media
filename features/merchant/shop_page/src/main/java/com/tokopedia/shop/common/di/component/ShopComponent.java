@@ -11,16 +11,17 @@ import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase;
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
+import com.tokopedia.shop.common.constant.GQLQueryNamedConstant;
 import com.tokopedia.shop.common.data.source.cloud.api.ShopApi;
-import com.tokopedia.shop.common.data.source.cloud.api.ShopWSApi;
 import com.tokopedia.shop.common.di.module.ShopModule;
 import com.tokopedia.shop.common.di.scope.ShopScope;
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopFavoriteStatusUseCase;
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoByDomainUseCase;
-import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopReputationUseCase;
+
+import javax.inject.Named;
 
 import dagger.Component;
 import kotlinx.coroutines.CoroutineDispatcher;
@@ -41,8 +42,6 @@ public interface ShopComponent {
 
     ShopApi getShopApi();
 
-    ShopWSApi ShopWSApi();
-
     AbstractionRouter getAbstractionRouter();
 
     Retrofit.Builder retrofitBuilder();
@@ -55,13 +54,11 @@ public interface ShopComponent {
 
     HttpLoggingInterceptor httpLoggingInterceptor();
 
-    GetShopInfoUseCase getShopInfoUseCase();
+    GQLGetShopInfoUseCase gqlGetShopInfoUseCase();
 
     GetShopInfoByDomainUseCase getShopInfoByDomainUseCase();
 
     ToggleFavouriteShopUseCase toggleFavouriteShopUseCase();
-
-    GQLGetShopInfoUseCase getGqlShopInfoUseCase();
 
     GQLGetShopFavoriteStatusUseCase getGQLGetShopFavoriteStatusUseCase();
 
@@ -73,4 +70,6 @@ public interface ShopComponent {
 
     MultiRequestGraphqlUseCase getMultiRequestGraphqlUseCase();
 
+    @Named(GQLQueryNamedConstant.GQL_GET_SHOP_OPERATIONAL_HOUR_STATUS)
+    String getGqlQueryShopOperationalHourStatus();
 }

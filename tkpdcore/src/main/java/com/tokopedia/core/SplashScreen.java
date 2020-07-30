@@ -6,22 +6,20 @@ import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.webkit.URLUtil;
 
-import com.tkpd.library.utils.CommonUtils;
-import com.tkpd.library.utils.DownloadResultReceiver;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.GCMHandlerListener;
-import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.PasswordGenerator;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.linker.LinkerManager;
@@ -32,8 +30,12 @@ import com.tokopedia.linker.model.LinkerDeeplinkResult;
 import com.tokopedia.linker.model.LinkerError;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.weaver.WeaveInterface;
+import com.tokopedia.weaver.Weaver;
+import com.tokopedia.weaver.WeaverFirebaseConditionCheck;
 
-import com.tokopedia.applink.ApplinkConst;
+import org.jetbrains.annotations.NotNull;
 
 import timber.log.Timber;
 
@@ -45,10 +47,8 @@ import timber.log.Timber;
  * <p>
  * fetch some data from server in order to worked around.
  */
-public class SplashScreen extends AppCompatActivity implements DownloadResultReceiver.Receiver{
+public class SplashScreen extends AppCompatActivity {
 
-    public static final int DAYS_IN_SECONDS = 86400;
-    public static final int STATUS_FINISHED = 1;
     public static final String SHIPPING_CITY_DURATION_STORAGE = "shipping_city_storage";
 
     private PasswordGenerator Pgenerator;
@@ -71,13 +71,21 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
                         | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
                         | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
                         | View.SYSTEM_UI_FLAG_IMMERSIVE);
-
-        fetchRemoteConfig();
+        WeaveInterface remoteConfigWeave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Object execute() {
+                return fetchRemoteConfig();
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutine(remoteConfigWeave, new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_ASYNC_REMOTECONF_FETCH, remoteConfig));
     }
 
-    private void fetchRemoteConfig() {
+    @NotNull
+    private boolean fetchRemoteConfig() {
         remoteConfig = new FirebaseRemoteConfigImpl(this);
         remoteConfig.fetch(getRemoteConfigListener());
+        return true;
     }
 
     protected RemoteConfig.Listener getRemoteConfigListener(){
@@ -87,25 +95,45 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
     @Override
     protected void onStart() {
         super.onStart();
-        getBranchDefferedDeeplink();
+        WeaveInterface branchDefferedDeeplinkWeave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Object execute() {
+                return getBranchDefferedDeeplink();
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutine(branchDefferedDeeplinkWeave, new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_ASYNC_DEFFERED_DEEPLINK_FETCH, remoteConfig));
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        boolean status = GCMHandler.isPlayServicesAvailable(this);
+        boolean status = GCMHandler.isPlayServicesAvailable(SplashScreen.this);
+        WeaveInterface moveToHomeFlowWeave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Object execute() {
+                return executeMoveToHomeFlow(status);
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(moveToHomeFlowWeave, RemoteConfigKey.ENABLE_ASYNC_MOVETOHOME, SplashScreen.this);
+        moveToHome();
+    }
+
+    @NotNull
+    private boolean executeMoveToHomeFlow(boolean status){
         if(!status){
             Timber.w("P2#PLAY_SERVICE_ERROR#Problem with PlayStore | " + Build.FINGERPRINT+" | "+  Build.MANUFACTURER + " | "
                     + Build.BRAND + " | "+Build.DEVICE+" | "+Build.PRODUCT+ " | "+Build.MODEL
                     + " | "+Build.TAGS);
         }
-        moveToHome();
+        Pgenerator = new PasswordGenerator(SplashScreen.this);
+        InitNew();
+        registerFCMDeviceID(status);
+        return true;
     }
 
     protected void moveToHome() {
-        Pgenerator = new PasswordGenerator(SplashScreen.this);
-        InitNew();
-        registerFCMDeviceID();
         finishSplashScreen();
     }
 
@@ -122,21 +150,15 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
         };
     }
 
-    private void registerFCMDeviceID() {
+    private void registerFCMDeviceID(boolean isPlayServiceAvailable) {
         GCMHandler gcm = new GCMHandler(this);
-        gcm.actionRegisterOrUpdateDevice(getGCMHandlerListener());
+        gcm.actionRegisterOrUpdateDevice(getGCMHandlerListener(), isPlayServiceAvailable);
     }
 
     public void finishSplashScreen() {
-        Intent intent = HomeRouter.getHomeActivity(this);
+        Intent intent = ((com.tokopedia.core.TkpdCoreRouter) getApplicationContext()).getHomeIntent(this);
         startActivity(intent);
         finish();
-    }
-
-    @Override
-    public void onReceiveResult(int resultCode, Bundle resultData) {
-        CommonUtils.dumper(resultData);
-        if (resultCode == STATUS_FINISHED) finishSplashScreen();
     }
 
     private void resetAllDatabaseFlag() {
@@ -166,11 +188,12 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
         }
     }
 
-    private void getBranchDefferedDeeplink() {
+    @NotNull
+    private boolean getBranchDefferedDeeplink() {
         LinkerDeeplinkData linkerDeeplinkData = new LinkerDeeplinkData();
-        linkerDeeplinkData.setClientId(TrackingUtils.getClientID(this));
-        linkerDeeplinkData.setReferrable(this.getIntent().getData());
-        linkerDeeplinkData.setActivity(this);
+        linkerDeeplinkData.setClientId(TrackingUtils.getClientID(SplashScreen.this));
+        linkerDeeplinkData.setReferrable(SplashScreen.this.getIntent().getData());
+        linkerDeeplinkData.setActivity(SplashScreen.this);
 
         LinkerManager.getInstance().handleDefferedDeeplink(LinkerUtils.createDeeplinkRequest(0,
                 linkerDeeplinkData, new DefferedDeeplinkCallback() {
@@ -206,6 +229,20 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
                     @Override
                     public void onError(LinkerError linkerError) {
                     }
-                }, this));
+                }, SplashScreen.this));
+        return true;
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        WeaveInterface branchDefferedDeeplinkWeave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Object execute() {
+                return getBranchDefferedDeeplink();
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(branchDefferedDeeplinkWeave, RemoteConfigKey.ENABLE_ASYNC_DEFFERED_DEEPLINK_FETCH, SplashScreen.this);
     }
 }

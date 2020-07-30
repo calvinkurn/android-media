@@ -48,10 +48,6 @@
         <item name="android:background">@drawable/bg_border_bottom</item>
     </style>
 
-    <style name="LabelLayout.BorderTop">
-        <item name="android:background">@drawable/bg_border_top</item>
-    </style>
-
     <style name="BaseCardViewLayoutMatchParent">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
@@ -229,4 +225,18 @@
         <item name="android:textColorSecondary">#bfbfbf</item>
     </style>
 
+    <style name="ToolbarText.SansSerifMedium" parent="ToolbarText">
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textColor">@color/black_70</item>
+    </style>
+
+    <style name="ToolbarSubtitleText.SansSerifMedium" parent="ToolbarSubtitleText">
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textColor">@color/black_70</item>
+    </style>
+
+    <style name="checkBoxStyleSeller" parent="Base.Theme.AppCompat">
+        <item name="colorAccent">@color/tkpd_main_green</item>
+        <item name="android:textColorSecondary">@color/black_12</item>
+    </style>
 </resources>

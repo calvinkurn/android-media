@@ -1,43 +1,53 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.view.activity;
 
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import com.google.android.material.tabs.TabLayout;
-import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.ViewPager;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.di.component.HasComponent;
-import com.tokopedia.core.base.presentation.BaseTemporaryDrawerActivity;
-import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.gcm.NotificationModHandler;
-import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
-import com.tokopedia.core.router.SellerAppRouter;
-import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.core.var.TkpdState;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+
+import com.google.android.material.tabs.TabLayout;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.base.view.activity.BaseActivity;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
+import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking;
+import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTrackingConstant;
+import com.tokopedia.tkpd.tkpdreputation.constant.Constant;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.SectionsPagerAdapter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment.InboxReputationFragment;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.GlobalMainTabSelectedListener;
+import com.tokopedia.tkpd.tkpdreputation.utils.ReputationUtil;
+import com.tokopedia.unifycomponents.TabsUnify;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.List;
-
 /**
  * @author by nisie on 8/10/17.
  */
 
-public class InboxReputationActivity extends BaseTemporaryDrawerActivity implements HasComponent {
+public class  InboxReputationActivity extends BaseActivity implements HasComponent {
 
     public static final String GO_TO_REPUTATION_HISTORY = "GO_TO_REPUTATION_HISTORY";
+    public static final String IS_DIRECTLY_GO_TO_RATING = "is_directly_go_to_rating";
 
     public static final int TAB_WAITING_REVIEW = 1;
     public static final int TAB_MY_REVIEW = 2;
@@ -45,23 +55,22 @@ public class InboxReputationActivity extends BaseTemporaryDrawerActivity impleme
     public static final int TAB_SELLER_REPUTATION_HISTORY = 2;
     private static final int OFFSCREEN_PAGE_LIMIT = 3;
     private Fragment sellerReputationFragment;
+    private Fragment reviewSellerFragment;
 
     private static final int MARGIN_TAB = 8;
     private static final int MARGIN_START_END_TAB = 16;
-
+    public static String tickerTitle;
 
     private ViewPager viewPager;
-    private TabLayout indicator;
+    private TabsUnify indicator;
+    private PagerAdapter sectionAdapter;
+    private Toolbar toolbar;
+
+    private UserSessionInterface userSession;
 
     private boolean goToReputationHistory;
-
-    @DeepLink(Constants.Applinks.REPUTATION)
-    public static Intent getCallingIntent(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, InboxReputationActivity.class)
-                .setData(uri.build())
-                .putExtras(extras);
-    }
+    private boolean canFireTracking;
+    private ReputationTracking reputationTracking;
 
     public static Intent getCallingIntent(Context context) {
         return new Intent(context, InboxReputationActivity.class);
@@ -70,77 +79,82 @@ public class InboxReputationActivity extends BaseTemporaryDrawerActivity impleme
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         goToReputationHistory = getIntent().getBooleanExtra(GO_TO_REPUTATION_HISTORY, false);
+        canFireTracking = !goToReputationHistory;
+        userSession = new UserSession(this);
+        reputationTracking = new ReputationTracking();
         super.onCreate(savedInstanceState);
-        NotificationModHandler.clearCacheIfFromNotification(this, getIntent());
+        setContentView(R.layout.activity_inbox_reputation);
+        setupStatusBar();
+        clearCacheIfFromNotification();
+        initView();
     }
 
-    @Override
-    protected void setupURIPass(Uri data) { }
+    private void initView() {
+        viewPager = findViewById(R.id.pager_reputation);
+        indicator = findViewById(R.id.indicator_unify);
+        indicator.getUnifyTabLayout().clearOnTabSelectedListeners();
+        toolbar = findViewById(R.id.toolbar);
 
-    @Override
-    protected void setupBundlePass(Bundle extras) { }
-
-    @Override
-    protected void initialPresenter() { }
-
-    @Override
-    protected boolean isLightToolbarThemes() {
-        return false;
-    }
-
-    @Override
-    protected int getContentId() {
-        if (GlobalConfig.isSellerApp())
-            return super.getContentId();
-        return R.layout.layout_tab_secondary;
-    }
-
-    @Override
-    protected int getLayoutId() {
-        if (GlobalConfig.isSellerApp())
-            return R.layout.activity_inbox_reputation;
-        return 0;
-    }
-
-    @Override
-    protected void initView() {
-        super.initView();
-
-        viewPager = (ViewPager) findViewById(R.id.pager);
-        indicator = (TabLayout) findViewById(R.id.indicator);
+        setupToolbar();
 
         if (getApplicationContext() != null
                 && getApplicationContext() instanceof ReputationRouter) {
             ReputationRouter applicationContext = (ReputationRouter) getApplicationContext();
             sellerReputationFragment = applicationContext.getReputationHistoryFragment();
+            reviewSellerFragment = applicationContext.getReviewSellerFragment();
+            Bundle reviewSellerBundle = new Bundle();
+            reviewSellerBundle.putBoolean(IS_DIRECTLY_GO_TO_RATING, !goToReputationHistory);
+            reviewSellerFragment.setArguments(reviewSellerBundle);
         }
-        viewPager.setAdapter(getViewPagerAdapter());
-        viewPager.setOffscreenPageLimit(OFFSCREEN_PAGE_LIMIT);
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(indicator));
-        indicator.addOnTabSelectedListener(new GlobalMainTabSelectedListener(viewPager));
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(indicator.getUnifyTabLayout()));
+        indicator.getUnifyTabLayout().addOnTabSelectedListener(new GlobalMainTabSelectedListener(viewPager, this) {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                super.onTabSelected(tab);
+                if (!canFireTracking) {
+                    canFireTracking = true;
+                    return;
+                }
+                reputationTracking.onTabReviewSelectedTracker(tab.getPosition());
+                if(tickerTitle != null) {
+                    reputationTracking.onSuccessGetIncentiveOvoTracker(tickerTitle, ReputationTrackingConstant.WAITING_REVIEWED);
+                }
+            }
+        });
 
         if (!GlobalConfig.isSellerApp()) {
-            indicator.addTab(indicator.newTab().setText(getString(R.string
-                    .title_tab_waiting_review)));
-            indicator.addTab(indicator.newTab().setText(getString(R.string
-                    .title_tab_my_review)));
+            indicator.addNewTab(getString(R.string
+                    .title_tab_waiting_review));
+            indicator.addNewTab(getString(R.string
+                    .title_tab_my_review));
         }
 
-        if (sessionHandler.isUserHasShop(this)) {
-            indicator.addTab(indicator.newTab().setText(getString(R.string
-                    .title_tab_buyer_review)));
+        if(GlobalConfig.isSellerApp()) {
+            if(reviewSellerFragment != null) {
+                indicator.addNewTab(getString(R.string.title_rating_product));
+            }
+        }
+
+        if (userSession.hasShop()) {
+            indicator.addNewTab(getString(R.string
+                    .title_tab_buyer_review));
         }
 
         if (GlobalConfig.isSellerApp()) {
             if (sellerReputationFragment != null) {
-                indicator.addTab(indicator.newTab().setText(R.string.title_reputation_history));
-            }
-            if (goToReputationHistory) {
-                viewPager.setCurrentItem(TAB_SELLER_REPUTATION_HISTORY);
+                indicator.addNewTab(getString(R.string.title_reputation_history));
             }
         }
 
-        wrapTabIndicatorToTitle(indicator, (int) CommonUtils.DptoPx(getApplicationContext(), MARGIN_START_END_TAB), (int) CommonUtils.DptoPx(getApplicationContext(), MARGIN_TAB));
+        sectionAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), getFragmentList(), indicator.getUnifyTabLayout());
+        viewPager.setOffscreenPageLimit(OFFSCREEN_PAGE_LIMIT);
+        viewPager.setAdapter(sectionAdapter);
+
+        if (goToReputationHistory) {
+            viewPager.setCurrentItem(TAB_SELLER_REPUTATION_HISTORY);
+        }
+
+        wrapTabIndicatorToTitle(indicator.getUnifyTabLayout(), (int) ReputationUtil.DptoPx(this, MARGIN_START_END_TAB), (int) ReputationUtil.DptoPx(this, MARGIN_TAB));
     }
 
     public void wrapTabIndicatorToTitle(TabLayout tabLayout, int externalMargin, int internalMargin) {
@@ -179,19 +193,16 @@ public class InboxReputationActivity extends BaseTemporaryDrawerActivity impleme
         }
     }
 
-    protected SectionsPagerAdapter getViewPagerAdapter() {
-        return new SectionsPagerAdapter(getSupportFragmentManager(), getFragmentList(), indicator);
-    }
-
     protected List<Fragment> getFragmentList() {
         List<Fragment> fragmentList = new ArrayList<>();
         if (GlobalConfig.isSellerApp()) {
+            fragmentList.add(reviewSellerFragment);
             fragmentList.add(InboxReputationFragment.createInstance(TAB_BUYER_REVIEW));
             fragmentList.add(sellerReputationFragment);
         } else {
             fragmentList.add(InboxReputationFragment.createInstance(TAB_WAITING_REVIEW));
             fragmentList.add(InboxReputationFragment.createInstance(TAB_MY_REVIEW));
-            if (sessionHandler.isUserHasShop(this)) {
+            if (userSession.hasShop()) {
                 fragmentList.add(InboxReputationFragment.createInstance(TAB_BUYER_REVIEW));
             }
         }
@@ -200,34 +211,58 @@ public class InboxReputationActivity extends BaseTemporaryDrawerActivity impleme
     }
 
     @Override
-    protected void setViewListener() { }
-
-    @Override
-    protected void initVar() { }
-
-    @Override
-    protected void setActionVar() { }
-
-    @Override
-    protected int setDrawerPosition() {
-        return TkpdState.DrawerPosition.INBOX_REVIEW;
-    }
-
-    @Override
     public void onBackPressed() {
         if (isTaskRoot() && GlobalConfig.isSellerApp()) {
-            startActivity(SellerAppRouter.getSellerHomeActivity(this));
+            RouteManager.route(this, ApplinkConst.SellerApp.SELLER_APP_HOME);
             finish();
         } else if (isTaskRoot()) {
-            startActivity(HomeRouter.getHomeActivity(this));
+            RouteManager.route(this, ApplinkConst.HOME);
             finish();
         }
+        tickerTitle = null;
         super.onBackPressed();
-
     }
 
     @Override
-    public AppComponent getComponent() {
-        return getApplicationComponent();
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        reputationTracking.onBackPressedInboxReviewClickTracker(indicator.getUnifyTabLayout().getSelectedTabPosition());
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public BaseAppComponent getComponent() {
+        return ((BaseMainApplication) getApplication()).getBaseAppComponent();
+    }
+
+    private void setupToolbar() {
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            getSupportActionBar().setDisplayShowTitleEnabled(true);
+            getSupportActionBar().setTitle(this.getTitle());
+        }
+    }
+
+    private void setupStatusBar() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            getWindow().setStatusBarColor(ContextCompat.getColor(this, com.tokopedia.abstraction.R.color.tkpdabstraction_green_600));
+        }
+    }
+
+    private void clearCacheIfFromNotification() {
+        Intent intent = getIntent();
+        if (intent != null && intent.hasExtra(Constant.Notification.EXTRA_FROM_PUSH)) {
+            if (intent.getBooleanExtra(Constant.Notification.EXTRA_FROM_PUSH, false)) {
+                NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                notificationManager.cancel(100);
+                LocalCacheHandler.clearCache(this, Constant.Notification.GCM_NOTIFICATION);
+            }
+        }
     }
 }

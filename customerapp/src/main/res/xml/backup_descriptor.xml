@@ -7,4 +7,8 @@
     <exclude
         domain="sharedpref"
         path="pref_moe.xml" />
+
+    <exclude
+        domain="sharedpref"
+        path="appsflyer-data" />
 </full-backup-content>

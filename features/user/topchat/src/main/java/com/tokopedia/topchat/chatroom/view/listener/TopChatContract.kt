@@ -3,17 +3,21 @@ package com.tokopedia.topchat.chatroom.view.listener
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import androidx.collection.ArrayMap
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.attachproduct.resultmodel.ResultProduct
 import com.tokopedia.chat_common.data.BlockedStatus
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.data.ProductAttachmentViewModel
 import com.tokopedia.chat_common.view.listener.BaseChatContract
-import com.tokopedia.topchat.chatroom.view.viewmodel.PreviewViewModel
-import com.tokopedia.topchat.common.TopChatRouter
-import kotlin.collections.ArrayList
+import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
+import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.ChatOrderProgress
+import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
+import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
+import com.tokopedia.topchat.chatroom.view.custom.ChatMenuView
+import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
+import com.tokopedia.wishlist.common.listener.WishListActionListener
 
 /**
  * @author : Steven 11/12/18
@@ -38,9 +42,6 @@ interface TopChatContract {
 
         fun onErrorUploadImage(errorMessage: String, it: ImageUploadViewModel)
 
-        fun showErrorWebSocket(b: Boolean)
-
-        fun onBackPressedEvent()
 
         fun getStringArgument(key: String, savedInstanceState: Bundle?): String
 
@@ -48,13 +49,21 @@ interface TopChatContract {
 
         fun focusOnReply()
 
-        fun showAttachmentPreview(attachmentPreview: ArrayList<PreviewViewModel>)
+        fun showAttachmentPreview(attachmentPreview: ArrayList<SendablePreview>)
 
-        fun notifyAttachmentsSent()
+        fun clearAttachmentPreviews()
 
         fun getShopName(): String
 
-        fun sendAnalyticAttachmentSent(attachment: PreviewViewModel)
+        fun sendAnalyticAttachmentSent(attachment: SendablePreview)
+
+        fun redirectToBrowser(url: String)
+
+        fun renderOrderProgress(chatOrder: ChatOrderProgress)
+
+        fun getChatMenuView(): ChatMenuView?
+
+        fun updateAttachmentsView(attachments: ArrayMap<String, Attachment>)
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {
@@ -81,24 +90,19 @@ interface TopChatContract {
 
         fun startUploadImages(it: ImageUploadViewModel)
 
-        fun loadPreviousChat(messageId: String, page: Int, onError: (Throwable) -> Unit, onSuccessGetPreviousChat: (ChatroomViewModel) -> Unit)
-
-        fun addProductToCart(router: TopChatRouter,
-                             element: ProductAttachmentViewModel,
-                             onError: (Throwable) -> Unit,
-                             onSuccess: (addToCartResult: AddToCartDataModel) -> Unit,
-                             shopId: Int)
+        fun loadPreviousChat(
+                messageId: String,
+                onError: (Throwable) -> Unit,
+                onSuccessGetPreviousChat: (ChatroomViewModel) -> Unit
+        )
 
         fun isUploading(): Boolean
-
-        fun sendProductAttachment(messageId: String, item: ResultProduct,
-                                  startTime: String, opponentId: String)
 
         fun deleteChat(messageId: String,
                        onError: (Throwable) -> Unit,
                        onSuccessDeleteConversation: () -> Unit)
 
-        fun unblockChat(messageId : String,
+        fun unblockChat(messageId: String,
                         opponentRole: String,
                         onError: (Throwable) -> Unit,
                         onSuccessUnblockChat: (BlockedStatus) -> Unit)
@@ -114,8 +118,12 @@ interface TopChatContract {
                                onSuccess: (Boolean) -> Unit)
 
         fun sendAttachmentsAndMessage(messageId: String, sendMessage: String,
-                        startTime: String, opponentId: String,
-                        onSendingMessage : () -> Unit)
+                                      startTime: String, opponentId: String,
+                                      onSendingMessage: () -> Unit)
+
+        fun sendAttachmentsAndSticker(messageId: String, sticker: Sticker,
+                                      startTime: String, opponentId: String,
+                                      onSendingMessage: () -> Unit)
 
         fun initProductPreview(savedInstanceState: Bundle?)
 
@@ -126,5 +134,35 @@ interface TopChatContract {
         fun initInvoicePreview(savedInstanceState: Bundle?)
 
         fun getAtcPageIntent(context: Context?, element: ProductAttachmentViewModel): Intent
+
+        fun initProductPreviewFromAttachProduct(resultProducts: ArrayList<ResultProduct>)
+
+        fun onClickBannedProduct(liteUrl: String)
+
+        fun getBuyPageIntent(context: Context?, element: ProductAttachmentViewModel): Intent
+
+        fun initVoucherPreview(extras: Bundle?)
+
+        fun loadChatRoomSettings(messageId: String, onSuccess: (List<Visitable<TopChatTypeFactory>>) -> Unit)
+
+        fun addToWishList(
+                productId: String,
+                userId: String,
+                wishlistActionListener: WishListActionListener
+        )
+
+        fun removeFromWishList(
+                productId: String,
+                userId: String,
+                wishListActionListener: WishListActionListener
+        )
+
+        fun updateMinReplyTime(chatRoom: ChatroomViewModel)
+
+        fun getOrderProgress(messageId: String)
+
+        fun getStickerGroupList(chatRoom: ChatroomViewModel)
+
+        fun loadAttachmentData(msgId: Int, chatRoom: ChatroomViewModel)
     }
 }

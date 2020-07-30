@@ -15,7 +15,7 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
-import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.design.text.CounterInputView;
 import com.tokopedia.design.text.SpinnerCounterInputView;
 import com.tokopedia.design.text.watcher.AfterTextWatcher;
@@ -172,8 +172,12 @@ public class ProductVariantDetailLeafFragment extends BaseVariantImageFragment {
             labelSwitchStatus.setChecked(true);
             labelSwitchStatus.setClickable(false);
             labelSwitchStatus.disableSwitch();
-            counterInputViewStock.setValue(1);
-            productVariantCombinationViewModel.setStock(1);
+            counterInputViewStock.setValue(productVariantCombinationViewModel.getStock());
+            if (productVariantCombinationViewModel.getStock() == 0) {
+                productVariantCombinationViewModel.setStock(1);
+            } else {
+                productVariantCombinationViewModel.setStock(productVariantCombinationViewModel.getStock());
+            }
 
         } else {
             labelSwitchStatus.setChecked(productVariantCombinationViewModel.getStock() != 0);
@@ -252,7 +256,9 @@ public class ProductVariantDetailLeafFragment extends BaseVariantImageFragment {
 
         if (listener.getProductVariantCombinationViewModel().isActive() &&
                 isStockLimited()) {
-            if (stock < minStock || stock > MAX_STOCK) {counterInputViewStock.setError(getContext().getString(R.string.product_error_product_minimum_order_not_valid,
+            if (stock < minStock || stock > MAX_STOCK) {
+                counterInputViewStock.setError(getContext().getString(
+                        R.string.product_error_total_stock_not_valid,
                         String.valueOf(minStock),
                         getContext().getString(R.string.product_maximum_total_stock)));
                 return false;
@@ -269,12 +275,12 @@ public class ProductVariantDetailLeafFragment extends BaseVariantImageFragment {
     }
 
     private void onButtonSaveClicked() {
-        if (!checkPriceValid(counterInputPrice.getCounterValue())) {
-            CommonUtils.hideKeyboard(getActivity(), getView());
+        if (!checkPriceValid(counterInputPrice.getCounterValue()) && getActivity() != null) {
+            KeyboardHandler.hideSoftKeyboard(getActivity());
             return;
         }
-        if (!checkStockValid((int) counterInputViewStock.getDoubleValue())) {
-            CommonUtils.hideKeyboard(getActivity(), getView());
+        if (!checkStockValid((int) counterInputViewStock.getDoubleValue()) && getActivity() != null) {
+            KeyboardHandler.hideSoftKeyboard(getActivity());
             return;
         }
         String sku = etSku.getText().toString();

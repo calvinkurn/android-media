@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_marginLeft="@dimen/dp_32"
+    android:layout_marginTop="@dimen/dp_16"
+    android:layout_marginRight="@dimen/dp_32"
+    android:background="@drawable/bg_qr_code_layout"
+    android:layout_marginBottom="@dimen/dp_32"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:padding="@dimen/dp_16"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/redeem_dialog_powered_by"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="@string/redeem_dialog_powered_by"
+            android:textColor="@color/white"
+            app:typographyType="body_3" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/redeem_dialog_shop_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            app:typographyType="heading_4"
+            app:typographyWeight="bold"
+            tools:text="Tokopedia" />
+
+        <ImageView
+            android:id="@+id/qrCode"
+            android:layout_width="@dimen/dp_200"
+            android:layout_height="@dimen/dp_200"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/dp_24"
+            android:background="@drawable/bg_rounded_white"
+            tools:srcCompat="@drawable/ic_good_rating" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_1"
+            android:layout_marginTop="@dimen/dp_25"
+            android:background="@color/tkpd_transaction_separator_white" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/dp_11"
+            android:text="@string/redeem_dialog_voucher_code"
+            android:textColor="@color/white"
+            app:typographyType="body_2" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/redeem_dialog_voucher_code"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            app:typographyType="heading_2"
+            app:typographyWeight="bold"
+            tools:text="X1234XXXXXX" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_margin="@dimen/dp_3"
+        android:visibility="gone"
+        android:id="@+id/redeem_dialog_expired_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/tkpd_transaction_green_50"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:visibility="gone"
+        android:id="@+id/redeem_dialog_expired_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_2"
+        android:background="@color/tkpd_transaction_bg_90"
+        android:padding="@dimen/dp_18"
+        android:textColor="@color/white"
+        tools:text="Sudah di redeem" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

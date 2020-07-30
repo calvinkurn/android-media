@@ -5,11 +5,8 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import android.util.Log;
-
 import com.crashlytics.android.Crashlytics;
-
-import java.util.HashMap;
-import java.util.Map;
+import java.util.WeakHashMap;
 
 /**
  * {@link androidx.fragment.app.FragmentManager.FragmentLifecycleCallbacks} implementation that
@@ -21,7 +18,7 @@ public class FragmentSavedStateLogger extends FragmentManager.FragmentLifecycleC
     @NonNull
     private final String tag;
     @NonNull
-    private final Map<Fragment, Bundle> savedStates = new HashMap<>();
+    private final WeakHashMap<Fragment, Bundle> savedStates = new WeakHashMap<>();
 
     public FragmentSavedStateLogger(int priority, @NonNull String tag) {
         this.priority = priority;

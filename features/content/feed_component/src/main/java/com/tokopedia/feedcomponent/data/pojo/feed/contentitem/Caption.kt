@@ -17,4 +17,8 @@ data class Caption (
     @SerializedName("webLink")
     @Expose
     var webLink: String = ""
-)
+) {
+    fun copy(): Caption {
+        return Caption(text, buttonName, appLink, webLink)
+    }
+}

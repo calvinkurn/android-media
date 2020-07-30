@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyViewHolder;
 import com.tokopedia.shop.favourite.view.adapter.viewholder.ShopFavouriteViewHolder;
-import com.tokopedia.shop.favourite.view.model.ShopFavouriteViewModel;
+import com.tokopedia.shop.favourite.view.model.ShopFollowerUiModel;
 
 /**
  * Created by alvarisi on 12/7/17.
@@ -19,7 +19,7 @@ public class ShopFavouriteAdapterTypeFactory extends BaseAdapterTypeFactory {
         this.callback = callback;
     }
 
-    public int type(ShopFavouriteViewModel shopFavouriteViewModel) {
+    public int type(ShopFollowerUiModel shopFollowerUiModel) {
         return ShopFavouriteViewHolder.LAYOUT;
     }
 

@@ -90,7 +90,9 @@ class RecommendationCardAdapter(val list: MutableList<RecommendationCardViewMode
                 listener.onRecommendationAvatarClick(
                         positionInFeed,
                         adapterPosition,
-                        element.redirectUrl
+                        element.redirectUrl,
+                        element.cta.authorType,
+                        element.cta.authorID
                 )
             }
 
@@ -139,10 +141,10 @@ class RecommendationCardAdapter(val list: MutableList<RecommendationCardViewMode
     }
 
     interface RecommendationCardListener {
-        fun onRecommendationAvatarClick(positionInFeed: Int, adapterPosition: Int, redirectLink: String)
+        fun onRecommendationAvatarClick(positionInFeed: Int, adapterPosition: Int, redirectLink: String, postType: String, authorId: String)
 
         fun onRecommendationActionClick(positionInFeed: Int, adapterPosition: Int, id: String, type: String, isFollow: Boolean)
 
-        fun onAffiliateTrackClicked(trackList: MutableList<TrackingViewModel>, isClick: Boolean)
+        fun onAffiliateTrackClicked(trackList: List<TrackingViewModel>, isClick: Boolean)
     }
 }

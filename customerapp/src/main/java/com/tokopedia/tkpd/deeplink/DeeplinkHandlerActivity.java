@@ -13,8 +13,6 @@ import androidx.core.app.TaskStackBuilder;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.airbnb.deeplinkdispatch.DeepLinkHandler;
 import com.appsflyer.AppsFlyerLib;
-import com.tokopedia.affiliate.applink.AffiliateApplinkModule;
-import com.tokopedia.affiliate.applink.AffiliateApplinkModuleLoader;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
@@ -23,61 +21,43 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.SessionApplinkModule;
 import com.tokopedia.applink.SessionApplinkModuleLoader;
 import com.tokopedia.applink.TkpdApplinkDelegate;
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.browse.common.applink.DigitalBrowseApplinkModule;
 import com.tokopedia.browse.common.applink.DigitalBrowseApplinkModuleLoader;
+import com.tokopedia.buyerorder.common.applink.TransactionApplinkModule;
+import com.tokopedia.buyerorder.common.applink.TransactionApplinkModuleLoader;
 import com.tokopedia.cachemanager.PersistentCacheManager;
-import com.tokopedia.challenges.deeplinkmodule.ChallengesDeepLinkModule;
-import com.tokopedia.challenges.deeplinkmodule.ChallengesDeepLinkModuleLoader;
-import com.tokopedia.changepassword.common.applink.ChangePasswordDeeplinkModule;
-import com.tokopedia.changepassword.common.applink.ChangePasswordDeeplinkModuleLoader;
-import com.tokopedia.chatbot.applink.ChatbotApplinkModule;
-import com.tokopedia.chatbot.applink.ChatbotApplinkModuleLoader;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.deeplink.CoreDeeplinkModule;
-import com.tokopedia.core.deeplink.CoreDeeplinkModuleLoader;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.createpost.view.applink.CreatePostModule;
 import com.tokopedia.createpost.view.applink.CreatePostModuleLoader;
 import com.tokopedia.developer_options.presentation.applink.RNDevOptionsApplinkModule;
 import com.tokopedia.developer_options.presentation.applink.RNDevOptionsApplinkModuleLoader;
-import com.tokopedia.digital.applink.DigitalApplinkModule;
-import com.tokopedia.digital.applink.DigitalApplinkModuleLoader;
-import com.tokopedia.discovery.applink.DiscoveryApplinkModule;
-import com.tokopedia.discovery.applink.DiscoveryApplinkModuleLoader;
 import com.tokopedia.events.deeplink.EventsDeepLinkModule;
 import com.tokopedia.events.deeplink.EventsDeepLinkModuleLoader;
 import com.tokopedia.explore.applink.ExploreApplinkModule;
 import com.tokopedia.explore.applink.ExploreApplinkModuleLoader;
 import com.tokopedia.feedplus.view.deeplink.FeedDeeplinkModule;
 import com.tokopedia.feedplus.view.deeplink.FeedDeeplinkModuleLoader;
-import com.tokopedia.gamification.applink.GamificationApplinkModule;
-import com.tokopedia.gamification.applink.GamificationApplinkModuleLoader;
-import com.tokopedia.groupchat.common.applink.GroupChatApplinkModule;
-import com.tokopedia.groupchat.common.applink.GroupChatApplinkModuleLoader;
 import com.tokopedia.home.account.applink.AccountHomeApplinkModule;
 import com.tokopedia.home.account.applink.AccountHomeApplinkModuleLoader;
 import com.tokopedia.home.applink.HomeApplinkModule;
 import com.tokopedia.home.applink.HomeApplinkModuleLoader;
-import com.tokopedia.home.constant.BerandaUrl;
 import com.tokopedia.home_recom.deeplink.RecommendationDeeplinkModule;
 import com.tokopedia.home_recom.deeplink.RecommendationDeeplinkModuleLoader;
 import com.tokopedia.homecredit.applink.HomeCreditAppLinkModule;
 import com.tokopedia.homecredit.applink.HomeCreditAppLinkModuleLoader;
 import com.tokopedia.inbox.deeplink.InboxDeeplinkModule;
 import com.tokopedia.inbox.deeplink.InboxDeeplinkModuleLoader;
-import com.tokopedia.instantdebitbca.data.view.applink.InstantDebitBcaApplinkModule;
-import com.tokopedia.instantdebitbca.data.view.applink.InstantDebitBcaApplinkModuleLoader;
 import com.tokopedia.interestpick.applink.InterestPickApplinkModule;
 import com.tokopedia.interestpick.applink.InterestPickApplinkModuleLoader;
 import com.tokopedia.kol.applink.KolApplinkModule;
 import com.tokopedia.kol.applink.KolApplinkModuleLoader;
 import com.tokopedia.kyc.deeplink.OvoUpgradeDeeplinkModule;
 import com.tokopedia.kyc.deeplink.OvoUpgradeDeeplinkModuleLoader;
+import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.linker.interfaces.DefferedDeeplinkCallback;
 import com.tokopedia.linker.model.LinkerDeeplinkResult;
 import com.tokopedia.linker.model.LinkerError;
@@ -87,53 +67,33 @@ import com.tokopedia.loyalty.applink.LoyaltyAppLinkModule;
 import com.tokopedia.loyalty.applink.LoyaltyAppLinkModuleLoader;
 import com.tokopedia.navigation.applink.HomeNavigationApplinkModule;
 import com.tokopedia.navigation.applink.HomeNavigationApplinkModuleLoader;
-import com.tokopedia.notifcenter.applink.NotifCenterApplinkModule;
-import com.tokopedia.notifcenter.applink.NotifCenterApplinkModuleLoader;
 import com.tokopedia.officialstore.applink.OfficialStoreApplinkModule;
 import com.tokopedia.officialstore.applink.OfficialStoreApplinkModuleLoader;
-import com.tokopedia.ovo.OvoPayWithQrApplinkModule;
-import com.tokopedia.ovo.OvoPayWithQrApplinkModuleLoader;
-import com.tokopedia.payment.setting.applink.PaymentSettingApplinkModule;
-import com.tokopedia.payment.setting.applink.PaymentSettingApplinkModuleLoader;
 import com.tokopedia.phoneverification.applink.PhoneVerificationApplinkModule;
 import com.tokopedia.phoneverification.applink.PhoneVerificationApplinkModuleLoader;
 import com.tokopedia.pms.howtopay.HowtopayApplinkModule;
 import com.tokopedia.pms.howtopay.HowtopayApplinkModuleLoader;
-import com.tokopedia.power_merchant.subscribe.applink.PowerMerchantSubscribeDeeplinkModule;
-import com.tokopedia.power_merchant.subscribe.applink.PowerMerchantSubscribeDeeplinkModuleLoader;
 import com.tokopedia.product.detail.applink.ProductDetailApplinkModule;
 import com.tokopedia.product.detail.applink.ProductDetailApplinkModuleLoader;
-import com.tokopedia.product.manage.list.applink.ProductManageApplinkModule;
-import com.tokopedia.product.manage.list.applink.ProductManageApplinkModuleLoader;
-import com.tokopedia.profile.applink.ProfileApplinkModule;
-import com.tokopedia.profile.applink.ProfileApplinkModuleLoader;
 import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubscriber;
 import com.tokopedia.pushnotif.Constant;
 import com.tokopedia.pushnotif.HistoryNotification;
 import com.tokopedia.recentview.view.applink.RecentViewApplinkModule;
 import com.tokopedia.recentview.view.applink.RecentViewApplinkModuleLoader;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.seller.applink.SellerApplinkModule;
 import com.tokopedia.seller.applink.SellerApplinkModuleLoader;
-import com.tokopedia.shop.applink.ShopAppLinkModule;
-import com.tokopedia.shop.applink.ShopAppLinkModuleLoader;
-import com.tokopedia.talk.common.applink.InboxTalkApplinkModule;
-import com.tokopedia.talk.common.applink.InboxTalkApplinkModuleLoader;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkAnalyticsImpl;
 import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
-import com.tokopedia.tkpd.tkpdreputation.applink.ReputationApplinkModule;
-import com.tokopedia.tkpd.tkpdreputation.applink.ReputationApplinkModuleLoader;
-import com.tokopedia.topchat.deeplink.TopChatAppLinkModule;
-import com.tokopedia.topchat.deeplink.TopChatAppLinkModuleLoader;
 import com.tokopedia.track.TrackApp;
-import com.tokopedia.tracking.applink.TrackingAppLinkModule;
-import com.tokopedia.tracking.applink.TrackingAppLinkModuleLoader;
-import com.tokopedia.transaction.applink.TransactionApplinkModule;
-import com.tokopedia.transaction.applink.TransactionApplinkModuleLoader;
-import com.tokopedia.updateinactivephone.applink.ChangeInactivePhoneApplinkModule;
-import com.tokopedia.updateinactivephone.applink.ChangeInactivePhoneApplinkModuleLoader;
+import com.tokopedia.updateinactivephone.common.applink.ChangeInactivePhoneApplinkModule;
+import com.tokopedia.updateinactivephone.common.applink.ChangeInactivePhoneApplinkModuleLoader;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.useridentification.applink.UserIdentificationApplinkModule;
 import com.tokopedia.useridentification.applink.UserIdentificationApplinkModuleLoader;
+import com.tokopedia.utils.uri.DeeplinkUtils;
 import com.tokopedia.webview.WebViewApplinkModule;
 import com.tokopedia.webview.WebViewApplinkModuleLoader;
 
@@ -145,60 +105,38 @@ import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-
-import static com.tokopedia.home.constant.BerandaUrl.FLAG_APP;
+import timber.log.Timber;
 
 @DeepLinkHandler({
         ConsumerDeeplinkModule.class,
-        CoreDeeplinkModule.class,
         InboxDeeplinkModule.class,
         SellerApplinkModule.class,
         TransactionApplinkModule.class,
-        DigitalApplinkModule.class,
         ProductDetailApplinkModule.class,
         HomeApplinkModule.class,
-        DiscoveryApplinkModule.class,
         SessionApplinkModule.class,
         FeedDeeplinkModule.class,
-        InstantDebitBcaApplinkModule.class,
         DigitalBrowseApplinkModule.class,
-        ReputationApplinkModule.class,
         EventsDeepLinkModule.class,
         OvoUpgradeDeeplinkModule.class,
         LoyaltyAppLinkModule.class,
-        ShopAppLinkModule.class,
-        GroupChatApplinkModule.class,
-        GamificationApplinkModule.class,
-        ProfileApplinkModule.class,
         CreatePostModule.class,
         KolApplinkModule.class,
         ExploreApplinkModule.class,
         InterestPickApplinkModule.class,
-        TrackingAppLinkModule.class,
         HowtopayApplinkModule.class,
-        TopChatAppLinkModule.class,
-        NotifCenterApplinkModule.class,
         HomeNavigationApplinkModule.class,
         AccountHomeApplinkModule.class,
         RecentViewApplinkModule.class,
-        ChangePasswordDeeplinkModule.class,
-        AffiliateApplinkModule.class,
-        ChallengesDeepLinkModule.class,
-        InboxTalkApplinkModule.class,
-        ProductManageApplinkModule.class,
         LoginRegisterApplinkModule.class,
         ChangeInactivePhoneApplinkModule.class,
         PhoneVerificationApplinkModule.class,
-        PaymentSettingApplinkModule.class,
         RNDevOptionsApplinkModule.class,
         UserIdentificationApplinkModule.class,
-        ChatbotApplinkModule.class,
         HomeCreditAppLinkModule.class,
         OfficialStoreApplinkModule.class,
-        OvoPayWithQrApplinkModule.class,
         WebViewApplinkModule.class,
-        RecommendationDeeplinkModule.class,
-        PowerMerchantSubscribeDeeplinkModule.class
+        RecommendationDeeplinkModule.class
 })
 
 public class DeeplinkHandlerActivity extends AppCompatActivity implements DefferedDeeplinkCallback {
@@ -210,55 +148,34 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
         if (applinkDelegate == null) {
             applinkDelegate = new TkpdApplinkDelegate(
                     new ConsumerDeeplinkModuleLoader(),
-                    new CoreDeeplinkModuleLoader(),
                     new InboxDeeplinkModuleLoader(),
                     new OvoUpgradeDeeplinkModuleLoader(),
                     new SellerApplinkModuleLoader(),
                     new TransactionApplinkModuleLoader(),
-                    new DigitalApplinkModuleLoader(),
                     new ProductDetailApplinkModuleLoader(),
                     new HomeApplinkModuleLoader(),
-                    new DiscoveryApplinkModuleLoader(),
                     new SessionApplinkModuleLoader(),
                     new FeedDeeplinkModuleLoader(),
-                    new InstantDebitBcaApplinkModuleLoader(),
                     new DigitalBrowseApplinkModuleLoader(),
-                    new ReputationApplinkModuleLoader(),
                     new EventsDeepLinkModuleLoader(),
                     new LoyaltyAppLinkModuleLoader(),
-                    new ShopAppLinkModuleLoader(),
-                    new GroupChatApplinkModuleLoader(),
-                    new GamificationApplinkModuleLoader(),
-                    new ProfileApplinkModuleLoader(),
                     new CreatePostModuleLoader(),
                     new KolApplinkModuleLoader(),
                     new ExploreApplinkModuleLoader(),
                     new InterestPickApplinkModuleLoader(),
-                    new TrackingAppLinkModuleLoader(),
                     new HowtopayApplinkModuleLoader(),
-                    new TopChatAppLinkModuleLoader(),
-                    new NotifCenterApplinkModuleLoader(),
                     new HomeNavigationApplinkModuleLoader(),
                     new AccountHomeApplinkModuleLoader(),
                     new RecentViewApplinkModuleLoader(),
-                    new ChangePasswordDeeplinkModuleLoader(),
-                    new AffiliateApplinkModuleLoader(),
-                    new ChallengesDeepLinkModuleLoader(),
-                    new InboxTalkApplinkModuleLoader(),
-                    new ProductManageApplinkModuleLoader(),
                     new LoginRegisterApplinkModuleLoader(),
                     new ChangeInactivePhoneApplinkModuleLoader(),
                     new PhoneVerificationApplinkModuleLoader(),
-                    new PaymentSettingApplinkModuleLoader(),
                     new RNDevOptionsApplinkModuleLoader(),
                     new UserIdentificationApplinkModuleLoader(),
-                    new ChatbotApplinkModuleLoader(),
                     new HomeCreditAppLinkModuleLoader(),
                     new OfficialStoreApplinkModuleLoader(),
-                    new OvoPayWithQrApplinkModuleLoader(),
                     new WebViewApplinkModuleLoader(),
-                    new RecommendationDeeplinkModuleLoader(),
-                    new PowerMerchantSubscribeDeeplinkModuleLoader()
+                    new RecommendationDeeplinkModuleLoader()
             );
         }
 
@@ -271,7 +188,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
         super.onCreate(savedInstanceState);
         ApplinkDelegate deepLinkDelegate = getApplinkDelegateInstance();
 
-        if (GlobalConfig.isCustomerApp()) {
+        if (!GlobalConfig.isSellerApp()) {
             AppsFlyerLib.getInstance().sendDeepLinkData(this);
         }
 
@@ -305,7 +222,16 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                 }
             }
         }
+        iniBranchIO(this);
+        logDeeplink();
         finish();
+    }
+
+    public static void createApplinkDelegateInBackground(){
+        Observable.fromCallable(() -> {
+            getApplinkDelegateInstance();
+            return true;
+        }).subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread()).subscribe();
     }
 
     @Override
@@ -355,7 +281,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
 
     private void routeApplink(ApplinkDelegate deepLinkDelegate, String applinkString, Bundle defaultBundle) {
         if (deepLinkDelegate.supportsUri(applinkString)) {
-            routeFromApplink(Uri.parse(applinkString), defaultBundle);
+            routeFromApplink(deepLinkDelegate, Uri.parse(applinkString), defaultBundle);
         } else {
             Intent intent = RouteManager.getIntent(this, applinkString);
             if (defaultBundle != null) {
@@ -363,15 +289,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
             }
             startActivity(intent);
         }
-    }
-
-    private void goToHome() {
-        Intent homeIntent = HomeRouter.getHomeActivityInterfaceRouter(this);
-        homeIntent.putExtra(HomeRouter.EXTRA_APPLINK_UNSUPPORTED, true);
-        if (getIntent() != null && getIntent().getExtras() != null)
-            homeIntent.putExtras(getIntent().getExtras());
-        homeIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(homeIntent);
     }
 
     public void eventPersonalizedClicked(String label) {
@@ -382,11 +299,11 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                 label);
     }
 
-    private void routeFromApplink(Uri applink, Bundle defaultBudle) {
+    private void routeFromApplink(ApplinkDelegate applinkDelegate, Uri applink, Bundle defaultBudle) {
         if (applink != null) {
             try {
 
-                Intent nextIntent = ((ApplinkRouter) getApplicationContext()).applinkDelegate().getIntent(this, applink.toString());
+                Intent nextIntent = applinkDelegate.getIntent(this, applink.toString());
                 if (defaultBudle != null) {
                     nextIntent.putExtras(defaultBudle);
                 }
@@ -397,7 +314,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(this);
                     if (getApplicationContext() instanceof TkpdCoreRouter) {
                         taskStackBuilder.addNextIntent(
-                                HomeRouter.getHomeActivityInterfaceRouter(this)
+                                ((com.tokopedia.core.TkpdCoreRouter) getApplicationContext()).getHomeIntent(this)
                         );
                         getIntent().addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     }
@@ -442,17 +359,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
         }
     }
 
-    @DeepLink({ApplinkConst.PROMO})
-    public static Intent getPromoIntent(Context context, Bundle bundle) {
-        String promoId = bundle.getString("promo_id", "");
-        String url = BerandaUrl.PROMO_URL;
-        if (!TextUtils.isEmpty(promoId)) {
-            url += promoId;
-        }
-        url += FLAG_APP;
-        return RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW, url);
-    }
-
     @DeepLink(ApplinkConst.BROWSER)
     public static Intent getCallingIntentOpenBrowser(Context context, Bundle extras) {
         String webUrl = extras.getString("url", TokopediaUrl.Companion.getInstance().getWEB()
@@ -477,5 +383,20 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
     @Override
     public void onError(LinkerError linkerError) {
 
+    }
+
+    private void iniBranchIO(Context context){
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
+        if (remoteConfig.getBoolean(RemoteConfigKey.APP_ENABLE_BRANCH_INIT_DEEPLINKHANDLER)){
+            LinkerManager.getInstance().initSession();
+        }
+    }
+
+    private void logDeeplink() {
+        String referrer = DeeplinkUtils.INSTANCE.getReferrerCompatible(this);
+        Uri extraReferrer = DeeplinkUtils.INSTANCE.getExtraReferrer(this);
+        Uri uri = DeeplinkUtils.INSTANCE.getDataUri(this);
+        Timber.w("P1#DEEPLINK_OPEN_APP#%s;referrer='%s';extra_referrer='%s';uri='%s'",
+                getClass().getSimpleName(), referrer, extraReferrer.toString(), uri.toString());
     }
 }

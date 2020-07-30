@@ -10,7 +10,6 @@ import android.os.Parcelable;
 
 @Deprecated
 public class ProductPass implements Parcelable {
-    private static final String TAG = ProductPass.class.getSimpleName();
 
     private String productId;
     private String productName;
@@ -83,10 +82,6 @@ public class ProductPass implements Parcelable {
         this.shopName = shopName;
     }
 
-    public String getProductUri() {
-        return productUri;
-    }
-
     public void setProductUri(String productUri) {
         this.productUri = productUri;
     }
@@ -115,32 +110,16 @@ public class ProductPass implements Parcelable {
         this.adKey = adKey;
     }
 
-    public String getAdR() {
-        return adR;
-    }
-
     public void setAdR(String adR) {
         this.adR = adR;
-    }
-
-    public String getProductDesc() {
-        return productDesc;
     }
 
     public void setProductDesc(String productDesc) {
         this.productDesc = productDesc;
     }
 
-    public Bitmap getPicToShare() {
-        return picToShare;
-    }
-
     public void setPicToShare(Bitmap picToShare) {
         this.picToShare = picToShare;
-    }
-
-    public long getDateTimeInMilis() {
-        return dateTimeInMilis;
     }
 
     public void setDateTimeInMilis(long dateTimeInMilis) {
@@ -183,24 +162,12 @@ public class ProductPass implements Parcelable {
         this.countReview = countReview;
     }
 
-    public int getCountDiscussion() {
-        return countDiscussion;
-    }
-
     public void setCountDiscussion(int countDiscussion) {
         this.countDiscussion = countDiscussion;
     }
 
-    public int getCountCourrier() {
-        return countCourrier;
-    }
-
     public void setCountCourrier(int countCourrier) {
         this.countCourrier = countCourrier;
-    }
-
-    public int getStarRating() {
-        return starRating;
     }
 
     public void setStarRating(int starRating) {
@@ -321,10 +288,6 @@ public class ProductPass implements Parcelable {
 
     public void setFromExploreAffiliate(boolean fromExploreAffiliate) {
         this.fromExploreAffiliate = fromExploreAffiliate;
-    }
-
-    public boolean isFromExploreAffiliate() {
-        return fromExploreAffiliate;
     }
 
     public static class Builder {
@@ -448,12 +411,6 @@ public class ProductPass implements Parcelable {
             return this;
         }
 
-        public Builder setDiscountedPrice(String discountedPrice){
-            this.discountedPrice = discountedPrice;
-            return this;
-        }
-
-
         public Builder setDiscountPercentage(int discountPercentage){
             this.discountPercentage = discountPercentage;
             return this;
@@ -469,16 +426,6 @@ public class ProductPass implements Parcelable {
             return this;
         }
 
-        public Builder setCountDiscussion(int countDiscussion){
-            this.countDiscussion = countDiscussion;
-            return this;
-        }
-
-        public Builder setCountCourrier(int countCourrier){
-            this.countCourrier = countCourrier;
-            return this;
-        }
-
         public Builder setCashback(String cashback){
             this.cashback = cashback;
             return this;
@@ -486,11 +433,6 @@ public class ProductPass implements Parcelable {
 
         public Builder setOfficial(boolean isOfficial){
             this.isOfficial = isOfficial;
-            return this;
-        }
-
-        public Builder setFromExploreAffiliate(boolean fromExploreAffiliate) {
-            this.fromExploreAffiliate = fromExploreAffiliate;
             return this;
         }
 

@@ -1,6 +1,6 @@
 package com.tokopedia.otp.cotp.domain.mapper;
 
-import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.network.data.model.response.DataResponse;
 import com.tokopedia.otp.cotp.domain.pojo.ListMethodItemPojo;
 import com.tokopedia.otp.cotp.domain.pojo.ModeList;
 import com.tokopedia.otp.cotp.view.viewmodel.ListVerificationMethod;
@@ -48,7 +48,8 @@ public class VerificationMethodMapper implements Func1<Response<DataResponse<Lis
                     modePojo.getNewAfterOtpListText(),
                     modePojo.isUsingPopUp(),
                     modePojo.getPopUpHeader(),
-                    modePojo.getPopUpBody()
+                    modePojo.getPopUpBody(),
+                    modePojo.getNumberOtpDigit()
             ));
         }
         return new ListVerificationMethod(list, pojo.getLinkType());

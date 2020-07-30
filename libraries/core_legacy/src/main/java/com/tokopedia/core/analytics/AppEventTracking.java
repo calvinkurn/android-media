@@ -697,7 +697,6 @@ public interface AppEventTracking {
         String TRUECALLER_ATTEMPT = "Truecaller - Attempt";
         String TRUECALLER_CONFIRM = "Truecaller - Confirm";
         String VIEW_ALL_OFFICIAL_STORE_EMPTY_FEED = "View All - Official Store";
-        String OPPORTUNIT_LIST = "Peluang";
 
         String GOLD_MERCHANT_CURRENCY = "Gold Merchant - Currency";
         String GOLD_MERCHANT_VIDEO = "Gold Merchant - Video Produk";
@@ -839,7 +838,6 @@ public interface AppEventTracking {
         String DASHBOARD_ITEM_ORDER_BARU = "Order Baru";
         String DASHBOARD_ITEM_KONFIRMASI_PENGIRIMAN = "Konfirmasi Pengiriman";
         String DASHBOARD_ITEM_STATUS_PENGIRIMAN = "Transaksi Sukses";
-        String DASHBOARD_ITEM_PELUANG = "Peluang";
         String DASHBOARD_ITEM_PESAN = "Pesan";
         String DASHBOARD_ITEM_DISKUSI_PRODUK = "Diskusi Produk";
         String DASHBOARD_ITEM_ULASAN = "Ulasan";
@@ -1028,13 +1026,13 @@ public interface AppEventTracking {
         String FIELDS_MANDATORY_STOCK_STATUS = "Stock Status";
         String FIELDS_MANDATORY_SHOWCASE = "Showcase";
         String FIELDS_MANDATORY_CONDITION = "Condition";
-        String FIELDS_MANDATORY_INSURANCE = "Insurance";
         String FIELDS_OPTIONAL_PICTURE = "Picture";
         String FIELDS_OPTIONAL_WHOLESALE = "Grosir";
         String FIELDS_OPTIONAL_STOCK_MANAGEMENT = "Stock management";
         String FIELDS_OPTIONAL_FREE_RETURN = "Free Return";
         String FIELDS_OPTIONAL_DESCRIPTION = "Description";
         String FIELDS_OPTIONAL_PRODUCT_VIDEO = "Product Video";
+        String FIELDS_OPTIONAL_INSURANCE = "Insurance";
         String FIELDS_OPTIONAL_PREORDER = "Preorder";
         String FIELDS_OPTIONAL_SHARE = "Share";
         String FIELDS_OPTIONAL_VARIANT_LEVEL1 = "Variant Level 1";
@@ -1042,6 +1040,14 @@ public interface AppEventTracking {
         String FIELDS_OPTIONAL_VARIANT_LEVEL1_CUSTOM = "Variant Level 1 with Custom";
         String FIELDS_OPTIONAL_VARIANT_LEVEL2_CUSTOM = "Variant Level 2 with Custom";
         String FIELDS_OPTIONAL_EMPTY = "no optional field used";
+        String FIELDS_OPTIONAL_SKU_PRODUCT = "SKU Product";
+        String FIELDS_OPTIONAL_ETALASE = "Etalase";
+        String FIELDS_OPTIONAL_PREORDER_PROCESS_TIME = "Preorder Process Time";
+        String FIELDS_OPTIONAL_PREORDER_TIME_UNIT = "Preorder Time Unit";
+        String FIELDS_OPTIONAL_PRODUCT_SIZE_CHART = "Product Size Chart";
+        String FIELDS_OPTIONAL_VARIANT_SKU_PRODUCT = "Variant SKU Product";
+
+
     }
 
     interface CustomDimension {

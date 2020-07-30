@@ -1,6 +1,6 @@
 package com.tokopedia.topchat.chattemplate.data.repository;
 
-import com.tokopedia.topchat.chattemplate.view.viewmodel.EditTemplateViewModel;
+import com.tokopedia.topchat.chattemplate.view.viewmodel.EditTemplateUiModel;
 
 import java.util.HashMap;
 
@@ -11,9 +11,9 @@ import rx.Observable;
  */
 
 public interface EditTemplateRepository {
-    Observable<EditTemplateViewModel> editTemplate(int index, HashMap<String, Object> object, boolean isSeller);
+    Observable<EditTemplateUiModel> editTemplate(int index, HashMap<String, Object> object, boolean isSeller);
 
-    Observable<EditTemplateViewModel> createTemplate(HashMap<String, Object> object);
+    Observable<EditTemplateUiModel> createTemplate(HashMap<String, Object> object);
 
-    Observable<EditTemplateViewModel> deleteTemplate(int index, boolean isSeller);
+    Observable<EditTemplateUiModel> deleteTemplate(int index, boolean isSeller);
 }

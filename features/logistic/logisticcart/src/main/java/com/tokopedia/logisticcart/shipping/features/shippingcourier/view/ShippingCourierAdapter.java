@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 
-import com.tokopedia.logisticcart.shipping.model.ShippingCourierViewModel;
+import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 
 import java.util.List;
 
@@ -17,12 +17,12 @@ import java.util.List;
 
 public class ShippingCourierAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private List<ShippingCourierViewModel> shippingCourierViewModels;
+    private List<ShippingCourierUiModel> shippingCourierUiModels;
     private ShippingCourierAdapterListener shippingCourierAdapterListener;
     private int cartPosition;
 
-    public void setShippingCourierViewModels(List<ShippingCourierViewModel> shippingCourierViewModels) {
-        this.shippingCourierViewModels = shippingCourierViewModels;
+    public void setShippingCourierViewModels(List<ShippingCourierUiModel> shippingCourierUiModels) {
+        this.shippingCourierUiModels = shippingCourierUiModels;
     }
 
     public void setShippingCourierAdapterListener(ShippingCourierAdapterListener shippingCourierAdapterListener) {
@@ -47,13 +47,13 @@ public class ShippingCourierAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        ((ShippingCourierViewHolder) holder).bindData(shippingCourierViewModels.get(position),
-                shippingCourierAdapterListener);
+        ((ShippingCourierViewHolder) holder).bindData(shippingCourierUiModels.get(position),
+                shippingCourierAdapterListener, position == getItemCount() - 1);
     }
 
     @Override
     public int getItemCount() {
-        return shippingCourierViewModels.size();
+        return shippingCourierUiModels.size();
     }
 
 }

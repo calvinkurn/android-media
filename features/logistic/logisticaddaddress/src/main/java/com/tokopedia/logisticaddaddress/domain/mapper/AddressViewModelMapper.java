@@ -1,6 +1,6 @@
 package com.tokopedia.logisticaddaddress.domain.mapper;
 
-import com.tokopedia.logisticaddaddress.adapter.AddressViewModel;
+import com.tokopedia.logisticaddaddress.features.manage.adapter.AddressUiModel;
 import com.tokopedia.logisticdata.data.entity.address.AddressModel;
 
 import java.util.ArrayList;
@@ -11,10 +11,10 @@ import java.util.List;
  */
 public class AddressViewModelMapper {
 
-    public static List<AddressViewModel> convertToViewModel(List<AddressModel> data) {
-        List<AddressViewModel> result = new ArrayList<>();
+    public static List<AddressUiModel> convertToViewModel(List<AddressModel> data) {
+        List<AddressUiModel> result = new ArrayList<>();
         for(AddressModel addressModel : data) {
-            AddressViewModel temp = new AddressViewModel(
+            AddressUiModel temp = new AddressUiModel(
                     addressModel.getAddressId(),
                     addressModel.getReceiverPhone(),
                     addressModel.getAddressStatus(),
@@ -37,7 +37,7 @@ public class AddressViewModelMapper {
         return result;
     }
 
-    public static AddressModel convertFromViewModel(AddressViewModel viewModel) {
+    public static AddressModel convertFromViewModel(AddressUiModel viewModel) {
         return new AddressModel(
                 viewModel.getAddressId(),
                 viewModel.getReceiverPhone(),

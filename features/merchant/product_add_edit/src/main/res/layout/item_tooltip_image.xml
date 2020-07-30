@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <com.tokopedia.unifycomponents.CardUnify
+        android:id="@+id/cardContent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        app:card_type="shadow_disabled"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/imageViewContent"
+            android:layout_width="@dimen/tooltip_image_size"
+            android:layout_height="@dimen/tooltip_image_size"
+            tools:ignore="ContentDescription" />
+
+    </com.tokopedia.unifycomponents.CardUnify>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/textViewContent"
+        style="@style/TextView.Title.BlackSecondary"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginLeft="@dimen/layout_lvl2"
+        android:layout_marginEnd="@dimen/spacing_lvl6"
+        android:layout_marginRight="@dimen/spacing_lvl6"
+        android:paddingTop="4dp"
+        android:text="@string/lorem"
+        android:textColor="@color/Neutral_N700_96"
+        app:layout_constraintBottom_toBottomOf="@id/cardContent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/cardContent"
+        app:layout_constraintTop_toTopOf="@id/cardContent"
+        app:typographyType="body_1" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

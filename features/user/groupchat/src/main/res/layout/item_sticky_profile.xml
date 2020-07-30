@@ -41,7 +41,7 @@
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@id/layout_image"
             app:layout_constraintRight_toRightOf="@id/layout_image"
-            app:srcCompat="@drawable/ic_byme_card"
+            app:srcCompat="@drawable/ic_byme_green_card"
             tools:visibility="visible" />
 
         <TextView

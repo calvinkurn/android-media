@@ -1,7 +1,7 @@
 package com.tokopedia.kol.feature.comment.view.subscriber;
 
 import com.tokopedia.kol.R;
-import com.tokopedia.kol.common.network.GraphqlErrorHandler;
+import com.tokopedia.kolcommon.util.GraphqlErrorHandler;
 import com.tokopedia.kol.feature.comment.view.listener.KolComment;
 
 import rx.Subscriber;
@@ -38,7 +38,7 @@ public class DeleteKolCommentSubscriber extends Subscriber<Boolean> {
             view.onSuccessDeleteComment(adapterPosition);
         } else {
             view.onErrorDeleteComment(
-                    view.getContext().getString(R.string.default_request_error_unknown)
+                    view.getContext().getString(com.tokopedia.abstraction.R.string.default_request_error_unknown)
             );
         }
     }

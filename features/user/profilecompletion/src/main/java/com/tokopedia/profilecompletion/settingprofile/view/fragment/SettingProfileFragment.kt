@@ -5,6 +5,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import com.google.android.material.snackbar.Snackbar
 import android.view.LayoutInflater
@@ -22,24 +23,30 @@ import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.addemail.view.fragment.AddEmailFragment
+import com.tokopedia.profilecompletion.addphone.data.analitycs.AddPhoneNumberTracker
 import com.tokopedia.profilecompletion.addphone.view.fragment.AddPhoneFragment
 import com.tokopedia.profilecompletion.changegender.view.ChangeGenderFragment
+import com.tokopedia.profilecompletion.changename.data.analytics.ChangeNameTracker
 import com.tokopedia.profilecompletion.customview.UnifyDialog
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
 import com.tokopedia.profilecompletion.settingprofile.data.ProfileCompletionData
 import com.tokopedia.profilecompletion.settingprofile.data.ProfileRoleData
 import com.tokopedia.profilecompletion.settingprofile.data.UploadProfilePictureResult
+import com.tokopedia.profilecompletion.settingprofile.domain.UrlSettingProfileConst
 import com.tokopedia.profilecompletion.settingprofile.viewmodel.ProfileInfoViewModel
 import com.tokopedia.profilecompletion.settingprofile.viewmodel.ProfileRoleViewModel
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_setting_profile.*
 import java.io.File
+import java.net.URLEncoder
 import javax.inject.Inject
 
 
@@ -52,14 +59,21 @@ class SettingProfileFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var remoteConfig: RemoteConfig
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
     private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     private val profileInfoViewModel by lazy { viewModelProvider.get(ProfileInfoViewModel::class.java) }
     private val profileRoleViewModel by lazy { viewModelProvider.get(ProfileRoleViewModel::class.java) }
 
     lateinit var overlayView: View
     lateinit var tickerPhoneVerification: Ticker
+
+    private var chancesChangeName = "0"
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -83,12 +97,30 @@ class SettingProfileFragment : BaseDaggerFragment() {
         initSettingProfileData()
     }
 
+    override fun onResume() {
+        super.onResume()
+        refreshProfile()
+    }
+
     private fun showChangeEmailDialog() {
-        val dialog = UnifyDialog(activity as Activity, UnifyDialog.SINGLE_ACTION, UnifyDialog.NO_HEADER)
-        dialog.setTitle(getString(R.string.title_change_email_dialog))
-        dialog.setDescription(getString(R.string.cannot_change_email))
-        dialog.setOk(getString(com.tokopedia.abstraction.R.string.title_ok))
-        dialog.setOkOnClickListner(View.OnClickListener { dialog.dismiss() })
+        val dialog = UnifyDialog(activity as Activity, UnifyDialog.VERTICAL_ACTION, UnifyDialog.NO_HEADER)
+        dialog.setTitle(getString(R.string.add_and_verify_phone))
+        dialog.setDescription(getString(R.string.add_and_verify_phone_detail))
+        dialog.setOk(getString(R.string.title_add_phone))
+        dialog.setOkOnClickListner(View.OnClickListener { goToAddPhone() })
+        dialog.setSecondary(getString(R.string.label_cancel))
+        dialog.setSecondaryOnClickListner(View.OnClickListener { dialog.dismiss() })
+        dialog.show()
+    }
+
+    private fun showVerifyEmailDialog() {
+        val dialog = UnifyDialog(activity as Activity, UnifyDialog.VERTICAL_ACTION, UnifyDialog.NO_HEADER)
+        dialog.setTitle(getString(R.string.add_and_verify_phone))
+        dialog.setDescription(getString(R.string.add_and_verify_phone_detail))
+        dialog.setOk(getString(R.string.title_verify_phone))
+        dialog.setOkOnClickListner(View.OnClickListener { goToVerifyPhone() })
+        dialog.setSecondary(getString(R.string.label_cancel))
+        dialog.setSecondaryOnClickListner(View.OnClickListener { dialog.dismiss() })
         dialog.show()
     }
 
@@ -154,6 +186,9 @@ class SettingProfileFragment : BaseDaggerFragment() {
                     REQUEST_CODE_EDIT_PROFILE_PHOTO -> {
                         onSuccessGetProfilePhoto(data)
                     }
+                    REQUEST_CODE_CHANGE_NAME -> {
+                        onSuccessChangeName(data)
+                    }
                     REQUEST_CODE_ADD_BOD -> {
                         onSuccessAddBOD(data)
                     }
@@ -174,25 +209,35 @@ class SettingProfileFragment : BaseDaggerFragment() {
                     }
                 }
             }
+            else -> {
+                when(requestCode) {
+                    REQUEST_CODE_ADD_PHONE -> {
+                        AddPhoneNumberTracker().viewPersonalDataPage(false)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun onSuccessChangeName(data: Intent?) {
+        view?.run {
+            Toaster.make(this, getString(R.string.change_name_change_success), Snackbar.LENGTH_LONG)
         }
     }
 
     private fun onSuccessAddBOD(data: Intent?) {
-        refreshProfile()
         view?.run {
             Toaster.showNormal(this, getString(R.string.success_add_bod), Snackbar.LENGTH_LONG)
         }
     }
 
     private fun onSuccessChangeBOD(data: Intent?) {
-        refreshProfile()
         view?.run {
             Toaster.showNormal(this, getString(R.string.success_change_bod), Snackbar.LENGTH_LONG)
         }
     }
 
     private fun onSuccessEditPhone(data: Intent?) {
-        refreshProfile()
         view?.run {
             Toaster.showNormal(this, getString(R.string.success_change_phone_number), Snackbar.LENGTH_LONG)
         }
@@ -229,7 +274,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
                     Toaster.showNormal(this, getString(R.string.success_add_phone), Snackbar.LENGTH_LONG)
                 }
             }
-            refreshProfile()
+            AddPhoneNumberTracker().viewPersonalDataPage(true)
         }
     }
 
@@ -241,7 +286,6 @@ class SettingProfileFragment : BaseDaggerFragment() {
                     Toaster.showNormal(this, getString(R.string.success_add_email), Snackbar.LENGTH_LONG)
                 }
             }
-            refreshProfile()
         }
     }
 
@@ -283,16 +327,21 @@ class SettingProfileFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessGetUserProfileInfo(profileCompletionData: ProfileCompletionData) {
-        userSession.phoneNumber = profileCompletionData.phone
+        userSession.phoneNumber = profileCompletionData.msisdn
         userSession.email = profileCompletionData.email
 
         ImageHandler.loadImageCircle2(context, profilePhoto, profileCompletionData.profilePicture)
 
-        name.showFilled(
+        name?.showFilled(
                 getString(R.string.subtitle_name_setting_profile),
                 profileCompletionData.fullName,
-                false,
-                false
+                showVerified = false,
+                showButton = true,
+                fieldClickListener = View.OnClickListener {
+                    ChangeNameTracker().clickOnChangeName()
+                    val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.CHANGE_NAME, profileCompletionData.fullName, chancesChangeName)
+                    startActivityForResult(intent, REQUEST_CODE_CHANGE_NAME)
+                }
         )
 
         if (profileCompletionData.birthDay.isEmpty()) {
@@ -358,12 +407,18 @@ class SettingProfileFragment : BaseDaggerFragment() {
                     true,
                     true,
                     View.OnClickListener {
-                        showChangeEmailDialog()
+                        if(profileCompletionData.msisdn.isNotEmpty() && profileCompletionData.isMsisdnVerified){
+                            goToChangeEmail()
+                        } else if(profileCompletionData.msisdn.isNotEmpty() && !profileCompletionData.isMsisdnVerified) {
+                            showVerifyEmailDialog()
+                        }else{
+                            showChangeEmailDialog()
+                        }
                     }
             )
         }
 
-        if (profileCompletionData.phone.isEmpty()) {
+        if (profileCompletionData.msisdn.isEmpty()) {
             phone.showEmpty(
                     getString(R.string.subtitle_phone_setting_profile),
                     getString(R.string.hint_phone_setting_profile),
@@ -377,19 +432,19 @@ class SettingProfileFragment : BaseDaggerFragment() {
         } else {
             phone.showFilled(
                     getString(R.string.subtitle_phone_setting_profile),
-                    PhoneNumberUtils.transform(profileCompletionData.phone),
-                    profileCompletionData.isPhoneVerified,
+                    PhoneNumberUtils.transform(profileCompletionData.msisdn),
+                    profileCompletionData.isMsisdnVerified,
                     true,
                     View.OnClickListener {
-                        if (profileCompletionData.isPhoneVerified) {
-                            goToChangePhone(profileCompletionData.phone, profileCompletionData.email)
+                        if (profileCompletionData.isMsisdnVerified) {
+                            goToChangePhone(profileCompletionData.msisdn, profileCompletionData.email)
                         } else {
                             goToVerifyPhone()
                         }
                     }
             )
 
-            if (profileCompletionData.isPhoneVerified) {
+            if (profileCompletionData.isMsisdnVerified) {
                 tickerPhoneVerification.visibility = View.GONE
             } else {
                 tickerPhoneVerification.visibility = View.VISIBLE
@@ -425,6 +480,8 @@ class SettingProfileFragment : BaseDaggerFragment() {
     private fun onSuccessGetProfileRole(profileRoleData: ProfileRoleData) {
         dismissLoading()
         bod.isEnabled = profileRoleData.isAllowedChangeDob
+        name?.isEnabled = profileRoleData.isAllowedChangeName && remoteConfig.getBoolean(REMOTE_KEY_CHANGE_NAME, false)
+        chancesChangeName = profileRoleData.chancesChangeName
     }
 
     private fun onErrorGetProfileRole(throwable: Throwable) {
@@ -467,6 +524,19 @@ class SettingProfileFragment : BaseDaggerFragment() {
         startActivityForResult(intent, REQUEST_CODE_EDIT_BOD)
     }
 
+    private fun goToChangeEmail(){
+        val url = Uri.parse(TokopediaUrl.getInstance().MOBILEWEB).buildUpon().apply {
+            appendPath(UrlSettingProfileConst.USER_PATH_URL)
+            appendPath(UrlSettingProfileConst.PROFILE_PATH_URL)
+            appendPath(UrlSettingProfileConst.EMAIL_PATH_URL)
+        }.build().toString()
+
+        RouteManager.route(
+                context,
+                ApplinkConstInternalGlobal.WEBVIEW.replace("{url}", URLEncoder.encode(url, "UTF-8"))
+        )
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         profileInfoViewModel.userProfileInfo.removeObservers(this)
@@ -506,10 +576,13 @@ class SettingProfileFragment : BaseDaggerFragment() {
         const val REQUEST_CODE_EDIT_PHONE = 203
         const val REQUEST_CODE_EDIT_BOD = 204
 
+        const val REQUEST_CODE_CHANGE_NAME = 300
         const val REQUEST_CODE_ADD_BOD = 301
         const val REQUEST_CODE_ADD_EMAIL = 302
         const val REQUEST_CODE_ADD_PHONE = 303
         const val REQUEST_CODE_ADD_GENDER = 304
+
+        const val REMOTE_KEY_CHANGE_NAME = "android_customer_change_public_name"
 
         const val HEADER_PICT_URL = "https://ecs7.tokopedia.net/img/android/others/bg_setting_profile_header.png"
 

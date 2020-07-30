@@ -2,30 +2,31 @@ package com.tokopedia.core.network.di.module;
 
 import android.content.Context;
 
-import com.readystatesoftware.chuck.ChuckInterceptor;
+import com.chuckerteam.chucker.api.ChuckerCollector;
+import com.chuckerteam.chucker.api.ChuckerInterceptor;
+import com.chuckerteam.chucker.api.RetentionManager;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
-import com.tokopedia.core.network.CoreNetworkApplication;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.di.scope.ApplicationScope;
 import com.tokopedia.core.constant.ConstantCoreNetwork;
+import com.tokopedia.core.network.CoreNetworkApplication;
 import com.tokopedia.core.network.di.qualifier.KeyDefaultQualifier;
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.network.retrofit.interceptors.BearerInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.CreditCardInterceptor;
-import com.tokopedia.core.network.retrofit.interceptors.DebugInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.GlobalTkpdAuthInterceptor;
-import com.tokopedia.core.network.retrofit.interceptors.ResolutionInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.StandardizedInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
-import com.tokopedia.core.network.retrofit.interceptors.TkpdBaseInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdErrorResponseInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TopAdsAuthInterceptor;
 import com.tokopedia.core.network.retrofit.response.TkpdV4ResponseError;
 import com.tokopedia.core.network.retrofit.response.TopAdsResponseError;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.network.interceptor.DebugInterceptor;
+import com.tokopedia.network.interceptor.TkpdBaseInterceptor;
 import com.tokopedia.user.session.UserSession;
 
 import javax.inject.Named;
@@ -108,10 +109,14 @@ public class InterceptorModule {
 
     @ApplicationScope
     @Provides
-    public ChuckInterceptor provideChuckInterceptor(@ApplicationContext Context context,
-                                                    @Named(ConstantCoreNetwork.CHUCK_ENABLED) LocalCacheHandler localCacheHandler) {
-        return new ChuckInterceptor(context)
-                .showNotification(localCacheHandler.getBoolean(ConstantCoreNetwork.IS_CHUCK_ENABLED, false));
+    public ChuckerInterceptor provideChuckerInterceptor(@ApplicationContext Context context,
+                                                                  @Named(ConstantCoreNetwork.CHUCK_ENABLED) LocalCacheHandler localCacheHandler) {
+        ChuckerCollector collector = new ChuckerCollector(
+                context,
+                localCacheHandler.getBoolean(ConstantCoreNetwork.IS_CHUCK_ENABLED, false));
+
+        return new ChuckerInterceptor(
+                context, collector);
     }
 
     @ApplicationScope
@@ -131,12 +136,6 @@ public class InterceptorModule {
     @Provides
     TkpdErrorResponseInterceptor provideTkpdErrorResponseInterceptor() {
         return new TkpdErrorResponseInterceptor(TkpdV4ResponseError.class);
-    }
-
-    @ApplicationScope
-    @Provides
-    public ResolutionInterceptor provideResolutionInterceptor() {
-        return new ResolutionInterceptor();
     }
 
     @ApplicationScope

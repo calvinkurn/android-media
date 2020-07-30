@@ -2,7 +2,7 @@ package com.tokopedia.topads.dashboard.view.listener;
 
 import androidx.annotation.NonNull;
 
-import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.topads.dashboard.data.model.data.Etalase;
 
 import java.util.List;

@@ -2,8 +2,8 @@ package com.tokopedia.topads.keyword.view.presenter;
 
 import android.text.TextUtils;
 
-import com.tkpd.library.utils.CurrencyFormatHelper;
-import com.tokopedia.abstraction.common.data.model.request.DataRequest;
+import com.tokopedia.design.utils.CurrencyFormatHelper;
+import com.tokopedia.topads.common.model.request.DataRequest;
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils;
 import com.tokopedia.topads.common.domain.interactor.TopAdsDatePickerInteractor;
 import com.tokopedia.topads.common.view.presenter.TopAdsBaseListPresenter;

@@ -38,7 +38,7 @@ open class SubmitPostUseCase @Inject constructor(
 
         uploadMultipleImageUseCase.notificationManager = notificationManager
 
-        val media = requestParams.getObject(PARAM_MEDIA_LIST) as List<Pair<String, String>>
+        val media = (requestParams.getObject(PARAM_MEDIA_LIST) as List<Pair<String, String>>? ?: emptyList())
 
         return uploadMultipleImageUseCase
                 .createObservable(
@@ -117,13 +117,16 @@ open class SubmitPostUseCase @Inject constructor(
 
     protected open fun getContentSubmitInput(requestParams: RequestParams,
                                              mediumList: List<SubmitPostMedium>): ContentSubmitInput {
-        val input = ContentSubmitInput()
+        val input = ContentSubmitInput(
+                action = requestParams.getString(PARAM_ACTION, null)
+        )
         input.type = getInputType(requestParams.getString(PARAM_TYPE, ""))
         input.token = requestParams.getString(PARAM_TOKEN, "")
         input.authorID = requestParams.getString(PARAM_AUTHOR_ID, "")
         input.authorType = requestParams.getString(PARAM_AUTHOR_TYPE, "")
         input.caption = requestParams.getString(PARAM_CAPTION, "")
         input.media = mediumList
+        input.activityId = requestParams.getString(PARAM_ID, null)
 
         return input
     }
@@ -135,6 +138,8 @@ open class SubmitPostUseCase @Inject constructor(
         private const val PARAM_AUTHOR_TYPE = "authorType"
         private const val PARAM_CAPTION = "caption"
         private const val PARAM_TAGS = "tags"
+        private const val PARAM_ACTION = "action"
+        private const val PARAM_ID = "ID"
 
         private const val PARAM_INPUT = "input"
 
@@ -145,9 +150,17 @@ open class SubmitPostUseCase @Inject constructor(
         const val SUCCESS = 1
 
         private const val PARAM_MEDIA_LIST = "media_list"
+        private const val ACTION_UPDATE = "update"
 
-        fun createRequestParams(type: String, token: String, authorId: String, caption: String,
-                                     media: List<Pair<String, String>>, relatedIdList: List<String>): RequestParams {
+        fun createRequestParams(
+                id: String?,
+                type: String,
+                token: String,
+                authorId: String,
+                caption: String,
+                media: List<Pair<String, String>>,
+                relatedIdList: List<String>
+        ): RequestParams {
 
             val requestParams = RequestParams.create()
             requestParams.putString(PARAM_TYPE, type)
@@ -155,8 +168,16 @@ open class SubmitPostUseCase @Inject constructor(
             requestParams.putString(PARAM_AUTHOR_ID, authorId)
             requestParams.putString(PARAM_AUTHOR_TYPE, type)
             requestParams.putString(PARAM_CAPTION, caption)
-            requestParams.putObject(PARAM_MEDIA_LIST, media)
             requestParams.putObject(PARAM_TAGS, relatedIdList)
+
+            if (!id.isNullOrEmpty()) {
+                //this is edit post
+                requestParams.putString(PARAM_ID, id)
+                requestParams.putString(PARAM_ACTION, ACTION_UPDATE)
+            }
+            else {
+                requestParams.putObject(PARAM_MEDIA_LIST, media)
+            }
             return requestParams
         }
     }

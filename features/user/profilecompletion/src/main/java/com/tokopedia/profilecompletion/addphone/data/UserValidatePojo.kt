@@ -9,16 +9,16 @@ import com.google.gson.annotations.SerializedName
  */
 
 data class UserValidatePojo(
-        @SerializedName("userProfileCompletionValidate")
+        @SerializedName("userProfileValidate")
         @Expose
-        var userProfileCompletionValidate: UserProfileCompletionValidate = UserProfileCompletionValidate()
+        var userProfileValidate: UserProfileValidate = UserProfileValidate()
 )
 
-data class UserProfileCompletionValidate(
+data class UserProfileValidate(
         @SerializedName("isValid")
         @Expose
         var isValid: Boolean = false,
-        @SerializedName("msisdnMessage")
+        @SerializedName("message")
         @Expose
-        var msisdnMessage: String = ""
+        var message: String = ""
 )

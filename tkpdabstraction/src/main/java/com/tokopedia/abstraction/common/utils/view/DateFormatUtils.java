@@ -1,7 +1,5 @@
 package com.tokopedia.abstraction.common.utils.view;
 
-import android.annotation.SuppressLint;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -18,15 +16,6 @@ public class DateFormatUtils {
     public static final String FORMAT_YYYY_MM_DD = "yyyy-MM-dd";
     public static final String FORMAT_D_MMMM_YYYY = "d MMMM yyyy";
     public static final Locale DEFAULT_LOCALE = new Locale("in", "ID");
-
-    @SuppressLint("SimpleDateFormat")
-    public static String getStringDateAfter(int count) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(new Date());
-        calendar.add(Calendar.DAY_OF_YEAR, count);
-        Date newDate = calendar.getTime();
-        return new SimpleDateFormat("dd/MM/yyyy").format(newDate);
-    }
 
     public static String formatDate(String currentFormat, String newFormat, String dateString){
         return formatDate(currentFormat, newFormat, dateString, DEFAULT_LOCALE);
@@ -53,11 +42,17 @@ public class DateFormatUtils {
         return dateFormat.format(instance.getTime());
     }
 
-    public static String getFormattedDateSeconds(int timeInSeconds, String format) {
+    public static String getFormattedDateSeconds(long timeInSeconds, String format) {
         return getFormattedDate(timeInSeconds * 1000L, format);
     }
 
     public static String getFormattedDate(String unixTimeStringInSeconds, String format) {
-        return getFormattedDateSeconds(Integer.parseInt(unixTimeStringInSeconds), format);
+        long timeInSeconds = 0L;
+        try {
+            timeInSeconds = Long.parseLong(unixTimeStringInSeconds);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+        return getFormattedDateSeconds(timeInSeconds, format);
     }
 }

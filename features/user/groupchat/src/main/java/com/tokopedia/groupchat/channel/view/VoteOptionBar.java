@@ -43,8 +43,8 @@ public class VoteOptionBar extends FrameLayout{
         init();
         TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.ProgressBarWithTimer);
         try {
-            textValue = styledAttributes.getString(R.styleable.ProgressBarWithTimer_text);
-            progress = styledAttributes.getInt(R.styleable.ProgressBarWithTimer_progress, 0);
+            textValue = styledAttributes.getString(R.styleable.ProgressBarWithTimer_pbwt_text);
+            progress = styledAttributes.getInt(R.styleable.ProgressBarWithTimer_pbwt_progress, 0);
         } finally {
             styledAttributes.recycle();
         }

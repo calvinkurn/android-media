@@ -4,12 +4,12 @@ import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
-import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
@@ -24,33 +24,27 @@ import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
 import com.tokopedia.promocheckout.common.domain.CheckPromoCodeException
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
 import com.tokopedia.promocheckout.list.di.DaggerPromoCheckoutListComponent
-import com.tokopedia.promocheckout.list.di.PromoCheckoutListComponent
 import com.tokopedia.promocheckout.list.di.PromoCheckoutListModule
 import com.tokopedia.promocheckout.list.model.listcoupon.PromoCheckoutListModel
 import com.tokopedia.promocheckout.list.model.listlastseen.PromoCheckoutLastSeenModel
-import com.tokopedia.promocheckout.list.model.listpromocatalog.CatalogListItem
-import com.tokopedia.promocheckout.list.model.listpromocatalog.TokopointsCatalogHighlight
 import com.tokopedia.promocheckout.list.view.adapter.PromoCheckoutListAdapterFactory
 import com.tokopedia.promocheckout.list.view.adapter.PromoCheckoutListViewHolder
 import com.tokopedia.promocheckout.list.view.adapter.PromoLastSeenAdapter
 import com.tokopedia.promocheckout.list.view.adapter.PromoLastSeenViewHolder
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListContract
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListPresenter
-import com.tokopedia.promocheckout.list.view.adapter.PromoCheckOutExchangeCouponAdapter
-import kotlinx.android.synthetic.main.fragment_list_exchange_coupon.view.*
 import kotlinx.android.synthetic.main.fragment_promo_checkout_list.*
 import kotlinx.android.synthetic.main.fragment_promo_checkout_list.view.*
 import javax.inject.Inject
 
-
 abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutListModel, PromoCheckoutListAdapterFactory>(),
-        PromoCheckoutListContract.View, PromoLastSeenViewHolder.ListenerLastSeen, PromoCheckoutListViewHolder.ListenerTrackingCoupon, PromoCheckOutExchangeCouponAdapter.ListenerCouponExchange {
+        PromoCheckoutListContract.View,
+        PromoLastSeenViewHolder.ListenerLastSeen,
+        PromoCheckoutListViewHolder.ListenerTrackingCoupon {
 
     @Inject
     lateinit var promoCheckoutListPresenter: PromoCheckoutListPresenter
-    val promoLastSeenAdapter: PromoLastSeenAdapter by lazy { PromoLastSeenAdapter(ArrayList(), this) }
-    val promoCheckoutExchangeCouponAdapter: PromoCheckOutExchangeCouponAdapter by lazy { PromoCheckOutExchangeCouponAdapter(ArrayList(), this) }
-
+    private val promoLastSeenAdapter: PromoLastSeenAdapter by lazy { PromoLastSeenAdapter(arrayListOf(), this) }
     @Inject
     lateinit var trackingPromoCheckoutUtil: TrackingPromoCheckoutUtil
     lateinit var progressDialog: ProgressDialog
@@ -77,7 +71,6 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView(view)
-        initViewExchangeCoupon(view)
     }
 
     override fun showProgressLoading() {
@@ -107,13 +100,20 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
     fun initView(view: View) {
         val dividerItemDecoration = DividerItemDecoration(context, DividerItemDecoration.HORIZONTAL)
         dividerItemDecoration.setDrawable(ContextCompat.getDrawable(context!!, R.drawable.divider_horizontal_custom_quick_filter)!!)
-        view.recyclerViewLastSeenPromo.addItemDecoration(dividerItemDecoration)
-        view.recyclerViewLastSeenPromo.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
-        view.recyclerViewLastSeenPromo.adapter = promoLastSeenAdapter
+        with (view.recyclerViewLastSeenPromo) {
+            layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
+            adapter = promoLastSeenAdapter
+            while (itemDecorationCount > 0) removeItemDecorationAt(0)
+            addItemDecoration(dividerItemDecoration)
+        }
+
 
         val linearDividerItemDecoration = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
         linearDividerItemDecoration.setDrawable(ContextCompat.getDrawable(context!!, R.drawable.divider_vertical_list_promo)!!)
-        getRecyclerView(view).addItemDecoration(linearDividerItemDecoration)
+        with (getRecyclerView(view)) {
+            while (itemDecorationCount > 0) removeItemDecorationAt(0)
+            addItemDecoration(linearDividerItemDecoration)
+        }
 
         progressDialog = ProgressDialog(activity)
         progressDialog.setMessage(getString(R.string.title_loading))
@@ -130,54 +130,9 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
         }
     }
 
-    fun initViewExchangeCoupon(view: View) {
-        val dividerItemDecoration = DividerItemDecoration(context, DividerItemDecoration.HORIZONTAL)
-        dividerItemDecoration.setDrawable(ContextCompat.getDrawable(context!!, R.drawable.divider_horizontal_custom_quick_filter)!!)
-        view.rv_carousel.addItemDecoration(dividerItemDecoration)
-        view.rv_carousel.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
-        view.rv_carousel.adapter = promoCheckoutExchangeCouponAdapter
-
-        val linearDividerItemDecoration = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
-        linearDividerItemDecoration.setDrawable(ContextCompat.getDrawable(context!!, R.drawable.divider_vertical_list_promo)!!)
-        getRecyclerView(view).addItemDecoration(linearDividerItemDecoration)
-
-        populateExchnageCouponList()
-
-        if (isCouponActive) {
-            getRecyclerView(view).visibility = View.VISIBLE
-        } else {
-            getRecyclerView(view).visibility = View.GONE
-        }
-    }
-
     abstract fun onPromoCodeUse(promoCode: String)
 
-    /* hold cos api not ready yet
-       promoCheckoutListPresenter.getListLastSeen(resources)
-    */
     override fun onClickItemLastSeen(promoCheckoutLastSeenModel: PromoCheckoutLastSeenModel) {
-
-    }
-
-    /* hold cos api not ready yet
-       promoCheckoutListPresenter.getListLastSeen(resources)
-    */
-
-    override fun renderListExchangeCoupon(data: TokopointsCatalogHighlight) {
-        view?.text_title?.text = data.title
-        view?.text_sub_title?.text = data.subTitle
-        promoCheckoutExchangeCouponAdapter.items?.clear()
-        promoCheckoutExchangeCouponAdapter.items?.addAll(data.catalogList as ArrayList<CatalogListItem>)//data.catalogList)
-        promoCheckoutExchangeCouponAdapter.notifyDataSetChanged()
-        populateExchnageCouponList()
-    }
-
-    override fun showProgressBar() {
-        view?.progressBarCatalog?.visibility = View.VISIBLE
-    }
-
-    override fun hideProgressBar() {
-        view?.progressBarCatalog?.visibility = View.GONE
 
     }
 
@@ -188,7 +143,7 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
 
     override fun onErrorCheckPromo(e: Throwable) {
         if (pageTracking == FROM_CART) {
-            trackingPromoCheckoutUtil.cartClickUsePromoCodeFailed()
+            trackingPromoCheckoutUtil.cartClickUsePromoCodeFailed(e)
         } else {
             trackingPromoCheckoutUtil.checkoutClickUsePromoCodeFailed()
         }
@@ -219,23 +174,13 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
         populateLastSeen()
     }
 
-    private fun populateLastSeen() {
+    protected fun populateLastSeen() {
         if (promoLastSeenAdapter.listData.isEmpty()) {
             containerLastSeen.visibility = View.GONE
         } else {
             containerLastSeen.visibility = View.VISIBLE
         }
     }
-
-    private fun populateExchnageCouponList() {
-
-        if (promoCheckoutExchangeCouponAdapter.items?.isEmpty()!!) {
-            container_exchnage_coupon.visibility = View.GONE
-        } else {
-            container_exchnage_coupon.visibility = View.VISIBLE
-        }
-    }
-
 
     override fun getScreenName(): String {
         return ""
@@ -251,9 +196,9 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
 
     protected fun trackSuccessCheckPromoCode(data: DataUiModel) {
         if (pageTracking == FROM_CART) {
-            trackingPromoCheckoutUtil.cartClickUsePromoCodeSuccess(data.codes[0])
+            trackingPromoCheckoutUtil.cartClickUsePromoCodeSuccess(data.codes.firstOrNull().orEmpty())
         } else {
-            trackingPromoCheckoutUtil.checkoutClickUsePromoCodeSuccess(data.codes[0])
+            trackingPromoCheckoutUtil.checkoutClickUsePromoCodeSuccess(data.codes.firstOrNull().orEmpty())
         }
     }
 
@@ -268,12 +213,6 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
     override fun onDestroyView() {
         promoCheckoutListPresenter.detachView()
         super.onDestroyView()
-    }
-
-    override fun loadData(page: Int) {
-        if (isCouponActive) {
-            promoCheckoutListPresenter.getListPromo(serviceId, categoryId, page, resources)
-        }
     }
 
     companion object {

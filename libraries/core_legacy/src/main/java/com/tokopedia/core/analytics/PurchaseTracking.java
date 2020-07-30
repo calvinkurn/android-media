@@ -6,10 +6,15 @@ import android.os.Bundle;
 import com.appsflyer.AFInAppEventParameterName;
 import com.appsflyer.AFInAppEventType;
 import com.google.android.gms.tagmanager.DataLayer;
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
+import com.tokopedia.iris.util.ConstantKt;
+import com.tokopedia.iris.util.IrisSession;
 import com.tokopedia.track.TrackApp;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,6 +27,7 @@ import static com.tokopedia.core.analytics.nishikino.model.Product.KEY_CAT;
 import static com.tokopedia.core.analytics.nishikino.model.Product.KEY_ID;
 import static com.tokopedia.core.analytics.nishikino.model.Product.KEY_NAME;
 import static com.tokopedia.core.analytics.nishikino.model.Product.KEY_QTY;
+import com.tokopedia.iris.util.ConstantKt;
 
 /**
  * Created by okasurya on 12/8/17.
@@ -29,26 +35,20 @@ import static com.tokopedia.core.analytics.nishikino.model.Product.KEY_QTY;
 
 public class PurchaseTracking extends TrackingUtils {
     public static final String TRANSACTION = "transaction";
-    public static final String PURCHASE = "purchase";
     public static final String EVENT = "event";
     public static final String EVENT_CATEGORY = "order complete";
-    public static final String EVENT_ACTION_DEFAULT = "default";
     public static final String EVENT_ACTION_COD = "view thank you cod";
-    public static final String PAYMENT_ID = "payment_id";
-    public static final String PAYMENT_STATUS = "payment_status";
-    public static final String PAYMENT_TYPE = "payment_type";
     public static final String SHOP_ID = "shop_id";
-    public static final String LOGISTIC_TYPE = "logistic_type";
-    public static final String ECOMMERCE = "ecommerce";
     public static final String EVENT_LABEL = "";
-    public static final String ITEMS = "items";
 
     public static final String USER_ID = "userId";
 
     public static void marketplace(Context context, Pair<Purchase, Bundle> purchaseBundlePair) {
+        IrisSession irisSession = new IrisSession(context);
         Purchase purchase = purchaseBundlePair.getFirst();
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 AppEventTracking.EVENT, PurchaseTracking.TRANSACTION,
+                ConstantKt.KEY_SESSION_IRIS, irisSession.getSessionId(),
                 AppEventTracking.EVENT_CATEGORY, purchase.getEventCategory(),
                 AppEventTracking.EVENT_ACTION, purchase.getEventAction(),
                 AppEventTracking.EVENT_LABEL, purchase.getEventLabel(),
@@ -70,8 +70,10 @@ public class PurchaseTracking extends TrackingUtils {
     }
 
     public static void digital(Context context, Purchase purchase) {
+        IrisSession irisSession = new IrisSession(context);
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(
+                        ConstantKt.KEY_SESSION_IRIS, irisSession.getSessionId(),
                         AppEventTracking.EVENT, PurchaseTracking.TRANSACTION,
                         AppEventTracking.EVENT_CATEGORY, "digital - thanks",
                         AppEventTracking.EVENT_ACTION, "view purchase attempt",
@@ -106,12 +108,20 @@ public class PurchaseTracking extends TrackingUtils {
         List<String> productList = new ArrayList<>();
         List<String> productId = new ArrayList<>();
         List<String> productCategory = new ArrayList<>();
+        JSONArray productArray = new JSONArray();
         for(Object product:trackignData.getListProduct()) {
+            JSONObject jsonObject = new JSONObject();
             Map<String, Object> product1 = (Map<String, Object>) product;
             quantity += parseStringToInt(String.valueOf(product1.get(KEY_QTY)));
             productList.add(String.valueOf(product1.get(KEY_NAME)));
             productId.add(String.valueOf(product1.get(KEY_ID)));
             productCategory.add(String.valueOf(product1.get(KEY_CAT)));
+            try {
+                jsonObject.put(KEY_ID, String.valueOf(product1.get(KEY_ID)));
+                jsonObject.put(KEY_QTY, parseStringToInt(String.valueOf(product1.get(KEY_QTY))));
+                productArray.put(jsonObject);
+            } catch (JSONException ignored) {
+            }
         }
 
 
@@ -126,13 +136,15 @@ public class PurchaseTracking extends TrackingUtils {
         afValue.put(AFInAppEventParameterName.CURRENCY, Jordan.VALUE_IDR);
         afValue.put(Jordan.AF_VALUE_PRODUCTTYPE, productList);
         afValue.put(Jordan.AF_KEY_CATEGORY_NAME,productCategory);
-        if(productList != null && productList.size()>1) {
-            afValue.put(AFInAppEventParameterName.CONTENT_TYPE, Jordan.AF_VALUE_PRODUCTGROUPTYPE);
-        }else {
-            afValue.put(AFInAppEventParameterName.CONTENT_TYPE, Jordan.AF_VALUE_PRODUCTTYPE);
+        afValue.put(AFInAppEventParameterName.CONTENT_TYPE, Jordan.AF_VALUE_PRODUCTTYPE);
+        Map<String, Object> criteoAfValue = new HashMap<>(afValue);
+        if (productArray.length() > 0) {
+            String afContent = productArray.toString();
+            afValue.put(AFInAppEventParameterName.CONTENT, afContent);
         }
 
         TrackApp.getInstance().getAppsFlyer().sendTrackEvent(AFInAppEventType.PURCHASE, afValue);
-        TrackApp.getInstance().getAppsFlyer().sendTrackEvent(Jordan.AF_KEY_CRITEO, afValue);
+
+        TrackApp.getInstance().getAppsFlyer().sendTrackEvent(Jordan.AF_KEY_CRITEO, criteoAfValue);
     }
 }

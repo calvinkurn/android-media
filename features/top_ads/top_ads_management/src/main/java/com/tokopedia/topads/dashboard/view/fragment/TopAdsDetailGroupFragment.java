@@ -4,16 +4,18 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
-import androidx.core.content.ContextCompat;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.tkpd.library.utils.CommonUtils;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalTopAds;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.datepicker.range.view.constant.DatePickerConstant;
+import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.seller.common.widget.LabelView;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.TopAdsManagementRouter;
@@ -22,11 +24,11 @@ import com.tokopedia.topads.dashboard.data.model.data.BulkAction;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAdBulkAction;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGroupAdInteractorImpl;
-import com.tokopedia.topads.dashboard.view.activity.TopAdsEditGroupMainPageActivity;
-import com.tokopedia.topads.product.view.activity.TopAdsProductAdListActivity;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailGroupPresenter;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailGroupViewPresenterImpl;
+import com.tokopedia.topads.product.view.activity.TopAdsProductAdListActivity;
 
+import timber.log.Timber;
 /**
  * Created by zulfikarrahman on 1/3/17.
  */
@@ -38,6 +40,9 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailStatisticFragment<Top
     private OnTopAdsDetailGroupListener listener;
     private boolean isEnoughDeposit;
     private boolean isDismissToTopUp = false;
+    public static final String groupId ="groupId";
+    public static final String groupName ="groupName";
+    public static final String groupStatus ="status";
 
     public static Fragment createInstance(GroupAd groupAd, String adId, boolean forceRefresh, boolean isEnoughDeposit) {
         Fragment fragment = new TopAdsDetailGroupFragment();
@@ -108,8 +113,15 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailStatisticFragment<Top
 
     @Override
     protected void editAd() {
-        Intent intent = TopAdsEditGroupMainPageActivity.createIntent(getActivity(), null, ad.getId(), isForceRefresh);
-        startActivityForResult(intent, REQUEST_CODE_AD_EDIT);
+
+        /*To start the flow of top ads edit*/
+        Bundle bundle = new Bundle();
+        if (ad != null) {
+            bundle.putString(groupId, ad.getId());
+            bundle.putString(groupName, ad.getName());
+            bundle.putString(groupStatus, ad.getStatusDesc());
+            RouteManager.route(getContext(), bundle, ApplinkConstInternalTopAds.TOPADS_EDIT_ADS);
+        }
     }
 
     @Override
@@ -129,7 +141,7 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailStatisticFragment<Top
         if(dataResponseActionAds != null && dataResponseActionAds instanceof GroupAdBulkAction) {
             Integer status = Integer.valueOf(((GroupAdBulkAction) dataResponseActionAds).getAdList().get(0).getStatus());
 
-            CommonUtils.dumper("status from network -> "+status);
+            Timber.d("status from network -> "+status);
             if(adFromIntent != null)
                 adFromIntent.setStatus(status);
 

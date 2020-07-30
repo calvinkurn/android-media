@@ -18,13 +18,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tkpd.library.utils.KeyboardHandler;
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.database.model.ResCenterAttachment;
 import com.tokopedia.core.database.repository.ResCenterAttachmentRepository;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
@@ -452,7 +452,7 @@ public class InputShippingFragment extends BasePresenterFragment<InputShippingFr
 
                 @Override
                 public void onFailed() {
-                    showErrorMessage(getActivity().getString(com.tokopedia.core2.R.string.error_gallery_valid));
+                    showErrorMessage(getActivity().getString(com.tokopedia.inbox.R.string.error_gallery_valid));
                 }
             });
         }

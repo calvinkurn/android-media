@@ -3,26 +3,23 @@ package com.tokopedia.logisticaddaddress.features.addnewaddress
 import android.annotation.TargetApi
 import android.app.Activity
 import android.content.Context
-import android.content.res.Resources
-import android.graphics.Rect
 import android.location.LocationManager
 import android.os.Build
 import android.provider.Settings
 import android.provider.Settings.Secure.getInt
-import com.google.android.material.snackbar.Snackbar
-import androidx.core.content.ContextCompat
 import android.view.View
-import android.view.ViewTreeObserver
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
+import android.widget.EditText
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.LocationSettingsRequest
-import com.google.android.gms.maps.model.LatLng
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.logisticaddaddress.R
-import android.widget.EditText
+import com.tokopedia.logisticaddaddress.common.AddressConstants
 import kotlin.math.abs
 
 
@@ -30,16 +27,6 @@ import kotlin.math.abs
  * Created by fwidjaja on 2019-06-22.
  */
 object AddNewAddressUtils {
-
-    @JvmField
-    val MONAS_LAT: Double = -6.175794
-    @JvmField
-    val MONAS_LONG: Double = 106.826457
-
-    @JvmStatic
-    fun generateLatLng(latitude: Double?, longitude: Double?): LatLng {
-        return latitude?.let { longitude?.let { it1 -> LatLng(it, it1) } }!!
-    }
 
     @JvmStatic
     fun showToastError(message: String, view: View, activity: Activity) {
@@ -68,11 +55,6 @@ object AddNewAddressUtils {
             mode != Settings.Secure.LOCATION_MODE_OFF
 
         }
-    }
-
-    @JvmStatic
-    fun toDp(number: Int): Int {
-        return (number * Resources.getSystem().displayMetrics.density + 0.5f).toInt()
     }
 
     @JvmStatic
@@ -105,9 +87,8 @@ object AddNewAddressUtils {
         return isGpsOn
     }
 
-    @JvmStatic
     fun hideKeyboard(et: EditText, context: Context?) {
-        val inputMethodManager = context?.getSystemService(Activity.INPUT_METHOD_SERVICE)
+        val inputMethodManager = context?.getSystemService(Activity.INPUT_METHOD_SERVICE) ?: return
         (inputMethodManager as InputMethodManager).hideSoftInputFromWindow(et.windowToken, 0)
     }
 
@@ -119,8 +100,8 @@ object AddNewAddressUtils {
 
     fun hasDefaultCoordinate(lat: Double, long: Double, exact: Boolean = false): Boolean {
         val threshold = 0.00001
-        val diffLat = lat - MONAS_LAT
-        val diffLong = long - MONAS_LONG
+        val diffLat = lat - AddressConstants.DEFAULT_LAT
+        val diffLong = long - AddressConstants.DEFAULT_LONG
 
         return if (exact) (diffLat == 0.0 && diffLong == 0.0)
         else (abs(diffLat) < threshold && abs(diffLong) < threshold)

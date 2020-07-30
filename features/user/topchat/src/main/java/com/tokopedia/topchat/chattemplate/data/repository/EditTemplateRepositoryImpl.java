@@ -1,7 +1,7 @@
 package com.tokopedia.topchat.chattemplate.data.repository;
 
 import com.tokopedia.topchat.chattemplate.data.factory.EditTemplateChatFactory;
-import com.tokopedia.topchat.chattemplate.view.viewmodel.EditTemplateViewModel;
+import com.tokopedia.topchat.chattemplate.view.viewmodel.EditTemplateUiModel;
 
 import java.util.HashMap;
 
@@ -20,18 +20,18 @@ public class EditTemplateRepositoryImpl implements EditTemplateRepository {
     }
 
     @Override
-    public Observable<EditTemplateViewModel> editTemplate(int index, HashMap<String, Object>
+    public Observable<EditTemplateUiModel> editTemplate(int index, HashMap<String, Object>
             parameters, boolean isSeller) {
         return templateChatFactory.createCloudEditTemplateDataSource().editTemplate(index, parameters, isSeller);
     }
 
     @Override
-    public Observable<EditTemplateViewModel> createTemplate(HashMap<String, Object> parameters) {
+    public Observable<EditTemplateUiModel> createTemplate(HashMap<String, Object> parameters) {
         return templateChatFactory.createCloudEditTemplateDataSource().createTemplate(parameters);
     }
 
     @Override
-    public Observable<EditTemplateViewModel> deleteTemplate(int index, boolean isSeller) {
+    public Observable<EditTemplateUiModel> deleteTemplate(int index, boolean isSeller) {
         return templateChatFactory.createCloudEditTemplateDataSource().deleteTemplate(index, isSeller);
     }
 }

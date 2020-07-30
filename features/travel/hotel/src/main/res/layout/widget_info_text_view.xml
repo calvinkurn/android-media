@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/info_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/info_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/layout_lvl1"
+        android:lineSpacingExtra="@dimen/sp_6"
+        app:typographyType="heading_4"
+        android:textColor="@color/Neutral_N700_96"
+        tools:text="Sarapan" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/info_desc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:lineSpacingExtra="@dimen/sp_6"
+        android:textColor="@color/Neutral_N700_68"
+        app:typographyType="body_3"
+        tools:text="Tidak tersedia paket makanan untuk harga ini di kamar ini." />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/info_more"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:lineSpacingExtra="@dimen/sp_6"
+        android:text="@string/hotel_read_more_title"
+        android:textColor="@color/Green_G500"
+        app:typographyType="body_3"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+</LinearLayout>

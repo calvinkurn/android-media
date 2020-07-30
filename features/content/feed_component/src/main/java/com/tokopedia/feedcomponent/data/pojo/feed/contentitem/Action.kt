@@ -16,4 +16,8 @@ data class Action(
     @SerializedName("webLink")
     @Expose
     var webLink: String = ""
-)
+) {
+    fun copy(): Action {
+        return Action(event, action, appLink, webLink)
+    }
+}

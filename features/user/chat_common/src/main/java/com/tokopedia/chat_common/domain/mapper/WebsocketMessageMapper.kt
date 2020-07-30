@@ -78,6 +78,8 @@ open class WebsocketMessageMapper @Inject constructor() {
         val pojoAttribute = GsonBuilder().create().fromJson<ProductAttachmentAttributes>(jsonAttribute,
                 ProductAttachmentAttributes::class.java)
 
+        val variant: List<AttachmentVariant> = pojoAttribute.productProfile.variant ?: emptyList()
+
         return ProductAttachmentViewModel(
                 pojo.msgId.toString(),
                 pojo.fromUid,
@@ -99,12 +101,18 @@ open class WebsocketMessageMapper @Inject constructor() {
                 pojo.blastId,
                 pojoAttribute.productProfile.priceInt,
                 pojoAttribute.productProfile.category,
-                pojoAttribute.productProfile.variant.toString(),
+                variant,
                 pojoAttribute.productProfile.dropPercentage,
                 pojoAttribute.productProfile.priceBefore,
                 pojoAttribute.productProfile.shopId,
-                pojoAttribute.productProfile.freeShipping
-        )
+                pojoAttribute.productProfile.freeShipping,
+                pojoAttribute.productProfile.categoryId,
+                pojoAttribute.productProfile.playStoreData,
+                pojoAttribute.productProfile.remainingStock,
+                pojoAttribute.productProfile.status
+        ).apply {
+            finishLoading()
+        }
     }
 
     private fun convertToInvoiceSent(pojo: ChatSocketPojo, jsonAttribute: JsonObject):
@@ -128,9 +136,11 @@ open class WebsocketMessageMapper @Inject constructor() {
                 invoiceSentPojo.invoiceLink.attributes.statusId,
                 invoiceSentPojo.invoiceLink.attributes.status,
                 invoiceSentPojo.invoiceLink.attributes.code,
-                invoiceSentPojo.invoiceLink.attributes.hrefUrl
-        )
-
+                invoiceSentPojo.invoiceLink.attributes.hrefUrl,
+                invoiceSentPojo.invoiceLink.attributes.createTime
+        ).apply {
+            finishLoading()
+        }
     }
 
     private fun canShowFooterProductAttachment(isOpposite: Boolean, role: String): Boolean {
@@ -142,7 +152,7 @@ open class WebsocketMessageMapper @Inject constructor() {
 
     open fun convertToFallBackModel(pojo: ChatSocketPojo): Visitable<*> {
         var fallbackMessage = ""
-        pojo.attachment?.fallbackAttachment?.let{
+        pojo.attachment?.fallbackAttachment?.let {
             fallbackMessage = it.message
         }
         return FallbackAttachmentViewModel(

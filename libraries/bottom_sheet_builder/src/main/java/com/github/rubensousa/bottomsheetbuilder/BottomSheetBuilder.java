@@ -167,6 +167,11 @@ public class BottomSheetBuilder {
         return this;
     }
 
+    public BottomSheetBuilder addItem(int id, @StringRes int title, @DrawableRes int icon, int itemTextColor) {
+        mAdapterBuilder.addItem(id, mContext.getString(title), ContextCompat.getDrawable(mContext, icon), itemTextColor, mItemBackground, mIconTintColor);
+        return this;
+    }
+
     public BottomSheetBuilder setItemTextColor(@ColorInt int color) {
         mItemTextColor = color;
         return this;

@@ -12,7 +12,8 @@ import com.tokopedia.instantloan.network.InstantLoanAuthInterceptor
 import com.tokopedia.instantloan.network.InstantLoanUrl.COMMON_URL.PATH_USER_PROFILE_STATUS
 import com.tokopedia.usecase.RequestParams
 
-class GetLoanProfileStatusUseCase(interceptor: InstantLoanAuthInterceptor, context: Context) : RestRequestSupportInterceptorUseCase(interceptor, context) {
+class GetLoanProfileStatusUseCase(interceptor: InstantLoanAuthInterceptor, context: Context) :
+        RestRequestSupportInterceptorUseCase(interceptor, context) {
 
     override fun buildRequest(requestParams: RequestParams): List<RestRequest> {
 

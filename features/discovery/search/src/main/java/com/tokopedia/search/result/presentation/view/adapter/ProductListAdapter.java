@@ -1,43 +1,100 @@
 package com.tokopedia.search.result.presentation.view.adapter;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.discovery.common.constants.SearchApiConst;
+import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.search.R;
-import com.tokopedia.search.result.presentation.model.*;
+import com.tokopedia.search.result.presentation.model.EmptySearchProductViewModel;
+import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
+import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
+import com.tokopedia.search.result.presentation.model.QuickFilterViewModel;
+import com.tokopedia.search.result.presentation.model.RecommendationItemViewModel;
+import com.tokopedia.search.result.presentation.model.TickerViewModel;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.RecommendationItemViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SmallGridProductItemViewHolder;
-import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.TopAdsViewHolder;
-import com.tokopedia.search.result.presentation.view.listener.TopAdsSwitcher;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory;
-import com.tokopedia.search.result.presentation.view.typefactory.SearchSectionTypeFactory;
-import com.tokopedia.topads.sdk.view.DisplayMode;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
-public final class ProductListAdapter extends SearchSectionGeneralAdapter {
+public final class ProductListAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
     private List<Visitable> list = new ArrayList<>();
     private ProductListTypeFactory typeFactory;
-    private int startFrom;
-    private int totalData;
-    private LoadingMoreModel loadingMoreModel;
-    private TopAdsSwitcher topAdsSwitcher;
+    private LoadingMoreModel loadingMoreModel = new LoadingMoreModel();
     private GlobalNavViewModel globalNavViewModel;
+    private OnItemChangeView itemChangeView;
 
     public ProductListAdapter(OnItemChangeView itemChangeView, ProductListTypeFactory typeFactory) {
-        super(itemChangeView);
+        this.itemChangeView = itemChangeView;
         this.typeFactory = typeFactory;
-        loadingMoreModel = new LoadingMoreModel();
+    }
+
+    public void changeListView() {
+        typeFactory.setRecyclerViewItem(SearchConstant.RecyclerView.VIEW_LIST);
+        itemChangeView.onChangeList();
+    }
+
+    public void changeDoubleGridView() {
+        typeFactory.setRecyclerViewItem(SearchConstant.RecyclerView.VIEW_PRODUCT_SMALL_GRID);
+        itemChangeView.onChangeDoubleGrid();
+    }
+
+    public void changeSingleGridView() {
+        typeFactory.setRecyclerViewItem(SearchConstant.RecyclerView.VIEW_PRODUCT_BIG_GRID);
+        itemChangeView.onChangeSingleGrid();
+    }
+
+    public int getTitleTypeRecyclerView() {
+        switch (typeFactory.getRecyclerViewItem()) {
+            case SearchConstant.RecyclerView.VIEW_LIST:
+                return R.string.list;
+            case SearchConstant.RecyclerView.VIEW_PRODUCT_SMALL_GRID:
+                return R.string.grid;
+            case SearchConstant.RecyclerView.VIEW_PRODUCT_BIG_GRID:
+                return R.string.grid;
+            default:
+                return R.string.grid;
+        }
+    }
+
+    public int getIconTypeRecyclerView() {
+        switch (typeFactory.getRecyclerViewItem()) {
+            case SearchConstant.RecyclerView.VIEW_LIST:
+                return R.drawable.search_ic_list;
+            case SearchConstant.RecyclerView.VIEW_PRODUCT_SMALL_GRID:
+                return R.drawable.search_ic_grid;
+            case SearchConstant.RecyclerView.VIEW_PRODUCT_BIG_GRID:
+                return R.drawable.search_ic_big_list;
+            default:
+                return R.drawable.search_ic_grid;
+        }
+    }
+
+    public SearchConstant.ViewType getCurrentLayoutType() {
+        switch (typeFactory.getRecyclerViewItem()) {
+            case SearchConstant.RecyclerView.VIEW_LIST:
+                return SearchConstant.ViewType.LIST;
+            case SearchConstant.RecyclerView.VIEW_PRODUCT_SMALL_GRID:
+                return SearchConstant.ViewType.SMALL_GRID;
+            case SearchConstant.RecyclerView.VIEW_PRODUCT_BIG_GRID:
+                return SearchConstant.ViewType.BIG_GRID;
+            default:
+                return SearchConstant.ViewType.SMALL_GRID;
+        }
     }
 
     @NonNull
@@ -45,23 +102,11 @@ public final class ProductListAdapter extends SearchSectionGeneralAdapter {
     public AbstractViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
         View view = LayoutInflater.from(context).inflate(viewType, parent, false);
-        AbstractViewHolder viewHolder = typeFactory.createViewHolder(view, viewType);
-        setTopAdsSwitcherForTopAdsViewHolder(viewHolder);
-        return viewHolder;
-    }
-
-    private void setTopAdsSwitcherForTopAdsViewHolder(AbstractViewHolder viewHolder) {
-        if(viewHolder instanceof TopAdsViewHolder){
-            setTopAdsSwitcher((TopAdsViewHolder) viewHolder);
-        }
-    }
-
-    private void setTopAdsSwitcher(TopAdsSwitcher topAdsSwitcher) {
-        this.topAdsSwitcher = topAdsSwitcher;
+        return typeFactory.createViewHolder(view, viewType);
     }
 
     @Override
-    public void onBindViewHolder(AbstractViewHolder holder, int position) {
+    public void onBindViewHolder(@NotNull AbstractViewHolder holder, int position) {
         setFullSpanForStaggeredGrid(holder, holder.getItemViewType());
 
         holder.bind(list.get(position));
@@ -81,26 +126,11 @@ public final class ProductListAdapter extends SearchSectionGeneralAdapter {
     }
 
     @Override
-    public void changeListView() {
-        super.changeListView();
-        if(topAdsSwitcher!=null) {
-            topAdsSwitcher.switchDisplay(DisplayMode.LIST);
-        }
-    }
-
-    @Override
-    public void changeDoubleGridView() {
-        super.changeDoubleGridView();
-        if(topAdsSwitcher!=null) {
-            topAdsSwitcher.switchDisplay(DisplayMode.GRID);
-        }
-    }
-
-    @Override
-    public void changeSingleGridView() {
-        super.changeSingleGridView();
-        if(topAdsSwitcher!=null) {
-            topAdsSwitcher.switchDisplay(DisplayMode.BIG);
+    public void onBindViewHolder(@NotNull AbstractViewHolder holder, int position, @NonNull List<Object> payloads) {
+        if (!payloads.isEmpty()) {
+            holder.bind(list.get(position), payloads);
+        } else {
+            super.onBindViewHolder(holder, position, payloads);
         }
     }
 
@@ -114,30 +144,10 @@ public final class ProductListAdapter extends SearchSectionGeneralAdapter {
         return list.size();
     }
 
-    public void clearDataBeforeSet() {
-        super.clearData();
-    }
-
     public void appendItems(List<Visitable> list) {
         int start = getItemCount();
         this.list.addAll(list);
         notifyItemRangeInserted(start, list.size());
-    }
-
-    public void incrementStart() {
-        setStartFrom(getStartFrom() + Integer.parseInt(SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_ROWS));
-    }
-
-    public boolean isEvenPage() {
-        return getStartFrom() / Integer.parseInt(SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_ROWS) % 2 == 0;
-    }
-
-    public int getStartFrom() {
-        return startFrom;
-    }
-
-    public void setStartFrom(int start) {
-        this.startFrom = start;
     }
 
     public void setWishlistButtonEnabled(String productId, boolean isEnabled) {
@@ -158,14 +168,13 @@ public final class ProductListAdapter extends SearchSectionGeneralAdapter {
                 ProductItemViewModel model = ((ProductItemViewModel) list.get(i));
                 if (productId.equals(model.getProductID())) {
                     model.setWishlisted(isWishlisted);
-                    notifyItemChanged(i);
+                    notifyItemChanged(i, "wishlist");
                 }
             } else if(list.get(i) instanceof RecommendationItemViewModel){
                 RecommendationItemViewModel model = (RecommendationItemViewModel) list.get(i);
                 if(productId.equals(String.valueOf(model.getRecommendationItem().getProductId()))){
                     model.getRecommendationItem().setWishlist(isWishlisted);
-                    notifyItemChanged(i);
-                    break;
+                    notifyItemChanged(i, "wishlist");
                 }
             }
         }
@@ -181,26 +190,9 @@ public final class ProductListAdapter extends SearchSectionGeneralAdapter {
         }
     }
 
-    public boolean isHeaderBanner(int position) {
-        if (checkDataSize(position))
-            return getItemList().get(position) instanceof HeaderViewModel;
-        return false;
-    }
-
-    public boolean isRelatedSearch(int position) {
-        if (checkDataSize(position))
-            return getItemList().get(position) instanceof RelatedSearchViewModel;
-        return false;
-    }
-
-    @Override
-    public List<Visitable> getItemList() {
-        return list;
-    }
-
-    @Override
-    protected SearchSectionTypeFactory getTypeFactory() {
-        return typeFactory;
+    private boolean checkDataSize(int position) {
+        return list != null && list.size() > 0
+                && position > -1 && position < list.size();
     }
 
     public boolean isProductItem(int position) {
@@ -209,38 +201,6 @@ public final class ProductListAdapter extends SearchSectionGeneralAdapter {
 
     public boolean isRecommendationItem(int position){
         return checkDataSize(position) && list.get(position) instanceof RecommendationItemViewModel;
-    }
-
-    @Override
-    public boolean isEmptyItem(int position) {
-        return checkDataSize(position) && getItemList().get(position) instanceof EmptySearchViewModel;
-    }
-
-    public void setTotalData(int totalData) {
-        this.totalData = totalData;
-    }
-
-    public int getTotalData() {
-        return totalData;
-    }
-
-    public boolean hasNextPage() {
-        return getStartFrom() < getTotalData();
-    }
-
-    @Override
-    public void clearData() {
-        super.clearData();
-        setStartFrom(0);
-        setTotalData(0);
-    }
-
-    public boolean hasHeader() {
-        return checkDataSize(0) && getItemList().get(0) instanceof HeaderViewModel;
-    }
-
-    public boolean isTopAds(int position) {
-        return checkDataSize(position) && getItemList().get(position) instanceof TopAdsViewModel;
     }
 
     public void addLoading() {
@@ -261,22 +221,28 @@ public final class ProductListAdapter extends SearchSectionGeneralAdapter {
         }
     }
 
-    @Override
-    public void showEmptyState(Context context, String query, boolean isFilterActive, String sectionTitle) {
+    public void showEmptyState(Context context, boolean isFilterActive) {
         clearData();
         if (globalNavViewModel != null) {
-            getItemList().add(globalNavViewModel);
+            list.add(globalNavViewModel);
         }
-        getItemList().add(mapEmptySearch(context, query, isFilterActive,
-                globalNavViewModel == null));
+        list.add(mapEmptySearch(context, isFilterActive, globalNavViewModel == null));
         notifyDataSetChanged();
     }
 
-    private EmptySearchViewModel mapEmptySearch(Context context, String query,
+    public void clearData() {
+        int itemSizeBeforeCleared = getItemCount();
+
+        list.clear();
+
+        notifyItemRangeRemoved(0, itemSizeBeforeCleared);
+    }
+
+    private EmptySearchProductViewModel mapEmptySearch(Context context,
                                                 boolean isFilterActive,
                                                 boolean isBannerAdsAllowed) {
-        EmptySearchViewModel emptySearchViewModel = new EmptySearchViewModel();
-        emptySearchViewModel.setImageRes(R.drawable.product_search_not_found);
+        EmptySearchProductViewModel emptySearchViewModel = new EmptySearchProductViewModel();
+        emptySearchViewModel.setImageRes(com.tokopedia.resources.common.R.drawable.ic_product_search_not_found);
         emptySearchViewModel.setBannerAdsAllowed(isBannerAdsAllowed);
         if (isFilterActive) {
             emptySearchViewModel.setTitle(context.getString(R.string.msg_empty_search_product_title));
@@ -291,5 +257,44 @@ public final class ProductListAdapter extends SearchSectionGeneralAdapter {
 
     public void setGlobalNavViewModel(GlobalNavViewModel globalNavViewModel) {
         this.globalNavViewModel = globalNavViewModel;
+    }
+
+    public boolean isListEmpty() {
+        return list.isEmpty();
+    }
+
+    public void removePriceFilterTicker() {
+        int i = 0;
+        Iterator iterator = list.iterator();
+
+        while(iterator.hasNext()) {
+            Object visitable = iterator.next();
+
+            if (visitable instanceof TickerViewModel) {
+                iterator.remove();
+                notifyItemRangeRemoved(i, 1);
+                return;
+            }
+
+            i++;
+        }
+    }
+
+    public void refreshQuickFilter() {
+        for(int i = 0; i < list.size(); i++) {
+            Visitable visitable = list.get(i);
+
+            if (visitable instanceof QuickFilterViewModel) {
+                notifyItemChanged(i);
+            }
+        }
+    }
+
+    public interface OnItemChangeView {
+        void onChangeList();
+
+        void onChangeDoubleGrid();
+
+        void onChangeSingleGrid();
     }
 }

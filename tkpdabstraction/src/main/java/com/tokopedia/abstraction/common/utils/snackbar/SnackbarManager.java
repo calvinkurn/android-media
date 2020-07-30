@@ -2,16 +2,18 @@ package com.tokopedia.abstraction.common.utils.snackbar;
 
 import android.app.Activity;
 import android.content.Context;
-import androidx.annotation.ColorRes;
-import androidx.annotation.DrawableRes;
-import com.google.android.material.snackbar.Snackbar;
-import androidx.core.content.ContextCompat;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.annotation.ColorRes;
+import androidx.annotation.DrawableRes;
+import androidx.core.content.ContextCompat;
+
+import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.R;
-import com.tokopedia.abstraction.common.utils.view.CommonUtils;
+
+import timber.log.Timber;
 
 /**
  * Created by Tkpd_Eka on 12/23/2015.
@@ -31,9 +33,9 @@ public class SnackbarManager {
         Snackbar snack = Snackbar.make(view, text, duration);
 
         if (snack.isShownOrQueued())
-            CommonUtils.dumper("Shown " + text);
+            Timber.d("Shown " + text);
         else
-            CommonUtils.dumper("Queue " + text);
+            Timber.d("Queue " + text);
 
         setViewForText(context, snack, textColorRes);
         setViewForAction(context, snack, actionColorRes);

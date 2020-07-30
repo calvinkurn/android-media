@@ -1,0 +1,14 @@
+query findRelatedLink($keyword: String){
+   categoryTkpdFindRelated(q: $keyword){
+    relatedHotlist {
+      id
+      url: URL
+      text: name
+    }
+    relatedCategory {
+      id
+      url: URL
+      text: name
+    }
+  }
+}

@@ -4,34 +4,29 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.webkit.URLUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
-import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.URLGenerator
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.chat_common.data.ChatroomViewModel
-import com.tokopedia.chat_common.data.ImageAnnouncementViewModel
-import com.tokopedia.chat_common.data.ImageUploadViewModel
-import com.tokopedia.chat_common.data.ProductAttachmentViewModel
-import com.tokopedia.chat_common.view.BaseChatViewStateImpl
-import com.tokopedia.chat_common.view.adapter.BaseChatTypeFactoryImpl
-import com.tokopedia.chat_common.view.adapter.viewholder.chatmenu.BaseChatMenuViewHolder
+import com.tokopedia.chat_common.data.*
+import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
+import com.tokopedia.chat_common.domain.pojo.attachmentmenu.VoucherMenu
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageAnnouncementListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ProductAttachmentListener
-import com.tokopedia.chat_common.view.fragment.BottomChatMenuFragment
+import com.tokopedia.chat_common.view.fragment.BaseChatActivityListener
 import com.tokopedia.chat_common.view.listener.BaseChatContract
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chat_common.view.listener.TypingListener
+import com.tokopedia.chat_common.view.widget.AttachmentMenuRecyclerView
 import com.tokopedia.network.constant.TkpdBaseURL
 import com.tokopedia.user.session.UserSessionInterface
 import java.net.URLEncoder
@@ -41,10 +36,11 @@ import java.util.*
  * @author by nisie on 23/11/18.
  */
 abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
-    , ImageAnnouncementListener, ChatLinkHandlerListener
-    , ImageUploadListener, ProductAttachmentListener, TypingListener
-    , BaseChatContract.View
-    , BaseChatMenuViewHolder.ChatMenuListener {
+        , ImageAnnouncementListener, ChatLinkHandlerListener
+        , ImageUploadListener, ProductAttachmentListener, TypingListener
+        , BaseChatContract.View
+        , BaseChatActivityListener
+        , AttachmentMenu.AttachmentMenuListener {
 
     open lateinit var viewState: BaseChatViewState
 
@@ -53,28 +49,27 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
     protected var opponentName = ""
     protected var opponentRole = ""
     protected var shopId = 0
-
     protected var toShopId = "0"
     protected var toUserId = "0"
     protected var source = ""
+    protected open fun rvAttachmentMenuId() = R.id.rv_attachment_menu
 
-    private val bottomChatMenu = BottomChatMenuFragment()
-
-    override fun onItemClicked(t: Visitable<*>?) {
-        return
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_chatroom, container, false)
-    }
+    abstract fun onCreateViewState(view: View): BaseChatViewState
+    abstract fun onSendButtonClicked()
+    abstract fun getUserSession(): UserSessionInterface
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewState = BaseChatViewStateImpl(view, (activity as BaseChatToolbarActivity).getToolbar(), this, this)
-
+        setupViewState(view)
         setupViewData(arguments, savedInstanceState)
         prepareView(view)
         prepareListener()
+    }
+
+    private fun setupViewState(view: View?) {
+        view?.let {
+            viewState = onCreateViewState(it)
+        }
     }
 
     override fun callInitialLoadAutomatically(): Boolean {
@@ -105,7 +100,7 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
                             savedInstanceState: Bundle?): String {
         return when {
             savedInstanceState != null
-                && savedInstanceState.getString(paramName, "").isNotEmpty()
+                    && savedInstanceState.getString(paramName, "").isNotEmpty()
             -> savedInstanceState.getString(paramName)
             arguments != null && arguments.getString(paramName, "").isNotEmpty()
             -> arguments.getString(paramName)
@@ -121,7 +116,6 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
             else -> -1
         }
     }
-
 
     override fun onImageAnnouncementClicked(viewModel: ImageAnnouncementViewModel) {
         if (!TextUtils.isEmpty(viewModel.redirectUrl)) {
@@ -146,10 +140,10 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
                 isContactUsLink(uri) -> {
                     val intent = RouteManager.getIntent(activity, url)
                     intent.putExtra(PARAM_URL, URLGenerator.generateURLSessionLogin(
-                        if (TextUtils.isEmpty(url)) TkpdBaseURL.BASE_CONTACT_US else url,
+                            if (TextUtils.isEmpty(url)) TkpdBaseURL.BASE_CONTACT_US else url,
 
-                        getUserSession().deviceId,
-                        getUserSession().userId))
+                            getUserSession().deviceId,
+                            getUserSession().userId))
                     intent.putExtra(IS_CHAT_BOT, true)
                     startActivity(intent)
                 }
@@ -166,12 +160,12 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
     private fun isContactUsLink(uri: Uri?): Boolean {
         val CONTACT_US_PATH_SEGMENT = "toped-contact-us"
         return uri != null
-            && uri.pathSegments != null
-            && uri.pathSegments.contains(CONTACT_US_PATH_SEGMENT)
+                && uri.pathSegments != null
+                && uri.pathSegments.contains(CONTACT_US_PATH_SEGMENT)
     }
 
     override fun handleBranchIOLinkClick(url: String) {
-        if (GlobalConfig.isCustomerApp()) {
+        if (!GlobalConfig.isSellerApp()) {
             val intent = RouteManager.getIntent(activity, ApplinkConst.CONSUMER_SPLASH_SCREEN)
             intent.putExtra("branch", url)
             intent.putExtra("branch_force_new_session", true)
@@ -197,7 +191,7 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
         if (!GlobalConfig.isSellerApp() || opponentRole != ROLE_SHOP) {
             activity?.run {
                 RouteManager.route(this, ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-                    element.productId.toString())
+                        element.productId.toString())
             }
 
         } else {
@@ -237,10 +231,6 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
         //Please override if you use
     }
 
-    abstract fun onSendButtonClicked()
-
-    abstract fun getUserSession(): UserSessionInterface
-
     open fun updateViewData(it: ChatroomViewModel) {
         this.opponentId = it.headerModel.senderId
         this.opponentName = it.headerModel.name
@@ -248,20 +238,42 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
         this.shopId = it.headerModel.shopId
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        viewState.clear()
+    }
+
+    override fun onBackPressed(): Boolean {
+        if (viewState.isAttachmentMenuVisible()) {
+            viewState.hideAttachmentMenu()
+            return true
+        }
+        return false
+    }
+
+    override fun createAttachmentMenus(): List<AttachmentMenu> {
+        return emptyList()
+    }
+
+    override fun onClickAttachProduct(menu: AttachmentMenu) {}
+
+    override fun onClickAttachImage(menu: AttachmentMenu) {}
+
+    override fun onClickAttachInvoice(menu: AttachmentMenu) {}
+
+    override fun onClickAttachVoucher(voucherMenu: VoucherMenu) {}
+
+    override fun onClickBannedProduct(viewModel: BannedProductAttachmentViewModel) {}
+
     override fun trackSeenProduct(element: ProductAttachmentViewModel) {}
 
-    override fun closeChatMenu() {
-        bottomChatMenu.dismiss()
-    }
+    override fun trackSeenBannedProduct(viewModel: BannedProductAttachmentViewModel) {}
 
-    override fun showChatMenu() {
-        if(bottomChatMenu.isAdded) return
-        bottomChatMenu.show(childFragmentManager, BottomChatMenuFragment.TAG)
-    }
+    override fun onClickAddToWishList(product: ProductAttachmentViewModel, success: () -> Unit) {}
 
-    override fun onClickAttachProduct() {}
+    override fun onClickRemoveFromWishList(productId: String, success: () -> Unit) {}
 
-    override fun onClickImagePicker() {}
+    override fun trackClickProductThumbnail(product: ProductAttachmentViewModel) { }
 
-    override fun trackChatMenuClicked(label: String) {}
+    override fun onItemClicked(t: Visitable<*>?) {}
 }

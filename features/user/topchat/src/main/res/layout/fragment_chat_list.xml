@@ -1,19 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/white">
+        android:layout_height="match_parent">
+
+        <com.tokopedia.unifycomponents.ticker.Ticker
+            android:id="@+id/topChatSellerMigrationTicker"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:tickerType="announcement"
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
             android:id="@+id/swipe_refresh_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="@dimen/layout_lvl0"
+            app:layout_constraintTop_toBottomOf="@id/topChatSellerMigrationTicker"
+            app:layout_constraintBottom_toBottomOf="parent">
 
             <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
                 android:id="@+id/recycler_view"
@@ -27,15 +37,18 @@
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_broadcast"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/dp_topchat_56"
+        android:layout_height="@dimen/dp_topchat_56"
         android:layout_gravity="bottom|end"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_24"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginRight="@dimen/spacing_lvl4"
+        android:layout_marginBottom="@dimen/spacing_lvl5"
         android:visibility="gone"
         app:backgroundTint="@color/Yellow_Y400"
+        app:fabCustomSize="@dimen/dp_topchat_56"
         app:layout_anchorGravity="bottom|center"
-        app:srcCompat="@drawable/ic_broadcast_white" />
+        app:maxImageSize="33dp"
+        app:srcCompat="@drawable/ic_broadcast_white"
+        tools:visibility="visible" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

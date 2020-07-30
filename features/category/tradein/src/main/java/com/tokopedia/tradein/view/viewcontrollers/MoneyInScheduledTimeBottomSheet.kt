@@ -6,9 +6,9 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import android.view.View
 import android.widget.Button
+import com.tokopedia.datepicker.numberpicker.NumberPicker
+import com.tokopedia.datepicker.numberpicker.OnValueChangeListener
 import com.tokopedia.design.component.BottomSheets
-import com.tokopedia.profilecompletion.addbod.view.widget.numberpicker.NumberPicker
-import com.tokopedia.profilecompletion.addbod.view.widget.numberpicker.OnValueChangeListener
 import com.tokopedia.tradein.R
 import com.tokopedia.tradein.adapter.DateAdapter
 import com.tokopedia.tradein.adapter.TimeAdapter
@@ -44,8 +44,8 @@ class MoneyInScheduledTimeBottomSheet : BottomSheets() {
     override fun getLayoutResourceId(): Int = R.layout.money_in_bottom_sheet_scheduled_time
 
     override fun initView(view: View?) {
-        if (arguments != null) {
-            scheduleDate = arguments!!.getParcelableArrayList(KEY_SCHEDULE_DATA)
+        if (arguments != null && arguments?.getParcelableArrayList<ScheduleDate>(KEY_SCHEDULE_DATA) != null) {
+            scheduleDate = arguments!!.getParcelableArrayList(KEY_SCHEDULE_DATA)!!
         }
         dateAdapter.date.clear()
         for (date in scheduleDate) {
@@ -60,6 +60,7 @@ class MoneyInScheduledTimeBottomSheet : BottomSheets() {
             setMinValue(dateAdapter.getMinIndex())
             setWrapSelectorWheel(false)
             setWheelItemCount(3)
+            setTextSize(30)
         }
 
         timeSpinner?.setAdapter(timeAdapter)
@@ -107,10 +108,11 @@ class MoneyInScheduledTimeBottomSheet : BottomSheets() {
         timeSpinner?.setMinValue(timeAdapter.getMinIndex())
         timeSpinner?.setWrapSelectorWheel(false)
         timeSpinner?.setWheelItemCount(3)
+        timeSpinner?.setTextSize(30)
         timeAdapter.notifyDataSetChanged()
     }
 
-    override fun setupDialog(dialog: Dialog?, style: Int) {
+    override fun setupDialog(dialog: Dialog, style: Int) {
         super.setupDialog(dialog, style)
         val myDialog: BottomSheetDialog = dialog as BottomSheetDialog
         val dField = myDialog.javaClass.getDeclaredField("behavior") //This is the correct name of the variable in the BottomSheetDialog class

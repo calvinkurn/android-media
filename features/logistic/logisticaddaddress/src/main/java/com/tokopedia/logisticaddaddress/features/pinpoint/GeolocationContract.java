@@ -1,18 +1,13 @@
 package com.tokopedia.logisticaddaddress.features.pinpoint;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.res.Configuration;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 
-import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationSettingsResult;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.tokopedia.logisticaddaddress.data.IMapsRepository;
@@ -69,6 +64,8 @@ public interface GeolocationContract {
         void showDetailDestination(View view);
 
         void setManualDestination(String s);
+
+        void setLoading(boolean active);
     }
 
     interface GeolocationPresenter {
@@ -85,15 +82,9 @@ public interface GeolocationContract {
 
         void setUpVariables(LocationPass locationPass, boolean hasLocation);
 
-        void onGoogleApiConnected(Bundle bundle);
-
-        void onGoogleApiSuspended(int cause);
-
-        void onGoogleApiFailed(ConnectionResult connectionResult);
+        LocationPass getUpdateLocation();
 
         void onResult(LocationSettingsResult locationSettingsResult);
-
-        LatLng getLastLocation();
 
         void requestLocationUpdate();
 
@@ -103,19 +94,11 @@ public interface GeolocationContract {
 
         void removeLocationUpdate();
 
-        void initDefaultLocation();
-
-        void onCameraChange(Context context, CameraPosition cameraPosition);
+        void getReverseGeoCoding(String latitude, String longitude);
 
         void prepareAutoCompleteView();
 
         void onSuggestionItemClick(AdapterView<?> adapter, int position);
-
-        void onSubmitPointer(Activity activity);
-
-        void restoreStateData(Bundle savedState);
-
-        Bundle saveStateCurrentLocation(Bundle state);
 
         void onDestroy();
 

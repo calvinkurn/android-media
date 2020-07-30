@@ -5,7 +5,7 @@ import androidx.annotation.NonNull;
 import android.util.Log;
 
 import com.tokopedia.core.database.repository.ResCenterAttachmentRepository;
-import com.tokopedia.core2.R;
+import com.tokopedia.inbox.R;
 import com.tokopedia.core.database.model.ResCenterAttachment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.rescenter.ResCenterActService;

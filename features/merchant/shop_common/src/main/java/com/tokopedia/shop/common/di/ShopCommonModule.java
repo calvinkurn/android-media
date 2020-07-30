@@ -22,13 +22,11 @@ import com.tokopedia.shop.common.data.source.cloud.ShopCommonCloudDataSource;
 import com.tokopedia.shop.common.data.source.cloud.api.ShopCommonApi;
 import com.tokopedia.shop.common.domain.interactor.DeleteShopInfoCacheUseCase;
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopFavoriteStatusUseCase;
+import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoByDomainUseCase;
-import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
 import com.tokopedia.shop.common.domain.repository.ShopCommonRepository;
 import com.tokopedia.shop.common.util.CacheApiTKPDResponseValidator;
-import com.tokopedia.user.session.UserSession;
-import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Named;
 
@@ -55,19 +53,124 @@ public class ShopCommonModule {
     @Provides
     @Named(GQLQueryNamedConstant.SHOP_INFO)
     public String provideGqlQueryShopInfo(@ApplicationContext Context context){
-        return GraphqlHelper.loadRawString(context.getResources(), R.raw.gql_get_shop_info);
+        return "query getShopInfo($shopIds: [Int!]!, $fields: [String!]!, $shopDomain: String, $source: String){\n" +
+                "    shopInfoByID(input: {\n" +
+                "        shopIDs: $shopIds,\n" +
+                "        fields: $fields,\n" +
+                "        domain: $shopDomain,\n" +
+                "        source: $source\n" +
+                "    }){\n" +
+                "        result {\n" +
+                "            shopCore{\n" +
+                "                shopID\n" +
+                "                description\n" +
+                "                domain\n" +
+                "                name\n" +
+                "                tagLine\n" +
+                "                url\n" +
+                "            }\n" +
+                "            freeOngkir{\n" +
+                "                isActive\n" +
+                "                imgURL\n" +
+                "            }\n" +
+                "            closedInfo{\n" +
+                "                closedNote\n" +
+                "                reason\n" +
+                "                until\n" +
+                "            }\n" +
+                "            createInfo{\n" +
+                "                openSince\n" +
+                "            }\n" +
+                "            shopAssets{\n" +
+                "                avatar\n" +
+                "                cover\n" +
+                "            }\n" +
+                "            shipmentInfo{\n" +
+                "                isAvailable\n" +
+                "                code\n" +
+                "                shipmentID\n" +
+                "                image\n" +
+                "                name\n" +
+                "                product{\n" +
+                "                    isAvailable\n" +
+                "                    productName\n" +
+                "                    shipProdID\n" +
+                "                    uiHidden\n" +
+                "                }\n" +
+                "                isPickup\n" +
+                "                maxAddFee\n" +
+                "                awbStatus\n" +
+                "            }\n" +
+                "            shopLastActive\n" +
+                "            location\n" +
+                "            isAllowManage\n" +
+                "            goldOS {\n" +
+                "                isGold\n" +
+                "                isGoldBadge\n" +
+                "                isOfficial\n" +
+                "            }\n" +
+                "            favoriteData{\n" +
+                "                totalFavorite\n" +
+                "                alreadyFavorited\n" +
+                "            }\n" +
+                "            statusInfo {\n" +
+                "                shopStatus\n" +
+                "                statusMessage\n" +
+                "                statusTitle\n" +
+                "            }\n" +
+                "            bbInfo {\n" +
+                "                bbName\n" +
+                "                bbNameEN\n" +
+                "                bbDesc\n" +
+                "                bbDescEN\n" +
+                "            }\n" +
+                "            topContent{\n" +
+                "                topURL\n" +
+                "            }\n" +
+                "            address {\n" +
+                "                id\n" +
+                "                name\n" +
+                "                address\n" +
+                "                area\n" +
+                "                email\n" +
+                "                phone\n" +
+                "                fax\n" +
+                "            }\n" +
+                "            shopHomeType\n" +
+                "        }\n" +
+                "    }\n" +
+                "}";
     }
 
     @Provides
     @Named(GQLQueryNamedConstant.SHOP_REPUTATION)
     public String provideGqlQueryShopReputation(@ApplicationContext Context context){
-        return GraphqlHelper.loadRawString(context.getResources(), R.raw.gql_get_shop_badge);
+        return "query getShopBadge($shopIds: [Int!]!){\n" +
+                "     reputation_shops(shop_ids: $shopIds) {\n" +
+                "         badge\n" +
+                "         badge_hd\n" +
+                "         score\n" +
+                "         score_map\n" +
+                "     }\n" +
+                " }";
     }
 
-    /** NON-GQL, Plan to be removed **/
     @Provides
-    public GetShopInfoUseCase provideGetShopInfoUseCase(ShopCommonRepository shopCommonRepository) {
-        return new GetShopInfoUseCase(shopCommonRepository);
+    @Named(GQLQueryNamedConstant.GQL_GET_SHOP_OPERATIONAL_HOUR_STATUS)
+    public String provideGqlQueryShopOperationalHourStatus(@ApplicationContext Context context){
+        return "query getShopOperationalHourStatus($shopID: String!, $type:Int!) {\n" +
+                "    getShopOperationalHourStatus(shopID: $shopID, type: $type) {\n" +
+                "        timestamp\n" +
+                "      \tstatusActive\n" +
+                "      \tstartTime\n" +
+                "\t\tendTime\n" +
+                "      \terror{\n" +
+                "          message\n" +
+                "        }\n" +
+                "        tickerTitle\n" +
+                "        tickerMessage\n" +
+                "    }\n" +
+                "}";
     }
 
     @Provides
@@ -85,8 +188,8 @@ public class ShopCommonModule {
         return new ShopCommonRepositoryImpl(shopInfoDataSource);
     }
     @Provides
-    public ShopCommonCloudDataSource provideShopCommonCloudDataSource(ShopCommonApi shopCommonApi, UserSessionInterface userSession) {
-        return new ShopCommonCloudDataSource(shopCommonApi, userSession);
+    public ShopCommonCloudDataSource provideShopCommonCloudDataSource(ShopCommonApi shopCommonApi) {
+        return new ShopCommonCloudDataSource(shopCommonApi);
     }
 
     @Provides
@@ -144,20 +247,42 @@ public class ShopCommonModule {
     }
 
     @Provides
-    public UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
-        return new UserSession(context);
-    }
-
-    @Provides
     @Named(ShopCommonParamApiConstant.QUERY_SHOP_SCORE)
     public String provideQueryShopScore(@ApplicationContext Context context) {
-        return GraphqlHelper.loadRawString(context.getResources(), R.raw.gql_query_shop_score);
+        return "query getShopScore($shopId: String!) {\n" +
+                "  shopScore(input: {shopID: $shopId}) {\n" +
+                "    result {\n" +
+                "      shopID\n" +
+                "      shopScore\n" +
+                "      shopScoreSummary {\n" +
+                "        title\n" +
+                "        value\n" +
+                "        maxValue\n" +
+                "        color\n" +
+                "        description\n" +
+                "      }\n" +
+                "      badgeScore\n" +
+                "    }\n" +
+                "  }\n" +
+                "}";
     }
 
     @Provides
     @Named(GQLQueryNamedConstant.FAVORITE_STATUS_GQL)
     public String provideGqlQueryFavoriteStatus(@ApplicationContext Context context) {
-        return GraphqlHelper.loadRawString(context.getResources(), R.raw.gql_get_favorite);
+        return "query getShopInfo($shopIds: [Int!]!, $fields: [String!]!, $shopDomain: String){\n" +
+                "     shopInfoByID(input: {\n" +
+                "         shopIDs: $shopIds,\n" +
+                "         fields: $fields,\n" +
+                "         domain: $shopDomain}){\n" +
+                "         result {\n" +
+                "             favoriteData{\n" +
+                "                 totalFavorite\n" +
+                "                 alreadyFavorited\n" +
+                "             }\n" +
+                "         }\n" +
+                "     }\n" +
+                " }";
     }
 
     @Provides
@@ -165,5 +290,12 @@ public class ShopCommonModule {
                                                            @Named(GQLQueryNamedConstant.FAVORITE_STATUS_GQL)
                                                                    String gqlQuery) {
         return new GQLGetShopFavoriteStatusUseCase(gqlQuery, graphqlUseCase);
+    }
+
+    @Provides
+    public GQLGetShopInfoUseCase provideGqlGetShopInfoUseCase(MultiRequestGraphqlUseCase graphqlUseCase,
+                                                              @Named(GQLQueryNamedConstant.SHOP_INFO)
+                                                                    String gqlQuery) {
+        return new GQLGetShopInfoUseCase(gqlQuery, graphqlUseCase);
     }
 }

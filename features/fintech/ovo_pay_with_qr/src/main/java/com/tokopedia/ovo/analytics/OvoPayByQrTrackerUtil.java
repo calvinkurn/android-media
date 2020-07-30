@@ -30,7 +30,7 @@ public class OvoPayByQrTrackerUtil {
     public interface LABEL {
         String defaultLabel = "";
     }
-    public static void sendEvent(Context context, String event, String category, String action, String label) {
+    public static void sendEvent(String event, String category, String action, String label) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(event, category, action, label);
     }
 }

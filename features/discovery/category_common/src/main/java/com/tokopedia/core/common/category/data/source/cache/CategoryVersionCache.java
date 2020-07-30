@@ -2,8 +2,8 @@ package com.tokopedia.core.common.category.data.source.cache;
 
 import android.content.Context;
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
-import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 
 import javax.inject.Inject;
 

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="wiget_number_picker_bg">#FFFFFF</color>
+    <color name="widget_card_with_action_separator">#cfcfcf</color>
+
+    <color name="filter_order_selected">#42b549</color>
+    <color name="filter_order_orange">#ff5722</color>
+    <color name="filter_order_blue">#29bbd1</color>
+    <color name="filter_order_green">#42b549</color>
+    <color name="filter_order_red">#d50000</color>
+    <color name="filter_order_yellow">#ffc107</color>
+    <color name="filter_order_green_medium">#42b549</color>
+
+    <color name="card_title_red">#fdebec</color>
+    <color name="card_title_green">#f3fef3</color>
+    <color name="flight_chips_danger_text">#ea212d</color>
+    <color name="flight_chips_info_text">#009bff</color>
+
+    <color name="flightPriceColor">#ff5722</color>
+
+    <color name="flight_booking_route_gradiend_end">#e5f5ff</color>
+
+    <color name="flight_search_reverse_background">#f3f4f5</color>
+    <color name="flight_dashed_line">#1e000000</color>
+    <color name="flight_search_list_background">#e5e7e9</color>
+    <color name="flight_departure_trip_label_background">#f9f9f9</color>
+    <color name="flight_search_form_field_title">#ae31353b</color>
+
+</resources>

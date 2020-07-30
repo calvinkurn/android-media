@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <com.tokopedia.unifycomponents.ChipsUnify
+        android:id="@+id/chipFilter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:chipText="@string/product_manage_filter"
+        app:chipSize="medium"
+        app:chipType="normal" />
+
+    <com.tokopedia.unifycomponents.NotificationUnify
+        android:id="@+id/filterCount"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="@dimen/product_manage_chip_filter_count_spacing"
+        android:layout_marginStart="@dimen/product_manage_chip_filter_count_spacing"
+        app:notificationType="counter_type"
+        app:notificationColor="color_secondary"
+        android:visibility="gone" />
+</FrameLayout>

@@ -77,5 +77,6 @@
     <string name="tokopedia_domain" translatable="false">www.tokopedia.com</string>
     <string name="saldolock_tickerTitle">Saldo Penghasilan tidak bisa ditarik</string>
     <string name="saldolock_tickerDescription">Karena belum membayar tagihan pinjaman Modal Toko selama %s hari. Bayar Sekarang</string>
+    <string name="tkpd_design_accept">Setuju</string>
 
 </resources>

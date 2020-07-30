@@ -1,17 +1,11 @@
 package com.tokopedia.feedcomponent.view.adapter.viewholder.posttag
 
-import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
-import android.os.Build
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
-import androidx.cardview.widget.CardView
-import android.util.DisplayMetrics
 import android.view.View
-import android.view.ViewTreeObserver
-import android.view.WindowManager
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -20,7 +14,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.pojo.common.ColorPojo
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
-import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItemTag
+import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.TagsItem
 import com.tokopedia.feedcomponent.data.pojo.track.Tracking
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagViewModel
@@ -36,7 +30,9 @@ import kotlin.math.roundToInt
  * @author by yoasfs on 2019-07-18
  */
 
-class ProductPostTagViewHolder(val mainView: View, val listener: DynamicPostViewHolder.DynamicPostListener)
+class ProductPostTagViewHolder(val mainView: View,
+                               val listener: DynamicPostViewHolder.DynamicPostListener,
+                               val screenWidth: Int)
     : AbstractViewHolder<ProductPostTagViewModel>(mainView) {
 
     private lateinit var productLayout: FrameLayout
@@ -64,7 +60,7 @@ class ProductPostTagViewHolder(val mainView: View, val listener: DynamicPostView
         productNameSection = itemView.findViewById(R.id.productNameSection)
         productName = itemView.findViewById(R.id.productName)
         widgetRating = itemView.findViewById(R.id.widgetRating)
-        productImage.loadImageRounded(item.thumbnail, RAD_10f)
+        productImage.loadImageRounded(item.thumbnail, RAD_20f)
         productPrice.text = item.price
 
         val btnCtaPojo = item.postTagItemPojo.buttonCTA.firstOrNull()
@@ -102,7 +98,7 @@ class ProductPostTagViewHolder(val mainView: View, val listener: DynamicPostView
         }
         if (item.feedType != DynamicPostViewHolder.SOURCE_DETAIL && item.needToResize) {
             container = itemView.findViewById(R.id.container)
-            container.viewTreeObserver.addOnGlobalLayoutListener(getGlobalLayoutListener())
+            container.layoutParams.width = screenWidth * 3/4
         }
 
         if (item.tags.isNotEmpty()) {
@@ -113,28 +109,7 @@ class ProductPostTagViewHolder(val mainView: View, val listener: DynamicPostView
         }
     }
 
-
-    private fun getGlobalLayoutListener(): ViewTreeObserver.OnGlobalLayoutListener {
-        return object : ViewTreeObserver.OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                val viewTreeObserver = container.viewTreeObserver
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    viewTreeObserver.removeOnGlobalLayoutListener(this)
-                } else {
-                    @Suppress("DEPRECATION")
-                    viewTreeObserver.removeGlobalOnLayoutListener(this)
-                }
-                val displayMetrics = DisplayMetrics()
-                (itemView.context.getSystemService(Context.WINDOW_SERVICE) as? WindowManager)?.let {
-                    it.defaultDisplay.getMetrics(displayMetrics)
-                    container.layoutParams.width = (displayMetrics.widthPixels * VALUE_CARD_SIZE).toInt()
-                    container.requestLayout()
-                }
-            }
-        }
-    }
-
-    private fun renderTag(textView: TextView, tag: PostTagItemTag) {
+    private fun renderTag(textView: TextView, tag: TagsItem) {
         textView.text = tag.text
         if (tag.bgColor.hex.isEmpty() || tag.bgColor.opacity.isEmpty()) {
             tag.bgColor = getDefaultBackgroundColor()
@@ -200,7 +175,6 @@ class ProductPostTagViewHolder(val mainView: View, val listener: DynamicPostView
         @LayoutRes
         val LAYOUT = R.layout.item_producttag_list
 
-        private const val VALUE_CARD_SIZE = 0.75
         private const val HEX_BLACK = "#000"
         private const val HEX_WHITE = "#fff"
         private const val OPACITY_70 = "0.7"

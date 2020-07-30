@@ -1,22 +1,39 @@
 package com.tokopedia.tkpd.thankyou.view;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
-import androidx.fragment.app.FragmentManager;
 import android.view.KeyEvent;
+
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactInstanceManager;
+import com.google.android.play.core.inappreview.InAppReviewInfo;
+import com.google.android.play.core.inappreview.InAppReviewManager;
+import com.google.android.play.core.inappreview.InAppReviewManagerFactory;
+import com.google.android.play.core.tasks.OnCompleteListener;
+import com.google.android.play.core.tasks.Task;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common_wallet.balance.data.CacheUtil;
+import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.nps.presentation.view.dialog.AppFeedbackRatingBottomSheet;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.home.fragment.ReactNativeThankYouPageFragment;
 import com.tokopedia.tkpd.thankyou.domain.model.ThanksTrackerConst;
 import com.tokopedia.tkpd.thankyou.view.viewmodel.ThanksTrackerData;
+import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.app.ReactFragmentActivity;
@@ -26,7 +43,7 @@ import java.net.URLDecoder;
 import java.util.Arrays;
 
 
-public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<ReactNativeThankYouPageFragment> {
+public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<ReactNativeThankYouPageFragment> implements ReputationRouter {
     public static final String EXTRA_TITLE = "EXTRA_TITLE";
 
     private static final String PLATFORM = "platform";
@@ -34,7 +51,17 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
     private static final String GL_THANK_YOU_PAGE = "gl_thank_you_page";
     private static final String PAGE_TITLE = "Thank You";
 
+    public static final String CACHE_THANK_YOU_PAGE = "CACHE_THANK_YOU_PAGE";
+    public static final String CACHE_KEY_HAS_SHOWN_IN_APP_REVIEW_BEFORE = "CACHE_KEY_HAS_SHOWN_IN_APP_REVIEW_BEFORE";
+
     private ReactInstanceManager reactInstanceManager;
+    private static final String SAVED_VERSION = "SAVED_VERSION";
+    private static final String REACT_NAVIGATION_MODULE = "REACT_NAVIGATION_MODULE";
+    private static final String IS_SHOWING_APP_RATING = "isShowAppRating";
+    private Task<InAppReviewInfo> inAppReviewRequest;
+
+    private InAppReviewManager inAppReviewManager;
+    private LocalCacheHandler cacheHandler;
 
     @DeepLink("tokopedia://thankyou/{platform}/{template}")
     public static Intent getThankYouPageApplinkIntent(Context context, Bundle bundle) {
@@ -47,8 +74,12 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
     public static Intent createReactNativeActivity(Context context, String pageTitle) {
         Intent intent = new Intent(context, ReactNativeThankYouPageActivity.class);
         Bundle extras = new Bundle();
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences(REACT_NAVIGATION_MODULE, Context.MODE_PRIVATE);
+
         extras.putString(ReactConst.KEY_SCREEN, ReactConst.Screen.THANK_YOU_PAGE);
         extras.putString(EXTRA_TITLE, pageTitle);
+        extras.putBoolean(IS_SHOWING_APP_RATING, isShowAppRating(sharedPreferences, context));
         intent.putExtras(extras);
         return intent;
     }
@@ -56,11 +87,33 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
         reactInstanceManager = ((ReactApplication) getApplication())
                 .getReactNativeHost().getReactInstanceManager();
         PurchaseNotifier.notify(this, getIntent().getExtras());
         resetWalletCache();
+
+        cacheHandler = new LocalCacheHandler(this, CACHE_THANK_YOU_PAGE);
+        boolean hasShownInAppReviewBefore = getInAppReviewHasShownBefore();
+        boolean enableInAppReview = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_IN_APP_REVIEW_DIGITAL_THANKYOU_PAGE, false);
+
+        if (enableInAppReview && !hasShownInAppReviewBefore && Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+            requestInAppReviewFlow();
+        }
+    }
+
+    private void requestInAppReviewFlow() {
+        try {
+            inAppReviewManager = InAppReviewManagerFactory.create(this);
+            inAppReviewManager.requestInAppReviewFlow().addOnCompleteListener(new OnCompleteListener<InAppReviewInfo>() {
+                @Override
+                public void onComplete(Task<InAppReviewInfo> request) {
+                    if (request.isSuccessful()) {
+                        inAppReviewRequest = request;
+                    }
+                }
+            });
+        } catch (Exception e) { }
     }
 
     @Override
@@ -112,17 +165,79 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
         ThanksTrackerService.start(this, data);
     }
 
+    /* Check savedVersion in sharedpreferences
+        If there is no savedVersion in sharedpreferences, then save the currentVersion
+        If there is savedVersion in sharedpreferences, then check if currentVersion - savedVersion equals to 4
+        If it is equals to 4 then show appRating */
+    private static boolean isShowAppRating(SharedPreferences sharedPreferences, Context context) {
+        String GlobalVersionName = BuildConfig.VERSION_NAME;
+        sharedPreferences = context.getSharedPreferences(REACT_NAVIGATION_MODULE, Context.MODE_PRIVATE);
+        String savedVersion = sharedPreferences.getString(SAVED_VERSION, "");
+        if (savedVersion.isEmpty()) {
+            sharedPreferences.edit().putString(SAVED_VERSION, GlobalVersionName).apply();
+            return true;
+        } else {
+            String[] splittedCurrentVersionName = GlobalVersionName.split(".");
+            String currentMajorVersion = splittedCurrentVersionName.length > 0 ? splittedCurrentVersionName[0] : "00";
+            String currentMinorVersion = splittedCurrentVersionName.length > 0 ? splittedCurrentVersionName[1] : "00";
+            int currentMajorVersionInt = Integer.parseInt(currentMajorVersion);
+            int currentMinorVersionInt = Integer.parseInt(currentMinorVersion);
+
+            String[] splittedSavedVersionName = savedVersion.split(".");
+            String savedMajorVersion = splittedSavedVersionName.length > 0 ? splittedSavedVersionName[0]: "00";
+            String savedMinorVersion = splittedSavedVersionName.length > 0 ? splittedSavedVersionName[1]: "00";
+            int savedMajorVersionInt = Integer.parseInt(savedMajorVersion);
+            int savedMinorVersionInt = Integer.parseInt(savedMinorVersion);
+
+            if (currentMajorVersionInt - savedMajorVersionInt >= 1) {
+                sharedPreferences.edit().putString(SAVED_VERSION, GlobalVersionName).apply();
+                return true;
+            } else if (currentMinorVersionInt - savedMinorVersionInt >= 4) {
+                sharedPreferences.edit().putString(SAVED_VERSION, GlobalVersionName).apply();
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+
     @Override
     public void onBackPressed() {
-        FragmentManager manager = getSupportFragmentManager();
+        try {
+            FragmentManager manager = getSupportFragmentManager();
+            if (isDigital() && manager != null) {
+                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M && inAppReviewManager != null && inAppReviewRequest != null) {
+                    inAppReviewManager.launchInAppReviewFlow(this, inAppReviewRequest.getResult()).addOnCompleteListener(new OnCompleteListener<Integer>() {
+                        @Override
+                        public void onComplete(Task<Integer> task) {
+                            setInAppReviewHasShownBefore();
+                            closeThankyouPage();
+                        }
+                    });
+                } else {
+                    AppFeedbackRatingBottomSheet rating = new AppFeedbackRatingBottomSheet();
+                    rating.setDialogDismissListener(this::closeThankyouPage);
+                    rating.showDialog(manager, this);
+                }
+            } else {
+                closeThankyouPage();
+            }
+        } catch (Exception e) { closeThankyouPage();}
+    }
 
-        if (isDigital() && manager != null) {
-            AppFeedbackRatingBottomSheet rating = new AppFeedbackRatingBottomSheet();
-            rating.setDialogDismissListener(this::closeThankyouPage);
-            rating.showDialog(manager, this);
-        } else {
-            closeThankyouPage();
+    private boolean getInAppReviewHasShownBefore() {
+        if (cacheHandler == null) {
+            return false;
         }
+        return cacheHandler.getBoolean(CACHE_KEY_HAS_SHOWN_IN_APP_REVIEW_BEFORE);
+    }
+
+    private void setInAppReviewHasShownBefore() {
+        if (cacheHandler == null) {
+            return;
+        }
+        cacheHandler.putBoolean(CACHE_KEY_HAS_SHOWN_IN_APP_REVIEW_BEFORE, true);
+        cacheHandler.applyEditor();
     }
 
     private boolean isDigital() {
@@ -142,4 +257,25 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
         RouteManager.route(this, ApplinkConst.HOME);
         finish();
     }
+
+    @Override
+    public Fragment getReputationHistoryFragment() {
+        return null;
+    }
+
+    @Override
+    public Fragment getReviewSellerFragment() {
+        return null;
+    }
+
+    @Override
+    public void showAppFeedbackRatingDialog(FragmentManager fragmentManager, Context context, BottomSheets.BottomSheetDismissListener listener) {
+
+    }
+
+    @Override
+    public void showSimpleAppRatingDialog(Activity activity) {
+
+    }
+
 }

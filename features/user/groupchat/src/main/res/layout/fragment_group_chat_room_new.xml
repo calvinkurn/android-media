@@ -51,7 +51,7 @@
                 android:layout_marginStart="@dimen/dp_16"
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginTop="8dp"
-                android:background="@drawable/bg_rounded_chat_input"
+                android:background="@drawable/bg_reverse_rounded_chat_input"
                 android:inputType="textMultiLine"
                 android:maxLength="200"
                 android:maxLines="5"
@@ -142,7 +142,7 @@
                 android:layout_height="@dimen/arrow_size"
                 android:layout_gravity="center_vertical"
                 android:rotation="180"
-                app:srcCompat="@drawable/ic_arrow_up_green"/>
+                app:srcCompat="@drawable/ic_arrow_up_green_thick"/>
 
         </LinearLayout>
 

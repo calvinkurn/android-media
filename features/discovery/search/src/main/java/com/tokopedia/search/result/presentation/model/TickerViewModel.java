@@ -3,9 +3,13 @@ package com.tokopedia.search.result.presentation.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class TickerViewModel implements Parcelable {
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory;
+
+public class TickerViewModel implements Parcelable, Visitable<ProductListTypeFactory> {
     private String text;
     private String query;
+    private int typeId;
 
     public String getText() {
         return text;
@@ -23,6 +27,19 @@ public class TickerViewModel implements Parcelable {
         this.query = query;
     }
 
+    public int getTypeId() {
+        return typeId;
+    }
+
+    public void setTypeId(int typeId) {
+        this.typeId = typeId;
+    }
+
+    @Override
+    public int type(ProductListTypeFactory typeFactory) {
+        return typeFactory.type(this);
+    }
+
     public TickerViewModel() {
     }
 
@@ -35,11 +52,13 @@ public class TickerViewModel implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.text);
         dest.writeString(this.query);
+        dest.writeInt(this.typeId);
     }
 
     protected TickerViewModel(Parcel in) {
         this.text = in.readString();
         this.query = in.readString();
+        this.typeId = in.readInt();
     }
 
     public static final Creator<TickerViewModel> CREATOR = new Creator<TickerViewModel>() {

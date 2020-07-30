@@ -8,7 +8,6 @@ import com.tokopedia.filter.common.data.LevelTwoCategory
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.newdynamicfilter.helper.FilterHelper
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
-import java.util.*
 
 open class FilterController {
 
@@ -89,7 +88,7 @@ open class FilterController {
         iterateOptionAndCheckForBundledOption(optionsForFilterViewState)
 
         for(option in optionsForFilterViewState) {
-            if(option.value == "") option.value = parameter[option.key]
+            if(option.value == "") option.value = parameter[option.key].toString()
             filterViewState.add(option.uniqueId)
         }
     }
@@ -181,6 +180,15 @@ open class FilterController {
                 action(filter, option)
     }
 
+    fun appendFilterList(parameter: Map<String, String>, filterList: List<Filter>) {
+        nonFilterParameter.clear()
+        filterViewState.clear()
+
+        loadFilterList(filterList)
+        loadParameter(parameter)
+        loadFilterViewState(parameter)
+    }
+
     fun saveSliderValueStates(minValue: Int, maxValue: Int) {
         pressedSliderMinValueState = minValue
         pressedSliderMaxValueState = maxValue
@@ -188,6 +196,14 @@ open class FilterController {
 
     fun isSliderValueHasChanged(minValue: Int, maxValue: Int): Boolean {
         return minValue != pressedSliderMinValueState || maxValue != pressedSliderMaxValueState
+    }
+
+    fun isSliderMinValueHasChanged(minValue: Int): Boolean {
+        return minValue != pressedSliderMinValueState
+    }
+
+    fun isSliderMaxValueHasChanged(maxValue: Int): Boolean {
+        return maxValue != pressedSliderMaxValueState
     }
 
     fun resetAllFilters() {
@@ -219,14 +235,47 @@ open class FilterController {
     }
 
     private fun getPopularOptionList(filter: Filter): List<Option> {
-        val checkedOptions = ArrayList<Option>()
+        val checkedLevelOneOptions = ArrayList<Option>()
+        val checkedLevelTwoOptions = ArrayList<Option>()
+        val checkedLevelThreeOptions = ArrayList<Option>()
 
         for (option in filter.options) {
-            if (option.isPopular) {
-                checkedOptions.add(option)
+            addPopularOption(checkedLevelOneOptions, option)
+
+            for (levelTwoCategory in option.levelTwoCategoryList) {
+                addPopularOption(checkedLevelTwoOptions, levelTwoCategory.asOption())
+
+                for (levelThreeCategory in levelTwoCategory.levelThreeCategoryList) {
+                    addPopularOption(checkedLevelThreeOptions, levelThreeCategory.asOption())
+                }
             }
         }
-        return checkedOptions
+
+        return checkedLevelOneOptions + checkedLevelTwoOptions + checkedLevelThreeOptions
+    }
+
+    private fun addPopularOption(checkedOptions: ArrayList<Option>, option: Option) {
+        if (option.isPopular) {
+            checkedOptions.add(option)
+        }
+    }
+
+    private fun LevelTwoCategory.asOption(): Option {
+        val uniqueId = OptionHelper.constructUniqueId(this.key, this.value, this.name)
+        val option = OptionHelper.generateOptionFromUniqueId(uniqueId)
+
+        option.isPopular = this.isPopular
+
+        return option
+    }
+
+    private fun LevelThreeCategory.asOption(): Option {
+        val uniqueId = OptionHelper.constructUniqueId(this.key, this.value, this.name)
+        val option = OptionHelper.generateOptionFromUniqueId(uniqueId)
+
+        option.isPopular = this.isPopular
+
+        return option
     }
 
     private fun putSelectedOptionsToList(selectedOptionList: MutableList<Option>, filter: Filter, popularOptionList: List<Option>) {
@@ -390,7 +439,7 @@ open class FilterController {
         if(optionList == null || optionList.isEmpty() ) return
 
         for(option in optionList) {
-            val isFilterApplied = option.inputState?.toBoolean() ?: false
+            val isFilterApplied = option.inputState.toBoolean()
             saveFilterViewState(option.uniqueId, isFilterApplied)
         }
     }

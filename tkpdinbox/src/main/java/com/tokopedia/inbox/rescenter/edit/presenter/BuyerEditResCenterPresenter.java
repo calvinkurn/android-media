@@ -1,8 +1,5 @@
 package com.tokopedia.inbox.rescenter.edit.presenter;
 
-import android.content.Context;
-import androidx.annotation.NonNull;
-
 import com.tokopedia.inbox.rescenter.edit.model.passdata.EditResCenterFormData;
 
 /**
@@ -10,21 +7,11 @@ import com.tokopedia.inbox.rescenter.edit.model.passdata.EditResCenterFormData;
  */
 public interface BuyerEditResCenterPresenter {
 
-    void setOnLaunching(@NonNull Context context);
-
-    void renderView(EditResCenterFormData formData);
-
     void setOnRadioPackageStatus(boolean received);
-
-    void setOnRadioPackageReceived();
-
-    void setOnRadioPackageNotReceived();
 
     void setOnCategoryTroubleSelected(EditResCenterFormData.TroubleCategoryData troubleCategoryData);
 
     void setOnCategoryTroubleNothingSelected();
-
-    void setOnButtonNextClick(@NonNull Context context);
 
     void unsubscribe();
 }

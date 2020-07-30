@@ -8,7 +8,6 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
-import com.tokopedia.ovo.R;
 import com.tokopedia.ovo.model.ThanksData;
 
 import java.util.HashMap;
@@ -26,7 +25,7 @@ public class QrOvoPayTxDetailPresenter extends BaseDaggerPresenter<QrOvoPayTxDet
 
         variables.put(TRANSFER_ID, transferId);
         GraphqlUseCase useCase = new GraphqlUseCase();
-        GraphqlRequest request = new GraphqlRequest(GraphqlHelper.loadRawString(context.getResources(), R.raw.oqr_qr_thanks),
+        GraphqlRequest request = new GraphqlRequest(GraphqlHelper.loadRawString(context.getResources(), com.tokopedia.ovo.R.raw.oqr_qr_thanks),
                 ThanksData.class, variables);
         useCase.addRequest(request);
         useCase.execute(new Subscriber<GraphqlResponse>() {

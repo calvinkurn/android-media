@@ -5,6 +5,7 @@
     <string name="path_topads_dashboard" translatable="false">/dashboard</string>
     <string name="path_topads_buy_credit" translatable="false">/buy</string>
     <string name="path_topads_history_credit" translatable="false">/history-credit</string>
+    <string name="path_topads_auto_topup" translatable="false">/auto-topup</string>
     <string name="path_topads_detail_shop" translatable="false">/detail-shop</string>
     <string name="path_topads_keyword_list" translatable="false">/keyword-list</string>
     <string name="path_topads_keyword_new_choose_group" translatable="false">/keyword-new-choose-group</string>
@@ -13,4 +14,12 @@
     <string name="path_topads_group_new_promo" translatable="false">/group-new-promo</string>
     <string name="path_topads_add_promo_option" translatable="false">/add-promo-option</string>
     <string name="path_topads_autoads" translatable="false">/autoads</string>
+    <string name="path_topads_autoads_create" translatable="false">/create-autoads</string>
+    <string name="path_topads_ad_chooser" translatable="false">/ad-picker</string>
+    <string name="path_topads_ad_creation" translatable="false">/create-ads</string>
+    <string name="path_topads_edit_manual" translatable="false">/edit-ads</string>
+    <string name="path_autoads_onboarding" translatable="false">/autoads-onboarding</string>
+    <string name="path_topads_edit_autoads" translatable="false">/edit-autoads</string>
+    <string name="path_topads_edit_without_group" translatable="false">/edit-without-group</string>
+
 </resources>

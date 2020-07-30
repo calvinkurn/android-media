@@ -18,7 +18,7 @@ import com.tokopedia.product.manage.item.main.draft.domain.SaveDraftProductUseCa
 import com.tokopedia.product.manage.item.main.edit.view.presenter.ProductEditPresenterImpl;
 import com.tokopedia.product.manage.item.variant.domain.FetchProductVariantByCatUseCase;
 import com.tokopedia.product.manage.item.video.data.source.FetchVideoEditProductDataSource;
-import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
+import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;
@@ -36,11 +36,11 @@ public class ProductEditModule{
     @ProductAddScope
     @Provides
     ProductEditPresenterImpl provideProductEditPresenterImpl(SaveDraftProductUseCase saveDraftProductUseCase,
-                                                             GetShopInfoUseCase getShopInfoUseCase,
+                                                             GQLGetShopInfoUseCase gqlGetShopInfoUseCase,
                                                              UserSessionInterface userSession,
                                                              FetchProductVariantByCatUseCase fetchProductVariantByCatUseCase,
                                                              GetProductDetailUseCase getProductDetailUseCase){
-        return new ProductEditPresenterImpl(saveDraftProductUseCase, getShopInfoUseCase, userSession, fetchProductVariantByCatUseCase, getProductDetailUseCase);
+        return new ProductEditPresenterImpl(saveDraftProductUseCase, gqlGetShopInfoUseCase, userSession, fetchProductVariantByCatUseCase, getProductDetailUseCase);
     }
 
     @ProductAddScope

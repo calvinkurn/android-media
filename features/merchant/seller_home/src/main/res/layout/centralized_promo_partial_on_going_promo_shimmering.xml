@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layoutCentralizedPromoOnGoingPromoShimmering"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingStart="@dimen/layout_lvl2"
+    android:paddingLeft="@dimen/layout_lvl2"
+    android:paddingTop="@dimen/layout_lvl2"
+    android:paddingEnd="@dimen/layout_lvl1"
+    android:paddingRight="@dimen/layout_lvl1"
+    android:paddingBottom="@dimen/layout_lvl2">
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/tvCentralizedPromoOnGoingShimmer"
+        android:layout_width="@dimen/centralized_promo_text_shimmer_width_200dp"
+        android:layout_height="@dimen/centralized_promo_text_shimmer_height_18dp"
+        app:corners="10"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderImageView
+        android:id="@+id/itemOnGoingOne"
+        android:layout_width="@dimen/centralized_promo_image_shimmer_height_150dp"
+        android:layout_height="@dimen/centralized_promo_image_shimmer_height_150dp"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        app:corners="10"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvCentralizedPromoOnGoingShimmer" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderImageView
+        android:id="@+id/itemOnGoingTwo"
+        android:layout_width="@dimen/centralized_promo_image_shimmer_height_150dp"
+        android:layout_height="@dimen/centralized_promo_image_shimmer_height_150dp"
+        android:layout_marginStart="@dimen/layout_lvl1"
+        android:layout_marginLeft="@dimen/layout_lvl1"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        app:corners="10"
+        app:layout_constraintLeft_toRightOf="@id/itemOnGoingOne"
+        app:layout_constraintTop_toBottomOf="@id/tvCentralizedPromoOnGoingShimmer" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderImageView
+        android:layout_width="@dimen/centralized_promo_image_shimmer_height_150dp"
+        android:layout_height="@dimen/centralized_promo_image_shimmer_height_150dp"
+        android:layout_marginStart="@dimen/layout_lvl1"
+        android:layout_marginLeft="@dimen/layout_lvl1"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        app:corners="10"
+        app:layout_constraintLeft_toRightOf="@id/itemOnGoingTwo"
+        app:layout_constraintTop_toBottomOf="@id/tvCentralizedPromoOnGoingShimmer" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

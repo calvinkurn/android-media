@@ -8,38 +8,45 @@ import androidx.appcompat.widget.Toolbar
 import android.text.TextUtils
 import android.view.View
 import android.widget.ImageView
+import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
-import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel
-import com.tokopedia.chat_common.data.BaseChatViewModel
-import com.tokopedia.chat_common.data.ChatroomViewModel
-import com.tokopedia.chat_common.data.ImageUploadViewModel
+import com.tokopedia.chat_common.data.*
+import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
 import com.tokopedia.chat_common.view.BaseChatViewStateImpl
-import com.tokopedia.chat_common.view.adapter.viewholder.chatmenu.BaseChatMenuViewHolder
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chatbot.R
+import com.tokopedia.chatbot.analytics.ChatbotAnalytics.Companion.chatbotAnalytics
 import com.tokopedia.chatbot.data.ConnectionDividerViewModel
+import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleViewModel
+import com.tokopedia.chatbot.data.invoice.AttachInvoiceSelectionViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
+import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
 import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper.Companion.SHOW_TEXT
 import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
 import com.tokopedia.chatbot.view.adapter.QuickReplyAdapter
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.QuickReplyListener
 import com.tokopedia.chatbot.view.customview.ReasonBottomSheet
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.user.session.UserSessionInterface
 
 /**
  * @author by nisie on 07/12/18.
  */
+private const val ACTION_IMRESSION_ACTION_BUTTON = "impression action button"
+private const val ACTION_IMRESSION_THUMBS_UP_THUMBS_DOWN = "impression thumbs up and thumbs down"
+
 class ChatbotViewStateImpl(@NonNull override val view: View,
                            @NonNull private val userSession: UserSessionInterface,
                            private val quickReplyListener: QuickReplyListener,
                            typingListener: TypingListener,
-                           chatMenuListener: BaseChatMenuViewHolder.ChatMenuListener,
+                           attachmentMenuListener: AttachmentMenu.AttachmentMenuListener,
                            override val toolbar: Toolbar,
                            private val adapter: BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory>
-) : BaseChatViewStateImpl(view, toolbar, typingListener, chatMenuListener), ChatbotViewState {
+) : BaseChatViewStateImpl(view, toolbar, typingListener, attachmentMenuListener), ChatbotViewState {
 
     private lateinit var quickReplyAdapter: QuickReplyAdapter
     private lateinit var rvQuickReply: RecyclerView
@@ -47,16 +54,38 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
     private lateinit var chatMenuBtn: ImageView
 
     override fun initView() {
-        super.initView()
+        recyclerView = view.findViewById(getRecyclerViewId())
+        mainLoading = view.findViewById(getProgressId())
+        replyEditText = view.findViewById(getNewCommentId())
+        replyBox = view.findViewById(getReplyBoxId())
+        actionBox = view.findViewById(getActionBoxId())
+        sendButton = view.findViewById(getSendButtonId())
+        notifier = view.findViewById(getNotifierId())
+        chatMenuButton = view.findViewById(getChatMenuId())
 
         chatMenuBtn = view.findViewById(R.id.iv_chat_menu)
         rvQuickReply = view.findViewById(R.id.list_quick_reply)
-        quickReplyAdapter = QuickReplyAdapter(QuickReplyListViewModel(), quickReplyListener)
+        quickReplyAdapter = QuickReplyAdapter(getQuickReplyList(), quickReplyListener)
 
         rvQuickReply.layoutManager = LinearLayoutManager(rvQuickReply.context,
                 LinearLayoutManager.HORIZONTAL, false)
         rvQuickReply.adapter = quickReplyAdapter
+
+        super.initView()
     }
+
+    private fun getQuickReplyList(): List<QuickReplyViewModel> {
+        return if (QuickReplyListViewModel().quickReplies.isNullOrEmpty()) {
+            if (ChatActionSelectionBubbleViewModel().quickReplies.isNullOrEmpty()) {
+                ChatRatingViewModel().quickReplies
+            } else {
+                ChatActionSelectionBubbleViewModel().quickReplies
+            }
+        } else {
+            QuickReplyListViewModel().quickReplies
+        }
+    }
+
 
     override fun onSuccessLoadFirstTime(chatroomViewModel: ChatroomViewModel) {
         scrollToBottom()
@@ -68,7 +97,7 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
     private fun checkShowQuickReply(chatroomViewModel: ChatroomViewModel) {
         if (chatroomViewModel.listChat.isNotEmpty()
                 && chatroomViewModel.listChat[0] is QuickReplyListViewModel) {
-            showQuickReply(chatroomViewModel.listChat[0] as QuickReplyListViewModel)
+            showQuickReply((chatroomViewModel.listChat[0] as QuickReplyListViewModel).quickReplies)
         }
     }
 
@@ -88,10 +117,24 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
 
     override fun onReceiveQuickReplyEvent(visitable: QuickReplyListViewModel) {
         super.onReceiveMessageEvent(visitable)
-        showQuickReply(visitable)
+        showQuickReply(visitable.quickReplies)
+    }
+
+    override fun onReceiveQuickReplyEventWithActionButton(visitable: ChatActionSelectionBubbleViewModel) {
+        super.onReceiveMessageEvent(visitable)
+        chatbotAnalytics.eventShowView(ACTION_IMRESSION_ACTION_BUTTON)
+        showQuickReply(visitable.quickReplies)
+    }
+
+    override fun onReceiveQuickReplyEventWithChatRating(visitable: ChatRatingViewModel) {
+        super.onReceiveMessageEvent(visitable)
+        chatbotAnalytics.eventShowView(ACTION_IMRESSION_THUMBS_UP_THUMBS_DOWN)
+        showQuickReply(visitable.quickReplies)
     }
 
     override fun onShowInvoiceToChat(generatedInvoice: AttachInvoiceSentViewModel) {
+        if (adapter.dataSize > 0 && adapter.data[0] is AttachInvoiceSelectionViewModel)
+            getAdapter().removeElement(adapter.data[0])
         super.onReceiveMessageEvent(generatedInvoice)
     }
 
@@ -133,12 +176,11 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
         return fromUid != null && userSession.userId == fromUid
     }
 
-    private fun showQuickReply(quickReplyListViewModel: QuickReplyListViewModel) {
-        if (::quickReplyAdapter.isInitialized) {
-            quickReplyAdapter.setList(quickReplyListViewModel)
-            quickReplyAdapter.notifyDataSetChanged()
-        }
-        rvQuickReply.visibility = View.VISIBLE
+    private fun showQuickReply(list: List<QuickReplyViewModel>) {
+            if (::quickReplyAdapter.isInitialized) {
+                quickReplyAdapter.setList(list)
+            }
+            rvQuickReply.visibility = View.VISIBLE
     }
 
     private fun hasQuickReply(): Boolean {
@@ -172,4 +214,66 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
         }
     }
 
+    override fun hideEmptyMessage(visitable: Visitable<*>) {
+        if (visitable is FallbackAttachmentViewModel && visitable.message.isEmpty()) {
+            getAdapter().removeElement(visitable)
+        }
+    }
+
+
+    override fun showLiveChatQuickReply(quickReplyList: List<QuickReplyViewModel>) {
+        showQuickReply(quickReplyList)
+    }
+
+    override fun getInterlocutorName(headerName: String): String  = headerName
+
+    override fun showErrorWebSocket(isWebSocketError: Boolean) {
+        val title = notifier.findViewById<TextView>(R.id.title)
+        val action = notifier.findViewById<View>(R.id.action)
+        if (isWebSocketError) {
+            notifier.show()
+            title.setText(com.tokopedia.chat_common.R.string.error_no_connection_retrying);
+            action.show()
+
+        } else {
+            action.hide()
+            notifier.hide()
+        }
+    }
+
+    override fun getRecyclerViewId(): Int {
+        return R.id.recycler_view
+    }
+
+    override fun getProgressId(): Int {
+        return R.id.progress
+    }
+
+    override fun getNewCommentId(): Int {
+        return R.id.new_comment
+    }
+
+    override fun getReplyBoxId(): Int {
+        return R.id.reply_box
+    }
+
+    override fun getActionBoxId(): Int {
+        return R.id.add_comment_area
+    }
+
+    override fun getSendButtonId(): Int {
+        return R.id.send_but
+    }
+
+    override fun getNotifierId(): Int {
+        return R.id.notifier
+    }
+
+    override fun getChatMenuId(): Int {
+        return R.id.iv_chat_menu
+    }
+
+    override fun getAttachmentMenuId() = R.id.rv_attachment_menu
+    override fun getRootViewId() = R.id.main
+    override fun getAttachmentMenuContainer(): Int = R.id.rv_attachment_menu_container
 }

@@ -196,7 +196,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         SpaceItemDecoration itemDecoration = new SpaceItemDecoration((int) getActivity()
                 .getResources().getDimension(R.dimen.space_chat));
         QuickReplyItemDecoration quickReplyItemDecoration = new QuickReplyItemDecoration((int) getActivity()
-                .getResources().getDimension(R.dimen.dp_16));
+                .getResources().getDimension(com.tokopedia.design.R.dimen.dp_16));
         chatRecyclerView.addItemDecoration(itemDecoration);
         quickReplyRecyclerView.addItemDecoration(quickReplyItemDecoration);
         chatRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -313,6 +313,8 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                                         userSession.getUserId(),
                                         userSession.getName(),
                                         userSession.getProfilePicture(),
+                                        false,
+                                        false,
                                         false);
                         ((GroupChatActivity) getActivity()).sendViaWebSocket(pendingChatViewModel);
                     }
@@ -500,7 +502,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         View view = getLayoutInflater().inflate(R.layout.layout_pinned_message_expanded, null);
         ((TextView) view.findViewById(R.id.message)).setText(pinnedMessage.getMessage());
         ImageHandler.loadImage(getActivity(), view.findViewById(R.id.thumbnail)
-                , pinnedMessage.getThumbnail(), R.drawable.loading_page);
+                , pinnedMessage.getThumbnail(), com.tokopedia.abstraction.R.drawable.loading_page);
         if (!TextUtils.isEmpty(pinnedMessage.getImageUrl())) {
             view.findViewById(R.id.thumbnail).setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -516,15 +518,15 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     private void setupSprintSaleIcon(SprintSaleViewModel sprintSaleViewModel) {
         if (sprintSaleViewModel.getSprintSaleType().equalsIgnoreCase(SprintSaleViewModel.TYPE_UPCOMING)) {
             MethodChecker.setBackground(sprintSaleText, MethodChecker.getDrawable(getActivity(),
-                    R.drawable.bg_rounded_pink_label));
-            sprintSaleText.setTextColor(MethodChecker.getColor(getActivity(), R.color.red_500));
+                    R.drawable.bg_rounded_soft_pink));
+            sprintSaleText.setTextColor(MethodChecker.getColor(getActivity(), com.tokopedia.design.R.color.red_500));
             sprintSaleText.setText(String.format("%s - %s", sprintSaleViewModel
                     .getFormattedStartDate(), sprintSaleViewModel.getFormattedEndDate()));
-            sprintSaleText.setTextColor(MethodChecker.getColor(getActivity(), R.color.red_500));
+            sprintSaleText.setTextColor(MethodChecker.getColor(getActivity(), com.tokopedia.design.R.color.red_500));
         } else if (sprintSaleViewModel.getSprintSaleType().equalsIgnoreCase(SprintSaleViewModel.TYPE_ACTIVE)) {
             MethodChecker.setBackground(sprintSaleText, MethodChecker.getDrawable(getActivity(),
                     R.drawable.bg_rounded_red_label));
-            sprintSaleText.setTextColor(MethodChecker.getColor(getActivity(), R.color.white));
+            sprintSaleText.setTextColor(MethodChecker.getColor(getActivity(), com.tokopedia.design.R.color.white));
             sprintSaleText.setText(getString(R.string.ongoing));
         }
     }
@@ -604,7 +606,9 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                         userSession.getUserId(),
                         userSession.getName(),
                         userSession.getProfilePicture(),
-                        false);
+                        false,
+                        false,
+                        true);
 
         ((GroupChatActivity) getActivity()).sendViaWebSocket(pendingChatViewModel);
     }

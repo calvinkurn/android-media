@@ -2,6 +2,7 @@ package com.tokopedia.logisticcart.shipping.features.shippingcourier.view;
 
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
@@ -9,7 +10,7 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.logisticcart.R;
-import com.tokopedia.logisticcart.shipping.model.ShippingCourierViewModel;
+import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.OntimeDeliveryGuarantee;
 
@@ -30,6 +31,7 @@ public class ShippingCourierViewHolder extends RecyclerView.ViewHolder {
     private View viewOtd;
     private ImageView imgCheck;
     private TextView tvPromoPotency;
+    private View separator;
 
     private int cartPosition;
 
@@ -45,54 +47,62 @@ public class ShippingCourierViewHolder extends RecyclerView.ViewHolder {
         viewOtd = itemView.findViewById(R.id.otdelivery);
         imgCheck = itemView.findViewById(R.id.img_check);
         tvPromoPotency = itemView.findViewById(R.id.tv_promo_potency);
+        separator = itemView.findViewById(R.id.separator);
     }
 
-    public void bindData(ShippingCourierViewModel shippingCourierViewModel,
-                         ShippingCourierAdapterListener shippingCourierAdapterListener) {
+    public void bindData(ShippingCourierUiModel shippingCourierUiModel,
+                         ShippingCourierAdapterListener shippingCourierAdapterListener,
+                         boolean isLastItem) {
+
+        if (isLastItem) {
+            separator.setVisibility(View.GONE);
+        } else {
+            separator.setVisibility(View.VISIBLE);
+        }
 
         if (shippingCourierAdapterListener.isToogleYearEndPromotionOn() &&
-                !TextUtils.isEmpty(shippingCourierViewModel.getProductData().getPromoCode())) {
+                !TextUtils.isEmpty(shippingCourierUiModel.getProductData().getPromoCode())) {
             tvPromoPotency.setVisibility(View.VISIBLE);
         } else {
             tvPromoPotency.setVisibility(View.GONE);
         }
 
-        if (shippingCourierViewModel.getProductData().getCodProductData() != null) {
-            tvCod.setText(shippingCourierViewModel.getProductData().getCodProductData().getCodText());
-            tvCod.setVisibility(shippingCourierViewModel.getProductData().getCodProductData()
+        if (shippingCourierUiModel.getProductData().getCodProductData() != null) {
+            tvCod.setText(shippingCourierUiModel.getProductData().getCodProductData().getCodText());
+            tvCod.setVisibility(shippingCourierUiModel.getProductData().getCodProductData()
                     .getIsCodAvailable() == COD_ENABLE_VALUE ? View.VISIBLE : View.GONE);
         }
 
-        if (shippingCourierViewModel.getProductData().getFeatures() != null &&
-                shippingCourierViewModel.getProductData().getFeatures().getOntimeDeliveryGuarantee() != null) {
-            OntimeDeliveryGuarantee otd = shippingCourierViewModel
+        if (shippingCourierUiModel.getProductData().getFeatures() != null &&
+                shippingCourierUiModel.getProductData().getFeatures().getOntimeDeliveryGuarantee() != null) {
+            OntimeDeliveryGuarantee otd = shippingCourierUiModel
                     .getProductData().getFeatures().getOntimeDeliveryGuarantee();
             viewOtd.setVisibility(otd.getAvailable() ? View.VISIBLE : View.GONE);
             tvOtd.setText(otd.getTextLabel());
             ImageHandler.LoadImage(ivOtd, otd.getIconUrl());
         }
 
-        tvCourier.setText(shippingCourierViewModel.getProductData().getShipperName());
-        if (shippingCourierViewModel.getProductData().getError() != null &&
-                shippingCourierViewModel.getProductData().getError().getErrorMessage().length() > 0) {
-            if (shippingCourierViewModel.getProductData().getError().getErrorId().equals(ErrorProductData.ERROR_PINPOINT_NEEDED)) {
-                tvPrice.setText(shippingCourierViewModel.getProductData().getError().getErrorMessage());
+        tvCourier.setText(shippingCourierUiModel.getProductData().getShipperName());
+        if (shippingCourierUiModel.getProductData().getError() != null &&
+                shippingCourierUiModel.getProductData().getError().getErrorMessage().length() > 0) {
+            if (shippingCourierUiModel.getProductData().getError().getErrorId().equals(ErrorProductData.ERROR_PINPOINT_NEEDED)) {
+                tvPrice.setText(shippingCourierUiModel.getProductData().getError().getErrorMessage());
                 tvPrice.setTextColor(ContextCompat.getColor(tvCourier.getContext(), R.color.black_54));
                 tvCourier.setTextColor(ContextCompat.getColor(tvCourier.getContext(), R.color.black_70));
-                itemView.setOnClickListener(v -> shippingCourierAdapterListener.onCourierChoosen(shippingCourierViewModel, cartPosition, true));
+                itemView.setOnClickListener(v -> shippingCourierAdapterListener.onCourierChoosen(shippingCourierUiModel, cartPosition, true));
             } else {
-                tvPrice.setText(shippingCourierViewModel.getProductData().getError().getErrorMessage());
+                tvPrice.setText(shippingCourierUiModel.getProductData().getError().getErrorMessage());
                 tvPrice.setTextColor(ContextCompat.getColor(tvCourier.getContext(), R.color.text_courier_error_red));
                 tvCourier.setTextColor(ContextCompat.getColor(tvCourier.getContext(), R.color.font_disabled));
                 itemView.setOnClickListener(null);
             }
         } else {
-            tvPrice.setText(shippingCourierViewModel.getProductData().getPrice().getFormattedPrice());
+            tvPrice.setText(shippingCourierUiModel.getProductData().getPrice().getFormattedPrice());
             tvPrice.setTextColor(ContextCompat.getColor(tvCourier.getContext(), R.color.black_54));
             tvCourier.setTextColor(ContextCompat.getColor(tvCourier.getContext(), R.color.black_70));
             itemView.setOnClickListener(v -> shippingCourierAdapterListener.onCourierChoosen(
-                    shippingCourierViewModel, cartPosition, false));
+                    shippingCourierUiModel, cartPosition, false));
         }
-        imgCheck.setVisibility(shippingCourierViewModel.isSelected() ? View.VISIBLE : View.GONE);
+        imgCheck.setVisibility(shippingCourierUiModel.isSelected() ? View.VISIBLE : View.GONE);
     }
 }

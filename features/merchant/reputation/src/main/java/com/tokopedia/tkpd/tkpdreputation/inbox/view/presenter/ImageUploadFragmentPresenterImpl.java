@@ -5,11 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.tokopedia.core.base.data.executor.JobExecutor;
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.presentation.UIThread;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.util.ImageUploadHandler;
+import com.tokopedia.cachemanager.PersistentCacheManager;
+import com.tokopedia.tkpd.tkpdreputation.constant.Constant;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.GetSendReviewFormUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.SendReviewUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.SetReviewFormCacheUseCase;
@@ -18,8 +15,8 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment.ImageUploadPreviewF
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.ImageUploadPreviewFragmentView;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageUpload;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.sendreview.SendReviewPass;
+import com.tokopedia.usecase.RequestParams;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -37,21 +34,18 @@ public class ImageUploadFragmentPresenterImpl implements ImageUploadFragmentPres
     private static final String TAG = ImageUploadFragmentPresenterImpl.class.getSimpleName();
 
     ImageUploadPreviewFragmentView viewListener;
-    ImageUploadHandler imageUploadHandler;
     GetSendReviewFormUseCase getSendReviewFormUseCase;
     SetReviewFormCacheUseCase setReviewFormCacheUseCase;
     List<ImageUpload> deletedImageUploads;
     String cameraFileLoc;
+    PersistentCacheManager persistentCacheManager;
 
-    public ImageUploadFragmentPresenterImpl(ImageUploadPreviewFragmentView viewListener) {
+    public ImageUploadFragmentPresenterImpl(ImageUploadPreviewFragmentView viewListener, PersistentCacheManager persistentCacheManager) {
         this.viewListener = viewListener;
-        this.imageUploadHandler = ImageUploadHandler.createInstance(viewListener.getActivity());
         this.deletedImageUploads = new ArrayList<>();
-        GlobalCacheManager globalCacheManager = new GlobalCacheManager();
-        this.getSendReviewFormUseCase = new GetSendReviewFormUseCase(new JobExecutor(),
-                new UIThread(), globalCacheManager);
-        this.setReviewFormCacheUseCase = new SetReviewFormCacheUseCase(new JobExecutor(),
-                new UIThread(), globalCacheManager);
+        this.persistentCacheManager = persistentCacheManager;
+        this.getSendReviewFormUseCase = new GetSendReviewFormUseCase(persistentCacheManager);
+        this.setReviewFormCacheUseCase = new SetReviewFormCacheUseCase(persistentCacheManager);
     }
 
 
@@ -108,7 +102,7 @@ public class ImageUploadFragmentPresenterImpl implements ImageUploadFragmentPres
 
         } else {
 
-            for(String url : Objects.requireNonNull(arguments.getStringArrayList(ImageUploadHandler.FILELOC))) {
+            for(String url : Objects.requireNonNull(arguments.getStringArrayList(Constant.ImageUpload.FILELOC))) {
                 int position = viewListener.getAdapter().getList().size();
                 final ImageUpload image = new ImageUpload();
                 image.setPosition(position);

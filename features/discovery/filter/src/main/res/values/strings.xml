@@ -22,4 +22,6 @@
     <string name="title_close">Tutup</string>
     <string name="see_all">Lihat Semua</string>
     <string name="filter">Filter</string>
+    <string name="sort">Sort</string>
+    <string name="search_icon">search icon</string>
 </resources>

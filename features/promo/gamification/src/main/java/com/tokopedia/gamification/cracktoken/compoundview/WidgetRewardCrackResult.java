@@ -4,13 +4,10 @@ import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -23,16 +20,15 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.tokopedia.applink.ApplinkConst;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import com.tokopedia.abstraction.common.utils.HexValidator;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
 import com.tokopedia.gamification.GamificationEventTracking;
 import com.tokopedia.gamification.R;
-import com.tokopedia.gamification.applink.ApplinkUtil;
-import com.tokopedia.gamification.cracktoken.activity.CrackTokenActivity;
 import com.tokopedia.gamification.data.entity.CrackBenefitEntity;
-import com.tokopedia.gamification.util.HexValidator;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 
@@ -83,7 +79,7 @@ public class WidgetRewardCrackResult extends FrameLayout implements View.OnClick
     }
 
     private void init() {
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.widget_rewards, this, true);
+        View view = LayoutInflater.from(getContext()).inflate(com.tokopedia.gamification.R.layout.widget_rewards, this, true);
         llRewards = view.findViewById(R.id.ll_rewards);
         rlParent = view.findViewById(R.id.rl_parent);
         rlPoints = view.findViewById(R.id.rl_points);
@@ -108,7 +104,7 @@ public class WidgetRewardCrackResult extends FrameLayout implements View.OnClick
             if (HexValidator.validate(crackBenefit.getColor())) {
                 textColor = Color.parseColor(crackBenefit.getColor());
             } else {
-                textColor = getResources().getColor(R.color.default_reward_color);
+                textColor = getResources().getColor(com.tokopedia.gamification.R.color.default_reward_color);
             }
             if (BENIFIT_TYPE_REWARD_POINT.equalsIgnoreCase(crackBenefit.getBenefitType())) {
 
@@ -172,7 +168,7 @@ public class WidgetRewardCrackResult extends FrameLayout implements View.OnClick
     private void initTextPaint() {
         textPaint = new Paint();
         textPaint.setStyle(Paint.Style.FILL);
-        textPaint.setTextSize(getResources().getDimensionPixelSize(R.dimen.sp_12));
+        textPaint.setTextSize(getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.sp_12));
         measureOneDigitWidth();
     }
 
@@ -229,7 +225,7 @@ public class WidgetRewardCrackResult extends FrameLayout implements View.OnClick
             AlphaAnimation alphaAnimation = new AlphaAnimation(1f, 0f);
             alphaAnimation.setDuration(TRANSLATE_TEXT_UP_DURATION);
             animatorSet.addAnimation(alphaAnimation);
-            TranslateAnimation translateAnimationCrackResult = new TranslateAnimation(0, 0, 0f, -rlPoints.getHeight() + getResources().getDimensionPixelOffset(R.dimen.dp_12));
+            TranslateAnimation translateAnimationCrackResult = new TranslateAnimation(0, 0, 0f, -rlPoints.getHeight() + getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_12));
             translateAnimationCrackResult.setStartOffset((listLength - 1 - i) * SLIDE_UP_TEXT_RELATIVE_DURATION);
             translateAnimationCrackResult.setDuration(TRANSLATE_TEXT_UP_DURATION);
             animatorSet.addAnimation(translateAnimationCrackResult);
@@ -316,9 +312,9 @@ public class WidgetRewardCrackResult extends FrameLayout implements View.OnClick
     }
 
     private void resetView() {
-        tvPoints.setTextColor(getResources().getColor(R.color.white));
-        tvLoyalty.setTextColor(getResources().getColor(R.color.white));
-        tvCoupons.setTextColor(getResources().getColor(R.color.white));
+        tvPoints.setTextColor(getResources().getColor(com.tokopedia.design.R.color.white));
+        tvLoyalty.setTextColor(getResources().getColor(com.tokopedia.design.R.color.white));
+        tvCoupons.setTextColor(getResources().getColor(com.tokopedia.design.R.color.white));
         rlCoupons.clearAnimation();
         rlLoyalty.clearAnimation();
         rlPoints.clearAnimation();
@@ -327,14 +323,14 @@ public class WidgetRewardCrackResult extends FrameLayout implements View.OnClick
     @Override
     public void onClick(View v) {
         int id = v.getId();
-        if(id == R.id.rl_points || id == R.id.rl_loyalty) {
+        if (id == R.id.rl_points || id == R.id.rl_loyalty) {
             RouteManager.route(getContext(), ApplinkConstInternalPromo.TOKOPOINTS_HOME);
-            if(id == R.id.rl_points)
+            if (id == R.id.rl_points)
                 trackPointsIconClick();
             else
                 trackLoyaltyIconClick();
-        } else if(id == R.id. rl_coupons) {
-            RouteManager.route(getContext(),ApplinkConstInternalPromo.TOKOPOINTS_COUPON);
+        } else if (id == R.id.rl_coupons) {
+            RouteManager.route(getContext(), ApplinkConstInternalPromo.TOKOPOINTS_COUPON);
             trackKuponIconClick();
         }
     }

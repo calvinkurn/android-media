@@ -6,6 +6,7 @@ import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.common.data.exception.ResponseErrorException
 import com.tokopedia.topads.debit.autotopup.data.model.*
 import com.tokopedia.usecase.coroutines.Fail
@@ -50,7 +51,7 @@ class TopAdsAutoTopUpViewModel @Inject constructor(private val graphqlRepository
 
     fun saveSelection(rawQuery: String, isActive: Boolean, selectedItem: AutoTopUpItem) {
         statusSaveSelection.value = Loading
-        val params = mapOf(PARAM_SHOP_ID to userSessionInterface.shopId.toInt(),
+        val params = mapOf(PARAM_SHOP_ID to userSessionInterface.shopId.toIntOrZero(),
                 PARAM_ACTION to (if (isActive) TOGGLE_ON else TOGGLE_OFF),
                 PARAM_SELECTION_ID to selectedItem.id)
 

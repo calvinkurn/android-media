@@ -21,7 +21,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.webview.TkpdWebView
 import com.tokopedia.abstraction.base.view.webview.TkpdWebViewClient
-import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -49,6 +49,7 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
 
     lateinit var webview: TkpdWebView
     lateinit var progressBar: ProgressBar
+    lateinit var errorView: View
     private val userSession: UserSessionInterface by lazy {
         UserSession(context)
     }
@@ -158,6 +159,7 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
 
         webview = view.findViewById(R.id.webview)
         progressBar = view.findViewById(R.id.progressBar)
+        errorView = view.findViewById(R.id.errorView)
         progressBar.isIndeterminate = true
         webview.setOnKeyListener(this)
         webview.settings.cacheMode = WebSettings.LOAD_NO_CACHE
@@ -252,7 +254,7 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
             override fun onProgressChanged(view: WebView, newProgress: Int) {
                 //  progressBar.setProgress(newProgress);
                 if (newProgress == 100) {
-                    progressBar.visibility = View.GONE
+                    progressBar?.visibility = View.GONE
                 }
                 super.onProgressChanged(view, newProgress)
             }
@@ -307,7 +309,7 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
                 val intent = RouteManager.getIntent(this, requestUrl)
                 startActivityForResult(intent, REQUEST_CODE_LOGIN)
                 return true
-            } else if (RouteManager.isSupportApplink(this, requestUrl)) {
+            } else if (!URLUtil.isNetworkUrl(requestUrl) && RouteManager.isSupportApplink(this, requestUrl)) {
                 RouteManager.route(this, requestUrl)
                 return true
             } else {

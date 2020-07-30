@@ -14,6 +14,7 @@ import com.tokopedia.profilecompletion.addphone.data.CheckPhonePojo
 import com.tokopedia.profilecompletion.addphone.data.UserValidatePojo
 import com.tokopedia.profilecompletion.addpin.data.*
 import com.tokopedia.profilecompletion.changegender.data.ChangeGenderPojo
+import com.tokopedia.profilecompletion.changename.domain.pojo.ChangeNamePojo
 import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant
 import com.tokopedia.profilecompletion.settingprofile.data.SubmitProfilePictureData
 import com.tokopedia.profilecompletion.settingprofile.data.UserProfileInfoData
@@ -31,8 +32,19 @@ class ProfileCompletionQueryModule {
     @ProfileCompletionSettingScope
     @Provides
     @IntoMap
+    @StringKey(ProfileCompletionQueryConstant.MUTATION_CHANGE_NAME)
+    fun provideRawMutationChangeName(@ProfileCompletionContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.mutation_change_name)
+
+    @Provides
+    fun provideChangeNameGraphQlUseCase(graphqlRepository: GraphqlRepository)
+            : GraphqlUseCase<ChangeNamePojo> = GraphqlUseCase(graphqlRepository)
+
+    @ProfileCompletionSettingScope
+    @Provides
+    @IntoMap
     @StringKey(ProfileCompletionQueryConstant.MUTATION_CHANGE_GENDER)
-    fun provideRawMutationChangeGender(@ApplicationContext context: Context): String =
+    fun provideRawMutationChangeGender(@ProfileCompletionContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.mutation_change_gender)
 
     @Provides
@@ -43,7 +55,7 @@ class ProfileCompletionQueryModule {
     @Provides
     @IntoMap
     @StringKey(ProfileCompletionQueryConstant.MUTATION_CHECK_EMAIL)
-    fun provideRawMutationCheckEmail(@ApplicationContext context: Context): String =
+    fun provideRawMutationCheckEmail(@ProfileCompletionContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.mutation_check_email)
 
 
@@ -55,7 +67,7 @@ class ProfileCompletionQueryModule {
     @Provides
     @IntoMap
     @StringKey(ProfileCompletionQueryConstant.MUTATION_ADD_EMAIL)
-    fun provideRawMutationAddEmail(@ApplicationContext context: Context): String =
+    fun provideRawMutationAddEmail(@ProfileCompletionContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.mutation_add_email)
 
 
@@ -67,7 +79,7 @@ class ProfileCompletionQueryModule {
     @Provides
     @IntoMap
     @StringKey(ProfileCompletionQueryConstant.MUTATION_ADD_PHONE)
-    fun provideRawMutationAddPhone(@ApplicationContext context: Context): String =
+    fun provideRawMutationAddPhone(@ProfileCompletionContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.mutation_add_phone)
 
     @Provides
@@ -78,7 +90,7 @@ class ProfileCompletionQueryModule {
     @Provides
     @IntoMap
     @StringKey(ProfileCompletionQueryConstant.MUTATION_CHECK_PHONE)
-    fun provideRawMutationCheckPhone(@ApplicationContext context: Context): String =
+    fun provideRawMutationCheckPhone(@ProfileCompletionContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.mutation_check_phone)
 
     @Provides
@@ -89,7 +101,7 @@ class ProfileCompletionQueryModule {
     @Provides
     @IntoMap
     @StringKey(ProfileCompletionQueryConstant.MUTATION_CHANGE_PICTURE)
-    fun provideRawMutationChangePicture(@ApplicationContext context: Context): String =
+    fun provideRawMutationChangePicture(@ProfileCompletionContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.mutation_change_picture)
 
     @Provides
@@ -100,7 +112,7 @@ class ProfileCompletionQueryModule {
     @Provides
     @IntoMap
     @StringKey(ProfileCompletionQueryConstant.MUTATION_ADD_BOD)
-    fun provideRawMutationAddBod(@ApplicationContext context: Context): String =
+    fun provideRawMutationAddBod(@ProfileCompletionContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.mutation_add_bod)
 
     @Provides
@@ -111,7 +123,7 @@ class ProfileCompletionQueryModule {
     @Provides
     @IntoMap
     @StringKey(ProfileCompletionQueryConstant.QUERY_PROFILE_COMPLETION)
-    fun provideRawQueryProfileCompletion(@ApplicationContext context: Context): String =
+    fun provideRawQueryProfileCompletion(@ProfileCompletionContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.query_user_profile_completion)
 
 
@@ -124,7 +136,7 @@ class ProfileCompletionQueryModule {
     @Provides
     @IntoMap
     @StringKey(ProfileCompletionQueryConstant.QUERY_PROFILE_ROLE)
-    fun provideRawQueryProfileRole(@ApplicationContext context: Context): String =
+    fun provideRawQueryProfileRole(@ProfileCompletionContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.query_user_profile_role)
 
 
@@ -137,7 +149,7 @@ class ProfileCompletionQueryModule {
     @Provides
     @IntoMap
     @StringKey(ProfileCompletionQueryConstant.MUTATION_USER_VALIDATE)
-    fun provideRawQueryUserValidate(@ApplicationContext context: Context): String =
+    fun provideRawQueryUserValidate(@ProfileCompletionContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.mutation_user_profile_completion_validate)
 
 
@@ -148,7 +160,7 @@ class ProfileCompletionQueryModule {
     @Provides
     @IntoMap
     @StringKey(ProfileCompletionQueryConstant.MUTATION_CREATE_PIN)
-    fun provideRawMutationCreatePin(@ApplicationContext context: Context): String =
+    fun provideRawMutationCreatePin(@ProfileCompletionContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.mutation_create_pin)
 
     @Provides
@@ -158,7 +170,7 @@ class ProfileCompletionQueryModule {
     @Provides
     @IntoMap
     @StringKey(ProfileCompletionQueryConstant.MUTATION_UPDATE_PIN)
-    fun provideRawMutationUpdatePin(@ApplicationContext context: Context): String =
+    fun provideRawMutationUpdatePin(@ProfileCompletionContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.mutation_update_pin)
 
     @Provides
@@ -168,7 +180,7 @@ class ProfileCompletionQueryModule {
     @Provides
     @IntoMap
     @StringKey(ProfileCompletionQueryConstant.QUERY_CHECK_PIN)
-    fun provideRawQueryCheckPin(@ApplicationContext context: Context): String =
+    fun provideRawQueryCheckPin(@ProfileCompletionContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.query_check_pin)
 
     @Provides
@@ -178,7 +190,7 @@ class ProfileCompletionQueryModule {
     @Provides
     @IntoMap
     @StringKey(ProfileCompletionQueryConstant.QUERY_GET_STATUS_PIN)
-    fun provideRawQueryGetStatusPin(@ApplicationContext context: Context): String =
+    fun provideRawQueryGetStatusPin(@ProfileCompletionContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.query_get_status_pin)
 
 
@@ -189,7 +201,7 @@ class ProfileCompletionQueryModule {
     @Provides
     @IntoMap
     @StringKey(ProfileCompletionQueryConstant.QUERY_VALIDATE_PIN)
-    fun provideRawQueryValidatePin(@ApplicationContext context: Context): String =
+    fun provideRawQueryValidatePin(@ProfileCompletionContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.query_validate_pin)
 
 
@@ -200,7 +212,7 @@ class ProfileCompletionQueryModule {
     @Provides
     @IntoMap
     @StringKey(ProfileCompletionQueryConstant.QUERY_SKIP_OTP_PIN)
-    fun provideRawQuerySkipOtpPin(@ApplicationContext context: Context): String =
+    fun provideRawQuerySkipOtpPin(@ProfileCompletionContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.query_skip_otp_pin)
 
 

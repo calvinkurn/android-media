@@ -22,7 +22,5 @@ public abstract class BaseAnalyticsModel {
 
     public abstract Map<String, String> getAttr();
 
-    public abstract void setExtraAttr(Map<String, String> extraAttr);
-
 
 }

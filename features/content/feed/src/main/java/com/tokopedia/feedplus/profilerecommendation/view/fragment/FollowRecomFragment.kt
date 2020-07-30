@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
 import com.tokopedia.feedplus.R
@@ -28,7 +29,6 @@ import com.tokopedia.feedplus.profilerecommendation.view.custom.DialogOnboarding
 import com.tokopedia.feedplus.profilerecommendation.view.state.FollowRecomAction
 import com.tokopedia.feedplus.profilerecommendation.view.viewmodel.FollowRecomCardThumbnailViewModel
 import com.tokopedia.feedplus.profilerecommendation.view.viewmodel.FollowRecomCardViewModel
-import com.tokopedia.kol.feature.video.view.activity.MediaPreviewActivity
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hideLoadingTransparent
 import com.tokopedia.kotlin.extensions.view.showLoadingTransparent
@@ -233,8 +233,10 @@ class FollowRecomFragment : BaseDaggerFragment(), FollowRecomContract.View, Foll
             feedAnalyticTracker.eventClickContentRecommendation(model.id, itemPos, it.typeString)
         }
         context?.let { ctx ->
-            startActivity(
-                    MediaPreviewActivity.createIntent(ctx, model.id, 0)
+            RouteManager.route(
+                    ctx,
+                    ApplinkConstInternalContent.MEDIA_PREVIEW,
+                    id.toString()
             )
         }
     }

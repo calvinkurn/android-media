@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="dp_attachvoucher_13">13dp</dimen>
+    <dimen name="dp_attachvoucher_216">216dp</dimen>
+</resources>

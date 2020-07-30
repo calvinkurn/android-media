@@ -1,0 +1,21 @@
+query suggestion($data: PropertySuggestionSearchParam!) {
+  propertySearchSuggestion(input: $data) {
+    data {
+      id
+      type
+      typeID
+      tag
+      icon
+      iconURL
+      name
+      location
+      hotelCount
+      searchType
+      searchID
+    }
+    meta {
+      keyword
+      totalSuggestion
+    }
+  }
+}

@@ -83,7 +83,7 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         buyerCardViewModel.setTokopoint(accountModel.getTokopoints().getStatus().getPoints().getRewardStr());
         buyerCardViewModel.setCoupons(accountModel.getTokopointsSumCoupon().getSumCouponStr());
         buyerCardViewModel.setImageUrl(accountModel.getProfile().getProfilePicture());
-        buyerCardViewModel.setProgress(accountModel.getProfile().getCompletion());
+        buyerCardViewModel.setProgress(accountModel.getUserProfileCompletion().getCompletionScore());
         items.add(buyerCardViewModel);
 
         TokopediaPayViewModel tokopediaPayViewModel = new TokopediaPayViewModel();
@@ -405,14 +405,6 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
 
         menuTitle = new MenuTitleViewModel(context.getString(R.string.title_menu_other_features));
         items.add(menuTitle);
-
-        menuList = new MenuListViewModel();
-        menuList.setMenu(context.getString(R.string.title_menu_opportunity));
-        menuList.setMenuDescription(context.getString(R.string.label_menu_opportunity));
-        menuList.setApplink(ApplinkConst.SELLER_OPPORTUNITY);
-        menuList.setTitleTrack(PENJUAL);
-        menuList.setSectionTrack(context.getString(R.string.title_menu_other_features));
-        items.add(menuList);
 
         menuList = new MenuListViewModel();
         menuList.setMenu(context.getString(R.string.title_menu_topads));

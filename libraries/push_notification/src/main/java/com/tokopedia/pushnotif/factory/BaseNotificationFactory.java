@@ -51,6 +51,8 @@ public abstract class BaseNotificationFactory {
             return Constant.NotificationGroup.NEW_ORDER;
         } else if (appLink.contains("resolution")) {
             return Constant.NotificationGroup.RESOLUTION;
+        } else if (appLink.contains("review")) {
+            return Constant.NotificationGroup.REVIEW;
         } else {
             return Constant.NotificationGroup.GENERAL;
         }
@@ -68,7 +70,7 @@ public abstract class BaseNotificationFactory {
         if (GlobalConfig.isSellerApp()) {
             return R.mipmap.ic_big_notif_seller;
         } else {
-            return R.mipmap.ic_launcher;
+            return com.tokopedia.resources.common.R.mipmap.ic_launcher_customerapp;
         }
     }
 

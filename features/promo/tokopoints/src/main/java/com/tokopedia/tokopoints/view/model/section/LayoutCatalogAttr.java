@@ -16,8 +16,5 @@ public class LayoutCatalogAttr {
         return catalogList;
     }
 
-    public void setCatalogList(List<CatalogsValueEntity> catalogList) {
-        this.catalogList = catalogList;
-    }
 
 }

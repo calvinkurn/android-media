@@ -4,39 +4,39 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="21dp"
-        android:layout_marginBottom="@dimen/dp_15"
-        android:paddingLeft="@dimen/dp_16"
-        android:paddingRight="@dimen/dp_16"
-        android:textSize="@dimen/sp_18"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
+        android:paddingLeft="@dimen/spacing_lvl4"
+        android:paddingRight="@dimen/spacing_lvl4"
+        android:textSize="@dimen/fontSize_lvl5"
         android:textStyle="bold"
-        android:textColor="@color/black"
+        android:textColor="@color/Neutral_N700_96"
         android:text="Pilih Tanggal Lahir"
         />
     
     <View
         android:layout_width="match_parent"
-        android:layout_height="2dp"
+        android:layout_height="@dimen/spacing_lvl1"
         android:background="#e5e7e9"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingLeft="17dp"
-        android:paddingRight="17dp"
-        android:layout_marginTop="@dimen/dp_24"
-        android:layout_marginBottom="@dimen/dp_24">
+        android:paddingLeft="@dimen/layout_lvl2"
+        android:paddingRight="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/spacing_lvl5"
+        android:layout_marginBottom="@dimen/spacing_lvl5">
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="#e5e7e9"/>
 
-        <com.tokopedia.profilecompletion.addbod.view.widget.datepicker.DatePicker
+        <com.tokopedia.datepicker.DatePicker
             android:id="@+id/datePicker"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
@@ -52,13 +52,13 @@
     <TextView
         android:id="@+id/btn_continue"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_16"
+        android:layout_height="@dimen/layout_lvl6"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginRight="@dimen/spacing_lvl4"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
         android:background="@drawable/bg_button_green"
         android:gravity="center"
         android:text="Pilih"
         android:textAllCaps="false"
-        android:textColor="@color/white"/>
+        android:textColor="@color/color_white"/>
 </LinearLayout>

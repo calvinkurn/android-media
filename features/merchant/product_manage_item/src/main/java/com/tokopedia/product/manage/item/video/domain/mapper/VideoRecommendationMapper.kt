@@ -1,10 +1,10 @@
 package com.tokopedia.product.manage.item.video.domain.mapper
 
-import com.tokopedia.product.manage.item.video.domain.model.youtube.YoutubeVideoModel
 import com.tokopedia.product.manage.item.video.view.model.VideoRecommendationViewModel
+import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
 
 class VideoRecommendationMapper {
-    fun transformDataToVideoViewModel(youtubeVideoModelList: List<YoutubeVideoModel>): List<VideoRecommendationViewModel> {
+    fun transformDataToVideoViewModel(youtubeVideoModelList: List<YoutubeVideoDetailModel>): List<VideoRecommendationViewModel> {
         return youtubeVideoModelList.filter { it.items != null && !it.items!!.isEmpty() }.map {
             VideoRecommendationViewModel().apply {
                 videoID = it.id

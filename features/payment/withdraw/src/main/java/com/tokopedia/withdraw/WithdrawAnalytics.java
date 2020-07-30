@@ -1,6 +1,7 @@
 package com.tokopedia.withdraw;
 
 import android.app.Activity;
+
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 import com.tokopedia.track.interfaces.Analytics;
@@ -40,12 +41,16 @@ public class WithdrawAnalytics {
     private static final String EVENT_ACTION_CLICK_BACK_TO_SALDO_DETAIL = "click kembali detail saldo";
     private static final String EVENT_ACTION_CLICK_BACK_TO_HOME_PAGE = "click belanja tokopedia";
 
+
+    private static final String EVENT_NAME_PREMIUM_PROGRAM = "viewWithdrawalIris";
+    private static final String EVENT_ACTION_PREMIUM_PROGRAM = "view ticker rekening premium";
+
     @Inject
     public WithdrawAnalytics() {
     }
 
     public void sendScreen(Activity activity, String screenName) {
-        TrackApp.getInstance().getGTM().sendScreenAuthenticated( screenName);
+        TrackApp.getInstance().getGTM().sendScreenAuthenticated(screenName);
     }
 
     public void eventClickWithdrawal() {
@@ -55,6 +60,7 @@ public class WithdrawAnalytics {
                 ""
         ));
     }
+
     public void eventClickWithdrawalAll() {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_NAME_CLICK_SALDO,
                 EVENT_CATEGORY_WITHDRAWAL_PAGE,
@@ -62,6 +68,7 @@ public class WithdrawAnalytics {
                 ""
         ));
     }
+
     public void eventClickBackArrow() {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_NAME_CLICK_SALDO,
                 EVENT_CATEGORY_WITHDRAWAL_PAGE,
@@ -69,6 +76,7 @@ public class WithdrawAnalytics {
                 ""
         ));
     }
+
     public void eventClickTarikSaldo() {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_NAME_CLICK_SALDO,
                 EVENT_CATEGORY_WITHDRAWAL_PAGE,
@@ -76,6 +84,7 @@ public class WithdrawAnalytics {
                 ""
         ));
     }
+
     public void eventClickJoinNow() {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_NAME_CLICK_SALDO,
                 EVENT_CATEGORY_WITHDRAWAL_PAGE,
@@ -83,6 +92,8 @@ public class WithdrawAnalytics {
                 ""
         ));
     }
+
+
     public void eventClickInfo() {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_NAME_CLICK_SALDO,
                 EVENT_CATEGORY_WITHDRAWAL_PAGE,
@@ -90,6 +101,7 @@ public class WithdrawAnalytics {
                 ""
         ));
     }
+
     public void eventClickGotoDashboard() {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_NAME_CLICK_SALDO,
                 EVENT_CATEGORY_WITHDRAWAL_PAGE,
@@ -97,6 +109,7 @@ public class WithdrawAnalytics {
                 ""
         ));
     }
+
     public void eventClickContinueBtn() {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_NAME_CLICK_SALDO,
                 EVENT_CATEGORY_WITHDRAWAL_PAGE,
@@ -104,6 +117,7 @@ public class WithdrawAnalytics {
                 ""
         ));
     }
+
     public void eventClickTANDC() {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_NAME_CLICK_SALDO,
                 EVENT_CATEGORY_WITHDRAWAL_PAGE,
@@ -111,6 +125,7 @@ public class WithdrawAnalytics {
                 ""
         ));
     }
+
     public void eventClickAccountBank() {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_NAME_CLICK_SALDO,
                 EVENT_CATEGORY_WITHDRAWAL_PAGE,
@@ -118,6 +133,7 @@ public class WithdrawAnalytics {
                 ""
         ));
     }
+
     public void eventClickAddAccount() {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_NAME_CLICK_SALDO,
                 EVENT_CATEGORY_WITHDRAWAL_PAGE,
@@ -125,6 +141,7 @@ public class WithdrawAnalytics {
                 ""
         ));
     }
+
     public void eventClickBackToSaldoPage() {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_NAME_CLICK_SALDO,
                 EVENT_CATEGORY_WITHDRAWAL_PAGE,
@@ -132,6 +149,7 @@ public class WithdrawAnalytics {
                 ""
         ));
     }
+
     public void eventClicGoToHomePage() {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_NAME_CLICK_SALDO,
                 EVENT_CATEGORY_WITHDRAWAL_PAGE,
@@ -155,6 +173,7 @@ public class WithdrawAnalytics {
                 ""
         ));
     }
+
     public void eventClickForgotPassword() {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_NAME_CLICK_SALDO,
                 EVENT_CATEGORY_WITHDRAWAL_PAGE,
@@ -162,10 +181,19 @@ public class WithdrawAnalytics {
                 ""
         ));
     }
+
     public void eventClickCloseErrorMessage() {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_NAME_CLICK_SALDO,
                 EVENT_CATEGORY_WITHDRAWAL_PAGE,
                 EVENT_ACTION_CLICK_CLOSE_ERROR,
+                ""
+        ));
+    }
+
+    public void eventOnPremiumProgramWidgetClick() {
+        TrackApp.getInstance().getGTM().pushEvent(EVENT_NAME_PREMIUM_PROGRAM, TrackAppUtils.gtmData(EVENT_NAME_PREMIUM_PROGRAM,
+                EVENT_CATEGORY_WITHDRAWAL_PAGE,
+                EVENT_ACTION_PREMIUM_PROGRAM,
                 ""
         ));
     }

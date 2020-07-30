@@ -27,6 +27,7 @@ import com.tokopedia.profilecompletion.addpin.viewmodel.AddChangePinViewModel
 import com.tokopedia.profilecompletion.changepin.view.activity.ChangePinActivity
 import com.tokopedia.profilecompletion.common.analytics.TrackingPinConstant
 import com.tokopedia.profilecompletion.common.analytics.TrackingPinUtil
+import com.tokopedia.profilecompletion.customview.focus
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -63,7 +64,7 @@ class ChangePinFragment : BaseDaggerFragment() {
 
     companion object {
         const val REQUEST_CODE_COTP_PHONE_VERIFICATION = 101
-        const val OTP_TYPE_PHONE_VERIFICATION = 124
+        const val OTP_TYPE_PHONE_VERIFICATION = 125
         const val PIN_LENGTH = 6
 
         fun createInstance(bundle: Bundle): ChangePinFragment {
@@ -92,7 +93,7 @@ class ChangePinFragment : BaseDaggerFragment() {
 
     private fun initViews(){
         toggleForgotText(true)
-        changePinInput.addTextChangedListener(object: TextWatcher {
+        changePinInput.pinTextField.addTextChangedListener(object: TextWatcher {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
@@ -110,6 +111,9 @@ class ChangePinFragment : BaseDaggerFragment() {
                 isValidated || isForgotPin -> handleValidatedAndForgotState(text)
                 else -> addChangePinViewModel.validatePin(text)
             }
+        }else {
+            changePinInput.isError = false
+            changePinInput.pinErrorMessageView.text = ""
         }
     }
 
@@ -123,7 +127,7 @@ class ChangePinFragment : BaseDaggerFragment() {
             if(isForgotPin) goToVerificationActivity()
             else addChangePinViewModel.changePin(pin, input, oldPin)
         }else{
-            changePinInput.setText("")
+            changePinInput.pinTextField.setText("")
             changePinInput.focus()
             displayErrorPin(getString(R.string.error_wrong_pin))
         }
@@ -190,21 +194,21 @@ class ChangePinFragment : BaseDaggerFragment() {
 
     private fun resetInputPin(){
         hideErrorPin()
-        changePinInput.setText("")
+        changePinInput.pinTextField.setText("")
     }
 
     private fun toggleForgotText(isForgot: Boolean){
         if(isForgot){
             changePinForgotBtn.apply {
                 text = getString(R.string.change_pin_forgot_btn)
-                setTextColor(resources.getColor(R.color.Green_G500))
+                setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Green_G500))
                 setOnClickListener(onForgotPinClick)
                 isEnabled = true
             }
         }else {
             changePinForgotBtn.apply {
                 text = getString(R.string.change_pin_avoid_info)
-                setTextColor(resources.getColor(R.color.Neutral_N700_44))
+                setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Neutral_N700_44))
                 isEnabled = false
             }
         }
@@ -214,28 +218,24 @@ class ChangePinFragment : BaseDaggerFragment() {
         dismissLoading()
         if(checkPinData.valid){
             if(inputNewPin) {
-                pin = changePinInput.text.toString()
+                pin = changePinInput.pinTextField.text.toString()
                 inputNewPin = false
                 konfirmasiState()
             }
             else inputNewPinState()
         }else  {
-            changePinInput.setText("")
+            changePinInput.pinTextField.setText("")
             displayErrorPin(checkPinData.errorMessage)
         }
     }
 
     private fun displayErrorPin(error: String){
-        errorPin.apply {
-            visibility = View.VISIBLE
-            text = error
-        }
+        changePinInput.isError = true
+        changePinInput.pinErrorMessageView.text = error
     }
 
     private fun hideErrorPin(){
-        if(errorPin.isVisible){
-            errorPin.visibility = View.GONE
-        }
+        changePinInput.isError = false
     }
 
     private fun onError(throwable: Throwable){
@@ -249,7 +249,7 @@ class ChangePinFragment : BaseDaggerFragment() {
 
     private fun onSuccessValidatePin(data: ValidatePinData){
         isValidated = data.valid
-        oldPin = changePinInput.text.toString()
+        oldPin = changePinInput.pinTextField.text.toString()
         if(data.valid){
             inputNewPinState()
         }else{

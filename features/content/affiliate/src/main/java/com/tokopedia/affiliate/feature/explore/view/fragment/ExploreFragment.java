@@ -3,21 +3,25 @@ package com.tokopedia.affiliate.feature.explore.view.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
@@ -26,14 +30,10 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
-import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.affiliate.R;
-import com.tokopedia.affiliatecommon.analytics.AffiliateAnalytics;
-import com.tokopedia.affiliatecommon.analytics.AffiliateEventTracking;
 import com.tokopedia.affiliate.common.di.DaggerAffiliateComponent;
-import com.tokopedia.affiliatecommon.data.util.AffiliatePreference;
 import com.tokopedia.affiliate.common.viewmodel.ExploreCardViewModel;
 import com.tokopedia.affiliate.common.viewmodel.ExploreTitleViewModel;
 import com.tokopedia.affiliate.common.widget.ExploreSearchView;
@@ -56,24 +56,21 @@ import com.tokopedia.affiliate.feature.explore.view.viewmodel.PopularProfileChil
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ProductTitleViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.RecommendationViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.SortViewModel;
-import com.tokopedia.affiliate.util.AffiliateHelper;
+import com.tokopedia.affiliatecommon.analytics.AffiliateAnalytics;
+import com.tokopedia.affiliatecommon.analytics.AffiliateEventTracking;
+import com.tokopedia.affiliatecommon.data.util.AffiliatePreference;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
-import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.design.component.Dialog;
-import com.tokopedia.design.component.ToasterError;
-import com.tokopedia.design.component.badge.BadgeView;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.kotlin.extensions.view.ViewExtKt;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.showcase.ShowCaseBuilder;
-import com.tokopedia.showcase.ShowCaseContentPosition;
-import com.tokopedia.showcase.ShowCaseDialog;
-import com.tokopedia.showcase.ShowCaseObject;
-import com.tokopedia.showcase.ShowCasePreference;
+import com.tokopedia.unifycomponents.Toaster;
+import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonItem;
+import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import org.jetbrains.annotations.NotNull;
@@ -82,6 +79,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import kotlin.Unit;
 
 /**
  * @author by yfsx on 24/09/18.
@@ -124,16 +123,15 @@ public class ExploreFragment
 
     private FrameLayout autoCompleteLayout;
     private AutoCompleteSearchAdapter autoCompleteAdapter;
-    private ImageView ivBack, ivBantuan, ivProfile;
+    private ImageView ivBack;
     private RecyclerView rvExplore, rvAutoComplete;
     private GridLayoutManager layoutManager;
     private SwipeToRefresh swipeRefreshLayout;
     private ExploreSearchView searchView;
     private FrameLayout layoutEmpty;
-    private FrameLayout layoutProfile;
-    private BottomActionView bottomActionView;
+    private FloatingButtonUnify floatingButton;
+    private ArrayList<FloatingButtonItem> floatingItems = new ArrayList<>();
     private FloatingActionButton btnBackToTop;
-    private BadgeView badgeView;
 
     private boolean isCanDoAction;
     private boolean isTraceStopped;
@@ -149,6 +147,7 @@ public class ExploreFragment
 
     @Inject
     AffiliatePreference affiliatePreference;
+    private List<SortViewModel> mSortList;
 
     public static ExploreFragment getInstance(Bundle bundle) {
         ExploreFragment fragment = new ExploreFragment();
@@ -171,13 +170,10 @@ public class ExploreFragment
         swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
         searchView = view.findViewById(R.id.search_input_view);
         ivBack = view.findViewById(R.id.iv_back);
-        ivBantuan = view.findViewById(R.id.action_bantuan);
         autoCompleteLayout = view.findViewById(R.id.layout_auto_complete);
         rvAutoComplete = view.findViewById(R.id.rv_search_auto_complete);
         layoutEmpty = view.findViewById(R.id.layout_empty);
-        layoutProfile = view.findViewById(R.id.action_profile);
-        ivProfile = view.findViewById(R.id.iv_profile);
-        bottomActionView = view.findViewById(R.id.bav);
+        floatingButton = view.findViewById(R.id.bav);
         btnBackToTop = view.findViewById(R.id.btn_back_to_top);
         adapter = new ExploreAdapter(new ExploreTypeFactoryImpl(this, this), new ArrayList<>());
         return view;
@@ -201,7 +197,6 @@ public class ExploreFragment
         layoutEmpty.setVisibility(View.GONE);
         dropKeyboard();
         initEmptyResultModel();
-        initProfileSection();
         autoCompleteLayout.setVisibility(View.GONE);
         btnBackToTop.hide();
         exploreParams = new ExploreParams();
@@ -235,43 +230,55 @@ public class ExploreFragment
 
         adapter = new ExploreAdapter(new ExploreTypeFactoryImpl(this, this), new ArrayList<>());
         rvExplore.setAdapter(adapter);
+        initFloatingItems();
     }
 
     private void initEmptyResultModel() {
         emptyResultModel = new EmptyModel();
-        emptyResultModel.setIconRes(R.drawable.ic_empty_search);
+        emptyResultModel.setIconRes(com.tokopedia.design.R.drawable.ic_empty_search);
         emptyResultModel.setTitle(
                 getString(R.string.text_product_not_found)
         );
     }
 
-    private void initProfileSection() {
-        //init image
-        if (userSession.isLoggedIn()) {
-            ImageHandler.loadImageCircle2(getActivity(), ivProfile,
-                    userSession.getProfilePicture(), R.drawable.loading_page);
-        }
+    private void initFloatingItems() {
+        if (getContext() != null) {
+            Drawable sortDrawable = ContextCompat.getDrawable(getContext(),
+                    com.tokopedia.resources.common.R.drawable.ic_system_action_sort_grayscale_24);
+            String sortStr = getContext().getString(R.string.text_button_sort);
+            Drawable filterDrawable = ContextCompat.getDrawable(getContext(),
+                    com.tokopedia.resources.common.R.drawable.ic_system_action_filter_grayscale_24);
+            String filterStr = getContext().getString(R.string.text_title_filter);
+            floatingItems.add(new FloatingButtonItem(sortDrawable, sortStr, false, () -> {
+                if (mSortList != null) {
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelableArrayList(SortActivity.PARAM_SORT_LIST,
+                            new ArrayList<>(mSortList));
+                    bundle.putParcelable(SortActivity.PARAM_SORT_SELECTED, exploreParams.getSort());
+                    startActivityForResult(SortActivity.getIntent(getActivity(), bundle),
+                            REQUEST_DETAIL_SORT);
+                    affiliateAnalytics.onSortClicked(userSession.getUserId());
+                } else {
+                    Toast.makeText(getContext(), "No sorting list found", Toast.LENGTH_SHORT).show();
+                }
 
-        if (getActivity() == null) {
-            return;
+                return Unit.INSTANCE;
+            }));
+            floatingItems.add(new FloatingButtonItem(filterDrawable, filterStr, false, () -> {
+                Bundle bundle = new Bundle();
+                bundle.putParcelableArrayList(
+                        FilterActivity.PARAM_FILTER_LIST,
+                        new ArrayList<>(getAllFilterList())
+                );
+                startActivityForResult(
+                        FilterActivity.getIntent(getActivity(), bundle),
+                        REQUEST_DETAIL_FILTER
+                );
+                affiliateAnalytics.onFilterClicked(userSession.getUserId());
+                return Unit.INSTANCE;
+            }));
         }
-
-        //init red dot
-        if (AffiliateHelper.isFirstTimeOpenProfileFromExplore(getActivity())) {
-            if (badgeView == null) {
-                badgeView = new BadgeView(getActivity());
-            }
-            badgeView.bindTarget(layoutProfile);
-            badgeView.setBadgeGravity(Gravity.END | Gravity.TOP);
-            badgeView.setBadgeNumber(-1);
-        } else {
-            if (badgeView != null) {
-                badgeView.hide(true);
-            }
-        }
-        if (!ShowCasePreference.hasShown(getActivity(), TAG_SHOWCASE)) {
-            showShowCase();
-        }
+        floatingButton.addItem(floatingItems);
     }
 
     private void initListener() {
@@ -280,33 +287,8 @@ public class ExploreFragment
         }
 
         ivBack.setOnClickListener(view -> getActivity().onBackPressed());
-        ivBantuan.setOnClickListener(view -> {
-            affiliateAnalytics.onInfoClicked();
-            goToEducation();
-        });
+
         btnBackToTop.setOnClickListener(view -> rvExplore.scrollToPosition(0));
-        layoutProfile.setOnClickListener(view -> {
-            if (!userSession.isLoggedIn()) {
-                goToLogin();
-            } else {
-                AffiliateHelper.setFirstTimeOpenProfileFromExplore(getActivity());
-                goToProfile();
-                initProfileSection();
-                affiliateAnalytics.onProfileClicked(userSession.getUserId());
-            }
-        });
-        bottomActionView.setButton2OnClickListener(view -> {
-            Bundle bundle = new Bundle();
-            bundle.putParcelableArrayList(
-                    FilterActivity.PARAM_FILTER_LIST,
-                    new ArrayList<>(getAllFilterList())
-            );
-            startActivityForResult(
-                    FilterActivity.getIntent(getActivity(), bundle),
-                    REQUEST_DETAIL_FILTER
-            );
-            affiliateAnalytics.onFilterClicked(userSession.getUserId());
-        });
     }
 
     @Override
@@ -386,7 +368,7 @@ public class ExploreFragment
                 }
 
                 if (position == 0) {
-                    outRect.top = (int) getResources().getDimension(R.dimen.dp_16);
+                    outRect.top = (int) getResources().getDimension(com.tokopedia.design.R.dimen.dp_16);
                 }
 
                 Visitable visitable = adapter.getData().get(position);
@@ -395,9 +377,9 @@ public class ExploreFragment
                     int spanIndex =
                             ((GridLayoutManager.LayoutParams) view.getLayoutParams()).getSpanIndex();
                     if (spanIndex == 0) {
-                        outRect.left = (int) getResources().getDimension(R.dimen.dp_12);
+                        outRect.left = (int) getResources().getDimension(com.tokopedia.design.R.dimen.dp_12);
                     } else {
-                        outRect.right = (int) getResources().getDimension(R.dimen.dp_12);
+                        outRect.right = (int) getResources().getDimension(com.tokopedia.design.R.dimen.dp_12);
                     }
                 }
             }
@@ -443,7 +425,7 @@ public class ExploreFragment
         }
         searchView.removeSearchTextWatcher();
         exploreParams.resetSearch();
-        bottomActionView.show(false);
+        floatingButton.show();
         populateLocalDataToAdapter();
     }
 
@@ -563,7 +545,7 @@ public class ExploreFragment
         }
         searchView.addTextWatcherToSearch();
         presenter.unsubscribeAutoComplete();
-        bottomActionView.setVisibility(View.VISIBLE);
+        floatingButton.setVisibility(View.VISIBLE);
         populateExploreItem(itemList, cursor);
     }
 
@@ -598,8 +580,14 @@ public class ExploreFragment
         if (autoCompleteLayout.getVisibility() == View.VISIBLE) {
             autoCompleteLayout.setVisibility(View.GONE);
         }
-        if (adapter.getFilterList().isEmpty()) {
-            bottomActionView.hideBav2();
+        if (adapter.getFilterList().isEmpty() && getContext() != null) {
+            String filterStr = getContext().getString(R.string.text_title_filter);
+            for (FloatingButtonItem floatingItem : floatingItems) {
+                if (floatingItem.getTitle().toString().equalsIgnoreCase(filterStr)) {
+                    floatingItems.remove(floatingItem);
+                }
+            }
+            floatingButton.addItem(floatingItems);
         }
     }
 
@@ -621,20 +609,12 @@ public class ExploreFragment
         //1. show button sort
         //2. handle onclick and passing sortlist and current selected sort (default is first data)
         if (sortList.size() > 0) {
-            bottomActionView.setVisibility(View.VISIBLE);
+            floatingButton.setVisibility(View.VISIBLE);
             sortList.get(0).setSelected(true);
             exploreParams.setSort(sortList.get(0));
-            bottomActionView.setButton1OnClickListener(view -> {
-                Bundle bundle = new Bundle();
-                bundle.putParcelableArrayList(SortActivity.PARAM_SORT_LIST,
-                        new ArrayList<>(sortList));
-                bundle.putParcelable(SortActivity.PARAM_SORT_SELECTED, exploreParams.getSort());
-                startActivityForResult(SortActivity.getIntent(getActivity(), bundle),
-                        REQUEST_DETAIL_SORT);
-                affiliateAnalytics.onSortClicked(userSession.getUserId());
-            });
+            mSortList = sortList;
         } else {
-            bottomActionView.setVisibility(View.GONE);
+            floatingButton.setVisibility(View.GONE);
         }
     }
 
@@ -666,7 +646,7 @@ public class ExploreFragment
         trackImpression(products);
 
         exploreParams.setLoading(false);
-        bottomActionView.show(false);
+        floatingButton.show();
         if (swipeRefreshLayout.isRefreshing()) {
             swipeRefreshLayout.setRefreshing(false);
         }
@@ -695,7 +675,7 @@ public class ExploreFragment
 
     @Override
     public void onErrorGetFirstData(String error) {
-        bottomActionView.setVisibility(View.GONE);
+        floatingButton.setVisibility(View.GONE);
         layoutEmpty.setVisibility(View.VISIBLE);
         exploreParams.setLoading(false);
         if (swipeRefreshLayout.isRefreshing()) {
@@ -742,7 +722,7 @@ public class ExploreFragment
     public void onEmptySearchResult() {
         exploreParams.setLoading(false);
         presenter.unsubscribeAutoComplete();
-        bottomActionView.hide();
+        floatingButton.hide();
         if (swipeRefreshLayout.isRefreshing()) {
             swipeRefreshLayout.setRefreshing(false);
         }
@@ -758,7 +738,7 @@ public class ExploreFragment
     public void onEmptyProduct() {
         exploreParams.setLoading(false);
         presenter.unsubscribeAutoComplete();
-        bottomActionView.hide();
+        floatingButton.hide();
         if (swipeRefreshLayout.isRefreshing()) {
             swipeRefreshLayout.setRefreshing(false);
         }
@@ -898,7 +878,7 @@ public class ExploreFragment
     @Override
     public void refresh() {
         presenter.unsubscribeAutoComplete();
-        bottomActionView.show();
+        floatingButton.show();
         exploreParams.resetParams();
         exploreParams.setLoading(false);
         searchView.getSearchTextView().setText("");
@@ -935,8 +915,6 @@ public class ExploreFragment
                 SortViewModel selectedSort =
                         data.getParcelableExtra(SortActivity.PARAM_SORT_SELECTED);
                 getSortedData(selectedSort);
-            } else if (requestCode == LOGIN_CODE) {
-                initProfileSection();
             } else if (requestCode == REQUEST_CREATE_POST) {
                 onRefresh();
             }
@@ -955,7 +933,7 @@ public class ExploreFragment
         presenter.detachView();
     }
 
-    private void trackImpressionSearch(List<Visitable<?>> visitables, String keyword){
+    private void trackImpressionSearch(List<Visitable<?>> visitables, String keyword) {
         for (int i = 0; i < visitables.size(); i++) {
             Visitable visitable = visitables.get(i);
 
@@ -1025,7 +1003,7 @@ public class ExploreFragment
                 position
         );
 
-        if (!TextUtils.isEmpty(exploreParams.getKeyword())){
+        if (!TextUtils.isEmpty(exploreParams.getKeyword())) {
             affiliateAnalytics.onProductSearchClicked(
                     exploreParams.getKeyword(),
                     card.getAdId(),
@@ -1042,9 +1020,8 @@ public class ExploreFragment
     }
 
     private void showError(String message, View.OnClickListener listener) {
-        ToasterError.make(getView(), message, ToasterError.LENGTH_LONG)
-                .setAction(R.string.title_try_again, listener)
-                .show();
+        Toaster.INSTANCE.make(getView(), message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
+                getString(com.tokopedia.abstraction.R.string.title_try_again), listener);
     }
 
     private void goToEducation() {
@@ -1057,34 +1034,5 @@ public class ExploreFragment
             startActivity(intent);
             affiliatePreference.setFirstTimeEducation(userSession.getUserId());
         }
-    }
-
-    private void showShowCase() {
-        ShowCaseDialog showCaseDialog = createShowCase();
-
-        ArrayList<ShowCaseObject> showcases = new ArrayList<>();
-        showcases.add(new ShowCaseObject(
-                layoutProfile,
-                getString(R.string.aff_title_showcase),
-                getString(R.string.aff_desc_showcase),
-                ShowCaseContentPosition.UNDEFINED));
-
-        showCaseDialog.show(getActivity(), TAG_SHOWCASE, showcases);
-    }
-
-    private ShowCaseDialog createShowCase() {
-        return new ShowCaseBuilder()
-                .backgroundContentColorRes(R.color.black)
-                .shadowColorRes(R.color.shadow)
-                .titleTextColorRes(R.color.white)
-                .textColorRes(R.color.grey_400)
-                .textSizeRes(R.dimen.sp_12)
-                .titleTextSizeRes(R.dimen.sp_16)
-                .nextStringRes(R.string.next)
-                .prevStringRes(R.string.previous)
-                .useCircleIndicator(true)
-                .clickable(true)
-                .useArrow(true)
-                .build();
     }
 }

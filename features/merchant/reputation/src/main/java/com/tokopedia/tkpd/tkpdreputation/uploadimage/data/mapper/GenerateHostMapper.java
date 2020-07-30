@@ -1,9 +1,10 @@
 package com.tokopedia.tkpd.tkpdreputation.uploadimage.data.mapper;
 
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.network.ErrorMessageException;
-import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import android.content.Context;
+
+import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
 import com.tokopedia.tkpd.tkpdreputation.R;
+import com.tokopedia.tkpd.tkpdreputation.network.ErrorMessageException;
 import com.tokopedia.tkpd.tkpdreputation.uploadimage.domain.model.GenerateHostDomain;
 import com.tokopedia.tkpd.tkpdreputation.uploadimage.data.pojo.GenerateHostPojo;
 
@@ -14,9 +15,16 @@ import rx.functions.Func1;
  * @author by nisie on 9/5/17.
  */
 
-public class GenerateHostMapper implements Func1<Response<TkpdResponse>, GenerateHostDomain> {
+public class GenerateHostMapper implements Func1<Response<TokopediaWsV4Response>, GenerateHostDomain> {
+
+    private Context context;
+
+    public GenerateHostMapper(Context context) {
+        this.context = context;
+    }
+
     @Override
-    public GenerateHostDomain call(Response<TkpdResponse> response) {
+    public GenerateHostDomain call(Response<TokopediaWsV4Response> response) {
 
         if (response.isSuccessful()) {
             if (!response.body().isNullData()) {
@@ -28,7 +36,7 @@ public class GenerateHostMapper implements Func1<Response<TkpdResponse>, Generat
                         && !response.body().getErrorMessages().isEmpty()) {
                     throw new ErrorMessageException(response.body().getErrorMessageJoined());
                 } else {
-                    throw new ErrorMessageException(MainApplication.getAppContext().getString
+                    throw new ErrorMessageException(context.getString
                             (R.string.default_request_error_unknown));
                 }
             }

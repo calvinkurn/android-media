@@ -1,16 +1,21 @@
 package com.tokopedia.search.result.presentation.mapper;
 
-import android.text.TextUtils;
-
+import com.tokopedia.filter.common.data.DataValue;
+import com.tokopedia.filter.common.data.Filter;
+import com.tokopedia.filter.common.data.Option;
 import com.tokopedia.search.result.domain.model.SearchProductModel;
 import com.tokopedia.search.result.presentation.model.BadgeItemViewModel;
+import com.tokopedia.search.result.presentation.model.BroadMatchItemViewModel;
+import com.tokopedia.search.result.presentation.model.BroadMatchViewModel;
 import com.tokopedia.search.result.presentation.model.FreeOngkirViewModel;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
+import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel;
 import com.tokopedia.search.result.presentation.model.LabelGroupViewModel;
 import com.tokopedia.search.result.presentation.model.LabelItemViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.search.result.presentation.model.ProductViewModel;
-import com.tokopedia.search.result.presentation.model.RelatedSearchViewModel;
+import com.tokopedia.search.result.presentation.model.QuickFilterViewModel;
+import com.tokopedia.search.result.presentation.model.RelatedViewModel;
 import com.tokopedia.search.result.presentation.model.SuggestionViewModel;
 import com.tokopedia.search.result.presentation.model.TickerViewModel;
 
@@ -19,7 +24,7 @@ import java.util.List;
 
 public class ProductViewModelMapper {
 
-    public ProductViewModel convertToProductViewModel(int lastProductItemPositionFromCache, SearchProductModel searchProductModel) {
+    public ProductViewModel convertToProductViewModel(int lastProductItemPositionFromCache, SearchProductModel searchProductModel, boolean useRatingString) {
         SearchProductModel.SearchProduct searchProduct = searchProductModel.getSearchProduct();
         ProductViewModel productViewModel = new ProductViewModel();
         productViewModel.setAdsModel(searchProductModel.getTopAdsModel());
@@ -27,31 +32,64 @@ public class ProductViewModelMapper {
             productViewModel.setGlobalNavViewModel(convertToViewModel(searchProductModel.getGlobalNavModel()));
         }
         productViewModel.setCpmModel(searchProductModel.getCpmModel());
-        if (searchProduct.getRelated() != null &&
-                !TextUtils.isEmpty(searchProduct.getRelated().getRelatedKeyword())) {
-            productViewModel.setRelatedSearchModel(convertToRelatedSearchModel(searchProduct.getRelated()));
+        if (searchProduct.getRelated() != null) {
+            productViewModel.setRelatedViewModel(convertToRelatedViewModel(searchProduct.getRelated()));
         }
-        productViewModel.setProductList(convertToProductItemViewModelList(lastProductItemPositionFromCache, searchProduct.getProducts()));
+        productViewModel.setProductList(convertToProductItemViewModelList(lastProductItemPositionFromCache, searchProduct.getProducts(), useRatingString));
         productViewModel.setAdsModel(searchProductModel.getTopAdsModel());
         productViewModel.setQuery(searchProduct.getQuery());
-        productViewModel.setShareUrl(searchProduct.getShareUrl());
         productViewModel.setTickerModel(createTickerModel(searchProduct));
         productViewModel.setSuggestionModel(createSuggestionModel(searchProduct));
         productViewModel.setTotalData(searchProduct.getCount());
         productViewModel.setResponseCode(searchProduct.getResponseCode());
+        productViewModel.setKeywordProcess(searchProduct.getKeywordProcess());
         productViewModel.setErrorMessage(searchProduct.getErrorMessage());
         productViewModel.setIsQuerySafe(searchProduct.isQuerySafe());
         if (searchProductModel.getDynamicFilterModel() != null) {
             productViewModel.setDynamicFilterModel(searchProductModel.getDynamicFilterModel());
         }
         if (searchProductModel.getQuickFilterModel() != null) {
-            productViewModel.setQuickFilterModel(searchProductModel.getQuickFilterModel());
+            productViewModel.setQuickFilterModel(
+                    convertToQuickFilterViewModel(
+                            searchProductModel.getQuickFilterModel(),
+                            searchProduct.getCountText()
+                    )
+            );
+        }
+        if (searchProductModel.getSearchInspirationCarousel() != null) {
+            productViewModel
+                    .setInspirationCarouselViewModel(
+                            convertToInspirationCarouselViewModel(searchProductModel.getSearchInspirationCarousel()
+                            )
+                    );
         }
         productViewModel.setAdditionalParams(searchProduct.getAdditionalParams());
         productViewModel.setAutocompleteApplink(searchProduct.getAutocompleteApplink());
         productViewModel.setDefaultView(searchProduct.getDefaultView());
 
         return productViewModel;
+    }
+
+    private QuickFilterViewModel convertToQuickFilterViewModel(DataValue dynamicFilterModel, String formattedResultCount) {
+        QuickFilterViewModel quickFilterViewModel = new QuickFilterViewModel();
+        quickFilterViewModel.setFormattedResultCount(formattedResultCount);
+        quickFilterViewModel.setQuickFilterList(dynamicFilterModel.getFilter());
+        quickFilterViewModel.setQuickFilterOptions(getQuickFilterOptions(dynamicFilterModel));
+        return quickFilterViewModel;
+    }
+
+    private List<Option> getQuickFilterOptions(DataValue dynamicFilterModel) {
+        ArrayList<Option> optionList = new ArrayList<>();
+
+        if (dynamicFilterModel.getFilter() == null) {
+            return optionList;
+        }
+
+        for (Filter filter : dynamicFilterModel.getFilter()) {
+            optionList.addAll(filter.getOptions());
+        }
+
+        return optionList;
     }
 
     private boolean isListContainItems(List list) {
@@ -67,6 +105,7 @@ public class ProductViewModelMapper {
                 globalNavModel.getData().getBackground(),
                 globalNavModel.getData().getSeeAllApplink(),
                 globalNavModel.getData().getSeeAllUrl(),
+                globalNavModel.getData().getIsShowTopAds(),
                 convertToViewModel(globalNavModel.getData().getGlobalNavItems())
         );
     }
@@ -95,43 +134,76 @@ public class ProductViewModelMapper {
         return itemList;
     }
 
-    private RelatedSearchViewModel convertToRelatedSearchModel(SearchProductModel.Related related) {
-        RelatedSearchViewModel relatedSearchModel = new RelatedSearchViewModel();
-        relatedSearchModel.setRelatedKeyword(related.getRelatedKeyword());
-
-        List<RelatedSearchViewModel.OtherRelated> otherRelatedList = new ArrayList<>();
-        for (SearchProductModel.OtherRelated otherRelatedResponse : related.getOtherRelated()) {
-            RelatedSearchViewModel.OtherRelated otherRelatedViewModel = new RelatedSearchViewModel.OtherRelated();
-            otherRelatedViewModel.setKeyword(otherRelatedResponse.getKeyword());
-            otherRelatedViewModel.setUrl(otherRelatedResponse.getUrl());
-            otherRelatedList.add(otherRelatedViewModel);
+    private RelatedViewModel convertToRelatedViewModel(SearchProductModel.Related related) {
+        List<BroadMatchViewModel> broadMatchViewModelList = new ArrayList<>();
+        for (SearchProductModel.OtherRelated otherRelated: related.getOtherRelated()) {
+            broadMatchViewModelList.add(convertToBroadMatchViewModel(otherRelated));
         }
-        relatedSearchModel.setOtherRelated(otherRelatedList);
 
-        return relatedSearchModel;
+        return new RelatedViewModel(
+                related.getRelatedKeyword(),
+                broadMatchViewModelList
+        );
     }
 
-    private List<ProductItemViewModel> convertToProductItemViewModelList(int lastProductItemPositionFromCache, List<SearchProductModel.Product> productModels) {
+    private BroadMatchViewModel convertToBroadMatchViewModel(SearchProductModel.OtherRelated otherRelated) {
+        List<BroadMatchItemViewModel> broadMatchItemViewModelList = new ArrayList<>();
+        int position = 0;
+        for (SearchProductModel.OtherRelatedProduct otherRelatedProduct: otherRelated.getOtherRelatedProductList()) {
+            position++;
+            broadMatchItemViewModelList.add(convertToBroadMatchItemViewModel(otherRelatedProduct, position, otherRelated.getKeyword()));
+        }
+
+        return new BroadMatchViewModel(
+                otherRelated.getKeyword(),
+                otherRelated.getUrl(),
+                otherRelated.getApplink(),
+                broadMatchItemViewModelList
+        );
+    }
+
+    private BroadMatchItemViewModel convertToBroadMatchItemViewModel(
+            SearchProductModel.OtherRelatedProduct otherRelatedProduct,
+            int position,
+            String alternativeKeyword
+    ) {
+        return new BroadMatchItemViewModel(
+                otherRelatedProduct.getId(),
+                otherRelatedProduct.getName(),
+                otherRelatedProduct.getPrice(),
+                otherRelatedProduct.getImageUrl(),
+                otherRelatedProduct.getRating(),
+                otherRelatedProduct.getCountReview(),
+                otherRelatedProduct.getUrl(),
+                otherRelatedProduct.getApplink(),
+                otherRelatedProduct.getPriceString(),
+                position,
+                alternativeKeyword
+        );
+    }
+
+    private List<ProductItemViewModel> convertToProductItemViewModelList(int lastProductItemPositionFromCache, List<SearchProductModel.Product> productModels, boolean useRatingString) {
         List<ProductItemViewModel> productItemList = new ArrayList<>();
 
         int position = lastProductItemPositionFromCache;
 
         for (SearchProductModel.Product productModel : productModels) {
             position++;
-            productItemList.add(convertToProductItem(productModel, position));
+            productItemList.add(convertToProductItem(productModel, position, useRatingString));
         }
 
         return productItemList;
     }
 
-    private ProductItemViewModel convertToProductItem(SearchProductModel.Product productModel, int position) {
+    private ProductItemViewModel convertToProductItem(SearchProductModel.Product productModel, int position, boolean useRatingString) {
         ProductItemViewModel productItem = new ProductItemViewModel();
         productItem.setProductID(productModel.getId());
         productItem.setWarehouseID(productModel.getWarehouseId());
         productItem.setProductName(productModel.getName());
         productItem.setImageUrl(productModel.getImageUrl());
         productItem.setImageUrl700(productModel.getImageUrlLarge());
-        productItem.setRating(productModel.getRating());
+        productItem.setRatingString(useRatingString ? productModel.getRatingAverage() : "");
+        productItem.setRating(useRatingString ? 0 : productModel.getRating());
         productItem.setCountReview(productModel.getCountReview());
         productItem.setCountCourier(productModel.getCourierCount());
         productItem.setDiscountPercentage(productModel.getDiscountPercentage());
@@ -155,6 +227,7 @@ public class ProductViewModelMapper {
         productItem.setIsShopPowerBadge(productModel.getShop().isPowerBadge());
         productItem.setIsShopOfficialStore(productModel.getShop().isOfficial());
         productItem.setFreeOngkirViewModel(convertToFreeOngkirViewModel(productModel.getFreeOngkir()));
+        productItem.setBoosterList(productModel.getBoosterList());
         return productItem;
     }
 
@@ -219,6 +292,8 @@ public class ProductViewModelMapper {
         TickerViewModel tickerViewModel = new TickerViewModel();
         tickerViewModel.setText(tickerModel.getText());
         tickerViewModel.setQuery(tickerModel.getQuery());
+        tickerViewModel.setTypeId(tickerModel.getTypeId());
+
         return tickerViewModel;
     }
 
@@ -229,6 +304,61 @@ public class ProductViewModelMapper {
         suggestionViewModel.setSuggestedQuery(suggestionModel.getQuery());
         suggestionViewModel.setSuggestionCurrentKeyword(suggestionModel.getCurrentKeyword());
         suggestionViewModel.setFormattedResultCount(searchProduct.getCountText());
+        suggestionViewModel.setSuggestion(suggestionModel.getSuggestion());
         return suggestionViewModel;
+    }
+
+    private  List<InspirationCarouselViewModel> convertToInspirationCarouselViewModel(SearchProductModel.SearchInspirationCarousel searchInspirationCarousel) {
+        List<InspirationCarouselViewModel> inspirationCarousel = new ArrayList<>();
+
+        for (SearchProductModel.InspirationCarouselData data : searchInspirationCarousel.getData()) {
+            inspirationCarousel.add(new InspirationCarouselViewModel(
+                    data.getTitle(),
+                    data.getType(),
+                    data.getPosition(),
+                    convertToInspirationCarouselOptionViewModel(data.getInspirationCarouselOptions(), data.getType())
+            ));
+        }
+
+        return inspirationCarousel;
+    }
+
+    private  List<InspirationCarouselViewModel.Option> convertToInspirationCarouselOptionViewModel(List<SearchProductModel.InspirationCarouselOption> inspirationCarouselOptions, String inspirationCarouselType) {
+        List<InspirationCarouselViewModel.Option> options = new ArrayList<>();
+
+        for (SearchProductModel.InspirationCarouselOption opt : inspirationCarouselOptions) {
+            int position = inspirationCarouselOptions.indexOf(opt) + 1;
+            options.add(new InspirationCarouselViewModel.Option(
+                    opt.getTitle(),
+                    opt.getUrl(),
+                    opt.getApplink(),
+                    convertToInspirationCarouselProductViewModel(opt.getInspirationCarouselProducts(), position, inspirationCarouselType),
+                    inspirationCarouselType
+            ));
+        }
+
+        return options;
+    }
+
+    private  List<InspirationCarouselViewModel.Option.Product> convertToInspirationCarouselProductViewModel(List<SearchProductModel.InspirationCarouselProduct> inspirationCarouselProduct, int position, String inspirationCarouselType) {
+        List<InspirationCarouselViewModel.Option.Product> products = new ArrayList<>();
+
+        for (SearchProductModel.InspirationCarouselProduct product : inspirationCarouselProduct) {
+            products.add(new InspirationCarouselViewModel.Option.Product(
+                    product.getId(),
+                    product.getName(),
+                    product.getPrice(),
+                    product.getPriceStr(),
+                    product.getImgUrl(),
+                    product.getRating(),
+                    product.countReview(),
+                    product.getUrl(),
+                    product.getApplink(),
+                    position,
+                    inspirationCarouselType
+            ));
+        }
+
+        return products;
     }
 }

@@ -5,6 +5,7 @@ import com.tokopedia.product.manage.item.common.di.component.ProductComponent
 import com.tokopedia.product.manage.item.common.util.ProductStatus
 import com.tokopedia.product.manage.item.catalog.view.model.ProductCatalog
 import com.tokopedia.product.manage.item.category.view.model.ProductCategory
+import com.tokopedia.product.manage.item.common.util.AddEditPageType
 import com.tokopedia.product.manage.item.main.add.di.DaggerProductAddComponent
 import com.tokopedia.product.manage.item.main.add.di.ProductAddModule
 import com.tokopedia.product.manage.item.main.add.view.listener.ProductAddView
@@ -17,6 +18,7 @@ import com.tokopedia.product.manage.item.main.base.view.model.ProductAddViewMode
 import java.util.ArrayList
 
 class ProductAddFragment : BaseProductAddEditFragment<ProductAddPresenterImpl<ProductAddView>, ProductAddView>() {
+    override var addEditPageType: AddEditPageType = AddEditPageType.ADD
     override var statusUpload: Int = ProductStatus.ADD
 
     override fun initInjector() {

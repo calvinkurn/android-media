@@ -2,9 +2,8 @@ package com.tokopedia.core.base.di.component;
 
 import android.content.Context;
 
+import com.chuckerteam.chucker.api.ChuckerInterceptor;
 import com.google.gson.Gson;
-import com.readystatesoftware.chuck.ChuckInterceptor;
-import com.tkpd.library.utils.image.ImageHandler;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TActivity;
@@ -15,25 +14,20 @@ import com.tokopedia.core.base.di.scope.ApplicationScope;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.network.core.OkHttpRetryPolicy;
 import com.tokopedia.core.network.di.qualifier.AceQualifier;
 import com.tokopedia.core.network.di.qualifier.CartQualifier;
 import com.tokopedia.core.network.di.qualifier.DefaultAuthWithErrorHandler;
 import com.tokopedia.core.network.di.qualifier.GoldMerchantQualifier;
 import com.tokopedia.core.network.di.qualifier.HadesQualifier;
 import com.tokopedia.core.network.di.qualifier.MerlinQualifier;
-import com.tokopedia.core.network.di.qualifier.MojitoGetWishlistQualifier;
 import com.tokopedia.core.network.di.qualifier.MojitoQualifier;
-import com.tokopedia.core.network.di.qualifier.MojitoWishlistActionQualifier;
 import com.tokopedia.core.network.di.qualifier.ResolutionQualifier;
 import com.tokopedia.core.network.di.qualifier.TomeQualifier;
-import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.network.di.qualifier.UploadWsV4Qualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.core.network.di.qualifier.YoutubeQualifier;
 import com.tokopedia.core.network.retrofit.interceptors.BearerInterceptor;
-import com.tokopedia.core.network.retrofit.interceptors.DebugInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
 import com.tokopedia.core.util.SessionHandler;
 
@@ -57,9 +51,6 @@ public interface AppComponent {
 
     void inject(TActivity baseActivity);
 
-    @TopAdsQualifier
-    Retrofit topAdsRetrofit();
-
     @ApplicationContext
     Context context();
 
@@ -74,12 +65,6 @@ public interface AppComponent {
 
     @MojitoQualifier
     Retrofit mojitoRetrofit();
-
-    @MojitoGetWishlistQualifier
-    Retrofit mojitoGetWishlistRetrofit();
-
-    @MojitoWishlistActionQualifier
-    Retrofit mojitoWishlistActionRetrofit();
 
     @HadesQualifier
     Retrofit hadesRetrofit();
@@ -116,17 +101,11 @@ public interface AppComponent {
 
     PostExecutionThread postExecutionThread();
 
-    OkHttpRetryPolicy okHttpRetryPolicy();
-
-    ChuckInterceptor chuckInterceptor();
-
-    DebugInterceptor debugInterceptor();
+    ChuckerInterceptor ChuckerInterceptor();
 
     SessionHandler sessionHandler();
 
     GCMHandler gcmHandler();
-
-    ImageHandler imageHandler();
 
     BearerInterceptor bearerInterceptor();
 

@@ -19,9 +19,6 @@ data class ChatNotificationsPojo(
         var chatTabCounter: ChatTabCounterPojo = ChatTabCounterPojo()
 )
 data class ChatTabCounterPojo(
-        @SerializedName("unreads")
-        @Expose
-        var unreads: Long = 1,
         @SerializedName("unreadsSeller")
         @Expose
         var unreadsSeller: Long = 1,

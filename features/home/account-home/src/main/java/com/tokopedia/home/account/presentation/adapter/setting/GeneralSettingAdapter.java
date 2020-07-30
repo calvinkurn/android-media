@@ -41,6 +41,10 @@ public class GeneralSettingAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         this.listener = listener;
     }
 
+    public void setSettingItems(List<SettingItemViewModel> settingItems) {
+        this.settingItems = settingItems;
+    }
+
     public void setListener(OnSettingItemClicked listener) {
         this.listener = listener;
     }
@@ -141,8 +145,19 @@ public class GeneralSettingAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                     .getContext()
                     .getResources()
                     .getString(R.string.title_notification_setting);
+            String preferenceTitle = itemView
+                    .getContext()
+                    .getResources()
+                    .getString(R.string.title_occ_preference_setting);
+            int boxColor = -1;
 
-            if (title.equals(notificationTitle) && !hasBeenOneMonth(title)) {
+            if (title.equals(notificationTitle)) {
+                boxColor = com.tokopedia.unifyprinciples.R.color.Red_R400;
+            } else if (title.equals(preferenceTitle)) {
+                boxColor = com.tokopedia.unifyprinciples.R.color.Red_R500;
+            }
+
+            if (boxColor > -1 && !hasBeenOneMonth(title)) {
                 int startPosition = title.length() + 1;
                 int endPosition = startPosition + indicatorNew.length() - 1;
                 title += indicatorNew;
@@ -151,7 +166,7 @@ public class GeneralSettingAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 TagRoundedSpan newTag = new TagRoundedSpan(
                         itemView.getContext(),
                         4,
-                        R.color.Red_R400,
+                        boxColor,
                         R.color.white
                 );
 

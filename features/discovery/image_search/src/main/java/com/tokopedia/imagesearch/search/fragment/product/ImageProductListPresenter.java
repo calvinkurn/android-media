@@ -19,11 +19,17 @@ public interface ImageProductListPresenter extends CustomerPresenter<ImageProduc
 
     void attachView(ImageProductListFragmentView viewListener, WishListActionListener wishlistActionListener);
 
-    void initData(List<Visitable> data, CategoryFilterModel categoryFilterModel);
+    void initData(List<Visitable> data, CategoryFilterModel categoryFilterModel, String token);
 
     void loadMoreData(int page);
+
+    void refreshData();
 
     boolean isCategoryFilterSelected(String categoryId);
 
     void setFilterCategory(String categoryId);
+
+    void requestImageSearch(String imagePath);
+
+    String getToken();
 }

@@ -23,6 +23,7 @@ import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.badge.BadgeView;
+import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.analytics.AccountAnalytics;
@@ -46,20 +47,27 @@ import javax.inject.Inject;
 public class AccountHomeFragment extends TkpdBaseV4Fragment implements
         AccountHome.View, AllNotificationListener, FragmentListener {
 
+    public static final int SELLER_TAB_INDEX = 1;
+
     @Inject
     AccountHome.Presenter presenter;
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private AppBarLayout appBarLayout;
     private AccountHomePagerAdapter adapter;
-    private BadgeView badgeView;
+    private BadgeView badgeViewInbox;
+    private BadgeView badgeViewNotification;
     private ImageButton menuNotification;
+    private ImageButton menuInbox;
+
     private int counterNumber = 0;
 
     private AccountAnalytics accountAnalytics;
 
-    public static Fragment newInstance() {
-        return new AccountHomeFragment();
+    public static Fragment newInstance(Bundle extras) {
+        Fragment fragment = new AccountHomeFragment();
+        fragment.setArguments(extras);
+        return fragment;
     }
 
     @Override
@@ -80,7 +88,13 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
         setPage();
+
+        if (getArguments() != null && getArguments().containsKey(AccountConstants.ACCOUNT_TAB)) {
+            String param = getArguments().getString(AccountConstants.ACCOUNT_TAB);
+            presenter.openTabByParam(param);
+        }
     }
 
     @Override
@@ -111,6 +125,11 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
 
             adapter.setItems(fragmentItems);
         }
+    }
+
+    @Override
+    public void openSellerTab() {
+        viewPager.setCurrentItem(SELLER_TAB_INDEX);
     }
 
     @Override
@@ -150,13 +169,21 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
         TextView title = toolbar.findViewById(R.id.toolbar_title);
         title.setText(getString(R.string.title_account));
         menuNotification = toolbar.findViewById(R.id.action_notification);
+        menuInbox = toolbar.findViewById(R.id.action_inbox);
+
         ImageButton menuSettings = toolbar.findViewById(R.id.action_settings);
 
-        menuSettings.setOnClickListener(v -> startActivity(GeneralSettingActivity.createIntent
+        menuSettings.setOnClickListener(v -> startActivity(GeneralSettingActivity.Companion.createIntent
                 (getActivity())));
         menuNotification.setOnClickListener(v -> {
+            accountAnalytics.eventTrackingNotifCenter();
             accountAnalytics.eventTrackingNotification();
             RouteManager.route(getActivity(), ApplinkConst.NOTIFICATION);
+        });
+
+        menuInbox.setOnClickListener(v -> {
+            accountAnalytics.eventTrackingInbox();
+            RouteManager.route(getActivity(), ApplinkConst.INBOX);
         });
 
         if (getActivity() instanceof AppCompatActivity) {
@@ -212,10 +239,10 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
     }
 
     @Override
-    public void showError(Throwable e) {
+    public void showError(Throwable e, String errorCode) {
         Fragment currentFragment = adapter.getItem(viewPager.getCurrentItem());
         if (currentFragment != null && currentFragment instanceof BaseAccountView) {
-            ((BaseAccountView) currentFragment).showError(e);
+            ((BaseAccountView) currentFragment).showError(e, errorCode);
         }
     }
 
@@ -237,16 +264,36 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
     }
 
     @Override
-    public void onNotificationChanged(int notificationCount, int inboxCount) {
-        if (menuNotification == null && getActivity() == null)
-            return;
-        if (badgeView == null)
-            badgeView = new BadgeView(getActivity());
+    public boolean isLightThemeStatusBar() {
+        return false;
+    }
 
-        badgeView.bindTarget(menuNotification);
-        badgeView.setBadgeGravity(Gravity.END | Gravity.TOP);
-        badgeView.setBadgeNumber(notificationCount);
+    @Override
+    public void onNotificationChanged(int notificationCount, int inboxCount) {
+        setToolbarNotificationCount(notificationCount);
+        setToolbarInboxCount(inboxCount);
+    }
+
+    private boolean setToolbarNotificationCount(int notificationCount) {
+        if (menuNotification == null && getActivity() == null)
+            return true;
+        if (badgeViewNotification == null) badgeViewNotification = new BadgeView(getActivity());
+
+        badgeViewNotification.bindTarget(menuNotification);
+        badgeViewNotification.setBadgeGravity(Gravity.END | Gravity.TOP);
+        badgeViewNotification.setBadgeNumber(notificationCount);
 
         this.counterNumber = notificationCount;
+        return false;
+    }
+
+    private void setToolbarInboxCount(int badgeNumber) {
+        if (menuInbox != null) {
+            if (badgeViewInbox == null) badgeViewInbox = new BadgeView(getContext());
+
+            badgeViewInbox.bindTarget(menuInbox);
+            badgeViewInbox.setBadgeGravity(Gravity.END | Gravity.TOP);
+            badgeViewInbox.setBadgeNumber(badgeNumber);
+        }
     }
 }

@@ -2,8 +2,8 @@ package com.tokopedia.kol.feature.post.data.mapper;
 
 import android.text.TextUtils;
 
-import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
-import com.tokopedia.kol.common.network.GraphqlErrorException;
+import com.tokopedia.network.data.model.response.GraphqlResponse;
+import com.tokopedia.kolcommon.util.GraphqlErrorException;
 import com.tokopedia.kol.feature.post.data.pojo.GetUserKolPostResponse;
 import com.tokopedia.kol.feature.post.data.pojo.PostKol;
 import com.tokopedia.kol.feature.post.data.pojo.PostKolContent;

@@ -1,10 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">product_detail</string>
+
+    <string name="GOOGLE_API_KEY">AIzaSyAqJLm1orGnm6BYnTu0a9uIjwS4gd8ThRY</string>
+
     <string name="label_flash_sale">Flash Sale</string>
     <string name="product_detail_discussion">Diskusi</string>
     <string name="product_detail_courier">Pengiriman</string>
     <string name="delivery_label">Pengiriman</string>
     <string name="label_seen">Dilihat</string>
+    <string name="label_dibeli">Dibeli</string>
     <string name="label_success_transaction">Transaksi Berhasil</string>
     <string name="label_product_variant">Varian Produk</string>
     <string name="label_choose_product_variant"><![CDATA[Pilih warna & ukuran]]></string>
@@ -14,6 +19,7 @@
     <string name="label_product_condition">Kondisi</string>
     <string name="label_read_detail">Baca Selengkapnya</string>
     <string name="label_product_desc">Deskripsi Produk</string>
+    <string name="label_image_preview_pdp">Gambar produk</string>
     <string name="transition_video_horizontal_scroll">transition_video_horizontal_scroll</string>
     <string name="transition_description">description_transition</string>
     <string name="title_activity_product_detail">Rincian Produk</string>
@@ -22,22 +28,27 @@
     <string name="template_weight">%1$s %2$s</string>
     <string name="template_campaign_off">%1$s%% OFF </string>
     <string name="template_review">%1$d Ulasan</string>
-    <string name="template_success_rate">%1$s%% (%2$s produk)</string>
-    <string name="template_talk">%1$d Diskusi</string>
+    <string name="template_success_rate">%1$s%% (%2$s)</string>
+    <string name="template_talk">%1$d Q&amp;A</string>
     <string name="template_preorder_time">%1$d %2$s</string>
     <string name="template_min_order">%1$d Buah</string>
     <string name="buy_now">Beli Sekarang</string>
     <string name="add_product_to_cart">Tambah ke Keranjang</string>
+    <string name="ticker_atc_done_some_store">Barang dikirim dari toko yang sama</string>
+    <string name="ticker_atc_done_different_store">Barang dikirim dari toko yang berbeda</string>
+    <string name="plus_product_to_cart">+ Keranjang</string>
     <string name="apply_credit">Ajukan Kredit</string>
     <string name="buy">Beli</string>
     <string name="promo_hourly">Promo Perjam</string>
     <string name="promote_topads">Iklankan</string>
     <string name="rincian_topads">Rincian Iklan</string>
     <string name="no_stock">Stok Kosong</string>
-    <string name="action_preorder">PREORDER</string>
-    <string name="product_from">Produk</string>
+    <string name="stock_habis">Stok Habis</string>
+    <string name="action_preorder">PreOrder</string>
+    <string name="product_from">Produk dari</string>
     <string name="from_official_store_label">Official Store</string>
     <string name="from_power_badge_label">Power Merchant</string>
+    <string name="label_oke_pdp">Oke</string>
 
     <string name="label_cart">Keranjang</string>
     <string name="label_move_to_warehouse">Gudangkan</string>
@@ -46,7 +57,6 @@
     <string name="label_product_installment">Cicilan</string>
     <string name="label_format_wholesale">Mulai dari %1$s</string>
 
-    <string name="GOOGLE_API_KEY">AIzaSyCRkgwGBe8ZxjcK07Cnl3Auf72BpgA6lLo</string>
     <string name="label_weight">Berat</string>
     <string name="label_asuransi">Asuransi</string>
     <string name="label_category">Kategori</string>
@@ -63,6 +73,7 @@
     <string name="product_shop_label">Penjual</string>
     <string name="label_chat_seller">Chat Penjual</string>
     <string name="label_favorite">Favoritkan</string>
+    <string name="label_follow">Follow</string>
     <string name="label_favorited">Followed</string>
     <string name="template_shop_last_login">\u2022 %s</string>
     <string name="campaign_expired_title">Waktu sudah berakhir</string>
@@ -79,6 +90,7 @@
     <string name="template_last_update_price">Perubahan Harga Terakhir : %1$s</string>
     <string name="title_voucher_code_copied">Kode Voucher berhasil disalin</string>
     <string name="title_image_review">Foto dari Pembeli</string>
+    <string name="title_buyer_review">Ulasan Pembeli</string>
     <string name="title_most_helpful_review">Ulasan Paling Membantu</string>
     <string name="label_see_all_review">Lihat Semua Ulasan (%1$s)</string>
     <string name="title_latest_talk">Diskusi Terakhir</string>
@@ -106,6 +118,7 @@
     <string name="title_cod">Bayar di Tempat</string>
     <string name="cod_content">Bayar ke kurir saat pesanan diterima. Tersedia di beberapa kota tertentu</string>
     <string name="installment_template">Bunga %1$s%% mulai dari %2$s</string>
+    <string name="new_installment_template">Cicilan mulai dari %s</string>
     <string name="pdp_label_cart_count_max">99+</string>
     <string name="label_atc_open_cart">Lihat</string>
     <string name="template_installment">Min. Pembelanjaan %1$s</string>
@@ -121,6 +134,7 @@
     <string name="success_to_report">Laporanmu sudah tercatat dan akan segera diproses.</string>
     <string name="pdp_search_hint">Cari %s di Tokopedia</string>
     <string name="label_prescription">Obat Keras</string>
+    <string name="label_no_description">TIDAK ADA DESKRIPSI</string>
 
     <string name="value_proposition_learn_more">Pelajari Selengkapnya</string>
     <string name="value_proposition_title_guarantee">Garansi Harga Termurah</string>
@@ -132,10 +146,96 @@
     <string name="value_proposition_title_original">Pasti ori</string>
     <string name="value_proposition_desc_original">Semua barang di Official Store Tokopedia dijamin asli. Kalau terbukti palsu, uangmu akan dikembalikan 2x lipat.</string>
     <string name="recom_go_to_wishlist">Lihat Wishlist</string>
-    <string name="atc_done_add_product_success">Produk berhasil ditambahkan</string>
+    <string name="atc_done_add_product_success">Barang berhasil ditambahkan</string>
+    <string name="atc_done_add_product_success_button">Berhasil ditambahkan</string>
     <string name="atc_done_see_cart">Lihat Keranjang</string>
     <string name="pdp_etalase_empty_default_value">Semua  Etalase</string>
     <string name="atc_free_ongkir_title">Produk berhasil ditambah ke keranjang. Dapatkan <b>gratis ongkir</b> untuk pembelian produk ini.</string>
     <string name="recom_see_more_title">Lihat semua</string>
+
+    <string name="review_like_pattern">%1$d orang</string>
+    <string name="date_review_pattern">%1$s oleh %2$s</string>
+    <string name="txt_most_helpfull">terbantu dengan ulasan ini</string>
+    <string name="txt_more_item_plus">%1$d +</string>
+    <string name="counter_pattern_string">%1$s / %2$d</string>
+    <string name="shipping_pattern_string">%1$d Kurir • </string>
+    <string name="ongkir_pattern_string">%1s dari <b>%2s</b></string>
+    <string name="ongkir_pattern_string_dynamic_pdp"><![CDATA[%1s <br>ke <b>%2s</b>]]></string>
+    <string name="review_counter">• %1$d ulasan</string>
+    <string name="label_see_all_with_counter">Lainnya \n %2$d</string>
+
+    <string name="ft_label_without_credit_card">Tanpa Kartu Kredit</string>
+    <string name="ft_label_with_credit_card">Dengan Kartu Kredit</string>
+    <string name="ft_installment_heading">Cicilan dengan %s</string>
+    <string name="pdp_installment_price_heading">Cicilan %sx</string>
+    <string name="ft_installment_data_heading">Berminat menggunakan %s? Ini caranya</string>
+    <string name="ft_instruction_heading">Langkah %s</string>
+    <string name="pdp_installment_price_ext"> /bulan</string>
+    <string name="ft_min_installment_amount">Min Pembelanjaan %s</string>
+    <string name="ft_max_installment_amount">Maks Pembelanjaan %s</string>
+    <string name="pdp_installment_desc">Lihat Semua Metode</string>
+
+    <string name="pdp_etalase_applink_builder">https://www.tokopedia.com/%s/etalase</string>
+    <string name="pdp_category_applink">https://www.tokopedia.com/p/</string>
+
+    <string-array name="ft_installment_type_title">
+        <item>@string/ft_label_without_credit_card</item>
+        <item>@string/ft_label_with_credit_card</item>
+    </string-array>
+
+    <string name="image_preview_add_wishlist">Tambahkan ke Wishlist</string>
+    <string name="image_preview_remove_wishlist">Hapus dari Wishlist</string>
+    <string name="image_preview_add_wishlist_success">Berhasil menambahkan ke Wishlist</string>
+    <string name="image_preview_remove_wishlist_success">Berhasil menghapus dari Wishlist</string>
+    <string name="on_error_p1_string_builder">Error getPdpLayout. userId: %1$s | userEmail: %2$s | %3$s</string>
+
+    //Error section
+    <string name="banned_product_title">Barang ini dilarang</string>
+    <string name="banned_product_description">Barang ini tidak diperjual belikan \nkarena melanggar syarat dan ketentuan Tokopedia</string>
+
+    //Variant section
+    <string name="add_to_cart_error_variant">Oops, kamu wajib pilih varian.</string>
+    <string name="variant_failed_load">Variannya belum muncul, refresh yuk!</string>
+    <string name="product_refresh">Refresh</string>
+    <string name="tradein_error_label">Stok sudah habis. Cari barang lain untuk bisa gunakan Tukar Tambah</string>
+
+    //Check Imei
+    <string name="ask_phone_state_rationale">Izinkan Tokopedia mengakses panggilan telepon untuk pastikan kamu adalah pengguna baru.</string>
+    <string name="ask_phone_state_title">Aktifkan akses telepon, yuk!</string>
+    <string name="check_imei_description">Untuk membeli produk ini, Tokopedia memerlukan akses perangkat untuk memastikan kamu adalah pengguna baru.</string>
+    <string name="check_imei_title">Butuh Akses ke HP-mu</string>
+    <string name="check_imei_btn_rationale">Ke Pengaturan HP</string>
+    <string name="check_imei_btn_later">Nanti Saja</string>
+    <string name="check_imei_understand_title">Berikan Akses</string>
+
+    //NotifyMe (UpComing Teaser) section
+    <string name="notify_me_active">Pengingat Aktif</string>
+    <string name="notify_me_inactive">Ingatkan Saya</string>
+    <string name="notify_me_subtitle">Dimulai dalam %1$s</string>
+    <string name="notify_me_subtitle_main">Dimulai dalam</string>
+    <string name="notify_me_title">Kejar Diskon</string>
+    <string name="notify_me_success_registered_message">Kamu berhasil menambah produk ke Diskon Yang Dikejar.</string>
+    <string name="notify_me_success_unregistered_message">Kamu berhasil menghapus produk ini dari daftar Diskon Yang Dikejar</string>
+
+    <!-- OVO -->
+    <string name="product_detail_price__goods">Harga Barang</string>
+    <string name="product_detail_estimation_price_min">Estimasi Ongkir termurah</string>
+    <string name="product_detail_ovo_cash_points">OVO Cash + OVO Points</string>
+    <string name="product_detail_total_pay">OVO Kamu Kurang</string>
+
+    // Discussion Most Helpful
+    <string name="product_detail_discussion_title">Q&amp;A (%d)</string>
+    <string name="product_detail_discussion_see_all">Lihat Semua</string>
+    <string name="product_detail_discussion_no_answers">Belum ada jawaban</string>
+    <string name="product_detail_discussion_other_answers">Lihat %d jawaban lainnya</string>
+    <string name="product_detail_discussion_attached_products">%d produk</string>
+    <string name="product_detail_discussion_empty_subtitle">Tanya di Q&amp;A aja!</string>
+    <string name="product_detail_discussion_empty_description">Masih ragu dengan barang ini? Tanyain langsung aja di sini.</string>
+    <string name="product_detail_discussion_empty_button">Kirim Pertanyaan</string>
+    <string name="product_detail_discussion_formatted_date">• %s</string>
+    <string name="product_detail_discussion_total_answers">%d jawaban</string>
+    <string name="product_detail_discussion_seller_label">Penjual</string>
+    <string name="product_detail_discussion_local_load_title">Q&amp;A gagal ditampilkan</string>
+    <string name="product_detail_discussion_local_load_description">Klik ikon di samping untuk coba lagi.</string>
 
 </resources>

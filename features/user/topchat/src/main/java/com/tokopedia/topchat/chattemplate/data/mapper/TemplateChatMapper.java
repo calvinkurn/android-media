@@ -1,10 +1,9 @@
 package com.tokopedia.topchat.chattemplate.data.mapper;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
 import com.tokopedia.network.data.model.response.DataResponse;
 import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateData;
-import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateViewModel;
+import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateUiModel;
 import com.tokopedia.topchat.chattemplate.view.viewmodel.TemplateChatModel;
 
 import java.util.ArrayList;
@@ -19,14 +18,14 @@ import rx.functions.Func1;
  * Created by stevenfredian on 11/27/17.
  */
 
-public class TemplateChatMapper implements Func1<Response<DataResponse<TemplateData>>, GetTemplateViewModel> {
+public class TemplateChatMapper implements Func1<Response<DataResponse<TemplateData>>, GetTemplateUiModel> {
 
     @Inject
     public TemplateChatMapper() {
     }
 
     @Override
-    public GetTemplateViewModel call(Response<DataResponse<TemplateData>> response) {
+    public GetTemplateUiModel call(Response<DataResponse<TemplateData>> response) {
         if (response.isSuccessful() &&
                 response.body().getHeader() == null ||
                 (response.body().getHeader() != null && response.body().getHeader().getMessages().isEmpty()
@@ -39,8 +38,8 @@ public class TemplateChatMapper implements Func1<Response<DataResponse<TemplateD
 
     }
 
-    private GetTemplateViewModel convertToDomain(TemplateData data) {
-        GetTemplateViewModel model = new GetTemplateViewModel();
+    private GetTemplateUiModel convertToDomain(TemplateData data) {
+        GetTemplateUiModel model = new GetTemplateUiModel();
         List<Visitable> list = new ArrayList<>();
         if (data.getTemplates() != null) {
             for (int i = 0; i < data.getTemplates().size(); i++) {

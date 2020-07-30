@@ -4,17 +4,13 @@
 
     <item
         android:id="@+id/add_product_menu"
-        android:icon="@drawable/ic_action_add"
+        android:icon="@drawable/ic_action_add_dark"
         android:title="@string/title_add_product"
         app:showAsAction="always">
         <menu>
             <item
                 android:id="@+id/label_view_add_image"
                 android:title="@string/add_product_text_description"
-                app:showAsAction="never" />
-            <item
-                android:id="@+id/label_view_import_from_instagram"
-                android:title="@string/import_from_instagram_to_draft"
                 app:showAsAction="never" />
         </menu>
     </item>

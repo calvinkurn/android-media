@@ -3,6 +3,7 @@ package com.tokopedia.product.detail.view.viewholder
 import android.view.View
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.spesification.SpecificationBodyDataModel
 
@@ -12,6 +13,6 @@ class ProductSpecificationBodyViewHolder(view: View) : AbstractViewHolder<Specif
     private val valueTxt: TextView = view.findViewById(R.id.value_specification)
     override fun bind(element: SpecificationBodyDataModel) {
         keyTxt.text = element.title
-        valueTxt.text = element.description
+        valueTxt.text = MethodChecker.fromHtml(element.description)
     }
 }

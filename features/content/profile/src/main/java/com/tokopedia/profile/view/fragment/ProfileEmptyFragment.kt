@@ -2,19 +2,18 @@ package com.tokopedia.profile.view.fragment
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.graphql.data.GraphqlClient
-import com.tokopedia.kol.KolComponentInstance
-import com.tokopedia.profile.ProfileModuleRouter
 import com.tokopedia.profile.R
 import com.tokopedia.profile.di.DaggerProfileComponent
 import com.tokopedia.profile.view.activity.ProfileActivity
@@ -30,8 +29,6 @@ class ProfileEmptyFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFacto
         ProfileEmptyContract.View {
 
     private var userId: Int = 0
-
-    override lateinit var profileRouter: ProfileModuleRouter
 
     @Inject
     lateinit var presenter: ProfileEmptyContract.Presenter
@@ -66,9 +63,11 @@ class ProfileEmptyFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFacto
 
     override fun initInjector() {
         activity?.let {
+            val appComponent = (it.application as BaseMainApplication).baseAppComponent
+
             GraphqlClient.init(it)
             DaggerProfileComponent.builder()
-                    .kolComponent(KolComponentInstance.getKolComponent(it.application))
+                    .baseAppComponent(appComponent)
                     .build()
                     .inject(this)
         }
@@ -124,12 +123,6 @@ class ProfileEmptyFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFacto
             } catch (e: java.lang.NumberFormatException) {
                 activity?.finish()
             }
-        }
-        if (context!!.applicationContext is ProfileModuleRouter) {
-            profileRouter = context!!.applicationContext as ProfileModuleRouter
-        } else {
-            throw IllegalStateException("Application must implement "
-                    .plus(ProfileModuleRouter::class.java.simpleName))
         }
     }
 }

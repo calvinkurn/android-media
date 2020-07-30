@@ -121,6 +121,11 @@ class MerchantVoucherViewUsed : CustomVoucherView {
                     btnUseVoucher.visibility = View.VISIBLE
                     btnUseVoucher.isEnabled = false
                 }
+                (merchantVoucherViewModel.status == MerchantVoucherStatusTypeDef.TYPE_RESTRICTED) -> {
+                    btnUseVoucher.text = context.getString(R.string.restricted)
+                    btnUseVoucher.visibility = View.VISIBLE
+                    btnUseVoucher.isEnabled = false
+                }
                 (merchantVoucherViewModel.status == MerchantVoucherStatusTypeDef.TYPE_IN_USE) -> {
                     MethodChecker.setBackground(
                             btnUseVoucher,

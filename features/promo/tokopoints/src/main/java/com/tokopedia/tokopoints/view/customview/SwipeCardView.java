@@ -5,11 +5,6 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.graphics.Color;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.ContextCompat;
-import androidx.cardview.widget.CardView;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -20,6 +15,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
@@ -63,7 +62,7 @@ public class SwipeCardView extends FrameLayout implements View.OnTouchListener {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) mTouchView.getLayoutParams();
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mTouchView.getLayoutParams();
         mMinWidth = params.width;
         mTouchView.setOnTouchListener(this);
 
@@ -117,7 +116,7 @@ public class SwipeCardView extends FrameLayout implements View.OnTouchListener {
                 if (event.getX() > mMinWidth
                         && isLeftSwipe(dx)
                         && event.getX() < getMaxSwipeWidth()) {
-                    ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) mTouchView.getLayoutParams();
+                    RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mTouchView.getLayoutParams();
                     layoutParams.width = (int) event.getX();
                     mTouchView.setLayoutParams(layoutParams);
                     if (event.getX() > getMaxSwipeWidth() * .3) {
@@ -133,7 +132,7 @@ public class SwipeCardView extends FrameLayout implements View.OnTouchListener {
                 if (Math.abs(x1 - event.getX()) > MIN_SWIPE_AMOUNT_PX) {
                     if (event.getX() > getMaxSwipeWidth() * .75) {
                         isSwipeEnable = false;
-                        ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) mTouchView.getLayoutParams();
+                        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mTouchView.getLayoutParams();
                         ValueAnimator anim = ValueAnimator.ofInt(layoutParams.width, getMaxSwipeWidth());
                         anim.addUpdateListener(valueAnimator -> {
                             int val = (Integer) valueAnimator.getAnimatedValue();
@@ -153,7 +152,7 @@ public class SwipeCardView extends FrameLayout implements View.OnTouchListener {
                         }, DELAY_SHOW_CHECK_MS);
                     } else {
                         isSwipeEnable = true;
-                        ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) mTouchView.getLayoutParams();
+                        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mTouchView.getLayoutParams();
                         ValueAnimator anim = ValueAnimator.ofInt(layoutParams.width, mMinWidth);
                         anim.addUpdateListener(valueAnimator -> {
                             int val = (Integer) valueAnimator.getAnimatedValue();
@@ -199,7 +198,7 @@ public class SwipeCardView extends FrameLayout implements View.OnTouchListener {
     }
 
     public void reset() {
-        ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) mTouchView.getLayoutParams();
+        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mTouchView.getLayoutParams();
         ValueAnimator anim = ValueAnimator.ofInt(layoutParams.width, mMinWidth);
         anim.addUpdateListener(valueAnimator -> {
             int val = (Integer) valueAnimator.getAnimatedValue();
@@ -235,5 +234,9 @@ public class SwipeCardView extends FrameLayout implements View.OnTouchListener {
         void onComplete();
 
         void onPartialSwipe();
+    }
+
+    public String getCouponCode(){
+        return mTextCoupon.getText().toString();
     }
 }

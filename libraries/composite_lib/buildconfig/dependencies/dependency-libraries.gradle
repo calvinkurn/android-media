@@ -1,0 +1,1 @@
+apply from: "$rootProject.projectDir/../../buildconfig/dependencies/dependency-libraries.gradle"

@@ -3,7 +3,6 @@ package com.tokopedia.promocheckout.common.data.entity.request
 import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.purchase_platform.common.data.model.request.checkout.TokopediaCornerData
 
 /**
  * Created by Irfan Khoirul on 19/03/19.
@@ -31,11 +30,11 @@ data class Promo(
         @SerializedName("is_trade_in")
         var isTradeIn: Int? = 0,
 
-        @SerializedName("state")
-        var state: String = "",
+        @SerializedName("is_trade_in_drop_off")
+        var isTradeInDropOff: Int? = 0,
 
-        @SerializedName("tokopedia_corner_data")
-        var tokopediCornerData: TokopediaCornerData? = null
+        @SerializedName("state")
+        var state: String = ""
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
             arrayListOf<String>().apply {
@@ -49,9 +48,9 @@ data class Promo(
                 parcel.readList(this, Order::class.java.classLoader)
             },
             parcel.readValue(Int::class.java.classLoader) as? Int,
-            parcel.readString() ?: "",
-            parcel.readParcelable(TokopediaCornerData::class.java.classLoader) ?: null
-    )
+            parcel.readValue(Int::class.java.classLoader) as? Int,
+            parcel.readString() ?: "") {
+    }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeList(codes)
@@ -60,9 +59,9 @@ data class Promo(
         parcel.writeValue(skipApply)
         parcel.writeValue(isSuggested)
         parcel.writeList(orders)
-        parcel.writeValue(skipApply)
+        parcel.writeValue(isTradeIn)
+        parcel.writeValue(isTradeInDropOff)
         parcel.writeString(state)
-        parcel.writeParcelable(tokopediCornerData, flags)
     }
 
     override fun describeContents(): Int {

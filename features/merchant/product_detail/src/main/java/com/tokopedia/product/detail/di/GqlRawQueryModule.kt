@@ -3,8 +3,9 @@ package com.tokopedia.product.detail.di
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.atc_common.AtcConstant
 import com.tokopedia.product.detail.R
-import com.tokopedia.transaction.common.usecase.SubmitHelpTicketUseCase
+import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.SubmitHelpTicketUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap
@@ -21,6 +22,13 @@ class GqlRawQueryModule {
     @StringKey(RawQueryKeyConstant.QUERY_PRODUCT_INFO)
     fun provideRawProductInfo(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_product_info)
+
+    @ProductDetailScope
+    @Provides
+    @IntoMap
+    @StringKey(RawQueryKeyConstant.QUERY_TRADE_IN)
+    fun provideRawTradeIn(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, com.tokopedia.common_tradein.R.raw.gql_validate_tradein)
 
     @ProductDetailScope
     @Provides
@@ -74,6 +82,13 @@ class GqlRawQueryModule {
     @ProductDetailScope
     @Provides
     @IntoMap
+    @StringKey(RawQueryKeyConstant.QUERY_GET_TOP_ADS_MANAGE_PRODUCT)
+    fun provideRawGetTopAds(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_top_ads_product_manage)
+
+    @ProductDetailScope
+    @Provides
+    @IntoMap
     @StringKey(RawQueryKeyConstant.QUERY_GET_MOST_HELPFUL_REVIEW)
     fun provideRawGetMostHelpfulReview(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_product_most_helpful_review)
@@ -84,6 +99,13 @@ class GqlRawQueryModule {
     @StringKey(RawQueryKeyConstant.QUERY_GET_LATEST_TALK)
     fun provideRawGetLatestTalk(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_product_latest_talk)
+
+    @ProductDetailScope
+    @Provides
+    @IntoMap
+    @StringKey(RawQueryKeyConstant.QUERY_DISCUSSION_MOST_HELPFUL)
+    fun provideRawDiscussionMostHelpful(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.gql_talk_discussion_most_helpful)
 
     @ProductDetailScope
     @Provides
@@ -132,14 +154,7 @@ class GqlRawQueryModule {
     @IntoMap
     @StringKey(RawQueryKeyConstant.QUERY_INSTALLMENT)
     fun provideGetInstallment(@ApplicationContext context: Context): String =
-        GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_installment)
-
-    @ProductDetailScope
-    @Provides
-    @IntoMap
-    @StringKey(RawQueryKeyConstant.QUERY_CHECKOUTTYPE)
-    fun provideCheckoutType(@ApplicationContext context: Context): String =
-        GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_checkout_type)
+            GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_installment)
 
     @ProductDetailScope
     @Provides
@@ -179,8 +194,24 @@ class GqlRawQueryModule {
     @ProductDetailScope
     @Provides
     @IntoMap
+    @StringKey(RawQueryKeyConstant.QUERY_PDP_FINANCING_RECOMMENDATION)
+    fun providePDPFinancingRecommendation(@ApplicationContext context: Context): String {
+        return GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_installment_recommendation)
+    }
+
+    @ProductDetailScope
+    @Provides
+    @IntoMap
+    @StringKey(RawQueryKeyConstant.QUERY_PDP_FINANCING_CALCULATION)
+    fun providePDPFinancingCalculation(@ApplicationContext context: Context): String {
+        return GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_installment_calculations)
+    }
+
+    @ProductDetailScope
+    @Provides
+    @IntoMap
     @StringKey(RawQueryKeyConstant.QUERY_RECOMMEN_PRODUCT)
-    fun proviceRecommendationProduct(@ApplicationContext context: Context): String =
+    fun provideRecommendationProduct(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.query_recommendation_widget)
 
     @ProductDetailScope
@@ -206,15 +237,57 @@ class GqlRawQueryModule {
 
     @ProductDetailScope
     @Provides
-    @Named(SubmitHelpTicketUseCase.QUERY_NAME)
-    fun provideSubmitHelpTicket(@ApplicationContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, com.tokopedia.transaction.common.R.raw.submit_help_ticket)
+    @IntoMap
+    @StringKey(RawQueryKeyConstant.QUERY_GET_PDP_LAYOUT)
+    fun provideGetPdpLayout(@ApplicationContext context: Context): String {
+        return GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_pdp_layout)
+    }
 
     @ProductDetailScope
     @Provides
-    @Named(RawQueryKeyConstant.MUTATION_UPDATE_CART_COUNTER)
-    fun provideAddToCartMutation(@ApplicationContext context: Context): String {
+    @IntoMap
+    @StringKey(RawQueryKeyConstant.QUERY_GET_CART_TYPE)
+    fun provideGetCartType(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_cart_type)
+
+
+    @ProductDetailScope
+    @Provides
+    @Named(SubmitHelpTicketUseCase.QUERY_NAME)
+    fun provideSubmitHelpTicket(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, com.tokopedia.purchase_platform.common.R.raw.submit_help_ticket)
+
+    @ProductDetailScope
+    @Provides
+    @Named(AtcConstant.MUTATION_UPDATE_CART_COUNTER)
+    fun provideUpdateCartCounterMutation(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.gql_update_cart_counter)
     }
 
+    @ProductDetailScope
+    @Provides
+    @Named("atcMutation")
+    fun provideAddToCartMutation(@ApplicationContext context: Context):
+            String = GraphqlHelper.loadRawString(context.resources, R.raw.mutation_add_to_cart)
+
+    @ProductDetailScope
+    @Provides
+    @Named("atcOcsMutation")
+    fun provideAddToCartOcsMutation(@ApplicationContext context: Context): String {
+        return GraphqlHelper.loadRawString(context.resources, R.raw.mutation_add_to_cart_one_click_shipment)
+    }
+
+    @ProductDetailScope
+    @Provides
+    @Named(AtcConstant.MUTATION_ATC_OCC)
+    fun provideAtcOccMutation(@ApplicationContext context: Context): String {
+        return GraphqlHelper.loadRawString(context.resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart_one_click_checkout)
+    }
+
+    @ProductDetailScope
+    @Provides
+    @IntoMap
+    @StringKey(RawQueryKeyConstant.MUTATION_NOTIFY_ME)
+    fun provideNotifyMeStatus(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.gql_check_campaign_notify_me)
 }

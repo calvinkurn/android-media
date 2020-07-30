@@ -1,35 +1,93 @@
-// jadi cara `ini` store semua variable diantara task
-task readGradlefile(type: ReadGradlefileTasks){
-    subprojects = project.subprojects
+import com.tokopedia.plugin.ReadVersionConfigTask
+import com.tokopedia.plugin.ScanProjectTask
+import com.tokopedia.plugin.ScanLatestVersionTask
+import com.tokopedia.plugin.ScanModuleToPublishTask
+import com.tokopedia.plugin.PublishCompositeTask
+import com.tokopedia.plugin.PrintLatestVersionTask
+
+// -PmoduleLatestVersion=<location of latest Version File Path>
+task scanLatestVersion(type: ScanLatestVersionTask){
+    doFirst {
+        println("[SCAN LATEST VERSION TASK START]")
+    }
     doLast{
-        lastRelease = scanReleaseDate.listReleaseDate[scanReleaseDate.listReleaseDate.size()-1]
-        listVersion = versionDependency.listVersion
-        listTree = versionDependency.listTree
-        topList()
-        readVersionConfig()
-        moduleVersionUpdate()
+        println("[SCAN LATEST VERSION TASK FINISHED]")
     }
 }
 
-// scan semua subproject dan simpan dalam list `listModule`
-task scanSubproject(type: ScanSubprojectTasks){}
-
-
-// simpan lokasi release date `fileDir` & scan semua release date dan simpan di list `listReleaseDate`
-task scanReleaseDate(type: ScanReleaseDateTasks,dependsOn: scanSubproject){
-    fileDir = 'tools/version/release_date.txt'
+// -PmoduleToPublish=<list Of module To Publish File Path> and
+task scanModuleToPublish(type: ScanModuleToPublishTask){
+    doFirst {
+        println("[SCAN MODULE TO PUBLISH TASK START]")
+    }
     doLast{
-        println "scan release date"
+        println("[SCAN MODULE TO PUBLISH TASK FINISHED]")
     }
 }
 
-task versionDependency(type: VersionTasks, dependsOn: scanReleaseDate) {
-    // simpan list release date
-    listReleaseDate = scanReleaseDate.listReleaseDate
+task readVersionConfigTask(type: ReadVersionConfigTask) {
+    doFirst {
+        println("[READ VERSION CONFIG TASK START]")
+    }
+    doLast {
+        println("[READ VERSION CONFIG TASK END]")
+    }
+}
 
-    // setelah task dipanggil selesaikan dengan readGradle
-    finalizedBy readGradlefile
 
-    // simpan root Project {Project}
-    rootProjectTask = rootProject
+task scanProjectTask(type: ScanProjectTask) {
+    dependsOn 'readVersionConfigTask'
+    dependsOn 'scanLatestVersion'
+    dependsOn 'scanModuleToPublish'
+    doFirst {
+        if (!scanLatestVersion.successScan) {
+            throw new StopExecutionException()
+        } else if (!scanModuleToPublish.successScan) {
+            throw new StopExecutionException()
+        } else {
+            println("[VERSION TASK START]")
+            versionConfigMap = readVersionConfigTask.versionConfigMap
+            versionSuffix = readVersionConfigTask.versionSuffix
+            moduleLatestVersionMap = scanLatestVersion.moduleLatestVersionMap
+            moduleToPublishList = scanModuleToPublish.moduleToPublishList
+        }
+    }
+    doLast {
+        println("[VERSION TASK END]")
+    }
+}
+
+task writeLatestVersion(type: PrintLatestVersionTask){
+    dependsOn 'scanLatestVersion'
+    doFirst {
+        if (!versionDependency.successPublish) {
+            throw new StopExecutionException()
+        }
+        println("[WRITE LATEST VERSION START]")
+        projectToArtifactInfoList = versionDependency.projectToArtifactInfoList
+        artifactIdToProjectNameList = versionDependency.artifactIdToProjectNameList
+        successModuleList = versionDependency.successModuleList
+        moduleLatestVersionMap = scanLatestVersion.moduleLatestVersionMap
+    }
+    doLast {
+        println("[WRITE LATEST VERSION FINISHED]")
+    }
+}
+
+// need parameter
+// -PmoduleToPublish=<list Of module To Publish> and
+// -PmoduleLatestVersion=<location of latest Version>
+task versionDependency(type: PublishCompositeTask){
+    dependsOn 'scanProjectTask'
+    doFirst {
+        println("[PUBLISH COMPOSITE TASK START]")
+        dependenciesProjectNameHashSet = scanProjectTask.dependenciesProjectNameHashSet
+        projectToArtifactInfoList = scanProjectTask.projectToArtifactInfoList
+        artifactIdToProjectNameList = scanProjectTask.artifactIdToProjectNameList
+        moduleToPublishList = scanProjectTask.moduleToPublishList
+    }
+    doLast{
+        println("[PUBLISH COMPOSITE TASK FINISHED]")
+    }
+    finalizedBy writeLatestVersion
 }

@@ -78,7 +78,7 @@ public class WidgetCrackResultTapTap extends RelativeLayout {
     }
 
     private void init() {
-        View rootView = LayoutInflater.from(getContext()).inflate(R.layout.widget_crack_result_tap_tap, this, true);
+        View rootView = LayoutInflater.from(getContext()).inflate(com.tokopedia.gamification.R.layout.widget_crack_result_tap_tap, this, true);
         imageViewCrackResult = rootView.findViewById(R.id.image_reward);
         listCrackResultText = rootView.findViewById(R.id.view_list_reward_text);
         rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -97,7 +97,7 @@ public class WidgetCrackResultTapTap extends RelativeLayout {
 
     private void initRewardBound(View rootView) {
         int rootHeight = rootView.getHeight();
-        int imageMarginBottom = rootView.getHeight() - TokenMarginUtilTapTap.getEggMarginBottom(rootHeight) + getContext().getResources().getDimensionPixelOffset(R.dimen.dp_32);
+        int imageMarginBottom = rootView.getHeight() - TokenMarginUtilTapTap.getEggMarginBottom(rootHeight) + getContext().getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_32);
         RelativeLayout.LayoutParams tvFullLp = (RelativeLayout.LayoutParams) listCrackResultText.getLayoutParams();
         tvFullLp.bottomMargin = imageMarginBottom;
         listCrackResultText.requestLayout();
@@ -166,7 +166,7 @@ public class WidgetCrackResultTapTap extends RelativeLayout {
 
 
             PropertyValuesHolder pvhTranslateImageResult =
-                    PropertyValuesHolder.ofFloat(View.TRANSLATION_Y, 0, getResources().getDimension(R.dimen.translate_image_distance));
+                    PropertyValuesHolder.ofFloat(View.TRANSLATION_Y, 0, getResources().getDimension(com.tokopedia.gamification.R.dimen.translate_image_distance));
             ObjectAnimator translate1 = ObjectAnimator.ofPropertyValuesHolder(imageViewCrackResult, pvhTranslateImageResult);
 
 
@@ -176,7 +176,7 @@ public class WidgetCrackResultTapTap extends RelativeLayout {
 
 
             PropertyValuesHolder pvhTranslate2 =
-                    PropertyValuesHolder.ofFloat(View.TRANSLATION_Y, getResources().getDimension(R.dimen.translate_image_distance), getResources().getDimension(R.dimen.translate_image_again_distance));
+                    PropertyValuesHolder.ofFloat(View.TRANSLATION_Y, getResources().getDimension(com.tokopedia.gamification.R.dimen.translate_image_distance), getResources().getDimension(com.tokopedia.gamification.R.dimen.translate_image_again_distance));
             ObjectAnimator translate2 = ObjectAnimator.ofPropertyValuesHolder(imageViewCrackResult, pvhTranslate2);
 
 
@@ -251,8 +251,8 @@ public class WidgetCrackResultTapTap extends RelativeLayout {
             textView.setText(rewardText.getText());
             textView.setMaxWidth((int) (getScreenWidth() / 2.3f));
             textView.setLayoutParams(layoutParams);
-            textView.setTextColor(getContext().getResources().getColor(R.color.default_text_reward_color));
-            textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getContext().getResources().getDimension(R.dimen.sp_16));
+            textView.setTextColor(getContext().getResources().getColor(com.tokopedia.gamification.R.color.default_text_reward_color));
+            textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getContext().getResources().getDimension(com.tokopedia.design.R.dimen.sp_16));
             listCrackResultText.addView(textView);
         }
 

@@ -27,7 +27,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.KeyboardHandler;
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.RouteManager;
@@ -35,7 +35,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.core.base.di.component.DaggerAppComponent;
 import com.tokopedia.core.base.di.module.AppModule;
 import com.tokopedia.core.customView.TextDrawable;
-import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.profilecompletion.data.pojo.StatusPinData;
 import com.tokopedia.profilecompletion.di.DaggerProfileCompletionComponent;
 import com.tokopedia.profilecompletion.domain.EditUserProfileUseCase;
@@ -135,12 +135,16 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
 
     private void onSuccessGetStatusPin(StatusPinData statusPinData){
         loading.setVisibility(View.GONE);
-        if(statusPinData.isRegistered()){
-            if(getActivity() != null)
-                getActivity().finish();
-        }else {
+        if(!statusPinData.isRegistered() &&
+                !userSession.getPhoneNumber().isEmpty() &&
+                userSession.isMsisdnVerified()) {
             Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalGlobal.ADD_PIN_ONBOARDING);
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, true);
             startActivityForResult(intent, REQUEST_CODE_PIN);
+        } else {
+            if(getActivity() != null){
+                getActivity().finish();
+            }
         }
     }
 

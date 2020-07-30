@@ -23,14 +23,11 @@ public class ImageProductListTypeFactoryImpl extends BaseAdapterTypeFactory impl
 
     private final ProductListener itemClickListener;
     private CategoryFilterListener categoryFilterListener;
-    private final String searchQuery;
 
     public ImageProductListTypeFactoryImpl(ProductListener itemClickListener,
-                                           CategoryFilterListener categoryFilterListener,
-                                           String searchQuery) {
+                                           CategoryFilterListener categoryFilterListener) {
         this.itemClickListener = itemClickListener;
         this.categoryFilterListener = categoryFilterListener;
-        this.searchQuery = searchQuery;
     }
 
     @Override
@@ -57,7 +54,7 @@ public class ImageProductListTypeFactoryImpl extends BaseAdapterTypeFactory impl
     public AbstractViewHolder createViewHolder(View view, int type) {
         AbstractViewHolder viewHolder;
         if (type == GridProductItemViewHolder.LAYOUT) {
-            viewHolder = new GridProductItemViewHolder(view, itemClickListener, searchQuery);
+            viewHolder = new GridProductItemViewHolder(view, itemClickListener);
         } else if (type == ImageSearchLoadingMoreViewHolder.LAYOUT) {
             viewHolder = new ImageSearchLoadingMoreViewHolder(view);
         } else if (type == ImageSearchLoadingViewHolder.LAYOUT) {

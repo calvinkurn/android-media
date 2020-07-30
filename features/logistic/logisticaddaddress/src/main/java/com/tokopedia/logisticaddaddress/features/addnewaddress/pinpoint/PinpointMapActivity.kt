@@ -5,8 +5,8 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.logisticaddaddress.AddressConstants.*
 import com.tokopedia.logisticaddaddress.R
+import com.tokopedia.logisticaddaddress.common.AddressConstants.*
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
 import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticdata.data.entity.address.Token
@@ -17,6 +17,8 @@ import com.tokopedia.logisticdata.data.entity.address.Token
 class PinpointMapActivity : BaseSimpleActivity() {
     private val FINISH_FLAG = 1212
     var SCREEN_NAME = "PinpointMapActivity"
+    private var isFullFLow: Boolean = true
+    private var isLogisticLabel: Boolean = true
 
     companion object {
         @JvmStatic
@@ -34,6 +36,14 @@ class PinpointMapActivity : BaseSimpleActivity() {
                     putExtra(EXTRA_IS_CHANGES_REQUESTED, isChangesRequested)
                 }
 
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        intent?.extras?.let {
+            isFullFLow = it.getBoolean(EXTRA_IS_FULL_FLOW, true)
+            isLogisticLabel = it.getBoolean(EXTRA_IS_LOGISTIC_LABEL, true)
+        }
     }
 
     override fun getScreenName(): String {
@@ -71,9 +81,9 @@ class PinpointMapActivity : BaseSimpleActivity() {
         }
 
         if (isAllowed) {
-            AddNewAddressAnalytics.eventClickButtonOkOnAllowLocation()
+            AddNewAddressAnalytics.eventClickButtonOkOnAllowLocation(isFullFLow, isLogisticLabel)
         } else {
-            AddNewAddressAnalytics.eventClickButtonDoNotAllowOnAllowLocation()
+            AddNewAddressAnalytics.eventClickButtonDoNotAllowOnAllowLocation(isFullFLow, isLogisticLabel)
         }
 
     }

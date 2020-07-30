@@ -1,6 +1,7 @@
 package com.tokopedia.tokopoints.notification;
 
 import android.content.Context;
+
 import androidx.fragment.app.FragmentManager;
 
 import com.example.tokopoints.notification.R;
@@ -54,5 +55,16 @@ public class TokoPointsNotificationManager {
                 bottomSheets.show(fragmentManager, notificationType);
             }
         });
+    }
+
+    public static void fetchNotification(Context context, String notificationType, Subscriber subscriber) {
+        GraphqlUseCase useCase = new GraphqlUseCase();
+        Map<String, Object> variable = new HashMap<>();
+        variable.put(Constant.KEY_TYPE, notificationType);
+        GraphqlRequest request = new GraphqlRequest(GraphqlHelper.loadRawString(context.getApplicationContext().getResources(), R.raw.tp_gql_popup_notification),
+                TokoPointDetailEntity.class, variable, false);
+        useCase.clearRequest();
+        useCase.addRequest(request);
+        useCase.execute(subscriber);
     }
 }

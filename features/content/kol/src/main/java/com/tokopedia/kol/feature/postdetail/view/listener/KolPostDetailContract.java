@@ -7,10 +7,13 @@ import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem;
 import com.tokopedia.feedcomponent.view.viewmodel.relatedpost.RelatedPostViewModel;
-import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
+import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticCommissionUiModel;
+import com.tokopedia.kolcommon.view.listener.KolPostLikeListener;
 import com.tokopedia.kol.feature.postdetail.view.viewmodel.PostDetailViewModel;
 import com.tokopedia.feedcomponent.data.pojo.whitelist.Whitelist;
 import com.tokopedia.vote.domain.model.VoteStatisticDomainModel;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -61,6 +64,10 @@ public interface KolPostDetailContract {
         void onSuccessGetRelatedPost(RelatedPostViewModel relatedPostViewModel);
 
         void onSuccessGetWhitelist(Whitelist whitelist);
+
+        void onSuccessGetPostStatistic(@NotNull PostStatisticCommissionUiModel statisticCommissionModel);
+
+        void onErrorGetPostStatistic(@NotNull Throwable error, @NotNull String activityId, @NotNull List<String> productIds);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -70,9 +77,9 @@ public interface KolPostDetailContract {
 
         void unfollowKol(int id, int rowNumber);
 
-        void likeKol(int id, int rowNumber, KolPostListener.View.Like likeListener);
+        void likeKol(int id, int rowNumber, KolPostLikeListener likeListener);
 
-        void unlikeKol(int id, int rowNumber, KolPostListener.View.Like likeListener);
+        void unlikeKol(int id, int rowNumber, KolPostLikeListener likeListener);
 
         void toggleFavoriteShop(String shopId);
 
@@ -87,5 +94,7 @@ public interface KolPostDetailContract {
         void getRelatedPost(String activityId);
 
         void getWhitelist();
+
+        void getPostStatistic(@NotNull String activityId, @NotNull List<String> productIds, int likeCount, int commentCount);
     }
 }

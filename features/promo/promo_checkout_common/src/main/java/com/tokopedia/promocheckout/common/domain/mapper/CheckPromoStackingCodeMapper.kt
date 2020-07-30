@@ -12,7 +12,7 @@ open class CheckPromoStackingCodeMapper @Inject constructor() {
 
     var isFinal: Boolean = false
 
-    fun call(response: GraphqlResponse?): ResponseGetPromoStackUiModel {
+    fun map(response: GraphqlResponse?): ResponseGetPromoStackUiModel {
         var status = ""
         val listMessage = ArrayList<String>()
         var data = DataUiModel()

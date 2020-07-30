@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/layout_lvl2">
+
+    <com.tokopedia.common.travel.widget.SelectPassengerView
+        android:id="@+id/spv_hotel_room"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:spv_icon="@drawable/ic_hotel_room"
+        app:spv_max_value="30"
+        app:spv_min_value="1"
+        app:spv_subtitle=""
+        app:spv_title="@string/hotel_bottom_sheets_room_count_title" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/hotel_1dp"
+        android:background="@color/hotel_divider_color_gray" />
+
+    <com.tokopedia.common.travel.widget.SelectPassengerView
+        android:id="@+id/spv_hotel_adult"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:spv_icon="@drawable/ic_hotel_adult"
+        app:spv_max_value="30"
+        app:spv_min_value="1"
+        app:spv_subtitle=""
+        app:spv_title="@string/hotel_bottom_sheets_adult_count_title" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/hotel_1dp"
+        android:background="@color/hotel_divider_color_gray" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_hotel_save_guest"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/layout_lvl3"
+        android:text="@string/hotel_button_save"
+        app:unifyButtonSize="large"
+        app:unifyButtonType="main"
+        />
+
+</LinearLayout>

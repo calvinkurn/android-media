@@ -29,6 +29,6 @@ class ProfileEmptyViewHolder(val v: View) : AbstractViewHolder<ProfileEmptyViewM
                 DisplayMetricUtils.getScreenDensity(itemView.context),
                 IMAGE_NAME
         )
-        ImageHandler.loadImage2(itemView.image, imageUrl, R.drawable.ic_loading_image)
+        ImageHandler.loadImage2(itemView.image, imageUrl, com.tokopedia.design.R.drawable.ic_loading_image)
     }
 }

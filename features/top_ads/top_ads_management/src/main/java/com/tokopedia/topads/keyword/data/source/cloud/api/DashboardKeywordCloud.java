@@ -1,6 +1,6 @@
 package com.tokopedia.topads.keyword.data.source.cloud.api;
 
-import com.tokopedia.abstraction.common.data.model.request.DataRequest;
+import com.tokopedia.topads.common.model.request.DataRequest;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.product.manage.item.common.data.source.cloud.DataResponse;
 import com.tokopedia.topads.dashboard.data.model.response.PageDataResponse;

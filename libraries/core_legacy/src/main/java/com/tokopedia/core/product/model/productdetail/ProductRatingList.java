@@ -11,7 +11,6 @@ import com.google.gson.annotations.SerializedName;
  */
 @Deprecated
 public class ProductRatingList implements Parcelable {
-    private static final String TAG = ProductRatingList.class.getSimpleName();
 
     @SerializedName("rating_rating_star_point")
     @Expose

@@ -20,6 +20,7 @@ public class MethodItem implements Parcelable {
     private boolean usingPopUp;
     private String popUpHeader;
     private String popUpBody;
+    private int numberOtpDigit;
 
     /**
      * Use this constructor for getting method item from ws.
@@ -34,7 +35,7 @@ public class MethodItem implements Parcelable {
      * @param popUpBody message of pop up. E.g : "Dengan verifikasi anda akan mengaktifkan ..."
      */
     public MethodItem(String mode, String imageUrl, String methodText, String verificationText,
-                      boolean usingPopUp, String popUpHeader, String popUpBody) {
+                      boolean usingPopUp, String popUpHeader, String popUpBody, int numberOtpDigit) {
         this.modeName = mode;
         this.iconResId = 0;
         this.imageUrl = imageUrl;
@@ -43,6 +44,7 @@ public class MethodItem implements Parcelable {
         this.usingPopUp = usingPopUp;
         this.popUpHeader = popUpHeader;
         this.popUpBody = popUpBody;
+        this.numberOtpDigit = numberOtpDigit;
     }
 
     /**
@@ -58,7 +60,7 @@ public class MethodItem implements Parcelable {
      * @param popUpBody message of pop up. E.g : "Dengan verifikasi anda akan mengaktifkan ..."
      */
     public MethodItem(String mode, int iconResId, String methodText, String verificationText,
-                      boolean usingPopUp, String popUpHeader, String popUpBody) {
+                      boolean usingPopUp, String popUpHeader, String popUpBody, int numberOtpDigit) {
         this.modeName = mode;
         this.iconResId = iconResId;
         this.imageUrl = "";
@@ -67,6 +69,7 @@ public class MethodItem implements Parcelable {
         this.usingPopUp = usingPopUp;
         this.popUpHeader = popUpHeader;
         this.popUpBody = popUpBody;
+        this.numberOtpDigit = numberOtpDigit;
     }
 
     /**
@@ -78,7 +81,7 @@ public class MethodItem implements Parcelable {
      * @param verificationText description of method, used in
      * {@link com.tokopedia.otp.cotp.view.fragment.VerificationFragment}.
      */
-    public MethodItem(String mode, int iconResId, String methodText, String verificationText) {
+    public MethodItem(String mode, int iconResId, String methodText, String verificationText, int numberOtpDigit) {
         this.modeName = mode;
         this.iconResId = iconResId;
         this.imageUrl = "";
@@ -87,6 +90,7 @@ public class MethodItem implements Parcelable {
         this.usingPopUp = false;
         this.popUpHeader = "";
         this.popUpBody = "";
+        this.numberOtpDigit = numberOtpDigit;
     }
 
     public String getModeName() {
@@ -136,6 +140,10 @@ public class MethodItem implements Parcelable {
         return iconResId;
     }
 
+    public int getNumberOtpDigit() {
+        return numberOtpDigit;
+    }
+
     protected MethodItem(Parcel in) {
         modeName = in.readString();
         iconResId = in.readInt();
@@ -145,6 +153,7 @@ public class MethodItem implements Parcelable {
         usingPopUp = in.readByte() != 0;
         popUpHeader = in.readString();
         popUpBody = in.readString();
+        numberOtpDigit = in.readInt();
     }
 
     public static final Creator<MethodItem> CREATOR = new Creator<MethodItem>() {
@@ -174,5 +183,6 @@ public class MethodItem implements Parcelable {
         dest.writeByte((byte) (usingPopUp ? 1 : 0));
         dest.writeString(popUpHeader);
         dest.writeString(popUpBody);
+        dest.writeInt(numberOtpDigit);
     }
 }

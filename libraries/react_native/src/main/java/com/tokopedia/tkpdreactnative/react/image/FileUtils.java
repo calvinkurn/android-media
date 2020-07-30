@@ -84,23 +84,6 @@ public class FileUtils {
         return writeImageToTkpdPath(convertLocalImagePathToBytes(galleryOrCameraPath, DEF_WIDTH_CMPR,
                 DEF_WIDTH_CMPR, DEF_QLTY_COMPRESS));
     }
-    public static File writeImageToTkpdPath(String galleryOrCameraPath,  int compressionQuality) {
-        return writeImageToTkpdPath(convertLocalImagePathToBytes(galleryOrCameraPath, DEF_WIDTH_CMPR,
-                DEF_WIDTH_CMPR, compressionQuality));
-    }
-
-
-    /**
-     * check if the file is in tkpdcache directory.
-     */
-    public static boolean isInTkpdCache(File file) {
-        File tkpdCacheDirectory = getTkpdCacheDirectory();
-        String tkpdcacheDirPath = tkpdCacheDirectory.getAbsolutePath();
-        if (file.exists() && file.getAbsolutePath().contains(tkpdcacheDirPath)) {
-            return true;
-        }
-        return false;
-    }
 
     private static boolean writeBufferToFile(byte[] buffer, String path) {
         try {

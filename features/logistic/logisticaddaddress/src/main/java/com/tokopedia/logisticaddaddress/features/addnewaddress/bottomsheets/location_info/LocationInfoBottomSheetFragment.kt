@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
 import android.location.LocationManager
+import android.os.Bundle
 import android.provider.Settings
 import android.view.View
 import android.widget.Toast
@@ -17,8 +18,10 @@ import com.google.android.gms.location.LocationSettingsStatusCodes
 import com.google.android.gms.tasks.OnFailureListener
 import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.design.component.ButtonCompat
-import com.tokopedia.logisticaddaddress.AddressConstants
 import com.tokopedia.logisticaddaddress.R
+import com.tokopedia.logisticaddaddress.common.AddressConstants
+import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_FULL_FLOW
+import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_LOGISTIC_LABEL
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
 
 /**
@@ -27,11 +30,26 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewA
 class LocationInfoBottomSheetFragment : BottomSheets() {
     private var bottomSheetView: View? = null
     private lateinit var btnActivateLocation: ButtonCompat
+    private var isFullFlow: Boolean = true
+    private var isLogisticLabel: Boolean = true
 
     companion object {
         @JvmStatic
-        fun newInstance(): LocationInfoBottomSheetFragment {
-            return LocationInfoBottomSheetFragment()
+        fun newInstance(isFullFlow: Boolean, isLogisticLabel: Boolean): LocationInfoBottomSheetFragment {
+            return LocationInfoBottomSheetFragment().apply {
+                arguments = Bundle().apply {
+                    putBoolean(EXTRA_IS_FULL_FLOW, isFullFlow)
+                    putBoolean(EXTRA_IS_LOGISTIC_LABEL, isLogisticLabel)
+                }
+            }
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            isFullFlow = it.getBoolean(EXTRA_IS_FULL_FLOW, true)
+            isLogisticLabel = it.getBoolean(EXTRA_IS_LOGISTIC_LABEL, true)
         }
     }
 
@@ -47,7 +65,7 @@ class LocationInfoBottomSheetFragment : BottomSheets() {
         bottomSheetView = view
         btnActivateLocation = view.findViewById(R.id.btn_activate_location)
         btnActivateLocation.setOnClickListener {
-            AddNewAddressAnalytics.eventClickButtonAktifkanLayananLokasiOnBlockGps()
+            AddNewAddressAnalytics.eventClickButtonAktifkanLayananLokasiOnBlockGps(isFullFlow, isLogisticLabel)
             if (!context?.let { it1 -> turnGPSOn(it1) }!!) {
                 startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
             }
@@ -63,7 +81,7 @@ class LocationInfoBottomSheetFragment : BottomSheets() {
         super.configView(parentView)
         parentView?.findViewById<View>(R.id.layout_title)?.setOnClickListener(null)
         parentView?.findViewById<View>(R.id.btn_close)?.setOnClickListener {
-            AddNewAddressAnalytics.eventClickButtonXOnBlockGps()
+            AddNewAddressAnalytics.eventClickButtonXOnBlockGps(isFullFlow, isLogisticLabel)
             onCloseButtonClick()
         }
     }

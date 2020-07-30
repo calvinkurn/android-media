@@ -6,7 +6,6 @@ import android.text.TextUtils;
 import com.google.gson.GsonBuilder;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.data.entity.FCMTokenUpdateEntity;
-import com.tokopedia.core.gcm.domain.PushNotification;
 import com.tokopedia.core.gcm.domain.PushNotificationRepository;
 import com.tokopedia.core.gcm.domain.model.DiscussionPushNotification;
 import com.tokopedia.core.gcm.domain.model.MessagePushNotification;
@@ -15,10 +14,7 @@ import com.tokopedia.core.gcm.model.FCMTokenUpdate;
 
 import java.util.List;
 
-import javax.inject.Inject;
-
 import rx.Observable;
-import rx.functions.Func1;
 
 /**
  * @author by alvarisi on 1/5/17.
@@ -86,18 +82,6 @@ public class PushNotificationDataRepository implements PushNotificationRepositor
         return mPushNotificationDataStoreFactory.createDiskPushNotificationDataStore()
                 .getPushSavedPushNotificationWithOrderBy(Constants.ARG_NOTIFICATION_APPLINK_DISCUSSION, true)
                 .map(mPushNotificationMapper::transformDiscussion);
-    }
-
-    @Override
-    public Observable<Boolean> clearPushNotificationStorage(String category) {
-        return mPushNotificationDataStoreFactory.createDiskPushNotificationDataStore()
-                .deleteSavedPushNotificationByCategory(category);
-    }
-
-    @Override
-    public Observable<Boolean> clearPushNotificationStorage(String category, String serverId) {
-        return mPushNotificationDataStoreFactory.createDiskPushNotificationDataStore()
-                .deleteSavedPushNotificationByCategoryAndServerId(category, serverId);
     }
 
     @Override

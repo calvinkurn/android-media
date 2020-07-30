@@ -1,33 +1,22 @@
 package com.tokopedia.age_restriction.viewmodel
 
-import android.app.Application
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.age_restriction.data.UserDOBUpdateResponse
+import com.tokopedia.age_restriction.usecase.UpdateUserDobUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.tradein_common.viewmodel.BaseViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlin.coroutines.CoroutineContext
+import javax.inject.Inject
 
-class VerifyDOBViewModel(application: Application) : BaseViewModel(application), CoroutineScope {
+private const val minimumAdultAge = 21
+class VerifyDOBViewModel @Inject constructor(private val updateUserDobUseCase: UpdateUserDobUseCase) : BaseARViewModel() {
 
     val userIsAdult = MutableLiveData<Boolean>()
     val userNotAdult = MutableLiveData<Boolean>()
 
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + SupervisorJob()
 
-
-    fun updateUserDoB(query: String, bdayDD: String, bdayMM: String, bdayYY: String) {
+    fun updateUserDoB(bdayDD: String, bdayMM: String, bdayYY: String) {
         progBarVisibility.value = true
         launchCatchError(block = {
-            val dobMap = HashMap<String, String>()
-            dobMap["bdayDD"] = bdayDD
-            dobMap["bdayMM"] = bdayMM
-            dobMap["bdayYY"] = bdayYY
-
-            val response = repository?.getGQLData(query, UserDOBUpdateResponse::class.java, dobMap) as UserDOBUpdateResponse
+            val response = updateUserDobUseCase.getData(bdayDD,bdayMM,bdayYY)
             checkIfAdult(response)
         }, onError = {
             it.printStackTrace()
@@ -45,7 +34,7 @@ class VerifyDOBViewModel(application: Application) : BaseViewModel(application),
 
         }
         if (userDOBUpdateResponse.userDobUpdateData.isDobVerified) {
-            if (userDOBUpdateResponse.userDobUpdateData.age > 18)
+            if (userDOBUpdateResponse.userDobUpdateData.age > minimumAdultAge)
                 userIsAdult.value = true
             else
                 userNotAdult.value = true

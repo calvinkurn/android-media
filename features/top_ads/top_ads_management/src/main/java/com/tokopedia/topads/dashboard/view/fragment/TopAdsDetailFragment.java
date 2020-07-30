@@ -4,13 +4,15 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.core.content.ContextCompat;
 import android.view.View;
+import android.widget.Toast;
 
-import com.tkpd.library.utils.CommonUtils;
+import androidx.core.content.ContextCompat;
+
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.common.view.fragment.TopAdsBaseDatePickerFragment;
@@ -76,7 +78,7 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter, V ex
     @Override
     protected void initialVar() {
         super.initialVar();
-        new RefreshHandler(getActivity(), getView(), new RefreshHandler.OnRefreshHandlerListener() {
+        new RefreshHandler(getActivity(), getView().findViewById(R.id.swipe_refresh_layout), new RefreshHandler.OnRefreshHandlerListener() {
             @Override
             public void onRefresh(View view) {
                 loadData();
@@ -163,7 +165,7 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter, V ex
     @Override
     public void onAdEmpty() {
         hideLoading();
-        CommonUtils.UniversalToast(getActivity(), getString(R.string.error_data_not_found));
+        Toast.makeText(getActivity(), MethodChecker.fromHtml(getString(R.string.error_data_not_found)), Toast.LENGTH_LONG).show();
         getActivity().finish();
     }
 

@@ -3,15 +3,15 @@ package com.tokopedia.search.result.presentation.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/**
- * Created by henrypriyono on 10/30/17.
- */
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory;
 
-public class SuggestionViewModel implements Parcelable {
-    private String suggestionText;
-    private String suggestionCurrentKeyword;
-    private String suggestedQuery;
-    private String formattedResultCount;
+public class SuggestionViewModel implements Parcelable, Visitable<ProductListTypeFactory> {
+    private String suggestionText = "";
+    private String suggestionCurrentKeyword = "";
+    private String suggestedQuery = "";
+    private String formattedResultCount = "";
+    private String suggestion = "";
 
     public String getSuggestionText() {
         return suggestionText;
@@ -45,6 +45,19 @@ public class SuggestionViewModel implements Parcelable {
         this.formattedResultCount = formattedResultCount;
     }
 
+    public void setSuggestion(String suggestion) {
+        this.suggestion = suggestion;
+    }
+
+    public String getSuggestion() {
+        return this.suggestion;
+    }
+
+    @Override
+    public int type(ProductListTypeFactory typeFactory) {
+        return typeFactory.type(this);
+    }
+
     public SuggestionViewModel() {
     }
 
@@ -59,6 +72,7 @@ public class SuggestionViewModel implements Parcelable {
         dest.writeString(this.suggestionCurrentKeyword);
         dest.writeString(this.suggestedQuery);
         dest.writeString(this.formattedResultCount);
+        dest.writeString(this.suggestion);
     }
 
     protected SuggestionViewModel(Parcel in) {
@@ -66,6 +80,7 @@ public class SuggestionViewModel implements Parcelable {
         this.suggestionCurrentKeyword = in.readString();
         this.suggestedQuery = in.readString();
         this.formattedResultCount = in.readString();
+        this.suggestion = in.readString();
     }
 
     public static final Creator<SuggestionViewModel> CREATOR = new Creator<SuggestionViewModel>() {

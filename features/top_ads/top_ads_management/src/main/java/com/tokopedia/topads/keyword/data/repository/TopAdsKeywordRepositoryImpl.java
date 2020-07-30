@@ -1,6 +1,6 @@
 package com.tokopedia.topads.keyword.data.repository;
 
-import com.tokopedia.abstraction.common.data.model.request.DataRequest;
+import com.tokopedia.topads.common.model.request.DataRequest;
 import com.tokopedia.topads.dashboard.data.model.data.Page;
 import com.tokopedia.topads.dashboard.data.model.response.PageDataResponse;
 import com.tokopedia.topads.keyword.constant.KeywordTypeDef;

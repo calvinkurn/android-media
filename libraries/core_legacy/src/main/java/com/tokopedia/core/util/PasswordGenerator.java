@@ -7,8 +7,6 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Build;
 
-import com.tkpd.library.utils.legacy.CommonUtils;
-
 import java.util.UUID;
 
 @Deprecated
@@ -19,8 +17,7 @@ public class PasswordGenerator {
 	private static final String PG_STORAGE = "PG_STORAGE";
 	private static final String VERSION_STORAGE = "VERSION_STORAGE";
 	private String uniqueID = null;
-	byte[] raw = new byte[] {'r','r','r','r','g','g','g','g','t','t','t','t','t','u','j','k'};   
-	byte[] rawPassword = new byte[] {'t','t','t','t','t','r','r','r','r','g','g','g','g','u','j','k'};   
+	byte[] raw = new byte[] {'r','r','r','r','g','g','g','g','t','t','t','t','t','u','j','k'};
 	
 	public PasswordGenerator(Context context) {
 		this.context = context;
@@ -59,8 +56,6 @@ public class PasswordGenerator {
 	        }
 	    }
 	}
-
-
 
 	public String getUniquePsuedoID() {
 	    // If all else fails, if the user does have lower than API 9 (lower
@@ -114,14 +109,6 @@ public class PasswordGenerator {
 		 String signature = sharedPrefs.getString("SIGNATURE", null);
 		 signature = EncoderDecoder.Decrypt(signature, getAppId().substring(0,16), raw);
 		 return signature;
-	}
-	
-	public String generatePassword(String sk) {
-		String password = getAppId()+"~"+sk+"~"+getSignature();
-		String iv = getAppId().substring(0,8)+getSignature().substring(0,8);
-		CommonUtils.dumper("IV: " + iv);
-		String enc_password = EncoderDecoder.Encrypt(password, iv, rawPassword);
-		return enc_password.replaceAll("\n", "");
 	}
 
     public static void clearTokenStorage(Context context) {

@@ -11,7 +11,7 @@ import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseI
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.feedcomponent.di.FeedComponentModule;
 import com.tokopedia.kol.common.data.source.api.KolApi;
-import com.tokopedia.kol.feature.post.domain.usecase.FollowKolPostGqlUseCase;
+import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase;
 import com.tokopedia.kol.feature.video.view.fragment.MediaPreviewFragment;
 import com.tokopedia.kol.feature.video.view.fragment.VideoDetailFragment;
 import com.tokopedia.user.session.UserSessionInterface;

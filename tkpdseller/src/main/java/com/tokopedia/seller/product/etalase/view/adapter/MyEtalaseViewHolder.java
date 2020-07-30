@@ -8,7 +8,7 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.product.etalase.view.model.MyEtalaseItemViewModel;
+import com.tokopedia.product.manage.item.etalase.view.model.MyEtalaseItemViewModel;
 
 /**
  * @author sebastianuskh on 4/5/17.

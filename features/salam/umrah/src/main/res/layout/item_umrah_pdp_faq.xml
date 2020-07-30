@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container_item_umrah_pdp_faq"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="@dimen/dp_8"
+    app:cardUseCompatPadding="true"
+    tools:targetApi="lollipop">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="260dp"
+        android:layout_height="wrap_content">
+
+        <View
+            android:id="@+id/v_umrah_pdp_left_bg"
+            android:layout_width="@dimen/dp_4"
+            android:layout_height="0dp"
+            android:background="@color/green_300"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/item_tg_umrah_pdp_faq_question"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_20"
+            android:layout_marginLeft="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:textColor="@color/Neutral_N700_96"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="body_3"
+            app:typographyWeight="bold"
+            tools:text="Apakah tour guide termasuk untuk setiap paket Umroh?" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/item_tg_umrah_pdp_faq_answer"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_8"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:textColor="@color/Neutral_N700_68"
+            app:layout_constraintLeft_toLeftOf="@+id/item_tg_umrah_pdp_faq_question"
+            app:layout_constraintRight_toRightOf="@+id/item_tg_umrah_pdp_faq_question"
+            app:layout_constraintTop_toBottomOf="@+id/item_tg_umrah_pdp_faq_question"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler"
+            tools:text="Semua paket Tokopedia Umroh sudah termasuk tour guide dari masing…" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/item_tg_umrah_pdp_faq_read_more"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginBottom="@dimen/dp_16"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:text="@string/umrah_pdp_read_more"
+            android:textColor="@color/g_500"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="@+id/item_tg_umrah_pdp_faq_answer"
+            app:layout_constraintTop_toBottomOf="@+id/item_tg_umrah_pdp_faq_answer"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

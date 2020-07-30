@@ -10,6 +10,9 @@ public class AppsflyerMappingRequest {
 	@SerializedName("appsflyerId")
 	private String appsflyerId;
 
+	@SerializedName("eventTime")
+	private String eventTime;
+
 	public void setCustomerUserId(String customerUserId){
 		this.customerUserId = customerUserId;
 	}
@@ -26,12 +29,16 @@ public class AppsflyerMappingRequest {
 		return appsflyerId;
 	}
 
+	public String getEventTime() { return eventTime; }
+
+	public void setEventTime(String eventTime) { this.eventTime = eventTime; }
+
 	@Override
- 	public String toString(){
-		return 
-			"AppsflyerMappingRequest{" +
-			"customerUserId = '" + customerUserId + '\'' + 
-			",appsflyerId = '" + appsflyerId + '\'' + 
-			"}";
-		}
+	public String toString() {
+		return "AppsflyerMappingRequest{" +
+				"customerUserId='" + customerUserId + '\'' +
+				", appsflyerId='" + appsflyerId + '\'' +
+				", eventTime='" + eventTime + '\'' +
+				'}';
+	}
 }

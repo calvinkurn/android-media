@@ -4,15 +4,16 @@ import android.content.Context
 import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
 import android.graphics.drawable.GradientDrawable
+import android.os.Build
 import android.os.Parcel
 import android.os.Parcelable
-import androidx.core.content.ContextCompat
 import android.util.AttributeSet
 import android.view.View
-import com.tokopedia.design.base.BaseCustomView
-import com.tokopedia.promocheckout.common.R
-import kotlinx.android.synthetic.main.layout_checkout_ticker_promostacking.view.*
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.promocheckout.common.R
+import com.tokopedia.unifycomponents.BaseCustomView
+import kotlinx.android.synthetic.main.layout_checkout_ticker_promostacking.view.*
 
 
 class TickerPromoStackingCheckoutView @JvmOverloads constructor(
@@ -47,6 +48,12 @@ class TickerPromoStackingCheckoutView @JvmOverloads constructor(
             field = value
             initView()
         }
+    var isLoading: Boolean = false
+        set(value) {
+            field = value
+            if (value) loading_view.visibility = View.VISIBLE
+            else loading_view.visibility = View.GONE
+        }
     var actionListener: ActionListener? = null
 
     init {
@@ -57,6 +64,12 @@ class TickerPromoStackingCheckoutView @JvmOverloads constructor(
             title = styledAttributes.getString(R.styleable.TickerCheckoutView_title) ?: ""
             counterCoupons = styledAttributes.getString(R.styleable.TickerCheckoutView_counter) ?: ""
             desc = styledAttributes.getString(R.styleable.TickerCheckoutView_desc) ?: ""
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                bg_button_coupon.clipToOutline = true
+                bg_active_down.clipToOutline = true
+                bg_active_up.clipToOutline = true
+            }
 
         } finally {
             styledAttributes.recycle()
@@ -84,6 +97,9 @@ class TickerPromoStackingCheckoutView @JvmOverloads constructor(
             descCouponGlobal.visibility = View.VISIBLE
         }
 
+        relativeLayoutUsePromoGlobal.background = ViewUtils.generateBackgroundWithShadow(relativeLayoutUsePromoGlobal)
+        layoutState.background = ViewUtils.generateBackgroundWithShadow(layoutState)
+
         setActionListener()
         invalidate()
         requestLayout()
@@ -91,13 +107,13 @@ class TickerPromoStackingCheckoutView @JvmOverloads constructor(
 
     private fun setActionListener() {
         imageCloseGlobal?.setOnClickListener {
-            actionListener?.onResetPromoDiscount()
+            if (!isLoading) actionListener?.onResetPromoDiscount()
         }
         relativeLayoutUsePromoGlobal?.setOnClickListener {
-            if (state != State.DISABLED) actionListener?.onClickUsePromo()
+            if (state != State.DISABLED && !isLoading) actionListener?.onClickUsePromo()
         }
         layoutTickerFrameGlobal?.setOnClickListener {
-            if (state != State.DISABLED) actionListener?.onClickDetailPromo()
+            if (state != State.DISABLED && !isLoading) actionListener?.onClickDetailPromo()
         }
     }
 
@@ -220,6 +236,10 @@ class TickerPromoStackingCheckoutView @JvmOverloads constructor(
         ic_button_coupon.imageAlpha = IMAGE_ALPHA_ENABLED
         bg_button_coupon.colorFilter = null
         bg_button_coupon.imageAlpha = IMAGE_ALPHA_ENABLED
+    }
+
+    fun toggleLoading(state: Boolean) {
+        isLoading = state
     }
 
     override fun onFinishInflate() {

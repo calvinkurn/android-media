@@ -5,7 +5,6 @@
     <application
         android:allowBackup="true"
         android:hardwareAccelerated="true"
-        android:label="@string/search_result_app_name"
         android:largeHeap="true"
         android:supportsRtl="true">
         <activity

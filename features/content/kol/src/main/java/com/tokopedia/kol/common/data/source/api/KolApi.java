@@ -1,13 +1,11 @@
 package com.tokopedia.kol.common.data.source.api;
 
-import com.tokopedia.abstraction.common.data.model.request.GraphqlRequest;
-import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
+import com.tokopedia.kol.common.data.model.request.GraphqlRequest;
+import com.tokopedia.network.data.model.response.GraphqlResponse;
 import com.tokopedia.kol.feature.comment.data.pojo.get.GetKolCommentData;
 import com.tokopedia.kol.feature.comment.data.pojo.delete.DeleteCommentKolGraphql;
 import com.tokopedia.kol.feature.comment.data.pojo.send.SendCommentKolGraphql;
-import com.tokopedia.kol.feature.following_list.data.pojo.GetKolFollowingData;
 import com.tokopedia.kol.feature.post.data.pojo.GetUserKolPostResponse;
-import com.tokopedia.kol.feature.post.data.pojo.LikeKolPostResponse;
 
 import retrofit2.Response;
 import retrofit2.http.Body;
@@ -27,11 +25,6 @@ public interface KolApi {
 
     @POST("./")
     @Headers({"Content-Type: application/json"})
-    Observable<Response<GraphqlResponse<LikeKolPostResponse>>>
-    likeKolPost(@Body GraphqlRequest requestBody);
-
-    @POST("./")
-    @Headers({"Content-Type: application/json"})
     Observable<Response<GraphqlResponse<GetKolCommentData>>>
     getKolComment(@Body GraphqlRequest requestBody);
 
@@ -45,8 +38,4 @@ public interface KolApi {
     Observable<Response<GraphqlResponse<SendCommentKolGraphql>>>
     sendKolComment(@Body GraphqlRequest requestBody);
 
-    @POST("./")
-    @Headers({"Content-Type: application/json"})
-    Observable<Response<GraphqlResponse<GetKolFollowingData>>>
-    getKolFollowingList(@Body GraphqlRequest requestBody);
 }

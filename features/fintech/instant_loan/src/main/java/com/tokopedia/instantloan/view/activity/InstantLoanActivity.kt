@@ -1,7 +1,5 @@
 package com.tokopedia.instantloan.view.activity
 
-import android.content.Context
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import com.google.android.material.tabs.TabLayout
@@ -54,15 +52,14 @@ import rx.Subscriber
 import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.TimeInterval
-import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>, InstantLoanLendingDataContractor.View, /*OnGoingLoanContractor.View*/
+class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>, InstantLoanLendingDataContractor.View,
         DanaInstantFragment.ActivityInteractor, BannerPagerAdapter.BannerClick {
 
     @Inject
-    lateinit var mBannerPresenter: InstantLoanLendingDataPresenter
+    lateinit var mLendingDataPresenter: InstantLoanLendingDataPresenter
 
     @Inject
     lateinit var instantLoanAnalytics: InstantLoanAnalytics
@@ -70,7 +67,7 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
     @Inject
     lateinit var userSession: UserSession
 
-    private lateinit var mBannerPager: ViewPager
+    private var mBannerPager: ViewPager? = null
 
     private var tabLayout: TabLayout? = null
     private var heightWrappingViewPager: HeightWrappingViewPager? = null
@@ -93,9 +90,9 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
 
     private var parterDataList: ArrayList<GqlLendingPartnerData> = ArrayList()
 
-    internal var instantLoanItemList: MutableList<InstantLoanItem> = ArrayList()
+    private var instantLoanItemList: MutableList<InstantLoanItem> = ArrayList()
 
-    internal var partnerDataItemList: ArrayList<PartnerDataPageItem> = ArrayList()
+    private var partnerDataItemList: ArrayList<PartnerDataPageItem> = ArrayList()
 
     private val mBannerPageChangeListener = object : ViewPager.OnPageChangeListener {
         override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
@@ -114,7 +111,7 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
     override fun setupLayout(savedInstanceState: Bundle?) {
         super.setupLayout(savedInstanceState)
         initInjector()
-        mBannerPresenter.attachView(this)
+        mLendingDataPresenter.attachView(this)
         initializeView()
         attachViewListener()
         setupToolbar()
@@ -150,15 +147,19 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
     }
 
     override fun IsUserLoggedIn(): Boolean {
-        return userSession != null && userSession.isLoggedIn
+        return userSession.isLoggedIn
     }
 
-    fun renderBannerList(banners: ArrayList<GqlLendingBannerData>) {
+    override fun isViewAttached(): Boolean {
+        return mLendingDataPresenter.isViewAttached
+    }
+
+    private fun renderBannerList(banners: ArrayList<GqlLendingBannerData>) {
         mBannerPager = findViewById(com.tokopedia.instantloan.R.id.view_pager_banner)
 
-        mBannerPager.apply {
+        mBannerPager?.apply {
             offscreenPageLimit = 2
-            adapter = BannerPagerAdapter(context, banners, context as BannerPagerAdapter.BannerClick)
+            adapter = BannerPagerAdapter(banners, context as BannerPagerAdapter.BannerClick)
             setPadding(resources.getDimensionPixelOffset(com.tokopedia.instantloan.R.dimen.il_margin_banner), 0,
                     resources.getDimensionPixelOffset(com.tokopedia.instantloan.R.dimen.il_margin_banner), 0)
             clipToPadding = false
@@ -178,50 +179,40 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
 
     override fun renderLendingData(gqlLendingDataResponse: GqlLendingDataResponse) {
 
-        if (gqlLendingDataResponse != null) {
-
-            if (gqlLendingDataResponse.leBanner != null &&
-                    gqlLendingDataResponse.leBanner.bannerData != null &&
-                    gqlLendingDataResponse.leBanner.bannerData.isNotEmpty()) {
-                showBannerLayout()
-                renderBannerList(gqlLendingDataResponse.leBanner.bannerData)
-            } else {
-                hideBannerLayout()
-            }
-
-            if (gqlLendingDataResponse != null && gqlLendingDataResponse.leCategory != null && gqlLendingDataResponse.leCategory.categoryData.isNotEmpty()) {
-                showCategoryLayout()
-                lendingCategoryAdpater = LendingCategoryAdapter(gqlLendingDataResponse.leCategory.categoryData)
-                setupCategoryLayout()
-                tanpaAgunanFragmentInstance?.setCategoryData(gqlLendingDataResponse.leCategory.categoryData)
-
-            } else {
-                hideCategoryLayout()
-            }
-
-            if (gqlLendingDataResponse != null && gqlLendingDataResponse.lePartner != null && gqlLendingDataResponse.lePartner.partnerData.isNotEmpty()) {
-                showPartnerLayout()
-                parterDataList = gqlLendingDataResponse.lePartner.partnerData
-                setupPartnerLayout()
-            } else {
-                hidePartnerLayout()
-            }
-
-            if (gqlLendingDataResponse.leSeo != null && gqlLendingDataResponse.leSeo?.seoData != null &&
-                    gqlLendingDataResponse.leSeo?.seoData?.isNotEmpty()!!) {
-                showSeoLayout()
-                lendingSeoAdapter = LendingSeoAdapter(gqlLendingDataResponse.leSeo!!.seoData!!)
-                setupSeoLayout()
-            } else {
-                hideSeoLayout()
-            }
-
+        if (gqlLendingDataResponse.leBanner.bannerData.isNotEmpty()) {
+            showBannerLayout()
+            renderBannerList(gqlLendingDataResponse.leBanner.bannerData)
         } else {
             hideBannerLayout()
+        }
+
+        if (gqlLendingDataResponse.leCategory.categoryData.isNotEmpty()) {
+            showCategoryLayout()
+            lendingCategoryAdpater = LendingCategoryAdapter(gqlLendingDataResponse.leCategory.categoryData)
+            setupCategoryLayout()
+            tanpaAgunanFragmentInstance?.setCategoryData(gqlLendingDataResponse.leCategory.categoryData)
+
+        } else {
             hideCategoryLayout()
+        }
+
+        if (gqlLendingDataResponse.lePartner.partnerData.isNotEmpty()) {
+            showPartnerLayout()
+            parterDataList = gqlLendingDataResponse.lePartner.partnerData
+            setupPartnerLayout()
+        } else {
             hidePartnerLayout()
+        }
+
+        if (gqlLendingDataResponse.leSeo != null && gqlLendingDataResponse.leSeo?.seoData != null &&
+                gqlLendingDataResponse.leSeo?.seoData?.isNotEmpty()!!) {
+            showSeoLayout()
+            lendingSeoAdapter = LendingSeoAdapter(gqlLendingDataResponse.leSeo!!.seoData!!)
+            setupSeoLayout()
+        } else {
             hideSeoLayout()
         }
+
     }
 
     private fun hideSeoLayout() {
@@ -255,11 +246,11 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
         testimonialList.add(testimonialItem3)
 
         il_view_pager_testimonials.pageMargin = resources.getDimensionPixelOffset(com.tokopedia.instantloan.R.dimen.il_margin_medium)
-        il_view_pager_testimonials.adapter = DanaInstanTestimonialsPagerAdapter(this, testimonialList)
+        il_view_pager_testimonials.adapter = DanaInstanTestimonialsPagerAdapter(testimonialList)
         (il_view_pager_testimonials.adapter as DanaInstanTestimonialsPagerAdapter).notifyDataSetChanged()
 
         var currentItem = 0
-        il_view_pager_testimonials.setCurrentItem(currentItem)
+        il_view_pager_testimonials.currentItem = currentItem
 
         observable = Observable.interval(8, TimeUnit.SECONDS)
                 .timeInterval()
@@ -276,10 +267,10 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
                     override fun onNext(longTimeInterval: TimeInterval<Long>) {
                         currentItem++
                         if (currentItem <= testimonialList.size - 1) {
-                            il_view_pager_testimonials.setCurrentItem(currentItem)
+                            il_view_pager_testimonials.currentItem = currentItem
                         } else {
                             currentItem = 0
-                            il_view_pager_testimonials.setCurrentItem(currentItem)
+                            il_view_pager_testimonials.currentItem = currentItem
 
                         }
                     }
@@ -344,17 +335,17 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
     }
 
     private fun populateOneTabItem() {
-        tanpaAgunanFragmentInstance = getTanpaAgunanFragment(PINJAMAN_ONLINE_TAB_POSITION)
+        tanpaAgunanFragmentInstance = getTanpaAgunanFragment()
         instantLoanItemList.add(InstantLoanItem(getPageTitle(PINJAMAN_ONLINE_TAB_POSITION),
                 tanpaAgunanFragmentInstance))
     }
 
     private fun populateTwoTabItem() {
-        tanpaAgunanFragmentInstance = getTanpaAgunanFragment(PINJAMAN_ONLINE_TAB_POSITION)
+        tanpaAgunanFragmentInstance = getTanpaAgunanFragment()
         instantLoanItemList.add(InstantLoanItem(getPageTitle(PINJAMAN_ONLINE_TAB_POSITION),
                 tanpaAgunanFragmentInstance))
         instantLoanItemList.add(InstantLoanItem(getPageTitle(DANA_INSTAN_TAB_POSITION),
-                getDanaInstantFragment(DANA_INSTAN_TAB_POSITION)))
+                getDanaInstantFragment()))
     }
 
     private fun populatePartnerItemList() {
@@ -387,12 +378,12 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
                 })
     }
 
-    private fun getDanaInstantFragment(position: Int): DanaInstantFragment {
-        return DanaInstantFragment.createInstance(position)
+    private fun getDanaInstantFragment(): DanaInstantFragment {
+        return DanaInstantFragment.createInstance()
     }
 
-    private fun getTanpaAgunanFragment(position: Int): TanpaAgunanFragment {
-        return TanpaAgunanFragment.createInstance(position)
+    private fun getTanpaAgunanFragment(): TanpaAgunanFragment {
+        return TanpaAgunanFragment.createInstance()
     }
 
     private fun getPartnerFragment(partnerItemList: ArrayList<GqlLendingPartnerData>): Fragment {
@@ -437,30 +428,33 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         this.menu = menu
 
-        if (onGoingLoanStatus && !menushown) {
+        return if (onGoingLoanStatus && !menushown) {
             menushown = true
             val menuInflater = menuInflater
             menuInflater.inflate(com.tokopedia.instantloan.R.menu.instant_loan_menu, menu)
-            return true
+            true
         } else {
-            return super.onCreateOptionsMenu(menu)
+            super.onCreateOptionsMenu(menu)
         }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val id = item.itemId
 
-        if (id == com.tokopedia.instantloan.R.id.submission_history) {
-            openWebView(SUBMISSION_HISTORY_URL)
-            return true
-        } else if (id == com.tokopedia.instantloan.R.id.payment_method) {
-            openWebView(String.format(PAYMENT_METHODS_URL, onGoingLoanId.toString()))
-            return true
-        } else if (id == com.tokopedia.instantloan.R.id.help) {
-            openWebView(HELP_URL)
-            return true
+        return when (item.itemId) {
+            com.tokopedia.instantloan.R.id.submission_history -> {
+                openWebView(SUBMISSION_HISTORY_URL)
+                true
+            }
+            com.tokopedia.instantloan.R.id.payment_method -> {
+                openWebView(String.format(PAYMENT_METHODS_URL, onGoingLoanId.toString()))
+                true
+            }
+            com.tokopedia.instantloan.R.id.help -> {
+                openWebView(HELP_URL)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
-        return super.onOptionsItemSelected(item)
     }
 
     override fun getNewFragment(): Fragment? {
@@ -473,7 +467,7 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
 
     override fun onDestroy() {
         super.onDestroy()
-        mBannerPresenter.detachView()
+        mLendingDataPresenter.detachView()
         if (observable != null && !observable?.isUnsubscribed!!)
             observable?.unsubscribe()
     }
@@ -513,7 +507,7 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
             supportActionBar!!.setDisplayHomeAsUpEnabled(true)
             supportActionBar!!.setDisplayShowTitleEnabled(true)
             supportActionBar!!.setHomeButtonEnabled(true)
-            supportActionBar!!.setTitle(this.title)
+            supportActionBar!!.title = this.title
             updateTitle("")
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -534,12 +528,10 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
     }
 
     private fun sendBannerImpressionEvent(position: Int) {
-        val bannerPagerAdapter = mBannerPager.adapter as BannerPagerAdapter?
+        val bannerPagerAdapter = mBannerPager?.adapter as BannerPagerAdapter?
 
-        if (bannerPagerAdapter != null &&
-                bannerPagerAdapter.bannerEntityList != null &&
-                bannerPagerAdapter.bannerEntityList[position] != null) {
-            val eventLabel = (bannerPagerAdapter.bannerEntityList[position].bannerLink
+        if (bannerPagerAdapter?.bannerEntities != null) {
+            val eventLabel = (bannerPagerAdapter.bannerEntities[position].bannerLink
                     + " - " + position.toString())
 
             instantLoanAnalytics.eventLoanBannerImpression(eventLabel)
@@ -553,7 +545,7 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
 
     override fun onBannerClick(view: View, position: Int) {
         val url = view.tag as String
-        val eventLabel = url + " - " + position.toString()
+        val eventLabel = "$url - $position"
         instantLoanAnalytics.eventLoanBannerClick(eventLabel)
         if (!TextUtils.isEmpty(url)) {
             openWebView(url)
@@ -575,36 +567,21 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
         instantLoanAnalytics.eventInstantLoanPermissionStatus(eventLabel.toString())
     }
 
-    override fun setUserOnGoingLoanStatus(status: Boolean, loanId: Int) {
-        this.onGoingLoanStatus = status
-        this.onGoingLoanId = loanId
+    override fun setUserOnGoingLoanStatus(id: Int) {
+        this.onGoingLoanStatus = id != 0
+        this.onGoingLoanId = id
         onCreateOptionsMenu(menu)
     }
 
     companion object {
 
-        val COLUMN_COUNT_FOR_LOAN_CATEGORY = 4
-        val DEFAULT_PARTNER_ITEM_LIST_SIZE = 9
-        val TAB_NAME = "tab_name"
-        val PINJAMAN_ONLINE_TAB_POSITION = 0
-        val DANA_INSTAN_TAB_POSITION = 1
-        private val TAB_INSTAN = "instan"
-        private val TAB_TANPA_AGUNAN = "pinjamanonline"
-
-        fun createIntent(context: Context): Intent {
-            return Intent(context, InstantLoanActivity::class.java)
-        }
+        const val COLUMN_COUNT_FOR_LOAN_CATEGORY = 4
+        const val DEFAULT_PARTNER_ITEM_LIST_SIZE = 9
+        const val TAB_NAME = "tab_name"
+        const val PINJAMAN_ONLINE_TAB_POSITION = 0
+        const val DANA_INSTAN_TAB_POSITION = 1
+        private const val TAB_INSTAN = "instan"
+        private const val TAB_TANPA_AGUNAN = "pinjamanonline"
     }
-
-
-    /*object DeepLinkIntents {
-        //        @DeepLink(ApplinkConst.INSTANT_LOAN, ApplinkConst.INSTANT_LOAN_TAB)
-        @JvmStatic
-        fun getInstantLoanCallingIntent(context: Context, bundle: Bundle): Intent {
-            val intent = Intent(context, InstantLoanActivity::class.java)
-            intent.putExtras(bundle)
-            return intent
-        }
-    }*/
 }
 

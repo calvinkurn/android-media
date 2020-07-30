@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="host_transaction" translatable="false">transaction</string>
+
+    <!--
+        If the link is Ended with {id}, must end with "/"
+        Otherwise, do not put "/"
+    -->
+    <string name="path_order_list" translatable="false">/order-list</string>
+
+</resources>

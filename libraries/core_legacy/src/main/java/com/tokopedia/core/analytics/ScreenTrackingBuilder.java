@@ -3,8 +3,6 @@ package com.tokopedia.core.analytics;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.tokopedia.core.analytics.nishikino.model.Authenticated;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,18 +26,6 @@ public class ScreenTrackingBuilder {
 
     private ScreenTrackingBuilder(String screenName) {
         this.screenName = screenName;
-    }
-
-    public ScreenTrackingBuilder setNetworkSpeed(String networkSpeed) {
-        customDimension.put(Authenticated.KEY_NETWORK_SPEED, networkSpeed);
-        return this;
-    }
-
-    public ScreenTrackingBuilder setKeyCompetitorIntelligence(String data) {
-        if (!TextUtils.isEmpty(data)) {
-            customDimension.put(Authenticated.KEY_COMPETITOR_INTELLIGENCE, data);
-        }
-        return this;
     }
 
     public void execute(Context context) {

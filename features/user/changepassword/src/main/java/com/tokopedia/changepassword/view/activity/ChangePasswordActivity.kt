@@ -1,15 +1,18 @@
 package com.tokopedia.changepassword.view.activity
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.changepassword.view.fragment.ChangePasswordFragment
+import com.tokopedia.managepassword.view.activity.HasPasswordActivity
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
 
 class ChangePasswordActivity : BaseSimpleActivity() {
+
+    private lateinit var remoteConfig: RemoteConfig
 
     override fun getNewFragment(): Fragment {
         val bundle = Bundle()
@@ -19,17 +22,25 @@ class ChangePasswordActivity : BaseSimpleActivity() {
         return ChangePasswordFragment()
     }
 
-    companion object {
-        open fun createIntent(context: Context): Intent {
-            return Intent(context, ChangePasswordActivity::class.java)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        if (!::remoteConfig.isInitialized) {
+            remoteConfig = FirebaseRemoteConfigImpl(this)
+        }
+
+        if (isDirectToForgotPassword()) {
+            val intent = RouteManager.getIntent(this, ApplinkConstInternalGlobal.FORGOT_PASSWORD)
+            startActivity(intent)
+            finish()
         }
     }
 
-    object DeeplinkIntents {
-        @JvmStatic
-        @DeepLink(ApplinkConst.CHANGE_PASSWORD)
-        fun defaultIntent(context: Context, extras: Bundle): Intent {
-            return Intent(context, ChangePasswordActivity::class.java)
-        }
+    private fun isDirectToForgotPassword(): Boolean {
+        return remoteConfig.getBoolean(REMOTE_DIRECT_TO_FORGOT_PASSWORD,false)
+    }
+
+    companion object {
+        private const val REMOTE_DIRECT_TO_FORGOT_PASSWORD = "android_direct_to_forgot_password"
     }
 }

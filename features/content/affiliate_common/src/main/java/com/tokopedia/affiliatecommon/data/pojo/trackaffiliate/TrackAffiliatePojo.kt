@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName
  * @author by milhamj on 10/17/18.
  */
 data class TrackAffiliatePojo(
-        @SerializedName("success")
+        @SerializedName("message")
         @Expose
-        val success: Boolean = false
+        val message: String = ""
 )

@@ -22,15 +22,23 @@ import javax.inject.Inject
  */
 open class GetExistingChatMapper @Inject constructor() {
 
-    open fun map(pojo: GetExistingChatPojo): ChatroomViewModel {
+    protected var latestHeaderDate: String = ""
 
+    open fun map(pojo: GetExistingChatPojo): ChatroomViewModel {
         val listChat = mappingListChat(pojo)
         val headerModel = mappingHeaderModel(pojo)
         val canLoadMore = pojo.chatReplies.hasNext
         val isReplyable: Boolean = pojo.chatReplies.textAreaReply != 0
         val blockedStatus: BlockedStatus = mapBlockedStatus(pojo)
+        val minReplyTime = pojo.chatReplies.minReplyTime
+        val attachmentIds = pojo.chatReplies.attachmentIds
         listChat.reverse()
-        return ChatroomViewModel(listChat, headerModel, canLoadMore, isReplyable, blockedStatus)
+        return ChatroomViewModel(
+                listChat, headerModel,
+                canLoadMore, isReplyable,
+                blockedStatus, minReplyTime,
+                latestHeaderDate, attachmentIds
+        )
 
     }
 
@@ -60,7 +68,10 @@ open class GetExistingChatMapper @Inject constructor() {
                 interlocutor.thumbnail,
                 interlocutor.status.timestampStr,
                 interlocutor.status.isOnline,
-                interlocutor.shopId
+                interlocutor.shopId,
+                interlocutor.isOfficial,
+                interlocutor.isGold,
+                interlocutor.badge
         )
     }
 
@@ -84,7 +95,7 @@ open class GetExistingChatMapper @Inject constructor() {
         return listChat
     }
 
-    private fun convertToMessageViewModel(chatItemPojoByDateByTime: Reply): Visitable<*> {
+    open fun convertToMessageViewModel(chatItemPojoByDateByTime: Reply): Visitable<*> {
         return MessageViewModel(
                 chatItemPojoByDateByTime.msgId.toString(),
                 chatItemPojoByDateByTime.senderId.toString(),
@@ -102,7 +113,6 @@ open class GetExistingChatMapper @Inject constructor() {
     }
 
     open fun mapAttachment(chatItemPojoByDateByTime: Reply): Visitable<*> {
-
         return when (chatItemPojoByDateByTime.attachment?.type.toString()) {
             TYPE_PRODUCT_ATTACHMENT -> convertToProductAttachment(chatItemPojoByDateByTime)
             TYPE_IMAGE_UPLOAD -> convertToImageUpload(chatItemPojoByDateByTime)
@@ -133,7 +143,7 @@ open class GetExistingChatMapper @Inject constructor() {
 
     private fun convertToFallBackModel(chatItemPojoByDateByTime: Reply): Visitable<*> {
         var fallbackMessage = ""
-        chatItemPojoByDateByTime.attachment?.fallback?.let{
+        chatItemPojoByDateByTime.attachment?.fallback?.let {
             fallbackMessage = it.message
         }
         return FallbackAttachmentViewModel(
@@ -168,10 +178,49 @@ open class GetExistingChatMapper @Inject constructor() {
         )
     }
 
-    private fun convertToProductAttachment(chatItemPojoByDateByTime: Reply): Visitable<*> {
+    open fun convertToProductAttachment(chatItemPojoByDateByTime: Reply): Visitable<*> {
 
         val pojoAttribute = GsonBuilder().create().fromJson<ProductAttachmentAttributes>(chatItemPojoByDateByTime.attachment?.attributes,
                 ProductAttachmentAttributes::class.java)
+
+        val variant: List<AttachmentVariant> = pojoAttribute.productProfile.variant ?: emptyList()
+
+        if (pojoAttribute.isBannedProduct()) {
+            return BannedProductAttachmentViewModel(
+                    chatItemPojoByDateByTime.msgId.toString(),
+                    chatItemPojoByDateByTime.senderId.toString(),
+                    chatItemPojoByDateByTime.senderName,
+                    chatItemPojoByDateByTime.role,
+                    chatItemPojoByDateByTime.attachment?.id ?: "",
+                    chatItemPojoByDateByTime.attachment?.type.toString(),
+                    chatItemPojoByDateByTime.replyTime,
+                    chatItemPojoByDateByTime.isRead,
+                    pojoAttribute.productId,
+                    pojoAttribute.productProfile.name,
+                    pojoAttribute.productProfile.price,
+                    pojoAttribute.productProfile.url,
+                    pojoAttribute.productProfile.imageUrl,
+                    !chatItemPojoByDateByTime.isOpposite,
+                    chatItemPojoByDateByTime.msg,
+                    canShowFooterProductAttachment(chatItemPojoByDateByTime.isOpposite,
+                            chatItemPojoByDateByTime.role),
+                    chatItemPojoByDateByTime.blastId,
+                    pojoAttribute.productProfile.priceInt,
+                    pojoAttribute.productProfile.category,
+                    variant,
+                    pojoAttribute.productProfile.dropPercentage,
+                    pojoAttribute.productProfile.priceBefore,
+                    pojoAttribute.productProfile.shopId,
+                    pojoAttribute.productProfile.freeShipping,
+                    pojoAttribute.productProfile.categoryId,
+                    pojoAttribute.productProfile.playStoreData,
+                    pojoAttribute.productProfile.minOrder,
+                    pojoAttribute.productProfile.remainingStock,
+                    pojoAttribute.productProfile.status,
+                    pojoAttribute.productProfile.wishList,
+                    pojoAttribute.productProfile.images
+            )
+        }
 
         return ProductAttachmentViewModel(
                 chatItemPojoByDateByTime.msgId.toString(),
@@ -194,12 +243,18 @@ open class GetExistingChatMapper @Inject constructor() {
                 chatItemPojoByDateByTime.blastId,
                 pojoAttribute.productProfile.priceInt,
                 pojoAttribute.productProfile.category,
-                pojoAttribute.productProfile.variant.toString(),
+                variant,
                 pojoAttribute.productProfile.dropPercentage,
                 pojoAttribute.productProfile.priceBefore,
                 pojoAttribute.productProfile.shopId,
                 pojoAttribute.productProfile.freeShipping,
-                pojoAttribute.productProfile.categoryId
+                pojoAttribute.productProfile.categoryId,
+                pojoAttribute.productProfile.playStoreData,
+                pojoAttribute.productProfile.minOrder,
+                pojoAttribute.productProfile.remainingStock,
+                pojoAttribute.productProfile.status,
+                pojoAttribute.productProfile.wishList,
+                pojoAttribute.productProfile.images
         )
     }
 
@@ -207,23 +262,24 @@ open class GetExistingChatMapper @Inject constructor() {
         val invoiceAttributes = pojo.attachment?.attributes
         val invoiceSentPojo = GsonBuilder().create().fromJson(invoiceAttributes, InvoiceSentPojo::class.java)
         return AttachInvoiceSentViewModel(
-                pojo.msgId.toString(),
-                pojo.senderId.toString(),
-                pojo.senderName,
-                pojo.role,
-                pojo.attachment?.id ?: "",
-                pojo.attachment?.type.toString(),
-                pojo.replyTime,
-                invoiceSentPojo.invoiceLink.attributes.title,
-                invoiceSentPojo.invoiceLink.attributes.description,
-                invoiceSentPojo.invoiceLink.attributes.imageUrl,
-                invoiceSentPojo.invoiceLink.attributes.totalAmount,
-                !pojo.isOpposite,
-                pojo.isRead,
-                invoiceSentPojo.invoiceLink.attributes.statusId,
-                invoiceSentPojo.invoiceLink.attributes.status,
-                invoiceSentPojo.invoiceLink.attributes.code,
-                invoiceSentPojo.invoiceLink.attributes.hrefUrl
+                msgId = pojo.msgId.toString(),
+                fromUid = pojo.senderId.toString(),
+                from = pojo.senderName,
+                fromRole = pojo.role,
+                attachmentId = pojo.attachment?.id ?: "",
+                attachmentType = pojo.attachment?.type.toString(),
+                replyTime = pojo.replyTime,
+                message = invoiceSentPojo.invoiceLink.attributes.title,
+                description = invoiceSentPojo.invoiceLink.attributes.description,
+                imageUrl = invoiceSentPojo.invoiceLink.attributes.imageUrl,
+                totalAmount = invoiceSentPojo.invoiceLink.attributes.totalAmount,
+                isSender = !pojo.isOpposite,
+                isRead = pojo.isRead,
+                statusId = invoiceSentPojo.invoiceLink.attributes.statusId,
+                status = invoiceSentPojo.invoiceLink.attributes.status,
+                invoiceId = invoiceSentPojo.invoiceLink.attributes.code,
+                invoiceUrl = invoiceSentPojo.invoiceLink.attributes.hrefUrl,
+                createTime = invoiceSentPojo.invoiceLink.attributes.createTime
         )
 
     }

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.home.source.api.ContactUsAPI;
@@ -21,7 +20,9 @@ import com.tokopedia.core.network.retrofit.utils.NetworkCalculator;
 import com.tokopedia.core.network.retrofit.utils.RetrofitUtils;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.util.ImageUploadHandler;
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.network.data.model.response.DataResponse;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.io.File;
 import java.io.IOException;
@@ -211,7 +212,8 @@ public class SubmitTicketDataStore {
 
                         Log.d(TAG + "(step 2):host = ", contactUsPass.getGeneratedHost().getUploadHost());
                         Observable<ImageUploadResult> upload;
-                        if (SessionHandler.isV4Login(context)) {
+                        UserSessionInterface userSession = new UserSession(context);
+                        if (userSession.isLoggedIn()) {
                             upload = RetrofitUtils.createRetrofit(uploadUrl)
                                     .create(UploadImageContactUsParam.class)
                                     .uploadImage(

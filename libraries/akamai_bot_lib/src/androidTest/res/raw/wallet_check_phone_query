@@ -1,0 +1,22 @@
+{
+    check_phone {
+        errors {
+            message
+        }
+        phone_number
+        is_registered
+        registered_applink
+        registered_url
+        not_registered_applink
+        not_registered_url
+        change_msisdn_applink
+        change_msisdn_url
+        is_allow
+        action {
+            title
+            description
+            text
+            applink
+        }
+    }
+}

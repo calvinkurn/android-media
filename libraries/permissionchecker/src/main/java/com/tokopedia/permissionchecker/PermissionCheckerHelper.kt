@@ -63,6 +63,7 @@ class PermissionCheckerHelper {
         const val PERMISSION_READ_CONTACTS = Manifest.permission.READ_CONTACTS
         const val PERMISSION_CALL_PHONE = Manifest.permission.CALL_PHONE
         const val PERMISSION_READ_PHONE_STATE =  Manifest.permission.READ_PHONE_STATE
+        const val PERMISSION_READ_CALL_LOG =  Manifest.permission.READ_CALL_LOG
     }
 
     interface PermissionCheckListener {

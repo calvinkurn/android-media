@@ -53,7 +53,7 @@ public abstract class ContextAnalytics implements Analytics {
      */
     public void sendRegistrationStartEvent(String medium){}
 
-    public void sendMoengageRegisterEvent(String fullName, String mobileNo){}
+    public void sendMoengageRegisterEvent(String fullName, String userId, String email, String loginMethod, String phoneNumber,boolean isGoldMerchant,String shopId,String shopName){}
 
     public void sendAppsflyerRegisterEvent(String userId, String method){}
 
@@ -81,6 +81,10 @@ public abstract class ContextAnalytics implements Analytics {
 
     public String getClientIDString(){return null;}
 
+    public String getCachedClientIDString(){return "";}
+
+    public String getIrisSessionId(){return "";}
+
     public void pushUserId(String userId){}
 
     public void eventOnline(String uid) {}
@@ -96,5 +100,10 @@ public abstract class ContextAnalytics implements Analytics {
     public void sendGTMGeneralEvent(String event, String category, String action, String label,
                                     String shopId, String shopType, String userId,
                                     @Nullable Map<String, Object> customDimension) { }
+    public String getDefferedDeeplinkPathIfExists(){return null;}
 
+
+    @Override
+    public void sendEnhanceEcommerceEvent(String eventName, Bundle value) {
+    }
 }

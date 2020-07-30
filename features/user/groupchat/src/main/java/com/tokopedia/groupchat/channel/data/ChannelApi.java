@@ -1,7 +1,7 @@
 package com.tokopedia.groupchat.channel.data;
 
-import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.groupchat.channel.domain.pojo.ChannelListPojo;
+import com.tokopedia.network.data.model.response.DataResponse;
 
 import java.util.Map;
 

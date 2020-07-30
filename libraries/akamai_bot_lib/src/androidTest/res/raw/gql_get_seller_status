@@ -1,0 +1,14 @@
+query getCampaignSellerStatus($slug: String, $shop_id: Int!){
+    getCampaignSellerStatus(slug:$slug,shop_id:$shop_id){
+        data {
+            is_eligible
+            is_visible
+            is_shop_active
+            is_god_seller
+            ticker_message
+            show_onboard
+            join_status
+            submit_status
+        }
+    }
+}

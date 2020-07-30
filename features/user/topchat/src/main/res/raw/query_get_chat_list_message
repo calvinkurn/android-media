@@ -1,4 +1,5 @@
 query get_existing_message_id($page: Int!, $perPage: Int!, $filter: String!, $tab: String!) {
+  status
   chatListMessage(filter: $filter, page: $page, tab: $tab, perPage: $perPage) {
     list{
           msgID
@@ -17,7 +18,9 @@ query get_existing_message_id($page: Int!, $perPage: Int!, $filter: String!, $ta
             lastReplyTimeStr
             readStatus
             unreads
+            unreadsreply
             fraudStatus
+            pinStatus
           }
         }
     hasNext

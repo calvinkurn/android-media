@@ -1,9 +1,9 @@
 package com.tokopedia.core.network.retrofit.interceptors;
 
 
-import com.tokopedia.abstraction.common.network.interceptor.TkpdBaseInterceptor;
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.exception.SessionExpiredException;
+import com.tokopedia.network.interceptor.TkpdBaseInterceptor;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -20,8 +20,6 @@ import okhttp3.ResponseBody;
  */
 
 public class StandardizedInterceptor extends TkpdBaseInterceptor {
-
-    private static final String TAG = StandardizedInterceptor.class.getSimpleName();
 
     private static final String HEADER_X_APP_VERSION = "X-APP-VERSION";
     private String authorizationString;
@@ -53,11 +51,6 @@ public class StandardizedInterceptor extends TkpdBaseInterceptor {
     private void handleError(String errorMessage) throws SessionExpiredException {
         if(errorMessage.equals("invalid_request") || errorMessage.equals("invalid_grant"))
             throw new SessionExpiredException(errorMessage);
-        /*if(errorMessage.equals("invalid_request"))
-            throw new SessionExpiredExce
-            ption("invalid_request");
-        else if(errorMessage.equals("invalid_grant"))
-            throw new SessionExpiredException("invalid_grant");*/
     }
 
     private Response createNewResponse(Response oldResponse, String oldBodyResponse) {

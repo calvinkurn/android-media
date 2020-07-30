@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
+    <dimen name="sp_9">9sp</dimen>
+    <dimen name="dp_270">270dp</dimen>
 </resources>

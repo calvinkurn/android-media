@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/clContainer"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground"
+    android:paddingBottom="@dimen/dp_16">
+
+    <RadioButton
+        android:id="@+id/rbSelect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:background="@color/transparent"
+        android:clickable="false"
+        app:layout_constraintBottom_toBottomOf="@+id/ivThumbnail"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/ivThumbnail" />
+
+    <ImageView
+        android:id="@+id/ivThumbnail"
+        android:layout_width="@dimen/dp_48"
+        android:layout_height="@dimen/dp_48"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
+        app:layout_constraintStart_toEndOf="@+id/rbSelect"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/labelInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_12"
+        android:layout_marginLeft="@dimen/dp_12"
+        app:layout_constraintEnd_toStartOf="@+id/tpTime"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/ivThumbnail"
+        app:layout_constraintTop_toTopOf="@+id/ivThumbnail"
+        tools:labelTitle="Pesanan Selesai"
+        tools:labelType="general_light_green" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/ivThumbnail"
+        app:typographyType="small"
+        tools:text="1 Mar 2019" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpCode"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_4"
+        app:layout_constraintEnd_toEndOf="@+id/tpTime"
+        app:layout_constraintStart_toStartOf="@+id/labelInfo"
+        app:layout_constraintTop_toBottomOf="@+id/labelInfo"
+        app:typographyType="body_3"
+        tools:text="INV/20190212/XIX/II/271200396" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_4"
+        android:textColor="@color/Neutral_N700_96"
+        app:layout_constraintEnd_toEndOf="@+id/tpTime"
+        app:layout_constraintStart_toStartOf="@+id/tpCode"
+        app:layout_constraintTop_toBottomOf="@+id/tpCode"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
+        tools:text="DIY Mug Cantik" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpPrice"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_4"
+        android:textColor="@color/red_800"
+        app:layout_constraintEnd_toEndOf="@+id/tpTime"
+        app:layout_constraintStart_toStartOf="@+id/tpName"
+        app:layout_constraintTop_toBottomOf="@+id/tpName"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
+        tools:text="Rp110.000" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

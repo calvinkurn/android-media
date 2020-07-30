@@ -17,6 +17,7 @@ public class ShipmentDetailData implements Parcelable {
     private ShipmentCartData shipmentCartData;
     private ShipmentItemData selectedShipment;
     private CourierItemData selectedCourier;
+    private CourierItemData selectedCourierTradeInDropOff;
     private Boolean useInsurance;
     private boolean usePartialOrder;
     private Boolean useDropshipper;
@@ -26,7 +27,7 @@ public class ShipmentDetailData implements Parcelable {
     private boolean dropshipperPhoneValid;
     private boolean courierPromoApplied;
     private String shopId;
-    private List<ShippingCourierViewModel> shippingCourierViewModels;
+    private List<ShippingCourierUiModel> shippingCourierUiModels;
     private boolean isBlackbox;
     private int addressId;
     private boolean preorder;
@@ -43,6 +44,7 @@ public class ShipmentDetailData implements Parcelable {
         shipmentCartData = in.readParcelable(ShipmentCartData.class.getClassLoader());
         selectedShipment = in.readParcelable(ShipmentItemData.class.getClassLoader());
         selectedCourier = in.readParcelable(CourierItemData.class.getClassLoader());
+        selectedCourierTradeInDropOff = in.readParcelable(CourierItemData.class.getClassLoader());
         byte tmpUseInsurance = in.readByte();
         useInsurance = tmpUseInsurance == 0 ? null : tmpUseInsurance == 1;
         usePartialOrder = in.readByte() != 0;
@@ -54,13 +56,13 @@ public class ShipmentDetailData implements Parcelable {
         dropshipperPhoneValid = in.readByte() != 0;
         courierPromoApplied = in.readByte() != 0;
         shopId = in.readString();
-        shippingCourierViewModels = in.createTypedArrayList(ShippingCourierViewModel.CREATOR);
+        shippingCourierUiModels = in.createTypedArrayList(ShippingCourierUiModel.CREATOR);
         isBlackbox = in.readByte() != 0;
         addressId = in.readInt();
         preorder = in.readByte() != 0;
         isTradein = in.readByte() != 0;
         byte tmpIsOrderPriority = in.readByte();
-        isOrderPriority = tmpIsOrderPriority ==0 ? null : tmpIsOrderPriority ==1;
+        isOrderPriority = tmpIsOrderPriority == 0 ? null : tmpIsOrderPriority == 1;
     }
 
     public static final Creator<ShipmentDetailData> CREATOR = new Creator<ShipmentDetailData>() {
@@ -187,12 +189,12 @@ public class ShipmentDetailData implements Parcelable {
         this.shopId = shopId;
     }
 
-    public List<ShippingCourierViewModel> getShippingCourierViewModels() {
-        return shippingCourierViewModels;
+    public List<ShippingCourierUiModel> getShippingCourierViewModels() {
+        return shippingCourierUiModels;
     }
 
-    public void setShippingCourierViewModels(List<ShippingCourierViewModel> shippingCourierViewModels) {
-        this.shippingCourierViewModels = shippingCourierViewModels;
+    public void setShippingCourierViewModels(List<ShippingCourierUiModel> shippingCourierUiModels) {
+        this.shippingCourierUiModels = shippingCourierUiModels;
     }
 
     public boolean isCourierPromoApplied() {
@@ -243,6 +245,14 @@ public class ShipmentDetailData implements Parcelable {
         this.isOrderPriority = orderPriority;
     }
 
+    public CourierItemData getSelectedCourierTradeInDropOff() {
+        return selectedCourierTradeInDropOff;
+    }
+
+    public void setSelectedCourierTradeInDropOff(CourierItemData selectedCourierTradeInDropOff) {
+        this.selectedCourierTradeInDropOff = selectedCourierTradeInDropOff;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -256,6 +266,7 @@ public class ShipmentDetailData implements Parcelable {
         dest.writeParcelable(shipmentCartData, flags);
         dest.writeParcelable(selectedShipment, flags);
         dest.writeParcelable(selectedCourier, flags);
+        dest.writeParcelable(selectedCourierTradeInDropOff, flags);
         dest.writeByte((byte) (useInsurance == null ? 0 : useInsurance ? 1 : 2));
         dest.writeByte((byte) (usePartialOrder ? 1 : 0));
         dest.writeByte((byte) (useDropshipper == null ? 0 : useDropshipper ? 1 : 2));
@@ -268,7 +279,7 @@ public class ShipmentDetailData implements Parcelable {
         dest.writeByte((byte) (isBlackbox ? 1 : 0));
         dest.writeInt(addressId);
         dest.writeByte((byte) (preorder ? 1 : 0));
-        dest.writeTypedList(shippingCourierViewModels);
+        dest.writeTypedList(shippingCourierUiModels);
         dest.writeByte((byte) (isTradein ? 1 : 0));
         dest.writeByte((byte) (isOrderPriority == null ? 0 : isOrderPriority ? 1 : 2));
     }

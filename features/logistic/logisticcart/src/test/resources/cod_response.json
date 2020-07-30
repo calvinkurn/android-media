@@ -1,0 +1,12 @@
+{
+  "checkout_cod": {
+    "header": {
+      "error_code": 200
+    },
+    "data": {
+      "data": {
+        "applink": "https://tokopedia/thankspage"
+      }
+    }
+  }
+}

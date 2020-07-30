@@ -1,0 +1,8 @@
+query get_chat_notif() {
+  notifications {
+      chat {
+        unreadsSeller
+        unreadsUser
+      }
+    }
+}

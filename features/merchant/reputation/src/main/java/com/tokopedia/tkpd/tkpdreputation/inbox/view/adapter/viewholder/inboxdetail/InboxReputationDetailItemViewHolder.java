@@ -1,10 +1,6 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.viewholder.inboxdetail;
 
 import android.content.Context;
-import androidx.annotation.LayoutRes;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.appcompat.widget.PopupMenu;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.Editable;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -16,11 +12,14 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.ImageHandler;
+import androidx.annotation.LayoutRes;
+import androidx.appcompat.widget.PopupMenu;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.core.util.TimeConverter;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.ImageUploadAdapter;
@@ -29,6 +28,7 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageA
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageUpload;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.InboxReputationDetailItemViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ReviewResponseViewModel;
+import com.tokopedia.tkpd.tkpdreputation.utils.TimeConverter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -173,12 +173,12 @@ public class InboxReputationDetailItemViewHolder extends
     public void bind(final InboxReputationDetailItemViewModel element) {
         if (element.isProductDeleted()) {
             productName.setText(
-                    MainApplication.getAppContext().getString(R.string.product_is_deleted));
+                    context.getString(R.string.product_is_deleted));
 
             ImageHandler.loadImageRounded2(productAvatar.getContext(), productAvatar, R.drawable.ic_product_deleted, 5.0f);
         } else if (element.isProductBanned()) {
             productName.setText(
-                    MainApplication.getAppContext().getString(R.string.product_is_banned));
+                    context.getString(R.string.product_is_banned));
 
             ImageHandler.loadImageRounded2(productAvatar.getContext(), productAvatar, R.drawable.ic_product_deleted, 5.0f);
         } else {
@@ -229,7 +229,7 @@ public class InboxReputationDetailItemViewHolder extends
 
             if (element.isReviewIsEdited()) {
                 time = getFormattedTime(element.getReviewTime()) +
-                        MainApplication.getAppContext().getString(R.string.edited);
+                        context.getString(R.string.edited);
             } else {
                 time = getFormattedTime(element.getReviewTime());
             }
@@ -240,7 +240,7 @@ public class InboxReputationDetailItemViewHolder extends
             review.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (review.getText().toString().endsWith(MainApplication.getAppContext().getString(R.string.more_to_complete))) {
+                    if (review.getText().toString().endsWith(context.getString(R.string.more_to_complete))) {
                         review.setText(element.getReview());
                     }
 
@@ -272,20 +272,12 @@ public class InboxReputationDetailItemViewHolder extends
 
         }
         showOrHideGiveReviewLayout(element);
-        giveReview.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                viewListener.onGoToGiveReview(element.getReviewId(),
-                        element.getProductId(),
-                        element.getShopId(),
-                        element.isReviewIsSkippable(),
-                        element.getProductAvatar(),
-                        element.getProductName(),
-                        element.getProductUrl(),
-                        element.getRevieweeName(),
-                        element.getproductStatus());
-            }
-        });
+        giveReview.setOnClickListener( view -> viewListener.onGoToGiveReview(
+                element.getProductId(),
+                element.getShopId(),
+                element.getOrderId(),
+                getAdapterPosition()
+        ));
 
         adapter.addList(convertToAdapterViewModel(element.getReviewAttachment()));
         adapter.notifyDataSetChanged();
@@ -295,8 +287,6 @@ public class InboxReputationDetailItemViewHolder extends
                 viewListener.onSendReplyReview(element, sellerAddReplyEditText.getText().toString());
             }
         });
-
-
     }
 
     private void showOrHideGiveReviewLayout(InboxReputationDetailItemViewModel element) {
@@ -321,6 +311,7 @@ public class InboxReputationDetailItemViewHolder extends
             @Override
             public void onClick(View v) {
                 toggleReply();
+                viewListener.onClickToggleReply(element, getAdapterPosition());
             }
         });
         replyArrow.setOnClickListener(new View.OnClickListener() {
@@ -350,7 +341,7 @@ public class InboxReputationDetailItemViewHolder extends
                 public void onClick(View v) {
                     final PopupMenu popup = new PopupMenu(context, v);
                     popup.getMenu().add(1, MENU_DELETE, 1,
-                            MainApplication.getAppContext()
+                            context
                                     .getString(R.string.menu_delete));
 
                     popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -376,12 +367,12 @@ public class InboxReputationDetailItemViewHolder extends
     private void toggleReply() {
         isReplyOpened = !isReplyOpened;
         if (isReplyOpened) {
-            seeReplyText.setText(MainApplication.getAppContext().getText(R.string.close_reply));
+            seeReplyText.setText(context.getText(R.string.close_reply));
             replyArrow.setRotation(180);
             replyReviewLayout.setVisibility(View.VISIBLE);
             viewListener.onSmoothScrollToReplyView(getAdapterPosition());
         } else {
-            seeReplyText.setText(MainApplication.getAppContext().getText(R.string.see_reply));
+            seeReplyText.setText(context.getText(R.string.see_reply));
             replyArrow.setRotation(0);
             replyReviewLayout.setVisibility(View.GONE);
         }
@@ -451,17 +442,20 @@ public class InboxReputationDetailItemViewHolder extends
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                viewListener.onClickReviewOverflowMenu(element, getAdapterPosition());
+
                 PopupMenu popup = new PopupMenu(context, v);
                 if (element.isReviewIsEditable())
-                    popup.getMenu().add(1, MENU_EDIT, 1, MainApplication.getAppContext()
+                    popup.getMenu().add(1, MENU_EDIT, 1, context
                             .getString(R.string.menu_edit));
 
                 if (element.getTab() == InboxReputationActivity.TAB_BUYER_REVIEW)
-                    popup.getMenu().add(1, MENU_REPORT, 2, MainApplication.getAppContext()
+                    popup.getMenu().add(1, MENU_REPORT, 2, context
                             .getString(R.string.menu_report));
 
                 if (!TextUtils.isEmpty(element.getProductName()))
-                    popup.getMenu().add(1, MENU_SHARE, 3, MainApplication.getAppContext()
+                    popup.getMenu().add(1, MENU_SHARE, 3, context
                             .getString(R.string.menu_share));
 
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -469,7 +463,7 @@ public class InboxReputationDetailItemViewHolder extends
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
                         if (item.getItemId() == MENU_EDIT) {
-                            viewListener.onEditReview(element);
+                            viewListener.onEditReview(element, getAdapterPosition());
                             return true;
                         } else if (item.getItemId() == MENU_REPORT) {
                             viewListener.onGoToReportReview(
@@ -478,12 +472,7 @@ public class InboxReputationDetailItemViewHolder extends
                             );
                             return true;
                         } else if (item.getItemId() == MENU_SHARE) {
-                            viewListener.onShareReview(
-                                    element.getProductName(),
-                                    element.getProductAvatar(),
-                                    element.getProductUrl(),
-                                    element.getReview()
-                            );
+                            viewListener.onShareReview(element, getAdapterPosition());
                             return true;
                         } else {
                             return false;

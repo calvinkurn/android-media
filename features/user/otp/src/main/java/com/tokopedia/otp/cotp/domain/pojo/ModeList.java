@@ -33,6 +33,9 @@ public class ModeList {
     @SerializedName("pop_up_body")
     @Expose
     private String popUpBody;
+    @SerializedName("number_otp_digit")
+    @Expose
+    private Integer numberOtpDigit;
 
     public int getModeCode() {
         return modeCode;
@@ -68,5 +71,9 @@ public class ModeList {
 
     public String getPopUpBody() {
         return popUpBody;
+    }
+
+    public Integer getNumberOtpDigit() {
+        return numberOtpDigit;
     }
 }

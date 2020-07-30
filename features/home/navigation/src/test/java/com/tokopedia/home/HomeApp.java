@@ -4,10 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+
 import androidx.fragment.app.Fragment;
 
-import com.raizlabs.android.dbflow.config.FlowConfig;
-import com.raizlabs.android.dbflow.config.FlowManager;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
@@ -18,8 +17,6 @@ import com.tokopedia.home.account.di.AccountHomeInjection;
 import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
-import com.tokopedia.user.session.UserSession;
-import com.tokopedia.user.session.UserSessionInterface;
 
 import org.robolectric.annotation.internal.Instrument;
 
@@ -34,33 +31,6 @@ public class HomeApp extends BaseMainApplication implements AccountHomeRouter, G
     @Override
     public void onCreate() {
         super.onCreate();
-
-        FlowManager.init(new FlowConfig.Builder(this).build());
-    }
-
-    @Override
-    public void doLogoutAccount(Activity activity) {
-
-    }
-
-    @Override
-    public void goToHelpCenter(Context context) {
-
-    }
-
-    @Override
-    public Intent getIntentCreateShop(Context context) {
-        return null;
-    }
-
-    @Override
-    public Intent getManageProfileIntent(Context context) {
-        return null;
-    }
-
-    @Override
-    public Intent getManagePasswordIntent(Context context) {
-        return null;
     }
 
     @Override
@@ -69,47 +39,12 @@ public class HomeApp extends BaseMainApplication implements AccountHomeRouter, G
     }
 
     @Override
-    public void goToShopEditor(Context context) {
-
-    }
-
-    @Override
     public void goToManageShopShipping(Context context) {
 
     }
 
     @Override
-    public void goToManageShopEtalase(Context context) {
-
-    }
-
-    @Override
-    public void goTotManageShopNotes(Context context) {
-
-    }
-
-    @Override
-    public void goToManageShopLocation(Context context) {
-
-    }
-
-    @Override
     public void goToManageShopProduct(Context context) {
-
-    }
-
-    @Override
-    public void goToManageBankAccount(Context context) {
-
-    }
-
-    @Override
-    public void goToManageCreditCard(Context context) {
-
-    }
-
-    @Override
-    public void goToTokoCash(String applinkUrl, String redirectUrl, Activity activity) {
 
     }
 
@@ -124,23 +59,8 @@ public class HomeApp extends BaseMainApplication implements AccountHomeRouter, G
     }
 
     @Override
-    public Fragment getFavoriteFragment() {
-        return null;
-    }
-
-    @Override
-    public void goToGMSubscribe(Context context) {
-
-    }
-
-    @Override
     public String getStringRemoteConfig(String key, String defaultValue) {
         return null;
-    }
-
-    @Override
-    public Boolean getBooleanRemoteConfig(String key, Boolean defaultValue) {
-        return false;
     }
 
     @Override
@@ -159,28 +79,8 @@ public class HomeApp extends BaseMainApplication implements AccountHomeRouter, G
     }
 
     @Override
-    public void setPromoPushPreference(Boolean newValue) {
-
-    }
-
-    @Override
-    public Fragment getHomeFragment() {
-        return new Fragment();
-    }
-
-    @Override
     public Fragment getFeedPlusFragment(Bundle bundle) {
         return new Fragment();
-    }
-
-    @Override
-    public Fragment getCartFragment() {
-        return new Fragment();
-    }
-
-    @Override
-    public Intent getInboxTalkCallingIntent(Context context) {
-        return null;
     }
 
     @Override
@@ -194,22 +94,12 @@ public class HomeApp extends BaseMainApplication implements AccountHomeRouter, G
     }
 
     @Override
-    public Intent getOnBoardingIntent(Activity activity) {
-        return new Intent();
-    }
-
-    @Override
     public int getCartCount(Context context) {
         return 0;
     }
 
     @Override
     public void setCartCount(Context context, int count) {
-
-    }
-
-    @Override
-    public void sendAnalyticsFirstTime() {
 
     }
 
@@ -225,11 +115,6 @@ public class HomeApp extends BaseMainApplication implements AccountHomeRouter, G
 
     @Override
     public void showMaintenancePage() {
-
-    }
-
-    @Override
-    public void sendForceLogoutAnalytics(Response response, boolean unauthorized, Boolean needGcmUpdate) {
 
     }
 
@@ -250,26 +135,6 @@ public class HomeApp extends BaseMainApplication implements AccountHomeRouter, G
 
     @Override
     public void refreshToken() throws IOException {
-
-    }
-
-    @Override
-    public UserSessionInterface getSession() {
-        return mock(UserSession.class);
-    }
-
-    @Override
-    public void init() {
-
-    }
-
-    @Override
-    public void registerShake(String screenName, Activity activity) {
-
-    }
-
-    @Override
-    public void unregisterShake() {
 
     }
 

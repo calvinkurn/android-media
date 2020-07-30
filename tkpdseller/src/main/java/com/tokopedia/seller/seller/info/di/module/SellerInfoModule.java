@@ -10,6 +10,7 @@ import javax.inject.Named;
 import dagger.Module;
 import dagger.Provides;
 
+import static com.tokopedia.seller.seller.info.constant.SellerInfoConstantKt.MARK_SELLER_INFO_READ_NOTIFICATION;
 import static com.tokopedia.seller.seller.info.constant.SellerInfoConstantKt.SELLER_CENTER_RAW;
 
 /**
@@ -23,5 +24,11 @@ public class SellerInfoModule {
     @Provides
     public String provideRawSellerCenter(@ApplicationContext Context context){
         return GraphqlHelper.loadRawString(context.getResources(), R.raw.notifcenter_list_raw);
+    }
+
+    @Named(MARK_SELLER_INFO_READ_NOTIFICATION)
+    @Provides
+    public String provideMarkReadNotificationQuery(@ApplicationContext Context context){
+        return GraphqlHelper.loadRawString(context.getResources(), R.raw.mutation_mark_read_notification);
     }
 }

@@ -1,10 +1,10 @@
 package com.tokopedia.core.network;
 
-import androidx.annotation.ColorInt;
-import com.google.android.material.snackbar.Snackbar;
 import android.view.View;
 
-import com.tokopedia.core.network.R;
+import androidx.annotation.ColorInt;
+
+import com.google.android.material.snackbar.Snackbar;
 
 /**
  * Created by ricoharisin on 6/2/16.
@@ -12,7 +12,6 @@ import com.tokopedia.core.network.R;
 @Deprecated
 public class SnackbarRetry {
 
-    private Boolean isRetryClicked;
     private Snackbar snackBar;
 
     public SnackbarRetry(Snackbar snackbar, final NetworkErrorHelper.RetryClickedListener listener) {
@@ -20,29 +19,16 @@ public class SnackbarRetry {
     }
 
     public SnackbarRetry(Snackbar snackbar, String actionText, final NetworkErrorHelper.RetryClickedListener listener) {
-        isRetryClicked = true;
         this.snackBar = snackbar;
         snackBar.setAction(actionText, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                isRetryClicked = true;
                 listener.onRetryClicked();
             }
         });
     }
 
-    public void resumeRetrySnackbar() {
-        if (!isRetryClicked) {
-            showRetrySnackbar();
-        }
-    }
-
-    public void pauseRetrySnackbar() {
-        hideRetrySnackbar();
-    }
-
     public void showRetrySnackbar() {
-        isRetryClicked = false;
         snackBar.show();
     }
 
@@ -52,10 +38,6 @@ public class SnackbarRetry {
 
     public boolean isShown(){
         return snackBar.isShown();
-    }
-
-    public void addOnAttachStateChangeListener(View.OnAttachStateChangeListener onAttachStateChangeListener) {
-        snackBar.getView().addOnAttachStateChangeListener(onAttachStateChangeListener);
     }
 
     public void setColorActionRetry(@ColorInt int colorActionRetry){

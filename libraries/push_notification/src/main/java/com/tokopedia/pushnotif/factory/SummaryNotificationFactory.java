@@ -57,7 +57,7 @@ public class SummaryNotificationFactory extends BaseNotificationFactory {
         if (ApplinkNotificationHelper.allowGroup()) {
             builder.setGroupSummary(true);
             builder.setGroup(generateGroupKey(applinkNotificationModel.getApplinks()));
-            builder.setGroupAlertBehavior(Notification.GROUP_ALERT_CHILDREN);
+            builder.setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_CHILDREN);
         }
         builder.setContentIntent(createPendingIntent(getGenericApplinks(notificationType), notificationType, 0));
         builder.setDeleteIntent(createDismissPendingIntent(notificationType, 0));

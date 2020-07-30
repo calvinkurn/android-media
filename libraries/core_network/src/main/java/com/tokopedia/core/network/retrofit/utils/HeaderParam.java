@@ -9,7 +9,6 @@ import java.util.Map;
 
 @Deprecated
 public class HeaderParam {
-    private static final String TAG = HeaderParam.class.getSimpleName();
 
     private Map<String, String> params = new HashMap<>();
     private Map<String, String> headers = new HashMap<>();

@@ -43,21 +43,13 @@ public class ReviewShopUseCase extends UseCase<DataResponseReviewShop> {
     @Override
     public Observable<DataResponseReviewShop> createObservable(final RequestParams requestParams) {
         return reputationRepository.getReviewShopList(requestParams.getParamsAllValueInString())
-                .flatMap(new Func1<DataResponseReviewShop, Observable<DataResponseReviewShop>>() {
-                    @Override
-                    public Observable<DataResponseReviewShop> call(final DataResponseReviewShop dataResponseReviewShop) {
-                        if(dataResponseReviewShop.getList()!= null && dataResponseReviewShop.getList().size() > 0) {
-                            return getLikeDislikeReviewUseCase.createObservable(
-                                    GetLikeDislikeReviewUseCase.getParam(createReviewIds(dataResponseReviewShop), requestParams.getString(USER_ID, "")))
-                                    .map(new Func1<GetLikeDislikeReviewDomain, DataResponseReviewShop>() {
-                                        @Override
-                                        public DataResponseReviewShop call(GetLikeDislikeReviewDomain getLikeDislikeReviewDomain) {
-                                            return mapLikeModelToReviewModel(getLikeDislikeReviewDomain, dataResponseReviewShop);
-                                        }
-                                    });
-                        }else{
-                            return Observable.just(dataResponseReviewShop);
-                        }
+                .flatMap((Func1<DataResponseReviewShop, Observable<DataResponseReviewShop>>) dataResponseReviewShop -> {
+                    if(dataResponseReviewShop.getList()!= null && dataResponseReviewShop.getList().size() > 0) {
+                        return getLikeDislikeReviewUseCase.createObservable(
+                                GetLikeDislikeReviewUseCase.getParam(createReviewIds(dataResponseReviewShop), requestParams.getString(USER_ID, "")))
+                                .map(getLikeDislikeReviewDomain -> mapLikeModelToReviewModel(getLikeDislikeReviewDomain, dataResponseReviewShop));
+                    }else{
+                        return Observable.just(dataResponseReviewShop);
                     }
                 });
     }

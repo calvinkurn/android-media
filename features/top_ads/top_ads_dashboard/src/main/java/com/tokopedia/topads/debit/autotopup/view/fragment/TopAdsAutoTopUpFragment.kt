@@ -1,28 +1,33 @@
 package com.tokopedia.topads.debit.autotopup.view.fragment
 
 import android.app.Activity
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
-import com.tokopedia.design.component.ToasterError
 import com.tokopedia.graphql.data.GraphqlClient
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.debit.autotopup.data.extensions.selectedPrice
-import com.tokopedia.topads.debit.autotopup.data.model.*
+import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpItem
+import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpStatus
+import com.tokopedia.topads.debit.autotopup.data.model.Loading
+import com.tokopedia.topads.debit.autotopup.data.model.ResponseSaving
 import com.tokopedia.topads.debit.autotopup.view.adapter.TopAdsAutoTopUpPriceTypeFactory
 import com.tokopedia.topads.debit.autotopup.view.adapter.viewholder.TopAdsAutoTopUpPriceViewHolder
 import com.tokopedia.topads.debit.autotopup.view.viewmodel.TopAdsAutoTopUpViewModel
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_top_ads_auto_topup.*
@@ -68,13 +73,15 @@ class TopAdsAutoTopUpFragment:
         } })
     }
 
-    private fun handleResponseSaving(it: ResponseSaving?) {
-        if (it == null) return
-        if (it.isSuccess){
+    private fun handleResponseSaving(r: ResponseSaving?) {
+        if (r == null) return
+        if (r.isSuccess){
             sendResultIntentOk()
         } else {
-            ToasterError.make(view, ErrorHandler.getErrorMessage(context, it.throwable))
-                    .setAction(com.tokopedia.abstraction.R.string.close){}.show()
+            view?.let {
+                Toaster.make(it, ErrorHandler.getErrorMessage(context, r.throwable), Snackbar.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+                        getString(com.tokopedia.abstraction.R.string.close), View.OnClickListener { })
+            }
         }
     }
 
@@ -95,7 +102,7 @@ class TopAdsAutoTopUpFragment:
         selectedItem = data.selectedPrice
         min_auto_topup_descr.text = getString(R.string.descr_min_autotopup, selectedItem.minCreditFmt)
         auto_topup_status.text = data.statusDesc
-        auto_topup_toggle.isChecked = data.status.toInt() != 0
+        auto_topup_toggle.isChecked = data.status.toIntOrZero() != 0
         addListenerToToggle()
         super.renderList(data.availableNominals)
     }

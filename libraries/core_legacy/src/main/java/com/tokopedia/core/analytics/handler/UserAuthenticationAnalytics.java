@@ -27,11 +27,6 @@ public class UserAuthenticationAnalytics {
         mDiskAnalyticsDataStore.setActiveAuthenticationState(AppEventTracking.GTMCacheValue.LOGIN);
     }
 
-    public static void setActiveRegister(Context context) {
-        checkNotNullAnalyticsData(context);
-        mDiskAnalyticsDataStore.setActiveAuthenticationState(AppEventTracking.GTMCacheValue.REGISTER);
-    }
-
     public static void setActiveAuthenticationMedium(Context context, String medium) {
         checkNotNullAnalyticsData(context);
         mDiskAnalyticsDataStore.setActiveAuthenticationMedium(medium);

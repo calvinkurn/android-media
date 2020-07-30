@@ -3,7 +3,6 @@ package com.tokopedia.profile.view.listener
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.listener.BaseListViewListener
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
-import com.tokopedia.profile.ProfileModuleRouter
 import com.tokopedia.user.session.UserSession
 
 /**
@@ -12,7 +11,6 @@ import com.tokopedia.user.session.UserSession
 
 interface ProfileEmptyContract {
     interface View : BaseListViewListener<Visitable<*>> {
-        var profileRouter: ProfileModuleRouter
 
         fun getUserSession(): UserSession
 

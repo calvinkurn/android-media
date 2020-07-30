@@ -13,8 +13,7 @@ import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
-import com.tokopedia.abstraction.common.utils.view.CommonUtils;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.utils.TKPDMapParam;
@@ -38,6 +37,7 @@ import javax.inject.Inject;
 import rx.Subscriber;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
+import timber.log.Timber;
 
 import static com.tokopedia.akamai_bot_lib.UtilsKt.getSensorData;
 
@@ -188,7 +188,7 @@ public class ReactNetworkModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void getResponseJson(String url, String method, String request, Boolean isAuth, final Promise promise) {
         try {
-            CommonUtils.dumper(url + " " + request);
+            Timber.d(url + " " + request);
             compositeSubscription.add(reactNetworkRepository.getResponseJson(url, method, request, isAuth)
                     .subscribeOn(Schedulers.newThread())
                     .subscribe(new Subscriber<String>() {
@@ -230,7 +230,7 @@ public class ReactNetworkModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void getResponseParam(String url, String method, String encodedRequest, Boolean isAuth, final Promise promise) {
         try {
-            CommonUtils.dumper(url + " " + encodedRequest);
+            Timber.d(url + " " + encodedRequest);
             compositeSubscription.add(reactNetworkRepository
                     .getResponseParam(url, method, encodedRequest, isAuth)
                     .subscribeOn(Schedulers.newThread())

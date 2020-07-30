@@ -32,35 +32,11 @@
                 android:id="@+id/search_input_view"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/dp_8"
+                android:layout_marginRight="@dimen/dp_8"
                 android:layout_weight="1"
                 android:fitsSystemWindows="true"
                 app:siv_search_hint="@string/text_search_hint" />
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/action_bantuan"
-                android:layout_width="@dimen/dp_24"
-                android:layout_height="@dimen/dp_24"
-                android:layout_gravity="center"
-                android:layout_marginEnd="@dimen/dp_8"
-                android:layout_marginRight="@dimen/dp_8"
-                app:srcCompat="@drawable/ic_system_action_information_grayscale_24" />
-
-            <FrameLayout
-                android:id="@+id/action_profile"
-                android:layout_width="@dimen/dp_30"
-                android:layout_height="@dimen/dp_30"
-                android:layout_gravity="center"
-                android:layout_marginEnd="@dimen/dp_16"
-                android:layout_marginRight="@dimen/dp_16">
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/iv_profile"
-                    android:layout_width="@dimen/dp_24"
-                    android:layout_height="@dimen/dp_24"
-                    android:layout_gravity="center"
-                    app:srcCompat="@drawable/ic_profile_default" />
-
-            </FrameLayout>
         </LinearLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -107,19 +83,14 @@
         android:visibility="gone"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-    <com.tokopedia.design.button.BottomActionView
+    <com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
         android:id="@+id/bav"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center|bottom"
         android:layout_marginBottom="@dimen/dp_16"
         android:visibility="gone"
-        app:bav_1_display="true"
-        app:bav_2_display="true"
-        app:bav_icon_1="@drawable/ic_system_action_sort_grayscale_24"
-        app:bav_icon_2="@drawable/ic_system_action_filter_grayscale_24"
-        app:bav_label_1="@string/text_button_sort"
-        app:bav_label_2="@string/text_title_filter" />
+        app:fbType="group" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/btn_back_to_top"
@@ -129,10 +100,10 @@
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_20"
-        app:srcCompat="@drawable/ic_arrow_up"
         android:tint="@color/grey_600"
         android:visibility="gone"
         app:backgroundTint="@color/white"
+        app:srcCompat="@drawable/ic_arrow_up"
         tools:visibility="visible" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

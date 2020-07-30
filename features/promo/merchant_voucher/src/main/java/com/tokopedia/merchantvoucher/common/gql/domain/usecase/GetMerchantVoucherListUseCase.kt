@@ -8,6 +8,7 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.merchantvoucher.R
 import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherModel
 import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherQuery
+import com.tokopedia.merchantvoucher.common.gql.data.request.CartItemDataVoucher
 import com.tokopedia.merchantvoucher.common.gql.domain.mapper.GraphQLMerchantListMapper
 import com.tokopedia.merchantvoucher.common.gql.domain.usecase.base.SingleGraphQLUseCase
 import com.tokopedia.usecase.RequestParams
@@ -31,6 +32,10 @@ constructor(@ApplicationContext context: Context) : UseCase<ArrayList<MerchantVo
                 variables[SHOP_ID] = shopId
                 val numVoucher = requestParams.getInt(NUM_VOUCHER, 0)
                 variables[NUM_VOUCHER] = numVoucher
+                if (requestParams.getObject(CART_ITEM_DATA) != null) {
+                    val cartItemData = requestParams.getObject(CART_ITEM_DATA)
+                    variables[CART_ITEM_DATA] = cartItemData
+                }
                 return variables
             }
 
@@ -43,7 +48,7 @@ constructor(@ApplicationContext context: Context) : UseCase<ArrayList<MerchantVo
         }
     }
 
-    fun clearCache(){
+    fun clearCache() {
         graphQLUseCase.clearCache()
     }
 
@@ -62,12 +67,16 @@ constructor(@ApplicationContext context: Context) : UseCase<ArrayList<MerchantVo
 
         val SHOP_ID = "shop_id"
         val NUM_VOUCHER = "num_voucher"
+        val CART_ITEM_DATA = "cart_item_data"
 
         @JvmStatic
-        fun createRequestParams(shopId:String, numVoucher: Int): RequestParams {
+        fun createRequestParams(shopId: String, numVoucher: Int, cartItemDatumVouchers: List<CartItemDataVoucher>? = null): RequestParams {
             val requestParams = RequestParams.create()
             requestParams.putInt(SHOP_ID, shopId.toInt())
             requestParams.putInt(NUM_VOUCHER, numVoucher)
+            if (cartItemDatumVouchers != null) {
+                requestParams.putObject(CART_ITEM_DATA, cartItemDatumVouchers)
+            }
             return requestParams
         }
     }

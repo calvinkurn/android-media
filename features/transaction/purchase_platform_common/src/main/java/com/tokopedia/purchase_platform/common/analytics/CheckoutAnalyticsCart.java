@@ -1,11 +1,13 @@
 package com.tokopedia.purchase_platform.common.analytics;
 
-import android.os.Bundle;
+import android.content.Context;
 
-import com.google.android.gms.tagmanager.DataLayer;
-import com.google.firebase.analytics.FirebaseAnalytics;
-import com.tokopedia.purchase_platform.common.analytics.TransactionAnalytics;
+import com.tokopedia.analyticconstant.DataLayer;
+import com.tokopedia.iris.util.IrisSession;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.CustomDimension;
@@ -15,14 +17,17 @@ import static com.tokopedia.purchase_platform.common.analytics.ConstantTransacti
 import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventName;
 import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.Key;
 
+import com.tokopedia.iris.util.ConstantKt;
+
 
 /**
  * @author anggaprasetiyo on 18/05/18.
  */
 public class CheckoutAnalyticsCart extends TransactionAnalytics {
+    IrisSession irisSession;
 
-    public CheckoutAnalyticsCart() {
-
+    public CheckoutAnalyticsCart(Context context) {
+        irisSession = new IrisSession(context);
     }
 
     @Deprecated
@@ -99,12 +104,12 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         );
     }
 
-    public void eventClickAtcCartClickShopName(String shopName) {
+    public void eventClickAtcCartClickShop(String shopId, String shopName) {
         sendEventCategoryActionLabel(
                 EventName.CLICK_ATC,
                 EventCategory.CART,
-                EventAction.CLICK_SHOP_NAME,
-                shopName
+                EventAction.CLICK_SHOP,
+                shopId + " - " + shopName
         );
     }
 
@@ -312,15 +317,18 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
     }
 
 
-    private void sendEnhancedECommerce(Map<String, Object> cartMap, String eventLabel) {
+    private void sendEnhancedECommerce(int step, Map<String, Object> cartMap, String eventLabel) {
+
         Map<String, Object> dataLayer = DataLayer.mapOf(
                 Key.EVENT, EventName.CHECKOUT,
                 Key.EVENT_CATEGORY, EventCategory.CART,
-                Key.EVENT_ACTION, EventAction.VIEW_CART_PAGE,
+                Key.EVENT_ACTION, step == 0 ? EventAction.VIEW_CART_PAGE : EventAction.CLICK_CHECKOUT,
                 Key.EVENT_LABEL, eventLabel,
                 Key.E_COMMERCE, cartMap,
                 Key.CURRENT_SITE, CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
         );
+        dataLayer.put(ConstantKt.KEY_SESSION_IRIS, irisSession.getSessionId());
+
         sendEnhancedEcommerce(dataLayer);
     }
 
@@ -333,98 +341,53 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
     }
 
     public void enhancedECommerceCartLoadedStep0(Map<String, Object> cartMap) {
-        sendEnhancedECommerce(cartMap, "");
+        sendEnhancedECommerce(0, cartMap, "");
         flushEnhancedECommerce();
     }
 
     public void enhancedECommerceGoToCheckoutStep1SuccessDefault(Map<String, Object> cartMap, boolean eligibleCod) {
         if (eligibleCod) {
-            sendEnhancedECommerce(cartMap, EventLabel.CHECKOUT_SUCCESS_DEFAULT_ELIGIBLE_COD);
+            sendEnhancedECommerce(1, cartMap, EventLabel.CHECKOUT_SUCCESS_DEFAULT_ELIGIBLE_COD);
         } else {
-            sendEnhancedECommerce(cartMap, EventLabel.CHECKOUT_SUCCESS_DEFAULT);
+            sendEnhancedECommerce(1, cartMap, EventLabel.CHECKOUT_SUCCESS_DEFAULT);
         }
         flushEnhancedECommerce();
     }
 
     public void enhancedECommerceGoToCheckoutStep1SuccessCheckAll(Map<String, Object> cartMap, boolean eligibleCod) {
         if (eligibleCod) {
-            sendEnhancedECommerce(cartMap, EventLabel.CHECKOUT_SUCCESS_CHECK_ALL_ELIGIBLE_COD);
+            sendEnhancedECommerce(1, cartMap, EventLabel.CHECKOUT_SUCCESS_CHECK_ALL_ELIGIBLE_COD);
         } else {
-            sendEnhancedECommerce(cartMap, EventLabel.CHECKOUT_SUCCESS_CHECK_ALL);
+            sendEnhancedECommerce(1, cartMap, EventLabel.CHECKOUT_SUCCESS_CHECK_ALL);
         }
         flushEnhancedECommerce();
     }
 
     public void enhancedECommerceGoToCheckoutStep1SuccessPartialShop(Map<String, Object> cartMap, boolean eligibleCod) {
         if (eligibleCod) {
-            sendEnhancedECommerce(cartMap, EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP_ELIGIBLE_COD);
+            sendEnhancedECommerce(1, cartMap, EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP_ELIGIBLE_COD);
         } else {
-            sendEnhancedECommerce(cartMap, EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP);
+            sendEnhancedECommerce(1, cartMap, EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP);
         }
         flushEnhancedECommerce();
     }
 
     public void enhancedECommerceGoToCheckoutStep1SuccessPartialProduct(Map<String, Object> cartMap, boolean eligibleCod) {
         if (eligibleCod) {
-            sendEnhancedECommerce(cartMap, EventLabel.CHECKOUT_SUCCESS_PARTIAL_PRODUCT_ELIGIBLE_COD);
+            sendEnhancedECommerce(1, cartMap, EventLabel.CHECKOUT_SUCCESS_PARTIAL_PRODUCT_ELIGIBLE_COD);
         } else {
-            sendEnhancedECommerce(cartMap, EventLabel.CHECKOUT_SUCCESS_PARTIAL_PRODUCT);
+            sendEnhancedECommerce(1, cartMap, EventLabel.CHECKOUT_SUCCESS_PARTIAL_PRODUCT);
         }
         flushEnhancedECommerce();
     }
 
     public void enhancedECommerceGoToCheckoutStep1SuccessPartialShopAndProduct(Map<String, Object> cartMap, boolean eligibleCod) {
         if (eligibleCod) {
-            sendEnhancedECommerce(cartMap, EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP_AND_PRODUCT_ELIGIBLE_COD);
+            sendEnhancedECommerce(1, cartMap, EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP_AND_PRODUCT_ELIGIBLE_COD);
         } else {
-            sendEnhancedECommerce(cartMap, EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP_AND_PRODUCT);
+            sendEnhancedECommerce(1, cartMap, EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP_AND_PRODUCT);
         }
         flushEnhancedECommerce();
-    }
-
-    // GTM v5 EE Step 1
-    private void sendEnhancedECommerce(Bundle eCommerceBundle, String eventLabel) {
-
-    }
-
-    public void enhancedECommerceGoToCheckoutStep1SuccessDefault(Bundle eCommerceBundle, boolean eligibleCod) {
-        if (eligibleCod) {
-            sendEnhancedECommerce(eCommerceBundle, EventLabel.CHECKOUT_SUCCESS_DEFAULT_ELIGIBLE_COD);
-        } else {
-            sendEnhancedECommerce(eCommerceBundle, EventLabel.CHECKOUT_SUCCESS_DEFAULT);
-        }
-    }
-
-    public void enhancedECommerceGoToCheckoutStep1SuccessCheckAll(Bundle eCommerceBundle, boolean eligibleCod) {
-        if (eligibleCod) {
-            sendEnhancedECommerce(eCommerceBundle, EventLabel.CHECKOUT_SUCCESS_CHECK_ALL_ELIGIBLE_COD);
-        } else {
-            sendEnhancedECommerce(eCommerceBundle, EventLabel.CHECKOUT_SUCCESS_CHECK_ALL);
-        }
-    }
-
-    public void enhancedECommerceGoToCheckoutStep1SuccessPartialShop(Bundle eCommerceBundle, boolean eligibleCod) {
-        if (eligibleCod) {
-            sendEnhancedECommerce(eCommerceBundle, EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP_ELIGIBLE_COD);
-        } else {
-            sendEnhancedECommerce(eCommerceBundle, EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP);
-        }
-    }
-
-    public void enhancedECommerceGoToCheckoutStep1SuccessPartialProduct(Bundle eCommerceBundle, boolean eligibleCod) {
-        if (eligibleCod) {
-            sendEnhancedECommerce(eCommerceBundle, EventLabel.CHECKOUT_SUCCESS_PARTIAL_PRODUCT_ELIGIBLE_COD);
-        } else {
-            sendEnhancedECommerce(eCommerceBundle, EventLabel.CHECKOUT_SUCCESS_PARTIAL_PRODUCT);
-        }
-    }
-
-    public void enhancedECommerceGoToCheckoutStep1SuccessPartialShopAndProduct(Bundle eCommerceBundle, boolean eligibleCod) {
-        if (eligibleCod) {
-            sendEnhancedECommerce(eCommerceBundle, EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP_AND_PRODUCT_ELIGIBLE_COD);
-        } else {
-            sendEnhancedECommerce(eCommerceBundle, EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP_AND_PRODUCT);
-        }
     }
 
     //PHASE 2
@@ -619,7 +582,7 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
                 Key.EVENT, EventName.PRODUCT_CLICK,
                 Key.EVENT_CATEGORY, EventCategory.CART,
                 Key.EVENT_ACTION, EventAction.CLICK_PRODUCT_RECOMMENDATION,
-                Key.EVENT_LABEL, position,
+                Key.EVENT_LABEL, "",
                 Key.E_COMMERCE, cartMap
         );
         sendEnhancedEcommerce(dataLayer);
@@ -643,49 +606,69 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         );
     }
 
-    public void eventClickPakaiMerchantVoucherManualInputSuccess(String promoCode) {
-        sendEventCategoryActionLabel(
-                EventName.CLICK_ATC,
+    //impression on user merchant voucher list
+    public void eventImpressionUseMerchantVoucher(String voucherId, Map<String, Object> ecommerceMap) {
+        Map<String, Object> eventMap = createEventMap(
+                EventName.PROMO_VIEW,
                 EventCategory.CART,
-                EventAction.CLICK_PAKAI_MERCHANT_VOUCHER_MANUAL_INPUT,
-                "success - " + promoCode
+                EventAction.IMPRESSION_MERCHANT_VOUCHER_FROM_PILIH_MERCHANT_VOUCHER,
+                ""
         );
+        eventMap.put(Key.PROMO_ID, voucherId);
+        eventMap.put(Key.E_COMMERCE, ecommerceMap);
+
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(eventMap);
     }
 
-    public void eventClickPakaiMerchantVoucherManualInputFailed(String errorMessage) {
-        sendEventCategoryActionLabel(
+    //on success use merchant voucher from list
+    public void eventClickUseMerchantVoucherSuccess(String promoCode, String promoId, Boolean isFromList) {
+        String eventAction = isFromList ? EventAction.CLICK_GUNAKAN_ON_MERCHANT_VOUCHER_FROM_PILIH_MERCHANT_VOUCHER : EventAction.CLICK_GUNAKAN_FROM_PILIH_MERCHANT_VOUCHER;
+        Map<String, Object> eventMap = createEventMap(
                 EventName.CLICK_ATC,
                 EventCategory.CART,
-                EventAction.CLICK_PAKAI_MERCHANT_VOUCHER_MANUAL_INPUT,
-                "error - " + errorMessage
+                eventAction,
+                EventLabel.SUCCESS + " - " + promoCode
         );
+        eventMap.put(Key.PROMO_ID, promoId);
+
+        TrackApp.getInstance().getGTM().sendGeneralEvent(eventMap);
     }
 
-    public void eventClickPakaiMerchantVoucherSuccess(String promoCode) {
-        sendEventCategoryActionLabel(
+    //on error use merchant voucher
+    public void eventClickUseMerchantVoucherFailed(String errorMessage, String promoId, Boolean isFromList) {
+        String eventAction = isFromList ? EventAction.CLICK_GUNAKAN_ON_MERCHANT_VOUCHER_FROM_PILIH_MERCHANT_VOUCHER : EventAction.CLICK_GUNAKAN_FROM_PILIH_MERCHANT_VOUCHER;
+        Map<String, Object> eventMap = createEventMap(
                 EventName.CLICK_ATC,
                 EventCategory.CART,
-                EventAction.CLICK_PAKAI_MERCHANT_VOUCHER,
-                "success - " + promoCode
+                eventAction,
+                EventLabel.ERROR + " - " + errorMessage
         );
+        eventMap.put(Key.PROMO_ID, promoId);
+
+        TrackApp.getInstance().getGTM().sendGeneralEvent(eventMap);
     }
 
-    public void eventClickPakaiMerchantVoucherFailed(String errorMessage) {
-        sendEventCategoryActionLabel(
-                EventName.CLICK_ATC,
+    //on merchant voucher click detail
+    public void eventClickDetailMerchantVoucher(Map<String, Object> ecommerceMap, String voucherId, String promoCode) {
+        Map<String, Object> eventMap = createEventMap(
+                EventName.PROMO_CLICK,
                 EventCategory.CART,
-                EventAction.CLICK_PAKAI_MERCHANT_VOUCHER,
-                "failed - " + errorMessage
-        );
-    }
-
-    public void eventClickDetailMerchantVoucher(String promoCode) {
-        sendEventCategoryActionLabel(
-                EventName.CLICK_ATC,
-                EventCategory.CART,
-                EventAction.CLICK_DETAIL_MERCHANT_VOUCHER,
+                EventAction.CLICK_MERCHANT_VOUCHER_FROM_PILIH_MERCHANT_VOUCHER,
                 promoCode
         );
+        eventMap.put(Key.PROMO_ID, voucherId);
+        eventMap.put(Key.E_COMMERCE, ecommerceMap);
+
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(eventMap);
+    }
+
+    private Map<String, Object> createEventMap(String event, String category, String action, String label) {
+        Map<String, Object> eventMap = new HashMap<>();
+        eventMap.put(Key.EVENT, event);
+        eventMap.put(Key.EVENT_CATEGORY, category);
+        eventMap.put(Key.EVENT_ACTION, action);
+        eventMap.put(Key.EVENT_LABEL, label);
+        return eventMap;
     }
 
     public void eventClickTickerMerchantVoucher(String promoCode) {
@@ -801,6 +784,7 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
                 Key.EVENT, EventName.PRODUCT_VIEW,
                 Key.EVENT_CATEGORY, EventCategory.CART,
                 Key.EVENT_ACTION, EventAction.IMPRESSION_ON_PRODUCT_RECOMMENDATION,
+                Key.EVENT_LABEL, "",
                 Key.E_COMMERCE, cartMap
         );
         sendEnhancedEcommerce(dataLayer);
@@ -841,21 +825,35 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         );
     }
 
-    public void eventClickAddWishlistOnPrimaryProduct() {
-        sendEventCategoryActionLabel(
-                EventName.CLICK_RECOMMENDATION,
-                EventCategory.RECOMMENDATION_PAGE,
-                EventAction.CLICK_ADD_WISHLIST_ON_PRIMARY_PRODUCT,
-                EventLabel.SOURCE_CART
+    public void eventClickAddWishlistOnProductRecommendation() {
+        sendEventCategoryAction(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_ADD_WISHLIST_ON_PRODUCT_RECOMMENDATION
         );
     }
 
-    public void eventClickRemoveWishlistOnPrimaryProduct() {
-        sendEventCategoryActionLabel(
-                EventName.CLICK_RECOMMENDATION,
-                EventCategory.RECOMMENDATION_PAGE,
-                EventAction.CLICK_REMOVE_WISHLIST_ON_PRIMARY_PRODUCT,
-                EventLabel.SOURCE_CART
+    public void eventClickAddWishlistOnProductRecommendationEmptyCart() {
+        sendEventCategoryAction(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_ADD_WISHLIST_ON_PRODUCT_RECOMMENDATION_EMPTY_CART
+        );
+    }
+
+    public void eventClickRemoveWishlistOnProductRecommendation() {
+        sendEventCategoryAction(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_REMOVE_WISHLIST_ON_PRODUCT_RECOMMENDATION
+        );
+    }
+
+    public void eventClickRemoveWishlistOnProductRecommendationEmptyCart() {
+        sendEventCategoryAction(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_REMOVE_WISHLIST_ON_PRODUCT_RECOMMENDATION_EMPTY_CART
         );
     }
 
@@ -873,4 +871,153 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         sendEnhancedEcommerce(dataLayer);
     }
 
+    public void eventAddWishlistAvailableSection(boolean isEmptyCart, String productId) {
+        sendEventCategoryActionLabel(
+                EventName.CART,
+                isEmptyCart ? EventCategory.EMPTY_CART : EventCategory.CART,
+                EventAction.ADD_WISHLIST_AVAILABLE_SECTION,
+                productId
+        );
+    }
+
+    public void eventRemoveWishlistAvailableSection(boolean isEmptyCart, String productId) {
+        sendEventCategoryActionLabel(
+                EventName.CART,
+                isEmptyCart ? EventCategory.EMPTY_CART : EventCategory.CART,
+                EventAction.REMOVE_WISHLIST_AVAILABLE_SECTION,
+                productId
+        );
+    }
+
+    public void eventAddWishlistUnavailableSection(boolean isEmptyCart, String productId) {
+        sendEventCategoryActionLabel(
+                EventName.CART,
+                isEmptyCart ? EventCategory.EMPTY_CART : EventCategory.CART,
+                EventAction.ADD_WISHLIST_UNAVAILABLE_SECTION,
+                productId
+        );
+    }
+
+    public void eventRemoveWishlistUnvailableSection(boolean isEmptyCart, String productId) {
+        sendEventCategoryActionLabel(
+                EventName.CART,
+                isEmptyCart ? EventCategory.EMPTY_CART : EventCategory.CART,
+                EventAction.REMOVE_WISHLIST_UNAVAILABLE_SECTION,
+                productId
+        );
+    }
+
+    public void eventAddWishlistLastSeenSection(boolean isEmptyCart, String productId) {
+        sendEventCategoryActionLabel(
+                EventName.CART,
+                isEmptyCart ? EventCategory.EMPTY_CART : EventCategory.CART,
+                EventAction.ADD_WISHLIST_LAST_SEEN,
+                productId
+        );
+    }
+
+    public void eventRemoveWishlistLastSeenSection(boolean isEmptyCart, String productId) {
+        sendEventCategoryActionLabel(
+                EventName.CART,
+                isEmptyCart ? EventCategory.EMPTY_CART : EventCategory.CART,
+                EventAction.REMOVE_WISHLIST_LAST_SEEN,
+                productId
+        );
+    }
+
+    public void eventAddWishlistWishlistsSection(boolean isEmptyCart, String productId) {
+        sendEventCategoryActionLabel(
+                EventName.CART,
+                isEmptyCart ? EventCategory.EMPTY_CART : EventCategory.CART,
+                EventAction.ADD_WISHLIST_WISHLIST,
+                productId
+        );
+    }
+
+    public void eventRemoveWishlistWishlistsSection(boolean isEmptyCart, String productId) {
+        sendEventCategoryActionLabel(
+                EventName.CART,
+                isEmptyCart ? EventCategory.EMPTY_CART : EventCategory.CART,
+                EventAction.REMOVE_WISHLIST_WISHLIST,
+                productId
+        );
+    }
+
+    public void sendEventDeleteInsurance(String insuranceTitle) {
+
+        sendEventCategoryActionLabel(
+                "",
+                EventCategory.FIN_INSURANCE_CART,
+                EventAction.FIN_INSURANCE_CART_DELETE,
+                String.format("cart page - %s", insuranceTitle)
+        );
+    }
+
+    public void sendEventInsuranceImpression(String title) {
+        sendEventCategoryActionLabel(
+                "",
+                EventCategory.FIN_INSURANCE_CART,
+                EventAction.FIN_INSURANCE_CART_IMPRESSION,
+                String.format("cart - %s", title)
+        );
+    }
+
+    public void sendEventChangeInsuranceState(boolean isChecked, String title) {
+        String eventLabel = "";
+        if (isChecked) {
+            eventLabel = String.format("cart page - tick %s", title);
+        } else {
+            eventLabel = String.format("cart page - untick %s", title);
+        }
+        sendEventCategoryActionLabel(
+                "",
+                EventCategory.FIN_INSURANCE_CART,
+                EventAction.FIN_INSURANCE_STATE_CHANGE,
+                eventLabel
+        );
+    }
+
+    public void sendEventPurchaseInsurance(String userID, String productId, String title) {
+        Map<String, Object> mapEvent = TrackAppUtils.gtmData(
+                "",
+                EventCategory.FIN_INSURANCE_CART,
+                EventAction.FIN_INSURANCE_CLICK_BUY,
+                String.format("cart page - %s", title)
+        );
+        mapEvent.put("userId", userID);
+        mapEvent.put("productId", productId);
+        sendGeneralEvent(mapEvent);
+    }
+
+    public void eventClickBrowseButtonOnTickerProductContainTobacco() {
+        sendEventCategoryAction(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_BROWSE_BUTTON_ON_TICKER_PRODUCT_CONTAIN_TOBACCO
+        );
+    }
+
+    public void eventViewTickerProductContainTobacco() {
+        sendEventCategoryAction(
+                EventName.VIEW_ATC_IRIS,
+                EventCategory.CART,
+                EventAction.VIEW_TICKER_PRODUCT_CONTAIN_TOBACCO
+        );
+    }
+
+    public void eventClickHapusButtonOnProductContainTobacco() {
+        sendEventCategoryAction(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_HAPUS_BUTTON_ON_PRODUCT_CONTAIN_TOBACCO
+        );
+    }
+
+    public void eventClickTrashIconButtonOnProductContainTobacco() {
+        sendEventCategoryAction(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_TRASH_ICON_BUTTON_ON_PRODUCT_CONTAIN_TOBACCO
+        );
+    }
 }

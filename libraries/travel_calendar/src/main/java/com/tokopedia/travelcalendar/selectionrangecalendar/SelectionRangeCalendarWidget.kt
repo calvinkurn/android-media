@@ -1,15 +1,18 @@
 package com.tokopedia.travelcalendar.selectionrangecalendar
 
 import android.app.Application
+import android.os.Bundle
+import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import android.os.Bundle
-import android.view.View
 import com.tokopedia.calendar.CalendarPickerView
 import com.tokopedia.calendar.Legend
-import com.tokopedia.travelcalendar.*
+import com.tokopedia.travelcalendar.R
+import com.tokopedia.travelcalendar.TRAVEL_CAL_YYYY_MM_DD
+import com.tokopedia.travelcalendar.TravelCalendarComponentInstance
 import com.tokopedia.travelcalendar.data.entity.TravelCalendarHoliday
+import com.tokopedia.travelcalendar.stringToDate
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -50,7 +53,8 @@ open class SelectionRangeCalendarWidget : BottomSheetUnify() {
         super.onCreate(savedInstanceState)
 
         setTitle(CALENDAR_TITLE)
-        setFullPage(true)
+        isFullpage = true
+        showCloseIcon = true
         setCloseClickListener { this.dismissAllowingStateLoss() }
 
         val childView = View.inflate(context, R.layout.dialog_calendar_multi_pick, null)
@@ -132,13 +136,9 @@ open class SelectionRangeCalendarWidget : BottomSheetUnify() {
     }
 
     fun setLayoutMargin() {
-
-        val ll = view?.findViewById(R.id.bottom_sheet_wrapper) as View
-        ll.setPadding(0,0,0,0)
-
-        val header = view?.findViewById(R.id.bottom_sheet_header) as View
         var padding = resources.getDimension(R.dimen.layout_lvl2).toInt()
-        header.setPadding(padding, 0, padding, 0)
+        bottomSheetWrapper.setPadding(0, padding, 0, 0)
+        bottomSheetHeader.setPadding(padding, 0, padding, 0)
     }
 
 
@@ -155,13 +155,16 @@ open class SelectionRangeCalendarWidget : BottomSheetUnify() {
         yesterday.set(Calendar.SECOND, 0)
         yesterday.set(Calendar.MILLISECOND, 0)
 
+        minDate?.let { if (it.before(yesterday.time) || it.after(nextYear.time)) minDate = yesterday.time }
+        maxDate?.let { if (minDate != null && (it.before(yesterday.time) || it.after(nextYear.time))) maxDate = yesterday.time }
+
         minDate?.let { minDate ->
             maxDate?.let { maxDate ->
-                    calendar.init(yesterday.time, nextYear.time, legends)
-                            .inMode(CalendarPickerView.SelectionMode.RANGE)
-                            .maxRange(rangeDateSelected)
-                            .withSelectedDates(listOf(minDate, maxDate))
-                    date_in.requestFocus()
+                calendar.init(yesterday.time, nextYear.time, legends)
+                        .inMode(CalendarPickerView.SelectionMode.RANGE)
+                        .maxRange(rangeDateSelected)
+                        .withSelectedDates(listOf(minDate, maxDate))
+                date_in.requestFocus()
             }
         }
 

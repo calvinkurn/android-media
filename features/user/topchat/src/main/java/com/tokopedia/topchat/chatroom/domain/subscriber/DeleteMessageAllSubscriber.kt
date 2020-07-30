@@ -1,13 +1,13 @@
 package com.tokopedia.topchat.chatroom.domain.subscriber
 
-import com.tokopedia.topchat.chatlist.viewmodel.DeleteChatListViewModel
+import com.tokopedia.topchat.chatlist.viewmodel.DeleteChatListUiModel
 import rx.Subscriber
 
 class DeleteMessageAllSubscriber(val onErrorDeleteMessage: (Throwable) -> Unit,
                                  val onSuccessDeleteMessage: () -> Unit)
-    : Subscriber<DeleteChatListViewModel>() {
+    : Subscriber<DeleteChatListUiModel>() {
 
-    override fun onNext(t: DeleteChatListViewModel?) {
+    override fun onNext(t: DeleteChatListUiModel?) {
         onSuccessDeleteMessage()
     }
 

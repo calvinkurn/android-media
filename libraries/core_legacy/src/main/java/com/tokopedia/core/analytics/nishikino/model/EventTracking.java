@@ -62,14 +62,6 @@ public class EventTracking {
         return this;
     }
 
-    public EventTracking setShopType(boolean isGoldMerchant, boolean isOfficialStore) {
-        this.eventTracking.put(AppEventTracking.CustomDimension.SHOP_TYPE,
-                isOfficialStore? AppEventTracking.ShopType.OFFICIAL_STORE :
-                        isGoldMerchant? AppEventTracking.ShopType.GOLD_MERCHANT :
-                                AppEventTracking.ShopType.REGULAR);
-        return this;
-    }
-
     public EventTracking setShopId(String shopId) {
         this.eventTracking.put(AppEventTracking.CustomDimension.SHOP_ID, shopId);
         return this;
@@ -77,11 +69,6 @@ public class EventTracking {
 
     public EventTracking setCustomEvent(String key, String value) {
         this.eventTracking.put(key, value);
-        return this;
-    }
-
-    public EventTracking setCustomDimension(HashMap<String, String> customDimension) {
-        this.eventTracking.putAll(customDimension);
         return this;
     }
 }

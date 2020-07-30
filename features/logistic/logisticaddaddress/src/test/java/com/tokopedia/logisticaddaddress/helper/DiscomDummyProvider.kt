@@ -1,10 +1,12 @@
 package com.tokopedia.logisticaddaddress.helper
 
 import com.google.gson.Gson
+import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.logisticaddaddress.domain.mapper.DistrictRecommendationMapper
 import com.tokopedia.logisticaddaddress.domain.model.AddressResponse
 import com.tokopedia.logisticaddaddress.domain.model.district_recommendation.DistrictRecommendationResponse
+import java.lang.reflect.Type
 
 object DiscomDummyProvider {
 
@@ -23,11 +25,11 @@ object DiscomDummyProvider {
     fun getSuccessResponse(): DistrictRecommendationResponse =
             Gson().fromJson(jakDiscomResponse, DistrictRecommendationResponse::class.java)
 
-    fun getSuccessGqlResponse(): GraphqlResponse = GraphqlResponse(
-            mapOf(DistrictRecommendationResponse::class.java to getSuccessResponse()),
-            null,
-            false
-    )
+    fun getSuccessGqlResponse(): GraphqlResponse {
+        val result = HashMap<Type, Any>()
+        result[DistrictRecommendationResponse::class.java] = getSuccessResponse()
+        return GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+    }
 
     fun getEmptyResponse(): DistrictRecommendationResponse =
             Gson().fromJson(qwrDiscomResponse, DistrictRecommendationResponse::class.java)

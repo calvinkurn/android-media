@@ -25,7 +25,7 @@ public class CheckQuotaUseCase extends GraphqlUseCase {
 
     public GraphqlRequest getRequest() {
         return new GraphqlRequest(
-                GraphqlHelper.loadRawString(context.getResources(), R.raw.query_af_quota),
+                GraphqlHelper.loadRawString(context.getResources(), com.tokopedia.affiliatecommon.R.raw.query_af_quota),
                 CheckQuotaQuery.class, false
         );
     }

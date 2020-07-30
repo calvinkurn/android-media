@@ -9,7 +9,6 @@
     android:background="@drawable/bg_tp_ticker_new"
     android:paddingLeft="@dimen/tp_padding_regular"
     android:paddingRight="@dimen/tp_padding_regular"
-    android:paddingBottom="@dimen/tp_padding_small"
     android:visibility="gone"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
@@ -30,24 +29,21 @@
 
     <com.tokopedia.abstraction.base.view.widget.TouchViewPager
         android:id="@+id/view_pager_ticker"
-        android:layout_width="0dp"
-        android:layout_height="40dp"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="@dimen/dp_40"
         android:layout_marginTop="@dimen/tp_padding_small"
         app:layout_constraintEnd_toStartOf="@+id/ic_close_ticker"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.tokopedia.design.viewpagerindicator.CirclePageIndicator
+    <com.tokopedia.unifycomponents.PageControl
         android:id="@+id/page_indicator_ticker"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="@dimen/dp_4"
-        android:padding="@dimen/tp_margin_xsmall"
-        app:fillColor="@color/tp_ticker_indicator_selected_color"
-        app:layout_constraintTop_toBottomOf="@+id/view_pager_ticker"
-        app:pageColor="@color/tp_ticker_indicator_default_color" />
-
+        app:indicator_color="@color/tp_ticker_indicator_default_color"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/view_pager_ticker" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -2,8 +2,6 @@ package com.tokopedia.kyc.view.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,20 +9,26 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.kyc.KYCRouter;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
+import com.tokopedia.kyc.Constants;
+import com.tokopedia.kyc.R;
+import com.tokopedia.kyc.di.KYCComponent;
 import com.tokopedia.kyc.model.CardIdDataKeyProvider;
 import com.tokopedia.kyc.util.AnalyticsUtil;
 import com.tokopedia.kyc.util.KycUtil;
 import com.tokopedia.kyc.view.interfaces.ActivityListener;
-import com.tokopedia.kyc.Constants;
-import com.tokopedia.kyc.R;
-import com.tokopedia.kyc.di.KYCComponent;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -89,8 +93,7 @@ public class FragmentIntroToOvoUpgradeSteps extends BaseDaggerFragment implement
             if(TextUtils.isEmpty(ovotncUrl)){
                 ovotncUrl = Constants.URLs.OVO_TNC_PAGE;
             }
-            ((KYCRouter)getContext().getApplicationContext()).actionOpenGeneralWebView(getActivity(),
-                    ovotncUrl);
+            RouteManager.route(getContext(), ApplinkConstInternalGlobal.WEBVIEW, ovotncUrl);
         }
     }
 
@@ -109,11 +112,12 @@ public class FragmentIntroToOvoUpgradeSteps extends BaseDaggerFragment implement
                             FragmentCardIDUpload.TAG);
                     activityListener.showHideActionbar(true);
                 }
+                UserSessionInterface userSession = new UserSession(getContext());
                 AnalyticsUtil.sendEvent(getContext(),
                         AnalyticsUtil.EventName.CLICK_OVO,
                         AnalyticsUtil.EventCategory.OVO_KYC,
                         "",
-                        ((KYCRouter)getContext().getApplicationContext()).getUserId(),
+                        userSession.getUserId(),
                         AnalyticsUtil.EventAction.CLK_CPTR_PIC_STP2);
             }
 
@@ -127,11 +131,12 @@ public class FragmentIntroToOvoUpgradeSteps extends BaseDaggerFragment implement
                 actionCreator,
                 Constants.Keys.KYC_CARDID_CAMERA,
                 true);
+        UserSessionInterface userSession = new UserSession(getContext());
         AnalyticsUtil.sendEvent(getContext(),
                 AnalyticsUtil.EventName.CLICK_OVO,
                 AnalyticsUtil.EventCategory.OVO_KYC,
                 "",
-                ((KYCRouter)getContext().getApplicationContext()).getUserId(),
+                userSession.getUserId(),
                 AnalyticsUtil.EventAction.CLK_MUL_STP1);
     }
 }

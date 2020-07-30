@@ -43,54 +43,6 @@
     </style>
 
 
-    <style name="WebViewActivity" parent="@style/Theme.Tokopedia3">
-        <item name="android:windowLightStatusBar" tools:targetApi="23">true</item>
-        <item name="android:statusBarColor">@color/white</item>
-       // <item name="android:colorPrimaryDark">@color/white</item>
-    </style>
-
-    <style name="CustomAlertDialogStyle" parent="android:Theme.Material.Light.Dialog.Alert">
-        <item name="android:buttonBarButtonStyle">@style/CustomButtonBarButtonStyle</item>
-        <item name="android:buttonBarStyle">@style/CustomButtonBarStyle</item>
-    </style>
-
-    <style name="CustomButtonBarStyle" parent="@android:style/Widget.Material.Light.ButtonBar.AlertDialog">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:height">@null</item>
-        <item name="android:minHeight">@null</item>
-    </style>
-
-    <style name="CustomButtonBarButtonStyle" parent="@android:style/Widget.Material.Light.Button.Borderless.Colored">
-        <item name="android:layout_width">0dp</item>
-        <item name="android:layout_weight">1</item>
-        <item name="android:width">100dp</item>
-    </style>
-
-    <style name="TkpdRatingBar" parent="@android:style/Widget.RatingBar">
-        <item name="android:progressDrawable">@xml/ratingbar_progress_drawable</item>
-        <item name="android:minHeight">48dp</item>
-        <item name="android:maxHeight">48dp</item>
-    </style>
-
-    <style name="CoolDialogTitle2">
-        <!--<item name="android:textColor">#FFEB3B</item>-->
-        <item name="android:textColor">@color/white</item>
-        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Title</item>
-    </style>
-
-    <style name="CoolDialog2" parent="Theme.AppCompat.Light.Dialog.Alert">
-        <!-- Used for the buttons -->
-        <!--<item name="colorAccent">#FFC107</item>-->
-        <item name="colorAccent">#FFC107</item>
-        <!-- Used for the title and text -->
-        <item name="android:textColorPrimary">#FFFFFF</item>
-        <!-- Used for the background -->
-        <item name="android:background">#4CAF50</item>
-
-        <item name="android:windowTitleStyle">@style/CoolDialogTitle2</item>
-    </style>
-
     <style name="CoolDialog" parent="@android:style/Theme.Material.Dialog">
         <item name="android:windowFrame">@null</item>
         <item name="android:windowBackground">@android:color/transparent</item>

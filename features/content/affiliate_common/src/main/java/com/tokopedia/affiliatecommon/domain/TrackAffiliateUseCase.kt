@@ -31,6 +31,7 @@ class TrackAffiliateUseCase @Inject constructor(
     override suspend fun executeOnBackground(): Boolean {
         val request = GraphqlRequest(query, TrackAffiliateResponse::class.java, params)
 
+
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(request)
         val graphqlResponse: GraphqlResponse = graphqlUseCase.executeOnBackground()

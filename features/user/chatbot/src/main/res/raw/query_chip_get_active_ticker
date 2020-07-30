@@ -1,0 +1,15 @@
+{
+  chipGetActiveTickerV4 {
+    status
+    server_process_time
+    data {
+      is_success
+      items {
+        title
+        text
+      }
+      type
+    }
+    message_error
+  }
+}

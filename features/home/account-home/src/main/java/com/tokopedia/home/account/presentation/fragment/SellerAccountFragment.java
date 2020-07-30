@@ -3,20 +3,20 @@ package com.tokopedia.home.account.presentation.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
+import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
-import com.tokopedia.design.component.ToasterError;
-import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.di.component.DaggerSellerAccountComponent;
@@ -25,12 +25,18 @@ import com.tokopedia.home.account.presentation.SellerAccount;
 import com.tokopedia.home.account.presentation.adapter.AccountTypeFactory;
 import com.tokopedia.home.account.presentation.adapter.seller.SellerAccountAdapter;
 import com.tokopedia.home.account.presentation.listener.AccountItemListener;
+import com.tokopedia.home.account.presentation.util.AccountHomeErrorHandler;
 import com.tokopedia.home.account.presentation.viewmodel.TickerViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.SellerViewModel;
 import com.tokopedia.navigation_common.listener.FragmentListener;
 import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
+import com.tokopedia.seller_migration_common.presentation.widget.SellerMigrationAccountBottomSheet;
 import com.tokopedia.track.TrackApp;
+import com.tokopedia.unifycomponents.BottomSheetUnify;
+import com.tokopedia.unifycomponents.ticker.Ticker;
+import com.tokopedia.unifycomponents.Toaster;
+import com.tokopedia.unifycomponents.ticker.TickerCallback;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -39,7 +45,11 @@ import java.util.ArrayList;
 import javax.inject.Inject;
 
 import kotlin.Unit;
+import kotlin.jvm.functions.Function0;
 import kotlin.jvm.functions.Function2;
+
+import static com.tokopedia.seller_migration_common.SellerMigrationRemoteConfigKt.getSellerMigrationDate;
+import static com.tokopedia.seller_migration_common.SellerMigrationRemoteConfigKt.isSellerMigrationEnabled;
 
 /**
  * @author okasurya on 7/16/18.
@@ -55,6 +65,7 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
     private RecyclerView recyclerView;
     private SellerAccountAdapter adapter;
     private PerformanceMonitoring fpmSeller;
+    private Ticker migrationTicker;
 
     @Inject
     SellerAccount.Presenter presenter;
@@ -81,6 +92,7 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
         View view = inflater.inflate(R.layout.fragment_seller_account, container, false);
         swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
         recyclerView = view.findViewById(R.id.recycler_seller);
+        migrationTicker = view.findViewById(R.id.account_seller_migration_ticker);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager
                 .VERTICAL, false));
         swipeRefreshLayout.setColorSchemeResources(R.color.tkpd_main_green);
@@ -90,10 +102,8 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
     @Override
     public void onResume() {
         super.onResume();
-        if (isOpenShop) {
-            getData();
-            isOpenShop = false;
-        }
+        isLoaded = false;
+        getData();
     }
 
     @Override
@@ -101,31 +111,35 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
         super.onViewCreated(view, savedInstanceState);
         adapter = new SellerAccountAdapter(new AccountTypeFactory(this), new ArrayList<>());
         recyclerView.setAdapter(adapter);
-
-        if (getContext() != null) {
-            GraphqlClient.init(getContext());
+        setupSellerMigrationTicker();
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            isLoaded = false;
             getData();
-            swipeRefreshLayout.setOnRefreshListener(this::getData);
-        }
+        });
     }
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser) {
-            if (!isLoaded) {
-                getData();
-                isLoaded = !isLoaded;
-            }
+            getData();
             TrackApp.getInstance().getGTM().sendScreenAuthenticated(getScreenName());
         }
     }
 
     private void getData() {
-        String saldoQuery = GraphqlHelper.loadRawString(getContext().getResources(), R.raw
-                .new_query_saldo_balance);
-        presenter.getSellerData(GraphqlHelper.loadRawString(getContext().getResources(), R.raw.query_seller_account_home),
-                GraphqlHelper.loadRawString(getContext().getResources(), R.raw.gql_get_deposit), saldoQuery);
+        if (!isLoaded && getContext() != null) {
+            String saldoQuery = GraphqlHelper.loadRawString(
+                    getContext().getResources(),
+                    R.raw.new_query_saldo_balance);
+            presenter.getSellerData(
+                    GraphqlHelper.loadRawString(getContext().getResources(), R.raw.query_seller_account_home),
+                    GraphqlHelper.loadRawString(getContext().getResources(), R.raw.gql_get_deposit),
+                    saldoQuery,
+                    GraphqlHelper.loadRawString(getContext().getResources(), R.raw.query_shop_location)
+            );
+            isLoaded = !isLoaded;
+        }
     }
 
     @Override
@@ -171,22 +185,21 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
     @Override
     public void showError(String message) {
         if (getView() != null && getUserVisibleHint()) {
-            ToasterError.make(getView(), message)
-                    .setAction(getString(R.string.title_try_again), view -> getData())
-                    .show();
+            Toaster.INSTANCE.make(getView(), message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
+                    getString(R.string.title_try_again), v -> getData());
         }
 
         fpmSeller.stopTrace();
     }
 
     @Override
-    public void showError(Throwable e) {
+    public void showError(Throwable e, String errorCode) {
         if (getView() != null && getContext() != null && getUserVisibleHint()) {
-            ToasterError.make(getView(), ErrorHandler.getErrorMessage(getContext(), e))
-                    .setAction(getString(R.string.title_try_again), view -> getData())
-                    .show();
+            String message = String.format("%s (%s)", ErrorHandler.getErrorMessage(getActivity(), e), errorCode);
+            Toaster.INSTANCE.make(getView(), message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
+                    getString(R.string.title_try_again), v -> getData());
         }
-
+        AccountHomeErrorHandler.logExceptionToCrashlytics(e, userSession.getUserId(), userSession.getEmail(), errorCode);
         fpmSeller.stopTrace();
     }
 
@@ -202,11 +215,17 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
     }
 
     @Override
+    public boolean isLightThemeStatusBar() {
+        return false;
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == OPEN_SHOP_SUCCESS){
+        if (resultCode == OPEN_SHOP_SUCCESS) {
+            isLoaded = false;
             getData();
-        } else if (resultCode == Activity.RESULT_OK && requestCode == BaseAccountFragment.REQUEST_PHONE_VERIFICATION){
+        } else if (resultCode == Activity.RESULT_OK && requestCode == BaseAccountFragment.REQUEST_PHONE_VERIFICATION) {
             userSession.setIsMSISDNVerified(true);
             moveToCreateShop();
         }
@@ -244,5 +263,42 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
     @Override
     public void onProductRecommendationWishlistClicked(@NotNull RecommendationItem product, boolean wishlistStatus, @NotNull Function2<? super Boolean, ? super Throwable, Unit> callback) {
 
+    }
+
+    @Override
+    public void onProductRecommendationThreeDotsClicked(@NotNull RecommendationItem product, int adapterPosition) {
+
+    }
+
+    private void setupSellerMigrationTicker() {
+        if(isSellerMigrationEnabled(this.getContext())) {
+            migrationTicker.setTickerTitle(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_account_home_ticker_title));
+            String remoteConfigDate = getSellerMigrationDate(this.getContext());
+            if(remoteConfigDate.isEmpty()) {
+                migrationTicker.setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_generic_ticker_content));
+            } else {
+                migrationTicker.setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_account_home_ticker_content, remoteConfigDate));
+            }
+            migrationTicker.setDescriptionClickEvent(new TickerCallback() {
+                @Override
+                public void onDescriptionViewClick(@NotNull CharSequence charSequence) {
+                    openSellerMigrationBottomSheet();
+                }
+
+                @Override
+                public void onDismiss() {
+                    // No op
+                }
+            });
+        } else {
+            migrationTicker.setVisibility(View.GONE);
+        }
+    }
+
+    private void openSellerMigrationBottomSheet() {
+        if(getContext() != null) {
+            BottomSheetUnify sellerMigrationBottomSheet = SellerMigrationAccountBottomSheet.Companion.createNewInstance(getContext());
+            sellerMigrationBottomSheet.show(getChildFragmentManager(), "");
+        }
     }
 }

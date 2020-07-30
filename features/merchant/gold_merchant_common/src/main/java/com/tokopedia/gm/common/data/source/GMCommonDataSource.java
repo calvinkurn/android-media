@@ -1,19 +1,11 @@
 package com.tokopedia.gm.common.data.source;
 
-import com.tokopedia.abstraction.common.data.model.response.DataResponse;
-import com.tokopedia.abstraction.common.network.mapper.DataResponseMapper;
 import com.tokopedia.gm.common.data.source.cloud.GMCommonCloudDataSource;
-import com.tokopedia.gm.common.data.source.cloud.model.GMGetCashbackModel;
-import com.tokopedia.gm.common.data.source.cloud.model.GMFeaturedProduct;
 import com.tokopedia.gm.common.data.source.cloud.model.RequestCashbackModel;
-import com.tokopedia.gm.common.data.source.cloud.model.RequestGetCashbackModel;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.tokopedia.network.mapper.DataResponseMapper;
 
 import javax.inject.Inject;
 
-import retrofit2.Response;
 import rx.Observable;
 import rx.functions.Func1;
 

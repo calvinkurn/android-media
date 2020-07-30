@@ -3,22 +3,19 @@ package com.tkpd.library.utils;
 import android.content.Context;
 import android.net.Uri;
 
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
+
+import timber.log.Timber;
 
 public class URLParser {
 
 	private Uri uri;
 
 	public URLParser (String url) {
-		CommonUtils.dumper(url);
+		Timber.d(url);
 		uri = Uri.parse(url);
 	}
 
@@ -55,36 +52,9 @@ public class URLParser {
 		return valuelist;
 	}
 
-	public JSONObject getJSONObj () {
-		ArrayList<String> keylist = getSetQueryKey();
-		ArrayList<String> valuelist = getSetQueryValue();
-		JSONObject json = new JSONObject();
-		for (int i = 0; i < keylist.size(); i++) {
-			try {
-				json.putOpt(keylist.get(i), valuelist.get(i));
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
-		}
-		return json;
-	}
-
 	public String getType () {
 		List<String> Path = uri.getPathSegments();
 		return Path.get(0);
-	}
-
-	public String getHotAlias() {
-		List<String> Path = uri.getPathSegments();
-		return Path.get(1);
-	}
-
-	public static String getPathSegment(int i, String url) {
-		List<String> path = Uri.parse(url).getPathSegments();
-		if (path.size()>i)
-			return path.get(i);
-		else
-			return "";
 	}
 
 	public HashMap<String, String> getParamKeyValueMap() {

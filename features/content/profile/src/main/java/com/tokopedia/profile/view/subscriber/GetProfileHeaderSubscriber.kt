@@ -4,7 +4,7 @@ import android.text.TextUtils
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyResultViewModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
-import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.profile.R
@@ -15,7 +15,6 @@ import com.tokopedia.profile.view.viewmodel.ProfileHeaderViewModel
 import rx.Subscriber
 import android.content.Intent
 import android.net.Uri
-import androidx.core.content.ContextCompat.startActivity
 
 
 /**
@@ -72,7 +71,7 @@ class GetProfileHeaderSubscriber constructor(
 
     private fun getEmptyModel(): EmptyResultViewModel {
         val emptyResult = EmptyResultViewModel()
-        emptyResult.iconRes = R.drawable.ic_af_empty
+        emptyResult.iconRes = com.tokopedia.affiliatecommon.R.drawable.ic_af_empty
         emptyResult.title = view.context.getString(R.string.profile_recommend_get_commission)
         emptyResult.content = view.context.getString(R.string.profile_tokopedia_app)
         emptyResult.buttonTitle = view.context.getString(R.string.profile_try_now)

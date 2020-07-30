@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="@color/hotel_black_disable_38"/>
+    <corners android:topLeftRadius="@dimen/layout_lvl1" android:bottomLeftRadius="@dimen/layout_lvl1"/>
+
+</shape>

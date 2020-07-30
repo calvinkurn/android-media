@@ -2,10 +2,7 @@
     package="com.tokopedia.saldodetails">
 
 
-    <application
-        android:allowBackup="true"
-        android:label="@string/app_name"
-        android:supportsRtl="true">
+    <application>
         <activity
             android:name="com.tokopedia.saldodetails.view.activity.SaldoDepositActivity"
             android:label="@string/saldo_detail_title_activity_people_deposit"
@@ -52,5 +49,9 @@
             </intent-filter>
 
         </activity>
+
+        <activity android:name=".view.activity.SaldoHoldInfoActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.PopupTransparent"/>
     </application>
 </manifest>

@@ -3,7 +3,6 @@ package com.tokopedia.payment.setting.util
 import android.content.Context
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.payment.setting.list.model.SettingListPaymentModel
-import kotlin.math.log
 
 val FORMAT_URL_IMAGE = "%s/%s/%s.png"
 val VISA = "visa"
@@ -23,6 +22,9 @@ val JCB_LOGO = "creditcard-jcb.png"
 val VISA_LOGO = "creditcard-visa.png"
 val MASTER_CARD_LOGO = "creditcard-mastercard.png"
 
+val DEFAULT_IMAGE_HOST = "http://ecs7.tokopedia.net"
+val CDN_IMG_ANDROID_DOMAIN = "/img/android/"
+
 fun SettingListPaymentModel.getLogoAsset() : String{
     var logo = VISA_LOGO
     when(this.cardType?.toLowerCase()){
@@ -40,24 +42,6 @@ fun SettingListPaymentModel.getLogoResource(): String {
         JCB -> return JCB_SMALL
         else -> return EXPIRED_SMALL
     }
-}
-
-fun SettingListPaymentModel.getBackgroundAssets(paymentSettingRouter : PaymentSettingRouter?,
-                                                        context : Context?): String {
-    val resourceUrl = paymentSettingRouter?.getResourceUrlAssetPayment()
-    val assetName = getBackgroundResource()
-    val density = DisplayMetricUtils.getScreenDensity(context)
-
-    return String.format(resourceUrl + FORMAT_URL_IMAGE, assetName, density, assetName)
-}
-
-fun SettingListPaymentModel.getBackgroundAssetsLarge(paymentSettingRouter : PaymentSettingRouter?,
-                                                context : Context?): String {
-    val resourceUrl = paymentSettingRouter?.getResourceUrlAssetPayment()
-    val assetName = getBackgroundResourceLarge()
-    val density = DisplayMetricUtils.getScreenDensity(context)
-
-    return String.format(resourceUrl + FORMAT_URL_IMAGE, assetName, density, assetName)
 }
 
 fun SettingListPaymentModel.getBackgroundResource(): String {

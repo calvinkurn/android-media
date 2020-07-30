@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.network.interceptor.TkpdBaseInterceptor;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -32,7 +33,6 @@ import okio.Buffer;
 @Deprecated
 public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     private static final int ERROR_FORBIDDEN_REQUEST = 403;
-    private static final String ACTION_TIMEZONE_ERROR = "com.tokopedia.tkpd.TIMEZONE_ERROR";
 
     private static final String REQUEST_METHOD_GET = "GET";
     private static final String REQUEST_METHOD_POST = "POST";
@@ -51,9 +51,6 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     private static final String RESPONSE_PARAM_STATUS = "status";
     private static final String RESPONSE_PARAM_MESSAGE_ERROR = "message_error";
 
-    private static final String BEARER = "Bearer";
-    private static final String AUTHORIZATION = "authorization";
-    private static final String TOKEN = "token";
     private static final String HEADER_ACCOUNTS_AUTHORIZATION = "accounts-authorization";
     private static final String HEADER_PARAM_IS_BETA = "is_beta";
     private static final String PARAM_DEFAULT_BETA = "0";
@@ -123,12 +120,6 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
             e.printStackTrace();
         }
     }
-
-    private boolean isOnBetaServer(Response response) {
-        return response.header(HEADER_PARAM_IS_BETA, PARAM_DEFAULT_BETA).equals(PARAM_BETA_TRUE);
-
-    }
-
 
     public void throwChainProcessCauseHttpError(Response response) throws IOException {
         /* this can override for throw error */

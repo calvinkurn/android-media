@@ -5,8 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -18,6 +16,9 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.auth.api.phone.SmsRetriever;
@@ -33,7 +34,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.otp.R;
-import com.tokopedia.otp.common.OTPAnalytics;
+import com.tokopedia.otp.common.analytics.OTPAnalytics;
 import com.tokopedia.otp.common.design.PinInputEditText;
 import com.tokopedia.otp.common.di.DaggerOtpComponent;
 import com.tokopedia.otp.common.di.OtpComponent;
@@ -65,7 +66,6 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
 
     private static final int COUNTDOWN_LENGTH = 30;
     private static final int INTERVAL = 1000;
-    protected static final int MAX_OTP_LENGTH = 6;
 
     private static final String CACHE_OTP = "CACHE_OTP";
     private static final String HAS_TIMER = "has_timer";
@@ -74,6 +74,8 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
 
     private static final CharSequence VERIFICATION_CODE = "Kode verifikasi";
     private static final CharSequence PIN_ERR_MSG = "PIN";
+
+    private int maxOtpLength = 6;
 
     protected ImageView icon;
     protected TextView message, title;
@@ -244,6 +246,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
 
     private void setupGeneralView(){
         limitOtp.setVisibility(View.GONE);
+        inputOtp.setLength(viewModel.getNumberOtpDigit());
         inputOtp.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -257,7 +260,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (inputOtp.getText().length() == MAX_OTP_LENGTH) {
+                if (inputOtp.getText().length() == viewModel.getNumberOtpDigit()) {
                     enableVerifyButton();
                     verifyOtp();
                 } else {
@@ -268,7 +271,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
 
         inputOtp.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_DONE
-                    && inputOtp.length() == MAX_OTP_LENGTH) {
+                    && inputOtp.length() == viewModel.getNumberOtpDigit()) {
                 verifyOtp();
                 return true;
             }
@@ -321,6 +324,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
             smsRetrieverClient.startSmsRetriever();
             requestOtp();
         }
+        showKeyboard();
     }
 
     private void updateViewFromServer() {
@@ -439,9 +443,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         inputOtp.setFocusableInTouchMode(true);
         inputOtp.post(new Runnable() {
             public void run() {
-                inputOtp.requestFocusFromTouch();
-                InputMethodManager lManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                lManager.showSoftInput(inputOtp, 0);
+                showKeyboard();
             }
         });
         errorImage.setVisibility(View.VISIBLE);
@@ -655,6 +657,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     public void onSuccessGetModelFromServer(MethodItem methodItem) {
         this.viewModel.setImageUrl(methodItem.getImageUrl());
         this.viewModel.setMessage(methodItem.getVerificationText());
+        this.maxOtpLength = methodItem.getNumberOtpDigit();
         setData();
     }
 
@@ -664,4 +667,11 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         verifyOtp();
     }
 
+    private void showKeyboard() {
+        if(getActivity() != null) {
+            inputOtp.requestFocus();
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(inputOtp, InputMethodManager.SHOW_IMPLICIT);
+        }
+    }
 }

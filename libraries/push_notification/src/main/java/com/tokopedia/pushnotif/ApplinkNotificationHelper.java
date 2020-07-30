@@ -94,6 +94,8 @@ public class ApplinkNotificationHelper {
                     return Constant.NotificationId.RESOLUTION;
                 case CHATBOT:
                     return Constant.NotificationId.CHAT_BOT;
+                case "product-review":
+                    return Constant.NotificationId.REVIEW;
                 default:
                     return Constant.NotificationId.GENERAL;
             }
@@ -158,7 +160,7 @@ public class ApplinkNotificationHelper {
         return Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT;
     }
 
-    private static Boolean isTargetApp(ApplinkNotificationModel applinkNotificationModel) {
+    public static Boolean isTargetApp(ApplinkNotificationModel applinkNotificationModel) {
         return (applinkNotificationModel.getTargetApp() == null) ||
                 (applinkNotificationModel.getTargetApp() != null && applinkNotificationModel.getTargetApp().contains(GlobalConfig.APPLICATION_ID));
     }

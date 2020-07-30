@@ -1,26 +1,9 @@
 package com.tokopedia.core.app;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
-import androidx.appcompat.app.AppCompatActivity;
 
-import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
-import com.tokopedia.core.drawer2.view.DrawerHelper;
-import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
-import com.tokopedia.applink.ApplinkUnsupported;
-import com.tokopedia.core.gcm.model.NotificationPass;
-import com.tokopedia.core.manage.people.address.model.Token;
-import com.tokopedia.core.util.SessionHandler;
-
-import rx.Observable;
 
 /**
  * Created by sebastianuskh on 12/8/16.
@@ -28,138 +11,38 @@ import rx.Observable;
  * all the router will moved to the each module's router
  */
 public interface TkpdCoreRouter {
-    String EXTRAS = "extras";
-
-    void goToManageProduct(Context context);
-
-    void goToDraftProductList(Context context);
-
-    void clearEtalaseCache();
 
     void resetAddProductCache(Context context);
 
-    void actionAppLink(Context context, String linkUrl);
-
-    /**
-     * deprecated
-     *
-     * @param activity activity context
-     * @param linkUrl  applinkScheme
-     * @see #actionApplinkFromActivity(Activity, String)
-     */
-    @Deprecated
-    void actionApplink(Activity activity, String linkUrl);
-
-    void actionApplinkFromActivity(Activity activity, String linkUrl);
-
-    void actionApplink(Activity activity, String linkUrl, String extra);
-
-    void actionOpenGeneralWebView(Activity activity, String mobileUrl);
-
-    Fragment getShopReputationFragment(String shopId, String shopDomain);
-
     Intent getHomeIntent(Context context);
-
-    Intent getPhoneVerificationActivityIntent(Context context);
-
-    Class<?> getHomeClass(Context context) throws ClassNotFoundException;
-
-    DrawerHelper getDrawer(AppCompatActivity activity,
-                           SessionHandler sessionHandler,
-                           LocalCacheHandler drawerCache,
-                           GlobalCacheManager globalCacheManager);
-
 
     void onLogout(AppComponent appComponent);
 
-    void onAppsFlyerInit();
-
-    void goToCreateMerchantRedirect(Context context);
-
-    Intent getLoginIntent(Context context);
-
     Intent getRegisterIntent(Context context);
-
-    void getUserInfo(RequestParams empty, ProfileCompletionSubscriber profileSubscriber);
-
-    String getFlavor();
 
     boolean isSupportedDelegateDeepLink(String appLinks);
 
-    Intent getIntentDeepLinkHandlerActivity();
-
-    void actionNavigateByApplinksUrl(Activity activity, String applinks, Bundle bundle);
-
-    boolean isInMyShop(Context context, String shopId);
-
-    void invalidateCategoryMenuData();
-
-    ApplinkUnsupported getApplinkUnsupported(Activity activity);
-
     Intent getSplashScreenIntent(Context context);
-
-    Class getDeepLinkClass();
-
-    Intent getIntentManageShop(Context context);
-
-    android.app.Fragment getFragmentShopSettings();
-
-    android.app.Fragment getFragmentSellingNewOrder();
-
-    Class getSellingActivityClass();
-
-    Intent getActivitySellingTransactionNewOrder(Context context);
-
-    Intent getActivitySellingTransactionConfirmShipping(Context context);
-
-    Intent getActivitySellingTransactionShippingStatus(Context context);
-
-    Intent getActivitySellingTransactionList(Context context);
-
-    Intent getActivitySellingTransactionOpportunity(Context context, String query);
-
-    Intent getHomeHotlistIntent(Context context);
-
-    NotificationPass setNotificationPass(Context mContext, NotificationPass mNotificationPass,
-                                         Bundle data, String notifTitle);
-
-    Intent getInboxReputationIntent(Context context);
-
-    Intent getResolutionCenterIntentSeller(Context context);
-
-    Intent getKolFollowingPageIntent(Context context, int userId);
-
-    Intent getPhoneVerificationProfileIntent(Context context);
 
     Intent getPhoneVerificationActivationIntent(Context context);
 
-    Intent getSellerHomeIntent(Activity activity);
-
+    /**
+     * Only for sellerapp
+     */
+    @Deprecated
     Intent getLoginGoogleIntent(Context context);
 
+    /**
+     * Only for sellerapp
+     */
+    @Deprecated
     Intent getLoginFacebookIntent(Context context);
 
+    /**
+     * Only for sellerapp
+     */
+    @Deprecated
     Intent getLoginWebviewIntent(Context context, String name, String url);
-
-    Intent getShopPageIntent(Context context, String shopId);
-
-    Intent getShoProductListIntent(Context context, String shopId, String keyword, String etalaseId);
-
-    Intent getTopProfileIntent(Context context, String userId);
-
-    Intent getGroupChatIntent(Context context, String channelUrl);
-
-    Intent getInboxChannelsIntent(Context context);
-
-    Intent getInboxMessageIntent(Context context);
-
-    String getStringRemoteConfig(String key);
-
-    void setStringRemoteConfigLocal(String key, String value);
-
-    Intent getInboxTalkCallingIntent(Context context);
-
-    Intent getManageAdressIntent(Context context);
 
     Intent getCreateResCenterActivityIntent(Context context, String orderId);
 }

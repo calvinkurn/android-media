@@ -1,8 +1,12 @@
 package com.tokopedia.tokopoints.view.util;
 
+import com.tokopedia.session.data.viewmodel.login.ShopReputationDomain;
+
 import static com.tokopedia.tokopoints.view.util.CommonConstant.BaseUrl.WEB_DOMAIN_MOBILE;
 
 public interface CommonConstant {
+    String UTF_ENCODING = "UTF-8";
+    String COUPON_MIME_TYPE = "text/html";
     String FRAGMENT_DETAIL_TOKOPOINT = "sendFragment";
     String PREF_TOKOPOINTS = "pref_tokopoints";
     String PREF_KEY_ON_BOARDED = "pref_key_on_boarded";
@@ -94,7 +98,6 @@ public interface CommonConstant {
         String MEMBERSHIP = WEB_DOMAIN_MOBILE + "tokopoints/mobile/membership";
         String HISTORY = WEB_DOMAIN_MOBILE + "tokopoints/mobile/history";
         String INFO = WEB_DOMAIN_MOBILE + "tokopoints/info";
-        String LEADERBOARD = WEB_DOMAIN_MOBILE + "tokopoints/leaderboard";
         String INFO_EXPIRED_POINTS = WEB_DOMAIN_MOBILE + "tokopoints/info/#expired-points";
         String DETAIL = WEB_DOMAIN_MOBILE + "tokopoints/detail/";
     }
@@ -118,5 +121,31 @@ public interface CommonConstant {
         String COLUMN_3_1_BY_1 = "3_column_1:1";
         String COLUMN_2_1_BY_1 = "2_column_1:1";
         String COLUMN_2_3_BY_4 = "2_column_3:4";
+    }
+
+    interface GQLQuery {
+        String TP_GQL_CURRENT_POINTS = "tp_gql_current_points";
+        String TP_GQL_HISTORY_POINTS = "tp_gql_point_history";
+        String TP_GQL_TOKOPOINT_APPLY_COUPON = "tp_gql_tokopoint_apply_coupon";
+        String TP_GQL_COUPON_DETAIL = "tp_gql_coupon_detail";
+        String TP_GQL_REFETCH_REAL_CODE = "tp_gql_refetch_real_code";
+        String TP_GQL_SWIPE_COUPON = "tp_gql_swipe_coupon";
+        String TP_GQL_COUPON_FILTER = "tp_gql_coupon_filter";
+        String TP_GQL_COUPON_LISTING_STACK ="tp_gql_coupon_listing_stack";
+        String TP_GQL_COUPON_IN_STACK = "tp_gql_coupon_in_stack";
+        String TP_GQL_USER_INFO = "tp_gql_user_info";
+        String TP_GQL_TOKOPOINT_REDEEM_COUPON = "tp_gql_tokopoint_redeem_coupon";
+        String TP_GQL_CATLOG_STATUS = "tp_gql_catalog_status";
+        String TP_GQL_TOKOPOINT_VALIDATE_REDEEM = "tp_gql_tokopoint_validate_redeem";
+        String TP_GQL_PRE_VALIDATE_REDEEM = "tp_gql_pre_validate_redeem";
+        String TP_GQL_CATALOG_DETAIL = "tp_gql_catalog_detail";
+        String TP_GQL_CATALOG_BANNER = "tp_gql_catalog_banner";
+        String TP_GQL_TOKOPOINT_DETAIL = "tp_gql_tokopoint_detail";
+        String TP_GQL_CATALOG_FILTER = "tp_gql_catalog_filter";
+        String TP_GQL_LUCKY_EGG_DETAILS = "tp_gql_lucky_egg_detail";
+        String TP_GQL_TOKOPOINT_DETAIL_NEW = "tp_gql_tokopoint_detail_new";
+        String TP_GQL_HOME_PAGE_SECTION = "tp_gql_home_page_section";
+        String TP_GQL_SUM_COUPON = "tp_gql_sum_coupon";
+        String TP_GQL_ADD_POINT_REWARD  = "tp_gql_add_point_reward";
     }
 }

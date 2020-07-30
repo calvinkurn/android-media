@@ -1,6 +1,5 @@
 package com.tokopedia.inbox.rescenter.discussion.view.subscriber;
 
-import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.network.MessageErrorException;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
@@ -11,6 +10,7 @@ import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.DiscussionItemVie
 import java.net.UnknownHostException;
 
 import rx.Subscriber;
+import timber.log.Timber;
 
 /**
  * Created by nisie on 4/3/17.
@@ -32,7 +32,7 @@ public class ReplyDiscussionSubscriber extends Subscriber<DiscussionItemViewMode
     @Override
     public void onError(Throwable e) {
         for (StackTraceElement st: e.getStackTrace()) {
-            CommonUtils.dumper("NISNIS " + st.toString());
+            Timber.d("NISNIS " + st.toString());
         }
         if (e instanceof UnknownHostException) {
             viewListener.onErrorSendReply(

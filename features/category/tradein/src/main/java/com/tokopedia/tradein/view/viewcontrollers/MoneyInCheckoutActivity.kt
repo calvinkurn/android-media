@@ -22,23 +22,20 @@ import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
-import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel
+import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.tradein.R
 import com.tokopedia.tradein.TradeInGTMConstants
 import com.tokopedia.tradein.model.MoneyInCourierResponse.ResponseData.RatesV4
 import com.tokopedia.tradein.model.MoneyInKeroGetAddressResponse.ResponseData.KeroGetAddress
 import com.tokopedia.tradein.model.MoneyInScheduleOptionResponse.ResponseData.GetPickupScheduleOption.ScheduleDate
-import com.tokopedia.tradein.viewmodel.CourierPriceError
-import com.tokopedia.tradein.viewmodel.MoneyInCheckoutViewModel
-import com.tokopedia.tradein.viewmodel.MutationCheckoutError
-import com.tokopedia.tradein.viewmodel.ScheduleTimeError
-import com.tokopedia.tradein_common.viewmodel.BaseViewModel
+import com.tokopedia.tradein.viewmodel.*
+import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Success
 
 
-class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBottomSheet.ActionListener, MoneyInCourierBottomSheet.ActionListener {
+class MoneyInCheckoutActivity : BaseTradeInActivity<MoneyInCheckoutViewModel>(), MoneyInScheduledTimeBottomSheet.ActionListener, MoneyInCourierBottomSheet.ActionListener {
 
     private lateinit var moneyInCheckoutViewModel: MoneyInCheckoutViewModel
     private lateinit var scheduleTime: ScheduleDate.ScheduleTime
@@ -49,6 +46,8 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
     private lateinit var destination: String
     private var isCourierSet: Boolean = false
     private var isTimeSet: Boolean = false
+    private var moneyInStringCancelled: String = ""
+    private var moneyInStringCancelledOrFailed: String = ""
 
     companion object {
         const val MONEY_IN_DEFAULT_ADDRESS = "MONEY_IN_DEFAULT_ADDRESS"
@@ -59,7 +58,13 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
         const val STATUS_SUCCESS = 2
     }
 
+    override fun initInject() {
+        component.inject(this)
+    }
+
     override fun initView() {
+        moneyInStringCancelled = getString(R.string.money_in_alert_payment_canceled)
+        moneyInStringCancelledOrFailed = getString(R.string.money_in_alert_payment_canceled_or_failed)
         sendGeneralEvent(TradeInGTMConstants.ACTION_VIEW_MONEYIN,
                 TradeInGTMConstants.CATEGORY_MONEYIN_COURIER_SELECTION,
                 TradeInGTMConstants.ACTION_VIEW_CHECKOUT_PAGE,
@@ -84,7 +89,7 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
             }
 
         }
-        moneyInCheckoutViewModel.getPickupScheduleOption(getMeGQlString(R.raw.gql_get_pickup_schedule_option))
+        moneyInCheckoutViewModel.getPickupScheduleOption()
         setObservers()
         val terms = getString(R.string.checkout_terms_and_conditions_text)
         val spannableString = SpannableString(terms)
@@ -94,7 +99,7 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
             }
 
             override fun updateDrawState(ds: TextPaint) {
-                ds.color = MethodChecker.getColor(this@MoneyInCheckoutActivity, R.color.g_500)
+                ds.color = MethodChecker.getColor(this@MoneyInCheckoutActivity, com.tokopedia.design.R.color.g_500)
                 ds.isUnderlineText = false
                 ds.typeface = Typeface.DEFAULT_BOLD
             }
@@ -113,7 +118,7 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
     }
 
     private fun showtnc() {
-        showTnC(R.string.money_in_tnc)
+        showTnC(MONEYIN_TNC_URL)
     }
 
     private fun setObservers() {
@@ -133,13 +138,13 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
                         setCourierRatesBottomSheet(it.data)
                     else {
                         val courierBtn = findViewById<Button>(R.id.courier_btn)
-                        showMessageWithAction(it.data.error?.message, getString(R.string.title_ok)) {}
+                        showMessageWithAction(it.data.error?.message, getString(com.tokopedia.abstraction.R.string.title_ok)) {}
                         courierBtn.setOnClickListener { v ->
                             sendGeneralEvent(TradeInGTMConstants.ACTION_CLICK_MONEYIN,
                                     TradeInGTMConstants.CATEGORY_MONEYIN_COURIER_SELECTION,
                                     TradeInGTMConstants.ACTION_CLICK_PILIH_KURIR,
                                     "")
-                            showMessageWithAction(it.data.error?.message, getString(R.string.title_ok)) {}
+                            showMessageWithAction(it.data.error?.message, getString(com.tokopedia.abstraction.R.string.title_ok)) {}
                         }
                     }
                 }
@@ -168,13 +173,13 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
         moneyInCheckoutViewModel.getErrorLiveData().observe(this, Observer {
             when (it) {
                 is ScheduleTimeError -> {
-                    showMessageWithAction(it.errMsg, getString(R.string.retry_label)) {
-                        moneyInCheckoutViewModel.getPickupScheduleOption(getMeGQlString(R.raw.gql_get_pickup_schedule_option))
+                    showMessageWithAction(it.errMsg, getString(com.tokopedia.abstraction.R.string.retry_label)) {
+                        moneyInCheckoutViewModel.getPickupScheduleOption()
                     }
                 }
                 is CourierPriceError -> {
-                    showMessageWithAction(it.errMsg, getString(R.string.retry_label)) {
-                        moneyInCheckoutViewModel.getCourierRates(getMeGQlString(R.raw.gql_courier_rates), destination)
+                    showMessageWithAction(it.errMsg, getString(com.tokopedia.abstraction.R.string.retry_label)) {
+                        moneyInCheckoutViewModel.getCourierRates(destination)
                     }
                 }
                 is MutationCheckoutError -> {
@@ -182,8 +187,8 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
                             TradeInGTMConstants.CATEGORY_MONEYIN_COURIER_SELECTION,
                             TradeInGTMConstants.ACTION_CLICK_PILIH_PEMBAYARAN,
                             TradeInGTMConstants.FAILURE)
-                    showMessageWithAction(it.errMsg, getString(R.string.retry_label)) {
-                        moneyInCheckoutViewModel.makeCheckoutMutation(getMeGQlString(R.raw.gql_mutation_checkout_general), hardwareId, addrId, spId, scheduleTime.minTimeUnix, scheduleTime.maxTimeUnix)
+                    showMessageWithAction(it.errMsg, getString(com.tokopedia.abstraction.R.string.retry_label)) {
+                        moneyInCheckoutViewModel.makeCheckoutMutation(hardwareId, addrId, spId, scheduleTime.minTimeUnix, scheduleTime.maxTimeUnix)
                     }
                 }
             }
@@ -221,13 +226,13 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
         courierLabel.text = getString(R.string.choose_courier)
         courierPrice.hide()
         courierButton.text = getString(R.string.choose)
-        MethodChecker.setBackground(courierButton, MethodChecker.getDrawable(this, R.drawable.bg_green_rounded_tradein))
-        courierButton.setTextColor(MethodChecker.getColor(this, R.color.white))
+        MethodChecker.setBackground(courierButton, MethodChecker.getDrawable(this, com.tokopedia.design.R.drawable.bg_green_rounded_tradein))
+        courierButton.setTextColor(MethodChecker.getColor(this, com.tokopedia.design.R.color.white))
         retrieverTimeLabel.text = getString(R.string.retrieval_time)
         retrieverTime.hide()
         retrieverTimeButton.text = getString(R.string.choose)
-        MethodChecker.setBackground(retrieverTimeButton, MethodChecker.getDrawable(this, R.drawable.bg_green_rounded_tradein))
-        retrieverTimeButton.setTextColor(MethodChecker.getColor(this, R.color.white))
+        MethodChecker.setBackground(retrieverTimeButton, MethodChecker.getDrawable(this, com.tokopedia.design.R.drawable.bg_green_rounded_tradein))
+        retrieverTimeButton.setTextColor(MethodChecker.getColor(this, com.tokopedia.design.R.color.white))
         isCourierSet = false
         isTimeSet = false
     }
@@ -241,7 +246,7 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
         courierPrice.text = price
         MethodChecker.setBackground(courierButton, MethodChecker.getDrawable(this, R.drawable.rect_white_rounded_stroke_gray_trade_in))
         courierButton.text = getString(R.string.change_courier)
-        courierButton.setTextColor(MethodChecker.getColor(this, R.color.unify_N700_44))
+        courierButton.setTextColor(MethodChecker.getColor(this, com.tokopedia.design.R.color.unify_N700_44))
         isCourierSet = true
     }
 
@@ -271,7 +276,7 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
         retrieverTime.text = scheduleTime.timeFmt
         MethodChecker.setBackground(retrieverTimeButton, MethodChecker.getDrawable(this, R.drawable.rect_white_rounded_stroke_gray_trade_in))
         retrieverTimeButton.text = getString(R.string.change_time)
-        retrieverTimeButton.setTextColor(MethodChecker.getColor(this, R.color.unify_N700_44))
+        retrieverTimeButton.setTextColor(MethodChecker.getColor(this, com.tokopedia.design.R.color.unify_N700_44))
         isTimeSet = true
         sendGeneralEvent(TradeInGTMConstants.ACTION_CLICK_MONEYIN,
                 TradeInGTMConstants.CATEGORY_MONEYIN_COURIER_SELECTION,
@@ -300,12 +305,12 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
 
         destination = "${(recipientAddress.district)}|${(recipientAddress.postalCode)}|${(recipientAddress.latitude)},${(recipientAddress.longitude)}"
         addrId = recipientAddress.addrId
-        moneyInCheckoutViewModel.getCourierRates(getMeGQlString(R.raw.gql_courier_rates), destination)
+        moneyInCheckoutViewModel.getCourierRates(destination)
 
         val btBuy = findViewById<Button>(R.id.bt_buy)
         btBuy.setOnClickListener {
             if (isTimeSet && isCourierSet) {
-                moneyInCheckoutViewModel.makeCheckoutMutation(getMeGQlString(R.raw.gql_mutation_checkout_general), hardwareId, addrId, spId, scheduleTime.minTimeUnix, scheduleTime.maxTimeUnix)
+                moneyInCheckoutViewModel.makeCheckoutMutation(hardwareId, addrId, spId, scheduleTime.minTimeUnix, scheduleTime.maxTimeUnix)
             } else if (!isCourierSet) {
                 sendGeneralEvent(TradeInGTMConstants.ACTION_CLICK_MONEYIN,
                         TradeInGTMConstants.CATEGORY_MONEYIN_COURIER_SELECTION,
@@ -378,10 +383,10 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
                 finish()
             }
             PaymentConstant.PAYMENT_FAILED -> {
-                showMessage(getString(R.string.money_in_alert_payment_canceled_or_failed))
+                showMessage(moneyInStringCancelledOrFailed)
             }
             PaymentConstant.PAYMENT_CANCELLED -> {
-                showMessage(getString(R.string.money_in_alert_payment_canceled))
+                showMessage(moneyInStringCancelled)
             }
             else -> {
 
@@ -400,24 +405,12 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
         return MoneyInCheckoutViewModel::class.java
     }
 
-    override fun setViewModel(viewModel: BaseViewModel?) {
+    override fun setViewModel(viewModel: BaseViewModel) {
         moneyInCheckoutViewModel = viewModel as MoneyInCheckoutViewModel
     }
 
     override fun getMenuRes(): Int {
         return -1
-    }
-
-    override fun getTncFragmentInstance(TncResId: Int): Fragment? {
-        return TnCFragment.getInstance(TncResId)
-    }
-
-    override fun getBottomSheetLayoutRes(): Int {
-        return -1
-    }
-
-    override fun doNeedReattach(): Boolean {
-        return false
     }
 
     override fun getNewFragment(): Fragment? {
@@ -426,5 +419,9 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
 
     override fun getLayoutRes(): Int {
         return R.layout.activity_money_in_checkout
+    }
+
+    override fun getRootViewId(): Int {
+        return R.id.root_view
     }
 }

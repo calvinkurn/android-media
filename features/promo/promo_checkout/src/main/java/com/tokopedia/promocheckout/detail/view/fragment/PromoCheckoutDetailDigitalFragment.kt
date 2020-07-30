@@ -5,11 +5,8 @@ import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import com.tokopedia.abstraction.common.utils.view.CommonUtils
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.promocheckout.R
-import com.tokopedia.promocheckout.common.analytics.FROM_CART
-import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
+import com.tokopedia.promocheckout.analytics.PromoCheckoutAnalytics
 import com.tokopedia.promocheckout.common.util.EXTRA_PROMO_DATA
 import com.tokopedia.promocheckout.common.util.mapToStatePromoCheckout
 import com.tokopedia.promocheckout.common.view.model.PromoData
@@ -19,6 +16,8 @@ import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
 import com.tokopedia.promocheckout.detail.di.PromoCheckoutDetailComponent
 import com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailDigitalActivity
 import com.tokopedia.promocheckout.detail.view.presenter.PromoCheckoutDetailDigitalPresenter
+import com.tokopedia.user.session.UserSession
+import timber.log.Timber
 import javax.inject.Inject
 
 class PromoCheckoutDetailDigitalFragment : BasePromoCheckoutDetailFragment() {
@@ -27,6 +26,8 @@ class PromoCheckoutDetailDigitalFragment : BasePromoCheckoutDetailFragment() {
 
     lateinit var promoDigitalModel: PromoDigitalModel
     lateinit var promoCheckoutDetailComponent: PromoCheckoutDetailComponent
+    @Inject
+    lateinit var userSession: UserSession
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,6 +56,7 @@ class PromoCheckoutDetailDigitalFragment : BasePromoCheckoutDetailFragment() {
     }
 
     override fun onClickUse() {
+        promoCheckoutAnalytics.clickUseDigitalMyPromo(codeCoupon, userSession.userId)
         promoCheckoutDetailDigitalPresenter.checkVoucher(codeCoupon, promoDigitalModel)
     }
 
@@ -84,7 +86,7 @@ class PromoCheckoutDetailDigitalFragment : BasePromoCheckoutDetailFragment() {
         try {
             progressDialog?.show()
         } catch (exception: UnsupportedOperationException) {
-            CommonUtils.dumper(exception)
+            Timber.d(exception)
         }
     }
 
@@ -98,6 +100,8 @@ class PromoCheckoutDetailDigitalFragment : BasePromoCheckoutDetailFragment() {
         val EXTRA_IS_USE = "EXTRA_IS_USE"
         val EXTRA_PROMO_DIGITAL_MODEL = "EXTRA_PROMO_DIGITAL_MODEL"
         val PAGE_TRACKING = "PAGE_TRACKING"
+
+        private val promoCheckoutAnalytics: PromoCheckoutAnalytics by lazy { PromoCheckoutAnalytics() }
 
         fun createInstance(codeCoupon: String, isUse: Boolean, promoDigitalModel: PromoDigitalModel, pageTracking: Int): PromoCheckoutDetailDigitalFragment {
             val promoCheckoutDetailFragment = PromoCheckoutDetailDigitalFragment()

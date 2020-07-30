@@ -4,32 +4,34 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    android:paddingEnd="@dimen/dp_16"
+    android:paddingStart="@dimen/dp_16"
     android:paddingLeft="@dimen/dp_16"
+    android:paddingTop="@dimen/dp_16"
+    android:paddingEnd="@dimen/dp_16"
     android:paddingRight="@dimen/dp_16"
-    android:paddingStart="@dimen/dp_16">
+    android:paddingBottom="@dimen/dp_50">
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/img_mobile"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:layout_marginTop="@dimen/dp_40"
-        app:srcCompat="@drawable/ic_verification_sms"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/illustration" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_info"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="@dimen/dp_24"
         android:gravity="center"
-        android:paddingEnd="@dimen/dp_24"
-        android:paddingLeft="@dimen/dp_24"
-        android:paddingRight="@dimen/dp_24"
         android:paddingStart="@dimen/dp_24"
+        android:paddingLeft="@dimen/dp_24"
+        android:paddingEnd="@dimen/dp_24"
+        android:paddingRight="@dimen/dp_24"
         android:textColor="@color/black_54"
         android:textSize="@dimen/tp_text_size_xsmall"
         app:layout_constraintEnd_toEndOf="parent"
@@ -37,29 +39,24 @@
         app:layout_constraintStart_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/img_mobile"
+        app:typographyType="body_2"
         tools:text="Masukan PIN untuk mengaktifkan kupon (hanya untuk merchant)"
         tools:visibility="visible" />
 
-    <com.tokopedia.design.widget.PinEditText
+    <com.tokopedia.pin.PinUnify
         android:id="@+id/et_input_otp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_60"
+        android:layout_marginTop="@dimen/dp_10"
         android:layout_marginRight="@dimen/dp_60"
-        android:layout_marginTop="@dimen/dp_32"
-        android:background="@null"
-        android:cursorVisible="false"
-        android:digits="1234567890"
-        android:imeOptions="actionDone"
-        android:inputType="number"
-        android:maxLength="4"
         android:paddingBottom="@dimen/dp_10"
-        android:textColor="@color/black_54"
-        android:textIsSelectable="false"
-        android:textSize="32sp"
         android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_info"
-        app:pinLineColors="#33000000" />
+        app:pin_count="4"
+        app:pin_type="hidden" />
 
     <TextView
         android:id="@+id/tv_pin_error"
@@ -68,10 +65,10 @@
         android:layout_gravity="center"
         android:layout_marginTop="@dimen/dp_16"
         android:gravity="center"
-        android:paddingEnd="@dimen/dp_24"
-        android:paddingLeft="@dimen/dp_24"
-        android:paddingRight="@dimen/dp_24"
         android:paddingStart="@dimen/dp_24"
+        android:paddingLeft="@dimen/dp_24"
+        android:paddingEnd="@dimen/dp_24"
+        android:paddingRight="@dimen/dp_24"
         android:textColor="@color/tkpd_dark_red"
         android:textSize="@dimen/tp_text_size_xsmall"
         android:visibility="gone"
@@ -86,10 +83,11 @@
         android:id="@+id/pb_main_loading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:layout_gravity="center"
         android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         tools:visibility="gone" />
 
 

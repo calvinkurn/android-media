@@ -9,7 +9,7 @@ import android.widget.ImageView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.database.model.ResCenterAttachment;
-import com.tokopedia.core2.R;
+import com.tokopedia.inbox.R;
 
 import java.io.File;
 import java.util.List;

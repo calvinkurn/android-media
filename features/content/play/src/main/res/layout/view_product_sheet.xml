@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_product_sheet"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_play_bottom_sheet"
+        android:paddingTop="@dimen/spacing_lvl4"
+        android:clickable="true"
+        android:focusable="true"
+        app:behavior_hideable="true"
+        app:behavior_skipCollapsed="true"
+        app:layout_behavior="com.tokopedia.play.view.custom.behavior.LockableBottomSheetBehavior"
+        tools:parentTag="androidx.coordinatorlayout.widget.CoordinatorLayout"
+        >
+
+        <include layout="@layout/bottom_sheet_header"/>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_product_content"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/layout_lvl0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ll_header"
+            app:layout_constraintBottom_toBottomOf="parent"
+            >
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_voucher_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_lvl4"
+                android:layout_marginEnd="@dimen/spacing_lvl4"
+                android:layout_marginTop="@dimen/play_voucher_sheet_title_margin"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_product_list"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/layout_lvl0"
+                android:layout_marginTop="@dimen/play_product_voucher_margin"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/rv_voucher_list"
+                app:layout_constraintBottom_toBottomOf="parent"
+                />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <include layout="@layout/bottom_sheet_bottom_overlay"/>
+
+        <com.tokopedia.globalerror.GlobalError
+            android:id="@+id/global_error_product"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/layout_lvl0"
+            android:clickable="true"
+            android:elevation="@dimen/play_product_variant_elevation"
+            android:focusable="true"
+            android:gravity="center"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/ll_header"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/v_bottom_overlay"
+            tools:visibility="visible"
+            />
+
+        <include layout="@layout/bottom_sheet_product_empty"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</merge>

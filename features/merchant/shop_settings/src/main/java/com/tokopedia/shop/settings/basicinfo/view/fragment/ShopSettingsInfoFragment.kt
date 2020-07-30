@@ -6,7 +6,6 @@ import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
-import androidx.core.content.ContextCompat
 import android.text.*
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
@@ -16,26 +15,24 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.URLUtil
 import android.widget.TextView
+import androidx.core.content.ContextCompat
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.config.GlobalConfig
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
-import com.tokopedia.design.component.ToasterError
-import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.design.utils.StringUtils
 import com.tokopedia.gm.common.data.source.cloud.model.GoldGetPmOsStatus
 import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel
 import com.tokopedia.gm.common.utils.PowerMerchantTracking
 import com.tokopedia.graphql.data.GraphqlClient
-import com.tokopedia.power_merchant.subscribe.URL_GAINS_SCORE_POINT
 import com.tokopedia.shop.common.constant.ShopScheduleActionDef
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
 import com.tokopedia.shop.settings.R
@@ -45,6 +42,7 @@ import com.tokopedia.shop.settings.basicinfo.view.presenter.ShopSettingsInfoPres
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
 import com.tokopedia.shop.settings.common.util.FORMAT_DATE
 import com.tokopedia.shop.settings.common.util.toReadableString
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_shop_settings_info.*
 import kotlinx.android.synthetic.main.partial_shop_settings_info_basic.*
@@ -115,17 +113,17 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
         when {
             itemMenuTitle.equals(getString(R.string.schedule_your_shop_close), ignoreCase = true) -> {
                 val intent = ShopEditScheduleActivity.createIntent(context!!, shopBasicDataModel!!,
-                    getString(R.string.schedule_shop_close), false)
+                        getString(R.string.schedule_shop_close), false)
                 startActivityForResult(intent, REQUEST_EDIT_SCHEDULE)
             }
             itemMenuTitle.equals(getString(R.string.label_close_shop_now), ignoreCase = true) -> {
                 val intent = ShopEditScheduleActivity.createIntent(context!!, shopBasicDataModel!!,
-                    getString(R.string.label_close_shop_now), true)
+                        getString(R.string.label_close_shop_now), true)
                 startActivityForResult(intent, REQUEST_EDIT_SCHEDULE)
             }
             itemMenuTitle.equals(getString(R.string.change_schedule), ignoreCase = true) -> {
                 val intent = ShopEditScheduleActivity.createIntent(context!!, shopBasicDataModel!!,
-                    getString(R.string.change_schedule), false)
+                        getString(R.string.change_schedule), false)
                 startActivityForResult(intent, REQUEST_EDIT_SCHEDULE)
             }
             itemMenuTitle.equals(getString(R.string.remove_schedule), ignoreCase = true) -> {
@@ -139,11 +137,11 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
                             //remove schedule
                             showSubmitLoading(getString(com.tokopedia.abstraction.R.string.title_loading))
                             shopSettingsInfoPresenter.updateShopSchedule(
-                                if (shopBasicDataModel!!.isClosed)
-                                    ShopScheduleActionDef.CLOSED
-                                else
-                                    ShopScheduleActionDef.OPEN,
-                                false, "", "", "")
+                                    if (shopBasicDataModel!!.isClosed)
+                                        ShopScheduleActionDef.CLOSED
+                                    else
+                                        ShopScheduleActionDef.OPEN,
+                                    false, "", "", "")
                             dismiss()
                         }
                         setOnCancelClickListener { dismiss() }
@@ -155,7 +153,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
                 // open now
                 showSubmitLoading(getString(com.tokopedia.abstraction.R.string.title_loading))
                 shopSettingsInfoPresenter.updateShopSchedule(ShopScheduleActionDef.OPEN, false,
-                    "", "", "")
+                        "", "", "")
             }
         }
     }
@@ -189,7 +187,9 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
                 if (requestCode == REQUEST_EDIT_SCHEDULE && data != null) {
                     val message: String = data.getStringExtra(ShopEditScheduleActivity.EXTRA_MESSAGE)
                     if (!message.isEmpty()) {
-                        ToasterNormal.show(activity!!, message)
+                        view?.let {
+                            Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
+                        }
                     }
                 }
             }
@@ -198,7 +198,9 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
                 if (requestCode == REQUEST_EDIT_BASIC_INFO && data != null) {
                     val message: String = data.getStringExtra(ShopEditBasicInfoActivity.EXTRA_MESSAGE)
                     if (!message.isEmpty()) {
-                        ToasterNormal.show(activity!!, message)
+                        view?.let {
+                            Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
+                        }
                     }
                 }
             }
@@ -220,15 +222,16 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
 
     override fun initInjector() {
         DaggerShopSettingsComponent.builder()
-            .baseAppComponent((activity!!.application as BaseMainApplication).baseAppComponent)
-            .build()
-            .inject(this)
+                .baseAppComponent((activity!!.application as BaseMainApplication).baseAppComponent)
+                .build()
+                .inject(this)
         shopSettingsInfoPresenter.attachView(this)
     }
 
     override fun onSuccessGetShopBasicData(result: Pair<ShopBasicDataModel?, GoldGetPmOsStatus?>) {
         val (shopBasicDataModel, shopStatusModel) = result
-        userSession.setIsGoldMerchant(!(shopStatusModel?.result?.data?.isRegularMerchantOrPending() ?: true))
+        userSession.setIsGoldMerchant(!(shopStatusModel?.result?.data?.isRegularMerchantOrPending()
+                ?: true))
         this.shopBasicDataModel = shopBasicDataModel
         hideLoading()
         shopBasicDataModel?.let {
@@ -403,11 +406,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
     }
 
     private fun navigateToPMSubscribe() {
-        if (GlobalConfig.isSellerApp()) {
-            RouteManager.route(context, ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE)
-        } else {
-            RouteManager.route(context, ApplinkConst.POWER_MERCHANT_SUBSCRIBE)
-        }
+        RouteManager.route(context, ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE)
     }
 
     override fun onErrorGetShopBasicData(throwable: Throwable) {
@@ -419,7 +418,9 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
     override fun onSuccessUpdateShopSchedule(successMessage: String) {
         hideSubmitLoading()
         activity?.setResult(Activity.RESULT_OK)
-        ToasterNormal.show(activity!!, successMessage)
+        view?.let {
+            Toaster.make(it, successMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
+        }
         loadShopBasicData()
     }
 
@@ -430,7 +431,9 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
 
     private fun showSnackbarErrorSubmitEdit(throwable: Throwable) {
         val message = ErrorHandler.getErrorMessage(context, throwable)
-        ToasterError.showClose(activity!!, message)
+        view?.let {
+            Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+        }
     }
 
     fun showSubmitLoading(message: String) {
@@ -458,7 +461,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
     }
 
     companion object {
-
+        private val URL_GAINS_SCORE_POINT = "https://seller.tokopedia.com/edu/skor-toko"
         private val REQUEST_EDIT_BASIC_INFO = 781
         private val REQUEST_EDIT_SCHEDULE = 782
 

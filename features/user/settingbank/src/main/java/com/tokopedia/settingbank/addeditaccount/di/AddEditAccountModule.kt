@@ -1,20 +1,16 @@
 package com.tokopedia.settingbank.addeditaccount.di
 
+import android.app.Activity
 import android.content.Context
-import com.readystatesoftware.chuck.ChuckInterceptor
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse
-import com.tokopedia.abstraction.common.network.interceptor.AccountsAuthorizationInterceptor
-import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
+import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor
-import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.DebugInterceptor
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.settingbank.addeditaccount.data.AddEditAccountApi
 import com.tokopedia.settingbank.addeditaccount.data.AddEditAccountUrl
-import com.tokopedia.settingbank.banklist.data.SettingBankUrl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -29,7 +25,10 @@ import retrofit2.Retrofit
 
 @AddEditAccountScope
 @Module
-class AddEditAccountModule{
+class AddEditAccountModule(val activity: Activity) {
+
+    @Provides
+    fun getContext(): Context = activity
 
     @AddEditAccountScope
     @Provides
@@ -46,19 +45,19 @@ class AddEditAccountModule{
 
     @AddEditAccountScope
     @Provides
-    fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
+    fun provideUserSession(context: Context): UserSessionInterface {
         return UserSession(context)
     }
 
     @AddEditAccountScope
     @Provides
-    fun provideNetworkRouter(@ApplicationContext context: Context): NetworkRouter {
-        return (context as NetworkRouter)
+    fun provideNetworkRouter(context: Context): NetworkRouter {
+        return (context.applicationContext as NetworkRouter)
     }
 
     @AddEditAccountScope
     @Provides
-    fun provideTkpdAuthInterceptor(@ApplicationContext context: Context,
+    fun provideTkpdAuthInterceptor(context: Context,
                                    networkRouter: NetworkRouter,
                                    userSession: UserSessionInterface)
             : TkpdAuthInterceptor = TkpdAuthInterceptor(context, networkRouter, userSession)
@@ -71,8 +70,8 @@ class AddEditAccountModule{
 
     @AddEditAccountScope
     @Provides
-    fun provideChuckInterceptor(@ApplicationContext context: Context): ChuckInterceptor
-            = ChuckInterceptor(context)
+    fun provideChuckerInterceptor(context: Context): ChuckerInterceptor
+            = ChuckerInterceptor(context)
 
     @AddEditAccountScope
     @Provides
@@ -83,7 +82,7 @@ class AddEditAccountModule{
     fun provideOkHttpClient(fingerprintInterceptor: FingerprintInterceptor,
                             tkpdAuthInterceptor: TkpdAuthInterceptor,
                             headerErrorResponseInterceptor: HeaderErrorResponseInterceptor,
-                            chuckInterceptor: ChuckInterceptor,
+                            chuckInterceptor: ChuckerInterceptor,
                             debugInterceptor: DebugInterceptor,
                             httpLoggingInterceptor: HttpLoggingInterceptor): OkHttpClient{
         val builder = OkHttpClient.Builder()

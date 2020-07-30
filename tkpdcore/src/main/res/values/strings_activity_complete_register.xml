@@ -1,19 +1,4 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
 
-    <!-- Strings related to login -->
-    <string name="prompt_email">Email</string>
-    <string name="prompt_password">Kata Sandi</string>
-    <string name="action_sign_in_short">Masuk</string>
-    <string name="login_progress_signing_in">Signing in…</string>
-    <string name="error_invalid_email">Email ini tidak valid.</string>
-    <string name="error_invalid_password">Kata sandi terlalu pendek</string>
-    <string name="error_incorrect_password">Kata sandi tidak benar</string>
-    <string name="error_field_required">Harus diisi</string>
-    <string name="error_max_128_character">Maksimal 128 karakter.</string>
-    <string name="error_min_5_character">Minimal 5 karakter</string>
-    <string name="error_max_35_character">Maksimal 35 karakter</string>
-    <string name="error_illegal_character">Hanya dapat menggunakan huruf</string>
-    <string name="error_invalid_phone_number">Nomor Telepon tidak valid</string>
-
 </resources>

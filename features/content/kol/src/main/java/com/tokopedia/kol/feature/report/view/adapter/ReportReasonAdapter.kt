@@ -27,8 +27,8 @@ class ReportReasonAdapter(val view: ContentReportContract.View)
         }
 
         MethodChecker.getDrawable(holder.radio.getContext(),
-                if (model.isSelected) R.drawable.ic_radiobutton_selected
-                else R.drawable.ic_radiobutton_normal
+                if (model.isSelected) com.tokopedia.design.R.drawable.ic_radiobutton_selected
+                else com.tokopedia.design.R.drawable.ic_radiobutton_normal
         )?.apply {
             holder.radio.setImageDrawable(this)
         }

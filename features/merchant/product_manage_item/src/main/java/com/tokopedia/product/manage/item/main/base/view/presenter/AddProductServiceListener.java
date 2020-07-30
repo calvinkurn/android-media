@@ -1,6 +1,6 @@
 package com.tokopedia.product.manage.item.main.base.view.presenter;
 
-import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.product.manage.item.main.base.view.listener.ProductSubmitNotificationListener;
 
 /**

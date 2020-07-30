@@ -1,45 +1,31 @@
 package com.tokopedia.gamification.taptap.activity;
 
-import android.content.Context;
-import android.content.Intent;
 import android.media.AudioManager;
 import android.os.Bundle;
+import android.widget.FrameLayout;
+
 import androidx.fragment.app.Fragment;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.gamification.GamificationRouter;
 import com.tokopedia.gamification.R;
-import com.tokopedia.gamification.applink.ApplinkConstant;
 import com.tokopedia.gamification.taptap.fragment.TapTapTokenFragment;
 import com.tokopedia.gamification.taptap.utils.TapTapAnalyticsTrackerUtil;
+import com.tokopedia.promogamification.common.GamificationRouter;
 
 public class TapTapTokenActivity extends BaseSimpleActivity {
 
-
-    @SuppressWarnings("unused")
-    @DeepLink(ApplinkConstant.GAMIFICATION2)
-    public static Intent getcallingIntent(Context context, Bundle extras) {
-        return TapTapTokenActivity.newInstance(context);
-    }
-
-    public static Intent newInstance(Context context) {
-        return new Intent(context, TapTapTokenActivity.class);
-    }
-
-    public static Intent getIntent(Context context) {
-        return new Intent(context, TapTapTokenActivity.class);
-    }
+    FrameLayout fm;
 
     @Override
     protected int getLayoutRes() {
-        return R.layout.activity_token_crack;
+        return com.tokopedia.gamification.R.layout.activity_token_crack;
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
+        fm = findViewById(R.id.parent_view);
     }
 
     @Override
@@ -48,7 +34,7 @@ public class TapTapTokenActivity extends BaseSimpleActivity {
     }
 
     private TapTapTokenFragment getCrackFragment() {
-        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.parent_view);
+        Fragment fragment = getSupportFragmentManager().findFragmentById(fm.getId());
         if (fragment != null && fragment instanceof TapTapTokenFragment) {
             return (TapTapTokenFragment) fragment;
         }
@@ -80,5 +66,10 @@ public class TapTapTokenActivity extends BaseSimpleActivity {
     @Override
     public String getScreenName() {
         return TapTapTokenActivity.class.getName();
+    }
+
+    @Override
+    protected int getParentViewResourceID() {
+        return com.tokopedia.gamification.R.id.parent_view;
     }
 }

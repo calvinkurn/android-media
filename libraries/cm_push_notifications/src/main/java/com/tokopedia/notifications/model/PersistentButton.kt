@@ -1,7 +1,9 @@
 package com.tokopedia.notifications.model
 
+import androidx.room.ColumnInfo
 import android.os.Parcel
 import android.os.Parcelable
+import com.google.gson.annotations.Expose
 
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.notifications.common.CMConstant
@@ -12,14 +14,23 @@ import com.tokopedia.notifications.common.CMConstant
 open class PersistentButton() : Parcelable {
 
     @SerializedName(CMConstant.PayloadKeys.APP_LINK)
+    @ColumnInfo(name = CMConstant.PayloadKeys.APP_LINK)
+    @Expose
     var appLink: String? = null
 
     @SerializedName(CMConstant.PayloadKeys.TEXT)
+    @ColumnInfo(name = CMConstant.PayloadKeys.TEXT)
+    @Expose
     var text: String? = null
 
     @SerializedName(CMConstant.PayloadKeys.ICON)
+    @ColumnInfo(name = CMConstant.PayloadKeys.ICON)
+    @Expose
     var icon: String? = null
 
+    @SerializedName("isAppLogo")
+    @ColumnInfo(name = "isAppLogo")
+    @Expose
     var isAppLogo: Boolean = false
 
     @SerializedName(CMConstant.PayloadKeys.ELEMENT_ID)

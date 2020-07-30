@@ -1,7 +1,6 @@
 package com.tokopedia.linker;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.linker.model.PaymentData;
@@ -82,6 +81,11 @@ public class BranchHelper {
                     .addCustomDataProperty(LinkerConstants.KEY_NEW_BUYER, String.valueOf(branchIOPayment.isNewBuyer()))
                     .addCustomDataProperty(LinkerConstants.KEY_MONTHLY_NEW_BUYER, String.valueOf(branchIOPayment.isMonthlyNewBuyer()))
                     .logEvent(context);
+
+            if (branchIOPayment.isNewBuyer()) {
+                sendMarketPlaceFirstTxnEvent(context, branchIOPayment, userData.getUserId(), revenuePrice, shippingPrice);
+            }
+
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -141,6 +145,31 @@ public class BranchHelper {
                 .addCustomDataProperty(LinkerConstants.CATEGORY_LEVEL_1, linkerData.getCatLvl1())
                 .addCustomDataProperty(LinkerConstants.USER_ID, linkerData.getUserId())
                 .addCustomDataProperty(LinkerConstants.CURRENCY, linkerData.getCurrency())
+                .logEvent(context);
+    }
+
+    public static void sendFlightPurchaseEvent(Context context, LinkerData linkerData){
+        new BranchEvent(LinkerConstants.EVENT_FLIGHT_PURCHASE)
+                .addCustomDataProperty(LinkerConstants.PRODUCT_CATEGORY, linkerData.getProductCategory())
+                .addCustomDataProperty(LinkerConstants.PRODUCT_NAME, linkerData.getProductName())
+                .addCustomDataProperty(LinkerConstants.JOURNEY_ID, linkerData.getJourneyId())
+                .addCustomDataProperty(LinkerConstants.USER_ID, linkerData.getUserId())
+                .addCustomDataProperty(LinkerConstants.INVOICE_ID, linkerData.getInvoiceId())
+                .addCustomDataProperty(LinkerConstants.KEY_PAYMENT, linkerData.getPaymentId())
+                .addCustomDataProperty(LinkerConstants.PRICE, linkerData.getPrice())
+                .logEvent(context);
+    }
+    private static void sendMarketPlaceFirstTxnEvent(Context context, PaymentData branchIOPayment,  String userId, double revenuePrice,double shippingPrice){
+        new BranchEvent(LinkerConstants.EVENT_MARKETPLACE_FIRST_TXN)
+                .setTransactionID(branchIOPayment.getOrderId())
+                .setCurrency(CurrencyType.IDR)
+                .setShipping(shippingPrice)
+                .setRevenue(revenuePrice)
+                .addCustomDataProperty(LinkerConstants.KEY_PAYMENT, branchIOPayment.getPaymentId())
+                .addCustomDataProperty(LinkerConstants.KEY_PRODUCTTYPE, branchIOPayment.getProductType())
+                .addCustomDataProperty(LinkerConstants.KEY_USERID, userId)
+                .addCustomDataProperty(LinkerConstants.KEY_NEW_BUYER, String.valueOf(branchIOPayment.isNewBuyer()))
+                .addCustomDataProperty(LinkerConstants.KEY_MONTHLY_NEW_BUYER, String.valueOf(branchIOPayment.isMonthlyNewBuyer()))
                 .logEvent(context);
     }
 

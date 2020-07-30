@@ -34,4 +34,11 @@ public class SearchBarConstant {
     public static final String KEY_OS_AB_TEST = "os_ab_test";
 
     public static final String CLICK_SEARCH_BOX = "click search box";
+
+    public static final String CLICK_NOTIF_CENTER = "clickNotifCenter";
+
+    public static final String NOTIF_CENTER = "notif center";
+
+    public static final String NOTIF_CENTER_ACTION = "click on bell on global nav";
+
 }

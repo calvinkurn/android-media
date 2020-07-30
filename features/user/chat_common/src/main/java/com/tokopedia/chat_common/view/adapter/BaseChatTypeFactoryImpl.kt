@@ -15,14 +15,14 @@ import com.tokopedia.chat_common.view.adapter.viewholder.listener.ProductAttachm
  */
 
 abstract class BaseChatTypeFactoryImpl(private val imageAnnouncementListener: ImageAnnouncementListener,
-                                   private val chatLinkHandlerListener: ChatLinkHandlerListener,
-                                   private val imageUploadListener : ImageUploadListener,
-                                   private val productAttachmentListener : ProductAttachmentListener) :
+                                       private val chatLinkHandlerListener: ChatLinkHandlerListener,
+                                       private val imageUploadListener: ImageUploadListener,
+                                       private val productAttachmentListener: ProductAttachmentListener) :
         BaseAdapterTypeFactory(),
         BaseChatTypeFactory {
 
     override fun type(productAttachmentViewModel: ProductAttachmentViewModel): Int {
-        return ProductAttachmentViewHolder.LAYOUT;
+        return ProductAttachmentViewHolder.LAYOUT
     }
 
     override fun type(messageViewModel: MessageViewModel): Int {
@@ -45,6 +45,10 @@ abstract class BaseChatTypeFactoryImpl(private val imageAnnouncementListener: Im
         return FallbackAttachmentViewHolder.LAYOUT
     }
 
+    override fun type(bannedAttachmentViewModel: BannedProductAttachmentViewModel): Int {
+        return BannedProductAttachmentViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             TypingChatViewHolder.LAYOUT -> TypingChatViewHolder(parent)
@@ -53,6 +57,7 @@ abstract class BaseChatTypeFactoryImpl(private val imageAnnouncementListener: Im
             ImageUploadViewHolder.LAYOUT -> ImageUploadViewHolder(parent, imageUploadListener)
             FallbackAttachmentViewHolder.LAYOUT -> FallbackAttachmentViewHolder(parent, chatLinkHandlerListener)
             ProductAttachmentViewHolder.LAYOUT -> ProductAttachmentViewHolder(parent, productAttachmentListener)
+            BannedProductAttachmentViewHolder.LAYOUT -> BannedProductAttachmentViewHolder(parent, productAttachmentListener)
             else -> super.createViewHolder(parent, type)
         }
     }

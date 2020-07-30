@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="title_notification_center" translatable="false">Notification</string>
+    <string name="host_notification_center" translatable="false">notification</string>
+    <string name="path_notification_center" translatable="false">/notification</string>
+</resources>

@@ -1,8 +1,6 @@
 package com.tokopedia.feedcomponent.view.viewmodel.posttag
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
-import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItemTag
 import com.tokopedia.feedcomponent.view.adapter.posttag.PostTagTypeFactory
 
 /**

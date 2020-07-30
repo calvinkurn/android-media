@@ -9,14 +9,6 @@ public class CouponDetailEntity {
     private int id;
 
     @Expose
-    @SerializedName("owner")
-    private int owner;
-
-    @Expose
-    @SerializedName("promo_id")
-    private int promoId;
-
-    @Expose
     @SerializedName("code")
     private String code;
 
@@ -32,32 +24,12 @@ public class CouponDetailEntity {
     @SerializedName("cta")
     private String cta;
 
-    @Expose
-    @SerializedName("cta_desktop")
-    private String ctaDesktop;
-
     public int getId() {
         return id;
     }
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public int getOwner() {
-        return owner;
-    }
-
-    public void setOwner(int owner) {
-        this.owner = owner;
-    }
-
-    public int getPromoId() {
-        return promoId;
-    }
-
-    public void setPromoId(int promoId) {
-        this.promoId = promoId;
     }
 
     public String getCode() {
@@ -92,25 +64,15 @@ public class CouponDetailEntity {
         this.cta = cta;
     }
 
-    public String getCtaDesktop() {
-        return ctaDesktop;
-    }
-
-    public void setCtaDesktop(String ctaDesktop) {
-        this.ctaDesktop = ctaDesktop;
-    }
 
     @Override
     public String toString() {
         return "RedeemCoupon{" +
                 "id=" + id +
-                ", owner=" + owner +
-                ", promoId=" + promoId +
                 ", code='" + code + '\'' +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", cta='" + cta + '\'' +
-                ", ctaDesktop='" + ctaDesktop + '\'' +
                 '}';
     }
 }

@@ -4,27 +4,37 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.payment.setting.add.view.fragment.AddCreditCardFragment
+import com.tokopedia.payment.setting.list.model.PaymentSignature
 
 class AddCreditCardActivity : BaseSimpleActivity() {
-    override fun getNewFragment(): Fragment {
-        return AddCreditCardFragment.createInstance()
+
+    override fun getNewFragment(): Fragment? {
+        return AddCreditCardFragment.createInstance(intent.extras)
     }
 
-    companion object {
-        fun createIntent(context: Context) : Intent {
-            return Intent(context, AddCreditCardActivity::class.java)
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        validateBundleData()
+        super.onCreate(savedInstanceState)
+    }
+
+    private fun validateBundleData() {
+        intent.extras?.let {
+            if (!it.containsKey(ARG_PAYMENT_SIGNATURE))
+                finish()
+        } ?: run {
+            finish()
         }
     }
 
-    object DeeplinkIntent {
-        @DeepLink(ApplinkConst.ADD_CREDIT_CARD)
-        @JvmStatic
-        fun createApplinkIntent(context: Context, bundle: Bundle): Intent {
-            return Intent(context, AddCreditCardActivity::class.java)
+    companion object {
+        const val ARG_PAYMENT_SIGNATURE = "arg_payment_signature"
+        fun createIntent(context: Context, paymentSignature: PaymentSignature): Intent {
+            return Intent(context, AddCreditCardActivity::class.java).apply {
+                putExtra(ARG_PAYMENT_SIGNATURE, paymentSignature)
+            }
         }
     }
 }

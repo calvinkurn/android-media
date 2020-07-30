@@ -5,11 +5,12 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.util.Log
 import android.view.View
+import com.tokopedia.kotlin.extensions.view.orZero
 
 /** for gridLayout
   * space in px
  **/
-class ItemOffsetDecoration(val space: Int, val totalItem: Int) : RecyclerView.ItemDecoration(){
+class ItemOffsetDecoration(val space: Int) : RecyclerView.ItemDecoration() {
 
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
         super.getItemOffsets(outRect, view, parent, state)
@@ -17,7 +18,7 @@ class ItemOffsetDecoration(val space: Int, val totalItem: Int) : RecyclerView.It
         val spanCount = 6 / (parent.layoutManager as GridLayoutManager).spanSizeLookup.getSpanSize(position)
         val column = position % spanCount
 
-        if (totalItem == 5) {
+        if (parent.adapter?.itemCount.orZero() == 5) {
             when (position) {
                 0 -> outRect.right = getRightSpace(space, column, spanCount)
                 1 -> outRect.left = getLeftSpace(space, column, spanCount)

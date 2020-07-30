@@ -74,7 +74,8 @@ public class ServerErrorView extends NestedScrollView {
         btnError = findViewById(R.id.text_failed_action);
     }
 
-    public void showErrorUi(boolean hasInternet) {
+
+    public void showErrorUi(boolean hasInternet ) {
 
         int noConnectionImageId = R.drawable.ic_tp_toped_sorry;
         int buttonFontSize = getResources().getInteger(R.integer.tp_error_btn_medium);
@@ -83,7 +84,7 @@ public class ServerErrorView extends NestedScrollView {
 
         if (!hasInternet) {
 
-            noConnectionImageId = R.drawable.ic_tp_no_connection;
+            noConnectionImageId = com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection;
             buttonFontSize = getResources().getInteger(R.integer.tp_error_btn_large);
 
             buttonColor = MethodChecker.getColor(getContext(), com.tokopedia.design.R.color.bg_button_green_border_outline);
@@ -98,8 +99,13 @@ public class ServerErrorView extends NestedScrollView {
         btnError.setTextColor(buttonFontColor);
         btnError.setButtonColor(buttonColor);
         btnError.setTextSize(TypedValue.COMPLEX_UNIT_SP, buttonFontSize);
-
         tvTitleError.setText(errorTitle);
         tvLabelError.setText(errorSubTitle);
     }
+
+    public void setErrorButtonClickListener(OnClickListener onClickListener){
+        btnError.setOnClickListener(onClickListener);
+    }
+
+
 }

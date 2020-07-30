@@ -6,24 +6,16 @@ import android.content.Context
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.Rect
 import android.os.Build
-import androidx.annotation.DimenRes
-import androidx.annotation.StringRes
 import android.view.*
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.design.base.BaseToaster
-import com.tokopedia.design.component.ToasterError
-import com.tokopedia.design.component.ToasterNormal
+import androidx.annotation.DimenRes
 import com.tokopedia.kotlin.extensions.R
 import com.tokopedia.kotlin.model.ImpressHolder
-import android.graphics.drawable.GradientDrawable
-
-
+import timber.log.Timber
 
 
 /**
@@ -63,8 +55,15 @@ fun View.gone() {
     visibility = View.GONE
 }
 
-val View.isVisible: Boolean
+var View.isVisible: Boolean
     get() = visibility == View.VISIBLE
+    set(value) {
+        if (value) {
+            this.visible()
+        } else {
+            this.gone()
+        }
+    }
 
 fun TextView.setTextAndCheckShow(text: String?) {
     if (text.isNullOrEmpty()) {
@@ -111,7 +110,7 @@ fun View.hideLoading() {
     try {
         this.findViewById<View>(R.id.loadingView)!!.hide()
     } catch (e: NullPointerException) {
-        e.debugTrace()
+        Timber.d(e)
     }
 }
 
@@ -134,54 +133,7 @@ fun View.hideLoadingTransparent() {
     try {
         this.findViewById<View>(R.id.loadingTransparentView)!!.hide()
     } catch (e: NullPointerException) {
-        e.debugTrace()
-    }
-}
-
-
-fun View.showErrorToaster(errorMessage: String) {
-    this.showErrorToaster(errorMessage, null as String?) { }
-}
-
-fun View.showErrorToaster(errorMessage: String, @StringRes actionMessage: Int = R.string.title_try_again, action: () -> Unit) {
-    this.showErrorToaster(errorMessage, context.getString(actionMessage), action)
-}
-
-fun View.showErrorToaster(errorMessage: String, actionMessage: String?, action: () -> Unit) {
-    val toaster = ToasterError.make(this, errorMessage, BaseToaster.LENGTH_LONG)
-    actionMessage?.let { message ->
-        toaster.setAction(message) {
-            action()
-        }
-    }
-    toaster.show()
-}
-
-fun View.showNormalToaster(successMessage: String) {
-    this.showNormalToaster(successMessage, null as String?) { }
-}
-
-fun View.showNormalToaster(successMessage: String, @StringRes actionMessage: Int = R.string.title_ok, action: () -> Unit) {
-    this.showNormalToaster(successMessage, context.getString(actionMessage), action)
-}
-
-fun View.showNormalToaster(successMessage: String, actionMessage: String?, action: () -> Unit) {
-    val toaster = ToasterNormal.make(this, successMessage, BaseToaster.LENGTH_LONG)
-    actionMessage?.let { message ->
-        toaster.setAction(message) {
-            action()
-        }
-    }
-    toaster.show()
-}
-
-fun View.showEmptyState(@StringRes errorMessage: Int, action: () -> Unit) {
-    this.showEmptyState(context.getString(errorMessage), action)
-}
-
-fun View.showEmptyState(errorMessage: String, action: () -> Unit) {
-    NetworkErrorHelper.showEmptyState(this.context, this, errorMessage) {
-        action()
+        Timber.d(e)
     }
 }
 
@@ -280,6 +232,16 @@ fun View.isNotVisibleOnTheScreen(listener: ViewHintListener) {
         }
     }
 
+}
+
+fun View.isVisibleOnTheScreen(onViewVisible:() -> Unit, onViewNotVisible:() -> Unit) {
+    viewTreeObserver.addOnScrollChangedListener {
+        if (getVisiblePercent(this@isVisibleOnTheScreen) == -1) {
+            onViewNotVisible.invoke()
+        } else {
+            onViewVisible.invoke()
+        }
+    }
 }
 
 fun getVisiblePercent(v: View): Int {

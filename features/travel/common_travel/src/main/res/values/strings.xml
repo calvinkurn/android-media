@@ -1,0 +1,34 @@
+<resources>
+    <string name="app_name">common-travel</string>
+
+    <string name="travel_buyer_first_name">Nama Depan (sesuai KTP/SIM/Paspor)</string>
+    <string name="travel_buyer_last_name">Nama Belakang (sesuai KTP/SIM/Paspor)</string>
+    <string name="travel_buyer_first_name_hint">Isi Nama Depan</string>
+    <string name="travel_buyer_last_name_hint">Isi Nama Belakang</string>
+    <string name="travel_passenger_identity_number">Nomor Identitas (KTP/SIM/Paspor)</string>
+    <string name="travel_passenger_identity_number_hint">Isi Nomor Identitas</string>
+    <string name="travel_passenger_additional_info">Bila tidak ada, mohon masukkan tanggal lahir dalam format (DDMMYYYY)</string>
+    <string name="travel_passenger_birthdate">Tanggal Lahir</string>
+    <string name="travel_passenger_birthdate_hint">Pilih Tanggal Lahir</string>
+
+    <string name="travel_menu_passenger_list">Edit</string>
+    <string name="travel_error_msg_choose_passenger">Kategori penumpang tidak sesuai.</string>
+    <string name="travel_error_msg_choose_passenger_adult">Penumpang tidak sesuai dengan kategori dewasa.</string>
+    <string name="travel_error_msg_choose_passenger_infant">Penumpang tidak sesuai dengan kategori bayi.</string>
+    <string name="travel_error_msg_pick_passenger_data_not_valid">Data penumpang belum lengkap.</string>
+    <string name="travel_error_msg_pick_infant_passenger">Umur penumpang bayi harus dibawah 3 tahun.</string>
+    <string name="travel_error_msg_pick_adult_passenger">Umur penumpang dewasa harus diatas 3 tahun.</string>
+    <string name="travel_title_edit_passenger_list">Edit Penumpang</string>
+    <string name="travel_account_default">(Utama)</string>
+    <string name="travel_account_chosen">Terpilih</string>
+    <string name="travel_salutation_mister_string">Tn</string>
+    <string name="travel_salutation_mrs_string">Ny</string>
+    <string name="travel_salutation_miss_string">Nn</string>
+
+    <string name="travel_title_sort_search">Urutkan</string>
+
+    <string name="travel_departure_trip_price_value"><![CDATA[<b>%s</b> /org]]></string>
+
+    <string name="phone_code_format">+%1$d</string>
+    <string name="flight_label_search_hint_airport">Cari bandara atau kota yang dituju</string>
+</resources>

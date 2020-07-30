@@ -7,15 +7,12 @@ import com.tokopedia.navigation_common.model.SaldoModel;
 
 public class UserAttributeData {
 
-    @SerializedName("shopInfoMoengage")
+    @SerializedName("userShopInfo")
     @Expose
-    private ShopInfoMoengage shopInfoMoengage = new ShopInfoMoengage();
+    private UserShopInfo userShopInfo = new UserShopInfo();
     @SerializedName("profile")
     @Expose
     private Profile profile = new Profile();
-    @SerializedName("wallet")
-    @Expose
-    private Wallet wallet = new Wallet();
     @SerializedName("paymentAdminProfile")
     @Expose
     private PaymentAdminProfile paymentAdminProfile = new PaymentAdminProfile();
@@ -28,13 +25,12 @@ public class UserAttributeData {
 
     private SaldoModel saldo = new SaldoModel();
 
-
-    public ShopInfoMoengage getShopInfoMoengage() {
-        return shopInfoMoengage;
+    public UserShopInfo getUserShopInfo() {
+        return userShopInfo;
     }
 
-    public void setShopInfoMoengage(ShopInfoMoengage shopInfoMoengage) {
-        this.shopInfoMoengage = shopInfoMoengage;
+    public void setUserShopInfo(UserShopInfo userShopInfo) {
+        this.userShopInfo = userShopInfo;
     }
 
     public Profile getProfile() {
@@ -43,14 +39,6 @@ public class UserAttributeData {
 
     public void setProfile(Profile profile) {
         this.profile = profile;
-    }
-
-    public Wallet getWallet() {
-        return wallet;
-    }
-
-    public void setWallet(Wallet wallet) {
-        this.wallet = wallet;
     }
 
     public SaldoModel getSaldo() {

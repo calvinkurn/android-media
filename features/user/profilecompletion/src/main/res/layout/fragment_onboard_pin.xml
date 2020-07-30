@@ -2,6 +2,7 @@
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="@dimen/spacing_lvl4"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -13,91 +14,65 @@
 
         <ImageView
             android:id="@+id/onboardImage"
-            android:layout_width="@dimen/dp_200"
-            android:layout_height="@dimen/dp_200"
-            android:layout_marginTop="@dimen/dp_8"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_marginTop="@dimen/spacing_lvl3"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
+            app:typographyType="heading_2"
             android:id="@+id/titleOnboard"
+            app:typographyWeight="bold"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_8"
-            android:layout_marginEnd="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginTop="@dimen/spacing_lvl3"
+            android:textColor="@color/Neutral_N700_96"
             android:text="@string/title_onboard_pin"
             android:textAlignment="center"
-            android:textColor="#b3000000"
-            android:textSize="@dimen/sp_16"
-            android:textStyle="bold"
             app:layout_constraintTop_toBottomOf="@+id/onboardImage" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
+            app:typographyType="body_2"
             android:id="@+id/subtitleOnboard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_8"
-            android:layout_marginEnd="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginTop="@dimen/spacing_lvl3"
             android:text="@string/subtitle_onboard_pin"
             android:textAlignment="center"
-            android:textColor="#85000000"
-            android:textSize="@dimen/sp_12"
             app:layout_constraintTop_toBottomOf="@+id/titleOnboard" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
+            app:typographyType="body_2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_8"
-            android:layout_marginEnd="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginTop="@dimen/spacing_lvl3"
             android:text="@string/subtitle_onboard_pin_2"
             android:textAlignment="center"
-            android:textColor="#85000000"
-            android:textSize="@dimen/sp_12"
             app:layout_constraintTop_toBottomOf="@+id/subtitleOnboard" />
 
-        <com.tokopedia.design.component.ButtonCompat
+        <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btnNext"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_48"
+            android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginEnd="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16"
-            android:layout_marginBottom="@dimen/dp_8"
+            android:layout_marginBottom="@dimen/spacing_lvl3"
             android:gravity="center"
             android:text="@string/create_pin"
-            android:textColor="@color/black_70"
-            app:buttonCompatSize="big"
-            app:buttonCompatType="primary"
             app:layout_constraintBottom_toTopOf="@+id/btnIgnore" />
 
-        <com.tokopedia.design.component.ButtonCompat
+        <com.tokopedia.unifycomponents.UnifyButton
+            app:unifyButtonVariant="ghost"
+            app:unifyButtonType="alternate"
             android:id="@+id/btnIgnore"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_48"
+            android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginEnd="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16"
-            android:layout_marginBottom="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/spacing_lvl4"
             android:gravity="center"
             android:text="@string/ignore_pin"
-            android:textColor="@color/black_70"
             android:visibility="visible"
-            app:buttonCompatSize="big"
-            app:buttonCompatType="white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />

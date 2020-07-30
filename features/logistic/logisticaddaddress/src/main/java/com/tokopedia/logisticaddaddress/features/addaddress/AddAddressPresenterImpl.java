@@ -6,14 +6,17 @@ import android.text.TextUtils;
 import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.logisticaddaddress.data.AddressRepository;
 import com.tokopedia.logisticdata.data.entity.address.Destination;
+import com.tokopedia.logisticdata.data.entity.response.KeroMapsAutofill;
 import com.tokopedia.logisticdata.data.module.qualifier.AddressScope;
-import com.tokopedia.logisticdata.data.utils.GeoLocationUtils;
+import com.tokopedia.logisticdata.domain.usecase.RevGeocodeUseCase;
 import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.Map;
 
 import javax.inject.Inject;
+
+import rx.Subscriber;
 
 /**
  * Created by nisie on 9/6/16.
@@ -36,11 +39,15 @@ public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
     private AddAddressContract.View mView;
     private AddressRepository networkInteractor;
     private UserSessionInterface userSession;
+    private RevGeocodeUseCase revGeocodeUseCase;
 
     @Inject
-    public AddAddressPresenterImpl(UserSessionInterface userSession, AddressRepository addressRepository) {
+    public AddAddressPresenterImpl(UserSessionInterface userSession,
+                                   AddressRepository addressRepository,
+                                   RevGeocodeUseCase revGeocodeUseCase) {
         this.networkInteractor = addressRepository;
         this.userSession = userSession;
+        this.revGeocodeUseCase = revGeocodeUseCase;
     }
 
     @Override
@@ -69,20 +76,25 @@ public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
 
     @Override
     public void requestReverseGeoCode(Context context, Destination destination) {
-        GeoLocationUtils.getReverseGeoCodeParallel(context,
-                Double.parseDouble(destination.getLatitude()),
-                Double.parseDouble(destination.getLongitude()),
-                new GeoLocationUtils.GeoLocationListener() {
+        String keyword = String.format("%s,%s", destination.getLatitude(), destination.getLongitude());
+        revGeocodeUseCase.execute(keyword)
+                .subscribe(new Subscriber<KeroMapsAutofill>() {
                     @Override
-                    public void getGeoCode(String resultAddress) {
-                        mView.setPinpointAddress(resultAddress);
+                    public void onCompleted() {
+
                     }
 
                     @Override
-                    public void onError(String message) {
-                        mView.showErrorSnackbar(message);
+                    public void onError(Throwable e) {
+                        mView.showErrorSnackbar(e.getMessage());
                     }
-                }, mView.getCompositeSubscription());
+
+                    @Override
+                    public void onNext(KeroMapsAutofill keroMapsAutofill) {
+                        mView.setPinpointAddress(
+                                keroMapsAutofill.getData().getFormattedAddress());
+                    }
+                });
     }
 
     private AddressRepository.AddAddressListener getListener(boolean isEditOperation) {

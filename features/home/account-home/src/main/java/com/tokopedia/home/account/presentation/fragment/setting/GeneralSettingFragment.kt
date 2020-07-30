@@ -7,22 +7,21 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.provider.Settings
-import com.google.android.material.snackbar.Snackbar
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.TextView
+import androidx.fragment.app.Fragment
 import com.facebook.FacebookSdk
 import com.facebook.login.LoginManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
@@ -33,6 +32,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.component.Dialog
+import com.tokopedia.design.dialog.AccessRequestDialogFragment
 import com.tokopedia.home.account.AccountConstants.Analytics.*
 import com.tokopedia.home.account.AccountHomeRouter
 import com.tokopedia.home.account.R
@@ -41,13 +41,15 @@ import com.tokopedia.home.account.constant.SettingConstant
 import com.tokopedia.home.account.constant.SettingConstant.Url.PATH_CHECKOUT_TEMPLATE
 import com.tokopedia.home.account.data.util.NotifPreference
 import com.tokopedia.home.account.di.component.DaggerAccountLogoutComponent
+import com.tokopedia.home.account.di.module.SettingsModule
 import com.tokopedia.home.account.presentation.activity.AccountSettingActivity
-import com.tokopedia.home.account.presentation.activity.SettingWebViewActivity
 import com.tokopedia.home.account.presentation.activity.StoreSettingActivity
 import com.tokopedia.home.account.presentation.activity.TkpdPaySettingActivity
 import com.tokopedia.home.account.presentation.adapter.setting.GeneralSettingAdapter
 import com.tokopedia.home.account.presentation.listener.LogoutView
+import com.tokopedia.home.account.presentation.listener.SettingOptionsView
 import com.tokopedia.home.account.presentation.presenter.LogoutPresenter
+import com.tokopedia.home.account.presentation.presenter.SettingsPresenter
 import com.tokopedia.home.account.presentation.viewmodel.SettingItemViewModel
 import com.tokopedia.home.account.presentation.viewmodel.base.SwitchSettingItemViewModel
 import com.tokopedia.navigation_common.model.WalletPref
@@ -62,12 +64,15 @@ import com.tokopedia.url.TokopediaUrl
 import java.util.*
 import javax.inject.Inject
 
-class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, GeneralSettingAdapter.SwitchSettingListener {
-
+class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, GeneralSettingAdapter.SwitchSettingListener, SettingOptionsView {
     @Inject
     internal lateinit var presenter: LogoutPresenter
     @Inject
     internal lateinit var walletPref: WalletPref
+
+    @Inject
+    internal lateinit var settingsPresenter: SettingsPresenter
+
 
     private lateinit var loadingView: View
     private lateinit var baseSettingView: View
@@ -76,6 +81,8 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
     private lateinit var permissionCheckerHelper: PermissionCheckerHelper
     private lateinit var notifPreference: NotifPreference
     private lateinit var googleSignInClient: GoogleSignInClient
+
+    private val remoteConfig by lazy { FirebaseRemoteConfigImpl(context) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -114,8 +121,11 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
         activity?.let {
             val component = DaggerAccountLogoutComponent.builder().baseAppComponent(
                     (it.application as BaseMainApplication)
-                            .baseAppComponent).build()
+                            .baseAppComponent).settingsModule(SettingsModule(activity)).build()
             component.inject(this)
+            settingsPresenter.attachView(this)
+            settingsPresenter.verifyUserAge()
+
         }
         presenter.attachView(this)
 
@@ -142,7 +152,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
                     getString(R.string.account_home_title_shop_setting), getString(R.string.account_home_subtitle_shop_setting)))
         }
 
-        val walletModel = walletPref.retrieveWallet()
+        val walletModel = try { walletPref.retrieveWallet() } catch (throwable: Throwable) { null }
         val walletName = if (walletModel != null) {
             walletModel.text + ", "
         } else {
@@ -162,6 +172,11 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
             }
         }
 
+        if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_ONE_CLICK_CHECKOUT, true)) {
+            settingItems.add(SettingItemViewModel(SettingConstant.SETTING_OCC_PREFERENCE_ID,
+                    getString(R.string.title_occ_preference_setting), getString(R.string.subtitle_occ_preference_setting)))
+        }
+
         settingItems.add(SettingItemViewModel(SettingConstant.SETTING_NOTIFICATION_ID,
                 getString(R.string.title_notification_setting), getString(R.string.subtitle_notification_setting)))
         settingItems.add(SwitchSettingItemViewModel(SettingConstant.SETTING_SHAKE_ID,
@@ -169,6 +184,12 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
         settingItems.add(SwitchSettingItemViewModel(SettingConstant.SETTING_GEOLOCATION_ID,
                 getString(R.string.title_geolocation_setting), getString(R.string.subtitle_geolocation_setting), true))
 
+        if (settingsPresenter.adultAgeVerified)
+            settingItems.add(SwitchSettingItemViewModel(SettingConstant.SETTING_SAFE_SEARCH_ID,
+                    getString(R.string.title_safe_mode_setting), getString(R.string.subtitle_safe_mode_setting), true))
+
+        settingItems.add(SettingItemViewModel(SettingConstant.SETTING_ABOUT_US,
+                getString(R.string.title_about_us)))
         settingItems.add(SettingItemViewModel(SettingConstant.SETTING_TNC_ID,
                 getString(R.string.title_tnc_setting)))
         settingItems.add(SettingItemViewModel(SettingConstant.SETTING_PRIVACY_ID,
@@ -220,11 +241,19 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
             }
             SettingConstant.SETTING_TNC_ID -> {
                 accountAnalytics.eventClickSetting(TERM_CONDITION)
-                gotoWebviewActivity(SettingConstant.Url.PATH_TERM_CONDITION, getString(R.string.title_tnc_setting))
+                RouteManager.route(activity, SettingConstant.Url.BASE_WEBVIEW_APPLINK + SettingConstant.Url.BASE_MOBILE + SettingConstant.Url.PATH_TERM_CONDITION)
+            }
+            SettingConstant.SETTING_ABOUT_US -> {
+                accountAnalytics.eventClickSetting(ABOUT_US)
+                RouteManager.getIntent(activity, SettingConstant.Url.BASE_WEBVIEW_APPLINK
+                        + SettingConstant.Url.BASE_MOBILE
+                        + SettingConstant.Url.PATH_ABOUT_US).run {
+                    startActivity(this)
+                }
             }
             SettingConstant.SETTING_PRIVACY_ID -> {
                 accountAnalytics.eventClickSetting(PRIVACY_POLICY)
-                gotoWebviewActivity(SettingConstant.Url.PATH_PRIVACY_POLICY, getString(R.string.title_privacy_setting))
+                RouteManager.route(activity, SettingConstant.Url.BASE_WEBVIEW_APPLINK + SettingConstant.Url.BASE_MOBILE + SettingConstant.Url.PATH_PRIVACY_POLICY)
             }
             SettingConstant.SETTING_APP_REVIEW_ID -> {
                 accountAnalytics.eventClickSetting(APPLICATION_REVIEW)
@@ -245,6 +274,9 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
             SettingConstant.SETTING_DEV_OPTIONS -> if (GlobalConfig.isAllowDebuggingTools()) {
                 accountAnalytics.eventClickSetting(DEVELOPER_OPTIONS)
                 RouteManager.route(activity, ApplinkConst.DEVELOPER_OPTIONS)
+            }
+            SettingConstant.SETTING_OCC_PREFERENCE_ID -> {
+                RouteManager.route(context, ApplinkConstInternalMarketplace.PREFERENCE_LIST)
             }
             else -> {
             }
@@ -349,6 +381,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
         when (settingId) {
             SettingConstant.SETTING_SHAKE_ID -> return isItemSelected(getString(R.string.pref_receive_shake), true)
             SettingConstant.SETTING_GEOLOCATION_ID -> return hasLocationPermission()
+            SettingConstant.SETTING_SAFE_SEARCH_ID -> return isItemSelected(getString(R.string.pref_safe_mode), false)
             else -> return false
         }
     }
@@ -359,6 +392,8 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
                 accountAnalytics.eventClickSetting(SHAKE_SHAKE)
                 saveSettingValue(getString(R.string.pref_receive_shake), value)
             }
+            SettingConstant.SETTING_SAFE_SEARCH_ID ->
+                    accountAnalytics.eventClickSetting(SAFE_MODE)
             else -> {
             }
         }
@@ -368,6 +403,9 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
     override fun onClicked(settingId: Int, currentValue: Boolean) {
         when (settingId) {
             SettingConstant.SETTING_GEOLOCATION_ID -> createAndShowLocationAlertDialog(currentValue)
+            SettingConstant.SETTING_SAFE_SEARCH_ID ->
+                    createAndShowSafeModeAlertDialog(currentValue)
+
         }
     }
 
@@ -379,18 +417,6 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
     private fun isItemSelected(key: String, defaultValue: Boolean): Boolean {
         val settings = PreferenceManager.getDefaultSharedPreferences(activity)
         return settings.getBoolean(key, defaultValue)
-    }
-
-    private fun gotoWebviewActivity(path: String, title: String) {
-        val intent: Intent
-        val url = String.format("%s%s", SettingConstant.Url.BASE_MOBILE, path)
-        if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            intent = SettingWebViewActivity.createIntent(activity, url, title)
-        } else {
-            intent = Intent(Intent.ACTION_VIEW)
-            intent.data = Uri.parse(url)
-        }
-        startActivity(intent)
     }
 
     private fun goToApplicationDetailActivity() {
@@ -452,6 +478,27 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
         dialog.show()
     }
 
+
+    private fun createAndShowSafeModeAlertDialog(currentValue: Boolean) {
+        var dialogTitleMsg = getString(R.string.account_home_safe_mode_selected_dialog_title)
+        var dialogBodyMsg = getString(R.string.account_home_safe_mode_selected_dialog_msg)
+        var dialogPositiveButton = getString(R.string.account_home_safe_mode_selected_dialog_positive_button)
+        val dialogNegativeButton = getString(R.string.account_home_label_cancel)
+
+        if (currentValue) {
+            dialogTitleMsg = getString(R.string.account_home_safe_mode_unselected_dialog_title)
+            dialogBodyMsg = getString(R.string.account_home_safe_mode_unselected_dialog_msg)
+            dialogPositiveButton = getString(R.string.account_home_safe_mode_unselected_dialog_positive_button)
+        }
+
+        val accessDialog = AccessRequestDialogFragment.newInstance()
+        accessDialog.setTitle(dialogTitleMsg)
+        accessDialog.setBodyText(dialogBodyMsg)
+        accessDialog.setPositiveButton(dialogPositiveButton)
+        accessDialog.setNegativeButton(dialogNegativeButton)
+        accessDialog.show(activity!!.supportFragmentManager, AccessRequestDialogFragment.TAG)
+    }
+
     private fun isGoogleAccount(): Boolean {
         val acct = GoogleSignIn.getLastSignedInAccount(context!!)
         return acct != null
@@ -467,5 +514,21 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
         }
 
         private val TAG = GeneralSettingFragment::class.java.simpleName
+    }
+
+    override fun refreshSafeSearchOption() {
+        if (adapter != null)
+            adapter.updateSettingItem(SettingConstant.SETTING_SAFE_SEARCH_ID)
+    }
+
+    override fun refreshSettingOptionsList() {
+        if (adapter != null) {
+            adapter.setSettingItems(settingItems)
+            adapter.notifyDataSetChanged()
+        }
+    }
+
+    fun onClickAcceptButton() {
+        settingsPresenter.onClickAcceptButton()
     }
 }

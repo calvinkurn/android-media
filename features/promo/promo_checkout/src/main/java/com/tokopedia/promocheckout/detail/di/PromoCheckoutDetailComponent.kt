@@ -1,10 +1,8 @@
 package com.tokopedia.promocheckout.detail.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.promocheckout.detail.view.fragment.CheckoutCatalogDetailFragment
-import com.tokopedia.promocheckout.detail.view.fragment.PromoCheckoutDetailDigitalFragment
-import com.tokopedia.promocheckout.detail.view.fragment.PromoCheckoutDetailFlightFragment
-import com.tokopedia.promocheckout.detail.view.fragment.PromoCheckoutDetailMarketplaceFragment
+import com.tokopedia.promocheckout.detail.view.fragment.*
+import com.tokopedia.user.session.UserSession
 import dagger.Component
 
 @PromoCheckoutDetailScope
@@ -14,4 +12,8 @@ interface PromoCheckoutDetailComponent{
     fun inject(promoCheckoutDetailDigitalFragment: PromoCheckoutDetailDigitalFragment)
     fun inject(checkoutDetailDigitalFragment: CheckoutCatalogDetailFragment)
     fun inject(promoCheckoutDetailFlightFragment: PromoCheckoutDetailFlightFragment)
+    fun inject(promoCheckoutDetailHotelFragment: PromoCheckoutDetailHotelFragment)
+    fun inject(promoCheckoutDetailEventFragment: PromoCheckoutDetailEventFragment)
+
+    fun userSession(): UserSession
 }

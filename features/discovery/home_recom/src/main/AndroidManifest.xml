@@ -7,28 +7,18 @@
             android:label="@string/recom_home_recommendation"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
-            <intent-filter android:autoVerify="true">
+            <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
                 <data
-                        android:scheme="@string/tokopedia_scheme"
-                        android:host="@string/recom_global_applink"
-                        android:pathPattern=".*"/>
-                <data
                         android:scheme="@string/internal_scheme"
                         android:host="@string/host_home"
                         android:pathPattern="@string/path_global_home_recommendation_domain"/>
-
-                <data
-                        android:scheme="@string/tokopedia_scheme"
-                        android:host="@string/recom_global_applink"
-                        android:pathPattern="/.*/d/.*"/>
-
                 <data
                         android:scheme="@string/internal_scheme"
                         android:host="@string/host_home"
-                        android:pathPattern="@string/path_global_similar_product_domain"/>
+                        android:pathPattern="/rekomendasi"/>
             </intent-filter>
         </activity>
     </application>

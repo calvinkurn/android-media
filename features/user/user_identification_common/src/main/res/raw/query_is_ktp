@@ -1,0 +1,7 @@
+ query is_ktp($image: String!, $id: String, $src: String) {
+    ocrIsKTP(base64Image: $image, identifier: $id, source: $src) {
+        isKTP
+        bypass
+        error
+    }
+ }

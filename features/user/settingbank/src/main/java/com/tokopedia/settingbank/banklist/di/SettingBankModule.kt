@@ -1,15 +1,14 @@
 package com.tokopedia.settingbank.banklist.di
 
+import android.app.Activity
 import android.content.Context
-import com.readystatesoftware.chuck.ChuckInterceptor
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor
-import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.DebugInterceptor
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
-import com.tokopedia.settingbank.addeditaccount.di.AddEditAccountScope
 import com.tokopedia.settingbank.banklist.data.SettingBankApi
 import com.tokopedia.settingbank.banklist.data.SettingBankUrl
 import com.tokopedia.user.session.UserSession
@@ -27,12 +26,20 @@ import retrofit2.Retrofit
 
 @SettingBankScope
 @Module
-class SettingBankModule{
+open class SettingBankModule(val activity: Activity) {
+
+    @Provides
+    fun getContext(): Context = activity
 
     @SettingBankScope
     @Provides
     fun provideSettingBankRetrofit(retrofitBuilder: Retrofit.Builder,
                                    okHttpClient: OkHttpClient): Retrofit{
+        return realprovideSettingBankRetrofit(retrofitBuilder, okHttpClient)
+    }
+
+    open fun realprovideSettingBankRetrofit(retrofitBuilder: Retrofit.Builder,
+                                            okHttpClient: OkHttpClient): Retrofit{
         return retrofitBuilder.baseUrl(SettingBankUrl.BASE_URL).client(okHttpClient).build()
     }
 
@@ -44,19 +51,19 @@ class SettingBankModule{
 
     @SettingBankScope
     @Provides
-    fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
+    fun provideUserSession(context: Context): UserSessionInterface {
         return UserSession(context)
     }
 
     @SettingBankScope
     @Provides
-    fun provideNetworkRouter(@ApplicationContext context: Context): NetworkRouter {
-        return (context as NetworkRouter)
+    fun provideNetworkRouter(context: Context): NetworkRouter {
+        return (context.applicationContext as NetworkRouter)
     }
 
     @SettingBankScope
     @Provides
-    fun provideTkpdAuthInterceptor(@ApplicationContext context: Context,
+    fun provideTkpdAuthInterceptor(context: Context,
                                    networkRouter: NetworkRouter,
                                    userSession: UserSessionInterface)
             : TkpdAuthInterceptor = TkpdAuthInterceptor(context, networkRouter, userSession)
@@ -64,13 +71,15 @@ class SettingBankModule{
     @SettingBankScope
     @Provides
     fun provideFingerprintInterceptor(networkRouter: NetworkRouter, userSession: UserSessionInterface)
-            : FingerprintInterceptor =  FingerprintInterceptor(networkRouter, userSession)
+            : FingerprintInterceptor =  realProvideFingerprintInterceptor(networkRouter, userSession)
 
+    open fun realProvideFingerprintInterceptor(networkRouter: NetworkRouter, userSession: UserSessionInterface)
+            : FingerprintInterceptor =  FingerprintInterceptor(networkRouter, userSession)
 
     @SettingBankScope
     @Provides
-    fun provideChuckInterceptor(@ApplicationContext context: Context): ChuckInterceptor
-            = ChuckInterceptor(context)
+    fun provideChuckerInterceptor(context: Context): ChuckerInterceptor
+            = ChuckerInterceptor(context)
 
     @SettingBankScope
     @Provides
@@ -81,7 +90,7 @@ class SettingBankModule{
     fun provideOkHttpClient(fingerprintInterceptor: FingerprintInterceptor,
                             tkpdAuthInterceptor: TkpdAuthInterceptor,
                             headerErrorResponseInterceptor: HeaderErrorResponseInterceptor,
-                            chuckInterceptor: ChuckInterceptor,
+                            chuckInterceptor: ChuckerInterceptor,
                             debugInterceptor: DebugInterceptor,
                             httpLoggingInterceptor: HttpLoggingInterceptor): OkHttpClient{
         val builder = OkHttpClient.Builder()

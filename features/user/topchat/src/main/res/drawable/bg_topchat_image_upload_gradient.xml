@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+
+    <gradient
+        android:angle="135"
+        android:centerColor="#00eeeeee"
+        android:centerX="30%"
+        android:endColor="#00eeeeee"
+        android:startColor="#50000000"
+        android:type="linear" />
+
+    <stroke
+        android:width="@dimen/dp_topchat_1"
+        android:color="@color/Neutral_N75" />
+
+    <corners android:radius="@dimen/dp_topchat_20" />
+</shape>

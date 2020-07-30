@@ -1,0 +1,11 @@
+query topadsStatisticsEstimationAttribute($shopId: String!,$type: Int!,$source:String!){
+   topadsStatisticsEstimationAttribute(shopID:$shopId,type: $type,source:$source) {
+    data {
+      type
+      lowImpMultiplier
+      highImpMultiplier
+      lowClickDivider
+      highClickDivider
+    }
+  }
+}

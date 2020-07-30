@@ -2,7 +2,7 @@ package com.tokopedia.product.manage.item.video.view.listener
 
 import android.content.Context
 import com.tokopedia.abstraction.base.view.listener.CustomerView
-import com.tokopedia.product.manage.item.video.domain.model.youtube.YoutubeVideoModel
+import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
 import java.util.ArrayList
 
 interface ProductAddVideoView : CustomerView {
@@ -11,11 +11,11 @@ interface ProductAddVideoView : CustomerView {
 
     fun addVideoIDfromURL(videoID: String)
 
-    fun onSuccessGetYoutubeDataVideoRecommendation(youtubeVideoModelArrayList: ArrayList<YoutubeVideoModel>)
+    fun onSuccessGetYoutubeDataVideoRecommendation(youtubeVideoModelArrayList: ArrayList<YoutubeVideoDetailModel>)
 
-    fun onSuccessGetYoutubeDataVideoChosen(youtubeVideoModelArrayList: ArrayList<YoutubeVideoModel>)
+    fun onSuccessGetYoutubeDataVideoChosen(youtubeVideoModelArrayList: ArrayList<YoutubeVideoDetailModel>)
 
-    fun onSuccessGetYoutubeDataVideoUrl(youtubeVideoModel: YoutubeVideoModel)
+    fun onSuccessGetYoutubeDataVideoUrl(youtubeVideoModel: YoutubeVideoDetailModel)
 
     fun onErrorGetVideoData(e: Throwable)
 

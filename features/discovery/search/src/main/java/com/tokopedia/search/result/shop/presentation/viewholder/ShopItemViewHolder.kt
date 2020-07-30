@@ -11,8 +11,6 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.gm.resource.GMConstant
 import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.productcard.utils.doIfVisible
-import com.tokopedia.productcard.utils.isNullOrNotVisible
 import com.tokopedia.search.R
 import com.tokopedia.search.result.shop.presentation.listener.ShopListener
 import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
@@ -335,5 +333,13 @@ internal class ShopItemViewHolder(
 
     private fun getDimensionPixelSize(@DimenRes id: Int): Int {
         return context.resources.getDimensionPixelSize(id)
+    }
+
+    private val View?.isNullOrNotVisible: Boolean
+        get() = this == null || !this.isVisible
+    private fun View.doIfVisible(action: (View) -> Unit) {
+        if(this.isVisible) {
+            action(this)
+        }
     }
 }

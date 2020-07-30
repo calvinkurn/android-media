@@ -7,5 +7,12 @@
     <color name="search_layover_bg">#baa0a7be</color>
     <color name="white_four">#e0e0e0</color>
     <color name="grey_400">#bdbdbd</color>
+    <color name="edit_text_color">#f531353b</color>
+    <color name="edit_text_color_hint">#7031353b</color>
+
+    <color name="charcoal_grey_44">#7031353b</color>
+    <color name="charcoal_grey_96">#f531353b</color>
+    <color name="initial_state_clear_all">#ef144a</color>
+    <color name="initial_state_refresh">#03ac0e</color>
 
 </resources>

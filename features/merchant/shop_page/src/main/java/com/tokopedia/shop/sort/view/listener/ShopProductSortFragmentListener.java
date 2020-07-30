@@ -5,5 +5,5 @@ package com.tokopedia.shop.sort.view.listener;
  */
 
 public interface ShopProductSortFragmentListener {
-    void select(String sortId, String sortName);
+    void select(String sortId, String sortValue, String name);
 }

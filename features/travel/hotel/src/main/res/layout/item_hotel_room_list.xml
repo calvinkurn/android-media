@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/layout_lvl2"
+    android:layout_marginLeft="@dimen/layout_lvl2"
+    android:layout_marginTop="@dimen/layout_lvl1"
+    android:layout_marginEnd="@dimen/layout_lvl2"
+    android:layout_marginRight="@dimen/layout_lvl2"
+    android:layout_marginBottom="@dimen/layout_lvl1"
+    app:cardBackgroundColor="@color/Neutral_N0"
+    app:cardCornerRadius="@dimen/layout_lvl1"
+    app:cardElevation="@dimen/hotel_3dp"
+    app:cardPreventCornerOverlap="false">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.tokopedia.hotel.roomlist.widget.ImageViewPager
+            android:id="@+id/room_image_view_pager"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/hotel_room_list_image_height"
+            android:background="@color/colorGray"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <include
+            android:id="@+id/room_full_layout"
+            layout="@layout/item_hotel_room_full"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/room_image_view_pager"
+            app:layout_constraintTop_toTopOf="@+id/room_image_view_pager" />
+
+        <LinearLayout
+            android:id="@+id/room_description_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/hotel_12dp"
+            app:layout_constraintTop_toBottomOf="@+id/room_image_view_pager">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/room_meta_info_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/hotel_12dp">
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/room_name_text_view"
+                    android:layout_width="@dimen/layout_lvl0"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:lines="1"
+                    android:textColor="@color/Neutral_N700_96"
+                    app:layout_constraintEnd_toStartOf="@+id/arrow_right"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toLeftOf="@+id/arrow_right"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:typographyType="body_2"
+                    app:typographyWeight="bold"
+                    tools:text="Kamar International Deluxe Double Bed Kamar International Deluxe Double Bed " />
+
+                <ImageView
+                    android:id="@+id/arrow_right"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/hotel_6dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/room_name_text_view"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/room_name_text_view"
+                    app:srcCompat="@drawable/ic_arrow_right_grey" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/max_occupancy_text_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/hotel_10dp"
+                    android:textColor="@color/Neutral_N700_68"
+                    app:layout_constraintTop_toBottomOf="@+id/room_name_text_view"
+                    app:typographyType="body_3"
+                    tools:text="Maksimum: 2 dewasa, 1 anak" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/bed_info_text_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/hotel_3dp"
+                    android:textColor="@color/Neutral_N700_68"
+                    app:layout_constraintTop_toBottomOf="@+id/max_occupancy_text_view"
+                    app:typographyType="body_3"
+                    tools:text="27 m² • 1 super-king atau 2 single" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <View
+                android:id="@+id/seperator"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="@dimen/layout_lvl1"
+                android:background="@drawable/bg_hotel_line_seperator"
+                app:layout_constraintTop_toBottomOf="@+id/room_meta_info_layout" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/room_info_and_facility_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="@dimen/hotel_12dp"
+                android:paddingLeft="@dimen/hotel_12dp"
+                android:paddingTop="@dimen/layout_lvl1"
+                android:paddingEnd="@dimen/hotel_12dp"
+                android:paddingRight="@dimen/hotel_12dp"
+                android:paddingBottom="@dimen/hotel_12dp"
+                app:layout_constraintTop_toBottomOf="@+id/seperator">
+
+                <LinearLayout
+                    android:id="@+id/room_facility_recycler_view"
+                    android:layout_width="@dimen/layout_lvl0"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="@dimen/hotel_12dp"
+                    android:layout_marginRight="@dimen/hotel_12dp"
+                    android:orientation="vertical"
+                    app:layout_constraintEnd_toStartOf="@+id/room_info_layout"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:layout_height="100dp"
+                    tools:minWidth="@dimen/dp_100" />
+
+                <LinearLayout
+                    android:id="@+id/room_info_layout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/layout_lvl1"
+                    android:gravity="end"
+                    android:orientation="vertical"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/room_list_tagging_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/layout_lvl1"
+                        android:layout_marginLeft="@dimen/layout_lvl1"
+                        android:layout_marginBottom="@dimen/spacing_lvl2"
+                        android:background="@drawable/bg_hotel_property_tag"
+                        android:ellipsize="end"
+                        android:gravity="center"
+                        android:lines="1"
+                        android:maxLines="1"
+                        android:paddingLeft="@dimen/spacing_lvl2"
+                        android:paddingTop="@dimen/spacing_lvl1"
+                        android:paddingRight="@dimen/spacing_lvl2"
+                        android:paddingBottom="@dimen/spacing_lvl1"
+                        android:singleLine="true"
+                        android:textColor="@color/Red_R400"
+                        android:visibility="gone"
+                        app:typographyType="small"
+                        app:typographyWeight="bold"
+                        tools:text="yayayayaaaaaaaaaa lalala yeyeyea"
+                        tools:visibility="visible" />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/room_list_slash_price_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/Neutral_N700_44"
+                        android:visibility="gone"
+                        app:typographyType="body_3"
+                        tools:text="Rp 500.000"
+                        tools:visibility="visible" />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/room_price_text_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/Neutral_N700_96"
+                        app:typographyType="body_2"
+                        app:typographyWeight="bold"
+                        tools:text="Rp 50.000.000"
+                        tools:textSize="@dimen/sp_16"
+                        tools:textStyle="bold" />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/per_room_text_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_lvl2"
+                        android:text="@string/hotel_room_list_per_room_per_night"
+                        android:textColor="@color/Neutral_N700_68"
+                        app:typographyType="small" />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/include_tax_text_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/hotel_room_list_include_tax"
+                        android:textColor="@color/Neutral_N700_68"
+                        app:typographyType="small" />
+
+                </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/hotel_12dp"
+                android:layout_marginEnd="@dimen/hotel_12dp"
+                android:layout_marginRight="@dimen/hotel_12dp"
+                android:layout_marginBottom="8dp"
+                app:layout_constraintTop_toBottomOf="@+id/room_info_and_facility_layout">
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/room_left_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/Red_R500"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:typographyType="body_3"
+                    tools:visibility="gone" />
+
+                <com.tokopedia.unifycomponents.UnifyButton
+                    android:id="@+id/choose_room_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/layout_lvl1"
+                    android:paddingLeft="@dimen/layout_lvl3"
+                    android:paddingRight="@dimen/layout_lvl3"
+                    android:text="@string/hotel_room_list_choose_room_button"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/room_left_text_view"
+                    app:unifyButtonSize="medium"
+                    app:unifyButtonType="transaction"
+                    app:unifyButtonVariant="filled"
+                    tools:gravity="center_vertical" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/pay_hotel_layout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent">
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/pay_hotel_text_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/hotel_room_list_pay_in_hotel"
+                        android:textColor="@color/Neutral_N700_96"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:typographyType="body_2"
+                        app:typographyWeight="bold" />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/cc_not_required_text_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginRight="8dp"
+                        android:text="@string/hotel_room_list_without_credit_card"
+                        android:textColor="@color/Neutral_N700_68"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/pay_hotel_text_view"
+                        app:typographyType="small" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

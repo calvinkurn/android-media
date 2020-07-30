@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="1dp"
+    android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/fpm_text_name"
+            style="@style/TextView.Title.Bold"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="EventName" />
+
+        <TextView
+            android:id="@+id/fpm_text_duration"
+            style="@style/TextView.Small"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="eventCategory" />
+
+        <TextView
+            android:id="@+id/fpm_text_metrics"
+            style="@style/TextView.Micro.BlackDisabled"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="{ dadfa:sdfasdfas...." />
+
+        <TextView
+            android:id="@+id/fpm_text_attributes"
+            style="@style/TextView.Micro.BlackDisabled"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="{ dadfa:sdfasdfas...." />
+
+        <TextView
+            android:id="@+id/fpm_text_timestamp"
+            style="@style/TextView.Micro.Bold"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_5"
+            tools:text="2018-01-01 01:01:01.000" />
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

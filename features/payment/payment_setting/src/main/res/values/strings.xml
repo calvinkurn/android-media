@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">payment_setting</string>
+    <string name="payment_setting_app_name">payment_setting</string>
     <string name="payment_label_auth_credit_card">Verifikasi Kartu Kredit</string>
     <string name="payment_label_saved_card">Kartu Kredit / Debit Online Tersimpan (%1$d/4)</string>
     <string name="payment_label_button_add_card">Tambah Kartu</string>
@@ -22,4 +22,5 @@
     <string name="payment_label_desc_dialog_verif">Untuk mengubah pengaturan verifikasi Anda harus melakukan verifikasi nomor ponsel terlebih dahulu</string>
     <string name="payment_label_continue_dialog_verif">Lanjutkan</string>
     <string name="payment_label_cancel_dialog_verif">Batal</string>
+    <string name="payment_label_coba_lagi">Coba Lagi</string>
 </resources>

@@ -2,16 +2,12 @@ package com.tokopedia.core.gcm;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Build;
-import androidx.core.util.Preconditions;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.common.api.GoogleApiActivity;
-import com.tkpd.library.utils.legacy.CommonUtils;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.gcm.data.RegisterDeviceInteractor;
 import com.tokopedia.core.gcm.model.DeviceRegistrationDataResponse;
@@ -37,14 +33,14 @@ public class GCMHandler {
         return FCMCacheManager.getRegistrationId(context);
     }
 
-    public void actionRegisterOrUpdateDevice(GCMHandlerListener listener) {
+    public void actionRegisterOrUpdateDevice(GCMHandlerListener listener, boolean isPlayServiceAvailable) {
         if (listener != null) {
             gcmlistener = listener;
         } else {
             return;
         }
 
-        if (isPlayServicesAvailable()) {
+        if (isPlayServiceAvailable) {
             registerDeviceToFCM();
         } else {
             Log.d(TAG, " Play services not available");
@@ -53,7 +49,7 @@ public class GCMHandler {
 
     private void registerDeviceToFCM() {
         regid = getRegistrationId(context);
-        CommonUtils.dumper(TAG + "start FCM get");
+        Timber.d(TAG + "start FCM get");
         if (TextUtils.isEmpty(regid)) {
             final RegisterDeviceInteractor interactor = new RegisterDeviceInteractor(context);
             interactor.registerDevice(new Subscriber<DeviceRegistrationDataResponse>() {
@@ -93,12 +89,14 @@ public class GCMHandler {
         int result = googleAPI.isGooglePlayServicesAvailable(activity);
         if (result != ConnectionResult.SUCCESS) {
             if (googleAPI.isUserResolvableError(result)) {
-                googleAPI.getErrorDialog(activity, result,
+                if(!activity.isFinishing()){
+                    googleAPI.getErrorDialog(activity, result,
                         PLAY_SERVICES_RESOLUTION_REQUEST, dialog -> {
                             Timber.w("P2#PLAY_SERVICE_ERROR#User Have Problems with Google Play Service | " + Build.FINGERPRINT+" | "+  Build.MANUFACTURER + " | "
                                     + Build.BRAND + " | "+Build.DEVICE+" | "+Build.PRODUCT+ " | "+Build.MODEL
                                     + " | "+Build.TAGS);
                         }).show();
+                }
             }
 
             return false;

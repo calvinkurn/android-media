@@ -1,8 +1,8 @@
 package com.tokopedia.shop.address.view.mapper;
 
 import com.tokopedia.shop.address.view.model.ShopAddressViewModel;
-import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfoAddress;
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,17 +21,15 @@ public class ShopAddressViewModelMapper {
 
     public List<ShopAddressViewModel> transform(ShopInfo shopInfo) {
         List<ShopAddressViewModel> visitableList = new ArrayList<>();
-        for (ShopInfoAddress shopInfoAddress : shopInfo.getAddress()) {
-            ShopAddressViewModel shopAddressViewModel = new ShopAddressViewModel();
-            shopAddressViewModel.setId(shopInfoAddress.getLocationAddressId());
-            shopAddressViewModel.setName(shopInfoAddress.getLocationAddressName());
-            shopAddressViewModel.setContent(shopInfoAddress.getLocationAddress());
-            shopAddressViewModel.setArea(shopInfoAddress.getLocationArea());
-            shopAddressViewModel.setEmail(shopInfoAddress.getLocationEmail());
-            shopAddressViewModel.setPhone(shopInfoAddress.getLocationPhone());
-            shopAddressViewModel.setFax(shopInfoAddress.getLocationFax());
-            visitableList.add(shopAddressViewModel);
-        }
+        ShopAddressViewModel shopAddressViewModel = new ShopAddressViewModel();
+        shopAddressViewModel.setId(shopInfo.getAddressData().getId());
+        shopAddressViewModel.setName(shopInfo.getAddressData().getName());
+        shopAddressViewModel.setContent(shopInfo.getAddressData().getAddress());
+        shopAddressViewModel.setArea(shopInfo.getAddressData().getArea());
+        shopAddressViewModel.setEmail(shopInfo.getAddressData().getEmail());
+        shopAddressViewModel.setPhone(shopInfo.getAddressData().getPhone());
+        shopAddressViewModel.setFax(shopInfo.getAddressData().getFax());
+        visitableList.add(shopAddressViewModel);
         return visitableList;
     }
 }

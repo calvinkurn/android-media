@@ -42,7 +42,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_weight="1"
             tools:itemCount="2"
-            tools:listitem="@layout/kol_post_layout" />
+        />
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
     <com.tokopedia.feedcomponent.view.widget.CreatePostFabView

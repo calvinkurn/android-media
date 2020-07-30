@@ -5,16 +5,18 @@ import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.net.ConnectivityManager
 import android.os.Build
 import android.text.Html
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.TextUtils
+import android.util.DisplayMetrics
 import android.util.Log
-import com.tokopedia.abstraction.common.utils.view.CommonUtils
 import com.tokopedia.notifications.model.BaseNotificationModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.net.MalformedURLException
 import java.net.UnknownHostException
 import java.util.*
@@ -95,7 +97,7 @@ object CMNotificationUtils {
     fun mapTokenWithAppVersionRequired(context: Context, appVersionName: String): Boolean {
         val cacheHandler = CMNotificationCacheHandler(context)
         val oldAppVersionName = cacheHandler.getStringValue(CMConstant.APP_VERSION_CACHE_KEY)
-        CommonUtils.dumper("CMUser-APP_VERSION$oldAppVersionName#new-$appVersionName")
+        Timber.d("CMUser-APP_VERSION$oldAppVersionName#new-$appVersionName")
         return if (TextUtils.isEmpty(oldAppVersionName))
             true
         else if (oldAppVersionName.equals(appVersionName, ignoreCase = true)) {
@@ -164,12 +166,16 @@ object CMNotificationUtils {
             inputStream?.close()
         } catch (e: OutOfMemoryError) {
             Log.e(TAG, String.format("Out of Memory Error in image bitmap download for Url: %s.", imageUrl))
+            return null
         } catch (e: UnknownHostException) {
             Log.e(TAG, String.format("Unknown Host Exception in image bitmap download for Url: %s. Device " + "may be offline.", imageUrl))
+            return null
         } catch (e: MalformedURLException) {
             Log.e(TAG, String.format("Malformed URL Exception in image bitmap download for Url: %s. Image " + "Url may be corrupted.", imageUrl))
+            return null
         } catch (e: Exception) {
             Log.e(TAG, String.format("Exception in image bitmap download for Url: %s", imageUrl))
+            return null
         }
 
         return bitmap
@@ -196,6 +202,9 @@ object CMNotificationUtils {
 
     }
 
+    fun getPXtoDP(context: Context, dip: Float) = dip * (context.resources.displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
+
+
     fun getApplicationName(context: Context?): String {
         var appName = ""
         if (context != null) {
@@ -210,6 +219,12 @@ object CMNotificationUtils {
             }
         }
         return appName
+    }
+
+    fun isNetworkAvailable(context: Context): Boolean {
+        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val activeNetworkInfo = connectivityManager.activeNetworkInfo
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected
     }
 }
 

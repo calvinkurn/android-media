@@ -25,7 +25,7 @@ public class LinkerManager {
         this.context = context;
     }
 
-    public static void initLinkerManager(Context context){
+    public static LinkerManager initLinkerManager(Context context){
         if(linkerManager == null){
             synchronized (LinkerManager.class){
                 if(linkerManager == null) {
@@ -34,6 +34,7 @@ public class LinkerManager {
                 }
             }
         }
+        return linkerManager;
     }
 
     public static LinkerManager getInstance(){
@@ -78,5 +79,18 @@ public class LinkerManager {
             dd4Session = wrapperObj.getDefferedDeeplinkForSession();
         }
         return dd4Session;
+    }
+
+    public LinkerManager setGAClientId(String gaClientId){
+        if(wrapperObj != null){
+            wrapperObj.setGaClientId(gaClientId);
+        }
+        return linkerManager;
+    }
+
+    public void initSession(){
+        if(wrapperObj != null){
+            wrapperObj.initSession();
+        }
     }
 }

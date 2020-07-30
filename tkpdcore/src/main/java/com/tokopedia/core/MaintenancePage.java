@@ -13,7 +13,6 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.network.apiservices.search.HotListService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core2.R;
 
@@ -32,14 +31,6 @@ public class MaintenancePage extends Activity {
     private static String UNDER_MAINTENANCE = "UNDER_MAINTENANCE";
     private ViewHolder holder;
     private String maintenanceMessage;
-
-    public static Intent createIntentFromNetwork(Context context, String msg) {
-        Intent intent = new Intent(context, MaintenancePage.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
-        intent.putExtra(IS_NETWORK, true);
-        intent.putExtra("message", msg);
-        return intent;
-    }
 
     public static Intent createIntentFromNetwork(Context context) {
         Intent intent = new Intent(context, MaintenancePage.class);
@@ -132,7 +123,7 @@ public class MaintenancePage extends Activity {
     }
 
     private void goToIndexHome() {
-        startActivity(HomeRouter.getHomeActivityInterfaceRouter(this));
+        startActivity(((TkpdCoreRouter) getApplication()).getHomeIntent(this));
         finish();
     }
 

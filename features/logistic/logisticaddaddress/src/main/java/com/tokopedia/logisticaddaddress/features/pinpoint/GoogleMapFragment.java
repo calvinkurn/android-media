@@ -3,18 +3,11 @@ package com.tokopedia.logisticaddaddress.features.pinpoint;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import androidx.fragment.app.Fragment;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +15,13 @@ import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -37,21 +37,27 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.logisticaddaddress.R;
+import com.tokopedia.logisticaddaddress.common.AddressConstants;
 import com.tokopedia.logisticaddaddress.data.IMapsRepository;
+import com.tokopedia.logisticaddaddress.di.DaggerGeolocationComponent;
 import com.tokopedia.logisticaddaddress.di.GeolocationModule;
 import com.tokopedia.logisticaddaddress.utils.RequestPermissionUtil;
-import com.tokopedia.logisticaddaddress.di.DaggerGeolocationComponent;
+import com.tokopedia.logisticdata.data.constant.LogisticConstant;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
+import com.tokopedia.logisticdata.util.LocationHelperKt;
 import com.tokopedia.user.session.UserSession;
 
 import javax.inject.Inject;
 
+import rx.Subscriber;
 import rx.subscriptions.CompositeSubscription;
 
 
@@ -78,6 +84,7 @@ public class GoogleMapFragment extends BaseDaggerFragment implements
     private BottomSheetDialog dialog;
     private ActionBar actionBar;
     private boolean hasLocation;
+    private CompositeSubscription composite = new CompositeSubscription();
 
     MapView mapView;
     Toolbar toolbar;
@@ -85,8 +92,10 @@ public class GoogleMapFragment extends BaseDaggerFragment implements
     TextView textPointer;
     View submitPointer;
     FloatingActionButton fab;
-    @Inject GeolocationContract.GeolocationPresenter presenter;
-    @Inject UserSession mUser;
+    @Inject
+    GeolocationContract.GeolocationPresenter presenter;
+    @Inject
+    UserSession mUser;
 
     public GoogleMapFragment() {
         // Required empty public constructor
@@ -141,12 +150,18 @@ public class GoogleMapFragment extends BaseDaggerFragment implements
         submitPointer = view.findViewById(R.id.pointer_submit);
         fab = view.findViewById(R.id.fab);
 
-        submitPointer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                presenter.onSubmitPointer(getActivity());
-                analyticsGeoLocationListener.sendAnalyticsOnSetCurrentMarkerAsCurrentPosition();
+        submitPointer.setOnClickListener(view1 -> {
+            locationPass = presenter.getUpdateLocation();
+            Bundle bundle = new Bundle();
+            bundle.putParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass);
+            Intent intent = new Intent();
+            intent.putExtras(bundle);
+            intent.putExtra(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass);
+            if (getActivity() != null) {
+                getActivity().setResult(Activity.RESULT_OK, intent);
+                getActivity().finish();
             }
+            analyticsGeoLocationListener.sendAnalyticsOnSetCurrentMarkerAsCurrentPosition();
         });
 
         presenter.setUpVariables(locationPass, hasLocation);
@@ -197,6 +212,7 @@ public class GoogleMapFragment extends BaseDaggerFragment implements
         if (RequestPermissionUtil.checkHasPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)) {
             mapView.onDestroy();
         }
+        composite.unsubscribe();
         super.onDestroyView();
     }
 
@@ -249,13 +265,26 @@ public class GoogleMapFragment extends BaseDaggerFragment implements
 
     @Override
     public void initMapListener() {
-        googleMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
-            @Override
-            public void onCameraChange(CameraPosition cameraPosition) {
-                dimissKeyBoard();
-                presenter.onCameraChange(getActivity(), cameraPosition);
-            }
-        });
+        composite.add(LocationHelperKt.rxPinPoint(googleMap)
+                .subscribe(new Subscriber<Boolean>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Boolean aBoolean) {
+                        dimissKeyBoard();
+                        LatLng temp = googleMap.getCameraPosition().target;
+                        presenter.getReverseGeoCoding(
+                                String.valueOf(temp.latitude), String.valueOf(temp.longitude));
+                    }
+                }));
 
         autoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -379,19 +408,20 @@ public class GoogleMapFragment extends BaseDaggerFragment implements
     }
 
     @Override
-    public void onConnected(@Nullable Bundle bundle) {
-        presenter.onGoogleApiConnected(bundle);
+    public void setLoading(boolean active) {
+        if (active) {
+            textPointer.setText(getString(R.string.wait_generate_address));
+        }
     }
 
     @Override
-    public void onConnectionSuspended(int cause) {
-        presenter.onGoogleApiSuspended(cause);
-    }
+    public void onConnected(@Nullable Bundle bundle) { }
 
     @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        presenter.onGoogleApiFailed(connectionResult);
-    }
+    public void onConnectionSuspended(int cause) { }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) { }
 
     @Override
     public void onResult(@NonNull LocationSettingsResult locationSettingsResult) {
@@ -404,10 +434,8 @@ public class GoogleMapFragment extends BaseDaggerFragment implements
         initMapView();
         initMapListener();
 
-        //This to fulfill 4th condition when no coordinate, no district, and no GPS
-        //TODO remove this if annoys UX or inefficient fending off GPS Error
-        presenter.initDefaultLocation();
-
+        LatLng defLatLng = new LatLng(AddressConstants.DEFAULT_LAT, AddressConstants.DEFAULT_LONG);
+        moveMap(defLatLng);
         presenter.onMapReady();
     }
 

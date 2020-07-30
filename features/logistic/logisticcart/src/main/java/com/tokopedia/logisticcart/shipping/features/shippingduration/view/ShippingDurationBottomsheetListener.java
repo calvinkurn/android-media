@@ -2,8 +2,8 @@ package com.tokopedia.logisticcart.shipping.features.shippingduration.view;
 
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData;
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
-import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
-import com.tokopedia.logisticcart.shipping.model.ShippingCourierViewModel;
+import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel;
+import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 
 import java.util.List;
 
@@ -13,14 +13,14 @@ import java.util.List;
 
 public interface ShippingDurationBottomsheetListener {
 
-    void onShippingDurationChoosen(List<ShippingCourierViewModel> shippingCourierViewModels,
+    void onShippingDurationChoosen(List<ShippingCourierUiModel> shippingCourierUiModels,
                                    CourierItemData courierItemData,
                                    RecipientAddressModel recipientAddressModel,
                                    int cartPosition, int selectedServiceId,
                                    ServiceData serviceData, boolean flagNeedToSetPinpoint,
                                    boolean isDurationClick, boolean isClearPromo);
 
-    void onLogisticPromoChosen(List<ShippingCourierViewModel> shippingCourierViewModels,
+    void onLogisticPromoChosen(List<ShippingCourierUiModel> shippingCourierUiModels,
                                CourierItemData courierData,
                                RecipientAddressModel recipientAddressModel, int cartPosition,
                                ServiceData serviceData, boolean flagNeedToSetPinpoint, String promoCode, int selectedServiceId);

@@ -2,7 +2,7 @@ package com.tokopedia.core.network.retrofit.interceptors;
 
 import com.tokopedia.core.network.CoreNetworkApplication;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.user.session.UserSession;
 
 import java.text.SimpleDateFormat;

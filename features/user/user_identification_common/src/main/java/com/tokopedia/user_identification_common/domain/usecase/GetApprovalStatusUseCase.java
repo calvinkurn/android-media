@@ -76,6 +76,12 @@ public class GetApprovalStatusUseCase {
         });
     }
 
+    public static Map<String, Object> getRequestParam(int projectId) {
+        Map<String, Object> requestParams = new HashMap<>();
+        requestParams.put(PROJECT_ID, projectId > 0 ? projectId : KYCConstant.KYC_PROJECT_ID);
+        return requestParams;
+    }
+
     public static Map<String, Object> getRequestParam() {
         Map<String, Object> requestParams = new HashMap<>();
         requestParams.put(PROJECT_ID, KYCConstant.KYC_PROJECT_ID);

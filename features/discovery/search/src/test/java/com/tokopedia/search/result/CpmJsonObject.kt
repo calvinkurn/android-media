@@ -2,7 +2,7 @@ package com.tokopedia.search.result
 
 import org.json.JSONObject
 
-val cpmJsonString = """
+internal val cpmJsonString = """
   {
     "status": {
       "error_code": 0,
@@ -132,4 +132,4 @@ val notCpmShopJsonString = """
   }
 """.trimIndent().replace("\n", "")
 
-val notCpmShopJsonObject: JSONObject = JSONObject(notCpmShopJsonString)
+internal val notCpmShopJsonObject: JSONObject = JSONObject(notCpmShopJsonString)

@@ -42,14 +42,6 @@ public class TrackingUtils{
         TrackApp.getInstance().getAppsFlyer().sendTrackEvent(AppScreen.convertAFActivityEvent(tag), afValue);
     }
 
-    public static String getNetworkSpeed(Context context) {
-        if (ConnectivityUtils.isConnected(context)) {
-            return ConnectivityUtils.getConnectionType(context);
-        } else {
-            return ConnectivityUtils.CONN_UNKNOWN;
-        }
-    }
-
     public static String extractFirstSegment(Context context,String inputString, String separator) {
         String firstSegment = "";
         if (!TextUtils.isEmpty(inputString)) {
@@ -110,29 +102,6 @@ public class TrackingUtils{
                 .eventOnline(uid);
     }
 
-    /**
-     * SessionHandler.getGTMLoginID(MainApplication.getAppContext())
-     */
-    public static void eventPushUserID(Context context,String userId) {
-        TrackApp.getInstance().getGTM()
-                .pushUserId(userId);
-    }
-
-    public static void eventAppsFlyerViewListingSearch(Context context,JSONArray productsId, String keyword, ArrayList<String> prodIds) {
-        Map<String, Object> listViewEvent = new HashMap<>();
-        listViewEvent.put(AFInAppEventParameterName.CONTENT_ID, prodIds);
-        listViewEvent.put(AFInAppEventParameterName.CURRENCY, "IDR");
-        listViewEvent.put(AFInAppEventParameterName.CONTENT_TYPE, Jordan.AF_VALUE_PRODUCTTYPE);
-        listViewEvent.put(AFInAppEventParameterName.SEARCH_STRING, keyword);
-        if (productsId.length() > 0) {
-            listViewEvent.put(AFInAppEventParameterName.SUCCESS, "success");
-        } else {
-            listViewEvent.put(AFInAppEventParameterName.SUCCESS, "fail");
-        }
-
-        TrackApp.getInstance().getAppsFlyer().sendTrackEvent(AFInAppEventType.SEARCH, listViewEvent);
-    }
-
     public static void sendGTMEvent(Context context, Map<String, Object> dataLayers) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(dataLayers);
     }
@@ -148,10 +117,4 @@ public class TrackingUtils{
     public static String getAfUniqueId(Context context) {
         return TrackApp.getInstance().getAppsFlyer().getUniqueId();
     }
-
-    public static void eventTrackingEnhancedEcommerce(Context context, Map<String, Object> trackingData) {
-        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(trackingData);
-    }
-
 }
-

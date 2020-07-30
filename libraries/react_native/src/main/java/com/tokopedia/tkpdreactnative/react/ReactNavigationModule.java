@@ -4,9 +4,13 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.facebook.react.bridge.ActivityEventListener;
 import com.facebook.react.bridge.BaseActivityEventListener;
@@ -21,7 +25,9 @@ import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.design.component.Dialog;
+import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpdreactnative.R;
 import com.tokopedia.tkpdreactnative.react.app.ReactNativeView;
 import com.tokopedia.tkpdreactnative.react.fingerprint.view.FingerPrintUIHelper;
@@ -47,6 +53,8 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule implements
     private Context context;
     private ProgressDialog progressDialog;
     private Promise mNativeModulePromise;
+    private static SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor editor;
 
     public ReactNavigationModule(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -73,12 +81,21 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule implements
     }
 
     @ReactMethod
+    public void navigateV2(String appLinks, String extra) {
+        if (extra != null && !TextUtils.isEmpty(extra)) {
+            RouteManager.route(this.getCurrentActivity(), ReactUtils.convertBundle(extra), appLinks);
+        } else {
+            RouteManager.route(this.getCurrentActivity(), appLinks);
+        }
+    }
+
+    @ReactMethod
     public void navigateWithMobileUrl(String appLinks, String mobileUrl, String extra) {
         if (((ApplinkRouter) context.getApplicationContext()).isSupportApplink(appLinks)) {
             ((ApplinkRouter) context.getApplicationContext())
                     .goToApplinkActivity(this.getCurrentActivity(), appLinks, ReactUtils.convertBundle(extra));
         } else {
-            RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, mobileUrl));
+            RouteManager.route(getCurrentActivity(), String.format("%s?url=%s", ApplinkConst.WEBVIEW, mobileUrl));
         }
     }
 
@@ -134,6 +151,19 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule implements
                     promise.resolve("OK");
                 } else {
                     promise.resolve("NOT OK");
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void showAppRating() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (getCurrentActivity() != null && getCurrentActivity() instanceof ReputationRouter) {
+                    ((ReputationRouter) getCurrentActivity().getApplication())
+                            .showSimpleAppRatingDialog(getCurrentActivity());
                 }
             }
         });

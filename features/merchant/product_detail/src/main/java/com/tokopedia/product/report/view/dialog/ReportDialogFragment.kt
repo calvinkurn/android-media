@@ -1,12 +1,7 @@
 package com.tokopedia.product.report.view.dialog
 
 import android.annotation.SuppressLint
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.FragmentManager
-import androidx.core.content.ContextCompat
 import android.text.Editable
 import android.text.SpannableString
 import android.text.TextPaint
@@ -14,11 +9,15 @@ import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.view.*
 import android.widget.AdapterView
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkRouter
-import com.tokopedia.design.component.ToasterError
-import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.design.text.watcher.AfterTextWatcher
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.di.ProductDetailComponent
@@ -27,6 +26,7 @@ import com.tokopedia.product.report.model.reportType.ReportType
 import com.tokopedia.product.report.view.adapter.ReportTypeAdapter
 import com.tokopedia.product.report.view.tracking.ProductReportTracking
 import com.tokopedia.product.report.view.viewmodel.ProductReportViewModel
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_dialog_report_product.*
 import javax.inject.Inject
 
@@ -66,7 +66,7 @@ class ReportDialogFragment : DialogFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        dialog.window?.run {
+        dialog?.window?.run {
             requestFeature(Window.FEATURE_NO_TITLE)
             setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN or WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
         }
@@ -180,10 +180,9 @@ class ReportDialogFragment : DialogFragment() {
     @SuppressLint("Range")
     private fun onErrorGetReportType(throwable: Throwable) {
         activity?.run {
-            ToasterError.make(findViewById(android.R.id.content),
+            Toaster.make(findViewById(android.R.id.content),
                 ProductDetailErrorHandler.getErrorMessage(this, throwable),
-                    ToasterError.LENGTH_LONG)
-                    .show()
+                    Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
         }
         dismiss()
     }
@@ -192,10 +191,9 @@ class ReportDialogFragment : DialogFragment() {
         btnReport.isEnabled = true
         productReportTracking.eventSubmitReport()
         activity?.run {
-            ToasterNormal.make(findViewById(android.R.id.content),
+            Toaster.make(findViewById(android.R.id.content),
                     getString(R.string.thanks_for_product_report),
-                    ToasterNormal.LENGTH_LONG)
-                    .show()
+                    Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
         }
         dismiss()
     }
@@ -203,17 +201,16 @@ class ReportDialogFragment : DialogFragment() {
     @SuppressLint("Range")
     private fun onErrorReportProduct(throwable: Throwable) {
         activity?.run {
-            ToasterError.make(findViewById(android.R.id.content),
+            Toaster.make(findViewById(android.R.id.content),
                 ProductDetailErrorHandler.getErrorMessage(this, throwable),
-                    ToasterError.LENGTH_LONG)
-                    .show()
+                    Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
         }
         dismiss()
     }
 
     override fun onResume() {
-        dialog.window?.run {
-            val params = dialog.window!!.attributes
+        dialog?.window?.run {
+            val params = dialog?.window!!.attributes
             params.width = WindowManager.LayoutParams.MATCH_PARENT
             params.height = WindowManager.LayoutParams.WRAP_CONTENT
             attributes = params as WindowManager.LayoutParams
@@ -226,7 +223,7 @@ class ReportDialogFragment : DialogFragment() {
         productReportViewModel.flush()
     }
 
-    override fun show(manager: FragmentManager, tag: String) {
+    override fun show(manager: FragmentManager, tag: String?) {
         val fragment = manager.findFragmentByTag(tag)
         if (fragment != null) {
             val ft = manager.beginTransaction()

@@ -1,5 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.home.beranda.presentation.view.customview.BannerViewDynamicBackground xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/banner"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content" />
+    android:layout_height="wrap_content">
+    <com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularViewPager
+        android:id="@+id/circular_view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:autoScroll="true"
+        app:isInfinite="true"
+        app:layout_constraintDimensionRatio="4:3"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <com.tokopedia.circular_view_pager.presentation.widgets.pageIndicator.CircularPageIndicator
+        android:id="@+id/indicator_banner"
+        android:layout_width="wrap_content"
+        android:layout_height="10dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal"
+        app:circle_height="@dimen/dp_8"
+        app:circle_margin="@dimen/dp_2"
+        app:circle_width="@dimen/dp_8"
+        app:drawable="@drawable/banner_dynamic_indicator_focus"
+        app:drawable_unselected="@drawable/banner_dynamic_indicator"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/circular_view_pager"
+        tools:background="@android:color/holo_blue_bright"
+        tools:layout_height="10dp"
+        tools:layout_width="200dp" />
+    <TextView
+        android:id="@+id/see_all_promo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="8dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?attr/selectableItemBackground"
+        android:focusableInTouchMode="false"
+        android:text="@string/home_banner_see_all"
+        android:textColor="#03ac0e"
+        android:textStyle="bold"
+        android:fontFamily="sans-serif-medium"
+        android:textSize="12sp"
+        android:lineSpacingExtra="3sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/circular_view_pager"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="host_seller" translatable="false">seller</string>
+    <string name="host_order" translatable="false">order</string>
+    <!--
+        If the link is Ended with {id}, must end with "/"
+        Otherwise, do not put "/"
+    -->
+    <string name="path_new_order" translatable="false">/new-order</string>
+    <string name="path_ready_to_ship" translatable="false">/ready-to-ship</string>
+    <string name="path_shipped" translatable="false">/shipped</string>
+    <string name="path_delivered" translatable="false">/delivered</string>
+    <string name="path_history" translatable="false">/history</string>
+    <string name="path_order" translatable="false">/order</string>
+    <string name="path_track" translatable="false">/track</string>
+
+    <string name="path_cancelled" translatable="false">/cancelled</string>
+    <string name="path_waiting_pickup" translatable="false">/waiting-pickup</string>
+    <string name="path_waiting_awb" translatable="false">/waiting-awb</string>
+    <string name="path_awb_invalid" translatable="false">/awb-invalid</string>
+    <string name="path_awb_change" translatable="false">/awb-change</string>
+    <string name="path_retur" translatable="false">/retur</string>
+    <string name="path_complaint" translatable="false">/complaint</string>
+    <string name="path_finished" translatable="false">/finished</string>
+
+    <string name="path_invoice" translatable="false">/invoice</string>
+</resources>

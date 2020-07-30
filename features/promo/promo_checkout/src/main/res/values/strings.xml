@@ -6,7 +6,7 @@
     <string name="promo_label_input_promo_code">Ketik kode promo</string>
     <string name="promo_label_button_use">Gunakan</string>
     <string name="promo_title_last_seen">Promo Terakhir Dilihat</string>
-    <string name="promo_title_category">Promo untuk kategori ini</string>
+    <string name="promo_title_category">Promo Terakhir Dilihat</string>
     <string name="promo_label_promo_code">Kode Promo:</string>
     <string name="promo_label_my_coupon">Kupon Saya:</string>
     <string name="promo_title_period">Berlaku Hingga</string>
@@ -30,4 +30,10 @@
     <string name="promo_checkout_tnc"><![CDATA[Syarat & Ketentuan]]></string>
     <string name="promo_checkout_mypoint">Points Saya</string>
     <string name="promo_checkout_error_desc_redeem">Points Anda tidak terpotong.Permintaan gagal diverifikasi</string>
+    <string name="promo_phone_verification_message">Sebelum menggunakan promo ini, harap melakukan verifikasi pada nomor handphone Anda</string>
+    <string name="promo_phone_verification_desc">Sebelum menggunakan promo ini, verifikasi dulu nomor HP kamu, ya.</string>
+    <string name="promo_verifikasi_title">Ayo verifikasi nomor HP kamu!</string>
+    <string name="promo_btn_verifikasi">Verifikasi Nomor HP</string>
+    <string name="promo_phone_verification_message_v2">Kamu baru bisa pakai promo ini setelah verifikasi nomor HP.</string>
+
 </resources>

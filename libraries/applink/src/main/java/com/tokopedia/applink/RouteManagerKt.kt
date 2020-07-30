@@ -4,7 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.text.TextUtils
-import com.tokopedia.applink.constant.DeeplinkConstant.SCHEME_HTTP
+import com.tokopedia.applink.internal.ApplinkConstInternalCategory
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalOrderDetail
 
@@ -49,7 +49,7 @@ object RouteManagerKt{
             }
             DeepLinkChecker.CATEGORY -> {
                 val departmentId = getLinkSegment(url)[1]
-                RouteManager.route(activity, ApplinkConstInternalMarketplace.DISCOVERY_CATEGORY_DETAIL, departmentId)
+                RouteManager.route(activity, ApplinkConstInternalCategory.INTERNAL_CATEGORY_DETAIL, departmentId)
                 return true
             }
             DeepLinkChecker.BROWSE -> {
@@ -57,16 +57,14 @@ object RouteManagerKt{
                 return true
             }
             DeepLinkChecker.HOT -> {
-                //TODO still use className
                 return DeepLinkChecker.openHot(url, activity)
+            }
+            DeepLinkChecker.FIND -> {
+                return DeepLinkChecker.openFind(url, activity)
             }
             DeepLinkChecker.CATALOG -> {
                 //TODO still use className
                 return DeepLinkChecker.openCatalog(url, activity)
-            }
-            DeepLinkChecker.PRODUCT -> {
-                RouteManager.route(activity, url)
-                return true
             }
             DeepLinkChecker.TOKOPOINT -> {
                 // it still point to webview. no need to override
@@ -90,6 +88,9 @@ object RouteManagerKt{
             DeepLinkChecker.ORDER_LIST -> {
                 RouteManager.route(activity, ApplinkConstInternalOrderDetail.ORDER_LIST_URL, url)
                 return true
+            }
+            DeepLinkChecker.TRAVEL_HOMEPAGE -> {
+                return RouteManager.route(activity, url)
             }
         }
         return false

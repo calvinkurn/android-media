@@ -12,12 +12,14 @@ public interface KYCConstant {
     String UNHANDLED_RESPONSE = "1005";
 
     int KYC_PROJECT_ID = 1;
+    int MERCHANT_KYC_PROJECT_ID = 10;
 
     String EXTRA_STRING_IMAGE_RESULT = "image_result";
 
     int REQUEST_CODE_CAMERA_KTP = 1010;
     int REQUEST_CODE_CAMERA_FACE = 2020;
 
+    int STATUS_DEFAULT = -3;
     int STATUS_ERROR = -2;
     int STATUS_REJECTED = -1;
     int STATUS_PENDING = 0;
@@ -34,8 +36,20 @@ public interface KYCConstant {
 
     int IS_FILE_IMAGE_NOT_EXIST = -7;
 
+    int NOT_SUPPORT_LIVENESS = -9;
+
+    int IS_FILE_LIVENESS_IMAGE_NOT_EXIST = -11;
+
     String PARAM_KYC_SRC = "source";
     String VALUE_KYC_SRC_SELLER = "seller";
     String EXTRA_IS_SOURCE_SELLER = "source_seller";
+    String PARAM_PROJECT_ID = "projectId";
 
+    int KTP_RETAKE = 1;
+    int FACE_RETAKE = 2;
+
+    int USER_EXIT = -9;
+
+    String KYC_OVERLAY_COLOR = "#ae000000";
+    String KYC_AB_KEYWORD = "Liveness Detection 2";
 }

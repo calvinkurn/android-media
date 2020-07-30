@@ -5,8 +5,6 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
-import androidx.appcompat.app.AlertDialog;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -14,7 +12,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
 
-import com.tkpd.library.utils.CommonUtils;
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.Fragment;
+
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.seller.common.widget.LabelSwitch;
 import com.tokopedia.seller.common.widget.LabelView;
@@ -29,6 +29,7 @@ import com.tokopedia.topads.dashboard.view.listener.TopAdsDetailViewListener;
 import com.tokopedia.topads.dashboard.view.model.Ad;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailViewPresenter;
 
+import timber.log.Timber;
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -196,7 +197,7 @@ public abstract class TopAdsDetailViewFragment<T extends TopAdsDetailViewPresent
         name.setContent(ad.getName());
         Log.d(TAG, "status -> " + ad.getStatus());
 
-        CommonUtils.dumper("status -> " + ad.getStatus());
+        Timber.d("status -> " + ad.getStatus());
         switch (ad.getStatus()) {
             case TopAdsConstant.STATUS_AD_ACTIVE:
             case TopAdsConstant.STATUS_AD_NOT_SENT:

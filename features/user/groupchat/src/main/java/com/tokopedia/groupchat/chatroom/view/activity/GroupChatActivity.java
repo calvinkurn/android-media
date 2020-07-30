@@ -15,18 +15,6 @@ import android.os.Handler;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.android.material.snackbar.Snackbar;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.Fragment.SavedState;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import androidx.collection.ArrayMap;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -40,6 +28,19 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.appcompat.widget.Toolbar;
+import androidx.collection.ArrayMap;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.Fragment.SavedState;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
@@ -54,7 +55,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.card.ToolTipUtils;
 import com.tokopedia.design.component.ButtonCompat;
-import com.tokopedia.design.component.ToasterError;
+import com.tokopedia.globalerror.GlobalError;
 import com.tokopedia.groupchat.R;
 import com.tokopedia.groupchat.channel.view.activity.ChannelActivity;
 import com.tokopedia.groupchat.channel.view.model.ChannelViewModel;
@@ -100,6 +101,7 @@ import com.tokopedia.groupchat.common.util.TextFormatter;
 import com.tokopedia.groupchat.common.util.TransparentStatusBarHelper;
 import com.tokopedia.groupchat.vote.view.model.VoteInfoViewModel;
 import com.tokopedia.groupchat.vote.view.model.VoteViewModel;
+import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.youtubeutils.common.YoutubePlayerConstant;
@@ -195,8 +197,6 @@ public class GroupChatActivity extends BaseSimpleActivity
     private int initialFragment;
     private GroupChatViewModel viewModel;
 
-    private Snackbar snackbarError;
-
     @Inject
     GroupChatPresenter presenter;
 
@@ -245,7 +245,7 @@ public class GroupChatActivity extends BaseSimpleActivity
             }
         } else {
             Intent intent = new Intent();
-            intent.putExtra(ChannelActivity.RESULT_MESSAGE, getString(R.string.default_request_error_unknown));
+            intent.putExtra(ChannelActivity.RESULT_MESSAGE, getString(com.tokopedia.abstraction.R.string.default_request_error_unknown));
             if (viewModel != null) {
                 intent.putExtra(TOTAL_VIEW, viewModel.getTotalView());
                 intent.putExtra(EXTRA_POSITION, viewModel.getChannelPosition());
@@ -467,35 +467,24 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     public void setSnackBarErrorLoading() {
         if (userSession.isLoggedIn()) {
-            snackbarError = ToasterError.make(findViewById(android.R.id.content), getString(R.string.connecting));
-            snackbarError.getView().setMinimumHeight((int) getResources().getDimension(R.dimen.snackbar_height));
-            snackbarError.show();
+            Toaster.INSTANCE.make(findViewById(android.R.id.content), getString(R.string.connecting),
+                    Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, "", v->{});
         }
     }
 
     public void setSnackBarRetry() {
         if (userSession.isLoggedIn()) {
-            snackbarError = ToasterError.make(findViewById(android.R.id.content), getString(R.string.sendbird_error_retry));
-            snackbarError.getView().setMinimumHeight((int) getResources().getDimension(R.dimen.snackbar_height));
-            snackbarError.setAction(getString(R.string.retry), new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-//                    presenter.connectWebSocket(userSession, viewModel.getChannelInfoViewModel().getChannelId()
-//                            , viewModel.getChannelInfoViewModel().getGroupChatToken()
-//                            , viewModel.getChannelInfoViewModel().getSettingGroupChat());
-                    presenter.getChannelInfo(viewModel.getChannelUuid(), true);
-                    setSnackBarErrorLoading();
-                }
-            });
-            snackbarError.show();
+            Toaster.INSTANCE.make(findViewById(android.R.id.content), getString(R.string.sendbird_error_retry),
+                    Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.retry), v->{
+                        presenter.getChannelInfo(viewModel.getChannelUuid(), true);
+                        setSnackBarErrorLoading();
+                    });
         }
     }
 
     @Override
     public void onOpenWebSocket() {
-        if (snackbarError != null) {
-            snackbarError.dismiss();
-        }
+        try { Toaster.snackBar.dismiss(); } catch (Exception e) {}
     }
 
     private void initData() {
@@ -547,7 +536,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         }
         removePaddingStatusBar();
 
-        toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(com.tokopedia.abstraction.R.id.toolbar);
         channelBanner = findViewById(R.id.channel_banner);
 
         if (isLollipopOrNewer()) {
@@ -692,7 +681,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         //TODO what is this
         restoreStateFragment(fragment, GroupChatFragment.class.getSimpleName());
 
-        fragmentTransaction.replace(R.id.container, fragment, fragment.getClass().getSimpleName());
+        fragmentTransaction.replace(com.tokopedia.analytics.R.id.container, fragment, fragment.getClass().getSimpleName());
         fragmentTransaction.commitAllowingStateLoss();
     }
 
@@ -700,7 +689,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         Fragment fragment = populateChannelInfoFragment();
 
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.container, fragment, fragment.getClass().getSimpleName());
+        fragmentTransaction.replace(com.tokopedia.analytics.R.id.container, fragment, fragment.getClass().getSimpleName());
         fragmentTransaction.commitAllowingStateLoss();
     }
 
@@ -719,7 +708,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         }
         ((ChannelVoteContract.View) fragment).showVoteLayout(
                 viewModel.getChannelInfoViewModel().getVoteInfoViewModel());
-        fragmentTransaction.replace(R.id.container, fragment, fragment.getClass().getSimpleName());
+        fragmentTransaction.replace(com.tokopedia.analytics.R.id.container, fragment, fragment.getClass().getSimpleName());
         fragmentTransaction.commitAllowingStateLoss();
     }
 
@@ -742,7 +731,7 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     private void addPaddingIfKeyboardIsClosed() {
         if (isLollipopOrNewer() && getSoftButtonsBarSizePort(GroupChatActivity.this) > 0) {
-            FrameLayout container = rootView.findViewById(R.id.container);
+            FrameLayout container = rootView.findViewById(com.tokopedia.analytics.R.id.container);
             ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) container
                     .getLayoutParams();
             params.setMargins(0, 0, 0, getSoftButtonsBarSizePort(GroupChatActivity.this));
@@ -752,7 +741,7 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     private void removePaddingIfKeyboardIsShowing() {
         if (isLollipopOrNewer() && getSoftButtonsBarSizePort(GroupChatActivity.this) > 0) {
-            FrameLayout container = rootView.findViewById(R.id.container);
+            FrameLayout container = rootView.findViewById(com.tokopedia.analytics.R.id.container);
             ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) container.getLayoutParams();
             params.setMargins(0, 0, 0, 0);
             container.setLayoutParams(params);
@@ -806,8 +795,8 @@ public class GroupChatActivity extends BaseSimpleActivity
     }
 
     private boolean hasErrorEmptyState() {
-        return rootView.findViewById(R.id.main_retry) != null
-                && rootView.findViewById(R.id.main_retry).getVisibility() == View.VISIBLE;
+        return rootView.findViewById(com.tokopedia.abstraction.R.id.main_retry) != null
+                && rootView.findViewById(com.tokopedia.abstraction.R.id.main_retry).getVisibility() == View.VISIBLE;
     }
 
     private void showDialogConfirmToExit() {
@@ -843,29 +832,20 @@ public class GroupChatActivity extends BaseSimpleActivity
         AlertDialog.Builder myAlertDialog = new android.app.AlertDialog.Builder(this);
         myAlertDialog.setTitle(getExitMessage().getTitle());
         myAlertDialog.setMessage(getExitMessage().getBody());
-        final Context context = this;
-        myAlertDialog.setPositiveButton(getString(R.string.exit_group_chat_yes), new
-                DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        analytics.eventUserExit(getChannelInfoViewModel().getChannelId() + " "+ getDurationOnGroupChat());
-                        if (isTaskRoot()) {
-                            startActivity(RouteManager.getIntent(getApplicationContext(), ApplinkConst.GROUPCHAT_LIST));
-                        }
-                        if (onPlayTime != 0) {
-                            analytics.eventWatchVideoDuration(getChannelInfoViewModel().getChannelId(), getDurationWatchVideo());
-                        }
-                        finish();
-                        GroupChatActivity.super.onBackPressed();
-                    }
-                });
-        myAlertDialog.setNegativeButton(getString(R.string.exit_group_chat_no), new
-                DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.cancel();
-                    }
-                });
+        myAlertDialog.setPositiveButton(getString(R.string.exit_group_chat_yes), (dialogInterface, i) -> {
+            if (getChannelInfoViewModel() != null)  {
+                analytics.eventUserExit(getChannelInfoViewModel().getChannelId() + " "+ getDurationOnGroupChat());
+            }
+            if (isTaskRoot()) {
+                startActivity(RouteManager.getIntent(getApplicationContext(), ApplinkConst.GROUPCHAT_LIST));
+            }
+            if (onPlayTime != 0 && getChannelInfoViewModel() != null) {
+                analytics.eventWatchVideoDuration(getChannelInfoViewModel().getChannelId(), getDurationWatchVideo());
+            }
+            finish();
+            GroupChatActivity.super.onBackPressed();
+        });
+        myAlertDialog.setNegativeButton(getString(R.string.exit_group_chat_no), (dialogInterface, i) -> dialogInterface.cancel());
 
         return myAlertDialog;
     }
@@ -948,13 +928,7 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     @Override
     public void onErrorGetChannelInfo(String errorMessage) {
-        NetworkErrorHelper.showEmptyState(this, rootView, errorMessage, new NetworkErrorHelper
-                .RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                initData();
-            }
-        });
+        NetworkErrorHelper.showEmptyState(this, rootView, errorMessage, () -> initData());
         setVisibilityHeader(View.GONE);
         stopTrace();
     }
@@ -1039,8 +1013,11 @@ public class GroupChatActivity extends BaseSimpleActivity
     }
 
     private void refreshChat() {
-        ((GroupChatFragment) getSupportFragmentManager().findFragmentByTag
-                (GroupChatFragment.class.getSimpleName())).refreshChat();
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag
+                (GroupChatFragment.class.getSimpleName());
+        if (fragment != null && fragment instanceof GroupChatFragment) {
+            ((GroupChatFragment)fragment).refreshChat();
+        }
     }
 
     private void trackAdsEE(ChannelInfoViewModel channelInfoViewModel) {
@@ -1140,7 +1117,7 @@ public class GroupChatActivity extends BaseSimpleActivity
                 && tabAdapter != null
                 && hasVoteTab()) {
             View view = ToolTipUtils.setToolTip(this, R.layout.tooltip_vote, this);
-            TextView temp = view.findViewById(R.id.text);
+            TextView temp = view.findViewById(com.tokopedia.design.R.id.text);
             MethodChecker.setBackground(temp, MethodChecker.getDrawable(this, R.drawable.ic_combined_shape));
             View anchorView = tabs.getChildAt(CHANNEL_VOTE_FRAGMENT);
             if (anchorView != null) {
@@ -1167,10 +1144,9 @@ public class GroupChatActivity extends BaseSimpleActivity
                                        ChannelInfoViewModel channelInfoViewModel) {
         View view = getLayoutInflater().inflate(R.layout.channel_info_bottom_sheet_dialog, null);
 
-        TextView actionButton = view.findViewById(R.id.action_button);
         ImageView image = view.findViewById(R.id.product_image);
         ImageView profile = view.findViewById(R.id.prof_pict);
-        TextView title = view.findViewById(R.id.title);
+        TextView title = view.findViewById(com.tokopedia.design.R.id.title);
         TextView subtitle = view.findViewById(R.id.subtitle);
         TextView name = view.findViewById(R.id.name);
         TextView participant = view.findViewById(R.id.participant);
@@ -1180,11 +1156,11 @@ public class GroupChatActivity extends BaseSimpleActivity
         title.setText(channelInfoViewModel.getTitle());
         subtitle.setText(channelInfoViewModel.getDescription());
 
-        ImageHandler.loadImage2(image, channelInfoViewModel.getImage(), R.drawable.loading_page);
+        ImageHandler.loadImage2(image, channelInfoViewModel.getImage(), com.tokopedia.abstraction.R.drawable.loading_page);
         ImageHandler.loadImageCircle2(profile.getContext(),
                 profile,
                 channelInfoViewModel.getAdminPicture(),
-                R.drawable.loading_page);
+                com.tokopedia.abstraction.R.drawable.loading_page);
 
         return view;
     }
@@ -1212,37 +1188,34 @@ public class GroupChatActivity extends BaseSimpleActivity
             sponsorLayout.setVisibility(View.VISIBLE);
             ImageHandler.loadImage2(sponsorImage,
                     viewModel.getChannelInfoViewModel().getAdsImageUrl(),
-                    R.drawable.loading_page);
+                    com.tokopedia.abstraction.R.drawable.loading_page);
 
-            sponsorImage.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+            sponsorImage.setOnClickListener(v -> {
 
-                    ArrayList<EEPromotion> list = new ArrayList<>();
-                    list.add(new EEPromotion(viewModel.getChannelInfoViewModel().getAdsId(),
-                            EEPromotion.NAME_GROUPCHAT,
-                            GroupChatAnalytics.DEFAULT_EE_POSITION,
-                            viewModel.getChannelInfoViewModel().getAdsName(),
-                            viewModel.getChannelInfoViewModel().getAdsImageUrl(),
-                            getAttributionTracking(GroupChatAnalytics
-                                    .ATTRIBUTE_BANNER)
-                    ));
+                ArrayList<EEPromotion> list = new ArrayList<>();
+                list.add(new EEPromotion(viewModel.getChannelInfoViewModel().getAdsId(),
+                        EEPromotion.NAME_GROUPCHAT,
+                        GroupChatAnalytics.DEFAULT_EE_POSITION,
+                        viewModel.getChannelInfoViewModel().getAdsName(),
+                        viewModel.getChannelInfoViewModel().getAdsImageUrl(),
+                        getAttributionTracking(GroupChatAnalytics
+                                .ATTRIBUTE_BANNER)
+                ));
 
-                    eventClickComponentEnhancedEcommerce(
-                            GroupChatAnalytics.COMPONENT_BANNER,
-                            viewModel.getChannelInfoViewModel().getAdsName(),
-                            GroupChatAnalytics.ATTRIBUTE_BANNER,
-                            list);
+                eventClickComponentEnhancedEcommerce(
+                        GroupChatAnalytics.COMPONENT_BANNER,
+                        viewModel.getChannelInfoViewModel().getAdsName(),
+                        GroupChatAnalytics.ATTRIBUTE_BANNER,
+                        list);
 
-                    analytics.eventClickBanner(String.format("%s - %s"
-                            , getChannelInfoViewModel().getChannelId(), getChannelInfoViewModel().getAdsId()));
+                analytics.eventClickBanner(String.format("%s - %s"
+                        , getChannelInfoViewModel().getChannelId(), getChannelInfoViewModel().getAdsId()));
 
-                    openSponsor(generateAttributeApplink(
-                            viewModel.getChannelInfoViewModel().getAdsLink(),
-                            GroupChatAnalytics.ATTRIBUTE_BANNER,
-                            viewModel.getChannelUrl(),
-                            viewModel.getChannelName()));
-                }
+                openSponsor(generateAttributeApplink(
+                        viewModel.getChannelInfoViewModel().getAdsLink(),
+                        GroupChatAnalytics.ATTRIBUTE_BANNER,
+                        viewModel.getChannelUrl(),
+                        viewModel.getChannelName()));
             });
         } else {
             sponsorLayout.setVisibility(View.GONE);
@@ -1445,7 +1418,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         } else {
             builder.setMessage(R.string.you_have_been_idle_for_too_long);
         }
-        builder.setPositiveButton(R.string.title_ok, new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(com.tokopedia.abstraction.R.string.title_ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 dialogInterface.dismiss();
@@ -1476,10 +1449,10 @@ public class GroupChatActivity extends BaseSimpleActivity
             }
         } catch (NumberFormatException e) {
             e.printStackTrace();
-            onErrorEnterChannel(getString(R.string.default_request_error_unknown));
+            onErrorEnterChannel(getString(com.tokopedia.abstraction.R.string.default_request_error_unknown));
         } catch (NullPointerException e) {
             e.printStackTrace();
-            onErrorEnterChannel(getString(R.string.default_request_error_unknown));
+            onErrorEnterChannel(getString(com.tokopedia.abstraction.R.string.default_request_error_unknown));
         }
     }
 
@@ -1532,14 +1505,12 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     private void setChannelNotFoundView(int visibility) {
         if (findViewById(R.id.card_retry) != null) {
-            findViewById(R.id.card_retry).setVisibility(visibility);
-            findViewById(R.id.card_retry).findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    String adsLink = "tokopedia://webview?url=https://tokopedia.link/playfreezestate";
-                    openSponsor(adsLink);
-                    finish();
-                }
+            GlobalError globalError = findViewById(R.id.card_retry);
+            globalError.setVisibility(visibility);
+            globalError.getErrorAction().setOnClickListener(v -> {
+                String adsLink = "tokopedia://webview?url=https://tokopedia.link/playfreezestate";
+                openSponsor(adsLink);
+                finish();
             });
         }
     }
@@ -1547,15 +1518,15 @@ public class GroupChatActivity extends BaseSimpleActivity
     private void setToolbarPlain() {
         toolbar.removeAllViews();
         setToolbarWhite();
-        toolbar.setSubtitleTextColor(getResources().getColor(R.color.white));
+        toolbar.setSubtitleTextColor(getResources().getColor(com.tokopedia.design.R.color.white));
         toolbar.setTitle(getResources().getString(R.string.label_group_chat));
-        toolbar.setTitleMarginTop((int) getResources().getDimension(R.dimen.dp_16));
+        toolbar.setTitleMarginTop((int) getResources().getDimension(com.tokopedia.design.R.dimen.dp_16));
     }
 
     private void setToolbarWhite() {
         toolbar.setContentInsetStartWithNavigation(0);
-        toolbar.setTitleTextColor(getResources().getColor(R.color.black_70));
-        toolbar.setSubtitleTextColor(getResources().getColor(R.color.black_70));
+        toolbar.setTitleTextColor(getResources().getColor(com.tokopedia.design.R.color.black_70));
+        toolbar.setSubtitleTextColor(getResources().getColor(com.tokopedia.design.R.color.black_70));
         toolbar.getMenu().findItem(R.id.action_share).setVisible(false);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setSubtitle(null);
@@ -1563,29 +1534,29 @@ public class GroupChatActivity extends BaseSimpleActivity
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             toolbar.setElevation(ELEVATION);
-            toolbar.setBackgroundResource(R.color.white);
+            toolbar.setBackgroundResource(com.tokopedia.design.R.color.white);
         } else {
-            toolbar.setBackgroundResource(R.drawable.bg_white_toolbar_drop_shadow);
+            toolbar.setBackgroundResource(com.tokopedia.design.R.drawable.bg_white_toolbar_drop_shadow);
         }
     }
 
     private boolean currentlyLoadingFragment() {
-        return getSupportFragmentManager().findFragmentById(R.id.container) == null;
+        return getSupportFragmentManager().findFragmentById(com.tokopedia.analytics.R.id.container) == null;
     }
 
     private boolean currentFragmentIsChat() {
-        return getSupportFragmentManager().findFragmentById(R.id.container) != null &&
-                getSupportFragmentManager().findFragmentById(R.id.container) instanceof GroupChatFragment;
+        return getSupportFragmentManager().findFragmentById(com.tokopedia.analytics.R.id.container) != null &&
+                getSupportFragmentManager().findFragmentById(com.tokopedia.analytics.R.id.container) instanceof GroupChatFragment;
     }
 
     private boolean currentFragmentIsVote() {
-        return getSupportFragmentManager().findFragmentById(R.id.container) != null &&
-                getSupportFragmentManager().findFragmentById(R.id.container) instanceof ChannelVoteFragment;
+        return getSupportFragmentManager().findFragmentById(com.tokopedia.analytics.R.id.container) != null &&
+                getSupportFragmentManager().findFragmentById(com.tokopedia.analytics.R.id.container) instanceof ChannelVoteFragment;
     }
 
     private boolean currentFragmentIsInfo() {
-        return getSupportFragmentManager().findFragmentById(R.id.container) != null &&
-                getSupportFragmentManager().findFragmentById(R.id.container) instanceof ChannelInfoFragment;
+        return getSupportFragmentManager().findFragmentById(com.tokopedia.analytics.R.id.container) != null &&
+                getSupportFragmentManager().findFragmentById(com.tokopedia.analytics.R.id.container) instanceof ChannelInfoFragment;
     }
 
 
@@ -1684,7 +1655,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         View view = getLayoutInflater().inflate(R.layout.layout_interupt_page, null);
         InteruptViewModel interuptViewModel = model.getInteruptViewModel();
         if (!TextUtils.isEmpty(interuptViewModel.getImageUrl())) {
-            ImageHandler.loadImage2((ImageView) view.findViewById(R.id.ivImage), interuptViewModel.getImageUrl(), R.drawable.loading_page);
+            ImageHandler.loadImage2((ImageView) view.findViewById(R.id.ivImage), interuptViewModel.getImageUrl(), com.tokopedia.abstraction.R.drawable.loading_page);
             view.findViewById(R.id.ivImage).setOnClickListener(view12 -> {
                 if (!TextUtils.isEmpty(interuptViewModel.getImageLink())) {
                     startApplink(interuptViewModel.getImageLink());
@@ -1883,7 +1854,7 @@ public class GroupChatActivity extends BaseSimpleActivity
             } else {
                 builder.setMessage(errorMessage);
             }
-            builder.setPositiveButton(R.string.title_ok, new DialogInterface.OnClickListener() {
+            builder.setPositiveButton(com.tokopedia.abstraction.R.string.title_ok, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     dialogInterface.dismiss();

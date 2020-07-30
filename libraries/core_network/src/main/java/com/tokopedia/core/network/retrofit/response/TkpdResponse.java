@@ -7,7 +7,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -23,15 +22,12 @@ import java.util.List;
  */
 public class TkpdResponse {
 
-    public static final String TOO_MANY_REQUEST = "TOO_MANY_REQUEST";
-
     private boolean isNullData;
     private boolean isError;
     private String status;
     private String strResponse;
     private String stringData = "";
     private JSONObject jsonData;
-    private JSONArray jsonDataArray;
     private List<String> errorMessages = new ArrayList<>();
     private List<String> statusMessages = new ArrayList<>();
 
@@ -155,13 +151,6 @@ public class TkpdResponse {
         return stringData;
     }
 
-    private void setStringData(String stringData) {
-        if (!stringData.isEmpty()) {
-            gson.toJson(stringData);
-        }
-        this.stringData = stringData;
-    }
-
     public JSONObject getJsonData() {
         return jsonData;
     }
@@ -185,7 +174,6 @@ public class TkpdResponse {
 
     private void setJsonDataArray(@NonNull JSONArray jsonDataArray) {
         this.stringData = jsonDataArray.toString();
-        this.jsonDataArray = jsonDataArray;
     }
 
     public boolean isError() {
@@ -257,21 +245,6 @@ public class TkpdResponse {
             }
         } else {
             return (T) objData;
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    public <T> List<T> convertDataList(Class<T[]> clazz) {
-        if (objData == null) {
-            try {
-                this.objData = Arrays.asList((T[]) (this.objData = gson.fromJson(stringData, clazz)));
-                return (List<T>) objData;
-            } catch (ClassCastException | JsonSyntaxException e) {
-                e.printStackTrace();
-                return null;
-            }
-        } else {
-            return (List<T>) objData;
         }
     }
 

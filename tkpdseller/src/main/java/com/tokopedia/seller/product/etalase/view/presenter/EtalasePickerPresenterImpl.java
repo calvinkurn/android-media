@@ -1,7 +1,7 @@
 package com.tokopedia.seller.product.etalase.view.presenter;
 
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.network.retrofit.exception.ResponseV4ErrorException;
+import com.tokopedia.network.data.model.response.ResponseV4ErrorException;
 import com.tokopedia.seller.product.etalase.domain.interactor.AddNewEtalaseUseCase;
 import com.tokopedia.seller.product.etalase.domain.interactor.FetchMyEtalaseUseCase;
 import com.tokopedia.seller.product.etalase.domain.model.MyEtalaseDomainModel;

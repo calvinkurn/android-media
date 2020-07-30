@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder;
@@ -14,17 +13,16 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.shop.R;
-import com.tokopedia.shop.ShopModuleRouter;
-import com.tokopedia.shop.analytic.ShopPageTrackingBuyer;
+import com.tokopedia.shop.analytic.OldShopPageTrackingBuyer;
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage;
 import com.tokopedia.shop.common.constant.ShopParamConstant;
-import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.di.component.ShopComponent;
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo;
 import com.tokopedia.shop.favourite.di.component.DaggerShopFavouriteComponent;
 import com.tokopedia.shop.favourite.di.module.ShopFavouriteModule;
 import com.tokopedia.shop.favourite.view.adapter.ShopFavouriteAdapterTypeFactory;
 import com.tokopedia.shop.favourite.view.listener.ShopFavouriteListView;
-import com.tokopedia.shop.favourite.view.model.ShopFavouriteViewModel;
+import com.tokopedia.shop.favourite.view.model.ShopFollowerUiModel;
 import com.tokopedia.shop.favourite.view.presenter.ShopFavouriteListPresenter;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 
@@ -34,7 +32,7 @@ import javax.inject.Inject;
  * Created by nathan on 2/5/18.
  */
 
-public class ShopFavouriteListFragment extends BaseListFragment<ShopFavouriteViewModel, ShopFavouriteAdapterTypeFactory> implements ShopFavouriteListView, BaseEmptyViewHolder.Callback {
+public class ShopFavouriteListFragment extends BaseListFragment<ShopFollowerUiModel, ShopFavouriteAdapterTypeFactory> implements ShopFavouriteListView, BaseEmptyViewHolder.Callback {
 
     private static final int DEFAULT_INITIAL_PAGE = 1;
     private static final int REQUEST_CODE_USER_LOGIN = 100;
@@ -50,14 +48,14 @@ public class ShopFavouriteListFragment extends BaseListFragment<ShopFavouriteVie
     @Inject
     ShopFavouriteListPresenter shopFavouriteListPresenter;
 
-    ShopPageTrackingBuyer shopPageTracking;
+    OldShopPageTrackingBuyer shopPageTracking;
     private ShopInfo shopInfo;
     private String shopId;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        shopPageTracking = new ShopPageTrackingBuyer(
+        shopPageTracking = new OldShopPageTrackingBuyer(
                 new TrackingQueue(getContext()));
         shopId = getArguments().getString(ShopParamConstant.EXTRA_SHOP_ID);
         shopFavouriteListPresenter.attachView(this);
@@ -78,8 +76,8 @@ public class ShopFavouriteListFragment extends BaseListFragment<ShopFavouriteVie
     }
 
     @Override
-    public void onItemClicked(ShopFavouriteViewModel shopFavouriteViewModel) {
-        Intent shopProfileIntent = RouteManager.getIntent(getActivity(), ApplinkConst.PROFILE, shopFavouriteViewModel.getId());
+    public void onItemClicked(ShopFollowerUiModel shopFollowerUiModel) {
+        Intent shopProfileIntent = RouteManager.getIntent(getActivity(), ApplinkConst.PROFILE, shopFollowerUiModel.getId());
         if (shopProfileIntent != null){
             startActivity(shopProfileIntent);
         }
@@ -137,7 +135,7 @@ public class ShopFavouriteListFragment extends BaseListFragment<ShopFavouriteVie
             emptyModel.setButtonTitle("");
         } else {
             emptyModel.setTitle(getString(R.string.shop_product_empty_follower_title));
-            emptyModel.setContent(getString(R.string.shop_product_empty_product_title_desc, shopInfo.getInfo().getShopName()));
+            emptyModel.setContent(getString(R.string.shop_product_empty_product_title_desc, shopInfo.getShopCore().getName()));
             emptyModel.setButtonTitle(getString(R.string.shop_page_label_follow));
             if (shopInfo != null) {
                 shopPageTracking.impressionFollowFromZeroFollower(CustomDimensionShopPage.create(shopInfo));

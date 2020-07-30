@@ -1,6 +1,6 @@
 package com.tokopedia.affiliate.feature.tracking.view.subscriber;
 
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.affiliate.feature.tracking.domain.model.Data;
 import com.tokopedia.affiliate.feature.tracking.view.contract.AffContract;
 import com.tokopedia.graphql.data.model.GraphqlResponse;

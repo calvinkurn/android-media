@@ -160,7 +160,7 @@ public class ChannelInfoFragment extends BaseDaggerFragment
     private void initView(View view) {
         KeyboardHandler.DropKeyboard(getContext(), getView());
         profile = view.findViewById(R.id.prof_pict);
-        title = view.findViewById(R.id.title);
+        title = view.findViewById(com.tokopedia.design.R.id.title);
         subtitle = view.findViewById(R.id.subtitle);
         name = view.findViewById(R.id.name);
         totalView = view.findViewById(R.id.participant);
@@ -195,7 +195,7 @@ public class ChannelInfoFragment extends BaseDaggerFragment
         ImageHandler.loadImageCircle2(profile.getContext(),
                 profile,
                 channelInfoViewModel.getAdminPicture(),
-                R.drawable.loading_page);
+                com.tokopedia.abstraction.R.drawable.loading_page);
 
         if (channelInfoViewModel.getChannelPartnerViewModels() != null
                 && !channelInfoViewModel.getChannelPartnerViewModels().isEmpty()) {

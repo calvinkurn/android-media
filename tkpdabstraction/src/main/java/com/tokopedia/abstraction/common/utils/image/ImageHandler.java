@@ -1,6 +1,5 @@
 package com.tokopedia.abstraction.common.utils.image;
 
-import android.app.Fragment;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -38,7 +37,10 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestBuilder;
+import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
@@ -58,6 +60,8 @@ import java.io.File;
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.util.ArrayList;
+
+import timber.log.Timber;
 
 import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
 
@@ -189,8 +193,6 @@ public class ImageHandler {
                 .into(imageview);
     }
 
-
-
     public static void loadImage(Context context, ImageView imageview, String url, ColorDrawable colorDrawable) {
         Glide.with(context)
                 .load(url)
@@ -231,6 +233,30 @@ public class ImageHandler {
                     .centerCrop()
                     .dontAnimate()
                     .error(R.drawable.error_drawable)
+                    .into(imageview);
+        }
+    }
+
+    public static void loadImageWithoutPlaceholder(ImageView imageview, String url, ImageLoaderStateListener imageLoaderStateListener) {
+        if (imageview.getContext() != null) {
+            Glide.with(imageview.getContext())
+                    .load(url)
+                    .centerCrop()
+                    .dontAnimate()
+                    .error(R.drawable.error_drawable)
+                    .addListener(new RequestListener<Drawable>() {
+                        @Override
+                        public boolean onLoadFailed(@androidx.annotation.Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                            imageLoaderStateListener.failedLoad();
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                            imageLoaderStateListener.successLoad();
+                            return false;
+                        }
+                    })
                     .into(imageview);
         }
     }
@@ -295,12 +321,16 @@ public class ImageHandler {
     }
 
     public static void loadImageWithSignature(ImageView imageview, String url, ObjectKey signature) {
-        Glide.with(imageview.getContext())
-                .load(url)
-                .diskCacheStrategy(DiskCacheStrategy.DATA)
-                .dontAnimate()
-                .signature(signature)
-                .into(imageview);
+        try {
+            Glide.with(imageview.getContext())
+                    .load(url)
+                    .diskCacheStrategy(DiskCacheStrategy.DATA)
+                    .dontAnimate()
+                    .signature(signature)
+                    .into(imageview);
+        } catch (IllegalArgumentException e){
+            Timber.e("%s%s", url, e.getMessage());
+        }
     }
 
     public static void downloadOriginalSizeImageWithSignature(
@@ -381,71 +411,8 @@ public class ImageHandler {
         }
     }
 
-    public static void loadImageRounded2Target(final Context context,
-                                               final ImageView imageview, final String url) {
-        Glide.with(context)
-                .asBitmap()
-                .load(url)
-                .dontAnimate()
-                .placeholder(R.drawable.loading_page)
-                .error(R.drawable.error_drawable)
-                .into(new CustomTarget<Bitmap>() {
-                    @Override
-                    public void onResourceReady(@NonNull Bitmap resource, @androidx.annotation.Nullable Transition<? super Bitmap> transition) {
-                        float newWidth = context.getResources().getDimension(R.dimen.half_screen) * 2;
-                        int width = resource.getWidth();
-                        int height = resource.getHeight();
-                        float newHeight = (newWidth * height) / width;
-
-                        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) imageview.getLayoutParams();
-                        params.width = (int) newWidth;
-                        params.height = (int) newHeight;
-                        imageview.setLayoutParams(params);
-
-                        imageview.setImageBitmap(resource);
-                    }
-
-                    @Override
-                    public void onLoadFailed(@androidx.annotation.Nullable Drawable errorDrawable) {
-                        super.onLoadFailed(errorDrawable);
-                        imageview.setImageDrawable(errorDrawable);
-                    }
-
-                    @Override
-                    public void onLoadCleared(@androidx.annotation.Nullable Drawable placeholder) {
-
-                    }
-                });
-    }
-
     public static void loadImageRounded2(Context context, final ImageView imageview, final String url) {
         loadImageRounded2(context, imageview, url, 5.0f);
-    }
-
-    public static void loadImageRoundedWithBorder(ImageView imageView,
-                                                  Context context,
-                                                  String url,
-                                                  int cornerRadius,
-                                                  int strokeWidth,
-                                                  int strokeColor,
-                                                  int width,
-                                                  int height
-                                                  ) {
-        Glide.with(context)
-                .asBitmap()
-                .load(url)
-                .dontAnimate()
-                .placeholder(R.drawable.loading_page)
-                .error(R.drawable.error_drawable)
-                .into(getRoundedCornerWithBorderViewTarget(
-                        imageView,
-                        context,
-                        cornerRadius,
-                        strokeWidth,
-                        strokeColor,
-                        width,
-                        height
-                ));
     }
 
     public static void loadImageRounded2(Context context, final ImageView imageview, final int resourceDrawable, float radius) {
@@ -483,18 +450,6 @@ public class ImageHandler {
         }
     }
 
-    public static void loadImageRounded2(Fragment fragment, final ImageView imageview, final String url) {
-        if (url != null && !url.isEmpty()) {
-            Glide.with(fragment)
-                    .asBitmap()
-                    .load(url)
-                    .dontAnimate()
-                    .placeholder(R.drawable.loading_page)
-                    .error(R.drawable.error_drawable)
-                    .into(getRoundedImageViewTarget(imageview, 5.0f));
-        }
-    }
-
     public static void loadImageFit2(Context context, ImageView imageView, String url) {
         Glide.with(context)
                 .load(url)
@@ -502,19 +457,6 @@ public class ImageHandler {
                 .placeholder(R.drawable.loading_page)
                 .error(R.drawable.error_drawable)
                 .centerCrop()
-                .into(imageView);
-    }
-
-    public static void loadImageFitTransformation(Context context, ImageView imageView, String url,
-                                                  BitmapTransformation transformation) {
-        Glide.with(context)
-                .load(url)
-                .dontAnimate()
-                .placeholder(R.drawable.loading_page)
-                .error(R.drawable.error_drawable)
-                .diskCacheStrategy(DiskCacheStrategy.DATA)
-                .centerCrop()
-                .transform(transformation)
                 .into(imageView);
     }
 
@@ -527,45 +469,6 @@ public class ImageHandler {
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .fitCenter()
                 .into(imageView);
-    }
-
-//    public static void loadImageFit2(Context context, ImageView imageView, String url, RequestListener<String, GlideDrawable> requestListener) {
-//        Glide.with(context)
-//                .load(url)
-//                .dontAnimate()
-//                .listener(requestListener)
-//                .placeholder(R.drawable.loading_page)
-//                .error(R.drawable.error_drawable)
-//                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-//                .centerCrop()
-//                .into(imageView);
-//    }
-
-    public static void loadImageLucky2(Context context, final ImageView imageView, String url) {
-        Glide.with(context)
-                .asBitmap()
-                .load(url)
-                .into(new CustomTarget<Bitmap>() {
-                    @Override
-                    public void onResourceReady(@NonNull Bitmap resource, @androidx.annotation.Nullable Transition<? super Bitmap> transition) {
-                        if (resource.getWidth() > 1) {
-                            imageView.setImageBitmap(resource);
-                            imageView.setVisibility(View.VISIBLE);
-                        } else
-                            imageView.setVisibility(View.GONE);
-                    }
-
-                    @Override
-                    public void onLoadFailed(@androidx.annotation.Nullable Drawable errorDrawable) {
-                        super.onLoadFailed(errorDrawable);
-                        imageView.setVisibility(View.GONE);
-                    }
-
-                    @Override
-                    public void onLoadCleared(@androidx.annotation.Nullable Drawable placeholder) {
-
-                    }
-                });
     }
 
     private static BitmapImageViewTarget getCircleImageViewTarget(final ImageView imageView) {
@@ -581,9 +484,13 @@ public class ImageHandler {
     }
 
     public static String encodeToBase64(String imagePath) {
+        return encodeToBase64(imagePath, 100);
+    }
+
+    public static String encodeToBase64(String imagePath, int quality) {
         Bitmap bm = BitmapFactory.decodeFile(imagePath);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bm.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        bm.compress(Bitmap.CompressFormat.JPEG, quality, baos);
         byte[] b = baos.toByteArray();
         return Base64.encodeToString(b, Base64.DEFAULT);
     }
@@ -594,50 +501,6 @@ public class ImageHandler {
         bm.compress(compressFormat, 100, baos);
         byte[] b = baos.toByteArray();
         return Base64.encodeToString(b, Base64.DEFAULT);
-    }
-
-    public static BitmapImageViewTarget getRoundedCornerWithBorderViewTarget(ImageView imageView,
-                                                                             Context context,
-                                                                             int cornerRadius,
-                                                                             int strokeWidth,
-                                                                             int strokeColor,
-                                                                             int width,
-                                                                             int height) {
-        return new BitmapImageViewTarget(imageView) {
-            @Override
-            protected void setResource(Bitmap resource) {
-                Bitmap output = Bitmap.createBitmap(width, height,
-                        Bitmap.Config.ARGB_8888);
-                Canvas canvas = new Canvas(output);
-
-                final int borderSizePx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, (float) strokeWidth,
-                        context.getResources().getDisplayMetrics());
-                final int cornerSizePx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, (float) cornerRadius,
-                        context.getResources().getDisplayMetrics());
-                final Paint paint = new Paint();
-                final Rect rect = new Rect(0, 0, width, height);
-                final RectF rectF = new RectF(rect);
-
-                // prepare canvas for transfer
-                paint.setAntiAlias(true);
-                paint.setColor(0xFFFFFFFF);
-                paint.setStyle(Paint.Style.FILL);
-                canvas.drawARGB(0, 0, 0, 0);
-                canvas.drawRoundRect(rectF, cornerSizePx, cornerSizePx, paint);
-
-                // draw bitmap
-                paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-                canvas.drawBitmap(resource, rect, rect, paint);
-
-                // draw border
-                paint.setColor(strokeColor);
-                paint.setStyle(Paint.Style.STROKE);
-                paint.setStrokeWidth((float) borderSizePx);
-                canvas.drawRoundRect(rectF, cornerSizePx, cornerSizePx, paint);
-
-                imageView.setImageBitmap(output);
-            }
-        };
     }
 
     private static BitmapImageViewTarget getRoundedImageViewTarget(final ImageView imageView, final float radius) {
@@ -737,16 +600,6 @@ public class ImageHandler {
                 .skipMemoryCache(true)
                 .diskCacheStrategy(DiskCacheStrategy.DATA)
                 .into(imageview);
-    }
-
-    public static void loadImageFit2(Context context, ImageView imageView, File file) {
-        Glide.with(context)
-                .load(file)
-                .dontAnimate()
-                .placeholder(R.drawable.loading_page)
-                .error(R.drawable.error_drawable)
-                .centerCrop()
-                .into(imageView);
     }
 
     public static void loadImageBlur(final Context context, final ImageView imageView, String imageUrl) {
@@ -883,15 +736,6 @@ public class ImageHandler {
         return outputBitmap;
     }
 
-    public static void loadCircleImageWithPlaceHolder(Context context, final ImageView imageView, int placeHolder, String url) {
-        Glide.with(context)
-                .asBitmap()
-                .load(url)
-                .placeholder(placeHolder)
-                .error(placeHolder)
-                .into(getCircleImageViewTarget(imageView));
-    }
-
     public static void loadImageWithListener(
             ImageView imageview,
             String url,
@@ -909,8 +753,12 @@ public class ImageHandler {
     }
 
     public static void clearImage(ImageView imageView) {
-        if (imageView != null) {
-            Glide.with(imageView.getContext()).clear(imageView);
+        try {
+            if (imageView != null) {
+                Glide.with(imageView.getContext()).clear(imageView);
+            }
+        } catch (IllegalArgumentException e){
+            Timber.e("%s", e.getMessage());
         }
     }
 
@@ -991,4 +839,9 @@ public class ImageHandler {
                     }
                 });
     }
+    public interface ImageLoaderStateListener{
+        void successLoad();
+        void failedLoad();
+    }
 }
+

@@ -4,7 +4,6 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.home_recom.analytics.RecommendationPageTracking
 import com.tokopedia.home_recom.analytics.SimilarProductRecommendationTracking
 import com.tokopedia.home_recom.di.DaggerHomeRecommendationComponent
 import com.tokopedia.home_recom.di.HomeRecommendationComponent
@@ -22,12 +21,25 @@ class SimilarProductRecommendationActivity : BaseSimpleActivity(), HasComponent<
 
     override fun getNewFragment(): Fragment? {
         return when {
-            intent.hasExtra(EXTRA_REF) -> SimilarProductRecommendationFragment.newInstance(intent.getStringExtra(EXTRA_PRODUCT_ID) ?: "", intent.getStringExtra(EXTRA_REF) ?: "")
-            intent.data != null -> SimilarProductRecommendationFragment.newInstance(if(isNumber(intent.data?.pathSegments?.get(0) ?: "")) intent.data?.pathSegments?.get(0) ?: ""
-                    else "",intent.data?.getQueryParameter("ref") ?: "")
+            intent.hasExtra(EXTRA_REF) -> SimilarProductRecommendationFragment.newInstance(
+                    intent.getStringExtra(EXTRA_PRODUCT_ID) ?: "",
+                    intent.getStringExtra(EXTRA_REF) ?: "")
+            intent.data != null ->
+                SimilarProductRecommendationFragment.newInstance(
+                        productId = getProductIdFromData(),
+                        ref = getRefFromData(),
+                        internalRef = getInternalRefFromData())
             else -> SimilarProductRecommendationFragment.newInstance("")
         }
     }
+
+    private fun getInternalRefFromData() = intent.data?.getQueryParameter("search_ref") ?: ""
+
+    private fun getRefFromData() = intent.data?.getQueryParameter("ref") ?: ""
+
+    private fun getProductIdFromData() =
+            if (isNumber(intent.data?.pathSegments?.get(0) ?: "")) intent.data?.pathSegments?.get(0)
+                    ?: "" else ""
 
     /**
      * Function [isNumber]

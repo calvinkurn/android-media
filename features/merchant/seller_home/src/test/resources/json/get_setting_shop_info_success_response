@@ -1,0 +1,14 @@
+{
+  "data": {
+    "shopInfoMoengage": {
+      "info": {
+        "shop_name": "success_shop_name",
+        "shop_avatar": "https://success.shop.name/avatar.png"
+      }
+    },
+    "balance": {
+      "seller_usable": 100000,
+      "buyer_usable": 100000
+    }
+  }
+}

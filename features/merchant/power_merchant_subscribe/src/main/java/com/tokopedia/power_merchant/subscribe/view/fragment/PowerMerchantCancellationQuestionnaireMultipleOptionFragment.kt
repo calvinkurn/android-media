@@ -5,17 +5,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CheckBox
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-
 import com.tokopedia.power_merchant.subscribe.R
-import com.tokopedia.power_merchant.subscribe.view.model.PMCancellationQuestionnaireMultipleOptionModel
-import com.tokopedia.power_merchant.subscribe.view.model.PMCancellationQuestionnaireStepperModel
 import com.tokopedia.power_merchant.subscribe.view.activity.PMCancellationQuestionnaireActivity
 import com.tokopedia.power_merchant.subscribe.view.adapter.MultipleOptionAdapter
-import kotlinx.android.synthetic.main.fragment_power_merchant_cancellation_questionnaire.*
+import com.tokopedia.power_merchant.subscribe.view.model.PMCancellationQuestionnaireMultipleOptionModel
+import com.tokopedia.power_merchant.subscribe.view.model.PMCancellationQuestionnaireStepperModel
 import kotlinx.android.synthetic.main.fragment_power_merchant_cancellation_questionnaire.view.*
 import kotlinx.android.synthetic.main.pm_cancellation_questionnaire_button_layout.view.*
 
@@ -70,7 +67,7 @@ class PowerMerchantCancellationQuestionnaireMultipleOptionFragment
             button_next.text = if (parentActivity.isFinalPage()) {
                 getString(R.string.label_send_answer)
             } else {
-                getString(R.string.label_next)
+                getString(com.tokopedia.abstraction.R.string.label_next)
             }
             button_next.setOnClickListener {
                 stepperModel?.let {

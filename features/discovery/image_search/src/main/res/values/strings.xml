@@ -10,4 +10,6 @@
     <string name="image_search_msg_add_wishlist">Sukses menambah wishlist</string>
     <string name="image_search_msg_empty_product_title">Oops, Produk Nggak Ditemukan</string>
     <string name="image_search_toolbar_text">Cari di Tokopedia</string>
+    <string name="error_sort_data_not_ready">Data Sort belum tersedia</string>
+    <string name="error_filter_data_not_ready">Data Filter belum tersedia</string>
 </resources>

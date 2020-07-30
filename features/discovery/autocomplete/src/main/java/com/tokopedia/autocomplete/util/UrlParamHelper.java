@@ -11,7 +11,7 @@ import java.util.Map;
 
 public class UrlParamHelper {
 
-    public static String generateUrlParamString(Map<String, String> paramMap) {
+    public static <T> String generateUrlParamString(Map<String, T> paramMap) {
         if (mapIsEmpty(paramMap)) {
             return "";
         }
@@ -21,14 +21,14 @@ public class UrlParamHelper {
         return joinWithDelimiter("&", paramList);
     }
 
-    private static boolean mapIsEmpty(Map<String, String> paramMap) {
+    private static <T> boolean mapIsEmpty(Map<String, T> paramMap) {
         return paramMap == null || paramMap.size() <= 0;
     }
 
-    private static List<String> createParameterListFromMap(Map<String, String> paramMap) {
+    private static <T> List<String> createParameterListFromMap(Map<String, T> paramMap) {
         List<String> paramList = new ArrayList<>();
 
-        for (Map.Entry<String, String> entry : paramMap.entrySet()) {
+        for (Map.Entry<String, T> entry : paramMap.entrySet()) {
             if (mapEntryHasNulls(entry)) continue;
 
             addParameterEntryToList(paramList, entry);
@@ -37,13 +37,15 @@ public class UrlParamHelper {
         return paramList;
     }
 
-    private static boolean mapEntryHasNulls(Map.Entry<String, String> entry) {
+    private static <T> boolean mapEntryHasNulls(Map.Entry<String, T> entry) {
         return entry.getKey() == null || entry.getValue() == null;
     }
 
-    private static void addParameterEntryToList(List<String> paramList, Map.Entry<String, String> entry) {
+    private static <T> void addParameterEntryToList(List<String> paramList, Map.Entry<String, T> entry) {
         try {
-            paramList.add(entry.getKey() + "=" + URLEncoder.encode(entry.getValue(), "UTF-8"));
+            if(entry.getValue() != null) {
+                paramList.add(entry.getKey() + "=" + URLEncoder.encode(entry.getValue().toString(), "UTF-8"));
+            }
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }

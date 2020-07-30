@@ -11,6 +11,7 @@ public class SettingConstant {
     public static final int SETTING_OUT_ID = 8;
     public static final int SETTING_SHAKE_ID = 9;
     public static final int SETTING_GEOLOCATION_ID = 98;
+    public static final int SETTING_SAFE_SEARCH_ID = 99;
     public static final int SETTING_ACCOUNT_PERSONAL_DATA_ID = 11;
     public static final int SETTING_ACCOUNT_PASS_ID = 12;
     public static final int SETTING_ACCOUNT_ADDRESS_ID = 13;
@@ -18,6 +19,7 @@ public class SettingConstant {
     public static final int SETTING_ACCOUNT_SAMPAI_ID = 15;
     public static final int SETTING_TEMPLATE_ID = 16;
     public static final int SETTING_PIN = 17;
+    public static final int SETTING_OCC_PREFERENCE_ID = 18;
     public static final int SETTING_SHOP_INFO_ID = 21;
     public static final int SETTING_SHOP_ETALASE_ID = 22;
     public static final int SETTING_SHOP_PRODUCT_ID = 23;
@@ -35,14 +37,16 @@ public class SettingConstant {
     public static final int SETTING_APP_ADVANCED_SETTING = 11;
     public static final int SETTING_APP_ADVANCED_CLEAR_CACHE = 1;
     public static final int SETTING_APP_ADVANCED_PUSH_NOTIFICATION = 2;
+    public static final int SETTING_ABOUT_US = 36;
 
 
     public static class Url {
         public static final String BASE_MOBILE = "https://m.tokopedia.com/";
-        public static final String PATH_TERM_CONDITION = "terms.pl";
-        public static final String PATH_PRIVACY_POLICY = "privacy.pl";
+        public static final String PATH_TERM_CONDITION = "terms.pl?isBack=true";
+        public static final String PATH_PRIVACY_POLICY = "privacy.pl?isBack=true";
         public static final String PATH_CHECKOUT_TEMPLATE = "user/settings/template-pembelian";
         public static final String BASE_WEBVIEW_APPLINK = "tokopedia://webview?url=";
+        public static final String PATH_ABOUT_US = "about";
     }
 
     public static class PeopleUrl{

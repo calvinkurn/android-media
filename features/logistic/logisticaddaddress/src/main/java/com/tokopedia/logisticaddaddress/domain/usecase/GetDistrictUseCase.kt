@@ -1,37 +1,50 @@
 package com.tokopedia.logisticaddaddress.domain.usecase
 
-import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.logisticaddaddress.R
+import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.logisticaddaddress.data.query.GetDistrictQuery
+import com.tokopedia.logisticaddaddress.domain.executor.SchedulerProvider
+import com.tokopedia.logisticaddaddress.domain.mapper.GetDistrictMapper
 import com.tokopedia.logisticaddaddress.domain.model.get_district.GetDistrictResponse
-import com.tokopedia.usecase.RequestParams
+import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
+import com.tokopedia.network.exception.MessageErrorException
 import rx.Observable
 import javax.inject.Inject
 
-/**
- * Created by fwidjaja on 2019-05-16.
- */
-class GetDistrictUseCase @Inject constructor(@ApplicationContext val context: Context) : GraphqlUseCase() {
-    var queryString: String = ""
+class GetDistrictUseCase
+@Inject constructor(
+        private val gql: GraphqlUseCase,
+        private val scheduler: SchedulerProvider,
+        private val mapper: GetDistrictMapper
+) {
+
+    fun execute(placeId: String): Observable<GetDistrictDataUiModel> {
+        val param = mapOf(
+                "param" to placeId,
+                "err" to true
+        )
+        val gqlRequest = GraphqlRequest(GetDistrictQuery.keroPlacesGetDistrict,
+                GetDistrictResponse::class.java, param)
+        gql.clearRequest()
+        gql.addRequest(gqlRequest)
+        return gql.getExecuteObservable(null)
+                .map { gqlResponse ->
+                    val response: GetDistrictResponse? =
+                            gqlResponse.getData(GetDistrictResponse::class.java)
+                    response ?: throw MessageErrorException(
+                            gqlResponse.getError(GetDistrictResponse::class.java)[0].message)
+                }
+                .map { response -> mapper.map(response) }
+                .subscribeOn(scheduler.io())
+                .observeOn(scheduler.ui())
+    }
+
+    fun unsubscribe() {
+        gql.unsubscribe()
+    }
 
     companion object {
-        val PARAM_PLACE_ID = "#placeId"
-    }
-
-    fun setParams(placeId: String) {
-        queryString = GraphqlHelper.loadRawString(context.resources, R.raw.get_district)
-        queryString = queryString.replace(PARAM_PLACE_ID, placeId, false)
-    }
-
-    override fun createObservable(params: RequestParams?): Observable<GraphqlResponse> {
-        val graphqlRequest = GraphqlRequest(queryString, GetDistrictResponse::class.java)
-        clearRequest()
-        addRequest(graphqlRequest)
-
-        return super.createObservable(params)
+        const val FOREIGN_COUNTRY_MESSAGE = "Lokasi di luar Indonesia."
+        const val LOCATION_NOT_FOUND_MESSAGE = "Lokasi gagal ditemukan"
     }
 }

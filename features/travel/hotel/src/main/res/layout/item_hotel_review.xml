@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/layout_lvl2">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/review_title"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/rating_text_view"
+            app:layout_constraintEnd_toStartOf="@+id/rating_text_view"
+            android:layout_marginEnd="@dimen/layout_lvl2"
+            android:layout_marginRight="@dimen/layout_lvl2"
+            android:textColor="@color/Neutral_N700_96"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
+            tools:text="Sangat Baik"
+            android:lineSpacingExtra="@dimen/spacing_lvl1"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/rating_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_hotel_blue_radius"
+            android:gravity="center"
+            android:paddingStart="@dimen/layout_lvl1"
+            android:paddingLeft="@dimen/layout_lvl1"
+            android:paddingEnd="@dimen/layout_lvl1"
+            android:paddingRight="@dimen/layout_lvl1"
+            android:paddingTop="@dimen/spacing_lvl1"
+            android:paddingBottom="@dimen/spacing_lvl1"
+            android:textColor="@color/blue_booking"
+            app:typographyWeight="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/review_title"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/review_title"
+            tools:text="8,6" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/good_review_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/hotel_12dp"
+            app:layout_constraintTop_toBottomOf="@+id/review_title">
+
+            <ImageView
+                android:id="@+id/icon_good_review"
+                android:layout_width="@dimen/layout_lvl2"
+                android:layout_height="@dimen/layout_lvl2"
+                app:srcCompat="@drawable/ic_good_review" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/good_review_text"
+                android:layout_width="@dimen/layout_lvl0"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/layout_lvl1"
+                android:layout_marginLeft="@dimen/layout_lvl1"
+                app:typographyType="body_3"
+                android:textColor="@color/Neutral_N700_68"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintLeft_toRightOf="@+id/icon_good_review"
+                app:layout_constraintStart_toEndOf="@+id/icon_good_review"
+                app:layout_constraintTop_toTopOf="@+id/icon_good_review"
+                android:lineSpacingExtra="@dimen/spacing_lvl1"
+                tools:text="Kami cukup puas dengan fasilitas yang disediakan oleh hotel tersebut. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. " />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/bad_review_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/layout_lvl1"
+            app:layout_constraintTop_toBottomOf="@+id/good_review_layout">
+
+            <ImageView
+                android:id="@+id/icon_bad_review"
+                android:layout_width="@dimen/layout_lvl2"
+                android:layout_height="@dimen/layout_lvl2"
+                app:srcCompat="@drawable/ic_bad_review" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/bad_review_text"
+                android:layout_width="@dimen/layout_lvl0"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/layout_lvl1"
+                android:layout_marginLeft="@dimen/layout_lvl1"
+                android:lineSpacingExtra="@dimen/spacing_lvl1"
+                app:typographyType="body_3"
+                android:textColor="@color/Neutral_N700_68"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintLeft_toRightOf="@+id/icon_bad_review"
+                app:layout_constraintStart_toEndOf="@+id/icon_bad_review"
+                app:layout_constraintTop_toTopOf="@+id/icon_bad_review"
+                tools:text="Kami cukup puas dengan fasilitas yang disediakan oleh hotel tersebut. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. " />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/reviewer_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/layout_lvl1"
+            app:layout_constraintTop_toBottomOf="@+id/bad_review_layout"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:typographyType="body_3"
+            app:typographyWeight="bold"
+            tools:text="Ignatius Andrew" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/reviewer_origin_and_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Neutral_N700_44"
+            app:typographyType="body_3"
+            app:layout_constraintTop_toBottomOf="@+id/reviewer_name"
+            app:layout_constraintLeft_toLeftOf="parent"
+            tools:text="Indonesia -  8 Sep 2018" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/hotel_1dp"
+        android:background="@drawable/bg_hotel_line_seperator" />
+
+</LinearLayout>

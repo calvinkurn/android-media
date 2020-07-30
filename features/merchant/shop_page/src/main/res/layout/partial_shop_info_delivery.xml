@@ -12,7 +12,6 @@
         android:id="@+id/labelViewLogisticTitle"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_50"
-        app:lv_content="@string/shop_info_label_manage_note"
         app:lv_title="@string/shop_info_label_logistic"
         app:lv_title_color="@color/black"
         app:lv_title_text_size="@dimen/sp_16"

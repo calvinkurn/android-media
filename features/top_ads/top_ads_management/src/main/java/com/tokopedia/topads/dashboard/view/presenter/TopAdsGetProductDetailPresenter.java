@@ -1,7 +1,6 @@
 package com.tokopedia.topads.dashboard.view.presenter;
 
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.core.base.presentation.CustomerPresenter;
+import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.topads.dashboard.view.listener.TopAdsGetProductDetailView;
 
 /**

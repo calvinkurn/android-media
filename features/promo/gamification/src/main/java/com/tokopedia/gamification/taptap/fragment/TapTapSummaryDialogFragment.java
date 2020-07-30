@@ -1,22 +1,22 @@
 package com.tokopedia.gamification.taptap.fragment;
 
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.applink.RouteManager;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
+
 import com.tokopedia.gamification.R;
-import com.tokopedia.gamification.applink.ApplinkUtil;
 import com.tokopedia.gamification.data.entity.CrackResultEntity;
 import com.tokopedia.gamification.taptap.activity.TapTapTokenActivity;
 import com.tokopedia.gamification.taptap.compoundview.WidgetSummaryTapTap;
 import com.tokopedia.gamification.taptap.data.entiity.RewardButton;
 import com.tokopedia.gamification.taptap.database.GamificationDatabaseWrapper;
 import com.tokopedia.gamification.taptap.database.GamificationDbCallback;
+import com.tokopedia.promogamification.common.applink.ApplinkUtil;
 
 import java.util.List;
 
@@ -50,7 +50,7 @@ public class TapTapSummaryDialogFragment extends DialogFragment implements Gamif
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setStyle(DialogFragment.STYLE_NO_TITLE, R.style.TapTapCustomDialog);
+        setStyle(DialogFragment.STYLE_NO_TITLE, com.tokopedia.gamification.R.style.TapTapCustomDialog);
     }
 
     @Nullable
@@ -59,7 +59,7 @@ public class TapTapSummaryDialogFragment extends DialogFragment implements Gamif
         if (getDialog() != null && getDialog().getWindow() != null)
             getDialog().getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
-        View view = inflater.inflate(R.layout.gf_popup_summary_page, container, false);
+        View view = inflater.inflate(com.tokopedia.gamification.R.layout.gf_popup_summary_page, container, false);
         widgetSummaryTapTap = view.findViewById(R.id.widget_summary_tap_tap);
         widgetSummaryTapTap.setInteractionListener(this);
         gamificationDatabaseWrapper = new GamificationDatabaseWrapper(getContext().getApplicationContext());
@@ -109,9 +109,7 @@ public class TapTapSummaryDialogFragment extends DialogFragment implements Gamif
 
     @Override
     public void navigateToActivity(String applink, String url) {
-        ApplinkUtil.navigateToAssociatedPage(getActivity(), applink,
-                url,
-                TapTapTokenActivity.class);
+        ApplinkUtil.navigateToAssociatedPage(getActivity(), applink, url, TapTapTokenActivity.class);
     }
 
     @Override

@@ -10,11 +10,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.annotation.DimenRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.IdRes
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -22,12 +24,15 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.design.image.SquareImageView
 import com.tokopedia.home.R
+import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
+import com.tokopedia.home.beranda.helper.glide.FPM_THEMATIC_CARD_VIEW
+import com.tokopedia.home.beranda.helper.glide.loadImage
+import com.tokopedia.home.beranda.helper.glide.loadImageFitCenter
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.productcard.utils.*
 import com.tokopedia.productcard.v2.BlankSpaceConfig
-import com.tokopedia.productcard.v2.ProductCardModel
+import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
 
@@ -70,6 +75,29 @@ class ThematicCardView : BaseCustomView {
     private var textViewReviewCount: Typography? = null
     private var imageFreeOngkirPromo: ImageView? = null
     private var labelCredibility: Label? = null
+
+    /**
+     * View components of a Skeleton ProductCardView
+     */
+    private var skeleton_constraintLayoutProductCard: ConstraintLayout? = null
+    private var skeleton_imageProduct: SquareImageView? = null
+    private var skeleton_labelPromo: Label? = null
+    private var skeleton_textViewShopName: Typography? = null
+    private var skeleton_textViewProductName: Typography? = null
+    private var skeleton_labelDiscount: Label? = null
+    private var skeleton_textViewSlashedPrice: Typography? = null
+    private var skeleton_textViewPrice: Typography? = null
+    private var skeleton_linearLayoutShopBadges: LinearLayout? = null
+    private var skeleton_textViewShopLocation: Typography? = null
+    private var skeleton_linearLayoutImageRating: LinearLayout? = null
+    private var skeleton_imageViewRating1: ImageView? = null
+    private var skeleton_imageViewRating2: ImageView? = null
+    private var skeleton_imageViewRating3: ImageView? = null
+    private var skeleton_imageViewRating4: ImageView? = null
+    private var skeleton_imageViewRating5: ImageView? = null
+    private var skeleton_textViewReviewCount: Typography? = null
+    private var skeleton_imageFreeOngkirPromo: ImageView? = null
+    private var skeleton_labelCredibility: Label? = null
     private var blankSpaceConfig = BlankSpaceConfig()
 
     constructor(context: Context): super(context) {
@@ -119,6 +147,27 @@ class ThematicCardView : BaseCustomView {
         textViewReviewCount = inflatedView.findViewById(R.id.textViewReviewCount)
         labelCredibility = inflatedView.findViewById(R.id.labelCredibility)
         imageFreeOngkirPromo = inflatedView.findViewById(R.id.imageFreeOngkirPromo)
+
+        //skeleton
+        skeleton_constraintLayoutProductCard = inflatedView.findViewById(R.id.skeleton_constraintLayoutProductCard)
+        skeleton_imageProduct = inflatedView.findViewById(R.id.skeleton_imageProduct)
+        skeleton_labelPromo = inflatedView.findViewById(R.id.skeleton_labelPromo)
+        skeleton_textViewShopName = inflatedView.findViewById(R.id.skeleton_textViewShopName)
+        skeleton_textViewProductName = inflatedView.findViewById(R.id.skeleton_textViewProductName)
+        skeleton_labelDiscount = inflatedView.findViewById(R.id.skeleton_labelDiscount)
+        skeleton_textViewSlashedPrice = inflatedView.findViewById(R.id.skeleton_textViewSlashedPrice)
+        skeleton_textViewPrice = inflatedView.findViewById(R.id.skeleton_textViewPrice)
+        skeleton_linearLayoutShopBadges = inflatedView.findViewById(R.id.skeleton_linearLayoutShopBadges)
+        skeleton_textViewShopLocation = inflatedView.findViewById(R.id.skeleton_textViewShopLocation)
+        skeleton_linearLayoutImageRating = inflatedView.findViewById(R.id.skeleton_linearLayoutImageRating)
+        skeleton_imageViewRating1 = inflatedView.findViewById(R.id.skeleton_imageViewRating1)
+        skeleton_imageViewRating2 = inflatedView.findViewById(R.id.skeleton_imageViewRating2)
+        skeleton_imageViewRating3 = inflatedView.findViewById(R.id.skeleton_imageViewRating3)
+        skeleton_imageViewRating4 = inflatedView.findViewById(R.id.skeleton_imageViewRating4)
+        skeleton_imageViewRating5 = inflatedView.findViewById(R.id.skeleton_imageViewRating5)
+        skeleton_textViewReviewCount = inflatedView.findViewById(R.id.skeleton_textViewReviewCount)
+        skeleton_labelCredibility = inflatedView.findViewById(R.id.skeleton_labelCredibility)
+        skeleton_imageFreeOngkirPromo = inflatedView.findViewById(R.id.skeleton_imageFreeOngkirPromo)
     }
 
     fun setBlankSpaceConfig(blankSpaceConfig: BlankSpaceConfig){
@@ -127,12 +176,12 @@ class ThematicCardView : BaseCustomView {
 
     fun initProductImage(productImageUrl: String) {
         imageProduct?.shouldShowWithAction(productImageUrl.isNotEmpty()) {
-            ImageHandler.loadImageThumbs(context, it, productImageUrl)
+            it.loadImage(productImageUrl, FPM_THEMATIC_CARD_VIEW)
         }
     }
 
     fun initShopName(shopName: String) {
-        textViewShopName.setTextWithBlankSpaceConfig(shopName, blankSpaceConfig.shopName)
+        textViewShopName.setTextWithBlankSpaceConfig(skeleton_textViewShopName, shopName, blankSpaceConfig.shopName)
     }
 
     fun initLabelPromo(title: String, labelType: String) {
@@ -143,15 +192,18 @@ class ThematicCardView : BaseCustomView {
     }
 
     fun initProductName(productName: String) {
-        if (blankSpaceConfig.twoLinesProductName) textViewProductName?.setLines(2)
-        textViewProductName.setTextWithBlankSpaceConfig(productName, blankSpaceConfig.productName)
+        if (blankSpaceConfig.twoLinesProductName) {
+            textViewProductName?.setLines(2)
+            skeleton_textViewProductName?.setLines(2)
+        }
+        textViewProductName.setTextWithBlankSpaceConfig(skeleton_textViewProductName, productName, blankSpaceConfig.productName)
     }
 
     fun initLabelDiscount(discountPercentage: String) {
         val isLabelDiscountVisible = getIsLabelDiscountVisible(discountPercentage)
 
         labelDiscount.configureVisibilityWithBlankSpaceConfig(
-                isLabelDiscountVisible, blankSpaceConfig.discountPercentage) {
+                isLabelDiscountVisible, skeleton_labelDiscount, blankSpaceConfig.discountPercentage) {
             it.text = MethodChecker.fromHtml(discountPercentage)
         }
     }
@@ -163,14 +215,14 @@ class ThematicCardView : BaseCustomView {
 
     fun initSlashedPrice(slashedPrice: String) {
         textViewSlashedPrice.configureVisibilityWithBlankSpaceConfig(
-                slashedPrice.isNotEmpty(), blankSpaceConfig.slashedPrice) {
+                slashedPrice.isNotEmpty(), skeleton_textViewSlashedPrice, blankSpaceConfig.slashedPrice) {
             it.text = slashedPrice
             it.paintFlags = it.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
         }
     }
 
     fun initProductPrice(formattedPrice: String) {
-        textViewPrice.setTextWithBlankSpaceConfig(formattedPrice, blankSpaceConfig.price)
+        textViewPrice.setTextWithBlankSpaceConfig(skeleton_textViewPrice, formattedPrice, blankSpaceConfig.price)
     }
 
     private fun hasAnyBadgesShown(shopBadgeList: List<ProductCardModel.ShopBadge>): Boolean {
@@ -222,12 +274,12 @@ class ThematicCardView : BaseCustomView {
     }
 
     private fun initShopLocation(shopLocation: String) {
-        textViewShopLocation.setTextWithBlankSpaceConfig(shopLocation, blankSpaceConfig.shopLocation)
+        textViewShopLocation.setTextWithBlankSpaceConfig(skeleton_textViewShopLocation, shopLocation, blankSpaceConfig.shopLocation)
     }
 
     fun initRating(ratingCount: Int) {
         linearLayoutImageRating.configureVisibilityWithBlankSpaceConfig(
-                ratingCount > 0, blankSpaceConfig.ratingCount) {
+                ratingCount > 0, skeleton_linearLayoutImageRating, blankSpaceConfig.ratingCount) {
             setRating(ratingCount)
         }
     }
@@ -236,21 +288,23 @@ class ThematicCardView : BaseCustomView {
         val shouldShowFreeOngkirImage = isActive && imageUrl.isNotEmpty()
 
         imageFreeOngkirPromo.configureVisibilityWithBlankSpaceConfig(
-                shouldShowFreeOngkirImage, blankSpaceConfig.freeOngkir) {
-            ImageHandler.loadImageThumbs(context, it, imageUrl)
+                shouldShowFreeOngkirImage, skeleton_imageFreeOngkirPromo, blankSpaceConfig.freeOngkir) {
+            it.loadImageFitCenter(imageUrl)
         }
     }
 
     private fun initReview(reviewCount: Int) {
         textViewReviewCount.configureVisibilityWithBlankSpaceConfig(
-                reviewCount > 0, blankSpaceConfig.reviewCount) {
+                reviewCount > 0, skeleton_textViewReviewCount, blankSpaceConfig.reviewCount) {
             it.text = getReviewCountFormattedAsText(reviewCount)
         }
     }
 
     private fun initLabelCredibility(labelCredibilityModel: ProductCardModel.Label) {
         labelCredibility.configureVisibilityWithBlankSpaceConfig(
-                labelCredibilityModel.title.isNotEmpty(), blankSpaceConfig.labelCredibility) {
+                labelCredibilityModel.title.isNotEmpty(),
+                skeleton_labelCredibility,
+                blankSpaceConfig.labelCredibility) {
             it.text = labelCredibilityModel.title
             it.setLabelType(getLabelTypeFromString(labelCredibilityModel.type))
         }
@@ -450,5 +504,70 @@ class ThematicCardView : BaseCustomView {
             val marginPixel = getDimensionPixelSize(marginDp)
             constraintSet.connect(startLayoutId, startSide, endLayoutId, endSide, marginPixel)
         }
+    }
+
+    private fun <T: View> T?.shouldShowWithAction(shouldShow: Boolean, action: (T) -> Unit) {
+        if (this == null) return
+
+        if (shouldShow) {
+            this.visibility = View.VISIBLE
+            action(this)
+        } else {
+            this.visibility = View.GONE
+        }
+    }
+
+    private fun ConstraintLayout?.applyConstraintSet(configureConstraintSet: (ConstraintSet) -> Unit) {
+        this?.let {
+            val constraintSet = ConstraintSet()
+
+            constraintSet.clone(it)
+            configureConstraintSet(constraintSet)
+            constraintSet.applyTo(it)
+        }
+    }
+
+    private fun View.getDimensionPixelSize(@DimenRes id: Int): Int {
+        return this.context.resources.getDimensionPixelSize(id)
+    }
+
+    private fun <T: View> T?.configureVisibilityWithBlankSpaceConfig(isVisible: Boolean,
+                                                                     viewSkeleton: View? = null,
+                                                                     blankSpaceConfigValue: Boolean,
+                                                                     action: (T) -> Unit) {
+        if (this == null) return
+
+        visibility = if (isVisible) {
+            action(this)
+            View.VISIBLE
+        } else View.GONE
+
+        viewSkeleton?.visibility = getViewNotVisibleWithBlankSpaceConfig(blankSpaceConfigValue)
+    }
+
+    private fun getViewNotVisibleWithBlankSpaceConfig(blankSpaceConfigValue: Boolean): Int {
+        return if (blankSpaceConfigValue) {
+            View.INVISIBLE
+        }
+        else {
+            View.GONE
+        }
+    }
+
+    private fun TextView?.setTextWithBlankSpaceConfig(viewSkeleton: TextView? = null, textValue: String, blankSpaceConfigValue: Boolean) {
+        this?.configureVisibilityWithBlankSpaceConfig(textValue.isNotEmpty(), viewSkeleton, blankSpaceConfigValue) {
+            it.text = MethodChecker.fromHtml(textValue)
+        }
+    }
+
+    fun setItemWithWrapBlankSpaceConfig(gridItem: DynamicHomeChannel.Grid,
+                                        blankSpaceConfig: BlankSpaceConfig) {
+        setBlankSpaceConfig(blankSpaceConfig)
+        initFreeOngkir(gridItem.freeOngkir.isActive, gridItem.freeOngkir.imageUrl)
+        initSlashedPrice(gridItem.slashedPrice)
+        initProductPrice(gridItem.price)
+        initProductImage(gridItem.imageUrl)
+        initProductName(gridItem.name)
+        initLabelDiscount(gridItem.discount)
     }
 }

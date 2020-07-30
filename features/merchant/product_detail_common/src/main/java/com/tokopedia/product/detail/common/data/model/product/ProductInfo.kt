@@ -68,7 +68,6 @@ data class ProductInfo(
         @Expose
         val freeOngkir: FreeOngkir = FreeOngkir()
 
-
 ) {
 
     fun getProductImageUrl(): String? {
@@ -99,10 +98,7 @@ data class ProductInfo(
     data class Response(
             @SerializedName("getPDPInfo")
             @Expose
-            val data: ProductInfo? = null,
-            @SerializedName("topAdsGetProductManage")
-            @Expose
-            val topAdsGetProductManage: TopAdsGetProductManage? = null
+            val data: ProductInfo? = null
     )
 
     data class WishlistStatus(

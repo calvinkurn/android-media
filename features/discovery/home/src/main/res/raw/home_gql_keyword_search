@@ -1,5 +1,0 @@
-{
-    universe_placeholder(navsource:"home"){
-        data { placeholder keyword }
-    }
-}

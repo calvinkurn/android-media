@@ -1,6 +1,6 @@
 package com.tokopedia.shop.note.data.source.cloud;
 
-import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.network.data.model.response.DataResponse;
 import com.tokopedia.shop.common.data.source.cloud.api.ShopApi;
 import com.tokopedia.shop.common.data.source.cloud.api.ShopCommonApi;
 import com.tokopedia.shop.note.data.source.cloud.model.ShopNoteDetail;

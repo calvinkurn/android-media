@@ -3,11 +3,11 @@ package com.tokopedia.purchase_platform.common.analytics;
 import android.os.Bundle;
 import android.text.TextUtils;
 
-import com.google.android.gms.tagmanager.DataLayer;
-import com.google.firebase.analytics.FirebaseAnalytics;
-import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics;
-import com.tokopedia.purchase_platform.common.analytics.TransactionAnalytics;
+import com.tokopedia.analyticconstant.DataLayer;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -16,6 +16,7 @@ import static com.tokopedia.purchase_platform.common.analytics.ConstantTransacti
 import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventCategory;
 import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventLabel;
 import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventName;
+import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.ExtraKey;
 
 
 /**
@@ -305,6 +306,7 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
     }
 
     public void sendEnhancedECommerceCheckout(Map<String, Object> cartMap,
+                                              String irisSessionId,
                                               String transactionId,
                                               boolean isTradeIn,
                                               String eventAction,
@@ -333,17 +335,6 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
                 ConstantTransactionAnalytics.Key.CURRENT_SITE, null
         );
         sendEnhancedEcommerce(dataLayer);
-    }
-
-    // GTM v5 EE Step 2 - 4
-    public void sendEnhancedECommerceCheckoutV5(Bundle eCommerceBundle,
-                                                int step,
-                                                String checkoutOption,
-                                                String transactionId,
-                                                boolean isTradeIn,
-                                                String eventAction,
-                                                String eventLabel) {
-
     }
 
     public void eventClickCourierSelectionClickPilihAlamatLain() {
@@ -661,6 +652,27 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         );
     }
 
+    public void eventClickJemputTab() {
+        sendEventCategoryAction(EventName.CLICK_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_JEMPUT_TAB
+        );
+    }
+
+    public void eventClickDropOffTab() {
+        sendEventCategoryAction(EventName.CLICK_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_DROP_OFF_TAB
+        );
+    }
+
+    public void eventClickUbahTitikDropoffButton() {
+        sendEventCategoryAction(EventName.CLICK_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_UBAH_TITIK_DROP_OFF_BUTTON
+        );
+    }
+
     public void eventClickShowMerchantVoucherList() {
         sendEventCategoryAction(
                 EventName.CLICK_COURIER,
@@ -668,34 +680,69 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
                 EventAction.CLICK_PILIH_MERCHANT_VOUCHER);
     }
 
-    public void eventClickPakaiMerchantVoucherManualInputSuccess(String promoCode) {
-        String label = EventLabel.SUCCESS + " - " + promoCode;
-        sendEventCategoryActionLabel(
+    //on success use merchant voucher from list
+    public void eventClickUseMerchantVoucherSuccess(String promoCode, String promoId, Boolean isFromList) {
+        String eventAction = isFromList ? EventAction.CLICK_GUNAKAN_ON_MERCHANT_VOUCHER_FROM_PILIH_MERCHANT_VOUCHER : EventAction.CLICK_GUNAKAN_FROM_PILIH_MERCHANT_VOUCHER;
+        Map<String, Object> eventMap = createEventMap(
                 EventName.CLICK_COURIER,
                 EventCategory.COURIER_SELECTION,
-                EventAction.CLICK_PAKAI_MERCHANT_VOUCHER_MANUAL_INPUT,
-                label
+                eventAction,
+                EventLabel.SUCCESS + " - " + promoCode
         );
+        eventMap.put(ConstantTransactionAnalytics.Key.PROMO_ID, promoId);
+
+        TrackApp.getInstance().getGTM().sendGeneralEvent(eventMap);
     }
 
-    public void eventClickPakaiMerchantVoucherManualInputError(String errorMsg) {
-        String label = EventLabel.ERROR + " - " + errorMsg;
-        sendEventCategoryActionLabel(
-                EventName.CLICK_COURIER,
+    //impression on user merchant voucher list
+    public void eventImpressionUseMerchantVoucher(String voucherId, Map<String, Object> ecommerceMap) {
+        Map<String, Object> eventMap = createEventMap(
+                EventName.PROMO_VIEW,
                 EventCategory.COURIER_SELECTION,
-                EventAction.CLICK_PAKAI_MERCHANT_VOUCHER_MANUAL_INPUT,
-                label
+                EventAction.IMPRESSION_MERCHANT_VOUCHER_FROM_PILIH_MERCHANT_VOUCHER,
+                ""
         );
+        eventMap.put(ConstantTransactionAnalytics.Key.PROMO_ID, voucherId);
+        eventMap.put(ConstantTransactionAnalytics.Key.E_COMMERCE, ecommerceMap);
+
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(eventMap);
     }
 
-    public void eventClickPakaiMerchantVoucherSuccess(String promoCode) {
-        String label = EventLabel.SUCCESS + " - " + promoCode;
-        sendEventCategoryActionLabel(
+    //on merchant voucher click detail
+    public void eventClickDetailMerchantVoucher(Map<String, Object> ecommerceMap, String voucherId, String promoCode) {
+        Map<String, Object> eventMap = createEventMap(
+                EventName.PROMO_CLICK,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_MERCHANT_VOUCHER_FROM_PILIH_MERCHANT_VOUCHER,
+                promoCode
+        );
+        eventMap.put(ConstantTransactionAnalytics.Key.PROMO_ID, voucherId);
+        eventMap.put(ConstantTransactionAnalytics.Key.E_COMMERCE, ecommerceMap);
+
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(eventMap);
+    }
+
+    //on error use merchant voucher
+    public void eventClickUseMerchantVoucherError(String errorMsg, String promoId, Boolean isFromList) {
+        String eventAction = isFromList ? EventAction.CLICK_GUNAKAN_ON_MERCHANT_VOUCHER_FROM_PILIH_MERCHANT_VOUCHER : EventAction.CLICK_GUNAKAN_FROM_PILIH_MERCHANT_VOUCHER;
+        Map<String, Object> eventMap = createEventMap(
                 EventName.CLICK_COURIER,
                 EventCategory.COURIER_SELECTION,
-                EventAction.CLICK_PAKAI_MERCHANT_VOUCHER,
-                label
+                eventAction,
+                EventLabel.ERROR + " - " + errorMsg
         );
+        eventMap.put(ConstantTransactionAnalytics.Key.PROMO_ID, promoId);
+
+        TrackApp.getInstance().getGTM().sendGeneralEvent(eventMap);
+    }
+
+    private Map<String, Object> createEventMap(String event, String category, String action, String label) {
+        Map<String, Object> eventMap = new HashMap<>();
+        eventMap.put(ConstantTransactionAnalytics.Key.EVENT, event);
+        eventMap.put(ConstantTransactionAnalytics.Key.EVENT_CATEGORY, category);
+        eventMap.put(ConstantTransactionAnalytics.Key.EVENT_ACTION, action);
+        eventMap.put(ConstantTransactionAnalytics.Key.EVENT_LABEL, label);
+        return eventMap;
     }
 
     public void eventClickPakaiMerchantVoucherError(String errorMsg) {
@@ -705,15 +752,6 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
                 EventCategory.COURIER_SELECTION,
                 EventAction.CLICK_PAKAI_MERCHANT_VOUCHER,
                 label
-        );
-    }
-
-    public void eventClickDetailMerchantVoucher(String promoCode) {
-        sendEventCategoryActionLabel(
-                EventName.CLICK_COURIER,
-                EventCategory.COURIER_SELECTION,
-                EventAction.CLICK_DETAIL_MERCHANT_VOUCHER,
-                promoCode
         );
     }
 
@@ -737,7 +775,7 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
 
     public void eventCancelPromoStackingLogistic() {
         sendEventCategoryAction(
-            "",
+                "",
                 EventCategory.COURIER_SELECTION,
                 EventAction.CLICK_X_ON_PROMO_STACKING_LOGISTIC
         );
@@ -918,4 +956,92 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
                 EventAction.CLICK_CLOSE_ON_HELP_POP_UP_IN_CHECKOUT
         );
     }
+
+    public void eventViewInformationAndWarningTickerInCheckout(String tickerId) {
+        sendEventCategoryActionLabel(
+                EventName.VIEW_COURIER_IRIS,
+                EventCategory.COURIER_SELECTION,
+                EventAction.VIEW_INFORMATION_AND_WARNING_TICKER_IN_CHECKOUT,
+                tickerId
+        );
+    }
+
+    public void eventViewPromoAfterAdjustItem(String msg) {
+        sendEventCategoryActionLabel(
+                EventName.VIEW_COURIER_IRIS,
+                EventCategory.COURIER_SELECTION,
+                EventAction.VIEW_PROMO_MESSAGE,
+                msg
+        );
+    }
+
+    public void eventViewPromoLogisticTickerDisable(String promoCode){
+        sendEventCategoryActionLabel(
+                EventName.VIEW_COURIER_IRIS,
+                EventCategory.COURIER_SELECTION,
+                EventAction.VIEW_PROMO_LOGISTIC_TICKER_DISABLE,
+                promoCode
+        );
+    }
+
+    public void eventViewPopupPriceIncrease(String eventLabel) {
+        sendEventCategoryActionLabel(EventName.VIEW_COURIER_IRIS,
+                EventCategory.COURIER_SELECTION,
+                EventAction.VIEW_POP_UP_PRICE_INCREASE,
+                eventLabel);
+    }
+
+    public void eventClickCheckboxDonation(boolean check) {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_DONATION,
+                check ? "check" : "uncheck"
+        );
+    }
+
+    public void eventViewCampaignDialog(int productId, String userId) {
+        Map<String, Object> gtmMap = TrackAppUtils.gtmData(
+                EventName.VIEW_COURIER_IRIS,
+                EventCategory.COURIER_SELECTION,
+                EventAction.VIEW_POP_UP_MESSAGE_TIMER,
+                String.valueOf(productId)
+        );
+        gtmMap.put(ExtraKey.USER_ID, userId);
+        sendGeneralEvent(gtmMap);
+    }
+
+    public void eventClickBelanjaLagiOnDialog(int productId, String userId) {
+        Map<String, Object> gtmMap = TrackAppUtils.gtmData(
+                EventName.VIEW_COURIER_IRIS,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_BELANJA_LAGI_ON_POP_UP,
+                String.valueOf(productId)
+        );
+        gtmMap.put(ExtraKey.USER_ID, userId);
+        sendGeneralEvent(gtmMap);
+    }
+
+    public void eventViewSummaryTransactionTickerCourierNotComplete(String userId) {
+        Map<String, Object> gtmMap = TrackAppUtils.gtmData(
+                EventName.VIEW_COURIER_IRIS,
+                EventCategory.COURIER_SELECTION,
+                EventAction.VIEW_SUMMARY_TRANSACTION_TICKER_COURIER_NOT_COMPLETE,
+                ""
+        );
+        gtmMap.put(ExtraKey.USER_ID, userId);
+        sendGeneralEvent(gtmMap);
+    }
+
+    public void clickCekOnSummaryTransactionTickerCourierNotComplete(String userId) {
+        Map<String, Object> gtmMap = TrackAppUtils.gtmData(
+                EventName.CLICK_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_CEK_ON_SUMMARY_TRANSACTION_TICKER_COURIER_NOT_COMPLETE,
+                ""
+        );
+        gtmMap.put(ExtraKey.USER_ID, userId);
+        sendGeneralEvent(gtmMap);
+    }
+
 }

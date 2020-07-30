@@ -4,19 +4,19 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.LinearSmoothScroller
-import androidx.recyclerview.widget.RecyclerView
 import android.text.InputFilter
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSmoothScroller
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.affiliatecommon.analytics.AffiliateAnalytics
 import com.tokopedia.affiliatecommon.analytics.AffiliateEventTracking
@@ -37,8 +37,8 @@ import com.tokopedia.createpost.di.DaggerCreatePostComponent
 import com.tokopedia.createpost.domain.entity.FeedDetail
 import com.tokopedia.createpost.view.activity.CreatePostActivity
 import com.tokopedia.createpost.view.activity.CreatePostImagePickerActivity
+import com.tokopedia.createpost.view.activity.CreatePostMediaPreviewActivity
 import com.tokopedia.createpost.view.activity.CreatePostVideoPickerActivity
-import com.tokopedia.createpost.view.activity.MediaPreviewActivity
 import com.tokopedia.createpost.view.adapter.DefaultCaptionsAdapter
 import com.tokopedia.createpost.view.adapter.ProductAttachmentAdapter
 import com.tokopedia.createpost.view.adapter.ProductSuggestionAdapter
@@ -55,12 +55,14 @@ import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.MediaItem
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.twitter_share.TwitterAuthenticator
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.videorecorder.main.VideoPickerActivity.Companion.VIDEOS_RESULT
 import kotlinx.android.synthetic.main.bottom_sheet_share_post.view.*
 import kotlinx.android.synthetic.main.fragment_af_create_post.*
+import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -120,7 +122,6 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         private const val MILLISECONDS_PER_INCH = 200f
         private const val VIEW_MODEL = "view_model"
         private const val PARAM_USER_ID = "{user_id}"
-        private const val PRODUCT_ID_QUERY_PARAM = "?product_id="
         private const val REQUEST_IMAGE_PICKER = 1234
         private const val REQUEST_VIDEO_PICKER = 1235
         private const val REQUEST_PREVIEW = 13
@@ -143,7 +144,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
                 .inject(this)
     }
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         activity?.let {
             productSmoothScroller = object : LinearSmoothScroller(it) {
@@ -179,7 +180,9 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         initVar(savedInstanceState)
         initView()
         if (userSession.isLoggedIn) {
-            if (viewModel.isEditState){
+            presenter.getFollowersCount(isTypeAffiliate())
+            presenter.invalidateShareOptions()
+            if (viewModel.isEditState) {
                 presenter.getFeedDetail(viewModel.postId, isTypeAffiliate())
             } else {
                 fetchContentForm()
@@ -209,11 +212,11 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         super.onPause()
     }
 
-    protected inline val isPostEnabled: Boolean
+    private inline val isPostEnabled: Boolean
         get() = viewModel.postId.isNotBlank() ||
                 (viewModel.completeImageList.isNotEmpty()
-                && viewModel.relatedProducts.isNotEmpty()
-                && (viewModel.adIdList.isNotEmpty()) || viewModel.productIdList.isNotEmpty())
+                        && viewModel.relatedProducts.isNotEmpty()
+                        && (viewModel.adIdList.isNotEmpty()) || viewModel.productIdList.isNotEmpty())
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
@@ -379,7 +382,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
     open fun updateRelatedProduct() {
         adapter.updateProduct(viewModel.relatedProducts)
-        if (viewModel.relatedProducts.isEmpty() || viewModel.isEditState){
+        if (viewModel.relatedProducts.isEmpty() || viewModel.isEditState) {
             product_attachment.gone()
             label_title_product_attachment.gone()
         } else {
@@ -432,10 +435,9 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
             viewModel.productIdList.addAll(productIds)
             viewModel.adIdList.addAll(adIds)
         } else {
-            view?.showErrorToaster(
-                    getString(R.string.af_duplicate_product),
-                    getString(R.string.af_title_ok)
-            ) { }
+            view?.let {
+                Toaster.make(it, getString(R.string.af_duplicate_product), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.af_title_ok))
+            }
         }
     }
 
@@ -446,10 +448,8 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
             affiliateAnalytics.onTambahTagButtonClicked()
         } else {
             view?.run {
-                Toaster.showErrorWithAction(this,
-                        getString(R.string.string_attach_product_warning_max_product_format,
-                                viewModel.maxProduct.toString()),
-                        Snackbar.LENGTH_LONG, getString(R.string.general_label_ok), View.OnClickListener {  })
+                Toaster.make(this, getString(R.string.string_attach_product_warning_max_product_format, viewModel.maxProduct.toString()), Snackbar.LENGTH_LONG,
+                        Toaster.TYPE_ERROR, getString(R.string.general_label_ok))
             }
         }
     }
@@ -475,7 +475,9 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     private fun handleDraftError(arguments: Bundle) {
         val errorMessage = arguments.getString(CREATE_POST_ERROR_MSG, "")
         if (errorMessage.isNotBlank()) {
-            view?.showErrorToaster(errorMessage)
+            view?.let {
+                Toaster.make(it, errorMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+            }
         }
     }
 
@@ -496,7 +498,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
             goToVideoPicker()
         }
         media_attachment.setOnFileClickListener(object : FeedMultipleImageView.OnFileClickListener {
-            private fun deleteMedia(position: Int){
+            private fun deleteMedia(position: Int) {
                 viewModel.fileImageList.removeAt(position)
                 if (position < viewModel.urlImageList.size)
                     viewModel.urlImageList.removeAt(position)
@@ -507,17 +509,17 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
             override fun onDeleteItem(item: MediaItem, position: Int) {
                 if (viewModel.fileImageList.size == 1 &&
-                        (viewModel.productIdList.isNotEmpty() || viewModel.adIdList.isNotEmpty())){
+                        (viewModel.productIdList.isNotEmpty() || viewModel.adIdList.isNotEmpty())) {
                     val dialog = Dialog(activity, Dialog.Type.PROMINANCE)
                     dialog.setTitle(getString(R.string.af_update_post))
                     dialog.setDesc(getString(R.string.af_delete_warning_desc))
                     dialog.setBtnOk(getString(R.string.cancel))
                     dialog.setBtnCancel(getString(R.string.title_delete))
-                    dialog.setOnOkClickListener{
+                    dialog.setOnOkClickListener {
                         dialog.dismiss()
                         media_attachment.bind(listOf(item))
                     }
-                    dialog.setOnCancelClickListener{
+                    dialog.setOnCancelClickListener {
                         dialog.dismiss()
                         deleteMedia(position)
                     }
@@ -529,7 +531,9 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
             }
 
-            override fun onClickItem(item: MediaItem, position: Int) { goToMediaPreview() }
+            override fun onClickItem(item: MediaItem, position: Int) {
+                goToMediaPreview()
+            }
         })
         updateMediaPreview()
         caption.filters = arrayOf(InputFilter.LengthFilter(MAX_CHAR))
@@ -539,6 +543,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         }
         caption.setOnTouchListener { v, event ->
             if (v.id == R.id.caption) {
+                showKeyboard()
                 v.parent.requestDisallowInterceptTouchEvent(true)
                 when (event.action and MotionEvent.ACTION_MASK) {
                     MotionEvent.ACTION_UP -> v.parent.requestDisallowInterceptTouchEvent(false)
@@ -548,8 +553,8 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         }
         caption.hint = viewModel.defaultPlaceholder
         caption.setText(viewModel.caption)
-        caption.onFocusChangeListener = View.OnFocusChangeListener{ _, hasFocus ->
-            if (hasFocus){
+        caption.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
                 layout_default_caption.visible()
                 hideProductSuggestion()
                 action_bottom.gone()
@@ -565,13 +570,13 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         icon_add_product.setOnClickListener { onAddProduct() }
         label_add_product.setOnClickListener { onAddProduct() }
 
-        if (viewModel.isEditState){
+        if (viewModel.isEditState) {
             media_attachment.gone()
         }
     }
 
-    private fun updateMediaPreview(){
-        val mItems = if (viewModel.fileImageList.isEmpty()){
+    private fun updateMediaPreview() {
+        val mItems = if (viewModel.fileImageList.isEmpty()) {
             viewModel.urlImageList.map { MediaItem(thumbnail = it.path, type = it.type, isSelected = true) }
         } else viewModel.fileImageList.map { MediaItem(thumbnail = it.path, type = it.type) }
         media_attachment.bind(mItems)
@@ -579,8 +584,8 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
     }
 
-    private fun onDefaultCaptionClicked(_caption: String){
-        if ((caption.text?.length ?: 0) + _caption.length <= MAX_CHAR ){
+    private fun onDefaultCaptionClicked(_caption: String) {
+        if ((caption.text?.length ?: 0) + _caption.length <= MAX_CHAR) {
             caption.text?.append(_caption)
         }
     }
@@ -632,7 +637,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
     private fun goToMediaPreview() {
         context?.let {
-            startActivityForResult(MediaPreviewActivity.createIntent(it, viewModel), REQUEST_PREVIEW)
+            startActivityForResult(CreatePostMediaPreviewActivity.createIntent(it, viewModel), REQUEST_PREVIEW)
         }
     }
 
@@ -655,7 +660,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         var isFormInvalid = false
         if (isTypeAffiliate() && viewModel.adIdList.isEmpty() && !viewModel.isEditState) {
             isFormInvalid = true
-            showUnifyErrorToaster(getString(R.string.af_warning_empty_product), getString(R.string.label_add)){
+            showUnifyErrorToaster(getString(R.string.af_warning_empty_product), getString(R.string.label_add)) {
                 onRelatedAddProductClick()
             }
         } else if (!isTypeAffiliate() && viewModel.productIdList.isEmpty() && !viewModel.isEditState) {
@@ -668,21 +673,24 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
             showUnifyErrorToaster(getString(R.string.af_warning_empty_photo), getString(R.string.label_add)) {
                 goToImagePicker()
             }
-        } else if ((caption.text?.length ?: 0) > MAX_CHAR){
+        } else if ((caption.text?.length ?: 0) > MAX_CHAR) {
             isFormInvalid = true
             showUnifyErrorToaster(getString(R.string.af_warning_over_char, MAX_CHAR.toString()), getString(R.string.general_label_ok))
         }
         return isFormInvalid
     }
 
-    private fun showUnifyErrorToaster(message: CharSequence, action: CharSequence? = null, actionClick: ((View) -> Unit)? = null){
-        view?.let {v ->
-            if (action.isNullOrBlank()){
-                Toaster.showError(v, message.toString(), Snackbar.LENGTH_LONG)
+    private fun showUnifyErrorToaster(message: CharSequence, action: CharSequence? = null, actionClick: ((View) -> Unit)? = null) {
+        view?.let { v ->
+            if (action.isNullOrBlank()) {
+                Toaster.make(v, message.toString(), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
             } else {
-                Toaster.showErrorWithAction(v, message.toString(), Snackbar.LENGTH_LONG, action.toString(), View.OnClickListener {
-                    actionClick?.invoke(it)
-                })
+                Toaster.apply {
+                    toasterCustomCtaWidth = resources.getDimension(R.dimen.dp_100).toPx().toInt()
+                    make(v, message.toString(), Snackbar.LENGTH_LONG, TYPE_ERROR, action.toString(), View.OnClickListener {
+                        actionClick?.invoke(it)
+                    })
+                }
             }
         }
     }
@@ -752,8 +760,8 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun onDeleteProduct(position: Int){
-        if (adapter.itemCount < 1){
+    private fun onDeleteProduct(position: Int) {
+        if (adapter.itemCount < 1) {
             label_title_product_attachment.gone()
             product_attachment.gone()
         } else {
@@ -808,7 +816,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
     private fun onErrorGetProductSuggestion(t: Throwable) {
         context?.let {
-            t.debugTrace()
+            Timber.d(t)
             val errorMessage = ErrorHandler.getErrorMessage(context, t)
             Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
             hideProductSuggestionLoading()
@@ -904,6 +912,12 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
                 saveDraftAndSubmit(true)
                 shareDialog.dismiss()
             }
+        }
+    }
+
+    private fun showKeyboard() {
+        activity?.let {
+            (it.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
         }
     }
 }

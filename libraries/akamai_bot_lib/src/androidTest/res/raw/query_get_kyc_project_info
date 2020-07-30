@@ -1,0 +1,15 @@
+query get_project_info($projectId: Int!) {
+    kycProjectInfo(projectID: $projectId) {
+        Status
+        StatusName
+        Message
+        IsAllowToRegister
+        TypeList {
+          TypeID
+          Status
+          StatusName
+          IsAllowToUpload
+        }
+    }
+}
+

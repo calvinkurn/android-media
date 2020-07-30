@@ -1,22 +1,20 @@
 package com.tokopedia.inbox.rescenter.product;
 
 import android.app.Fragment;
-import android.content.Intent;
 import android.os.Bundle;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.PreviewProductImage;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.base.BaseDaggerFragment;
 import com.tokopedia.inbox.rescenter.detailv2.di.component.ResolutionDetailComponent;
-import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationAttachmentDomain;
 import com.tokopedia.inbox.rescenter.product.di.component.DaggerResolutionProductDetailComponent;
 import com.tokopedia.inbox.rescenter.product.di.component.ResolutionProductDetailComponent;
 import com.tokopedia.inbox.rescenter.product.di.module.ResolutionProductDetailModule;
@@ -24,9 +22,6 @@ import com.tokopedia.inbox.rescenter.product.view.customadapter.AttachmentAdapte
 import com.tokopedia.inbox.rescenter.product.view.model.ProductDetailViewData;
 import com.tokopedia.inbox.rescenter.product.view.presenter.ProductDetailFragmentContract;
 import com.tokopedia.inbox.rescenter.product.view.presenter.ProductDetailFragmentImpl;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
 

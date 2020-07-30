@@ -1,51 +1,34 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddress
 
-import org.junit.Test
+import com.tokopedia.logisticaddaddress.common.AddressConstants
+import org.junit.Assert
+import org.spekframework.spek2.Spek
+import org.spekframework.spek2.style.gherkin.Feature
 
-import org.junit.Assert.*
+object AddNewAddressUtilsTest: Spek ({
 
-class AddNewAddressUtilsTest {
+    Feature("execute given value") {
 
-    @Test
-    fun givenExactValue_whenExecuted_thenReturnTrue() {
-        // Default Monas
-        val tLat = -6.175794
-        val tLong = 106.826457
+        Scenario("givenExactValue_whenExecuted") {
+            val tLat = AddressConstants.DEFAULT_LAT
+            val tLong = AddressConstants.DEFAULT_LONG
 
-        val actual = AddNewAddressUtils.hasDefaultCoordinate(tLat, tLong)
+            val actual = AddNewAddressUtils.hasDefaultCoordinate(tLat, tLong)
 
-        assertTrue(actual)
+            Then("return true") {
+                Assert.assertTrue(actual)
+            }
+        }
+
+        Scenario("givenSlightlyMiss_whenExecuted") {
+            val tLat = AddressConstants.DEFAULT_LAT - 0.000009
+            val tLong = AddressConstants.DEFAULT_LONG + 0.000006
+
+            val actual = AddNewAddressUtils.hasDefaultCoordinate(tLat, tLong)
+
+            Then("return true") {
+                Assert.assertTrue(actual)
+            }
+        }
     }
-
-    @Test
-    fun givenSlightlyMiss_whenExecuted_thenReturnTrue() {
-        val tLat = -6.1757931839
-        val tLong = 106.8264570490
-
-        val actual = AddNewAddressUtils.hasDefaultCoordinate(tLat, tLong)
-
-        assertTrue(actual)
-    }
-
-    @Test
-    fun givenValueFromMapIdle_whenExecuted_thenReturnTrue() {
-        val tLat = -6.175793971019989
-        val tLong = 106.82645704597235
-
-        val actual = AddNewAddressUtils.hasDefaultCoordinate(tLat, tLong)
-
-        assertTrue(actual)
-    }
-
-    @Test
-    fun givenSlightlyDrag_whenExecuted_thenReturnFalse() {
-        val tLat = -6.175644639000966
-        val tLong = 106.82704713195562
-
-        val actual = AddNewAddressUtils.hasDefaultCoordinate(tLat, tLong)
-
-        assertFalse(actual)
-    }
-
-
-}
+})

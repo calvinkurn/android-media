@@ -78,7 +78,8 @@ public class VerificationPresenter extends BaseDaggerPresenter<Verification.View
                 requestOtpUseCase.execute(RequestOtpUseCase.getParamEmail(
                         viewModel.getEmail(),
                         viewModel.getOtpType(),
-                        userSession.getUserId()
+                        userSession.getUserId(),
+                        viewModel.getNumberOtpDigit()
                 ), new RequestOtpSubscriber(getView()));
                 break;
             default:
@@ -86,7 +87,8 @@ public class VerificationPresenter extends BaseDaggerPresenter<Verification.View
                         viewModel.getType(),
                         viewModel.getPhoneNumber(),
                         viewModel.getOtpType(),
-                        userSession.getUserId()
+                        userSession.getUserId(),
+                        viewModel.getNumberOtpDigit()
                 ), new RequestOtpSubscriber(getView()));
                 break;
         }
@@ -98,7 +100,8 @@ public class VerificationPresenter extends BaseDaggerPresenter<Verification.View
                     requestOtpUseCase.execute(RequestOtpUseCase.getParamEmail(
                             viewModel.getEmail(),
                             viewModel.getOtpType(),
-                            userSession.getTemporaryUserId()
+                            userSession.getTemporaryUserId(),
+                            viewModel.getNumberOtpDigit()
                     ), new RequestOtpSubscriber(getView()));
                 break;
             default:
@@ -106,7 +109,8 @@ public class VerificationPresenter extends BaseDaggerPresenter<Verification.View
                             viewModel.getType(),
                             viewModel.getPhoneNumber(),
                             viewModel.getOtpType(),
-                            userSession.getTemporaryUserId()
+                            userSession.getTemporaryUserId(),
+                            viewModel.getNumberOtpDigit()
                     ), new RequestOtpSubscriber(getView()));
                 break;
         }
@@ -171,7 +175,6 @@ public class VerificationPresenter extends BaseDaggerPresenter<Verification.View
                     if (listVerificationMethod.getList().isEmpty()) {
                         getView().logUnknownError(new Throwable("mode list is empty"));
                     } else {
-
                         for (MethodItem methodItem : listVerificationMethod.getList()) {
                             if (methodItem.getModeName().equals(viewModel.getMode())) {
                                 getView().onSuccessGetModelFromServer(methodItem);

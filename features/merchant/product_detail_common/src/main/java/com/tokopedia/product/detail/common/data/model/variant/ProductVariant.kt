@@ -41,7 +41,7 @@ data class ProductVariant(
         var children: List<Child> = listOf()
 ) {
     val hasChildren: Boolean
-        get() = with(children) {this.isNotEmpty() }
+        get() = with(children) { this.isNotEmpty() }
 
     val hasVariant: Boolean
         get() = with(variant) { this.isNotEmpty() }
@@ -88,7 +88,7 @@ data class ProductVariant(
         return null
     }
 
-    
+
 }
 
 data class Picture(

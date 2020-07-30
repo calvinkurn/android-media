@@ -14,4 +14,8 @@ data class Share (
         val title: String = "",
         @SerializedName("url")
         val url: String = ""
-)
+) {
+        fun copy(): Share {
+                return Share(description, imageUrl, text, title, url)
+        }
+}

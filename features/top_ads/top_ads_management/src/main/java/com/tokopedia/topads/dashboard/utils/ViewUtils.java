@@ -4,7 +4,7 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import android.text.TextUtils;
 
-import com.tokopedia.core.network.retrofit.exception.ResponseV4ErrorException;
+import com.tokopedia.network.data.model.response.ResponseV4ErrorException;
 import com.tokopedia.product.manage.item.common.util.TomeException;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.common.data.exception.ResponseErrorException;

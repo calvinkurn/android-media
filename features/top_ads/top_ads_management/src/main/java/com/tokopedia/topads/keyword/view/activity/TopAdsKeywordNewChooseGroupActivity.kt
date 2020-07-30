@@ -4,9 +4,9 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import androidx.appcompat.app.AlertDialog
 import android.view.MenuItem
+import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity
 import com.tokopedia.abstraction.base.view.model.StepperModel
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -83,7 +83,7 @@ class TopAdsKeywordNewChooseGroupActivity : BaseStepperActivity(), HasComponent<
         return TopAdsComponentInstance.getComponent(application)
     }
 
-    override fun onSaveInstanceState(outState: Bundle?) {
+    override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState?.putParcelable(STEPPER_MODEL_EXTRA, stepperModel)
         outState?.putInt(SAVED_POSITION, currentPosition)

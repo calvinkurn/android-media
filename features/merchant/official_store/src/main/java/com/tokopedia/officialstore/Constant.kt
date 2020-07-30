@@ -20,6 +20,8 @@ object DynamicChannelIdentifiers {
     val LAYOUT_SPRINT_LEGO = "sprint_lego"
     val LAYOUT_LEGO_3_IMAGE = "lego_3_image"
     val LAYOUT_6_IMAGE = "6_image"
+    val LAYOUT_MIX_LEFT = "left_carousel"
+    val LAYOUT_MIX_TOP = "top_carousel"
 
     val CTA_MODE_MAIN = "main"
     val CTA_MODE_TRANSACTION = "transaction"
@@ -30,6 +32,14 @@ object DynamicChannelIdentifiers {
     val CTA_TYPE_FILLED = "filled"
     val CTA_TYPE_GHOST = "ghost"
     val CTA_TYPE_TEXT = "text_only"
+}
+
+object FirebasePerformanceMonitoringConstant {
+    val CATEGORY = "mp_os_home_category"
+    val BANNER = "mp_os_home_{slug}_banner"
+    val BRAND = "mp_os_home_{slug}_featuredbrand"
+    val DYNAMIC_CHANNEL = "mp_os_home_{slug}_fsdcdm"
+    val PRODUCT_RECOM = "mp_os_home_{slug}_productrecom"
 }
 
 object ApplinkConstant {

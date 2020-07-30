@@ -1,0 +1,37 @@
+<resources>
+    <string name="liveness_app_name">liveness</string>
+    <string name="liveness_title" translatable="false">Verifikasi Wajah</string>
+    <string name="liveness_none"></string>
+    <string name="liveness_blink">Silakan berkedip</string>
+    <string name="liveness_mouse">Buka dan tutup mulut</string>
+    <string name="liveness_pos_raw">Tengok ke kanan atau ke kiri</string>
+    <string name="liveness_hold_phone_vertical">Please hold the phone upright </string>
+    <string name="liveness_weak_light">Find a brighter place</string>
+    <string name="liveness_too_light">Find a darker place</string>
+    <string name="liveness_no_camera_permission">Camera is not turned on, please turn on camera permissions</string>
+    <string name="liveness_perform">Yes</string>
+    <string name="liveness_cancel">Cancel</string>
+    <string name="liveness_try_again">Use again</string>
+    <string name="liveness_detection_success">Liveness detection succeed</string>
+    <string name="liveness_move_face_center">Posisikan wajahmu tepat di tengah area lingkaran</string>
+    <string name="liveness_still">Pastikan wajahmu siap untuk memulai</string>
+    <string name="liveness_frontal">Arahkan wajah sejajar dengan layar</string>
+    <string name="liveness_detection_fail">Liveness detection failed, please try again</string>
+    <string name="liveness_time_out">Waktu habis</string>
+    <string name="liveness_no_people_face">Posisikan wajahmu tepat di tengah area lingkaran</string>
+    <string name="liveness_auth_check">Silakan tunggu</string>
+    <string name="liveness_tip_move_closer">Arahkan wajah lebih dekat ke layar</string>
+    <string name="liveness_tip_move_furthre">Arahkan wajah lebih jauh ke layar</string>
+
+    <string name="liveness_device_not_support_title">Scan wajah gagal</string>
+    <string name="liveness_device_not_support">HP kamu belum mendukung fitur verifikasi wajah. Jangan khawatir, kamu bisa pakai cara lain.</string>
+    <string name="liveness_device_not_support_primary_button">Ganti Cara Verifikasi</string>
+    <string name="liveness_device_not_support_secondary_button">Batal</string>
+
+    <string name="exit">Keluar</string>
+    <string name="default_error_unknown">Terjadi kesalahan, Ulangi beberapa saat lagi.</string>
+
+    <string name="liveness_retry" translatable="false">Coba Lagi</string>
+    <string name="upload_loading_title" translatable="false">Tunggu sebentar, ya…</string>
+    <string name="upload_loading_subtitle" translatable="false">Dokumenmu sedang di-upload</string>
+</resources>

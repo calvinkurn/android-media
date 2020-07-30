@@ -9,8 +9,13 @@ public class AccountConstants {
     public static final String TOPADS_QUERY = "topads_query";
     public static final String VARIABLES = "variables";
     public static final String RC_GIFTCARD_ENABLE = "enable_gift_card_transaction_history_entry";
+    public static final String RC_LOCALSERVICE_ENABLE = "enable_local_service_transaction_history_entry";
+    public static final String RC_FOOD_AND_VOUCHER_ICON_ENABLE = "enable_food_and_voucher_icon";
     public static final String TOP_SELLER_APPLICATION_PACKAGE = "com.tokopedia.sellerapp";
     public static final String SALDO_QUERY = "saldo_query";
+    public static final String SHOP_LOCATION_QUERY = "query_shop_location";
+    public static final String ACCOUNT_TAB = "ACCOUNT_TAB";
+    public static final String ACCOUNT_TAB_SELLER = "ACCOUNT_TAB_SELLER";
 
     public static class Navigation {
         public static final String SEE_ALL = "lihat_semua";
@@ -39,8 +44,11 @@ public class AccountConstants {
         public static final String ACCOUNT = "account";
         public static final String PAYMENT_METHOD = "payment method";
         public static final String NOTIFICATION = "notification";
+        public static final String INBOX = "inbox";
         public static final String SHAKE_SHAKE = "shake - shake";
+        public static final String SAFE_MODE = "safe mode";
         public static final String TERM_CONDITION = "terms & condition";
+        public static final String ABOUT_US = "about us";
         public static final String PRIVACY_POLICY = "privacy policy";
         public static final String APPLICATION_REVIEW = "application review";
         public static final String HELP_CENTER = "help center";
@@ -77,7 +85,7 @@ public class AccountConstants {
         public static final String SCREEN_NAME_ACCOUNT = "/account";
         public static final String MY_ACCOUNT = "my account page";
         public static final String CLICK_MY_ACCOUNT_ACTIVATION_OVO = "click aktivasi ovo pada akun";
-        public static final String CLICK_KYC_SETTING = "click on dokumen data diri";
+        public static final String CLICK_KYC_SETTING = "click dokumen data diri";
         public static final String CLICK_KYC_REJECTED = "click on verifikasi ulang";
         public static final String CLICK_KYC_NOT_VERIFIED = "click on verifikasi sekarang";
         public static final String CLICK_KYC_PENDING = "click on lihat status";
@@ -91,6 +99,7 @@ public class AccountConstants {
         public static final String OVO_PAY_ICON_CLICK = "ovo - tokopedia pay icon click";
         public static final String BY_ME_CURATION = "kurasi produk by.me";
         public static final String CLICK_FINTECH_MICROSITE = "clickFintechMicrosite";
+        public static final String CLICK_ON_PASSWORD = "click on kata sandi";
 
         public static final String EVENT_CLICK_ACCOUNT = "clickAccount";
         public static final String CATEGORY_ACCOUNT_SELL = "my account - sell";
@@ -158,6 +167,10 @@ public class AccountConstants {
         public static final String PROMOTION_CLICK = "promoClick";
 
         public static final String VALUE_ACCOUNT_PROMOTION_NAME = "/account_profile_buyer/promotion";
+
+        public static final String CLICK_NOTIF_CENTER = "clickNotifCenter";
+        public static final String NOTIF_CENTER = "notif center";
+        public static final String NOTIF_CENTER_ACTION = "click on bell on global nav";
     }
 
     public interface VccStatus {
@@ -174,5 +187,9 @@ public class AccountConstants {
 
     public interface ErrorCodes{
         String ERROR_CODE_NULL_MENU = "ACC001";
+        String ERROR_CODE_ACCOUNT_SETTING_CONFIG = "ASC001";
+        String ERROR_CODE_BUYER_ACCOUNT = "ACB001";
+        String ERROR_CODE_SELLER_ACCOUNT = "ACS001";
+
     }
 }

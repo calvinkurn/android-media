@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.instantloan.InstantLoanComponentInstance
@@ -21,7 +22,6 @@ import com.tokopedia.instantloan.data.model.response.GqlLoanAmountResponse
 import com.tokopedia.instantloan.data.model.response.LoanPeriodType
 import com.tokopedia.instantloan.network.InstantLoanUrl.COMMON_URL.LOAN_AMOUNT_QUERY_PARAM
 import com.tokopedia.instantloan.network.InstantLoanUrl.COMMON_URL.WEB_LINK_NO_COLLATERAL
-import com.tokopedia.instantloan.router.InstantLoanRouter
 import com.tokopedia.instantloan.view.activity.SelectLoanCategoryActivity
 import com.tokopedia.instantloan.view.activity.SelectLoanParamActivity
 import com.tokopedia.instantloan.view.contractor.OnlineLoanContractor
@@ -54,22 +54,17 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, Wid
     private lateinit var selectedLoanPeriodMonth: LoanPeriodType
     private lateinit var selectedLoanPeriodYear: LoanPeriodType
     private lateinit var selectedLoanCategoryData: GqlLendingCategoryData
-    private lateinit var selectedLoanAmountResponse: GqlLoanAmountResponse
-
-    private var currentLoanPeriodType: Int = 0
 
     private var loanPeriodMonthList: ArrayList<LoanPeriodType> = ArrayList()
     private var loanPeriodYearList: ArrayList<LoanPeriodType> = ArrayList()
     private var loanPeriodTypeList: ArrayList<LoanPeriodType> = ArrayList()
     private var loanCategoryTypeList: ArrayList<GqlLendingCategoryData> = ArrayList()
     private var loanAmountList: ArrayList<GqlLoanAmountResponse> = ArrayList()
-    private var mCurrentTab: Int = 0
     private var mContext: Context? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         presenter.attachView(this)
-        mCurrentTab = arguments?.getInt(TAB_POSITION) ?: 0
     }
 
     override fun onAttachActivity(context: Context) {
@@ -142,12 +137,12 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, Wid
             }
         }
 
-        view.findViewById<View>(com.tokopedia.instantloan.R.id.button_search_pinjaman).setOnClickListener { view1 ->
+        view.findViewById<View>(com.tokopedia.instantloan.R.id.button_search_pinjaman).setOnClickListener {
 
-            if (!presenter.isUserLoggedIn()) {
-                navigateToLoginPage()
-            } else {
+            if (userSession.isLoggedIn) {
                 searchLoanOnline()
+            } else {
+                navigateToLoginPage()
             }
         }
 
@@ -166,7 +161,7 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, Wid
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == LOGIN_REQUEST_CODE) {
-            if (userSession != null && userSession.isLoggedIn) {
+            if (userSession.isLoggedIn) {
                 searchLoanOnline()
             } else {
                 showToastMessage(resources.getString(com.tokopedia.instantloan.R.string.login_to_proceed), Toast.LENGTH_SHORT)
@@ -257,6 +252,14 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, Wid
 
     }
 
+    override fun getFilterDataQuery(): String {
+        return GraphqlHelper.loadRawString(resources, com.tokopedia.instantloan.R.raw.query_filter_data)
+    }
+
+    override fun isViewAttached(): Boolean {
+        return presenter.isViewAttached
+    }
+
     private fun prepareLoanPeriodTypeList() {
 
         loanPeriodTypeList = ArrayList()
@@ -321,28 +324,16 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, Wid
         return InstantLoanEventConstants.Screen.TANPA_AGUNAN_SCREEN_NAME
     }
 
-    override fun getAppContext(): Context? {
-        return getContext()?.applicationContext
-    }
-
-    override fun getActivityContext(): Context? {
-        return getContext()
-    }
-
-    override fun navigateToLoginPage() {
+    private fun navigateToLoginPage() {
         val intent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
         startActivityForResult(intent, LOGIN_REQUEST_CODE)
     }
 
-    override fun showToastMessage(message: String, duration: Int) {
-        Toast.makeText(getContext(), message, duration).show()
+    private fun showToastMessage(message: String, duration: Int) {
+        Toast.makeText(context, message, duration).show()
     }
 
-    override fun openWebView(url: String) {
-        RouteManager.route(context!!, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
-    }
-
-    override fun searchLoanOnline() {
+    private fun searchLoanOnline() {
         if (!::selectedLoanPeriodType.isInitialized) {
             loanPeriodLabelTV.error = ""
 
@@ -358,21 +349,10 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, Wid
                             selectedLoanPeriodType.value?.toLowerCase(),
                             loanPeriodValueTV.tag as String,
                             (loanCategoryValueTV.tag as Int).toString()), "UTF-8")))
-
-            /*startActivity((activity!!
-                    .application as InstantLoanRouter).getWebviewActivityWithIntent(context,
-                    URLEncoder.encode(WEB_LINK_NO_COLLATERAL + String.format(LOAN_AMOUNT_QUERY_PARAM,
-                            widgetAddRemove.getLoanValue().toString(),
-                            selectedLoanPeriodType.value?.toLowerCase(),
-                            loanPeriodValueTV.tag as String,
-                            (loanCategoryValueTV.tag as Int).toString()), "UTF-8")))*/
-
         }
     }
 
     companion object {
-
-        private val TAB_POSITION = "tab_position"
 
         private val DEFAULT_LOAN_CATEGORY = 0
         private val DEFAULT_MONTH_VALUE = "Month"
@@ -385,9 +365,8 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, Wid
         private val LOAN_PERIOD_YEAR = 14
         private val LOAN_CATEGORY_TYPE = 15
 
-        fun createInstance(position: Int): TanpaAgunanFragment {
+        fun createInstance(): TanpaAgunanFragment {
             val bundle = Bundle()
-            bundle.putInt(TAB_POSITION, position)
             val tanpaAgunanFragment = TanpaAgunanFragment()
             tanpaAgunanFragment.arguments = bundle
             return tanpaAgunanFragment

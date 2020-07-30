@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/ivEmpty"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_attachvoucher_216"
+        android:layout_marginTop="@dimen/spacing_lvl4" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:gravity="center"
+        android:text="@string/title_attachvoucher_empty"
+        android:textColor="@color/Neutral_N700_96"
+        app:typographyType="heading_2"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:gravity="center"
+        android:text="@string/desc_attachvoucher_empty"
+        android:textColor="@color/Neutral_N700_96"
+        app:typographyType="body_3" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnCreateVoucher"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_48"
+        android:layout_marginTop="@dimen/spacing_lvl5"
+        android:layout_marginEnd="@dimen/dp_48"
+        android:text="@string/action_attachvoucher_create_voucher"
+        app:unifyButtonSize="large" />
+</LinearLayout>
