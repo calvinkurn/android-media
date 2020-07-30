@@ -3,12 +3,14 @@ package com.tokopedia.sellerhome.view.activity
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomnavigation.LabelVisibilityMode
@@ -93,6 +95,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sah_seller_home)
 
+        window.decorView.setBackgroundColor(Color.WHITE)
         setupToolbar()
         setupStatusBar()
         setupNavigator()
@@ -222,6 +225,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
     }
 
     private fun setupBottomNav() {
+        sahBottomNav.setBackgroundColor(ContextCompat.getColor(this, android.R.color.transparent))
         sahBottomNav.itemIconTintList = null
         sahBottomNav.labelVisibilityMode = LabelVisibilityMode.LABEL_VISIBILITY_LABELED
         sahBottomNav.setOnNavigationItemSelectedListener { menu ->

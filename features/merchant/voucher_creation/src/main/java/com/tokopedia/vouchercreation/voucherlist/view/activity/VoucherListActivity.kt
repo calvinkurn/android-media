@@ -60,7 +60,6 @@ class VoucherListActivity : BaseActivity(),
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_mvc_voucher_list)
 
-
         window.decorView.setBackgroundColor(Color.WHITE)
         setWhiteStatusBar()
 
