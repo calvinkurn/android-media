@@ -315,7 +315,7 @@ open class HomeViewModel @Inject constructor(
             if(newPlayCarouselDataModel.channelList.isEmpty()){
                 _homeLiveData.value?.list?.indexOfFirst { visitable -> visitable is PlayCarouselCardDataModel }?.let{ playIndex ->
                     logChannelUpdate("delete play banner data: ${newPlayCarouselDataModel.title}")
-                    updateWidget(UpdateLiveDataModel(ACTION_DELETE, playCarouselCardDataModel, playIndex))
+                    updateWidget(UpdateLiveDataModel(ACTION_DELETE, playCarouselCardDataModel))
                 }
             } else {
                 val newList = mutableListOf<Visitable<*>>()
@@ -333,8 +333,7 @@ open class HomeViewModel @Inject constructor(
             if(playCarouselCardDataModel.playBannerCarouselDataModel.channelList.isEmpty()) {
                 val newList = mutableListOf<Visitable<*>>()
                 newList.addAll(_homeLiveData.value?.list ?: listOf())
-                val playIndex = newList.indexOfFirst { visitable -> visitable is PlayCarouselCardDataModel }
-                updateWidget(UpdateLiveDataModel(ACTION_DELETE, playCarouselCardDataModel, playIndex))
+                updateWidget(UpdateLiveDataModel(ACTION_DELETE, playCarouselCardDataModel))
             }
         }
     }
@@ -527,9 +526,9 @@ open class HomeViewModel @Inject constructor(
     // play widget it will be removed when load image is failed (deal from PO)
     // because don't let the banner blank
     fun clearPlayBanner(){
-        val playIndex = _homeLiveData.value?.list.copy().indexOfFirst { visitable -> visitable is PlayCardDataModel }
-        if(playIndex != -1) {
-            launch(coroutineContext) { updateWidget(UpdateLiveDataModel(ACTION_DELETE, null, playIndex )) }
+        val play = _homeLiveData.value?.list.copy().find { visitable -> visitable is PlayCardDataModel }
+        if(play != null) {
+            launch(coroutineContext) { updateWidget(UpdateLiveDataModel(ACTION_DELETE, play )) }
         }
     }
 
@@ -895,7 +894,6 @@ open class HomeViewModel @Inject constructor(
                         homeData = evaluateAvailableComponent(homeDataModel)
                         _homeLiveData.value = homeData
                     }
-                    delay(100)
                     getPlayBannerCarousel()
                     getHeaderData()
                     getReviewData()
@@ -934,7 +932,14 @@ open class HomeViewModel @Inject constructor(
     private fun initChannel(){
         logChannelUpdate("init channel")
         jobChannel?.cancelChildren()
-        jobChannel = launch(homeDispatcher.get().ui()) {
+        launch (homeDispatcher.get().ui()){
+            updateChannel(channel)
+        }
+    }
+    private suspend fun reinitChannel(){
+        logChannelUpdate("reinit channel")
+        jobChannel?.cancelChildren()
+        withContext (homeDispatcher.get().ui()){
             updateChannel(channel)
         }
     }
@@ -1380,7 +1385,6 @@ open class HomeViewModel @Inject constructor(
 // ============================================================================================
 // ================================ Live Data Controller ======================================
 // ============================================================================================
-    // make coffee channel
     private suspend fun updateChannel(channel: ReceiveChannel<UpdateLiveDataModel>){
         for(data in channel){
             if(data.action == ACTION_UPDATE_HOME_DATA){
@@ -1444,8 +1448,9 @@ open class HomeViewModel @Inject constructor(
             channel.send(updateWidget)
         }catch (e: ClosedSendChannelException){
             logChannelUpdate("Update Widget Error... (send = ${channel.isClosedForSend} | widget = $updateWidget)")
+            logChannelUpdate("init channel")
             initChannel()
-            channel.send(updateWidget)
+            updateWidget(updateWidget)
         }
     }
 
