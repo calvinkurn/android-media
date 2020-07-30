@@ -67,8 +67,8 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         removeObservers(viewModel.reviewTabs)
+        super.onDestroy()
     }
 
 

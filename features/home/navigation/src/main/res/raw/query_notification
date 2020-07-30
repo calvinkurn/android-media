@@ -49,4 +49,8 @@ query Notification($cursor: String) {
   homeFlag {
     isOSBottomNav
   }
+
+    productrevInboxReviewCounter {
+      count
+    }
 }
