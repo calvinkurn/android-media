@@ -29,11 +29,12 @@ class ProductShopCredibilityViewHolder(private val view: View, private val liste
     override fun bind(element: ProductShopCredibilityDataModel) {
         with(view) {
             showShopLoading()
-            element.shopInfo?.let {
-                shop_name.text = MethodChecker.fromHtml(it.shopCore.name)
-                shop_location_online.text = context.getString(R.string.location_dot_builder, it.location)
-                setupLastActive(element.shopInfo?.shopLastActive.orEmpty())
-                setupBadgeAndImage(it, element.isOs, element.isPm)
+            if (element.shopInfo.shopCore.shopID.isNotEmpty()) {
+                val shopInfo = element.shopInfo
+                shop_name.text = MethodChecker.fromHtml(shopInfo.shopCore.name)
+                shop_location_online.text = context.getString(R.string.location_dot_builder, shopInfo.location)
+                setupLastActive(shopInfo.shopLastActive)
+                setupBadgeAndImage(shopInfo, element.isOs, element.isPm)
                 setupGoApotik(element.isGoApotik)
                 setupInfoRegion(element)
                 hideShopLoading()

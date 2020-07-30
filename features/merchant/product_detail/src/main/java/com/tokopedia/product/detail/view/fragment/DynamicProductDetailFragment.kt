@@ -84,7 +84,6 @@ import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductIn
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.product.TopAdsGetProductManage
 import com.tokopedia.product.detail.common.data.model.product.Video
-import com.tokopedia.product.detail.data.model.ProductInfoP2ShopData
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.model.ProductInfoP3
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
@@ -121,7 +120,6 @@ import com.tokopedia.referral.ReferralAction
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shopetalasepicker.constant.ShopParamConstant
 import com.tokopedia.shopetalasepicker.view.activity.ShopEtalasePickerActivity
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
@@ -211,7 +209,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private var affiliateString: String? = null
     private var deeplinkUrl: String = ""
     private var isFromDeeplink: Boolean = false
-    private var delegateTradeInTracking = false
     private var trackerAttributionPdp: String? = ""
     private var trackerListNamePdp: String? = ""
     private var warehouseId: String? = null
@@ -493,7 +490,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     override fun onDestroy() {
         hideProgressDialog()
         viewModel.productLayout.removeObservers(this)
-        viewModel.p2ShopDataResp.removeObservers(this)
         viewModel.p2Login.removeObservers(this)
         viewModel.productInfoP3.removeObservers(this)
         viewModel.loadTopAdsProduct.removeObservers(this)
@@ -543,7 +539,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             R.id.btn_edit_product -> {
                 val shopInfo = viewModel.shopInfo
                 val productInfo = viewModel.getDynamicProductInfoP1
-                if (shopInfo != null && shopInfo.isAllowManage == 1) {
+                if (shopInfo.isShopInfoNotEmpty() && shopInfo.isAllowManage == 1) {
                     if (productInfo?.basic?.status != ProductStatusTypeDef.PENDING) {
                         DynamicProductDetailTracking.Click.eventEditProductClick(viewModel.isUserSessionActive, viewModel.getDynamicProductInfoP1, ComponentTrackDataModel())
                         gotoEditProduct()
@@ -665,7 +661,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             }
             ProductDetailConstant.PRODUCT_INSTALLMENT_INFO -> {
                 DynamicProductDetailTracking.Click.eventClickPDPInstallmentSeeMore(viewModel.getDynamicProductInfoP1, componentTrackDataModel)
-                openFtInstallmentBottomSheet(viewModel.p2Data.value?.productFinancingCalculationData ?: FtInstallmentCalculationDataResponse())
+                openFtInstallmentBottomSheet(viewModel.p2Data.value?.productFinancingCalculationData
+                        ?: FtInstallmentCalculationDataResponse())
             }
             ProductDetailConstant.PRODUCT_VARIANT_INFO -> {
                 if (!GlobalConfig.isSellerApp()) {
@@ -797,10 +794,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     override fun onReviewClick() {
         viewModel.getDynamicProductInfoP1?.run {
-            DynamicProductDetailTracking.Iris.eventReviewClickedIris(this, deeplinkUrl, viewModel.shopInfo?.shopCore?.name
-                    ?: "")
-            DynamicProductDetailTracking.Moengage.sendMoEngageClickReview(this, viewModel.shopInfo?.shopCore?.name
-                    ?: "")
+            DynamicProductDetailTracking.Iris.eventReviewClickedIris(this, deeplinkUrl, basic.shopName)
+            DynamicProductDetailTracking.Moengage.sendMoEngageClickReview(this)
             goToReviewDetail(basic.productID, getProductName)
         }
     }
@@ -838,8 +833,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             trackOnTickerClicked(tickerTitle, tickerType, componentTrackDataModel)
             //Make sure dont put your parameter inside constructor, it will cause crash when dont keep activity
             val shopStatusBs = ShopStatusInfoBottomSheet()
-            shopStatusBs.statusInfo = viewModel.shopInfo?.statusInfo ?: ShopInfo.StatusInfo()
-            shopStatusBs.closedInfo = viewModel.shopInfo?.closedInfo ?: ShopInfo.ClosedInfo()
+            shopStatusBs.statusInfo = viewModel.shopInfo.statusInfo
+            shopStatusBs.closedInfo = viewModel.shopInfo.closedInfo
             shopStatusBs.isShopOwner = viewModel.isShopOwner()
             shopStatusBs.show(it.supportFragmentManager, "Shop Status BS")
         }
@@ -874,9 +869,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     override fun onSeeAllMerchantVoucherClick(componentTrackDataModel: ComponentTrackDataModel) {
         activity?.let {
             viewModel.getDynamicProductInfoP1?.run {
-                DynamicProductDetailTracking.Click.eventClickMerchantVoucherSeeAll(viewModel.getDynamicProductInfoP1, componentTrackDataModel)
-                val intent = MerchantVoucherListActivity.createIntent(it, basic.shopID,
-                        viewModel.shopInfo?.shopCore?.name)
+                DynamicProductDetailTracking.Click.eventClickMerchantVoucherSeeAll(this, componentTrackDataModel)
+                val intent = MerchantVoucherListActivity.createIntent(it, basic.shopID, basic.shopName)
                 startActivityForResult(intent, ProductDetailConstant.REQUEST_CODE_MERCHANT_VOUCHER)
             }
         }
@@ -985,10 +979,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     override fun onDiscussionClicked(componentTrackDataModel: ComponentTrackDataModel?) {
 
         viewModel.getDynamicProductInfoP1?.run {
-            DynamicProductDetailTracking.Iris.eventDiscussionClickedIris(this, deeplinkUrl, viewModel.shopInfo?.shopCore?.name
-                    ?: "", componentTrackDataModel ?: ComponentTrackDataModel())
-            DynamicProductDetailTracking.Moengage.sendMoEngageClickDiskusi(this, viewModel.shopInfo?.shopCore?.name
-                    ?: "")
+            DynamicProductDetailTracking.Iris.eventDiscussionClickedIris(this, deeplinkUrl, basic.shopName, componentTrackDataModel
+                    ?: ComponentTrackDataModel())
+            DynamicProductDetailTracking.Moengage.sendMoEngageClickDiskusi(this)
         }
 
         disscussionClicked()
@@ -1092,7 +1085,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         observeP1()
         observeP2Data()
         observeP2Login()
-        observeP2Shop()
         observeP3()
         observeToggleFavourite()
         observeToggleNotifyMe()
@@ -1271,20 +1263,21 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
     }
 
-    private fun observeP2Shop() {
-        viewLifecycleOwner.observe(viewModel.p2ShopDataResp) {
-            onSuccessGetDataP2Shop(it)
-
-            if (!viewModel.isUserSessionActive) {
-                (activity as? ProductDetailActivity)?.stopMonitoringFull()
-            }
-            (activity as? ProductDetailActivity)?.stopMonitoringP2()
-        }
-    }
-
     private fun observeP2Data() {
         viewLifecycleOwner.observe(viewModel.p2Data) {
             trackProductView(viewModel.tradeInParams.isEligible == 1)
+
+            viewModel.getDynamicProductInfoP1?.let { p1 ->
+                DynamicProductDetailTracking.Moengage.sendMoEngageOpenProduct(p1)
+                DynamicProductDetailTracking.Moengage.eventAppsFylerOpenProduct(p1)
+
+                DynamicProductDetailTracking.sendScreen(
+                        irisSessionId,
+                        p1.basic.shopID,
+                        p1.shopTypeString,
+                        p1.basic.productID)
+            }
+
             onSuccessGetDataP2(it)
             (activity as? ProductDetailActivity)?.stopMonitoringP2General()
         }
@@ -1392,7 +1385,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         DynamicProductDetailTracking.Click.eventEcommerceBuy(viewModel.buttonActionType,
                 viewModel.buttonActionText,
                 viewModel.userId,
-                viewModel.shopInfo?.shopCore?.name ?: "",
                 cartId,
                 trackerAttributionPdp ?: "",
                 viewModel.selectedMultiOrigin.isFulfillment,
@@ -1468,36 +1460,14 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
     }
 
-    private fun onSuccessGetDataP2Shop(it: ProductInfoP2ShopData) {
-        viewModel.getDynamicProductInfoP1?.let { p1 ->
-            actionButtonView.renderData(!p1.isProductActive(), viewModel.hasShopAuthority(), viewModel.isShopOwner(),
-                    hasTopAds(), it.cartRedirectionResponse.cartRedirection?.data?.firstOrNull())
-            showOrHideButton()
-            setupTickerOcc()
-
-            viewModel.shopInfo?.let { shopInfo ->
-                DynamicProductDetailTracking.Moengage.sendMoEngageOpenProduct(p1, shopInfo.shopCore.name)
-                DynamicProductDetailTracking.Moengage.eventAppsFylerOpenProduct(p1)
-
-                DynamicProductDetailTracking.sendScreen(
-                        irisSessionId,
-                        shopInfo.shopCore.shopID,
-                        p1.shopTypeString,
-                        p1.basic.productID)
-            }
-        }
-        pdpUiUpdater?.updateDataP2Shop(it)
-        adapter.notifyDataSetChanged()
-    }
-
     private fun showOrHideButton() {
-        viewModel.shopInfo?.let {
-            val shopStatus = viewModel.shopInfo?.statusInfo?.shopStatus
+        if (viewModel.shopInfo.isShopInfoNotEmpty()) {
+            val shopStatus = viewModel.shopInfo.statusInfo.shopStatus
             val shouldShowSellerButtonByShopType = shopStatus != ProductShopStatusTypeDef.DELETED && shopStatus != ProductShopStatusTypeDef.MODERATED_PERMANENTLY
             if (viewModel.isShopOwner()) {
                 actionButtonView.visibility = shouldShowSellerButtonByShopType
             } else {
-                actionButtonView.visibility = !isAffiliate && viewModel.shopInfo?.statusInfo?.shopStatus == ProductShopStatusTypeDef.OPEN
+                actionButtonView.visibility = !isAffiliate && viewModel.shopInfo.statusInfo.shopStatus == ProductShopStatusTypeDef.OPEN
             }
             return
         }
@@ -1542,6 +1512,12 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun onSuccessGetDataP2(it: ProductInfoP2UiData) {
+        //TODO CART REDIR
+        actionButtonView.renderData(viewModel.getDynamicProductInfoP1?.isProductActive() == false, viewModel.hasShopAuthority(), viewModel.isShopOwner(),
+                hasTopAds(), null)
+        showOrHideButton()
+        setupTickerOcc()
+
         if (it.vouchers.isNullOrEmpty()) {
             dynamicAdapter.removeComponentSection(pdpUiUpdater?.productMerchantVoucherMap)
         } else {
@@ -1583,7 +1559,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
 
         pdpUiUpdater?.updateFulfillmentData(context, viewModel.selectedMultiOrigin.isFulfillment)
-        pdpUiUpdater?.updateDataP2(context, it, viewModel.getDynamicProductInfoP1?.basic?.productID ?: "")
+        pdpUiUpdater?.updateDataP2(context, it, viewModel.getDynamicProductInfoP1?.basic?.productID
+                ?: "")
 
         dynamicAdapter.notifyDataSetChanged()
     }
@@ -1801,8 +1778,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                         MethodChecker.fromHtml(productInfo.getProductName).toString(),
                         productInfo.data.price.currency,
                         productInfo.basic.url,
-                        viewModel.shopInfo?.shopCore?.url ?: "",
-                        viewModel.shopInfo?.shopCore?.name ?: "",
+                        viewModel.shopInfo.shopCore.url ?: "",
+                        productInfo.basic.shopName,
                         productInfo.basic.productID,
                         productInfo.data.getProductImageUrl() ?: ""
                 )
@@ -1936,8 +1913,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun gotoRateEstimation() {
         viewModel.getDynamicProductInfoP1?.let { productInfo ->
-            viewModel.shopInfo?.let { shopInfo ->
+            if (viewModel.shopInfo.isShopInfoNotEmpty()) {
                 context?.let { context ->
+                    val shopInfo = viewModel.shopInfo
                     startActivity(RatesEstimationDetailActivity.createIntent(
                             context,
                             shopInfo.shopCore.domain,
@@ -1957,11 +1935,11 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private fun goToCourier() {
         activity?.let {
             viewModel.getDynamicProductInfoP1?.let { productInfo ->
-                viewModel.shopInfo?.let { shopInfo ->
+                if (viewModel.shopInfo.isShopInfoNotEmpty()) {
                     startActivity(CourierActivity.createIntent(it,
                             productInfo.basic.productID,
-                            shopInfo.shipments,
-                            shopInfo.bbInfo
+                            viewModel.shopInfo.shipments,
+                            viewModel.shopInfo.bbInfo
                     ))
                 }
             }
@@ -2059,13 +2037,12 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun trackProductView(isElligible: Boolean) {
         viewModel.getDynamicProductInfoP1?.let { productInfo ->
-            viewModel.shopInfo?.let { shopInfo ->
-
+            if (viewModel.shopInfo.isShopInfoNotEmpty()) {
                 val sentBundle = DynamicProductDetailTracking.Impression.eventEnhanceEcommerceProductDetail(
                         irisSessionId,
                         trackerListNamePdp,
                         productInfo,
-                        shopInfo,
+                        viewModel.shopInfo,
                         trackerAttributionPdp,
                         isElligible,
                         viewModel.tradeInParams.usedPrice > 0,
@@ -2079,7 +2056,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 return
             }
         }
-        delegateTradeInTracking = true
     }
 
     private fun openFtInstallmentBottomSheet(installmentData: FtInstallmentCalculationDataResponse) {
@@ -2252,30 +2228,28 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
 
         topAdsDetailSheet.detailTopAdsClick = {
-            viewModel.shopInfo?.let { shopInfo ->
-                val applink = Uri.parse(ApplinkConst.SellerApp.TOPADS_PRODUCT_CREATE).buildUpon()
-                        .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_EXTRA_SHOP_ID, shopInfo.shopCore.shopID)
-                        .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_EXTRA_ITEM_ID, viewModel.getDynamicProductInfoP1?.basic?.productID)
-                        .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_KEY_SOURCE,
-                                if (GlobalConfig.isSellerApp()) TopAdsSourceOption.SA_PDP else TopAdsSourceOption.MA_PDP).build().toString()
+            val applink = Uri.parse(ApplinkConst.SellerApp.TOPADS_PRODUCT_CREATE).buildUpon()
+                    .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_EXTRA_SHOP_ID, viewModel.getDynamicProductInfoP1?.basic?.shopID
+                            ?: "")
+                    .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_EXTRA_ITEM_ID, viewModel.getDynamicProductInfoP1?.basic?.productID)
+                    .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_KEY_SOURCE,
+                            if (GlobalConfig.isSellerApp()) TopAdsSourceOption.SA_PDP else TopAdsSourceOption.MA_PDP).build().toString()
 
-                context?.let {
-                    startActivityForResult(RouteManager.getIntent(it, applink), ProductDetailConstant.REQUEST_CODE_EDIT_PRODUCT)
-                }
+            context?.let {
+                startActivityForResult(RouteManager.getIntent(it, applink), ProductDetailConstant.REQUEST_CODE_EDIT_PRODUCT)
             }
         }
 
         actionButtonView.promoTopAdsClick = {
-            viewModel.shopInfo?.let { shopInfo ->
-                val applink = Uri.parse(ApplinkConst.SellerApp.TOPADS_PRODUCT_CREATE).buildUpon()
-                        .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_EXTRA_SHOP_ID, shopInfo.shopCore.shopID)
-                        .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_EXTRA_ITEM_ID, viewModel.getDynamicProductInfoP1?.basic?.productID
-                                ?: "")
-                        .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_KEY_SOURCE,
-                                if (GlobalConfig.isSellerApp()) TopAdsSourceOption.SA_PDP else TopAdsSourceOption.MA_PDP).build().toString()
+            val applink = Uri.parse(ApplinkConst.SellerApp.TOPADS_PRODUCT_CREATE).buildUpon()
+                    .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_EXTRA_SHOP_ID, viewModel.getDynamicProductInfoP1?.basic?.shopID
+                            ?: "")
+                    .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_EXTRA_ITEM_ID, viewModel.getDynamicProductInfoP1?.basic?.productID
+                            ?: "")
+                    .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_KEY_SOURCE,
+                            if (GlobalConfig.isSellerApp()) TopAdsSourceOption.SA_PDP else TopAdsSourceOption.MA_PDP).build().toString()
 
-                context?.let { RouteManager.route(it, applink) }
-            }
+            context?.let { RouteManager.route(it, applink) }
         }
 
         actionButtonView.addToCartClick = {
@@ -2489,13 +2463,14 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun onShopFavoriteClick(componentTrackDataModel: ComponentTrackDataModel? = null) {
-        val shop = viewModel.shopInfo ?: return
-        doActionOrLogin({
-            trackToggleFavoriteShop(componentTrackDataModel)
-            pdpUiUpdater?.getShopInfo?.enableButtonFavorite = false
-            dynamicAdapter.notifyShopInfo(pdpUiUpdater?.getShopInfo, ProductDetailConstant.PAYLOAD_TOOGLE_FAVORITE)
-            viewModel.toggleFavorite(shop.shopCore.shopID)
-        })
+        if (viewModel.shopInfo.isShopInfoNotEmpty()) {
+            doActionOrLogin({
+                trackToggleFavoriteShop(componentTrackDataModel)
+                pdpUiUpdater?.getShopInfo?.enableButtonFavorite = false
+                dynamicAdapter.notifyShopInfo(pdpUiUpdater?.getShopInfo, ProductDetailConstant.PAYLOAD_TOOGLE_FAVORITE)
+                viewModel.toggleFavorite(viewModel.getDynamicProductInfoP1?.basic?.shopID ?: "")
+            })
+        }
     }
 
     private fun trackToggleFavoriteShop(componentTrackDataModel: ComponentTrackDataModel?) {
@@ -2528,18 +2503,20 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun onShopChatClicked() {
-        val shop = viewModel.shopInfo ?: return
-        val product = viewModel.getDynamicProductInfoP1 ?: return
-        doActionOrLogin({
-            activity?.let {
-                val intent = RouteManager.getIntent(it,
-                        ApplinkConst.TOPCHAT_ASKSELLER,
-                        product.basic.shopID, "",
-                        "product", shop.shopCore.name, shop.shopAssets.avatar)
-                VariantMapper.putChatProductInfoTo(intent, product.basic.productID, product, viewModel.variantData)
-                startActivity(intent)
-            }
-        })
+        if (viewModel.shopInfo.isShopInfoNotEmpty()) {
+            val product = viewModel.getDynamicProductInfoP1 ?: return
+            doActionOrLogin({
+                val shop = viewModel.shopInfo
+                activity?.let {
+                    val intent = RouteManager.getIntent(it,
+                            ApplinkConst.TOPCHAT_ASKSELLER,
+                            product.basic.shopID, "",
+                            "product", shop.shopCore.name, shop.shopAssets.avatar)
+                    VariantMapper.putChatProductInfoTo(intent, product.basic.productID, product, viewModel.variantData)
+                    startActivity(intent)
+                }
+            })
+        }
     }
 
     private fun initToolbarLight() {

@@ -112,21 +112,21 @@ query GetPdpGetData($productID: String, $pdpSession: String) {
         countryName
         provinceName
       }
-      statsData {
+      shopStats {
         productSold
         totalTx
         totalShowcase
       }
       bbInfo {
-        title
-        titleEN
-        desc
-        descEN
+        bbName
+        bbNameEN
+        bbDesc
+        bbDescEN
       }
       shopType
     }
     merchantVoucher {
-        merchantVoucherData {
+        vouchers {
           voucher_id
           voucher_name
           voucher_type {
@@ -256,18 +256,18 @@ query GetPdpGetData($productID: String, $pdpSession: String) {
       widgetString
     }
     cartRedirection {
-      errorMessage
       status
-      cartRedirectionData {
-        configName
-        availableButtons {
+      error_message
+      data{
+        config_name
+        available_buttons {
           text
           color
-          cartType
-          onBoardingMessage
-          showRecommendation
+          cart_type
+          onboarding_message
+          show_recommendation
         }
-        unavailableButtons
+        unavailable_buttons
       }
     }
     upcomingCampaigns {

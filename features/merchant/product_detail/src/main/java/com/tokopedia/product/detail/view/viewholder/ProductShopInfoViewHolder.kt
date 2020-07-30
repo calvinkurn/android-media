@@ -24,11 +24,10 @@ class ProductShopInfoViewHolder(private val view: View, private val listener: Dy
 
     override fun bind(element: ProductShopInfoDataModel) {
 
-        if (element.shopName != "") {
+        if (element.shouldRenderShopInfo) {
             view.addOnImpressionListener(element.impressHolder) {
                 listener.onImpressComponent(getComponentTrackData(element))
             }
-
             hideLoading()
             shopInfoView.renderShop(
                     element.shopName,

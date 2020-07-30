@@ -13,6 +13,7 @@ import com.tokopedia.product.detail.data.model.shopfeature.ShopFeatureP2
 import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
 import com.tokopedia.product.detail.data.model.upcoming.ProductUpcomingData
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopCommitment
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.data.shopscore.ProductShopRatingQuery
 import com.tokopedia.shop.common.graphql.data.shopspeed.ProductShopChatSpeedQuery
 import com.tokopedia.shop.common.graphql.data.shopspeed.ProductShopPackSpeedQuery
@@ -45,6 +46,10 @@ data class ProductInfoP2Data(
         @Expose
         var shopChatSpeed: ProductShopChatSpeedQuery = ProductShopChatSpeedQuery(),
 
+        @SerializedName("shopInfo")
+        @Expose
+        var shopInfo: ShopInfo = ShopInfo(),
+
         @SerializedName("shopRatingsQuery")
         @Expose
         var shopRating: ProductShopRatingQuery = ProductShopRatingQuery(),
@@ -76,6 +81,7 @@ data class ProductInfoP2Data(
         @SerializedName("upcomingCampaigns")
         @Expose
         var upcomingCampaigns: List<ProductUpcomingData> = listOf(),
+
 
         @SerializedName("merchantVoucher")
         @Expose

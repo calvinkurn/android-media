@@ -4,9 +4,6 @@ import android.os.Bundle
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.iris.util.KEY_SESSION_IRIS
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.linker.LinkerConstants
-import com.tokopedia.linker.LinkerManager
-import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
@@ -194,13 +191,14 @@ object DynamicProductDetailTracking {
         }
 
         fun eventEcommerceBuy(actionButton: Int, buttonText: String, userId: String,
-                              shopName: String, cartId: String, trackerAttribution: String, multiOrigin: Boolean, variantString: String,
+                             cartId: String, trackerAttribution: String, multiOrigin: Boolean, variantString: String,
                               productInfo: DynamicProductInfoP1?) {
             val productId = productInfo?.basic?.productID ?: ""
             val shopId = productInfo?.basic?.shopID ?: ""
             val productName = productInfo?.data?.name ?: ""
             val productPrice = productInfo?.finalPrice.toString()
             val shopType = productInfo?.shopTypeString ?: ""
+            val shopName = productInfo?.basic?.shopName ?: ""
 
             val quantity = productInfo?.basic?.minOrder ?: 0
             val isFreeOngkir = productInfo?.data?.isFreeOngkir?.isActive ?: false
@@ -984,16 +982,16 @@ object DynamicProductDetailTracking {
 
     object Moengage {
 
-        fun sendMoEngageClickReview(productInfo: DynamicProductInfoP1, shopName: String) {
-            sendMoEngage(productInfo, shopName, "Clicked_Ulasan_Pdp")
+        fun sendMoEngageClickReview(productInfo: DynamicProductInfoP1) {
+            sendMoEngage(productInfo, "Clicked_Ulasan_Pdp")
         }
 
-        fun sendMoEngageOpenProduct(productInfo: DynamicProductInfoP1, shopName: String) {
-            sendMoEngage(productInfo, shopName, "Product_Page_Opened")
+        fun sendMoEngageOpenProduct(productInfo: DynamicProductInfoP1) {
+            sendMoEngage(productInfo, "Product_Page_Opened")
         }
 
-        fun sendMoEngageClickDiskusi(productInfo: DynamicProductInfoP1, shopName: String) {
-            sendMoEngage(productInfo, shopName, "Clicked_Diskusi_Pdp")
+        fun sendMoEngageClickDiskusi(productInfo: DynamicProductInfoP1) {
+            sendMoEngage(productInfo, "Clicked_Diskusi_Pdp")
         }
 
         fun eventPDPWishlistAppsFyler(productInfo: DynamicProductInfoP1) {
@@ -1014,7 +1012,6 @@ object DynamicProductDetailTracking {
         }
 
         private fun sendMoEngage(productInfo: DynamicProductInfoP1,
-                                 shopName: String,
                                  eventName: String) {
 
             productInfo.run {
@@ -1038,7 +1035,7 @@ object DynamicProductDetailTracking {
                             put("product_price_fmt", TrackingUtil.getFormattedPrice(data.price.value))
                             put("is_official_store", data.isOS)
                             put("shop_id", productInfo.basic.shopID)
-                            put("shop_name", shopName)
+                            put("shop_name", productInfo.basic.shopName)
                             put("product_image_url", data.getFirstProductImage().toString())
                         }
                 )

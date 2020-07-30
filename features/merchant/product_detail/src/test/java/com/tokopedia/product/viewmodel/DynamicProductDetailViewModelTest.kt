@@ -71,9 +71,6 @@ class DynamicProductDetailViewModelTest {
     lateinit var getPdpLayoutUseCase: GetPdpLayoutUseCase
 
     @RelaxedMockK
-    lateinit var getProductInfoP2ShopUseCase: GetProductInfoP2ShopUseCase
-
-    @RelaxedMockK
     lateinit var getProductInfoP2LoginUseCase: GetProductInfoP2LoginUseCase
 
     @RelaxedMockK
@@ -141,7 +138,7 @@ class DynamicProductDetailViewModelTest {
     }
 
     private val viewModel by lazy {
-        DynamicProductDetailViewModel(TestDispatcherProvider(), stickyLoginUseCase, getPdpLayoutUseCase, getProductInfoP2ShopUseCase, getProductInfoP2LoginUseCase, getProductInfoP2General2UseCase, getProductInfoP2GeneralUseCase, getProductInfoP3UseCase, toggleFavoriteUseCase, removeWishlistUseCase, addWishListUseCase, getRecommendationUseCase,
+        DynamicProductDetailViewModel(TestDispatcherProvider(), stickyLoginUseCase, getPdpLayoutUseCase, getProductInfoP2LoginUseCase, getProductInfoP2General2UseCase, getProductInfoP2GeneralUseCase, getProductInfoP3UseCase, toggleFavoriteUseCase, removeWishlistUseCase, addWishListUseCase, getRecommendationUseCase,
                 moveProductToWarehouseUseCase, moveProductToEtalaseUseCase, trackAffiliateUseCase, submitHelpTicketUseCase, updateCartCounterUseCase, addToCartUseCase, addToCartOcsUseCase, addToCartOccUseCase, toggleNotifyMeUseCase, discussionMostHelpfulUseCase, userSessionInterface)
     }
 
@@ -429,12 +426,7 @@ class DynamicProductDetailViewModelTest {
         val data = ProductDetailDataModel(listOfLayout = mutableListOf(ProductSnapshotDataModel()))
         val productParams = ProductParams("", "", "", "", "", "")
 
-        val cartRedirectionData = CartRedirectionResponse(CartRedirection(data = listOf(CartTypeData(), CartTypeData())))
-        val shopCore = ShopCore(domain = anyString())
-        val dataP2Shop = ProductInfoP2ShopData(shopInfo = ShopInfo(shopCore = shopCore), tradeinResponse = TradeinResponse(), cartRedirectionResponse = cartRedirectionData)
-
         val dataP2Login = ProductInfoP2Login(pdpAffiliate = TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.Data.PdpAffiliate())
-        val dataP2General = ProductInfoP2General()
 
         val dataP3RateEstimate = ProductInfoP3(SummaryText(), RatesModel(), false, AddressModel())
 
@@ -457,16 +449,8 @@ class DynamicProductDetailViewModelTest {
         } returns data
 
         coEvery {
-            getProductInfoP2ShopUseCase.executeOnBackground()
-        } returns dataP2Shop
-
-        coEvery {
             getProductInfoP2LoginUseCase.executeOnBackground()
         } returns dataP2Login
-
-        coEvery {
-            getProductInfoP2GeneralUseCase.executeOnBackground()
-        } returns dataP2General
 
         coEvery {
             getProductInfoP3UseCase.executeOnBackground()
@@ -481,17 +465,7 @@ class DynamicProductDetailViewModelTest {
 
         Assert.assertTrue(viewModel.productLayout.value is Success)
 
-        //P2
-        coVerify {
-            getProductInfoP2ShopUseCase.executeOnBackground()
-        }
-
         Assert.assertNotNull(viewModel.shopInfo)
-        Assert.assertNotNull(viewModel.p2ShopDataResp.value)
-        Assert.assertNotNull(viewModel.p2ShopDataResp.value?.shopInfo)
-        Assert.assertNotNull(viewModel.p2ShopDataResp.value?.nearestWarehouse)
-        Assert.assertNotNull(viewModel.p2ShopDataResp.value?.tradeinResponse)
-        Assert.assertTrue(viewModel.p2ShopDataResp.value?.cartRedirectionResponse?.cartRedirection?.data?.size != 0)
 
         coVerify {
             getProductInfoP2LoginUseCase.executeOnBackground()
@@ -502,7 +476,6 @@ class DynamicProductDetailViewModelTest {
         coVerify {
             getProductInfoP2GeneralUseCase.executeOnBackground()
         }
-        Assert.assertNotNull(viewModel.p2General.value)
 
         //P3
         coVerify {
@@ -530,10 +503,6 @@ class DynamicProductDetailViewModelTest {
         }
         Assert.assertTrue(viewModel.productLayout.value is Fail)
 
-        //P2
-        coVerify(inverse = true) {
-            getProductInfoP2ShopUseCase.executeOnBackground()
-        }
 
         coVerify(inverse = true) {
             getProductInfoP2LoginUseCase.executeOnBackground()
@@ -555,10 +524,8 @@ class DynamicProductDetailViewModelTest {
         val productParams = ProductParams("", "", "", "", "", "")
 
         val shopCore = ShopCore(domain = anyString())
-        val dataP2Shop = ProductInfoP2ShopData(shopInfo = ShopInfo(shopCore = shopCore), tradeinResponse = TradeinResponse())
 
         val dataP2Login = ProductInfoP2Login(pdpAffiliate = TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.Data.PdpAffiliate())
-        val dataP2General = ProductInfoP2General()
 
         val dataP3 = ProductInfoP3(SummaryText(), RatesModel())
 
@@ -569,10 +536,6 @@ class DynamicProductDetailViewModelTest {
         coEvery {
             getPdpLayoutUseCase.executeOnBackground()
         } returns data
-
-        coEvery {
-            getProductInfoP2ShopUseCase.executeOnBackground()
-        } returns dataP2Shop
 
         coEvery {
             getProductInfoP2LoginUseCase.executeOnBackground()
@@ -595,14 +558,6 @@ class DynamicProductDetailViewModelTest {
 
         Assert.assertTrue(viewModel.productLayout.value is Success)
 
-        //P2
-        coVerify {
-            getProductInfoP2ShopUseCase.executeOnBackground()
-        }
-        Assert.assertNotNull(viewModel.p2ShopDataResp.value)
-        Assert.assertNotNull(viewModel.p2ShopDataResp.value?.shopInfo)
-        Assert.assertNotNull(viewModel.p2ShopDataResp.value?.nearestWarehouse)
-        Assert.assertNotNull(viewModel.p2ShopDataResp.value?.tradeinResponse)
         //Make sure not called
         coVerify(inverse = true) {
             getProductInfoP2LoginUseCase.executeOnBackground()
@@ -1061,10 +1016,6 @@ class DynamicProductDetailViewModelTest {
 
         verify {
             getPdpLayoutUseCase.cancelJobs()
-        }
-
-        verify {
-            getProductInfoP2ShopUseCase.cancelJobs()
         }
 
         verify {

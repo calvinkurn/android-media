@@ -22,7 +22,7 @@ class ProductShopCredibilityDataModel(
         val name: String = "",
         val type: String = "",
 
-        var shopInfo: ShopInfo? = null,
+        var shopInfo: ShopInfo = ShopInfo(),
         var isOs: Boolean = false,
         var isPm: Boolean = false,
         var shopSpeed: Int = 0,
@@ -48,11 +48,11 @@ class ProductShopCredibilityDataModel(
             shopRating > 0 -> {
                 ShopCredibilityUiData(shopRating.toString(), context.getString(R.string.product_shop_rating), R.drawable.ic_review_gray)
             }
-            shopInfo?.shopStats?.productSold.toIntOrZero() > 0 -> {
-                ShopCredibilityUiData(shopInfo?.shopStats?.productSold.toIntOrZero().productThousandFormatted(0), context.getString(R.string.product_shop_transaction), R.drawable.ic_product_sold_grey)
+            shopInfo.shopStats.productSold.toIntOrZero() > 0 -> {
+                ShopCredibilityUiData(shopInfo.shopStats.productSold.toIntOrZero().productThousandFormatted(0), context.getString(R.string.product_shop_transaction), R.drawable.ic_product_sold_grey)
             }
-            shopInfo?.activeProduct.orZero() > 0 -> {
-                ShopCredibilityUiData(shopInfo?.activeProduct?.productThousandFormatted(0)
+            shopInfo.activeProduct.orZero() > 0 -> {
+                ShopCredibilityUiData(shopInfo.activeProduct.productThousandFormatted(0)
                         ?: "", context.getString(R.string.product_shop_total_product), R.drawable.ic_product_grey)
             }
             else -> {

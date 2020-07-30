@@ -146,6 +146,7 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
             }
 
             shopInfoMap?.run {
+                shopName = it.basic.shopName
                 isOs = it.data.isOS
                 isPm = it.data.isPowerMerchant
             }
@@ -235,30 +236,6 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
         }
     }
 
-    fun updateDataP2Shop(dataP2: ProductInfoP2ShopData?) {
-        dataP2?.let {
-            val multiOriginNearestWarehouse = it.variantMultiOrigin
-            shopInfoMap?.run {
-                shopName = it.shopInfo?.shopCore?.name ?: ""
-                shopLocation = it.shopInfo?.location ?: ""
-                shopLastActive = it.shopInfo?.shopLastActive ?: ""
-                isFavorite = it.shopInfo?.favoriteData?.alreadyFavorited == 1
-                shopAvatar = it.shopInfo?.shopAssets?.avatar ?: ""
-                isAllowManage = it.shopInfo?.isAllowManage ?: 0
-            }
-
-            shopCredibility?.run {
-                shopInfo = it.shopInfo
-            }
-
-            tickerInfoMap?.run {
-                statusInfo = it.shopInfo?.statusInfo
-                closedInfo = it.shopInfo?.closedInfo
-            }
-
-        }
-    }
-
     fun updateWishlistData(isWishlisted: Boolean) {
         basicContentMap?.isWishlisted = isWishlisted
         snapShotMap?.isWishlisted = isWishlisted
@@ -289,12 +266,25 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
 
     fun updateDataP2(context:Context?, p2Data: ProductInfoP2UiData, productId: String){
         p2Data.let {
+
             shopInfoMap?.run {
+                shopLocation = it.shopInfo.location
+                shopLastActive = it.shopInfo.shopLastActive
+                isFavorite = it.shopInfo.favoriteData.alreadyFavorited == 1
+                shopAvatar = it.shopInfo.shopAssets.avatar
+                isAllowManage = it.shopInfo.isAllowManage
                 isGoAPotik = it.isGoApotik
                 shopBadge = it.shopBadge
+                shouldRenderShopInfo = true
+            }
+
+            tickerInfoMap?.run {
+                statusInfo = it.shopInfo.statusInfo
+                closedInfo = it.shopInfo.closedInfo
             }
 
             shopCredibility?.run {
+                shopInfo = it.shopInfo
                 isGoApotik = it.isGoApotik
                 shopSpeed = it.shopSpeed
                 shopChatSpeed = it.shopChatSpeed.toIntOrZero()

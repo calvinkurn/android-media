@@ -8,12 +8,14 @@ import com.tokopedia.product.detail.data.model.purchaseprotection.ProductPurchas
 import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
 import com.tokopedia.product.detail.data.model.upcoming.ProductUpcomingData
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopCommitment
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.variant_common.model.WarehouseInfo
 
 /**
  * Created by Yehezkiel on 28/07/20
  */
 data class ProductInfoP2UiData(
+        var shopInfo: ShopInfo = ShopInfo(),
         var shopSpeed: Int = 0,
         var shopChatSpeed: String = "",
         var shopRating: Float = 0F,

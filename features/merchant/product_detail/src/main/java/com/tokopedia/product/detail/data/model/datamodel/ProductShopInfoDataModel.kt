@@ -1,7 +1,6 @@
 package com.tokopedia.product.detail.data.model.datamodel
 
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.product.detail.data.model.shopfeature.ShopFeatureData
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
 
 class ProductShopInfoDataModel(
@@ -18,11 +17,11 @@ class ProductShopInfoDataModel(
         var shopName: String = "",
         var shopLocation: String = "",
         var shopLastActive: String = "",
+        var shouldRenderShopInfo: Boolean = false,
 
         //From P2 General
         var shopBadge: String? = "",
         var isGoAPotik:Boolean = false,
-        var shopFeature: ShopFeatureData? = null,
 
         //Static
         var enableButtonFavorite: Boolean = false
