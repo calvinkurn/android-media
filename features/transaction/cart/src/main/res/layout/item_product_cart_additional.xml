@@ -75,7 +75,7 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_product_price"
         tools:src="@drawable/ic_power_merchant" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_badge_dot_separator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -86,9 +86,10 @@
         android:textColor="@color/black_38"
         android:textSize="@dimen/sp_12"
         app:layout_constraintStart_toEndOf="@+id/img_badge"
-        app:layout_constraintTop_toBottomOf="@+id/tv_product_price" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_product_price"
+        app:typographyType="body_3" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_shop_location"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -98,10 +99,10 @@
         android:ellipsize="end"
         android:maxLines="1"
         android:textColor="@color/black_38"
-        android:textSize="@dimen/sp_12"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/tv_badge_dot_separator"
         app:layout_constraintTop_toBottomOf="@+id/tv_product_price"
+        app:typographyType="body_3"
         tools:text="Kota Administrasi Jakarta Selatanan " />
 
     <ImageView
@@ -114,7 +115,7 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_shop_location"
         tools:src="@drawable/ic_star_three" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_review_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -122,9 +123,9 @@
         android:layout_marginLeft="@dimen/dp_4"
         android:layout_marginTop="@dimen/dp_8"
         android:textColor="@color/black_38"
-        android:textSize="@dimen/sp_12"
         app:layout_constraintStart_toEndOf="@+id/img_rating"
         app:layout_constraintTop_toBottomOf="@+id/tv_shop_location"
+        app:typographyType="body_3"
         tools:text="(199)" />
 
     <com.tokopedia.unifyprinciples.Typography
