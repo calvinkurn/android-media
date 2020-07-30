@@ -294,6 +294,8 @@ class DealsAnalytics @Inject constructor(
                     DealsAnalyticsConstants.Item.name, it.title,
                     DealsAnalyticsConstants.Item.id, it.id,
                     DealsAnalyticsConstants.Item.category, categoryName,
+                    DealsAnalyticsConstants.Item.brand, it.title,
+                    DealsAnalyticsConstants.Item.price, 0,
                     DealsAnalyticsConstants.Item.variant, DealsAnalyticsConstants.NONE,
                     DealsAnalyticsConstants.Item.list, DealsAnalyticsConstants.FOOD_VOUCHER_LIST,
                     DealsAnalyticsConstants.Item.position, it.position + 1
