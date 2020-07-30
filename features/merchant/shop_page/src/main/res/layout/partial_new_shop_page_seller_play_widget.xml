@@ -54,6 +54,7 @@
                 android:layout_width="120dp"
                 android:layout_height="36dp"
                 app:lottie_autoPlay="true"
+                app:lottie_fileName="sgc_entry_point.json"
                 app:lottie_loop="false" />
         </FrameLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
