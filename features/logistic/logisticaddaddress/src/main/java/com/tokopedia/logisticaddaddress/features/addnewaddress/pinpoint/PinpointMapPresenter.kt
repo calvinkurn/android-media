@@ -103,7 +103,7 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
     }
 
     fun getDistrictBoundary(districtId: Int, keroToken: String?, keroUt: Int) {
-        keroToken?.let { districtBoundaryUseCase.setParams(districtId, it, keroUt) }
+        districtBoundaryUseCase.setParams(districtId, keroToken, keroUt)
         districtBoundaryUseCase.execute(RequestParams.create(), object : Subscriber<GraphqlResponse>() {
             override fun onNext(t: GraphqlResponse) {
                 val districtBoundaryResponseUiModel = districtBoundaryMapper.map(t)
