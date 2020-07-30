@@ -138,11 +138,11 @@ object WishlistTracking {
     private fun convertBannerTopAdsToDataTrackingObject(item: BannerTopAdsDataModel,
                                                         position: Int): Any {
         return DataLayer.mapOf(
-                FIELD_PROMOTION_ID, "0",
-                FIELD_PROMOTION_NAME, IMPRESSION_TOPADS_LIST.format(position.toString()),
+                FIELD_PROMOTION_ID, item.topAdsDataModel.bannerId ?: "0",
+                FIELD_PROMOTION_NAME, IMPRESSION_TOPADS_LIST.format((position + 1).toString()),
                 FIELD_PROMOTION_CREATIVE, item.topAdsDataModel.imageUrl,
                 FIELD_PROMOTION_CREATIVE_URL, item.topAdsDataModel.imageUrl,
-                FIELD_PROMOTION_POSITION, position.toString()
+                FIELD_PROMOTION_POSITION, "1"
         )
     }
 
