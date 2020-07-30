@@ -27,6 +27,6 @@
         app:layout_constraintBottom_toBottomOf="@id/tv_unit_value_header"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tv_unit_value_header"
-        app:srcCompat="@drawable/ic_chevron_down" />
+        app:srcCompat="@drawable/product_add_edit_ic_chevron_down" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
