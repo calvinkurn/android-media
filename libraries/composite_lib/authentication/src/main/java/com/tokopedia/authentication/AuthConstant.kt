@@ -7,9 +7,6 @@ internal const val CONTENT_TYPE_JSON = "application/json"
 internal const val MAC_ALGORITHM = "HmacSHA1"
 
 const val HEADER_RELEASE_TRACK = "x-release-track"
-const val RELEASE_TRACK_BETA = "beta"
-const val RELEASE_TRACK_INTERNAL = "internal"
-const val RELEASE_TRACK_DEFAULT = "production"
 
 const val HEADER_AUTHORIZATION = "Authorization"
 const val HEADER_CONTENT_TYPE = "Content-Type"
