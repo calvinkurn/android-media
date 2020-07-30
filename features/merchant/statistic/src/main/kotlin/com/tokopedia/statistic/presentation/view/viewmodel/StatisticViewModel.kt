@@ -4,21 +4,20 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.sellerhomecommon.domain.model.WidgetDataParameterModel
 import com.tokopedia.sellerhomecommon.domain.usecase.*
 import com.tokopedia.sellerhomecommon.presentation.model.*
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.statistic.common.coroutine.DispatchersProvider
+import com.tokopedia.statistic.presentation.domain.usecase.GetUserRoleUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.*
 import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * Created By @ilhamsuaib on 08/06/20
@@ -26,6 +25,7 @@ import javax.inject.Named
 
 class StatisticViewModel @Inject constructor(
         private val userSession: UserSessionInterface,
+        private val getUserRoleUseCase: GetUserRoleUseCase,
         private val getLayoutUseCase: GetLayoutUseCase,
         private val getCardDataUseCase: GetCardDataUseCase,
         private val getLineGraphDataUseCase: GetLineGraphDataUseCase,
@@ -45,6 +45,8 @@ class StatisticViewModel @Inject constructor(
 
     val widgetLayout: LiveData<Result<List<BaseWidgetUiModel<*>>>>
         get() = _widgetLayout
+    val userRole: LiveData<Result<List<String>>>
+        get() = _userRole
     val cardWidgetData: LiveData<Result<List<CardDataUiModel>>>
         get() = _cardWidgetData
     val lineGraphWidgetData: LiveData<Result<List<LineGraphDataUiModel>>>
@@ -64,6 +66,7 @@ class StatisticViewModel @Inject constructor(
 
     private val shopId by lazy { userSession.shopId }
     private val _widgetLayout = MutableLiveData<Result<List<BaseWidgetUiModel<*>>>>()
+    private val _userRole = MutableLiveData<Result<List<String>>>()
     private val _cardWidgetData = MutableLiveData<Result<List<CardDataUiModel>>>()
     private val _lineGraphWidgetData = MutableLiveData<Result<List<LineGraphDataUiModel>>>()
     private val _progressWidgetData = MutableLiveData<Result<List<ProgressDataUiModel>>>()
@@ -94,6 +97,18 @@ class StatisticViewModel @Inject constructor(
             _widgetLayout.postValue(result)
         }, onError = {
             _widgetLayout.postValue(Fail(it))
+        })
+    }
+
+    fun getUserRole() {
+        launchCatchError(block = {
+            val result: Success<List<String>> = Success(withContext(dispatcher.io()) {
+                getUserRoleUseCase.params = GetUserRoleUseCase.createParam(userSession.userId.toIntOrZero())
+                return@withContext getUserRoleUseCase.executeOnBackground()
+            })
+            _userRole.postValue(result)
+        }, onError = {
+            _userRole.postValue(Fail(it))
         })
     }
 

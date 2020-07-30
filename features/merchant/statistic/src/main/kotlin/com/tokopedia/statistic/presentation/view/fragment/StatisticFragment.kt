@@ -98,6 +98,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         mViewModel.setDateRange(defaultStartDate, defaultEndDate)
 
         observeWidgetLayoutLiveData()
+        observeUserRole()
         observeWidgetData(mViewModel.cardWidgetData, WidgetType.CARD)
         observeWidgetData(mViewModel.lineGraphWidgetData, WidgetType.LINE_GRAPH)
         observeWidgetData(mViewModel.progressWidgetData, WidgetType.PROGRESS)
@@ -624,6 +625,15 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         mViewModel.getWidgetLayout()
     }
 
+    private fun observeUserRole() {
+        mViewModel.userRole.observe(viewLifecycleOwner, Observer {
+            if (it is Success) {
+                checkUserRole(it.data)
+            }
+        })
+        mViewModel.getUserRole()
+    }
+
     private inline fun <reified D : BaseDataUiModel> observeWidgetData(liveData: LiveData<Result<List<D>>>, type: String) {
         liveData.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
@@ -631,5 +641,12 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
                 is Fail -> result.throwable.setOnErrorWidgetState<D, BaseWidgetUiModel<D>>(type)
             }
         })
+    }
+
+    private fun checkUserRole(roles: List<String>) {
+        val manageShopStatsRole = "MANAGE_SHOPSTATS"
+        if (!roles.contains(manageShopStatsRole)) {
+            activity?.finish()
+        }
     }
 }
