@@ -222,6 +222,6 @@ class PlayBroadcastPrepareFragment @Inject constructor(
     companion object {
 
         private const val APPLINK_WEBVIEW_FORMAT = "%s?url=%s"
-        private const val TERMS_CONDITION_URL = "https://www.tokopedia.com/help/article/syarat-dan-ketentuan-tokopedia-play"
+        private const val TERMS_CONDITION_URL = "https://www.tokopedia.com/help/article/tokopedia-play-live-streaming"
     }
 }
