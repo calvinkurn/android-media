@@ -5,17 +5,23 @@
     android:layout_height="match_parent"
     android:background="@color/Neutral_N0">
 
-    <include
-        android:id="@+id/layout_search_location"
-        layout="@layout/layout_deals_search_location_bottomsheet"
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_location_result"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/deals_dp_141"
-        android:background="@color/Neutral_N0"/>
+        <include
+            android:id="@+id/layout_search_location"
+            layout="@layout/layout_deals_search_location_bottomsheet"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_location_result"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/Neutral_N0"/>
+
+    </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

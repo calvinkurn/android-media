@@ -19,6 +19,7 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
                          val pagePath: String = EMPTY_STRING,
                          val pageIdentifier: String = EMPTY_STRING,
                          val campaignCode : String = EMPTY_STRING,
+                         val sourceIdentifier: String = EMPTY_STRING,
                          val trackingQueue: TrackingQueue) {
 
     private var eventDiscoveryCategory: String = "$VALUE_DISCOVERY_PAGE - $pageType - ${removeDashPageIdentifier(pageIdentifier)}"
@@ -260,6 +261,7 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
             productMap[KEY_POSITION] = componentsItems.position + 1
             productMap[LIST] = productCardItemList
             productMap[DIMENSION83] = if (it.freeOngkir?.isActive == true) BEBAS_ONGKIR else NONE_OTHER
+            addSourceData(productMap)
             if (productTypeName == PRODUCT_SPRINT_SALE || productTypeName == PRODUCT_SPRINT_SALE_CAROUSEL) {
                 productMap[DIMENSION96] = " - ${if (it.notifyMeCount.toIntOrZero() > 0) it.notifyMeCount else " "} - ${if (it.pdpView.toIntOrZero() > 0) it.pdpView else 0} - " +
                         "${if (it.campaignSoldCount.toIntOrZero() > 0) it.pdpView else 0} $SOLD - ${if (it.customStock.toIntOrZero() > 0) it.customStock else 0} $LEFT - - $tabName - $NOTIFY_ME ${getNotificationStatus(componentsItems)}"
@@ -323,7 +325,7 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
                 listMap[KEY_POSITION] = componentsItems.position + 1
                 listMap[LIST] = productCardItemList
                 listMap[DIMENSION83] = if (it.freeOngkir?.isActive == true) BEBAS_ONGKIR else NONE_OTHER
-
+                addSourceData(listMap)
                 if (productTypeName == PRODUCT_SPRINT_SALE || productTypeName == PRODUCT_SPRINT_SALE_CAROUSEL) {
                     listMap[DIMENSION96] = " - ${if (it.notifyMeCount.toIntOrZero() > 0) it.notifyMeCount else " "} - ${if (it.pdpView.toIntOrZero() > 0) it.pdpView else 0} - " +
                             "${if (it.campaignSoldCount.toIntOrZero() > 0) it.pdpView else 0} $SOLD - ${if (it.customStock.toIntOrZero() > 0) it.customStock else 0} $LEFT - - $tabName - $NOTIFY_ME ${getNotificationStatus(componentsItems)}"
@@ -611,6 +613,13 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
         val map = createGeneralEvent(eventAction = CLICK_VIEW_ALL_BANNER_CAROUSEL, eventLabel = EMPTY_STRING)
         getTracker().sendGeneralEvent(map)
     }
+    private fun addSourceData(productMap: HashMap<String, Any>): HashMap<String, Any> {
+        if (sourceIdentifier.isEmpty()) return productMap
+
+        productMap[DIMENSION90] = sourceIdentifier
+        return productMap
+    }
+
     fun trackEventImpressionTopAdsShop(componentDataItem: ComponentsItem, cpmData: CpmData) {
         val list = ArrayList<Map<String, Any>>()
         val listMap = HashMap<String, Any>()
@@ -659,6 +668,7 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
             productMap[KEY_ITEM_CATEGORY] = NONE_OTHER
             productMap[KEY_VARIANT] = NONE_OTHER
             productMap[KEY_POSITION] = productPosition + 1
+            productMap[dimension140] = sourceIdentifier
             productMap[LIST] = "/$pagePath - $pageType - ${componentPosition + 1} - $login - ${componentDataItem.name} - ${cpmData.id}"
             list.add(productMap)
         }
@@ -692,6 +702,7 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
             productMap[KEY_ITEM_CATEGORY] = NONE_OTHER
             productMap[KEY_VARIANT] = NONE_OTHER
             productMap[KEY_POSITION] = productPosition + 1
+            productMap[dimension140] = sourceIdentifier
             productMap[LIST] = "/$pagePath - $pageType - ${componentPosition + 1} - $login - ${componentDataItem.name} - ${cpmData.id}"
             list.add(productMap)
         }
