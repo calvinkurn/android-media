@@ -590,8 +590,8 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
         getTracker().sendEnhanceEcommerceEvent(map)
     }
 
-    fun trackTopAdsProductImpression(componentDataItem: ComponentsItem, cpmData: CpmData, componentPosition: Int, productPosition: Int, userLoggedIn: Boolean) {
-        val login = if (userLoggedIn) LOGIN else NON_LOGIN
+    fun trackTopAdsProductImpression(componentDataItem: ComponentsItem, cpmData: CpmData, componentPosition: Int, productPosition: Int, userLoggedIn: Boolean?) {
+        val login = if (userLoggedIn != null && userLoggedIn) LOGIN else NON_LOGIN
         val list = ArrayList<Map<String, Any>>()
         val productMap = HashMap<String, Any>()
         val cpmProductList = cpmData.cpm.cpmShop.products

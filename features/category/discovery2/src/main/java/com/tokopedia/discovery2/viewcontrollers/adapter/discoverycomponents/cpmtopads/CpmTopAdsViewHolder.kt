@@ -19,8 +19,10 @@ class CpmTopAdsViewHolder(itemView: View, private val fragment: Fragment) : Abst
 
     private var adsBannerView: TopAdsBannerView = itemView.findViewById(R.id.cpm_ads_banner)
     private lateinit var cpmTopAdsViewModel: CpmTopAdsViewModel
+    private var userLoggedInStatus : Boolean? = null
 
     init {
+        userLoggedInStatus = cpmTopAdsViewModel.isUserLoggedIn()
         adsBannerView.setTopAdsBannerClickListener(TopAdsBannerClickListener { position: Int, applink: String?, data: CpmData? ->
             RouteManager.route(itemView.context, applink)
             sendClickGTMTracking(position, data)
@@ -64,7 +66,6 @@ class CpmTopAdsViewHolder(itemView: View, private val fragment: Fragment) : Abst
         val componentDataItem = cpmTopAdsViewModel.getComponentData()
         val componentPosition = cpmTopAdsViewModel.getComponentPosition()
         val cpmProductPosition = position - 1
-        val userLoggedInStatus = cpmTopAdsViewModel.isUserLoggedIn()
 
         if (cpmData != null && cpmProductPosition >= 0) {
             if (position == 1) {
