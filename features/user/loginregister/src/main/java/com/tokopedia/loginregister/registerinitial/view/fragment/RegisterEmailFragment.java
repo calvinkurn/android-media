@@ -38,7 +38,6 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
@@ -56,6 +55,7 @@ import com.tokopedia.network.exception.MessageErrorException;
 import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.sessioncommon.di.SessionModule;
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity;
+import com.tokopedia.unifycomponents.UnifyButton;
 import com.tokopedia.usecase.coroutines.Fail;
 import com.tokopedia.usecase.coroutines.Success;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -104,7 +104,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
     View redirectView;
     AutoCompleteTextView email;
     TextInputEditText registerPassword;
-    TextView registerButton;
+    UnifyButton registerButton;
     TkpdHintTextInputLayout wrapperName;
     TkpdHintTextInputLayout wrapperEmail;
     TkpdHintTextInputLayout wrapperPassword;
@@ -517,11 +517,6 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
 
     private void setRegisterButtonEnabled() {
         if (getActivity() != null) {
-            MethodChecker.setBackground(registerButton, MethodChecker.getDrawable(getActivity().getApplicationContext(), R
-                    .drawable
-                    .green_button_rounded));
-            registerButton.setTextColor(MethodChecker.getColor(getActivity().getApplicationContext(),
-                    R.color.white));
             registerButton.setEnabled(true);
         }
     }
@@ -529,11 +524,6 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
 
     private void setRegisterButtonDisabled() {
         if (getActivity() != null) {
-            MethodChecker.setBackground(registerButton, MethodChecker.getDrawable(
-                    getActivity().getApplicationContext(), R.drawable.grey_button_rounded));
-            registerButton.setTextColor(MethodChecker.getColor(
-                    getActivity().getApplicationContext(),
-                    R.color.grey_500));
             registerButton.setEnabled(false);
         }
     }
