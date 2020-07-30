@@ -35,7 +35,7 @@
             android:layout_height="@dimen/btn_height"
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/phoneverification_dp_20"
-            android:background="@drawable/bg_button_green_enabled"
+            android:background="@drawable/phoneverification_bg_button_green_enabled"
             android:fontFamily="sans-serif-medium"
             android:gravity="center"
             android:text="@string/change_number"

@@ -38,6 +38,6 @@
         android:layout_height="@dimen/layout_lvl3"
         android:layout_gravity="center_vertical"
         android:padding="@dimen/spacing_lvl2"
-        app:srcCompat="@drawable/ic_arrow_right_grey" />
+        app:srcCompat="@drawable/ic_notifsetting_arrow_right_grey" />
 
 </LinearLayout>

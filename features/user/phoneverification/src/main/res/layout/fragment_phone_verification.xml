@@ -140,7 +140,7 @@
         android:layout_marginLeft="@dimen/phoneverification_dp_20"
         android:layout_marginRight="@dimen/phoneverification_dp_20"
         android:layout_marginBottom="@dimen/phoneverification_dp_10"
-        android:background="@drawable/grey_button_rounded"
+        android:background="@drawable/phoneverification_grey_button_rounded"
         android:enabled="false"
         android:gravity="center"
         android:text="@string/title_confirm_otp"
