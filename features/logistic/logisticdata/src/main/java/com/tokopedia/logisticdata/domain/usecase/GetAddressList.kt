@@ -57,4 +57,8 @@ class GetAddressCornerUseCase
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
+    fun unsubscribe() {
+        usecase.unsubscribe()
+    }
+
 }
