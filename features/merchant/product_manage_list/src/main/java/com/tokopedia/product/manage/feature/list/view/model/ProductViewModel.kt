@@ -19,8 +19,7 @@ data class ProductViewModel(
         val multiSelectActive: Boolean,
         val isChecked: Boolean,
         val hasStockReserved: Boolean,
-        val isTopAds: Boolean,
-        val isAutoAds: Boolean
+        val topAdsInfo: TopAdsInfo?
 ) : Visitable<ProductManageAdapterFactory> {
     override fun type(typeFactory: ProductManageAdapterFactory): Int {
         return typeFactory.type(this)
@@ -34,4 +33,5 @@ data class ProductViewModel(
     fun isViolation(): Boolean = status == ProductStatus.VIOLATION
     fun isNotViolation(): Boolean = status != ProductStatus.VIOLATION
     fun isEmpty(): Boolean = status == ProductStatus.EMPTY || stock == 0
+    fun isTopAds(): Boolean = !isEmpty() && topAdsInfo?.isTopAds == true
 }

@@ -11,6 +11,7 @@ import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult.S
 import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult.UpdateFilterTab
 import com.tokopedia.product.manage.feature.list.view.model.PriceUiModel
 import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
+import com.tokopedia.product.manage.feature.list.view.model.TopAdsInfo
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.Product
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus.*
@@ -23,6 +24,7 @@ object ProductMapper {
             val minPrice = it.price?.min
             val maxPrice = it.price?.max
             val picture = it.pictures?.firstOrNull()
+            val topAdsInfo = TopAdsInfo(it.isTopAds(), it.isAutoAds())
 
             ProductViewModel(
                 id = it.id,
@@ -45,8 +47,7 @@ object ProductMapper {
                 multiSelectActive = multiSelectActive,
                 isChecked = false,
                 hasStockReserved = it.hasStockReserved,
-                isTopAds = it.isTopAds(),
-                isAutoAds = it.isAutoAds()
+                topAdsInfo = topAdsInfo
             )
         } ?: emptyList()
     }

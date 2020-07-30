@@ -128,7 +128,7 @@ class ProductViewHolder(
     }
 
     private fun showProductTopAdsIcon(product: ProductViewModel) {
-        itemView.imageTopAds.showWithCondition(product.isTopAds)
+        itemView.imageTopAds.showWithCondition(product.isTopAds())
     }
 
     private fun toggleCheckBox() {
