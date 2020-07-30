@@ -10,12 +10,14 @@ import com.tokopedia.entertainment.pdp.adapter.EventPDPTicketItemPackageAdapter
 import com.tokopedia.entertainment.pdp.analytic.EventPDPTracking
 import com.tokopedia.entertainment.pdp.data.PackageV3
 import com.tokopedia.entertainment.pdp.listener.OnBindItemTicketListener
+import com.tokopedia.entertainment.pdp.listener.OnCoachmarkListener
 import com.tokopedia.entertainment.pdp.widget.WidgetEventPDPExpandable
 import kotlinx.android.synthetic.main.custom_event_expandable_parent.view.*
 import kotlinx.android.synthetic.main.item_event_pdp_parent_ticket.view.*
 
 class PackageParentViewHolder (view: View,
-                               private val onBindItemTicketListener: OnBindItemTicketListener): AbstractViewHolder<PackageV3>(view),
+                               private val onBindItemTicketListener: OnBindItemTicketListener,
+                               private val onCoachmarkListener: OnCoachmarkListener): AbstractViewHolder<PackageV3>(view),
         WidgetEventPDPExpandable.EventWidgetExpandableListener{
 
     lateinit var chooseNewPackage: (String) -> Unit
@@ -28,8 +30,9 @@ class PackageParentViewHolder (view: View,
         with(itemView){
             idPackage = element.id
             if(!element.isChoosen){
-                expand_event_pdp_ticket.setExpand(false)
+                expand_event_pdp_ticket.setExpand((position!=-1 && position==0))
             }
+
             eventPDPTicketAdapter.setList(element.packageItems, element.id, element.name)
             eventPDPTicketAdapter.eventPDPTracking = eventPDPTracking
             tg_event_pdp_expand_title.text = element.name
@@ -43,6 +46,9 @@ class PackageParentViewHolder (view: View,
                 )
             }
 
+            if(onCoachmarkListener.getLocalCache()){
+                onCoachmarkListener.showCoachMark(rv_event_parent_ticket)
+            }
         }
     }
 
