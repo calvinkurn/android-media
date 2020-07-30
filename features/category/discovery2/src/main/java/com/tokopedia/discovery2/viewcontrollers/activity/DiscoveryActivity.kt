@@ -47,7 +47,7 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
         const val SOURCE_QUERY = "source_query"
 
         @JvmField
-        var config: String = NATIVE
+        var config: String = ""
 
         @JvmStatic
         fun createDiscoveryIntent(context: Context, endpoint: String): Intent {
