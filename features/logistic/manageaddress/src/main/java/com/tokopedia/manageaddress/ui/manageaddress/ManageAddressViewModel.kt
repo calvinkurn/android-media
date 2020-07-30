@@ -17,7 +17,7 @@ class ManageAddressViewModel @Inject constructor(
         private val deletePeopleAddressUseCase: DeletePeopleAddressUseCase,
         private val setDefaultPeopleAddressUseCase: SetDefaultPeopleAddressUseCase) : ViewModel() {
 
-    private val token: Token = Token()
+    var token: Token? = null
     var savedQuery: String = ""
     var page: Int = 1
 
@@ -41,6 +41,7 @@ class ManageAddressViewModel @Inject constructor(
                             }
 
                             override fun onNext(addressModel: AddressListModel) {
+                                token = addressModel.token
                                 savedQuery = query
                                 _addressList.value = ManageAddressState.Success(addressModel)
                             }
@@ -50,10 +51,6 @@ class ManageAddressViewModel @Inject constructor(
                             }
                         })
         )
-    }
-
-    fun getToken(): Token? {
-        return token
     }
 
     fun deletePeopleAddress(id: String) {

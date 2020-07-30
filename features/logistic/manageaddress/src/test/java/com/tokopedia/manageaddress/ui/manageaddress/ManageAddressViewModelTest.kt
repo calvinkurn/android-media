@@ -111,11 +111,4 @@ class ManageAddressViewModelTest {
 
         assertEquals(ManageAddressState.Fail(response, ""), manageAddressViewModel.addressList.value)
     }
-
-    @Test
-    fun `Get Token Data`() {
-        manageAddressViewModel.getToken()
-
-        assert(true)
-    }
 }
