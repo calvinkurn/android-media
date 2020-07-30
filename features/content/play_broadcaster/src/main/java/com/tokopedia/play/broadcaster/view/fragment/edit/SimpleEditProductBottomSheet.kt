@@ -7,7 +7,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -23,6 +25,9 @@ import com.tokopedia.play.broadcaster.ui.itemdecoration.PlayGridTwoItemDecoratio
 import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 import com.tokopedia.play.broadcaster.ui.viewholder.ProductSelectableViewHolder
+import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
+import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.play.broadcaster.util.extension.showToaster
 import com.tokopedia.play.broadcaster.util.scroll.StopFlingScrollListener
 import com.tokopedia.play.broadcaster.view.adapter.ProductSelectableAdapter
 import com.tokopedia.play.broadcaster.view.viewmodel.DataStoreViewModel
@@ -30,20 +35,28 @@ import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayEditProductViewModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
+import kotlinx.coroutines.*
 import javax.inject.Inject
 
 /**
  * Created by jegul on 23/06/20
  */
 class SimpleEditProductBottomSheet @Inject constructor(
-        private val viewModelFactory: ViewModelFactory
+        private val viewModelFactory: ViewModelFactory,
+        private val dispatcher: CoroutineDispatcherProvider,
+        private val dialogCustomizer: PlayBroadcastDialogCustomizer
 ) : BottomSheetDialogFragment() {
+
+    private val job = SupervisorJob()
+    private val scope = CoroutineScope(dispatcher.main + job)
 
     private lateinit var btnAction: UnifyButton
     private lateinit var vDragArea: View
     private lateinit var tvChooseOver: TextView
     private lateinit var tvSelectedProductTitle: TextView
     private lateinit var rvSelectedProduct: RecyclerView
+    private lateinit var coordinatorEdit: CoordinatorLayout
+    private lateinit var llBtnContainer: LinearLayout
 
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
 
@@ -52,6 +65,8 @@ class SimpleEditProductBottomSheet @Inject constructor(
     private lateinit var dataStoreViewModel: DataStoreViewModel
 
     private var mListener: Listener? = null
+
+    private var toasterBottomMargin = 0
 
     private val selectableProductAdapter = ProductSelectableAdapter(object : ProductSelectableViewHolder.Listener {
         override fun onProductSelectStateChanged(productId: Long, isSelected: Boolean) {
@@ -62,6 +77,12 @@ class SimpleEditProductBottomSheet @Inject constructor(
 
         }
     })
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        return super.onCreateDialog(savedInstanceState).apply {
+            dialogCustomizer.customize(this)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -89,6 +110,11 @@ class SimpleEditProductBottomSheet @Inject constructor(
         observeUploadProduct()
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        job.cancelChildren()
+    }
+
     fun show(fragmentManager: FragmentManager) {
         show(fragmentManager, TAG)
     }
@@ -104,6 +130,8 @@ class SimpleEditProductBottomSheet @Inject constructor(
             tvChooseOver = findViewById(R.id.tv_choose_over)
             tvSelectedProductTitle = findViewById(R.id.tv_selected_product_title)
             rvSelectedProduct = findViewById(R.id.rv_selected_product)
+            coordinatorEdit = findViewById(R.id.coordinator_edit)
+            llBtnContainer = findViewById(R.id.ll_btn_container)
         }
 
     }
@@ -114,7 +142,8 @@ class SimpleEditProductBottomSheet @Inject constructor(
         rvSelectedProduct.addOnScrollListener(StopFlingScrollListener())
 
         btnAction.setOnClickListener {
-            viewModel.uploadProduct(parentViewModel.channelId)
+            if (btnAction.isLoading) return@setOnClickListener
+            viewModel.uploadProduct()
         }
         tvChooseOver.setOnClickListener { mListener?.onChooseOver() }
 
@@ -151,6 +180,38 @@ class SimpleEditProductBottomSheet @Inject constructor(
 
     private fun maxHeight(): Int = getScreenHeight()
 
+    private fun onUploadSuccess() {
+        scope.launch {
+            val error = mListener?.onSaveEditedProductList(dataStoreViewModel.getDataStore())
+            if (error != null) {
+                yield()
+                onUploadFailed(error)
+            }
+            else dismiss()
+        }
+    }
+
+    private fun onUploadFailed(e: Throwable) {
+        btnAction.isLoading = false
+        showToaster(
+                message = e.localizedMessage,
+                type = Toaster.TYPE_ERROR
+        )
+    }
+
+    private fun showToaster(message: String, type: Int, duration: Int = Toaster.LENGTH_SHORT) {
+        if (toasterBottomMargin == 0) {
+            toasterBottomMargin = llBtnContainer.height
+        }
+
+        coordinatorEdit.showToaster(
+                message = message,
+                type = type,
+                duration = duration,
+                bottomMargin = toasterBottomMargin
+        )
+    }
+
     /**
      * Observe
      */
@@ -165,16 +226,10 @@ class SimpleEditProductBottomSheet @Inject constructor(
         viewModel.observableUploadProductEvent.observe(viewLifecycleOwner, Observer {
             when (it) {
                 NetworkResult.Loading -> btnAction.isLoading = true
-                is NetworkResult.Fail -> {
-                    btnAction.isLoading = false
-                    Toaster.make(requireView(), it.error.localizedMessage)
-                }
+                is NetworkResult.Fail -> onUploadFailed(it.error)
                 is NetworkResult.Success -> {
                     val data = it.data.getContentIfNotHandled()
-                    if (data != null) {
-                        btnAction.isLoading = false
-                        mListener?.onSaveEditedProductList(dataStoreViewModel.getDataStore())
-                    }
+                    if (data != null) onUploadSuccess()
                 }
             }
         })
@@ -189,6 +244,6 @@ class SimpleEditProductBottomSheet @Inject constructor(
     interface Listener {
 
         fun onChooseOver()
-        fun onSaveEditedProductList(dataStore: PlayBroadcastSetupDataStore)
+        suspend fun onSaveEditedProductList(dataStore: PlayBroadcastSetupDataStore): Throwable?
     }
 }

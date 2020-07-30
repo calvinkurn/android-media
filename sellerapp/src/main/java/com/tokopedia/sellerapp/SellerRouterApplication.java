@@ -14,12 +14,10 @@ import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.analyticsdebugger.debugger.TetraDebugger;
-import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.config.GlobalConfig;
@@ -55,7 +53,6 @@ import com.tokopedia.phoneverification.PhoneVerificationRouter;
 import com.tokopedia.product.manage.feature.list.view.fragment.ProductManageSellerFragment;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.reviewseller.feature.reviewlist.view.fragment.RatingProductFragment;
 import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.common.logout.TkpdSellerLogout;
 import com.tokopedia.seller.common.topads.deposit.data.model.DataDeposit;
@@ -89,7 +86,6 @@ import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.dashboard.domain.interactor.GetDepositTopAdsUseCase;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
 import com.tokopedia.topchat.chatlist.fragment.ChatTabListFragment;
-import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -219,11 +215,6 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Fragment getReputationHistoryFragment() {
         return SellerReputationFragment.createInstance();
-    }
-
-    @Override
-    public Fragment getReviewSellerFragment() {
-        return RatingProductFragment.Companion.createInstance();
     }
 
     @Override

@@ -302,6 +302,7 @@ class DealsCategoryFragment : DealsBaseFragment(),
 
     override fun resetFilter() {
         chips.forEach { it.isSelected = false }
+        selectFilterFromChipsData()
         dealCategoryViewModel.updateChips(getCurrentLocation(), categoryID, false)
     }
 

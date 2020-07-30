@@ -36,11 +36,6 @@ abstract class PlayBroadcastFragmentModule {
 
     @Binds
     @IntoMap
-    @FragmentKey(PlayBroadcastFragment::class)
-    abstract fun getParentBroadcastFragment(fragment: PlayBroadcastFragment): Fragment
-
-    @Binds
-    @IntoMap
     @FragmentKey(PlayProductLiveBottomSheet::class)
     abstract fun getProductLiveBottomSheet(fragment: PlayProductLiveBottomSheet): Fragment
 
@@ -48,4 +43,9 @@ abstract class PlayBroadcastFragmentModule {
     @IntoMap
     @FragmentKey(PlayBeforeLiveFragment::class)
     abstract fun getBeforeLiveFragment(fragment: PlayBeforeLiveFragment): Fragment
+
+    @Binds
+    @IntoMap
+    @FragmentKey(PlayPermissionFragment::class)
+    abstract fun getPermissionFragment(fragment: PlayPermissionFragment): Fragment
 }
