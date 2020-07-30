@@ -64,6 +64,7 @@ import com.tokopedia.buyerorder.detail.data.DriverDetails;
 import com.tokopedia.buyerorder.detail.data.DropShipper;
 import com.tokopedia.buyerorder.detail.data.Invoice;
 import com.tokopedia.buyerorder.detail.data.Items;
+import com.tokopedia.buyerorder.detail.data.OrderDetails;
 import com.tokopedia.buyerorder.detail.data.OrderToken;
 import com.tokopedia.buyerorder.detail.data.PayMethod;
 import com.tokopedia.buyerorder.detail.data.Pricing;
@@ -90,6 +91,7 @@ import com.tokopedia.url.TokopediaUrl;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -355,7 +357,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                 orderListAnalytics.sendViewInvoiceClickEvent();
                 orderListAnalytics.sendLihatInvoiceClick(status.status());
 
-                Intent intent = SeeInvoiceActivity.newInstance(getContext(), status, invoice,
+                Intent intent = SeeInvoiceActivity.newInstance(Objects.requireNonNull(getContext()), status, invoice,
                         getString(R.string.title_invoice));
                 startActivity(intent);
             });
@@ -1029,7 +1031,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
 
     @SuppressLint("SetTextI18n")
     @Override
-    public void setItems(List<Items> items, boolean isTradeIn) {
+    public void setItems(List<Items> items, boolean isTradeIn, OrderDetails orderDetails) {
         listProducts = items;
         rlShopInfo.setVisibility(View.VISIBLE);
         String labelShop = shopInformationTitle.getContext().getResources().getString(R.string.label_shop_title) + " ";

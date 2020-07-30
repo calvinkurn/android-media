@@ -47,14 +47,6 @@ public abstract class UseCase<T> implements Interactor<T> {
         execute(requestParams, subscriber, false);
     }
 
-    public final void executeSync(RequestParams requestParams) {
-        execute(requestParams, null, true);
-    }
-
-    public final void executeSync(RequestParams requestParams, Subscriber<T> subscriber) {
-        execute(requestParams, subscriber, true);
-    }
-
     private void execute(RequestParams requestParams, Subscriber<T> subscriber, boolean sync) {
         try {
             if (compositeSubscription == null || compositeSubscription.isUnsubscribed()) {

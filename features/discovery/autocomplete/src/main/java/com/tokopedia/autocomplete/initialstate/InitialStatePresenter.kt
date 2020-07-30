@@ -21,7 +21,7 @@ import javax.inject.Inject
 
 class InitialStatePresenter @Inject constructor(
         private val initialStateUseCase: UseCase<List<InitialStateData>>,
-        private val deleteRecentSearchUseCase: DeleteRecentSearchUseCase,
+        private val deleteRecentSearchUseCase: UseCase<Boolean>,
         private val refreshPopularSearchUseCase: RefreshPopularSearchUseCase,
         private val userSession: UserSessionInterface
 ) : BaseDaggerPresenter<InitialStateContract.View>(), InitialStateContract.Presenter {
@@ -246,15 +246,15 @@ class InitialStatePresenter @Inject constructor(
         return childList
     }
 
-    override fun deleteRecentSearchItem(keyword: String) {
+    override fun deleteRecentSearchItem(item: BaseItemInitialStateSearch) {
         val params = DeleteRecentSearchUseCase.getParams(
-                keyword,
                 userSession.deviceId,
-                userSession.userId
+                userSession.userId,
+                item
         )
         deleteRecentSearchUseCase.execute(
                 params,
-                getDeleteRecentSearchSubscriber(keyword)
+                getDeleteRecentSearchSubscriber(item.title)
         )
     }
 
@@ -265,8 +265,8 @@ class InitialStatePresenter @Inject constructor(
             e.printStackTrace()
         }
 
-        override fun onNext(isSuccessful: Boolean) {
-            if (isSuccessful) {
+        override fun onNext(isSuccess: Boolean) {
+            if (isSuccess) {
                 var needDelete = false
                 listVistable.forEachIndexed { _, visitable ->
                     if (visitable is RecentSearchViewModel) {
@@ -315,8 +315,8 @@ class InitialStatePresenter @Inject constructor(
             e.printStackTrace()
         }
 
-        override fun onNext(isSuccessful: Boolean) {
-            if (isSuccessful) {
+        override fun onNext(isSuccess: Boolean) {
+            if (isSuccess) {
                 removeRecentSearchTitle()
                 removeRecentSearch()
                 view.deleteRecentSearch(listVistable)

@@ -11,7 +11,8 @@ import com.tokopedia.contactus.home.data.TopBotStatus;
 import com.tokopedia.contactus.home.domain.ContactUsArticleUseCase;
 import com.tokopedia.contactus.home.domain.ContactUsPurchaseListUseCase;
 import com.tokopedia.contactus.home.domain.ContactUsTopBotUseCase;
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.List;
 
@@ -100,7 +101,10 @@ public class ContactUsHomePresenter extends BaseDaggerPresenter<ContactUsHomeCon
                 if (topBotStatus.isIsActive()) {
                     getView().setChatBotVisible();
                     getView().setChatBotMessageId(topBotStatus.getMsgId());
-                    String username = SessionHandler.getLoginName(context);
+
+                    UserSessionInterface userSessionInterface = new UserSession(context);
+                    String username = userSessionInterface.getName();
+
                     // Showing user's first name only
                     if(username != null && username.split(" ").length >0) {
                         getView().setHighMessageUserName(username.split(" ")[0]);

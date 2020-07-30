@@ -1,175 +1,175 @@
 package com.tokopedia.common_category.data.raw
 
-const val GQL_NAV_CATEGORY_DETAIL_V3: String = "query CategoryDetailQueryV3(\$identifier: String!, \$intermediary: Boolean!, \$safeSearch: Boolean!) {\n" +
-        "  CategoryDetailQueryV3(identifier: \$identifier, intermediary: \$intermediary, safeSearch: \$safeSearch) {\n" +
-        "    header{\n" +
-        "      code\n" +
-        "      serverProcessTime\n" +
-        "      message\n" +
-        "    }\n" +
-        "        data{\n" +
-        "      id\n" +
-        "      name\n" +
-        "      tree\n" +
-        "      parent\n" +
-        "      rootId\n" +
-        "      url\n" +
-        "      redirectionURL\n" +
-        "      appRedirectionURL\n" +
-        "      displayButton\n" +
-        "      applinks\n" +
-        "      redirectTo\n" +
-        "      iconImageURL\n" +
-        "      hidden\n" +
-        "      view\n" +
-        "      intermediary\n" +
-        "      isAdult\n" +
-        "      isBanned\n" +
-        "      bannedMsg\n" +
-        "      bannedMsgHeader\n" +
-        "      appRedirection\n" +
-        "      brandCurated\n" +
-        "      titleTag\n" +
-        "      description\n" +
-        "      metaDescription\n" +
-        "      bannerTemplate\n" +
-        "      bannerType\n" +
-        "      filterAttribute{\n" +
-        "        brandId\n" +
-        "      }\n" +
-        "      widget{\n" +
-        "        bannerCpm\n" +
-        "        bannerPromo\n" +
-        "        catalogLatest\n" +
-        "        catalogPopular\n" +
-        "        catalogCurated\n" +
-        "        subCategoryNavigation\n" +
-        "        subCategoryThumbnail\n" +
-        "        othersSubCategoryThumbnail\n" +
-        "        contentVideo\n" +
-        "        hotlist\n" +
-        "        officialStore\n" +
-        "        contentStaticHeader\n" +
-        "        contentFeaturedCategory\n" +
-        "        contentBrand\n" +
-        "        contentCuratedProduct\n" +
-        "        staticHeader{\n" +
-        "          headerImage\n" +
-        "          headerImageHexColor\n" +
-        "        }\n" +
-        "        curatedProduct{\n" +
-        "          departmentId\n" +
-        "          section{\n" +
-        "            title\n" +
-        "            products{\n" +
-        "              productId\n" +
-        "              departmentId\n" +
-        "              condition\n" +
-        "              imageUrl\n" +
-        "              name\n" +
-        "              price\n" +
-        "              rating\n" +
-        "              review\n" +
-        "              url\n" +
-        "              applinks\n" +
-        "              wholesale{\n" +
-        "                quantityMin\n" +
-        "                quantityMax\n" +
-        "                price\n" +
-        "              }\n" +
-        "              badges{\n" +
-        "                title\n" +
-        "                imageUrl\n" +
-        "              }\n" +
-        "              labels{\n" +
-        "                title\n" +
-        "                color\n" +
-        "              }\n" +
-        "              shop{\n" +
-        "                id\n" +
-        "                name\n" +
-        "                url\n" +
-        "                location\n" +
-        "                city\n" +
-        "                reputation\n" +
-        "                freeReturn\n" +
-        "                clover\n" +
-        "                goldmerchant\n" +
-        "                official\n" +
-        "              }\n" +
-        "            }\n" +
-        "          }\n" +
-        "        }\n" +
-        "        banner{\n" +
-        "          id\n" +
-        "          title\n" +
-        "          url\n" +
-        "          imageUrl\n" +
-        "          applinks\n" +
-        "          position\n" +
-        "        }\n" +
-        "        videoCategory{\n" +
-        "          title\n" +
-        "          description\n" +
-        "          videoUrl\n" +
-        "          youtubeId\n" +
-        "        }\n" +
-        "        brandCategory{\n" +
-        "          id\n" +
-        "          name\n" +
-        "          url\n" +
-        "          imageUrl\n" +
-        "          applinks\n" +
-        "        }\n" +
-        "        featuredCategory{\n" +
-        "          id\n" +
-        "          name\n" +
-        "          categoryID\n" +
-        "          isAdult\n" +
-        "          url\n" +
-        "          imageUrl\n" +
-        "          applinks\n" +
-        "        }\n" +
-        "        catalogCategory{\n" +
-        "          id\n" +
-        "          name\n" +
-        "          url\n" +
-        "          imageUrl\n" +
-        "          type\n" +
-        "          bgImageUrl\n" +
-        "          color\n" +
-        "          catalogs {\n" +
-        "            id\n" +
-        "            catalogId\n" +
-        "            name\n" +
-        "            url\n" +
-        "            imageUrl\n" +
-        "            marketPrice\n" +
-        "          }\n" +
-        "        }\n" +
-        "        longDescription{\n" +
-        "          title\n" +
-        "          description\n" +
-        "        }\n" +
-        "      }\n" +
-        "      child{\n" +
-        "        id\n" +
-        "        name\n" +
-        "        url\n" +
-        "        thumbnailImage\n" +
-        "        isAdult\n" +
-        "        applinks\n" +
-        "      }\n" +
-        "      relatedHotlist{\n" +
-        "        id\n" +
-        "        url\n" +
-        "        name\n" +
-        "      }\n" +
-        "        relatedCategory{\n" +
-        "        id\n" +
-        "        url\n" +
-        "        name\n" +
-        "      }\n" +
-        "    }\n" +
-        "  }\n" +
-        "}"
+const val GQL_NAV_CATEGORY_DETAIL_V3: String = """query CategoryDetailQueryV3(${'$'}identifier: String!, ${'$'}intermediary: Boolean!, ${'$'}safeSearch: Boolean!) {
+  CategoryDetailQueryV3(identifier: ${'$'}identifier, intermediary: ${'$'}intermediary, safeSearch: ${'$'}safeSearch) {
+    header{
+      code
+      serverProcessTime
+      message
+    }
+        data{
+      id
+      name
+      tree
+	rootId      
+      parent
+      url
+      redirectionURL
+      appRedirectionURL
+      displayButton
+      applinks
+      redirectTo
+      iconImageURL
+      hidden
+      view
+      intermediary
+      isAdult
+ 	  isBanned
+      bannedMsg
+      bannedMsgHeader
+      appRedirection
+      brandCurated
+      titleTag
+      description
+      metaDescription
+      bannerTemplate
+      bannerType
+      filterAttribute{
+        brandId
+      }
+      widget{
+        bannerCpm
+        bannerPromo
+        catalogLatest
+        catalogPopular
+        catalogCurated
+        subCategoryNavigation
+        subCategoryThumbnail
+        othersSubCategoryThumbnail
+        contentVideo
+        hotlist
+        officialStore
+        contentStaticHeader
+        contentFeaturedCategory
+        contentBrand
+        contentCuratedProduct
+        staticHeader{
+          headerImage
+          headerImageHexColor
+        }
+        curatedProduct{
+          departmentId
+          section{
+            title
+            products{
+              productId
+              departmentId
+              condition
+              imageUrl
+              name
+              price
+              rating
+              review
+              url
+              applinks
+              wholesale{
+                quantityMin
+                quantityMax
+                price
+              }
+              badges{
+                title
+                imageUrl
+              }
+              labels{
+                title
+                color
+              }
+              shop{
+                id
+                name
+                url
+                location
+                city
+                reputation
+                freeReturn
+                clover
+                goldmerchant
+                official
+              }
+            }
+          }
+        }
+        banner{
+          id
+          title
+          url
+          imageUrl
+          applinks
+          position
+        }
+        videoCategory{
+          title
+          description
+          videoUrl
+          youtubeId
+        }
+        brandCategory{
+          id
+          name
+          url
+          imageUrl
+          applinks
+        }
+        featuredCategory{
+          id
+          name
+          categoryID
+          isAdult
+          url
+          imageUrl
+          applinks
+        }
+        catalogCategory{
+          id
+          name
+          url
+          imageUrl
+          type
+          bgImageUrl
+          color
+          catalogs {
+            id
+            catalogId
+            name
+            url
+            imageUrl
+            marketPrice
+          }
+        }
+        longDescription{
+          title
+          description
+        }
+      }
+      child{
+        id
+        name
+        url
+        thumbnailImage
+        isAdult
+        applinks
+      }
+      relatedHotlist{
+        id
+        url
+        name
+      }
+        relatedCategory{
+        id
+        url
+        name
+      }
+    }
+  }
+}"""

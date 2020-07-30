@@ -4,5 +4,5 @@
     <item
         android:id="@+id/action_post"
         app:showAsAction="always"
-        android:title="@string/af_label_post"/>
+        android:title="@string/cp_label_post"/>
 </menu>

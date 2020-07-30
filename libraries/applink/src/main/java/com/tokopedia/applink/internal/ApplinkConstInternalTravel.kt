@@ -26,6 +26,12 @@ object ApplinkConstInternalTravel {
     val DASHBOARD_HOTEL = "$INTERNAL_HOTEL/dashboard"
 
     @JvmField
+    val HOTEL_SRP = "$INTERNAL_HOTEL/result"
+
+    @JvmField
+    val HOTEL_DETAIL = "$INTERNAL_HOTEL/detail"
+
+    @JvmField
     val HOTEL_PROMO_LIST = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://promoNative?menuID=4&categoryID=742"
 
     @JvmField
@@ -37,6 +43,9 @@ object ApplinkConstInternalTravel {
     val HOME_TRAVEL_HOMEPAGE = "$INTERNAL_TRAVEL_HOMEPAGE/home"
     @JvmField
     val CITY_PAGE_TRAVEL_HOMEPAGE = "$INTERNAL_TRAVEL_HOMEPAGE/home/city"
+
+    @JvmField
+    val TRAIN_ORDER_LIST = "tokopedia://webview?url=https://m.tokopedia.com/order-list?tab=TRAINS&allow_override=false"
 
     @JvmField
     val EXTRA_DESTINATION_WEB_URL = "EXTRA_DESTINATION_WEB_URL"

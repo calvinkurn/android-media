@@ -70,8 +70,8 @@ class ChangeInactivePhoneRequestSubmittedActivity : BaseSimpleActivity(), HasCom
         if (intent.extras != null) {
             val bundle = intent.extras
             isDuplicateRequest = bundle?.getBoolean(IS_DUPLICATE_REQUEST, false) == true
-            email = bundle.getString(USER_EMAIL)
-            phone = bundle.getString(USER_PHONE)
+            email = bundle?.getString(USER_EMAIL)
+            phone = bundle?.getString(USER_PHONE)
         }
 
         val newRequestDetailLayout = findViewById<LinearLayout>(R.id.first_request_submission_details)

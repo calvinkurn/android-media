@@ -1,5 +1,7 @@
 package com.tokopedia.topchat.chatlist.fragment
 
+import android.graphics.Color
+import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -9,6 +11,7 @@ import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.lifecycle.Observer
@@ -25,6 +28,8 @@ import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.seller.active.common.service.UpdateShopActiveService
+import com.tokopedia.topchat.BuildConfig
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.activity.ChatListActivity.Companion.BUYER_ANALYTICS_LABEL
 import com.tokopedia.topchat.chatlist.activity.ChatListActivity.Companion.SELLER_ANALYTICS_LABEL
@@ -40,6 +45,7 @@ import com.tokopedia.topchat.chatlist.model.IncomingChatWebSocketModel
 import com.tokopedia.topchat.chatlist.model.IncomingTypingWebSocketModel
 import com.tokopedia.topchat.chatlist.viewmodel.ChatTabCounterViewModel
 import com.tokopedia.topchat.chatlist.viewmodel.WebSocketViewModel
+import com.tokopedia.topchat.common.custom.ToolTipSearchPopupWindow
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import timber.log.Timber
@@ -61,14 +67,22 @@ open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListCon
     @Inject
     lateinit var chatListAnalytics: ChatListAnalytic
 
-    lateinit var viewModelProvider: ViewModelProvider
-    lateinit var webSocketViewModel: WebSocketViewModel
-    lateinit var chatNotifCounterViewModel: ChatTabCounterViewModel
+    private lateinit var viewModelProvider: ViewModelProvider
+    private lateinit var webSocketViewModel: WebSocketViewModel
+    private lateinit var chatNotifCounterViewModel: ChatTabCounterViewModel
+    private lateinit var searchToolTip: ToolTipSearchPopupWindow
 
+    private var coachMarkOnBoarding = CoachMarkBuilder().build()
     private var fragmentViewCreated = false
+    private var isFinishShowingCoachMarkOnBoarding = false
 
     private var tabLayout: TabLayout? = null
     private var viewPager: ViewPager? = null
+    private var chatTabListListener: Listener? = null
+
+    interface Listener {
+        fun getActivityToolbar(): Toolbar
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_chat_tab_list, container, false)
@@ -85,6 +99,21 @@ open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListCon
         initData()
         initOnBoarding()
         initChatCounterObserver()
+        initToolTip()
+        initBackground()
+        context?.let { UpdateShopActiveService.startService(it) }
+    }
+
+    private fun initBackground() {
+        if (GlobalConfig.isSellerApp()) {
+            viewPager?.setBackgroundColor(Color.WHITE)
+        }
+    }
+
+    override fun onAttachActivity(context: Context?) {
+        if (context is Listener) {
+            chatTabListListener = context
+        }
     }
 
     override fun onStart() {
@@ -104,6 +133,11 @@ open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListCon
         super.onDestroy()
         stopLiveDataObserver()
         flushAllViewModel()
+        searchToolTip.dismiss()
+    }
+
+    private fun initToolTip() {
+        searchToolTip = ToolTipSearchPopupWindow(context, chatNotifCounterViewModel)
     }
 
     override fun initInjector() {
@@ -112,10 +146,6 @@ open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListCon
                 .chatListContextModule(context?.let { ChatListContextModule(it) })
                 .build()
                 .inject(this)
-    }
-
-    override fun loadNotificationCounter() {
-        chatNotifCounterViewModel.queryGetNotifCounter()
     }
 
     override fun notifyViewCreated() {
@@ -428,6 +458,23 @@ open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListCon
         loadNotificationCounter()
     }
 
+    override fun loadNotificationCounter() {
+        chatNotifCounterViewModel.queryGetNotifCounter()
+    }
+
+    override fun showSearchOnBoardingTooltip() {
+        if (chatNotifCounterViewModel.isSearchOnBoardingTooltipHasShown() || !isFinishShowingCoachMarkOnBoarding) return
+        val toolbar = chatTabListListener?.getActivityToolbar()
+        toolbar?.post {
+            val searchView = toolbar.findViewById<View>(R.id.menu_chat_search)
+            searchToolTip.showAtBottom(searchView)
+        }
+    }
+
+    override fun closeSearchTooltip() {
+        searchToolTip.dismissOnBoarding()
+    }
+
     private fun decreaseNotificationCounter(iconId: Int) {
         for ((tabIndex, tab) in tabList.withIndex()) {
             if (tab.icon == iconId) {
@@ -455,12 +502,17 @@ open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListCon
     }
 
     private fun initOnBoarding() {
-        if (!userSession.hasShop()) return
+        if (!userSession.hasShop()){
+            isFinishShowingCoachMarkOnBoarding = true
+            return
+        }
         tabLayout?.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 tabLayout?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
                 if (!isOnBoardingAlreadyShown()) {
                     showOnBoarding()
+                } else {
+                    isFinishShowingCoachMarkOnBoarding = true
                 }
             }
         })
@@ -490,7 +542,11 @@ open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListCon
                         getString(R.string.coach_tab_description_buyer)
                 )
         )
-        CoachMarkBuilder().build().show(activity, TAG_ONBOARDING, tutorials)
+        coachMarkOnBoarding.onFinishListener = {
+            isFinishShowingCoachMarkOnBoarding = true
+            showSearchOnBoardingTooltip()
+        }
+        coachMarkOnBoarding.show(activity, TAG_ONBOARDING, tutorials)
         context?.let { CoachMarkPreference.setShown(it, TAG_ONBOARDING, true) }
     }
 

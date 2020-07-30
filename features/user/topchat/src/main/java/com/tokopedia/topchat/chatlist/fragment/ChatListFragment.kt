@@ -85,10 +85,13 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
     @Inject
     lateinit var remoteConfig: RemoteConfig
+
     @Inject
     lateinit var chatListAnalytics: ChatListAnalytic
+
     @Inject
     lateinit var userSession: UserSessionInterface
 
@@ -157,6 +160,7 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
                 true
             }
             R.id.menu_chat_search -> {
+                chatTabListContract?.closeSearchTooltip()
                 RouteManager.route(context, ApplinkConstInternalMarketplace.CHAT_SEARCH)
                 true
             }
@@ -178,6 +182,11 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
         setObserver()
         setupSellerBroadcast()
         setupTicker()
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        chatTabListContract?.showSearchOnBoardingTooltip()
+        super.onPrepareOptionsMenu(menu)
     }
 
     private fun setupSellerBroadcast() {
@@ -293,7 +302,9 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
     ) {
         adapter?.let { adapter ->
             when {
-                index >= adapter.list.size -> { return }
+                index >= adapter.list.size -> {
+                    return
+                }
                 //not found on list
                 index == -1 -> {
                     if (adapter.hasEmptyModel()) {
@@ -389,6 +400,7 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
     }
 
     private fun onFailGetChatList(throwable: Throwable) {
+        showGetListError(throwable)
         fpmStopTrace()
     }
 

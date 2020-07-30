@@ -1,7 +1,6 @@
 package com.tokopedia.merchantvoucher.common.model
 
 import android.content.Context
-import android.os.Parcel
 import android.os.Parcelable
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.KMNumbers
@@ -14,40 +13,43 @@ import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherStatusTypeDe
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherTypeDef
 import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherModel
 import com.tokopedia.merchantvoucher.voucherList.adapter.MerchantVoucherAdapterTypeFactory
+import kotlinx.android.parcel.Parcelize
 
 /**
  * Created by hendry on 01/10/18.
  */
-class MerchantVoucherViewModel() : Visitable<MerchantVoucherAdapterTypeFactory>, Parcelable, ImpressHolder() {
+@Parcelize
+class MerchantVoucherViewModel(var voucherId: Int = 0,
+                               var voucherName: String? = "",
+                               var voucherCode: String = "",
 
-    var voucherId: Int = 0
-    var voucherName: String? = ""
-    var voucherCode: String = ""
-
-    @MerchantVoucherTypeDef
-    var merchantVoucherType: Int? = MerchantVoucherTypeDef.TYPE_FREE_ONGKIR
-    @MerchantVoucherAmountTypeDef
-    var merchantVoucherAmountType: Int? = MerchantVoucherAmountTypeDef.TYPE_FIXED
-    var merchantVoucherAmount: Float? = 0f
-    var minimumSpend: Int = 0
-    var validThru: Long? = 0
-    var tnc: String? = ""
-    var bannerUrl: String? = ""
-    @MerchantVoucherStatusTypeDef
-    var status: Int? = MerchantVoucherStatusTypeDef.TYPE_AVAILABLE
-    @MerchantVoucherOwnerTypeDef
-    var ownerId: Int? = MerchantVoucherOwnerTypeDef.TYPE_MERCHANT
-    var enableButtonUse = false
-    var restrictedForLiquidProduct: Boolean = false
+                               @MerchantVoucherTypeDef
+                               var merchantVoucherType: Int? = MerchantVoucherTypeDef.TYPE_FREE_ONGKIR,
+                               @MerchantVoucherAmountTypeDef
+                               var merchantVoucherAmountType: Int? = MerchantVoucherAmountTypeDef.TYPE_FIXED,
+                               var merchantVoucherAmount: Float? = 0f,
+                               var minimumSpend: Int = 0,
+                               var validThru: Long? = 0,
+                               var tnc: String? = "",
+                               var bannerUrl: String? = "",
+                               @MerchantVoucherStatusTypeDef
+                               var status: Int? = MerchantVoucherStatusTypeDef.TYPE_AVAILABLE,
+                               @MerchantVoucherOwnerTypeDef
+                               var ownerId: Int? = MerchantVoucherOwnerTypeDef.TYPE_MERCHANT,
+                               var enableButtonUse: Boolean = false,
+                               var restrictedForLiquidProduct: Boolean = false,
+                               var isPublic: Boolean = true) : Visitable<MerchantVoucherAdapterTypeFactory>, Parcelable, ImpressHolder() {
 
     fun isAvailable() = status == MerchantVoucherStatusTypeDef.TYPE_AVAILABLE
 
-    constructor(merchantVoucherModel: MerchantVoucherModel): this() {
+    constructor(merchantVoucherModel: MerchantVoucherModel) : this() {
         voucherId = merchantVoucherModel.voucherId
         voucherName = merchantVoucherModel.voucherName
         voucherCode = merchantVoucherModel.voucherCode ?: ""
-        merchantVoucherType = merchantVoucherModel.merchantVoucherType?.type ?: MerchantVoucherTypeDef.TYPE_FREE_ONGKIR
-        merchantVoucherAmountType = merchantVoucherModel.merchantVoucherAmount?.type ?: MerchantVoucherAmountTypeDef.TYPE_FIXED
+        merchantVoucherType = merchantVoucherModel.merchantVoucherType?.type
+                ?: MerchantVoucherTypeDef.TYPE_FREE_ONGKIR
+        merchantVoucherAmountType = merchantVoucherModel.merchantVoucherAmount?.type
+                ?: MerchantVoucherAmountTypeDef.TYPE_FIXED
         merchantVoucherAmount = merchantVoucherModel.merchantVoucherAmount?.amount ?: 0f
         minimumSpend = merchantVoucherModel.minimumSpend
         ownerId = merchantVoucherModel.merchantVoucherOwner.ownerId
@@ -66,53 +68,6 @@ class MerchantVoucherViewModel() : Visitable<MerchantVoucherAdapterTypeFactory>,
     override fun type(typeFactory: MerchantVoucherAdapterTypeFactory): Int {
         return typeFactory.type(this)
     }
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeInt(voucherId)
-        parcel.writeString(voucherName)
-        parcel.writeString(voucherCode)
-        parcel.writeValue(merchantVoucherType)
-        parcel.writeValue(merchantVoucherAmountType)
-        parcel.writeValue(merchantVoucherAmount)
-        parcel.writeInt(minimumSpend)
-        parcel.writeValue(validThru)
-        parcel.writeString(tnc)
-        parcel.writeString(bannerUrl)
-        parcel.writeValue(status)
-        parcel.writeValue(ownerId)
-        parcel.writeByte(if (restrictedForLiquidProduct) 1 else 0)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    constructor(parcel: Parcel): this() {
-        voucherId = parcel.readInt()
-        voucherName = parcel.readString()
-        voucherCode = parcel.readString()
-        merchantVoucherType = parcel.readValue(Int::class.java.classLoader) as? Int
-        merchantVoucherAmountType = parcel.readValue(Int::class.java.classLoader) as? Int
-        merchantVoucherAmount = parcel.readValue(Float::class.java.classLoader) as? Float
-        minimumSpend = parcel.readInt()
-        validThru = parcel.readValue(Long::class.java.classLoader) as? Long
-        tnc = parcel.readString()
-        bannerUrl = parcel.readString()
-        status = parcel.readValue(Int::class.java.classLoader) as? Int
-        ownerId = parcel.readValue(Int::class.java.classLoader) as? Int
-        restrictedForLiquidProduct = parcel.readByte() != 0.toByte()
-    }
-
-    companion object CREATOR : Parcelable.Creator<MerchantVoucherViewModel> {
-        override fun createFromParcel(parcel: Parcel): MerchantVoucherViewModel {
-            return MerchantVoucherViewModel(parcel)
-        }
-
-        override fun newArray(size: Int): Array<MerchantVoucherViewModel?> {
-            return arrayOfNulls(size)
-        }
-    }
-
 }
 
 fun MerchantVoucherViewModel.getTypeString(context: Context): String {

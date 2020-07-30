@@ -83,6 +83,10 @@ class FirebaseMessagingManagerImpl @Inject constructor(
         return prefToken == currentFcmToken
     }
 
+    override fun currentToken(): String {
+        return getTokenFromPref()?: ""
+    }
+
     override fun clear() {
         coroutineContext.cancelChildren()
     }
@@ -121,7 +125,7 @@ class FirebaseMessagingManagerImpl @Inject constructor(
                     fcmTokenShouldBe: $token
                     errorMessage: ${error.message},
                 """.trimIndent()
-                Crashlytics.logException(Exception(errorMessage))
+                Crashlytics.logException(Exception(errorMessage, error))
             }
         } catch (e: Exception) {
             e.printStackTrace()

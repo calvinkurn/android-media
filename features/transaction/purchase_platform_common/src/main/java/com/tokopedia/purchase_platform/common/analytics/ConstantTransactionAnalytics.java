@@ -399,6 +399,8 @@ public interface ConstantTransactionAnalytics {
         String VIEW_PROMO_MESSAGE = "view promo message";
         String SELECT_PROMO_CODE_FROM_LAST_SEEN = "select promo code from Last Seen";
         String DISMISS_LAST_SEEN = "dismiss Last Seen";
+        String CLICK_INPUT_FIELD = "click input field";
+        String SHOW_LAST_SEEN_POP_UP = "show Last Seen pop-up";
 
         //OCC
         String ADD_PREFERENCE_OCC = "click tambah preferensi from tambah pilihan";
@@ -426,6 +428,8 @@ public interface ConstantTransactionAnalytics {
         String EDIT_SELLER_NOTES = "product - click tulis catatan";
         String FIND_SIMILAR_PRODUCT = "product - click cari barang serupa";
         String USER_CHANGE_COURIER_OSP = "courier - click arrow to change courier option";
+        String CLICK_UBAH_WHEN_DURATION_ERROR = "click ubah when duration error";
+        String CLICK_SELECTED_DURATION_OPTION = "click selected duration option";
         String CLICK_ON_INSURANCE = "courier - click on asuransi pengiriman";
         String CLICK_BAYAR_NOT_SUCCESS = "click bayar - not success";
         String CLICK_PILIH_PEMBAYARAN_NOT_SUCCESS = "click pilih pembayaran - not success";
@@ -523,6 +527,7 @@ public interface ConstantTransactionAnalytics {
 
     interface ExtraKey {
         String USER_ID = "userId";
+        String PROMO_CODE = "promoCode";
     }
 
     interface ScreenName {

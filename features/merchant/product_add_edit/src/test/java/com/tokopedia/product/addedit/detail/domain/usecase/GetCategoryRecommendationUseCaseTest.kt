@@ -6,10 +6,10 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.product.addedit.detail.domain.mapper.CategoryRecommendationMapper
+import com.tokopedia.product.addedit.detail.domain.model.GetCategoryRecommendationDataModel
 import com.tokopedia.product.addedit.detail.domain.model.GetCategoryRecommendationResponse
-import io.mockk.MockKAnnotations
-import io.mockk.coEvery
-import io.mockk.coVerify
+import com.tokopedia.unifycomponents.list.ListItemUnify
+import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
@@ -33,7 +33,8 @@ class GetCategoryRecommendationUseCaseTest {
     @RelaxedMockK
     lateinit var gqlRepository: GraphqlRepository
 
-    private val mapper: CategoryRecommendationMapper = CategoryRecommendationMapper()
+    @RelaxedMockK
+    lateinit var mapper: CategoryRecommendationMapper
 
     private val usecase by lazy {
         GetCategoryRecommendationUseCase(gqlRepository, mapper)
@@ -50,10 +51,16 @@ class GetCategoryRecommendationUseCaseTest {
     fun `should success on get category recommendation`() = runBlocking {
         usecase.params = params
         val successResponse = createSuccessResponse<GetCategoryRecommendationResponse>(SUCCESS_RESPONSE)
+        val mappedResponse = mapRemoteModelToUiModel(successResponse.getData<GetCategoryRecommendationResponse>(GetCategoryRecommendationResponse::class.java)
+                .categoryRecommendationDataModel)
 
         coEvery {
             gqlRepository.getReseponse(any(), any())
         } returns successResponse
+
+        every {
+            mapper.mapRemoteModelToUiModel(any())
+        } returns mappedResponse
 
         val result = usecase.executeOnBackground()
 
@@ -63,6 +70,11 @@ class GetCategoryRecommendationUseCaseTest {
 
         Assert.assertTrue(result.isNotEmpty())
     }
+
+    private fun mapRemoteModelToUiModel(categoryRecommendationData: GetCategoryRecommendationDataModel?): List<ListItemUnify> =
+            categoryRecommendationData?.categories?.map {
+                mockk<ListItemUnify>()
+            }.orEmpty()
 
     fun getJsonFromFile(path: String): String {
         val uri = ClassLoader.getSystemClassLoader().getResource(path)

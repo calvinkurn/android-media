@@ -135,7 +135,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     private lateinit var orderPreferenceCard: OrderPreferenceCard
 
     private var progressDialog: AlertDialog? = null
-    private var coachMark: CoachMark? = null
     private var dialogUnify: DialogUnify? = null
 
     private var shouldUpdateCart: Boolean = true
@@ -210,10 +209,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
     private fun onResultFromPayment(resultCode: Int) {
         if (activity != null) {
-            val lastOrderTotal = viewModel.orderTotal.value
-            if (lastOrderTotal != null && !lastOrderTotal.isButtonChoosePayment) {
-                activity?.finish()
-            } else if (resultCode != PaymentConstant.PAYMENT_CANCELLED && resultCode != PaymentConstant.PAYMENT_FAILED) {
+            if (resultCode != PaymentConstant.PAYMENT_CANCELLED && resultCode != PaymentConstant.PAYMENT_FAILED) {
                 activity?.finish()
             }
         }
@@ -530,31 +526,23 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 }
                 coachMarkItems.add(CoachMarkItem(view, detailIndexed.value.title, detailIndexed.value.message, tintBackgroundColor = Color.WHITE))
             }
-            coachMark = CoachMarkBuilder().build()
-            coachMark?.let { coachMark ->
-                coachMark.enableSkip = true
-                if (onboarding.onboardingCoachMark.skipButtonText.isNotEmpty()) {
-                    coachMark.setSkipText(onboarding.onboardingCoachMark.skipButtonText)
-                }
-                coachMark.overlayOnClickListener = ({
-                    //do nothing
-                })
-                coachMark.onFinishListener = ({
-                    this.coachMark = null
-                })
-                coachMark.setShowCaseStepListener(object : CoachMark.OnShowCaseStepListener {
-                    override fun onShowCaseGoTo(previousStep: Int, nextStep: Int, coachMarkItem: CoachMarkItem): Boolean {
-                        if (nextStep == 0) {
-                            scrollview.scrollTo(0, it.findViewById<View>(R.id.tv_header_2).top)
-                        } else if (nextStep == 3) {
-                            scrollview.scrollTo(0, layoutPayment.bottom)
-                        }
-                        return false
-                    }
-                })
-                coachMark.show(activity, COACH_MARK_TAG, coachMarkItems)
-                orderSummaryAnalytics.eventViewOnboardingTicker()
+            val coachMark = CoachMarkBuilder().build()
+            coachMark.enableSkip = true
+            if (onboarding.onboardingCoachMark.skipButtonText.isNotEmpty()) {
+                coachMark.setSkipText(onboarding.onboardingCoachMark.skipButtonText)
             }
+            coachMark.setShowCaseStepListener(object : CoachMark.OnShowCaseStepListener {
+                override fun onShowCaseGoTo(previousStep: Int, nextStep: Int, coachMarkItem: CoachMarkItem): Boolean {
+                    if (nextStep == 0) {
+                        scrollview.scrollTo(0, it.findViewById<View>(R.id.tv_header_2).top)
+                    } else if (nextStep == 3) {
+                        scrollview.scrollTo(0, layoutPayment.bottom)
+                    }
+                    return false
+                }
+            })
+            coachMark.show(activity, COACH_MARK_TAG, coachMarkItems)
+            orderSummaryAnalytics.eventViewOnboardingTicker()
         }
     }
 
@@ -836,6 +824,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         }
 
         override fun onDurationChange(selectedServiceId: Int, selectedShippingCourierUiModel: ShippingCourierUiModel, flagNeedToSetPinpoint: Boolean) {
+            orderSummaryAnalytics.eventClickSelectedDurationOption(selectedServiceId.toString(), userSession.userId)
             viewModel.chooseDuration(selectedServiceId, selectedShippingCourierUiModel, flagNeedToSetPinpoint)
         }
 
@@ -851,7 +840,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             }
         }
 
-        override fun chooseDuration() {
+        override fun chooseDuration(isDurationError: Boolean) {
+            if (isDurationError) {
+                orderSummaryAnalytics.eventClickUbahWhenDurationError(userSession.userId)
+            }
             if (viewModel.orderTotal.value?.buttonState != ButtonBayarState.LOADING) {
                 orderPreferenceCard.showDurationBottomSheet(this@OrderSummaryPageFragment)
             }
@@ -1082,7 +1074,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
     override fun onStop() {
         super.onStop()
-        coachMark?.close()
         if (swipeRefreshLayout?.isRefreshing == false && shouldUpdateCart) {
             viewModel.updateCart()
         }

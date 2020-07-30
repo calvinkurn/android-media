@@ -1,6 +1,7 @@
 package com.tokopedia.chat_common.domain.mapper
 
 import androidx.annotation.NonNull
+import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -108,7 +109,8 @@ open class WebsocketMessageMapper @Inject constructor() {
                 pojoAttribute.productProfile.playStoreData,
                 pojoAttribute.productProfile.remainingStock,
                 pojoAttribute.productProfile.status,
-                pojo.source
+                pojo.source,
+                pojoAttribute.productProfile.rating
         ).apply {
             finishLoading()
         }

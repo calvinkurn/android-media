@@ -115,6 +115,8 @@ class YouTubeView(
     }
 
     internal fun setYouTubeId(youtubeId: String) {
+        if (videoId == youtubeId) return
+
         videoId = youtubeId
         playYouTubeFromId(youtubeId)
     }

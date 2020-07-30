@@ -29,22 +29,12 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.var.TkpdCache;
-import com.tokopedia.createpost.view.applink.CreatePostModule;
-import com.tokopedia.createpost.view.applink.CreatePostModuleLoader;
 import com.tokopedia.explore.applink.ExploreApplinkModule;
 import com.tokopedia.explore.applink.ExploreApplinkModuleLoader;
 import com.tokopedia.feedplus.view.deeplink.FeedDeeplinkModule;
 import com.tokopedia.feedplus.view.deeplink.FeedDeeplinkModuleLoader;
-import com.tokopedia.home.account.applink.AccountHomeApplinkModule;
-import com.tokopedia.home.account.applink.AccountHomeApplinkModuleLoader;
-import com.tokopedia.home.applink.HomeApplinkModule;
-import com.tokopedia.home.applink.HomeApplinkModuleLoader;
 import com.tokopedia.homecredit.applink.HomeCreditAppLinkModule;
 import com.tokopedia.homecredit.applink.HomeCreditAppLinkModuleLoader;
-import com.tokopedia.interestpick.applink.InterestPickApplinkModule;
-import com.tokopedia.interestpick.applink.InterestPickApplinkModuleLoader;
-import com.tokopedia.kol.applink.KolApplinkModule;
-import com.tokopedia.kol.applink.KolApplinkModuleLoader;
 import com.tokopedia.kyc.deeplink.OvoUpgradeDeeplinkModule;
 import com.tokopedia.kyc.deeplink.OvoUpgradeDeeplinkModuleLoader;
 import com.tokopedia.linker.LinkerManager;
@@ -66,8 +56,6 @@ import com.tokopedia.product.detail.applink.ProductDetailApplinkModuleLoader;
 import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubscriber;
 import com.tokopedia.pushnotif.Constant;
 import com.tokopedia.pushnotif.HistoryNotification;
-import com.tokopedia.recentview.view.applink.RecentViewApplinkModule;
-import com.tokopedia.recentview.view.applink.RecentViewApplinkModuleLoader;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -102,18 +90,12 @@ import timber.log.Timber;
         SellerApplinkModule.class,
         TransactionApplinkModule.class,
         ProductDetailApplinkModule.class,
-        HomeApplinkModule.class,
         FeedDeeplinkModule.class,
         DigitalBrowseApplinkModule.class,
         OvoUpgradeDeeplinkModule.class,
         LoyaltyAppLinkModule.class,
-        CreatePostModule.class,
-        KolApplinkModule.class,
         ExploreApplinkModule.class,
-        InterestPickApplinkModule.class,
         HowtopayApplinkModule.class,
-        AccountHomeApplinkModule.class,
-        RecentViewApplinkModule.class,
         LoginRegisterApplinkModule.class,
         ChangeInactivePhoneApplinkModule.class,
         PhoneVerificationApplinkModule.class,
@@ -137,17 +119,11 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new SellerApplinkModuleLoader(),
                     new TransactionApplinkModuleLoader(),
                     new ProductDetailApplinkModuleLoader(),
-                    new HomeApplinkModuleLoader(),
                     new FeedDeeplinkModuleLoader(),
                     new DigitalBrowseApplinkModuleLoader(),
                     new LoyaltyAppLinkModuleLoader(),
-                    new CreatePostModuleLoader(),
-                    new KolApplinkModuleLoader(),
                     new ExploreApplinkModuleLoader(),
-                    new InterestPickApplinkModuleLoader(),
                     new HowtopayApplinkModuleLoader(),
-                    new AccountHomeApplinkModuleLoader(),
-                    new RecentViewApplinkModuleLoader(),
                     new LoginRegisterApplinkModuleLoader(),
                     new ChangeInactivePhoneApplinkModuleLoader(),
                     new PhoneVerificationApplinkModuleLoader(),

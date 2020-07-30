@@ -178,7 +178,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private Map<Integer, List<ShippingCourierUiModel>> shippingCourierViewModelsState;
     private boolean isPurchaseProtectionPage = false;
     private boolean isShowOnboarding;
-    private boolean isIneligbilePromoDialogEnabled;
+    private boolean isIneligiblePromoDialogEnabled;
 
     private ShipmentContract.AnalyticsActionListener analyticsActionListener;
     private CheckoutAnalyticsPurchaseProtection mTrackerPurchaseProtection;
@@ -487,8 +487,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public boolean isIneligbilePromoDialogEnabled() {
-        return isIneligbilePromoDialogEnabled;
+    public boolean isIneligiblePromoDialogEnabled() {
+        return isIneligiblePromoDialogEnabled;
     }
 
 
@@ -653,7 +653,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         token.setDistrictRecommendation(cartShipmentAddressFormData.getKeroDiscomToken());
 
         isShowOnboarding = cartShipmentAddressFormData.isShowOnboarding();
-        isIneligbilePromoDialogEnabled = cartShipmentAddressFormData.isIneligbilePromoDialogEnabled();
+        isIneligiblePromoDialogEnabled = cartShipmentAddressFormData.isIneligiblePromoDialogEnabled();
     }
 
     @Override
@@ -1363,7 +1363,16 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
         Map<String, Object> param = new HashMap<>();
         List<ShipmentStateRequestData> saveShipmentDataArray = getShipmentItemSaveStateData(shipmentCartItemModels);
-        param.put(SaveShipmentStateGqlUseCase.PARAM_CARTS, saveShipmentDataArray);
+        List<ShipmentStateRequestData> tmpSaveShipmentDataArray = new ArrayList<>();
+        for (ShipmentStateRequestData requestData : saveShipmentDataArray) {
+            if (requestData.getShopProductDataList() != null && !requestData.getShopProductDataList().isEmpty()) {
+                tmpSaveShipmentDataArray.add(requestData);
+            }
+        }
+
+        if (tmpSaveShipmentDataArray.isEmpty()) return;
+
+        param.put(SaveShipmentStateGqlUseCase.PARAM_CARTS, tmpSaveShipmentDataArray);
 
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(SaveShipmentStateGqlUseCase.PARAM_CART_DATA_OBJECT, param);
@@ -1437,9 +1446,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 .build();
     }
 
-    private void setSaveShipmentStateData(ShipmentCartItemModel
-                                                  shipmentCartItemModel, List<ShipmentStateShopProductData> shipmentStateShopProductDataList) {
-        // todo: refactor to converter class
+    private void setSaveShipmentStateData(ShipmentCartItemModel shipmentCartItemModel,
+                                          List<ShipmentStateShopProductData> shipmentStateShopProductDataList) {
+        if (shipmentCartItemModel == null) return;
         CourierItemData courierData = null;
         if (getView().isTradeInByDropOff()) {
             courierData = shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff();

@@ -33,12 +33,4 @@ class CategoryUseCaseModule {
         return GraphqlUseCase()
     }
 
-    @CategoryNavigationScope
-    @Named(Constants.GQL_CATEGORY_LIST)
-    @Provides
-    fun provideCategoryListQuery(resources: Resources): String {
-        return GraphqlHelper.loadRawString(resources, R.raw.categorylist)
-    }
-
-
 }

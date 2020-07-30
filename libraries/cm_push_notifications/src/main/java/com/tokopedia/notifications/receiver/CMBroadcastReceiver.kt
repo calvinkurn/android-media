@@ -242,7 +242,7 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
     private fun copyToClipboard(context: Context, contents: String) {
         val clipboard = context.getSystemService(Activity.CLIPBOARD_SERVICE) as ClipboardManager
         val clip = ClipData.newPlainText("Tokopedia", contents)
-        clipboard.primaryClip = clip
+        clipboard.setPrimaryClip(clip)
         applyPromoCode(context, contents)
         Toast.makeText(context, "${context.getString(R.string.cm_tv_coupon_code_copied)} $contents"
                 , Toast.LENGTH_LONG).show()

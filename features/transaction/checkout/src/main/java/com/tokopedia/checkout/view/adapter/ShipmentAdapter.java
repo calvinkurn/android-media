@@ -880,6 +880,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public void updateShipmentCostModel() {
+        if (shipmentCostModel == null) return;
         double totalWeight = 0;
         double totalPrice = 0;
         double additionalFee = 0;
