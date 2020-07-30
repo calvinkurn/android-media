@@ -1,110 +1,108 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingLeft="@dimen/deals_dp_12"
     android:paddingRight="@dimen/deals_dp_12"
-    android:layout_marginBottom="@dimen/spacing_lvl3"
+    android:paddingBottom="@dimen/spacing_lvl2"
     app:contentInsetLeft="0dp"
     app:contentInsetStart="0dp"
     app:contentInsetStartWithNavigation="0dp">
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/imgDealsBaseBackIcon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_system_action_back_grayscale_24" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <LinearLayout
-        android:id="@+id/contentDealsBaseLocationHint"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/deals_dp_12"
-        android:layout_marginLeft="@dimen/deals_dp_12"
-        app:layout_constraintLeft_toRightOf="@id/imgDealsBaseBackIcon"
-        app:layout_constraintTop_toTopOf="parent">
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/imgDealsBaseBackIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginBottom="@dimen/spacing_lvl3"
+            app:srcCompat="@drawable/ic_system_action_back_grayscale_24" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/txtDealsBaseLocationHint"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/deals_dp_12"
+            android:layout_marginLeft="@dimen/deals_dp_12"
             android:layout_marginTop="@dimen/spacing_lvl1"
-            android:gravity="center_vertical"
             android:text="@string/deals_base_activity_location_placeholder"
+            android:gravity="center_vertical"
             android:textColor="@color/Neutral_N700_96"
+            app:drawableRightCompat="@drawable/ic_deals_dropdown_down_24dp"
+            app:layout_constraintLeft_toRightOf="@id/imgDealsBaseBackIcon"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/txtDealsBaseLocationTitle"
             app:typographyType="body_3"
             tools:text="Lokasi Deals" />
 
-        <ImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            app:srcCompat="@drawable/ic_deals_dropdown_down_24dp"/>
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toRightOf="@id/txtDealsBaseLocationHint"
+            app:layout_constraintStart_toEndOf="@id/txtDealsBaseLocationHint"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    </LinearLayout>
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/txtDealsBaseLocationTitle"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:includeFontPadding="false"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:layout_marginRight="@dimen/spacing_lvl4"
+            android:textColor="@color/Neutral_N700_96"
+            app:layout_constraintEnd_toStartOf="@id/imgDealsOrderListMenu"
+            app:layout_constraintLeft_toRightOf="@id/imgDealsBaseBackIcon"
+            app:layout_constraintStart_toStartOf="@id/txtDealsBaseLocationHint"
+            app:layout_constraintTop_toBottomOf="@id/txtDealsBaseLocationHint"
+            app:typographyType="heading_4"
+            tools:text="Jakarta Barat" />
+
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
+            android:id="@+id/shimmerDealsBaseLocationTitle"
+            android:layout_width="@dimen/deals_dp_100"
+            android:layout_height="@dimen/layout_lvl2"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:layout_marginRight="@dimen/spacing_lvl4"
+            android:textColor="@color/Neutral_N700_96"
+            android:visibility="gone"
+            app:corners="8"
+            android:includeFontPadding="false"
+            app:layout_constraintLeft_toRightOf="@id/imgDealsBaseBackIcon"
+            app:layout_constraintStart_toStartOf="@id/txtDealsBaseLocationHint"
+            app:layout_constraintTop_toBottomOf="@id/txtDealsBaseLocationHint" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/imgDealsOrderListMenu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/spacing_lvl3"
+            android:layout_marginRight="@dimen/spacing_lvl3"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="@dimen/spacing_lvl3"
+            app:layout_constraintEnd_toStartOf="@id/imgDealsSearchIcon"
+            app:layout_goneMarginEnd="@dimen/layout_lvl0"
+            app:layout_goneMarginRight="@dimen/layout_lvl0"
+            app:srcCompat="@drawable/ic_deals_voucher_order_list_24dp" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/imgDealsSearchIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginBottom="@dimen/spacing_lvl3"
+            app:srcCompat="@drawable/ic_system_action_search_grayscale_24" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintLeft_toRightOf="@id/contentDealsBaseLocationHint"
-        app:layout_constraintStart_toEndOf="@id/contentDealsBaseLocationHint"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/txtDealsBaseLocationTitle"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:layout_marginRight="@dimen/spacing_lvl4"
-        android:textColor="@color/Neutral_N700_96"
-        app:layout_constraintEnd_toStartOf="@id/imgDealsOrderListMenu"
-        app:layout_constraintLeft_toRightOf="@id/imgDealsBaseBackIcon"
-        app:layout_constraintStart_toStartOf="@id/contentDealsBaseLocationHint"
-        app:layout_constraintTop_toBottomOf="@id/contentDealsBaseLocationHint"
-        app:typographyType="heading_4"
-        tools:text="Jakarta Barat" />
-
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
-        android:id="@+id/shimmerDealsBaseLocationTitle"
-        android:layout_width="@dimen/deals_dp_100"
-        android:layout_height="@dimen/layout_lvl2"
-        android:layout_marginTop="@dimen/spacing_lvl2"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:layout_marginRight="@dimen/spacing_lvl4"
-        android:textColor="@color/Neutral_N700_96"
-        android:visibility="gone"
-        app:corners="8"
-        app:layout_constraintLeft_toRightOf="@id/imgDealsBaseBackIcon"
-        app:layout_constraintStart_toStartOf="@id/contentDealsBaseLocationHint"
-        app:layout_constraintTop_toBottomOf="@id/contentDealsBaseLocationHint" />
-
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/imgDealsOrderListMenu"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/spacing_lvl3"
-        android:layout_marginRight="@dimen/spacing_lvl3"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/imgDealsSearchIcon"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_goneMarginEnd="@dimen/layout_lvl0"
-        app:layout_goneMarginRight="@dimen/layout_lvl0"
-        app:srcCompat="@drawable/ic_deals_voucher_order_list_24dp" />
-
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/imgDealsSearchIcon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_system_action_search_grayscale_24" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.appcompat.widget.Toolbar>
