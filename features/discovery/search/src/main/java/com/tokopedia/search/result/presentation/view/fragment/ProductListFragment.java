@@ -135,6 +135,7 @@ import static com.tokopedia.discovery.common.constants.SearchConstant.ViewType.B
 import static com.tokopedia.discovery.common.constants.SearchConstant.ViewType.LIST;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ViewType.SMALL_GRID;
 
+
 public class ProductListFragment
         extends BaseDaggerFragment
         implements ProductListAdapter.OnItemChangeView,

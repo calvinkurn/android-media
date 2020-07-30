@@ -28,6 +28,7 @@ import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_TYPING
 import com.tokopedia.chat_common.data.WebsocketEvent.Mode.MODE_API
 import com.tokopedia.chat_common.data.WebsocketEvent.Mode.MODE_WEBSOCKET
 import com.tokopedia.chat_common.data.preview.ProductPreview
+import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.network.ChatUrl
 import com.tokopedia.chat_common.network.ChatUrl.Companion.CHAT_WEBSOCKET_DOMAIN
@@ -49,7 +50,10 @@ import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.OrderProgressRes
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.StickerGroup
-import com.tokopedia.topchat.chatroom.domain.subscriber.*
+import com.tokopedia.topchat.chatroom.domain.subscriber.ChangeChatBlockSettingSubscriber
+import com.tokopedia.topchat.chatroom.domain.subscriber.DeleteMessageAllSubscriber
+import com.tokopedia.topchat.chatroom.domain.subscriber.GetExistingMessageIdSubscriber
+import com.tokopedia.topchat.chatroom.domain.subscriber.GetShopFollowingStatusSubscriber
 import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 import com.tokopedia.topchat.chatroom.view.listener.TopChatContract
@@ -106,6 +110,7 @@ class TopChatRoomPresenter @Inject constructor(
 ) : BaseChatPresenter<TopChatContract.View>(userSession, topChatRoomWebSocketMessageMapper),
         TopChatContract.Presenter {
 
+    var newUnreadMessage = 0
     var thisMessageId: String = ""
     val attachments: ArrayMap<String, Attachment> = ArrayMap()
 
@@ -116,7 +121,6 @@ class TopChatRoomPresenter @Inject constructor(
     private var compressImageSubscription: CompositeSubscription
     private var listInterceptor: ArrayList<Interceptor>
     private var dummyList: ArrayList<Visitable<*>>
-    private var paramBeforeReplyTime = "0"
 
     init {
         mSubscription = CompositeSubscription()
@@ -124,6 +128,7 @@ class TopChatRoomPresenter @Inject constructor(
         listInterceptor = arrayListOf(tkpdAuthInterceptor, fingerprintInterceptor)
         dummyList = arrayListOf()
     }
+
 
     override fun connectWebSocket(messageId: String) {
         thisMessageId = messageId
@@ -158,8 +163,6 @@ class TopChatRoomPresenter @Inject constructor(
                 if (GlobalConfig.isAllowDebuggingTools()) {
                     Log.d("RxWebSocket Presenter", "item")
                 }
-                val pojo: ChatSocketPojo = Gson().fromJson(webSocketResponse.jsonObject, ChatSocketPojo::class.java)
-                if (pojo.msgId.toString() != messageId) return
                 mappingEvent(webSocketResponse, messageId)
             }
 
@@ -203,35 +206,55 @@ class TopChatRoomPresenter @Inject constructor(
 
     override fun mappingEvent(response: WebSocketResponse, messageId: String) {
         val pojo: ChatSocketPojo = Gson().fromJson(response.jsonObject, ChatSocketPojo::class.java)
-
         if (pojo.msgId.toString() != messageId) return
         when (response.code) {
-            EVENT_TOPCHAT_TYPING -> view?.onReceiveStartTypingEvent()
-            EVENT_TOPCHAT_END_TYPING -> view?.onReceiveStopTypingEvent()
-            EVENT_TOPCHAT_READ_MESSAGE -> view?.onReceiveReadEvent()
-            EVENT_TOPCHAT_REPLY_MESSAGE -> {
-                var temp = mapToVisitable(pojo)
-                view?.onReceiveMessageEvent(temp)
-                if (!pojo.isOpposite) {
-                    checkDummyAndRemove(temp)
-                } else {
-                    readMessage()
+            EVENT_TOPCHAT_TYPING -> {
+                if (!isInTheMiddleOfThePage()) {
+                    view?.onReceiveStartTypingEvent()
                 }
             }
+            EVENT_TOPCHAT_END_TYPING -> {
+                if (!isInTheMiddleOfThePage()) {
+                    view?.onReceiveStopTypingEvent()
+                }
+            }
+            EVENT_TOPCHAT_READ_MESSAGE -> {
+                if (!isInTheMiddleOfThePage()) {
+                    view?.onReceiveReadEvent()
+                }
+            }
+            EVENT_TOPCHAT_REPLY_MESSAGE -> {
+                if (!isInTheMiddleOfThePage()) {
+                    onReplyMessage(pojo)
+                    newUnreadMessage = 0
+                    view?.hideUnreadMessage()
+                } else {
+                    newUnreadMessage++
+                    view?.showUnreadMessage(newUnreadMessage)
+                }
+            }
+        }
+    }
+
+    private fun onReplyMessage(pojo: ChatSocketPojo) {
+        val temp = mapToVisitable(pojo)
+        view?.onReceiveMessageEvent(temp)
+        if (!pojo.isOpposite) {
+            checkDummyAndRemove(temp)
+        } else {
+            readMessage()
         }
     }
 
     override fun getExistingChat(
             messageId: String,
             onError: (Throwable) -> Unit,
-            onSuccessGetExistingMessage: (ChatroomViewModel) -> Unit) {
+            onSuccessGetExistingMessage: (ChatroomViewModel, ChatReplies) -> Unit) {
         if (messageId.isNotEmpty()) {
-            getChatUseCase.execute(
-                    GetChatUseCase.generateParam(messageId, paramBeforeReplyTime),
-                    GetChatSubscriber(
-                            onError,
-                            onSuccessGetExistingMessage
-                    )
+            getChatUseCase.getFirstPageChat(
+                    messageId = messageId,
+                    onSuccess = onSuccessGetExistingMessage,
+                    onErrorGetChat = onError
             )
         }
     }
@@ -247,19 +270,27 @@ class TopChatRoomPresenter @Inject constructor(
         ))
     }
 
-    override fun loadPreviousChat(
+    override fun loadTopChat(
             messageId: String,
             onError: (Throwable) -> Unit,
-            onSuccessGetPreviousChat: (ChatroomViewModel) -> Unit
+            onSuccessGetPreviousChat: (ChatroomViewModel, ChatReplies) -> Unit
     ) {
         if (messageId.isNotEmpty()) {
-            getChatUseCase.execute(
-                    GetChatUseCase.generateParam(messageId, paramBeforeReplyTime),
-                    GetChatSubscriber(
-                            onError,
-                            onSuccessGetPreviousChat
-                    )
+            getChatUseCase.getTopChat(
+                    messageId = messageId,
+                    onSuccess = onSuccessGetPreviousChat,
+                    onErrorGetChat = onError
             )
+        }
+    }
+
+    override fun loadBottomChat(
+            messageId: String,
+            onError: (Throwable) -> Unit,
+            onsuccess: (ChatroomViewModel, ChatReplies) -> Unit
+    ) {
+        if (messageId.isNotEmpty()) {
+            getChatUseCase.getBottomChat(messageId, onsuccess, onError)
         }
     }
 
@@ -291,7 +322,7 @@ class TopChatRoomPresenter @Inject constructor(
         )
     }
 
-    private fun readMessage() {
+    override fun readMessage() {
         sendMessageWebSocket(TopChatWebSocketParam.generateParamRead(thisMessageId))
     }
 
@@ -768,10 +799,6 @@ class TopChatRoomPresenter @Inject constructor(
         removeWishListUseCase.createObservable(productId, userId, wishListActionListener)
     }
 
-    override fun updateMinReplyTime(chatRoom: ChatroomViewModel) {
-        paramBeforeReplyTime = chatRoom.minReplyTime
-    }
-
     override fun clearText() {}
 
     override fun getOrderProgress(messageId: String) {
@@ -803,6 +830,22 @@ class TopChatRoomPresenter @Inject constructor(
 
     override fun toolTipOnBoardingShown() {
         sharedPref.edit().putBoolean(STICKER_TOOLTIP_ONBOARDING, true).apply()
+    }
+
+    override fun setBeforeReplyTime(createTime: String) {
+        getChatUseCase.minReplyTime = createTime
+    }
+
+    override fun isInTheMiddleOfThePage(): Boolean {
+        return getChatUseCase.isInTheMiddleOfThePage()
+    }
+
+    override fun resetChatUseCase() {
+        getChatUseCase.reset()
+    }
+
+    override fun resetUnreadMessage() {
+        newUnreadMessage = 0
     }
 
     private fun onSuccessGetAttachments(attachments: ArrayMap<String, Attachment>) {

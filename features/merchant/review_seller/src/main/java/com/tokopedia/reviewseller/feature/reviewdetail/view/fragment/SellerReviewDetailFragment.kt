@@ -325,7 +325,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
                     coachMarkShow()
                 }
                 is Fail -> {
-                    onErrorGetReviewDetailData(it.throwable)
+                    onErrorGetReviewDetailData()
                 }
             }
         })
@@ -337,7 +337,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
                     onSuccessGetFeedbackReviewListData(it.data)
                 }
                 is Fail -> {
-                    onErrorGetReviewDetailData(it.throwable)
+                    onErrorGetReviewDetailData()
                 }
             }
         })
@@ -354,7 +354,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         updateScrollListenerState(data.hasNext)
     }
 
-    private fun onErrorGetReviewDetailData(throwable: Throwable) {
+    private fun onErrorGetReviewDetailData() {
         swipeToRefreshReviewDetail?.isRefreshing = false
         val feedbackReviewCount = reviewSellerDetailAdapter.list.count { it is FeedbackUiModel }
         if (feedbackReviewCount == 0) {
@@ -564,7 +564,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
                 updatedState.toString())
         val getTopicsFilterFromAdapter = reviewSellerDetailAdapter.list.filterIsInstance<TopicUiModel>().firstOrNull()
         reviewSellerDetailAdapter.updateFilterTopic(adapterPosition, item.title.toString(), updatedState, getTopicsFilterFromAdapter)
-        viewModelProductReviewDetail?.setFilterTopicDataText(getTopicsFilterFromAdapter?.sortFilterItemList)
+        getTopicsFilterFromAdapter?.sortFilterItemList?.let { viewModelProductReviewDetail?.setFilterTopicDataText(it) }
         endlessRecyclerViewScrollListener?.resetState()
     }
 
@@ -574,8 +574,8 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
                 productID.toString())
 
         val bottomSheet = PopularTopicsBottomSheet(activity, tracking, userSession, productID, ::onTopicsClicked)
-        viewModelProductReviewDetail?.filterTopicData?.let { bottomSheet.setTopicListData(it) }
-        viewModelProductReviewDetail?.sortTopicData?.let { bottomSheet.setSortListData(it) }
+        viewModelProductReviewDetail?.getFilterTopicData()?.let { bottomSheet.setTopicListData(it) }
+        viewModelProductReviewDetail?.getSortTopicData()?.let { bottomSheet.setSortListData(it) }
         bottomSheet.showDialog()
     }
 
@@ -602,16 +602,17 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         val sortBy = sort.firstOrNull { it.isSelected }?.title.orEmpty()
         val sortValue = ReviewSellerConstant.mapSortReviewDetail().getKeyByValue(sortBy)
 
-        viewModelProductReviewDetail?.sortAndFilter?.first?.mapIndexed { index, data ->
-            if(topic.isNotEmpty()) {
+        viewModelProductReviewDetail?.getSortAndFilter()?.first?.mapIndexed { index, data ->
+            if (topic.isNotEmpty()) {
                 isDifferent = topic.getOrNull(index)?.isSelected == data.isSelected
             }
         }
 
-        if (viewModelProductReviewDetail?.sortAndFilter?.second == sortBy && isDifferent) return
+        if (viewModelProductReviewDetail?.getSortAndFilter()?.second == sortBy && isDifferent) return
 
         reviewSellerDetailAdapter.updateTopicFromBottomSheet(topic)
         viewModelProductReviewDetail?.setSortAndFilterTopicData(topic to sortValue)
+        viewModelProductReviewDetail?.updateSortAndFilterTopicData(topic to sortValue)
         endlessRecyclerViewScrollListener?.resetState()
         reviewSellerDetailAdapter.removeReviewNotFound()
         reviewSellerDetailAdapter.showLoading()

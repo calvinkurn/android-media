@@ -3,6 +3,8 @@ package com.tokopedia.topupbills.telco.data
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.topupbills.telco.prepaid.adapter.TelcoProductAdapterFactory
 import kotlinx.android.parcel.Parcelize
 
 /**
@@ -18,4 +20,6 @@ data class TelcoProduct(
         val attributes: TelcoAttributesProduct = TelcoAttributesProduct(),
         var isTitle: Boolean = false,
         var titleSection: String = "")
-    : Parcelable
+    : Parcelable, Visitable<TelcoProductAdapterFactory> {
+    override fun type(typeFactoryProduct: TelcoProductAdapterFactory) = typeFactoryProduct.type(this)
+}
