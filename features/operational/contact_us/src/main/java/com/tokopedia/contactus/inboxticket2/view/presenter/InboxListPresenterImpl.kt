@@ -33,10 +33,14 @@ const val ALL = 0
 const val NEED_RATING = 2
 const val IN_PROGRESS = 1
 const val CLOSED = 3
+const val FILTER_NEED_RATING = 1
+const val FILTER_CLOSED = 2
+const val FIRST_PAGE = 1
 
 class InboxListPresenterImpl(private val mUseCase: GetTicketListUseCase,
                              private val userSession: UserSessionInterface) : InboxListPresenter, CustomEditText.Listener, CoroutineScope {
-    private val status: Int = 0
+    private var status: Int = 0
+    private var rating: Int = 0
     private var mView: InboxListView? = null
     private val filterList: ArrayList<String> by lazy { ArrayList<String>() }
     private val originalList: ArrayList<InboxTicketListResponse.Ticket.Data.TicketItem> by lazy { ArrayList<InboxTicketListResponse.Ticket.Data.TicketItem>() }
@@ -104,33 +108,40 @@ class InboxListPresenterImpl(private val mUseCase: GetTicketListUseCase,
         fromFilter = true
         when (position) {
             ALL -> {
-                val requestParams = mUseCase.getRequestParams(1, 0)
+                val requestParams = mUseCase.getRequestParams(FIRST_PAGE, ALL)
                 getTicketList(requestParams)
                 selected = getFilterList(filterList, ALL)
                 selectedFilter = ALL
+                status = ALL
+                rating = ALL
+                page = FIRST_PAGE
             }
             IN_PROGRESS -> {
-                val requestParams = mUseCase.getRequestParams(1, 1)
+                val requestParams = mUseCase.getRequestParams(FIRST_PAGE, IN_PROGRESS)
                 selected = getFilterList(filterList, IN_PROGRESS)
                 getTicketList(requestParams)
                 selectedFilter = IN_PROGRESS
-//                queryMap = mUseCase.setQueryMap2(1,1)
-//                selectedFilter = getFilterList(filterList, INPROGRESS)
-//                ticketList
+                status = IN_PROGRESS
+                rating = ALL
+                page = FIRST_PAGE
             }
             NEED_RATING -> {
-                val requestParams = mUseCase.getRequestParams(1, 2)
+                val requestParams = mUseCase.getRequestParams(FIRST_PAGE, NEED_RATING, FILTER_NEED_RATING)
                 selected = getFilterList(filterList, NEED_RATING)
                 getTicketList(requestParams)
                 selectedFilter = NEED_RATING
-//                queryMap = mUseCase.setQueryMap2(1,2)
-//                selectedFilter = getFilterList(filterList, NEEDRATING)
-//                ticketList
+                status = NEED_RATING
+                rating = FILTER_NEED_RATING
+                page = FIRST_PAGE
             }
             CLOSED -> {
-//                queryMap = mUseCase.setQueryMap2(1,2)
-//                selectedFilter = getFilterList(filterList, CLOSED)
-//                ticketList
+                val requestParams = mUseCase.getRequestParams(FIRST_PAGE, NEED_RATING, FILTER_CLOSED)
+                selected = getFilterList(filterList, CLOSED)
+                getTicketList(requestParams)
+                selectedFilter = CLOSED
+                status = NEED_RATING
+                rating = FILTER_CLOSED
+                page = FIRST_PAGE
             }
         }
         ContactUsTracking.sendGTMInboxTicket("",
@@ -201,7 +212,7 @@ class InboxListPresenterImpl(private val mUseCase: GetTicketListUseCase,
     }
 
     override fun reAttachView() {
-        val requestParams = mUseCase.getRequestParams(0, status)
+        val requestParams = mUseCase.getRequestParams(FIRST_PAGE, status, rating)
         getTicketList(requestParams)
     }
 
@@ -232,7 +243,7 @@ class InboxListPresenterImpl(private val mUseCase: GetTicketListUseCase,
         mView?.addFooter()
         launchCatchError(
                 block = {
-                    val requestParams = mUseCase.getRequestParams(page, status)
+                    val requestParams = mUseCase.getRequestParams(page, status, rating)
                     val ticketListResponse = mUseCase.getTicketListResponse(requestParams)
                     val ticketData = ticketListResponse.ticket?.data
                     if (ticketData?.ticketItems?.isNullOrEmpty() == false) {

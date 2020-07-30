@@ -1,5 +1,5 @@
-query TicketListQuery($userID: String!, $page: Int!, $status: Int!) {
-  ticket(userID: $userID, page: $page, status: $status) {
+query TicketListQuery($userID: String!, $page: Int!, $status: Int!, $rating: Int) {
+  ticket(userID: $userID, page: $page, status: $status, rating: $rating) {
     status
     data {
       is_success
@@ -18,8 +18,7 @@ query TicketListQuery($userID: String!, $page: Int!, $status: Int!) {
         last_message
         need_rating
         is_official_store
-      	case_number
-
+        case_number
       }
     }
   }

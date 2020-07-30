@@ -19,11 +19,12 @@ class GetTicketListUseCase @Inject constructor(@Named("ticket_list_query") val t
         return repository.getGQLData(ticketListQuery, InboxTicketListResponse::class.java, requestParams.parameters)
     }
 
-    fun getRequestParams(page: Int, status: Int): RequestParams {
+    fun getRequestParams(page: Int, status: Int, rating: Int = 0): RequestParams {
         val requestParams = RequestParams.create()
         requestParams.putString(USERID, userSession.userId)
         requestParams.putInt(PAGE, page)
         requestParams.putInt(STATUS, status)
+        if (rating != 0) requestParams.putInt(RATING, rating)
         return requestParams
     }
 }
