@@ -99,6 +99,7 @@ class DealsBrandFragment : DealsBaseFragment(), DealsBrandActionListener,
                     if (totalItem == 0 && currentPage == 1) {
                         toggleNotFound()
                     } else {
+                        showTitle(it.data)
                         val nextPage = totalItem >= DEFAULT_MIN_ITEMS
                         renderList(mapBrandListToBaseItemView(it.data.brands, showTitle()), nextPage)
                         cacheData(nextPage)
@@ -259,7 +260,7 @@ class DealsBrandFragment : DealsBaseFragment(), DealsBrandActionListener,
     override fun getRecyclerView(view: View): RecyclerView = view.findViewById(R.id.recycler_view)
 
     override fun showTitle(brands: DealsBrandsDataView) {
-        if (!brands.title.isNullOrEmpty()) {
+        if (!brands.title.isNullOrEmpty() && showTitle()) {
             hideTitleShimmering()
             tv_brand_title.show()
             unused_line.show()
@@ -270,7 +271,6 @@ class DealsBrandFragment : DealsBaseFragment(), DealsBrandActionListener,
     private fun hideTitleShimmering() {
         shimmering_title.hide()
     }
-
 
     companion object {
         const val TAG = "DealsBrandFragment"
