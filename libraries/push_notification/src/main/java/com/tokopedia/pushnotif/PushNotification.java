@@ -8,18 +8,18 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 
-import com.crashlytics.android.Crashlytics;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.pushnotif.data.constant.Constant;
+import com.tokopedia.pushnotif.data.model.ApplinkNotificationModel;
 import com.tokopedia.pushnotif.data.repository.TransactionRepository;
 import com.tokopedia.pushnotif.factory.ChatNotificationFactory;
 import com.tokopedia.pushnotif.factory.GeneralNotificationFactory;
 import com.tokopedia.pushnotif.factory.ReviewNotificationFactory;
 import com.tokopedia.pushnotif.factory.SummaryNotificationFactory;
 import com.tokopedia.pushnotif.factory.TalkNotificationFactory;
-import com.tokopedia.pushnotif.data.model.ApplinkNotificationModel;
 import com.tokopedia.pushnotif.util.NotificationTracker;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.user.session.UserSession;
@@ -119,7 +119,7 @@ public class PushNotification {
     private static void executeCrashlyticLog(Context context, Bundle data, String message) {
         if (!BuildConfig.DEBUG) {
             String logMessage = generateLogMessage(context, data, message);
-            Crashlytics.logException(new Exception(logMessage));
+            FirebaseCrashlytics.getInstance().recordException(new Exception(logMessage));
             Timber.w(
                     "P2#LOG_PUSH_NOTIF#'%s';data='%s'",
                     "PushNotification::notify(Context context, Bundle data)",
@@ -223,14 +223,6 @@ public class PushNotification {
 
         notificationManagerCompat.notify(notificationType, notifChat);
 
-    }
-
-    private static void notifyChallenges(Context context, ApplinkNotificationModel applinkNotificationModel,
-                                         int notificationType, NotificationManagerCompat notificationManagerCompat) {
-        Notification notifChat = new GeneralNotificationFactory(context)
-                .createNotification(applinkNotificationModel, notificationType, notificationType);
-
-        notificationManagerCompat.notify(notificationType, notifChat);
     }
 
     private static boolean isNotificationEnabled(Context context) {

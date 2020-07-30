@@ -55,6 +55,7 @@ class ProductMediaViewHolder(private val view: View,
         when (payloads[0] as Int) {
             ProductDetailConstant.PAYLOAD_UPDATE_IMAGE -> {
                 view.viewMediaPager.updateImage(element.listOfMedia)
+                element.shouldRenderImageVariant = false
             }
         }
     }

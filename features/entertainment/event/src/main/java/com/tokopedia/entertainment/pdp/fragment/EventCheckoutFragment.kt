@@ -106,7 +106,7 @@ class EventCheckoutFragment : BaseDaggerFragment() {
         initializePerformance()
         arguments?.let {
             urlPDP = it.getString(EXTRA_URL_PDP, "")
-            metadata = it.getParcelable(EXTRA_META_DATA)
+            metadata = it.getParcelable(EXTRA_META_DATA) ?: MetaDataResponse()
             packageID = it.getString(EXTRA_PACKAGE_ID, "")
         }
     }
