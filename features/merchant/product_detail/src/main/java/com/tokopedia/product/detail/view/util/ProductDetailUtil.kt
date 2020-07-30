@@ -38,6 +38,10 @@ object ProductDetailUtil {
             MethodChecker.fromHtml(review)
         }
     }
+
+    fun randomGenerator(random: Random) : String {
+        return (System.currentTimeMillis() + random.nextInt()).toString()
+    }
 }
 
 fun String.linkTextWithGiven(context: Context, vararg textToBold: Pair<String, () -> Unit>): SpannableString {
