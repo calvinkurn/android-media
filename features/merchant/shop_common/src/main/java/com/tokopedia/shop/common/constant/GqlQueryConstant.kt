@@ -79,7 +79,6 @@ object GqlQueryConstant {
             "                fax\n" +
             "            }\n" +
             "            shopHomeType\n" +
-            "            shopSnippetURL" +
             "        }"
 
     const val SHOP_INFO_FOR_TAB_REQUEST_QUERY_STRING = "result {\n" +
@@ -131,6 +130,7 @@ object GqlQueryConstant {
             "                    shopLastActive\n" +
             "                    location\n" +
             "                    isAllowManage\n" +
+            "                    shopSnippetURL\n" +
             "                    statusInfo {\n" +
             "                        shopStatus\n" +
             "                        statusMessage\n" +

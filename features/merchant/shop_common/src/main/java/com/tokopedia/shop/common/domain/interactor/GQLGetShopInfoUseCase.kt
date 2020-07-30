@@ -57,6 +57,7 @@ class GQLGetShopInfoUseCase(private var gqlQuery: String,
         const val FIELD_IS_OPEN = "is_open"
         const val FIELD_CLOSED_INFO = "closed_info"
         const val FIELD_CREATE_INFO = "create_info"
+        const val FIELD_SHOP_SNIPPET = "shop-snippet"
 
 
 
