@@ -7,7 +7,6 @@ import android.os.Build;
 
 import androidx.multidex.MultiDex;
 
-import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.security.ProviderInstaller;
@@ -31,8 +30,8 @@ import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
 
 import org.jetbrains.annotations.NotNull;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
-import io.fabric.sdk.android.Fabric;
 
 public abstract class MainApplication extends MainRouterApplication{
 
@@ -148,10 +147,8 @@ public abstract class MainApplication extends MainRouterApplication{
 
     public void initCrashlytics() {
         if (!BuildConfig.DEBUG) {
-            Fabric.with(this, new Crashlytics());
-            Crashlytics.setUserIdentifier(userSession.getUserId());
-            Crashlytics.setUserEmail(userSession.getEmail());
-            Crashlytics.setUserName(userSession.getName());
+            FirebaseCrashlytics crashlytics = FirebaseCrashlytics.getInstance();
+            crashlytics.setUserId(userSession.getUserId());
         }
     }
 
