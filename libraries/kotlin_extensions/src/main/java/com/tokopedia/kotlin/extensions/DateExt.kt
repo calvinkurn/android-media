@@ -2,6 +2,7 @@ package com.tokopedia.kotlin.extensions
 
 import android.annotation.SuppressLint
 import android.text.format.DateUtils
+import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
@@ -93,5 +94,15 @@ fun convertFormatDate(date: String, initDateFormat: String, endDateFormat: Strin
     val formatter = SimpleDateFormat(endDateFormat)
 
     return formatter.format(initDate)
+}
+
+fun String.convertToDate(format: String, locale: Locale = Locale.getDefault()): Date {
+    val formatter = SimpleDateFormat(format, locale)
+    return try {
+        formatter.parse(this)
+    } catch (ex: ParseException) {
+        ex.printStackTrace()
+        throw RuntimeException(ex.message)
+    }
 }
 

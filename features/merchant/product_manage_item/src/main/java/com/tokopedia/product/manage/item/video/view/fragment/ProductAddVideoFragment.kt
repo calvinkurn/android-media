@@ -52,13 +52,13 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
         productAddVideoPresenter.attachView(this)
 
         if(activity!!.intent != null){
-            videoIDs = activity!!.intent.getStringArrayListExtra(EXTRA_VIDEOS_LINKS)
-            productName = activity!!.intent.getStringExtra(EXTRA_KEYWORD)
+            videoIDs = activity!!.intent.getStringArrayListExtra(EXTRA_VIDEOS_LINKS) ?: arrayListOf()
+            productName = activity!!.intent.getStringExtra(EXTRA_KEYWORD) ?: ""
         }
         if (savedInstanceState != null) {
-            videoIDs = savedInstanceState.getStringArrayList(EXTRA_VIDEOS_LINKS)
-            videoViewModelList = savedInstanceState.getParcelableArrayList<VideoViewModel>(EXTRA_VIDEO_CHOSEN)
-            videoRecommendationViewModelList = savedInstanceState.getParcelableArrayList<VideoRecommendationViewModel>(EXTRA_VIDEO_RECOMMENDATION)
+            videoIDs = savedInstanceState.getStringArrayList(EXTRA_VIDEOS_LINKS) ?: arrayListOf()
+            videoViewModelList = savedInstanceState.getParcelableArrayList(EXTRA_VIDEO_CHOSEN) ?: arrayListOf()
+            videoRecommendationViewModelList = savedInstanceState.getParcelableArrayList(EXTRA_VIDEO_RECOMMENDATION) ?: arrayListOf()
         }
 
         (activity as AppCompatActivity).supportActionBar?.subtitle = getString(R.string.product_from_to_video, videoIDs.size, MAX_VIDEO)
@@ -68,7 +68,7 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
                 REQUEST_CODE_GET_VIDEO_RECOMMENDATION -> {
-                    videoRecommendationViewModelList = data!!.getParcelableArrayListExtra<VideoRecommendationViewModel>(EXTRA_VIDEO_RECOMMENDATION)
+                    videoRecommendationViewModelList = data!!.getParcelableArrayListExtra(EXTRA_VIDEO_RECOMMENDATION) ?: arrayListOf()
                     adapter.data.filter { it is VideoViewModel && it.recommendation == true }.map {
                         deleteVideoChosenFromList(it as VideoViewModel)
                     }

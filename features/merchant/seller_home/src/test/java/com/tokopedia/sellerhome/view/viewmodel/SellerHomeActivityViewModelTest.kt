@@ -13,7 +13,10 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -43,27 +46,28 @@ class SellerHomeActivityViewModelTest {
         MockKAnnotations.init(this)
     }
 
-    private val mViewModel by lazy {
+    private fun createViewModel() =
         SellerHomeActivityViewModel(userSession, getNotificationUseCase, getShopInfoUseCase, Dispatchers.Unconfined)
-    }
 
     @Test
     fun `get notifications then returns success result`() {
 
         val notifications = NotificationUiModel(NotificationChatUiModel(), NotificationCenterUnreadUiModel(),
-                NotificationSellerOrderStatusUiModel())
+            NotificationSellerOrderStatusUiModel())
 
         coEvery {
             getNotificationUseCase.executeOnBackground()
         } returns notifications
 
-        mViewModel.getNotifications()
-
-        coVerify {
-            getNotificationUseCase.executeOnBackground()
+        val viewModel = createViewModel()
+        runBlocking {
+            viewModel.getNotifications()
+            viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+            coVerify {
+                getNotificationUseCase.executeOnBackground()
+            }
+            assertEquals(Success(notifications), viewModel.notifications.value)
         }
-
-        assertEquals(Success(notifications), mViewModel.notifications.value)
     }
 
     @Test
@@ -75,15 +79,16 @@ class SellerHomeActivityViewModelTest {
             getNotificationUseCase.executeOnBackground()
         } throws throwable
 
-        mViewModel.getNotifications()
+        val viewModel = createViewModel()
+        viewModel.getNotifications()
 
         coVerify {
             getNotificationUseCase.executeOnBackground()
         }
 
-        delay(100)
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
-        assert(mViewModel.notifications.value is Fail)
+        assert(viewModel.notifications.value is Fail)
     }
 
     @Test
@@ -101,17 +106,19 @@ class SellerHomeActivityViewModelTest {
             getShopInfoUseCase.executeOnBackground()
         } returns shopInfo
 
-        mViewModel.getShopInfo()
-
-        verify {
-            userSession.userId
+        val viewModel = createViewModel()
+        runBlocking {
+            viewModel.getShopInfo()
+            viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+            coVerify {
+                userSession.userId
+            }
+            coVerify {
+                getShopInfoUseCase.executeOnBackground()
+            }
         }
 
-        coVerify {
-            getShopInfoUseCase.executeOnBackground()
-        }
-
-        assertEquals(Success(shopInfo), mViewModel.shopInfo.value)
+        assertEquals(Success(shopInfo), viewModel.shopInfo.value)
     }
 
     @Test
@@ -129,7 +136,8 @@ class SellerHomeActivityViewModelTest {
             getShopInfoUseCase.executeOnBackground()
         } throws throwable
 
-        mViewModel.getShopInfo()
+        val viewModel = createViewModel()
+        viewModel.getShopInfo()
 
         verify {
             userSession.userId
@@ -139,24 +147,25 @@ class SellerHomeActivityViewModelTest {
             getShopInfoUseCase.executeOnBackground()
         }
 
-        delay(100)
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
-        assert(mViewModel.shopInfo.value is Fail)
+        assert(viewModel.shopInfo.value is Fail)
     }
 
     @Test
     fun `execute launch in custom base view model with custom onError block without custom context`() = runBlocking {
         val customOnErrorViewModel = CustomOnErrorViewModel(Job())
         customOnErrorViewModel.noCustomContext()
-        delay(100)
+        customOnErrorViewModel.coroutineContext[Job]?.children?.forEach { it.join() }
         assert(customOnErrorViewModel.mockLiveData.value is Fail)
     }
 
     @Test
     fun `execute launch in custom base view model with custom onError block with custom context`() = runBlocking {
-        val customOnErrorViewModel = CustomOnErrorViewModel(Job())
+        val job = Job()
+        val customOnErrorViewModel = CustomOnErrorViewModel(job)
         customOnErrorViewModel.withCustomContext()
-        delay(100)
+        job.children.forEach { it.join() }
         assert(customOnErrorViewModel.mockLiveData.value is Fail)
     }
 

@@ -136,7 +136,6 @@ class ExploreSectionPagerAdapter(context: Context?, presenter: TokoPointsHomeVie
         if (content.layoutCatalogAttr.catalogList != null) {
             view.setPadding(0, view.paddingTop, 0, 0)
             val rvCarousel: RecyclerView = view.findViewById(R.id.rv_carousel)
-            rvCarousel.addItemDecoration(CarouselItemDecoration(mLayoutInflater.context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_4)))
             rvCarousel.layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
             val adapter = CatalogListCarouselAdapter(mPresenter, content.layoutCatalogAttr.catalogList, rvCarousel)
             rvCarousel.adapter = adapter

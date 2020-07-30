@@ -25,6 +25,8 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.review.feature.inboxreview.presentation.fragment.InboxReviewFragment;
+import com.tokopedia.review.feature.reviewlist.view.fragment.RatingProductFragment;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking;
@@ -47,6 +49,7 @@ import java.util.List;
 public class  InboxReputationActivity extends BaseActivity implements HasComponent {
 
     public static final String GO_TO_REPUTATION_HISTORY = "GO_TO_REPUTATION_HISTORY";
+    public static final String IS_DIRECTLY_GO_TO_RATING = "is_directly_go_to_rating";
 
     public static final int TAB_WAITING_REVIEW = 1;
     public static final int TAB_MY_REVIEW = 2;
@@ -55,6 +58,7 @@ public class  InboxReputationActivity extends BaseActivity implements HasCompone
     private static final int OFFSCREEN_PAGE_LIMIT = 3;
     private Fragment sellerReputationFragment;
     private Fragment reviewSellerFragment;
+    private Fragment inboxReviewFragment;
 
     private static final int MARGIN_TAB = 8;
     private static final int MARGIN_START_END_TAB = 16;
@@ -68,6 +72,7 @@ public class  InboxReputationActivity extends BaseActivity implements HasCompone
     private UserSessionInterface userSession;
 
     private boolean goToReputationHistory;
+    private boolean canFireTracking;
     private ReputationTracking reputationTracking;
 
     public static Intent getCallingIntent(Context context) {
@@ -77,6 +82,7 @@ public class  InboxReputationActivity extends BaseActivity implements HasCompone
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         goToReputationHistory = getIntent().getBooleanExtra(GO_TO_REPUTATION_HISTORY, false);
+        canFireTracking = !goToReputationHistory;
         userSession = new UserSession(this);
         reputationTracking = new ReputationTracking();
         super.onCreate(savedInstanceState);
@@ -89,6 +95,7 @@ public class  InboxReputationActivity extends BaseActivity implements HasCompone
     private void initView() {
         viewPager = findViewById(R.id.pager_reputation);
         indicator = findViewById(R.id.indicator_unify);
+        indicator.getUnifyTabLayout().clearOnTabSelectedListeners();
         toolbar = findViewById(R.id.toolbar);
 
         setupToolbar();
@@ -99,12 +106,25 @@ public class  InboxReputationActivity extends BaseActivity implements HasCompone
             sellerReputationFragment = applicationContext.getReputationHistoryFragment();
             reviewSellerFragment = applicationContext.getReviewSellerFragment();
         }
+        if(GlobalConfig.isSellerApp()) {
+            reviewSellerFragment = RatingProductFragment.Companion.createInstance();
+            Bundle reviewSellerBundle = new Bundle();
+            reviewSellerBundle.putBoolean(IS_DIRECTLY_GO_TO_RATING, !goToReputationHistory);
+            reviewSellerFragment.setArguments(reviewSellerBundle);
+            inboxReviewFragment = InboxReviewFragment.Companion.createInstance();
+        }
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(indicator.getUnifyTabLayout()));
         indicator.getUnifyTabLayout().addOnTabSelectedListener(new GlobalMainTabSelectedListener(viewPager, this) {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 super.onTabSelected(tab);
-                reputationTracking.onTabReviewSelectedTracker(tab.getPosition());
+                if (!canFireTracking) {
+                    canFireTracking = true;
+                    return;
+                }
+                if(!GlobalConfig.isSellerApp()) {
+                    reputationTracking.onTabReviewSelectedTracker(tab.getPosition());
+                }
                 if(tickerTitle != null) {
                     reputationTracking.onSuccessGetIncentiveOvoTracker(tickerTitle, ReputationTrackingConstant.WAITING_REVIEWED);
                 }
@@ -122,6 +142,9 @@ public class  InboxReputationActivity extends BaseActivity implements HasCompone
             if(reviewSellerFragment != null) {
                 indicator.addNewTab(getString(R.string.title_rating_product));
             }
+            if(inboxReviewFragment != null) {
+                indicator.addNewTab(getString(R.string.title_review_inbox));
+            }
         }
 
         if (userSession.hasShop()) {
@@ -133,18 +156,15 @@ public class  InboxReputationActivity extends BaseActivity implements HasCompone
             if (sellerReputationFragment != null) {
                 indicator.addNewTab(getString(R.string.title_reputation_history));
             }
-            if (goToReputationHistory) {
-                viewPager.setCurrentItem(TAB_SELLER_REPUTATION_HISTORY);
-            }
-        }
-
-        if (goToReputationHistory) {
-            viewPager.setCurrentItem(TAB_SELLER_REPUTATION_HISTORY);
         }
 
         sectionAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), getFragmentList(), indicator.getUnifyTabLayout());
         viewPager.setOffscreenPageLimit(OFFSCREEN_PAGE_LIMIT);
         viewPager.setAdapter(sectionAdapter);
+
+        if (goToReputationHistory) {
+            viewPager.setCurrentItem(TAB_SELLER_REPUTATION_HISTORY);
+        }
 
         wrapTabIndicatorToTitle(indicator.getUnifyTabLayout(), (int) ReputationUtil.DptoPx(this, MARGIN_START_END_TAB), (int) ReputationUtil.DptoPx(this, MARGIN_TAB));
     }
@@ -189,6 +209,7 @@ public class  InboxReputationActivity extends BaseActivity implements HasCompone
         List<Fragment> fragmentList = new ArrayList<>();
         if (GlobalConfig.isSellerApp()) {
             fragmentList.add(reviewSellerFragment);
+            fragmentList.add(inboxReviewFragment);
             fragmentList.add(InboxReputationFragment.createInstance(TAB_BUYER_REVIEW));
             fragmentList.add(sellerReputationFragment);
         } else {

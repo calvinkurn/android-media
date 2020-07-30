@@ -40,8 +40,8 @@ class RekPremBankAccountInfoBottomSheet : BottomSheetUnify() {
         super.onCreate(savedInstanceState)
         arguments?.let {
             if (it.containsKey(ARG_CHECK_ELIGIBLE_DATA)) {
-                bankAccount = it.getParcelable(ARG_BANK_ACCOUNT)
-                checkEligible = it.getParcelable(ARG_CHECK_ELIGIBLE_DATA)
+                bankAccount = it.getParcelable(ARG_BANK_ACCOUNT) ?: BankAccount()
+                checkEligible = it.getParcelable(ARG_CHECK_ELIGIBLE_DATA) ?: CheckEligible()
                 initInjector()
                 addChildView()
             } else {

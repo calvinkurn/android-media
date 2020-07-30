@@ -2,6 +2,7 @@ package com.tokopedia.tkpd.tkpdreputation;
 
 import android.app.Activity;
 import android.content.Context;
+
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
@@ -14,8 +15,6 @@ import com.tokopedia.design.component.BottomSheets;
 public interface ReputationRouter {
 
     Fragment getReputationHistoryFragment();
-
-    Fragment getReviewSellerFragment();
 
     void showAppFeedbackRatingDialog(
             FragmentManager fragmentManager,

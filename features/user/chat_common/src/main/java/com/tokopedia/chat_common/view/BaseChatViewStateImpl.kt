@@ -42,13 +42,13 @@ open class BaseChatViewStateImpl(
 
     protected lateinit var rootView: ViewGroup
     protected lateinit var recyclerView: RecyclerView
-    protected lateinit var mainLoading: ProgressBar
     protected lateinit var replyEditText: EditText
     protected lateinit var replyBox: RelativeLayout
     protected lateinit var actionBox: LinearLayout
     protected lateinit var sendButton: View
     protected lateinit var notifier: View
     protected lateinit var chatMenuButton: ImageView
+    protected var mainLoading: ProgressBar? = null
     protected var attachmentMenu: AttachmentMenuRecyclerView? = null
     protected var attachmentMenuContainer: FrameLayout? = null
 
@@ -228,11 +228,11 @@ open class BaseChatViewStateImpl(
 
 
     fun showLoading() {
-        mainLoading.visibility = View.VISIBLE
+        mainLoading?.visibility = View.VISIBLE
     }
 
     fun hideLoading() {
-        mainLoading.visibility = View.GONE
+        mainLoading?.visibility = View.GONE
     }
 
     fun setAdapter(adapter: BaseChatAdapter) {

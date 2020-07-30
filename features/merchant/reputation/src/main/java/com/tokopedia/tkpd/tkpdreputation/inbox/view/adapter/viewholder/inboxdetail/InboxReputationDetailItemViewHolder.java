@@ -288,11 +288,6 @@ public class InboxReputationDetailItemViewHolder extends
                 viewListener.onSendReplyReview(element, sellerAddReplyEditText.getText().toString());
             }
         });
-
-        if(GlobalConfig.isSellerApp()) {
-            sellerReplyLayout.setVisibility(View.GONE);
-            sellerAddReplyLayout.setVisibility(View.GONE);
-        }
     }
 
     private void showOrHideGiveReviewLayout(InboxReputationDetailItemViewModel element) {
