@@ -20,10 +20,12 @@ import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventDateMapper.checkNotE
 import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventDateMapper.checkStartSale
 import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventDateMapper.getDate
 import com.tokopedia.entertainment.pdp.listener.OnBindItemTicketListener
+import com.tokopedia.entertainment.pdp.listener.OnCoachmarkListener
 import java.util.*
 
 class EventPDPTicketItemPackageAdapter(
-        val onBindItemTicketListener: OnBindItemTicketListener
+        val onBindItemTicketListener: OnBindItemTicketListener,
+        private val onCoachmarkListener: OnCoachmarkListener
 ) : RecyclerView.Adapter<EventPDPTicketItemPackageAdapter.EventPDPTicketItemPackageViewHolder>(){
 
     private var listItemPackage = emptyList<PackageItem>()
@@ -65,6 +67,12 @@ class EventPDPTicketItemPackageAdapter(
                     txtHabis_ticket.visibility = View.GONE
                     txtAlreadyEnd.visibility = View.VISIBLE
                     txtNotStarted.visibility = View.GONE
+                }
+
+                if(onCoachmarkListener.getLocalCache() && position==1){
+                    itemView.post {
+                        onCoachmarkListener.showCoachMark(itemView.width,itemView.height,txtPilih_ticket)
+                    }
                 }
 
                 quantityEditor.minValue = items.minQty.toInt()

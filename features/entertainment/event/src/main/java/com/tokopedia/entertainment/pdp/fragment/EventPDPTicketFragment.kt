@@ -22,6 +22,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.calendar.CalendarPickerView
 import com.tokopedia.calendar.Legend
 import com.tokopedia.coachmark.CoachMarkBuilder
+import com.tokopedia.coachmark.CoachMarkContentPosition
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.pdp.activity.EventCheckoutActivity
@@ -51,6 +52,7 @@ import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventVerifyMapper.getTota
 import com.tokopedia.entertainment.pdp.listener.OnBindItemTicketListener
 import com.tokopedia.entertainment.pdp.listener.OnCoachmarkListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.custom_event_expandable_parent.view.*
 import kotlinx.android.synthetic.main.ent_ticket_listing_activity.*
@@ -332,18 +334,19 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
         return localCacheHandler.getBoolean(SHOW_COACH_MARK_KEY, true)
     }
 
-    override fun showCoachMark(view: View) {
+    override fun showCoachMark(width:Int, height:Int, view: View) {
         val coachMark = CoachMarkBuilder().build().apply {
             enableSkip = true
         }
+        coachMark.setHighlightMargin(marginLeft = width.toDp(), marginRight = width.toDp()/5, marginTop = (height.toDp()*0.75).toInt(), marginBottom = height.toDp()/10)
         coachMark.show(
                 activity,
                 EventPDPTicketFragment::class.java.simpleName,
                 getCoachMarkItems(view)
         )
         localCacheHandler.apply {
-            putBoolean(SHOW_COACH_MARK_KEY, false)
-            applyEditor()
+//            putBoolean(SHOW_COACH_MARK_KEY, false)
+//            applyEditor()
         }
     }
 
@@ -351,7 +354,8 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
         return arrayListOf(CoachMarkItem(
                 view,
                 getString(R.string.ent_home_coachmark_title),
-                getString(R.string.ent_home_coachmark_subtitle)
+                getString(R.string.ent_home_coachmark_subtitle),
+                CoachMarkContentPosition.BOTTOM
         ))
     }
 

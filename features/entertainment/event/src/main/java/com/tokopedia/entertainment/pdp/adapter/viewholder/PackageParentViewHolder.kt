@@ -24,7 +24,7 @@ class PackageParentViewHolder (view: View,
     lateinit var eventPDPTracking: EventPDPTracking
     var idPackage = ""
 
-    var eventPDPTicketAdapter = EventPDPTicketItemPackageAdapter(onBindItemTicketListener)
+    var eventPDPTicketAdapter = EventPDPTicketItemPackageAdapter(onBindItemTicketListener, onCoachmarkListener)
     override fun bind(element: PackageV3) {
         itemView.expand_event_pdp_ticket.setListener(this)
         with(itemView){
@@ -44,10 +44,6 @@ class PackageParentViewHolder (view: View,
                         this@with.context,
                         RecyclerView.VERTICAL, false
                 )
-            }
-
-            if(onCoachmarkListener.getLocalCache()){
-                onCoachmarkListener.showCoachMark(rv_event_parent_ticket)
             }
         }
     }

@@ -4,5 +4,5 @@ import android.view.View
 
 interface OnCoachmarkListener {
     fun getLocalCache():Boolean
-    fun showCoachMark(view: View)
+    fun showCoachMark(width:Int, height:Int, view: View)
 }
