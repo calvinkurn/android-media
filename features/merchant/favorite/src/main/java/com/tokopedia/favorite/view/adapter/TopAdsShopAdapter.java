@@ -106,14 +106,12 @@ public class TopAdsShopAdapter extends RecyclerView.Adapter<TopAdsShopAdapter.Vi
 
                         @Override
                         public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                            if(!isFirstResource) {
-                                new TopAdsUrlHitter(holder.getContext()).hitImpressionUrl(
-                                        className,
-                                        shopItem.getShopCoverUrl(),
-                                        shopItem.getShopId(),
-                                        shopItem.getShopName(),
-                                        shopItem.getShopImageUrl());
-                            }
+                            new TopAdsUrlHitter(holder.getContext()).hitImpressionUrl(
+                                    className,
+                                    shopItem.getShopCoverUrl(),
+                                    shopItem.getShopId(),
+                                    shopItem.getShopName(),
+                                    shopItem.getShopImageUrl());
                             return false;
                         }
                     })
