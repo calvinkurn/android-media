@@ -55,7 +55,7 @@ class CpmTopadsShopItemViewHolder(itemView: View, private val fragment: Fragment
     }
 
     private fun sendTopAdsShopImpression(data: DataItem?) {
-        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackEventImpressionTopAdsShop(data)
+//        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackEventImpressionTopAdsShop(data)
     }
 
     private fun setClick(data: DataItem?) {
@@ -70,8 +70,8 @@ class CpmTopadsShopItemViewHolder(itemView: View, private val fragment: Fragment
     }
 
     private fun sendTopAdsShopClick(data: DataItem) {
-        cpmTopadsItemViewModel.sendTopAdsClickTracking(data.shopAdsClickURL)
-        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackClickTopAdsShop(data)
+//        cpmTopadsItemViewModel.sendTopAdsClickTracking(data.shopAdsClickURL)
+//        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackClickTopAdsShop(data)
     }
 
     private fun setName(item: DataItem) {

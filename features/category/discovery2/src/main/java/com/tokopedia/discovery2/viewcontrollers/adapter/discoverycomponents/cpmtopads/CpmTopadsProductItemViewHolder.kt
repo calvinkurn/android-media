@@ -48,6 +48,6 @@ class CpmTopadsProductItemViewHolder(itemView: View, private val fragment: Fragm
     }
 
     private fun sendTopAdsShopClick(data: DataItem) {
-        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackClickTopAdsProducts(data)
+//        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackClickTopAdsProducts(data)
     }
 }

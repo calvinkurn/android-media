@@ -13,6 +13,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSession
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -63,13 +64,16 @@ class CpmTopAdsViewModel(val application: Application, private val components: C
 
     fun getCpmData(): LiveData<Result<CpmModel>> = cpmData
 
-    fun getComponentData(): DataItem? {
-        components.data?.let {
-            if (it.isNotEmpty()) {
-                return it[0]
-            }
-        }
-        return null
+    fun getComponentData(): ComponentsItem {
+        return components
+    }
+
+    fun getComponentPosition(): Int {
+        return components.position
+    }
+
+    fun isUserLoggedIn(): Boolean {
+        return UserSession(application).isLoggedIn
     }
 
 }

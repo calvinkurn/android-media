@@ -35,7 +35,6 @@ class CpmTopAdsViewHolder(itemView: View, private val fragment: Fragment) : Abst
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         cpmTopAdsViewModel = discoveryBaseViewModel as CpmTopAdsViewModel
-
     }
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
@@ -51,22 +50,28 @@ class CpmTopAdsViewHolder(itemView: View, private val fragment: Fragment) : Abst
     }
 
     private fun sendClickGTMTracking(position: Int, data: CpmData?) {
-        val componentDataItem = cpmTopAdsViewModel.getComponentData()
-        if (position == 0) {
-            componentDataItem?.let { (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackClickTopAdsShop(it) }
-        } else {
-            componentDataItem?.let {
-                (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackClickTopAdsProducts(it)
-            }
-        }
+//        val componentDataItem = cpmTopAdsViewModel.getComponentData()
+//        if (position == 1) {
+//            componentDataItem?.let { (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackClickTopAdsShop(it) }
+//        } else {
+//            componentDataItem?.let {
+//                (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackClickTopAdsProducts(it)
+//            }
+//        }
     }
 
-
-    private fun sendViewGTMImpression(position: Int, data: CpmData?) {
+    private fun sendViewGTMImpression(position: Int, cpmData: CpmData?) {
         val componentDataItem = cpmTopAdsViewModel.getComponentData()
-        if (position != 0) {
-            componentDataItem?.let {
-                (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackEventImpressionTopAdsShop(it)
+        val componentPosition = cpmTopAdsViewModel.getComponentPosition()
+        val cpmProductPosition = position - 1
+        val userLoggedInStatus = cpmTopAdsViewModel.isUserLoggedIn()
+
+        if (cpmData != null && cpmProductPosition >= 0) {
+            if (position == 1) {
+                (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackEventImpressionTopAdsShop(componentDataItem, cpmData)
+                fragment.getDiscoveryAnalytics().trackTopAdsProductImpression(componentDataItem, cpmData, componentPosition, cpmProductPosition, userLoggedInStatus)
+            } else {
+                (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackTopAdsProductImpression(componentDataItem, cpmData, componentPosition, cpmProductPosition, userLoggedInStatus)
             }
         }
     }
