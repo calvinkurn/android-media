@@ -1,4 +1,4 @@
-package com.tokopedia.pushnotif.domain.pojo;
+package com.tokopedia.pushnotif.data.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

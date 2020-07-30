@@ -1,4 +1,4 @@
-package com.tokopedia.pushnotif;
+package com.tokopedia.pushnotif.data.constant;
 
 /**
  * @author ricoharisin .
