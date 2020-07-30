@@ -766,10 +766,6 @@ open class WishlistViewModel @Inject constructor(
         }
     }
 
-    fun sendTopAds(url: String){
-        sendTopAdsUseCase.executeOnBackground(url)
-    }
-
     private fun addWishlistForRecommendationItem(productId: String,
                                                  currentWishlistState: Boolean,
                                                  parentPosition: Int,

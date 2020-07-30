@@ -9,9 +9,15 @@ android{
             includeAndroidResources = true
         }
     }
-}
+    packagingOptions {
+        exclude 'META-INF/**'
+    }
 
-repositories {
+    defaultConfig {
+        multiDexEnabled true
+        testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
+    }
+
 }
 
 buildscript {
@@ -33,6 +39,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.baseList)
+    implementation project(rootProject.ext.features.carouselProductCard)
     implementation project(rootProject.ext.features.recommendationWidgetCommon)
     implementation project(rootProject.ext.features.productCard)
     implementation project(rootProject.ext.features.atc_common)
@@ -63,13 +70,24 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
+    kapt rootProject.ext.miscDependencies.lifeCycleRuntime
+    kapt rootProject.ext.miscDependencies.daggerCompiler
+
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.miscDependencies.coroutineCore
     testImplementation rootProject.ext.miscDependencies.coroutineTest
-    kapt rootProject.ext.miscDependencies.lifeCycleRuntime
-    kapt rootProject.ext.miscDependencies.daggerCompiler
-    implementation project(rootProject.ext.features.carouselProductCard)
+
+    androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
+    androidTestImplementation project(rootProject.ext.libraries.analyticsDebugger)
+
+    androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
+    androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
+    androidTestImplementation rootProject.ext.testDependencies.junit
+    androidTestImplementation rootProject.ext.testDependencies.espressoCore
+    androidTestImplementation rootProject.ext.testDependencies.espressoContrib
+    androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
+    androidTestImplementation rootProject.ext.testDependencies.testCore
 }
 
 project.ext {
