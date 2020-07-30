@@ -134,7 +134,6 @@ class PartialContentView(private val view: View,
     private fun renderFlashSale(campaign: CampaignModular, stockWording: String) = with(view) {
         if (campaign.isCampaignNewUser && !campaign.shouldShowRibbonCampaign) {
             renderFlashSaleNewUserAbove24H(campaign, stockWording)
-            text_title_discount_timer.text = campaign.campaignTypeName
         } else if (campaign.shouldShowRibbonCampaign) {
             if (campaign.campaignID.toInt() > 0) {
                 renderStockBarFlashSale(campaign, stockWording)
@@ -153,6 +152,7 @@ class PartialContentView(private val view: View,
         renderStockBarFlashSale(campaign, stockWording)
         count_down.hide()
         discount_timer_holder.show()
+        text_title_discount_timer.text = campaign.campaignTypeName
     }
 
     private fun renderStockBarFlashSale(campaign: CampaignModular, stockWording: String) = with(view) {
