@@ -110,6 +110,13 @@ class EditProductInputMapper @Inject constructor() {
     }
 
     private fun mapVariantProducts(products: List<ProductVariantInputModel>) = products.map {
+        val filePath = it.pictures.firstOrNull()?.filePath ?: ""
+        val picID = it.pictures.firstOrNull()?.picID ?: ""
+        var productPicture = it.pictures
+
+        if (filePath.startsWith(AddEditProductConstants.HTTP_PREFIX)) {
+            productPicture = getExistingPictureFromProductVariants(filePath, picID, products)
+        }
         Product(
                 it.combination,
                 it.price,
@@ -117,8 +124,21 @@ class EditProductInputMapper @Inject constructor() {
                 it.status,
                 it.stock,
                 it.isPrimary,
-                mapPictureVariant(it.pictures)
+                mapPictureVariant(productPicture)
         )
+    }
+
+    private fun getExistingPictureFromProductVariants(
+            filePath: String,
+            picID: String,
+            products: List<ProductVariantInputModel>
+    ): List<PictureVariantInputModel> {
+        val existingPicture = products.find {
+            val urlOriginal = it.pictures.firstOrNull()?.urlOriginal
+            return@find urlOriginal == filePath && picID.isEmpty()
+        }?.pictures
+
+        return existingPicture ?: emptyList()
     }
 
     private fun mapPictureVariant(pictures: List<PictureVariantInputModel>) = pictures.map {

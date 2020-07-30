@@ -27,7 +27,7 @@ fun TextFieldUnify?.setModeToNumberInput() {
     val textFieldInput = this?.textFieldInput
     val maxLength = Int.MAX_VALUE.toString().length
     val delimiterCount = maxLength / 3
-    textFieldInput?.filters = arrayOf(InputFilter.LengthFilter(maxLength + delimiterCount))
+    textFieldInput?.filters = arrayOf(InputFilter.LengthFilter(maxLength + delimiterCount - 2))
     textFieldInput?.addTextChangedListener(object : TextWatcher {
 
         override fun afterTextChanged(p0: Editable?) {}
