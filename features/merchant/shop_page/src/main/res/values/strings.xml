@@ -178,6 +178,7 @@
     <string name="text_shop_no_product_follow">Mulai follow untuk mendapatkan update dari toko ini</string>
     <string name="text_shop_no_product_description_seller">Mulai detik ini, tekadkan semangatmu untuk cetak penjualan pertama</string>
     <string name="shop_menu_action_cart">Cart</string>
+    <string name="shop_menu_action_share">Share</string>
     <string name="shop_menu_action_store_info">Info</string>
     <string name="shop_header_action_follow">Follow</string>
     <string name="shop_header_action_following">Following</string>
@@ -229,6 +230,8 @@
     <string name="shop_sort_filter_default_label">Urutkan</string>
     <string name="shop_etalase_filter_default_label">Etalase Toko</string>
     <string name="shop_page_retry">Ulangi</string>
+
+    <!-- shop share -->
     <string name="shop_page_share_to_social_media_text">Bagikan ke media sosial</string>
     <string name="shop_page_share_copy_link">Copy Link</string>
     <string name="shop_page_share_instagram">Instagram</string>
@@ -239,6 +242,7 @@
     <string name="shop_page_share_telegram">Telegram</string>
     <string name="shop_page_share_action_more">Lainnya</string>
     <string name="shop_page_share_action_copy_success">Teks berhasil disalin</string>
+    <string name="shop_page_share_text_with_link">Yay, belanja produk di %1$s sekarang bisa di Tokopedia!\n%2$s</string>
 
 
 </resources>
