@@ -68,7 +68,7 @@ abstract class BaseWidgetUiTest{
             getRechargeRecommendationUseCase = getRechargeRecommendationUseCase,
             declineRechargeRecommendationUseCase = declineRechargeRecommendationUseCase,
             getSalamWidgetUseCase = getSalamWIdgetUseCase,
-            declineSalamWIdgetUseCase = declineSalamWIdgetUseCase,
+            declineSalamWidgetUseCase = declineSalamWIdgetUseCase,
             injectCouponTimeBasedUseCase = injectCouponTimeBasedUseCase,
             topAdsImageViewUseCase = topAdsImageViewUseCase
     )

@@ -60,7 +60,7 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
             if (arguments?.containsKey(ARG_FILTER_MODEL) == true) {
                 flightFilterViewModel.init(
                         arguments?.getInt(ARG_SORT) ?: SORT_DEFAULT_VALUE,
-                        arguments?.getParcelable(ARG_FILTER_MODEL) as FlightFilterModel)
+                        arguments?.getParcelable(ARG_FILTER_MODEL) ?: FlightFilterModel())
             }
         }
 

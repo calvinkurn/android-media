@@ -97,7 +97,8 @@ buildscript {
 ext.lintchecks = [
         'SetColourUsageError',
         'CoreResourcesUsageError',
-        'VectorDrawableCompat'
+        'VectorDrawableCompat',
+        'TypographyOverTextViewUsage'
 ] as String[]
 
 
@@ -345,7 +346,6 @@ dependencies {
     implementation project(rootProject.ext.features.promoCheckout)
     implementation project(rootProject.ext.features.loyaltyCommon)
     implementation project(rootProject.ext.features.promoCheckoutCommon)
-    implementation project(rootProject.ext.features.userIdentification)
     implementation project(rootProject.ext.features.userIdentificationCommon)
     implementation project(rootProject.ext.features.gallery)
     implementation project(rootProject.ext.features.categoryCommon)
@@ -584,6 +584,7 @@ dependencies {
     }
     androidTestImplementation rootProject.ext.supportLibDependencies.appCompactV7
     androidTestImplementation rootProject.ext.supportLibDependencies.cardViewV7
+    implementation project(rootProject.ext.features.additional_check)
 
     if (enableHermes) {
         debugImplementation 'com.facebook.hermes:hermes-debug:0.1.2@aar'
