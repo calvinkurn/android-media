@@ -188,7 +188,7 @@
                     app:typographyType="heading_3"
                     app:typographyWeight="bold" />
 
-                <com.tokopedia.abstraction.base.view.webview.TkpdWebView
+                <com.tokopedia.webview.TkpdWebView
                     android:id="@+id/tnc_content"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -235,7 +235,7 @@
                     app:typographyType="heading_3"
                     app:typographyWeight="bold" />
 
-                <WebView
+                <com.tokopedia.webview.TkpdWebView
                     android:id="@+id/how_to_use_content"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
