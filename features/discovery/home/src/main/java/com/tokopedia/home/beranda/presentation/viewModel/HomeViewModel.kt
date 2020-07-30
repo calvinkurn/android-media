@@ -1441,7 +1441,7 @@ open class HomeViewModel @Inject constructor(
         }catch (e: ClosedSendChannelException){
             logChannelUpdate("Update Widget Error... (send = ${channel.isClosedForSend} | widget = $updateWidget)")
             initChannel()
-            channel.send(updateWidget)
+            updateWidget(updateWidget)
         }
     }
 
