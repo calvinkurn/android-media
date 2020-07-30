@@ -375,6 +375,14 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
         );
     }
 
+    public void clickShareButton(CustomDimensionShopPage customDimensionShopPage) {
+        sendGeneralEvent(CLICK_SHOP_PAGE,
+                SHOP_PROFILE_PAGE_BUYER,
+                CLICK_SHARE,
+                "",
+                customDimensionShopPage);
+    }
+
     public void sendEventMembership(String eventAction) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 CLICK_MEMBERSHIP_EVENT,

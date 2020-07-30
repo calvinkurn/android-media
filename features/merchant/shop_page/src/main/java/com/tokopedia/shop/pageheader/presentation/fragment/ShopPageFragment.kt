@@ -7,6 +7,7 @@ import android.graphics.drawable.LayerDrawable
 import android.os.Bundle
 import android.view.*
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -20,16 +21,19 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.drawable.CountDrawable
+import com.tokopedia.feedcomponent.util.util.ClipboardHandler
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -40,6 +44,9 @@ import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.analytic.model.TrackShopTypeDef
 import com.tokopedia.shop.common.constant.ShopHomeType
+import com.tokopedia.shop.common.view.bottomsheet.ShopShareBottomSheet
+import com.tokopedia.shop.common.view.bottomsheet.viewholder.ShopShareBottomsheetViewHolder
+import com.tokopedia.shop.common.view.model.ShopShareModel
 import com.tokopedia.shop.favourite.view.activity.ShopFavouriteListActivity
 import com.tokopedia.shop.feed.view.fragment.FeedShopFragment
 import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
@@ -69,12 +76,14 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.shop_page_main.*
+import java.io.File
 import javax.inject.Inject
 
 class ShopPageFragment :
         BaseDaggerFragment(),
         HasComponent<ShopPageComponent>,
-        ShopPageFragmentHeaderViewHolder.ShopPageFragmentViewHolderListener {
+        ShopPageFragmentHeaderViewHolder.ShopPageFragmentViewHolderListener,
+        ShopShareBottomsheetViewHolder.ShopShareBottomsheetListener{
 
     companion object {
         const val SHOP_ID = "EXTRA_SHOP_ID"
@@ -143,6 +152,7 @@ class ShopPageFragment :
     private val iconTabFeed = R.drawable.ic_shop_tab_feed_inactive
     private val iconTabReview = R.drawable.ic_shop_tab_review_inactive
     private val intentData: Intent = Intent()
+    private val permissionChecker: PermissionCheckerHelper = PermissionCheckerHelper()
     private var isFirstLoading: Boolean = false
     private var shouldOverrideTabToHome: Boolean = false
     private var isRefresh: Boolean = false
@@ -156,6 +166,8 @@ class ShopPageFragment :
         )
     }
     private var shopPageHeaderDataModel: ShopPageHeaderDataModel? = null
+    private var shopShareBottomSheet: ShopShareBottomSheet? = null
+    private var shopImageFilePath: String = ""
 
     val isMyShop: Boolean
         get() = if (::shopViewModel.isInitialized) {
@@ -183,6 +195,7 @@ class ShopPageFragment :
     override fun onDestroy() {
         shopViewModel.shopPageHeaderTabData.removeObservers(this)
         shopViewModel.shopPageHeaderContentData.removeObservers(this)
+        shopViewModel.shopImagePath.removeObservers(this)
         shopViewModel.flush()
         super.onDestroy()
     }
@@ -234,6 +247,7 @@ class ShopPageFragment :
         mainLayout.requestFocus()
         initStickyLogin(view)
         getChatButtonInitialMargin()
+        setupBottomSheet()
     }
 
     private fun getChatButtonInitialMargin() {
@@ -264,6 +278,13 @@ class ShopPageFragment :
                 is Fail -> {
                     onErrorGetShopPageHeaderContentData(result.throwable)
                 }
+            }
+        })
+
+        shopViewModel.shopImagePath.observe(owner, Observer {
+            shopImageFilePath = it
+            if(shopImageFilePath.isNotEmpty()) {
+                shopShareBottomSheet?.show()
             }
         })
 
@@ -405,6 +426,10 @@ class ShopPageFragment :
         }
     }
 
+    private fun setupBottomSheet() {
+        shopShareBottomSheet = ShopShareBottomSheet(context, fragmentManager, this)
+    }
+
     private fun displayToolbarSeller() {
         text_your_shop.show()
         searchBarLayout.hide()
@@ -441,6 +466,7 @@ class ShopPageFragment :
 
     override fun onResume() {
         super.onResume()
+        removeTemporaryShopImage(shopImageFilePath)
         updateStickyState()
     }
 
@@ -510,6 +536,7 @@ class ShopPageFragment :
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         shopPageHeaderDataModel?.let {
             when (item.itemId) {
+                R.id.menu_action_share, R.id.menu_action_share_seller_view -> clickShopShare()
                 R.id.menu_action_search -> clickSearch()
                 R.id.menu_action_settings -> clickSettingButton()
                 R.id.menu_action_cart -> redirectToCartPage()
@@ -517,6 +544,23 @@ class ShopPageFragment :
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun removeTemporaryShopImage(uri: String) {
+        if(uri.isNotEmpty()) {
+            File(uri).apply {
+                if(exists()) {
+                    delete()
+                }
+            }
+        }
+    }
+
+    private fun clickShopShare() {
+        // todo please move share tracker from shop info to here
+        shopPageTracking?.clickShareButton(customDimensionShopPage)
+        removeTemporaryShopImage(shopImageFilePath)
+        getWriteReadStoragePermission()
     }
 
     private fun clickSearch() {
@@ -570,6 +614,25 @@ class ShopPageFragment :
         }
     }
 
+    private fun getWriteReadStoragePermission() = activity?.let {
+        permissionChecker.checkPermissions(it, arrayOf(
+                PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE,
+                PermissionCheckerHelper.Companion.PERMISSION_READ_EXTERNAL_STORAGE
+        ), object : PermissionCheckerHelper.PermissionCheckListener {
+            override fun onPermissionDenied(permissionText: String) {
+                permissionChecker.onPermissionDenied(it, permissionText)
+            }
+
+            override fun onNeverAskAgain(permissionText: String) {
+                permissionChecker.onNeverAskAgain(it, permissionText)
+            }
+
+            override fun onPermissionGranted() {
+                saveShopImage()
+            }
+        })
+    }
+
     private fun onSuccessGetShopPageTabData(shopPageHeaderTabData: ShopPageHeaderTabData) {
         stopPreparePltShopPage()
         isShowFeed = shopPageHeaderTabData.feedWhitelist.isWhitelist
@@ -616,6 +679,8 @@ class ShopPageFragment :
             shopPageHeaderDataModel.statusTitle = shopPageHeaderContentData.shopInfo.statusInfo.statusTitle
             shopPageHeaderDataModel.statusMessage = shopPageHeaderContentData.shopInfo.statusInfo.statusMessage
             shopPageHeaderDataModel.shopStatus = shopPageHeaderContentData.shopInfo.statusInfo.shopStatus
+            shopPageHeaderDataModel.shopSnippetUrl = shopPageHeaderContentData.shopInfo.shopSnippetUrl
+            shopPageHeaderDataModel.shopCoreUrl = shopPageHeaderContentData.shopInfo.shopCore.url
             if (!isMyShop) {
                 button_chat.show()
                 button_chat.setOnClickListener {
@@ -642,6 +707,7 @@ class ShopPageFragment :
 
     fun onBackPressed() {
         shopPageTracking?.clickBackArrow(isMyShop, customDimensionShopPage)
+        removeTemporaryShopImage(shopImageFilePath)
     }
 
     override fun onPause() {
@@ -940,6 +1006,52 @@ class ShopPageFragment :
 
     override fun onShopCoverClicked(isOfficial: Boolean, isPowerMerchant: Boolean) {
         RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_SETTINGS_INFO)
+    }
+
+    override fun onItemBottomsheetShareClicked(shopShare: ShopShareModel) {
+        val shopImageFileUri = MethodChecker.getUri(context, File(shopImageFilePath))
+        when(shopShare) {
+            is ShopShareModel.CopyLink -> {
+                shopPageHeaderDataModel?.let {
+                    ClipboardHandler().copyToClipboard((activity as Activity), it.shopCoreUrl)
+                    Toast.makeText(context, getString(R.string.shop_page_share_action_copy_success), Toast.LENGTH_SHORT).show()
+                }
+            }
+            is ShopShareModel.Instagram, is ShopShareModel.Facebook -> {
+                startActivity(shopShare.appIntent?.apply {
+                    putExtra(Intent.EXTRA_STREAM, shopImageFileUri)
+                })
+            }
+            is ShopShareModel.Whatsapp -> {
+                startActivity(shopShare.appIntent?.apply {
+                    putExtra(Intent.EXTRA_STREAM, shopImageFileUri)
+                    type = ShopShareBottomSheet.MimeType.TEXT.type
+                    putExtra(Intent.EXTRA_TEXT, getString(
+                            R.string.shop_page_share_text_with_link,
+                            shopPageHeaderDataModel?.shopName,
+                            shopPageHeaderDataModel?.shopCoreUrl
+                    ))
+                })
+            }
+            is ShopShareModel.Others -> {
+                startActivity(Intent.createChooser(Intent(Intent.ACTION_SEND).apply {
+                    type = ShopShareBottomSheet.MimeType.IMAGE.type
+                    putExtra(Intent.EXTRA_STREAM, shopImageFileUri)
+                }, getString(R.string.shop_page_share_to_social_media_text)))
+            }
+            else -> {
+                startActivity(shopShare.appIntent?.apply {
+                    putExtra(Intent.EXTRA_TEXT, shopPageHeaderDataModel?.shopCoreUrl)
+                })
+            }
+        }
+        shopShareBottomSheet?.dismiss()
+    }
+
+    private fun saveShopImage() {
+        shopPageHeaderDataModel?.shopSnippetUrl?.let {
+            shopViewModel.saveShopImageToPhoneStorage(context, it)
+        }
     }
 
     private fun updateStickyContent() {

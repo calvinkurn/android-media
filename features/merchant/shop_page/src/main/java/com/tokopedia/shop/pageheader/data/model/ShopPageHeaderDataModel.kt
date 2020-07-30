@@ -13,6 +13,7 @@ data class ShopPageHeaderDataModel(
         var isFreeOngkir: Boolean = false,
         var statusTitle: String = "",
         var statusMessage: String = "",
-        var shopStatus: Int = -1
-
+        var shopStatus: Int = -1,
+        var shopSnippetUrl: String = "",
+        var shopCoreUrl: String = ""
 )
