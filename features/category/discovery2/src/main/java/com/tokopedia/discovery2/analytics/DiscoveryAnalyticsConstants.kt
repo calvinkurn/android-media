@@ -119,4 +119,5 @@ const val NOTIFY_ON  = "ON"
 const val NOTIFY_OFF  = "OFF"
 const val CPM_PRODUCT_LIST_IMPRESSION = "impression - product cpm"
 const val CPM_SHOP_PAGE_COMPONENT= "cpm_shop_page_component"
+const val CPM_SHOP_CLICK= "click - cpm shop page"
 

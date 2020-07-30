@@ -19,10 +19,8 @@ class CpmTopAdsViewHolder(itemView: View, private val fragment: Fragment) : Abst
 
     private var adsBannerView: TopAdsBannerView = itemView.findViewById(R.id.cpm_ads_banner)
     private lateinit var cpmTopAdsViewModel: CpmTopAdsViewModel
-    private var userLoggedInStatus : Boolean? = null
 
     init {
-        userLoggedInStatus = cpmTopAdsViewModel.isUserLoggedIn()
         adsBannerView.setTopAdsBannerClickListener(TopAdsBannerClickListener { position: Int, applink: String?, data: CpmData? ->
             RouteManager.route(itemView.context, applink)
             sendClickGTMTracking(position, data)
@@ -51,15 +49,18 @@ class CpmTopAdsViewHolder(itemView: View, private val fragment: Fragment) : Abst
         })
     }
 
-    private fun sendClickGTMTracking(position: Int, data: CpmData?) {
-//        val componentDataItem = cpmTopAdsViewModel.getComponentData()
-//        if (position == 1) {
-//            componentDataItem?.let { (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackClickTopAdsShop(it) }
-//        } else {
-//            componentDataItem?.let {
-//                (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackClickTopAdsProducts(it)
-//            }
-//        }
+    private fun sendClickGTMTracking(position: Int, cpmData: CpmData?) {
+        val componentDataItem = cpmTopAdsViewModel.getComponentData()
+        val componentPosition = cpmTopAdsViewModel.getComponentPosition()
+        val cpmProductPosition = position - 1
+
+        if (cpmData != null) {
+            if (position == 0) {
+                (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackClickTopAdsShop(componentDataItem, cpmData)
+            } else if(cpmProductPosition >= 0) {
+                (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackClickTopAdsProducts(componentDataItem, cpmData, componentPosition, cpmProductPosition, cpmTopAdsViewModel.isUserLoggedIn())
+            }
+        }
     }
 
     private fun sendViewGTMImpression(position: Int, cpmData: CpmData?) {
@@ -70,9 +71,9 @@ class CpmTopAdsViewHolder(itemView: View, private val fragment: Fragment) : Abst
         if (cpmData != null && cpmProductPosition >= 0) {
             if (position == 1) {
                 (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackEventImpressionTopAdsShop(componentDataItem, cpmData)
-                fragment.getDiscoveryAnalytics().trackTopAdsProductImpression(componentDataItem, cpmData, componentPosition, cpmProductPosition, userLoggedInStatus)
+                fragment.getDiscoveryAnalytics().trackTopAdsProductImpression(componentDataItem, cpmData, componentPosition, cpmProductPosition, cpmTopAdsViewModel.isUserLoggedIn())
             } else {
-                (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackTopAdsProductImpression(componentDataItem, cpmData, componentPosition, cpmProductPosition, userLoggedInStatus)
+                (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackTopAdsProductImpression(componentDataItem, cpmData, componentPosition, cpmProductPosition, cpmTopAdsViewModel.isUserLoggedIn())
             }
         }
     }
