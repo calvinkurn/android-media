@@ -4,19 +4,20 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.manageaddress.domain.response.SetDefaultPeopleAddressGqlResponse
 import com.tokopedia.manageaddress.util.ManageAddressConstant.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.manageaddress.util.ManageAddressConstant.STATUS_OK
+import com.tokopedia.manageaddress.util.ManageAddressConstant.SUCCESS
 import com.tokopedia.network.exception.MessageErrorException
 import javax.inject.Inject
 
 class SetDefaultPeopleAddressUseCase @Inject constructor(private val graphqlUseCase: GraphqlUseCase<SetDefaultPeopleAddressGqlResponse>) {
 
-    fun execute(inputAddressId: Int, onSuccess: (SetDefaultPeopleAddressGqlResponse) -> Unit, onError: (Throwable) -> Unit) {
+    fun execute(inputAddressId: Int, onSuccess: (String) -> Unit, onError: (Throwable) -> Unit) {
         graphqlUseCase.setGraphqlQuery(QUERY)
         graphqlUseCase.setRequestParams(mapOf(PARAM_KEY to inputAddressId))
         graphqlUseCase.setTypeClass(SetDefaultPeopleAddressGqlResponse::class.java)
         graphqlUseCase.execute({ response: SetDefaultPeopleAddressGqlResponse ->
             if(response.response.status.equals(STATUS_OK, true))  {
                 if(response.response.data.success == 1) {
-                    onSuccess(response)
+                    onSuccess(SUCCESS)
                 } else {
                     onError(MessageErrorException(DEFAULT_ERROR_MESSAGE))
                 }
