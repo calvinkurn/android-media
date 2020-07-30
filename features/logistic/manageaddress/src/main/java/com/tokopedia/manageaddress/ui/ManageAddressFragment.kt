@@ -3,7 +3,6 @@ package com.tokopedia.manageaddress.ui
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -239,7 +238,6 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                 activity?.let { ManageAddressAnalytics.sendScreenName(it, SCREEN_NAME_USER_NEW) }
                 val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2)
                 intent.putExtra(KERO_TOKEN, token)
-                Log.d("TOKEN_CHECK_2", token?.districtRecommendation.toString())
                 startActivityForResult(intent, REQUEST_CODE_PARAM_CREATE)
             } else {
                 val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V1)
