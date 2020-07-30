@@ -68,6 +68,8 @@ class CampaignReservedStockFragment: BaseListFragment<Visitable<CampaignStockTyp
         view.setBackgroundColor(Color.TRANSPARENT)
         if(reservedEventInfoList.isNotEmpty()) {
             setupAdapterModels(isVariant)
+        } else {
+            renderList(listOf())
         }
     }
 
@@ -87,11 +89,7 @@ class CampaignReservedStockFragment: BaseListFragment<Visitable<CampaignStockTyp
                             }
                         })
             }
-            if (reservedStockList.isNullOrEmpty()) {
-                renderList(listOf())
-            } else {
-                renderList(reservedStockList)
-            }
+            renderList(reservedStockList)
         } else {
             renderList(listOf(ReservedStockRedirectionUiModel))
         }
