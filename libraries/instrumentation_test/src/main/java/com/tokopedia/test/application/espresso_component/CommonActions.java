@@ -1,5 +1,6 @@
 package com.tokopedia.test.application.espresso_component;
 
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -40,6 +41,7 @@ public class CommonActions {
                 Espresso.onView(CommonMatcher.firstView(withId(recyclerViewId)))
                         .perform(RecyclerViewActions.actionOnItemAtPosition(i, click()));
             } catch (PerformException e) {
+                Log.d("TopAdsLogDev", "This is failed: stacktrace:");
                 e.printStackTrace();
             }
         }
