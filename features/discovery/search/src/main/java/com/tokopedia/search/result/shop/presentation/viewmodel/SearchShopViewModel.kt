@@ -79,6 +79,7 @@ internal class SearchShopViewModel(
     private val shimmeringQuickFilterIsVisible = MutableLiveData<Boolean>()
     private val refreshLayoutIsVisible = MutableLiveData<Boolean>()
     private val shopCountMutableLiveData = MutableLiveData<String>()
+    private val activeFilterCountMutableLiveData = MutableLiveData<Int>()
     var dynamicFilterModel: DynamicFilterModel? = null
 
     init {
@@ -516,6 +517,8 @@ internal class SearchShopViewModel(
     private fun processFilterData() {
         processFilterIntoFilterController()
 
+        activeFilterCountMutableLiveData.postValue(filterController.getFilterCount())
+
         if (isEmptySearchShop) {
             updateEmptySearchViewModelWithFilter()
         }
@@ -813,6 +816,8 @@ internal class SearchShopViewModel(
 
     fun getShopCountLiveData(): LiveData<String> =
             shopCountMutableLiveData
+
+    fun getActiveFilterCountLiveData(): LiveData<Int> = activeFilterCountMutableLiveData
 
     data class QuickFilterTrackingData(val option: Option, val isSelected: Boolean)
 }

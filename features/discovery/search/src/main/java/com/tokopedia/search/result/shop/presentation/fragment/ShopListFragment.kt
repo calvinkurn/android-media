@@ -186,6 +186,7 @@ internal class ShopListFragment:
         observeRefreshLayoutVisibility()
         observeShimmeringLayoutVisibility()
         observeQuickFilterVisibility()
+        observeActiveFilterCount()
     }
 
     private fun observeSearchShopLiveData() {
@@ -534,6 +535,12 @@ internal class ShopListFragment:
     private fun observeQuickFilterVisibility() {
         searchShopViewModel?.getQuickFilterIsVisibleLiveData()?.observe(viewLifecycleOwner, Observer {
             searchShopQuickSortFilter?.showWithCondition(it)
+        })
+    }
+
+    private fun observeActiveFilterCount() {
+        searchShopViewModel?.getActiveFilterCountLiveData()?.observe(viewLifecycleOwner, Observer {
+            searchShopQuickSortFilter?.indicatorCounter = it
         })
     }
 

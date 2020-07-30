@@ -1,5 +1,6 @@
 package com.tokopedia.search.result.shop.presentation.viewmodel
 
+import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.search.TestException
 import com.tokopedia.search.result.shop.presentation.viewmodel.testinstance.dynamicFilterModel
 import com.tokopedia.search.result.shop.presentation.viewmodel.testinstance.searchShopModel
@@ -16,7 +17,8 @@ internal class SearchShopGetDynamicFilterTest: SearchShopViewModelTestFixtures()
         `When handle view is visible and added`()
 
         `Then assert dynamic filter response event is success (true)`()
-        searchShopViewModel.dynamicFilterModel shouldBe dynamicFilterModel
+        `Then assert dynamic filter model`(dynamicFilterModel)
+        `Then assert active filter count`(1)
     }
 
     private fun `Given dynamic filter API will be successful`() {
@@ -34,6 +36,14 @@ internal class SearchShopGetDynamicFilterTest: SearchShopViewModelTestFixtures()
         getDynamicFilterResponseEvent?.getContentIfNotHandled() shouldBe true
     }
 
+    private fun `Then assert dynamic filter model`(dynamicFilterModel: DynamicFilterModel?) {
+        searchShopViewModel.dynamicFilterModel shouldBe dynamicFilterModel
+    }
+
+    private fun `Then assert active filter count`(expectedActiveFilterCount: Int?) {
+        searchShopViewModel.getActiveFilterCountLiveData().value shouldBe expectedActiveFilterCount
+    }
+
     @Test
     fun `Get Dynamic Filter Failed`() {
         val exception = TestException()
@@ -44,7 +54,8 @@ internal class SearchShopGetDynamicFilterTest: SearchShopViewModelTestFixtures()
 
         `Then assert exception print stack trace is called`(exception)
         `Then assert dynamic filter response event is failed (false)`()
-        searchShopViewModel.dynamicFilterModel shouldBe null
+        `Then assert dynamic filter model`(null)
+        `Then assert active filter count`(null)
     }
 
     private fun `Given dynamic filter API will fail`(exception: Exception) {
