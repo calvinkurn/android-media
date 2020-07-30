@@ -37,14 +37,6 @@ object ProductDetailUtil {
             MethodChecker.fromHtml(review)
         }
     }
-
-    fun randomGenerator(randomNumber: Int): String {
-        return try {
-            (randomNumber + System.nanoTime()).toString()
-        } catch (e: Throwable) {
-            System.nanoTime().toString()
-        }
-    }
 }
 
 fun String.linkTextWithGiven(context: Context, vararg textToBold: Pair<String, () -> Unit>): SpannableString {

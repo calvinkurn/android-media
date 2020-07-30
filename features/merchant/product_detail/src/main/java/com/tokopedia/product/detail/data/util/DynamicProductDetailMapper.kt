@@ -4,11 +4,9 @@ import com.tokopedia.product.detail.common.data.model.carttype.CartRedirectionPa
 import com.tokopedia.product.detail.common.data.model.pdplayout.*
 import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.data.model.variant.VariantDataModel
-import com.tokopedia.product.detail.view.util.ProductDetailUtil
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.variant_common.model.ProductVariantCommon
-import java.util.*
 
 object DynamicProductDetailMapper {
 
@@ -125,7 +123,7 @@ object DynamicProductDetailMapper {
 
     private fun assignIdToMedia(listOfMedia: List<Media>){
         listOfMedia.forEachIndexed { index, it ->
-            it.id = ProductDetailUtil.randomGenerator(index)
+            it.id = (index + 1).toString()
         }
     }
 
