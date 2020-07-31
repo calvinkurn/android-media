@@ -1,4 +1,4 @@
-package com.tokopedia.topads.edit.view;
+package com.tokopedia.topads.common;
 
 import android.content.Context;
 import android.util.AttributeSet;
