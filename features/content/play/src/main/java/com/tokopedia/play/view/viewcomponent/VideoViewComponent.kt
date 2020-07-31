@@ -1,62 +1,57 @@
-package com.tokopedia.play.ui.video
+package com.tokopedia.play.view.viewcomponent
 
 import android.graphics.Bitmap
-import android.view.*
+import android.view.Gravity
+import android.view.TextureView
+import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
+import androidx.annotation.IdRes
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.OnLifecycleEvent
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.ui.PlayerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.getScreenWidth
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
-import com.tokopedia.play.component.UIView
 import com.tokopedia.play.util.changeConstraint
 import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.type.VideoOrientation
+import com.tokopedia.play_common.viewcomponent.ViewComponent
 
 /**
- * Created by jegul on 02/12/19
+ * Created by jegul on 31/07/20
  */
-class VideoView(container: ViewGroup) : UIView(container) {
+class VideoViewComponent(
+        container: ViewGroup,
+        @IdRes idRes: Int
+) : ViewComponent(container, idRes) {
 
-    private val view: View =
-            LayoutInflater.from(container.context).inflate(R.layout.view_video, container, true)
-                    .findViewById(R.id.cl_video_view)
+    private val pvVideo = findViewById<PlayerView>(R.id.pv_video)
+    private val ivThumbnail = findViewById<ImageView>(R.id.iv_thumbnail)
 
-    private val pvVideo = view.findViewById<PlayerView>(R.id.pv_video)
-    private val ivThumbnail = view.findViewById<ImageView>(R.id.iv_thumbnail)
+    private var mExoPlayer: ExoPlayer? = null
 
-    override val containerId: Int = view.id
-
-    override fun show() {
-        view.show()
-    }
-
-    override fun hide() {
-        view.hide()
-    }
-
-    internal fun onDestroy() {
-        setPlayer(null)
-    }
-
-    internal fun setPlayer(exoPlayer: ExoPlayer?) {
+    fun setPlayer(exoPlayer: ExoPlayer?) {
+        mExoPlayer = exoPlayer
         pvVideo.player = exoPlayer
     }
 
-    internal fun setOrientation(screenOrientation: ScreenOrientation, videoOrientation: VideoOrientation) {
+    fun setOrientation(screenOrientation: ScreenOrientation, videoOrientation: VideoOrientation) {
         configureVideoLayout(screenOrientation, videoOrientation)
         configureThumbnailLayout(screenOrientation, videoOrientation)
     }
 
-    internal fun getCurrentBitmap(): Bitmap? {
+    fun getCurrentBitmap(): Bitmap? {
         val textureView = pvVideo.videoSurfaceView as? TextureView
         return textureView?.bitmap
     }
 
-    internal fun showThumbnail(bitmap: Bitmap?) {
+    fun showThumbnail(bitmap: Bitmap?) {
         if (bitmap != null) {
             ivThumbnail.setImageBitmap(bitmap)
             ivThumbnail.show()
@@ -93,7 +88,7 @@ class VideoView(container: ViewGroup) : UIView(container) {
         }
 
         fun configureBackground() {
-            view.setBackgroundColor(MethodChecker.getColor(view.context,
+            rootView.setBackgroundColor(MethodChecker.getColor(rootView.context,
                     if (videoOrientation.isHorizontal && !screenOrientation.isLandscape) R.color.play_solid_black
                     else R.color.transparent
             ))
@@ -106,19 +101,37 @@ class VideoView(container: ViewGroup) : UIView(container) {
     private fun configureThumbnailLayout(screenOrientation: ScreenOrientation, videoOrientation: VideoOrientation) {
         when {
             !screenOrientation.isLandscape && videoOrientation is VideoOrientation.Horizontal -> {
-                view.changeConstraint {
+                rootView.changeConstraint {
                     clear(ivThumbnail.id, ConstraintSet.BOTTOM)
                     setDimensionRatio(ivThumbnail.id, "H, ${videoOrientation.aspectRatio}")
                 }
                 ivThumbnail.scaleType = ImageView.ScaleType.FIT_CENTER
             }
             else -> {
-                view.changeConstraint {
+                rootView.changeConstraint {
                     connect(ivThumbnail.id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
                     setDimensionRatio(ivThumbnail.id, null)
                 }
                 ivThumbnail.scaleType = if (videoOrientation.isHorizontal) ImageView.ScaleType.FIT_CENTER else ImageView.ScaleType.CENTER
             }
         }
+    }
+
+    /**
+     * Lifecycle Function
+     */
+    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+    fun onPause() {
+        setPlayer(null)
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    fun onResume() {
+        mExoPlayer?.let { setPlayer(it) }
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    fun onDestroy() {
+        setPlayer(null)
     }
 }
