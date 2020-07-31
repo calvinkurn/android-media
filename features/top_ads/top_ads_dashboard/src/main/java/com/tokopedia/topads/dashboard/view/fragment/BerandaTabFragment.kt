@@ -22,17 +22,25 @@ import com.tokopedia.topads.credit.history.view.activity.TopAdsCreditHistoryActi
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CUSTOM_DATE
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DATA_INSIGHT
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DATE_RANGE_BERANDA
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.END_DATE_BERANDA
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.START_DATE_BERANDA
 import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
 import com.tokopedia.topads.dashboard.data.model.DataStatistic
+import com.tokopedia.topads.dashboard.data.model.insightkey.InsightKeyData
+import com.tokopedia.topads.dashboard.data.model.insightkey.KeywordInsightDataMain
 import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.topads.dashboard.data.utils.Utils.format
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.activity.TopAdsAddCreditActivity
+import com.tokopedia.topads.dashboard.view.adapter.TopAdsDashInsightPagerAdapter
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsStatisticPagerAdapter
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsTabAdapter
+import com.tokopedia.topads.dashboard.view.adapter.insight.TopAdsInsightTabAdapter
+import com.tokopedia.topads.dashboard.view.fragment.insight.TopAdsInsightMiniBidFragment
+import com.tokopedia.topads.dashboard.view.fragment.insight.TopAdsInsightMiniKeyFragment
+import com.tokopedia.topads.dashboard.view.fragment.insight.TopAdsInsightMiniProductFragment
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
 import com.tokopedia.topads.dashboard.view.sheet.CustomDatePicker
 import com.tokopedia.topads.dashboard.view.sheet.DatePickerSheet
@@ -49,6 +57,7 @@ import javax.inject.Inject
 open class BerandaTabFragment : BaseDaggerFragment(), CustomDatePicker.ActionListener {
 
     private var dataStatistic: DataStatistic? = null
+    private var insightCallBack: GoToInsight? = null
 
     @TopAdsStatisticsType
     internal var selectedStatisticType: Int = TopAdsStatisticsType.PRODUCT_ADS
@@ -91,6 +100,10 @@ open class BerandaTabFragment : BaseDaggerFragment(), CustomDatePicker.ActionLis
         context?.run { TopAdsTabAdapter(this) }
     }
 
+    private val topAdsInsightTabAdapter: TopAdsInsightTabAdapter? by lazy {
+        context?.run { TopAdsInsightTabAdapter(this) }
+    }
+
     protected val currentStatisticsFragment: TopAdsDashboardStatisticFragment?
         get() = pagerAdapter?.instantiateItem(pager, topAdsTabAdapter?.selectedTabPosition
                 ?: 0) as? TopAdsDashboardStatisticFragment
@@ -121,6 +134,10 @@ open class BerandaTabFragment : BaseDaggerFragment(), CustomDatePicker.ActionLis
             val intent = Intent(activity, TopAdsAddCreditActivity::class.java)
             startActivityForResult(intent, REQUEST_CODE_ADD_CREDIT)
         }
+        goToInsights.setOnClickListener {
+            insightCallBack?.gotToInsights()
+        }
+
         setDateRangeText(SEVEN_DAYS_RANGE_INDEX)
         endDate = Utils.getEndDate()
         startDate = Utils.getStartDate()
@@ -130,6 +147,40 @@ open class BerandaTabFragment : BaseDaggerFragment(), CustomDatePicker.ActionLis
         }
         swipe_refresh_layout.setOnRefreshListener {
             loadData()
+        }
+    }
+
+    private fun renderInsightViewPager(data: HashMap<String, KeywordInsightDataMain>) {
+        viewPagerInsight?.adapter = getViewPagerAdapter(data)
+        viewPagerInsight?.disableScroll(true)
+        viewPagerInsight?.currentItem = 0
+        viewPagerInsight?.offscreenPageLimit = TopAdsDashboardConstant.OFFSCREEN_PAGE_LIMIT
+    }
+
+    private fun getViewPagerAdapter(data: HashMap<String, KeywordInsightDataMain>): TopAdsDashInsightPagerAdapter? {
+        val list: ArrayList<Fragment> = arrayListOf()
+        val bundle = Bundle()
+        bundle.putSerializable(DATA_INSIGHT, data)
+        list.add(TopAdsInsightMiniKeyFragment.createInstance(bundle))
+        list.add(TopAdsInsightMiniProductFragment())
+        list.add(TopAdsInsightMiniBidFragment())
+        val adapter = TopAdsDashInsightPagerAdapter(childFragmentManager, 0)
+        adapter.setList(list)
+        return adapter
+    }
+
+    private fun onSuccessGetInsightData(response: InsightKeyData) {
+        if (response.data.isEmpty()) {
+            insightCard.visibility = View.GONE
+            val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
+            with(sharedPref.edit()) {
+                putBoolean(TopAdsDashboardConstant.FIRST_LAUNCH, false)
+                commit()
+            }
+        } else {
+            insightCard.visibility = View.VISIBLE
+            initInsightTabAdapter(response)
+            renderInsightViewPager(response.data)
         }
     }
 
@@ -158,6 +209,8 @@ open class BerandaTabFragment : BaseDaggerFragment(), CustomDatePicker.ActionLis
         loadStatisticsData()
         getAutoTopUpStatus()
         topAdsDashboardPresenter.getShopDeposit(::onLoadTopAdsShopDepositSuccess)
+        topAdsDashboardPresenter.getInsight(resources, ::onSuccessGetInsightData)
+
     }
 
     private fun handleDate(date1: Long, date2: Long, position: Int) {
@@ -219,6 +272,26 @@ open class BerandaTabFragment : BaseDaggerFragment(), CustomDatePicker.ActionLis
         val isAutoTopUpActive = (data.status.toIntOrZero()) != TopAdsDashboardConstant.AUTO_TOPUP_INACTIVE
         if (isAutoTopUpActive)
             img_auto_debit.visibility = View.VISIBLE
+    }
+
+    private fun initInsightTabAdapter(response: InsightKeyData) {
+        val tabLayoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
+        rvTabInsight.layoutManager = tabLayoutManager
+        topAdsInsightTabAdapter?.setListener(object : TopAdsInsightTabAdapter.OnRecyclerTabItemClick {
+            override fun onTabItemClick(position: Int) {
+                viewPagerInsight.currentItem = position
+                if(position==1||position==2){
+                    goToInsights.visibility = View.GONE
+                    arrow.visibility = View.GONE
+                }
+                else{
+                    goToInsights.visibility = View.VISIBLE
+                    arrow.visibility = View.VISIBLE
+                }
+            }
+        })
+        topAdsInsightTabAdapter?.setTabTitles(resources,  response.data.size, 0, 0)
+        rvTabInsight.adapter = topAdsInsightTabAdapter
     }
 
     private fun initStatisticComponent() {
@@ -311,8 +384,26 @@ open class BerandaTabFragment : BaseDaggerFragment(), CustomDatePicker.ActionLis
         super.onDestroy()
         val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
         with(sharedPref.edit()) {
-            clear()
+            remove(END_DATE_BERANDA)
+            remove(START_DATE_BERANDA)
+            remove(DATE_RANGE_BERANDA)
             commit()
         }
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is GoToInsight) {
+            insightCallBack = context
+        }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        insightCallBack = null
+    }
+
+    interface GoToInsight {
+        fun gotToInsights()
     }
 }
