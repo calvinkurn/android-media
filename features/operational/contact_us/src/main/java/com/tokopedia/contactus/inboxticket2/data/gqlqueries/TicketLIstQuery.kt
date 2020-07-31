@@ -1,5 +1,7 @@
-query TicketListQuery($userID: String!, $page: Int!, $status: Int!, $rating: Int) {
-  ticket(userID: $userID, page: $page, status: $status, rating: $rating) {
+package com.tokopedia.contactus.inboxticket2.data.gqlqueries
+
+const val TICKET_LIST_QUERY: String = """query TicketListQuery(${'$'}userID: String!, ${'$'}page: Int!, ${'$'}status: Int!, ${'$'}rating: Int) {
+  ticket(userID: ${'$'}userID, page: ${'$'}page, status: ${'$'}status, rating: ${'$'}rating) {
     status
     data {
       is_success
@@ -23,3 +25,4 @@ query TicketListQuery($userID: String!, $page: Int!, $status: Int!, $rating: Int
     }
   }
 }
+"""
