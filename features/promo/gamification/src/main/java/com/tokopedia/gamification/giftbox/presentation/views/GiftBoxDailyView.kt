@@ -169,19 +169,6 @@ open class GiftBoxDailyView : FrameLayout {
         })
         viewModel.downloadImages(lidImageList, imageListLiveData)
 
-//        lidImagesDownloader.downloadImages(this.context, lidImageList) { images ->
-//            if (images.isNullOrEmpty()) {
-//                imageCallback.invoke(false)
-//            } else {
-//                lidImages.addAll(images)
-//                var bmp = images.last()
-//                if (state == TokenUserState.ACTIVE) {
-//                    bmp = images.first()
-//                }
-//                loadOriginalImages(bmp, imageCallback)
-//            }
-//        }
-
         Glide.with(imageBoxFront)
                 .load(imageFrontUrl)
                 .dontAnimate()

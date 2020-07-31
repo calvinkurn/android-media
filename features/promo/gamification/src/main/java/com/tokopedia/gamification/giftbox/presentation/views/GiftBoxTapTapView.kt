@@ -250,20 +250,6 @@ class GiftBoxTapTapView : GiftBoxDailyView {
         })
         viewModel.downloadImage(bgUrl, imageLiveData)
 
-//        lidImagesDownloader.downloadBgImage(context, bgUrl) { bmp ->
-//            val rp = if (bmp != null) {
-//                Glide.with(this)
-//                        .load(bmp)
-//
-//            } else {
-//                Glide.with(this)
-//                        .load(R.drawable.gf_gift_bg)
-//            }
-//            rp.dontAnimate()
-//                    .into(imageBg)
-//            incrementAndSendCallback()
-//        }
-
         Glide.with(this)
                 .load(imageFrontUrl)
                 .dontAnimate()
@@ -304,16 +290,6 @@ class GiftBoxTapTapView : GiftBoxDailyView {
             }
         })
         viewModel.downloadImages(lidImageList, imageListLiveData)
-
-//        lidImagesDownloader.downloadImages(this.context, lidImageList) { images ->
-//            if (images.isNullOrEmpty()) {
-//                loadOriginalImages(null, imageCallback)
-//            } else {
-//                lidImages.addAll(images)
-//                loadOriginalImages(images[0], imageCallback)
-//
-//            }
-//        }
     }
 
     private fun prepareLoaderLottieTask(fileName: String): LottieTask<LottieComposition>? {
