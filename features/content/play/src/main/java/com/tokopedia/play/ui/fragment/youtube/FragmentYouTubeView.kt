@@ -1,11 +1,14 @@
 package com.tokopedia.play.ui.fragment.youtube
 
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.component.UIView
 import com.tokopedia.play.view.custom.ScaleFriendlyFrameLayout
@@ -38,7 +41,7 @@ class FragmentYouTubeView(
     }
 
     internal fun init() {
-        fragmentManager.findFragmentByTag(YOUTUBE_FRAGMENT_TAG) ?: PlayYouTubeFragment.newInstance(channelId).also {
+        fragmentManager.findFragmentByTag(YOUTUBE_FRAGMENT_TAG) ?: getPlayYouTubeFragment().also {
             fragmentManager.beginTransaction()
                     .replace(view.id, it, YOUTUBE_FRAGMENT_TAG)
                     .commit()
@@ -54,6 +57,15 @@ class FragmentYouTubeView(
             fragmentManager.beginTransaction()
                     .remove(fragment)
                     .commit()
+        }
+    }
+
+    private fun getPlayYouTubeFragment(): Fragment {
+        val fragmentFactory = fragmentManager.fragmentFactory
+        return fragmentFactory.instantiate(container.context.classLoader, PlayYouTubeFragment::class.java.name).apply {
+            arguments = Bundle().apply {
+                putString(PLAY_KEY_CHANNEL_ID, channelId)
+            }
         }
     }
 

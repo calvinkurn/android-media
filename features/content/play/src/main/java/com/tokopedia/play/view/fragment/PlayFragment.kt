@@ -10,6 +10,7 @@ import android.view.*
 import android.view.inputmethod.InputMethodManager
 import androidx.annotation.Nullable
 import androidx.core.view.ViewCompat
+import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
@@ -17,6 +18,7 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
@@ -73,7 +75,7 @@ import kotlin.coroutines.CoroutineContext
 /**
  * Created by jegul on 29/11/19
  */
-class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragmentContract, PlayParentViewInitializer {
+class PlayFragment : TkpdBaseV4Fragment(), PlayOrientationListener, PlayFragmentContract, PlayParentViewInitializer {
 
     companion object {
         private const val TOP_BOUNDS_LANDSCAPE_VIDEO = "top_bounds_landscape_video"
@@ -101,6 +103,9 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var fragmentFactory: FragmentFactory
 
     private var channelId = ""
     private var topBounds: Int? = null
@@ -133,18 +138,9 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
 
     override fun getScreenName(): String = "Play"
 
-    override fun initInjector() {
-        DaggerPlayComponent
-                .builder()
-                .baseAppComponent(
-                        (requireContext().applicationContext as BaseMainApplication).baseAppComponent
-                )
-                .playModule(PlayModule(requireContext()))
-                .build()
-                .inject(this)
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
+        inject()
+        childFragmentManager.fragmentFactory = fragmentFactory
         super.onCreate(savedInstanceState)
         setOrientation()
         setupPageMonitoring()
@@ -289,6 +285,17 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
         if (this.channelId != channelId && activity is PlayNewChannelInteractor) {
             (activity as PlayNewChannelInteractor).onNewChannel(channelId)
         }
+    }
+
+    private fun inject() {
+        DaggerPlayComponent
+                .builder()
+                .baseAppComponent(
+                        (requireContext().applicationContext as BaseMainApplication).baseAppComponent
+                )
+                .playModule(PlayModule(requireContext()))
+                .build()
+                .inject(this)
     }
 
     //region init components

@@ -9,6 +9,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.VideoAnalyticHelper
@@ -40,18 +41,10 @@ import kotlin.coroutines.CoroutineContext
 /**
  * Created by jegul on 28/04/20
  */
-class PlayYouTubeFragment : BaseDaggerFragment(), PlayYouTubeViewInitializer, PlayFragmentContract {
-
-    companion object {
-
-        fun newInstance(channelId: String): PlayYouTubeFragment {
-            return PlayYouTubeFragment().apply {
-                val bundle = Bundle()
-                bundle.putString(PLAY_KEY_CHANNEL_ID, channelId)
-                arguments = bundle
-            }
-        }
-    }
+class PlayYouTubeFragment @Inject constructor(
+        private val viewModelFactory: ViewModelProvider.Factory,
+        private val dispatchers: CoroutineDispatcherProvider
+): TkpdBaseV4Fragment(), PlayYouTubeViewInitializer, PlayFragmentContract {
 
     private val scope = object : CoroutineScope {
         override val coroutineContext: CoroutineContext
@@ -60,12 +53,6 @@ class PlayYouTubeFragment : BaseDaggerFragment(), PlayYouTubeViewInitializer, Pl
     private val job: Job = SupervisorJob()
 
     private val cornerRadius = 16f.dpToPx()
-
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    @Inject
-    lateinit var dispatchers: CoroutineDispatcherProvider
 
     private var channelId: String = ""
 
@@ -86,17 +73,6 @@ class PlayYouTubeFragment : BaseDaggerFragment(), PlayYouTubeViewInitializer, Pl
         get() = playViewModel.videoPlayer.isYouTube
 
     override fun getScreenName(): String = "Play YouTube"
-
-    override fun initInjector() {
-        DaggerPlayComponent
-                .builder()
-                .baseAppComponent(
-                        (requireContext().applicationContext as BaseMainApplication).baseAppComponent
-                )
-                .playModule(PlayModule(requireContext()))
-                .build()
-                .inject(this)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

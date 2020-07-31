@@ -10,7 +10,7 @@ import dagger.Component
  */
 @PlayScope
 @Component(
-        modules = [PlayModule::class, PlayViewModelModule::class],
+        modules = [PlayModule::class, PlayViewModelModule::class, PlayViewerFragmentModule::class],
         dependencies = [BaseAppComponent::class]
 )
 interface PlayComponent {
