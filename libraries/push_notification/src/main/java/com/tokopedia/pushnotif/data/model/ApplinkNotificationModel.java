@@ -1,4 +1,4 @@
-package com.tokopedia.pushnotif.model;
+package com.tokopedia.pushnotif.data.model;
 
 import java.util.HashMap;
 import java.util.Map;

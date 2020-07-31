@@ -1,7 +1,6 @@
-package com.tokopedia.pushnotif.db.model
+package com.tokopedia.pushnotif.data.model
 
 import android.net.Uri
-import com.tokopedia.pushnotif.model.ApplinkNotificationModel
 
 data class ReviewNotificationModel(
         val applinkNotificationModel: ApplinkNotificationModel = ApplinkNotificationModel(),

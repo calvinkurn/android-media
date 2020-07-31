@@ -1,8 +1,10 @@
-package com.tokopedia.pushnotif
+package com.tokopedia.pushnotif.services
 
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import com.tokopedia.pushnotif.data.constant.Constant
+import com.tokopedia.pushnotif.data.repository.HistoryRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -23,9 +25,9 @@ class DismissBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
         launch {
             try {
                 if (notificationId == 0) {
-                    HistoryNotification.clearAllHistoryNotification(context, notificationType)
+                    HistoryRepository.clearAllHistoryNotification(context, notificationType)
                 } else {
-                    HistoryNotification.clearHistoryNotification(context, notificationType, notificationId)
+                    HistoryRepository.clearHistoryNotification(context, notificationType, notificationId)
                 }
             } catch (ignored: Exception) {
 
