@@ -70,13 +70,7 @@ class PlayYouTubeFragment @Inject constructor(
 
         initView(view)
         initAnalytic()
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        observeVideoPlayer()
-        observeBottomInsetsState()
+        setupObserve()
     }
 
     override fun onPause() {
@@ -106,9 +100,7 @@ class PlayYouTubeFragment @Inject constructor(
     /**
      * YouTube View Component Listener
      */
-    override fun onInitFailure(view: YouTubeViewComponent, result: YouTubeInitializationResult) {
-        TODO("Not yet implemented")
-    }
+    override fun onInitFailure(view: YouTubeViewComponent, result: YouTubeInitializationResult) { }
 
     override fun onEnterFullscreen(view: YouTubeViewComponent) {
         enterFullscreen()
@@ -122,6 +114,9 @@ class PlayYouTubeFragment @Inject constructor(
         handleYouTubeVideoState(state)
     }
 
+    /**
+     * Private methods
+     */
     private fun initAnalytic() {
         videoAnalyticHelper = VideoAnalyticHelper(requireContext(), channelId)
     }
@@ -132,7 +127,29 @@ class PlayYouTubeFragment @Inject constructor(
         }
     }
 
+    private fun enterFullscreen() {
+        if (!orientation.isLandscape)
+            orientationListener.onOrientationChanged(ScreenOrientation.Landscape, isTilting = false)
+    }
+
+    private fun exitFullscreen() {
+        if (!orientation.isPortrait)
+            orientationListener.onOrientationChanged(ScreenOrientation.Portrait, isTilting = false)
+    }
+
+    private fun handleYouTubeVideoState(state: PlayVideoState) {
+        if (isYouTube) videoAnalyticHelper.onNewVideoState(playViewModel.userId, playViewModel.channelType, state)
+    }
+
+    private fun setupObserve() {
+        observeVideoPlayer()
+        observeBottomInsetsState()
+    }
+
     //region observe
+    /**
+     * Observe
+     */
     private fun observeVideoPlayer() {
         playViewModel.observableVideoPlayer.observe(viewLifecycleOwner, Observer {
             if (it is YouTube) {
@@ -154,18 +171,4 @@ class PlayYouTubeFragment @Inject constructor(
         })
     }
     //endregion
-
-    private fun enterFullscreen() {
-        if (!orientation.isLandscape)
-            orientationListener.onOrientationChanged(ScreenOrientation.Landscape, isTilting = false)
-    }
-
-    private fun exitFullscreen() {
-        if (!orientation.isPortrait)
-            orientationListener.onOrientationChanged(ScreenOrientation.Portrait, isTilting = false)
-    }
-
-    private fun handleYouTubeVideoState(state: PlayVideoState) {
-        if (isYouTube) videoAnalyticHelper.onNewVideoState(playViewModel.userId, playViewModel.channelType, state)
-    }
 }
