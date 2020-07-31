@@ -113,6 +113,7 @@
     <string name="contact_us_tokopedia_care">Ke Tokopedia Care</string>
     <string name="contact_us_transaction_details">Detail Transaksi</string>
     <string name="contact_us_tokopedia_care_team">Tim Tokopedia Care</string>
+    <string name="contact_us_ticket_id_prefix">ID: %s</string>
 
     <string-array name="contactus_csat_question">
         <item>Apa yang bisa diperbaiki dari layanan kami?</item>

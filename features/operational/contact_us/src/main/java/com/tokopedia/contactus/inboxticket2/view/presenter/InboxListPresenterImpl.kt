@@ -65,7 +65,7 @@ class InboxListPresenterImpl(private val mUseCase: GetTicketListUseCase,
         launchCatchError(
                 block = {
                     val ticketListResponse = mUseCase.getTicketListResponse(requestParams
-                            ?: mUseCase.getRequestParams(1, 0))
+                            ?: mUseCase.getRequestParams(FIRST_PAGE, ALL))
                     val ticketData = ticketListResponse.ticket?.data
                     when {
                         !ticketData?.ticketItems.isNullOrEmpty() -> {

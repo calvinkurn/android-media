@@ -1,5 +1,6 @@
 package com.tokopedia.contactus.inboxticket2.view.adapter
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -128,6 +129,8 @@ class TicketListAdapter(private val itemList: MutableList<InboxTicketListRespons
         private var layoutItemTicket: ConstraintLayout? = null
         private var isOfficialStore = false
         private var servicePrioritiesBottomSheet: CloseableBottomSheetDialog? = null
+        val utils by lazy { Utils() }
+
         private fun findingViewsId(view: View) {
             tvTicketStatus = view.findViewById(R.id.tv_ticket_status)
             tvTicketTitle = view.findViewById(R.id.tv_ticket_title)
@@ -139,35 +142,33 @@ class TicketListAdapter(private val itemList: MutableList<InboxTicketListRespons
 
         fun bindViewHolder(item: InboxTicketListResponse.Ticket.Data.TicketItem) {
             val mContext = itemView.context
-            val utils = Utils()
-            if (UNREAD.equals(item.readStatus, true)) {
-                layoutItemTicket?.setBackgroundColor(MethodChecker.getColor(mContext, R.color.contact_us_unread_ticket_background))
-                tvTicketTitle?.setWeight(Typography.BOLD)
-            } else if (READ.equals(item.readStatus, true)) {
-                layoutItemTicket?.setBackgroundColor(MethodChecker.getColor(mContext, com.tokopedia.abstraction.R.color.white))
-                tvTicketTitle?.setWeight(Typography.REGULAR)
-            }
-            tvTicketTitle?.text = item.subject
-            ticketId?.text = String.format("ID: %s", item.caseNumber)
-            tvTicketDate?.text = utils.getDateTimeYear(item.lastUpdate ?: "")
-            if (NEW.equals(item.status, true) || OPEN.equals(item.status, true) || SOLVED.equals(item.status, true)) {
-                MethodChecker.setBackground(tvTicketStatus, MethodChecker.getDrawable(mContext, R.drawable.rounded_rect_yellow))
-                tvTicketStatus?.setText(R.string.on_going)
-                tvTicketStatus?.setTextColor(MethodChecker.getColor(mContext, R.color.contact_us_in_process))
-            } else if (CLOSED.equals(item.status, true) && item.needRating == RATING_CLOSED) {
-                MethodChecker.setBackground(tvTicketStatus, MethodChecker.getDrawable(mContext, R.drawable.rounded_rect_grey))
-                tvTicketStatus?.setTextColor(MethodChecker.getColor(mContext, R.color.contact_us_closed))
-                tvTicketStatus?.setText(R.string.closed)
-            } else if (CLOSED.equals(item.status, true) && item.needRating == NEED_RATING) {
-                MethodChecker.setBackground(tvTicketStatus, MethodChecker.getDrawable(mContext, R.drawable.rounded_rect_pink))
-                tvTicketStatus?.setTextColor(MethodChecker.getColor(mContext, R.color.contact_us_need_rating))
-                tvTicketStatus?.setText(R.string.need_rating)
-            }
-            if (item.isOfficialStore) {
+            setTicketTitle(item.subject)
+            setTicketId(item.caseNumber,mContext)
+            setTicketDate(item.lastUpdate)
+            setTicketReadStatus(item.readStatus, mContext)
+            setTicketStatus(item.status, item.needRating, mContext)
+            setTicketPriority(item.isOfficialStore, mContext)
+            layoutItemTicket?.setOnClickListener { clickItem() }
+        }
+
+        private fun setTicketTitle(subject: String?) {
+            tvTicketTitle?.text = subject
+        }
+
+        private fun setTicketId(caseNumber: String?, mContext: Context) {
+            ticketId?.text = String.format(mContext.getString(R.string.contact_us_ticket_id_prefix), caseNumber)
+        }
+
+        private fun setTicketDate(lastUpdate: String?) {
+            tvTicketDate?.text = utils.getDateTimeYear(lastUpdate ?: "")
+        }
+
+        private fun setTicketPriority(officialStore: Boolean, mContext: Context) {
+            if (officialStore) {
                 isOfficialStore = true
                 group?.show()
                 itemView.post {
-                    group?.setAllOnClickListener{
+                    group?.setAllOnClickListener {
                         servicePrioritiesBottomSheet = CloseableBottomSheetDialog.createInstanceRounded(mContext)
                         servicePrioritiesBottomSheet?.setCustomContentView(ServicePrioritiesBottomSheet(mContext, this@TicketItemHolder), "", false)
                         servicePrioritiesBottomSheet?.show()
@@ -177,7 +178,39 @@ class TicketListAdapter(private val itemList: MutableList<InboxTicketListRespons
                 group?.hide()
                 isOfficialStore = false
             }
-            layoutItemTicket?.setOnClickListener { clickItem() }
+        }
+
+        private fun setTicketStatus(status: String?, needRating: Int, mContext: Context) {
+            when {
+                NEW.equals(status, true) || OPEN.equals(status, true) || SOLVED.equals(status, true) -> {
+                    MethodChecker.setBackground(tvTicketStatus, MethodChecker.getDrawable(mContext, R.drawable.rounded_rect_yellow))
+                    tvTicketStatus?.setText(R.string.on_going)
+                    tvTicketStatus?.setTextColor(MethodChecker.getColor(mContext, R.color.contact_us_in_process))
+                }
+                CLOSED.equals(status, true) && needRating == RATING_CLOSED -> {
+                    MethodChecker.setBackground(tvTicketStatus, MethodChecker.getDrawable(mContext, R.drawable.rounded_rect_grey))
+                    tvTicketStatus?.setTextColor(MethodChecker.getColor(mContext, R.color.contact_us_closed))
+                    tvTicketStatus?.setText(R.string.closed)
+                }
+                CLOSED.equals(status, true) && needRating == NEED_RATING -> {
+                    MethodChecker.setBackground(tvTicketStatus, MethodChecker.getDrawable(mContext, R.drawable.rounded_rect_pink))
+                    tvTicketStatus?.setTextColor(MethodChecker.getColor(mContext, R.color.contact_us_need_rating))
+                    tvTicketStatus?.setText(R.string.need_rating)
+                }
+            }
+        }
+
+        private fun setTicketReadStatus(readStatus: String?, mContext :Context) {
+            when {
+                UNREAD.equals(readStatus, true) -> {
+                    layoutItemTicket?.setBackgroundColor(MethodChecker.getColor(mContext, R.color.contact_us_unread_ticket_background))
+                    tvTicketTitle?.setWeight(Typography.BOLD)
+                }
+                READ.equals(readStatus, true) -> {
+                    layoutItemTicket?.setBackgroundColor(MethodChecker.getColor(mContext, com.tokopedia.abstraction.R.color.white))
+                    tvTicketTitle?.setWeight(Typography.REGULAR)
+                }
+            }
         }
 
         private fun clickItem() {
