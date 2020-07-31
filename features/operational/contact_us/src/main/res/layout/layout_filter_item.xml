@@ -33,6 +33,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_default="wrap"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_tick" />
+        app:srcCompat="@drawable/contact_us_ic_tick" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

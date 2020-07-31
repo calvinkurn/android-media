@@ -43,7 +43,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider_rv"
-        app:srcCompat="@drawable/ic_image" />
+        app:srcCompat="@drawable/contact_us_ic_image" />
 
     <EditText
         android:id="@+id/ed_message"
@@ -82,7 +82,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider_rv"
-        app:srcCompat="@drawable/ic_send_button" />
+        app:srcCompat="@drawable/contact_us_ic_send_button" />
 
     <ProgressBar
         android:id="@+id/send_progress"
