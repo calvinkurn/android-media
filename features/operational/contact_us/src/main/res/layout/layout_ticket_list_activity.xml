@@ -130,7 +130,7 @@
             android:paddingLeft="@dimen/dp_50"
             android:paddingRight="@dimen/dp_50"
             android:paddingTop="@dimen/dp_12"
-            android:text="@string/hubungi_kami2"
+            android:text="@string/contact_us_show_all_ticket"
             android:textColor="@color/white"
             android:visibility="gone"
             app:layout_constraintLeft_toLeftOf="parent"
