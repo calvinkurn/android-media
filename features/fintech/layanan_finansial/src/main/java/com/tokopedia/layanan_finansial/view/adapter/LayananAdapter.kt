@@ -18,15 +18,21 @@ import com.tokopedia.layanan_finansial.view.Analytics.EVENT_PROMO_VIEW
 import com.tokopedia.layanan_finansial.view.Analytics.LAYANAN_FINANSIAL_CATEGORY
 import com.tokopedia.layanan_finansial.view.Analytics.LAYANAN_FINANSILA_VIEW_ACTION
 import com.tokopedia.layanan_finansial.view.Analytics.LAYANAN_FINANSILA_click_ACTION
+import com.tokopedia.layanan_finansial.view.customview.LayananSectionView
 import com.tokopedia.layanan_finansial.view.models.LayananListItem
 import kotlinx.android.synthetic.main.layanan_card_item.view.*
 import java.util.*
 import kotlin.collections.HashMap
 
-class LayananAdapter(private val list: List<LayananListItem>) : RecyclerView.Adapter<LayananAdapter.LayananViewHolder>() {
+class LayananAdapter(private val list: List<LayananListItem>, private val type: String) : RecyclerView.Adapter<LayananAdapter.LayananViewHolder>() {
 
 
    inner class LayananViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+       init {
+           if (type.equals(LayananSectionView.VERTICAL)) {
+               itemView.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
+           }
+       }
        fun setData(layananListItem: LayananListItem) {
            itemView.apply {
                ImageLoader.LoadImage(icon,layananListItem.iconUrl)
