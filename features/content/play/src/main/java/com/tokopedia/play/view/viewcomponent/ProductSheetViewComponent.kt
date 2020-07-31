@@ -1,6 +1,5 @@
-package com.tokopedia.play.ui.productsheet
+package com.tokopedia.play.view.viewcomponent
 
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -15,7 +14,6 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
-import com.tokopedia.play.component.UIView
 import com.tokopedia.play.ui.productsheet.adapter.MerchantVoucherAdapter
 import com.tokopedia.play.ui.productsheet.adapter.ProductLineAdapter
 import com.tokopedia.play.ui.productsheet.itemdecoration.MerchantVoucherItemDecoration
@@ -25,64 +23,62 @@ import com.tokopedia.play.view.uimodel.ProductLineUiModel
 import com.tokopedia.play.view.uimodel.ProductPlaceholderUiModel
 import com.tokopedia.play.view.uimodel.ProductSheetUiModel
 import com.tokopedia.play.view.uimodel.VoucherPlaceholderUiModel
+import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 
 /**
- * Created by jegul on 02/03/20
+ * Created by jegul on 31/07/20
  */
-class ProductSheetView(
+class ProductSheetViewComponent(
         container: ViewGroup,
         private val listener: Listener
-) : UIView(container) {
+) : ViewComponent(container, R.id.cl_product_sheet) {
 
-    private val view: View = LayoutInflater.from(container.context).inflate(R.layout.view_product_sheet, container, true)
-            .findViewById(R.id.cl_product_sheet)
+    private val clProductContent: ConstraintLayout = findViewById(R.id.cl_product_content)
+    private val tvSheetTitle: TextView = findViewById(R.id.tv_sheet_title)
+    private val rvProductList: RecyclerView = findViewById(R.id.rv_product_list)
+    private val rvVoucherList: RecyclerView = findViewById(R.id.rv_voucher_list)
+    private val vBottomOverlay: View = findViewById(R.id.v_bottom_overlay)
 
-    private val clProductContent: ConstraintLayout = view.findViewById(R.id.cl_product_content)
-    private val tvSheetTitle: TextView = view.findViewById(R.id.tv_sheet_title)
-    private val rvProductList: RecyclerView = view.findViewById(R.id.rv_product_list)
-    private val rvVoucherList: RecyclerView = view.findViewById(R.id.rv_voucher_list)
-    private val vBottomOverlay: View = view.findViewById(R.id.v_bottom_overlay)
+    private val globalError: GlobalError = findViewById(R.id.global_error_product)
 
-    private val globalError: GlobalError = view.findViewById(R.id.global_error_product)
-
-    private val clProductEmpty: ConstraintLayout = view.findViewById(R.id.cl_product_empty)
-    private val btnProductEmpty: UnifyButton = view.findViewById(R.id.btn_action_product_empty)
+    private val clProductEmpty: ConstraintLayout = findViewById(R.id.cl_product_empty)
+    private val btnProductEmpty: UnifyButton = findViewById(R.id.btn_action_product_empty)
 
     private val productLineAdapter = ProductLineAdapter(object : ProductLineViewHolder.Listener {
         override fun onBuyProduct(product: ProductLineUiModel) {
-            listener.onBuyButtonClicked(this@ProductSheetView, product)
+            listener.onBuyButtonClicked(this@ProductSheetViewComponent, product)
 
         }
         override fun onAtcProduct(product: ProductLineUiModel) {
-            listener.onAtcButtonClicked(this@ProductSheetView, product)
+            listener.onAtcButtonClicked(this@ProductSheetViewComponent, product)
         }
 
         override fun onClickProductCard(product: ProductLineUiModel, position: Int) {
-            listener.onProductCardClicked(this@ProductSheetView, product, position)
+            listener.onProductCardClicked(this@ProductSheetViewComponent, product, position)
         }
     })
     private val voucherAdapter = MerchantVoucherAdapter()
 
-    private val bottomSheetBehavior = BottomSheetBehavior.from(view)
+    private val bottomSheetBehavior = BottomSheetBehavior.from(rootView)
 
     init {
-        view.findViewById<ImageView>(R.id.iv_close)
+        findViewById<ImageView>(R.id.iv_close)
                 .setOnClickListener {
                     listener.onCloseButtonClicked(this)
                 }
 
         rvProductList.apply {
-            layoutManager = LinearLayoutManager(view.context, RecyclerView.VERTICAL, false)
+            layoutManager = LinearLayoutManager(rvProductList.context, RecyclerView.VERTICAL, false)
             adapter = productLineAdapter
-            addItemDecoration(ProductLineItemDecoration(view.context))
+            addItemDecoration(ProductLineItemDecoration(rvProductList.context))
         }
 
         rvVoucherList.apply {
-            layoutManager = LinearLayoutManager(view.context, RecyclerView.HORIZONTAL, false)
+            layoutManager = LinearLayoutManager(rvVoucherList.context, RecyclerView.HORIZONTAL, false)
             adapter = voucherAdapter
-            addItemDecoration(MerchantVoucherItemDecoration(view.context))
+            addItemDecoration(MerchantVoucherItemDecoration(rvVoucherList.context))
         }
 
         rvVoucherList.apply {
@@ -91,13 +87,13 @@ class ProductSheetView(
                     if (newState == RecyclerView.SCROLL_STATE_SETTLING &&
                             layoutManager is LinearLayoutManager) {
                         val llManager = layoutManager as LinearLayoutManager
-                        listener.onVoucherScrolled(llManager.findLastVisibleItemPosition())
+                        listener.onVoucherScrolled(this@ProductSheetViewComponent, llManager.findLastVisibleItemPosition())
                     }
                 }
             })
         }
 
-        ViewCompat.setOnApplyWindowInsetsListener(view) { v, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, insets ->
 
             vBottomOverlay.layoutParams = vBottomOverlay.layoutParams.apply {
                 height = insets.systemWindowInsetBottom
@@ -108,8 +104,6 @@ class ProductSheetView(
         }
     }
 
-    override val containerId: Int = view.id
-
     override fun show() {
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
     }
@@ -118,17 +112,17 @@ class ProductSheetView(
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
     }
 
-    internal fun showWithHeight(height: Int) {
-        if (view.height != height) {
-            val layoutParams = view.layoutParams as CoordinatorLayout.LayoutParams
+    fun showWithHeight(height: Int) {
+        if (rootView.height != height) {
+            val layoutParams = rootView.layoutParams as CoordinatorLayout.LayoutParams
             layoutParams.height = height
-            view.layoutParams = layoutParams
+            rootView.layoutParams = layoutParams
         }
 
         show()
     }
 
-    internal fun setProductSheet(model: ProductSheetUiModel) {
+    fun setProductSheet(model: ProductSheetUiModel) {
         showContent(true)
 
         if (isProductDecreased(model.productList.size)) showToasterProductUpdated()
@@ -141,12 +135,12 @@ class ProductSheetView(
         else rvVoucherList.show()
     }
 
-    internal fun showPlaceholder() {
+    fun showPlaceholder() {
         showContent(true)
         setProductSheet(getPlaceholderModel())
     }
 
-    internal fun showError(isConnectionError: Boolean, onError: () -> Unit) {
+    fun showError(isConnectionError: Boolean, onError: () -> Unit) {
         showContent(false)
 
         globalError.setActionClickListener {
@@ -158,13 +152,13 @@ class ProductSheetView(
         )
     }
 
-    internal fun showEmpty(partnerId: Long) {
+    fun showEmpty(partnerId: Long) {
         showContent(false)
         globalError.hide()
         clProductEmpty.show()
 
         btnProductEmpty.setOnClickListener {
-            listener.onEmptyButtonClicked(partnerId)
+            listener.onEmptyButtonClicked(this@ProductSheetViewComponent, partnerId)
         }
     }
 
@@ -198,8 +192,8 @@ class ProductSheetView(
 
     private fun showToasterProductUpdated() {
         Toaster.make(
-                view,
-                view.context.getString(R.string.play_product_updated),
+                rootView,
+                getString(R.string.play_product_updated),
                 type = Toaster.TYPE_NORMAL)
     }
 
@@ -208,11 +202,11 @@ class ProductSheetView(
     }
 
     interface Listener {
-        fun onCloseButtonClicked(view: ProductSheetView)
-        fun onBuyButtonClicked(view: ProductSheetView, product: ProductLineUiModel)
-        fun onAtcButtonClicked(view: ProductSheetView, product: ProductLineUiModel)
-        fun onProductCardClicked(view: ProductSheetView, product: ProductLineUiModel, position: Int)
-        fun onVoucherScrolled(lastPositionViewed: Int)
-        fun onEmptyButtonClicked(partnerId: Long)
+        fun onCloseButtonClicked(view: ProductSheetViewComponent)
+        fun onBuyButtonClicked(view: ProductSheetViewComponent, product: ProductLineUiModel)
+        fun onAtcButtonClicked(view: ProductSheetViewComponent, product: ProductLineUiModel)
+        fun onProductCardClicked(view: ProductSheetViewComponent, product: ProductLineUiModel, position: Int)
+        fun onVoucherScrolled(view: ProductSheetViewComponent, lastPositionViewed: Int)
+        fun onEmptyButtonClicked(view: ProductSheetViewComponent, partnerId: Long)
     }
 }
