@@ -36,8 +36,11 @@ import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
+import com.tokopedia.test.application.environment.callback.ResponseTotalSizeInterface;
 import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface;
 import com.tokopedia.test.application.environment.interceptor.TopAdsDetectorInterceptor;
+import com.tokopedia.test.application.environment.interceptor.size.SizeInterceptor;
+import com.tokopedia.test.application.environment.interceptor.size.SizeModelConfig;
 import com.tokopedia.test.application.util.DeviceConnectionInfo;
 import com.tokopedia.test.application.util.DeviceInfo;
 import com.tokopedia.test.application.util.DeviceScreenInfo;
@@ -57,11 +60,18 @@ import okhttp3.Interceptor;
 import okhttp3.Response;
 
 public class InstrumentationTestApp extends BaseMainApplication
-        implements AbstractionRouter, TkpdCoreRouter, NetworkRouter, ApplinkRouter, TopAdsVerificatorInterface {
+        implements AbstractionRouter,
+        TkpdCoreRouter,
+        NetworkRouter,
+        ApplinkRouter,
+        TopAdsVerificatorInterface,
+        ResponseTotalSizeInterface {
     public static final String MOCK_ADS_ID = "2df9e57a-849d-4259-99ea-673107469eef";
     public static final String MOCK_FINGERPRINT_HASH = "eyJjYXJyaWVyIjoiQW5kcm9pZCIsImN1cnJlbnRfb3MiOiI4LjAuMCIsImRldmljZV9tYW51ZmFjdHVyZXIiOiJHb29nbGUiLCJkZXZpY2VfbW9kZWwiOiJBbmRyb2lkIFNESyBidWlsdCBmb3IgeDg2IiwiZGV2aWNlX25hbWUiOiJBbmRyb2lkIFNESyBidWlsdCBmb3IgeDg2IiwiZGV2aWNlX3N5c3RlbSI6ImFuZHJvaWQiLCJpc19lbXVsYXRvciI6dHJ1ZSwiaXNfamFpbGJyb2tlbl9yb290ZWQiOmZhbHNlLCJpc190YWJsZXQiOmZhbHNlLCJsYW5ndWFnZSI6ImVuX1VTIiwibG9jYXRpb25fbGF0aXR1ZGUiOiItNi4xNzU3OTQiLCJsb2NhdGlvbl9sb25naXR1ZGUiOiIxMDYuODI2NDU3Iiwic2NyZWVuX3Jlc29sdXRpb24iOiIxMDgwLDE3OTQiLCJzc2lkIjoiXCJBbmRyb2lkV2lmaVwiIiwidGltZXpvbmUiOiJHTVQrNyIsInVzZXJfYWdlbnQiOiJEYWx2aWsvMi4xLjAgKExpbnV4OyBVOyBBbmRyb2lkIDguMC4wOyBBbmRyb2lkIFNESyBidWlsdCBmb3IgeDg2IEJ1aWxkL09TUjEuMTcwOTAxLjA0MykifQ==";
     public static final String MOCK_DEVICE_ID="cx68b1CtPII:APA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR";
     private int topAdsProductCount = 0;
+    private Long totalSizeInKb = 0L;
+    private List<Interceptor> testInterceptors = new ArrayList<>();
 
     @Override
     public void onCreate() {
@@ -97,11 +107,25 @@ public class InstrumentationTestApp extends BaseMainApplication
 
     public void enableTopAdsDetector() {
         if (GlobalConfig.DEBUG) {
-            List<Interceptor> testInterceptors = new ArrayList<>();
             testInterceptors.add(new TopAdsDetectorInterceptor(new Function1<Integer, Unit>() {
                 @Override
                 public Unit invoke(Integer newCount) {
                     topAdsProductCount+=newCount;
+                    return null;
+                }
+            }));
+
+            GraphqlClient.reInitRetrofitWithInterceptors(testInterceptors, this);
+        }
+    }
+
+    public void enableSizeDetector(SizeModelConfig sizeModelConfig) {
+        if (GlobalConfig.DEBUG) {
+            testInterceptors.add(new SizeInterceptor(sizeModelConfig, new Function1<Long, Unit>() {
+                @Override
+                public Unit invoke(Long bytes) {
+                    Long kbValue = bytes/1000;
+                    totalSizeInKb+=kbValue;
                     return null;
                 }
             }));
@@ -143,6 +167,11 @@ public class InstrumentationTestApp extends BaseMainApplication
     @Override
     public ApplinkDelegate applinkDelegate() {
         return null;
+    }
+
+    @Override
+    public Long getResponseTotalSize() {
+        return totalSizeInKb;
     }
 
     public static class DummyAppsFlyerAnalytics extends ContextAnalytics {
