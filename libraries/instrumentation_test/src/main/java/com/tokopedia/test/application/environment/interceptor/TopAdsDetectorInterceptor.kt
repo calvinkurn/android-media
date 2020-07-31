@@ -10,7 +10,7 @@ import java.io.IOException
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
-class TopAdsDetectorInterceptor(val adder: (Int) -> Unit) : Interceptor {
+class TopAdsDetectorInterceptor(private val adder: (Int) -> Unit) : Interceptor {
 
     val topAdsInEachRequest = hashMapOf<String, Int>()
 
