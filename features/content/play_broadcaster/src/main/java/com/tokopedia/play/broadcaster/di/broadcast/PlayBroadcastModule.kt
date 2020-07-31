@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.pusher.PlayPusher
 import com.tokopedia.play.broadcaster.pusher.PlayPusherBuilder
 import com.tokopedia.play.broadcaster.socket.PlayBroadcastSocket
@@ -12,7 +13,6 @@ import com.tokopedia.play.broadcaster.socket.PlayBroadcastSocket.Companion.KEY_G
 import com.tokopedia.play.broadcaster.socket.PlayBroadcastSocketImpl
 import com.tokopedia.play.broadcaster.util.coroutine.CommonCoroutineDispatcherProvider
 import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
-import com.tokopedia.play.broadcaster.util.permission.PlayPermissionUtil
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -48,12 +48,14 @@ class PlayBroadcastModule(val mContext: Context) {
     }
 
     @Provides
-    fun providePlayPermissionUtil(): PlayPermissionUtil {
-        return PlayPermissionUtil(mContext)
-    }
-
-    @Provides
     fun provideGraphQLRepository(): GraphqlRepository {
         return GraphqlInteractor.getInstance().graphqlRepository
     }
+
+    @PlayBroadcastScope
+    @Provides
+    fun providePlayBroadcastAnalytic(userSession: UserSessionInterface): PlayBroadcastAnalytic {
+        return PlayBroadcastAnalytic(userSession)
+    }
+
 }

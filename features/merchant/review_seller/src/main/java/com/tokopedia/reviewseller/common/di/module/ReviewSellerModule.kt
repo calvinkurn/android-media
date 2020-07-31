@@ -9,8 +9,6 @@ import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.reviewseller.common.di.scope.ReviewSellerScope
 import com.tokopedia.reviewseller.common.util.CoroutineDispatcherProvider
 import com.tokopedia.reviewseller.common.util.CoroutineDispatcherProviderImpl
-import com.tokopedia.reviewseller.feature.reviewlist.analytics.ProductReviewTracking
-import com.tokopedia.reviewseller.feature.reviewlist.di.module.ReviewProductListViewModelModule
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -18,7 +16,7 @@ import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
-@Module(includes = [ReviewProductListViewModelModule::class])
+@Module
 @ReviewSellerScope
 class ReviewSellerModule {
 
@@ -48,12 +46,6 @@ class ReviewSellerModule {
     @Provides
     fun getCoroutineDispatcherProvider(): CoroutineDispatcherProvider {
         return CoroutineDispatcherProviderImpl
-    }
-
-    @ReviewSellerScope
-    @Provides
-    fun provideProductReviewTracking(): ProductReviewTracking {
-        return ProductReviewTracking()
     }
 
 }

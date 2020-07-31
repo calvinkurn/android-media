@@ -2,8 +2,6 @@ package com.tokopedia.logisticorder.adapter;
 
 import android.content.Context;
 import android.graphics.Color;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -12,9 +10,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.tokopedia.logisticorder.R;
+import com.tokopedia.logisticorder.uimodel.TrackingHistoryUiModel;
 import com.tokopedia.logisticorder.utils.DateUtil;
-import com.tokopedia.logisticorder.viewmodel.TrackingHistoryUiModel;
 
 import java.util.List;
 

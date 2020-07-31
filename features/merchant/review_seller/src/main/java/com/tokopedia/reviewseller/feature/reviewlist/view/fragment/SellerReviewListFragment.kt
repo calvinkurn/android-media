@@ -52,7 +52,6 @@ class SellerReviewListFragment : BaseDaggerFragment() {
     private fun initTabReview(view: View, tabLayout: TabLayout) {
         viewPager = view.findViewById(R.id.pager_review)
         tabList.add(ReviewFragmentAdapter.ReviewFragmentItem(RatingProductFragment()))
-        tabList.add(ReviewFragmentAdapter.ReviewFragmentItem(InboxReviewFragment()))
 
         fragmentAdapter = ReviewFragmentAdapter(childFragmentManager)
         fragmentAdapter?.setItemList(tabList)
