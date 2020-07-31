@@ -29,6 +29,7 @@ import com.tokopedia.gamification.di.ActivityContextModule
 import com.tokopedia.gamification.giftbox.analytics.GtmEvents
 import com.tokopedia.gamification.giftbox.data.di.GAMI_GIFT_DAILY_TRACE_PAGE
 import com.tokopedia.gamification.giftbox.data.di.component.DaggerGiftBoxComponent
+import com.tokopedia.gamification.giftbox.data.di.modules.AppModule
 import com.tokopedia.gamification.giftbox.data.di.modules.PltModule
 import com.tokopedia.gamification.giftbox.data.entities.*
 import com.tokopedia.gamification.giftbox.presentation.fragments.TokenUserState.Companion.ACTIVE
@@ -85,6 +86,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         context?.let {
             val component = DaggerGiftBoxComponent.builder()
                     .activityContextModule(ActivityContextModule(it))
+                    .appModule(AppModule((context as AppCompatActivity).application))
                     .build()
             component.inject(this)
 
@@ -724,7 +726,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     }
 
     private fun fadeInActiveStateViews(frontImageUrl: String, imageBgUrl: String, lidImages: List<String>) {
-        giftBoxDailyView.loadFiles(tokenUserState, frontImageUrl, imageBgUrl, lidImages, imageCallback = {
+        giftBoxDailyView.loadFiles(tokenUserState, frontImageUrl, imageBgUrl, lidImages,viewLifecycleOwner, imageCallback = {
             giftBoxDailyView.imagesLoaded.lazySet(0)
             if (it) {
                 setPositionOfViewsAtBoxOpen(tokenUserState)
