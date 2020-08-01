@@ -95,7 +95,6 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sah_seller_home)
 
-        window.decorView.setBackgroundColor(Color.WHITE)
         setupToolbar()
         setupStatusBar()
         setupNavigator()
@@ -269,6 +268,13 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         showToolbar(pageType)
         setCurrentFragmentType(pageType)
         resetPages(page)
+
+        window.decorView.setBackgroundColor(
+                if (pageType == FragmentType.HOME) {
+                    Color.DKGRAY
+                } else {
+                    Color.WHITE
+                })
 
         navigator?.showPage(pageType)
         trackClickBottomNavigation(trackingAction)
