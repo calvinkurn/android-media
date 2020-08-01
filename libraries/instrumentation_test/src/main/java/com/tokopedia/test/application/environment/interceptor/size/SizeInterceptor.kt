@@ -5,11 +5,14 @@ import com.tokopedia.test.application.environment.interceptor.size.SizeModelConf
 import com.tokopedia.test.application.environment.interceptor.size.SizeModelConfig.Companion.FIND_BY_QUERY_NAME
 import okhttp3.*
 import okio.Buffer
-import org.json.JSONArray
-import org.json.JSONObject
 import java.io.IOException
 
-class SizeInterceptor(private val sizeModelConfig: SizeModelConfig, private val adder: (Long) -> Unit) : Interceptor {
+class SizeInterceptor(private val sizeModelConfig: SizeModelConfig, private val adder: (Int) -> Unit) : Interceptor {
+
+    companion object {
+        const val KEY = "SizeInterceptor"
+    }
+    val sizeInEachRequest = hashMapOf<String, Int>()
 
     override fun intercept(chain: Interceptor.Chain): Response {
         if (BuildConfig.DEBUG) {
@@ -21,9 +24,14 @@ class SizeInterceptor(private val sizeModelConfig: SizeModelConfig, private val 
 
                 sizeModelConfig.getResponseList().forEach {
                     if (it.value.findType == FIND_BY_CONTAINS || it.value.findType == FIND_BY_QUERY_NAME) {
-                        adder.invoke(response.body()?.contentLength()?:0)
+                        if (!sizeInEachRequest.containsKey(it.key)) {
+                            val size = response.body()?.bytes()?.size?:0
+                            adder.invoke(size)
+                            sizeInEachRequest[it.key] = size
+                        }
                     }
                 }
+
             } catch (e: IOException) {
                 "did not work"
             }

@@ -11,6 +11,9 @@ import java.io.IOException
 
 class MockInterceptor(val responseConfig: MockModelConfig) : Interceptor {
 
+    companion object {
+        const val KEY = "MockInterceptor"
+    }
     override fun intercept(chain: Interceptor.Chain): Response {
         if (BuildConfig.DEBUG) {
             try {
