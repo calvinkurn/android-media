@@ -12,6 +12,9 @@ import java.util.regex.Pattern
 
 class TopAdsDetectorInterceptor(private val adder: (Int) -> Unit) : Interceptor {
 
+    companion object {
+        const val KEY = "TopAdsInterceptor"
+    }
     val topAdsInEachRequest = hashMapOf<String, Int>()
 
     override fun intercept(chain: Interceptor.Chain): Response {

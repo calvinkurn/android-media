@@ -22,7 +22,7 @@ object PerformanceDataFileUtils {
                         "${pltPerformanceData.networkRequestDuration}," +
                         "${pltPerformanceData.renderPageDuration}," +
                         "${pltPerformanceData.overallDuration}," +
-                        "$dataSourceType" +
+                        "$dataSourceType," +
                         "$totalResponseSize\n")
 
         val perfReport = File(perfDataDir, "report.csv")
@@ -64,7 +64,7 @@ object PerformanceDataFileUtils {
         val renderPagePlt = "Render Page Duration (ms)"
         val overallPlt = "Page Load Time (FPI) (ms)"
         val datasource = "Data source"
-        val totalResponseSize = "Total Response Size (kb)"
+        val totalResponseSize = "Total Response Size (bytes)"
 
         val allframes = "All Frames"
         val jankyframes = "Janky Frames"
