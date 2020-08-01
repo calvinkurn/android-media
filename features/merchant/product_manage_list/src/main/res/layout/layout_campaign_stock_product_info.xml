@@ -5,10 +5,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/transparent"
-    android:layout_marginLeft="@dimen/product_manage_campaign_stock_horizontal_margin"
-    android:layout_marginStart="@dimen/product_manage_campaign_stock_horizontal_margin"
-    android:layout_marginRight="@dimen/product_manage_campaign_stock_horizontal_margin"
-    android:layout_marginEnd="@dimen/product_manage_campaign_stock_horizontal_margin"
+    android:paddingLeft="@dimen/product_manage_campaign_stock_horizontal_margin"
+    android:paddingStart="@dimen/product_manage_campaign_stock_horizontal_margin"
+    android:paddingRight="@dimen/product_manage_campaign_stock_horizontal_margin"
+    android:paddingEnd="@dimen/product_manage_campaign_stock_horizontal_margin"
     android:paddingTop="@dimen/layout_lvl2"
     android:paddingBottom="@dimen/layout_lvl2">
 

@@ -2,6 +2,7 @@ package com.tokopedia.product.manage.feature.campaignstock.ui.fragment
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -40,6 +41,7 @@ import com.tokopedia.product.manage.feature.quickedit.variant.presentation.data.
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.android.synthetic.main.activity_campaign_stock.*
 import kotlinx.android.synthetic.main.fragment_campaign_stock.*
 import kotlinx.android.synthetic.main.layout_campaign_stock_product_info.view.*
 import javax.inject.Inject
@@ -121,15 +123,6 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
         }
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == android.R.id.home) {
-            isVariant?.run {
-                ProductManageTracking.eventClickCloseStockAllocation(this)
-            }
-        }
-        return super.onOptionsItemSelected(item)
-    }
-
     override fun onTotalStockChanged(totalStock: Int) {
         mViewModel.updateNonVariantStockCount(totalStock)
     }
@@ -187,6 +180,7 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
 
     private fun setupView() {
         setupButtonOnClick()
+        setupHeader()
         shopId?.let { shopId ->
             productIds?.let { productIds ->
                 mViewModel.setShopId(shopId)
@@ -204,6 +198,18 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
                 isVariant?.run {
                     ProductManageTracking.eventClickAllocationSaveStock(this, isMainStock)
                 }
+            }
+        }
+    }
+
+    private fun setupHeader() {
+        header_campaign_stock?.run {
+            setBackgroundColor(Color.TRANSPARENT)
+            setNavigationOnClickListener {
+                isVariant?.run {
+                    ProductManageTracking.eventClickCloseStockAllocation(this)
+                }
+                activity?.onBackPressed()
             }
         }
     }

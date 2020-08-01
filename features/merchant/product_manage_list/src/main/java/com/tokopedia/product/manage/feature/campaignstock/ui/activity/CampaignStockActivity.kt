@@ -13,7 +13,6 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.kotlin.extensions.view.setStatusBarColor
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.campaignstock.ui.fragment.CampaignStockFragment
-import kotlinx.android.synthetic.main.activity_campaign_stock.*
 import timber.log.Timber
 
 class CampaignStockActivity : BaseSimpleActivity() {
@@ -53,7 +52,6 @@ class CampaignStockActivity : BaseSimpleActivity() {
     private fun setupView() {
         window.decorView.setBackgroundColor(Color.WHITE)
         setupStatusBarTransparent()
-        setupHeader()
     }
 
     private fun setupStatusBarTransparent() {
@@ -66,14 +64,6 @@ class CampaignStockActivity : BaseSimpleActivity() {
         }
     }
 
-    private fun setupHeader() {
-        header_campaign_stock?.run {
-            setBackgroundColor(Color.TRANSPARENT)
-            setNavigationOnClickListener {
-                onBackPressed()
-            }
-        }
-    }
 
     private fun setupApplinkAttribute() {
         intent?.data?.let { uri ->
