@@ -42,22 +42,7 @@ class UohListModule {
 
     @UohListScope
     @Provides
-    fun provideUohGetUnifiedOrderHistoryUseCase(graphqlRepository: GraphqlRepository): com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase = com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase(graphqlRepository)
-
-    /*@Provides
-    @UohListScope
-    @Named("recommendationQuery")
-    fun provideRecommendationRawQuery(@ApplicationContext context: Context): String? {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.query_recommendation_widget)
-    }*/
-
-    /*@Provides
-    @UohListScope
-    fun provideGetRecommendationUseCase(@Named("recommendationQuery") recomQuery: String?,
-                                        graphqlUseCase: com.tokopedia.graphql.domain.GraphqlUseCase?,
-                                        userSessionInterface: UserSessionInterface?): GetRecommendationUseCase? {
-        return GetRecommendationUseCase(recomQuery!!, graphqlUseCase!!, userSessionInterface!!)
-    }*/
+    fun provideUohGetUnifiedOrderHistoryUseCase(graphqlRepository: GraphqlRepository): GetRecommendationUseCase = GetRecommendationUseCase(graphqlRepository)
 
     @UohListScope
     @Provides

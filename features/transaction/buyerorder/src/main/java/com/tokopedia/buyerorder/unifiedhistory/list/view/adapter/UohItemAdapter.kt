@@ -5,17 +5,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.buyerorder.R
-import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.EMPTY_TYPE
-import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ORDER_LIST_TYPE
-import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.RECOMMENDATION_TITLE_TYPE
-import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.RECOMMENDATION_TYPE
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.TYPE_EMPTY
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.TYPE_LOADER
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.TYPE_ORDER_LIST
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.TYPE_RECOMMENDATION_TITLE
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.TYPE_RECOMMENDATION_ITEM
 import com.tokopedia.buyerorder.unifiedhistory.list.data.model.UohListOrder
 import com.tokopedia.buyerorder.unifiedhistory.list.data.model.UohTypeData
-import com.tokopedia.buyerorder.unifiedhistory.list.view.adapter.viewholder.UohEmptyStateViewHolder
-import com.tokopedia.buyerorder.unifiedhistory.list.view.adapter.viewholder.UohOrderListViewHolder
-import com.tokopedia.buyerorder.unifiedhistory.list.view.adapter.viewholder.UohRecommendationItemViewHolder
-import com.tokopedia.buyerorder.unifiedhistory.list.view.adapter.viewholder.UohRecommendationTitleViewHolder
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.buyerorder.unifiedhistory.list.view.adapter.viewholder.*
+import com.tokopedia.buyerorder.unifiedhistory.list.view.fragment.UohListFragment
 
 /**
  * Created by fwidjaja on 22/07/20.
@@ -23,34 +21,31 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 class UohItemAdapter : RecyclerView.Adapter<UohItemAdapter.BaseViewHolder<*>>() {
     var listTypeData = mutableListOf<UohTypeData>()
     private var actionListener: ActionListener? = null
-    private var isEmptyState: Boolean = false
-    private var isLoading = false
 
     companion object {
-        const val LAYOUT_ORDER_LIST = 0
-        const val LAYOUT_EMPTY_STATE = 1
-        const val LAYOUT_RECOMMENDATION_TITLE = 2
-        const val LAYOUT_RECOMMENDATION_LIST = 3
+        const val LAYOUT_LOADER = 0
+        const val LAYOUT_ORDER_LIST = 1
+        const val LAYOUT_EMPTY_STATE = 2
+        const val LAYOUT_RECOMMENDATION_TITLE = 3
+        const val LAYOUT_RECOMMENDATION_LIST = 4
     }
 
     interface ActionListener {
-        fun onShowBottomSheetInfo(title: String, resIdDesc: Int)
-        fun onTextCopied(label: String, str: String)
-        fun onInvalidResiUpload(awbUploadUrl: String)
-        fun onDialPhone(strPhoneNo: String)
-        fun onShowBookingCode(bookingCode: String, bookingType: String)
-        fun onShowBuyerRequestCancelReasonBottomSheet()
-        fun onSeeInvoice(invoiceUrl: String)
-        fun onCopiedInvoice(invoice: String, str: String)
-        fun onClickProduct(productId: Int)
-        fun onCopiedAddress(address: String, str: String)
+        fun doFinishOrder()
+        fun onKebabMenuClicked(listDotMenu: List<UohListOrder.Data.UohOrders.Order.Metadata.DotMenu>)
+        fun onListItemClicked(verticalCategory: String, verticalId: String, upstream: String)
+        fun onActionButtonClicked(url: String)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<*> {
         return when (viewType) {
+            LAYOUT_LOADER -> {
+                val view = LayoutInflater.from(parent.context).inflate(R.layout.uoh_loader_item, parent, false)
+                UohLoaderItemViewHolder(view)
+            }
             LAYOUT_ORDER_LIST -> {
                 val view = LayoutInflater.from(parent.context).inflate(R.layout.uoh_list_item, parent, false)
-                UohOrderListViewHolder(view, isLoading)
+                UohOrderListViewHolder(view, actionListener)
             }
             LAYOUT_EMPTY_STATE -> {
                 val view = LayoutInflater.from(parent.context).inflate(R.layout.uoh_empty_state, parent, false)
@@ -74,10 +69,11 @@ class UohItemAdapter : RecyclerView.Adapter<UohItemAdapter.BaseViewHolder<*>>() 
 
     override fun getItemViewType(position: Int): Int {
         return when (listTypeData[position].typeLayout) {
-            ORDER_LIST_TYPE -> LAYOUT_ORDER_LIST
-            EMPTY_TYPE -> LAYOUT_EMPTY_STATE
-            RECOMMENDATION_TITLE_TYPE -> LAYOUT_RECOMMENDATION_TITLE
-            RECOMMENDATION_TYPE -> LAYOUT_RECOMMENDATION_LIST
+            TYPE_LOADER -> LAYOUT_LOADER
+            TYPE_ORDER_LIST -> LAYOUT_ORDER_LIST
+            TYPE_EMPTY -> LAYOUT_EMPTY_STATE
+            TYPE_RECOMMENDATION_TITLE -> LAYOUT_RECOMMENDATION_TITLE
+            TYPE_RECOMMENDATION_ITEM -> LAYOUT_RECOMMENDATION_LIST
             else -> throw IllegalArgumentException("Invalid view type")
         }
     }
@@ -105,20 +101,25 @@ class UohItemAdapter : RecyclerView.Adapter<UohItemAdapter.BaseViewHolder<*>>() 
     }
 
     fun showLoader() {
-        isLoading = true
+        listTypeData.clear()
+        for (x in 0 until 5) {
+            listTypeData.add(UohTypeData("", TYPE_LOADER))
+        }
         notifyDataSetChanged()
     }
 
     fun addList(list: List<UohTypeData>) {
-        isLoading = false
         listTypeData.clear()
         listTypeData.addAll(list)
         notifyDataSetChanged()
     }
 
     fun appendList(list: List<UohTypeData>) {
-        isLoading = false
         listTypeData.addAll(list)
         notifyDataSetChanged()
+    }
+
+    fun setActionListener(fragment: UohListFragment) {
+        this.actionListener = fragment
     }
 }

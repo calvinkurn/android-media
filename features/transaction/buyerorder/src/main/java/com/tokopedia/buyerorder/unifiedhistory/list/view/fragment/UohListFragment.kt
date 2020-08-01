@@ -33,7 +33,6 @@ import com.tokopedia.buyerorder.unifiedhistory.list.di.DaggerUohListComponent
 import com.tokopedia.buyerorder.unifiedhistory.list.view.adapter.UohBottomSheetKebabMenuAdapter
 import com.tokopedia.buyerorder.unifiedhistory.list.view.adapter.UohBottomSheetOptionAdapter
 import com.tokopedia.buyerorder.unifiedhistory.list.view.adapter.UohItemAdapter
-import com.tokopedia.buyerorder.unifiedhistory.list.view.adapter.UohListItemAdapter
 import com.tokopedia.buyerorder.unifiedhistory.list.view.viewmodel.UohListViewModel
 import com.tokopedia.datepicker.DatePickerUnify
 import com.tokopedia.kotlin.extensions.convertMonth
@@ -67,12 +66,11 @@ import kotlin.collections.HashMap
  * Created by fwidjaja on 29/06/20.
  */
 class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerListener,
-        UohBottomSheetOptionAdapter.ActionListener, UohListItemAdapter.ActionListener,
-        UohBottomSheetKebabMenuAdapter.ActionListener {
+        UohBottomSheetOptionAdapter.ActionListener, UohBottomSheetKebabMenuAdapter.ActionListener,
+        UohItemAdapter.ActionListener {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    // private lateinit var uohListItemAdapter: UohListItemAdapter
     private lateinit var uohItemAdapter: UohItemAdapter
     private lateinit var scrollListener: EndlessRecyclerViewScrollListener
     private lateinit var scrollRecommendationListener: EndlessRecyclerViewScrollListener
@@ -160,7 +158,6 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         onLoadMoreRecommendation = false
         currPage = 1
         currRecommendationListPage = 1
-        // uohListItemAdapter.showLoader()
         uohItemAdapter.showLoader()
         loadOrderHistoryList()
     }
@@ -182,10 +179,10 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     private fun prepareLayout() {
         refreshHandler = RefreshHandler(swipe_refresh_layout, this)
         refreshHandler?.setPullEnabled(true)
-        /*uohListItemAdapter = UohListItemAdapter()
-        uohListItemAdapter.setActionListener(this)*/
 
-        uohItemAdapter = UohItemAdapter()
+        uohItemAdapter = UohItemAdapter().apply {
+            setActionListener(this@UohListFragment)
+        }
 
         uohBottomSheetKebabMenuAdapter = UohBottomSheetKebabMenuAdapter(this)
 
@@ -476,14 +473,12 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
         val listOrder = arrayListOf<UohTypeData>()
         orderList.orders.forEach {
-            listOrder.add(UohTypeData(it, UohConsts.ORDER_LIST_TYPE))
+            listOrder.add(UohTypeData(it, UohConsts.TYPE_ORDER_LIST))
         }
 
         if (!onLoadMore) {
-            // uohListItemAdapter.addList(orderList.orders)
             uohItemAdapter.addList(listOrder)
         } else {
-            // uohListItemAdapter.appendList(orderList.orders)
             uohItemAdapter.appendList(listOrder)
             scrollListener.updateStateAfterGetData()
         }
@@ -544,15 +539,15 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
         val listRecomm = arrayListOf<UohTypeData>()
         if (!onLoadMoreRecommendation) {
-            emptyStatus?.let { emptyState -> UohTypeData(emptyState, UohConsts.EMPTY_TYPE) }?.let { uohTypeData -> listRecomm.add(uohTypeData) }
-            listRecomm.add(UohTypeData(getString(R.string.uoh_recommendation_title), UohConsts.RECOMMENDATION_TITLE_TYPE))
+            emptyStatus?.let { emptyState -> UohTypeData(emptyState, UohConsts.TYPE_EMPTY) }?.let { uohTypeData -> listRecomm.add(uohTypeData) }
+            listRecomm.add(UohTypeData(getString(R.string.uoh_recommendation_title), UohConsts.TYPE_RECOMMENDATION_TITLE))
             recommendationList.first().recommendationItemList.forEach {
-                listRecomm.add(UohTypeData(it, UohConsts.RECOMMENDATION_TYPE))
+                listRecomm.add(UohTypeData(it, UohConsts.TYPE_RECOMMENDATION_ITEM))
             }
             uohItemAdapter.addList(listRecomm)
         } else {
             recommendationList.first().recommendationItemList.forEach {
-                listRecomm.add(UohTypeData(it, UohConsts.RECOMMENDATION_TYPE))
+                listRecomm.add(UohTypeData(it, UohConsts.TYPE_RECOMMENDATION_ITEM))
             }
             uohItemAdapter.appendList(listRecomm)
             scrollRecommendationListener.updateStateAfterGetData()
@@ -780,5 +775,9 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
     override fun onActionButtonClicked(url: String) {
         RouteManager.route(context, url)
+    }
+
+    override fun doFinishOrder() {
+        TODO("Not yet implemented")
     }
 }

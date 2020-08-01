@@ -24,5 +24,5 @@ abstract class UohListViewModelModule {
     @Binds
     @IntoMap
     @ViewModelKey(UohListViewModel::class)
-    internal abstract fun somListViewModel(viewModel: UohListViewModel): ViewModel
+    internal abstract fun uohListViewModel(viewModel: UohListViewModel): ViewModel
 }
