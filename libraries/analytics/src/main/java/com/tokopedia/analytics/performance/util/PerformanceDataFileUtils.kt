@@ -9,7 +9,10 @@ object PerformanceDataFileUtils {
                                 testCaseName: String,
                                 pltPerformanceData: PltPerformanceData,
                                 dataSourceType: String = "",
-                                totalResponseSize: String = "") {
+                                totalResponseSize: String = "",
+                                totalResponseTime:String = "",
+                                responseSizeDetail:String = "",
+                                responseTimeDetail:String = "") {
         val path = activity.getExternalFilesDir(null)
         val perfDataDir = File(path, "perf_data")
         if (!perfDataDir.exists()) {
@@ -23,7 +26,10 @@ object PerformanceDataFileUtils {
                         "${pltPerformanceData.renderPageDuration}," +
                         "${pltPerformanceData.overallDuration}," +
                         "$dataSourceType," +
-                        "$totalResponseSize\n")
+                        "$totalResponseSize," +
+                        "$totalResponseTime," +
+                        "$responseSizeDetail," +
+                        "$responseTimeDetail\n")
 
         val perfReport = File(perfDataDir, "report.csv")
         perfReport.appendText(
@@ -65,6 +71,9 @@ object PerformanceDataFileUtils {
         val overallPlt = "Page Load Time (FPI) (ms)"
         val datasource = "Data source"
         val totalResponseSize = "Total Response Size (bytes)"
+        val totalResponseTime = "Total Response Time (ms)"
+        val responseSizeDetail = "ResponseSizeDetail"
+        val responseTimeDetail = "ResponseTimeDetail"
 
         val allframes = "All Frames"
         val jankyframes = "Janky Frames"
@@ -80,7 +89,10 @@ object PerformanceDataFileUtils {
                 "$renderPagePlt," +
                 "$overallPlt," +
                 "$datasource," +
-                "$totalResponseSize\n")
+                "$totalResponseSize," +
+                "$totalResponseTime," +
+                "$responseSizeDetail," +
+                "$responseTimeDetail\n")
 
         val perfReportFpi = File(perfDataDir, "report-fpi.csv")
         perfReportFpi.appendText("" +

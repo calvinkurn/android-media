@@ -4,9 +4,8 @@ import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analytics.performance.util.PerformanceDataFileUtils.writePLTPerformanceFile
 import com.tokopedia.home.environment.InstrumentationHomeTestActivity
 import com.tokopedia.home.mock.HomeMockResponseConfig
-import com.tokopedia.home.size.HomeSizeResponseConfig
 import com.tokopedia.test.application.TestRepeatRule
-import com.tokopedia.test.application.util.getTotalResponseSize
+import com.tokopedia.test.application.environment.interceptor.size.SizeInterceptor
 import com.tokopedia.test.application.util.setupGraphqlMockResponseWithCheck
 import com.tokopedia.test.application.util.setupTotalSizeInterceptor
 import org.junit.Before
@@ -27,7 +26,8 @@ class PltHomeDynamicChannelPerformanceTest {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
             setupGraphqlMockResponseWithCheck(HomeMockResponseConfig())
-            setupTotalSizeInterceptor(HomeSizeResponseConfig())
+            setupTotalSizeInterceptor()
+            SizeInterceptor.reset()
         }
     }
 
@@ -66,7 +66,10 @@ class PltHomeDynamicChannelPerformanceTest {
                     tag,
                     performanceData,
                     datasource,
-                    getTotalResponseSize()
+                    SizeInterceptor.getTotalTime().toString(),
+                    SizeInterceptor.getTotalSize().toString(),
+                    SizeInterceptor.sizeInEachRequest.toString(),
+                    SizeInterceptor.timeInEachRequest.toString()
             )
         }
     }

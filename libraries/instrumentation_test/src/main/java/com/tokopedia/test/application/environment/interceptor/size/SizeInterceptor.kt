@@ -7,31 +7,50 @@ import okhttp3.*
 import okio.Buffer
 import java.io.IOException
 
-class SizeInterceptor(private val sizeModelConfig: SizeModelConfig, private val adder: (Int) -> Unit) : Interceptor {
+class SizeInterceptor : Interceptor {
 
     companion object {
-        const val KEY = "SizeInterceptor"
+        val sizeInEachRequest = hashMapOf<String, Int>()
+        val timeInEachRequest = hashMapOf<String, Long>()
+
+        fun reset() {
+            sizeInEachRequest.clear()
+            timeInEachRequest.clear()
+        }
+
+        fun getTotalSize(): Int {
+            var total = 0
+            sizeInEachRequest.forEach {
+                total += it.value
+            }
+            return total
+        }
+
+        fun getTotalTime(): Long {
+            var total = 0L
+            timeInEachRequest.forEach {
+                total += it.value
+            }
+            return total
+        }
     }
-    val sizeInEachRequest = hashMapOf<String, Int>()
 
     override fun intercept(chain: Interceptor.Chain): Response {
         if (BuildConfig.DEBUG) {
             try {
-                val copy = chain.request().newBuilder().build()
+                val request = chain.request()
                 val buffer = Buffer()
-                copy.body()?.writeTo(buffer)
+                request.body()?.writeTo(buffer)
+                val requestString = buffer.readUtf8()
                 val response = chain.proceed(chain.request())
 
-                sizeModelConfig.getResponseList().forEach {
-                    if (it.value.findType == FIND_BY_CONTAINS || it.value.findType == FIND_BY_QUERY_NAME) {
-                        if (!sizeInEachRequest.containsKey(it.key)) {
-                            val size = response.body()?.bytes()?.size?:0
-                            adder.invoke(size)
-                            sizeInEachRequest[it.key] = size
-                        }
-                    }
-                }
-
+                val size = response.peekBody(Long.MAX_VALUE).bytes().size
+                sizeInEachRequest[requestString] = size
+                val reqTimeStamp = response.sentRequestAtMillis();
+                val respTimeStamp = response.receivedResponseAtMillis()
+                val duration = respTimeStamp - reqTimeStamp
+                timeInEachRequest[requestString] = duration
+                return response
             } catch (e: IOException) {
                 "did not work"
             }
