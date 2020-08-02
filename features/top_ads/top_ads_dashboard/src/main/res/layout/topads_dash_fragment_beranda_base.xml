@@ -14,8 +14,8 @@
         <androidx.core.widget.NestedScrollView
             android:id="@+id/scroll_view"
             android:layout_width="match_parent"
-            android:fillViewport="true"
-            android:layout_height="0dp">
+            android:layout_height="0dp"
+            android:fillViewport="true">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -122,7 +122,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/dp_8"
                     android:padding="@dimen/dp_8"
-                    app:layout_constraintBottom_toTopOf="@id/help_section"
+                    app:layout_constraintBottom_toTopOf="@id/insightCard"
                     app:layout_constraintTop_toBottomOf="@id/credit_history">
 
                     <LinearLayout
@@ -137,6 +137,80 @@
                 </com.tokopedia.unifycomponents.CardUnify>
 
                 <com.tokopedia.unifycomponents.CardUnify
+                    android:id="@+id/insightCard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_8"
+                    android:layout_marginRight="@dimen/dp_8"
+                    android:visibility="gone"
+                    app:cardPreventCornerOverlap="false"
+                    app:layout_constraintBottom_toTopOf="@id/help_section"
+                    app:layout_constraintTop_toBottomOf="@id/statistic_graph">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:padding="@dimen/dp_16">
+
+                        <com.tokopedia.unifyprinciples.Typography
+                            android:id="@+id/txtTitle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/topads_dash_insight_title_beranda"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:typographyType="heading_4" />
+
+                        <com.tokopedia.unifyprinciples.Typography
+                            android:id="@+id/txtDesc"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/dp_4"
+                            android:text="@string/topads_dash_insight_desc_beranda"
+                            app:layout_constraintTop_toBottomOf="@id/txtTitle"
+                            app:typographyType="body_3" />
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rvTabInsight"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/dp_16"
+                            android:background="@color/white"
+                            android:orientation="horizontal"
+                            app:layout_constraintTop_toBottomOf="@id/txtDesc" />
+
+                        <com.tokopedia.unifyprinciples.Typography
+                            android:id="@+id/goToInsights"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/dp_12"
+                            android:text="@string/topads_dash_go_to_insights"
+                            app:layout_constraintStart_toStartOf="parent"
+                            android:textColor="@color/tkpd_main_green"
+                            app:layout_constraintTop_toBottomOf="@id/viewPagerInsight" />
+
+                        <ImageView
+                            android:id="@+id/arrow"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:tint="@color/tkpd_main_green"
+                            app:layout_constraintStart_toEndOf="@id/goToInsights"
+                            app:layout_constraintTop_toTopOf="@id/goToInsights"
+                            app:srcCompat="@drawable/topads_ic_arrow">
+                        </ImageView>
+
+                        <com.tokopedia.topads.common.CustomViewPager
+                            android:id="@+id/viewPagerInsight"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/dp_150"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/rvTabInsight"/>
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </com.tokopedia.unifycomponents.CardUnify>
+
+                <com.tokopedia.unifycomponents.CardUnify
                     android:id="@+id/help_section"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -147,7 +221,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/statistic_graph">
+                    app:layout_constraintTop_toBottomOf="@id/insightCard">
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"

@@ -4,10 +4,10 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
+import com.tokopedia.topads.dashboard.data.model.CountDataItem
 import com.tokopedia.topads.dashboard.view.adapter.movetogroup.viewmodel.MovetoGroupItemViewModel
 import com.tokopedia.unifycomponents.Label
 import kotlinx.android.synthetic.main.topads_dash_item_moveto_group.view.*
-
 
 class MovetoGroupItemViewHolder(val view: View, var itemSelected: ((pos: Int) -> Unit)) : MovetoGroupViewHolder<MovetoGroupItemViewModel>(view) {
 
@@ -27,7 +27,7 @@ class MovetoGroupItemViewHolder(val view: View, var itemSelected: ((pos: Int) ->
         }
     }
 
-    override fun bind(item: MovetoGroupItemViewModel, lastSelected: Int) {
+    override fun bind(item: MovetoGroupItemViewModel, lastSelected: Int, countList: MutableList<CountDataItem>) {
         item.let {
             view.group_title.text = it.result.groupName
             view.radio_button.isChecked = lastSelected == adapterPosition
@@ -37,8 +37,10 @@ class MovetoGroupItemViewHolder(val view: View, var itemSelected: ((pos: Int) ->
                 TopAdsDashboardConstant.TIDAK_TAMPIL -> view.label.setLabelType(Label.GENERAL_LIGHT_ORANGE)
             }
             view.label.text = it.result.groupStatusDesc
-            view.price_bid.text = it.result.totalItem.toString()
-            view.key_count.text = it.result.totalKeyword.toString()
+            if (countList.isNotEmpty() && adapterPosition < countList.size) {
+                view.productCount.text = countList[adapterPosition].totalAds.toString()
+                view.key_count.text = countList[adapterPosition].totalKeywords.toString()
+            }
         }
     }
 }
