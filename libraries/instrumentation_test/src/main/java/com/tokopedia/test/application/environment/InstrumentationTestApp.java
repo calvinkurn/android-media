@@ -36,11 +36,10 @@ import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
-import com.tokopedia.test.application.environment.callback.ResponseTotalSizeInterface;
+import com.tokopedia.test.application.environment.callback.GqlResponseAnalyzerInterface;
 import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface;
 import com.tokopedia.test.application.environment.interceptor.TopAdsDetectorInterceptor;
-import com.tokopedia.test.application.environment.interceptor.size.SizeInterceptor;
-import com.tokopedia.test.application.environment.interceptor.size.SizeModelConfig;
+import com.tokopedia.test.application.environment.interceptor.size.GqlNetworkAnalyzerInterceptor;
 import com.tokopedia.test.application.util.DeviceConnectionInfo;
 import com.tokopedia.test.application.util.DeviceInfo;
 import com.tokopedia.test.application.util.DeviceScreenInfo;
@@ -51,7 +50,6 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -66,7 +64,7 @@ public class InstrumentationTestApp extends BaseMainApplication
         NetworkRouter,
         ApplinkRouter,
         TopAdsVerificatorInterface,
-        ResponseTotalSizeInterface{
+        GqlResponseAnalyzerInterface {
     public static final String MOCK_ADS_ID = "2df9e57a-849d-4259-99ea-673107469eef";
     public static final String MOCK_FINGERPRINT_HASH = "eyJjYXJyaWVyIjoiQW5kcm9pZCIsImN1cnJlbnRfb3MiOiI4LjAuMCIsImRldmljZV9tYW51ZmFjdHVyZXIiOiJHb29nbGUiLCJkZXZpY2VfbW9kZWwiOiJBbmRyb2lkIFNESyBidWlsdCBmb3IgeDg2IiwiZGV2aWNlX25hbWUiOiJBbmRyb2lkIFNESyBidWlsdCBmb3IgeDg2IiwiZGV2aWNlX3N5c3RlbSI6ImFuZHJvaWQiLCJpc19lbXVsYXRvciI6dHJ1ZSwiaXNfamFpbGJyb2tlbl9yb290ZWQiOmZhbHNlLCJpc190YWJsZXQiOmZhbHNlLCJsYW5ndWFnZSI6ImVuX1VTIiwibG9jYXRpb25fbGF0aXR1ZGUiOiItNi4xNzU3OTQiLCJsb2NhdGlvbl9sb25naXR1ZGUiOiIxMDYuODI2NDU3Iiwic2NyZWVuX3Jlc29sdXRpb24iOiIxMDgwLDE3OTQiLCJzc2lkIjoiXCJBbmRyb2lkV2lmaVwiIiwidGltZXpvbmUiOiJHTVQrNyIsInVzZXJfYWdlbnQiOiJEYWx2aWsvMi4xLjAgKExpbnV4OyBVOyBBbmRyb2lkIDguMC4wOyBBbmRyb2lkIFNESyBidWlsdCBmb3IgeDg2IEJ1aWxkL09TUjEuMTcwOTAxLjA0MykifQ==";
     public static final String MOCK_DEVICE_ID="cx68b1CtPII:APA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR";
@@ -120,7 +118,7 @@ public class InstrumentationTestApp extends BaseMainApplication
 
     public void enableSizeDetector() {
         if (GlobalConfig.DEBUG) {
-            addInterceptor(new SizeInterceptor());
+            addInterceptor(new GqlNetworkAnalyzerInterceptor());
         }
     }
 
@@ -169,27 +167,32 @@ public class InstrumentationTestApp extends BaseMainApplication
 
     @Override
     public int getResponseTotalSize() {
-        return SizeInterceptor.Companion.getTotalSize();
+        return GqlNetworkAnalyzerInterceptor.Companion.getTotalSize();
     }
 
     @Override
     public Long getResponseTotalTime() {
-        return SizeInterceptor.Companion.getTotalTime();
+        return GqlNetworkAnalyzerInterceptor.Companion.getTotalTime();
+    }
+
+    @Override
+    public Long getUserNetworkTotalDuration() {
+        return GqlNetworkAnalyzerInterceptor.Companion.getUserTotalNetworkDuration();
     }
 
     @Override
     public HashMap<String, Integer> getGqlSizeMap() {
-        return SizeInterceptor.Companion.getSizeInEachRequest();
+        return GqlNetworkAnalyzerInterceptor.Companion.getSizeInEachRequest();
     }
 
     @Override
     public HashMap<String, Long> getGqlTimeMap() {
-        return SizeInterceptor.Companion.getTimeInEachRequest();
+        return GqlNetworkAnalyzerInterceptor.Companion.getTimeInEachRequest();
     }
 
     @Override
     public void reset() {
-        SizeInterceptor.Companion.reset();
+        GqlNetworkAnalyzerInterceptor.Companion.reset();
     }
 
     public static class DummyAppsFlyerAnalytics extends ContextAnalytics {

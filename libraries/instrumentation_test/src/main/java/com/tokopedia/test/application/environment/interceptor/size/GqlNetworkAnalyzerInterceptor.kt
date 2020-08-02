@@ -9,13 +9,16 @@ import okhttp3.*
 import okio.Buffer
 import java.io.IOException
 
-class SizeInterceptor : Interceptor {
+class GqlNetworkAnalyzerInterceptor : Interceptor {
 
     companion object {
         val parserRuleProvider = ParserRuleProvider()
         val sizeInEachRequest = hashMapOf<String, Int>()
         val timeInEachRequest = hashMapOf<String, Long>()
         val queryCounterMap = hashMapOf<String, Int>()
+
+        var startRequest = 0L
+        var endRequest = 0L
 
         fun reset() {
             sizeInEachRequest.clear()
@@ -37,6 +40,10 @@ class SizeInterceptor : Interceptor {
                 total += it.value
             }
             return total
+        }
+
+        fun getUserTotalNetworkDuration(): Long {
+            return endRequest - startRequest
         }
     }
 
@@ -62,6 +69,12 @@ class SizeInterceptor : Interceptor {
                 val respTimeStamp = response.receivedResponseAtMillis()
                 val duration = respTimeStamp - reqTimeStamp
                 timeInEachRequest[formattedOperationName] = duration
+
+                if (startRequest == 0L) {
+                    startRequest = reqTimeStamp
+                }
+                endRequest = respTimeStamp
+
                 return response
             } catch (e: IOException) {
                 Log.i("SizeInterceptorTag", "did not work" + e.stackTrace)

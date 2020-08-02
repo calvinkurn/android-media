@@ -6,7 +6,7 @@ import com.tokopedia.analytics.performance.util.PerformanceDataFileUtils.writePL
 import com.tokopedia.home.environment.InstrumentationHomeTestActivity
 import com.tokopedia.home.mock.HomeMockResponseConfig
 import com.tokopedia.test.application.TestRepeatRule
-import com.tokopedia.test.application.environment.callback.ResponseTotalSizeInterface
+import com.tokopedia.test.application.environment.callback.GqlResponseAnalyzerInterface
 import com.tokopedia.test.application.util.setupGraphqlMockResponseWithCheck
 import com.tokopedia.test.application.util.setupTotalSizeInterceptor
 import org.junit.Before
@@ -61,7 +61,7 @@ class PltHomeDynamicChannelPerformanceTest {
             } else if (!performanceData.isSuccess) {
                 datasource = "failed"
             } else datasource = "network"
-            val totalSizeInterface = InstrumentationRegistry.getInstrumentation().targetContext.applicationContext as ResponseTotalSizeInterface
+            val totalSizeInterface = InstrumentationRegistry.getInstrumentation().targetContext.applicationContext as GqlResponseAnalyzerInterface
             writePLTPerformanceFile(
                     activityRule.activity,
                     tag,
@@ -69,6 +69,7 @@ class PltHomeDynamicChannelPerformanceTest {
                     datasource,
                     totalSizeInterface.responseTotalSize.toString(),
                     totalSizeInterface.responseTotalTime.toString(),
+                    totalSizeInterface.userNetworkTotalDuration.toString(),
                     totalSizeInterface.gqlSizeMap.toString().replace(",", ";"),
                     totalSizeInterface.gqlTimeMap.toString().replace(",", ";")
             )

@@ -11,6 +11,7 @@ object PerformanceDataFileUtils {
                                 dataSourceType: String = "",
                                 totalResponseSize: String = "",
                                 totalResponseTime:String = "",
+                                totalUserNetworkDuration:String = "",
                                 responseSizeDetail:String = "",
                                 responseTimeDetail:String = "") {
         val path = activity.getExternalFilesDir(null)
@@ -28,6 +29,7 @@ object PerformanceDataFileUtils {
                         "$dataSourceType," +
                         "$totalResponseSize," +
                         "$totalResponseTime," +
+                        "$totalUserNetworkDuration," +
                         "$responseSizeDetail," +
                         "$responseTimeDetail\n")
 
@@ -72,6 +74,7 @@ object PerformanceDataFileUtils {
         val datasource = "Data source"
         val totalResponseSize = "Total Response Size (bytes)"
         val totalResponseTime = "Total Response Time (ms)"
+        val totalUserNetworkDuration = "Total User Network Duration (ms)"
         val responseSizeDetail = "ResponseSizeDetail"
         val responseTimeDetail = "ResponseTimeDetail"
 
@@ -91,6 +94,7 @@ object PerformanceDataFileUtils {
                 "$datasource," +
                 "$totalResponseSize," +
                 "$totalResponseTime," +
+                "$totalUserNetworkDuration," +
                 "$responseSizeDetail," +
                 "$responseTimeDetail\n")
 
