@@ -68,8 +68,8 @@ class PltHomeDynamicChannelPerformanceTest {
                     datasource,
                     SizeInterceptor.getTotalSize().toString(),
                     SizeInterceptor.getTotalTime().toString(),
-                    SizeInterceptor.sizeInEachRequest.toString(),
-                    SizeInterceptor.timeInEachRequest.toString()
+                    SizeInterceptor.sizeInEachRequest.toString().replace(",", ";"),
+                    SizeInterceptor.timeInEachRequest.toString().replace(",", ";")
             )
         }
     }
