@@ -3,6 +3,7 @@ package com.tokopedia.test.application.environment.interceptor.size
 import com.tokopedia.network.BuildConfig
 import com.tokopedia.test.application.environment.interceptor.size.SizeModelConfig.Companion.FIND_BY_CONTAINS
 import com.tokopedia.test.application.environment.interceptor.size.SizeModelConfig.Companion.FIND_BY_QUERY_NAME
+import com.tokopedia.test.application.util.parserule.ParserRuleProvider
 import okhttp3.*
 import okio.Buffer
 import java.io.IOException
@@ -10,12 +11,15 @@ import java.io.IOException
 class SizeInterceptor : Interceptor {
 
     companion object {
+        val parserRuleProvider = ParserRuleProvider()
         val sizeInEachRequest = hashMapOf<String, Int>()
         val timeInEachRequest = hashMapOf<String, Long>()
+        val queryCounterMap = hashMapOf<String, Int>()
 
         fun reset() {
             sizeInEachRequest.clear()
             timeInEachRequest.clear()
+            queryCounterMap.clear()
         }
 
         fun getTotalSize(): Int {
@@ -45,11 +49,16 @@ class SizeInterceptor : Interceptor {
                 val response = chain.proceed(chain.request())
 
                 val size = response.peekBody(Long.MAX_VALUE).bytes().size
-                sizeInEachRequest[requestString] = size
-                val reqTimeStamp = response.sentRequestAtMillis();
+                var formattedOperationName = parserRuleProvider.parse(requestString)
+                if (queryCounterMap.containsKey(formattedOperationName)) {
+                    queryCounterMap[formattedOperationName] = (queryCounterMap[formattedOperationName]?: 0) + 1
+                    formattedOperationName += queryCounterMap[formattedOperationName]
+                }
+                sizeInEachRequest[formattedOperationName] = size
+                val reqTimeStamp = response.sentRequestAtMillis()
                 val respTimeStamp = response.receivedResponseAtMillis()
                 val duration = respTimeStamp - reqTimeStamp
-                timeInEachRequest[requestString] = duration
+                timeInEachRequest[formattedOperationName] = duration
                 return response
             } catch (e: IOException) {
                 "did not work"
