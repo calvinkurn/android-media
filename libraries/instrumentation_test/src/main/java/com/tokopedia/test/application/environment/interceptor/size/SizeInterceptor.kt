@@ -49,7 +49,7 @@ class SizeInterceptor : Interceptor {
                 val response = chain.proceed(chain.request())
 
                 val size = response.peekBody(Long.MAX_VALUE).bytes().size
-                var formattedOperationName = parserRuleProvider.parse(requestString)
+                var formattedOperationName = parserRuleProvider.parse(requestString.substringAfter("\"query\": \""))
                 if (queryCounterMap.containsKey(formattedOperationName)) {
                     queryCounterMap[formattedOperationName] = (queryCounterMap[formattedOperationName]?: 0) + 1
                     formattedOperationName += queryCounterMap[formattedOperationName]
