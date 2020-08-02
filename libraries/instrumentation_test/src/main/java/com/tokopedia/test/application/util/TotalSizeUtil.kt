@@ -8,4 +8,5 @@ import com.tokopedia.test.application.environment.interceptor.size.SizeModelConf
 fun setupTotalSizeInterceptor() {
     val application = getInstrumentation().targetContext.applicationContext as InstrumentationTestApp
     application.enableSizeDetector()
+    (application as ResponseTotalSizeInterface).reset()
 }
