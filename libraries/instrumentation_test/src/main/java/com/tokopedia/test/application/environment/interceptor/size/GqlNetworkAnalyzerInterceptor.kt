@@ -24,6 +24,8 @@ class GqlNetworkAnalyzerInterceptor : Interceptor {
             sizeInEachRequest.clear()
             timeInEachRequest.clear()
             queryCounterMap.clear()
+            startRequest = 0L
+            endRequest = 0L
         }
 
         fun getTotalSize(): Int {
