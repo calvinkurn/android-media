@@ -1,5 +1,6 @@
 package com.tokopedia.test.application.environment.interceptor.size
 
+import android.util.Log
 import com.tokopedia.network.BuildConfig
 import com.tokopedia.test.application.environment.interceptor.size.SizeModelConfig.Companion.FIND_BY_CONTAINS
 import com.tokopedia.test.application.environment.interceptor.size.SizeModelConfig.Companion.FIND_BY_QUERY_NAME
@@ -53,6 +54,8 @@ class SizeInterceptor : Interceptor {
                 if (queryCounterMap.containsKey(formattedOperationName)) {
                     queryCounterMap[formattedOperationName] = (queryCounterMap[formattedOperationName]?: 0) + 1
                     formattedOperationName += queryCounterMap[formattedOperationName]
+                } else {
+                    queryCounterMap[formattedOperationName] = 1
                 }
                 sizeInEachRequest[formattedOperationName] = size
                 val reqTimeStamp = response.sentRequestAtMillis()
@@ -61,11 +64,11 @@ class SizeInterceptor : Interceptor {
                 timeInEachRequest[formattedOperationName] = duration
                 return response
             } catch (e: IOException) {
-                "did not work"
+                Log.i("SizeInterceptorTag", "did not work" + e.stackTrace)
             }
         } else {
             //just to be on safe side.
-            throw IllegalAccessError("MockInterceptor is only meant for Testing Purposes and " +
+            throw IllegalAccessError("SizeInterceptor is only meant for Testing Purposes and " +
                     "bound to be used only with DEBUG mode")
         }
         return chain.proceed(chain.request())
