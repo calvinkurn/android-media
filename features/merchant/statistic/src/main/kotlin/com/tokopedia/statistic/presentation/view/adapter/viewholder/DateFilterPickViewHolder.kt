@@ -10,9 +10,9 @@ import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.statistic.R
+import com.tokopedia.statistic.common.utils.DateFilterFormatUtil
 import com.tokopedia.statistic.presentation.model.DateFilterItem
 import com.tokopedia.statistic.presentation.view.bottomsheet.CalendarPicker
-import com.tokopedia.statistic.common.utils.DateFilterFormatUtil
 import kotlinx.android.synthetic.main.item_stc_date_range_pick.view.*
 import java.util.*
 
@@ -55,9 +55,11 @@ class DateFilterPickViewHolder(
             showCustomForm(element.isSelected)
 
             setOnClickListener {
-                element.isSelected = true
-                showCustomForm(true)
-                onClick(element)
+                onItemClickListener(element)
+            }
+
+            radStcSingleDateRange.setOnClickListener {
+                onItemClickListener(element)
             }
 
             setupDatePicker()
@@ -67,6 +69,12 @@ class DateFilterPickViewHolder(
                 setSelectedDate(element.startDate, element.endDate)
             }
         }
+    }
+
+    private fun onItemClickListener(element: DateFilterItem.Pick) {
+        element.isSelected = true
+        showCustomForm(true)
+        onClick(element)
     }
 
     private fun setupDatePicker() = with(itemView) {

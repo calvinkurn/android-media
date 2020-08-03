@@ -44,11 +44,19 @@ class MonthPickerViewHolder(
             }
 
             setOnClickListener {
-                element.isSelected = true
-                radStcPerMonth.isChecked = true
-                showCustomForm(true)
+                onItemClickListener(element)
+            }
+
+            radStcPerMonth.setOnClickListener {
+                onItemClickListener(element)
             }
         }
+    }
+
+    private fun onItemClickListener(element: DateFilterItem.MonthPickerItem) {
+        element.isSelected = true
+        showCustomForm(true)
+        onSelected(element)
     }
 
     private fun showCustomForm(isShown: Boolean) = with(itemView) {
