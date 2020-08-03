@@ -7,11 +7,14 @@ import com.tokopedia.home.beranda.domain.interactor.GetHomeRecommendationUseCase
 import com.tokopedia.home.beranda.helper.copy
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.*
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import kotlinx.coroutines.Job
 import javax.inject.Inject
 
 class HomeRecommendationViewModel @Inject constructor(
         private val getHomeRecommendationUseCase: GetHomeRecommendationUseCase,
+        private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
         homeDispatcher: HomeDispatcherProvider
 ) : BaseViewModel(homeDispatcher.io()){
     val homeRecommendationLiveData get() = _homeRecommendationLiveData
@@ -21,6 +24,8 @@ class HomeRecommendationViewModel @Inject constructor(
     private val loadingModel = HomeRecommendationLoading()
     private val loadMoreModel = HomeRecommendationLoadMore()
     private var recommendationJob: Job? = null
+    private var topAdsBannerNextPageToken = ""
+
     fun loadInitialPage(tabName: String, recommendationId: Int,count: Int){
         if(recommendationJob?.isActive == true) return
         _homeRecommendationLiveData.postValue(HomeRecommendationDataModel(homeRecommendations = listOf(loadingModel)))
@@ -30,7 +35,16 @@ class HomeRecommendationViewModel @Inject constructor(
             if(data.homeRecommendations.isEmpty()){
                 _homeRecommendationLiveData.postValue(data.copy(homeRecommendations = listOf(HomeRecommendationEmpty())))
             } else {
-                _homeRecommendationLiveData.postValue(data)
+                val topAdsBanner = getTopAdsBanner()
+                if(topAdsBanner.isEmpty()){
+                    _homeRecommendationLiveData.postValue(data)
+                } else {
+                    val banner = topAdsBanner.first()
+                    val newList = data.homeRecommendations.toMutableList()
+                    newList.add(DEFAULT_POSITION_BANNER, HomeRecommendationBannerTopAdsDataModel(banner))
+                    _homeRecommendationLiveData.postValue(data.copy(homeRecommendations = newList))
+                    topAdsBannerNextPageToken = banner.nextPageToken ?: ""
+                }
             }
             _homeRecommendationNetworkLiveData.postValue(Result.success(data))
         }){
@@ -49,8 +63,18 @@ class HomeRecommendationViewModel @Inject constructor(
         recommendationJob = launchCatchError(coroutineContext, block = {
             getHomeRecommendationUseCase.setParams(tabName, recomId, count, page)
             val data = getHomeRecommendationUseCase.executeOnBackground()
+            val topAdsBanner = getTopAdsBanner()
             list.remove(loadMoreModel)
-            list.addAll(data.homeRecommendations)
+            if(topAdsBanner.isEmpty()){
+                list.addAll(data.homeRecommendations)
+
+            } else {
+                val banner = topAdsBanner.first()
+                val newRecommendationList = data.homeRecommendations.toMutableList()
+                newRecommendationList.add(DEFAULT_POSITION_BANNER, HomeRecommendationBannerTopAdsDataModel(banner))
+                topAdsBannerNextPageToken = banner.nextPageToken ?: ""
+                list.addAll(newRecommendationList)
+            }
             _homeRecommendationNetworkLiveData.postValue(Result.success(data))
             _homeRecommendationLiveData.postValue(data.copy(homeRecommendations = list.copy()))
         }){
@@ -58,6 +82,19 @@ class HomeRecommendationViewModel @Inject constructor(
             _homeRecommendationLiveData.postValue(_homeRecommendationLiveData.value?.copy(homeRecommendations = list.copy()))
             _homeRecommendationNetworkLiveData.postValue(Result.failure(it))
         }
+    }
+
+    private suspend fun getTopAdsBanner(): ArrayList<TopAdsImageViewModel>{
+        return topAdsImageViewUseCase.getImageData(
+                topAdsImageViewUseCase.getQueryMap(
+                        "",
+                        "1",
+                        topAdsBannerNextPageToken,
+                        1,
+                        3,
+                        ""
+                )
+        )
     }
 
     fun updateWishlist(id: String, position: Int, isWishlisted: Boolean){
@@ -79,5 +116,9 @@ class HomeRecommendationViewModel @Inject constructor(
             )
             _homeRecommendationLiveData.postValue(_homeRecommendationLiveData.value?.copy(homeRecommendations = list.copy()))
         }
+    }
+
+    companion object{
+        private const val DEFAULT_POSITION_BANNER = 4
     }
 }
