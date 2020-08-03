@@ -18,4 +18,5 @@
     <string name="stc_per_day">Per Hari</string>
     <string name="stc_per_week">Per Minggu</string>
     <string name="stc_per_month">Per Bulan</string>
+    <string name="stc_you_havent_access_this_page">Kamu tidak memiliki akses ke halaman Wawasan Toko. Akses hanya bisa diberikan oleh pemilik toko.</string>
 </resources>

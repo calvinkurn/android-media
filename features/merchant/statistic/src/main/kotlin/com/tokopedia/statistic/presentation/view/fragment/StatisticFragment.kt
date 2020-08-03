@@ -3,6 +3,7 @@ package com.tokopedia.statistic.presentation.view.fragment
 import android.os.Bundle
 import android.os.Handler
 import android.view.*
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
@@ -646,7 +647,12 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     private fun checkUserRole(roles: List<String>) {
         val manageShopStatsRole = "MANAGE_SHOPSTATS"
         if (!roles.contains(manageShopStatsRole)) {
+            showToaster()
             activity?.finish()
         }
+    }
+
+    private fun showToaster() = view?.run {
+        Toast.makeText(context, context.getString(R.string.stc_you_havent_access_this_page), TOAST_DURATION.toInt()).show()
     }
 }
