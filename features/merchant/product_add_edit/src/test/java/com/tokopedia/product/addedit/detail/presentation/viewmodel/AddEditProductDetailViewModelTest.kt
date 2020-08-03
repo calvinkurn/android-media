@@ -15,6 +15,7 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MIN_PRODUCT_STOCK_LIMIT
 import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
 import com.tokopedia.product.addedit.util.getOrAwaitValue
+import com.tokopedia.product.addedit.variant.presentation.model.SelectionInputModel
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -505,7 +506,8 @@ class AddEditProductDetailViewModelTest {
         mIsProductStockInputError.value = false
         val previousValue = mIsProductStockInputError.getOrAwaitValue()
 
-        viewModel.hasVariants = true
+        val selection = SelectionInputModel()
+        viewModel.productInputModel.variantInputModel.selections = listOf(selection)
 
         viewModel.validateProductStockInput("")
         val newValue = viewModel.isProductStockInputError.getOrAwaitValue()
@@ -565,8 +567,8 @@ class AddEditProductDetailViewModelTest {
 
     @Test
     fun `validateProductMinOrderInput should valid when productStockInput is blank or not, minOrderQuantityInput is greater or equal to min order quantity and product has variant`() {
-        viewModel.hasVariants = true
-
+        val selection = SelectionInputModel()
+        viewModel.productInputModel.variantInputModel.selections = listOf(selection)
         viewModel.validateProductMinOrderInput("${MIN_MIN_ORDER_QUANTITY - 1}", "$MIN_MIN_ORDER_QUANTITY")
 
         val isError = viewModel.isOrderQuantityInputError.getOrAwaitValue()

@@ -71,6 +71,7 @@ class PowerMerchantCancelBottomSheet : BottomSheetUnify() {
         }
 
         btnBack.setOnClickListener {
+            listener?.onClickBackButton()
             dismiss()
         }
 
@@ -92,5 +93,6 @@ class PowerMerchantCancelBottomSheet : BottomSheetUnify() {
 
     interface BottomSheetCancelListener {
         fun onClickCancelButton()
+        fun onClickBackButton()
     }
 }
