@@ -412,7 +412,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     private fun setupFirstTimeOnly(chatRoom: ChatroomViewModel, chat: ChatReplies) {
         updateViewData(chatRoom)
         checkCanAttachVoucher()
-        presenter.getShopFollowingStatus(shopId, onErrorGetShopFollowingStatus(), onSuccessGetShopFollowingStatus())
+        presenter.getShopFollowingStatus(shopId, ::onErrorGetShopFollowingStatus, ::onSuccessGetShopFollowingStatus)
         orderProgress?.renderIfExist()
         getViewState().onSuccessLoadFirstTime(chatRoom, onToolbarClicked(), this, alertDialog, onUnblockChatClicked())
         getViewState().onSetCustomMessage(customMessage)
@@ -458,16 +458,12 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         }
     }
 
-    private fun onErrorGetShopFollowingStatus(): (Throwable) -> Unit {
-        return {
-            getViewState().isShopFollowed = false
-        }
+    private fun onErrorGetShopFollowingStatus(throwable: Throwable) {
+        getViewState().isShopFollowed = false
     }
 
-    private fun onSuccessGetShopFollowingStatus(): (Boolean) -> Unit {
-        return {
-            getViewState().isShopFollowed = it
-        }
+    private fun onSuccessGetShopFollowingStatus(isFollowed: Boolean) {
+        getViewState().isShopFollowed = isFollowed
     }
 
     private fun onToolbarClicked(): () -> Unit {
