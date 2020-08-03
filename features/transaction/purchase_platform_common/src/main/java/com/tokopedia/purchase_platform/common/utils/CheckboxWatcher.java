@@ -7,9 +7,8 @@ import android.widget.CompoundButton;
  */
 public class CheckboxWatcher implements CompoundButton.OnCheckedChangeListener {
 
-    private Boolean prevIsChecked = false;
     public static final int CHECKBOX_WATCHER_DEBOUNCE_TIME = 1000;
-    public static CheckboxWatcherListener checkboxWatcherListener;
+    public CheckboxWatcherListener checkboxWatcherListener;
 
     public CheckboxWatcher(CheckboxWatcherListener checkboxWatcherListener) {
         this.checkboxWatcherListener = checkboxWatcherListener;
@@ -17,7 +16,6 @@ public class CheckboxWatcher implements CompoundButton.OnCheckedChangeListener {
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        prevIsChecked = isChecked;
         if (checkboxWatcherListener != null) {
             checkboxWatcherListener.onCheckboxChanged(isChecked);
         }

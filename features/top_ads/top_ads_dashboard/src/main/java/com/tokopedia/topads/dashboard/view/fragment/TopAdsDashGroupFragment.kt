@@ -281,13 +281,11 @@ class TopAdsDashGroupFragment : BaseDaggerFragment() {
 
     private fun performAction(actionActivate: String) {
         if (actionActivate == TopAdsDashboardConstant.ACTION_DELETE) {
-            view.let {
                 view.let {
-                    Toaster.make(it!!, getString(R.string.topads_dash_with_grup_delete_toast), TOASTER_DURATION.toInt(), Toaster.TYPE_NORMAL, getString(R.string.topads_common_batal), View.OnClickListener {
+                    Toaster.make(it!!, getString(R.string.topads_dash_with_grup_delete_toast), TOASTER_DURATION.toInt(), Toaster.TYPE_NORMAL, getString(com.tokopedia.topads.common.R.string.topads_common_batal), View.OnClickListener {
                         deleteCancel = true
                     })
                 }
-            }
             val coroutineScope = CoroutineScope(Dispatchers.Main)
             coroutineScope.launch {
                 delay(TOASTER_DURATION)

@@ -55,7 +55,7 @@
                     android:lineSpacingExtra="@dimen/sp_6"
                     android:maxLines="2"
                     android:textColor="@color/clr_f531353b"
-                    app:typographyType="heading_4"
+                    app:typographyType="heading_3"
                     app:typographyWeight="bold"
                     tool:text="Top Up E-Money Lebih Cepat dan Dapat Cashback hingga Rp10.000" />
 
@@ -163,7 +163,7 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="match_parent">
 
                 <View
                     android:id="@+id/top_separator"
@@ -185,29 +185,29 @@
                     android:textColor="@color/clr_f531353b"
                     app:layout_constraintLeft_toLeftOf="@+id/top_separator"
                     app:layout_constraintTop_toBottomOf="@+id/top_separator"
-                    app:typographyType="heading_4"
+                    app:typographyType="heading_3"
                     app:typographyWeight="bold" />
 
                 <com.tokopedia.webview.TkpdWebView
                     android:id="@+id/tnc_content"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="16dp"
                     android:layout_marginTop="@dimen/dp_8"
                     android:layout_marginRight="@dimen/dp_16"
                     android:scrollbars="none"
-                    app:layout_constraintLeft_toLeftOf="@+id/tnc"
-                    app:layout_constraintRight_toRightOf="@+id/tnc"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tnc" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tnc_see_more"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_16"
                     android:lineSpacingExtra="@dimen/sp_4"
                     android:text="@string/see_more_txt"
                     android:textColor="@color/medium_green"
-                    app:layout_constraintLeft_toLeftOf="@+id/tnc_content"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tnc_content"
                     app:typographyType="body_2"
                     app:typographyWeight="bold" />
@@ -232,14 +232,13 @@
                     android:textColor="@color/clr_f531353b"
                     app:layout_constraintLeft_toLeftOf="@+id/mid_separator"
                     app:layout_constraintTop_toBottomOf="@+id/mid_separator"
-                    app:typographyType="heading_4"
+                    app:typographyType="heading_3"
                     app:typographyWeight="bold" />
 
                 <com.tokopedia.webview.TkpdWebView
                     android:id="@+id/how_to_use_content"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_16"
                     android:layout_marginTop="@dimen/dp_8"
                     android:layout_marginRight="@dimen/dp_16"
                     android:scrollbars="none"
@@ -251,15 +250,15 @@
                     android:id="@+id/how_to_use_see_more"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_16"
                     android:lineSpacingExtra="@dimen/sp_4"
                     android:paddingBottom="@dimen/dp_16"
                     android:text="@string/see_more_txt"
                     android:textColor="@color/medium_green"
-                    app:layout_constraintLeft_toLeftOf="@+id/how_to_use_content"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/how_to_use_content"
                     app:typographyType="body_2"
                     app:typographyWeight="bold" />
-
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -268,15 +267,15 @@
                 android:id="@+id/barcode_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_8"
                 android:layout_marginStart="@dimen/dp_16"
                 android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginRight="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_8"
                 android:layout_marginEnd="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
                 android:layout_marginBottom="@dimen/dp_8"
                 android:visibility="gone"
-                app:cardElevation="@dimen/dp_2"
                 app:cardCornerRadius="@dimen/dp_15"
+                app:cardElevation="@dimen/dp_2"
                 app:cardUseCompatPadding="true"
                 tool:visibility="visible"
 

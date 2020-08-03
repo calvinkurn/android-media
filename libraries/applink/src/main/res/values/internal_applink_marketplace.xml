@@ -43,6 +43,7 @@
     <string name="path_product_manage_list" translatable="false">/product-manage-list</string>
     <string name="path_product_review" translatable="false">/product/.*\\/review</string>
     <string name="path_stock_reminder" translatable="false">/stock-reminder/.*\\/.*\\/.*\\/</string>
+    <string name="path_reserved_stock" translatable="false">/reserved-stock/.*\\/.*\\/</string>
     <string name="path_set_cashback" translatable="false">/set-cashback/.*\\/</string>
     <string name="path_create_review" translatable="false">/product-review/create/.*\\/.*\\/</string>
     <string name="path_product_review_gallery" translatable="false">/product/.*\\/review/gallery</string>
@@ -76,7 +77,7 @@
     <string name="path_shop_settings_etalase" translatable="false">/shop-settings-etalase</string>
     <string name="path_shop_settings_etalase_add" translatable="false">/shop-settings-etalase/add</string>
     <string name="path_shop_settings_notes" translatable="false">/shop-settings-notes</string>
-    <string name="path_shop_setting_shipping" translatable="false">/shop-setting-shipping</string>
+    <string name="path_shop_setting_shipping" translatable="false">/shop-settings-shipping</string>
     <string name="path_shop_score_detail" translatable="false">/shop-score-detail</string>
     <string name="path_shop_edit_schedule" translatable="false">/shop-settings-edit-schedule</string>
     <string name="path_shop_page_setting" translatable="false">/shop-page-setting</string>

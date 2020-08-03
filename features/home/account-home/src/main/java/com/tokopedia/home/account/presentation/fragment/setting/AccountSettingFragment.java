@@ -14,7 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.crashlytics.android.Crashlytics;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -22,8 +22,8 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic;
 import com.tokopedia.dialog.DialogUnify;
-import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.home.account.AccountHomeUrl;
 import com.tokopedia.home.account.BuildConfig;
 import com.tokopedia.home.account.R;
@@ -190,42 +190,42 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
     }
 
     public void onItemClicked(int settingId) {
-        if (getActivity().getApplication() instanceof AccountHomeRouter) {
-            AccountHomeRouter router = (AccountHomeRouter) getActivity().getApplication();
-            Intent intent;
-            switch (settingId) {
-                case SettingConstant.SETTING_ACCOUNT_PERSONAL_DATA_ID:
-                    accountAnalytics.eventClickAccountSetting(PERSONAL_DATA);
-                    intent = RouteManager.getIntent(getActivity(), ApplinkConst.SETTING_PROFILE);
-                    getActivity().startActivityForResult(intent, 0);
-                    break;
-                case SettingConstant.SETTING_ACCOUNT_PASS_ID:
-                    accountAnalytics.eventClickAccountSetting(PASSWORD);
-                    accountAnalytics.eventClickAccountPassword();
-                    intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalGlobal.HAS_PASSWORD);
-                    startActivity(intent);
-                    break;
-                case SettingConstant.SETTING_PIN:
-                    accountAnalytics.eventClickPinSetting();
-                    onPinMenuClicked();
-                    break;
-                case SettingConstant.SETTING_ACCOUNT_ADDRESS_ID:
-                    accountAnalytics.eventClickAccountSetting(ADDRESS_LIST);
-                    startActivity(router.getManageAddressIntent(getActivity()));
-                    break;
-                case SettingConstant.SETTING_ACCOUNT_KYC_ID:
-                    onKycMenuClicked();
-                    break;
-                case SettingConstant.SETTING_ACCOUNT_SAMPAI_ID:
-                    goToTokopediaCorner();
-                    break;
-                case SettingConstant.SETTING_BANK_ACCOUNT_ID:
-                    accountAnalytics.eventClickPaymentSetting(ACCOUNT_BANK);
-                    gotoAccountBank();
-                    break;
-                default:
-                    break;
-            }
+
+        Intent intent;
+        switch (settingId) {
+            case SettingConstant.SETTING_ACCOUNT_PERSONAL_DATA_ID:
+                accountAnalytics.eventClickAccountSetting(PERSONAL_DATA);
+                intent = RouteManager.getIntent(getActivity(), ApplinkConst.SETTING_PROFILE);
+                getActivity().startActivityForResult(intent, 0);
+                break;
+            case SettingConstant.SETTING_ACCOUNT_PASS_ID:
+                accountAnalytics.eventClickAccountSetting(PASSWORD);
+                accountAnalytics.eventClickAccountPassword();
+                intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalGlobal.HAS_PASSWORD);
+                startActivity(intent);
+                break;
+            case SettingConstant.SETTING_PIN:
+                accountAnalytics.eventClickPinSetting();
+                onPinMenuClicked();
+                break;
+            case SettingConstant.SETTING_ACCOUNT_ADDRESS_ID:
+                accountAnalytics.eventClickAccountSetting(ADDRESS_LIST);
+                intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalLogistic.MANAGE_ADDRESS);
+                startActivity(intent);
+                break;
+            case SettingConstant.SETTING_ACCOUNT_KYC_ID:
+                onKycMenuClicked();
+                break;
+            case SettingConstant.SETTING_ACCOUNT_SAMPAI_ID:
+                goToTokopediaCorner();
+                break;
+            case SettingConstant.SETTING_BANK_ACCOUNT_ID:
+                accountAnalytics.eventClickPaymentSetting(ACCOUNT_BANK);
+                gotoAccountBank();
+                break;
+            default:
+                break;
+
         }
     }
 
@@ -294,7 +294,7 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
     @Override
     public void logUnknownError(Throwable e) {
         try {
-            if (!BuildConfig.DEBUG) Crashlytics.logException(e);
+            if (!BuildConfig.DEBUG) FirebaseCrashlytics.getInstance().recordException(e);
         } catch (IllegalStateException ex) {
             ex.printStackTrace();
         }

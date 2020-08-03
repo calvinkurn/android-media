@@ -6,7 +6,6 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.atc_variant.R
 import com.tokopedia.common_tradein.model.TradeInParams
 import com.tokopedia.design.dialog.AccessRequestDialogFragment
 import com.tokopedia.design.dialog.IAccessRequestListener
@@ -66,7 +65,7 @@ open class NormalCheckoutActivity : BaseSimpleActivity(), IAccessRequestListener
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val actionBar = supportActionBar
-        actionBar?.setHomeAsUpIndicator(R.drawable.ic_close)
+        actionBar?.setHomeAsUpIndicator(com.tokopedia.design.R.drawable.ic_close)
     }
 
     override fun getNewFragment(): Fragment {
@@ -98,7 +97,8 @@ open class NormalCheckoutActivity : BaseSimpleActivity(), IAccessRequestListener
                     getString(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_ACTION),
                     tradeInParams,
                     getString(ApplinkConst.Transaction.EXTRA_LAYOUT_NAME),
-                    getString(ApplinkConst.Transaction.EXTRA_ATC_EXTERNAL_SOURCE)
+                    getString(ApplinkConst.Transaction.EXTRA_ATC_EXTERNAL_SOURCE),
+                    getString(ApplinkConst.Transaction.EXTRA_CUSTOM_DIMENSION40)
             )
             return normalCheckoutFragment!!
         }
@@ -109,7 +109,7 @@ open class NormalCheckoutActivity : BaseSimpleActivity(), IAccessRequestListener
         fragment?.run {
             (this as NormalCheckoutFragment).selectVariantAndFinish()
         }
-        overridePendingTransition(0, R.anim.push_down)
+        overridePendingTransition(0, com.tokopedia.design.R.anim.push_down)
     }
 
     override fun clickAccept() {

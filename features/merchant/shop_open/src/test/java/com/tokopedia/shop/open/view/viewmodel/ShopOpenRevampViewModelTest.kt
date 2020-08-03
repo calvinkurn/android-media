@@ -2,9 +2,9 @@ package com.tokopedia.shop.open.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.LiveData
-import com.tokopedia.shop.open.shop_open_revamp.data.model.*
-import com.tokopedia.shop.open.shop_open_revamp.domain.*
-import com.tokopedia.shop.open.shop_open_revamp.presentation.viewmodel.ShopOpenRevampViewModel
+import com.tokopedia.shop.open.data.model.*
+import com.tokopedia.shop.open.domain.*
+import com.tokopedia.shop.open.presentation.viewmodel.ShopOpenRevampViewModel
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK

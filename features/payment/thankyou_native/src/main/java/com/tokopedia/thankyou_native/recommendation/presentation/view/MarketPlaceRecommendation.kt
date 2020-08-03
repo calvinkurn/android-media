@@ -30,6 +30,7 @@ import com.tokopedia.thankyou_native.recommendation.presentation.adapter.MarketP
 import com.tokopedia.thankyou_native.recommendation.presentation.adapter.decorator.ProductCardDefaultDecorator
 import com.tokopedia.thankyou_native.recommendation.presentation.adapter.listener.MarketPlaceRecommendationViewListener
 import com.tokopedia.thankyou_native.recommendation.presentation.viewmodel.MarketPlaceRecommendationViewModel
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -40,6 +41,9 @@ class MarketPlaceRecommendation : FrameLayout, IRecommendationView {
 
 
     private lateinit var fragment: BaseDaggerFragment
+    private lateinit var trackingQueue: TrackingQueue
+    private lateinit var paymentId: String
+
 
     @Inject
     lateinit var analytics: dagger.Lazy<RecommendationAnalytics>
@@ -89,8 +93,11 @@ class MarketPlaceRecommendation : FrameLayout, IRecommendationView {
         LayoutInflater.from(context).inflate(getLayout(), this, true)
     }
 
-    override fun loadRecommendation(fragment: BaseDaggerFragment) {
+    override fun loadRecommendation(paymentId: String,
+                                    fragment: BaseDaggerFragment, trackingQueue: TrackingQueue) {
+        this.paymentId = paymentId
         this.fragment = fragment
+        this.trackingQueue = trackingQueue
         startViewModelObserver()
         viewModel.loadRecommendationData()
     }
@@ -185,7 +192,8 @@ class MarketPlaceRecommendation : FrameLayout, IRecommendationView {
 
             override fun onRecommendationItemDisplayed(recommendationItem: RecommendationItem,
                                                        position: Int) {
-                analytics.get().sendRecommendationItemDisplayed(recommendationItem, position)
+                analytics.get().sendRecommendationItemDisplayed(recommendationItem, position,
+                        trackingQueue, paymentId)
             }
 
             override fun onWishlistClick(item: RecommendationItem, isAddWishlist: Boolean,
@@ -238,7 +246,8 @@ class MarketPlaceRecommendation : FrameLayout, IRecommendationView {
     }
 
     private fun onRecomProductClick(item: RecommendationItem, position: Int) {
-        analytics.get().sendRecommendationItemClick(item, position = position + 1)
+        analytics.get().sendRecommendationItemClick(item, position = position + 1,
+                paymentId = paymentId)
         val intent = RouteManager.getIntent(context,
                 ApplinkConstInternalMarketplace.PRODUCT_DETAIL, item.productId.toString())
 

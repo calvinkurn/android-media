@@ -15,15 +15,15 @@ buildscript {
     }
 }
 android {
-    compileSdkVersion 29
-    buildToolsVersion "29.0.2"
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
 
 
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 29
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "2.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles 'consumer-rules.pro'
@@ -41,9 +41,7 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
-    implementation (rootProject.ext.miscDependencies.workManager) {
-        exclude group: 'com.google.guava', module: 'listenablefuture'
-    }
+    implementation rootProject.ext.miscDependencies.workManager
     implementation(rootProject.ext.debugToolsDependencies.timber) {
         exclude group: 'org.jetbrains', module: 'annotations'
     }
@@ -54,6 +52,9 @@ dependencies {
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
     implementation rootProject.ext.dbDependencies.dbRoomKtx
     kapt rootProject.ext.dbDependencies.dbRoomCompiler
+
+
+    implementation project(rootProject.ext.libraries.kotlinExtensions)
 
     //test
     testImplementation rootProject.ext.testDependencies.junit
@@ -67,12 +68,14 @@ dependencies {
     androidTestImplementation(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    androidTestImplementation rootProject.ext.testDependencies.mockitorCore,     { exclude group: 'net.bytebuddy' } // DexMaker has it"s own MockMaker==============================--
-    androidTestImplementation 'org.mockito:mockito-android:2.6.3'
+    androidTestImplementation rootProject.ext.testDependencies.mockitorCore, {
+        exclude group: 'net.bytebuddy'
+    } // DexMaker has it"s own MockMaker==============================--
+    androidTestImplementation rootProject.ext.testDependencies.mockitorAndroid
 
     testImplementation rootProject.ext.testDependencies.mockitorCore
     testImplementation rootProject.ext.testDependencies.junit
-    testImplementation 'org.assertj:assertj-core:3.8.0'
+    testImplementation rootProject.ext.testDependencies.assertJCore
 
     testImplementation rootProject.ext.testDependencies.powerMock
     testImplementation rootProject.ext.testDependencies.powerMockJUnit

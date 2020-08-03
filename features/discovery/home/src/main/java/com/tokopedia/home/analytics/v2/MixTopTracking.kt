@@ -5,6 +5,8 @@ import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.design.utils.CurrencyFormatHelper
 import com.tokopedia.home.analytics.v2.BaseTracking.Value.LIST
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
+import com.tokopedia.home_component.model.ChannelGrid
+import com.tokopedia.home_component.model.ChannelModel
 
 object MixTopTracking : BaseTracking() {
     private class CustomAction{
@@ -48,7 +50,7 @@ object MixTopTracking : BaseTracking() {
             Event.PRODUCT_CLICK,
             Category.HOMEPAGE,
             CustomAction.CLICK_ON_CAROUSEL_PRODUCT,
-            headerName,
+            channelId + " - " + headerName,
             CustomActionField.LIST_CAROUSEL_PRODUCT.format(positionOnWidgetHome, headerName),
             channelId,
             campaignCode,
@@ -89,7 +91,7 @@ object MixTopTracking : BaseTracking() {
             channelId = channelId,
             isFreeOngkir = grid.freeOngkir.isActive,
             productPosition = position.toString(),
-            productPrice = CurrencyFormatHelper.convertRupiahToInt(grid.price).toString(),
+            productPrice = convertRupiahToInt(grid.price).toString(),
             variant = "",
             persoType = persoType,
             categoryId = categoryId,
@@ -100,16 +102,45 @@ object MixTopTracking : BaseTracking() {
         mapGridToProductTracker(it.value, channels.id, it.index, channels.persoType, channels.categoryID)
     }
 
-    fun getBackgroundClick(channels: DynamicHomeChannel.Channels, userId: String = "") = DataLayer.mapOf(
+    //home component section
+
+    fun mapChannelToProductTracker(channels: ChannelModel) = channels.channelGrids.withIndex().map {
+        mapGridToProductTrackerComponent(it.value, channels.id, it.index, channels.trackingAttributionModel.persoType, channels.trackingAttributionModel.categoryId)
+    }
+
+    fun mapGridToProductTrackerComponent(grid: ChannelGrid, channelId: String, position: Int, persoType: String, categoryId: String) = Product(
+            id = grid.id,
+            name = grid.name,
+            brand = "",
+            category = "",
+            channelId = channelId,
+            isFreeOngkir = grid.isFreeOngkirActive,
+            productPosition = position.toString(),
+            productPrice = convertRupiahToInt(grid.price).toString(),
+            variant = "",
+            persoType = persoType,
+            categoryId = categoryId,
+            isTopAds = grid.isTopads
+    )
+
+    fun getBackgroundClickComponent(channels: ChannelModel, userId: String = "") = DataLayer.mapOf(
             Event.KEY, Event.CLICK_HOMEPAGE,
             Category.KEY, Category.HOMEPAGE,
             Action.KEY, CustomAction.CLICK_BACKGROUND,
-            Label.KEY, channels.id + " - " + channels.header.name,
+            Label.KEY, channels.id + " - " + channels.channelHeader.name,
             Screen.KEY, Screen.DEFAULT,
             CurrentSite.KEY, CurrentSite.DEFAULT,
             Screen.KEY, Screen.DEFAULT,
             UserId.KEY, userId,
-            BusinessUnit.KEY, BusinessUnit.DEFAULT
+            BusinessUnit.KEY, BusinessUnit.DEFAULT,
+            ChannelId.KEY, channels.id,
+            CampaignCode.KEY, channels.trackingAttributionModel.campaignCode,
+            Label.ATTRIBUTION_LABEL, channels.channelBanner.attribution,
+            Label.AFFINITY_LABEL, channels.trackingAttributionModel.persona,
+            Label.CATEGORY_LABEL, channels.trackingAttributionModel.categoryId,
+            Label.SHOP_LABEL, channels.trackingAttributionModel.brandId
     )
+
+    //end of home component section
 
 }

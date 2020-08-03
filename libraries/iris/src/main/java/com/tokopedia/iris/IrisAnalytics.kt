@@ -124,10 +124,13 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
         // convert map to json then save as string
         val event = gson.toJson(map)
         val resultEvent = TrackingMapper.reformatEvent(event, session.getSessionId())
-        trackingRepository.saveEvent(resultEvent.toString(), session, eventName, eventCategory, eventAction)
-        setAlarm(true, force = false)
+        if(WhiteList.REALTIME_EVENT_LIST.contains(eventName) && trackingRepository.getRemoteConfig().getBoolean(KEY_REMOTE_CONFIG_SEND_REALTIME, false)){
+            sendEvent(map)
+        } else {
+            trackingRepository.saveEvent(resultEvent.toString(), session, eventName, eventCategory, eventAction)
+            setAlarm(true, force = false)
+        }
     }
-
 
     @Deprecated(message = "function should not be called directly", replaceWith = ReplaceWith(expression = "saveEvent(input)"))
     override fun sendEvent(map: Map<String, Any>) {
@@ -172,6 +175,8 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
     }
 
     companion object {
+
+        const val KEY_REMOTE_CONFIG_SEND_REALTIME = "android_customerapp_iris_realtime"
 
         private val lock = Any()
 

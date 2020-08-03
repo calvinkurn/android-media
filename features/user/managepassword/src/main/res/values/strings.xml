@@ -1,0 +1,49 @@
+<resources>
+    <string name="app_name">changepassword</string>
+
+    <string name="button_save">Simpan</string>
+
+    <string name="change_password_app_name">Ubah Kata Sandi</string>
+    <string name="password">Kata Sandi</string>
+
+    <string name="insert_old_password">Masukkan Kata Sandi Lama</string>
+    <string name="insert_new_password">Masukkan Kata Sandi Baru</string>
+    <string name="reenter_password">Ulangi Kata Sandi Baru</string>
+
+    <string name="minimal_6_character">Minimal 6 karakter</string>
+    <string name="must_equal_new_password">Pastikan sama dengan password baru</string>
+    <string name="error_field_required">Harus diisi</string>
+    <string name="error_minimal_password">Minimal 6 karakter</string>
+    <string name="error_must_equal_new_password">Kata sandi baru tidak cocok</string>
+    <string name="success_change_password">Sukses mengganti kata sandi</string>
+    <string name="insert_password_not_other_pass">Masukkan kata sandi Tokopedia Anda, bukan kata sandi dari akun aplikasi lain (google/facebook)</string>
+    
+    <string name="forgot_password_tokopedia">Lupa kata sandi Tokopedia Anda?</string>
+    <string name="forgot_password_title">Kesulitan mengakses akun Anda?</string>
+    <string name="forgot_password_body">Lupa kata sandi? Masukkan email atau nomor telepon login Anda di bawah ini. Kami akan mengirimkan pesan beserta tautan untuk reset kata sandi anda.</string>
+    <string name="forgot_password_register">"Belum punya akun? Daftar Sekarang"</string>
+    <string name="forgot_password_email_sent_title">Kata sandi Anda akan diatur ulang</string>
+    <string name="forgot_password_email_sent_body_1">Sebuah email telah dikirim ke email kontak Anda dikaitkan dengan akun Anda,</string>
+    <string name="forgot_password_email_sent_body_2">Harap bersabar, pengiriman email dapat tertunda. Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk atau folder spam atau filter jika Anda tidak menerima email ini.</string>
+  
+    <string name="add_password_top">Membuat kata sandi membantu Anda menjaga keamanan akun dan transaksi di Tokopedia.</string>
+    <string name="add_password_title">Buat Kata Sandi</string>
+    <string name="add_password_title_hint">Masukkan Kata Sandi Baru</string>
+    <string name="add_password_title_hint_reenter">Masukkan Ulang Kata Sandi Baru</string>
+    <string name="add_password_min_char">Minimum 6 karakter</string>
+    <string name="add_password_button_submit">Buat Kata Sandi</string>
+    <string name="add_password_confirmation_not_match">Kata sandi tidak sesuai</string>
+    
+    <string name="change_password_field_required">Harus diisi</string>
+    <string name="change_password_insert_old">Masukan Kata Sandi Lama</string>
+    <string name="change_password_insert_new">Masukan Kata Sandi Baru</string>
+    <string name="change_password_insert_confirmation">Ulangi Kata Sandi Baru</string>
+    <string name="change_password_success">Sukses mengubah kata sandi. Silahkan masuk ke akun anda dengan kata sandi baru.</string>
+    <string name="change_password_save">Simpan</string>
+    <string name="change_password_login">Login</string>
+    <string name="change_password_forgot">Lupa kata sandi Tokopedia Anda?</string>
+    <string name="change_password_minimal_six_char">Minimal 6 karakter</string>
+    <string name="change_password_same_with_old">Kata sandi tidak boleh sama dengan yang lama</string>
+    <string name="change_password_confirmation_invalid">Pastikan sama dengan kata sandi baru</string>
+    <string name="change_password_insert_not_other_pass">Masukkan kata sandi Tokopedia Anda, bukan kata sandi dari akun aplikasi lain (google/facebook)</string>
+</resources>

@@ -113,6 +113,8 @@ interface HomeCategoryListener {
 
     fun onBuyAgainCloseChannelClick(channel: DynamicHomeChannel.Channels, position: Int)
 
+    fun removeViewHolderAtPosition(position: Int)
+
     fun onPlayBannerCarouselRefresh(playCarouselCardDataModel: PlayCarouselCardDataModel, position: Int)
 
     fun onPlayBannerReminderClick(playBannerCarouselItemDataModel: PlayBannerCarouselItemDataModel)

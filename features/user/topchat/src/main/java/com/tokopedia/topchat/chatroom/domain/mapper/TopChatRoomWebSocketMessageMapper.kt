@@ -1,5 +1,6 @@
 package com.tokopedia.chatbot.domain.mapper
 
+import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -15,6 +16,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.sticker.attr.StickerAttributes
 import com.tokopedia.topchat.chatroom.view.uimodel.StickerUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherUiModel
+import com.tokopedia.websocket.WebSocketResponse
 import javax.inject.Inject
 
 /**
@@ -47,12 +49,13 @@ class TopChatRoomWebSocketMessageMapper @Inject constructor() : WebsocketMessage
                 isRead = false,
                 isDummy = false,
                 isSender = !pojo.isOpposite,
-                sticker = stickerAttributes.stickerProfile
+                sticker = stickerAttributes.stickerProfile,
+                source = pojo.source
         )
     }
 
     private fun convertToVoucher(item: ChatSocketPojo, jsonAttributes: JsonObject): Visitable<*> {
-        val pojo = GsonBuilder().create().fromJson<TopChatVoucherPojo>(jsonAttributes,
+        val pojo = GsonBuilder().create().fromJson(jsonAttributes,
                 TopChatVoucherPojo::class.java)
         val voucher = pojo.voucher
         var voucherType = MerchantVoucherType(voucher.voucherType, "")
@@ -86,7 +89,9 @@ class TopChatRoomWebSocketMessageMapper @Inject constructor() : WebsocketMessage
                 !item.isOpposite,
                 voucherModel,
                 "",
-                item.blastId.toString()
+                item.blastId.toString(),
+                item.source,
+                voucher.isPublic
         )
     }
 
@@ -105,7 +110,12 @@ class TopChatRoomWebSocketMessageMapper @Inject constructor() : WebsocketMessage
                 replyTime = payload.message.timeStampUnixNano,
                 isSender = !payload.isOpposite,
                 message = payload.message.censoredReply,
-                startTime = payload.startTime
+                startTime = payload.startTime,
+                source = payload.source
         )
+    }
+
+    fun parseResponse(response: WebSocketResponse?): ChatSocketPojo {
+        return Gson().fromJson(response?.jsonObject, ChatSocketPojo::class.java)
     }
 }

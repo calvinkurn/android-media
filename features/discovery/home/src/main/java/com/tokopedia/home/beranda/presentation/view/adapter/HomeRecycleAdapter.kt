@@ -56,6 +56,8 @@ class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<Visitable<*>>, pri
             holder.onViewAttach()
         } else if(holder is BannerViewHolder){
             holder.onResume()
+        } else if(holder is PlayBannerCardViewHolder){
+            holder.onResume()
         }
     }
 
@@ -64,6 +66,8 @@ class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<Visitable<*>>, pri
         if(holder is PlayCardViewHolder) {
             holder.onViewDetach()
         } else if(holder is BannerViewHolder){
+            holder.onPause()
+        } else if(holder is PlayBannerCardViewHolder){
             holder.onPause()
         }
     }
@@ -134,7 +138,7 @@ class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<Visitable<*>>, pri
 
     fun onDestroy() {
         for (exoPlayerHelper in getAllExoPlayers()) {
-            exoPlayerHelper.onActivityStop()
+            exoPlayerHelper.onActivityDestroy()
         }
         for (i in 0 until itemCount){
             val viewHolder = getViewHolder(i)

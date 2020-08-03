@@ -9,7 +9,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.common.constant.ShopPageConstant;
 import com.tokopedia.shop.common.domain.interactor.DeleteShopInfoCacheUseCase;
-import com.tokopedia.shop.note.domain.interactor.DeleteShopNoteUseCase;
+import com.tokopedia.shop.common.graphql.domain.usecase.shopnotes.DeleteShopNoteUseCase;
 import com.tokopedia.shop.pageheader.di.scope.ShopPageScope;
 import com.tokopedia.shop.pageheader.domain.interactor.GetBroadcasterShopConfigUseCase;
 import com.tokopedia.shop.product.domain.interactor.DeleteShopProductAceUseCase;

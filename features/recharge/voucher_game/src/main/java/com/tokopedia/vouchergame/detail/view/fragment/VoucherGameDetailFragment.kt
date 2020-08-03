@@ -253,6 +253,10 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
     }
 
+    override fun onLoadingMenuDetail(showLoading: Boolean) {
+        //do nothing
+    }
+
     override fun onCatalogPluginDataError(error: Throwable) {
 
     }
@@ -595,10 +599,10 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
     }
 
     override fun onClickNextBuyButton() {
-        processCheckout()
+        processCheckoutData()
     }
 
-    private fun processCheckout() {
+    private fun processCheckoutData() {
         // Setup checkout pass data
         if (::voucherGameExtraParam.isInitialized) {
             selectedProduct?.run {

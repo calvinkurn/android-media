@@ -24,9 +24,9 @@ object PlayShareWrapper {
     private val channelListWebUrl= "${TokopediaUrl.getInstance().WEB}play/channel/"
 
     fun copyToClipboard(context: Context, shareContents: String, onUrlCopied: () -> Unit) {
-        val clipboard: ClipboardManager = context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+        var clipboard: ClipboardManager = context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
         val clip = ClipData.newPlainText("play-broadcaster", shareContents)
-        clipboard.primaryClip = clip
+        clipboard.setPrimaryClip(clip)
         onUrlCopied()
     }
 

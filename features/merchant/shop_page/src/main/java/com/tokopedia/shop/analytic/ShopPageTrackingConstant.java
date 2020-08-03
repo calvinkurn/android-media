@@ -77,6 +77,7 @@ public class ShopPageTrackingConstant {
     public static final String CLICK_VIEW_ALL_PRODUCT = "click lihat semua produk - %s - %s";
     public static final String VIEW_WIDGET_BROADCAST = "view widget broadcast";
     public static final String CLICK_WIDGET_BROADCAST = "click widget broadcast";
+    public static final String CLICK_CLOSE_FILTER = "click close filter";
 
     //label
     public static final String CLICK_TAB = "click tab";

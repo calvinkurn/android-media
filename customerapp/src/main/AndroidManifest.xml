@@ -58,10 +58,6 @@
             android:name="com.google.android.gms.ads.AD_MANAGER_APP"
             android:value="true"/>
         <meta-data
-            android:name="com.crashlytics.ApiKey"
-            android:value="d02324f74e70ffcd2dc00ab722d32baecf1884b4"
-            tools:replace="android:value"/>
-        <meta-data
             android:name="APP_ID"
             android:value="@string/key_moengage"
             tools:replace="android:value"/>
@@ -126,6 +122,9 @@
                 <data
                     android:host="tokopedia-alternate.app.link"
                     android:scheme="https"/>
+                <data
+                    android:host="tokopedia.app.link"
+                    android:scheme="https"/>
             </intent-filter>
         </activity>
 
@@ -180,9 +179,21 @@
             android:theme="@style/TokopediaTransparentStatus"
             android:windowSoftInputMode="adjustPan"
             android:screenOrientation="portrait">
+
             <meta-data
                 android:name="APPS_HOME"
                 android:value="true"/>
+
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_home"
+                    android:path="@string/path_navigation"/>
+            </intent-filter>
+
         </activity>
         <activity
             android:name=".goldmerchant.GoldMerchantRedirectActivity"
@@ -257,12 +268,6 @@
             android:name=".home.ReactNativeDiscoveryActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".home.ReactNativeOfficialStorePromoActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".home.ReactNativePromoSaleActivity"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".thankyou.view.ReactNativeThankYouPageActivity"
             android:screenOrientation="portrait" />
         <activity android:name=".home.ReactNativeSubPromoPageActivity"
@@ -318,7 +323,7 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name="androidx.media.session.MediaButtonReceiver" >
+        <receiver android:name=".receiver.AppMediaButtonReceiver" >
             <intent-filter>
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
             </intent-filter>

@@ -1,11 +1,13 @@
 package com.tokopedia.vouchercreation.voucherlist.view.widget.sharebottomsheet
 
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.voucherlist.model.ui.ShareVoucherUiModel
@@ -16,9 +18,14 @@ import kotlinx.android.synthetic.main.bottomsheet_mvc_share_voucher.view.*
  * Created By @ilhamsuaib on 28/04/20
  */
 
-class ShareVoucherBottomSheet(
-        private val parent: ViewGroup
-) : BottomSheetUnify() {
+class ShareVoucherBottomSheet : BottomSheetUnify() {
+
+    companion object {
+        @JvmStatic
+        fun createInstance(): ShareVoucherBottomSheet = ShareVoucherBottomSheet().apply {
+            setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
+        }
+    }
 
     private var onItemClickListener: (Int) -> Unit = {}
 
@@ -29,17 +36,27 @@ class ShareVoucherBottomSheet(
         }
     }
 
-    init {
-        val child = LayoutInflater.from(parent.context)
-                .inflate(R.layout.bottomsheet_mvc_share_voucher, parent, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        initBottomSheet()
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
 
-        setupView(child)
-        setTitle(parent.context.getString(R.string.mvc_share))
-        setChild(child)
-        setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupView(view)
+    }
+
+    private fun initBottomSheet() {
+        context?.run {
+            val child = View.inflate(this, R.layout.bottomsheet_mvc_share_voucher, null)
+            setTitle(getString(R.string.mvc_share))
+            setChild(child)
+        }
     }
 
     private fun setupView(view: View) = with(view) {
+        mAdapter.clearAllElements()
+        mAdapter.addElement(getSocmedList())
         rvMvcShareVoucher.run {
             layoutManager = LinearLayoutManager(view.context)
             adapter = mAdapter
@@ -52,19 +69,17 @@ class ShareVoucherBottomSheet(
     }
 
     fun show(fm: FragmentManager) {
-        mAdapter.clearAllElements()
-        mAdapter.addElement(getSocmedList())
         showNow(fm, ShareVoucherBottomSheet::class.java.simpleName)
     }
 
     private fun getSocmedList(): List<ShareVoucherUiModel> {
         return listOf(
-                ShareVoucherUiModel(R.drawable.ic_mvc_link, parent.context.getString(R.string.mvc_copy_link), SocmedType.COPY_LINK),
-                ShareVoucherUiModel(R.drawable.ic_mvc_instagram, parent.context.getString(R.string.mvc_instagram), SocmedType.INSTAGRAM),
-                ShareVoucherUiModel(R.drawable.ic_mvc_whatsapp, parent.context.getString(R.string.mvc_whatsapp), SocmedType.WHATSAPP),
-                ShareVoucherUiModel(R.drawable.ic_mvc_line, parent.context.getString(R.string.mvc_line), SocmedType.LINE),
-                ShareVoucherUiModel(R.drawable.ic_mvc_twitter, parent.context.getString(R.string.mvc_twitter), SocmedType.TWITTER),
-                ShareVoucherUiModel(R.drawable.ic_mvc_lainnya, parent.context.getString(R.string.mvc_others), SocmedType.LAINNYA)
+                ShareVoucherUiModel(R.drawable.ic_mvc_link, context?.getString(R.string.mvc_copy_link).toBlankOrString(), SocmedType.COPY_LINK),
+                ShareVoucherUiModel(R.drawable.ic_mvc_instagram, context?.getString(R.string.mvc_instagram).toBlankOrString(), SocmedType.INSTAGRAM),
+                ShareVoucherUiModel(R.drawable.ic_mvc_whatsapp, context?.getString(R.string.mvc_whatsapp).toBlankOrString(), SocmedType.WHATSAPP),
+                ShareVoucherUiModel(R.drawable.ic_mvc_line, context?.getString(R.string.mvc_line).toBlankOrString(), SocmedType.LINE),
+                ShareVoucherUiModel(R.drawable.ic_mvc_twitter, context?.getString(R.string.mvc_twitter).toBlankOrString(), SocmedType.TWITTER),
+                ShareVoucherUiModel(R.drawable.ic_mvc_lainnya, context?.getString(R.string.mvc_others).toBlankOrString(), SocmedType.LAINNYA)
         )
     }
 }

@@ -10,15 +10,18 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.gm.common.constant.GMParamTracker
 import com.tokopedia.gm.common.utils.PowerMerchantTracking
 import com.tokopedia.kotlin.extensions.view.hideLoading
 import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.showLoading
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.TERMS_AND_CONDITION_URL
 import com.tokopedia.power_merchant.subscribe.URL_GAINS_SCORE_POINT
 import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
+import com.tokopedia.power_merchant.subscribe.view.activity.PowerMerchantTermsActivity.Companion.EXTRA_SHOP_SCORE
 import com.tokopedia.power_merchant.subscribe.view.bottomsheets.PowerMerchantNotificationBottomSheet
 import com.tokopedia.power_merchant.subscribe.view.bottomsheets.PowerMerchantNotificationBottomSheet.*
 import com.tokopedia.power_merchant.subscribe.view.fragment.PowerMerchantSubscribeFragment.Companion.APPLINK_POWER_MERCHANT_KYC
@@ -58,7 +61,7 @@ class PowerMerchantTermsFragment : BaseWebViewFragment() {
         }
     }
 
-    override fun getScreenName(): String = ""
+    override fun getScreenName(): String = GMParamTracker.ScreenName.PM_TERMS_AND_CONDITION_PAGE
 
     override fun initInjector() {
         activity?.let {
@@ -165,7 +168,12 @@ class PowerMerchantTermsFragment : BaseWebViewFragment() {
     }
 
     private fun onClickActivateButton() {
+        trackClickTermsAndConditionUpgradeBtn()
         viewModel.activatePowerMerchant()
+    }
+
+    private fun trackClickTermsAndConditionUpgradeBtn() {
+        powerMerchantTracking.eventClickTermsAndConditionUpgradeBtn()
     }
 
     private fun openKycPage() {
@@ -176,8 +184,13 @@ class PowerMerchantTermsFragment : BaseWebViewFragment() {
     }
 
     private fun onCheckBoxClicked() {
+        trackClickTermsAndConditionTickBox()
         isTermsAgreed = !isTermsAgreed
         checkbox.isChecked = isTermsAgreed
+    }
+
+    private fun trackClickTermsAndConditionTickBox() {
+        powerMerchantTracking.eventClickTermsAndConditionTickBox()
     }
 
     private fun resultOkAndFinish() {
@@ -186,6 +199,7 @@ class PowerMerchantTermsFragment : BaseWebViewFragment() {
     }
 
     private fun showShopScoreBottomSheet() {
+        val shopScore = arguments?.getInt(EXTRA_SHOP_SCORE).orZero()
         val bottomSheet = PowerMerchantNotificationBottomSheet.createInstance(
             getString(R.string.power_merchant_bottom_sheet_score_title),
             getString(R.string.power_merchant_bottom_sheet_score_description),
@@ -196,33 +210,62 @@ class PowerMerchantTermsFragment : BaseWebViewFragment() {
         bottomSheet.setPrimaryButtonText(getString(R.string.power_merchant_see_tips))
         bottomSheet.setSecondaryButtonText(getString(R.string.pm_label_button_close))
         bottomSheet.setPrimaryButtonClickListener {
-            powerMerchantTracking.eventIncreaseScorePopUp()
+            trackClickSeeShopScoreTips(shopScore)
             RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, URL_GAINS_SCORE_POINT)
             bottomSheet.dismiss()
         }
         bottomSheet.setSecondaryButtonClickListener {
+            trackClickDismissShopScorePopUp(shopScore)
             activity?.finish()
             bottomSheet.dismiss()
         }
         bottomSheet.show(childFragmentManager)
+        trackShowScoreDialog(shopScore)
+    }
+
+    private fun trackShowScoreDialog(shopScore: Int) {
+        powerMerchantTracking.eventShowDialogScore(shopScore)
+    }
+
+    private fun trackClickSeeShopScoreTips(shopScore: Int) {
+        powerMerchantTracking.eventClickSeeShopScoreTips(shopScore)
+    }
+
+    private fun trackClickDismissShopScorePopUp(shopScore: Int) {
+        powerMerchantTracking.eventClickDismissShopScorePopUp(shopScore)
     }
 
     private fun showDialogKyc() {
         context?.let {
+            trackShowKycDialog()
             DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
                 setTitle(it.getString(R.string.pm_label_kyc_verification_header))
                 setDescription(it.getString(R.string.pm_label_kyc_verification_desc_1))
                 setPrimaryCTAText(it.getString(R.string.power_merchant_kyc_verification))
                 setSecondaryCTAText(it.getString(R.string.pm_label_button_close))
                 setPrimaryCTAClickListener {
+                    trackClickKycVerification()
                     openKycPage()
                     dismiss()
                 }
                 setSecondaryCTAClickListener {
+                    trackClickDismissKycPopUp()
                     activity?.finish()
                     dismiss()
                 }
             }.show()
         }
+    }
+
+    private fun trackShowKycDialog() {
+        powerMerchantTracking.eventShowDialogKyc()
+    }
+
+    private fun trackClickDismissKycPopUp() {
+        powerMerchantTracking.eventClickDismissKycPopUp()
+    }
+
+    private fun trackClickKycVerification() {
+        powerMerchantTracking.eventClickKycVerification()
     }
 }

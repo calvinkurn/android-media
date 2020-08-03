@@ -50,11 +50,14 @@
     <string name="path_setting_bank" translatable="false">/setting-bank</string>
     <string name="path_add_bank" translatable="false">/add-bank</string>
     <string name="path_general_setting" translatable="false">/general-setting</string>
+    <string name="path_account_setting" translatable="false">/account-setting</string>
     <string name="path_advanced_setting" translatable="false">/advanced-setting</string>
     <string name="path_push_notification_troubleshooter" translatable="false">/push-notification-troubleshooter</string>
     <string name="path_change_email_register">/change-email-register</string>
     <string name="path_login">/login</string>
     <string name="path_init_register">/init-register</string>
+    <string name="path_manage_name">/manage-name</string>
+
     <string name="path_email_register">/email-register</string>
     <string name="path_ovo_pay_with_qr">/ovo-pay-with-qr</string>
     <string name="path_oqr_pin_url_response">/ovoqrthanks/.*\\/</string>
@@ -68,4 +71,7 @@
 
     <string name="path_seller_seamless_login" translatable="false">/login-seamless</string>
     <string name="path_reply_talk" translatable="false">/reply-talk/.*\\/</string>
+    <string name="two_factor_register">/two-factor-register</string>
+
+    <string name="path_screen_recorder">/screen-recorder</string>
 </resources>

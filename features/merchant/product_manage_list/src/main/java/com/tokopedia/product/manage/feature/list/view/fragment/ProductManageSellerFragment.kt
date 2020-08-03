@@ -39,7 +39,9 @@ class ProductManageSellerFragment : ProductManageFragment() {
         private const val SEARCH_KEYWORD_OPTIONS = "search_keyword_options"
 
         @JvmStatic
-        fun newInstance(filterOptions: ArrayList<String>, searchKeyWord: String): ProductManageSellerFragment {
+        fun newInstance(
+                filterOptions: ArrayList<String>,
+                searchKeyWord: String): ProductManageSellerFragment {
             return ProductManageSellerFragment().apply {
                 arguments = Bundle().apply {
                     putStringArrayList(FILTER_OPTIONS, filterOptions)
@@ -76,7 +78,7 @@ class ProductManageSellerFragment : ProductManageFragment() {
     }
 
     override fun initInjector() {
-        ProductManageListInstance.getComponent((requireActivity().application))
+        ProductManageListInstance.getComponent(requireContext())
                 .inject(this)
     }
 
@@ -200,7 +202,7 @@ class ProductManageSellerFragment : ProductManageFragment() {
                 addAction(UploadProductService.ACTION_DRAFT_CHANGED)
                 addAction(TkpdState.ProductService.BROADCAST_ADD_PRODUCT)
             }
-            it.registerReceiver(draftBroadCastReceiver, intentFilters)
+            LocalBroadcastManager.getInstance(it).registerReceiver(draftBroadCastReceiver, intentFilters)
         }
     }
 

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    tools:background="@color/Neutral_N0">
+
+    <FrameLayout
+        android:layout_width="@dimen/deals_dp_60"
+        android:layout_height="@dimen/deals_dp_60"
+        android:padding="@dimen/spacing_lvl3"
+        android:background="@drawable/bg_deals_squircle_category_white"
+        >
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/btn_deals_category"
+            android:layout_width="@dimen/layout_lvl4"
+            android:layout_height="@dimen/layout_lvl4"
+            android:scaleType="centerCrop"
+            android:layout_gravity="center"
+            tools:src="@tools:sample/avatars"
+            />
+    </FrameLayout>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txt_deals_category_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Neutral_N700_96"
+        app:typographyType="small"
+        app:typographyWeight="reguler"
+        tools:text="Transportasi"
+        android:gravity="center"/>
+
+</LinearLayout>

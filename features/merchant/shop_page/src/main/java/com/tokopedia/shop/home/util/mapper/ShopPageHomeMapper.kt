@@ -6,7 +6,9 @@ import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherTypeDef
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.common.data.source.cloud.model.LabelGroup
+import com.tokopedia.shop.home.WidgetName
 import com.tokopedia.shop.home.WidgetName.PRODUCT
+import com.tokopedia.shop.home.WidgetType
 import com.tokopedia.shop.home.WidgetType.DISPLAY
 import com.tokopedia.shop.home.WidgetType.DYNAMIC
 import com.tokopedia.shop.home.WidgetType.VOUCHER

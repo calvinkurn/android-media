@@ -38,40 +38,67 @@ object LegoBannerTracking : BaseTracking() {
         getTracker().sendEnhanceEcommerceEvent(getLegoBannerThreeClick(channelModel, channelGrid, position))
     }
 
-    fun sendLegoBannerSixClickViewAll(headerName: String, channelId: String) {
-        getTracker().sendGeneralEvent(getLegoBannerSixViewAllClick(headerName, channelId))
+    fun sendLegoBannerSixClickViewAll(channelModel: ChannelModel, channelId: String, userId: String) {
+        getTracker().sendGeneralEvent(getLegoBannerSixViewAllClick(channelModel, channelModel.channelHeader.name, channelId, userId))
     }
 
-    fun sendLegoBannerFourClickViewAll(headerName: String, channelId: String) {
-        getTracker().sendGeneralEvent(getLegoBannerFourViewAllClick(headerName, channelId))
+    fun sendLegoBannerFourClickViewAll(channelModel: ChannelModel, channelId: String, userId: String) {
+        getTracker().sendGeneralEvent(getLegoBannerFourViewAllClick(channelModel, channelModel.channelHeader.name, channelId, userId))
     }
 
-    fun sendLegoBannerThreeClickViewAll(headerName: String, channelId: String) {
-        getTracker().sendGeneralEvent(getLegoBannerThreeViewAllClick(headerName, channelId))
+    fun sendLegoBannerThreeClickViewAll(channelModel: ChannelModel, channelId: String, userId: String) {
+        getTracker().sendGeneralEvent(getLegoBannerThreeViewAllClick(channelModel, channelModel.channelHeader.name, channelId, userId))
     }
 
-    private fun getLegoBannerSixViewAllClick(headerName: String, channelId: String) =  DataLayer.mapOf(
+    private fun getLegoBannerSixViewAllClick(channelModel: ChannelModel, headerName: String, channelId: String, userId: String) =  DataLayer.mapOf(
             Event.KEY, Event.CLICK_HOMEPAGE,
             Category.KEY, Category.HOMEPAGE,
             Action.KEY, CLICK_VIEW_ALL_ON_LEGO_6,
             Label.KEY, Value.FORMAT_2_ITEMS_DASH.format(channelId, headerName),
-            ChannelId.KEY, channelId
+            ChannelId.KEY, channelId,
+            Label.ATTRIBUTION_LABEL, channelModel.channelBanner.attribution,
+            Label.AFFINITY_LABEL, channelModel.trackingAttributionModel.persona,
+            Label.CATEGORY_LABEL, channelModel.trackingAttributionModel.categoryId,
+            Label.SHOP_LABEL, channelModel.trackingAttributionModel.brandId,
+            Label.CAMPAIGN_CODE, channelModel.trackingAttributionModel.campaignCode,
+            Screen.KEY, Screen.DEFAULT,
+            CurrentSite.KEY, CurrentSite.DEFAULT,
+            UserId.KEY, userId,
+            BusinessUnit.KEY, BusinessUnit.DEFAULT
     ) as HashMap<String, Any>
 
-    private fun getLegoBannerFourViewAllClick(headerName: String, channelId: String) =  DataLayer.mapOf(
+    private fun getLegoBannerFourViewAllClick(channelModel: ChannelModel, headerName: String, channelId: String, userId: String) =  DataLayer.mapOf(
             Event.KEY, Event.CLICK_HOMEPAGE,
             Category.KEY, Category.HOMEPAGE,
             Action.KEY, CLICK_VIEW_ALL_ON_LEGO_4,
             Label.KEY, Value.FORMAT_2_ITEMS_DASH.format(channelId, headerName),
-            ChannelId.KEY, channelId
+            ChannelId.KEY, channelId,
+            Label.ATTRIBUTION_LABEL, channelModel.channelBanner.attribution,
+            Label.AFFINITY_LABEL, channelModel.trackingAttributionModel.persona,
+            Label.CATEGORY_LABEL, channelModel.trackingAttributionModel.categoryId,
+            Label.SHOP_LABEL, channelModel.trackingAttributionModel.brandId,
+            Label.CAMPAIGN_CODE, channelModel.trackingAttributionModel.campaignCode,
+            Screen.KEY, Screen.DEFAULT,
+            CurrentSite.KEY, CurrentSite.DEFAULT,
+            UserId.KEY, userId,
+            BusinessUnit.KEY, BusinessUnit.DEFAULT
     ) as HashMap<String, Any>
 
-    private fun getLegoBannerThreeViewAllClick(headerName: String, channelId: String) =  DataLayer.mapOf(
+    private fun getLegoBannerThreeViewAllClick(channelModel: ChannelModel, headerName: String, channelId: String, userId: String) =  DataLayer.mapOf(
             Event.KEY, Event.CLICK_HOMEPAGE,
             Category.KEY, Category.HOMEPAGE,
             Action.KEY, CLICK_VIEW_ALL_ON_LEGO_3,
             Label.KEY, Value.FORMAT_2_ITEMS_DASH.format(channelId, headerName),
-            ChannelId.KEY, channelId
+            ChannelId.KEY, channelId,
+            Label.ATTRIBUTION_LABEL, channelModel.channelBanner.attribution,
+            Label.AFFINITY_LABEL, channelModel.trackingAttributionModel.persona,
+            Label.CATEGORY_LABEL, channelModel.trackingAttributionModel.categoryId,
+            Label.SHOP_LABEL, channelModel.trackingAttributionModel.brandId,
+            Label.CAMPAIGN_CODE, channelModel.trackingAttributionModel.campaignCode,
+            Screen.KEY, Screen.DEFAULT,
+            CurrentSite.KEY, CurrentSite.DEFAULT,
+            UserId.KEY, userId,
+            BusinessUnit.KEY, BusinessUnit.DEFAULT
     ) as HashMap<String, Any>
 
     private fun getLegoBannerSixClick(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int) = getBasicPromotionChannelClick(

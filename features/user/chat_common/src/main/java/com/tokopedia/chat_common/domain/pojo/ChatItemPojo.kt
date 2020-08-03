@@ -76,5 +76,9 @@ data class ChatItemPojo(
 
         @Expose
         @SerializedName("blast_id")
-        val blastId: Int = 0
+        val blastId: Int = 0,
+
+        @Expose
+        @SerializedName("source")
+        val source: String = ""
 )

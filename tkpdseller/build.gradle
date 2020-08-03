@@ -27,7 +27,6 @@ dependencies {
     implementation project(rootProject.ext.features.topAdsManagementSourceTagging)
     implementation project(rootProject.ext.features.topAdsManagementCommon)
     implementation project(rootProject.ext.features.goldMerchantCommon)
-    implementation project(rootProject.ext.features.goldMerchantResource)
     implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.features.tkpdcore)
     implementation project(rootProject.ext.features.payment)
@@ -37,7 +36,6 @@ dependencies {
     implementation project(rootProject.ext.features.productManageCommon)
     implementation project(rootProject.ext.features.logisticdata)
     implementation project(rootProject.ext.features.categoryCommon)
-    implementation project(rootProject.ext.features.logisticdata)
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.purchase_platform_common)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
@@ -73,7 +71,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.cameraView
     implementation rootProject.ext.miscDependencies.lottie
-    implementation (rootProject.ext.serviceDependencies.crashlytics) {
+    implementation (rootProject.ext.firebase.crashlytics) {
         transitive = true
     }
     implementation (rootProject.ext.miscDependencies.ucrop){
