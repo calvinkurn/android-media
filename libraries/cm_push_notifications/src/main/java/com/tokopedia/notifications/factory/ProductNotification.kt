@@ -10,8 +10,10 @@ import android.view.View
 import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
 import com.tokopedia.notifications.R
+import com.tokopedia.notifications.analytics.ProductAnalytics
 import com.tokopedia.notifications.common.CMConstant
 import com.tokopedia.notifications.common.CMConstant.NotificationProductType
+import com.tokopedia.notifications.common.CMConstant.PreDefineActionType.OCC
 import com.tokopedia.notifications.common.CarouselUtilities
 import com.tokopedia.notifications.model.ActionButton
 import com.tokopedia.notifications.model.BaseNotificationModel
@@ -30,6 +32,8 @@ internal class ProductNotification(
 ) : BaseNotification(applicationContext, baseNotificationModel) {
 
     override fun createNotification(): Notification? {
+        ProductAnalytics.impression(baseNotificationModel) // impression tracker
+
         val builder = notificationBuilder
 
         if (baseNotificationModel.productInfoList.isEmpty()) return null
@@ -129,6 +133,9 @@ internal class ProductNotification(
     }
 
     private fun productDetailCard(remoteView: RemoteViews, product: ProductInfo) {
+        //tracker
+        ProductAnalytics.impressionExpanded(baseNotificationModel, product)
+
         // collapse
         remoteView.setOnClickPendingIntent(R.id.collapseMainView, getProductPendingIntent(product))
 
@@ -150,13 +157,17 @@ internal class ProductNotification(
         remoteView.setViewVisibility(R.id.ivArrowRight, View.GONE)
 
         // action button
-        remoteView.setOnClickPendingIntent(R.id.tv_productButton, getButtonPendingIntent(actionButton))
+        remoteView.setOnClickPendingIntent(R.id.tv_productButton, getButtonPendingIntent(product, actionButton))
         remoteView.setOnClickPendingIntent(R.id.iv_productImage, getProductPendingIntent(product))
         remoteView.setOnClickPendingIntent(R.id.ll_content, getProductPendingIntent(product))
         remoteView.setTextViewText(R.id.tv_productButton, actionButton.text)
     }
 
-    private fun getButtonPendingIntent(actionButton: ActionButton): PendingIntent {
+    private fun getButtonPendingIntent(product: ProductInfo, actionButton: ActionButton): PendingIntent {
+        if (actionButton.type == OCC) {
+            ProductAnalytics.occCLickButton(baseNotificationModel, product)
+        }
+
         val intent = getBaseBroadcastIntent(context, baseNotificationModel)
         intent.action = CMConstant.ReceiverAction.ACTION_BUTTON
         intent.putExtra(CMConstant.ReceiverExtraData.ACTION_BUTTON_EXTRA, actionButton)
@@ -164,6 +175,8 @@ internal class ProductNotification(
     }
 
     private fun getCollapsedPendingIntent(): PendingIntent {
+        ProductAnalytics.clickBody(baseNotificationModel) //click body tracker
+
         val intent = getBaseBroadcastIntent(context, baseNotificationModel)
         intent.action = CMConstant.ReceiverAction.ACTION_PRODUCT_COLLAPSED_CLICK
         return getPendingIntent(context, intent, requestCode)
@@ -176,6 +189,8 @@ internal class ProductNotification(
     }
 
     private fun getProductPendingIntent(productInfo: ProductInfo): PendingIntent {
+        ProductAnalytics.clickProductCard(baseNotificationModel, productInfo) //click body tracker
+
         val intent = getBaseBroadcastIntent(context, baseNotificationModel)
         intent.action = CMConstant.ReceiverAction.ACTION_PRODUCT_CLICK
         intent.putExtra(CMConstant.EXTRA_PRODUCT_INFO, productInfo)
