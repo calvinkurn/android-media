@@ -16,6 +16,8 @@ abstract class ViewComponent(
         @IdRes rootId: Int
 ) : IViewComponent {
 
+    override val id: Int = rootId
+
     override val rootView: View = container.findViewById(rootId)
 
     protected fun <V: View> findViewById(@IdRes id: Int): V = rootView.findViewById(id)

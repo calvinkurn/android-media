@@ -8,5 +8,7 @@ import androidx.lifecycle.LifecycleObserver
  */
 interface IViewComponent : LifecycleObserver {
 
+    val id: Int
+
     val rootView: View
 }
