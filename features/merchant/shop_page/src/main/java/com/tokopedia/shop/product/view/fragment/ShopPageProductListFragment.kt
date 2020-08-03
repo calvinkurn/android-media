@@ -39,7 +39,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.R
-import com.tokopedia.shop.ShopComponentInstance
+import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.*
 import com.tokopedia.shop.analytic.model.*
@@ -665,7 +665,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             DaggerShopProductComponent
                     .builder()
                     .shopProductModule(ShopProductModule())
-                    .shopComponent(ShopComponentInstance.getComponent(application, this))
+                    .shopComponent(ShopComponentHelper().getComponent(application, this))
                     .build()
                     .inject(this@ShopPageProductListFragment)
         }

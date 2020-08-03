@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.shop.R;
-import com.tokopedia.shop.ShopComponentInstance;
+import com.tokopedia.shop.ShopComponentHelper;
 import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.sort.view.fragment.ShopProductSortFragment;
 import com.tokopedia.shop.sort.view.listener.ShopProductSortFragmentListener;
@@ -64,7 +64,7 @@ public class ShopProductSortActivity extends BaseSimpleActivity implements HasCo
     @Override
     public ShopComponent getComponent() {
         if (component == null) {
-            component = ShopComponentInstance.getComponent(getApplication(), this);
+            component = new ShopComponentHelper().getComponent(getApplication(), this);
         }
         return component;
     }

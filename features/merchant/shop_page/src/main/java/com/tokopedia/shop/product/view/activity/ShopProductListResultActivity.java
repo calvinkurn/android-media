@@ -15,7 +15,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.shop.R;
-import com.tokopedia.shop.ShopComponentInstance;
+import com.tokopedia.shop.ShopComponentHelper;
 import com.tokopedia.shop.analytic.OldShopPageTrackingBuyer;
 import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.di.component.ShopComponent;
@@ -183,7 +183,7 @@ public class ShopProductListResultActivity extends BaseSimpleActivity
     @Override
     public ShopComponent getComponent() {
         if (component == null) {
-            component = ShopComponentInstance.getComponent(getApplication(), this);
+            component = new ShopComponentHelper().getComponent(getApplication(), this);
         }
         return component;
     }

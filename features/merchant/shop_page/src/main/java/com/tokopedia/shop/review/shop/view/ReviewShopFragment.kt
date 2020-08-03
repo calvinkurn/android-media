@@ -20,7 +20,7 @@ import com.tokopedia.imagepreview.ImagePreviewActivity.Companion.getCallingInten
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.R
-import com.tokopedia.shop.ShopComponentInstance
+import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.review.analytic.ReputationTracking
 import com.tokopedia.shop.review.analytic.ReputationTrackingConstant
 import com.tokopedia.shop.review.di.DaggerReputationComponent
@@ -110,7 +110,7 @@ class ReviewShopFragment : BaseListFragment<ReviewShopModelContent?, ReviewShopT
             DaggerReputationComponent
                     .builder()
                     .reputationModule(ReputationModule())
-                    .shopComponent(ShopComponentInstance.getComponent(it.application, it))
+                    .shopComponent(ShopComponentHelper().getComponent(it.application, it))
                     .build()
                     .inject(this)
             shopReviewPresenter!!.attachView(this)

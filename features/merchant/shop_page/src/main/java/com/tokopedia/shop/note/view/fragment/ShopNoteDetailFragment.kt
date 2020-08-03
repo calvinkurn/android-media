@@ -12,7 +12,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.design.loading.LoadingStateView
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shop.R
-import com.tokopedia.shop.ShopComponentInstance
+import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.common.constant.ShopParamConstant
 import com.tokopedia.shop.common.graphql.data.shopnote.ShopNoteModel
 import com.tokopedia.shop.common.util.TextHtmlUtils
@@ -72,7 +72,7 @@ class ShopNoteDetailFragment: BaseDaggerFragment(), ShopNoteDetailView {
             DaggerShopNoteComponent
                     .builder()
                     .shopNoteModule(ShopNoteModule())
-                    .shopComponent(ShopComponentInstance.getComponent(activity?.application, it))
+                    .shopComponent(ShopComponentHelper().getComponent(it.application, it))
                     .build()
                     .inject(this)
         }

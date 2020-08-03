@@ -39,7 +39,7 @@ import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarou
 import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselOverlayImageDataModel
 import com.tokopedia.shop.BuildConfig
 import com.tokopedia.shop.R
-import com.tokopedia.shop.ShopComponentInstance
+import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.analytic.ShopPageHomeTracking
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageAttribution
@@ -504,7 +504,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             DaggerShopPageHomeComponent
                     .builder()
                     .shopPageHomeModule(ShopPageHomeModule())
-                    .shopComponent(ShopComponentInstance.getComponent(application, this))
+                    .shopComponent(ShopComponentHelper().getComponent(application, this))
                     .build()
                     .inject(this@ShopPageHomeFragment)
             }
