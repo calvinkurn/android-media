@@ -5,7 +5,6 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
@@ -41,7 +40,6 @@ import com.tokopedia.product.manage.feature.quickedit.variant.presentation.data.
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.activity_campaign_stock.*
 import kotlinx.android.synthetic.main.fragment_campaign_stock.*
 import kotlinx.android.synthetic.main.layout_campaign_stock_product_info.view.*
 import javax.inject.Inject
@@ -278,8 +276,10 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
                                                  otherCampaignStockData: OtherCampaignStockData) {
         with(getStockAllocation) {
             val nonVariantStock = summary.sellableStock.toIntOrZero()
+            val nonVariantReservedStock = summary.reserveStock.toIntOrZero()
 
             mViewModel.updateNonVariantStockCount(nonVariantStock)
+            mViewModel.updateNonVariantReservedStockCount(nonVariantReservedStock)
 
             vp2_campaign_stock?.run {
                 adapter = activity?.let {

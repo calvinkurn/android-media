@@ -55,6 +55,7 @@ class CampaignStockViewModel @Inject constructor(
     private val mShopIdLiveData = MutableLiveData<String>()
 
     private val mNonVariantStockLiveData = MutableLiveData<Int>()
+    private val mNonVariantReservedStockLiveData = MutableLiveData<Int>()
     private val mNonVariantIsActiveLiveData = MutableLiveData<Boolean>()
 
     private val mEditVariantCampaignParamLiveData = MutableLiveData<List<EditVariantCampaignProductParam>>()
@@ -98,6 +99,10 @@ class CampaignStockViewModel @Inject constructor(
 
     fun updateNonVariantStockCount(stock: Int) {
         mNonVariantStockLiveData.value = stock
+    }
+
+    fun updateNonVariantReservedStockCount(reservedStockCount: Int) {
+        mNonVariantReservedStockLiveData.value = reservedStockCount
     }
 
     fun updateNonVariantIsActive(isActive: Boolean) {
@@ -164,7 +169,7 @@ class CampaignStockViewModel @Inject constructor(
                                         UpdateCampaignStockResult(
                                                 productId,
                                                 mCampaignProductNameLiveData.value.orEmpty(),
-                                                stock,
+                                                stock + mNonVariantReservedStockLiveData.value.toZeroIfNull(),
                                                 status,
                                                 editStockResponse.productUpdateV3Data.isSuccess,
                                                 editStockResponse.productUpdateV3Data.header.errorMessage.firstOrNull()
