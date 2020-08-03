@@ -118,6 +118,9 @@ class ReviewHistoryFragment : BaseListFragment<ReviewHistoryUiModel, ReviewHisto
     }
 
     override fun onSearchTextChanged(text: String) {
+        if(text.isNotEmpty()) {
+            ReviewHistoryTracking.eventSearch(viewModel.getUserId(), text)
+        }
         adapter.clearAllElements()
         viewModel.updateKeyWord(text)
     }
@@ -129,6 +132,11 @@ class ReviewHistoryFragment : BaseListFragment<ReviewHistoryUiModel, ReviewHisto
     private fun initSearchBar() {
         reviewHistorySearchBar.searchBarTextField.apply {
             addTextChangedListener(SearchTextWatcher(searchTextView = this, searchListener = this@ReviewHistoryFragment))
+            setOnFocusChangeListener { v, hasFocus ->
+                if(hasFocus) {
+                    ReviewHistoryTracking.eventClickSearchBar(viewModel.getUserId())
+                }
+            }
         }
     }
 

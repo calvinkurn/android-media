@@ -5,8 +5,24 @@ import com.tokopedia.track.TrackApp
 
 object ReviewHistoryTracking {
 
-    fun eventClickSearchBar(userId: String, keyword: String) {
+    fun eventSearch(userId: String, keyword: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                generateTrackingMap(
+                        ReviewHistoryTrackingConstants.CLICK_SEARCH,
+                        userId,
+                        String.format(ReviewHistoryTrackingConstants.KEYWORD_EVENT_LABEL, keyword)
+                )
+        )
+    }
 
+    fun eventClickSearchBar(userId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                generateTrackingMap(
+                        ReviewHistoryTrackingConstants.CLICK_SEARCH_EMPTY,
+                        userId,
+                        ""
+                )
+        )
     }
 
     fun eventClickImageGallery(userId: String, productId: Int, feedbackId: Int) {
