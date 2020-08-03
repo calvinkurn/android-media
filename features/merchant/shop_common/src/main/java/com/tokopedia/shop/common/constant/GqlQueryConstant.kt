@@ -1,5 +1,7 @@
 package com.tokopedia.shop.common.constant
 
+import com.tokopedia.shop.common.constant.GQLQueryNamedConstant.DEFAULT_SHOP_INFO_QUERY_NAME
+
 object GqlQueryConstant {
 
     const val SHOP_INFO_REQUEST_QUERY_STRING = "result {\n" +
@@ -226,19 +228,19 @@ object GqlQueryConstant {
             "             }\n" +
             "         }"
 
-    private const val SHOP_INFO_BASE_QUERY_STRING = "query getShopInfo(\$shopIds: [Int!]!, \$fields: [String!]!, \$shopDomain: String, \$source: String){\n" +
+    private const val SHOP_INFO_BASE_QUERY_STRING = "query %1s(\$shopIds: [Int!]!, \$fields: [String!]!, \$shopDomain: String, \$source: String){\n" +
             "    shopInfoByID(input: {\n" +
             "        shopIDs: \$shopIds,\n" +
             "        fields: \$fields,\n" +
             "        domain: \$shopDomain,\n" +
             "        source: \$source\n" +
             "    }){\n" +
-            "%1s" +
+            "%2s" +
             "        \n" +
             "    }\n" +
             "}"
 
-    fun getShopInfoQuery(requestQuery: String): String {
-        return String.format(SHOP_INFO_BASE_QUERY_STRING, requestQuery)
+    fun getShopInfoQuery(requestQuery: String, queryName: String = DEFAULT_SHOP_INFO_QUERY_NAME): String {
+        return String.format(SHOP_INFO_BASE_QUERY_STRING, queryName, requestQuery)
     }
 }

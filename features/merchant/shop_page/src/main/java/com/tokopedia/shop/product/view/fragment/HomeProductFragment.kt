@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.common.utils.network.TextApiUtils
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.shop.R
+import com.tokopedia.shop.ShopComponentInstance
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent
@@ -65,12 +66,14 @@ class HomeProductFragment : BaseDaggerFragment() {
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
-        DaggerShopProductComponent
-                .builder()
-                .shopProductModule(ShopProductModule())
-                .shopComponent(getComponent(ShopComponent::class.java))
-                .build()
-                .inject(this)
+        activity?.let {
+            DaggerShopProductComponent
+                    .builder()
+                    .shopProductModule(ShopProductModule())
+                    .shopComponent(ShopComponentInstance.getComponent(it.application))
+                    .build()
+                    .inject(this)
+        }
     }
 
 

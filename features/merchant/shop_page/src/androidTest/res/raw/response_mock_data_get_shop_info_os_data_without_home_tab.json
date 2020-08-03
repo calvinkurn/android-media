@@ -1,0 +1,14 @@
+[{
+  "data": {
+    "shopInfoByID": {
+      "result": [{
+        "os": {
+          "isOfficial": 0,
+          "title": "",
+          "badge": "",
+          "badgeSVG": ""
+        }
+      }]
+    }
+  }
+}]

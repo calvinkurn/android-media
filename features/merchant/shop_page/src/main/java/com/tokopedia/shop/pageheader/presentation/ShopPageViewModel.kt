@@ -14,6 +14,7 @@ import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shop.common.constant.ShopPageConstant
+import com.tokopedia.shop.common.di.GqlGetShopInfoForHeaderUseCaseQualifier
 import com.tokopedia.shop.common.di.*
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopFavoriteStatusUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
@@ -55,7 +56,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import rx.Subscriber
 import javax.inject.Inject
 
@@ -65,8 +65,6 @@ class ShopPageViewModel @Inject constructor(
                                             @GqlGetShopInfoForHeaderUseCaseQualifier
                                             private val gqlGetShopInfoForHeaderUseCase: GQLGetShopInfoUseCase,
                                             private val getBroadcasterShopConfigUseCase: GetBroadcasterShopConfigUseCase,
-                                            @GqlGetShopInfoForTabUseCaseQualifier
-                                            private val gqlGetShopInfoForTabUseCase: GQLGetShopInfoUseCase,
                                             @GqlGetShopInfoUseCaseOsQualifier
                                             private val gqlGetShopInfobUseCaseOs: GQLGetShopInfoUseCase,
                                             @GqlGetShopInfoUseCaseGoldQualifier

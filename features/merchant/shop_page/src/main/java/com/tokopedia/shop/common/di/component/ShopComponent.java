@@ -14,7 +14,6 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
 import com.tokopedia.shop.common.constant.GQLQueryNamedConstant;
 import com.tokopedia.shop.common.data.source.cloud.api.ShopApi;
 import com.tokopedia.shop.common.di.GqlGetShopInfoForHeaderUseCaseQualifier;
-import com.tokopedia.shop.common.di.GqlGetShopInfoForTabUseCaseQualifier;
 import com.tokopedia.shop.common.di.ShopPageContext;
 import com.tokopedia.shop.common.di.GqlGetShopInfoUseCaseCoreAndAssetsQualifier;
 import com.tokopedia.shop.common.di.GqlGetShopInfoUseCaseGoldQualifier;
@@ -80,9 +79,6 @@ public interface ShopComponent {
 
     @Named(GQLQueryNamedConstant.GQL_GET_SHOP_OPERATIONAL_HOUR_STATUS)
     String getGqlQueryShopOperationalHourStatus();
-
-    @GqlGetShopInfoForTabUseCaseQualifier
-    GQLGetShopInfoUseCase gqlGetShopInfoForTabUseCase();
 
     @GqlGetShopInfoUseCaseOsQualifier
     GQLGetShopInfoUseCase gqlGetShopInfoUseCaseOs();

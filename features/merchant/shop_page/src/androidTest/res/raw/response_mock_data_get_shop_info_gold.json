@@ -1,0 +1,13 @@
+[{
+  "data": {
+    "shopInfoByID": {
+      "result": [{
+        "gold": {
+          "isGold": 1,
+          "badge": "https://ecs7.tokopedia.net/img/newtkpd/powermerchant/ic-powermerchant-130px.png",
+          "badgeSVG": "https://ecs7.tokopedia.net/img/newtkpd/powermerchant/ic-powermerchant.svg"
+        }
+      }]
+    }
+  }
+}]
