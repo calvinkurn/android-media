@@ -77,6 +77,7 @@ import com.tokopedia.play.view.type.PlayRoomEvent
 import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.viewcomponent.EmptyViewComponent
+import com.tokopedia.play.view.viewcomponent.ToolbarViewComponent
 import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
@@ -106,7 +107,8 @@ class PlayUserInteractionFragment @Inject constructor(
         TkpdBaseV4Fragment(),
         PlayInteractionViewInitializer,
         PlayMoreActionBottomSheet.Listener,
-        PlayFragmentContract
+        PlayFragmentContract,
+        ToolbarViewComponent.Listener
 {
 
     companion object {
@@ -128,6 +130,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private val spaceSize by viewComponent { EmptyViewComponent(it, R.id.space_size) }
     private val gradientBackgroundView by viewComponent { EmptyViewComponent(it, R.id.view_gradient_background) }
+    private val toolbarView by viewComponent { ToolbarViewComponent(it, R.id.view_toolbar, this) }
 
     private lateinit var playViewModel: PlayViewModel
     private lateinit var viewModel: PlayInteractionViewModel
@@ -141,8 +144,6 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private val productSheetMaxHeight: Int
         get() = (requireView().height * PERCENT_PRODUCT_SHEET_HEIGHT).toInt()
-
-    private lateinit var toolbarView: View
 
     private val channelId: String
         get() = arguments?.getString(PLAY_KEY_CHANNEL_ID).orEmpty()
@@ -241,10 +242,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     override fun onNoAction(bottomSheet: PlayMoreActionBottomSheet) {
-        scope.launch {
-            EventBusFactory.get(viewLifecycleOwner)
-                    .emit(ScreenStateEvent::class.java, ScreenStateEvent.OnNoMoreAction)
-        }
+        toolbarView.hideActionMore()
     }
 
     override fun onInterceptOrientationChangedEvent(newOrientation: ScreenOrientation): Boolean {
@@ -267,6 +265,29 @@ class PlayUserInteractionFragment @Inject constructor(
             val lastAction = viewModel.observableLoggedInInteractionEvent.value?.peekContent()
             if (lastAction != null) handleInteractionEvent(lastAction.event)
         } else super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    /**
+     * Toolbar View Component Listener
+     */
+    override fun onBackButtonClicked(view: ToolbarViewComponent) {
+        doLeaveRoom()
+    }
+
+    override fun onMoreButtonClicked(view: ToolbarViewComponent) {
+        showMoreActionBottomSheet()
+    }
+
+    override fun onFollowButtonClicked(view: ToolbarViewComponent, partnerId: Long, action: PartnerFollowAction) {
+        doClickFollow(partnerId, action)
+    }
+
+    override fun onPartnerNameClicked(view: ToolbarViewComponent, partnerId: Long, type: PartnerType) {
+        openPartnerPage(partnerId, type)
+    }
+
+    override fun onCartButtonClicked(view: ToolbarViewComponent) {
+        shouldOpenCartPage()
     }
 
     private fun setupInsets(view: View) {
@@ -353,7 +374,9 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun observeToolbarInfo() {
-        playViewModel.observablePartnerInfo.observe(viewLifecycleOwner, DistinctObserver(::setPartnerInfo))
+        playViewModel.observablePartnerInfo.observe(viewLifecycleOwner, DistinctObserver {
+            toolbarView.setPartnerInfo(it)
+        })
     }
 
     private fun observeTotalLikes() {
@@ -455,6 +478,7 @@ class PlayUserInteractionFragment @Inject constructor(
              * New
              */
             if (map.isAnyShown) gradientBackgroundView.hide() else gradientBackgroundView.show()
+            if (!map.isAnyShown) toolbarView.show() else toolbarView.hide()
         })
     }
 
@@ -473,12 +497,15 @@ class PlayUserInteractionFragment @Inject constructor(
                  * New
                  */
                 if(it.isFreeze || it.isBanned) gradientBackgroundView.hide()
+                if(it.isFreeze || it.isBanned) toolbarView.show()
             }
         })
     }
 
     private fun observeCartInfo() {
-        playViewModel.observableBadgeCart.observe(viewLifecycleOwner, DistinctObserver(::setCartInfo))
+        playViewModel.observableBadgeCart.observe(viewLifecycleOwner, DistinctObserver {
+            toolbarView.setCartInfo(it)
+        })
     }
     //endregion
 
@@ -520,10 +547,10 @@ class PlayUserInteractionFragment @Inject constructor(
             onToolbarGlobalLayoutListener = object : ViewTreeObserver.OnGlobalLayoutListener{
                 override fun onGlobalLayout() {
                     playFragment.stopRenderMonitoring()
-                    if (::toolbarView.isInitialized) toolbarView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    toolbarView.rootView.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 }
             }
-            if (::toolbarView.isInitialized) toolbarView.viewTreeObserver.addOnGlobalLayoutListener(onToolbarGlobalLayoutListener)
+            toolbarView.rootView.viewTreeObserver.addOnGlobalLayoutListener(onToolbarGlobalLayoutListener)
         }
     }
 
@@ -545,25 +572,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     override fun onInitToolbar(container: ViewGroup): Int {
-        val toolbarComponent = ToolbarComponent(container, EventBusFactory.get(viewLifecycleOwner), scope, dispatchers)
-
-        scope.launch {
-            toolbarComponent.getUserInteractionEvents()
-                    .collect {
-                        when (it) {
-                            PlayToolbarInteractionEvent.BackButtonClicked -> doLeaveRoom()
-                            is PlayToolbarInteractionEvent.FollowButtonClicked -> doClickFollow(it.partnerId, it.action)
-                            PlayToolbarInteractionEvent.MoreButtonClicked -> showMoreActionBottomSheet()
-                            is PlayToolbarInteractionEvent.PartnerNameClicked -> openPartnerPage(it.partnerId, it.type)
-                            PlayToolbarInteractionEvent.CartButtonClicked -> shouldOpenCartPage()
-                        }
-                    }
-        }
-
-        val containerId = toolbarComponent.getContainerId()
-        toolbarView = container.findViewById(containerId)
-
-        return containerId
+        throw IllegalStateException("No Init")
     }
 
     override fun onInitVideoControl(container: ViewGroup): Int {
@@ -882,7 +891,7 @@ class PlayUserInteractionFragment @Inject constructor(
         PlayAnalytics.clickFollowShop(channelId, partnerId.toString(), action.value, playViewModel.channelType)
         viewModel.doFollow(partnerId, action)
 
-        sendEventFollowPartner(action == PartnerFollowAction.Follow)
+        toolbarView.setFollowStatus(action == PartnerFollowAction.Follow)
     }
 
     private fun sendEventFollowPartner(shouldFollow: Boolean) {

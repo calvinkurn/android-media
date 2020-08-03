@@ -36,13 +36,13 @@ class PlayUserInteractionLayoutManager(
     @IdRes private val videoControlComponentId: Int = viewInitializer.onInitVideoControl(container)
     @IdRes private val videoSettingsComponentId: Int = viewInitializer.onInitVideoSettings(container)
     @IdRes private val endLiveInfoComponentId: Int = viewInitializer.onInitEndLiveComponent(container)
-    @IdRes private val toolbarComponentId: Int = viewInitializer.onInitToolbar(container)
+//    @IdRes private val toolbarComponentId: Int = viewInitializer.onInitToolbar(container)
     @IdRes private val statsInfoComponentId: Int = viewInitializer.onInitStatsInfo(container)
     @IdRes private val quickReplyComponentId: Int = viewInitializer.onInitQuickReply(container)
     //play button should be on top of other component so it can be clicked
     @IdRes private val playButtonComponentId: Int = viewInitializer.onInitPlayButton(container)
 
-    private val toolbarView: View = container.findViewById(toolbarComponentId)
+    private val toolbarView: View = container.findViewById(R.id.view_toolbar)
     private val statsInfoView: View = container.findViewById(statsInfoComponentId)
     private val sendChatView: View = container.findViewById(sendChatComponentId)
     private val quickReplyView: View = container.findViewById(quickReplyComponentId)
@@ -56,7 +56,6 @@ class PlayUserInteractionLayoutManager(
     private val offset0 = container.resources.getDimensionPixelOffset(com.tokopedia.play.R.dimen.play_no_offset)
 
     override fun layoutView(view: View) {
-        layoutToolbar(container = view, id = toolbarComponentId, sizeContainerComponentId = R.id.space_size)
         layoutVideoControl(container = view, id = videoControlComponentId, sizeContainerComponentId = R.id.space_size, likeComponentId = likeComponentId)
         layoutLike(container = view, id = likeComponentId, videoControlComponentId = videoControlComponentId, sizeContainerComponentId = R.id.space_size)
         layoutChat(container = view, id = sendChatComponentId, likeComponentId = likeComponentId, sizeContainerComponentId = R.id.space_size, videoControlComponentId = videoControlComponentId)
@@ -66,7 +65,7 @@ class PlayUserInteractionLayoutManager(
         layoutImmersiveBox(container = view, videoOrientation = videoOrientation, id = immersiveBoxComponentId, pinnedComponentId = pinnedComponentId, statsInfoComponentId = statsInfoComponentId)
         layoutQuickReply(container = view, id = quickReplyComponentId, sendChatComponentId = sendChatComponentId, sizeContainerComponentId = R.id.space_size)
         layoutEndLiveComponent(container = view, id = endLiveInfoComponentId)
-        layoutStatsInfo(container = view, id = statsInfoComponentId, sizeContainerComponentId = R.id.space_size, toolbarComponentId = toolbarComponentId)
+        layoutStatsInfo(container = view, id = statsInfoComponentId, sizeContainerComponentId = R.id.space_size, toolbarComponentId = R.id.view_toolbar)
         layoutVideoSettings(container = view, id = videoSettingsComponentId, sizeContainerComponentId = R.id.space_size, statsInfoComponentId = statsInfoComponentId)
     }
 
@@ -195,14 +194,6 @@ class PlayUserInteractionLayoutManager(
             connect(id, ConstraintSet.START, sizeContainerComponentId, ConstraintSet.START, offset16)
             connect(id, ConstraintSet.END, likeComponentId, ConstraintSet.START, offset8)
             connect(id, ConstraintSet.BOTTOM, sizeContainerComponentId, ConstraintSet.BOTTOM)
-        }
-    }
-
-    private fun layoutToolbar(container: View, @IdRes id: Int, @IdRes sizeContainerComponentId: Int) {
-        container.changeConstraint {
-            connect(id, ConstraintSet.START, sizeContainerComponentId, ConstraintSet.START, offset16)
-            connect(id, ConstraintSet.END, sizeContainerComponentId, ConstraintSet.END, offset16)
-            connect(id, ConstraintSet.TOP, sizeContainerComponentId, ConstraintSet.TOP, offset16)
         }
     }
 
