@@ -8,17 +8,20 @@ import com.tokopedia.chat_common.view.adapter.BaseChatTypeFactory
  */
 class MessageViewModel : SendableViewModel, Visitable<BaseChatTypeFactory> {
 
+    var blastId = 0
+
     constructor(
             messageId: String, fromUid: String, from: String, fromRole: String,
             attachmentId: String, attachmentType: String, replyTime: String, startTime: String,
             isRead: Boolean, isDummy: Boolean, isSender: Boolean, message: String,
-            source: String
+            source: String, blastId: Int = 0
     ) : super(
             messageId, fromUid, from, fromRole,
             attachmentId, attachmentType, replyTime, startTime,
             isRead, isDummy, isSender, message,
             source
     ) {
+        this.blastId = blastId
     }
 
     /**
