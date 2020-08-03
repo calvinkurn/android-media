@@ -8,6 +8,7 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.TransitionDrawable
 import android.os.Build
+import android.os.Handler
 import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.View
@@ -62,6 +63,10 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
 
     private lateinit var afterInflationCallable: Callable<Any?>
 
+    private lateinit var handlerHint: Handler
+
+    private lateinit var handlerHintTask: Runnable
+
     private var viewHomeMainToolBar: View? = null
 
     constructor(context: Context) : super(context)
@@ -69,6 +74,8 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
 
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+
+
 
     fun setViewAttributesAfterInflation(){
         showShadow()
@@ -151,6 +158,7 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
     }
 
     override fun inflateResource(context: Context) {
+
         val asyncLayoutInflater = AsyncLayoutInflater(context)
         val inflateFinishCallBack: OnInflateFinishedListener? = OnInflateFinishedListener { view, resid, parent ->
             viewHomeMainToolBar = view
@@ -229,10 +237,51 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
         return shadowApplied
     }
 
-    fun setHint(placeholder: String, keyword: String, isFirstInstall: Boolean){
+    fun setHint(placeholder: ArrayList<String>, keyword: String, isFirstInstall: Boolean) {
         if(viewHomeMainToolBar != null) {
             val editTextSearch = viewHomeMainToolBar!!.findViewById<TextView>(R.id.et_search)
-            editTextSearch.hint = if (placeholder.isEmpty()) context.getString(R.string.search_tokopedia) else placeholder
+            if(::handlerHint.isInitialized && ::handlerHintTask.isInitialized) {
+                handlerHint.removeCallbacks(handlerHintTask)
+            }
+            if(placeholder.size > 1) {
+                var iterator = placeholder.iterator()
+                handlerHint = Handler()
+                handlerHintTask = Runnable {
+                    var hint = context.getString(R.string.search_tokopedia)
+
+                    val slideUpIn = AnimationUtils.loadAnimation(context, R.anim.slide_up_in)
+                    slideUpIn.interpolator = EasingInterpolator(Ease.QUART_OUT)
+                    val slideOutUp = AnimationUtils.loadAnimation(context, R.anim.slide_out_up)
+                    slideOutUp.interpolator = EasingInterpolator(Ease.QUART_IN)
+                    slideOutUp.setAnimationListener(object : Animation.AnimationListener {
+                        override fun onAnimationRepeat(animation: Animation?) {}
+                        override fun onAnimationEnd(animation: Animation?) {
+                            if(iterator.hasNext()) {
+                                hint = iterator.next()
+                            } else {
+                                iterator = placeholder.iterator()
+                                hint = iterator.next()
+                            }
+                            editTextSearch.hint = hint
+                            editTextSearch.startAnimation(slideUpIn)
+                        }
+                        override fun onAnimationStart(animation: Animation?) {}
+                    })
+                    editTextSearch.startAnimation(slideOutUp)
+
+                    handlerHint.postDelayed(
+                            handlerHintTask,
+                            INTERVAL_HINT.toLong()
+                    )
+                }
+                handlerHint.postDelayed(
+                        handlerHintTask,
+                        INTERVAL_HINT.toLong()
+                )
+            } else {
+                editTextSearch.hint = if (placeholder.isEmpty()) context.getString(R.string.search_tokopedia) else placeholder.first()
+            }
+
             editTextSearch.setSingleLine()
             editTextSearch.ellipsize = TextUtils.TruncateAt.END
             editTextSearch.setOnClickListener {
@@ -263,6 +312,7 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
         const val TOOLBAR_LIGHT_TYPE = 0
         const val TOOLBAR_DARK_TYPE = 1
         private const val HOME_SOURCE = "home"
+        private const val INTERVAL_HINT = 1000 * 10  //2 minutes
 
         private const val PARAM_APPLINK_AUTOCOMPLETE = "?navsource={source}&hint={hint}&first_install={first_install}"
     }
