@@ -1,7 +1,7 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
-apply from: "../../../compile-instrument-test.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
+apply plugin: 'androidx.benchmark'
 
 repositories {
     maven { url 'https://hansel.io/maven' }
@@ -28,6 +28,13 @@ android {
     defaultConfig {
         multiDexEnabled true
     }
+    defaultConfig {
+        if (project.hasProperty("benchmark")) {
+            testInstrumentationRunner 'com.tokopedia.test.application.environment.TkpdAndroidBenchmarkTestRunner'
+        } else {
+            testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
+        }
+    }
 }
 
 dependencies {
@@ -53,6 +60,8 @@ dependencies {
 
     implementation rootProject.ext.networkDependencies.glide
     implementation project(rootProject.ext.features.productCard)
+
+    androidTestImplementation (project(rootProject.ext.libraries.core_legacy))
 
     // UI Test
     androidTestImplementation rootProject.ext.testDependencies.androidTestRunner

@@ -3,6 +3,7 @@ package com.tokopedia.core.analytics;
 import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.appsflyer.AFInAppEventParameterName;
 import com.appsflyer.AFInAppEventType;
@@ -26,6 +27,8 @@ import java.util.Map;
 @Deprecated
 public class TrackingUtils{
     public static void eventCampaign(Context context, Campaign campaign) {
+        if (!isValidCampaign(campaign.getCampaign())) return;
+
         // V5
         TrackApp.getInstance().getGTM().sendCampaign(campaign.getCampaign());
 
@@ -77,18 +80,6 @@ public class TrackingUtils{
         TrackApp.getInstance().getMoEngage().sendTrackEvent(value, AppEventTracking.EventMoEngage.REFERRAL_SHARE_EVENT);
     }
 
-    public static void fragmentBasedAFEvent(Context context,String tag) {
-        Map<String, Object> afValue = new HashMap<>();
-        if (tag.equals(AppScreen.IDENTIFIER_REGISTER_NEWNEXT_FRAGMENT)
-                || tag.equals(AppScreen.IDENTIFIER_REGISTER_PASSPHONE_FRAGMENT)) {
-            afValue.put(AFInAppEventParameterName.REGSITRATION_METHOD, "register_normal");
-        } else if (tag.equals(AppScreen.IDENTIFIER_CATEGORY_FRAGMENT)) {
-            afValue.put(AFInAppEventParameterName.DESCRIPTION, Jordan.AF_SCREEN_HOME_MAIN);
-        }
-
-        TrackApp.getInstance().getAppsFlyer().sendTrackEvent(AppScreen.convertAFFragmentEvent(tag), afValue);
-    }
-
     public static void eventError(Context context,String className, String errorMessage) {
         TrackApp.getInstance().getGTM()
                 .eventError(className, errorMessage);
@@ -116,5 +107,27 @@ public class TrackingUtils{
 
     public static String getAfUniqueId(Context context) {
         return TrackApp.getInstance().getAppsFlyer().getUniqueId();
+    }
+
+    public static boolean isValidCampaign(Map<String, Object> maps) {
+        boolean isValid = false;
+
+        if(maps != null){
+            String gclid = maps.get(AppEventTracking.GTM.UTM_GCLID) != null ? maps.get(AppEventTracking.GTM.UTM_GCLID).toString() : "";
+            if(maps.containsKey(AppEventTracking.GTM.UTM_GCLID) && !TextUtils.isEmpty(gclid)){
+                isValid = true;
+            }else{
+                String utmSource = maps.get(AppEventTracking.GTM.UTM_SOURCE) != null ? maps.get(AppEventTracking.GTM.UTM_SOURCE).toString() : "";
+                String utmMedium = maps.get(AppEventTracking.GTM.UTM_MEDIUM) != null ? maps.get(AppEventTracking.GTM.UTM_MEDIUM).toString() : "";
+
+                isValid = !TextUtils.isEmpty(utmSource) && !TextUtils.isEmpty(utmMedium);
+            }
+
+            if(!isValid){
+                Log.d("TrackingUtils", "Invalid Campaign Data = "+maps.toString());
+            }
+        }
+
+        return isValid;
     }
 }

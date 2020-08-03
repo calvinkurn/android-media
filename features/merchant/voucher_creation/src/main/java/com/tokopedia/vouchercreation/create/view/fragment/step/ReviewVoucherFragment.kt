@@ -4,17 +4,25 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
+import com.bumptech.glide.signature.ObjectKey
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.unifycomponents.Toaster
@@ -38,7 +46,10 @@ import com.tokopedia.vouchercreation.create.view.enums.VoucherTargetCardType
 import com.tokopedia.vouchercreation.create.view.fragment.bottomsheet.GeneralExpensesInfoBottomSheetFragment
 import com.tokopedia.vouchercreation.create.view.fragment.bottomsheet.TermsAndConditionBottomSheetFragment
 import com.tokopedia.vouchercreation.create.view.fragment.bottomsheet.VoucherDisplayBottomSheetFragment
+import com.tokopedia.vouchercreation.create.view.painter.VoucherPreviewPainter
+import com.tokopedia.vouchercreation.create.view.uimodel.initiation.BannerBaseUiModel
 import com.tokopedia.vouchercreation.create.view.uimodel.initiation.PostBaseUiModel
+import com.tokopedia.vouchercreation.create.view.uimodel.voucherimage.BannerVoucherUiModel
 import com.tokopedia.vouchercreation.create.view.uimodel.voucherimage.PostVoucherUiModel
 import com.tokopedia.vouchercreation.create.view.uimodel.voucherreview.VoucherReviewUiModel
 import com.tokopedia.vouchercreation.create.view.viewmodel.ReviewVoucherViewModel
@@ -60,6 +71,8 @@ class ReviewVoucherFragment : BaseDetailFragment() {
                            getBannerBitmap: () -> Bitmap?,
                            getVoucherId: () -> Int?,
                            getPromoCodePrefix: () -> String,
+                           getBannerBaseUiModel: () -> BannerBaseUiModel,
+                           getVoucherBanner: () -> BannerVoucherUiModel,
                            isEdit: Boolean): ReviewVoucherFragment = ReviewVoucherFragment().apply {
             this.getVoucherReviewUiModel = getVoucherReviewUiModel
             this.getToken = getToken
@@ -68,6 +81,8 @@ class ReviewVoucherFragment : BaseDetailFragment() {
             this.getBannerBitmap = getBannerBitmap
             this.getVoucherId = getVoucherId
             this.getPromoCodePrefix = getPromoCodePrefix
+            this.getBannerBaseUiModel = getBannerBaseUiModel
+            this.getVoucherBanner = getVoucherBanner
             this.isEdit = isEdit
         }
 
@@ -94,6 +109,20 @@ class ReviewVoucherFragment : BaseDetailFragment() {
     private var getBannerBitmap: () -> Bitmap? = { null }
     private var getVoucherId: () -> Int? = { null }
     private var getPromoCodePrefix: () -> String = { "" }
+    private var getBannerBaseUiModel: () -> BannerBaseUiModel = {
+        BannerBaseUiModel(
+                CreateMerchantVoucherStepsActivity.BANNER_BASE_URL,
+                CreateMerchantVoucherStepsActivity.FREE_DELIVERY_URL,
+                CreateMerchantVoucherStepsActivity.CASHBACK_URL,
+                CreateMerchantVoucherStepsActivity.CASHBACK_UNTIL_URL
+        )}
+    private var getVoucherBanner: () -> BannerVoucherUiModel = {
+        BannerVoucherUiModel(
+                VoucherImageType.FreeDelivery(0),
+                "",
+                "",
+                "")
+    }
     private var isEdit: Boolean = false
 
     @Inject
@@ -299,9 +328,7 @@ class ReviewVoucherFragment : BaseDetailFragment() {
                         context?.getString(R.string.mvc_oke).toBlankOrString(),
                         View.OnClickListener { })
             }
-            with(adapter) {
-                notifyItemChanged(data.indexOf(buttonUiModel))
-            }
+            refreshFooterButton()
             return
         }
         if (!isPromoCodeEligible) {
@@ -313,9 +340,7 @@ class ReviewVoucherFragment : BaseDetailFragment() {
                         context?.getString(R.string.mvc_oke).toBlankOrString(),
                         View.OnClickListener { })
             }
-            with(adapter) {
-                notifyItemChanged(data.indexOf(buttonUiModel))
-            }
+            refreshFooterButton()
             return
         }
         isWaitingForResult = true
@@ -356,6 +381,7 @@ class ReviewVoucherFragment : BaseDetailFragment() {
                     when(result) {
                         is Success -> {
                             context?.run {
+                                // Send success voucher id to voucher list to display success bottomsheet/toaster
                                 val intent = VoucherListActivity.createInstance(this, true).apply {
                                     putExtra(VoucherListActivity.SUCCESS_VOUCHER_ID_KEY, result.data)
                                     flags = Intent.FLAG_ACTIVITY_NEW_TASK
@@ -365,6 +391,8 @@ class ReviewVoucherFragment : BaseDetailFragment() {
                                     finish()
                                 }
                                 startActivity(intent)
+
+                                // Disable showing create voucher dialog upon accessing mvc after first time success
                                 sharedPref?.run {
                                     if (getBoolean(IS_MVC_FIRST_TIME, true)) {
                                         edit().putBoolean(IS_MVC_FIRST_TIME, false).apply()
@@ -507,16 +535,20 @@ class ReviewVoucherFragment : BaseDetailFragment() {
     }
 
     private fun updateVoucher() {
-        getBannerBitmap()?.let startCheck@ { bannerBitmap ->
-            squareVoucherBitmap?.let { squareBitmap ->
-                getVoucherId()?.let { voucherId ->
-                    viewModel.updateVoucher(
-                            bannerBitmap,
-                            squareBitmap,
-                            getVoucherReviewUiModel(),
-                            getToken(),
-                            voucherId
-                    )
+        if (getBannerBitmap() == null) {
+            drawNullBanner()
+        } else {
+            getBannerBitmap()?.let { bannerBitmap ->
+                squareVoucherBitmap?.let { squareBitmap ->
+                    getVoucherId()?.let { voucherId ->
+                        viewModel.updateVoucher(
+                                bannerBitmap,
+                                squareBitmap,
+                                getVoucherReviewUiModel(),
+                                getToken(),
+                                voucherId
+                        )
+                    }
                 }
             }
         }
@@ -575,6 +607,51 @@ class ReviewVoucherFragment : BaseDetailFragment() {
         }
         adapter.notifyDataSetChanged()
         isPromoCodeEligible = false
+    }
+
+    private fun drawNullBanner() {
+        context?.run {
+            Glide.with(this)
+                    .asDrawable()
+                    .load(getBannerBaseUiModel().bannerBaseUrl)
+                    .signature(ObjectKey(System.currentTimeMillis().toString()))
+                    .listener(object : RequestListener<Drawable> {
+                        override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                            view?.run {
+                                Toaster.make(this,
+                                        context?.getString(R.string.mvc_general_error).toBlankOrString(),
+                                        Toaster.LENGTH_SHORT,
+                                        Toaster.TYPE_ERROR)
+                            }
+                            refreshFooterButton()
+                            return false
+                        }
+
+                        override fun onResourceReady(resource: Drawable, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                            activity?.runOnUiThread {
+                                val bitmap = resource.toBitmap()
+                                val painter = VoucherPreviewPainter(this@run, bitmap, ::onSuccessGetUpdateBitmap, getBannerBaseUiModel())
+                                painter.drawFull(getVoucherBanner(), bitmap)
+                            }
+                            return false
+                        }
+                    })
+                    .submit()
+        }
+    }
+
+    private fun onSuccessGetUpdateBitmap(bannerBitmap: Bitmap) {
+        getBannerBitmap = { bannerBitmap }
+        updateVoucher()
+    }
+
+    private fun refreshFooterButton() {
+        adapter?.run {
+            data?.indexOf(buttonUiModel)?.let { index ->
+                (adapter.data[index] as? FooterButtonUiModel)?.isLoading = false
+                notifyItemChanged(index)
+            }
+        }
     }
 
 }

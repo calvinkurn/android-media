@@ -41,6 +41,7 @@ import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.DASH_DATE_FORMAT
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.HOUR_FORMAT
 import com.tokopedia.vouchercreation.common.utils.SharingUtil
 import com.tokopedia.vouchercreation.common.utils.Socmed
+import com.tokopedia.vouchercreation.common.utils.showErrorToaster
 import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherTargetType
 import com.tokopedia.vouchercreation.create.view.activity.CreateMerchantVoucherStepsActivity
 import com.tokopedia.vouchercreation.create.view.enums.VoucherCreationStep
@@ -107,6 +108,10 @@ class VoucherDetailFragment : BaseDetailFragment() {
 
     private val generalExpenseBottomSheet by lazy {
         GeneralExpensesInfoBottomSheetFragment.createInstance(context)
+    }
+
+    private val shareVoucherBottomSheet by lazy {
+        ShareVoucherBottomSheet.createInstance()
     }
 
     private val impressHolder = ImpressHolder()
@@ -257,7 +262,7 @@ class VoucherDetailFragment : BaseDetailFragment() {
                 userId = userSession.userId
         )
         if (!isAdded) return
-        TipsTrickBottomSheet(context ?: return, !(voucherUiModel?.isPublic ?: true))
+        TipsTrickBottomSheet.createInstance(!(voucherUiModel?.isPublic ?: true))
                 .setOnDownloadClickListener {
                     VoucherCreationTracking.sendVoucherDetailClickTracking(
                             status = voucherUiModel?.status ?: VoucherStatusConst.NOT_STARTED,
@@ -281,12 +286,10 @@ class VoucherDetailFragment : BaseDetailFragment() {
 
     override fun showDownloadBottomSheet() {
         if (!isAdded) return
-        val parent = view as? ViewGroup ?: return
-        DownloadVoucherBottomSheet(
-                parent,
+        DownloadVoucherBottomSheet.createInstance(
                 voucherUiModel?.image.toBlankOrString(),
                 voucherUiModel?.imageSquare.toBlankOrString(),
-                userSession)
+                userSession.userId)
                 .setOnDownloadClickListener { voucherList ->
                     activity?.run {
                         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
@@ -384,8 +387,7 @@ class VoucherDetailFragment : BaseDetailFragment() {
 
     private fun showShareBottomSheet(voucher: VoucherUiModel) {
         if (!isAdded) return
-        val parent = view as? ViewGroup ?: return
-        ShareVoucherBottomSheet(parent)
+        shareVoucherBottomSheet
                 .setOnItemClickListener { socmedType ->
                     context?.run {
                         if (socmedType != SocmedType.COPY_LINK || socmedType != SocmedType.LAINNYA) {
@@ -630,12 +632,7 @@ class VoucherDetailFragment : BaseDetailFragment() {
                 }
         val errorMessage = context?.getString(errorMessageRes).toBlankOrString()
 
-        view?.run {
-            Toaster.make(this,
-                    errorMessage,
-                    Toaster.LENGTH_LONG,
-                    Toaster.TYPE_ERROR)
-        }
+        view?.showErrorToaster(errorMessage)
     }
 
     private fun sendOpenScreenTracking() {
