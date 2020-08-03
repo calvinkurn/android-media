@@ -34,6 +34,7 @@ import com.tokopedia.topchat.chatroom.view.listener.TopChatVoucherListener
 import com.tokopedia.topchat.chatroom.view.uimodel.HeaderDateUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.ProductCarouselUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.StickerUiModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.BroadcastSpamHandlerUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.ImageDualAnnouncementUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherUiModel
@@ -116,6 +117,10 @@ open class TopChatTypeFactoryImpl constructor(
         return StickerMessageViewHolder.LAYOUT
     }
 
+    override fun type(broadcastSpamHandlerUiModel: BroadcastSpamHandlerUiModel): Int {
+        return BroadcastSpamHandlerViewHolder.LAYOUT
+    }
+
     override fun type(productAttachmentViewModel: ProductAttachmentViewModel): Int {
         return TopchatProductAttachmentViewHolder.LAYOUT
     }
@@ -154,6 +159,7 @@ open class TopChatTypeFactoryImpl constructor(
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
+            BroadcastSpamHandlerViewHolder.LAYOUT -> BroadcastSpamHandlerViewHolder(parent)
             TopchatLoadingModelViewHolder.LAYOUT -> TopchatLoadingModelViewHolder(parent)
             TopchatLoadingMoreViewHolder.LAYOUT -> TopchatLoadingMoreViewHolder(parent)
             StickerMessageViewHolder.LAYOUT -> StickerMessageViewHolder(parent)

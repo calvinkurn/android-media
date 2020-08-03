@@ -85,4 +85,8 @@ class MessageViewModel : SendableViewModel, Visitable<BaseChatTypeFactory> {
     fun isFromSmartReply(): Boolean {
         return source == SOURCE_TOPBOT
     }
+
+    fun isFromBroadCast(): Boolean {
+        return blastId > 0
+    }
 }

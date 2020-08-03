@@ -7,6 +7,7 @@ import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_DUAL_A
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_QUOTATION
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_STICKER
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_VOUCHER
+import com.tokopedia.chat_common.data.MessageViewModel
 import com.tokopedia.chat_common.domain.mapper.GetExistingChatMapper
 import com.tokopedia.chat_common.domain.pojo.ChatRepliesItem
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
@@ -19,6 +20,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.sticker.attr.StickerAttributes
 import com.tokopedia.topchat.chatroom.view.uimodel.HeaderDateUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.ProductCarouselUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.StickerUiModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.BroadcastSpamHandlerUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.ImageDualAnnouncementUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherUiModel
@@ -60,8 +62,22 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
                     }
                 }
             }
+            addTickerBroadcastSpamHandler(listChat)
         }
         return listChat
+    }
+
+    private fun addTickerBroadcastSpamHandler(listChat: ArrayList<Visitable<*>>) {
+        if (listChat.isEmpty()) return
+        val lastMessage = listChat[listChat.lastIndex]
+        if (lastMessage is MessageViewModel && lastMessage.isFromBroadCast() && !lastMessage.isSender) {
+            val spamHandlerModel = createBroadcastSpamHandlerViewModel()
+            listChat.add(spamHandlerModel)
+        }
+    }
+
+    private fun createBroadcastSpamHandlerViewModel(): Visitable<*> {
+        return BroadcastSpamHandlerUiModel()
     }
 
     private fun createHeaderDate(chatItemPojo: ChatRepliesItem): Visitable<*> {
