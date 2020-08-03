@@ -43,7 +43,8 @@ object ProductMapper {
                 url = it.url,
                 cashBack = it.cashback,
                 multiSelectActive = multiSelectActive,
-                isChecked = false
+                isChecked = false,
+                hasStockReserved = it.hasStockReserved
             )
         } ?: emptyList()
     }

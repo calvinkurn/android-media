@@ -215,6 +215,7 @@
     <string name="filter_expand_activity">Expand</string>
     <string name="product_manage_set_cashback">Cashback</string>
     <string name="product_manage_etalase_picker_title">Pindah Etalase</string>
+    <string name="product_manage_campaign_stock_allocation">Alokasi Stok</string>
 
     <!-- Dynamic feature for manage Seller Order Management-->
     <string name="title_seller_order">Seller Order Management</string>
