@@ -65,13 +65,9 @@ public class PromoStacking {
     @SerializedName("hide_shipper_name")
     @Expose
     private boolean hideShipperName;
-    @SerializedName("is_bo_eligible_cod")
+    @SerializedName("cod")
     @Expose
-    private boolean isBoEligibleCod;
-    @SerializedName("cod_text")
-    @Expose
-    private boolean codText;
-
+    private CodProductData cod;
 
     public Integer getIsPromo() {
         return isPromo;
@@ -225,19 +221,11 @@ public class PromoStacking {
         this.hideShipperName = hideShipperName;
     }
 
-    public boolean isBoEligibleCod() {
-        return isBoEligibleCod;
+    public CodProductData getCod() {
+        return cod;
     }
 
-    public void setBoEligibleCod(boolean boEligibleCod) {
-        isBoEligibleCod = boEligibleCod;
-    }
-
-    public boolean isCodText() {
-        return codText;
-    }
-
-    public void setCodText(boolean codText) {
-        this.codText = codText;
+    public void setCod(CodProductData cod) {
+        this.cod = cod;
     }
 }

@@ -2,6 +2,7 @@ package com.tokopedia.logisticcart.shipping.model
 
 import android.os.Parcel
 import android.os.Parcelable
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.CodProductData
 
 /**
  * Created by fajarnuha on 29/03/19.
@@ -22,7 +23,8 @@ data class LogisticPromoUiModel(val promoCode: String,
                                 val shippingRate: Int,
                                 val benefitAmount: Int,
                                 val disabled: Boolean,
-                                val hideShipperName: Boolean) : RatesViewModelType, Parcelable{
+                                val hideShipperName: Boolean,
+                                val codData: CodProductData) : RatesViewModelType, Parcelable{
     constructor(source: Parcel) : this(
             source.readString(),
             source.readString(),
@@ -40,7 +42,9 @@ data class LogisticPromoUiModel(val promoCode: String,
             source.readInt(),
             source.readInt(),
             1 == source.readInt(),
-            1 == source.readInt()
+            1 == source.readInt(),
+//            readParcelable(ServiceData.class.getClassLoader());
+            source.readParcelable(CodProductData::class.java.classLoader)
     )
 
     override fun describeContents() = 0
@@ -63,6 +67,7 @@ data class LogisticPromoUiModel(val promoCode: String,
         writeInt(benefitAmount)
         writeInt((if (disabled) 1 else 0))
         writeInt((if (hideShipperName) 1 else 0))
+        writeParcelable(codData, flags)
     }
 
     companion object {
