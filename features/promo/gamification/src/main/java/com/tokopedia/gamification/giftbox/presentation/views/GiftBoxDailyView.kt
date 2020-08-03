@@ -140,6 +140,14 @@ open class GiftBoxDailyView : FrameLayout {
                   lifecycleOwner: LifecycleOwner,
                   imageCallback: ((isLoaded: Boolean) -> Unit)) {
 
+        fun incrementAndSendCallback() {
+            val count = imagesLoaded.incrementAndGet()
+            if (count == TOTAL_ASYNC_IMAGES) {
+                imageCallback.invoke(true)
+            }
+        }
+
+        //Lid images
         fun handleSuccessOfImageListDownload(images: List<Bitmap>?) {
             try {
                 if (images.isNullOrEmpty()) {
@@ -153,6 +161,7 @@ open class GiftBoxDailyView : FrameLayout {
                     loadOriginalImages(bmp, imageCallback)
                 }
             } catch (ex: Exception) {
+                imageCallback.invoke(false)
             }
         }
 
@@ -169,18 +178,45 @@ open class GiftBoxDailyView : FrameLayout {
         })
         viewModel.downloadImages(lidImageList, imageListLiveData)
 
+        //Front Image
         Glide.with(imageBoxFront)
                 .load(imageFrontUrl)
                 .dontAnimate()
                 .addListener(getGlideListener(imageCallback))
                 .into(imageBoxFront)
 
+        //Bg Image
+        fun handleSuccessOfDownloadImage(bmp: Bitmap?){
+            try {
+                if (bmp != null) {
+                    Glide.with(this)
+                            .load(bmp)
+                            .dontAnimate()
+                            .into(imageBg)
+                }
+                incrementAndSendCallback()
+            }catch (ex:Exception){
+                imageCallback.invoke(false)
+            }
+        }
 
-        Glide.with(imageBg)
-                .load(imageBgUrl)
-                .dontAnimate()
-                .addListener(getGlideListener(imageCallback))
-                .into(imageBg)
+        fun handleFailureOfDownloadImage(){
+            imageCallback.invoke(false)
+        }
+
+        val imageLiveData = MutableLiveData<LiveDataResult<Bitmap?>>()
+        imageLiveData.observe(lifecycleOwner, Observer {
+            when (it.status) {
+                LiveDataResult.STATUS.SUCCESS -> {
+                    val bmp = it.data
+                    handleSuccessOfDownloadImage(bmp)
+                }
+                LiveDataResult.STATUS.ERROR -> {
+                    handleFailureOfDownloadImage()
+                }
+            }
+        })
+        viewModel.downloadImage(imageBgUrl, imageLiveData)
     }
 
     fun getGlideListener(imageCallback: ((isLoaded: Boolean) -> Unit)): RequestListener<Drawable> {
@@ -341,6 +377,7 @@ open class GiftBoxDailyView : FrameLayout {
                     })
                     .into(imageGiftBoxLid)
         } catch (ex: Exception) {
+            imageCallback.invoke(false)
         }
     }
 

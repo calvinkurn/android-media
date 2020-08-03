@@ -77,6 +77,8 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     var tokenUserState: String = TokenUserState.DEFAULT
     var disableGiftBoxTap = false
     var autoApplyMessage = ""
+    var totalPrizeImagesCount = 0
+    var loadedPrizeImagesCount = 0
 
     override fun getLayout() = com.tokopedia.gamification.R.layout.fragment_gift_box_daily
 
@@ -675,18 +677,18 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     }
 
     fun loadPrizeImagesAsync(entity: GiftBoxEntity, imageCallback: (() -> Unit)) {
-        var totalImagesCount = 0
-        var loadedImagesCount = 0
+        loadedPrizeImagesCount = 0
+        totalPrizeImagesCount = 0
 
         fun checkImageLoadStatus() {
-            loadedImagesCount += 1
-            if (loadedImagesCount == totalImagesCount) {
+            loadedPrizeImagesCount += 1
+            if (loadedPrizeImagesCount == totalPrizeImagesCount) {
                 imageCallback.invoke()
             }
         }
         entity.gamiLuckyHome.prizeList?.forEach {
             if (it.isSpecial) {
-                totalImagesCount += 1
+                totalPrizeImagesCount += 1
                 prizeViewLarge.setData(it.imageURL, it.text) {
                     checkImageLoadStatus()
                 }
@@ -697,17 +699,17 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                         checkImageLoadStatus()
                     }
                     prizeViewSmallFirst.visibility = View.VISIBLE
-                    totalImagesCount += 1
+                    totalPrizeImagesCount += 1
                 } else {
                     prizeViewSmallSecond.setData(it.imageURL, it.text) {
                         checkImageLoadStatus()
                     }
                     prizeViewSmallSecond.visibility = View.VISIBLE
-                    totalImagesCount += 1
+                    totalPrizeImagesCount += 1
                 }
             }
         }
-        if (totalImagesCount == loadedImagesCount) {
+        if (totalPrizeImagesCount == loadedPrizeImagesCount) {
             imageCallback.invoke()
         }
     }

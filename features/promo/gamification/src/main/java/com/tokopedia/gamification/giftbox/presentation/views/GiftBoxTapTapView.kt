@@ -210,6 +210,7 @@ class GiftBoxTapTapView : GiftBoxDailyView {
             TOTAL_ASYNC_IMAGES -= 1
         }
 
+        //Bg Image
         fun handleSuccessOfDownloadImage(bmp: Bitmap?){
             try {
                 val rp = if (bmp != null) {
@@ -222,7 +223,9 @@ class GiftBoxTapTapView : GiftBoxDailyView {
                 rp.dontAnimate()
                         .into(imageBg)
                 incrementAndSendCallback()
-            }catch (ex:Exception){}
+            }catch (ex:Exception){
+                ex.printStackTrace()
+            }
         }
 
         fun handleFailureOfDownloadImage(){
@@ -233,7 +236,7 @@ class GiftBoxTapTapView : GiftBoxDailyView {
                         .into(imageBg)
 
                 incrementAndSendCallback()
-            }catch (ex:Exception){}
+            }catch (ex:Exception){ex.printStackTrace()}
         }
 
         val imageLiveData = MutableLiveData<LiveDataResult<Bitmap?>>()
@@ -268,6 +271,7 @@ class GiftBoxTapTapView : GiftBoxDailyView {
                 })
                 .into(imageBoxFront)
 
+        //Download lid images
         fun handleSuccessOfImageListDownload(images: List<Bitmap>?){
 
             if (images.isNullOrEmpty()) {
@@ -277,7 +281,7 @@ class GiftBoxTapTapView : GiftBoxDailyView {
                 loadOriginalImages(images[0], imageCallback)
             }
         }
-        //Download lid images
+
         val imageListLiveData = MutableLiveData<LiveDataResult<List<Bitmap>?>>()
         imageListLiveData.observe(lifecycleOwner, Observer {
             when (it.status) {
