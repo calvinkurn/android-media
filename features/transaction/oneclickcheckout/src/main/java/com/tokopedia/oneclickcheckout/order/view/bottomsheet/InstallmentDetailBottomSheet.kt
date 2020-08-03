@@ -77,8 +77,9 @@ class InstallmentDetailBottomSheet {
                 }
                 viewInstallmentDetailItem.alpha = 1.0f
             } else {
-                tvInstallmentDetailServiceFee.text = context.getString(R.string.lbl_installment_payment_minimum_before_fee, CurrencyFormatUtil.convertPriceValueToIdrFormat(installment.fee, false).removeDecimalSuffix())
+                tvInstallmentDetailServiceFee.text = context.getString(R.string.lbl_installment_payment_minimum_before_fee, CurrencyFormatUtil.convertPriceValueToIdrFormat(installment.minAmount, false).removeDecimalSuffix())
                 rbInstallmentDetail.isChecked = installment.isSelected
+                rbInstallmentDetail.isEnabled = false
                 viewInstallmentDetailItem.alpha = 0.5f
             }
             ll.addView(viewInstallmentDetailItem, 0)
