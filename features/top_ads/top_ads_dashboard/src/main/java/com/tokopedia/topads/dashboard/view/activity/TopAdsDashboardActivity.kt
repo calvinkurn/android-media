@@ -1,6 +1,7 @@
 package com.tokopedia.topads.dashboard.view.activity
 
 import android.app.Activity
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -16,12 +17,9 @@ import com.tokopedia.applink.AppUtil
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
-import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
-import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.TopAdsDashboardTracking
@@ -29,6 +27,7 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.AUTO_ADS_DISABLED
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.EXPIRE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.FIRST_LAUNCH
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.SELLER_PACKAGENAME
 import com.tokopedia.topads.dashboard.data.model.FragmentTabItem
 import com.tokopedia.topads.dashboard.di.DaggerTopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
@@ -52,8 +51,6 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
 
     @Inject
     lateinit var topAdsDashboardPresenter: TopAdsDashboardPresenter
-
-    override fun getScreenName(): String = TopAdsDashboardActivity::class.java.simpleName
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
@@ -218,9 +215,11 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
 
     private fun openDashboard() {
         if (AppUtil.isSellerInstalled(this)) {
-            goToSellerMigrationPage(arrayListOf(ApplinkConstInternalSellerapp.SELLER_HOME, ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL))
+            val intent = RouteManager.getIntent(this, ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL)
+            intent.component = ComponentName(SELLER_PACKAGENAME, TopAdsDashboardActivity::class.java.name)
+            startActivity(intent)
         } else {
-            goToSellerMigrationPage(arrayListOf(ApplinkConstInternalSellerapp.SELLER_HOME, ApplinkConstInternalMechant.MERCHANT_REDIRECT_CREATE_SHOP))
+            RouteManager.route(this, ApplinkConstInternalMechant.MERCHANT_REDIRECT_CREATE_SHOP)
         }
     }
 
@@ -230,11 +229,6 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
         } else if (state == TopAdsProductIklanFragment.State.EXPANDED) {
             app_bar_layout.setExpanded(true)
         }
-    }
-
-    private fun goToSellerMigrationPage(appLinks: ArrayList<String>) {
-        val intent = SellerMigrationActivity.createIntent(this, SellerMigrationFeatureName.FEATURE_TOPADS, screenName, appLinks)
-        startActivity(intent)
     }
 
     override fun gotToInsights() {

@@ -16,9 +16,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
-import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.kotlin.extensions.view.requestStatusBarDark
 import com.tokopedia.seller.active.common.service.UpdateShopActiveService
@@ -89,7 +87,6 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
 
     private var shouldMoveToReview: Boolean = false
     private var shouldMoveToCentralizedPromo: Boolean = false
-    private var shouldMoveToTopAds: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initPerformanceMonitoring()
@@ -99,7 +96,6 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         with (intent?.getStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA)?.firstOrNull().orEmpty()) {
             shouldMoveToReview = this == ApplinkConst.REPUTATION
             shouldMoveToCentralizedPromo = this == ApplinkConst.REPUTATION
-            shouldMoveToTopAds = this == ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL || this == ApplinkConstInternalMechant.MERCHANT_REDIRECT_CREATE_SHOP
         }
         val isRedirectedFromSellerMigration = intent?.hasExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA) ?: false ||
                 intent?.hasExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME) ?: false
@@ -119,10 +115,9 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         val appLinks = ArrayList(intent?.getStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA).orEmpty())
         if (appLinks.isNotEmpty()) {
             val appLinkToOpen = appLinks.firstOrNull().orEmpty()
-            if (shouldMoveToReview || shouldMoveToCentralizedPromo || shouldMoveToTopAds) {
+            if (shouldMoveToReview || shouldMoveToCentralizedPromo) {
                 shouldMoveToReview = false
                 shouldMoveToCentralizedPromo = false
-                shouldMoveToTopAds = false
                 RouteManager.getIntent(this, appLinkToOpen).apply {
                     replaceExtras(this@SellerHomeActivity.intent.extras)
                     startActivity(this)
