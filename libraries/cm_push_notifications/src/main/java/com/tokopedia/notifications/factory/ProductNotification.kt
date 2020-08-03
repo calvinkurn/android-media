@@ -144,11 +144,16 @@ internal class ProductNotification(
             }
         }
 
+        // visibility
+        remoteView.setViewVisibility(R.id.tv_productMessage, View.GONE)
+        remoteView.setViewVisibility(R.id.ivArrowLeft, View.GONE)
+        remoteView.setViewVisibility(R.id.ivArrowRight, View.GONE)
+
+        // action button
         remoteView.setOnClickPendingIntent(R.id.tv_productButton, getButtonPendingIntent(actionButton))
         remoteView.setOnClickPendingIntent(R.id.iv_productImage, getProductPendingIntent(product))
         remoteView.setOnClickPendingIntent(R.id.ll_content, getProductPendingIntent(product))
         remoteView.setTextViewText(R.id.tv_productButton, actionButton.text)
-        remoteView.setViewVisibility(R.id.tv_productMessage, View.GONE)
     }
 
     private fun getButtonPendingIntent(actionButton: ActionButton): PendingIntent {
