@@ -47,7 +47,7 @@ class TopAdsKeywordNewItemActivity : TopAdsBaseActivity(), HasComponent<BaseAppC
         iniateStepperModel()
         intent?.extras?.run {
             localKeywords.clear()
-            localKeywords.addAll(getParcelableArrayList(LOCAL_KEYWORDS_PARAM))
+            localKeywords.addAll(getParcelableArrayList(LOCAL_KEYWORDS_PARAM) ?: emptyList())
             maxCount = getInt(MAX_COUNT_PARAM, 50)
             stepperModel = getParcelable(STEPPERMODEL_PARAM)
         }

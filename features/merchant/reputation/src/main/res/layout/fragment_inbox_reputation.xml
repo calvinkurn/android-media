@@ -15,13 +15,6 @@
         android:background="@color/white"
         app:elevation="0dp">
 
-        <com.tokopedia.unifycomponents.ticker.Ticker
-            android:id="@+id/review_seller_migration_ticker"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            app:tickerType="announcement" />
-
         <com.tokopedia.design.text.SearchInputView
             android:id="@+id/search"
             android:layout_width="match_parent"

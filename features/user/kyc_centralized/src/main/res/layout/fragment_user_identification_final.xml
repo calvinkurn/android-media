@@ -128,7 +128,7 @@
                     android:gravity="center"
                     android:lineSpacingExtra="@dimen/fontSize_lvl10"
                     tools:text="@string/form_final_info"
-                    android:textColor="@color/black_54"
+                    android:textColor="@color/kyc_centralized_8a000000"
                     android:textSize="@dimen/fontSize_lvl3"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/layout_result" />
