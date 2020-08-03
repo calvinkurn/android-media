@@ -65,7 +65,7 @@ class FlightCancellationReviewViewModel @Inject constructor(
 
             cancellationWrapperModel.cancellationReasonAndAttachmentModel.estimateRefund = estimateRefundData.totalValueNumeric
             cancellationWrapperModel.cancellationReasonAndAttachmentModel.estimateFmt = estimateRefundData.totalValue
-            cancellationWrapperModel.cancellationReasonAndAttachmentModel.showEstimateRefund = true
+            cancellationWrapperModel.cancellationReasonAndAttachmentModel.showEstimateRefund = estimateRefundData.showEstimate
 
             mutableEstimateRefundFinish.postValue(Success(true))
         }) {

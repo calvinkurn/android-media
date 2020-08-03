@@ -232,7 +232,8 @@ val DUMMY_ESTIMATE_REFUND = FlightCancellationEstimateEntity(
                 )
         ),
         "Rp1.000.000",
-        1000000
+        1000000,
+        true
 )
 
 val DUMMY_CANCEL_REQUEST = FlightCancellationRequestEntity(

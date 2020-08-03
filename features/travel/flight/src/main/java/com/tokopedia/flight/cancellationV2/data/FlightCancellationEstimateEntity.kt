@@ -15,7 +15,10 @@ class FlightCancellationEstimateEntity(
         val totalValue: String = "",
         @SerializedName("totalValueNumeric")
         @Expose
-        val totalValueNumeric: Long = 0
+        val totalValueNumeric: Long = 0,
+        @SerializedName("showEstimate")
+        @Expose
+        val showEstimate: Boolean = true
 ) {
     class Response(@SerializedName("flightEstimated")
                    @Expose
