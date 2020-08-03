@@ -10,10 +10,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingMoreViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductViewHolder
-import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
-import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
-import com.tokopedia.shop.home.view.model.ShopHomeProductEtalaseTitleUiModel
-import com.tokopedia.shop.home.view.model.ShopHomeProductViewModel
+import com.tokopedia.shop.home.view.model.*
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.shop.product.view.datamodel.ShopProductSortFilterUiModel
 import com.tokopedia.shop.product.view.viewholder.ShopProductSortFilterViewHolder
@@ -81,7 +78,8 @@ class ShopHomeAdapter(
     }
 
     fun setHomeLayoutData(data: List<BaseShopHomeWidgetUiModel>) {
-        visitables.addAll(data)
+        visitables.removeAll(visitables.filterIsInstance(BaseShopHomeWidgetUiModel::class.java))
+        visitables.addAll(0, data)
         notifyDataSetChanged()
     }
 
@@ -263,6 +261,33 @@ class ShopHomeAdapter(
 
     private fun isAllowedNotify(isComputingLayout: Boolean, position: Int): Boolean {
         return !isComputingLayout && position >= 0
+    }
+
+    fun updateRemindMeStatusCampaignNplWidgetData(
+            campaignId: String,
+            isRemindMe: Boolean? = null
+    ) {
+        visitables.filterIsInstance<ShopHomeNewProductLaunchCampaignUiModel>().onEach{nplCampaignUiModel ->
+            nplCampaignUiModel.data?.firstOrNull { it.campaignId == campaignId }?.let {
+                isRemindMe?.let{ isRemindMe ->
+                    it.isRemindMe = isRemindMe
+                    if(isRemindMe)
+                        ++it.totalNotify
+                    else
+                        --it.totalNotify
+                }
+                notifyChangedItem(visitables.indexOf(nplCampaignUiModel))
+            }
+        }
+    }
+
+
+    fun removeShopHomeCampaignNplWidget(model: ShopHomeNewProductLaunchCampaignUiModel){
+        val modelIndex = visitables.indexOf(model)
+        if(modelIndex != -1){
+            visitables.remove(model)
+            notifyRemovedItem(modelIndex)
+        }
     }
 
 }

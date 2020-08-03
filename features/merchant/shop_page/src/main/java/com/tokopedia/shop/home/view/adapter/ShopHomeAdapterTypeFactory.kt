@@ -7,14 +7,17 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.shop.home.WidgetName.DISPLAY_DOUBLE_COLUMN
 import com.tokopedia.shop.home.WidgetName.DISPLAY_SINGLE_COLUMN
 import com.tokopedia.shop.home.WidgetName.DISPLAY_TRIPLE_COLUMN
+import com.tokopedia.shop.home.WidgetName.NEW_PRODUCT_LAUNCH_CAMPAIGN
 import com.tokopedia.shop.home.WidgetName.PRODUCT
 import com.tokopedia.shop.home.WidgetName.SLIDER_BANNER
 import com.tokopedia.shop.home.WidgetName.SLIDER_SQUARE_BANNER
 import com.tokopedia.shop.home.WidgetName.VIDEO
 import com.tokopedia.shop.home.WidgetName.VOUCHER
 import com.tokopedia.shop.home.view.adapter.viewholder.*
+import com.tokopedia.shop.home.view.listener.ShopHomeCampaignNplWidgetListener
+import com.tokopedia.shop.home.view.listener.ShopHomeCarouselProductListener
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
-import com.tokopedia.shop.home.view.listener.ShopPageHomeProductClickListener
+import com.tokopedia.shop.home.view.listener.ShopHomeEndlessProductListener
 import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductEtalaseTitleUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductViewModel
@@ -24,8 +27,10 @@ import com.tokopedia.shop.product.view.viewholder.ShopProductSortFilterViewHolde
 class ShopHomeAdapterTypeFactory(
         private val listener: ShopHomeDisplayWidgetListener,
         private val onMerchantVoucherListWidgetListener: ShopHomeVoucherViewHolder.ShopHomeVoucherViewHolderListener,
-        private val shopPageHomeProductClickListener: ShopPageHomeProductClickListener,
-        private val shopProductEtalaseListViewHolderListener: ShopProductSortFilterViewHolder.ShopProductEtalaseChipListViewHolderListener?
+        private val shopHomeEndlessProductListener: ShopHomeEndlessProductListener,
+        private val shopHomeCarouselProductListener: ShopHomeCarouselProductListener,
+        private val shopProductEtalaseListViewHolderListener: ShopProductSortFilterViewHolder.ShopProductEtalaseChipListViewHolderListener?,
+        private val shopHomeCampaignNplWidgetListener: ShopHomeCampaignNplWidgetListener
 ) : BaseAdapterTypeFactory(), TypeFactoryShopHome {
     var adapter: ShopHomeAdapter? = null
     private var previousViewHolder: AbstractViewHolder<*>? = null
@@ -38,6 +43,7 @@ class ShopHomeAdapterTypeFactory(
             VIDEO -> return ShopHomeVideoViewHolder.LAYOUT_RES
             PRODUCT -> return ShopHomeCarousellProductViewHolder.LAYOUT
             VOUCHER -> return ShopHomeVoucherViewHolder.LAYOUT
+            NEW_PRODUCT_LAUNCH_CAMPAIGN -> return ShopHomeNplCampaignViewHolder.LAYOUT
         }
         return -1
     }
@@ -81,13 +87,13 @@ class ShopHomeAdapterTypeFactory(
                     listener
             )
             ShopHomeProductViewHolder.LAYOUT -> {
-                ShopHomeProductViewHolder(parent, shopPageHomeProductClickListener)
+                ShopHomeProductViewHolder(parent, shopHomeEndlessProductListener)
             }
             ShopHomeProductEtalaseTitleViewHolder.LAYOUT -> {
                 ShopHomeProductEtalaseTitleViewHolder(parent)
             }
             ShopHomeCarousellProductViewHolder.LAYOUT -> {
-                ShopHomeCarousellProductViewHolder(parent, shopPageHomeProductClickListener)
+                ShopHomeCarousellProductViewHolder(parent, shopHomeCarouselProductListener)
             }
             ShopHomeVoucherViewHolder.LAYOUT -> {
                 ShopHomeVoucherViewHolder(parent, adapter?.isOwner
@@ -97,6 +103,9 @@ class ShopHomeAdapterTypeFactory(
                 ShopHomeLoadingShimmerViewHolder(parent)
             }
             ShopProductSortFilterViewHolder.LAYOUT -> return ShopProductSortFilterViewHolder(parent, shopProductEtalaseListViewHolderListener)
+            ShopHomeNplCampaignViewHolder.LAYOUT -> {
+                ShopHomeNplCampaignViewHolder(parent, shopHomeCampaignNplWidgetListener)
+            }
 
             else -> return super.createViewHolder(parent, type)
         }

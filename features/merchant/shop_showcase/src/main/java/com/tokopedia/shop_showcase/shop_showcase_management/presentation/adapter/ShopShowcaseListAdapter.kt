@@ -6,12 +6,16 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.inflateLayout
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.shop_showcase.R
 import com.tokopedia.shop_showcase.common.ShopShowcaseManagementListener
 import com.tokopedia.shop_showcase.common.ShowcaseType
 import com.tokopedia.shop_showcase.common.TOTAL_GENERATED_ID
 import com.tokopedia.shop_showcase.shop_showcase_management.data.model.ShowcaseList.ShowcaseItem
+import com.tokopedia.unifyprinciples.Typography
 
 class ShopShowcaseListAdapter (
         val listener: ShopShowcaseManagementListener,
@@ -42,11 +46,13 @@ class ShopShowcaseListAdapter (
         val context: Context
         private var titleShowcase: TextView? = null
         private var buttonMenuMore: ImageView? = null
+        private var campaignLabel: Typography? = null
 
         init {
             context = itemView.context
             titleShowcase = itemView.findViewById(R.id.tv_showcase_name)
             buttonMenuMore = itemView.findViewById(R.id.img_menu_more)
+            campaignLabel = itemView.findViewById(R.id.tv_campaign_label)
         }
 
         fun bindData(dataShowcase: ShowcaseItem, position: Int) {
@@ -56,6 +62,12 @@ class ShopShowcaseListAdapter (
                 buttonMenuMore?.visibility = View.INVISIBLE
             } else {
                 buttonMenuMore?.visibility = View.VISIBLE
+            }
+
+            if(dataShowcase.type ==  ShowcaseType.CAMPAIGN){
+                campaignLabel?.show()
+            }else{
+                campaignLabel?.hide()
             }
 
             itemView.setOnClickListener {

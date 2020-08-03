@@ -230,5 +230,7 @@
     <string name="shop_etalase_filter_default_label">Etalase Toko</string>
     <string name="shop_page_retry">Ulangi</string>
 
+    <string name="shop_home_npl_remind_me">Ingatkan</string>
+
 
 </resources>

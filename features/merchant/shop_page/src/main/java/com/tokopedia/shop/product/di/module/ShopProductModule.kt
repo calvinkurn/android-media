@@ -25,6 +25,8 @@ import com.tokopedia.shop.common.domain.interactor.DeleteShopInfoCacheUseCase
 import com.tokopedia.shop.common.graphql.data.stampprogress.MembershipStampProgress
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.ClaimBenefitMembershipUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetMembershipUseCase
+import com.tokopedia.shop.home.util.CoroutineDispatcherProvider
+import com.tokopedia.shop.home.util.CoroutineDispatcherProviderImpl
 import com.tokopedia.shop.product.data.GQLQueryConstant
 import com.tokopedia.shop.product.data.model.ShopFeaturedProduct
 import com.tokopedia.shop.product.data.repository.ShopProductRepositoryImpl
@@ -148,13 +150,17 @@ class ShopProductModule {
                   stats{
                     reviewCount
                     rating
+                    viewCount
                   }
                   campaign{
+                    hide_gimmick
                     original_price
                     original_price_fmt
                     discounted_price_fmt
                     discounted_percentage
                     discounted_price
+                    is_upcoming
+                    stock_sold_percentage
                   }
                   primary_image{
                     original
@@ -580,5 +586,11 @@ class ShopProductModule {
     @Provides
     fun provideShopProductSortMapper(): ShopProductSortMapper {
         return ShopProductSortMapper()
+    }
+
+    @ShopProductScope
+    @Provides
+    fun getCoroutineDispatcherProvider(): CoroutineDispatcherProvider {
+        return CoroutineDispatcherProviderImpl
     }
 }

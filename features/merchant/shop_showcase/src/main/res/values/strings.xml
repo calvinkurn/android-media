@@ -42,4 +42,5 @@
     <string name="text_exit_confirm_dialog_title">Yakin ingin keluar?</string>
     <string name="text_confirm_dialog_description">Produk akan gagal terhapus jika kamu \nlanjut pilih produk</string>
     <string name="text_exit_confirm_dialog_description">Jika keluar, perubahan di etalasemu\n akan gagal</string>
+    <string name="text_label_campaign">Special Release</string>
 </resources>

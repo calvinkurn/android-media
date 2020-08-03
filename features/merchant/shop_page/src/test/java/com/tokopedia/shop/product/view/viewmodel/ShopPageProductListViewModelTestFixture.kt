@@ -10,7 +10,10 @@ import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtala
 import com.tokopedia.shop.product.di.ShopProductGetHighlightProductQualifier
 import com.tokopedia.shop.product.domain.interactor.GetShopFeaturedProductUseCase
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
+import com.tokopedia.shop.sort.domain.interactor.GetShopProductSortUseCase
+import com.tokopedia.shop.sort.view.mapper.ShopProductSortMapper
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.util.TestCoroutineDispatcherProviderImpl
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import io.mockk.MockKAnnotations
@@ -57,8 +60,16 @@ abstract class ShopPageProductListViewModelTestFixture {
     @RelaxedMockK
     lateinit var getShopInfoUseCase: GQLGetShopInfoUseCase
 
+    @RelaxedMockK
+    lateinit var getShopProductFilterUseCase: GetShopProductSortUseCase
+    @RelaxedMockK
+    lateinit var shopProductSortMapper: ShopProductSortMapper
+
     protected lateinit var viewModelShopPageProductListViewModel: ShopPageProductListViewModel
     protected lateinit var viewModelShopPageProductListResultViewModel: ShopPageProductListResultViewModel
+    private val testCoroutineDispatcherProvider by lazy {
+        TestCoroutineDispatcherProviderImpl
+    }
 
     @Before
     fun setUp() {
@@ -81,7 +92,7 @@ abstract class ShopPageProductListViewModelTestFixture {
                 getShopHighlightProductUseCase,
                 removeWishlistUseCase,
                 deleteShopInfoUseCase,
-                Dispatchers.Unconfined
+                testCoroutineDispatcherProvider
         )
 
         viewModelShopPageProductListResultViewModel = ShopPageProductListResultViewModel(
@@ -89,9 +100,9 @@ abstract class ShopPageProductListViewModelTestFixture {
                 getShopInfoUseCase,
                 getShopEtalaseByShopUseCase,
                 getShopProductUseCase,
-                addWishListUseCase,
-                removeWishlistUseCase,
-                Dispatchers.Unconfined
+                getShopProductFilterUseCase,
+                shopProductSortMapper,
+                testCoroutineDispatcherProvider
         )
     }
 }

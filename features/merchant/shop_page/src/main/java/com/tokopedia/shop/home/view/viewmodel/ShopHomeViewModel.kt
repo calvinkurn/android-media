@@ -13,20 +13,21 @@ import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.domain.interactor.GQLCheckWishlistUseCase
 import com.tokopedia.shop.common.graphql.data.checkwishlist.CheckWishlistResult
 import com.tokopedia.shop.common.util.ShopUtil
+import com.tokopedia.shop.home.data.model.CheckCampaignNotifyMeModel
+import com.tokopedia.shop.home.data.model.GetCampaignNotifyMeModel
+import com.tokopedia.shop.home.domain.CheckCampaignNotifyMeUseCase
+import com.tokopedia.shop.home.domain.GetCampaignNotifyMeUseCase
 import com.tokopedia.shop.home.util.CoroutineDispatcherProvider
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.shop.home.domain.GetShopPageHomeLayoutUseCase
+import com.tokopedia.shop.home.util.CheckCampaignNplException
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.model.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlist.common.listener.WishListActionListener
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
-import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -38,9 +39,9 @@ class ShopHomeViewModel @Inject constructor(
         private val getShopProductUseCase: GqlGetShopProductUseCase,
         private val dispatcherProvider: CoroutineDispatcherProvider,
         private val addToCartUseCase: AddToCartUseCase,
-        private val addWishListUseCase: AddWishListUseCase,
-        private val removeWishlistUseCase: RemoveWishListUseCase,
-        private val gqlCheckWishlistUseCase: Provider<GQLCheckWishlistUseCase>
+        private val gqlCheckWishlistUseCase: Provider<GQLCheckWishlistUseCase>,
+        private val getCampaignNotifyMeUseCase: Provider<GetCampaignNotifyMeUseCase>,
+        private val checkCampaignNotifyMeUseCase: Provider<CheckCampaignNotifyMeUseCase>
 ) : BaseViewModel(dispatcherProvider.main()) {
 
     companion object {
@@ -63,6 +64,14 @@ class ShopHomeViewModel @Inject constructor(
         get() = _checkWishlistData
     private val _checkWishlistData = MutableLiveData<Result<List<Pair<ShopHomeCarousellProductUiModel, List<CheckWishlistResult>>?>>>()
 
+    val campaignNplRemindMeStatusData: LiveData<Result<GetCampaignNotifyMeUiModel>>
+        get() = _campaignNplRemindMeStatusData
+    private val _campaignNplRemindMeStatusData = MutableLiveData<Result<GetCampaignNotifyMeUiModel>>()
+
+    val checkCampaignNplRemindMeStatusData: LiveData<Result<CheckCampaignNotifyMeUiModel>>
+        get() = _checkCampaignNplRemindMeStatusData
+    private val _checkCampaignNplRemindMeStatusData = MutableLiveData<Result<CheckCampaignNotifyMeUiModel>>()
+
     val userSessionShopId: String
         get() = userSession.shopId ?: ""
     val isLogin: Boolean
@@ -72,7 +81,8 @@ class ShopHomeViewModel @Inject constructor(
 
     fun getShopPageHomeData(
             shopId: String,
-            sortId: Int
+            sortId: Int,
+            isRefreshShopLayout: Boolean = false
     ) {
         launchCatchError(block = {
             val shopLayoutWidget = asyncCatchError(
@@ -87,7 +97,11 @@ class ShopHomeViewModel @Inject constructor(
             )
             val productList = asyncCatchError(
                     dispatcherProvider.io(),
-                    block = { getProductListData(shopId, sortId, 1) },
+                    block = {
+                        if (!isRefreshShopLayout)
+                            getProductListData(shopId, sortId, 1)
+                        else null
+                    },
                     onError = { null }
             )
             shopLayoutWidget.await()?.let {
@@ -107,7 +121,7 @@ class ShopHomeViewModel @Inject constructor(
     ) {
         launchCatchError(block = {
             val listProductData = withContext(dispatcherProvider.io()) {
-                getProductListData(shopId,sortId, page)
+                getProductListData(shopId, sortId, page)
             }
             _newProductListData.postValue(Success(listProductData))
         }) {
@@ -158,7 +172,8 @@ class ShopHomeViewModel @Inject constructor(
         getShopPageHomeLayoutUseCase.params = GetShopPageHomeLayoutUseCase.createParams(shopId)
         return ShopPageHomeMapper.mapToShopPageHomeLayoutUiModel(
                 getShopPageHomeLayoutUseCase.executeOnBackground(),
-                ShopUtil.isMyShop(shopId, userSessionShopId)
+                ShopUtil.isMyShop(shopId, userSessionShopId),
+                isLogin
         )
     }
 
@@ -189,7 +204,9 @@ class ShopHomeViewModel @Inject constructor(
     }
 
     private fun submitAddProductToCart(shopId: String, product: ShopHomeProductViewModel): AddToCartDataModel {
-        val requestParams = AddToCartUseCase.getMinimumParams(product.id ?: "", shopId, productName = product.name ?: "", price = product.displayedPrice ?: "")
+        val requestParams = AddToCartUseCase.getMinimumParams(product.id
+                ?: "", shopId, productName = product.name ?: "", price = product.displayedPrice
+                ?: "")
         return addToCartUseCase.createObservable(requestParams).toBlocking().first()
     }
 
@@ -209,5 +226,56 @@ class ShopHomeViewModel @Inject constructor(
     fun clearCache() {
         clearGetShopProductUseCase()
         getShopPageHomeLayoutUseCase.clearCache()
+    }
+
+    fun getCampaignNplRemindMeStatus(model: ShopHomeNewProductLaunchCampaignUiModel.NewProductLaunchCampaignItem) {
+        launchCatchError(block = {
+            val getCampaignNotifyMeModel = withContext(dispatcherProvider.io()) {
+                val campaignId = model.campaignId
+                getCampaignNotifyMe(campaignId)
+            }
+            val getCampaignNotifyMeUiModel = ShopPageHomeMapper.mapToGetCampaignNotifyMeUiModel(
+                    getCampaignNotifyMeModel
+            )
+            _campaignNplRemindMeStatusData.value = Success(getCampaignNotifyMeUiModel)
+        }) {}
+    }
+
+    private suspend fun getCampaignNotifyMe(campaignId: String): GetCampaignNotifyMeModel {
+        val useCase = getCampaignNotifyMeUseCase.get()
+        useCase.params = GetCampaignNotifyMeUseCase.createParams(campaignId)
+        return useCase.executeOnBackground()
+    }
+
+    fun clickRemindMe(campaignId: String, action: String) {
+        launchCatchError(block = {
+            val checkCampaignNotifyMeModel = withContext(dispatcherProvider.io()) {
+                checkCampaignNotifyMe(campaignId, action)
+            }
+            val checkCampaignNotifyMeUiModel = CheckCampaignNotifyMeUiModel(
+                    checkCampaignNotifyMeModel.campaignId,
+                    checkCampaignNotifyMeModel.success,
+                    checkCampaignNotifyMeModel.message,
+                    checkCampaignNotifyMeModel.errorMessage,
+                    action
+            )
+            _checkCampaignNplRemindMeStatusData.value = Success(checkCampaignNotifyMeUiModel)
+        }) {
+            _checkCampaignNplRemindMeStatusData.value = Fail(CheckCampaignNplException(
+                    it.cause,
+                    it.message,
+                    campaignId
+            ))
+        }
+    }
+
+    private suspend fun checkCampaignNotifyMe(campaignId: String, action: String): CheckCampaignNotifyMeModel {
+        return checkCampaignNotifyMeUseCase.get().run {
+            params = CheckCampaignNotifyMeUseCase.createParams(
+                    campaignId,
+                    action
+            )
+            executeOnBackground()
+        }
     }
 }

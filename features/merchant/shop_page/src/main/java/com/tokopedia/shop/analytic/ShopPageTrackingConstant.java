@@ -22,6 +22,7 @@ public class ShopPageTrackingConstant {
     public static final String ADD_TO_CART = "addToCart";
 
     public static final String CLICK_MEMBERSHIP_EVENT = "clickShopPage";
+    public static final String VIEW_SHOP_PAGE_IRIS = "viewShopPageIris";
 
     //category
     public static final String SHOP_PAGE_SELLER = "shop page - seller";
@@ -75,6 +76,14 @@ public class ShopPageTrackingConstant {
     public static final String CLICK_SHOP_PROFILE = "click shop profile";
     public static final String CLICK_ADD_ETALASE_BUTTON = "click add etalase button";
     public static final String CLICK_VIEW_ALL_PRODUCT = "click lihat semua produk - %s - %s";
+    public static final String CLICK_TNC = "click t&c - %1s";
+    public static final String IMPRESSION_TNC = "impression t&c - %1s";
+    public static final String CLICK_CLOSE_TNC = "click close t&c - %1s";
+    public static final String CLICK_ACTIVATE_REMINDER = "click activate reminder";
+    public static final String CLICK_DEACTIVATE_REMINDER = "click deactivate reminder";
+    public static final String IMPRESSION_TOASTER_NOTIFY_ME = "impression toaster notify me";
+    public static final String CLICK_OK_TOASTER_NOTIFY_ME = "click ok on toaster notify me";
+    public static final String CLICK_SEE_ALL_CAMPAIGN_NPL_WIDGET = "click see all - %1s";
 
     //label
     public static final String CLICK_TAB = "click tab";
@@ -135,7 +144,8 @@ public class ShopPageTrackingConstant {
     public static final String WISHLIST = "wishlist";
     public static final String IMPRESSION_OF_USE_VOUCHER = "impression of use voucher";
     public static final String CLICK_ADD_TO_CART = "click add to cart";
-
+    public static final String LABEL_ETALASE_UPCOMING_ONGOING_CAMPAIGN = "%1s campaign %2s";
+    public static final String LABEL_ETALASE_CAMPAIGN = "campaign %1s";
 
 
 
@@ -204,6 +214,20 @@ public class ShopPageTrackingConstant {
 
     //value
     public static final String VALUE_PRODUCT = "Product";
+    public static final String VALUE_UPCOMING = "upcoming";
+    public static final String VALUE_ONGOING = "ongoing";
+    public static final String VALUE_UPCOMING_BANNER = "upcoming banner";
+    public static final String VALUE_ONGOING_BANNER = "ongoing banner";
+    public static final String VALUE_FINISHED_BANNER = "finished banner";
+    public static final String VALUE_UPCOMING_CAMPAIGN = "upcoming campaign";
+    public static final String VALUE_ONGOING_CAMPAIGN = "ongoing campaign";
+    public static final String VALUE_FINISHED_CAMPAIGN = "finished campaign";
+    public static final String VALUE_SEE_CAMPAIGN = "see campaign";
+    public static final String VALUE_NO_SEE_CAMPAIGN = "no see campaign";
+    public static final String VALUE_HOME = "home";
+
+
+
 
     //page_url
     public static final String ETALASE_SHOPNAME = "etalase-%s";

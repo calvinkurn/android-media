@@ -17,6 +17,7 @@ public class ShopParamConstant {
 
     public static final String EXTRA_ETALASE_PICKER_ETALASE_ID = "ETALASE_ID";
     public static final String EXTRA_ETALASE_PICKER_ETALASE_NAME = "ETALASE_NAME";
+    public static final String EXTRA_ETALASE_PICKER_ETALASE_TYPE = "ETALASE_TYPE";
     public static final String EXTRA_ETALASE_PICKER_ETALASE_BADGE = "ETALASE_BADGE";
 
     public static final String EXTRA_PAGE = "EXTRA_PAGE";
