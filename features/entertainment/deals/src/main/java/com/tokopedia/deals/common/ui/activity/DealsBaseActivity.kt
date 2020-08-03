@@ -98,8 +98,14 @@ abstract class DealsBaseActivity : BaseSimpleActivity(), CurrentLocationCallback
             if (abs(verticalOffset) - appBarLayout.totalScrollRange >= -searchBarDealsBaseSearch.height) {
                 //collapse
                 imgDealsSearchIcon.show()
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    appBarLayoutSearchContent.elevation = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2)
+                }
             } else {
                 imgDealsSearchIcon.hide()
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    appBarLayoutSearchContent.elevation = resources.getDimension(R.dimen.deals_dp_0)
+                }
             }
         })
 
