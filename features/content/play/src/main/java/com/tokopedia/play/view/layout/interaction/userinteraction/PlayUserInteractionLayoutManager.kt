@@ -34,7 +34,7 @@ class PlayUserInteractionLayoutManager(
 //    @IdRes private val pinnedComponentId: Int = viewInitializer.onInitPinned(container)
 //    @IdRes private val chatListComponentId: Int = viewInitializer.onInitChatList(container)
 //    @IdRes private val videoControlComponentId: Int = viewInitializer.onInitVideoControl(container)
-    @IdRes private val videoSettingsComponentId: Int = viewInitializer.onInitVideoSettings(container)
+//    @IdRes private val videoSettingsComponentId: Int = viewInitializer.onInitVideoSettings(container)
     @IdRes private val endLiveInfoComponentId: Int = viewInitializer.onInitEndLiveComponent(container)
 //    @IdRes private val toolbarComponentId: Int = viewInitializer.onInitToolbar(container)
 //    @IdRes private val statsInfoComponentId: Int = viewInitializer.onInitStatsInfo(container)
@@ -59,7 +59,6 @@ class PlayUserInteractionLayoutManager(
         layoutPlayButton(container = view, videoOrientation = videoOrientation, id = playButtonComponentId, immersiveBoxComponentId = immersiveBoxComponentId)
         layoutImmersiveBox(container = view, videoOrientation = videoOrientation, id = immersiveBoxComponentId, pinnedComponentId = R.id.view_pinned, statsInfoComponentId = R.id.view_stats_info)
         layoutEndLiveComponent(container = view, id = endLiveInfoComponentId)
-        layoutVideoSettings(container = view, id = videoSettingsComponentId, sizeContainerComponentId = R.id.space_size, statsInfoComponentId = R.id.view_stats_info)
     }
 
     override fun setupInsets(view: View, insets: WindowInsetsCompat) {
@@ -185,13 +184,6 @@ class PlayUserInteractionLayoutManager(
             connect(id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
             connect(id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
             connect(id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
-        }
-    }
-
-    private fun layoutVideoSettings(container: View, @IdRes id: Int, @IdRes sizeContainerComponentId: Int, @IdRes statsInfoComponentId: Int) {
-        container.changeConstraint {
-            connect(id, ConstraintSet.END, sizeContainerComponentId, ConstraintSet.END, offset16)
-            connect(id, ConstraintSet.TOP, statsInfoComponentId, ConstraintSet.BOTTOM, offset24)
         }
     }
 

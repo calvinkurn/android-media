@@ -34,8 +34,6 @@ import com.tokopedia.play.ui.playbutton.PlayButtonComponent
 import com.tokopedia.play.ui.playbutton.interaction.PlayButtonInteractionEvent
 import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
 import com.tokopedia.play.ui.toolbar.model.PartnerType
-import com.tokopedia.play.ui.videosettings.VideoSettingsComponent
-import com.tokopedia.play.ui.videosettings.interaction.VideoSettingsInteractionEvent
 import com.tokopedia.play.util.PlayFullScreenHelper
 import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.util.event.DistinctEventObserver
@@ -91,7 +89,8 @@ class PlayUserInteractionFragment @Inject constructor(
         LikeViewComponent.Listener,
         SendChatViewComponent.Listener,
         QuickReplyViewComponent.Listener,
-        PinnedViewComponent.Listener
+        PinnedViewComponent.Listener,
+        VideoSettingsViewComponent.Listener
 {
 
     companion object {
@@ -121,6 +120,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private val quickReplyView by viewComponent { QuickReplyViewComponent(it, R.id.rv_quick_reply, this) }
     private val chatListView by viewComponent { ChatListViewComponent(it, R.id.view_chat_list) }
     private val pinnedView by viewComponent { PinnedViewComponent(it, R.id.view_pinned, this) }
+    private val videoSettingsView by viewComponent { VideoSettingsViewComponent(it, R.id.view_video_settings, this) }
 
     private lateinit var playViewModel: PlayViewModel
     private lateinit var viewModel: PlayInteractionViewModel
@@ -330,6 +330,22 @@ class PlayUserInteractionFragment @Inject constructor(
         doClickPinnedProduct()
     }
 
+    /**
+     * VideoSettings View Component Listener
+     */
+    override fun onEnterFullscreen(view: VideoSettingsViewComponent) {
+        PlayAnalytics.clickCtaFullScreenFromPortraitToLandscape(
+                userId = playViewModel.userId,
+                channelId = channelId,
+                channelType = playViewModel.channelType
+        )
+        enterFullscreen()
+    }
+
+    override fun onExitFullscreen(view: VideoSettingsViewComponent) {
+        exitFullscreen()
+    }
+
     private fun setupInsets(view: View) {
         spaceSize.rootView.doOnApplyWindowInsets { v, insets, _, margin ->
             val marginLayoutParams = v.layoutParams as ViewGroup.MarginLayoutParams
@@ -429,6 +445,11 @@ class PlayUserInteractionFragment @Inject constructor(
             if (it.channelType.isLive) sendChatView.show() else sendChatView.hide()
 
             if (it.channelType.isLive && !playViewModel.bottomInsets.isAnyBottomSheetsShown) chatListView.show() else chatListView.hide()
+
+            if (it.orientation.isHorizontal &&
+                    playViewModel.videoPlayer.isGeneral &&
+                    !playViewModel.bottomInsets.isAnyShown
+            ) videoSettingsView.show() else videoSettingsView.hide()
         })
     }
 
@@ -574,6 +595,9 @@ class PlayUserInteractionFragment @Inject constructor(
             if (!map.isAnyShown &&
                     (pinned is PinnedMessageUiModel || pinned is PinnedProductUiModel)
             ) pinnedView.show() else pinnedView.hide()
+
+            if (!map.isAnyShown && playViewModel.videoOrientation.isHorizontal && playViewModel.videoPlayer.isGeneral) videoSettingsView.show()
+            else videoSettingsView.hide()
         })
     }
 
@@ -619,6 +643,8 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun setupView(view: View) {
         likeView.setEnabled(false)
+        videoSettingsView.setFullscreen(false)
+
         container.setOnClickListener {
             if (!playViewModel.videoOrientation.isHorizontal && container.hasAlpha) triggerImmersive(it.isFullSolid)
         }
@@ -639,7 +665,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
         when {
             orientation.isLandscape -> triggerFullImmersive(shouldImmersive, true)
-            playViewModel.videoOrientation.isHorizontal -> sendImmersiveEvent(shouldImmersive)
+            playViewModel.videoOrientation.isHorizontal -> handleVideoHorizontalImmersive(shouldImmersive)
             else -> {
                 systemUiVisibility = if (shouldImmersive) layoutManager.onEnterImmersive() else layoutManager.onExitImmersive()
                 triggerFullImmersive(shouldImmersive, false)
@@ -775,26 +801,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     override fun onInitVideoSettings(container: ViewGroup): Int {
-        val videoSettingsComponent =  VideoSettingsComponent(container, EventBusFactory.get(viewLifecycleOwner), scope, dispatchers)
-
-        scope.launch {
-            videoSettingsComponent.getUserInteractionEvents()
-                    .collect {
-                        when (it) {
-                            VideoSettingsInteractionEvent.EnterFullscreenClicked -> {
-                                PlayAnalytics.clickCtaFullScreenFromPortraitToLandscape(
-                                        userId = playViewModel.userId,
-                                        channelId = channelId,
-                                        channelType = playViewModel.channelType
-                                )
-                                enterFullscreen()
-                            }
-                            VideoSettingsInteractionEvent.ExitFullscreenClicked -> exitFullscreen()
-                        }
-                    }
-        }
-
-        return videoSettingsComponent.getContainerId()
+        throw IllegalStateException("No Init")
     }
     //endregion
 
@@ -940,14 +947,8 @@ class PlayUserInteractionFragment @Inject constructor(
         }
     }
 
-    private fun sendImmersiveEvent(shouldImmersive: Boolean) {
-        scope.launch {
-            EventBusFactory.get(viewLifecycleOwner)
-                    .emit(
-                            ScreenStateEvent::class.java,
-                            ScreenStateEvent.ImmersiveStateChanged(shouldImmersive)
-                    )
-        }
+    private fun handleVideoHorizontalImmersive(shouldImmersive: Boolean) {
+        if (shouldImmersive) videoSettingsView.fadeOut() else videoSettingsView.fadeIn()
     }
 
     private fun showMoreActionBottomSheet() {

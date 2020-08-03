@@ -1,38 +1,30 @@
-package com.tokopedia.play.ui.videosettings
+package com.tokopedia.play.view.viewcomponent
 
 import android.animation.Animator
-import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
+import androidx.annotation.IdRes
 import com.tokopedia.play.R
 import com.tokopedia.play.animation.PlayFadeInFadeOutAnimation
 import com.tokopedia.play.animation.PlayFadeOutAnimation
-import com.tokopedia.play.component.UIView
 import com.tokopedia.play.extensions.isFullSolid
+import com.tokopedia.play_common.viewcomponent.ViewComponent
 
 /**
- * Created by jegul on 14/04/20
+ * Created by jegul on 03/08/20
  */
-class VideoSettingsView(
+class VideoSettingsViewComponent(
         container: ViewGroup,
+        @IdRes idRes: Int,
         private val listener: Listener
-) : UIView(container) {
+) : ViewComponent(container, idRes) {
 
     companion object {
         private const val FADE_DURATION = 200L
         private const val FADE_TRANSITION_DELAY = 3000L
     }
 
-    private val view: View =
-            LayoutInflater.from(container.context).inflate(R.layout.view_mini_video_settings, container, true)
-                    .findViewById(R.id.fl_fullscreen_control_area)
-
-    private val ivFullscreenControl: ImageView = view.findViewById(R.id.iv_fullscreen_control)
-
-    override val containerId: Int = view.id
+    private val ivFullscreenControl: ImageView = findViewById(R.id.iv_fullscreen_control)
 
     private val fadeInListener = object : Animator.AnimatorListener {
         override fun onAnimationRepeat(animation: Animator?) {
@@ -40,16 +32,16 @@ class VideoSettingsView(
 
         override fun onAnimationEnd(animation: Animator?) {
             animation?.removeAllListeners()
-            view.isClickable = true
+            rootView.isClickable = true
         }
 
         override fun onAnimationCancel(animation: Animator?) {
             animation?.removeAllListeners()
-            view.isClickable = view.isFullSolid
+            rootView.isClickable = rootView.isFullSolid
         }
 
         override fun onAnimationStart(animation: Animator?) {
-            view.isClickable = false
+            rootView.isClickable = false
         }
     }
 
@@ -59,29 +51,21 @@ class VideoSettingsView(
 
         override fun onAnimationEnd(animation: Animator?) {
             animation?.removeAllListeners()
-            view.isClickable = false
+            rootView.isClickable = false
         }
 
         override fun onAnimationCancel(animation: Animator?) {
             animation?.removeAllListeners()
-            view.isClickable = view.isFullSolid
+            rootView.isClickable = rootView.isFullSolid
         }
 
         override fun onAnimationStart(animation: Animator?) {
-            view.isClickable = false
+            rootView.isClickable = false
         }
     }
 
     private val fadeOutAnimation = PlayFadeOutAnimation(FADE_DURATION, fadeOutListener)
     private val fadeInFadeOutAnimation = PlayFadeInFadeOutAnimation(FADE_DURATION, FADE_TRANSITION_DELAY, fadeInListener, fadeOutListener)
-
-    override fun show() {
-        view.show()
-    }
-
-    override fun hide() {
-        view.hide()
-    }
 
     internal fun setFullscreen(isFullscreen: Boolean) {
         ivFullscreenControl.setImageResource(
@@ -89,22 +73,22 @@ class VideoSettingsView(
                 else R.drawable.ic_play_enter_fullscreen
         )
 
-        view.setOnClickListener {
+        rootView.setOnClickListener {
             if (isFullscreen) listener.onExitFullscreen(this)
             else listener.onEnterFullscreen(this)
         }
     }
 
-    internal fun fadeOut() {
+    fun fadeOut() {
         cancelAllAnimation()
 
-        fadeOutAnimation.start(view)
+        fadeOutAnimation.start(rootView)
     }
 
-    internal fun fadeIn() {
+    fun fadeIn() {
         cancelAllAnimation()
 
-        fadeInFadeOutAnimation.start(view)
+        fadeInFadeOutAnimation.start(rootView)
     }
 
     private fun cancelAllAnimation() {
@@ -114,7 +98,7 @@ class VideoSettingsView(
 
     interface Listener {
 
-        fun onEnterFullscreen(view: VideoSettingsView)
-        fun onExitFullscreen(view: VideoSettingsView)
+        fun onEnterFullscreen(view: VideoSettingsViewComponent)
+        fun onExitFullscreen(view: VideoSettingsViewComponent)
     }
 }
