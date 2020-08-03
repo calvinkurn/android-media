@@ -1,7 +1,6 @@
 package com.tokopedia.home.beranda.presentation.viewModel
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -197,6 +196,9 @@ open class HomeViewModel @Inject constructor(
     private val _rechargeRecommendationLiveData = MutableLiveData<Event<RechargeRecommendation>>()
     val rechargeRecommendationLiveData: LiveData<Event<RechargeRecommendation>> get() = _rechargeRecommendationLiveData
 
+    private val _isNeedRefresh = MutableLiveData<Event<Boolean>>()
+    val isNeedRefresh: LiveData<Event<Boolean>> get() = _isNeedRefresh
+
 // ============================================================================================
 // ==================================== Helper Local Job ======================================
 // ================================= PLEASE SORT BY NAME A-Z ==================================
@@ -245,6 +247,7 @@ open class HomeViewModel @Inject constructor(
         val needSendGeolocationRequest = lastRequestTimeHomeData + REQUEST_DELAY_SEND_GEOLOCATION < System.currentTimeMillis()
         if (!fetchFirstData && homeRateLimit.shouldFetch(HOME_LIMITER_KEY)) {
             refreshHomeData()
+            _isNeedRefresh.value = Event(true)
         }
         if (needSendGeolocationRequest && hasGeoLocationPermission) {
             _sendLocationLiveData.postValue(Event(needSendGeolocationRequest))
@@ -285,23 +288,26 @@ open class HomeViewModel @Inject constructor(
 
     fun updateBannerTotalView(channelId: String, totalView: String) {
         val homeList = _homeLiveData.value?.list ?: listOf()
-        val playCard = _homeLiveData.value?.list?.firstOrNull { visitable -> visitable is PlayCardDataModel || visitable is PlayCarouselCardDataModel }
-        val playIndex = homeList.indexOf(playCard)
-        if(playCard is PlayCardDataModel && playCard.playCardHome != null) {
-            val newPlayCard = playCard.copy(playCardHome = playCard.playCardHome.copy(totalView = totalView))
+        val playCard = homeList.withIndex().find {
+            (_, visitable) -> (visitable is PlayCardDataModel && visitable.playCardHome?.channelId == channelId) ||
+                (visitable is PlayCarouselCardDataModel)
+        } ?: return
+        if(playCard.value is PlayCardDataModel && (playCard.value as PlayCardDataModel).playCardHome != null) {
+            val newPlayCard = (playCard.value as PlayCardDataModel).copy(playCardHome = (playCard.value as PlayCardDataModel).playCardHome?.copy(totalView = totalView))
             launch(coroutineContext){
-                updateWidget(UpdateLiveDataModel(ACTION_UPDATE, newPlayCard, playIndex))
+                updateWidget(UpdateLiveDataModel(ACTION_UPDATE, newPlayCard, playCard.index))
             }
-        } else if(playCard is PlayCarouselCardDataModel && playCard.playBannerCarouselDataModel.channelList.isNotEmpty()){
-            playCard.playBannerCarouselDataModel.channelList.withIndex().find { (_, value) -> value is PlayBannerCarouselItemDataModel && value.channelId == channelId }?.let {
-                val newList = playCard.playBannerCarouselDataModel.channelList.toMutableList()
-                newList[it.index] = (it.value as PlayBannerCarouselItemDataModel).copy(countView = totalView)
-                val newPlayCard = playCard.copy(playBannerCarouselDataModel = playCard.playBannerCarouselDataModel.copy(channelList = newList))
-                launch(coroutineContext) {
-                    updateWidget(UpdateLiveDataModel(ACTION_UPDATE, newPlayCard, playIndex))
-                }
+        } else if(playCard.value is PlayCarouselCardDataModel && (playCard.value as PlayCarouselCardDataModel).playBannerCarouselDataModel.channelList.isNotEmpty()) {
+            (playCard.value as PlayCarouselCardDataModel).playBannerCarouselDataModel.channelList.withIndex().find { (_, value) -> value is PlayBannerCarouselItemDataModel && value.channelId == channelId }?.let {
+                    val newList = (playCard.value as PlayCarouselCardDataModel).playBannerCarouselDataModel.channelList.toMutableList()
+                    newList[it.index] = (it.value as PlayBannerCarouselItemDataModel).copy(countView = totalView)
+                    val newPlayCard = (playCard.value as PlayCarouselCardDataModel).copy(playBannerCarouselDataModel = (playCard.value as PlayCarouselCardDataModel).playBannerCarouselDataModel.copy(channelList = newList))
+                    launch(coroutineContext) {
+                        updateWidget(UpdateLiveDataModel(ACTION_UPDATE, newPlayCard, playCard.index))
+                    }
             }
         }
+
     }
 
     private fun getPlayBannerV2(playCarouselCardDataModel: PlayCarouselCardDataModel){
@@ -352,7 +358,6 @@ open class HomeViewModel @Inject constructor(
             }
         }){
             rollbackRemindPlayBanner()
-            it.printStackTrace()
             _reminderPlayLiveData.postValue(Result.error(Throwable()))
         }
     }
@@ -516,10 +521,7 @@ open class HomeViewModel @Inject constructor(
     fun setPlayBanner(playCardDataModel: PlayCardDataModel){
         val newList = mutableListOf<Visitable<*>>()
         newList.addAll(_homeLiveData.value?.list ?: listOf())
-        val playIndex = newList.indexOfFirst { visitable -> visitable is PlayCardDataModel }
-        if(playIndex != -1 && newList[playIndex] is PlayCardDataModel){
-            launch(coroutineContext) { updateWidget(UpdateLiveDataModel(ACTION_UPDATE, playCardDataModel, playIndex)) }
-        }
+        launch(coroutineContext) { updateWidget(UpdateLiveDataModel(ACTION_UPDATE, playCardDataModel)) }
     }
 
     // play widget it will be removed when load image is failed (deal from PO)

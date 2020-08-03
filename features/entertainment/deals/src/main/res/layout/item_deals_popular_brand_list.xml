@@ -25,9 +25,9 @@
             android:layout_marginEnd="@dimen/spacing_lvl3"
             android:layout_marginRight="@dimen/spacing_lvl3"
             android:textColor="@color/Neutral_N700_96"
-            app:layout_constraintEnd_toStartOf="@id/txtDealsPopularBrandSeeAll"
+            app:layout_constraintEnd_toStartOf="@+id/txtDealsPopularBrandSeeAll"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toLeftOf="@id/txtDealsPopularBrandSeeAll"
+            app:layout_constraintRight_toLeftOf="@+id/txtDealsPopularBrandSeeAll"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="heading_4"
@@ -37,7 +37,7 @@
         android:id="@+id/txtDealsPopularBrandSeeAll"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="@id/txtDealsPopularBrandTitle"
+        app:layout_constraintBottom_toBottomOf="@+id/txtDealsPopularBrandTitle"
         app:typographyType="body_3"
         tools:text="Lihat semua"
         app:layout_constraintEnd_toEndOf="parent"
@@ -55,7 +55,7 @@
             android:clipToPadding="false"
             android:paddingLeft="@dimen/deals_dp_12"
             android:paddingRight="@dimen/deals_dp_12"
-            app:layout_constraintTop_toBottomOf="@id/txtDealsPopularBrandTitle" />
+            app:layout_constraintTop_toBottomOf="@+id/txtDealsPopularBrandTitle" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <include
