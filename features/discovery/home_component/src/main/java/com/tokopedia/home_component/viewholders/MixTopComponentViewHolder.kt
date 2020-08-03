@@ -205,7 +205,7 @@ class MixTopComponentViewHolder(
     private fun copyCoupon(view: View, cta: ChannelCtaData) {
         val clipboard = view.context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val clipData = ClipData.newPlainText("Coupon Code", cta.couponCode)
-        clipboard.primaryClip = clipData
+        clipboard.setPrimaryClip(clipData)
 
         Toaster.make(view.parent as ViewGroup,
                 getString(R.string.discovery_home_toaster_coupon_copied),

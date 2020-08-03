@@ -14,7 +14,6 @@ import com.tokopedia.tokopatch.utils.PatchLogger
 import com.tokopedia.tokopatch.utils.Utils
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import java.io.BufferedOutputStream
 import java.io.File
 import java.io.FileOutputStream
@@ -37,8 +36,8 @@ class PatchService : JobIntentService() {
         fun startService(app: Application) {
             val work = Intent(app.applicationContext, PatchService::class.java)
             enqueueWork(
-                app.applicationContext, PatchService::class.java,
-                JOB_ID, work
+                    app.applicationContext, PatchService::class.java,
+                    JOB_ID, work
             )
         }
     }
@@ -49,8 +48,8 @@ class PatchService : JobIntentService() {
         logger.logMessage(applicationContext,"P1#ROBUST#PatchService created")
         val dataDao = RobustDatabase.getDatabase(applicationContext).dataDao()
         repository = PatchRepository(
-            dataDao,
-            Utils.versionName(applicationContext)
+                dataDao,
+                Utils.versionCode(applicationContext)
         )
         allResult = repository.allData
 
@@ -68,9 +67,12 @@ class PatchService : JobIntentService() {
                 Utils.packageName(applicationContext)
         val versionName =
                 Utils.versionName(applicationContext)
+        val buildNumber =
+                Utils.versionCode(applicationContext)
         repository.getPatch(
                 packageName,
                 versionName,
+                buildNumber,
                 this::onSuccessGetPatch,
                 this::onErrorGetPatch
         )
@@ -82,8 +84,8 @@ class PatchService : JobIntentService() {
 
     private fun onSuccessGetPatch(data: DataResponse) {
         GlobalScope.launch {
+            repository.flush()
             data.result?.let {
-                repository.flush()
                 it.forEachIndexed { index, result ->
                     result.uid = index
                     repository.insert(result)
@@ -97,7 +99,7 @@ class PatchService : JobIntentService() {
     private fun decodeData(result: DataResponse.Result, patchList: MutableList<Patch>) {
         val decodedBytes = Decoder.decrypt(result.signature, result.data)
 
-        val file = File.createTempFile(result.version, ".zip", applicationContext.cacheDir)
+        val file = File.createTempFile(result.versionName, ".zip", applicationContext.cacheDir)
         val bufferedOutputStream = BufferedOutputStream(FileOutputStream(file))
         try {
             bufferedOutputStream.write(decodedBytes)
@@ -107,7 +109,7 @@ class PatchService : JobIntentService() {
             try {
                 bufferedOutputStream.close()
                 val p = Patch()
-                p.version = result.version
+                p.version = result.versionName
                 p.name = result.description
                 p.md5 = result.signature
                 p.patchesInfoImplClassFullName = PATCHES_CLASS_FULL_NAME
