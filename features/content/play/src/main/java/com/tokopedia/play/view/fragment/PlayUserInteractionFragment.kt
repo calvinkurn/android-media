@@ -76,6 +76,7 @@ import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.PlayRoomEvent
 import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.uimodel.*
+import com.tokopedia.play.view.viewcomponent.EmptyViewComponent
 import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
@@ -85,6 +86,7 @@ import com.tokopedia.play_common.state.PlayVideoState
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updateMargins
+import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -124,7 +126,8 @@ class PlayUserInteractionFragment @Inject constructor(
     }
     private val job: Job = SupervisorJob()
 
-    private lateinit var spaceSize: Space
+    private val spaceSize by viewComponent { EmptyViewComponent(it, R.id.space_size) }
+    private val gradientBackgroundView by viewComponent { EmptyViewComponent(it, R.id.view_gradient_background) }
 
     private lateinit var playViewModel: PlayViewModel
     private lateinit var viewModel: PlayInteractionViewModel
@@ -187,14 +190,13 @@ class PlayUserInteractionFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initView(view)
         setupView(view)
         setupInsets(view)
     }
 
     override fun onStart() {
         super.onStart()
-        spaceSize.requestApplyInsetsWhenAttached()
+        spaceSize.rootView.requestApplyInsetsWhenAttached()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -268,7 +270,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun setupInsets(view: View) {
-        spaceSize.doOnApplyWindowInsets { v, insets, _, margin ->
+        spaceSize.rootView.doOnApplyWindowInsets { v, insets, _, margin ->
             val marginLayoutParams = v.layoutParams as ViewGroup.MarginLayoutParams
             var isMarginChanged = false
 
@@ -448,6 +450,11 @@ class PlayUserInteractionFragment @Inject constructor(
                     view?.show()
                 }
             }
+
+            /**
+             * New
+             */
+            if (map.isAnyShown) gradientBackgroundView.hide() else gradientBackgroundView.show()
         })
     }
 
@@ -461,6 +468,11 @@ class PlayUserInteractionFragment @Inject constructor(
                     sendEventFreeze(it)
                     hideBottomSheet()
                 }
+
+                /**
+                 * New
+                 */
+                if(it.isFreeze || it.isBanned) gradientBackgroundView.hide()
             }
         })
     }
@@ -469,12 +481,6 @@ class PlayUserInteractionFragment @Inject constructor(
         playViewModel.observableBadgeCart.observe(viewLifecycleOwner, DistinctObserver(::setCartInfo))
     }
     //endregion
-
-    private fun initView(view: View) {
-        with (view) {
-            spaceSize = findViewById(R.id.space_size)
-        }
-    }
 
     private fun setupView(view: View) {
         container.setOnClickListener {
@@ -695,8 +701,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     override fun onInitGradientBackground(container: ViewGroup): Int {
-        return GradientBackgroundComponent(container, EventBusFactory.get(viewLifecycleOwner), scope, dispatchers)
-                .getContainerId()
+        throw IllegalStateException("No Init")
     }
 
     override fun onInitEndLiveComponent(container: ViewGroup): Int {

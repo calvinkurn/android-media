@@ -28,7 +28,6 @@ class PlayUserInteractionLayoutManager(
         viewInitializer: PlayInteractionViewInitializer
 ) : PlayInteractionLayoutManager {
 
-    @IdRes private val gradientBackgroundComponentId: Int = viewInitializer.onInitGradientBackground(container)
     @IdRes private val immersiveBoxComponentId: Int = viewInitializer.onInitImmersiveBox(container)
     @IdRes private val sendChatComponentId: Int = viewInitializer.onInitChat(container)
     @IdRes private val likeComponentId: Int = viewInitializer.onInitLike(container)
@@ -66,7 +65,6 @@ class PlayUserInteractionLayoutManager(
         layoutPlayButton(container = view, videoOrientation = videoOrientation, id = playButtonComponentId, immersiveBoxComponentId = immersiveBoxComponentId)
         layoutImmersiveBox(container = view, videoOrientation = videoOrientation, id = immersiveBoxComponentId, pinnedComponentId = pinnedComponentId, statsInfoComponentId = statsInfoComponentId)
         layoutQuickReply(container = view, id = quickReplyComponentId, sendChatComponentId = sendChatComponentId, sizeContainerComponentId = R.id.space_size)
-        layoutGradientBackground(container = view, id = gradientBackgroundComponentId)
         layoutEndLiveComponent(container = view, id = endLiveInfoComponentId)
         layoutStatsInfo(container = view, id = statsInfoComponentId, sizeContainerComponentId = R.id.space_size, toolbarComponentId = toolbarComponentId)
         layoutVideoSettings(container = view, id = videoSettingsComponentId, sizeContainerComponentId = R.id.space_size, statsInfoComponentId = statsInfoComponentId)
@@ -161,15 +159,6 @@ class PlayUserInteractionLayoutManager(
         changePinnedBottomMarginGone(if (videoPlayerUiModel.isYouTube && channelType.isVod) offset0 else offset12)
     }
 
-    private fun layoutSizeContainer(container: View, @IdRes id: Int) {
-        container.changeConstraint {
-            connect(id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
-            connect(id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
-            connect(id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
-            connect(id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
-        }
-    }
-
     private fun layoutChat(container: View, @IdRes id: Int, @IdRes likeComponentId: Int, @IdRes sizeContainerComponentId: Int, @IdRes videoControlComponentId: Int) {
         container.changeConstraint {
             connect(id, ConstraintSet.START, sizeContainerComponentId, ConstraintSet.START, offset16)
@@ -206,15 +195,6 @@ class PlayUserInteractionLayoutManager(
             connect(id, ConstraintSet.START, sizeContainerComponentId, ConstraintSet.START, offset16)
             connect(id, ConstraintSet.END, likeComponentId, ConstraintSet.START, offset8)
             connect(id, ConstraintSet.BOTTOM, sizeContainerComponentId, ConstraintSet.BOTTOM)
-        }
-    }
-
-    private fun layoutGradientBackground(container: View, @IdRes id: Int) {
-        container.changeConstraint {
-            connect(id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
-            connect(id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
-            connect(id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
-            connect(id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
         }
     }
 
