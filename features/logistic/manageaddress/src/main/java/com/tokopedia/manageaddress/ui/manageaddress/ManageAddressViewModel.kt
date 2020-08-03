@@ -15,9 +15,9 @@ import javax.inject.Inject
 class ManageAddressViewModel @Inject constructor(
         private val getPeopleAddressUseCase: GetAddressCornerUseCase,
         private val deletePeopleAddressUseCase: DeletePeopleAddressUseCase,
-        private val setDeletePeopleAddressUseCase: SetDefaultPeopleAddressUseCase) : ViewModel() {
+        private val setDefaultPeopleAddressUseCase: SetDefaultPeopleAddressUseCase) : ViewModel() {
 
-    private val token: Token = Token()
+    var token: Token? = null
     var savedQuery: String = ""
     var page: Int = 1
 
@@ -41,8 +41,9 @@ class ManageAddressViewModel @Inject constructor(
                             }
 
                             override fun onNext(addressModel: AddressListModel) {
+                                token = addressModel.token
                                 savedQuery = query
-                                mapToModel(addressModel)
+                                _addressList.value = ManageAddressState.Success(addressModel)
                             }
 
                             override fun onCompleted() {
@@ -52,38 +53,24 @@ class ManageAddressViewModel @Inject constructor(
         )
     }
 
-    fun mapToModel(addressListModel: AddressListModel) {
-        _addressList.value = ManageAddressState.Success(addressListModel)
-    }
-
-    fun getToken(): Token {
-        return token
-    }
-
     fun deletePeopleAddress(id: String) {
-        val value = _addressList.value
-        if (value is ManageAddressState.Success) {
-            _result.value = ManageAddressState.Loading
-            deletePeopleAddressUseCase.execute(id.toInt(), {
-                _result.value = ManageAddressState.Success("Success")
-                searchAddress("")
-            },  {
-                _addressList.value  = ManageAddressState.Fail(it, "")
-            })
-        }
+        _result.value = ManageAddressState.Loading
+        deletePeopleAddressUseCase.execute(id.toInt(), {
+            _result.value = ManageAddressState.Success("Success")
+            searchAddress("")
+        },  {
+            _addressList.value  = ManageAddressState.Fail(it, "")
+        })
     }
 
     fun setDefaultPeopleAddress(id: String) {
-        val value = _addressList.value
-        if (value is ManageAddressState.Success) {
-            _result.value = ManageAddressState.Loading
-            setDeletePeopleAddressUseCase.execute(id.toInt(), {
-                _result.value = ManageAddressState.Success("Success")
-                searchAddress("")
-            },  {
-                _addressList.value  = ManageAddressState.Fail(it, "")
-            })
-        }
+        _result.value = ManageAddressState.Loading
+        setDefaultPeopleAddressUseCase.execute(id.toInt(), {
+            _result.value = ManageAddressState.Success("Success")
+            searchAddress("")
+        },  {
+            _addressList.value  = ManageAddressState.Fail(it, "")
+        })
     }
 
     override fun onCleared() {

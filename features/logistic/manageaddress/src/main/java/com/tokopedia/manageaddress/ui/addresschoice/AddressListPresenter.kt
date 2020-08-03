@@ -29,6 +29,7 @@ class AddressListPresenter @Inject constructor(
     }
 
     override fun detachView() {
+        usecase.unsubscribe()
         mView = null
     }
 

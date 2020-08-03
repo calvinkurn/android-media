@@ -673,6 +673,15 @@ open class HomeFragment : BaseDaggerFragment(),
 
         }
     }
+          
+    private fun observeIsNeedRefresh() {
+        getHomeViewModel().isNeedRefresh.observe(viewLifecycleOwner, Observer { data: Event<Boolean> ->
+            val isNeedRefresh = data.peekContent()
+            if (isNeedRefresh) {
+                adapter?.resetImpressionHomeBanner()
+            }
+        })
+    }
 
     private fun observeHomeRequestNetwork() {
         getHomeViewModel().isRequestNetworkLiveData.observe(viewLifecycleOwner, Observer { data: Event<Boolean> ->
@@ -1587,9 +1596,9 @@ open class HomeFragment : BaseDaggerFragment(),
 
     override fun onPromoScrolled(bannerSlidesModel: BannerSlidesModel) {
         HomeTrackingUtils.homeSlidingBannerImpression(context, bannerSlidesModel, bannerSlidesModel.position)
-        if (bannerSlidesModel.type == BannerSlidesModel.TYPE_BANNER_PERSO && !bannerSlidesModel.isInvoke) {
+        if (bannerSlidesModel.type == BannerSlidesModel.TYPE_BANNER_PERSO) {
             putEEToTrackingQueue(getOverlayBannerImpression(bannerSlidesModel) as HashMap<String, Any>)
-        } else if (!bannerSlidesModel.isInvoke) {
+        } else {
             if (bannerSlidesModel.topadsViewUrl.isNotEmpty()) {
                 TopAdsUrlHitter(className).hitImpressionUrl(context, bannerSlidesModel.topadsViewUrl,
                         bannerSlidesModel.id.toString(),
@@ -1605,7 +1614,7 @@ open class HomeFragment : BaseDaggerFragment(),
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
         trackScreen(isVisibleToUser)
-        restartBanner(isVisibleToUser)
+        conditionalViewModelRefresh()
     }
 
     private fun restartBanner(isVisibleToUser: Boolean) {

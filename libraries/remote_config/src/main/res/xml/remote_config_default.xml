@@ -482,4 +482,8 @@
         <key>app_enable_branch_utm_support</key>
         <value>true</value>
     </entry>
+    <entry>
+        <key>android_gql_connection_warm_up</key>
+        <value>false</value>
+    </entry>
 </defaultsMap>
