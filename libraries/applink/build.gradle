@@ -29,7 +29,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.devMonitoringTools)
 
-    implementation (rootProject.ext.serviceDependencies.crashlytics)
+    implementation (rootProject.ext.firebase.crashlytics)
 }
 
 project.ext {

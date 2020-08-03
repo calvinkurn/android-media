@@ -83,6 +83,4 @@ public interface TkpdCoreRouter {
     void refreshFCMTokenFromBackgroundToCM(String token, boolean force);
 
     void refreshFCMFromInstantIdService(String token);
-
-    void refreshFCMTokenFromForegroundToCM();
 }
