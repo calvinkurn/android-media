@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/dp_16">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/keywordName"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_percent=".66"
+            app:typographyType="heading_5"
+            tools:text="@tools:sample/lorem"
+            tools:textColor="@color/topads_heading_color"
+            tools:textStyle="bold" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/txtSearch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_8"
+            android:textColor="@color/topads_heading_color"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/keywordName"
+            app:typographyType="heading_6"
+            tools:text="Jumlah pencarian" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/textSearchValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_2"
+            android:textColor="@color/topads_common_select_color_unchecked"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txtSearch"
+            app:typographyType="heading_6"
+            tools:text="12rb / bulan" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/txtSavings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/topads_heading_color"
+            app:layout_constraintStart_toEndOf="@id/txtSearch"
+            app:layout_constraintEnd_toStartOf="@id/btnTambah"
+            app:layout_constraintTop_toTopOf="@+id/txtSearch"
+            app:typographyType="heading_6"
+            tools:text="Biaya" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/txtSavingsValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/topads_common_select_color_unchecked"
+            app:layout_constraintStart_toStartOf="@id/txtSavings"
+            app:layout_constraintTop_toTopOf="@+id/textSearchValue"
+            app:typographyType="heading_6"
+            tools:text="Rp600 /klik" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btnTambah"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/txtSearch"
+            app:unifyButtonSize="small"
+            app:unifyButtonType="main"
+            app:unifyButtonVariant="ghost"
+            tools:text="tambah" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/txtpotential"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_10"
+            android:background="@drawable/topads_text_shadow"
+            android:gravity="center_vertical"
+            android:paddingStart="@dimen/dp_8"
+            android:paddingLeft="@dimen/dp_8"
+            app:typographyType="body_3"
+            android:textColor="@color/topads_heading_color"
+            app:layout_constraintTop_toBottomOf="@id/textSearchValue"
+            tools:text="Potensi tampil +500 kali / bulan" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.tokopedia.unifycomponents.CardUnify>
