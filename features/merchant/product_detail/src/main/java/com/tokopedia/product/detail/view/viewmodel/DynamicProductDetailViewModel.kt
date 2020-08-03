@@ -23,8 +23,8 @@ import com.tokopedia.product.detail.common.data.model.carttype.CartRedirection
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.Media
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
-import com.tokopedia.product.detail.data.model.ProductInfoP2GeneralData
 import com.tokopedia.product.detail.data.model.ProductInfoP2Login
+import com.tokopedia.product.detail.data.model.ProductInfoP2Other
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.model.ProductInfoP3
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
@@ -74,7 +74,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                                                              private val stickyLoginUseCase: StickyLoginUseCase,
                                                              private val getPdpLayoutUseCase: GetPdpLayoutUseCase,
                                                              private val getProductInfoP2LoginUseCase: GetProductInfoP2LoginUseCase,
-                                                             private val getProductInfoP2GeneralUseCase: GetProductInfoP2GeneralUseCase,
+                                                             private val getProductInfoP2OtherUseCase: GetProductInfoP2OtherUseCase,
                                                              private val getProductInfoP2DataUseCase: GetProductInfoP2DataUseCase,
                                                              private val getProductInfoP3UseCase: GetProductInfoP3UseCase,
                                                              private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
@@ -105,9 +105,9 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     val p2Data: LiveData<ProductInfoP2UiData>
         get() = _p2Data
 
-    private val _p2GeneralData = MutableLiveData<ProductInfoP2GeneralData>()
-    val p2GeneralData: LiveData<ProductInfoP2GeneralData>
-        get() = _p2GeneralData
+    private val _p2Other = MutableLiveData<ProductInfoP2Other>()
+    val p2Other: LiveData<ProductInfoP2Other>
+        get() = _p2Other
 
     private val _productInfoP3 = MediatorLiveData<ProductInfoP3>()
     val productInfoP3: LiveData<ProductInfoP3>
@@ -204,7 +204,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         stickyLoginUseCase.cancelJobs()
         getPdpLayoutUseCase.cancelJobs()
         getProductInfoP2LoginUseCase.cancelJobs()
-        getProductInfoP2GeneralUseCase.cancelJobs()
+        getProductInfoP2OtherUseCase.cancelJobs()
         getProductInfoP3UseCase.cancelJobs()
         toggleFavoriteUseCase.cancelJobs()
         trackAffiliateUseCase.cancelJobs()
@@ -397,10 +397,10 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 getProductInfoP2LoginAsync(it.basic.getShopId(),
                         it.basic.getProductId())
             } else null
-            val p2Data: Deferred<ProductInfoP2UiData> = getProductInfoP2DataAsync(it.basic.productID, it.pdpSession)
-            val p2GeneralData: Deferred<ProductInfoP2GeneralData> = getProductInfoP2GeneralDataAsync(it.basic.getProductId(), it.basic.getShopId())
+            val p2DataDeffered: Deferred<ProductInfoP2UiData> = getProductInfoP2DataAsync(it.basic.productID, it.pdpSession)
+            val p2OtherDeffered: Deferred<ProductInfoP2Other> = getProductInfoP2OtherAsync(it.basic.getProductId(), it.basic.getShopId())
 
-            _p2Data.value = p2Data.await().also { value ->
+            _p2Data.value = p2DataDeffered.await().also { value ->
                 shopInfo = value.shopInfo
                 updateSelectedMultiOrigin(it.basic.productID)
                 updateTradeinParams(value.validateTradeIn)
@@ -410,7 +410,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 _p2Login.value = it.await()
             }
 
-            _p2GeneralData.value = p2GeneralData.await()
+            _p2Other.value = p2OtherDeffered.await()
         }
     }
 
@@ -665,9 +665,9 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         tradeInParams.widgetString = validateTradeIn.widgetString
     }
 
-    private fun getProductInfoP2GeneralDataAsync(productId: Int, shopId: Int): Deferred<ProductInfoP2GeneralData> {
+    private fun getProductInfoP2OtherAsync(productId: Int, shopId: Int): Deferred<ProductInfoP2Other> {
         return async {
-            getProductInfoP2GeneralUseCase.executeOnBackground(GetProductInfoP2GeneralUseCase.createParams(productId, shopId), forceRefresh)
+            getProductInfoP2OtherUseCase.executeOnBackground(GetProductInfoP2OtherUseCase.createParams(productId, shopId), forceRefresh)
         }
     }
 

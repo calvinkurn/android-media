@@ -46,10 +46,9 @@ class GetProductSpecificationUseCase @Inject constructor(private val rawQueries:
 
         if (error != null && error.isNotEmpty()) {
             throw MessageErrorException(error.firstOrNull()?.message ?: "")
-        } else if (data == null) {
+        } else if (data == null || data.productCatalogQuery.data.catalog.specification.isEmpty()) {
             throw RuntimeException()
         }
-
         return data
     }
 }

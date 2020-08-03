@@ -57,7 +57,6 @@ query pdpGetLayout($productID: String, $shopDomain:String, $productKey:String) {
         itemSoldPaymentVerified
       }
       stats {
-        countView
         countReview
         countTalk
         rating

@@ -6,8 +6,7 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.Media
-import com.tokopedia.product.detail.data.model.ProductInfoP2GeneralData
-import com.tokopedia.product.detail.data.model.ProductInfoP2ShopData
+import com.tokopedia.product.detail.data.model.ProductInfoP2Other
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.model.ProductInfoP3
 import com.tokopedia.product.detail.data.model.datamodel.*
@@ -163,7 +162,6 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
             miniSocialProofMap?.run {
                 rating = it.basic.stats.rating
                 ratingCount = it.basic.stats.countReview
-                viewCount = it.basic.stats.countView
                 talkCount = it.basic.stats.countTalk
                 paymentVerifiedCount = it.basic.txStats.itemSoldPaymentVerified.toInt()
             }
@@ -270,7 +268,7 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
             shopInfoMap?.run {
                 shopLocation = it.shopInfo.location
                 shopLastActive = it.shopInfo.shopLastActive
-                isFavorite = it.shopInfo.favoriteData.alreadyFavorited == 1
+                isFavorite = it.shopInfo.favoriteData.alreadyFavorited == ProductDetailConstant.ALREADY_FAVORITE_SHOP
                 shopAvatar = it.shopInfo.shopAssets.avatar
                 isAllowManage = it.shopInfo.isAllowManage
                 isGoAPotik = it.isGoApotik
@@ -306,14 +304,17 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
 
             socialProofMap?.run {
                 wishlistCount = it.wishlistCount.toIntOrZero()
+                viewCount = it.productView.toIntOrZero()
             }
 
             productSocialProofPvDataModel?.run {
                 wishlistCount = it.wishlistCount.toIntOrZero()
+                viewCount = it.productView.toIntOrZero()
             }
 
             miniSocialProofMap?.run {
                 wishlistCount = it.wishlistCount.toIntOrZero()
+                viewCount = it.productView.toIntOrZero()
                 shouldRenderSocialProof = true
             }
 
@@ -338,7 +339,7 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
         }
     }
 
-    fun updateDataP2General(data: ProductInfoP2GeneralData?) {
+    fun updateDataP2General(data: ProductInfoP2Other?) {
         data?.let {
             productReviewMap?.run {
                 listOfReviews = it.helpfulReviews

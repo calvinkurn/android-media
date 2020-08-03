@@ -106,7 +106,7 @@ class ProductFullDescriptionTabActivity : BaseSimpleActivity(), HasComponent<Pro
     private fun observeLiveData() {
         observe(viewModel.specificationResponseData) {
             it.doSuccessOrFail({
-                if (titleList.size > 2) return@doSuccessOrFail
+                if (titleList.size == 2) return@doSuccessOrFail
                 tabLayoutDesc?.show()
                 titleList.add(getString(R.string.label_spec))
                 productViewPagerAdapter.setSpecificationData(it.data.productCatalogQuery.data.catalog.specification)

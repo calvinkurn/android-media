@@ -1096,11 +1096,11 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         observeInitialVariantData()
         observeonVariantClickedData()
         observeDiscussionData()
-        observeP2GeneralData()
+        observeP2Other()
     }
 
-    private fun observeP2GeneralData() {
-        viewLifecycleOwner.observe(viewModel.p2GeneralData) {
+    private fun observeP2Other() {
+        viewLifecycleOwner.observe(viewModel.p2Other) {
             if (it.latestTalk.id.isEmpty() || remoteConfig.getBoolean(ProductDetailConstant.ENABLE_NEW_DISCUSSION_REMOTE_CONFIG, true)) {
                 dynamicAdapter.removeComponentSection(pdpUiUpdater?.productDiscussionMap)
             } else {
@@ -1114,6 +1114,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             pdpUiUpdater?.updateDataP2General(it)
             dynamicAdapter.notifyItemComponentSections(pdpUiUpdater?.productDiscussionMostHelpfulMap, pdpUiUpdater?.productDiscussionMap, pdpUiUpdater?.productReviewMap)
             dynamicAdapter.notifyMediaWithPayload(pdpUiUpdater?.mediaMap, ProductDetailConstant.PAYLOAD_MEDIA_UPDATE_IMAGE_REVIEW)
+
+            (activity as? ProductDetailActivity)?.stopMonitoringP2Other()
         }
     }
 
@@ -1279,7 +1281,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             }
 
             onSuccessGetDataP2(it)
-            (activity as? ProductDetailActivity)?.stopMonitoringP2General()
+            (activity as? ProductDetailActivity)?.stopMonitoringP2Data()
         }
     }
 
@@ -1559,8 +1561,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
 
         pdpUiUpdater?.updateFulfillmentData(context, viewModel.selectedMultiOrigin.isFulfillment)
-        pdpUiUpdater?.updateDataP2(context, it, viewModel.getDynamicProductInfoP1?.basic?.productID
-                ?: "")
+        pdpUiUpdater?.updateDataP2(context, it, viewModel.getDynamicProductInfoP1?.basic?.productID ?: "")
 
         dynamicAdapter.notifyDataSetChanged()
     }

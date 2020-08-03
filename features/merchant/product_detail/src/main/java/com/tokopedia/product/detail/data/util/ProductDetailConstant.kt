@@ -59,9 +59,9 @@ object ProductDetailConstant {
     const val DEFAULT_PAGE_NAME = "pdp_1,pdp_2,pdp_3,pdp_4"
 
     const val PDP_P1_TRACE = "mp_pdp_p1"
-    const val PDP_P2_TRACE = "mp_pdp_p2"
-    const val PDP_P2_GENERAL_TRACE = "mp_pdp_p2_general"
+    const val PDP_P2_OTHER_TRACE = "mp_pdp_p2_other"
     const val PDP_P2_LOGIN_TRACE = "mp_pdp_p2_login"
+    const val PDP_P2_DATA_TRACE = "mp_pdp_p2_data"
     const val PDP_P3_TRACE = "mp_pdp_p3"
 
     const val PDP_RESULT_PLT_PREPARE_METRICS = "pdp_result_plt_prepare_metrics"
@@ -175,5 +175,7 @@ object ProductDetailConstant {
     const val OVO_INSUFFICIENT_BALANCE_STATUS = 2;
 
     const val ENABLE_NEW_DISCUSSION_REMOTE_CONFIG = "android_enable_new_discussion"
-    const val SHOW_LABEL_SHARED_PREFERENCE_KEY = "discussion_show_new_%s"
+
+    //SHOP
+    const val ALREADY_FAVORITE_SHOP = 1
 }

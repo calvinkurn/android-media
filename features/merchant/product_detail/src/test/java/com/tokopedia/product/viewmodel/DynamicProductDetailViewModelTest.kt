@@ -14,9 +14,6 @@ import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartOcsUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
-import com.tokopedia.product.detail.common.data.model.carttype.CartRedirection
-import com.tokopedia.product.detail.common.data.model.carttype.CartRedirectionResponse
-import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.pdplayout.BasicInfo
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.Media
@@ -74,7 +71,7 @@ class DynamicProductDetailViewModelTest {
     lateinit var getProductInfoP2LoginUseCase: GetProductInfoP2LoginUseCase
 
     @RelaxedMockK
-    lateinit var getProductInfoP2GeneralUseCase: GetProductInfoP2GeneralUseCase
+    lateinit var getProductInfoP2OtherUseCase: GetProductInfoP2OtherUseCase
 
     @RelaxedMockK
     lateinit var getProductInfoP3UseCase: GetProductInfoP3UseCase
@@ -122,7 +119,7 @@ class DynamicProductDetailViewModelTest {
     lateinit var discussionMostHelpfulUseCase: DiscussionMostHelpfulUseCase
 
     @RelaxedMockK
-    lateinit var getProductInfoP2General2UseCase: GetProductInfoP2GeneralUseCase
+    lateinit var getProductInfoP2General2UseCase: GetProductInfoP2OtherUseCase
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
@@ -138,7 +135,7 @@ class DynamicProductDetailViewModelTest {
     }
 
     private val viewModel by lazy {
-        DynamicProductDetailViewModel(TestDispatcherProvider(), stickyLoginUseCase, getPdpLayoutUseCase, getProductInfoP2LoginUseCase, getProductInfoP2General2UseCase, getProductInfoP2GeneralUseCase, getProductInfoP3UseCase, toggleFavoriteUseCase, removeWishlistUseCase, addWishListUseCase, getRecommendationUseCase,
+        DynamicProductDetailViewModel(TestDispatcherProvider(), stickyLoginUseCase, getPdpLayoutUseCase, getProductInfoP2LoginUseCase, getProductInfoP2General2UseCase, getProductInfoP2OtherUseCase, getProductInfoP3UseCase, toggleFavoriteUseCase, removeWishlistUseCase, addWishListUseCase, getRecommendationUseCase,
                 moveProductToWarehouseUseCase, moveProductToEtalaseUseCase, trackAffiliateUseCase, submitHelpTicketUseCase, updateCartCounterUseCase, addToCartUseCase, addToCartOcsUseCase, addToCartOccUseCase, toggleNotifyMeUseCase, discussionMostHelpfulUseCase, userSessionInterface)
     }
 
@@ -474,7 +471,7 @@ class DynamicProductDetailViewModelTest {
         Assert.assertNotNull(viewModel.p2Login.value?.pdpAffiliate)
 
         coVerify {
-            getProductInfoP2GeneralUseCase.executeOnBackground()
+            getProductInfoP2OtherUseCase.executeOnBackground()
         }
 
         //P3
@@ -509,7 +506,7 @@ class DynamicProductDetailViewModelTest {
         }
 
         coVerify(inverse = true) {
-            getProductInfoP2GeneralUseCase.executeOnBackground()
+            getProductInfoP2OtherUseCase.executeOnBackground()
         }
 
         //P3
@@ -542,10 +539,6 @@ class DynamicProductDetailViewModelTest {
         } returns dataP2Login
 
         coEvery {
-            getProductInfoP2GeneralUseCase.executeOnBackground()
-        } returns dataP2General
-
-        coEvery {
             getProductInfoP3UseCase.executeOnBackground()
         } returns dataP3
 
@@ -562,11 +555,6 @@ class DynamicProductDetailViewModelTest {
         coVerify(inverse = true) {
             getProductInfoP2LoginUseCase.executeOnBackground()
         }
-
-        coVerify {
-            getProductInfoP2GeneralUseCase.executeOnBackground()
-        }
-        Assert.assertNotNull(viewModel.p2General.value)
 
         //RateEstimate
         //Make sure not called
@@ -1023,7 +1011,7 @@ class DynamicProductDetailViewModelTest {
         }
 
         verify {
-            getProductInfoP2GeneralUseCase.cancelJobs()
+            getProductInfoP2OtherUseCase.cancelJobs()
         }
 
         verify {
