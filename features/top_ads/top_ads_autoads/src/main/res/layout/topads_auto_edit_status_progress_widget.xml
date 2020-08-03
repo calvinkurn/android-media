@@ -10,7 +10,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
-        android:background="@drawable/topads_blue_bg"
         android:padding="@dimen/dp_8"
         app:layout_constraintStart_toStartOf="parent">
 

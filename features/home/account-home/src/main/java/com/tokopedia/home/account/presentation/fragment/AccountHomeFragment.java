@@ -120,7 +120,7 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
             fragmentItems.add(item);
 
             item = new AccountFragmentItem();
-            item.setFragment(SellerAccountFragment.newInstance());
+            item.setFragment(SellerAccountFragment.Companion.newInstance());
             item.setTitle(getContext().getString(R.string.label_account_seller));
             fragmentItems.add(item);
 

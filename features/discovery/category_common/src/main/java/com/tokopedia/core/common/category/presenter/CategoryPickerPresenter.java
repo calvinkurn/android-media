@@ -8,11 +8,9 @@ import com.tokopedia.core.common.category.view.listener.CategoryPickerView;
  */
 
 public abstract class CategoryPickerPresenter extends BaseDaggerPresenter<CategoryPickerView> {
-    public abstract void fetchCategoryLevelOne();
+    public abstract void getCategoryLiteTree();
 
-    public abstract void fetchCategoryChild(long categoryId);
-
-    public abstract void fetchCategoryFromSelected(long initSelected);
+    public abstract void getCategoryChild(long categoryId);
 
     public abstract void unsubscribe();
 }
