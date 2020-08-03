@@ -40,6 +40,7 @@ import com.tokopedia.purchase_platform.common.feature.helpticket.data.request.Su
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.model.SubmitTicketResult
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.SubmitHelpTicketUseCase
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
@@ -67,29 +68,30 @@ import rx.schedulers.Schedulers
 import timber.log.Timber
 import javax.inject.Inject
 
-open class DynamicProductDetailViewModel @Inject constructor(private val dispatcher: DynamicProductDetailDispatcherProvider,
-                                                             private val stickyLoginUseCase: StickyLoginUseCase,
-                                                             private val getPdpLayoutUseCase: GetPdpLayoutUseCase,
-                                                             private val getProductInfoP2ShopUseCase: GetProductInfoP2ShopUseCase,
-                                                             private val getProductInfoP2LoginUseCase: GetProductInfoP2LoginUseCase,
-                                                             private val getProductInfoP2GeneralUseCase: GetProductInfoP2GeneralUseCase,
-                                                             private val getProductInfoP3RateEstimateUseCase: GetProductInfoP3RateEstimateUseCase,
-                                                             private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
-                                                             private val removeWishlistUseCase: RemoveWishListUseCase,
-                                                             private val addWishListUseCase: AddWishListUseCase,
-                                                             private val getRecommendationUseCase: GetRecommendationUseCase,
-                                                             private val moveProductToWarehouseUseCase: MoveProductToWarehouseUseCase,
-                                                             private val moveProductToEtalaseUseCase: MoveProductToEtalaseUseCase,
-                                                             private val trackAffiliateUseCase: TrackAffiliateUseCase,
-                                                             private val submitHelpTicketUseCase: SubmitHelpTicketUseCase,
-                                                             private val updateCartCounterUseCase: UpdateCartCounterUseCase,
-                                                             private val addToCartUseCase: AddToCartUseCase,
-                                                             private val addToCartOcsUseCase: AddToCartOcsUseCase,
-                                                             private val addToCartOccUseCase: AddToCartOccUseCase,
-                                                             private val getProductInfoP3VariantUseCase: GetProductInfoP3VariantUseCase,
-                                                             private val toggleNotifyMeUseCase: ToggleNotifyMeUseCase,
-                                                             private val discussionMostHelpfulUseCase: DiscussionMostHelpfulUseCase,
-                                                             val userSessionInterface: UserSessionInterface) : BaseViewModel(dispatcher.ui()) {
+open class DynamicProductDetailViewModel @Inject constructor(
+         private val dispatcher: DynamicProductDetailDispatcherProvider,
+         private val stickyLoginUseCase: StickyLoginUseCase,
+         private val getPdpLayoutUseCase: GetPdpLayoutUseCase,
+         private val getProductInfoP2ShopUseCase: GetProductInfoP2ShopUseCase,
+         private val getProductInfoP2LoginUseCase: GetProductInfoP2LoginUseCase,
+         private val getProductInfoP2GeneralUseCase: GetProductInfoP2GeneralUseCase,
+         private val getProductInfoP3RateEstimateUseCase: GetProductInfoP3RateEstimateUseCase,
+         private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
+         private val removeWishlistUseCase: RemoveWishListUseCase,
+         private val addWishListUseCase: AddWishListUseCase,
+         private val getRecommendationUseCase: GetRecommendationUseCase,
+         private val moveProductToWarehouseUseCase: MoveProductToWarehouseUseCase,
+         private val moveProductToEtalaseUseCase: MoveProductToEtalaseUseCase,
+         private val trackAffiliateUseCase: TrackAffiliateUseCase,
+         private val submitHelpTicketUseCase: SubmitHelpTicketUseCase,
+         private val updateCartCounterUseCase: UpdateCartCounterUseCase,
+         private val addToCartUseCase: AddToCartUseCase,
+         private val addToCartOcsUseCase: AddToCartOcsUseCase,
+         private val addToCartOccUseCase: AddToCartOccUseCase,
+         private val getProductInfoP3VariantUseCase: GetProductInfoP3VariantUseCase,
+         private val toggleNotifyMeUseCase: ToggleNotifyMeUseCase,
+         private val discussionMostHelpfulUseCase: DiscussionMostHelpfulUseCase,
+         val userSessionInterface: UserSessionInterface) : BaseViewModel(dispatcher.ui()) {
 
     private val _productLayout = MutableLiveData<Result<List<DynamicPdpDataModel>>>()
     val productLayout: LiveData<Result<List<DynamicPdpDataModel>>>
@@ -118,6 +120,14 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     private val _loadTopAdsProduct = MutableLiveData<Result<List<RecommendationWidget>>>()
     val loadTopAdsProduct: LiveData<Result<List<RecommendationWidget>>>
         get() = _loadTopAdsProduct
+
+    private val _filterTopAdsProduct = MutableLiveData<ProductRecommendationDataModel>()
+    val filterTopAdsProduct: LiveData<ProductRecommendationDataModel>
+        get() = _filterTopAdsProduct
+
+    private val _statusFilterTopAdsProduct = MutableLiveData<Result<Boolean>>()
+    val statusFilterTopAdsProduct: LiveData<Result<Boolean>>
+        get() = _statusFilterTopAdsProduct
 
     private val _moveToWarehouseResult = MutableLiveData<Result<Boolean>>()
     val moveToWarehouseResult: LiveData<Result<Boolean>>
@@ -576,6 +586,35 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                     _loadTopAdsProduct.value = e.asFail()
                 }
             }
+        }
+    }
+
+    fun getRecommendation(recommendationDataModel: ProductRecommendationDataModel, annotationChip: AnnotationChip, position: Int, filterPosition: Int){
+        launchCatchError(dispatcher.io(), block = {
+            if (!GlobalConfig.isSellerApp()) {
+                val recomData = getRecommendationUseCase.createObservable(getRecommendationUseCase.getRecomParams(
+                        pageNumber = ProductDetailConstant.DEFAULT_PAGE_NUMBER,
+                        pageName = recommendationDataModel.recomWidgetData?.pageName ?: "",
+                        productIds = arrayListOf(getDynamicProductInfoP1?.basic?.productID ?: "")
+                )).toBlocking().first()
+                if(recomData.isNotEmpty()){
+                    val newRecommendation = recomData.first()
+                    _filterTopAdsProduct.postValue(recommendationDataModel.copy(
+                            recomWidgetData = newRecommendation,
+                            filterData = recommendationDataModel.filterData?.map {
+                                it.copy(selected = annotationChip.id == it.id && annotationChip.selected)
+                            }
+                    ))
+                    _statusFilterTopAdsProduct.postValue(true.asSuccess())
+                }
+            }
+        }) { throwable ->
+            _filterTopAdsProduct.postValue(recommendationDataModel.copy(
+                    filterData = recommendationDataModel.filterData?.map {
+                        it.copy(selected = it.id == annotationChip.id && !annotationChip.selected)
+                    }
+            ))
+            _statusFilterTopAdsProduct.postValue(throwable.asFail())
         }
     }
 

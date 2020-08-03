@@ -1,6 +1,11 @@
 package com.tokopedia.product.detail.view.viewholder
 
+import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -11,30 +16,52 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.util.AnnotationFilterDiffUtil
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import kotlinx.android.synthetic.main.item_dynamic_recommendation.view.*
 
-class ProductRecommendationViewHolder(private val view: View,
-                                      private val listener: DynamicProductDetailListener) : AbstractViewHolder<ProductRecommendationDataModel>(view) {
+class ProductRecommendationViewHolder(
+      private val view: View,
+      private val listener: DynamicProductDetailListener)
+: AbstractViewHolder<ProductRecommendationDataModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_dynamic_recommendation
         private const val EXPERIMENT_NAME = "See more button card"
         private const val SEE_MORE_CARD_AB_VALUE = "See more card"
+        const val KEY_UPDATE_FILTER_RECOM = "KEY_UPDATE_FILTER_RECOM"
     }
+
+    private var annotationChipAdapter: AnnotationChipFilterAdapter? = null
 
     override fun bind(element: ProductRecommendationDataModel) {
         view.rvProductRecom.gone()
         view.visible()
         view.loadingRecom.visible()
         element.recomWidgetData?.run {
-
             view.addOnImpressionListener(element.impressHolder) {
                 listener.onImpressComponent(getComponentTrackData(element))
             }
+            if(annotationChipAdapter == null){
+                annotationChipAdapter = AnnotationChipFilterAdapter(object : AnnotationChipListener{
+                    override fun onFilterAnnotationClicked(annotationChip: AnnotationChip, position: Int) {
+                        annotationChipAdapter?.submitList(
+                            element.filterData?.map {
+                                it.copy(selected = annotationChip.id == it.id && !annotationChip.selected)
+                            } ?: listOf()
+                        )
+                        listener.onChipFilterClicked(element, annotationChip.copy(selected = !annotationChip.selected), adapterPosition, position)
+                        view.loadingRecom.show()
+                        view.rvProductRecom.hide()
+                    }
+                })
+            }
 
+            view.chip_filter_recyclerview?.adapter = annotationChipAdapter
+            annotationChipAdapter?.submitList(element.filterData ?: listOf())
             view.loadingRecom.gone()
             view.titleRecom.text = title
             view.rvProductRecom.show()
@@ -47,6 +74,17 @@ class ProductRecommendationViewHolder(private val view: View,
                 listener.onSeeAllRecomClicked(pageName, seeMoreAppLink, getComponentTrackData(element))
             }
             initAdapter(element, this, element.cardModel, getComponentTrackData(element))
+        }
+    }
+
+    override fun bind(element: ProductRecommendationDataModel?, payloads: MutableList<Any>) {
+        if(payloads.isNotEmpty() && payloads.first() is Bundle && (payloads.first() as Bundle).containsKey(KEY_UPDATE_FILTER_RECOM)){
+            element?.recomWidgetData?.let {
+                initAdapter(element, it, element.cardModel, getComponentTrackData(element))
+                annotationChipAdapter?.submitList(element.filterData ?: listOf())
+                view.loadingRecom.gone()
+                view.rvProductRecom.show()
+            }
         }
     }
 
@@ -106,5 +144,35 @@ class ProductRecommendationViewHolder(private val view: View,
         listener.getRecommendationCarouselSavedState().put(adapterPosition, view.rvProductRecom.getCurrentPosition())
         itemView.rvProductRecom?.recycle()
         super.onViewRecycled()
+    }
+
+    internal class AnnotationChipFilterAdapter (private val listener: AnnotationChipListener): RecyclerView.Adapter<ProductRecommendationAnnotationChipViewHolder>(){
+        private val annotationList = mutableListOf<AnnotationChip>()
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductRecommendationAnnotationChipViewHolder {
+            val view = LayoutInflater.from(parent.context).inflate(ProductRecommendationAnnotationChipViewHolder.LAYOUT, parent, false)
+            return ProductRecommendationAnnotationChipViewHolder(view, listener)
+        }
+
+        override fun getItemCount(): Int = annotationList.size
+
+        override fun onBindViewHolder(holder: ProductRecommendationAnnotationChipViewHolder, position: Int) {
+            holder.bind(annotationList[position])
+        }
+
+        override fun onBindViewHolder(holder: ProductRecommendationAnnotationChipViewHolder, position: Int, payloads: MutableList<Any>) {
+            if(payloads.isNotEmpty()) holder.bind(annotationList[position], payloads)
+            else super.onBindViewHolder(holder, position, payloads)
+        }
+
+        fun submitList(list: List<AnnotationChip>){
+            val diffCallback = AnnotationFilterDiffUtil(annotationList.toMutableList(), list)
+            val diffResult = DiffUtil.calculateDiff(diffCallback)
+            annotationList.clear()
+            annotationList.addAll(list)
+            diffResult.dispatchUpdatesTo(this)
+        }
+    }
+    interface AnnotationChipListener{
+        fun onFilterAnnotationClicked(annotationChip: AnnotationChip, position: Int)
     }
 }

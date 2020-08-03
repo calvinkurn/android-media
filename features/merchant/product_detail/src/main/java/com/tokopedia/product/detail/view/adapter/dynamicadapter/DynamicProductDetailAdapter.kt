@@ -1,5 +1,6 @@
 package com.tokopedia.product.detail.view.adapter.dynamicadapter
 
+import android.os.Bundle
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -82,6 +83,12 @@ class DynamicProductDetailAdapter(
                 }
             }
         }
+    }
+
+    fun notifyFilterRecommendation(productRecommendationDataModel: ProductRecommendationDataModel){
+        notifyItemChanged(list.indexOf(productRecommendationDataModel), Bundle().apply {
+            putBoolean(ProductRecommendationViewHolder.KEY_UPDATE_FILTER_RECOM, true)
+        })
     }
 
     fun removeRecommendation(listOfData: List<ProductRecommendationDataModel>?) {

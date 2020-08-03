@@ -306,4 +306,6 @@
         \n• Menyalakan WiFi
         \n• Akses accelero meter</string>
     <string name="pdp_tradein_text_request_access">Meminta Izin Akses</string>
+
+    <string name="recom_filter_chip_click_error_network">Silahkan cek kondisi jaringan</string>
 </resources>

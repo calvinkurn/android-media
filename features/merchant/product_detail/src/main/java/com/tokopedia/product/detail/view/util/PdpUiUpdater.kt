@@ -17,6 +17,7 @@ import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.variant_common.model.VariantCategory
 import kotlin.math.roundToLong
@@ -388,6 +389,14 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
         }
     }
 
+    fun updateFilterRecommendationData(data: ProductRecommendationDataModel): ProductRecommendationDataModel?{
+        return listProductRecomMap?.find { it.recomWidgetData?.pageName == data.recomWidgetData?.pageName }?.apply {
+            filterData = data.filterData
+            recomWidgetData = data.recomWidgetData
+            cardModel = data.cardModel
+        }
+    }
+
     fun updateImageAfterClickVariant(it: MutableList<Media>) {
         mediaMap?.shouldRenderImageVariant = true
         mediaMap?.listOfMedia = DynamicProductDetailMapper.convertMediaToDataModel(it)
@@ -447,6 +456,15 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
         recomWidget.getOrNull(position)?.let { recom ->
             dataModel.recomWidgetData = recom
             dataModel.cardModel = mapToCardModel(recom)
+            dataModel.filterData = listOf(
+                    AnnotationChip("1", "Warna Coklat", false),
+                    AnnotationChip("2", "Warna Biru", false),
+                    AnnotationChip("3", "Warna Hijau", false),
+                    AnnotationChip("4", "34", false),
+                    AnnotationChip("5", "Resliting", false),
+                    AnnotationChip("6", "Hooded", false),
+                    AnnotationChip("7", "Multi", false)
+            )
         }
     }
 }

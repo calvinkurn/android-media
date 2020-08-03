@@ -13,5 +13,4 @@ open class RecommendationWidget(
         val nextPage: Int = 0,
         val prevPage: Int = 0,
         val hasNext: Boolean = false,
-        val pageName: String = "") {
-}
+        val pageName: String = "")
