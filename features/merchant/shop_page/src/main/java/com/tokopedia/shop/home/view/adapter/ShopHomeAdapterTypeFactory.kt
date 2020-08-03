@@ -19,7 +19,6 @@ import com.tokopedia.shop.home.view.listener.ShopHomeCampaignNplWidgetListener
 import com.tokopedia.shop.home.view.listener.ShopHomeCarouselProductListener
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
 import com.tokopedia.shop.home.view.listener.ShopPageHomePlayCarouselListener
-import com.tokopedia.shop.home.view.listener.ShopPageHomeProductClickListener
 import com.tokopedia.shop.home.view.listener.ShopHomeEndlessProductListener
 import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
 import com.tokopedia.shop.home.view.model.ShopHomePlayCarouselUiModel
@@ -31,7 +30,6 @@ import com.tokopedia.shop.product.view.viewholder.ShopProductSortFilterViewHolde
 class ShopHomeAdapterTypeFactory(
         private val listener: ShopHomeDisplayWidgetListener,
         private val onMerchantVoucherListWidgetListener: ShopHomeVoucherViewHolder.ShopHomeVoucherViewHolderListener,
-        private val shopPageHomeProductClickListener: ShopPageHomeProductClickListener,
         private val shopPageHomePlayCarouselListener: ShopPageHomePlayCarouselListener,
         private val shopHomeEndlessProductListener: ShopHomeEndlessProductListener,
         private val shopHomeCarouselProductListener: ShopHomeCarouselProductListener,
