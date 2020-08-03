@@ -150,6 +150,9 @@
     @com.tokopedia.tkpd.analytics.** *;
 }
 
+-keep class com.tokopedia.firebase.analytic.rules.** { *; }
+-keep class com.tokopedia.analyticparam.** { *; }
+
 -keep class android.support.design.widget.** { *; }
 -keep interface android.support.design.widget.** { *; }
 
