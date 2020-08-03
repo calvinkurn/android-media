@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/dp_8"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/dp_8">
+    android:padding="@dimen/dp_8">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/shimmer_view"
@@ -17,6 +17,7 @@
         android:id="@+id/text_component_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textColor="@color/discovery2_text_component_black_color"
         android:textSize="@dimen/sp_16"
         android:textStyle="bold"
         tools:text="Header test 123" />

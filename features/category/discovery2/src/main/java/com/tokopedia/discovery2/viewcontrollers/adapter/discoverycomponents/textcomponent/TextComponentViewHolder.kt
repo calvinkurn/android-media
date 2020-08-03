@@ -30,7 +30,7 @@ class TextComponentViewHolder(itemView: View, private val fragment: Fragment) : 
         })
     }
 
-    fun trimTrailingWhitespace(source: CharSequence?): CharSequence? {
+    private fun trimTrailingWhitespace(source: CharSequence?): CharSequence? {
         if (source == null) return ""
         var i = source.length
 
