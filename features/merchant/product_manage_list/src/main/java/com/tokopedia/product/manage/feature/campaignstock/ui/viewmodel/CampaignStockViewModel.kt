@@ -8,7 +8,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.product.manage.common.coroutine.CoroutineDispatchers
-import com.tokopedia.product.manage.feature.campaignstock.domain.model.param.EditVariantCampaignProductParam
+import com.tokopedia.product.manage.feature.campaignstock.domain.model.param.EditVariantCampaignProductResult
 import com.tokopedia.product.manage.feature.campaignstock.domain.model.response.GetStockAllocationData
 import com.tokopedia.product.manage.feature.campaignstock.domain.usecase.CampaignStockAllocationUseCase
 import com.tokopedia.product.manage.feature.campaignstock.domain.usecase.OtherCampaignStockDataUseCase
@@ -58,7 +58,7 @@ class CampaignStockViewModel @Inject constructor(
     private val mNonVariantReservedStockLiveData = MutableLiveData<Int>()
     private val mNonVariantIsActiveLiveData = MutableLiveData<Boolean>()
 
-    private val mEditVariantCampaignParamLiveData = MutableLiveData<List<EditVariantCampaignProductParam>>()
+    private val mEditVariantCampaignParamLiveData = MutableLiveData<List<EditVariantCampaignProductResult>>()
     private val mEditVariantResultLiveData = MutableLiveData<EditVariantResult>()
 
     private val mGetStockAllocationLiveData = MediatorLiveData<Result<StockAllocationResult>>().apply {
@@ -252,7 +252,7 @@ class CampaignStockViewModel @Inject constructor(
         val getVariantResult = ProductManageVariantMapper.mapToVariantsResult(getProductVariantData.await().getProductV3).also {
             mEditVariantCampaignParamLiveData.postValue(
                     it.variants.map { variant ->
-                        EditVariantCampaignProductParam(variant.id, variant.status, variant.stock)
+                        EditVariantCampaignProductResult(variant.id, variant.status, variant.stock)
                     }
             )
             mEditVariantResultLiveData.postValue(
@@ -267,12 +267,12 @@ class CampaignStockViewModel @Inject constructor(
     }
 
     private fun getUpdateVariantParam(editVariantResult: EditVariantResult,
-                                      editVariantCampaignParam: List<EditVariantCampaignProductParam>,
+                                      editVariantCampaignResult: List<EditVariantCampaignProductResult>,
                                       shopId: String): UpdateVariantParam {
         val updatedEditVariantResult =
                 try {
                     editVariantResult.copy(
-                            variants = editVariantCampaignParam.map { param ->
+                            variants = editVariantCampaignResult.map { param ->
                                 editVariantResult.variants.find { it.id == param.productId }?.copy(
                                         status = param.status,
                                         stock = param.stock
