@@ -267,8 +267,6 @@ class AddEditProductDescriptionFragment:
             tvNoVariantDescription.text = getString(com.tokopedia.seller_migration_common.R.string.seller_migration_add_edit_no_variant_description).parseAsHtml()
         }
 
-        descriptionViewModel.getVariants(descriptionViewModel.categoryId)
-
         hideKeyboardWhenTouchOutside()
         observeProductInputModel()
         observeProductVideo()
