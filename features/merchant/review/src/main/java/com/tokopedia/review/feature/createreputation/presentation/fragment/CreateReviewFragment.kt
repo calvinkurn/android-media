@@ -175,10 +175,16 @@ class CreateReviewFragment : BaseDaggerFragment(),
         })
 
         createReviewViewModel.submitReviewResult.observe(viewLifecycleOwner, Observer {
-            if(it) {
-                onSuccessSubmitReview()
-            } else {
-                onFailSubmitReview()
+            when(it) {
+                is LoadingView -> {
+                    showLoading()
+                }
+                is Success -> {
+                    onSuccessSubmitReview()
+                }
+                is Fail -> {
+                    onFailSubmitReview()
+                }
             }
         })
     }
@@ -602,12 +608,11 @@ class CreateReviewFragment : BaseDaggerFragment(),
     }
 
     private fun showLoading() {
-        hideLayout()
-        progressBarReview.show()
+        createReviewSubmitButton.isLoading = true
     }
 
     private fun stopLoading() {
-        progressBarReview.hide()
+        createReviewSubmitButton.isLoading = true
     }
 
     private fun hideLayout() {

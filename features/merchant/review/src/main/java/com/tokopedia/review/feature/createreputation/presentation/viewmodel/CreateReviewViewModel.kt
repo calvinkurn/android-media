@@ -50,12 +50,13 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
     val reviewDetails: LiveData<ReviewViewState<ProductrevGetReviewDetail>>
         get() = _reviewDetails
 
-    private val _submitReviewResult = MutableLiveData<Boolean>()
-    val submitReviewResult: LiveData<Boolean>
+    private val _submitReviewResult = MutableLiveData<ReviewViewState<Boolean>>()
+    val submitReviewResult: LiveData<ReviewViewState<Boolean>>
         get() = _submitReviewResult
 
     fun submitReview(reputationId: Int, productId: Int, shopId: Int, reputationScore: Int = 0, rating: Int,
                      reviewText: String = "", isAnonymous: Boolean = false) {
+        _submitReviewResult.postValue(LoadingView())
         if (imageData.isEmpty()) {
             sendReviewWithoutImage(reputationId, productId, shopId, reputationScore, rating, reviewText, isAnonymous)
         } else {
@@ -145,9 +146,15 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
                 submitReviewUseCase.setParams(reputationId, productId, shopId, reputationScore, rating, reviewText, isAnonymous)
                 submitReviewUseCase.executeOnBackground()
             }
-            _submitReviewResult.postValue(response.productrevSubmitReview?.success ?: false)
+            if(response.productrevSubmitReview != null) {
+                if(response.productrevSubmitReview.success) {
+                    _submitReviewResult.postValue(Success(response.productrevSubmitReview.success))
+                } else {
+                    _submitReviewResult.postValue(Fail(Throwable()))
+                }
+            }
         }) {
-            _submitReviewResult.postValue(false)
+            _submitReviewResult.postValue(Fail(it))
         }
     }
 
@@ -159,7 +166,7 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
                 repeat(listOfImages.size) {
                     val imageId = uploadImageAndGetId(listOfImages[it])
                     if(imageId.isEmpty()) {
-                        _submitReviewResult.postValue(false)
+                        _submitReviewResult.postValue(Fail(Throwable()))
                         this@launchCatchError.cancel()
                     }
                     uploadIdList.add(imageId)
@@ -167,9 +174,15 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
                 submitReviewUseCase.setParams(reputationId, productId, shopId, reputationScore, rating, reviewText, isAnonymous, uploadIdList)
                 submitReviewUseCase.executeOnBackground()
             }
-            _submitReviewResult.postValue(response.productrevSubmitReview?.success ?: false)
+            if(response.productrevSubmitReview != null) {
+                if(response.productrevSubmitReview.success) {
+                    _submitReviewResult.postValue(Success(response.productrevSubmitReview.success))
+                } else {
+                    _submitReviewResult.postValue(Fail(Throwable()))
+                }
+            }
         }) {
-            _submitReviewResult.postValue(false)
+            _submitReviewResult.postValue(Fail(it))
         }
     }
 
