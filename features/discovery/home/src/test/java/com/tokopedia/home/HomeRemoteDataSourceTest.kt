@@ -37,9 +37,9 @@ class HomeRemoteDataSourceTest {
     @Test
     fun `get home data`() {
         val homeData = Gson().fromJson<HomeData>(getJson("home.json"), HomeData::class.java)
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns GraphqlResponse(mapOf(
-                HomeData::class.java to homeData
-        ), mapOf(), false)
+//        coEvery { graphqlRepository.getReseponse(any(), any()) } returns GraphqlResponse(mapOf(
+//                HomeData::class.java to homeData
+//        ), mapOf(), false)
         runBlocking {
             val graphqlResponse = homeRemoteDataSource.getHomeData()
             val result = graphqlResponse.getData<HomeData>(HomeData::class.java)

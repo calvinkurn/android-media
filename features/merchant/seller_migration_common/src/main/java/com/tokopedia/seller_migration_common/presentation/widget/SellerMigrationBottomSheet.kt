@@ -4,46 +4,55 @@ import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.text.Spannable
 import android.view.View
+import android.widget.LinearLayout
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.seller_migration_common.R
-import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants.APPLINK_PLAYSTORE
-import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants.PACKAGE_SELLER_APP
-import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants.SELLER_MIGRATION_INFORMATION_LINK
-import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants.URL_PLAYSTORE
+import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants
+import com.tokopedia.seller_migration_common.getSellerMigrationDate
+import com.tokopedia.seller_migration_common.presentation.util.touchlistener.SellerMigrationTouchListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
-import kotlinx.android.synthetic.main.partial_seller_migration_footer.*
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.widget_seller_migration_bottom_sheet.*
 
-abstract class SellerMigrationBottomSheet(val titles: List<String> = emptyList(),
-        val contents: List<String> = emptyList(),
-        val images: ArrayList<String> = arrayListOf()) : BottomSheetUnify() {
+abstract class SellerMigrationBottomSheet(private val titles: List<String> = emptyList(),
+                                          private val contents: List<String> = emptyList(),
+                                          private val images: ArrayList<String> = arrayListOf()) : BottomSheetUnify() {
 
-    companion object {
-        const val KEY_AUTO_LOGIN = "is_auto_login"
-    }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupPadding()
         setUpButtons()
         setupText()
         setupImages()
-        super.onViewCreated(view, savedInstanceState)
+        setupWarningCard()
     }
 
-
+    private fun setupPadding() {
+        setShowListener {
+            val headerMargin = 16.toPx()
+            bottomSheetWrapper.setPadding(0,0,0,0)
+            (bottomSheetHeader.layoutParams as LinearLayout.LayoutParams).setMargins(headerMargin,headerMargin,headerMargin,headerMargin)
+        }
+    }
 
     private fun setUpButtons() {
-        sellerMigrationBottomSheetButton.setOnClickListener {
+        val sellerMigrationBottomSheetButton: UnifyButton? = view?.findViewById(R.id.sellerMigrationBottomSheetButton)
+        sellerMigrationBottomSheetButton?.setOnClickListener {
             goToSellerApp()
         }
-        sellerMigrationBottomSheetLink.text = context?.let { HtmlLinkHelper(it, getString(R.string.seller_migration_bottom_sheet_footer)).spannedString }
-        sellerMigrationBottomSheetLink.setOnClickListener {
-            goToInformationWebview()
-        }
+        val sellerMigrationBottomSheetLink: Typography? = view?.findViewById(R.id.sellerMigrationBottomSheetLink)
+        sellerMigrationBottomSheetLink?.text = context?.let { HtmlLinkHelper(it, getString(R.string.seller_migration_bottom_sheet_footer)).spannedString }
+        sellerMigrationBottomSheetLink?.setOnTouchListener(SellerMigrationTouchListener {
+            goToInformationWebview(it)
+        })
     }
 
     private fun setupText() {
@@ -64,7 +73,15 @@ abstract class SellerMigrationBottomSheet(val titles: List<String> = emptyList()
             return
         }
         setupCarousel()
+    }
 
+    private fun setupWarningCard() {
+        val remoteConfigDate = getSellerMigrationDate(context)
+        if(remoteConfigDate.isNotBlank()) {
+            val sellerMigrationWarningDate: Typography? = view?.findViewById(R.id.sellerMigrationWarningDate)
+            sellerMigrationWarningCard.show()
+            sellerMigrationWarningDate?.text = remoteConfigDate
+        }
     }
 
     private fun setupImageView() {
@@ -97,20 +114,22 @@ abstract class SellerMigrationBottomSheet(val titles: List<String> = emptyList()
     }
 
     private fun goToSellerApp() {
-        try {
-            val intent = context?.packageManager?.getLaunchIntentForPackage(PACKAGE_SELLER_APP)
-            if(intent != null) {
-                intent.putExtra(KEY_AUTO_LOGIN, true)
-                this.activity?.startActivity(intent)
-            } else {
-                this.activity?.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(APPLINK_PLAYSTORE + PACKAGE_SELLER_APP)))
+        with(SellerMigrationConstants) {
+            try {
+                val intent = context?.packageManager?.getLaunchIntentForPackage(PACKAGE_SELLER_APP)
+                if(intent != null) {
+                    intent.putExtra(SELLER_MIGRATION_KEY_AUTO_LOGIN, true)
+                    activity?.startActivity(intent)
+                } else {
+                    activity?.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(APPLINK_PLAYSTORE + PACKAGE_SELLER_APP)))
+                }
+            } catch (anfe: ActivityNotFoundException) {
+                activity?.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(URL_PLAYSTORE + PACKAGE_SELLER_APP)))
             }
-        } catch (anfe: ActivityNotFoundException) {
-            this.activity?.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(URL_PLAYSTORE + PACKAGE_SELLER_APP)))
         }
     }
 
-    private fun goToInformationWebview() {
-        RouteManager.route(activity, "${ApplinkConst.WEBVIEW}?url=${SELLER_MIGRATION_INFORMATION_LINK}")
+    private fun goToInformationWebview(link: String) : Boolean {
+        return RouteManager.route(activity, "${ApplinkConst.WEBVIEW}?url=${link}")
     }
 }

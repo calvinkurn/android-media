@@ -11,7 +11,7 @@ import com.google.gson.annotations.SerializedName
 class TelcoProductData(
         @SerializedName("data_collections")
         @Expose
-        val productDataCollections: List<TelcoProductDataCollection>)
+        val productDataCollections: List<TelcoProductDataCollection> = listOf())
         : Parcelable {
 
     constructor(parcel: Parcel) : this(

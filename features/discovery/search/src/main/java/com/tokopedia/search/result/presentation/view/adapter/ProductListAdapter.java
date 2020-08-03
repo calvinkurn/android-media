@@ -242,7 +242,7 @@ public final class ProductListAdapter extends RecyclerView.Adapter<AbstractViewH
                                                 boolean isFilterActive,
                                                 boolean isBannerAdsAllowed) {
         EmptySearchProductViewModel emptySearchViewModel = new EmptySearchProductViewModel();
-        emptySearchViewModel.setImageRes(R.drawable.product_search_not_found);
+        emptySearchViewModel.setImageRes(com.tokopedia.resources.common.R.drawable.ic_product_search_not_found);
         emptySearchViewModel.setBannerAdsAllowed(isBannerAdsAllowed);
         if (isFilterActive) {
             emptySearchViewModel.setTitle(context.getString(R.string.msg_empty_search_product_title));

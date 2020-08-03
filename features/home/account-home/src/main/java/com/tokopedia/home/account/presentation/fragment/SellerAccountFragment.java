@@ -31,12 +31,12 @@ import com.tokopedia.home.account.presentation.viewmodel.base.SellerViewModel;
 import com.tokopedia.navigation_common.listener.FragmentListener;
 import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
-import com.tokopedia.seller_migration_common.presentation.widget.SellerMigrationGenericBottomSheet;
+import com.tokopedia.seller_migration_common.presentation.widget.SellerMigrationAccountBottomSheet;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.unifycomponents.BottomSheetUnify;
 import com.tokopedia.unifycomponents.ticker.Ticker;
-import com.tokopedia.unifycomponents.ticker.TickerCallback;
 import com.tokopedia.unifycomponents.Toaster;
+import com.tokopedia.unifycomponents.ticker.TickerCallback;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -45,8 +45,10 @@ import java.util.ArrayList;
 import javax.inject.Inject;
 
 import kotlin.Unit;
+import kotlin.jvm.functions.Function0;
 import kotlin.jvm.functions.Function2;
 
+import static com.tokopedia.seller_migration_common.SellerMigrationRemoteConfigKt.getSellerMigrationDate;
 import static com.tokopedia.seller_migration_common.SellerMigrationRemoteConfigKt.isSellerMigrationEnabled;
 
 /**
@@ -270,8 +272,13 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
 
     private void setupSellerMigrationTicker() {
         if(isSellerMigrationEnabled(this.getContext())) {
-            migrationTicker.setTickerTitle(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_generic_ticker_title));
-            migrationTicker.setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_generic_ticker_content));
+            migrationTicker.setTickerTitle(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_account_home_ticker_title));
+            String remoteConfigDate = getSellerMigrationDate(this.getContext());
+            if(remoteConfigDate.isEmpty()) {
+                migrationTicker.setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_generic_ticker_content));
+            } else {
+                migrationTicker.setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_account_home_ticker_content, remoteConfigDate));
+            }
             migrationTicker.setDescriptionClickEvent(new TickerCallback() {
                 @Override
                 public void onDescriptionViewClick(@NotNull CharSequence charSequence) {
@@ -280,7 +287,7 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
 
                 @Override
                 public void onDismiss() {
-
+                    // No op
                 }
             });
         } else {
@@ -290,7 +297,7 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
 
     private void openSellerMigrationBottomSheet() {
         if(getContext() != null) {
-            BottomSheetUnify sellerMigrationBottomSheet = SellerMigrationGenericBottomSheet.Companion.createNewInstance(getContext());
+            BottomSheetUnify sellerMigrationBottomSheet = SellerMigrationAccountBottomSheet.Companion.createNewInstance(getContext());
             sellerMigrationBottomSheet.show(getChildFragmentManager(), "");
         }
     }

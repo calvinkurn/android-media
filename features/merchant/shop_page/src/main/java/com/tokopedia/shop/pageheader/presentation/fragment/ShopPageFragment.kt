@@ -21,7 +21,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -40,6 +39,7 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentInstance
 import com.tokopedia.shop.ShopModuleRouter
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
+import com.tokopedia.shop.analytic.ShopPageTrackingSGCPlayWidget
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.analytic.model.TrackShopTypeDef
 import com.tokopedia.shop.common.constant.ShopHomeType
@@ -112,6 +112,7 @@ class ShopPageFragment :
         private const val CART_LOCAL_CACHE_NAME = "CART"
         private const val TOTAL_CART_CACHE_KEY = "CACHE_TOTAL_CART"
         private const val PATH_HOME = "home"
+        private const val PATH_REVIEW = "review"
         private const val QUERY_SHOP_REF = "shop_ref"
         private const val QUERY_SHOP_ATTRIBUTION = "tracker_attribution"
 
@@ -127,6 +128,8 @@ class ShopPageFragment :
     private lateinit var remoteConfig: RemoteConfig
     private lateinit var cartLocalCacheHandler: LocalCacheHandler
     var shopPageTracking: ShopPageTrackingBuyer? = null
+    private var shopPageTrackingSGCPlay: ShopPageTrackingSGCPlayWidget? = null
+    var titles = listOf<String>()
     var shopId: String? = null
     var shopRef: String = ""
     var shopDomain: String? = null
@@ -151,6 +154,7 @@ class ShopPageFragment :
     private val intentData: Intent = Intent()
     private var isFirstLoading: Boolean = false
     private var shouldOverrideTabToHome: Boolean = false
+    private var shouldOverrideTabToReview: Boolean = false
     private var listShopPageTabModel = listOf<ShopPageTabModel>()
     private val customDimensionShopPage: CustomDimensionShopPage by lazy {
         CustomDimensionShopPage.create(shopId, isOfficialStore, isGoldMerchant)
@@ -194,7 +198,7 @@ class ShopPageFragment :
         activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
         errorTextView = view.findViewById(R.id.message_retry)
         errorButton = view.findViewById(R.id.button_retry)
-        shopPageFragmentHeaderViewHolder = ShopPageFragmentHeaderViewHolder(view, this, shopPageTracking, view.context)
+        shopPageFragmentHeaderViewHolder = ShopPageFragmentHeaderViewHolder(view, this, shopPageTracking, shopPageTrackingSGCPlay, view.context)
         initToolbar()
         initAdapter()
         appBarLayout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
@@ -265,6 +269,10 @@ class ShopPageFragment :
             stopShopPageHeaderMonitoringPltRenderPage()
         })
 
+        shopViewModel.broadcasterConfigResp.observe(owner, Observer { pair ->
+            shopPageFragmentHeaderViewHolder.setupSgcContent(pair.first, shopViewModel.isMyShop(pair.first.shopCore.shopID), pair.second)
+        })
+
         shopViewModel.whiteListResp.observe(this, Observer { response ->
             when (response) {
                 is Success -> onSuccessGetFeedWhitelist(response.data.first, response.data.second)
@@ -312,6 +320,7 @@ class ShopPageFragment :
             remoteConfig = FirebaseRemoteConfigImpl(it)
             cartLocalCacheHandler = LocalCacheHandler(it, CART_LOCAL_CACHE_NAME)
             shopPageTracking = ShopPageTrackingBuyer(TrackingQueue(it))
+            shopPageTrackingSGCPlay = ShopPageTrackingSGCPlayWidget(TrackingQueue(it))
             activity?.intent?.run {
                 shopId = getStringExtra(SHOP_ID)
                 shopRef = getStringExtra(SHOP_REF).orEmpty()
@@ -332,6 +341,9 @@ class ShopPageFragment :
                     }
                     if (lastPathSegment.orEmpty() == PATH_HOME) {
                         shouldOverrideTabToHome = true
+                    }
+                    if (lastPathSegment.orEmpty() == PATH_REVIEW) {
+                        shouldOverrideTabToReview = true
                     }
                     shopRef = getQueryParameter(QUERY_SHOP_REF) ?: ""
                     shopAttribution = getQueryParameter(QUERY_SHOP_ATTRIBUTION) ?: ""
@@ -601,7 +613,6 @@ class ShopPageFragment :
         }
         swipeToRefresh.isRefreshing = false
         view?.let { onToasterNoUploadProduct(it, getString(R.string.shop_page_product_no_upload_product), isFirstCreateShop) }
-
     }
 
     fun onBackPressed() {
@@ -623,6 +634,13 @@ class ShopPageFragment :
                 viewPagerAdapter.getFragmentPosition(HomeProductFragment::class.java)
             }else{
                 viewPagerAdapter.getFragmentPosition(ShopPageHomeFragment::class.java)
+            }
+        }
+        if(shouldOverrideTabToReview){
+            selectedPosition = if(viewPagerAdapter.isFragmentObjectExists((activity?.application as ShopModuleRouter).reviewFragmentClass)){
+                viewPagerAdapter.getFragmentPosition((activity?.application as ShopModuleRouter).reviewFragmentClass)
+            } else {
+                selectedPosition
             }
         }
         tabLayout?.apply {

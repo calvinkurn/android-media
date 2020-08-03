@@ -1,16 +1,15 @@
 package com.tokopedia.settingbank.choosebank.di
 
+import android.app.Activity
 import android.content.Context
 import com.chuckerteam.chucker.api.ChuckerInterceptor
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.DebugInterceptor
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
-import com.tokopedia.settingbank.addeditaccount.di.AddEditAccountScope
 import com.tokopedia.settingbank.choosebank.data.BankListApi
 import com.tokopedia.settingbank.choosebank.data.BankListUrl
 import com.tokopedia.settingbank.choosebank.data.database.BankDao
@@ -30,7 +29,11 @@ import retrofit2.Retrofit
 
 @ChooseBankScope
 @Module
-class ChooseBankModule{
+class ChooseBankModule(val activity: Activity) {
+
+    @Provides
+    fun getContext(): Context = activity
+
     @ChooseBankScope
     @Provides
     fun provideBankListRetrofit(retrofitBuilder: Retrofit.Builder,
@@ -46,19 +49,19 @@ class ChooseBankModule{
 
     @ChooseBankScope
     @Provides
-    fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
+    fun provideUserSession(context: Context): UserSessionInterface {
         return UserSession(context)
     }
 
     @ChooseBankScope
     @Provides
-    fun provideNetworkRouter(@ApplicationContext context: Context): NetworkRouter {
-        return (context as NetworkRouter)
+    fun provideNetworkRouter(context: Context): NetworkRouter {
+        return (context.applicationContext as NetworkRouter)
     }
 
     @ChooseBankScope
     @Provides
-    fun provideTkpdAuthInterceptor(@ApplicationContext context: Context,
+    fun provideTkpdAuthInterceptor(context: Context,
                                    networkRouter: NetworkRouter,
                                    userSession: UserSessionInterface)
             : TkpdAuthInterceptor = TkpdAuthInterceptor(context, networkRouter, userSession)
@@ -71,7 +74,7 @@ class ChooseBankModule{
 
     @ChooseBankScope
     @Provides
-    fun provideChuckerInterceptor(@ApplicationContext context: Context): ChuckerInterceptor
+    fun provideChuckerInterceptor(context: Context): ChuckerInterceptor
             = ChuckerInterceptor(context)
 
     @ChooseBankScope
@@ -103,13 +106,13 @@ class ChooseBankModule{
 
     @ChooseBankScope
     @Provides
-    fun provideLocalCacheHandler(@ApplicationContext context: Context): LocalCacheHandler{
+    fun provideLocalCacheHandler(context: Context): LocalCacheHandler{
         return LocalCacheHandler(context, "FETCH_BANK")
     }
 
     @ChooseBankScope
     @Provides
-    fun provideBankDatabase(@ApplicationContext context: Context): BankDatabase{
+    fun provideBankDatabase(context: Context): BankDatabase{
         return BankDatabase.getDataBase(context)!!
     }
 

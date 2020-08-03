@@ -32,7 +32,7 @@ ext {
     roomVersion = '2.2.1'
     multiDexVersion = '2.0.0'
     twitter4JVersion = '4.0.7'
-    guavaVersion = '21.0'
+    guavaVersion = '20.0'
     constraintLayoutVersion = '2.0.0-beta3'
     materialVersion = '1.0.0'
 
@@ -75,6 +75,7 @@ ext {
     coroutineTestVersion = '1.3.2'
     chuckerVersion = '3.0.1'
     sliceVersion = '1.0.0-alpha6'
+    transitionVersion = '1.3.1'
 
     benchmarkTestVersion = '1.0.0'
     testCore = '1.2.0'
@@ -94,6 +95,7 @@ ext {
     unifyCoachMarkVersion = '1.2.6'
     unifyPrinciplesVersion = '1.1.8'
     unifyComponentsVersion = '1.1.40'
+    unifyCoachMarkVersion = '1.2.5'
     unifyCalendarVersion = '1.0.2'
     unifyBannerVersion = '1.0.4'
     unifyDialogVersion = '1.0.3'
@@ -265,7 +267,8 @@ ext {
             stfalconImageViewer   : "com.github.stfalcon:stfalcon-imageviewer:$stfalconVersion",
             liveness              : "ai.advance.liveness:guardian_core_v1.6@aar",
             javaxInject           :  "javax.inject:javax.inject:1",
-            slice                 : "androidx.slice:slice-builders-ktx:$sliceVersion"
+            slice                 : "androidx.slice:slice-builders-ktx:$sliceVersion",
+            transition            : "androidx.transition:transition:$transitionVersion"
     ]
 
     testDependencies = [

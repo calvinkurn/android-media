@@ -11,13 +11,13 @@ import com.google.gson.annotations.SerializedName
 class TelcoProductDataCollection(
         @SerializedName("key")
         @Expose
-        val key: String,
+        val key: String = "",
         @SerializedName("value")
         @Expose
-        val value: String,
+        val value: String = "",
         @SerializedName("product")
         @Expose
-        val product: TelcoProduct)
+        val product: TelcoProduct = TelcoProduct())
     : Parcelable {
 
     constructor(parcel: Parcel) : this(

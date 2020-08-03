@@ -34,6 +34,8 @@ import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListActivity
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselItemDataModel
+import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselOverlayImageDataModel
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentInstance
 import com.tokopedia.shop.analytic.ShopPageHomeTracking
@@ -54,11 +56,9 @@ import com.tokopedia.shop.home.view.adapter.ShopHomeAdapter
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeVoucherViewHolder
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
+import com.tokopedia.shop.home.view.listener.ShopPageHomePlayCarouselListener
 import com.tokopedia.shop.home.view.listener.ShopPageHomeProductClickListener
-import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
-import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
-import com.tokopedia.shop.home.view.model.ShopHomeProductViewModel
-import com.tokopedia.shop.home.view.model.ShopPageHomeLayoutUiModel
+import com.tokopedia.shop.home.view.model.*
 import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPageHomeTabPerformanceMonitoringListener
@@ -72,6 +72,7 @@ import javax.inject.Inject
 class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeFactory>(),
         ShopHomeDisplayWidgetListener,
         ShopHomeVoucherViewHolder.ShopHomeVoucherViewHolderListener,
+        ShopPageHomePlayCarouselListener,
         ShopPageHomeProductClickListener {
 
     companion object {
@@ -133,7 +134,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         get() = adapter as ShopHomeAdapter
 
     private val shopHomeAdapterTypeFactory by lazy {
-        ShopHomeAdapterTypeFactory(this, this, this)
+        ShopHomeAdapterTypeFactory(this, this, this, this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -193,16 +194,24 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         observeLiveData()
     }
 
+    override fun onResume() {
+        super.onResume()
+        shopHomeAdapter.resumePlayCarousel()
+    }
+
     override fun onPause() {
-        shopPageHomeTracking.sendAllTrackingQueue()
         super.onPause()
+        shopPageHomeTracking.sendAllTrackingQueue()
+        shopHomeAdapter.pausePlayCarousel()
     }
 
     override fun onDestroy() {
         viewModel?.productListData?.removeObservers(this)
         viewModel?.shopHomeLayoutData?.removeObservers(this)
         viewModel?.checkWishlistData?.removeObservers(this)
+        viewModel?.reminderPlayLiveData?.removeObservers(this)
         viewModel?.flush()
+        shopHomeAdapter.onDestroy()
         super.onDestroy()
     }
 
@@ -258,6 +267,20 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             when (it) {
                 is Success -> {
                     onSuccessCheckWishlist(it.data)
+                }
+            }
+        })
+
+        viewModel?.reminderPlayLiveData?.observe(this, Observer {
+            when(it){
+                is Success -> {
+                    showToastSuccess(
+                            if(it.data) getString(R.string.shop_page_play_card_success_add_reminder)
+                            else getString(R.string.shop_page_play_card_success_remove_reminder)
+                    )
+                }
+                is Fail -> {
+                    showErrorToast(it.throwable.message ?: "")
                 }
             }
         })
@@ -663,6 +686,65 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         )
     }
 
+    override fun onPlayBannerCarouselRefresh(shopHomePlayCarouselUiModel: ShopHomePlayCarouselUiModel, position: Int) {
+        viewModel?.onRefreshPlayBanner(shopId)
+    }
+
+    override fun onReminderClick(playBannerCarouselItemDataModel: PlayBannerCarouselItemDataModel, position: Int) {
+        viewModel?.setToggleReminderPlayBanner(playBannerCarouselItemDataModel.channelId, true)
+    }
+
+    override fun onPlayBannerSeeMoreClick(appLink: String) {
+        shopPageHomeTracking.clickSeeMorePlayCarouselBanner(shopId, viewModel?.userId ?: "")
+        RouteManager.route(context, appLink)
+    }
+
+    override fun onPlayBannerImpressed(dataModel: PlayBannerCarouselItemDataModel, autoPlay: String, widgetId: String, position: Int) {
+        shopPageHomeTracking.impressionPlayBanner(
+                shopId = dataModel.partnerId,
+                userId = viewModel?.userId ?: "",
+                channelId = dataModel.channelId,
+                bannerId = widgetId,
+                creativeName = dataModel.coverUrl,
+                autoPlay = autoPlay,
+                positionChannel = position.toString()
+        )
+    }
+
+    override fun onPlayBannerClicked(dataModel: PlayBannerCarouselItemDataModel, autoPlay: String, widgetId: String, position: Int) {
+        shopPageHomeTracking.clickPlayBanner(
+                shopId = dataModel.partnerId,
+                userId = viewModel?.userId ?: "",
+                channelId = dataModel.channelId,
+                bannerId = widgetId,
+                creativeName = dataModel.coverUrl,
+                autoPlay = autoPlay,
+                positionChannel = position.toString()
+        )
+        RouteManager.route(context, dataModel.applink)
+    }
+
+    override fun onPlayLeftBannerImpressed(dataModel: PlayBannerCarouselOverlayImageDataModel, widgetId: String) {
+        shopPageHomeTracking.impressionLeftPlayBanner(
+                shopId = shopId,
+                userId = viewModel?.userId ?: "",
+                bannerId = widgetId,
+                creativeName = dataModel.imageUrl,
+                positionChannel = "0"
+        )
+    }
+
+    override fun onPlayLeftBannerClicked(dataModel: PlayBannerCarouselOverlayImageDataModel, widgetId: String) {
+        shopPageHomeTracking.clickLeftPlayBanner(
+                shopId = shopId,
+                userId = viewModel?.userId ?: "",
+                bannerId = widgetId,
+                creativeName = dataModel.imageUrl,
+                positionChannel = "0"
+        )
+        RouteManager.route(context, dataModel.applink)
+    }
+
     private fun onSuccessRemoveWishList(
             shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?,
             shopHomeProductViewModel: ShopHomeProductViewModel?
@@ -778,6 +860,12 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     private fun showToastSuccess(message: String) {
         activity?.run {
             Toaster.make(findViewById(android.R.id.content), message)
+        }
+    }
+
+    private fun showErrorToast(message: String) {
+        activity?.run {
+            Toaster.make(findViewById(android.R.id.content), message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
         }
     }
 

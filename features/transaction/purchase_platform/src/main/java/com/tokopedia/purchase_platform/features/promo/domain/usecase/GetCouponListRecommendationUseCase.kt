@@ -2,7 +2,7 @@ package com.tokopedia.purchase_platform.features.promo.domain.usecase
 
 import com.google.gson.Gson
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
-import com.tokopedia.purchase_platform.features.promo.data.request.PromoRequest
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.features.promo.data.response.CouponListRecommendationResponse
 import com.tokopedia.purchase_platform.features.promo.presentation.MOCK_RESPONSE_PHONE_NOT_VERIF
 import com.tokopedia.usecase.coroutines.UseCase
