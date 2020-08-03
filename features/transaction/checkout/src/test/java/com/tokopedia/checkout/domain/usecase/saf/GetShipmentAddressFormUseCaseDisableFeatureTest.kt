@@ -22,7 +22,6 @@ import rx.observers.AssertableSubscriber
 import java.lang.reflect.Type
 
 const val PATH_JSON_SAF_DISABLE_DROPSHIPPER = "assets/saf_disable_dropshipper.json"
-const val PATH_JSON_SAF_DISABLE_MULTIPLE_ADDRESS = "assets/saf_disable_multiple_address.json"
 const val PATH_JSON_SAF_DISABLE_ORDER_PRIORITAS = "assets/saf_disable_order_prioritas.json"
 const val PATH_JSON_SAF_DISABLE_EGOLD = "assets/saf_disable_egold.json"
 const val PATH_JSON_SAF_DISABLE_PPP = "assets/saf_disable_ppp.json"
@@ -64,51 +63,6 @@ object GetShipmentAddressFormUseCaseDisableFeatureTest : Spek({
                 assertEquals(true, resultData.isDropshipperDisable)
             }
 
-            Then("should not have multiple address disabled") {
-                assertEquals(false, resultData.isMultipleDisable)
-            }
-
-            Then("should not have order prioritas disabled") {
-                assertEquals(false, resultData.isOrderPrioritasDisable)
-            }
-
-            Then("should have egold attributes") {
-                assertNotNull(resultData.egoldAttributes)
-            }
-
-            Then("should have purchase protection plan data") {
-                resultData.groupAddress.each { groupShop.each { products.each { assertNotNull(purchaseProtectionPlanData) } } }
-            }
-
-            Then("should have donation") {
-                assertNotNull(resultData.donation)
-            }
-        }
-
-        Scenario("Disable Multiple Address") {
-
-            val result = HashMap<Type, Any>()
-            result[ShipmentAddressFormDataResponse::class.java] = gson.fromJson(unitTestFileUtils.getJsonFromAsset(PATH_JSON_SAF_DISABLE_MULTIPLE_ADDRESS), ShipmentAddressFormDataResponse::class.java)
-            val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
-
-            val resultData by lazy { mapper.convertToShipmentAddressFormData(result[ShipmentAddressFormDataResponse::class.java] as ShipmentAddressFormDataResponse) }
-
-            Given("mock response") {
-                every { graphqlUseCase.createObservable(any()) } returns Observable.just(gqlResponse)
-            }
-
-            When("create observable") {
-                subscriber = useCase.createObservable(param).test()
-            }
-
-            Then("should not have dropshipper disabled") {
-                assertEquals(false, resultData.isDropshipperDisable)
-            }
-
-            Then("should have multiple address disabled") {
-                assertEquals(true, resultData.isMultipleDisable)
-            }
-
             Then("should not have order prioritas disabled") {
                 assertEquals(false, resultData.isOrderPrioritasDisable)
             }
@@ -144,10 +98,6 @@ object GetShipmentAddressFormUseCaseDisableFeatureTest : Spek({
 
             Then("should not have dropshipper disabled") {
                 assertEquals(false, resultData.isDropshipperDisable)
-            }
-
-            Then("should not have multiple address disabled") {
-                assertEquals(false, resultData.isMultipleDisable)
             }
 
             Then("should have order prioritas disabled") {
@@ -187,10 +137,6 @@ object GetShipmentAddressFormUseCaseDisableFeatureTest : Spek({
                 assertEquals(false, resultData.isDropshipperDisable)
             }
 
-            Then("should not have multiple address disabled") {
-                assertEquals(false, resultData.isMultipleDisable)
-            }
-
             Then("should not have order prioritas disabled") {
                 assertEquals(false, resultData.isOrderPrioritasDisable)
             }
@@ -226,10 +172,6 @@ object GetShipmentAddressFormUseCaseDisableFeatureTest : Spek({
 
             Then("should not have dropshipper disabled") {
                 assertEquals(false, resultData.isDropshipperDisable)
-            }
-
-            Then("should not have multiple address disabled") {
-                assertEquals(false, resultData.isMultipleDisable)
             }
 
             Then("should not have order prioritas disabled") {
@@ -269,10 +211,6 @@ object GetShipmentAddressFormUseCaseDisableFeatureTest : Spek({
                 assertEquals(false, resultData.isDropshipperDisable)
             }
 
-            Then("should not have multiple address disabled") {
-                assertEquals(false, resultData.isMultipleDisable)
-            }
-
             Then("should not have order prioritas disabled") {
                 assertEquals(false, resultData.isOrderPrioritasDisable)
             }
@@ -308,10 +246,6 @@ object GetShipmentAddressFormUseCaseDisableFeatureTest : Spek({
 
             Then("should have dropshipper disabled") {
                 assertEquals(true, resultData.isDropshipperDisable)
-            }
-
-            Then("should have multiple address disabled") {
-                assertEquals(true, resultData.isMultipleDisable)
             }
 
             Then("should have order prioritas disabled") {

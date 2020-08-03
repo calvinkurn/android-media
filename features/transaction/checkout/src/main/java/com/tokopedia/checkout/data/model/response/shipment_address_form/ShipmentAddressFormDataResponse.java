@@ -2,9 +2,9 @@ package com.tokopedia.checkout.data.model.response.shipment_address_form;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker;
 import com.tokopedia.checkout.data.model.response.egold.EgoldAttributes;
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.PromoSAFResponse;
+import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,9 +20,6 @@ public class ShipmentAddressFormDataResponse {
     @SerializedName("error_code")
     @Expose
     private int errorCode;
-    @SerializedName("is_multiple")
-    @Expose
-    private int isMultiple;
     @SerializedName("group_address")
     @Expose
     private List<GroupAddress> groupAddress = new ArrayList<>();
@@ -96,10 +93,6 @@ public class ShipmentAddressFormDataResponse {
 
     public int getErrorCode() {
         return errorCode;
-    }
-
-    public int getIsMultiple() {
-        return isMultiple;
     }
 
     public List<GroupAddress> getGroupAddress() {

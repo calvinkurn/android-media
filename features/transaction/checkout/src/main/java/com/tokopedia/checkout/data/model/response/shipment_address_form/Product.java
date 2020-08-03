@@ -2,8 +2,6 @@ package com.tokopedia.checkout.data.model.response.shipment_address_form;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.cart.data.model.response.FreeReturns;
-import com.tokopedia.checkout.data.model.response.WholesalePrice;
 
 import java.util.ArrayList;
 import java.util.List;

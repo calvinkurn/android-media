@@ -84,7 +84,6 @@ public class ShipmentMapper implements IShipmentMapper {
             dataResult.setKeroDiscomToken(shipmentAddressFormDataResponse.getKeroDiscomToken());
             dataResult.setKeroToken(shipmentAddressFormDataResponse.getKeroToken());
             dataResult.setKeroUnixTime(shipmentAddressFormDataResponse.getKeroUnixTime());
-            dataResult.setMultiple(shipmentAddressFormDataResponse.getIsMultiple() == 1);
             dataResult.setUseCourierRecommendation(shipmentAddressFormDataResponse.getIsRobinhood() == 1);
             dataResult.setHidingCourier(shipmentAddressFormDataResponse.getHideCourier());
             dataResult.setIsBlackbox(shipmentAddressFormDataResponse.getIsBlackbox() == 1);
@@ -114,9 +113,6 @@ public class ShipmentMapper implements IShipmentMapper {
                     switch (disabledFeature) {
                         case CheckoutDisabledFeaturesKt.dropshipper:
                             dataResult.setDropshipperDisable(true);
-                            break;
-                        case CheckoutDisabledFeaturesKt.multiAddress:
-                            dataResult.setMultipleDisable(true);
                             break;
                         case CheckoutDisabledFeaturesKt.orderPrioritas:
                             dataResult.setOrderPrioritasDisable(true);
@@ -150,7 +146,7 @@ public class ShipmentMapper implements IShipmentMapper {
                     if (defaultTradeInAddress != null && addresses.getActive().equals(AddressesData.TRADE_IN_ADDRESS)) {
                         UserAddress defaultAddressData = getUserAddress(defaultTradeInAddress);
                         dataAddressData.setDefaultAddress(defaultAddressData);
-                    } else if (shipmentAddressFormDataResponse.getIsMultiple() == 0) {
+                    } else {
                         com.tokopedia.checkout.data.model.response.shipment_address_form.UserAddress defaultAddress =
                                 shipmentAddressFormDataResponse.getGroupAddress().get(0).getUserAddress();
                         UserAddress defaultAddressData = getUserAddress(defaultAddress);
@@ -171,12 +167,10 @@ public class ShipmentMapper implements IShipmentMapper {
                     }
                 }
             } else {
-                if (shipmentAddressFormDataResponse.getIsMultiple() == 0) {
-                    com.tokopedia.checkout.data.model.response.shipment_address_form.UserAddress defaultAddress =
-                            shipmentAddressFormDataResponse.getGroupAddress().get(0).getUserAddress();
-                    UserAddress defaultAddressData = getUserAddress(defaultAddress);
-                    dataAddressData.setDefaultAddress(defaultAddressData);
-                }
+                com.tokopedia.checkout.data.model.response.shipment_address_form.UserAddress defaultAddress =
+                        shipmentAddressFormDataResponse.getGroupAddress().get(0).getUserAddress();
+                UserAddress defaultAddressData = getUserAddress(defaultAddress);
+                dataAddressData.setDefaultAddress(defaultAddressData);
             }
 
             AddressesData addressesData = new AddressesData();

@@ -152,30 +152,11 @@
         android:orientation="horizontal">
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_send_to_multiple_address"
+            android:id="@+id/tv_change_recipient_address"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_6"
-            android:layout_marginBottom="@dimen/dp_6"
-            android:layout_weight="1"
-            android:background="@drawable/bg_green_round_address"
-            android:foreground="?selectableItemBackground"
-            android:gravity="center"
-            android:paddingTop="@dimen/dp_12"
-            android:paddingBottom="@dimen/dp_12"
-            android:text="@string/label_button_send_to_multiple_address"
-            android:textColor="@color/address_green"
-            app:typographyType="heading_6"
-            app:typographyWeight="bold" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_change_recipient_address"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_12"
-            android:layout_marginLeft="@dimen/dp_12"
             android:layout_marginTop="@dimen/dp_6"
             android:layout_marginEnd="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"

@@ -3,11 +3,11 @@ package com.tokopedia.checkout.domain.model.cartshipmentform;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel;
 import com.tokopedia.logisticcart.shipping.model.CodModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoCheckoutErrorDefault;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel;
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerData;
-import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,8 +22,6 @@ public class CartShipmentAddressFormData implements Parcelable {
     private String errorMessage;
     private int errorCode;
     private boolean isShowOnboarding;
-    private boolean isMultiple;
-    private boolean isMultipleDisable;
     private boolean isDropshipperDisable;
     private boolean isOrderPrioritasDisable;
     private List<GroupAddress> groupAddress = new ArrayList<>();
@@ -76,22 +74,6 @@ public class CartShipmentAddressFormData implements Parcelable {
 
     public void setErrorCode(int errorCode) {
         this.errorCode = errorCode;
-    }
-
-    public boolean isMultiple() {
-        return isMultiple;
-    }
-
-    public void setMultiple(boolean multiple) {
-        isMultiple = multiple;
-    }
-
-    public boolean isMultipleDisable() {
-        return isMultipleDisable;
-    }
-
-    public void setMultipleDisable(boolean multipleDisable) {
-        isMultipleDisable = multipleDisable;
     }
 
     public boolean isDropshipperDisable() {
@@ -275,8 +257,6 @@ public class CartShipmentAddressFormData implements Parcelable {
         errorMessage = in.readString();
         errorCode = in.readInt();
         isShowOnboarding = in.readByte() != 0;
-        isMultiple = in.readByte() != 0;
-        isMultipleDisable = in.readByte() != 0;
         isDropshipperDisable = in.readByte() != 0;
         isOrderPrioritasDisable = in.readByte() != 0;
         groupAddress = in.createTypedArrayList(GroupAddress.CREATOR);
@@ -305,8 +285,6 @@ public class CartShipmentAddressFormData implements Parcelable {
         dest.writeString(errorMessage);
         dest.writeInt(errorCode);
         dest.writeByte((byte) (isShowOnboarding ? 1 : 0));
-        dest.writeByte((byte) (isMultiple ? 1 : 0));
-        dest.writeByte((byte) (isMultipleDisable ? 1 : 0));
         dest.writeByte((byte) (isDropshipperDisable ? 1 : 0));
         dest.writeByte((byte) (isOrderPrioritasDisable ? 1 : 0));
         dest.writeTypedList(groupAddress);
