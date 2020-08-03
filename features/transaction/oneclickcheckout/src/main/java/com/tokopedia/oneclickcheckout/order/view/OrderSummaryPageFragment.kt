@@ -61,6 +61,8 @@ import com.tokopedia.oneclickcheckout.order.view.card.OrderProductCard
 import com.tokopedia.oneclickcheckout.order.view.card.OrderTotalPaymentCard
 import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.oneclickcheckout.preference.edit.view.PreferenceEditActivity
+import com.tokopedia.oneclickcheckout.preference.edit.view.payment.creditcard.CreditCardPickerActivity
+import com.tokopedia.oneclickcheckout.preference.edit.view.payment.creditcard.CreditCardPickerFragment
 import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
 import com.tokopedia.purchase_platform.common.constant.*
@@ -157,6 +159,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 REQUEST_CODE_COURIER_PINPOINT -> onResultFromCourierPinpoint(resultCode, data)
                 REQUEST_CODE_PROMO -> onResultFromPromo(resultCode, data)
                 PaymentConstant.REQUEST_CODE -> onResultFromPayment(resultCode)
+                REQUEST_CODE_CREDIT_CARD -> onResultFromCreditCardPicker(resultCode, data)
             }
         }
     }
@@ -212,6 +215,13 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         }
         viewModel.clearBboIfExist()
         refresh()
+    }
+
+    private fun onResultFromCreditCardPicker(resultCode: Int, data: Intent?) {
+        val metadata = data?.getStringExtra(CreditCardPickerFragment.EXTRA_RESULT_METADATA)
+        if (metadata != null) {
+            viewModel.updateCreditCard(metadata)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -725,6 +735,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         override fun onInstallmentDetailChange(selectedInstallmentTerm: OrderPaymentInstallmentTerm) {
             viewModel.chooseInstallment(selectedInstallmentTerm)
         }
+
+        override fun onChangeCreditCardClicked() {
+            startActivityForResult(Intent(context, CreditCardPickerActivity::class.java), REQUEST_CODE_CREDIT_CARD)
+        }
     }
 
     fun showPreferenceListBottomSheet() {
@@ -957,6 +971,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         const val REQUEST_CODE_COURIER_PINPOINT = 13
 
         const val REQUEST_CODE_PROMO = 14
+
+        const val REQUEST_CODE_CREDIT_CARD = 15
 
         const val QUERY_PRODUCT_ID = "product_id"
 

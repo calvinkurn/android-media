@@ -163,7 +163,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         assertEquals(OrderShipment(serviceName = "kirimaja (2 hari)", serviceDuration = "kirimaja (2 hari)", serviceId = 1, shipperName = "kirimin",
                 shipperId = 1, shipperProductId = 1, ratesId = "0", shippingPrice = 0, shippingRecommendationData = shippingRecommendationData,
                 insuranceData = shippingRecommendationData.shippingDurationViewModels[0].shippingCourierViewModelList[0].productData.insurance),
-        orderSummaryPageViewModel.orderShipment.value)
+                orderSummaryPageViewModel.orderShipment.value)
         assertEquals(OccGlobalEvent.Normal, orderSummaryPageViewModel.globalEvent.value)
         verify(exactly = 1) {
             orderSummaryAnalytics.eventViewOrderSummaryPage(any())
@@ -429,5 +429,56 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.chooseInstallment(term2)
 
         assertEquals(OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE), orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
+    fun `Update Credit Card Success`() {
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        val metadata = "metadata"
+        every { updateCartOccUseCase.execute(match { it.profile.metadata == metadata }, any(), any()) } answers {
+            (secondArg() as ((UpdateCartOccGqlResponse) -> Unit)).invoke(UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc())))
+        }
+
+        orderSummaryPageViewModel.updateCreditCard(metadata)
+
+        assertEquals(OccGlobalEvent.TriggerRefresh(), orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
+    fun `Update Credit Card Failed`() {
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        val metadata = "metadata"
+        val responseMessage = "message"
+        val response = MessageErrorException(responseMessage)
+        every { updateCartOccUseCase.execute(match { it.profile.metadata == metadata }, any(), any()) } answers {
+            (thirdArg() as ((Throwable) -> Unit)).invoke(response)
+        }
+
+        orderSummaryPageViewModel.updateCreditCard(metadata)
+
+        assertEquals(OccGlobalEvent.Error(errorMessage = responseMessage), orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
+    fun `Update Credit Card Error`() {
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        val metadata = "metadata"
+        val response = Exception()
+        every { updateCartOccUseCase.execute(match { it.profile.metadata == metadata }, any(), any()) } answers {
+            (thirdArg() as ((Throwable) -> Unit)).invoke(response)
+        }
+
+        orderSummaryPageViewModel.updateCreditCard(metadata)
+
+        assertEquals(OccGlobalEvent.Error(response), orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
+    fun `Update Credit Card On Invalid Preference State`() {
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = false)
+
+        orderSummaryPageViewModel.updateCreditCard("")
+
+        verify(inverse = true) { updateCartOccUseCase.execute(any(), any(), any()) }
     }
 }

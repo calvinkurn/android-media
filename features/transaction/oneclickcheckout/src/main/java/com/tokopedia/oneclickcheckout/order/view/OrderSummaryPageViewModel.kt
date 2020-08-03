@@ -1403,6 +1403,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             val installment = installments[i]
             if (shouldChooseNextInstallment) {
                 installment.isSelected = true
+                shouldChooseNextInstallment = false
             }
             installment.isEnable = installment.minAmount <= subTotal
             if (installment.isSelected && !installment.isEnable) {
@@ -1455,6 +1456,27 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                         ?: DEFAULT_ERROR_MESSAGE)
             } else {
                 globalEvent.value = OccGlobalEvent.Error(it)
+            }
+        })
+    }
+
+    fun updateCreditCard(metadata: String) {
+        var param = generateUpdateCartParam()
+        if (param == null) {
+            globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE)
+            return
+        }
+        param = param.copy(profile = param.profile.copy(metadata = metadata))
+        globalEvent.value = OccGlobalEvent.Loading
+        updateCartOccUseCase.execute(param, {
+            clearBboIfExist()
+            globalEvent.value = OccGlobalEvent.TriggerRefresh()
+        }, { throwable: Throwable ->
+            if (throwable is MessageErrorException) {
+                globalEvent.value = OccGlobalEvent.Error(errorMessage = throwable.message
+                        ?: DEFAULT_ERROR_MESSAGE)
+            } else {
+                globalEvent.value = OccGlobalEvent.Error(throwable)
             }
         })
     }

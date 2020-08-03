@@ -272,6 +272,14 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
                     tvPaymentDetail?.setOnClickListener {
                         //do nothing
                     }
+                    tvPaymentErrorAction?.setOnClickListener {
+                        if (payment.hasCreditCardOption()) {
+                            listener.onChangeCreditCardClicked()
+                        } else {
+                            listener.onChangeCreditCardClicked()
+//                            listener.onPaymentErrorActionClicked(payment.errorMessage.button.link)
+                        }
+                    }
                 } else {
                     tvPaymentErrorMessage?.gone()
                     tvPaymentErrorAction?.gone()
@@ -305,7 +313,7 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
         if (payment.creditCard.numberOfCards.availableCards > 1) {
             tvPaymentDetail?.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_keyboard_arrow_down_grey_20dp, 0)
             tvPaymentDetail?.setOnClickListener {
-                // todo: go to cc choose page
+                listener.onChangeCreditCardClicked()
             }
         } else {
             tvPaymentDetail?.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
@@ -449,5 +457,7 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
         fun onInstallmentDetailClicked()
 
         fun onInstallmentDetailChange(selectedInstallmentTerm: OrderPaymentInstallmentTerm)
+
+        fun onChangeCreditCardClicked()
     }
 }

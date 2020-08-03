@@ -236,7 +236,17 @@ class GetOccCartUseCase @Inject constructor(val context: Context, val graphqlUse
     }
 
     private fun mapPaymentInstallmentTerm(availableTerms: List<InstallmentTerm>): List<OrderPaymentInstallmentTerm> {
-        return availableTerms.map { OrderPaymentInstallmentTerm(it.term, it.mdr, it.mdrSubsidize, it.minAmount, it.isSelected) }
+        var hasSelection = false
+        val installmentTerms = availableTerms.map {
+            if (!hasSelection) {
+                hasSelection = it.isSelected
+            }
+            OrderPaymentInstallmentTerm(it.term, it.mdr, it.mdrSubsidize, it.minAmount, it.isSelected)
+        }.toMutableList()
+        if (!hasSelection && installmentTerms.isNotEmpty()) {
+            installmentTerms[0] = installmentTerms[0].copy(isSelected = true)
+        }
+        return installmentTerms
     }
 
     private fun mapAddress(address: Address): OrderProfileAddress {

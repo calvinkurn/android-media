@@ -31,6 +31,11 @@ data class OrderPayment(
         if (creditCard.numberOfCards.totalCards > 0 && creditCard.numberOfCards.availableCards < 1) return true
         return false
     }
+
+    fun hasCreditCardOption(): Boolean {
+        if (creditCard.numberOfCards.totalCards > 0 && creditCard.numberOfCards.availableCards > 0) return true
+        return false
+    }
 }
 
 data class OrderPaymentErrorMessage(

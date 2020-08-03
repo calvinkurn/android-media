@@ -1,7 +1,8 @@
-package com.tokopedia.oneclickcheckout.preference.edit.view.payment
+package com.tokopedia.oneclickcheckout.preference.edit.view.payment.creditcard
 
 import android.annotation.SuppressLint
-import android.content.Context
+import android.app.Activity.RESULT_OK
+import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.net.http.SslError
@@ -11,43 +12,30 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.*
-import com.google.android.play.core.splitcompat.SplitCompat
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.oneclickcheckout.R
-import com.tokopedia.oneclickcheckout.preference.analytics.PreferenceListAnalytics
 import com.tokopedia.oneclickcheckout.preference.edit.di.PreferenceEditComponent
-import com.tokopedia.oneclickcheckout.preference.edit.view.PreferenceEditBackPressedListener
-import com.tokopedia.oneclickcheckout.preference.edit.view.PreferenceEditParent
-import com.tokopedia.oneclickcheckout.preference.edit.view.summary.PreferenceSummaryFragment
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_payment_method.*
 import javax.inject.Inject
 
-class PaymentMethodFragment : BaseDaggerFragment(), PreferenceEditBackPressedListener {
-
-    companion object {
-
-        private const val ARG_IS_EDIT = "is_edit"
-
-        fun newInstance(isEdit: Boolean = false): PaymentMethodFragment {
-            val paymentMethodFragment = PaymentMethodFragment()
-            val bundle = Bundle()
-            bundle.putBoolean(ARG_IS_EDIT, isEdit)
-            paymentMethodFragment.arguments = bundle
-            return paymentMethodFragment
-        }
-    }
-
-    @Inject
-    lateinit var preferenceListAnalytics: PreferenceListAnalytics
+class CreditCardPickerFragment: BaseDaggerFragment() {
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
+    override fun getScreenName(): String {
+        return this::class.java.simpleName
+    }
+
+    override fun initInjector() {
+        getComponent(PreferenceEditComponent::class.java).inject(this)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -56,26 +44,7 @@ class PaymentMethodFragment : BaseDaggerFragment(), PreferenceEditBackPressedLis
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initHeader()
         initWebView()
-    }
-
-    private fun initHeader() {
-        val parent = activity
-        if (parent is PreferenceEditParent) {
-            parent.hideAddButton()
-            parent.hideDeleteButton()
-            val parentContext: Context = parent
-            SplitCompat.installActivity(parentContext)
-            parent.setHeaderTitle(parentContext.getString(R.string.lbl_choose_payment_method))
-            if (arguments?.getBoolean(ARG_IS_EDIT) == true) {
-                parent.hideStepper()
-            } else {
-                parent.setHeaderSubtitle(parentContext.getString(R.string.step_choose_payment))
-                parent.showStepper()
-                parent.setStepperValue(75)
-            }
-        }
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -91,37 +60,19 @@ class PaymentMethodFragment : BaseDaggerFragment(), PreferenceEditBackPressedLis
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             webSettings.mediaPlaybackRequiresUserGesture = false
         }
-
-        var addressId = ""
-        val parent = activity
-        if (parent is PreferenceEditParent) {
-            addressId = parent.getAddressId().toString()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            WebView.setWebContentsDebuggingEnabled(true)
         }
+
         val phoneNumber = userSession.phoneNumber
         val msisdnVerified = userSession.isMsisdnVerified
         var phone = ""
         if (msisdnVerified && phoneNumber.isNotBlank()) {
             phone = phoneNumber
         }
-        val data = "version=${GlobalConfig.VERSION_NAME}&merchant_code=tokopediatest&profile_code=EXPRESS_SAVE&user_id=${userSession.userId}&customer_name=${userSession.name.trim()}&customer_email=${userSession.email}&customer_msisdn=${phone}&address_id=${addressId}&callback_url=${TokopediaUrl.getInstance().PAY}/dummy/payment/listing"
-        val url = "${TokopediaUrl.getInstance().PAY}/v2/payment/register/listing"
+        val data = "version=${GlobalConfig.VERSION_NAME}&merchant_code=tokopediatest&profile_code=EXPRESS_SAVE&enable_add_card=true&user_id=${userSession.userId}&customer_name=${userSession.name.trim()}&customer_email=${userSession.email}&customer_msisdn=${phone}&callback_url=${TokopediaUrl.getInstance().PAY}/dummy/payment/listing"
+        val url = "${TokopediaUrl.getInstance().PAY}/v3/cardlist"
         web_view.postUrl(url, data.toByteArray())
-    }
-
-    override fun getScreenName(): String {
-        return this::class.java.simpleName
-    }
-
-    override fun initInjector() {
-        getComponent(PreferenceEditComponent::class.java).inject(this)
-    }
-
-    override fun onStart() {
-        super.onStart()
-        val parent = activity
-        if (parent is PreferenceEditParent) {
-            parent.setStepperValue(75)
-        }
     }
 
     inner class PaymentMethodWebViewClient : WebViewClient() {
@@ -148,7 +99,6 @@ class PaymentMethodFragment : BaseDaggerFragment(), PreferenceEditBackPressedLis
             if (isSuccess != null && isSuccess.equals("true", true)) {
                 val gatewayCode = uri.getQueryParameter("gateway_code")
                 if (gatewayCode != null) {
-                    preferenceListAnalytics.eventClickPaymentMethodOptionInPilihMetodePembayaranPage(gatewayCode)
                     goToNextStep(gatewayCode, generateMetadata(uri))
                 }
             }
@@ -165,23 +115,15 @@ class PaymentMethodFragment : BaseDaggerFragment(), PreferenceEditBackPressedLis
     }
 
     private fun goToNextStep(gatewayCode: String, metadata: String) {
-        val parent = activity
-        if (parent is PreferenceEditParent) {
-            parent.setGatewayCode(gatewayCode)
-            parent.setPaymentQuery(metadata)
-            if (arguments?.getBoolean(ARG_IS_EDIT) == true) {
-                parent.goBack()
-            } else {
-                parent.addFragment(PreferenceSummaryFragment.newInstance())
-            }
+        activity?.let {
+            it.setResult(RESULT_OK, Intent().apply {
+                putExtra(EXTRA_RESULT_METADATA, metadata)
+            })
+            it.finish()
         }
     }
 
-    override fun onBackPressed(): Boolean {
-        if (web_view.canGoBack()) {
-            web_view.goBack()
-            return true
-        }
-        return false
+    companion object {
+        const val EXTRA_RESULT_METADATA = "RESULT_METADATA"
     }
 }
