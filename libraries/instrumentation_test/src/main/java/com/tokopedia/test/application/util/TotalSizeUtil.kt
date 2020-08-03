@@ -4,8 +4,8 @@ import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import com.tokopedia.test.application.environment.InstrumentationTestApp
 import com.tokopedia.test.application.environment.callback.GqlResponseAnalyzerInterface
 
-fun setupTotalSizeInterceptor() {
+fun setupTotalSizeInterceptor(listToAnalyze: List<String>?) {
     val application = getInstrumentation().targetContext.applicationContext as InstrumentationTestApp
-    application.enableSizeDetector()
+    application.enableSizeDetector(listToAnalyze)
     (application as GqlResponseAnalyzerInterface).reset()
 }

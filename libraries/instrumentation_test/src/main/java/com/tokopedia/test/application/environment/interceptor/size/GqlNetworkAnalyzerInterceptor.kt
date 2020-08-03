@@ -8,8 +8,13 @@ import com.tokopedia.test.application.util.parserule.ParserRuleProvider
 import okhttp3.*
 import okio.Buffer
 import java.io.IOException
+import java.util.*
 
-class GqlNetworkAnalyzerInterceptor : Interceptor {
+class GqlNetworkAnalyzerInterceptor(private var gqlQueryListToAnalyze: List<String>?) : Interceptor {
+
+    init {
+        gqlQueryListToAnalyze = gqlQueryListToAnalyze?.map { it.toLowerCase(Locale.US) }
+    }
 
     companion object {
         val parserRuleProvider = ParserRuleProvider()
@@ -60,24 +65,36 @@ class GqlNetworkAnalyzerInterceptor : Interceptor {
 
                 val size = response.peekBody(Long.MAX_VALUE).bytes().size
                 var formattedOperationName = parserRuleProvider.parse(requestString.substringAfter("\"query\": \""))
-                if (queryCounterMap.containsKey(formattedOperationName)) {
-                    queryCounterMap[formattedOperationName] = (queryCounterMap[formattedOperationName]?: 0) + 1
-                    formattedOperationName += queryCounterMap[formattedOperationName]
+
+                var needToAnalyze = true
+                val gqlFilterList = gqlQueryListToAnalyze
+                if (gqlFilterList?.isNotEmpty() == true) {
+                    needToAnalyze = gqlFilterList.contains(formattedOperationName.toLowerCase(Locale.US))
+                }
+
+                if (needToAnalyze) {
+                    if (queryCounterMap.containsKey(formattedOperationName)) {
+                        queryCounterMap[formattedOperationName] = (queryCounterMap[formattedOperationName]
+                                ?: 0) + 1
+                        formattedOperationName += queryCounterMap[formattedOperationName]
+                    } else {
+                        queryCounterMap[formattedOperationName] = 1
+                    }
+                    sizeInEachRequest[formattedOperationName] = size
+                    val reqTimeStamp = response.sentRequestAtMillis()
+                    val respTimeStamp = response.receivedResponseAtMillis()
+                    val duration = respTimeStamp - reqTimeStamp
+                    timeInEachRequest[formattedOperationName] = duration
+
+                    if (startRequest == 0L) {
+                        startRequest = reqTimeStamp
+                    }
+                    endRequest = respTimeStamp
+
+                    return response
                 } else {
-                    queryCounterMap[formattedOperationName] = 1
+                    return chain.proceed(chain.request())
                 }
-                sizeInEachRequest[formattedOperationName] = size
-                val reqTimeStamp = response.sentRequestAtMillis()
-                val respTimeStamp = response.receivedResponseAtMillis()
-                val duration = respTimeStamp - reqTimeStamp
-                timeInEachRequest[formattedOperationName] = duration
-
-                if (startRequest == 0L) {
-                    startRequest = reqTimeStamp
-                }
-                endRequest = respTimeStamp
-
-                return response
             } catch (e: IOException) {
                 Log.i("SizeInterceptorTag", "did not work" + e.stackTrace)
             }

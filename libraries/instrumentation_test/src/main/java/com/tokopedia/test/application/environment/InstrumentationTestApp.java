@@ -50,8 +50,11 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
+import javax.annotation.Nullable;
 
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
@@ -116,9 +119,9 @@ public class InstrumentationTestApp extends BaseMainApplication
         }
     }
 
-    public void enableSizeDetector() {
+    public void enableSizeDetector(@Nullable List<String> listToAnalyze) {
         if (GlobalConfig.DEBUG) {
-            addInterceptor(new GqlNetworkAnalyzerInterceptor());
+            addInterceptor(new GqlNetworkAnalyzerInterceptor(listToAnalyze));
         }
     }
 
