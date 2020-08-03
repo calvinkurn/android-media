@@ -131,7 +131,7 @@ dependencies {
         }
     }
 
-    implementation(rootProject.ext.serviceDependencies.crashlytics) {
+    implementation(rootProject.ext.firebase.crashlytics) {
         transitive = true
     }
     implementation rootProject.ext.miscDependencies.dagger
@@ -191,6 +191,7 @@ project.ext {
 }
 
 apply from: '../../../publish_local.gradle'
-//apply from: '../../../jacoco_task.gradle'
+apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'

@@ -6,7 +6,7 @@
     android:background="@android:color/white"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/dp_16">
+    android:padding="@dimen/spacing_lvl4">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txtTitle"
@@ -21,7 +21,7 @@
         android:id="@+id/txtDescription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginTop="@dimen/spacing_lvl3"
         android:text="@string/settingnotif_desc_activation"
         android:textColor="@color/charcoal_grey_68"
         app:typographyType="body_1"
@@ -31,7 +31,7 @@
         android:id="@+id/btnActivation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginTop="@dimen/spacing_lvl4"
         app:unifyButtonType="main"
         app:unifyButtonVariant="filled"
         android:text="@string/settingnotif_activation" />

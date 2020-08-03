@@ -20,6 +20,8 @@ import com.tokopedia.youtube_common.domain.usecase.GetYoutubeVideoDetailUseCase
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.After
 import org.junit.Before
@@ -154,7 +156,7 @@ class AddEditProductDescriptionViewModelTest {
     }
 
     @Test
-    fun `When user insert url from youtube app and usecase is success expect youtube video data`() {
+    fun `When user insert url from youtube app and usecase is success expect youtube video data`() = runBlocking {
         usedYoutubeVideoUrl = youtubeVideoUrlFromApp
 
         coEvery {
@@ -167,12 +169,14 @@ class AddEditProductDescriptionViewModelTest {
             getYoutubeVideoUseCase.executeOnBackground()
         }
 
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
         val result = viewModel.videoYoutube.value
         assert(result != null && result == Pair(0, Success(youtubeSuccessData)))
     }
 
     @Test
-    fun `When user insert url from youtube web and usecase is success expect youtube video data`() {
+    fun `When user insert url from youtube web and usecase is success expect youtube video data`() = runBlocking {
         usedYoutubeVideoUrl = youtubeVideoUrlFromWebsite
 
         coEvery {
@@ -184,6 +188,8 @@ class AddEditProductDescriptionViewModelTest {
         coVerify {
             getYoutubeVideoUseCase.executeOnBackground()
         }
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
         val result = viewModel.videoYoutube.value
         assert(result != null && result == Pair(0, Success(youtubeSuccessData)))
