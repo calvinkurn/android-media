@@ -2,7 +2,6 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
-  android:id="@+id/container"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
   android:background="@color/white">
@@ -105,20 +104,14 @@
         android:text="@string/title_register_wo_u"
         app:unifyButtonType="main" />
   
-      <TextView
+      <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/register_next_detail_t_and_p"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/layout_lvl1"
         android:layout_marginTop="@dimen/layout_lvl3"
-        android:fontFamily="sans-serif"
         android:gravity="center"
-        android:lineSpacingExtra="@dimen/spacing_lvl3"
-        android:paddingLeft="@dimen/layout_lvl1"
-        android:paddingRight="@dimen/layout_lvl1"
-        android:textColor="@color/black_38"
-        android:textSize="@dimen/spacing_lvl4"
-        android:textStyle="normal"
+        app:typographyType="body_2"
         tools:text="Dengan menekan "/>
     
     </LinearLayout>
@@ -133,30 +126,27 @@
     android:orientation="vertical"
     android:visibility="gone">
     
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:gravity="center_horizontal"
       android:text="@string/account_registered_title"
-      android:textColor="@color/black_70"
-      android:textSize="@dimen/spacing_lvl4"
-      android:textStyle="bold" />
+      app:typographyType="heading_2" />
     
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
       android:id="@+id/body"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:gravity="center_horizontal"
-      android:lineSpacingExtra="@dimen/spacing_lvl3"
       android:text="@string/account_registered_body"
-      android:textColor="@color/black_54" />
+      app:typographyType="body_2"/>
   
   </LinearLayout>
   
-  <ProgressBar
+  <com.tokopedia.unifycomponents.LoaderUnify
     android:id="@+id/progress_bar"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_width="@dimen/layout_lvl4"
+    android:layout_height="@dimen/layout_lvl4"
     android:visibility="gone"
     app:layout_constraintTop_toTopOf="parent"
     app:layout_constraintLeft_toLeftOf="parent"
