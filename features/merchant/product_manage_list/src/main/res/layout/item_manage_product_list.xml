@@ -120,7 +120,7 @@
         android:layout_marginRight="@dimen/spacing_lvl3"
         android:visibility="gone"
         app:labelTitle="@string/product_manage_variant"
-        app:labelType="general_light_grey"
+        app:labelType="general_dark_grey"
         app:layout_constraintLeft_toRightOf="@id/labelActive"
         app:layout_constraintRight_toLeftOf="@id/labelBanned"
         app:layout_constraintTop_toBottomOf="@id/textPrice"

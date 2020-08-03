@@ -7,10 +7,12 @@ import com.tokopedia.power_merchant.subscribe.common.coroutine.TestCoroutineDisp
 import com.tokopedia.power_merchant.subscribe.verification.verifyValueEquals
 import com.tokopedia.power_merchant.subscribe.view.model.ViewState
 import com.tokopedia.power_merchant.subscribe.view.util.PowerMerchantRemoteConfig
+import com.tokopedia.shop.common.data.source.cloud.model.ShopFreeShippingStatus
 import com.tokopedia.shop.common.domain.interactor.GetShopFreeShippingStatusUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.mockk
 import org.junit.Before
 import org.junit.Rule
@@ -33,9 +35,7 @@ open class PmSubscribeViewModelTestFixture {
         userSession = mockk(relaxed = true)
         remoteConfig = mockk(relaxed = true)
 
-        coEvery {
-            remoteConfig.isFreeShippingEnabled()
-        } returns false
+        onGetFreeShippingEnabledConfig_thenReturn(false)
 
         viewModel = PmSubscribeViewModel(
             getPowerMerchantStatusUseCase,
@@ -52,6 +52,22 @@ open class PmSubscribeViewModelTestFixture {
 
     protected fun onGetPowerMerchantStatusUseCase_thenReturn(error: Throwable) {
         coEvery { getPowerMerchantStatusUseCase.getData(any()) } throws error
+    }
+
+    protected fun onGetFreeShippingStatusUseCase_thenReturn(freeShippingStatus: ShopFreeShippingStatus) {
+        coEvery { getShopFreeShippingStatusUseCase.execute(any()) } returns freeShippingStatus
+    }
+
+    protected fun onGetFreeShippingStatusUseCase_thenReturn(error: Throwable) {
+        coEvery { getShopFreeShippingStatusUseCase.execute(any()) } throws  error
+    }
+
+    protected fun onGetFreeShippingEnabledConfig_thenReturn(isEnabled: Boolean) {
+        every { remoteConfig.isFreeShippingEnabled() } returns isEnabled
+    }
+
+    protected fun verifyGetFreeShippingStatusUseCaseNotCalled() {
+        coVerify (exactly = 0) { getShopFreeShippingStatusUseCase.execute(any()) }
     }
 
     protected fun verifyUnsubscribeUseCase() {
