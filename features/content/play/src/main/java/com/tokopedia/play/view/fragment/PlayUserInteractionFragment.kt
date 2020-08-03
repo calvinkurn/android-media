@@ -30,8 +30,6 @@ import com.tokopedia.play.ui.endliveinfo.EndLiveInfoComponent
 import com.tokopedia.play.ui.endliveinfo.interaction.EndLiveInfoInteractionEvent
 import com.tokopedia.play.ui.immersivebox.ImmersiveBoxComponent
 import com.tokopedia.play.ui.immersivebox.interaction.ImmersiveBoxInteractionEvent
-import com.tokopedia.play.ui.pinned.PinnedComponent
-import com.tokopedia.play.ui.pinned.interaction.PinnedInteractionEvent
 import com.tokopedia.play.ui.playbutton.PlayButtonComponent
 import com.tokopedia.play.ui.playbutton.interaction.PlayButtonInteractionEvent
 import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
@@ -92,7 +90,8 @@ class PlayUserInteractionFragment @Inject constructor(
         VideoControlViewComponent.Listener,
         LikeViewComponent.Listener,
         SendChatViewComponent.Listener,
-        QuickReplyViewComponent.Listener
+        QuickReplyViewComponent.Listener,
+        PinnedViewComponent.Listener
 {
 
     companion object {
@@ -121,6 +120,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private val sendChatView by viewComponent { SendChatViewComponent(it, R.id.view_send_chat, this) }
     private val quickReplyView by viewComponent { QuickReplyViewComponent(it, R.id.rv_quick_reply, this) }
     private val chatListView by viewComponent { ChatListViewComponent(it, R.id.view_chat_list) }
+    private val pinnedView by viewComponent { PinnedViewComponent(it, R.id.view_pinned, this) }
 
     private lateinit var playViewModel: PlayViewModel
     private lateinit var viewModel: PlayInteractionViewModel
@@ -318,6 +318,18 @@ class PlayUserInteractionFragment @Inject constructor(
         doSendChat(replyString)
     }
 
+    /**
+     * QuickReply View Component Listener
+     */
+    override fun onPinnedMessageActionClicked(view: PinnedViewComponent, applink: String, message: String) {
+        PlayAnalytics.clickPinnedMessage(channelId, message, applink, playViewModel.channelType)
+        openPageByApplink(applink)
+    }
+
+    override fun onPinnedProductActionClicked(view: PinnedViewComponent) {
+        doClickPinnedProduct()
+    }
+
     private fun setupInsets(view: View) {
         spaceSize.rootView.doOnApplyWindowInsets { v, insets, _, margin ->
             val marginLayoutParams = v.layoutParams as ViewGroup.MarginLayoutParams
@@ -454,7 +466,25 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun observePinned() {
-        playViewModel.observablePinned.observe(viewLifecycleOwner, DistinctObserver(::setPinned))
+        playViewModel.observablePinned.observe(viewLifecycleOwner, DistinctObserver {
+            when (it) {
+                is PinnedMessageUiModel -> {
+                    pinnedView.setPinnedMessage(it)
+
+                    if (!playViewModel.bottomInsets.isAnyShown) pinnedView.show()
+                    else pinnedView.hide()
+                }
+                is PinnedProductUiModel -> {
+                    pinnedView.setPinnedProduct(it)
+
+                    if (!playViewModel.bottomInsets.isAnyShown) pinnedView.show()
+                    else pinnedView.hide()
+                }
+                is PinnedRemoveUiModel -> {
+                    pinnedView.hide()
+                }
+            }
+        })
     }
 
     private fun observeLoggedInInteractionEvent() {
@@ -539,6 +569,11 @@ class PlayUserInteractionFragment @Inject constructor(
                     map[BottomInsetsType.VariantSheet]?.isShown == false) {
                 chatListView.show()
             } else chatListView.hide()
+
+            val pinned = playViewModel.observablePinned.value
+            if (!map.isAnyShown &&
+                    (pinned is PinnedMessageUiModel || pinned is PinnedProductUiModel)
+            ) pinnedView.show() else pinnedView.hide()
         })
     }
 
@@ -570,6 +605,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 }
                 if(it.isFreeze || it.isBanned) quickReplyView.hide()
                 if(it.isFreeze || it.isBanned) chatListView.hide()
+                if(it.isFreeze || it.isBanned) pinnedView.hide()
             }
         })
     }
@@ -665,23 +701,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     override fun onInitPinned(container: ViewGroup): Int {
-        val pinnedComponent = PinnedComponent(container, EventBusFactory.get(viewLifecycleOwner), scope, dispatchers)
-                .also(viewLifecycleOwner.lifecycle::addObserver)
-
-        scope.launch {
-            pinnedComponent.getUserInteractionEvents()
-                    .collect {
-                        when (it) {
-                            is PinnedInteractionEvent.PinnedMessageClicked -> {
-                                PlayAnalytics.clickPinnedMessage(channelId, it.message, it.applink, playViewModel.channelType)
-                                openPageByApplink(it.applink)
-                            }
-                            PinnedInteractionEvent.PinnedProductClicked -> doClickPinnedProduct()
-                        }
-                    }
-        }
-
-        return pinnedComponent.getContainerId()
+        throw IllegalStateException("No Init")
     }
 
     override fun onInitPlayButton(container: ViewGroup): Int {

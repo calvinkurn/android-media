@@ -1,49 +1,35 @@
-package com.tokopedia.play.ui.pinned
+package com.tokopedia.play.view.viewcomponent
 
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
-import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.annotation.IdRes
 import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
-import com.tokopedia.play.component.UIView
 import com.tokopedia.play.view.uimodel.PinnedMessageUiModel
 import com.tokopedia.play.view.uimodel.PinnedProductUiModel
+import com.tokopedia.play_common.viewcomponent.ViewComponent
 
 /**
- * Created by jegul on 03/12/19
+ * Created by jegul on 03/08/20
  */
-class PinnedView(
+class PinnedViewComponent(
         container: ViewGroup,
+        @IdRes idRes: Int,
         private val listener: Listener
-) : UIView(container) {
+) : ViewComponent(container, idRes) {
 
-    private val view: View =
-            LayoutInflater.from(container.context).inflate(R.layout.view_pinned, container, true)
-                    .findViewById(R.id.cl_pinned)
-
-    private val tvPinnedMessage: TextView = view.findViewById(R.id.tv_pinned_message)
-    private val llPinnedProduct: LinearLayout = view.findViewById(R.id.ll_pinned_product)
-    private val tvPinnedProductMessage: TextView = view.findViewById(R.id.tv_pinned_product_message)
-    private val animationProduct: LottieAnimationView = view.findViewById(R.id.animation_product)
-    private val tvPinnedAction: TextView = view.findViewById(R.id.tv_pinned_action)
-
-    override val containerId: Int = view.id
-
-    override fun show() {
-        view.show()
-    }
-
-    override fun hide() {
-        view.hide()
-    }
+    private val tvPinnedMessage: TextView = findViewById(R.id.tv_pinned_message)
+    private val llPinnedProduct: LinearLayout = findViewById(R.id.ll_pinned_product)
+    private val tvPinnedProductMessage: TextView = findViewById(R.id.tv_pinned_product_message)
+    private val animationProduct: LottieAnimationView = findViewById(R.id.animation_product)
+    private val tvPinnedAction: TextView = findViewById(R.id.tv_pinned_action)
 
     fun setPinnedMessage(pinnedMessage: PinnedMessageUiModel) {
         llPinnedProduct.hide()
@@ -73,7 +59,7 @@ class PinnedView(
 
         } else tvPinnedAction.hide()
     }
-    
+
     fun setPinnedProduct(pinnedProduct: PinnedProductUiModel) {
         llPinnedProduct.show()
         tvPinnedAction.show()
@@ -95,7 +81,7 @@ class PinnedView(
     private fun spanPartnerName(partnerName: String, fullMessage: Spannable): Spannable {
         fullMessage.setSpan(
                 ForegroundColorSpan(
-                        MethodChecker.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Green_G300)
+                        MethodChecker.getColor(rootView.context, com.tokopedia.unifyprinciples.R.color.Green_G300)
                 ),
                 fullMessage.indexOf(partnerName),
                 partnerName.length,
@@ -106,7 +92,7 @@ class PinnedView(
 
     interface Listener {
 
-        fun onPinnedMessageActionClicked(view: PinnedView, applink: String, message: String)
-        fun onPinnedProductActionClicked(view: PinnedView)
+        fun onPinnedMessageActionClicked(view: PinnedViewComponent, applink: String, message: String)
+        fun onPinnedProductActionClicked(view: PinnedViewComponent)
     }
 }

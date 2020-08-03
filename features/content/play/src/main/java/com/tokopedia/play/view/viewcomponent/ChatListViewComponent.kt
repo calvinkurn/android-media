@@ -2,6 +2,8 @@ package com.tokopedia.play.view.viewcomponent
 
 import android.view.ViewGroup
 import androidx.annotation.IdRes
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.hide
@@ -77,6 +79,7 @@ class ChatListViewComponent(
         chatAdapter.setChatList(chatList)
     }
 
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun onDestroy() {
         chatAdapter.unregisterAdapterDataObserver(adapterObserver)
     }
