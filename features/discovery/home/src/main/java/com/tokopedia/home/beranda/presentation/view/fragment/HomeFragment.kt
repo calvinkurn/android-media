@@ -643,6 +643,7 @@ open class HomeFragment : BaseDaggerFragment(),
         adapter = null
         homeRecyclerView?.layoutManager = null
         layoutManager = null
+        getHomeViewModel().onCloseChannel()
         unRegisterBroadcastReceiverTokoCash()
     }
 

@@ -271,9 +271,12 @@ open class HomeViewModel @Inject constructor(
         if (!compositeSubscription.isUnsubscribed) {
             compositeSubscription.unsubscribe()
         }
-        channel.close()
-        jobChannel?.cancelChildren()
         super.onCleared()
+    }
+
+    fun onCloseChannel(){
+        jobChannel?.cancelChildren()
+        channel.close()
     }
 
     fun getHeaderData() {
@@ -932,7 +935,7 @@ open class HomeViewModel @Inject constructor(
     private fun initChannel(){
         logChannelUpdate("init channel")
         jobChannel?.cancelChildren()
-        launch (homeDispatcher.get().ui()){
+        jobChannel = launch (homeDispatcher.get().ui()){
             updateChannel(channel)
         }
     }
@@ -940,10 +943,13 @@ open class HomeViewModel @Inject constructor(
     private fun reInitChannel(widget: UpdateLiveDataModel){
         logChannelUpdate("reinit channel")
         jobChannel?.cancelChildren()
-        channel = Channel()
-        launch(homeDispatcher.get().ui()){
-            channel.send(widget)
+        jobChannel = launch (homeDispatcher.get().ui()){
             updateChannel(channel)
+        }
+        launch {
+            if (!channel.isClosedForSend){
+                channel.send(widget)
+            }
         }
     }
 
@@ -1446,9 +1452,10 @@ open class HomeViewModel @Inject constructor(
             if(updateWidget.visitable != null) logChannelUpdate("Send Update Widget... (send = ${channel.isClosedForSend} | widget = ${updateWidget.visitable.javaClass.simpleName})")
             else logChannelUpdate("Send Widget Processing... (send = ${channel.isClosedForSend} | homeData = ${updateWidget.homeData?.list?.map{ it.javaClass.simpleName }}")
             if(channel.isClosedForSend){
-                initChannel()
+                reInitChannel(updateWidget)
+            } else {
+                channel.send(updateWidget)
             }
-            channel.send(updateWidget)
         }catch (e: ClosedSendChannelException){
             logChannelUpdate("Update Widget Error... (send = ${channel.isClosedForSend} | widget = $updateWidget)")
             logChannelUpdate("init channel")
