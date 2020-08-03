@@ -1,13 +1,17 @@
 package com.tokopedia.review.feature.inbox.container.presentation.adapter
 
+import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.tokopedia.review.feature.inbox.container.data.ReviewInboxTabs
 import com.tokopedia.review.feature.inbox.history.presentation.fragment.ReviewHistoryFragment
 import com.tokopedia.review.feature.inbox.pending.presentation.fragment.ReviewPendingFragment
+import com.tokopedia.review.feature.inboxreview.presentation.fragment.InboxReviewFragment
+import com.tokopedia.review.feature.reviewlist.view.fragment.RatingProductFragment
 
 class ReviewInboxContainerAdapter(private val tabs: List<ReviewInboxTabs>,
-                                  fragment: Fragment) : FragmentStateAdapter(fragment) {
+                                  fragment: Fragment,
+                                  private val bundle: Bundle? = null) : FragmentStateAdapter(fragment) {
 
     override fun getItemCount(): Int {
         return tabs.size
@@ -23,6 +27,18 @@ class ReviewInboxContainerAdapter(private val tabs: List<ReviewInboxTabs>,
             }
             is ReviewInboxTabs.ReviewInboxSeller -> {
                 // Change this to seller fragment
+                ReviewHistoryFragment.createNewInstance()
+            }
+            is ReviewInboxTabs.ReviewRatingProduct -> {
+                val fragment = RatingProductFragment.createInstance()
+                fragment.arguments = bundle
+                fragment
+            }
+            is ReviewInboxTabs.ReviewBuyer -> {
+                InboxReviewFragment.createInstance()
+            }
+            is ReviewInboxTabs.ReviewPenaltyAndReward -> {
+                // Change this to penalty & reward fragment
                 ReviewHistoryFragment.createNewInstance()
             }
         }

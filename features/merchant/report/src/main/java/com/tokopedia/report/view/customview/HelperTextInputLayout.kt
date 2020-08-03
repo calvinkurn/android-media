@@ -68,17 +68,6 @@ class HelperTextInputLayout @JvmOverloads constructor(
         }
     }
 
-    override fun addView(child: View?, index: Int, params: ViewGroup.LayoutParams?) {
-        super.addView(child, index, params)
-        if (child is EditText){
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                helperTextView.setPadding(child.paddingStart, 0, child.paddingEnd, child.paddingBottom)
-            } else {
-                helperTextView.setPadding(child.paddingLeft, 0, child.paddingRight, child.paddingBottom)
-            }
-        }
-    }
-
     override fun setErrorEnabled(enabled: Boolean) {
         if (errorTextEnabled == enabled) return
         errorTextEnabled = enabled

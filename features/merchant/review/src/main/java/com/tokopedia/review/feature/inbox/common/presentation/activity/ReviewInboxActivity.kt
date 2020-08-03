@@ -8,9 +8,15 @@ import com.tokopedia.review.feature.inbox.container.presentation.fragment.Review
 
 class ReviewInboxActivity : BaseSimpleActivity() {
 
-    private val reviewInboxContainerFragment = ReviewInboxContainerFragment.createNewInstance()
+    companion object {
+        const val GO_TO_REPUTATION_HISTORY = "GO_TO_REPUTATION_HISTORY"
+    }
+
+    private var reviewInboxContainerFragment: ReviewInboxContainerFragment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        val goToReputationHistory = getArgumentsFromApplink() ?: false
+        reviewInboxContainerFragment = ReviewInboxContainerFragment.createNewInstance(goToReputationHistory)
         super.onCreate(savedInstanceState)
         setUpToolBar()
     }
@@ -21,10 +27,14 @@ class ReviewInboxActivity : BaseSimpleActivity() {
 
     override fun onBackPressed() {
         super.onBackPressed()
-        reviewInboxContainerFragment.onBackPressed()
+        reviewInboxContainerFragment?.onBackPressed()
     }
 
     private fun setUpToolBar() {
         supportActionBar?.elevation = ReviewInboxConstants.NO_SHADOW_ELEVATION
+    }
+
+    private fun getArgumentsFromApplink(): Boolean? {
+        return intent?.getBooleanExtra(GO_TO_REPUTATION_HISTORY, false)
     }
 }

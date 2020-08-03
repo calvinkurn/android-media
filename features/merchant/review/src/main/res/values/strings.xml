@@ -2,6 +2,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_review_rating_product">Rating Produk</string>
     <string name="title_review_inbox">Inbox Ulasan</string>
+    <string name="title_reputation_history">Penalti dan Reward</string>
     <string name="title_review_detail_page">Review Detail Page</string>
     <string name="title_review_reply">Balas Ulasan</string>
     <string name="most_review">Ulasan Terbanyak</string>

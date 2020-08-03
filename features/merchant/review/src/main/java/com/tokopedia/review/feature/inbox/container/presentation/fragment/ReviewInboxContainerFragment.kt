@@ -9,6 +9,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.review.R
@@ -28,9 +29,14 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
     companion object {
         const val PENDING_TAB_INDEX = 0
         const val HISTORY_TAB_INDEX = 1
+        private const val IS_DIRECTLY_GO_TO_RATING = "is_directly_go_to_rating"
 
-        fun createNewInstance() : ReviewInboxContainerFragment{
-            return ReviewInboxContainerFragment()
+        fun createNewInstance(goToReputationHistory: Boolean) : ReviewInboxContainerFragment{
+            return ReviewInboxContainerFragment().apply {
+                arguments = Bundle().apply {
+                    putBoolean(IS_DIRECTLY_GO_TO_RATING, !goToReputationHistory)
+                }
+            }
         }
     }
 
@@ -61,9 +67,15 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        observeReviewTabs()
+        if (GlobalConfig.isSellerApp()) {
+            val reviewSellerBundle = Bundle()
+            reviewSellerBundle.putBoolean(IS_DIRECTLY_GO_TO_RATING, arguments?.getBoolean(IS_DIRECTLY_GO_TO_RATING) ?: true)
+            setupViewPagerForSellerApp(listOf(getString(R.string.title_review_rating_product), getString(R.string.title_review_inbox), getString(R.string.title_reputation_history)), reviewSellerBundle)
+        } else {
+            observeReviewTabs()
+            viewModel.getTabCounter()
+        }
         setupTabLayout()
-        viewModel.getTabCounter()
     }
 
     override fun onDestroy() {
@@ -74,6 +86,19 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
 
     override fun onBackPressed() {
         ReviewInboxContainerTracking.eventOnClickBackButton(viewModel.getUserId())
+    }
+
+    private fun setupViewPagerForSellerApp(tabTitles: List<String>, bundle: Bundle) {
+        val tabs: List<ReviewInboxTabs> = listOf(ReviewInboxTabs.ReviewRatingProduct, ReviewInboxTabs.ReviewBuyer, ReviewInboxTabs.ReviewPenaltyAndReward)
+        reviewInboxViewPager.adapter = ReviewInboxContainerAdapter(tabs, this)
+        tabTitles.forEach {
+            reviewInboxTabs.addNewTab(it)
+        }
+        reviewInboxViewPager.registerOnPageChangeCallback(object: ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                reviewInboxTabs.getUnifyTabLayout().selectTab(reviewInboxTabs.getUnifyTabLayout().getTabAt(position))
+            }
+        })
     }
 
     private fun setupViewPager(tabTitles: List<String>) {
@@ -102,22 +127,24 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
             override fun onTabSelected(tab: TabLayout.Tab) {
                 val currentTab = reviewInboxTabs.tabLayout.selectedTabPosition
                 reviewInboxViewPager.setCurrentItem(tab.position, true)
-                when(tab.position) {
-                    PENDING_TAB_INDEX -> {
-                        when(currentTab) {
-                            PENDING_TAB_INDEX -> {
-                                ReviewInboxContainerTracking.eventOnClickReviewPendingTabFromReviewPendingTab(viewModel.getUserId())
-                            }
-                            HISTORY_TAB_INDEX -> {
-                                ReviewInboxContainerTracking.eventOnClickReviewPendingTabFromReviewHistoryTab(viewModel.getUserId())
+                if(!GlobalConfig.isSellerApp()) {
+                    when(tab.position) {
+                        PENDING_TAB_INDEX -> {
+                            when(currentTab) {
+                                PENDING_TAB_INDEX -> {
+                                    ReviewInboxContainerTracking.eventOnClickReviewPendingTabFromReviewPendingTab(viewModel.getUserId())
+                                }
+                                HISTORY_TAB_INDEX -> {
+                                    ReviewInboxContainerTracking.eventOnClickReviewPendingTabFromReviewHistoryTab(viewModel.getUserId())
+                                }
                             }
                         }
-                    }
-                    HISTORY_TAB_INDEX -> {
-                        ReviewInboxContainerTracking.eventOnClickReviewHistoryTabFromReviewPendingTab(viewModel.getUserId())
-                    }
-                    else -> {
-                        ReviewInboxContainerTracking.eventOnClickReviewSellerTab(viewModel.getUserId())
+                        HISTORY_TAB_INDEX -> {
+                            ReviewInboxContainerTracking.eventOnClickReviewHistoryTabFromReviewPendingTab(viewModel.getUserId())
+                        }
+                        else -> {
+                            ReviewInboxContainerTracking.eventOnClickReviewSellerTab(viewModel.getUserId())
+                        }
                     }
                 }
             }

@@ -35,7 +35,7 @@ abstract class InboxBottomSheetFragment : BottomSheetDialogFragment() {
         dialog?.setOnShowListener { dialog: DialogInterface ->
             val d = dialog as BottomSheetDialog
             val bottomSheetInternal = d.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
-            BottomSheetBehavior.from(bottomSheetInternal).setState(BottomSheetBehavior.STATE_EXPANDED)
+            BottomSheetBehavior.from(bottomSheetInternal as View).setState(BottomSheetBehavior.STATE_EXPANDED)
         }
         title?.setOnClickListener { closeBottomSheet() }
         return contentView

@@ -218,11 +218,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Fragment getReviewSellerFragment() {
-        return RatingProductFragment.Companion.createInstance();
-    }
-
-    @Override
     public Intent getHomeIntent(Context context) {
         UserSessionInterface userSession = new UserSession(context);
         Intent intent = new Intent(context, SellerOnboardingActivity.class);
