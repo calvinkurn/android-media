@@ -8,12 +8,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import android.widget.Space
 import android.widget.Toast
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.hide
@@ -80,6 +82,9 @@ import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.state.PlayVideoState
+import com.tokopedia.play_common.view.doOnApplyWindowInsets
+import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
+import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -91,8 +96,12 @@ import kotlin.coroutines.CoroutineContext
 /**
  * Created by jegul on 29/11/19
  */
-class PlayUserInteractionFragment :
-        BaseDaggerFragment(),
+class PlayUserInteractionFragment @Inject constructor(
+        private val viewModelFactory: ViewModelProvider.Factory,
+        private val dispatchers: CoroutineDispatcherProvider,
+        private val trackingQueue: TrackingQueue
+):
+        TkpdBaseV4Fragment(),
         PlayInteractionViewInitializer,
         PlayMoreActionBottomSheet.Listener,
         PlayFragmentContract
@@ -107,14 +116,6 @@ class PlayUserInteractionFragment :
 
         private const val FADE_DURATION = 200L
         private const val FADE_TRANSITION_DELAY = 3000L
-
-        fun newInstance(channelId: String): PlayUserInteractionFragment {
-            return PlayUserInteractionFragment().apply {
-                val bundle = Bundle()
-                bundle.putString(PLAY_KEY_CHANNEL_ID, channelId)
-                arguments = bundle
-            }
-        }
     }
 
     private val scope = object : CoroutineScope {
@@ -123,14 +124,7 @@ class PlayUserInteractionFragment :
     }
     private val job: Job = SupervisorJob()
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    @Inject
-    lateinit var dispatchers: CoroutineDispatcherProvider
-
-    @Inject
-    lateinit var trackingQueue: TrackingQueue
+    private lateinit var spaceSize: Space
 
     private lateinit var playViewModel: PlayViewModel
     private lateinit var viewModel: PlayInteractionViewModel
@@ -147,7 +141,8 @@ class PlayUserInteractionFragment :
 
     private lateinit var toolbarView: View
 
-    private var channelId: String = ""
+    private val channelId: String
+        get() = arguments?.getString(PLAY_KEY_CHANNEL_ID).orEmpty()
 
     private val playFragment: PlayFragment
         get() = requireParentFragment() as PlayFragment
@@ -178,21 +173,10 @@ class PlayUserInteractionFragment :
 
     override fun getScreenName(): String = "Play User Interaction"
 
-    override fun initInjector() {
-        DaggerPlayComponent.builder()
-                .baseAppComponent(
-                        (requireContext().applicationContext as BaseMainApplication).baseAppComponent
-                )
-                .playModule(PlayModule(requireContext()))
-                .build()
-                .inject(this)
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         playViewModel = ViewModelProvider(requireParentFragment(), viewModelFactory).get(PlayViewModel::class.java)
         viewModel = ViewModelProvider(this, viewModelFactory).get(PlayInteractionViewModel::class.java)
-        channelId  = arguments?.getString(PLAY_KEY_CHANNEL_ID).orEmpty()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -203,8 +187,14 @@ class PlayUserInteractionFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initView(view)
         setupView(view)
-        setInsets(view)
+        setupInsets(view)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        spaceSize.requestApplyInsetsWhenAttached()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -277,7 +267,26 @@ class PlayUserInteractionFragment :
         } else super.onActivityResult(requestCode, resultCode, data)
     }
 
-    private fun setInsets(view: View) {
+    private fun setupInsets(view: View) {
+        spaceSize.doOnApplyWindowInsets { v, insets, _, margin ->
+            val marginLayoutParams = v.layoutParams as ViewGroup.MarginLayoutParams
+            var isMarginChanged = false
+
+            val newTopMargin = insets.systemWindowInsetTop
+            if (marginLayoutParams.topMargin != newTopMargin) {
+                marginLayoutParams.updateMargins(top = newTopMargin)
+                isMarginChanged = true
+            }
+
+            val newBottomMargin = margin.bottom + insets.systemWindowInsetBottom
+            if (marginLayoutParams.bottomMargin != newBottomMargin) {
+                marginLayoutParams.updateMargins(bottom = newBottomMargin)
+                isMarginChanged = true
+            }
+
+            if (isMarginChanged) v.parent.requestLayout()
+        }
+
         ViewCompat.setOnApplyWindowInsetsListener(view) { _, insets ->
             layoutManager.setupInsets(view, insets)
             insets
@@ -461,6 +470,12 @@ class PlayUserInteractionFragment :
     }
     //endregion
 
+    private fun initView(view: View) {
+        with (view) {
+            spaceSize = findViewById(R.id.space_size)
+        }
+    }
+
     private fun setupView(view: View) {
         container.setOnClickListener {
             if (!playViewModel.videoOrientation.isHorizontal && container.hasAlpha) triggerImmersive(it.isFullSolid)
@@ -520,8 +535,7 @@ class PlayUserInteractionFragment :
     }
 
     override fun onInitSizeContainer(container: ViewGroup): Int {
-        return SizeContainerComponent(container)
-                .getContainerId()
+        throw IllegalStateException("No Init")
     }
 
     override fun onInitToolbar(container: ViewGroup): Int {

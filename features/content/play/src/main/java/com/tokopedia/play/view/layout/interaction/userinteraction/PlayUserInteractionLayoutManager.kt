@@ -28,7 +28,6 @@ class PlayUserInteractionLayoutManager(
         viewInitializer: PlayInteractionViewInitializer
 ) : PlayInteractionLayoutManager {
 
-    @IdRes private val sizeContainerComponentId: Int = viewInitializer.onInitSizeContainer(container)
     @IdRes private val gradientBackgroundComponentId: Int = viewInitializer.onInitGradientBackground(container)
     @IdRes private val immersiveBoxComponentId: Int = viewInitializer.onInitImmersiveBox(container)
     @IdRes private val sendChatComponentId: Int = viewInitializer.onInitChat(container)
@@ -58,29 +57,22 @@ class PlayUserInteractionLayoutManager(
     private val offset0 = container.resources.getDimensionPixelOffset(com.tokopedia.play.R.dimen.play_no_offset)
 
     override fun layoutView(view: View) {
-        layoutSizeContainer(container = view, id = sizeContainerComponentId)
-        layoutToolbar(container = view, id = toolbarComponentId, sizeContainerComponentId = sizeContainerComponentId)
-        layoutVideoControl(container = view, id = videoControlComponentId, sizeContainerComponentId = sizeContainerComponentId, likeComponentId = likeComponentId)
-        layoutLike(container = view, id = likeComponentId, videoControlComponentId = videoControlComponentId, sizeContainerComponentId = sizeContainerComponentId)
-        layoutChat(container = view, id = sendChatComponentId, likeComponentId = likeComponentId, sizeContainerComponentId = sizeContainerComponentId, videoControlComponentId = videoControlComponentId)
-        layoutChatList(container = view, id = chatListComponentId, quickReplyComponentId = quickReplyComponentId, likeComponentId = likeComponentId, sizeContainerComponentId = sizeContainerComponentId)
-        layoutPinned(container = view, id = pinnedComponentId, chatListComponentId = chatListComponentId, likeComponentId = likeComponentId, sizeContainerComponentId = sizeContainerComponentId)
+        layoutToolbar(container = view, id = toolbarComponentId, sizeContainerComponentId = R.id.space_size)
+        layoutVideoControl(container = view, id = videoControlComponentId, sizeContainerComponentId = R.id.space_size, likeComponentId = likeComponentId)
+        layoutLike(container = view, id = likeComponentId, videoControlComponentId = videoControlComponentId, sizeContainerComponentId = R.id.space_size)
+        layoutChat(container = view, id = sendChatComponentId, likeComponentId = likeComponentId, sizeContainerComponentId = R.id.space_size, videoControlComponentId = videoControlComponentId)
+        layoutChatList(container = view, id = chatListComponentId, quickReplyComponentId = quickReplyComponentId, likeComponentId = likeComponentId, sizeContainerComponentId = R.id.space_size)
+        layoutPinned(container = view, id = pinnedComponentId, chatListComponentId = chatListComponentId, likeComponentId = likeComponentId, sizeContainerComponentId = R.id.space_size)
         layoutPlayButton(container = view, videoOrientation = videoOrientation, id = playButtonComponentId, immersiveBoxComponentId = immersiveBoxComponentId)
         layoutImmersiveBox(container = view, videoOrientation = videoOrientation, id = immersiveBoxComponentId, pinnedComponentId = pinnedComponentId, statsInfoComponentId = statsInfoComponentId)
-        layoutQuickReply(container = view, id = quickReplyComponentId, sendChatComponentId = sendChatComponentId, sizeContainerComponentId = sizeContainerComponentId)
+        layoutQuickReply(container = view, id = quickReplyComponentId, sendChatComponentId = sendChatComponentId, sizeContainerComponentId = R.id.space_size)
         layoutGradientBackground(container = view, id = gradientBackgroundComponentId)
         layoutEndLiveComponent(container = view, id = endLiveInfoComponentId)
-        layoutStatsInfo(container = view, id = statsInfoComponentId, sizeContainerComponentId = sizeContainerComponentId, toolbarComponentId = toolbarComponentId)
-        layoutVideoSettings(container = view, id = videoSettingsComponentId, sizeContainerComponentId = sizeContainerComponentId, statsInfoComponentId = statsInfoComponentId)
+        layoutStatsInfo(container = view, id = statsInfoComponentId, sizeContainerComponentId = R.id.space_size, toolbarComponentId = toolbarComponentId)
+        layoutVideoSettings(container = view, id = videoSettingsComponentId, sizeContainerComponentId = R.id.space_size, statsInfoComponentId = statsInfoComponentId)
     }
 
     override fun setupInsets(view: View, insets: WindowInsetsCompat) {
-        val sizeContainerView = view.findViewById<View>(sizeContainerComponentId)
-        val sizeContainerMarginLp = sizeContainerView.layoutParams as ViewGroup.MarginLayoutParams
-        sizeContainerMarginLp.bottomMargin = offset16 + insets.systemWindowInsetBottom
-        sizeContainerMarginLp.topMargin = insets.systemWindowInsetTop
-        sizeContainerView.layoutParams = sizeContainerMarginLp
-
         val endLiveInfoView = view.findViewById<View>(endLiveInfoComponentId)
         endLiveInfoView.setPadding(endLiveInfoView.paddingLeft, endLiveInfoView.paddingTop, endLiveInfoView.paddingRight, offset24 + insets.systemWindowInsetBottom)
     }

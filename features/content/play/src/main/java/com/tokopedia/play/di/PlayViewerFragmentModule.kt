@@ -4,6 +4,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import com.tokopedia.play.di.key.FragmentKey
 import com.tokopedia.play.view.fragment.PlayBottomSheetFragment
+import com.tokopedia.play.view.fragment.PlayUserInteractionFragment
 import com.tokopedia.play.view.fragment.PlayVideoFragment
 import com.tokopedia.play.view.fragment.PlayYouTubeFragment
 import com.tokopedia.play.view.fragment.factory.PlayViewerFragmentFactory
@@ -34,4 +35,9 @@ abstract class PlayViewerFragmentModule {
     @IntoMap
     @FragmentKey(PlayVideoFragment::class)
     abstract fun getPlayVideoFragment(fragment: PlayVideoFragment): Fragment
+
+    @Binds
+    @IntoMap
+    @FragmentKey(PlayUserInteractionFragment::class)
+    abstract fun getPlayUserInteractionFragment(fragment: PlayUserInteractionFragment): Fragment
 }
