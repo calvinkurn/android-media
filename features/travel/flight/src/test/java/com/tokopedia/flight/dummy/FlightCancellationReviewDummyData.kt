@@ -52,7 +52,7 @@ val DUMMY_CANCELLATION_WRAPPER =
                                 arrayListOf(
                                         FlightCancellationPassengerModel(
                                                 "12345",
-                                                1,
+                                                0,
                                                 1,
                                                 "Tuan",
                                                 "Test",
@@ -127,7 +127,7 @@ val DUMMY_EMPTY_FILEPATH_CANCELLATION_WRAPPER =
                                 arrayListOf(
                                         FlightCancellationPassengerModel(
                                                 "12345",
-                                                1,
+                                                0,
                                                 1,
                                                 "Tuan",
                                                 "Test",
