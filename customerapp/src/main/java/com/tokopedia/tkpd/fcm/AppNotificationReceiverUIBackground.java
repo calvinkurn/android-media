@@ -48,6 +48,8 @@ import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.Map;
 
+import timber.log.Timber;
+
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_CODE;
 
 
@@ -68,6 +70,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
 
     @Override
     public void notifyReceiverBackgroundMessage(Bundle bundle) {
+        Timber.w("P2#PUSH_NOTIF_UNUSED#AppNotificationReceiverUIBackground;allowed_notif='%s'", isAllowedNotification(bundle));
         if (isAllowedNotification(bundle)) {
             mFCMCacheManager.setCache();
             if (isApplinkNotification(bundle)) {

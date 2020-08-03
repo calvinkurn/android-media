@@ -1,12 +1,13 @@
 package com.tokopedia.groupchat.room.view.viewmodel.pinned
 
-import android.os.Parcel
 import android.os.Parcelable
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import kotlinx.android.parcel.Parcelize
 
 /**
  * @author by yfsx on 14/02/19.
  */
+@Parcelize
 data class StickyComponentViewModel constructor(val componentId : String = "",
                                      val componentType: String = "",
                                      val imageUrl: String = "",
@@ -17,44 +18,8 @@ data class StickyComponentViewModel constructor(val componentId : String = "",
                                      val relatedButton : Int = 0,
                                      var attributeData : String = "") : Visitable<Any>, Parcelable {
 
-    constructor(parcel: Parcel) : this(
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readInt(),
-            parcel.readInt(),
-            parcel.readString()) {
-    }
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(componentId)
-        parcel.writeString(componentType)
-        parcel.writeString(imageUrl)
-        parcel.writeString(title)
-        parcel.writeString(subtitle)
-        parcel.writeString(redirectUrl)
-        parcel.writeInt(stickyTime)
-        parcel.writeInt(relatedButton)
-        parcel.writeString(attributeData)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<StickyComponentViewModel> {
+    companion object {
         const val TYPE_PRODUCT = "product"
-
-        override fun createFromParcel(parcel: Parcel): StickyComponentViewModel {
-            return StickyComponentViewModel(parcel)
-        }
-
-        override fun newArray(size: Int): Array<StickyComponentViewModel?> {
-            return arrayOfNulls(size)
-        }
     }
 
     override fun type(typeFactory: Any?): Int {

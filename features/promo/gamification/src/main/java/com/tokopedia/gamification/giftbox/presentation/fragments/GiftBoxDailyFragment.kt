@@ -76,6 +76,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     var tokenUserState: String = TokenUserState.DEFAULT
     var disableGiftBoxTap = false
     var autoApplyMessage = ""
+    private val HTTP_STATUS_OK = "200"
 
     override fun getLayout() = com.tokopedia.gamification.R.layout.fragment_gift_box_daily
 
@@ -247,8 +248,8 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                         val remindMeCheckEntity = it.data.second
 
                         val giftBoxStatusCode = giftBoxEntity.gamiLuckyHome?.resultStatus?.code
-                        val remindMeCheckStatusCode = giftBoxEntity.gamiLuckyHome?.resultStatus?.code
-                        if (giftBoxStatusCode == 200 && remindMeCheckStatusCode == 200) {
+                        val remindMeCheckStatusCode = remindMeCheckEntity?.gameRemindMeCheck?.resultStatus?.code
+                        if (giftBoxStatusCode == HTTP_STATUS_OK && remindMeCheckStatusCode == HTTP_STATUS_OK) {
 
                             tokenUserState = giftBoxEntity.gamiLuckyHome.tokensUser.state
                             reminder = giftBoxEntity.gamiLuckyHome.reminder
@@ -303,14 +304,14 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                         } else {
                             reminderLayout.visibility = View.GONE
 
-                            if (remindMeCheckStatusCode != 200) {
+                            if (remindMeCheckStatusCode != HTTP_STATUS_OK) {
 
                                 val messageList = remindMeCheckEntity?.gameRemindMeCheck?.resultStatus?.message
                                 if (!messageList.isNullOrEmpty()) {
                                     renderGiftBoxError(messageList[0], "Oke")
                                 }
 
-                            } else if (giftBoxStatusCode != 200) {
+                            } else if (giftBoxStatusCode != HTTP_STATUS_OK) {
                                 val messageList = giftBoxEntity?.gamiLuckyHome?.resultStatus?.message
                                 if (!messageList.isNullOrEmpty()) {
                                     renderGiftBoxError(messageList[0], "Oke")
@@ -342,7 +343,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                         renderOpenBoxError(defaultErrorMessage, "Oke")
                     } else {
                         val code = it.data?.gamiCrack.resultStatus.code
-                        if (code == 200) {
+                        if (code == HTTP_STATUS_OK) {
                             //set data in rewards first and then animate
                             disableGiftBoxTap = true
                             giftBoxRewardEntity = it.data
@@ -407,7 +408,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                     val code = it.data?.gameRemindMe?.resultStatus?.code
                     val reason = it.data?.gameRemindMe?.resultStatus?.reason
 
-                    if (code == 200) {
+                    if (code == HTTP_STATUS_OK) {
                         renderReminderButton(true)
                     } else {
                         val messageList = it.data?.gameRemindMe?.resultStatus?.message
@@ -430,7 +431,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                 LiveDataResult.STATUS.SUCCESS -> {
                     val code = it.data?.tokopointsSetAutoApply?.resultStatus?.code
                     val messageList = it.data?.tokopointsSetAutoApply?.resultStatus?.message
-                    if (code == 200) {
+                    if (code == HTTP_STATUS_OK) {
                         if (autoApplyMessage.isNotEmpty() && context != null) {
                             CustomToast.show(context!!, autoApplyMessage)
                         }

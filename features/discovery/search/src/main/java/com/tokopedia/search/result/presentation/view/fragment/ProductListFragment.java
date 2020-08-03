@@ -133,6 +133,7 @@ import static com.tokopedia.discovery.common.constants.SearchConstant.ViewType.B
 import static com.tokopedia.discovery.common.constants.SearchConstant.ViewType.LIST;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ViewType.SMALL_GRID;
 
+
 public class ProductListFragment
         extends BaseDaggerFragment
         implements ProductListAdapter.OnItemChangeView,
@@ -719,13 +720,32 @@ public class ProductListFragment
     @Override
     public void showNetworkError(final int startRow) {
         if (adapter.isListEmpty()) {
-            NetworkErrorHelper.showEmptyState(getActivity(), getView(), this::reloadData);
+            showNetworkErrorOnEmptyList();
         } else {
-            NetworkErrorHelper.createSnackbarWithAction(getActivity(), () -> {
-                presenter.setStartFrom(startRow);
-                loadMoreProduct(startRow);
-            }).showRetrySnackbar();
+            showNetworkErrorOnLoadMore(startRow);
         }
+    }
+
+    private void showNetworkErrorOnEmptyList() {
+        hideViewOnError();
+
+        NetworkErrorHelper.showEmptyState(getActivity(), getView(), () -> {
+            refreshLayout.setVisibility(View.VISIBLE);
+            reloadData();
+        });
+    }
+
+    private void hideViewOnError() {
+        searchSortFilter.setVisibility(View.GONE);
+        shimmeringView.setVisibility(View.GONE);
+        refreshLayout.setVisibility(View.GONE);
+    }
+
+    private void showNetworkErrorOnLoadMore(int startRow) {
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(), () -> {
+            presenter.setStartFrom(startRow);
+            loadMoreProduct(startRow);
+        }).showRetrySnackbar();
     }
 
     private void generateLoadMoreParameter(int startRow) {
@@ -867,7 +887,7 @@ public class ProductListFragment
     public void onGlobalNavWidgetClicked(GlobalNavViewModel.Item item, String keyword) {
         redirectionStartActivity(item.getApplink(), item.getUrl());
 
-        SearchTracking.trackEventClickGlobalNavWidgetItem(item.getGlobalNavItemAsObjectDataLayer(),
+        SearchTracking.trackEventClickGlobalNavWidgetItem(item.getGlobalNavItemAsObjectDataLayer(item.getName()),
                 keyword, item.getName(), item.getApplink());
     }
 
@@ -1516,7 +1536,7 @@ public class ProductListFragment
     public void sendImpressionGlobalNav(GlobalNavViewModel globalNavViewModel) {
         List<Object> dataLayerList = new ArrayList<>();
         for (GlobalNavViewModel.Item item : globalNavViewModel.getItemList()) {
-            dataLayerList.add(item.getGlobalNavItemAsObjectDataLayer());
+            dataLayerList.add(item.getGlobalNavItemAsObjectDataLayer(item.getApplink()));
         }
         SearchTracking.trackEventImpressionGlobalNavWidgetItem(trackingQueue, dataLayerList, globalNavViewModel.getKeyword());
     }

@@ -12,12 +12,14 @@ object ProfileCompletionQueryConstant {
     const val MUTATION_USER_VALIDATE = "user_validate"
     const val MUTATION_CREATE_PIN = "create_pin"
     const val MUTATION_UPDATE_PIN = "update_pin"
+    const val MUTATION_RESET_PIN = "reset_pin"
     const val QUERY_PROFILE_COMPLETION = "profile_completion"
     const val QUERY_PROFILE_ROLE = "profile_role"
     const val QUERY_CHECK_PIN = "check_pin"
     const val QUERY_GET_STATUS_PIN = "get_status_pin"
     const val QUERY_VALIDATE_PIN = "validate_pin"
     const val QUERY_SKIP_OTP_PIN = "skip_otp_pin"
+
 
     const val PARAM_NAME= "name"
     const val PARAM_GENDER = "gender"
@@ -29,6 +31,7 @@ object ProfileCompletionQueryConstant {
     const val PARAM_PIC_OBJ = "pic_obj"
     const val PARAM_TOKEN = "token"
     const val PARAM_PIN = "pin"
+    const val PARAM_VALIDATE_TOKEN = "validate_token"
     const val PARAM_PIN_CONFIRM = "pinConfirm"
     const val PARAM_PIN_OLD = "pinOld"
     const val PARAM_OTP_TYPE = "otpType"
