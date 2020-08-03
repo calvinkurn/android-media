@@ -44,6 +44,7 @@ import com.tokopedia.logisticdata.data.constant.LogisticConstant
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.oneclickcheckout.R
+import com.tokopedia.oneclickcheckout.common.DEFAULT_LOCAL_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
 import com.tokopedia.oneclickcheckout.common.view.model.preference.ProfilesItemModel
@@ -160,6 +161,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 REQUEST_CODE_PROMO -> onResultFromPromo(resultCode, data)
                 PaymentConstant.REQUEST_CODE -> onResultFromPayment(resultCode)
                 REQUEST_CODE_CREDIT_CARD -> onResultFromCreditCardPicker(resultCode, data)
+                REQUEST_CODE_CREDIT_CARD_ERROR -> refresh()
             }
         }
     }
@@ -739,6 +741,16 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         override fun onChangeCreditCardClicked() {
             startActivityForResult(Intent(context, CreditCardPickerActivity::class.java), REQUEST_CODE_CREDIT_CARD)
         }
+
+        override fun onCreditCardErrorActionClicked() {
+            startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalPayment.PAYMENT_SETTING), REQUEST_CODE_CREDIT_CARD_ERROR)
+        }
+
+        override fun onPaymentErrorActionClicked(link: String) {
+            view?.let {
+                Toaster.make(it, DEFAULT_LOCAL_ERROR_MESSAGE, type = Toaster.TYPE_ERROR)
+            }
+        }
     }
 
     fun showPreferenceListBottomSheet() {
@@ -973,6 +985,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         const val REQUEST_CODE_PROMO = 14
 
         const val REQUEST_CODE_CREDIT_CARD = 15
+        const val REQUEST_CODE_CREDIT_CARD_ERROR = 16
 
         const val QUERY_PRODUCT_ID = "product_id"
 

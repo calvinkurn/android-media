@@ -54,23 +54,32 @@ class InstallmentDetailBottomSheet {
         val context: Context = fragment.activity!!
         SplitCompat.installActivity(context)
         val ll = child.findViewById<LinearLayout>(R.id.main_content)
-        val installments = installmentDetails.filter { it.isEnable }
-        for (i in installments.lastIndex downTo 0) {
+        for (i in installmentDetails.lastIndex downTo 0) {
             val installment = installmentDetails[i]
             val viewInstallmentDetailItem = View.inflate(fragment.context, R.layout.item_installment_detail, null)
+            val tvInstallmentDetailName = viewInstallmentDetailItem.findViewById<Typography>(R.id.tv_installment_detail_name)
+            val tvInstallmentDetailFinalFee = viewInstallmentDetailItem.findViewById<Typography>(R.id.tv_installment_detail_final_fee)
             if (installment.term > 0) {
-                viewInstallmentDetailItem.findViewById<Typography>(R.id.tv_installment_detail_name).text = "${installment.term}x Cicilan 0%"
-                viewInstallmentDetailItem.findViewById<Typography>(R.id.tv_installment_detail_final_fee).text = context.getString(R.string.lbl_installment_payment_monthly, CurrencyFormatUtil.convertPriceValueToIdrFormat(installment.monthlyAmount, false).removeDecimalSuffix())
+                tvInstallmentDetailName.text = "${installment.term}x Cicilan 0%"
+                tvInstallmentDetailFinalFee.text = context.getString(R.string.lbl_installment_payment_monthly, CurrencyFormatUtil.convertPriceValueToIdrFormat(installment.monthlyAmount, false).removeDecimalSuffix())
             } else {
-                viewInstallmentDetailItem.findViewById<Typography>(R.id.tv_installment_detail_name).text = context.getString(R.string.lbl_installment_full_payment)
-                viewInstallmentDetailItem.findViewById<Typography>(R.id.tv_installment_detail_final_fee).text = CurrencyFormatUtil.convertPriceValueToIdrFormat(installment.monthlyAmount, false).removeDecimalSuffix()
+                tvInstallmentDetailName.text = context.getString(R.string.lbl_installment_full_payment)
+                tvInstallmentDetailFinalFee.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(installment.monthlyAmount, false).removeDecimalSuffix()
             }
-            viewInstallmentDetailItem.findViewById<Typography>(R.id.tv_installment_detail_service_fee).text = context.getString(R.string.lbl_installment_payment_fee, CurrencyFormatUtil.convertPriceValueToIdrFormat(installment.fee, false).removeDecimalSuffix())
+            val tvInstallmentDetailServiceFee = viewInstallmentDetailItem.findViewById<Typography>(R.id.tv_installment_detail_service_fee)
             val rbInstallmentDetail = viewInstallmentDetailItem.findViewById<RadioButton>(R.id.rb_installment_detail)
-            rbInstallmentDetail.isChecked = installment.isSelected
-            rbInstallmentDetail.setOnClickListener {
-                listener.onSelectInstallment(installment)
-                dismiss()
+            if (installment.isEnable) {
+                tvInstallmentDetailServiceFee.text = context.getString(R.string.lbl_installment_payment_fee, CurrencyFormatUtil.convertPriceValueToIdrFormat(installment.fee, false).removeDecimalSuffix())
+                rbInstallmentDetail.isChecked = installment.isSelected
+                rbInstallmentDetail.setOnClickListener {
+                    listener.onSelectInstallment(installment)
+                    dismiss()
+                }
+                viewInstallmentDetailItem.alpha = 1.0f
+            } else {
+                tvInstallmentDetailServiceFee.text = context.getString(R.string.lbl_installment_payment_minimum_before_fee, CurrencyFormatUtil.convertPriceValueToIdrFormat(installment.fee, false).removeDecimalSuffix())
+                rbInstallmentDetail.isChecked = installment.isSelected
+                viewInstallmentDetailItem.alpha = 0.5f
             }
             ll.addView(viewInstallmentDetailItem, 0)
         }

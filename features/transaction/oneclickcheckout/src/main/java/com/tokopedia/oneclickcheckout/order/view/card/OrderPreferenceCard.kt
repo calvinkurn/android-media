@@ -275,9 +275,10 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
                     tvPaymentErrorAction?.setOnClickListener {
                         if (payment.hasCreditCardOption()) {
                             listener.onChangeCreditCardClicked()
+                        } else if (payment.hasNoCreditCardOption()) {
+                            listener.onCreditCardErrorActionClicked()
                         } else {
-                            listener.onChangeCreditCardClicked()
-//                            listener.onPaymentErrorActionClicked(payment.errorMessage.button.link)
+                            listener.onPaymentErrorActionClicked(payment.errorMessage.button.link)
                         }
                     }
                 } else {
@@ -459,5 +460,9 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
         fun onInstallmentDetailChange(selectedInstallmentTerm: OrderPaymentInstallmentTerm)
 
         fun onChangeCreditCardClicked()
+
+        fun onCreditCardErrorActionClicked()
+
+        fun onPaymentErrorActionClicked(link: String)
     }
 }

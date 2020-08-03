@@ -85,6 +85,7 @@
     <string name="lbl_see_installment_terms_and_condition">Lihat Syarat &amp; Ketentuan</string>
     <string name="lbl_installment_full_payment">Bayar Penuh</string>
     <string name="lbl_installment_payment_fee">+ Biaya Layanan %1$s</string>
+    <string name="lbl_installment_payment_minimum_before_fee">Min. %1$s sebelum biaya layanan</string>
     <string name="lbl_installment_payment_monthly">%1$s/bulan</string>
     <string name="lbl_choose_installment_type">Pilih Jenis Pembayaran</string>
 </resources>
