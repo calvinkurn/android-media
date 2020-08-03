@@ -123,10 +123,12 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
                                 hotelRoomListPageModel, it.data, ROOM_LIST_SCREEN_NAME)
                     }
                     firstTime = false
+
                     if (!roomListViewModel.isFilter) {
                         roomListViewModel.roomList = it.data
                         showFilterRecyclerView(it.data.size > 0)
                     } else showFilterRecyclerView(true)
+
                     clearAllData()
                     roomList = it.data
                     renderList(roomList, false)
@@ -321,6 +323,9 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
     }
 
     override fun onChipClickListener(string: String, isSelected: Boolean) {
+        clearAllData()
+        showLoading()
+
         when (string) {
             getString(R.string.hotel_room_list_filter_free_breakfast) -> {
                 roomListViewModel.clickFilter(clickFreeBreakfast = true)

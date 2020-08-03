@@ -11,6 +11,9 @@ import com.tokopedia.hotel.roomlist.usecase.GetHotelRoomListUseCase
 import com.tokopedia.hotel.roomlist.usecase.HotelAddToCartUseCase
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -43,9 +46,12 @@ class HotelRoomListViewModel @Inject constructor(
     }
 
     fun clickFilter(clickFreeBreakfast: Boolean = false, clickFreeCancelable: Boolean = false) {
-        if (clickFreeBreakfast) filterFreeBreakfast = !filterFreeBreakfast
-        if (clickFreeCancelable) filterFreeCancelable = !filterFreeCancelable
-        doFilter()
+        launch {
+            delay(500)
+            if (clickFreeBreakfast) filterFreeBreakfast = !filterFreeBreakfast
+            if (clickFreeCancelable) filterFreeCancelable = !filterFreeCancelable
+            doFilter()
+        }
     }
 
     private fun doFilter() {
