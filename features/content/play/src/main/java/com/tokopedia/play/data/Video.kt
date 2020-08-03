@@ -7,31 +7,22 @@ import com.google.gson.annotations.SerializedName
 /**
  * Created by mzennis on 2019-12-05.
  */
-data class VideoStream(
+data class Video(
         @SerializedName("video_stream_id")
         val id: String = "", // vertical or horizontal
         @SerializedName("orientation")
         val orientation: String = "", // vertical or horizontal
         @SerializedName("type")
-        val type: String = "live", // youtube / live / live+playback / vod / playback+live
-        @SerializedName("is_live")
-        val isLive: Boolean = false,
-        @SerializedName("config")
-        val config: Config = Config(),
+        val type: String = "", // youtube / live / live+playback / vod / playback+live
+        @SerializedName("cover_url")
+        val coverUrl: String = "",
+        @SerializedName("stream_source")
+        val streamSource: String = "",
+        @SerializedName("autoplay")
+        val autoplay: Boolean = false,
         @SerializedName("buffer_control")
         val bufferControl: BufferControl? = BufferControl()
 ) {
-
-    data class Config(
-            @SerializedName("youtube_id")
-            val youtubeId: String = "", // type: youtube
-            @SerializedName("stream_url")
-            val streamUrl: String = "", // type: vod, live
-            @SerializedName("livestream_id")
-            val liveStreamId: String = "", // type: live
-            @SerializedName("is_auto_play")
-            val isAutoPlay: Boolean = false
-    )
 
     data class BufferControl(
             @SerializedName("max_buffer_in_second")

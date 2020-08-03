@@ -21,11 +21,11 @@ object PlayUiMapper {
     ) = PlayCompleteInfoUiModel(
             channelInfo = mapChannelInfo(channel),
             videoStream = mapVideoStream(
-                    channel.videoStream,
+                    channel.video,
                     channel.isActive,
                     channel.backgroundUrl),
             videoPlayer = mapVideoPlayer(
-                    channel.videoStream,
+                    channel.video,
                     exoPlayer
             ),
             pinnedMessage = mapPinnedMessage(
@@ -82,10 +82,10 @@ object PlayUiMapper {
     ) else null
 
     // TODO("testing")
-    fun mapVideoStream(videoStream: VideoStream, isActive: Boolean, backgroundUrl: String) = VideoStreamUiModel(
-            uriString = videoStream.config.streamUrl,
-            channelType = if (videoStream.isLive) PlayChannelType.Live else PlayChannelType.VOD,
-            orientation = VideoOrientation.getByValue(videoStream.orientation),
+    fun mapVideoStream(video: Video, isActive: Boolean, backgroundUrl: String) = VideoStreamUiModel(
+            uriString = video.config.streamUrl,
+            channelType = if (video.isLive) PlayChannelType.Live else PlayChannelType.VOD,
+            orientation = VideoOrientation.getByValue(video.orientation),
             backgroundUrl = backgroundUrl,
 //            channelType = PlayChannelType.Live,
 //            orientation = VideoOrientation.Vertical,
@@ -93,10 +93,10 @@ object PlayUiMapper {
             isActive = isActive
     )
 
-    private fun mapVideoPlayer(videoStream: VideoStream, exoPlayer: ExoPlayer) = when (videoStream.type) {
+    private fun mapVideoPlayer(video: Video, exoPlayer: ExoPlayer) = when (video.type) {
         "live", "vod" -> General(exoPlayer)
 //        "live", "vod" -> YouTube("HrjRj4uQQ1o")
-        "youtube" -> YouTube(videoStream.config.youtubeId)
+        "youtube" -> YouTube(video.config.youtubeId)
         else -> Unknown
     }
 

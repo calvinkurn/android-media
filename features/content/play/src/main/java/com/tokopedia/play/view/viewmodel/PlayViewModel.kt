@@ -37,7 +37,7 @@ import javax.inject.Inject
  */
 class PlayViewModel @Inject constructor(
         private val playVideoManager: PlayVideoManager,
-        private val getChannelInfoUseCase: GetChannelInfoUseCase,
+        private val getChannelInfoUseCase: GetChannelDetailUseCase,
         private val getPartnerInfoUseCase: GetPartnerInfoUseCase,
         private val getTotalLikeUseCase: GetTotalLikeUseCase,
         private val getIsLikeUseCase: GetIsLikeUseCase,
@@ -359,16 +359,10 @@ class PlayViewModel @Inject constructor(
 
     private fun initiateVideo(channel: Channel) {
         startVideoWithUrlString(
-                channel.videoStream.config.streamUrl,
-                bufferControl = channel.videoStream.bufferControl?.let { mapBufferControl(it) }
+                channel.video.config.streamUrl,
+                bufferControl = channel.video.bufferControl?.let { mapBufferControl(it) }
                         ?: PlayBufferControl()
         )
-//        startVideoWithUrlString(
-//                "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
-////                "https://assets.mixkit.co/videos/preview/mixkit-womans-feet-splashing-in-the-pool-1261-large.mp4",
-//                bufferControl = channel.videoStream.bufferControl?.let { mapBufferControl(it) }
-//                        ?: PlayBufferControl()
-//        )
         playVideoManager.setRepeatMode(false)
     }
 
@@ -394,14 +388,14 @@ class PlayViewModel @Inject constructor(
         fun getChannelInfoResponse(channelId: String){
             channelInfoJob = scope.launchCatchError(block = {
                 val channel = withContext(dispatchers.io) {
-                    getChannelInfoUseCase.channelId = channelId
+                    getChannelInfoUseCase.params = GetChannelDetailUseCase.createParams(channelId)
                     return@withContext getChannelInfoUseCase.executeOnBackground()
                 }
 
                 launch { getTotalLikes(channel.contentId, channel.contentType, channel.likeType) }
                 launch { getIsLike(channel.contentId, channel.contentType) }
-                launch { getBadgeCart(channel.isShowCart) }
-                launch { if (channel.isShowProductTagging) getProductTagItems(channel) }
+                launch { getBadgeCart(channel.configuration.showCart) }
+                launch { if (channel.configuration.showPinnedProduct) getProductTagItems(channel) }
 
                 startWebSocket(channelId, channel.gcToken, channel.settings)
 
@@ -665,7 +659,7 @@ class PlayViewModel @Inject constructor(
         }
     }
 
-    private fun mapBufferControl(bufferControl: VideoStream.BufferControl) = PlayBufferControl(
+    private fun mapBufferControl(bufferControl: Video.BufferControl) = PlayBufferControl(
             minBufferMs = bufferControl.minBufferingSecond * MS_PER_SECOND,
             maxBufferMs = bufferControl.maxBufferingSecond * MS_PER_SECOND,
             bufferForPlaybackMs = bufferControl.bufferForPlayback * MS_PER_SECOND,

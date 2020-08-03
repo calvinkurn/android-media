@@ -117,12 +117,12 @@ class PlayViewModelTest {
     @Test
     fun `test observe video stream`() {
         val expectedModel = modelBuilder.buildVideoStreamUiModel(
-                uriString = mockChannel.videoStream.config.streamUrl,
-                channelType = if (mockChannel.videoStream.isLive &&
-                        mockChannel.videoStream.type.equals(PlayChannelType.Live.value, true))
+                uriString = mockChannel.video.config.streamUrl,
+                channelType = if (mockChannel.video.isLive &&
+                        mockChannel.video.type.equals(PlayChannelType.Live.value, true))
                     PlayChannelType.Live else PlayChannelType.VOD,
                 isActive = mockChannel.isActive,
-                orientation = VideoOrientation.getByValue(mockChannel.videoStream.orientation),
+                orientation = VideoOrientation.getByValue(mockChannel.video.orientation),
                 backgroundUrl = mockChannel.backgroundUrl
         )
 
@@ -660,7 +660,7 @@ class PlayViewModelTest {
     @Test
     fun `when channel info is success, then channel type should match with channel_info's channel type`() {
         val expectedResult =
-                if (mockChannel.videoStream.isLive)
+                if (mockChannel.video.isLive)
                     PlayChannelType.Live
                 else
                     PlayChannelType.VOD
@@ -769,7 +769,7 @@ class PlayViewModelTest {
     @Test
     fun `given channel info is success, when channel type is live, then state_helper's channel type should be live`() {
         coEvery { mockGetChannelInfoUseCase.executeOnBackground() } returns mockChannel.copy(
-                videoStream = mockChannel.videoStream.copy(
+                video = mockChannel.video.copy(
                         isLive = PlayChannelType.Live.isLive,
                         type = PlayChannelType.Live.value
                 )
@@ -787,7 +787,7 @@ class PlayViewModelTest {
     @Test
     fun `given channel info is success, when channel type is vod, then state_helper's channel type should be vod`() {
         coEvery { mockGetChannelInfoUseCase.executeOnBackground() } returns mockChannel.copy(
-                videoStream = mockChannel.videoStream.copy(
+                video = mockChannel.video.copy(
                         isLive = PlayChannelType.VOD.isLive,
                         type = PlayChannelType.VOD.value
                 )
@@ -827,7 +827,7 @@ class PlayViewModelTest {
     @Test
     fun `given channel is live, when keyboard is shown, then state_helper's keyboard is shown`() {
         coEvery { mockGetChannelInfoUseCase.executeOnBackground() } returns mockChannel.copy(
-                videoStream = mockChannel.videoStream.copy(
+                video = mockChannel.video.copy(
                         isLive = PlayChannelType.Live.isLive,
                         type = PlayChannelType.Live.value
                 )
@@ -846,7 +846,7 @@ class PlayViewModelTest {
     @Test
     fun `given channel is vod, when keyboard is shown, then state_helper's keyboard is shown`() {
         coEvery { mockGetChannelInfoUseCase.executeOnBackground() } returns mockChannel.copy(
-                videoStream = mockChannel.videoStream.copy(
+                video = mockChannel.video.copy(
                         isLive = PlayChannelType.VOD.isLive,
                         type = PlayChannelType.VOD.value
                 )
@@ -923,7 +923,7 @@ class PlayViewModelTest {
     @Test
     fun `given keyboard is shown, when back button is clicked, then keyboard should be hidden`() {
         coEvery { mockGetChannelInfoUseCase.executeOnBackground() } returns mockChannel.copy(
-                videoStream = mockChannel.videoStream.copy(
+                video = mockChannel.video.copy(
                         isLive = PlayChannelType.Live.isLive,
                         type = PlayChannelType.Live.value
                 )
@@ -1009,7 +1009,7 @@ class PlayViewModelTest {
     @Test
     fun `when hide all insets and keyboard is handled, keyboard should be hidden but same with previous state`() {
         coEvery { mockGetChannelInfoUseCase.executeOnBackground() } returns mockChannel.copy(
-                videoStream = mockChannel.videoStream.copy(
+                video = mockChannel.video.copy(
                         isLive = PlayChannelType.Live.isLive,
                         type = PlayChannelType.Live.value
                 )
@@ -1030,7 +1030,7 @@ class PlayViewModelTest {
     @Test
     fun `when hide all insets and keyboard is not handled, keyboard should be hidden with different previous state`() {
         coEvery { mockGetChannelInfoUseCase.executeOnBackground() } returns mockChannel.copy(
-                videoStream = mockChannel.videoStream.copy(
+                video = mockChannel.video.copy(
                         isLive = PlayChannelType.Live.isLive,
                         type = PlayChannelType.Live.value
                 )
