@@ -98,6 +98,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.BaseSimpleWebViewActivity
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import javax.inject.Inject
+import kotlin.math.abs
 
 /**
  * @author : Steven 29/11/18
@@ -464,7 +465,18 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
 
     private fun onSuccessGetShopFollowingStatus(isFollow: Boolean) {
         getViewState().isShopFollowed = isFollow
-        adapter.addBroadcastSpamHandler(isFollow, presenter.isInTheMiddleOfThePage())
+        addBroadCastSpamHandler(isFollow)
+    }
+
+    private fun addBroadCastSpamHandler(isFollow: Boolean) {
+        val broadCastHandlerPosition = adapter.addBroadcastSpamHandler(isFollow, presenter.isInTheMiddleOfThePage())
+        if (broadCastHandlerPosition != RecyclerView.NO_POSITION) {
+            val firstVisible = rvLayoutManager?.findFirstCompletelyVisibleItemPosition() ?: return
+            val threshold = 1
+            if (abs(firstVisible - broadCastHandlerPosition) <= threshold) {
+                rv?.smoothScrollToPosition(broadCastHandlerPosition)
+            }
+        }
     }
 
     private fun onToolbarClicked(): () -> Unit {

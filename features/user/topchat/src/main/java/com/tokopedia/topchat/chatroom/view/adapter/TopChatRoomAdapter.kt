@@ -5,6 +5,7 @@ import android.os.Parcelable
 import android.view.ViewGroup
 import androidx.collection.ArrayMap
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -194,14 +195,17 @@ class TopChatRoomAdapter(
         notifyDataSetChanged()
     }
 
-    fun addBroadcastSpamHandler(isFollow: Boolean, isMiddlePage: Boolean) {
-        if (isFollow || isMiddlePage || visitables.isEmpty()) return
+    fun addBroadcastSpamHandler(isFollow: Boolean, isMiddlePage: Boolean): Int {
+        var insertedPosition = RecyclerView.NO_POSITION
+        if (isFollow || isMiddlePage || visitables.isEmpty()) return insertedPosition
         val latestMessage = visitables.first()
         if (latestMessage is MessageViewModel && latestMessage.isFromBroadCast() && !latestMessage.isSender) {
             val spamHandlerModel = createBroadcastSpamHandlerViewModel()
-            visitables.add(0, spamHandlerModel)
-            notifyItemInserted(0)
+            insertedPosition = 0
+            visitables.add(insertedPosition, spamHandlerModel)
+            notifyItemInserted(insertedPosition)
         }
+        return insertedPosition
     }
 
     private fun createBroadcastSpamHandlerViewModel(): Visitable<*> {
