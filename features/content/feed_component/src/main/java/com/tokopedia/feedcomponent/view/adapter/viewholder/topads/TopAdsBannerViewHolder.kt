@@ -10,8 +10,6 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.listener.TopAdsImageVieWApiResponseListener
-import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
-import com.tokopedia.topads.sdk.listener.TopAdsImageViewImpressionListener
 import com.tokopedia.topads.sdk.widget.TopAdsImageView
 import kotlinx.android.synthetic.main.feed_item_topads_banner.view.*
 
@@ -43,18 +41,6 @@ class TopAdsBannerViewHolder(view: View,
 
             }
 
-        })
-
-        topAdsImageView.setTopAdsImageViewImpression(object : TopAdsImageViewImpressionListener {
-            override fun onTopAdsImageViewImpression(viewUrl: String) {
-
-            }
-        })
-
-        topAdsImageView.setTopAdsImageViewClick(object : TopAdsImageViewClickListener {
-            override fun onTopAdsImageViewClicked(applink: String?) {
-
-            }
         })
     }
 
