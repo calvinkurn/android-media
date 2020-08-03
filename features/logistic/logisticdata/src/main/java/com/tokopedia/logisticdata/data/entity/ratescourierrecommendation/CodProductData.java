@@ -20,6 +20,13 @@ public class CodProductData {
     @SerializedName("formatted_price")
     @Expose
     private String formattedPrice;
+    @SerializedName("tnc_text")
+    @Expose
+    private String tncText;
+    @SerializedName("tnc_link")
+    @Expose
+    private String tncLink;
+
 
     public Integer getIsCodAvailable() {
         return isCodAvailable;
@@ -51,5 +58,21 @@ public class CodProductData {
 
     public void setFormattedPrice(String formattedPrice) {
         this.formattedPrice = formattedPrice;
+    }
+
+    public String getTncText() {
+        return tncText;
+    }
+
+    public void setTncText(String tncText) {
+        this.tncText = tncText;
+    }
+
+    public String getTncLink() {
+        return tncLink;
+    }
+
+    public void setTncLink(String tncLink) {
+        this.tncLink = tncLink;
     }
 }
