@@ -48,6 +48,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.common.util.ProductManageListErrorHandler
+import com.tokopedia.product.manage.feature.campaignstock.ui.activity.CampaignStockActivity
 import com.tokopedia.product.manage.feature.cashback.data.SetCashbackResult
 import com.tokopedia.product.manage.feature.cashback.presentation.activity.ProductManageSetCashbackActivity
 import com.tokopedia.product.manage.feature.cashback.presentation.fragment.ProductManageSetCashbackFragment.Companion.EXTRA_CASHBACK_SHOP_ID
@@ -65,10 +66,15 @@ import com.tokopedia.product.manage.feature.filter.presentation.fragment.Product
 import com.tokopedia.product.manage.feature.list.analytics.ProductManageTracking
 import com.tokopedia.product.manage.feature.list.constant.ProductManageAnalytics.MP_PRODUCT_MANAGE
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant
+import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_PRODUCT_ID
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_PRODUCT_NAME
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_THRESHOLD
+import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_UPDATED_STATUS
+import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_UPDATED_STOCK
+import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_UPDATE_MESSAGE
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.INSTAGRAM_SELECT_REQUEST_CODE
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.REQUEST_CODE_ADD_PRODUCT
+import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.REQUEST_CODE_CAMPAIGN_STOCK
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.REQUEST_CODE_EDIT_PRODUCT
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.REQUEST_CODE_STOCK_REMINDER
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.SET_CASHBACK_REQUEST_CODE
@@ -1110,8 +1116,16 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     override fun onClickEditStockButton(product: ProductViewModel) {
-        val editStockBottomSheet = context?.let { ProductManageQuickEditStockFragment.createInstance(product, this) }
-        editStockBottomSheet?.show(childFragmentManager, BOTTOM_SHEET_TAG)
+        if (product.hasStockReserved) {
+            context?.run {
+                startActivityForResult(
+                        CampaignStockActivity.createIntent(this, userSession.shopId, arrayOf(product.id)),
+                        REQUEST_CODE_CAMPAIGN_STOCK)
+            }
+        } else {
+            val editStockBottomSheet = context?.let { ProductManageQuickEditStockFragment.createInstance(product, this) }
+            editStockBottomSheet?.show(childFragmentManager, BOTTOM_SHEET_TAG)
+        }
         ProductManageTracking.eventEditStock(product.id)
     }
 
@@ -1124,10 +1138,18 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     override fun onClickEditVariantStockButton(product: ProductViewModel) {
-        val editVariantStockBottomSheet = QuickEditVariantStockBottomSheet.createInstance(product.id) { result ->
-            viewModel.editVariantsStock(result)
+        if (product.hasStockReserved) {
+            context?.run {
+                startActivityForResult(
+                        CampaignStockActivity.createIntent(this, userSession.shopId, arrayOf(product.id)),
+                        REQUEST_CODE_CAMPAIGN_STOCK)
+            }
+        } else {
+            val editVariantStockBottomSheet = QuickEditVariantStockBottomSheet.createInstance(product.id) { result ->
+                viewModel.editVariantsStock(result)
+            }
+            editVariantStockBottomSheet.show(childFragmentManager, QuickEditVariantStockBottomSheet.TAG)
         }
-        editVariantStockBottomSheet.show(childFragmentManager, QuickEditVariantStockBottomSheet.TAG)
         ProductManageTracking.eventClickEditStockVariant()
     }
 
@@ -1498,6 +1520,42 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                         }
                     }
                 }
+                REQUEST_CODE_CAMPAIGN_STOCK ->
+                    when(resultCode) {
+                        Activity.RESULT_OK -> {
+                            val productId = it.getStringExtra(EXTRA_PRODUCT_ID)
+                            val productName = it.getStringExtra(EXTRA_PRODUCT_NAME)
+                            val stock = it.getIntExtra(EXTRA_UPDATED_STOCK, 0)
+                            val status = valueOf(it.getStringExtra(EXTRA_UPDATED_STATUS))
+
+                            productManageListAdapter.updateStock(productId, stock, status)
+
+                            filterTab?.getSelectedFilter()?.let { productStatus ->
+                                filterProductListByStatus(productStatus)
+                                renderMultiSelectProduct()
+                            }
+
+                            getFiltersTab(withDelay = true)
+
+                            val successMessage = getString(R.string.product_manage_campaign_stock_success_toast, productName)
+                            Toaster.build(
+                                    coordinatorLayout,
+                                    successMessage,
+                                    Snackbar.LENGTH_SHORT,
+                                    Toaster.TYPE_NORMAL)
+                                    .show()
+                        }
+                        Activity.RESULT_CANCELED -> {
+                            val errorMessage = it.getStringExtra(EXTRA_UPDATE_MESSAGE) ?: getString(R.string.product_manage_campaign_stock_error_toast)
+                            Toaster.build(
+                                    coordinatorLayout,
+                                    errorMessage,
+                                    Snackbar.LENGTH_SHORT,
+                                    Toaster.TYPE_ERROR)
+                                    .show()
+                        }
+                        else -> {}
+                    }
                 else -> super.onActivityResult(requestCode, resultCode, it)
             }
         }
