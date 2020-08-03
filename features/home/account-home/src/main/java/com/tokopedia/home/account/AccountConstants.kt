@@ -22,7 +22,6 @@ object AccountConstants {
         const val SEE_ALL = "lihat_semua"
         const val TRAIN_ORDER_LIST = "train_order_list"
         const val TOPADS = "topads"
-        const val FEATURED_PRODUCT = "featured_product"
     }
 
     object Analytics {
