@@ -91,7 +91,8 @@ class PlayUserInteractionFragment @Inject constructor(
         QuickReplyViewComponent.Listener,
         PinnedViewComponent.Listener,
         VideoSettingsViewComponent.Listener,
-        ImmersiveBoxViewComponent.Listener
+        ImmersiveBoxViewComponent.Listener,
+        PlayButtonViewComponent.Listener
 {
 
     companion object {
@@ -123,6 +124,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private val pinnedView by viewComponent { PinnedViewComponent(it, R.id.view_pinned, this) }
     private val videoSettingsView by viewComponent { VideoSettingsViewComponent(it, R.id.view_video_settings, this) }
     private val immersiveBoxView by viewComponent { ImmersiveBoxViewComponent(it, R.id.v_immersive_box, this) }
+    private val playButtonView by viewComponent { PlayButtonViewComponent(it, R.id.view_play_button, this) }
 
     private lateinit var playViewModel: PlayViewModel
     private lateinit var viewModel: PlayInteractionViewModel
@@ -361,6 +363,13 @@ class PlayUserInteractionFragment @Inject constructor(
         triggerImmersive(currentAlpha == VISIBLE_ALPHA)
     }
 
+    /**
+     * PlayButton View Component Listener
+     */
+    override fun onButtonClicked(view: PlayButtonViewComponent) {
+        playViewModel.startCurrentVideo()
+    }
+
     private fun setupInsets(view: View) {
         spaceSize.rootView.doOnApplyWindowInsets { v, insets, _, margin ->
             val marginLayoutParams = v.layoutParams as ViewGroup.MarginLayoutParams
@@ -424,6 +433,19 @@ class PlayUserInteractionFragment @Inject constructor(
                                 ScreenStateEvent::class.java,
                                 ScreenStateEvent.VideoPropertyChanged(it, playViewModel.getStateHelper(orientation))
                         )
+            }
+
+            /**
+             * New
+             */
+            if (!playViewModel.channelType.isVod) {
+                playButtonView.hide()
+                return@DistinctObserver
+            }
+            when (it.state) {
+                PlayVideoState.Pause -> playButtonView.showPlayButton()
+                PlayVideoState.Ended -> playButtonView.showRepeatButton()
+                else -> playButtonView.hide()
             }
         })
     }
@@ -648,6 +670,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 if(it.isFreeze || it.isBanned) chatListView.hide()
                 if(it.isFreeze || it.isBanned) pinnedView.hide()
                 if(it.isFreeze || it.isBanned) immersiveBoxView.hide()
+                if(it.isFreeze || it.isBanned) playButtonView.hide()
             }
         })
     }
@@ -749,18 +772,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     override fun onInitPlayButton(container: ViewGroup): Int {
-        val playButtonComponent = PlayButtonComponent(container, EventBusFactory.get(viewLifecycleOwner), scope, dispatchers)
-
-        scope.launch {
-            playButtonComponent.getUserInteractionEvents()
-                    .collect {
-                        when (it) {
-                            PlayButtonInteractionEvent.PlayClicked -> playViewModel.startCurrentVideo()
-                        }
-                    }
-        }
-
-        return playButtonComponent.getContainerId()
+        throw IllegalStateException("No Init")
     }
 
     override fun onInitImmersiveBox(container: ViewGroup): Int {

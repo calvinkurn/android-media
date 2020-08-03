@@ -6,8 +6,6 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
 import com.tokopedia.play.component.UIView
@@ -21,7 +19,7 @@ class PlayButtonView(
 ) : UIView(container) {
 
     private val view: View =
-            LayoutInflater.from(container.context).inflate(R.layout.view_play_button, container, true)
+            LayoutInflater.from(container.context).inflate(R.layout.view_mini_play_button, container, true)
                     .findViewById(R.id.cl_play_control_round)
 
     private val ivPlay = view.findViewById<AppCompatImageView>(R.id.iv_play)

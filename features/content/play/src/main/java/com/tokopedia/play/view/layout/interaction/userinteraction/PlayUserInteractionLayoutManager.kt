@@ -40,7 +40,7 @@ class PlayUserInteractionLayoutManager(
 //    @IdRes private val statsInfoComponentId: Int = viewInitializer.onInitStatsInfo(container)
 //    @IdRes private val quickReplyComponentId: Int = viewInitializer.onInitQuickReply(container)
     //play button should be on top of other component so it can be clicked
-    @IdRes private val playButtonComponentId: Int = viewInitializer.onInitPlayButton(container)
+//    @IdRes private val playButtonComponentId: Int = viewInitializer.onInitPlayButton(container)
 
     private val toolbarView: View = container.findViewById(R.id.view_toolbar)
     private val statsInfoView: View = container.findViewById(R.id.view_stats_info)
@@ -56,7 +56,6 @@ class PlayUserInteractionLayoutManager(
     private val offset0 = container.resources.getDimensionPixelOffset(com.tokopedia.play.R.dimen.play_no_offset)
 
     override fun layoutView(view: View) {
-        layoutPlayButton(container = view, videoOrientation = videoOrientation, id = playButtonComponentId, immersiveBoxComponentId = R.id.v_immersive_box)
         layoutEndLiveComponent(container = view, id = endLiveInfoComponentId)
     }
 
@@ -141,7 +140,7 @@ class PlayUserInteractionLayoutManager(
     override fun onVideoOrientationChanged(container: View, videoOrientation: VideoOrientation) {
         if (this.videoOrientation != videoOrientation) {
             layoutImmersiveBox(container = container, videoOrientation = videoOrientation, id = R.id.v_immersive_box, pinnedComponentId = R.id.view_pinned, statsInfoComponentId = R.id.view_stats_info)
-            layoutPlayButton(container = container, videoOrientation = videoOrientation, id = playButtonComponentId, immersiveBoxComponentId = R.id.v_immersive_box)
+            layoutPlayButton(container = container, videoOrientation = videoOrientation, id = R.id.view_play_button, immersiveBoxComponentId = R.id.v_immersive_box)
         }
     }
 
