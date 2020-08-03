@@ -2,12 +2,12 @@ package com.tokopedia.review.feature.createreputation.presentation.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.review.feature.createreputation.model.ImageReviewViewModel
+import com.tokopedia.review.feature.createreputation.model.ImageReviewUiModel
 import com.tokopedia.review.feature.createreputation.presentation.listener.ImageClickListener
 import kotlinx.android.synthetic.main.item_image_chooser_review.view.*
 
-class ImageReviewViewHolder(val view: View, private val imageClickListener: ImageClickListener?) : BaseImageReviewViewHolder<ImageReviewViewModel>(view) {
-    override fun bind(element: ImageReviewViewModel) {
+class ImageReviewViewHolder(val view: View, private val imageClickListener: ImageClickListener?) : BaseImageReviewViewHolder<ImageReviewUiModel>(view) {
+    override fun bind(element: ImageReviewUiModel) {
         view.setOnClickListener {
             imageClickListener?.onAddImageClick()
         }

@@ -1,3 +1,3 @@
 package com.tokopedia.tkpd.tkpdreputation.createreputation.model
 
-interface BaseImageReviewUiModel
+interface BaseImageReviewViewModel

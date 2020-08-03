@@ -8,6 +8,7 @@ import com.tokopedia.review.feature.createreputation.domain.usecase.GetProductIn
 import com.tokopedia.review.feature.createreputation.domain.usecase.GetProductReputationForm
 import com.tokopedia.review.feature.createreputation.domain.usecase.ProductrevSubmitReviewUseCase
 import com.tokopedia.review.feature.createreputation.presentation.viewmodel.CreateReviewViewModel
+import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
 import org.junit.Before
@@ -30,6 +31,9 @@ abstract class CreateReviewViewModelTestFixture {
     @RelaxedMockK
     lateinit var uploaderUseCase: UploaderUseCase
 
+    @RelaxedMockK
+    lateinit var userSession: UserSessionInterface
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
@@ -38,6 +42,6 @@ abstract class CreateReviewViewModelTestFixture {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        viewModel = CreateReviewViewModel(TestCoroutineDispatchers, getProductReputationForm, getProductIncentiveOvo, getReviewDetailUseCase, submitReviewUseCase, uploaderUseCase)
+        viewModel = CreateReviewViewModel(TestCoroutineDispatchers, getProductReputationForm, getProductIncentiveOvo, getReviewDetailUseCase, submitReviewUseCase, uploaderUseCase, userSession)
     }
 }

@@ -29,17 +29,15 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
                                                 private val getProductIncentiveOvo: GetProductIncentiveOvo,
                                                 private val getReviewDetailUseCase: ProductrevGetReviewDetailUseCase,
                                                 private val submitReviewUseCase: ProductrevSubmitReviewUseCase,
-                                                private val uploaderUseCase: UploaderUseCase
+                                                private val uploaderUseCase: UploaderUseCase,
+                                                private val userSessionInterface: UserSessionInterface
 ) : BaseViewModel(coroutineDispatcherProvider.io()) {
 
     companion object {
-        private const val CREATE_REVIEW_SOURCE_ID = "bjFkPX"
+        const val CREATE_REVIEW_SOURCE_ID = "bjFkPX"
     }
 
-    @Inject
-    lateinit var userSessionInterface: UserSessionInterface
-
-    private var imageData: MutableList<BaseImageReviewViewModel> = mutableListOf()
+    private var imageData: MutableList<BaseImageReviewUiModel> = mutableListOf()
 
     private var reputationDataForm = MutableLiveData<Result<ProductRevGetForm>>()
     val getReputationDataForm: LiveData<Result<ProductRevGetForm>>
@@ -78,24 +76,24 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
         }
     }
 
-    fun getImageList(selectedImage: ArrayList<String>): MutableList<BaseImageReviewViewModel> {
+    fun getImageList(selectedImage: ArrayList<String>): MutableList<BaseImageReviewUiModel> {
         when (selectedImage.size) {
             5 -> {
                 imageData = (selectedImage.map {
-                    ImageReviewViewModel(it)
+                    ImageReviewUiModel(it)
                 }).toMutableList()
             }
             else -> {
                 imageData.addAll(selectedImage.map {
-                    ImageReviewViewModel(it)
+                    ImageReviewUiModel(it)
                 })
-                imageData.add(DefaultImageReviewModel())
+                imageData.add(DefaultImageReviewUiModel())
             }
         }
         return imageData
     }
 
-    fun removeImage(image: BaseImageReviewViewModel) {
+    fun removeImage(image: BaseImageReviewUiModel) {
         imageData.remove(image)
     }
 
@@ -106,7 +104,7 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
     fun getSelectedImagesUrl(): ArrayList<String> {
         val result = arrayListOf<String>()
         imageData.forEach {
-            val imageUrl = (it as? ImageReviewViewModel)?.imageUrl
+            val imageUrl = (it as? ImageReviewUiModel)?.imageUrl
             if(imageUrl?.isNotEmpty() == true) {
                 result.add(imageUrl)
             }
@@ -134,6 +132,10 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
         }) {
             _incentiveOvo.postValue(CoroutineFail(it))
         }
+    }
+
+    fun getUserName(): String {
+        return userSessionInterface.name
     }
 
     private fun sendReviewWithoutImage(reputationId: Int, productId: Int, shopId: Int, reputationScore: Int, rating: Int,

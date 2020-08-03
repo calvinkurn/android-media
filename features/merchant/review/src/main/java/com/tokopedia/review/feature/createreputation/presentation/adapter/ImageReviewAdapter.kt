@@ -4,9 +4,9 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.review.R
-import com.tokopedia.review.feature.createreputation.model.BaseImageReviewViewModel
-import com.tokopedia.review.feature.createreputation.model.DefaultImageReviewModel
-import com.tokopedia.review.feature.createreputation.model.ImageReviewViewModel
+import com.tokopedia.review.feature.createreputation.model.BaseImageReviewUiModel
+import com.tokopedia.review.feature.createreputation.model.DefaultImageReviewUiModel
+import com.tokopedia.review.feature.createreputation.model.ImageReviewUiModel
 import com.tokopedia.review.feature.createreputation.presentation.listener.ImageClickListener
 import com.tokopedia.review.feature.createreputation.presentation.viewholder.BaseImageReviewViewHolder
 import com.tokopedia.review.feature.createreputation.presentation.viewholder.DefaultImageReviewViewHolder
@@ -19,14 +19,14 @@ class ImageReviewAdapter(private val imageClickListener: ImageClickListener) : R
         const val TYPE_IMAGE = 2
     }
 
-    private var imageReviewData: MutableList<BaseImageReviewViewModel> = mutableListOf()
+    private var imageReviewData: MutableList<BaseImageReviewUiModel> = mutableListOf()
 
-    fun setImageReviewData(data: List<BaseImageReviewViewModel>) {
+    fun setImageReviewData(data: List<BaseImageReviewUiModel>) {
         imageReviewData = data.toMutableList()
         notifyDataSetChanged()
     }
 
-    fun removeItem(item: BaseImageReviewViewModel) {
+    fun removeItem(item: BaseImageReviewUiModel) {
         val index = imageReviewData.indexOf(item)
         imageReviewData.remove(item)
         notifyItemRemoved(index)
@@ -46,16 +46,16 @@ class ImageReviewAdapter(private val imageClickListener: ImageClickListener) : R
 
     override fun onBindViewHolder(holder: BaseImageReviewViewHolder<*>, position: Int) {
         when (holder) {
-            is DefaultImageReviewViewHolder -> holder.bind((imageReviewData[position] as DefaultImageReviewModel))
-            is ImageReviewViewHolder -> holder.bind((imageReviewData[position] as ImageReviewViewModel))
+            is DefaultImageReviewViewHolder -> holder.bind((imageReviewData[position] as DefaultImageReviewUiModel))
+            is ImageReviewViewHolder -> holder.bind((imageReviewData[position] as ImageReviewUiModel))
 
         }
     }
 
     override fun getItemViewType(position: Int): Int {
         return when (imageReviewData[position]) {
-            is DefaultImageReviewModel -> TYPE_DEFAULT
-            is ImageReviewViewModel -> TYPE_IMAGE
+            is DefaultImageReviewUiModel -> TYPE_DEFAULT
+            is ImageReviewUiModel -> TYPE_IMAGE
             else -> 0
         }
     }
@@ -63,6 +63,6 @@ class ImageReviewAdapter(private val imageClickListener: ImageClickListener) : R
     override fun getItemCount(): Int = imageReviewData.size
 
     fun isEmpty(): Boolean {
-        return imageReviewData.filterIsInstance<ImageReviewViewModel>().isEmpty()
+        return imageReviewData.filterIsInstance<ImageReviewUiModel>().isEmpty()
     }
 }

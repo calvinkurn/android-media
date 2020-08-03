@@ -40,14 +40,13 @@ import com.tokopedia.review.common.data.*
 import com.tokopedia.review.common.presentation.util.ReviewScoreClickListener
 import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.feature.createreputation.di.DaggerCreateReviewComponent
-import com.tokopedia.review.feature.createreputation.model.BaseImageReviewViewModel
+import com.tokopedia.review.feature.createreputation.model.BaseImageReviewUiModel
 import com.tokopedia.review.feature.createreputation.model.ProductRevGetForm
 import com.tokopedia.review.feature.createreputation.presentation.activity.CreateReviewActivity
 import com.tokopedia.review.feature.createreputation.presentation.adapter.ImageReviewAdapter
 import com.tokopedia.review.feature.createreputation.presentation.listener.ImageClickListener
 import com.tokopedia.review.feature.createreputation.presentation.listener.TextAreaListener
 import com.tokopedia.review.feature.createreputation.presentation.widget.CreateReviewTextAreaBottomSheet
-import com.tokopedia.review.common.util.OnBackPressedListener
 import com.tokopedia.review.feature.createreputation.analytics.CreateReviewTracking
 import com.tokopedia.review.feature.createreputation.model.Reputation
 import com.tokopedia.review.feature.createreputation.presentation.viewmodel.CreateReviewViewModel
@@ -289,7 +288,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onRemoveImageClick(item: BaseImageReviewViewModel) {
+    override fun onRemoveImageClick(item: BaseImageReviewUiModel) {
         imageAdapter.removeItem(item)
         createReviewViewModel.removeImage(item)
         if(imageAdapter.isEmpty()) {
@@ -500,17 +499,17 @@ class CreateReviewFragment : BaseDaggerFragment(),
     private fun updateViewBasedOnSelectedRating(position: Int) {
         when {
             position < 3 -> {
-                txt_review_desc.text = MethodChecker.fromHtml(getString(R.string.review_text_negative, createReviewViewModel.userSessionInterface.name))
+                txt_review_desc.text = MethodChecker.fromHtml(getString(R.string.review_text_negative, createReviewViewModel.getUserName()))
                 createReviewContainer.setContainerColor(ContainerUnify.RED)
                 createReviewTextAreaTitle.text = resources.getString(R.string.review_create_negative_title)
             }
             position == 3 -> {
-                txt_review_desc.text = MethodChecker.fromHtml(getString(R.string.review_text_neutral, createReviewViewModel.userSessionInterface.name))
+                txt_review_desc.text = MethodChecker.fromHtml(getString(R.string.review_text_neutral, createReviewViewModel.getUserName()))
                 createReviewContainer.setContainerColor(ContainerUnify.YELLOW)
                 createReviewTextAreaTitle.text = resources.getString(R.string.review_create_neutral_title)
             }
             else -> {
-                txt_review_desc.text = MethodChecker.fromHtml(getString(R.string.review_text_positive, createReviewViewModel.userSessionInterface.name))
+                txt_review_desc.text = MethodChecker.fromHtml(getString(R.string.review_text_positive, createReviewViewModel.getUserName()))
                 createReviewContainer.setContainerColor(ContainerUnify.GREEN)
                 createReviewTextAreaTitle.text = resources.getString(R.string.review_create_positive_title)
             }

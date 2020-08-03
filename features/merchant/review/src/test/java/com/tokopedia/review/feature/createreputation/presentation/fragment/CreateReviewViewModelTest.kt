@@ -2,7 +2,7 @@ package com.tokopedia.review.feature.createreputation.presentation.fragment
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
-import com.tokopedia.mediauploader.domain.UploaderUseCase
+import com.tokopedia.mediauploader.data.state.UploadResult
 import com.tokopedia.review.common.data.ProductrevGetReviewDetail
 import com.tokopedia.review.common.data.ProductrevGetReviewDetailResponseWrapper
 import com.tokopedia.review.feature.createreputation.domain.usecase.GetProductReputationForm
@@ -19,7 +19,6 @@ import org.junit.Assert
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.mockito.ArgumentMatchers.*
-import java.io.File
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
@@ -33,42 +32,70 @@ class  CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
 //        val shopId = anyInt()
 //        val rating = 5
 //        val selectedImages = arrayListOf("ImageUrl1", "ImageUrl2", "ImageUrl3", "ImageUrl4", "ImageUrl5")
+//        val expectedUploadResponse = UploadResult.Success("uploadId")
 //        val expectedResponse = ProductrevSubmitReviewResponseWrapper(ProductRevSubmitReview(true))
-//        val params = uploaderUseCase.createParams(anyString(), File(anyString()))
+////        val params = selectedImages.map { uploaderUseCase.createParams(CreateReviewViewModel.CREATE_REVIEW_SOURCE_ID, File(it)) }
 //
 //        onSubmitReviewSuccess_thenReturn(expectedResponse)
+//        onUploadImageSuccess_thenReturn(expectedUploadResponse)
 //
 //        viewModel.getImageList(selectedImages)
 //        viewModel.submitReview(reputationId = reputationId, productId = productId, shopId = shopId, rating = rating)
 //
-//        verifyImageUploaderUseCaseCalledBasedOnSizeOfList(selectedImages.size, params)
-//        verifySubmitReviewUseCaseCalled()
-//        verifySubmitReviewSuccess()
-//    }
-//
-//    @Test
-//    fun `when submit review with image fail should set expected error`() {
-//        val reputationId = anyInt()
-//        val productId = anyInt()
-//        val shopId = anyInt()
-//        val rating = 5
-//        val selectedImages = arrayListOf("ImageUrl1", "ImageUrl2", "ImageUrl3", "ImageUrl4", "ImageUrl5")
-//        val expectedResponse = Throwable()
-//        val params = uploaderUseCase.createParams(anyString(), File(anyString()))
-//
-//        onSubmitReviewFails_thenReturn(expectedResponse)
-//
-//        viewModel.getImageList(selectedImages)
-//        viewModel.submitReview(reputationId = reputationId, productId = productId, shopId = shopId, rating = rating)
-//
-//        verifyImageUploaderUseCaseCalledBasedOnSizeOfList(selectedImages.size, params)
+////        verifyImageUploaderUseCaseCalledBasedOnSizeOfList(selectedImages.size, params)
 //        verifySubmitReviewUseCaseCalled()
 //        verifySubmitReviewSuccess()
 //    }
 
     @Test
+    fun `when submit review with image fail should set expected error`() {
+        val reputationId = anyInt()
+        val productId = anyInt()
+        val shopId = anyInt()
+        val rating = 5
+        val selectedImages = arrayListOf("ImageUrl1", "ImageUrl2", "ImageUrl3", "ImageUrl4", "ImageUrl5")
+        val expectedUploadResponse = UploadResult.Success(anyString())
+        val expectedResponse = Throwable()
+//        val params = uploaderUseCase.createParams(anyString(), File(anyString()))
+
+        onSubmitReviewFails_thenReturn(expectedResponse)
+        onUploadImageSuccess_thenReturn(expectedUploadResponse)
+
+        viewModel.getImageList(selectedImages)
+        viewModel.submitReview(reputationId = reputationId, productId = productId, shopId = shopId, rating = rating)
+
+//        verifyImageUploaderUseCaseCalledBasedOnSizeOfList(selectedImages.size, params)
+        verifySubmitReviewUseCaseCalled()
+        verifySubmitReviewFail()
+    }
+
+    @Test
     fun `when submit review with imageuploader fails should set expected error`() {
 
+    }
+
+    @Test
+    fun `when getSelectedImagesUrl should return expected list of Url`() {
+        val selectedImages = arrayListOf("ImageUrl1", "ImageUrl2", "ImageUrl3", "ImageUrl4", "ImageUrl5")
+
+        viewModel.clearImageData()
+        viewModel.getImageList(selectedImages)
+        val actualData = viewModel.getSelectedImagesUrl()
+
+        Assert.assertEquals(actualData, selectedImages)
+    }
+
+    @Test
+    fun `when removeImage should return expected list ofUrl`() {
+        val selectedImages = arrayListOf("ImageUrl1", "ImageUrl2", "ImageUrl3", "ImageUrl4", "ImageUrl5")
+        val images = viewModel.getImageList(selectedImages)
+
+        viewModel.removeImage(images.first())
+
+        val actualData = viewModel.getSelectedImagesUrl()
+        val expectedData = arrayListOf("ImageUrl2", "ImageUrl3", "ImageUrl4", "ImageUrl5")
+
+        Assert.assertEquals(actualData, expectedData)
     }
 
     @Test
@@ -197,7 +224,7 @@ class  CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
     @Test
     fun `when getImageList of 5 images should return expected ImageReviewModels`() {
         val selectedImages = arrayListOf("ImageUrl1", "ImageUrl2", "ImageUrl3", "ImageUrl4", "ImageUrl5")
-        val expectedData = mutableListOf(ImageReviewViewModel("ImageUrl1"), ImageReviewViewModel("ImageUrl2"), ImageReviewViewModel("ImageUrl3"), ImageReviewViewModel("ImageUrl4"), ImageReviewViewModel("ImageUrl5"))
+        val expectedData = mutableListOf(ImageReviewUiModel("ImageUrl1"), ImageReviewUiModel("ImageUrl2"), ImageReviewUiModel("ImageUrl3"), ImageReviewUiModel("ImageUrl4"), ImageReviewUiModel("ImageUrl5"))
 
         val actualData = viewModel.getImageList(selectedImages)
 
@@ -208,7 +235,7 @@ class  CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
     fun `when getImageList of less than 5 images should return expected ImageReviewModels and DefaultImageReviewModel`() {
         val selectedImages = arrayListOf("ImageUrl1", "ImageUrl2", "ImageUrl3", "ImageUrl4")
 
-        val expectedData = mutableListOf(ImageReviewViewModel("ImageUrl1"), ImageReviewViewModel("ImageUrl2"), ImageReviewViewModel("ImageUrl3"), ImageReviewViewModel("ImageUrl4"), DefaultImageReviewModel())
+        val expectedData = mutableListOf(ImageReviewUiModel("ImageUrl1"), ImageReviewUiModel("ImageUrl2"), ImageReviewUiModel("ImageUrl3"), ImageReviewUiModel("ImageUrl4"), DefaultImageReviewUiModel())
 
         val actualData = viewModel.getImageList(selectedImages)
 
@@ -223,8 +250,8 @@ class  CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
         coVerify { submitReviewUseCase.executeOnBackground() }
     }
 
-    private fun verifyImageUploaderUseCaseCalledBasedOnSizeOfList(size: Int, params: RequestParams) {
-        coVerify(exactly = size) { uploaderUseCase(params) }
+    private fun verifyImageUploaderUseCaseCalledBasedOnSizeOfList(size: Int, params: List<RequestParams>) {
+//        coVerify(exactly = size) { uploaderUseCase(params) }
     }
 
     private fun onGetReviewDetails_thenReturn(response: ProductrevGetReviewDetailResponseWrapper) {
@@ -241,6 +268,10 @@ class  CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
 
     private fun onSubmitReviewFails_thenReturn(throwable: Throwable) {
         coEvery { submitReviewUseCase.executeOnBackground() } throws throwable
+    }
+
+    private fun onUploadImageSuccess_thenReturn(response: UploadResult) {
+        coEvery { uploaderUseCase(RequestParams()) } returns response
     }
 
     private fun verifyReviewDetailsSuccess(viewState: com.tokopedia.review.common.data.Success<ProductrevGetReviewDetail>) {

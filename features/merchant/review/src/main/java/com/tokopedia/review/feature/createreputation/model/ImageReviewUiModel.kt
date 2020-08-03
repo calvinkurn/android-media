@@ -1,5 +1,5 @@
 package com.tokopedia.review.feature.createreputation.model
 
-data class ImageReviewViewModel (
+data class ImageReviewUiModel (
         val imageUrl:String = ""
-): BaseImageReviewViewModel
+): BaseImageReviewUiModel

@@ -4,9 +4,9 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.tkpd.tkpdreputation.R
-import com.tokopedia.tkpd.tkpdreputation.createreputation.model.BaseImageReviewUiModel
-import com.tokopedia.tkpd.tkpdreputation.createreputation.model.DefaultImageReviewUiModel
-import com.tokopedia.tkpd.tkpdreputation.createreputation.model.ImageReviewUiModel
+import com.tokopedia.tkpd.tkpdreputation.createreputation.model.BaseImageReviewViewModel
+import com.tokopedia.tkpd.tkpdreputation.createreputation.model.DefaultImageReviewViewModel
+import com.tokopedia.tkpd.tkpdreputation.createreputation.model.ImageReviewViewModel
 import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.viewholder.BaseImageReviewViewHolder
 import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.viewholder.DefaultImageReviewViewHolder
 import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.viewholder.ImageReviewViewHolder
@@ -19,9 +19,9 @@ class ImageReviewAdapter(private val onAddImageClickListener: OnAddImageClickLis
         const val TYPE_IMAGE = 2
     }
 
-    private var imageReviewData: MutableList<BaseImageReviewUiModel> = mutableListOf()
+    private var imageReviewData: MutableList<BaseImageReviewViewModel> = mutableListOf()
 
-    fun setImageReviewData(data: List<BaseImageReviewUiModel>) {
+    fun setImageReviewData(data: List<BaseImageReviewViewModel>) {
         imageReviewData = data.toMutableList()
         notifyDataSetChanged()
     }
@@ -40,16 +40,16 @@ class ImageReviewAdapter(private val onAddImageClickListener: OnAddImageClickLis
 
     override fun onBindViewHolder(holder: BaseImageReviewViewHolder<*>, position: Int) {
         when (holder) {
-            is DefaultImageReviewViewHolder -> holder.bind((imageReviewData[position] as DefaultImageReviewUiModel))
-            is ImageReviewViewHolder -> holder.bind((imageReviewData[position] as ImageReviewUiModel))
+            is DefaultImageReviewViewHolder -> holder.bind((imageReviewData[position] as DefaultImageReviewViewModel))
+            is ImageReviewViewHolder -> holder.bind((imageReviewData[position] as ImageReviewViewModel))
 
         }
     }
 
     override fun getItemViewType(position: Int): Int {
         return when (imageReviewData[position]) {
-            is DefaultImageReviewUiModel -> TYPE_DEFAULT
-            is ImageReviewUiModel -> TYPE_IMAGE
+            is DefaultImageReviewViewModel -> TYPE_DEFAULT
+            is ImageReviewViewModel -> TYPE_IMAGE
             else -> 0
         }
     }

@@ -35,7 +35,7 @@ class CreateReviewViewModel @Inject constructor(@Named("Main")
     @Inject
     lateinit var userSessionInterface: UserSessionInterface
 
-    private var imageData: MutableList<BaseImageReviewUiModel> = mutableListOf()
+    private var imageData: MutableList<BaseImageReviewViewModel> = mutableListOf()
 
     private var reputationDataForm = MutableLiveData<Result<ProductRevGetForm>>()
     val getReputationDataForm = reputationDataForm
@@ -56,21 +56,21 @@ class CreateReviewViewModel @Inject constructor(@Named("Main")
         }
     }
 
-    fun getImageList(selectedImage: ArrayList<String>): MutableList<BaseImageReviewUiModel> {
+    fun getImageList(selectedImage: ArrayList<String>): MutableList<BaseImageReviewViewModel> {
         when (selectedImage.size) {
             5 -> {
                 imageData = (selectedImage.take(4).map {
-                    ImageReviewUiModel(it, shouldDisplayOverlay = true)
+                    ImageReviewViewModel(it, shouldDisplayOverlay = true)
                 }).asReversed().toMutableList()
             }
             4 -> {
                 imageData.addAll(selectedImage.take(3).map {
-                    ImageReviewUiModel(it, shouldDisplayOverlay = true)
+                    ImageReviewViewModel(it, shouldDisplayOverlay = true)
                 }.asReversed())
             }
             else -> {
                 imageData.addAll(selectedImage.map {
-                    ImageReviewUiModel(it, shouldDisplayOverlay = false)
+                    ImageReviewViewModel(it, shouldDisplayOverlay = false)
                 }.asReversed())
             }
         }
@@ -78,9 +78,9 @@ class CreateReviewViewModel @Inject constructor(@Named("Main")
         return imageData
     }
 
-    fun initImageData(): MutableList<BaseImageReviewUiModel> {
+    fun initImageData(): MutableList<BaseImageReviewViewModel> {
         imageData.clear()
-        imageData.add(DefaultImageReviewUiModel())
+        imageData.add(DefaultImageReviewViewModel())
         return imageData
     }
 
