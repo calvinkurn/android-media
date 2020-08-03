@@ -42,11 +42,15 @@ class UohListModule {
 
     @UohListScope
     @Provides
-    fun provideUohGetUnifiedOrderHistoryUseCase(graphqlRepository: GraphqlRepository): GetRecommendationUseCase = GetRecommendationUseCase(graphqlRepository)
+    fun provideGetUohOrderList(graphqlRepository: GraphqlRepository): GraphqlUseCase<UohListOrder.Data> = GraphqlUseCase(graphqlRepository)
 
     @UohListScope
     @Provides
-    fun provideGetRecommendationUseCase(graphqlRepository: GraphqlRepository): GraphqlUseCase<List<RecommendationWidget>> = GraphqlUseCase(graphqlRepository)
+    fun provideGetRecommendationUseCase(graphqlRepository: GraphqlRepository): GetRecommendationUseCase = GetRecommendationUseCase(graphqlRepository)
+
+    /*@UohListScope
+    @Provides
+    fun provideGetRecommendationUseCase(graphqlRepository: GraphqlRepository): GraphqlUseCase<List<RecommendationWidget>> = GraphqlUseCase(graphqlRepository)*/
 
     @UohListScope
     @Provides

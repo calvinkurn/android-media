@@ -3,11 +3,16 @@ package com.tokopedia.buyerorder.unifiedhistory.list.view.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
+import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.buyerorder.common.BuyerDispatcherProvider
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohUtils.asSuccess
+import com.tokopedia.buyerorder.unifiedhistory.list.data.model.UohFinishOrder
+import com.tokopedia.buyerorder.unifiedhistory.list.data.model.UohFinishOrderParam
 import com.tokopedia.buyerorder.unifiedhistory.list.data.model.UohListOrder
 import com.tokopedia.buyerorder.unifiedhistory.list.data.model.UohListParam
+import com.tokopedia.buyerorder.unifiedhistory.list.domain.UohFinishOrderUseCase
 import com.tokopedia.buyerorder.unifiedhistory.list.domain.UohListUseCase
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
@@ -21,7 +26,8 @@ import javax.inject.Inject
  */
 class UohListViewModel @Inject constructor(dispatcher: BuyerDispatcherProvider,
                                            private val uohListUseCase: UohListUseCase,
-                                           private val getRecommendationUseCase: GetRecommendationUseCase) : BaseViewModel(dispatcher.ui()) {
+                                           private val getRecommendationUseCase: GetRecommendationUseCase,
+                                           private val uohFinishOrderUseCase: UohFinishOrderUseCase) : BaseViewModel(dispatcher.ui()) {
 
     private val _orderHistoryListResult = MutableLiveData<Result<UohListOrder.Data.UohOrders>>()
     val orderHistoryListResult: LiveData<Result<UohListOrder.Data.UohOrders>>
@@ -30,6 +36,10 @@ class UohListViewModel @Inject constructor(dispatcher: BuyerDispatcherProvider,
     private val _recommendationListResult = MutableLiveData<Result<List<RecommendationWidget>>>()
     val recommendationListResult: LiveData<Result<List<RecommendationWidget>>>
         get() = _recommendationListResult
+
+    private val _finishOrderResult = MutableLiveData<Result<UohFinishOrder.Data.FinishOrderBuyer>>()
+    val finishOrderResult: LiveData<Result<UohFinishOrder.Data.FinishOrderBuyer>>
+        get() = _finishOrderResult
 
     fun loadOrderList(orderQuery: String, paramOrder: UohListParam) {
         launch {
@@ -44,6 +54,12 @@ class UohListViewModel @Inject constructor(dispatcher: BuyerDispatcherProvider,
                             pageNumber = pageNumber,
                             pageName = UohConsts.PAGE_NAME))
             _recommendationListResult.postValue(recommendationData.asSuccess())
+        }
+    }
+
+    fun doFinishOrder(finishOrderQuery: String, paramFinishOrder: UohFinishOrderParam) {
+        launch {
+            _finishOrderResult.postValue(uohFinishOrderUseCase.execute(finishOrderQuery, paramFinishOrder))
         }
     }
 }

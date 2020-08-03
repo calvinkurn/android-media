@@ -29,7 +29,9 @@ class UohOrderListViewHolder(itemView: View, private val actionListener: UohItem
             itemView.tv_uoh_categories?.text = item.dataObject.metadata.verticalLabel
             itemView.tv_uoh_date?.text = item.dataObject.metadata.paymentDateStr
             itemView.label_uoh_order?.text = item.dataObject.metadata.status.label
-            itemView.label_uoh_order?.setLabelType(item.dataObject.metadata.status.bgColor)
+            if (item.dataObject.metadata.status.bgColor.isNotEmpty()) {
+                itemView.label_uoh_order?.setLabelType(item.dataObject.metadata.status.bgColor)
+            }
             itemView.label_uoh_order?.fontColorByPass = item.dataObject.metadata.status.textColor
 
             if (item.dataObject.metadata.tickers.isNotEmpty()) {
@@ -114,6 +116,7 @@ class UohOrderListViewHolder(itemView: View, private val actionListener: UohItem
             itemView.tv_uoh_total_belanja?.text = item.dataObject.metadata.totalPrice.label
             itemView.tv_uoh_total_belanja_value?.text = item.dataObject.metadata.totalPrice.value
             if (item.dataObject.metadata.buttons.isNotEmpty()) {
+                itemView.uoh_btn_action?.visible()
                 itemView.uoh_btn_action?.text = item.dataObject.metadata.buttons[0].label
                 itemView.uoh_btn_action?.buttonType = UohUtils.getButtonType(item.dataObject.metadata.buttons[0].variantColor)
                 itemView.uoh_btn_action?.buttonVariant = UohUtils.getButtonVariant(item.dataObject.metadata.buttons[0].type)
@@ -127,7 +130,7 @@ class UohOrderListViewHolder(itemView: View, private val actionListener: UohItem
 
             itemView.uoh_btn_action?.setOnClickListener {
                 if (item.dataObject.metadata.buttons.isNotEmpty()) {
-                    actionListener?.onActionButtonClicked(item.dataObject.metadata.buttons.first().appURL)
+                    actionListener?.onActionButtonClicked(item.dataObject.metadata.buttons.first(), position, item.dataObject.orderUUID, item.dataObject.verticalID)
                 }
             }
         }

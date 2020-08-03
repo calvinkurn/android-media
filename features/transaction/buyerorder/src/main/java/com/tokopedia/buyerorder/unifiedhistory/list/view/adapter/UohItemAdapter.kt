@@ -31,10 +31,9 @@ class UohItemAdapter : RecyclerView.Adapter<UohItemAdapter.BaseViewHolder<*>>() 
     }
 
     interface ActionListener {
-        fun doFinishOrder()
         fun onKebabMenuClicked(listDotMenu: List<UohListOrder.Data.UohOrders.Order.Metadata.DotMenu>)
         fun onListItemClicked(verticalCategory: String, verticalId: String, upstream: String)
-        fun onActionButtonClicked(url: String)
+        fun onActionButtonClicked(button: UohListOrder.Data.UohOrders.Order.Metadata.Button, index: Int, orderUUID: String, verticalId: String)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<*> {
@@ -105,6 +104,22 @@ class UohItemAdapter : RecyclerView.Adapter<UohItemAdapter.BaseViewHolder<*>>() 
         for (x in 0 until 5) {
             listTypeData.add(UohTypeData("", TYPE_LOADER))
         }
+        notifyDataSetChanged()
+    }
+
+    fun getDataAtIndex(index: Int): UohListOrder.Data.UohOrders.Order {
+        return listTypeData[index].dataObject as UohListOrder.Data.UohOrders.Order
+    }
+
+    fun showLoaderAtIndex(index: Int) {
+        listTypeData.removeAt(index)
+        listTypeData.add(index, UohTypeData("", TYPE_LOADER))
+        notifyDataSetChanged()
+    }
+
+    fun updateDataAtIndex(index: Int, order: UohListOrder.Data.UohOrders.Order) {
+        listTypeData.removeAt(index)
+        listTypeData.add(index, UohTypeData(order, TYPE_ORDER_LIST))
         notifyDataSetChanged()
     }
 

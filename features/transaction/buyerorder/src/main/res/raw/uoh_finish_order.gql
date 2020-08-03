@@ -1,0 +1,6 @@
+mutation FinishOrderBuyer($input:FinishOrderBuyerRequest!) {
+  finish_order_buyer(input: $input) {
+    success
+    message
+  }
+}

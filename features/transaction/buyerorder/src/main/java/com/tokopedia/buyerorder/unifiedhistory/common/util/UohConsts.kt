@@ -48,4 +48,12 @@ object UohConsts {
     const val TYPE_EMPTY = "empty"
     const val TYPE_RECOMMENDATION_TITLE = "recommendation_title"
     const val TYPE_RECOMMENDATION_ITEM = "recommendation"
+
+    const val TYPE_ACTION_BUTTON_LINK = "link"
+    const val GQL_FINISH_ORDER = "gql-mp-finish"
+    const val GQL_ATC = "gql-mp-atc"
+    const val GQL_TRACK = "gql-mp-track"
+
+    const val FINISH_ORDER_BOTTOMSHEET_TITLE = "Selesaikan pesanan ini?"
+    const val REPLACE_ORDER_ID = "{order_id}"
 }
