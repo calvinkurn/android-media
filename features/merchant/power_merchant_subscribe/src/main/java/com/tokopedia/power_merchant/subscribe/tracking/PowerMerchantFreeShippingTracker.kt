@@ -92,7 +92,7 @@ object PowerMerchantFreeShippingTracker {
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }
 
-    fun sendSuccessBottomSheetPopUp(
+    fun eventFreeShippingSuccessBottomSheet(
         user: UserSessionInterface,
         freeShippingStatus: PowerMerchantFreeShippingStatus
     ) {

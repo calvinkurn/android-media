@@ -23,13 +23,18 @@
             android:focusable="true"
             android:focusableInTouchMode="true">
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/layout_lvl1"
+                app:layout_scrollFlags="scroll"/>
+
             <com.tokopedia.unifycomponents.ticker.Ticker
                 android:id="@+id/telco_ticker_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
                 android:layout_marginLeft="@dimen/layout_lvl2"
-                android:layout_marginTop="@dimen/layout_lvl2"
+                android:layout_marginTop="@dimen/layout_lvl1"
                 android:layout_marginRight="@dimen/layout_lvl2"
                 app:closeButtonVisibility="visible"
                 app:enableAutoSlide="true"
@@ -43,8 +48,9 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/telco_ticker_view"
                 android:layout_marginLeft="@dimen/layout_lvl2"
-                android:layout_marginTop="@dimen/layout_lvl2"
-                android:layout_marginRight="@dimen/layout_lvl2" />
+                android:layout_marginTop="@dimen/layout_lvl1"
+                android:layout_marginRight="@dimen/layout_lvl2"
+                android:layout_marginBottom="@dimen/layout_lvl1"/>
 
 
             <com.tokopedia.unifycomponents.TabsUnify
@@ -64,7 +70,7 @@
             <androidx.viewpager2.widget.ViewPager2
                 android:id="@+id/telco_view_pager"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_below="@+id/separator"
                 android:layout_marginLeft="@dimen/layout_lvl2"
                 android:layout_marginRight="@dimen/layout_lvl2"

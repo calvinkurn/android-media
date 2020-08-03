@@ -24,19 +24,22 @@
             android:orientation="vertical"
             app:elevation="@dimen/spacing_lvl2">
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/layout_lvl1"
+                app:layout_scrollFlags="scroll"/>
+
             <com.tokopedia.unifycomponents.ticker.Ticker
                 android:id="@+id/telco_ticker_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/layout_lvl2"
-                android:layout_marginTop="@dimen/layout_lvl1"
                 android:layout_marginRight="@dimen/layout_lvl2"
-                android:layout_marginBottom="@dimen/layout_lvl1"
                 android:visibility="gone"
-                app:closeButtonVisibility="gone"
+                app:tickerShapeType="loose"
+                app:closeButtonVisibility="visible"
                 app:enableAutoSlide="true"
                 app:layout_scrollFlags="scroll"
-                app:tickerShapeType="loose"
                 tools:visibility="gone" />
 
             <androidx.cardview.widget.CardView
@@ -47,7 +50,7 @@
                 android:layout_marginLeft="@dimen/layout_lvl2"
                 android:layout_marginTop="@dimen/layout_lvl1"
                 android:layout_marginRight="@dimen/layout_lvl2"
-                android:layout_marginBottom="@dimen/spacing_lvl4"
+                android:layout_marginBottom="@dimen/layout_lvl1"
                 app:cardCornerRadius="@dimen/layout_lvl1">
 
                 <com.tokopedia.topupbills.telco.prepaid.widget.DigitalClientNumberWidget
