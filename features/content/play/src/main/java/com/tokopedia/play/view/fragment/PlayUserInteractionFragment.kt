@@ -90,7 +90,8 @@ class PlayUserInteractionFragment @Inject constructor(
         SendChatViewComponent.Listener,
         QuickReplyViewComponent.Listener,
         PinnedViewComponent.Listener,
-        VideoSettingsViewComponent.Listener
+        VideoSettingsViewComponent.Listener,
+        ImmersiveBoxViewComponent.Listener
 {
 
     companion object {
@@ -121,6 +122,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private val chatListView by viewComponent { ChatListViewComponent(it, R.id.view_chat_list) }
     private val pinnedView by viewComponent { PinnedViewComponent(it, R.id.view_pinned, this) }
     private val videoSettingsView by viewComponent { VideoSettingsViewComponent(it, R.id.view_video_settings, this) }
+    private val immersiveBoxView by viewComponent { ImmersiveBoxViewComponent(it, R.id.v_immersive_box, this) }
 
     private lateinit var playViewModel: PlayViewModel
     private lateinit var viewModel: PlayInteractionViewModel
@@ -344,6 +346,19 @@ class PlayUserInteractionFragment @Inject constructor(
 
     override fun onExitFullscreen(view: VideoSettingsViewComponent) {
         exitFullscreen()
+    }
+
+    /**
+     * ImmersiveBox View Component Listener
+     */
+    override fun onImmersiveBoxClicked(view: ImmersiveBoxViewComponent, currentAlpha: Float) {
+        PlayAnalytics.clickWatchArea(
+                channelId = channelId,
+                userId = playViewModel.userId,
+                channelType = playViewModel.channelType,
+                screenOrientation = orientation
+        )
+        triggerImmersive(currentAlpha == VISIBLE_ALPHA)
     }
 
     private fun setupInsets(view: View) {
@@ -598,6 +613,8 @@ class PlayUserInteractionFragment @Inject constructor(
 
             if (!map.isAnyShown && playViewModel.videoOrientation.isHorizontal && playViewModel.videoPlayer.isGeneral) videoSettingsView.show()
             else videoSettingsView.hide()
+
+            if (map.isAnyShown) immersiveBoxView.hide() else immersiveBoxView.show()
         })
     }
 
@@ -630,6 +647,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 if(it.isFreeze || it.isBanned) quickReplyView.hide()
                 if(it.isFreeze || it.isBanned) chatListView.hide()
                 if(it.isFreeze || it.isBanned) pinnedView.hide()
+                if(it.isFreeze || it.isBanned) immersiveBoxView.hide()
             }
         })
     }
@@ -746,26 +764,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     override fun onInitImmersiveBox(container: ViewGroup): Int {
-        val immersiveBoxComponent = ImmersiveBoxComponent(container, EventBusFactory.get(viewLifecycleOwner), scope, dispatchers)
-
-        scope.launch {
-            immersiveBoxComponent.getUserInteractionEvents()
-                    .collect {
-                        when (it) {
-                            is ImmersiveBoxInteractionEvent.BoxClicked -> {
-                                PlayAnalytics.clickWatchArea(
-                                        channelId = channelId,
-                                        userId = playViewModel.userId,
-                                        channelType = playViewModel.channelType,
-                                        screenOrientation = orientation
-                                )
-                                triggerImmersive(it.currentAlpha == VISIBLE_ALPHA)
-                            }
-                        }
-                    }
-        }
-
-        return immersiveBoxComponent.getContainerId()
+        throw IllegalStateException("No Init")
     }
 
     override fun onInitQuickReply(container: ViewGroup): Int {
@@ -949,6 +948,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun handleVideoHorizontalImmersive(shouldImmersive: Boolean) {
         if (shouldImmersive) videoSettingsView.fadeOut() else videoSettingsView.fadeIn()
+        if (shouldImmersive) immersiveBoxView.fadeOut() else immersiveBoxView.fadeIn()
     }
 
     private fun showMoreActionBottomSheet() {

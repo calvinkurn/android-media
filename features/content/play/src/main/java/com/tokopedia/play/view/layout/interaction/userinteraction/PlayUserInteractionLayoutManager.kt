@@ -28,7 +28,7 @@ class PlayUserInteractionLayoutManager(
         viewInitializer: PlayInteractionViewInitializer
 ) : PlayInteractionLayoutManager {
 
-    @IdRes private val immersiveBoxComponentId: Int = viewInitializer.onInitImmersiveBox(container)
+//    @IdRes private val immersiveBoxComponentId: Int = viewInitializer.onInitImmersiveBox(container)
 //    @IdRes private val sendChatComponentId: Int = viewInitializer.onInitChat(container)
 //    @IdRes private val likeComponentId: Int = viewInitializer.onInitLike(container)
 //    @IdRes private val pinnedComponentId: Int = viewInitializer.onInitPinned(container)
@@ -56,8 +56,7 @@ class PlayUserInteractionLayoutManager(
     private val offset0 = container.resources.getDimensionPixelOffset(com.tokopedia.play.R.dimen.play_no_offset)
 
     override fun layoutView(view: View) {
-        layoutPlayButton(container = view, videoOrientation = videoOrientation, id = playButtonComponentId, immersiveBoxComponentId = immersiveBoxComponentId)
-        layoutImmersiveBox(container = view, videoOrientation = videoOrientation, id = immersiveBoxComponentId, pinnedComponentId = R.id.view_pinned, statsInfoComponentId = R.id.view_stats_info)
+        layoutPlayButton(container = view, videoOrientation = videoOrientation, id = playButtonComponentId, immersiveBoxComponentId = R.id.v_immersive_box)
         layoutEndLiveComponent(container = view, id = endLiveInfoComponentId)
     }
 
@@ -141,8 +140,8 @@ class PlayUserInteractionLayoutManager(
 
     override fun onVideoOrientationChanged(container: View, videoOrientation: VideoOrientation) {
         if (this.videoOrientation != videoOrientation) {
-            layoutImmersiveBox(container = container, videoOrientation = videoOrientation, id = immersiveBoxComponentId, pinnedComponentId = R.id.view_pinned, statsInfoComponentId = R.id.view_stats_info)
-            layoutPlayButton(container = container, videoOrientation = videoOrientation, id = playButtonComponentId, immersiveBoxComponentId = immersiveBoxComponentId)
+            layoutImmersiveBox(container = container, videoOrientation = videoOrientation, id = R.id.v_immersive_box, pinnedComponentId = R.id.view_pinned, statsInfoComponentId = R.id.view_stats_info)
+            layoutPlayButton(container = container, videoOrientation = videoOrientation, id = playButtonComponentId, immersiveBoxComponentId = R.id.v_immersive_box)
         }
     }
 
