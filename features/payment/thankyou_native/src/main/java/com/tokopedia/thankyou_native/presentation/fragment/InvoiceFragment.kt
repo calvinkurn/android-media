@@ -115,10 +115,8 @@ class InvoiceFragment : BottomSheetUnify() {
         private fun getInvoiceFragment(thanksPageData: ThanksPageData)
                 : InvoiceFragment = InvoiceFragment().apply {
             val bundle = Bundle()
-            bundle.let {
-                arguments = bundle
-                bundle.putParcelable(ARG_THANK_PAGE_DATA, thanksPageData)
-            }
+            bundle.putParcelable(ARG_THANK_PAGE_DATA, thanksPageData)
+            arguments = bundle
         }
     }
 }
