@@ -28,6 +28,21 @@
         />
 
     <include
+        android:id="@+id/view_send_chat"
+        layout="@layout/view_send_chat"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/play_send_chat_height"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl3"
+        android:layout_marginRight="@dimen/spacing_lvl3"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/pcv_video"
+        app:layout_constraintEnd_toStartOf="@id/view_like"
+        app:layout_constraintStart_toStartOf="@id/space_size"
+        />
+
+    <include
         android:id="@+id/view_like"
         layout="@layout/view_like"
         android:layout_width="wrap_content"

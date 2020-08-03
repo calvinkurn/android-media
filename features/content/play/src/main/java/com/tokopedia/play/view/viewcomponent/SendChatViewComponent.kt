@@ -1,37 +1,30 @@
-package com.tokopedia.play.ui.sendchat
+package com.tokopedia.play.view.viewcomponent
 
 import android.content.Context
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
+import androidx.annotation.IdRes
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
-import com.tokopedia.play.component.UIView
+import com.tokopedia.play_common.viewcomponent.ViewComponent
 
 /**
- * Created by jegul on 02/12/19
+ * Created by jegul on 03/08/20
  */
-class SendChatView(container: ViewGroup, val listener: Listener) : UIView(container) {
+class SendChatViewComponent(
+        container: ViewGroup,
+        @IdRes idRes: Int,
+        private val listener: Listener
+) : ViewComponent(container, idRes) {
 
-    companion object {
-        private const val MAX_CHARS = 140
-    }
-
-    private val view: View =
-            LayoutInflater.from(container.context).inflate(R.layout.view_chat_form, container, true)
-                    .findViewById(R.id.cl_chat_form)
-
-    private val etChat: EditText = view.findViewById(R.id.et_chat)
-    private val ivSend: ImageView = view.findViewById(R.id.iv_send)
+    private val etChat: EditText = findViewById(R.id.et_chat)
+    private val ivSend: ImageView = findViewById(R.id.iv_send)
 
     private var prevText = ""
 
@@ -73,16 +66,6 @@ class SendChatView(container: ViewGroup, val listener: Listener) : UIView(contai
         }
     }
 
-    override val containerId: Int = view.id
-
-    override fun show() {
-        view.show()
-    }
-
-    override fun hide() {
-        view.hide()
-    }
-
     fun focusChatForm(shouldFocus: Boolean, forceChangeKeyboardState: Boolean = false) {
         if (shouldFocus && !etChat.isFocusable) {
             etChat.apply {
@@ -122,8 +105,12 @@ class SendChatView(container: ViewGroup, val listener: Listener) : UIView(contai
         }
     }
 
+    companion object {
+        private const val MAX_CHARS = 140
+    }
+
     interface Listener {
-        fun onChatFormClicked(view: SendChatView)
-        fun onSendChatClicked(view: SendChatView, message: String)
+        fun onChatFormClicked(view: SendChatViewComponent)
+        fun onSendChatClicked(view: SendChatViewComponent, message: String)
     }
 }

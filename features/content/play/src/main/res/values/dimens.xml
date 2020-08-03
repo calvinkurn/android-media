@@ -46,6 +46,8 @@
     <dimen name="play_toolbar_back_button_margin">@dimen/play_offset_12</dimen>
     <dimen name="play_product_pinned_lottie_bottom_margin">10dp</dimen>
 
+    <dimen name="play_send_chat_height">40dp</dimen>
+
     <!--General Dimension-->
     <dimen name="play_offset_12">12dp</dimen>
     <dimen name="play_no_offset">0dp</dimen>

@@ -29,7 +29,7 @@ class PlayUserInteractionLayoutManager(
 ) : PlayInteractionLayoutManager {
 
     @IdRes private val immersiveBoxComponentId: Int = viewInitializer.onInitImmersiveBox(container)
-    @IdRes private val sendChatComponentId: Int = viewInitializer.onInitChat(container)
+//    @IdRes private val sendChatComponentId: Int = viewInitializer.onInitChat(container)
 //    @IdRes private val likeComponentId: Int = viewInitializer.onInitLike(container)
     @IdRes private val pinnedComponentId: Int = viewInitializer.onInitPinned(container)
     @IdRes private val chatListComponentId: Int = viewInitializer.onInitChatList(container)
@@ -44,7 +44,7 @@ class PlayUserInteractionLayoutManager(
 
     private val toolbarView: View = container.findViewById(R.id.view_toolbar)
     private val statsInfoView: View = container.findViewById(R.id.view_stats_info)
-    private val sendChatView: View = container.findViewById(sendChatComponentId)
+    private val sendChatView: View = container.findViewById(R.id.view_send_chat)
     private val quickReplyView: View = container.findViewById(quickReplyComponentId)
     private val chatListView: View = container.findViewById(chatListComponentId)
     private val pinnedView: View = container.findViewById(pinnedComponentId)
@@ -56,12 +56,11 @@ class PlayUserInteractionLayoutManager(
     private val offset0 = container.resources.getDimensionPixelOffset(com.tokopedia.play.R.dimen.play_no_offset)
 
     override fun layoutView(view: View) {
-        layoutChat(container = view, id = sendChatComponentId, likeComponentId = R.id.view_like, sizeContainerComponentId = R.id.space_size, videoControlComponentId = R.id.pcv_video)
         layoutChatList(container = view, id = chatListComponentId, quickReplyComponentId = quickReplyComponentId, likeComponentId = R.id.view_like, sizeContainerComponentId = R.id.space_size)
         layoutPinned(container = view, id = pinnedComponentId, chatListComponentId = chatListComponentId, likeComponentId = R.id.view_like, sizeContainerComponentId = R.id.space_size)
         layoutPlayButton(container = view, videoOrientation = videoOrientation, id = playButtonComponentId, immersiveBoxComponentId = immersiveBoxComponentId)
         layoutImmersiveBox(container = view, videoOrientation = videoOrientation, id = immersiveBoxComponentId, pinnedComponentId = pinnedComponentId, statsInfoComponentId = R.id.view_stats_info)
-        layoutQuickReply(container = view, id = quickReplyComponentId, sendChatComponentId = sendChatComponentId, sizeContainerComponentId = R.id.space_size)
+        layoutQuickReply(container = view, id = quickReplyComponentId, sendChatComponentId = R.id.view_send_chat, sizeContainerComponentId = R.id.space_size)
         layoutEndLiveComponent(container = view, id = endLiveInfoComponentId)
         layoutVideoSettings(container = view, id = videoSettingsComponentId, sizeContainerComponentId = R.id.space_size, statsInfoComponentId = R.id.view_stats_info)
     }
@@ -153,14 +152,6 @@ class PlayUserInteractionLayoutManager(
 
     override fun onVideoPlayerChanged(container: View, videoPlayerUiModel: VideoPlayerUiModel, channelType: PlayChannelType) {
         changePinnedBottomMarginGone(if (videoPlayerUiModel.isYouTube && channelType.isVod) offset0 else offset12)
-    }
-
-    private fun layoutChat(container: View, @IdRes id: Int, @IdRes likeComponentId: Int, @IdRes sizeContainerComponentId: Int, @IdRes videoControlComponentId: Int) {
-        container.changeConstraint {
-            connect(id, ConstraintSet.START, sizeContainerComponentId, ConstraintSet.START, offset16)
-            connect(id, ConstraintSet.END, likeComponentId, ConstraintSet.START, offset8)
-            connect(id, ConstraintSet.BOTTOM, videoControlComponentId, ConstraintSet.TOP)
-        }
     }
 
     private fun layoutChatList(container: View, @IdRes id: Int, @IdRes quickReplyComponentId: Int, @IdRes likeComponentId: Int, @IdRes sizeContainerComponentId: Int) {

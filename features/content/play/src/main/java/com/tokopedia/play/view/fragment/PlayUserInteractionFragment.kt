@@ -8,13 +8,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
-import android.widget.Space
 import android.widget.Toast
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -28,33 +25,20 @@ import com.tokopedia.play.animation.PlayFadeInAnimation
 import com.tokopedia.play.animation.PlayFadeInFadeOutAnimation
 import com.tokopedia.play.animation.PlayFadeOutAnimation
 import com.tokopedia.play.component.EventBusFactory
-import com.tokopedia.play.di.DaggerPlayComponent
-import com.tokopedia.play.di.PlayModule
 import com.tokopedia.play.extensions.*
 import com.tokopedia.play.ui.chatlist.ChatListComponent
 import com.tokopedia.play.ui.endliveinfo.EndLiveInfoComponent
 import com.tokopedia.play.ui.endliveinfo.interaction.EndLiveInfoInteractionEvent
-import com.tokopedia.play.ui.gradientbg.GradientBackgroundComponent
 import com.tokopedia.play.ui.immersivebox.ImmersiveBoxComponent
 import com.tokopedia.play.ui.immersivebox.interaction.ImmersiveBoxInteractionEvent
-import com.tokopedia.play.ui.like.LikeComponent
-import com.tokopedia.play.ui.like.interaction.LikeInteractionEvent
 import com.tokopedia.play.ui.pinned.PinnedComponent
 import com.tokopedia.play.ui.pinned.interaction.PinnedInteractionEvent
 import com.tokopedia.play.ui.playbutton.PlayButtonComponent
 import com.tokopedia.play.ui.playbutton.interaction.PlayButtonInteractionEvent
 import com.tokopedia.play.ui.quickreply.QuickReplyComponent
 import com.tokopedia.play.ui.quickreply.interaction.QuickReplyInteractionEvent
-import com.tokopedia.play.ui.sendchat.SendChatComponent
-import com.tokopedia.play.ui.sendchat.interaction.SendChatInteractionEvent
-import com.tokopedia.play.ui.sizecontainer.SizeContainerComponent
-import com.tokopedia.play.ui.statsinfo.StatsInfoComponent
-import com.tokopedia.play.ui.toolbar.ToolbarComponent
-import com.tokopedia.play.ui.toolbar.interaction.PlayToolbarInteractionEvent
 import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
 import com.tokopedia.play.ui.toolbar.model.PartnerType
-import com.tokopedia.play.ui.videocontrol.VideoControlComponent
-import com.tokopedia.play.ui.videocontrol.interaction.VideoControlInteractionEvent
 import com.tokopedia.play.ui.videosettings.VideoSettingsComponent
 import com.tokopedia.play.ui.videosettings.interaction.VideoSettingsInteractionEvent
 import com.tokopedia.play.util.PlayFullScreenHelper
@@ -109,7 +93,8 @@ class PlayUserInteractionFragment @Inject constructor(
         PlayFragmentContract,
         ToolbarViewComponent.Listener,
         VideoControlViewComponent.Listener,
-        LikeViewComponent.Listener
+        LikeViewComponent.Listener,
+        SendChatViewComponent.Listener
 {
 
     companion object {
@@ -135,6 +120,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private val statsInfoView by viewComponent { StatsInfoViewComponent(it, R.id.view_stats_info) }
     private val videoControlView by viewComponent { VideoControlViewComponent(it, R.id.pcv_video, this) }
     private val likeView by viewComponent { LikeViewComponent(it, R.id.view_like, this) }
+    private val sendChatView by viewComponent { SendChatViewComponent(it, R.id.view_send_chat, this) }
 
     private lateinit var playViewModel: PlayViewModel
     private lateinit var viewModel: PlayInteractionViewModel
@@ -312,6 +298,18 @@ class PlayUserInteractionFragment @Inject constructor(
         doClickLike(shouldLike)
     }
 
+    /**
+     * SendChat View Component Listener
+     */
+    override fun onChatFormClicked(view: SendChatViewComponent) {
+        doClickChatBox()
+    }
+
+    override fun onSendChatClicked(view: SendChatViewComponent, message: String) {
+        PlayAnalytics.clickSendChat(channelId)
+        doSendChat(message)
+    }
+
     private fun setupInsets(view: View) {
         spaceSize.rootView.doOnApplyWindowInsets { v, insets, _, margin ->
             val marginLayoutParams = v.layoutParams as ViewGroup.MarginLayoutParams
@@ -405,6 +403,8 @@ class PlayUserInteractionFragment @Inject constructor(
 
             if (it.channelType.isVod && playViewModel.videoPlayer.isGeneral && !playViewModel.bottomInsets.isAnyShown) videoControlView.show()
             else videoControlView.hide()
+
+            if (it.channelType.isLive) sendChatView.show() else sendChatView.hide()
         })
     }
 
@@ -518,6 +518,14 @@ class PlayUserInteractionFragment @Inject constructor(
             if (!map.isAnyShown && playViewModel.channelType.isVod && playViewModel.videoPlayer.isGeneral) videoControlView.show()
             else videoControlView.hide()
             if (map.isAnyShown) likeView.hide() else likeView.show()
+
+            if (playViewModel.channelType.isLive &&
+                    map[BottomInsetsType.ProductSheet]?.isShown == false &&
+                    map[BottomInsetsType.VariantSheet]?.isShown == false) {
+                sendChatView.show()
+            } else sendChatView.hide()
+
+            sendChatView.focusChatForm(playViewModel.channelType.isLive && map[BottomInsetsType.Keyboard] is BottomInsetsState.Shown)
         })
     }
 
@@ -543,6 +551,10 @@ class PlayUserInteractionFragment @Inject constructor(
                     videoControlView.setPlayer(null)
                 }
                 if(it.isFreeze || it.isBanned) likeView.hide()
+                if(it.isFreeze || it.isBanned) {
+                    sendChatView.focusChatForm(false)
+                    sendChatView.hide()
+                }
             }
         })
     }
@@ -630,23 +642,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     override fun onInitChat(container: ViewGroup): Int {
-        val sendChatComponent = SendChatComponent(container, EventBusFactory.get(viewLifecycleOwner), scope, dispatchers)
-                .also(viewLifecycleOwner.lifecycle::addObserver)
-
-        scope.launch {
-            sendChatComponent.getUserInteractionEvents()
-                    .collect {
-                        when (it) {
-                            SendChatInteractionEvent.FormClicked -> doClickChatBox()
-                            is SendChatInteractionEvent.SendClicked -> {
-                                PlayAnalytics.clickSendChat(channelId)
-                                doSendChat(it.message)
-                            }
-                        }
-                    }
-        }
-
-        return sendChatComponent.getContainerId()
+        throw IllegalStateException("No Init")
     }
 
     override fun onInitChatList(container: ViewGroup): Int {
@@ -988,21 +984,15 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun handleInteractionEvent(event: InteractionEvent) {
         when (event) {
             InteractionEvent.CartPage -> openPageByApplink(ApplinkConst.CART)
-            InteractionEvent.SendChat -> sendEventComposeChat()
+            InteractionEvent.SendChat -> shouldComposeChat()
             InteractionEvent.ClickPinnedProduct -> openProductSheet()
             is InteractionEvent.Like -> doLikeUnlike(event.shouldLike)
             is InteractionEvent.Follow -> doActionFollowPartner(event.partnerId, event.partnerAction)
         }
     }
 
-    private fun sendEventComposeChat() {
-        scope.launch {
-            EventBusFactory.get(viewLifecycleOwner)
-                    .emit(
-                            ScreenStateEvent::class.java,
-                            ScreenStateEvent.ComposeChat
-                    )
-        }
+    private fun shouldComposeChat() {
+        sendChatView.focusChatForm(shouldFocus = true, forceChangeKeyboardState = true)
     }
 
     private fun doLikeUnlike(shouldLike: Boolean) {
