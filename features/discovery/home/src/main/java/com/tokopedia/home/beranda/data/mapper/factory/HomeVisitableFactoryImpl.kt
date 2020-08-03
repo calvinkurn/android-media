@@ -14,7 +14,6 @@ import com.tokopedia.home.beranda.domain.model.Spotlight
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.DynamicIconSectionDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.HomeIconItem
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightItemDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeoLocationPromptDataModel

@@ -1,12 +1,10 @@
 package com.tokopedia.home.beranda.presentation.view.listener
 
 import com.tokopedia.home.analytics.v2.MixLeftComponentTracking
-import com.tokopedia.home.beranda.data.mapper.factory.DynamicChannelComponentMapper
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home_component.listener.MixLeftComponentListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
-import com.tokopedia.home_component.productcardgridcarousel.listener.CommonProductCardCarouselListener
 
 /**
  * @author by yoasfs on 09/06/20

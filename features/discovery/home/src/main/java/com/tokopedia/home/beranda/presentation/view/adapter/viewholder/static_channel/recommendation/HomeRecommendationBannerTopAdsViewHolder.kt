@@ -14,6 +14,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.smart_recycler_helper.SmartAbstractViewHolder
 import com.tokopedia.smart_recycler_helper.SmartListener
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import kotlinx.android.synthetic.main.item_home_banner_topads_layout.view.*
 
 class HomeRecommendationBannerTopAdsViewHolder(view: View) : SmartAbstractViewHolder<HomeRecommendationBannerTopAdsDataModel>(view){
@@ -24,6 +25,13 @@ class HomeRecommendationBannerTopAdsViewHolder(view: View) : SmartAbstractViewHo
     override fun bind(element: HomeRecommendationBannerTopAdsDataModel, listener: SmartListener) {
         loadImageTopAds(element, listener as HomeRecommendationListener)
         itemView.home_recom_topads_image_view?.setOnClickListener {
+            TopAdsUrlHitter(itemView.context).hitClickUrl(
+                    this::class.java.simpleName,
+                    element.topAdsImageViewModel?.adClickUrl,
+                    "",
+                    "",
+                    element.topAdsImageViewModel?.imageUrl
+            )
             listener.onBannerTopAdsClick(element, adapterPosition)
         }
     }
@@ -49,6 +57,13 @@ class HomeRecommendationBannerTopAdsViewHolder(view: View) : SmartAbstractViewHo
                     override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
                         itemView.home_recom_topads_image_view?.show()
                         itemView.home_recom_topads_loader_image?.hide()
+                        TopAdsUrlHitter(itemView.context).hitImpressionUrl(
+                                this::class.java.simpleName,
+                                recommendationBannerTopAdsDataModelDataModel.topAdsImageViewModel.adViewUrl,
+                                "",
+                                "",
+                                recommendationBannerTopAdsDataModelDataModel.topAdsImageViewModel.imageUrl
+                        )
                         listener.onBannerTopAdsImpress(recommendationBannerTopAdsDataModelDataModel, adapterPosition)
                         return false
                     }

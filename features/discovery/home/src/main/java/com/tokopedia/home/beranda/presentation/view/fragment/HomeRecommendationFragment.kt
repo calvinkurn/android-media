@@ -297,11 +297,11 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
     }
 
     override fun onBannerTopAdsClick(homeTopAdsRecommendationBannerDataModelDataModel: HomeRecommendationBannerTopAdsDataModel, position: Int) {
-
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(HomeRecommendationTracking.getClickBannerTopAds(homeTopAdsRecommendationBannerDataModelDataModel, tabIndex, position))
     }
 
     override fun onBannerTopAdsImpress(homeTopAdsRecommendationBannerDataModelDataModel: HomeRecommendationBannerTopAdsDataModel, position: Int) {
-
+        trackingQueue.putEETracking(HomeRecommendationTracking.getImpressionBannerTopAds(homeTopAdsRecommendationBannerDataModelDataModel, tabIndex, position) as HashMap<String, Any>)
     }
 
     override fun onRetryGetProductRecommendationData() {
