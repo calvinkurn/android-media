@@ -197,4 +197,13 @@ object AccountConstants {
             const val ERROR_CODE_SELLER_ACCOUNT = "ACS001"
         }
     }
+
+    object Query {
+        const val NEW_QUERY_BUYER_ACCOUNT_HOME = "new_query_buyer_account_home"
+        const val QUERY_SELLER_ACCOUNT_HOME = "query_seller_account_home"
+        const val QUERY_TOP_ADS = "gql_get_deposit"
+        const val NEW_QUERY_SALDO_BALANCE = "new_query_saldo_balance"
+        const val QUERY_SHOP_LOCATION = "query_shop_location"
+        const val QUERY_USER_REWARDSHORCUT = "query_user_rewardshortcut"
+    }
 }

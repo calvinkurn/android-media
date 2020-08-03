@@ -53,8 +53,11 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.PENJUAL;
 
 /**
  * @author by alvinatin on 10/08/18.
+ *
+ *
+ * please use SellerAccountMapper.kt instead
  */
-
+@Deprecated
 public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewModel> {
 
     private Context context;
