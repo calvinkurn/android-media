@@ -9,16 +9,14 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.chat_common.BaseChatAdapter
-import com.tokopedia.chat_common.data.BaseChatViewModel
-import com.tokopedia.chat_common.data.ChatroomViewModel
-import com.tokopedia.chat_common.data.DeferredAttachment
-import com.tokopedia.chat_common.data.ImageUploadViewModel
+import com.tokopedia.chat_common.data.*
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.util.ChatRoomDiffUtil
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ProductCarouselListAttachmentViewHolder
 import com.tokopedia.topchat.chatroom.view.uimodel.HeaderDateUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.ProductCarouselUiModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.BroadcastSpamHandlerUiModel
 
 /**
  * @author : Steven 02/01/19
@@ -194,5 +192,19 @@ class TopChatRoomAdapter(
         topMostHeaderDate = null
         topMostHeaderDateIndex = null
         notifyDataSetChanged()
+    }
+
+    fun addBroadcastSpamHandler(isFollow: Boolean, isMiddlePage: Boolean) {
+        if (isFollow || isMiddlePage || visitables.isEmpty()) return
+        val latestMessage = visitables.first()
+        if (latestMessage is MessageViewModel && latestMessage.isFromBroadCast() && !latestMessage.isSender) {
+            val spamHandlerModel = createBroadcastSpamHandlerViewModel()
+            visitables.add(0, spamHandlerModel)
+            notifyItemInserted(0)
+        }
+    }
+
+    private fun createBroadcastSpamHandlerViewModel(): Visitable<*> {
+        return BroadcastSpamHandlerUiModel()
     }
 }

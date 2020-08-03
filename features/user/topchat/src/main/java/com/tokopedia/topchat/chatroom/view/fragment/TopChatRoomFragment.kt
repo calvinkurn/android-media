@@ -462,8 +462,9 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         getViewState().isShopFollowed = false
     }
 
-    private fun onSuccessGetShopFollowingStatus(isFollowed: Boolean) {
-        getViewState().isShopFollowed = isFollowed
+    private fun onSuccessGetShopFollowingStatus(isFollow: Boolean) {
+        getViewState().isShopFollowed = isFollow
+        adapter.addBroadcastSpamHandler(isFollow, presenter.isInTheMiddleOfThePage())
     }
 
     private fun onToolbarClicked(): () -> Unit {

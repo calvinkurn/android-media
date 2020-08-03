@@ -66,19 +66,6 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
         return listChat
     }
 
-    fun addTickerBroadcastSpamHandler(listChat: ArrayList<Visitable<*>>) {
-        if (listChat.isEmpty()) return
-        val latestMessage = listChat.first()
-        if (latestMessage is MessageViewModel && latestMessage.isFromBroadCast() && !latestMessage.isSender) {
-            val spamHandlerModel = createBroadcastSpamHandlerViewModel()
-            listChat.add(0, spamHandlerModel)
-        }
-    }
-
-    private fun createBroadcastSpamHandlerViewModel(): Visitable<*> {
-        return BroadcastSpamHandlerUiModel()
-    }
-
     private fun createHeaderDate(chatItemPojo: ChatRepliesItem): Visitable<*> {
         return HeaderDateUiModel(chatItemPojo.date)
     }

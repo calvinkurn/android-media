@@ -83,8 +83,6 @@ class GetChatUseCase @Inject constructor(
                     }.executeOnBackground()
                     val chatroomViewModel = mapper.map(response)
                     onResponseReady(chatroomViewModel, response)
-                    // TODO: show bc spam handling
-                    mapper.addTickerBroadcastSpamHandler(chatroomViewModel.listChat)
                     withContext(dispatchers.Main) {
                         onSuccess(chatroomViewModel, response.chatReplies)
                     }
