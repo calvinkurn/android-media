@@ -19,7 +19,7 @@ class ManageAddressViewModel @Inject constructor(
         private val setDeletePeopleAddressUseCase: SetDefaultPeopleAddressUseCase,
         private val mapper: ManageAddressMapper) : ViewModel() {
 
-    private val token: Token = Token()
+    var token: Token? = null
     var savedQuery: String = ""
     var page: Int = 1
 
@@ -35,6 +35,7 @@ class ManageAddressViewModel @Inject constructor(
         _addressList.value = ManageAddressState.Loading
         getPeopleAddressUseCase.execute(query,
                 {
+                    token = mapToken(it.keroAddressCorner.token)
                     savedQuery = query
                     _addressList.value = ManageAddressState.Success(mapToModel(it))
 
@@ -48,8 +49,11 @@ class ManageAddressViewModel @Inject constructor(
         return mapper.mapAddress(responses)
     }
 
-    fun getToken(): Token {
-        return token
+    fun mapToken(token: com.tokopedia.manageaddress.domain.response.Token): Token {
+        return Token().apply {
+            this.districtRecommendation = token.districtReccomendation
+            this.ut = token.ut
+        }
     }
 
     fun deletePeopleAddress(id: String) {

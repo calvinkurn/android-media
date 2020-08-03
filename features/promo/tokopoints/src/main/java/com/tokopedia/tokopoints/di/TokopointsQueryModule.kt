@@ -135,13 +135,6 @@ class TokopointsQueryModule(val activity: Activity) {
 
     @Provides
     @TokoPointScope
-    @Named(CommonConstant.GQLQuery.TP_GQL_CATALOG_BANNER)
-    fun getGQLCataloganner(context: Context) : String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.tp_gql_catalog_banners)
-    }
-
-    @Provides
-    @TokoPointScope
     @Named(CommonConstant.GQLQuery.TP_GQL_TOKOPOINT_DETAIL)
     fun getGQLTOkopointDetail(context: Context) : String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.tp_gql_tokopoint_detail)

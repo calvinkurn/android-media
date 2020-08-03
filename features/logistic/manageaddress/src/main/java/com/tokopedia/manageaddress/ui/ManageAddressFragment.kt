@@ -233,7 +233,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     }
 
     private fun openFormAddressView(data: AddressModel?) {
-        val token = viewModel.getToken()
+        val token = viewModel.token
             if(data == null) {
                 activity?.let { ManageAddressAnalytics.sendScreenName(it, SCREEN_NAME_USER_NEW) }
                 val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2)
