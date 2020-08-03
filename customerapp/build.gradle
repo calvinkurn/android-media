@@ -595,6 +595,9 @@ dependencies {
         implementation jscFlavor
     }
     lintChecks project(rootProject.ext.libraries.lint)
+    implementation rootProject.ext.tkpdInternalLibDependencies.analyticAnnotation
+    implementation rootProject.ext.tkpdInternalLibDependencies.analyticFirebaseRules
+    implementation rootProject.ext.tkpdInternalLibDependencies.analyticParam
 }
 
 
