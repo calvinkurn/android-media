@@ -19,18 +19,24 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.analyticsdebugger.validator.core.*
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
+import com.tokopedia.discovery.common.constants.SearchConstant.FreeOngkir.FREE_ONGKIR_LOCAL_CACHE_NAME
+import com.tokopedia.discovery.common.constants.SearchConstant.FreeOngkir.FREE_ONGKIR_SHOW_CASE_ALREADY_SHOWN
+import com.tokopedia.discovery.common.constants.SearchConstant.OnBoarding.FILTER_ONBOARDING_SHOWN
+import com.tokopedia.discovery.common.constants.SearchConstant.OnBoarding.LOCAL_CACHE_NAME
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel
 import com.tokopedia.search.result.presentation.view.activity.SearchActivity
 import com.tokopedia.search.result.presentation.view.adapter.ProductListAdapter
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.ProductItemViewHolder
+import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.junit.After
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-
 
 private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME = "tracker/search/search_product.json"
 private const val TAG = "SearchProductTest"
@@ -50,17 +56,15 @@ internal class SearchProductTrackingTest {
     fun setUp() {
         gtmLogDBSource.deleteAll().subscribe()
 
+        setupGraphqlMockResponse(SearchMockModelConfig())
+
+        disableOnBoarding(context)
+
         activityRule.launchActivity(createIntent())
 
         setupIdlingResource()
 
         intending(isInternal()).respondWith(ActivityResult(Activity.RESULT_OK, null))
-    }
-
-    private fun createIntent(): Intent {
-        return Intent(InstrumentationRegistry.getInstrumentation().targetContext, SearchActivity::class.java).also {
-            it.data = Uri.parse(ApplinkConstInternalDiscovery.SEARCH_RESULT + "?q=samsung")
-        }
     }
 
     private fun setupIdlingResource() {
@@ -70,20 +74,12 @@ internal class SearchProductTrackingTest {
         IdlingRegistry.getInstance().register(recyclerViewIdlingResource)
     }
 
-    @After
-    fun tearDown() {
-        gtmLogDBSource.deleteAll().subscribe()
-
-        IdlingRegistry.getInstance().unregister(recyclerViewIdlingResource)
-    }
-
     @Test
     fun testTracking() {
         performUserJourney()
 
-        assertAnalyticWithValidator(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME) {
-            it.assertStatus()
-        }
+        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME),
+                hasAllSuccess())
     }
 
     private fun performUserJourney() {
@@ -99,17 +95,6 @@ internal class SearchProductTrackingTest {
         activityRule.activity.finish()
     }
 
-    private fun RecyclerView?.getProductListAdapter(): ProductListAdapter {
-        val productListAdapter = this?.adapter as? ProductListAdapter
-
-        if (productListAdapter == null) {
-            val detailMessage = "Adapter is not ${ProductListAdapter::class.java.simpleName}"
-            throw AssertionError(detailMessage)
-        }
-
-        return productListAdapter
-    }
-
     private fun List<Visitable<*>>.getFirstTopAdsProductPosition(): Int {
         return indexOfFirst { it is ProductItemViewModel && it.isTopAds }
     }
@@ -118,12 +103,10 @@ internal class SearchProductTrackingTest {
         return indexOfFirst { it is ProductItemViewModel && !it.isTopAds }
     }
 
-    private fun Validator.assertStatus() {
-        val eventAction = data["eventAction"]
+    @After
+    fun tearDown() {
+        gtmLogDBSource.deleteAll().subscribe()
 
-        if (status != Status.SUCCESS)
-            throw AssertionError("\"$eventAction\" event status = $status.")
-        else
-            Log.d(TAG, "\"$eventAction\" event success. Total hits: ${matches.size}.")
+        IdlingRegistry.getInstance().unregister(recyclerViewIdlingResource)
     }
 }

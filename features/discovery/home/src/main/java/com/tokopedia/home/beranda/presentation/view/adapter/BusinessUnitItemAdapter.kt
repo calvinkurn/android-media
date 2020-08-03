@@ -16,13 +16,14 @@ class BusinessUnitItemAdapter(private val tabIndex: Int, private val tabName: St
     private var positionWidgetOnHome = -1
 
     private var listener = object: BusinessUnitItemViewListener{
+        //increase tab index by 1 as  PO requested @rico.ocir
         override fun onClicked(position: Int) {
             val element = getItem(position)
-            listenerBusinessTrackerTracker.onClickTracking(BusinessUnitTracking.getBusinessUnitClick(BusinessUnitTracking.mapToPromotionTracker(element, tabName, tabIndex, positionWidgetOnHome)) as HashMap<String, Any>)
+            listenerBusinessTrackerTracker.onClickTracking(BusinessUnitTracking.getBusinessUnitClick(BusinessUnitTracking.mapToPromotionTracker(element, tabName, tabIndex+1, positionWidgetOnHome)) as HashMap<String, Any>)
         }
 
         override fun onImpressed(element: BusinessUnitItemDataModel, position: Int) {
-            listenerBusinessTrackerTracker.onImpressTracking(BusinessUnitTracking.getBusinessUnitView(BusinessUnitTracking.mapToPromotionTracker(element, tabName, tabIndex, positionWidgetOnHome)) as HashMap<String, Any>)
+            listenerBusinessTrackerTracker.onImpressTracking(BusinessUnitTracking.getBusinessUnitView(BusinessUnitTracking.mapToPromotionTracker(element, tabName, tabIndex+1, positionWidgetOnHome)) as HashMap<String, Any>)
         }
     }
 

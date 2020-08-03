@@ -16,6 +16,7 @@ object WidgetType {
     const val DISPLAY = "display"
     const val PRODUCT = "product"
     const val VOUCHER = "promo"
+    const val DYNAMIC = "dynamic"
     const val CAMPAIGN = "campaign"
 }
 
@@ -25,6 +26,7 @@ object WidgetName {
     const val DISPLAY_SINGLE_COLUMN = "display_single_column"
     const val DISPLAY_DOUBLE_COLUMN = "display_double_column"
     const val DISPLAY_TRIPLE_COLUMN = "display_triple_column"
+    const val PLAY_CAROUSEL_WIDGET = "play"
     const val VIDEO = "video"
     const val PRODUCT = "product"
     const val VOUCHER = "voucher"

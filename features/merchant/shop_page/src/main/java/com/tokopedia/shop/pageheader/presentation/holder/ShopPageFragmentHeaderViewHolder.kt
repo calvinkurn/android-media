@@ -2,10 +2,12 @@ package com.tokopedia.shop.pageheader.presentation.holder
 
 import android.content.Context
 import android.view.View
+import com.airbnb.lottie.LottieCompositionFactory
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.network.TextApiUtils
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.gm.resource.GMConstant
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
@@ -13,6 +15,7 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey.LABEL_SHOP_PAGE_FREE_ONGKIR_TITLE
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
+import com.tokopedia.shop.analytic.ShopPageTrackingSGCPlayWidget
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
@@ -24,12 +27,13 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import kotlinx.android.synthetic.main.partial_new_shop_page_header.view.*
-import kotlinx.android.synthetic.main.shop_page_main.view.*
+import kotlinx.android.synthetic.main.partial_new_shop_page_seller_play_widget.view.*
 
 class ShopPageFragmentHeaderViewHolder(private val view: View, private val listener: ShopPageFragmentViewHolderListener,
                                        private val shopPageTracking: ShopPageTrackingBuyer?,
+                                       private val shopPageTrackingSGCPlayWidget: ShopPageTrackingSGCPlayWidget?,
                                        private val context: Context) {
-    private var isShopFavourited = false
+    private var isShopFavorite = false
 
     companion object {
         private const val LABEL_FREE_ONGKIR_DEFAULT_TITLE = "Toko ini Bebas Ongkir"
@@ -37,7 +41,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
 
     fun bind(shopPageHeaderDataModel: ShopPageHeaderDataModel, isMyShop: Boolean, remoteConfig: RemoteConfig) {
         view.shop_page_main_profile_name.text = MethodChecker.fromHtml(shopPageHeaderDataModel.shopName).toString()
-        view.shop_page_main_profile_follower.setOnClickListener { listener.onFollowerTextClicked(isShopFavourited) }
+        view.shop_page_main_profile_follower.setOnClickListener { listener.onFollowerTextClicked(isShopFavorite) }
         view.shop_page_main_profile_location.text = shopPageHeaderDataModel.location
         ImageHandler.loadImageCircle2(view.context, view.shop_page_main_profile_image, shopPageHeaderDataModel.avatar)
         if (isMyShop) {
@@ -55,17 +59,45 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
                 view.shop_page_main_profile_badge.visibility = View.GONE
             }
         }
-
         if (isMyShop) {
             displayAsSeller()
         } else {
             displayAsBuyer()
         }
+        setupSgcPlayWidget(shopPageHeaderDataModel, isMyShop)
 
         if (shopPageHeaderDataModel.isFreeOngkir)
             showLabelFreeOngkir(remoteConfig)
         else
             view.shop_page_main_profile_free_ongkir.hide()
+    }
+
+    private fun setupTextContentSgcWidget(){
+        if(view.shop_page_sgc_title.text.isBlank()) {
+            val text = context.getString(R.string.shop_page_play_widget_title)
+            view.shop_page_sgc_title.text = MethodChecker.fromHtml(text)
+        }
+    }
+
+    private fun setupSgcPlayWidget(shopPageHeaderDataModel: ShopPageHeaderDataModel, isMyShop: Boolean){
+        view.play_seller_widget_container.visibility = if(isMyShop && shopPageHeaderDataModel.broadcaster.streamAllowed) View.VISIBLE else View.GONE
+        if(isMyShop){
+            setupTextContentSgcWidget()
+            setLottieAnimationFromUrl(context.getString(R.string.shop_page_lottie_sgc_url))
+            shopPageTrackingSGCPlayWidget?.onImpressionSGCContent(shopId = shopPageHeaderDataModel.shopId, customDimensionShopPage = CustomDimensionShopPage.create(
+                    shopPageHeaderDataModel.shopId,
+                    shopPageHeaderDataModel.isOfficial,
+                    shopPageHeaderDataModel.isGoldMerchant
+            ))
+            view.container_lottie?.setOnClickListener {
+                shopPageTrackingSGCPlayWidget?.onClickSGCContent(shopId = shopPageHeaderDataModel.shopId, customDimensionShopPage = CustomDimensionShopPage.create(
+                        shopPageHeaderDataModel.shopId,
+                        shopPageHeaderDataModel.isOfficial,
+                        shopPageHeaderDataModel.isGoldMerchant
+                ))
+                RouteManager.route(view.context, ApplinkConstInternalContent.INTERNAL_PLAY_BROADCASTER)
+            }
+        }
     }
 
     fun showShopPageHeaderContent() {
@@ -106,7 +138,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
     }
 
     fun updateFavoriteData(favoriteData: ShopInfo.FavoriteData) {
-        isShopFavourited = TextApiUtils.isValueTrue(favoriteData.alreadyFavorited.toString())
+        isShopFavorite = TextApiUtils.isValueTrue(favoriteData.alreadyFavorited.toString())
         if (favoriteData.totalFavorite > 1) {
             view.shop_page_main_profile_follower.text = MethodChecker.fromHtml(view.context.getString(R.string.shop_page_header_total_followers,
                     favoriteData.totalFavorite.toDouble().formatToSimpleNumber()))
@@ -192,17 +224,17 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         updateFavoriteButton()
     }
 
-    fun isShopFavourited() = isShopFavourited
+    fun isShopFavourited() = isShopFavorite
 
     fun updateFavoriteButton() {
         view.shop_page_follow_unfollow_button.isLoading = false
         view.shop_page_follow_unfollow_button.setOnClickListener {
             if (!view.shop_page_follow_unfollow_button.isLoading) {
                 view.shop_page_follow_unfollow_button.isLoading = true
-                listener.toggleFavorite(!isShopFavourited)
+                listener.toggleFavorite(!isShopFavorite)
             }
         }
-        if (isShopFavourited) {
+        if (isShopFavorite) {
             view.shop_page_follow_unfollow_button.buttonVariant = UnifyButton.Variant.GHOST
             view.shop_page_follow_unfollow_button.buttonType = UnifyButton.Type.ALTERNATE
             view.shop_page_follow_unfollow_button.text = context.getString(R.string.shop_header_action_following)
@@ -225,7 +257,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
 
     private fun displayGoldenShop() {
         view.shop_page_main_profile_badge.visibility = View.VISIBLE
-        view.shop_page_main_profile_badge.setImageDrawable(GMConstant.getGMDrawable(context))
+        view.shop_page_main_profile_badge.setImageDrawable(MethodChecker.getDrawable(context, com.tokopedia.gm.common.R.drawable.ic_power_merchant))
     }
 
     private fun displayOfficial() {
@@ -233,9 +265,24 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         view.shop_page_main_profile_badge.setImageResource(R.drawable.ic_badge_shop_official)
     }
 
+    /**
+     * Fetch the animation from http URL and play the animation
+     */
+    private fun setLottieAnimationFromUrl(animationUrl: String) {
+        context?.let {
+            val lottieCompositionLottieTask = LottieCompositionFactory.fromUrl(it, animationUrl)
+
+            lottieCompositionLottieTask.addListener { result ->
+                view.lottie?.setComposition(result)
+                view.lottie?.playAnimation()
+            }
+
+            lottieCompositionLottieTask.addFailureListener { }
+        }
+    }
 
     fun toggleFavourite() {
-        isShopFavourited = !isShopFavourited
+        isShopFavorite = !isShopFavorite
     }
 
     interface ShopPageFragmentViewHolderListener {

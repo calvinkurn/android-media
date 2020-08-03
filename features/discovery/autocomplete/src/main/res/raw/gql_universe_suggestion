@@ -22,5 +22,20 @@ query universe_suggestion($params: String!) {
         }
       }
     }
+    top_shops{
+      type
+      id
+      applink
+      url
+      title
+      subtitle
+      icon_title
+      icon_subtitle
+      url_tracker
+      image_url
+      products{
+        image_url
+      }
+    }
   }
 }

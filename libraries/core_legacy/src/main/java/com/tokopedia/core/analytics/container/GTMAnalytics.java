@@ -15,6 +15,7 @@ import com.tokopedia.analyticsdebugger.debugger.GtmLogger;
 import com.tokopedia.analyticsdebugger.debugger.TetraDebugger;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.util.PriceUtil;
 import com.tokopedia.device.info.DeviceConnectionInfo;
@@ -781,7 +782,7 @@ public class GTMAnalytics extends ContextAnalytics {
             }
         }
 
-        pushEventV5("openScreen", bundle, context);
+        pushEventV5("openScreen", wrapWithSessionIris(bundle), context);
         iris.saveEvent(bundleToMap(bundle));
     }
 
@@ -947,10 +948,12 @@ public class GTMAnalytics extends ContextAnalytics {
         }
         //
         bundle.putString(KEY_EVENT, keyEvent);
-        pushEventV5(keyEvent, bundle, context);
+        pushEventV5(keyEvent, wrapWithSessionIris(bundle), context);
     }
 
     public void sendCampaign(Map<String, Object> param) {
+        if(!TrackingUtils.isValidCampaign(param)) return;
+
         Bundle bundle = new Bundle();
         String afUniqueId = getAfUniqueId(context);
 
@@ -971,7 +974,7 @@ public class GTMAnalytics extends ContextAnalytics {
         bundle.putString("utmContent", (String) param.get(AppEventTracking.GTM.UTM_CAMPAIGN));
         bundle.putString("utmTerm", (String) param.get(AppEventTracking.GTM.UTM_TERM));
 
-        pushEventV5("campaignTrack", bundle, context);
+        pushEventV5("campaignTrack", wrapWithSessionIris(bundle), context);
     }
 
     public void pushGeneralGtmV5Internal(Map<String, Object> params) {
@@ -991,11 +994,26 @@ public class GTMAnalytics extends ContextAnalytics {
                 bundle.putString(entry.getKey(), bruteForceCastToString(entry.getValue()));
         }
 
-        pushEventV5(params.get(KEY_EVENT) + "", bundle, context);
+
+        pushEventV5(params.get(KEY_EVENT) + "", wrapWithSessionIris(bundle), context);
+    }
+
+    public Bundle wrapWithSessionIris(Bundle bundle){
+        // AN-18166
+        // globally put sessionIris
+        String sessionIris = bundle.getString(SESSION_IRIS);
+        if (TextUtils.isEmpty(sessionIris))  {
+            bundle.putString(SESSION_IRIS, iris.getSessionId());
+        }
+        return bundle;
+        // end of globally put sessionIris
     }
 
     public void pushEventV5(String eventName, Bundle bundle, Context context) {
         try {
+            if (!CommonUtils.checkStringNotNull(bundle.getString(SESSION_IRIS))) {
+                bundle.putString(SESSION_IRIS, new IrisSession(context).getSessionId());
+            }
             FirebaseAnalytics.getInstance(context).logEvent(eventName, bundle);
             logV5(context, eventName, bundle);
         } catch (Exception ex) {

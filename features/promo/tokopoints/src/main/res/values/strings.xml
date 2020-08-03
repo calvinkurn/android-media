@@ -1,5 +1,5 @@
 <resources>
-    <string name="tp_title_tokopoints">TokoPoints</string>
+    <string name="tp_title_tokopoints">Rewards</string>
     <string name="tp_title_detail">Detail Kupon</string>
     <string name="tp_title_send_coupon">Kirim Kupon</string>
     <string name="tp_title_history">Riwayat</string>
@@ -30,11 +30,11 @@
     <string name="tp_label_my_coupon_new_card">Lihat Semua\nKupon Saya</string>
     <string name="tp_label_my_coupon_space">Kupon Milik Saya \u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020</string>
     <string name="tp_label_see_all">Lihat Semua</string>
-    <string name="tp_label_help_with_storepoints">Bantuan TokoPoints</string>
+    <string name="tp_label_help_with_storepoints">Info Selengkapnya</string>
     <string name="tp_label_valid_for">Berlaku selama</string>
     <string name="tp_label_applies_to">Berlaku pada:</string>
-    <string name="tp_label_prepare_catalog">Sedang Menyiapkan Katalog</string>
-    <string name="tp_label_go_shopping">Silakan lanjut berbelanja</string>
+    <string name="tp_label_prepare_catalog">Kamu tidak memiliki kupon untuk kategori ini</string>
+    <string name="tp_label_go_shopping">Ayo klaim kupon gratis di halaman Rewards!</string>
     <string name="tp_label_try_again">Silakan coba kembali</string>
     <string name="tp_label_server_error">Terjadi Kendala Pada Server</string>
     <string name="tp_label_remaining_exchange">Sisa Tukar</string>
@@ -42,7 +42,7 @@
     <string name="tp_message_tokopoints_on_boarding"><![CDATA[<strong>TokoPoints</strong> adalah program loyalitas konsumen untuk Pengguna yang memungkinkan Pengguna untuk mendapatkan.<br /><strong>Loyalty</strong> dari transaksi yang dilakukan melalui situs/aplikasi.<br /><br />Tingkatkan <strong>Loyalty</strong> untuk mendapatkan keuntungan yang lebih banyak .]]></string>
     <string name="tp_label_too_many_access">Failed to Redeem</string>
     <string name="tp_label_wait">Tunggu beberapa saat lagi</string>
-    <string name="tp_label_exchange_point">Tukar Points</string>
+    <string name="tp_label_exchange_point">Lihat Kupon</string>
     <string name="tp_label_how_to_use">Cara Pakai</string>
     <string name="tp_label_tnc">Ketentuan</string>
     <string name="tp_label_min_exchange">Minimal transaksi:</string>
@@ -74,9 +74,9 @@
     <string name="moreCouponCount">99+</string>
     <string name="tp_btn_exp_help">Selengkapnya tentang Points dan Loyalty</string>
     <string name="tp_exp_info">Points dan Loyalty memiliki masa berlaku yang berbeda:</string>
-    <string name="tp_loyalty_info"><b>Loyalty</b> adalah hadiah yang Anda peroleh setelah bertransaksi di Tokopedia tanpa harus memecahkan Lucky Egg.</string>
-    <string name="tp_point_info"><b>Points</b> adalah hadiah yang Anda peroleh dari program menarik Tokopedia seperti bermain games di Tokopedia Seru dan program lainnya.</string>
-    <string name="tp_history_header">Tukarkan Points dengan Kupon menarik dan tingkatkan Loyalty untuk mendapatkan keuntungan yang lebih banyak.</string>
+    <string name="tp_loyalty_info"><b>Loyalty</b> masih bisa didapatkan oleh pengguna dari transaksi.  Loyalty akan menentukan level membership pengguna.</string>
+    <string name="tp_point_info"><b>Seluruh Points</b> pengguna telah kadaluwarsa dan pengguna tidak akan mendapatkan Points lagi dari transaksi maupun aktivitas lainnya.</string>
+    <string name="tp_history_header">Klaim kupon menarik dan tingkatkan Loyalty untuk mendapatkan keuntungan yang lebih banyak.</string>
     <string name="tp_title_history_bottomshet">Beda Points dan Loyalty</string>
     <string name="tp_btn_history_bottomshet">Cek Info Points &amp; Loyalty</string>
     <string name="tp_ph_point">Points: </string>
@@ -103,5 +103,11 @@
     <string name="tp_phone_verification_desc">Sebelum menggunakan promo ini, verifikasi dulu nomor HP kamu, ya.</string>
     <string name="tp_verifikasi_title">Ayo verifikasi nomor HP kamu!</string>
     <string name="tp_btn_verifikasi">Verifikasi Nomor HP</string>
-
+    <string name="tp_catalog_code_error_title">Waduh, tujuanmu nggak ada!</string>
+    <string name="tp_catalog_code_error_desc">Mungkin kamu salah jalan atau alamat. Ayo balik sebelum gelap!</string>
+    <string name="tp_catalog_code_error_btn">Ke Homepage</string>
+    <string name="tp_see_all">See All</string>
+    <string name="tp_catalog_empty_title">Kupon kategori ini sedang disiapkan</string>
+    <string name="tp_catalog_empty_description">Sabar! Kami punya banyak kupon spesial buatmu yang menunggu saatnya dikeluarkan.</string>
+    <string name="tp_catalog_empty_button">Lihat Kupon Tersedia</string>
 </resources>

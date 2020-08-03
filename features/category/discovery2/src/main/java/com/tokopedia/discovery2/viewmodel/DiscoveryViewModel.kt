@@ -1,16 +1,16 @@
 package com.tokopedia.discovery2.viewmodel
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.PageInfo
+import com.tokopedia.discovery2.datamapper.DiscoveryPageData
 import com.tokopedia.discovery2.repository.discoveryPage.DiscoveryUIConfigGQLRepository
 import com.tokopedia.discovery2.usecase.CustomTopChatUseCase
 import com.tokopedia.discovery2.usecase.DiscoveryDataUseCase
@@ -22,29 +22,31 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.*
-import java.io.InputStream
-import java.net.HttpURLConnection
-import java.net.URL
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: DiscoveryDataUseCase,
                                              private val discoveryUIConfigRepo: DiscoveryUIConfigGQLRepository,
                                              private val userSession: UserSessionInterface,
-                                             private val trackingQueue: TrackingQueue) : BaseViewModel(), CoroutineScope {
+                                             private val trackingQueue: TrackingQueue,
+                                             private val pageLoadTimePerformanceInterface: PageLoadTimePerformanceInterface?) : BaseViewModel(), CoroutineScope {
 
     private val discoveryPageInfo = MutableLiveData<Result<PageInfo>>()
     private val discoveryFabLiveData = MutableLiveData<Result<ComponentsItem>>()
     private val discoveryResponseList = MutableLiveData<Result<List<ComponentsItem>>>()
     private val discoveryUIConfig = MutableLiveData<Result<String>>()
-    private val phoneVerificationLiveData = MutableLiveData<Boolean>()
     var pageIdentifier: String = ""
     var pageType: String = ""
     var pagePath: String = ""
+    var campaignCode: String = ""
 
     @Inject
     lateinit var customTopChatUseCase: CustomTopChatUseCase
+
     @Inject
     lateinit var quickCouponUseCase: QuickCouponUseCase
 
@@ -55,13 +57,17 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     fun getDiscoveryData() {
         launchCatchError(
                 block = {
+                    pageLoadTimePerformanceInterface?.stopPreparePagePerformanceMonitoring()
+                    pageLoadTimePerformanceInterface?.startNetworkRequestPerformanceMonitoring()
                     val data = discoveryDataUseCase.getDiscoveryPageDataUseCase(pageIdentifier)
+                    pageLoadTimePerformanceInterface?.stopNetworkRequestPerformanceMonitoring()
+                    pageLoadTimePerformanceInterface?.startRenderPerformanceMonitoring()
                     data.let {
                         withContext(Dispatchers.Default) {
                             discoveryResponseList.postValue(Success(it.components))
 
                         }
-                        setPageInfo(it.pageInfo)
+                        setPageInfo(it)
                     }
                 },
                 onError = {
@@ -78,7 +84,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
                     setUIConfig(data.discoveryPageUIConfig?.data?.config)
                 },
                 onError = {
-                    discoveryUIConfig.postValue(Fail(it))
+                    discoveryUIConfig.postValue(Success(REACT_NATIVE))
                 }
         )
     }
@@ -87,11 +93,13 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
         discoveryUIConfig.postValue(Success(config ?: REACT_NATIVE))
     }
 
-    private fun setPageInfo(pageInfo: PageInfo?) {
-        if (pageInfo != null) {
-            pageType = pageInfo.type ?: ""
-            pagePath = pageInfo.path ?: ""
-            discoveryPageInfo.value = Success(pageInfo)
+    private fun setPageInfo(discoPageData: DiscoveryPageData?) {
+        discoPageData?.pageInfo?.let {pageInfoData ->
+            pageType = pageInfoData.type ?: ""
+            pagePath = pageInfoData.path ?: ""
+            pageInfoData.additionalInfo = discoPageData.additionalInfo
+            campaignCode = pageInfoData.campaignCode ?: ""
+            discoveryPageInfo.value = Success(pageInfoData)
         }
     }
 
@@ -105,20 +113,6 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
             discoveryFabLiveData.postValue(Fail(Throwable()))
         }
 
-    }
-
-
-    fun getBitmapFromURL(src: String?): Bitmap? = runBlocking {
-        getBitmap(src).await()
-    }
-
-    fun getBitmap(src: String?) = async(Dispatchers.IO) {
-        val url = URL(src)
-        val connection: HttpURLConnection = url.openConnection() as HttpURLConnection
-        connection.doInput = true
-        connection.connect()
-        val input: InputStream = connection.inputStream
-        BitmapFactory.decodeStream(input)
     }
 
     fun getDiscoveryPageInfo(): LiveData<Result<PageInfo>> = discoveryPageInfo

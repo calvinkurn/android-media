@@ -16,10 +16,12 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeoLocationPromptDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.RetryModel
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.*
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.InspirationHeaderViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.RetryViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.SellViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.UseCaseIconSectionViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.*
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.default_home_dc.ErrorPromptViewHolder
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.mix_top.MixTopBannerViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.widget_business.NewBusinessViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.EmptyBlankViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.GeolocationPromptViewHolder
@@ -28,16 +30,8 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_ch
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
 import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.listener.*
-import com.tokopedia.home_component.viewholders.DynamicLegoBannerViewHolder
-import com.tokopedia.home_component.viewholders.MixLeftComponentViewHolder
-import com.tokopedia.home_component.viewholders.MixTopComponentViewHolder
-import com.tokopedia.home_component.viewholders.RecommendationListCarouselViewHolder
-import com.tokopedia.home_component.viewholders.ReminderWidgetViewHolder
-import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
-import com.tokopedia.home_component.visitable.MixLeftDataModel
-import com.tokopedia.home_component.visitable.MixTopDataModel
-import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
-import com.tokopedia.home_component.visitable.ReminderWidgetModel
+import com.tokopedia.home_component.viewholders.*
+import com.tokopedia.home_component.visitable.*
 import java.util.*
 
 /**
@@ -55,7 +49,8 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                          private val recommendationListCarouselListener: RecommendationListCarouselListener,
                          private val mixLeftComponentListener: MixLeftComponentListener,
                          private val mixTopComponentListener: MixTopComponentListener,
-                         private val reminderWidgetListener: ReminderWidgetListener
+                         private val reminderWidgetListener: ReminderWidgetListener,
+                         private val productHighlightListener: ProductHighlightListener
 ) :
         BaseAdapterTypeFactory(),
         HomeTypeFactory, HomeComponentTypeFactory{
@@ -137,6 +132,10 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
         return PlayCardViewHolder.LAYOUT
     }
 
+    override fun type(playCard: PlayCarouselCardDataModel): Int {
+        return PlayBannerCardViewHolder.LAYOUT
+    }
+
     override fun type(homeLoadingMoreModel: HomeLoadingMoreModel): Int {
         return HomeLoadingMoreViewHolder.LAYOUT
     }
@@ -147,6 +146,10 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
 
     override fun type(popularKeywordListDataModel: PopularKeywordListDataModel): Int {
         return PopularKeywordViewHolder.LAYOUT
+    }
+
+    override fun type(homeTopAdsBannerDataModel: HomeTopAdsBannerDataModel): Int {
+        return TopadsBannerViewHolder.LAYOUT
     }
 
     //Home-Component
@@ -169,6 +172,10 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
     override fun type(mixTopDataModel: MixTopDataModel): Int {
         return MixTopComponentViewHolder.LAYOUT
     }
+
+    override fun type(productHighlightDataModel: ProductHighlightDataModel): Int {
+        return ProductHighlightComponentViewHolder.LAYOUT
+    }
     //end of Home-Component section
 
     private fun getDynamicChannelLayoutFromType(layout: String): Int {
@@ -189,24 +196,10 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
 
         return when (layout) {
             /**
-             * refer to 3 and 6 image item layout {@link com.tokopedia.home.R.layout#layout_lego_item}
-             * //deprecated - exist for remote config
-             */
-            DynamicHomeChannel.Channels.LAYOUT_6_IMAGE,
-            DynamicHomeChannel.Channels.LAYOUT_LEGO_4_IMAGE,
-            DynamicHomeChannel.Channels.LAYOUT_LEGO_3_IMAGE -> OldDynamicLegoBannerViewHolder.LAYOUT
-
-            /**
              * refer to 1 grid item layout {@link com.tokopedia.home.R.layout#home_dc_category_widget}
              * used by category widget
              */
             DynamicHomeChannel.Channels.LAYOUT_CATEGORY_WIDGET -> CategoryWidgetViewHolder.LAYOUT
-
-            /**
-             * refer to 1 grid item layout {@link com.tokopedia.home.R.layout#home_dc_deals}
-             * used by deals widget to show 1 product item
-             */
-            DynamicHomeChannel.Channels.LAYOUT_PRODUCT_HIGHLIGHT -> ProductHighlightViewHolder.LAYOUT
 
             /**
              * refer to sprint product item layout {@link com.tokopedia.home.R.layout#layout_sprint_product_item}
@@ -226,23 +219,14 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
             DynamicHomeChannel.Channels.LAYOUT_POPULAR_KEYWORD -> PopularKeywordViewHolder.LAYOUT
 
             /**
-             * refer to mix left carousel com.tokopedia.home.R.layout#home_dc_mix_left
-             */
-            DynamicHomeChannel.Channels.LAYOUT_MIX_LEFT -> MixLeftViewHolder.LAYOUT
-
-            /**
              * refer to gif banner layout com.tokopedia.home.R.layout#home_dc_default_error_prompt
              */
             DynamicHomeChannel.Channels.LAYOUT_DEFAULT_ERROR -> ErrorPromptViewHolder.LAYOUT
 
             /**
-             * refer to recommendation list carousel com.tokopedia.home.R.layout#home_dc_list_carousel
-             */
-            DynamicHomeChannel.Channels.LAYOUT_LIST_CAROUSEL -> OldRecommendationListCarouselViewHolder.LAYOUT
-            /**
              * refer to mix top carousel com.tokopedia.home.R.layout#home_mix_top_banner
              */
-            DynamicHomeChannel.Channels.LAYOUT_MIX_TOP -> MixTopBannerViewHolder.LAYOUT
+            DynamicHomeChannel.Channels.LAYOUT_BANNER_ADS -> TopadsBannerViewHolder.LAYOUT
             else -> EmptyBlankViewHolder.LAYOUT
         }
     }
@@ -251,13 +235,6 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
         when (type) {
             DynamicChannelSprintViewHolder.LAYOUT -> viewHolder = DynamicChannelSprintViewHolder(view, listener, parentRecycledViewPool)
             ProductOrganicChannelViewHolder.LAYOUT -> viewHolder = ProductOrganicChannelViewHolder(view, listener, parentRecycledViewPool)
-
-            //deprecated - exist for remote config
-            OldDynamicLegoBannerViewHolder.LAYOUT -> viewHolder = OldDynamicLegoBannerViewHolder(view, listener, parentRecycledViewPool)
-
-            //deprecated - exist for remote config
-            OldRecommendationListCarouselViewHolder.LAYOUT -> viewHolder = OldRecommendationListCarouselViewHolder(view, listener, parentRecycledViewPool)
-
             BannerViewHolder.LAYOUT -> viewHolder = BannerViewHolder(view, listener)
             TickerViewHolder.LAYOUT -> viewHolder = TickerViewHolder(view, listener)
             NewBusinessViewHolder.LAYOUT -> viewHolder = NewBusinessViewHolder(view, listener)
@@ -276,13 +253,16 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
             BannerImageViewHolder.LAYOUT -> viewHolder = BannerImageViewHolder(view, listener)
             ReviewViewHolder.LAYOUT -> viewHolder = ReviewViewHolder(view, homeReviewListener, listener)
             PlayCardViewHolder.LAYOUT -> viewHolder = PlayCardViewHolder(view, listener)
+            PlayBannerCardViewHolder.LAYOUT -> viewHolder = PlayBannerCardViewHolder(view, listener)
             HomeLoadingMoreViewHolder.LAYOUT -> viewHolder = HomeLoadingMoreViewHolder(view)
             ErrorPromptViewHolder.LAYOUT -> viewHolder = ErrorPromptViewHolder(view, listener)
             PopularKeywordViewHolder.LAYOUT -> viewHolder = PopularKeywordViewHolder(view, listener, popularKeywordListener)
-            MixLeftViewHolder.LAYOUT -> viewHolder = MixLeftViewHolder(view, listener, parentRecycledViewPool)
-            MixTopBannerViewHolder.LAYOUT -> viewHolder = MixTopBannerViewHolder(view, listener)
-            ProductHighlightViewHolder.LAYOUT -> viewHolder = ProductHighlightViewHolder(view, listener)
             CategoryWidgetViewHolder.LAYOUT -> viewHolder = CategoryWidgetViewHolder(view, listener)
+            ProductHighlightComponentViewHolder.LAYOUT -> viewHolder = ProductHighlightComponentViewHolder(
+                    view,
+                    homeComponentListener,
+                    productHighlightListener
+            )
             DynamicLegoBannerViewHolder.LAYOUT -> viewHolder =
                     DynamicLegoBannerViewHolder(
                             view,
@@ -310,6 +290,7 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                     )
             ReminderWidgetViewHolder.LAYOUT -> viewHolder =
                     ReminderWidgetViewHolder(view,reminderWidgetListener)
+            TopadsBannerViewHolder.LAYOUT -> viewHolder = TopadsBannerViewHolder(view, listener)
             else -> viewHolder = super.createViewHolder(view, type)
         }
 

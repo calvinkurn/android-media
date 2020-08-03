@@ -80,6 +80,7 @@ class SearchProductLoadMoreGqlUseCase(
                             discountPercentage
                             warehouseIdDefault
                             boosterList
+                            source_engine
                             labelGroups {
                                 title
                                 position
@@ -117,6 +118,7 @@ class SearchProductLoadMoreGqlUseCase(
                             id
                             name
                             wishlist
+                            category_breadcrumb
                             image {
                                 m_url
                                 s_url

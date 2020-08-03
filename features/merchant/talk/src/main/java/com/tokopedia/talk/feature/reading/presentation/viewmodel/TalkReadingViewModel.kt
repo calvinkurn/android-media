@@ -24,7 +24,7 @@ import javax.inject.Inject
 class TalkReadingViewModel @Inject constructor(
         private val getDiscussionAggregateUseCase: GetDiscussionAggregateUseCase,
         private val getDiscussionDataUseCase: GetDiscussionDataUseCase,
-        userSession: UserSessionInterface,
+        private val userSession: UserSessionInterface,
         private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
@@ -32,7 +32,6 @@ class TalkReadingViewModel @Inject constructor(
         private const val REQUEST_DELAY = 1000L
     }
 
-    val isUserLoggedIn: Boolean = userSession.isLoggedIn
     val userId: String = userSession.userId
 
     private val _discussionAggregate = MutableLiveData<Result<DiscussionAggregateResponse>>()
@@ -106,11 +105,13 @@ class TalkReadingViewModel @Inject constructor(
 
     fun unselectAllCategories() {
         val filterCategories = _filterCategories.value?.toMutableList()
-        val updatedCategories = mutableListOf<TalkReadingCategory>()
-        filterCategories?.forEachIndexed { index, talkReadingCategory ->
-            updatedCategories.add(index, talkReadingCategory.copy(isSelected = false))
+        filterCategories?.let { list ->
+            val updatedCategories = mutableListOf<TalkReadingCategory>()
+            list.forEachIndexed { index, talkReadingCategory ->
+                updatedCategories.add(index, talkReadingCategory.copy(isSelected = false))
+            }
+            _filterCategories.value = updatedCategories
         }
-        _filterCategories.value = updatedCategories
     }
 
     fun updateSortOptions(sortOptions: List<SortOption>) {
@@ -129,10 +130,12 @@ class TalkReadingViewModel @Inject constructor(
 
     fun resetSortOptions() {
         val sortOptions = _sortOptions.value?.toMutableList()
-        sortOptions?.forEach {
-            it.isSelected = it.id == SortOption.SortId.INFORMATIVENESS
+        sortOptions?.let { list ->
+            list.forEach {
+                it.isSelected = it.id == SortOption.SortId.TIME
+            }
+            _sortOptions.value = sortOptions
         }
-        _sortOptions.value = sortOptions
     }
 
     fun updateLastAction(lastAction: TalkLastAction) {
@@ -145,6 +148,10 @@ class TalkReadingViewModel @Inject constructor(
 
     private fun setError(page: Int) {
         _viewState.value = ViewState.Error(page)
+    }
+
+    fun isUserLoggedIn(): Boolean {
+        return userSession.isLoggedIn
     }
 
     fun setSuccess(isEmpty: Boolean, page: Int) {

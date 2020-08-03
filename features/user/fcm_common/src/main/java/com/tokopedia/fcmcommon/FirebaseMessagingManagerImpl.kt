@@ -2,7 +2,8 @@ package com.tokopedia.fcmcommon
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.crashlytics.android.Crashlytics
+import android.preference.PreferenceManager
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.iid.FirebaseInstanceId
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.fcmcommon.data.UpdateFcmTokenResponse
@@ -82,6 +83,10 @@ class FirebaseMessagingManagerImpl @Inject constructor(
         return prefToken == currentFcmToken
     }
 
+    override fun currentToken(): String {
+        return getTokenFromPref()?: ""
+    }
+
     override fun clear() {
         coroutineContext.cancelChildren()
     }
@@ -120,7 +125,7 @@ class FirebaseMessagingManagerImpl @Inject constructor(
                     fcmTokenShouldBe: $token
                     errorMessage: ${error.message},
                 """.trimIndent()
-                Crashlytics.logException(Exception(errorMessage))
+                FirebaseCrashlytics.getInstance().recordException(Exception(errorMessage))
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -155,5 +160,10 @@ class FirebaseMessagingManagerImpl @Inject constructor(
 
     companion object {
         private const val FCM_TOKEN = "pref_fcm_token"
+
+        @JvmStatic
+        fun getFcmTokenFromPref(context: Context): String {
+            return PreferenceManager.getDefaultSharedPreferences(context).getString(FCM_TOKEN, "") ?: ""
+        }
     }
 }

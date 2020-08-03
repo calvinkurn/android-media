@@ -19,12 +19,12 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
-import com.tokopedia.oneclickcheckout.common.domain.model.OccState
-import com.tokopedia.oneclickcheckout.common.domain.model.shipping.ServicesItem
+import com.tokopedia.oneclickcheckout.common.view.model.OccState
 import com.tokopedia.oneclickcheckout.preference.analytics.PreferenceListAnalytics
 import com.tokopedia.oneclickcheckout.preference.edit.di.PreferenceEditComponent
 import com.tokopedia.oneclickcheckout.preference.edit.view.PreferenceEditParent
 import com.tokopedia.oneclickcheckout.preference.edit.view.payment.PaymentMethodFragment
+import com.tokopedia.oneclickcheckout.preference.edit.view.shipping.model.ServicesItem
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker

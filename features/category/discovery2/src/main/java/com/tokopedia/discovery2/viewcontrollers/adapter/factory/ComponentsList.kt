@@ -35,7 +35,7 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     Spacing(R.layout.spacing_layout, ComponentNames.Margin.componentName),
     ChipsFilter(R.layout.widget_recycler_view, ComponentNames.ChipsFilter.componentName),
     ChipsFilterItem(R.layout.chips_filter_item_layout, ComponentNames.ChipsFilterItem.componentName),
-    Tabs(R.layout.widget_recycler_view, ComponentNames.Tabs.componentName),
+    Tabs(R.layout.tabs_layout, ComponentNames.Tabs.componentName),
     TabsItem(R.layout.tabs_item_layout, ComponentNames.TabsItem.componentName),
     DynamicCategory(R.layout.dynamic_category_layout, ComponentNames.DynamicCategory.componentName),
     DynamicCategoryItem(R.layout.dynamic_category_single_item_layout, ComponentNames.DynamicCategoryItem.componentName),
@@ -45,6 +45,8 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     Shimmer(R.layout.discovery_shimmer_layout, ComponentNames.Shimmer.componentName),
     LoadMore(R.layout.discovery_progress_bar_layout, ComponentNames.LoadMore.componentName),
     QuickCoupon(R.layout.quick_coupon_layout, ComponentNames.QuickCoupon.componentName),
+    BannerCarousel(R.layout.horizontal_recycler_view_lihat, ComponentNames.BannerCarousel.componentName),
+    BannerCarouselItemView(R.layout.banner_carousel_item_layout, ComponentNames.BannerCarouselItemView.componentName),
 
     // CustomTopChat(R.layout.coming_soon_view, ComponentNames.CustomTopchat.componentName),
     // Product Card Revamp
@@ -52,7 +54,7 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     ProductCardRevampItem(R.layout.product_item_layout, ComponentNames.ProductCardRevampItem.componentName),
 
     // Product Card Revamp Carousel
-    ProductCardCarousel(R.layout.horizontal_recycler_view_layout, ComponentNames.ProductCardCarousel.componentName),
+    ProductCardCarousel(R.layout.carousel_product_card_recycler_view, ComponentNames.ProductCardCarousel.componentName),
     ProductCardCarouselItem(R.layout.product_item_horizontal_layout, ComponentNames.ProductCardCarouselItem.componentName),
 
     // Product Card Sprint Sale
@@ -60,7 +62,7 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     ProductCardSprintSaleItem(R.layout.product_item_layout, ComponentNames.ProductCardSprintSaleItem.componentName),
 
     // Product Card Sprint Sale Carousel
-    ProductCardSprintSaleCarousel(R.layout.horizontal_recycler_view_layout, ComponentNames.ProductCardSprintSaleCarousel.componentName),
+    ProductCardSprintSaleCarousel(R.layout.carousel_product_card_recycler_view, ComponentNames.ProductCardSprintSaleCarousel.componentName),
     ProductCardSprintSaleCarouselItem(R.layout.product_item_horizontal_layout, ComponentNames.ProductCardSprintSaleCarouselItem.componentName),
 
 

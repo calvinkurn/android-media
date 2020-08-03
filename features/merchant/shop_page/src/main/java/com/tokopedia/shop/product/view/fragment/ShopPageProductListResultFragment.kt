@@ -171,7 +171,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             selectedEtalaseName = savedInstanceState.getString(SAVED_SELECTED_ETALASE_NAME) ?: ""
             selectedEtalaseType = savedInstanceState.getInt(SAVED_SELECTED_ETALASE_TYPE, SELECTED_ETALASE_TYPE_DEFAULT_VALUE)
             keyword = savedInstanceState.getString(SAVED_KEYWORD) ?: ""
-            sortValue = savedInstanceState.getString(SAVED_SORT_VALUE)
+            sortValue = savedInstanceState.getString(SAVED_SORT_VALUE, "")
             shopId = savedInstanceState.getString(SAVED_SHOP_ID)
             shopRef = savedInstanceState.getString(SAVED_SHOP_REF).orEmpty()
             needReloadData = savedInstanceState.getBoolean(ShopParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA)
@@ -309,12 +309,12 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             shopProductAdapter.clearProductList()
             endlessRecyclerViewScrollListener.resetState()
         }
-        shopProductAdapter.setProductListDataModel(productList)
-        updateScrollListenerState(hasNextPage)
 
-        if (shopProductAdapter.shopProductViewModelList.size == 0) {
+        if (productList.isEmpty()) {
             shopProductAdapter.addEmptyDataModel(emptyDataViewModel)
         } else {
+            shopProductAdapter.setProductListDataModel(productList)
+            updateScrollListenerState(hasNextPage)
             isLoadingInitialData = false
         }
     }
@@ -469,7 +469,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     private fun onSuccessGetSortFilterData(shopStickySortFilter: ShopStickySortFilter) {
         val etalaseList = shopStickySortFilter.etalaseList
         defaultEtalaseName = etalaseList.firstOrNull()?.etalaseName.orEmpty()
-        selectedEtalaseId = shopStickySortFilter.etalaseList.firstOrNull { it.etalaseId == selectedEtalaseId }?.etalaseId
+        selectedEtalaseId = shopStickySortFilter.etalaseList.firstOrNull { isEtalaseMatch(it) }?.etalaseId
                 ?: ""
         sortValue = shopStickySortFilter.sortList.firstOrNull { it.value == sortValue }?.value ?: ""
         selectedEtalaseName = etalaseList.firstOrNull { it.etalaseId == selectedEtalaseId }?.etalaseName
@@ -495,6 +495,12 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 isNeedToReloadData,
                 selectedEtalaseType
         )
+    }
+
+    private fun isEtalaseMatch(model: ShopEtalaseItemDataModel): Boolean {
+        return (model.etalaseId.toLowerCase() == selectedEtalaseId.toLowerCase() ||
+                model.etalaseName.toLowerCase() == selectedEtalaseId.toLowerCase() ||
+                model.alias.toLowerCase() == selectedEtalaseId.toLowerCase()) && selectedEtalaseId.isNotEmpty()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -746,6 +752,10 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         if (shopProductAdapter.isLoading) {
             return
         }
+        shopPageTracking?.clickClearFilter(
+                isMyShop,
+                customDimensionShopPage
+        )
         sortValue = ""
         val sortName = ""
         shopProductAdapter.changeSelectedSortFilter(sortValue ?: "", sortName)

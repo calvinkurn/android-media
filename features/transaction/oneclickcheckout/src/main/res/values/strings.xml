@@ -9,7 +9,7 @@
     <string name="lbl_summary_preference_with_number_title">Atur</string>
     <string name="lbl_summary_preference_subtitle">Cek ringkasan pengaturanmu</string>
 
-    <string name="lbl_choose_payment">Pilih Metode Pembayaran</string>
+    <string name="lbl_choose_payment_method">Pilih Metode Pembayaran</string>
     <string name="step_choose_payment">Langkah 3 dari 3</string>
     <string name="lbl_save">Simpan</string>
 
@@ -25,7 +25,6 @@
     <string name="label_used">Digunakan</string>
 
     <string name="label_pay_total">Total Bayar</string>
-    <string name="label_cashback_ovo_points">Cashback OVO Points</string>
 
     <string name="lbl_osp_free_shipping">Pengiriman Bebas Ongkir</string>
     <string name="lbl_osp_free_shipping_with_price">Bebas Ongkir - Rp 0</string>
@@ -36,7 +35,6 @@
     <string name="lbl_osp_secondary_header">Pengiriman dan pembayaran</string>
 
     <string name="default_osp_error_message">Terjadi kesalahan pada server. Ulangi beberapa saat lagi</string>
-    <string name="message_error_checkout_empty">Barangmu lagi nggak bisa dibeli. Silakan balik ke keranjang untuk cek belanjaanmu.</string>
 
     <string name="title_one_click_checkout_preference">Pengaturan Beli Langsung</string>
     <string name="preference_list_empty_header">Kamu belum punya pengaturan Beli Langsung</string>
@@ -48,7 +46,6 @@
     <string name="lbl_default_preference_profile">Pilihan Utama</string>
 
     <!--Choose Address-->
-    <string name="hint_find_address">Cari alamat</string>
     <string name="label_button_save_address">Simpan Alamat</string>
     <string name="text_detail_address">Tokopedia Tower Ciputra World 2 Lantai 46, Jl. Prof. Dr. Satrio No. Kav. 11, RT.3/RW.3, Kota Jakarta Selatan 12950</string>
     <string name="text_address_type">Kantor</string>
@@ -87,4 +84,9 @@
 
     <string name="lbl_try_again">Coba Lagi</string>
     <string name="lbl_go_to_home">Ke Homepage</string>
+
+    <string name="lbl_shipping">Pengiriman</string>
+    <string name="lbl_shipping_with_name">Pengiriman %1$s</string>
+    <string name="lbl_shipping_duration_prefix">Durasi %1$s</string>
+    <string name="lbl_no_exact_shipping_duration">Durasi tergantung kurir</string>
 </resources>
