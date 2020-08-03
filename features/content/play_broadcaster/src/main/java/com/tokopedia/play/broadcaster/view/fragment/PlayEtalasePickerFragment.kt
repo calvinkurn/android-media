@@ -107,6 +107,11 @@ class PlayEtalasePickerFragment @Inject constructor(
         observeUploadProduct()
     }
 
+    override fun onPause() {
+        psbSearch.clearFocus()
+        super.onPause()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         job.cancelChildren()
