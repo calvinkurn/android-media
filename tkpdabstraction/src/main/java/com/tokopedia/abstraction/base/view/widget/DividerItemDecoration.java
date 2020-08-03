@@ -16,26 +16,26 @@ import com.tokopedia.abstraction.R;
  */
 
 public class DividerItemDecoration extends RecyclerView.ItemDecoration {
-    public static final int HORIZONTAL = LinearLayout.HORIZONTAL;
     public static final int VERTICAL = LinearLayout.VERTICAL;
+    public static final int HORIZONTAL = LinearLayout.HORIZONTAL;
 
     private int mOrientation;
     private Drawable mDivider;
     private boolean usePaddingLeft = true;
 
     public DividerItemDecoration(Context context) {
-        this(context, HORIZONTAL, context.getResources().getDrawable(R.drawable.bg_line_separator_thin));
+        this(VERTICAL, context.getResources().getDrawable(R.drawable.bg_line_separator_thin));
     }
 
     public DividerItemDecoration(Context context, int orientation) {
-        this(context, orientation, context.getResources().getDrawable(R.drawable.bg_line_separator_thin));
+        this(orientation, context.getResources().getDrawable(R.drawable.bg_line_separator_thin));
     }
 
-    public DividerItemDecoration(Context context, Drawable drawable) {
-        this(context, HORIZONTAL, drawable);
+    public DividerItemDecoration(Drawable drawable) {
+        this(VERTICAL, drawable);
     }
 
-    public DividerItemDecoration(Context context, int orientation, Drawable drawable) {
+    public DividerItemDecoration(int orientation, Drawable drawable) {
         mOrientation = orientation;
         mDivider = drawable;
     }
@@ -47,7 +47,7 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
     @Override
     public void onDrawOver(Canvas c, RecyclerView parent, RecyclerView.State state) {
         if (mOrientation == VERTICAL) {
-             drawVertical(c, parent);
+            drawVertical(c, parent);
         } else {
             drawHorizontal(c, parent);
         }
@@ -79,8 +79,18 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
     }
 
     private void drawHorizontal(Canvas c, RecyclerView parent) {
-        int top = parent.getPaddingTop();
-        int bottom = parent.getHeight() - parent.getPaddingBottom();
+        int top;
+        int bottom;
+
+        if (parent.getClipToPadding()) {
+            top = parent.getPaddingTop();
+            bottom = parent.getHeight() - parent.getPaddingBottom();
+            c.clipRect(parent.getPaddingLeft(), top,
+                    parent.getWidth() - parent.getPaddingRight(), bottom);
+        } else {
+            top = 0;
+            bottom = parent.getHeight();
+        }
 
         int childCount = parent.getChildCount();
         for (int i = 0; i < childCount; i++) {
