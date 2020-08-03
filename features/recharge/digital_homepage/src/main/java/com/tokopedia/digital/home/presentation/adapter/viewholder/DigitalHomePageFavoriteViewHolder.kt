@@ -22,20 +22,20 @@ class DigitalHomePageFavoriteViewHolder(itemView: View?, val onItemBindListener:
             if (element.isSuccess
                     && element.data != null
                     && element.data.section.items.isNotEmpty()) {
-                with (element.data.section) {
-//                    itemView.digital_homepage_favorites_shimmering.hide()
-                    itemView.digital_homepage_favorites_container.show()
-                    itemView.tv_recharge_home_favorites_title.text = title
+                with(element.data.section) {
+                    itemView.view_digital_homepage_favorites_shimmering.hide()
+                    itemView.view_digital_homepage_favorites_container.show()
+                    itemView.tv_digital_homepage_favorites_title.text = title
                     itemView.rv_digital_homepage_favorites.adapter = DigitalItemFavoriteAdapter(items, onItemBindListener)
                     onItemBindListener.onSectionItemImpression(items, BEHAVIORAL_CATEGORY_IMPRESSION)
                 }
             } else {
-//                itemView.digital_homepage_favorites_shimmering.hide()
-                itemView.digital_homepage_favorites_container.hide()
+                itemView.view_digital_homepage_favorites_shimmering.hide()
+                itemView.view_digital_homepage_favorites_container.hide()
             }
         } else {
-//            itemView.digital_homepage_favorites_shimmering.show()
-            itemView.digital_homepage_favorites_container.hide()
+            itemView.view_digital_homepage_favorites_shimmering.show()
+            itemView.view_digital_homepage_favorites_container.hide()
         }
     }
 

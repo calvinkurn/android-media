@@ -33,7 +33,7 @@ class RechargeItemFavoriteAdapter(val items: List<RechargeHomepageSections.Item>
             itemView.category_frame_image.card_image.loadImage(element.mediaUrl)
             itemView.category_frame_name.text = element.title
             itemView.setOnClickListener {
-                onItemBindListener.onRechargeSectionItemClicked(element, adapterPosition, BEHAVIORAL_CATEGORY_CLICK)
+                onItemBindListener.onRechargeSectionItemClicked(element)
             }
         }
 

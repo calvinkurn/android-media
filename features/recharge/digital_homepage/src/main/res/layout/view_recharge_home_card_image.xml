@@ -2,10 +2,10 @@
 <androidx.cardview.widget.CardView  xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/card_image_container"
-    android:layout_width="@dimen/layout_lvl5"
-    android:layout_height="@dimen/layout_lvl5"
+    android:layout_width="@dimen/layout_lvl6"
+    android:layout_height="@dimen/layout_lvl6"
     android:layout_gravity="center"
-    app:cardCornerRadius="@dimen/spacing_lvl4"
+    app:cardCornerRadius="@dimen/card_image_corner_radius"
     app:cardElevation="@dimen/spacing_lvl1">
 
     <ImageView

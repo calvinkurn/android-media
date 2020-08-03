@@ -1,22 +1,16 @@
 package com.tokopedia.digital.home.presentation.adapter.viewholder
 
-import android.content.res.Resources
-import android.util.TypedValue
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.digital.home.R
-import com.tokopedia.digital.home.model.RechargeHomepageCategoryModel
 import com.tokopedia.digital.home.model.RechargeHomepageProductCardsModel
-import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.DYNAMIC_ICON_IMPRESSION
-import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.PRODUCT_CARDS_IMPRESSION
 import com.tokopedia.digital.home.presentation.adapter.adapter.RechargeItemProductCardsAdapter
 import com.tokopedia.digital.home.presentation.adapter.adapter.RechargeItemProductCardsDecorator
 import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.dpToPx
-import com.tokopedia.kotlin.extensions.view.hide
 import kotlinx.android.synthetic.main.view_recharge_home_product_cards.view.*
 
 /**
@@ -42,10 +36,10 @@ class RechargeHomepageProductCardsViewHolder(itemView: View, val listener: OnIte
 
                 tv_recharge_home_product_cards_title.text = section.title
                 addOnImpressionListener(section) {
-                    listener.onRechargeSectionItemImpression(section.items, PRODUCT_CARDS_IMPRESSION)
+                    listener.onRechargeSectionItemImpression(section)
                 }
             } else {
-                view_recharge_home_product_cards_container.hide()
+                listener.onRechargeSectionEmpty(element.visitableId())
             }
         }
     }

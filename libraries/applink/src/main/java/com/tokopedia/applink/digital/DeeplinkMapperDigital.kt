@@ -58,6 +58,9 @@ object DeeplinkMapperDigital {
             deeplink.startsWith(ApplinkConst.DIGITAL_SMARTBILLS) -> {
                 ApplinkConsInternalDigital.SMART_BILLS
             }
+            deeplink.startsWith(ApplinkConst.DIGITAL_SUBHOMEPAGE_HOME) -> {
+                ApplinkConsInternalDigital.SUBHOMEPAGE
+            }
             else -> deeplink
         }
     }

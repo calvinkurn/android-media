@@ -1,10 +1,11 @@
-query rechargeGetDynamicPage($enablePersonalize: Boolean) {
-  rechargeGetDynamicPage(platformID:31, enablePersonalize: $enablePersonalize){
+query rechargeGetDynamicPage($platformId: Int!, $enablePersonalize: Boolean) {
+  rechargeGetDynamicPage(platformID: $platformId, enablePersonalize: $enablePersonalize){
     sections {
       id
       title
       sub_title
       template
+      app_link
       tracking {
         action
         data

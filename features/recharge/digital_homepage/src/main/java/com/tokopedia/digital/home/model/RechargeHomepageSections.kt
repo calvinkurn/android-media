@@ -33,6 +33,9 @@ data class RechargeHomepageSections (
             @SerializedName("tracking")
             @Expose
             val tracking: List<Tracking> = listOf(),
+            @SerializedName("app_link")
+            @Expose
+            val applink: String = "",
             @SerializedName("items")
             @Expose
             val items: List<Item> = listOf()
@@ -99,65 +102,105 @@ data class RechargeHomepageSections (
     )
 }
 
-abstract class RechargeHomepageSectionModel(val section: RechargeHomepageSections.Section): Visitable<DigitalHomePageTypeFactory> {
-        abstract override fun type(typeFactory: DigitalHomePageTypeFactory): Int
+interface RechargeHomepageSectionModel: Visitable<DigitalHomePageTypeFactory> {
+        fun visitableId(): Int
 }
 
-class RechargeHomepageBannerModel(section: RechargeHomepageSections.Section): RechargeHomepageSectionModel(section) {
+data class RechargeHomepageBannerModel(val section: RechargeHomepageSections.Section): RechargeHomepageSectionModel {
+        override fun visitableId(): Int {
+                return section.id
+        }
+
         override fun type(typeFactory: DigitalHomePageTypeFactory): Int {
                 return typeFactory.type(this)
         }
 }
 
-class RechargeHomepageBannerEmptyModel(section: RechargeHomepageSections.Section): RechargeHomepageSectionModel(section) {
+data class RechargeHomepageBannerEmptyModel(val section: RechargeHomepageSections.Section): RechargeHomepageSectionModel {
+        override fun visitableId(): Int {
+                return section.id
+        }
+
         override fun type(typeFactory: DigitalHomePageTypeFactory): Int {
                 return typeFactory.type(this)
         }
 }
 
-class RechargeHomepageFavoriteModel(section: RechargeHomepageSections.Section): RechargeHomepageSectionModel(section) {
+data class RechargeHomepageFavoriteModel(val section: RechargeHomepageSections.Section): RechargeHomepageSectionModel {
+        override fun visitableId(): Int {
+                return section.id
+        }
+
         override fun type(typeFactory: DigitalHomePageTypeFactory): Int {
                 return typeFactory.type(this)
         }
 }
 
-class RechargeHomepageCategoryModel(section: RechargeHomepageSections.Section): RechargeHomepageSectionModel(section) {
+data class RechargeHomepageCategoryModel(val section: RechargeHomepageSections.Section): RechargeHomepageSectionModel {
+        override fun visitableId(): Int {
+                return section.id
+        }
+
         override fun type(typeFactory: DigitalHomePageTypeFactory): Int {
                 return typeFactory.type(this)
         }
 }
 
-class RechargeHomepageTrustMarkModel(section: RechargeHomepageSections.Section): RechargeHomepageSectionModel(section) {
+data class RechargeHomepageTrustMarkModel(val section: RechargeHomepageSections.Section): RechargeHomepageSectionModel {
+        override fun visitableId(): Int {
+                return section.id
+        }
+
         override fun type(typeFactory: DigitalHomePageTypeFactory): Int {
                 return typeFactory.type(this)
         }
 }
 
-class RechargeHomepageVideoHighlightModel(section: RechargeHomepageSections.Section): RechargeHomepageSectionModel(section) {
+data class RechargeHomepageVideoHighlightModel(val section: RechargeHomepageSections.Section): RechargeHomepageSectionModel {
+        override fun visitableId(): Int {
+                return section.id
+        }
+
         override fun type(typeFactory: DigitalHomePageTypeFactory): Int {
                 return typeFactory.type(this)
         }
 }
 
-class RechargeHomepageSingleBannerModel(section: RechargeHomepageSections.Section): RechargeHomepageSectionModel(section) {
+data class RechargeHomepageSingleBannerModel(val section: RechargeHomepageSections.Section): RechargeHomepageSectionModel {
+        override fun visitableId(): Int {
+                return section.id
+        }
+
         override fun type(typeFactory: DigitalHomePageTypeFactory): Int {
                 return typeFactory.type(this)
         }
 }
 
-class RechargeHomepageDualBannersModel(section: RechargeHomepageSections.Section): RechargeHomepageSectionModel(section) {
+data class RechargeHomepageDualBannersModel(val section: RechargeHomepageSections.Section): RechargeHomepageSectionModel {
+        override fun visitableId(): Int {
+                return section.id
+        }
+
         override fun type(typeFactory: DigitalHomePageTypeFactory): Int {
                 return typeFactory.type(this)
         }
 }
 
-class RechargeHomepageProductCardsModel(section: RechargeHomepageSections.Section): RechargeHomepageSectionModel(section) {
+data class RechargeHomepageProductCardsModel(val section: RechargeHomepageSections.Section): RechargeHomepageSectionModel {
+        override fun visitableId(): Int {
+                return section.id
+        }
+
         override fun type(typeFactory: DigitalHomePageTypeFactory): Int {
                 return typeFactory.type(this)
         }
 }
 
-class RechargeHomepageProductBannerModel(section: RechargeHomepageSections.Section): RechargeHomepageSectionModel(section) {
+data class RechargeHomepageProductBannerModel(val section: RechargeHomepageSections.Section): RechargeHomepageSectionModel {
+        override fun visitableId(): Int {
+                return section.id
+        }
+
         override fun type(typeFactory: DigitalHomePageTypeFactory): Int {
                 return typeFactory.type(this)
         }

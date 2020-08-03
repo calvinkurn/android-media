@@ -14,6 +14,7 @@ import com.tokopedia.applink.internal.ApplinkConsInternalDigital.INTERNAL_SMARTC
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.INTERNAL_SMARTCARD_EMONEY
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.TELCO_POSTPAID_DIGITAL
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.TELCO_PREPAID_DIGITAL
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital.SUBHOMEPAGE
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.VOUCHER_GAME
 import com.tokopedia.applink.internal.ApplinkConsInternalHome.HOME_WISHLIST
 import com.tokopedia.applink.internal.ApplinkConsInternalHome.DEFAULT_HOME_RECOMMENDATION
@@ -191,7 +192,7 @@ object DeeplinkDFMapper : CoroutineScope {
 
             // Digital
             add(DFP({
-                it.startsWith(DIGITAL_SUBHOMEPAGE_HOME) ||
+                it.startsWith(SUBHOMEPAGE) ||
                     it.startsWith(TELCO_POSTPAID_DIGITAL) ||
                     it.startsWith(TELCO_PREPAID_DIGITAL) ||
                     it.startsWith(DIGITAL_PRODUCT_FORM) ||

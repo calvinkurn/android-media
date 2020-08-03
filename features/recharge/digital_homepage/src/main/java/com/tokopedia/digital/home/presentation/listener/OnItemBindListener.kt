@@ -7,8 +7,10 @@ import com.tokopedia.digital.home.model.DigitalHomePageSectionModel
 import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.home_component.listener.DynamicLegoBannerListener
 import com.tokopedia.home_component.listener.HomeComponentListener
+import com.tokopedia.home_component.listener.ReminderWidgetListener
 
-interface OnItemBindListener: DynamicLegoBannerListener, HomeComponentListener {
+interface OnItemBindListener {
+    // Old Subhomepage
     fun onCategoryItemClicked(element: DigitalHomePageCategoryModel.Submenu?, position: Int)
     fun onBannerItemClicked(element: DigitalHomePageBannerModel.Banner?, position: Int)
     fun onBannerAllItemClicked()
@@ -20,9 +22,19 @@ interface OnItemBindListener: DynamicLegoBannerListener, HomeComponentListener {
     fun onSectionItemImpression(elements: List<DigitalHomePageSectionModel.Item>, sectionType: String)
     fun onRecommendationImpression(elements: List<RecommendationItemEntity>)
 
-    fun onRechargeSectionItemClicked(element: RechargeHomepageSections.Item, position: Int, sectionType: String)
-    fun onRechargeSectionItemImpression(elements: List<RechargeHomepageSections.Item>, sectionType: String)
-    fun onRechargeFavoriteAllItemClicked()
-    fun onRechargeBannerAllItemClicked()
-    fun onRechargeProductBannerClose(element: RechargeHomepageSections.Item)
+    // Dynamic Subhomepage
+    fun onRechargeSectionEmpty(sectionID: Int)
+
+    fun onRechargeSectionItemClicked(element: RechargeHomepageSections.Item)
+    fun onRechargeBannerAllItemClicked(section: RechargeHomepageSections.Section)
+    fun onRechargeReminderWidgetClicked(sectionID: Int)
+    fun onRechargeReminderWidgetClosed(sectionID: Int)
+    fun onRechargeFavoriteAllItemClicked(section: RechargeHomepageSections.Section)
+    fun onRechargeLegoBannerItemClicked(sectionID: Int, itemPosition: Int)
+    fun onRechargeProductBannerClosed(section: RechargeHomepageSections.Section, position: Int)
+
+    fun onRechargeSectionItemImpression(element: RechargeHomepageSections.Section)
+    fun onRechargeBannerImpression(element: RechargeHomepageSections.Section)
+    fun onRechargeReminderWidgetImpression(sectionID: Int)
+    fun onRechargeLegoBannerImpression(sectionID: Int)
 }

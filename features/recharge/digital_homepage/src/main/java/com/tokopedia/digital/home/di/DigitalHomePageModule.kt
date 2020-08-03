@@ -2,6 +2,7 @@ package com.tokopedia.digital.home.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.digital.home.domain.DigitalHomePageUseCase
 import com.tokopedia.digital.home.domain.SearchCategoryHomePageUseCase
 import com.tokopedia.digital.home.presentation.Util.DigitalHomePageDispatchersProvider
 import com.tokopedia.digital.home.presentation.Util.DigitalHomeTrackingUtil
@@ -30,6 +31,11 @@ class DigitalHomePageModule {
     @DigitalHomePageScope
     @Provides
     fun provideDispatcher(): DigitalHomePageDispatchersProvider = DigitalHomePageDispatchersProvider()
+
+    @DigitalHomePageScope
+    @Provides
+    fun provideDigitalHomePageUseCase(multiRequestGraphqlUseCase: MultiRequestGraphqlUseCase): DigitalHomePageUseCase =
+            DigitalHomePageUseCase(multiRequestGraphqlUseCase)
 
     @DigitalHomePageScope
     @Provides

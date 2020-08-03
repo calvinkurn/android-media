@@ -82,15 +82,19 @@ object ViewUtils {
 }
 
 fun View.setGradientBackground(colorArray: ArrayList<String>) {
-    if (colorArray.size > 1) {
-        val colors = IntArray(colorArray.size)
-        for (i in 0 until colorArray.size) {
-            colors[i] = Color.parseColor(colorArray[i])
+    try {
+        if (colorArray.size > 1) {
+            val colors = IntArray(colorArray.size)
+            for (i in 0 until colorArray.size) {
+                colors[i] = Color.parseColor(colorArray[i])
+            }
+            val gradient = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, colors)
+            gradient.cornerRadius = 0f
+            this.background = gradient
+        } else {
+            this.setBackgroundColor(Color.parseColor(colorArray[0]))
         }
-        val gradient = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, colors)
-        gradient.cornerRadius = 0f
-        this.background = gradient
-    } else {
-        this.setBackgroundColor(Color.parseColor(colorArray[0]))
+    } catch (e: Exception) {
+
     }
 }

@@ -21,18 +21,18 @@ class DigitalHomePageTrustMarkViewHolder(itemView: View?, val onItemBindListener
             if (element.isSuccess
                     && element.data != null
                     && element.data.section.items.isNotEmpty()) {
-                with (element.data.section) {
-                    itemView.digital_homepage_trust_mark_shimmering.hide()
-                    itemView.digital_homepage_trust_mark_container.show()
+                with(element.data.section) {
+                    itemView.view_digital_homepage_trust_mark_shimmering.hide()
+                    itemView.view_digital_homepage_trust_mark_container.show()
                     itemView.rv_digital_homepage_trust_mark.adapter = DigitalItemTrustMarkAdapter(items)
                 }
             } else {
-                itemView.digital_homepage_trust_mark_shimmering.hide()
-                itemView.digital_homepage_trust_mark_container.hide()
+                itemView.view_digital_homepage_trust_mark_shimmering.hide()
+                itemView.view_digital_homepage_trust_mark_container.hide()
             }
         } else {
-            itemView.digital_homepage_trust_mark_shimmering.show()
-            itemView.digital_homepage_trust_mark_container.hide()
+            itemView.view_digital_homepage_trust_mark_shimmering.show()
+            itemView.view_digital_homepage_trust_mark_container.hide()
         }
     }
 
