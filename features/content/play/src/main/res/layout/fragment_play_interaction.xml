@@ -40,5 +40,16 @@
         app:layout_constraintTop_toTopOf="@id/space_size"
         />
 
+    <include
+        android:id="@+id/view_stats_info"
+        layout="@layout/view_stats_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/play_offset_12"
+        app:layout_constraintStart_toStartOf="@id/space_size"
+        app:layout_constraintTop_toBottomOf="@id/view_toolbar"
+        />
 
 </com.tokopedia.play.view.custom.PlayInteractionConstraintLayout>

@@ -37,13 +37,13 @@ class PlayUserInteractionLayoutManager(
     @IdRes private val videoSettingsComponentId: Int = viewInitializer.onInitVideoSettings(container)
     @IdRes private val endLiveInfoComponentId: Int = viewInitializer.onInitEndLiveComponent(container)
 //    @IdRes private val toolbarComponentId: Int = viewInitializer.onInitToolbar(container)
-    @IdRes private val statsInfoComponentId: Int = viewInitializer.onInitStatsInfo(container)
+//    @IdRes private val statsInfoComponentId: Int = viewInitializer.onInitStatsInfo(container)
     @IdRes private val quickReplyComponentId: Int = viewInitializer.onInitQuickReply(container)
     //play button should be on top of other component so it can be clicked
     @IdRes private val playButtonComponentId: Int = viewInitializer.onInitPlayButton(container)
 
     private val toolbarView: View = container.findViewById(R.id.view_toolbar)
-    private val statsInfoView: View = container.findViewById(statsInfoComponentId)
+    private val statsInfoView: View = container.findViewById(R.id.view_stats_info)
     private val sendChatView: View = container.findViewById(sendChatComponentId)
     private val quickReplyView: View = container.findViewById(quickReplyComponentId)
     private val chatListView: View = container.findViewById(chatListComponentId)
@@ -62,11 +62,10 @@ class PlayUserInteractionLayoutManager(
         layoutChatList(container = view, id = chatListComponentId, quickReplyComponentId = quickReplyComponentId, likeComponentId = likeComponentId, sizeContainerComponentId = R.id.space_size)
         layoutPinned(container = view, id = pinnedComponentId, chatListComponentId = chatListComponentId, likeComponentId = likeComponentId, sizeContainerComponentId = R.id.space_size)
         layoutPlayButton(container = view, videoOrientation = videoOrientation, id = playButtonComponentId, immersiveBoxComponentId = immersiveBoxComponentId)
-        layoutImmersiveBox(container = view, videoOrientation = videoOrientation, id = immersiveBoxComponentId, pinnedComponentId = pinnedComponentId, statsInfoComponentId = statsInfoComponentId)
+        layoutImmersiveBox(container = view, videoOrientation = videoOrientation, id = immersiveBoxComponentId, pinnedComponentId = pinnedComponentId, statsInfoComponentId = R.id.view_stats_info)
         layoutQuickReply(container = view, id = quickReplyComponentId, sendChatComponentId = sendChatComponentId, sizeContainerComponentId = R.id.space_size)
         layoutEndLiveComponent(container = view, id = endLiveInfoComponentId)
-        layoutStatsInfo(container = view, id = statsInfoComponentId, sizeContainerComponentId = R.id.space_size, toolbarComponentId = R.id.view_toolbar)
-        layoutVideoSettings(container = view, id = videoSettingsComponentId, sizeContainerComponentId = R.id.space_size, statsInfoComponentId = statsInfoComponentId)
+        layoutVideoSettings(container = view, id = videoSettingsComponentId, sizeContainerComponentId = R.id.space_size, statsInfoComponentId = R.id.view_stats_info)
     }
 
     override fun setupInsets(view: View, insets: WindowInsetsCompat) {
@@ -149,7 +148,7 @@ class PlayUserInteractionLayoutManager(
 
     override fun onVideoOrientationChanged(container: View, videoOrientation: VideoOrientation) {
         if (this.videoOrientation != videoOrientation) {
-            layoutImmersiveBox(container = container, videoOrientation = videoOrientation, id = immersiveBoxComponentId, pinnedComponentId = pinnedComponentId, statsInfoComponentId = statsInfoComponentId)
+            layoutImmersiveBox(container = container, videoOrientation = videoOrientation, id = immersiveBoxComponentId, pinnedComponentId = pinnedComponentId, statsInfoComponentId = R.id.view_stats_info)
             layoutPlayButton(container = container, videoOrientation = videoOrientation, id = playButtonComponentId, immersiveBoxComponentId = immersiveBoxComponentId)
         }
     }
@@ -194,13 +193,6 @@ class PlayUserInteractionLayoutManager(
             connect(id, ConstraintSet.START, sizeContainerComponentId, ConstraintSet.START, offset16)
             connect(id, ConstraintSet.END, likeComponentId, ConstraintSet.START, offset8)
             connect(id, ConstraintSet.BOTTOM, sizeContainerComponentId, ConstraintSet.BOTTOM)
-        }
-    }
-
-    private fun layoutStatsInfo(container: View, @IdRes id: Int, @IdRes sizeContainerComponentId: Int, @IdRes toolbarComponentId: Int) {
-        container.changeConstraint {
-            connect(id, ConstraintSet.START, sizeContainerComponentId, ConstraintSet.START, offset16)
-            connect(id, ConstraintSet.TOP, toolbarComponentId, ConstraintSet.BOTTOM, offset12)
         }
     }
 

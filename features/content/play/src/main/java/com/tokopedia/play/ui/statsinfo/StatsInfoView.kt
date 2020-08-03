@@ -16,7 +16,7 @@ import com.tokopedia.unifyprinciples.Typography
 class StatsInfoView(container: ViewGroup) : UIView(container) {
 
     private val view: View =
-            LayoutInflater.from(container.context).inflate(R.layout.view_stats_info, container, true)
+            LayoutInflater.from(container.context).inflate(R.layout.view_mini_stats_info, container, true)
                     .findViewById(R.id.cl_stats_info)
 
     override val containerId: Int = view.id

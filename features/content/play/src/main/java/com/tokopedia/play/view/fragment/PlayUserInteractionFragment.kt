@@ -77,6 +77,7 @@ import com.tokopedia.play.view.type.PlayRoomEvent
 import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.viewcomponent.EmptyViewComponent
+import com.tokopedia.play.view.viewcomponent.StatsInfoViewComponent
 import com.tokopedia.play.view.viewcomponent.ToolbarViewComponent
 import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
@@ -131,6 +132,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private val spaceSize by viewComponent { EmptyViewComponent(it, R.id.space_size) }
     private val gradientBackgroundView by viewComponent { EmptyViewComponent(it, R.id.view_gradient_background) }
     private val toolbarView by viewComponent { ToolbarViewComponent(it, R.id.view_toolbar, this) }
+    private val statsInfoView by viewComponent { StatsInfoViewComponent(it, R.id.view_stats_info) }
 
     private lateinit var playViewModel: PlayViewModel
     private lateinit var viewModel: PlayInteractionViewModel
@@ -370,6 +372,11 @@ class PlayUserInteractionFragment @Inject constructor(
             playFragment.setVideoTopBounds(playViewModel.videoPlayer, it.orientation, layoutManager.getVideoTopBounds(container, it.orientation))
 
             setVideoStream(it)
+
+            /**
+             * New
+             */
+            statsInfoView.setLiveBadgeVisibility(it.channelType.isLive)
         })
     }
 
@@ -384,7 +391,9 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun observeTotalViews() {
-        playViewModel.observableTotalViews.observe(viewLifecycleOwner, DistinctObserver(::setTotalView))
+        playViewModel.observableTotalViews.observe(viewLifecycleOwner, DistinctObserver {
+            statsInfoView.setTotalViews(it)
+        })
     }
 
     private fun observeNewChat() {
@@ -479,6 +488,7 @@ class PlayUserInteractionFragment @Inject constructor(
              */
             if (map.isAnyShown) gradientBackgroundView.hide() else gradientBackgroundView.show()
             if (!map.isAnyShown) toolbarView.show() else toolbarView.hide()
+            if (!map.isAnyShown) statsInfoView.show() else statsInfoView.hide()
         })
     }
 
@@ -498,6 +508,7 @@ class PlayUserInteractionFragment @Inject constructor(
                  */
                 if(it.isFreeze || it.isBanned) gradientBackgroundView.hide()
                 if(it.isFreeze || it.isBanned) toolbarView.show()
+                if(it.isFreeze || it.isBanned) statsInfoView.show()
             }
         })
     }
@@ -734,8 +745,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     override fun onInitStatsInfo(container: ViewGroup): Int {
-        return StatsInfoComponent(container, EventBusFactory.get(viewLifecycleOwner), scope, dispatchers)
-                .getContainerId()
+        throw IllegalStateException("No Init")
     }
 
     override fun onInitVideoSettings(container: ViewGroup): Int {
