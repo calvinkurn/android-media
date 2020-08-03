@@ -12,6 +12,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.gson.Gson
+import com.google.gson.JsonArray
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
@@ -38,6 +40,7 @@ import com.tokopedia.buyerorder.unifiedhistory.list.view.adapter.UohBottomSheetO
 import com.tokopedia.buyerorder.unifiedhistory.list.view.adapter.UohItemAdapter
 import com.tokopedia.buyerorder.unifiedhistory.list.view.viewmodel.UohListViewModel
 import com.tokopedia.datepicker.DatePickerUnify
+import com.tokopedia.design.utils.StringUtils
 import com.tokopedia.kotlin.extensions.convertMonth
 import com.tokopedia.kotlin.extensions.getCalculatedFormattedDate
 import com.tokopedia.kotlin.extensions.toFormattedString
@@ -191,6 +194,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         observingOrderHistory()
         observingRecommendationList()
         observingFinishOrder()
+        observingAtc()
     }
 
     private fun prepareLayout() {
@@ -359,6 +363,24 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 }
                 is Fail -> {
                     showToaster(responseFinishOrder.message.first(), Toaster.TYPE_ERROR)
+                }
+            }
+        })
+    }
+
+    private fun observingAtc() {
+        uohListViewModel.atcResult.observe(this, androidx.lifecycle.Observer {
+            when (it) {
+                is Success -> {
+                    val msg = StringUtils.convertListToStringDelimiter(it.data.atcMulti.buyAgainData.message, ",")
+                    if (it.data.atcMulti.buyAgainData.success == 1) {
+                        showToaster(msg, Toaster.TYPE_NORMAL)
+                    } else {
+                        showToaster(msg, Toaster.TYPE_ERROR)
+                    }
+                }
+                is Fail -> {
+                    context?.getString(R.string.fail_cancellation)?.let { it1 -> showToaster(it1, Toaster.TYPE_ERROR) }
                 }
             }
         })
@@ -842,20 +864,25 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         }
     }
 
-    override fun onActionButtonClicked(button: UohListOrder.Data.UohOrders.Order.Metadata.Button, index: Int, orderUUID: String, verticalId: String) {
+    override fun onActionButtonClicked(button: UohListOrder.Data.UohOrders.Order.Metadata.Button,
+                                       index: Int, orderUUID: String, verticalId: String, listProducts: String) {
         if (button.actionType.equals(TYPE_ACTION_BUTTON_LINK, true)) {
             RouteManager.route(context, button.appURL)
         } else {
-            // uohItemAdapter.showLoaderAtIndex(index)
-            if (button.actionType.equals(GQL_FINISH_ORDER, true)) {
-                // show bottomsheet
-                orderIdNeedUpdated = orderUUID
-                showBottomSheetFinishOrder(index, verticalId)
-            } else if (button.actionType.equals(GQL_ATC, true)) {
-
-            } else if (button.actionType.equals(GQL_TRACK, true)) {
-                val applinkTrack = ApplinkConst.ORDER_TRACKING.replace(REPLACE_ORDER_ID, verticalId)
-                RouteManager.route(context, applinkTrack)
+            when {
+                button.actionType.equals(GQL_FINISH_ORDER, true) -> {
+                    orderIdNeedUpdated = orderUUID
+                    showBottomSheetFinishOrder(index, verticalId)
+                }
+                button.actionType.equals(GQL_ATC, true) -> {
+                    val listOfStrings = Gson().fromJson(listProducts, mutableListOf<String>().javaClass)
+                    val jsonArray: JsonArray = Gson().toJsonTree(listOfStrings).asJsonArray
+                    uohListViewModel.doAtc(GraphqlHelper.loadRawString(resources, R.raw.buy_again), jsonArray)
+                }
+                button.actionType.equals(GQL_TRACK, true) -> {
+                    val applinkTrack = ApplinkConst.ORDER_TRACKING.replace(REPLACE_ORDER_ID, verticalId)
+                    RouteManager.route(context, applinkTrack)
+                }
             }
         }
     }

@@ -102,7 +102,13 @@ data class UohListOrder(
                         val buttons: List<Button> = listOf(),
 
                         @SerializedName("dotMenus")
-                        val dotMenus: List<DotMenu> = listOf()
+                        val dotMenus: List<DotMenu> = listOf(),
+
+                        @SerializedName("queryParams")
+                        val queryParams: String = "",
+
+                        @SerializedName("listProducts")
+                        val listProducts: String = ""
                 ) {
                     data class Status(
                         @SerializedName("label")

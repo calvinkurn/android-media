@@ -5,14 +5,13 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.buyerorder.common.BuyerDispatcherProvider
 import com.tokopedia.buyerorder.common.BuyerProductionDispatcherProvider
+import com.tokopedia.buyerorder.unifiedhistory.list.data.model.AtcMultiData
 import com.tokopedia.buyerorder.unifiedhistory.list.data.model.UohListOrder
 import com.tokopedia.graphql.coroutines.data.Interactor
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
@@ -42,15 +41,15 @@ class UohListModule {
 
     @UohListScope
     @Provides
-    fun provideGetUohOrderList(graphqlRepository: GraphqlRepository): GraphqlUseCase<UohListOrder.Data> = GraphqlUseCase(graphqlRepository)
+    fun provideGetUohOrderListUseCase(graphqlRepository: GraphqlRepository): GraphqlUseCase<UohListOrder.Data> = GraphqlUseCase(graphqlRepository)
+
+    @UohListScope
+    @Provides
+    fun provideAtcMultiUseCase(graphqlRepository: GraphqlRepository): GraphqlUseCase<AtcMultiData> = GraphqlUseCase(graphqlRepository)
 
     @UohListScope
     @Provides
     fun provideGetRecommendationUseCase(graphqlRepository: GraphqlRepository): GetRecommendationUseCase = GetRecommendationUseCase(graphqlRepository)
-
-    /*@UohListScope
-    @Provides
-    fun provideGetRecommendationUseCase(graphqlRepository: GraphqlRepository): GraphqlUseCase<List<RecommendationWidget>> = GraphqlUseCase(graphqlRepository)*/
 
     @UohListScope
     @Provides

@@ -77,6 +77,8 @@ query GetOrderHistory($input:UOHOrdersRequest!){
           textColor
           bgColor
         }
+        queryParams
+        listProducts
       }
       createTime
       createBy

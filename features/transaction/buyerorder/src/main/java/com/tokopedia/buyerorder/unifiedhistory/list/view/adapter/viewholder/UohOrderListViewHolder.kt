@@ -125,12 +125,20 @@ class UohOrderListViewHolder(itemView: View, private val actionListener: UohItem
             }
 
             itemView.cl_data_product?.setOnClickListener {
-                actionListener?.onListItemClicked(item.dataObject.verticalCategory, item.dataObject.verticalID, item.dataObject.metadata.upstream)
+                actionListener?.onListItemClicked(
+                        item.dataObject.verticalCategory,
+                        item.dataObject.verticalID,
+                        item.dataObject.metadata.upstream)
             }
 
             itemView.uoh_btn_action?.setOnClickListener {
                 if (item.dataObject.metadata.buttons.isNotEmpty()) {
-                    actionListener?.onActionButtonClicked(item.dataObject.metadata.buttons.first(), position, item.dataObject.orderUUID, item.dataObject.verticalID)
+                    actionListener?.onActionButtonClicked(
+                            item.dataObject.metadata.buttons.first(),
+                            position,
+                            item.dataObject.orderUUID,
+                            item.dataObject.verticalID,
+                            item.dataObject.metadata.listProducts)
                 }
             }
         }
