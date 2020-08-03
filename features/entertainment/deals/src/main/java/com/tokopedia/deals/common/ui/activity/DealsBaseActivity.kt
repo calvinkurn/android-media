@@ -144,7 +144,8 @@ abstract class DealsBaseActivity : BaseSimpleActivity(), CurrentLocationCallback
                     override fun onNeverAskAgain(permissionText: String) {}
 
                     override fun onPermissionDenied(permissionText: String) {
-                        baseViewModel.setCurrentLocation(dealsLocationUtils.getLocation())
+                        val defaultLocation = dealsLocationUtils.updateLocationToDefault()
+                        baseViewModel.setCurrentLocation(defaultLocation)
                     }
 
                     override fun onPermissionGranted() {
