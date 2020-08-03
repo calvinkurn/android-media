@@ -1,18 +1,19 @@
 package com.tokopedia.logisticcart.shipping.features.shippingcourier.view;
 
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.logisticcart.R;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.OntimeDeliveryGuarantee;
+import com.tokopedia.unifycomponents.Label;
 
 /**
  * Created by Irfan Khoirul on 06/08/18.
@@ -32,6 +33,7 @@ public class ShippingCourierViewHolder extends RecyclerView.ViewHolder {
     private ImageView imgCheck;
     private TextView tvPromoPotency;
     private View separator;
+    private Label codLabel;
 
     private int cartPosition;
 
@@ -48,6 +50,7 @@ public class ShippingCourierViewHolder extends RecyclerView.ViewHolder {
         imgCheck = itemView.findViewById(R.id.img_check);
         tvPromoPotency = itemView.findViewById(R.id.tv_promo_potency);
         separator = itemView.findViewById(R.id.separator);
+        codLabel = itemView.findViewById(R.id.lbl_cod_available);
     }
 
     public void bindData(ShippingCourierUiModel shippingCourierUiModel,
@@ -71,6 +74,10 @@ public class ShippingCourierViewHolder extends RecyclerView.ViewHolder {
             tvCod.setText(shippingCourierUiModel.getProductData().getCodProductData().getCodText());
             tvCod.setVisibility(shippingCourierUiModel.getProductData().getCodProductData()
                     .getIsCodAvailable() == COD_ENABLE_VALUE ? View.VISIBLE : View.GONE);
+
+            /*cod label*/
+            codLabel.setVisibility(shippingCourierUiModel.getProductData().getCodProductData().
+                    getIsCodAvailable() == COD_ENABLE_VALUE? View.VISIBLE : View.GONE );
         }
 
         if (shippingCourierUiModel.getProductData().getFeatures() != null &&

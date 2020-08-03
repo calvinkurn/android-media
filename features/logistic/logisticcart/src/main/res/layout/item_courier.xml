@@ -58,16 +58,6 @@
         android:layout_marginTop="4dp"
         tools:text="Rp10.000" />
 
-    <TextView
-        android:id="@+id/tv_cod_availability"
-        style="@style/TextSmallNormalBlack54"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/tv_price"
-        android:layout_marginTop="4dp"
-        tools:text="(Tersedia Bayar di Tempat)"
-        tools:visibility="visible" />
-
     <LinearLayout
         android:id="@+id/otdelivery"
         android:layout_width="wrap_content"
@@ -108,7 +98,7 @@
         android:id="@+id/separator"
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:layout_below="@id/tv_cod_availability"
+        android:layout_below="@id/tv_price"
         android:layout_marginTop="@dimen/dp_16"
         android:background="@color/separator_color" />
 

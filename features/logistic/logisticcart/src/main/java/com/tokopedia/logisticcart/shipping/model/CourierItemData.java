@@ -3,6 +3,8 @@ package com.tokopedia.logisticcart.shipping.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.CodProductData;
+
 /**
  * Created by Irfan Khoirul on 25/01/18.
  */
@@ -55,6 +57,7 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
     private String priorityFeeMessage;
     private String priorityPdpMessage;
     private OntimeDelivery ontimeDelivery;
+    private CashOnDeliveryProduct codProductData;
 
     public CourierItemData() {
     }
@@ -467,6 +470,7 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
         dest.writeString(this.priorityFeeMessage);
         dest.writeString(this.priorityPdpMessage);
         dest.writeParcelable(this.ontimeDelivery, flags);
+        dest.writeParcelable(this.codProductData, flags);
     }
 
     protected CourierItemData(Parcel in) {
@@ -515,6 +519,7 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
         this.priorityFeeMessage = in.readString();
         this.priorityPdpMessage = in.readString();
         this.ontimeDelivery = in.readParcelable(OntimeDelivery.class.getClassLoader());
+        this.codProductData = in.readParcelable(CodProductData.class.getClassLoader());
     }
 
     public static final Creator<CourierItemData> CREATOR = new Creator<CourierItemData>() {
@@ -528,4 +533,12 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
             return new CourierItemData[size];
         }
     };
+
+    public CashOnDeliveryProduct getCodProductData() {
+        return codProductData;
+    }
+
+    public void setCodProductData(CashOnDeliveryProduct codProductData) {
+        this.codProductData = codProductData;
+    }
 }

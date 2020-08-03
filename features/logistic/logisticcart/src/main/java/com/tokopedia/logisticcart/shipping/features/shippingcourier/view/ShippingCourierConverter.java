@@ -1,9 +1,11 @@
 package com.tokopedia.logisticcart.shipping.features.shippingcourier.view;
 
 
+import com.tokopedia.logisticcart.shipping.model.CashOnDeliveryProduct;
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
 import com.tokopedia.logisticcart.shipping.model.OntimeDelivery;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.CodProductData;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.OntimeDeliveryGuarantee;
 
@@ -86,6 +88,18 @@ public class ShippingCourierConverter {
                     otdPrev.getIconUrl()
             );
             courierItemData.setOntimeDelivery(otd);
+        }
+        if (shippingCourierUiModel.getProductData().getCodProductData() != null) {
+            CodProductData codProductData = shippingCourierUiModel.getProductData().getCodProductData();
+            CashOnDeliveryProduct codProduct = new CashOnDeliveryProduct(
+                    codProductData.getIsCodAvailable(),
+                    codProductData.getCodText(),
+                    codProductData.getCodPrice(),
+                    codProductData.getFormattedPrice(),
+                    codProductData.getTncText(),
+                    codProductData.getTncLink()
+            );
+            courierItemData.setCodProductData(codProduct);
         }
         return courierItemData;
     }
