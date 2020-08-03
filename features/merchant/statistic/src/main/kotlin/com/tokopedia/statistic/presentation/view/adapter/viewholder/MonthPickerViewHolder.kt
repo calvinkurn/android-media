@@ -79,10 +79,17 @@ class MonthPickerViewHolder(
             val minMonth = get(Calendar.MONTH).minus(3)
             set(Calendar.MONTH, minMonth)
         }
-        val defaultDate = GregorianCalendar(LocaleUtils.getCurrentLocale(itemView.context))
+
+        var selectedMonth: Date? = element.startDate
+
+        val defaultDate = GregorianCalendar(LocaleUtils.getCurrentLocale(itemView.context)).apply {
+            if (selectedMonth != null) {
+                time = selectedMonth
+            }
+        }
+
         val maxDate = GregorianCalendar(LocaleUtils.getCurrentLocale(itemView.context))
 
-        var selectedMonth = element.startDate
         val listener = object : OnDateChangedListener {
             override fun onDateChanged(date: Long) {
                 selectedMonth = Date(date)
