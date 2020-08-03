@@ -32,7 +32,7 @@ class PlayUserInteractionLayoutManager(
 //    @IdRes private val sendChatComponentId: Int = viewInitializer.onInitChat(container)
 //    @IdRes private val likeComponentId: Int = viewInitializer.onInitLike(container)
     @IdRes private val pinnedComponentId: Int = viewInitializer.onInitPinned(container)
-    @IdRes private val chatListComponentId: Int = viewInitializer.onInitChatList(container)
+//    @IdRes private val chatListComponentId: Int = viewInitializer.onInitChatList(container)
 //    @IdRes private val videoControlComponentId: Int = viewInitializer.onInitVideoControl(container)
     @IdRes private val videoSettingsComponentId: Int = viewInitializer.onInitVideoSettings(container)
     @IdRes private val endLiveInfoComponentId: Int = viewInitializer.onInitEndLiveComponent(container)
@@ -46,7 +46,7 @@ class PlayUserInteractionLayoutManager(
     private val statsInfoView: View = container.findViewById(R.id.view_stats_info)
     private val sendChatView: View = container.findViewById(R.id.view_send_chat)
     private val quickReplyView: View = container.findViewById(R.id.rv_quick_reply)
-    private val chatListView: View = container.findViewById(chatListComponentId)
+    private val chatListView: View = container.findViewById(R.id.view_chat_list)
     private val pinnedView: View = container.findViewById(pinnedComponentId)
 
     private val offset24 = container.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl5)
@@ -56,8 +56,7 @@ class PlayUserInteractionLayoutManager(
     private val offset0 = container.resources.getDimensionPixelOffset(com.tokopedia.play.R.dimen.play_no_offset)
 
     override fun layoutView(view: View) {
-        layoutChatList(container = view, id = chatListComponentId, quickReplyComponentId = R.id.rv_quick_reply, likeComponentId = R.id.view_like, sizeContainerComponentId = R.id.space_size)
-        layoutPinned(container = view, id = pinnedComponentId, chatListComponentId = chatListComponentId, likeComponentId = R.id.view_like, sizeContainerComponentId = R.id.space_size)
+        layoutPinned(container = view, id = pinnedComponentId, chatListComponentId = R.id.view_chat_list, likeComponentId = R.id.view_like, sizeContainerComponentId = R.id.space_size)
         layoutPlayButton(container = view, videoOrientation = videoOrientation, id = playButtonComponentId, immersiveBoxComponentId = immersiveBoxComponentId)
         layoutImmersiveBox(container = view, videoOrientation = videoOrientation, id = immersiveBoxComponentId, pinnedComponentId = pinnedComponentId, statsInfoComponentId = R.id.view_stats_info)
         layoutEndLiveComponent(container = view, id = endLiveInfoComponentId)

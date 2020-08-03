@@ -1,33 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cl_chat_list"
+    android:layout_width="@dimen/layout_lvl0"
+    android:layout_height="wrap_content"
+    >
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/cl_chat_list"
+    <com.tokopedia.play.view.custom.MaximumHeightRecyclerView
+        android:id="@+id/rv_chat_list"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        >
+        android:overScrollMode="never"
+        app:maximumHeight="@dimen/play_chat_max_height"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
 
-        <com.tokopedia.play.view.custom.MaximumHeightRecyclerView
-            android:id="@+id/rv_chat_list"
-            android:layout_width="@dimen/layout_lvl0"
-            android:layout_height="wrap_content"
-            android:overScrollMode="never"
-            app:maximumHeight="@dimen/play_chat_max_height"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            />
+    <com.tokopedia.play.view.custom.ChatScrollDownView
+        android:id="@+id/csdown_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
 
-        <com.tokopedia.play.view.custom.ChatScrollDownView
-            android:id="@+id/csdown_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</merge>
+</androidx.constraintlayout.widget.ConstraintLayout>

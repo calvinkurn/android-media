@@ -26,7 +26,6 @@ import com.tokopedia.play.animation.PlayFadeInFadeOutAnimation
 import com.tokopedia.play.animation.PlayFadeOutAnimation
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.extensions.*
-import com.tokopedia.play.ui.chatlist.ChatListComponent
 import com.tokopedia.play.ui.endliveinfo.EndLiveInfoComponent
 import com.tokopedia.play.ui.endliveinfo.interaction.EndLiveInfoInteractionEvent
 import com.tokopedia.play.ui.immersivebox.ImmersiveBoxComponent
@@ -121,6 +120,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private val likeView by viewComponent { LikeViewComponent(it, R.id.view_like, this) }
     private val sendChatView by viewComponent { SendChatViewComponent(it, R.id.view_send_chat, this) }
     private val quickReplyView by viewComponent { QuickReplyViewComponent(it, R.id.rv_quick_reply, this) }
+    private val chatListView by viewComponent { ChatListViewComponent(it, R.id.view_chat_list) }
 
     private lateinit var playViewModel: PlayViewModel
     private lateinit var viewModel: PlayInteractionViewModel
@@ -415,6 +415,8 @@ class PlayUserInteractionFragment @Inject constructor(
             else videoControlView.hide()
 
             if (it.channelType.isLive) sendChatView.show() else sendChatView.hide()
+
+            if (it.channelType.isLive && !playViewModel.bottomInsets.isAnyBottomSheetsShown) chatListView.show() else chatListView.hide()
         })
     }
 
@@ -438,13 +440,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun observeNewChat() {
         playViewModel.observableNewChat.observe(viewLifecycleOwner, DistinctEventObserver {
-            scope.launch {
-                EventBusFactory.get(viewLifecycleOwner)
-                        .emit(
-                                ScreenStateEvent::class.java,
-                                ScreenStateEvent.IncomingChat(it)
-                        )
-            }
+            chatListView.showNewChat(it)
         })
     }
 
@@ -452,13 +448,7 @@ class PlayUserInteractionFragment @Inject constructor(
         playViewModel.observableChatList.observe(viewLifecycleOwner, object : Observer<List<PlayChatUiModel>> {
             override fun onChanged(chatList: List<PlayChatUiModel>) {
                 playViewModel.observableChatList.removeObserver(this)
-                scope.launch {
-                    EventBusFactory.get(viewLifecycleOwner)
-                            .emit(
-                                    ScreenStateEvent::class.java,
-                                    ScreenStateEvent.SetChatList(chatList)
-                            )
-                }
+                chatListView.setChatList(chatList)
             }
         })
     }
@@ -543,6 +533,12 @@ class PlayUserInteractionFragment @Inject constructor(
                     map[BottomInsetsType.Keyboard]?.isShown == true) {
                 quickReplyView.show()
             } else quickReplyView.hide()
+
+            if (playViewModel.channelType.isLive &&
+                    map[BottomInsetsType.ProductSheet]?.isShown == false &&
+                    map[BottomInsetsType.VariantSheet]?.isShown == false) {
+                chatListView.show()
+            } else chatListView.hide()
         })
     }
 
@@ -573,6 +569,7 @@ class PlayUserInteractionFragment @Inject constructor(
                     sendChatView.hide()
                 }
                 if(it.isFreeze || it.isBanned) quickReplyView.hide()
+                if(it.isFreeze || it.isBanned) chatListView.hide()
             }
         })
     }
@@ -664,9 +661,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     override fun onInitChatList(container: ViewGroup): Int {
-        return ChatListComponent(container, EventBusFactory.get(viewLifecycleOwner), scope, dispatchers)
-                .also(viewLifecycleOwner.lifecycle::addObserver)
-                .getContainerId()
+        throw IllegalStateException("No Init")
     }
 
     override fun onInitPinned(container: ViewGroup): Int {
