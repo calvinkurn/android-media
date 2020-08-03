@@ -35,15 +35,20 @@ class HomeRecommendationViewModel @Inject constructor(
             if(data.homeRecommendations.isEmpty()){
                 _homeRecommendationLiveData.postValue(data.copy(homeRecommendations = listOf(HomeRecommendationEmpty())))
             } else {
-                val topAdsBanner = getTopAdsBanner()
+                val homeBannerTopAds = data.homeRecommendations.filterIsInstance<HomeRecommendationBannerTopAdsDataModel>()
+                val topAdsBanner = getTopAdsBanner(homeBannerTopAds.size)
                 if(topAdsBanner.isEmpty()){
-                    _homeRecommendationLiveData.postValue(data)
+                    _homeRecommendationLiveData.postValue(data.copy(
+                            homeRecommendations = data.homeRecommendations.filter { it !is HomeRecommendationBannerTopAdsDataModel}
+                    ))
                 } else {
-                    val banner = topAdsBanner.first()
                     val newList = data.homeRecommendations.toMutableList()
-                    newList.add(DEFAULT_POSITION_BANNER, HomeRecommendationBannerTopAdsDataModel(banner))
+                    topAdsBanner.forEachIndexed { index, topAdsImageViewModel ->
+                        val visitableBanner = homeBannerTopAds[index]
+                        newList.add(visitableBanner.position, HomeRecommendationBannerTopAdsDataModel(topAdsImageViewModel))
+                        topAdsBannerNextPageToken = topAdsImageViewModel.nextPageToken ?: ""
+                    }
                     _homeRecommendationLiveData.postValue(data.copy(homeRecommendations = newList))
-                    topAdsBannerNextPageToken = banner.nextPageToken ?: ""
                 }
             }
             _homeRecommendationNetworkLiveData.postValue(Result.success(data))
@@ -63,17 +68,19 @@ class HomeRecommendationViewModel @Inject constructor(
         recommendationJob = launchCatchError(coroutineContext, block = {
             getHomeRecommendationUseCase.setParams(tabName, recomId, count, page)
             val data = getHomeRecommendationUseCase.executeOnBackground()
-            val topAdsBanner = getTopAdsBanner()
             list.remove(loadMoreModel)
+            val homeBannerTopAds = data.homeRecommendations.filterIsInstance<HomeRecommendationBannerTopAdsDataModel>()
+            val topAdsBanner = getTopAdsBanner(homeBannerTopAds.size)
             if(topAdsBanner.isEmpty()){
-                list.addAll(data.homeRecommendations)
-
+                list.addAll(data.homeRecommendations.filter { it !is HomeRecommendationBannerTopAdsDataModel})
             } else {
-                val banner = topAdsBanner.first()
-                val newRecommendationList = data.homeRecommendations.toMutableList()
-                newRecommendationList.add(DEFAULT_POSITION_BANNER, HomeRecommendationBannerTopAdsDataModel(banner))
-                topAdsBannerNextPageToken = banner.nextPageToken ?: ""
-                list.addAll(newRecommendationList)
+                val newList = data.homeRecommendations.toMutableList()
+                topAdsBanner.forEachIndexed { index, topAdsImageViewModel ->
+                    val visitableBanner = homeBannerTopAds[index]
+                    newList.add(visitableBanner.position, HomeRecommendationBannerTopAdsDataModel(topAdsImageViewModel))
+                    topAdsBannerNextPageToken = topAdsImageViewModel.nextPageToken ?: ""
+                }
+                list.addAll(newList)
             }
             _homeRecommendationNetworkLiveData.postValue(Result.success(data))
             _homeRecommendationLiveData.postValue(data.copy(homeRecommendations = list.copy()))
@@ -84,13 +91,14 @@ class HomeRecommendationViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getTopAdsBanner(): ArrayList<TopAdsImageViewModel>{
+    private suspend fun getTopAdsBanner(size: Int = 1): ArrayList<TopAdsImageViewModel>{
+        if(size == 0) return arrayListOf()
         return topAdsImageViewUseCase.getImageData(
                 topAdsImageViewUseCase.getQueryMap(
                         "",
                         "1",
                         topAdsBannerNextPageToken,
-                        1,
+                        size,
                         3,
                         ""
                 )
@@ -118,7 +126,4 @@ class HomeRecommendationViewModel @Inject constructor(
         }
     }
 
-    companion object{
-        private const val DEFAULT_POSITION_BANNER = 4
-    }
 }

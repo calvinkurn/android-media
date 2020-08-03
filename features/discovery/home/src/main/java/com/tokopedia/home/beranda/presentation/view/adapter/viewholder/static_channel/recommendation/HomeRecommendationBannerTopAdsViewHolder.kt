@@ -30,6 +30,8 @@ class HomeRecommendationBannerTopAdsViewHolder(view: View) : SmartAbstractViewHo
 
 
     private fun loadImageTopAds(recommendationBannerTopAdsDataModelDataModel: HomeRecommendationBannerTopAdsDataModel, listener: HomeRecommendationListener){
+        recommendationBannerTopAdsDataModelDataModel.topAdsImageViewModel?.let{
+
         itemView.home_recom_topads_loader_image?.show()
         itemView.home_recom_topads_loader_image?.hide()
         Glide.with(itemView.context)
@@ -52,6 +54,7 @@ class HomeRecommendationBannerTopAdsViewHolder(view: View) : SmartAbstractViewHo
                     }
                 })
                 .into(itemView.home_recom_topads_image_view)
+        }
     }
 
     private fun getHeight(width: Int, height: Int): Int {
