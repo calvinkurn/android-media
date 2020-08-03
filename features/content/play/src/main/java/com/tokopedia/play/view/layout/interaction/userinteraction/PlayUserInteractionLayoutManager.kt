@@ -30,10 +30,10 @@ class PlayUserInteractionLayoutManager(
 
     @IdRes private val immersiveBoxComponentId: Int = viewInitializer.onInitImmersiveBox(container)
     @IdRes private val sendChatComponentId: Int = viewInitializer.onInitChat(container)
-    @IdRes private val likeComponentId: Int = viewInitializer.onInitLike(container)
+//    @IdRes private val likeComponentId: Int = viewInitializer.onInitLike(container)
     @IdRes private val pinnedComponentId: Int = viewInitializer.onInitPinned(container)
     @IdRes private val chatListComponentId: Int = viewInitializer.onInitChatList(container)
-    @IdRes private val videoControlComponentId: Int = viewInitializer.onInitVideoControl(container)
+//    @IdRes private val videoControlComponentId: Int = viewInitializer.onInitVideoControl(container)
     @IdRes private val videoSettingsComponentId: Int = viewInitializer.onInitVideoSettings(container)
     @IdRes private val endLiveInfoComponentId: Int = viewInitializer.onInitEndLiveComponent(container)
 //    @IdRes private val toolbarComponentId: Int = viewInitializer.onInitToolbar(container)
@@ -56,11 +56,9 @@ class PlayUserInteractionLayoutManager(
     private val offset0 = container.resources.getDimensionPixelOffset(com.tokopedia.play.R.dimen.play_no_offset)
 
     override fun layoutView(view: View) {
-        layoutVideoControl(container = view, id = videoControlComponentId, sizeContainerComponentId = R.id.space_size, likeComponentId = likeComponentId)
-        layoutLike(container = view, id = likeComponentId, videoControlComponentId = videoControlComponentId, sizeContainerComponentId = R.id.space_size)
-        layoutChat(container = view, id = sendChatComponentId, likeComponentId = likeComponentId, sizeContainerComponentId = R.id.space_size, videoControlComponentId = videoControlComponentId)
-        layoutChatList(container = view, id = chatListComponentId, quickReplyComponentId = quickReplyComponentId, likeComponentId = likeComponentId, sizeContainerComponentId = R.id.space_size)
-        layoutPinned(container = view, id = pinnedComponentId, chatListComponentId = chatListComponentId, likeComponentId = likeComponentId, sizeContainerComponentId = R.id.space_size)
+        layoutChat(container = view, id = sendChatComponentId, likeComponentId = R.id.view_like, sizeContainerComponentId = R.id.space_size, videoControlComponentId = R.id.pcv_video)
+        layoutChatList(container = view, id = chatListComponentId, quickReplyComponentId = quickReplyComponentId, likeComponentId = R.id.view_like, sizeContainerComponentId = R.id.space_size)
+        layoutPinned(container = view, id = pinnedComponentId, chatListComponentId = chatListComponentId, likeComponentId = R.id.view_like, sizeContainerComponentId = R.id.space_size)
         layoutPlayButton(container = view, videoOrientation = videoOrientation, id = playButtonComponentId, immersiveBoxComponentId = immersiveBoxComponentId)
         layoutImmersiveBox(container = view, videoOrientation = videoOrientation, id = immersiveBoxComponentId, pinnedComponentId = pinnedComponentId, statsInfoComponentId = R.id.view_stats_info)
         layoutQuickReply(container = view, id = quickReplyComponentId, sendChatComponentId = sendChatComponentId, sizeContainerComponentId = R.id.space_size)
@@ -165,13 +163,6 @@ class PlayUserInteractionLayoutManager(
         }
     }
 
-    private fun layoutLike(container: View, @IdRes id: Int, @IdRes videoControlComponentId: Int, @IdRes sizeContainerComponentId: Int) {
-        container.changeConstraint {
-            connect(id, ConstraintSet.END, sizeContainerComponentId, ConstraintSet.END, offset16)
-            connect(id, ConstraintSet.BOTTOM, videoControlComponentId, ConstraintSet.BOTTOM)
-        }
-    }
-
     private fun layoutChatList(container: View, @IdRes id: Int, @IdRes quickReplyComponentId: Int, @IdRes likeComponentId: Int, @IdRes sizeContainerComponentId: Int) {
         container.changeConstraint {
             connect(id, ConstraintSet.START, sizeContainerComponentId, ConstraintSet.START, offset16)
@@ -185,14 +176,6 @@ class PlayUserInteractionLayoutManager(
             connect(id, ConstraintSet.START, sizeContainerComponentId, ConstraintSet.START, offset16)
             connect(id, ConstraintSet.END, likeComponentId, ConstraintSet.START, offset8)
             connect(id, ConstraintSet.BOTTOM, chatListComponentId, ConstraintSet.TOP, offset8)
-        }
-    }
-
-    private fun layoutVideoControl(container: View, @IdRes id: Int, @IdRes sizeContainerComponentId: Int, @IdRes likeComponentId: Int) {
-        container.changeConstraint {
-            connect(id, ConstraintSet.START, sizeContainerComponentId, ConstraintSet.START, offset16)
-            connect(id, ConstraintSet.END, likeComponentId, ConstraintSet.START, offset8)
-            connect(id, ConstraintSet.BOTTOM, sizeContainerComponentId, ConstraintSet.BOTTOM)
         }
     }
 

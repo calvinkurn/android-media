@@ -1,36 +1,27 @@
-package com.tokopedia.play.ui.like
+package com.tokopedia.play.view.viewcomponent
 
 import android.animation.Animator
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.IdRes
 import com.airbnb.lottie.LottieAnimationView
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
-import com.tokopedia.play.component.UIView
 import com.tokopedia.play.view.uimodel.TotalLikeUiModel
+import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.unifyprinciples.Typography
 
 /**
- * Created by jegul on 02/12/19
+ * Created by jegul on 03/08/20
  */
-class LikeView(container: ViewGroup, private val listener: Listener) : UIView(container) {
+class LikeViewComponent(
+        container: ViewGroup,
+        @IdRes idRes: Int,
+        private val listener: Listener
+) : ViewComponent(container, idRes) {
 
-    private companion object {
-
-        const val START_ANIMATED_PROGRESS = 0f
-        const val END_ANIMATED_PROGRESS = 1f
-
-    }
-
-    private val view: View =
-            LayoutInflater.from(container.context).inflate(R.layout.view_mini_like, container, true)
-                    .findViewById(R.id.cl_like)
-
-    private val animationLike = view.findViewById<LottieAnimationView>(R.id.animation_like)
-    private val vLikeClickArea = view.findViewById<View>(R.id.v_like_click_area)
-    private val tvTotalLikes = view.findViewById<Typography>(R.id.tv_total_likes)
+    private val animationLike = findViewById<LottieAnimationView>(R.id.animation_like)
+    private val vLikeClickArea = findViewById<View>(R.id.v_like_click_area)
+    private val tvTotalLikes = findViewById<Typography>(R.id.tv_total_likes)
 
     init {
         animationLike.addAnimatorListener(object : Animator.AnimatorListener {
@@ -51,17 +42,7 @@ class LikeView(container: ViewGroup, private val listener: Listener) : UIView(co
         })
     }
 
-    override val containerId: Int = view.id
-
-    override fun show() {
-        view.show()
-    }
-
-    override fun hide() {
-        view.hide()
-    }
-
-    internal fun setEnabled(isEnabled: Boolean) {
+    fun setEnabled(isEnabled: Boolean) {
         if (isEnabled) {
             vLikeClickArea.setOnClickListener {
                 val shouldLike = animationLike.progress == START_ANIMATED_PROGRESS
@@ -72,11 +53,11 @@ class LikeView(container: ViewGroup, private val listener: Listener) : UIView(co
         }
     }
 
-    internal fun setTotalLikes(totalLikes: TotalLikeUiModel) {
+    fun setTotalLikes(totalLikes: TotalLikeUiModel) {
         tvTotalLikes.text = totalLikes.totalLikeFormatted
     }
 
-    internal fun playLikeAnimation(shouldLike: Boolean, animate: Boolean) {
+    fun playLikeAnimation(shouldLike: Boolean, animate: Boolean) {
         if (!shouldLike) animationLike.progress = START_ANIMATED_PROGRESS
         else {
             if (animate) animationLike.playAnimation()
@@ -84,8 +65,15 @@ class LikeView(container: ViewGroup, private val listener: Listener) : UIView(co
         }
     }
 
+    private companion object {
+
+        const val START_ANIMATED_PROGRESS = 0f
+        const val END_ANIMATED_PROGRESS = 1f
+
+    }
+
     interface Listener {
 
-        fun onLikeClicked(view: LikeView, shouldLike: Boolean)
+        fun onLikeClicked(view: LikeViewComponent, shouldLike: Boolean)
     }
 }

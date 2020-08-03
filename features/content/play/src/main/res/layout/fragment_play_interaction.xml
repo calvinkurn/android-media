@@ -28,6 +28,34 @@
         />
 
     <include
+        android:id="@+id/view_like"
+        layout="@layout/view_like"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginRight="@dimen/spacing_lvl4"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/pcv_video"
+        app:layout_constraintEnd_toEndOf="@id/space_size"
+        />
+
+    <com.google.android.exoplayer2.ui.PlayerControlView
+        android:id="@+id/pcv_video"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginLeft="@dimen/spacing_lvl3"
+        android:layout_marginEnd="@dimen/spacing_lvl3"
+        android:layout_marginRight="@dimen/spacing_lvl3"
+        android:visibility="gone"
+        app:controller_layout_id="@layout/layout_play_player_control"
+        app:layout_constraintBottom_toBottomOf="@id/space_size"
+        app:layout_constraintEnd_toStartOf="@id/view_like"
+        app:layout_constraintStart_toStartOf="@id/space_size"
+        app:show_timeout="-1"
+        />
+
+    <include
         android:id="@+id/view_toolbar"
         layout="@layout/view_toolbar"
         android:layout_width="@dimen/layout_lvl0"

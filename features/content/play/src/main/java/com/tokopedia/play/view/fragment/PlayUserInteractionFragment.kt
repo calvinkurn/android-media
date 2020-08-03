@@ -76,9 +76,7 @@ import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.PlayRoomEvent
 import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.uimodel.*
-import com.tokopedia.play.view.viewcomponent.EmptyViewComponent
-import com.tokopedia.play.view.viewcomponent.StatsInfoViewComponent
-import com.tokopedia.play.view.viewcomponent.ToolbarViewComponent
+import com.tokopedia.play.view.viewcomponent.*
 import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
@@ -109,7 +107,9 @@ class PlayUserInteractionFragment @Inject constructor(
         PlayInteractionViewInitializer,
         PlayMoreActionBottomSheet.Listener,
         PlayFragmentContract,
-        ToolbarViewComponent.Listener
+        ToolbarViewComponent.Listener,
+        VideoControlViewComponent.Listener,
+        LikeViewComponent.Listener
 {
 
     companion object {
@@ -133,6 +133,8 @@ class PlayUserInteractionFragment @Inject constructor(
     private val gradientBackgroundView by viewComponent { EmptyViewComponent(it, R.id.view_gradient_background) }
     private val toolbarView by viewComponent { ToolbarViewComponent(it, R.id.view_toolbar, this) }
     private val statsInfoView by viewComponent { StatsInfoViewComponent(it, R.id.view_stats_info) }
+    private val videoControlView by viewComponent { VideoControlViewComponent(it, R.id.pcv_video, this) }
+    private val likeView by viewComponent { LikeViewComponent(it, R.id.view_like, this) }
 
     private lateinit var playViewModel: PlayViewModel
     private lateinit var viewModel: PlayInteractionViewModel
@@ -292,6 +294,24 @@ class PlayUserInteractionFragment @Inject constructor(
         shouldOpenCartPage()
     }
 
+    /**
+     * VideoControl View Component Listener
+     */
+    override fun onStartSeeking(view: VideoControlViewComponent) {
+        onScrubStarted()
+    }
+
+    override fun onEndSeeking(view: VideoControlViewComponent) {
+        onScrubEnded()
+    }
+
+    /**
+     * Like View Component Listener
+     */
+    override fun onLikeClicked(view: LikeViewComponent, shouldLike: Boolean) {
+        doClickLike(shouldLike)
+    }
+
     private fun setupInsets(view: View) {
         spaceSize.rootView.doOnApplyWindowInsets { v, insets, _, margin ->
             val marginLayoutParams = v.layoutParams as ViewGroup.MarginLayoutParams
@@ -335,6 +355,11 @@ class PlayUserInteractionFragment @Inject constructor(
                                 ScreenStateEvent.SetVideo(it)
                         )
             }
+
+            /**
+             * New
+             */
+            if (it is General) videoControlView.setPlayer(it.exoPlayer)
         })
     }
 
@@ -377,6 +402,9 @@ class PlayUserInteractionFragment @Inject constructor(
              * New
              */
             statsInfoView.setLiveBadgeVisibility(it.channelType.isLive)
+
+            if (it.channelType.isVod && playViewModel.videoPlayer.isGeneral && !playViewModel.bottomInsets.isAnyShown) videoControlView.show()
+            else videoControlView.hide()
         })
     }
 
@@ -387,7 +415,9 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun observeTotalLikes() {
-        playViewModel.observableTotalLikes.observe(viewLifecycleOwner, DistinctObserver(::setTotalLikes))
+        playViewModel.observableTotalLikes.observe(viewLifecycleOwner, DistinctObserver {
+            likeView.setTotalLikes(it)
+        })
     }
 
     private fun observeTotalViews() {
@@ -443,14 +473,10 @@ class PlayUserInteractionFragment @Inject constructor(
         playViewModel.observableLikeState.observe(viewLifecycleOwner, object : Observer<LikeStateUiModel> {
             private var isFirstTime = true
             override fun onChanged(likeModel: LikeStateUiModel) {
-                scope.launch {
-                    EventBusFactory.get(viewLifecycleOwner)
-                            .emit(
-                                    ScreenStateEvent::class.java,
-                                    ScreenStateEvent.LikeContent(likeModel, isFirstTime)
-                            )
-                    isFirstTime = false
-                }
+                likeView.setEnabled(true)
+                likeView.playLikeAnimation(likeModel.isLiked, !likeModel.fromNetwork && !isFirstTime)
+
+                isFirstTime = false
             }
         })
     }
@@ -489,6 +515,9 @@ class PlayUserInteractionFragment @Inject constructor(
             if (map.isAnyShown) gradientBackgroundView.hide() else gradientBackgroundView.show()
             if (!map.isAnyShown) toolbarView.show() else toolbarView.hide()
             if (!map.isAnyShown) statsInfoView.show() else statsInfoView.hide()
+            if (!map.isAnyShown && playViewModel.channelType.isVod && playViewModel.videoPlayer.isGeneral) videoControlView.show()
+            else videoControlView.hide()
+            if (map.isAnyShown) likeView.hide() else likeView.show()
         })
     }
 
@@ -509,6 +538,11 @@ class PlayUserInteractionFragment @Inject constructor(
                 if(it.isFreeze || it.isBanned) gradientBackgroundView.hide()
                 if(it.isFreeze || it.isBanned) toolbarView.show()
                 if(it.isFreeze || it.isBanned) statsInfoView.show()
+                if(it.isFreeze || it.isBanned) {
+                    videoControlView.hide()
+                    videoControlView.setPlayer(null)
+                }
+                if(it.isFreeze || it.isBanned) likeView.hide()
             }
         })
     }
@@ -521,6 +555,7 @@ class PlayUserInteractionFragment @Inject constructor(
     //endregion
 
     private fun setupView(view: View) {
+        likeView.setEnabled(false)
         container.setOnClickListener {
             if (!playViewModel.videoOrientation.isHorizontal && container.hasAlpha) triggerImmersive(it.isFullSolid)
         }
@@ -587,35 +622,11 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     override fun onInitVideoControl(container: ViewGroup): Int {
-        val videoControlComponent = VideoControlComponent(container, EventBusFactory.get(viewLifecycleOwner), scope, dispatchers)
-                .also(viewLifecycleOwner.lifecycle::addObserver)
-
-        scope.launch {
-            videoControlComponent.getUserInteractionEvents()
-                    .collect {
-                        when (it) {
-                            VideoControlInteractionEvent.VideoScrubStarted -> onScrubStarted()
-                            VideoControlInteractionEvent.VideoScrubEnded -> onScrubEnded()
-                        }
-                    }
-        }
-
-        return videoControlComponent.getContainerId()
+        throw IllegalStateException("No Init")
     }
 
     override fun onInitLike(container: ViewGroup): Int {
-        val likeComponent = LikeComponent(container, EventBusFactory.get(viewLifecycleOwner), scope, dispatchers)
-
-        scope.launch {
-            likeComponent.getUserInteractionEvents()
-                    .collect {
-                        when (it) {
-                            is LikeInteractionEvent.LikeClicked -> doClickLike(it.shouldLike)
-                        }
-                    }
-        }
-
-        return likeComponent.getContainerId()
+        throw IllegalStateException("No Init")
     }
 
     override fun onInitChat(container: ViewGroup): Int {
