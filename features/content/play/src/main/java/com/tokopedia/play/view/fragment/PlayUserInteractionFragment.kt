@@ -35,8 +35,6 @@ import com.tokopedia.play.ui.pinned.PinnedComponent
 import com.tokopedia.play.ui.pinned.interaction.PinnedInteractionEvent
 import com.tokopedia.play.ui.playbutton.PlayButtonComponent
 import com.tokopedia.play.ui.playbutton.interaction.PlayButtonInteractionEvent
-import com.tokopedia.play.ui.quickreply.QuickReplyComponent
-import com.tokopedia.play.ui.quickreply.interaction.QuickReplyInteractionEvent
 import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.ui.videosettings.VideoSettingsComponent
@@ -94,7 +92,8 @@ class PlayUserInteractionFragment @Inject constructor(
         ToolbarViewComponent.Listener,
         VideoControlViewComponent.Listener,
         LikeViewComponent.Listener,
-        SendChatViewComponent.Listener
+        SendChatViewComponent.Listener,
+        QuickReplyViewComponent.Listener
 {
 
     companion object {
@@ -121,6 +120,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private val videoControlView by viewComponent { VideoControlViewComponent(it, R.id.pcv_video, this) }
     private val likeView by viewComponent { LikeViewComponent(it, R.id.view_like, this) }
     private val sendChatView by viewComponent { SendChatViewComponent(it, R.id.view_send_chat, this) }
+    private val quickReplyView by viewComponent { QuickReplyViewComponent(it, R.id.rv_quick_reply, this) }
 
     private lateinit var playViewModel: PlayViewModel
     private lateinit var viewModel: PlayInteractionViewModel
@@ -310,6 +310,14 @@ class PlayUserInteractionFragment @Inject constructor(
         doSendChat(message)
     }
 
+    /**
+     * QuickReply View Component Listener
+     */
+    override fun onQuickReplyClicked(view: QuickReplyViewComponent, replyString: String) {
+        PlayAnalytics.clickQuickReply(channelId)
+        doSendChat(replyString)
+    }
+
     private fun setupInsets(view: View) {
         spaceSize.rootView.doOnApplyWindowInsets { v, insets, _, margin ->
             val marginLayoutParams = v.layoutParams as ViewGroup.MarginLayoutParams
@@ -385,7 +393,9 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun observeQuickReply() {
-        playViewModel.observableQuickReply.observe(viewLifecycleOwner, DistinctObserver(::setQuickReply))
+        playViewModel.observableQuickReply.observe(viewLifecycleOwner, DistinctObserver {
+            quickReplyView.setQuickReply(it)
+        })
     }
 
     private fun observeVideoStream() {
@@ -526,6 +536,13 @@ class PlayUserInteractionFragment @Inject constructor(
             } else sendChatView.hide()
 
             sendChatView.focusChatForm(playViewModel.channelType.isLive && map[BottomInsetsType.Keyboard] is BottomInsetsState.Shown)
+
+            if (playViewModel.channelType.isLive &&
+                    map[BottomInsetsType.ProductSheet]?.isShown == false &&
+                    map[BottomInsetsType.VariantSheet]?.isShown == false &&
+                    map[BottomInsetsType.Keyboard]?.isShown == true) {
+                quickReplyView.show()
+            } else quickReplyView.hide()
         })
     }
 
@@ -555,6 +572,7 @@ class PlayUserInteractionFragment @Inject constructor(
                     sendChatView.focusChatForm(false)
                     sendChatView.hide()
                 }
+                if(it.isFreeze || it.isBanned) quickReplyView.hide()
             }
         })
     }
@@ -710,21 +728,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     override fun onInitQuickReply(container: ViewGroup): Int {
-        val quickReplyComponent = QuickReplyComponent(container, EventBusFactory.get(viewLifecycleOwner), scope, dispatchers)
-
-        scope.launch {
-            quickReplyComponent.getUserInteractionEvents()
-                    .collect {
-                        when (it) {
-                            is QuickReplyInteractionEvent.ReplyClicked -> {
-                                PlayAnalytics.clickQuickReply(channelId)
-                                doSendChat(it.replyString)
-                            }
-                        }
-                    }
-        }
-
-        return quickReplyComponent.getContainerId()
+        throw IllegalStateException("No Init")
     }
 
     override fun onInitGradientBackground(container: ViewGroup): Int {

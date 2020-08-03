@@ -95,4 +95,17 @@
         app:layout_constraintTop_toBottomOf="@id/view_toolbar"
         />
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_quick_reply"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginBottom="@dimen/spacing_lvl3"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/view_send_chat"
+        app:layout_constraintEnd_toEndOf="@id/space_size"
+        app:layout_constraintStart_toStartOf="@id/space_size"
+        />
+
 </com.tokopedia.play.view.custom.PlayInteractionConstraintLayout>
