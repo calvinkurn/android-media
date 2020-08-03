@@ -919,7 +919,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         if (adapter.list[positionInFeed] is TopadsShopViewModel) {
             val (_, dataList, _, _) = adapter.list[positionInFeed] as TopadsShopViewModel
             if (adapterPosition != RecyclerView.NO_POSITION) {
-                presenter.doTopAdsTracker(dataList[adapterPosition].redirect, shop.id, shop.name, dataList[adapterPosition].shopClickUrl, true)
+                presenter.doTopAdsTracker(dataList[adapterPosition].shopClickUrl, shop.id, shop.name, dataList[adapterPosition].shop.imageShop.xsEcs, true)
             }
         }
         context?.let {

@@ -1031,7 +1031,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         if (adapter.getlist()[positionInFeed] is TopadsShopViewModel) {
             val (_, dataList, _, _) = adapter.getlist()[positionInFeed] as TopadsShopViewModel
             if (adapterPosition != RecyclerView.NO_POSITION) {
-                feedViewModel.doTopAdsTracker(dataList[adapterPosition].redirect, shop.id, shop.name, dataList[adapterPosition].shopClickUrl, true)
+                feedViewModel.doTopAdsTracker(dataList[adapterPosition].shopClickUrl, shop.id, shop.name, dataList[adapterPosition].shop.imageShop.xsEcs, true)
             }
         }
     }
