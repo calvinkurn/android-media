@@ -50,6 +50,19 @@ class ReviewDetailViewModelTest : ReviewDetailViewModelTestFixture() {
         verifyProductrevGetReviewDetailUseCaseCalled()
     }
 
+    @Test
+    fun `when getUserId should return valid userId`() {
+        val actualUserId = viewModel.getUserId()
+        Assert.assertTrue(actualUserId.isEmpty())
+    }
+
+    @Test
+    fun `when feedback Id live data is not initialized should return 0`() {
+        val expectedFeedbackId = 0
+        val actualFeedbackId = viewModel.feedbackId
+        Assert.assertEquals(expectedFeedbackId, actualFeedbackId)
+    }
+
     private fun onGetReviewDetails_thenReturn(response: ProductrevGetReviewDetailResponseWrapper) {
         coEvery { productrevGetReviewDetailUseCase.executeOnBackground() } returns response
     }

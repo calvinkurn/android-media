@@ -17,19 +17,17 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ReviewInboxContainerViewModel @Inject constructor(
-        userSessionInterface: UserSessionInterface,
+        private val userSessionInterface: UserSessionInterface,
         private val dispatchers: CoroutineDispatcherProvider,
         private val productrevReviewTabCounterUseCase: ProductrevReviewTabCounterUseCase
 ) : BaseViewModel(dispatchers.io()){
-
-    val userId = userSessionInterface.userId ?: ""
 
     private val _reviewTabs = MutableLiveData<Result<ProductrevReviewTabCount>>()
     val reviewTabs: LiveData<List<ReviewInboxTabs>> = Transformations.map(_reviewTabs) {
         updateCounters(it)
     }
 
-    private val isShopOwner = userSessionInterface.hasShop()
+    fun getUserId() = userSessionInterface.userId ?: ""
 
     fun getTabCounter() {
         launchCatchError(block = {
@@ -55,9 +53,11 @@ class ReviewInboxContainerViewModel @Inject constructor(
             }
         }
         result.add(ReviewInboxTabs.ReviewInboxHistory)
-        if(isShopOwner) {
+        if(isShopOwner()) {
             result.add(ReviewInboxTabs.ReviewInboxSeller)
         }
         return result
     }
+
+    private fun isShopOwner() = userSessionInterface.hasShop()
 }

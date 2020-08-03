@@ -73,7 +73,7 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
 
 
     override fun onBackPressed() {
-        ReviewInboxContainerTracking.eventOnClickBackButton(viewModel.userId)
+        ReviewInboxContainerTracking.eventOnClickBackButton(viewModel.getUserId())
     }
 
     private fun setupViewPager(tabTitles: List<String>) {
@@ -106,18 +106,18 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
                     PENDING_TAB_INDEX -> {
                         when(currentTab) {
                             PENDING_TAB_INDEX -> {
-                                ReviewInboxContainerTracking.eventOnClickReviewPendingTabFromReviewPendingTab(viewModel.userId)
+                                ReviewInboxContainerTracking.eventOnClickReviewPendingTabFromReviewPendingTab(viewModel.getUserId())
                             }
                             HISTORY_TAB_INDEX -> {
-                                ReviewInboxContainerTracking.eventOnClickReviewPendingTabFromReviewHistoryTab(viewModel.userId)
+                                ReviewInboxContainerTracking.eventOnClickReviewPendingTabFromReviewHistoryTab(viewModel.getUserId())
                             }
                         }
                     }
                     HISTORY_TAB_INDEX -> {
-                        ReviewInboxContainerTracking.eventOnClickReviewHistoryTabFromReviewPendingTab(viewModel.userId)
+                        ReviewInboxContainerTracking.eventOnClickReviewHistoryTabFromReviewPendingTab(viewModel.getUserId())
                     }
                     else -> {
-                        ReviewInboxContainerTracking.eventOnClickReviewSellerTab(viewModel.userId)
+                        ReviewInboxContainerTracking.eventOnClickReviewSellerTab(viewModel.getUserId())
                     }
                 }
             }

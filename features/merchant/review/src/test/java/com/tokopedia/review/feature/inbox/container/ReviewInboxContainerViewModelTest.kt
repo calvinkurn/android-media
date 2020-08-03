@@ -28,17 +28,22 @@ class ReviewInboxContainerViewModelTest : ReviewInboxContainerViewModelTestFixtu
 
     @Test
     fun `when getTabCounter fails should still execute expected use case, update UI with default values`() {
-        val defaultCountWhenError = 0
         val exception = NetworkErrorException()
 
         onGetTabCounterFail_thenReturn(exception)
 
         viewModel.getTabCounter()
 
-        val expectedError = listOf(ReviewInboxTabs.ReviewInboxPending(defaultCountWhenError.toString()), ReviewInboxTabs.ReviewInboxHistory, ReviewInboxTabs.ReviewInboxSeller )
+        val expectedError = listOf(ReviewInboxTabs.ReviewInboxPending(), ReviewInboxTabs.ReviewInboxHistory, ReviewInboxTabs.ReviewInboxSeller)
 
         verifyGetTabCounterUseCaseExecuted()
         verifyTabCountersEquals(expectedError)
+    }
+
+    @Test
+    fun `when getUserId should return valid userId`() {
+        val actualUserId = viewModel.getUserId()
+        Assert.assertTrue(actualUserId.isEmpty())
     }
 
     private fun verifyGetTabCounterUseCaseExecuted() {

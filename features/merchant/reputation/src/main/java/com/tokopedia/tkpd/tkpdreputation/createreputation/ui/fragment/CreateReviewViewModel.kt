@@ -35,7 +35,7 @@ class CreateReviewViewModel @Inject constructor(@Named("Main")
     @Inject
     lateinit var userSessionInterface: UserSessionInterface
 
-    private var imageData: MutableList<BaseImageReviewViewModel> = mutableListOf()
+    private var imageData: MutableList<BaseImageReviewUiModel> = mutableListOf()
 
     private var reputationDataForm = MutableLiveData<Result<ProductRevGetForm>>()
     val getReputationDataForm = reputationDataForm
@@ -56,21 +56,21 @@ class CreateReviewViewModel @Inject constructor(@Named("Main")
         }
     }
 
-    fun getImageList(selectedImage: ArrayList<String>): MutableList<BaseImageReviewViewModel> {
+    fun getImageList(selectedImage: ArrayList<String>): MutableList<BaseImageReviewUiModel> {
         when (selectedImage.size) {
             5 -> {
                 imageData = (selectedImage.take(4).map {
-                    ImageReviewViewModel(it, shouldDisplayOverlay = true)
+                    ImageReviewUiModel(it, shouldDisplayOverlay = true)
                 }).asReversed().toMutableList()
             }
             4 -> {
                 imageData.addAll(selectedImage.take(3).map {
-                    ImageReviewViewModel(it, shouldDisplayOverlay = true)
+                    ImageReviewUiModel(it, shouldDisplayOverlay = true)
                 }.asReversed())
             }
             else -> {
                 imageData.addAll(selectedImage.map {
-                    ImageReviewViewModel(it, shouldDisplayOverlay = false)
+                    ImageReviewUiModel(it, shouldDisplayOverlay = false)
                 }.asReversed())
             }
         }
@@ -78,9 +78,9 @@ class CreateReviewViewModel @Inject constructor(@Named("Main")
         return imageData
     }
 
-    fun initImageData(): MutableList<BaseImageReviewViewModel> {
+    fun initImageData(): MutableList<BaseImageReviewUiModel> {
         imageData.clear()
-        imageData.add(DefaultImageReviewModel())
+        imageData.add(DefaultImageReviewUiModel())
         return imageData
     }
 

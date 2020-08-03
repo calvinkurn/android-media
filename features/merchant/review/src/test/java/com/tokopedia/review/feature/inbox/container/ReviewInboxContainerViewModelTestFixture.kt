@@ -27,5 +27,6 @@ abstract class ReviewInboxContainerViewModelTestFixture {
     fun setup() {
         MockKAnnotations.init(this)
         viewModel = ReviewInboxContainerViewModel(userSession, TestCoroutineDispatchers, productrevReviewTabCounterUseCase)
+        viewModel.reviewTabs.observeForever {  }
     }
 }

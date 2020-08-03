@@ -15,6 +15,7 @@ import com.tokopedia.review.utils.verifyErrorEquals
 import com.tokopedia.review.utils.verifySuccessEquals
 import io.mockk.coEvery
 import io.mockk.coVerify
+import org.junit.Assert
 import org.junit.Test
 import java.lang.Exception
 
@@ -87,6 +88,12 @@ class ReviewPendingViewModelTest : ReviewPendingViewModelTestFixture() {
 
         verifyGetOvoIncentiveUseCaseExecuted()
         viewModel.incentiveOvo.verifyCoroutineFailEquals(expectedError)
+    }
+
+    @Test
+    fun `when getUserId should return valid userId`() {
+        val actualUserId = viewModel.getUserId()
+        Assert.assertTrue(actualUserId.isEmpty())
     }
 
     private fun verifyReviewListEquals(response: Success<ProductrevWaitForFeedbackResponse>) {
