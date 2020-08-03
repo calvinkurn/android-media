@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
@@ -24,7 +23,7 @@ class EndLiveInfoView(
 ) : UIView(container) {
 
     private val view: View =
-            LayoutInflater.from(container.context).inflate(R.layout.view_end_live_info, container, true)
+            LayoutInflater.from(container.context).inflate(R.layout.view_mini_end_live_info, container, true)
                     .findViewById(R.id.cl_play_live_ended)
 
     private val txtLiveEndedTitle = view.findViewById<TextView>(R.id.txt_live_ended_title)

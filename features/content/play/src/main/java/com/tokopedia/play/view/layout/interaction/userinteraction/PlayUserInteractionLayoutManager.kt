@@ -35,7 +35,7 @@ class PlayUserInteractionLayoutManager(
 //    @IdRes private val chatListComponentId: Int = viewInitializer.onInitChatList(container)
 //    @IdRes private val videoControlComponentId: Int = viewInitializer.onInitVideoControl(container)
 //    @IdRes private val videoSettingsComponentId: Int = viewInitializer.onInitVideoSettings(container)
-    @IdRes private val endLiveInfoComponentId: Int = viewInitializer.onInitEndLiveComponent(container)
+//    @IdRes private val endLiveInfoComponentId: Int = viewInitializer.onInitEndLiveComponent(container)
 //    @IdRes private val toolbarComponentId: Int = viewInitializer.onInitToolbar(container)
 //    @IdRes private val statsInfoComponentId: Int = viewInitializer.onInitStatsInfo(container)
 //    @IdRes private val quickReplyComponentId: Int = viewInitializer.onInitQuickReply(container)
@@ -56,12 +56,9 @@ class PlayUserInteractionLayoutManager(
     private val offset0 = container.resources.getDimensionPixelOffset(com.tokopedia.play.R.dimen.play_no_offset)
 
     override fun layoutView(view: View) {
-        layoutEndLiveComponent(container = view, id = endLiveInfoComponentId)
     }
 
     override fun setupInsets(view: View, insets: WindowInsetsCompat) {
-        val endLiveInfoView = view.findViewById<View>(endLiveInfoComponentId)
-        endLiveInfoView.setPadding(endLiveInfoView.paddingLeft, endLiveInfoView.paddingTop, endLiveInfoView.paddingRight, offset24 + insets.systemWindowInsetBottom)
     }
 
     override fun onDestroy() {
@@ -173,15 +170,6 @@ class PlayUserInteractionLayoutManager(
                 connect(id, ConstraintSet.TOP, statsInfoComponentId, ConstraintSet.BOTTOM)
                 connect(id, ConstraintSet.BOTTOM, pinnedComponentId, ConstraintSet.TOP, offset16)
             }
-        }
-    }
-
-    private fun layoutEndLiveComponent(container: View, @IdRes id: Int) {
-        container.changeConstraint {
-            connect(id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
-            connect(id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
-            connect(id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
-            connect(id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
         }
     }
 

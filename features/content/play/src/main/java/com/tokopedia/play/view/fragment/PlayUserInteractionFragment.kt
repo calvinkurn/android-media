@@ -63,6 +63,7 @@ import com.tokopedia.play_common.state.PlayVideoState
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updateMargins
+import com.tokopedia.play_common.view.updatePadding
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.coroutines.Fail
@@ -92,7 +93,8 @@ class PlayUserInteractionFragment @Inject constructor(
         PinnedViewComponent.Listener,
         VideoSettingsViewComponent.Listener,
         ImmersiveBoxViewComponent.Listener,
-        PlayButtonViewComponent.Listener
+        PlayButtonViewComponent.Listener,
+        EndLiveInfoViewComponent.Listener
 {
 
     companion object {
@@ -125,6 +127,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private val videoSettingsView by viewComponent { VideoSettingsViewComponent(it, R.id.view_video_settings, this) }
     private val immersiveBoxView by viewComponent { ImmersiveBoxViewComponent(it, R.id.v_immersive_box, this) }
     private val playButtonView by viewComponent { PlayButtonViewComponent(it, R.id.view_play_button, this) }
+    private val endLiveInfoView by viewComponent { EndLiveInfoViewComponent(it, R.id.view_end_live_info, this) }
 
     private lateinit var playViewModel: PlayViewModel
     private lateinit var viewModel: PlayInteractionViewModel
@@ -192,6 +195,7 @@ class PlayUserInteractionFragment @Inject constructor(
     override fun onStart() {
         super.onStart()
         spaceSize.rootView.requestApplyInsetsWhenAttached()
+        endLiveInfoView.rootView.requestApplyInsetsWhenAttached()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -370,6 +374,16 @@ class PlayUserInteractionFragment @Inject constructor(
         playViewModel.startCurrentVideo()
     }
 
+    /**
+     * EndLiveInfo View Component Listener
+     */
+    override fun onButtonActionClicked(view: EndLiveInfoViewComponent, btnUrl: String) {
+        openPageByApplink(
+                applink = btnUrl,
+                shouldFinish = true
+        )
+    }
+
     private fun setupInsets(view: View) {
         spaceSize.rootView.doOnApplyWindowInsets { v, insets, _, margin ->
             val marginLayoutParams = v.layoutParams as ViewGroup.MarginLayoutParams
@@ -388,6 +402,10 @@ class PlayUserInteractionFragment @Inject constructor(
             }
 
             if (isMarginChanged) v.parent.requestLayout()
+        }
+
+        endLiveInfoView.rootView.doOnApplyWindowInsets { v, insets, padding, _ ->
+            v.updatePadding(bottom = padding.bottom + insets.systemWindowInsetBottom)
         }
 
         ViewCompat.setOnApplyWindowInsetsListener(view) { _, insets ->
@@ -499,12 +517,14 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun observeTotalLikes() {
         playViewModel.observableTotalLikes.observe(viewLifecycleOwner, DistinctObserver {
             likeView.setTotalLikes(it)
+            endLiveInfoView.setTotalLikes(it)
         })
     }
 
     private fun observeTotalViews() {
         playViewModel.observableTotalViews.observe(viewLifecycleOwner, DistinctObserver {
             statsInfoView.setTotalViews(it)
+            endLiveInfoView.setTotalViews(it)
         })
     }
 
@@ -650,28 +670,37 @@ class PlayUserInteractionFragment @Inject constructor(
                     sendEventFreeze(it)
                     hideBottomSheet()
                 }
-
-                /**
-                 * New
-                 */
-                if(it.isFreeze || it.isBanned) gradientBackgroundView.hide()
-                if(it.isFreeze || it.isBanned) toolbarView.show()
-                if(it.isFreeze || it.isBanned) statsInfoView.show()
-                if(it.isFreeze || it.isBanned) {
-                    videoControlView.hide()
-                    videoControlView.setPlayer(null)
-                }
-                if(it.isFreeze || it.isBanned) likeView.hide()
-                if(it.isFreeze || it.isBanned) {
-                    sendChatView.focusChatForm(false)
-                    sendChatView.hide()
-                }
-                if(it.isFreeze || it.isBanned) quickReplyView.hide()
-                if(it.isFreeze || it.isBanned) chatListView.hide()
-                if(it.isFreeze || it.isBanned) pinnedView.hide()
-                if(it.isFreeze || it.isBanned) immersiveBoxView.hide()
-                if(it.isFreeze || it.isBanned) playButtonView.hide()
             }
+
+            /**
+             * New
+             */
+            if(it.isFreeze || it.isBanned) gradientBackgroundView.hide()
+            if(it.isFreeze || it.isBanned) toolbarView.show()
+            if(it.isFreeze || it.isBanned) statsInfoView.show()
+            if(it.isFreeze || it.isBanned) {
+                videoControlView.hide()
+                videoControlView.setPlayer(null)
+            }
+            if(it.isFreeze || it.isBanned) likeView.hide()
+            if(it.isFreeze || it.isBanned) {
+                sendChatView.focusChatForm(false)
+                sendChatView.hide()
+            }
+            if(it.isFreeze || it.isBanned) quickReplyView.hide()
+            if(it.isFreeze || it.isBanned) chatListView.hide()
+            if(it.isFreeze || it.isBanned) pinnedView.hide()
+            if(it.isFreeze || it.isBanned) immersiveBoxView.hide()
+            if(it.isFreeze || it.isBanned) playButtonView.hide()
+            if(it.isFreeze) {
+                endLiveInfoView.setInfo(
+                        title = it.freezeTitle,
+                        message = it.freezeMessage,
+                        btnTitle = it.freezeButtonTitle,
+                        btnUrl = it.freezeButtonUrl
+                )
+                endLiveInfoView.show()
+            } else endLiveInfoView.hide()
         })
     }
 
@@ -788,23 +817,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     override fun onInitEndLiveComponent(container: ViewGroup): Int {
-        val endLiveInfoComponent = EndLiveInfoComponent(container, EventBusFactory.get(viewLifecycleOwner), scope, dispatchers)
-
-        scope.launch {
-            endLiveInfoComponent.getUserInteractionEvents()
-                    .collect {
-                        when (it) {
-                            is EndLiveInfoInteractionEvent.ButtonActionClicked -> {
-                                openPageByApplink(
-                                        applink = it.buttonUrl,
-                                        shouldFinish = true
-                                )
-                            }
-                        }
-                    }
-        }
-
-        return endLiveInfoComponent.getContainerId()
+        throw IllegalStateException("No Init")
     }
 
     override fun onInitStatsInfo(container: ViewGroup): Int {
