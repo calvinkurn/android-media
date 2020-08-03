@@ -32,6 +32,8 @@ class EventPDPTicketItemPackageAdapter(
     private var isError = false
     private var idPackage = ""
     private var packageName = ""
+    private var heightItemView = 0
+    private var lowerMin = - 1
 
     lateinit var eventPDPTracking: EventPDPTracking
 
@@ -69,14 +71,19 @@ class EventPDPTicketItemPackageAdapter(
                     txtNotStarted.visibility = View.GONE
                 }
 
-                if(onCoachmarkListener.getLocalCache() && position==1){
-                    itemView.post {
-                        onCoachmarkListener.showCoachMark(itemView.width,itemView.height,txtPilih_ticket)
-                    }
-                }
+                //itemView.post {
+//                    heightItemView += itemView.height
+//                    if (onCoachmarkListener.getLocalCache() && listItemPackage.size == 1 && position == 0) {
+//                        onCoachmarkListener.showCoachMark(itemView.width, heightItemView, txtPilih_ticket, 4)
+//                    } else if (onCoachmarkListener.getLocalCache() && listItemPackage.size >= 2 && position == 1) {
+//                        onCoachmarkListener.showCoachMark(itemView.width, heightItemView, txtPilih_ticket, 2)
+//                    }
+//                }
 
-                quantityEditor.minValue = items.minQty.toInt()
+                quantityEditor.setValue(items.minQty.toInt())
+                quantityEditor.minValue = items.minQty.toInt() - 1
                 quantityEditor.maxValue = items.maxQty.toInt()
+
 
                 quantityEditor.setValueChangedListener { newValue, _, _ ->
                     isError = !(quantityEditor.getValue() >= items.minQty.toInt() && quantityEditor.getValue() <= items.maxQty.toInt())
@@ -101,8 +108,10 @@ class EventPDPTicketItemPackageAdapter(
                                 quantityEditor.editText.error = String.format(resources.getString(R.string.ent_error_value_exceeded), items.maxQty)
                                 isError = true
                             } else if (getDigit(txtTotal.toString()) < items.minQty.toInt()) {
-                                quantityEditor.editText.error = String.format(resources.getString(R.string.ent_error_value_under_min), items.minQty)
-                                isError = true
+                                itemView.txtPilih_ticket.visibility = View.VISIBLE
+                                itemView.greenDivider.visibility = View.GONE
+                                itemView.quantityEditor.visibility = View.GONE
+                                itemView.bgTicket.background = ContextCompat.getDrawable(context, R.drawable.ent_pdp_ticket_normal_bg)
                             }
                             if (txtTotal.toString().length > 1) { // zero first checker example: 01 -> 1, 02 -> 2
                                 if (txtTotal.toString().startsWith("0")) {
@@ -139,7 +148,7 @@ class EventPDPTicketItemPackageAdapter(
                     itemView.greenDivider.visibility = View.VISIBLE
                     itemView.bgTicket.background = ContextCompat.getDrawable(context, R.drawable.ent_pdp_ticket_active_bg)
                     itemView.quantityEditor.visibility = View.VISIBLE
-                    itemView.quantityEditor.setValue(MIN_QTY)
+                    itemView.quantityEditor.setValue(if(items.minQty.toInt()<1) MIN_QTY else items.minQty.toInt())
                     itemView.quantityEditor.editText.visibility = View.VISIBLE
                     itemView.quantityEditor.addButton.visibility = View.VISIBLE
                     itemView.quantityEditor.subtractButton.visibility = View.VISIBLE
