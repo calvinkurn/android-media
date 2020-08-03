@@ -43,6 +43,8 @@ public class TokopediaPayViewHolder extends AbstractViewHolder<TokopediaPayViewM
 
         if(element.getBsDataCentre() == null) {
             tokopediaPayCardView.setCenterLayoutVisibility(View.GONE);
+        } else {
+            tokopediaPayCardView.setCenterLayoutVisibility(View.VISIBLE);
         }
 
         tokopediaPayCardView.setTextDescLeft(element.getLabelLeft());

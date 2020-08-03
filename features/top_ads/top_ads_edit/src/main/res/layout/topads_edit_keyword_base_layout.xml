@@ -40,7 +40,7 @@
 
     </RadioGroup>
 
-    <com.tokopedia.topads.edit.view.CustomViewPager
+    <com.tokopedia.topads.common.CustomViewPager
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_0"
