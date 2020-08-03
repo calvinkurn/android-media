@@ -65,7 +65,6 @@ class GiftBoxTapTapView : GiftBoxDailyView {
     override fun getLayout(): Int = com.tokopedia.gamification.R.layout.view_gift_box_tap_tap
 
     override fun initViews() {
-        initInjector()
         confettiView = findViewById(R.id.lottie_particles)
         imageBoxWhite = findViewById(R.id.image_box_white)
         imageBoxGlow = findViewById(R.id.image_box_glow)
@@ -236,7 +235,9 @@ class GiftBoxTapTapView : GiftBoxDailyView {
                         .into(imageBg)
 
                 incrementAndSendCallback()
-            }catch (ex:Exception){ex.printStackTrace()}
+            }catch (ex:Exception){
+                ex.printStackTrace()
+            }
         }
 
         val imageLiveData = MutableLiveData<LiveDataResult<Bitmap?>>()
