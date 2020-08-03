@@ -11,6 +11,9 @@ import android.os.Build
 import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.View
+import android.view.animation.AccelerateDecelerateInterpolator
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.asynclayoutinflater.view.AsyncLayoutInflater
@@ -19,6 +22,8 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
+import com.tokopedia.searchbar.helper.Ease
+import com.tokopedia.searchbar.helper.EasingInterpolator
 import com.tokopedia.searchbar.helper.ViewHelper
 import kotlinx.android.synthetic.main.home_main_toolbar.view.*
 import kotlinx.coroutines.*

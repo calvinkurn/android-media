@@ -1455,7 +1455,7 @@ open class HomeFragment : BaseDaggerFragment(),
     private fun setHint(searchPlaceholder: SearchPlaceholder) {
         if (searchPlaceholder.data != null && searchPlaceholder.data.placeholder != null && searchPlaceholder.data.keyword != null) {
             homeMainToolbar?.setHint(
-                    searchPlaceholder.data.placeholder,
+                    arrayListOf("asd", "asdf", "asdfg"),
                     searchPlaceholder.data.keyword,
                     isFirstInstall())
         }

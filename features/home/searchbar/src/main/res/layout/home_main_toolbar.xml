@@ -27,7 +27,8 @@
             android:background="@drawable/bg_corner"
             android:layout_height="match_parent"
             android:orientation="horizontal"
-            android:padding="@dimen/dp_4">
+            android:paddingLeft="@dimen/spacing_lvl2"
+            android:paddingRight="@dimen/spacing_lvl2">
 
             <ImageView
                 android:id="@+id/search_magnify_icon"
