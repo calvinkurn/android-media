@@ -61,8 +61,8 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
     private val headerStatusMap: HashMap<Int, Boolean> = hashMapOf()
     private val currentHeaderPositionMap: HashMap<Int, Int> = hashMapOf()
     private val inputLayoutModelMap: HashMap<Int, VariantDetailInputLayoutModel> = hashMapOf()
-    private val inputPriceErrorStatusMap: HashMap<Int, Boolean> = hashMapOf()
-    private val inputStockErrorStatusMap: HashMap<Int, Boolean> = hashMapOf()
+    private var inputPriceErrorStatusMap: HashMap<Int, Boolean> = hashMapOf()
+    private var inputStockErrorStatusMap: HashMap<Int, Boolean> = hashMapOf()
 
     fun getInputFieldSize(): Int {
         return inputFieldSize
@@ -193,10 +193,18 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
                     // assign new value if input price is not empty
                     if (inputModel.price.isNotEmpty()) {
                         price = inputModel.price.toBigIntegerOrNull().orZero()
+                        // reset error statuses to false
+                        inputPriceErrorStatusMap.forEach {
+                            inputPriceErrorStatusMap[it.key] = false
+                        }
                     }
                     // assign new value if input stock is not empty
                     if (inputModel.stock.isNotEmpty()) {
                         stock = inputModel.stock.toIntOrZero()
+                        // reset error statuses to false
+                        inputStockErrorStatusMap.forEach {
+                            inputStockErrorStatusMap[it.key] = false
+                        }
                     }
                     // assign new value if input sku is not empty
                     if (inputModel.sku.isNotEmpty()) {
