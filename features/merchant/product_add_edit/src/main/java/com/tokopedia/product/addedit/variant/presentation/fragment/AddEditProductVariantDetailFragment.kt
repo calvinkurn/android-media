@@ -391,8 +391,8 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
     }
 
     private fun setupToolbarActions() {
-        activity?.findViewById<HeaderUnify>(R.id.toolbar_variant_detail)?.apply {
-            headerTitle = getString(R.string.title_variant_activity)
+        activity?.findViewById<HeaderUnify>(com.tokopedia.product.addedit.R.id.toolbar_variant_detail)?.apply {
+            headerTitle = getString(com.tokopedia.product.addedit.R.string.title_variant_activity)
             setNavigationOnClickListener {
                 activity?.onBackPressed()
             }

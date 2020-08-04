@@ -4,22 +4,24 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.core.network.retrofit.response.TextErrorObject
-import com.tokopedia.core.util.MethodChecker
 import com.tokopedia.topads.R
 import com.tokopedia.topads.common.data.exception.ResponseErrorException
 import com.tokopedia.topads.common.data.response.Error
 import com.tokopedia.topads.common.view.fragment.TopAdsNewBaseStepperFragment
 import com.tokopedia.topads.common.view.widget.TkpdProgressDialog
+import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant
+import com.tokopedia.topads.dashboard.data.model.request.DataSuggestions
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent
 import com.tokopedia.topads.dashboard.utils.ViewUtils
 import com.tokopedia.topads.keyword.di.component.DaggerTopAdsKeywordAddComponent
@@ -31,9 +33,10 @@ import com.tokopedia.topads.keyword.view.adapter.TopAdsKeywordAddAdapter
 import com.tokopedia.topads.keyword.view.listener.TopAdsKeywordNewAddView
 import com.tokopedia.topads.keyword.view.model.TopAdsKeywordNewStepperModel
 import com.tokopedia.topads.keyword.view.presenter.TopAdsKeywordNewAddPresenter
+import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_top_ads_keyword_new_add.*
 import kotlinx.android.synthetic.main.top_ads_empty_layout.*
-import java.util.ArrayList
+import java.util.*
 import javax.inject.Inject
 
 class TopAdsKeywordNewAddFragment : TopAdsNewBaseStepperFragment<TopAdsKeywordNewStepperModel>(),
@@ -59,6 +62,7 @@ class TopAdsKeywordNewAddFragment : TopAdsNewBaseStepperFragment<TopAdsKeywordNe
         private const val MAX_KEYWORD = 50
         private const val EXTRA_ERROR_WORDS = "err_wrds"
         private const val EXTRA_LOCAL_WORDS = "lcl_wrds"
+        private const val KEYWORD_PARAM = "keyword"
 
         fun newInstance(): Fragment = TopAdsKeywordNewAddFragment()
     }
@@ -103,6 +107,13 @@ class TopAdsKeywordNewAddFragment : TopAdsNewBaseStepperFragment<TopAdsKeywordNe
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        stepperModel?.run {
+            activity?.let {
+                val suggestions: MutableList<DataSuggestions> = ArrayList()
+                presenter.getBidInfo(KEYWORD_PARAM,
+                        suggestions, TopAdsNetworkConstant.SOURCE_EDIT_COST_GROUP, UserSession(it).shopId.toInt(), resources)
+            }
+        }
         stepperModel?.run {bidInfoTextView.visibility = if (isPositive) View.VISIBLE else View.GONE}
         buttonSave.setOnClickListener { gotoNextPage() }
         initEmptyStateView()
@@ -112,6 +123,11 @@ class TopAdsKeywordNewAddFragment : TopAdsNewBaseStepperFragment<TopAdsKeywordNe
         setServerKeyword()
         setRecyclerView()
         needShowEmptyLayout()
+        presenter.minBid.observe(viewLifecycleOwner, androidx.lifecycle.Observer { minBid ->
+            stepperModel.run {
+                this?.priceBid = minBid
+            }
+        })
     }
 
     private fun needShowEmptyLayout() {
@@ -277,10 +293,10 @@ class TopAdsKeywordNewAddFragment : TopAdsNewBaseStepperFragment<TopAdsKeywordNe
         super.onViewStateRestored(savedInstanceState)
         localKeywordAdapter.clear()
         if (savedInstanceState != null && savedInstanceState.containsKey(EXTRA_LOCAL_WORDS)) {
-            localKeywordAdapter.addBulk(savedInstanceState.getParcelableArrayList(EXTRA_LOCAL_WORDS))
+            localKeywordAdapter.addBulk(savedInstanceState.getParcelableArrayList(EXTRA_LOCAL_WORDS) ?: emptyList())
         }
         if (savedInstanceState != null && savedInstanceState.containsKey(EXTRA_ERROR_WORDS)) {
-            errorList = savedInstanceState.getStringArrayList(EXTRA_ERROR_WORDS)
+            errorList = savedInstanceState.getStringArrayList(EXTRA_ERROR_WORDS) ?: emptyList()
         }
     }
 

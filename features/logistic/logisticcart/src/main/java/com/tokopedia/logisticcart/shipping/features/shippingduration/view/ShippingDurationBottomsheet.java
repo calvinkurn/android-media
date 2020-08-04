@@ -23,7 +23,7 @@ import com.tokopedia.logisticcart.shipping.features.shippingduration.di.Shipping
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel;
 import com.tokopedia.logisticcart.shipping.model.Product;
-import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
+import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel;
@@ -152,6 +152,19 @@ public class ShippingDurationBottomsheet extends BottomSheets
     @Override
     public int getLayoutResourceId() {
         return R.layout.fragment_shipment_duration_choice;
+    }
+
+    @Override
+    public int getBaseLayoutResourceId() {
+        return R.layout.widget_bottomsheet_shipping;
+    }
+
+    @Override
+    public void setupDialog(android.app.Dialog dialog, int style) {
+        super.setupDialog(dialog, style);
+        if (dialog != null) {
+            dialog.findViewById(R.id.design_bottom_sheet).setBackgroundResource(android.R.color.transparent);
+        }
     }
 
     @Override
@@ -286,7 +299,7 @@ public class ShippingDurationBottomsheet extends BottomSheets
         }
         if (promoViewModel != null) {
             mPromoTracker.eventViewPromoLogisticTicker(promoViewModel.getPromoCode());
-            if(promoViewModel.getDisabled()){
+            if (promoViewModel.getDisabled()) {
                 mPromoTracker.eventViewPromoLogisticTickerDisable(promoViewModel.getPromoCode());
             }
         }

@@ -57,6 +57,7 @@ public class TopAdsShopAdapter extends RecyclerView.Adapter<TopAdsShopAdapter.Vi
     private Context context;
     private final String PATH_VIEW = "views";
     private ImageLoader imageLoader;
+    private static final String className = "com.tokopedia.favorite.view.adapter.TopAdsShopAdapter";
 
     public TopAdsShopAdapter(FavoriteClickListener favoriteClickListener) {
         this.favoriteClickListener = favoriteClickListener;
@@ -74,7 +75,7 @@ public class TopAdsShopAdapter extends RecyclerView.Adapter<TopAdsShopAdapter.Vi
         context = parent.getContext();
         imageLoader = new ImageLoader(context);
         View itemLayoutView = LayoutInflater.from(context)
-                .inflate(R.layout.listview_reccommend_shop, parent, false);
+                .inflate(R.layout.favorite_listview_reccommend_shop, parent, false);
         createScaleAnimation();
         return new ViewHolder(itemLayoutView);
     }
@@ -96,7 +97,7 @@ public class TopAdsShopAdapter extends RecyclerView.Adapter<TopAdsShopAdapter.Vi
 
     private void setShopCover(ViewHolder holder, final String coverUri, String ecs) {
         if (coverUri == null) {
-            holder.shopCover.setImageResource(R.drawable.ic_loading_toped);
+            holder.shopCover.setImageResource(com.tokopedia.abstraction.R.drawable.ic_loading_toped);
         } else {
             Glide.with(context)
                     .load(ecs)
@@ -115,7 +116,7 @@ public class TopAdsShopAdapter extends RecyclerView.Adapter<TopAdsShopAdapter.Vi
                         @Override
                         public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
                             if (coverUri.contains(PATH_VIEW) && !isFirstResource) {
-                                new ImpresionTask().execute(coverUri);
+                                new ImpresionTask(className).execute(coverUri);
                             }
                             return false;
                         }

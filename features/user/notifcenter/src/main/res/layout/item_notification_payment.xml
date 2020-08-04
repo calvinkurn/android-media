@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/btnWaitingPayment"
+    android:layout_width="match_parent"
+    android:visibility="gone"
+    tools:visibility="visible"
+    android:layout_height="@dimen/notif_dp_56">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="@dimen/notif_dp_16"
+        android:layout_marginLeft="@dimen/notif_dp_16"
+        android:text="@string/notif_transaction_waiting_payment"
+        android:textColor="@color/black_68"/>
+
+    <TextView
+        android:id="@+id/txtCounterWaitingPayment"
+        android:layout_width="@dimen/notif_dp_16"
+        android:layout_height="@dimen/notif_dp_16"
+        android:layout_marginEnd="@dimen/notif_dp_16"
+        android:layout_marginRight="@dimen/notif_dp_16"
+        android:textSize="@dimen/notif_sp_10"
+        android:layout_gravity="center_vertical"
+        android:gravity="center"
+        tools:text="99+"
+        android:layout_centerVertical="true"
+        android:textColor="@color/white"
+        tools:visibility="visible"
+        android:visibility="gone"
+        android:background="@drawable/circle_red"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/notif_dp_0_5"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="@dimen/notif_dp_16"
+        android:layout_marginLeft="@dimen/notif_dp_16"
+        android:background="@color/divider_notif_light" />
+
+</RelativeLayout>

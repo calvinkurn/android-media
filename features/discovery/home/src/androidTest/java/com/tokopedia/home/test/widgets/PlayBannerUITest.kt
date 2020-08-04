@@ -1,8 +1,6 @@
 package com.tokopedia.home.test.widgets
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -27,8 +25,13 @@ import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
 import com.tokopedia.home.test.activity.HomeActivityTest
 import com.tokopedia.home.test.fragment.HomeFragmentTest
 import com.tokopedia.home.test.rules.TestDispatcherProvider
+import com.tokopedia.play_common.domain.usecases.GetPlayWidgetUseCase
+import com.tokopedia.play_common.domain.usecases.PlayToggleChannelReminderUseCase
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
+import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.user.session.UserSessionInterface
+import dagger.Lazy
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -39,7 +42,7 @@ import org.junit.Rule
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
-class PlayBannerUITest{
+class PlayBannerUITest : BaseWidgetUiTest(){
     @Rule
     @JvmField
     val activityRule = ActivityTestRule(HomeActivityTest::class.java, true, true)
@@ -48,51 +51,54 @@ class PlayBannerUITest{
     @JvmField
     val taskExecutorRule = InstantTaskExecutorRule()
 
-    private val userSessionInterface = mockk<UserSessionInterface>(relaxed = true)
-    private val dismissHomeReviewUseCase = mockk<DismissHomeReviewUseCase>(relaxed = true)
-    private val getHomeReviewSuggestedUseCase = mockk<GetHomeReviewSuggestedUseCase>(relaxed = true)
-    private val getKeywordSearchUseCase = mockk<GetKeywordSearchUseCase>(relaxed = true)
-    private val getRecommendationTabUseCase = mockk<GetRecommendationTabUseCase>(relaxed = true)
-    private val getHomeTokopointsDataUseCase = mockk<GetHomeTokopointsDataUseCase>(relaxed = true)
-    private val getCoroutinePendingCashbackUseCase = mockk<GetCoroutinePendingCashbackUseCase> (relaxed = true)
-    private val getPlayLiveDynamicUseCase = mockk<GetPlayLiveDynamicUseCase> (relaxed = true)
-    private val getCoroutineWalletBalanceUseCase = mockk<GetCoroutineWalletBalanceUseCase> (relaxed = true)
-    private val getHomeUseCase = mockk<HomeUseCase> (relaxed = true)
-    private val getSendGeolocationInfoUseCase = mockk<SendGeolocationInfoUseCase> (relaxed = true)
-    private val getStickyLoginUseCase = mockk<StickyLoginUseCase> (relaxed = true)
-    private val getBusinessWidgetTab = mockk<GetBusinessWidgetTab> (relaxed = true)
-    private val getBusinessUnitDataUseCase = mockk<GetBusinessUnitDataUseCase> (relaxed = true)
-    private val getPopularKeywordUseCase = mockk<GetPopularKeywordUseCase> (relaxed = true)
-    private val getDynamicChannelsUseCase = mockk<GetDynamicChannelsUseCase> (relaxed = true)
-    private val sendTopAdsUseCase = mockk<SendTopAdsUseCase>(relaxed = true)
-    private val getAtcUseCase = mockk<AddToCartOccUseCase>(relaxed = true)
-    private val homeDataMapper = HomeDataMapper(InstrumentationRegistry.getInstrumentation().context, HomeVisitableFactoryImpl(userSessionInterface), mockk(relaxed = true))
-
+    override val userSessionInterface = mockk<dagger.Lazy<UserSessionInterface>>(relaxed = true)
+    override val dismissHomeReviewUseCase = mockk<dagger.Lazy<DismissHomeReviewUseCase>>(relaxed = true)
+    override val getHomeReviewSuggestedUseCase = mockk<dagger.Lazy<GetHomeReviewSuggestedUseCase>>(relaxed = true)
+    override val getKeywordSearchUseCase = mockk<dagger.Lazy<GetKeywordSearchUseCase>>(relaxed = true)
+    override val getRecommendationTabUseCase = mockk<dagger.Lazy<GetRecommendationTabUseCase>>(relaxed = true)
+    override val getHomeTokopointsDataUseCase = mockk<dagger.Lazy<GetHomeTokopointsDataUseCase>>(relaxed = true)
+    override val getCoroutinePendingCashbackUseCase = mockk<dagger.Lazy<GetCoroutinePendingCashbackUseCase>> (relaxed = true)
+    override val getPlayLiveDynamicUseCase = mockk<dagger.Lazy<GetPlayLiveDynamicUseCase>> (relaxed = true)
+    override val getCoroutineWalletBalanceUseCase = mockk<dagger.Lazy<GetCoroutineWalletBalanceUseCase>> (relaxed = true)
+    override val getHomeUseCase = mockk<dagger.Lazy<HomeUseCase>> (relaxed = true)
+    override val getSendGeolocationInfoUseCase = mockk<dagger.Lazy<SendGeolocationInfoUseCase>> (relaxed = true)
+    override val getStickyLoginUseCase = mockk<dagger.Lazy<StickyLoginUseCase>> (relaxed = true)
+    override val getBusinessWidgetTab = mockk<dagger.Lazy<GetBusinessWidgetTab>> (relaxed = true)
+    override val getBusinessUnitDataUseCase = mockk<dagger.Lazy<GetBusinessUnitDataUseCase>> (relaxed = true)
+    override val getPopularKeywordUseCase = mockk<dagger.Lazy<GetPopularKeywordUseCase>> (relaxed = true)
+    override val getDynamicChannelsUseCase = mockk<dagger.Lazy<GetDynamicChannelsUseCase>> (relaxed = true)
+    override val getAtcUseCase = mockk<dagger.Lazy<AddToCartOccUseCase>>(relaxed = true)
+    override val getRechargeRecommendationUseCase = mockk<dagger.Lazy<GetRechargeRecommendationUseCase>>(relaxed = true)
+    override val declineRechargeRecommendationUseCase = mockk<dagger.Lazy<DeclineRechargeRecommendationUseCase>>(relaxed = true)
+    override val declineSalamWIdgetUseCase = mockk<dagger.Lazy<DeclineSalamWIdgetUseCase>>(relaxed = true)
+    override val getSalamWIdgetUseCase = mockk<dagger.Lazy<GetSalamWidgetUseCase>>(relaxed = true)
+    override val closeChannelUseCase = mockk<dagger.Lazy<CloseChannelUseCase>>(relaxed = true)
+    override val topAdsImageViewUseCase = mockk<Lazy<TopAdsImageViewUseCase>>(relaxed = true)
+    override val injectCouponTimeBasedUseCase = mockk<dagger.Lazy<InjectCouponTimeBasedUseCase>>(relaxed = true)
+    override val playToggleChannelReminderUseCase = mockk<Lazy<PlayToggleChannelReminderUseCase>> (relaxed = true)
+    override val getPlayBannerUseCase = mockk<Lazy<GetPlayWidgetUseCase>> (relaxed = true)
+    override val remoteConfig = mockk<RemoteConfig>(relaxed = true)
+    override val homeDataMapper = HomeDataMapper(InstrumentationRegistry.getInstrumentation().context, HomeVisitableFactoryImpl(userSessionInterface.get(), remoteConfig), mockk(relaxed = true))
     private val context = InstrumentationRegistry.getInstrumentation().context
     private lateinit var viewModel: HomeViewModel
-    
+
     companion object{
         private val CONTAINER = R.id.play_frame_layout
         private val TITLE = R.id.title
         private val TITLE_CONTENT = R.id.title_play
-        
+
     }
-    
-//    @Before
-//    fun setup(){
-//        every { userSessionInterface.isLoggedIn } returns false
-//    }
 
     @Test
     fun test_when_no_data_skeleton_from_home_api_and_expect_the_widget_not_show(){
         val json = GraphqlHelper.loadRawString(context.resources, com.tokopedia.home.test.R.raw.home_empty_dynamic_channel_json)
         val homeData = Gson().fromJson<HomeData>(json, HomeData::class.java)
-        coEvery { getHomeUseCase.updateHomeData() } returns flow {  }
-        coEvery { getHomeUseCase.getHomeData() } returns flow {
+        coEvery { getHomeUseCase.get().updateHomeData() } returns flow {  }
+        coEvery { getHomeUseCase.get().getHomeData() } returns flow {
             emit(homeDataMapper.mapToHomeViewModel(homeData, false))
         }
         viewModel = reInitViewModel()
-        val homeFragment = HomeFragmentTest(createViewModelFactory(viewModel))
+        val homeFragment = HomeFragmentTest()
 
         activityRule.activity.setupFragment(homeFragment)
         Thread.sleep(5000)
@@ -103,7 +109,7 @@ class PlayBannerUITest{
     fun test_given_data_play_and_the_widget_must_take_data_from_play_api_and_expect_the_widget_will_show_with_data(){
         val json = GraphqlHelper.loadRawString(context.resources, com.tokopedia.home.test.R.raw.play_widget_json)
         val homeData = Gson().fromJson<HomeData>(json, HomeData::class.java)
-        coEvery { getPlayLiveDynamicUseCase.executeOnBackground() } returns PlayData(
+        coEvery { getPlayLiveDynamicUseCase.get().executeOnBackground() } returns PlayData(
                 listOf(
                         PlayChannel(
                                 title = "Channel 1",
@@ -121,12 +127,12 @@ class PlayBannerUITest{
                         )
                 )
         )
-        coEvery { getHomeUseCase.updateHomeData() } returns flow {  }
-        coEvery { getHomeUseCase.getHomeData() } returns flow {
+        coEvery { getHomeUseCase.get().updateHomeData() } returns flow {  }
+        coEvery { getHomeUseCase.get().getHomeData() } returns flow {
             emit(homeDataMapper.mapToHomeViewModel(homeData, false))
         }
         viewModel = reInitViewModel()
-        val homeFragment = HomeFragmentTest(createViewModelFactory(viewModel))
+        val homeFragment = HomeFragmentTest()
 
         activityRule.activity.setupFragment(homeFragment)
         Thread.sleep(1000)
@@ -143,11 +149,11 @@ class PlayBannerUITest{
     fun test_given_data_play_and_the_widget_must_take_data_from_play_api_and_the_url_not_valid_the_widget_should_not_visible_into_user(){
         val json = GraphqlHelper.loadRawString(context.resources, com.tokopedia.home.test.R.raw.home_empty_dynamic_channel_json)
         val homeData = Gson().fromJson<HomeData>(json, HomeData::class.java)
-        coEvery { getHomeUseCase.updateHomeData() } returns flow {  }
-        coEvery { getHomeUseCase.getHomeData() } returns flow {
+        coEvery { getHomeUseCase.get().updateHomeData() } returns flow {  }
+        coEvery { getHomeUseCase.get().getHomeData() } returns flow {
             emit(homeDataMapper.mapToHomeViewModel(homeData, false))
         }
-        coEvery { getPlayLiveDynamicUseCase.executeOnBackground() } returns PlayData(
+        coEvery { getPlayLiveDynamicUseCase.get().executeOnBackground() } returns PlayData(
                 listOf(
                         PlayChannel(
                                 title = "Channel 1",
@@ -166,7 +172,7 @@ class PlayBannerUITest{
                 )
         )
         viewModel = reInitViewModel()
-        val homeFragment = HomeFragmentTest(createViewModelFactory(viewModel))
+        val homeFragment = HomeFragmentTest()
 
         activityRule.activity.setupFragment(homeFragment)
         Thread.sleep(5000)
@@ -178,15 +184,15 @@ class PlayBannerUITest{
     fun test_given_data_play_and_the_widget_must_take_data_from_play_api_but_the_return_is_empty_and_expect_the_widget_not_visible_into_user(){
         val json = GraphqlHelper.loadRawString(context.resources, com.tokopedia.home.test.R.raw.home_empty_dynamic_channel_json)
         val homeData = Gson().fromJson<HomeData>(json, HomeData::class.java)
-        coEvery { getHomeUseCase.updateHomeData() } returns flow {  }
-        coEvery { getHomeUseCase.getHomeData() } returns flow {
+        coEvery { getHomeUseCase.get().updateHomeData() } returns flow {  }
+        coEvery { getHomeUseCase.get().getHomeData() } returns flow {
             emit(homeDataMapper.mapToHomeViewModel(homeData, false))
         }
-        coEvery { getPlayLiveDynamicUseCase.executeOnBackground() } returns PlayData(
+        coEvery { getPlayLiveDynamicUseCase.get().executeOnBackground() } returns PlayData(
                 listOf()
         )
         viewModel = reInitViewModel()
-        val homeFragment = HomeFragmentTest(createViewModelFactory(viewModel))
+        val homeFragment = HomeFragmentTest()
 
         activityRule.activity.setupFragment(homeFragment)
         Thread.sleep(5000)
@@ -198,13 +204,13 @@ class PlayBannerUITest{
     fun test_given_data_play_and_the_widget_must_take_data_from_play_api_but_the_api_throw_error_and_the_widget_should_not_visible(){
         val json = GraphqlHelper.loadRawString(context.resources, com.tokopedia.home.test.R.raw.home_empty_dynamic_channel_json)
         val homeData = Gson().fromJson<HomeData>(json, HomeData::class.java)
-        coEvery { getHomeUseCase.updateHomeData() } returns flow {  }
-        coEvery { getHomeUseCase.getHomeData() } returns flow {
+        coEvery { getHomeUseCase.get().updateHomeData() } returns flow {  }
+        coEvery { getHomeUseCase.get().getHomeData() } returns flow {
             emit(homeDataMapper.mapToHomeViewModel(homeData, false))
         }
-        coEvery { getPlayLiveDynamicUseCase.executeOnBackground() } throws RuntimeException()
+        coEvery { getPlayLiveDynamicUseCase.get().executeOnBackground() } throws RuntimeException()
         viewModel = reInitViewModel()
-        val homeFragment = HomeFragmentTest(createViewModelFactory(viewModel))
+        val homeFragment = HomeFragmentTest()
 
         activityRule.activity.setupFragment(homeFragment)
         Thread.sleep(5000)
@@ -214,10 +220,10 @@ class PlayBannerUITest{
 
     @Test
     fun test_given_data_play_and_try_update_new_data_but_the_new_data_is_empty_and_expect_the_widget_will_removed(){
-        coEvery { getHomeUseCase.updateHomeData() } returns flow {
+        coEvery { getHomeUseCase.get().updateHomeData() } returns flow {
             emit(Result.success(""))
         }
-        coEvery { getHomeUseCase.getHomeData() } returns flow {
+        coEvery { getHomeUseCase.get().getHomeData() } returns flow {
             var json = GraphqlHelper.loadRawString(context.resources, com.tokopedia.home.test.R.raw.home_empty_dynamic_channel_json)
             var homeData = Gson().fromJson<HomeData>(json, HomeData::class.java)
             emit(homeDataMapper.mapToHomeViewModel(homeData, false))
@@ -226,7 +232,7 @@ class PlayBannerUITest{
             homeData = Gson().fromJson(json, HomeData::class.java)
             emit(homeDataMapper.mapToHomeViewModel(homeData, false))
         }
-        coEvery { getPlayLiveDynamicUseCase.executeOnBackground() } returns PlayData(
+        coEvery { getPlayLiveDynamicUseCase.get().executeOnBackground() } returns PlayData(
                 listOf(
                         PlayChannel(
                                 title = "Channel 1",
@@ -245,7 +251,7 @@ class PlayBannerUITest{
                 )
         )
         viewModel = reInitViewModel()
-        val homeFragment = HomeFragmentTest(createViewModelFactory(viewModel))
+        val homeFragment = HomeFragmentTest()
 
         activityRule.activity.setupFragment(homeFragment)
         Thread.sleep(3000)
@@ -260,10 +266,10 @@ class PlayBannerUITest{
 
     @Test
     fun test_given_data_play_and_try_update_into_new_data_expect_widget_show_the_new_data(){
-        coEvery { getHomeUseCase.updateHomeData() } returns flow {
+        coEvery { getHomeUseCase.get().updateHomeData() } returns flow {
             emit(Result.success(""))
         }
-        coEvery { getHomeUseCase.getHomeData() } returns flow {
+        coEvery { getHomeUseCase.get().getHomeData() } returns flow {
             var json = GraphqlHelper.loadRawString(context.resources, com.tokopedia.home.test.R.raw.play_widget_json)
             var homeData = Gson().fromJson<HomeData>(json, HomeData::class.java)
             emit(homeDataMapper.mapToHomeViewModel(homeData, false))
@@ -272,7 +278,7 @@ class PlayBannerUITest{
             homeData = Gson().fromJson(json, HomeData::class.java)
             emit(homeDataMapper.mapToHomeViewModel(homeData, false))
         }
-        coEvery { getPlayLiveDynamicUseCase.executeOnBackground() } returns PlayData(
+        coEvery { getPlayLiveDynamicUseCase.get().executeOnBackground() } returns PlayData(
                 listOf(
                         PlayChannel(
                                 title = "Channel 1",
@@ -308,7 +314,7 @@ class PlayBannerUITest{
                 )
         )
         viewModel = reInitViewModel()
-        val homeFragment = HomeFragmentTest(createViewModelFactory(viewModel))
+        val homeFragment = HomeFragmentTest()
 
         activityRule.activity.setupFragment(homeFragment)
         Thread.sleep(2000)
@@ -325,19 +331,19 @@ class PlayBannerUITest{
         onView(withId(TITLE_CONTENT)).check(matches(withText("Channel 2")))
     }
 
-    private fun <T : ViewModel> createViewModelFactory(viewModel: T): ViewModelProvider.Factory {
-        return object : ViewModelProvider.Factory {
-            override fun <T : ViewModel> create(viewModelClass: Class<T>): T {
-                if (viewModelClass.isAssignableFrom(viewModel.javaClass)) {
-                    @Suppress("UNCHECKED_CAST")
-                    return viewModel as T
-                }
-                throw IllegalArgumentException("Unknown view model class " + viewModelClass)
-            }
-        }
-    }
+//    private fun <T : ViewModel> createViewModelFactory(viewModel: T): ViewModelProvider.Factory {
+//        return object : ViewModelProvider.Factory {
+//            override fun <T : ViewModel> create(viewModelClass: Class<T>): T {
+//                if (viewModelClass.isAssignableFrom(viewModel.javaClass)) {
+//                    @Suppress("UNCHECKED_CAST")
+//                    return viewModel as T
+//                }
+//                throw IllegalArgumentException("Unknown view model class " + viewModelClass)
+//            }
+//        }
+//    }
 
-    private fun reInitViewModel() = HomeViewModel(
+    override fun reInitViewModel() = HomeViewModel(
             dismissHomeReviewUseCase = dismissHomeReviewUseCase,
             getBusinessUnitDataUseCase = getBusinessUnitDataUseCase,
             getBusinessWidgetTab = getBusinessWidgetTab,
@@ -356,6 +362,14 @@ class PlayBannerUITest{
             stickyLoginUseCase = getStickyLoginUseCase,
             userSession = userSessionInterface,
             getAtcUseCase = getAtcUseCase,
-            sendTopAdsUseCase = sendTopAdsUseCase
+            closeChannelUseCase = closeChannelUseCase,
+            getRechargeRecommendationUseCase = getRechargeRecommendationUseCase,
+            declineRechargeRecommendationUseCase = declineRechargeRecommendationUseCase,
+            getSalamWidgetUseCase = getSalamWIdgetUseCase,
+            declineSalamWidgetUseCase = declineSalamWIdgetUseCase,
+            injectCouponTimeBasedUseCase = injectCouponTimeBasedUseCase,
+            topAdsImageViewUseCase = topAdsImageViewUseCase,
+            playToggleChannelReminderUseCase = playToggleChannelReminderUseCase,
+            getPlayBannerUseCase = getPlayBannerUseCase
     )
 }

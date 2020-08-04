@@ -1,7 +1,8 @@
 package com.tokopedia.product.manage.feature.list.analytics
 
-import com.tokopedia.product.manage.feature.list.constant.ProductManageDataLayer
 import com.tokopedia.product.manage.feature.list.constant.CLICK
+import com.tokopedia.product.manage.feature.list.constant.ProductManageDataLayer
+import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.track.TrackApp
 
 object ProductManageTracking {
@@ -25,6 +26,16 @@ object ProductManageTracking {
         ).dataTracking)
     }
 
+    private infix fun String.withAllocationType(isVariant: Boolean): String {
+        val allocationType =
+                if (isVariant) {
+                    ProductManageDataLayer.ALLOCATION_VARIANT_PRODUCT
+                } else {
+                    ProductManageDataLayer.ALLOCATION_SINGLE_PRODUCT
+                }
+        return this.plus(allocationType)
+    }
+
     fun eventDraftClick(label: String) {
         eventProductManage(CLICK, label)
     }
@@ -35,10 +46,6 @@ object ProductManageTracking {
 
     fun eventMultipleSelect() {
         eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_MULTIPLE, "")
-    }
-
-    fun eventEditVariants(label: String) {
-        eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_EDIT_VARIANTS, label)
     }
 
     fun eventEditPrice(label: String) {
@@ -214,4 +221,111 @@ object ProductManageTracking {
         eventEditProduct(action, shopId)
     }
 
+    fun eventClickEditPriceVariant() {
+        eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_ON_EDIT_PRICE_VARIANT, "")
+    }
+
+    fun eventClickEditPriceVariantSave() {
+        eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_ON_EDIT_PRICE_VARIANT_SAVE, "")
+    }
+
+    fun eventClickEditStockVariant() {
+        eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_ON_EDIT_STOCK_VARIANT, "")
+    }
+
+    fun eventClickStatusToggleVariant(status: ProductStatus) {
+        with(ProductManageDataLayer) {
+            val label = if(status == ProductStatus.ACTIVE) {
+                STATUS_TOGGLE_ON
+            } else {
+                STATUS_TOGGLE_OFF
+            }
+            eventProductManage(EVENT_ACTION_CLICK_ON_STATUS_TOGGLE_VARIANT, label)
+        }
+    }
+
+    fun eventClickChangeAmountVariant() {
+        eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_ON_CHANGE_AMOUNT_VARIANT, "")
+    }
+
+    fun eventClickEditStockVariantSave() {
+        eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_ON_EDIT_STOCK_VARIANT_SAVE, "")
+    }
+
+    fun eventClickMoreMenuEllipses() {
+        eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_MENU_MORE_ELLIPSES, "")
+    }
+
+    fun eventClickMoreMenuShopShowcase() {
+        eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_MENU_MORE_SHOP_SHOWCASE, "")
+    }
+
+    fun eventClickCloseStockAllocation(isVariant: Boolean) {
+        eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_ALLOCATION_CLOSE withAllocationType isVariant, "")
+    }
+
+    fun eventClickAllocationMainStock(isVariant: Boolean) {
+        eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_ALLOCATION_ON_MAIN_STOCK withAllocationType isVariant, "")
+    }
+
+    fun eventClickAllocationProductStatus(isVariant: Boolean,
+                                          isOn: Boolean) {
+        val label =
+                if (isOn) {
+                    ProductManageDataLayer.EVENT_LABEL_ALLOCATION_ON
+                } else {
+                    ProductManageDataLayer.EVENT_LABEL_ALLOCATION_OFF
+                }
+        eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_ALLOCATION_PRODUCT_STATUS withAllocationType isVariant, label)
+    }
+
+    fun eventClickAllocationDecreaseStock(isVariant: Boolean) {
+        eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_ALLOCATION_DECREASE_STOCK withAllocationType isVariant, "")
+    }
+
+    fun eventClickAllocationInputStock(isVariant: Boolean) {
+        eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_ALLOCATION_INPUT_STOCK withAllocationType isVariant, "")
+    }
+
+    fun eventClickAllocationIncreaseStock(isVariant: Boolean) {
+        eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_ALLOCATION_INCREASE_STOCK withAllocationType isVariant, "")
+    }
+
+    fun eventClickAllocationOnStockCampaign(isVariant: Boolean) {
+        eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_ALLOCATION_ON_STOCK_CAMPAIGN withAllocationType isVariant, "")
+    }
+
+    fun eventClickAllocationSaveStock(isVariant: Boolean,
+                                      isMain: Boolean) {
+        val label =
+                if (isMain) {
+                    ProductManageDataLayer.EVENT_LABEL_ALLOCATION_MAIN
+                } else {
+                    ProductManageDataLayer.EVENT_LABEL_ALLOCATION_CAMPAIGN
+                }
+        eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_ALLOCATION_SAVE_STOCK withAllocationType isVariant, label)
+    }
+
+    fun eventClickPreviewVariantProduct() {
+        eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_ALLOCATION_PREVIEW_VARIANT_PRODUCT, "")
+    }
+
+    fun sendScreen(screenName: String) {
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
+    }
+
+    fun sendScreen(screenName: String, pageSource: String) {
+        val customDimension = mapOf(ProductManageDataLayer.CUSTOM_DIMENSION_PAGE_SOURCE to pageSource)
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName, customDimension)
+    }
+
+    fun sendStockAllocationScreen(isVariant: Boolean) {
+        val screenName =
+                if (isVariant) {
+                    ProductManageDataLayer.SCREEN_NAME_STOCK_ALLOCATION_VARIANT
+                } else {
+                    ProductManageDataLayer.SCREEN_NAME_STOCK_ALLOCATION_SINGLE
+                }
+        sendScreen(screenName)
+    }
 }

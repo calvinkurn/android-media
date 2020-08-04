@@ -18,6 +18,7 @@ object SomConsts {
     const val PARAM_BARCODE_TYPE = "barcodeType"
     const val PARAM_BOOKING_MESSAGE_LIST = "message"
     const val PARAM_ORDER_CODE = "order_code"
+    const val PARAM_USER_ROLES = "user_roles"
 
     const val VAR_PARAM_ORDERID = "orderID"
     const val VAR_PARAM_LANG = "lang"
@@ -33,6 +34,7 @@ object SomConsts {
     const val FILTER_TYPE_RADIO = "radio"
     const val FILTER_TYPE_LABEL = "label"
     const val FILTER_TYPE_SEPARATOR = "separator"
+    const val FROM_WIDGET_TAG = "from widget"
 
     const val STATUS_ALL_ORDER = "all_order"
     const val STATUS_NEW_ORDER = "new_order"
@@ -145,4 +147,6 @@ object SomConsts {
 
     const val SORT_ASCENDING = 0
     const val SORT_DESCENDING = 2
+
+    const val ERROR_GET_USER_ROLES = "Error when get user roles in %s."
 }

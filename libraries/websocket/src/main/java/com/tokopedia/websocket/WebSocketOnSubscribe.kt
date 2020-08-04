@@ -1,5 +1,8 @@
 package com.tokopedia.websocket
 
+import com.tokopedia.authentication.AuthHelper
+import com.tokopedia.authentication.HEADER_RELEASE_TRACK
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.url.TokopediaUrl
 import okhttp3.*
 import okio.ByteString
@@ -21,8 +24,9 @@ class WebSocketOnSubscribe internal constructor(private val client: OkHttpClient
     private fun getRequest(url: String, accessToken: String): Request {
         return Request.Builder().get().url(url)
                 .header("Origin", TokopediaUrl.getInstance().WEB)
-                .header("Accounts-Authorization",
-                        "Bearer $accessToken")
+                .header("Accounts-Authorization", "Bearer $accessToken")
+                .header("X-Device", "android-" + GlobalConfig.VERSION_NAME)
+                .header(HEADER_RELEASE_TRACK, GlobalConfig.VERSION_NAME_SUFFIX)
                 .build()
     }
 
@@ -30,7 +34,7 @@ class WebSocketOnSubscribe internal constructor(private val client: OkHttpClient
         webSocket = client.newWebSocket(getRequest(url, accessToken), object : WebSocketListener() {
             override fun onOpen(webSocket: WebSocket, response: Response?) {
                 if (!subscriber.isUnsubscribed) {
-                    subscriber.onNext(WebSocketInfo(webSocket!!, true))
+                    subscriber.onNext(WebSocketInfo(webSocket, true))
                 }
             }
 
@@ -54,7 +58,7 @@ class WebSocketOnSubscribe internal constructor(private val client: OkHttpClient
             }
 
             override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
-                webSocket.close(1000, "onclosing")
+                webSocket.close(1000, "on closing") // 1000 normal closure
             }
 
             override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
@@ -65,8 +69,7 @@ class WebSocketOnSubscribe internal constructor(private val client: OkHttpClient
 
         subscriber.add(object : MainThreadSubscription() {
             override fun onUnsubscribe() {
-                webSocket?.close(3000, "close websocket")
-
+                webSocket?.close(1001, "disconnected by client") // 1001 going away
             }
         })
     }

@@ -9,8 +9,6 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.common.travel.data.entity.TravelCrossSelling;
 import com.tokopedia.common.travel.domain.TravelCrossSellingUseCase;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.bookingV2.constant.FlightBookingPassenger;
-import com.tokopedia.flight.bookingV2.presentation.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.common.constant.FlightErrorConstant;
 import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.common.data.model.FlightError;
@@ -20,6 +18,8 @@ import com.tokopedia.flight.common.util.FlightCurrencyFormatUtil;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.common.util.FlightPassengerTitleType;
 import com.tokopedia.flight.detail.view.model.FlightDetailOrderJourney;
+import com.tokopedia.flight.detail.view.model.FlightDetailPassenger;
+import com.tokopedia.flight.detail.view.model.SimpleModel;
 import com.tokopedia.flight.orderlist.constant.FlightStatusOrderType;
 import com.tokopedia.flight.orderlist.data.cloud.entity.ManualTransferEntity;
 import com.tokopedia.flight.orderlist.data.cloud.entity.PaymentInfoEntity;
@@ -27,12 +27,12 @@ import com.tokopedia.flight.orderlist.domain.FlightGetOrderUseCase;
 import com.tokopedia.flight.orderlist.domain.model.FlightInsurance;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrder;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
-import com.tokopedia.flight.orderlist.domain.model.FlightOrderPassengerViewModel;
+import com.tokopedia.flight.orderlist.domain.model.FlightOrderPassengerModel;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightCancellationJourney;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderAmenityViewModel;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailPassData;
 import com.tokopedia.flight.orderlist.view.viewmodel.mapper.FlightOrderToCancellationJourneyMapper;
-import com.tokopedia.flight.review.view.model.FlightDetailPassenger;
+import com.tokopedia.flight.passenger.constant.FlightBookingPassenger;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.sessioncommon.data.profile.ProfileInfo;
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo;
@@ -146,7 +146,8 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
             public void onNext(GraphqlResponse response) {
                 if (isViewAttached()) {
                     TravelCrossSelling.Response crossSellingResponse = response.getData(TravelCrossSelling.Response.class);
-                    if (crossSellingResponse.getResponse().getItems().isEmpty()) getView().hideCrossSellingItems();
+                    if (crossSellingResponse.getResponse().getItems().isEmpty())
+                        getView().hideCrossSellingItems();
                     else getView().showCrossSellingItems(crossSellingResponse.getResponse());
                 }
             }
@@ -188,8 +189,8 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
                         flightOrderDetailPassData
                 );
                 getView().updateFlightList(transformToDetailJourneyList(flightOrderJourneyList));
-                getView().updatePassengerList(transformToListPassenger(flightOrder.getPassengerViewModels()));
-                getView().updatePrice(transformToSimpleModelPrice(flightOrder), FlightCurrencyFormatUtil.Companion.convertToIdrPrice(totalPrice));
+                getView().updatePassengerList(transformToListPassenger(flightOrder.getPassengerModels()));
+                getView().updatePrice(transformToSimpleModelPrice(flightOrder), FlightCurrencyFormatUtil.Companion.convertToIdrPrice(totalPrice, true));
                 getView().setTransactionDate(
                         FlightDateUtil.formatDateByUsersTimezone(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
                                 FlightDateUtil.FORMAT_DATE_LOCAL_DETAIL_ORDER, flightOrder.getCreateTime())
@@ -197,7 +198,7 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
                 getView().updateOrderData(
                         generateTicketLink(flightOrder.getId(), flightOrder.getPdf(), userSession.getUserId()),
                         generateInvoiceLink(flightOrder.getId()),
-                        generateCancelMessage(flightOrderJourneyList, flightOrder.getPassengerViewModels())
+                        generateCancelMessage(flightOrderJourneyList, flightOrder.getPassengerModels())
                 );
                 generateStatus(flightOrder.getStatus(), flightOrder.getStatusString());
                 renderPaymentInfo(flightOrder);
@@ -212,7 +213,7 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
                     getView().hideCancellationContainer();
                 }
 
-                if (isShouldHideCancelButton(flightOrder.getJourneys().size(), flightOrder.getPassengerViewModels(),
+                if (isShouldHideCancelButton(flightOrder.getJourneys().size(), flightOrder.getPassengerModels(),
                         flightOrder.getCancelledPassengerCount())) {
                     getView().hideCancelButton();
                 }
@@ -280,13 +281,17 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
             if (flightOrder.getPayment().getManualTransfer() != null && flightOrder.getPayment().getManualTransfer().getAccountBankName().length() > 0) {
                 getView().setPaymentLabel(com.tokopedia.flight.orderlist.R.string.flight_order_payment_manual_label);
                 getView().setPaymentDescription(renderManualPaymentDescriptionText(flightOrder.getPayment().getManualTransfer()));
-                if (flightOrder.getPayment().getNeedToPayAmount() > 0) getView().setTotalTransfer(FlightCurrencyFormatUtil.Companion.convertToIdrPrice(flightOrder.getPayment().getNeedToPayAmount()));
-                    else getView().setTotalTransfer(flightOrder.getPayment().getManualTransfer().getTotal());
+                if (flightOrder.getPayment().getNeedToPayAmount() > 0)
+                    getView().setTotalTransfer(FlightCurrencyFormatUtil.Companion
+                            .convertToIdrPrice(flightOrder.getPayment().getNeedToPayAmount(), true));
+                else
+                    getView().setTotalTransfer(flightOrder.getPayment().getManualTransfer().getTotal());
             } else {
                 getView().setPaymentLabel(com.tokopedia.flight.orderlist.R.string.flight_order_payment_label);
                 getView().setPaymentDescription(renderPaymentDescriptionText(flightOrder.getPayment()));
                 if (flightOrder.getPayment().getNeedToPayAmount() > 0) {
-                    getView().setTotalTransfer(FlightCurrencyFormatUtil.Companion.convertToIdrPrice(flightOrder.getPayment().getNeedToPayAmount()));
+                    getView().setTotalTransfer(FlightCurrencyFormatUtil.Companion
+                            .convertToIdrPrice(flightOrder.getPayment().getNeedToPayAmount(), true));
                 } else {
                     getView().hideTotalTransfer();
                 }
@@ -358,7 +363,7 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
         return text;
     }
 
-    private String generateCancelMessage(List<FlightOrderJourney> flightOrder, List<FlightOrderPassengerViewModel> passengerViewModels) {
+    private String generateCancelMessage(List<FlightOrderJourney> flightOrder, List<FlightOrderPassengerModel> passengerViewModels) {
         String newLine = "\n";
         StringBuilder result = new StringBuilder();
         result.append(newLine);
@@ -366,8 +371,8 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
             String item = flightOrderJourney.getDepartureAiportId() + "-" + flightOrderJourney.getArrivalAirportId() + " ";
             item += newLine;
             ArrayList<String> passengers = new ArrayList<>();
-            for (FlightOrderPassengerViewModel flightOrderPassengerViewModel : passengerViewModels) {
-                passengers.add(flightOrderPassengerViewModel.getPassengerFirstName() + " " + flightOrderPassengerViewModel.getPassengerLastName());
+            for (FlightOrderPassengerModel flightOrderPassengerModel : passengerViewModels) {
+                passengers.add(flightOrderPassengerModel.getPassengerFirstName() + " " + flightOrderPassengerModel.getPassengerLastName());
             }
             item += TextUtils.join(newLine, passengers);
             item += newLine;
@@ -440,8 +445,8 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
         return journeyList;
     }
 
-    private List<SimpleViewModel> transformToSimpleModelPrice(FlightOrder flightOrder) {
-        List<SimpleViewModel> simpleViewModelList = new ArrayList<>();
+    private List<SimpleModel> transformToSimpleModelPrice(FlightOrder flightOrder) {
+        List<SimpleModel> simpleViewModelList = new ArrayList<>();
 
         Map<String, Integer> meals = new HashMap<>();
         Map<String, Integer> luggages = new HashMap<>();
@@ -450,9 +455,9 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
         int passengerChildCount = 0;
         int passengerInfantCount = 0;
 
-        for (FlightOrderPassengerViewModel flightOrderPassengerViewModel : flightOrder.getPassengerViewModels()) {
+        for (FlightOrderPassengerModel flightOrderPassengerModel : flightOrder.getPassengerModels()) {
             // add to passenger count
-            switch (flightOrderPassengerViewModel.getType()) {
+            switch (flightOrderPassengerModel.getType()) {
                 case FlightBookingPassenger.ADULT:
                     passengerAdultCount++;
                     break;
@@ -464,7 +469,7 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
                     break;
             }
 
-            for (FlightOrderAmenityViewModel amenityViewModel : flightOrderPassengerViewModel.getAmenities()) {
+            for (FlightOrderAmenityViewModel amenityViewModel : flightOrderPassengerModel.getAmenities()) {
                 switch (Integer.toString(amenityViewModel.getAmenityType())) {
                     case FlightAmenityType.LUGGAGE:
                         String key = String.format("%s - %s", amenityViewModel.getDepartureId(), amenityViewModel.getArrivalId());
@@ -507,23 +512,23 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
             simpleViewModelList.add(formatPassengerFarePriceDetail(getView().getString(com.tokopedia.flight.R.string.select_passenger_infant_title), passengerInfantCount, flightOrder.getTotalInfantNumeric()));
 
         for (Map.Entry<String, Integer> entry : luggages.entrySet()) {
-            simpleViewModelList.add(new SimpleViewModel(
+            simpleViewModelList.add(new SimpleModel(
                     String.format("%s %s", getView().getString(com.tokopedia.flight.R.string.flight_price_detail_prefix_luggage_label),
                             entry.getKey()),
-                    FlightCurrencyFormatUtil.Companion.convertToIdrPrice(entry.getValue())));
+                    FlightCurrencyFormatUtil.Companion.convertToIdrPrice(entry.getValue(), true)));
         }
 
         for (Map.Entry<String, Integer> entry : meals.entrySet()) {
-            simpleViewModelList.add(new SimpleViewModel(
+            simpleViewModelList.add(new SimpleModel(
                     String.format("%s %s", getView().getString(com.tokopedia.flight.R.string.flight_price_detail_prefixl_meal_label),
                             entry.getKey()),
-                    FlightCurrencyFormatUtil.Companion.convertToIdrPrice(entry.getValue())));
+                    FlightCurrencyFormatUtil.Companion.convertToIdrPrice(entry.getValue(), true)));
         }
 
         int totalPassenger = passengerAdultCount + passengerChildCount + passengerInfantCount;
 
         for (FlightInsurance insurance : flightOrder.getInsurances()) {
-            simpleViewModelList.add(new SimpleViewModel(
+            simpleViewModelList.add(new SimpleModel(
                     String.format("%s %dx", insurance.getTitle(), totalPassenger),
                     insurance.getPaidAmount()
             ));
@@ -533,29 +538,29 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
         return simpleViewModelList;
     }
 
-    private SimpleViewModel formatPassengerFarePriceDetail(
+    private SimpleModel formatPassengerFarePriceDetail(
             String label,
             int passengerCount,
             int price) {
-        return new SimpleViewModel(
+        return new SimpleModel(
                 String.format("%s x%d",
                         label,
                         passengerCount),
-                FlightCurrencyFormatUtil.Companion.convertToIdrPrice(price));
+                FlightCurrencyFormatUtil.Companion.convertToIdrPrice(price, true));
     }
 
-    private List<FlightDetailPassenger> transformToListPassenger(List<FlightOrderPassengerViewModel> passengerViewModels) {
+    private List<FlightDetailPassenger> transformToListPassenger(List<FlightOrderPassengerModel> passengerViewModels) {
         List<FlightDetailPassenger> flightDetailPassengers = new ArrayList<>();
-        for (FlightOrderPassengerViewModel flightOrderPassengerViewModel : passengerViewModels) {
+        for (FlightOrderPassengerModel flightOrderPassengerModel : passengerViewModels) {
             FlightDetailPassenger flightDetailPassenger = new FlightDetailPassenger();
-            flightDetailPassenger.setPassengerName(String.format("%s %s %s", generateSalutation(flightOrderPassengerViewModel.getPassengerTitleId()),
-                    flightOrderPassengerViewModel.getPassengerFirstName(), flightOrderPassengerViewModel.getPassengerLastName()));
-            flightDetailPassenger.setPassengerType(flightOrderPassengerViewModel.getType());
-            flightDetailPassenger.setInfoPassengerList(transformToSimpleModelPassenger(flightOrderPassengerViewModel.getAmenities()));
-            flightDetailPassenger.setPassengerStatus(flightOrderPassengerViewModel.getStatus());
-            flightDetailPassenger.setPassengerCancellationStr(flightOrderPassengerViewModel.getCancellationStatusStr());
-            flightDetailPassenger.setSecondPassengerStatus(flightOrderPassengerViewModel.getSecondStatus());
-            flightDetailPassenger.setSecondPassengerCancellationStr(flightOrderPassengerViewModel.getSecondCancellationStatusStr());
+            flightDetailPassenger.setPassengerName(String.format("%s %s %s", generateSalutation(flightOrderPassengerModel.getPassengerTitleId()),
+                    flightOrderPassengerModel.getPassengerFirstName(), flightOrderPassengerModel.getPassengerLastName()));
+            flightDetailPassenger.setPassengerType(flightOrderPassengerModel.getType());
+            flightDetailPassenger.setInfoPassengerList(transformToSimpleModelPassenger(flightOrderPassengerModel.getAmenities()));
+            flightDetailPassenger.setPassengerStatus(flightOrderPassengerModel.getStatus());
+            flightDetailPassenger.setPassengerCancellationStr(flightOrderPassengerModel.getCancellationStatusStr());
+            flightDetailPassenger.setSecondPassengerStatus(flightOrderPassengerModel.getSecondStatus());
+            flightDetailPassenger.setSecondPassengerCancellationStr(flightOrderPassengerModel.getSecondCancellationStatusStr());
             flightDetailPassengers.add(flightDetailPassenger);
         }
         return flightDetailPassengers;
@@ -593,10 +598,10 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
         }
     }
 
-    private List<SimpleViewModel> transformToSimpleModelPassenger(List<FlightOrderAmenityViewModel> amenities) {
-        List<SimpleViewModel> simpleViewModels = new ArrayList<>();
+    private List<SimpleModel> transformToSimpleModelPassenger(List<FlightOrderAmenityViewModel> amenities) {
+        List<SimpleModel> simpleViewModels = new ArrayList<>();
         for (FlightOrderAmenityViewModel flightOrderAmenityViewModel : amenities) {
-            SimpleViewModel simpleViewModel = new SimpleViewModel();
+            SimpleModel simpleViewModel = new SimpleModel();
             simpleViewModel.setDescription(generateLabelPassenger(String.valueOf(flightOrderAmenityViewModel.getAmenityType()), flightOrderAmenityViewModel.getDepartureId(),
                     flightOrderAmenityViewModel.getArrivalId()));
             simpleViewModel.setLabel(flightOrderAmenityViewModel.getTitle());
@@ -626,7 +631,7 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
         super.detachView();
     }
 
-    private boolean isShouldHideCancelButton(int journeyCount, List<FlightOrderPassengerViewModel> passengerViewModels,
+    private boolean isShouldHideCancelButton(int journeyCount, List<FlightOrderPassengerModel> passengerViewModels,
                                              int cancelledPassengerCount) {
         int allPassengerCount = passengerViewModels.size() * journeyCount;
         return (allPassengerCount <= cancelledPassengerCount);

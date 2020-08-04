@@ -12,8 +12,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
 import com.tokopedia.play.component.UIView
 import com.tokopedia.play.ui.productsheet.adapter.MerchantVoucherAdapter
@@ -25,13 +25,15 @@ import com.tokopedia.play.view.uimodel.ProductLineUiModel
 import com.tokopedia.play.view.uimodel.ProductPlaceholderUiModel
 import com.tokopedia.play.view.uimodel.ProductSheetUiModel
 import com.tokopedia.play.view.uimodel.VoucherPlaceholderUiModel
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
 
 /**
  * Created by jegul on 02/03/20
  */
 class ProductSheetView(
         container: ViewGroup,
-        listener: Listener
+        private val listener: Listener
 ) : UIView(container) {
 
     private val view: View = LayoutInflater.from(container.context).inflate(R.layout.view_product_sheet, container, true)
@@ -45,6 +47,9 @@ class ProductSheetView(
 
     private val globalError: GlobalError = view.findViewById(R.id.global_error_product)
 
+    private val clProductEmpty: ConstraintLayout = view.findViewById(R.id.cl_product_empty)
+    private val btnProductEmpty: UnifyButton = view.findViewById(R.id.btn_action_product_empty)
+
     private val productLineAdapter = ProductLineAdapter(object : ProductLineViewHolder.Listener {
         override fun onBuyProduct(product: ProductLineUiModel) {
             listener.onBuyButtonClicked(this@ProductSheetView, product)
@@ -54,8 +59,8 @@ class ProductSheetView(
             listener.onAtcButtonClicked(this@ProductSheetView, product)
         }
 
-        override fun onClickProductCard(product: ProductLineUiModel) {
-            listener.onProductCardClicked(this@ProductSheetView, product)
+        override fun onClickProductCard(product: ProductLineUiModel, position: Int) {
+            listener.onProductCardClicked(this@ProductSheetView, product, position)
         }
     })
     private val voucherAdapter = MerchantVoucherAdapter()
@@ -126,12 +131,14 @@ class ProductSheetView(
     internal fun setProductSheet(model: ProductSheetUiModel) {
         showContent(true)
 
+        if (isProductDecreased(model.productList.size)) showToasterProductUpdated()
+
         tvSheetTitle.text = model.title
         voucherAdapter.setItemsAndAnimateChanges(model.voucherList)
         productLineAdapter.setItemsAndAnimateChanges(model.productList)
 
-        if (model.voucherList.isEmpty()) rvVoucherList.gone()
-        else rvVoucherList.visible()
+        if (model.voucherList.isEmpty()) rvVoucherList.hide()
+        else rvVoucherList.show()
     }
 
     internal fun showPlaceholder() {
@@ -151,25 +158,50 @@ class ProductSheetView(
         )
     }
 
+    internal fun showEmpty(partnerId: Long) {
+        showContent(false)
+        globalError.hide()
+        clProductEmpty.show()
+
+        btnProductEmpty.setOnClickListener {
+            listener.onEmptyButtonClicked(partnerId)
+        }
+    }
+
     private fun showContent(shouldShow: Boolean) {
         if (shouldShow) {
-            rvProductList.visible()
-            rvVoucherList.visible()
+            rvProductList.show()
+            rvVoucherList.show()
 
-            globalError.gone()
+            globalError.hide()
+            clProductEmpty.hide()
         } else {
-            rvProductList.gone()
-            rvVoucherList.gone()
+            rvProductList.hide()
+            rvVoucherList.hide()
 
-            globalError.visible()
+            globalError.show()
         }
     }
 
     private fun getPlaceholderModel() = ProductSheetUiModel(
             title = "",
+            partnerId = 0L,
             voucherList = List(PLACEHOLDER_COUNT) { VoucherPlaceholderUiModel },
             productList = List(PLACEHOLDER_COUNT) { ProductPlaceholderUiModel }
     )
+
+    private fun isProductDecreased(productSize: Int): Boolean {
+        return productLineAdapter.getItems().isNotEmpty() &&
+                productLineAdapter.getItems().first() is ProductLineUiModel &&
+                productLineAdapter.itemCount > productSize
+    }
+
+    private fun showToasterProductUpdated() {
+        Toaster.make(
+                view,
+                view.context.getString(R.string.play_product_updated),
+                type = Toaster.TYPE_NORMAL)
+    }
 
     companion object {
         private const val PLACEHOLDER_COUNT = 5
@@ -179,7 +211,8 @@ class ProductSheetView(
         fun onCloseButtonClicked(view: ProductSheetView)
         fun onBuyButtonClicked(view: ProductSheetView, product: ProductLineUiModel)
         fun onAtcButtonClicked(view: ProductSheetView, product: ProductLineUiModel)
-        fun onProductCardClicked(view: ProductSheetView, product: ProductLineUiModel)
+        fun onProductCardClicked(view: ProductSheetView, product: ProductLineUiModel, position: Int)
         fun onVoucherScrolled(lastPositionViewed: Int)
+        fun onEmptyButtonClicked(partnerId: Long)
     }
 }

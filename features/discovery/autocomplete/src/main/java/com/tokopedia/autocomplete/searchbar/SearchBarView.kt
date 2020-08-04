@@ -63,6 +63,7 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
     private lateinit var remoteConfig: RemoteConfig
     private var lastQuery: String? = null
     private var hint: String? = null
+    private var isTyping = false
 
     private val mOnClickListener = OnClickListener { v ->
         if (v === actionUpBtn || v === actionCancelButton) {
@@ -170,6 +171,11 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
 
                     if (queryListener != null) {
                         queryListener?.onQueryChanged(keyword)
+                    }
+
+                    if (!lastQuery.equals(keyword) && !isTyping) {
+                        isTyping = true
+                        mOnQueryChangeListener.setIsTyping(isTyping)
                     }
                 }
             }
@@ -414,7 +420,7 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
         private var isSearchOpen: Boolean = false
         var hint: String? = null
 
-        constructor(superState: Parcelable) : super(superState)
+        constructor(superState: Parcelable?) : super(superState)
 
         constructor(parcel: Parcel): super(parcel) {
             query = parcel.readString()
@@ -451,5 +457,6 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
     interface OnQueryTextListener {
         fun onQueryTextSubmit(searchParameter: SearchParameter): Boolean
         fun onQueryTextChange(searchParameter: SearchParameter)
+        fun setIsTyping(isTyping: Boolean)
     }
 }

@@ -4,8 +4,10 @@ import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel;
-import com.tokopedia.flight.airport.view.viewmodel.FlightCountryAirportViewModel;
+import com.tokopedia.flight.airport.view.model.FlightAirportModel;
+import com.tokopedia.flight.airport.view.model.FlightCountryAirportModel;
+import com.tokopedia.flight.common.view.model.EmptyResultModel;
+import com.tokopedia.flight.searchV4.presentation.adapter.viewholder.EmptyResultViewHolder;
 
 /**
  * Created by alvarisi on 12/19/17.
@@ -18,8 +20,12 @@ public class FlightAirportAdapterTypeFactory extends BaseAdapterTypeFactory {
         this.flightAirportClickListener = flightAirportClickListener;
     }
 
-    public int type(FlightAirportViewModel viewModel) {
+    public int type(FlightAirportModel viewModel) {
         return FlightAirportViewHolder.LAYOUT;
+    }
+
+    public int type(EmptyResultModel emptyResultModel) {
+        return EmptyResultViewHolder.Companion.getLAYOUT();
     }
 
     @Override
@@ -28,12 +34,14 @@ public class FlightAirportAdapterTypeFactory extends BaseAdapterTypeFactory {
             return new FlightCountryViewHolder(parent);
         } else if (type == FlightAirportViewHolder.LAYOUT) {
             return new FlightAirportViewHolder(parent, flightAirportClickListener);
+        } else if (type == EmptyResultViewHolder.Companion.getLAYOUT()) {
+            return new EmptyResultViewHolder(parent);
         } else {
             return super.createViewHolder(parent, type);
         }
     }
 
-    public int type(FlightCountryAirportViewModel flightCountryAirportViewModel) {
+    public int type(FlightCountryAirportModel flightCountryAirportModel) {
         return FlightCountryViewHolder.LAYOUT;
     }
 }

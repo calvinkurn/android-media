@@ -1,13 +1,16 @@
 package com.tokopedia.notifications.model
 
+import android.os.Parcel
+import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import android.os.Parcel
-import android.os.Parcelable
-import com.tokopedia.notifications.database.convertors.NotificationModeConverter
-import com.tokopedia.notifications.database.convertors.NotificationStatusConverter
+import com.tokopedia.notifications.data.converters.NotificationModeConverter
+import com.tokopedia.notifications.data.converters.NotificationStatusConverter
+import com.tokopedia.notifications.model.WebHookParams.Companion.webHookToJson
+import kotlinx.android.parcel.Parcelize
+import kotlinx.android.parcel.RawValue
 import org.json.JSONObject
 
 /**
@@ -15,6 +18,7 @@ import org.json.JSONObject
 parcel.createTypedArrayList(Carousel.CREATOR),
  * Created by Ashwani Tyagi on 18/10/18.
  */
+@Parcelize
 @Entity(tableName = "BaseNotificationModel")
 data class BaseNotificationModel(
         @ColumnInfo(name = "notificationId")
@@ -67,7 +71,7 @@ data class BaseNotificationModel(
         var persistentButtonList: ArrayList<PersistentButton>? = null,
 
         @ColumnInfo(name = "videoPush")
-        var videoPushModel: JSONObject? = null,
+        var videoPushModel: @RawValue JSONObject? = null,
 
         @ColumnInfo(name = "subText")
         var subText: String? = null,
@@ -105,7 +109,6 @@ data class BaseNotificationModel(
         @ColumnInfo(name = "campaignUserToken")
         var campaignUserToken: String? = null,
 
-        //new Fields for offline
         @ColumnInfo(name = "notificationStatus")
         var status: NotificationStatus = NotificationStatus.PENDING,
 
@@ -121,7 +124,6 @@ data class BaseNotificationModel(
         @ColumnInfo(name = "is_test")
         var isTest: Boolean = false,
 
-        //notification attribution
         @ColumnInfo(name = "transId")
         var transactionId: String? = null,
 
@@ -135,103 +137,15 @@ data class BaseNotificationModel(
         var shopId: String? = null,
 
         @ColumnInfo(name = "notifcenterBlastId")
-        var blastId: String? = null
+        var blastId: String? = null,
+
+        @ColumnInfo(name = "webhook_params")
+        var webHookParam: String? = null
 
 ) : Parcelable {
-    constructor(parcel: Parcel) : this(
-            parcel.readInt(),
-            parcel.readLong(),
-            parcel.readInt(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readParcelable(Media::class.java.classLoader),
-            parcel.readString(),
-            parcel.createTypedArrayList(ActionButton),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.createTypedArrayList(PersistentButton),
-            null,
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readInt(),
-            parcel.readByte() != 0.toByte(),
-            parcel.readByte() != 0.toByte(),
-            parcel.readByte() != 0.toByte(),
-            parcel.createTypedArrayList(Carousel),
-            parcel.createTypedArrayList(Grid),
-            parcel.createTypedArrayList(ProductInfo),
-            parcel.readLong(),
-            parcel.readString(),
-            NotificationStatusConverter.instances.toStatus(parcel.readInt()),
-            parcel.readLong(),
-            parcel.readLong(),
-            NotificationModeConverter.instances.toMode(parcel.readInt()),
-            parcel.readByte() != 0.toByte(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString())
 
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeInt(notificationId)
-        parcel.writeLong(campaignId)
-        parcel.writeInt(priorityPreOreo)
-        parcel.writeString(title)
-        parcel.writeString(detailMessage)
-        parcel.writeString(message)
-        parcel.writeString(icon)
-        parcel.writeString(soundFileName)
-        parcel.writeString(tribeKey)
-        parcel.writeParcelable(media, flags)
-        parcel.writeString(appLink)
-        parcel.writeTypedList(actionButton)
-        parcel.writeString(customValues)
-        parcel.writeString(type)
-        parcel.writeString(channelName)
-        parcel.writeTypedList(persistentButtonList)
-        parcel.writeString(subText)
-        parcel.writeString(visualCollapsedImageUrl)
-        parcel.writeString(visualExpandedImageUrl)
-        parcel.writeInt(carouselIndex)
-        parcel.writeByte(if (isVibration) 1 else 0)
-        parcel.writeByte(if (isSound) 1 else 0)
-        parcel.writeByte(if (isUpdateExisting) 1 else 0)
-        parcel.writeTypedList(carouselList)
-        parcel.writeTypedList(gridList)
-        parcel.writeTypedList(productInfoList)
-        parcel.writeLong(parentId)
-        parcel.writeString(campaignUserToken)
-        parcel.writeInt(status.statusInt)
-        parcel.writeLong(startTime)
-        parcel.writeLong(endTime)
-        parcel.writeInt(status.statusInt)
-        parcel.writeByte(if (isTest) 1 else 0)
-        parcel.writeString(transactionId)
-        parcel.writeString(userTransactionId)
-        parcel.writeString(userId)
-        parcel.writeString(shopId)
-        parcel.writeString(blastId)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<BaseNotificationModel> {
-        override fun createFromParcel(parcel: Parcel): BaseNotificationModel {
-            return BaseNotificationModel(parcel)
-        }
-
-        override fun newArray(size: Int): Array<BaseNotificationModel?> {
-            return arrayOfNulls(size)
-        }
+    fun webHookParamData(): String? {
+        return webHookToJson(this.webHookParam)
     }
 
 }

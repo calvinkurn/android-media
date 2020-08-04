@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.power_merchant.subscribe.ACTION_KEY
 import com.tokopedia.power_merchant.subscribe.view.fragment.PowerMerchantTermsFragment
 
 /**
@@ -17,9 +16,11 @@ class PowerMerchantTermsActivity : BaseSimpleActivity() {
     }
 
     companion object {
-        fun createIntent(context: Context, action: String): Intent {
+        const val EXTRA_SHOP_SCORE = "extra_shop_score"
+
+        fun createIntent(context: Context, shopScore: Int): Intent {
             return Intent(context, PowerMerchantTermsActivity::class.java).apply {
-                putExtra(ACTION_KEY, action)
+                putExtra(EXTRA_SHOP_SCORE, shopScore)
             }
         }
     }

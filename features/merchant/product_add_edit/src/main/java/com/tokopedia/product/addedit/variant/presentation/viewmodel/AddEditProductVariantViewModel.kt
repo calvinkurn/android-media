@@ -361,31 +361,46 @@ class AddEditProductVariantViewModel @Inject constructor(
 
     private fun mapProducts(variantDetails: List<VariantDetail>, variantPhotos: List<VariantPhoto>): List<ProductVariantInputModel> {
         val result: MutableList<ProductVariantInputModel> = mutableListOf()
-        val selectedLevel1: MutableList<UnitValue> = selectedVariantUnitValuesMap
-                .getOrElse(VARIANT_VALUE_LEVEL_ONE_POSITION) { mutableListOf() }
-        val selectedLevel2: MutableList<UnitValue> = selectedVariantUnitValuesMap
-                .getOrElse(VARIANT_VALUE_LEVEL_TWO_POSITION) { mutableListOf() }
-        val variantDetailLevel1 = variantDetails.getOrNull(VARIANT_VALUE_LEVEL_ONE_POSITION)
-                ?: VariantDetail()
-        val variantDetailLevel2 = variantDetails.getOrNull(VARIANT_VALUE_LEVEL_TWO_POSITION)
-                ?: VariantDetail()
+        val unitValueList: MutableList<List<UnitValue>> = mutableListOf()
+        val variantIdList: MutableList<Int> = mutableListOf()
 
-        selectedLevel1.forEachIndexed { optionIndexLevel1, _ ->
+        // init unitValueList and variantIdList
+        selectedVariantUnitValuesMap.toSortedMap().forEach {
+            if (it.value.isNotEmpty()) {
+                unitValueList.add(it.value)
+                variantDetails.getOrNull(it.key)?.let { variantDetail ->
+                    variantIdList.add(variantDetail.variantID)
+                }
+            }
+        }
+
+        // get value for each level
+        val unitValueLevel1 = unitValueList.getOrNull(VARIANT_VALUE_LEVEL_ONE_POSITION) ?: emptyList()
+        val unitValueLevel2 = unitValueList.getOrNull(VARIANT_VALUE_LEVEL_TWO_POSITION) ?: emptyList()
+        val variantIdLevel1 = variantIdList.getOrNull(VARIANT_VALUE_LEVEL_ONE_POSITION)
+        val variantIdLevel2 = variantIdList.getOrNull(VARIANT_VALUE_LEVEL_TWO_POSITION)
+
+        unitValueLevel1.forEachIndexed { optionIndexLevel1, _ ->
+            // init variant picture
             var variantPicture = emptyList<PictureVariantInputModel>()
-            if (variantDetailLevel1.variantID == COLOUR_VARIANT_TYPE_ID) {
+            if (variantIdLevel1 == COLOUR_VARIANT_TYPE_ID) {
                 variantPicture = mapVariantPhoto(variantPhotos.getOrNull(optionIndexLevel1))
             }
 
-            if (selectedLevel2.isEmpty()) {
+            if (unitValueLevel2.isEmpty()) {
+                // loop condition when variant having 1 level
                 result.add(mapProductVariant(
                         variantPicture,
                         listOf(optionIndexLevel1)
                 ))
             } else {
-                selectedLevel2.forEachIndexed { optionIndexLevel2, _ ->
-                    if (variantDetailLevel2.variantID == COLOUR_VARIANT_TYPE_ID) {
+                // loop condition when variant having 2 level
+                unitValueLevel2.forEachIndexed { optionIndexLevel2, _ ->
+                    // re-init variant picture (condition if color at level 2)
+                    if (variantIdLevel2 == COLOUR_VARIANT_TYPE_ID) {
                         variantPicture = mapVariantPhoto(variantPhotos.getOrNull(optionIndexLevel2))
                     }
+
                     result.add(mapProductVariant(
                             variantPicture,
                             listOf(optionIndexLevel1, optionIndexLevel2)

@@ -17,6 +17,7 @@ import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
 import com.tokopedia.chat_common.view.BaseChatViewStateImpl
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chatbot.R
+import com.tokopedia.chatbot.analytics.ChatbotAnalytics.Companion.chatbotAnalytics
 import com.tokopedia.chatbot.data.ConnectionDividerViewModel
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleViewModel
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSelectionViewModel
@@ -35,6 +36,9 @@ import com.tokopedia.user.session.UserSessionInterface
 /**
  * @author by nisie on 07/12/18.
  */
+private const val ACTION_IMRESSION_ACTION_BUTTON = "impression action button"
+private const val ACTION_IMRESSION_THUMBS_UP_THUMBS_DOWN = "impression thumbs up and thumbs down"
+
 class ChatbotViewStateImpl(@NonNull override val view: View,
                            @NonNull private val userSession: UserSessionInterface,
                            private val quickReplyListener: QuickReplyListener,
@@ -118,11 +122,13 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
 
     override fun onReceiveQuickReplyEventWithActionButton(visitable: ChatActionSelectionBubbleViewModel) {
         super.onReceiveMessageEvent(visitable)
+        chatbotAnalytics.eventShowView(ACTION_IMRESSION_ACTION_BUTTON)
         showQuickReply(visitable.quickReplies)
     }
 
     override fun onReceiveQuickReplyEventWithChatRating(visitable: ChatRatingViewModel) {
         super.onReceiveMessageEvent(visitable)
+        chatbotAnalytics.eventShowView(ACTION_IMRESSION_THUMBS_UP_THUMBS_DOWN)
         showQuickReply(visitable.quickReplies)
     }
 
@@ -171,11 +177,10 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
     }
 
     private fun showQuickReply(list: List<QuickReplyViewModel>) {
-        if (::quickReplyAdapter.isInitialized) {
-            quickReplyAdapter.setList(list)
-            quickReplyAdapter.notifyDataSetChanged()
-        }
-        rvQuickReply.visibility = View.VISIBLE
+            if (::quickReplyAdapter.isInitialized) {
+                quickReplyAdapter.setList(list)
+            }
+            rvQuickReply.visibility = View.VISIBLE
     }
 
     private fun hasQuickReply(): Boolean {
@@ -220,7 +225,14 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
         showQuickReply(quickReplyList)
     }
 
-    override fun getInterlocutorName(headerName: CharSequence): CharSequence  = headerName
+    override fun hideActionBubble(model: ChatActionSelectionBubbleViewModel) {
+        val adapter = getAdapter()
+        if (adapter.list.isNotEmpty() && adapter.list[0] is ChatActionSelectionBubbleViewModel ){
+            adapter.removeElement(model)
+        }
+    }
+
+    override fun getInterlocutorName(headerName: String): String  = headerName
 
     override fun showErrorWebSocket(isWebSocketError: Boolean) {
         val title = notifier.findViewById<TextView>(R.id.title)

@@ -33,12 +33,12 @@ class VariantTypeAdapter(private val clickListener: OnVariantTypeClickListener)
     }
 
     override fun onVariantTypeSelected(position: Int) {
-        // execute the callback function
-        clickListener.onVariantTypeSelected(position, items[position])
         // from normal to selected
         selectedItems[position] = VariantTypeViewHolder.ViewHolderState.SELECTED
         // disable unselected items when maximum selected items reached
         manageUnselectedItems(getSelectedCount())
+        // execute the callback function
+        clickListener.onVariantTypeSelected(position, items[position])
     }
 
     override fun onVariantTypeDeselected(position: Int): Boolean {

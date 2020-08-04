@@ -50,11 +50,11 @@ class VariantDetailFieldsViewHolder(itemView: View?,
     private var isPriceFieldEdited = false
 
     init {
-        unitValueLabel = itemView?.findViewById(R.id.tv_unit_value_label)
-        statusSwitch = itemView?.findViewById(R.id.su_variant_status)
-        priceField = itemView?.findViewById(R.id.tfu_price_field)
-        stockField = itemView?.findViewById(R.id.tfu_stock_field)
-        skuField = itemView?.findViewById(R.id.tfu_sku_field)
+        unitValueLabel = itemView?.findViewById(com.tokopedia.product.addedit.R.id.tv_unit_value_label)
+        statusSwitch = itemView?.findViewById(com.tokopedia.product.addedit.R.id.su_variant_status)
+        priceField = itemView?.findViewById(com.tokopedia.product.addedit.R.id.tfu_price_field)
+        stockField = itemView?.findViewById(com.tokopedia.product.addedit.R.id.tfu_stock_field)
+        skuField = itemView?.findViewById(com.tokopedia.product.addedit.R.id.tfu_sku_field)
 
         statusSwitch?.setOnClickListener {
             val isChecked = statusSwitch?.isChecked ?: false
@@ -94,6 +94,11 @@ class VariantDetailFieldsViewHolder(itemView: View?,
                         // reset the listener
                         it.addTextChangedListener(this)
                     }
+                } else if (isRendered && !isPriceFieldEdited) {
+                    // handle the price input if field is cleared
+                    val validatedInputModel = onPriceInputTextChangedListener.onPriceInputTextChanged(charSequence.toString(), visitablePosition)
+                    priceField?.setError(validatedInputModel.isPriceError)
+                    priceField?.setMessage(validatedInputModel.priceFieldErrorMessage)
                 }
             }
         })

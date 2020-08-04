@@ -5,9 +5,9 @@ import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder
 
-class KeywordSearchData(parcel: Parcel) : Parcelable {
+class KeywordSearchData : Parcelable {
     @SerializedName("universe_placeholder")
-    lateinit var searchData: SearchPlaceholder
+     val searchData: SearchPlaceholder = SearchPlaceholder()
 
     override fun writeToParcel(dest: Parcel?, flags: Int) {}
 
@@ -15,7 +15,7 @@ class KeywordSearchData(parcel: Parcel) : Parcelable {
 
     companion object CREATOR : Parcelable.Creator<KeywordSearchData> {
         override fun createFromParcel(parcel: Parcel): KeywordSearchData {
-            return KeywordSearchData(parcel)
+            return KeywordSearchData()
         }
 
         override fun newArray(size: Int): Array<KeywordSearchData?> {

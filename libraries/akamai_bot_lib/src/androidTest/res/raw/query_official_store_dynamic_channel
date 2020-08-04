@@ -1,0 +1,70 @@
+query dynamicHomeChannel($type: String) {
+    dynamicHomeChannel {
+        channels(type: $type) {
+            id
+            name
+            layout
+            type
+            campaignID
+            campaignCode
+            header {
+                id
+                name
+                url
+                applink
+                serverTime
+                expiredTime
+                backColor
+                backImage
+            }
+            hero {
+                id
+                name
+                url
+                applink
+                imageUrl
+                attribution
+            }
+            grids {
+                id
+                name
+                url
+                applink
+                price
+                slashedPrice
+                discount
+                imageUrl
+                label
+                soldPercentage
+                attribution
+                productClickUrl
+                impression
+                cashback
+                freeOngkir {
+                    isActive
+                    imageUrl
+                }
+            }
+            banner {
+                id
+                title
+                description
+                url
+                cta {
+                    type
+                    mode
+                    text
+                    coupon_code
+                }
+                applink
+                text_color
+                image_url
+                attribution
+            }
+            galaxy_attribution
+	        persona
+       	    category_persona
+       	    brand_id
+        }
+    }
+}

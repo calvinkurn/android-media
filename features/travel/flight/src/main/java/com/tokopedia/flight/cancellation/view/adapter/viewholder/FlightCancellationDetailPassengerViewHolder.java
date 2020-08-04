@@ -10,11 +10,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.flight.bookingV2.constant.FlightBookingPassenger;
-import com.tokopedia.flight.bookingV2.presentation.viewmodel.SimpleViewModel;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationListPassengerViewModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationListPassengerModel;
 import com.tokopedia.flight.common.util.FlightAmenityType;
+import com.tokopedia.flight.detail.view.model.SimpleModel;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderAmenityViewModel;
+import com.tokopedia.flight.passenger.constant.FlightBookingPassenger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +23,7 @@ import java.util.List;
  * @author by furqan on 04/05/18.
  */
 
-public class FlightCancellationDetailPassengerViewHolder extends AbstractViewHolder<FlightCancellationListPassengerViewModel> {
+public class FlightCancellationDetailPassengerViewHolder extends AbstractViewHolder<FlightCancellationListPassengerModel> {
 
     @LayoutRes
     public static int LAYOUT = com.tokopedia.flight.R.layout.item_flight_review_passenger;
@@ -47,7 +47,7 @@ public class FlightCancellationDetailPassengerViewHolder extends AbstractViewHol
     }
 
     @Override
-    public void bind(FlightCancellationListPassengerViewModel element) {
+    public void bind(FlightCancellationListPassengerModel element) {
         passengerNumber.setText(String.format("%d.", getAdapterPosition() + 1));
         passengerName.setText(element.getFirstName() + " " + element.getLastName());
         passengerCategory.setText(getPassengerType(element.getType()));
@@ -73,12 +73,12 @@ public class FlightCancellationDetailPassengerViewHolder extends AbstractViewHol
         }
     }
 
-    private List<SimpleViewModel> transformToSimpleModelPassenger(FlightCancellationListPassengerViewModel passengerViewModel) {
-        List<SimpleViewModel> simpleViewModels = new ArrayList<>();
+    private List<SimpleModel> transformToSimpleModelPassenger(FlightCancellationListPassengerModel passengerViewModel) {
+        List<SimpleModel> simpleViewModels = new ArrayList<>();
         for (FlightOrderAmenityViewModel flightBookingAmenityViewModel : passengerViewModel.getAmenities()) {
             if (flightBookingAmenityViewModel.getDepartureId().equals(passengerViewModel.getDepartureAiportId()) &&
                     flightBookingAmenityViewModel.getArrivalId().equals(passengerViewModel.getArrivalAirportId())) {
-                SimpleViewModel simpleViewModel = new SimpleViewModel();
+                SimpleModel simpleViewModel = new SimpleModel();
                 simpleViewModel.setDescription(generateLabelPassenger(String.valueOf(flightBookingAmenityViewModel.getAmenityType()),
                         flightBookingAmenityViewModel.getDepartureId(),
                         flightBookingAmenityViewModel.getArrivalId()));
@@ -101,7 +101,7 @@ public class FlightCancellationDetailPassengerViewHolder extends AbstractViewHol
     }
 
     private class CancellationPassengerDetailAdapter extends RecyclerView.Adapter<PassengerDetailViewHolder> {
-        List<SimpleViewModel> infoList;
+        List<SimpleModel> infoList;
 
         public CancellationPassengerDetailAdapter() {
             infoList = new ArrayList<>();
@@ -123,7 +123,7 @@ public class FlightCancellationDetailPassengerViewHolder extends AbstractViewHol
             return infoList.size();
         }
 
-        public void addData(List<SimpleViewModel> infos) {
+        public void addData(List<SimpleModel> infos) {
             infoList.clear();
             infoList.addAll(infos);
             notifyDataSetChanged();
@@ -140,7 +140,7 @@ public class FlightCancellationDetailPassengerViewHolder extends AbstractViewHol
             descInfo = (TextView) itemView.findViewById(com.tokopedia.flight.R.id.desc_info);
         }
 
-        public void bindData(SimpleViewModel info) {
+        public void bindData(SimpleModel info) {
             titleInfo.setText(info.getDescription());
             descInfo.setText(info.getLabel().trim());
         }

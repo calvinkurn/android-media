@@ -55,7 +55,7 @@
 
         <com.tokopedia.tokopoints.view.customview.RoundButton
             android:id="@+id/text_failed_action"
-            app:cornerRadius="8dp"
+            app:tpRbCornerRadius="8dp"
             android:layout_width="@dimen/dp_200"
             android:layout_height="@dimen/dp_48"
             android:layout_marginTop="@dimen/tp_margin_top_error_button"

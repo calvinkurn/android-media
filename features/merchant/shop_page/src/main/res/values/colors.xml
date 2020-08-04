@@ -16,4 +16,8 @@
     <color name="tab_layout_shop_page_background_color">#e5e7e9</color>
     <color name="color3f454c">#3f454c</color>
     <color name="clr_31353B">#31353B</color>
+    <color name="color_chips_etalase_text_selected">#03AC0E</color>
+    <color name="color_chips_etalase_text_not_selected">#ae31353b</color>
+    <color name="color_beta_badge">#FF5C84</color>
+
 </resources>

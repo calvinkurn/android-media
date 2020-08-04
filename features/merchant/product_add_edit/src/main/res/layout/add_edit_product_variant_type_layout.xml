@@ -20,6 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginBottom="@dimen/body_3"
         android:text="@string/label_variant_type_desc"
         android:textColor="@color/light_N700_68"
         app:typographyType="body_3" />
@@ -29,7 +30,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/spacing_lvl4"
-        android:layout_marginRight="@dimen/spacing_lvl4" />
-
+        android:layout_marginRight="@dimen/spacing_lvl4"
+        android:layout_marginBottom="@dimen/layout_lvl1" />
 </LinearLayout>

@@ -10,11 +10,13 @@ import android.view.ViewParent
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.core.content.ContextCompat
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.gamification.R
 import com.tokopedia.gamification.giftbox.analytics.GtmEvents
+import com.tokopedia.gamification.giftbox.analytics.GtmGiftTapTap
+import com.tokopedia.gamification.giftbox.presentation.activities.GiftBoxDailyActivity
+import com.tokopedia.gamification.giftbox.presentation.activities.GiftBoxTapTapActivity
 import com.tokopedia.user.session.UserSession
 
 class NoInternetDialog {
@@ -26,7 +28,7 @@ class NoInternetDialog {
     lateinit var closeAbleDialog: CloseableBottomSheetDialog
 
     fun showDialog(context: Context) {
-        val resId = R.layout.dialog_gami_no_internet
+        val resId = com.tokopedia.gamification.R.layout.dialog_gami_no_internet
         val v = LayoutInflater.from(context).inflate(resId, null, false)
         closeAbleDialog = CloseableBottomSheetDialog.createInstanceRounded(context)
         closeAbleDialog.setContentView(v)
@@ -62,7 +64,11 @@ class NoInternetDialog {
         btnSettings.setOnClickListener {
             try {
                 val userSession = UserSession(it.context)
-                GtmEvents.clickSettingsButton(userSession.userId)
+                when(context){
+                    is GiftBoxDailyActivity-> GtmEvents.clickSettingsButton(userSession.userId)
+                    is GiftBoxTapTapActivity-> GtmGiftTapTap.clickSettingsButton(userSession.userId)
+                }
+
                 val intent = Intent(Settings.ACTION_WIRELESS_SETTINGS)
                 context.startActivity(intent)
             } catch (ex: Exception) {

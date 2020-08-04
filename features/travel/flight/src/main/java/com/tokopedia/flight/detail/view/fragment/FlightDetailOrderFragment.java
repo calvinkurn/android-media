@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
-import android.text.TextUtils;
 import android.text.style.ClickableSpan;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -46,28 +45,27 @@ import com.tokopedia.common.travel.utils.TrackingCrossSellUtil;
 import com.tokopedia.common.travel.widget.TravelCrossSellWidget;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.bookingV2.presentation.adapter.FlightSimpleAdapter;
-import com.tokopedia.flight.bookingV2.presentation.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.cancellation.view.activity.FlightCancellationActivity;
 import com.tokopedia.flight.cancellation.view.activity.FlightCancellationListActivity;
 import com.tokopedia.flight.common.di.component.FlightComponent;
 import com.tokopedia.flight.detail.presenter.ExpandableOnClickListener;
 import com.tokopedia.flight.detail.presenter.FlightDetailOrderContract;
 import com.tokopedia.flight.detail.presenter.FlightDetailOrderPresenter;
-import com.tokopedia.flight.detail.view.activity.FlightInvoiceActivity;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailOrderAdapter;
+import com.tokopedia.flight.detail.view.adapter.FlightDetailOrderPassengerAdapter;
+import com.tokopedia.flight.detail.view.adapter.FlightDetailOrderPassengerAdapterTypeFactory;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailOrderTypeFactory;
 import com.tokopedia.flight.detail.view.adapter.FlightOrderDetailInsuranceAdapter;
+import com.tokopedia.flight.detail.view.adapter.FlightSimpleAdapter;
 import com.tokopedia.flight.detail.view.model.FlightDetailOrderJourney;
+import com.tokopedia.flight.detail.view.model.FlightDetailPassenger;
+import com.tokopedia.flight.detail.view.model.SimpleModel;
 import com.tokopedia.flight.orderlist.domain.model.FlightInsurance;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrder;
 import com.tokopedia.flight.orderlist.util.FlightErrorUtil;
 import com.tokopedia.flight.orderlist.view.fragment.FlightResendETicketDialogFragment;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightCancellationJourney;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailPassData;
-import com.tokopedia.flight.review.view.adapter.FlightBookingReviewPassengerAdapter;
-import com.tokopedia.flight.review.view.adapter.FlightBookingReviewPassengerAdapterTypeFactory;
-import com.tokopedia.flight.review.view.model.FlightDetailPassenger;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -122,7 +120,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     private LinearLayout showEticket;
 
     private FlightDetailOrderAdapter flightDetailOrderAdapter;
-    private FlightBookingReviewPassengerAdapter flightBookingReviewPassengerAdapter;
+    private FlightDetailOrderPassengerAdapter flightBookingReviewPassengerAdapter;
     private FlightSimpleAdapter flightBookingReviewPriceAdapter;
     private FlightOrderDetailPassData flightOrderDetailPassData;
     private FlightOrder flightOrder;
@@ -214,8 +212,8 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
 
         FlightDetailOrderTypeFactory flightDetailOrderTypeFactory = new FlightDetailOrderTypeFactory(this, JOURNEY_TITLE_FONT_SIZE);
         flightDetailOrderAdapter = new FlightDetailOrderAdapter(flightDetailOrderTypeFactory);
-        FlightBookingReviewPassengerAdapterTypeFactory flightBookingReviewPassengerAdapterTypeFactory = new FlightBookingReviewPassengerAdapterTypeFactory();
-        flightBookingReviewPassengerAdapter = new FlightBookingReviewPassengerAdapter(flightBookingReviewPassengerAdapterTypeFactory);
+        FlightDetailOrderPassengerAdapterTypeFactory flightBookingReviewPassengerAdapterTypeFactory = new FlightDetailOrderPassengerAdapterTypeFactory();
+        flightBookingReviewPassengerAdapter = new FlightDetailOrderPassengerAdapter(flightBookingReviewPassengerAdapterTypeFactory);
         flightBookingReviewPriceAdapter = new FlightSimpleAdapter();
 
         recyclerViewFlight.setAdapter(flightDetailOrderAdapter);
@@ -288,9 +286,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         containerDownloadInvoice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!TextUtils.isEmpty(invoiceLink)) {
-                    startActivity(FlightInvoiceActivity.newInstance(getActivity(), invoiceLink));
-                }
+                RouteManager.route(requireContext(), flightOrder.getInvoiceUri());
             }
         });
 
@@ -365,7 +361,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     }
 
     @Override
-    public void updatePrice(List<SimpleViewModel> priceList, String totalPrice) {
+    public void updatePrice(List<SimpleModel> priceList, String totalPrice) {
         flightBookingReviewPriceAdapter.setViewModels(priceList);
         flightBookingReviewPriceAdapter.notifyDataSetChanged();
         this.totalPrice.setText(totalPrice);

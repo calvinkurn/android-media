@@ -1,0 +1,78 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/interactive_adapter_template_chat"
+    android:minHeight="@dimen/dp_topchat_72"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/spacing_lvl4"
+    android:paddingTop="@dimen/dp_topchat_10"
+    android:paddingRight="@dimen/spacing_lvl4"
+    android:paddingBottom="@dimen/dp_topchat_10">
+
+    <com.tokopedia.design.image.SquareImageView
+        android:id="@+id/thumbnail"
+        android:layout_width="@dimen/dp_topchat_52"
+        android:layout_height="@dimen/dp_topchat_52"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@color/red_400" />
+
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/user_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_topchat_12"
+        android:layout_marginLeft="@dimen/dp_topchat_12"
+        android:layout_marginEnd="@dimen/spacing_lvl3"
+        android:layout_marginRight="@dimen/spacing_lvl3"
+        android:ellipsize="end"
+        android:includeFontPadding="false"
+        android:maxLines="1"
+        android:textColor="@color/Neutral_N700_96"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintBottom_toBottomOf="@+id/thumbnail"
+        app:layout_constraintEnd_toStartOf="@+id/time"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toEndOf="@+id/thumbnail"
+        app:layout_constraintTop_toTopOf="@+id/thumbnail"
+        app:typographyType="body_1"
+        app:typographyWeight="bold"
+        tools:text="Adrian di rico el cabana yumi relica" />
+
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/user_label"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_topchat_0"
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        android:layout_marginLeft="@dimen/spacing_lvl2"
+        android:layout_marginEnd="@dimen/spacing_lvl3"
+        android:layout_marginRight="@dimen/spacing_lvl3"
+        android:gravity="center_vertical"
+        android:text="@string/title_official"
+        android:visibility="gone"
+        app:labelType="general_light_blue"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintBottom_toBottomOf="@+id/user_name"
+        app:layout_constraintEnd_toStartOf="@+id/time"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@id/user_name"
+        app:layout_constraintTop_toTopOf="@+id/user_name"
+        tools:visibility="visible" />
+
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Neutral_N700_44"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintBottom_toBottomOf="@id/user_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/user_name"
+        app:typographyType="body_3"
+        tools:text="12:15" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -2,4 +2,37 @@
 <resources>
     <dimen name="notif_image_width">84dp</dimen>
     <dimen name="notif_image_height">55dp</dimen>
+    <dimen name="notif_dp_0_5">0.5dp</dimen>
+    <dimen name="notif_dp_0">0dp</dimen>
+    <dimen name="notif_dp_2">2dp</dimen>
+    <dimen name="notif_dp_3">3dp</dimen>
+    <dimen name="notif_dp_4">4dp</dimen>
+    <dimen name="notif_dp_6">6dp</dimen>
+    <dimen name="notif_dp_8">8dp</dimen>
+    <dimen name="notif_dp_10">10dp</dimen>
+    <dimen name="notif_dp_12">12dp</dimen>
+    <dimen name="notif_dp_16">16dp</dimen>
+    <dimen name="notif_dp_18">18dp</dimen>
+    <dimen name="notif_dp_20">20dp</dimen>
+    <dimen name="notif_dp_24">24dp</dimen>
+    <dimen name="notif_dp_32">32dp</dimen>
+    <dimen name="notif_dp_40">40dp</dimen>
+    <dimen name="notif_dp_48">48dp</dimen>
+    <dimen name="notif_dp_50">50dp</dimen>
+    <dimen name="notif_dp_56">56dp</dimen>
+    <dimen name="notif_dp_72">72dp</dimen>
+    <dimen name="notif_dp_96">96dp</dimen>
+    <dimen name="notif_dp_128">128dp</dimen>
+    <dimen name="notif_dp_145">145dp</dimen>
+    <dimen name="notif_dp_210">210dp</dimen>
+    <dimen name="notif_dp_280">280dp</dimen>
+    <dimen name="notif_dp_288">288dp</dimen>
+    <dimen name="notif_dp_292">292dp</dimen>
+
+    <dimen name="notif_sp_4">4sp</dimen>
+    <dimen name="notif_sp_10">10sp</dimen>
+    <dimen name="notif_sp_12">12sp</dimen>
+    <dimen name="notif_sp_14">14sp</dimen>
+    <dimen name="notif_sp_16">16sp</dimen>
+    <dimen name="notif_sp_18">18sp</dimen>
 </resources>

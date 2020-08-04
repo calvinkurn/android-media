@@ -16,14 +16,13 @@ import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.design.countdown.CountDownView
-import com.tokopedia.design.countdown.CountDownView.CountDownListener
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.adapter.*
 import com.tokopedia.tokopoints.view.model.section.ImageList
 import com.tokopedia.tokopoints.view.model.section.SectionContent
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
 import com.tokopedia.tokopoints.view.util.CommonConstant
+import com.tokopedia.unifycomponents.TimerUnify
 import java.util.*
 
 class ExploreSectionPagerAdapter(context: Context?, presenter: TokoPointsHomeViewModel, sections: List<SectionContent>?) : PagerAdapter() {
@@ -31,7 +30,7 @@ class ExploreSectionPagerAdapter(context: Context?, presenter: TokoPointsHomeVie
     private val mSections: List<SectionContent>?
     private val mPresenter: TokoPointsHomeViewModel
     private val swipeToRefresh = arrayOfNulls<SwipeToRefresh>(2)
-    private var countDownView: CountDownView? = null
+    private var countDownView: TimerUnify? = null
     private val mCouponListAdapterList: ArrayList<CouponListAdapter>? = ArrayList()
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
         var view: View? = null
@@ -111,8 +110,8 @@ class ExploreSectionPagerAdapter(context: Context?, presenter: TokoPointsHomeVie
                 content.countdownAttr.isShowTimer && content.countdownAttr.expiredCountDown > 0) {
             countDownView = view.findViewById(R.id.tp_count_down_view)
             countDownView?.findViewById<View>(R.id.tp_count_down_view)?.visibility = View.VISIBLE
-            countDownView?.setUnify(true)
-            countDownView?.setupTimerFromRemianingMillis(content.countdownAttr.expiredCountDown * 1000, CountDownListener { view.visibility = View.GONE })
+            countDownView?.remainingMilliseconds = content.countdownAttr.expiredCountDown * 1000
+            countDownView?.onFinish = { view?.visibility = View.GONE }
             view.findViewById<View>(R.id.text_title).layoutParams.width = view.resources.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_180)
         } else {
             view.findViewById<View>(R.id.text_title).layoutParams.width = view.resources.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_280)
@@ -137,7 +136,6 @@ class ExploreSectionPagerAdapter(context: Context?, presenter: TokoPointsHomeVie
         if (content.layoutCatalogAttr.catalogList != null) {
             view.setPadding(0, view.paddingTop, 0, 0)
             val rvCarousel: RecyclerView = view.findViewById(R.id.rv_carousel)
-            rvCarousel.addItemDecoration(CarouselItemDecoration(mLayoutInflater.context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_4)))
             rvCarousel.layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
             val adapter = CatalogListCarouselAdapter(mPresenter, content.layoutCatalogAttr.catalogList, rvCarousel)
             rvCarousel.adapter = adapter
@@ -576,8 +574,9 @@ class ExploreSectionPagerAdapter(context: Context?, presenter: TokoPointsHomeVie
                 content.countdownAttr.isShowTimer && content.countdownAttr.expiredCountDown > 0) {
             countDownView = view.findViewById(R.id.tp_count_down_view)
             countDownView?.findViewById<View>(R.id.tp_count_down_view)?.visibility = View.VISIBLE
-            countDownView?.setUnify(true)
-            countDownView?.setupTimerFromRemianingMillis(content.countdownAttr.expiredCountDown * 1000, CountDownListener { view.visibility = View.GONE })
+            countDownView?.remainingMilliseconds = content.countdownAttr.expiredCountDown * 1000
+            countDownView?.onFinish = { view?.visibility = View.GONE }
+
             view.findViewById<View>(R.id.text_title).layoutParams.width = view.resources.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_180)
         } else {
             view.findViewById<View>(R.id.text_title).layoutParams.width = view.resources.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_280)

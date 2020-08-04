@@ -6,11 +6,13 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.widget.LinearLayout
+import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.util.getText
 import com.tokopedia.product.addedit.variant.data.model.Unit
 import com.tokopedia.product.addedit.variant.data.model.UnitValue
 import kotlinx.android.synthetic.main.add_edit_product_variant_custom_input_layout.view.*
+import kotlinx.android.synthetic.main.add_edit_product_variant_custom_input_layout.view.buttonSave
 
 class CustomVariantUnitValueForm : LinearLayout {
 
@@ -35,6 +37,10 @@ class CustomVariantUnitValueForm : LinearLayout {
     fun setupVariantCustomInputLayout(selectedVariantUnit: Unit, selectedVariantUnitValues: MutableList<UnitValue>) {
         setupTextChangedListener(textWatcher = createTextWatcher())
         setupButtonSaveClickListener(layoutPosition, selectedVariantUnit, variantUnitValues, selectedVariantUnitValues)
+
+        textFieldUnifyCustomValue.textFieldInput.afterTextChanged {
+            buttonSave.isEnabled = it.isNotEmpty()
+        }
     }
 
     private fun setupTextChangedListener(textWatcher: TextWatcher) {

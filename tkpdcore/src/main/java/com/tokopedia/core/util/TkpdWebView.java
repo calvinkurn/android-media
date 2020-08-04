@@ -1,14 +1,12 @@
 package com.tokopedia.core.util;
 
 import android.content.Context;
-import android.net.Uri;
 import android.util.AttributeSet;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
-import com.crashlytics.android.Crashlytics;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.tokopedia.config.GlobalConfig;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core2.R;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -58,26 +56,9 @@ public class TkpdWebView extends WebView {
             super.loadUrl(url, additionalHttpHeaders);
         } else {
             if (!GlobalConfig.DEBUG)
-                Crashlytics.log(getContext().getString(R.string.error_message_url_invalid_crashlytics) + url);
+                FirebaseCrashlytics.getInstance().log(getContext().getString(R.string.error_message_url_invalid_crashlytics) + url);
 
             super.loadUrl(url);
         }
-    }
-
-    public void loadAuthUrl(String url) {
-        url = WebViewHelper.appendGAClientIdAsQueryParam(url, getContext());
-        loadUrl(url, getWebviewHeaders(url));
-    }
-
-    public static Map<String, String> getWebviewHeaders(String url) {
-        return AuthUtil.generateWebviewHeaders(
-                Uri.parse(url).getPath(),
-                getQuery(Uri.parse(url).getQuery()),
-                "GET",
-                AuthUtil.KEY.KEY_WSV4);
-    }
-
-    private static String getQuery(String query) {
-        return query != null ? query : "";
     }
 }

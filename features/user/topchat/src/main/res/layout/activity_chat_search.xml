@@ -4,14 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
     tools:context=".chatsearch.view.activity.ChatSearchActivity">
 
     <LinearLayout
         android:id="@+id/search_top_bar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_topchat_44"
-        android:background="@android:color/white"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         app:contentInsetStartWithNavigation="0dp"
@@ -27,7 +25,22 @@
             android:paddingBottom="@dimen/dp_topchat_10"
             app:srcCompat="@drawable/ic_system_action_back_grayscale_24" />
 
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/txt_toolbar_tittle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:layout_marginRight="@dimen/spacing_lvl4"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:visibility="gone"
+            app:typographyType="heading_4"
+            app:typographyWeight="bold"
+            tools:text="'Lorem Ipsum set amet dolor'"
+            tools:visibility="visible" />
+
         <RelativeLayout
+            android:id="@+id/container_search"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl2"
@@ -35,7 +48,9 @@
             android:layout_marginRight="@dimen/spacing_lvl4"
             android:layout_marginBottom="@dimen/spacing_lvl2"
             android:layout_weight="1"
-            android:background="@drawable/topchat_bg_search_action_background">
+            android:background="@drawable/topchat_bg_search_action_background"
+            android:visibility="visible"
+            tools:visibility="visible">
 
             <EditText
                 android:id="@+id/searchTextView"
@@ -44,7 +59,7 @@
                 android:layout_centerVertical="true"
                 android:background="@null"
                 android:gravity="center_vertical"
-                android:hint="@string/search_chat_by_username"
+                android:hint="@string/search_chat_hint"
                 android:imeOptions="actionSearch"
                 android:inputType="textNoSuggestions"
                 android:lines="1"
@@ -85,7 +100,11 @@
         android:id="@+id/parent_view"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_topchat_0"
+        android:clickable="true"
+        android:focusable="true"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/search_top_bar" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

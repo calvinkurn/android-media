@@ -43,7 +43,6 @@ class RechargeCCFragment : BaseDaggerFragment() {
 
     private lateinit var rechargeCCViewModel: RechargeCCViewModel
     private lateinit var rechargeSubmitCCViewModel: RechargeSubmitCCViewModel
-    private lateinit var checkoutPassDataState: DigitalCheckoutPassData
     private lateinit var saveInstanceManager: SaveInstanceCacheManager
     private lateinit var performanceMonitoring: PerformanceMonitoring
 
@@ -58,6 +57,7 @@ class RechargeCCFragment : BaseDaggerFragment() {
     private var productIdSelected: String = ""
     private var categoryId: String = ""
     private var menuId: String = ""
+    private var checkoutPassDataState: DigitalCheckoutPassData? = null
 
     override fun getScreenName(): String {
         return ""
@@ -79,15 +79,15 @@ class RechargeCCFragment : BaseDaggerFragment() {
 
         if (savedInstanceState != null) {
             checkoutPassDataState = saveInstanceManager.get(EXTRA_STATE_CHECKOUT_PASS_DATA,
-                    DigitalCheckoutPassData::class.java, null)!!
+                    DigitalCheckoutPassData::class.java, null)
         }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
 
-        if (::checkoutPassDataState.isInitialized) {
-            saveInstanceManager.put(EXTRA_STATE_CHECKOUT_PASS_DATA, checkoutPassDataState)
+        checkoutPassDataState?.let {
+            saveInstanceManager.put(EXTRA_STATE_CHECKOUT_PASS_DATA, it)
         }
     }
 
@@ -101,7 +101,7 @@ class RechargeCCFragment : BaseDaggerFragment() {
         initializedViewModel()
         getDataBundle()
         getTickerData()
-        
+
         cc_widget_client_number.setListener(object : CCClientNumberWidget.ActionListener {
             override fun onClickNextButton(clientNumber: String) {
                 creditCardAnalytics.clickToConfirmationPage(
@@ -126,8 +126,8 @@ class RechargeCCFragment : BaseDaggerFragment() {
 
     private fun getDataBundle() {
         arguments?.let {
-            categoryId = it.getString(CATEGORY_ID)
-            menuId = it.getString(MENU_ID)
+            categoryId = it.getString(CATEGORY_ID, "")
+            menuId = it.getString(MENU_ID, "")
         }
     }
 
@@ -302,8 +302,10 @@ class RechargeCCFragment : BaseDaggerFragment() {
                 }
             }
             REQUEST_CODE_LOGIN -> {
-                if (userSession.isLoggedIn && ::checkoutPassDataState.isInitialized) {
-                    navigateToCart(checkoutPassDataState)
+                if (userSession.isLoggedIn) {
+                    checkoutPassDataState?.let {
+                        navigateToCart(it)
+                    }
                 }
             }
         }
@@ -314,7 +316,7 @@ class RechargeCCFragment : BaseDaggerFragment() {
         super.onDestroyView()
     }
 
-    private fun initializePerformance(){
+    private fun initializePerformance() {
         performanceMonitoring = PerformanceMonitoring.start(RECHARGE_CC_PAGE_PERFORMANCE)
     }
 
@@ -324,7 +326,7 @@ class RechargeCCFragment : BaseDaggerFragment() {
 
         private const val CATEGORY_ID = "category_id"
         private const val MENU_ID = "menu_id"
-        const val RECHARGE_CC_PAGE_PERFORMANCE="dg_tagihan_cc_pdp"
+        const val RECHARGE_CC_PAGE_PERFORMANCE = "dg_tagihan_cc_pdp"
 
         const val REQUEST_CODE_CART = 1000
         const val REQUEST_CODE_LOGIN = 1001

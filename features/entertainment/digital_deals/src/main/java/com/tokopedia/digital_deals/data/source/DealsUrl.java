@@ -26,7 +26,7 @@ public class DealsUrl {
         String PROMOURL = "https://www.tokopedia.com/promo/produk-digital/entertainment";
         String FAQURL = "https://www.tokopedia.com/contact-us#step2";
         String TRANSATIONSURL = "https://pulsa.tokopedia.com/order-list/";
-        String REDEEM_URL = "https://www.tokopedia.com/bantuan/produk-digital/tokopedia_e_voucher/seputar-tokopedia-e-voucher/#cara-menggunakan-e-voucher";
+        String REDEEM_URL = "https://www.tokopedia.com/help/article/st-1283-tokopedia-food-voucher";
     }
 
     public interface AppLink{

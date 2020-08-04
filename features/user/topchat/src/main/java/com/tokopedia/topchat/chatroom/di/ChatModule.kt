@@ -1,8 +1,8 @@
 package com.tokopedia.topchat.chatroom.di
 
 import android.content.Context
+import android.content.SharedPreferences
 import com.chuckerteam.chucker.api.ChuckerInterceptor
-import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
@@ -14,12 +14,6 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.imageuploader.di.ImageUploaderModule
-import com.tokopedia.imageuploader.di.qualifier.ImageUploaderQualifier
-import com.tokopedia.imageuploader.domain.GenerateHostRepository
-import com.tokopedia.imageuploader.domain.UploadImageRepository
-import com.tokopedia.imageuploader.domain.UploadImageUseCase
-import com.tokopedia.imageuploader.utils.ImageUploaderUtils
 import com.tokopedia.mediauploader.di.MediaUploaderModule
 import com.tokopedia.mediauploader.di.MediaUploaderNetworkModule
 import com.tokopedia.mediauploader.di.NetworkModule
@@ -42,9 +36,12 @@ import com.tokopedia.topchat.common.analytics.ChatSettingsAnalytics
 import com.tokopedia.topchat.common.chat.api.ChatApi
 import com.tokopedia.topchat.common.di.qualifier.InboxQualifier
 import com.tokopedia.topchat.common.di.qualifier.TopchatContext
+import com.tokopedia.topchat.common.network.TopchatCacheManager
+import com.tokopedia.topchat.common.network.TopchatCacheManagerImpl
 import com.tokopedia.topchat.common.network.XUserIdInterceptor
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.websocket.RxWebSocketUtil
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import dagger.Module
@@ -148,6 +145,16 @@ class ChatModule {
 
     @ChatScope
     @Provides
+    fun provideRxWebSocketUtil(
+            tkpdAuthInterceptor: TkpdAuthInterceptor,
+            fingerprintInterceptor: FingerprintInterceptor
+    ): RxWebSocketUtil {
+        val interceptors = listOf(tkpdAuthInterceptor, fingerprintInterceptor)
+        return RxWebSocketUtil.getInstance(interceptors)
+    }
+
+    @ChatScope
+    @Provides
     fun provideOkHttpClient(@ApplicationContext context: Context,
                             @InboxQualifier retryPolicy: OkHttpRetryPolicy,
                             errorResponseInterceptor: ErrorResponseInterceptor,
@@ -239,8 +246,21 @@ class ChatModule {
 
     @ChatScope
     @Provides
+    internal fun provideTopchatCacheManager(@TopchatContext context: Context): TopchatCacheManager {
+        val topchatCachePref = context.getSharedPreferences("topchatCache", Context.MODE_PRIVATE)
+        return TopchatCacheManagerImpl(topchatCachePref)
+    }
+
+    @ChatScope
+    @Provides
     internal fun provideRemoveWishListUseCase(@TopchatContext context: Context): RemoveWishListUseCase {
         return RemoveWishListUseCase(context)
+    }
+
+    @ChatScope
+    @Provides
+    internal fun provideTopchatSharedPrefs(@TopchatContext context: Context): SharedPreferences {
+        return context.getSharedPreferences("topchat_prefs", Context.MODE_PRIVATE)
     }
 
     @ChatScope

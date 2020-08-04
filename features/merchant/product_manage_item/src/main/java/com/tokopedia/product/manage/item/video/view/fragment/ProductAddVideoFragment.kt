@@ -23,10 +23,10 @@ import com.tokopedia.product.manage.item.video.view.listener.VideoChosenListener
 import com.tokopedia.product.manage.item.video.domain.mapper.VideoMapper
 import com.tokopedia.product.manage.item.video.domain.mapper.VideoRecommendationMapper
 import com.tokopedia.product.manage.item.utils.YoutubeUtil
-import com.tokopedia.product.manage.item.video.domain.model.youtube.YoutubeVideoModel
 import com.tokopedia.product.manage.item.video.view.activity.ProductAddVideoRecommendationActivity
 import com.tokopedia.product.manage.item.video.view.model.*
 import com.tokopedia.product.manage.item.video.view.presenter.ProductAddVideoPresenter
+import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
 import kotlinx.android.synthetic.main.fragment_product_add_video.*
 
 class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, ProductAddVideoAdapterTypeFactory>(), ProductAddVideoView, VideoChosenListener, SectionVideoRecommendationListener {
@@ -52,13 +52,13 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
         productAddVideoPresenter.attachView(this)
 
         if(activity!!.intent != null){
-            videoIDs = activity!!.intent.getStringArrayListExtra(EXTRA_VIDEOS_LINKS)
-            productName = activity!!.intent.getStringExtra(EXTRA_KEYWORD)
+            videoIDs = activity!!.intent.getStringArrayListExtra(EXTRA_VIDEOS_LINKS) ?: arrayListOf()
+            productName = activity!!.intent.getStringExtra(EXTRA_KEYWORD) ?: ""
         }
         if (savedInstanceState != null) {
-            videoIDs = savedInstanceState.getStringArrayList(EXTRA_VIDEOS_LINKS)
-            videoViewModelList = savedInstanceState.getParcelableArrayList<VideoViewModel>(EXTRA_VIDEO_CHOSEN)
-            videoRecommendationViewModelList = savedInstanceState.getParcelableArrayList<VideoRecommendationViewModel>(EXTRA_VIDEO_RECOMMENDATION)
+            videoIDs = savedInstanceState.getStringArrayList(EXTRA_VIDEOS_LINKS) ?: arrayListOf()
+            videoViewModelList = savedInstanceState.getParcelableArrayList(EXTRA_VIDEO_CHOSEN) ?: arrayListOf()
+            videoRecommendationViewModelList = savedInstanceState.getParcelableArrayList(EXTRA_VIDEO_RECOMMENDATION) ?: arrayListOf()
         }
 
         (activity as AppCompatActivity).supportActionBar?.subtitle = getString(R.string.product_from_to_video, videoIDs.size, MAX_VIDEO)
@@ -68,7 +68,7 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
                 REQUEST_CODE_GET_VIDEO_RECOMMENDATION -> {
-                    videoRecommendationViewModelList = data!!.getParcelableArrayListExtra<VideoRecommendationViewModel>(EXTRA_VIDEO_RECOMMENDATION)
+                    videoRecommendationViewModelList = data!!.getParcelableArrayListExtra(EXTRA_VIDEO_RECOMMENDATION) ?: arrayListOf()
                     adapter.data.filter { it is VideoViewModel && it.recommendation == true }.map {
                         deleteVideoChosenFromList(it as VideoViewModel)
                     }
@@ -185,7 +185,7 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
         productAddVideoPresenter.getYoutubaDataVideoUrl(videoID)
     }
 
-    override fun onSuccessGetYoutubeDataVideoRecommendation(youtubeVideoModelArrayList: ArrayList<YoutubeVideoModel>) {
+    override fun onSuccessGetYoutubeDataVideoRecommendation(youtubeVideoModelArrayList: ArrayList<YoutubeVideoDetailModel>) {
         val mapper = VideoRecommendationMapper()
         videoRecommendationViewModelList = mapper.transformDataToVideoViewModel(youtubeVideoModelArrayList) as ArrayList<VideoRecommendationViewModel>
         adapter.data.filter { it is VideoViewModel }.map {
@@ -201,7 +201,7 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
         listener?.onSuccessGetYoutubeDataVideoRecommendation(videoRecommendationViewModelList)
     }
 
-    override fun onSuccessGetYoutubeDataVideoChosen(youtubeVideoModelArrayList: ArrayList<YoutubeVideoModel>) {
+    override fun onSuccessGetYoutubeDataVideoChosen(youtubeVideoModelArrayList: ArrayList<YoutubeVideoDetailModel>) {
         videoViewModelList.clear()
         videoViewModelList = mapper.transformDataToVideoViewModel(youtubeVideoModelArrayList) as ArrayList<VideoViewModel>
         renderListData(videoViewModelList)
@@ -210,7 +210,7 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
             productAddVideoPresenter.getVideoRecommendation(productName, MAX_VIDEO_RECOMMENDATION)
     }
 
-    override fun onSuccessGetYoutubeDataVideoUrl(youtubeVideoModel: YoutubeVideoModel) {
+    override fun onSuccessGetYoutubeDataVideoUrl(youtubeVideoModel: YoutubeVideoDetailModel) {
         addVideoChosenToList(mapper.transformDataToVideoViewModel(youtubeVideoModel))
         showSnackbarGreen(getString(R.string.product_add_message_success_add_video_chosen))
     }

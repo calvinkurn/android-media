@@ -12,7 +12,8 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.design.button.BottomActionView
+import com.tokopedia.atc_common.domain.model.response.DataModel
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.analytics.NotificationTracker
 import com.tokopedia.notifcenter.analytics.NotificationUpdateAnalytics
@@ -24,24 +25,26 @@ import com.tokopedia.notifcenter.listener.NotificationFilterListener
 import com.tokopedia.notifcenter.listener.NotificationItemListener
 import com.tokopedia.notifcenter.presentation.activity.NotificationActivity
 import com.tokopedia.notifcenter.presentation.fragment.NotificationLongerTextDialog
-import com.tokopedia.notifcenter.presentation.fragment.NotificationProductCardDialog
-import com.tokopedia.notifcenter.presentation.fragment.ProductStockReminderDialog
+import com.tokopedia.notifcenter.presentation.fragment.ProductCardListDialog
+import com.tokopedia.notifcenter.presentation.fragment.ProductStockHandlerDialog
 import com.tokopedia.notifcenter.util.endLess
 import com.tokopedia.purchase_platform.common.constant.ATC_AND_BUY
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-abstract class BaseNotificationFragment: BaseListFragment<Visitable<*>,
+abstract class BaseNotificationFragment : BaseListFragment<Visitable<*>,
         BaseAdapterTypeFactory>(),
         NotificationItemListener,
         NotificationFilterListener {
 
     private lateinit var longerTextDialog: BottomSheetDialogFragment
 
-    @Inject lateinit var userSession: UserSessionInterface
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
-    abstract fun bottomFilterView(): BottomActionView?
+    abstract fun bottomFilterView(): FloatingButtonUnify?
     abstract fun analytics(): NotificationTracker
 
     //last notification id
@@ -97,11 +100,8 @@ abstract class BaseNotificationFragment: BaseListFragment<Visitable<*>,
 
     protected fun notifyBottomActionView() {
         bottomFilterView().let {
-            if (markAllReadCounter == 0L) {
-                it?.hide()
-            } else {
-                it?.show()
-            }
+            if (markAllReadCounter == 0L) it?.hide()
+            else it?.show()
         }
     }
 
@@ -129,7 +129,8 @@ abstract class BaseNotificationFragment: BaseListFragment<Visitable<*>,
                 putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_LABEL, element.getAtcEventLabel())
                 putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_ACTION, element.getBuyEventAction())
             })
-        } catch (e: Exception) {}
+        } catch (e: Exception) {
+        }
     }
 
     override fun showNotificationDetail(bottomSheet: BottomSheetType, element: NotificationItemViewBean) {
@@ -143,25 +144,20 @@ abstract class BaseNotificationFragment: BaseListFragment<Visitable<*>,
     private fun showStockHandlerDialog(element: NotificationItemViewBean) {
         element.getAtcProduct()?.let {
             if (it.stock < 1) {
-                context?.let { context ->
-                    ProductStockReminderDialog(
-                            context = context,
-                            fragmentManager = childFragmentManager,
-                            userSession = userSession,
-                            listener = this
-                    ).show(element)
-                }
+                ProductStockHandlerDialog(
+                        element = element,
+                        listener = this
+                ).show(childFragmentManager, TAG_PRODUCT_STOCK)
             }
         }
     }
 
     private fun showProductCheckout(element: NotificationItemViewBean) {
         context?.let {
-            NotificationProductCardDialog(
-                    context = it,
-                    fragmentManager = childFragmentManager,
+            ProductCardListDialog(
+                    element = element,
                     listener = this
-            ).show(element)
+            ).show(childFragmentManager, TAG_PRODUCT_LIST)
         }
     }
 
@@ -175,6 +171,7 @@ abstract class BaseNotificationFragment: BaseListFragment<Visitable<*>,
         bundle.putString(PARAM_CONTENT_TITLE, element.title)
         bundle.putString(PARAM_BUTTON_TEXT, element.btnText)
         bundle.putString(PARAM_TEMPLATE_KEY, element.templateKey)
+        bundle.putString(PARAM_NOTIF_ID, element.notificationId)
 
         if (!::longerTextDialog.isInitialized) {
             longerTextDialog = NotificationLongerTextDialog.createInstance(bundle)
@@ -183,27 +180,38 @@ abstract class BaseNotificationFragment: BaseListFragment<Visitable<*>,
         }
 
         if (!longerTextDialog.isAdded) {
-            longerTextDialog.show(childFragmentManager, "Longer Text Bottom Sheet")
+            longerTextDialog.show(childFragmentManager, TAG_LONGER_TEXT)
+        }
+    }
+
+    override fun onSuccessAddToCart(message: String) {
+        val onActionClick = View.OnClickListener {
+            RouteManager.route(context, ApplinkConstInternalMarketplace.CART)
+        }
+
+        view?.let {
+            val toasterPosition = resources.getInteger(R.integer.toaster_y_position)
+            Toaster.toasterCustomBottomHeight = toasterPosition
+            Toaster.make(
+                    it,
+                    message,
+                    Snackbar.LENGTH_LONG,
+                    Toaster.TYPE_NORMAL,
+                    getString(R.string.notifcenter_title_view),
+                    onActionClick
+            )
+        }
+    }
+
+    override fun showMessageError(e: Throwable?) {
+        view?.let {
+            val errorMessage = ErrorHandler.getErrorMessage(it.context, e)
+            showToastMessageError(errorMessage)
         }
     }
 
     protected fun showToastMessageError(message: String) {
         view?.let { Toaster.showError(it, message, Snackbar.LENGTH_LONG) }
-    }
-
-    override fun onSuccessReminderStock() {
-        view?.let { view ->
-            context?.let {
-                Toaster.make(
-                        view,
-                        it.getString(R.string.product_reminder_success),
-                        Snackbar.LENGTH_LONG,
-                        Toaster.TYPE_NORMAL,
-                        it.getString(R.string.notifcenter_btn_title_ok),
-                        View.OnClickListener {  }
-                )
-            }
-        }
     }
 
     override fun onPause() {
@@ -234,8 +242,9 @@ abstract class BaseNotificationFragment: BaseListFragment<Visitable<*>,
 
     //unused method
     override fun onItemClicked(t: Visitable<*>?) = Unit
+
     override fun getScreenName(): String = ""
-    override fun addProductToCart(product: ProductData, onSuccessAddToCart: () -> Unit) {}
+    override fun addProductToCart(product: ProductData, onSuccessAddToCart: (DataModel) -> Unit) {}
 
     override fun initInjector() {
         (activity as NotificationActivity)
@@ -244,6 +253,10 @@ abstract class BaseNotificationFragment: BaseListFragment<Visitable<*>,
     }
 
     companion object {
+        private const val TAG_PRODUCT_STOCK = "Product Stock Handler"
+        private const val TAG_PRODUCT_LIST = "Product List Card"
+        private const val TAG_LONGER_TEXT = "Longer Text Bottom Sheet"
+
         const val PARAM_CONTENT_TITLE = "content title"
         const val PARAM_CONTENT_TEXT = "content text"
         const val PARAM_CONTENT_IMAGE = "content image"
@@ -251,5 +264,6 @@ abstract class BaseNotificationFragment: BaseListFragment<Visitable<*>,
         const val PARAM_CTA_APPLINK = "cta applink"
         const val PARAM_BUTTON_TEXT = "button text"
         const val PARAM_TEMPLATE_KEY = "template key"
+        const val PARAM_NOTIF_ID = "notification id"
     }
 }

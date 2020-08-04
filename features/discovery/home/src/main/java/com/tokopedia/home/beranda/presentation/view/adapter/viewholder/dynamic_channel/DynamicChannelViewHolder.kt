@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewStub
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import com.crashlytics.android.Crashlytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.design.countdown.CountDownView
 import com.tokopedia.home.R
@@ -23,9 +23,11 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.UnifyButton
 import androidx.constraintlayout.widget.ConstraintSet
+import com.tokopedia.home.beranda.helper.benchmark.BenchmarkHelper
+import com.tokopedia.home.beranda.helper.benchmark.TRACE_ON_BIND_DYNAMIC_CHANNEL
 
 abstract class DynamicChannelViewHolder(itemView: View,
-                                        private val listener: HomeCategoryListener) : AbstractViewHolder<DynamicChannelDataModel>(itemView) {
+                                        private val listener: HomeCategoryListener?) : AbstractViewHolder<DynamicChannelDataModel>(itemView) {
     private val context: Context = itemView.context
 
     var countDownView: CountDownView? = null
@@ -52,6 +54,7 @@ abstract class DynamicChannelViewHolder(itemView: View,
         const val TYPE_MIX_LEFT = 20
         const val TYPE_RECOMMENDATION_LIST = 14
         const val TYPE_PRODUCT_HIGHLIGHT = 11
+        const val TYPE_CATEGORY_WIDGET = 15
 
         fun getLayoutType(channels: DynamicHomeChannel.Channels): Int {
             when(channels.layout) {
@@ -68,12 +71,14 @@ abstract class DynamicChannelViewHolder(itemView: View,
                 DynamicHomeChannel.Channels.LAYOUT_PRODUCT_HIGHLIGHT -> return TYPE_PRODUCT_HIGHLIGHT
                 DynamicHomeChannel.Channels.LAYOUT_MIX_LEFT -> return TYPE_MIX_LEFT
                 DynamicHomeChannel.Channels.LAYOUT_LIST_CAROUSEL -> return TYPE_RECOMMENDATION_LIST
+                DynamicHomeChannel.Channels.LAYOUT_CATEGORY_WIDGET -> return TYPE_CATEGORY_WIDGET
             }
             return TYPE_CURATED
         }
     }
 
     override fun bind(element: DynamicChannelDataModel, payloads: MutableList<Any>) {
+        BenchmarkHelper.beginSystraceSection(TRACE_ON_BIND_DYNAMIC_CHANNEL+element.channel?.layout)
         super.bind(element, payloads)
         try {
             val channel = element.channel
@@ -88,11 +93,13 @@ abstract class DynamicChannelViewHolder(itemView: View,
                 setupContent(channel, payloads)
             }
         } catch (e: Exception) {
-            Crashlytics.log(0, getViewHolderClassName(), e.localizedMessage)
+            FirebaseCrashlytics.getInstance().log("E/${getViewHolderClassName()}:${e.localizedMessage}")
         }
+        BenchmarkHelper.endSystraceSection()
     }
 
     override fun bind(element: DynamicChannelDataModel) {
+        BenchmarkHelper.beginSystraceSection(TRACE_ON_BIND_DYNAMIC_CHANNEL+element.channel?.layout)
         try {
             val channel = element.channel
             val channelHeaderName = element.channel?.header?.name
@@ -106,8 +113,9 @@ abstract class DynamicChannelViewHolder(itemView: View,
                 setupContent(channel)
             }
         } catch (e: Exception) {
-            Crashlytics.log(0, getViewHolderClassName(), e.localizedMessage)
+            FirebaseCrashlytics.getInstance().log("E/${getViewHolderClassName()}:${e.localizedMessage}")
         }
+        BenchmarkHelper.endSystraceSection()
     }
 
     private fun handleHeaderComponent(channelHeaderName: String?, channel: DynamicHomeChannel.Channels, channelSubtitleName: String?, element: DynamicChannelDataModel) {
@@ -195,7 +203,7 @@ abstract class DynamicChannelViewHolder(itemView: View,
 
             seeAllButton?.show()
             seeAllButton?.setOnClickListener {
-                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.header))
+                listener?.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.header))
                 HomeTrackingUtils.homeDiscoveryWidgetViewAll(context,
                         DynamicLinkHelper.getActionLink(channel.header))
                 onSeeAllClickTracker(channel, DynamicLinkHelper.getActionLink(channel.header))
@@ -283,7 +291,7 @@ abstract class DynamicChannelViewHolder(itemView: View,
             val expiredTime = DateHelper.getExpiredTime(channel.header.expiredTime)
             if (!DateHelper.isExpired(element.serverTimeOffset, expiredTime)) {
                 countDownView?.setup(element.serverTimeOffset, expiredTime) {
-                    listener.updateExpiredChannel(element, adapterPosition)
+                    listener?.updateExpiredChannel(element, adapterPosition)
                 }
                 countDownView?.visibility = View.VISIBLE
             }

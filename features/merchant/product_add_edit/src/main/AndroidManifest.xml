@@ -96,6 +96,5 @@
             android:name="com.tokopedia.product.addedit.preview.presentation.service.AddEditProductEditService"
             android:enabled="true"
             android:permission="android.permission.BIND_JOB_SERVICE" />
-
     </application>
 </manifest>

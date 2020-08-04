@@ -3,14 +3,20 @@ package com.tokopedia.topchat.chatroom.view.listener
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import androidx.collection.ArrayMap
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.attachproduct.resultmodel.ResultProduct
 import com.tokopedia.chat_common.data.BlockedStatus
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.data.ProductAttachmentViewModel
+import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.view.listener.BaseChatContract
+import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
+import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.ChatOrderProgress
+import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
+import com.tokopedia.topchat.chatroom.view.custom.ChatMenuView
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 
@@ -54,9 +60,15 @@ interface TopChatContract {
 
         fun redirectToBrowser(url: String)
 
-        fun isUseNewCard(): Boolean
+        fun renderOrderProgress(chatOrder: ChatOrderProgress)
 
-        fun isUseCarousel(): Boolean?
+        fun getChatMenuView(): ChatMenuView?
+
+        fun updateAttachmentsView(attachments: ArrayMap<String, Attachment>)
+
+        fun showUnreadMessage(newUnreadMessage: Int)
+
+        fun hideUnreadMessage()
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {
@@ -69,7 +81,7 @@ interface TopChatContract {
         fun getExistingChat(
                 messageId: String,
                 onError: (Throwable) -> Unit,
-                onSuccessGetExistingMessage: (ChatroomViewModel) -> Unit)
+                onSuccessGetExistingMessage: (ChatroomViewModel, ChatReplies) -> Unit)
 
         fun getMessageId(
                 toUserId: String,
@@ -79,14 +91,22 @@ interface TopChatContract {
                 onSuccessGetMessageId: (String) -> Unit
         )
 
+        fun readMessage()
+
         fun startCompressImages(it: ImageUploadViewModel)
 
         fun startUploadImages(it: ImageUploadViewModel)
 
-        fun loadPreviousChat(
+        fun loadTopChat(
                 messageId: String,
                 onError: (Throwable) -> Unit,
-                onSuccessGetPreviousChat: (ChatroomViewModel) -> Unit
+                onSuccessGetPreviousChat: (ChatroomViewModel, ChatReplies) -> Unit
+        )
+
+        fun loadBottomChat(
+                messageId: String,
+                onError: (Throwable) -> Unit,
+                onsuccess: (ChatroomViewModel, ChatReplies) -> Unit
         )
 
         fun isUploading(): Boolean
@@ -114,6 +134,10 @@ interface TopChatContract {
                                       startTime: String, opponentId: String,
                                       onSendingMessage: () -> Unit)
 
+        fun sendAttachmentsAndSticker(messageId: String, sticker: Sticker,
+                                      startTime: String, opponentId: String,
+                                      onSendingMessage: () -> Unit)
+
         fun initProductPreview(savedInstanceState: Bundle?)
 
         fun initAttachmentPreview()
@@ -122,13 +146,21 @@ interface TopChatContract {
 
         fun initInvoicePreview(savedInstanceState: Bundle?)
 
-        fun getAtcPageIntent(context: Context?, element: ProductAttachmentViewModel): Intent
+        fun getAtcPageIntent(
+                context: Context?,
+                element: ProductAttachmentViewModel,
+                sourcePage: String
+        ): Intent
 
         fun initProductPreviewFromAttachProduct(resultProducts: ArrayList<ResultProduct>)
 
         fun onClickBannedProduct(liteUrl: String)
 
-        fun getBuyPageIntent(context: Context?, element: ProductAttachmentViewModel): Intent
+        fun getBuyPageIntent(
+                context: Context?,
+                element: ProductAttachmentViewModel,
+                sourcePage: String
+        ): Intent
 
         fun initVoucherPreview(extras: Bundle?)
 
@@ -146,6 +178,22 @@ interface TopChatContract {
                 wishListActionListener: WishListActionListener
         )
 
-        fun updateMinReplyTime(chatRoom: ChatroomViewModel)
+        fun getOrderProgress(messageId: String)
+
+        fun getStickerGroupList(chatRoom: ChatroomViewModel)
+
+        fun loadAttachmentData(msgId: Int, chatRoom: ChatroomViewModel)
+
+        fun isStickerTooltipAlreadyShow(): Boolean
+
+        fun toolTipOnBoardingShown()
+
+        fun setBeforeReplyTime(createTime: String)
+
+        fun isInTheMiddleOfThePage(): Boolean
+
+        fun resetChatUseCase()
+
+        fun resetUnreadMessage()
     }
 }

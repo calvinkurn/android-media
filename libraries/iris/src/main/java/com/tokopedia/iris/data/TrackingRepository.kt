@@ -3,7 +3,9 @@ package com.tokopedia.iris.data
 import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
+import android.util.Log
 import com.tokopedia.analyticsdebugger.debugger.IrisLogger
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.iris.IrisAnalytics
 import com.tokopedia.iris.data.db.IrisDb
 import com.tokopedia.iris.data.db.dao.TrackingDao
@@ -14,9 +16,13 @@ import com.tokopedia.iris.util.*
 import com.tokopedia.iris.worker.IrisService
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 /**
@@ -27,6 +33,7 @@ class TrackingRepository(
 ) {
 
     private val cache: Cache = Cache(context)
+    private val userSession: UserSessionInterface = UserSession(context)
     private val trackingDao: TrackingDao = IrisDb.getInstance(context).trackingDao()
     private var firebaseRemoteConfig: RemoteConfig? = null
 
@@ -49,7 +56,8 @@ class TrackingRepository(
                           eventName: String?, eventCategory: String?, eventAction: String?) =
         withContext(Dispatchers.IO) {
             try {
-                val tracking = Tracking(data, session.getUserId(), session.getDeviceId())
+                val tracking = Tracking(data, userSession.userId, userSession.deviceId,
+                    Calendar.getInstance().timeInMillis, GlobalConfig.VERSION_NAME)
                 trackingDao.insert(tracking)
                 IrisLogger.getInstance(context).putSaveIrisEvent(tracking.toString())
 
@@ -91,14 +99,20 @@ class TrackingRepository(
     }
 
     suspend fun sendSingleEvent(data: String, session: Session): Boolean {
-        val dataRequest = TrackingMapper().transformSingleEvent(data, session.getSessionId(), session.getUserId(), session.getDeviceId())
-        val requestBody = ApiService.parse(dataRequest)
-        val response = apiService.sendSingleEventAsync(requestBody)
-        val isSuccessFul = response.isSuccessful
-        if (!isSuccessFul) {
-            Timber.e("P1#IRIS#sendSingleEventNotSuccess %s", data)
+        try {
+            val dataRequest = TrackingMapper().transformSingleEvent(data, session.getSessionId(),
+                    userSession.userId, userSession.deviceId)
+            val requestBody = ApiService.parse(dataRequest)
+            val response = apiService.sendSingleEventAsync(requestBody)
+            val isSuccessFul = response.isSuccessful
+            if (!isSuccessFul) {
+                Timber.e("P1#IRIS_REALTIME_ERROR#not_success;data='${data.take(ERROR_MAX_LENGTH).trim()}'")
+            }
+            return isSuccessFul
+        } catch (e: Exception) {
+            Timber.e("P1#IRIS_REALTIME_ERROR#exception;data='${data.take(ERROR_MAX_LENGTH).trim()}';err='${Log.getStackTraceString(e).take(ERROR_MAX_LENGTH).trim()}'")
+            return false
         }
-        return isSuccessFul
     }
 
     /**
@@ -128,16 +142,16 @@ class TrackingRepository(
                 break
             }
             // transform and send the data to server
-            val request: String = TrackingMapper().transformListEvent(data)
+            val (request, output) = TrackingMapper().transformListEvent(data)
             val requestBody = ApiService.parse(request)
             val response = apiService.sendMultiEventAsync(requestBody)
             if (response.isSuccessful && response.code() == 200) {
-                IrisLogger.getInstance(context).putSendIrisEvent(request, data.size)
-                delete(data)
-                totalSentData += data.size
+                IrisLogger.getInstance(context).putSendIrisEvent(request, output.size)
+                delete(output)
+                totalSentData += output.size
 
                 // no need to loop, because it is already less than max row
-                if (data.size < maxRow) {
+                if (output.size < maxRow) {
                     break
                 }
             } else {
@@ -157,5 +171,9 @@ class TrackingRepository(
         val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val activeNetworkInfo = connectivityManager.activeNetworkInfo
         return activeNetworkInfo != null && activeNetworkInfo.isConnected
+    }
+
+    companion object {
+        const val ERROR_MAX_LENGTH = 1000
     }
 }

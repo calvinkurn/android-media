@@ -3,6 +3,7 @@ package com.tokopedia.shop.analytic
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.*
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
+import com.tokopedia.shop.analytic.model.CustomDimensionShopPageAttribution
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
@@ -177,7 +178,7 @@ class ShopPageHomeTracking(
             widgetId: String,
             widgetName: String,
             widgetOption: Int,
-            customDimensionShopPage: CustomDimensionShopPage
+            customDimensionShopPage: CustomDimensionShopPageAttribution
     ) {
         val widgetNameEventValue = widgetName.takeIf { it.isNotEmpty() } ?: ALL_PRODUCT
         val eventAction = joinDash(PRODUCT_LIST_IMPRESSION, HOME_TAB, layoutId, widgetNameEventValue)
@@ -219,7 +220,7 @@ class ShopPageHomeTracking(
             widgetId: String,
             widgetName: String,
             widgetOption: Int,
-            customDimensionShopPage: CustomDimensionShopPage
+            customDimensionShopPage: CustomDimensionShopPageAttribution
     ) {
         val widgetNameEventValue = widgetName.takeIf { it.isNotEmpty() } ?: ALL_PRODUCT
         val eventAction = joinDash(CLICK_PRODUCT, HOME_TAB, layoutId, widgetNameEventValue)
@@ -351,6 +352,140 @@ class ShopPageHomeTracking(
         sendDataLayerEvent(eventMap)
     }
 
+    fun impressionLeftPlayBanner(
+            shopId: String,
+            positionChannel: String,
+            userId: String,
+            bannerId: String,
+            creativeName: String
+
+    ){
+        val eventMap = mapOf(
+                EVENT to VIEW_SHOP_PAGE,
+                EVENT_CATEGORY to SHOP_PAGE_BUYER,
+                EVENT_ACTION to IMPRESSION_SGC_BANNER,
+                EVENT_LABEL to "view on banner play - $shopId",
+                USER_ID to userId,
+                ECOMMERCE to mapOf(
+                        PROMO_VIEW to mapOf(
+                                PROMOTIONS to listOf(
+                                        mapOf(
+                                                ID to bannerId,
+                                                NAME to PLAY_LEFT_BANNER_NAME.format(positionChannel),
+                                                CREATIVE to creativeName,
+                                                POSITION to positionChannel
+                                        )
+                                )
+                        )
+                )
+        ) as HashMap<String, Any>
+        trackingQueue.putEETracking(eventMap)
+    }
+
+    fun clickLeftPlayBanner(
+            shopId: String,
+            positionChannel: String,
+            userId: String,
+            bannerId: String,
+            creativeName: String
+
+    ){
+        val eventMap = mapOf(
+                EVENT to CLICK_SHOP_PAGE,
+                EVENT_CATEGORY to SHOP_PAGE_BUYER,
+                EVENT_ACTION to CLICK,
+                EVENT_LABEL to "click on banner play - $shopId",
+                USER_ID to userId,
+                ECOMMERCE to mapOf(
+                        PROMO_CLICK to mapOf(
+                                PROMOTIONS to listOf(
+                                        mapOf(
+                                                ID to bannerId,
+                                                NAME to PLAY_LEFT_BANNER_NAME.format(positionChannel),
+                                                CREATIVE to creativeName,
+                                                POSITION to positionChannel
+                                        )
+                                )
+                        )
+                )
+        ) as HashMap<String, Any>
+        trackingQueue.putEETracking(eventMap)
+    }
+
+    fun impressionPlayBanner(
+        shopId: String,
+        channelId: String,
+        positionChannel: String,
+        autoPlay: String,
+        userId: String,
+        bannerId: String,
+        creativeName: String
+
+    ){
+        val eventMap = mapOf(
+                EVENT to VIEW_SHOP_PAGE,
+                EVENT_CATEGORY to SHOP_PAGE_BUYER,
+                EVENT_ACTION to IMPRESSION_SGC_CHANNEL,
+                EVENT_LABEL to "view channel - $shopId - $channelId - $positionChannel - $autoPlay",
+                USER_ID to userId,
+                ECOMMERCE to mapOf(
+                        PROMO_VIEW to mapOf(
+                                PROMOTIONS to listOf(
+                                        mapOf(
+                                                ID to bannerId,
+                                                NAME to PLAY_SGC_NAME.format(positionChannel),
+                                                CREATIVE to creativeName,
+                                                POSITION to positionChannel
+                                        )
+                                )
+                        )
+                )
+        ) as HashMap<String, Any>
+        trackingQueue.putEETracking(eventMap)
+    }
+
+    fun clickPlayBanner(
+            shopId: String,
+            channelId: String,
+            positionChannel: String,
+            autoPlay: String,
+            userId: String,
+            bannerId: String,
+            creativeName: String
+
+    ){
+        val eventMap = mapOf(
+                EVENT to CLICK_SHOP_PAGE,
+                EVENT_CATEGORY to SHOP_PAGE_BUYER,
+                EVENT_ACTION to CLICK,
+                EVENT_LABEL to "click channel - $shopId - $channelId - $positionChannel - $autoPlay",
+                USER_ID to userId,
+                ECOMMERCE to mapOf(
+                        PROMO_CLICK to mapOf(
+                                PROMOTIONS to listOf(
+                                        mapOf(
+                                                ID to bannerId,
+                                                NAME to PLAY_SGC_NAME.format(positionChannel),
+                                                CREATIVE to creativeName,
+                                                POSITION to positionChannel
+                                        )
+                                )
+                        )
+                )
+        ) as HashMap<String, Any>
+        trackingQueue.putEETracking(eventMap)
+    }
+
+    fun clickSeeMorePlayCarouselBanner(shopId: String, userId: String) {
+        val eventMap = mapOf(
+                EVENT to CLICK_SHOP_PAGE,
+                EVENT_CATEGORY to SHOP_PAGE_BUYER,
+                EVENT_ACTION to CLICK_OTHER_CONTENT,
+                EVENT_LABEL to shopId,
+                USER_ID to userId
+        )
+        sendDataLayerEvent(eventMap)
+    }
 
     private fun createDisplayWidgetPromotionsItemMap(
             widgetId: String,
@@ -424,7 +559,7 @@ class ShopPageHomeTracking(
             widgetNameEventValue: String,
             widgetOption: Int,
             isLogin: Boolean,
-            customDimensionShopPage: CustomDimensionShopPage
+            customDimensionShopPage: CustomDimensionShopPageAttribution
     ): Map<String, Any> {
         val listEventValue = createProductListValue(
                 isLogin,
@@ -444,7 +579,8 @@ class ShopPageHomeTracking(
                 LIST to listEventValue,
                 POSITION to horizontalPosition,
                 DIMENSION_81 to customDimensionShopPage.shopType,
-                DIMENSION_79 to customDimensionShopPage.shopId
+                DIMENSION_79 to customDimensionShopPage.shopId,
+                SHOP_REF to customDimensionShopPage.shopRef
         )
     }
 
@@ -516,4 +652,22 @@ class ShopPageHomeTracking(
         )
     }
 
+    fun clickMoreMenuChip(isOwner: Boolean,
+                          selectedEtalaseName: String,
+                          customDimensionShopPage: CustomDimensionShopPage
+    ) {
+        sendGeneralEvent(CLICK_SHOP_PAGE,
+                getShopPageCategory(isOwner),
+                CLICK_SHOWCASE_LIST, String.format(ETALASE_X, selectedEtalaseName),
+                customDimensionShopPage)
+    }
+
+    fun clickClearFilter(isOwner: Boolean, customDimensionShopPage: CustomDimensionShopPage) {
+        sendGeneralEvent(CLICK_SHOP_PAGE,
+                getShopPageCategory(isOwner),
+                CLICK_CLOSE_FILTER,
+                "",
+                customDimensionShopPage
+        )
+    }
 }

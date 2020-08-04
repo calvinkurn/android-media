@@ -23,13 +23,17 @@ open class SendableViewModel
  * sending messages
  * @see AttachmentType for attachment types.
  */
-(messageId: String, fromUid: String, from: String, fromRole: String, attachmentId: String,
- attachmentType: String, replyTime: String,
- startTime: String, var isRead: Boolean, var isDummy: Boolean, val isSender: Boolean,
- message: String) : BaseChatViewModel(messageId, fromUid, from, fromRole, attachmentId,
-        attachmentType, replyTime, message) {
-
-
+constructor(
+        messageId: String, fromUid: String, from: String, fromRole: String, attachmentId: String,
+        attachmentType: String, replyTime: String, startTime: String, var isRead: Boolean,
+        var isDummy: Boolean, val isSender: Boolean, message: String, source: String,
+        replyId: String = ""
+) : BaseChatViewModel(
+        messageId, fromUid, from, fromRole,
+        attachmentId, attachmentType, replyTime, message,
+        source,
+        replyId = replyId
+) {
 
     var startTime: String protected set
     var isShowRole = true
@@ -41,19 +45,20 @@ open class SendableViewModel
 
     private fun checkRole(fromRole: String): String {
         val v = fromRole.toIntOrNull()
-        return when(v) {
+        return when (v) {
             null -> fromRole
-            else ->{
-               return when (v > listRole.size){
-                   true -> fromRole
-                   else -> listRole[v-1]
-               }
+            else -> {
+                return when (v > listRole.size) {
+                    true -> fromRole
+                    else -> listRole[v - 1]
+                }
             }
         }
     }
 
     companion object {
-
+        @JvmStatic
+        val PAYLOAD_EVENT_READ = "event_read"
         val START_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
 
         const val SENDING_TEXT = "Sedang mengirim ..."

@@ -22,27 +22,27 @@ public class GeneralErrorCrackResult extends CrackResultEntity {
 
     public GeneralErrorCrackResult(Context context) {
 
-        setBenefitLabel(context.getString(R.string.error_reward_title));
+        setBenefitLabel(context.getString(com.tokopedia.gamification.R.string.error_reward_title));
 
         List<CrackBenefitEntity> crackBenefits = new ArrayList<>();
         CrackBenefitEntity crackBenefit = new CrackBenefitEntity();
-        crackBenefit.setText(context.getString(R.string.error_reward_message));
-        crackBenefit.setColor(context.getString(R.string.expired_reward_color));
-        crackBenefit.setSize(context.getString(R.string.expired_reward_size));
+        crackBenefit.setText(context.getString(com.tokopedia.gamification.R.string.error_reward_message));
+        crackBenefit.setColor(context.getString(com.tokopedia.gamification.R.string.expired_reward_color));
+        crackBenefit.setSize(context.getString(com.tokopedia.gamification.R.string.expired_reward_size));
         crackBenefits.add(crackBenefit);
 
         Bitmap errorBitmap = BitmapFactory.decodeResource(context.getResources(),
-                R.drawable.gf_ic_toped_sorry);
+                com.tokopedia.gamification.R.drawable.gf_ic_toped_sorry);
         setBenefits(crackBenefits);
         setImageBitmap(errorBitmap);
 
         CrackButtonEntity returnButton = new CrackButtonEntity();
-        returnButton.setTitle(context.getString(R.string.try_again_btn));
+        returnButton.setTitle(context.getString(com.tokopedia.gamification.R.string.try_again_btn));
         returnButton.setType(CrackResultEntity.TYPE_BTN_DISMISS);
         setReturnButton(returnButton);
 
         CrackButtonEntity ctaButton = new CrackButtonEntity();
-        ctaButton.setTitle(context.getString(R.string.return_to_home));
+        ctaButton.setTitle(context.getString(com.tokopedia.gamification.R.string.return_to_home));
         ctaButton.setApplink(ApplinkConst.HOME);
         ctaButton.setType(CrackResultEntity.TYPE_BTN_REDIRECT);
         setCtaButton(ctaButton);

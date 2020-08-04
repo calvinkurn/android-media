@@ -1,23 +1,24 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder;
 
 import android.content.Context;
-import androidx.annotation.LayoutRes;
-import androidx.appcompat.widget.AppCompatImageView;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.LayoutRes;
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.home.R;
+import com.tokopedia.home.analytics.HomePageTracking;
+import com.tokopedia.home.beranda.domain.model.DynamicHomeIcon;
 import com.tokopedia.home.beranda.helper.DynamicLinkHelper;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.HomeIconItem;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.UseCaseIconSectionDataModel;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
 
@@ -76,8 +77,8 @@ public class UseCaseIconSectionViewHolder extends AbstractViewHolder<UseCaseIcon
 
         @Override
         public void onBindViewHolder(UseCaseIconViewHolder holder, final int position) {
-            holder.title.setText(sectionViewModel.getItemList().get(position).getTitle());
-            ImageHandler.loadImageThumbs(holder.getContext(), holder.icon, sectionViewModel.getItemList().get(position).getIcon());
+            holder.title.setText(sectionViewModel.getItemList().get(position).getName());
+            ImageHandler.loadImageThumbs(holder.getContext(), holder.icon, sectionViewModel.getItemList().get(position).getImageUrl());
             holder.container.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -88,11 +89,11 @@ public class UseCaseIconSectionViewHolder extends AbstractViewHolder<UseCaseIcon
             });
         }
 
-        private void eventClickUseCase(Context context, HomeIconItem homeIconItem, int position) {
-            HomePageTracking.eventClickHomeUseCase(context, homeIconItem.getTitle());
+        private void eventClickUseCase(Context context, DynamicHomeIcon.DynamicIcon homeIconItem, int position) {
+            HomePageTracking.eventClickHomeUseCase(context, homeIconItem.getName());
 
             HomeTrackingUtils.homeUsedCaseClick(context,
-                    homeIconItem.getTitle(), position + 1, homeIconItem.getApplink());
+                    homeIconItem.getName(), position + 1, homeIconItem.getApplinks());
         }
 
         @Override

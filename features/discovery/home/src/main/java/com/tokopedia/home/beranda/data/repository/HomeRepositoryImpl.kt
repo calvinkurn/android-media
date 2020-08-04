@@ -12,6 +12,7 @@ import com.tokopedia.home.beranda.domain.gql.ProductrevDismissSuggestion
 import com.tokopedia.home.beranda.domain.model.HomeData
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
 import com.tokopedia.home.beranda.helper.Result
+import dagger.Lazy
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
@@ -23,7 +24,7 @@ class HomeRepositoryImpl @Inject constructor(
         private val homeCachedDataSource: HomeCachedDataSource,
         private val homeRemoteDataSource: HomeRemoteDataSource,
         private val homeDefaultDataSource: HomeDefaultDataSource,
-        private val geolocationRemoteDataSource: GeolocationRemoteDataSource
+        private val geolocationRemoteDataSource: Lazy<GeolocationRemoteDataSource>
 ): HomeRepository {
 
     override fun getHomeData() = homeCachedDataSource.getCachedHomeData()
@@ -46,6 +47,6 @@ class HomeRepositoryImpl @Inject constructor(
         emit(Result.success(null))
     }
 
-    override fun sendGeolocationInfo(): Observable<Response<String>> = geolocationRemoteDataSource.sendGeolocationInfo()
+    override fun sendGeolocationInfo(): Observable<Response<String>> = geolocationRemoteDataSource.get().sendGeolocationInfo()
 
 }

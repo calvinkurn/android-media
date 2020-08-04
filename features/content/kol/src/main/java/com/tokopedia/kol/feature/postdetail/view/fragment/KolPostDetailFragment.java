@@ -4,15 +4,17 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
+import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
@@ -21,12 +23,10 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalContent;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
-import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.component.Menus;
-import com.tokopedia.design.component.ToasterError;
-import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics;
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker;
 import com.tokopedia.feedcomponent.data.pojo.FeedPostRelated;
@@ -34,6 +34,7 @@ import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Like;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItemShop;
+import com.tokopedia.feedcomponent.data.pojo.whitelist.Whitelist;
 import com.tokopedia.feedcomponent.util.FeedScrollListener;
 import com.tokopedia.feedcomponent.util.util.ShareBottomSheets;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightAdapter;
@@ -62,14 +63,10 @@ import com.tokopedia.feedcomponent.view.widget.PostStatisticBottomSheet;
 import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.R;
 import com.tokopedia.kol.analytics.KolEventTracking;
-import com.tokopedia.kolcommon.util.PostMenuListener;
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
 import com.tokopedia.kol.feature.comment.view.listener.KolComment;
 import com.tokopedia.kol.feature.post.di.DaggerKolProfileComponent;
 import com.tokopedia.kol.feature.post.di.KolProfileModule;
-import com.tokopedia.kolcommon.view.listener.KolPostLikeListener;
-import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase;
-import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase;
 import com.tokopedia.kol.feature.postdetail.view.activity.KolPostDetailActivity;
 import com.tokopedia.kol.feature.postdetail.view.adapter.KolPostDetailAdapter;
 import com.tokopedia.kol.feature.postdetail.view.adapter.typefactory.KolPostDetailTypeFactory;
@@ -78,10 +75,12 @@ import com.tokopedia.kol.feature.postdetail.view.analytics.KolPostDetailAnalytic
 import com.tokopedia.kol.feature.postdetail.view.listener.KolPostDetailContract;
 import com.tokopedia.kol.feature.postdetail.view.viewmodel.PostDetailViewModel;
 import com.tokopedia.kol.feature.report.view.activity.ContentReportActivity;
-import com.tokopedia.kol.feature.video.view.activity.MediaPreviewActivity;
-import com.tokopedia.kol.feature.video.view.activity.VideoDetailActivity;
-import com.tokopedia.feedcomponent.data.pojo.whitelist.Whitelist;
+import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase;
+import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase;
+import com.tokopedia.kolcommon.util.PostMenuListener;
+import com.tokopedia.kolcommon.view.listener.KolPostLikeListener;
 import com.tokopedia.track.TrackApp;
+import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.vote.domain.model.VoteStatisticDomainModel;
 
@@ -91,8 +90,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import kotlin.NotImplementedError;
-import kotlin.StandardKt;
 import kotlin.Unit;
 
 import static com.tokopedia.kolcommon.util.PostMenuUtilKt.createBottomMenu;
@@ -467,13 +464,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
             adapter.notifyItemChanged(rowNumber, DynamicPostViewHolder.PAYLOAD_FOLLOW);
 
             if (dynamicPostViewModel.getHeader().getFollowCta().isFollow()) {
-                ToasterNormal
-                        .make(swipeToRefresh,
-                                getString(R.string.post_detail_follow_success_toast),
-                                BaseToaster.LENGTH_LONG)
-                        .setAction(getString(R.string.post_detail_follow_success_check_now),
-                                followSuccessOnClickListener())
-                        .show();
+                Toaster.INSTANCE.make(getView(), getString(R.string.post_detail_follow_success_toast), Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, "", v->{});
             }
         }
     }
@@ -488,11 +479,8 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onErrorToggleFavoriteShop(String errorMessage, String shopId) {
-        ToasterError.make(getView(), errorMessage, BaseToaster.LENGTH_LONG)
-                .setAction(com.tokopedia.abstraction.R.string.title_try_again,
-                        v -> presenter.toggleFavoriteShop(shopId)
-                )
-                .show();
+        Toaster.INSTANCE.make(getView(), errorMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
+                getString(com.tokopedia.abstraction.R.string.title_try_again), v -> presenter.toggleFavoriteShop(shopId));
     }
 
     @Override
@@ -611,21 +599,13 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
 
     private void onSuccessReportContent() {
-        ToasterNormal
-                .make(getView(),
-                        getString(com.tokopedia.feedcomponent.R.string.feed_content_reported),
-                        BaseToaster.LENGTH_LONG)
-                .setAction(com.tokopedia.design.R.string.label_close, v -> {
-                })
-                .show();
+        Toaster.INSTANCE.make(getView(), getString(com.tokopedia.feedcomponent.R.string.feed_content_reported),
+                Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(com.tokopedia.design.R.string.label_close), v -> {});
     }
 
     private void onErrorReportContent(String errorMsg) {
-        ToasterError
-                .make(getView(), errorMsg, BaseToaster.LENGTH_LONG)
-                .setAction(com.tokopedia.design.R.string.label_close, v -> {
-                })
-                .show();
+        Toaster.INSTANCE.make(getView(), errorMsg, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
+                getString(com.tokopedia.design.R.string.label_close), v->{});
     }
 
     @Override
@@ -733,10 +713,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
     private void goToContentReport(int contentId) {
         if (getContext() != null) {
-            Intent intent = ContentReportActivity.Companion.createIntent(
-                    getContext(),
-                    contentId
-            );
+            Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalContent.CONTENT_REPORT, String.valueOf(contentId));
             startActivityForResult(intent, OPEN_CONTENT_REPORT);
         }
     }
@@ -857,7 +834,9 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     public void onMediaGridClick(int positionInFeed, int contentPosition,
                                  @NotNull String redirectLink, boolean isSingleItem) {
         if (!isSingleItem && getActivity() != null){
-            startActivity(MediaPreviewActivity.createIntent(getActivity(), postId.toString(), contentPosition));
+            String appLinkPatternWithQueryParams = ApplinkConstInternalContent.INTERNAL_MEDIA_PREVIEW.replace(ApplinkConstInternalContent.DUMMY_MEDIA_INDEX,
+                    String.valueOf(contentPosition));
+            RouteManager.route(getContext(), appLinkPatternWithQueryParams, postId.toString());
         }
     }
 
@@ -931,8 +910,9 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onVideoPlayerClicked(int positionInFeed, int contentPosition, @NotNull String postId) {
-        startActivityForResult(VideoDetailActivity.getInstance(requireContext(), postId), OPEN_VIDEO_DETAIL);
+    public void onVideoPlayerClicked(int positionInFeed, int contentPosition, @NotNull String postId, String redirectUrl) {
+        Intent videoDetailIntent = RouteManager.getIntent(getContext(), ApplinkConstInternalContent.VIDEO_DETAIL, postId);
+        startActivityForResult(videoDetailIntent, OPEN_VIDEO_DETAIL);
     }
 
     @Override

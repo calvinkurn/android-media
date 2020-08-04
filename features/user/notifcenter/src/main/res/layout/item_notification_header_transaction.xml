@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/notif_dp_16"
+    android:paddingEnd="@dimen/notif_dp_16"
+    android:paddingStart="@dimen/notif_dp_16"
+    android:paddingBottom="@dimen/notif_dp_16">
+
+    <TextView
+        android:id="@+id/txtHeaderTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        tools:text="Pembayaran"
+        android:textColor="@color/chorcoal_black"
+        android:textSize="@dimen/notif_sp_16"/>
+
+    <TextView
+        android:id="@+id/btnLoadMore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/title_read_more"
+        android:layout_centerVertical="true"
+        android:textColor="@color/green_500"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"/>
+
+</RelativeLayout>

@@ -11,7 +11,7 @@ import com.tokopedia.home_recom.model.datamodel.RecommendationCarouselDataModel
 import com.tokopedia.home_recom.model.datamodel.RecommendationCarouselItemDataModel
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.topads.sdk.utils.ImpresionTask
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 
 /**
  * Created by lukas on 21/05/2019
@@ -24,6 +24,11 @@ class RecommendationCarouselViewHolder(val view: View) : AbstractViewHolder<Reco
     private val seeMore: TextView by lazy { view.findViewById<TextView>(R.id.see_more) }
     private val recyclerView: CarouselProductCardView by lazy { view.findViewById<CarouselProductCardView>(R.id.list) }
     private val list = mutableListOf<RecommendationCarouselItemDataModel>()
+
+    companion object {
+        private const val className = "com.tokopedia.home_recom.view.viewholder.RecommendationCarouselViewHolder"
+    }
+
     override fun bind(element: RecommendationCarouselDataModel) {
         title.text = element.title
         seeMore.visibility = if(element.appLinkSeeMore.isEmpty()) View.GONE else View.VISIBLE
@@ -45,7 +50,13 @@ class RecommendationCarouselViewHolder(val view: View) : AbstractViewHolder<Reco
                                 productRecommendation.parentPosition,
                                 carouselProductCardPosition)
                         if (productRecommendation.productItem.isTopAds) {
-                            ImpresionTask().execute(productRecommendation.productItem.clickUrl)
+                            TopAdsUrlHitter(itemView.context).hitClickUrl(
+                                    this.javaClass.simpleName,
+                                    productRecommendation.productItem.clickUrl,
+                                    productRecommendation.productItem.productId.toString(),
+                                    productRecommendation.productItem.name,
+                                    productRecommendation.productItem.imageUrl
+                            )
                         }
                     }
                 },
@@ -57,7 +68,13 @@ class RecommendationCarouselViewHolder(val view: View) : AbstractViewHolder<Reco
                     override fun onItemImpressed(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
                         val productRecommendation = products.getOrNull(carouselProductCardPosition) ?: return
                         if(productRecommendation.productItem.isTopAds){
-                            ImpresionTask().execute(productRecommendation.productItem.trackerImageUrl)
+                            TopAdsUrlHitter(itemView.context).hitImpressionUrl(
+                                    this.javaClass.simpleName,
+                                    productRecommendation.productItem.trackerImageUrl,
+                                    productRecommendation.productItem.productId.toString(),
+                                    productRecommendation.productItem.name,
+                                    productRecommendation.productItem.imageUrl
+                            )
                         }
                         productRecommendation.listener.onProductImpression(productRecommendation.productItem)
                     }

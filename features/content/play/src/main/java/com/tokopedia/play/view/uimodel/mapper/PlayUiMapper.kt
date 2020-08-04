@@ -1,32 +1,38 @@
 package com.tokopedia.play.view.uimodel.mapper
 
+import com.google.android.exoplayer2.ExoPlayer
 import com.tokopedia.play.data.*
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.*
-
+import com.tokopedia.play_common.model.ui.PlayChatUiModel
 
 /**
  * Created by mzennis on 2020-03-06.
  */
 object PlayUiMapper {
 
-    private const val MAX_PRODUCTS = 5
-    private const val MAX_VOUCHERS = 5
-
     fun createCompleteInfoModel(
             channel: Channel,
             partnerName: String,
-            isBanned: Boolean
+            isBanned: Boolean,
+            exoPlayer: ExoPlayer
     ) = PlayCompleteInfoUiModel(
             channelInfo = mapChannelInfo(channel),
-            videoStream = mapVideoStream(channel.videoStream, channel.isActive),
+            videoStream = mapVideoStream(
+                    channel.videoStream,
+                    channel.isActive,
+                    channel.backgroundUrl),
+            videoPlayer = mapVideoPlayer(
+                    channel.videoStream,
+                    exoPlayer
+            ),
             pinnedMessage = mapPinnedMessage(
                     partnerName,
                     channel.pinnedMessage
             ),
-            pinnedProduct = PlayUiMapper.mapPinnedProduct(
+            pinnedProduct = mapPinnedProduct(
                     partnerName,
                     channel.isShowProductTagging,
                     channel.pinnedProduct),
@@ -51,7 +57,6 @@ object PlayUiMapper {
             id = channel.channelId,
             title = channel.title,
             description = channel.description,
-            channelType = if (channel.videoStream.isLive) PlayChannelType.Live else PlayChannelType.VOD,
             moderatorName = channel.moderatorName,
             partnerId = channel.partnerId,
             partnerType = PartnerType.getTypeByValue(channel.partnerType),
@@ -76,13 +81,24 @@ object PlayUiMapper {
             isPromo = pinnedProduct.isShowDiscount
     ) else null
 
-    fun mapVideoStream(videoStream: VideoStream, isActive: Boolean) = VideoStreamUiModel(
+    // TODO("testing")
+    fun mapVideoStream(videoStream: VideoStream, isActive: Boolean, backgroundUrl: String) = VideoStreamUiModel(
             uriString = videoStream.config.streamUrl,
-            channelType = if (videoStream.isLive
-                    && videoStream.type.equals(PlayChannelType.Live.value, true))
-                PlayChannelType.Live else PlayChannelType.VOD,
+            channelType = if (videoStream.isLive) PlayChannelType.Live else PlayChannelType.VOD,
+            orientation = VideoOrientation.getByValue(videoStream.orientation),
+            backgroundUrl = backgroundUrl,
+//            channelType = PlayChannelType.Live,
+//            orientation = VideoOrientation.Vertical,
+//            backgroundUrl = "https://i.pinimg.com/736x/d3/bb/7b/d3bb7b85f4e160d013f68fcde8d19844.jpg",
             isActive = isActive
     )
+
+    private fun mapVideoPlayer(videoStream: VideoStream, exoPlayer: ExoPlayer) = when (videoStream.type) {
+        "live", "vod" -> General(exoPlayer)
+//        "live", "vod" -> YouTube("HrjRj4uQQ1o")
+        "youtube" -> YouTube(videoStream.config.youtubeId)
+        else -> Unknown
+    }
 
     fun mapQuickReply(quickReplyList: List<String>) = QuickReplyUiModel(quickReplyList.filterNot { quickReply -> quickReply.isEmpty() || quickReply.isBlank() } )
     fun mapQuickReply(quickReply: QuickReply) = mapQuickReply(quickReply.data)
@@ -104,21 +120,22 @@ object PlayUiMapper {
     fun mapPartnerInfoFromShop(shopId: String, shopInfo: ShopInfo) = PartnerInfoUiModel(
             id = shopInfo.shopCore.shopId.toLong(),
             name = shopInfo.shopCore.name,
-            type = PartnerType.SHOP,
+            type = PartnerType.Shop,
             isFollowed = shopInfo.favoriteData.alreadyFavorited == 1,
             isFollowable = shopId != shopInfo.shopCore.shopId
     )
 
-    fun mapProductSheet(title: String, productTagging: ProductTagging): ProductSheetUiModel {
+    fun mapProductSheet(title: String, partnerId: Long, productTagging: ProductTagging): ProductSheetUiModel {
         return ProductSheetUiModel(
                 title = title,
+                partnerId = partnerId,
                 productList = mapItemProducts(productTagging.listOfProducts),
                 voucherList = mapItemVouchers(productTagging.listOfVouchers)
         )
     }
 
     fun mapItemProducts(products: List<Product>): List<ProductLineUiModel> {
-        return products.take(MAX_PRODUCTS).map { product ->
+        return products.map { product ->
             mapItemProduct(product)
         }
     }
@@ -147,7 +164,7 @@ object PlayUiMapper {
     )
 
     fun mapItemVouchers(vouchers: List<Voucher>): List<MerchantVoucherUiModel> {
-        return vouchers.take(MAX_VOUCHERS).map {
+        return vouchers.map {
             MerchantVoucherUiModel(
                     title = it.title,
                     description = it.subtitle,

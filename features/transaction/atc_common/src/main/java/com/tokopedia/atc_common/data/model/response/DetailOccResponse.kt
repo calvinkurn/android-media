@@ -10,11 +10,27 @@ data class DetailOccResponse(
 
         @SerializedName("product_id")
         @Expose
-        val productId: Int = 0,
+        val productId: Long = 0,
+
+        @SerializedName("product_name")
+        @Expose
+        val productName: String = "",
 
         @SerializedName("quantity")
         @Expose
         val quantity: Int = 0,
+
+        @SerializedName("price")
+        @Expose
+        val price: Long = 0,
+
+        @SerializedName("category")
+        @Expose
+        val category: String = "",
+
+        @SerializedName("category_id")
+        @Expose
+        val categoryId: String = "",
 
         @SerializedName("notes")
         @Expose
@@ -23,6 +39,30 @@ data class DetailOccResponse(
         @SerializedName("shop_id")
         @Expose
         val shopId: Int = 0,
+
+        @SerializedName("shop_type")
+        @Expose
+        val shopType: String = "",
+
+        @SerializedName("shop_name")
+        @Expose
+        val shopName: String = "",
+
+        @SerializedName("picture")
+        @Expose
+        val picture: String = "",
+
+        @SerializedName("url")
+        @Expose
+        val url: String = "",
+
+        @SerializedName("brand")
+        @Expose
+        val brand: String = "",
+
+        @SerializedName("variant")
+        @Expose
+        val variant: String = "",
 
         @SerializedName("customer_id")
         @Expose
@@ -38,5 +78,17 @@ data class DetailOccResponse(
 
         @SerializedName("is_scp")
         @Expose
-        val isScp: Boolean = false
+        val isScp: Boolean = false,
+
+        @SerializedName("is_multi_origin")
+        @Expose
+        val isMultiOrigin: Boolean = false,
+
+        @SerializedName("is_free_ongkir")
+        @Expose
+        val isFreeOngkir: Boolean = false,
+
+        @SerializedName("tracker_attribution")
+        @Expose
+        val trackerAttribution: String = ""
 )

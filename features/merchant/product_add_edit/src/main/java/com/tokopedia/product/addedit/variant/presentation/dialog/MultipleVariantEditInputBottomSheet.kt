@@ -10,7 +10,6 @@ import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.util.getText
 import com.tokopedia.product.addedit.common.util.getTextBigIntegerOrZero
-import com.tokopedia.product.addedit.common.util.getTextIntOrZero
 import com.tokopedia.product.addedit.common.util.setModeToNumberInput
 import com.tokopedia.product.addedit.tracking.ProductAddVariantDetailTracking
 import com.tokopedia.product.addedit.tracking.ProductEditVariantDetailTracking
@@ -72,7 +71,7 @@ class MultipleVariantEditInputBottomSheet(
     }
 
     private fun addMarginCloseButton() {
-        val topMargin = resources.getDimensionPixelSize(R.dimen.spacing_lvl3)
+        val topMargin = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
         val horizontalMargin = resources.getDimensionPixelSize(R.dimen.tooltip_close_margin)
         (bottomSheetClose.layoutParams as RelativeLayout.LayoutParams).apply {
             setMargins(0, topMargin, horizontalMargin, 0)
@@ -81,7 +80,7 @@ class MultipleVariantEditInputBottomSheet(
     }
 
     private fun initChildLayout() {
-        setTitle(getString(R.string.label_variant_multiple_input_bottom_sheet_title))
+        setTitle(getString(com.tokopedia.product.addedit.R.string.label_variant_multiple_input_bottom_sheet_title))
         overlayClickDismiss = false
         contentView = View.inflate(context,
                 R.layout.add_edit_product_multiple_variant_edit_input_bottom_sheet_content, null)
@@ -176,7 +175,7 @@ class MultipleVariantEditInputBottomSheet(
         if (!isPriceError && !isStockError) {
             contentView?.apply {
                 val price = tfuPrice.getText().replace(".", "")
-                val stock = tfuStock.getText()
+                val stock = tfuStock.getText().replace(".", "")
                 val sku = tfuSku.getText()
                 val inputData = MultipleVariantEditInputModel(
                         price = price,

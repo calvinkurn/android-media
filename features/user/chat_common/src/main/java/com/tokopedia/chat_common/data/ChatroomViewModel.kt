@@ -8,14 +8,14 @@ import kotlin.collections.ArrayList
 /**
  * @author by nisie on 14/12/18.
  */
-class ChatroomViewModel(
+class ChatroomViewModel constructor(
         val listChat: ArrayList<Visitable<*>> = ArrayList(),
         val headerModel: ChatRoomHeaderViewModel = ChatRoomHeaderViewModel(),
         val canLoadMore: Boolean = false,
         val replyable: Boolean = false,
         var blockedStatus: BlockedStatus = BlockedStatus(),
-        val minReplyTime: String = "0",
-        val latestHeaderDate: String = ""
+        val latestHeaderDate: String = "",
+        val attachmentIds: String = ""
 ) {
 
     val badgeUrl get() = headerModel.badge
@@ -34,8 +34,12 @@ class ChatroomViewModel(
         return (headerModel.isGold || headerModel.isOfficial) && headerModel.badge.isNotEmpty()
     }
 
-    fun getHeaderName(): CharSequence {
+    fun getHeaderName(): String {
         return headerModel.name
+    }
+
+    fun hasAttachment(): Boolean {
+        return attachmentIds.isNotEmpty()
     }
 
 }
