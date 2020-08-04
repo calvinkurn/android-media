@@ -1,5 +1,6 @@
 package com.tokopedia.oneclickcheckout.order.view
 
+import android.util.Log
 import com.google.gson.JsonParser
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
@@ -899,10 +900,13 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                         } else {
                             globalEvent.value = OccGlobalEvent.TriggerRefresh(throwable = throwable)
                         }
+                        Log.i("QWERTYUIOP", "UPDATE FAIL")
+                        throwable.printStackTrace()
                     })
                     return
                 }
             }
+            Log.i("QWERTYUIOP", "UPDATE ERROR")
             globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE)
         }
     }
@@ -917,6 +921,8 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                             .observeOn(executorSchedulers.main)
                             .subscribe(object : Observer<ValidateUsePromoRevampUiModel> {
                                 override fun onError(e: Throwable) {
+                                    Log.i("QWERTYUIOP", "VALIDATE ERROR")
+                                    e.printStackTrace()
                                     globalEvent.value = OccGlobalEvent.TriggerRefresh(throwable = e)
                                 }
 
@@ -992,6 +998,8 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                         ?: DEFAULT_ERROR_MESSAGE)
             }
         }, { throwable: Throwable ->
+            throwable.printStackTrace()
+            Log.i("QWERTYUIOP", "CHECKOUT ERROR")
             globalEvent.value = OccGlobalEvent.Error(throwable)
         })
     }
