@@ -8,10 +8,10 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_selected_images"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_10"
-        android:background="@color/white_bg"
+        android:paddingTop="@dimen/dp_10"
+        android:background="@color/contact_us_input_field_bg_color"
         android:orientation="horizontal"
         android:scrollbars="horizontal"
         android:visibility="gone"
@@ -24,7 +24,6 @@
         android:id="@+id/divider_rv"
         android:layout_width="@dimen/dp_0"
         android:layout_height="@dimen/dp_5"
-        android:layout_marginTop="@dimen/dp_10"
         android:background="@drawable/top_shadow_gradient"
         android:visibility="visible"
         app:layout_constraintLeft_toLeftOf="parent"
