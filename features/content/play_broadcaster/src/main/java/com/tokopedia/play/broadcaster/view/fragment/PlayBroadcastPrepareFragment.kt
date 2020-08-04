@@ -34,6 +34,7 @@ import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updatePadding
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.url.TokopediaUrl
 import javax.inject.Inject
 
 /**
@@ -158,6 +159,7 @@ class PlayBroadcastPrepareFragment @Inject constructor(
                 openTermsConditionPage()
             }
 
+            analytic.viewTnC()
             tvTermsCondition.visible()
         } else {
             tvTermsCondition.gone()
@@ -222,6 +224,6 @@ class PlayBroadcastPrepareFragment @Inject constructor(
     companion object {
 
         private const val APPLINK_WEBVIEW_FORMAT = "%s?url=%s"
-        private const val TERMS_CONDITION_URL = "https://www.tokopedia.com/help/article/syarat-dan-ketentuan-tokopedia-play"
+        private val TERMS_CONDITION_URL = "${TokopediaUrl.getInstance().WEB}help/article/tokopedia-play-live-streaming"
     }
 }
