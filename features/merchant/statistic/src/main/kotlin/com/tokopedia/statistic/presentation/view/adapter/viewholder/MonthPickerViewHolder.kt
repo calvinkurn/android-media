@@ -15,6 +15,7 @@ import com.tokopedia.statistic.R
 import com.tokopedia.statistic.presentation.model.DateFilterItem
 import kotlinx.android.synthetic.main.item_stc_month_picker.view.*
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 /**
  * Created By @ilhamsuaib on 27/07/20
@@ -76,8 +77,9 @@ class MonthPickerViewHolder(
 
     private fun showMonthPicker(element: DateFilterItem.MonthPickerItem) {
         val minDate = GregorianCalendar(LocaleUtils.getCurrentLocale(itemView.context)).apply {
-            val minMonth = get(Calendar.MONTH).minus(3)
-            set(Calendar.MONTH, minMonth)
+            val last3months = TimeUnit.DAYS.toMillis(30).times(3)
+            val minDateMillis = timeInMillis.minus(last3months)
+            timeInMillis = minDateMillis
         }
 
         var selectedMonth: Date? = element.startDate
