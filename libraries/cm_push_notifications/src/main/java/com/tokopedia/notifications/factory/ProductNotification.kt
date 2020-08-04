@@ -13,6 +13,7 @@ import com.tokopedia.notifications.R
 import com.tokopedia.notifications.analytics.ProductAnalytics
 import com.tokopedia.notifications.common.CMConstant
 import com.tokopedia.notifications.common.CMConstant.NotificationProductType
+import com.tokopedia.notifications.common.CMConstant.PreDefineActionType.ATC
 import com.tokopedia.notifications.common.CMConstant.PreDefineActionType.OCC
 import com.tokopedia.notifications.common.CarouselUtilities
 import com.tokopedia.notifications.model.ActionButton
@@ -166,6 +167,8 @@ internal class ProductNotification(
     private fun getButtonPendingIntent(product: ProductInfo, actionButton: ActionButton): PendingIntent {
         if (actionButton.type == OCC) {
             ProductAnalytics.occCLickButton(baseNotificationModel, product)
+        } else if (actionButton.type == ATC) {
+            ProductAnalytics.atcCLickButton(baseNotificationModel, product)
         }
 
         val intent = getBaseBroadcastIntent(context, baseNotificationModel)
