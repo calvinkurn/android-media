@@ -656,7 +656,8 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
     private fun showToaster() = view?.run {
         val toaster = Toast.makeText(context, context.getString(R.string.stc_you_havent_access_this_page), Toast.LENGTH_LONG)
-        val toastCountDown = object : CountDownTimer(TOAST_DURATION, 1000) {
+        val countDownInterval = 1000L
+        val toastCountDown = object : CountDownTimer(TOAST_DURATION, countDownInterval) {
             override fun onTick(p0: Long) {
                 toaster.show()
             }
