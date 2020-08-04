@@ -334,7 +334,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
         return localCacheHandler.getBoolean(SHOW_COACH_MARK_KEY, true)
     }
 
-    override fun showCoachMark(width:Int, height:Int, view: View, sizeMargin:Int) {
+    override fun showCoachMark(view: View, height:Int) {
         val coachMark = CoachMarkBuilder().build().apply {
             enableSkip = true
         }
@@ -345,8 +345,8 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
                 getCoachMarkItems(view)
         )
         localCacheHandler.apply {
-//            putBoolean(SHOW_COACH_MARK_KEY, false)
-//            applyEditor()
+            putBoolean(SHOW_COACH_MARK_KEY, false)
+            applyEditor()
         }
     }
 

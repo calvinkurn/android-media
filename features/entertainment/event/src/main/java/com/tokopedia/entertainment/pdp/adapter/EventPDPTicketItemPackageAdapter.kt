@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.entertainment.R
@@ -21,6 +22,7 @@ import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventDateMapper.checkStar
 import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventDateMapper.getDate
 import com.tokopedia.entertainment.pdp.listener.OnBindItemTicketListener
 import com.tokopedia.entertainment.pdp.listener.OnCoachmarkListener
+import com.tokopedia.unifycomponents.toDp
 import java.util.*
 
 class EventPDPTicketItemPackageAdapter(
@@ -33,15 +35,14 @@ class EventPDPTicketItemPackageAdapter(
     private var idPackage = ""
     private var packageName = ""
     private var heightItemView = 0
-    private var lowerMin = - 1
-
     lateinit var eventPDPTracking: EventPDPTracking
 
-    inner class EventPDPTicketItemPackageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
+
+    inner class EventPDPTicketItemPackageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val linear = LinearLayout(itemView.context)
         fun bind(items: PackageItem) {
             with(itemView) {
-
                 onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
                     if (!hasFocus) {
                         val imm = context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -71,14 +72,14 @@ class EventPDPTicketItemPackageAdapter(
                     txtNotStarted.visibility = View.GONE
                 }
 
-                //itemView.post {
-//                    heightItemView += itemView.height
-//                    if (onCoachmarkListener.getLocalCache() && listItemPackage.size == 1 && position == 0) {
-//                        onCoachmarkListener.showCoachMark(itemView.width, heightItemView, txtPilih_ticket, 4)
-//                    } else if (onCoachmarkListener.getLocalCache() && listItemPackage.size >= 2 && position == 1) {
-//                        onCoachmarkListener.showCoachMark(itemView.width, heightItemView, txtPilih_ticket, 2)
-//                    }
-//                }
+                itemView.post {
+                    if(position == 0) heightItemView += itemView.height.toDp()
+                    if (onCoachmarkListener.getLocalCache() && listItemPackage.size == 1 && position == 0) {
+                        onCoachmarkListener.showCoachMark(itemView, 0)
+                    } else if (onCoachmarkListener.getLocalCache() && listItemPackage.size >= 2 && position == 1) {
+                        onCoachmarkListener.showCoachMark(itemView, heightItemView)
+                    }
+                }
 
                 quantityEditor.setValue(items.minQty.toInt())
                 quantityEditor.minValue = items.minQty.toInt() - 1

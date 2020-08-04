@@ -30,7 +30,11 @@ class PackageParentViewHolder (view: View,
         with(itemView){
             idPackage = element.id
             if(!element.isChoosen){
-                expand_event_pdp_ticket.setExpand((position!=-1 && position==0))
+                if (onCoachmarkListener.getLocalCache()) {
+                    expand_event_pdp_ticket.setExpand((position != -1 && position == 0))
+                }else{
+                    expand_event_pdp_ticket.setExpand(false)
+                }
             }
 
             eventPDPTicketAdapter.setList(element.packageItems, element.id, element.name)
