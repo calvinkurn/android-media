@@ -1,4 +1,4 @@
-package com.tokopedia.oneclickcheckout.order.view
+package com.tokopedia.oneclickcheckout.common.interceptor
 
 import okhttp3.*
 import okio.Buffer
@@ -869,7 +869,7 @@ const val RATES_DEFAULT_RESPONSE = """
 ]
 """
 
-class OrderSummaryPageLogisticTestInterceptor : Interceptor {
+class LogisticTestInterceptor : Interceptor {
 
     var customRatesResponseString: String? = null
 

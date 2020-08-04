@@ -1,4 +1,4 @@
-package com.tokopedia.oneclickcheckout.order.view
+package com.tokopedia.oneclickcheckout.common.interceptor
 
 import okhttp3.*
 import okio.Buffer
@@ -84,7 +84,7 @@ const val VALIDATE_USE_PROMO_REVAMP_DEFAULT_RESPONSE = """
 ]
 """
 
-class OrderSummaryPagePromoTestInterceptor : Interceptor {
+class PromoTestInterceptor : Interceptor {
 
     var customValidateUseResponseString: String? = null
 

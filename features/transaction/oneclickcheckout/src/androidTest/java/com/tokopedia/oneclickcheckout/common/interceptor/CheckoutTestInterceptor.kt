@@ -1,4 +1,4 @@
-package com.tokopedia.oneclickcheckout.order.view
+package com.tokopedia.oneclickcheckout.common.interceptor
 
 import okhttp3.*
 import okio.Buffer
@@ -56,7 +56,7 @@ const val CHECKOUT_DEFAULT_RESPONSE = """
 ]
 """
 
-class OrderSummaryPageCheckoutTestInterceptor : Interceptor {
+class CheckoutTestInterceptor : Interceptor {
 
     var customCheckoutResponseString: String? = null
 
@@ -69,6 +69,7 @@ class OrderSummaryPageCheckoutTestInterceptor : Interceptor {
         val requestString = buffer.readUtf8()
 
         if (requestString.contains(CHECKOUT_QUERY)) {
+            Thread.sleep(2000)
             if (customCheckoutThrowable != null) {
                 throw customCheckoutThrowable!!
             } else if (customCheckoutResponseString != null) {

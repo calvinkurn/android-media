@@ -1,4 +1,4 @@
-package com.tokopedia.oneclickcheckout.order.view
+package com.tokopedia.oneclickcheckout.common.interceptor
 
 import okhttp3.*
 import okio.Buffer
@@ -609,7 +609,7 @@ const val UPDATE_CART_OCC_DEFAULT_RESPONSE = """
 ]
 """
 
-class OrderSummaryPageCartTestInterceptor : Interceptor {
+class CartTestInterceptor : Interceptor {
 
     var customGetOccCartResponseString: String? = null
     var customUpdateCartOccResponseString: String? = null
@@ -653,11 +653,4 @@ class OrderSummaryPageCartTestInterceptor : Interceptor {
                 .addHeader("content-type", "application/json")
                 .build()
     }
-}
-
-object OrderSummaryPageInterceptor {
-    val cartInterceptor = OrderSummaryPageCartTestInterceptor()
-    val logisticInterceptor = OrderSummaryPageLogisticTestInterceptor()
-    val promoInterceptor = OrderSummaryPagePromoTestInterceptor()
-    val checkoutInterceptor = OrderSummaryPageCheckoutTestInterceptor()
 }

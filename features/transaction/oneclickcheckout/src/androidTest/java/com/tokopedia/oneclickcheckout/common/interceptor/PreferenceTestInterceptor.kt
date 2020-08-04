@@ -1,4 +1,4 @@
-package com.tokopedia.oneclickcheckout.preference.list.view
+package com.tokopedia.oneclickcheckout.common.interceptor
 
 import okhttp3.*
 import okio.Buffer
@@ -199,7 +199,7 @@ val SET_DEFAULT_PROFILE_DEFAULT_RESPONSE = """
             }]
         """.trimIndent()
 
-class PreferenceListActivityTestInterceptor : Interceptor {
+class PreferenceTestInterceptor : Interceptor {
 
     var customGetPreferenceListResponseString: String? = null
     var customSetDefaultPreferenceResponseString: String? = null
@@ -242,8 +242,4 @@ class PreferenceListActivityTestInterceptor : Interceptor {
                 .addHeader("content-type", "application/json")
                 .build()
     }
-}
-
-object PreferenceListInterceptor {
-    val interceptor = PreferenceListActivityTestInterceptor()
 }

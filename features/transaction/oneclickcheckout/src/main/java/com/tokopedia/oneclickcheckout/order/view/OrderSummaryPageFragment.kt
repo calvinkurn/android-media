@@ -931,6 +931,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             activity?.let {
                 val redirectParam = checkoutData.paymentParameter.redirectParam
                 if (redirectParam.url.isNotEmpty() && redirectParam.method.isNotEmpty()) {
+//                    Log.i("QWERTYUIOP", "SUCCESS CHECKOUT START")
                     val paymentPassData = PaymentPassData()
                     paymentPassData.redirectUrl = redirectParam.url
                     paymentPassData.queryString = redirectParam.form
@@ -966,6 +967,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             viewModel.updateCart()
         }
         if (shouldDismissProgressDialog && progressDialog?.isShowing == true) {
+            progressDialog?.dismiss()
             viewModel.globalEvent.value = OccGlobalEvent.Normal
         }
     }
