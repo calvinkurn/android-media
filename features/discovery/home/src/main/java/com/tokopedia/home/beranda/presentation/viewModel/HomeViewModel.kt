@@ -988,7 +988,7 @@ open class HomeViewModel @Inject constructor(
     fun getBusinessUnitData(tabId: Int, position: Int){
         if(buWidgetJob?.isActive == true) return
         buWidgetJob = launchCatchError(coroutineContext, block = {
-            getBusinessUnitDataUseCase.get().setParams(tabId)
+            getBusinessUnitDataUseCase.get().setParams(tabId, position)
             val data = getBusinessUnitDataUseCase.get().executeOnBackground()
             _homeLiveData.value?.list?.withIndex()?.find { it.value is NewBusinessUnitWidgetDataModel }?.let { buModel ->
                 val oldBuData = buModel.value as NewBusinessUnitWidgetDataModel

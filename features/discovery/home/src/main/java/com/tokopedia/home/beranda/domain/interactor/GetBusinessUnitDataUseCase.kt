@@ -24,16 +24,18 @@ class GetBusinessUnitDataUseCase @Inject constructor(
         graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
         graphqlUseCase.setRequestParams(params.parameters)
         return graphqlUseCase.executeOnBackground().homeWidget.contentItemTabList.withIndex().map {
-            BusinessUnitItemDataModel(it.value, it.index)
+            BusinessUnitItemDataModel(it.value, it.index, params.getInt(PARAM_TAB_POSITION, 0))
         }
     }
 
-    fun setParams(id: Int){
+    fun setParams(id: Int, position: Int){
         params.parameters.clear()
         params.putInt(PARAM_ID, id)
+        params.putInt(PARAM_TAB_POSITION, id)
     }
 
     companion object{
         private const val PARAM_ID = "tabId"
+        private const val PARAM_TAB_POSITION = "tabPosition"
     }
 }
