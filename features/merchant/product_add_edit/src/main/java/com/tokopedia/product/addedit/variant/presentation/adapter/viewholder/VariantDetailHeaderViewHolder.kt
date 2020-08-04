@@ -19,8 +19,8 @@ class VariantDetailHeaderViewHolder(itemView: View?, listener: OnCollapsibleHead
 
         itemView?.setOnClickListener {
             val isCollapsed = listener.onHeaderClicked(headerPosition)
-            if (isCollapsed) accordionIndicator?.setImageResource(com.tokopedia.product.addedit.R.drawable.ic_chevron_up)
-            else accordionIndicator?.setImageResource(com.tokopedia.product.addedit.R.drawable.ic_chevron_down)
+            if (isCollapsed) accordionIndicator?.setImageResource(com.tokopedia.product.addedit.R.drawable.product_add_edit_ic_chevron_up)
+            else accordionIndicator?.setImageResource(com.tokopedia.product.addedit.R.drawable.product_add_edit_ic_chevron_down)
         }
     }
 

@@ -32,12 +32,7 @@ public class TkpdBaseURL {
     }
 
     public static class User {
-        public static final String PATH_NOTIFICATION = "v4/notification/";
-        public static final String URL_NOTIFICATION = BASE_DOMAIN + PATH_NOTIFICATION;
         public static final String URL_PEOPLE = BASE_DOMAIN + "v4/people/";
-
-        public static final String PATH_GET_NOTIFICATION = "get_notification.pl";
-
         public static final String PATH_GET_PEOPLE_INFO = "get_people_info.pl";
     }
 
@@ -46,7 +41,6 @@ public class TkpdBaseURL {
         public static final String URL_MY_SHOP = BASE_DOMAIN + PATH_MY_SHOP;
         public static final String PATH_MY_SHOP_ETALASE = "v4/myshop-etalase/";
         public static final String PATH_ACTION_MY_SHOP_ETALASE = "v4/action/myshop-etalase/";
-        public static final String URL_MY_SHOP_PAYMENT = BASE_DOMAIN + "v4/myshop-payment/";
         public static final String PATH_MY_SHOP_SHIPMENT = "v4/myshop-shipment/";
         public static final String URL_MY_SHOP_SHIPMENT = BASE_DOMAIN + PATH_MY_SHOP_SHIPMENT;
         public static final String PATH_MY_SHOP_SHIPMENT_ACTION = "v4/action/myshop-shipment/";
@@ -55,7 +49,6 @@ public class TkpdBaseURL {
         public static final String URL_SHOP = BASE_DOMAIN + PATH_SHOP;
         public static final String PATH_SHIPPING_WEBVIEW = "v4/web-view/";
         public static final String URL_SHIPPING_WEBVIEW = BASE_DOMAIN + PATH_SHIPPING_WEBVIEW;
-        public static final String URL_ACTION_SHOP_ORDER = "v4/myshop-order/";
 
         public static final String PATH_GET_OPEN_SHOP_FORM = "get_open_shop_form.pl";
 
@@ -64,9 +57,6 @@ public class TkpdBaseURL {
 
         public static final String PATH_GET_SHOP_INFO = "get_shop_info.pl";
         public static final String PATH_GET_DETAIL_INFO_DETAIL = "get_shipping_detail_info.pl";
-        public static final String PATH_GET_ORDER_NEW = "get_order_new.pl";
-
-        public static final String PATH_GET_PAYMENT_INFO = "get_payment_info.pl";
 
         public static final String PATH_UPDATE_SHIPPING_INFO = "update_shipping_info.pl";
 
@@ -90,7 +80,6 @@ public class TkpdBaseURL {
 
         public static final String PATH_UPLOAD_IMAGE_HELPER = "/web-service/v4/action/upload-image-helper/";
         public static final String PATH_ADD_PRODUCT_PICTURE = "add_product_picture.pl";
-        public static final String PATH_OPEN_SHOP_PICTURE = "open_shop_picture.pl";
     }
 
     public static class Ace {
@@ -144,8 +133,6 @@ public class TkpdBaseURL {
     }
 
     public class Purchase {
-        public static final String PATH_ORDER_DETAIL = "/v4/order/detail";
         public static final String PATH_ORDER_HISTORY = "/v4/order/history";
-        public static final String PATH_CHANGE_COURIER = "/v4/order/change_courier";
     }
 }

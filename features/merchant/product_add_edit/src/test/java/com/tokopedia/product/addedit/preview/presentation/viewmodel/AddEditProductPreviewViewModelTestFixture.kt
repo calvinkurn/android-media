@@ -3,7 +3,6 @@ package com.tokopedia.product.addedit.preview.presentation.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.coroutine.TestCoroutineDispatchers
-import com.tokopedia.product.addedit.description.domain.usecase.GetProductVariantUseCase
 import com.tokopedia.product.addedit.draft.domain.usecase.GetProductDraftUseCase
 import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCase
 import com.tokopedia.product.addedit.preview.domain.usecase.GetProductUseCase
@@ -27,9 +26,6 @@ abstract class AddEditProductPreviewViewModelTestFixture {
     lateinit var getProductUseCase: GetProductUseCase
 
     @RelaxedMockK
-    lateinit var getProductVariantUseCase: GetProductVariantUseCase
-
-    @RelaxedMockK
     lateinit var getProductDraftUseCase: GetProductDraftUseCase
 
     @RelaxedMockK
@@ -44,7 +40,6 @@ abstract class AddEditProductPreviewViewModelTestFixture {
     protected val viewModel: AddEditProductPreviewViewModel by lazy {
         spyk(AddEditProductPreviewViewModel(getProductUseCase,
                 getProductMapper,
-                getProductVariantUseCase,
                 resourceProvider,
                 getProductDraftUseCase,
                 saveProductDraftUseCase,

@@ -91,6 +91,10 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val SET_CASHBACK = "$INTERNAL_MARKETPLACE/set-cashback/{productId}/"
 
+    // CampaignStockActivity
+    @JvmField
+    val RESERVED_STOCK = "$INTERNAL_MARKETPLACE/reserved-stock/{productId}/{shopId}/"
+
     // CreateReviewActivity
     @JvmField
     val CREATE_REVIEW = "$INTERNAL_MARKETPLACE/product-review/create/{reputation_id}/{product_id}/"

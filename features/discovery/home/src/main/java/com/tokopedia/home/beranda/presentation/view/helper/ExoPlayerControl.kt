@@ -14,5 +14,5 @@ interface ExoPlayerControl {
     fun setExoPlayerEventsListener(pExoPlayerListenerListener: ExoPlayerListener?)
     fun onActivityResume()
     fun onActivityPause()
-    fun onActivityStop()
+    fun onActivityDestroy()
 }

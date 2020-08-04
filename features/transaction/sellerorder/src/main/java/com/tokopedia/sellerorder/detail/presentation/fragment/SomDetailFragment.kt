@@ -976,7 +976,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
             tv_buyer_request_cancel?.text = spanned
 
             val reasonBuyer = detailResponse.buyerRequestCancel.reason
-            buyer_request_cancel_notes?.text = reasonBuyer.replace("\\n", System.getProperty("line.separator"))
+            buyer_request_cancel_notes?.text = reasonBuyer.replace("\\n", System.getProperty("line.separator") ?: "")
 
             if (detailResponse.statusCode != 220 && detailResponse.statusCode != 400) {
                 ll_buyer_req_cancel_buttons?.visibility = View.GONE
@@ -1023,7 +1023,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
 
     override fun onTextCopied(label: String, str: String) {
         val clipboardManager = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        clipboardManager.primaryClip = ClipData.newPlainText(label, str)
+        clipboardManager.setPrimaryClip(ClipData.newPlainText(label, str))
         showCommonToaster(getString(R.string.resi_tersalin))
     }
 
@@ -1043,13 +1043,13 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
 
     override fun onCopiedInvoice(invoice: String, str: String) {
         val clipboardManager = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        clipboardManager.primaryClip = ClipData.newPlainText(invoice, str)
+        clipboardManager.setPrimaryClip(ClipData.newPlainText(invoice, str))
         showCommonToaster(getString(R.string.invoice_tersalin))
     }
 
     override fun onCopiedAddress(address: String, str: String) {
         val clipboardManager = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        clipboardManager.primaryClip = ClipData.newPlainText(address, str)
+        clipboardManager.setPrimaryClip(ClipData.newPlainText(address, str))
         showCommonToaster(getString(R.string.alamat_pengiriman_tersalin))
     }
 

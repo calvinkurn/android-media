@@ -34,6 +34,7 @@ import com.tokopedia.gamification.giftbox.Constants
 import com.tokopedia.gamification.giftbox.InactiveImageLoader
 import com.tokopedia.gamification.giftbox.analytics.GtmGiftTapTap
 import com.tokopedia.gamification.giftbox.data.di.component.DaggerGiftBoxComponent
+import com.tokopedia.gamification.giftbox.data.di.modules.AppModule
 import com.tokopedia.gamification.giftbox.data.entities.CouponTapTap
 import com.tokopedia.gamification.giftbox.presentation.entities.RewardSummaryItem
 import com.tokopedia.gamification.giftbox.presentation.fragments.BenefitType.Companion.COUPON
@@ -131,6 +132,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         context?.let {
             val component = DaggerGiftBoxComponent.builder()
                     .activityContextModule(ActivityContextModule(it))
+                    .appModule(AppModule((context as AppCompatActivity).application))
                     .build()
             component.inject(this)
 
@@ -554,6 +556,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                     imageFrontUrl,
                     bgImageUrl,
                     lidImages,
+                    viewLifecycleOwner,
                     imageCallback = { isLoaded ->
                         giftBoxDailyView.imagesLoaded.lazySet(0)
                         setPositionOfViewsAtBoxOpen()
@@ -625,6 +628,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                         imageFrontUrl,
                         bgImageUrl,
                         lidImages,
+                        viewLifecycleOwner,
                         imageCallback = { isLoaded ->
                             giftBoxDailyView.imagesLoaded.lazySet(0)
                             setPositionOfViewsAtBoxOpen()

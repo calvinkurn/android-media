@@ -79,7 +79,7 @@ class CouponCatalogDetailsActivity : BaseSimpleActivity(), HasComponent<Tokopoin
     companion object {
         fun getCallingIntent(context: Context?, extras: Bundle?): Intent? {
             val intent = Intent(context, CouponCatalogDetailsActivity::class.java)
-            intent.putExtras(extras)
+            intent.putExtras(extras ?: Bundle())
             return intent
         }
 

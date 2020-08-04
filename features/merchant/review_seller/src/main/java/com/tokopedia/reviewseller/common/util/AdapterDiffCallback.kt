@@ -1,6 +1,7 @@
 package com.tokopedia.reviewseller.common.util
 
 import androidx.recyclerview.widget.DiffUtil
+import com.tokopedia.reviewseller.feature.inboxreview.presentation.model.FeedbackInboxUiModel
 import com.tokopedia.reviewseller.feature.reviewdetail.view.model.FeedbackUiModel
 import com.tokopedia.reviewseller.feature.reviewreply.view.model.ReplyTemplateUiModel
 
@@ -12,6 +13,16 @@ object AdapterDiffCallback {
         }
 
         override fun areContentsTheSame(oldItemReviewFeedback: FeedbackUiModel.Attachment, newItemReviewFeedback: FeedbackUiModel.Attachment): Boolean {
+            return oldItemReviewFeedback == newItemReviewFeedback
+        }
+    }
+
+    val ImageInboxReviewDiffCallback = object : DiffUtil.ItemCallback<FeedbackInboxUiModel.Attachment>() {
+        override fun areItemsTheSame(oldItemReviewFeedback: FeedbackInboxUiModel.Attachment, newItemReviewFeedback: FeedbackInboxUiModel.Attachment): Boolean {
+            return oldItemReviewFeedback == newItemReviewFeedback
+        }
+
+        override fun areContentsTheSame(oldItemReviewFeedback: FeedbackInboxUiModel.Attachment, newItemReviewFeedback: FeedbackInboxUiModel.Attachment): Boolean {
             return oldItemReviewFeedback == newItemReviewFeedback
         }
     }
