@@ -1,7 +1,9 @@
 package com.tokopedia.layanan_finansial.view.adapter
 
+import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
+import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,16 +25,19 @@ import com.tokopedia.layanan_finansial.view.models.LayananListItem
 import kotlinx.android.synthetic.main.layanan_card_item.view.*
 import java.util.*
 import kotlin.collections.HashMap
+import kotlin.math.roundToInt
 
 class LayananAdapter(private val list: List<LayananListItem>, private val type: String) : RecyclerView.Adapter<LayananAdapter.LayananViewHolder>() {
 
 
    inner class LayananViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
        init {
-           if (type.equals(LayananSectionView.VERTICAL)) {
-               itemView.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
+           if (!type.equals(LayananSectionView.VERTICAL)) {
+               itemView.layoutParams.width = convertDpToPixel(168,itemView.context)
            }
        }
+
+
        fun setData(layananListItem: LayananListItem) {
            itemView.apply {
                ImageLoader.LoadImage(icon,layananListItem.iconUrl)
@@ -110,5 +115,11 @@ class LayananAdapter(private val list: List<LayananListItem>, private val type: 
         val promoView = HashMap<String, Map<String, List<Map<String, Any?>>>>()
         promoView["promoView"] = promotions
         return promoView
+    }
+
+    private fun convertDpToPixel(dp: Int, context: Context) : Int {
+        val result = dp.toFloat() * context.resources.getDisplayMetrics().densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT.toFloat()
+
+        return result.roundToInt()
     }
 }
