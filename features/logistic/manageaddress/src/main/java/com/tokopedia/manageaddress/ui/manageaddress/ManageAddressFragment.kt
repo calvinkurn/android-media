@@ -125,9 +125,9 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     }
 
     private fun initHeader() {
-       manageAddressListener?.setAddButtonOnClickListener {
-           openFormAddressView(null)
-       }
+        manageAddressListener?.setAddButtonOnClickListener {
+            openFormAddressView(null)
+        }
     }
 
     private fun initView() {
@@ -225,7 +225,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     }
 
     override fun onManageAddressEditClicked(peopleAddress: RecipientAddressModel) {
-       openFormAddressView(peopleAddress)
+        openFormAddressView(peopleAddress)
     }
 
     override fun onManageAddressLainnyaClicked(peopleAddress: RecipientAddressModel) {
@@ -234,17 +234,17 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
 
     private fun openFormAddressView(data: RecipientAddressModel?) {
         val token = viewModel.token
-            if(data == null) {
-                activity?.let { ManageAddressAnalytics.sendScreenName(it, SCREEN_NAME_USER_NEW) }
-                val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2)
-                intent.putExtra(KERO_TOKEN, token)
-                startActivityForResult(intent, REQUEST_CODE_PARAM_CREATE)
-            } else {
-                val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V1)
-                intent.putExtra(EDIT_PARAM, data)
-                intent.putExtra(KERO_TOKEN, token)
-                startActivityForResult(intent, REQUEST_CODE_PARAM_EDIT)
-            }
+        if(data == null) {
+            activity?.let { ManageAddressAnalytics.sendScreenName(it, SCREEN_NAME_USER_NEW) }
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2)
+            intent.putExtra(KERO_TOKEN, token)
+            startActivityForResult(intent, REQUEST_CODE_PARAM_CREATE)
+        } else {
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V1)
+            intent.putExtra(EDIT_PARAM, data)
+            intent.putExtra(KERO_TOKEN, token)
+            startActivityForResult(intent, REQUEST_CODE_PARAM_EDIT)
+        }
     }
 
     private fun openBottomSheetView(data: RecipientAddressModel) {
