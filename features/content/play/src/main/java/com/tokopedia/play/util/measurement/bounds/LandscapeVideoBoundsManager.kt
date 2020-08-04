@@ -11,7 +11,7 @@ class LandscapeVideoBoundsManager : VideoBoundsManager {
         return 0
     }
 
-    override fun getVideoBottomBoundsOnKeyboardShown(estimatedKeyboardHeight: Int, hasQuickReply: Boolean): Int {
+    override suspend fun getVideoBottomBoundsOnKeyboardShown(estimatedKeyboardHeight: Int, hasQuickReply: Boolean): Int {
         return 0
     }
 }

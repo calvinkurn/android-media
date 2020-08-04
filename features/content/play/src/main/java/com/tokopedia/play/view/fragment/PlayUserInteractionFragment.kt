@@ -26,6 +26,7 @@ import com.tokopedia.play.animation.PlayFadeInAnimation
 import com.tokopedia.play.animation.PlayFadeInFadeOutAnimation
 import com.tokopedia.play.animation.PlayFadeOutAnimation
 import com.tokopedia.play.extensions.*
+import com.tokopedia.play.gesture.PlayClickTouchListener
 import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.PlayFullScreenHelper
@@ -196,7 +197,12 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     override fun onInterceptSystemUiVisibilityChanged(): Boolean {
-        return if (!orientation.isLandscape) {
+        return if (orientation.isLandscape) {
+            if (playViewModel.isFreezeOrBanned && orientation.isLandscape) {
+                systemUiVisibility = PlayFullScreenHelper.getHideNavigationBarVisibility()
+                true
+            } else false
+        } else if (!orientation.isLandscape) {
             systemUiVisibility = if (!playViewModel.videoOrientation.isHorizontal && container.isFullAlpha)
                 PlayFullScreenHelper.getHideSystemUiVisibility()
             else
@@ -351,12 +357,27 @@ class PlayUserInteractionFragment @Inject constructor(
     //endregion
 
     private fun setupView(view: View) {
-        likeView.setEnabled(false)
-        videoSettingsView.setFullscreen(false)
 
-        container.setOnClickListener {
-            if (!playViewModel.videoOrientation.isHorizontal && container.hasAlpha) triggerImmersive(it.isFullSolid)
+        fun setupLandscapeView() {
+            container.setOnTouchListener(PlayClickTouchListener(INTERACTION_TOUCH_CLICK_TOLERANCE))
+            container.setOnClickListener {
+                if (playViewModel.isFreezeOrBanned) return@setOnClickListener
+                if (container.hasAlpha) triggerImmersive(it.isFullSolid)
+            }
         }
+
+        fun setupPortraitView() {
+            container.setOnClickListener {
+                if (playViewModel.isFreezeOrBanned) return@setOnClickListener
+                if (!playViewModel.videoOrientation.isHorizontal && container.hasAlpha) triggerImmersive(it.isFullSolid)
+            }
+        }
+
+        likeView.setEnabled(false)
+        videoSettingsView.setFullscreen(orientation.isLandscape)
+
+        if (orientation.isLandscape) setupLandscapeView()
+        else setupPortraitView()
     }
 
     private fun setupInsets(view: View) {
@@ -564,16 +585,21 @@ class PlayUserInteractionFragment @Inject constructor(
                 immersiveBoxView.hide()
                 playButtonView.hide()
 
-                videoControlView.setPlayer(null)
-                videoControlView.hide()
+                videoControlViewOnStateChanged(isFreezeOrBanned = true)
 
                 sendChatView?.focusChatForm(false)
                 sendChatView?.hide()
 
-                toolbarView.show()
-                statsInfoView.show()
+                toolbarViewOnStateChanged(isFreezeOrBanned = true)
+                statsInfoViewOnStateChanged(isFreezeOrBanned = true)
 
+                /**
+                 * Non view component
+                 */
                 hideBottomSheet()
+                cancelAllAnimations()
+
+                container.alpha = VISIBLE_ALPHA
             }
 
             endLiveInfoViewOnStateChanged(event = it)
@@ -785,7 +811,10 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun pushParentPlayByKeyboardHeight(estimatedKeyboardHeight: Int) {
         val hasQuickReply = !playViewModel.observableQuickReply.value?.quickReplyList.isNullOrEmpty()
-        playFragment.onBottomInsetsViewShown(getVideoBottomBoundsOnKeyboardShown(estimatedKeyboardHeight, hasQuickReply))
+
+        scope.launch(dispatchers.immediate) {
+            playFragment.onBottomInsetsViewShown(getVideoBottomBoundsOnKeyboardShown(estimatedKeyboardHeight, hasQuickReply))
+        }
     }
 
     private fun cancelAllAnimations() {
@@ -796,7 +825,7 @@ class PlayUserInteractionFragment @Inject constructor(
         return getVideoBoundsManager().getVideoTopBounds(videoOrientation)
     }
 
-    private fun getVideoBottomBoundsOnKeyboardShown(estimatedKeyboardHeight: Int, hasQuickReply: Boolean): Int {
+    private suspend fun getVideoBottomBoundsOnKeyboardShown(estimatedKeyboardHeight: Int, hasQuickReply: Boolean): Int {
         return getVideoBoundsManager().getVideoBottomBoundsOnKeyboardShown(estimatedKeyboardHeight, hasQuickReply)
     }
 
@@ -849,9 +878,14 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun videoControlViewOnStateChanged(
             channelType: PlayChannelType = playViewModel.channelType,
             videoPlayer: VideoPlayerUiModel = playViewModel.videoPlayer,
-            bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets
+            bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets,
+            isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned
     ) {
-        if (channelType.isVod && videoPlayer.isGeneral && !bottomInsets.isAnyShown) videoControlView.show()
+        if (isFreezeOrBanned) {
+            videoControlView.setPlayer(null)
+            videoControlView.hide()
+        }
+        else if (channelType.isVod && videoPlayer.isGeneral && !bottomInsets.isAnyShown) videoControlView.show()
         else videoControlView.hide()
     }
 
@@ -865,9 +899,11 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun videoSettingsViewOnStateChanged(
             videoOrientation: VideoOrientation = playViewModel.videoOrientation,
             videoPlayer: VideoPlayerUiModel = playViewModel.videoPlayer,
-            bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets
+            bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets,
+            isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned
     ) {
-        if (videoOrientation.isHorizontal && videoPlayer.isGeneral && !bottomInsets.isAnyShown) videoSettingsView.show()
+        if (isFreezeOrBanned) videoSettingsView.hide()
+        else if (videoOrientation.isHorizontal && videoPlayer.isGeneral && !bottomInsets.isAnyShown) videoSettingsView.show()
         else videoSettingsView.hide()
     }
 
@@ -901,18 +937,24 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun toolbarViewOnStateChanged(
-            bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets
+            bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets,
+            isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned
     ) {
-        if (!bottomInsets.isAnyShown) toolbarView.show() else toolbarView.hide()
+        if (isFreezeOrBanned) toolbarView.show()
+        else if (!bottomInsets.isAnyShown && orientation.isPortrait) toolbarView.show()
+        else toolbarView.hide()
     }
 
     private fun statsInfoViewOnStateChanged(
             channelType: PlayChannelType = playViewModel.channelType,
-            bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets
+            bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets,
+            isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned
     ) {
         statsInfoView.setLiveBadgeVisibility(channelType.isLive)
 
-        if (!bottomInsets.isAnyShown) statsInfoView.show() else statsInfoView.hide()
+        if (isFreezeOrBanned) statsInfoView.show()
+        else if (!bottomInsets.isAnyShown && orientation.isPortrait) statsInfoView.show()
+        else statsInfoView.hide()
     }
 
     private fun likeViewOnStateChanged(
@@ -968,6 +1010,8 @@ class PlayUserInteractionFragment @Inject constructor(
     //endregion
 
     companion object {
+        private const val INTERACTION_TOUCH_CLICK_TOLERANCE = 25
+
         private const val REQUEST_CODE_LOGIN = 192
 
         private const val PERCENT_PRODUCT_SHEET_HEIGHT = 0.6

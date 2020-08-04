@@ -9,5 +9,5 @@ interface VideoBoundsManager {
 
     suspend fun getVideoTopBounds(videoOrientation: VideoOrientation): Int
 
-    fun getVideoBottomBoundsOnKeyboardShown(estimatedKeyboardHeight: Int, hasQuickReply: Boolean): Int
+    suspend fun getVideoBottomBoundsOnKeyboardShown(estimatedKeyboardHeight: Int, hasQuickReply: Boolean): Int
 }

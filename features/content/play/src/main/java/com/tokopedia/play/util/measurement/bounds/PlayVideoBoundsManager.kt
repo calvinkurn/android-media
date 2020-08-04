@@ -20,7 +20,7 @@ class PlayVideoBoundsManager(
         else getPortraitManager().getVideoTopBounds(videoOrientation)
     }
 
-    override fun getVideoBottomBoundsOnKeyboardShown(estimatedKeyboardHeight: Int, hasQuickReply: Boolean): Int {
+    override suspend fun getVideoBottomBoundsOnKeyboardShown(estimatedKeyboardHeight: Int, hasQuickReply: Boolean): Int {
         return if (dataSource.getScreenOrientation().isLandscape) getLandscapeManager().getVideoBottomBoundsOnKeyboardShown(estimatedKeyboardHeight, hasQuickReply)
         else getPortraitManager().getVideoBottomBoundsOnKeyboardShown(estimatedKeyboardHeight, hasQuickReply)
     }

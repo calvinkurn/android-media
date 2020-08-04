@@ -47,26 +47,18 @@ class PortraitVideoBoundsManager(
 
             toolbarViewTotalHeight + statsInfoTotalHeight + statusBarHeight
         } else 0
-
-//        val toolbarViewTotalHeight = run {
-//                val marginLp = toolbarView.layoutParams as ViewGroup.MarginLayoutParams
-//                toolbarView.height + marginLp.bottomMargin + marginLp.topMargin
-//            }
-//
-//            val statsInfoTotalHeight = run {
-//                val marginLp = statsInfoView.layoutParams as ViewGroup.MarginLayoutParams
-//                statsInfoView.height + marginLp.bottomMargin + marginLp.topMargin
-//            }
-//
-//            val statusBarHeight = container.let { DisplayMetricUtils.getStatusBarHeight(it.context) }.orZero()
-//
-//            toolbarViewTotalHeight + statsInfoTotalHeight + statusBarHeight
     }
 
-    override fun getVideoBottomBoundsOnKeyboardShown(estimatedKeyboardHeight: Int, hasQuickReply: Boolean): Int {
+    override suspend fun getVideoBottomBoundsOnKeyboardShown(estimatedKeyboardHeight: Int, hasQuickReply: Boolean): Int = coroutineScope {
         val sendChatViewTotalHeight = run {
             val height = sendChatView.height
             val marginLp = sendChatView.layoutParams as ViewGroup.MarginLayoutParams
+            height + marginLp.bottomMargin + marginLp.topMargin
+        }
+
+        val chatListViewTotalHeight = run {
+            val height = container.resources.getDimensionPixelSize(R.dimen.play_chat_max_height)
+            val marginLp = chatListView.layoutParams as ViewGroup.MarginLayoutParams
             height + marginLp.bottomMargin + marginLp.topMargin
         }
 
@@ -81,17 +73,11 @@ class PortraitVideoBoundsManager(
             height + marginLp.bottomMargin + marginLp.topMargin
         }
 
-        val chatListViewTotalHeight = run {
-            val height = container.resources.getDimensionPixelSize(R.dimen.play_chat_max_height)
-            val marginLp = chatListView.layoutParams as ViewGroup.MarginLayoutParams
-            height + marginLp.bottomMargin + marginLp.topMargin
-        }
-
         val statusBarHeight = DisplayMetricUtils.getStatusBarHeight(container.context)
         val requiredMargin = offset16
 
         val interactionTopmostY = getScreenHeight() - (estimatedKeyboardHeight + sendChatViewTotalHeight + chatListViewTotalHeight + quickReplyViewTotalHeight + statusBarHeight + requiredMargin)
 
-        return interactionTopmostY
+        return@coroutineScope interactionTopmostY
     }
 }
