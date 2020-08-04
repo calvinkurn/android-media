@@ -363,12 +363,6 @@ class PlayViewModel @Inject constructor(
                 bufferControl = channel.videoStream.bufferControl?.let { mapBufferControl(it) }
                         ?: PlayBufferControl()
         )
-//        startVideoWithUrlString(
-//                "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
-////                "https://assets.mixkit.co/videos/preview/mixkit-womans-feet-splashing-in-the-pool-1261-large.mp4",
-//                bufferControl = channel.videoStream.bufferControl?.let { mapBufferControl(it) }
-//                        ?: PlayBufferControl()
-//        )
         playVideoManager.setRepeatMode(false)
     }
 
@@ -383,7 +377,8 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun stopPlayer() {
-        playVideoManager.stop()
+        if (playVideoManager.isVideoLive() || channelType.isLive || isFreezeOrBanned) playVideoManager.release()
+        else playVideoManager.stop()
     }
     //endregion
 
@@ -441,7 +436,7 @@ class PlayViewModel @Inject constructor(
             }
         }
 
-        getChannelInfoResponse(channelId)
+        if (!isFreezeOrBanned) getChannelInfoResponse(channelId)
     }
 
     fun sendChat(message: String) {
