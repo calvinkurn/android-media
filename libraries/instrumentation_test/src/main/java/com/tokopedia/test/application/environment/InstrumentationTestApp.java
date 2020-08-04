@@ -35,6 +35,7 @@ import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
+import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface;
 import com.tokopedia.test.application.environment.interceptor.TopAdsDetectorInterceptor;
 import com.tokopedia.test.application.util.DeviceConnectionInfo;
@@ -80,6 +81,7 @@ public class InstrumentationTestApp extends BaseMainApplication
         GraphqlClient.init(this);
         com.tokopedia.config.GlobalConfig.DEBUG = true;
         enableTopAdsDetector();
+        RemoteConfigInstance.initAbTestPlatform(this);
         super.onCreate();
     }
 
@@ -235,11 +237,6 @@ public class InstrumentationTestApp extends BaseMainApplication
         return new SessionHandler(this) {
 
             @Override
-            public String getGTMLoginID() {
-                return "null";
-            }
-
-            @Override
             public String getLoginID() {
                 return "null";
             }
@@ -249,10 +246,6 @@ public class InstrumentationTestApp extends BaseMainApplication
                 return "null";
             }
 
-            @Override
-            public boolean isMsisdnVerified() {
-                return false;
-            }
         };
     }
 
@@ -268,11 +261,6 @@ public class InstrumentationTestApp extends BaseMainApplication
 
     @Override
     public void refreshFCMFromInstantIdService(String token) {
-
-    }
-
-    @Override
-    public void refreshFCMTokenFromForegroundToCM() {
 
     }
 

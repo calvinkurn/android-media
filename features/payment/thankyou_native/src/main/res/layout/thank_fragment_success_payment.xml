@@ -176,10 +176,10 @@
                 android:text="@string/thank_see_transaction_list"
                 app:unifyButtonSize="medium"
                 app:unifyButtonType="main"
-                app:unifyButtonVariant="filled"
+                app:unifyButtonVariant="ghost"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/iv_payment" />
+                app:layout_constraintTop_toBottomOf="@+id/btnShopAgain" />
 
             <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/btnShopAgain"
@@ -191,23 +191,24 @@
                 android:text="@string/thank_shop_again"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/btn_see_transaction_list"
+                app:layout_constraintTop_toBottomOf="@id/iv_payment"
                 app:unifyButtonSize="medium"
                 app:unifyButtonType="main"
-                app:unifyButtonVariant="ghost" />
+                app:unifyButtonVariant="filled" />
             <View
                 android:id="@+id/view_divider_2"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_8"
                 android:layout_marginTop="@dimen/dp_16"
                 android:background="@color/thank_divider_color"
-                app:layout_constraintTop_toBottomOf="@id/btnShopAgain" />
+                app:layout_constraintTop_toBottomOf="@id/btn_see_transaction_list" />
 
             <LinearLayout
                 android:id="@+id/recommendationContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
+                android:paddingBottom="@dimen/spacing_lvl3"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/view_divider_2" />
 

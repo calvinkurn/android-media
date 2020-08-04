@@ -7,12 +7,14 @@ import com.tokopedia.thankyou_native.recommendationdigital.model.Recommendations
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.ContextAnalytics
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class DigitalRecommendationAnalytics @Inject constructor(
+        val userSession: dagger.Lazy<UserSessionInterface>,
         @CoroutineMainDispatcher val mainDispatcher: dagger.Lazy<CoroutineDispatcher>,
         @CoroutineBackgroundDispatcher val backgroundDispatcher: dagger.Lazy<CoroutineDispatcher>) {
 
@@ -20,12 +22,16 @@ class DigitalRecommendationAnalytics @Inject constructor(
         get() = TrackApp.getInstance().gtm
 
 
-    fun sendDigitalRecommendationItemDisplayed(trackingQueue: TrackingQueue, recommendationItem: RecommendationsItem,
-                                               position: Int) {
+    fun sendDigitalRecommendationItemDisplayed(trackingQueue: TrackingQueue,
+                                               recommendationItem: RecommendationsItem,
+                                               position: Int, paymentId: String) {
         val data: MutableMap<String, Any> = mutableMapOf(
                 KEY_EVENT to EVENT_PRODUCT_VIEW,
                 KEY_EVENT_CATEGORY to EVENT_CATEGORY_ORDER_COMPLETE,
                 KEY_EVENT_ACTION to EVENT_ACTION_PRODUCT_VIEW,
+                KEY_USER_ID to userSession.get().userId,
+                KEY_PAYMENT_ID to paymentId,
+                KEY_BUSINESS_UNIT to KEY_BUSINESS_UNIT_VALUE_RECHARGE,
                 KEY_EVENT_LABEL to recommendationItem.type + " - " + recommendationItem.categoryName + " - " + (position + 1),
                 KEY_E_COMMERCE to getProductViewECommerceData(recommendationItem, position))
 
@@ -34,7 +40,7 @@ class DigitalRecommendationAnalytics @Inject constructor(
 
 
     fun sendDigitalRecommendationItemClick(recommendationItem: RecommendationsItem,
-                                           position: Int) {
+                                           position: Int, paymentId: String) {
 
         CoroutineScope(mainDispatcher.get()).launchCatchError(
                 block = {
@@ -43,7 +49,10 @@ class DigitalRecommendationAnalytics @Inject constructor(
                                 KEY_EVENT to EVENT_PRODUCT_CLICK,
                                 KEY_EVENT_CATEGORY to EVENT_CATEGORY_ORDER_COMPLETE,
                                 KEY_EVENT_ACTION to EVENT_ACTION_CLICK_PRODUCT,
-                                KEY_EVENT_LABEL to (position + 1),
+                                KEY_USER_ID to userSession.get().userId,
+                                KEY_PAYMENT_ID to paymentId,
+                                KEY_BUSINESS_UNIT to KEY_BUSINESS_UNIT_VALUE_RECHARGE,
+                                KEY_EVENT_LABEL to recommendationItem.type + " - " + recommendationItem.categoryName + " - " + (position + 1),
                                 KEY_E_COMMERCE to getProductClickECommerceData(recommendationItem, position))
                         analyticTracker.sendEnhanceEcommerceEvent(data)
                     }
@@ -118,6 +127,12 @@ class DigitalRecommendationAnalytics @Inject constructor(
         const val KEY_PRODUCT_CATEGORY = "category"
         const val KEY_PRODUCT_VARIANT = "variant"
         const val KEY_PRODUCT_POSITION = "position"
+
+
+        const val KEY_USER_ID = "userId"
+        const val KEY_PAYMENT_ID = "paymentId"
+        const val KEY_BUSINESS_UNIT = "businessUnit"
+        const val KEY_BUSINESS_UNIT_VALUE_RECHARGE = "recharge"
     }
 
 }

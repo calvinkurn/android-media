@@ -4,8 +4,11 @@ import com.tokopedia.reviewseller.feature.reviewdetail.data.ProductFeedbackDetai
 import com.tokopedia.reviewseller.feature.reviewdetail.data.ProductFeedbackFilterResponse
 import com.tokopedia.reviewseller.feature.reviewdetail.data.ProductReviewDetailOverallResponse
 import com.tokopedia.reviewseller.feature.reviewdetail.data.ProductReviewInitialDataResponse
+import com.tokopedia.reviewseller.feature.reviewdetail.util.mapper.SellerReviewProductDetailMapper
+import com.tokopedia.reviewseller.feature.reviewdetail.view.model.ProductReviewFilterUiModel
 import com.tokopedia.reviewseller.feature.reviewdetail.view.model.RatingBarUiModel
 import com.tokopedia.reviewseller.feature.reviewdetail.view.model.SortFilterItemWrapper
+import com.tokopedia.reviewseller.feature.reviewdetail.view.model.TopicUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
@@ -25,11 +28,29 @@ class ProductReviewDetailViewModelTest : ProductReviewDetailViewModelTestFixture
             onProductReviewInitial_thenReturn()
 
             viewModel.getProductRatingDetail(anyInt(), anyString())
+            val dataResponse = (viewModel.reviewInitialData.value as Success).data
+            viewModel.updateRatingFilterData(dataResponse.first.filterIsInstance<ProductReviewFilterUiModel>().firstOrNull()?.ratingBarList
+                    ?: listOf())
+            viewModel.updateTopicsFilterData(dataResponse.first.filterIsInstance<TopicUiModel>().firstOrNull()?.sortFilterItemList
+                    ?: arrayListOf())
 
             verifySuccessProductReviewInitialUseCaseCalled()
             assertTrue(viewModel.reviewInitialData.value is Success)
             assertNotNull(viewModel.reviewInitialData.value)
+            assertNotNull(viewModel.getFilterRatingData())
+            assertNotNull(viewModel.getFilterTopicData())
         }
+    }
+
+    @Test
+    fun `when set sort topic data should return not null`() {
+
+        val sortTopicData = SellerReviewProductDetailMapper.mapToItemSortTopic()
+
+        viewModel.setSortTopicData(sortTopicData)
+
+        assertEquals(viewModel.getSortTopicData(), sortTopicData)
+        assertNotNull(viewModel.getSortTopicData())
     }
 
     @Test
@@ -41,8 +62,8 @@ class ProductReviewDetailViewModelTest : ProductReviewDetailViewModelTestFixture
 
         viewModel.updateRatingFilterData(dataList)
 
-        assertEquals(viewModel.filterRatingData, dataList)
-        assertNotNull(viewModel.filterRatingData)
+        assertEquals(viewModel.getFilterRatingData(), dataList)
+        assertNotNull(viewModel.getFilterRatingData())
     }
 
     @Test
@@ -54,49 +75,8 @@ class ProductReviewDetailViewModelTest : ProductReviewDetailViewModelTestFixture
 
         viewModel.updateTopicsFilterData(sortFilterItemList)
 
-        assertEquals(viewModel.filterTopicData, sortFilterItemList)
-        assertNotNull(viewModel.filterTopicData)
-    }
-
-    @Test
-    fun `when set value filter topic data should return not null`() {
-
-        val dataList = mutableListOf<SortFilterItemWrapper>().apply {
-            add(SortFilterItemWrapper(ArgumentMatchers.any(), anyBoolean(), anyInt(), anyString()))
-        }
-
-        viewModel.setFilterTopicDataText(dataList)
-
-        assertEquals(viewModel.topicFilterData.value, dataList)
-        assertNotNull(viewModel.topicFilterData.value)
-    }
-
-    @Test
-    fun `when set value sort and topic filter data should return not null`() {
-
-        val sortFilterItemList = mutableListOf<SortFilterItemWrapper>().apply {
-            add(SortFilterItemWrapper(ArgumentMatchers.any(), anyBoolean(), anyInt(), anyString()))
-        }
-
-        val dataList = Pair(sortFilterItemList, anyString())
-
-        viewModel.setSortAndFilterTopicData(dataList)
-
-        assertEquals(viewModel.topicAndSortFilterData.value?.first, sortFilterItemList)
-        assertNotNull(viewModel.topicAndSortFilterData.value)
-    }
-
-    @Test
-    fun `when set value filter rating data should return not null`() {
-
-        val dataList = mutableListOf<RatingBarUiModel>().apply {
-            add(RatingBarUiModel(anyInt(), anyInt(), anyFloat(), anyBoolean()))
-        }
-
-        viewModel.setFilterRatingDataText(dataList)
-
-        assertEquals(viewModel.ratingFilterData.value, dataList)
-        assertNotNull(viewModel.ratingFilterData.value)
+        assertEquals(viewModel.getFilterTopicData(), sortFilterItemList)
+        assertNotNull(viewModel.getFilterTopicData())
     }
 
     @Test
@@ -148,6 +128,74 @@ class ProductReviewDetailViewModelTest : ProductReviewDetailViewModelTestFixture
         val expectedResult = "time=7d"
         assertEquals(viewModel.sortBy, expectedResult)
         assertNotNull(viewModel.sortBy)
+    }
+
+    @Test
+    fun `when get product feedback detail by sort and topic only should return success`() {
+        runBlocking {
+            onProductFeedbackDetailList_thenReturn()
+
+            val sortFilterItemList = mutableListOf<SortFilterItemWrapper>().apply {
+                add(SortFilterItemWrapper(titleUnformated = "kualitas", isSelected = true))
+                add(SortFilterItemWrapper(titleUnformated = "kemasan", isSelected = true))
+            }
+            val sortBy = "rating desc"
+            val sortAndFilter = Pair(sortFilterItemList, sortBy)
+
+            viewModel.productFeedbackDetailMediator.observe( {lifecycle}) {}
+
+            viewModel.setSortAndFilterTopicData(sortAndFilter)
+            viewModel.updateSortAndFilterTopicData(sortAndFilter)
+
+            verifySuccessProductFeedbackDetailListUseCaseCalled()
+            assertTrue(viewModel.productFeedbackDetail.value is Success)
+            assertNotNull(viewModel.productFeedbackDetail.value)
+            assertNotNull(viewModel.getSortAndFilter())
+        }
+    }
+
+    @Test
+    fun `when get product feedback detail by topic only should return success`() {
+        runBlocking {
+            onProductFeedbackDetailList_thenReturn()
+
+            val sortFilterItemList = mutableListOf<SortFilterItemWrapper>().apply {
+                add(SortFilterItemWrapper(titleUnformated = "kualitas", isSelected = true))
+                add(SortFilterItemWrapper(titleUnformated = "kemasan", isSelected = true))
+            }
+
+            viewModel.productFeedbackDetailMediator.observe( {lifecycle}) {}
+
+            viewModel.setFilterTopicDataText(sortFilterItemList)
+            viewModel.updateTopicsFilterData(sortFilterItemList)
+
+            verifySuccessProductFeedbackDetailListUseCaseCalled()
+            assertTrue(viewModel.productFeedbackDetail.value is Success)
+            assertNotNull(viewModel.productFeedbackDetail.value)
+            assertNotNull(viewModel.getFilterTopicData())
+        }
+    }
+
+    @Test
+    fun `when get product feedback detail by rating only should return success`() {
+        runBlocking {
+            onProductFeedbackDetailList_thenReturn()
+
+            val ratingBarList = mutableListOf<RatingBarUiModel>().apply {
+                add(RatingBarUiModel(ratingLabel = 2, ratingIsChecked = true))
+                add(RatingBarUiModel(ratingLabel = 3, ratingIsChecked = true))
+            }
+
+            viewModel.productFeedbackDetailMediator.observe( {lifecycle}) {}
+
+            viewModel.setFilterRatingDataText(ratingBarList)
+            viewModel.updateRatingFilterData(ratingBarList)
+
+            verifySuccessProductFeedbackDetailListUseCaseCalled()
+            assertTrue(viewModel.productFeedbackDetail.value is Success)
+            assertNotNull(viewModel.productFeedbackDetail.value)
+            assertNotNull(viewModel.getFilterRatingData())
+        }
     }
 
     private fun onProductReviewInitial_thenError(exception: NullPointerException) {

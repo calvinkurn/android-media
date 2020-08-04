@@ -37,6 +37,7 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.topads.common.data.model.DataDeposit;
+import com.tokopedia.unifycomponents.Label;
 import com.tokopedia.user_identification_common.KYCConstant;
 
 import java.util.ArrayList;
@@ -52,8 +53,11 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.PENJUAL;
 
 /**
  * @author by alvinatin on 10/08/18.
+ *
+ *
+ * please use SellerAccountMapper.kt instead
  */
-
+@Deprecated
 public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewModel> {
 
     private Context context;
@@ -70,7 +74,9 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
         AccountModel accountModel = graphqlResponse.getData(AccountModel.class);
         ShopInfoLocation shopInfoLocation = graphqlResponse.getData(ShopInfoLocation.class);
         SaldoModel saldoModel = graphqlResponse.getData(SaldoModel.class);
-        accountModel.setSaldoModel(saldoModel);
+        if(saldoModel != null && accountModel != null) {
+            accountModel.setSaldoModel(saldoModel);
+        }
         DataDeposit.Response dataDepositResponse = graphqlResponse.getData(DataDeposit.Response.class);
         DataDeposit dataDeposit = null;
         if (graphqlResponse.getError(DataDeposit.Response.class) == null || graphqlResponse.getError(DataDeposit.Response.class).isEmpty()) {
@@ -133,8 +139,10 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
             items.add(getShopInfoMenu(accountModel, dataDeposit));
         }
 
-        if (accountModel.getSaldoModel().getSaldo().getDepositLong() != 0) {
-            items.add(getSaldoInfo(accountModel.getSaldoModel().getSaldo()));
+        if(accountModel.getSaldoModel() != null) {
+            if (accountModel.getSaldoModel().getSaldo().getDepositLong() != 0) {
+                items.add(getSaldoInfo(accountModel.getSaldoModel().getSaldo()));
+            }
         }
 
         if (showPinjamanModalOnTop) {
@@ -180,13 +188,15 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
         menuList.setSectionTrack(context.getString(R.string.title_menu_product));
         items.add(menuList);
 
-        menuList = new MenuListViewModel();
-        menuList.setMenu(context.getString(R.string.title_menu_product_feature));
-        menuList.setMenuDescription(context.getString(R.string.label_menu_product_feature));
-        menuList.setApplink(AccountConstants.Navigation.FEATURED_PRODUCT);
-        menuList.setTitleTrack(PENJUAL);
-        menuList.setSectionTrack(context.getString(R.string.title_menu_product));
-        items.add(menuList);
+        items.add(createLabelledMenuList(
+                context.getString(R.string.title_menu_product_feature),
+                context.getString(com.tokopedia.seller_migration_common.R.string.seller_migration_label_seller_app_only),
+                Label.Companion.getGENERAL_LIGHT_GREEN(),
+                context.getString(R.string.label_menu_product_feature),
+                ApplinkConst.PRODUCT_MANAGE,
+                PENJUAL,
+                context.getString(R.string.title_menu_product),
+                true));
 
         menuList = new MenuListViewModel();
         menuList.setMenu(context.getString(R.string.title_menu_product_draft));
@@ -217,11 +227,13 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
 
         items.add(createLabelledMenuList(
                 context.getString(R.string.title_menu_voucher_toko),
-                context.getString(R.string.label_menu_voucher_toko),
+                context.getString(com.tokopedia.seller_migration_common.R.string.seller_migration_label_seller_app_only),
+                Label.Companion.getGENERAL_LIGHT_GREEN(),
                 context.getString(R.string.description_menu_voucher_toko),
                 "",
                 PENJUAL,
-                context.getString(R.string.title_menu_other_features)));
+                context.getString(R.string.title_menu_other_features),
+                true));
 
         ParcelableViewModel menuItem = getRekeningPremiumAccountMenu(accountModel);
         if(menuItem != null)
@@ -386,14 +398,16 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
         return menuGridItems;
     }
 
-    private LabelledMenuListUiModel createLabelledMenuList(String title, String label, String description, String appLink, String titleTrack, String sectionTrack) {
+    private LabelledMenuListUiModel createLabelledMenuList(String title, String label, int labelType, String description, String appLink, String titleTrack, String sectionTrack, boolean showRightArrow) {
         LabelledMenuListUiModel menuList = new LabelledMenuListUiModel();
         menuList.setMenu(title);
         menuList.setLabel(label);
+        menuList.setLabelType(labelType);
         menuList.setMenuDescription(description);
         menuList.setApplink(appLink);
         menuList.setTitleTrack(titleTrack);
         menuList.setSectionTrack(sectionTrack);
+        menuList.setShowRightButton(showRightArrow);
 
         return menuList;
     }

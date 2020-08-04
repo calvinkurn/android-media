@@ -26,6 +26,7 @@ import com.tokopedia.sellerhome.analytic.NavigationSearchTracking
 import com.tokopedia.sellerhome.analytic.NavigationTracking
 import com.tokopedia.sellerhome.analytic.SellerHomeTracking
 import com.tokopedia.sellerhome.analytic.TrackingConstant
+import com.tokopedia.sellerhome.analytic.performance.HomeLayoutLoadTimeMonitoring
 import com.tokopedia.sellerhome.common.SellerHomePerformanceMonitoringConstant.SELLER_HOME_CARD_TRACE
 import com.tokopedia.sellerhome.common.SellerHomePerformanceMonitoringConstant.SELLER_HOME_CAROUSEL_TRACE
 import com.tokopedia.sellerhome.common.SellerHomePerformanceMonitoringConstant.SELLER_HOME_LINE_GRAPH_TRACE
@@ -119,6 +120,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
     private var performanceMonitoringSellerHomeProgress: PerformanceMonitoring? = null
     private var performanceMonitoringSellerHomePostList: PerformanceMonitoring? = null
     private var performanceMonitoringSellerHomeCarousel: PerformanceMonitoring? = null
+    private var performanceMonitoringSellerHomePlt: HomeLayoutLoadTimeMonitoring? = null
 
     override fun getScreenName(): String = TrackingConstant.SCREEN_NAME_SELLER_HOME
 
@@ -136,7 +138,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        initPltPerformanceMonitoring()
         hideTooltipIfExist()
         setupView()
 
@@ -172,6 +174,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
+        menu.clear()
         inflater.inflate(R.menu.sah_menu_toolbar_notification, menu)
         this.menu = menu
         showGlobalSearchIcon()
@@ -187,6 +190,14 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
             NavigationSearchTracking.sendClickSearchMenuEvent(userSession.userId.orEmpty())
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun initPltPerformanceMonitoring() {
+        performanceMonitoringSellerHomePlt = if(remoteConfig.isNewSellerHomeDisabled()) {
+            (activity as? com.tokopedia.sellerhome.view.oldactivity.SellerHomeActivity)?.performanceMonitoringSellerHomeLayoutPlt
+        } else {
+            (activity as? SellerHomeActivity)?.performanceMonitoringSellerHomeLayoutPlt
+        }
     }
 
     private fun hideTooltipIfExist() {
@@ -456,19 +467,23 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
     }
 
     private fun startHomeLayoutNetworkMonitoring() {
-        (activity as? SellerHomeActivity)?.startHomeLayoutNetworkMonitoring()
+        performanceMonitoringSellerHomePlt?.startNetworkPerformanceMonitoring()
     }
 
     private fun startHomeLayoutRenderMonitoring() {
-        (activity as? SellerHomeActivity)?.startHomeLayoutRenderMonitoring()
+        performanceMonitoringSellerHomePlt?.startRenderPerformanceMonitoring()
     }
 
     private fun stopHomeLayoutRenderMonitoring() {
-        (activity as? SellerHomeActivity)?.stopHomeLayoutRenderMonitoring()
+        performanceMonitoringSellerHomePlt?.stopRenderPerformanceMonitoring()
     }
 
     private fun stopPerformanceMonitoringSellerHomeLayout() {
-        (activity as? SellerHomeActivity)?.stopPerformanceMonitoringSellerHomeLayout()
+        if(remoteConfig.isNewSellerHomeDisabled()) {
+            (activity as? com.tokopedia.sellerhome.view.oldactivity.SellerHomeActivity)?.stopPerformanceMonitoringSellerHomeLayout()
+        } else {
+            (activity as? SellerHomeActivity)?.stopPerformanceMonitoringSellerHomeLayout()
+        }
     }
 
     private fun setOnSuccessGetLayout(widgets: List<BaseWidgetUiModel<*>>) {

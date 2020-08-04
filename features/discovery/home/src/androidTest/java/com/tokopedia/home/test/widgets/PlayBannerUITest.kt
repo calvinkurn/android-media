@@ -27,6 +27,7 @@ import com.tokopedia.home.test.fragment.HomeFragmentTest
 import com.tokopedia.home.test.rules.TestDispatcherProvider
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
+import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import io.mockk.coEvery
@@ -70,6 +71,7 @@ class PlayBannerUITest : BaseWidgetUiTest(){
     override val declineSalamWIdgetUseCase = mockk<dagger.Lazy<DeclineSalamWIdgetUseCase>>(relaxed = true)
     override val getSalamWIdgetUseCase = mockk<dagger.Lazy<GetSalamWidgetUseCase>>(relaxed = true)
     override val closeChannelUseCase = mockk<dagger.Lazy<CloseChannelUseCase>>(relaxed = true)
+    override val topAdsImageViewUseCase = mockk<Lazy<TopAdsImageViewUseCase>>(relaxed = true)
     override val injectCouponTimeBasedUseCase = mockk<dagger.Lazy<InjectCouponTimeBasedUseCase>>(relaxed = true)
     override val remoteConfig = mockk<RemoteConfig>(relaxed = true)
     override val homeDataMapper = HomeDataMapper(InstrumentationRegistry.getInstrumentation().context, HomeVisitableFactoryImpl(userSessionInterface.get(), remoteConfig), mockk(relaxed = true))
@@ -324,7 +326,7 @@ class PlayBannerUITest : BaseWidgetUiTest(){
         onView(withId(TITLE)).check(matches(withText("Play Widget")))
         onView(withId(TITLE_CONTENT)).check(matches(withText("Channel 2")))
     }
-  
+
 //    private fun <T : ViewModel> createViewModelFactory(viewModel: T): ViewModelProvider.Factory {
 //        return object : ViewModelProvider.Factory {
 //            override fun <T : ViewModel> create(viewModelClass: Class<T>): T {
@@ -360,7 +362,8 @@ class PlayBannerUITest : BaseWidgetUiTest(){
             getRechargeRecommendationUseCase = getRechargeRecommendationUseCase,
             declineRechargeRecommendationUseCase = declineRechargeRecommendationUseCase,
             getSalamWidgetUseCase = getSalamWIdgetUseCase,
-            declineSalamWIdgetUseCase = declineSalamWIdgetUseCase,
-            injectCouponTimeBasedUseCase = injectCouponTimeBasedUseCase
+            declineSalamWidgetUseCase = declineSalamWIdgetUseCase,
+            injectCouponTimeBasedUseCase = injectCouponTimeBasedUseCase,
+            topAdsImageViewUseCase = topAdsImageViewUseCase
     )
 }

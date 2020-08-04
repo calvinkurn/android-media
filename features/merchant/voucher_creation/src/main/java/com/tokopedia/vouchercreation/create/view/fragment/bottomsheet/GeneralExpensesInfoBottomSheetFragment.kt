@@ -15,17 +15,18 @@ import com.tokopedia.vouchercreation.create.view.typefactory.vouchertarget.Vouch
 import com.tokopedia.vouchercreation.create.view.typefactory.vouchertarget.VoucherTipsItemTypeFactory
 import kotlinx.android.synthetic.main.mvc_voucher_bottom_sheet_view.*
 
-class GeneralExpensesInfoBottomSheetFragment(bottomSheetContext: Context?) : BottomSheetUnify(), VoucherBottomView {
+class GeneralExpensesInfoBottomSheetFragment : BottomSheetUnify(), VoucherBottomView {
 
     companion object {
         @JvmStatic
         fun createInstance(context: Context?) : GeneralExpensesInfoBottomSheetFragment {
-            return GeneralExpensesInfoBottomSheetFragment(context).apply {
+            return GeneralExpensesInfoBottomSheetFragment().apply {
                 context.run {
                     val view = View.inflate(this, R.layout.mvc_voucher_bottom_sheet_view, null)
                     setChild(view)
                     setTitle(context?.getString(R.string.mvc_create_promo_type_bottomsheet_title_promo_expenses).toBlankOrString())
                     setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
+                    bottomSheetViewTitle = context?.getString(R.string.mvc_create_promo_type_bottomsheet_title_promo_expenses).toBlankOrString()
                 }
             }
         }
@@ -33,7 +34,7 @@ class GeneralExpensesInfoBottomSheetFragment(bottomSheetContext: Context?) : Bot
         val TAG = GeneralExpensesInfoBottomSheetFragment::javaClass.name
     }
 
-    override var bottomSheetViewTitle: String? = bottomSheetContext?.resources?.getString(R.string.mvc_create_promo_type_bottomsheet_title_promo_expenses).toBlankOrString()
+    override var bottomSheetViewTitle: String? = null
 
     private val adapterTypeFactory by lazy {
         VoucherTipsItemAdapterTypeFactory()

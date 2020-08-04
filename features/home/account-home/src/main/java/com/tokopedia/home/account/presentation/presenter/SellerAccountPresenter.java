@@ -23,8 +23,12 @@ import static com.tokopedia.home.account.AccountConstants.VARIABLES;
 
 /**
  * @author by alvinatin on 10/08/18.
+ *
+ *
+ * please use SellerAccountViewModel.kt instead
  */
 
+@Deprecated
 public class SellerAccountPresenter extends BaseDaggerPresenter<SellerAccount.View>
         implements SellerAccount.Presenter{
 

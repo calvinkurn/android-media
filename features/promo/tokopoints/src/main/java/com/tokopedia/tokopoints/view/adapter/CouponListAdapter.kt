@@ -15,10 +15,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.coupondetail.CouponDetailActivity.Companion.getCouponDetail
 import com.tokopedia.tokopoints.view.model.CouponValueEntity
 import com.tokopedia.tokopoints.view.util.CommonConstant
+import com.tokopedia.tokopoints.view.util.convertDpToPixel
 import java.util.*
 
 class CouponListAdapter(private val mItems: MutableList<CouponValueEntity>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -118,6 +120,7 @@ class CouponListAdapter(private val mItems: MutableList<CouponValueEntity>) : Re
                     holder.progressTimer.max = CommonConstant.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S.toInt()
                     holder.progressTimer.visibility = View.VISIBLE
                     holder.value.visibility = View.VISIBLE
+                    holder.label.hide()
                     if (holder.timer != null) {
                         holder.timer!!.cancel()
                     }
@@ -128,7 +131,7 @@ class CouponListAdapter(private val mItems: MutableList<CouponValueEntity>) : Re
                             val minutes = (l / (1000 * 60) % 60).toInt()
                             val hours = (l / (1000 * 60 * 60) % 24).toInt()
                             holder.value.text = String.format(Locale.ENGLISH, "%02d : %02d : %02d", hours, minutes, seconds)
-                            holder.value.setTextColor(ContextCompat.getColor(holder.value.context, com.tokopedia.design.R.color.medium_green))
+                            holder.value.setTextColor(ContextCompat.getColor(holder.value.context, R.color.tp_coupon_flash_sale_timer_text_color))
                             holder.progressTimer.progress = l.toInt() / 1000
                             try {
                                 holder.value.setPadding(holder.label.resources.getDimensionPixelSize(R.dimen.tp_padding_small),

@@ -22,6 +22,8 @@ object TrackingConstant {
     const val IS_LOGGED_IN_STATUS = "isLoggedInStatus"
     const val CURRENT_SITE = "currentSite"
     const val USER_ID = "userId"
+    const val SHOP_ID = "shopId"
+    const val SHOP_TYPE = "shopType"
     const val BUSINESS_UNIT = "businessUnit"
 
     //event

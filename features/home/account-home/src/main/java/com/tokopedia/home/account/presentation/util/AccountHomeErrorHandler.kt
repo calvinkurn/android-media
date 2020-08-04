@@ -1,8 +1,7 @@
 package com.tokopedia.home.account.presentation.util
 
 import android.text.TextUtils
-import com.crashlytics.android.Crashlytics
-import com.tokopedia.home.account.BuildConfig
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.network.data.model.response.ResponseV4ErrorException
 import timber.log.Timber
 
@@ -35,9 +34,23 @@ object AccountHomeErrorHandler {
 
         Timber.w("P2#ACCOUNT_HOME_ERROR#'Failed render';$errorMessage;'$exception'")
         try {
-            Crashlytics.logException(exception)
+            FirebaseCrashlytics.getInstance().recordException(exception)
         } catch (exception: Exception) {
 
         }
     }
+
+    @JvmStatic
+    fun logDataNull(source: String, t: Throwable) {
+        val exception = AccountHomeException(t.message ?: "", t)
+
+        Timber.w("P2#ACCOUNT_HOME_ERROR#'Failed parsing model'; $source;'$exception'")
+        try {
+            FirebaseCrashlytics.getInstance().recordException(exception)
+        } catch (exception: Exception) {
+
+        }
+    }
+
+    // add handler
 }

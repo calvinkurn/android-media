@@ -1,8 +1,6 @@
 package com.tokopedia.discovery2.viewmodel
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
@@ -24,10 +22,10 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.*
-import java.io.InputStream
-import java.net.HttpURLConnection
-import java.net.URL
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -44,6 +42,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     var pageIdentifier: String = ""
     var pageType: String = ""
     var pagePath: String = ""
+    var campaignCode: String = ""
 
     @Inject
     lateinit var customTopChatUseCase: CustomTopChatUseCase
@@ -85,7 +84,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
                     setUIConfig(data.discoveryPageUIConfig?.data?.config)
                 },
                 onError = {
-                    discoveryUIConfig.postValue(Fail(it))
+                    discoveryUIConfig.postValue(Success(REACT_NATIVE))
                 }
         )
     }
@@ -99,6 +98,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
             pageType = pageInfoData.type ?: ""
             pagePath = pageInfoData.path ?: ""
             pageInfoData.additionalInfo = discoPageData.additionalInfo
+            campaignCode = pageInfoData.campaignCode ?: ""
             discoveryPageInfo.value = Success(pageInfoData)
         }
     }
