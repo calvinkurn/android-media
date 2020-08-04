@@ -158,7 +158,7 @@ class MainSliceProvider : SliceProvider() {
                     return sliceNotLogin(sliceUri)
                 }
             } catch (e: Exception) {
-                return sliceNotLogin(sliceUri)
+                return sliceNoAccess(sliceUri)
             }
         } else {
             return sliceNoAccess(sliceUri)
