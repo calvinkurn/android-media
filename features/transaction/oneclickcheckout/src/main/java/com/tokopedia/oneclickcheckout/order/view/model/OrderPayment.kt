@@ -24,7 +24,7 @@ data class OrderPayment(
     }
 
     fun hasBlockingError(): Boolean {
-        return errorMessage.message.isNotEmpty()
+        return errorMessage.message.isNotEmpty() || creditCard.selectedTerm?.isEnable == false
     }
 
     fun hasNoCreditCardOption(): Boolean {
