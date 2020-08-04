@@ -338,7 +338,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
         val coachMark = CoachMarkBuilder().build().apply {
             enableSkip = true
         }
-        coachMark.setHighlightMargin(marginLeft = width.toDp(), marginRight = width.toDp()/5, marginTop = (height.toDp()*0.75).toInt(), marginBottom = height.toDp()/10)
+        coachMark.setHighlightMargin(marginTop = height)
         coachMark.show(
                 activity,
                 EventPDPTicketFragment::class.java.simpleName,
