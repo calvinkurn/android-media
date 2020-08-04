@@ -172,35 +172,13 @@ class PlayUserInteractionFragment @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
         setupView(view)
         setupInsets(view)
+        setupObserve()
     }
 
     override fun onStart() {
         super.onStart()
         spaceSize.rootView.requestApplyInsetsWhenAttached()
         endLiveInfoView.rootView.requestApplyInsetsWhenAttached()
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        observeVideoPlayer()
-        observeVideoProperty()
-        observeTitleChannel()
-        observeQuickReply()
-        observeVideoStream()
-        observeToolbarInfo()
-        observeTotalLikes()
-        observeTotalViews()
-        observeNewChat()
-        observeChatList()
-        observePinned()
-        observeCartInfo()
-        observeFollowShop()
-        observeLikeContent()
-        observeBottomInsetsState()
-        observeEventUserInfo()
-
-        observeLoggedInInteractionEvent()
     }
 
     override fun onPause() {
@@ -391,6 +369,27 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun destroyInsets(view: View) {
         ViewCompat.setOnApplyWindowInsetsListener(view, null)
+    }
+
+    private fun setupObserve() {
+        observeVideoPlayer()
+        observeVideoProperty()
+        observeTitleChannel()
+        observeQuickReply()
+        observeVideoStream()
+        observeToolbarInfo()
+        observeTotalLikes()
+        observeTotalViews()
+        observeNewChat()
+        observeChatList()
+        observePinned()
+        observeCartInfo()
+        observeFollowShop()
+        observeLikeContent()
+        observeBottomInsetsState()
+        observeEventUserInfo()
+
+        observeLoggedInInteractionEvent()
     }
 
     //region observe
