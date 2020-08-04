@@ -44,12 +44,6 @@ android {
             dimension "client"
         }
     }
-    packagingOptions {
-        exclude 'lib/arm64-v8a/libnative-lib.so'
-        exclude 'lib/armeabi-v7a/libnative-lib.so'
-        exclude 'lib/x86/libnative-lib.so'
-        exclude 'lib/x86_64/libnative-lib.so'
-    }
 }
 
 dependencies {
