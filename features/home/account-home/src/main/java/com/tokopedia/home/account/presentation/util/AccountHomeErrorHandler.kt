@@ -46,7 +46,7 @@ object AccountHomeErrorHandler {
 
         Timber.w("P2#ACCOUNT_HOME_ERROR#'Failed parsing model'; $source;'$exception'")
         try {
-            FirebaseCrashlytics.getInstance().recordException(exception)
+            Crashlytics.logException(exception)
         } catch (exception: Exception) {
 
         }
