@@ -269,13 +269,6 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         setCurrentFragmentType(pageType)
         resetPages(page)
 
-        window.decorView.setBackgroundColor(
-                if (pageType == FragmentType.HOME) {
-                    Color.DKGRAY
-                } else {
-                    Color.WHITE
-                })
-
         navigator?.showPage(pageType)
         trackClickBottomNavigation(trackingAction)
     }
