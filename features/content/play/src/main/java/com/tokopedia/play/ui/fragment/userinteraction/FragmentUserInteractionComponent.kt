@@ -34,8 +34,8 @@ class FragmentUserInteractionComponent(
                     .collect {
                         when (it) {
                             is ScreenStateEvent.Init -> uiView.show()
-                            is ScreenStateEvent.OrientationChanged ->
-                                if (it.orientation.isLandscape) uiView.hide() else uiView.show()
+//                            is ScreenStateEvent.OrientationChanged ->
+//                                if (it.orientation.isLandscape) uiView.hide() else uiView.show()
                         }
                     }
         }

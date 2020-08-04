@@ -9,3 +9,7 @@ import androidx.fragment.app.Fragment
 fun <VC: IViewComponent> Fragment.viewComponent(creator: (ViewGroup) -> VC) : ViewComponentDelegate<VC> {
     return ViewComponentDelegate(creator)
 }
+
+fun <VC: IViewComponent> Fragment.viewComponentOrNull(creator: (ViewGroup) -> VC) : ViewComponentNullableDelegate<VC> {
+    return ViewComponentNullableDelegate(creator)
+}

@@ -84,11 +84,11 @@ object PlayUiMapper {
     // TODO("testing")
     fun mapVideoStream(videoStream: VideoStream, isActive: Boolean, backgroundUrl: String) = VideoStreamUiModel(
             uriString = videoStream.config.streamUrl,
-            channelType = if (videoStream.isLive) PlayChannelType.Live else PlayChannelType.VOD,
-            orientation = VideoOrientation.getByValue(videoStream.orientation),
+//            channelType = if (videoStream.isLive) PlayChannelType.Live else PlayChannelType.VOD,
+//            orientation = VideoOrientation.getByValue(videoStream.orientation),
             backgroundUrl = backgroundUrl,
-//            channelType = PlayChannelType.Live,
-//            orientation = VideoOrientation.Vertical,
+            channelType = PlayChannelType.Live,
+            orientation = VideoOrientation.Horizontal(16, 9),
 //            backgroundUrl = "https://i.pinimg.com/736x/d3/bb/7b/d3bb7b85f4e160d013f68fcde8d19844.jpg",
             isActive = isActive
     )

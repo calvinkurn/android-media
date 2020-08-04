@@ -37,8 +37,8 @@ class FragmentMiniInteractionComponent(
                                 uiView.init()
                                 uiView.hide()
                             }
-                            is ScreenStateEvent.OrientationChanged ->
-                                if (it.orientation.isLandscape) uiView.show() else uiView.hide()
+//                            is ScreenStateEvent.OrientationChanged ->
+//                                if (it.orientation.isLandscape) uiView.show() else uiView.hide()
                             is ScreenStateEvent.VideoStreamChanged ->
                                 if (!it.videoStream.orientation.isHorizontal) {
                                     uiView.release()

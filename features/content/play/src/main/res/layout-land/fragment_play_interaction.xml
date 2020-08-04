@@ -33,27 +33,11 @@
         android:id="@+id/v_immersive_box"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="@dimen/layout_lvl0"
-        android:layout_marginBottom="@dimen/spacing_lvl4"
-        app:layout_constraintBottom_toTopOf="@id/view_pinned"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/view_stats_info"
-        />
-
-    <include
-        android:id="@+id/view_send_chat"
-        layout="@layout/view_send_chat"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="@dimen/play_send_chat_height"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginLeft="@dimen/spacing_lvl4"
-        android:layout_marginEnd="@dimen/spacing_lvl3"
-        android:layout_marginRight="@dimen/spacing_lvl3"
-        android:visibility="gone"
+        android:layout_marginBottom="@dimen/spacing_lvl3"
         app:layout_constraintBottom_toTopOf="@id/pcv_video"
         app:layout_constraintEnd_toStartOf="@id/view_like"
-        app:layout_constraintStart_toStartOf="@id/space_size"
-        tools:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         />
 
     <include
@@ -66,40 +50,6 @@
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/pcv_video"
         app:layout_constraintEnd_toEndOf="@id/space_size"
-        tools:visibility="visible"
-        />
-
-    <include
-        android:id="@+id/view_pinned"
-        layout="@layout/view_pinned"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginLeft="@dimen/spacing_lvl4"
-        android:layout_marginEnd="@dimen/spacing_lvl3"
-        android:layout_marginRight="@dimen/spacing_lvl3"
-        android:layout_marginBottom="@dimen/spacing_lvl3"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/view_chat_list"
-        app:layout_constraintEnd_toStartOf="@id/view_like"
-        app:layout_constraintStart_toStartOf="@id/space_size"
-        tools:visibility="visible"
-        />
-
-    <include
-        android:id="@+id/view_chat_list"
-        layout="@layout/view_chat_list"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginLeft="@dimen/spacing_lvl4"
-        android:layout_marginEnd="@dimen/spacing_lvl3"
-        android:layout_marginRight="@dimen/spacing_lvl3"
-        android:layout_marginBottom="@dimen/spacing_lvl3"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/rv_quick_reply"
-        app:layout_constraintEnd_toStartOf="@id/view_like"
-        app:layout_constraintStart_toStartOf="@id/space_size"
         tools:visibility="visible"
         />
 
@@ -125,12 +75,11 @@
         layout="@layout/view_video_settings"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl5"
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:layout_marginRight="@dimen/spacing_lvl4"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="@id/space_size"
-        app:layout_constraintTop_toBottomOf="@id/view_stats_info"
+        app:layout_constraintTop_toTopOf="@id/space_size"
         tools:visibility="visible"
         />
 
@@ -169,20 +118,6 @@
         android:layout_marginTop="@dimen/play_offset_12"
         app:layout_constraintStart_toStartOf="@id/space_size"
         app:layout_constraintTop_toBottomOf="@id/view_toolbar"
-        />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_quick_reply"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:layout_marginBottom="@dimen/spacing_lvl3"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/view_send_chat"
-        app:layout_constraintEnd_toEndOf="@id/space_size"
-        app:layout_constraintStart_toStartOf="@id/space_size"
-        tools:visibility="visible"
         />
 
     <include

@@ -2,7 +2,7 @@ package com.tokopedia.play.view.fragment
 
 import android.app.Activity
 import android.content.Intent
-import android.os.Build
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,12 +14,9 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
-import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
@@ -33,8 +30,14 @@ import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.PlayFullScreenHelper
 import com.tokopedia.play.util.changeConstraint
+import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.util.event.DistinctEventObserver
 import com.tokopedia.play.util.event.EventObserver
+import com.tokopedia.play.util.measurement.ScreenOrientationDataSource
+import com.tokopedia.play.util.measurement.bounds.PlayVideoBoundsManager
+import com.tokopedia.play.util.measurement.bounds.VideoBoundsManager
+import com.tokopedia.play.util.measurement.layout.DynamicLayoutManager
+import com.tokopedia.play.util.measurement.layout.PlayDynamicLayoutManager
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.view.bottomsheet.PlayMoreActionBottomSheet
 import com.tokopedia.play.view.contract.PlayFragmentContract
@@ -55,8 +58,13 @@ import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.play_common.view.updatePadding
 import com.tokopedia.play_common.viewcomponent.viewComponent
+import com.tokopedia.play_common.viewcomponent.viewComponentOrNull
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.coroutines.Fail
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -64,6 +72,7 @@ import javax.inject.Inject
  */
 class PlayUserInteractionFragment @Inject constructor(
         private val viewModelFactory: ViewModelProvider.Factory,
+        private val dispatchers: CoroutineDispatcherProvider,
         private val trackingQueue: TrackingQueue
 ):
         TkpdBaseV4Fragment(),
@@ -80,17 +89,8 @@ class PlayUserInteractionFragment @Inject constructor(
         PlayButtonViewComponent.Listener,
         EndLiveInfoViewComponent.Listener
 {
-
-    companion object {
-        private const val REQUEST_CODE_LOGIN = 192
-
-        private const val PERCENT_PRODUCT_SHEET_HEIGHT = 0.6
-
-        private const val VISIBLE_ALPHA = 1f
-
-        private const val FADE_DURATION = 200L
-        private const val FADE_TRANSITION_DELAY = 3000L
-    }
+    private val job = SupervisorJob()
+    private val scope = CoroutineScope(dispatchers.main + job)
 
     private val spaceSize by viewComponent { EmptyViewComponent(it, R.id.space_size) }
     private val gradientBackgroundView by viewComponent { EmptyViewComponent(it, R.id.view_gradient_background) }
@@ -98,10 +98,10 @@ class PlayUserInteractionFragment @Inject constructor(
     private val statsInfoView by viewComponent { StatsInfoViewComponent(it, R.id.view_stats_info) }
     private val videoControlView by viewComponent { VideoControlViewComponent(it, R.id.pcv_video, this) }
     private val likeView by viewComponent { LikeViewComponent(it, R.id.view_like, this) }
-    private val sendChatView by viewComponent { SendChatViewComponent(it, R.id.view_send_chat, this) }
-    private val quickReplyView by viewComponent { QuickReplyViewComponent(it, R.id.rv_quick_reply, this) }
-    private val chatListView by viewComponent { ChatListViewComponent(it, R.id.view_chat_list) }
-    private val pinnedView by viewComponent { PinnedViewComponent(it, R.id.view_pinned, this) }
+    private val sendChatView by viewComponentOrNull { SendChatViewComponent(it, R.id.view_send_chat, this) }
+    private val quickReplyView by viewComponentOrNull { QuickReplyViewComponent(it, R.id.rv_quick_reply, this) }
+    private val chatListView by viewComponentOrNull { ChatListViewComponent(it, R.id.view_chat_list) }
+    private val pinnedView by viewComponentOrNull { PinnedViewComponent(it, R.id.view_pinned, this) }
     private val videoSettingsView by viewComponent { VideoSettingsViewComponent(it, R.id.view_video_settings, this) }
     private val immersiveBoxView by viewComponent { ImmersiveBoxViewComponent(it, R.id.v_immersive_box, this) }
     private val playButtonView by viewComponent { PlayButtonViewComponent(it, R.id.view_play_button, this) }
@@ -114,9 +114,6 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private val container: View
         get() = requireView()
-
-    private val offset12 by lazy { container.resources.getDimensionPixelOffset(R.dimen.play_offset_12) }
-    private val offset16 by lazy { container.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4) }
 
     private val productSheetMaxHeight: Int
         get() = (requireView().height * PERCENT_PRODUCT_SHEET_HEIGHT).toInt()
@@ -141,6 +138,9 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private val orientation: ScreenOrientation
         get() = ScreenOrientation.getByInt(resources.configuration.orientation)
+
+    private var videoBoundsManager: VideoBoundsManager? = null
+    private var dynamicLayoutManager: DynamicLayoutManager? = null
 
     /**
      * Animation
@@ -211,6 +211,22 @@ class PlayUserInteractionFragment @Inject constructor(
             val lastAction = viewModel.observableLoggedInInteractionEvent.value?.peekContent()
             if (lastAction != null) handleInteractionEvent(lastAction.event)
         } else super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        fragmentManager?.beginTransaction()
+                ?.setReorderingAllowed(false)
+                ?.detach(this)
+                ?.attach(this)
+                ?.commit()
+    }
+
+    override fun onDestroyView() {
+        videoBoundsManager = null
+        dynamicLayoutManager = null
+        super.onDestroyView()
+        job.cancelChildren()
     }
 
     //region ComponentListener
@@ -419,7 +435,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun observeQuickReply() {
         playViewModel.observableQuickReply.observe(viewLifecycleOwner, DistinctObserver {
-            quickReplyView.setQuickReply(it)
+            quickReplyView?.setQuickReply(it)
         })
     }
 
@@ -427,7 +443,10 @@ class PlayUserInteractionFragment @Inject constructor(
         playViewModel.observableVideoStream.observe(viewLifecycleOwner, DistinctObserver {
             changeLayoutBasedOnVideoOrientation(it.orientation)
             triggerImmersive(false)
-            playFragment.setVideoTopBounds(playViewModel.videoPlayer, it.orientation, getVideoTopBounds(it.orientation))
+
+            scope.launch(dispatchers.immediate) {
+                playFragment.setVideoTopBounds(playViewModel.videoPlayer, it.orientation, getVideoTopBounds(it.orientation))
+            }
 
             statsInfoViewOnStateChanged(channelType = it.channelType)
             videoControlViewOnStateChanged(channelType = it.channelType)
@@ -459,7 +478,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun observeNewChat() {
         playViewModel.observableNewChat.observe(viewLifecycleOwner, DistinctEventObserver {
-            chatListView.showNewChat(it)
+            chatListView?.showNewChat(it)
         })
     }
 
@@ -467,7 +486,7 @@ class PlayUserInteractionFragment @Inject constructor(
         playViewModel.observableChatList.observe(viewLifecycleOwner, object : Observer<List<PlayChatUiModel>> {
             override fun onChanged(chatList: List<PlayChatUiModel>) {
                 playViewModel.observableChatList.removeObserver(this)
-                chatListView.setChatList(chatList)
+                chatListView?.setChatList(chatList)
             }
         })
     }
@@ -539,17 +558,17 @@ class PlayUserInteractionFragment @Inject constructor(
             if (it.isFreeze || it.isBanned) {
                 gradientBackgroundView.hide()
                 likeView.hide()
-                quickReplyView.hide()
-                chatListView.hide()
-                pinnedView.hide()
+                quickReplyView?.hide()
+                chatListView?.hide()
+                pinnedView?.hide()
                 immersiveBoxView.hide()
                 playButtonView.hide()
 
                 videoControlView.setPlayer(null)
                 videoControlView.hide()
 
-                sendChatView.focusChatForm(false)
-                sendChatView.hide()
+                sendChatView?.focusChatForm(false)
+                sendChatView?.hide()
 
                 toolbarView.show()
                 statsInfoView.show()
@@ -712,7 +731,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun shouldComposeChat() {
-        sendChatView.focusChatForm(shouldFocus = true, forceChangeKeyboardState = true)
+        sendChatView?.focusChatForm(shouldFocus = true, forceChangeKeyboardState = true)
     }
 
     private fun doLikeUnlike(shouldLike: Boolean) {
@@ -773,107 +792,42 @@ class PlayUserInteractionFragment @Inject constructor(
         fadeAnimationList.forEach { it.cancel() }
     }
 
-    private fun getVideoTopBounds(videoOrientation: VideoOrientation): Int {
-        return if (videoOrientation.isHorizontal) {
-            val toolbarViewTotalHeight = run {
-                val height = if (toolbarView.rootView.height <= 0) {
-                    toolbarView.rootView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
-                    toolbarView.rootView.measuredHeight
-                } else toolbarView.rootView.height
-                val marginLp = toolbarView.rootView.layoutParams as ViewGroup.MarginLayoutParams
-                height + marginLp.bottomMargin + marginLp.topMargin
-            }
-
-            val statsInfoTotalHeight = run {
-                val height = if (statsInfoView.rootView.height <= 0) {
-                    statsInfoView.rootView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
-                    statsInfoView.rootView.measuredHeight
-                } else statsInfoView.rootView.height
-                val marginLp = statsInfoView.rootView.layoutParams as ViewGroup.MarginLayoutParams
-                height + marginLp.bottomMargin + marginLp.topMargin
-            }
-
-            val statusBarHeight = container.let { DisplayMetricUtils.getStatusBarHeight(it.context) }.orZero()
-
-            toolbarViewTotalHeight + statsInfoTotalHeight + statusBarHeight
-        } else 0
+    private suspend fun getVideoTopBounds(videoOrientation: VideoOrientation): Int {
+        return getVideoBoundsManager().getVideoTopBounds(videoOrientation)
     }
 
     private fun getVideoBottomBoundsOnKeyboardShown(estimatedKeyboardHeight: Int, hasQuickReply: Boolean): Int {
-        val sendChatViewTotalHeight = run {
-            val height = sendChatView.rootView.height
-            val marginLp = sendChatView.rootView.layoutParams as ViewGroup.MarginLayoutParams
-            height + marginLp.bottomMargin + marginLp.topMargin
-        }
-
-        val quickReplyViewTotalHeight = run {
-            val height = if (hasQuickReply) {
-                if (quickReplyView.rootView.height <= 0) {
-                    quickReplyView.rootView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
-                    quickReplyView.rootView.measuredHeight
-                } else quickReplyView.rootView.height
-            } else 0
-            val marginLp = quickReplyView.rootView.layoutParams as ViewGroup.MarginLayoutParams
-            height + marginLp.bottomMargin + marginLp.topMargin
-        }
-
-        val chatListViewTotalHeight = run {
-            val height = container.resources.getDimensionPixelSize(R.dimen.play_chat_max_height)
-            val marginLp = chatListView.rootView.layoutParams as ViewGroup.MarginLayoutParams
-            height + marginLp.bottomMargin + marginLp.topMargin
-        }
-
-        val statusBarHeight = DisplayMetricUtils.getStatusBarHeight(container.context)
-        val requiredMargin = offset16
-
-        val interactionTopmostY = getScreenHeight() - (estimatedKeyboardHeight + sendChatViewTotalHeight + chatListViewTotalHeight + quickReplyViewTotalHeight + statusBarHeight + requiredMargin)
-
-        return interactionTopmostY
+        return getVideoBoundsManager().getVideoBottomBoundsOnKeyboardShown(estimatedKeyboardHeight, hasQuickReply)
     }
 
     private fun changeLayoutBasedOnVideoOrientation(videoOrientation: VideoOrientation) {
-
-        fun changeStatsInfoViewConstraint() {
-            container.changeConstraint {
-
-                connect(id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
-                connect(id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
-
-                if (videoOrientation is VideoOrientation.Horizontal) {
-                    connect(id, ConstraintSet.TOP, statsInfoView.id, ConstraintSet.BOTTOM, offset16)
-                    clear(id, ConstraintSet.BOTTOM)
-                    setDimensionRatio(id, "H, ${videoOrientation.aspectRatio}")
-                } else {
-                    connect(id, ConstraintSet.TOP, statsInfoView.id, ConstraintSet.BOTTOM)
-                    connect(id, ConstraintSet.BOTTOM, pinnedView.id, ConstraintSet.TOP, offset16)
-                }
-            }
-        }
-
-        fun changeImmersiveBoxViewConstraint() {
-            container.changeConstraint {
-                val componentAnchor = if (videoOrientation.isHorizontal) immersiveBoxView.id else ConstraintSet.PARENT_ID
-
-                connect(id, ConstraintSet.START, componentAnchor, ConstraintSet.START)
-                connect(id, ConstraintSet.END, componentAnchor, ConstraintSet.END)
-                connect(id, ConstraintSet.TOP, componentAnchor, ConstraintSet.TOP)
-                connect(id, ConstraintSet.BOTTOM, componentAnchor, ConstraintSet.BOTTOM)
-            }
-        }
-
-        changeStatsInfoViewConstraint()
-        changeImmersiveBoxViewConstraint()
+        getDynamicLayoutManager().onVideoOrientationChanged(videoOrientation)
     }
 
     private fun changeLayoutBasedOnVideoType(videoPlayerUiModel: VideoPlayerUiModel, channelType: PlayChannelType) {
-        val bottomMargin = if (videoPlayerUiModel.isYouTube && channelType.isVod) 0 else offset12
-        changePinnedBottomMarginGone(bottomMargin)
+        getDynamicLayoutManager().onVideoPlayerChanged(videoPlayerUiModel, channelType)
     }
 
-    private fun changePinnedBottomMarginGone(bottomMargin: Int) {
-        val layoutParams = pinnedView.rootView.layoutParams as ConstraintLayout.LayoutParams
-        layoutParams.goneBottomMargin = bottomMargin
-        pinnedView.rootView.layoutParams = layoutParams
+    private fun getDynamicLayoutManager(): DynamicLayoutManager = synchronized(this) {
+        if (dynamicLayoutManager == null) {
+            dynamicLayoutManager = PlayDynamicLayoutManager(container as ViewGroup, object : ScreenOrientationDataSource {
+                override fun getScreenOrientation(): ScreenOrientation {
+                    return orientation
+                }
+            })
+        }
+        return dynamicLayoutManager!!
+    }
+
+    private fun getVideoBoundsManager(): VideoBoundsManager = synchronized(this) {
+        if (videoBoundsManager == null) {
+            videoBoundsManager = PlayVideoBoundsManager(container as ViewGroup, object : ScreenOrientationDataSource {
+                override fun getScreenOrientation(): ScreenOrientation {
+                    return orientation
+                }
+            })
+        }
+        return videoBoundsManager!!
     }
 
     //region OnStateChanged
@@ -905,7 +859,7 @@ class PlayUserInteractionFragment @Inject constructor(
             channelType: PlayChannelType = playViewModel.channelType,
             bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets
     ) {
-        if (channelType.isLive && !bottomInsets.isAnyBottomSheetsShown) chatListView.show() else chatListView.hide()
+        if (channelType.isLive && !bottomInsets.isAnyBottomSheetsShown) chatListView?.show() else chatListView?.hide()
     }
 
     private fun videoSettingsViewOnStateChanged(
@@ -923,19 +877,19 @@ class PlayUserInteractionFragment @Inject constructor(
     ) {
         when (pinnedModel) {
             is PinnedMessageUiModel -> {
-                pinnedView.setPinnedMessage(pinnedModel)
+                pinnedView?.setPinnedMessage(pinnedModel)
 
-                if (!bottomInsets.isAnyShown) pinnedView.show()
-                else pinnedView.hide()
+                if (!bottomInsets.isAnyShown) pinnedView?.show()
+                else pinnedView?.hide()
             }
             is PinnedProductUiModel -> {
-                pinnedView.setPinnedProduct(pinnedModel)
+                pinnedView?.setPinnedProduct(pinnedModel)
 
-                if (!bottomInsets.isAnyShown) pinnedView.show()
-                else pinnedView.hide()
+                if (!bottomInsets.isAnyShown) pinnedView?.show()
+                else pinnedView?.hide()
             }
             is PinnedRemoveUiModel -> {
-                pinnedView.hide()
+                pinnedView?.hide()
             }
         }
     }
@@ -974,10 +928,10 @@ class PlayUserInteractionFragment @Inject constructor(
         if (channelType.isLive &&
                 bottomInsets[BottomInsetsType.ProductSheet]?.isShown == false &&
                 bottomInsets[BottomInsetsType.VariantSheet]?.isShown == false) {
-            sendChatView.show()
-        } else sendChatView.hide()
+            sendChatView?.show()
+        } else sendChatView?.hide()
 
-        sendChatView.focusChatForm(channelType.isLive && bottomInsets[BottomInsetsType.Keyboard] is BottomInsetsState.Shown)
+        sendChatView?.focusChatForm(channelType.isLive && bottomInsets[BottomInsetsType.Keyboard] is BottomInsetsState.Shown)
     }
 
     private fun quickReplyViewOnStateChanged(
@@ -988,8 +942,8 @@ class PlayUserInteractionFragment @Inject constructor(
                 bottomInsets[BottomInsetsType.ProductSheet]?.isShown == false &&
                 bottomInsets[BottomInsetsType.VariantSheet]?.isShown == false &&
                 bottomInsets[BottomInsetsType.Keyboard]?.isShown == true) {
-            quickReplyView.show()
-        } else quickReplyView.hide()
+            quickReplyView?.show()
+        } else quickReplyView?.hide()
     }
 
     private fun immersiveBoxViewOnStateChanged(
@@ -1012,4 +966,15 @@ class PlayUserInteractionFragment @Inject constructor(
         } else endLiveInfoView.hide()
     }
     //endregion
+
+    companion object {
+        private const val REQUEST_CODE_LOGIN = 192
+
+        private const val PERCENT_PRODUCT_SHEET_HEIGHT = 0.6
+
+        private const val VISIBLE_ALPHA = 1f
+
+        private const val FADE_DURATION = 200L
+        private const val FADE_TRANSITION_DELAY = 3000L
+    }
 }
