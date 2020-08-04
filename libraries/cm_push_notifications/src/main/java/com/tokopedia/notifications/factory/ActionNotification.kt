@@ -4,10 +4,10 @@ import android.app.Notification
 import android.app.PendingIntent
 import android.content.Context
 import android.graphics.Bitmap
-import androidx.core.app.NotificationCompat
 import android.text.TextUtils
 import android.view.View
 import android.widget.RemoteViews
+import androidx.core.app.NotificationCompat
 import com.tokopedia.notifications.R
 import com.tokopedia.notifications.common.CMConstant
 import com.tokopedia.notifications.common.CMNotificationUtils
@@ -90,6 +90,13 @@ internal class ActionNotification internal constructor(context: Context, baseNot
         remoteView.setTextViewText(R.id.tv_collapsed_message, CMNotificationUtils.getSpannedTextFromStr(baseNotificationModel.message))
         remoteView.setOnClickPendingIntent(if (isCollapsed) R.id.collapseMainView else R.id.status_bar_latest_event_content, createMainPendingIntent(baseNotificationModel,
                 requestCode))
+        if (baseNotificationModel.media == null || baseNotificationModel.media?.mediumQuality == null
+                || baseNotificationModel.media?.mediumQuality!!.isBlank() && !TextUtils.isEmpty(baseNotificationModel.detailMessage)) {
+            remoteView.setViewVisibility(if (isCollapsed) R.id.tv_collapsed_message else R.id.tv_expanded_message, View.VISIBLE)
+            remoteView.setViewVisibility(if (isCollapsed) R.id.tv_expanded_message else R.id.tv_collapsed_message, View.GONE)
+            remoteView.setTextViewText(if (isCollapsed) R.id.tv_collapsed_message else R.id.tv_expanded_message,
+                    CMNotificationUtils.getSpannedTextFromStr(if (isCollapsed) baseNotificationModel.message else baseNotificationModel.detailMessage))
+        }
     }
 
     private fun addActionButton(actionButtonList: List<ActionButton>, expandedView: RemoteViews) {

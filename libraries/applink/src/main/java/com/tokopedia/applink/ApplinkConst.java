@@ -311,6 +311,8 @@ public interface ApplinkConst {
 
     String OCC = "tokopedia://occ";
 
+    String SELLER_MIGRATION = "tokopedia://seller/seller-migration";
+
     interface Discovery {
         String CATEGORY = "tokopedia://category";
     }
@@ -436,6 +438,8 @@ public interface ApplinkConst {
 
         String SOURCE_ASK_SELLER = "tx_ask_seller";
         String SOURCE_PAGE = "source_page";
+        String SEARCH_CREATE_TIME = "search_create_time_str";
+        String SEARCH_PRODUCT_KEYWORD = "search_product_keyword";
 
         // chat source page
         String SOURCE_CHAT_SEARCH = "chat_search";
@@ -526,7 +530,7 @@ public interface ApplinkConst {
     }
 
     interface ResCenter {
-        String MOBILE =  "/mobile";
+        String MOBILE = "/mobile";
         String RESO_CREATE = "resolution-center/create/%s" + MOBILE;
     }
 
@@ -535,11 +539,13 @@ public interface ApplinkConst {
         interface RemoteConfig {
             String APP_SHOW_TOKOPOINT_NATIVE = "app_enable_tokopoint_native";
         }
-        interface RewardWebview{
+
+        interface RewardWebview {
             String REWARD_WEBVIEW = "https://m.tokopedia.com/tokopoints";
         }
-        interface Reward{
-            String REWARDS= "rewards";
+
+        interface Reward {
+            String REWARDS = "rewards";
         }
     }
 

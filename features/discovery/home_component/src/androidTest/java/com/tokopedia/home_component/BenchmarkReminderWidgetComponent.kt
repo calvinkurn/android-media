@@ -23,11 +23,11 @@ class BenchmarkReminderWidgetComponent {
     var activityRule: ActivityTestRule<BlankTestActivity> = ActivityTestRule(BlankTestActivity::class.java)
 
     @Test
-    fun benchmark_onCreateViewHolder_reminder_widget_component() {
+    fun benchmark_onCreateViewHolder_ViewHolder_reminder_widget_component() {
         val viewGroup = FrameLayout(activityRule.activity)
         val recyclerViewAdapter = simpleAdapter(
                 ReminderWidgetViewHolder.LAYOUT) {
-            ReminderWidgetViewHolder(it, null)
+            ReminderWidgetViewHolder(it, null, disableNetwork = true)
         }
 
         benchmarkRule.measureRepeated {
@@ -38,10 +38,10 @@ class BenchmarkReminderWidgetComponent {
     }
 
     @Test
-    fun benchmark_onBind_reminder_widget_recharge_component() {
+    fun benchmark_onBind_ViewHolder_reminder_widget_recharge_component() {
         val itemView = simpleViewFromLayout(ReminderWidgetViewHolder.LAYOUT, activityRule.activity)
         val viewHolder = ReminderWidgetViewHolder(
-                itemView, null
+                itemView, null, disableNetwork = true
         )
         val data = ReminderWidgetModel(MockReminderWidget.get(), ReminderEnum.RECHARGE)
         benchmarkRule.measureRepeated {
@@ -52,10 +52,10 @@ class BenchmarkReminderWidgetComponent {
     }
 
     @Test
-    fun benchmark_onBind_reminder_widget_salam_component() {
+    fun benchmark_onBind_ViewHolder_reminder_widget_salam_component() {
         val itemView = simpleViewFromLayout(ReminderWidgetViewHolder.LAYOUT, activityRule.activity)
         val viewHolder = ReminderWidgetViewHolder(
-                itemView, null
+                itemView, null, disableNetwork = true
         )
         val data = ReminderWidgetModel(MockReminderWidget.get(), ReminderEnum.SALAM)
         benchmarkRule.measureRepeated {

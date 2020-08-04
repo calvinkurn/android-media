@@ -38,9 +38,9 @@ class TopupBillsRecentNumbersAdapter(val digitalRecentNumbers: List<TopupBillsRe
 
     inner class RecentNumbersItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        private val iconOperator: ImageView = itemView.findViewById(R.id.icon_operator)
-        private val textClientNumber: TextView = itemView.findViewById(R.id.text_client_number)
-        private val textProductName: TextView = itemView.findViewById(R.id.text_product_name)
+        private val iconOperator: ImageView = itemView.findViewById(R.id.topupbills_recent_icon_operator)
+        private val textClientNumber: TextView = itemView.findViewById(R.id.topupbills_recent_client_number)
+        private val textProductName: TextView = itemView.findViewById(R.id.topupbills_text_product_name)
 
         private lateinit var topupBillsRecommendation: TopupBillsRecommendation
 

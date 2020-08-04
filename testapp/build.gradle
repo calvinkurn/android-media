@@ -26,7 +26,7 @@ def getTkpdVersionName() {
 }
 buildscript {
     repositories {
-        maven { url 'https://maven.fabric.io/public' }
+        google()
         maven { url "https://maven.google.com" }
         maven { url 'https://hansel.io/maven' }
         mavenCentral()

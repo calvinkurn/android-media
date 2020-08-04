@@ -135,14 +135,14 @@ class ProductInfoFragment : BaseDaggerFragment() {
     private fun initView(productDataModel: ProductInfoDataModel){
         configureContentView(true)
         recommendationItem = mapToRecommendationItem(productDataModel)
-        product_name.text = productDataModel.productDetailData.name
-        product_price.text = productDataModel.productDetailData.price
-        location.text = productDataModel.productDetailData.shop.location
+        product_name?.text = productDataModel.productDetailData.name
+        product_price?.text = productDataModel.productDetailData.price
+        location?.text = productDataModel.productDetailData.shop.location
         if (productDataModel.productDetailData.badges.isNotEmpty()) {
-            badge.show()
+            badge?.show()
             ImageHandler.loadImageFitCenter(context, badge, productDataModel.productDetailData.badges[0].imageUrl)
         } else {
-            badge.hide()
+            badge?.hide()
         }
         setRatingReviewCount(productDataModel.productDetailData.rating, productDataModel.productDetailData.countReview)
         updateWishlist(productDataModel.productDetailData.isWishlist)
@@ -151,15 +151,15 @@ class ProductInfoFragment : BaseDaggerFragment() {
 
         when(productDataModel.productDetailData.status){
             0 -> {
-                container_loading.hide()
-                container_error.hide()
-                container_product.hide()
-                container_empty.show()
+                container_loading?.hide()
+                container_error?.hide()
+                container_product?.hide()
+                container_empty?.show()
             }
             3 -> {
-                add_to_cart.isEnabled = false
-                buy_now.hide()
-                add_to_cart.text = getString(R.string.empty_stock)
+                add_to_cart?.isEnabled = false
+                buy_now?.hide()
+                add_to_cart?.text = getString(R.string.empty_stock)
             }
         }
 
@@ -167,7 +167,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
         onClickAddToCart(productDataModel.productDetailData)
         onClickBuyNow(productDataModel.productDetailData)
         onClickProductCard(productDataModel.productDetailData.id.toString())
-        onClickWishlist(productDataModel.productDetailData.id.toString())
+        onClickWishlist(productDataModel.productDetailData.id.toString(), productDataModel.productDetailData.shop.id.toString())
     }
 
     /**
@@ -277,7 +277,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
                     }
                 }
                 else -> {
-                    buy_now.isEnabled = true
+                    buy_now?.isEnabled = true
                     showToastError(MessageErrorException(response.message ?: ""))
                 }
             }
@@ -406,7 +406,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
                 addToCart(productDetailData)
             } else {
                 context?.let {
-                    RecommendationPageTracking.eventUserAddToCartNonLoginWithProductId(ref)
+                    RecommendationPageTracking.eventUserAddToCartNonLoginWithProductId(ref, productDetailData.shop.id.toString())
                     startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
                             REQUEST_CODE_LOGIN)
                 }
@@ -423,7 +423,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
                 buy_now?.isEnabled = false
                 buyNow(productDetailData)
             } else {
-                RecommendationPageTracking.eventUserClickBuyNonLoginWithProductId(ref)
+                RecommendationPageTracking.eventUserClickBuyNonLoginWithProductId(ref, productDetailData.shop.id.toString())
                 context?.let {
                     startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
                             REQUEST_CODE_LOGIN)
@@ -435,17 +435,17 @@ class ProductInfoFragment : BaseDaggerFragment() {
     /**
      * [onClickWishlist] it will handle click wishlist icon
      */
-    private fun onClickWishlist(productId: String){
+    private fun onClickWishlist(productId: String, shopId: String){
         fab_detail?.setOnClickListener {
             if (primaryProductViewModel.isLoggedIn()) {
-                RecommendationPageTracking.eventUserClickProductToWishlistForUserLoginWithProductId(!it.isActivated, ref)
+                RecommendationPageTracking.eventUserClickProductToWishlistForUserLoginWithProductId(!it.isActivated, ref, shopId)
                 if (it.isActivated) {
                     primaryProductViewModel.removeWishList(productId)
                 } else {
                     primaryProductViewModel.addWishList(productId)
                 }
             } else {
-                RecommendationPageTracking.eventUserClickProductToWishlistForNonLoginWithProductId(ref)
+                RecommendationPageTracking.eventUserClickProductToWishlistForNonLoginWithProductId(ref, shopId)
                 RouteManager.route(activity, ApplinkConst.LOGIN)
             }
         }
@@ -499,13 +499,13 @@ class ProductInfoFragment : BaseDaggerFragment() {
     private fun onSuccessRemoveWishlist(productId: String?) {
         showToastSuccess(getString(com.tokopedia.wishlist.common.R.string.msg_success_remove_wishlist))
         updateWishlist(false)
-        sendIntentResusltWishlistChange(productId ?: "", false)
+        sendIntentResultWishlistChange(productId ?: "", false)
     }
 
     /**
-     * [sendIntentResusltWishlistChange] it will handle send result when wishlist success / error
+     * [sendIntentResultWishlistChange] it will handle send result when wishlist success / error
      */
-    private fun sendIntentResusltWishlistChange(productId: String, isInWishlist: Boolean) {
+    private fun sendIntentResultWishlistChange(productId: String, isInWishlist: Boolean) {
         val resultIntent = Intent()
                 .putExtra(WISHLIST_STATUS_UPDATED_POSITION, activity?.intent?.getIntExtra(WISHLIST_STATUS_UPDATED_POSITION, -1))
         resultIntent.putExtra(WIHSLIST_STATUS_IS_WISHLIST, isInWishlist)
@@ -527,7 +527,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
     private fun onSuccessAddWishlist(productId: String?) {
         showToastSuccess(getString(com.tokopedia.wishlist.common.R.string.msg_success_add_wishlist))
         updateWishlist(true)
-        sendIntentResusltWishlistChange(productId ?: "", true)
+        sendIntentResultWishlistChange(productId ?: "", true)
     }
 
     /**
@@ -586,11 +586,11 @@ class ProductInfoFragment : BaseDaggerFragment() {
      */
     private fun setRatingReviewCount(ratingValue: Int, review: Int){
         if (ratingValue in 1..5) {
-            rating.setImageResource(getRatingDrawable(ratingValue))
-            review_count.text = String.format(getString(R.string.recom_review_count), review)
+            rating?.setImageResource(getRatingDrawable(ratingValue))
+            review_count?.text = String.format(getString(R.string.recom_review_count), review)
         } else {
-            rating.visibility = View.GONE
-            review_count.visibility = View.GONE
+            rating?.visibility = View.GONE
+            review_count?.visibility = View.GONE
         }
     }
 
@@ -614,8 +614,8 @@ class ProductInfoFragment : BaseDaggerFragment() {
      * [setSplashedText] it will handle splashed text
      */
     private fun setSplashedText(text: String){
-        product_slashed_price.text = text
-        product_slashed_price.paintFlags = product_slashed_price.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+        product_slashed_price?.text = text
+        product_slashed_price?.paintFlags = product_slashed_price.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
     }
 
     /**
@@ -625,11 +625,11 @@ class ProductInfoFragment : BaseDaggerFragment() {
     private fun updateWishlist(wishlisted: Boolean) {
         context?.let {
             if (wishlisted) {
-                fab_detail.isActivated = true
-                fab_detail.setImageDrawable(ContextCompat.getDrawable(it, R.drawable.recom_ic_product_action_wishlist_added_28))
+                fab_detail?.isActivated = true
+                fab_detail?.setImageDrawable(ContextCompat.getDrawable(it, R.drawable.recom_ic_product_action_wishlist_added_28))
             } else {
-                fab_detail.isActivated = false
-                fab_detail.setImageDrawable(ContextCompat.getDrawable(it, R.drawable.recom_ic_product_action_wishlist_gray_28))
+                fab_detail?.isActivated = false
+                fab_detail?.setImageDrawable(ContextCompat.getDrawable(it, R.drawable.recom_ic_product_action_wishlist_gray_28))
             }
         }
     }
@@ -683,13 +683,13 @@ class ProductInfoFragment : BaseDaggerFragment() {
      */
     private fun handleDiscount(discountPercentage: Int, slashedPrice: String){
         if(discountPercentage > 0){
-            product_discount.show()
-            product_slashed_price.show()
-            product_discount.text = "$discountPercentage%"
+            product_discount?.show()
+            product_slashed_price?.show()
+            product_discount?.text = "$discountPercentage%"
             setSplashedText(slashedPrice)
         } else {
-            product_discount.gone()
-            product_slashed_price.gone()
+            product_discount?.gone()
+            product_slashed_price?.gone()
         }
     }
 

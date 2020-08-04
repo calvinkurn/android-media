@@ -89,10 +89,8 @@ class GiftBoxDailyViewModel @Inject constructor(@Named(MAIN) uiDispatcher: Corou
         fun mapperGratificationResponseToCouponIds(response: GiftBoxRewardEntity): List<String> {
             var ids = arrayListOf<String>()
             response.gamiCrack.benefits?.forEach {
-                if (it.referenceID != null) {
-                    if (it.referenceID != 0) {
-                        ids.add(it.referenceID.toString())
-                    }
+                if (!it.referenceID.isNullOrEmpty()) {
+                    ids.add(it.referenceID)
                 }
             }
             return ids

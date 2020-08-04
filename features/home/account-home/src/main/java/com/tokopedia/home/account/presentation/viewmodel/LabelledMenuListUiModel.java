@@ -3,11 +3,14 @@ package com.tokopedia.home.account.presentation.viewmodel;
 import android.os.Parcel;
 
 import com.tokopedia.home.account.presentation.adapter.AccountTypeFactory;
+import com.tokopedia.unifycomponents.Label;
 
 import java.util.Objects;
 
 public class LabelledMenuListUiModel extends MenuListViewModel {
     private String label;
+    private int labelType = Label.Companion.getGENERAL_LIGHT_GREEN();
+    private boolean showRightButton;
 
     @Override
     public int type(AccountTypeFactory typeFactory) {
@@ -22,6 +25,22 @@ public class LabelledMenuListUiModel extends MenuListViewModel {
         this.label = label;
     }
 
+    public int getLabelType() {
+        return labelType;
+    }
+
+    public void setLabelType(int labelType) {
+        this.labelType = labelType;
+    }
+
+    public boolean isShowRightButton() {
+        return showRightButton;
+    }
+
+    public void setShowRightButton(boolean showRightButton) {
+        this.showRightButton = showRightButton;
+    }
+
     public LabelledMenuListUiModel() {
     }
 
@@ -30,10 +49,12 @@ public class LabelledMenuListUiModel extends MenuListViewModel {
         dest.writeString(getMenu());
         dest.writeString(getMenuDescription());
         dest.writeString(getLabel());
+        dest.writeInt(getLabelType());
         dest.writeString(getApplink());
         dest.writeInt(getCount());
         dest.writeString(getTitleTrack());
         dest.writeString(getSectionTrack());
+        dest.writeInt((showRightButton) ? 1 : 0);
         dest.writeByte((byte) (isUseSeparator() ? 1 : 0));
     }
 
@@ -41,10 +62,12 @@ public class LabelledMenuListUiModel extends MenuListViewModel {
         this.setMenu(in.readString());
         this.setMenuDescription(in.readString());
         this.setLabel(in.readString());
+        this.setLabelType(in.readInt());
         this.setApplink(Objects.requireNonNull(in.readString()));
         this.setCount(in.readInt());
         this.setTitleTrack(in.readString());
         this.setSectionTrack(in.readString());
+        this.setShowRightButton(in.readInt() == 1);
         this.setUseSeparator(in.readByte() != 0);
     }
 

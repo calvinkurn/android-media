@@ -143,7 +143,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
         recyclerView.isNestedScrollingEnabled = false
         recyclerView.addItemDecoration(DividerItemDecoration(activity))
         val appVersion = view.findViewById<TextView>(R.id.text_view_app_version)
-        appVersion.text = getString(R.string.application_version_fmt, GlobalConfig.VERSION_NAME)
+        appVersion.text = getString(R.string.application_version_fmt, GlobalConfig.RAW_VERSION_NAME)
     }
 
     override fun getSettingItems(): List<SettingItemViewModel> {

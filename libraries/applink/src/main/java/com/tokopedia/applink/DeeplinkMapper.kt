@@ -3,7 +3,7 @@ package com.tokopedia.applink
 import android.content.Context
 import android.net.Uri
 import chatbot.DeeplinkMapperChatbot.getChatbotDeeplink
-import com.tokopedia.applink.Digital_Deals.DeeplinkMapperDeals.getRegisteredNavigationDeals
+import com.tokopedia.applink.digitaldeals.DeeplinkMapperDeals.getRegisteredNavigationDeals
 import com.tokopedia.applink.Hotlist.DeeplinkMapperHotlist.getRegisteredHotlist
 import com.tokopedia.applink.category.DeeplinkMapperCategory.getRegisteredCategoryNavigation
 import com.tokopedia.applink.category.DeeplinkMapperCategory.getRegisteredNavigationCatalog
@@ -75,7 +75,6 @@ object DeeplinkMapper {
 
     val TOKOPOINTS = "tokopoints"
     val LOCK = Any()
-    var mShowTokopointNative=false
 
     /**
      * Get registered deeplink navigation in manifest
@@ -202,20 +201,6 @@ object DeeplinkMapper {
      */
     fun getRegisteredNavigationFromHttp(context: Context, uri: Uri, deeplink: String): String {
 
-        //Fallback strategy for new Rewards Page
-        val firebaseRemoteConfig = FirebaseRemoteConfigImpl(context)
-        firebaseRemoteConfig.let {
-            mShowTokopointNative = it.getBoolean(ApplinkConst.RewardFallback.RemoteConfig.APP_SHOW_TOKOPOINT_NATIVE, false)
-        }
-        if (mShowTokopointNative) {
-            if (uri.pathSegments.joinToString("/") == TOKOPOINTS || uri.pathSegments.joinToString("/") == ApplinkConst.RewardFallback.Reward.REWARDS) {
-                return ApplinkConstInternalPromo.TOKOPOINTS_HOME
-            }
-        } else {
-            if (uri.pathSegments.joinToString("/") == ApplinkConst.RewardFallback.Reward.REWARDS){
-               return deeplink.replaceFirst("rewards","tokopoints")
-            }
-        }
         val applinkDigital = DeeplinkMapperDigital.getRegisteredNavigationFromHttpDigital(context, deeplink)
         if (applinkDigital.isNotEmpty()) {
             return applinkDigital
@@ -241,7 +226,7 @@ object DeeplinkMapper {
             DLP.startWith(ApplinkConst.CART) { _, _, deeplink -> getRegisteredNavigationMarketplace(deeplink) },
             DLP.startWith(ApplinkConst.CHECKOUT) { _, _, deeplink -> getRegisteredNavigationMarketplace(deeplink) },
             DLP.startWith(ApplinkConst.OCC) { _, _, deeplink -> getRegisteredNavigationMarketplace(deeplink) },
-            DLP.startWithPattern(ApplinkConst.DEALS_HOME) { _, _, deeplink -> getRegisteredNavigationDeals(deeplink) },
+            DLP.startWithPattern(ApplinkConst.DEALS_HOME) { ctx, _, deeplink -> getRegisteredNavigationDeals(ctx, deeplink) },
             DLP.startWithPattern(ApplinkConst.FIND) { _, _, deeplink -> getRegisteredFind(deeplink) },
             DLP.startWith(ApplinkConst.AMP_FIND) { _, _, deeplink -> getRegisteredFind(deeplink) },
             DLP.startWithPattern(ApplinkConst.Digital.DIGITAL_BROWSE) { _, _, deeplink -> getRegisteredNavigationExploreCategory(deeplink) },

@@ -97,7 +97,7 @@ class AddEditProductPreviewActivity : BaseSimpleActivity() {
     override fun onBackPressed() {
         onBackPressedHitTracking()
         DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
-            setTitle(getString(R.string.label_title_on_dialog))
+            setTitle(getString(com.tokopedia.product.addedit.R.string.label_title_on_dialog))
             setPrimaryCTAText(getString(R.string.label_cta_primary_button_on_dialog))
             setSecondaryCTAText(getString(R.string.label_cta_secondary_button_on_dialog))
             if((isEditing()  || dataBackPressedLoss()) && !isDrafting()) {
