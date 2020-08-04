@@ -11,7 +11,6 @@ import android.view.ViewTreeObserver
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
-import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
@@ -34,7 +33,6 @@ import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.PlayFullScreenHelper
 import com.tokopedia.play.util.changeConstraint
-import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.util.event.DistinctEventObserver
 import com.tokopedia.play.util.event.EventObserver
 import com.tokopedia.play.util.observer.DistinctObserver
@@ -59,16 +57,13 @@ import com.tokopedia.play_common.view.updatePadding
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.coroutines.Fail
-import kotlinx.coroutines.*
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
 
 /**
  * Created by jegul on 29/11/19
  */
 class PlayUserInteractionFragment @Inject constructor(
         private val viewModelFactory: ViewModelProvider.Factory,
-        private val dispatchers: CoroutineDispatcherProvider,
         private val trackingQueue: TrackingQueue
 ):
         TkpdBaseV4Fragment(),
@@ -218,6 +213,7 @@ class PlayUserInteractionFragment @Inject constructor(
         } else super.onActivityResult(requestCode, resultCode, data)
     }
 
+    //region ComponentListener
     /**
      * Toolbar View Component Listener
      */
@@ -336,6 +332,16 @@ class PlayUserInteractionFragment @Inject constructor(
                 shouldFinish = true
         )
     }
+    //endregion
+
+    private fun setupView(view: View) {
+        likeView.setEnabled(false)
+        videoSettingsView.setFullscreen(false)
+
+        container.setOnClickListener {
+            if (!playViewModel.videoOrientation.isHorizontal && container.hasAlpha) triggerImmersive(it.isFullSolid)
+        }
+    }
 
     private fun setupInsets(view: View) {
         spaceSize.rootView.doOnApplyWindowInsets { v, insets, _, margin ->
@@ -384,13 +390,12 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     //region observe
+    /**
+     * Observe
+     */
     private fun observeVideoPlayer() {
         playViewModel.observableVideoPlayer.observe(viewLifecycleOwner, Observer {
             changeLayoutBasedOnVideoType(it, playViewModel.channelType)
-
-            /**
-             * New
-             */
             if (it is General) videoControlView.setPlayer(it.exoPlayer)
         })
     }
@@ -402,18 +407,7 @@ class PlayUserInteractionFragment @Inject constructor(
             }
             if (it.state == PlayVideoState.Ended) showInteractionIfWatchMode()
 
-            /**
-             * New
-             */
-            if (!playViewModel.channelType.isVod) {
-                playButtonView.hide()
-                return@DistinctObserver
-            }
-            when (it.state) {
-                PlayVideoState.Pause -> playButtonView.showPlayButton()
-                PlayVideoState.Ended -> playButtonView.showRepeatButton()
-                else -> playButtonView.hide()
-            }
+            playButtonViewOnStateChanged(state = it.state)
         })
     }
 
@@ -435,22 +429,11 @@ class PlayUserInteractionFragment @Inject constructor(
             triggerImmersive(false)
             playFragment.setVideoTopBounds(playViewModel.videoPlayer, it.orientation, getVideoTopBounds(it.orientation))
 
-            /**
-             * New
-             */
-            statsInfoView.setLiveBadgeVisibility(it.channelType.isLive)
-
-            if (it.channelType.isVod && playViewModel.videoPlayer.isGeneral && !playViewModel.bottomInsets.isAnyShown) videoControlView.show()
-            else videoControlView.hide()
-
-            if (it.channelType.isLive) sendChatView.show() else sendChatView.hide()
-
-            if (it.channelType.isLive && !playViewModel.bottomInsets.isAnyBottomSheetsShown) chatListView.show() else chatListView.hide()
-
-            if (it.orientation.isHorizontal &&
-                    playViewModel.videoPlayer.isGeneral &&
-                    !playViewModel.bottomInsets.isAnyShown
-            ) videoSettingsView.show() else videoSettingsView.hide()
+            statsInfoViewOnStateChanged(channelType = it.channelType)
+            videoControlViewOnStateChanged(channelType = it.channelType)
+            sendChatViewOnStateChanged(channelType = it.channelType)
+            chatListViewOnStateChanged(channelType = it.channelType)
+            videoSettingsViewOnStateChanged(videoOrientation = it.orientation)
         })
     }
 
@@ -491,23 +474,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun observePinned() {
         playViewModel.observablePinned.observe(viewLifecycleOwner, DistinctObserver {
-            when (it) {
-                is PinnedMessageUiModel -> {
-                    pinnedView.setPinnedMessage(it)
-
-                    if (!playViewModel.bottomInsets.isAnyShown) pinnedView.show()
-                    else pinnedView.hide()
-                }
-                is PinnedProductUiModel -> {
-                    pinnedView.setPinnedProduct(it)
-
-                    if (!playViewModel.bottomInsets.isAnyShown) pinnedView.show()
-                    else pinnedView.hide()
-                }
-                is PinnedRemoveUiModel -> {
-                    pinnedView.hide()
-                }
-            }
+            pinnedViewOnStateChanged(pinnedModel = it)
         })
     }
 
@@ -517,9 +484,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun observeFollowShop() {
         viewModel.observableFollowPartner.observe(viewLifecycleOwner, DistinctObserver {
-            if (it is Fail) {
-                showToast(it.throwable.message.orEmpty())
-            }
+            if (it is Fail) showToast(it.throwable.message.orEmpty())
         })
     }
 
@@ -553,46 +518,17 @@ class PlayUserInteractionFragment @Inject constructor(
                 view?.show()
             }, PlayParentLayoutManagerImpl.ANIMATION_DURATION)
 
-            /**
-             * New
-             */
-            if (map.isAnyShown) gradientBackgroundView.hide() else gradientBackgroundView.show()
-            if (!map.isAnyShown) toolbarView.show() else toolbarView.hide()
-            if (!map.isAnyShown) statsInfoView.show() else statsInfoView.hide()
-            if (!map.isAnyShown && playViewModel.channelType.isVod && playViewModel.videoPlayer.isGeneral) videoControlView.show()
-            else videoControlView.hide()
-            if (map.isAnyShown) likeView.hide() else likeView.show()
-
-            if (playViewModel.channelType.isLive &&
-                    map[BottomInsetsType.ProductSheet]?.isShown == false &&
-                    map[BottomInsetsType.VariantSheet]?.isShown == false) {
-                sendChatView.show()
-            } else sendChatView.hide()
-
-            sendChatView.focusChatForm(playViewModel.channelType.isLive && map[BottomInsetsType.Keyboard] is BottomInsetsState.Shown)
-
-            if (playViewModel.channelType.isLive &&
-                    map[BottomInsetsType.ProductSheet]?.isShown == false &&
-                    map[BottomInsetsType.VariantSheet]?.isShown == false &&
-                    map[BottomInsetsType.Keyboard]?.isShown == true) {
-                quickReplyView.show()
-            } else quickReplyView.hide()
-
-            if (playViewModel.channelType.isLive &&
-                    map[BottomInsetsType.ProductSheet]?.isShown == false &&
-                    map[BottomInsetsType.VariantSheet]?.isShown == false) {
-                chatListView.show()
-            } else chatListView.hide()
-
-            val pinned = playViewModel.observablePinned.value
-            if (!map.isAnyShown &&
-                    (pinned is PinnedMessageUiModel || pinned is PinnedProductUiModel)
-            ) pinnedView.show() else pinnedView.hide()
-
-            if (!map.isAnyShown && playViewModel.videoOrientation.isHorizontal && playViewModel.videoPlayer.isGeneral) videoSettingsView.show()
-            else videoSettingsView.hide()
-
-            if (map.isAnyShown) immersiveBoxView.hide() else immersiveBoxView.show()
+            gradientBackgroundViewOnStateChanged(bottomInsets = map)
+            toolbarViewOnStateChanged(bottomInsets = map)
+            statsInfoViewOnStateChanged(bottomInsets = map)
+            videoControlViewOnStateChanged(bottomInsets = map)
+            likeViewOnStateChanged(bottomInsets = map)
+            sendChatViewOnStateChanged(bottomInsets = map)
+            quickReplyViewOnStateChanged(bottomInsets = map)
+            chatListViewOnStateChanged(bottomInsets = map)
+            pinnedViewOnStateChanged(bottomInsets = map)
+            videoSettingsViewOnStateChanged(bottomInsets = map)
+            immersiveBoxViewOnStateChanged(bottomInsets = map)
         })
     }
 
@@ -600,37 +536,28 @@ class PlayUserInteractionFragment @Inject constructor(
         playViewModel.observableEvent.observe(viewLifecycleOwner, DistinctObserver {
             getBottomSheetInstance().setState(it.isFreeze)
 
-            if (it.isFreeze) hideBottomSheet()
+            if (it.isFreeze || it.isBanned) {
+                gradientBackgroundView.hide()
+                likeView.hide()
+                quickReplyView.hide()
+                chatListView.hide()
+                pinnedView.hide()
+                immersiveBoxView.hide()
+                playButtonView.hide()
 
-            /**
-             * New
-             */
-            if(it.isFreeze || it.isBanned) gradientBackgroundView.hide()
-            if(it.isFreeze || it.isBanned) toolbarView.show()
-            if(it.isFreeze || it.isBanned) statsInfoView.show()
-            if(it.isFreeze || it.isBanned) {
-                videoControlView.hide()
                 videoControlView.setPlayer(null)
-            }
-            if(it.isFreeze || it.isBanned) likeView.hide()
-            if(it.isFreeze || it.isBanned) {
+                videoControlView.hide()
+
                 sendChatView.focusChatForm(false)
                 sendChatView.hide()
+
+                toolbarView.show()
+                statsInfoView.show()
+
+                hideBottomSheet()
             }
-            if(it.isFreeze || it.isBanned) quickReplyView.hide()
-            if(it.isFreeze || it.isBanned) chatListView.hide()
-            if(it.isFreeze || it.isBanned) pinnedView.hide()
-            if(it.isFreeze || it.isBanned) immersiveBoxView.hide()
-            if(it.isFreeze || it.isBanned) playButtonView.hide()
-            if(it.isFreeze) {
-                endLiveInfoView.setInfo(
-                        title = it.freezeTitle,
-                        message = it.freezeMessage,
-                        btnTitle = it.freezeButtonTitle,
-                        btnUrl = it.freezeButtonUrl
-                )
-                endLiveInfoView.show()
-            } else endLiveInfoView.hide()
+
+            endLiveInfoViewOnStateChanged(event = it)
         })
     }
 
@@ -640,15 +567,6 @@ class PlayUserInteractionFragment @Inject constructor(
         })
     }
     //endregion
-
-    private fun setupView(view: View) {
-        likeView.setEnabled(false)
-        videoSettingsView.setFullscreen(false)
-
-        container.setOnClickListener {
-            if (!playViewModel.videoOrientation.isHorizontal && container.hasAlpha) triggerImmersive(it.isFullSolid)
-        }
-    }
 
     private fun triggerImmersive(shouldImmersive: Boolean) {
         cancelAllAnimations()
@@ -841,13 +759,6 @@ class PlayUserInteractionFragment @Inject constructor(
         view?.performClick()
     }
 
-    private fun invalidateInsets(view: View) {
-        try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) view.requestApplyInsets()
-            else view.requestFitSystemWindows()
-        } catch (e: Exception) {}
-    }
-
     private fun openProductSheet() {
         PlayAnalytics.clickPinnedProduct(channelId)
         playViewModel.onShowProductSheet(productSheetMaxHeight)
@@ -921,29 +832,37 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun changeLayoutBasedOnVideoOrientation(videoOrientation: VideoOrientation) {
-        container.changeConstraint {
 
-            connect(id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
-            connect(id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
+        fun changeStatsInfoViewConstraint() {
+            container.changeConstraint {
 
-            if (videoOrientation is VideoOrientation.Horizontal) {
-                connect(id, ConstraintSet.TOP, statsInfoView.id, ConstraintSet.BOTTOM, offset16)
-                clear(id, ConstraintSet.BOTTOM)
-                setDimensionRatio(id, "H, ${videoOrientation.aspectRatio}")
-            } else {
-                connect(id, ConstraintSet.TOP, statsInfoView.id, ConstraintSet.BOTTOM)
-                connect(id, ConstraintSet.BOTTOM, pinnedView.id, ConstraintSet.TOP, offset16)
+                connect(id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
+                connect(id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
+
+                if (videoOrientation is VideoOrientation.Horizontal) {
+                    connect(id, ConstraintSet.TOP, statsInfoView.id, ConstraintSet.BOTTOM, offset16)
+                    clear(id, ConstraintSet.BOTTOM)
+                    setDimensionRatio(id, "H, ${videoOrientation.aspectRatio}")
+                } else {
+                    connect(id, ConstraintSet.TOP, statsInfoView.id, ConstraintSet.BOTTOM)
+                    connect(id, ConstraintSet.BOTTOM, pinnedView.id, ConstraintSet.TOP, offset16)
+                }
             }
         }
 
-        container.changeConstraint {
-            val componentAnchor = if (videoOrientation.isHorizontal) immersiveBoxView.id else ConstraintSet.PARENT_ID
+        fun changeImmersiveBoxViewConstraint() {
+            container.changeConstraint {
+                val componentAnchor = if (videoOrientation.isHorizontal) immersiveBoxView.id else ConstraintSet.PARENT_ID
 
-            connect(id, ConstraintSet.START, componentAnchor, ConstraintSet.START)
-            connect(id, ConstraintSet.END, componentAnchor, ConstraintSet.END)
-            connect(id, ConstraintSet.TOP, componentAnchor, ConstraintSet.TOP)
-            connect(id, ConstraintSet.BOTTOM, componentAnchor, ConstraintSet.BOTTOM)
+                connect(id, ConstraintSet.START, componentAnchor, ConstraintSet.START)
+                connect(id, ConstraintSet.END, componentAnchor, ConstraintSet.END)
+                connect(id, ConstraintSet.TOP, componentAnchor, ConstraintSet.TOP)
+                connect(id, ConstraintSet.BOTTOM, componentAnchor, ConstraintSet.BOTTOM)
+            }
         }
+
+        changeStatsInfoViewConstraint()
+        changeImmersiveBoxViewConstraint()
     }
 
     private fun changeLayoutBasedOnVideoType(videoPlayerUiModel: VideoPlayerUiModel, channelType: PlayChannelType) {
@@ -956,4 +875,141 @@ class PlayUserInteractionFragment @Inject constructor(
         layoutParams.goneBottomMargin = bottomMargin
         pinnedView.rootView.layoutParams = layoutParams
     }
+
+    //region OnStateChanged
+    private fun playButtonViewOnStateChanged(
+            channelType: PlayChannelType = playViewModel.channelType,
+            state: PlayVideoState
+    ) {
+        if (!channelType.isVod) {
+            playButtonView.hide()
+            return
+        }
+        when (state) {
+            PlayVideoState.Pause -> playButtonView.showPlayButton()
+            PlayVideoState.Ended -> playButtonView.showRepeatButton()
+            else -> playButtonView.hide()
+        }
+    }
+
+    private fun videoControlViewOnStateChanged(
+            channelType: PlayChannelType = playViewModel.channelType,
+            videoPlayer: VideoPlayerUiModel = playViewModel.videoPlayer,
+            bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets
+    ) {
+        if (channelType.isVod && videoPlayer.isGeneral && !bottomInsets.isAnyShown) videoControlView.show()
+        else videoControlView.hide()
+    }
+
+    private fun chatListViewOnStateChanged(
+            channelType: PlayChannelType = playViewModel.channelType,
+            bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets
+    ) {
+        if (channelType.isLive && !bottomInsets.isAnyBottomSheetsShown) chatListView.show() else chatListView.hide()
+    }
+
+    private fun videoSettingsViewOnStateChanged(
+            videoOrientation: VideoOrientation = playViewModel.videoOrientation,
+            videoPlayer: VideoPlayerUiModel = playViewModel.videoPlayer,
+            bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets
+    ) {
+        if (videoOrientation.isHorizontal && videoPlayer.isGeneral && !bottomInsets.isAnyShown) videoSettingsView.show()
+        else videoSettingsView.hide()
+    }
+
+    private fun pinnedViewOnStateChanged(
+            pinnedModel: PinnedUiModel? = playViewModel.observablePinned.value,
+            bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets
+    ) {
+        when (pinnedModel) {
+            is PinnedMessageUiModel -> {
+                pinnedView.setPinnedMessage(pinnedModel)
+
+                if (!bottomInsets.isAnyShown) pinnedView.show()
+                else pinnedView.hide()
+            }
+            is PinnedProductUiModel -> {
+                pinnedView.setPinnedProduct(pinnedModel)
+
+                if (!bottomInsets.isAnyShown) pinnedView.show()
+                else pinnedView.hide()
+            }
+            is PinnedRemoveUiModel -> {
+                pinnedView.hide()
+            }
+        }
+    }
+
+    private fun gradientBackgroundViewOnStateChanged(
+            bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets
+    ) {
+        if (bottomInsets.isAnyShown) gradientBackgroundView.hide() else gradientBackgroundView.show()
+    }
+
+    private fun toolbarViewOnStateChanged(
+            bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets
+    ) {
+        if (!bottomInsets.isAnyShown) toolbarView.show() else toolbarView.hide()
+    }
+
+    private fun statsInfoViewOnStateChanged(
+            channelType: PlayChannelType = playViewModel.channelType,
+            bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets
+    ) {
+        statsInfoView.setLiveBadgeVisibility(channelType.isLive)
+
+        if (!bottomInsets.isAnyShown) statsInfoView.show() else statsInfoView.hide()
+    }
+
+    private fun likeViewOnStateChanged(
+            bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets
+    ) {
+        if (bottomInsets.isAnyShown) likeView.hide() else likeView.show()
+    }
+
+    private fun sendChatViewOnStateChanged(
+            channelType: PlayChannelType = playViewModel.channelType,
+            bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets
+    ) {
+        if (channelType.isLive &&
+                bottomInsets[BottomInsetsType.ProductSheet]?.isShown == false &&
+                bottomInsets[BottomInsetsType.VariantSheet]?.isShown == false) {
+            sendChatView.show()
+        } else sendChatView.hide()
+
+        sendChatView.focusChatForm(channelType.isLive && bottomInsets[BottomInsetsType.Keyboard] is BottomInsetsState.Shown)
+    }
+
+    private fun quickReplyViewOnStateChanged(
+            channelType: PlayChannelType = playViewModel.channelType,
+            bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets
+    ) {
+        if (channelType.isLive &&
+                bottomInsets[BottomInsetsType.ProductSheet]?.isShown == false &&
+                bottomInsets[BottomInsetsType.VariantSheet]?.isShown == false &&
+                bottomInsets[BottomInsetsType.Keyboard]?.isShown == true) {
+            quickReplyView.show()
+        } else quickReplyView.hide()
+    }
+
+    private fun immersiveBoxViewOnStateChanged(
+            bottomInsets: Map<BottomInsetsType, BottomInsetsState>
+    ) {
+        if (bottomInsets.isAnyShown) immersiveBoxView.hide() else immersiveBoxView.show()
+    }
+
+    private fun endLiveInfoViewOnStateChanged(
+            event: EventUiModel
+    ) {
+        if(event.isFreeze) {
+            endLiveInfoView.setInfo(
+                    title = event.freezeTitle,
+                    message = event.freezeMessage,
+                    btnTitle = event.freezeButtonTitle,
+                    btnUrl = event.freezeButtonUrl
+            )
+            endLiveInfoView.show()
+        } else endLiveInfoView.hide()
+    }
+    //endregion
 }
