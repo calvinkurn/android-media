@@ -225,6 +225,7 @@ class AddEditProductVariantFragment :
 
         // button save on click listener
         buttonSave.setOnClickListener {
+            // perform the save button function
             val variantPhotos = variantPhotoAdapter?.getData().orEmpty()
             val selectedVariantDetails = variantTypeAdapter?.getSelectedItems().orEmpty()
             viewModel.updateVariantInputModel(selectedVariantDetails, variantPhotos)
@@ -622,6 +623,7 @@ class AddEditProductVariantFragment :
                                            unConfirmedSelection: List<UnitValue> = listOf()) {
         variantDataValuePicker = BottomSheetUnify()
         variantDataValuePicker?.setTitle(getString(R.string.label_variant_choose) + " " + variantData.name)
+        variantDataValuePicker?.overlayClickDismiss = false
         variantDataValuePicker?.showCloseIcon = false
         variantDataValuePicker?.clearContentPadding = true
         variantDataValuePicker?.showKnob = true
@@ -642,6 +644,7 @@ class AddEditProductVariantFragment :
                                       hasSelectedValues: Boolean = false) {
         variantUnitPicker = BottomSheetUnify()
         variantUnitPicker?.setTitle(getString(R.string.label_variant_choose) + " " + variantData.name)
+        variantUnitPicker?.overlayClickDismiss = false
         variantUnitPicker?.showCloseIcon = true
         variantUnitPicker?.clearContentPadding = true
         val variantUnitPickerLayout = VariantUnitPicker(context)
@@ -665,6 +668,7 @@ class AddEditProductVariantFragment :
                                            selectedVariantUnitValues: MutableList<UnitValue>) {
         customVariantValueInputForm = BottomSheetUnify()
         customVariantValueInputForm?.setTitle(getString(R.string.action_variant_add) + " " + variantData.name)
+        customVariantValueInputForm?.overlayClickDismiss = false
         customVariantValueInputForm?.isKeyboardOverlap = false
         val customVariantValueInputLayout = CustomVariantUnitValueForm(requireContext(), layoutPosition, variantUnitValues, this)
         customVariantValueInputLayout.setupVariantCustomInputLayout(selectedVariantUnit, selectedVariantUnitValues)
