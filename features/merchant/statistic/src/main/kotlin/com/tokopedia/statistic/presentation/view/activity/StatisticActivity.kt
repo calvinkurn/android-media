@@ -13,7 +13,7 @@ import com.tokopedia.statistic.presentation.view.fragment.StatisticFragment
  * Created By @ilhamsuaib on 08/06/20
  */
 
-// Internal applink : ApplinkConstInternalMarketplace.MERCHANT_STATISTIC_DASHBOARD
+// Internal applink : ApplinkConstInternalMechant.MERCHANT_STATISTIC_DASHBOARD
 
 class StatisticActivity : BaseActivity() {
 
