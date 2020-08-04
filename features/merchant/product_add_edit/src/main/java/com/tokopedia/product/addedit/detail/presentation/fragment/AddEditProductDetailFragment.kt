@@ -1277,7 +1277,18 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         productCategoryRecListView?.onLoadFinish {
             selectFirstCategoryRecommendation(items)
             createCategoryRecommendationItemClickListener(items)
-            productCategoryRecListView?.onLoadFinish {}
+
+            productCategoryRecListView?.run {
+                this.setOnItemClickListener { _, _, position, _ ->
+                    selectCategoryRecommendation(items, position)
+                }
+            }
+
+            items.forEachIndexed { position, listItemUnify ->
+                listItemUnify.listRightRadiobtn?.setOnClickListener {
+                    selectCategoryRecommendation(items, position)
+                }
+            }
         }
     }
 
@@ -1286,17 +1297,21 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         productCategoryRecListView?.hide()
     }
 
-    private fun selectFirstCategoryRecommendation(items: List<ListItemUnify>) = productCategoryRecListView?.run {
-        adapter?.count?.let { itemSize ->
+    private fun selectFirstCategoryRecommendation(items: List<ListItemUnify>) {
+        productCategoryRecListView?.count?.let { itemSize ->
             if (itemSize > 0) {
-                setSelected(items, 0) {
-                    val categoryId = it.getCategoryId().toString()
-                    val categoryName = it.getCategoryName()
-                    viewModel.productInputModel.detailInputModel.categoryId = categoryId
-                    viewModel.productInputModel.detailInputModel.categoryName = categoryName
-                    true
-                }
+                selectCategoryRecommendation(items, 0)
             }
+        }
+    }
+
+    private fun selectCategoryRecommendation(items: List<ListItemUnify>, position: Int) = productCategoryRecListView?.run {
+        setSelected(items, position) {
+            val categoryId = it.getCategoryId().toString()
+            val categoryName = it.getCategoryName()
+            viewModel.productInputModel.detailInputModel.categoryId = categoryId
+            viewModel.productInputModel.detailInputModel.categoryName = categoryName
+            true
         }
     }
 
