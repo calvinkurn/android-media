@@ -374,7 +374,6 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
             val shopDomain = "http://www.tokopedia.com/#1"
             val shopCore = ShopCore(domain = shopDomain)
             val goldOS = ShopInfo.GoldOS(isGold = 1, isOfficial = 1)
-            val topAdsInfo = TopAdsInfo(isTopAds = true , isAutoAds = true)
 
             val shopInfoResponse = ShopInfo(shopCore = shopCore, goldOS = goldOS)
             val shopInfoTopAdsData = ShopInfoTopAds(Data(AUTO_ADS, "auto ads"))
@@ -385,7 +384,7 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
 
             viewModel.getGoldMerchantStatus()
 
-            val data = ShopInfoResult(shopDomain, isGoldMerchant, isOfficialStore, topAdsInfo)
+            val data = ShopInfoResult(shopDomain, isGoldMerchant, isOfficialStore)
             val expectedResult = Success(data)
 
             viewModel.shopInfoResult

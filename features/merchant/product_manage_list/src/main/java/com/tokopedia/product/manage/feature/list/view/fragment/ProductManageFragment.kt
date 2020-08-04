@@ -265,6 +265,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         getProductListFeaturedOnlySize()
         getTopAdsFreeClaim()
         getGoldMerchantStatus()
+        getTopAdsInfo()
 
         setupDialogFeaturedProduct()
 
@@ -1587,6 +1588,10 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
     private fun getGoldMerchantStatus() {
         viewModel.getGoldMerchantStatus()
+    }
+
+    private fun getTopAdsInfo() {
+        viewModel.getTopAdsInfo()
     }
 
     private fun getFiltersTab(withDelay: Boolean = false) {

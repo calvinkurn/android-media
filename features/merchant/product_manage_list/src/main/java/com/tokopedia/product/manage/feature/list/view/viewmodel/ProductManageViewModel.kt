@@ -130,6 +130,7 @@ class ProductManageViewModel @Inject constructor(
     private val _editVariantPriceResult = MutableLiveData<Result<EditVariantResult>>()
     private val _editVariantStockResult = MutableLiveData<Result<EditVariantResult>>()
     private val _productFiltersTab = MutableLiveData<Result<GetFilterTabResult>>()
+    private val _topAdsInfo = MutableLiveData<TopAdsInfo>()
     private val _onClickPromoTopAds = MutableLiveData<TopAdsPage>()
 
     private var getProductListJob: Job? = null
@@ -140,23 +141,33 @@ class ProductManageViewModel @Inject constructor(
     fun getGoldMerchantStatus() {
         launchCatchError(block = {
             val status = withContext(dispatchers.io) {
-                val shopId: Int = userSessionInterface.shopId.toIntOrZero()
-                val requestParams = GetShopInfoTopAdsUseCase.createRequestParams(shopId)
-                gqlGetShopInfoUseCase.params = GQLGetShopInfoUseCase.createParams(listOf(shopId))
+                val shopId: List<Int> = listOf(userSessionInterface.shopId.toIntOrZero())
+                gqlGetShopInfoUseCase.params = GQLGetShopInfoUseCase.createParams(shopId)
 
                 val shopInfo = gqlGetShopInfoUseCase.executeOnBackground()
-                val topAdsInfo = getShopInfoTopAdsUseCase.execute(requestParams)
-
                 val shopDomain = shopInfo.shopCore.domain
                 val isGoldMerchant  = shopInfo.goldOS.isGold == 1
                 val isOfficialStore= shopInfo.goldOS.isOfficial == 1
-                val topAds = TopAdsInfo(topAdsInfo.isTopAds(), topAdsInfo.isAutoAds())
 
-                ShopInfoResult(shopDomain, isGoldMerchant, isOfficialStore, topAds)
+                ShopInfoResult(shopDomain, isGoldMerchant, isOfficialStore)
             }
             _shopInfoResult.value = Success(status)
         }) {
             _shopInfoResult.value = Fail(it)
+        }
+    }
+
+    fun getTopAdsInfo() {
+        launchCatchError(block = {
+            _topAdsInfo.value = withContext(dispatchers.io) {
+                val shopId = userSessionInterface.shopId.toIntOrZero()
+                val requestParams = GetShopInfoTopAdsUseCase.createRequestParams(shopId)
+                val topAdsInfo = getShopInfoTopAdsUseCase.execute(requestParams)
+
+                TopAdsInfo(topAdsInfo.isTopAds(), topAdsInfo.isAutoAds())
+            }
+        }) {
+            _topAdsInfo.value = TopAdsInfo(isTopAds = false, isAutoAds = false)
         }
     }
 
@@ -492,15 +503,19 @@ class ProductManageViewModel @Inject constructor(
     }
 
     fun onPromoTopAdsClicked() {
-        (_shopInfoResult.value as? Success<ShopInfoResult>)?.data?.let { shopInfo ->
-            val shopHasTopAds = shopInfo.topAds.isTopAds
-            val shopHasAutoAds = shopInfo.topAds.isAutoAds
+        val topAdsInfo = _topAdsInfo.value
+
+        if(topAdsInfo != null) {
+            val shopHasTopAds = topAdsInfo.isTopAds
+            val shopHasAutoAds = topAdsInfo.isAutoAds
 
             _onClickPromoTopAds.value = when {
                 shopHasAutoAds -> TopAdsPage.AutoAds
                 shopHasTopAds -> TopAdsPage.ManualAds
                 else -> TopAdsPage.OnBoarding
             }
+        } else {
+            _onClickPromoTopAds.value = TopAdsPage.OnBoarding
         }
     }
 
