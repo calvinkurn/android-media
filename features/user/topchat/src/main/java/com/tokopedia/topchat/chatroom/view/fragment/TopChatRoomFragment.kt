@@ -81,10 +81,7 @@ import com.tokopedia.topchat.chatroom.view.customview.TopChatRoomDialog
 import com.tokopedia.topchat.chatroom.view.customview.TopChatViewStateImpl
 import com.tokopedia.topchat.chatroom.view.listener.*
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenter
-import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewUiModel
-import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationUiModel
-import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
-import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
+import com.tokopedia.topchat.chatroom.view.viewmodel.*
 import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener
 import com.tokopedia.topchat.common.InboxMessageConstant
 import com.tokopedia.topchat.common.TopChatInternalRouter
@@ -1370,22 +1367,40 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         return searchQuery
     }
 
-    override fun requestFollowShop(onSuccess: () -> Unit, onError: () -> Unit) {
-        presenter.requestFollowShop(shopId, onSuccess, onError)
+    override fun requestFollowShop(element: BroadcastSpamHandlerUiModel) {
+        presenter.requestFollowShop(shopId, {
+            element.stopFollowShop()
+            onSuccessFollowShopFromBcHandler()
+            adapter.removeBroadcastHandler(element)
+        }, {
+            onErrorFollowShopFromBcHandler(it)
+            element.stopFollowShop()
+            adapter.updateBroadcastHandlerState(element)
+        })
     }
 
-    override fun onSuccessFollowShopFromBcHandler(bcHandlerPosition: Int) {
+    private fun onSuccessFollowShopFromBcHandler() {
         getViewState().isShopFollowed = true
-        adapter.removeBroadcastHandler(bcHandlerPosition)
         context?.let {
             showToasterConfirmation(it.getString(R.string.title_success_follow_shop))
         }
+    }
+
+    private fun onErrorFollowShopFromBcHandler(throwable: Throwable) {
+        val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
+        showToasterError(errorMessage)
     }
 
     private fun showToasterConfirmation(message:  String) {
         view?.let {
             Toaster.build(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, "Oke")
                     .show()
+        }
+    }
+
+    private fun showToasterError(message:  String) {
+        view?.let {
+            Toaster.build(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
         }
     }
 }

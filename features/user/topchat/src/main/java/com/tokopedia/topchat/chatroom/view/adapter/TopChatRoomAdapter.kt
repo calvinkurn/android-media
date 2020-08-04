@@ -14,6 +14,7 @@ import com.tokopedia.chat_common.data.*
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.util.ChatRoomDiffUtil
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.BroadcastSpamHandlerViewHolder.Companion.PAYLOAD_UPDATE_STATE
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ProductCarouselListAttachmentViewHolder
 import com.tokopedia.topchat.chatroom.view.uimodel.HeaderDateUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.ProductCarouselUiModel
@@ -208,13 +209,17 @@ class TopChatRoomAdapter(
         return insertedPosition
     }
 
-    fun removeBroadcastHandler(bcHandlerPosition: Int) {
-        if (bcHandlerPosition >= visitables.size) return
-        val item = visitables[bcHandlerPosition]
-        if (item is BroadcastSpamHandlerUiModel) {
-            visitables.removeAt(bcHandlerPosition)
-            notifyItemRemoved(bcHandlerPosition)
-        }
+    fun removeBroadcastHandler(element: BroadcastSpamHandlerUiModel) {
+        val elementIndex = visitables.indexOf(element)
+        if (elementIndex == RecyclerView.NO_POSITION || elementIndex >= visitables.size) return
+        visitables.removeAt(elementIndex)
+        notifyItemRemoved(elementIndex)
+    }
+
+    fun updateBroadcastHandlerState(element: BroadcastSpamHandlerUiModel) {
+        val elementIndex = visitables.indexOf(element)
+        if (elementIndex == RecyclerView.NO_POSITION || elementIndex >= visitables.size) return
+        notifyItemChanged(elementIndex, PAYLOAD_UPDATE_STATE)
     }
 
     private fun createBroadcastSpamHandlerViewModel(): Visitable<*> {

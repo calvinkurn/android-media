@@ -831,7 +831,7 @@ class TopChatRoomPresenter @Inject constructor(
     override fun requestFollowShop(
             shopId: Int,
             onSuccess: () -> Unit,
-            onError: () -> Unit
+            onErrorFollowShop: (Throwable) -> Unit
     ) {
         val followShopParam = ToggleFavouriteShopUseCase.createRequestParam(
                 shopId.toString(), ToggleFavouriteShopUseCase.Action.FOLLOW
@@ -840,7 +840,7 @@ class TopChatRoomPresenter @Inject constructor(
             override fun onCompleted() {}
 
             override fun onError(e: Throwable) {
-                onError()
+                onErrorFollowShop(e)
             }
 
             override fun onNext(success: Boolean) {

@@ -7,8 +7,20 @@ data class BroadcastSpamHandlerUiModel(
         val asd: String = ""
 ) : Visitable<TopChatTypeFactory> {
 
-    override fun type(typeFactory: TopChatTypeFactory): Int {
+    var isLoadingFollowShop = false
+    var isLoadingStopBroadCast = false
+    val isLoading: Boolean get() = isLoadingFollowShop || isLoadingStopBroadCast
+
+        override fun type(typeFactory: TopChatTypeFactory): Int {
         return typeFactory.type(this)
+    }
+
+    fun startFollowShop() {
+        isLoadingFollowShop = true
+    }
+
+    fun stopFollowShop() {
+        isLoadingFollowShop = false
     }
 
 }

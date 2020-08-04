@@ -13,61 +13,72 @@ class BroadcastSpamHandlerViewHolder(
 
     private val btnStopPromo: UnifyButton? = itemView?.findViewById(R.id.btn_stop_promo)
     private val btnFollowShop: UnifyButton? = itemView?.findViewById(R.id.btn_follow_shop)
-    private var isLoading = false
 
     interface Listener {
-        fun requestFollowShop(onSuccess: () -> Unit, onError: () -> Unit)
-        fun onSuccessFollowShopFromBcHandler(bcHandlerPosition: Int)
+        fun requestFollowShop(element: BroadcastSpamHandlerUiModel)
+    }
+
+    override fun bind(element: BroadcastSpamHandlerUiModel, payloads: MutableList<Any>) {
+        if (payloads.isNotEmpty() && payloads[0] == PAYLOAD_UPDATE_STATE) {
+            bind(element)
+        } else {
+            super.bind(element, payloads)
+        }
     }
 
     override fun bind(element: BroadcastSpamHandlerUiModel) {
-        bindState()
+        bindFollowShopButton(element)
+        bindStopPromoButton(element)
+        bindButtonEnableState(element)
         bindClickFollowShop(element)
     }
 
-    private fun bindState() {
-        if (isLoading) {
-            startLoading()
+    private fun bindButtonEnableState(element: BroadcastSpamHandlerUiModel) {
+        if (element.isLoading) {
+            disableAllButton()
         } else {
-            stopLoading()
+            enableAllButton()
         }
+    }
+
+    private fun bindFollowShopButton(element: BroadcastSpamHandlerUiModel) {
+        btnFollowShop?.isLoading = element.isLoadingFollowShop
+    }
+
+    private fun bindStopPromoButton(element: BroadcastSpamHandlerUiModel) {
+        btnStopPromo?.isLoading = element.isLoadingStopBroadCast
     }
 
     private fun bindClickFollowShop(element: BroadcastSpamHandlerUiModel) {
         btnFollowShop?.setOnClickListener {
-            btnFollowShop.isLoading = true
-            startLoading()
-            requestFollowShop()
+            element.startFollowShop()
+            startLoading(btnFollowShop)
+            requestFollowShop(element)
         }
     }
 
-    private fun requestFollowShop() {
-        listener?.requestFollowShop(::onSuccessFollowShop, ::onErrorFollowShop)
+    private fun requestFollowShop(element: BroadcastSpamHandlerUiModel) {
+        listener?.requestFollowShop(element)
     }
 
-    private fun onSuccessFollowShop() {
-        btnFollowShop?.isLoading = false
-        listener?.onSuccessFollowShopFromBcHandler(adapterPosition)
-        stopLoading()
+    private fun startLoading(button: UnifyButton?) {
+        button?.isLoading = true
+        disableAllButton()
     }
 
-    private fun onErrorFollowShop() {
-        stopLoading()
-    }
-
-    private fun startLoading() {
-        isLoading = true
+    private fun disableAllButton() {
         btnStopPromo?.isEnabled = false
         btnFollowShop?.isEnabled = false
     }
 
-    private fun stopLoading() {
-        isLoading = false
+    private fun enableAllButton() {
         btnStopPromo?.isEnabled = true
         btnFollowShop?.isEnabled = true
     }
 
     companion object {
         val LAYOUT = R.layout.item_broadcast_spam_handler
+
+        const val PAYLOAD_UPDATE_STATE = "update_state"
     }
 }
