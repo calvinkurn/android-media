@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.digital.home.domain.DigitalHomePageUseCase
 import com.tokopedia.digital.home.model.DigitalHomePageItemModel
+import com.tokopedia.digital.home.model.RechargeHomepageSectionSkeleton
 import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.presentation.Util.DigitalHomePageDispatchersProvider
 import com.tokopedia.graphql.GraphqlConstant
@@ -33,8 +34,12 @@ class DigitalHomePageViewModel @Inject constructor(
     private val mutableIsAllError = MutableLiveData<Boolean>()
     val isAllError: LiveData<Boolean>
         get() = mutableIsAllError
-    private val mutableRechargeHomepageSections = MutableLiveData<Result<List<RechargeHomepageSections.Section>>>()
-    val rechargeHomepageSections: LiveData<Result<List<RechargeHomepageSections.Section>>>
+
+    private val mutableRechargeHomepageSectionSkeleton = MutableLiveData<Result<List<RechargeHomepageSectionSkeleton.Item>>>()
+    val rechargeHomepageSectionSkeleton: LiveData<Result<List<RechargeHomepageSectionSkeleton.Item>>>
+        get() = mutableRechargeHomepageSectionSkeleton
+    private val mutableRechargeHomepageSections = MutableLiveData<Result<RechargeHomepageSections>>()
+    val rechargeHomepageSections: LiveData<Result<RechargeHomepageSections>>
         get() = mutableRechargeHomepageSections
 
     fun initialize(queryList: Map<String, String>) {
@@ -61,6 +66,23 @@ class DigitalHomePageViewModel @Inject constructor(
         return data.all { !it.isSuccess }
     }
 
+    fun getRechargeHomepageSectionSkeleton(rawQuery: String, mapParams: Map<String, Any>, isLoadFromCloud: Boolean = false) {
+        launchCatchError(block = {
+            val graphqlRequest = GraphqlRequest(rawQuery, RechargeHomepageSectionSkeleton.Response::class.java, mapParams)
+            val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST)
+                    .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5).build()
+            val data = withContext(dispatcher.IO) {
+                graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
+            }.getSuccessData<RechargeHomepageSectionSkeleton.Response>().response
+
+            mutableRechargeHomepageSectionSkeleton.postValue(Success(data.sections))
+//            val filteredSections = data.sections.filter { it.template != SECTION_DYNAMIC_ICONS }
+//            mutableRechargeHomepageSectionSkeleton.postValue(Success(filteredSections))
+        }) {
+            mutableRechargeHomepageSectionSkeleton.postValue(Fail(it))
+        }
+    }
+
     fun getRechargeHomepageSections(rawQuery: String, mapParams: Map<String, Any>, isLoadFromCloud: Boolean = false) {
         launchCatchError(block = {
             val graphqlRequest = GraphqlRequest(rawQuery, RechargeHomepageSections.Response::class.java, mapParams)
@@ -69,18 +91,25 @@ class DigitalHomePageViewModel @Inject constructor(
             val data = withContext(dispatcher.IO) {
                 graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
             }.getSuccessData<RechargeHomepageSections.Response>().response
+            data.requestIDs = (mapParams[PARAM_RECHARGE_HOMEPAGE_SECTIONS_SECTION_IDS] as? List<Int>) ?: listOf()
 
-            // Filter out sections with no items then map sections based on their types
-            val filteredData = data.sections.filter { it.items.isNotEmpty() }
-            mutableRechargeHomepageSections.postValue(Success(filteredData))
+            mutableRechargeHomepageSections.postValue(Success(data))
         }) {
             mutableRechargeHomepageSections.postValue(Fail(it))
         }
     }
 
-    fun createRechargeHomepageSectionsParams(platformId: Int, enablePersonalize: Boolean = false): Map<String, Any> {
+    fun createRechargeHomepageSectionSkeletonParams(platformId: Int, enablePersonalize: Boolean = false): Map<String, Any> {
         return mapOf(
                 PARAM_RECHARGE_HOMEPAGE_SECTIONS_PLATFORM_ID to platformId,
+                PARAM_RECHARGE_HOMEPAGE_SECTIONS_PERSONALIZE to enablePersonalize
+        )
+    }
+
+    fun createRechargeHomepageSectionsParams(platformId: Int, sectionIDs: List<Int>, enablePersonalize: Boolean = false): Map<String, Any> {
+        return mapOf(
+                PARAM_RECHARGE_HOMEPAGE_SECTIONS_PLATFORM_ID to platformId,
+                PARAM_RECHARGE_HOMEPAGE_SECTIONS_SECTION_IDS to sectionIDs,
                 PARAM_RECHARGE_HOMEPAGE_SECTIONS_PERSONALIZE to enablePersonalize
         )
     }
@@ -99,7 +128,8 @@ class DigitalHomePageViewModel @Inject constructor(
                 DigitalHomePageUseCase.PROMO_ORDER to 8
         )
 
-        const val PARAM_RECHARGE_HOMEPAGE_SECTIONS_PLATFORM_ID = "platformId"
+        const val PARAM_RECHARGE_HOMEPAGE_SECTIONS_PLATFORM_ID = "platformID"
+        const val PARAM_RECHARGE_HOMEPAGE_SECTIONS_SECTION_IDS = "sectionIDs"
         const val PARAM_RECHARGE_HOMEPAGE_SECTIONS_PERSONALIZE = "enablePersonalize"
 
         const val SECTION_TOP_BANNER = "TOP_BANNER"

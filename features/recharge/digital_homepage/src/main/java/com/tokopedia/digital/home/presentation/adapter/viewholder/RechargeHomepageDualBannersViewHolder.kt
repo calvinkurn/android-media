@@ -39,7 +39,10 @@ class RechargeHomepageDualBannersViewHolder(itemView: View?, val listener: OnIte
                     listener.onRechargeSectionItemImpression(section)
                 }
             }
-            if (items == null) listener.onRechargeSectionEmpty(element.visitableId())
+            if (items == null) {
+                // TODO: Show shimmering
+                listener.loadRechargeSectionData(element.visitableId())
+            }
         }
     }
 

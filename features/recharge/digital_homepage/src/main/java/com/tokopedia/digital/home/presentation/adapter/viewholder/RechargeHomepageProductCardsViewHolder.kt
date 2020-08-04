@@ -39,7 +39,8 @@ class RechargeHomepageProductCardsViewHolder(itemView: View, val listener: OnIte
                     listener.onRechargeSectionItemImpression(section)
                 }
             } else {
-                listener.onRechargeSectionEmpty(element.visitableId())
+                // TODO: Show shimmering
+                listener.loadRechargeSectionData(element.visitableId())
             }
         }
     }

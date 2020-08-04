@@ -32,7 +32,8 @@ class RechargeHomepageBannerViewHolder(itemView: View,
             initSeeAllPromo(element.section)
             initBanner(element.section)
         } else {
-            listener.onRechargeSectionEmpty(element.visitableId())
+            // TODO: Show shimmering
+            listener.loadRechargeSectionData(element.visitableId())
         }
     }
 

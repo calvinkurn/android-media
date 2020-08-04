@@ -1,5 +1,5 @@
-query rechargeGetDynamicPage($platformId: Int!, $enablePersonalize: Boolean) {
-  rechargeGetDynamicPage(platformID: $platformId, enablePersonalize: $enablePersonalize){
+query rechargeGetDynamicPage($platformID: Int!, $sectionIDs: [Int], $enablePersonalize: Boolean) {
+  rechargeGetDynamicPage(platformID: $platformID, sectionIDs: $sectionIDs, enablePersonalize: $enablePersonalize){
     sections {
       id
       title

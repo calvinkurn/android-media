@@ -38,7 +38,8 @@ class RechargeHomepageSingleBannerViewHolder(itemView: View?, val listener: OnIt
                 view_recharge_home_single_banner_title.displayTextOrHide(section.title)
                 view_recharge_home_single_banner_label.displayTextOrHide(section.subtitle)
             } else {
-                listener.onRechargeSectionEmpty(element.visitableId())
+                // TODO: Show shimmering
+                listener.loadRechargeSectionData(element.visitableId())
             }
         }
     }

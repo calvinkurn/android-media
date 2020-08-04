@@ -89,4 +89,8 @@ class DynamicLegoBannerComponentCallback(val context: Context?, val homeCategory
                 ) as HashMap<String, Any>
         )
     }
+
+    override fun getDynamicLegoBanner(channelModel: ChannelModel) {
+
+    }
 }

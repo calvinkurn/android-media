@@ -20,10 +20,28 @@
         android:layout_height="wrap_content"
         android:nestedScrollingEnabled="false" />
 
-    <include
+    <LinearLayout
         android:id="@+id/view_recharge_home_category_shimmering"
-        layout="@layout/content_digital_home_shimmering_category"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone" />
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <include
+            layout="@layout/content_digital_home_shimmering_category"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <include
+            layout="@layout/content_digital_home_shimmering_category"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <include
+            layout="@layout/content_digital_home_shimmering_category"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
 </LinearLayout>

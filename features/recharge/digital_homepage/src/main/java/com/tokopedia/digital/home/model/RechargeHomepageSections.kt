@@ -9,7 +9,8 @@ import com.tokopedia.kotlin.model.ImpressHolder
 data class RechargeHomepageSections (
         @SerializedName("sections")
         @Expose
-        var sections: List<Section> = listOf()
+        val sections: List<Section> = listOf(),
+        var requestIDs: List<Int> = listOf()
 ) {
     data class Response (
             @SerializedName("rechargeGetDynamicPage")

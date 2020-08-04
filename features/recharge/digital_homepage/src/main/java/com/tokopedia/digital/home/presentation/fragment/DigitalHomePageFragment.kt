@@ -54,8 +54,10 @@ class DigitalHomePageFragment : BaseListFragment<Visitable<*>, DigitalHomePageTy
 
     @Inject
     lateinit var trackingUtil: DigitalHomeTrackingUtil
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
     @Inject
     lateinit var viewModel: DigitalHomePageViewModel
 
@@ -66,6 +68,7 @@ class DigitalHomePageFragment : BaseListFragment<Visitable<*>, DigitalHomePageTy
     private var platformId: Int = 0
     private var enablePersonalize: Boolean = false
 
+    lateinit var sectionSkeleton: List<RechargeHomepageSectionSkeleton.Item>
     lateinit var homeComponentsData: List<RechargeHomepageSections.Section>
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -154,14 +157,18 @@ class DigitalHomePageFragment : BaseListFragment<Visitable<*>, DigitalHomePageTy
             activity?.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
             digital_homepage_toolbar.toOnScrolledMode()
             digital_homepage_order_list.setColorFilter(com.tokopedia.unifyprinciples.R.color.Neutral_N200)
-            context?.run { searchBarContainer.background =
-                        MethodChecker.getDrawable(this, R.drawable.bg_digital_homepage_search_view_background_gray) }
+            context?.run {
+                searchBarContainer.background =
+                        MethodChecker.getDrawable(this, R.drawable.bg_digital_homepage_search_view_background_gray)
+            }
         } else {
             activity?.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
             digital_homepage_toolbar.toInitialMode()
             digital_homepage_order_list.clearColorFilter()
-            context?.run { searchBarContainer.background =
-                        MethodChecker.getDrawable(this, R.drawable.bg_digital_homepage_search_view_background) }
+            context?.run {
+                searchBarContainer.background =
+                        MethodChecker.getDrawable(this, R.drawable.bg_digital_homepage_search_view_background)
+            }
         }
     }
 
@@ -201,13 +208,54 @@ class DigitalHomePageFragment : BaseListFragment<Visitable<*>, DigitalHomePageTy
             }
         })
 
+        viewModel.rechargeHomepageSectionSkeleton.observe(this, Observer {
+            hideLoading()
+            when (it) {
+                is Success -> {
+                    sectionSkeleton = it.data
+                    val mappedData = RechargeHomepageSectionMapper.mapHomepageSectionsFromSkeleton(it.data).filterNotNull()
+                    renderList(mappedData)
+                }
+                is Fail -> {
+                    showGetListError(it.throwable)
+                }
+            }
+        })
+
         viewModel.rechargeHomepageSections.observe(this, Observer {
             when (it) {
                 is Success -> {
-                    homeComponentsData = it.data.filter{ section ->
-                        DigitalHomePageViewModel.SECTION_HOME_COMPONENTS.contains(section.template) }
-                    val mappedData = RechargeHomepageSectionMapper.mapHomepageSections(it.data).filterNotNull()
-                    renderList(mappedData)
+                    with (it.data) {
+                        homeComponentsData = sections.filter { section ->
+                            DigitalHomePageViewModel.SECTION_HOME_COMPONENTS.contains(section.template)
+                        }
+                        for (id in requestIDs) {
+                            val sectionTemplate = sectionSkeleton.find { item -> item.id == id }?.template
+                                    ?: ""
+                            val sectionIndex = RechargeHomepageSectionMapper.getSectionIndex(adapter.data, id)
+                            if (sectionTemplate.isNotEmpty() && sectionIndex >= 0) {
+                                val updatedSectionItems = RechargeHomepageSectionMapper.getUpdatedSectionsOfType(sections, sectionTemplate)
+                                recycler_view.post {
+                                    when (updatedSectionItems.size) {
+                                        0 -> {
+                                            adapter.data.removeAt(sectionIndex)
+                                            adapter.notifyItemRemoved(sectionIndex)
+                                        }
+                                        1 -> {
+                                            adapter.data[sectionIndex] = updatedSectionItems.first()
+                                            adapter.notifyItemChanged(sectionIndex)
+                                        }
+                                        else -> {
+                                            adapter.data.removeAt(sectionIndex)
+                                            adapter.notifyItemRemoved(sectionIndex)
+                                            adapter.data.addAll(sectionIndex, updatedSectionItems)
+                                            adapter.notifyItemRangeInserted(sectionIndex, updatedSectionItems.size)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
                 is Fail -> {
                     showGetListError(it.throwable)
@@ -219,16 +267,12 @@ class DigitalHomePageFragment : BaseListFragment<Visitable<*>, DigitalHomePageTy
     override fun loadData(page: Int) {
         // Load dynamic sub-homepage if platformId is provided; else load old sub-homepage
         if (isDynamicPage()) {
-            viewModel.getRechargeHomepageSections(
-                    GraphqlHelper.loadRawString(resources, R.raw.query_recharge_home_dynamic),
-                    viewModel.createRechargeHomepageSectionsParams(platformId, enablePersonalize),
+            viewModel.getRechargeHomepageSectionSkeleton(
+                    GraphqlHelper.loadRawString(resources, R.raw.query_recharge_home_dynamic_skeleton),
+                    viewModel.createRechargeHomepageSectionSkeletonParams(platformId, false),
                     swipeToRefresh?.isRefreshing ?: false
             )
         } else {
-            isLoadingInitialData = true
-            adapter.clearAllElements()
-            showLoading()
-
             val queryList = mapOf(
                     DigitalHomePageUseCase.QUERY_BANNER to GraphqlHelper.loadRawString(resources, R.raw.query_digital_home_banner),
                     DigitalHomePageUseCase.QUERY_CATEGORY to GraphqlHelper.loadRawString(resources, R.raw.query_digital_home_category),
@@ -237,6 +281,15 @@ class DigitalHomePageFragment : BaseListFragment<Visitable<*>, DigitalHomePageTy
             )
             viewModel.initialize(queryList)
             viewModel.getData(swipeToRefresh?.isRefreshing ?: false)
+        }
+    }
+
+    override fun loadRechargeSectionData(sectionID: Int) {
+        if (sectionID >= 0) {
+            viewModel.getRechargeHomepageSections(
+                    GraphqlHelper.loadRawString(resources, R.raw.query_recharge_home_dynamic),
+                    viewModel.createRechargeHomepageSectionsParams(platformId, listOf(sectionID), false)
+            )
         }
     }
 
@@ -291,7 +344,7 @@ class DigitalHomePageFragment : BaseListFragment<Visitable<*>, DigitalHomePageTy
 
     override fun onRechargeLegoBannerItemClicked(sectionID: Int, itemPosition: Int) {
         if (::homeComponentsData.isInitialized) {
-            homeComponentsData.firstOrNull { it.id == sectionID }?.tracking?.firstOrNull {
+            homeComponentsData.find { it.id == sectionID }?.tracking?.find {
                 it.action == DigitalHomeTrackingUtil.ACTION_CLICK
             }?.run {
                 trackingUtil.rechargeEnhanceEcommerceEvent(data)
@@ -306,7 +359,7 @@ class DigitalHomePageFragment : BaseListFragment<Visitable<*>, DigitalHomePageTy
 
     override fun onRechargeReminderWidgetClicked(sectionID: Int) {
         if (::homeComponentsData.isInitialized) {
-            homeComponentsData.firstOrNull { it.id == sectionID }?.tracking?.firstOrNull {
+            homeComponentsData.find { it.id == sectionID }?.tracking?.find {
                 it.action == DigitalHomeTrackingUtil.ACTION_CLICK
             }?.run {
                 trackingUtil.rechargeEnhanceEcommerceEvent(data)
@@ -319,20 +372,19 @@ class DigitalHomePageFragment : BaseListFragment<Visitable<*>, DigitalHomePageTy
         if (index >= 0) onRechargeSectionEmpty(index)
     }
 
-    override fun onRechargeProductBannerClosed(section: RechargeHomepageSections.Section, position: Int) {
-//        val index = adapter.data.indexOfFirst { it is RechargeHomepageSectionModel && it.visitableId() == section.id }
-//        if (index >= 0) onRechargeSectionEmpty(index)
-        onRechargeSectionEmpty(position)
+    override fun onRechargeProductBannerClosed(section: RechargeHomepageSections.Section) {
+        val index = adapter.data.indexOfFirst { it is RechargeHomepageSectionModel && it.visitableId() == section.id }
+        if (index >= 0) onRechargeSectionEmpty(index)
     }
 
     override fun onRechargeSectionItemImpression(element: RechargeHomepageSections.Section) {
-        element.tracking.firstOrNull { it.action == DigitalHomeTrackingUtil.ACTION_IMPRESSION }?.run {
+        element.tracking.find { it.action == DigitalHomeTrackingUtil.ACTION_IMPRESSION }?.run {
             trackingUtil.rechargeEnhanceEcommerceEvent(data)
         }
     }
 
     override fun onRechargeSectionItemClicked(element: RechargeHomepageSections.Item) {
-        element.tracking.firstOrNull { it.action == DigitalHomeTrackingUtil.ACTION_CLICK }?.run {
+        element.tracking.find { it.action == DigitalHomeTrackingUtil.ACTION_CLICK }?.run {
             trackingUtil.rechargeEnhanceEcommerceEvent(data)
         }
 
@@ -340,14 +392,14 @@ class DigitalHomePageFragment : BaseListFragment<Visitable<*>, DigitalHomePageTy
     }
 
     override fun onRechargeBannerImpression(element: RechargeHomepageSections.Section) {
-        element.tracking.firstOrNull { it.action == DigitalHomeTrackingUtil.ACTION_IMPRESSION }?.run {
+        element.tracking.find { it.action == DigitalHomeTrackingUtil.ACTION_IMPRESSION }?.run {
             trackingUtil.rechargeEnhanceEcommerceEvent(data)
         }
     }
 
     override fun onRechargeReminderWidgetImpression(sectionID: Int) {
         if (::homeComponentsData.isInitialized) {
-            homeComponentsData.firstOrNull { it.id == sectionID }?.tracking?.firstOrNull {
+            homeComponentsData.find { it.id == sectionID }?.tracking?.find {
                 it.action == DigitalHomeTrackingUtil.ACTION_IMPRESSION
             }?.run {
                 trackingUtil.rechargeEnhanceEcommerceEvent(data)
@@ -357,7 +409,7 @@ class DigitalHomePageFragment : BaseListFragment<Visitable<*>, DigitalHomePageTy
 
     override fun onRechargeLegoBannerImpression(sectionID: Int) {
         if (::homeComponentsData.isInitialized) {
-            homeComponentsData.firstOrNull { it.id == sectionID }?.tracking?.firstOrNull {
+            homeComponentsData.find { it.id == sectionID }?.tracking?.find {
                 it.action == DigitalHomeTrackingUtil.ACTION_IMPRESSION
             }?.run {
                 trackingUtil.rechargeEnhanceEcommerceEvent(data)
@@ -414,7 +466,7 @@ class DigitalHomePageFragment : BaseListFragment<Visitable<*>, DigitalHomePageTy
         if (hasFocus) {
             digital_homepage_search_view.searchTextView.clearFocus()
             trackingUtil.eventClickSearchBox()
-            context?.let{ context -> startActivity(DigitalHomePageSearchActivity.getCallingIntent(context)) }
+            context?.let { context -> startActivity(DigitalHomePageSearchActivity.getCallingIntent(context)) }
         }
     }
 

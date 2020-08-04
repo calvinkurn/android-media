@@ -37,7 +37,8 @@ class RechargeHomepageProductBannerViewHolder(
             setHeader(section)
             setProduct(section)
         } else {
-            listener.onRechargeSectionEmpty(element.visitableId())
+            // TODO: Show shimmering
+            listener.loadRechargeSectionData(element.visitableId())
         }
     }
 
@@ -73,7 +74,7 @@ class RechargeHomepageProductBannerViewHolder(
             }
             iv_recharge_home_product_banner_close_button.setOnClickListener {
                 view_recharge_home_product_banner_container.hide()
-                listener.onRechargeProductBannerClosed(section, adapterPosition)
+                listener.onRechargeProductBannerClosed(section)
             }
         }
     }

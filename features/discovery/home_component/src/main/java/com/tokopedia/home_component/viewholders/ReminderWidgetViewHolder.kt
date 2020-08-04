@@ -47,7 +47,7 @@ class ReminderWidgetViewHolder(
         with(itemView) {
             if(element.data.reminders.isEmpty()){
                 home_reminder_recommendation_loading.show()
-                reminderWidgetListener.getReminderWidget(element.source)
+                reminderWidgetListener.getReminderWidget(element)
                 performanceMonitoring?.stopTrace()
                 performanceMonitoring = null
             } else {
