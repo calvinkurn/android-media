@@ -29,7 +29,9 @@ import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.FINISH_ORDE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_ATC
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_FINISH_ORDER
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_LS_FINISH
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_LS_LACAK
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_TRACK
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.LS_LACAK_MWEB
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.REPLACE_ORDER_ID
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.START_DATE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.TYPE_ACTION_BUTTON_LINK
@@ -62,7 +64,6 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.bottomsheet_finish_order_uoh.view.*
 import kotlinx.android.synthetic.main.bottomsheet_kebab_menu_uoh.view.*
-import kotlinx.android.synthetic.main.bottomsheet_ls_finish_order_uoh.*
 import kotlinx.android.synthetic.main.bottomsheet_ls_finish_order_uoh.view.*
 import kotlinx.android.synthetic.main.bottomsheet_option_uoh.*
 import kotlinx.android.synthetic.main.bottomsheet_option_uoh.view.*
@@ -230,31 +231,10 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             }
 
         })
-        // addOrderListEndlessScrollListener()
-        addRecommendationListEndlessScrollListener()
+        addEndlessScrollListener()
     }
 
-    private fun addOrderListEndlessScrollListener() {
-        rv_order_list?.apply {
-            layoutManager = LinearLayoutManager(activity)
-            // adapter = uohListItemAdapter
-            adapter = uohItemAdapter
-            scrollListener = object : EndlessRecyclerViewScrollListener(layoutManager as LinearLayoutManager) {
-                override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                    onLoadMore = true
-                    if (orderList.next.isNotEmpty()) {
-                        currentPage += 1
-                        // uohListItemAdapter.showLoader()
-                        uohItemAdapter.showLoader()
-                        loadOrderHistoryList()
-                    }
-                }
-            }
-            addOnScrollListener(scrollListener)
-        }
-    }
-
-    private fun addRecommendationListEndlessScrollListener() {
+    private fun addEndlessScrollListener() {
         val glm = GridLayoutManager(activity, 2)
         glm.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
@@ -594,7 +574,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     private fun renderEmptyList() {
         refreshHandler?.finishRefresh()
         val searchBarIsNotEmpty = search_bar?.searchBarTextField?.text?.isNotEmpty()
-        var searchBarEmpty: Boolean = false
+        var searchBarEmpty = false
         searchBarIsNotEmpty?.let { searchBarEmpty = it }
 
         val emptyStatus: UohEmptyState?
@@ -704,14 +684,14 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         fragmentManager?.let { bottomSheetOption?.show(it, getString(R.string.show_bottomsheet)) }
     }
 
-    private fun showBottomSheetKebabMenu(title: String) {
+    private fun showBottomSheetKebabMenu() {
         val viewBottomSheet = View.inflate(context, R.layout.bottomsheet_kebab_menu_uoh, null)
         viewBottomSheet.rv_kebab.adapter = uohBottomSheetKebabMenuAdapter
         viewBottomSheet.rv_kebab.layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
 
         bottomSheetKebabMenu = BottomSheetUnify().apply {
             setChild(viewBottomSheet)
-            setTitle(title)
+            setTitle(UohConsts.OTHERS)
             setCloseClickListener { dismiss() }
         }
 
@@ -902,7 +882,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     }
 
     override fun onKebabMenuClicked(listDotMenu: List<UohListOrder.Data.UohOrders.Order.Metadata.DotMenu>) {
-        showBottomSheetKebabMenu(UohConsts.OTHERS)
+        showBottomSheetKebabMenu()
         uohBottomSheetKebabMenuAdapter.addList(listDotMenu)
     }
 
@@ -942,6 +922,10 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 button.actionType.equals(GQL_LS_FINISH, true) -> {
                     orderIdNeedUpdated = orderUUID
                     showBottomSheetLsFinishOrder(index, verticalId)
+                }
+                button.actionType.equals(GQL_LS_LACAK, true) -> {
+                    val linkUrl = LS_LACAK_MWEB.replace(REPLACE_ORDER_ID, verticalId)
+                    RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
                 }
             }
         }
