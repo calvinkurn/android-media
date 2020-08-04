@@ -271,7 +271,7 @@ class DealsHomeFragment : DealsBaseFragment(),
     }
 
     override fun onSeeAllProductClicked(curatedProductCategoryDataView: CuratedProductCategoryDataView, position: Int) {
-        analytics.clickAllCuratedProduct()
+        analytics.clickAllCuratedProduct(curatedProductCategoryDataView.title)
         val intent = RouteManager.getIntent(context, curatedProductCategoryDataView.seeAllUrl)
         startActivityForResult(intent, DEALS_CATEGORY_REQUEST_CODE)
     }
