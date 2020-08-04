@@ -183,8 +183,6 @@ internal class ProductNotification(
     }
 
     private fun getProductPendingIntent(productInfo: ProductInfo): PendingIntent {
-        ProductAnalytics.clickProductCard(baseNotificationModel, productInfo) //click body tracker
-
         val intent = getBaseBroadcastIntent(context, baseNotificationModel)
         intent.action = CMConstant.ReceiverAction.ACTION_PRODUCT_CLICK
         intent.putExtra(CMConstant.EXTRA_PRODUCT_INFO, productInfo)

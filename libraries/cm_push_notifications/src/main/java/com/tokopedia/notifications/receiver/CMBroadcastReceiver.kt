@@ -127,7 +127,7 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
 
                     /*Product Info Carousel Click Handling*/
                     CMConstant.ReceiverAction.ACTION_PRODUCT_CLICK -> {
-                        handleProductClick(context, intent, notificationId)
+                        handleProductClick(context, intent, notificationId, baseNotificationModel)
                         sendClickPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, baseNotificationModel, CMConstant.NotificationType.GENERAL)
                     }
                     CMConstant.ReceiverAction.ACTION_PRODUCT_COLLAPSED_CLICK -> {
@@ -166,12 +166,26 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
         clearCarouselImages(context.applicationContext)
     }
 
-    private fun handleProductClick(context: Context, intent: Intent, notificationId: Int) {
+    private fun handleProductClick(
+            context: Context,
+            intent: Intent,
+            notificationId: Int,
+            element: BaseNotificationModel?
+    ) {
         val productInfo: ProductInfo = intent.getParcelableExtra(CMConstant.EXTRA_PRODUCT_INFO)
-        val appLinkIntent = RouteManager.getIntent(context.applicationContext, productInfo.appLink?:ApplinkConst.HOME)
-        intent.extras?.let { bundle->
-            appLinkIntent.putExtras(bundle)
+
+        element?.let {
+            if (it.type == ATC || it.type == OCC) {
+                ProductAnalytics.clickProductCard(it, productInfo)
+            }
         }
+
+        val appLinkIntent = RouteManager.getIntent(
+                context.applicationContext,
+                productInfo.appLink?: ApplinkConst.HOME
+        )
+
+        intent.extras?.let { appLinkIntent.putExtras(it) }
         startActivity(context, appLinkIntent)
         context.applicationContext.sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
         NotificationManagerCompat.from(context).cancel(notificationId)
