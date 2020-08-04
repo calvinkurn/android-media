@@ -16,6 +16,7 @@ object ProductAnalytics {
     private const val KEY_CURRENCY_CODE = "currencyCode"
     private const val KEY_IMPRESSIONS = "impressions"
     private const val KEY_CLICK = "click"
+    private const val KEY_ADD = "add"
 
     private const val KEY_ID = "id"
     private const val KEY_NAME = "name"
@@ -27,6 +28,7 @@ object ProductAnalytics {
     private const val KEY_CATEGORY = "category"
     private const val KEY_DIMENSION_79 = "dimension79"
 
+    private const val EVENT_ATC = "addToCart"
     private const val EVENT_VIEW = "viewPushNotifIris"
     private const val EVENT_CLICK = "clickPushNotif"
     private const val EVENT_PRODUCT_VIEW = "productView"
@@ -39,7 +41,7 @@ object ProductAnalytics {
     private const val ACTION_CLICK_EXPAND_OCC = "click on expanded push occ"
     private const val ACTION_CLICK_EXPAND_ATC = "click on expanded push atc"
     private const val IDR = "IDR"
-    private const val LIST = "/notifcenter"
+    private const val LIST = "/pushnotif"
     private const val POSITION = "1"
 
     fun impression(
@@ -158,6 +160,7 @@ object ProductAnalytics {
         val ecommerce = mapOf(
                 EVENT_CHECKOUT to mapOf(
                         "actionField" to mapOf(
+                                KEY_LIST to LIST,
                                 "products" to arrayListOf(productElement)
                         )
                 )
@@ -166,9 +169,46 @@ object ProductAnalytics {
         sendTracker(mapOf(
                 KEY_EVENT to EVENT_CHECKOUT,
                 KEY_EVENT_CATEGORY to CATEGORY,
-                KEY_EVENT_ACTION to ACTION_CLICK_EXPAND_OCC, //TODO by type
+                KEY_EVENT_ACTION to ACTION_CLICK_EXPAND_OCC,
                 KEY_EVENT_LABEL to element.transactionId.toString(),
                 KEY_USER_ID to element.userId.toString(),
+                KEY_ECOMMERCE to ecommerce
+        ))
+    }
+
+    fun atcCLickButton(
+            element: BaseNotificationModel,
+            product: ProductInfo
+    ) {
+        val productElement = mapOf(
+                KEY_ID to product.element_id.toString(),
+                KEY_NAME to product.productTitle,
+                KEY_PRICE to product.productCurrentPrice,
+                KEY_BRAND to "",
+                KEY_VARIANT to "",
+                KEY_LIST to LIST,
+                KEY_CATEGORY to "",
+                "quantity" to "1",
+                "dimension79" to element.shopId.toString(),
+                "dimension81" to "",
+                "dimension80" to "",
+                "dimension82" to "",
+                "dimension45" to "",
+                "dimension40" to LIST
+        )
+
+        val ecommerce = mapOf(
+                KEY_CURRENCY_CODE to IDR,
+                KEY_ADD to mapOf(
+                        "products" to arrayListOf(productElement)
+                )
+        )
+
+        sendTracker(mapOf(
+                KEY_EVENT to EVENT_ATC,
+                KEY_EVENT_CATEGORY to CATEGORY,
+                KEY_EVENT_ACTION to ACTION_CLICK_EXPAND_ATC,
+                KEY_EVENT_LABEL to element.transactionId.toString(),
                 KEY_ECOMMERCE to ecommerce
         ))
     }
