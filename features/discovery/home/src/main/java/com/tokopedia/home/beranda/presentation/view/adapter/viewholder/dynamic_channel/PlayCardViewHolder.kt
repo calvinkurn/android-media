@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel
 
+import android.net.Uri
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
@@ -85,6 +86,7 @@ class PlayCardViewHolder(
         val videoStream = playCardDataModel.playCardHome?.videoStream
         if (videoStream != null) {
             helper?.isAutoPlay = videoStream.config.isAutoPlay
+
             if (helper?.isAutoPlay == true && videoStream.config.streamUrl.isNotEmpty()) {
                 playChannel(videoStream.config.streamUrl)
             }
