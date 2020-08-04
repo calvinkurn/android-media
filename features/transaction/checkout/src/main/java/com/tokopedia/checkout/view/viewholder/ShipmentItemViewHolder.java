@@ -41,7 +41,6 @@ import com.tokopedia.checkout.view.converter.RatesDataConverter;
 import com.tokopedia.design.component.Tooltip;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
-import com.tokopedia.logisticcart.shipping.model.CashOnDeliveryProduct;
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
 import com.tokopedia.logisticcart.shipping.model.OntimeDelivery;
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
@@ -257,8 +256,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private Typography labelFreeShippingOriginalPrice;
     private Typography labelFreeShippingDiscountedPrice;
     private ImageView iconChevronFreeShippingChooseDuration;
-    private Typography labelCodAvailable;
-    private Typography labelCodAvailableTnc;
+//    private Typography labelCodAvailable;
+//    private Typography labelCodAvailableTnc;
 
     public ShipmentItemViewHolder(View itemView) {
         super(itemView);
@@ -420,8 +419,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         labelFreeShippingOriginalPrice = itemView.findViewById(R.id.label_free_shipping_original_price);
         labelFreeShippingDiscountedPrice = itemView.findViewById(R.id.label_free_shipping_discounted_price);
         iconChevronFreeShippingChooseDuration = itemView.findViewById(R.id.icon_chevron_free_shipping_choose_duration);
-        labelCodAvailable = itemView.findViewById(R.id.lbl_cod);
-        labelCodAvailableTnc = itemView.findViewById(R.id.term_and_conds_cod);
+//        labelCodAvailable = itemView.findViewById(R.id.lbl_cod);
+//        labelCodAvailableTnc = itemView.findViewById(R.id.term_and_conds_cod);
 
         compositeSubscription = new CompositeSubscription();
         initSaveStateDebouncer();
@@ -834,10 +833,10 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                     labelOnTimeDeliveryGuarantee.setVisibility(View.GONE);
                     labelOnTimeDeliveryGuaranteeTnc.setVisibility(View.GONE);
                 }
-
+/*
                 CashOnDeliveryProduct codProductData = selectedCourierItemData.getCodProductData();
                 if(codProductData != null && codProductData.isCodAvailable() == 1) {
-                    /*Cash on delivery*/
+                    *//*Cash on delivery*//*
                     labelCodAvailable.setText(codProductData.getCodText());
                     labelCodAvailableTnc.setOnClickListener(view -> {
                         mActionListener.onOntimeDeliveryClicked(codProductData.getTncLink());
@@ -847,7 +846,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 } else {
                     labelCodAvailable.setVisibility(View.GONE);
                     labelCodAvailableTnc.setVisibility(View.GONE);
-                }
+                }*/
             }
         } else {
             // Has not select shipping
