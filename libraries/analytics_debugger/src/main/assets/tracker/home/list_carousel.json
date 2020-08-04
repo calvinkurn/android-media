@@ -53,7 +53,7 @@
       "eventCategory": "homepage",
       "currentSite": "tokopediamarketplace",
       "screenName": "/",
-      "event": "add_to_card",
+      "event": "add_to_cart",
       "userId": "{{.*}}",
       "eventAction": "click add to card on dynamic channel list carousel",
       "sessionIris": "{{.*}}",
