@@ -9,6 +9,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.commonpromo.PromoCodeAutoApplyUseCase
 import com.tokopedia.notifications.R
+import com.tokopedia.notifications.analytics.ProductAnalytics
 import com.tokopedia.notifications.common.*
 import com.tokopedia.notifications.common.CMConstant.PayloadKeys.ADD_TO_CART
 import com.tokopedia.notifications.common.CMConstant.PreDefineActionType.ATC
@@ -130,7 +131,7 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
                         sendClickPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, baseNotificationModel, CMConstant.NotificationType.GENERAL)
                     }
                     CMConstant.ReceiverAction.ACTION_PRODUCT_COLLAPSED_CLICK -> {
-                        handleCollapsedViewClick(context, intent, notificationId)
+                        handleCollapsedViewClick(context, intent, notificationId, baseNotificationModel)
                     }
                     CMConstant.ReceiverAction.ACTION_PRODUCT_CAROUSEL_LEFT_CLICK -> {
                         ProductNotification.onLeftIconClick(context.applicationContext,baseNotificationModel!!)
@@ -177,9 +178,15 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
         clearProductImages(context.applicationContext)
     }
 
-    private fun handleCollapsedViewClick(context: Context, intent: Intent, notificationId: Int) {
+    private fun handleCollapsedViewClick(
+            context: Context,
+            intent: Intent,
+            notificationId: Int,
+            element: BaseNotificationModel?
+    ) {
         handleMainClick(context, intent, notificationId)
         clearProductImages(context.applicationContext)
+        ProductAnalytics.clickBody(element)
     }
 
     private fun clearProductImages(context: Context) {
@@ -311,6 +318,12 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
             notificationData: BaseNotificationModel,
             actionButton: ActionButton
     ) {
+        if (actionButton.type == OCC) {
+            ProductAnalytics.occCLickButton(notificationData, notificationData.productInfoList)
+        } else if (actionButton.type == ATC) {
+            ProductAnalytics.atcCLickButton(notificationData, notificationData.productInfoList)
+        }
+
         actionButton.let {
             val intent = RouteManager.getIntent(context.applicationContext, it.appLink)
             startActivity(context, intent)

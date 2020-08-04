@@ -58,15 +58,15 @@ object ProductAnalytics {
     }
 
     fun clickBody(
-            element: BaseNotificationModel
+            element: BaseNotificationModel?
     ) {
         sendTracker(mapOf(
                 KEY_EVENT to EVENT_CLICK,
                 KEY_EVENT_CATEGORY to CATEGORY,
                 KEY_EVENT_ACTION to ACTION_CLICK_EXPAND,
-                KEY_EVENT_LABEL to element.transactionId.toString(),
-                KEY_USER_ID to element.userId.toString(),
-                KEY_SHOP_ID to element.shopId.toString()
+                KEY_EVENT_LABEL to element?.transactionId.toString(),
+                KEY_USER_ID to element?.userId.toString(),
+                KEY_SHOP_ID to element?.shopId.toString()
         ))
     }
 
@@ -138,30 +138,33 @@ object ProductAnalytics {
 
     fun occCLickButton(
             element: BaseNotificationModel,
-            product: ProductInfo
+            productElement: List<ProductInfo>
     ) {
-        val productElement = mapOf(
-                KEY_ID to product.element_id.toString(),
-                KEY_NAME to product.productTitle,
-                KEY_PRICE to product.productCurrentPrice,
-                KEY_BRAND to "",
-                KEY_VARIANT to "",
-                KEY_LIST to LIST,
-                KEY_CATEGORY to "",
-                "quantity" to "1",
-                "dimension79" to element.shopId.toString(),
-                "dimension81" to "",
-                "dimension80" to "",
-                "dimension82" to "",
-                "dimension45" to "",
-                "dimension40" to "/pushnotif"
-        )
+        val products = mutableListOf<Map<String, String>>()
+        productElement.forEach {
+            products.add(mapOf(
+                    KEY_ID to it.element_id.toString(),
+                    KEY_NAME to it.productTitle,
+                    KEY_PRICE to it.productCurrentPrice,
+                    KEY_BRAND to "",
+                    KEY_VARIANT to "",
+                    KEY_LIST to LIST,
+                    KEY_CATEGORY to "",
+                    "quantity" to "1",
+                    "dimension79" to element.shopId.toString(),
+                    "dimension81" to "",
+                    "dimension80" to "",
+                    "dimension82" to "",
+                    "dimension45" to "",
+                    "dimension40" to "/pushnotif"
+            ))
+        }
 
         val ecommerce = mapOf(
                 EVENT_CHECKOUT to mapOf(
                         "actionField" to mapOf(
                                 KEY_LIST to LIST,
-                                "products" to arrayListOf(productElement)
+                                "products" to products
                         )
                 )
         )
@@ -178,29 +181,32 @@ object ProductAnalytics {
 
     fun atcCLickButton(
             element: BaseNotificationModel,
-            product: ProductInfo
+            productElement: List<ProductInfo>
     ) {
-        val productElement = mapOf(
-                KEY_ID to product.element_id.toString(),
-                KEY_NAME to product.productTitle,
-                KEY_PRICE to product.productCurrentPrice,
-                KEY_BRAND to "",
-                KEY_VARIANT to "",
-                KEY_LIST to LIST,
-                KEY_CATEGORY to "",
-                "quantity" to "1",
-                "dimension79" to element.shopId.toString(),
-                "dimension81" to "",
-                "dimension80" to "",
-                "dimension82" to "",
-                "dimension45" to "",
-                "dimension40" to LIST
-        )
+        val products = mutableListOf<Map<String, String>>()
+        productElement.forEach {
+            products.add(mapOf(
+                    KEY_ID to it.element_id.toString(),
+                    KEY_NAME to it.productTitle,
+                    KEY_PRICE to it.productCurrentPrice,
+                    KEY_BRAND to "",
+                    KEY_VARIANT to "",
+                    KEY_LIST to LIST,
+                    KEY_CATEGORY to "",
+                    "quantity" to "1",
+                    "dimension79" to element.shopId.toString(),
+                    "dimension81" to "",
+                    "dimension80" to "",
+                    "dimension82" to "",
+                    "dimension45" to "",
+                    "dimension40" to LIST
+            ))
+        }
 
         val ecommerce = mapOf(
                 KEY_CURRENCY_CODE to IDR,
                 KEY_ADD to mapOf(
-                        "products" to arrayListOf(productElement)
+                        "products" to products
                 )
         )
 

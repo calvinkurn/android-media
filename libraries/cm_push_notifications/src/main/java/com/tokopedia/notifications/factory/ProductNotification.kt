@@ -33,8 +33,6 @@ internal class ProductNotification(
 ) : BaseNotification(applicationContext, baseNotificationModel) {
 
     override fun createNotification(): Notification? {
-        ProductAnalytics.impression(baseNotificationModel) // impression tracker
-
         val builder = notificationBuilder
 
         if (baseNotificationModel.productInfoList.isEmpty()) return null
@@ -135,6 +133,7 @@ internal class ProductNotification(
 
     private fun productDetailCard(remoteView: RemoteViews, product: ProductInfo) {
         //tracker
+        ProductAnalytics.impression(baseNotificationModel)
         ProductAnalytics.impressionExpanded(baseNotificationModel, product)
 
         // collapse
@@ -158,19 +157,13 @@ internal class ProductNotification(
         remoteView.setViewVisibility(R.id.ivArrowRight, View.GONE)
 
         // action button
-        remoteView.setOnClickPendingIntent(R.id.tv_productButton, getButtonPendingIntent(product, actionButton))
+        remoteView.setOnClickPendingIntent(R.id.tv_productButton, getButtonPendingIntent(actionButton))
         remoteView.setOnClickPendingIntent(R.id.iv_productImage, getProductPendingIntent(product))
         remoteView.setOnClickPendingIntent(R.id.ll_content, getProductPendingIntent(product))
         remoteView.setTextViewText(R.id.tv_productButton, actionButton.text)
     }
 
-    private fun getButtonPendingIntent(product: ProductInfo, actionButton: ActionButton): PendingIntent {
-        if (actionButton.type == OCC) {
-            ProductAnalytics.occCLickButton(baseNotificationModel, product)
-        } else if (actionButton.type == ATC) {
-            ProductAnalytics.atcCLickButton(baseNotificationModel, product)
-        }
-
+    private fun getButtonPendingIntent(actionButton: ActionButton): PendingIntent {
         val intent = getBaseBroadcastIntent(context, baseNotificationModel)
         intent.action = CMConstant.ReceiverAction.ACTION_BUTTON
         intent.putExtra(CMConstant.ReceiverExtraData.ACTION_BUTTON_EXTRA, actionButton)
@@ -178,8 +171,6 @@ internal class ProductNotification(
     }
 
     private fun getCollapsedPendingIntent(): PendingIntent {
-        ProductAnalytics.clickBody(baseNotificationModel) //click body tracker
-
         val intent = getBaseBroadcastIntent(context, baseNotificationModel)
         intent.action = CMConstant.ReceiverAction.ACTION_PRODUCT_COLLAPSED_CLICK
         return getPendingIntent(context, intent, requestCode)
