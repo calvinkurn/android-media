@@ -574,7 +574,7 @@ class DealsAnalytics @Inject constructor(
         val map = getTrackingMapWithHeader() as MutableMap<String, Any>
         map.addGeneralEvent(
                 DealsAnalyticsConstants.Event.PRODUCT_VIEW,
-                DealsAnalyticsConstants.Action.PRODUCT_CARD_HOME_PAGE_IMPRESSION,
+                String.format(DealsAnalyticsConstants.Action.PRODUCT_CARD_HOME_PAGE_IMPRESSION,curatedProductCategoryDataView.title),
                 String.format(DealsAnalyticsConstants.Label.BRAND_NAME_SCROLL, curatedProductCategoryDataView.title, position + 1)
         )
 
@@ -609,7 +609,7 @@ class DealsAnalytics @Inject constructor(
         val map = getTrackingMapWithHeader() as MutableMap<String, Any>
         map.addGeneralEvent(
                 DealsAnalyticsConstants.Event.PRODUCT_CLICK,
-                DealsAnalyticsConstants.Action.CLICK_ON_PRODUCT_CARD_HOME_PAGE,
+                String.format(DealsAnalyticsConstants.Action.CLICK_ON_PRODUCT_CARD_HOME_PAGE, productCardDataView.title),
                 String.format(DealsAnalyticsConstants.Label.CLICK_PRODUCT_HOMEPAGE, productCardDataView.title, productCardDataView.brand, position + 1)
         )
 
@@ -638,11 +638,11 @@ class DealsAnalytics @Inject constructor(
         return data
     }
 
-    fun clickAllCuratedProduct() {
+    fun clickAllCuratedProduct(title: String) {
         val map = getTrackingMapWithHeader() as MutableMap<String, Any>
         map.addGeneralEvent(
                 DealsAnalyticsConstants.Event.CLICK_DEALS,
-                DealsAnalyticsConstants.Action.CLICK_VIEW_ALL_PRODUCT_CARD_HOME_PAGE2,
+                String.format(DealsAnalyticsConstants.Action.CLICK_VIEW_ALL_PRODUCT_CARD_HOME_PAGE2, title),
                 "-"
         )
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
