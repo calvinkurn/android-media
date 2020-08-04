@@ -37,6 +37,14 @@ class VideoControlViewComponent(
         })
     }
 
+    override fun show() {
+        pcvVideo.show()
+    }
+
+    override fun hide() {
+        pcvVideo.hide()
+    }
+
     fun setPlayer(exoPlayer: ExoPlayer?) {
         pcvVideo.player = exoPlayer
     }
