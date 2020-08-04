@@ -248,6 +248,10 @@ class AddEditProductVariantViewModel @Inject constructor(
         }
     }
 
+    fun clearProductVariant() {
+        productInputModel.value?.variantInputModel?.products = emptyList()
+    }
+
     fun getSelectedVariantUnit(layoutPosition: Int): Unit {
         val selectedVariantUnit = selectedVariantUnitMap[layoutPosition] ?: Unit()
         return if (selectedVariantUnit.unitName.isNotBlank()) {
