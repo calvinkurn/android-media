@@ -6,7 +6,10 @@ import com.tokopedia.home.beranda.domain.gql.feed.Product
 import com.tokopedia.home.beranda.domain.interactor.GetHomeRecommendationUseCase
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.*
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRecommendationViewModel
+import com.tokopedia.home.ext.observeOnce
 import com.tokopedia.home.rules.TestDispatcherProvider
+import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import io.mockk.*
 import org.junit.Rule
@@ -22,8 +25,9 @@ class HomeRecommendationViewModelTest{
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     private val getHomeRecommendationUseCase = mockk<GetHomeRecommendationUseCase>(relaxed = true)
+    private val topAdsImageViewUseCase = mockk< TopAdsImageViewUseCase>(relaxed = true)
     private val topAdsUrlHitter = mockk<TopAdsUrlHitter>(relaxed = true)
-    private val homeRecommendationViewModel = HomeRecommendationViewModel(getHomeRecommendationUseCase, TestDispatcherProvider())
+    private val homeRecommendationViewModel = HomeRecommendationViewModel(getHomeRecommendationUseCase, topAdsImageViewUseCase, TestDispatcherProvider())
 
     @Test
     fun `Get Success Data Home Recommendation Initial Page`(){
@@ -55,6 +59,10 @@ class HomeRecommendationViewModelTest{
             })
         }
         confirmVerified(observerHomeRecommendation)
+
+        homeRecommendationViewModel.homeRecommendationNetworkLiveData.observeOnce {
+            assert(it.isSuccess)
+        }
     }
 
     @Test
@@ -482,5 +490,307 @@ class HomeRecommendationViewModelTest{
         assert(productId == item.product.id)
         assert(productName == item.product.name)
         assert(imageUrl == item.product.imageUrl)
+    }
+
+    @Test
+    fun `Get Success Data Home Recommendation Initial Page and load topads banner`(){
+        val observerHomeRecommendation: Observer<HomeRecommendationDataModel> = mockk(relaxed = true)
+        val homeRecommendationDataModel = HomeRecommendationDataModel(
+                homeRecommendations = listOf(
+                        HomeRecommendationItemDataModel(
+                                Product(),
+                                1
+                        ),
+                        HomeRecommendationBannerTopAdsDataModel(position = 1)
+                ),
+                isHasNextPage = false
+        )
+
+        getHomeRecommendationUseCase.givenDataReturn(homeRecommendationDataModel)
+
+        topAdsImageViewUseCase.givenDataReturn(arrayListOf(TopAdsImageViewModel()))
+
+        homeRecommendationViewModel.homeRecommendationLiveData.observeForever(observerHomeRecommendation)
+
+        homeRecommendationViewModel.loadInitialPage("", 1, 0)
+
+        verifyOrder {
+            // check on loading
+            observerHomeRecommendation.onChanged(match {
+                it.homeRecommendations.isNotEmpty() && it.homeRecommendations.first() is HomeRecommendationLoading
+            })
+            // check on first data is home recommendation item
+            observerHomeRecommendation.onChanged(match {
+                it.homeRecommendations.isNotEmpty() && it.homeRecommendations.first() is HomeRecommendationItemDataModel
+                        && it.homeRecommendations[1] is HomeRecommendationBannerTopAdsDataModel
+            })
+        }
+        confirmVerified(observerHomeRecommendation)
+    }
+
+    @Test
+    fun `Get Success Data Home Recommendation Initial Page and load topads banner is empty`(){
+        val observerHomeRecommendation: Observer<HomeRecommendationDataModel> = mockk(relaxed = true)
+        val homeRecommendationDataModel = HomeRecommendationDataModel(
+                homeRecommendations = listOf(
+                        HomeRecommendationItemDataModel(
+                                Product(),
+                                1
+                        ),
+                        HomeRecommendationBannerTopAdsDataModel(position = 1)
+                ),
+                isHasNextPage = false
+        )
+
+        getHomeRecommendationUseCase.givenDataReturn(homeRecommendationDataModel)
+
+        topAdsImageViewUseCase.givenDataReturn(arrayListOf())
+
+        homeRecommendationViewModel.homeRecommendationLiveData.observeForever(observerHomeRecommendation)
+
+        homeRecommendationViewModel.loadInitialPage("", 1, 0)
+
+        verifyOrder {
+            // check on loading
+            observerHomeRecommendation.onChanged(match {
+                it.homeRecommendations.isNotEmpty() && it.homeRecommendations.first() is HomeRecommendationLoading
+            })
+            // check on first data is home recommendation item
+            observerHomeRecommendation.onChanged(match {
+                it.homeRecommendations.isNotEmpty() && it.homeRecommendations.first() is HomeRecommendationItemDataModel
+                        && it.homeRecommendations.size == 1
+            })
+        }
+        confirmVerified(observerHomeRecommendation)
+    }
+
+    @Test
+    fun `Get Success Data Home Recommendation Initial Page and load topads banner is error`(){
+        val observerHomeRecommendation: Observer<HomeRecommendationDataModel> = mockk(relaxed = true)
+        val homeRecommendationDataModel = HomeRecommendationDataModel(
+                homeRecommendations = listOf(
+                        HomeRecommendationItemDataModel(
+                                Product(),
+                                1
+                        ),
+                        HomeRecommendationBannerTopAdsDataModel(position = 1)
+                ),
+                isHasNextPage = false
+        )
+
+        getHomeRecommendationUseCase.givenDataReturn(homeRecommendationDataModel)
+
+        topAdsImageViewUseCase.givenThrows()
+
+        homeRecommendationViewModel.homeRecommendationLiveData.observeForever(observerHomeRecommendation)
+
+        homeRecommendationViewModel.loadInitialPage("", 1, 0)
+
+        verifyOrder {
+            // check on loading
+            observerHomeRecommendation.onChanged(match {
+                it.homeRecommendations.isNotEmpty() && it.homeRecommendations.first() is HomeRecommendationLoading
+            })
+            // check on first data is home recommendation item
+            observerHomeRecommendation.onChanged(match {
+                it.homeRecommendations.isNotEmpty() && it.homeRecommendations.first() is HomeRecommendationItemDataModel
+                        && it.homeRecommendations.size == 1
+            })
+        }
+        confirmVerified(observerHomeRecommendation)
+    }
+
+    @Test
+    fun `Get Success Data Home Recommendation Initial Page & try load more and get success topads banner`(){
+        val observerHomeRecommendation: Observer<HomeRecommendationDataModel> = mockk(relaxed = true)
+        val homeRecommendationDataModel = HomeRecommendationDataModel(
+                homeRecommendations = listOf(
+                        HomeRecommendationItemDataModel(
+                                Product(),
+                                1
+                        ),
+                        HomeRecommendationBannerTopAdsDataModel(position = 1)
+                ),
+                isHasNextPage = true
+        )
+        val homeRecommendationDataModel2 = HomeRecommendationDataModel(
+                homeRecommendations = listOf(
+                        HomeRecommendationItemDataModel(
+                                Product(),
+                                1
+                        ),
+                        HomeRecommendationBannerTopAdsDataModel(position = 1)
+                ),
+                isHasNextPage = true
+        )
+
+        getHomeRecommendationUseCase.givenDataReturn(homeRecommendationDataModel, homeRecommendationDataModel2)
+
+        topAdsImageViewUseCase.givenDataReturn(arrayListOf(TopAdsImageViewModel()))
+
+        homeRecommendationViewModel.homeRecommendationLiveData.observeForever(observerHomeRecommendation)
+
+        homeRecommendationViewModel.loadInitialPage("",1, 0)
+
+        homeRecommendationViewModel.loadNextData("",1, 0, 2)
+
+        verifyOrder {
+            // check on loading
+            observerHomeRecommendation.onChanged(match {
+                it.homeRecommendations.isNotEmpty() && it.homeRecommendations.first() is HomeRecommendationLoading
+            })
+            // check on first data is home recommendation item
+            observerHomeRecommendation.onChanged(match {
+                it.homeRecommendations.isNotEmpty() && it.homeRecommendations.first() is HomeRecommendationItemDataModel &&
+                        it.homeRecommendations.size == homeRecommendationDataModel.homeRecommendations.size &&
+                        it.homeRecommendations[1] is HomeRecommendationBannerTopAdsDataModel
+            })
+            // check on end data is home recommendation loading
+            observerHomeRecommendation.onChanged(match {
+                it.homeRecommendations.isNotEmpty() && it.homeRecommendations.last() is HomeRecommendationLoadMore &&
+                        it.homeRecommendations.size == homeRecommendationDataModel.homeRecommendations.size + 1
+            })
+            // check on end data is home recommendation data after load more
+            observerHomeRecommendation.onChanged(match {
+                it.homeRecommendations.isNotEmpty() &&
+                        it.homeRecommendations.size == homeRecommendationDataModel.homeRecommendations.size + homeRecommendationDataModel2.homeRecommendations.size&&
+                        it.homeRecommendations[it.homeRecommendations.size - 1] is HomeRecommendationBannerTopAdsDataModel
+            })
+        }
+        confirmVerified(observerHomeRecommendation)
+    }
+
+    @Test
+    fun `Get Success Data Home Recommendation Initial Page & try load more and get success topads banner and empty for loadmore topads banner`(){
+        val observerHomeRecommendation: Observer<HomeRecommendationDataModel> = mockk(relaxed = true)
+        val homeRecommendationDataModel = HomeRecommendationDataModel(
+                homeRecommendations = listOf(
+                        HomeRecommendationItemDataModel(
+                                Product(),
+                                1
+                        ),
+                        HomeRecommendationItemDataModel(
+                                Product(),
+                                1
+                        ),
+                        HomeRecommendationBannerTopAdsDataModel(position = 2)
+                ),
+                isHasNextPage = true
+        )
+        val homeRecommendationDataModel2 = HomeRecommendationDataModel(
+                homeRecommendations = listOf(
+                        HomeRecommendationItemDataModel(
+                                Product(),
+                                1
+                        ),
+                        HomeRecommendationItemDataModel(
+                                Product(),
+                                1
+                        ),
+                        HomeRecommendationBannerTopAdsDataModel(position = 2)
+                ),
+                isHasNextPage = true
+        )
+
+        getHomeRecommendationUseCase.givenDataReturn(homeRecommendationDataModel, homeRecommendationDataModel2)
+
+        topAdsImageViewUseCase.givenDataReturn(arrayListOf(TopAdsImageViewModel()), arrayListOf())
+
+        homeRecommendationViewModel.homeRecommendationLiveData.observeForever(observerHomeRecommendation)
+
+        homeRecommendationViewModel.loadInitialPage("",1, 0)
+
+        homeRecommendationViewModel.loadNextData("",1, 0, 2)
+
+        verifyOrder {
+            // check on loading
+            observerHomeRecommendation.onChanged(match {
+                it.homeRecommendations.isNotEmpty() && it.homeRecommendations.first() is HomeRecommendationLoading
+            })
+            // check on first data is home recommendation item
+            observerHomeRecommendation.onChanged(match {
+                it.homeRecommendations.isNotEmpty() && it.homeRecommendations.first() is HomeRecommendationItemDataModel &&
+                        it.homeRecommendations.size == homeRecommendationDataModel.homeRecommendations.size &&
+                        it.homeRecommendations[it.homeRecommendations.size - 1] is HomeRecommendationBannerTopAdsDataModel
+            })
+            // check on end data is home recommendation loading
+            observerHomeRecommendation.onChanged(match {
+                it.homeRecommendations.isNotEmpty() && it.homeRecommendations.last() is HomeRecommendationLoadMore &&
+                        it.homeRecommendations.size == homeRecommendationDataModel.homeRecommendations.size + 1
+            })
+            // check on end data is home recommendation data after load more
+            observerHomeRecommendation.onChanged(match {
+                it.homeRecommendations.isNotEmpty() &&
+                        it.homeRecommendations[it.homeRecommendations.size - 1] !is HomeRecommendationBannerTopAdsDataModel
+            })
+        }
+        confirmVerified(observerHomeRecommendation)
+    }
+
+    @Test
+    fun `Get Success Data Home Recommendation Initial Page & try load more and get success topads banner and error for loadmore topads banner`(){
+        val observerHomeRecommendation: Observer<HomeRecommendationDataModel> = mockk(relaxed = true)
+        val homeRecommendationDataModel = HomeRecommendationDataModel(
+                homeRecommendations = listOf(
+                        HomeRecommendationItemDataModel(
+                                Product(),
+                                1
+                        ),
+                        HomeRecommendationItemDataModel(
+                                Product(),
+                                1
+                        ),
+                        HomeRecommendationBannerTopAdsDataModel(position = 2)
+                ),
+                isHasNextPage = true
+        )
+        val homeRecommendationDataModel2 = HomeRecommendationDataModel(
+                homeRecommendations = listOf(
+                        HomeRecommendationItemDataModel(
+                                Product(),
+                                1
+                        ),
+                        HomeRecommendationItemDataModel(
+                                Product(),
+                                1
+                        ),
+                        HomeRecommendationBannerTopAdsDataModel(position = 2)
+                ),
+                isHasNextPage = true
+        )
+
+        getHomeRecommendationUseCase.givenDataReturn(homeRecommendationDataModel, homeRecommendationDataModel2)
+
+        topAdsImageViewUseCase.givenDataReturnAndThenThrows(arrayListOf(TopAdsImageViewModel()))
+
+        homeRecommendationViewModel.homeRecommendationLiveData.observeForever(observerHomeRecommendation)
+
+        homeRecommendationViewModel.loadInitialPage("",1, 0)
+
+        homeRecommendationViewModel.loadNextData("",1, 0, 2)
+
+        verifyOrder {
+            // check on loading
+            observerHomeRecommendation.onChanged(match {
+                it.homeRecommendations.isNotEmpty() && it.homeRecommendations.first() is HomeRecommendationLoading
+            })
+            // check on first data is home recommendation item
+            observerHomeRecommendation.onChanged(match {
+                it.homeRecommendations.isNotEmpty() && it.homeRecommendations.first() is HomeRecommendationItemDataModel &&
+                        it.homeRecommendations.size == homeRecommendationDataModel.homeRecommendations.size &&
+                        it.homeRecommendations[it.homeRecommendations.size - 1] is HomeRecommendationBannerTopAdsDataModel
+            })
+            // check on end data is home recommendation loading
+            observerHomeRecommendation.onChanged(match {
+                it.homeRecommendations.isNotEmpty() && it.homeRecommendations.last() is HomeRecommendationLoadMore &&
+                        it.homeRecommendations.size == homeRecommendationDataModel.homeRecommendations.size + 1
+            })
+            // check on end data is home recommendation data after load more
+            observerHomeRecommendation.onChanged(match {
+                it.homeRecommendations.isNotEmpty() &&
+                        it.homeRecommendations[it.homeRecommendations.size - 1] !is HomeRecommendationBannerTopAdsDataModel
+            })
+        }
+        confirmVerified(observerHomeRecommendation)
     }
 }
