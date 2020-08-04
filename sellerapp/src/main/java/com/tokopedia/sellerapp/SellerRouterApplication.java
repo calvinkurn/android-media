@@ -220,7 +220,7 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getHomeIntent(Context context) {
         UserSessionInterface userSession = new UserSession(context);
-        Intent intent = new RouteManager.getIntent(this, ApplinkConstInternalSellerapp.WELCOME);
+        Intent intent = RouteManager.getIntent(this, ApplinkConstInternalSellerapp.WELCOME);
         if (userSession.isLoggedIn()) {
             if (userSession.hasShop()) {
                 return SellerHomeActivity.createIntent(context);
