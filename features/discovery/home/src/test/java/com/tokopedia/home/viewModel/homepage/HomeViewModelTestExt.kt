@@ -17,6 +17,7 @@ import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
 import com.tokopedia.home.rules.TestDispatcherProvider
 import com.tokopedia.play_common.domain.usecases.GetPlayWidgetUseCase
 import com.tokopedia.play_common.domain.usecases.PlayToggleChannelReminderUseCase
+import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselDataModel
 import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.user.session.UserSessionInterface
@@ -98,6 +99,14 @@ fun GetPlayLiveDynamicUseCase.givenGetPlayLiveDynamicUseCaseReturn(channel: Play
     )
 }
 
+fun GetPlayWidgetUseCase.givenGetPlayCarouselUseCaseReturn(playBannerCarouselDataModel: PlayBannerCarouselDataModel) {
+    coEvery { executeOnBackground() } returns playBannerCarouselDataModel
+}
+
+fun GetPlayWidgetUseCase.givenGetPlayCarouselUseCaseReturnError() {
+    coEvery { executeOnBackground() } throws TimeoutException()
+}
+
 fun GetBusinessWidgetTab.givenGetBusinessWidgetTabUseCaseReturn(homeWidget: HomeWidget) {
     coEvery { executeOnBackground() } returns homeWidget
 }
@@ -145,6 +154,7 @@ fun HomeUseCase.givenGetHomeDataReturn(homeDataModel: HomeDataModel) {
         emit(homeDataModel)
     }
 }
+
 fun HomeUseCase.givenGetHomeDataReturn(homeDataModel: HomeDataModel, newHomeDataModel: HomeDataModel) {
     coEvery { getHomeData() } returns flow{
         emit(homeDataModel)

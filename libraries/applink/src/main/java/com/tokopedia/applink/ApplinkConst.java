@@ -311,6 +311,8 @@ public interface ApplinkConst {
 
     String OCC = "tokopedia://occ";
 
+    String SELLER_MIGRATION = "tokopedia://seller/seller-migration";
+
     interface Discovery {
         String CATEGORY = "tokopedia://category";
     }

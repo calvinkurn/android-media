@@ -39,7 +39,9 @@ class ProductManageSellerFragment : ProductManageFragment() {
         private const val SEARCH_KEYWORD_OPTIONS = "search_keyword_options"
 
         @JvmStatic
-        fun newInstance(filterOptions: ArrayList<String>, searchKeyWord: String): ProductManageSellerFragment {
+        fun newInstance(
+                filterOptions: ArrayList<String>,
+                searchKeyWord: String): ProductManageSellerFragment {
             return ProductManageSellerFragment().apply {
                 arguments = Bundle().apply {
                     putStringArrayList(FILTER_OPTIONS, filterOptions)
