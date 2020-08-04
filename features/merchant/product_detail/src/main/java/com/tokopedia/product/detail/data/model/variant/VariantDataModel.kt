@@ -14,15 +14,9 @@ data class VariantDataModel(
         val name: String = "",
         var listOfVariantCategory: List<VariantCategory>? = null,
         var mapOfSelectedVariant: MutableMap<String, Int> = mutableMapOf(),
-        var isVariantError: Boolean = false
+        var isVariantError: Boolean = false,
+        var isRefreshing: Boolean = false
 ) : DynamicPdpDataModel {
-
-    fun getFirstSelectedVariantId(): Int {
-        return mapOfSelectedVariant.map {
-            //[Merah,S]
-            it.value
-        }.firstOrNull() ?: 0
-    }
 
     fun isPartialySelected(): Boolean = mapOfSelectedVariant.any {
         it.value == 0

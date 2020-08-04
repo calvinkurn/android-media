@@ -66,7 +66,7 @@ class ProductNotifyMeViewHolder(view: View, private val listener: DynamicProduct
                 }
                 dayLeft < 1 -> {
                     itemView.notify_count_down?.setup(delta, startDate) {
-                        listener.showAlertUpcomingEnded()
+                        listener.refreshPage()
                     }
                     itemView.notify_count_down?.visible()
                     itemView.product_notify_subtitle?.text = getString(R.string.notify_me_subtitle_main)

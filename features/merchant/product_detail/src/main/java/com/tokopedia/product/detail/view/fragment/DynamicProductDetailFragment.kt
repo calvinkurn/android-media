@@ -2926,7 +2926,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
     }
 
-    override fun showAlertUpcomingEnded() {
+    override fun refreshPage() {
         activity?.let {
             onSwipeRefresh()
         }

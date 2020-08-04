@@ -8,6 +8,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.variant.VariantDataModel
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
+import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.variant_common.util.VariantItemDecorator
 import com.tokopedia.variant_common.view.ProductVariantListener
 import com.tokopedia.variant_common.view.adapter.VariantContainerAdapter
@@ -18,7 +19,8 @@ import kotlinx.android.synthetic.main.item_product_variant_view_holder.view.*
  * Created by Yehezkiel on 2020-02-26
  */
 class ProductVariantViewHolder(val view: View,
-                               val listener: ProductVariantListener) : AbstractViewHolder<VariantDataModel>(view) {
+                               val variantListener: ProductVariantListener,
+                               val pdpListener: DynamicProductDetailListener) : AbstractViewHolder<VariantDataModel>(view) {
 
     private var containerAdapter: VariantContainerAdapter? = null
 
@@ -29,11 +31,11 @@ class ProductVariantViewHolder(val view: View,
     override fun bind(element: VariantDataModel) {
         with(view) {
             if (element.isVariantError) {
-                showError()
+                showError(element)
             } else {
                 hideError()
                 element.listOfVariantCategory?.let {
-                    containerAdapter = VariantContainerAdapter(listener)
+                    containerAdapter = VariantContainerAdapter(variantListener)
                     rvContainerVariant.adapter = containerAdapter
                     if (rvContainerVariant.itemDecorationCount == 0) {
                         rvContainerVariant.addItemDecoration(VariantItemDecorator(MethodChecker.getDrawable(view.context, R.drawable.bg_separator_variant)))
@@ -54,14 +56,21 @@ class ProductVariantViewHolder(val view: View,
         }
     }
 
-    private fun showError() = with(view) {
+    private fun showError(element: VariantDataModel) = with(view) {
+        variant_local_load.progressState = false
         variant_local_load.show()
-        renderError()
+        renderError(element)
         rvContainerVariant.hide()
     }
 
-    private fun renderError() = with(view) {
-        //TODO
+    private fun renderError(element: VariantDataModel) = with(view) {
+        variant_local_load.refreshBtn?.setOnClickListener {
+            if (!element.isRefreshing) {
+                element.isRefreshing = true
+                variant_local_load.progressState = true
+                pdpListener.refreshPage()
+            }
+        }
     }
 
     private fun hideError() = with(view) {

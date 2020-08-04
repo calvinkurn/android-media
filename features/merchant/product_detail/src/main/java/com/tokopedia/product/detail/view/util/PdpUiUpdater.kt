@@ -125,6 +125,11 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
             basicContentMap?.run {
                 data = it
             }
+
+            productNewVariantDataModel?.run {
+                isRefreshing = false
+            }
+
             snapShotMap?.run {
                 data = it
             }
