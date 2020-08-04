@@ -13,7 +13,7 @@
     <com.tokopedia.unifycomponents.DividerUnify
         android:layout_width="match_parent"
         android:layout_height="@dimen/setting_divider_thin"
-        android:background="@color/white"/>
+        android:background="@android:color/transparent"/>
 
     <include
         layout="@layout/setting_balance_loading"/>

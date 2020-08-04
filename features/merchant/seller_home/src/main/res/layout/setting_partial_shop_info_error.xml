@@ -10,7 +10,7 @@
         android:layout_height="@dimen/setting_shop_error_background_height"
         android:layout_marginTop="@dimen/setting_header_height"
         app:layout_constraintTop_toTopOf="parent"
-        android:background="@color/white"/>
+        android:background="@android:color/transparent"/>
 
     <com.tokopedia.unifycomponents.LocalLoad
         android:id="@+id/settingLocalLoad"
