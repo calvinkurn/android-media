@@ -265,7 +265,7 @@ open class CircularViewPager : FrameLayout, CoroutineScope{
      * This function needs to be called if dataSet has changed,
      * in order to reset current selected item and currentPagePosition and autoPageSelectionLock.
      */
-    private fun reset() {
+    fun reset() {
         resetImpressions()
         currentPagePosition = if (isInfinite) {
             viewPager.setCurrentItem(1, false)

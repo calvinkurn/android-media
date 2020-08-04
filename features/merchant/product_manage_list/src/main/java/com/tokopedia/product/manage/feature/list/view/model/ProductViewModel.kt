@@ -17,7 +17,8 @@ data class ProductViewModel(
         val isFeatured: Boolean?,
         val isVariant: Boolean?,
         val multiSelectActive: Boolean,
-        val isChecked: Boolean
+        val isChecked: Boolean,
+        val hasStockReserved: Boolean
 ) : Visitable<ProductManageAdapterFactory> {
     override fun type(typeFactory: ProductManageAdapterFactory): Int {
         return typeFactory.type(this)

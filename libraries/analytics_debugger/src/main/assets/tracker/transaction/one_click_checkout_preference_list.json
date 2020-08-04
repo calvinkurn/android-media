@@ -1,0 +1,21 @@
+{
+  "mode": "subset",
+  "query": [
+    {
+      "event": "clickCheckoutExpress",
+      "eventCategory": "purchase setting",
+      "eventAction": "click button jadikan pilihan utama from tambah pilihan"
+    },
+    {
+      "event": "clickCheckoutExpress",
+      "eventCategory": "purchase setting",
+      "eventAction": "click tambah preferensi from tambah pilihan"
+    },
+    {
+      "event": "clickCheckoutExpress",
+      "eventCategory": "purchase setting",
+      "eventAction": "click gear logo from tambah pilihan"
+    }
+  ],
+  "readme": "OCC Preference List Tracking"
+}
