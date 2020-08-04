@@ -204,6 +204,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
         userSession = UserSession(requireContext())
         shopId = userSession.shopId
+        selectedDurationPosition = viewModel.productInputModel.detailInputModel.preorder.timeUnit
 
         if (viewModel.isAdding) {
             ProductAddMainTracking.trackScreen()
