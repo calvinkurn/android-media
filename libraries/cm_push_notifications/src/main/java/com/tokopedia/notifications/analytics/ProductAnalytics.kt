@@ -17,6 +17,8 @@ object ProductAnalytics {
     private const val KEY_IMPRESSIONS = "impressions"
     private const val KEY_CLICK = "click"
     private const val KEY_ADD = "add"
+    private const val KEY_PRODUCTS = "products"
+    private const val KEY_ACTION_FIELD = "actionField"
 
     private const val KEY_ID = "id"
     private const val KEY_NAME = "name"
@@ -32,6 +34,7 @@ object ProductAnalytics {
     private const val EVENT_VIEW = "viewPushNotifIris"
     private const val EVENT_CLICK = "clickPushNotif"
     private const val EVENT_PRODUCT_VIEW = "productView"
+    private const val EVENT_PRODUCT_CLICK = "productClick"
     private const val EVENT_CHECKOUT = "checkout"
     private const val CATEGORY = "push notif"
     private const val ACTION_VIEW = "view on push notif"
@@ -40,6 +43,7 @@ object ProductAnalytics {
     private const val ACTION_CLICK_EXPAND = "click on expanded push body"
     private const val ACTION_CLICK_EXPAND_OCC = "click on expanded push occ"
     private const val ACTION_CLICK_EXPAND_ATC = "click on expanded push atc"
+    private const val ACTION_CLICK_EXPAND_PDP = "click on expanded push product card"
     private const val IDR = "IDR"
     private const val LIST = "/pushnotif"
     private const val POSITION = "1"
@@ -88,7 +92,7 @@ object ProductAnalytics {
 
         val ecommerce = mapOf(
                 KEY_CURRENCY_CODE to IDR,
-                KEY_IMPRESSIONS to impressions
+                KEY_IMPRESSIONS to arrayOf(impressions)
         )
 
         sendTracker(mapOf(
@@ -119,17 +123,17 @@ object ProductAnalytics {
 
         val ecommerce = mapOf(
                 KEY_CLICK to mapOf(
-                        "actionField" to mapOf(
+                        KEY_ACTION_FIELD to mapOf(
                                 KEY_LIST to LIST,
-                                "products" to arrayListOf(productElement)
+                                KEY_PRODUCTS to arrayListOf(productElement)
                         )
                 )
         )
 
         sendTracker(mapOf(
-                KEY_EVENT to "productClick",
+                KEY_EVENT to EVENT_PRODUCT_CLICK,
                 KEY_EVENT_CATEGORY to CATEGORY,
-                KEY_EVENT_ACTION to "click on expanded push product card",
+                KEY_EVENT_ACTION to ACTION_CLICK_EXPAND_PDP,
                 KEY_EVENT_LABEL to element.transactionId.toString(),
                 KEY_USER_ID to element.userId.toString(),
                 KEY_ECOMMERCE to ecommerce
@@ -162,9 +166,9 @@ object ProductAnalytics {
 
         val ecommerce = mapOf(
                 EVENT_CHECKOUT to mapOf(
-                        "actionField" to mapOf(
+                        KEY_ACTION_FIELD to mapOf(
                                 KEY_LIST to LIST,
-                                "products" to products
+                                KEY_PRODUCTS to products
                         )
                 )
         )
@@ -206,7 +210,7 @@ object ProductAnalytics {
         val ecommerce = mapOf(
                 KEY_CURRENCY_CODE to IDR,
                 KEY_ADD to mapOf(
-                        "products" to products
+                        KEY_PRODUCTS to products
                 )
         )
 
