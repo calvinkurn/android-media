@@ -34,7 +34,7 @@ class LayananAdapter(private val list: List<LayananListItem>, private val type: 
    inner class LayananViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
        init {
            if (!type.equals(LayananSectionView.VERTICAL)) {
-               itemView.layoutParams.width = itemView.context.dpToPx(itemView.context.resources.getDimension(R.dimen.dp_168).toInt()).toInt()
+               itemView.layoutParams.width = itemView.context.dpToPx(itemView.context.resources.getDimension(R.dimen.lf_card_width).toInt()).toInt()
            }
        }
 
