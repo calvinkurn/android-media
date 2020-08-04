@@ -1,6 +1,7 @@
 package com.tokopedia.statistic.presentation.view.fragment
 
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.os.Handler
 import android.view.*
 import android.widget.Toast
@@ -654,6 +655,17 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     private fun showToaster() = view?.run {
-        Toast.makeText(context, context.getString(R.string.stc_you_havent_access_this_page), TOAST_DURATION.toInt()).show()
+        val toaster = Toast.makeText(context, context.getString(R.string.stc_you_havent_access_this_page), Toast.LENGTH_LONG)
+        val toastCountDown = object : CountDownTimer(TOAST_DURATION, 1000) {
+            override fun onTick(p0: Long) {
+                toaster.show()
+            }
+
+            override fun onFinish() {
+                toaster.cancel()
+            }
+        }
+        toaster.show()
+        toastCountDown.start()
     }
 }
