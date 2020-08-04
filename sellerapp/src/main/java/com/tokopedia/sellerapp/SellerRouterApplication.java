@@ -71,8 +71,6 @@ import com.tokopedia.sellerapp.utils.SellerOnboardingPreference;
 import com.tokopedia.sellerapp.onboarding.SellerOnboardingBridgeActivity;
 import com.tokopedia.sellerhome.SellerHomeRouter;
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
-import com.tokopedia.selleronboarding.activity.SellerOnboardingActivity;
-import com.tokopedia.selleronboarding.utils.OnboardingPreference;
 import com.tokopedia.sellerorder.common.util.SomConsts;
 import com.tokopedia.sellerorder.list.presentation.fragment.SomListFragment;
 import com.tokopedia.shop.ShopModuleRouter;
