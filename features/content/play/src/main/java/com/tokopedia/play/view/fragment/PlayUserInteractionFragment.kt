@@ -186,11 +186,6 @@ class PlayUserInteractionFragment @Inject constructor(
         trackingQueue.sendAll()
     }
 
-    override fun onDestroyView() {
-        destroyInsets(requireView())
-        super.onDestroyView()
-    }
-
     override fun onWatchModeClicked(bottomSheet: PlayMoreActionBottomSheet) {
         PlayAnalytics.clickWatchMode(channelId, playViewModel.channelType)
         triggerImmersive(container.isFullSolid)
@@ -365,10 +360,6 @@ class PlayUserInteractionFragment @Inject constructor(
         endLiveInfoView.rootView.doOnApplyWindowInsets { v, insets, padding, _ ->
             v.updatePadding(bottom = padding.bottom + insets.systemWindowInsetBottom)
         }
-    }
-
-    private fun destroyInsets(view: View) {
-        ViewCompat.setOnApplyWindowInsetsListener(view, null)
     }
 
     private fun setupObserve() {
