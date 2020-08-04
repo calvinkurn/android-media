@@ -46,7 +46,7 @@
         android:layout_alignBottom="@id/tv_courier"
         android:layout_alignTop="@id/tv_courier"
         android:text="Tersedia Bayar di tempat"
-
+        android:visibility="gone"
         app:labelType="general_light_green" />
 
     <TextView
