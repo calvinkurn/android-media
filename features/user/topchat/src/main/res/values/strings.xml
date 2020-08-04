@@ -168,4 +168,8 @@ yang ditemukan</string>
     <string name="filter_chat_smart_reply">Dibalas oleh Smart Reply</string>
     <string name="title_topchat_tooltip_sticker_onboarding">Kami punya stiker lucu buatmu, lho. Cobain, yuk!</string>
     <string name="title_topchat_tooltip_search_onboarding">Kamu bisa cari pengguna, pesan, atau produk. Coba ketik sesuatu.</string>
+    <string name="title_broadcast_handle_not_follow">Kamu menerima chat promosi ini karena pernah melihat produk toko ini</string>
+    <string name="title_broadcast_stop_promo">Berhenti Terima Promo</string>
+    <string name="title_broadcast_follow_shop">Follow Toko</string>
+    <string name="title_success_follow_shop">Berhasil follow</string>
 </resources>

@@ -828,6 +828,27 @@ class TopChatRoomPresenter @Inject constructor(
         newUnreadMessage = 0
     }
 
+    override fun requestFollowShop(
+            shopId: Int,
+            onSuccess: () -> Unit,
+            onError: () -> Unit
+    ) {
+        val followShopParam = ToggleFavouriteShopUseCase.createRequestParam(
+                shopId.toString(), ToggleFavouriteShopUseCase.Action.FOLLOW
+        )
+        toggleFavouriteShopUseCase.execute(followShopParam, object : Subscriber<Boolean>() {
+            override fun onCompleted() {}
+
+            override fun onError(e: Throwable) {
+                onError()
+            }
+
+            override fun onNext(success: Boolean) {
+                onSuccess()
+            }
+        })
+    }
+
     private fun onSuccessGetAttachments(attachments: ArrayMap<String, Attachment>) {
         this.attachments.putAll(attachments.toMap())
         view?.updateAttachmentsView(this.attachments)

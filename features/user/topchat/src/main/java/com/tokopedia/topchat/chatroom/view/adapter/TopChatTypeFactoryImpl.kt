@@ -50,7 +50,8 @@ open class TopChatTypeFactoryImpl constructor(
         private val quotationListener: QuotationViewHolder.QuotationListener,
         private val deferredAttachment: DeferredViewHolderAttachment,
         private val commonListener: CommonViewHolderListener,
-        private val searchListener: SearchListener
+        private val searchListener: SearchListener,
+        private val broadcastHandlingListener: BroadcastSpamHandlerViewHolder.Listener
 ) : BaseChatTypeFactoryImpl(
         imageAnnouncementListener,
         chatLinkHandlerListener,
@@ -159,7 +160,7 @@ open class TopChatTypeFactoryImpl constructor(
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
-            BroadcastSpamHandlerViewHolder.LAYOUT -> BroadcastSpamHandlerViewHolder(parent)
+            BroadcastSpamHandlerViewHolder.LAYOUT -> BroadcastSpamHandlerViewHolder(parent, broadcastHandlingListener)
             TopchatLoadingModelViewHolder.LAYOUT -> TopchatLoadingModelViewHolder(parent)
             TopchatLoadingMoreViewHolder.LAYOUT -> TopchatLoadingMoreViewHolder(parent)
             StickerMessageViewHolder.LAYOUT -> StickerMessageViewHolder(parent)

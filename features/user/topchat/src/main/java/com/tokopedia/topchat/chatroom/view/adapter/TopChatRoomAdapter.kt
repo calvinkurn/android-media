@@ -208,6 +208,15 @@ class TopChatRoomAdapter(
         return insertedPosition
     }
 
+    fun removeBroadcastHandler(bcHandlerPosition: Int) {
+        if (bcHandlerPosition >= visitables.size) return
+        val item = visitables[bcHandlerPosition]
+        if (item is BroadcastSpamHandlerUiModel) {
+            visitables.removeAt(bcHandlerPosition)
+            notifyItemRemoved(bcHandlerPosition)
+        }
+    }
+
     private fun createBroadcastSpamHandlerViewModel(): Visitable<*> {
         return BroadcastSpamHandlerUiModel()
     }

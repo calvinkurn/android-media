@@ -195,5 +195,7 @@ interface TopChatContract {
         fun resetChatUseCase()
 
         fun resetUnreadMessage()
+
+        fun requestFollowShop(shopId: Int, onSuccess: () -> Unit, onError: () -> Unit)
     }
 }
