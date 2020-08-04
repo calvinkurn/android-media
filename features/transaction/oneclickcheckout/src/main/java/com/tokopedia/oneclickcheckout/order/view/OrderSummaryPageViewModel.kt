@@ -209,10 +209,12 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     private fun debounce() {
         debounceJob?.cancel()
         debounceJob = launch(executorDispatchers.main) {
+            OccIdlingResource.increment()
             delay(1000)
             if (isActive) {
                 updateCart()
                 getRates()
+                OccIdlingResource.decrement()
             }
         }
     }
@@ -233,6 +235,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                                 orderShipment.value = _orderShipment
                                 orderTotal.value = orderTotal.value.copy(buttonState = ButtonBayarState.DISABLE)
                                 sendViewOspEe()
+                                OccIdlingResource.decrement()
                             }
 
                             override fun onNext(shippingRecommendationData: ShippingRecommendationData) {
@@ -527,6 +530,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         orderPromo.value = orderPromo.value.copy(state = ButtonBayarState.LOADING)
         val requestParams = RequestParams.create()
         requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, generateValidateUsePromoRequestWithBbo(logisticPromoUiModel, oldCode))
+        OccIdlingResource.increment()
         compositeSubscription.add(
                 validateUsePromoRevampUseCase.createObservable(requestParams)
                         .subscribeOn(executorSchedulers.io)
@@ -539,6 +543,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                                 orderShipment.value = _orderShipment
                                 orderTotal.value = orderTotal.value.copy(buttonState = ButtonBayarState.DISABLE)
                                 calculateTotal()
+                                OccIdlingResource.decrement()
                             }
 
                             override fun onNext(response: ValidateUsePromoRevampUiModel) {
@@ -552,7 +557,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                             }
 
                             override fun onCompleted() {
-                                // do nothing
+                                OccIdlingResource.decrement()
                             }
                         })
         )
@@ -898,6 +903,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                     OccIdlingResource.increment()
                     updateCartOccUseCase.execute(param, {
                         finalValidateUse(product, shop, pref, onSuccessCheckout, skipCheckIneligiblePromo)
+                        OccIdlingResource.decrement()
                     }, { throwable: Throwable ->
                         if (throwable is MessageErrorException && throwable.message != null) {
                             globalEvent.value = OccGlobalEvent.TriggerRefresh(errorMessage = throwable.message
@@ -918,6 +924,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         if (!skipCheckIneligiblePromo) {
             val requestParams = RequestParams.create()
             requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, generateValidateUsePromoRequest())
+            OccIdlingResource.increment()
             compositeSubscription.add(
                     validateUsePromoRevampUseCase.createObservable(requestParams)
                             .subscribeOn(executorSchedulers.io)
@@ -937,7 +944,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                                 }
 
                                 override fun onCompleted() {
-                                    //do nothing
+                                    OccIdlingResource.decrement()
                                 }
                             })
             )
@@ -976,6 +983,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                         )
                 )
         )), promos = checkoutPromos))
+        OccIdlingResource.increment()
         checkoutOccUseCase.execute(param, { checkoutOccGqlResponse: CheckoutOccGqlResponse ->
             if (checkoutOccGqlResponse.response.status.equals(STATUS_OK, true)) {
                 if (checkoutOccGqlResponse.response.data.success == 1 || checkoutOccGqlResponse.response.data.paymentParameter.redirectParam.url.isNotEmpty()) {
@@ -1042,7 +1050,6 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
         if (notEligiblePromoHolderdataList.size > 0) {
             globalEvent.value = OccGlobalEvent.PromoClashing(notEligiblePromoHolderdataList)
-            OccIdlingResource.decrement()
             return false
         }
         return true
@@ -1280,6 +1287,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                             override fun onError(e: Throwable) {
                                 orderPromo.value = orderPromo.value.copy(state = ButtonBayarState.DISABLE)
                                 orderTotal.value = orderTotal.value.copy(buttonState = ButtonBayarState.DISABLE)
+                                OccIdlingResource.decrement()
                             }
 
                             override fun onNext(result: ValidateUsePromoRevampUiModel) {
