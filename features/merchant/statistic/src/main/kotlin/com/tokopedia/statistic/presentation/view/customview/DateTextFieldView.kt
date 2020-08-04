@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.LinearLayout
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.statistic.R
+
 import kotlinx.android.synthetic.main.view_stc_date_text_field.view.*
 
 /**
@@ -26,9 +27,9 @@ class DateTextFieldView(
         set(value) {
             field = value
             val color = if (value) {
-                context.getResColor(R.color.light_G400)
+                context.getResColor(com.tokopedia.unifyprinciples.R.color.light_G400)
             } else {
-                context.getResColor(R.color.Neutral_N150)
+                context.getResColor(com.tokopedia.unifyprinciples.R.color.Neutral_N150)
             }
             horLineDtf.setBackgroundColor(color)
         }
@@ -43,14 +44,14 @@ class DateTextFieldView(
         set(value) {
             field = value
             tvStcDateText.text = value
-            tvStcDateText.setTextColor(context.getResColor(R.color.Neutral_N700_32))
+            tvStcDateText.setTextColor(context.getResColor(com.tokopedia.unifyprinciples.R.color.Neutral_N700_32))
         }
 
     var valueStr: String = ""
         set(value) {
             field = value
             tvStcDateText.text = value
-            tvStcDateText.setTextColor(context.getResColor(R.color.Neutral_N700_96))
+            tvStcDateText.setTextColor(context.getResColor(com.tokopedia.unifyprinciples.R.color.Neutral_N700_96))
         }
 
     var labelGravity: Int = Gravity.START
