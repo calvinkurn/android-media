@@ -55,7 +55,8 @@ class HomeViewModelBusinessUnitTest{
         getBusinessUnitDataUseCase.givenGetBusinessUnitDataUseCaseReturn(listOf(
                 BusinessUnitItemDataModel(
                         content = HomeWidget.ContentItemTab(),
-                        itemPosition = 0
+                        itemPosition = 0,
+                        tabPosition = 0
                 )
         ))
 
