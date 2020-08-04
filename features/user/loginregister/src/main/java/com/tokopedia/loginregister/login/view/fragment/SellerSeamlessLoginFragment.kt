@@ -54,6 +54,7 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
     private var serviceConnection: RemoteServiceConnection? = null
 
     private var autoLogin = false
+    private var redirectUrl = ""
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -85,6 +86,8 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
 
     companion object {
         private const val KEY_AUTO_LOGIN = "is_auto_login"
+        const val KEY_REDIRECT_SEAMLESS_APPLINK = "redirect_seamless"
+
         fun createInstance(bundle: Bundle): Fragment {
             val fragment = SellerSeamlessLoginFragment()
             fragment.arguments = bundle
@@ -157,6 +160,7 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
         super.onCreate(savedInstanceState)
         arguments?.run {
             autoLogin = getBoolean(KEY_AUTO_LOGIN, false)
+            redirectUrl = getString(KEY_REDIRECT_SEAMLESS_APPLINK, "")
         }
         if (context?.applicationContext is LoginRouter) {
             (context?.applicationContext as LoginRouter).setOnboardingStatus(true)
@@ -229,7 +233,14 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
     private fun onSuccessLoginToken(){
         analytics.eventClickLoginSeamless(SeamlessLoginAnalytics.LABEL_SUCCESS)
         hideProgressBar()
-        activity?.setResult(Activity.RESULT_OK)
+        if(redirectUrl.isNotEmpty()) {
+            val intent = Intent().apply {
+                putExtra(KEY_REDIRECT_SEAMLESS_APPLINK, redirectUrl)
+            }
+            activity?.setResult(Activity.RESULT_OK, intent)
+        }else {
+            activity?.setResult(Activity.RESULT_OK)
+        }
         activity?.finish()
     }
 

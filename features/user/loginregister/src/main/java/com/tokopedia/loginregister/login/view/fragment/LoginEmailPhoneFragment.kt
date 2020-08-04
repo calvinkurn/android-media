@@ -721,7 +721,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         saveFirstInstallTime()
     }
 
-    private fun setLoginSuccessSellerApp() = view?.run {
+    override fun setLoginSuccessSellerApp() = view?.run {
         if (context.applicationContext is LoginRouter) {
             (context.applicationContext as LoginRouter).setOnboardingStatus(true)
         }
