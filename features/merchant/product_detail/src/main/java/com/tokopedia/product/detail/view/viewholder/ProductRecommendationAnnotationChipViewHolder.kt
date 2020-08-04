@@ -18,8 +18,8 @@ class ProductRecommendationAnnotationChipViewHolder (
 ) : RecyclerView.ViewHolder(view) {
 
     fun bind(element: AnnotationChip) {
-        view.annotation_chip.chipText = element.name
-        view.annotation_chip.chipType = if(element.selected) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL
+        view.annotation_chip.chipText = element.recommendationFilterChip.name
+        view.annotation_chip.chipType = if(element.recommendationFilterChip.isActivated) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL
         view.setOnClickListener {
             listener.onFilterAnnotationClicked(element, adapterPosition)
         }
@@ -29,9 +29,9 @@ class ProductRecommendationAnnotationChipViewHolder (
         if(payload.isEmpty()) return
         val bundle = payload.first() as Bundle
         if(bundle.containsKey(KEY_UPDATE_FILTER_SELECTED_RECOM)){
-            view.annotation_chip.chipType = if(element.selected) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL
+            view.annotation_chip.chipType = if(element.recommendationFilterChip.isActivated) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL
         } else if(bundle.containsKey(KEY_UPDATE_FILTER_NAME_RECOM)){
-            view.annotation_chip.chipText = element.name
+            view.annotation_chip.chipText = element.recommendationFilterChip.name
         }
         view.setOnClickListener {
             listener.onFilterAnnotationClicked(element, adapterPosition)

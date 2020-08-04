@@ -85,6 +85,11 @@ class DynamicProductDetailAdapter(
         }
     }
 
+    fun notifyRecomAdapter(productRecommendationDataModel: ProductRecommendationDataModel?) {
+        val index = list.indexOf(productRecommendationDataModel)
+        notifyItemChanged(index)
+    }
+
     fun notifyFilterRecommendation(productRecommendationDataModel: ProductRecommendationDataModel){
         notifyItemChanged(list.indexOf(productRecommendationDataModel), Bundle().apply {
             putBoolean(ProductRecommendationViewHolder.KEY_UPDATE_FILTER_RECOM, true)
@@ -157,8 +162,11 @@ class DynamicProductDetailAdapter(
 
     override fun onViewAttachedToWindow(holder: AbstractViewHolder<out Visitable<*>>) {
         super.onViewAttachedToWindow(holder)
-        if (holder is ProductRecommendationViewHolder) {
-            listener.loadTopads()
+        if (holder is ProductRecommendationViewHolder &&
+                holder.adapterPosition < visitables.size &&
+                visitables[holder.adapterPosition] is ProductRecommendationDataModel &&
+                (visitables[holder.adapterPosition] as ProductRecommendationDataModel).recomWidgetData == null) {
+            listener.loadTopads((visitables[holder.adapterPosition] as ProductRecommendationDataModel).name)
         }
     }
 }

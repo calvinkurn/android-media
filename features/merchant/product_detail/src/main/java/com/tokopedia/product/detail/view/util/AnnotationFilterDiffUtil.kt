@@ -15,7 +15,7 @@ class AnnotationFilterDiffUtil(
         private val newList: List<AnnotationChip>
 ) : DiffUtil.Callback(){
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return oldList[oldItemPosition].id == newList[newItemPosition].id
+        return oldList[oldItemPosition].recommendationFilterChip.name == newList[newItemPosition].recommendationFilterChip.name
     }
 
     override fun getOldListSize(): Int = oldList.size
@@ -23,16 +23,15 @@ class AnnotationFilterDiffUtil(
     override fun getNewListSize(): Int = newList.size
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return oldList[oldItemPosition].selected == newList[newItemPosition].selected
-                && oldList[oldItemPosition].name == newList[newItemPosition].name
+        return oldList[oldItemPosition].recommendationFilterChip.isActivated == newList[newItemPosition].recommendationFilterChip.isActivated
     }
 
     override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Any? {
         val bundle = Bundle()
-        if(oldList[oldItemPosition].name != newList[newItemPosition].name){
-            bundle.putString(KEY_UPDATE_FILTER_NAME_RECOM, newList[newItemPosition].name)
-        } else if(oldList[oldItemPosition].selected != newList[newItemPosition].selected) {
-            bundle.putBoolean(KEY_UPDATE_FILTER_SELECTED_RECOM, newList[newItemPosition].selected)
+        if(oldList[oldItemPosition].recommendationFilterChip.name != newList[newItemPosition].recommendationFilterChip.name){
+            bundle.putString(KEY_UPDATE_FILTER_NAME_RECOM, newList[newItemPosition].recommendationFilterChip.name)
+        } else if(oldList[oldItemPosition].recommendationFilterChip.isActivated != newList[newItemPosition].recommendationFilterChip.isActivated) {
+            bundle.putBoolean(KEY_UPDATE_FILTER_SELECTED_RECOM, newList[newItemPosition].recommendationFilterChip.isActivated)
         }
         return bundle
     }

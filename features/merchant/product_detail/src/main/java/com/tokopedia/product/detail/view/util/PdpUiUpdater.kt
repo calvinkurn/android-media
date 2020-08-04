@@ -368,24 +368,11 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
         }
     }
 
-    fun updateRecomData(data: List<RecommendationWidget>) {
-        listProductRecomMap?.run {
-            forEach {
-                when (it.name) {
-                    ProductDetailConstant.PDP_1 -> {
-                        fillRecomData(it, data, 0)
-                    }
-                    ProductDetailConstant.PDP_2 -> {
-                        fillRecomData(it, data, 1)
-                    }
-                    ProductDetailConstant.PDP_3 -> {
-                        fillRecomData(it, data, 2)
-                    }
-                    ProductDetailConstant.PDP_4 -> {
-                        fillRecomData(it, data, 3)
-                    }
-                }
-            }
+    fun updateRecommendationData(data: RecommendationWidget): ProductRecommendationDataModel?{
+        return listProductRecomMap?.find { it.name == data.pageName }?.apply {
+            recomWidgetData = data
+            cardModel = mapToCardModel(data)
+            filterData = mapToAnnotateChip(data)
         }
     }
 
@@ -452,19 +439,9 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
         }
     }
 
-    private fun fillRecomData(dataModel: ProductRecommendationDataModel, recomWidget: List<RecommendationWidget>, position: Int) {
-        recomWidget.getOrNull(position)?.let { recom ->
-            dataModel.recomWidgetData = recom
-            dataModel.cardModel = mapToCardModel(recom)
-            dataModel.filterData = listOf(
-                    AnnotationChip("1", "Warna Coklat", false),
-                    AnnotationChip("2", "Warna Biru", false),
-                    AnnotationChip("3", "Warna Hijau", false),
-                    AnnotationChip("4", "34", false),
-                    AnnotationChip("5", "Resliting", false),
-                    AnnotationChip("6", "Hooded", false),
-                    AnnotationChip("7", "Multi", false)
-            )
+    private fun mapToAnnotateChip(data: RecommendationWidget): List<AnnotationChip>{
+        return data.recommendationFilterChips.map {
+            AnnotationChip(it)
         }
     }
 }

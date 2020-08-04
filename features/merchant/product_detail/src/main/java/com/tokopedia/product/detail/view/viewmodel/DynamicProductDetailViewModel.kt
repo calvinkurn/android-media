@@ -1,5 +1,6 @@
 package com.tokopedia.product.detail.view.viewmodel
 
+import android.text.TextUtils
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
@@ -28,8 +29,8 @@ import com.tokopedia.product.detail.data.model.*
 import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.data.model.financing.FinancingDataResponse
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpfulResponseWrapper
-import com.tokopedia.product.detail.data.util.DynamicProductDetailTalkLastAction
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
+import com.tokopedia.product.detail.data.util.DynamicProductDetailTalkLastAction
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.usecase.*
 import com.tokopedia.product.detail.view.util.DynamicProductDetailDispatcherProvider
@@ -39,6 +40,7 @@ import com.tokopedia.product.detail.view.util.asThrowable
 import com.tokopedia.purchase_platform.common.feature.helpticket.data.request.SubmitHelpTicketRequest
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.model.SubmitTicketResult
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.SubmitHelpTicketUseCase
+import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -69,29 +71,30 @@ import timber.log.Timber
 import javax.inject.Inject
 
 open class DynamicProductDetailViewModel @Inject constructor(
-         private val dispatcher: DynamicProductDetailDispatcherProvider,
-         private val stickyLoginUseCase: StickyLoginUseCase,
-         private val getPdpLayoutUseCase: GetPdpLayoutUseCase,
-         private val getProductInfoP2ShopUseCase: GetProductInfoP2ShopUseCase,
-         private val getProductInfoP2LoginUseCase: GetProductInfoP2LoginUseCase,
-         private val getProductInfoP2GeneralUseCase: GetProductInfoP2GeneralUseCase,
-         private val getProductInfoP3RateEstimateUseCase: GetProductInfoP3RateEstimateUseCase,
-         private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
-         private val removeWishlistUseCase: RemoveWishListUseCase,
-         private val addWishListUseCase: AddWishListUseCase,
-         private val getRecommendationUseCase: GetRecommendationUseCase,
-         private val moveProductToWarehouseUseCase: MoveProductToWarehouseUseCase,
-         private val moveProductToEtalaseUseCase: MoveProductToEtalaseUseCase,
-         private val trackAffiliateUseCase: TrackAffiliateUseCase,
-         private val submitHelpTicketUseCase: SubmitHelpTicketUseCase,
-         private val updateCartCounterUseCase: UpdateCartCounterUseCase,
-         private val addToCartUseCase: AddToCartUseCase,
-         private val addToCartOcsUseCase: AddToCartOcsUseCase,
-         private val addToCartOccUseCase: AddToCartOccUseCase,
-         private val getProductInfoP3VariantUseCase: GetProductInfoP3VariantUseCase,
-         private val toggleNotifyMeUseCase: ToggleNotifyMeUseCase,
-         private val discussionMostHelpfulUseCase: DiscussionMostHelpfulUseCase,
-         val userSessionInterface: UserSessionInterface) : BaseViewModel(dispatcher.ui()) {
+        private val dispatcher: DynamicProductDetailDispatcherProvider,
+        private val stickyLoginUseCase: StickyLoginUseCase,
+        private val getPdpLayoutUseCase: GetPdpLayoutUseCase,
+        private val getProductInfoP2ShopUseCase: GetProductInfoP2ShopUseCase,
+        private val getProductInfoP2LoginUseCase: GetProductInfoP2LoginUseCase,
+        private val getProductInfoP2GeneralUseCase: GetProductInfoP2GeneralUseCase,
+        private val getProductInfoP3RateEstimateUseCase: GetProductInfoP3RateEstimateUseCase,
+        private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
+        private val removeWishlistUseCase: RemoveWishListUseCase,
+        private val addWishListUseCase: AddWishListUseCase,
+        private val getRecommendationUseCase: GetRecommendationUseCase,
+        private val getRecommendationFilterChips: GetRecommendationFilterChips,
+        private val moveProductToWarehouseUseCase: MoveProductToWarehouseUseCase,
+        private val moveProductToEtalaseUseCase: MoveProductToEtalaseUseCase,
+        private val trackAffiliateUseCase: TrackAffiliateUseCase,
+        private val submitHelpTicketUseCase: SubmitHelpTicketUseCase,
+        private val updateCartCounterUseCase: UpdateCartCounterUseCase,
+        private val addToCartUseCase: AddToCartUseCase,
+        private val addToCartOcsUseCase: AddToCartOcsUseCase,
+        private val addToCartOccUseCase: AddToCartOccUseCase,
+        private val getProductInfoP3VariantUseCase: GetProductInfoP3VariantUseCase,
+        private val toggleNotifyMeUseCase: ToggleNotifyMeUseCase,
+        private val discussionMostHelpfulUseCase: DiscussionMostHelpfulUseCase,
+        val userSessionInterface: UserSessionInterface) : BaseViewModel(dispatcher.ui()) {
 
     private val _productLayout = MutableLiveData<Result<List<DynamicPdpDataModel>>>()
     val productLayout: LiveData<Result<List<DynamicPdpDataModel>>>
@@ -117,8 +120,8 @@ open class DynamicProductDetailViewModel @Inject constructor(
     val p3VariantResponse: LiveData<ProductInfoP3Variant>
         get() = _p3VariantResponse
 
-    private val _loadTopAdsProduct = MutableLiveData<Result<List<RecommendationWidget>>>()
-    val loadTopAdsProduct: LiveData<Result<List<RecommendationWidget>>>
+    private val _loadTopAdsProduct = MutableLiveData<Result<RecommendationWidget>>()
+    val loadTopAdsProduct: LiveData<Result<RecommendationWidget>>
         get() = _loadTopAdsProduct
 
     private val _filterTopAdsProduct = MutableLiveData<ProductRecommendationDataModel>()
@@ -569,18 +572,35 @@ open class DynamicProductDetailViewModel @Inject constructor(
         })
     }
 
-    fun loadRecommendation() {
+    fun loadRecommendation(pageName: String) {
         launch {
             if (!GlobalConfig.isSellerApp()) {
                 try {
                     withContext(dispatcher.io()) {
-                        val recomData = getRecommendationUseCase.createObservable(getRecommendationUseCase.getRecomParams(
+                        val productIds = arrayListOf(getDynamicProductInfoP1?.basic?.productID ?: "")
+                        val productIdsString = TextUtils.join(",", productIds)
+                        getRecommendationFilterChips.setParams(
+                                userId = userSessionInterface.userId,
+                                pageName = pageName,
+                                productIDs = productIdsString,
+                                xSource = ProductDetailConstant.DEFAULT_X_SOURCE
+                        )
+                        val recomFilter = getRecommendationFilterChips.executeOnBackground()
+
+                        val recomData=getRecommendationUseCase.createObservable(getRecommendationUseCase.getRecomParams(
                                 pageNumber = ProductDetailConstant.DEFAULT_PAGE_NUMBER,
-                                pageName = ProductDetailConstant.DEFAULT_PAGE_NAME,
-                                productIds = arrayListOf(getDynamicProductInfoP1?.basic?.productID
-                                        ?: "")
-                        )).toBlocking()
-                        _loadTopAdsProduct.postValue((recomData.first() ?: emptyList()).asSuccess())
+                                pageName = pageName,
+                                productIds = productIds,
+                                queryParam = recomFilter.data.find { it.isActivated }?.value ?: ""
+                        )).toBlocking().first()
+
+                        if(recomData.isNotEmpty()){
+                            val recomWidget = recomData.first().copy(
+                                    recommendationFilterChips = recomFilter.data
+                            )
+                            _loadTopAdsProduct.postValue(recomWidget.asSuccess())
+                        }
+
                     }
                 } catch (e: Throwable) {
                     _loadTopAdsProduct.value = e.asFail()
@@ -602,7 +622,13 @@ open class DynamicProductDetailViewModel @Inject constructor(
                     _filterTopAdsProduct.postValue(recommendationDataModel.copy(
                             recomWidgetData = newRecommendation,
                             filterData = recommendationDataModel.filterData?.map {
-                                it.copy(selected = annotationChip.id == it.id && annotationChip.selected)
+                                it.copy(
+                                    recommendationFilterChip = it.recommendationFilterChip.copy(
+                                        isActivated =
+                                            annotationChip.recommendationFilterChip.name == it.recommendationFilterChip.name
+                                                    && annotationChip.recommendationFilterChip.isActivated
+                                    )
+                                )
                             }
                     ))
                     _statusFilterTopAdsProduct.postValue(true.asSuccess())
@@ -611,7 +637,13 @@ open class DynamicProductDetailViewModel @Inject constructor(
         }) { throwable ->
             _filterTopAdsProduct.postValue(recommendationDataModel.copy(
                     filterData = recommendationDataModel.filterData?.map {
-                        it.copy(selected = it.id == annotationChip.id && !annotationChip.selected)
+                        it.copy(
+                                recommendationFilterChip = it.recommendationFilterChip.copy(
+                                        isActivated =
+                                        annotationChip.recommendationFilterChip.name == it.recommendationFilterChip.name
+                                                && annotationChip.recommendationFilterChip.isActivated
+                                )
+                        )
                     }
             ))
             _statusFilterTopAdsProduct.postValue(throwable.asFail())

@@ -748,11 +748,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         return recommendationCarouselPositionSavedState
     }
 
-    override fun loadTopads() {
-        if (pdpUiUpdater?.listProductRecomMap?.isNotEmpty() == true && !isTopdasLoaded) {
-            isTopdasLoaded = true
-            viewModel.loadRecommendation()
-        }
+    override fun loadTopads(pageName: String) {
+        viewModel.loadRecommendation(pageName)
     }
 
     /**
@@ -1336,8 +1333,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private fun observeRecommendationProduct() {
         viewLifecycleOwner.observe(viewModel.loadTopAdsProduct) { data ->
             data.doSuccessOrFail({
-                pdpUiUpdater?.updateRecomData(it.data)
-                dynamicAdapter.notifyRecomAdapter(pdpUiUpdater?.listProductRecomMap)
+                dynamicAdapter.notifyRecomAdapter(pdpUiUpdater?.updateRecommendationData(it.data))
             }, {
                 dynamicAdapter.removeRecommendation(pdpUiUpdater?.listProductRecomMap)
             })

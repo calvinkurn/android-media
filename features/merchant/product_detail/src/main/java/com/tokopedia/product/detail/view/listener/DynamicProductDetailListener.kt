@@ -106,7 +106,7 @@ interface DynamicProductDetailListener {
     /**
      * ProductRecom
      */
-    fun loadTopads()
+    fun loadTopads(pageName: String)
 
     /**
      * ProductDefaultErrorViewHolder

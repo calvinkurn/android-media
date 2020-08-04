@@ -50,10 +50,20 @@ class ProductRecommendationViewHolder(
                     override fun onFilterAnnotationClicked(annotationChip: AnnotationChip, position: Int) {
                         annotationChipAdapter?.submitList(
                             element.filterData?.map {
-                                it.copy(selected = annotationChip.id == it.id && !annotationChip.selected)
+                                it.copy(
+                                    recommendationFilterChip = it.recommendationFilterChip.copy(
+                                            isActivated =
+                                            annotationChip.recommendationFilterChip.name == it.recommendationFilterChip.name
+                                                    && !annotationChip.recommendationFilterChip.isActivated
+                                    )
+                                )
                             } ?: listOf()
                         )
-                        listener.onChipFilterClicked(element, annotationChip.copy(selected = !annotationChip.selected), adapterPosition, position)
+                        listener.onChipFilterClicked(element, annotationChip.copy(
+                                recommendationFilterChip = annotationChip.recommendationFilterChip.copy(
+                                        isActivated = !annotationChip.recommendationFilterChip.isActivated
+                                )), adapterPosition, position
+                        )
                         view.loadingRecom.show()
                         view.rvProductRecom.hide()
                     }
