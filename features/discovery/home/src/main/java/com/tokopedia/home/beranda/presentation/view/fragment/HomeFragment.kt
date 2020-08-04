@@ -672,6 +672,7 @@ open class HomeFragment : BaseDaggerFragment(),
         observeSalamWidget()
         observeRechargeRecommendation()
         observePlayReminder()
+        observeIsNeedRefresh()
     }
           
     private fun observeIsNeedRefresh() {
