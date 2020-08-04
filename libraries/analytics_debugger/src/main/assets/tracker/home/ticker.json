@@ -1,0 +1,20 @@
+{
+  "readme": "Ticker, click applink and close",
+  "mode": "exact",
+  "query": [
+    {
+      "eventCategory": "ticker homepage",
+      "event": "clickTicker",
+      "eventAction": "click on close ticker",
+      "sessionIris": "{{.*}}",
+      "eventLabel": "{{.*}}"
+    },
+    {
+      "eventCategory": "ticker homepage",
+      "event": "clickTicker",
+      "eventAction": "click ticker",
+      "sessionIris": "{{.*}}",
+      "eventLabel": "{{.*}}"
+    }
+  ]
+}
