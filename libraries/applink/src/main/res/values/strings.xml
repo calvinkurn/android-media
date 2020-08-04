@@ -81,4 +81,8 @@
 
     <!-- ATC Variant -->
     <string name="title_normal_checkout">Detail Produk</string>
+
+    <!-- Seller Onboarding -->
+    <string name="title_seller_onboarding">Seller Onboarding</string>
+
 </resources>
