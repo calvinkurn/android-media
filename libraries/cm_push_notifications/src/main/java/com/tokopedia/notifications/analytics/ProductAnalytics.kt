@@ -99,7 +99,7 @@ object ProductAnalytics {
 
         val ecommerce = mapOf(
                 KEY_CURRENCY_CODE to IDR,
-                KEY_IMPRESSIONS to arrayOf(impressions)
+                KEY_IMPRESSIONS to listOf(impressions)
         )
 
         sendTracker(mapOf(
@@ -132,7 +132,7 @@ object ProductAnalytics {
                 KEY_CLICK to mapOf(
                         KEY_ACTION_FIELD to mapOf(
                                 KEY_LIST to LIST,
-                                KEY_PRODUCTS to arrayListOf(productElement)
+                                KEY_PRODUCTS to listOf(productElement)
                         )
                 )
         )
