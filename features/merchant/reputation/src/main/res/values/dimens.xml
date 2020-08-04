@@ -35,4 +35,7 @@
     <dimen name="margin_top_incentive_ovo_description">30dp</dimen>
     <dimen name="size_width_incentive_ovo_image">170dp</dimen>
     <dimen name="size_height_incentive_ovo_image">120dp</dimen>
+    <dimen name="size_seller_migration_review_icon">56dp</dimen>
+    <dimen name="size_seller_migration_review_right_arrow_icon">24dp</dimen>
+    <dimen name="seller_migration_card_side_margin">10dp</dimen>
 </resources>

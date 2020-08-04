@@ -24,6 +24,7 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.topads.common.data.model.DataDeposit
+import com.tokopedia.unifycomponents.Label
 import com.tokopedia.user_identification_common.KYCConstant
 import rx.functions.Func1
 import java.util.*
@@ -241,12 +242,15 @@ class SellerAccountMapper @Inject constructor(
     }
 
     private fun getProductFeatureMenu(): MenuListViewModel {
-        return MenuListViewModel().apply {
-            menu = context.getString(R.string.title_menu_product_feature)
-            menuDescription = context.getString(R.string.label_menu_product_feature)
-            applink = AccountConstants.Navigation.FEATURED_PRODUCT
-            titleTrack = PENJUAL
-            sectionTrack = context.getString(R.string.title_menu_product)
+        return LabelledMenuListUiModel().apply {
+                menu = context.getString(R.string.title_menu_product_feature)
+                label = context.getString(com.tokopedia.seller_migration_common.R.string.seller_migration_label_seller_app_only)
+                labelType = Label.GENERAL_LIGHT_GREEN
+                menuDescription = context.getString(R.string.label_menu_product_feature)
+                applink = ApplinkConst.PRODUCT_MANAGE
+                titleTrack = PENJUAL
+                sectionTrack = context.getString(R.string.title_menu_product)
+                isShowRightButton = true
         }
     }
 
@@ -281,11 +285,13 @@ class SellerAccountMapper @Inject constructor(
     private fun getShopVoucherMenu(): LabelledMenuListUiModel {
         return LabelledMenuListUiModel().apply {
             menu = context.getString(R.string.title_menu_voucher_toko)
-            label = context.getString(R.string.label_menu_voucher_toko)
+            label = context.getString(com.tokopedia.seller_migration_common.R.string.seller_migration_label_seller_app_only)
+            labelType = Label.GENERAL_LIGHT_GREEN
             menuDescription = context.getString(R.string.description_menu_voucher_toko)
             applink = ""
             titleTrack = PENJUAL
             sectionTrack = context.getString(R.string.title_menu_other_features)
+            isShowRightButton = true
         }
     }
 

@@ -84,17 +84,9 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         if(isMyShop){
             setupTextContentSgcWidget()
             setLottieAnimationFromUrl(context.getString(R.string.shop_page_lottie_sgc_url))
-            shopPageTrackingSGCPlayWidget?.onImpressionSGCContent(shopId = shopPageHeaderDataModel.shopId, customDimensionShopPage = CustomDimensionShopPage.create(
-                    shopPageHeaderDataModel.shopId,
-                    shopPageHeaderDataModel.isOfficial,
-                    shopPageHeaderDataModel.isGoldMerchant
-            ))
+            shopPageTrackingSGCPlayWidget?.onImpressionSGCContent(shopId = shopPageHeaderDataModel.shopId)
             view.container_lottie?.setOnClickListener {
-                shopPageTrackingSGCPlayWidget?.onClickSGCContent(shopId = shopPageHeaderDataModel.shopId, customDimensionShopPage = CustomDimensionShopPage.create(
-                        shopPageHeaderDataModel.shopId,
-                        shopPageHeaderDataModel.isOfficial,
-                        shopPageHeaderDataModel.isGoldMerchant
-                ))
+                shopPageTrackingSGCPlayWidget?.onClickSGCContent(shopId = shopPageHeaderDataModel.shopId)
                 RouteManager.route(view.context, ApplinkConstInternalContent.INTERNAL_PLAY_BROADCASTER)
             }
         }
