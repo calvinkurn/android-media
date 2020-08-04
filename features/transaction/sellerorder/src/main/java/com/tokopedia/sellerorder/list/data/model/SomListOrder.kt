@@ -84,7 +84,11 @@ data class SomListOrder (
 
                     @SerializedName("cancel_request_origin_note")
                     @Expose
-                    val cancelRequestOriginNote: String = ""
+                    val cancelRequestOriginNote: String = "",
+
+                    @SerializedName("ticker_info")
+                    @Expose
+                    val tickerInfo: TickerInfo = TickerInfo()
             ) {
                 data class OrderLabel (
                         @SerializedName("flag_name")
@@ -108,6 +112,28 @@ data class SomListOrder (
                         @SerializedName("product_name")
                         @Expose
                         val productName: String = ""
+                )
+
+                data class TickerInfo(
+                        @SerializedName("label")
+                        @Expose
+                        val message: String = "",
+
+                        @SerializedName("color")
+                        @Expose
+                        val textColor: String = "",
+
+                        @SerializedName("bg_color")
+                        @Expose
+                        val backgroundColor: String = "",
+
+                        @SerializedName("link_text")
+                        @Expose
+                        val linkText: String = "",
+
+                        @SerializedName("link_url")
+                        @Expose
+                        val linkUrl: String = ""
                 )
             }
         }
