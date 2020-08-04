@@ -97,12 +97,6 @@ class PlayUserInteractionFragment @Inject constructor(
         private const val FADE_TRANSITION_DELAY = 3000L
     }
 
-    private val scope = object : CoroutineScope {
-        override val coroutineContext: CoroutineContext
-            get() = job + dispatchers.main
-    }
-    private val job: Job = SupervisorJob()
-
     private val spaceSize by viewComponent { EmptyViewComponent(it, R.id.space_size) }
     private val gradientBackgroundView by viewComponent { EmptyViewComponent(it, R.id.view_gradient_background) }
     private val toolbarView by viewComponent { ToolbarViewComponent(it, R.id.view_toolbar, this) }
@@ -217,7 +211,6 @@ class PlayUserInteractionFragment @Inject constructor(
     override fun onDestroyView() {
         destroyInsets(requireView())
         super.onDestroyView()
-        job.cancelChildren()
     }
 
     override fun onWatchModeClicked(bottomSheet: PlayMoreActionBottomSheet) {
@@ -566,10 +559,9 @@ class PlayUserInteractionFragment @Inject constructor(
                     }
                 }
 
-            scope.launch(dispatchers.immediate) {
-                delay(PlayParentLayoutManagerImpl.ANIMATION_DURATION)
+            view?.postDelayed({
                 view?.show()
-            }
+            }, PlayParentLayoutManagerImpl.ANIMATION_DURATION)
 
             /**
              * New
