@@ -301,12 +301,21 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
             } else {
                 tvInstallmentDetail?.text = view.context.getString(R.string.lbl_installment_full_payment)
             }
+            setupPaymentInstallmentError(selectedTerm)
             tvInstallmentDetail?.setOnClickListener {
                 listener.onInstallmentDetailClicked()
             }
         } else {
             tvInstallmentType?.gone()
             tvInstallmentDetail?.gone()
+        }
+    }
+
+    private fun setupPaymentInstallmentError(selectedTerm: OrderPaymentInstallmentTerm) {
+        if (selectedTerm.isEnable) {
+            tvInstallmentDetail.alpha = 1.0f
+        } else {
+            tvInstallmentDetail.alpha = 0.5f
         }
     }
 
