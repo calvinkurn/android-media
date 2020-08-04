@@ -70,7 +70,8 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
         if (GlobalConfig.isSellerApp()) {
             val reviewSellerBundle = Bundle()
             reviewSellerBundle.putBoolean(IS_DIRECTLY_GO_TO_RATING, arguments?.getBoolean(IS_DIRECTLY_GO_TO_RATING) ?: true)
-            setupViewPagerForSellerApp(listOf(getString(R.string.title_review_rating_product), getString(R.string.title_review_inbox), getString(R.string.title_reputation_history)), reviewSellerBundle)
+            setupSellerAdapter(reviewSellerBundle)
+            setupViewPager(listOf(getString(R.string.title_review_rating_product), getString(R.string.title_review_inbox), getString(R.string.title_reputation_history)))
         } else {
             observeReviewTabs()
             viewModel.getTabCounter()
@@ -88,21 +89,16 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
         ReviewInboxContainerTracking.eventOnClickBackButton(viewModel.getUserId())
     }
 
-    private fun setupViewPagerForSellerApp(tabTitles: List<String>, bundle: Bundle) {
+    private fun setupSellerAdapter(bundle: Bundle) {
         val tabs: List<ReviewInboxTabs> = listOf(ReviewInboxTabs.ReviewRatingProduct, ReviewInboxTabs.ReviewBuyer, ReviewInboxTabs.ReviewPenaltyAndReward)
-        reviewInboxViewPager.adapter = ReviewInboxContainerAdapter(tabs, this)
-        tabTitles.forEach {
-            reviewInboxTabs.addNewTab(it)
-        }
-        reviewInboxViewPager.registerOnPageChangeCallback(object: ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                reviewInboxTabs.getUnifyTabLayout().selectTab(reviewInboxTabs.getUnifyTabLayout().getTabAt(position))
-            }
-        })
+        reviewInboxViewPager.adapter = ReviewInboxContainerAdapter(tabs, this, bundle)
+    }
+
+    private fun setupBuyerAdapter() {
+        reviewInboxViewPager.adapter = viewModel.reviewTabs.value?.let { ReviewInboxContainerAdapter(it,this) }
     }
 
     private fun setupViewPager(tabTitles: List<String>) {
-        reviewInboxViewPager.adapter = viewModel.reviewTabs.value?.let { ReviewInboxContainerAdapter(it,this) }
         tabTitles.forEach {
             reviewInboxTabs.addNewTab(it)
         }
@@ -171,6 +167,7 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
                     }
                 }
             }
+            setupBuyerAdapter()
             setupViewPager(tabTitles)
         })
     }
