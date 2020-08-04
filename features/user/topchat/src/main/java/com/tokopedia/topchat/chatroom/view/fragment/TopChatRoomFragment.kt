@@ -1017,7 +1017,13 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     private fun onSuccessFollowUnfollowShop(): (Boolean) -> Unit {
         return {
             if (it) {
-                getViewState().isShopFollowed = !getViewState().isShopFollowed
+                val isFollow = !getViewState().isShopFollowed
+                if (isFollow) {
+                    onSuccessFollowShopFromBcHandler()
+                    adapter.removeBroadcastHandler()
+                } else {
+                    onSuccessUnFollowShopFromBcHandler()
+                }
             }
         }
     }
@@ -1383,6 +1389,13 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         getViewState().isShopFollowed = true
         context?.let {
             showToasterConfirmation(it.getString(R.string.title_success_follow_shop))
+        }
+    }
+
+    private fun onSuccessUnFollowShopFromBcHandler() {
+        getViewState().isShopFollowed = false
+        context?.let {
+            showToasterConfirmation(it.getString(R.string.title_success_unfollow_shop))
         }
     }
 
