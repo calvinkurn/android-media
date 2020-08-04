@@ -543,7 +543,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         }
 
         subscribeToProductNameInputStatus()
-        subscribeToProductNamezRecommendation()
+        subscribeToProductNameRecommendation()
         subscribeToCategoryRecommendation()
         subscribeToProductPriceInputStatus()
         subscribeToWholeSaleSwitchStatus()
