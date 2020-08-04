@@ -96,4 +96,6 @@
     <string name="action_edit_photo">Ubah Foto</string>
     <string name="label_title_add_product">Tambah Produk</string>
 
+    <string name="vidpick_app_name">Video Recorder</string>
+
 </resources>

@@ -36,7 +36,7 @@ class BannedProductAttachmentViewModel : ProductAttachmentViewModel {
             dropPercentage: String, priceBefore: String, shopId: Int, freeShipping: FreeShipping,
             categoryId: Int, playStoreData: PlayStoreData, minOrder: Int, remainingStock: Int,
             status: Int, wishList: Boolean, images: List<String>, source: String,
-            rating: TopchatProductRating
+            rating: TopchatProductRating, replyId: String
     ) : super(
             messageId, fromUid, from, fromRole,
             attachmentId, attachmentType, replyTime, isRead,
@@ -46,7 +46,7 @@ class BannedProductAttachmentViewModel : ProductAttachmentViewModel {
             dropPercentage, priceBefore, shopId, freeShipping,
             categoryId, playStoreData, minOrder, remainingStock,
             status, wishList, images, source,
-            rating
+            rating, replyId
     )
 
 

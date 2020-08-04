@@ -22,7 +22,6 @@ object AccountConstants {
         const val SEE_ALL = "lihat_semua"
         const val TRAIN_ORDER_LIST = "train_order_list"
         const val TOPADS = "topads"
-        const val FEATURED_PRODUCT = "featured_product"
     }
 
     object Analytics {
@@ -165,6 +164,11 @@ object AccountConstants {
         const val CLICK_NOTIF_CENTER = "clickNotifCenter"
         const val NOTIF_CENTER = "notif center"
         const val NOTIF_CENTER_ACTION = "click on bell on global nav"
+        const val FIELD_USER_ID = "userId"
+        const val FIELD_SHOP_ID = "shopId"
+        const val FIELD_SHOP_TYPE = "shopType"
+        const val SHOP_TYPE_RM = "RM"
+        const val SHOP_TYPE_PM = "PM"
     }
 
     object MOENGAGE {
@@ -197,5 +201,14 @@ object AccountConstants {
             const val ERROR_CODE_BUYER_ACCOUNT = "ACB001"
             const val ERROR_CODE_SELLER_ACCOUNT = "ACS001"
         }
+    }
+
+    object Query {
+        const val NEW_QUERY_BUYER_ACCOUNT_HOME = "new_query_buyer_account_home"
+        const val QUERY_SELLER_ACCOUNT_HOME = "query_seller_account_home"
+        const val QUERY_TOP_ADS = "gql_get_deposit"
+        const val NEW_QUERY_SALDO_BALANCE = "new_query_saldo_balance"
+        const val QUERY_SHOP_LOCATION = "query_shop_location"
+        const val QUERY_USER_REWARDSHORCUT = "query_user_rewardshortcut"
     }
 }

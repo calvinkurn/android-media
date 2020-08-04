@@ -33,8 +33,6 @@ import com.tokopedia.explore.applink.ExploreApplinkModule;
 import com.tokopedia.explore.applink.ExploreApplinkModuleLoader;
 import com.tokopedia.feedplus.view.deeplink.FeedDeeplinkModule;
 import com.tokopedia.feedplus.view.deeplink.FeedDeeplinkModuleLoader;
-import com.tokopedia.home.applink.HomeApplinkModule;
-import com.tokopedia.home.applink.HomeApplinkModuleLoader;
 import com.tokopedia.homecredit.applink.HomeCreditAppLinkModule;
 import com.tokopedia.homecredit.applink.HomeCreditAppLinkModuleLoader;
 import com.tokopedia.kyc.deeplink.OvoUpgradeDeeplinkModule;
@@ -56,8 +54,8 @@ import com.tokopedia.pms.howtopay.HowtopayApplinkModuleLoader;
 import com.tokopedia.product.detail.applink.ProductDetailApplinkModule;
 import com.tokopedia.product.detail.applink.ProductDetailApplinkModuleLoader;
 import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubscriber;
-import com.tokopedia.pushnotif.Constant;
-import com.tokopedia.pushnotif.HistoryNotification;
+import com.tokopedia.pushnotif.data.constant.Constant;
+import com.tokopedia.pushnotif.data.repository.HistoryRepository;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -92,7 +90,6 @@ import timber.log.Timber;
         SellerApplinkModule.class,
         TransactionApplinkModule.class,
         ProductDetailApplinkModule.class,
-        HomeApplinkModule.class,
         FeedDeeplinkModule.class,
         DigitalBrowseApplinkModule.class,
         OvoUpgradeDeeplinkModule.class,
@@ -122,7 +119,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new SellerApplinkModuleLoader(),
                     new TransactionApplinkModuleLoader(),
                     new ProductDetailApplinkModuleLoader(),
-                    new HomeApplinkModuleLoader(),
                     new FeedDeeplinkModuleLoader(),
                     new DigitalBrowseApplinkModuleLoader(),
                     new LoyaltyAppLinkModuleLoader(),
@@ -214,12 +210,12 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                 .subscribeOn(Schedulers.io())
                 .map(aBoolean -> {
                     if (notificationId == 0) {
-                        HistoryNotification.clearAllHistoryNotification(DeeplinkHandlerActivity.this, notificationType);
+                        HistoryRepository.clearAllHistoryNotification(DeeplinkHandlerActivity.this, notificationType);
                     } else {
-                        HistoryNotification.clearHistoryNotification(DeeplinkHandlerActivity.this, notificationType, notificationId);
+                        HistoryRepository.clearHistoryNotification(DeeplinkHandlerActivity.this, notificationType, notificationId);
                     }
 
-                    return HistoryNotification.isSingleNotification(DeeplinkHandlerActivity.this, notificationType);
+                    return HistoryRepository.isSingleNotification(DeeplinkHandlerActivity.this, notificationType);
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<Boolean>() {

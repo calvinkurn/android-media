@@ -341,7 +341,7 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
 
     @Override
     public void onEmptyButtonClicked() {
-        tracker.sendEventDraftProductClicked(AppEventTracking.EventLabel.ADD_PRODUCT);
+        eventDraftProductClicked(AppEventTracking.EventLabel.ADD_PRODUCT);
         ProductAddEditDraftListPageTracking.INSTANCE.eventAddEditDraftClicked(shopId, ProductAddEditDraftListPageTracking.CLICK_ADD_PRODUCT);
         Intent intent = RouteManager.getIntent(getContext(), ApplinkConst.PRODUCT_ADD);
         startActivityForResult(intent, REQUEST_CODE_ADD_PRODUCT);

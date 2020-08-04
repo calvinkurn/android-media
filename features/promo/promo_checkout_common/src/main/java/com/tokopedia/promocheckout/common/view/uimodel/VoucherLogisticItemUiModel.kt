@@ -2,10 +2,12 @@ package com.tokopedia.promocheckout.common.view.uimodel
 
 import android.os.Parcel
 import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
 
 /**
  * Created by fajarnuha on 02/04/19.
  */
+@Parcelize
 data class VoucherLogisticItemUiModel(
         var code: String = "",
         var couponDesc: String = "",
@@ -13,34 +15,4 @@ data class VoucherLogisticItemUiModel(
         var cashbackAmount: Int = 0,
         var discountAmount: Int = 0,
         var message: MessageUiModel = MessageUiModel(),
-        var couponAmountRaw: Int = 0) : Parcelable {
-    constructor(source: Parcel) : this(
-            source.readString(),
-            source.readString(),
-            source.readString(),
-            source.readInt(),
-            source.readInt(),
-            source.readParcelable(MessageUiModel::class.java.classLoader),
-            source.readInt()
-    )
-
-    override fun describeContents() = 0
-
-    override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
-        writeString(code)
-        writeString(couponDesc)
-        writeString(couponAmount)
-        writeInt(cashbackAmount)
-        writeInt(discountAmount)
-        writeParcelable(message, flags)
-        writeInt(couponAmountRaw)
-    }
-
-    companion object {
-        @JvmField
-        val CREATOR: Parcelable.Creator<VoucherLogisticItemUiModel> = object : Parcelable.Creator<VoucherLogisticItemUiModel> {
-            override fun createFromParcel(source: Parcel): VoucherLogisticItemUiModel = VoucherLogisticItemUiModel(source)
-            override fun newArray(size: Int): Array<VoucherLogisticItemUiModel?> = arrayOfNulls(size)
-        }
-    }
-}
+        var couponAmountRaw: Int = 0) : Parcelable
