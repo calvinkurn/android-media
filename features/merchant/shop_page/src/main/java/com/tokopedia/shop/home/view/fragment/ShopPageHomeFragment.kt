@@ -950,14 +950,6 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 )
         )
     }
-//
-//    override fun onCampaignCarouselProductItemClicked(parentPosition: Int, itemPosition: Int, shopHomeNewProductLaunchCampaignUiModel: ShopHomeNewProductLaunchCampaignUiModel, shopHomeProductViewModel: ShopHomeProductViewModel?) {
-//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-//    }
-//
-//    override fun onCampaignCarouselProductItemImpression(parentPosition: Int, itemPosition: Int, shopHomeNewProductLaunchCampaignUiModel: ShopHomeNewProductLaunchCampaignUiModel, shopHomeProductViewModel: ShopHomeProductViewModel?) {
-//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-//    }
 
     override fun onThreeDotsCarouselProductItemClicked(
             shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?,
@@ -1290,29 +1282,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             )
         }
         shopHomeProductViewModel?.let {
-            //            shopPageHomeTracking.clickProduct(
-//                    isOwner,
-//                    isLogin,
-//                    shopPageHomeLayoutUiModel?.masterLayoutId.toString(),
-//                    shopHomeProductViewModel.name ?: "",
-//                    shopHomeProductViewModel.id ?: "",
-//                    shopHomeProductViewModel.displayedPrice ?: "",
-//                    shopName,
-//                    shopHomeAdapter.getAllProductWidgetPosition() + 1,
-//                    realItemPositonOnTheList + 1,
-//                    "",
-//                    "",
-//                    0,
-//                    CustomDimensionShopPageAttribution.create(
-//                            shopId,
-//                            isOfficialStore,
-//                            isGoldMerchant,
-//                            shopHomeProductViewModel.id,
-//                            shopAttribution,
-//                            shopRef
-//                    )
-//            )
-//            goToPDP(it.id ?: "")
+            goToPDP(it.id ?: "")
         }
     }
 
