@@ -7,13 +7,10 @@ import com.google.gson.annotations.SerializedName
  * Created by Yehezkiel on 20/07/20
  */
 data class P2Error (
-        @SerializedName("error")
+        @SerializedName("Code")
         @Expose
-        var isError: Boolean = false,
-        @SerializedName("code")
-        @Expose
-        var errorCode: String = "",
-        @SerializedName("errorMsg")
+        var errorCode: Int = 0,
+        @SerializedName("Message")
         @Expose
         var errorMessage: String = ""
 )

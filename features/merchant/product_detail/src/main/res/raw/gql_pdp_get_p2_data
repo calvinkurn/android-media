@@ -13,11 +13,6 @@ query GetPdpGetData($productID: String, $pdpSession: String) {
         titlePDP
         subTitlePDP
       }
-      error {
-        error
-        code
-        errorMsg
-      }
     }
     productView
     wishlistCount

@@ -22,14 +22,14 @@ data class ProductShopShipment (
 
     constructor(parcel: Parcel) : this(
             parcel.readInt(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
+            parcel.readString() ?: "",
+            parcel.readString() ?: "",
+            parcel.readString() ?: "",
+            parcel.readString() ?: "",
             parcel.readInt(),
             parcel.readInt(),
             parcel.readInt(),
-            parcel.createTypedArrayList(ShopShipment.ShipmentProduct.CREATOR)) {
+            parcel.createTypedArrayList(ShopShipment.ShipmentProduct.CREATOR) ?: arrayListOf()) {
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {

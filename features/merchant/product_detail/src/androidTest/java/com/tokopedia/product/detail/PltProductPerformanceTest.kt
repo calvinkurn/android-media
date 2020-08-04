@@ -3,13 +3,11 @@ package com.tokopedia.product.detail
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analytics.performance.util.PerformanceDataFileUtils
-import com.tokopedia.analytics.performance.util.PltPerformanceData
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
 import com.tokopedia.test.application.TestRepeatRule
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import java.io.File
 
 
 /**

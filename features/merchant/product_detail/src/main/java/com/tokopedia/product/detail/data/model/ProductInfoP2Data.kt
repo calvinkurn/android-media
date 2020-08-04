@@ -22,9 +22,9 @@ import com.tokopedia.shop.common.graphql.data.shopspeed.ProductShopPackSpeedQuer
  * Created by Yehezkiel on 20/07/20
  */
 data class ProductInfoP2Data(
-//        @SerializedName("error")
-//        @Expose
-//        var error: P2Error = P2Error(),
+        @SerializedName("error")
+        @Expose
+        var error: P2Error = P2Error(),
 
         @SerializedName("productView")
         @Expose

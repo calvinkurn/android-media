@@ -268,7 +268,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         recommendationCarouselPositionSavedState.clear()
         isLoadingInitialData = true
         isTopdasLoaded = false
-        actionButtonView.visibility = false
         ticker_occ_layout.gone()
         updateStickyContent()
         loadProductData(true)
@@ -1444,7 +1443,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             renderVariant(viewModel.variantData)
             et_search.hint = String.format(getString(R.string.pdp_search_hint), productInfo.basic.category.name)
             pdpUiUpdater?.updateDataP1(context, productInfo)
-            viewModel.listOfParentMedia = productInfo.data.media.toMutableList()
             shouldShowCodP1 = productInfo.data.isCOD
             actionButtonView.setButtonP1(productInfo.data.preOrder, productInfo.basic.isLeasing)
 
@@ -1453,8 +1451,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             }
 
             if (affiliateString.hasValue()) {
-                viewModel.hitAffiliateTracker(affiliateString
-                        ?: "", viewModel.deviceId)
+                viewModel.hitAffiliateTracker(affiliateString ?: "", viewModel.deviceId)
             }
 
             activity?.invalidateOptionsMenu()

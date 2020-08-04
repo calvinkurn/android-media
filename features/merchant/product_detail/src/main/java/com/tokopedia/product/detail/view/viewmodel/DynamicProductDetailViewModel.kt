@@ -309,7 +309,10 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             getPdpLayout(productParams.productId ?: "", productParams.shopDomain
                     ?: "", productParams.productName ?: "").also {
                 addStaticComponent(it)
-                getDynamicProductInfoP1 = it.layoutData
+                getDynamicProductInfoP1 = it.layoutData.also {
+                    listOfParentMedia = it.data.media.toMutableList()
+                }
+
                 variantData = if (getDynamicProductInfoP1?.isProductVariant() == false) null else it.variantData
 
                 //Create tradein params
@@ -673,7 +676,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
     private fun getProductInfoP2LoginAsync(shopId: Int, productId: Int): Deferred<ProductInfoP2Login> {
         return async {
-            getProductInfoP2LoginUseCase.requestParams = GetProductInfoP2LoginUseCase.createParams(shopId, productId)
+            getProductInfoP2LoginUseCase.requestParams = GetProductInfoP2LoginUseCase.createParams(shopId, productId, isShopOwner())
             getProductInfoP2LoginUseCase.executeOnBackground()
         }
     }
