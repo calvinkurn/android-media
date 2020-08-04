@@ -111,20 +111,20 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
                         null
                     }
             )
-//            val sortResponse  = asyncCatchError(
-//                    dispatcherProvider.io(),
-//                    block = {
-//                        getSortListData()
-//                    },
-//                    onError = {
-//                        shopSortFilterData.postValue(Fail(it))
-//                        null
-//                    }
-//            )
+            val sortResponse  = asyncCatchError(
+                    dispatcherProvider.io(),
+                    block = {
+                        getSortListData()
+                    },
+                    onError = {
+                        shopSortFilterData.postValue(Fail(it))
+                        null
+                    }
+            )
             etalaseResponse.await()?.let { etalase ->
-//                sortResponse.await()?.let{sort ->
-                    shopSortFilterData.postValue(Success(ShopStickySortFilter(etalase, listOf())))
-//                }
+                sortResponse.await()?.let{sort ->
+                    shopSortFilterData.postValue(Success(ShopStickySortFilter(etalase, sort)))
+                }
             }
         }) {
             shopSortFilterData.postValue(Fail(it))
