@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.image.ImageLoader
+import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.layanan_finansial.R
@@ -33,7 +34,7 @@ class LayananAdapter(private val list: List<LayananListItem>, private val type: 
    inner class LayananViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
        init {
            if (!type.equals(LayananSectionView.VERTICAL)) {
-               itemView.layoutParams.width = convertDpToPixel(168,itemView.context)
+               itemView.layoutParams.width = itemView.context.dpToPx(itemView.context.resources.getDimension(R.dimen.dp_168).toInt()).toInt()
            }
        }
 
@@ -115,11 +116,5 @@ class LayananAdapter(private val list: List<LayananListItem>, private val type: 
         val promoView = HashMap<String, Map<String, List<Map<String, Any?>>>>()
         promoView["promoView"] = promotions
         return promoView
-    }
-
-    private fun convertDpToPixel(dp: Int, context: Context) : Int {
-        val result = dp.toFloat() * context.resources.getDisplayMetrics().densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT.toFloat()
-
-        return result.roundToInt()
     }
 }
