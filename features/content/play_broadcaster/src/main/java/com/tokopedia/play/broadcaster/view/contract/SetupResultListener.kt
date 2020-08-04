@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.view.contract
 
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 
 /**
@@ -8,5 +9,6 @@ import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 interface SetupResultListener {
 
     fun onSetupCanceled()
-    fun onSetupCompletedWithData(dataStore: PlayBroadcastSetupDataStore)
+
+    suspend fun onSetupCompletedWithData(bottomSheet: BottomSheetDialogFragment, dataStore: PlayBroadcastSetupDataStore): Throwable?
 }

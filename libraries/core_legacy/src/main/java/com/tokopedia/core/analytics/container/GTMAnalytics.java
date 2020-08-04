@@ -15,6 +15,7 @@ import com.tokopedia.analyticsdebugger.debugger.GtmLogger;
 import com.tokopedia.analyticsdebugger.debugger.TetraDebugger;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.util.PriceUtil;
 import com.tokopedia.device.info.DeviceConnectionInfo;
@@ -951,6 +952,8 @@ public class GTMAnalytics extends ContextAnalytics {
     }
 
     public void sendCampaign(Map<String, Object> param) {
+        if(!TrackingUtils.isValidCampaign(param)) return;
+
         Bundle bundle = new Bundle();
         String afUniqueId = getAfUniqueId(context);
 
@@ -1008,6 +1011,9 @@ public class GTMAnalytics extends ContextAnalytics {
 
     public void pushEventV5(String eventName, Bundle bundle, Context context) {
         try {
+            if (!CommonUtils.checkStringNotNull(bundle.getString(SESSION_IRIS))) {
+                bundle.putString(SESSION_IRIS, new IrisSession(context).getSessionId());
+            }
             FirebaseAnalytics.getInstance(context).logEvent(eventName, bundle);
             logV5(context, eventName, bundle);
         } catch (Exception ex) {
