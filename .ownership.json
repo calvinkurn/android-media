@@ -8,15 +8,15 @@
     {
       "name": "customerapp",
       "description": "Code base for customerapp",
-      "owner": "ricoharisin",
+      "owner": "rico.harisin@tokopedia.com",
       "slack_channel": "mobileapp",
       "db": []
     },
      {
       "name": "sellerapp",
       "description": "Code base for sellerapp",
-      "owner": "milhamj",
-      "slack_channel": "mobileapp aja ",
+      "owner": "ilham.jamaludin@tokopedia.com",
+      "slack_channel": "mobileapp",
       "db": []
     }
   ],
