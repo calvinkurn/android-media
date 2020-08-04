@@ -9,6 +9,7 @@ import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohUtils.asSuccess
 import com.tokopedia.buyerorder.unifiedhistory.list.data.model.*
 import com.tokopedia.buyerorder.unifiedhistory.list.domain.AtcMultiProductsUseCase
+import com.tokopedia.buyerorder.unifiedhistory.list.domain.LsPrintFinishOrderUseCase
 import com.tokopedia.buyerorder.unifiedhistory.list.domain.UohFinishOrderUseCase
 import com.tokopedia.buyerorder.unifiedhistory.list.domain.UohListUseCase
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
@@ -25,7 +26,8 @@ class UohListViewModel @Inject constructor(dispatcher: BuyerDispatcherProvider,
                                            private val uohListUseCase: UohListUseCase,
                                            private val getRecommendationUseCase: GetRecommendationUseCase,
                                            private val uohFinishOrderUseCase: UohFinishOrderUseCase,
-                                           private val atcMultiProductsUseCase: AtcMultiProductsUseCase) : BaseViewModel(dispatcher.ui()) {
+                                           private val atcMultiProductsUseCase: AtcMultiProductsUseCase,
+                                           private val lsPrintFinishOrderUseCase: LsPrintFinishOrderUseCase) : BaseViewModel(dispatcher.ui()) {
 
     private val _orderHistoryListResult = MutableLiveData<Result<UohListOrder.Data.UohOrders>>()
     val orderHistoryListResult: LiveData<Result<UohListOrder.Data.UohOrders>>
@@ -42,6 +44,10 @@ class UohListViewModel @Inject constructor(dispatcher: BuyerDispatcherProvider,
     private val _atcResult = MutableLiveData<Result<AtcMultiData>>()
     val atcResult: LiveData<Result<AtcMultiData>>
         get() = _atcResult
+
+    private val _lsPrintFinishOrderResult = MutableLiveData<Result<LsPrintData.Data>>()
+    val lsPrintFinishOrderResult: LiveData<Result<LsPrintData.Data>>
+        get() = _lsPrintFinishOrderResult
 
     fun loadOrderList(orderQuery: String, paramOrder: UohListParam) {
         launch {
@@ -68,6 +74,12 @@ class UohListViewModel @Inject constructor(dispatcher: BuyerDispatcherProvider,
     fun doAtc(atcMultiQuery: String, listParam: JsonArray) {
         launch {
             _atcResult.postValue(atcMultiProductsUseCase.execute(atcMultiQuery, listParam))
+        }
+    }
+
+    fun doLsPrintFinishOrder(lsPrintQuery: String, verticalId: String) {
+        launch {
+            _lsPrintFinishOrderResult.postValue(lsPrintFinishOrderUseCase.execute(lsPrintQuery, verticalId))
         }
     }
 }

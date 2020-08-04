@@ -53,7 +53,16 @@ object UohConsts {
     const val GQL_FINISH_ORDER = "gql-mp-finish"
     const val GQL_ATC = "gql-mp-atc"
     const val GQL_TRACK = "gql-mp-track"
+    const val GQL_LS_FINISH = "gql-ls-finish"
 
     const val FINISH_ORDER_BOTTOMSHEET_TITLE = "Selesaikan pesanan ini?"
     const val REPLACE_ORDER_ID = "{order_id}"
+
+    const val PARAM_LS_PRINT_FINISH_ACTION = "FINISHED"
+    const val PARAM_LS_PRINT_BUSINESS_CODE = "LS_PRINT"
+
+    const val LS_PRINT_GQL_PARAM_BUSINESS_CODE = "businessCode"
+    const val LS_PRINT_GQL_PARAM_ACTION = "action"
+    const val LS_PRINT_GQL_PARAM_UUID = "uuid"
+    const val LS_PRINT_GQL_PARAM_VALUE = "value"
 }

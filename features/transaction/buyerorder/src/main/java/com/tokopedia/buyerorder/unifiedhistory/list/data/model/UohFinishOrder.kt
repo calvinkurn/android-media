@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 
 data class UohFinishOrder(
     @SerializedName("data")
-    val `data`: Data = Data()
+    val data: Data = Data()
 ) {
     data class Data(
         @SerializedName("finish_order_buyer")

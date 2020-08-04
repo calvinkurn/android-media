@@ -28,6 +28,7 @@ import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.END_DATE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.FINISH_ORDER_BOTTOMSHEET_TITLE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_ATC
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_FINISH_ORDER
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_LS_FINISH
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_TRACK
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.REPLACE_ORDER_ID
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.START_DATE
@@ -61,6 +62,8 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.bottomsheet_finish_order_uoh.view.*
 import kotlinx.android.synthetic.main.bottomsheet_kebab_menu_uoh.view.*
+import kotlinx.android.synthetic.main.bottomsheet_ls_finish_order_uoh.*
+import kotlinx.android.synthetic.main.bottomsheet_ls_finish_order_uoh.view.*
 import kotlinx.android.synthetic.main.bottomsheet_option_uoh.*
 import kotlinx.android.synthetic.main.bottomsheet_option_uoh.view.*
 import kotlinx.android.synthetic.main.fragment_uoh_list.*
@@ -88,10 +91,12 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     private var orderList: UohListOrder.Data.UohOrders = UohListOrder.Data.UohOrders()
     private var recommendationList: List<RecommendationWidget> = listOf()
     private var responseFinishOrder: UohFinishOrder.Data.FinishOrderBuyer = UohFinishOrder.Data.FinishOrderBuyer()
+    private var responseLsPrintFinishOrder: LsPrintData.Data.Oiaction = LsPrintData.Data.Oiaction()
     private lateinit var uohBottomSheetOptionAdapter: UohBottomSheetOptionAdapter
     private lateinit var uohBottomSheetKebabMenuAdapter: UohBottomSheetKebabMenuAdapter
     private var bottomSheetOption: BottomSheetUnify? = null
     private var bottomSheetFinishOrder: BottomSheetUnify? = null
+    private var bottomSheetLsFinishOrder: BottomSheetUnify? = null
     private var bottomSheetKebabMenu: BottomSheetUnify? = null
     private var currFilterKey: String = ""
     private var currFilterLabel: String = ""
@@ -195,6 +200,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         observingRecommendationList()
         observingFinishOrder()
         observingAtc()
+        observingLsFinishOrder()
     }
 
     private fun prepareLayout() {
@@ -381,6 +387,33 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 }
                 is Fail -> {
                     context?.getString(R.string.fail_cancellation)?.let { it1 -> showToaster(it1, Toaster.TYPE_ERROR) }
+                }
+            }
+        })
+    }
+
+    private fun observingLsFinishOrder() {
+        uohListViewModel.lsPrintFinishOrderResult.observe(this, androidx.lifecycle.Observer {
+            when (it) {
+                is Success -> {
+                    responseLsPrintFinishOrder = it.data.oiaction
+                    if (responseLsPrintFinishOrder.status == 200) {
+                        if (responseLsPrintFinishOrder.data.message.isNotEmpty()) {
+                            showToaster(responseLsPrintFinishOrder.data.message, Toaster.TYPE_NORMAL)
+                        }
+                        currPage -= 1
+                        loadOrderHistoryList()
+                    } else {
+                        if (responseLsPrintFinishOrder.data.message.isNotEmpty()) {
+                            showToaster(responseLsPrintFinishOrder.data.message, Toaster.TYPE_ERROR)
+                        } else {
+                            context?.getString(R.string.fail_cancellation)?.let { it1 -> showToaster(it1, Toaster.TYPE_ERROR) }
+                        }
+                        chosenOrder?.let { it1 -> uohItemAdapter.updateDataAtIndex(currIndexNeedUpdate, it1) }
+                    }
+                }
+                is Fail -> {
+                    showToaster(responseLsPrintFinishOrder.data.message, Toaster.TYPE_ERROR)
                 }
             }
         })
@@ -714,6 +747,29 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         fragmentManager?.let { bottomSheetFinishOrder?.show(it, getString(R.string.show_bottomsheet)) }
     }
 
+    private fun showBottomSheetLsFinishOrder(index: Int, orderId: String) {
+        val viewBottomSheet = View.inflate(context, R.layout.bottomsheet_ls_finish_order_uoh, null)
+        viewBottomSheet.btn_ls_finish_order?.setOnClickListener {
+            bottomSheetLsFinishOrder?.dismiss()
+            chosenOrder = uohItemAdapter.getDataAtIndex(index)
+            uohItemAdapter.showLoaderAtIndex(index)
+            currIndexNeedUpdate = index
+            uohListViewModel.doLsPrintFinishOrder(GraphqlHelper.loadRawString(resources, R.raw.uoh_finish_lsprint), orderId)
+        }
+
+        viewBottomSheet.btn_ls_kembali?.setOnClickListener {
+            bottomSheetLsFinishOrder?.dismiss()
+        }
+
+        bottomSheetLsFinishOrder = BottomSheetUnify().apply {
+            setChild(viewBottomSheet)
+            setTitle(FINISH_ORDER_BOTTOMSHEET_TITLE)
+            setCloseClickListener { dismiss() }
+        }
+
+        fragmentManager?.let { bottomSheetLsFinishOrder?.show(it, getString(R.string.show_bottomsheet)) }
+    }
+
     override fun onOptionItemClick(option: String, label: String, filterType: Int) {
         currFilterKey = option
         currFilterLabel = label
@@ -882,6 +938,10 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 button.actionType.equals(GQL_TRACK, true) -> {
                     val applinkTrack = ApplinkConst.ORDER_TRACKING.replace(REPLACE_ORDER_ID, verticalId)
                     RouteManager.route(context, applinkTrack)
+                }
+                button.actionType.equals(GQL_LS_FINISH, true) -> {
+                    orderIdNeedUpdated = orderUUID
+                    showBottomSheetLsFinishOrder(index, verticalId)
                 }
             }
         }
