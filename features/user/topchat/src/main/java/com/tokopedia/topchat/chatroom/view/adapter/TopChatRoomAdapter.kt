@@ -201,7 +201,7 @@ class TopChatRoomAdapter(
         if (isFollow || isMiddlePage || visitables.isEmpty()) return insertedPosition
         val latestMessage = visitables.first()
         if (latestMessage is MessageViewModel && latestMessage.isFromBroadCast() && !latestMessage.isSender) {
-            val spamHandlerModel = createBroadcastSpamHandlerViewModel()
+            val spamHandlerModel = BroadcastSpamHandlerUiModel()
             insertedPosition = 0
             visitables.add(insertedPosition, spamHandlerModel)
             notifyItemInserted(insertedPosition)
@@ -231,7 +231,4 @@ class TopChatRoomAdapter(
         notifyItemChanged(elementIndex, PAYLOAD_UPDATE_STATE)
     }
 
-    private fun createBroadcastSpamHandlerViewModel(): Visitable<*> {
-        return BroadcastSpamHandlerUiModel()
-    }
 }

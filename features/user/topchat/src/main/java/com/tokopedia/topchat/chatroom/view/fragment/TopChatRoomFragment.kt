@@ -1023,6 +1023,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
                     adapter.removeBroadcastHandler()
                 } else {
                     onSuccessUnFollowShopFromBcHandler()
+                    addBroadCastSpamHandler(isFollow)
                 }
             }
         }
