@@ -28,6 +28,7 @@ import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
 import com.tokopedia.manageaddress.R
 import com.tokopedia.manageaddress.data.analytics.ManageAddressAnalytics
 import com.tokopedia.manageaddress.di.manageaddress.ManageAddressComponent
+import com.tokopedia.manageaddress.domain.mapper.AddressModelMapper
 import com.tokopedia.manageaddress.domain.model.ManageAddressState
 import com.tokopedia.manageaddress.util.ManageAddressConstant.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.manageaddress.util.ManageAddressConstant.EDIT_PARAM
@@ -241,7 +242,8 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
             startActivityForResult(intent, REQUEST_CODE_PARAM_CREATE)
         } else {
             val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V1)
-            intent.putExtra(EDIT_PARAM, data)
+            val mapper = AddressModelMapper()
+            intent.putExtra(EDIT_PARAM, mapper.transform(data))
             intent.putExtra(KERO_TOKEN, token)
             startActivityForResult(intent, REQUEST_CODE_PARAM_EDIT)
         }
