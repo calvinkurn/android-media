@@ -76,7 +76,7 @@ object ShopPageProductListMapper {
                             if (viewCount >= THRESHOLD_VIEW_COUNT)
                                 it.pdpViewCount = String.format(POSTFIX_VIEW_COUNT, viewCount.thousandFormatted())
                             it.stockLabel = labelGroupList.firstOrNull { labelGroup ->
-                                labelGroup.position.isEmpty() && labelGroup.type.isEmpty()
+                                labelGroup.position.isEmpty()
                             }?.title ?: ""
                             it.stockBarPercentage = campaign.stockSoldPercentage.toInt()
                         }
