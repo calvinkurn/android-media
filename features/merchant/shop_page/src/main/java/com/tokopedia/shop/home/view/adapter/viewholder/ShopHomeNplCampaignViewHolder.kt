@@ -188,25 +188,29 @@ class ShopHomeNplCampaignViewHolder(
     }
 
     private fun setTimer(model: ShopHomeNewProductLaunchCampaignUiModel) {
-//        val startDate = DateHelper.getDateFromString(model.data?.firstOrNull()?.startDate ?: "")
-////        val startDate = DateHelper.getDateFromString("2020-06-14 18:00:00")
-//        val startDateMinus1Day = Calendar.getInstance().apply {
-//            time = startDate
-//            add(Calendar.DATE, -1)
-//        }.time
-//        val endDate = DateHelper.getDateFromString(model.data?.firstOrNull()?.endDate ?: "")
-//        val currentTime = Date(System.currentTimeMillis())
         val statusCampaign = model.data?.firstOrNull()?.statusCampaign ?: ""
         if (statusCampaign.toLowerCase() != StatusCampaign.FINISHED.statusCampaign.toLowerCase()) {
             val timeDescription = model.data?.firstOrNull()?.timeDescription ?: ""
             val timeCounter = model.data?.firstOrNull()?.timeCounter ?: ""
             itemView.text_time_description?.text = timeDescription
             val currentTime = Date(System.currentTimeMillis()).time
-            val endDate = DateHelper.getDateFromString(model.data?.firstOrNull()?.endDate
-                    ?: "").time
             itemView.layout_timer?.show()
-            if (timeCounter.isNotEmpty() && currentTime < endDate) {
-                val remainingMilliseconds = endDate - currentTime
+            if (timeCounter.toLong() != 0L) {
+                val remainingMilliseconds = when (statusCampaign.toLowerCase()) {
+                    StatusCampaign.UPCOMING.statusCampaign.toLowerCase() -> {
+                        val startDate = DateHelper.getDateFromString(model.data?.firstOrNull()?.startDate
+                                ?: "").time
+                        startDate - currentTime
+                    }
+                    StatusCampaign.ONGOING.statusCampaign.toLowerCase() -> {
+                        val endDate = DateHelper.getDateFromString(model.data?.firstOrNull()?.endDate
+                                ?: "").time
+                        endDate - currentTime
+                    }
+                    else -> {
+                        0
+                    }
+                }
                 setTimerData(remainingMilliseconds, model)
             } else {
                 itemView.timer?.gone()
@@ -229,6 +233,10 @@ class ShopHomeNplCampaignViewHolder(
             (itemView.timer.colonMinuteView as Typography).setType(Typography.SMALL)
             onFinish = {
                 shopHomeCampaignNplWidgetListener.onTimerFinished(model)
+            }
+            onTick = {
+                val qwe = it
+                val asd = 2
             }
             show()
         }
