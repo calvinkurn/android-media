@@ -7,5 +7,6 @@ package com.tokopedia.sellerhomecommon.presentation.model
 data class TooltipUiModel(
         val title: String,
         val content: String,
+        val shouldShow: Boolean,
         val list: List<TooltipListItemUiModel>
 )

@@ -31,7 +31,8 @@ class SectionViewHolder(
             tvSectionSubTitle.text = element.subtitle.parseDateTemplate().toString().parseAsHtml()
 
             element.tooltip?.let { tooltip ->
-                if (tooltip.content.isNotBlank() || tooltip.list.isNotEmpty()) {
+                val shouldShowTooltip = tooltip.shouldShow && (tooltip.content.isNotBlank() || tooltip.list.isNotEmpty())
+                if (shouldShowTooltip) {
                     btnSectionInfo.visible()
                     btnSectionInfo.setOnClickListener {
                         listener.onTooltipClicked(tooltip)

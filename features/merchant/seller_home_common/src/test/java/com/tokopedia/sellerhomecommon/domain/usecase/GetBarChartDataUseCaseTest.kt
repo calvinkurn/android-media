@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.sellerhomecommon.domain.mapper.BarChartMapper
 import com.tokopedia.sellerhomecommon.domain.model.GetBarChartDataResponse
-import com.tokopedia.sellerhomecommon.domain.model.WidgetDataParameterModel
+import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
 import com.tokopedia.sellerhomecommon.utils.TestHelper
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
@@ -42,7 +42,7 @@ class GetBarChartDataUseCaseTest {
 
     private val params = GetPieChartDataUseCase.getRequestParams(
             dataKey = ArgumentMatchers.anyList(),
-            dynamicParameter = WidgetDataParameterModel()
+            dynamicParameter = DynamicParameterModel()
     )
 
     @Before

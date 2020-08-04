@@ -3,7 +3,7 @@ package com.tokopedia.sellerhomecommon.domain.usecase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.sellerhomecommon.domain.mapper.PieChartMapper
 import com.tokopedia.sellerhomecommon.domain.model.GetPieChartDataResponse
-import com.tokopedia.sellerhomecommon.domain.model.WidgetDataParameterModel
+import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
 import com.tokopedia.sellerhomecommon.utils.TestHelper
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
@@ -41,7 +41,7 @@ class GetPieChartDataUseCaseTest {
 
     private val params = GetPieChartDataUseCase.getRequestParams(
             dataKey = ArgumentMatchers.anyList(),
-            dynamicParameter = WidgetDataParameterModel()
+            dynamicParameter = DynamicParameterModel()
     )
 
     @Before

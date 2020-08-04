@@ -15,4 +15,6 @@ interface DateFilterAdapterFactory {
     fun type(item: DateFilterItem.ApplyButton): Int
 
     fun type(divider: DateFilterItem.Divider): Int
+
+    fun type(item: DateFilterItem.MonthPickerItem): Int
 }

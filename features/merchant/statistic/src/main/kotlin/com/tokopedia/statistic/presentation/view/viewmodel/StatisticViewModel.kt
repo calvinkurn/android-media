@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.sellerhomecommon.domain.model.WidgetDataParameterModel
+import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
 import com.tokopedia.sellerhomecommon.domain.usecase.*
 import com.tokopedia.sellerhomecommon.presentation.model.*
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
@@ -76,15 +76,20 @@ class StatisticViewModel @Inject constructor(
     private val _pieChartWidgetData = MutableLiveData<Result<List<PieChartDataUiModel>>>()
     private val _barChartWidgetData = MutableLiveData<Result<List<BarChartDataUiModel>>>()
 
-    private var dynamicParameter = WidgetDataParameterModel()
+    private var dynamicParameter = DynamicParameterModel()
 
-    fun setDateRange(startDate: Date, endDate: Date) {
+    fun setDateRange(startDate: Date, endDate: Date, isMonthly: Boolean = false) {
         val startDateFmt = DateTimeUtil.format(startDate.time, DATE_FORMAT)
         val endDateFmt = DateTimeUtil.format(endDate.time, DATE_FORMAT)
-        this.dynamicParameter = WidgetDataParameterModel(
+        this.dynamicParameter = DynamicParameterModel(
                 startDate = startDateFmt,
                 endDate = endDateFmt,
-                pageSource = STATISTIC_PAGE_NAME
+                pageSource = STATISTIC_PAGE_NAME,
+                dateType = if (isMonthly) {
+                    DynamicParameterModel.DATE_TYPE_MONTHLY
+                } else {
+                    DynamicParameterModel.DATE_TYPE_DAILY
+                }
         )
     }
 

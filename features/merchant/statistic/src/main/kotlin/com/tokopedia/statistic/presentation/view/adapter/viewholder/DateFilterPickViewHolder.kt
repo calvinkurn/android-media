@@ -10,9 +10,9 @@ import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.statistic.R
+import com.tokopedia.statistic.common.utils.DateFilterFormatUtil
 import com.tokopedia.statistic.presentation.model.DateFilterItem
 import com.tokopedia.statistic.presentation.view.bottomsheet.CalendarPicker
-import com.tokopedia.statistic.common.utils.DateFilterFormatUtil
 import kotlinx.android.synthetic.main.item_stc_date_range_pick.view.*
 import java.util.*
 
@@ -55,16 +55,14 @@ class DateFilterPickViewHolder(
             showCustomForm(element.isSelected)
 
             setOnClickListener {
-                element.isSelected = true
-                showCustomForm(true)
-                onClick(element)
+                onItemClickListener(element)
             }
 
-            if (element.type == DateFilterItem.TYPE_PER_MONTH) {
-                setupMontPicker()
-            } else {
-                setupDatePicker()
+            radStcSingleDateRange.setOnClickListener {
+                onItemClickListener(element)
             }
+
+            setupDatePicker()
 
             if (element.startDate != null && element.endDate != null) {
                 datePicker.selectedDates = listOf(element.startDate!!, element.endDate!!)
@@ -73,8 +71,10 @@ class DateFilterPickViewHolder(
         }
     }
 
-    private fun setupMontPicker() {
-        //should implement month picker here, but the component not ready yet from unify
+    private fun onItemClickListener(element: DateFilterItem.Pick) {
+        element.isSelected = true
+        showCustomForm(true)
+        onClick(element)
     }
 
     private fun setupDatePicker() = with(itemView) {

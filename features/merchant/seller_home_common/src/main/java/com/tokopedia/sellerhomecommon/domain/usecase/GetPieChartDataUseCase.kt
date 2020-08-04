@@ -6,7 +6,7 @@ import com.tokopedia.sellerhomecommon.domain.mapper.PieChartMapper
 import com.tokopedia.sellerhomecommon.domain.model.DataKeyModel
 import com.tokopedia.sellerhomecommon.domain.model.GetPieChartDataResponse
 import com.tokopedia.sellerhomecommon.domain.model.PieChartWidgetDataModel
-import com.tokopedia.sellerhomecommon.domain.model.WidgetDataParameterModel
+import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
 import com.tokopedia.sellerhomecommon.presentation.model.PieChartDataUiModel
 import com.tokopedia.usecase.RequestParams
 
@@ -38,7 +38,7 @@ class GetPieChartDataUseCase(
 
         fun getRequestParams(
                 dataKey: List<String>,
-                dynamicParameter: WidgetDataParameterModel
+                dynamicParameter: DynamicParameterModel
         ): RequestParams = RequestParams.create().apply {
             val dataKeys = dataKey.map {
                 DataKeyModel(

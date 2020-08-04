@@ -8,7 +8,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.sellerhomecommon.domain.mapper.PostMapper
 import com.tokopedia.sellerhomecommon.domain.model.DataKeyModel
 import com.tokopedia.sellerhomecommon.domain.model.GetPostDataResponse
-import com.tokopedia.sellerhomecommon.domain.model.WidgetDataParameterModel
+import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
 import com.tokopedia.sellerhomecommon.presentation.model.PostListDataUiModel
 import com.tokopedia.usecase.RequestParams
 
@@ -41,7 +41,7 @@ class GetPostDataUseCase(
 
         fun getRequestParams(
                 dataKey: List<String>,
-                dynamicParameter: WidgetDataParameterModel,
+                dynamicParameter: DynamicParameterModel,
                 limit: Int = DEFAULT_POST_LIMIT
         ): RequestParams = RequestParams.create().apply {
             val dataKeys = dataKey.map {
