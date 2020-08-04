@@ -364,7 +364,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         dateFilterBottomSheet
                 .setFragmentManager(childFragmentManager)
                 .setOnApplyChanges {
-                    setHeaderSubTitle(it.getHeaderSubTitle())
+                    setHeaderSubTitle(it.getHeaderSubTitle(requireContext()))
                     applyDateRange(it)
                 }
                 .show()

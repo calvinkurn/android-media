@@ -1,7 +1,9 @@
 package com.tokopedia.statistic.presentation.model
 
+import android.content.Context
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
+import com.tokopedia.statistic.R
 import com.tokopedia.statistic.common.utils.DateFilterFormatUtil
 import com.tokopedia.statistic.presentation.view.adapter.factory.DateFilterAdapterFactory
 import java.util.*
@@ -30,42 +32,43 @@ sealed class DateFilterItem(
         const val TYPE_DIVIDER = 7
     }
 
-    fun getHeaderSubTitle(): String {
+    fun getHeaderSubTitle(context: Context): String {
         when (type) {
             TYPE_TODAY -> {
                 val startDateMillis = startDate?.time ?: return ""
                 val dateStr = DateTimeUtil.format(startDateMillis, "dd MMMM")
                 val hourStr = DateTimeUtil.format(System.currentTimeMillis().minus(TimeUnit.HOURS.toMillis(1)), "HH:00")
-                return "Hari Ini ($dateStr 00:00 - $hourStr)"
+                return context.getString(R.string.stc_today_fmt, dateStr, hourStr)
             }
             TYPE_LAST_7_DAYS -> {
                 val mStartDate = startDate ?: return ""
                 val mEndDate = endDate ?: return ""
                 val dateRangeStr = DateFilterFormatUtil.getDateRangeStr(mStartDate, mEndDate)
-                return "7 Hari Terakhir ($dateRangeStr)"
+                return context.getString(R.string.stc_last_7_days_fmt, dateRangeStr)
             }
             TYPE_LAST_30_DAYS -> {
                 val mStartDate = startDate ?: return ""
                 val mEndDate = endDate ?: return ""
                 val dateRangeStr = DateFilterFormatUtil.getDateRangeStr(mStartDate, mEndDate)
-                return "30 Hari Terakhir ($dateRangeStr)"
+                return context.getString(R.string.stc_last_30_days_fmt, dateRangeStr)
             }
             TYPE_PER_DAY -> {
                 val startDateMillis = startDate?.time ?: return ""
-                return "Per Hari (${DateTimeUtil.format(startDateMillis, "dd MMM yyyy")})"
+                val perDayFmt = DateTimeUtil.format(startDateMillis, "dd MMM yyyy")
+                return context.getString(R.string.stc_per_day_fmt, perDayFmt)
             }
             TYPE_PER_WEEK -> {
                 val mStartDate = startDate ?: return ""
                 val mEndDate = endDate ?: return ""
                 val dateRangeStr = DateFilterFormatUtil.getDateRangeStr(mStartDate, mEndDate)
-                return "Per Minggu ($dateRangeStr)"
+                return context.getString(R.string.stc_per_week_fmt, dateRangeStr)
             }
             TYPE_PER_MONTH -> {
                 startDate?.let {
                     val monthFmt = DateTimeUtil.format(it.time, "MMMM yyyy")
-                    return "Per Bulan ($monthFmt)"
+                    return context.getString(R.string.stc_per_month_fmt, monthFmt)
                 }
-                return "Per Bulan"
+                return context.getString(R.string.stc_per_month)
             }
         }
         return ""
