@@ -58,6 +58,8 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
     private val tvPaymentErrorAction by lazy { view.findViewById<Typography>(R.id.tv_payment_error_action) }
     private val tvInstallmentType by lazy { view.findViewById<Typography>(R.id.tv_installment_type) }
     private val tvInstallmentDetail by lazy { view.findViewById<Typography>(R.id.tv_installment_detail) }
+    private val tvInstallmentErrorMessage by lazy { view.findViewById<Typography>(R.id.tv_installment_error_message) }
+    private val tvInstallmentErrorAction by lazy { view.findViewById<Typography>(R.id.tv_installment_error_action) }
     private val tvAddressName by lazy { view.findViewById<Typography>(R.id.tv_address_name) }
     private val tvAddressReceiver by lazy { view.findViewById<Typography>(R.id.tv_address_receiver) }
     private val tvAddressDetail by lazy { view.findViewById<Typography>(R.id.tv_address_detail) }
