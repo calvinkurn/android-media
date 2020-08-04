@@ -29,6 +29,7 @@ class BannerTopAdsViewHolder (view: View) : SmartAbstractViewHolder<BannerTopAds
     private fun loadImageTopAds(bannerTopAdsDataModel: BannerTopAdsDataModel, listener: TopAdsListener){
         itemView.wishlist_topads_loader_image.show()
         itemView.wishlist_topads_image_view.hide()
+        listener.onBannerTopAdsImpress(bannerTopAdsDataModel, adapterPosition)
         Glide.with(itemView.context)
                 .load(bannerTopAdsDataModel.topAdsDataModel.imageUrl)
                 .override(itemView.context.resources.displayMetrics.widthPixels,
@@ -44,7 +45,6 @@ class BannerTopAdsViewHolder (view: View) : SmartAbstractViewHolder<BannerTopAds
                     override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
                         itemView.wishlist_topads_image_view.show()
                         itemView.wishlist_topads_loader_image.hide()
-                        listener.onBannerTopAdsImpress(bannerTopAdsDataModel, adapterPosition)
                         return false
 
                     }
