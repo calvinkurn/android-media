@@ -28,6 +28,13 @@ object ProductAnalytics {
     private const val KEY_LIST = "list"
     private const val KEY_POSITION = "position"
     private const val KEY_CATEGORY = "category"
+    private const val KEY_QUANTITY = "quantity"
+    private const val KEY_DIMENSION79 = "dimension79"
+    private const val KEY_DIMENSION81 = "dimension81"
+    private const val KEY_DIMENSION80 = "dimension80"
+    private const val KEY_DIMENSION82 = "dimension82"
+    private const val KEY_DIMENSION45 = "dimension45"
+    private const val KEY_DIMENSION40 = "dimension40"
     private const val KEY_DIMENSION_79 = "dimension79"
 
     private const val EVENT_ATC = "addToCart"
@@ -154,13 +161,13 @@ object ProductAnalytics {
                     KEY_VARIANT to "",
                     KEY_LIST to LIST,
                     KEY_CATEGORY to "",
-                    "quantity" to "1",
-                    "dimension79" to element.shopId.toString(),
-                    "dimension81" to "",
-                    "dimension80" to "",
-                    "dimension82" to "",
-                    "dimension45" to "",
-                    "dimension40" to "/pushnotif"
+                    KEY_QUANTITY to POSITION,
+                    KEY_DIMENSION79 to element.shopId.toString(),
+                    KEY_DIMENSION81 to "",
+                    KEY_DIMENSION80 to "",
+                    KEY_DIMENSION82 to "",
+                    KEY_DIMENSION45 to "",
+                    KEY_DIMENSION40 to LIST
             ))
         }
 
@@ -197,13 +204,13 @@ object ProductAnalytics {
                     KEY_VARIANT to "",
                     KEY_LIST to LIST,
                     KEY_CATEGORY to "",
-                    "quantity" to "1",
-                    "dimension79" to element.shopId.toString(),
-                    "dimension81" to "",
-                    "dimension80" to "",
-                    "dimension82" to "",
-                    "dimension45" to "",
-                    "dimension40" to LIST
+                    KEY_QUANTITY to POSITION,
+                    KEY_DIMENSION79 to element.shopId.toString(),
+                    KEY_DIMENSION81 to "",
+                    KEY_DIMENSION80 to "",
+                    KEY_DIMENSION82 to "",
+                    KEY_DIMENSION45 to "",
+                    KEY_DIMENSION40 to LIST
             ))
         }
 

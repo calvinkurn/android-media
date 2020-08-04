@@ -286,10 +286,11 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
                     handleShareActionButtonClick(context, it, notificationData)
                 }
             }?: let {
-                // validate if the action button is ATC
                 it.type?.let { type ->
-                    if (type == ADD_TO_CART) {
+                    if (type == ADD_TO_CART) { // internal ATC
                         handleAddToCartProduct(notificationData, it.addToCart)
+                    } else if (it.type == ATC || it.type == OCC) { // external appLink
+                        handleProductPurchaseClick(context, notificationData, this)
                     }
                 }
 
