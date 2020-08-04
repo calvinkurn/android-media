@@ -54,4 +54,7 @@
     <!-- Voucher Creation -->
     <string name="title_voucher_creation">Voucher Creation</string>
 
+    <!-- Statistic -->
+    <string name="title_statistic">Statistic</string>
+
 </resources>
