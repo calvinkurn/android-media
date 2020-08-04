@@ -80,6 +80,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
     @Inject
     lateinit var itemDecorator: PromoCheckoutDecoration
 
@@ -87,6 +88,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     private var showBottomsheetJob: Job? = null
     private var keyboardHeight = 0
     private var isPromoCheckoutlastSeenBottomsheetShown = false
+    private var hasTriedToGetLastSeenData = false
 
     private val viewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[PromoCheckoutViewModel::class.java]
@@ -178,7 +180,9 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                 keyboardHeight = heightDiff
                 if (!isPromoCheckoutlastSeenBottomsheetShown) {
                     isPromoCheckoutlastSeenBottomsheetShown = true
-                    getOrShowLastSeenData()
+                    if (!hasTriedToGetLastSeenData) {
+                        getOrShowLastSeenData()
+                    }
                 }
             } else {
                 keyboardHeight = 0
@@ -254,7 +258,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         buttonApplyPromo?.let { buttonApplyPromo ->
             buttonApplyPromo.setOnClickListener {
                 setButtonLoading(buttonApplyPromo, true)
-                val validateUsePromoRequest = arguments?.getParcelable(ARGS_VALIDATE_USE_REQUEST) as ValidateUsePromoRequest
+                val validateUsePromoRequest = arguments?.getParcelable(ARGS_VALIDATE_USE_REQUEST) ?: ValidateUsePromoRequest()
                 val bboPromoCodes = arguments?.getStringArrayList(ARGS_BBO_PROMO_CODES) as ArrayList<String>?
                 viewModel.applyPromo(GraphqlHelper.loadRawString(it.resources, com.tokopedia.purchase_platform.common.R.raw.mutation_validate_use_promo_revamp), validateUsePromoRequest, bboPromoCodes
                         ?: ArrayList())
@@ -264,7 +268,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         buttonApplyNoPromo?.let { buttonApplyNoPromo ->
             buttonApplyNoPromo.setOnClickListener {
                 setButtonLoading(buttonApplyNoPromo, true)
-                val validateUsePromoRequest = arguments?.getParcelable(ARGS_VALIDATE_USE_REQUEST) as ValidateUsePromoRequest
+                val validateUsePromoRequest = arguments?.getParcelable(ARGS_VALIDATE_USE_REQUEST) ?: ValidateUsePromoRequest()
                 val bboPromoCodes = arguments?.getStringArrayList(ARGS_BBO_PROMO_CODES) as ArrayList<String>?
                 viewModel.clearPromo(GraphqlHelper.loadRawString(it.resources, R.raw.clear_promo), validateUsePromoRequest, bboPromoCodes
                         ?: ArrayList())
@@ -457,12 +461,12 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     }
 
     private fun observeGetCouponRecommendationResult() {
-        viewModel.getCouponRecommendationResponse.observe(this, Observer {
-            when {
-                it.state == GetCouponRecommendationAction.ACTION_CLEAR_DATA -> {
+        viewModel.getPromoListResponseAction.observe(this, Observer {
+            when (it.state) {
+                GetPromoListResponseAction.ACTION_CLEAR_DATA -> {
                     clearAllData()
                 }
-                it.state == GetCouponRecommendationAction.ACTION_SHOW_TOAST_ERROR -> {
+                GetPromoListResponseAction.ACTION_SHOW_TOAST_ERROR -> {
                     it.exception?.let {
                         showToastMessage(it)
                     }
@@ -472,9 +476,9 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     }
 
     private fun observeApplyPromoResult() {
-        viewModel.applyPromoResponse.observe(this, Observer {
-            when {
-                it.state == ApplyPromoResponseAction.ACTION_NAVIGATE_TO_CART -> {
+        viewModel.applyPromoResponseAction.observe(this, Observer {
+            when (it.state) {
+                ApplyPromoResponseAction.ACTION_NAVIGATE_TO_CALLER_PAGE -> {
                     val intent = Intent()
                     if (it.data != null) {
                         intent.putExtra(ARGS_VALIDATE_USE_DATA_RESULT, it.data)
@@ -485,7 +489,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                     activity?.setResult(Activity.RESULT_OK, intent)
                     activity?.finish()
                 }
-                it.state == ApplyPromoResponseAction.ACTION_SHOW_TOAST_AND_RELOAD_PROMO -> {
+                ApplyPromoResponseAction.ACTION_SHOW_TOAST_AND_RELOAD_PROMO -> {
                     buttonApplyPromo?.let {
                         setButtonLoading(it, false)
                     }
@@ -494,7 +498,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                     }
                     reloadData()
                 }
-                it.state == ApplyPromoResponseAction.ACTION_SHOW_TOAST_ERROR -> {
+                ApplyPromoResponseAction.ACTION_SHOW_TOAST_ERROR -> {
                     buttonApplyPromo?.let {
                         setButtonLoading(it, false)
                     }
@@ -509,11 +513,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     private fun observeClearPromoResult() {
         viewModel.clearPromoResponse.observe(this, Observer {
-            buttonApplyNoPromo?.let {
-                setButtonLoading(it, false)
-            }
-            when {
-                it.state == ClearPromoResponseAction.ACTION_STATE_SUCCESS -> {
+            when (it.state) {
+                ClearPromoResponseAction.ACTION_STATE_SUCCESS -> {
                     val intent = Intent()
                     if (it.data != null) {
                         intent.putExtra(ARGS_CLEAR_PROMO_RESULT, it.data)
@@ -524,7 +525,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                     activity?.setResult(Activity.RESULT_OK, intent)
                     activity?.finish()
                 }
-                it.state == ClearPromoResponseAction.ACTION_STATE_ERROR -> it.exception?.let {
+                ClearPromoResponseAction.ACTION_STATE_ERROR -> it.exception?.let {
                     showToastMessage(it)
                 }
             }
@@ -533,11 +534,14 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     private fun observeGetPromoLastSeenResult() {
         viewModel.getPromoLastSeenResponse.observe(this, Observer {
-            when {
-                it.state == GetPromoLastSeenAction.ACTION_SHOW -> {
+            when (it.state) {
+                GetPromoLastSeenAction.ACTION_SHOW -> {
                     it.data?.let {
                         showPromoCheckoutLastSeenBottomsheet(it)
                     }
+                }
+                GetPromoLastSeenAction.ACTION_RELEASE_LOCK_FLAG -> {
+                    hasTriedToGetLastSeenData = false
                 }
             }
         })
@@ -573,6 +577,9 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                 }
 
                 promoCheckoutLastSeenBottomsheet?.state = BottomSheetBehavior.STATE_COLLAPSED
+
+                viewModel.sendAnalyticsViewLastSeenPromo()
+                hasTriedToGetLastSeenData = false
             }
         }
     }
@@ -726,9 +733,9 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     override fun loadData(page: Int) {
         activity?.let {
             showLoading()
-            val promoRequest = arguments?.getParcelable(ARGS_PROMO_REQUEST) as PromoRequest
+            val promoRequest = arguments?.getParcelable(ARGS_PROMO_REQUEST) ?: PromoRequest()
             val mutation = GraphqlHelper.loadRawString(it.resources, R.raw.get_coupon_list_recommendation)
-            viewModel.loadData(mutation, promoRequest, "")
+            viewModel.getPromoList(mutation, promoRequest, "")
         }
     }
 
@@ -765,12 +772,12 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                 setPrimaryCTAClickListener {
                     viewModel.sendAnalyticsClickSimpanPromoBaru()
                     if (viewModel.isHasAnySelectedPromoItem()) {
-                        val validateUsePromoRequest = arguments?.getParcelable(ARGS_VALIDATE_USE_REQUEST) as ValidateUsePromoRequest
+                        val validateUsePromoRequest = arguments?.getParcelable(ARGS_VALIDATE_USE_REQUEST) ?: ValidateUsePromoRequest()
                         val bboPromoCodes = arguments?.getStringArrayList(ARGS_BBO_PROMO_CODES) as ArrayList<String>?
                         viewModel.applyPromo(GraphqlHelper.loadRawString(it.resources, com.tokopedia.purchase_platform.common.R.raw.mutation_validate_use_promo_revamp), validateUsePromoRequest, bboPromoCodes
                                 ?: ArrayList())
                     } else {
-                        val validateUsePromoRequest = arguments?.getParcelable(ARGS_VALIDATE_USE_REQUEST) as ValidateUsePromoRequest
+                        val validateUsePromoRequest = arguments?.getParcelable(ARGS_VALIDATE_USE_REQUEST) ?: ValidateUsePromoRequest()
                         val bboPromoCodes = arguments?.getStringArrayList(ARGS_BBO_PROMO_CODES) as ArrayList<String>?
                         viewModel.clearPromo(GraphqlHelper.loadRawString(it.resources, R.raw.clear_promo), validateUsePromoRequest, bboPromoCodes
                                 ?: ArrayList())
@@ -812,18 +819,20 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     }
 
     override fun onClickPromoManualInputTextField() {
-        getOrShowLastSeenData()
+        if (!hasTriedToGetLastSeenData) {
+            getOrShowLastSeenData()
+        }
     }
 
     private fun getOrShowLastSeenData() {
+        hasTriedToGetLastSeenData = true
+        viewModel.sendAnalyticsClickPromoInputField()
         view?.let {
             if (promoCheckoutLastSeenBottomsheet?.state == BottomSheetBehavior.STATE_HIDDEN) {
                 val query = GraphqlHelper.loadRawString(it.resources, R.raw.promo_suggestion_query)
-                viewModel.loadPromoLastSeen(query)
+                viewModel.getPromoLastSeen(query)
             } else {
-                viewModel.promoLastSeenUiModel.value?.let {
-                    showPromoCheckoutLastSeenBottomsheet(it)
-                }
+                hasTriedToGetLastSeenData = false
             }
         }
     }
@@ -831,9 +840,9 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     override fun onClickApplyManualInputPromo(promoCode: String, isFromLastSeen: Boolean) {
         activity?.let {
             viewModel.updatePromoInputStateBeforeApplyPromo(promoCode, isFromLastSeen)
-            val promoRequest = arguments?.getParcelable(ARGS_PROMO_REQUEST) as PromoRequest
+            val promoRequest = arguments?.getParcelable(ARGS_PROMO_REQUEST) ?: PromoRequest()
             val mutation = GraphqlHelper.loadRawString(it.resources, R.raw.get_coupon_list_recommendation)
-            viewModel.loadData(mutation, promoRequest, promoCode)
+            viewModel.getPromoList(mutation, promoRequest, promoCode)
         }
     }
 

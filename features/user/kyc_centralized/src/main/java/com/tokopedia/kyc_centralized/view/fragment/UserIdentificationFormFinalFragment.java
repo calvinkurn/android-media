@@ -55,6 +55,8 @@ import java.util.Objects;
 
 import javax.inject.Inject;
 
+import timber.log.Timber;
+
 import static com.tokopedia.kyc_centralized.view.fragment.UserIdentificationCameraFragment.PARAM_VIEW_MODE_KTP;
 import static com.tokopedia.user_identification_common.KYCConstant.EXTRA_STRING_IMAGE_RESULT;
 import static com.tokopedia.user_identification_common.KYCConstant.REQUEST_CODE_CAMERA_FACE;
@@ -393,6 +395,10 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
     @Override
     public void onSuccessUpload() {
         hideLoading();
+        Timber.w("P2#KYC_SELFIE_UPLOAD_RESULT#'SuccessUpload';" +
+                "ktpPath='"+ stepperModel.getKtpFile() +"';" +
+                "facePath='"+ stepperModel.getFaceFile() +"';" +
+                "tkpdProjectId='"+ projectId +"';");
         getActivity().setResult(Activity.RESULT_OK);
         analytics.eventClickUploadPhotosTradeIn("success");
         stepperListener.finishPage();

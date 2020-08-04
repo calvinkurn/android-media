@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="oval">
+            <solid android:color="@color/Neutral_N0" />
+            <stroke android:color="@color/settingnotif_green_ic"
+                android:width="@dimen/setting_notif_dp_0_5"/>
+            <size android:height="@dimen/setting_notif_dp_6"
+                android:width="@dimen/setting_notif_dp_6"/>
+        </shape>
+    </item>
+    <item
+        android:top="@dimen/setting_notif_dp_10"
+        android:bottom="@dimen/setting_notif_dp_10"
+        android:left="@dimen/setting_notif_dp_7"
+        android:right="@dimen/setting_notif_dp_7">
+        <bitmap android:src="@drawable/ic_action_check"
+            android:tint="@color/settingnotif_green_ic" />
+    </item>
+</layer-list>

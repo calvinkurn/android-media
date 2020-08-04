@@ -1,18 +1,24 @@
 package com.tokopedia.play.broadcaster.ui.viewholder
 
+import android.graphics.drawable.Drawable
 import android.view.View
 import android.widget.CheckBox
 import android.widget.CompoundButton
 import android.widget.ImageView
 import android.widget.TextView
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.type.StockAvailable
 import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
-import com.tokopedia.play.broadcaster.util.compatTransitionName
+import com.tokopedia.play.broadcaster.util.extension.compatTransitionName
+import com.tokopedia.play.broadcaster.util.extension.loadImageFromUrl
 import com.tokopedia.play.broadcaster.view.state.NotSelectable
 import com.tokopedia.play.broadcaster.view.state.Selectable
 import com.tokopedia.unifycomponents.Label
@@ -35,6 +41,18 @@ class ProductSelectableViewHolder(
 
     private var onCheckedChangeListener: (CompoundButton, Boolean) -> Unit = { _ , _ -> }
 
+    private val imageRequestListener = object : RequestListener<Drawable> {
+        override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+            listener?.onImageLoaded(position = adapterPosition, isSuccess = false)
+            return false
+        }
+
+        override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+            listener?.onImageLoaded(position = adapterPosition, isSuccess = true)
+            return false
+        }
+    }
+
     init {
         if (showSelection) cbSelected.show()
         else cbSelected.gone()
@@ -47,18 +65,19 @@ class ProductSelectableViewHolder(
 
     fun bind(item: ProductContentUiModel) {
         cbSelected.forceSetCheckbox(item.isSelectedHandler(item.id))
-        ivImage.loadImage(item.imageUrl)
+        ivImage.loadImageFromUrl(item.imageUrl, imageRequestListener)
         ivImage.compatTransitionName = item.transitionName
 
         tvProductName.text = item.name
-        tvProductAmount.text = getString(R.string.play_product_stock_amount, item.stock)
 
-        if (item.hasStock) {
+        if (item.stock is StockAvailable) {
             lblEmptyStock.gone()
             cbSelected.isEnabled = true
+            tvProductAmount.text = getString(R.string.play_product_stock_amount, item.stock.stock)
         } else {
             lblEmptyStock.show()
             cbSelected.isEnabled = false
+            tvProductAmount.text = getString(R.string.play_product_stock_amount, 0)
         }
 
         itemView.setOnClickListener {
@@ -94,6 +113,7 @@ class ProductSelectableViewHolder(
 
     interface Listener {
 
+        fun onImageLoaded(position: Int, isSuccess: Boolean) {}
         fun onProductSelectStateChanged(productId: Long, isSelected: Boolean)
         fun onProductSelectError(reason: Throwable)
     }

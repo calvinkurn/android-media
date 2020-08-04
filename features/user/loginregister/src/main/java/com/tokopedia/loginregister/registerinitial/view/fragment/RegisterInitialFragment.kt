@@ -63,8 +63,7 @@ import com.tokopedia.loginregister.registerinitial.viewmodel.RegisterInitialView
 import com.tokopedia.loginregister.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase
-import com.tokopedia.otp.cotp.view.activity.VerificationActivity
+import com.tokopedia.otp.verification.domain.data.OtpConstant
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
@@ -228,9 +227,11 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         setViewListener()
         if (isSmartLogin) {
             if (isPending) {
-                goToPendingOtpValidator(email)
+                val intent =  goToVerification(email = email, otpType = OTP_TYPE_ACTIVATE)
+                startActivityForResult(intent, REQUEST_PENDING_OTP_VALIDATE)
             } else {
-                goToOtpValidator(email)
+                val intent =  goToVerification(email = email, otpType = OTP_TYPE_REGISTER)
+                startActivityForResult(intent, REQUEST_OTP_VALIDATE)
             }
         }
         return view
@@ -439,7 +440,10 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
             if (it != null) onGoToActivationPage(it)
         })
         registerInitialViewModel.goToSecurityQuestion.observe(this, Observer {
-            if (it != null) onGoToSecurityQuestion(it)
+            if (it != null) {
+                val intent =  goToVerification(email = it, otpType = OTP_SECURITY_QUESTION)
+                startActivityForResult(intent, REQUEST_SECURITY_QUESTION)
+            }
         })
         registerInitialViewModel.goToActivationPageAfterRelogin.observe(this, Observer {
             if (it != null) onGoToActivationPageAfterRelogin()
@@ -644,10 +648,12 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
                     if (!registerCheckData.isPending) {
                         showRegisteredEmailDialog(registerCheckData.view)
                     } else {
-                        goToPendingOtpValidator(registerCheckData.view)
+                        val intent =  goToVerification(email = registerCheckData.view, otpType = OTP_TYPE_ACTIVATE)
+                        startActivityForResult(intent, REQUEST_PENDING_OTP_VALIDATE)
                     }
                 } else {
-                    goToOtpValidator(registerCheckData.view)
+                    val intent =  goToVerification(email = registerCheckData.view, otpType = OTP_TYPE_REGISTER)
+                    startActivityForResult(intent, REQUEST_OTP_VALIDATE)
                 }
             }
         }
@@ -698,12 +704,6 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         NetworkErrorHelper.showSnackbar(activity, ErrorHandler.getErrorMessage(context, errorMessage))
     }
 
-    private fun onGoToSecurityQuestion(email: String) {
-        val intent = VerificationActivity.getShowChooseVerificationMethodIntent(
-                activity, RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION, "", email)
-        startActivityForResult(intent, REQUEST_SECURITY_QUESTION)
-    }
-
     private fun goToLoginPage() {
         activity?.let {
             val intent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
@@ -731,34 +731,6 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
             startActivityForResult(intent, REQUEST_REGISTER_EMAIL)
         }
-    }
-
-    private fun goToVerificationPhoneRegister(phone: String) {
-        userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_PHONE
-
-        val intent = VerificationActivity.getShowChooseVerificationMethodIntent(
-                activity,
-                RequestOtpUseCase.OTP_TYPE_REGISTER_PHONE_NUMBER,
-                phone,
-                ""
-        )
-        startActivityForResult(intent, REQUEST_VERIFY_PHONE_REGISTER_PHONE)
-    }
-
-    private fun goToOtpValidator(email: String) {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.OTP_VALIDATOR)
-        intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, email)
-        intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_TYPE_REGISTER)
-        intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
-        startActivityForResult(intent, REQUEST_OTP_VALIDATE)
-    }
-
-    private fun goToPendingOtpValidator(email: String) {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.OTP_VALIDATOR)
-        intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, email)
-        intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_TYPE_ACTIVATE)
-        intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
-        startActivityForResult(intent, REQUEST_PENDING_OTP_VALIDATE)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -823,7 +795,8 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
                 if (data != null) {
                     data.extras?.let { bundle ->
                         if (bundle.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_SQ_CHECK, false)) {
-                            onGoToSecurityQuestion("")
+                            val intent =  goToVerification(otpType = OTP_SECURITY_QUESTION)
+                            startActivityForResult(intent, REQUEST_SECURITY_QUESTION)
                         } else {
                             it.finish()
                         }
@@ -1010,7 +983,9 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
             registerAnalytics.trackClickYesButtonRegisteredPhoneDialog()
             dialog.dismiss()
             phoneNumber = phone
-            goToVerifyAccountPage(phoneNumber)
+            userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_PHONE
+            val intent =  goToVerification(phone = phone, otpType = OTP_LOGIN_PHONE_NUMBER)
+            startActivityForResult(intent, REQUEST_VERIFY_PHONE_TOKOCASH)
         }
         dialog.setBtnCancel(getString(R.string.already_registered_no))
         dialog.setOnCancelClickListener {
@@ -1020,14 +995,15 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         dialog.show()
     }
 
-    private fun goToVerifyAccountPage(phoneNumber: String?) {
-        userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_PHONE
-
-        activity?.let {
-            val intent = VerificationActivity.getShowChooseVerificationMethodIntent(it,
-                    RequestOtpUseCase.OTP_TYPE_LOGIN_PHONE_NUMBER, phoneNumber, "")
-            startActivityForResult(intent, REQUEST_VERIFY_PHONE_TOKOCASH)
-        }
+    private fun goToVerification(phone: String = "", email: String = "", otpType: Int): Intent {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phone)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, email)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, otpType)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, true)
+        return intent
     }
 
     private fun goToChooseAccountPage(accessToken: String, phoneNumber: String) {
@@ -1066,7 +1042,9 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         dialog.setOnOkClickListener {
             registerAnalytics.trackClickYesButtonPhoneDialog()
             dialog.dismiss()
-            goToVerificationPhoneRegister(phone)
+            userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_PHONE
+            val intent =  goToVerification(phone = phone, otpType = OTP_REGISTER_PHONE_NUMBER)
+            startActivityForResult(intent, REQUEST_VERIFY_PHONE_REGISTER_PHONE)
         }
         dialog.setBtnCancel(getString(R.string.already_registered_no))
         dialog.setOnCancelClickListener {
@@ -1331,6 +1309,9 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
 
         private const val OTP_TYPE_ACTIVATE = 143
         private const val OTP_TYPE_REGISTER = 126
+        private const val OTP_SECURITY_QUESTION = 134
+        private const val OTP_LOGIN_PHONE_NUMBER = 112
+        private const val OTP_REGISTER_PHONE_NUMBER = 116
 
         private const val FACEBOOK = "facebook"
         private const val GPLUS = "gplus"

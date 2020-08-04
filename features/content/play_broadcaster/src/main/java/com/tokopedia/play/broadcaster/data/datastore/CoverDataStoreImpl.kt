@@ -2,12 +2,13 @@ package com.tokopedia.play.broadcaster.data.datastore
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.play.broadcaster.domain.usecase.AddMediaUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.UpdateChannelUseCase
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.state.SetupDataState
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -16,7 +17,8 @@ import javax.inject.Inject
  */
 class CoverDataStoreImpl @Inject constructor(
         private val dispatcher: CoroutineDispatcherProvider,
-        private val addMediaUseCase: AddMediaUseCase
+        private val updateChannelUseCase: UpdateChannelUseCase,
+        private val userSession: UserSessionInterface
 ): CoverDataStore {
 
     private val _selectedCoverLiveData = MutableLiveData<PlayCoverUiModel>()
@@ -52,6 +54,21 @@ class CoverDataStoreImpl @Inject constructor(
     override suspend fun uploadSelectedCover(channelId: String): NetworkResult<Unit> {
         return try {
             updateCover(channelId)
+            getSelectedCover()?.let {
+                setFullCover(it.copy(state = SetupDataState.Uploaded))
+            }
+            NetworkResult.Success(Unit)
+        } catch (e: Throwable) {
+            NetworkResult.Fail(e)
+        }
+    }
+
+    override suspend fun uploadCoverTitle(channelId: String): NetworkResult<Unit> {
+        return try {
+            syncCoverTitle(channelId)
+            getSelectedCover()?.let {
+                setFullCover(it.copy(state = SetupDataState.Uploaded))
+            }
             NetworkResult.Success(Unit)
         } catch (e: Throwable) {
             NetworkResult.Fail(e)
@@ -59,13 +76,40 @@ class CoverDataStoreImpl @Inject constructor(
     }
 
     private suspend fun updateCover(channelId: String) = withContext(dispatcher.io) {
-        return@withContext addMediaUseCase.apply {
-            params = AddMediaUseCase.createParams(
-                    channelId = channelId,
-                    coverUrl = when (val croppedCover = getSelectedCover()?.croppedCover) {
-                        is CoverSetupState.Cropped -> croppedCover.coverImage.path
-                        else -> throw IllegalStateException("Cover url must not be null")
-                    })
-        }.executeOnBackground()
+        val currentCover = getSelectedCover()
+        val coverUrl = when (val croppedCover = currentCover?.croppedCover) {
+            is CoverSetupState.Cropped -> croppedCover.coverImage.toString()
+            else -> throw IllegalStateException("Cover url must not be null")
+        }
+
+        val coverTitle = currentCover.title
+
+        updateChannelUseCase.apply {
+            setQueryParams(
+                    UpdateChannelUseCase.createUpdateFullCoverRequest(
+                            channelId = channelId,
+                            authorId = userSession.shopId,
+                            coverTitle = coverTitle,
+                            coverUrl = coverUrl
+                    )
+            )
+        }
+        return@withContext updateChannelUseCase.executeOnBackground()
+    }
+
+    private suspend fun syncCoverTitle(channelId: String) = withContext(dispatcher.io) {
+        val currentCover = getSelectedCover()
+        val coverTitle = currentCover?.title ?: throw IllegalStateException("Cover title cannot be null")
+
+        updateChannelUseCase.apply {
+            setQueryParams(
+                    UpdateChannelUseCase.createUpdateCoverTitleRequest(
+                            channelId = channelId,
+                            authorId = userSession.shopId,
+                            coverTitle = coverTitle
+                    )
+            )
+        }
+        return@withContext updateChannelUseCase.executeOnBackground()
     }
 }

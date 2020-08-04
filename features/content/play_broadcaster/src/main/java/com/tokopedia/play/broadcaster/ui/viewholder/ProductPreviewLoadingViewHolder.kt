@@ -5,8 +5,8 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.model.ProductLoadingUiModel
-import com.tokopedia.play.broadcaster.util.changeConstraint
-import com.tokopedia.play.broadcaster.util.doOnPreDraw
+import com.tokopedia.play.broadcaster.util.extension.changeConstraint
+import com.tokopedia.play.broadcaster.util.extension.doOnPreDraw
 import com.tokopedia.unifycomponents.LoaderUnify
 
 /**

@@ -1,48 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_weight="1">
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="@color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:focusable="true"
         android:focusableInTouchMode="true"
-        android:padding="@dimen/spacing_lvl4"
         android:orientation="vertical">
 
         <include
-            android:layout_height="wrap_content"
+            layout="@layout/add_edit_product_description_input_layout"
             android:layout_width="match_parent"
-            android:layout_marginBottom="@dimen/spacing_lvl6"
-            layout="@layout/add_edit_product_description_input_layout" />
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:layout_marginLeft="@dimen/spacing_lvl4"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginRight="@dimen/spacing_lvl4"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:layout_marginBottom="@dimen/spacing_lvl6" />
 
         <include
-            android:layout_height="wrap_content"
+            layout="@layout/add_edit_product_video_input_layout"
             android:layout_width="match_parent"
-            android:layout_marginBottom="@dimen/spacing_lvl6"
-            layout="@layout/add_edit_product_video_input_layout" />
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/spacing_lvl4"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginRight="@dimen/spacing_lvl4"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:layout_marginBottom="@dimen/spacing_lvl6" />
 
         <include
-            android:layout_height="wrap_content"
+            layout="@layout/add_edit_product_variant_input_layout"
             android:layout_width="match_parent"
-            android:layout_marginBottom="@dimen/spacing_lvl6"
-            layout="@layout/add_edit_product_variant_input_layout" />
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/spacing_lvl4"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginRight="@dimen/spacing_lvl4"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:layout_marginBottom="@dimen/dp_36" />
+
+        <include
+            layout="@layout/add_edit_product_no_variant_input_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/spacing_lvl4"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginRight="@dimen/spacing_lvl4"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:layout_marginBottom="@dimen/dp_36" />
+
+        <View
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"/>
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btnNext"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/action_next_button"/>
+            android:layout_marginLeft="@dimen/spacing_lvl4"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginRight="@dimen/spacing_lvl4"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:layout_marginBottom="@dimen/spacing_lvl3"
+            android:text="@string/action_next_button" />
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btnSave"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:text="@string/action_save"/>
-
+            android:text="@string/action_save"
+            android:layout_marginLeft="@dimen/spacing_lvl4"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginRight="@dimen/spacing_lvl4"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:layout_marginBottom="@dimen/spacing_lvl3"
+            android:visibility="gone" />
     </LinearLayout>
-</androidx.core.widget.NestedScrollView>
+</ScrollView>
+
+
