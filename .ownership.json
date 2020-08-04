@@ -2,7 +2,7 @@
   "repository_name": "android-tokopedia-core",
   "description": "Code base for android application (seller app & customer app).",
   "directorate": "TECH",
-  "namespace": "android-tokopedia-core",
+  "namespace": "android",
   "security_owner": "rico.harisin@tokopedia.com",
   "app": [
     {
