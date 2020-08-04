@@ -13,6 +13,16 @@ data class ProductTopAds(
     @SerializedName("management")
     val management: Int
 ) {
+    private companion object {
+        val ADS_STATUS = listOf(
+            PUBLISHED,
+            UNPUBLISHED,
+            INACTIVE,
+            REJECTED,
+            IN_REVIEW
+        )
+    }
+
     private object AdsStatus {
         const val PUBLISHED = 1
         const val UNPUBLISHED = 2
@@ -25,15 +35,7 @@ data class ProductTopAds(
         const val AUTO = 2
     }
 
-    private val adsStatus = listOf(
-        PUBLISHED,
-        UNPUBLISHED,
-        INACTIVE,
-        REJECTED,
-        IN_REVIEW
-    )
-
-    fun isApplied() = adsStatus.contains(status)
+    fun isApplied() = ADS_STATUS.contains(status)
 
     fun isAutoAds() = management == ManagementType.AUTO
 }
