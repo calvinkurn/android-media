@@ -91,7 +91,7 @@
       "eventCategory": "homepage",
       "event": "clickHomepage",
       "userId": "{{.*}}",
-      "eventAction": "click view all card on close dynamic channel list carousel",
+      "eventAction": "click view all card on dynamic channel list carousel",
       "sessionIris": "{{.*}}",
       "eventLabel": "{{.*}}"
     }
