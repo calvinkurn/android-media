@@ -3,7 +3,7 @@ package com.tokopedia.statistic.presentation.view.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
-import com.tokopedia.sellerhomecommon.domain.model.WidgetDataParameterModel
+import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
 import com.tokopedia.sellerhomecommon.domain.usecase.*
 import com.tokopedia.sellerhomecommon.presentation.model.*
 import com.tokopedia.statistic.utils.TestConst
@@ -66,7 +66,7 @@ class StatisticViewModelTest {
     val rule = InstantTaskExecutorRule()
 
     private lateinit var viewModel: StatisticViewModel
-    private lateinit var dynamicParameter: WidgetDataParameterModel
+    private lateinit var dynamicParameter: DynamicParameterModel
 
     @Before
     fun setup() {
@@ -79,8 +79,8 @@ class StatisticViewModelTest {
         dynamicParameter = getDynamicParameter()
     }
 
-    private fun getDynamicParameter(): WidgetDataParameterModel {
-        return WidgetDataParameterModel(
+    private fun getDynamicParameter(): DynamicParameterModel {
+        return DynamicParameterModel(
                 startDate = "15-07-20202",
                 endDate = "21-07-20202",
                 pageSource = TestConst.PAGE_SOURCE

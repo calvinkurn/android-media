@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName
  * Created By @ilhamsuaib on 11/06/20
  */
 
-data class WidgetDataParameterModel(
+data class DynamicParameterModel(
         @Expose
         @SerializedName("date")
         val date: String = "",
@@ -26,8 +26,16 @@ data class WidgetDataParameterModel(
         val page: Int = 0,
         @Expose
         @SerializedName("limit")
-        val limit: Int = 0
+        val limit: Int = 0,
+        @Expose
+        @SerializedName("date_type")
+        val dateType: String = DATE_TYPE_DAILY
 ) {
+
+    companion object {
+        const val DATE_TYPE_DAILY = "daily"
+        const val DATE_TYPE_MONTHLY = "month"
+    }
 
     fun toJsonString(): String {
         return Gson().toJsonTree(this).toString()

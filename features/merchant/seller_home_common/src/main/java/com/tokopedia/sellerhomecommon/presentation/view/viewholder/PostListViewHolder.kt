@@ -1,6 +1,7 @@
 package com.tokopedia.sellerhomecommon.presentation.view.viewholder
 
 import android.view.View
+import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -30,6 +31,7 @@ class PostListViewHolder(
 ) : AbstractViewHolder<PostListWidgetUiModel>(view), BaseListAdapter.OnAdapterInteractionListener<PostUiModel> {
 
     companion object {
+        @LayoutRes
         val RES_LAYOUT = R.layout.shc_post_list_card_widget
     }
 
@@ -128,7 +130,8 @@ class PostListViewHolder(
 
     private fun setupTooltip(tooltip: TooltipUiModel?) = with(itemView) {
         tooltip?.run {
-            if (content.isNotBlank() || list.isNotEmpty()) {
+            val shouldShowTooltip = shouldShow && (content.isNotBlank() || list.isNotEmpty())
+            if (shouldShowTooltip) {
                 imgInfo.visible()
                 imgInfo.setOnClickListener { showBottomSheet(tooltip) }
                 tvPostListTitle.setOnClickListener { showBottomSheet(tooltip) }

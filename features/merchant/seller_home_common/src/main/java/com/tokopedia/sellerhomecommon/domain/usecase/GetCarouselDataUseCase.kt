@@ -8,7 +8,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.sellerhomecommon.domain.mapper.CarouselMapper
 import com.tokopedia.sellerhomecommon.domain.model.DataKeyModel
 import com.tokopedia.sellerhomecommon.domain.model.GetCarouselDataResponse
-import com.tokopedia.sellerhomecommon.domain.model.WidgetDataParameterModel
+import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
 import com.tokopedia.sellerhomecommon.presentation.model.CarouselDataUiModel
 import com.tokopedia.usecase.RequestParams
 
@@ -49,7 +49,7 @@ class GetCarouselDataUseCase(
             val dataKeys = dataKey.map {
                 DataKeyModel(
                         key = it,
-                        jsonParams = WidgetDataParameterModel(
+                        jsonParams = DynamicParameterModel(
                                 page = pageNumber,
                                 limit = limits
                         ).toJsonString()

@@ -16,7 +16,8 @@ class TooltipMapper @Inject constructor() {
         return TooltipUiModel(
                 title = tooltip.title.orEmpty(),
                 content = tooltip.content.orEmpty(),
-                list = mapTooltipItem(tooltip.list)
+                list = mapTooltipItem(tooltip.list),
+                shouldShow = tooltip.shouldShow
         )
     }
 
