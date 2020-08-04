@@ -240,7 +240,7 @@
         android:id="@+id/play_seller_widget_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="visible"
+        android:visibility="gone"
         android:layout_marginTop="@dimen/spacing_lvl2"
         android:layout_marginBottom="@dimen/spacing_lvl3"
         android:layout_marginLeft="@dimen/spacing_lvl4"
