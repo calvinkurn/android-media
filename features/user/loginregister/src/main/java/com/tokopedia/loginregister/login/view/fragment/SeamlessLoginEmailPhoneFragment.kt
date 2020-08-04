@@ -69,8 +69,8 @@ class SeamlessLoginEmailPhoneFragment: LoginEmailPhoneFragment() {
         })
     }
 
-    override fun setLoginSuccessSellerApp(): Unit? {
-        return if(redirectApplink?.isNotEmpty() == true){
+    override fun setLoginSuccessSellerApp() {
+        if(redirectApplink?.isNotEmpty() == true){
             view?.run {
                 if (context.applicationContext is LoginRouter) {
                     (context.applicationContext as LoginRouter).setOnboardingStatus(true)
