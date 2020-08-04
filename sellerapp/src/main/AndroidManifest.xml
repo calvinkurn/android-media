@@ -241,6 +241,10 @@
             android:launchMode="singleTask"/>
 
         <activity
+            android:name=".onboarding.SellerOnboardingBridgeActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name=".deeplink.DeepLinkHandlerActivity"
             android:screenOrientation="portrait">
             <intent-filter>

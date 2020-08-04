@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp;
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst;
 import com.tokopedia.core.SplashScreen;
 import com.tokopedia.core.gcm.Constants;
@@ -18,6 +19,7 @@ import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.utils.timber.TimberWrapper;
+import com.tokopedia.sellerapp.utils.SellerOnboardingPreference;
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
 import com.tokopedia.selleronboarding.activity.SellerOnboardingActivity;
 import com.tokopedia.selleronboarding.utils.OnboardingPreference;
@@ -128,8 +130,8 @@ public class SplashScreenActivity extends SplashScreen {
     }
 
     private void seamlessLogin(boolean isAutoLoginSeamless) {
-        boolean hasOnboarding = new OnboardingPreference(this)
-                .getBoolean(OnboardingPreference.HAS_OPEN_ONBOARDING, false);
+        boolean hasOnboarding = new SellerOnboardingPreference(this)
+                .getBoolean(SellerOnboardingPreference.HAS_OPEN_ONBOARDING, false);
         Intent intent;
         if (isAutoLoginSeamless){
             intent = RouteManager.getIntent(this, ApplinkConstInternalGlobal.SEAMLESS_LOGIN);
@@ -139,7 +141,7 @@ public class SplashScreenActivity extends SplashScreen {
         } else if (hasOnboarding) {
             intent = RouteManager.getIntent(this, ApplinkConstInternalGlobal.SEAMLESS_LOGIN);
         } else {
-            intent = new Intent(this, SellerOnboardingActivity.class);
+            intent = RouteManager.getIntent(this, ApplinkConstInternalSellerapp.WELCOME);
         }
         startActivity(intent);
     }

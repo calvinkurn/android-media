@@ -4,6 +4,7 @@
     <application>
         <activity
             android:name=".activity.SellerOnboardingActivity"
+            android:label="@string/title_seller_onboarding"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
             <intent-filter>
