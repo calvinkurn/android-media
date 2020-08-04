@@ -194,7 +194,7 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
     override fun validateShowPopup(data: ValidateShippingModel?) {
         if (data != null) {
             if (data.data.showPopup) {
-                data?.let { openPopupValidation(it) }
+                data.let { openPopupValidation(it) }
             } else {
                 submitData()
             }
