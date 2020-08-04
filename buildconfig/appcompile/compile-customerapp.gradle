@@ -60,6 +60,7 @@ include "features:travel:hotel"
 include "features:travel:common_travel"
 
 include "features:entertainment:event"
+include "features:entertainment:deals"
 include "features:entertainment:digital_deals"
 
 include "features:salam:umrah"
@@ -212,6 +213,8 @@ include "features:user:settingbank"
 include "features:user:settingnotif"
 include "features:user:sessioncommon"
 include "features:user:seamless_login"
+include "features:user:additional_check"
+
 include "features:user:stickylogin"
 include "features:user:topchat"
 include "features:user:orderhistory"

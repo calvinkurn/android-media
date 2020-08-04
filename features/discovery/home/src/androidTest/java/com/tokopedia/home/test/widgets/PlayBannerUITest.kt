@@ -330,7 +330,7 @@ class PlayBannerUITest : BaseWidgetUiTest(){
         onView(withId(TITLE)).check(matches(withText("Play Widget")))
         onView(withId(TITLE_CONTENT)).check(matches(withText("Channel 2")))
     }
-  
+
 //    private fun <T : ViewModel> createViewModelFactory(viewModel: T): ViewModelProvider.Factory {
 //        return object : ViewModelProvider.Factory {
 //            override fun <T : ViewModel> create(viewModelClass: Class<T>): T {

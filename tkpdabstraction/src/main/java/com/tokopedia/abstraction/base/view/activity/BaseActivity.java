@@ -14,7 +14,7 @@ import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.crashlytics.android.Crashlytics;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.play.core.splitcompat.SplitCompat;
 import com.tokopedia.abstraction.AbstractionRouter;
@@ -191,7 +191,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
 
     public void setLogCrash() {
         if (!GlobalConfig.DEBUG) {
-            Crashlytics.log(this.getClass().getCanonicalName());
+            FirebaseCrashlytics.getInstance().log(this.getClass().getCanonicalName());
         }
     }
 

@@ -40,9 +40,7 @@ dependencies {
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.debugToolsDependencies.chuck
-    api (rootProject.ext.serviceDependencies.crashlytics) {
-        transitive = true
-    }
+    api rootProject.ext.firebase.crashlytics
 
     //test
     testImplementation rootProject.ext.testDependencies.junit

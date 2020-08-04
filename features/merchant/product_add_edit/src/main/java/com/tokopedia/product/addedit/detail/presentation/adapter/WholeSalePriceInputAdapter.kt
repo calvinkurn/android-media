@@ -10,7 +10,8 @@ import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputMod
 import com.tokopedia.product.addedit.detail.presentation.viewholder.WholeSaleInputViewHolder
 import java.math.BigInteger
 
-class WholeSalePriceInputAdapter(private val listener: WholeSaleInputViewHolder.TextChangedListener,
+class WholeSalePriceInputAdapter(private val textListener: WholeSaleInputViewHolder.TextChangedListener,
+                                 private val addListener: WholeSaleInputViewHolder.OnAddButtonClickListener,
                                  private val onDeleteWholesale: (() -> Unit)? = null) :
         RecyclerView.Adapter<WholeSaleInputViewHolder>(), WholeSaleInputViewHolder.OnDeleteButtonClickListener {
 
@@ -18,9 +19,11 @@ class WholeSalePriceInputAdapter(private val listener: WholeSaleInputViewHolder.
 
     private var productPrice: BigInteger = 0.toBigInteger()
 
+    private var deletePosition: Int = 0
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WholeSaleInputViewHolder {
         val rootView = LayoutInflater.from(parent.context).inflate(R.layout.wholesale_input_item, parent, false)
-        return WholeSaleInputViewHolder(rootView, this, listener)
+        return WholeSaleInputViewHolder(rootView, this, addListener,  textListener)
     }
 
     override fun getItemCount(): Int {
@@ -82,17 +85,22 @@ class WholeSalePriceInputAdapter(private val listener: WholeSaleInputViewHolder.
     }
 
     fun getPreviousQuantity(position: Int): String {
-        return if (position == 0) ""
+        return if (position <= 0) ""
         else wholeSaleInputModelList[position - 1].quantity
     }
 
     fun getPreviousPrice(position: Int): String {
-        return if (position == 0) ""
+        return if (position <= 0) ""
         else wholeSaleInputModelList[position - 1].price
+    }
+
+    fun getDeletePosition() : Int? {
+        return deletePosition
     }
 
     override fun onDeleteButtonClicked(position: Int) {
         if (position != NO_POSITION) {
+            deletePosition = position
             onDeleteWholesale?.invoke()
             wholeSaleInputModelList.removeAt(position)
             notifyItemRemoved(position)

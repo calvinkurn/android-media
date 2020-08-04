@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.play.broadcaster.ui.model.CoverSource
@@ -42,6 +43,13 @@ class CoverImagePickerHelper(
 
     override fun onGetCoverFromGallery(imageUri: Uri?) {
         imageUri?.let(listener::onGetFromGallery)
+    }
+
+    fun onAttachFragment(childFragment: Fragment) {
+        when (childFragment) {
+            is PlayGalleryImagePickerBottomSheet -> childFragment.mListener = this
+            is PlayCoverImageChooserBottomSheet -> childFragment.mListener = this
+        }
     }
 
     fun show(source: CoverSource = CoverSource.None) {
@@ -85,7 +93,6 @@ class CoverImagePickerHelper(
                     PlayCoverImageChooserBottomSheet::class.java.name
             ) as PlayCoverImageChooserBottomSheet
 
-            coverChooser.mListener = this
             coverChooser.setShowListener { coverChooser.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED }
 
             coverImageChooserBottomSheet = coverChooser
@@ -101,9 +108,6 @@ class CoverImagePickerHelper(
                     context.classLoader,
                     PlayGalleryImagePickerBottomSheet::class.java.name
             ) as PlayGalleryImagePickerBottomSheet
-
-            imagePicker.mListener = this
-            imagePicker.setShowListener { imagePicker.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED }
 
             galleryImagePickerBottomSheet = imagePicker
         }

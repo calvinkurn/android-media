@@ -1,24 +1,15 @@
 package com.tokopedia.play.broadcaster.socket
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import com.crashlytics.android.Crashlytics
 import com.google.gson.Gson
 import com.google.gson.JsonElement
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.config.GlobalConfig
-import com.tokopedia.play.broadcaster.domain.model.ConcurrentUser
-import com.tokopedia.play.broadcaster.domain.model.LiveDuration
-import com.tokopedia.play.broadcaster.domain.model.LiveStats
-import com.tokopedia.play.broadcaster.domain.model.Metric
+import com.tokopedia.play.broadcaster.domain.model.*
+import com.tokopedia.play.broadcaster.util.extension.sendCrashlyticsLog
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.websocket.RxWebSocketUtil
-import com.tokopedia.websocket.WebSocketResponse
-import com.tokopedia.websocket.WebSocketSubscriber
+import com.tokopedia.websocket.*
 import okhttp3.WebSocket
 import rx.subscriptions.CompositeSubscription
-import java.lang.reflect.Type
 
 
 /**
@@ -29,12 +20,21 @@ class PlayBroadcastSocketImpl constructor(
         private val cacheHandler: LocalCacheHandler
 ): PlayBroadcastSocket {
 
-    var socketInfoListener: PlaySocketInfoListener? = null
+    private var socketInfoListener: PlaySocketInfoListener? = null
 
+    private lateinit var webSocketUtil: RxWebSocketUtil
     private lateinit var compositeSubscription: CompositeSubscription
-    private val gson = Gson()
 
-    private val _observableResponseMessage = MutableLiveData<PlaySocketType>()
+    private val gson = Gson()
+    private var config: SocketConfiguration = SocketConfiguration(
+            minReconnectDelay = DEFAULT_DELAY,
+            maxRetries = DEFAULT_MAX_RETRIES,
+            pingInterval = DEFAULT_PING
+    )
+
+    override fun config(minReconnectDelay: Int, maxRetries: Int, pingInterval: Long) {
+        this.config = SocketConfiguration(minReconnectDelay, maxRetries, pingInterval)
+    }
 
     override fun socketInfoListener(listener: PlaySocketInfoListener) {
         this.socketInfoListener = listener
@@ -50,6 +50,8 @@ class PlayBroadcastSocketImpl constructor(
         var wsConnectUrl = "$wsBaseUrl${PlayBroadcastSocket.KEY_GROUP_CHAT_PATH}$channelId"
         if (groupChatToken.isNotEmpty())
             wsConnectUrl += "&token=$groupChatToken"
+
+        compositeSubscription = CompositeSubscription()
 
         val subscriber = object : WebSocketSubscriber() {
 
@@ -67,8 +69,11 @@ class PlayBroadcastSocketImpl constructor(
 
                 var data: PlaySocketType? = null
                 when(webSocketResponse.type) {
-                    PlaySocketEnum.ConcurrentUser.value -> {
-                        data = mapConcurrentUser(webSocketResponse)
+                    PlaySocketEnum.TotalView.value -> {
+                        data = mapTotalView(webSocketResponse)
+                    }
+                    PlaySocketEnum.TotalLike.value -> {
+                        data = mapTotalLike(webSocketResponse)
                     }
                     PlaySocketEnum.LiveDuration.value -> {
                         data = mapLiveDuration(webSocketResponse)
@@ -79,10 +84,16 @@ class PlayBroadcastSocketImpl constructor(
                     PlaySocketEnum.Metric.value -> {
                         data = mapMetric(webSocketResponse)
                     }
+                    PlaySocketEnum.ProductTag.value -> {
+                        data = mapProductTag(webSocketResponse)
+                    }
+                    PlaySocketEnum.Chat.value -> {
+                        data = mapChat(webSocketResponse)
+                    }
                 }
 
                 if (data != null) {
-                    _observableResponseMessage.postValue(data)
+                    socketInfoListener?.onReceive(data)
                 }
             }
 
@@ -95,20 +106,27 @@ class PlayBroadcastSocketImpl constructor(
             }
         }
 
-        val config = configuration()
-        val webSocketUtil = RxWebSocketUtil.getInstance(null, config.minReconnectDelay, config.maxRetries, config.pingInterval)
-
+        webSocketUtil = RxWebSocketUtil.getInstance(
+                null,
+                delay = config.minReconnectDelay,
+                maxRetries = config.maxRetries,
+                pingInterval = config.pingInterval
+        )
         val subscription = webSocketUtil.getWebSocketInfo(wsConnectUrl, userSession.accessToken)?.
         subscribe(subscriber)
         compositeSubscription.add(subscription)
     }
 
+    override fun close() {
+        if (::webSocketUtil.isInitialized)
+            webSocketUtil.close()
+    }
+
     override fun destroy() {
+        close()
         if (::compositeSubscription.isInitialized)
             compositeSubscription.clear()
     }
-
-    override fun getObservablePlaySocketMessage(): LiveData<out PlaySocketType> = _observableResponseMessage
 
     data class SocketConfiguration(
             val minReconnectDelay: Int,
@@ -131,28 +149,27 @@ class PlayBroadcastSocketImpl constructor(
         return convertToModel(response.jsonObject, Metric::class.java)
     }
 
-    private fun mapConcurrentUser(response: WebSocketResponse): ConcurrentUser? {
-        return convertToModel(response.jsonObject, ConcurrentUser::class.java)
+    private fun mapTotalView(response: WebSocketResponse): TotalView? {
+        return convertToModel(response.jsonObject, TotalView::class.java)
+    }
+
+    private fun mapTotalLike(response: WebSocketResponse): TotalLike? {
+        return convertToModel(response.jsonObject, TotalLike::class.java)
+    }
+
+    private fun mapProductTag(response: WebSocketResponse): ProductTagging? {
+        return convertToModel(response.jsonObject, ProductTagging::class.java)
+    }
+
+    private fun mapChat(response: WebSocketResponse): Chat? {
+        return convertToModel(response.jsonObject, Chat::class.java)
     }
 
     private fun <T> convertToModel(jsonElement: JsonElement?, classOfT: Class<T>): T? {
         try {
             return gson.fromJson(jsonElement, classOfT)
         } catch (e: Exception) {
-            if (!GlobalConfig.DEBUG) {
-                Crashlytics.log(0, PlayBroadcastSocket.TAG, e.localizedMessage)
-            }
-        }
-        return null
-    }
-
-    private fun <T> convertToModel(jsonElement: JsonElement?, typeOfT: Type): T? {
-        try {
-            return gson.fromJson(jsonElement, typeOfT)
-        } catch (e: Exception) {
-            if (!GlobalConfig.DEBUG) {
-                Crashlytics.log(0, PlayBroadcastSocket.TAG, e.localizedMessage)
-            }
+            sendCrashlyticsLog(0, e.localizedMessage)
         }
         return null
     }
