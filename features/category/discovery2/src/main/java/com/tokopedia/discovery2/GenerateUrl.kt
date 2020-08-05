@@ -7,6 +7,7 @@ class GenerateUrl {
         private const val PAGE_URL = "$BASE_URL/discopage/discovery/api/page/"
         private const val CLAIM_COUPON_URL = "$BASE_URL/discopage/discovery/api/component/"
         private const val CLAIM_COUPON = "tokopedia://tokopoints/tukar-point/detail/"
+        private const val CLAIM_COUPON_DIKLAIM = "tokopedia://rewards/kupon/detail/"
 
         private const val COMPONENT_URL = "$BASE_URL/discopage/discovery/api/component/"
 
@@ -15,6 +16,7 @@ class GenerateUrl {
         fun getClaimCoupon(couponCode: String) = String.format("$CLAIM_COUPON%s", couponCode)
 
         fun getComponentUrl(pageEndPoint: String, componentId: String) = String.format("$COMPONENT_URL%s%s", "${pageEndPoint}/", componentId)
+        fun getDiklaimClaimCoupon(couponCode: String) = String.format("$CLAIM_COUPON_DIKLAIM%s", couponCode)
     }
 
 

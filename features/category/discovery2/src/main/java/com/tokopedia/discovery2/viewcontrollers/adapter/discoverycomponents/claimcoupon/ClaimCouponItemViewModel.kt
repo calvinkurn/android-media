@@ -106,7 +106,7 @@ class ClaimCouponItemViewModel(val application: Application, private val compone
     fun setClick(context: Context, status: String?) {
         var applink = ""
         if (status == DIKLAIM) {
-            applink = GenerateUrl.getClaimCoupon(components.data?.get(0)?.couponCode ?: "")
+            applink = GenerateUrl.getDiklaimClaimCoupon(components.data?.get(0)?.couponCode ?: "")
         } else if (status == KLAIM || status == HABIS) {
             applink = GenerateUrl.getClaimCoupon(components.data?.get(0)?.slug ?: "")
         }
