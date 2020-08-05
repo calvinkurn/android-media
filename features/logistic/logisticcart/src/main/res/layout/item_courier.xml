@@ -58,32 +58,14 @@
         android:layout_marginTop="4dp"
         tools:text="Rp10.000" />
 
-    <LinearLayout
-        android:id="@+id/otdelivery"
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/lbl_otd_available"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tv_courier"
-        android:layout_marginTop="@dimen/dp_4"
-        android:layout_toRightOf="@+id/tv_price"
-        android:layout_toEndOf="@+id/tv_price"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:id="@+id/iv_icon_otd"
-            android:layout_width="@dimen/dp_12"
-            android:layout_height="@dimen/dp_12"
-            android:layout_marginLeft="@dimen/dp_6"
-            android:layout_marginRight="@dimen/dp_6" />
-
-        <TextView
-            android:id="@+id/tv_otd"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="@dimen/sp_12"
-            tools:text="Jaminan tepat waktu" />
-
-    </LinearLayout>
+        android:layout_below="@+id/tv_price"
+        android:text="Jaminan Tepat Waktu"
+        android:layout_marginTop="4dp"
+        app:labelType="general_light_green" />
 
     <ImageView
         android:id="@+id/img_check"
@@ -98,7 +80,7 @@
         android:id="@+id/separator"
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:layout_below="@id/tv_price"
+        android:layout_below="@id/lbl_otd_available"
         android:layout_marginTop="@dimen/dp_16"
         android:background="@color/separator_color" />
 
