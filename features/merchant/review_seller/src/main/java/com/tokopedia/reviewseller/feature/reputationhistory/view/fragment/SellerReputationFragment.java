@@ -310,10 +310,10 @@ public class SellerReputationFragment extends BaseDaggerFragment
     private void inject() {
        if(getActivity() != null) {
            //[START] This is for dependent component
-//           DaggerSeller.builder()
-//                   .sellerReputationModule(new SellerReputationModule())
-//                   .appComponent(ReviewSellerComponentBuilder.Companion.getComponent(getActivity().getApplication()))
-//                   .build().inject(this);
+           DaggerSellerReputationComponent.builder()
+                   .sellerReputationModule(new SellerReputationModule())
+                   .appComponent(ReviewSellerComponentBuilder.Companion.getComponent(getActivity().getApplication()))
+                   .build().inject(this);
            //[END] This is for dependent component
        }
     }
