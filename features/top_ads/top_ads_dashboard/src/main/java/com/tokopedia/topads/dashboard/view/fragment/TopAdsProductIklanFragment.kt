@@ -7,6 +7,8 @@ import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -29,8 +31,8 @@ import com.tokopedia.datepicker.range.view.constant.DatePickerConstant
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.topads.auto.view.widget.AutoAdsWidget
-import com.tokopedia.topads.common.data.internal.AutoAdsStatus.*
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
+import com.tokopedia.topads.common.data.internal.AutoAdsStatus.*
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.TopAdsDashboardTracking
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
@@ -65,9 +67,7 @@ import com.tokopedia.topads.dashboard.view.sheet.DatePickerSheet
 import com.tokopedia.topads.dashboard.view.sheet.TopadsGroupFilterSheet
 import kotlinx.android.synthetic.main.partial_top_ads_dashboard_statistics.*
 import kotlinx.android.synthetic.main.topads_dash_auto_ads_onboarding_widget.*
-import kotlinx.android.synthetic.main.topads_dash_fragment_group_list.*
 import kotlinx.android.synthetic.main.topads_dash_fragment_product_iklan.*
-import kotlinx.android.synthetic.main.topads_dash_fragment_product_iklan.loader
 import kotlinx.android.synthetic.main.topads_dash_layout_common_searchbar_layout.*
 import kotlinx.android.synthetic.main.topads_dash_layout_hari_ini.*
 import kotlinx.android.synthetic.main.topads_dash_product_iklan_empty_view.*
@@ -80,6 +80,7 @@ import kotlin.math.abs
  */
 
 private const val CLICK_COBA_SEKARANG = "click - coba sekarang"
+
 class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, CustomDatePicker.ActionListener {
     private var adCurrentState = 0
     private var datePickerSheet: DatePickerSheet? = null
@@ -91,6 +92,7 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
     private lateinit var recyclerviewScrollListener: EndlessRecyclerViewScrollListener
     private lateinit var layoutManager: LinearLayoutManager
     private lateinit var recyclerView: RecyclerView
+    private lateinit var imgBg: ConstraintLayout
     private var totalCount = 0
     private var totalPage = 0
 
@@ -164,6 +166,7 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.topads_dash_fragment_product_iklan, container, false)
         recyclerView = view.findViewById(R.id.auto_ads_list)
+        imgBg = view.findViewById(R.id.progressImg)
         setAutoAdsAdapter()
         return view
     }
@@ -323,27 +326,33 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
         empty_view.visibility = View.VISIBLE
         mulai_beriklan.setOnClickListener {
             if (GlobalConfig.isSellerApp())
-            RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_CREATE_ADS)
+                RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_CREATE_ADS)
             else
-            openDashboard()
+                openDashboard()
         }
     }
 
     private fun noProduct() {
         if (adCurrentState == STATUS_ACTIVE || adCurrentState == STATUS_NOT_DELIVERED) {
             autoAds()
-            } else {
-                        setEmptyView()
-                  }
-
+        } else {
+            setEmptyView()
+        }
     }
 
     private fun manualAds() {
         empty_view.visibility = View.GONE
         view_pager_frag.visibility = View.VISIBLE
         autoads_layout.visibility = View.GONE
-        autoads_status.visibility = View.VISIBLE
         autoAdsWidget?.visibility = View.GONE
+        if (adCurrentState == STATUS_IN_PROGRESS_INACTIVE) {
+            imgBg.background = AppCompatResources.getDrawable(context!!, com.tokopedia.topads.auto.R.drawable.topads_blue_bg)
+            autoadsDeactivationProgress?.visibility = View.VISIBLE
+            autoadsOnboarding.visibility = View.GONE
+        } else {
+            autoadsDeactivationProgress?.visibility = View.GONE
+            autoadsOnboarding.visibility = View.VISIBLE
+        }
         renderViewPager()
     }
 
@@ -353,7 +362,7 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
         autoAdsAdapter.items.clear()
         autoAdsAdapter.notifyDataSetChanged()
         topAdsDashboardPresenter.getGroupProductData(resources, 1, null, searchBar?.searchBarTextField?.text.toString(),
-        groupFilterSheet.getSelectedSortId(), null, format.format(startDate), format.format(endDate), this::onSuccessResult, this::onEmptyResult)
+                groupFilterSheet.getSelectedSortId(), null, format.format(startDate), format.format(endDate), this::onSuccessResult, this::onEmptyResult)
     }
 
     private fun autoAds() {
@@ -364,7 +373,7 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
         autoads_layout.visibility = View.VISIBLE
         tab_layout.visibility = View.GONE
         empty_view.visibility = View.GONE
-        autoads_status.visibility = View.GONE
+        autoadsOnboarding.visibility = View.GONE
         fetchData()
     }
 
