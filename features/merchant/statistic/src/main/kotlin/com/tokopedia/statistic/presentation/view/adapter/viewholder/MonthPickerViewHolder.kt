@@ -68,9 +68,9 @@ class MonthPickerViewHolder(
         }
 
         val lineMarginTop = if (isShown) {
-            context.resources.getDimension(R.dimen.layout_lvl3)
+            context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl3)
         } else {
-            context.resources.getDimension(R.dimen.layout_lvl2)
+            context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2)
         }
         verLineStcCustom.setMargin(0, lineMarginTop.toInt(), 0, 0)
     }
