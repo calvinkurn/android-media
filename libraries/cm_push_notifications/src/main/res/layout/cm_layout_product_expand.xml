@@ -142,6 +142,8 @@
             android:layout_centerVertical="true"
             android:background="@drawable/cm_next_btn_background"
             android:clickable="true"
+            android:visibility="gone"
+            tools:visibility="visible"
             android:padding="8dp"
             android:rotation="180"
             android:src="@drawable/cm_ic_arrow" />
@@ -157,6 +159,8 @@
             android:layout_margin="@dimen/dp_5"
             android:background="@drawable/cm_next_btn_background"
             android:clickable="true"
+            android:visibility="gone"
+            tools:visibility="visible"
             android:padding="8dp"
             android:src="@drawable/cm_ic_arrow" />
 

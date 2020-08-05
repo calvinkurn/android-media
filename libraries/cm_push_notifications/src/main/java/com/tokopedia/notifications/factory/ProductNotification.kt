@@ -125,6 +125,10 @@ internal class ProductNotification(
         // collapse
         remoteView.setOnClickPendingIntent(R.id.collapseMainView, getCollapsedPendingIntent())
 
+        // visibility
+        remoteView.setViewVisibility(R.id.ivArrowLeft, View.GONE)
+        remoteView.setViewVisibility(R.id.ivArrowRight, View.GONE)
+
         // expand
         remoteView.setOnClickPendingIntent(R.id.ll_expandedProductView, getProductPendingIntent(product))
         remoteView.setTextViewText(R.id.tv_productButton, spanStr(product.productButtonMessage))
@@ -153,8 +157,6 @@ internal class ProductNotification(
 
         // visibility
         remoteView.setViewVisibility(R.id.tv_productMessage, View.GONE)
-        remoteView.setViewVisibility(R.id.ivArrowLeft, View.GONE)
-        remoteView.setViewVisibility(R.id.ivArrowRight, View.GONE)
 
         // action button
         remoteView.setOnClickPendingIntent(R.id.tv_productButton, getButtonPendingIntent(actionButton))
