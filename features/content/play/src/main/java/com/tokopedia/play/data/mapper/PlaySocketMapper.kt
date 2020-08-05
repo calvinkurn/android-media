@@ -1,6 +1,6 @@
 package com.tokopedia.play.data.mapper
 
-import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.crashlytics.android.Crashlytics
 import com.google.gson.Gson
 import com.google.gson.JsonElement
 import com.google.gson.reflect.TypeToken
@@ -99,7 +99,7 @@ class PlaySocketMapper(
             return gson.fromJson(jsonElement, classOfT)
         } catch (e: Exception) {
             if (!GlobalConfig.DEBUG) {
-                FirebaseCrashlytics.getInstance().log("E/${TAG}: ${e.localizedMessage}")
+                Crashlytics.log(0, TAG, e.localizedMessage)
             }
         }
         return null
@@ -110,7 +110,7 @@ class PlaySocketMapper(
             return gson.fromJson(jsonElement, typeOfT)
         } catch (e: Exception) {
             if (!GlobalConfig.DEBUG) {
-                FirebaseCrashlytics.getInstance().log("E/${TAG}: ${e.localizedMessage}")
+                Crashlytics.log(0, TAG, e.localizedMessage)
             }
         }
         return null
