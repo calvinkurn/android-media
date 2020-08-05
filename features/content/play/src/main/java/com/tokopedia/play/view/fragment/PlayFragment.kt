@@ -48,6 +48,11 @@ import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.layout.parent.PlayParentLayoutManager
 import com.tokopedia.play.view.layout.parent.PlayParentLayoutManagerImpl
 import com.tokopedia.play.view.layout.parent.PlayParentViewInitializer
+import com.tokopedia.play.view.measurement.ScreenOrientationDataSource
+import com.tokopedia.play.view.measurement.bounds.PlayVideoBoundsManager
+import com.tokopedia.play.view.measurement.bounds.VideoBoundsManager
+import com.tokopedia.play.view.measurement.scaling.PlayVideoScalingManager
+import com.tokopedia.play.view.measurement.scaling.VideoScalingManager
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.EventUiModel
 import com.tokopedia.play.view.uimodel.VideoPlayerUiModel
@@ -68,11 +73,10 @@ import kotlin.coroutines.CoroutineContext
 class PlayFragment @Inject constructor(
         private val dispatchers: CoroutineDispatcherProvider,
         private val viewModelFactory: ViewModelProvider.Factory
-):
+) :
         TkpdBaseV4Fragment(),
         PlayOrientationListener,
         PlayFragmentContract,
-        PlayParentViewInitializer,
         FragmentVideoViewComponent.Listener,
         FragmentYouTubeViewComponent.Listener {
 
@@ -130,10 +134,11 @@ class PlayFragment @Inject constructor(
     private val orientation: ScreenOrientation
         get() = ScreenOrientation.getByInt(resources.configuration.orientation)
 
+    private var videoScalingManager: VideoScalingManager? = null
+
     override fun getScreenName(): String = "Play"
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        inject()
         super.onCreate(savedInstanceState)
         setOrientation()
         setupPageMonitoring()
@@ -190,6 +195,9 @@ class PlayFragment @Inject constructor(
     }
 
     override fun onDestroyView() {
+        getVideoBoundsManager().onDestroy()
+        videoScalingManager = null
+
         destroyInsets(requireView())
         super.onDestroyView()
         if (::layoutManager.isInitialized) layoutManager.onDestroy()
@@ -258,11 +266,11 @@ class PlayFragment @Inject constructor(
 
     fun onBottomInsetsViewShown(bottomMostBounds: Int) {
         if (orientation.isLandscape) return
-        layoutManager.onBottomInsetsShown(requireView(), bottomMostBounds, playViewModel.videoPlayer, playViewModel.videoOrientation)
+        getVideoBoundsManager().onBottomInsetsShown(bottomMostBounds, playViewModel.videoPlayer, playViewModel.videoOrientation)
     }
 
     fun onBottomInsetsViewHidden() {
-        layoutManager.onBottomInsetsHidden(requireView(), playViewModel.videoPlayer)
+        getVideoBoundsManager().onBottomInsetsHidden(playViewModel.videoPlayer)
     }
 
     fun setResultBeforeFinish() {
@@ -297,54 +305,21 @@ class PlayFragment @Inject constructor(
         }
     }
 
-    private fun inject() {
-        DaggerPlayComponent
-                .builder()
-                .baseAppComponent(
-                        (requireContext().applicationContext as BaseMainApplication).baseAppComponent
-                )
-                .playModule(PlayModule(requireContext()))
-                .build()
-                .inject(this)
+    private fun getVideoBoundsManager(): VideoScalingManager = synchronized(this) {
+        if (videoScalingManager == null) {
+            videoScalingManager = PlayVideoScalingManager(requireView() as ViewGroup)
+        }
+        return videoScalingManager!!
     }
 
     //region init components
     private fun initComponents(container: ViewGroup) {
         layoutManager = PlayParentLayoutManagerImpl(
-                container = container,
-                viewInitializer = this
+                container = container
         )
 
         sendInitState()
         layoutManager.layoutView(container)
-    }
-
-    override fun onInitCloseButton(container: ViewGroup): Int {
-        throw IllegalStateException("No Init")
-    }
-
-    override fun onInitVideoFragment(container: ViewGroup): Int {
-        throw IllegalStateException("No Init")
-    }
-
-    override fun onInitUserInteractionFragment(container: ViewGroup): Int {
-        throw IllegalStateException("No Init")
-    }
-
-    override fun onInitMiniInteractionFragment(container: ViewGroup): Int {
-        throw IllegalStateException("No Init")
-    }
-
-    override fun onInitBottomSheetFragment(container: ViewGroup): Int {
-        throw IllegalStateException("No Init")
-    }
-
-    override fun onInitYouTubeFragment(container: ViewGroup): Int {
-        throw IllegalStateException("No Init")
-    }
-
-    override fun onInitErrorFragment(container: ViewGroup): Int {
-        throw IllegalStateException("No Init")
     }
     //endregion
 
@@ -555,11 +530,6 @@ class PlayFragment @Inject constructor(
             dialog.setOverlayClose(false)
             dialog.show()
         }
-    }
-
-    private fun showGlobalError() {
-        fragmentErrorView.safeInit()
-        fragmentErrorView.show()
     }
 
     /**

@@ -34,11 +34,11 @@ import com.tokopedia.play.util.changeConstraint
 import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.util.event.DistinctEventObserver
 import com.tokopedia.play.util.event.EventObserver
-import com.tokopedia.play.util.measurement.ScreenOrientationDataSource
-import com.tokopedia.play.util.measurement.bounds.PlayVideoBoundsManager
-import com.tokopedia.play.util.measurement.bounds.VideoBoundsManager
-import com.tokopedia.play.util.measurement.layout.DynamicLayoutManager
-import com.tokopedia.play.util.measurement.layout.PlayDynamicLayoutManager
+import com.tokopedia.play.view.measurement.ScreenOrientationDataSource
+import com.tokopedia.play.view.measurement.bounds.PlayVideoBoundsManager
+import com.tokopedia.play.view.measurement.bounds.VideoBoundsManager
+import com.tokopedia.play.view.measurement.layout.DynamicLayoutManager
+import com.tokopedia.play.view.measurement.layout.PlayDynamicLayoutManager
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.view.bottomsheet.PlayMoreActionBottomSheet
 import com.tokopedia.play.view.contract.PlayFragmentContract

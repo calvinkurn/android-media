@@ -1,7 +1,7 @@
-package com.tokopedia.play.util.measurement.bounds
+package com.tokopedia.play.view.measurement.bounds
 
 import android.view.ViewGroup
-import com.tokopedia.play.util.measurement.ScreenOrientationDataSource
+import com.tokopedia.play.view.measurement.ScreenOrientationDataSource
 import com.tokopedia.play.view.type.VideoOrientation
 
 /**

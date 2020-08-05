@@ -1,4 +1,4 @@
-package com.tokopedia.play.util.measurement.layout
+package com.tokopedia.play.view.measurement.layout
 
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.type.VideoOrientation

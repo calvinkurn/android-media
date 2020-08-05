@@ -1,4 +1,4 @@
-package com.tokopedia.play.util.measurement.layout
+package com.tokopedia.play.view.measurement.layout
 
 import android.view.View
 import android.view.ViewGroup

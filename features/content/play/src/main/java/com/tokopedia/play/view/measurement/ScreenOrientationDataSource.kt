@@ -1,4 +1,4 @@
-package com.tokopedia.play.util.measurement
+package com.tokopedia.play.view.measurement
 
 import com.tokopedia.play.view.type.ScreenOrientation
 
