@@ -35,18 +35,28 @@ class PlayBannerCardViewHolder(
 
     override fun bind(element: PlayCarouselCardDataModel?) {
         playCarouselCardDataModel = element
-        element?.playBannerCarouselDataModel?.let {
-            if(it.channelList.isNotEmpty()){
-                playBannerCarouselView?.setItem(it)
+        if(element?.playBannerCarouselDataModel?.channelList?.isEmpty() == true){
+            playBannerCarouselView?.showRefreshShimmer()
+        } else {
+            playBannerCarouselView?.removeRefreshShimmer()
+            element?.playBannerCarouselDataModel?.let {
+                if (it.channelList.isNotEmpty()) {
+                    playBannerCarouselView?.setItem(it)
+                }
             }
         }
     }
 
     override fun bind(element: PlayCarouselCardDataModel?, payloads: MutableList<Any>) {
         playCarouselCardDataModel = element
-        element?.playBannerCarouselDataModel?.let {
-            if(it.channelList.isNotEmpty()){
-                playBannerCarouselView?.setItem(it)
+        if(element?.playBannerCarouselDataModel?.channelList?.isEmpty() == true){
+            playBannerCarouselView?.showRefreshShimmer()
+        } else {
+            playBannerCarouselView?.removeRefreshShimmer()
+            element?.playBannerCarouselDataModel?.let {
+                if(it.channelList.isNotEmpty()){
+                    playBannerCarouselView?.setItem(it)
+                }
             }
         }
     }
@@ -66,7 +76,7 @@ class PlayBannerCardViewHolder(
                         position = playCarouselCardDataModel?.channel?.brandId ?: "1"
                 )
         )
-        RouteManager.route(itemView.context, dataModel.applink)
+        listener.onPlayV2Click(dataModel)
     }
 
     override fun onItemImpress(dataModel: PlayBannerCarouselItemDataModel, position: Int) {

@@ -30,10 +30,12 @@ open class YouTubeComponent(
         dispatchers: CoroutineDispatcherProvider
 ) : UIComponent<YouTubeInteractionEvent>, YouTubeView.Listener {
 
+    private var videoId: String? = null
+    private var currentPosition: Int = 0
+    private var shouldPlayOnReady: Boolean = true
+
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     val uiView = initView(container, fragmentManager)
-
-    private var isPlaying: Boolean = false
 
     init {
         scope.launch(dispatchers.immediate) {
@@ -48,7 +50,9 @@ open class YouTubeComponent(
                                 uiView.release()
                             }
                             is ScreenStateEvent.SetVideo -> if (it.videoPlayer is YouTube) {
-                                uiView.setYouTubeId(it.videoPlayer.youtubeId)
+                                videoId = it.videoPlayer.youtubeId
+
+                                playVideoById(it.videoPlayer.youtubeId)
                                 uiView.show()
                             }
                             is ScreenStateEvent.OrientationChanged -> uiView.setFullScreenButton(it.orientation.isLandscape)
@@ -97,21 +101,23 @@ open class YouTubeComponent(
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     fun onPause() {
-        isPlaying = uiView.isPlaying()
+        try {
+            currentPosition = uiView.getCurrentPosition()
+            shouldPlayOnReady = uiView.isPlaying() ?: true
+        } catch (e: Throwable) { /*Not Used*/ }
+
+        uiView.release()
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     fun onResume() {
-        if (isPlaying) scope.launch {
-            delay(YOUTUBE_DELAY)
-            uiView.play()
-        }
+        videoId?.let { playVideoById(it) }
+    }
+
+    private fun playVideoById(videoId: String) {
+        uiView.setYouTubeId(videoId, currentPosition, shouldPlayOnReady)
     }
 
     protected open fun initView(container: ViewGroup, fragmentManager: FragmentManager) =
             YouTubeView(container, fragmentManager, this)
-
-    companion object {
-        private const val YOUTUBE_DELAY = 1300L
-    }
 }
