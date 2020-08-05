@@ -624,7 +624,7 @@ class AddEditProductVariantFragment :
         variantDataValuePicker = BottomSheetUnify()
         variantDataValuePicker?.setTitle(getString(R.string.label_variant_choose) + " " + variantData.name)
         variantDataValuePicker?.overlayClickDismiss = false
-        variantDataValuePicker?.showCloseIcon = false
+        variantDataValuePicker?.showCloseIcon = true
         variantDataValuePicker?.clearContentPadding = true
         variantDataValuePicker?.showKnob = true
         variantDataValuePicker?.clearContentPadding = true
