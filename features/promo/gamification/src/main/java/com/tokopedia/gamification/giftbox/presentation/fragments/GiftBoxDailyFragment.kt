@@ -567,8 +567,17 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
 
             rewardContainer.rvCoupons.translationY = translationY
             val distanceFromLidTop = fmGiftBox.dpToPx(29)
-            val heightOfRewardText = fmGiftBox.dpToPx(31)
             rewardContainer.llRewardTextLayout.translationY = lidTop + distanceFromLidTop
+
+            tvTapHint.doOnLayout { tapHint ->
+                if (giftBoxDailyView.height > LARGE_PHONE_HEIGHT) {
+                    tapHint.translationY = lidTop - fmGiftBox.context.resources.getDimension(R.dimen.gami_tap_hint_margin) - tapHint.height
+                }
+
+                if (isTablet) {
+                    tapHint.translationY = lidTop - fmGiftBox.context.resources.getDimension(R.dimen.gami_tap_hint_margin_tablet) - tapHint.height
+                }
+            }
 
         }
         giftBoxDailyView.imageBoxFront.doOnLayout { imageBoxFront ->
