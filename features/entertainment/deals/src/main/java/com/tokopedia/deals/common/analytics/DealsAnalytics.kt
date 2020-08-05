@@ -611,11 +611,11 @@ class DealsAnalytics @Inject constructor(
         return dataImpressions
     }
 
-    fun curatedProductClick(productCardDataView: ProductCardDataView, position: Int) {
+    fun curatedProductClick(productCardDataView: ProductCardDataView, position: Int, sectionTitle: String) {
         val map = getTrackingMapWithHeader() as MutableMap<String, Any>
         map.addGeneralEvent(
                 DealsAnalyticsConstants.Event.PRODUCT_CLICK,
-                String.format(DealsAnalyticsConstants.Action.CLICK_ON_PRODUCT_CARD_HOME_PAGE, productCardDataView.title),
+                String.format(DealsAnalyticsConstants.Action.CLICK_ON_PRODUCT_CARD_HOME_PAGE, sectionTitle),
                 String.format(DealsAnalyticsConstants.Label.CLICK_PRODUCT_HOMEPAGE, productCardDataView.title, productCardDataView.brand, position + 1)
         )
 

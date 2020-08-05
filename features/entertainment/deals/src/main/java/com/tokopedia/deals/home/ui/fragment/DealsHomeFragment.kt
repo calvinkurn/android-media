@@ -269,8 +269,8 @@ class DealsHomeFragment : DealsBaseFragment(),
     }
 
     /* PRODUCT SECTION ACTION */
-    override fun onProductClicked(productCardDataView: ProductCardDataView, productItemPosition: Int) {
-        analytics.curatedProductClick(productCardDataView,productItemPosition)
+    override fun onProductClicked(productCardDataView: ProductCardDataView, productItemPosition: Int, sectionTitle: String) {
+        analytics.curatedProductClick(productCardDataView,productItemPosition, sectionTitle)
         RouteManager.route(context, productCardDataView.appUrl)
     }
 
