@@ -78,7 +78,6 @@
                     android:layout_gravity="center"
                     android:clickable="false"
                     android:focusable="false"
-                    android:scaleType="centerInside"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:layout_editor_absoluteX="45dp" />
 

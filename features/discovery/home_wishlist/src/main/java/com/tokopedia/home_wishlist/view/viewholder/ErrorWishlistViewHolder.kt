@@ -18,7 +18,7 @@ class ErrorWishlistViewHolder(
 
     override fun bind(element: ErrorWishlistDataModel, listener: SmartListener) {
         element.error?.let {
-            description.text = element.error
+            if(element.error.isNotEmpty()) description.text = element.error
             retry.setOnClickListener {
                 (listener as WishlistListener).onTryAgainClick()
             }

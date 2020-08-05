@@ -62,9 +62,12 @@
     <string name="seller_migration_product_manage_set_variant_title">PRODUK VARIAN</string>
     <string name="seller_migration_product_manage_set_variant_description">Tambah produk dengan varian warna dan ukuran dengan mudah.</string>
 
+    <string name="seller_migration_add_edit_product_set_variant_title">ATUR VARIAN</string>
+    <string name="seller_migration_add_edit_product_set_variant_description">Kelola varian warna dan ukuran produk dengan mudah.</string>
+
     <!--    seller migration product seller features-->
-    <string name="seller_migration_fragment_product_tab_set_variant_title">ATUR VARIAN</string>
-    <string name="seller_migration_fragment_product_tab_set_variant_description">Kelola varian warna dan ukuran produk dengan mudah.</string>
+    <string name="seller_migration_fragment_product_tab_set_variant_title">PRODUK VARIAN</string>
+    <string name="seller_migration_fragment_product_tab_set_variant_description">Tambah produk bervarian dengan mudah.</string>
     <string name="seller_migration_fragment_product_tab_multi_edit_title">EDIT SEKALIGUS</string>
     <string name="seller_migration_fragment_product_tab_multi_edit_description">Ubah info stok dan harga produk dalam waktu bersamaan.</string>
     <string name="seller_migration_fragment_product_tab_instagram_import_title">INSTOPED</string>
