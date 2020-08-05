@@ -33,7 +33,7 @@ class PlayParentLayoutManagerImpl(
         private const val NO_TRANSLATION = 0f
     }
 
-    @IdRes private val buttonCloseId = viewInitializer.onInitCloseButton(container)
+//    @IdRes private val buttonCloseId = viewInitializer.onInitCloseButton(container)
     @IdRes private val videoFragmentId = viewInitializer.onInitVideoFragment(container)
     @IdRes private val miniInteractionFragmentId = viewInitializer.onInitMiniInteractionFragment(container)
     @IdRes private val userInteractionFragmentId = viewInitializer.onInitUserInteractionFragment(container)
@@ -44,7 +44,7 @@ class PlayParentLayoutManagerImpl(
     private val flVideo = container.findViewById<View>(videoFragmentId)
     private val flYouTube = container.findViewById<View>(youTubeFragmentId)
     private val flUserInteraction = container.findViewById<View>(userInteractionFragmentId)
-    private val ivClose = container.findViewById<View>(buttonCloseId)
+    private val ivClose = container.findViewById<View>(R.id.iv_close)
 
     private val offset12 = container.resources.getDimensionPixelOffset(R.dimen.play_offset_12)
     private val offset16 = container.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
@@ -108,7 +108,6 @@ class PlayParentLayoutManagerImpl(
     }
 
     override fun layoutView(view: View) {
-        layoutCloseButton(container = view, id = buttonCloseId)
         layoutVideoFragment(container = view, id = videoFragmentId)
         layoutInteractionFragment(container = view, id = userInteractionFragmentId)
         layoutInteractionFragment(container = view, id = miniInteractionFragmentId)
@@ -285,13 +284,6 @@ class PlayParentLayoutManagerImpl(
     /**
      * Layout
      */
-    private fun layoutCloseButton(container: View, @IdRes id: Int) {
-        container.changeConstraint {
-            connect(id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, offset12)
-            connect(id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, offset12)
-        }
-    }
-
     private fun layoutVideoFragment(container: View, @IdRes id: Int) {
         container.changeConstraint {
             connect(id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)

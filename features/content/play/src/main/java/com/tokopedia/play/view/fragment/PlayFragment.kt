@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.*
 import android.view.inputmethod.InputMethodManager
+import android.widget.ImageView
 import androidx.annotation.Nullable
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.FragmentFactory
@@ -22,6 +23,8 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.ERR_STATE_SOCKET
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
@@ -34,8 +37,6 @@ import com.tokopedia.play.extensions.isAnyBottomSheetsShown
 import com.tokopedia.play.extensions.isAnyHidden
 import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.extensions.isKeyboardShown
-import com.tokopedia.play.ui.closebutton.CloseButtonComponent
-import com.tokopedia.play.ui.closebutton.interaction.CloseButtonInteractionEvent
 import com.tokopedia.play.ui.fragment.bottomsheet.FragmentBottomSheetComponent
 import com.tokopedia.play.ui.fragment.error.FragmentErrorComponent
 import com.tokopedia.play.ui.fragment.miniinteraction.FragmentMiniInteractionComponent
@@ -57,9 +58,7 @@ import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.layout.parent.PlayParentLayoutManager
 import com.tokopedia.play.view.layout.parent.PlayParentLayoutManagerImpl
 import com.tokopedia.play.view.layout.parent.PlayParentViewInitializer
-import com.tokopedia.play.view.type.PlayRoomEvent
-import com.tokopedia.play.view.type.ScreenOrientation
-import com.tokopedia.play.view.type.VideoOrientation
+import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.EventUiModel
 import com.tokopedia.play.view.uimodel.VideoPlayerUiModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
@@ -87,6 +86,8 @@ class PlayFragment @Inject constructor(
     private val job: Job = SupervisorJob()
 
     private var topBounds: Int? = null
+
+    private lateinit var ivClose: ImageView
 
     private lateinit var pageMonitoring: PageLoadTimePerformanceInterface
     private lateinit var playViewModel: PlayViewModel
@@ -289,18 +290,7 @@ class PlayFragment @Inject constructor(
     }
 
     override fun onInitCloseButton(container: ViewGroup): Int {
-        val closeButtonComponent = CloseButtonComponent(container, EventBusFactory.get(viewLifecycleOwner), scope, dispatchers)
-
-        scope.launch {
-            closeButtonComponent.getUserInteractionEvents()
-                    .collect {
-                        when (it) {
-                            CloseButtonInteractionEvent.OnClicked -> hideKeyboard()
-                        }
-                    }
-        }
-
-        return closeButtonComponent.getContainerId()
+        throw IllegalStateException("No Init")
     }
 
     override fun onInitVideoFragment(container: ViewGroup): Int {
@@ -431,10 +421,14 @@ class PlayFragment @Inject constructor(
     }
 
     private fun initView(view: View) {
+        with (view) {
+            ivClose = findViewById(R.id.iv_close)
+        }
         topBounds?.let { setVideoTopBounds(playViewModel.videoPlayer, playViewModel.videoOrientation, it) }
     }
 
     private fun setupView(view: View) {
+        ivClose.setOnClickListener { hideKeyboard() }
         hideAllInsets()
     }
 
@@ -522,6 +516,11 @@ class PlayFragment @Inject constructor(
                                 ScreenStateEvent.BottomInsetsChanged(it, it.isAnyShown, it.isAnyHidden, playViewModel.getStateHelper(orientation))
                         )
             }
+
+            /**
+             * New
+             */
+            buttonCloseOnStateChanged(bottomInsets = it)
         })
     }
 
@@ -637,6 +636,14 @@ class PlayFragment @Inject constructor(
                 view?.background = resource
             }
         })
+    }
+
+    /**
+     * OnStateChanged
+     */
+    private fun buttonCloseOnStateChanged(bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets) {
+        if (bottomInsets.isKeyboardShown) ivClose.show()
+        else ivClose.invisible()
     }
 
     companion object {
