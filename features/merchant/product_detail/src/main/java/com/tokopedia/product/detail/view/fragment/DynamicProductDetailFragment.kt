@@ -28,10 +28,10 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.youtube.player.YouTubeApiServiceUtil
 import com.google.android.youtube.player.YouTubeInitializationResult
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator
 import com.tokopedia.abstraction.Actions.interfaces.ActionUIDelegate
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -1314,7 +1314,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         observe(viewModel.productInfoP3RateEstimate) {
             onSuccessGetDataP3RateEstimate(it)
             (activity as? ProductDetailActivity)?.stopMonitoringFull()
-            if (!activity?.intent?.data?.getQueryParameter(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME).isNullOrBlank() &&
+            if (!activity?.intent?.getStringExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME).isNullOrBlank() &&
                     !alreadyPerformSellerMigrationAction) {
                 alreadyPerformSellerMigrationAction = true
                 actionButtonView.rincianTopAdsClick?.invoke()
