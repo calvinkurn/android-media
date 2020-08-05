@@ -196,9 +196,9 @@ class TopChatRoomAdapter(
         notifyDataSetChanged()
     }
 
-    fun addBroadcastSpamHandler(isFollow: Boolean, isMiddlePage: Boolean): Int {
+    fun addBroadcastSpamHandler(): Int {
         var insertedPosition = RecyclerView.NO_POSITION
-        if (isFollow || isMiddlePage || visitables.isEmpty()) return insertedPosition
+        if (visitables.isEmpty()) return insertedPosition
         val latestMessage = visitables.first()
         if (latestMessage is MessageViewModel && latestMessage.isFromBroadCast() && !latestMessage.isSender) {
             val spamHandlerModel = BroadcastSpamHandlerUiModel()

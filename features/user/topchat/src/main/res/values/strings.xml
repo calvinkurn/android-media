@@ -173,4 +173,5 @@ yang ditemukan</string>
     <string name="title_broadcast_follow_shop">Follow Toko</string>
     <string name="title_success_follow_shop">Berhasil follow</string>
     <string name="title_success_unfollow_shop">Berhasil unfollow</string>
+    <string name="title_success_block_promo">Kamu berhenti menerima chat promosi dari toko ini sampai %1$s.</string>
 </resources>

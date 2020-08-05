@@ -468,7 +468,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     }
 
     private fun addBroadCastSpamHandler(isFollow: Boolean) {
-        val broadCastHandlerPosition = adapter.addBroadcastSpamHandler(isFollow, presenter.isInTheMiddleOfThePage())
+        if (isPromoBlocked || isFollow || presenter.isInTheMiddleOfThePage()) return
+        val broadCastHandlerPosition = adapter.addBroadcastSpamHandler()
         if (broadCastHandlerPosition != RecyclerView.NO_POSITION) {
             val firstVisible = rvLayoutManager?.findFirstCompletelyVisibleItemPosition() ?: return
             val threshold = 1
@@ -1380,10 +1381,33 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
             onSuccessFollowShopFromBcHandler()
             adapter.removeBroadcastHandler(element)
         }, {
-            onErrorFollowShopFromBcHandler(it)
             element.stopFollowShop()
+            onErrorFollowShopFromBcHandler(it)
             adapter.updateBroadcastHandlerState(element)
         })
+    }
+
+    override fun requestBlockPromo(element: BroadcastSpamHandlerUiModel) {
+        presenter.requestBlockPromo(messageId, { until ->
+            element.stopBlockPromo()
+            onSuccessBlockPromoFromBcHandler(until)
+            adapter.removeBroadcastHandler(element)
+        }, {
+            element.stopBlockPromo()
+            onErrorBlockPromoFromBcHandler(it)
+            adapter.updateBroadcastHandlerState(element)
+        })
+    }
+
+    private fun onSuccessBlockPromoFromBcHandler(until: String) {
+        context?.let {
+            showToasterConfirmation(it.getString(R.string.title_success_block_promo, until))
+        }
+    }
+
+    private fun onErrorBlockPromoFromBcHandler(throwable: Throwable) {
+        val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
+        showToasterError(errorMessage)
     }
 
     private fun onSuccessFollowShopFromBcHandler() {
@@ -1405,14 +1429,14 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         showToasterError(errorMessage)
     }
 
-    private fun showToasterConfirmation(message:  String) {
+    private fun showToasterConfirmation(message: String) {
         view?.let {
             Toaster.build(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, "Oke")
                     .show()
         }
     }
 
-    private fun showToasterError(message:  String) {
+    private fun showToasterError(message: String) {
         view?.let {
             Toaster.build(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
         }

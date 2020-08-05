@@ -53,6 +53,7 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
     protected var toUserId = "0"
     protected var source = ""
     protected var amISeller = false
+    protected var isPromoBlocked = false
     protected open fun rvAttachmentMenuId() = R.id.rv_attachment_menu
 
     abstract fun onCreateViewState(view: View): BaseChatViewState
@@ -238,6 +239,7 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
         this.opponentRole = it.headerModel.role
         this.shopId = it.headerModel.shopId
         this.amISeller = it.isSeller()
+        this.isPromoBlocked = it.blockedStatus.isPromoBlocked
     }
 
     override fun onDestroy() {

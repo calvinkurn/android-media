@@ -16,6 +16,7 @@ class BroadcastSpamHandlerViewHolder(
 
     interface Listener {
         fun requestFollowShop(element: BroadcastSpamHandlerUiModel)
+        fun requestBlockPromo(element: BroadcastSpamHandlerUiModel)
     }
 
     override fun bind(element: BroadcastSpamHandlerUiModel, payloads: MutableList<Any>) {
@@ -31,6 +32,7 @@ class BroadcastSpamHandlerViewHolder(
         bindStopPromoButton(element)
         bindButtonEnableState(element)
         bindClickFollowShop(element)
+        bindClickBlockPromo(element)
     }
 
     private fun bindButtonEnableState(element: BroadcastSpamHandlerUiModel) {
@@ -49,6 +51,14 @@ class BroadcastSpamHandlerViewHolder(
         btnStopPromo?.isLoading = element.isLoadingStopBroadCast
     }
 
+    private fun bindClickBlockPromo(element: BroadcastSpamHandlerUiModel) {
+        btnStopPromo?.setOnClickListener {
+            element.startBlockPromo()
+            startLoading(btnStopPromo)
+            requestBlockPromo(element)
+        }
+    }
+
     private fun bindClickFollowShop(element: BroadcastSpamHandlerUiModel) {
         btnFollowShop?.setOnClickListener {
             element.startFollowShop()
@@ -59,6 +69,10 @@ class BroadcastSpamHandlerViewHolder(
 
     private fun requestFollowShop(element: BroadcastSpamHandlerUiModel) {
         listener?.requestFollowShop(element)
+    }
+
+    private fun requestBlockPromo(element: BroadcastSpamHandlerUiModel) {
+        listener?.requestBlockPromo(element)
     }
 
     private fun startLoading(button: UnifyButton?) {

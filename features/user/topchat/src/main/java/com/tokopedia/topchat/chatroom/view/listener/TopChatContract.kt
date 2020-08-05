@@ -197,5 +197,7 @@ interface TopChatContract {
         fun resetUnreadMessage()
 
         fun requestFollowShop(shopId: Int, onSuccess: () -> Unit, onErrorFollowShop: (Throwable) -> Unit)
+
+        fun requestBlockPromo(messageId: String, onSuccess: (String) -> Unit, onError: (Throwable) -> Unit)
     }
 }

@@ -103,6 +103,7 @@ class TopChatRoomPresenter @Inject constructor(
         private var orderProgressUseCase: OrderProgressUseCase,
         private val groupStickerUseCase: ChatListGroupStickerUseCase,
         private val chatAttachmentUseCase: ChatAttachmentUseCase,
+        private val chatToggleBlockChat: ChatToggleBlockChatUseCase,
         private val sharedPref: SharedPreferences
 ) : BaseChatPresenter<TopChatContract.View>(userSession, topChatRoomWebSocketMessageMapper),
         TopChatContract.Presenter {
@@ -847,6 +848,10 @@ class TopChatRoomPresenter @Inject constructor(
                 onSuccess()
             }
         })
+    }
+
+    override fun requestBlockPromo(messageId: String, onSuccess: (String) -> Unit, onError: (Throwable) -> Unit) {
+        chatToggleBlockChat.blockPromo(messageId, onSuccess, onError)
     }
 
     private fun onSuccessGetAttachments(attachments: ArrayMap<String, Attachment>) {

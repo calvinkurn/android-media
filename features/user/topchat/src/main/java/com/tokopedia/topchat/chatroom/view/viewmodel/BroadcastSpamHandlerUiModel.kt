@@ -11,7 +11,7 @@ data class BroadcastSpamHandlerUiModel(
     var isLoadingStopBroadCast = false
     val isLoading: Boolean get() = isLoadingFollowShop || isLoadingStopBroadCast
 
-        override fun type(typeFactory: TopChatTypeFactory): Int {
+    override fun type(typeFactory: TopChatTypeFactory): Int {
         return typeFactory.type(this)
     }
 
@@ -21,6 +21,14 @@ data class BroadcastSpamHandlerUiModel(
 
     fun stopFollowShop() {
         isLoadingFollowShop = false
+    }
+
+    fun startBlockPromo() {
+        isLoadingStopBroadCast = true
+    }
+
+    fun stopBlockPromo() {
+        isLoadingStopBroadCast = false
     }
 
 }
