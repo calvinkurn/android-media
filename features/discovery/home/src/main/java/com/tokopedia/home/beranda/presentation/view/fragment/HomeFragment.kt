@@ -1521,7 +1521,7 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     override fun onPlayV2Click(playBannerCarouselItemDataModel: PlayBannerCarouselItemDataModel) {
-        if(playBannerCarouselItemDataModel.widgetType != PlayBannerWidgetType.UPCOMING || playBannerCarouselItemDataModel.widgetType != PlayBannerWidgetType.NONE) {
+        if(playBannerCarouselItemDataModel.widgetType != PlayBannerWidgetType.UPCOMING && playBannerCarouselItemDataModel.widgetType != PlayBannerWidgetType.NONE) {
             val intent = RouteManager.getIntent(activity, ApplinkConstInternalContent.PLAY_DETAIL, playBannerCarouselItemDataModel.channelId)
             startActivityForResult(intent, REQUEST_CODE_PLAY_ROOM)
         } else {
