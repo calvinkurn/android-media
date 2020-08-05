@@ -1314,7 +1314,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         observe(viewModel.productInfoP3RateEstimate) {
             onSuccessGetDataP3RateEstimate(it)
             (activity as? ProductDetailActivity)?.stopMonitoringFull()
-            if (!activity?.intent?.getStringExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME).isNullOrBlank() &&
+            if (!activity?.intent?.data?.getQueryParameter(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME).isNullOrBlank() &&
                     !alreadyPerformSellerMigrationAction) {
                 alreadyPerformSellerMigrationAction = true
                 actionButtonView.rincianTopAdsClick?.invoke()
@@ -2318,9 +2318,13 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 }
             } else {
                 val appLink = UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId)
+                val parameterizedAppLink = Uri.parse(appLink).buildUpon()
+                        .appendQueryParameter(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, SellerMigrationFeatureName.FEATURE_ADS_DETAIL)
+                        .build()
+                        .toString()
                 goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_ADS_DETAIL, arrayListOf(
                         ApplinkConst.PRODUCT_MANAGE,
-                        appLink
+                        parameterizedAppLink
                 ))
             }
         }
