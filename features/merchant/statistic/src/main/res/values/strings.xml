@@ -18,4 +18,12 @@
     <string name="stc_per_day">Per Hari</string>
     <string name="stc_per_week">Per Minggu</string>
     <string name="stc_per_month">Per Bulan</string>
+    <string name="stc_you_havent_access_this_page">Kamu tidak memiliki akses ke halaman Wawasan Toko. Akses hanya bisa diberikan oleh pemilik toko.</string>
+    <string name="stc_month">Bulan</string>
+    <string name="stc_today_fmt">Hari Ini (%1$s 00:00 - %2$s)</string>
+    <string name="stc_last_7_days_fmt">7 Hari Terakhir (%1$s)</string>
+    <string name="stc_last_30_days_fmt">30 Hari Terakhir (%1$s)</string>
+    <string name="stc_per_day_fmt">Per Hari (%1$s)</string>
+    <string name="stc_per_week_fmt">Per Minggu (%1$s)</string>
+    <string name="stc_per_month_fmt">Per Bulan (%1$s)</string>
 </resources>

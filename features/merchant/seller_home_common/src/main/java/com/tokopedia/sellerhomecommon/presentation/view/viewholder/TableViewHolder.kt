@@ -119,7 +119,8 @@ class TableViewHolder(
 
     private fun setupTooltip(element: TableWidgetUiModel) = with(itemView) {
         val tooltip = element.tooltip
-        if (!tooltip?.content.isNullOrBlank() || !tooltip?.list.isNullOrEmpty()) {
+        val shouldShowTooltip = (tooltip?.shouldShow == true) && (tooltip.content.isNotBlank() || tooltip.list.isNotEmpty())
+        if (shouldShowTooltip) {
             btnTableInformation.visible()
             tvTableWidgetTitle.setOnClickListener {
                 listener.onTooltipClicked(tooltip ?: return@setOnClickListener)

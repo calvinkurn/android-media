@@ -1,8 +1,10 @@
 package com.tokopedia.statistic.presentation.view.fragment
 
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.os.Handler
 import android.view.*
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
@@ -98,6 +100,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         mViewModel.setDateRange(defaultStartDate, defaultEndDate)
 
         observeWidgetLayoutLiveData()
+        observeUserRole()
         observeWidgetData(mViewModel.cardWidgetData, WidgetType.CARD)
         observeWidgetData(mViewModel.lineGraphWidgetData, WidgetType.LINE_GRAPH)
         observeWidgetData(mViewModel.progressWidgetData, WidgetType.PROGRESS)
@@ -364,7 +367,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         dateFilterBottomSheet
                 .setFragmentManager(childFragmentManager)
                 .setOnApplyChanges {
-                    setHeaderSubTitle(it.getHeaderSubTitle())
+                    setHeaderSubTitle(it.getHeaderSubTitle(requireContext()))
                     applyDateRange(it)
                 }
                 .show()
@@ -374,7 +377,8 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         StatisticTracker.sendSetDateFilterEvent(item.label)
         val startDate = item.startDate ?: return
         val endDate = item.endDate ?: return
-        mViewModel.setDateRange(startDate, endDate)
+        val isMonthly = item is DateFilterItem.MonthPickerItem
+        mViewModel.setDateRange(startDate, endDate, isMonthly)
         adapter.data.forEach {
             it.isLoaded = false
             it.data = null
@@ -624,6 +628,15 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         mViewModel.getWidgetLayout()
     }
 
+    private fun observeUserRole() {
+        mViewModel.userRole.observe(viewLifecycleOwner, Observer {
+            if (it is Success) {
+                checkUserRole(it.data)
+            }
+        })
+        mViewModel.getUserRole()
+    }
+
     private inline fun <reified D : BaseDataUiModel> observeWidgetData(liveData: LiveData<Result<List<D>>>, type: String) {
         liveData.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
@@ -631,5 +644,29 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
                 is Fail -> result.throwable.setOnErrorWidgetState<D, BaseWidgetUiModel<D>>(type)
             }
         })
+    }
+
+    private fun checkUserRole(roles: List<String>) {
+        val manageShopStatsRole = "MANAGE_SHOPSTATS"
+        if (!roles.contains(manageShopStatsRole)) {
+            showToaster()
+            activity?.finish()
+        }
+    }
+
+    private fun showToaster() = view?.run {
+        val toaster = Toast.makeText(context, context.getString(R.string.stc_you_havent_access_this_page), Toast.LENGTH_LONG)
+        val countDownInterval = 1000L
+        val toastCountDown = object : CountDownTimer(TOAST_DURATION, countDownInterval) {
+            override fun onTick(p0: Long) {
+                toaster.show()
+            }
+
+            override fun onFinish() {
+                toaster.cancel()
+            }
+        }
+        toaster.show()
+        toastCountDown.start()
     }
 }

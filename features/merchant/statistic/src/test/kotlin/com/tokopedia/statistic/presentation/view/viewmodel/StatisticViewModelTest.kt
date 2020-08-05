@@ -3,9 +3,10 @@ package com.tokopedia.statistic.presentation.view.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
-import com.tokopedia.sellerhomecommon.domain.model.WidgetDataParameterModel
+import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
 import com.tokopedia.sellerhomecommon.domain.usecase.*
 import com.tokopedia.sellerhomecommon.presentation.model.*
+import com.tokopedia.statistic.presentation.domain.usecase.GetUserRoleUseCase
 import com.tokopedia.statistic.utils.TestConst
 import com.tokopedia.statistic.utils.TestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
@@ -16,6 +17,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
+import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
@@ -37,6 +39,9 @@ class StatisticViewModelTest {
 
     @RelaxedMockK
     lateinit var getLayoutUseCase: GetLayoutUseCase
+
+    @RelaxedMockK
+    lateinit var getUserRoleUseCase: GetUserRoleUseCase
 
     @RelaxedMockK
     lateinit var getCardDataUseCase: GetCardDataUseCase
@@ -66,21 +71,21 @@ class StatisticViewModelTest {
     val rule = InstantTaskExecutorRule()
 
     private lateinit var viewModel: StatisticViewModel
-    private lateinit var dynamicParameter: WidgetDataParameterModel
+    private lateinit var dynamicParameter: DynamicParameterModel
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
 
-        viewModel = StatisticViewModel(userSession, getLayoutUseCase, getCardDataUseCase, getLineGraphDataUseCase,
+        viewModel = StatisticViewModel(userSession, getUserRoleUseCase, getLayoutUseCase, getCardDataUseCase, getLineGraphDataUseCase,
                 getProgressDataUseCase, getPostDataUseCase, getCarouselDataUseCase, getTableDataUseCase,
                 getPieChartDataUseCase, getBarChartDataUseCase, TestDispatchersProvider)
 
         dynamicParameter = getDynamicParameter()
     }
 
-    private fun getDynamicParameter(): WidgetDataParameterModel {
-        return WidgetDataParameterModel(
+    private fun getDynamicParameter(): DynamicParameterModel {
+        return DynamicParameterModel(
                 startDate = "15-07-20202",
                 endDate = "21-07-20202",
                 pageSource = TestConst.PAGE_SOURCE
@@ -144,6 +149,33 @@ class StatisticViewModelTest {
         }
 
         assert(viewModel.widgetLayout.value is Fail)
+    }
+
+    @Test
+    fun `should success when get user role`() = runBlocking {
+        val userId = 123456
+        val userRoles = listOf("a", "b", "c")
+        getUserRoleUseCase.params = GetUserRoleUseCase.createParam(userId)
+
+        every {
+            userSession.userId
+        } returns userId.toString()
+
+        coEvery {
+            getUserRoleUseCase.executeOnBackground()
+        } returns userRoles
+
+        viewModel.getUserRole()
+
+        coVerify {
+            userSession.userId
+        }
+
+        coVerify {
+            getUserRoleUseCase.executeOnBackground()
+        }
+
+        assertEquals(Success(userRoles), viewModel.userRole.value)
     }
 
     @Test
