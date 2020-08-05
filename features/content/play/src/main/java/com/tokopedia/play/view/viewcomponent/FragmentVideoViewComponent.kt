@@ -23,6 +23,12 @@ class FragmentVideoViewComponent(
 
     private var isAlreadyInit: AtomicBoolean = AtomicBoolean(false)
 
+    init {
+        rootView.setOnClickListener {
+            listener.onFragmentClicked(this@FragmentVideoViewComponent)
+        }
+    }
+
     fun safeInit() = synchronized(this) {
         if (isAlreadyInit.get()) return@synchronized
         isAlreadyInit.compareAndSet(false, true)
@@ -31,10 +37,6 @@ class FragmentVideoViewComponent(
             fragmentManager.beginTransaction()
                     .replace(rootView.id, it, VIDEO_FRAGMENT_TAG)
                     .commit()
-        }
-
-        rootView.setOnClickListener {
-            listener.onFragmentClicked(this@FragmentVideoViewComponent)
         }
     }
 

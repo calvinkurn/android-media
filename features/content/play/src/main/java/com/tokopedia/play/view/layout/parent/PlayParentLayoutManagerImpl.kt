@@ -39,7 +39,7 @@ class PlayParentLayoutManagerImpl(
 //    @IdRes private val userInteractionFragmentId = viewInitializer.onInitUserInteractionFragment(container)
 //    @IdRes private val bottomSheetFragmentId = viewInitializer.onInitBottomSheetFragment(container)
 //    @IdRes private val youTubeFragmentId = viewInitializer.onInitYouTubeFragment(container)
-    @IdRes private val errorFragmentId = viewInitializer.onInitErrorFragment(container)
+//    @IdRes private val errorFragmentId = viewInitializer.onInitErrorFragment(container)
 
     private val flVideo = container.findViewById<View>(R.id.fl_video)
     private val flYouTube = container.findViewById<View>(R.id.fl_youtube)
@@ -108,7 +108,6 @@ class PlayParentLayoutManagerImpl(
     }
 
     override fun layoutView(view: View) {
-        layoutErrorFragment(container = view, id = errorFragmentId)
     }
 
     override fun onOrientationChanged(view: View, orientation: ScreenOrientation, videoOrientation: VideoOrientation, videoPlayer: VideoPlayerUiModel) {
@@ -275,17 +274,5 @@ class PlayParentLayoutManagerImpl(
         }
 
         return animator
-    }
-
-    /**
-     * Layout
-     */
-    private fun layoutErrorFragment(container: View, @IdRes id: Int) {
-        container.changeConstraint {
-            connect(id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
-            connect(id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
-            connect(id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
-            connect(id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
-        }
     }
 }

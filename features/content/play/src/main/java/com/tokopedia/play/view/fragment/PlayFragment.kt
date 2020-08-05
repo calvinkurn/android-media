@@ -35,7 +35,6 @@ import com.tokopedia.play.extensions.isAnyBottomSheetsShown
 import com.tokopedia.play.extensions.isAnyHidden
 import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.extensions.isKeyboardShown
-import com.tokopedia.play.ui.fragment.error.FragmentErrorComponent
 import com.tokopedia.play.util.PlayFullScreenHelper
 import com.tokopedia.play.util.PlaySensorOrientationManager
 import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
@@ -52,10 +51,7 @@ import com.tokopedia.play.view.layout.parent.PlayParentViewInitializer
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.EventUiModel
 import com.tokopedia.play.view.uimodel.VideoPlayerUiModel
-import com.tokopedia.play.view.viewcomponent.FragmentBottomSheetViewComponent
-import com.tokopedia.play.view.viewcomponent.FragmentUserInteractionViewComponent
-import com.tokopedia.play.view.viewcomponent.FragmentVideoViewComponent
-import com.tokopedia.play.view.viewcomponent.FragmentYouTubeViewComponent
+import com.tokopedia.play.view.viewcomponent.*
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.GlobalErrorCodeWrapper
 import com.tokopedia.play_common.viewcomponent.viewComponent
@@ -100,6 +96,9 @@ class PlayFragment @Inject constructor(
     }
     private val fragmentYouTubeView by viewComponent {
         FragmentYouTubeViewComponent(channelId, it, R.id.fl_youtube, childFragmentManager, this)
+    }
+    private val fragmentErrorView by viewComponent {
+        FragmentErrorViewComponent(channelId, it, R.id.fl_global_error, childFragmentManager)
     }
 
     private lateinit var pageMonitoring: PageLoadTimePerformanceInterface
@@ -341,29 +340,11 @@ class PlayFragment @Inject constructor(
     }
 
     override fun onInitYouTubeFragment(container: ViewGroup): Int {
-//        val fragmentYouTubeComponent = FragmentYouTubeComponent(channelId, container, childFragmentManager, EventBusFactory.get(viewLifecycleOwner), scope, dispatchers)
-//
-//        scope.launch {
-//            fragmentYouTubeComponent.getUserInteractionEvents()
-//                    .collect {
-//                        when (it) {
-//                            is FragmentYouTubeInteractionEvent.OnClicked -> {
-//                                if (!it.isScaling) return@collect
-//
-//                                if (playViewModel.bottomInsets.isKeyboardShown) hideKeyboard()
-//                                else hideAllInsets()
-//                            }
-//                        }
-//                    }
-//        }
-//
-//        return fragmentYouTubeComponent.getContainerId()
         throw IllegalStateException("No Init")
     }
 
     override fun onInitErrorFragment(container: ViewGroup): Int {
-        return FragmentErrorComponent(channelId, container, childFragmentManager, EventBusFactory.get(viewLifecycleOwner), scope, dispatchers)
-                .getContainerId()
+        throw IllegalStateException("No Init")
     }
     //endregion
 
@@ -466,9 +447,14 @@ class PlayFragment @Inject constructor(
     private fun observeGetChannelInfo() {
         playViewModel.observableGetChannelInfo.observe(viewLifecycleOwner, DistinctObserver { result ->
             when (result) {
-                is Success -> PlayAnalytics.sendScreen(channelId, playViewModel.channelType)
+                is Success -> {
+                    fragmentErrorViewOnStateChanged(shouldShow = false)
+                    PlayAnalytics.sendScreen(channelId, playViewModel.channelType)
+                }
                 is Fail -> result.throwable.message?.let {
-                    if (GlobalErrorCodeWrapper.wrap(it) != GlobalErrorCodeWrapper.Unknown) showGlobalError()
+                    if (GlobalErrorCodeWrapper.wrap(it) != GlobalErrorCodeWrapper.Unknown) {
+                        fragmentErrorViewOnStateChanged(shouldShow = true)
+                    }
                 }
             }
         })
@@ -572,10 +558,8 @@ class PlayFragment @Inject constructor(
     }
 
     private fun showGlobalError() {
-        scope.launch {
-            EventBusFactory.get(viewLifecycleOwner)
-                    .emit(ScreenStateEvent::class.java, ScreenStateEvent.ShowGlobalError)
-        }
+        fragmentErrorView.safeInit()
+        fragmentErrorView.show()
     }
 
     /**
@@ -710,6 +694,17 @@ class PlayFragment @Inject constructor(
         if (videoPlayer.isYouTube) {
             fragmentYouTubeView.safeInit()
             fragmentYouTubeView.show()
+        }
+    }
+
+    private fun fragmentErrorViewOnStateChanged(
+            shouldShow: Boolean
+    ) {
+        if (shouldShow) {
+            fragmentErrorView.safeInit()
+            fragmentErrorView.show()
+        } else {
+            fragmentErrorView.hide()
         }
     }
     //endregion
