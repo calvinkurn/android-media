@@ -9,11 +9,7 @@ object PerformanceDataFileUtils {
                                 testCaseName: String,
                                 pltPerformanceData: PltPerformanceData,
                                 dataSourceType: String = "",
-                                totalResponseSize: String = "",
-                                totalResponseTime:String = "",
-                                totalUserNetworkDuration:String = "",
-                                responseSizeDetail:String = "",
-                                responseTimeDetail:String = "") {
+                                networkData: NetworkData? = null) {
         val path = activity.getExternalFilesDir(null)
         val perfDataDir = File(path, "perf_data")
         if (!perfDataDir.exists()) {
@@ -27,11 +23,11 @@ object PerformanceDataFileUtils {
                         "${pltPerformanceData.renderPageDuration}," +
                         "${pltPerformanceData.overallDuration}," +
                         "$dataSourceType," +
-                        "$totalResponseSize," +
-                        "$totalResponseTime," +
-                        "$totalUserNetworkDuration," +
-                        "$responseSizeDetail," +
-                        "$responseTimeDetail\n")
+                        "${networkData?.totalResponseSize}," +
+                        "${networkData?.totalResponseTime}," +
+                        "${networkData?.totalUserNetworkDuration}," +
+                        "${networkData?.responseSizeDetailMapString}," +
+                        "${networkData?.responseTimeDetailMapString}\n")
 
         val perfReport = File(perfDataDir, "report.csv")
         perfReport.appendText(

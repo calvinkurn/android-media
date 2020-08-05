@@ -1,11 +1,11 @@
 package com.tokopedia.test.application.environment.interceptor.size
 
 import android.util.Log
+import com.tokopedia.analytics.performance.util.NetworkData
 import com.tokopedia.network.BuildConfig
-import com.tokopedia.test.application.environment.interceptor.size.SizeModelConfig.Companion.FIND_BY_CONTAINS
-import com.tokopedia.test.application.environment.interceptor.size.SizeModelConfig.Companion.FIND_BY_QUERY_NAME
 import com.tokopedia.test.application.util.parserule.ParserRuleProvider
-import okhttp3.*
+import okhttp3.Interceptor
+import okhttp3.Response
 import okio.Buffer
 import java.io.IOException
 import java.util.*
@@ -51,6 +51,16 @@ class GqlNetworkAnalyzerInterceptor(private var gqlQueryListToAnalyze: List<Stri
 
         fun getUserTotalNetworkDuration(): Long {
             return endRequest - startRequest
+        }
+
+        fun getNetworkData(): NetworkData {
+            return NetworkData(
+                    getTotalSize(),
+                    getTotalTime(),
+                    getUserTotalNetworkDuration(),
+                    sizeInEachRequest,
+                    timeInEachRequest
+            )
         }
     }
 
