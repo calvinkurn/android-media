@@ -1,9 +1,9 @@
 package com.tokopedia.reviewseller.feature.reputationhistory.domain;
 
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.reviewseller.feature.reputationhistory.domain.model.SellerReputationDomain;
 import com.tokopedia.reviewseller.feature.reputationhistory.util.ShopNetworkController;
+import com.tokopedia.usecase.RequestParams;
 
 import java.util.Map;
 

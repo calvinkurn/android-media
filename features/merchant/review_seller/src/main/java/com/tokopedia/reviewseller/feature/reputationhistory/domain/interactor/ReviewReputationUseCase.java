@@ -1,12 +1,10 @@
 package com.tokopedia.reviewseller.feature.reputationhistory.domain.interactor;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.reviewseller.feature.reputationhistory.domain.model.SellerReputationDomain;
 import com.tokopedia.reviewseller.feature.reputationhistory.util.ShopNetworkController;
 import com.tokopedia.reviewseller.feature.reputationhistory.domain.ReputationReviewRepository;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
 import java.util.Map;
 
@@ -26,16 +24,8 @@ public class ReviewReputationUseCase extends UseCase<SellerReputationDomain> {
 
     @Inject
     public ReviewReputationUseCase(
-            ThreadExecutor threadExecutor,
-            PostExecutionThread postExecutionThread,
             ReputationReviewRepository reputationReviewRepository) {
-        super(threadExecutor, postExecutionThread);
         this.reputationReviewRepository = reputationReviewRepository;
-    }
-
-    @Override
-    public Observable<SellerReputationDomain> createObservable(RequestParams requestParams) {
-        return reputationReviewRepository.getReputationHistory(requestParams);
     }
 
     public Observable<SellerReputationDomain> createObservable(String shopId, Map<String, String> param) {
@@ -48,6 +38,11 @@ public class ReviewReputationUseCase extends UseCase<SellerReputationDomain> {
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.io())
                 .subscribe(subscriber);
+    }
+
+    @Override
+    public Observable<SellerReputationDomain> createObservable(com.tokopedia.usecase.RequestParams requestParams) {
+        return reputationReviewRepository.getReputationHistory(requestParams);
     }
 
     public static class RequestParamFactory {

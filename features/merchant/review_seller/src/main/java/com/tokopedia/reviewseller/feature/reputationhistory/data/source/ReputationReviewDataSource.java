@@ -1,7 +1,7 @@
 package com.tokopedia.reviewseller.feature.reputationhistory.data.source;
 
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.reviewseller.feature.reputationhistory.domain.model.SellerReputationDomain;
+import com.tokopedia.usecase.RequestParams;
 
 import java.util.Map;
 

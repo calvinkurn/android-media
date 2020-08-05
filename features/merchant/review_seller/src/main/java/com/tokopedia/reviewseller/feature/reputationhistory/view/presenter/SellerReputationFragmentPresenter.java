@@ -3,14 +3,12 @@ package com.tokopedia.reviewseller.feature.reputationhistory.view.presenter;
 import android.content.Context;
 
 import com.db.williamchart.util.GoldMerchantDateUtils;
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.base.list.seller.common.util.ItemType;
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.reviewseller.feature.reputationhistory.data.model.request.SellerReputationRequest;
 import com.tokopedia.reviewseller.feature.reputationhistory.domain.interactor.ReviewReputationMergeUseCase;
 import com.tokopedia.reviewseller.feature.reputationhistory.domain.interactor.ReviewReputationUseCase;
@@ -24,6 +22,7 @@ import com.tokopedia.reviewseller.feature.reputationhistory.view.model.EmptyList
 import com.tokopedia.reviewseller.feature.reputationhistory.view.model.ReputationReviewModel;
 import com.tokopedia.reviewseller.feature.reputationhistory.view.model.SetDateHeaderModel;
 import com.tokopedia.reviewseller.R;
+import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;

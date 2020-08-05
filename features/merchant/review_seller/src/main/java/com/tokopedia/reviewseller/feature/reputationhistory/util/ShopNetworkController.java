@@ -4,8 +4,8 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 import com.tkpd.library.utils.network.BaseNetworkController;
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.apiservices.shop.ShopService;
+import com.tokopedia.usecase.RequestParams;
 
 /**
  * Created by normansyahputa on 3/20/17.

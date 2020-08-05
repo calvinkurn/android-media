@@ -21,21 +21,20 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.appbar.AppBarLayout;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.base.list.seller.common.util.ItemType;
 import com.tokopedia.base.list.seller.view.adapter.BaseRetryDataBinder;
 import com.tokopedia.base.list.seller.view.old.RetryDataBinder;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
+import com.tokopedia.reviewseller.common.ReviewSellerComponentBuilder;
 import com.tokopedia.seller.reputation.view.helper.RefreshHandler;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.datepicker.range.view.listener.DatePickerResultListener;
 import com.tokopedia.reviewseller.feature.reputationhistory.di.SellerReputationModule;
 import com.tokopedia.reviewseller.feature.reputationhistory.domain.interactor.ReviewReputationMergeUseCase;
@@ -50,7 +49,6 @@ import com.tokopedia.reviewseller.feature.reputationhistory.view.helper.GMStatHe
 import com.tokopedia.reviewseller.feature.reputationhistory.view.helper.ReputationViewHelper;
 import com.tokopedia.reviewseller.feature.reputationhistory.view.model.SetDateHeaderModel;
 import com.tokopedia.reviewseller.R;
-import com.tokopedia.reviewseller.feature.reputationhistory.di.DaggerSellerReputationComponent;
 import com.tokopedia.reviewseller.feature.reputationhistory.view.presenter.SellerReputationFragmentPresenter;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -97,7 +95,6 @@ public class SellerReputationFragment extends BaseDaggerFragment
 
     private SnackbarRetry snackbarRetry;
     private View rootView;
-    private AppComponent baseApplication;
     private ReputationViewHelper reputationViewHelper;
     private boolean isFirstTime = true;
     private boolean isEndOfFile = true;
@@ -108,10 +105,6 @@ public class SellerReputationFragment extends BaseDaggerFragment
     private int appBarLayoutHeight;
     private CoordinatorLayout.LayoutParams orignalLp;
 
-    /**
-     * this is used due to limitation of
-     * {@link BasePresenterFragment}
-     */
     private ArrayList<Parcelable> tempParcelables;
 
     public static SellerReputationFragment createInstance() {
@@ -316,13 +309,11 @@ public class SellerReputationFragment extends BaseDaggerFragment
 
     private void inject() {
        if(getActivity() != null) {
-           AppComponent appComponent = ((MainApplication) getActivity().getApplication()).getAppComponent();
-
            //[START] This is for dependent component
-           DaggerSellerReputationComponent.builder()
-                   .sellerReputationModule(new SellerReputationModule())
-                   .appComponent(appComponent)
-                   .build().inject(this);
+//           DaggerSeller.builder()
+//                   .sellerReputationModule(new SellerReputationModule())
+//                   .appComponent(ReviewSellerComponentBuilder.Companion.getComponent(getActivity().getApplication()))
+//                   .build().inject(this);
            //[END] This is for dependent component
        }
     }

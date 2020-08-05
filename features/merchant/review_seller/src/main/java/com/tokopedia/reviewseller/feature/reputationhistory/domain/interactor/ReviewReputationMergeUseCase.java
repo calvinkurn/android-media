@@ -1,10 +1,8 @@
 package com.tokopedia.reviewseller.feature.reputationhistory.domain.interactor;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.reviewseller.feature.reputationhistory.util.ShopNetworkController;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
 import java.util.List;
 import java.util.Map;
@@ -30,11 +28,8 @@ public class ReviewReputationMergeUseCase extends UseCase<List<Object>> {
 
     @Inject
     public ReviewReputationMergeUseCase(
-            ThreadExecutor threadExecutor,
-            PostExecutionThread postExecutionThread,
             ReviewReputationUseCase reviewReputationUseCase,
             ShopInfoUseCase shopInfoUseCase) {
-        super(threadExecutor, postExecutionThread);
         this.reviewReputationUseCase = reviewReputationUseCase;
         this.shopInfoUseCase = shopInfoUseCase;
     }
@@ -60,9 +55,8 @@ public class ReviewReputationMergeUseCase extends UseCase<List<Object>> {
                 .subscribe(subscriber);
     }
 
-
     @Override
-    public Observable<List<Object>> createObservable(RequestParams requestParams) {
+    public Observable<List<Object>> createObservable(com.tokopedia.usecase.RequestParams requestParams) {
         return Observable.concat(
                 shopInfoUseCase.createObservable((RequestParams) requestParams.getObject(KEY_SHOP_INFO_CONTAINER_PARAM)),
                 reviewReputationUseCase.createObservable((RequestParams) requestParams.getObject(KEY_REVIEW_REPUTATION_CONTAINER_PARAM))

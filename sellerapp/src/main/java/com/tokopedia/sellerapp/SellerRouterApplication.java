@@ -213,11 +213,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Fragment getReputationHistoryFragment() {
-        return SellerReputationFragment.createInstance();
-    }
-
-    @Override
     public Intent getHomeIntent(Context context) {
         UserSessionInterface userSession = new UserSession(context);
         Intent intent = new Intent(context, SellerOnboardingActivity.class);

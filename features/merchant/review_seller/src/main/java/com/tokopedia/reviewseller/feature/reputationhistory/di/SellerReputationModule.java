@@ -29,7 +29,7 @@ public class SellerReputationModule {
     @InboxQualifier
     @SellerReputationScope
     @Provides
-    public Retrofit provideInboxRetrofit(@DefaultAuthWithErrorHandler OkHttpClient okHttpClient,
+    public Retrofit provideInboxRetrofit(OkHttpClient okHttpClient,
                                          Retrofit.Builder retrofitBuilder){
         return retrofitBuilder.baseUrl(TkpdBaseURL.INBOX_DOMAIN).client(okHttpClient).build();
     }
