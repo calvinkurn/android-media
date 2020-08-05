@@ -86,15 +86,13 @@ class ClaimCouponItemViewModel(val application: Application, private val compone
 
 
     private fun checkClaimStatus(item: DataItem?): String {
-        return if (item?.isDisabledBtn == true) {
-            if (item.couponCode.isNullOrEmpty()) {
-                HABIS
-            } else {
-                DIKLAIM
-            }
-        } else {
-            KLAIM
+        var claimStatus = KLAIM
+        if(item?.isDisabledBtn == true && !item.couponCode.isNullOrEmpty()){
+            claimStatus = DIKLAIM
+        }else if(item?.isDisabledBtn == true ){
+            claimStatus = HABIS
         }
+        return claimStatus
     }
 
     fun setClick(context: Context, status: String?) {
