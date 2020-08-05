@@ -7,6 +7,7 @@ import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.product.addedit.common.constant.ProductStatus
 import com.tokopedia.product.addedit.common.constant.ProductStatus.STATUS_ACTIVE_STRING
 import com.tokopedia.product.addedit.common.constant.ProductStatus.STATUS_INACTIVE_STRING
 import com.tokopedia.product.addedit.common.util.InputPriceUtil
@@ -179,6 +180,17 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
                 }
             }
             productPosition++
+        }
+
+        updateProductStatus(inputLayoutModelMap)
+    }
+
+    private fun updateProductStatus(inputLayoutModelMap: HashMap<Int, VariantDetailInputLayoutModel>) {
+        val isAllProductDeactivated = inputLayoutModelMap.all { !it.value.isActive }
+        productInputModel.value?.detailInputModel?.status = if (isAllProductDeactivated) {
+            ProductStatus.STATUS_INACTIVE
+        } else {
+            ProductStatus.STATUS_ACTIVE
         }
     }
 

@@ -19,7 +19,6 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
-import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
@@ -330,13 +329,10 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
             }
         }
 
-        productStatusSwitch?.setOnCheckedChangeListener { _, isChecked ->
-            viewModel.updateProductStatus(isChecked)
-        }
-
-        // track switch status on click
         productStatusSwitch?.setOnClickListener {
             val isChecked = productStatusSwitch?.isChecked
+            viewModel.updateProductStatus(isChecked == true)
+            // track switch status on click
             if (isChecked == true && viewModel.isEditing.value == true) {
                 ProductEditStepperTracking.trackChangeProductStatus(shopId)
             }
@@ -550,6 +546,9 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                     val cacheManagerId = data.getStringExtra(EXTRA_CACHE_MANAGER_ID) ?: ""
                     SaveInstanceCacheManager(requireContext(), cacheManagerId).run {
                         viewModel.productInputModel.value = get(EXTRA_PRODUCT_INPUT_MODEL, ProductInputModel::class.java)
+                        viewModel.productInputModel.value?.let {
+                            updateProductStatusSwitch(it)
+                        }
                     }
                 }
                 SET_CASHBACK_REQUEST_CODE -> {
@@ -758,6 +757,10 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                 displayEditMode()
             }
         })
+    }
+
+    private fun updateProductStatusSwitch(productInputModel: ProductInputModel) {
+        productStatusSwitch?.isChecked = (productInputModel.detailInputModel.status == 1)
     }
 
     private fun observeProductVariant() {
