@@ -63,9 +63,7 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
 
     private lateinit var afterInflationCallable: Callable<Any?>
 
-    private lateinit var handlerHint: Handler
-
-    private lateinit var handlerHintTask: Runnable
+    private lateinit var animationJob: Job
 
     private var viewHomeMainToolBar: View? = null
 
@@ -237,56 +235,23 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
         return shadowApplied
     }
 
-    fun setHint(placeholder: ArrayList<String>, keyword: String, isFirstInstall: Boolean) {
+    fun setHint(placeholders: ArrayList<String>, keyword: String, isFirstInstall: Boolean) {
         if(viewHomeMainToolBar != null) {
             val editTextSearch = viewHomeMainToolBar!!.findViewById<TextView>(R.id.et_search)
-            if(::handlerHint.isInitialized && ::handlerHintTask.isInitialized) {
-                handlerHint.removeCallbacks(handlerHintTask)
+            if(::animationJob.isInitialized) {
+                animationJob.cancel()
             }
-            if(placeholder.size > 1) {
-                var iterator = placeholder.iterator()
-                handlerHint = Handler()
-                handlerHintTask = Runnable {
-                    var hint = context.getString(R.string.search_tokopedia)
-
-                    val slideUpIn = AnimationUtils.loadAnimation(context, R.anim.slide_up_in)
-                    slideUpIn.interpolator = EasingInterpolator(Ease.QUART_OUT)
-                    val slideOutUp = AnimationUtils.loadAnimation(context, R.anim.slide_out_up)
-                    slideOutUp.interpolator = EasingInterpolator(Ease.QUART_IN)
-                    slideOutUp.setAnimationListener(object : Animation.AnimationListener {
-                        override fun onAnimationRepeat(animation: Animation?) {}
-                        override fun onAnimationEnd(animation: Animation?) {
-                            if(iterator.hasNext()) {
-                                hint = iterator.next()
-                            } else {
-                                iterator = placeholder.iterator()
-                                hint = iterator.next()
-                            }
-                            editTextSearch.hint = hint
-                            editTextSearch.startAnimation(slideUpIn)
-                        }
-                        override fun onAnimationStart(animation: Animation?) {}
-                    })
-                    editTextSearch.startAnimation(slideOutUp)
-
-                    handlerHint.postDelayed(
-                            handlerHintTask,
-                            INTERVAL_HINT.toLong()
-                    )
-                }
-                handlerHint.postDelayed(
-                        handlerHintTask,
-                        INTERVAL_HINT.toLong()
-                )
+            if(placeholders.size > 1) {
+                setHintAnimation(placeholders)
             } else {
-                editTextSearch.hint = if (placeholder.isEmpty()) context.getString(R.string.search_tokopedia) else placeholder.first()
+                editTextSearch.hint = if (placeholders.isEmpty()) context.getString(R.string.search_tokopedia) else placeholders.first()
             }
 
             editTextSearch.setSingleLine()
             editTextSearch.ellipsize = TextUtils.TruncateAt.END
             editTextSearch.setOnClickListener {
                 searchBarAnalytics.eventTrackingSearchBar(screenName, keyword)
-                if (placeholder.isEmpty()) {
+                if (placeholders.isEmpty()) {
                     RouteManager.route(context, ApplinkConstInternalDiscovery.AUTOCOMPLETE)
                 } else {
                     RouteManager.route(context,
@@ -295,6 +260,37 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
                             safeEncodeUTF8(keyword),
                             isFirstInstall.toString())
                 }
+            }
+        }
+    }
+
+    private fun setHintAnimation(placeholders: ArrayList<String>) {
+        var iterator = placeholders.iterator()
+
+        animationJob = launch {
+            while(true) {
+                var hint = context.getString(R.string.search_tokopedia)
+                val slideUpIn = AnimationUtils.loadAnimation(context, R.anim.slide_up_in)
+                slideUpIn.interpolator = EasingInterpolator(Ease.QUART_OUT)
+                val slideOutUp = AnimationUtils.loadAnimation(context, R.anim.slide_out_up)
+                slideOutUp.interpolator = EasingInterpolator(Ease.QUART_IN)
+                slideOutUp.setAnimationListener(object : Animation.AnimationListener {
+                    override fun onAnimationRepeat(animation: Animation?) {}
+                    override fun onAnimationEnd(animation: Animation?) {
+                        if(iterator.hasNext()) {
+                            hint = iterator.next()
+                        } else {
+                            iterator = placeholders.iterator()
+                            hint = iterator.next()
+                        }
+                        editTextSearch.hint = hint
+                        editTextSearch.startAnimation(slideUpIn)
+                    }
+                    override fun onAnimationStart(animation: Animation?) {}
+                })
+                editTextSearch.startAnimation(slideOutUp)
+
+                delay(INTERVAL_HINT.toLong())
             }
         }
     }
@@ -312,7 +308,7 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
         const val TOOLBAR_LIGHT_TYPE = 0
         const val TOOLBAR_DARK_TYPE = 1
         private const val HOME_SOURCE = "home"
-        private const val INTERVAL_HINT = 1000 * 10  //2 minutes
+        private const val INTERVAL_HINT = 1000 * 10  //1000 * 60 * 2   2 minutes
 
         private const val PARAM_APPLINK_AUTOCOMPLETE = "?navsource={source}&hint={hint}&first_install={first_install}"
     }
