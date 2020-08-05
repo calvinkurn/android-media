@@ -6,22 +6,25 @@ import com.tokopedia.shop.common.data.source.cloud.model.ShopInfoTopAdsCategory.
 
 data class ShopInfoTopAdsResponse(
     @SerializedName("topAdsGetShopInfo")
-    val response: ShopInfoTopAds
+    val response: ShopInfoTopAds = ShopInfoTopAds()
 ) {
+    private companion object {
+        val adsCategory = listOf(MANUAL_ADS, AUTO_ADS)
+    }
+
     data class ShopInfoTopAds(
         @SerializedName("data")
-        val data: Data
+        val data: Data = Data()
     )
 
     data class Data(
         @SerializedName("category")
-        val category: Int,
+        val category: Int = MANUAL_ADS,
         @SerializedName("category_desc")
-        val categoryDesc: String
+        val categoryDesc: String = ""
     )
 
     fun isTopAds(): Boolean {
-        val adsCategory = listOf(MANUAL_ADS, AUTO_ADS)
         val category = response.data.category
         return adsCategory.contains(category)
     }
