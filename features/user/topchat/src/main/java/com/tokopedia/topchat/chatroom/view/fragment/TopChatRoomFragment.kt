@@ -649,6 +649,10 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         }
     }
 
+    override fun removeBroadcastHandler() {
+        adapter.removeBroadcastHandler()
+    }
+
     private fun getFirstVisibleItemPosition(): Int? {
         var firstVisible = rvLayoutManager?.findFirstVisibleItemPosition() ?: return null
         val partialVisible = firstVisible - 1

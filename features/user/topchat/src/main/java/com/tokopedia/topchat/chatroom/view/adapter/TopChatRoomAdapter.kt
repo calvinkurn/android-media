@@ -217,11 +217,8 @@ class TopChatRoomAdapter(
     }
 
     fun removeBroadcastHandler() {
-        if (visitables.isEmpty()) return
-        val firstItem = visitables.first()
-        if (firstItem is BroadcastSpamHandlerUiModel) {
-            visitables.removeAt(0)
-            notifyItemRemoved(0)
+        if (!removeBroadcastHandler(0)) {
+            removeBroadcastHandler(1)
         }
     }
 
@@ -229,6 +226,17 @@ class TopChatRoomAdapter(
         val elementIndex = visitables.indexOf(element)
         if (elementIndex == RecyclerView.NO_POSITION || elementIndex >= visitables.size) return
         notifyItemChanged(elementIndex, PAYLOAD_UPDATE_STATE)
+    }
+
+    private fun removeBroadcastHandler(index: Int): Boolean {
+        if (index >= visitables.size) return false
+        val item = visitables[index]
+        if (item is BroadcastSpamHandlerUiModel) {
+            visitables.removeAt(index)
+            notifyItemRemoved(index)
+            return true
+        }
+        return false
     }
 
 }

@@ -69,6 +69,8 @@ interface TopChatContract {
         fun showUnreadMessage(newUnreadMessage: Int)
 
         fun hideUnreadMessage()
+
+        fun removeBroadcastHandler()
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {
