@@ -26,7 +26,7 @@ class GetShortcutDataUseCase @Inject constructor(
         if (!errors.isNullOrEmpty()) {
             throw MessageErrorException(errors[0].message)
         } else {
-            var data: ShortcutResponse = gqlResponse.getData(ShortcutResponse::class.java)
+            var data: ShortcutResponse? = gqlResponse.getData(ShortcutResponse::class.java)
             if(data == null) {
                 data = ShortcutResponse()
                 AccountHomeErrorHandler.logDataNull("GetShortcutDataUseCase", Throwable("ShortcutResponse"))
