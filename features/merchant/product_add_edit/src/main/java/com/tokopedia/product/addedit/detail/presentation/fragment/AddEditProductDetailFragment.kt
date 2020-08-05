@@ -34,6 +34,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.FIRST_CATEGORY_SELECTED
 import com.tokopedia.product.addedit.common.util.*
 import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity
 import com.tokopedia.product.addedit.description.presentation.fragment.AddEditProductDescriptionFragment.Companion.REQUEST_CODE_DESCRIPTION
@@ -1300,7 +1301,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     private fun selectFirstCategoryRecommendation(items: List<ListItemUnify>) {
         productCategoryRecListView?.count?.let { itemSize ->
             if (itemSize > 0) {
-                selectCategoryRecommendation(items, 0)
+                selectCategoryRecommendation(items, FIRST_CATEGORY_SELECTED)
             }
         }
     }
