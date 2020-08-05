@@ -24,11 +24,11 @@ data class AddToCartDataModel(
     }
 
     constructor(parcel: Parcel) : this(
-            parcel.createStringArrayList(),
-            parcel.readString(),
-            parcel.readParcelable(DataModel::class.java.classLoader),
-            parcel.readParcelable(ErrorReporterModel::class.java.classLoader),
-            parcel.readString())
+            parcel.createStringArrayList()?: arrayListOf(""),
+            parcel.readString()?:"",
+            parcel.readParcelable(DataModel::class.java.classLoader)?:DataModel(),
+            parcel.readParcelable(ErrorReporterModel::class.java.classLoader)?:ErrorReporterModel(),
+            parcel.readString()?:"")
 
     companion object {
         const val STATUS_OK = "OK"

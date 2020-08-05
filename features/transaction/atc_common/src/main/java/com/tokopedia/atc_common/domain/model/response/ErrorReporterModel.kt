@@ -10,7 +10,7 @@ data class ErrorReporterModel(
 
     constructor(parcel: Parcel) : this(
             parcel.readByte() != 0.toByte(),
-            parcel.readParcelable(ErrorReporterTextModel::class.java.classLoader))
+            parcel.readParcelable(ErrorReporterTextModel::class.java.classLoader)?:ErrorReporterTextModel())
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeByte(if (eligible) 1 else 0)

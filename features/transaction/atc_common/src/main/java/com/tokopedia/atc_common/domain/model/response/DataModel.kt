@@ -27,19 +27,19 @@ data class DataModel(
 
     constructor(parcel: Parcel) : this(
             parcel.readInt(),
-            parcel.readString(),
+            parcel.readString()?:"",
             parcel.readInt(),
             parcel.readInt(),
-            parcel.readString(),
+            parcel.readString()?:"",
             parcel.readInt(),
             parcel.readInt(),
             parcel.readInt(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
+            parcel.readString()?:"",
+            parcel.readString()?:"",
+            parcel.readString()?:"",
             parcel.readByte() != 0.toByte(),
-            parcel.createStringArrayList(),
-            parcel.readParcelable(OvoValidationDataModel::class.java.classLoader),
+            parcel.createStringArrayList()?: arrayListOf(""),
+            parcel.readParcelable(OvoValidationDataModel::class.java.classLoader)?:OvoValidationDataModel(),
             parcel.readByte() != 0.toByte())
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {

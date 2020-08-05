@@ -30,7 +30,7 @@ internal object Utils {
         val files: MutableList<String> = ArrayList()
         try {
             val paths = c.assets.list(rootPath)
-            if (paths.size > 0) { // This is a folder
+            if (paths != null && paths.size > 0) { // This is a folder
                 for (file in paths) {
                     val path = "$rootPath/$file"
                     val temp = listAssetFiles(c, path)
