@@ -737,20 +737,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         }
     }
 
-//    override fun setLoginSuccessSellerApp() = view?.run {
-//        if (context.applicationContext is LoginRouter) {
-//            (context.applicationContext as LoginRouter).setOnboardingStatus(true)
-//        }
-//        val intent = if (userSession.hasShop()) {
-//            RouteManager.getIntent(context, ApplinkConstInternalSellerapp.SELLER_HOME)
-//        } else {
-//            RouteManager.getIntent(context, ApplinkConstInternalMarketplace.OPEN_SHOP)
-//        }
-//        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
-//        startActivity(intent)
-//        activity?.finish()
-//    }
-
     private fun setFCM() {
         CMPushNotificationManager.instance
                 .refreshFCMTokenFromForeground(userSession.deviceId, true)
