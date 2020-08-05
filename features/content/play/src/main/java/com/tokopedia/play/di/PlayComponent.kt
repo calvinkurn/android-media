@@ -21,8 +21,6 @@ interface PlayComponent {
 
     fun inject(playUserInteractionFragment: PlayUserInteractionFragment)
 
-    fun inject(playMiniInteractionFragment: PlayMiniInteractionFragment)
-
     fun inject(playErrorFragment: PlayErrorFragment)
 
     fun inject(playBottomSheetFragment: PlayBottomSheetFragment)

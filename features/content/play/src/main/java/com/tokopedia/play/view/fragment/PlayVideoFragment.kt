@@ -12,22 +12,14 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.VideoAnalyticHelper
-import com.tokopedia.play.component.EventBusFactory
-import com.tokopedia.play.extensions.isAnyHidden
 import com.tokopedia.play.extensions.isAnyShown
-import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.util.event.DistinctEventObserver
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.util.video.PlayVideoUtil
 import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.custom.RoundedConstraintLayout
-import com.tokopedia.play.view.event.ScreenStateEvent
-import com.tokopedia.play.view.type.PlayRoomEvent
 import com.tokopedia.play.view.type.ScreenOrientation
-import com.tokopedia.play.view.uimodel.EventUiModel
 import com.tokopedia.play.view.uimodel.General
-import com.tokopedia.play.view.uimodel.VideoPropertyUiModel
-import com.tokopedia.play.view.uimodel.VideoStreamUiModel
 import com.tokopedia.play.view.viewcomponent.EmptyViewComponent
 import com.tokopedia.play.view.viewcomponent.OneTapViewComponent
 import com.tokopedia.play.view.viewcomponent.VideoViewComponent
@@ -36,9 +28,7 @@ import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play_common.state.PlayVideoState
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.dpToPx
-import kotlinx.coroutines.*
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
 
 /**
  * Created by jegul on 29/11/19

@@ -35,16 +35,6 @@ import javax.inject.Inject
  */
 class PlayActivity : BaseActivity(), PlayNewChannelInteractor, PlayNavigation {
 
-    companion object {
-        private const val PLAY_FRAGMENT_TAG = "FRAGMENT_PLAY"
-
-        @TestOnly
-        fun createIntent(context: Context, channelId: String) =
-                Intent(context, PlayActivity::class.java).apply {
-                    data = Uri.parse("${ApplinkConstInternalContent.INTERNAL_PLAY}/$channelId")
-                }
-    }
-
     @Inject
     lateinit var playLifecycleObserver: PlayVideoPlayerObserver
 
@@ -62,9 +52,11 @@ class PlayActivity : BaseActivity(), PlayNewChannelInteractor, PlayNavigation {
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
         supportFragmentManager.fragmentFactory = fragmentFactory
+
         startPageMonitoring()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_play)
+
         setupPage()
 
         val channelId = intent?.data?.lastPathSegment
@@ -154,6 +146,14 @@ class PlayActivity : BaseActivity(), PlayNewChannelInteractor, PlayNavigation {
         onBackPressed(true)
     }
 
+    fun getPageMonitoring(): PageLoadTimePerformanceInterface {
+        return pageMonitoring
+    }
+
+    fun getPltPerformanceResultData(): PltPerformanceData? {
+        return pageMonitoring.getPltPerformanceData()
+    }
+
     private fun startPageMonitoring() {
         pageMonitoring = PageLoadTimePerformanceCallback(
                 PLAY_TRACE_PREPARE_PAGE,
@@ -168,11 +168,13 @@ class PlayActivity : BaseActivity(), PlayNewChannelInteractor, PlayNavigation {
         pageMonitoring.startPreparePagePerformanceMonitoring()
     }
 
-    fun getPageMonitoring(): PageLoadTimePerformanceInterface {
-        return pageMonitoring
-    }
+    companion object {
+        private const val PLAY_FRAGMENT_TAG = "FRAGMENT_PLAY"
 
-    fun getPltPerformanceResultData(): PltPerformanceData? {
-        return pageMonitoring.getPltPerformanceData()
+        @TestOnly
+        fun createIntent(context: Context, channelId: String) =
+                Intent(context, PlayActivity::class.java).apply {
+                    data = Uri.parse("${ApplinkConstInternalContent.INTERNAL_PLAY}/$channelId")
+                }
     }
 }
