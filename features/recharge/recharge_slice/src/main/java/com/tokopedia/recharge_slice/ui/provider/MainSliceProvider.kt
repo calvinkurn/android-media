@@ -148,7 +148,7 @@ class MainSliceProvider : SliceProvider() {
                                     }
                                 }
                             }
-                            if (alreadyLoadData && listProduct.size == 3) {
+                            if (alreadyLoadData) {
                                 val trackingImpression = TrackingData(listProduct)
                                 Timber.w(contextNonNull.resources.getString(R.string.slice_track_timber_impression) + trackingImpression)
                             }
