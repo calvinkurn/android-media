@@ -150,5 +150,6 @@
     <string name="pm_upgrade_shop_settings">Upgrade Tokomu</string>
     <string name="shop_settings_information_edit">Ubah Informasi</string>
     <string name="shop_settings_set_shop_status">Atur Status Toko</string>
+    <string name="ticker_warning_can_only_change_shopname_once">Nama dan domain toko hanya bisa diubah 1 kali.\nPastikan semua sudah benar.</string>
 
 </resources>

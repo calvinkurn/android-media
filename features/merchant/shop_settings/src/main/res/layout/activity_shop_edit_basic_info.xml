@@ -102,17 +102,18 @@
                         android:background="@drawable/rect_white_stroke_gray"/>
                 </LinearLayout>
 
-
             </LinearLayout>
 
 
             <com.tokopedia.unifycomponents.ticker.Ticker
                 android:id="@+id/shop_name_change_ticker"
-                android:layout_marginTop="@dimen/dp_12"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="78dp"
+                android:layout_marginTop="@dimen/dp_12"
+                app:tckv_content_text_size="@dimen/dp_12"
                 app:layout_constraintTop_toTopOf="parent"
-                app:tickerType="warning"/>
+                app:tickerType="warning"
+                app:descriptionText="@string/ticker_warning_can_only_change_shopname_once" />
 
             <com.tokopedia.unifycomponents.TextFieldUnify
                 android:id="@+id/shop_name_textfield"
@@ -127,7 +128,7 @@
                 android:id="@+id/shop_domain_textfield"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="40dp"
+                android:layout_marginTop="20dp"
                 app:text_field_counter="24"
                 app:text_field_label="Domain Toko"
                 app:text_field_prepend_text="www.tokopedia.com/"
@@ -175,9 +176,7 @@
                 android:textColor="@color/green_500"
                 android:textSize="@dimen/sp_12"
                 app:typographyType="body_3" />
-
-
-
+            
 
             <com.tokopedia.design.text.TkpdHintTextInputLayout
                 android:id="@+id/tilShopSlogan"
