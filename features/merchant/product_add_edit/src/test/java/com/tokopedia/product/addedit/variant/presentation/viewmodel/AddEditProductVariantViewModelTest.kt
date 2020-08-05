@@ -36,23 +36,6 @@ class AddEditProductVariantViewModelTest: AddEditProductVariantViewModelTestFixt
     }
 
     @Test
-    fun `When get variant combination is failed Expect Fail result`() {
-        runBlocking {
-            coEvery {
-                getCategoryVariantCombinationUseCase.executeOnBackground()
-            } throws MessageErrorException("")
-
-            viewModel.getCategoryVariantCombination("00")
-            coVerify { getCategoryVariantCombinationUseCase.executeOnBackground() }
-
-            viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
-
-            val result = viewModel.getCategoryVariantCombinationResult.getOrAwaitValue()
-            assert(result is Fail)
-        }
-    }
-
-    @Test
     fun `When updateVariantInputModel is success Expect update variantInputModel`() {
         viewModel.productInputModel.value = ProductInputModel()
 
