@@ -95,22 +95,17 @@ class ClaimCouponItemViewModel(val application: Application, private val compone
         } else {
             KLAIM
         }
-
-//        var status = if (item?.couponCode.isNullOrEmpty()) KLAIM else DIKLAIM
-//        if (item?.isDisabledBtn == true) {
-//            status = HABIS
-//        }
-//        return status
     }
 
     fun setClick(context: Context, status: String?) {
-        var applink = ""
-        if (status == DIKLAIM) {
-            applink = GenerateUrl.getDiklaimClaimCoupon(components.data?.get(0)?.slug ?: "")
-        } else if (status == KLAIM || status == HABIS) {
-            applink = GenerateUrl.getClaimCoupon(components.data?.get(0)?.slug ?: "")
-        }
+        val applink = GenerateUrl.getClaimCouponApplink(components.data?.get(0)?.slug ?: "")
         navigate(context, applink)
+    }
+
+    fun getCouponSlug() : String? {
+        if(components.data.isNullOrEmpty()) return ""
+
+        return components.data?.get(0)?.slug
     }
 
     private fun getQueryMap(): Map<String, Any> {
