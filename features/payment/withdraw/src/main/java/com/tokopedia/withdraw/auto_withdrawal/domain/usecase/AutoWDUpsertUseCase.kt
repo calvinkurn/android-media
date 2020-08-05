@@ -2,24 +2,23 @@ package com.tokopedia.withdraw.auto_withdrawal.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.withdraw.auto_withdrawal.QUERY_UPSERT_AUTO_WD_DATA
-import com.tokopedia.withdraw.auto_withdrawal.domain.model.AutoWDStatus
-import com.tokopedia.withdraw.auto_withdrawal.domain.model.AutoWDStatusResponse
+import com.tokopedia.withdraw.auto_withdrawal.domain.model.*
+import com.tokopedia.withdraw.auto_withdrawal.domain.query.GQL_UPSERT_AUTO_WD
 import javax.inject.Inject
-import javax.inject.Named
 
-class AutoWDUpsertUseCase @Inject constructor(
-        @Named(QUERY_UPSERT_AUTO_WD_DATA) val query: String, graphqlRepository: GraphqlRepository)
-    : GraphqlUseCase<AutoWDStatusResponse>(graphqlRepository) {
+class AutoWDUpsertUseCase @Inject constructor(graphqlRepository: GraphqlRepository)
+    : GraphqlUseCase<AutoWDUpsertResponse>(graphqlRepository) {
 
-    fun getAutoWDUpsert(onSuccess: (AutoWDStatus) -> Unit,
+    fun getAutoWDUpsert(paramsMap: Map<String, Any?>,
+                        onSuccess: (UpsertResponse) -> Unit,
                         onError: (Throwable) -> Unit) {
         try {
-            this.setTypeClass(AutoWDStatusResponse::class.java)
-            this.setGraphqlQuery(query)
+            this.setTypeClass(AutoWDUpsertResponse::class.java)
+            this.setGraphqlQuery(GQL_UPSERT_AUTO_WD)
+            this.setRequestParams(paramsMap)
             this.execute(
                     { result ->
-                        onSuccess(result.autoWDStatus)
+                        onSuccess(result.upsertResponse)
                     }, { error ->
                 onError(error)
             }
@@ -29,4 +28,26 @@ class AutoWDUpsertUseCase @Inject constructor(
         }
     }
 
+    fun getRequestParams(request: AutoWithdrawalUpsertRequest): MutableMap<String, Any?> {
+        request.apply {
+            val map = mutableMapOf(
+                    "autoWDUserId" to autoWDStatusData.auto_wd_user_id,
+                    "oldAutoWDScheduleId" to oldSchedule?.autoWithdrawalScheduleId,
+                    "scheduleType" to newSchedule?.scheduleType,
+                    "isUpdate" to isUpdating,
+                    "isQuit" to isQuit
+            )
+
+            bankAccount?.apply {
+                map["accId"] = bankAccountID
+                map["accNo"] = accountNo
+                map["bankId"] = bankID
+            }
+
+            token?.apply {
+                map["validateToken"] = token
+            }
+            return map
+        }
+    }
 }

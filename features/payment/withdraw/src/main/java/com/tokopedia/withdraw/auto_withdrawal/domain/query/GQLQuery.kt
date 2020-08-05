@@ -70,3 +70,22 @@ const val GQL_AUTO_WD_TNC = "query GetTNCAutoWD {\n" +
         "    }\n" +
         "  }\n" +
         "}"
+
+const val GQL_UPSERT_AUTO_WD = "mutation UpsertAutoWDData {\n" +
+        "  UpsertAutoWDData(\n"+
+        "    input: {\n"+
+        "       autoWDUserId: autoWDUserId\n" +
+        "       oldAutoWDScheduleId: \$oldAutoWDScheduleId\n" +
+        "       scheduleType: \$scheduleType\n" +
+        "       accId: \$accId\n" +
+        "       accNo: \$accNo\n" +
+        "       bankId: \$bankId\n" +
+        "       isUpdate: \$isUpdate\n" +
+        "       validateToken: \$validateToken\n" +
+        "       isQuit: \$isQuit\n" +
+        "       }\n" +
+        "  ){\n" +
+        "    code\n" +
+        "    message\n" +
+        "  }\n" +
+        "}"

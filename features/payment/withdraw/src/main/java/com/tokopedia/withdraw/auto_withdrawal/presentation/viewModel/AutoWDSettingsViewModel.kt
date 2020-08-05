@@ -2,14 +2,13 @@ package com.tokopedia.withdraw.auto_withdrawal.presentation.viewModel
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.withdraw.auto_withdrawal.domain.model.*
-import com.tokopedia.withdraw.auto_withdrawal.domain.usecase.AutoWDInfoUseCase
-import com.tokopedia.withdraw.auto_withdrawal.domain.usecase.AutoWDStatusUseCase
-import com.tokopedia.withdraw.auto_withdrawal.domain.usecase.AutoWDTNCUseCase
-import com.tokopedia.withdraw.auto_withdrawal.domain.usecase.GQLBankAccountListUseCase
+import com.tokopedia.withdraw.auto_withdrawal.domain.usecase.*
+import com.tokopedia.withdraw.saldowithdrawal.presentation.viewmodel.util.SingleLiveEvent
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
@@ -18,14 +17,17 @@ class AutoWDSettingsViewModel @Inject constructor(
         private val autoWDInfoUseCase: AutoWDInfoUseCase,
         private val bankAccountListUseCase: GQLBankAccountListUseCase,
         private val autoWDTNCUseCase: AutoWDTNCUseCase,
+        private val autoWDUpsertUseCase: AutoWDUpsertUseCase,
         dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
     val autoWDStatusDataResultLiveData = MutableLiveData<Result<AutoWDStatusData>>()
     val infoAutoWDResultLiveData = MutableLiveData<Result<GetInfoAutoWD>>()
     val bankListResultLiveData = MutableLiveData<Result<ArrayList<BankAccount>>>()
     val autoWDTNCResultLiveData = MutableLiveData<Result<String>>()
+    val upsertResponseLiveData = SingleLiveEvent<Result<UpsertResponse>>()
 
     private var isTNCLoading = false
+    private var isUpsertAutoWDInProgress = false
 
     fun getAutoWDInfo() {
         autoWDInfoUseCase.cancelJobs()
@@ -46,6 +48,21 @@ class AutoWDSettingsViewModel @Inject constructor(
         if (!isTNCLoading) {
             isTNCLoading = true
             autoWDTNCUseCase.getAutoWDTNC(::onAutoWithdrawalTNCLoaded, ::onAutoWithdrawalTNCFailed)
+        }
+    }
+
+    fun upsertAutoWithdrawal(request: AutoWithdrawalUpsertRequest) {
+        if (!isUpsertAutoWDInProgress) {
+            isUpsertAutoWDInProgress = true
+            val requestParamMap = autoWDUpsertUseCase.getRequestParams(request)
+            autoWDUpsertUseCase.getAutoWDUpsert(requestParamMap,
+                    { upsertResponse ->
+                        if (upsertResponse.code == 200)
+                            upsertResponseLiveData.value = Success(upsertResponse)
+                    },
+                    { error ->
+                        upsertResponseLiveData.value = Fail(error)
+                    })
         }
     }
 
@@ -90,6 +107,7 @@ class AutoWDSettingsViewModel @Inject constructor(
         autoWDInfoUseCase.cancelJobs()
         bankAccountListUseCase.cancelJobs()
         autoWDTNCUseCase.cancelJobs()
+        autoWDUpsertUseCase.cancelJobs()
         super.onCleared()
     }
 
