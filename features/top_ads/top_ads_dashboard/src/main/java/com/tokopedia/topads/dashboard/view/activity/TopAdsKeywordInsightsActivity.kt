@@ -48,6 +48,7 @@ class TopAdsKeywordInsightsActivity : BaseActivity(), HasComponent<TopAdsDashboa
     private var keyList: MutableList<String> = mutableListOf()
     private var requestFrom: String = REQUEST_FROM_POS
     private var countToAdd: Int = 1
+    private var currentTabPosition = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,7 +82,8 @@ class TopAdsKeywordInsightsActivity : BaseActivity(), HasComponent<TopAdsDashboa
 
     private fun renderViewPager(it: InsightKeyData) {
         view_pager?.adapter = getViewPagerAdapter(it)
-        view_pager?.currentItem = tabUnify.getUnifyTabLayout().selectedTabPosition
+        view_pager?.currentItem = currentTabPosition
+        tabUnify?.getUnifyTabLayout()?.getTabAt(currentTabPosition)?.select()
     }
 
     override fun getComponent(): TopAdsDashboardComponent = DaggerTopAdsDashboardComponent.builder().baseAppComponent(
@@ -99,6 +101,7 @@ class TopAdsKeywordInsightsActivity : BaseActivity(), HasComponent<TopAdsDashboa
             intent.getStringExtra(KEY_INSIGHT)
         } else
             currentGroupId
+        currentTabPosition = tabUnify.getUnifyTabLayout().selectedTabPosition
         bundle.putString(KEY_INSIGHT, keyToMap)
         selectGroup.text = data.data[keyToMap]?.name
         bundle.putParcelable(INSIGHT_DATA_HEADER, data.header)
