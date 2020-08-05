@@ -108,4 +108,7 @@
     <string name="swd_awd_can_withdraw_auto_if_join_rp">Kamu hanya bisa tarik saldo otomatis dengan gabung Rekening Premium.</string>
     <string name="swd_join_premium_account_free">Gabung Rekening Premium, Gratis</string>
     <string name="swd_add_bank_account">Tambah Rekening</string>
+    <string name="swd_awd_disable_autowd">Nonaktifkan tarik saldo otomatis?</string>
+    <string name="swd_awd_auto_withdrawal_will_not_work">Saldo Penghasilan tidak akan lagi dicairkan secara otomatis ke rekeningmu.</string>
+    <string name="swd_deactivate">Nonaktifkan</string>
 </resources>

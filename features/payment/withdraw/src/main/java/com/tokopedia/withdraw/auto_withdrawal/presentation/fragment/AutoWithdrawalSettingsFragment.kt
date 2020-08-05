@@ -20,6 +20,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
@@ -473,17 +474,11 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
     private fun onSaveAutoWDSettingsClick() {
         autoWDStatusData?.apply {
             if (isPowerWd) {
-                val schedule = requestedSchedule?: currentSchedule
-                if(status == 0){
-                    //---registering for automatic withdrawal...
-                }else if(status == 1){
-                    //---unregistering for automatic withdrawal...
-                }else{
-                    //---registering for automatic withdrawal...
-                }
-                schedule?.let {
-                    verifyUserUsingOTP()
-                }
+                    if(status == 0 || status == 2){
+                        verifyUserUsingOTP()
+                    }else if(status == 1){
+                        openRemoveAutoWDSettingDialog()
+                    }
             } else {
                 openJoinRPProgramBottomSheet()
             }
@@ -517,6 +512,27 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
         startActivityForResult(intent, REQUEST_OTP_CODE)
     }
 
+    private fun openRemoveAutoWDSettingDialog(){
+        context?.apply {
+            DialogUnify(context = this,
+                    actionType = DialogUnify.HORIZONTAL_ACTION,
+                    imageType = DialogUnify.NO_IMAGE).apply {
+                setTitle(getString(R.string.swd_awd_disable_autowd))
+                setDescription(getString(R.string.swd_awd_auto_withdrawal_will_not_work))
+                setPrimaryCTAText(getString(R.string.swd_deactivate))
+                setSecondaryCTAText(getString(R.string.swd_back))
+                setPrimaryCTAClickListener {
+                    this.dismiss()
+                    
+                }
+                setSecondaryCTAClickListener {
+                    this.dismiss()
+                }
+                show()
+            }
+        }
+    }
+
 
     companion object {
         private const val REQUEST_OTP_CODE = 131
@@ -528,3 +544,9 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
     }
 
 }
+
+
+//-
+//-UpsertAutoWDData api integration remaining and GTM integration
+//-Unit Testing
+
