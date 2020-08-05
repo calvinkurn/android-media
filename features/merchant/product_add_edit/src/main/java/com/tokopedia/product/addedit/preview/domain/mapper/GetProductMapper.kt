@@ -10,6 +10,8 @@ import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputMod
 import com.tokopedia.product.addedit.preview.data.source.api.response.*
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
+import com.tokopedia.product.addedit.variant.presentation.model.*
+import com.tokopedia.product.addedit.variant.presentation.model.ProductVariantInputModel
 import javax.inject.Inject
 
 /**
@@ -24,122 +26,88 @@ class GetProductMapper @Inject constructor() {
             mapShipmentInputModel(product),
             mapVariantInputModel(product.variant))
 
-    private fun mapVariantInputModel(variant: Variant): ProductVariantInputModel =
-            ProductVariantInputModel(
-                    mapProductVariantOption(variant.selections, variant.products),
-                    mapProductVariant(variant.products),
-                    mapSizeChart(variant.sizecharts).firstOrNull()
+    private fun mapVariantInputModel(variant: Variant): VariantInputModel =
+            VariantInputModel(
+                    products = mapProductVariants(variant.products),
+                    selections = mapProductVariantSelections(variant.selections),
+                    sizecharts = mapSizeChart(variant.sizecharts),
+                    isRemoteDataHasVariant = variant.selections.isNotEmpty() // if selection is not empty, means server has a variant
             )
 
-    private fun mapSizeChart(sizecharts: List<Picture>): List<ProductPicture> =
-            sizecharts.map {
-                ProductPicture(
-                        it.picID.toLongOrZero(),
-                        it.status.toIntOrZero(),
-                        "",
-                        "",
-                        it.urlOriginal,
-                        it.urlThumbnail,
-                        0,
-                        0,
-                        it.isFromIG.toIntOrZero()
-                )
-            }
+    private fun mapSizeChart(sizecharts: List<Picture>): PictureVariantInputModel {
+        val sizechart = sizecharts.firstOrNull()
+        sizechart?.let {
+            return PictureVariantInputModel(
+                    it.picID,
+                    it.description,
+                    it.filePath,
+                    it.fileName,
+                    it.width.toLongOrZero(),
+                    it.height.toLongOrZero(),
+                    it.isFromIG,
+                    it.urlOriginal,
+                    it.urlThumbnail,
+                    it.url300,
+                    it.status == "true",
+                    ""
+            )
+        }
+        return PictureVariantInputModel()
+    }
 
-    private fun mapProductVariant(products: List<ProductVariant>): ArrayList<ProductVariantCombination> {
+    private fun mapProductVariants(products: List<ProductVariant>): ArrayList<ProductVariantInputModel> {
         val variantCombination = products.map {
-            ProductVariantCombination(
-                    getActiveStatus(it.status),
-                    it.price.toDouble(),
-                    it.stock.toLong(),
+            ProductVariantInputModel(
+                    it.combination,
+                    mapVariantPictureInputModel(it.pictures),
+                    it.price,
                     it.sku,
-                    mapProductVariantCombination(it.combination)
+                    it.status,
+                    it.stock,
+                    it.isPrimary
             )
         }
         return ArrayList(variantCombination)
     }
 
-    private fun mapProductVariantCombination(combination: List<Int>): List<Int> =
-            combination.map { it + 1 }
-
-    private fun mapProductVariantOption(
-            selections: List<Selection>,
-            products: List<ProductVariant>
-    ): ArrayList<ProductVariantOptionParent> {
-        var position = 0
-        val variantOptions = selections.map {
-            position++
-            ProductVariantOptionParent(
-                    it.variantId.toIntOrZero(),
-                    it.unitID.toIntOrZero(),
-                    position,
-                    mapProductVariantOptionChild(it.options, products),
-                    it.variantName,
-                    it.identifier,
-                    it.unitName
-            )
-        }
-        return ArrayList(variantOptions)
-    }
-
-    private fun mapProductVariantOptionChild(
-            options: List<Option>,
-            products: List<ProductVariant>
-    ): List<ProductVariantOptionChild>?{
-        var pvo = 0
-        return options.map {
-            pvo += 1 // generate pvo id
-            ProductVariantOptionChild(
-                    hex = it.hexCode,
-                    value = it.value,
-                    vuv = correctUnitValueId(it.unitValueID, it.hexCode),
-                    pvo = pvo,
-                    productPictureViewModelList = mapProductVariantPicture(products, pvo - 1)
-            )
-        }
-    }
-
-    // server still return invalid unitValueID for custom color, so we must correct the ID
-    private fun correctUnitValueId(unitValueID: String, hexCode: String): Int {
-        return if (unitValueID == INCORRECT_UNIT_VALUE_ID && hexCode == INCORRECT_UNIT_HEXCODE) {
-            CORRECTED_UNIT_VALUE_ID
-        } else {
-            unitValueID.toIntOrZero()
-        }
-    }
-
-    private fun mapProductVariantPicture(
-            productVariant: List<ProductVariant>,
-            index: Int
-    ): List<ProductPicture> {
-        var variantPicture = listOf<ProductPicture>()
-        productVariant.forEach { variant ->
-            val level1Combination = variant.combination.getOrNull(0)
-            level1Combination?.apply {
-                if (this == index) {
-                    variantPicture = transformProductVariantPicture(variant.pictures.getOrNull(0))
-                }
+    private fun mapVariantPictureInputModel(pictures: List<Picture>): List<PictureVariantInputModel> =
+            pictures.map {
+                PictureVariantInputModel(
+                        it.picID,
+                        it.description,
+                        it.filePath,
+                        it.fileName,
+                        it.width.toLongOrZero(),
+                        it.height.toLongOrZero(),
+                        it.isFromIG,
+                        it.urlOriginal,
+                        it.urlThumbnail,
+                        it.url300,
+                        it.status == "0",
+                        ""
+                )
             }
-        }
-        return variantPicture
-    }
 
-    private fun transformProductVariantPicture(picture: Picture?): List<ProductPicture> {
-        var variantPicture = listOf<ProductPicture>()
-        picture?.let {
-            val pictureViewModel = ProductPicture(
-                    id = it.picID.toLongOrZero(),
-                    fileName = it.fileName,
-                    filePath = it.filePath,
-                    urlOriginal = it.urlOriginal,
-                    urlThumbnail = it.urlThumbnail,
-                    x = it.width.toLongOrZero(),
-                    y = it.height.toLongOrZero()
-            )
-            variantPicture = listOf(pictureViewModel)
-        }
-        return variantPicture
-    }
+    private fun mapProductVariantSelections(selections: List<Selection>): List<SelectionInputModel> =
+            selections.map {
+                SelectionInputModel(
+                        it.variantId,
+                        it.variantName,
+                        it.unitID,
+                        it.unitName,
+                        it.identifier,
+                        mapProductVariantOptions(it.options)
+                )
+            }
+
+    private fun mapProductVariantOptions(options: List<Option>): List<OptionInputModel> =
+            options.map {
+                OptionInputModel(
+                        it.unitValueID,
+                        it.value,
+                        it.hexCode
+                )
+            }
 
     private fun mapDetailInputModel(product: Product): DetailInputModel =
             DetailInputModel(
@@ -247,9 +215,6 @@ class GetProductMapper @Inject constructor() {
         const val UNIT_MONTH_STRING = "MONTH"
         const val UNIT_GRAM_SRING = "GR"
         const val UNIT_KILOGRAM_SRING = "KG"
-        const val INCORRECT_UNIT_VALUE_ID = "1"
-        const val CORRECTED_UNIT_VALUE_ID = 0
-        const val INCORRECT_UNIT_HEXCODE = "#ffffff"
         const val YOUTUBE_URL_DELIMITER = "/watch?v="
         const val YOUTUBE_URL_DELIMITER_SHORT = "/"
         const val YOUTUBE_URL = "www.youtube.com"

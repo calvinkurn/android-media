@@ -14,15 +14,14 @@ import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.analyticsdebugger.validator.core.getAnalyticsWithQuery
 import com.tokopedia.analyticsdebugger.validator.core.hasAllSuccess
+import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularViewPager
 import com.tokopedia.home.R
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.MixLeftViewHolder
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.mix_top.MixTopBannerViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.BannerViewHolder
 import com.tokopedia.home.environment.InstrumentationHomeTestActivity
 import com.tokopedia.home.mock.HomeMockResponseConfig
 import com.tokopedia.home_component.viewholders.MixLeftComponentViewHolder
 import com.tokopedia.home_component.viewholders.MixTopComponentViewHolder
 import com.tokopedia.test.application.assertion.topads.TopAdsVerificationTestReportUtil
-import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.BaseMatcher
 import org.hamcrest.Description
@@ -33,6 +32,8 @@ import org.junit.Rule
 import org.junit.Test
 
 
+private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_HOMEPAGE_BANNER = "tracker/home/hpb.json"
+private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_HOMEPAGE_SCREEN = "tracker/home/homescreen.json"
 private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MIX_LEFT = "tracker/home/mix_left.json"
 private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MIX_TOP = "tracker/home/mix_top.json"
 private const val TAG = "DynamicChannelComponentAnalyticsTest"
@@ -59,7 +60,7 @@ class DynamicChannelComponentAnalyticsTest {
     }
 
     @Test
-    fun testMixLeftHome() {
+    fun testDCHome() {
         initTest()
 
         doActivityTest()
@@ -76,7 +77,7 @@ class DynamicChannelComponentAnalyticsTest {
     }
 
     private fun waitForData() {
-        Thread.sleep(5000)
+        Thread.sleep(10000)
     }
 
     private fun addDebugEnd() {
@@ -96,6 +97,10 @@ class DynamicChannelComponentAnalyticsTest {
 
     private fun doAnalyticDebuggerTest() {
         waitForData()
+//        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_HOMEPAGE_SCREEN),
+//                hasAllSuccess())
+//        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_HOMEPAGE_BANNER),
+//                hasAllSuccess())
         assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MIX_LEFT),
                 hasAllSuccess())
         assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MIX_TOP),
@@ -114,23 +119,67 @@ class DynamicChannelComponentAnalyticsTest {
     private fun checkProductOnDynamicChannel(homeRecyclerView: RecyclerView, i: Int) {
         val viewholder = homeRecyclerView.findViewHolderForAdapterPosition(i)
         when (viewholder) {
-            is MixLeftViewHolder -> {
-                logTestMessage("VH MixLeftViewHolder")
-                clickOnEachItemRecyclerView(viewholder.itemView, R.id.rv_product)
+            is BannerViewHolder -> {
+                logTestMessage("VH BannerViewHolder")
+                clickHomeBannerItemAndViewAll(viewholder.itemView)
             }
             is MixLeftComponentViewHolder -> {
                 logTestMessage("VH MixLeftComponentViewHolder")
+                clickLihatSemuaButtonIfAvailable(viewholder.itemView, "MixLeftComponentViewHolder")
                 clickOnEachItemRecyclerView(viewholder.itemView, R.id.rv_product)
-            }
-            is MixTopBannerViewHolder -> {
-                logTestMessage("VH MixTopBannerViewHolder")
-                clickOnEachItemRecyclerView(viewholder.itemView, R.id.dc_banner_rv)
             }
             is MixTopComponentViewHolder -> {
                 logTestMessage("VH MixTopComponentViewHolder")
+                clickLihatSemuaButtonIfAvailable(viewholder.itemView, "MixTopComponentViewHolder")
                 clickOnEachItemRecyclerView(viewholder.itemView, R.id.dc_banner_rv)
             }
         }
+    }
+
+    private fun clickHomeBannerItemAndViewAll(view: View) {
+        val childView = view
+        val seeAllButton = childView.findViewById<View>(R.id.see_all_promo)
+
+        //banner item click
+        val bannerViewPager = childView.findViewById<CircularViewPager>(R.id.circular_view_pager)
+        val itemCount = bannerViewPager.getViewPager().adapter?.itemCount ?: 0
+        for (i in 0 until itemCount) {
+            try {
+                Espresso.onView(firstView(ViewMatchers.withId(R.id.circular_view_pager)))
+                        .perform(ViewActions.click())
+                logTestMessage("Click SUCCESS banner item "  + 1)
+            } catch (e: PerformException) {
+                e.printStackTrace()
+                logTestMessage("Click FAILED banner item "  + i) }
+
+        }
+        //see all promo button click
+        if (seeAllButton.visibility == View.VISIBLE) {
+            try {
+                Espresso.onView(firstView(ViewMatchers.withId(R.id.see_all_button)))
+                        .perform(ViewActions.click())
+                logTestMessage("Click SUCCESS See All Button BannerViewHolder")
+            } catch (e: PerformException) {
+                e.printStackTrace()
+                logTestMessage("Click FAILED See All Button BannerViewHolder")
+            }
+        }
+    }
+
+    private fun clickLihatSemuaButtonIfAvailable(view: View, viewComponent: String) {
+        val childView = view
+        val seeAllButton = childView.findViewById<View>(R.id.see_all_button)
+        if (seeAllButton.visibility == View.VISIBLE) {
+            try {
+                Espresso.onView(firstView(ViewMatchers.withId(R.id.see_all_button)))
+                        .perform(ViewActions.click())
+                logTestMessage("Click SUCCESS See All Button $viewComponent")
+            } catch (e: PerformException) {
+                e.printStackTrace()
+                logTestMessage("Click FAILED See All Button $viewComponent")
+            }
+        }
+
     }
 
     private fun clickOnEachItemRecyclerView(view: View, recyclerViewId: Int) {
@@ -139,7 +188,7 @@ class DynamicChannelComponentAnalyticsTest {
         val childItemCount = childRecyclerView.adapter?.itemCount ?: 0
         logTestMessage("ChildCount Here: " + childItemCount + " item")
 
-        for (j in 1 until childItemCount) {
+        for (j in 0 until childItemCount) {
             try {
                 Espresso.onView(firstView(ViewMatchers.withId(recyclerViewId)))
                         .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(j, ViewActions.click()))

@@ -49,7 +49,6 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
     public static final int TYPE_PESAN = 2;
     public static final int TYPE_AJUKAN = 3;
     public static final int TYPE_JUAL = 4;
-    private static final String NAME_PINJAMAN_ONLINE = "Pinjaman Online";
     public static final String EXTRA_URL = "url";
     public static final String EXTRA_TITLE = "core_web_view_extra_title";
     public static final String DEPARTMENT_ID = "DEPARTMENT_ID";
@@ -167,11 +166,6 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
 
     @Override
     public void onGimickItemClicked(LayoutRows data) {
-
-        if (NAME_PINJAMAN_ONLINE.equalsIgnoreCase(data.getName())) {
-            RouteManager.route(getActivity(), ApplinkConstInternalGlobal.GLOBAL_INTERNAL_INSTANT_LOAN);
-            return;
-        }
 
         String redirectUrl = data.getUrl();
         if (redirectUrl != null && redirectUrl.length() > 0) {

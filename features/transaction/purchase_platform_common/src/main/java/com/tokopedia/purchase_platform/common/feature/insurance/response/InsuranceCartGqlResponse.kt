@@ -1,8 +1,8 @@
 package com.tokopedia.purchase_platform.common.feature.insurance.response
 
-import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
 data class InsuranceCartGqlResponse(
         @SerializedName("cart_list_transactional")
@@ -30,6 +30,7 @@ data class InsuranceCartShopItems(
         var digitalProductList: ArrayList<InsuranceCartDigitalProduct>
 )
 
+@Parcelize
 data class InsuranceCartDigitalProduct(
         @SerializedName("digital_product_id")
         var digitalProductId: Long,
@@ -72,61 +73,9 @@ data class InsuranceCartDigitalProduct(
 
         var shopId: String = "",
         var productId: String
-) : Parcelable {
+) : Parcelable
 
-    constructor(parcel: Parcel) : this(
-            parcel.readLong(),
-            parcel.readLong(),
-            parcel.readLong(),
-            parcel.readLong(),
-            parcel.readLong(),
-            parcel.readByte() != 0.toByte(),
-            parcel.readByte() != 0.toByte(),
-            parcel.readByte() != 0.toByte(),
-            parcel.readByte() != 0.toByte(),
-            parcel.readByte() != 0.toByte(),
-            parcel.readByte() != 0.toByte(),
-            parcel.readParcelable<InsuranceCartProductInfo>(InsuranceCartProductInfo::class.java.classLoader)!!,
-            arrayListOf<InsuranceProductApplicationDetails>().apply {
-                parcel.readList(this, InsuranceProductApplicationDetails::class.java.classLoader)
-
-            },
-            parcel.readString() ?: "",
-            parcel.readString() ?: ""
-    )
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeLong(digitalProductId)
-        parcel.writeLong(cartItemId)
-        parcel.writeLong(typeId)
-        parcel.writeLong(pricePerProduct)
-        parcel.writeLong(totalPrice)
-        parcel.writeByte(if (optIn) 1 else 0)
-        parcel.writeByte(if (isProductLevel) 1 else 0)
-        parcel.writeByte(if (isPurchaseProtection) 1 else 0)
-        parcel.writeByte(if (isSellerMoney) 1 else 0)
-        parcel.writeByte(if (isApplicationNeeded) 1 else 0)
-        parcel.writeByte(if (isNew) 1 else 0)
-        parcel.writeString(shopId)
-        parcel.writeString(productId)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<InsuranceCartDigitalProduct> {
-        override fun createFromParcel(parcel: Parcel): InsuranceCartDigitalProduct {
-            return InsuranceCartDigitalProduct(parcel)
-        }
-
-        override fun newArray(size: Int): Array<InsuranceCartDigitalProduct?> {
-            return arrayOfNulls(size)
-        }
-    }
-
-}
-
+@Parcelize
 data class InsuranceCartProductInfo(
         @SerializedName("title")
         var title: String,
@@ -157,49 +106,9 @@ data class InsuranceCartProductInfo(
 
         @SerializedName("link_name")
         var linkName: String
-) : Parcelable {
-    constructor(parcel: Parcel) : this(
-            parcel.readString() ?: "",
-            parcel.readString() ?: "",
-            parcel.readString() ?: "",
-            parcel.readString() ?: "",
-            parcel.readString() ?: "",
-            parcel.readString() ?: "",
-            parcel.readString() ?: "",
-            parcel.readString() ?: "",
-            parcel.readString() ?: "",
-            parcel.readString() ?: "") {
-    }
+) : Parcelable
 
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(title)
-        parcel.writeString(subTitle)
-        parcel.writeString(detailInfoTitle)
-        parcel.writeString(description)
-        parcel.writeString(sectionTitle)
-        parcel.writeString(iconUrl)
-        parcel.writeString(tickerText)
-        parcel.writeString(infoText)
-        parcel.writeString(appLinkUrl)
-        parcel.writeString(linkName)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<InsuranceCartProductInfo> {
-        override fun createFromParcel(parcel: Parcel): InsuranceCartProductInfo {
-            return InsuranceCartProductInfo(parcel)
-        }
-
-        override fun newArray(size: Int): Array<InsuranceCartProductInfo?> {
-            return arrayOfNulls(size)
-        }
-    }
-
-}
-
+@Parcelize
 data class InsuranceProductApplicationDetails(
         @SerializedName("id")
         var id: Int,
@@ -226,81 +135,18 @@ data class InsuranceProductApplicationDetails(
         var validationsList: ArrayList<InsuranceApplicationValidation>,
 
         var isError: Boolean = false
-) : Parcelable {
-    constructor(parcel: Parcel) : this(
-            parcel.readInt(),
-            parcel.readString() ?: "",
-            parcel.readString() ?: "",
-            parcel.readString() ?: "",
-            parcel.readByte() != 0.toByte(),
-            parcel.readString() ?: "",
-            arrayListOf<InsuranceApplicationValue>().apply {
-                parcel.readList(this, InsuranceApplicationValue::class.java.classLoader)
-            },
-            arrayListOf<InsuranceApplicationValidation>().apply {
-                parcel.readList(this, InsuranceApplicationValidation::class.java.classLoader)
-            }
-    )
+) : Parcelable
 
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeInt(id)
-        parcel.writeString(label)
-        parcel.writeString(placeHolder)
-        parcel.writeString(type)
-        parcel.writeByte(if (isRequired) 1 else 0)
-        parcel.writeString(value)
-        parcel.writeByte(if (isError) 1 else 0)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<InsuranceProductApplicationDetails> {
-        override fun createFromParcel(parcel: Parcel): InsuranceProductApplicationDetails {
-            return InsuranceProductApplicationDetails(parcel)
-        }
-
-        override fun newArray(size: Int): Array<InsuranceProductApplicationDetails?> {
-            return arrayOfNulls(size)
-        }
-    }
-
-}
-
+@Parcelize
 data class InsuranceApplicationValue(
         @SerializedName("id")
         var valuesId: Int,
 
         @SerializedName("value")
         var value: String
-) : Parcelable {
-    constructor(parcel: Parcel) : this(
-            parcel.readInt(),
-            parcel.readString() ?: "") {
-    }
+) : Parcelable
 
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeInt(valuesId)
-        parcel.writeString(value)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<InsuranceApplicationValue> {
-        override fun createFromParcel(parcel: Parcel): InsuranceApplicationValue {
-            return InsuranceApplicationValue(parcel)
-        }
-
-        override fun newArray(size: Int): Array<InsuranceApplicationValue?> {
-            return arrayOfNulls(size)
-        }
-    }
-
-}
-
+@Parcelize
 data class InsuranceApplicationValidation(
         @SerializedName("id")
         var validationId: Int,
@@ -313,33 +159,4 @@ data class InsuranceApplicationValidation(
 
         @SerializedName("error_message")
         var validationErrorMessage: String
-) : Parcelable {
-    constructor(parcel: Parcel) : this(
-            parcel.readInt(),
-            parcel.readString() ?: "",
-            parcel.readString() ?: "",
-            parcel.readString() ?: "") {
-    }
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeInt(validationId)
-        parcel.writeString(validationValue)
-        parcel.writeString(type)
-        parcel.writeString(validationErrorMessage)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<InsuranceApplicationValidation> {
-        override fun createFromParcel(parcel: Parcel): InsuranceApplicationValidation {
-            return InsuranceApplicationValidation(parcel)
-        }
-
-        override fun newArray(size: Int): Array<InsuranceApplicationValidation?> {
-            return arrayOfNulls(size)
-        }
-    }
-
-}
+) : Parcelable
