@@ -35,7 +35,6 @@ import com.tokopedia.play.extensions.isAnyBottomSheetsShown
 import com.tokopedia.play.extensions.isAnyHidden
 import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.extensions.isKeyboardShown
-import com.tokopedia.play.ui.fragment.bottomsheet.FragmentBottomSheetComponent
 import com.tokopedia.play.ui.fragment.error.FragmentErrorComponent
 import com.tokopedia.play.ui.fragment.youtube.FragmentYouTubeComponent
 import com.tokopedia.play.ui.fragment.youtube.interaction.FragmentYouTubeInteractionEvent
@@ -55,6 +54,7 @@ import com.tokopedia.play.view.layout.parent.PlayParentViewInitializer
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.EventUiModel
 import com.tokopedia.play.view.uimodel.VideoPlayerUiModel
+import com.tokopedia.play.view.viewcomponent.FragmentBottomSheetViewComponent
 import com.tokopedia.play.view.viewcomponent.FragmentUserInteractionViewComponent
 import com.tokopedia.play.view.viewcomponent.FragmentVideoViewComponent
 import com.tokopedia.play.view.viewmodel.PlayViewModel
@@ -95,6 +95,9 @@ class PlayFragment @Inject constructor(
     }
     private val fragmentUserInteractionView by viewComponent {
         FragmentUserInteractionViewComponent(channelId, it, R.id.fl_user_interaction, childFragmentManager)
+    }
+    private val fragmentBottomSheetView by viewComponent {
+        FragmentBottomSheetViewComponent(channelId, it, R.id.fl_bottom_sheet, childFragmentManager)
     }
 
     private lateinit var pageMonitoring: PageLoadTimePerformanceInterface
@@ -322,8 +325,7 @@ class PlayFragment @Inject constructor(
     }
 
     override fun onInitBottomSheetFragment(container: ViewGroup): Int {
-        return FragmentBottomSheetComponent(channelId, container, childFragmentManager, EventBusFactory.get(viewLifecycleOwner), scope, dispatchers)
-                .getContainerId()
+        throw IllegalStateException("No Init")
     }
 
     override fun onInitYouTubeFragment(container: ViewGroup): Int {
@@ -431,6 +433,7 @@ class PlayFragment @Inject constructor(
         ivClose.setOnClickListener { hideKeyboard() }
         fragmentVideoView.init()
         fragmentUserInteractionView.init()
+        fragmentBottomSheetView.init()
 
         hideAllInsets()
     }
@@ -487,6 +490,7 @@ class PlayFragment @Inject constructor(
              * New
              */
             fragmentVideoViewOnStateChanged(isFreezeOrBanned = it.isFreeze || it.isBanned)
+            fragmentBottomSheetViewOnStateChanged(isFreezeOrBanned = it.isFreeze || it.isBanned)
         })
     }
 
@@ -663,6 +667,15 @@ class PlayFragment @Inject constructor(
             isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned
     ) {
         if (videoPlayer.isYouTube || isFreezeOrBanned) {
+            fragmentVideoView.release()
+            fragmentVideoView.hide()
+        }
+    }
+
+    private fun fragmentBottomSheetViewOnStateChanged(
+            isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned
+    ) {
+        if (isFreezeOrBanned) {
             fragmentVideoView.release()
             fragmentVideoView.hide()
         }

@@ -37,7 +37,7 @@ class PlayParentLayoutManagerImpl(
 //    @IdRes private val videoFragmentId = viewInitializer.onInitVideoFragment(container)
 //    @IdRes private val miniInteractionFragmentId = viewInitializer.onInitMiniInteractionFragment(container)
 //    @IdRes private val userInteractionFragmentId = viewInitializer.onInitUserInteractionFragment(container)
-    @IdRes private val bottomSheetFragmentId = viewInitializer.onInitBottomSheetFragment(container)
+//    @IdRes private val bottomSheetFragmentId = viewInitializer.onInitBottomSheetFragment(container)
     @IdRes private val youTubeFragmentId = viewInitializer.onInitYouTubeFragment(container)
     @IdRes private val errorFragmentId = viewInitializer.onInitErrorFragment(container)
 
@@ -108,7 +108,6 @@ class PlayParentLayoutManagerImpl(
     }
 
     override fun layoutView(view: View) {
-        layoutBottomSheetFragment(container = view, id = bottomSheetFragmentId)
         layoutErrorFragment(container = view, id = errorFragmentId)
     }
 
@@ -281,14 +280,6 @@ class PlayParentLayoutManagerImpl(
     /**
      * Layout
      */
-    private fun layoutBottomSheetFragment(container: View, @IdRes id: Int) {
-        container.changeConstraint {
-            connect(id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
-            connect(id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
-            connect(id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
-        }
-    }
-
     private fun layoutErrorFragment(container: View, @IdRes id: Int) {
         container.changeConstraint {
             connect(id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
