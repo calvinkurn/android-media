@@ -42,4 +42,9 @@ abstract class PlayViewerFragmentModule {
     @IntoMap
     @FragmentKey(PlayErrorFragment::class)
     abstract fun getPlayErrorFragment(fragment: PlayErrorFragment): Fragment
+
+    @Binds
+    @IntoMap
+    @FragmentKey(PlayFragment::class)
+    abstract fun getPlayFragment(fragment: PlayFragment): Fragment
 }

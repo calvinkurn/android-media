@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.WindowManager
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentFactory
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
@@ -21,6 +22,7 @@ import com.tokopedia.play.di.PlayModule
 import com.tokopedia.play.util.observer.PlayVideoUtilObserver
 import com.tokopedia.play.view.contract.PlayNavigation
 import com.tokopedia.play.view.contract.PlayNewChannelInteractor
+import com.tokopedia.play.view.fragment.PlayErrorFragment
 import com.tokopedia.play.view.fragment.PlayFragment
 import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play_common.util.PlayVideoPlayerObserver
@@ -49,16 +51,20 @@ class PlayActivity : BaseActivity(), PlayNewChannelInteractor, PlayNavigation {
     @Inject
     lateinit var playVideoUtilObserver: PlayVideoUtilObserver
 
+    @Inject
+    lateinit var fragmentFactory: FragmentFactory
+
     private val orientation: ScreenOrientation
         get() = ScreenOrientation.getByInt(resources.configuration.orientation)
 
     private lateinit var pageMonitoring: PageLoadTimePerformanceInterface
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        inject()
+        supportFragmentManager.fragmentFactory = fragmentFactory
         startPageMonitoring()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_play)
-        inject()
         setupPage()
 
         val channelId = intent?.data?.lastPathSegment
@@ -102,7 +108,7 @@ class PlayActivity : BaseActivity(), PlayNewChannelInteractor, PlayNavigation {
     }
 
     private fun getFragment(channelId: String?): Fragment {
-        return PlayFragment.newInstance(channelId)
+        return getPlayFragment(channelId)
     }
 
     private fun setupPage() {
@@ -113,6 +119,15 @@ class PlayActivity : BaseActivity(), PlayNewChannelInteractor, PlayNavigation {
     private fun setupView(channelId: String?) {
         if (supportFragmentManager.findFragmentByTag(PLAY_FRAGMENT_TAG) == null) {
             onNewChannel(channelId)
+        }
+    }
+
+    private fun getPlayFragment(channelId: String?): Fragment {
+        val fragmentFactory = supportFragmentManager.fragmentFactory
+        return fragmentFactory.instantiate(classLoader, PlayFragment::class.java.name).apply {
+            arguments = Bundle().apply {
+                putString(PLAY_KEY_CHANNEL_ID, channelId)
+            }
         }
     }
 

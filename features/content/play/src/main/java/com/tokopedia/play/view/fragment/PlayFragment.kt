@@ -75,22 +75,10 @@ import kotlin.coroutines.CoroutineContext
 /**
  * Created by jegul on 29/11/19
  */
-class PlayFragment : TkpdBaseV4Fragment(), PlayOrientationListener, PlayFragmentContract, PlayParentViewInitializer {
-
-    companion object {
-        private const val TOP_BOUNDS_LANDSCAPE_VIDEO = "top_bounds_landscape_video"
-
-        private const val EXTRA_TOTAL_VIEW = "EXTRA_TOTAL_VIEW"
-        private const val EXTRA_CHANNEL_ID = "EXTRA_CHANNEL_ID"
-
-        fun newInstance(channelId: String?): PlayFragment {
-            return PlayFragment().apply {
-                val args = Bundle()
-                args.putString(PLAY_KEY_CHANNEL_ID, channelId)
-                arguments = args
-            }
-        }
-    }
+class PlayFragment @Inject constructor(
+        private val dispatchers: CoroutineDispatcherProvider,
+        private val viewModelFactory: ViewModelProvider.Factory
+): TkpdBaseV4Fragment(), PlayOrientationListener, PlayFragmentContract, PlayParentViewInitializer {
 
     private val scope = object : CoroutineScope {
         override val coroutineContext: CoroutineContext
@@ -98,20 +86,13 @@ class PlayFragment : TkpdBaseV4Fragment(), PlayOrientationListener, PlayFragment
     }
     private val job: Job = SupervisorJob()
 
-    @Inject
-    lateinit var dispatchers: CoroutineDispatcherProvider
-
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    @Inject
-    lateinit var fragmentFactory: FragmentFactory
-
-    private var channelId = ""
     private var topBounds: Int? = null
 
     private lateinit var pageMonitoring: PageLoadTimePerformanceInterface
     private lateinit var playViewModel: PlayViewModel
+
+    private val channelId: String
+        get() = arguments?.getString(PLAY_KEY_CHANNEL_ID).orEmpty()
 
     /**
      * Manager
@@ -140,12 +121,10 @@ class PlayFragment : TkpdBaseV4Fragment(), PlayOrientationListener, PlayFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
-        childFragmentManager.fragmentFactory = fragmentFactory
         super.onCreate(savedInstanceState)
         setOrientation()
         setupPageMonitoring()
         playViewModel = ViewModelProvider(this, viewModelFactory).get(PlayViewModel::class.java)
-        channelId = arguments?.getString(PLAY_KEY_CHANNEL_ID).orEmpty()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -658,5 +637,12 @@ class PlayFragment : TkpdBaseV4Fragment(), PlayOrientationListener, PlayFragment
                 view?.background = resource
             }
         })
+    }
+
+    companion object {
+        private const val TOP_BOUNDS_LANDSCAPE_VIDEO = "top_bounds_landscape_video"
+
+        private const val EXTRA_TOTAL_VIEW = "EXTRA_TOTAL_VIEW"
+        private const val EXTRA_CHANNEL_ID = "EXTRA_CHANNEL_ID"
     }
 }
