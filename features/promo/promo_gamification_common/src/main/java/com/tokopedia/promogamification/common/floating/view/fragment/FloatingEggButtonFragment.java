@@ -56,6 +56,7 @@ import com.tokopedia.track.TrackApp;
 import javax.inject.Inject;
 
 import dagger.Lazy;
+import timber.log.Timber;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -120,13 +121,16 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         minimizeButtonLeft = view.findViewById(R.id.minimize_img_left);
         vgFloatingEgg.setVisibility(View.GONE);
 
-        try {
-            screenHeight = getActivity().getResources().getDisplayMetrics().heightPixels;
-        } catch (Exception e) {
-            //Do nothing
-        }
-
+        prepareScreenHeight();
         return view;
+    }
+
+    private void prepareScreenHeight(){
+        try {
+            screenHeight = vgFloatingEgg.getContext().getResources().getDisplayMetrics().heightPixels;
+        } catch (Exception e) {
+            Timber.d(e);
+        }
     }
 
     private void hideShowClickListener() {
