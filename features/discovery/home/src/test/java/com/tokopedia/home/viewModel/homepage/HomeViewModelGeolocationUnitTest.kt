@@ -93,9 +93,8 @@ class HomeViewModelGeolocationUnitTest {
         )
 
         // home viewModel
-        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase).apply {
-            setNeedToShowGeolocationComponent(true)
-        }
+        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
+        homeViewModel.setNeedToShowGeolocationComponent(true)
         homeViewModel.homeLiveData.observeForever(observerHome)
 
         // Send geolocation
