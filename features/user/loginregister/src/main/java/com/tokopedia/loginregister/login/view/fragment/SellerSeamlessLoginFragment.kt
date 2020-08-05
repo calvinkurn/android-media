@@ -86,7 +86,6 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
 
     companion object {
         private const val KEY_AUTO_LOGIN = "is_auto_login"
-        const val KEY_REDIRECT_SEAMLESS_APPLINK = "redirect_seamless"
 
         fun createInstance(bundle: Bundle): Fragment {
             val fragment = SellerSeamlessLoginFragment()
@@ -160,7 +159,7 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
         super.onCreate(savedInstanceState)
         arguments?.run {
             autoLogin = getBoolean(KEY_AUTO_LOGIN, false)
-            redirectUrl = getString(KEY_REDIRECT_SEAMLESS_APPLINK, "")
+            redirectUrl = getString(ApplinkConstInternalGlobal.KEY_REDIRECT_SEAMLESS_APPLINK, "")
         }
         if (context?.applicationContext is LoginRouter) {
             (context?.applicationContext as LoginRouter).setOnboardingStatus(true)
@@ -221,7 +220,7 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
 
     private fun  setApplinkResult(intent: Intent){
         if(redirectUrl.isNotEmpty()) {
-            intent.putExtra(KEY_REDIRECT_SEAMLESS_APPLINK, redirectUrl)
+            intent.putExtra(ApplinkConstInternalGlobal.KEY_REDIRECT_SEAMLESS_APPLINK, redirectUrl)
         }
     }
 

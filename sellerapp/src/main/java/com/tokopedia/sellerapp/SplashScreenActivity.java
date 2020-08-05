@@ -36,7 +36,6 @@ public class SplashScreenActivity extends SplashScreen {
 
     private boolean isApkTempered;
     private static String KEY_AUTO_LOGIN = "is_auto_login";
-    private static String KEY_REDIRECT_SEAMLESS_APPLINK = "redirect_seamless";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -64,7 +63,7 @@ public class SplashScreenActivity extends SplashScreen {
             boolean isFromMainApp = uri.getBooleanQueryParameter(RouteManager.KEY_REDIRECT_TO_SELLER_APP, false);
             boolean isAutoLogin = uri.getBooleanQueryParameter(KEY_AUTO_LOGIN, false);
             if (isFromMainApp) {
-                String redirectApplink = uri.getQueryParameter(KEY_REDIRECT_SEAMLESS_APPLINK);
+                String redirectApplink = uri.getQueryParameter(ApplinkConstInternalGlobal.KEY_REDIRECT_SEAMLESS_APPLINK);
                 Intent intent = RouteManager.getIntent(this, uri.toString());
                 if (isAutoLogin && userSession.getUserId().isEmpty()) {
                     ArrayList<String> remainingAppLinks = getIntent().getStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA);
@@ -139,7 +138,7 @@ public class SplashScreenActivity extends SplashScreen {
             Bundle b = new Bundle();
             b.putBoolean(KEY_AUTO_LOGIN, true);
             if(!redirectApplink.isEmpty())
-                b.putString(KEY_REDIRECT_SEAMLESS_APPLINK, redirectApplink);
+                b.putString(ApplinkConstInternalGlobal.KEY_REDIRECT_SEAMLESS_APPLINK, redirectApplink);
 
             if (remainingApplinks != null && !remainingApplinks.isEmpty()) {
                 intent.putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, remainingApplinks);
