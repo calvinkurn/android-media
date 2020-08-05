@@ -1,37 +1,12 @@
 package com.tokopedia.product.addedit.variant.presentation.viewmodel
 
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
-import com.tokopedia.product.addedit.util.getOrAwaitValue
-import com.tokopedia.product.addedit.variant.data.model.GetCategoryVariantCombinationResponse
 import com.tokopedia.product.addedit.variant.presentation.model.PictureVariantInputModel
-import com.tokopedia.usecase.coroutines.Success
-import io.mockk.coEvery
-import io.mockk.coVerify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.runBlocking
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
 class AddEditProductVariantViewModelTest: AddEditProductVariantViewModelTestFixture() {
-
-    @Test
-    fun `When get variant combination is success Expect Success result`() {
-        runBlocking {
-            val successResult = GetCategoryVariantCombinationResponse()
-            coEvery {
-                getCategoryVariantCombinationUseCase.executeOnBackground()
-            } returns successResult
-
-            viewModel.getCategoryVariantCombination("2821")
-            coVerify { getCategoryVariantCombinationUseCase.executeOnBackground() }
-
-            viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
-
-            val result = viewModel.getCategoryVariantCombinationResult.getOrAwaitValue()
-            assert(result == Success(successResult))
-        }
-    }
 
     @Test
     fun `When updateVariantInputModel is success Expect update variantInputModel`() {
