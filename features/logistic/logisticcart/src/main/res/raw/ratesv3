@@ -92,6 +92,8 @@ query RatesV3($param: OngkirRatesV3Input!) {
             cod_price
             cod_text
             formatted_price
+            tnc_text
+            tnc_link
           }
           features {
             ontime_delivery_guarantee {

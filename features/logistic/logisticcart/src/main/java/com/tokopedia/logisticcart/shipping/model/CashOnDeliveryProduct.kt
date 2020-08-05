@@ -5,11 +5,11 @@ import android.os.Parcelable
 
 data class CashOnDeliveryProduct(
         var isCodAvailable: Int,
-        val codText: String,
+        val codText: String?,
         val codPrice: Int,
-        val formattedPrice: String,
-        val tncText: String,
-        val tncLink: String
+        val formattedPrice: String?,
+        val tncText: String?,
+        val tncLink: String?
 ) : Parcelable {
     constructor(source: Parcel) : this(
             source.readInt(),
