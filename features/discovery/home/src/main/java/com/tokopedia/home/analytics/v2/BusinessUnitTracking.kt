@@ -42,7 +42,7 @@ object BusinessUnitTracking : BaseTracking(){
     fun mapToPromotionTracker(model: BusinessUnitItemDataModel, positionWidget: Int) = Promotion(
             id = model.content.contentId.toString(),
             creative = model.content.contentName,
-            name = Ecommerce.PROMOTION_NAME.format(positionWidget, "bu widget - tab ${model.tabPosition}", model.tabName),
+            name = Ecommerce.PROMOTION_NAME.format(positionWidget, "bu widget - tab ${(model.tabPosition+1)}", model.tabName),
             position = (model.itemPosition+1).toString(),
             promoCodes = Label.NONE,
             promoIds = Label.NONE)
