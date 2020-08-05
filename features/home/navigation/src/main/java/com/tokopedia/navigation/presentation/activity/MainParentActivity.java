@@ -910,6 +910,8 @@ public class MainParentActivity extends BaseActivity implements
                     boolean isHaveNewFeed = intent.getBooleanExtra(PARAM_BROADCAST_NEW_FEED_CLICKED, false);
                     if (isHaveNewFeed) {
                         bottomNavigation.setBadge(0, FEED_MENU, View.VISIBLE);
+                    } else {
+                        bottomNavigation.setBadge(0, FEED_MENU, View.GONE);
                     }
                 }
             }
