@@ -4,13 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.AppCompatImageView
-import androidx.core.content.ContextCompat
-import androidx.lifecycle.Observer
+import android.widget.ImageView
 import androidx.lifecycle.ViewModelProvider
-import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.globalerror.GlobalError
@@ -20,14 +17,14 @@ import com.tokopedia.play.ERR_STATE_GLOBAL
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytics
-import com.tokopedia.play.di.DaggerPlayComponent
-import com.tokopedia.play.di.PlayModule
-import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.GlobalErrorCodeWrapper
+import com.tokopedia.play_common.view.doOnApplyWindowInsets
+import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
+import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
@@ -42,6 +39,7 @@ class PlayErrorFragment @Inject constructor(
     private lateinit var playViewModel: PlayViewModel
     private lateinit var container: View
     private lateinit var globalError: GlobalError
+    private lateinit var imgBack: ImageView
 
     private val channelId: String
         get() = arguments?.getString(PLAY_KEY_CHANNEL_ID).orEmpty()
@@ -54,14 +52,21 @@ class PlayErrorFragment @Inject constructor(
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_play_error, container, false)
-        initComponent(view)
-        return view
+        return inflater.inflate(R.layout.fragment_play_error, container, false)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        observeErrorChannel()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        initView(view)
+        setupView(view)
+        setupInsets(view)
+        setupObserve()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        imgBack.requestApplyInsetsWhenAttached()
     }
 
     override fun onInterceptOrientationChangedEvent(newOrientation: ScreenOrientation): Boolean {
@@ -72,18 +77,44 @@ class PlayErrorFragment @Inject constructor(
         return false
     }
 
-    private fun initComponent(view: View) {
-        container = view.findViewById(R.id.container_global_error)
-        globalError = view.findViewById(R.id.global_error)
-        context?.let {
-            globalError.errorTitle.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Neutral_N0))
-            globalError.errorDescription.setTextColor(ContextCompat.getColor(it, R.color.play_error_text_color))
+    private fun initView(view: View) {
+        with (view) {
+            container = findViewById(R.id.container_global_error)
+            globalError = findViewById(R.id.global_error)
+            imgBack = findViewById(R.id.img_back)
         }
-
-        val imgBack = view.findViewById<AppCompatImageView>(R.id.img_back)
-        imgBack.setOnClickListener { activity?.onBackPressed() }
     }
 
+    private fun setupView(view: View) {
+        imgBack.setOnClickListener { activity?.onBackPressed() }
+
+        globalError.errorTitle.setTextColor(
+                MethodChecker.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Neutral_N0)
+        )
+        globalError.errorDescription.setTextColor(
+                MethodChecker.getColor(requireContext(), R.color.play_error_text_color)
+        )
+    }
+
+    private fun setupInsets(view: View) {
+        imgBack.doOnApplyWindowInsets { v, insets, _, margin ->
+            val marginLayoutParams = v.layoutParams as ViewGroup.MarginLayoutParams
+
+            val newTopMargin = margin.top + insets.systemWindowInsetTop
+            if (marginLayoutParams.topMargin != newTopMargin) {
+                marginLayoutParams.updateMargins(top = newTopMargin)
+                v.parent.requestLayout()
+            }
+        }
+    }
+
+    private fun setupObserve() {
+        observeErrorChannel()
+    }
+
+    /**
+     * Observe
+     */
     private fun observeErrorChannel() {
         playViewModel.observableGetChannelInfo.observe(viewLifecycleOwner, DistinctObserver {
             when (it) {
