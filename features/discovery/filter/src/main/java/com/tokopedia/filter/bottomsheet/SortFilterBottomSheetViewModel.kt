@@ -23,6 +23,7 @@ internal class SortFilterBottomSheetViewModel {
 
     companion object {
         private const val SORT_VIEW_POSITION = 0
+        private const val SHOW_KNOB_MINIMUM_SECTION = 3
         const val MAX_OPTION_SIZE = 5
     }
 
@@ -87,7 +88,7 @@ internal class SortFilterBottomSheetViewModel {
         val hasSort = dynamicFilterModel.data.sort.isNotEmpty()
         val sectionCount = (dynamicFilterModel.data.filter.size + if (hasSort) 1 else 0)
 
-        return sectionCount > 2
+        return sectionCount > SHOW_KNOB_MINIMUM_SECTION
     }
 
     private fun getSelectedSortValue(): String {
