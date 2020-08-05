@@ -31,7 +31,7 @@ class GetBusinessUnitDataUseCase @Inject constructor(
     fun setParams(id: Int, position: Int){
         params.parameters.clear()
         params.putInt(PARAM_ID, id)
-        params.putInt(PARAM_TAB_POSITION, id)
+        params.putInt(PARAM_TAB_POSITION, position)
     }
 
     companion object{
