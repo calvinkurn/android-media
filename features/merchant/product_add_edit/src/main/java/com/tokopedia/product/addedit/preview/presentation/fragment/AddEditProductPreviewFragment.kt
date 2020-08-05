@@ -44,6 +44,7 @@ import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.HTT
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.PHOTO_TIPS_URL_1
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.PHOTO_TIPS_URL_2
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.PHOTO_TIPS_URL_3
+import com.tokopedia.product.addedit.common.constant.ProductStatus.STATUS_ACTIVE
 import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.InputPriceUtil
 import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity
@@ -330,10 +331,10 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         }
 
         productStatusSwitch?.setOnClickListener {
-            val isChecked = productStatusSwitch?.isChecked
-            viewModel.updateProductStatus(isChecked == true)
+            val isChecked = productStatusSwitch?.isChecked ?: false
+            viewModel.updateProductStatus(isChecked)
             // track switch status on click
-            if (isChecked == true && viewModel.isEditing.value == true) {
+            if (isChecked && viewModel.isEditing.value == true) {
                 ProductEditStepperTracking.trackChangeProductStatus(shopId)
             }
         }
@@ -760,7 +761,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
     }
 
     private fun updateProductStatusSwitch(productInputModel: ProductInputModel) {
-        productStatusSwitch?.isChecked = (productInputModel.detailInputModel.status == 1)
+        productStatusSwitch?.isChecked = (productInputModel.detailInputModel.status == STATUS_ACTIVE)
     }
 
     private fun observeProductVariant() {
