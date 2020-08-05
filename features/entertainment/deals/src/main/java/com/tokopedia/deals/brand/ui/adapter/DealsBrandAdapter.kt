@@ -19,17 +19,4 @@ class DealsBrandAdapter(
                 .addDelegate(DealsBrandEmptyAdapterDelegate(emptyStateListener))
                 .addDelegate(LoadingMoreUnifyAdapterDelegate())
     }
-
-    override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
-        if (oldItem.javaClass == newItem.javaClass) {
-            if (oldItem is DealsBaseItemDataView && newItem is DealsBaseItemDataView) {
-                return oldItem.javaClass == newItem.javaClass && oldItem.isLoaded == newItem.isLoaded && oldItem.isSuccess == newItem.isSuccess
-            }
-        }
-        return false
-    }
-
-    override fun areContentsTheSame(oldItem: Any, newItem: Any): Boolean {
-        return oldItem == newItem
-    }
 }

@@ -42,7 +42,7 @@ class SellerAccountMapper @Inject constructor(
 
     override fun call(graphqlResponse: GraphqlResponse): SellerViewModel {
         val sellerViewModel: SellerViewModel
-        var accountDataModel: AccountDataModel = graphqlResponse.getData(AccountDataModel::class.java)
+        var accountDataModel: AccountDataModel? = graphqlResponse.getData(AccountDataModel::class.java)
 
         if (accountDataModel == null) {
             accountDataModel = AccountDataModel()
@@ -62,7 +62,7 @@ class SellerAccountMapper @Inject constructor(
     private fun isShopHaveProvinceId(graphqlResponse: GraphqlResponse): Boolean {
         val error = graphqlResponse.getError(ShopInfoLocation::class.java)
         if (error.isNullOrEmpty()) {
-            var data : ShopInfoLocation = graphqlResponse.getData(ShopInfoLocation::class.java)
+            var data : ShopInfoLocation? = graphqlResponse.getData(ShopInfoLocation::class.java)
             if (data == null) {
                 data = ShopInfoLocation()
                 AccountHomeErrorHandler.logDataNull("SellerAccountMapper", Throwable("ShopInfoLocation"))
@@ -75,7 +75,7 @@ class SellerAccountMapper @Inject constructor(
     private fun getDataDeposit(graphqlResponse: GraphqlResponse): DataDeposit {
         val error = graphqlResponse.getError(DataDeposit.Response::class.java)
         if (error.isNullOrEmpty()) {
-            var data : DataDeposit.Response = graphqlResponse.getData(DataDeposit.Response::class.java)
+            var data : DataDeposit.Response? = graphqlResponse.getData(DataDeposit.Response::class.java)
             if (data == null) {
                 data = DataDeposit.Response()
                 AccountHomeErrorHandler.logDataNull("SellerAccountMapper", Throwable("DataDeposit.Response"))

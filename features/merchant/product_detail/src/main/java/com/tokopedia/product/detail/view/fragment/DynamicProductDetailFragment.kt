@@ -28,7 +28,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
-import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.crashlytics.android.Crashlytics
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.youtube.player.YouTubeApiServiceUtil
 import com.google.android.youtube.player.YouTubeInitializationResult
@@ -1675,7 +1675,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                         viewModel.userSessionInterface.email,
                         t.message
                 )
-                FirebaseCrashlytics.getInstance().recordException(Exception(errorMessage))
+                Crashlytics.logException(Exception(errorMessage))
             }
         } catch (ex: IllegalStateException) {
             ex.printStackTrace()
