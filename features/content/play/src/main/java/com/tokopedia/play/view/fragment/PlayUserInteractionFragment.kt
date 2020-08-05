@@ -9,8 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.Toast
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
@@ -30,13 +28,12 @@ import com.tokopedia.play.gesture.PlayClickTouchListener
 import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.PlayFullScreenHelper
-import com.tokopedia.play.util.changeConstraint
 import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.util.event.DistinctEventObserver
 import com.tokopedia.play.util.event.EventObserver
 import com.tokopedia.play.view.measurement.ScreenOrientationDataSource
-import com.tokopedia.play.view.measurement.bounds.PlayVideoBoundsManager
-import com.tokopedia.play.view.measurement.bounds.VideoBoundsManager
+import com.tokopedia.play.view.measurement.bounds.provider.PlayVideoBoundsProvider
+import com.tokopedia.play.view.measurement.bounds.provider.VideoBoundsProvider
 import com.tokopedia.play.view.measurement.layout.DynamicLayoutManager
 import com.tokopedia.play.view.measurement.layout.PlayDynamicLayoutManager
 import com.tokopedia.play.util.observer.DistinctObserver
@@ -140,7 +137,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private val orientation: ScreenOrientation
         get() = ScreenOrientation.getByInt(resources.configuration.orientation)
 
-    private var videoBoundsManager: VideoBoundsManager? = null
+    private var videoBoundsProvider: VideoBoundsProvider? = null
     private var dynamicLayoutManager: DynamicLayoutManager? = null
 
     /**
@@ -229,7 +226,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     override fun onDestroyView() {
-        videoBoundsManager = null
+        videoBoundsProvider = null
         dynamicLayoutManager = null
         super.onDestroyView()
         job.cancelChildren()
@@ -466,7 +463,7 @@ class PlayUserInteractionFragment @Inject constructor(
             triggerImmersive(false)
 
             scope.launch(dispatchers.immediate) {
-                playFragment.setVideoTopBounds(playViewModel.videoPlayer, it.orientation, getVideoTopBounds(it.orientation))
+                playFragment.setCurrentVideoTopBounds(it.orientation, getVideoTopBounds(it.orientation))
             }
 
             statsInfoViewOnStateChanged(channelType = it.channelType)
@@ -822,11 +819,11 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private suspend fun getVideoTopBounds(videoOrientation: VideoOrientation): Int {
-        return getVideoBoundsManager().getVideoTopBounds(videoOrientation)
+        return getVideoBoundsProvider().getVideoTopBounds(videoOrientation)
     }
 
     private suspend fun getVideoBottomBoundsOnKeyboardShown(estimatedKeyboardHeight: Int, hasQuickReply: Boolean): Int {
-        return getVideoBoundsManager().getVideoBottomBoundsOnKeyboardShown(estimatedKeyboardHeight, hasQuickReply)
+        return getVideoBoundsProvider().getVideoBottomBoundsOnKeyboardShown(estimatedKeyboardHeight, hasQuickReply)
     }
 
     private fun changeLayoutBasedOnVideoOrientation(videoOrientation: VideoOrientation) {
@@ -848,15 +845,15 @@ class PlayUserInteractionFragment @Inject constructor(
         return dynamicLayoutManager!!
     }
 
-    private fun getVideoBoundsManager(): VideoBoundsManager = synchronized(this) {
-        if (videoBoundsManager == null) {
-            videoBoundsManager = PlayVideoBoundsManager(container as ViewGroup, object : ScreenOrientationDataSource {
+    private fun getVideoBoundsProvider(): VideoBoundsProvider = synchronized(this) {
+        if (videoBoundsProvider == null) {
+            videoBoundsProvider = PlayVideoBoundsProvider(container as ViewGroup, object : ScreenOrientationDataSource {
                 override fun getScreenOrientation(): ScreenOrientation {
                     return orientation
                 }
             })
         }
-        return videoBoundsManager!!
+        return videoBoundsProvider!!
     }
 
     //region OnStateChanged

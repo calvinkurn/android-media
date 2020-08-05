@@ -1,4 +1,4 @@
-package com.tokopedia.play.view.measurement.bounds
+package com.tokopedia.play.view.measurement.bounds.provider
 
 import android.view.ViewGroup
 import com.tokopedia.play.view.measurement.ScreenOrientationDataSource
@@ -7,13 +7,13 @@ import com.tokopedia.play.view.type.VideoOrientation
 /**
  * Created by jegul on 04/08/20
  */
-class PlayVideoBoundsManager(
+class PlayVideoBoundsProvider(
         private val container: ViewGroup,
         private val dataSource: ScreenOrientationDataSource
-) : VideoBoundsManager {
+) : VideoBoundsProvider {
 
-    private lateinit var portraitVideoBoundsManager: PortraitVideoBoundsManager
-    private lateinit var landscapeVideoBoundsManager: LandscapeVideoBoundsManager
+    private lateinit var portraitVideoBoundsProvider: PortraitVideoBoundsProvider
+    private lateinit var landscapeVideoBoundsProvider: LandscapeVideoBoundsProvider
 
     override suspend fun getVideoTopBounds(videoOrientation: VideoOrientation): Int {
         return if (dataSource.getScreenOrientation().isLandscape) getLandscapeManager().getVideoTopBounds(videoOrientation)
@@ -28,17 +28,17 @@ class PlayVideoBoundsManager(
     /**
      * Getter
      */
-    private fun getPortraitManager(): VideoBoundsManager = synchronized(this) {
-        if (!::portraitVideoBoundsManager.isInitialized) {
-            portraitVideoBoundsManager = PortraitVideoBoundsManager(container = container)
+    private fun getPortraitManager(): VideoBoundsProvider = synchronized(this) {
+        if (!::portraitVideoBoundsProvider.isInitialized) {
+            portraitVideoBoundsProvider = PortraitVideoBoundsProvider(container = container)
         }
-        return portraitVideoBoundsManager
+        return portraitVideoBoundsProvider
     }
 
-    private fun getLandscapeManager(): VideoBoundsManager = synchronized(this) {
-        if (!::landscapeVideoBoundsManager.isInitialized) {
-            landscapeVideoBoundsManager = LandscapeVideoBoundsManager()
+    private fun getLandscapeManager(): VideoBoundsProvider = synchronized(this) {
+        if (!::landscapeVideoBoundsProvider.isInitialized) {
+            landscapeVideoBoundsProvider = LandscapeVideoBoundsProvider()
         }
-        return landscapeVideoBoundsManager
+        return landscapeVideoBoundsProvider
     }
 }

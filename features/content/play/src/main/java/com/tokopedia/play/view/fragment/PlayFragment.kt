@@ -16,7 +16,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.RouteManager
@@ -29,8 +28,6 @@ import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytics
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.data.websocket.PlaySocketInfo
-import com.tokopedia.play.di.DaggerPlayComponent
-import com.tokopedia.play.di.PlayModule
 import com.tokopedia.play.extensions.isAnyBottomSheetsShown
 import com.tokopedia.play.extensions.isAnyHidden
 import com.tokopedia.play.extensions.isAnyShown
@@ -47,10 +44,10 @@ import com.tokopedia.play.view.contract.PlayOrientationListener
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.layout.parent.PlayParentLayoutManager
 import com.tokopedia.play.view.layout.parent.PlayParentLayoutManagerImpl
-import com.tokopedia.play.view.layout.parent.PlayParentViewInitializer
 import com.tokopedia.play.view.measurement.ScreenOrientationDataSource
-import com.tokopedia.play.view.measurement.bounds.PlayVideoBoundsManager
-import com.tokopedia.play.view.measurement.bounds.VideoBoundsManager
+import com.tokopedia.play.view.measurement.bounds.BoundsKey
+import com.tokopedia.play.view.measurement.bounds.manager.PlayVideoBoundsManager
+import com.tokopedia.play.view.measurement.bounds.manager.VideoBoundsManager
 import com.tokopedia.play.view.measurement.scaling.PlayVideoScalingManager
 import com.tokopedia.play.view.measurement.scaling.VideoScalingManager
 import com.tokopedia.play.view.type.*
@@ -59,6 +56,9 @@ import com.tokopedia.play.view.uimodel.VideoPlayerUiModel
 import com.tokopedia.play.view.viewcomponent.*
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.GlobalErrorCodeWrapper
+import com.tokopedia.play_common.view.doOnApplyWindowInsets
+import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
+import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -135,6 +135,8 @@ class PlayFragment @Inject constructor(
         get() = ScreenOrientation.getByInt(resources.configuration.orientation)
 
     private var videoScalingManager: VideoScalingManager? = null
+    private var videoBoundsManager: VideoBoundsManager? = null
+    private val boundsMap = BoundsKey.values.associate { Pair(it, 0) }.toMutableMap()
 
     override fun getScreenName(): String = "Play"
 
@@ -159,7 +161,7 @@ class PlayFragment @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
         initView(view)
         setupView(view)
-        setupScreen(view)
+        setupInsets(view)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -172,6 +174,11 @@ class PlayFragment @Inject constructor(
         observeVideoStream()
         observeVideoPlayer()
         observeBottomInsetsState()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        ivClose.requestApplyInsetsWhenAttached()
     }
 
     override fun onResume() {
@@ -195,7 +202,7 @@ class PlayFragment @Inject constructor(
     }
 
     override fun onDestroyView() {
-        getVideoBoundsManager().onDestroy()
+        getVideoScalingManager().onDestroy()
         videoScalingManager = null
 
         destroyInsets(requireView())
@@ -266,11 +273,11 @@ class PlayFragment @Inject constructor(
 
     fun onBottomInsetsViewShown(bottomMostBounds: Int) {
         if (orientation.isLandscape) return
-        getVideoBoundsManager().onBottomInsetsShown(bottomMostBounds, playViewModel.videoPlayer, playViewModel.videoOrientation)
+        getVideoScalingManager().onBottomInsetsShown(bottomMostBounds, playViewModel.videoPlayer, playViewModel.videoOrientation)
     }
 
     fun onBottomInsetsViewHidden() {
-        getVideoBoundsManager().onBottomInsetsHidden(playViewModel.videoPlayer)
+        getVideoScalingManager().onBottomInsetsHidden(playViewModel.videoPlayer)
     }
 
     fun setResultBeforeFinish() {
@@ -281,11 +288,16 @@ class PlayFragment @Inject constructor(
         })
     }
 
-    fun setVideoTopBounds(videoPlayer: VideoPlayerUiModel, videoOrientation: VideoOrientation, topBounds: Int) {
-        if (this.topBounds == null && topBounds > 0) {
-            this.topBounds = topBounds
-        }
-        this.topBounds?.let { layoutManager.onVideoTopBoundsChanged(requireView(), videoPlayer, orientation, videoOrientation, it) }
+    fun setCurrentVideoTopBounds(videoOrientation: VideoOrientation, topBounds: Int) {
+        val key = BoundsKey.getByOrientation(orientation, videoOrientation)
+        boundsMap[key] = topBounds
+
+        invalidateVideoTopBounds(videoOrientation)
+
+//        if (this.topBounds == null && topBounds > 0) {
+//            this.topBounds = topBounds
+//        }
+//        this.topBounds?.let { layoutManager.onVideoTopBoundsChanged(requireView(), videoPlayer, orientation, videoOrientation, it) }
     }
 
     /**
@@ -305,11 +317,30 @@ class PlayFragment @Inject constructor(
         }
     }
 
-    private fun getVideoBoundsManager(): VideoScalingManager = synchronized(this) {
+    private fun invalidateVideoTopBounds(
+            videoOrientation: VideoOrientation = playViewModel.videoOrientation
+    ) {
+        val key = BoundsKey.getByOrientation(orientation, playViewModel.videoOrientation)
+        val topBounds = boundsMap[key] ?: 0
+        getVideoBoundsManager().invalidateVideoBounds(videoOrientation, playViewModel.videoPlayer, topBounds)
+    }
+
+    private fun getVideoScalingManager(): VideoScalingManager = synchronized(this) {
         if (videoScalingManager == null) {
             videoScalingManager = PlayVideoScalingManager(requireView() as ViewGroup)
         }
         return videoScalingManager!!
+    }
+
+    private fun getVideoBoundsManager(): VideoBoundsManager = synchronized(this) {
+        if (videoBoundsManager == null) {
+            videoBoundsManager = PlayVideoBoundsManager(requireView() as ViewGroup, object: ScreenOrientationDataSource {
+                override fun getScreenOrientation(): ScreenOrientation {
+                    return orientation
+                }
+            })
+        }
+        return videoBoundsManager!!
     }
 
     //region init components
@@ -327,7 +358,9 @@ class PlayFragment @Inject constructor(
         super.onConfigurationChanged(newConfig)
         val newOrientation = ScreenOrientation.getByInt(newConfig.orientation)
         if (newOrientation.isLandscape) hideAllInsets()
-        layoutManager.onOrientationChanged(requireView(), newOrientation, playViewModel.videoOrientation, playViewModel.videoPlayer)
+
+        invalidateVideoTopBounds()
+//        layoutManager.onOrientationChanged(requireView(), newOrientation, playViewModel.videoOrientation, playViewModel.videoPlayer)
         sendOrientationChangedEvent(newOrientation)
         onInterceptSystemUiVisibilityChanged()
     }
@@ -395,7 +428,8 @@ class PlayFragment @Inject constructor(
         with (view) {
             ivClose = findViewById(R.id.iv_close)
         }
-        topBounds?.let { setVideoTopBounds(playViewModel.videoPlayer, playViewModel.videoOrientation, it) }
+        invalidateVideoTopBounds()
+//        topBounds?.let { setCurrentVideoTopBounds(playViewModel.videoPlayer, playViewModel.videoOrientation, it) }
     }
 
     private fun setupView(view: View) {
@@ -407,15 +441,15 @@ class PlayFragment @Inject constructor(
         hideAllInsets()
     }
 
-    private fun setupScreen(view: View) {
-        setInsets(view)
-    }
+    private fun setupInsets(view: View) {
+        ivClose.doOnApplyWindowInsets { v, insets, _, margin ->
+            val marginLayoutParams = v.layoutParams as ViewGroup.MarginLayoutParams
 
-    private fun setInsets(view: View) {
-        ViewCompat.setOnApplyWindowInsetsListener(view) { _, insets ->
-
-            layoutManager.setupInsets(view, insets)
-            insets
+            val newTopMargin = margin.top + insets.systemWindowInsetTop
+            if (marginLayoutParams.topMargin != newTopMargin) {
+                marginLayoutParams.updateMargins(top = newTopMargin)
+                v.parent.requestLayout()
+            }
         }
     }
 

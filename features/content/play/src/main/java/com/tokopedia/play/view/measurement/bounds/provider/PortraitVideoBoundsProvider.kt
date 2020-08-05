@@ -1,4 +1,4 @@
-package com.tokopedia.play.view.measurement.bounds
+package com.tokopedia.play.view.measurement.bounds.provider
 
 import android.view.View
 import android.view.ViewGroup
@@ -15,9 +15,9 @@ import kotlinx.coroutines.coroutineScope
 /**
  * Created by jegul on 04/08/20
  */
-class PortraitVideoBoundsManager(
+class PortraitVideoBoundsProvider(
         private val container: ViewGroup
-) : VideoBoundsManager {
+) : VideoBoundsProvider {
 
     private val toolbarView = container.findViewById<View>(R.id.view_toolbar)
     private val statsInfoView = container.findViewById<View>(R.id.view_stats_info)

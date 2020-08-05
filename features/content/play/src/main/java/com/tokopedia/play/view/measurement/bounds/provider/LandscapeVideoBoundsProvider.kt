@@ -1,11 +1,12 @@
-package com.tokopedia.play.view.measurement.bounds
+package com.tokopedia.play.view.measurement.bounds.provider
 
+import com.tokopedia.play.view.measurement.bounds.provider.VideoBoundsProvider
 import com.tokopedia.play.view.type.VideoOrientation
 
 /**
  * Created by jegul on 04/08/20
  */
-class LandscapeVideoBoundsManager : VideoBoundsManager {
+class LandscapeVideoBoundsProvider : VideoBoundsProvider {
 
     override suspend fun getVideoTopBounds(videoOrientation: VideoOrientation): Int {
         return 0
