@@ -38,7 +38,7 @@ class TalkProductActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
             finish()
         }
 
-        return ProductTalkFragment.newInstance(intent.extras)
+        return ProductTalkFragment.newInstance(intent.extras ?: Bundle())
     }
 
     override fun getToolbarResourceID(): Int = R.id.activity_talk_product_toolbar

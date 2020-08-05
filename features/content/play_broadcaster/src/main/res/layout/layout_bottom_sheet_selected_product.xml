@@ -15,7 +15,7 @@
         android:clickable="true"
         app:behavior_hideable="true"
         app:behavior_skipCollapsed="true"
-        app:layout_behavior="com.tokopedia.play.broadcaster.util.behavior.LockableBottomSheetBehavior"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
         >
 
         <View

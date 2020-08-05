@@ -3,7 +3,7 @@
     <dimen name="dp_1">1dp</dimen>
     <dimen name="dp_10">10dp</dimen>
     <dimen name="dp_18">18dp</dimen>
-    <dimen name="dp_166">166dp</dimen>
+    <dimen name="dp_175">175dp</dimen>
     <dimen name="dp_36">36dp</dimen>
     <dimen name="product_manage_list_padding_top">9dp</dimen>
     <dimen name="product_manage_list_padding_bottom">20dp</dimen>
@@ -45,4 +45,18 @@
     <dimen name="product_manage_filter_count_shimmer_width">80dp</dimen>
     <dimen name="product_manage_mutli_select_shimmer_width">92dp</dimen>
     <dimen name="product_manage_item_stock_info_vertical_spacing">7dp</dimen>
+    <dimen name="product_manage_campaign_stock_total_margin">4dp</dimen>
+    <dimen name="product_manage_campaign_stock_horizontal_margin">20dp</dimen>
+    <dimen name="product_manage_campaign_stock_item_switch_height">46dp</dimen>
+    <dimen name="product_manage_campaign_stock_item_padding">12dp</dimen>
+    <dimen name="product_manage_campaign_stock_event_name_margin">4dp</dimen>
+    <dimen name="product_manage_campaign_stock_event_description_margin">2dp</dimen>
+    <dimen name="product_manage_campaign_stock_variant_radius">2dp</dimen>
+    <dimen name="product_manage_campaign_stock_variant_action_height">28dp</dimen>
+    <dimen name="product_manage_campaign_stock_variant_action_padding">14dp</dimen>
+    <dimen name="product_manage_campaign_stock_variant_desc_padding">5dp</dimen>
+    <dimen name="product_manage_campaign_stock_variant_name_height">44dp</dimen>
+    <dimen name="product_manage_campaign_stock_accordion_padding">6dp</dimen>
+    <dimen name="product_manage_campaign_stock_redirection_desc_margin">30dp</dimen>
+    <dimen name="product_manage_campaign_stock_ticker_custom_margin">12dp</dimen>
 </resources>

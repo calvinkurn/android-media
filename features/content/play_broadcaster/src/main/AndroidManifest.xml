@@ -18,12 +18,12 @@
         <activity
             android:name=".view.activity.PlayCoverCameraActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.PlayBroadcast.FullScreen"
+            android:theme="@style/Play.FullScreen"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".view.activity.PlayBroadcastActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.PlayBroadcast"
+            android:theme="@style/Play.FullScreen"
             android:windowSoftInputMode="stateAlwaysHidden">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />

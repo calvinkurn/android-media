@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/setting_title_indented_margin_top"
         android:paddingBottom="@dimen/setting_title_indented_margin_bottom"
-        android:textColor="@color/setting_black_text"
+        android:textColor="@color/default_black_text"
         android:letterSpacing="@integer/setting_title_letter_spacing"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="@id/guideline"
