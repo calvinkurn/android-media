@@ -151,28 +151,27 @@ object ProductAnalytics {
             element: BaseNotificationModel,
             productElement: List<ProductInfo>
     ) {
-        val product = mapOf(
-                KEY_ID to productElement.first().element_id.toString(),
-                KEY_NAME to productElement.first().productTitle,
-                KEY_PRICE to productElement.first().productCurrentPrice,
-                KEY_BRAND to "",
-                KEY_VARIANT to "",
-                KEY_LIST to LIST,
-                KEY_CATEGORY to "",
-                KEY_QUANTITY to POSITION,
-                KEY_DIMENSION79 to element.shopId.toString(),
-                KEY_DIMENSION81 to "",
-                KEY_DIMENSION80 to "",
-                KEY_DIMENSION82 to "",
-                KEY_DIMENSION45 to "",
-                KEY_DIMENSION40 to LIST
-        )
-
+        val product = productElement.first()
         val ecommerce = mapOf(
                 EVENT_CHECKOUT to mapOf(
                         KEY_ACTION_FIELD to mapOf(
                                 KEY_LIST to LIST,
-                                KEY_PRODUCTS to listOf(product)
+                                KEY_PRODUCTS to listOf(mapOf(
+                                        KEY_ID to product.element_id.toString(),
+                                        KEY_NAME to product.productTitle,
+                                        KEY_PRICE to product.productCurrentPrice,
+                                        KEY_BRAND to "",
+                                        KEY_VARIANT to "",
+                                        KEY_LIST to LIST,
+                                        KEY_CATEGORY to "",
+                                        KEY_QUANTITY to POSITION,
+                                        KEY_DIMENSION79 to element.shopId.toString(),
+                                        KEY_DIMENSION81 to "",
+                                        KEY_DIMENSION80 to "",
+                                        KEY_DIMENSION82 to "",
+                                        KEY_DIMENSION45 to "",
+                                        KEY_DIMENSION40 to LIST
+                                ))
                         )
                 )
         )
@@ -191,27 +190,26 @@ object ProductAnalytics {
             element: BaseNotificationModel,
             productElement: List<ProductInfo>
     ) {
-        val product = mapOf(
-                KEY_ID to productElement.first().element_id.toString(),
-                KEY_NAME to productElement.first().productTitle,
-                KEY_PRICE to productElement.first().productCurrentPrice,
-                KEY_BRAND to "",
-                KEY_VARIANT to "",
-                KEY_LIST to LIST,
-                KEY_CATEGORY to "",
-                KEY_QUANTITY to POSITION,
-                KEY_DIMENSION79 to element.shopId.toString(),
-                KEY_DIMENSION81 to "",
-                KEY_DIMENSION80 to "",
-                KEY_DIMENSION82 to "",
-                KEY_DIMENSION45 to "",
-                KEY_DIMENSION40 to LIST
-        )
-
+        val product = productElement.first()
         val ecommerce = mapOf(
                 KEY_CURRENCY_CODE to IDR,
                 KEY_ADD to mapOf(
-                        KEY_PRODUCTS to listOf(product)
+                        KEY_PRODUCTS to listOf(mapOf(
+                                KEY_ID to product.element_id.toString(),
+                                KEY_NAME to product.productTitle,
+                                KEY_PRICE to product.productCurrentPrice,
+                                KEY_BRAND to "",
+                                KEY_VARIANT to "",
+                                KEY_LIST to LIST,
+                                KEY_CATEGORY to "",
+                                KEY_QUANTITY to POSITION,
+                                KEY_DIMENSION79 to element.shopId.toString(),
+                                KEY_DIMENSION81 to "",
+                                KEY_DIMENSION80 to "",
+                                KEY_DIMENSION82 to "",
+                                KEY_DIMENSION45 to "",
+                                KEY_DIMENSION40 to LIST
+                        ))
                 )
         )
 
