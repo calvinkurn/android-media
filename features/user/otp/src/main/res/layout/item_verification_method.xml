@@ -7,6 +7,7 @@
     android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/spacing_lvl5"
     android:layout_marginTop="@dimen/spacing_lvl3"
+    android:layout_marginBottom="@dimen/spacing_lvl3"
     android:layout_marginEnd="@dimen/spacing_lvl5"
     android:background="@color/Neutral_N0"
     android:orientation="horizontal"
@@ -19,8 +20,8 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/method_icon"
-            android:layout_width="@dimen/layout_lvl5"
-            android:layout_height="@dimen/layout_lvl5"
+            android:layout_width="@dimen/layout_lvl6"
+            android:layout_height="@dimen/layout_lvl6"
             android:layout_gravity="center_vertical"
             android:padding="@dimen/spacing_lvl3"
             android:scaleType="fitCenter"
