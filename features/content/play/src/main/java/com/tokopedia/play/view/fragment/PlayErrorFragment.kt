@@ -10,6 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.globalerror.GlobalError
@@ -34,47 +35,22 @@ import javax.inject.Inject
 /**
  * Created by mzennis on 2020-01-10.
  */
-class PlayErrorFragment: BaseDaggerFragment(), PlayFragmentContract {
-
-    companion object {
-        fun newInstance(channelId: String?): PlayErrorFragment {
-            return PlayErrorFragment().apply {
-                val args = Bundle()
-                args.putString(PLAY_KEY_CHANNEL_ID, channelId)
-                arguments = args
-            }
-        }
-    }
-
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    @Inject
-    lateinit var dispatchers: CoroutineDispatcherProvider
+class PlayErrorFragment @Inject constructor(
+        private val viewModelFactory: ViewModelProvider.Factory
+): TkpdBaseV4Fragment(), PlayFragmentContract {
 
     private lateinit var playViewModel: PlayViewModel
     private lateinit var container: View
     private lateinit var globalError: GlobalError
 
-    private var channelId: String = ""
+    private val channelId: String
+        get() = arguments?.getString(PLAY_KEY_CHANNEL_ID).orEmpty()
 
     override fun getScreenName() = "Play Video"
-
-    override fun initInjector() {
-        DaggerPlayComponent
-                .builder()
-                .baseAppComponent(
-                        (requireContext().applicationContext as BaseMainApplication).baseAppComponent
-                )
-                .playModule(PlayModule(requireContext()))
-                .build()
-                .inject(this)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         playViewModel = ViewModelProvider(requireParentFragment(), viewModelFactory).get(PlayViewModel::class.java)
-        channelId  = arguments?.getString(PLAY_KEY_CHANNEL_ID).orEmpty()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

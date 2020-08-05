@@ -3,10 +3,7 @@ package com.tokopedia.play.di
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import com.tokopedia.play.di.key.FragmentKey
-import com.tokopedia.play.view.fragment.PlayBottomSheetFragment
-import com.tokopedia.play.view.fragment.PlayUserInteractionFragment
-import com.tokopedia.play.view.fragment.PlayVideoFragment
-import com.tokopedia.play.view.fragment.PlayYouTubeFragment
+import com.tokopedia.play.view.fragment.*
 import com.tokopedia.play.view.fragment.factory.PlayViewerFragmentFactory
 import dagger.Binds
 import dagger.Module
@@ -40,4 +37,9 @@ abstract class PlayViewerFragmentModule {
     @IntoMap
     @FragmentKey(PlayUserInteractionFragment::class)
     abstract fun getPlayUserInteractionFragment(fragment: PlayUserInteractionFragment): Fragment
+
+    @Binds
+    @IntoMap
+    @FragmentKey(PlayErrorFragment::class)
+    abstract fun getPlayErrorFragment(fragment: PlayErrorFragment): Fragment
 }
