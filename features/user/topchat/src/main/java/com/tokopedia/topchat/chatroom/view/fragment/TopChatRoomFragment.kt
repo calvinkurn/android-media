@@ -710,6 +710,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
             )
         } else {
             sendMessage()
+            removeBroadcastHandler()
         }
     }
 
@@ -786,6 +787,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
 
     private fun sendSticker(sticker: Sticker?) {
         if (sticker == null) return
+        removeBroadcastHandler()
         val startTime = SendableViewModel.generateStartTime()
         presenter.sendAttachmentsAndSticker(
                 messageId,
