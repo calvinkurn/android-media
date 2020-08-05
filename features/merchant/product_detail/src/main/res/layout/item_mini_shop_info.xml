@@ -6,8 +6,7 @@
     android:layout_height="wrap_content"
     android:paddingLeft="@dimen/dp_16"
     android:paddingRight="@dimen/dp_16"
-    android:paddingBottom="@dimen/dp_16"
-    android:background="@color/white">
+    android:paddingBottom="@dimen/dp_16">
 
     <View
         android:id="@+id/mini_shop_divider"

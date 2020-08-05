@@ -1936,9 +1936,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 if (viewModel.shopInfo.isShopInfoNotEmpty()) {
                     startActivity(CourierActivity.createIntent(it,
                             productInfo.basic.productID,
-                            viewModel.shopInfo.shipments,
-                            viewModel.shopInfo.bbInfo
-                    ))
+                            viewModel.shopInfo.shipments))
                 }
             }
         }
