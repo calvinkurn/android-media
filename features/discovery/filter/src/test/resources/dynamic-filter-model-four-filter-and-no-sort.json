@@ -8790,6 +8790,46 @@
             "child": []
           }
         ]
+      },
+      {
+        "title": "Kondisi",
+        "search": {
+          "searchable": 0,
+          "placeholder": ""
+        },
+        "template_name": "",
+        "options": [
+          {
+            "name": "Baru",
+            "key": "condition",
+            "icon": "",
+            "Description": "",
+            "value": "1",
+            "inputType": "checkbox",
+            "totalData": "",
+            "valMax": "",
+            "valMin": "",
+            "isPopular": true,
+            "isNew": false,
+            "hexColor": "",
+            "child": []
+          },
+          {
+            "name": "Bekas",
+            "key": "condition",
+            "icon": "",
+            "Description": "",
+            "value": "2",
+            "inputType": "checkbox",
+            "totalData": "",
+            "valMax": "",
+            "valMin": "",
+            "isPopular": true,
+            "isNew": false,
+            "hexColor": "",
+            "child": []
+          }
+        ]
       }
     ]
   }

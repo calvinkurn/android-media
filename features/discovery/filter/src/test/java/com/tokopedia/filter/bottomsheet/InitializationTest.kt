@@ -34,8 +34,8 @@ internal class InitializationTest : SortFilterBottomSheetViewModelTestFixtures()
     }
 
     @Test
-    fun `Initialization Test with three filter and no sort`() {
-        sortFilterBottomSheetViewModel.init(mapOf(), "dynamic-filter-model-three-filter-and-no-sort.json".jsonToObject<DynamicFilterModel>())
+    fun `Initialization Test with four filter and no sort`() {
+        sortFilterBottomSheetViewModel.init(mapOf(), "dynamic-filter-model-four-filter-and-no-sort.json".jsonToObject<DynamicFilterModel>())
 
         `showKnob should be`(true)
     }
