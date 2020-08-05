@@ -64,9 +64,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.cameraView
-    implementation (rootProject.ext.serviceDependencies.crashlytics) {
-        transitive = true
-    }
+    implementation rootProject.ext.firebase.crashlytics
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
     kapt rootProject.ext.dbDependencies.dbRoomCompiler
     androidTestImplementation rootProject.ext.dbDependencies.dbRoomTesting

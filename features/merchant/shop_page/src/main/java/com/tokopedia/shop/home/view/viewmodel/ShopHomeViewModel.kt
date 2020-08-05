@@ -61,7 +61,6 @@ class ShopHomeViewModel @Inject constructor(
     companion object {
         const val ALL_SHOWCASE_ID = "etalase"
     }
-    private var shopId: String = ""
 
     val initialProductListData: LiveData<Result<Pair<Boolean, List<ShopHomeProductViewModel>>>>
         get() = _initialProductListData
@@ -153,7 +152,7 @@ class ShopHomeViewModel @Inject constructor(
     }
 
     fun onRefreshPlayBanner(shopId: String){
-         val result = _shopHomeLayoutData.value
+        val result = _shopHomeLayoutData.value
         if(result is Success){
             launchCatchError(dispatcherProvider.io(), block = {
                 result.data.listWidget.find { data -> data is ShopHomePlayCarouselUiModel }?.let { uiModel ->

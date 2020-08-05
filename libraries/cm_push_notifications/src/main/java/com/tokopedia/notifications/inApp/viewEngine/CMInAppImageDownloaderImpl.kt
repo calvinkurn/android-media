@@ -14,8 +14,8 @@ class CMInAppImageDownloaderImpl(cmInApp: CMInApp) : CMInAppImageDownloader(cmIn
 
     override suspend fun downloadImages(context: Context): CMInApp {
         val imageSizeAndTimeout: ImageSizeAndTimeout = when(cmInApp.type) {
-            CmInAppConstant.TYPE_FULL_SCREEN_IMAGE_ONLY,  CmInAppConstant.TYPE_INTERSTITIAL_IMAGE_ONLY -> ImageSizeAndTimeout.getBigImageSize(context)
-            CmInAppConstant.TYPE_INTERSTITIAL, CmInAppConstant.TYPE_FULL_SCREEN -> ImageSizeAndTimeout.getCenterImageSize(context)
+            CmInAppConstant.TYPE_FULL_SCREEN_IMAGE_ONLY,  CmInAppConstant.TYPE_INTERSTITIAL_IMAGE_ONLY -> ImageSizeAndTimeout.getBigImageSize()
+            CmInAppConstant.TYPE_INTERSTITIAL, CmInAppConstant.TYPE_FULL_SCREEN -> ImageSizeAndTimeout.getCenterImageSize()
             else -> ImageSizeAndTimeout.getAlertImageSize(context)
         }
         cmInApp.cmLayout?.run {

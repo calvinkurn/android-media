@@ -26,6 +26,10 @@ import rx.Subscriber
 /**
  * @author okasurya on 7/17/18.
  */
+
+@Deprecated(
+        message = "please use BuyerAccountViewModel.kt instead",
+        replaceWith = ReplaceWith("BuyerAccountViewModel"))
 class BuyerAccountPresenter(
         private val getBuyerAccountUseCase: GetBuyerAccountUseCase,
         private val getRecommendationUseCase: GetRecommendationUseCase,

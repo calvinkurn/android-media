@@ -22,7 +22,6 @@ class PromoCheckoutListPresenter(private val graphqlUseCase: GraphqlUseCase,
     override fun getListPromo(serviceId: String, categoryId: Int, page: Int, resources: Resources) {
         val variables = HashMap<String, Any>()
         variables.put(INPUT_GQL, generateInputList(page, serviceId, categoryId))
-        variables.put(API_VERSION, "2.0.0")
         val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(resources,
                 R.raw.promo_checkout_list), DataPromoCheckoutList::class.java, variables, false)
         graphqlUseCase.clearRequest()
@@ -56,6 +55,7 @@ class PromoCheckoutListPresenter(private val graphqlUseCase: GraphqlUseCase,
         input.addProperty(PAGE, page)
         input.addProperty(LIMIT, 10)
         input.addProperty(INCLUDE_EXTRA_INFO, 0)
+        input.addProperty(API_VERSION, API_VERSION_VALUE)
         return input
     }
 
@@ -100,5 +100,6 @@ class PromoCheckoutListPresenter(private val graphqlUseCase: GraphqlUseCase,
         private val PAGE = "page"
         private val LIMIT = "limit"
         private val INCLUDE_EXTRA_INFO = "includeExtraInfo"
+        private val API_VERSION_VALUE= "2.0.0"
     }
 }

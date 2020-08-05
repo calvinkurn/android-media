@@ -23,7 +23,7 @@ class OrderHistoryViewHolder(
     interface Listener {
         fun onClickBuyAgain(product: Product)
         fun onClickAddToWishList(product: Product)
-        fun onClickCardProduct(product: Product)
+        fun onClickCardProduct(product: Product, position: Int)
         fun trackSeenProduct(product: Product, position: Int)
     }
 
@@ -53,7 +53,7 @@ class OrderHistoryViewHolder(
 
     private fun bindCardClick(product: Product) {
         itemView.setOnClickListener {
-            listener?.onClickCardProduct(product)
+            listener?.onClickCardProduct(product, adapterPosition)
         }
     }
 

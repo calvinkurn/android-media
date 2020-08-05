@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="StickyLoginView">
+        <attr name="sticky_left_icon" format="reference" />
+        <attr name="sticky_text" format="string|reference" />
+        <attr name="sticky_text_highlight" format="string|reference" />
+        <attr name="sticky_highlight_color" format="reference|color" />
+    </declare-styleable>
+</resources>
