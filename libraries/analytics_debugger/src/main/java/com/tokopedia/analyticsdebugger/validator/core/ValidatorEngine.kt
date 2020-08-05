@@ -13,7 +13,7 @@ class ValidatorEngine constructor(private val dao: GtmLogDBSource) {
         fun isInExact():Boolean = (this == EXACT_ORDER || this == EXACT_ALL)
     }
 
-    private var currentMode = Mode.SUBSET_ALL
+    private var currentMode = Mode.EXACT_ALL
 
     fun computeRx(testCases: List<Validator>, mode: String = "exact"): Observable<List<Validator>> {
         setMode(mode)
