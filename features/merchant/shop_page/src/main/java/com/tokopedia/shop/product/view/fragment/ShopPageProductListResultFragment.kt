@@ -482,7 +482,8 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 selectedEtalaseId = selectedEtalaseId.takeIf { it.isNotEmpty() } ?: "",
                 selectedEtalaseName = selectedEtalaseName.takeIf { it.isNotEmpty() } ?: "",
                 selectedSortId = sortValue,
-                selectedSortName = selectedSortName
+                selectedSortName = selectedSortName,
+                isShowSortFilter = selectedEtalaseType != ShopEtalaseTypeDef.ETALASE_CAMPAIGN
         )
         shopProductAdapter.setSortFilterData(shopProductSortFilterUiModel)
         viewModel.getShopProduct(

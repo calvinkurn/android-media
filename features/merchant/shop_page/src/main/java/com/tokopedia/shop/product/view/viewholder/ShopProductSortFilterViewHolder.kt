@@ -59,21 +59,24 @@ class ShopProductSortFilterViewHolder(
             }
         })
         val filterData = ArrayList<SortFilterItem>()
-        val sortFilter = if (data.selectedSortName.isNotEmpty()) {
-            SortFilterItem(data.selectedSortName).apply {
-                type = ChipsUnify.TYPE_SELECTED
+        var sortFilter: SortFilterItem? = null
+        if(data.isShowSortFilter) {
+            sortFilter = if (data.selectedSortName.isNotEmpty()) {
+                SortFilterItem(data.selectedSortName).apply {
+                    type = ChipsUnify.TYPE_SELECTED
+                }
+            } else {
+                SortFilterItem(itemView.resources.getString(
+                        R.string.shop_sort_filter_default_label)
+                ).apply {
+                    type = ChipsUnify.TYPE_NORMAL
+                }
             }
-        } else {
-            SortFilterItem(itemView.resources.getString(
-                    R.string.shop_sort_filter_default_label)
-            ).apply {
-                type = ChipsUnify.TYPE_NORMAL
+            sortFilter.listener = {
+                shopProductEtalaseChipListViewHolderListener?.onSortFilterClicked()
             }
+            filterData.add(sortFilter)
         }
-        sortFilter.listener = {
-            shopProductEtalaseChipListViewHolderListener?.onSortFilterClicked()
-        }
-
 
         val etalaseFilter = if (data.selectedEtalaseName.isNotEmpty()) {
             SortFilterItem(data.selectedEtalaseName).apply {
@@ -89,11 +92,12 @@ class ShopProductSortFilterViewHolder(
         etalaseFilter.listener = {
             shopProductEtalaseChipListViewHolderListener?.onEtalaseFilterClicked()
         }
-        filterData.add(sortFilter)
         filterData.add(etalaseFilter)
         itemView.sort_filter?.addItem(filterData)
-        sortFilter.refChipUnify.setChevronClickListener {
-            shopProductEtalaseChipListViewHolderListener?.onSortFilterClicked()
+        if(data.isShowSortFilter) {
+            sortFilter?.refChipUnify?.setChevronClickListener {
+                shopProductEtalaseChipListViewHolderListener?.onSortFilterClicked()
+            }
         }
         etalaseFilter.refChipUnify.setChevronClickListener {
             shopProductEtalaseChipListViewHolderListener?.onEtalaseFilterClicked()
