@@ -12,6 +12,7 @@ import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.spyk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import org.junit.Before
 import org.junit.Rule
@@ -25,6 +26,8 @@ abstract class AddEditProductVariantViewModelTestFixture {
 
     @RelaxedMockK
     lateinit var getCategoryVariantCombinationUseCase: GetCategoryVariantCombinationUseCase
+
+    private val testCoroutineDispatcher = TestCoroutineDispatcher()
 
     val variantDetailTest1 = VariantDetail(
             variantID=54,
@@ -116,7 +119,7 @@ abstract class AddEditProductVariantViewModelTestFixture {
 
     protected val viewModel: AddEditProductVariantViewModel by lazy {
         spyk(AddEditProductVariantViewModel(
-                TestCoroutineDispatchers.main,
+                testCoroutineDispatcher,
                 getCategoryVariantCombinationUseCase
         ))
     }
