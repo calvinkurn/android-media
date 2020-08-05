@@ -26,24 +26,17 @@ import com.tokopedia.play.ERR_STATE_SOCKET
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytics
-import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.data.websocket.PlaySocketInfo
 import com.tokopedia.play.extensions.isAnyBottomSheetsShown
-import com.tokopedia.play.extensions.isAnyHidden
-import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.extensions.isKeyboardShown
 import com.tokopedia.play.util.PlayFullScreenHelper
 import com.tokopedia.play.util.PlaySensorOrientationManager
-import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.util.keyboard.KeyboardWatcher
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.view.activity.PlayActivity
 import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.contract.PlayNewChannelInteractor
 import com.tokopedia.play.view.contract.PlayOrientationListener
-import com.tokopedia.play.view.event.ScreenStateEvent
-import com.tokopedia.play.view.layout.parent.PlayParentLayoutManager
-import com.tokopedia.play.view.layout.parent.PlayParentLayoutManagerImpl
 import com.tokopedia.play.view.measurement.ScreenOrientationDataSource
 import com.tokopedia.play.view.measurement.bounds.BoundsKey
 import com.tokopedia.play.view.measurement.bounds.manager.PlayVideoBoundsManager
@@ -51,7 +44,6 @@ import com.tokopedia.play.view.measurement.bounds.manager.VideoBoundsManager
 import com.tokopedia.play.view.measurement.scaling.PlayVideoScalingManager
 import com.tokopedia.play.view.measurement.scaling.VideoScalingManager
 import com.tokopedia.play.view.type.*
-import com.tokopedia.play.view.uimodel.EventUiModel
 import com.tokopedia.play.view.uimodel.VideoPlayerUiModel
 import com.tokopedia.play.view.viewcomponent.*
 import com.tokopedia.play.view.viewmodel.PlayViewModel
@@ -63,15 +55,12 @@ import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.*
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
 
 /**
  * Created by jegul on 29/11/19
  */
 class PlayFragment @Inject constructor(
-        private val dispatchers: CoroutineDispatcherProvider,
         private val viewModelFactory: ViewModelProvider.Factory
 ) :
         TkpdBaseV4Fragment(),
@@ -79,14 +68,6 @@ class PlayFragment @Inject constructor(
         PlayFragmentContract,
         FragmentVideoViewComponent.Listener,
         FragmentYouTubeViewComponent.Listener {
-
-    private val scope = object : CoroutineScope {
-        override val coroutineContext: CoroutineContext
-            get() = job + dispatchers.main
-    }
-    private val job: Job = SupervisorJob()
-
-    private var topBounds: Int? = null
 
     private lateinit var ivClose: ImageView
     private val fragmentVideoView by viewComponent {
@@ -114,7 +95,6 @@ class PlayFragment @Inject constructor(
     /**
      * Manager
      */
-    private lateinit var layoutManager: PlayParentLayoutManager
     private lateinit var orientationManager: PlaySensorOrientationManager
 
     private val keyboardWatcher = KeyboardWatcher()
@@ -148,13 +128,7 @@ class PlayFragment @Inject constructor(
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        if (savedInstanceState?.containsKey(TOP_BOUNDS_LANDSCAPE_VIDEO) == true) {
-            topBounds = savedInstanceState.getInt(TOP_BOUNDS_LANDSCAPE_VIDEO, 0)
-        }
-
-        val view = inflater.inflate(R.layout.fragment_play, container, false)
-        initComponents(view as ViewGroup)
-        return view
+        return inflater.inflate(R.layout.fragment_play, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -162,18 +136,7 @@ class PlayFragment @Inject constructor(
         initView(view)
         setupView(view)
         setupInsets(view)
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        observeGetChannelInfo()
-        observeSocketInfo()
-        observeEventUserInfo()
-        observeVideoProperty()
-        observeVideoStream()
-        observeVideoPlayer()
-        observeBottomInsetsState()
+        setupObserve()
     }
 
     override fun onStart() {
@@ -188,10 +151,9 @@ class PlayFragment @Inject constructor(
         startNetworkMonitoring()
         playViewModel.getChannelInfo(channelId)
         onInterceptSystemUiVisibilityChanged()
-        scope.launch {
-            delay(200)
-            registerKeyboardListener(requireView())
-        }
+        view?.postDelayed({
+            view?.let { registerKeyboardListener(it) }
+        }, 200)
     }
 
     override fun onPause() {
@@ -207,8 +169,6 @@ class PlayFragment @Inject constructor(
 
         destroyInsets(requireView())
         super.onDestroyView()
-        if (::layoutManager.isInitialized) layoutManager.onDestroy()
-        job.cancelChildren()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -219,11 +179,6 @@ class PlayFragment @Inject constructor(
             }
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        topBounds?.let { outState.putInt(TOP_BOUNDS_LANDSCAPE_VIDEO, it) }
-        super.onSaveInstanceState(outState)
     }
 
     override fun onOrientationChanged(screenOrientation: ScreenOrientation, isTilting: Boolean) {
@@ -293,11 +248,6 @@ class PlayFragment @Inject constructor(
         boundsMap[key] = topBounds
 
         invalidateVideoTopBounds(videoOrientation)
-
-//        if (this.topBounds == null && topBounds > 0) {
-//            this.topBounds = topBounds
-//        }
-//        this.topBounds?.let { layoutManager.onVideoTopBoundsChanged(requireView(), videoPlayer, orientation, videoOrientation, it) }
     }
 
     /**
@@ -343,77 +293,13 @@ class PlayFragment @Inject constructor(
         return videoBoundsManager!!
     }
 
-    //region init components
-    private fun initComponents(container: ViewGroup) {
-        layoutManager = PlayParentLayoutManagerImpl(
-                container = container
-        )
-
-        sendInitState()
-        layoutManager.layoutView(container)
-    }
-    //endregion
-
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         val newOrientation = ScreenOrientation.getByInt(newConfig.orientation)
         if (newOrientation.isLandscape) hideAllInsets()
 
         invalidateVideoTopBounds()
-//        layoutManager.onOrientationChanged(requireView(), newOrientation, playViewModel.videoOrientation, playViewModel.videoPlayer)
-        sendOrientationChangedEvent(newOrientation)
         onInterceptSystemUiVisibilityChanged()
-    }
-
-    private fun sendInitState() {
-        scope.launch(dispatchers.immediate) {
-            EventBusFactory.get(viewLifecycleOwner).emit(
-                    ScreenStateEvent::class.java,
-                    ScreenStateEvent.Init(orientation, playViewModel.getStateHelper(orientation))
-            )
-        }
-    }
-
-    private fun sendEventBanned(event: EventUiModel) {
-        scope.launch {
-            EventBusFactory.get(viewLifecycleOwner)
-                    .emit(
-                            ScreenStateEvent::class.java,
-                            ScreenStateEvent.OnNewPlayRoomEvent(
-                                    PlayRoomEvent.Banned(
-                                            title = event.bannedTitle,
-                                            message = event.bannedMessage,
-                                            btnTitle = event.bannedButtonTitle
-                                    )
-                            )
-                    )
-        }
-    }
-
-    private fun sendEventFreeze(event: EventUiModel) {
-        scope.launch {
-            EventBusFactory.get(viewLifecycleOwner)
-                    .emit(
-                            ScreenStateEvent::class.java,
-                            ScreenStateEvent.OnNewPlayRoomEvent(
-                                    PlayRoomEvent.Freeze(
-                                            title = event.freezeTitle,
-                                            message = event.freezeMessage,
-                                            btnTitle = event.freezeButtonTitle,
-                                            btnUrl = event.freezeButtonUrl
-                                    )
-                            )
-                    )
-        }
-    }
-
-    private fun sendOrientationChangedEvent(orientation: ScreenOrientation) {
-        scope.launch(dispatchers.immediate) {
-            EventBusFactory.get(viewLifecycleOwner).emit(
-                    ScreenStateEvent::class.java,
-                    ScreenStateEvent.OrientationChanged(orientation, playViewModel.getStateHelper(orientation))
-            )
-        }
     }
 
     private fun destroyInsets(view: View) {
@@ -428,8 +314,6 @@ class PlayFragment @Inject constructor(
         with (view) {
             ivClose = findViewById(R.id.iv_close)
         }
-        invalidateVideoTopBounds()
-//        topBounds?.let { setCurrentVideoTopBounds(playViewModel.videoPlayer, playViewModel.videoOrientation, it) }
     }
 
     private fun setupView(view: View) {
@@ -438,6 +322,7 @@ class PlayFragment @Inject constructor(
         fragmentUserInteractionView.safeInit()
         fragmentBottomSheetView.safeInit()
 
+        invalidateVideoTopBounds()
         hideAllInsets()
     }
 
@@ -453,6 +338,19 @@ class PlayFragment @Inject constructor(
         }
     }
 
+    private fun setupObserve() {
+        observeGetChannelInfo()
+        observeSocketInfo()
+        observeEventUserInfo()
+        observeVideoStream()
+        observeVideoPlayer()
+        observeBottomInsetsState()
+    }
+
+    //region observe
+    /**
+     * Observe
+     */
     private fun observeGetChannelInfo() {
         playViewModel.observableGetChannelInfo.observe(viewLifecycleOwner, DistinctObserver { result ->
             when (result) {
@@ -483,10 +381,8 @@ class PlayFragment @Inject constructor(
     private fun observeEventUserInfo() {
         playViewModel.observableEvent.observe(viewLifecycleOwner, DistinctObserver {
             if (it.isFreeze) {
-                sendEventFreeze(it)
                 try { Toaster.snackBar.dismiss() } catch (e: Exception) {}
             } else if (it.isBanned) {
-                sendEventBanned(it)
                 showEventDialog(it.bannedTitle, it.bannedMessage, it.bannedButtonTitle)
             }
             if (it.isFreeze || it.isBanned) {
@@ -494,18 +390,9 @@ class PlayFragment @Inject constructor(
                 onBottomInsetsViewHidden()
             }
 
-            /**
-             * New
-             */
             fragmentVideoViewOnStateChanged(isFreezeOrBanned = it.isFreeze || it.isBanned)
             fragmentBottomSheetViewOnStateChanged(isFreezeOrBanned = it.isFreeze || it.isBanned)
             fragmentYouTubeViewOnStateChanged(isFreezeOrBanned = it.isFreeze || it.isBanned)
-        })
-    }
-
-    private fun observeVideoProperty() {
-        playViewModel.observableVideoProperty.observe(viewLifecycleOwner, DistinctObserver {
-            layoutManager.onVideoStateChanged(requireView(), it.state, playViewModel.videoOrientation)
         })
     }
 
@@ -518,16 +405,6 @@ class PlayFragment @Inject constructor(
 
     private fun observeVideoPlayer() {
         playViewModel.observableVideoPlayer.observe(viewLifecycleOwner, Observer {
-            scope.launch {
-                EventBusFactory.get(viewLifecycleOwner)
-                        .emit(
-                                ScreenStateEvent::class.java,
-                                ScreenStateEvent.SetVideo(it)
-                        )
-            }
-            /**
-             * New
-             */
             fragmentVideoViewOnStateChanged(videoPlayer = it)
             fragmentYouTubeViewOnStateChanged(videoPlayer = it)
         })
@@ -535,17 +412,6 @@ class PlayFragment @Inject constructor(
 
     private fun observeBottomInsetsState() {
         playViewModel.observableBottomInsetsState.observe(viewLifecycleOwner, DistinctObserver {
-            scope.launch {
-                EventBusFactory.get(viewLifecycleOwner)
-                        .emit(
-                                ScreenStateEvent::class.java,
-                                ScreenStateEvent.BottomInsetsChanged(it, it.isAnyShown, it.isAnyHidden, playViewModel.getStateHelper(orientation))
-                        )
-            }
-
-            /**
-             * New
-             */
             buttonCloseViewOnStateChanged(bottomInsets = it)
         })
     }
@@ -714,8 +580,6 @@ class PlayFragment @Inject constructor(
     //endregion
 
     companion object {
-        private const val TOP_BOUNDS_LANDSCAPE_VIDEO = "top_bounds_landscape_video"
-
         private const val EXTRA_TOTAL_VIEW = "EXTRA_TOTAL_VIEW"
         private const val EXTRA_CHANNEL_ID = "EXTRA_CHANNEL_ID"
     }

@@ -41,7 +41,7 @@ import com.tokopedia.play.view.bottomsheet.PlayMoreActionBottomSheet
 import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.contract.PlayNavigation
 import com.tokopedia.play.view.contract.PlayOrientationListener
-import com.tokopedia.play.view.layout.parent.PlayParentLayoutManagerImpl
+import com.tokopedia.play.view.measurement.scaling.PlayVideoScalingManager
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.viewcomponent.*
@@ -553,7 +553,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
             view?.postDelayed({
                 view?.show()
-            }, PlayParentLayoutManagerImpl.ANIMATION_DURATION)
+            }, PlayVideoScalingManager.ANIMATION_DURATION)
 
             gradientBackgroundViewOnStateChanged(bottomInsets = map)
             toolbarViewOnStateChanged(bottomInsets = map)
