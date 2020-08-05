@@ -1,11 +1,9 @@
 package com.tokopedia.product.addedit.variant.presentation.viewmodel
 
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.util.getOrAwaitValue
 import com.tokopedia.product.addedit.variant.data.model.GetCategoryVariantCombinationResponse
 import com.tokopedia.product.addedit.variant.presentation.model.PictureVariantInputModel
-import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.coVerify
