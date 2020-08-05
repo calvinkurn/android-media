@@ -587,7 +587,6 @@ class AddEditProductVariantFragment :
                         viewModel.productInputModel.value = saveInstanceCacheManager
                                 .get(EXTRA_PRODUCT_INPUT_MODEL, ProductInputModel::class.java)
                     }
-
                     submitVariantInput()
                 }
             }
