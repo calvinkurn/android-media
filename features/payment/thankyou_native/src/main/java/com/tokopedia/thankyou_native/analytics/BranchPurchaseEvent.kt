@@ -39,10 +39,10 @@ class BranchPurchaseEvent(val userSession: UserSessionInterface,
         paymentData.isNewBuyer = thanksPageData.isNewUser
         paymentData.isMonthlyNewBuyer = thanksPageData.isMonthlyNewUser
         var revenue = 0F
-        shopOrder.purchaseItemList.forEach { productItem ->
+        shopOrder.purchaseItemList.forEach { purchaseItem ->
             if (isItemPartOfRevenue(purchaseItem)) {
-                revenue += productItem.totalPrice
-                paymentData.setProduct(getPurchasedItemBranch(productItem))
+                revenue += purchaseItem.totalPrice
+                paymentData.setProduct(getPurchasedItemBranch(purchaseItem))
             }
         }
         paymentData.setRevenue(revenue.toString())
@@ -51,12 +51,9 @@ class BranchPurchaseEvent(val userSession: UserSessionInterface,
 
     private fun isItemPartOfRevenue(purchaseItem: PurchaseItem): Boolean {
         val categoryLevelOne = getCategoryLevel1(purchaseItem.category)
-        if (getProductTypeForBranch() == LinkerConstants.PRODUCTTYPE_DIGITAL &&
+        return !(getProductTypeForBranch() == LinkerConstants.PRODUCTTYPE_DIGITAL &&
                 (categoryLevelOne == CATEGORY_LEVEL_ONE_EGOLD ||
-                        categoryLevelOne == CATEGORY_LEVEL_ONE_PURCHASE_PROTECTION)) {
-            return false
-        }
-        return true
+                        categoryLevelOne == CATEGORY_LEVEL_ONE_PURCHASE_PROTECTION))
     }
 
     private fun getPurchasedItemBranch(productItem: PurchaseItem): HashMap<String, String> {
