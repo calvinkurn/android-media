@@ -212,9 +212,28 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
 
     private fun goToSecurityQuestion(){
         activity?.let {
-            it.setResult(Activity.RESULT_OK, Intent().putExtra(ApplinkConstInternalGlobal.PARAM_IS_SQ_CHECK, true))
+            val intent = Intent().putExtra(ApplinkConstInternalGlobal.PARAM_IS_SQ_CHECK, true)
+            setApplinkResult(intent)
+            it.setResult(Activity.RESULT_OK, intent)
             it.finish()
         }
+    }
+
+    private fun  setApplinkResult(intent: Intent){
+        if(redirectUrl.isNotEmpty()) {
+            intent.putExtra(KEY_REDIRECT_SEAMLESS_APPLINK, redirectUrl)
+        }
+    }
+
+    private fun finishIntent(){
+        if(redirectUrl.isNotEmpty()) {
+            val intent = Intent()
+            setApplinkResult(intent)
+            activity?.setResult(Activity.RESULT_OK, intent)
+        }else {
+            activity?.setResult(Activity.RESULT_OK)
+        }
+        activity?.finish()
     }
 
     private fun initObserver(){
@@ -230,18 +249,11 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
         })
     }
 
+
     private fun onSuccessLoginToken(){
         analytics.eventClickLoginSeamless(SeamlessLoginAnalytics.LABEL_SUCCESS)
         hideProgressBar()
-        if(redirectUrl.isNotEmpty()) {
-            val intent = Intent().apply {
-                putExtra(KEY_REDIRECT_SEAMLESS_APPLINK, redirectUrl)
-            }
-            activity?.setResult(Activity.RESULT_OK, intent)
-        }else {
-            activity?.setResult(Activity.RESULT_OK)
-        }
-        activity?.finish()
+        finishIntent()
     }
 
     private fun onErrorLoginToken(throwable: Throwable?){
