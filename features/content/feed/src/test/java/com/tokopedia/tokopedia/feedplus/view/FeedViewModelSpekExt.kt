@@ -115,6 +115,10 @@ fun FeatureBody.createFeedTestInstance() {
     val deletePostUseCase by memoized {
         mockk<DeletePostUseCase>(relaxed = true)
     }
+
+    val sendTopAdsUseCase by memoized {
+        mockk<SendTopAdsUseCase>(relaxed = true)
+    }
 }
 
 fun GetDynamicFeedFirstPageUseCase.getFeedFirstDataWithSample(data: MutableList<Visitable<*>>, cursor: String = "") {
