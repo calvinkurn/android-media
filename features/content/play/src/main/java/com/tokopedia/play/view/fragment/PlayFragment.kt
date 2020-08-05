@@ -11,14 +11,12 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import androidx.annotation.Nullable
 import androidx.core.view.ViewCompat
-import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.RouteManager
@@ -41,8 +39,6 @@ import com.tokopedia.play.ui.fragment.bottomsheet.FragmentBottomSheetComponent
 import com.tokopedia.play.ui.fragment.error.FragmentErrorComponent
 import com.tokopedia.play.ui.fragment.miniinteraction.FragmentMiniInteractionComponent
 import com.tokopedia.play.ui.fragment.userinteraction.FragmentUserInteractionComponent
-import com.tokopedia.play.ui.fragment.video.FragmentVideoComponent
-import com.tokopedia.play.ui.fragment.video.interaction.FragmentVideoInteractionEvent
 import com.tokopedia.play.ui.fragment.youtube.FragmentYouTubeComponent
 import com.tokopedia.play.ui.fragment.youtube.interaction.FragmentYouTubeInteractionEvent
 import com.tokopedia.play.util.PlayFullScreenHelper
@@ -61,8 +57,10 @@ import com.tokopedia.play.view.layout.parent.PlayParentViewInitializer
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.EventUiModel
 import com.tokopedia.play.view.uimodel.VideoPlayerUiModel
+import com.tokopedia.play.view.viewcomponent.FragmentVideoViewComponent
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.GlobalErrorCodeWrapper
+import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -77,7 +75,12 @@ import kotlin.coroutines.CoroutineContext
 class PlayFragment @Inject constructor(
         private val dispatchers: CoroutineDispatcherProvider,
         private val viewModelFactory: ViewModelProvider.Factory
-): TkpdBaseV4Fragment(), PlayOrientationListener, PlayFragmentContract, PlayParentViewInitializer {
+):
+        TkpdBaseV4Fragment(),
+        PlayOrientationListener,
+        PlayFragmentContract,
+        PlayParentViewInitializer,
+        FragmentVideoViewComponent.Listener {
 
     private val scope = object : CoroutineScope {
         override val coroutineContext: CoroutineContext
@@ -88,6 +91,9 @@ class PlayFragment @Inject constructor(
     private var topBounds: Int? = null
 
     private lateinit var ivClose: ImageView
+    private val fragmentVideoView by viewComponent {
+        FragmentVideoViewComponent(channelId, it, R.id.fl_video, childFragmentManager, this)
+    }
 
     private lateinit var pageMonitoring: PageLoadTimePerformanceInterface
     private lateinit var playViewModel: PlayViewModel
@@ -226,6 +232,14 @@ class PlayFragment @Inject constructor(
         return isIntercepted
     }
 
+    /**
+     * FragmentVideo View Component Listener
+     */
+    override fun onFragmentClicked(view: FragmentVideoViewComponent) {
+        if (playViewModel.bottomInsets.isKeyboardShown) hideKeyboard()
+        else hideAllInsets()
+    }
+
     fun onBottomInsetsViewShown(bottomMostBounds: Int) {
         if (orientation.isLandscape) return
         layoutManager.onBottomInsetsShown(requireView(), bottomMostBounds, playViewModel.videoPlayer, playViewModel.videoOrientation)
@@ -294,21 +308,7 @@ class PlayFragment @Inject constructor(
     }
 
     override fun onInitVideoFragment(container: ViewGroup): Int {
-        val fragmentVideoComponent = FragmentVideoComponent(channelId, container, childFragmentManager, EventBusFactory.get(viewLifecycleOwner), scope, dispatchers)
-
-        scope.launch {
-            fragmentVideoComponent.getUserInteractionEvents()
-                    .collect {
-                        when (it) {
-                            FragmentVideoInteractionEvent.OnClicked -> {
-                                if (playViewModel.bottomInsets.isKeyboardShown) hideKeyboard()
-                                else hideAllInsets()
-                            }
-                        }
-                    }
-        }
-
-        return fragmentVideoComponent.getContainerId()
+        throw IllegalStateException("No Init")
     }
 
     override fun onInitUserInteractionFragment(container: ViewGroup): Int {
@@ -429,6 +429,8 @@ class PlayFragment @Inject constructor(
 
     private fun setupView(view: View) {
         ivClose.setOnClickListener { hideKeyboard() }
+        fragmentVideoView.init()
+
         hideAllInsets()
     }
 
@@ -479,6 +481,11 @@ class PlayFragment @Inject constructor(
                 unregisterKeyboardListener(requireView())
                 onBottomInsetsViewHidden()
             }
+
+            /**
+             * New
+             */
+            fragmentVideoViewOnStateChanged(isFreezeOrBanned = it.isFreeze || it.isBanned)
         })
     }
 
@@ -504,6 +511,10 @@ class PlayFragment @Inject constructor(
                                 ScreenStateEvent.SetVideo(it)
                         )
             }
+            /**
+             * New
+             */
+            fragmentVideoViewOnStateChanged(videoPlayer = it)
         })
     }
 
@@ -520,7 +531,7 @@ class PlayFragment @Inject constructor(
             /**
              * New
              */
-            buttonCloseOnStateChanged(bottomInsets = it)
+            buttonCloseViewOnStateChanged(bottomInsets = it)
         })
     }
 
@@ -641,9 +652,19 @@ class PlayFragment @Inject constructor(
     /**
      * OnStateChanged
      */
-    private fun buttonCloseOnStateChanged(bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets) {
+    private fun buttonCloseViewOnStateChanged(bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets) {
         if (bottomInsets.isKeyboardShown) ivClose.show()
         else ivClose.invisible()
+    }
+
+    private fun fragmentVideoViewOnStateChanged(
+            videoPlayer: VideoPlayerUiModel = playViewModel.videoPlayer,
+            isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned
+    ) {
+        if (videoPlayer.isYouTube || isFreezeOrBanned) {
+            fragmentVideoView.release()
+            fragmentVideoView.hide()
+        }
     }
 
     companion object {

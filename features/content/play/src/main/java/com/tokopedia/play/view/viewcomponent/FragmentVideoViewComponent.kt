@@ -1,56 +1,38 @@
-package com.tokopedia.play.ui.fragment.video
+package com.tokopedia.play.view.viewcomponent
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
-import com.tokopedia.play.R
-import com.tokopedia.play.component.UIView
 import com.tokopedia.play.view.fragment.PlayVideoFragment
-import com.tokopedia.play.view.fragment.PlayYouTubeFragment
+import com.tokopedia.play_common.viewcomponent.ViewComponent
 
 /**
- * Created by jegul on 05/05/20
+ * Created by jegul on 05/08/20
  */
-class FragmentVideoView(
+class FragmentVideoViewComponent(
         private val channelId: String,
-        container: ViewGroup,
+        private val container: ViewGroup,
+        @IdRes idRes: Int,
         private val fragmentManager: FragmentManager,
         private val listener: Listener
-) : UIView(container) {
+) : ViewComponent(container, idRes) {
 
-    private val view: View =
-            LayoutInflater.from(container.context).inflate(R.layout.view_fragment_video, container, true)
-                    .findViewById(R.id.fl_video)
-
-    override val containerId: Int = view.id
-
-    override fun show() {
-        view.show()
-    }
-
-    override fun hide() {
-        view.hide()
-    }
-
-    internal fun init() {
+    fun init() {
         fragmentManager.findFragmentByTag(VIDEO_FRAGMENT_TAG) ?: getPlayVideoFragment().also {
             fragmentManager.beginTransaction()
-                    .replace(view.id, it, VIDEO_FRAGMENT_TAG)
+                    .replace(rootView.id, it, VIDEO_FRAGMENT_TAG)
                     .commit()
         }
 
-        view.setOnClickListener {
-            listener.onFragmentClicked(this@FragmentVideoView)
+        rootView.setOnClickListener {
+            listener.onFragmentClicked(this@FragmentVideoViewComponent)
         }
     }
 
-    internal fun release() {
+    fun release() {
         fragmentManager.findFragmentByTag(VIDEO_FRAGMENT_TAG)?.let { fragment ->
             fragmentManager.beginTransaction()
                     .remove(fragment)
@@ -73,6 +55,6 @@ class FragmentVideoView(
 
     interface Listener {
 
-        fun onFragmentClicked(view: FragmentVideoView)
+        fun onFragmentClicked(view: FragmentVideoViewComponent)
     }
 }

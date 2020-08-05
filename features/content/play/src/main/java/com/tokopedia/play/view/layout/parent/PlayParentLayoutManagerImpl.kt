@@ -34,14 +34,14 @@ class PlayParentLayoutManagerImpl(
     }
 
 //    @IdRes private val buttonCloseId = viewInitializer.onInitCloseButton(container)
-    @IdRes private val videoFragmentId = viewInitializer.onInitVideoFragment(container)
+//    @IdRes private val videoFragmentId = viewInitializer.onInitVideoFragment(container)
     @IdRes private val miniInteractionFragmentId = viewInitializer.onInitMiniInteractionFragment(container)
     @IdRes private val userInteractionFragmentId = viewInitializer.onInitUserInteractionFragment(container)
     @IdRes private val bottomSheetFragmentId = viewInitializer.onInitBottomSheetFragment(container)
     @IdRes private val youTubeFragmentId = viewInitializer.onInitYouTubeFragment(container)
     @IdRes private val errorFragmentId = viewInitializer.onInitErrorFragment(container)
 
-    private val flVideo = container.findViewById<View>(videoFragmentId)
+    private val flVideo = container.findViewById<View>(R.id.fl_video)
     private val flYouTube = container.findViewById<View>(youTubeFragmentId)
     private val flUserInteraction = container.findViewById<View>(userInteractionFragmentId)
     private val ivClose = container.findViewById<View>(R.id.iv_close)
@@ -108,7 +108,6 @@ class PlayParentLayoutManagerImpl(
     }
 
     override fun layoutView(view: View) {
-        layoutVideoFragment(container = view, id = videoFragmentId)
         layoutInteractionFragment(container = view, id = userInteractionFragmentId)
         layoutInteractionFragment(container = view, id = miniInteractionFragmentId)
         layoutBottomSheetFragment(container = view, id = bottomSheetFragmentId)
@@ -284,15 +283,6 @@ class PlayParentLayoutManagerImpl(
     /**
      * Layout
      */
-    private fun layoutVideoFragment(container: View, @IdRes id: Int) {
-        container.changeConstraint {
-            connect(id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
-            connect(id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
-            connect(id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
-            connect(id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
-        }
-    }
-
     private fun layoutInteractionFragment(container: View, @IdRes id: Int) {
         container.changeConstraint {
             connect(id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
