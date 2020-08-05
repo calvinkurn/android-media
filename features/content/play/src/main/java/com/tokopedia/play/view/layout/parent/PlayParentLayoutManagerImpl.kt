@@ -38,11 +38,11 @@ class PlayParentLayoutManagerImpl(
 //    @IdRes private val miniInteractionFragmentId = viewInitializer.onInitMiniInteractionFragment(container)
 //    @IdRes private val userInteractionFragmentId = viewInitializer.onInitUserInteractionFragment(container)
 //    @IdRes private val bottomSheetFragmentId = viewInitializer.onInitBottomSheetFragment(container)
-    @IdRes private val youTubeFragmentId = viewInitializer.onInitYouTubeFragment(container)
+//    @IdRes private val youTubeFragmentId = viewInitializer.onInitYouTubeFragment(container)
     @IdRes private val errorFragmentId = viewInitializer.onInitErrorFragment(container)
 
     private val flVideo = container.findViewById<View>(R.id.fl_video)
-    private val flYouTube = container.findViewById<View>(youTubeFragmentId)
+    private val flYouTube = container.findViewById<View>(R.id.fl_youtube)
     private val flUserInteraction = container.findViewById<View>(R.id.fl_user_interaction)
     private val ivClose = container.findViewById<View>(R.id.iv_close)
 

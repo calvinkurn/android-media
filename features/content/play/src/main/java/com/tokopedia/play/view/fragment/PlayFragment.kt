@@ -36,8 +36,6 @@ import com.tokopedia.play.extensions.isAnyHidden
 import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.extensions.isKeyboardShown
 import com.tokopedia.play.ui.fragment.error.FragmentErrorComponent
-import com.tokopedia.play.ui.fragment.youtube.FragmentYouTubeComponent
-import com.tokopedia.play.ui.fragment.youtube.interaction.FragmentYouTubeInteractionEvent
 import com.tokopedia.play.util.PlayFullScreenHelper
 import com.tokopedia.play.util.PlaySensorOrientationManager
 import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
@@ -57,6 +55,7 @@ import com.tokopedia.play.view.uimodel.VideoPlayerUiModel
 import com.tokopedia.play.view.viewcomponent.FragmentBottomSheetViewComponent
 import com.tokopedia.play.view.viewcomponent.FragmentUserInteractionViewComponent
 import com.tokopedia.play.view.viewcomponent.FragmentVideoViewComponent
+import com.tokopedia.play.view.viewcomponent.FragmentYouTubeViewComponent
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.GlobalErrorCodeWrapper
 import com.tokopedia.play_common.viewcomponent.viewComponent
@@ -64,7 +63,6 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -79,7 +77,8 @@ class PlayFragment @Inject constructor(
         PlayOrientationListener,
         PlayFragmentContract,
         PlayParentViewInitializer,
-        FragmentVideoViewComponent.Listener {
+        FragmentVideoViewComponent.Listener,
+        FragmentYouTubeViewComponent.Listener {
 
     private val scope = object : CoroutineScope {
         override val coroutineContext: CoroutineContext
@@ -98,6 +97,9 @@ class PlayFragment @Inject constructor(
     }
     private val fragmentBottomSheetView by viewComponent {
         FragmentBottomSheetViewComponent(channelId, it, R.id.fl_bottom_sheet, childFragmentManager)
+    }
+    private val fragmentYouTubeView by viewComponent {
+        FragmentYouTubeViewComponent(channelId, it, R.id.fl_youtube, childFragmentManager, this)
     }
 
     private lateinit var pageMonitoring: PageLoadTimePerformanceInterface
@@ -245,6 +247,16 @@ class PlayFragment @Inject constructor(
         else hideAllInsets()
     }
 
+    /**
+     * FragmentYouTube View Component Listener
+     */
+    override fun onFragmentClicked(view: FragmentYouTubeViewComponent, isScaling: Boolean) {
+        if (!isScaling) return
+
+        if (playViewModel.bottomInsets.isKeyboardShown) hideKeyboard()
+        else hideAllInsets()
+    }
+
     fun onBottomInsetsViewShown(bottomMostBounds: Int) {
         if (orientation.isLandscape) return
         layoutManager.onBottomInsetsShown(requireView(), bottomMostBounds, playViewModel.videoPlayer, playViewModel.videoOrientation)
@@ -329,23 +341,24 @@ class PlayFragment @Inject constructor(
     }
 
     override fun onInitYouTubeFragment(container: ViewGroup): Int {
-        val fragmentYouTubeComponent = FragmentYouTubeComponent(channelId, container, childFragmentManager, EventBusFactory.get(viewLifecycleOwner), scope, dispatchers)
-
-        scope.launch {
-            fragmentYouTubeComponent.getUserInteractionEvents()
-                    .collect {
-                        when (it) {
-                            is FragmentYouTubeInteractionEvent.OnClicked -> {
-                                if (!it.isScaling) return@collect
-
-                                if (playViewModel.bottomInsets.isKeyboardShown) hideKeyboard()
-                                else hideAllInsets()
-                            }
-                        }
-                    }
-        }
-
-        return fragmentYouTubeComponent.getContainerId()
+//        val fragmentYouTubeComponent = FragmentYouTubeComponent(channelId, container, childFragmentManager, EventBusFactory.get(viewLifecycleOwner), scope, dispatchers)
+//
+//        scope.launch {
+//            fragmentYouTubeComponent.getUserInteractionEvents()
+//                    .collect {
+//                        when (it) {
+//                            is FragmentYouTubeInteractionEvent.OnClicked -> {
+//                                if (!it.isScaling) return@collect
+//
+//                                if (playViewModel.bottomInsets.isKeyboardShown) hideKeyboard()
+//                                else hideAllInsets()
+//                            }
+//                        }
+//                    }
+//        }
+//
+//        return fragmentYouTubeComponent.getContainerId()
+        throw IllegalStateException("No Init")
     }
 
     override fun onInitErrorFragment(container: ViewGroup): Int {
@@ -431,9 +444,9 @@ class PlayFragment @Inject constructor(
 
     private fun setupView(view: View) {
         ivClose.setOnClickListener { hideKeyboard() }
-        fragmentVideoView.init()
-        fragmentUserInteractionView.init()
-        fragmentBottomSheetView.init()
+        fragmentVideoView.safeInit()
+        fragmentUserInteractionView.safeInit()
+        fragmentBottomSheetView.safeInit()
 
         hideAllInsets()
     }
@@ -491,6 +504,7 @@ class PlayFragment @Inject constructor(
              */
             fragmentVideoViewOnStateChanged(isFreezeOrBanned = it.isFreeze || it.isBanned)
             fragmentBottomSheetViewOnStateChanged(isFreezeOrBanned = it.isFreeze || it.isBanned)
+            fragmentYouTubeViewOnStateChanged(isFreezeOrBanned = it.isFreeze || it.isBanned)
         })
     }
 
@@ -520,6 +534,7 @@ class PlayFragment @Inject constructor(
              * New
              */
             fragmentVideoViewOnStateChanged(videoPlayer = it)
+            fragmentYouTubeViewOnStateChanged(videoPlayer = it)
         })
     }
 
@@ -654,6 +669,7 @@ class PlayFragment @Inject constructor(
         })
     }
 
+    //region onStateChanged
     /**
      * OnStateChanged
      */
@@ -667,7 +683,7 @@ class PlayFragment @Inject constructor(
             isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned
     ) {
         if (videoPlayer.isYouTube || isFreezeOrBanned) {
-            fragmentVideoView.release()
+            fragmentVideoView.safeRelease()
             fragmentVideoView.hide()
         }
     }
@@ -676,10 +692,27 @@ class PlayFragment @Inject constructor(
             isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned
     ) {
         if (isFreezeOrBanned) {
-            fragmentVideoView.release()
-            fragmentVideoView.hide()
+            fragmentBottomSheetView.safeRelease()
+            fragmentBottomSheetView.hide()
         }
     }
+
+    private fun fragmentYouTubeViewOnStateChanged(
+            videoPlayer: VideoPlayerUiModel = playViewModel.videoPlayer,
+            isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned
+    ) {
+        if (isFreezeOrBanned) {
+            fragmentYouTubeView.safeRelease()
+            fragmentYouTubeView.hide()
+            return
+        }
+
+        if (videoPlayer.isYouTube) {
+            fragmentYouTubeView.safeInit()
+            fragmentYouTubeView.show()
+        }
+    }
+    //endregion
 
     companion object {
         private const val TOP_BOUNDS_LANDSCAPE_VIDEO = "top_bounds_landscape_video"

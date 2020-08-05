@@ -40,4 +40,8 @@ abstract class ViewComponent(
     open fun hide() {
         rootView.hide()
     }
+
+    open fun isShown(): Boolean = rootView.visibility == View.VISIBLE
+
+    open fun isHidden(): Boolean = rootView.visibility == View.GONE
 }

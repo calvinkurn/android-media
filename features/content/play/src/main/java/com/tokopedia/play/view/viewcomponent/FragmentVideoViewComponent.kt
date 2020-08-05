@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentManager
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.view.fragment.PlayVideoFragment
 import com.tokopedia.play_common.viewcomponent.ViewComponent
+import java.util.concurrent.atomic.AtomicBoolean
 
 /**
  * Created by jegul on 05/08/20
@@ -20,7 +21,12 @@ class FragmentVideoViewComponent(
         private val listener: Listener
 ) : ViewComponent(container, idRes) {
 
-    fun init() {
+    private var isAlreadyInit: AtomicBoolean = AtomicBoolean(false)
+
+    fun safeInit() = synchronized(this) {
+        if (isAlreadyInit.get()) return@synchronized
+        isAlreadyInit.compareAndSet(false, true)
+
         fragmentManager.findFragmentByTag(VIDEO_FRAGMENT_TAG) ?: getPlayVideoFragment().also {
             fragmentManager.beginTransaction()
                     .replace(rootView.id, it, VIDEO_FRAGMENT_TAG)
@@ -32,7 +38,10 @@ class FragmentVideoViewComponent(
         }
     }
 
-    fun release() {
+    fun safeRelease() = synchronized(this) {
+        if (!isAlreadyInit.get()) return@synchronized
+        isAlreadyInit.compareAndSet(true, false)
+
         fragmentManager.findFragmentByTag(VIDEO_FRAGMENT_TAG)?.let { fragment ->
             fragmentManager.beginTransaction()
                     .remove(fragment)

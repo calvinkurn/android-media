@@ -1,58 +1,52 @@
-package com.tokopedia.play.ui.fragment.youtube
+package com.tokopedia.play.view.viewcomponent
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
-import com.tokopedia.play.R
-import com.tokopedia.play.component.UIView
 import com.tokopedia.play.view.custom.ScaleFriendlyFrameLayout
 import com.tokopedia.play.view.fragment.PlayYouTubeFragment
+import com.tokopedia.play_common.viewcomponent.ViewComponent
+import java.util.concurrent.atomic.AtomicBoolean
 
 /**
- * Created by jegul on 05/05/20
+ * Created by jegul on 05/08/20
  */
-class FragmentYouTubeView(
+class FragmentYouTubeViewComponent(
         private val channelId: String,
-        container: ViewGroup,
+        private val container: ViewGroup,
+        @IdRes idRes: Int,
         private val fragmentManager: FragmentManager,
         private val listener: Listener
-) : UIView(container) {
+) : ViewComponent(container, idRes) {
 
-    private val view: View =
-            LayoutInflater.from(container.context).inflate(R.layout.view_fragment_youtube, container, true)
-                    .findViewById(R.id.fl_youtube)
+    private val flYouTube = rootView as ScaleFriendlyFrameLayout
 
-    private val flYouTube = view as ScaleFriendlyFrameLayout
+    private var isAlreadyInit: AtomicBoolean = AtomicBoolean(false)
 
-    override val containerId: Int = view.id
-
-    override fun show() {
-        view.show()
+    init {
+        rootView.setOnClickListener {
+            listener.onFragmentClicked(this@FragmentYouTubeViewComponent, isScaling = flYouTube.isScaling)
+        }
     }
 
-    override fun hide() {
-        view.hide()
-    }
+    fun safeInit() = synchronized(this) {
+        if (isAlreadyInit.get()) return@synchronized
+        isAlreadyInit.compareAndSet(false, true)
 
-    internal fun init() {
         fragmentManager.findFragmentByTag(YOUTUBE_FRAGMENT_TAG) ?: getPlayYouTubeFragment().also {
             fragmentManager.beginTransaction()
-                    .replace(view.id, it, YOUTUBE_FRAGMENT_TAG)
+                    .replace(rootView.id, it, YOUTUBE_FRAGMENT_TAG)
                     .commit()
-        }
-
-        view.setOnClickListener {
-            listener.onFragmentClicked(this@FragmentYouTubeView, isScaling = flYouTube.isScaling)
         }
     }
 
-    internal fun release() {
+    fun safeRelease() = synchronized(this) {
+        if (!isAlreadyInit.get()) return@synchronized
+        isAlreadyInit.compareAndSet(true, false)
+
         fragmentManager.findFragmentByTag(YOUTUBE_FRAGMENT_TAG)?.let { fragment ->
             fragmentManager.beginTransaction()
                     .remove(fragment)
@@ -75,6 +69,6 @@ class FragmentYouTubeView(
 
     interface Listener {
 
-        fun onFragmentClicked(view: FragmentYouTubeView, isScaling: Boolean)
+        fun onFragmentClicked(view: FragmentYouTubeViewComponent, isScaling: Boolean)
     }
 }

@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentManager
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.view.fragment.PlayUserInteractionFragment
 import com.tokopedia.play_common.viewcomponent.ViewComponent
+import java.util.concurrent.atomic.AtomicBoolean
 
 /**
  * Created by jegul on 05/08/20
@@ -19,7 +20,12 @@ class FragmentUserInteractionViewComponent(
         private val fragmentManager: FragmentManager
 ) : ViewComponent(container, idRes) {
 
-    fun init() {
+    private var isAlreadyInit: AtomicBoolean = AtomicBoolean(false)
+
+    fun safeInit() = synchronized(this) {
+        if (isAlreadyInit.get()) return@synchronized
+        isAlreadyInit.compareAndSet(false, true)
+
         fragmentManager.findFragmentByTag(USER_INTERACTION_FRAGMENT_TAG) ?: getPlayUserInteractionFragment().also {
             fragmentManager.beginTransaction()
                     .replace(rootView.id, it, USER_INTERACTION_FRAGMENT_TAG)
