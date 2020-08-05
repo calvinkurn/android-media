@@ -17,6 +17,7 @@ import com.tokopedia.analyticsdebugger.validator.core.hasAllSuccess
 import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularViewPager
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.BannerViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.TickerViewHolder
 import com.tokopedia.home.environment.InstrumentationHomeTestActivity
 import com.tokopedia.home.mock.HomeMockResponseConfig
 import com.tokopedia.home_component.viewholders.MixLeftComponentViewHolder
@@ -34,6 +35,8 @@ import org.junit.Test
 
 private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_HOMEPAGE_BANNER = "tracker/home/hpb.json"
 private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_HOMEPAGE_SCREEN = "tracker/home/homescreen.json"
+private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_TICKER = "tracker/home/ticker.json"
+private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_LIST_CAROUSEL = "tracker/home/list_carousel.json"
 private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MIX_LEFT = "tracker/home/mix_left.json"
 private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MIX_TOP = "tracker/home/mix_top.json"
 private const val TAG = "DynamicChannelComponentAnalyticsTest"
@@ -101,6 +104,8 @@ class DynamicChannelComponentAnalyticsTest {
 //                hasAllSuccess())
 //        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_HOMEPAGE_BANNER),
 //                hasAllSuccess())
+//        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_TICKER),
+//                hasAllSuccess())
         assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MIX_LEFT),
                 hasAllSuccess())
         assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MIX_TOP),
@@ -119,6 +124,10 @@ class DynamicChannelComponentAnalyticsTest {
     private fun checkProductOnDynamicChannel(homeRecyclerView: RecyclerView, i: Int) {
         val viewholder = homeRecyclerView.findViewHolderForAdapterPosition(i)
         when (viewholder) {
+            is TickerViewHolder -> {
+                logTestMessage("VH TickerViewHolder")
+                clickTickerItem(viewholder.itemView)
+            }
             is BannerViewHolder -> {
                 logTestMessage("VH BannerViewHolder")
                 clickHomeBannerItemAndViewAll(viewholder.itemView)
@@ -132,6 +141,33 @@ class DynamicChannelComponentAnalyticsTest {
                 logTestMessage("VH MixTopComponentViewHolder")
                 clickLihatSemuaButtonIfAvailable(viewholder.itemView, "MixTopComponentViewHolder")
                 clickOnEachItemRecyclerView(viewholder.itemView, R.id.dc_banner_rv)
+                clickOnMixTopCTA(viewholder.itemView)
+            }
+        }
+    }
+
+    private fun clickTickerItem(view: View) {
+        val childView = view
+        val textApplink = childView.findViewById<View>(R.id.ticker_description)
+        val closeButton = childView.findViewById<View>(R.id.ticker_close_icon)
+        if (textApplink.visibility == View.VISIBLE) {
+            try {
+                Espresso.onView(firstView(ViewMatchers.withId(R.id.banner_button)))
+                        .perform(ViewActions.click())
+                logTestMessage("Click SUCCESS mixtop banner Button")
+            } catch (e: PerformException) {
+                e.printStackTrace()
+                logTestMessage("Click FAILED mixtop banner Button")
+            }
+        }
+        if (closeButton.visibility == View.VISIBLE) {
+            try {
+                Espresso.onView(firstView(ViewMatchers.withId(R.id.banner_button)))
+                        .perform(ViewActions.click())
+                logTestMessage("Click SUCCESS mixtop banner Button")
+            } catch (e: PerformException) {
+                e.printStackTrace()
+                logTestMessage("Click FAILED mixtop banner Button")
             }
         }
     }
@@ -162,6 +198,21 @@ class DynamicChannelComponentAnalyticsTest {
             } catch (e: PerformException) {
                 e.printStackTrace()
                 logTestMessage("Click FAILED See All Button BannerViewHolder")
+            }
+        }
+    }
+
+    private fun clickOnMixTopCTA(view: View) {
+        val childView = view
+        val bannerButton = childView.findViewById<View>(R.id.banner_button)
+        if (bannerButton.visibility == View.VISIBLE) {
+            try {
+                Espresso.onView(firstView(ViewMatchers.withId(R.id.banner_button)))
+                        .perform(ViewActions.click())
+                logTestMessage("Click SUCCESS mixtop banner Button")
+            } catch (e: PerformException) {
+                e.printStackTrace()
+                logTestMessage("Click FAILED mixtop banner Button")
             }
         }
     }
