@@ -37,8 +37,6 @@ import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.extensions.isKeyboardShown
 import com.tokopedia.play.ui.fragment.bottomsheet.FragmentBottomSheetComponent
 import com.tokopedia.play.ui.fragment.error.FragmentErrorComponent
-import com.tokopedia.play.ui.fragment.miniinteraction.FragmentMiniInteractionComponent
-import com.tokopedia.play.ui.fragment.userinteraction.FragmentUserInteractionComponent
 import com.tokopedia.play.ui.fragment.youtube.FragmentYouTubeComponent
 import com.tokopedia.play.ui.fragment.youtube.interaction.FragmentYouTubeInteractionEvent
 import com.tokopedia.play.util.PlayFullScreenHelper
@@ -57,6 +55,7 @@ import com.tokopedia.play.view.layout.parent.PlayParentViewInitializer
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.EventUiModel
 import com.tokopedia.play.view.uimodel.VideoPlayerUiModel
+import com.tokopedia.play.view.viewcomponent.FragmentUserInteractionViewComponent
 import com.tokopedia.play.view.viewcomponent.FragmentVideoViewComponent
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.GlobalErrorCodeWrapper
@@ -93,6 +92,9 @@ class PlayFragment @Inject constructor(
     private lateinit var ivClose: ImageView
     private val fragmentVideoView by viewComponent {
         FragmentVideoViewComponent(channelId, it, R.id.fl_video, childFragmentManager, this)
+    }
+    private val fragmentUserInteractionView by viewComponent {
+        FragmentUserInteractionViewComponent(channelId, it, R.id.fl_user_interaction, childFragmentManager)
     }
 
     private lateinit var pageMonitoring: PageLoadTimePerformanceInterface
@@ -312,13 +314,11 @@ class PlayFragment @Inject constructor(
     }
 
     override fun onInitUserInteractionFragment(container: ViewGroup): Int {
-        return FragmentUserInteractionComponent(channelId, container, childFragmentManager, EventBusFactory.get(viewLifecycleOwner), scope, dispatchers)
-                .getContainerId()
+        throw IllegalStateException("No Init")
     }
 
     override fun onInitMiniInteractionFragment(container: ViewGroup): Int {
-        return FragmentMiniInteractionComponent(channelId, container, childFragmentManager, EventBusFactory.get(viewLifecycleOwner), scope, dispatchers)
-                .getContainerId()
+        throw IllegalStateException("No Init")
     }
 
     override fun onInitBottomSheetFragment(container: ViewGroup): Int {
@@ -430,6 +430,7 @@ class PlayFragment @Inject constructor(
     private fun setupView(view: View) {
         ivClose.setOnClickListener { hideKeyboard() }
         fragmentVideoView.init()
+        fragmentUserInteractionView.init()
 
         hideAllInsets()
     }

@@ -1,48 +1,30 @@
-package com.tokopedia.play.ui.fragment.userinteraction
+package com.tokopedia.play.view.viewcomponent
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
-import com.tokopedia.play.R
-import com.tokopedia.play.component.UIView
 import com.tokopedia.play.view.fragment.PlayUserInteractionFragment
-import com.tokopedia.play.view.fragment.PlayVideoFragment
+import com.tokopedia.play_common.viewcomponent.ViewComponent
 
 /**
- * Created by jegul on 05/05/20
+ * Created by jegul on 05/08/20
  */
-class FragmentUserInteractionView(
+class FragmentUserInteractionViewComponent(
         private val channelId: String,
-        container: ViewGroup,
+        private val container: ViewGroup,
+        @IdRes idRes: Int,
         private val fragmentManager: FragmentManager
-) : UIView(container) {
+) : ViewComponent(container, idRes) {
 
-    private val view: View =
-            LayoutInflater.from(container.context).inflate(R.layout.view_fragment_user_interaction, container, true)
-                    .findViewById(R.id.fl_user_interaction)
-
-    init {
+    fun init() {
         fragmentManager.findFragmentByTag(USER_INTERACTION_FRAGMENT_TAG) ?: getPlayUserInteractionFragment().also {
             fragmentManager.beginTransaction()
-                    .replace(view.id, it, USER_INTERACTION_FRAGMENT_TAG)
+                    .replace(rootView.id, it, USER_INTERACTION_FRAGMENT_TAG)
                     .commit()
         }
-    }
-
-    override val containerId: Int = view.id
-
-    override fun show() {
-        view.show()
-    }
-
-    override fun hide() {
-        view.hide()
     }
 
     private fun getPlayUserInteractionFragment(): Fragment {
