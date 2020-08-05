@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
 import com.tokopedia.discovery2.usecase.CpmTopAdsUseCase
+import com.tokopedia.discovery2.usecase.topAdsUseCase.DiscoveryTopAdsTrackingUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.topads.sdk.domain.model.CpmModel
@@ -24,6 +25,10 @@ class CpmTopAdsViewModel(val application: Application, private val components: C
 
     @Inject
     lateinit var cpmTopAdsUseCase: CpmTopAdsUseCase
+
+    @Inject
+    lateinit var discoveryTopAdsTrackingUseCase: DiscoveryTopAdsTrackingUseCase
+
     private val cpmData = MutableLiveData<Result<CpmModel>>()
 
     override val coroutineContext: CoroutineContext
@@ -57,6 +62,12 @@ class CpmTopAdsViewModel(val application: Application, private val components: C
                 .baseAppComponent((application.applicationContext as BaseMainApplication).baseAppComponent)
                 .build()
                 .inject(this)
+    }
+
+    fun sendTopAdsTracking(url: String?) {
+        if (url != null) {
+            discoveryTopAdsTrackingUseCase.sendTopAdsTracking(this::class.qualifiedName, url)
+        }
     }
 
     fun getCpmData(): LiveData<Result<CpmModel>> = cpmData
