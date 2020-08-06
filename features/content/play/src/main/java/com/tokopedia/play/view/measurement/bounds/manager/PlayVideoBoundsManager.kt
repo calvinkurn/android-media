@@ -30,7 +30,7 @@ class PlayVideoBoundsManager(
             topBounds: Int
     ) {
         val finalTopBounds =
-                if (!dataSource.getScreenOrientation().isLandscape) topBounds + offset16
+                if (!dataSource.getScreenOrientation().isLandscape && videoOrientation.isHorizontal) topBounds + offset16
                 else topBounds
 
         if (videoPlayer.isYouTube) changeVideoMargin(flYouTube, finalTopBounds)
