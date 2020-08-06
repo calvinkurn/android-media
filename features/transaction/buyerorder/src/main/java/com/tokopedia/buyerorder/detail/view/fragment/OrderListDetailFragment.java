@@ -229,6 +229,11 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     }
 
     @Override
+    public void setIsRequestedCancel(Boolean isRequestedCancel) {
+
+    }
+
+    @Override
     public void setAdditionInfoVisibility(int visibility) {
         additionalText.setVisibility(visibility);
         additionalText.setOnClickListener(view -> {

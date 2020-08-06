@@ -477,7 +477,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             getView().setDetail(details.detail().get(i));
         }
 
-
+        getView().setIsRequestedCancel(details.getRequestCancelInfo().getIsRequestedCancel());
         getView().setBoughtDate(details.getBoughtDate());
         if (details.getShopInfo() != null) {
             getView().setShopInfo(details.getShopInfo());

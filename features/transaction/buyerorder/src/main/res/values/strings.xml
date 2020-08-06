@@ -444,7 +444,7 @@ Anda di sini.</string>
     <string name="product_price_placeholder">Rp 10.000.000</string>
     <string name="see_all_placeholder">Lihat Semua Produk (3)</string>
     <string name="ask_1_placeholder">Mengapa kamu ingin membatalkan pesanan ini?</string>
-    <string name="ask_2_placeholder">Informasi pesanan apa yang ingin kamu ubah?</string>
+    <string name="ask_2_placeholder">Apa detail pembatalan dari pesanan ini?</string>
     <string name="reason_placeholder">Pilih alasan</string>
     <string name="ajukan_btn">Ajukan</string>
     <string name="chat_penjual">Chat Penjual</string>
@@ -453,7 +453,7 @@ Anda di sini.</string>
     <string name="bottomsheet_title">Pilih alasan pembatalan</string>
     <string name="fail_cancellation">Terjadi kesalahan, mohon dicoba kembali</string>
     <string name="tulis_alasan">Tulis alasan...</string>
-    <string name="ask_2_lainnya">Kendala apa yang kamu alami?</string>
+    <string name="ask_2_lainnya">Tulis detail pembatalan pesanan.</string>
     <string name="icon_placeholder">Icon</string>
     <string name="toaster_lainnya_empty">Mohon isi kendala yang kamu alami</string>
     <string name="toaster_manual_max">Max 160 karakter</string>

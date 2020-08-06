@@ -30,7 +30,8 @@
             android:visibility="gone"
             app:tickerShapeType="loose"
             app:tickerType="announcement"
-            android:layout_margin="@dimen/dp_16"/>
+            android:layout_margin="@dimen/dp_16"
+            app:closeButtonVisibility="gone"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/label_shop_name"
@@ -343,7 +344,7 @@
             android:text="@string/ajukan_btn"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:visibility="gone"/>
+            android:visibility="gone" />
 
         <!--end layout available to cancel-->
 

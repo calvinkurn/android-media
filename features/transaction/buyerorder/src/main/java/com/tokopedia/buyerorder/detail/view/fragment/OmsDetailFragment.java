@@ -279,6 +279,11 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     }
 
     @Override
+    public void setIsRequestedCancel(Boolean isRequestedCancel) {
+
+    }
+
+    @Override
     public void setAdditionInfoVisibility(int visibility) {
     }
 

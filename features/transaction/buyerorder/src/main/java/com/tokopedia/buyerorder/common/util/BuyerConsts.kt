@@ -36,4 +36,8 @@ object BuyerConsts {
     const val TICKER_LABEL = "#ticker_label"
     const val BUTTON_INSTANT_CANCELATION = "Batalkan Pesanan"
     const val BUTTON_REGULER_CANCELATION = "Ajukan Pembatalan"
+    const val RESULT_CODE_INSTANT_CANCEL = "result_code_instant"
+    const val RESULT_MSG_INSTANT_CANCEL = "result_msg_instant"
+    const val RESULT_POPUP_TITLE_INSTANT_CANCEL = "result_popup_title_instant_cancel"
+    const val RESULT_POPUP_BODY_INSTANT_CANCEL = "result_popup_body_instant_cancel"
 }

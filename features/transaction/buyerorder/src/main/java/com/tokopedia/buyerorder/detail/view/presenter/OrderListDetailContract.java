@@ -49,6 +49,8 @@ public interface OrderListDetailContract {
 
         void setDetail(Detail detail);
 
+        void setIsRequestedCancel(Boolean isRequestedCancel);
+
         void setAdditionalInfo(AdditionalInfo additionalInfo);
 
         void setAdditionalTickerInfo(List<AdditionalTickerInfo> tickerInfos, @Nullable String url);

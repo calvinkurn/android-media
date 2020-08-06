@@ -21,6 +21,11 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.buyerorder.R
 import com.tokopedia.buyerorder.common.util.BuyerConsts
+import com.tokopedia.buyerorder.common.util.BuyerConsts.LAINNYA
+import com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_CODE_INSTANT_CANCEL
+import com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_MSG_INSTANT_CANCEL
+import com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_POPUP_BODY_INSTANT_CANCEL
+import com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_POPUP_TITLE_INSTANT_CANCEL
 import com.tokopedia.buyerorder.common.util.BuyerConsts.TICKER_LABEL
 import com.tokopedia.buyerorder.common.util.BuyerConsts.TICKER_URL
 import com.tokopedia.buyerorder.detail.data.Items
@@ -454,32 +459,70 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         reasonCancel = reason
         currentReasonStr = reason
 
-        if (cancelReasonResponse.reasons.isNotEmpty()) {
-            tf_choose_sub_reason_editable?.gone()
-            tf_choose_sub_reason?.visible()
-            tf_choose_sub_reason?.setPlaceholder(getString(R.string.reason_placeholder))
-            tf_choose_sub_reason?.textFieldIcon1?.setImageResource(R.drawable.ic_chevron_down)
-            tf_choose_sub_reason?.textFieldInput?.setText("")
-            tf_choose_sub_reason?.textFiedlLabelText?.setText(R.string.ask_2_placeholder)
+        if (reason.equals(LAINNYA, true)) {
+            reasonCode = BuyerConsts.REASON_CODE_LAINNYA
+            tf_choose_sub_reason?.gone()
+            tf_choose_sub_reason_editable?.visible()
+            tf_choose_sub_reason_editable?.setCounter(160)
+            tf_choose_sub_reason_editable?.textFieldInput?.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS or InputType.TYPE_TEXT_FLAG_MULTI_LINE
+            tf_choose_sub_reason_editable?.textFieldInput?.setSingleLine(false)
+            tf_choose_sub_reason_editable?.textFieldInput?.imeOptions = EditorInfo.IME_FLAG_NO_ENTER_ACTION
+            tf_choose_sub_reason_editable?.textFieldInput?.addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+                    //Before user enters the text
+                }
 
-            cancelReasonResponse.reasons.forEach {
-                if (it.title.equals(reason, true))  {
-                    listOfSubReason = it.subReasons
+                override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                    //On user changes the text
+                    btn_req_cancel?.isEnabled = s.toString().trim { it <= ' ' }.isNotEmpty()
+                }
 
-                    tf_choose_sub_reason?.textFiedlLabelText?.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS or InputType.TYPE_TEXT_FLAG_MULTI_LINE
-                    tf_choose_sub_reason?.textFieldInput?.setSingleLine(false)
-                    tf_choose_sub_reason?.textFieldInput?.imeOptions = EditorInfo.IME_FLAG_NO_ENTER_ACTION
-                    tf_choose_sub_reason?.textFiedlLabelText?.text = it.question
-                    tf_choose_sub_reason?.textFieldInput?.isFocusable = false
-                    tf_choose_sub_reason?.textFieldInput?.isClickable = true
-                    tf_choose_sub_reason?.setOnClickListener {
-                        showSubReasonBottomSheet()
+                override fun afterTextChanged(s: Editable) {
+                    //After user is done entering the text
+                    when {
+                        s.length < 15 -> {
+                            tf_choose_sub_reason_editable?.setError(true)
+                            tf_choose_sub_reason_editable?.setMessage(getString(R.string.min_char_reason_lainnya))
+                        }
+                        s.length > 160 -> {
+                            tf_choose_sub_reason_editable?.setError(true)
+                            tf_choose_sub_reason_editable?.setMessage(getString(R.string.max_char_reason_lainnya))
+                        }
+                        else -> {
+                            tf_choose_sub_reason_editable?.setError(false)
+                            tf_choose_sub_reason_editable?.setMessage("")
+                        }
                     }
-                    tf_choose_sub_reason?.textFieldInput?.setOnClickListener {
-                        showSubReasonBottomSheet()
-                    }
-                    tf_choose_sub_reason?.textFieldIcon1?.setOnClickListener {
-                        showSubReasonBottomSheet()
+                }
+            })
+        } else {
+            if (cancelReasonResponse.reasons.isNotEmpty()) {
+                tf_choose_sub_reason_editable?.gone()
+                tf_choose_sub_reason?.visible()
+                tf_choose_sub_reason?.setPlaceholder(getString(R.string.reason_placeholder))
+                tf_choose_sub_reason?.textFieldIcon1?.setImageResource(R.drawable.ic_chevron_down)
+                tf_choose_sub_reason?.textFieldInput?.setText("")
+                tf_choose_sub_reason?.textFiedlLabelText?.setText(R.string.ask_2_placeholder)
+
+                cancelReasonResponse.reasons.forEach {
+                    if (it.title.equals(reason, true))  {
+                        listOfSubReason = it.subReasons
+
+                        tf_choose_sub_reason?.textFiedlLabelText?.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS or InputType.TYPE_TEXT_FLAG_MULTI_LINE
+                        tf_choose_sub_reason?.textFieldInput?.setSingleLine(false)
+                        tf_choose_sub_reason?.textFieldInput?.imeOptions = EditorInfo.IME_FLAG_NO_ENTER_ACTION
+                        // tf_choose_sub_reason?.textFiedlLabelText?.text = it.question
+                        tf_choose_sub_reason?.textFieldInput?.isFocusable = false
+                        tf_choose_sub_reason?.textFieldInput?.isClickable = true
+                        tf_choose_sub_reason?.setOnClickListener {
+                            showSubReasonBottomSheet()
+                        }
+                        tf_choose_sub_reason?.textFieldInput?.setOnClickListener {
+                            showSubReasonBottomSheet()
+                        }
+                        tf_choose_sub_reason?.textFieldIcon1?.setOnClickListener {
+                            showSubReasonBottomSheet()
+                        }
                     }
                 }
             }
@@ -489,7 +532,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
     override fun onSubReasonClicked(rCode: Int, reason: String) {
         bottomSheet.dismiss()
         reasonCode = rCode
-        if (rCode == BuyerConsts.REASON_CODE_LAINNYA) {
+        /*if (rCode == BuyerConsts.REASON_CODE_LAINNYA) {
             tf_choose_sub_reason?.gone()
             tf_choose_sub_reason_editable?.visible()
             tf_choose_sub_reason_editable?.setCounter(160)
@@ -520,7 +563,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
                     }
                 }
             })
-        } else {
+        } else {*/
             tf_choose_sub_reason?.textFieldInput?.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS or InputType.TYPE_TEXT_FLAG_MULTI_LINE
             tf_choose_sub_reason?.textFieldInput?.setSingleLine(false)
             tf_choose_sub_reason?.textFieldInput?.imeOptions = EditorInfo.IME_FLAG_NO_ENTER_ACTION
@@ -536,7 +579,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
                     }
                 }
             }
-        }
+        // }
     }
 
     private fun submitResultReason() {
@@ -573,15 +616,27 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
                 showToaster(instantCancelResponse.message, Toaster.TYPE_ERROR)
             }
             1 -> {
-                showToaster(instantCancelResponse.message, Toaster.TYPE_NORMAL)
+                // showToaster(instantCancelResponse.message, Toaster.TYPE_NORMAL)
+                backToDetailPage(1, instantCancelResponse.message, "", "")
             }
             2 -> {
                 showPopupWithTwoButtons()
             }
             3 -> {
-                showPopupWithSingleButton()
+                // showPopupWithSingleButton()
+                backToDetailPage(3, instantCancelResponse.message, instantCancelResponse.popup.title, instantCancelResponse.popup.body)
             }
         }
+    }
+
+    private fun backToDetailPage(resultCode: Int, resultMsg: String, popupTitle: String, popupBody: String) {
+        val intent = Intent()
+        intent.putExtra(RESULT_CODE_INSTANT_CANCEL, resultCode)
+        intent.putExtra(RESULT_MSG_INSTANT_CANCEL, resultMsg)
+        intent.putExtra(RESULT_POPUP_TITLE_INSTANT_CANCEL, popupTitle)
+        intent.putExtra(RESULT_POPUP_BODY_INSTANT_CANCEL, popupBody)
+        activity?.setResult(MarketPlaceDetailFragment.INSTANT_CANCEL_BUYER_REQUEST, intent)
+        activity?.finish()
     }
 
     private fun showPopupWithTwoButtons() {
@@ -599,12 +654,10 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
 
     private fun showPopupWithSingleButton() {
         val dialog = context?.let { DialogUnify(it, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE) }
-        dialog?.apply {
-            setTitle(instantCancelResponse.popup.title)
-            setDescription(instantCancelResponse.popup.body)
-            setPrimaryCTAText(getString(R.string.mengerti_button))
-            setPrimaryCTAClickListener { dismiss() }
-        }
+        dialog?.setTitle(instantCancelResponse.popup.title)
+        dialog?.setDescription(instantCancelResponse.popup.body)
+        dialog?.setPrimaryCTAText(getString(R.string.mengerti_button))
+        dialog?.setPrimaryCTAClickListener { dialog.dismiss() }
     }
 
     private fun goToChatSeller() {
