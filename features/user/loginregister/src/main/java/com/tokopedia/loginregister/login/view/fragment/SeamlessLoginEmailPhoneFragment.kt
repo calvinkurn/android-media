@@ -10,6 +10,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -77,6 +78,9 @@ class SeamlessLoginEmailPhoneFragment: LoginEmailPhoneFragment() {
                 }
                 val intent = RouteManager.getIntent(activity, redirectApplink)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+                if(activity?.intent?.hasExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA)==true){
+                    intent.putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, activity?.intent?.getStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA))
+                }
                 startActivity(intent)
                 activity?.finish()
             }
@@ -87,7 +91,9 @@ class SeamlessLoginEmailPhoneFragment: LoginEmailPhoneFragment() {
         if(isEnableSeamlessLogin && GlobalConfig.isSellerApp() && isAdded) {
             context?.run {
                 val intent = RouteManager.getIntent(context, ApplinkConstInternalSellerapp.SEAMLESS_CHOOSE_ACCOUNT)
-                arguments?.run { intent.putExtras(this) }
+                arguments?.run {
+                    intent.putExtras(this)
+                }
                 startActivityForResult(intent, REQUEST_SEAMLESS_LOGIN)
             }
         }else {
