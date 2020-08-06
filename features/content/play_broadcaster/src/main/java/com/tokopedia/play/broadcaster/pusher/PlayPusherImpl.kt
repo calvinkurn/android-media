@@ -38,6 +38,7 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
         setResolution(builder.resolution)
         isEnableAutoResolution = builder.isEnableAutoResolution
         setFps(builder.fps)
+        setPushMirror(builder.pushMirror)
 //        setAudioChannels(builder.audioChannel)
 //        audioProfile = builder.audioProfile
 //        setAudioEncodeMode(builder.audioEncode)
