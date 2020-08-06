@@ -186,3 +186,11 @@ fun Dialog.updateNavigationBarColors(colorResArray: IntArray, useDarkIcon: Boole
 fun Dialog.updateNavigationBarColor(@ColorRes colorRes: Int, useDarkIcon: Boolean = true) {
     updateNavigationBarColors(intArrayOf(colorRes), useDarkIcon)
 }
+
+fun Fragment.recreateView() {
+    fragmentManager?.beginTransaction()
+            ?.setReorderingAllowed(false)
+            ?.detach(this)
+            ?.attach(this)
+            ?.commit()
+}

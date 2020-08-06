@@ -51,6 +51,7 @@ import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.state.PlayVideoState
+import com.tokopedia.play_common.util.extension.recreateView
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updateMargins
@@ -218,11 +219,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        fragmentManager?.beginTransaction()
-                ?.setReorderingAllowed(false)
-                ?.detach(this)
-                ?.attach(this)
-                ?.commit()
+        recreateView()
     }
 
     override fun onDestroyView() {
@@ -471,6 +468,7 @@ class PlayUserInteractionFragment @Inject constructor(
             sendChatViewOnStateChanged(channelType = it.channelType)
             chatListViewOnStateChanged(channelType = it.channelType)
             videoSettingsViewOnStateChanged(videoOrientation = it.orientation)
+            gradientBackgroundViewOnStateChanged(videoOrientation = it.orientation)
         })
     }
 
@@ -928,9 +926,13 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun gradientBackgroundViewOnStateChanged(
+            videoOrientation: VideoOrientation = playViewModel.videoOrientation,
             bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets
     ) {
-        if (bottomInsets.isAnyShown) gradientBackgroundView.hide() else gradientBackgroundView.show()
+        if (bottomInsets.isAnyShown ||
+                (videoOrientation.isHorizontal && orientation.isPortrait)
+        ) gradientBackgroundView.hide()
+        else gradientBackgroundView.show()
     }
 
     private fun toolbarViewOnStateChanged(
