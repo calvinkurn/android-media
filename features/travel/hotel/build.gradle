@@ -1,6 +1,13 @@
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
+
+repositories {
+    maven { url 'https://hansel.io/maven' }
+}
 
 buildscript {
     repositories {
@@ -77,22 +84,30 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.base
     implementation rootProject.ext.playServicesDependencies.maps
 
-    testImplementation rootProject.ext.testDependencies.mockk
+    // UI Test
+    androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
+    androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
+    androidTestImplementation rootProject.ext.testDependencies.junit
+    androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
+    androidTestImplementation rootProject.ext.testDependencies.espressoCore
+    androidTestImplementation rootProject.ext.testDependencies.espressoContrib
+    androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
+    androidTestAnnotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+    androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
+    androidTestImplementation rootProject.ext.testDependencies.benchmark
+    androidTestImplementation rootProject.ext.testDependencies.testCore
+    androidTestImplementation project(rootProject.ext.libraries.analyticsDebugger)
+
+
+    // Unit test
     testImplementation rootProject.ext.testDependencies.archCoreTesting
-    testImplementation rootProject.ext.testDependencies.androidxTest
-    testImplementation rootProject.ext.testDependencies.androidTestRunner
-    testImplementation rootProject.ext.testDependencies.androidRulesVersion
-    testImplementation rootProject.ext.testDependencies.junit
-    testImplementation rootProject.ext.testDependencies.mockitorCore
-    testImplementation rootProject.ext.testDependencies.mockkAndroid
-    testImplementation rootProject.ext.testDependencies.espressoCore
-    testImplementation rootProject.ext.testDependencies.espressoContrib
-    androidTestImplementation project(rootProject.ext.libraries.instrumentation_test), {
-        exclude group: 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
-        exclude group: 'org.jetbrains.kotlin:kotlin-reflect'
-        exclude group: 'org.jetbrains.kotlin:kotlin-stdlib-jdk7'
-        exclude group: 'com.google.android.gms'
-    }
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.miscDependencies.coroutineCore
+    testImplementation rootProject.ext.miscDependencies.coroutineTest
+
+    debugImplementation (rootProject.ext.testDependencies.fragmentTest, {
+        exclude group: 'androidx.test', module: 'core'
+    })
 }
 
 project.ext {
@@ -105,4 +120,3 @@ project.ext {
 apply from: '../../../publish_local.gradle'
 apply from: '../../../jacoco_task.gradle'
 apply from: '../../../sonar_config.gradle'
-apply from: "../../../compile-instrument-test.gradle"
