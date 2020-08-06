@@ -49,8 +49,13 @@ class VariantUnitPicker(context: Context?) : LinearLayout(context) {
     }
 
     fun setupVariantUnitPicker(variantUnits: List<Unit>) {
+        setDefaultSelection(selectedVariantUnit)
         setupPicker(variantUnits)
         setupSaveButton()
+    }
+
+    private fun setDefaultSelection(selectedVariantUnit: Unit) {
+        this.currentVariantUnit = selectedVariantUnit
     }
 
     private fun setupPicker(variantUnits: List<Unit>) {

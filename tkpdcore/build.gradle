@@ -4,14 +4,13 @@ apply plugin: 'io.hansel.preprocessor.module'
 
 buildscript {
     repositories {
-        google()
+        maven { url 'https://maven.fabric.io/public' }
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         mavenCentral()
         jcenter()
         maven { url 'https://hansel.io/maven' }
     }
     dependencies {
-        classpath rootProject.ext.gradlePlugin.crashlytics
         classpath rootProject.ext.miscDependencies.hansel
     }
 }
@@ -103,7 +102,9 @@ dependencies {
     debugImplementation rootProject.ext.debugToolsDependencies.stetho
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
-    implementation rootProject.ext.firebase.crashlytics
+    implementation (rootProject.ext.serviceDependencies.crashlytics) {
+        transitive = true
+    }
     
     androidTestImplementation(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'

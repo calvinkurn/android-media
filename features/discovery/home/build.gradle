@@ -131,7 +131,7 @@ dependencies {
         }
     }
 
-    implementation(rootProject.ext.firebase.crashlytics) {
+    implementation(rootProject.ext.serviceDependencies.crashlytics) {
         transitive = true
     }
     implementation rootProject.ext.miscDependencies.dagger

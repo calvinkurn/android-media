@@ -25,6 +25,8 @@ import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.TkpdCoreRouter;
+import com.tokopedia.core.analytics.container.GTMAnalytics;
+import com.tokopedia.core.analytics.container.MoengageAnalytics;
 import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
@@ -39,8 +41,6 @@ import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.network.DataSource;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.interfaces.ContextAnalytics;
-import com.tokopedia.core.analytics.container.GTMAnalytics;
-import com.tokopedia.core.analytics.container.MoengageAnalytics;
 import com.tokopedia.user.session.UserSession;
 
 import java.io.IOException;
@@ -269,12 +269,6 @@ public class MyApplication extends BaseMainApplication
             com.tokopedia.user.session.UserSession userSession =
                     new com.tokopedia.user.session.UserSession(this);
             return sessionHandler = new SessionHandler(this) {
-
-                @Override
-                public String getGTMLoginID() {
-                    return userSession.getGTMLoginID();
-                }
-
                 @Override
                 public String getLoginID() {
                     return userSession.getUserId();
@@ -285,10 +279,6 @@ public class MyApplication extends BaseMainApplication
                     return userSession.getRefreshTokenIV();
                 }
 
-                @Override
-                public boolean isMsisdnVerified() {
-                    return userSession.isMsisdnVerified();
-                }
             };
         }else{
             return sessionHandler;
@@ -311,11 +301,6 @@ public class MyApplication extends BaseMainApplication
 
     @Override
     public void refreshFCMFromInstantIdService(String token) {
-
-    }
-
-    @Override
-    public void refreshFCMTokenFromForegroundToCM() {
 
     }
 

@@ -7,7 +7,9 @@ import com.tokopedia.carouselproductcard.CarouselProductCardListener
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.search.R
+import com.tokopedia.search.result.presentation.model.BadgeItemViewModel
 import com.tokopedia.search.result.presentation.model.BroadMatchViewModel
+import com.tokopedia.search.result.presentation.model.FreeOngkirViewModel
 import com.tokopedia.search.result.presentation.view.listener.BroadMatchListener
 import kotlinx.android.synthetic.main.search_result_product_broad_match_layout.view.*
 
@@ -49,17 +51,35 @@ class BroadMatchViewHolder(
                             formattedPrice = it.priceString,
                             productImageUrl = it.imageUrl,
                             reviewCount = it.countReview,
-                            ratingCount = it.rating
+                            ratingCount = it.rating,
+                            shopLocation = it.shopLocation,
+                            shopBadgeList = it.badgeItemViewModelList.toProductCardModelShopBadges(),
+                            freeOngkir = it.freeOngkirViewModel.toProductCardModelFreeOngkir(),
+                            hasThreeDots = true
                     )
                 },
                 carouselProductCardOnItemClickListener = object : CarouselProductCardListener.OnItemClickListener {
                     override fun onItemClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
                         val product = products.getOrNull(carouselProductCardPosition) ?: return
-                        product.let {
-                            broadMatchListener.onBroadMatchItemClicked(product)
-                        }
+                        broadMatchListener.onBroadMatchItemClicked(product)
+                    }
+                },
+                carouselProductCardOnItemThreeDotsClickListener = object: CarouselProductCardListener.OnItemThreeDotsClickListener {
+                    override fun onItemThreeDotsClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
+                        val product = products.getOrNull(carouselProductCardPosition) ?: return
+                        broadMatchListener.onBroadMatchThreeDotsClicked(product)
                     }
                 }
         )
+    }
+
+    private fun List<BadgeItemViewModel>?.toProductCardModelShopBadges(): List<ProductCardModel.ShopBadge> {
+        return this?.map {
+            ProductCardModel.ShopBadge(it.isShown, it.imageUrl)
+        } ?: listOf()
+    }
+
+    private fun FreeOngkirViewModel.toProductCardModelFreeOngkir(): ProductCardModel.FreeOngkir {
+        return ProductCardModel.FreeOngkir(isActive, imageUrl)
     }
 }
