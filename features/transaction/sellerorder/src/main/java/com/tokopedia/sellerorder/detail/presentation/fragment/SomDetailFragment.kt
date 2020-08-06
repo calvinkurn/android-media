@@ -529,7 +529,8 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
             detailResponse.shipment.awbUploadProofText,
             detailResponse.bookingInfo.onlineBooking.bookingCode,
             detailResponse.bookingInfo.onlineBooking.state,
-            detailResponse.bookingInfo.onlineBooking.barcodeType)
+            detailResponse.bookingInfo.onlineBooking.barcodeType,
+            detailResponse.tickerInfo)
 
         listDetailData.add(SomDetailData(dataHeader, DETAIL_HEADER_TYPE))
     }

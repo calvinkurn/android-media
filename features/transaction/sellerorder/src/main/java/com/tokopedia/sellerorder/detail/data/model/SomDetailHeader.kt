@@ -1,5 +1,7 @@
 package com.tokopedia.sellerorder.detail.data.model
 
+import com.tokopedia.sellerorder.common.domain.model.TickerInfo
+
 /**
  * Created by fwidjaja on 2019-10-03.
  */
@@ -21,4 +23,5 @@ data class SomDetailHeader (
         val awbUploadProofText: String = "",
         val onlineBookingCode: String = "",
         val onlineBookingState: Int = -1,
-        val onlineBookingType: String = "")
+        val onlineBookingType: String = "",
+        val tickerInfo: TickerInfo = TickerInfo())
