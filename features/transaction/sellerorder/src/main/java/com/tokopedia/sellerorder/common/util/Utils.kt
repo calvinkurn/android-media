@@ -8,6 +8,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.sellerorder.R
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.ticker.Ticker
 
 /**
  * Created by fwidjaja on 2019-11-21.
@@ -47,6 +48,17 @@ object Utils {
 
                 startActivity(this)
             }
+        }
+    }
+
+    @JvmStatic
+    fun mapBackgroundColorToUnifyTickerType(hexBgColor: String): Int {
+        return when (hexBgColor) {
+            "#EBF6F6" -> Ticker.TYPE_ANNOUNCEMENT
+            "#FFEAEF" -> Ticker.TYPE_ERROR
+            "#FFFAE6" -> Ticker.TYPE_WARNING
+            "#F3F4F5" -> Ticker.TYPE_INFORMATION
+            else -> Ticker.TYPE_ANNOUNCEMENT
         }
     }
 }
