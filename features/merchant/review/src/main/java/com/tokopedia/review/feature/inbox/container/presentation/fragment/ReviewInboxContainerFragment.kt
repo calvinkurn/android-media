@@ -43,6 +43,8 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
     @Inject
     lateinit var viewModel: ReviewInboxContainerViewModel
 
+    private var previouslySelectedTab = 0
+
     override fun getScreenName(): String {
         return ""
     }
@@ -121,12 +123,11 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
             }
 
             override fun onTabSelected(tab: TabLayout.Tab) {
-                val currentTab = reviewInboxTabs.tabLayout.selectedTabPosition
                 reviewInboxViewPager.setCurrentItem(tab.position, true)
                 if(!GlobalConfig.isSellerApp()) {
                     when(tab.position) {
                         PENDING_TAB_INDEX -> {
-                            when(currentTab) {
+                            when(previouslySelectedTab) {
                                 PENDING_TAB_INDEX -> {
                                     ReviewInboxContainerTracking.eventOnClickReviewPendingTabFromReviewPendingTab(viewModel.getUserId())
                                 }
@@ -142,6 +143,7 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
                             ReviewInboxContainerTracking.eventOnClickReviewSellerTab(viewModel.getUserId())
                         }
                     }
+                    previouslySelectedTab = tab.position
                 }
             }
         })
