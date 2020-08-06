@@ -156,6 +156,7 @@
             app:layout_constraintLeft_toLeftOf="@+id/container_departure_time"
             app:layout_constraintTop_toBottomOf="@+id/container_departure_time"
             app:typographyType="small"
+            app:typographyWeight="bold"
             tools:text="Berhenti di Muscat" />
 
         <LinearLayout
