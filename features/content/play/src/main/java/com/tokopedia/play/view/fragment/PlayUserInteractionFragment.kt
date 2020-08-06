@@ -391,6 +391,18 @@ class PlayUserInteractionFragment @Inject constructor(
                 isMarginChanged = true
             }
 
+            val newLeftMargin = insets.systemWindowInsetLeft
+            if (marginLayoutParams.leftMargin != newLeftMargin) {
+                marginLayoutParams.updateMargins(left = newLeftMargin)
+                isMarginChanged = true
+            }
+
+            val newRightMargin = insets.systemWindowInsetRight
+            if (marginLayoutParams.rightMargin != newRightMargin) {
+                marginLayoutParams.updateMargins(right = newRightMargin)
+                isMarginChanged = true
+            }
+
             if (isMarginChanged) v.parent.requestLayout()
         }
 
