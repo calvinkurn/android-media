@@ -1025,7 +1025,7 @@ open class HomeViewModel @Inject constructor(
                 data.reversed().forEach {
                     updateWidget(UpdateLiveDataModel(ACTION_ADD, it, lastIndex))
                 }
-                _trackingLiveData.postValue(Event(data))
+                _trackingLiveData.postValue(Event(data.filterIsInstance(HomeVisitable::class.java)))
             }
         }){
             updateWidget(UpdateLiveDataModel(ACTION_DELETE, dynamicChannelDataModel, position))
@@ -1048,7 +1048,7 @@ open class HomeViewModel @Inject constructor(
                 data.reversed().forEach {
                     updateWidget(UpdateLiveDataModel(ACTION_ADD, it, lastIndex))
                 }
-                _trackingLiveData.postValue(Event(data))
+                _trackingLiveData.postValue(Event(data.filterIsInstance(HomeVisitable::class.java)))
             }
         }){
             updateWidget(UpdateLiveDataModel(ACTION_DELETE, visitable, position))
