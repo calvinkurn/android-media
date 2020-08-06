@@ -25,6 +25,7 @@
             android:orientation="vertical"
             android:paddingLeft="@dimen/dp_16"
             android:paddingRight="@dimen/dp_16"
+            android:paddingBottom="@dimen/dp_24"
             android:paddingTop="@dimen/dp_16">
 
             <TextView
@@ -176,7 +177,7 @@
                 android:textColor="@color/green_500"
                 android:textSize="@dimen/sp_12"
                 app:typographyType="body_3" />
-            
+
 
             <com.tokopedia.design.text.TkpdHintTextInputLayout
                 android:id="@+id/tilShopSlogan"
