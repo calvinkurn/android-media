@@ -144,15 +144,9 @@ class ShopHomeNplCampaignViewHolder(
         val isRemindMe = model.data?.firstOrNull()?.isRemindMe
         isRemindMe?.let {
             itemView.layout_remind_me?.show()
-            itemView.image_notification?.show()
-            itemView.loader_remind_me?.hide()
             itemView.layout_remind_me?.setOnClickListener {
                 if (itemView.loader_remind_me?.isVisible == false) {
-                    shopHomeCampaignNplWidgetListener.onClickRemindMe(model) {
-                        itemView.image_notification?.hide()
-                        itemView.text_remind_me?.hide()
-                        itemView.loader_remind_me?.show()
-                    }
+                    shopHomeCampaignNplWidgetListener.onClickRemindMe(model)
                 }
             }
             if (it) {
@@ -176,6 +170,18 @@ class ShopHomeNplCampaignViewHolder(
                 ))
                 itemView.text_remind_me?.show()
             }
+            checkRemindMeLoading(model)
+        }
+    }
+
+    private fun checkRemindMeLoading(model: ShopHomeNewProductLaunchCampaignUiModel){
+        if (model.data?.firstOrNull()?.showRemindMeLoading == true) {
+            itemView.image_notification?.hide()
+            itemView.text_remind_me?.hide()
+            itemView.loader_remind_me?.show()
+        } else {
+            itemView.image_notification?.show()
+            itemView.loader_remind_me?.hide()
         }
     }
 

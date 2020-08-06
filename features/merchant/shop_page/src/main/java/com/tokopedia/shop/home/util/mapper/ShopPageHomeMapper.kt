@@ -213,6 +213,10 @@ object ShopPageHomeMapper {
             isLoggedIn: Boolean
     ): List<ShopHomeNewProductLaunchCampaignUiModel.NewProductLaunchCampaignItem> {
         return data.map {
+            val isRemindMe = if (!isLoggedIn && it.statusCampaign.toLowerCase() == StatusCampaign.UPCOMING.statusCampaign.toLowerCase())
+                false
+            else
+                null
             ShopHomeNewProductLaunchCampaignUiModel.NewProductLaunchCampaignItem(
                     it.campaignId,
                     it.name,
@@ -226,7 +230,7 @@ object ShopPageHomeMapper {
                     it.totalNotifyWording,
                     mapCampaignListBanner(it.listBanner),
                     mapCampaignListProduct(it.statusCampaign, it.listProduct),
-                    if(!isLoggedIn) false else null
+                    isRemindMe
             )
         }
     }
@@ -248,8 +252,8 @@ object ShopPageHomeMapper {
                 if(statusCampaign.toLowerCase() == StatusCampaign.ONGOING.statusCampaign.toLowerCase()){
                     stockLabel = it.stockWording.title
                     stockPercentage = ((it.stock - it.countSold).toFloat()/it.stock * 100).toInt()
-                    hideGimmick = it.hideGimmick
                 }
+                hideGimmick = it.hideGimmick
             }
         }
     }

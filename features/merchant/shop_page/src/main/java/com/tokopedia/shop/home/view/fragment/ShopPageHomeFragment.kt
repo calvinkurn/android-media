@@ -121,6 +121,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         const val BUNDLE = "bundle"
         const val REGISTER_VALUE = "REGISTER"
         const val UNREGISTER_VALUE = "UNREGISTER"
+        var nplRemindMeCampaignId = ""
 
         fun createInstance(
                 shopId: String,
@@ -456,7 +457,15 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     private fun onSuccessGetCampaignNplRemindMeStatusData(data: GetCampaignNotifyMeUiModel) {
-        shopHomeAdapter.updateRemindMeStatusCampaignNplWidgetData(data.campaignId,data.isAvailable)
+        shopHomeAdapter.updateRemindMeStatusCampaignNplWidgetData(data.campaignId, data.isAvailable)
+        if (nplRemindMeCampaignId == data.campaignId && !data.isAvailable) {
+            val nplCampaignModel = shopHomeAdapter.getNplCampaignUiModel(data.campaignId)
+            nplCampaignModel?.let{
+                shopHomeAdapter.showNplRemindMeLoading(data.campaignId)
+                handleClickRemindMe(it)
+                nplRemindMeCampaignId = ""
+            }
+        }
     }
 
     private fun addProductListHeader() {
@@ -1134,10 +1143,10 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         }
     }
 
-    private fun redirectToLoginPage() {
+    private fun redirectToLoginPage(requestCode: Int = REQUEST_CODE_USER_LOGIN) {
         context?.let {
             val intent = RouteManager.getIntent(it, ApplinkConst.LOGIN)
-            startActivityForResult(intent, REQUEST_CODE_USER_LOGIN)
+            startActivityForResult(intent, requestCode)
         }
     }
 
@@ -1326,12 +1335,13 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         bottomSheet.show(childFragmentManager, "")
     }
 
-    override fun onClickRemindMe(model: ShopHomeNewProductLaunchCampaignUiModel, showLoading: () -> Unit) {
+    override fun onClickRemindMe(model: ShopHomeNewProductLaunchCampaignUiModel) {
         viewModel?.let {
             if (it.isLogin) {
-                showLoading.invoke()
+                shopHomeAdapter.showNplRemindMeLoading(model.data?.firstOrNull()?.campaignId.orEmpty())
                 handleClickRemindMe(model)
             } else {
+                nplRemindMeCampaignId = model.data?.firstOrNull()?.campaignId.orEmpty()
                 redirectToLoginPage()
             }
         }

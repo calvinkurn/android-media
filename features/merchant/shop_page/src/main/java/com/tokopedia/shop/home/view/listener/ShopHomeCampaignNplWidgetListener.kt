@@ -20,7 +20,7 @@ interface ShopHomeCampaignNplWidgetListener {
 
     fun onClickTncCampaignNplWidget(model: ShopHomeNewProductLaunchCampaignUiModel)
 
-    fun onClickRemindMe(model: ShopHomeNewProductLaunchCampaignUiModel, showLoading: () -> Unit)
+    fun onClickRemindMe(model: ShopHomeNewProductLaunchCampaignUiModel)
 
     fun onClickCtaCampaignNplWidget(model: ShopHomeNewProductLaunchCampaignUiModel)
 

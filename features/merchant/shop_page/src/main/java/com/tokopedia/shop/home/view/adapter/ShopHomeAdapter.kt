@@ -350,6 +350,7 @@ class ShopHomeAdapter(
                     else
                         --it.totalNotify
                 }
+                it.showRemindMeLoading = false
                 notifyChangedItem(visitables.indexOf(nplCampaignUiModel))
             }
         }
@@ -360,6 +361,21 @@ class ShopHomeAdapter(
         if(modelIndex != -1){
             visitables.remove(model)
             notifyRemovedItem(modelIndex)
+        }
+    }
+
+    fun showNplRemindMeLoading(campaignId: String) {
+        visitables.filterIsInstance<ShopHomeNewProductLaunchCampaignUiModel>().onEach{nplCampaignUiModel ->
+            nplCampaignUiModel.data?.firstOrNull { it.campaignId == campaignId }?.let {
+                it.showRemindMeLoading = true
+                notifyChangedItem(visitables.indexOf(nplCampaignUiModel))
+            }
+        }
+    }
+
+    fun getNplCampaignUiModel(campaignId: String): ShopHomeNewProductLaunchCampaignUiModel? {
+        return visitables.filterIsInstance<ShopHomeNewProductLaunchCampaignUiModel>().firstOrNull {
+            it.data?.firstOrNull()?.campaignId == campaignId
         }
     }
 
