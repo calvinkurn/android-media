@@ -73,6 +73,7 @@ internal fun createBroadMatchListener(): BroadMatchListener {
     return object: BroadMatchListener {
         override fun onBroadMatchItemClicked(broadMatchItemViewModel: BroadMatchItemViewModel) {}
         override fun onBroadMatchSeeMoreClicked(broadMatchViewModel: BroadMatchViewModel) {}
+        override fun onBroadMatchThreeDotsClicked(broadMatchItemViewModel: BroadMatchItemViewModel) {}
     }
 }
 
@@ -94,14 +95,6 @@ internal fun createBannerAdsListener(): BannerAdsListener {
     return object: BannerAdsListener {
         override fun onBannerAdsImpressionListener(position: Int, data: CpmData?) {}
         override fun onBannerAdsClicked(position: Int, applink: String?, data: CpmData?) {}
-    }
-}
-
-internal fun createTickerListener(): TickerListener {
-    return object: TickerListener {
-        override fun isTickerHasDismissed(): Boolean { return false }
-        override fun onTickerDismissed() {}
-        override fun onTickerClicked(tickerViewModel: TickerViewModel?) {}
     }
 }
 
