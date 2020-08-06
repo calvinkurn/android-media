@@ -5,7 +5,6 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.topads.sdk.domain.model.Data
@@ -46,7 +45,7 @@ class TopadsShopViewHolder(v: View, private val topadsShopListener: TopadsShopLi
             itemView.cardTitle.visibility = View.VISIBLE
             itemView.cardTitle.bind(element.title, element.template.cardrecom.title, adapterPosition)
             itemView.cardTitle.listener = cardTitleListener
-        } else{
+        } else {
             itemView.cardTitle.visibility = View.GONE
         }
 
@@ -82,12 +81,10 @@ class TopadsShopViewHolder(v: View, private val topadsShopListener: TopadsShopLi
 
         fun onAddFavorite(positionInFeed: Int, adapterPosition: Int, data: Data)
 
-        fun onAffiliateTrackClicked(trackList: List<TrackingViewModel>, isClick: Boolean)
+        fun onTopAdsImpression(url: String, shopId: String, shopName: String, imageUrl: String)
     }
 
-    override fun onImpressionShopAds(url: String?) {
-        url?.let {
-            topadsShopListener.onAffiliateTrackClicked(listOf(TrackingViewModel(viewURL = it)), false)
-        }
+    override fun onImpressionShopAds(url: String, shopId: String, shopName: String, imageUrl: String) {
+        topadsShopListener.onTopAdsImpression(url, shopId, shopName, imageUrl)
     }
 }

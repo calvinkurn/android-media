@@ -1,6 +1,7 @@
 package com.tokopedia.oneclickcheckout.preference.edit.view.payment
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
 import android.net.http.SslError
@@ -10,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.*
+import com.google.android.play.core.splitcompat.SplitCompat
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.gone
@@ -69,11 +71,13 @@ class PaymentMethodFragment : BaseDaggerFragment() {
         if (parent is PreferenceEditParent) {
             parent.hideAddButton()
             parent.hideDeleteButton()
-            parent.setHeaderTitle(getString(R.string.lbl_choose_payment))
+            val parentContext: Context = parent
+            SplitCompat.installActivity(parentContext)
+            parent.setHeaderTitle(parentContext.getString(R.string.lbl_choose_payment_method))
             if (arguments?.getBoolean(ARG_IS_EDIT) == true) {
                 parent.hideStepper()
             } else {
-                parent.setHeaderSubtitle(getString(R.string.step_choose_payment))
+                parent.setHeaderSubtitle(parentContext.getString(R.string.step_choose_payment))
                 parent.showStepper()
                 parent.setStepperValue(75, true)
             }

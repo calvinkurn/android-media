@@ -17,7 +17,7 @@ open class WebViewURLSpan(url: String?) : URLSpan(url){
 
     override fun updateDrawState(ds: TextPaint) {
         super.updateDrawState(ds)
-        ds?.isUnderlineText = listener?.showUnderline() ?: true
+        ds.isUnderlineText = listener?.showUnderline() ?: true
     }
 
     interface OnClickListener{

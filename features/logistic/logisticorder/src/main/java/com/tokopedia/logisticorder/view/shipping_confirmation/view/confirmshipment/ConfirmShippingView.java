@@ -1,6 +1,6 @@
 package com.tokopedia.logisticorder.view.shipping_confirmation.view.confirmshipment;
 
-import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order.ListCourierViewModel;
+import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order.ListCourierUiModel;
 
 
 /**
@@ -9,7 +9,7 @@ import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order.Li
 
 public interface ConfirmShippingView {
 
-    void receiveShipmentData(ListCourierViewModel model);
+    void receiveShipmentData(ListCourierUiModel model);
 
     void onSuccessConfirm(String successMessage);
 

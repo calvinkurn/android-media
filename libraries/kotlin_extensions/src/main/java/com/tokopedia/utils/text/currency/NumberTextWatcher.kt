@@ -37,7 +37,7 @@ open class NumberTextWatcher : AfterTextWatcher {
             editText.setSelection(editText.text.length)
             return
         }
-        val value = java.lang.Double.parseDouble(valueString?:"0.0")
+        val value = valueString?.toDouble() ?: 0.0
         onNumberChanged(value)
     }
 

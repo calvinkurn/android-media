@@ -15,5 +15,11 @@
         </menu>
     </item>
 
+    <item
+        android:id="@+id/action_more_menu"
+        android:icon="@drawable/ic_product_manage_more_grey"
+        android:title="@string/product_manage_more_menu"
+        app:showAsAction="always" />
+
 
 </menu>

@@ -39,23 +39,23 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
                 latestHeaderDate = chatItemPojo.date
             }
             for (chatItemPojoByDate in chatItemPojo.chats) {
-                var index = 0
-                while (index < chatItemPojoByDate.replies.size) {
-                    val chatDateTime = chatItemPojoByDate.replies[index]
+                var chatIndex = 0
+                while (chatIndex < chatItemPojoByDate.replies.size) {
+                    val chatDateTime = chatItemPojoByDate.replies[chatIndex]
                     if (hasAttachment(chatDateTime)) {
-                        val nextItem = chatItemPojoByDate.replies.getOrNull(index + 1)
+                        val nextItem = chatItemPojoByDate.replies.getOrNull(chatIndex + 1)
                         if (chatDateTime.isMultipleProductAttachment(nextItem)) {
-                            val products = mergeProduct(index, chatItemPojoByDate.replies)
+                            val products = mergeProduct(chatIndex, chatItemPojoByDate.replies)
                             val carouselProducts = createCarouselProduct(chatDateTime, products)
                             listChat.add(carouselProducts)
-                            index += products.size
+                            chatIndex += products.size
                         } else {
                             listChat.add(mapAttachment(chatDateTime))
-                            index++
+                            chatIndex++
                         }
                     } else {
                         listChat.add(convertToMessageViewModel(chatDateTime))
-                        index++
+                        chatIndex++
                     }
                 }
             }

@@ -41,8 +41,8 @@ class KeywordListAdapter(val typeFactory: KeywordListAdapterTypeFactory) : Recyc
     }
 
     fun getSelectedItems(): List<KeywordItemViewModel> {
-        var selected = mutableListOf<KeywordItemViewModel>()
-        items.forEachIndexed { _, model ->
+        val selected = mutableListOf<KeywordItemViewModel>()
+        items.forEach { model ->
             if ((model is KeywordItemViewModel) && model.isChecked) {
                 selected.add(model)
             }
@@ -98,7 +98,7 @@ class KeywordListAdapter(val typeFactory: KeywordListAdapterTypeFactory) : Recyc
         items.clear()
         items.add(0, KeywordGroupViewModel(SELECTED_KEYWORD))
         items.addAll(favoured)
-        if(remains.size!=0) {
+        if (remains.size != 0) {
             items.add(KeywordGroupViewModel(RECOMMENDED))
             items.addAll(remains)
         }

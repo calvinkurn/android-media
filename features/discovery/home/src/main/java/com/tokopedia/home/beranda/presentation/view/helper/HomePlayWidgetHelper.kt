@@ -3,6 +3,7 @@ package com.tokopedia.home.beranda.presentation.view.helper
 import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
+import android.os.CountDownTimer
 import androidx.lifecycle.Observer
 import com.google.android.exoplayer2.ExoPlayer
 import com.tokopedia.device.info.DeviceConnectionInfo
@@ -40,6 +41,23 @@ class HomePlayWidgetHelper(
 
     private val playManager
         get() = PlayVideoManager.getInstance(context)
+
+    private val timerDelayBack = object : CountDownTimer(DELAY_BACK, 1000) {
+        override fun onFinish() {
+            observeVideoPlayer()
+            resumeVideo()
+        }
+
+        override fun onTick(millisUntilFinished: Long) {}
+    }
+
+    private val timerDelayPlay = object : CountDownTimer(DELAY_PLAYING, 1000) {
+        override fun onFinish() {
+            playManager.resume()
+        }
+
+        override fun onTick(millisUntilFinished: Long) {}
+    }
 
     /**
      * DO NOT CHANGE THIS TO LAMBDA
@@ -119,10 +137,7 @@ class HomePlayWidgetHelper(
 
     override fun playerPlayWithDelay() {
         masterJob.cancelChildren()
-        launch(coroutineContext){
-            delay(DELAY_PLAYING)
-            playManager.resume()
-        }
+        timerDelayPlay.start()
     }
 
     override fun play(url: String){
@@ -168,23 +183,18 @@ class HomePlayWidgetHelper(
     override fun onActivityResume() {
         if(DeviceConnectionInfo.isConnectWifi(context) && isDeviceHasRequirementAutoPlay()) {
             masterJob.cancelChildren()
-            launch(coroutineContext){
-                delay(DELAY_BACK)
-                observeVideoPlayer()
-                resumeVideo()
-            }
+            timerDelayBack.start()
         } else {
             stopVideoPlayer()
         }
     }
 
     override fun onActivityPause() {
-        masterJob.cancelChildren()
-        exoPlayerView.setPlayer(null)
+        playerPause()
         removeVideoPlayerObserver()
     }
 
-    override fun onActivityStop() {
+    override fun onActivityDestroy() {
         masterJob.cancelChildren()
         exoPlayerView.setPlayer(null)
         releasePlayer()

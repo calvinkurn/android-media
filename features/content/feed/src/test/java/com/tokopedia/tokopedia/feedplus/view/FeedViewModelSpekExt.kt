@@ -7,6 +7,7 @@ import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
+import com.tokopedia.feedcomponent.analytics.topadstracker.SendTopAdsUseCase
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
 import com.tokopedia.feedplus.domain.model.DynamicFeedFirstPageDomainModel
@@ -44,6 +45,7 @@ fun TestBody.createFeedViewModel(): FeedViewModel{
     val atcUseCase by memoized<AddToCartUseCase>()
     val trackAffiliateClickUseCase by memoized<TrackAffiliateClickUseCase>()
     val deletePostUseCase by memoized<DeletePostUseCase>()
+    val sendTopAdsUseCase by memoized<SendTopAdsUseCase>()
 
     return FeedViewModel(
             FeedTestDispatcherProvider(),
@@ -58,7 +60,8 @@ fun TestBody.createFeedViewModel(): FeedViewModel{
             sendVoteUseCase,
             atcUseCase,
             trackAffiliateClickUseCase,
-            deletePostUseCase
+            deletePostUseCase,
+            sendTopAdsUseCase
     )
 }
 
@@ -111,6 +114,10 @@ fun FeatureBody.createFeedTestInstance() {
 
     val deletePostUseCase by memoized {
         mockk<DeletePostUseCase>(relaxed = true)
+    }
+
+    val sendTopAdsUseCase by memoized {
+        mockk<SendTopAdsUseCase>(relaxed = true)
     }
 }
 

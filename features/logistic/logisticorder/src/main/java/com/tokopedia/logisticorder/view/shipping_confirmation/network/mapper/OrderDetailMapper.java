@@ -3,27 +3,27 @@ package com.tokopedia.logisticorder.view.shipping_confirmation.network.mapper;
 import com.tokopedia.logisticdata.data.entity.courierlist.CourierResponse;
 import com.tokopedia.logisticdata.data.entity.courierlist.Shipment;
 import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order.CourierServiceModel;
-import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order.CourierViewModel;
-import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order.ListCourierViewModel;
+import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order.CourierUiModel;
+import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order.ListCourierUiModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class OrderDetailMapper {
 
-    public ListCourierViewModel getCourierServiceModel(CourierResponse response,
-                                                       String selectedCourierId) {
-        ListCourierViewModel listCourierViewModel = new ListCourierViewModel();
-        List<CourierViewModel> viewModelList = new ArrayList<>();
+    public ListCourierUiModel getCourierServiceModel(CourierResponse response,
+                                                     String selectedCourierId) {
+        ListCourierUiModel listCourierUiModel = new ListCourierUiModel();
+        List<CourierUiModel> uiModelList = new ArrayList<>();
         if (response.getShipment() != null) {
             for (int i = 0; i < response.getShipment().size(); i++) {
-                CourierViewModel courierViewModel = new CourierViewModel();
-                courierViewModel.setSelected(
+                CourierUiModel courierUiModel = new CourierUiModel();
+                courierUiModel.setSelected(
                         selectedCourierId.equals(response.getShipment().get(i).getShipmentId())
                 );
-                courierViewModel.setCourierId(response.getShipment().get(i).getShipmentId());
-                courierViewModel.setCourierName(response.getShipment().get(i).getShipmentName());
-                courierViewModel.setCourierImageUrl(response.getShipment().get(i).getShipmentImage());
+                courierUiModel.setCourierId(response.getShipment().get(i).getShipmentId());
+                courierUiModel.setCourierName(response.getShipment().get(i).getShipmentName());
+                courierUiModel.setCourierImageUrl(response.getShipment().get(i).getShipmentImage());
                 List<CourierServiceModel> courierServiceModelList = new ArrayList<>();
                 for (int j = 0; j < response.getShipment().get(i).getShipmentPackage().size(); j++) {
                     CourierServiceModel courierServiceModel = new CourierServiceModel();
@@ -32,11 +32,11 @@ public class OrderDetailMapper {
                     courierServiceModel.setServiceName(courierShipment.getShipmentPackage().get(j).getName());
                     courierServiceModelList.add(courierServiceModel);
                 }
-                courierViewModel.setCourierServiceList(courierServiceModelList);
-                viewModelList.add(courierViewModel);
+                courierUiModel.setCourierServiceList(courierServiceModelList);
+                uiModelList.add(courierUiModel);
             }
         }
-        listCourierViewModel.setCourierViewModelList(viewModelList);
-        return listCourierViewModel;
+        listCourierUiModel.setCourierUiModelList(uiModelList);
+        return listCourierUiModel;
     }
 }

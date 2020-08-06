@@ -1,23 +1,28 @@
 package com.tokopedia.abstraction.processor
 
 
+import com.tokopedia.analytic.annotation.ErrorHandler
+import com.tokopedia.analytic.annotation.Key
+import com.tokopedia.analytic.annotation.Logger
 import com.tokopedia.analytic_constant.Event
 import com.tokopedia.analytic_constant.Param
 import com.tokopedia.annotation.AnalyticEvent
 import com.tokopedia.annotation.BundleThis
-import com.tokopedia.annotation.Key
 import com.tokopedia.annotation.defaultvalues.DefaultValueLong
 import com.tokopedia.annotation.defaultvalues.DefaultValueString
 import com.tokopedia.firebase.analytic.rules.ProductImpressionsRules
+import com.tokopedia.util.GTMErrorHandlerImpl
+import com.tokopedia.util.logger.GTMLoggerImpl
 
 /**
  * Product Detail
  */
+@ErrorHandler(GTMErrorHandlerImpl::class)
+@Logger(GTMLoggerImpl::class)
 @AnalyticEvent(true, Event.VIEW_ITEM_LIST, ProductImpressionsRules::class)
 data class ProductListImpression(
         val item_list: String,
         val items: List<ProductListImpressionProduct>,
-
         @DefaultValueString("")
         val currentSite: String?,
         @DefaultValueString("")
@@ -37,6 +42,8 @@ data class ProductListImpression(
 private const val KEY_DIMENSION_40 = "dimension40"
 
 
+@ErrorHandler(GTMErrorHandlerImpl::class)
+@Logger(GTMLoggerImpl::class)
 @BundleThis(false, true)
 data class ProductListImpressionProduct(
         @Key(Param.ITEM_ID)
@@ -62,5 +69,11 @@ data class ProductListImpressionProduct(
         val list: String,
         @DefaultValueString("none / other")
         @Key(KEY_DIMENSION_40)
-        val dimension40: String?
+        val dimension40: String?,
+        @DefaultValueString("")
+        @Key("dimension87")
+        val dimension87: String?,
+        @DefaultValueString("")
+        @Key("dimension88")
+        val dimension88: String?
 )

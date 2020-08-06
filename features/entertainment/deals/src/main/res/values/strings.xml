@@ -1,0 +1,61 @@
+<resources>
+
+    <string name="deals_base_activity_location_placeholder">Lokasi Voucher</string>
+    <string name="deals_base_activity_search_placeholder">Cari voucher atau brand</string>
+
+    <string name="deals_homepage_banner_carousel_tag">Carousel</string>
+    <string name="deals_homepage_layout_topdeals_tag">topdeals</string>
+    <string name="deals_homepage_popular_tag">Populer</string>
+    <string name="deals_homepage_new_deals_tag">Terbaru</string>
+    <string name="deals_homepage_new_halal_tag">Halal</string>
+    <string name="deals_homepage_new_hot_deals_tag">Hot Deals</string>
+    <string name="deals_homepage_new_only_grab_driver_tag">Khusus Grab Driver</string>
+    <string name="deals_homepage_new_only_for_grab_tag">Khusus Pengguna Grab</string>
+    <string name="deals_homepage_food_section_title">Pilih jenis kuliner kesukaanmu</string>
+    <string name="deals_homepage_food_section_subtitle">Mau makan apa aja, ada!</string>
+    <string name="deals_homepage_place_popular_section_title">Voucher di tempat populer</string>
+    <string name="deals_homepage_place_popular_section_subtitle">Cek voucher di tempat nongkrong favoritmu</string>
+    <string name="deals_homepage_brand_popular_section_title">Brand populer</string>
+    <string name="deals_homepage_section_see_all">Lihat Semua</string>
+    <string name="deals_homepage_banner_see_all">Lihat Semua</string>
+    <string name="deals_homepage_category_see_all">Semua Kategori</string>
+
+    <string name="deals_filter_submit">Terapkan</string>
+
+    <string name="deals_search_input_hint_deals">Cari voucher atau brand</string>
+    <string name="deals_location_text_search">Lokasi</string>
+    <string name="deals_no_brand_text">Yaah, Deals yang kamu cari nggak ketemu</string>
+    <string name="deals_no_brand_subtext">Coba cari lagi pakai kata kunci lain, yuk!</string>
+    <string name="deals_brand_count_text">Lihat Brand Terkait \'%1$s\' (%2$d)</string>
+    <string name="deals_location_deals_changed_toast">Kamu sedang melihat pilihan voucher di</string>
+    <string name="deals_search_error">Terjadi Kesalahan, tidak dapat melakukan pencarian. Silakan coba lagi nanti.</string>
+    <string name="deals_search_load_initial_error">Terjadi Kesalahan, tidak dapat menemukan halaman yang dicari. Silakan coba lagi nanti.</string>
+    <string name="deals_search_load_more_error">Terjadi Kesalahan, tidak dapat menemukan voucher lainnya. Silakan coba lagi nanti.</string>
+    <string name="deals_product_category_see_all">Lihat Semua</string>
+    <string name="deals_select_category">Pilih kategori voucher</string>
+    <string name="deals_detect_current_location">Gunakan lokasi saya saat ini</string>
+    <string name="deals_search_input_hint_location">Lokasi populer, wilayah, atau kota</string>
+    <string name="deals_location_bottomsheet_title">Ganti lokasi</string>
+    <string name="deals_use_current_location">Tokopedia Would Like To Use Your Current Location</string>
+    <string name="deals_location_popular_cities_error">Terjadi Kesalahan, tidak dapat menemukan daftar kota populer. Silakan coba lagi nanti.</string>
+    <string name="deals_location_popular_location_error">Terjadi Kesalahan, tidak dapat menemukan daftar lokasi populer. Silakan coba lagi nanti.</string>
+    <string name="deals_location_landmark_error">Terjadi Kesalahan, tidak dapat menemukan daftar landmark. Silakan coba lagi nanti.</string>
+    <string name="deals_location_popular_location_more_error">Terjadi Kesalahan, tidak dapat menemukan daftar lanjutan lokasi populer. Silakan coba lagi nanti.</string>
+    <string name="deals_location_landmark_more_error">Terjadi Kesalahan, tidak dapat menemukan daftar lanjutan landmark. Silakan coba lagi nanti.</string>
+    <string name="deals_search_location_error">Terjadi Kesalahan, tidak dapat menemukan pencarian. Silakan coba lagi nanti.</string>
+    <string name="deals_search_location_more_error">Terjadi Kesalahan, tidak dapat memuat hasil lanjutan pencarian. Silakan coba lagi nanti.</string>
+    <string name="deals_current_location_error">Tidak dapat mendapatkan lokasi saat ini.</string>
+    <string name="deals_menu_coach_mark_title">Cek e-voucher kamu</string>
+    <string name="deals_menu_coach_mark_description">Sudah beli voucher? Lihat cara pakai dan redeem voucher kamu di sini!</string>
+    <string name="deals_popular_place_coach_mark_title">Pilihan voucher di tempat populer</string>
+    <string name="deals_popular_places_coach_mark_description">Lihat berbagai voucher yang bisa kamu pakai di tempat hangout paling hits.</string>
+    <string name="deals_favorite_categories_coach_mark_title">Berbagai jenis voucher menarik</string>
+    <string name="deals_favorite_categories_coach_mark_description">Kamu bisa langsung lihat pilihan voucher berdasarkan jenisnya di sini.</string>
+    <string name="deals_category_filter_bottom_sheet_title">Filter</string>
+    <string name="deals_category_filter_bottom_sheet_subtitle">Koleksi Menarik</string>
+    <string name="deals_category_filter_bottom_sheet_action_label">Reset</string>
+    <string name="deals_category_empty_reset_filter">Reset Filter</string>
+    <string name="deals_category_empty_description">Jangan menyerah, lanjutkan perburuan dengan cek kategori lainnya!</string>
+    <string name="deals_category_empty_title">Yaah, nggak ada isinya</string>
+    <string name="deals_category_empty_desc_filter">Jangan menyerah, lanjutkan perburuan dengan reset filter kamu!</string>
+</resources>

@@ -52,4 +52,16 @@ object DeeplinkMapperContent {
         }
         return getRegisteredNavigation(deepLink)
     }
+
+    fun getContentCreatePostDeepLink(deepLink: String): String {
+        when {
+            deepLink.startsWith(ApplinkConst.CONTENT_CREATE_POST) ||
+                    deepLink.startsWithPattern(ApplinkConst.CONTENT_DRAFT_POST) ||
+                    deepLink.startsWith(ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST) ||
+                    deepLink.startsWithPattern(ApplinkConst.AFFILIATE_DRAFT_POST) -> {
+                return getRegisteredNavigation(deepLink)
+            }
+        }
+        return deepLink
+    }
 }

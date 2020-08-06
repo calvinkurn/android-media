@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="@dimen/layout_lvl2"
+    android:layout_marginStart="@dimen/layout_lvl2"
+    android:layout_marginRight="@dimen/layout_lvl2"
+    android:layout_marginEnd="@dimen/layout_lvl2"
+    android:layout_marginTop="@dimen/layout_lvl3"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/img_campaign_stock_redirection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:unify_image_corner_radius="6"
+        tools:src="@tools:sample/avatars"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_campaign_stock_redirection_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/layout_lvl3"
+        android:layout_marginLeft="@dimen/layout_lvl5"
+        android:layout_marginStart="@dimen/layout_lvl5"
+        android:layout_marginRight="@dimen/layout_lvl5"
+        android:layout_marginEnd="@dimen/layout_lvl5"
+        android:maxLines="@integer/product_manage_campaign_stock_text_max_lines"
+        android:text="@string/product_manage_campaign_stock_redirection_title"
+        android:textColor="@color/Neutral_N700_96"
+        android:gravity="center"
+        app:typographyType="heading_5"
+        app:layout_constraintTop_toBottomOf="@id/img_campaign_stock_redirection"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_campaign_stock_redirection_desc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/layout_lvl1"
+        android:layout_marginLeft="@dimen/product_manage_campaign_stock_redirection_desc_margin"
+        android:layout_marginStart="@dimen/product_manage_campaign_stock_redirection_desc_margin"
+        android:layout_marginRight="@dimen/product_manage_campaign_stock_redirection_desc_margin"
+        android:layout_marginEnd="@dimen/product_manage_campaign_stock_redirection_desc_margin"
+        android:maxLines="@integer/product_manage_campaign_stock_text_max_lines"
+        android:text="@string/product_manage_campaign_stock_redirection_desc"
+        android:textColor="@color/Neutral_N700_68"
+        android:gravity="center"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        app:layout_constraintTop_toBottomOf="@id/tv_campaign_stock_redirection_title"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
