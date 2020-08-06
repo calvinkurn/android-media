@@ -1,22 +1,30 @@
 package com.tokopedia.sellerorder.list.presentation.adapter
 
+import android.content.Context
 import android.graphics.Color
+import android.text.Spannable
+import android.text.SpannableStringBuilder
+import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.dpToPx
-import com.tokopedia.kotlin.extensions.view.loadImage
-import com.tokopedia.kotlin.extensions.view.loadImageDrawable
-import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.util.SomConsts.LABEL_EMPTY
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ORDER_DELIVERED
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ORDER_DELIVERED_DUE_LIMIT
+import com.tokopedia.sellerorder.common.util.Utils
 import com.tokopedia.sellerorder.list.data.model.SomListOrder
 import com.tokopedia.sellerorder.list.presentation.fragment.SomListFragment
+import com.tokopedia.unifycomponents.UrlSpanNoUnderline
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.som_list_item.view.*
 
@@ -42,13 +50,10 @@ class SomListItemAdapter : RecyclerView.Adapter<SomListItemAdapter.ViewHolder>()
             holder.itemView.label_status_order.text = somItemList[position].status
 
             if (somItemList[position].cancelRequest == 1) {
-                holder.itemView.ticker_buyer_request_cancel?.apply {
-                    visibility = View.VISIBLE
-                    setTextDescription(holder.itemView.context.getString(R.string.buyer_request_cancel))
-                    closeButtonVisibility = View.GONE
-                }
+                setupTicker(holder.itemView.ticker_buyer_request_cancel, somItemList.getOrNull(position)?.tickerInfo)
+                holder.itemView.ticker_buyer_request_cancel?.show()
             } else {
-                holder.itemView.ticker_buyer_request_cancel?.visibility = View.GONE
+                holder.itemView.ticker_buyer_request_cancel?.hide()
             }
 
             if (somItemList[position].statusColor.isNotEmpty() && !somItemList[position].statusColor.equals(LABEL_EMPTY, true)) {
@@ -100,6 +105,55 @@ class SomListItemAdapter : RecyclerView.Adapter<SomListItemAdapter.ViewHolder>()
                 actionListener?.onListItemClicked(orderId)
             }
         }
+    }
+
+    private fun setupTicker(tickerBuyerRequestCancel: Ticker?, tickerInfo: SomListOrder.Data.OrderList.Order.TickerInfo?) {
+        tickerBuyerRequestCancel?.apply {
+            val tickerDescription = makeTickerDescription(context, tickerInfo)
+            setTextDescription(tickerDescription)
+            setDescriptionClickEvent(object: TickerCallback {
+                override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                    RouteManager.route(context, String.format("%s?=url", ApplinkConst.WEBVIEW, tickerInfo?.linkUrl))
+                }
+                override fun onDismiss() {}
+            })
+            tickerType = Utils.mapBackgroundColorToUnifyTickerType(tickerInfo?.backgroundColor.orEmpty())
+            closeButtonVisibility = View.GONE
+        }
+    }
+
+    private fun makeTickerDescription(context: Context, tickerInfo: SomListOrder.Data.OrderList.Order.TickerInfo?): String {
+        val message = tickerInfo?.message.orEmpty()
+        val messageLink = tickerInfo?.linkText.orEmpty()
+        val spannedMessage = SpannableStringBuilder()
+                .append(message)
+                .append(". $messageLink")
+
+        if (message.isNotBlank() && tickerInfo?.textColor.orEmpty().length > 1) {
+            spannedMessage.setSpan(
+                    ForegroundColorSpan(Color.parseColor(tickerInfo?.textColor)),
+                    0,
+                    message.length,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+        }
+
+        if (messageLink.isNotBlank() && tickerInfo?.textColor.orEmpty().length > 1) {
+            spannedMessage.setSpan(
+                    UrlSpanNoUnderline(messageLink),
+                    message.length + 2,
+                    message.length + messageLink.length,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+            spannedMessage.setSpan(
+                    ForegroundColorSpan(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Green_G500)),
+                    message.length + 2,
+                    message.length + messageLink.length,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+        }
+
+        return spannedMessage.toString()
     }
 
     fun setActionListener(fragment: SomListFragment) {
