@@ -34,6 +34,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.reviewseller.common.ReviewSellerComponentBuilder;
+import com.tokopedia.reviewseller.feature.reputationhistory.di.DaggerSellerReputationComponent;
 import com.tokopedia.seller.reputation.view.helper.RefreshHandler;
 import com.tokopedia.datepicker.range.view.listener.DatePickerResultListener;
 import com.tokopedia.reviewseller.feature.reputationhistory.di.SellerReputationModule;
@@ -312,7 +313,7 @@ public class SellerReputationFragment extends BaseDaggerFragment
            //[START] This is for dependent component
            DaggerSellerReputationComponent.builder()
                    .sellerReputationModule(new SellerReputationModule())
-                   .appComponent(ReviewSellerComponentBuilder.Companion.getComponent(getActivity().getApplication()))
+                   .reviewSellerComponent(ReviewSellerComponentBuilder.Companion.getComponent(getActivity().getApplication()))
                    .build().inject(this);
            //[END] This is for dependent component
        }
