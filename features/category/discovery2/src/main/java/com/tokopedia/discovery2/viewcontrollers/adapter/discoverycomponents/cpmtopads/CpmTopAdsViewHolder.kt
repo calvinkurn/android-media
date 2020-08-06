@@ -22,7 +22,6 @@ class CpmTopAdsViewHolder(itemView: View, private val fragment: Fragment) : Abst
 
     init {
         adsBannerView.setTopAdsBannerClickListener(TopAdsBannerClickListener { position: Int, applink: String?, data: CpmData? ->
-            sendTopAdsClick(position, data)
             RouteManager.route(itemView.context, applink)
             sendClickGTMTracking(position, data)
         })
@@ -75,19 +74,6 @@ class CpmTopAdsViewHolder(itemView: View, private val fragment: Fragment) : Abst
                 fragment.getDiscoveryAnalytics().trackTopAdsProductImpression(componentDataItem, cpmData, componentPosition, cpmProductPosition, cpmTopAdsViewModel.isUserLoggedIn())
             } else {
                 (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackTopAdsProductImpression(componentDataItem, cpmData, componentPosition, cpmProductPosition, cpmTopAdsViewModel.isUserLoggedIn())
-            }
-        }
-    }
-
-    private fun sendTopAdsClick(position: Int, data: CpmData?) {
-        if (position > 0) {
-            val productPosition = position - 1
-            val productListSize = data?.cpm?.cpmShop?.products?.size
-            if (productListSize != null && productPosition < productListSize) {
-                val clickUrl = data.cpm?.cpmShop?.products?.get(productPosition)?.imageProduct?.imageClickUrl
-                if (::cpmTopAdsViewModel.isInitialized && clickUrl != null) {
-                    cpmTopAdsViewModel.sendTopAdsTracking(clickUrl)
-                }
             }
         }
     }

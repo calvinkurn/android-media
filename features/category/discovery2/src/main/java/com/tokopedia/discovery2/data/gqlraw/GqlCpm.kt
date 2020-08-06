@@ -24,21 +24,37 @@ const val GQL_CPM: String = """query DisplayAds(${'$'}params: String) {
           name
           promoted_text
           shop {
-            id
-            name
-            gold_shop_badge
-            slogan
-            product {
-              id
-              name
-              applinks
-              price_format
-              image_product {
-                image_click_url
-                image_url
-              }
-            }
-          }
+    id
+    name
+    domain
+    tagline
+    slogan
+    location
+    city
+    gold_shop
+    gold_shop_badge
+    shop_is_official
+    product {
+        id
+        name
+        price_format
+        applinks
+        image_product{
+            product_id
+            product_name
+            image_url
+            image_click_url
+        }
+    }
+    image_shop {
+        cover
+        s_url
+        xs_url
+        cover_ecs
+        s_ecs
+        xs_ecs
+    }
+}
         }
       }
     }
