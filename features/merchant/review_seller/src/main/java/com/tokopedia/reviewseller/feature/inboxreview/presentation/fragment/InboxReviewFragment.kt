@@ -334,7 +334,6 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
 
         if (isUnAnsweredHasNextFalse(data)) {
             statusFilter = ANSWERED_VALUE
-            isFilter = true
             if(data.feedbackInboxList.isNotEmpty() && inboxReviewAdapter.itemCount.isZero()) {
                 endlessRecyclerViewScrollListener?.resetState()
                 inboxReviewAdapter.setFeedbackListData(data.feedbackInboxList)
@@ -351,11 +350,10 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
                 sortFilterInboxReview?.show()
                 inboxReviewAdapter.addInboxFeedbackEmpty(true)
             } else if (data.feedbackInboxList.isEmpty() && !isFilter && data.page == 1) {
-                sortFilterInboxReview?.hide()
+                sortFilterInboxReview?.show()
                 inboxReviewAdapter.clearAllElements()
                 inboxReviewAdapter.addInboxFeedbackEmpty(false)
             } else {
-                isFilter = true
                 inboxReviewAdapter.setFeedbackListData(data.feedbackInboxList)
             }
             updateScrollListenerState(data.hasNext)
@@ -449,7 +447,6 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
 
 
     private fun onRatingFilterSelected(filterRatingList: List<ListItemRatingWrapper>) {
-        isFilter = true
         val countSelected = inboxReviewViewModel.getRatingFilterListUpdated().filter { it.isSelected }.count()
         sortFilterInboxReview?.hide()
         endlessRecyclerViewScrollListener?.resetState()
@@ -467,8 +464,6 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
     }
 
     private fun updateFilterStatusInboxReview(index: Int) {
-        isFilter = true
-
         if (index == positionUnAnswered) {
             val unAnsweredSelected = itemSortFilterList[index].type == ChipsUnify.TYPE_SELECTED
             sortFilterItemInboxReviewWrapper[positionUnAnswered].isSelected = !unAnsweredSelected
@@ -501,6 +496,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
         inboxReviewViewModel.setFilterStatusDataText(ArrayList(sortFilterItemInboxReviewWrapper))
 
         endlessRecyclerViewScrollListener?.resetState()
+        isFilter = hasFiltered()
     }
 
     private fun updatedFilterRatingInboxReview(filterRatingList: List<ListItemRatingWrapper>) {
@@ -542,6 +538,8 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
 
         inboxReviewViewModel.updateRatingFilterData(ArrayList(filterRatingList))
         inboxReviewViewModel.setFilterRatingDataText(filterRatingList)
+
+        isFilter = hasFiltered()
     }
 
     private fun isUnAnsweredHasNextFalse(data: InboxReviewUiModel): Boolean {
@@ -558,5 +556,11 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
     private fun getQuickFilter(): String {
         val statusFilterViewModel = inboxReviewViewModel.getStatusFilterListUpdated()
         return InboxReviewMapper.mapToStatusFilterList(statusFilterViewModel).filter { it.isSelected }.joinToString { it.sortFilterItem?.title.toString() }
+    }
+
+    private fun hasFiltered(): Boolean {
+        val statusFilter = inboxReviewViewModel.getStatusFilterListUpdated().filter { it.isSelected }.count()
+        val ratingFilter = inboxReviewViewModel.getRatingFilterListUpdated().filter { it.isSelected }.count()
+        return statusFilter > 0 || ratingFilter > 0
     }
 }
