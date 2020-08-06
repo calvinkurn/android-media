@@ -102,7 +102,7 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
             notificationManager?.onStartUpload(primaryImagePathOrUrl)
 
             repeat(pathImageCount) { i ->
-                val imageId = uploadImageAndGetId(imageUrlOrPathList[i])
+                val imageId = uploadImageAndGetId(imagePathList[i])
                 uploadIdList.add(imageId)
             }
 
