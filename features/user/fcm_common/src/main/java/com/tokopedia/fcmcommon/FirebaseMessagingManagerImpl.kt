@@ -3,7 +3,7 @@ package com.tokopedia.fcmcommon
 import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
-import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.crashlytics.android.Crashlytics
 import com.google.firebase.iid.FirebaseInstanceId
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.fcmcommon.data.UpdateFcmTokenResponse
@@ -125,7 +125,7 @@ class FirebaseMessagingManagerImpl @Inject constructor(
                     fcmTokenShouldBe: $token
                     errorMessage: ${error.message},
                 """.trimIndent()
-                FirebaseCrashlytics.getInstance().recordException(Exception(errorMessage))
+                Crashlytics.logException(Exception(errorMessage, error))
             }
         } catch (e: Exception) {
             e.printStackTrace()
