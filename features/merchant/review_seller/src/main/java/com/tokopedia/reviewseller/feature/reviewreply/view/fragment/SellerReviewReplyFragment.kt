@@ -191,7 +191,9 @@ class SellerReviewReplyFragment : BaseDaggerFragment(), ReviewTemplateListViewHo
             bottomSheetAddTemplate?.dismiss()
             when (it) {
                 is Success -> {
-                    getReviewTemplate()
+                    if(it.data.isSuccess) {
+                        getReviewTemplate()
+                    }
                 }
                 is Fail -> {
                     view?.let { it1 ->
