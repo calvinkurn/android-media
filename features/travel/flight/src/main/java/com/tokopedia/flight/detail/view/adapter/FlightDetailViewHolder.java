@@ -119,7 +119,7 @@ public class FlightDetailViewHolder extends AbstractViewHolder<FlightDetailRoute
                     stopOverTextView.setText(String.format(getString(R.string.flight_detail_total_stop_over_label), route.getStopOver()));
                 } else {
                     stopOverTextView.setText(getString(R.string.flight_detail_transit_stop_over_label));
-                    stopOverTextView.append(TextUtils.join("\n", route.getStopOverDetail()));
+                    stopOverTextView.append(TextUtils.join(", ", route.getStopOverDetail()));
                 }
             } else {
                 stopOverTextView.setVisibility(View.GONE);
