@@ -1066,7 +1066,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
                     opponentRole,
                     opponentName,
                     blockedStatus.isBlocked,
-                    blockedStatus.isPromoBlocked,
+                    getViewState().isPromoBlocked,
                     blockedStatus.blockedUntil,
                     shopId)
             startActivityForResult(intent, REQUEST_GO_TO_SETTING_CHAT)
