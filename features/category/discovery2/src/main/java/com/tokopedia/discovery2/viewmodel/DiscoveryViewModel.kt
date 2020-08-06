@@ -15,7 +15,6 @@ import com.tokopedia.discovery2.repository.discoveryPage.DiscoveryUIConfigGQLRep
 import com.tokopedia.discovery2.usecase.CustomTopChatUseCase
 import com.tokopedia.discovery2.usecase.DiscoveryDataUseCase
 import com.tokopedia.discovery2.usecase.quickcouponusecase.QuickCouponUseCase
-import com.tokopedia.discovery2.viewcontrollers.activity.NATIVE
 import com.tokopedia.discovery2.viewcontrollers.activity.REACT_NATIVE
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -91,7 +90,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     }
 
     private fun setUIConfig(config: String?) {
-        discoveryUIConfig.postValue(Success(NATIVE))
+        discoveryUIConfig.postValue(Success(config ?: REACT_NATIVE))
     }
 
     private fun setPageInfo(discoPageData: DiscoveryPageData?) {
