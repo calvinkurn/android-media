@@ -132,6 +132,7 @@ ext {
             referral                        : ":features:im:referral",
             install_referral                : ":features:im:install_referral",
 
+            inboxReputation                 : ":features:merchant:inbox_reputation",
             reputation                      : ":features:merchant:reputation",
             reputationCommon                : ":features:merchant:reputation_common",
             review                          : ":features:merchant:review",

@@ -40,10 +40,10 @@ import com.tokopedia.gm.GMModuleRouter;
 import com.tokopedia.gm.common.di.component.DaggerGMComponent;
 import com.tokopedia.gm.common.di.component.GMComponent;
 import com.tokopedia.gm.common.di.module.GMModule;
+import com.tokopedia.inboxreputation.presentation.activity.InboxReputationActivity;
 import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.linker.interfaces.LinkerRouter;
 import com.tokopedia.loginregister.login.router.LoginRouter;
-import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity;
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomActivity;
 import com.tokopedia.logisticaddaddress.features.pinpoint.GeolocationActivity;
 import com.tokopedia.logisticdata.data.entity.address.Token;
@@ -75,10 +75,6 @@ import com.tokopedia.sellerorder.common.util.SomConsts;
 import com.tokopedia.sellerorder.list.presentation.fragment.SomListFragment;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.talk_old.inboxtalk.view.activity.InboxTalkActivity;
-import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
-import com.tokopedia.tkpd.tkpdreputation.TkpdReputationInternalRouter;
-import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
-import com.tokopedia.tkpd.tkpdreputation.review.shop.view.ReviewShopFragment;
 import com.tokopedia.topads.TopAdsComponentInstance;
 import com.tokopedia.topads.TopAdsManagementRouter;
 import com.tokopedia.topads.TopAdsModuleRouter;
@@ -209,7 +205,7 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     private Intent getInboxReputationIntent(Context context) {
-        return TkpdReputationInternalRouter.getInboxReputationActivityIntent(context);
+        return InboxReputationActivity.getCallingIntent(context);
     }
 
     @Override

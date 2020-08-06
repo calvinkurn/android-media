@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.tkpdreputation.inbox.view.activity;
+package com.tokopedia.inboxreputation.presentation.activity;
 
 import android.app.NotificationManager;
 import android.content.Context;
@@ -36,10 +36,13 @@ import com.tokopedia.tkpd.tkpdreputation.constant.Constant;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.SectionsPagerAdapter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment.InboxReputationFragment;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.GlobalMainTabSelectedListener;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputationListener;
 import com.tokopedia.tkpd.tkpdreputation.utils.ReputationUtil;
 import com.tokopedia.unifycomponents.TabsUnify;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +50,7 @@ import java.util.List;
  * @author by nisie on 8/10/17.
  */
 
-public class  InboxReputationActivity extends BaseActivity implements HasComponent {
+public class  InboxReputationActivity extends BaseActivity implements HasComponent, InboxReputationListener {
 
     public static final String GO_TO_REPUTATION_HISTORY = "GO_TO_REPUTATION_HISTORY";
     public static final String IS_DIRECTLY_GO_TO_RATING = "is_directly_go_to_rating";
@@ -302,5 +305,10 @@ public class  InboxReputationActivity extends BaseActivity implements HasCompone
                 LocalCacheHandler.clearCache(this, Constant.Notification.GCM_NOTIFICATION);
             }
         }
+    }
+
+    @Override
+    public void updateTickerTitle(@NotNull String title) {
+        tickerTitle = title;
     }
 }
