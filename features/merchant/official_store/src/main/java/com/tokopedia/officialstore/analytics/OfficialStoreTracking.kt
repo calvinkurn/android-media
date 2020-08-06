@@ -7,6 +7,7 @@ import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.iris.IrisAnalytics
 import com.tokopedia.officialstore.DynamicChannelIdentifiers
 import com.tokopedia.officialstore.category.data.model.Category
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Banner
@@ -28,6 +29,7 @@ class OfficialStoreTracking(context: Context) {
 
     private val tracker: ContextAnalytics by lazy { TrackApp.getInstance().gtm }
     private var trackingQueue = TrackingQueue(context)
+    private var trackingIris = IrisAnalytics.getInstance(context)
 
     private val EVENT = "event"
     private val EVENT_CATEGORY = "eventCategory"
@@ -68,6 +70,11 @@ class OfficialStoreTracking(context: Context) {
     private val FIELD_SHOP_ID = "shop_id"
     private val FIELD_SHOP_TYPE = "shop_type"
     private val FIELD_SHOP_NAME = "shop_name"
+
+    private val KEY_EVENT = "event"
+    private val KEY_CATEGORY = "eventCategory"
+    private val KEY_ACTION = "eventAction"
+    val KEY_LABEL = "eventLabel"
 
     private val VALUE_NONE_OTHER = "none / other"
     private val VALUE_NONE = "none"
@@ -860,6 +867,19 @@ class OfficialStoreTracking(context: Context) {
         ))
 
         tracker.sendEnhanceEcommerceEvent("view_item", eventDataLayer)
+        trackingIris.saveEvent(eventDataLayer)
+    }
+
+    private fun createEventMap(event: String, category: String,
+                       action: String, label: String,
+                       customDimension: Map<String, String>): Map<String, String> {
+        val map = mutableMapOf(
+                KEY_EVENT to event,
+                KEY_CATEGORY to category,
+                KEY_ACTION to action,
+                KEY_LABEL to label)
+        map.putAll(customDimension)
+        return map
     }
 
     private fun createMixLeftEcommerceDataLayer(channelId: String, categoryName: String, headerName: String, bannerPosition: Int, creative: String, creativeUrl: String): ArrayList<Bundle> {
