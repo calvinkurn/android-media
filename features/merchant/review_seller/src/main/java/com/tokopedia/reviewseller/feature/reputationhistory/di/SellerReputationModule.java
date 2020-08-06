@@ -25,6 +25,7 @@ import com.tokopedia.reviewseller.feature.reputationhistory.domain.ReputationRep
 import com.tokopedia.reviewseller.feature.reputationhistory.domain.ReputationReviewRepository;
 import com.tokopedia.product.manage.item.common.data.source.cloud.ShopApi;
 import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoRepositoryImpl;
+import com.tokopedia.shop.common.constant.ShopCommonUrl;
 import com.tokopedia.user.session.UserSession;
 
 import dagger.Module;
@@ -155,9 +156,17 @@ public class SellerReputationModule {
         return new ReputationReviewRepositoryImpl(cloudReputationReviewDataSource, shopInfoRepository);
     }
 
-    @Provides
+    @ShopWsQualifier
     @SellerReputationScope
-    public ShopApi provideShopApi(Retrofit retrofit){
+    @Provides
+    public Retrofit provideWSRetrofit(OkHttpClient okHttpClient,
+                          Retrofit.Builder retrofitBuilder) {
+        return retrofitBuilder.baseUrl(ShopCommonUrl.BASE_WS_URL).client(okHttpClient).build();
+    }
+
+    @SellerReputationScope
+    @Provides
+    public ShopApi provideShopApi(@ShopWsQualifier Retrofit retrofit) {
         return retrofit.create(ShopApi.class);
     }
 
