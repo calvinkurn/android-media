@@ -91,6 +91,8 @@ dependencies {
         exclude group: "com.android.support"
     }
     implementation rootProject.ext.debugToolsDependencies.chuck
+
+    implementation 'com.google.code.findbugs:jsr305:3.0.2'
 }
 
 project.ext {

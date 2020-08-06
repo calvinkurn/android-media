@@ -97,7 +97,6 @@ import com.tokopedia.purchase_platform.common.constant.CartConstant;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
-import com.tokopedia.reviewseller.feature.reputationhistory.view.fragment.SellerReputationFragment;
 import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.common.logout.TkpdSellerLogout;
 import com.tokopedia.seller.product.etalase.utils.EtalaseUtils;
