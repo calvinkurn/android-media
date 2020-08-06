@@ -16,6 +16,7 @@ import com.tokopedia.home.beranda.helper.benchmark.BenchmarkHelper
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeBannerAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomepageBannerDataModel
+import com.tokopedia.unifycomponents.PageControl
 
 /**
  * @author by errysuprayogi on 11/28/17.
@@ -27,7 +28,7 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
     private var slidesList: List<BannerSlidesModel>? = null
     private var isCache = true
     private val circularViewPager: CircularViewPager = itemView.findViewById(R.id.circular_view_pager)
-    private val indicatorView: CircularPageIndicator = itemView.findViewById(R.id.indicator_banner)
+    private val indicatorView: PageControl = itemView.findViewById(R.id.indicator_banner)
     private val seeAllPromo: TextView = itemView.findViewById(R.id.see_all_promo)
     private val adapter = HomeBannerAdapter(listOf(), this)
 
@@ -52,8 +53,12 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
             slidesList = element.slides
             this.isCache = element.isCache
             element.slides?.let {
+                if (it.size > 5) {
+                    indicatorView.setIndicator(it.size)
+                } else {
+                    indicatorView.setIndicator(it.size)
+                }
                 circularViewPager.setItemList(it.map { CircularModel(it.id, it.imageUrl) })
-                indicatorView.createIndicators(circularViewPager.indicatorCount, circularViewPager.indicatorPosition)
             }
         }catch (e: Exception){
             e.printStackTrace()
@@ -68,7 +73,7 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
     private fun initBanner(list: List<CircularModel>){
         circularViewPager.setIndicatorPageChangeListener(object: CircularViewPager.IndicatorPageChangeListener{
             override fun onIndicatorPageChange(newIndicatorPosition: Int) {
-                indicatorView.animatePageSelected(newIndicatorPosition)
+                indicatorView.setCurrentIndicator(newIndicatorPosition)
             }
         })
 
@@ -83,7 +88,11 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
         })
         circularViewPager.setAdapter(adapter)
         circularViewPager.setItemList(list)
-        indicatorView.createIndicators(circularViewPager.indicatorCount, circularViewPager.indicatorPosition)
+        if (list.size > 5) {
+            indicatorView.setIndicator(list.size)
+        } else {
+            indicatorView.setIndicator(list.size)
+        }
     }
 
     override fun onClick(position: Int) {
