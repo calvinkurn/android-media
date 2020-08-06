@@ -1,8 +1,6 @@
 package com.tokopedia.product.viewmodel
 
-import android.util.Log
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.affiliatecommon.data.pojo.productaffiliate.TopAdsPdpAffiliateResponse
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateUseCase
 import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
@@ -15,30 +13,23 @@ import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartOcsUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
-import com.tokopedia.product.detail.common.data.model.pdplayout.BasicInfo
-import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
-import com.tokopedia.product.detail.common.data.model.pdplayout.Media
-import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailLayout
+import com.tokopedia.product.detail.common.data.model.pdplayout.*
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.data.model.ProductInfoP2Login
+import com.tokopedia.product.detail.data.model.ProductInfoP2Other
+import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.model.ProductInfoP3
-import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductSnapshotDataModel
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpfulResponseWrapper
-import com.tokopedia.product.detail.estimasiongkir.data.model.v3.AddressModel
-import com.tokopedia.product.detail.estimasiongkir.data.model.v3.RatesModel
-import com.tokopedia.product.detail.estimasiongkir.data.model.v3.SummaryText
 import com.tokopedia.product.detail.usecase.*
 import com.tokopedia.product.detail.view.viewmodel.DynamicProductDetailViewModel
 import com.tokopedia.product.usecase.GetPdpLayoutUseCaseTest.Companion.GQL_GET_PDP_LAYOUT_JSON
-import com.tokopedia.product.util.JsonFormatter
+import com.tokopedia.product.util.ProductDetailTestUtil
 import com.tokopedia.product.util.TestDispatcherProvider
 import com.tokopedia.product.warehouse.model.ProductActionSubmit
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.model.SubmitTicketResult
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.SubmitHelpTicketUseCase
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.shop.common.graphql.data.shopinfo.ShopCore
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.domain.usecase.StickyLoginUseCase
@@ -422,15 +413,10 @@ class DynamicProductDetailViewModelTest {
      * GetProductInfoP1
      */
     @Test
-    fun onSuccessGetProductInfo() {
-        val data = ProductDetailDataModel(listOfLayout = mutableListOf(ProductSnapshotDataModel()))
+    fun `on success get product info login`() {
         val productParams = ProductParams("", "", "", "", "", "")
-
-        val mockData : ProductDetailLayout = JsonFormatter.createMockGraphqlSuccessResponse(GQL_GET_PDP_LAYOUT_JSON, ProductDetailLayout::class.java)
-        Log.e("datanya","ini " + mockData)
-        val dataP2Login = ProductInfoP2Login(pdpAffiliate = TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.Data.PdpAffiliate())
-
-        val dataP3RateEstimate = ProductInfoP3(SummaryText(), RatesModel(), false, AddressModel())
+        val mockData : ProductDetailLayout = ProductDetailTestUtil.createMockGraphqlSuccessResponse(GQL_GET_PDP_LAYOUT_JSON, ProductDetailLayout::class.java)
+        val dataP1 = ProductDetailTestUtil.mapIntoModel(mockData.data ?: PdpGetLayout())
 
         viewModel.productInfoP3.observeForever { }
 
@@ -448,15 +434,23 @@ class DynamicProductDetailViewModelTest {
 
         coEvery {
             getPdpLayoutUseCase.executeOnBackground()
-        } returns data
+        } returns dataP1
 
         coEvery {
             getProductInfoP2LoginUseCase.executeOnBackground()
-        } returns dataP2Login
+        } returns ProductInfoP2Login()
 
         coEvery {
-            getProductInfoP3UseCase.executeOnBackground()
-        } returns dataP3RateEstimate
+            getProductInfoP3UseCase.executeOnBackground(any(), any(), any())
+        } returns ProductInfoP3()
+
+        coEvery {
+            getProductInfoP2DataUseCase.executeOnBackground(any(), any())
+        } returns ProductInfoP2UiData()
+
+        coEvery {
+            getProductInfoP2OtherUseCase.executeOnBackground(any(), any())
+        } returns ProductInfoP2Other()
 
         viewModel.getProductP1(productParams)
 
@@ -465,33 +459,31 @@ class DynamicProductDetailViewModelTest {
             getPdpLayoutUseCase.executeOnBackground()
         }
 
-//        Assert.assertTrue(viewModel.productLayout.value is Success)
+        coVerify {
+            getProductInfoP2OtherUseCase.executeOnBackground(any(), any())
+        }
 
-//        Assert.assertNotNull(viewModel.shopInfo)
-//
-//        coVerify {
-//            getProductInfoP2LoginUseCase.executeOnBackground()
-//        }
-//        Assert.assertNotNull(viewModel.p2Login.value)
-//        Assert.assertNotNull(viewModel.p2Login.value?.pdpAffiliate)
-//
-//        coVerify {
-//            getProductInfoP2OtherUseCase.executeOnBackground()
-//        }
-//
-//        //P3
-//        coVerify {
-//            getProductInfoP3UseCase.executeOnBackground()
-//        }
-//
-//        Assert.assertNotNull(viewModel.productInfoP3.value)
-//        Assert.assertNotNull(viewModel.productInfoP3.value?.rateEstSummarizeText)
-//        Assert.assertNotNull(viewModel.productInfoP3.value?.ratesModel)
-//        Assert.assertEquals(viewModel.productInfoP3.value?.userCod, anyBoolean())
+        coVerify {
+            getProductInfoP2DataUseCase.executeOnBackground(any(), any())
+        }
+
+        coVerify {
+            getProductInfoP3UseCase.executeOnBackground(any(), any(), any())
+        }
+
+        coVerify {
+            getProductInfoP2LoginUseCase.executeOnBackground()
+        }
+
+        Assert.assertTrue(viewModel.productLayout.value is Success)
+        Assert.assertNotNull(viewModel.p2Data.value)
+        Assert.assertNotNull(viewModel.p2Other.value)
+        Assert.assertNotNull(viewModel.p2Login.value)
+        Assert.assertNotNull(viewModel.productInfoP3.value)
     }
 
     @Test
-    fun onErrorGetProductInfo() {
+    fun `on error get product info login`() {
         val productParams = ProductParams("", "", "", "", "", "")
 
         coEvery {
@@ -504,48 +496,62 @@ class DynamicProductDetailViewModelTest {
             getPdpLayoutUseCase.executeOnBackground()
         }
         Assert.assertTrue(viewModel.productLayout.value is Fail)
-
+        Assert.assertNull(viewModel.productInfoP3.value)
+        Assert.assertNull(viewModel.p2Data.value)
+        Assert.assertNull(viewModel.p2Login.value)
+        Assert.assertNull(viewModel.p2Other.value)
 
         coVerify(inverse = true) {
             getProductInfoP2LoginUseCase.executeOnBackground()
         }
 
         coVerify(inverse = true) {
-            getProductInfoP2OtherUseCase.executeOnBackground()
+            getProductInfoP2DataUseCase.executeOnBackground()
         }
 
-        //P3
+        coVerify(inverse = true) {
+            getProductInfoP2OtherUseCase.executeOnBackground()
+        }
         coVerify(inverse = true) {
             getProductInfoP3UseCase.executeOnBackground()
         }
     }
 
     @Test
-    fun onSuccessGetProductInfoNonLogin() {
-        val data = ProductDetailDataModel(listOfLayout = mutableListOf(ProductSnapshotDataModel()))
+    fun `on success get product info non login`() {
         val productParams = ProductParams("", "", "", "", "", "")
+        val mockData : ProductDetailLayout = ProductDetailTestUtil.createMockGraphqlSuccessResponse(GQL_GET_PDP_LAYOUT_JSON, ProductDetailLayout::class.java)
+        val dataP1 = ProductDetailTestUtil.mapIntoModel(mockData.data ?: PdpGetLayout())
 
-        val shopCore = ShopCore(domain = anyString())
-
-        val dataP2Login = ProductInfoP2Login(pdpAffiliate = TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.Data.PdpAffiliate())
-
-        val dataP3 = ProductInfoP3(SummaryText(), RatesModel())
+        viewModel.productInfoP3.observeForever { }
 
         every {
             userSessionInterface.isLoggedIn
         } returns false
 
+        every {
+            viewModel.isUserSessionActive
+        } returns false
+
         coEvery {
             getPdpLayoutUseCase.executeOnBackground()
-        } returns data
+        } returns dataP1
 
         coEvery {
             getProductInfoP2LoginUseCase.executeOnBackground()
-        } returns dataP2Login
+        } returns ProductInfoP2Login()
 
         coEvery {
-            getProductInfoP3UseCase.executeOnBackground()
-        } returns dataP3
+            getProductInfoP3UseCase.executeOnBackground(any(), any(), any())
+        } returns ProductInfoP3()
+
+        coEvery {
+            getProductInfoP2DataUseCase.executeOnBackground(any(), any())
+        } returns ProductInfoP2UiData()
+
+        coEvery {
+            getProductInfoP2OtherUseCase.executeOnBackground(any(), any())
+        } returns ProductInfoP2Other()
 
         viewModel.getProductP1(productParams)
 
@@ -554,18 +560,27 @@ class DynamicProductDetailViewModelTest {
             getPdpLayoutUseCase.executeOnBackground()
         }
 
-        Assert.assertTrue(viewModel.productLayout.value is Success)
+        coVerify {
+            getProductInfoP2OtherUseCase.executeOnBackground(any(), any())
+        }
 
-        //Make sure not called
-        coVerify(inverse = true) {
+        coVerify{
+            getProductInfoP2DataUseCase.executeOnBackground(any(), any())
+        }
+
+        coVerify {
+            getProductInfoP3UseCase.executeOnBackground(any(), any(), any())
+        }
+
+        coVerify(inverse = true)  {
             getProductInfoP2LoginUseCase.executeOnBackground()
         }
 
-        //RateEstimate
-        //Make sure not called
-        coVerify(inverse = true) {
-            getProductInfoP3UseCase.executeOnBackground()
-        }
+        Assert.assertTrue(viewModel.productLayout.value is Success)
+        Assert.assertNotNull(viewModel.p2Data.value)
+        Assert.assertNotNull(viewModel.p2Other.value)
+        Assert.assertNull(viewModel.p2Login.value)
+        Assert.assertNotNull(viewModel.productInfoP3.value)
     }
 
     /**
