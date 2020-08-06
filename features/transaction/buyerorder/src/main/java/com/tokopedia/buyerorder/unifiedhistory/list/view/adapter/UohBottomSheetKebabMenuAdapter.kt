@@ -17,7 +17,7 @@ class UohBottomSheetKebabMenuAdapter(private var listener: ActionListener): Recy
     var uohKebabMenuList = mutableListOf<UohListOrder.Data.UohOrders.Order.Metadata.DotMenu>()
 
     interface ActionListener {
-        fun onKebabItemClick(dotMenu: UohListOrder.Data.UohOrders.Order.Metadata.DotMenu)
+        fun onKebabItemClick(dotMenu: UohListOrder.Data.UohOrders.Order.Metadata.DotMenu, index: Int)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -31,7 +31,7 @@ class UohBottomSheetKebabMenuAdapter(private var listener: ActionListener): Recy
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.itemView.label_kebab_option?.text = uohKebabMenuList[position].label
         holder.itemView.label_kebab_option?.setOnClickListener {
-            listener.onKebabItemClick(uohKebabMenuList[position])
+            listener.onKebabItemClick(uohKebabMenuList[position], position)
         }
     }
 

@@ -477,6 +477,8 @@ Anda di sini.</string>
     <string name="ls_finish_order_desc">Dengan klik selesai, kamu sudah menerima barang sesuai pesanan dan transaksi telah berakhir. kamu tidak bisa mengajukan komplain.</string>
     <string name="placeholder_email">Alamat E-mail</string>
     <string name="btn_send_email_label">Kirim</string>
+    <string name="toaster_succeed_send_email">Hore! E-mail berhasil dikirim.</string>
+    <string name="toaster_failed_send_email">E-mail gagal dikirim, coba kirim ulang ya</string>
 
     <string name="ticker_info_selengkapnya">
         <![CDATA[

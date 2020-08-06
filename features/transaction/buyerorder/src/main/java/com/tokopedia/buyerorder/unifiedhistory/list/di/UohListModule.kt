@@ -5,10 +5,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.buyerorder.common.BuyerDispatcherProvider
 import com.tokopedia.buyerorder.common.BuyerProductionDispatcherProvider
-import com.tokopedia.buyerorder.unifiedhistory.list.data.model.AtcMultiData
-import com.tokopedia.buyerorder.unifiedhistory.list.data.model.LsPrintData
-import com.tokopedia.buyerorder.unifiedhistory.list.data.model.UohFinishOrder
-import com.tokopedia.buyerorder.unifiedhistory.list.data.model.UohListOrder
+import com.tokopedia.buyerorder.unifiedhistory.list.data.model.*
 import com.tokopedia.graphql.coroutines.data.Interactor
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -56,6 +53,10 @@ class UohListModule {
     @UohListScope
     @Provides
     fun provideLsPrintFinishOrderUseCase(graphqlRepository: GraphqlRepository): GraphqlUseCase<LsPrintData> = GraphqlUseCase(graphqlRepository)
+
+    @UohListScope
+    @Provides
+    fun provideFlightResendEmailUseCase(graphqlRepository: GraphqlRepository): GraphqlUseCase<FlightResendEmail> = GraphqlUseCase(graphqlRepository)
 
     @UohListScope
     @Provides

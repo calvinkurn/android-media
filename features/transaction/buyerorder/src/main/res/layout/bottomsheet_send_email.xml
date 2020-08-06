@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_margin="@dimen/dp_20">
+    android:layout_margin="@dimen/dp_20"
+    android:orientation="vertical">
 
-    <com.tokopedia.unifycomponents.TextAreaUnify
-        android:id="@+id/text_area_email"
+    <com.tokopedia.unifycomponents.TextFieldUnify
+        android:id="@+id/tf_email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:text_area_label_static="true"
-        app:text_area_placeholder="@string/placeholder_email"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:text_field_placeholder="@string/placeholder_email"
+        app:text_field_label_static="true"
+        app:text_field_label="@string/placeholder_email"/>
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btn_send_email"
@@ -22,11 +23,10 @@
         app:layout_constraintLeft_toLeftOf="parent"
         android:textAllCaps="false"
         app:unifyButtonVariant="filled"
-        app:layout_constraintTop_toBottomOf="@id/text_area_email"
-        app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginTop="@dimen/dp_24"
         android:layout_marginBottom="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_5"
-        android:layout_marginEnd="@dimen/dp_5"/>
+        android:layout_marginEnd="@dimen/dp_5"
+        android:enabled="false"/>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

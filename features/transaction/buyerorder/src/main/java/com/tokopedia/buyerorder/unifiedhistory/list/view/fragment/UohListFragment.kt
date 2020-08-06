@@ -24,8 +24,10 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.buyerorder.R
 import com.tokopedia.buyerorder.unifiedhistory.common.di.UohComponentInstance
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.EMAIL_MUST_NOT_BE_EMPTY
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.END_DATE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.FINISH_ORDER_BOTTOMSHEET_TITLE
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.FLIGHT_STATUS_OK
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_ATC
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_FINISH_ORDER
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_FLIGHT_EMAIL
@@ -36,6 +38,7 @@ import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.LS_LACAK_MW
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.REPLACE_ORDER_ID
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.START_DATE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.TYPE_ACTION_BUTTON_LINK
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.WRONG_FORMAT_EMAIL
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohUtils
 import com.tokopedia.buyerorder.unifiedhistory.list.data.model.*
 import com.tokopedia.buyerorder.unifiedhistory.list.di.DaggerUohListComponent
@@ -72,7 +75,6 @@ import kotlinx.android.synthetic.main.bottomsheet_send_email.*
 import kotlinx.android.synthetic.main.bottomsheet_send_email.view.*
 import kotlinx.android.synthetic.main.bottomsheet_send_email.view.btn_send_email
 import kotlinx.android.synthetic.main.fragment_uoh_list.*
-import kotlinx.android.synthetic.main.product_card_grid_layout.*
 import kotlinx.coroutines.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -104,6 +106,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     private var bottomSheetFinishOrder: BottomSheetUnify? = null
     private var bottomSheetLsFinishOrder: BottomSheetUnify? = null
     private var bottomSheetKebabMenu: BottomSheetUnify? = null
+    private var bottomSheetResendEmail: BottomSheetUnify? = null
     private var currFilterKey: String = ""
     private var currFilterLabel: String = ""
     private var currFilterType: Int = -1
@@ -207,6 +210,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         observingFinishOrder()
         observingAtc()
         observingLsFinishOrder()
+        observingFlightResendEmail()
     }
 
     private fun prepareLayout() {
@@ -401,6 +405,30 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 }
                 is Fail -> {
                     showToaster(responseLsPrintFinishOrder.data.message, Toaster.TYPE_ERROR)
+                }
+            }
+        })
+    }
+
+    private fun observingFlightResendEmail() {
+        uohListViewModel.flightResendEmailResult.observe(this, androidx.lifecycle.Observer {
+            when (it) {
+                is Success -> {
+                    val flightEmailResponse = it.data.flightResendEmailV2
+                    if (flightEmailResponse == null) {
+                        bottomSheetKebabMenu?.tf_email?.setError(true)
+                        bottomSheetKebabMenu?.tf_email?.setMessage(getString(R.string.toaster_failed_send_email))
+                    } else {
+                        if (flightEmailResponse.meta.status.equals(FLIGHT_STATUS_OK, true)) {
+                            bottomSheetResendEmail?.dismiss()
+                            bottomSheetKebabMenu?.dismiss()
+                            showToaster(getString(R.string.toaster_succeed_send_email), Toaster.TYPE_NORMAL)
+                        }
+                    }
+                }
+                is Fail -> {
+                    bottomSheetResendEmail?.tf_email?.setError(true)
+                    bottomSheetResendEmail?.tf_email?.setMessage(getString(R.string.toaster_failed_send_email))
                 }
             }
         })
@@ -757,42 +785,55 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         fragmentManager?.let { bottomSheetLsFinishOrder?.show(it, getString(R.string.show_bottomsheet)) }
     }
 
-    private fun showBottomSheetSendEmail() {
+    private fun showBottomSheetSendEmail(gqlGroup: String, index: Int) {
         val viewBottomSheet = View.inflate(context, R.layout.bottomsheet_send_email, null)
-        viewBottomSheet.text_area_email?.textAreaInput?.addTextChangedListener(object: TextWatcher{
+        viewBottomSheet.tf_email?.textFieldInput?.addTextChangedListener(object: TextWatcher{
             override fun afterTextChanged(s: Editable?) {
-                TODO("Not yet implemented")
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                TODO("Not yet implemented")
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val isEmailValid = UohUtils.isEmailValid(s.toString())
-                btn_send_email?.isEnabled = isEmailValid
-                if (!isEmailValid) {
-                    viewBottomSheet.text_area_email?.isError = true
-                    // lanjut di sini
+                viewBottomSheet.btn_send_email?.isEnabled = isEmailValid
+                if (s.toString().isEmpty()) {
+                    viewBottomSheet.tf_email?.setError(true)
+                    viewBottomSheet.tf_email?.setMessage(EMAIL_MUST_NOT_BE_EMPTY)
+                } else {
+                    if (!isEmailValid) {
+                        viewBottomSheet.tf_email?.setError(true)
+                        viewBottomSheet.tf_email?.setMessage(WRONG_FORMAT_EMAIL)
+                    } else {
+                        viewBottomSheet.tf_email?.setError(false)
+                        viewBottomSheet.tf_email?.setMessage("")
+                    }
                 }
             }
 
         })
         viewBottomSheet.btn_send_email?.setOnClickListener {
-            // uohListViewModel.doLsPrintFinishOrder(GraphqlHelper.loadRawString(resources, R.raw.uoh_finish_lsprint), orderId)
+            if (gqlGroup.equals(GQL_FLIGHT_EMAIL, true)) {
+                val flightQueryParams = Gson().fromJson(orderList.orders[index].metadata.queryParams, FlightQueryParams::class.java)
+                val invoiceId = flightQueryParams.invoiceId
+                val email = "${viewBottomSheet.tf_email.textFieldInput.text}"
+                uohListViewModel.doFlightResendEmail(GraphqlHelper.loadRawString(resources, R.raw.uoh_send_eticket_flight), invoiceId, email)
+            }
         }
 
         viewBottomSheet.btn_ls_kembali?.setOnClickListener {
             bottomSheetLsFinishOrder?.dismiss()
         }
 
-        bottomSheetLsFinishOrder = BottomSheetUnify().apply {
+        bottomSheetResendEmail = BottomSheetUnify().apply {
+            isFullpage = false
+            isKeyboardOverlap = false
             setChild(viewBottomSheet)
             setTitle(FINISH_ORDER_BOTTOMSHEET_TITLE)
             setCloseClickListener { dismiss() }
         }
 
-        fragmentManager?.let { bottomSheetLsFinishOrder?.show(it, getString(R.string.show_bottomsheet)) }
+        fragmentManager?.let { bottomSheetResendEmail?.show(it, getString(R.string.show_bottomsheet)) }
     }
 
     override fun onOptionItemClick(option: String, label: String, filterType: Int) {
@@ -931,13 +972,13 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         uohBottomSheetKebabMenuAdapter.addList(listDotMenu)
     }
 
-    override fun onKebabItemClick(dotMenu: UohListOrder.Data.UohOrders.Order.Metadata.DotMenu) {
+    override fun onKebabItemClick(dotMenu: UohListOrder.Data.UohOrders.Order.Metadata.DotMenu, index: Int) {
         if (dotMenu.actionType.equals(TYPE_ACTION_BUTTON_LINK, true)) {
             RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, dotMenu.appURL))
         } else {
             when {
                 dotMenu.actionType.equals(GQL_FLIGHT_EMAIL, true) -> {
-                    showBottomSheetSendEmail()
+                    showBottomSheetSendEmail(GQL_FLIGHT_EMAIL, index)
                 }
             }
         }

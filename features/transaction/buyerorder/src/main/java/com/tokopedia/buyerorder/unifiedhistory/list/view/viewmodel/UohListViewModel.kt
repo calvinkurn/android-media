@@ -8,10 +8,7 @@ import com.tokopedia.buyerorder.common.BuyerDispatcherProvider
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohUtils.asSuccess
 import com.tokopedia.buyerorder.unifiedhistory.list.data.model.*
-import com.tokopedia.buyerorder.unifiedhistory.list.domain.AtcMultiProductsUseCase
-import com.tokopedia.buyerorder.unifiedhistory.list.domain.LsPrintFinishOrderUseCase
-import com.tokopedia.buyerorder.unifiedhistory.list.domain.UohFinishOrderUseCase
-import com.tokopedia.buyerorder.unifiedhistory.list.domain.UohListUseCase
+import com.tokopedia.buyerorder.unifiedhistory.list.domain.*
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -27,7 +24,8 @@ class UohListViewModel @Inject constructor(dispatcher: BuyerDispatcherProvider,
                                            private val getRecommendationUseCase: GetRecommendationUseCase,
                                            private val uohFinishOrderUseCase: UohFinishOrderUseCase,
                                            private val atcMultiProductsUseCase: AtcMultiProductsUseCase,
-                                           private val lsPrintFinishOrderUseCase: LsPrintFinishOrderUseCase) : BaseViewModel(dispatcher.ui()) {
+                                           private val lsPrintFinishOrderUseCase: LsPrintFinishOrderUseCase,
+                                           private val flightResendEmailUseCase: FlightResendEmailUseCase) : BaseViewModel(dispatcher.ui()) {
 
     private val _orderHistoryListResult = MutableLiveData<Result<UohListOrder.Data.UohOrders>>()
     val orderHistoryListResult: LiveData<Result<UohListOrder.Data.UohOrders>>
@@ -48,6 +46,10 @@ class UohListViewModel @Inject constructor(dispatcher: BuyerDispatcherProvider,
     private val _lsPrintFinishOrderResult = MutableLiveData<Result<LsPrintData.Data>>()
     val lsPrintFinishOrderResult: LiveData<Result<LsPrintData.Data>>
         get() = _lsPrintFinishOrderResult
+
+    private val _flightResendEmailResult = MutableLiveData<Result<FlightResendEmail.Data>>()
+    val flightResendEmailResult: LiveData<Result<FlightResendEmail.Data>>
+        get() = _flightResendEmailResult
 
     fun loadOrderList(orderQuery: String, paramOrder: UohListParam) {
         launch {
@@ -80,6 +82,12 @@ class UohListViewModel @Inject constructor(dispatcher: BuyerDispatcherProvider,
     fun doLsPrintFinishOrder(lsPrintQuery: String, verticalId: String) {
         launch {
             _lsPrintFinishOrderResult.postValue(lsPrintFinishOrderUseCase.execute(lsPrintQuery, verticalId))
+        }
+    }
+
+    fun doFlightResendEmail(flightResendQuery: String, invoiceId: String, email: String) {
+        launch {
+            _flightResendEmailResult.postValue(flightResendEmailUseCase.execute(flightResendQuery, invoiceId, email))
         }
     }
 }
