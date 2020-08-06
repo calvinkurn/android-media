@@ -1,24 +1,33 @@
 package com.tokopedia.sellerorder.detail.presentation.adapter.viewholder
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.graphics.Color
+import android.text.Spannable
+import android.text.SpannableStringBuilder
+import android.text.style.ForegroundColorSpan
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.sellerorder.R
+import com.tokopedia.sellerorder.common.domain.model.TickerInfo
 import com.tokopedia.sellerorder.common.util.SomConsts.EXTRA_ORDER_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.EXTRA_USER_MODE
 import com.tokopedia.sellerorder.common.util.SomConsts.LABEL_EMPTY
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ORDER_DELIVERED
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ORDER_DELIVERED_DUE_LIMIT
+import com.tokopedia.sellerorder.common.util.Utils
 import com.tokopedia.sellerorder.detail.data.model.SomDetailData
 import com.tokopedia.sellerorder.detail.data.model.SomDetailHeader
 import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailAdapter
 import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailLabelInfoAdapter
+import com.tokopedia.unifycomponents.UrlSpanNoUnderline
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import kotlinx.android.synthetic.main.detail_header_item.view.*
@@ -44,6 +53,7 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
             }
 
             if (item.dataObject.isBuyerRequestCancel) {
+                setupTicker(itemView.ticker_detail_buyer_request_cancel, item.dataObject.tickerInfo)
                 itemView.ticker_detail_buyer_request_cancel?.apply {
                     visibility = View.VISIBLE
                     closeButtonVisibility = View.GONE
@@ -156,5 +166,54 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
                 coachmarkHeader
         )
 
+    }
+
+    private fun setupTicker(tickerBuyerRequestCancel: Ticker?, tickerInfo: TickerInfo) {
+        tickerBuyerRequestCancel?.apply {
+            val tickerDescription = makeTickerDescription(context, tickerInfo)
+            setTextDescription(tickerDescription)
+            setDescriptionClickEvent(object: TickerCallback {
+                override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                    RouteManager.route(context, String.format("%s?=url", ApplinkConst.WEBVIEW, tickerInfo.linkUrl))
+                }
+                override fun onDismiss() {}
+            })
+            tickerType = Utils.mapBackgroundColorToUnifyTickerType(tickerInfo.backgroundColor)
+            closeButtonVisibility = View.GONE
+        }
+    }
+
+    private fun makeTickerDescription(context: Context, tickerInfo: TickerInfo): String {
+        val message = tickerInfo.message
+        val messageLink = tickerInfo.linkText
+        val spannedMessage = SpannableStringBuilder()
+                .append(message)
+                .append(". $messageLink")
+
+        if (message.isNotBlank() && tickerInfo.textColor.length > 1) {
+            spannedMessage.setSpan(
+                    ForegroundColorSpan(Color.parseColor(tickerInfo.textColor)),
+                    0,
+                    message.length,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+        }
+
+        if (messageLink.isNotBlank() && tickerInfo.textColor.length > 1) {
+            spannedMessage.setSpan(
+                    UrlSpanNoUnderline(messageLink),
+                    message.length + 2,
+                    message.length + messageLink.length,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+            spannedMessage.setSpan(
+                    ForegroundColorSpan(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Green_G500)),
+                    message.length + 2,
+                    message.length + messageLink.length,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+        }
+
+        return spannedMessage.toString()
     }
 }
