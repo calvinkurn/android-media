@@ -271,43 +271,6 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
         RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, url)
     }
 
-    override fun showRedeemCouponDialog(cta: String, code: String, title: String) {
-        context?.let {
-            val adb = AlertDialog.Builder(context!!)
-            adb.setTitle(R.string.tp_label_use_coupon)
-            val messageBuilder = StringBuilder()
-                    .append(getString(R.string.tp_label_coupon))
-                    .append(" ")
-                    .append("<strong>")
-                    .append(title)
-                    .append("</strong>")
-                    .append(" ")
-                    .append(getString(R.string.tp_mes_coupon_part_2))
-            adb.setMessage(MethodChecker.fromHtml(messageBuilder.toString()))
-            adb.setPositiveButton(R.string.tp_label_use) { dialogInterface, i ->
-                //Call api to validate the coupon
-                mPresenter.redeemCoupon(code, cta)
-
-                AnalyticsTrackerUtil.sendEvent(context,
-                        AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                        AnalyticsTrackerUtil.CategoryKeys.POPUP_KONFIRMASI_GUNAKAN_KUPON,
-                        AnalyticsTrackerUtil.ActionKeys.CLICK_GUNAKAN,
-                        title)
-            }
-            adb.setNegativeButton(R.string.tp_label_later) { dialogInterface, i ->
-                AnalyticsTrackerUtil.sendEvent(context,
-                        AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                        AnalyticsTrackerUtil.CategoryKeys.POPUP_KONFIRMASI_GUNAKAN_KUPON,
-                        AnalyticsTrackerUtil.ActionKeys.CLICK_NANTI_SAJA,
-                        title)
-            }
-            val dialog = adb.create()
-            dialog.show()
-            decorateDialog(dialog)
-        }
-
-    }
-
     private fun openPhoneVerificationBottomSheet() {
         val view = LayoutInflater.from(context).inflate(R.layout.phoneverification_bottomsheet, null, false)
         val closeableBottomSheetDialog = BottomSheetUnify()
@@ -490,7 +453,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
             } else {
                 val code = mRealCode as String
                 if (!TextUtils.isEmpty(code)) {
-                    showRedeemCouponDialog(data.cta, code, data.title)
+                    mPresenter.redeemCoupon(code, data.cta)
                     AnalyticsTrackerUtil.sendEvent(context,
                             AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
                             AnalyticsTrackerUtil.CategoryKeys.KUPON_MILIK_SAYA_DETAIL,
@@ -586,7 +549,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
     private fun setupInfoPager(info: String, tnc: String) {
         view?.apply {
             tnc_content.loadData(getLessDisplayData(tnc, tnc_see_more), COUPON_MIME_TYPE, UTF_ENCODING)
-            tnc_content.setMargin(0,0,0,0)
+            tnc_content.setMargin(0, 0, 0, 0)
             how_to_use_content.loadData(getLessDisplayData(info, how_to_use_see_more), COUPON_MIME_TYPE, UTF_ENCODING)
 
             tnc_see_more.setOnClickListener { v -> loadWebViewInBottomsheet(tnc, getString(R.string.tnc_coupon_catalog)) }

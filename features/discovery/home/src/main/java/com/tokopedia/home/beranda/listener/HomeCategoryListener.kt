@@ -118,4 +118,6 @@ interface HomeCategoryListener {
     fun onPlayBannerCarouselRefresh(playCarouselCardDataModel: PlayCarouselCardDataModel, position: Int)
 
     fun onPlayBannerReminderClick(playBannerCarouselItemDataModel: PlayBannerCarouselItemDataModel)
+
+    fun onPlayV2Click(playBannerCarouselItemDataModel: PlayBannerCarouselItemDataModel)
 }

@@ -3,7 +3,7 @@ package com.tokopedia.purchase_platform.common.feature.promo.view.model.validate
 import android.os.Parcel
 import android.os.Parcelable
 
-data class TrackingDetailsItem(
+data class TrackingDetailsItemUiModel(
 	var promoDetailsTracking: String? = null,
 	var productId: Int? = null,
 	var promoCodesTracking: String? = null
@@ -23,12 +23,12 @@ data class TrackingDetailsItem(
 		return 0
 	}
 
-	companion object CREATOR : Parcelable.Creator<TrackingDetailsItem> {
-		override fun createFromParcel(parcel: Parcel): TrackingDetailsItem {
-			return TrackingDetailsItem(parcel)
+	companion object CREATOR : Parcelable.Creator<TrackingDetailsItemUiModel> {
+		override fun createFromParcel(parcel: Parcel): TrackingDetailsItemUiModel {
+			return TrackingDetailsItemUiModel(parcel)
 		}
 
-		override fun newArray(size: Int): Array<TrackingDetailsItem?> {
+		override fun newArray(size: Int): Array<TrackingDetailsItemUiModel?> {
 			return arrayOfNulls(size)
 		}
 	}
