@@ -97,12 +97,6 @@ class CreditCardPickerFragment : BaseDaggerFragment() {
     }
 
     private fun getPayload(additionalData: OrderPaymentCreditCardAdditionalData): String {
-//        val phoneNumber = userSession.phoneNumber
-//        val msisdnVerified = userSession.isMsisdnVerified
-//        var phone = ""
-//        if (msisdnVerified && phoneNumber.isNotBlank()) {
-//            phone = phoneNumber
-//        }
         return "merchant_code=${getUrlEncoded(additionalData.merchantCode)}&" +
                 "profile_code=${getUrlEncoded(additionalData.profileCode)}&" +
                 "enable_add_card=${getUrlEncoded("false")}&" +

@@ -188,6 +188,8 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             orderPreference.value = OccState.Failed(Failure(throwable))
             _orderShipment = OrderShipment()
             orderShipment.value = _orderShipment
+            _orderPayment = OrderPayment()
+            orderPayment.value = _orderPayment
         }, getOccCartUseCase.createRequestParams(source))
     }
 
@@ -1405,7 +1407,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 installment.isSelected = true
                 shouldChooseNextInstallment = false
             }
-            installment.isEnable = installment.minAmount <= subTotal
+            installment.isEnable = installment.minAmount <= (subTotal - discount)
             if (installment.isSelected && !installment.isEnable) {
                 installment.isSelected = false
                 shouldChooseNextInstallment = true

@@ -58,10 +58,6 @@ class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditCompon
 
     override fun onBackPressed() {
         val fragments = supportFragmentManager.fragments
-//        val last = fragments.lastOrNull { it.isVisible }
-//        if (last is PreferenceEditBackPressedListener) {
-//            if (last.onBackPressed()) return
-//        }
         val lastFragments = fragments[fragments.lastIndex]
         val checkLastFragment = checkLastFragment(lastFragments)
         if (!checkLastFragment && fragments.size > 1) {

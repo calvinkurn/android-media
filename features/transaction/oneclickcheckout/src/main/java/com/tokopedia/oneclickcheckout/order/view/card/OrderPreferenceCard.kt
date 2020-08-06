@@ -121,7 +121,7 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
         val shipping = shipment
         tvShippingName?.text = view.context.getString(R.string.lbl_shipping_with_name, shipmentModel.serviceName.capitalize())
 
-        if (shipping == null) {
+        if (shipping == null || !shipping.isValid()) {
             tvShippingDuration?.text = generateServiceDuration(shipmentModel.serviceDuration)
             tvShippingDuration?.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
             tickerShippingPromo?.gone()
@@ -255,7 +255,7 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
 
         val payment = payment
         if (payment != null) {
-            if (payment.isEnable && !payment.isError()) {
+            if (!payment.isError()) {
                 tvPaymentErrorMessage?.gone()
                 tvPaymentErrorAction?.gone()
                 setPaymentActiveAlpha()
@@ -277,7 +277,9 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
                         if (payment.hasCreditCardOption()) {
                             listener.onChangeCreditCardClicked(payment.creditCard.additionalData)
                         } else if (payment.hasNoCreditCardOption()) {
+                            // todo check
                             listener.onCreditCardErrorActionClicked()
+//                            listener.onPreferenceEditClicked(preference)
                         } else {
                             listener.onPaymentErrorActionClicked(payment.errorMessage.button.link)
                         }
