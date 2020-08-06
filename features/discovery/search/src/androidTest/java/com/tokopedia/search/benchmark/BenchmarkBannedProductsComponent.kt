@@ -34,7 +34,7 @@ internal class BenchmarkBannedProductsComponent {
     }
 
     @Test
-    fun benchmark_onCreateViewHolder_banned_products_empty_search() {
+    fun benchmark_onCreateViewHolder_ViewHolder_banned_products_empty_search() {
         val viewGroup = FrameLayout(activityRule.activity)
         val recyclerViewAdapter = BenchmarkObject.simpleAdapter(
                 BannedProductsEmptySearchViewHolder.LAYOUT) {

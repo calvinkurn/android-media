@@ -35,7 +35,7 @@ internal class BenchmarkEmptySearchProductComponent {
     }
 
     @Test
-    fun benchmark_onCreateViewHolder_empty_search_product() {
+    fun benchmark_onCreateViewHolder_ViewHolder_empty_search_product() {
         val viewGroup = FrameLayout(activityRule.activity)
         val recyclerViewAdapter = BenchmarkObject.simpleAdapter(
                 ProductEmptySearchViewHolder.LAYOUT) {

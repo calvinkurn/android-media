@@ -34,7 +34,7 @@ internal class BenchmarkBroadMatchComponent {
     }
 
     @Test
-    fun benchmark_onCreateViewHolder_broad_match() {
+    fun benchmark_onCreateViewHolder_ViewHolder_broad_match() {
         val viewGroup = FrameLayout(activityRule.activity)
         val recyclerViewAdapter = BenchmarkObject.simpleAdapter(
                 BroadMatchViewHolder.LAYOUT) {

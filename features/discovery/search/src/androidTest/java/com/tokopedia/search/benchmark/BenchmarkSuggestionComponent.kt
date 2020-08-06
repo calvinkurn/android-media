@@ -34,7 +34,7 @@ internal class BenchmarkSuggestionComponent {
     }
 
     @Test
-    fun benchmark_onCreateViewHolder_suggestion() {
+    fun benchmark_onCreateViewHolder_ViewHolder_suggestion() {
         val viewGroup = FrameLayout(activityRule.activity)
         val recyclerViewAdapter = BenchmarkObject.simpleAdapter(
                 SuggestionViewHolder.LAYOUT) {

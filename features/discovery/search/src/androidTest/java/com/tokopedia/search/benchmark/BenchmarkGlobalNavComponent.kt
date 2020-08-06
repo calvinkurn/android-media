@@ -34,7 +34,7 @@ internal class BenchmarkGlobalNavComponent {
     }
 
     @Test
-    fun benchmark_onCreateViewHolder_quick_filter() {
+    fun benchmark_onCreateViewHolder_ViewHolder_quick_filter() {
         val viewGroup = FrameLayout(activityRule.activity)
         val recyclerViewAdapter = BenchmarkObject.simpleAdapter(
                 GlobalNavViewHolder.LAYOUT) {

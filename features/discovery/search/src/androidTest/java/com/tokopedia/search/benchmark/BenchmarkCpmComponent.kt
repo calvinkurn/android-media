@@ -34,7 +34,7 @@ internal class BenchmarkCpmComponent {
     }
 
     @Test
-    fun benchmark_onCreateViewHolder_cpm() {
+    fun benchmark_onCreateViewHolder_ViewHolder_cpm() {
         val viewGroup = FrameLayout(activityRule.activity)
         val recyclerViewAdapter = BenchmarkObject.simpleAdapter(
                 CpmViewHolder.LAYOUT) {
