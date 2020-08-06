@@ -19,7 +19,7 @@ import com.tokopedia.fcmcommon.FirebaseMessagingManagerImpl;
 import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.pushnotif.ApplinkNotificationHelper;
 import com.tokopedia.pushnotif.PushNotification;
-import com.tokopedia.pushnotif.model.ApplinkNotificationModel;
+import com.tokopedia.pushnotif.data.model.ApplinkNotificationModel;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.ConsumerMainApplication;

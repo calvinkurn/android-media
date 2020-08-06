@@ -54,7 +54,6 @@ import com.tokopedia.product.manage.feature.list.view.fragment.ProductManageSell
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.seller.LogisticRouter;
-import com.tokopedia.seller.common.logout.TkpdSellerLogout;
 import com.tokopedia.seller.common.topads.deposit.data.model.DataDeposit;
 import com.tokopedia.seller.product.etalase.utils.EtalaseUtils;
 import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
@@ -247,7 +246,6 @@ public abstract class SellerRouterApplication extends MainApplication
         SessionHandler sessionHandler = new SessionHandler(this);
         sessionHandler.forceLogout();
         new CacheApiClearAllUseCase(this).executeSync();
-        TkpdSellerLogout.onLogOut(appComponent, this);
         setTetraUserId("");
     }
 

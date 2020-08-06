@@ -8,6 +8,7 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.common.util.TopAdsComponentUtils;
+import com.tokopedia.topads.dashboard.data.model.response.TopAdsDepositResponse;
 import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
 import com.tokopedia.topads.dashboard.di.module.TopAdsCreatePromoModule;
 import com.tokopedia.topads.dashboard.domain.model.MinimumBidDomain;
@@ -69,8 +70,8 @@ public class TopAdsNewScheduleNewGroupFragment extends TopAdsNewScheduleFragment
             stepperModel = new TopAdsCreatePromoNewGroupModel();
         }
         trackingNewScheduleTopads();
+        daggerPresenter.getBalance(getResources());
         stepperModel.setDetailGroupScheduleViewModel(detailAd);
-        daggerPresenter.saveAdNew(stepperModel.getGroupName(), stepperModel.getDetailAd(), stepperModel.getTopAdsProductViewModels(), stepperModel.getSource(), shopId);
     }
 
     @Override
@@ -79,6 +80,11 @@ public class TopAdsNewScheduleNewGroupFragment extends TopAdsNewScheduleFragment
         if(stepperListener != null) {
             stepperListener.finishPage();
         }
+    }
+
+    @Override
+    public void onBalanceCheck(TopAdsDepositResponse.Data topAdsDepositResponse) {
+        daggerPresenter.saveAdNew(stepperModel.getGroupName(), stepperModel.getDetailAd(), stepperModel.getTopAdsProductViewModels(), stepperModel.getSource(), shopId,topAdsDepositResponse);
     }
 
     @Override

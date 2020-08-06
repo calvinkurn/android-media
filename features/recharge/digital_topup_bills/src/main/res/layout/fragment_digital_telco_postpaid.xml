@@ -23,14 +23,23 @@
             android:focusable="true"
             android:focusableInTouchMode="true">
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/layout_lvl1"
+                app:layout_scrollFlags="scroll"/>
+
             <com.tokopedia.unifycomponents.ticker.Ticker
                 android:id="@+id/telco_ticker_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
-                app:tckv_content_text_size="@dimen/dp_11"
-                app:tckv_indicator_off_color="@color/grey_550"
-                app:tckv_indicator_on_color="@color/tkpd_main_green"
+                android:layout_marginLeft="@dimen/layout_lvl2"
+                android:layout_marginTop="@dimen/layout_lvl1"
+                android:layout_marginRight="@dimen/layout_lvl2"
+                app:closeButtonVisibility="visible"
+                app:enableAutoSlide="true"
+                app:tickerShapeType="loose"
+                app:layout_scrollFlags="scroll"
                 tools:visibility="gone" />
 
             <com.tokopedia.topupbills.telco.postpaid.widget.DigitalPostpaidClientNumberWidget
@@ -39,8 +48,9 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/telco_ticker_view"
                 android:layout_marginLeft="@dimen/spacing_lvl4"
-                android:layout_marginTop="@dimen/spacing_lvl2"
-                android:layout_marginRight="@dimen/spacing_lvl4" />
+                android:layout_marginTop="@dimen/layout_lvl1"
+                android:layout_marginRight="@dimen/spacing_lvl4"
+                android:layout_marginBottom="@dimen/layout_lvl1"/>
 
 
             <com.tokopedia.unifycomponents.TabsUnify
@@ -60,7 +70,7 @@
             <androidx.viewpager2.widget.ViewPager2
                 android:id="@+id/telco_view_pager"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_below="@+id/separator"
                 android:layout_marginLeft="@dimen/spacing_lvl4"
                 android:layout_marginRight="@dimen/spacing_lvl4"

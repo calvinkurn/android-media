@@ -4,10 +4,15 @@ import android.Manifest
 import android.app.Dialog
 import android.content.pm.PackageManager
 import android.database.Cursor
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import android.widget.FrameLayout
+import android.widget.LinearLayout
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.FragmentManager
 import androidx.loader.app.LoaderManager
@@ -15,6 +20,9 @@ import androidx.loader.content.Loader
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.imagepicker.picker.album.AlbumAdapter
 import com.tokopedia.imagepicker.picker.gallery.adapter.AlbumMediaAdapter
@@ -24,6 +32,7 @@ import com.tokopedia.imagepicker.picker.gallery.model.AlbumItem
 import com.tokopedia.imagepicker.picker.gallery.model.MediaItem
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.gallery.widget.MediaGridInset
+import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
 import com.tokopedia.play.broadcaster.util.extension.showToaster
@@ -39,14 +48,13 @@ import javax.inject.Inject
  */
 class PlayGalleryImagePickerBottomSheet @Inject constructor(
         private val dialogCustomizer: PlayBroadcastDialogCustomizer
-) : BottomSheetUnify(),
+) : BottomSheetDialogFragment(),
         AlbumMediaAdapter.OnMediaClickListener,
         AlbumAdapter.OnAlbumAdapterListener,
         LoaderManager.LoaderCallbacks<Cursor> {
 
     var mListener: Listener? = null
 
-    private lateinit var mChildView: View
     private lateinit var albumMediaAdapter: AlbumMediaAdapter
     private lateinit var albumAdapter: AlbumAdapter
 
@@ -54,8 +62,6 @@ class PlayGalleryImagePickerBottomSheet @Inject constructor(
     private var albumTitle: String = DEFAULT_ALBUM_TITLE
     private var selectedAlbumItem: AlbumItem? = null
     private var selectedAlbumPosition: Int = 0
-
-    private var toasterBottomMargin = 0
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return super.onCreateDialog(savedInstanceState).apply {
@@ -71,6 +77,12 @@ class PlayGalleryImagePickerBottomSheet @Inject constructor(
         }
 
         initBottomSheet()
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val view = inflater.inflate(R.layout.bottom_sheet_play_cover_from_gallery, container, false)
+        dialog?.let { setupDialog(it) }
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -164,34 +176,37 @@ class PlayGalleryImagePickerBottomSheet @Inject constructor(
     }
 
     private fun initBottomSheet() {
-        showCloseIcon = false
-        showKnob = true
-        isFullpage = true
-        isHideable = true
-
-        mChildView = View.inflate(requireContext(), R.layout.bottom_sheet_play_cover_from_gallery, null)
-        setChild(mChildView)
-
         albumMediaAdapter = AlbumMediaAdapter(false,
                 arrayListOf(), this)
         albumAdapter = AlbumAdapter(requireContext(), this, GalleryType.IMAGE_ONLY)
     }
 
-    private fun initView() {
-        bottomSheetHeader.visibility = View.GONE
-        bottomSheetWrapper.setPadding(0,
-                bottomSheetWrapper.paddingTop,
-                0,
-                bottomSheetWrapper.paddingBottom)
+    private fun setupDialog(dialog: Dialog) {
+        dialog.setOnShowListener {
+            val bottomSheetDialog = dialog as BottomSheetDialog
+            val bottomSheet = bottomSheetDialog.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
+            val maxHeight = (HEIGHT_MULTIPLIER * getScreenHeight()).toInt()
+            bottomSheet?.layoutParams = bottomSheet?.layoutParams?.apply {
+                height = maxHeight
+            }
+            bottomSheet?.setBackgroundColor(Color.TRANSPARENT)
+            val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
+            bottomSheetBehavior.isHideable = true
+            bottomSheetBehavior.skipCollapsed = true
+            bottomSheetBehavior.peekHeight = maxHeight
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
 
-        rvPlayGallery.setHasFixedSize(true)
+            isCancelable = true
+        }
+    }
+
+    private fun initView() {
         rvPlayGallery.layoutManager = GridLayoutManager(requireContext(), DEFAULT_GALLERY_SPAN_COUNT)
         rvPlayGallery.addItemDecoration(MediaGridInset(DEFAULT_GALLERY_SPAN_COUNT,
                 resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl1),
                 false))
         rvPlayGallery.adapter = albumMediaAdapter
 
-        rvPlayAlbum.setHasFixedSize(true)
         rvPlayAlbum.layoutManager = LinearLayoutManager(requireContext(),
                 RecyclerView.VERTICAL, false)
         rvPlayAlbum.adapter = albumAdapter
@@ -207,29 +222,29 @@ class PlayGalleryImagePickerBottomSheet @Inject constructor(
     }
 
     private fun showLoading() {
-        mChildView.containerPlayLoading?.visibility = View.VISIBLE
+        containerPlayLoading?.visibility = View.VISIBLE
     }
 
     private fun hideLoading() {
-        mChildView.containerPlayLoading?.visibility = View.GONE
+        containerPlayLoading?.visibility = View.GONE
     }
 
     private fun showMediaLayout() {
-        mChildView.containerPlayGalleryHeader?.visibility = View.VISIBLE
-        mChildView.rvPlayGallery?.visibility = View.VISIBLE
+        containerPlayGalleryHeader?.visibility = View.VISIBLE
+        rvPlayGallery?.visibility = View.VISIBLE
     }
 
     private fun hideMediaLayout() {
-        mChildView.containerPlayGalleryHeader?.visibility = View.GONE
-        mChildView.rvPlayGallery?.visibility = View.GONE
+        containerPlayGalleryHeader?.visibility = View.GONE
+        rvPlayGallery?.visibility = View.GONE
     }
 
     private fun showAlbumLayout() {
-        mChildView.rvPlayAlbum?.visibility = View.VISIBLE
+        rvPlayAlbum?.visibility = View.VISIBLE
     }
 
     private fun hideAlbumLayout() {
-        mChildView.rvPlayAlbum?.visibility = View.GONE
+        rvPlayAlbum?.visibility = View.GONE
     }
 
     private fun onAlbumLoadedCursor(cursor: Cursor?) {
@@ -272,9 +287,10 @@ class PlayGalleryImagePickerBottomSheet @Inject constructor(
 
         tvPlayGalleryAlbumLabel?.text = if (albumItem.isAll) DEFAULT_ALBUM_TITLE else albumItem.displayName
         if (albumItem.isAll && albumItem.isEmpty) {
-            Toaster.make(mChildView.rootView,
-                    getString(com.tokopedia.imagepicker.R.string.error_no_media_storage),
-                    Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR)
+            showToaster(
+                    message = getString(com.tokopedia.imagepicker.R.string.error_no_media_storage),
+                    type = Toaster.TYPE_ERROR
+            )
         } else {
             LoaderManager.getInstance(this).restartLoader(MEDIA_LOADER_ID, null, this)
         }
@@ -316,19 +332,14 @@ class PlayGalleryImagePickerBottomSheet @Inject constructor(
     private fun showToaster(
             message: String,
             type: Int = Toaster.TYPE_NORMAL,
+            duration: Int = Snackbar.LENGTH_SHORT,
             actionLabel: String = ""
     ) {
-        if (!::mChildView.isInitialized) return
-
-        if (toasterBottomMargin == 0) {
-            toasterBottomMargin = mChildView.rootView.bottom - mChildView.bottom
-        }
-
-        mChildView.rootView.showToaster(
+        requireView().showToaster(
                 message = message,
                 actionLabel = actionLabel,
-                type = type,
-                bottomMargin = toasterBottomMargin
+                duration = duration,
+                type = type
         )
     }
 
@@ -354,5 +365,7 @@ class PlayGalleryImagePickerBottomSheet @Inject constructor(
         private const val DEFAULT_GALLERY_SPAN_COUNT = 4
         private const val MAXIMUM_COVER_SIZE = 5120
         private const val BYTES_IN_KB = 1024
+
+        private const val HEIGHT_MULTIPLIER = 0.95f
     }
 }

@@ -1817,6 +1817,25 @@ public class ProductListFragment
     }
 
     @Override
+    public void onBroadMatchThreeDotsClicked(@NotNull BroadMatchItemViewModel broadMatchItemViewModel) {
+        ProductCardOptionsManager.showProductCardOptions(this, createProductCardOptionsModel(broadMatchItemViewModel));
+    }
+
+    private ProductCardOptionsModel createProductCardOptionsModel(BroadMatchItemViewModel item) {
+        ProductCardOptionsModel productCardOptionsModel = new ProductCardOptionsModel();
+
+        productCardOptionsModel.setHasWishlist(true);
+        productCardOptionsModel.setHasSimilarSearch(true);
+        productCardOptionsModel.setWishlisted(item.isWishlisted());
+        productCardOptionsModel.setKeyword(getSearchParameter().getSearchQuery());
+        productCardOptionsModel.setProductId(item.getId());
+        productCardOptionsModel.setScreenName(SearchEventTracking.Category.SEARCH_RESULT);
+        productCardOptionsModel.setSeeSimilarProductEvent(SearchTracking.EVENT_CLICK_SEARCH_RESULT);
+
+        return productCardOptionsModel;
+    }
+
+    @Override
     public void trackBroadMatchImpression(String alternativeKeyword, List<Object> impressionObjectDataLayer) {
         SearchTracking.trackEventImpressionBroadMatch(getQueryKey(), alternativeKeyword, impressionObjectDataLayer);
     }

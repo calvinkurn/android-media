@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.text.TextUtils
 import android.view.View
+import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -18,7 +19,10 @@ import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.deals.R
 import com.tokopedia.deals.brand.ui.activity.DealsBrandActivity
 import com.tokopedia.deals.common.analytics.DealsAnalytics
-import com.tokopedia.deals.common.listener.*
+import com.tokopedia.deals.common.listener.CuratedProductCategoryListener
+import com.tokopedia.deals.common.listener.DealsBrandActionListener
+import com.tokopedia.deals.common.listener.OnBaseLocationActionListener
+import com.tokopedia.deals.common.listener.SearchBarActionListener
 import com.tokopedia.deals.common.ui.activity.DealsBaseActivity
 import com.tokopedia.deals.common.ui.dataview.CuratedProductCategoryDataView
 import com.tokopedia.deals.common.ui.dataview.DealsBaseItemDataView
@@ -265,13 +269,13 @@ class DealsHomeFragment : DealsBaseFragment(),
     }
 
     /* PRODUCT SECTION ACTION */
-    override fun onProductClicked(productCardDataView: ProductCardDataView, productItemPosition: Int) {
-        analytics.curatedProductClick(productCardDataView,productItemPosition)
+    override fun onProductClicked(productCardDataView: ProductCardDataView, productItemPosition: Int, sectionTitle: String) {
+        analytics.curatedProductClick(productCardDataView,productItemPosition, sectionTitle)
         RouteManager.route(context, productCardDataView.appUrl)
     }
 
     override fun onSeeAllProductClicked(curatedProductCategoryDataView: CuratedProductCategoryDataView, position: Int) {
-        analytics.clickAllCuratedProduct()
+        analytics.clickAllCuratedProduct(curatedProductCategoryDataView.title)
         val intent = RouteManager.getIntent(context, curatedProductCategoryDataView.seeAllUrl)
         startActivityForResult(intent, DEALS_CATEGORY_REQUEST_CODE)
     }
