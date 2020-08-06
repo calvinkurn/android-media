@@ -1279,22 +1279,20 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         val items = ArrayList(result.data.take(3))
         productCategoryRecListView?.setData(items)
         productCategoryRecListView?.onLoadFinish {
-            if (!hasCategoryFromPicker) {
-                selectFirstCategoryRecommendation(items)
+            selectFirstCategoryRecommendation(items)
+            createCategoryRecommendationItemClickListener(items)
 
-                productCategoryRecListView?.run {
-                    this.setOnItemClickListener { _, _, position, _ ->
-                        selectCategoryRecommendation(items, position)
-                    }
-                }
-
-                items.forEachIndexed { position, listItemUnify ->
-                    listItemUnify.listRightRadiobtn?.setOnClickListener {
-                        selectCategoryRecommendation(items, position)
-                    }
+            productCategoryRecListView?.run {
+                this.setOnItemClickListener { _, _, position, _ ->
+                    selectCategoryRecommendation(items, position)
                 }
             }
-            createCategoryRecommendationItemClickListener(items)
+
+            items.forEachIndexed { position, listItemUnify ->
+                listItemUnify.listRightRadiobtn?.setOnClickListener {
+                    selectCategoryRecommendation(items, position)
+                }
+            }
         }
     }
 
@@ -1312,12 +1310,14 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     }
 
     private fun selectCategoryRecommendation(items: List<ListItemUnify>, position: Int) = productCategoryRecListView?.run {
-        setSelected(items, position) {
-            val categoryId = it.getCategoryId().toString()
-            val categoryName = it.getCategoryName()
-            viewModel.productInputModel.detailInputModel.categoryId = categoryId
-            viewModel.productInputModel.detailInputModel.categoryName = categoryName
-            true
+        if (!hasCategoryFromPicker) {
+            setSelected(items, position) {
+                val categoryId = it.getCategoryId().toString()
+                val categoryName = it.getCategoryName()
+                viewModel.productInputModel.detailInputModel.categoryId = categoryId
+                viewModel.productInputModel.detailInputModel.categoryName = categoryName
+                true
+            }
         }
     }
 
