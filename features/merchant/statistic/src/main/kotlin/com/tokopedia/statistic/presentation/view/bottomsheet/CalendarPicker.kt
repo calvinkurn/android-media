@@ -25,6 +25,7 @@ class CalendarPicker : BottomSheetUnify() {
         fun newInstance(): CalendarPicker {
             return CalendarPicker().apply {
                 isFullpage = true
+                clearContentPadding = true
                 setStyle(DialogFragment.STYLE_NORMAL, R.style.StcDialogStyle)
             }
         }
