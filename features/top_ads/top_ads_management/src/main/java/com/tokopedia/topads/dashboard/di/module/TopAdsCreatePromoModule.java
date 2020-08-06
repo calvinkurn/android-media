@@ -8,6 +8,7 @@ import com.tokopedia.topads.common.data.api.TopAdsManagementApi;
 import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.api.TopAdsOldManagementApi;
 import com.tokopedia.topads.dashboard.di.qualifier.TopAdsManagementQualifier;
 import com.tokopedia.topads.dashboard.di.scope.TopAdsManagementScope;
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsBalanceCheckUseCase;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsMinimumBidUseCase;
 import com.tokopedia.topads.sourcetagging.data.repository.TopAdsSourceTaggingRepositoryImpl;
 import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingDataSource;
@@ -78,11 +79,12 @@ public class TopAdsCreatePromoModule {
                                                            TopAdsCreateDetailProductListUseCase topAdsCreateDetailProductListUseCase,
                                                            TopAdsProductListUseCase topAdsProductListUseCase,
                                                            TopAdsMinimumBidUseCase minimumBidUseCase,
+                                                           TopAdsBalanceCheckUseCase topAdsBalanceCheckUseCase,
                                                            TopAdsGetSourceTaggingUseCase topAdsGetSourceTaggingUseCase,
                                                            UserSessionInterface sessionInterface) {
         return new TopAdsDetailNewGroupPresenterImpl(topAdsCreateNewGroupUseCase, topAdsGetDetailGroupUseCase,
                 topAdsSaveDetailGroupUseCase, topAdsCreateDetailProductListUseCase, topAdsProductListUseCase,
-                minimumBidUseCase, topAdsGetSourceTaggingUseCase, sessionInterface);
+                minimumBidUseCase,topAdsBalanceCheckUseCase, topAdsGetSourceTaggingUseCase, sessionInterface);
     }
 
     @TopAdsManagementScope
@@ -98,10 +100,11 @@ public class TopAdsCreatePromoModule {
                                                                         TopAdsCreateDetailProductListUseCase topAdsCreateDetailProductListUseCase,
                                                                         TopAdsProductListUseCase topAdsProductListUseCase,
                                                                         TopAdsGetSuggestionUseCase topAdsGetSuggestionUseCase,
+                                                                        TopAdsBalanceCheckUseCase topAdsBalanceCheckUseCase,
                                                                         TopAdsGetSourceTaggingUseCase topAdsGetSourceTaggingUseCase,
                                                                         TopAdsMinimumBidUseCase minimumBidUseCase, UserSessionInterface sessionInterface) {
         return new TopAdsDetailNewProductPresenterImpl(topAdsGetDetailProductUseCase, topAdsSaveDetailProductUseCase,
-                topAdsCreateDetailProductListUseCase, topAdsProductListUseCase, topAdsGetSuggestionUseCase,
+                topAdsCreateDetailProductListUseCase, topAdsProductListUseCase, topAdsGetSuggestionUseCase,topAdsBalanceCheckUseCase,
                 topAdsGetSourceTaggingUseCase, minimumBidUseCase, sessionInterface);
     }
 
@@ -123,11 +126,12 @@ public class TopAdsCreatePromoModule {
                                                                              TopAdsSaveDetailProductUseCase topAdsSaveDetailProductUseCase,
                                                                              TopAdsProductListUseCase topAdsProductListUseCase,
                                                                              TopAdsGetSuggestionUseCase topAdsGetSuggestionUseCase,
+                                                                             TopAdsBalanceCheckUseCase topAdsBalanceCheckUseCase,
                                                                              TopAdsGetSourceTaggingUseCase topAdsGetSourceTaggingUseCase,
                                                                              TopAdsMinimumBidUseCase topAdsMinimumBidUseCase,
                                                                              UserSessionInterface sessionInterface){
         return new TopAdsDetailEditProductPresenterImpl(topAdsGetDetailProductUseCase,
-                topAdsSaveDetailProductUseCase, topAdsProductListUseCase, topAdsGetSuggestionUseCase, topAdsGetSourceTaggingUseCase,
+                topAdsSaveDetailProductUseCase, topAdsProductListUseCase, topAdsGetSuggestionUseCase,topAdsBalanceCheckUseCase, topAdsGetSourceTaggingUseCase,
                 topAdsMinimumBidUseCase, sessionInterface);
     }
 

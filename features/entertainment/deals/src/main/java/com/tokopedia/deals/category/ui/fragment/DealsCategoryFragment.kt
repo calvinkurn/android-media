@@ -266,14 +266,14 @@ class DealsCategoryFragment : DealsBaseFragment(),
     }
 
     override fun onBaseLocationChanged(location: Location) {
-        setCurrentLocation(location)
         getCurrentLocation()
         dealCategoryViewModel.shimmeringCategory()
         applyFilter()
 
-        if (getCurrentLocation() != location) {
-            analytics.eventClickChangeLocationCategoryPage(getCurrentLocation().name, location.name)
+        if ((activity as DealsBaseActivity).currentLoc != location) {
+            analytics.eventClickChangeLocationCategoryPage(oldLocation = (activity as DealsBaseActivity).currentLoc.name, newLocation = location.name)
         }
+        setCurrentLocation(location)
     }
 
     override fun hasInitialLoadingModel(): Boolean = false
