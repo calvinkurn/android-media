@@ -112,12 +112,6 @@ query GetPdpGetData($productID: String, $pdpSession: String) {
         totalTx
         totalShowcase
       }
-      bbInfo {
-        bbName
-        bbNameEN
-        bbDesc
-        bbDescEN
-      }
       shopType
     }
     merchantVoucher {
