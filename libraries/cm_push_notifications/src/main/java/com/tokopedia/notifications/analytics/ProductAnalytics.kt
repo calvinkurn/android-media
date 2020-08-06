@@ -45,7 +45,7 @@ object ProductAnalytics {
     private const val CATEGORY = "push notif"
     private const val ACTION_VIEW = "view on push notif"
     private const val ACTION_VIEW_EXPAND = "view on expanded push"
-    private const val ACTION_CLICK = "click on push body"
+    private const val ACTION_CLICK_PUSH_BODY = "click on push body"
     private const val ACTION_CLICK_EXPAND = "click on expanded push body"
     private const val ACTION_CLICK_EXPAND_OCC = "click on expanded push occ"
     private const val ACTION_CLICK_EXPAND_ATC = "click on expanded push atc"
@@ -156,6 +156,9 @@ object ProductAnalytics {
         val product = productElement.first()
         val ecommerce = mapOf(
                 KEY_CHECKOUT to mapOf(
+                        "actionField" to mapOf(
+                                KEY_LIST to LIST
+                        ),
                         KEY_PRODUCTS to listOf(mapOf(
                                 KEY_ID to product.productId.toString(),
                                 KEY_NAME to product.productTitle,
@@ -181,7 +184,6 @@ object ProductAnalytics {
                 KEY_EVENT_ACTION to ACTION_CLICK_EXPAND_OCC,
                 KEY_EVENT_LABEL to element.transactionId.toString(),
                 KEY_USER_ID to userId,
-                KEY_LIST to LIST,
                 KEY_ECOMMERCE to ecommerce
         ))
     }
