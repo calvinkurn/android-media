@@ -79,7 +79,7 @@ public class InboxReputationFragment extends BaseDaggerFragment
     private static final String ARGS_QUERY = "ARGS_QUERY";
     private static final String SEE_ALL_REVIEW = "Lihat Semua";
 
-    SearchInputView searchView;
+    private SearchInputView searchView;
     private RecyclerView mainList;
     private SwipeToRefresh swipeToRefresh;
     private LinearLayoutManager layoutManager;

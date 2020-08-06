@@ -8,10 +8,15 @@ import com.tokopedia.review.feature.inbox.history.presentation.fragment.ReviewHi
 import com.tokopedia.review.feature.inbox.pending.presentation.fragment.ReviewPendingFragment
 import com.tokopedia.review.feature.inboxreview.presentation.fragment.InboxReviewFragment
 import com.tokopedia.review.feature.reviewlist.view.fragment.RatingProductFragment
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment.InboxReputationFragment
 
 class ReviewInboxContainerAdapter(private val tabs: List<ReviewInboxTabs>,
                                   fragment: Fragment,
                                   private val bundle: Bundle? = null) : FragmentStateAdapter(fragment) {
+
+    companion object {
+        const val TAB_BUYER_REVIEW = 3
+    }
 
     override fun getItemCount(): Int {
         return tabs.size
@@ -27,7 +32,7 @@ class ReviewInboxContainerAdapter(private val tabs: List<ReviewInboxTabs>,
             }
             is ReviewInboxTabs.ReviewInboxSeller -> {
                 // Change this to seller fragment
-                ReviewHistoryFragment.createNewInstance()
+                InboxReputationFragment.createInstance(TAB_BUYER_REVIEW)
             }
             is ReviewInboxTabs.ReviewRatingProduct -> {
                 val fragment = RatingProductFragment.createInstance()
