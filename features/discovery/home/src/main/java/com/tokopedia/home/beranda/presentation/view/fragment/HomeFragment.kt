@@ -592,7 +592,7 @@ open class HomeFragment : BaseDaggerFragment(),
         super.onResume()
         shouldPausePlay = true
         createAndCallSendScreen()
-        adapter?.onResume()
+        if (!shouldPausePlay) adapter?.onResume()
         conditionalViewModelRefresh()
         if (activityStateListener != null) {
             activityStateListener!!.onResume()
@@ -675,6 +675,7 @@ open class HomeFragment : BaseDaggerFragment(),
         observeSalamWidget()
         observeRechargeRecommendation()
         observePlayReminder()
+        observeIsNeedRefresh()
     }
           
     private fun observeIsNeedRefresh() {
@@ -1586,8 +1587,8 @@ open class HomeFragment : BaseDaggerFragment(),
         getHomeViewModel().getBusinessUnitTabData(position)
     }
 
-    override fun getBusinessUnit(tabId: Int, position: Int) {
-        getHomeViewModel().getBusinessUnitData(tabId, position)
+    override fun getBusinessUnit(tabId: Int, position: Int, tabName: String) {
+        getHomeViewModel().getBusinessUnitData(tabId, position, tabName)
     }
 
     override fun getPlayChannel(position: Int) {
