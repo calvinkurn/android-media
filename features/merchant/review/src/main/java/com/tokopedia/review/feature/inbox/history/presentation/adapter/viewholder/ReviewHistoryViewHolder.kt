@@ -59,10 +59,7 @@ class ReviewHistoryViewHolder(view: View,
             return
         }
         itemView.reviewHistoryAttachedImages.apply {
-            setOnClickListener {
-                reviewHistoryItemListener.trackAttachedImageClicked(productId, feedbackId)
-            }
-            setImages(attachedImages, productName, reviewAttachedImagesClickListener)
+            setImages(attachedImages, productName, reviewAttachedImagesClickListener, reviewHistoryItemListener, productId, feedbackId)
             show()
         }
     }

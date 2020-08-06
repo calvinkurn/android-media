@@ -25,6 +25,7 @@ import com.tokopedia.review.common.data.Success
 import com.tokopedia.review.common.presentation.util.ReviewAttachedImagesClickListener
 import com.tokopedia.review.feature.inbox.common.ReviewInboxConstants
 import com.tokopedia.review.feature.inbox.history.analytics.ReviewHistoryTracking
+import com.tokopedia.review.feature.inbox.history.analytics.ReviewHistoryTrackingConstants
 import com.tokopedia.review.feature.inbox.history.di.DaggerReviewHistoryComponent
 import com.tokopedia.review.feature.inbox.history.di.ReviewHistoryComponent
 import com.tokopedia.review.feature.inbox.history.presentation.adapter.ReviewHistoryAdapterTypeFactory
@@ -80,7 +81,7 @@ class ReviewHistoryFragment : BaseListFragment<ReviewHistoryUiModel, ReviewHisto
     }
 
     override fun getScreenName(): String {
-        return ""
+        return ReviewHistoryTrackingConstants.HISTORY_SCREEN_NAME
     }
 
     override fun initInjector() {
@@ -98,6 +99,13 @@ class ReviewHistoryFragment : BaseListFragment<ReviewHistoryUiModel, ReviewHisto
 
     override fun loadData(page: Int) {
         viewModel.updatePage(page)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        activity?.run {
+            ReviewHistoryTracking.sendScreen(screenName)
+        }
     }
 
     override fun onDestroy() {
@@ -125,8 +133,10 @@ class ReviewHistoryFragment : BaseListFragment<ReviewHistoryUiModel, ReviewHisto
         viewModel.updateKeyWord(text)
     }
 
-    override fun trackAttachedImageClicked(productId: Int, feedbackId: Int) {
-        ReviewHistoryTracking.eventClickImageGallery(viewModel.getUserId(), productId, feedbackId)
+    override fun trackAttachedImageClicked(productId: Int?, feedbackId: Int?) {
+        if(productId != null && feedbackId != null) {
+            ReviewHistoryTracking.eventClickImageGallery(viewModel.getUserId(), productId, feedbackId)
+        }
     }
 
     private fun initSearchBar() {

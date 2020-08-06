@@ -6,11 +6,15 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.common.presentation.util.ReviewAttachedImagesClickListener
+import com.tokopedia.review.feature.inbox.history.presentation.util.ReviewHistoryItemListener
 import kotlinx.android.synthetic.main.item_review_attached_image.view.*
 
 class ReviewAttachedProductViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
-    fun bind(attachedImageUrl: String, reviewAttachedImagesClickListener: ReviewAttachedImagesClickListener, attachedImages: List<String>, productName: String) {
+    fun bind(attachedImageUrl: String, reviewAttachedImagesClickListener: ReviewAttachedImagesClickListener,
+             attachedImages: List<String>, productName: String, reviewHistoryItemListener: ReviewHistoryItemListener? = null,
+             productId: Int? = null,
+             feedbackId: Int? = null) {
         if(attachedImageUrl.isEmpty()) {
             itemView.apply {
                 reviewHistoryAttachedImageBlankSpace.show()
@@ -23,6 +27,7 @@ class ReviewAttachedProductViewHolder(view: View) : RecyclerView.ViewHolder(view
             reviewHistoryAttachedImage.show()
             reviewHistoryAttachedImage.loadImage(attachedImageUrl)
             setOnClickListener {
+                reviewHistoryItemListener?.trackAttachedImageClicked(productId, feedbackId)
                 reviewAttachedImagesClickListener.onAttachedImagesClicked(productName, attachedImages, adapterPosition)
             }
         }
