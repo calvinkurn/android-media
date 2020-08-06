@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/title_shimmer"
@@ -29,11 +29,11 @@
         android:id="@+id/background_banner_shimmer"
         android:layout_width="0dp"
         android:layout_height="260dp"
-        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl8"
         app:corners="@integer/corner_radius_shimmering"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/title_shimmer" />
+        app:layout_constraintTop_toTopOf="parent" />
     <androidx.cardview.widget.CardView
         android:id="@+id/first_item_play_banner"
         android:layout_width="@dimen/play_banner_item_carousel_width"

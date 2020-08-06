@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:id="@+id/scrollViewContent"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayoutSave"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <include
+                layout="@layout/add_edit_product_variant_type_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_lvl5" />
+
+            <com.tokopedia.unifycomponents.DividerUnify
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/layout_lvl1"
+                android:layout_marginTop="@dimen/body_3" />
+
+            <include
+                android:id="@+id/variantValueLevel1Layout"
+                layout="@layout/add_edit_product_variant_value_level1_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_lvl5"
+                android:visibility="gone" />
+
+            <include
+                android:id="@+id/variantValueLevel2Layout"
+                layout="@layout/add_edit_product_variant_value_level2_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_lvl5"
+                android:visibility="gone" />
+
+            <include
+                android:id="@+id/variantPhotoLayout"
+                layout="@layout/add_edit_product_variant_photo_layout"
+                android:visibility="gone" />
+
+            <include layout="@layout/add_edit_product_variant_sizechart_layout" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/linearLayoutSave"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/spacing_lvl4"
+        android:paddingTop="@dimen/spacing_lvl3"
+        android:paddingRight="@dimen/spacing_lvl4"
+        android:paddingBottom="@dimen/spacing_lvl3"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/buttonSave"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:enabled="false"
+            android:text="@string/action_save"
+            app:unifyButtonSize="medium" />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
