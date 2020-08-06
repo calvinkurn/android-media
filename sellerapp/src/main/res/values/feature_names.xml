@@ -232,4 +232,7 @@
     <!-- Dynamic features Voucher Creation -->
     <string name="title_voucher_creation">Voucher Create</string>
 
+    <!-- Dynamic feature Statistic -->
+    <string name="title_statistic">Statistic</string>
+
 </resources>

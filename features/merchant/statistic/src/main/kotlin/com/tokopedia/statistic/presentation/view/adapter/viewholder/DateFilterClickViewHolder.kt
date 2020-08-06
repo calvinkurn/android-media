@@ -25,7 +25,7 @@ class DateFilterClickViewHolder(
 
     override fun bind(element: DateFilterItem.Click) {
         with(itemView) {
-            setBackgroundColor(context.getResColor(R.color.Neutral_N0))
+            setBackgroundColor(context.getResColor(com.tokopedia.unifyprinciples.R.color.Neutral_N0))
 
             tvStcDateRangeLabel.text = element.label
             tvStcDefaultDateRange.text = DateFilterFormatUtil.getDateRangeStr(element.startDate, element.endDate)

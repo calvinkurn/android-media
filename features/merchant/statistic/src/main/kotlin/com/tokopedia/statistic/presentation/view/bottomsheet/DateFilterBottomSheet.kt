@@ -29,7 +29,7 @@ class DateFilterBottomSheet : BottomSheetUnify(), DateFilterAdapterFactoryImpl.L
 
         fun newInstance(): DateFilterBottomSheet {
             return DateFilterBottomSheet().apply {
-                setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
+                setStyle(DialogFragment.STYLE_NORMAL, R.style.StcDialogStyle)
                 clearContentPadding = true
             }
         }
