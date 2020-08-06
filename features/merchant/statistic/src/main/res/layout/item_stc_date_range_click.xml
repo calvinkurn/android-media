@@ -5,8 +5,8 @@
     android:layout_width="match_parent"
     android:paddingStart="@dimen/layout_lvl2"
     android:paddingLeft="@dimen/layout_lvl2"
-    android:paddingEnd="@dimen/layout_lvl2"
-    android:paddingRight="@dimen/layout_lvl2"
+    android:paddingEnd="@dimen/layout_lvl0"
+    android:paddingRight="@dimen/layout_lvl0"
     android:layout_height="wrap_content">
 
     <com.tokopedia.unifyprinciples.Typography
@@ -45,6 +45,8 @@
 
     <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
         android:id="@+id/radStcDefaultDateRange"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:layout_marginRight="@dimen/layout_lvl2"
         android:layout_width="@dimen/layout_lvl3"
         android:layout_height="@dimen/dimen_stc_22dp"
         app:layout_constraintBottom_toBottomOf="@+id/tvStcDefaultDateRange"

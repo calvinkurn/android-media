@@ -6,8 +6,8 @@
     android:layout_height="wrap_content"
     android:paddingStart="@dimen/layout_lvl2"
     android:paddingLeft="@dimen/layout_lvl2"
-    android:paddingEnd="@dimen/layout_lvl2"
-    android:paddingRight="@dimen/layout_lvl2">
+    android:paddingEnd="@dimen/layout_lvl0"
+    android:paddingRight="@dimen/layout_lvl0">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvStcPerMonthLabel"
@@ -28,6 +28,8 @@
         android:layout_width="@dimen/layout_lvl3"
         android:layout_height="@dimen/layout_lvl3"
         android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:layout_marginRight="@dimen/layout_lvl2"
         android:layout_marginBottom="@dimen/layout_lvl2"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -39,8 +41,10 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginEnd="@dimen/spacing_lvl1"
+        android:layout_marginRight="@dimen/spacing_lvl1"
         android:visibility="gone"
-        app:layout_constraintEnd_toStartOf="@+id/radStcPerMonth"
+        app:layout_constraintEnd_toEndOf="@+id/radStcPerMonth"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/radStcPerMonth"
         tools:visibility="gone" />
