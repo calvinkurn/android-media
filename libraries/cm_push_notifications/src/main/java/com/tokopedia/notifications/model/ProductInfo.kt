@@ -84,4 +84,14 @@ data class ProductInfo(
         @ColumnInfo(name = CMConstant.PayloadKeys.ACTION_BUTTON)
         var actionButton: ArrayList<ActionButton> = ArrayList()
 
-) : Parcelable
+) : Parcelable {
+
+    fun getNumberPrice(): String {
+        val startIndex = productCurrentPrice.indexOfFirst { it.isDigit() }
+        val endIndex = productCurrentPrice.indexOfLast { it.isDigit() } + 1
+        return productCurrentPrice
+                .substring(startIndex, endIndex)
+                .filter { it.isDigit() || it == '.' }
+    }
+
+}

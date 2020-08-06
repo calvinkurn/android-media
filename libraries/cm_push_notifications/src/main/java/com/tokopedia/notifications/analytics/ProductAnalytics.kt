@@ -92,7 +92,7 @@ object ProductAnalytics {
         val impressions = mapOf(
                 KEY_ID to product.productId.toString(),
                 KEY_NAME to product.productTitle,
-                KEY_PRICE to product.productCurrentPrice,
+                KEY_PRICE to product.getNumberPrice(),
                 KEY_BRAND to "",
                 KEY_VARIANT to "",
                 KEY_LIST to LIST,
@@ -124,7 +124,7 @@ object ProductAnalytics {
         val productElement = mapOf(
                 KEY_ID to product.productId.toString(),
                 KEY_NAME to product.productTitle,
-                KEY_PRICE to product.productCurrentPrice,
+                KEY_PRICE to product.getNumberPrice(),
                 KEY_BRAND to "",
                 KEY_VARIANT to "",
                 KEY_LIST to LIST,
@@ -162,7 +162,7 @@ object ProductAnalytics {
                         KEY_PRODUCTS to listOf(mapOf(
                                 KEY_ID to product.productId.toString(),
                                 KEY_NAME to product.productTitle,
-                                KEY_PRICE to product.productCurrentPrice,
+                                KEY_PRICE to product.getNumberPrice(),
                                 KEY_BRAND to "",
                                 KEY_VARIANT to "",
                                 KEY_LIST to LIST,
@@ -199,7 +199,7 @@ object ProductAnalytics {
                         KEY_PRODUCTS to listOf(mapOf(
                                 KEY_ID to product.productId.toString(),
                                 KEY_NAME to product.productTitle,
-                                KEY_PRICE to product.productCurrentPrice,
+                                KEY_PRICE to product.getNumberPrice(),
                                 KEY_BRAND to "",
                                 KEY_VARIANT to "",
                                 KEY_LIST to LIST,
