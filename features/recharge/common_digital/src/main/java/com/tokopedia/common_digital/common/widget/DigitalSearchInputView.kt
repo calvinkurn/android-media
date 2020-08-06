@@ -37,20 +37,22 @@ class DigitalSearchInputView @JvmOverloads constructor(@NotNull context: Context
     }
 
     override fun getOnEditorActionListener(): TextView.OnEditorActionListener {
-        return object : TextView.OnEditorActionListener {
-            override fun onEditorAction(textView: TextView, actionId: Int, event: KeyEvent?): Boolean {
-                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    hideKeyboard()
-                    listener.onSearchSubmitted(textView.text.toString())
-                    return true
-                } else if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    hideKeyboard()
-                    listener.onSearchDone(textView.text.toString())
-                    return true
+        return if (::listener.isInitialized) {
+            object : TextView.OnEditorActionListener {
+                override fun onEditorAction(textView: TextView, actionId: Int, event: KeyEvent?): Boolean {
+                    if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                        hideKeyboard()
+                        listener.onSearchSubmitted(textView.text.toString())
+                        return true
+                    } else if (actionId == EditorInfo.IME_ACTION_DONE) {
+                        hideKeyboard()
+                        listener.onSearchDone(textView.text.toString())
+                        return true
+                    }
+                    return false
                 }
-                return false
             }
-        }
+        } else super.getOnEditorActionListener()
     }
 
     interface DigitalSearchInputListener {

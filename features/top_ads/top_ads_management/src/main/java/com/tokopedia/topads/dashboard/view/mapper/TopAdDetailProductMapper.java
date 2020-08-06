@@ -2,6 +2,7 @@ package com.tokopedia.topads.dashboard.view.mapper;
 
 import android.text.TextUtils;
 
+import com.tokopedia.topads.dashboard.data.model.response.TopAdsDepositResponse;
 import com.tokopedia.topads.dashboard.domain.model.TopAdsDetailProductDomainModel;
 import com.tokopedia.topads.dashboard.domain.model.TopAdsDetailShopDomainModel;
 import com.tokopedia.topads.dashboard.view.model.TopAdsDetailProductViewModel;

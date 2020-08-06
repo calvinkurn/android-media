@@ -3,26 +3,21 @@ package com.tokopedia.topads.dashboard.view.fragment;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import android.text.TextUtils;
 
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.product.manage.item.common.util.CurrencyIdrTextWatcher;
-import com.tokopedia.topads.R;
 import com.tokopedia.topads.common.util.TopAdsComponentUtils;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
 import com.tokopedia.topads.dashboard.constant.TopAdsSuggestionBidInteractionTypeDef;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.topads.dashboard.data.model.request.DataSuggestions;
-import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
+import com.tokopedia.topads.dashboard.data.model.response.TopAdsDepositResponse;
 import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
 import com.tokopedia.topads.dashboard.di.module.TopAdsCreatePromoModule;
 import com.tokopedia.topads.dashboard.domain.model.MinimumBidDomain;
-import com.tokopedia.topads.dashboard.utils.ViewUtils;
 import com.tokopedia.topads.dashboard.view.model.TopAdsDetailProductViewModel;
-import com.tokopedia.topads.dashboard.view.model.TopAdsProductViewModel;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailEditProductPresenter;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailNewProductPresenter;
 
@@ -75,7 +70,7 @@ public class TopAdsEditCostWithoutGroupFragment extends TopAdsEditCostFragment<T
             super.onClickedNext();
             if (detailAd != null) {
                 trackingEditCostTopads();
-                daggerPresenter.saveAd(detailAd);
+                daggerPresenter.getBalance(getResources());
             }
         }
     }
@@ -98,6 +93,11 @@ public class TopAdsEditCostWithoutGroupFragment extends TopAdsEditCostFragment<T
         NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
     }
 
+
+    @Override
+    public void onBalanceCheck(TopAdsDepositResponse.Data topAdsDepositResponse) {
+        daggerPresenter.saveAd(detailAd, topAdsDepositResponse);
+    }
 
     @Override
     public void onBidInfoSuccess(MinimumBidDomain.TopadsBidInfo bidInfo) {

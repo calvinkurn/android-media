@@ -212,13 +212,14 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     private void warmUpGQLClient(){
         if(remoteConfig.getBoolean(RemoteConfigKey.EXECUTE_GQL_CONNECTION_WARM_UP, false)) {
+            try{
             GQLPing gqlPing = GraphqlClient.getRetrofit().create(GQLPing.class);
             Call<String> gqlPingCall = gqlPing.pingGQL();
             gqlPingCall.enqueue(new Callback<String>() {
                 @Override
                 public void onResponse(Call<String> call, retrofit2.Response<String> response) {
-                    if(response.body() != null) {
-                        Timber.d("Success%s", response.body());
+                    if(response != null && response.body() != null) {
+                        Timber.d("Success %s", response.body());
                     }
                 }
 
@@ -227,6 +228,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                     Timber.d("Failure");
                 }
             });
+            } catch (Exception ex){
+                Timber.d("GQL Ping exception %s", ex.getMessage());
+            }
         }
     }
 
