@@ -55,7 +55,7 @@ const val GQL_GET_AUTO_WD_STATUS = "query GetAutoWDStatus {\n" +
         "        scheduleType\n" +
         "        title\n" +
         "        desc\n" +
-        "        status\n" +//0 never opted show banner --- if is owner -- warning page disabled
+        "        status\n" +
         "      }\n" +
         "    }\n" +
         "  }\n" +
@@ -71,21 +71,31 @@ const val GQL_AUTO_WD_TNC = "query GetTNCAutoWD {\n" +
         "  }\n" +
         "}"
 
-const val GQL_UPSERT_AUTO_WD = "mutation UpsertAutoWDData {\n" +
-        "  UpsertAutoWDData(\n"+
-        "    input: {\n"+
-        "       autoWDUserId: autoWDUserId\n" +
-        "       oldAutoWDScheduleId: \$oldAutoWDScheduleId\n" +
-        "       scheduleType: \$scheduleType\n" +
-        "       accId: \$accId\n" +
-        "       accNo: \$accNo\n" +
-        "       bankId: \$bankId\n" +
-        "       isUpdate: \$isUpdate\n" +
-        "       validateToken: \$validateToken\n" +
-        "       isQuit: \$isQuit\n" +
-        "       }\n" +
-        "  ){\n" +
-        "    code\n" +
-        "    message\n" +
-        "  }\n" +
+const val GQL_UPSERT_AUTO_WD = "mutation UpsertAutoWDData(" +
+        "   \$autoWDUserId: Int\n" +
+        "   \$oldAutoWDScheduleId: Int\n" +
+        "   \$scheduleType: Int\n" +
+        "   \$accId: Int!\n" +
+        "   \$accNo: String!\n" +
+        "   \$bankId: Int!\n" +
+        "   \$isUpdate: Boolean!\n" +
+        "   \$validateToken: String!\n" +
+        "   \$isQuit: Boolean!" +
+        "   ) {\n" +
+        "   UpsertAutoWDData(\n"+
+        "        input: {\n"+
+        "           autoWDUserId: \$autoWDUserId\n" +
+        "           oldAutoWDScheduleId: \$oldAutoWDScheduleId\n" +
+        "           scheduleType: \$scheduleType\n" +
+        "           accId: \$accId\n" +
+        "           accNo: \$accNo\n" +
+        "           bankId: \$bankId\n" +
+        "           isUpdate: \$isUpdate\n" +
+        "           validateToken: \$validateToken\n" +
+        "           isQuit: \$isQuit\n" +
+        "           }\n" +
+        "       ){\n" +
+        "           code\n" +
+        "           message\n" +
+        "        }\n" +
         "}"

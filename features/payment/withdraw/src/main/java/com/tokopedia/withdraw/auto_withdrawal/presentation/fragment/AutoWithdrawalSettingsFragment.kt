@@ -54,7 +54,7 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
-    var getInfoAutoWD: GetInfoAutoWD? = null
+    private var getInfoAutoWD: GetInfoAutoWD? = null
     private var autoWDStatusData: AutoWDStatusData? = null
     private var currentSchedule: Schedule? = null
     private var requestedSchedule: Schedule? = null
@@ -83,7 +83,7 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
             setTermsAndConditionSpannable(context)
         }
         scrollViewAutoWDContent.gone()
-        setLoaderViewVisibility(true)
+        loaderView.visible()
         observeViewModel()
         autoWDSettingsViewModel.getAutoWDInfo()
     }
@@ -103,18 +103,21 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
                 is Fail -> showGlobalError(it.throwable, autoWDSettingsViewModel::getAutoWDInfo)
             }
         })
+
         autoWDSettingsViewModel.bankListResultLiveData.observe(this, Observer {
             when (it) {
                 is Success -> onBankAccountLoaded(it.data)
                 is Fail -> showGlobalError(it.throwable, autoWDSettingsViewModel::getBankAccount)
             }
         })
+
         autoWDSettingsViewModel.autoWDStatusDataResultLiveData.observe(this, Observer {
             when (it) {
                 is Success -> onAutoWithdrawalStatusLoaded(it.data)
                 is Fail -> showGlobalError(it.throwable, autoWDSettingsViewModel::getAutoWDStatus)
             }
         })
+
         autoWDSettingsViewModel.autoWDTNCResultLiveData.observe(this, Observer {
             when (it) {
                 is Success -> onTermsAndConditionLoaded(it.data)
@@ -123,7 +126,25 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
                 }
             }
         })
+
+        autoWDSettingsViewModel.upsertResponseLiveData.observe(this, Observer {
+            when (it) {
+                is Success -> {
+                    if (it.data.code == 200) {
+                        Toaster.make(view!!, it.data.message, Toaster.LENGTH_SHORT)
+                        autoWDSettingsViewModel.getAutoWDStatus()
+                    } else {
+                       onAutoWithdrawalUpsertFailed(it.data.message)
+                    }
+                }
+                is Fail -> {
+                    //todo upsert Network fail...
+                    loaderView.gone()
+                }
+            }
+        })
     }
+
 
     private fun onTermsAndConditionLoaded(template: String) {
         tncTemplateStr = template
@@ -136,6 +157,7 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
     }
 
     private fun showGlobalError(throwable: Throwable, retryAction: () -> Unit) {
+        loaderView.gone()
         val errorType = when (throwable) {
             is MessageErrorException -> GlobalError.SERVER_ERROR
             else -> GlobalError.NO_CONNECTION
@@ -144,16 +166,10 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
         globalError.setType(errorType)
         globalError.errorAction.visible()
         globalError.errorAction.setOnClickListener {
-            setLoaderViewVisibility(false)
+            globalError.gone()
+            loaderView.visible()
             retryAction.invoke()
         }
-    }
-
-    private fun setLoaderViewVisibility(isVisible: Boolean) {
-        if (isVisible)
-            loaderView.visible()
-        else
-            loaderView.gone()
     }
 
     private fun onBankAccountLoaded(accountList: ArrayList<BankAccount>) {
@@ -177,7 +193,12 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
         }
     }
 
+    private fun resetOldRequest() {
+        requestedSchedule = null
+    }
+
     private fun onAutoWithdrawalStatusLoaded(autoWDStatusData: AutoWDStatusData) {
+        resetOldRequest()
         groupAutoWDSaveSetting.gone()
         this.autoWDStatusData = autoWDStatusData
         autoWDStatusData.apply {
@@ -194,8 +215,8 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
             enableScheduleSection(autoWDStatusData.status == 1 && autoWDStatusData.isOwner)
             enableBankAccountSection(autoWDStatusData.status == 1 && autoWDStatusData.isOwner)
             updateBankAccountSectionState()
-            setLoaderViewVisibility(false)
             scrollViewAutoWDContent.visible()
+            loaderView.gone()
         }
     }
 
@@ -538,7 +559,7 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
             val uuid: String = data.getStringExtra(ApplinkConstInternalGlobal.PARAM_UUID)
             autoWithdrawalUpsertRequest?.let {
                 it.token = uuid
-                autoWDSettingsViewModel.upsertAutoWithdrawal(it)
+                upsertAutoWithdrawalSchedule(it)
             }
         }
     }
@@ -567,21 +588,33 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
 
     private fun optOutFromAutoWithdrawal() {
         autoWDStatusData?.let {
-            autoWDSettingsViewModel.upsertAutoWithdrawal(AutoWithdrawalUpsertRequest(it,
+            upsertAutoWithdrawalSchedule(AutoWithdrawalUpsertRequest(it,
                     currentSchedule, null, primaryBankAccount,
-                    true, null, true))
+                    false, null, true))
         }
     }
 
     private fun updateAutoWithdrawalSchedule() {
         autoWDStatusData?.let {
-            autoWDSettingsViewModel.upsertAutoWithdrawal(AutoWithdrawalUpsertRequest(
+            upsertAutoWithdrawalSchedule(AutoWithdrawalUpsertRequest(
                     it,
                     currentSchedule, requestedSchedule, primaryBankAccount,
                     true, null, false
             ))
         }
     }
+
+    private fun upsertAutoWithdrawalSchedule(autoWithdrawalUpsertRequest: AutoWithdrawalUpsertRequest) {
+        loaderView.visible()
+        autoWDSettingsViewModel.upsertAutoWithdrawal(autoWithdrawalUpsertRequest)
+    }
+
+
+    private fun onAutoWithdrawalUpsertFailed(message: String) {
+        loaderView.gone()
+        //todo
+    }
+
 
     companion object {
         private const val REQUEST_OTP_CODE = 131
@@ -593,5 +626,6 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
     }
 
 }
+//todo add button loader....
 
 //check on Auto wd and left rp program case

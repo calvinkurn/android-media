@@ -59,9 +59,11 @@ class AutoWDSettingsViewModel @Inject constructor(
                     { upsertResponse ->
                         if (upsertResponse.code == 200)
                             upsertResponseLiveData.value = Success(upsertResponse)
+                        isUpsertAutoWDInProgress = false
                     },
                     { error ->
                         upsertResponseLiveData.value = Fail(error)
+                        isUpsertAutoWDInProgress = false
                     })
         }
     }

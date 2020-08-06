@@ -30,22 +30,25 @@ class AutoWDUpsertUseCase @Inject constructor(graphqlRepository: GraphqlReposito
 
     fun getRequestParams(request: AutoWithdrawalUpsertRequest): MutableMap<String, Any?> {
         request.apply {
-            val map = mutableMapOf(
+            val map: MutableMap<String, Any?> = mutableMapOf(
                     "autoWDUserId" to autoWDStatusData.auto_wd_user_id,
-                    "oldAutoWDScheduleId" to oldSchedule?.autoWithdrawalScheduleId,
-                    "scheduleType" to newSchedule?.scheduleType,
                     "isUpdate" to isUpdating,
                     "isQuit" to isQuit
             )
+
+            oldSchedule?.let {
+                map["oldAutoWDScheduleId"] = it.autoWithdrawalScheduleId
+            }
+            newSchedule?.let {
+                map["scheduleType"] = it.scheduleType
+            }
+
+            map["validateToken"] = token ?: ""
 
             bankAccount?.apply {
                 map["accId"] = bankAccountID
                 map["accNo"] = accountNo
                 map["bankId"] = bankID
-            }
-
-            token?.apply {
-                map["validateToken"] = token
             }
             return map
         }
