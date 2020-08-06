@@ -94,13 +94,13 @@ internal class ProductNotification(
 
         remoteView.setTextViewText(R.id.tv_currentPrice, spanStr(currentProductInfo.productCurrentPrice))
 
+        addLeftCarouselButton(remoteView)
+        addRightCarouselButton(remoteView)
+
         when (baseNotificationModel.notificationProductType) {
             NotificationProductType.V2 -> productDetailCard(remoteView, currentProductInfo)
             else -> productStockCard(remoteView, currentProductInfo)
         }
-
-        addLeftCarouselButton(remoteView)
-        addRightCarouselButton(remoteView)
     }
 
     private fun productStockCard(remoteView: RemoteViews, product: ProductInfo) {
@@ -115,16 +115,16 @@ internal class ProductNotification(
         // visibility
         when {
             baseNotificationModel.productInfoList.size == 1 -> {
-                remoteView.setViewVisibility(R.id.ivArrowLeft, View.GONE)
-                remoteView.setViewVisibility(R.id.ivArrowRight, View.GONE)
+                remoteView.setViewVisibility(R.id.ivArrowLeft, View.INVISIBLE)
+                remoteView.setViewVisibility(R.id.ivArrowRight, View.INVISIBLE)
             }
             baseNotificationModel.carouselIndex == 0 -> {
-                remoteView.setViewVisibility(R.id.ivArrowLeft, View.GONE)
+                remoteView.setViewVisibility(R.id.ivArrowLeft, View.INVISIBLE)
                 remoteView.setViewVisibility(R.id.ivArrowRight, View.VISIBLE)
             }
             baseNotificationModel.carouselIndex == (baseNotificationModel.productInfoList.size - 1) -> {
                 remoteView.setViewVisibility(R.id.ivArrowLeft, View.VISIBLE)
-                remoteView.setViewVisibility(R.id.ivArrowRight, View.GONE)
+                remoteView.setViewVisibility(R.id.ivArrowRight, View.INVISIBLE)
             }
             else -> {
                 remoteView.setViewVisibility(R.id.ivArrowLeft, View.VISIBLE)
