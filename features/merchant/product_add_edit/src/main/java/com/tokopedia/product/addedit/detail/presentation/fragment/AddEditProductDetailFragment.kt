@@ -114,6 +114,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     private var selectedDurationPosition: Int = UNIT_DAY
     private var isPreOrderFirstTime = true
     private var countTouchPhoto = 0
+    private var hasCategoryFromPicker = false
 
     // product photo
     private var addProductPhotoButton: AppCompatTextView? = null
@@ -637,7 +638,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                     }
                 }
                 REQUEST_CODE_CATEGORY -> {
-
+                    hasCategoryFromPicker = true
                     val categoryId = data.getLongExtra(CATEGORY_RESULT_ID, 0)
                     val categoryName = data.getStringExtra(CATEGORY_RESULT_FULL_NAME)
 
@@ -1272,25 +1273,28 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     }
 
     private fun onGetCategoryRecommendationSuccess(result: Success<List<ListItemUnify>>) {
+        hasCategoryFromPicker = false
         productCategoryLayout?.show()
         productCategoryRecListView?.show()
         val items = ArrayList(result.data.take(3))
         productCategoryRecListView?.setData(items)
         productCategoryRecListView?.onLoadFinish {
-            selectFirstCategoryRecommendation(items)
+            if (!hasCategoryFromPicker) {
+                selectFirstCategoryRecommendation(items)
+
+                productCategoryRecListView?.run {
+                    this.setOnItemClickListener { _, _, position, _ ->
+                        selectCategoryRecommendation(items, position)
+                    }
+                }
+
+                items.forEachIndexed { position, listItemUnify ->
+                    listItemUnify.listRightRadiobtn?.setOnClickListener {
+                        selectCategoryRecommendation(items, position)
+                    }
+                }
+            }
             createCategoryRecommendationItemClickListener(items)
-
-            productCategoryRecListView?.run {
-                this.setOnItemClickListener { _, _, position, _ ->
-                    selectCategoryRecommendation(items, position)
-                }
-            }
-
-            items.forEachIndexed { position, listItemUnify ->
-                listItemUnify.listRightRadiobtn?.setOnClickListener {
-                    selectCategoryRecommendation(items, position)
-                }
-            }
         }
     }
 
@@ -1311,9 +1315,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         setSelected(items, position) {
             val categoryId = it.getCategoryId().toString()
             val categoryName = it.getCategoryName()
-            if (viewModel.productInputModel.detailInputModel.categoryId == "0") {
-                viewModel.productInputModel.detailInputModel.categoryId = categoryId
-            }
+            viewModel.productInputModel.detailInputModel.categoryId = categoryId
             viewModel.productInputModel.detailInputModel.categoryName = categoryName
             true
         }
