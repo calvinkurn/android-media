@@ -17,6 +17,7 @@ class ChatToggleBlockChatUseCase @Inject constructor(
     private val paramMsgId = "messageID"
     private val paramBlockType = "blockType"
     private val paramIsBlocked = "isBlocked"
+    private var promoStateChangerJob: Job? = null
 
     override val coroutineContext: CoroutineContext get() = dispatchers.Main + SupervisorJob()
 
@@ -32,7 +33,8 @@ class ChatToggleBlockChatUseCase @Inject constructor(
             onSuccess: (String) -> Unit,
             onError: (Throwable) -> Unit
     ) {
-        launchCatchError(dispatchers.IO,
+        if (isPreviousRequestRunning()) return
+        promoStateChangerJob = launchCatchError(dispatchers.IO,
                 {
                     val params = generateParams(msgId, true)
                     val response = gqlUseCase.apply {
@@ -58,7 +60,8 @@ class ChatToggleBlockChatUseCase @Inject constructor(
             onSuccess: () -> Unit,
             onError: (Throwable) -> Unit
     ) {
-        launchCatchError(dispatchers.IO,
+        if (isPreviousRequestRunning()) return
+        promoStateChangerJob = launchCatchError(dispatchers.IO,
                 {
                     val params = generateParams(messageId, false)
                     val response = gqlUseCase.apply {
@@ -76,6 +79,10 @@ class ChatToggleBlockChatUseCase @Inject constructor(
                     }
                 }
         )
+    }
+
+    private fun isPreviousRequestRunning(): Boolean {
+        return promoStateChangerJob != null && promoStateChangerJob?.isCompleted == false
     }
 
     private fun generateParams(msgId: String, isBlocked: Boolean): Map<String, Any> {
