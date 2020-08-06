@@ -55,7 +55,9 @@ class HomeViewModelBusinessUnitTest{
         getBusinessUnitDataUseCase.givenGetBusinessUnitDataUseCaseReturn(listOf(
                 BusinessUnitItemDataModel(
                         content = HomeWidget.ContentItemTab(),
-                        itemPosition = 0
+                        itemPosition = 0,
+                        tabPosition = 0,
+                        tabName = "Keuangan"
                 )
         ))
 
@@ -63,7 +65,7 @@ class HomeViewModelBusinessUnitTest{
         homeViewModel.getBusinessUnitTabData(0)
 
         // viewModel load business data
-        homeViewModel.getBusinessUnitData(1, 0)
+        homeViewModel.getBusinessUnitData(1, 0, "Keuangan")
 
         // Expect tabs data on live data available
         verifyOrder {
@@ -114,7 +116,7 @@ class HomeViewModelBusinessUnitTest{
         homeViewModel.getBusinessUnitTabData(0)
 
         // viewModel load business data
-        homeViewModel.getBusinessUnitData(1, 0)
+        homeViewModel.getBusinessUnitData(1, 0, "Keuangan")
 
         // Expect tabs data on live data available
         verifyOrder {
