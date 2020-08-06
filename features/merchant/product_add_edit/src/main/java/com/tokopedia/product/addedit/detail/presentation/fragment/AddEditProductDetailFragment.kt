@@ -1311,7 +1311,9 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         setSelected(items, position) {
             val categoryId = it.getCategoryId().toString()
             val categoryName = it.getCategoryName()
-            viewModel.productInputModel.detailInputModel.categoryId = categoryId
+            if (viewModel.productInputModel.detailInputModel.categoryId == "0") {
+                viewModel.productInputModel.detailInputModel.categoryId = categoryId
+            }
             viewModel.productInputModel.detailInputModel.categoryName = categoryName
             true
         }
