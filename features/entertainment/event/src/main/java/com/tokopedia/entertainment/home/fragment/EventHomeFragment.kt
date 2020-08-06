@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -89,7 +90,7 @@ class EventHomeFragment : BaseDaggerFragment(), FragmentView, MenuSheet.ItemClic
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.getHomeData(this, ::onSuccessGetData, ::onErrorGetData, CacheType.CACHE_FIRST)
+        viewModel.getHomeData(GraphqlHelper.loadRawString(resources, R.raw.event_home_query), ::onSuccessGetData, ::onErrorGetData, CacheType.CACHE_FIRST)
 
         recycler_view.apply {
             setHasFixedSize(true)
@@ -100,7 +101,7 @@ class EventHomeFragment : BaseDaggerFragment(), FragmentView, MenuSheet.ItemClic
 
         swipe_refresh_layout.setOnRefreshListener {
             initializePerformance()
-            viewModel.getHomeData(this, ::onSuccessGetData, ::onErrorGetData, CacheType.CLOUD_THEN_CACHE)
+            viewModel.getHomeData(GraphqlHelper.loadRawString(resources, R.raw.event_home_query), ::onSuccessGetData, ::onErrorGetData, CacheType.CLOUD_THEN_CACHE)
         }
     }
 

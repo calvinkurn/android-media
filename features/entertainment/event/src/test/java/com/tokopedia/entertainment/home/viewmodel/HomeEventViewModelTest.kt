@@ -1,5 +1,6 @@
 package com.tokopedia.entertainment.home.viewmodel
 
+import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.Gson
 import com.tokopedia.common.network.coroutines.repository.RestRepository
@@ -10,11 +11,13 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.Answer
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.MockK
+import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
@@ -45,20 +48,18 @@ class HomeEventViewModelTest {
     lateinit var graphqlRepository: GraphqlRepository
     @MockK
     lateinit var restRepository: RestRepository
-    @MockK
-    lateinit var userSessionInterface: UserSessionInterface
-    @MockK
-    lateinit var fragmentView: FragmentView
+    lateinit var userSessionInterface: UserSession
+    private val context: Context = mockk(relaxed = true)
 
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
+        userSessionInterface = UserSession(context)
         homeEventViewModel = HomeEventViewModel(Dispatchers.Unconfined, graphqlRepository, restRepository, userSessionInterface)
     }
 
     @Test
     fun getHomeData() {
-        assertNotNull(fragmentView)
         assertNotNull(graphqlRepository)
         assertNotNull(homeEventViewModel)
         val data = Gson().fromJson<EventHomeDataResponse.Data>(getJson("home_response_mock.json"), EventHomeDataResponse.Data::class.java)
@@ -75,8 +76,8 @@ class HomeEventViewModelTest {
             assertNotNull(throwable)
         }
 
-        runBlocking(Dispatchers.Unconfined){
-            homeEventViewModel.getHomeData(fragmentView, ::result, ::error, CacheType.CACHE_FIRST)
+        runBlocking{
+            homeEventViewModel.getHomeData("", ::result, ::error, CacheType.CACHE_FIRST)
         }
 
     }
