@@ -100,7 +100,18 @@ internal class ProductNotification(
 
         addLeftCarouselButton(remoteView)
         addRightCarouselButton(remoteView)
+    }
 
+    private fun productStockCard(remoteView: RemoteViews, product: ProductInfo) {
+        // collapse
+        remoteView.setOnClickPendingIntent(R.id.collapseMainView, getCollapsedPendingIntent())
+
+        // expand
+        remoteView.setOnClickPendingIntent(R.id.ll_expandedProductView, getProductPendingIntent(product))
+        remoteView.setTextViewText(R.id.tv_productButton, spanStr(product.productButtonMessage))
+        remoteView.setTextViewText(R.id.tv_productMessage, spanStr(product.productMessage))
+
+        // visibility
         when {
             baseNotificationModel.productInfoList.size == 1 -> {
                 remoteView.setViewVisibility(R.id.ivArrowLeft, View.GONE)
@@ -115,20 +126,10 @@ internal class ProductNotification(
                 remoteView.setViewVisibility(R.id.ivArrowRight, View.GONE)
             }
             else -> {
-                remoteView.setViewVisibility(R.id.ivArrowLeft, View.GONE)
-                remoteView.setViewVisibility(R.id.ivArrowRight, View.GONE)
+                remoteView.setViewVisibility(R.id.ivArrowLeft, View.VISIBLE)
+                remoteView.setViewVisibility(R.id.ivArrowRight, View.VISIBLE)
             }
         }
-    }
-
-    private fun productStockCard(remoteView: RemoteViews, product: ProductInfo) {
-        // collapse
-        remoteView.setOnClickPendingIntent(R.id.collapseMainView, getCollapsedPendingIntent())
-
-        // expand
-        remoteView.setOnClickPendingIntent(R.id.ll_expandedProductView, getProductPendingIntent(product))
-        remoteView.setTextViewText(R.id.tv_productButton, spanStr(product.productButtonMessage))
-        remoteView.setTextViewText(R.id.tv_productMessage, spanStr(product.productMessage))
     }
 
     private fun productDetailCard(remoteView: RemoteViews, product: ProductInfo) {
@@ -153,6 +154,8 @@ internal class ProductNotification(
 
         // visibility
         remoteView.setViewVisibility(R.id.tv_productMessage, View.GONE)
+        remoteView.setViewVisibility(R.id.ivArrowLeft, View.GONE)
+        remoteView.setViewVisibility(R.id.ivArrowRight, View.GONE)
 
         // action button
         remoteView.setOnClickPendingIntent(R.id.tv_productButton, getButtonPendingIntent(actionButton))
