@@ -82,7 +82,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
-    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.chips
     implementation rootProject.ext.supportLibDependencies.constraintLayout
