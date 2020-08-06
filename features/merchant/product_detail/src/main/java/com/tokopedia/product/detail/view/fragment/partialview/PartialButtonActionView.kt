@@ -215,15 +215,14 @@ class PartialButtonActionView private constructor(val view: View,
                 btn_top_ads?.show()
                 btn_edit_product?.show()
                 hasTopAdsActive?.let {
+                    btn_top_ads.buttonVariant = UnifyButton.Variant.GHOST
                     if (it) {
                         btn_top_ads.setOnClickListener { rincianTopAdsClick?.invoke() }
                         btn_top_ads.text = context.getString(R.string.rincian_topads)
-                        btn_top_ads.buttonVariant = UnifyButton.Variant.GHOST
                         btn_top_ads.buttonType = UnifyButton.Type.ALTERNATE
                     } else {
                         btn_top_ads.setOnClickListener { promoTopAdsClick?.invoke() }
                         btn_top_ads.text = context.getString(R.string.promote_topads)
-                        btn_top_ads.buttonVariant = UnifyButton.Variant.GHOST
                         btn_top_ads.buttonType = UnifyButton.Type.TRANSACTION
                     }
                 }
