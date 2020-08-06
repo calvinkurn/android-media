@@ -53,7 +53,11 @@ class ChatToggleBlockChatUseCase @Inject constructor(
         )
     }
 
-    fun allowPromo(messageId: String, onSuccess: (String) -> Unit, onError: (Throwable) -> Unit) {
+    fun allowPromo(
+            messageId: String,
+            onSuccess: () -> Unit,
+            onError: (Throwable) -> Unit
+    ) {
         launchCatchError(dispatchers.IO,
                 {
                     val params = generateParams(messageId, false)
@@ -62,9 +66,8 @@ class ChatToggleBlockChatUseCase @Inject constructor(
                         setRequestParams(params)
                         setGraphqlQuery(query)
                     }.executeOnBackground()
-                    val dueDate = Utils.getDateTime(response.chatBlockResponse.chatBlockStatus.validDate)
                     withContext(dispatchers.Main) {
-                        onSuccess(dueDate)
+                        onSuccess()
                     }
                 },
                 {

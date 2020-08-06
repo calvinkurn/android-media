@@ -1427,7 +1427,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     }
 
     private fun requestAllowPromo() {
-        presenter.requestAllowPromo(messageId, { until ->
+        presenter.requestAllowPromo(messageId, {
             view?.hideLoadingTransparent()
             getViewState().isPromoBlocked = false
             addBroadCastSpamHandler(getViewState().isShopFollowed)

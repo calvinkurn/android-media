@@ -855,7 +855,7 @@ class TopChatRoomPresenter @Inject constructor(
         chatToggleBlockChat.blockPromo(messageId, onSuccess, onError)
     }
 
-    override fun requestAllowPromo(messageId: String, onSuccess: (String) -> Unit, onError: (Throwable) -> Unit) {
+    override fun requestAllowPromo(messageId: String, onSuccess: () -> Unit, onError: (Throwable) -> Unit) {
         chatToggleBlockChat.allowPromo(messageId, onSuccess, onError)
     }
 
