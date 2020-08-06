@@ -10,7 +10,7 @@ import rx.Observable;
  */
 
 public interface HomeAceApi {
-    @POST("r3/v1/ulabel/userLocation")
+    @POST("personalization/v1/ulabel/userLocation")
     @Headers({"Content-Type: application/json"})
     Observable<Response<String>> sendGeolocationInfo();
 }
