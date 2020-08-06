@@ -103,20 +103,20 @@ internal class ProductNotification(
 
         when {
             baseNotificationModel.productInfoList.size == 1 -> {
-                remoteView.setViewVisibility(R.id.ivArrowLeft, View.INVISIBLE)
-                remoteView.setViewVisibility(R.id.ivArrowRight, View.INVISIBLE)
+                remoteView.setViewVisibility(R.id.ivArrowLeft, View.GONE)
+                remoteView.setViewVisibility(R.id.ivArrowRight, View.GONE)
             }
             baseNotificationModel.carouselIndex == 0 -> {
-                remoteView.setViewVisibility(R.id.ivArrowLeft, View.INVISIBLE)
+                remoteView.setViewVisibility(R.id.ivArrowLeft, View.GONE)
                 remoteView.setViewVisibility(R.id.ivArrowRight, View.VISIBLE)
             }
             baseNotificationModel.carouselIndex == (baseNotificationModel.productInfoList.size - 1) -> {
                 remoteView.setViewVisibility(R.id.ivArrowLeft, View.VISIBLE)
-                remoteView.setViewVisibility(R.id.ivArrowRight, View.INVISIBLE)
+                remoteView.setViewVisibility(R.id.ivArrowRight, View.GONE)
             }
             else -> {
-                remoteView.setViewVisibility(R.id.ivArrowLeft, View.VISIBLE)
-                remoteView.setViewVisibility(R.id.ivArrowRight, View.VISIBLE)
+                remoteView.setViewVisibility(R.id.ivArrowLeft, View.GONE)
+                remoteView.setViewVisibility(R.id.ivArrowRight, View.GONE)
             }
         }
     }
@@ -124,10 +124,6 @@ internal class ProductNotification(
     private fun productStockCard(remoteView: RemoteViews, product: ProductInfo) {
         // collapse
         remoteView.setOnClickPendingIntent(R.id.collapseMainView, getCollapsedPendingIntent())
-
-        // visibility
-        remoteView.setViewVisibility(R.id.ivArrowLeft, View.GONE)
-        remoteView.setViewVisibility(R.id.ivArrowRight, View.GONE)
 
         // expand
         remoteView.setOnClickPendingIntent(R.id.ll_expandedProductView, getProductPendingIntent(product))
