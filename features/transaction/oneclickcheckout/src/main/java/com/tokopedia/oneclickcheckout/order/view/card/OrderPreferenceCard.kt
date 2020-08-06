@@ -325,8 +325,8 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
             tvInstallmentErrorAction?.gone()
         } else {
             tvInstallmentDetail?.alpha = 0.5f
-            tvInstallmentErrorMessage?.text = "Cicilan tidak tersedia."
-            tvInstallmentErrorAction?.text = "Ubah"
+            tvInstallmentErrorMessage?.text = view.context.getString(R.string.lbl_installment_error)
+            tvInstallmentErrorAction?.text = view.context.getString(R.string.lbl_change_template)
             tvInstallmentErrorAction?.setOnClickListener {
                 listener.onInstallmentDetailClicked()
             }
