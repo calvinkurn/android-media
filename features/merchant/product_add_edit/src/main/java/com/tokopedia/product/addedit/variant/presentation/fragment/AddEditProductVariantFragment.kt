@@ -597,7 +597,6 @@ class AddEditProductVariantFragment :
                         viewModel.productInputModel.value = saveInstanceCacheManager
                                 .get(EXTRA_PRODUCT_INPUT_MODEL, ProductInputModel::class.java)
                     }
-
                     submitVariantInput()
                 }
             }
@@ -627,8 +626,6 @@ class AddEditProductVariantFragment :
         variantDataValuePicker?.setTitle(getString(R.string.label_variant_choose) + " " + variantData.name)
         variantDataValuePicker?.overlayClickDismiss = false
         variantDataValuePicker?.showCloseIcon = true
-        variantDataValuePicker?.clearContentPadding = true
-        variantDataValuePicker?.showKnob = true
         variantDataValuePicker?.clearContentPadding = true
         // set the bottom sheet to full screen
         variantDataValuePicker?.setShowListener {
