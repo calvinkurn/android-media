@@ -24,7 +24,7 @@ class BenchmarkMixTopComponent {
     var activityRule: ActivityTestRule<BlankTestActivity> = ActivityTestRule(BlankTestActivity::class.java)
 
     @Test
-    fun benchmark_onCreateViewHolder_mix_top_component() {
+    fun benchmark_onCreateViewHolder_ViewHolder_mix_top_component() {
         val viewGroup = FrameLayout(activityRule.activity)
         val recyclerViewAdapter = simpleAdapter(
                 MixTopComponentViewHolder.LAYOUT) {
@@ -39,7 +39,7 @@ class BenchmarkMixTopComponent {
     }
 
     @Test
-    fun benchmark_onBind_mix_top_component() {
+    fun benchmark_onBind_ViewHolder_mix_top_component() {
         val itemView = simpleViewFromLayout(MixTopComponentViewHolder.LAYOUT, activityRule.activity)
         val viewHolder = MixTopComponentViewHolder(
                 itemView, null, null
