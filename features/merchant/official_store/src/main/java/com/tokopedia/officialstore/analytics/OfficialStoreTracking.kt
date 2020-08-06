@@ -870,18 +870,6 @@ class OfficialStoreTracking(context: Context) {
         trackingIris.saveEvent(eventDataLayer)
     }
 
-    private fun createEventMap(event: String, category: String,
-                       action: String, label: String,
-                       customDimension: Map<String, String>): Map<String, String> {
-        val map = mutableMapOf(
-                KEY_EVENT to event,
-                KEY_CATEGORY to category,
-                KEY_ACTION to action,
-                KEY_LABEL to label)
-        map.putAll(customDimension)
-        return map
-    }
-
     private fun createMixLeftEcommerceDataLayer(channelId: String, categoryName: String, headerName: String, bannerPosition: Int, creative: String, creativeUrl: String): ArrayList<Bundle> {
         val promotion = Bundle()
         promotion.putString("item_id", channelId)
