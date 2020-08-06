@@ -147,11 +147,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl2"
-            android:textColor="@color/Neutral_N700_44"
+            android:background="@drawable/bg_flight_gray_rounded_radius_3"
+            android:paddingLeft="@dimen/spacing_lvl2"
+            android:paddingTop="@dimen/spacing_lvl1"
+            android:paddingRight="@dimen/spacing_lvl2"
+            android:paddingBottom="@dimen/spacing_lvl1"
+            android:textColor="@color/Neutral_N700_68"
             app:layout_constraintLeft_toLeftOf="@+id/container_departure_time"
             app:layout_constraintTop_toBottomOf="@+id/container_departure_time"
-            app:typographyType="body_3"
-            tools:text="Transit: 1 kali berhenti" />
+            app:typographyType="small"
+            tools:text="Berhenti di Muscat" />
 
         <LinearLayout
             android:id="@+id/container_arrival_info"
