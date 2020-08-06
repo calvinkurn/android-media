@@ -1,7 +1,6 @@
 package com.tokopedia.entertainment.search.viewmodel
 
 import android.content.res.Resources
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
@@ -11,7 +10,6 @@ import com.tokopedia.entertainment.search.adapter.viewholder.HistoryBackgroundIt
 import com.tokopedia.entertainment.search.adapter.viewholder.SearchEventListViewHolder
 import com.tokopedia.entertainment.search.adapter.viewholder.SearchLocationListViewHolder
 import com.tokopedia.entertainment.search.adapter.viewmodel.*
-import com.tokopedia.entertainment.search.data.EventSearchFullLocationResponse
 import com.tokopedia.entertainment.search.data.EventSearchHistoryResponse
 import com.tokopedia.entertainment.search.data.EventSearchLocationResponse
 import com.tokopedia.entertainment.search.data.mapper.SearchMapper
@@ -24,8 +22,6 @@ import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import timber.log.Timber
-import java.net.UnknownHostException
-import javax.annotation.Resource
 
 /**
  * Author errysuprayogi on 04,March,2020
@@ -61,9 +57,9 @@ class EventSearchViewModel(private val dispatcher: CoroutineDispatcher,
                                     it.items.forEach {
                                         lists.add(SearchMapper.mappingRecentSearch(it))
                                     }
-                                    listViewHolder.add(HistoryViewModel(lists))
+                                    listViewHolder.add(HistoryModel(lists))
                                 } else{
-                                    listViewHolder.add(FirstTimeViewModel())
+                                    listViewHolder.add(FirstTimeModel())
                                 }
 
                                 searchList.postValue(listViewHolder)
@@ -71,7 +67,7 @@ class EventSearchViewModel(private val dispatcher: CoroutineDispatcher,
                             }
                         }
                     }else{
-                        listViewHolder.add(FirstTimeViewModel())
+                        listViewHolder.add(FirstTimeModel())
                         searchList.postValue(listViewHolder)
                         isItRefreshing.postValue(false)
                     }
@@ -96,7 +92,7 @@ class EventSearchViewModel(private val dispatcher: CoroutineDispatcher,
                                 it.locations.forEach {
                                     listsLocation.add(SearchMapper.mappingLocationSuggestion(it))
                                 }
-                                listViewHolder.add(SearchLocationViewModel(listsLocation, query = text))
+                                listViewHolder.add(SearchLocationModel(listsLocation, query = text))
                             }
                         }
                         it.eventSearch.let {
@@ -104,12 +100,12 @@ class EventSearchViewModel(private val dispatcher: CoroutineDispatcher,
                                 it.products.forEach{
                                     listsKegiatan.add(SearchMapper.mappingEventSuggestion(it))
                                 }
-                                if(listsKegiatan.size > 0) listViewHolder.add(SearchEventViewModel(listsKegiatan, resources))
+                                if(listsKegiatan.size > 0) listViewHolder.add(SearchEventModel(listsKegiatan, resources))
                             }
                         }
                         if(it.eventLocationSearch.locations.isEmpty() && it.eventSearch.products.isEmpty()) {
                             listViewHolder.clear()
-                            listViewHolder.add(SearchEmptyStateViewModel())
+                            listViewHolder.add(SearchEmptyStateModel())
                         }
                         searchList.postValue(listViewHolder)
                         isItRefreshing.value = false

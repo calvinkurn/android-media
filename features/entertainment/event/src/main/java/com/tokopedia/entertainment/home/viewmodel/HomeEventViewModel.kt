@@ -3,19 +3,15 @@ package com.tokopedia.entertainment.home.viewmodel
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.common.network.data.model.RequestType
 import com.tokopedia.common.network.data.model.RestRequest
-import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.home.UrlConstant.BASE_REST_URL
 import com.tokopedia.entertainment.home.UrlConstant.PATH_EVENTS_LIKES
-import com.tokopedia.entertainment.home.UrlConstant.PATH_USER_LIKES
 import com.tokopedia.entertainment.home.adapter.HomeEventItem
 import com.tokopedia.entertainment.home.adapter.viewmodel.*
 import com.tokopedia.entertainment.home.data.ActionLikedRequest
 import com.tokopedia.entertainment.home.data.ActionLikedResponse
-import com.tokopedia.entertainment.home.data.EventFavoriteResponse
 import com.tokopedia.entertainment.home.data.EventHomeDataResponse
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -107,19 +103,19 @@ class HomeEventViewModel @Inject constructor(
             val layouts = it.eventHome.layout
             val bannerItem: EventHomeDataResponse.Data.EventHome.Layout? = layouts.find { it.id.toIntOrZero() == 0 }
             bannerItem?.let {
-                items.add(BannerViewModel(it))
+                items.add(BannerModel(it))
                 layouts.remove(it)
             }
-            items.add(CategoryViewModel(data.eventChildCategory))
+            items.add(CategoryModel(data.eventChildCategory))
             layouts.let {
                 it.forEachIndexed { index, it ->
                     if (index == 2) {
-                        items.add(EventLocationViewModel(data.eventLocationSearch))
+                        items.add(EventLocationModel(data.eventLocationSearch))
                     }
                     if (it.isCard == 1) {
-                        items.add(EventCarouselViewModel(it))
+                        items.add(EventCarouselModel(it))
                     } else {
-                        items.add(EventGridViewModel(it))
+                        items.add(EventGridModel(it))
                     }
                 }
             }

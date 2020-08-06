@@ -7,7 +7,7 @@ import com.tokopedia.entertainment.home.data.EventHomeDataResponse
 /**
  * Author errysuprayogi on 27,January,2020
  */
-class EventCarouselViewModel(var layout: EventHomeDataResponse.Data.EventHome.Layout) : HomeEventItem<HomeTypeFactory> {
+class EventCarouselModel(var layout: EventHomeDataResponse.Data.EventHome.Layout) : HomeEventItem<HomeTypeFactory> {
 
     var items : MutableList<EventItemModel> = mutableListOf()
 

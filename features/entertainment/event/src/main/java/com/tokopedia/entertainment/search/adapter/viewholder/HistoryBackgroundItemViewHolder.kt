@@ -9,13 +9,12 @@ import com.bumptech.glide.Glide
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.search.adapter.SearchEventViewHolder
-import com.tokopedia.entertainment.search.adapter.viewmodel.HistoryViewModel
-import com.tokopedia.kotlin.extensions.view.loadImageRounded
+import com.tokopedia.entertainment.search.adapter.viewmodel.HistoryModel
 import com.tokopedia.kotlin.extensions.view.setMargin
 import kotlinx.android.synthetic.main.ent_search_event_list_item.view.*
 import kotlinx.android.synthetic.main.ent_search_history_search.view.*
 
-class HistoryBackgroundItemViewHolder(val view: View) : SearchEventViewHolder<HistoryViewModel>(view){
+class HistoryBackgroundItemViewHolder(val view: View) : SearchEventViewHolder<HistoryModel>(view){
 
     val listAdapter = EventAdapter()
 
@@ -27,7 +26,7 @@ class HistoryBackgroundItemViewHolder(val view: View) : SearchEventViewHolder<Hi
         }
     }
 
-    override fun bind(element: HistoryViewModel) {
+    override fun bind(element: HistoryModel) {
         listAdapter.list = element.list
         listAdapter.notifyDataSetChanged()
     }

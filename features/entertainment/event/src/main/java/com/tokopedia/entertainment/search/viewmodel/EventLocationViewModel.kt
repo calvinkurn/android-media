@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.search.adapter.SearchEventItem
 import com.tokopedia.entertainment.search.adapter.viewholder.SearchLocationListViewHolder
-import com.tokopedia.entertainment.search.adapter.viewmodel.SearchLocationViewModel
+import com.tokopedia.entertainment.search.adapter.viewmodel.SearchLocationModel
 import com.tokopedia.entertainment.search.data.EventSearchFullLocationResponse
 import com.tokopedia.entertainment.search.data.mapper.SearchMapper
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
@@ -48,7 +48,7 @@ EventLocationViewModel(private val dispatcher: CoroutineDispatcher,
                                 it.locations.forEach{
                                     lists.add(SearchMapper.mappingLocationFullSuggestion(it))
                                 }
-                                listViewHolder.add(SearchLocationViewModel(lists, allLocation = true))
+                                listViewHolder.add(SearchLocationModel(lists, allLocation = true))
                             }
                         }
                         searchList.value = listViewHolder
