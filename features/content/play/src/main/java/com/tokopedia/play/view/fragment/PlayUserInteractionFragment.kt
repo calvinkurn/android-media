@@ -594,7 +594,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 hideBottomSheet()
                 cancelAllAnimations()
 
-                container.alpha = VISIBLE_ALPHA
+                triggerImmersive(false)
             }
 
             endLiveInfoViewOnStateChanged(event = it)
@@ -622,6 +622,10 @@ class PlayUserInteractionFragment @Inject constructor(
         }
 
         when {
+            playViewModel.isFreezeOrBanned -> {
+                container.alpha = VISIBLE_ALPHA
+                systemUiVisibility = PlayFullScreenHelper.getShowSystemUiVisibility()
+            }
             orientation.isLandscape -> triggerFullImmersive(shouldImmersive, true)
             playViewModel.videoOrientation.isHorizontal -> handleVideoHorizontalImmersive(shouldImmersive)
             else -> {
