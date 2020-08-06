@@ -585,14 +585,16 @@ open class DynamicProductDetailViewModel @Inject constructor(
                                 productIDs = productIdsString,
                                 xSource = ProductDetailConstant.DEFAULT_X_SOURCE
                         )
-                        val recomFilter = getRecommendationFilterChips.executeOnBackground()
+                        val recomFilterDeferred = async { getRecommendationFilterChips.executeOnBackground() }
 
-                        val recomData=getRecommendationUseCase.createObservable(getRecommendationUseCase.getRecomParams(
+                        val recomDataDeferred = async { getRecommendationUseCase.createObservable(getRecommendationUseCase.getRecomParams(
                                 pageNumber = ProductDetailConstant.DEFAULT_PAGE_NUMBER,
                                 pageName = pageName,
-                                productIds = productIds,
-                                queryParam = recomFilter.data.find { it.isActivated }?.value ?: ""
-                        )).toBlocking().first()
+                                productIds = productIds
+                        )).toBlocking().first() }
+
+                        val recomFilter = recomFilterDeferred.await()
+                        val recomData = recomDataDeferred.await()
 
                         if(recomData.isNotEmpty()){
                             val recomWidget = recomData.first().copy(
@@ -600,7 +602,6 @@ open class DynamicProductDetailViewModel @Inject constructor(
                             )
                             _loadTopAdsProduct.postValue(recomWidget.asSuccess())
                         }
-
                     }
                 } catch (e: Throwable) {
                     _loadTopAdsProduct.value = e.asFail()
