@@ -37,9 +37,14 @@ class FlightSearchViewHolder(itemView: View,
 
     private fun setDuration(element: FlightJourneyModel) {
         with(itemView) {
-            if (element.totalTransit > 0) {
+            var totalTransitAndStop = element.totalTransit
+            for (route in element.routeList) {
+                totalTransitAndStop += route.stops
+            }
+
+            if (totalTransitAndStop > 0) {
                 tvFlightDuration.text = context.getString(R.string.flight_label_duration_transit,
-                        element.duration, element.totalTransit.toString())
+                        element.duration, totalTransitAndStop.toString())
             } else {
                 tvFlightDuration.text = context.getString(R.string.flight_label_duration_direct,
                         element.duration)

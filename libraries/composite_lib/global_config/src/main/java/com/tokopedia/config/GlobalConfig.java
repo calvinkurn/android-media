@@ -13,6 +13,9 @@ public class GlobalConfig {
     public static final String PACKAGE_CONSUMER_APP = "com.tokopedia.customerappp";
 
     public static String VERSION_NAME = "1.0";
+    public static String VERSION_NAME_SUFFIX = "production";
+    public static String RAW_VERSION_NAME = "1.0";
+
     public static int VERSION_CODE = 1;
     public static String FLAVOR = "liveProd";
     public static int APPLICATION_TYPE = CONSUMER_APPLICATION;

@@ -170,6 +170,10 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
                         clickApplink = ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING,
                         settingTypeInfix = SettingTrackingConstant.APP_SETTING),
                 MenuItemUiModel(
+                        resources.getString(R.string.setting_notification_troubleshooter),
+                        clickApplink = ApplinkConstInternalGlobal.PUSH_NOTIFICATION_TROUBLESHOOTER,
+                        settingTypeInfix = SettingTrackingConstant.APP_SETTING),
+                MenuItemUiModel(
                         resources.getString(R.string.setting_menu_share_app),
                         settingTypeInfix = SettingTrackingConstant.APP_SETTING) { shareApplication() },
                 MenuItemUiModel(

@@ -20,45 +20,58 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/couponView" />
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/icon"
-        android:layout_width="@dimen/dp_24"
-        android:layout_height="@dimen/dp_24"
-        android:layout_marginStart="@dimen/dp_8"
-        android:layout_marginLeft="@dimen/dp_8"
-        android:layout_marginTop="@dimen/dp_14"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clTransaction"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_48"
+        android:background="@drawable/promo_ui_bottom_corner"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appCompatImageView"
-        app:srcCompat="@drawable/t_promo_transaction_icon"
-        tools:background="@color/colorPink" />
+        app:layout_constraintTop_toBottomOf="@+id/appCompatImageView">
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_8"
-        android:layout_marginLeft="@dimen/dp_8"
-        android:layout_marginTop="@dimen/dp_10"
-        android:text="@string/t_promo_min_transaction"
-        android:textColor="@color/t_promo_grey96"
-        app:layout_constraintStart_toEndOf="@+id/icon"
-        app:layout_constraintTop_toBottomOf="@+id/appCompatImageView"
-        app:typographyType="small" />
+        <LinearLayout
+            app:layout_constraintVertical_bias="0.50"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/icon"
+            app:layout_constraintTop_toTopOf="parent">
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvSubTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_8"
-        android:layout_marginLeft="@dimen/dp_8"
-        android:layout_marginBottom="8dp"
-        android:textColor="@color/t_promo_grey96"
-        android:textSize="@dimen/sp_14"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/icon"
-        app:layout_constraintTop_toBottomOf="@+id/tvTitle"
-        app:typographyType="heading_5"
-        tools:text="Rp100.000" />
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/t_promo_min_transaction"
+                android:textColor="@color/t_promo_grey96"
+                app:typographyType="small" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvSubTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/t_promo_grey96"
+                android:textSize="@dimen/sp_14"
+                app:typographyType="heading_5"
+                tools:text="Rp100.000" />
+
+        </LinearLayout>
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/icon"
+            app:srcCompat="@drawable/t_promo_transaction_icon"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            android:layout_marginStart="@dimen/dp_10"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:scaleType="centerCrop"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.50" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </com.tokopedia.promoui.common.CouponView>
 

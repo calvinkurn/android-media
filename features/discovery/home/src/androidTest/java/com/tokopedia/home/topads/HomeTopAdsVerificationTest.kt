@@ -5,8 +5,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelSprintViewHolder
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.MixLeftViewHolder
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.mix_top.MixTopBannerViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder
 import com.tokopedia.home.environment.InstrumentationHomeTestActivity
 import com.tokopedia.home_component.viewholders.MixLeftComponentViewHolder
@@ -60,10 +58,10 @@ class HomeTopAdsVerificationTest {
     private fun checkProductOnDynamicChannel(homeRecyclerView: RecyclerView, i: Int) {
         val viewholder = homeRecyclerView.findViewHolderForAdapterPosition(i)
         when (viewholder) {
-            is MixTopBannerViewHolder, is MixTopComponentViewHolder -> {
+            is MixTopComponentViewHolder -> {
                 clickOnEachItemRecyclerView(viewholder.itemView, R.id.dc_banner_rv, 0)
             }
-            is MixLeftViewHolder, is MixLeftComponentViewHolder -> {
+            is MixLeftComponentViewHolder -> {
                 clickOnEachItemRecyclerView(viewholder.itemView, R.id.rv_product, 0)
             }
             is DynamicChannelSprintViewHolder -> {

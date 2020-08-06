@@ -26,8 +26,8 @@ class BackgroundViewModel() : Visitable<Any>, Parcelable {
     var default: String = ""
 
     constructor(`in`: Parcel) : this() {
-        this.url = `in`.readString()
-        this.default = `in`.readString()
+        this.url = `in`.readString() ?: ""
+        this.default = `in`.readString() ?: ""
     }
 
     companion object {
