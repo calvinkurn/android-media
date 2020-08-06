@@ -1086,13 +1086,11 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     }
 
     override fun onClickBlockPromo() {
-        view?.showLoadingTransparent()
         val broadCastHandler = adapter.findBroadcastHandler()
         requestBlockPromo(broadCastHandler)
     }
 
     override fun onClickAllowPromo() {
-        view?.showLoadingTransparent()
         requestAllowPromo()
     }
 
@@ -1409,7 +1407,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
 
     override fun requestBlockPromo(element: BroadcastSpamHandlerUiModel?) {
         presenter.requestBlockPromo(messageId, { until ->
-            view?.hideLoadingTransparent()
             getViewState().isPromoBlocked = true
             element?.stopBlockPromo()
             onSuccessBlockPromoFromBcHandler(until)
@@ -1417,7 +1414,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
                 adapter.removeBroadcastHandler(it)
             }
         }, {
-            view?.hideLoadingTransparent()
             element?.stopBlockPromo()
             onErrorBlockPromoFromBcHandler(it)
             element?.let {
@@ -1428,12 +1424,10 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
 
     private fun requestAllowPromo() {
         presenter.requestAllowPromo(messageId, {
-            view?.hideLoadingTransparent()
             getViewState().isPromoBlocked = false
             addBroadCastSpamHandler(getViewState().isShopFollowed)
             onSuccessAllowPromoFromBcHandler()
         }, {
-            view?.hideLoadingTransparent()
             onErrorAllowPromoFromBcHandler(it)
         })
     }
