@@ -16,6 +16,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.sellerorder.R
+import com.tokopedia.sellerorder.common.domain.model.TickerInfo
 import com.tokopedia.sellerorder.common.util.SomConsts.LABEL_EMPTY
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ORDER_DELIVERED
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ORDER_DELIVERED_DUE_LIMIT
@@ -107,7 +108,7 @@ class SomListItemAdapter : RecyclerView.Adapter<SomListItemAdapter.ViewHolder>()
         }
     }
 
-    private fun setupTicker(tickerBuyerRequestCancel: Ticker?, tickerInfo: SomListOrder.Data.OrderList.Order.TickerInfo?) {
+    private fun setupTicker(tickerBuyerRequestCancel: Ticker?, tickerInfo: TickerInfo?) {
         tickerBuyerRequestCancel?.apply {
             val tickerDescription = makeTickerDescription(context, tickerInfo)
             setTextDescription(tickerDescription)
@@ -122,7 +123,7 @@ class SomListItemAdapter : RecyclerView.Adapter<SomListItemAdapter.ViewHolder>()
         }
     }
 
-    private fun makeTickerDescription(context: Context, tickerInfo: SomListOrder.Data.OrderList.Order.TickerInfo?): String {
+    private fun makeTickerDescription(context: Context, tickerInfo: TickerInfo?): String {
         val message = tickerInfo?.message.orEmpty()
         val messageLink = tickerInfo?.linkText.orEmpty()
         val spannedMessage = SpannableStringBuilder()
