@@ -28,6 +28,7 @@ import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.END_DATE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.FINISH_ORDER_BOTTOMSHEET_TITLE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_ATC
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_FINISH_ORDER
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_FLIGHT_EMAIL
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_LS_FINISH
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_LS_LACAK
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_TRACK
@@ -67,7 +68,11 @@ import kotlinx.android.synthetic.main.bottomsheet_kebab_menu_uoh.view.*
 import kotlinx.android.synthetic.main.bottomsheet_ls_finish_order_uoh.view.*
 import kotlinx.android.synthetic.main.bottomsheet_option_uoh.*
 import kotlinx.android.synthetic.main.bottomsheet_option_uoh.view.*
+import kotlinx.android.synthetic.main.bottomsheet_send_email.*
+import kotlinx.android.synthetic.main.bottomsheet_send_email.view.*
+import kotlinx.android.synthetic.main.bottomsheet_send_email.view.btn_send_email
 import kotlinx.android.synthetic.main.fragment_uoh_list.*
+import kotlinx.android.synthetic.main.product_card_grid_layout.*
 import kotlinx.coroutines.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -274,7 +279,6 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             when (it) {
                 is Success -> {
                     orderList = it.data
-                    currPage += 1
                     // if (currFilterKey.isEmpty() && currFilterType == -1) {
                         if (orderList.filters.isNotEmpty() && orderList.categories.isNotEmpty()) {
                             renderChipsFilter()
@@ -294,7 +298,9 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                             }
                         }
                     } else {
-                        loadRecommendationList()
+                        if (currPage == 1) {
+                            loadRecommendationList()
+                        }
                     }
 
                     if (orderList.tickers.isNotEmpty()) {
@@ -302,6 +308,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     } else {
                         ticker_info?.gone()
                     }
+                    currPage += 1
                 }
                 is Fail -> {
                     // renderErrorOrderList(getString(R.string.error_list_title), getString(R.string.error_list_desc))
@@ -750,6 +757,44 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         fragmentManager?.let { bottomSheetLsFinishOrder?.show(it, getString(R.string.show_bottomsheet)) }
     }
 
+    private fun showBottomSheetSendEmail() {
+        val viewBottomSheet = View.inflate(context, R.layout.bottomsheet_send_email, null)
+        viewBottomSheet.text_area_email?.textAreaInput?.addTextChangedListener(object: TextWatcher{
+            override fun afterTextChanged(s: Editable?) {
+                TODO("Not yet implemented")
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val isEmailValid = UohUtils.isEmailValid(s.toString())
+                btn_send_email?.isEnabled = isEmailValid
+                if (!isEmailValid) {
+                    viewBottomSheet.text_area_email?.isError = true
+                    // lanjut di sini
+                }
+            }
+
+        })
+        viewBottomSheet.btn_send_email?.setOnClickListener {
+            // uohListViewModel.doLsPrintFinishOrder(GraphqlHelper.loadRawString(resources, R.raw.uoh_finish_lsprint), orderId)
+        }
+
+        viewBottomSheet.btn_ls_kembali?.setOnClickListener {
+            bottomSheetLsFinishOrder?.dismiss()
+        }
+
+        bottomSheetLsFinishOrder = BottomSheetUnify().apply {
+            setChild(viewBottomSheet)
+            setTitle(FINISH_ORDER_BOTTOMSHEET_TITLE)
+            setCloseClickListener { dismiss() }
+        }
+
+        fragmentManager?.let { bottomSheetLsFinishOrder?.show(it, getString(R.string.show_bottomsheet)) }
+    }
+
     override fun onOptionItemClick(option: String, label: String, filterType: Int) {
         currFilterKey = option
         currFilterLabel = label
@@ -886,8 +931,16 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         uohBottomSheetKebabMenuAdapter.addList(listDotMenu)
     }
 
-    override fun onKebabItemClick(appUrl: String) {
-        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, appUrl))
+    override fun onKebabItemClick(dotMenu: UohListOrder.Data.UohOrders.Order.Metadata.DotMenu) {
+        if (dotMenu.actionType.equals(TYPE_ACTION_BUTTON_LINK, true)) {
+            RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, dotMenu.appURL))
+        } else {
+            when {
+                dotMenu.actionType.equals(GQL_FLIGHT_EMAIL, true) -> {
+                    showBottomSheetSendEmail()
+                }
+            }
+        }
     }
 
     override fun onListItemClicked(verticalCategory: String, verticalId: String, upstream: String) {

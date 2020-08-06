@@ -55,6 +55,7 @@ object UohConsts {
     const val GQL_TRACK = "gql-mp-track"
     const val GQL_LS_FINISH = "gql-ls-finish"
     const val GQL_LS_LACAK = "gql-ls-lacak"
+    const val GQL_FLIGHT_EMAIL = "gql-flight-email"
 
     const val FINISH_ORDER_BOTTOMSHEET_TITLE = "Selesaikan pesanan ini?"
     const val REPLACE_ORDER_ID = "{order_id}"

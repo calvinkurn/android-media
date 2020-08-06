@@ -475,6 +475,8 @@ Anda di sini.</string>
     <string name="btn_ajukan_komplain">Ajukan Komplain</string>
     <string name="btn_finish_order">Selesai</string>
     <string name="ls_finish_order_desc">Dengan klik selesai, kamu sudah menerima barang sesuai pesanan dan transaksi telah berakhir. kamu tidak bisa mengajukan komplain.</string>
+    <string name="placeholder_email">Alamat E-mail</string>
+    <string name="btn_send_email_label">Kirim</string>
 
     <string name="ticker_info_selengkapnya">
         <![CDATA[
