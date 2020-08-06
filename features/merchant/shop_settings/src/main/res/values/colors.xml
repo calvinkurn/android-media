@@ -4,4 +4,8 @@
     <color name="merchant_green">#03ac0e</color>
     <color name="ticker_blue">#ebf6f6</color>
 
+    <color name="title_information">#F531353B</color>
+    <color name="title_subinformation">#AD31353B</color>
+
+
 </resources>

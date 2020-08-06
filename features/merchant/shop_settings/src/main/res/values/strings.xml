@@ -13,8 +13,8 @@
 
     <string name="shop_slogan_hint">Tulis Slogan Toko</string>
     <string name="shop_desc_hint">Tulis Desckripsi Toko</string>
-    <string name="shop_slogan_label">Slogan Toko</string>
-    <string name="shop_description_label">Deskripsi Toko</string>
+    <string name="shop_slogan_label">Slogan</string>
+    <string name="shop_description_label">Deskripsi</string>
     <string name="shop_status_label">Status Toko</string>
     <string name="shop_settings_membership_label">Keanggotaan</string>
     <string name="shop_settings_gold_merchant_invite">Tingkatkan efektivitas toko dengan menjadi %1$s</string>
@@ -151,5 +151,6 @@
     <string name="shop_settings_information_edit">Ubah Informasi</string>
     <string name="shop_settings_set_shop_status">Atur Status Toko</string>
     <string name="ticker_warning_can_only_change_shopname_once">Nama dan domain toko hanya bisa diubah 1 kali.\nPastikan semua sudah benar.</string>
+    <string name="text_ubah_button">Ubah</string>
 
 </resources>
