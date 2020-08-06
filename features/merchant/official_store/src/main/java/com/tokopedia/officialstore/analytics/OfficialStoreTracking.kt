@@ -70,10 +70,6 @@ class OfficialStoreTracking(context: Context) {
     private val FIELD_SHOP_ID = "shop_id"
     private val FIELD_SHOP_TYPE = "shop_type"
     private val FIELD_SHOP_NAME = "shop_name"
-
-    private val KEY_EVENT = "event"
-    private val KEY_CATEGORY = "eventCategory"
-    private val KEY_ACTION = "eventAction"
     val KEY_LABEL = "eventLabel"
 
     private val VALUE_NONE_OTHER = "none / other"
