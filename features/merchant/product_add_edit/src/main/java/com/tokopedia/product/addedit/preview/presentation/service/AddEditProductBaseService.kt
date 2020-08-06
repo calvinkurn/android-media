@@ -3,6 +3,7 @@ package com.tokopedia.product.addedit.preview.presentation.service
 import android.content.Intent
 import android.os.Bundle
 import androidx.core.app.JobIntentService
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.constant.TkpdState
@@ -206,6 +207,6 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
         val bundle = Bundle()
         bundle.putInt(TkpdState.ProductService.STATUS_FLAG, TkpdState.ProductService.STATUS_DONE)
         result.putExtras(bundle)
-        sendBroadcast(result)
+        LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(result)
     }
 }
