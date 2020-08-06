@@ -368,7 +368,7 @@ class TopChatViewStateImpl constructor(
                 headerMenuListener.onClickAllowPromo()
             }
             itemMenus.icon == R.drawable.ic_topchat_block_promo -> {
-                showConfirmationBlockChatPromo()
+                headerMenuListener.onClickBlockPromo()
             }
             itemMenus.title == view.context.getString(R.string.delete_conversation) -> {
                 showDeleteChatDialog(headerMenuListener, alertDialog)
@@ -388,23 +388,6 @@ class TopChatViewStateImpl constructor(
             else -> {
             }
         }
-    }
-
-    private fun showConfirmationBlockChatPromo() {
-        val title = view.context.getString(R.string.title_confirm_block_promo)
-        val desc = view.context.getString(R.string.desc_confirm_block_promo)
-        val dialog = DialogUnify(view.context, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
-            setTitle(title)
-            setDescription(desc)
-            setPrimaryCTAText("Blokir")
-            setPrimaryCTAClickListener {
-                headerMenuListener.onClickBlockPromo()
-                dismiss()
-            }
-            setSecondaryCTAText("Batal")
-            setSecondaryCTAClickListener { dismiss() }
-        }
-        dialog.show()
     }
 
     override fun getLastItem(): Parcelable? {
