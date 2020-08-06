@@ -20,7 +20,16 @@ class PatchRepository(private val dataDao: DataDao, versionCode: String) {
     private var TAG : String = PatchRepository::class.java.simpleName
     private var client: PatchApiService = RetrofitClient.webservice
 
-    val allData: LiveData<List<DataResponse.Result>> = getDistinctAllResult(versionCode)
+    companion object {
+        fun  getInstance(dataDao: DataDao, versionCode: String): PatchRepository {
+            val instance: PatchRepository by lazy {
+                PatchRepository(dataDao, versionCode)
+            }
+            return instance
+        }
+    }
+
+    val allData: List<DataResponse.Result> = dataDao.getAllResultList(versionCode)
 
     private fun getDistinctAllResult(versionCode: String): LiveData<List<DataResponse.Result>>
             = dataDao.getAllResult(versionCode).getDistinct()
