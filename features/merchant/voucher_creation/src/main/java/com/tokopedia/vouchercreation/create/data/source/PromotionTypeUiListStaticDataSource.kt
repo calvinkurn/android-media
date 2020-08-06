@@ -85,7 +85,7 @@ object PromotionTypeUiListStaticDataSource {
         internal const val NOMINAL_AMOUNT = 5000
         internal const val PUCHASE_AMOUNT = 50000
         internal const val VOUCHER_QUOTA = 1
-        internal const val DISCOUNT_AMOUNT = 10
+        internal const val DISCOUNT_AMOUNT = 0
     }
 
     object MaxValue {
