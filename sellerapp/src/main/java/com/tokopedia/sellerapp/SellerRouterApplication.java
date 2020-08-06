@@ -43,17 +43,12 @@ import com.tokopedia.gm.common.di.module.GMModule;
 import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.linker.interfaces.LinkerRouter;
 import com.tokopedia.loginregister.login.router.LoginRouter;
-import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity;
-import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomActivity;
-import com.tokopedia.logisticaddaddress.features.pinpoint.GeolocationActivity;
-import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.phoneverification.PhoneVerificationRouter;
 import com.tokopedia.product.manage.feature.list.view.fragment.ProductManageSellerFragment;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.common.topads.deposit.data.model.DataDeposit;
 import com.tokopedia.seller.product.etalase.utils.EtalaseUtils;
 import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
@@ -106,7 +101,7 @@ import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 
 public abstract class SellerRouterApplication extends MainApplication
         implements TkpdCoreRouter, GMModuleRouter, TopAdsModuleRouter,
-        ReputationRouter, LogisticRouter,
+        ReputationRouter,
         AbstractionRouter,
         ShopModuleRouter,
         ApplinkRouter,
@@ -279,11 +274,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Intent getDistrictRecommendationIntent(Activity activity, Token token) {
-        return DiscomActivity.newInstance(activity, token);
-    }
-
-    @Override
     public void onForceLogout(Activity activity) {
         SessionHandler sessionHandler = new SessionHandler(activity);
         sessionHandler.forceLogout();
@@ -432,11 +422,6 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public boolean isAllowLogOnChuckInterceptorNotification() {
         return DevOptConfig.isChuckNotifEnabled(this);
-    }
-
-    @Override
-    public Intent getGeoLocationActivityIntent(Context context, com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass locationPass) {
-        return GeolocationActivity.createInstance(context, locationPass, false);
     }
 
     @Override
