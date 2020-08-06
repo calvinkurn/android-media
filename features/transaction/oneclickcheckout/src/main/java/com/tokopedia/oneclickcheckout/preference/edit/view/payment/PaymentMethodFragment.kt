@@ -10,7 +10,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.*
+import android.webkit.SslErrorHandler
+import android.webkit.WebResourceResponse
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.ProgressBar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -120,12 +123,14 @@ class PaymentMethodFragment : BaseDaggerFragment() {
     @SuppressLint("SetJavaScriptEnabled")
     private fun initWebView() {
         webView?.clearCache(true)
-        val webSettings: WebSettings? = webView?.settings
-        webSettings?.javaScriptEnabled = true
-        webSettings?.cacheMode = WebSettings.LOAD_NO_CACHE
-        webSettings?.domStorageEnabled = true
-        webSettings?.builtInZoomControls = false
-        webSettings?.displayZoomControls = true
+        val webSettings = webView?.settings
+        webSettings?.apply {
+            javaScriptEnabled = true
+            domStorageEnabled = true
+            builtInZoomControls = false
+            displayZoomControls = true
+            setAppCacheEnabled(true)
+        }
         webView?.webViewClient = PaymentMethodWebViewClient()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             webSettings?.mediaPlaybackRequiresUserGesture = false
