@@ -2,6 +2,7 @@ package com.tokopedia.sellerorder.detail.data.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.sellerorder.common.domain.model.TickerInfo
 
 /**
  * Created by fwidjaja on 2019-08-27.
@@ -111,7 +112,11 @@ data class SomDetailOrder(
 
                 @SerializedName("penalty_reject_info")
                 @Expose
-                val penaltyRejectInfo: PenaltyRejectInfo = PenaltyRejectInfo()) {
+                val penaltyRejectInfo: PenaltyRejectInfo = PenaltyRejectInfo(),
+
+                @SerializedName("ticker_info")
+                @Expose
+                val tickerInfo: TickerInfo = TickerInfo()) {
 
             data class Products(
                     @SerializedName("id")
