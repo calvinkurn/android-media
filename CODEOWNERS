@@ -50,6 +50,7 @@
 
 /features/merchant/atc_variant/                         @tokopedia/android-minionstuart-dev
 /features/merchant/brandlist/                           @tokopedia/android-minionstuart-dev
+/features/merchant/inbox_reputation/                    @tokopedia/android-minionstuart-dev
 /features/merchant/gold_merchant/                       @tokopedia/android-minionstuart-dev
 /features/merchant/gold_merchant_common/                @tokopedia/android-minionstuart-dev
 /features/merchant/gold_merchant_subscribe/             @tokopedia/android-minionstuart-dev

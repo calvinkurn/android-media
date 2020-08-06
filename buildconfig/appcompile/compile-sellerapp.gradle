@@ -51,6 +51,7 @@ include "features:logistic:logisticorder"
 include "features:logistic:logisticcart"
 include "features:logistic:editshipping"
 
+include "features:merchant:inbox_reputation"
 include "features:merchant:gold_merchant"
 include "features:merchant:gold_merchant_common"
 include "features:merchant:power_merchant_subscribe"
