@@ -88,20 +88,10 @@
             tools:text="(Direkomendasikan untuk berat di atas 5kg)" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_cod_availability"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_text_desc"
-            android:layout_marginTop="4dp"
-            app:typographyType="body_3"
-            app:typographyWeight="reguler"
-            tools:text="(Tersedia Bayar di Tempat)" />
-
-        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_order_prioritas"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_cod_availability"
+            android:layout_below="@+id/tv_text_desc"
             android:layout_marginTop="4dp"
             app:typographyType="body_3"
             app:typographyWeight="reguler"

@@ -38,7 +38,6 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
     private TextView tvError;
     private TextView tvDuration;
     private TextView tvPrice;
-    private TextView tvCod;
     private TextView tvTextDesc;
     private ImageView imgCheck;
     private RelativeLayout rlContent;
@@ -61,7 +60,6 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
         imgCheck = itemView.findViewById(R.id.img_check);
         rlContent = itemView.findViewById(R.id.rl_content);
         tvPromoPotency = itemView.findViewById(R.id.tv_promo_potency);
-        tvCod = itemView.findViewById(R.id.tv_cod_availability);
         tvShippingInformation = itemView.findViewById(R.id.tv_shipping_information);
         labelCodAvailable = itemView.findViewById(R.id.lbl_cod_available);
     }
@@ -115,8 +113,6 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
 
         tvDuration.setText(shippingDurationUiModel.getServiceData().getServiceName());
         imgCheck.setVisibility(shippingDurationUiModel.isSelected() ? View.VISIBLE : View.GONE);
-        tvCod.setText(shippingDurationUiModel.getCodText());
-        tvCod.setVisibility(shippingDurationUiModel.isCodAvailable() ? View.VISIBLE : View.GONE);
         labelCodAvailable.setVisibility(shippingDurationUiModel.isCodAvailable() ? View.VISIBLE : View.GONE);
         if (shippingDurationUiModel.isShowShowCase()) setShowCase(shippingDurationAdapterListener);
         itemView.setOnClickListener(new View.OnClickListener() {

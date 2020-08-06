@@ -25,7 +25,6 @@ public class ShippingCourierViewHolder extends RecyclerView.ViewHolder {
 
     private TextView tvCourier;
     private TextView tvPrice;
-    private TextView tvCod;
     private ImageView imgCheck;
     private TextView tvPromoPotency;
     private View separator;
@@ -40,7 +39,6 @@ public class ShippingCourierViewHolder extends RecyclerView.ViewHolder {
 
         tvCourier = itemView.findViewById(R.id.tv_courier);
         tvPrice = itemView.findViewById(R.id.tv_price);
-        tvCod = itemView.findViewById(R.id.tv_cod_availability);
         imgCheck = itemView.findViewById(R.id.img_check);
         tvPromoPotency = itemView.findViewById(R.id.tv_promo_potency);
         separator = itemView.findViewById(R.id.separator);
