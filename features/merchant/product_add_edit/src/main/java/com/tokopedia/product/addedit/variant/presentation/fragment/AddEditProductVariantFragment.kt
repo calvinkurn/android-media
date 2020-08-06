@@ -367,6 +367,8 @@ class AddEditProductVariantFragment :
         viewModel.updateSelectedVariantUnitMap(layoutPosition, Unit())
         // update layout - selected unit values map
         viewModel.updateSelectedVariantUnitValuesMap(layoutPosition, mutableListOf())
+        // clear old variant price/ stock
+        viewModel.clearProductVariant()
         when (layoutPosition) {
             VARIANT_VALUE_LEVEL_ONE_POSITION -> {
                 viewModel.updateSelectedVariantUnitValuesLevel1(mutableListOf())
