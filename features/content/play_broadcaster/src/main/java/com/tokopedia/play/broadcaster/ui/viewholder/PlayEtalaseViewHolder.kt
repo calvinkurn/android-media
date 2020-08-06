@@ -68,7 +68,7 @@ class PlayEtalaseViewHolder(itemView: View, private val listener: Listener) : Ba
 
     private fun setupProductPreview(productPreviewMap: Map<Int, List<ProductContentUiModel>>, totalProduct: Int) {
         if (productPreviewMap.isEmpty()) {
-            val totalProductValidated = min(MAX_PREVIEW, max(MIN_PREVIEW, -1))
+            val totalProductValidated = min(MAX_PREVIEW, max(MIN_PREVIEW, totalProduct))
             productPreviewAdapter.setItemsAndAnimateChanges(List(totalProductValidated) { ProductLoadingUiModel })
         } else {
             productPreviewAdapter.setItemsAndAnimateChanges(productPreviewMap.values.flatten())
