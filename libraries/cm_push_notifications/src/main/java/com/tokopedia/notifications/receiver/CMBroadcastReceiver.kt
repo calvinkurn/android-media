@@ -23,6 +23,7 @@ import com.tokopedia.notifications.factory.CarouselNotification
 import com.tokopedia.notifications.factory.ProductNotification
 import com.tokopedia.notifications.model.*
 import com.tokopedia.usecase.RequestParams
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
@@ -35,6 +36,7 @@ import kotlin.coroutines.CoroutineContext
 class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
 
     @Inject lateinit var dataManager: DataManager
+    @Inject lateinit var userSession: UserSessionInterface
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main
@@ -177,7 +179,7 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
 
         element?.let {
             if (it.type == PRODUCT_NOTIIFICATION) {
-                ProductAnalytics.clickProductCard(it, productInfo)
+                ProductAnalytics.clickProductCard(userSession.userId, it, productInfo)
             }
         }
 
@@ -201,7 +203,11 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
     ) {
         handleMainClick(context, intent, notificationId)
         clearProductImages(context.applicationContext)
-        ProductAnalytics.clickBody(element)
+        ProductAnalytics.clickBody(
+                userSession.userId,
+                element,
+                element?.productInfoList?.first()
+        )
     }
 
     private fun clearProductImages(context: Context) {
@@ -335,7 +341,11 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
             actionButton: ActionButton
     ) {
         if (actionButton.type == OCC) {
-            ProductAnalytics.occCLickButton(notificationData, notificationData.productInfoList)
+            ProductAnalytics.occCLickButton(
+                    userSession.userId,
+                    notificationData,
+                    notificationData.productInfoList
+            )
         } else if (actionButton.type == ATC) {
             ProductAnalytics.atcCLickButton(notificationData, notificationData.productInfoList)
         }

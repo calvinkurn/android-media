@@ -55,37 +55,42 @@ object ProductAnalytics {
     private const val POSITION = "1"
 
     fun impression(
-            element: BaseNotificationModel
+            userId: String,
+            element: BaseNotificationModel,
+            product: ProductInfo
     ) {
         sendTracker(mapOf(
                 KEY_EVENT to EVENT_VIEW,
                 KEY_EVENT_CATEGORY to CATEGORY,
                 KEY_EVENT_ACTION to ACTION_VIEW,
                 KEY_EVENT_LABEL to element.transactionId.toString(),
-                KEY_USER_ID to element.userId.toString(),
-                KEY_SHOP_ID to element.shopId.toString()
+                KEY_SHOP_ID to product.shopId.toString(),
+                KEY_USER_ID to userId
         ))
     }
 
     fun clickBody(
-            element: BaseNotificationModel?
+            userId: String,
+            element: BaseNotificationModel?,
+            product: ProductInfo?
     ) {
         sendTracker(mapOf(
                 KEY_EVENT to EVENT_CLICK,
                 KEY_EVENT_CATEGORY to CATEGORY,
                 KEY_EVENT_ACTION to ACTION_CLICK_EXPAND,
                 KEY_EVENT_LABEL to element?.transactionId.toString(),
-                KEY_USER_ID to element?.userId.toString(),
-                KEY_SHOP_ID to element?.shopId.toString()
+                KEY_SHOP_ID to product?.shopId.toString(),
+                KEY_USER_ID to userId
         ))
     }
 
     fun impressionExpanded(
+            userId: String,
             element: BaseNotificationModel,
             product: ProductInfo
     ) {
         val impressions = mapOf(
-                KEY_ID to product.element_id.toString(),
+                KEY_ID to product.productId.toString(),
                 KEY_NAME to product.productTitle,
                 KEY_PRICE to product.productCurrentPrice,
                 KEY_BRAND to "",
@@ -93,7 +98,7 @@ object ProductAnalytics {
                 KEY_LIST to LIST,
                 KEY_POSITION to POSITION,
                 KEY_CATEGORY to "",
-                KEY_DIMENSION_79 to element.shopId.toString()
+                KEY_DIMENSION_79 to product.shopId.toString()
         )
 
         val ecommerce = mapOf(
@@ -106,17 +111,18 @@ object ProductAnalytics {
                 KEY_EVENT_CATEGORY to CATEGORY,
                 KEY_EVENT_ACTION to ACTION_VIEW_EXPAND,
                 KEY_EVENT_LABEL to element.transactionId.toString(),
-                KEY_USER_ID to element.userId.toString(),
+                KEY_USER_ID to userId,
                 KEY_ECOMMERCE to ecommerce
         ))
     }
 
     fun clickProductCard(
+            userId: String,
             element: BaseNotificationModel,
             product: ProductInfo
     ) {
         val productElement = mapOf(
-                KEY_ID to product.element_id.toString(),
+                KEY_ID to product.productId.toString(),
                 KEY_NAME to product.productTitle,
                 KEY_PRICE to product.productCurrentPrice,
                 KEY_BRAND to "",
@@ -124,7 +130,7 @@ object ProductAnalytics {
                 KEY_LIST to LIST,
                 KEY_POSITION to POSITION,
                 KEY_CATEGORY to "",
-                KEY_DIMENSION_79 to element.shopId.toString()
+                KEY_DIMENSION_79 to product.shopId.toString()
         )
 
         val ecommerce = mapOf(
@@ -136,13 +142,14 @@ object ProductAnalytics {
                 KEY_EVENT_CATEGORY to CATEGORY,
                 KEY_EVENT_ACTION to ACTION_CLICK_EXPAND_PDP,
                 KEY_EVENT_LABEL to element.transactionId.toString(),
-                KEY_USER_ID to element.userId.toString(),
+                KEY_USER_ID to userId,
                 KEY_LIST to LIST,
                 KEY_ECOMMERCE to ecommerce
         ))
     }
 
     fun occCLickButton(
+            userId: String,
             element: BaseNotificationModel,
             productElement: List<ProductInfo>
     ) {
@@ -150,7 +157,7 @@ object ProductAnalytics {
         val ecommerce = mapOf(
                 KEY_CHECKOUT to mapOf(
                         KEY_PRODUCTS to listOf(mapOf(
-                                KEY_ID to product.element_id.toString(),
+                                KEY_ID to product.productId.toString(),
                                 KEY_NAME to product.productTitle,
                                 KEY_PRICE to product.productCurrentPrice,
                                 KEY_BRAND to "",
@@ -158,7 +165,7 @@ object ProductAnalytics {
                                 KEY_LIST to LIST,
                                 KEY_CATEGORY to "",
                                 KEY_QUANTITY to POSITION,
-                                KEY_DIMENSION79 to element.shopId.toString(),
+                                KEY_DIMENSION79 to product.shopId.toString(),
                                 KEY_DIMENSION81 to "",
                                 KEY_DIMENSION80 to "",
                                 KEY_DIMENSION82 to "",
@@ -173,7 +180,7 @@ object ProductAnalytics {
                 KEY_EVENT_CATEGORY to CATEGORY,
                 KEY_EVENT_ACTION to ACTION_CLICK_EXPAND_OCC,
                 KEY_EVENT_LABEL to element.transactionId.toString(),
-                KEY_USER_ID to element.userId.toString(),
+                KEY_USER_ID to userId,
                 KEY_LIST to LIST,
                 KEY_ECOMMERCE to ecommerce
         ))
@@ -188,7 +195,7 @@ object ProductAnalytics {
                 KEY_CURRENCY_CODE to IDR,
                 KEY_ADD to mapOf(
                         KEY_PRODUCTS to listOf(mapOf(
-                                KEY_ID to product.element_id.toString(),
+                                KEY_ID to product.productId.toString(),
                                 KEY_NAME to product.productTitle,
                                 KEY_PRICE to product.productCurrentPrice,
                                 KEY_BRAND to "",
@@ -196,7 +203,7 @@ object ProductAnalytics {
                                 KEY_LIST to LIST,
                                 KEY_CATEGORY to "",
                                 KEY_QUANTITY to POSITION,
-                                KEY_DIMENSION79 to element.shopId.toString(),
+                                KEY_DIMENSION79 to product.shopId.toString(),
                                 KEY_DIMENSION81 to "",
                                 KEY_DIMENSION80 to "",
                                 KEY_DIMENSION82 to "",

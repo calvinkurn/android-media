@@ -10,6 +10,11 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class ProductInfo(
 
+        @SerializedName("productId")
+        @ColumnInfo(name = "productId")
+        @Expose
+        var productId: Int?,
+
         @SerializedName("productTitle")
         @ColumnInfo(name = "productTitle")
         @Expose
@@ -44,6 +49,11 @@ data class ProductInfo(
         @ColumnInfo(name = "buttonTxt")
         @Expose
         var productButtonMessage: String,
+
+        @SerializedName("shopId")
+        @ColumnInfo(name = "shopId")
+        @Expose
+        var shopId: Int?,
 
         @SerializedName("appLink")
         @ColumnInfo(name = "appLink")

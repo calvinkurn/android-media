@@ -13,12 +13,11 @@ import com.tokopedia.notifications.R
 import com.tokopedia.notifications.analytics.ProductAnalytics
 import com.tokopedia.notifications.common.CMConstant
 import com.tokopedia.notifications.common.CMConstant.NotificationProductType
-import com.tokopedia.notifications.common.CMConstant.PreDefineActionType.ATC
-import com.tokopedia.notifications.common.CMConstant.PreDefineActionType.OCC
 import com.tokopedia.notifications.common.CarouselUtilities
 import com.tokopedia.notifications.model.ActionButton
 import com.tokopedia.notifications.model.BaseNotificationModel
 import com.tokopedia.notifications.model.ProductInfo
+import com.tokopedia.user.session.UserSession
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -31,6 +30,8 @@ internal class ProductNotification(
         applicationContext: Context,
         baseNotificationModel: BaseNotificationModel
 ) : BaseNotification(applicationContext, baseNotificationModel) {
+
+    private val userSession by lazy { UserSession(context) }
 
     override fun createNotification(): Notification? {
         val builder = notificationBuilder
@@ -134,8 +135,12 @@ internal class ProductNotification(
 
     private fun productDetailCard(remoteView: RemoteViews, product: ProductInfo) {
         //tracker
-        ProductAnalytics.impression(baseNotificationModel)
-        ProductAnalytics.impressionExpanded(baseNotificationModel, product)
+        ProductAnalytics.impression(userSession.userId, baseNotificationModel, product)
+        ProductAnalytics.impressionExpanded(
+                userSession.userId,
+                baseNotificationModel,
+                product
+        )
 
         // collapse
         remoteView.setOnClickPendingIntent(R.id.collapseMainView, getProductPendingIntent(product))
