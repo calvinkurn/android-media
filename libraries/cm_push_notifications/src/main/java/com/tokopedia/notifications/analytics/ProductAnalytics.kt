@@ -18,7 +18,6 @@ object ProductAnalytics {
     private const val KEY_CLICK = "click"
     private const val KEY_ADD = "add"
     private const val KEY_PRODUCTS = "products"
-    private const val KEY_ACTION_FIELD = "actionField"
     private const val KEY_CHECKOUT = "checkout"
 
     private const val KEY_ID = "id"
@@ -119,7 +118,7 @@ object ProductAnalytics {
         val productElement = mapOf(
                 KEY_ID to product.element_id.toString(),
                 KEY_NAME to product.productTitle,
-                KEY_PRICE to product.productCurrentPrice, // jangan pake Rp.
+                KEY_PRICE to product.productCurrentPrice,
                 KEY_BRAND to "",
                 KEY_VARIANT to "",
                 KEY_LIST to LIST,
@@ -129,10 +128,7 @@ object ProductAnalytics {
         )
 
         val ecommerce = mapOf(
-                KEY_CLICK to mapOf(
-                        KEY_ACTION_FIELD to mapOf(KEY_LIST to LIST),
-                        KEY_PRODUCTS to listOf(productElement)
-                )
+                KEY_CLICK to mapOf(KEY_PRODUCTS to listOf(productElement))
         )
 
         sendTracker(mapOf(
@@ -141,6 +137,7 @@ object ProductAnalytics {
                 KEY_EVENT_ACTION to ACTION_CLICK_EXPAND_PDP,
                 KEY_EVENT_LABEL to element.transactionId.toString(),
                 KEY_USER_ID to element.userId.toString(),
+                KEY_LIST to LIST,
                 KEY_ECOMMERCE to ecommerce
         ))
     }
@@ -152,9 +149,6 @@ object ProductAnalytics {
         val product = productElement.first()
         val ecommerce = mapOf(
                 KEY_CHECKOUT to mapOf(
-                        KEY_ACTION_FIELD to mapOf(
-                                KEY_LIST to LIST // step & option
-                        ),
                         KEY_PRODUCTS to listOf(mapOf(
                                 KEY_ID to product.element_id.toString(),
                                 KEY_NAME to product.productTitle,
@@ -180,6 +174,7 @@ object ProductAnalytics {
                 KEY_EVENT_ACTION to ACTION_CLICK_EXPAND_OCC,
                 KEY_EVENT_LABEL to element.transactionId.toString(),
                 KEY_USER_ID to element.userId.toString(),
+                KEY_LIST to LIST,
                 KEY_ECOMMERCE to ecommerce
         ))
     }

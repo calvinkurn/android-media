@@ -11,6 +11,7 @@ import com.tokopedia.commonpromo.PromoCodeAutoApplyUseCase
 import com.tokopedia.notifications.R
 import com.tokopedia.notifications.analytics.ProductAnalytics
 import com.tokopedia.notifications.common.*
+import com.tokopedia.notifications.common.CMConstant.NotificationType.PRODUCT_NOTIIFICATION
 import com.tokopedia.notifications.common.CMConstant.PayloadKeys.ADD_TO_CART
 import com.tokopedia.notifications.common.CMConstant.PreDefineActionType.ATC
 import com.tokopedia.notifications.common.CMConstant.PreDefineActionType.OCC
@@ -175,7 +176,7 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
         val productInfo: ProductInfo = intent.getParcelableExtra(CMConstant.EXTRA_PRODUCT_INFO)
 
         element?.let {
-            if (it.type == ATC || it.type == OCC) {
+            if (it.type == PRODUCT_NOTIIFICATION) {
                 ProductAnalytics.clickProductCard(it, productInfo)
             }
         }
