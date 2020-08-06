@@ -16,6 +16,7 @@ import com.tokopedia.oneclickcheckout.common.dispatchers.DefaultDispatchers
 import com.tokopedia.oneclickcheckout.common.dispatchers.ExecutorDispatchers
 import com.tokopedia.oneclickcheckout.common.domain.mapper.PreferenceModelMapper
 import com.tokopedia.oneclickcheckout.preference.analytics.PreferenceListAnalytics
+import com.tokopedia.oneclickcheckout.preference.edit.data.payment.PaymentListingParamGqlResponse
 import com.tokopedia.oneclickcheckout.preference.edit.domain.create.CreatePreferenceUseCase
 import com.tokopedia.oneclickcheckout.preference.edit.domain.create.CreatePreferenceUseCaseImpl
 import com.tokopedia.oneclickcheckout.preference.edit.domain.create.model.CreatePreferenceGqlResponse
@@ -142,5 +143,11 @@ class PreferenceEditModule(private val activity: Activity) {
     @Provides
     fun provideGetAddressCornerUseCase(context: Context, graphqlUseCase: com.tokopedia.graphql.domain.GraphqlUseCase, mapper: AddressCornerMapper): GetAddressCornerUseCase {
         return GetAddressCornerUseCase(context, graphqlUseCase, mapper)
+    }
+
+    @PreferenceEditScope
+    @Provides
+    fun provideGetPaymentListingGraphqlUsecase(graphqlRepository: GraphqlRepository): GraphqlUseCase<PaymentListingParamGqlResponse> {
+        return GraphqlUseCase(graphqlRepository)
     }
 }

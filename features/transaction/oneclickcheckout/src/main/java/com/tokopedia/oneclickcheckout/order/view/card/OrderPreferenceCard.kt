@@ -289,6 +289,8 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
                 }
                 tvInstallmentType?.gone()
                 tvInstallmentDetail?.gone()
+                tvInstallmentErrorMessage?.gone()
+                tvInstallmentErrorAction?.gone()
                 setPaymentErrorAlpha()
             }
         }
@@ -310,14 +312,25 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
         } else {
             tvInstallmentType?.gone()
             tvInstallmentDetail?.gone()
+            tvInstallmentErrorMessage?.gone()
+            tvInstallmentErrorAction?.gone()
         }
     }
 
     private fun setupPaymentInstallmentError(selectedTerm: OrderPaymentInstallmentTerm) {
         if (selectedTerm.isEnable) {
-            tvInstallmentDetail.alpha = 1.0f
+            tvInstallmentDetail?.alpha = 1.0f
+            tvInstallmentErrorMessage?.gone()
+            tvInstallmentErrorAction?.gone()
         } else {
-            tvInstallmentDetail.alpha = 0.5f
+            tvInstallmentDetail?.alpha = 0.5f
+            tvInstallmentErrorMessage?.text = "Cicilan tidak tersedia."
+            tvInstallmentErrorAction?.text = "Ubah"
+            tvInstallmentErrorAction?.setOnClickListener {
+                listener.onInstallmentDetailClicked()
+            }
+            tvInstallmentErrorMessage?.visible()
+            tvInstallmentErrorMessage?.visible()
         }
     }
 

@@ -1,0 +1,29 @@
+package com.tokopedia.oneclickcheckout.preference.edit.view.payment
+
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import com.tokopedia.oneclickcheckout.common.view.model.Failure
+import com.tokopedia.oneclickcheckout.common.view.model.OccState
+import com.tokopedia.oneclickcheckout.preference.edit.data.payment.ListingParam
+import com.tokopedia.oneclickcheckout.preference.edit.domain.payment.GetPaymentListingParamUseCase
+import javax.inject.Inject
+
+class PaymentMethodViewModel @Inject constructor(private val getPaymentListingParamUseCase: GetPaymentListingParamUseCase) : ViewModel() {
+
+    private val _paymentListingParam: MutableLiveData<OccState<ListingParam>> = MutableLiveData(OccState.Loading)
+    val paymentListingParam: LiveData<OccState<ListingParam>>
+        get() = _paymentListingParam
+
+    private val merchantCode = "tokopedia"
+    private val profileCode = "EXPRESS_SAVE"
+
+    fun getPaymentListingParam(merchantCode: String, profileCode: String, callbackUrl: String, addressId: String) {
+        _paymentListingParam.value = OccState.Loading
+        getPaymentListingParamUseCase.execute(merchantCode, profileCode, callbackUrl, addressId, {
+            _paymentListingParam.value = OccState.Success(it)
+        }, {
+            _paymentListingParam.value = OccState.Failed(Failure(it))
+        })
+    }
+}
