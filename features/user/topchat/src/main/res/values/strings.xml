@@ -174,4 +174,8 @@ yang ditemukan</string>
     <string name="title_success_follow_shop">Berhasil follow</string>
     <string name="title_success_unfollow_shop">Berhasil unfollow</string>
     <string name="title_success_block_promo">Kamu berhenti menerima chat promosi dari toko ini sampai %1$s.</string>
+    <string name="title_allow_promo">Terima kembali chat promosi</string>
+    <string name="title_block_promo">Berhenti terima chat promosi</string>
+    <string name="title_confirm_block_promo">Yakin ingin diblokir?</string>
+    <string name="desc_confirm_block_promo">Kalau diblokir, kamu tidak akan menerima chat dari pengguna ini.</string>
 </resources>

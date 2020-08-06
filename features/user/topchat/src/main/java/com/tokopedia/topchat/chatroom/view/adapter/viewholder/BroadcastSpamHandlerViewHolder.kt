@@ -16,7 +16,7 @@ class BroadcastSpamHandlerViewHolder(
 
     interface Listener {
         fun requestFollowShop(element: BroadcastSpamHandlerUiModel)
-        fun requestBlockPromo(element: BroadcastSpamHandlerUiModel)
+        fun requestBlockPromo(element: BroadcastSpamHandlerUiModel?)
     }
 
     override fun bind(element: BroadcastSpamHandlerUiModel, payloads: MutableList<Any>) {

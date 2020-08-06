@@ -298,7 +298,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     override fun onCreateViewState(view: View): BaseChatViewState {
         return TopChatViewStateImpl(
                 view, this, this, this,
-                this, this, this,
+                this, this, this, this,
                 (activity as BaseChatToolbarActivity).getToolbar(), analytics
         )
     }
@@ -410,6 +410,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     }
 
     private fun setupFirstTimeOnly(chatRoom: ChatroomViewModel, chat: ChatReplies) {
+        getViewState().isPromoBlocked = chatRoom.blockedStatus.isPromoBlocked
         updateViewData(chatRoom)
         checkCanAttachVoucher()
         presenter.getShopFollowingStatus(shopId, ::onErrorGetShopFollowingStatus, ::onSuccessGetShopFollowingStatus)
@@ -468,7 +469,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     }
 
     private fun addBroadCastSpamHandler(isFollow: Boolean) {
-        if (isPromoBlocked || isFollow || presenter.isInTheMiddleOfThePage()) return
+        if (getViewState().isPromoBlocked || isFollow || presenter.isInTheMiddleOfThePage()) return
         val broadCastHandlerPosition = adapter.addBroadcastSpamHandler()
         if (broadCastHandlerPosition != RecyclerView.NO_POSITION) {
             val firstVisible = rvLayoutManager?.findFirstCompletelyVisibleItemPosition() ?: return
@@ -1082,6 +1083,11 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         }
     }
 
+    override fun onClickBlockPromo() {
+        val broadCastHandler = adapter.findBroadcastHandler()
+        requestBlockPromo(broadCastHandler)
+    }
+
     private fun getChatReportUrl() = "${TkpdBaseURL.CHAT_REPORT_URL}$messageId"
 
     override fun onDualAnnouncementClicked(redirectUrl: String, attachmentId: String, blastId: Int) {
@@ -1393,15 +1399,20 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         })
     }
 
-    override fun requestBlockPromo(element: BroadcastSpamHandlerUiModel) {
+    override fun requestBlockPromo(element: BroadcastSpamHandlerUiModel?) {
         presenter.requestBlockPromo(messageId, { until ->
-            element.stopBlockPromo()
+            getViewState().isPromoBlocked = true
+            element?.stopBlockPromo()
             onSuccessBlockPromoFromBcHandler(until)
-            adapter.removeBroadcastHandler(element)
+            element?.let {
+                adapter.removeBroadcastHandler(it)
+            }
         }, {
-            element.stopBlockPromo()
+            element?.stopBlockPromo()
             onErrorBlockPromoFromBcHandler(it)
-            adapter.updateBroadcastHandlerState(element)
+            element?.let {
+                adapter.updateBroadcastHandlerState(it)
+            }
         })
     }
 

@@ -217,8 +217,9 @@ class TopChatRoomAdapter(
     }
 
     fun removeBroadcastHandler() {
-        if (!removeBroadcastHandler(0)) {
-            removeBroadcastHandler(1)
+        val bcHandlerPost = findBroadcastHandlerPosition()
+        if (bcHandlerPost != RecyclerView.NO_POSITION) {
+            removeBroadcastHandler(bcHandlerPost)
         }
     }
 
@@ -228,15 +229,41 @@ class TopChatRoomAdapter(
         notifyItemChanged(elementIndex, PAYLOAD_UPDATE_STATE)
     }
 
-    private fun removeBroadcastHandler(index: Int): Boolean {
-        if (index >= visitables.size) return false
+    fun findBroadcastHandler(): BroadcastSpamHandlerUiModel? {
+        val bcHandlerPost = findBroadcastHandlerPosition()
+        if (bcHandlerPost != RecyclerView.NO_POSITION) {
+            return visitables[bcHandlerPost] as BroadcastSpamHandlerUiModel
+        }
+        return null
+    }
+
+    private fun removeBroadcastHandler(index: Int) {
+        if (index >= visitables.size) return
         val item = visitables[index]
         if (item is BroadcastSpamHandlerUiModel) {
             visitables.removeAt(index)
             notifyItemRemoved(index)
-            return true
         }
-        return false
     }
 
+    private fun findBroadcastHandlerPosition(): Int {
+        if (!isPossibleBroadcastHandlerExist()) return RecyclerView.NO_POSITION
+        for (index in 0..1) {
+            if (isBroadcastHandlerPosition(index) != RecyclerView.NO_POSITION) return index
+        }
+        return RecyclerView.NO_POSITION
+    }
+
+    private fun isBroadcastHandlerPosition(index: Int): Int {
+        if (index >= visitables.size) return RecyclerView.NO_POSITION
+        val item = visitables[index]
+        if (item is BroadcastSpamHandlerUiModel) {
+            return index
+        }
+        return RecyclerView.NO_POSITION
+    }
+
+    private fun isPossibleBroadcastHandlerExist(): Boolean {
+        return visitables.isNotEmpty() && visitables.size >= 2
+    }
 }
