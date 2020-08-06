@@ -20,10 +20,7 @@ import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageFragment
 import com.tokopedia.oneclickcheckout.order.view.bottomsheet.InstallmentDetailBottomSheet
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPayment
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentInstallmentTerm
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPreference
-import com.tokopedia.oneclickcheckout.order.view.model.OrderShipment
+import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.Label
@@ -248,7 +245,9 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
         tvPaymentName?.text = paymentModel.gatewayName
         val description = paymentModel.description
         if (description.isNotBlank()) {
-            tvPaymentDetail?.text = description
+//            tvPaymentDetail?.text = description
+//            tvPaymentDetail?.text = description.replace('*', '\u00B7')
+            tvPaymentDetail?.text = description.replace('*', '\u2022')
             tvPaymentDetail?.visible()
         } else {
             tvPaymentDetail?.gone()
@@ -276,7 +275,7 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
                     }
                     tvPaymentErrorAction?.setOnClickListener {
                         if (payment.hasCreditCardOption()) {
-                            listener.onChangeCreditCardClicked()
+                            listener.onChangeCreditCardClicked(payment.creditCard.additionalData)
                         } else if (payment.hasNoCreditCardOption()) {
                             listener.onCreditCardErrorActionClicked()
                         } else {
@@ -338,7 +337,7 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
         if (payment.creditCard.numberOfCards.availableCards > 1) {
             tvPaymentDetail?.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_keyboard_arrow_down_grey_20dp, 0)
             tvPaymentDetail?.setOnClickListener {
-                listener.onChangeCreditCardClicked()
+                listener.onChangeCreditCardClicked(payment.creditCard.additionalData)
             }
         } else {
             tvPaymentDetail?.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
@@ -483,7 +482,7 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
 
         fun onInstallmentDetailChange(selectedInstallmentTerm: OrderPaymentInstallmentTerm)
 
-        fun onChangeCreditCardClicked()
+        fun onChangeCreditCardClicked(additionalData: OrderPaymentCreditCardAdditionalData)
 
         fun onCreditCardErrorActionClicked()
 

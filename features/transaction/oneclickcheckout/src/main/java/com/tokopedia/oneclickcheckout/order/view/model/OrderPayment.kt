@@ -1,5 +1,8 @@
 package com.tokopedia.oneclickcheckout.order.view.model
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
 data class OrderPayment(
         val isEnable: Boolean = false,
         val isCalculationError: Boolean = false,
@@ -55,7 +58,8 @@ data class OrderPaymentCreditCard(
         val cardType: String = "",
         val isExpired: Boolean = false,
         val tncInfo: String = "",
-        val selectedTerm: OrderPaymentInstallmentTerm? = null
+        val selectedTerm: OrderPaymentInstallmentTerm? = null,
+        val additionalData: OrderPaymentCreditCardAdditionalData = OrderPaymentCreditCardAdditionalData()
 )
 
 data class OrderPaymentCreditCardsNumber(
@@ -63,6 +67,17 @@ data class OrderPaymentCreditCardsNumber(
         val unavailableCards: Int = 0,
         val totalCards: Int = 0
 )
+
+@Parcelize
+data class OrderPaymentCreditCardAdditionalData(
+        val id: Long = 0,
+        val name: String = "",
+        val email: String = "",
+        val msisdn: String = "",
+        val merchantCode: String = "",
+        val profileCode: String = "",
+        val signature: String = ""
+) : Parcelable
 
 data class OrderPaymentInstallmentTerm(
         val term: Int = 0,

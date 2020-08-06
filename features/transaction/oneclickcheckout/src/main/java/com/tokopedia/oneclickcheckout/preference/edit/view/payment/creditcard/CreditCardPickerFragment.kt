@@ -12,22 +12,26 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.*
+import android.widget.ProgressBar
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.oneclickcheckout.R
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentCreditCardAdditionalData
 import com.tokopedia.oneclickcheckout.preference.edit.di.PreferenceEditComponent
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_payment_method.*
+import java.net.URLEncoder
 import javax.inject.Inject
 
-class CreditCardPickerFragment: BaseDaggerFragment() {
+class CreditCardPickerFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
+    private var webView: WebView? = null
+    private var progressBar: ProgressBar? = null
 
     override fun getScreenName(): String {
         return this::class.java.simpleName
@@ -44,35 +48,69 @@ class CreditCardPickerFragment: BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initViews(view)
         initWebView()
+//        webView?.loadUrl("https://www.google.com")
+//        view.findViewById<Button>(R.id.btntesting).setOnClickListener {
+//            loadWebView()
+//        }
+        loadWebView()
+    }
+
+    private fun initViews(view: View) {
+        webView = view.findViewById(R.id.web_view)
+        progressBar = view.findViewById(R.id.progress_bar)
     }
 
     @SuppressLint("SetJavaScriptEnabled")
     private fun initWebView() {
-        web_view.clearCache(true)
-        val webSettings: WebSettings = web_view.settings
-        webSettings.javaScriptEnabled = true
-        webSettings.cacheMode = WebSettings.LOAD_NO_CACHE
-        webSettings.domStorageEnabled = true
-        webSettings.builtInZoomControls = false
-        webSettings.displayZoomControls = true
-        web_view.webViewClient = PaymentMethodWebViewClient()
+        webView?.clearCache(true)
+        val webSettings: WebSettings? = webView?.settings
+        webSettings?.javaScriptEnabled = true
+        webSettings?.cacheMode = WebSettings.LOAD_NO_CACHE
+        webSettings?.domStorageEnabled = true
+        webSettings?.builtInZoomControls = false
+        webSettings?.displayZoomControls = true
+        webView?.webViewClient = PaymentMethodWebViewClient()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            webSettings.mediaPlaybackRequiresUserGesture = false
+            webSettings?.mediaPlaybackRequiresUserGesture = false
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             WebView.setWebContentsDebuggingEnabled(true)
         }
+        webView?.visible()
+    }
 
-        val phoneNumber = userSession.phoneNumber
-        val msisdnVerified = userSession.isMsisdnVerified
-        var phone = ""
-        if (msisdnVerified && phoneNumber.isNotBlank()) {
-            phone = phoneNumber
+    private fun loadWebView() {
+        val additionalData = arguments?.getParcelable<OrderPaymentCreditCardAdditionalData>(EXTRA_ADDITIONAL_DATA)
+        if (additionalData == null) {
+            activity?.finish()
+            return
         }
-        val data = "version=${GlobalConfig.VERSION_NAME}&merchant_code=tokopediatest&profile_code=EXPRESS_SAVE&enable_add_card=true&user_id=${userSession.userId}&customer_name=${userSession.name.trim()}&customer_email=${userSession.email}&customer_msisdn=${phone}&callback_url=${TokopediaUrl.getInstance().PAY}/dummy/payment/listing"
         val url = "${TokopediaUrl.getInstance().PAY}/v3/cardlist"
-        web_view.postUrl(url, data.toByteArray())
+        webView?.postUrl(url, getPayload(additionalData).toByteArray())
+    }
+
+    private fun getPayload(additionalData: OrderPaymentCreditCardAdditionalData): String {
+//        val phoneNumber = userSession.phoneNumber
+//        val msisdnVerified = userSession.isMsisdnVerified
+//        var phone = ""
+//        if (msisdnVerified && phoneNumber.isNotBlank()) {
+//            phone = phoneNumber
+//        }
+        return "merchant_code=${getUrlEncoded(additionalData.merchantCode)}&" +
+                "profile_code=${getUrlEncoded(additionalData.profileCode)}&" +
+                "enable_add_card=${getUrlEncoded("false")}&" +
+                "user_id=${getUrlEncoded(additionalData.id.toString())}&" +
+                "customer_name=${getUrlEncoded(additionalData.name.trim())}&" +
+                "customer_email=${getUrlEncoded(additionalData.email)}&" +
+                "customer_msisdn=${getUrlEncoded(additionalData.msisdn)}&" +
+                "callback_url=${getUrlEncoded("${TokopediaUrl.getInstance().PAY}/v3/cardlist")}"
+//                        "version=${getUrlEncoded(GlobalConfig.VERSION_NAME)}&"
+    }
+
+    private fun getUrlEncoded(valueStr: String): String {
+        return URLEncoder.encode(valueStr, "UTF-8")
     }
 
     inner class PaymentMethodWebViewClient : WebViewClient() {
@@ -80,17 +118,17 @@ class CreditCardPickerFragment: BaseDaggerFragment() {
         override fun onReceivedSslError(view: WebView?, handler: SslErrorHandler?, error: SslError?) {
             super.onReceivedSslError(view, handler, error)
             handler?.cancel()
-            progress_bar?.gone()
+            progressBar?.gone()
         }
 
         override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
             super.onPageStarted(view, url, favicon)
-            progress_bar?.visible()
+            progressBar?.visible()
         }
 
         override fun onPageFinished(view: WebView?, url: String?) {
             super.onPageFinished(view, url)
-            progress_bar?.gone()
+            progressBar?.gone()
         }
 
         override fun shouldInterceptRequest(view: WebView?, url: String?): WebResourceResponse? {
@@ -125,5 +163,15 @@ class CreditCardPickerFragment: BaseDaggerFragment() {
 
     companion object {
         const val EXTRA_RESULT_METADATA = "RESULT_METADATA"
+
+        const val EXTRA_ADDITIONAL_DATA = "additional_data"
+
+        fun createInstance(additionalData: OrderPaymentCreditCardAdditionalData): CreditCardPickerFragment {
+            return CreditCardPickerFragment().apply {
+                arguments = Bundle().apply {
+                    putParcelable(EXTRA_ADDITIONAL_DATA, additionalData)
+                }
+            }
+        }
     }
 }

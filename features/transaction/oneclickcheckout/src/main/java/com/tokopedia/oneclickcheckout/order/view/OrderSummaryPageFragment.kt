@@ -738,8 +738,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             viewModel.chooseInstallment(selectedInstallmentTerm)
         }
 
-        override fun onChangeCreditCardClicked() {
-            startActivityForResult(Intent(context, CreditCardPickerActivity::class.java), REQUEST_CODE_CREDIT_CARD)
+        override fun onChangeCreditCardClicked(additionalData: OrderPaymentCreditCardAdditionalData) {
+            context?.let {
+                startActivityForResult(CreditCardPickerActivity.createIntent(it, additionalData), REQUEST_CODE_CREDIT_CARD)
+            }
         }
 
         override fun onCreditCardErrorActionClicked() {
