@@ -14,3 +14,12 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticGTMUtil
     implementation "com.tokopedia.config:global_config:1.0.3"
 }
+
+project.ext {
+    artifactId = 'central'
+    groupId = 'com.tokopedia.annotation'
+    versionName = "0.0.2-xxxx"
+    artifactName = "annotation_proc_central-debug"
+}
+
+apply from: '../../publish_local.gradle'
