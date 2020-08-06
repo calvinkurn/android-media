@@ -335,6 +335,7 @@ class SellerReviewReplyFragment : BaseDaggerFragment(), ReviewTemplateListViewHo
             isFocusable = true
             requestFocus()
             setText(replyText)
+            text?.length?.let { setSelection(it) }
             imm.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
         }
     }
@@ -440,5 +441,4 @@ class SellerReviewReplyFragment : BaseDaggerFragment(), ReviewTemplateListViewHo
         val replyText = StringBuilder().append(replyEditText?.text.toString()).append(message.orEmpty()).toString()
         showTextReplyEditText(replyText)
     }
-
 }
