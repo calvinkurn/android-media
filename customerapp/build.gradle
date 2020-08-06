@@ -575,6 +575,7 @@ dependencies {
         exclude group: 'org.hamcrest', module: 'hamcrest-core, mockito-core'
         exclude group: 'org.mockito'
     }
+    implementation rootProject.ext.testDependencies.espressoIdlingResource
     // Cloud testing
     androidTestImplementation(name: 'cloudtestingscreenshotter_lib', ext: 'aar')
     androidTestImplementation(rootProject.ext.miscDependencies.facebook) {
