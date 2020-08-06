@@ -123,7 +123,9 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.menu_stc_action_calendar, menu)
+        if (!getRegularMerchantStatus()) {
+            inflater.inflate(R.menu.menu_stc_action_calendar, menu)
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -261,6 +263,12 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         globalErrorStc.setActionClickListener {
             reloadPage()
         }
+    }
+
+    private fun getRegularMerchantStatus(): Boolean {
+        val isPowerMerchant = userSession.isPowerMerchantIdle || userSession.isGoldMerchant
+        val isOfficialStore = userSession.isShopOfficialStore
+        return !isPowerMerchant && !isOfficialStore
     }
 
     private fun setDefaultRange() = view?.run {
