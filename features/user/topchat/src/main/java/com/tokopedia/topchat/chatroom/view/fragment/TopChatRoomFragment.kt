@@ -46,7 +46,9 @@ import com.tokopedia.imagepicker.picker.main.builder.ImagePickerMultipleSelectio
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.imagepreview.ImagePreviewActivity
+import com.tokopedia.kotlin.extensions.view.hideLoadingTransparent
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.showLoadingTransparent
 import com.tokopedia.kotlin.util.getParamBoolean
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
@@ -1084,6 +1086,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     }
 
     override fun onClickBlockPromo() {
+        view?.showLoadingTransparent()
         val broadCastHandler = adapter.findBroadcastHandler()
         requestBlockPromo(broadCastHandler)
     }
@@ -1401,6 +1404,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
 
     override fun requestBlockPromo(element: BroadcastSpamHandlerUiModel?) {
         presenter.requestBlockPromo(messageId, { until ->
+            view?.hideLoadingTransparent()
             getViewState().isPromoBlocked = true
             element?.stopBlockPromo()
             onSuccessBlockPromoFromBcHandler(until)
@@ -1408,6 +1412,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
                 adapter.removeBroadcastHandler(it)
             }
         }, {
+            view?.hideLoadingTransparent()
             element?.stopBlockPromo()
             onErrorBlockPromoFromBcHandler(it)
             element?.let {
