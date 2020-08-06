@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -13,21 +14,22 @@
         android:layout_height="match_parent"
         android:visibility="gone" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_component_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_16"
         android:textColor="@color/discovery2_text_component_black_color"
-        android:textSize="@dimen/sp_16"
-        android:textStyle="bold"
+        app:typographyType="body_1"
+        app:typographyWeight="bold"
         tools:text="Header test 123" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_component_body"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/sp_14"
+        app:typographyType="body_2"
+        app:typographyWeight="reguler"
         tools:text="Body test 123" />
 
 </LinearLayout>

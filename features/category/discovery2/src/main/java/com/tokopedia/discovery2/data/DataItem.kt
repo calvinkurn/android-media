@@ -341,7 +341,7 @@ data class DataItem(
         val trackingFields: TrackingFields? = null,
 
         @SerializedName("body")
-        val textComponentBody: String = "",
+        val body: String = "",
 
         var shopAdsClickURL : String? = "",
 
