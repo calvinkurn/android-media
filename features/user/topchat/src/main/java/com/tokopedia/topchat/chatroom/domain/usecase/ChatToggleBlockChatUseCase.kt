@@ -34,7 +34,7 @@ class ChatToggleBlockChatUseCase @Inject constructor(
     ) {
         launchCatchError(dispatchers.IO,
                 {
-                    val params = generateParams(msgId)
+                    val params = generateParams(msgId, true)
                     val response = gqlUseCase.apply {
                         setTypeClass(ChatSettingsResponse::class.java)
                         setRequestParams(params)
@@ -53,11 +53,33 @@ class ChatToggleBlockChatUseCase @Inject constructor(
         )
     }
 
-    private fun generateParams(msgId: String): Map<String, Any> {
+    fun allowPromo(messageId: String, onSuccess: (String) -> Unit, onError: (Throwable) -> Unit) {
+        launchCatchError(dispatchers.IO,
+                {
+                    val params = generateParams(messageId, false)
+                    val response = gqlUseCase.apply {
+                        setTypeClass(ChatSettingsResponse::class.java)
+                        setRequestParams(params)
+                        setGraphqlQuery(query)
+                    }.executeOnBackground()
+                    val dueDate = Utils.getDateTime(response.chatBlockResponse.chatBlockStatus.validDate)
+                    withContext(dispatchers.Main) {
+                        onSuccess(dueDate)
+                    }
+                },
+                {
+                    withContext(dispatchers.Main) {
+                        onError(it)
+                    }
+                }
+        )
+    }
+
+    private fun generateParams(msgId: String, isBlocked: Boolean): Map<String, Any> {
         return mapOf(
                 paramMsgId to msgId,
                 paramBlockType to BlockType.Promo.value,
-                paramIsBlocked to true
+                paramIsBlocked to isBlocked
         )
     }
 

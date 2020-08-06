@@ -1091,6 +1091,11 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         requestBlockPromo(broadCastHandler)
     }
 
+    override fun onClickAllowPromo() {
+        view?.showLoadingTransparent()
+        requestAllowPromo()
+    }
+
     private fun getChatReportUrl() = "${TkpdBaseURL.CHAT_REPORT_URL}$messageId"
 
     override fun onDualAnnouncementClicked(redirectUrl: String, attachmentId: String, blastId: Int) {
@@ -1419,6 +1424,29 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
                 adapter.updateBroadcastHandlerState(it)
             }
         })
+    }
+
+    private fun requestAllowPromo() {
+        presenter.requestAllowPromo(messageId, { until ->
+            view?.hideLoadingTransparent()
+            getViewState().isPromoBlocked = false
+            addBroadCastSpamHandler(getViewState().isShopFollowed)
+            onSuccessAllowPromoFromBcHandler()
+        }, {
+            view?.hideLoadingTransparent()
+            onErrorAllowPromoFromBcHandler(it)
+        })
+    }
+
+    private fun onSuccessAllowPromoFromBcHandler() {
+        context?.let {
+            showToasterConfirmation(it.getString(R.string.title_success_allow_promo))
+        }
+    }
+
+    private fun onErrorAllowPromoFromBcHandler(throwable: Throwable) {
+        val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
+        showToasterError(errorMessage)
     }
 
     private fun onSuccessBlockPromoFromBcHandler(until: String) {

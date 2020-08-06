@@ -855,6 +855,10 @@ class TopChatRoomPresenter @Inject constructor(
         chatToggleBlockChat.blockPromo(messageId, onSuccess, onError)
     }
 
+    override fun requestAllowPromo(messageId: String, onSuccess: (String) -> Unit, onError: (Throwable) -> Unit) {
+        chatToggleBlockChat.allowPromo(messageId, onSuccess, onError)
+    }
+
     private fun onSuccessGetAttachments(attachments: ArrayMap<String, Attachment>) {
         this.attachments.putAll(attachments.toMap())
         view?.updateAttachmentsView(this.attachments)

@@ -19,4 +19,6 @@ interface HeaderMenuListener{
 
     fun onClickBlockPromo()
 
+    fun onClickAllowPromo()
+
 }

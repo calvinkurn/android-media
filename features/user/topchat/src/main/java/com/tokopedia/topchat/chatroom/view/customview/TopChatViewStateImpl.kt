@@ -365,7 +365,7 @@ class TopChatViewStateImpl constructor(
     ) {
         when {
             itemMenus.icon == R.drawable.ic_topchat_allow_promo -> {
-
+                headerMenuListener.onClickAllowPromo()
             }
             itemMenus.icon == R.drawable.ic_topchat_block_promo -> {
                 showConfirmationBlockChatPromo()
