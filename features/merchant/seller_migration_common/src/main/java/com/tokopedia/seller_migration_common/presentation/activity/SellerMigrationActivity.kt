@@ -61,6 +61,8 @@ class SellerMigrationActivity : BaseSimpleActivity() {
                             .toString()
                     val sellerAppSeamlessLoginAppLink = Uri.parse(ApplinkConstInternalGlobal.SEAMLESS_LOGIN).buildUpon()
                             .appendQueryParameter(ApplinkConstInternalGlobal.KEY_REDIRECT_SEAMLESS_APPLINK, parameterizedFirstAppLink)
+                            .appendQueryParameter(RouteManager.KEY_REDIRECT_TO_SELLER_APP, "true")
+                            .appendQueryParameter(SellerMigrationApplinkConst.QUERY_PARAM_IS_AUTO_LOGIN, "true")
                             .build()
                             .toString()
                     appLinks.removeAt(0)
