@@ -77,8 +77,12 @@ public class SplashScreenActivity extends SplashScreen {
                 }
                 if (intent != null) {
                     ArrayList<String> remainingAppLinks = getIntent().getStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA);
+                    String featureName = getIntent().getStringExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME);
                     if (remainingAppLinks != null && !remainingAppLinks.isEmpty()) {
                         intent.putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, remainingAppLinks);
+                    }
+                    if (featureName != null && !featureName.isEmpty()) {
+                        intent.putExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, featureName);
                     }
                     startActivity(intent);
                     return true;
@@ -147,6 +151,10 @@ public class SplashScreenActivity extends SplashScreen {
 
             if (remainingApplinks != null && !remainingApplinks.isEmpty()) {
                 intent.putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, remainingApplinks);
+            }
+            String featureName = getIntent().getStringExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME);
+            if (featureName != null && !featureName.isEmpty()) {
+                intent.putExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, featureName);
             }
             intent.putExtras(b);
         } else if (hasOnboarding) {
