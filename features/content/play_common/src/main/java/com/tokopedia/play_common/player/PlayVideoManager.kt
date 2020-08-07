@@ -7,8 +7,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ProcessLifecycleOwner
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.audio.AudioAttributes
-import com.google.android.exoplayer2.database.DatabaseProvider
-import com.google.android.exoplayer2.database.ExoDatabaseProvider
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.source.dash.DashMediaSource
@@ -16,11 +14,10 @@ import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import com.google.android.exoplayer2.source.smoothstreaming.SsMediaSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.upstream.DefaultLoadErrorHandlingPolicy
+import com.google.android.exoplayer2.upstream.HttpDataSource.InvalidResponseCodeException
 import com.google.android.exoplayer2.upstream.LoadErrorHandlingPolicy
 import com.google.android.exoplayer2.upstream.Loader.UnexpectedLoaderException
 import com.google.android.exoplayer2.upstream.cache.CacheDataSourceFactory
-import com.google.android.exoplayer2.upstream.cache.CacheEvictor
-import com.google.android.exoplayer2.upstream.cache.LeastRecentlyUsedCacheEvictor
 import com.google.android.exoplayer2.util.Util
 import com.tokopedia.play_common.exception.PlayVideoErrorException
 import com.tokopedia.play_common.model.PlayBufferControl
@@ -34,7 +31,6 @@ import com.tokopedia.play_common.util.PlayProcessLifecycleObserver
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
 import kotlin.coroutines.CoroutineContext
@@ -45,53 +41,6 @@ import kotlin.properties.Delegates
  */
 //TODO("Figure out how to manage cache more graceful")
 class PlayVideoManager private constructor(private val applicationContext: Context) : CoroutineScope {
-
-    companion object {
-        private const val MAX_CACHE_BYTES: Long = 10 * 1024 * 1024
-        private const val CACHE_FOLDER_NAME = "play_video"
-
-        private const val RETRY_COUNT_LIVE = 1
-        private const val RETRY_COUNT_DEFAULT = 2
-        private const val RETRY_DELAY = 2000L
-
-        private const val VIDEO_MAX_SOUND = 1f
-        private const val VIDEO_MIN_SOUND = 0f
-
-        private const val USE_CACHE = false
-
-        @Volatile
-        private var INSTANCE: PlayVideoManager? = null
-
-        private var playProcessLifecycleObserver: PlayProcessLifecycleObserver? = null
-
-        @JvmStatic
-        fun getInstance(context: Context): PlayVideoManager {
-            return INSTANCE ?: synchronized(this) {
-                val player = PlayVideoManager(context.applicationContext).also {
-                    INSTANCE = it
-                }
-
-                if (playProcessLifecycleObserver == null)
-                    playProcessLifecycleObserver = PlayProcessLifecycleObserver(context.applicationContext)
-
-                playProcessLifecycleObserver?.let { ProcessLifecycleOwner.get()
-                        .lifecycle.addObserver(it) }
-
-                player
-            }
-        }
-
-        @JvmStatic
-        fun deleteInstance() = synchronized(this) {
-            if (INSTANCE != null) {
-                playProcessLifecycleObserver?.let { ProcessLifecycleOwner.get()
-                        .lifecycle.removeObserver(it) }
-
-                INSTANCE!!.videoPlayer.removeListener(INSTANCE!!.playerEventListener)
-                INSTANCE = null
-            }
-        }
-    }
 
     override val coroutineContext: CoroutineContext
         get() = job + Dispatchers.Main
@@ -189,16 +138,6 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
                 is PlayVideoPrepareState.Prepared -> currentState.uri
             }
         }
-
-    /**
-     * Cache
-     */
-    private val cacheFile: File
-        get() = File(applicationContext.filesDir, CACHE_FOLDER_NAME)
-    private val cacheEvictor: CacheEvictor
-        get() = LeastRecentlyUsedCacheEvictor(MAX_CACHE_BYTES)
-    private val cacheDbProvider: DatabaseProvider
-        get() = ExoDatabaseProvider(applicationContext)
 
     //region public method
     fun playUri(uri: Uri, autoPlay: Boolean = true, bufferControl: PlayBufferControl = playerModel.loadControl.bufferControl) {
@@ -353,6 +292,17 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
                     else -> RETRY_COUNT_DEFAULT
                 }
             }
+
+            override fun getBlacklistDurationMsFor(dataType: Int, loadDurationMs: Long, exception: IOException?, errorCount: Int): Long {
+                if (exception is InvalidResponseCodeException) {
+                    val responseCode = exception.responseCode
+                    return if (responseCode == 404 // HTTP 404 Not Found.
+                            || responseCode == 410 // HTTP 410 Gone.
+                            || responseCode == 416 // HTTP 416 Range Not Satisfiable.
+                    ) BLACKLIST_MS else C.TIME_UNSET
+                }
+                return C.TIME_UNSET
+            }
         }
     }
 
@@ -388,33 +338,48 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
         return PlayVideoLoadControl(bufferControl)
     }
 
-//    private fun initCache(playerModel: PlayPlayerModel?): Cache {
-//        return if (playerModel?.cache == null) {
-//            SimpleCache(
-//                    cacheFile,
-//                    cacheEvictor,
-//                    cacheDbProvider
-//            )
-//        } else playerModel.cache
-//    }
+    companion object {
+        private const val RETRY_COUNT_LIVE = 1
+        private const val RETRY_COUNT_DEFAULT = 2
+        private const val RETRY_DELAY = 2000L
+        private const val BLACKLIST_MS = 10000L
 
-    /**
-     * If and only if these functions cause leak, please contact the owner of this module
-     */
-//    private suspend fun releaseCache() = withContext(Dispatchers.IO) {
-//        try {
-//            playerModel.cache?.release()
-//        } catch (e: Throwable) {
-//            Timber.tag("PlayVideoManager").e("Release cache failed: $e")
-//        }
-//    }
-//
-//    private suspend fun deleteCache() = withContext(Dispatchers.IO) {
-//        try {
-//            SimpleCache.delete(cacheFile, cacheDbProvider)
-//        } catch (e: Throwable) {
-//            Timber.tag("PlayVideoManager").e("Delete cache failed: $e")
-//        }
-//    }
-    //endregion
+        private const val VIDEO_MAX_SOUND = 1f
+        private const val VIDEO_MIN_SOUND = 0f
+
+        private const val USE_CACHE = false
+
+        @Volatile
+        private var INSTANCE: PlayVideoManager? = null
+
+        private var playProcessLifecycleObserver: PlayProcessLifecycleObserver? = null
+
+        @JvmStatic
+        fun getInstance(context: Context): PlayVideoManager {
+            return INSTANCE ?: synchronized(this) {
+                val player = PlayVideoManager(context.applicationContext).also {
+                    INSTANCE = it
+                }
+
+                if (playProcessLifecycleObserver == null)
+                    playProcessLifecycleObserver = PlayProcessLifecycleObserver(context.applicationContext)
+
+                playProcessLifecycleObserver?.let { ProcessLifecycleOwner.get()
+                        .lifecycle.addObserver(it) }
+
+                player
+            }
+        }
+
+        @JvmStatic
+        fun deleteInstance() = synchronized(this) {
+            if (INSTANCE != null) {
+                playProcessLifecycleObserver?.let { ProcessLifecycleOwner.get()
+                        .lifecycle.removeObserver(it) }
+
+                INSTANCE!!.videoPlayer.removeListener(INSTANCE!!.playerEventListener)
+                INSTANCE = null
+            }
+        }
+    }
 }
