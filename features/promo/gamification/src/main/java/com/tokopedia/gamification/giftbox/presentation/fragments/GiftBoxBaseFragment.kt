@@ -60,6 +60,7 @@ open class GiftBoxBaseFragment : Fragment() {
     var screenWidth = 0
 
     val FADE_IN_DURATION = 500L
+    val LARGE_PHONE_HEIGHT = 1900
 
     val giftBoxTapTapAudio = GiftBoxTapTapAudio()
     var bgSoundManager: AudioManager? = null

@@ -619,6 +619,7 @@ class ShopPageFragment :
             shopPageHeaderDataModel.statusTitle = shopPageHeaderContentData.shopInfo.statusInfo.statusTitle
             shopPageHeaderDataModel.statusMessage = shopPageHeaderContentData.shopInfo.statusInfo.statusMessage
             shopPageHeaderDataModel.shopStatus = shopPageHeaderContentData.shopInfo.statusInfo.shopStatus
+            shopPageHeaderDataModel.broadcaster = shopPageHeaderContentData.broadcasterConfig
             if (!isMyShop) {
                 button_chat.show()
                 button_chat.setOnClickListener {
