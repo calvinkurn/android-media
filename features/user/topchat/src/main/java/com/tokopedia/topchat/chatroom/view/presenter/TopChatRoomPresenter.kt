@@ -852,11 +852,11 @@ class TopChatRoomPresenter @Inject constructor(
         })
     }
 
-    override fun requestBlockPromo(messageId: String, onSuccess: (String) -> Unit, onError: (Throwable) -> Unit) {
+    override fun requestBlockPromo(messageId: String, onSuccess: (ChatSettingsResponse) -> Unit, onError: (Throwable) -> Unit) {
         chatToggleBlockChat.blockPromo(messageId, onSuccess, onError)
     }
 
-    override fun requestAllowPromo(messageId: String, onSuccess: () -> Unit, onError: (Throwable) -> Unit) {
+    override fun requestAllowPromo(messageId: String, onSuccess: (ChatSettingsResponse) -> Unit, onError: (Throwable) -> Unit) {
         chatToggleBlockChat.allowPromo(messageId, onSuccess, onError)
     }
 

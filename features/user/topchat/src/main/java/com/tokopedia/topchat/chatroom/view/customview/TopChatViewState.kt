@@ -32,4 +32,6 @@ interface TopChatViewState : BaseChatViewState {
 
     fun setChatBlockStatus(isBlocked: Boolean)
 
+    fun setChatPromoBlockStatus(isBlocked: Boolean, due: String = "")
+
 }

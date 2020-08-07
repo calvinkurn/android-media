@@ -60,6 +60,7 @@ import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule
 import com.tokopedia.topchat.chatroom.di.DaggerChatComponent
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
+import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ChatSettingsResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.ChatOrderProgress
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
@@ -90,6 +91,7 @@ import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.EXTRA_SHOP_S
 import com.tokopedia.topchat.common.analytics.ChatSettingsAnalytics
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.topchat.common.custom.ToolTipStickerPopupWindow
+import com.tokopedia.topchat.common.util.Utils
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -412,7 +414,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     }
 
     private fun setupFirstTimeOnly(chatRoom: ChatroomViewModel, chat: ChatReplies) {
-        getViewState().isPromoBlocked = chatRoom.blockedStatus.isPromoBlocked
         updateViewData(chatRoom)
         checkCanAttachVoucher()
         presenter.getShopFollowingStatus(shopId, ::onErrorGetShopFollowingStatus, ::onSuccessGetShopFollowingStatus)
@@ -471,7 +472,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     }
 
     private fun addBroadCastSpamHandler(isFollow: Boolean) {
-        if (getViewState().isPromoBlocked || isFollow || presenter.isInTheMiddleOfThePage()) return
+        if (getViewState().blockStatus.isPromoBlocked || isFollow || presenter.isInTheMiddleOfThePage()) return
         val broadCastHandlerPosition = adapter.addBroadcastSpamHandler()
         if (broadCastHandlerPosition != RecyclerView.NO_POSITION) {
             val firstVisible = rvLayoutManager?.findFirstCompletelyVisibleItemPosition() ?: return
@@ -1069,9 +1070,9 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
                     messageId,
                     opponentRole,
                     opponentName,
-                    blockedStatus.isBlocked,
-                    getViewState().isPromoBlocked,
-                    blockedStatus.blockedUntil,
+                    getViewState().blockStatus.isBlocked,
+                    getViewState().blockStatus.isPromoBlocked,
+                    getViewState().blockStatus.blockedUntil,
                     shopId)
             startActivityForResult(intent, REQUEST_GO_TO_SETTING_CHAT)
         }
@@ -1430,10 +1431,10 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     }
 
     override fun requestBlockPromo(element: BroadcastSpamHandlerUiModel?) {
-        presenter.requestBlockPromo(messageId, { until ->
-            getViewState().isPromoBlocked = true
+        presenter.requestBlockPromo(messageId, { response ->
+            getViewState().setChatPromoBlockStatus(true, response.chatBlockResponse.chatBlockStatus.validDate)
             element?.stopBlockPromo()
-            onSuccessBlockPromoFromBcHandler(until)
+            onSuccessBlockPromoFromBcHandler(response)
             element?.let {
                 adapter.removeBroadcastHandler(it)
             }
@@ -1448,7 +1449,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
 
     private fun requestAllowPromo() {
         presenter.requestAllowPromo(messageId, {
-            getViewState().isPromoBlocked = false
+            getViewState().setChatPromoBlockStatus(false)
             addBroadCastSpamHandler(getViewState().isShopFollowed)
             onSuccessAllowPromoFromBcHandler()
         }, {
@@ -1467,8 +1468,9 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         showToasterError(errorMessage)
     }
 
-    private fun onSuccessBlockPromoFromBcHandler(until: String) {
+    private fun onSuccessBlockPromoFromBcHandler(response: ChatSettingsResponse) {
         context?.let {
+            val until = Utils.getDateTime(response.chatBlockResponse.chatBlockStatus.validDate)
             showToasterConfirmation(it.getString(R.string.title_success_block_promo, until))
         }
     }

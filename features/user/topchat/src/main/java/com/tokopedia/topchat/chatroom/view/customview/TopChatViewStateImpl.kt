@@ -75,7 +75,6 @@ class TopChatViewStateImpl constructor(
 
     var isShopFollowed: Boolean = false
     var blockStatus: BlockedStatus = BlockedStatus()
-    var isPromoBlocked: Boolean = false
 
     var roomMenu = LongClickMenu()
 
@@ -154,6 +153,11 @@ class TopChatViewStateImpl constructor(
 
     override fun setChatBlockStatus(isBlocked: Boolean) {
         blockStatus.isBlocked = isBlocked
+    }
+
+    override fun setChatPromoBlockStatus(isBlocked: Boolean, due: String)  {
+        blockStatus.isPromoBlocked = isBlocked
+        blockStatus.blockedUntil = due
     }
 
     override fun onKeyboardOpened() {
@@ -375,7 +379,7 @@ class TopChatViewStateImpl constructor(
     private fun createPromoMenu(): Menus.ItemMenus {
         val promoStatusTitle: String
         @DrawableRes val promoStatusDrawable: Int
-        if (isPromoBlocked) {
+        if (blockStatus.isPromoBlocked) {
             promoStatusTitle = view.context.getString(R.string.title_allow_promo)
             promoStatusDrawable = R.drawable.ic_topchat_allow_promo
         } else {
