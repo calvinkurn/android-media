@@ -129,9 +129,9 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
 
     override suspend fun switchCamera() {
         try {
+            frontCamera = !frontCamera
             mAliVcLivePusher?.switchCamera()
             mAliVcLivePusher?.setPushMirror(frontCamera)
-            frontCamera = !frontCamera
         } catch (e: Exception) {}
     }
 
