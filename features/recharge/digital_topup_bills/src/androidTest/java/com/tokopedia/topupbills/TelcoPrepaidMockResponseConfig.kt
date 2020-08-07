@@ -8,10 +8,10 @@ import com.tokopedia.topupbills.test.R
 class TelcoPrepaidMockResponseConfig : MockModelConfig() {
 
     companion object {
-        const val KEY_QUERY_MENU_DETAIL = "rechargeCatalogMenuDetail"
-        const val KEY_QUERY_FAV_NUMBER = "recharge_favorite_number"
-        const val KEY_QUERY_PREFIX_SELECT = "rechargeCatalogPrefixSelect"
-        const val KEY_QUERY_PRODUCT_MULTI_TAB = "rechargeCatalogProductInputMultiTab"
+        const val KEY_QUERY_MENU_DETAIL = "catalogMenuDetail"
+        const val KEY_QUERY_FAV_NUMBER = "favouriteNumber"
+        const val KEY_QUERY_PREFIX_SELECT = "telcoPrefixSelect"
+        const val KEY_QUERY_PRODUCT_MULTI_TAB = "telcoProductMultiTab"
     }
 
     override fun createMockModel(context: Context): MockModelConfig {
