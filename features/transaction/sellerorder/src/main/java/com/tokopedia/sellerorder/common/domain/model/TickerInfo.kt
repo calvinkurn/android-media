@@ -4,7 +4,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class TickerInfo(
-        @SerializedName("label")
+        @SerializedName("text")
         @Expose
         val message: String = "",
 
@@ -12,15 +12,15 @@ data class TickerInfo(
         @Expose
         val textColor: String = "",
 
-        @SerializedName("bg_color")
+        @SerializedName("type")
         @Expose
         val backgroundColor: String = "",
 
-        @SerializedName("link_text")
+        @SerializedName("action_text")
         @Expose
         val linkText: String = "",
 
-        @SerializedName("link_url")
+        @SerializedName("action_url")
         @Expose
         val linkUrl: String = ""
 )
