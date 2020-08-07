@@ -17,6 +17,8 @@ class DiscussionGetWritingFormUseCase @Inject constructor(graphqlRepository: Gra
                   discussionGetWritingForm(productID:${'$'}productID) {
                     productName
                     productThumbnailURL
+                    productID
+                    productPrice
                     shopID
                     minChar
                     maxChar

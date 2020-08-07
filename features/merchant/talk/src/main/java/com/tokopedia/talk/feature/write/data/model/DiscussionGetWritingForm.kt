@@ -10,6 +10,12 @@ data class DiscussionGetWritingForm(
         @SerializedName("productThumbnailURL")
         @Expose
         val productThumbnailUrl: String = "",
+        @SerializedName("productID")
+        @Expose
+        val productId: String = "",
+        @SerializedName("productPrice")
+        @Expose
+        val productPrice: String = "",
         @SerializedName("shopID")
         @Expose
         val shopId: String = "",

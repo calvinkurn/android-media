@@ -25,10 +25,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.chat_common.data.preview.ProductPreview
 import com.tokopedia.common.network.util.CommonUtil
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.loadImage
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringContract
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringListener
 import com.tokopedia.talk.common.constants.TalkConstants
@@ -50,6 +47,7 @@ import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import kotlinx.android.synthetic.main.fragment_talk_write.*
 import kotlinx.android.synthetic.main.partial_talk_connection_error.*
 import kotlinx.android.synthetic.main.widget_talk_write_header.*
@@ -394,7 +392,7 @@ class TalkWriteFragment : BaseDaggerFragment(),
 
     private fun getProductInfoToJson(): String {
         (viewModel.writeFormData.value as? Success)?.let {
-            val productInfo = listOf(ProductPreview(id = viewModel.getProductId().toString(), name = it.data.productName, imageUrl = it.data.productThumbnailUrl, price = "Rp some dummy"))
+            val productInfo = listOf(ProductPreview(id = viewModel.getProductId().toString(), name = it.data.productName, imageUrl = it.data.productThumbnailUrl, price = it.data.productPrice.toIntOrZero().getCurrencyFormatted()))
             val gson = Gson()
             return gson.toJson(productInfo, productInfo.javaClass)
         }
