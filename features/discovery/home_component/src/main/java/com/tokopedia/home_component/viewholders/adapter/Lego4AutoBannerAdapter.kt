@@ -1,5 +1,9 @@
 package com.tokopedia.home_component.viewholders.adapter
 
+import android.graphics.Typeface
+import android.text.SpannableStringBuilder
+import android.text.Spanned
+import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -55,22 +59,33 @@ class Lego4AutoBannerAdapter(
         private val itemImage: ImageView = v.findViewById(R.id.item_image)
         private val itemName: Typography = v.findViewById(R.id.item_name)
         private val itemDesc: Typography = v.findViewById(R.id.item_desc)
-        private val itemPrice: Typography = v.findViewById(R.id.item_price)
+        private val template = "%s %s"
 
 
         fun bind(item: Lego4AutoItem, parentPosition: Int, listener: Lego4AutoBannerListener?, channelModel: ChannelModel) {
             itemName.text = item.grid.name
             itemImage.loadImage(item.grid.imageUrl)
-            itemDesc.text = item.grid.benefit.type
-            itemPrice.text = item.grid.benefit.value
-            itemLayout.setGradientBackground(arrayListOf(item.grid.backColor))
-
+            itemDesc.text = constructBoldFont(item.grid.benefit.type, item.grid.benefit.value)
+            if (item.grid.backColor.isNotEmpty()) {
+                itemLayout.setGradientBackground(arrayListOf(item.grid.backColor))
+            }
             itemLayout.addOnImpressionListener(item.impressHolder){
                 listener?.onLegoItemImpressed(channelModel, item.grid, adapterPosition, parentPosition)
             }
             itemLayout.setOnClickListener {
                 listener?.onLegoItemClicked(channelModel, item.grid, adapterPosition, parentPosition)
             }
+        }
+
+        private fun constructBoldFont(type: String, value : String): SpannableStringBuilder {
+            var text = SpannableStringBuilder(String.format(template, type, value))
+            val startIndexBold = text.indexOf(value)
+            val endIndexBold = startIndexBold + value.length
+            while(startIndexBold > 0) {
+                val spanStyle = StyleSpan(Typeface.BOLD)
+                text.setSpan(spanStyle, startIndexBold, endIndexBold, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+            }
+            return text
         }
     }
 }
