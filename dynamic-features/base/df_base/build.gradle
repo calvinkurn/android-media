@@ -86,7 +86,6 @@ dependencies {
     implementation project(rootProject.ext.features.similarSearch)
     implementation project(rootProject.ext.features.search)
     implementation project(rootProject.ext.features.autocomplete)
-    implementation project(rootProject.ext.features.recentview)
     implementation project(rootProject.ext.features.homeRecom)
     implementation project(rootProject.ext.features.homeWishlist)
     implementation project(rootProject.ext.features.productCardOptions)
@@ -94,7 +93,6 @@ dependencies {
     //Fintech
     implementation project(rootProject.ext.features.ovoPayWithQr)
     implementation project(rootProject.ext.features.wallet)
-    implementation project(rootProject.ext.features.instantLoan)
     implementation project(rootProject.ext.features.ovop2p)
 
     //IM
@@ -138,6 +136,7 @@ dependencies {
     implementation project(rootProject.ext.features.notifTroubleshooter)
     implementation project(rootProject.ext.features.topchat)
     implementation project(rootProject.ext.features.otp)
+    implementation project(rootProject.ext.features.userIdentification)
 
     //Entertainment
     implementation project(rootProject.ext.features.orderhistory)

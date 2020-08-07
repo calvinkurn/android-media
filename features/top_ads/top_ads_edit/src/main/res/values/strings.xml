@@ -32,9 +32,9 @@
     <string name="topads_edit_leave_page_conf_dialog_title">Simpan Perubahan?</string>
     <string name="topads_edit_leave_page_conf_dialog_desc">Kamu sudah mengubah pengaturan grup dan belum simpan perubahanmu</string>
     <string name="topads_edit_delete_keyword_conf_dialog_title">Hapus Kata Kunci?</string>
-    <string name="topads_edit_delete_keyword_conf_dialog_desc">Apakah kamu yakin untuk menghapus kata kunci Kemeja Batik?</string>
+    <string name="topads_edit_delete_keyword_conf_dialog_desc">Apakah kamu yakin untuk menghapus kata kunci %s?</string>
     <string name="topads_edit_delete_neg_keyword_conf_dialog_title">Hapus Kata Kunci Negatif?</string>
-    <string name="topads_edit_delete_neg_keyword_conf_dialog_desc">Apakah kamu yakin untuk menghapus kata kunci Kemeja Panjang?</string>
+    <string name="topads_edit_delete_neg_keyword_conf_dialog_desc">Apakah kamu yakin untuk menghapus kata kunci %s?</string>
     <string name="topads_edit_ya">Ya</string>
     <string name="topads_edit_batal">Batal</string>
     <string name="topads_edit_no_neg_keyword_title">Belum ada kata kunci negatif</string>

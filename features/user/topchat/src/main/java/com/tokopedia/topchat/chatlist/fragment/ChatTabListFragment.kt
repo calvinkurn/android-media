@@ -133,6 +133,7 @@ class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListContract
         super.onDestroy()
         stopLiveDataObserver()
         flushAllViewModel()
+        searchToolTip.dismiss()
     }
 
     private fun initToolTip() {

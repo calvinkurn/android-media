@@ -24,13 +24,13 @@ data class ApplyPromoResponseAction(
         var lastValidateUseRequest: ValidateUsePromoRequest? = null
 ) {
     companion object {
-        val ACTION_NAVIGATE_TO_CART = 1
+        val ACTION_NAVIGATE_TO_CALLER_PAGE = 1
         val ACTION_SHOW_TOAST_ERROR = 2
         val ACTION_SHOW_TOAST_AND_RELOAD_PROMO = 3
     }
 }
 
-data class GetCouponRecommendationAction(
+data class GetPromoListResponseAction(
         var state: Int = 0,
         var exception: Throwable? = null
 ) {

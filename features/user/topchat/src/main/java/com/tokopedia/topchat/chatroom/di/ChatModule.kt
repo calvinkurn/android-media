@@ -41,6 +41,7 @@ import com.tokopedia.topchat.common.network.TopchatCacheManagerImpl
 import com.tokopedia.topchat.common.network.XUserIdInterceptor
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.websocket.RxWebSocketUtil
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import dagger.Module
@@ -140,6 +141,16 @@ class ChatModule {
                                    userSessionInterface: UserSessionInterface):
             TkpdAuthInterceptor {
         return TkpdAuthInterceptor(context, networkRouter, userSessionInterface)
+    }
+
+    @ChatScope
+    @Provides
+    fun provideRxWebSocketUtil(
+            tkpdAuthInterceptor: TkpdAuthInterceptor,
+            fingerprintInterceptor: FingerprintInterceptor
+    ): RxWebSocketUtil {
+        val interceptors = listOf(tkpdAuthInterceptor, fingerprintInterceptor)
+        return RxWebSocketUtil.getInstance(interceptors)
     }
 
     @ChatScope

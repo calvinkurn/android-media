@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        app:corners="16"
+        android:id="@+id/title"
+        android:layout_width="@dimen/layout_lvl8"
+        android:layout_height="@dimen/spacing_lvl3"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl5"
+        />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        app:corners="16"
+        android:id="@+id/see_all"
+        android:layout_width="@dimen/layout_lvl6"
+        android:layout_height="@dimen/spacing_lvl3"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/title"
+        android:layout_marginRight="@dimen/spacing_lvl5"
+        />
+
+    <include
+        android:id="@+id/popular_first"
+        layout="@layout/item_deals_brands_page_row_shimmering"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/title"
+        android:layout_marginBottom="@dimen/layout_lvl1"
+        app:layout_constraintWidth_percent="0.2"
+        android:layout_marginTop="@dimen/deals_dp_14"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -15,6 +15,7 @@ import com.tokopedia.analyticsdebugger.debugger.GtmLogger;
 import com.tokopedia.analyticsdebugger.debugger.TetraDebugger;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.util.PriceUtil;
 import com.tokopedia.device.info.DeviceConnectionInfo;
@@ -72,6 +73,7 @@ public class GTMAnalytics extends ContextAnalytics {
     public static String[] GENERAL_EVENT_KEYS = new String[]{
             KEY_ACTION, KEY_CATEGORY, KEY_LABEL, KEY_EVENT
     };
+    private static final String ECOMMERCE = "ecommerce";
     private final Iris iris;
     private final RemoteConfig remoteConfig;
     private final Long DELAY_GET_CONN = 120000L; //2 minutes
@@ -227,6 +229,14 @@ public class GTMAnalytics extends ContextAnalytics {
 
     @Override
     public void sendEnhanceEcommerceEvent(Map<String, Object> value) {
+
+        // https://tokopedia.atlassian.net/browse/AN-19138
+        if (!value.containsKey(ECOMMERCE)) {
+            sendGeneralEvent(value);
+            return;
+        }
+        // https://tokopedia.atlassian.net/browse/AN-19138
+
         // V4
         clearEnhanceEcommerce();
         pushGeneralEcommerce(clone(value));
@@ -951,6 +961,8 @@ public class GTMAnalytics extends ContextAnalytics {
     }
 
     public void sendCampaign(Map<String, Object> param) {
+        if(!TrackingUtils.isValidCampaign(param)) return;
+
         Bundle bundle = new Bundle();
         String afUniqueId = getAfUniqueId(context);
 

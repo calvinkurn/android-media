@@ -24,7 +24,7 @@ class TopAdsDebuggerDetailActivity : BaseSimpleActivity() {
     }
 
     override fun getNewFragment(): Fragment? {
-        return TopAdsDebuggerDetailFragment.newInstance(intent.extras)
+        return TopAdsDebuggerDetailFragment.newInstance(intent.extras ?: Bundle())
     }
 
     companion object {

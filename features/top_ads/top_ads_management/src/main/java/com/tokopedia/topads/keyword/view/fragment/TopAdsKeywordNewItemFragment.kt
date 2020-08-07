@@ -69,7 +69,7 @@ class TopAdsKeywordNewItemFragment: BaseDaggerFragment() {
         super.onCreate(savedInstanceState)
         arguments?.let {
             localKeywords.clear()
-            localKeywords.addAll(it.getParcelableArrayList(TopAdsKeywordNewItemActivity.LOCAL_KEYWORDS_PARAM))
+            localKeywords.addAll(it.getParcelableArrayList(TopAdsKeywordNewItemActivity.LOCAL_KEYWORDS_PARAM) ?: emptyList())
             maxCount = it.getInt(TopAdsKeywordNewItemActivity.MAX_COUNT_PARAM, 50)
             positiveKeyword = it.getBoolean(PARAM_POSITIVE_KEYWORD)
             groupId = it.getString(PARAM_GROUP_ID, "")

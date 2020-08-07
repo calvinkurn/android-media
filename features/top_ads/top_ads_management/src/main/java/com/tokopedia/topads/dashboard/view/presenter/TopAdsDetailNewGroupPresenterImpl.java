@@ -1,15 +1,14 @@
 package com.tokopedia.topads.dashboard.view.presenter;
 
-import android.util.Log;
+import android.content.res.Resources;
 
 import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
-import com.tokopedia.topads.dashboard.domain.interactor.TopAdsMinimumBidUseCase;
-import com.tokopedia.topads.sourcetagging.data.TopAdsSourceTaggingModel;
-import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsGetSourceTaggingUseCase;
+import com.tokopedia.topads.dashboard.data.model.response.TopAdsDepositResponse;
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsBalanceCheckUseCase;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsCreateDetailProductListUseCase;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsCreateNewGroupUseCase;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGetDetailGroupUseCase;
-import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGetSuggestionUseCase;
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsMinimumBidUseCase;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsProductListUseCase;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsSaveDetailGroupUseCase;
 import com.tokopedia.topads.dashboard.domain.model.TopAdsDetailGroupDomainModel;
@@ -19,8 +18,8 @@ import com.tokopedia.topads.dashboard.view.listener.TopAdsDetailNewGroupView;
 import com.tokopedia.topads.dashboard.view.mapper.TopAdDetailProductMapper;
 import com.tokopedia.topads.dashboard.view.model.TopAdsDetailGroupViewModel;
 import com.tokopedia.topads.dashboard.view.model.TopAdsProductViewModel;
-import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsRemoveSourceTaggingUseCase;
-import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.topads.sourcetagging.data.TopAdsSourceTaggingModel;
+import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsGetSourceTaggingUseCase;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.List;
@@ -36,6 +35,8 @@ public class TopAdsDetailNewGroupPresenterImpl<T extends TopAdsDetailNewGroupVie
 
     private TopAdsCreateNewGroupUseCase topAdsCreateNewGroupUseCase;
     private TopAdsCreateDetailProductListUseCase topAdsCreateDetailProductListUseCase;
+    private TopAdsBalanceCheckUseCase topAdsBalanceCheckUseCase;
+    private UserSessionInterface sessionInterface;
 
     public TopAdsDetailNewGroupPresenterImpl(TopAdsCreateNewGroupUseCase topAdsCreateNewGroupUseCase,
                                              TopAdsGetDetailGroupUseCase topAdsGetDetailGroupUseCase,
@@ -43,16 +44,38 @@ public class TopAdsDetailNewGroupPresenterImpl<T extends TopAdsDetailNewGroupVie
                                              TopAdsCreateDetailProductListUseCase topAdsCreateDetailProductListUseCase,
                                              TopAdsProductListUseCase topAdsProductListUseCase,
                                              TopAdsMinimumBidUseCase minimumBidUseCase,
+                                             TopAdsBalanceCheckUseCase topAdsBalanceCheckUseCase,
                                              TopAdsGetSourceTaggingUseCase topAdsGetSourceTaggingUseCase,
                                              UserSessionInterface sessionInterface) {
         super(topAdsGetDetailGroupUseCase, topAdsSaveDetailGroupUseCase, topAdsProductListUseCase,
                 minimumBidUseCase, topAdsGetSourceTaggingUseCase, sessionInterface);
         this.topAdsCreateNewGroupUseCase = topAdsCreateNewGroupUseCase;
         this.topAdsCreateDetailProductListUseCase = topAdsCreateDetailProductListUseCase;
+        this.sessionInterface = sessionInterface;
+        this.topAdsBalanceCheckUseCase = topAdsBalanceCheckUseCase;
+    }
+
+    public void getBalance(Resources resources) {
+        topAdsBalanceCheckUseCase.setQuery(resources);
+        topAdsBalanceCheckUseCase.execute(TopAdsBalanceCheckUseCase.createRequestParams(Integer.parseInt(sessionInterface.getShopId())), new Subscriber<TopAdsDepositResponse.Data>() {
+            @Override
+            public void onCompleted() {
+            }
+
+            @Override
+            public void onError(Throwable e) {
+            }
+
+            @Override
+            public void onNext(TopAdsDepositResponse.Data topAdsDepositResponse) {
+                getView().onBalanceCheck(topAdsDepositResponse);
+            }
+        });
+
     }
 
     @Override
-    public void saveAdExisting(String groupId, final List<TopAdsProductViewModel> topAdsProductViewModelList, final String source) {
+    public void saveAdExisting(String groupId, final List<TopAdsProductViewModel> topAdsProductViewModelList, final String source, TopAdsDepositResponse.Data topAdsDepositResponse) {
         super.getDetailAd(groupId, new Subscriber<TopAdsDetailGroupDomainModel>() {
             @Override
             public void onCompleted() {
@@ -81,7 +104,7 @@ public class TopAdsDetailNewGroupPresenterImpl<T extends TopAdsDetailNewGroupVie
                     @Override
                     public void onNext(TopAdsSourceTaggingModel topAdsSourceTaggingModel) {
                         String source = TopAdsNetworkConstant.VALUE_SOURCE_ANDROID;
-                        if (topAdsSourceTaggingModel != null){
+                        if (topAdsSourceTaggingModel != null) {
                             source = topAdsSourceTaggingModel.getSource();
                         }
                         topAdsCreateDetailProductListUseCase.execute(
@@ -90,7 +113,7 @@ public class TopAdsDetailNewGroupPresenterImpl<T extends TopAdsDetailNewGroupVie
                                         topAdsProductViewModelList,
                                         source
                                 ),
-                                getSaveProductSubscriber()
+                                getSaveProductSubscriber(topAdsDepositResponse)
                         );
                     }
                 });
@@ -99,7 +122,7 @@ public class TopAdsDetailNewGroupPresenterImpl<T extends TopAdsDetailNewGroupVie
     }
 
 
-    private Subscriber<TopAdsDetailProductDomainModel> getSaveProductSubscriber(){
+    private Subscriber<TopAdsDetailProductDomainModel> getSaveProductSubscriber(TopAdsDepositResponse.Data topAdsDepositResponse) {
         return new Subscriber<TopAdsDetailProductDomainModel>() {
             @Override
             public void onCompleted() {
@@ -113,6 +136,10 @@ public class TopAdsDetailNewGroupPresenterImpl<T extends TopAdsDetailNewGroupVie
 
             @Override
             public void onNext(TopAdsDetailProductDomainModel domainModel) {
+                if (topAdsDepositResponse.getTopadsDashboardDeposits().getData().getAmount() > 0)
+                    domainModel.setEnoughDeposit(true);
+                else
+                    domainModel.setEnoughDeposit(false);
                 getView().onSaveAdSuccess(TopAdDetailProductMapper.convertDomainToView(domainModel));
                 getView().goToGroupDetail(domainModel.getGroupId());
             }
@@ -123,7 +150,7 @@ public class TopAdsDetailNewGroupPresenterImpl<T extends TopAdsDetailNewGroupVie
     @Override
     public void saveAdNew(final String groupName,
                           final TopAdsDetailGroupViewModel topAdsDetailProductViewModel,
-                          final List<TopAdsProductViewModel> topAdsProductViewModelList, final String source, String shopId) {
+                          final List<TopAdsProductViewModel> topAdsProductViewModelList, final String source, String shopId, TopAdsDepositResponse.Data topAdsDepositResponse) {
 
         topAdsGetSourceTaggingUseCase.execute(new Subscriber<TopAdsSourceTaggingModel>() {
             @Override
@@ -139,7 +166,7 @@ public class TopAdsDetailNewGroupPresenterImpl<T extends TopAdsDetailNewGroupVie
             @Override
             public void onNext(TopAdsSourceTaggingModel topAdsSourceTaggingModel) {
                 String source = TopAdsNetworkConstant.VALUE_SOURCE_ANDROID;
-                if (topAdsSourceTaggingModel != null){
+                if (topAdsSourceTaggingModel != null) {
                     source = topAdsSourceTaggingModel.getSource();
                 }
                 topAdsCreateNewGroupUseCase.execute(
@@ -159,6 +186,10 @@ public class TopAdsDetailNewGroupPresenterImpl<T extends TopAdsDetailNewGroupVie
 
                             @Override
                             public void onNext(TopAdsDetailGroupViewModel topAdsDetailGroupViewModel) {
+                                if (topAdsDepositResponse.getTopadsDashboardDeposits().getData().getAmount() > 0)
+                                    topAdsDetailGroupViewModel.setEnoughDeposit(true);
+                                else
+                                    topAdsDetailGroupViewModel.setEnoughDeposit(false);
                                 getView().onSaveAdSuccess(topAdsDetailGroupViewModel);
                                 getView().goToGroupDetail(String.valueOf(topAdsDetailGroupViewModel.getGroupId()));
                             }
@@ -172,6 +203,7 @@ public class TopAdsDetailNewGroupPresenterImpl<T extends TopAdsDetailNewGroupVie
         super.detachView();
         topAdsCreateNewGroupUseCase.unsubscribe();
         topAdsCreateDetailProductListUseCase.unsubscribe();
+        topAdsBalanceCheckUseCase.unsubscribe();
         topAdsGetSourceTaggingUseCase.unsubscribe();
     }
 

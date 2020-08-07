@@ -220,6 +220,11 @@ class PowerMerchantTermsFragment : BaseWebViewFragment() {
             bottomSheet.dismiss()
         }
         bottomSheet.show(childFragmentManager)
+        trackShowScoreDialog(shopScore)
+    }
+
+    private fun trackShowScoreDialog(shopScore: Int) {
+        powerMerchantTracking.eventShowDialogScore(shopScore)
     }
 
     private fun trackClickSeeShopScoreTips(shopScore: Int) {
@@ -232,6 +237,7 @@ class PowerMerchantTermsFragment : BaseWebViewFragment() {
 
     private fun showDialogKyc() {
         context?.let {
+            trackShowKycDialog()
             DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
                 setTitle(it.getString(R.string.pm_label_kyc_verification_header))
                 setDescription(it.getString(R.string.pm_label_kyc_verification_desc_1))
@@ -249,6 +255,10 @@ class PowerMerchantTermsFragment : BaseWebViewFragment() {
                 }
             }.show()
         }
+    }
+
+    private fun trackShowKycDialog() {
+        powerMerchantTracking.eventShowDialogKyc()
     }
 
     private fun trackClickDismissKycPopUp() {
