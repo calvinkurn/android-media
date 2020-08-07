@@ -71,16 +71,16 @@ class DotIndicatorView : LinearLayout {
     fun setCurrent(position: Int) {
         if (position <= viewPager.adapter?.itemCount ?: 0) {
             setAllDefaultDot()
-            dots[position].apply {
+            /*dots[position].apply {
                 setImageResource(getDefaultIndicatorSelected())
-            }
+            }*/
         }
     }
 
     private fun setAllDefaultDot() {
-        dots.forEach {
+        /*dots.forEach {
             it.setImageResource(getDefaultIndicatorUnselected())
-        }
+        }*/
     }
 
     private fun getScreenHeight(): Int {
@@ -91,6 +91,6 @@ class DotIndicatorView : LinearLayout {
     }
 
     //override this to change indicator color as you want
-    fun getDefaultIndicatorSelected(): Int = com.tokopedia.unifycomponents.R.drawable.unify_default_indicator_selected
-    fun getDefaultIndicatorUnselected(): Int = com.tokopedia.unifycomponents.R.drawable.unify_default_indicator_unselected
+    // fun getDefaultIndicatorSelected(): Int = com.tokopedia.unifycomponents.R.drawable.unify_default_indicator_selected
+    // fun getDefaultIndicatorUnselected(): Int = com.tokopedia.unifycomponents.R.drawable.unify_default_indicator_unselected
 }
