@@ -170,7 +170,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        vgShopInfoContainer.setOnClickListener {
+        btnChangeShopInfo.setOnClickListener {
             val intent = ShopEditBasicInfoActivity.createIntent(context!!, shopBasicDataModel)
             startActivityForResult(intent, REQUEST_EDIT_BASIC_INFO)
         }

@@ -120,7 +120,7 @@
         tools:text="Toko saya bagus banget, menjual kebutuhan Anda dari rumah, kantor, hingga entertainment" />
 
     <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/btn_cancel_order_canceled"
+        android:id="@+id/btnChangeShopInfo"
         app:unifyButtonType="alternate"
         app:unifyButtonVariant="ghost"
         android:layout_width="match_parent"
