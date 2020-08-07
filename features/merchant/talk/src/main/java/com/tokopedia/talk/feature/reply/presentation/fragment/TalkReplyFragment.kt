@@ -492,7 +492,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
                         hidePageError()
                         hidePageLoading()
                         replySwipeRefresh.isRefreshing = false
-                        if(isFromWriting) {
+                        if(isFromWrite()) {
                             showSuccessToaster(getString(R.string.reading_create_question_toaster_success))
                         }
                     }
@@ -709,6 +709,10 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
 
     private fun isFromNotif(): Boolean {
         return source == TalkConstants.NOTIFICATION_SOURCE
+    }
+
+    private fun isFromWrite(): Boolean {
+        return source == TalkConstants.WRITING_SOURCE
     }
 
     private fun setProductId(productId: String) {

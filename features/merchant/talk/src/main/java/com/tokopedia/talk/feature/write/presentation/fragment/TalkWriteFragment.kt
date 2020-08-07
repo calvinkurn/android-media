@@ -1,5 +1,6 @@
 package com.tokopedia.talk.feature.write.presentation.fragment
 
+import android.app.Activity
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
@@ -12,6 +13,7 @@ import android.view.ViewTreeObserver
 import android.widget.EditText
 import androidx.lifecycle.Observer
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.google.gson.JsonNull
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -26,11 +28,14 @@ import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringContract
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringListener
 import com.tokopedia.talk.common.constants.TalkConstants
 import com.tokopedia.talk.common.di.TalkComponent
 import com.tokopedia.talk.common.utils.setCustomMovementMethod
+import com.tokopedia.talk.feature.reading.presentation.fragment.TalkReadingFragment
+import com.tokopedia.talk.feature.reply.presentation.activity.TalkReplyActivity
 import com.tokopedia.talk.feature.write.analytics.TalkWriteTracking
 import com.tokopedia.talk.feature.write.data.model.DiscussionGetWritingForm
 import com.tokopedia.talk.feature.write.di.DaggerTalkWriteComponent
@@ -42,6 +47,7 @@ import com.tokopedia.talk.feature.write.presentation.viewmodel.TalkWriteViewMode
 import com.tokopedia.talk.feature.write.presentation.widget.TalkWriteCategoryChipsWidget
 import com.tokopedia.talk_old.R
 import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_talk_write.*
@@ -87,6 +93,7 @@ class TalkWriteFragment : BaseDaggerFragment(),
         observeReviewForm()
         observeButtonState()
         observeCategories()
+        observeSubmitFormResult()
         return inflater.inflate(R.layout.fragment_talk_write, container, false)
     }
 
@@ -219,6 +226,7 @@ class TalkWriteFragment : BaseDaggerFragment(),
                         .build().toString()
         )
         startActivity(intent)
+        activity?.finish()
     }
 
     private fun goToSettingsPage() {
@@ -274,6 +282,19 @@ class TalkWriteFragment : BaseDaggerFragment(),
         })
     }
 
+    private fun observeSubmitFormResult() {
+        viewModel.submitFormResult.observe(viewLifecycleOwner, Observer {
+            when(it) {
+                is Success -> {
+                    goToReplyPage(it.data.discussionId.toIntOrZero())
+                }
+                is Fail -> {
+                    showErrorToaster()
+                }
+            }
+        })
+    }
+
     private fun onSuccessGetWriteData(discussionGetWritingForm: DiscussionGetWritingForm) {
         with(discussionGetWritingForm) {
             setCharLimits(maxChar, minChar)
@@ -290,7 +311,7 @@ class TalkWriteFragment : BaseDaggerFragment(),
     }
 
     private fun submitNewQuestion() {
-        viewModel.submitForm(writeQuestionTextArea.textAreaMessage.toString())
+        viewModel.submitForm(writeQuestionTextArea.textAreaInput.text.toString())
         TalkWriteTracking.eventClickSendButton(viewModel.getUserId(), viewModel.getProductId().toString())
     }
 
@@ -341,7 +362,7 @@ class TalkWriteFragment : BaseDaggerFragment(),
     }
 
     private fun showErrorToaster() {
-//        view?.let { Toaster.build(talkReadingContainer, getString(R.string.reading_connection_error_toaster_message), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.talk_ok)).show()}
+        view?.let { Toaster.build(it, getString(R.string.write_submit_error), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.talk_ok)).show()}
     }
 
     private fun showError() {

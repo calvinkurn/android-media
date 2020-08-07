@@ -23,10 +23,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GENERAL_SETTING
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.loadImage
-import com.tokopedia.kotlin.extensions.view.removeObservers
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringContract
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringListener
 import com.tokopedia.talk.common.analytics.TalkTrackingConstants
@@ -212,9 +209,6 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
                 data?.let {
                     onSuccessDeleteQuestion(it.getStringExtra(QUESTION_ID) ?: "")
                 }
-            }
-            TALK_WRITE_ACTIVITY_REQUEST_CODE -> if (resultCode == Activity.RESULT_OK) {
-                onSuccessCreateQuestion()
             }
             LOGIN_ACTIVITY_REQUEST_CODE -> if (resultCode == Activity.RESULT_OK) {
                 when (viewModel.talkLastAction) {
@@ -431,22 +425,6 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     private fun getHeaderData() {
         viewModel.getDiscussionAggregate(productId, shopId)
-    }
-
-    private fun onSuccessCreateQuestion() {
-        showSuccessToaster(getString(R.string.reading_create_question_toaster_success))
-        resetSortOptions()
-        unselectCategories()
-        (viewModel.discussionAggregate.value as? Success)?.let {
-            talkReadingHeader.clearAllSort(
-                    TalkReadingMapper.mapDiscussionAggregateResponseToTalkReadingHeaderModel(
-                            it.data.discussionAggregateResponse,
-                            { showBottomSheet() },
-                            this
-                    ), this
-            ) { showBottomSheet() }
-        }
-
     }
 
     private fun onSuccessDeleteQuestion(questionID: String) {

@@ -12,6 +12,5 @@ object TalkConstants {
     const val PARAM_SOURCE = "utm_source"
     const val READING_SOURCE = "reading"
     const val WRITING_SOURCE = "writing"
-    const val SOURCE_INBOX = "inbox"
     const val APP_DISABLE_NEW_TALK_REMOTE_CONFIG_KEY = "android_mainapp_disable_new_talk"
 }

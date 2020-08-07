@@ -143,6 +143,7 @@
     <string name="write_question_error_message">Oops, sudah melebihi maks. karakter.</string>
     <string name="write_question_length_minimum_error">Oops, minimal 5 karakter.</string>
     <string name="write_category_details_subtitle">Hal lain terkait stok bisa &lt;a href = "#">chat penjual.&lt;/a></string>
+    <string name="write_submit_error">Pertanyaan tidak terkirim. Cek koneksi internetmu dan coba lagi, ya.</string>
 
     <string name="reply_dot_builder">• %s</string>
 
