@@ -1,32 +1,18 @@
 package com.tokopedia.logger.service
 
-import android.content.Context
+import androidx.work.ListenableWorker
 import com.tokopedia.logger.LogManager
-import com.tokopedia.logger.utils.ConnectionUtil
 
 class ServiceLogger {
     companion object {
-        var isRunning = false
-
-        fun run(context: Context, onComplete: () -> Unit): Boolean {
-            if (isRunning) {
-                onComplete()
-                return false
-            }
-            isRunning = true
+        suspend fun run(): ListenableWorker.Result {
             try {
-                if (ConnectionUtil.isInternetAvailable(context.applicationContext)) {
-                    LogManager.sendLogToServer()
-                }
+                LogManager.sendLogToServer()
                 LogManager.deleteExpiredLogs()
             } catch (e:Exception) {
                 e.printStackTrace()
-            } finally {
-                isRunning = false
-                onComplete()
             }
-            return false
+            return ListenableWorker.Result.success()
         }
     }
-
 }
