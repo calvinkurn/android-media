@@ -58,6 +58,8 @@ class Lego4AutoBannerViewHolder (itemView: View,
     private fun initItems(element: Lego4AutoDataModel) {
         adapter = Lego4AutoBannerAdapter(legoListener, adapterPosition)
         adapter.addData(element)
+        recyclerView.adapter = adapter
+        adapter.notifyDataSetChanged()
     }
 
     private fun setHeaderComponent(element: Lego4AutoDataModel) {
