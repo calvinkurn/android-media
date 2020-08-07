@@ -52,12 +52,12 @@ object Utils {
     }
 
     @JvmStatic
-    fun mapBackgroundColorToUnifyTickerType(hexBgColor: String): Int {
-        return when (hexBgColor) {
-            "#EBF6F6" -> Ticker.TYPE_ANNOUNCEMENT
-            "#FFEAEF" -> Ticker.TYPE_ERROR
-            "#FFFAE6" -> Ticker.TYPE_WARNING
-            "#F3F4F5" -> Ticker.TYPE_INFORMATION
+    fun mapBackgroundColorToUnifyTickerType(typeString: String): Int {
+        return when (typeString) {
+            "announcement" -> Ticker.TYPE_ANNOUNCEMENT
+            "info" -> Ticker.TYPE_ERROR
+            "warning" -> Ticker.TYPE_WARNING
+            "error" -> Ticker.TYPE_INFORMATION
             else -> Ticker.TYPE_ANNOUNCEMENT
         }
     }
