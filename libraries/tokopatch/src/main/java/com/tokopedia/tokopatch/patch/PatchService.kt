@@ -86,11 +86,10 @@ class PatchService : JobIntentService() {
     }
 
     private fun decodeData(result: DataResponse.Result, patchList: MutableList<Patch>) {
-        val decodedBytes = Decoder.decrypt(result.signature, result.data)
-
         val file = File.createTempFile(result.versionName, ".zip", applicationContext.cacheDir)
         val bufferedOutputStream = BufferedOutputStream(FileOutputStream(file))
         try {
+            val decodedBytes = Decoder.decrypt(result.signature, result.data)
             bufferedOutputStream.write(decodedBytes)
         } catch (e: IOException) {
             e.printStackTrace()
