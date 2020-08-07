@@ -17,7 +17,6 @@ import com.google.android.exoplayer2.upstream.DefaultLoadErrorHandlingPolicy
 import com.google.android.exoplayer2.upstream.HttpDataSource.InvalidResponseCodeException
 import com.google.android.exoplayer2.upstream.LoadErrorHandlingPolicy
 import com.google.android.exoplayer2.upstream.Loader.UnexpectedLoaderException
-import com.google.android.exoplayer2.upstream.cache.CacheDataSourceFactory
 import com.google.android.exoplayer2.util.Util
 import com.tokopedia.play_common.exception.PlayVideoErrorException
 import com.tokopedia.play_common.model.PlayBufferControl
@@ -28,24 +27,14 @@ import com.tokopedia.play_common.state.VideoPositionHandle
 import com.tokopedia.play_common.types.PlayVideoType
 import com.tokopedia.play_common.util.ExoPlaybackExceptionParser
 import com.tokopedia.play_common.util.PlayProcessLifecycleObserver
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 import java.io.FileNotFoundException
 import java.io.IOException
-import kotlin.coroutines.CoroutineContext
 import kotlin.properties.Delegates
 
 /**
  * Created by jegul on 03/12/19
  */
-//TODO("Figure out how to manage cache more graceful")
-class PlayVideoManager private constructor(private val applicationContext: Context) : CoroutineScope {
-
-    override val coroutineContext: CoroutineContext
-        get() = job + Dispatchers.Main
-
-    private val job = SupervisorJob()
+class PlayVideoManager private constructor(private val applicationContext: Context) {
 
     /**
      * VideoPlayer shared state
@@ -192,8 +181,6 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
     fun release() {
         currentPrepareState = getDefaultPrepareState()
         videoPlayer.release()
-//        launch { releaseCache() }
-        playerModel.copy(cache = null)
     }
 
     fun stop(resetState: Boolean = true) {
@@ -265,8 +252,7 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
 
     //region private method
     private fun getMediaSourceBySource(context: Context, uri: Uri): MediaSource {
-        val mDefaultDataSourceFactory = DefaultDataSourceFactory(context, Util.getUserAgent(context, "Tokopedia Android"))
-        val mDataSourceFactory = if (USE_CACHE) CacheDataSourceFactory(playerModel.cache, mDefaultDataSourceFactory) else mDefaultDataSourceFactory
+        val mDataSourceFactory = DefaultDataSourceFactory(context, Util.getUserAgent(context, "Tokopedia Android"))
         val errorHandlingPolicy = getErrorHandlingPolicy()
         val mediaSource = when (val type = Util.inferContentType(uri)) {
             C.TYPE_SS -> SsMediaSource.Factory(mDataSourceFactory).setLoadErrorHandlingPolicy(errorHandlingPolicy)
@@ -282,7 +268,7 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
         return object : DefaultLoadErrorHandlingPolicy() {
             override fun getRetryDelayMsFor(dataType: Int, loadDurationMs: Long, exception: IOException?, errorCount: Int): Long {
                 return if (exception is ParserException || exception is FileNotFoundException || exception is UnexpectedLoaderException) C.TIME_UNSET
-                else (errorCount * RETRY_DELAY) + RETRY_DELAY
+                else errorCount * RETRY_DELAY
             }
 
             override fun getMinimumLoadableRetryCount(dataType: Int): Int {
@@ -321,7 +307,7 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
                     setRepeatMode(it, isRepeated)
                 }
 
-        return PlayPlayerModel(videoPlayer, videoLoadControl, null)
+        return PlayPlayerModel(videoPlayer, videoLoadControl)
     }
 
     /**
@@ -339,8 +325,8 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
     }
 
     companion object {
-        private const val RETRY_COUNT_LIVE = 1
-        private const val RETRY_COUNT_DEFAULT = 2
+        private const val RETRY_COUNT_LIVE = 2
+        private const val RETRY_COUNT_DEFAULT = 3
         private const val RETRY_DELAY = 2000L
         private const val BLACKLIST_MS = 10000L
 

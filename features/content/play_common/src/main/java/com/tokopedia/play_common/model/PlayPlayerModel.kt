@@ -9,10 +9,5 @@ import com.tokopedia.play_common.player.PlayVideoLoadControl
  */
 data class PlayPlayerModel(
         val player: SimpleExoPlayer,
-        val loadControl: PlayVideoLoadControl,
-        /**
-         * Cache is nullable because it is better to be released if it is not used,
-         * and to handle that release state, null is preferred for now
-         */
-        val cache: Cache?
+        val loadControl: PlayVideoLoadControl
 )
