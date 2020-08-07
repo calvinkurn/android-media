@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ProcessLifecycleOwner
 import com.google.android.exoplayer2.*
+import com.google.android.exoplayer2.audio.AudioAttributes
 import com.google.android.exoplayer2.database.DatabaseProvider
 import com.google.android.exoplayer2.database.ExoDatabaseProvider
 import com.google.android.exoplayer2.source.MediaSource
@@ -17,7 +18,9 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.upstream.DefaultLoadErrorHandlingPolicy
 import com.google.android.exoplayer2.upstream.LoadErrorHandlingPolicy
 import com.google.android.exoplayer2.upstream.Loader.UnexpectedLoaderException
-import com.google.android.exoplayer2.upstream.cache.*
+import com.google.android.exoplayer2.upstream.cache.CacheDataSourceFactory
+import com.google.android.exoplayer2.upstream.cache.CacheEvictor
+import com.google.android.exoplayer2.upstream.cache.LeastRecentlyUsedCacheEvictor
 import com.google.android.exoplayer2.util.Util
 import com.tokopedia.play_common.exception.PlayVideoErrorException
 import com.tokopedia.play_common.model.PlayBufferControl
@@ -28,8 +31,9 @@ import com.tokopedia.play_common.state.VideoPositionHandle
 import com.tokopedia.play_common.types.PlayVideoType
 import com.tokopedia.play_common.util.ExoPlaybackExceptionParser
 import com.tokopedia.play_common.util.PlayProcessLifecycleObserver
-import kotlinx.coroutines.*
-import timber.log.Timber
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
@@ -360,6 +364,7 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
                 .build()
                 .apply {
                     addListener(playerEventListener)
+                    setAudioAttributes(initAudioAttributes(), true)
                 }
                 .also {
                     mute(it, isMuted)
@@ -367,6 +372,16 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
                 }
 
         return PlayPlayerModel(videoPlayer, videoLoadControl, null)
+    }
+
+    /**
+     * To handle audio focus and content type
+     */
+    private fun initAudioAttributes(): AudioAttributes {
+        return AudioAttributes.Builder()
+                .setContentType(C.CONTENT_TYPE_MOVIE)
+                .setUsage(C.USAGE_MEDIA)
+                .build()
     }
 
     private fun initCustomLoadControl(bufferControl: PlayBufferControl): PlayVideoLoadControl {
