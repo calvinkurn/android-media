@@ -233,7 +233,7 @@
     </string>
 
     <string name="som_chat_buyer">Chat Pembeli</string>
-    <string name="som_shop_performance_info">Skor performa toko tidak akan dikurangi untuk pembatalan ini</string>
+    <string name="som_shop_performance_info">Skor performa tokomu tidak akan dikurangi untuk pembatalan pesanan ini.</string>
     <string name="som_request_buyer_notes_1">telah mengajukan pembatalan pesanan</string>
     <string name="som_request_buyer_notes_2">dengan alasan : </string>
 
@@ -276,5 +276,10 @@
     <string name="dialog_title_cannot_access_page">Kamu tidak memiliki akses ke halaman ini</string>
     <string name="dialog_description_cannot_access_page">Akses ke halaman penjualan hanya dapat diberikan oleh pemilik toko</string>
     <string name="button_understand">Ya, saya mengerti</string>
+    <string name="bottomsheet_buyer_request_cancel">Alasan pembeli mengajukan pembatalan pesanan:</string>
+    <string name="bottomsheet_order_cancellation_response_negative_button_code_220">Terima Pesanan</string>
+    <string name="bottomsheet_order_cancellation_response_positive_button_code_220">Batalkan Pesanan</string>
+    <string name="bottomsheet_order_cancellation_response_negative_button_code_400">Konfirmasi Pengiriman</string>
+    <string name="bottomsheet_order_cancellation_response_positive_button_code_400">Batalkan Pesanan</string>
 
 </resources>

@@ -14,7 +14,9 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.coachmark.CoachMarkItem
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImageDrawable
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.domain.model.TickerInfo
 import com.tokopedia.sellerorder.common.util.SomConsts.EXTRA_ORDER_ID
@@ -54,28 +56,9 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
 
             if (item.dataObject.isBuyerRequestCancel) {
                 setupTicker(itemView.ticker_detail_buyer_request_cancel, item.dataObject.tickerInfo)
-                itemView.ticker_detail_buyer_request_cancel?.apply {
-                    visibility = View.VISIBLE
-                    closeButtonVisibility = View.GONE
-                    setHtmlDescription(itemView.context.getString(R.string.buyer_request_cancel_html))
-                    setOnClickListener { actionListener?.onShowBuyerRequestCancelReasonBottomSheet() }
-                    setDescriptionClickEvent(object: TickerCallback {
-                        override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                            actionListener?.onShowBuyerRequestCancelReasonBottomSheet()
-                        }
-
-                        override fun onDismiss() {}
-
-                    })
-                    post {
-                        measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
-                                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED))
-                        requestLayout()
-                    }
-                }
-
+                itemView.ticker_detail_buyer_request_cancel?.show()
             } else {
-                itemView.ticker_detail_buyer_request_cancel?.visibility = View.GONE
+                itemView.ticker_detail_buyer_request_cancel?.gone()
             }
 
             itemView.header_buyer_value?.text = item.dataObject.custName
@@ -174,32 +157,23 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
             setTextDescription(tickerDescription)
             setDescriptionClickEvent(object: TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                    RouteManager.route(context, String.format("%s?=url", ApplinkConst.WEBVIEW, tickerInfo.linkUrl))
+                    RouteManager.route(context, String.format("%s?=url", ApplinkConst.WEBVIEW, tickerInfo.actionUrl))
                 }
                 override fun onDismiss() {}
             })
-            tickerType = Utils.mapBackgroundColorToUnifyTickerType(tickerInfo.backgroundColor)
+            tickerType = Utils.mapBackgroundColorToUnifyTickerType(tickerInfo.type)
             closeButtonVisibility = View.GONE
         }
     }
 
     private fun makeTickerDescription(context: Context, tickerInfo: TickerInfo): String {
-        val message = tickerInfo.message
-        val messageLink = tickerInfo.linkText
+        val message = tickerInfo.text
+        val messageLink = tickerInfo.actionText
         val spannedMessage = SpannableStringBuilder()
                 .append(message)
-                .append(". $messageLink")
+                .append(" $messageLink")
 
-        if (message.isNotBlank() && tickerInfo.textColor.length > 1) {
-            spannedMessage.setSpan(
-                    ForegroundColorSpan(Color.parseColor(tickerInfo.textColor)),
-                    0,
-                    message.length,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
-        }
-
-        if (messageLink.isNotBlank() && tickerInfo.textColor.length > 1) {
+        if (messageLink.isNotBlank()) {
             spannedMessage.setSpan(
                     UrlSpanNoUnderline(messageLink),
                     message.length + 2,
