@@ -81,7 +81,9 @@ class LogManager(val application: Application) {
                 }
                 val log = Logger(timeStamp, serverChannel, priority, truncatedMessage)
                 logger.insert(log)
-                LogWorker.run()
+                instance?.run {
+                    LogWorker.scheduleWorker(this.application)
+                }
             }
         }
 

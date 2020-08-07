@@ -19,7 +19,7 @@ class Constants {
         const val SEVERITY_HIGH = 1
         const val SEVERITY_MEDIUM = 2
 
-        val LOG_SERVICE_DELAY = 60L
+        val LOG_SERVICE_DELAY = 30L
         val LOG_SERVICE_BACKOFF = 30L
 
         const val CLIENT_LOGENTRIES = "logentries"
