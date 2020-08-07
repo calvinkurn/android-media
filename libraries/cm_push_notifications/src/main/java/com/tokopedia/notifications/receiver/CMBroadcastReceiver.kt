@@ -134,7 +134,7 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
                         sendClickPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, baseNotificationModel, CMConstant.NotificationType.GENERAL)
                     }
                     CMConstant.ReceiverAction.ACTION_PRODUCT_COLLAPSED_CLICK -> {
-                        handleCollapsedViewClick(context, intent, notificationId, baseNotificationModel)
+                        handleCollapsedViewClick(context, intent, notificationId)
                     }
                     CMConstant.ReceiverAction.ACTION_PRODUCT_CAROUSEL_LEFT_CLICK -> {
                         ProductNotification.onLeftIconClick(context.applicationContext,baseNotificationModel!!)
@@ -179,6 +179,14 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
 
         element?.let {
             if (it.type == PRODUCT_NOTIIFICATION) {
+                // tracker for general body click
+                ProductAnalytics.clickBody(
+                        userSession.userId,
+                        element,
+                        productInfo
+                )
+
+                // tracker for product card click
                 ProductAnalytics.clickProductCard(userSession.userId, it, productInfo)
             }
         }
@@ -195,19 +203,9 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
         clearProductImages(context.applicationContext)
     }
 
-    private fun handleCollapsedViewClick(
-            context: Context,
-            intent: Intent,
-            notificationId: Int,
-            element: BaseNotificationModel?
-    ) {
+    private fun handleCollapsedViewClick(context: Context, intent: Intent, notificationId: Int) {
         handleMainClick(context, intent, notificationId)
         clearProductImages(context.applicationContext)
-        ProductAnalytics.clickBody(
-                userSession.userId,
-                element,
-                element?.productInfoList?.first()
-        )
     }
 
     private fun clearProductImages(context: Context) {
