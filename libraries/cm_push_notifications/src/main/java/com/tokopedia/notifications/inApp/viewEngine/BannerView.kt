@@ -125,11 +125,13 @@ internal open class BannerView(activity: Activity) {
         }
     }
 
-    private fun getBannerAppLink(cmLayout: CMLayout): String {
-        return if (cmLayout.getAppLink().isNullOrEmpty() && cmLayout.getButton().isNotEmpty()) {
-            cmLayout.getButton().first().getAppLink()
-        } else {
-            cmLayout.getAppLink()
+    private fun getBannerAppLink(data: CMInApp): String {
+        with(data.getCmLayout()) {
+            return if (data.type == TYPE_INTERSTITIAL && getButton().isNotEmpty()) {
+                getButton().first().getAppLink()
+            } else {
+                getAppLink()
+            }
         }
     }
 
@@ -137,7 +139,7 @@ internal open class BannerView(activity: Activity) {
         // prevent banner click if has more than one CTA button
         with(data.getCmLayout()) {
             if (getButton().size > 1) return
-            val bannerAppLink = getBannerAppLink(this)
+            val bannerAppLink = getBannerAppLink(data)
 
             imgBanner.setOnClickListener {
                 trackAppLinkClick(data, bannerAppLink, ElementType(ElementType.MAIN))
