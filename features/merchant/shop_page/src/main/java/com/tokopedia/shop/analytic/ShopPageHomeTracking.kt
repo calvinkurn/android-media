@@ -357,14 +357,14 @@ class ShopPageHomeTracking(
             positionChannel: String,
             userId: String,
             bannerId: String,
-            creativeName: String
-
+            creativeName: String,
+            position: String
     ){
         val eventMap = mapOf(
                 EVENT to VIEW_SHOP_PAGE,
                 EVENT_CATEGORY to SHOP_PAGE_BUYER,
                 EVENT_ACTION to IMPRESSION_SGC_BANNER,
-                EVENT_LABEL to "view on banner play - $shopId",
+                EVENT_LABEL to "view on banner play - $shopId - $position",
                 USER_ID to userId,
                 ECOMMERCE to mapOf(
                         PROMO_VIEW to mapOf(
@@ -387,14 +387,14 @@ class ShopPageHomeTracking(
             positionChannel: String,
             userId: String,
             bannerId: String,
-            creativeName: String
-
+            creativeName: String,
+            position: String
     ){
         val eventMap = mapOf(
                 EVENT to CLICK_SHOP_PAGE,
                 EVENT_CATEGORY to SHOP_PAGE_BUYER,
                 EVENT_ACTION to CLICK,
-                EVENT_LABEL to "click on banner play - $shopId",
+                EVENT_LABEL to "click on banner play - $shopId - $position",
                 USER_ID to userId,
                 ECOMMERCE to mapOf(
                         PROMO_CLICK to mapOf(
@@ -413,13 +413,13 @@ class ShopPageHomeTracking(
     }
 
     fun impressionPlayBanner(
-        shopId: String,
-        channelId: String,
-        positionChannel: String,
-        autoPlay: String,
-        userId: String,
-        bannerId: String,
-        creativeName: String
+            shopId: String,
+            channelId: String,
+            positionChannel: String,
+            autoPlay: String,
+            userId: String,
+            bannerId: String,
+            creativeName: String
 
     ){
         val eventMap = mapOf(
