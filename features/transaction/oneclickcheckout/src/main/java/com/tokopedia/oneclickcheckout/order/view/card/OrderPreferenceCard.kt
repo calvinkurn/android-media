@@ -277,11 +277,7 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
                         if (payment.hasCreditCardOption()) {
                             listener.onChangeCreditCardClicked(payment.creditCard.additionalData)
                         } else if (payment.hasNoCreditCardOption()) {
-                            // todo check
-                            listener.onCreditCardErrorActionClicked()
-//                            listener.onPreferenceEditClicked(preference)
-                        } else {
-                            listener.onPaymentErrorActionClicked(payment.errorMessage.button.link)
+                            listener.onPreferenceEditClicked(preference)
                         }
                     }
                 } else {
@@ -485,9 +481,5 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
         fun onInstallmentDetailChange(selectedInstallmentTerm: OrderPaymentInstallmentTerm)
 
         fun onChangeCreditCardClicked(additionalData: OrderPaymentCreditCardAdditionalData)
-
-        fun onCreditCardErrorActionClicked()
-
-        fun onPaymentErrorActionClicked(link: String)
     }
 }

@@ -76,7 +76,8 @@ data class OrderPaymentCreditCardAdditionalData(
         val msisdn: String = "",
         val merchantCode: String = "",
         val profileCode: String = "",
-        val signature: String = ""
+        val signature: String = "",
+        val changeCcLink: String = ""
 ) : Parcelable
 
 data class OrderPaymentInstallmentTerm(

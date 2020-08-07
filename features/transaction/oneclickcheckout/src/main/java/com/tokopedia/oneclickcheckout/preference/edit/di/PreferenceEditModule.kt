@@ -24,6 +24,8 @@ import com.tokopedia.oneclickcheckout.preference.edit.domain.delete.DeletePrefer
 import com.tokopedia.oneclickcheckout.preference.edit.domain.delete.DeletePreferenceUseCaseImpl
 import com.tokopedia.oneclickcheckout.preference.edit.domain.delete.model.DeletePreferenceGqlResponse
 import com.tokopedia.oneclickcheckout.preference.edit.domain.get.model.GetPreferenceByIdGqlResponse
+import com.tokopedia.oneclickcheckout.preference.edit.domain.payment.GetPaymentListingParamUseCase
+import com.tokopedia.oneclickcheckout.preference.edit.domain.payment.GetPaymentListingParamUseCaseImpl
 import com.tokopedia.oneclickcheckout.preference.edit.domain.shipping.GetShippingDurationUseCase
 import com.tokopedia.oneclickcheckout.preference.edit.domain.shipping.mapper.ShippingDurationModelMapper
 import com.tokopedia.oneclickcheckout.preference.edit.domain.update.UpdatePreferenceUseCase
@@ -147,7 +149,13 @@ class PreferenceEditModule(private val activity: Activity) {
 
     @PreferenceEditScope
     @Provides
-    fun provideGetPaymentListingGraphqlUsecase(graphqlRepository: GraphqlRepository): GraphqlUseCase<PaymentListingParamGqlResponse> {
+    fun provideGetPaymentListingGraphqlUseCase(graphqlRepository: GraphqlRepository): GraphqlUseCase<PaymentListingParamGqlResponse> {
         return GraphqlUseCase(graphqlRepository)
+    }
+
+    @PreferenceEditScope
+    @Provides
+    fun provideGetPaymentListingParamUseCase(graphqlUseCase: GraphqlUseCase<PaymentListingParamGqlResponse>): GetPaymentListingParamUseCase {
+        return GetPaymentListingParamUseCaseImpl(graphqlUseCase)
     }
 }

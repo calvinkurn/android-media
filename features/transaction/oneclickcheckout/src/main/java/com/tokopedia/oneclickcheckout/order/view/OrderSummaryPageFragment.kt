@@ -743,16 +743,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 startActivityForResult(CreditCardPickerActivity.createIntent(it, additionalData), REQUEST_CODE_CREDIT_CARD)
             }
         }
-
-        override fun onCreditCardErrorActionClicked() {
-            startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalPayment.PAYMENT_SETTING), REQUEST_CODE_CREDIT_CARD_ERROR)
-        }
-
-        override fun onPaymentErrorActionClicked(link: String) {
-            view?.let {
-                Toaster.make(it, DEFAULT_LOCAL_ERROR_MESSAGE, type = Toaster.TYPE_ERROR)
-            }
-        }
     }
 
     fun showPreferenceListBottomSheet() {

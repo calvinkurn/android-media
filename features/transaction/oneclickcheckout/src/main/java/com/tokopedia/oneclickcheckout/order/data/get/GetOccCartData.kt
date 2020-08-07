@@ -60,5 +60,7 @@ data class PaymentAdditionalData(
         @SerializedName("profile_code")
         val profileCode: String = "",
         @SerializedName("signature")
-        val signature: String = ""
+        val signature: String = "",
+        @SerializedName("change_cc_link")
+        val changeCcLink: String = ""
 )

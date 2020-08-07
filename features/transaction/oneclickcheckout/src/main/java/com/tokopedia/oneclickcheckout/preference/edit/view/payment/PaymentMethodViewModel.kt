@@ -15,9 +15,6 @@ class PaymentMethodViewModel @Inject constructor(private val getPaymentListingPa
     val paymentListingParam: LiveData<OccState<ListingParam>>
         get() = _paymentListingParam
 
-    private val merchantCode = "tokopedia"
-    private val profileCode = "EXPRESS_SAVE"
-
     fun getPaymentListingParam(merchantCode: String, profileCode: String, callbackUrl: String, addressId: String) {
         _paymentListingParam.value = OccState.Loading
         getPaymentListingParamUseCase.execute(merchantCode, profileCode, callbackUrl, addressId, {

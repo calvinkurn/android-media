@@ -7,9 +7,13 @@ import com.tokopedia.oneclickcheckout.preference.edit.data.payment.ListingParam
 import com.tokopedia.oneclickcheckout.preference.edit.data.payment.PaymentListingParamGqlResponse
 import javax.inject.Inject
 
-class GetPaymentListingParamUseCase @Inject constructor(private val graphqlUseCase: GraphqlUseCase<PaymentListingParamGqlResponse>) {
+interface GetPaymentListingParamUseCase {
+    fun execute(merchantCode: String, profileCode: String, callbackUrl: String, addressId: String, onSuccess: (ListingParam) -> Unit, onError: (Throwable) -> Unit)
+}
 
-    fun execute(merchantCode: String, profileCode: String, callbackUrl: String, addressId: String, onSuccess: (ListingParam) -> Unit, onError: (Throwable) -> Unit) {
+class GetPaymentListingParamUseCaseImpl @Inject constructor(private val graphqlUseCase: GraphqlUseCase<PaymentListingParamGqlResponse>): GetPaymentListingParamUseCase {
+
+    override fun execute(merchantCode: String, profileCode: String, callbackUrl: String, addressId: String, onSuccess: (ListingParam) -> Unit, onError: (Throwable) -> Unit) {
         graphqlUseCase.setGraphqlQuery(QUERY)
         graphqlUseCase.setRequestParams(mapOf(
                 PARAM_MERCHANT_CODE to merchantCode,

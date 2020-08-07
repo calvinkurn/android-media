@@ -92,8 +92,8 @@ class CreditCardPickerFragment : BaseDaggerFragment() {
             activity?.finish()
             return
         }
-        val url = "${TokopediaUrl.getInstance().PAY}/v3/cardlist"
-        webView?.postUrl(url, getPayload(additionalData).toByteArray())
+//        val url = "${TokopediaUrl.getInstance().PAY}/v3/cardlist"
+        webView?.postUrl(additionalData.changeCcLink, getPayload(additionalData).toByteArray())
     }
 
     private fun getPayload(additionalData: OrderPaymentCreditCardAdditionalData): String {
@@ -105,7 +105,7 @@ class CreditCardPickerFragment : BaseDaggerFragment() {
                 "customer_email=${getUrlEncoded(additionalData.email)}&" +
                 "customer_msisdn=${getUrlEncoded(additionalData.msisdn)}&" +
                 "callback_url=${getUrlEncoded("${TokopediaUrl.getInstance().PAY}/v3/cardlist")}"
-//                        "version=${getUrlEncoded(GlobalConfig.VERSION_NAME)}&"
+//                "version=${getUrlEncoded(GlobalConfig.VERSION_NAME)}"
     }
 
     private fun getUrlEncoded(valueStr: String): String {

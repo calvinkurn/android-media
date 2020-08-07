@@ -99,14 +99,14 @@ class PaymentMethodFragment : BaseDaggerFragment() {
         val parent = activity
         if (parent is PreferenceEditParent) {
             parent.hideAddButton()
-            parent.hideDeleteButton()
-//            parent.showDeleteButton()
-//            parent.setDeleteButtonOnClickListener {
-//                param?.let {
-//                    val url = "${TokopediaUrl.getInstance().PAY}/v2/payment/register/listing"
-//                    webView?.postUrl(url, getPayload(it).toByteArray())
-//                }
-//            }
+//            parent.hideDeleteButton()
+            parent.showDeleteButton()
+            parent.setDeleteButtonOnClickListener {
+                param?.let {
+                    val url = "${TokopediaUrl.getInstance().PAY}/v2/payment/register/listing"
+                    webView?.postUrl(url, getPayload(it).toByteArray())
+                }
+            }
             val parentContext: Context = parent
             SplitCompat.installActivity(parentContext)
             parent.setHeaderTitle(parentContext.getString(R.string.lbl_choose_payment_method))
@@ -135,9 +135,9 @@ class PaymentMethodFragment : BaseDaggerFragment() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             webSettings?.mediaPlaybackRequiresUserGesture = false
         }
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-//            WebView.setWebContentsDebuggingEnabled(true)
-//        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            WebView.setWebContentsDebuggingEnabled(true)
+        }
     }
 
     private fun loadPaymentParams() {
@@ -147,7 +147,7 @@ class PaymentMethodFragment : BaseDaggerFragment() {
                     loadWebView(it.data)
                 }
                 is OccState.Failed -> {
-                    it.getFailure()?.let {failure ->
+                    it.getFailure()?.let { failure ->
                         handleError(failure.throwable)
                     }
                 }
@@ -163,22 +163,15 @@ class PaymentMethodFragment : BaseDaggerFragment() {
     }
 
     private fun loadWebView(param: ListingParam) {
-//        this.param = param
-        val url = "${TokopediaUrl.getInstance().PAY}/v2/payment/register/listing"
-        webView?.postUrl(url, getPayload(param).toByteArray())
-//        webView?.loadUrl("https://www.google.com")
+        this.param = param
+//        val url = "${TokopediaUrl.getInstance().PAY}/v2/payment/register/listing"
+//        webView?.postUrl(url, getPayload(param).toByteArray())
+        webView?.loadUrl("https://www.google.com")
         webView?.visible()
         globalError?.gone()
     }
 
     private fun getPayload(param: ListingParam): String {
-//        val phoneNumber = userSession.phoneNumber
-//        val msisdnVerified = userSession.isMsisdnVerified
-//        var phone = ""
-//        if (msisdnVerified && phoneNumber.isNotBlank()) {
-//            phone = phoneNumber
-//        }
-        //merchant_code=tokopedia&profile_code=EXPRESS_SAVE&user_id=5512940&customer_name=erdepe&customer_email=reza.pramitra%40tokopedia.com&customer_msisdn=6281380919101&address_id=4690461&callback_url=https%3A%2F%2Fpay-staging.tokopedia.com%2Fdummy%2Fpayment%2Flisting&signature=1517d62a7150ef32392da38791ce89890a7c383d
         return "merchant_code=${getUrlEncoded(param.merchantCode)}&" +
                 "profile_code=${getUrlEncoded(param.profileCode)}&" +
                 "user_id=${getUrlEncoded(param.userId)}&" +
@@ -186,20 +179,16 @@ class PaymentMethodFragment : BaseDaggerFragment() {
                 "customer_email=${getUrlEncoded(param.customerEmail)}&" +
                 "customer_msisdn=${getUrlEncoded(param.customerMsisdn)}&" +
                 "address_id=${getUrlEncoded(param.addressId)}&" +
-//                "callback_url=${getUrlEncoded("tokopedia://occ")}"
                 "callback_url=${getUrlEncoded(param.callbackUrl)}&" +
                 "signature=${getUrlEncoded(param.hash)}"
-//                        "version=${getUrlEncoded(GlobalConfig.VERSION_NAME)}&"
-//        return data
+//                "version=${getUrlEncoded(GlobalConfig.VERSION_NAME)}"
     }
 
     private fun getMerchantCode(): String {
-//        return getUrlEncoded("tokopedia")
         return "tokopedia"
     }
 
     private fun getProfileCode(): String {
-//        return getUrlEncoded("EXPRESS_SAVE")
         return "EXPRESS_SAVE"
     }
 
@@ -329,12 +318,4 @@ class PaymentMethodFragment : BaseDaggerFragment() {
             return Gson().toJson(map)
         }
     }
-
-//    override fun onBackPressed(): Boolean {
-//        if (webView?.canGoBack() == true) {
-//            webView?.goBack()
-//            return true
-//        }
-//        return false
-//    }
 }
