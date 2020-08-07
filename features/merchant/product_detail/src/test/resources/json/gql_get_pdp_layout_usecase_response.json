@@ -40,7 +40,7 @@
           },
           "condition": "NEW",
           "gtin": "",
-          "isBlacklisted": true,
+          "isBlacklisted": false,
           "isLeasing": false,
           "isMustInsurance": false,
           "maxOrder": 0,
@@ -742,6 +742,10 @@
             "data": [],
             "name": "pdp_4",
             "type": "product_list"
+          },{
+            "data": [],
+            "name": "byme",
+            "type": "info"
           }
         ],
         "name": "Default Layout",

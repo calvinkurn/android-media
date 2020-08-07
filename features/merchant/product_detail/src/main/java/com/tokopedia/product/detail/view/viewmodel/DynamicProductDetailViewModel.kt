@@ -447,13 +447,11 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 it
             } else if (it.name() == ProductDetailConstant.PRODUCT_VARIANT_INFO) {
                 it
-            } else if (it.name() == ProductDetailConstant.VARIANT && !isVariant) {
+            } else if (it.name() == ProductDetailConstant.VARIANT_OPTIONS && !isVariant) {
                 it
             } else if (GlobalConfig.isSellerApp() && it.type() == ProductDetailConstant.PRODUCT_LIST) {
                 it
             } else if (it.name() == ProductDetailConstant.BY_ME && isAffiliate && !GlobalConfig.isSellerApp()) {
-                it
-            } else if (it.type() == ProductDetailConstant.VARIANT && !isVariant) {
                 it
             } else {
                 null

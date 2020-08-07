@@ -19,10 +19,14 @@ import com.tokopedia.product.detail.data.model.ProductInfoP2Login
 import com.tokopedia.product.detail.data.model.ProductInfoP2Other
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.model.ProductInfoP3
+import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpfulResponseWrapper
+import com.tokopedia.product.detail.data.util.DynamicProductDetailTalkGoToWriteDiscussion
+import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.usecase.*
 import com.tokopedia.product.detail.view.viewmodel.DynamicProductDetailViewModel
 import com.tokopedia.product.usecase.GetPdpLayoutUseCaseTest.Companion.GQL_GET_PDP_LAYOUT_JSON
+import com.tokopedia.product.usecase.GetPdpLayoutUseCaseTest.Companion.GQL_GET_PDP_LAYOUT_REMOVE_COMPONENT_JSON
 import com.tokopedia.product.util.ProductDetailTestUtil
 import com.tokopedia.product.util.TestDispatcherProvider
 import com.tokopedia.product.warehouse.model.ProductActionSubmit
@@ -139,6 +143,24 @@ class DynamicProductDetailViewModelTest {
     //==============================================================================================//
 
     @Test
+    fun `on success update variable p1`() {
+        viewModel.updateDynamicProductInfoData(DynamicProductInfoP1())
+
+        Assert.assertNotNull(viewModel.getDynamicProductInfoP1)
+    }
+
+    @Test
+    fun `on success update notify me data`() {
+        viewModel.updateNotifyMeData()
+    }
+
+    @Test
+    fun `on success update talk action`() {
+        viewModel.updateLastAction(DynamicProductDetailTalkGoToWriteDiscussion)
+        Assert.assertTrue(viewModel.talkLastAction is DynamicProductDetailTalkGoToWriteDiscussion)
+    }
+
+    @Test
     fun `has shop authority`() {
         val shopInfo = ShopInfo(isAllowManage = 1)
         every {
@@ -153,8 +175,8 @@ class DynamicProductDetailViewModelTest {
     }
 
     @Test
-    fun `has not shop authority`() {
-        val shopInfo = ShopInfo(isAllowManage = 0)
+    fun `has not shop authority shopowner`() {
+        val shopInfo = ShopInfo(isAllowManage = 1)
         every {
             viewModel.isShopOwner()
         } returns false
@@ -163,7 +185,21 @@ class DynamicProductDetailViewModelTest {
 
         val hasShopAuthority = viewModel.hasShopAuthority()
 
-        Assert.assertFalse(hasShopAuthority)
+        Assert.assertTrue(hasShopAuthority)
+    }
+
+    @Test
+    fun `has not shop authority allow manage`() {
+        val shopInfo = ShopInfo(isAllowManage = 0)
+        every {
+            viewModel.isShopOwner()
+        } returns true
+
+        viewModel.shopInfo = shopInfo
+
+        val hasShopAuthority = viewModel.hasShopAuthority()
+
+        Assert.assertTrue(hasShopAuthority)
     }
 
     @Test
@@ -414,15 +450,18 @@ class DynamicProductDetailViewModelTest {
      */
     @Test
     fun `on success get product info login`() {
-        val productParams = ProductParams("", "", "", "", "", "")
-        val mockData : ProductDetailLayout = ProductDetailTestUtil.createMockGraphqlSuccessResponse(GQL_GET_PDP_LAYOUT_JSON, ProductDetailLayout::class.java)
+        val mockData: ProductDetailLayout = ProductDetailTestUtil.createMockGraphqlSuccessResponse(GQL_GET_PDP_LAYOUT_JSON, ProductDetailLayout::class.java)
         val dataP1 = ProductDetailTestUtil.mapIntoModel(mockData.data ?: PdpGetLayout())
+
+        val productParams = ProductParams("", "", "", "", "", "")
 
         viewModel.productInfoP3.observeForever { }
 
         every {
             viewModel.userId
         } returns "123"
+
+        viewModel.enableCaching = false
 
         every {
             userSessionInterface.isLoggedIn
@@ -432,6 +471,54 @@ class DynamicProductDetailViewModelTest {
             viewModel.isUserSessionActive
         } returns true
 
+       `co every p1 success`(dataP1)
+
+        viewModel.getProductP1(productParams, true, false)
+
+        `co verify p1 success`()
+
+        Assert.assertTrue(viewModel.productLayout.value is Success)
+        Assert.assertNotNull(viewModel.p2Data.value)
+        Assert.assertNotNull(viewModel.p2Other.value)
+        Assert.assertNotNull(viewModel.p2Login.value)
+        Assert.assertNotNull(viewModel.productInfoP3.value)
+
+        Assert.assertFalse(viewModel.enableCaching)
+
+        val p1Result = (viewModel.productLayout.value as Success).data
+        Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.PRODUCT_VARIANT_INFO } == 0)
+        Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.PRODUCT_SHIPPING_INFO } == 1)
+        Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.VALUE_PROP } == 1)
+        Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.PRODUCT_WHOLESALE_INFO } == 1)
+        Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.TRADE_IN } == 1)
+        Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.BY_ME } == 1)
+
+    }
+
+    private fun `co verify p1 success`(){
+        //P1
+        coVerify {
+            getPdpLayoutUseCase.executeOnBackground()
+        }
+
+        coVerify {
+            getProductInfoP2OtherUseCase.executeOnBackground(any(), any())
+        }
+
+        coVerify {
+            getProductInfoP2DataUseCase.executeOnBackground(any(), any())
+        }
+
+        coVerify {
+            getProductInfoP3UseCase.executeOnBackground(any(), any(), any())
+        }
+
+        coVerify {
+            getProductInfoP2LoginUseCase.executeOnBackground()
+        }
+    }
+
+    private fun `co every p1 success`(dataP1 : ProductDetailDataModel){
         coEvery {
             getPdpLayoutUseCase.executeOnBackground()
         } returns dataP1
@@ -451,40 +538,12 @@ class DynamicProductDetailViewModelTest {
         coEvery {
             getProductInfoP2OtherUseCase.executeOnBackground(any(), any())
         } returns ProductInfoP2Other()
-
-        viewModel.getProductP1(productParams)
-
-        //P1
-        coVerify {
-            getPdpLayoutUseCase.executeOnBackground()
-        }
-
-        coVerify {
-            getProductInfoP2OtherUseCase.executeOnBackground(any(), any())
-        }
-
-        coVerify {
-            getProductInfoP2DataUseCase.executeOnBackground(any(), any())
-        }
-
-        coVerify {
-            getProductInfoP3UseCase.executeOnBackground(any(), any(), any())
-        }
-
-        coVerify {
-            getProductInfoP2LoginUseCase.executeOnBackground()
-        }
-
-        Assert.assertTrue(viewModel.productLayout.value is Success)
-        Assert.assertNotNull(viewModel.p2Data.value)
-        Assert.assertNotNull(viewModel.p2Other.value)
-        Assert.assertNotNull(viewModel.p2Login.value)
-        Assert.assertNotNull(viewModel.productInfoP3.value)
     }
 
     @Test
     fun `on error get product info login`() {
         val productParams = ProductParams("", "", "", "", "", "")
+        viewModel.enableCaching = true
 
         coEvery {
             getPdpLayoutUseCase.executeOnBackground()
@@ -500,6 +559,8 @@ class DynamicProductDetailViewModelTest {
         Assert.assertNull(viewModel.p2Data.value)
         Assert.assertNull(viewModel.p2Login.value)
         Assert.assertNull(viewModel.p2Other.value)
+
+        Assert.assertTrue(viewModel.enableCaching)
 
         coVerify(inverse = true) {
             getProductInfoP2LoginUseCase.executeOnBackground()
@@ -519,9 +580,10 @@ class DynamicProductDetailViewModelTest {
 
     @Test
     fun `on success get product info non login`() {
-        val productParams = ProductParams("", "", "", "", "", "")
-        val mockData : ProductDetailLayout = ProductDetailTestUtil.createMockGraphqlSuccessResponse(GQL_GET_PDP_LAYOUT_JSON, ProductDetailLayout::class.java)
+        val mockData: ProductDetailLayout = ProductDetailTestUtil.createMockGraphqlSuccessResponse(GQL_GET_PDP_LAYOUT_JSON, ProductDetailLayout::class.java)
         val dataP1 = ProductDetailTestUtil.mapIntoModel(mockData.data ?: PdpGetLayout())
+
+        val productParams = ProductParams("", "", "", "", "", "")
 
         viewModel.productInfoP3.observeForever { }
 
@@ -533,25 +595,7 @@ class DynamicProductDetailViewModelTest {
             viewModel.isUserSessionActive
         } returns false
 
-        coEvery {
-            getPdpLayoutUseCase.executeOnBackground()
-        } returns dataP1
-
-        coEvery {
-            getProductInfoP2LoginUseCase.executeOnBackground()
-        } returns ProductInfoP2Login()
-
-        coEvery {
-            getProductInfoP3UseCase.executeOnBackground(any(), any(), any())
-        } returns ProductInfoP3()
-
-        coEvery {
-            getProductInfoP2DataUseCase.executeOnBackground(any(), any())
-        } returns ProductInfoP2UiData()
-
-        coEvery {
-            getProductInfoP2OtherUseCase.executeOnBackground(any(), any())
-        } returns ProductInfoP2Other()
+        `co every p1 success`(dataP1)
 
         viewModel.getProductP1(productParams)
 
@@ -564,7 +608,7 @@ class DynamicProductDetailViewModelTest {
             getProductInfoP2OtherUseCase.executeOnBackground(any(), any())
         }
 
-        coVerify{
+        coVerify {
             getProductInfoP2DataUseCase.executeOnBackground(any(), any())
         }
 
@@ -572,7 +616,7 @@ class DynamicProductDetailViewModelTest {
             getProductInfoP3UseCase.executeOnBackground(any(), any(), any())
         }
 
-        coVerify(inverse = true)  {
+        coVerify(inverse = true) {
             getProductInfoP2LoginUseCase.executeOnBackground()
         }
 
@@ -581,6 +625,43 @@ class DynamicProductDetailViewModelTest {
         Assert.assertNotNull(viewModel.p2Other.value)
         Assert.assertNull(viewModel.p2Login.value)
         Assert.assertNotNull(viewModel.productInfoP3.value)
+    }
+
+    @Test
+    fun `on success remove unused component`() {
+        val productParams = ProductParams("", "", "", "", "", "")
+        val mockData: ProductDetailLayout = ProductDetailTestUtil.createMockGraphqlSuccessResponse(GQL_GET_PDP_LAYOUT_REMOVE_COMPONENT_JSON, ProductDetailLayout::class.java)
+        val dataP1 = ProductDetailTestUtil.mapIntoModel(mockData.data ?: PdpGetLayout())
+
+        every {
+            viewModel.userId
+        } returns "123"
+
+        every {
+            viewModel.isShopOwner()
+        } returns true
+
+        viewModel.enableCaching = false
+
+        every {
+            userSessionInterface.isLoggedIn
+        } returns true
+
+        every {
+            viewModel.isUserSessionActive
+        } returns false
+
+        `co every p1 success`(dataP1)
+
+        viewModel.getProductP1(productParams, refreshPage = true, isAffiliate = true)
+
+        val p1Result = (viewModel.productLayout.value as Success).data
+        Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.TRADE_IN} == 0 )
+        Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.PRODUCT_SHIPPING_INFO } == 0)
+        Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.VALUE_PROP } == 0)
+        Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.PRODUCT_WHOLESALE_INFO } == 0)
+        Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.VARIANT_OPTIONS } == 0)
+        Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.BY_ME } == 0)
     }
 
     /**

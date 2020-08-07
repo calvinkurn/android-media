@@ -8,6 +8,7 @@ import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailLayout
 import com.tokopedia.product.detail.data.util.TobacoErrorException
+import com.tokopedia.product.detail.di.RawQueryKeyConstant
 import com.tokopedia.product.detail.usecase.GetPdpLayoutUseCase
 import com.tokopedia.usecase.RequestParams
 import io.mockk.MockKAnnotations
@@ -20,7 +21,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.ExpectedException
-import org.mockito.ArgumentMatchers.anyMap
 import java.io.File
 import java.lang.reflect.Type
 
@@ -29,6 +29,8 @@ class GetPdpLayoutUseCaseTest {
 
     companion object {
         const val GQL_GET_PDP_LAYOUT_JSON = "json/gql_get_pdp_layout.json"
+        const val GQL_GET_PDP_LAYOUT_USECASE_JSON = "json/gql_get_pdp_layout_usecase_response.json"
+        const val GQL_GET_PDP_LAYOUT_REMOVE_COMPONENT_JSON = "json/gql_get_pdp_layout_remove_component.json"
         const val GQL_GET_PDP_LAYOUT_ERROR_TOBACCO_JSON = "json/gql_get_pdp_layout_tobacco.json"
     }
 
@@ -43,7 +45,7 @@ class GetPdpLayoutUseCaseTest {
 
     private val useCaseTest by lazy {
         GetPdpLayoutUseCase(
-                anyMap(),
+                mapOf(RawQueryKeyConstant.QUERY_GET_PDP_LAYOUT to "test"),
                 gqlUseCase
         )
     }
@@ -152,7 +154,7 @@ class GetPdpLayoutUseCaseTest {
         val result = HashMap<Type, Any>()
         val errors = HashMap<Type, List<GraphqlError>>()
         val jsonObject: JsonObject = CommonUtils.fromJson(
-                getJsonFromFile(GQL_GET_PDP_LAYOUT_JSON),
+                getJsonFromFile(GQL_GET_PDP_LAYOUT_USECASE_JSON),
                 JsonObject::class.java
         )
         val data = jsonObject.get(GraphqlConstant.GqlApiKeys.DATA)

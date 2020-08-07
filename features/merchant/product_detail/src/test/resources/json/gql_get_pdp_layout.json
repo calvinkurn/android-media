@@ -250,7 +250,7 @@
                 },
                 "isOS": true,
                 "isPowerMerchant": true,
-                "isTradeIn": false,
+                "isTradeIn": true,
                 "isWishlist": false,
                 "name": "Calypso Frypan Super Non Stick 22cm Wajan Penggorengan Anti Lengket - Hijau",
                 "preorder": {
@@ -272,7 +272,11 @@
                   "isVariant": true,
                   "parentID": "449682965"
                 },
-                "wholesale": []
+                "wholesale": [
+                  {
+                    "minQty" : 1
+                  }
+                ]
               }
             ],
             "name": "product_content",
@@ -741,6 +745,10 @@
             "data": [],
             "name": "pdp_4",
             "type": "product_list"
+          },{
+            "data": [],
+            "name": "byme",
+            "type": "info"
           }
         ],
         "name": "Default Layout",
