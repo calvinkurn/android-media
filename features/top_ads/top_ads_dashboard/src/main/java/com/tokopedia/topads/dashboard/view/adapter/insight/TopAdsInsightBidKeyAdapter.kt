@@ -11,6 +11,7 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.INDE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.INDEX_4
 import com.tokopedia.topads.dashboard.data.model.insightkey.Bid
 import com.tokopedia.topads.dashboard.data.model.insightkey.MutationData
+import com.tokopedia.topads.dashboard.data.utils.Utils
 import kotlinx.android.synthetic.main.topads_dash_insight_pos_key_item_layout.view.*
 
 /**
@@ -39,10 +40,10 @@ class TopAdsInsightBidKeyAdapter(var onButtonClick: ((MutationData) -> Unit?)) :
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.view.keywordName.text = items[position].data?.get(INDEX_1)?.value.toString()
         holder.view.txtSearch.text = holder.view.resources.getString(R.string.topads_insight_item_bid_1)
-        holder.view.textSearchValue.text = items[position].data?.get(INDEX_2)?.value.toString()
+        holder.view.textSearchValue.text = Utils.convertToCurrencyString((items[position].data?.get(INDEX_2)?.value as Double).toLong())
         holder.view.txtSavings.text = holder.view.resources.getString(R.string.topads_insight_item_bid_2)
-        holder.view.txtSavingsValue.text = items[position].data?.get(INDEX_3)?.value.toString()
-        holder.view.txtpotential.text = String.format(holder.view.resources.getString(R.string.topads_insight_item_bid_3), items[position].data?.get(INDEX_4)?.value.toString())
+        holder.view.txtSavingsValue.text = Utils.convertToCurrencyString((items[position].data?.get(INDEX_3)?.value as Double).toLong())
+        holder.view.txtpotential.text = String.format(holder.view.resources.getString(R.string.topads_insight_item_bid_3), Utils.convertToCurrencyString((items[position].data?.get(INDEX_4)?.value as Double).toLong()))
         holder.view.btnTambah.text = holder.view.resources.getString(R.string.topads_insight_btn_terpakan)
         holder.view.btnTambah.setOnClickListener {
             onButtonClick.invoke(items[position].mutationData)

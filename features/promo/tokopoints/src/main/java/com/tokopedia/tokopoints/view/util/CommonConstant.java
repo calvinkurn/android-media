@@ -136,7 +136,6 @@ public interface CommonConstant {
         String TP_GQL_TOKOPOINT_VALIDATE_REDEEM = "tp_gql_tokopoint_validate_redeem";
         String TP_GQL_PRE_VALIDATE_REDEEM = "tp_gql_pre_validate_redeem";
         String TP_GQL_CATALOG_DETAIL = "tp_gql_catalog_detail";
-        String TP_GQL_CATALOG_BANNER = "tp_gql_catalog_banner";
         String TP_GQL_TOKOPOINT_DETAIL = "tp_gql_tokopoint_detail";
         String TP_GQL_CATALOG_FILTER = "tp_gql_catalog_filter";
         String TP_GQL_LUCKY_EGG_DETAILS = "tp_gql_lucky_egg_detail";
