@@ -78,13 +78,11 @@ class Lego4AutoBannerAdapter(
         }
 
         private fun constructBoldFont(type: String, value : String): SpannableStringBuilder {
-            var text = SpannableStringBuilder(String.format(template, type, value))
+            val text = SpannableStringBuilder(String.format(template, type, value))
             val startIndexBold = text.indexOf(value)
             val endIndexBold = startIndexBold + value.length
-            while(startIndexBold > 0) {
-                val spanStyle = StyleSpan(Typeface.BOLD)
-                text.setSpan(spanStyle, startIndexBold, endIndexBold, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
-            }
+            val spanStyle = StyleSpan(Typeface.BOLD)
+            text.setSpan(spanStyle, startIndexBold, endIndexBold, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
             return text
         }
     }

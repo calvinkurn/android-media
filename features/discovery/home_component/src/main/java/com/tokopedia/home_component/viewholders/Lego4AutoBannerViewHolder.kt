@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.customview.HeaderListener
+import com.tokopedia.home_component.decoration.GridSpacingItemDecoration
 import com.tokopedia.home_component.listener.HomeComponentListener
 import com.tokopedia.home_component.listener.Lego4AutoBannerListener
 import com.tokopedia.home_component.model.ChannelModel
@@ -60,6 +61,8 @@ class Lego4AutoBannerViewHolder (itemView: View,
         adapter.addData(element)
         recyclerView.adapter = adapter
         adapter.notifyDataSetChanged()
+        if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(
+                GridSpacingItemDecoration(2, 10, false))
     }
 
     private fun setHeaderComponent(element: Lego4AutoDataModel) {
