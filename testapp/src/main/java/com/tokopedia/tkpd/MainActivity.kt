@@ -6,14 +6,12 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.chuckerteam.chucker.api.Chucker
-import com.tokopedia.analyticsdebugger.debugger.GtmLogger
 import com.tokopedia.application.MyApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalHome
-import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalTestApp
+import com.tokopedia.home.HomeActivity
 import com.tokopedia.tkpd.helper.logout
 import com.tokopedia.tkpd.network.DataSource
 import com.tokopedia.tkpd.testgql.TestGqlUseCase
@@ -66,9 +64,7 @@ class MainActivity : AppCompatActivity() {
         val button = findViewById<Button>(R.id.button)
         val chuckButton = findViewById<Button>(R.id.chuckButton)
 
-        chuckButton.setOnClickListener {
-            startActivity(Chucker.getLaunchIntent(this, Chucker.SCREEN_HTTP))
-        }
+        chuckButton.setOnClickListener { startActivity(Chucker.getLaunchIntent(this, Chucker.SCREEN_HTTP)) }
         button.setOnClickListener {
             goTo()
         }
@@ -105,5 +101,6 @@ class MainActivity : AppCompatActivity() {
          * startActivity(PlayActivity.getCallingIntent(this, "668", true))
          * or, you can use route like this:
          * RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS) */
+        startActivity(Intent(this, HomeActivity::class.java))
     }
 }

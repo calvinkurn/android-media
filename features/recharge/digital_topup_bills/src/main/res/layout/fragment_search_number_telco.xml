@@ -11,12 +11,12 @@
         android:layout_height="wrap_content"
         android:background="@color/white"
         android:orientation="horizontal"
-        android:layout_marginRight="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_16">
+        android:paddingRight="@dimen/dp_16"
+        android:paddingLeft="@dimen/layout_lvl1"
+        android:paddingBottom="@dimen/layout_lvl1">
 
         <com.tokopedia.common_digital.common.widget.DigitalSearchInputView
-            android:id="@+id/siv_search_number"
+            android:id="@+id/telco_search_number_input_view"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
@@ -24,7 +24,7 @@
             android:layout_marginRight="@dimen/dp_16" />
 
         <ImageView
-            android:id="@+id/btnContactPicker"
+            android:id="@+id/telco_search_number_contact_picker"
             android:layout_width="@dimen/dp_25"
             android:layout_height="@dimen/dp_25"
             android:layout_gravity="end|center"
@@ -38,7 +38,7 @@
         android:background="#f3f4f5"/>
     
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvNumberList"
+        android:id="@+id/telco_search_number_rv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"

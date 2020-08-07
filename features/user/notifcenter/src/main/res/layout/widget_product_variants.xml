@@ -1,29 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/ll_variant"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/dp_20"
+    android:layout_height="@dimen/notif_dp_20"
     android:orientation="horizontal">
 
     <LinearLayout
         android:id="@+id/ll_variant_color"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_marginEnd="@dimen/dp_4"
-        android:layout_marginRight="@dimen/dp_4"
+        android:layout_marginEnd="@dimen/notif_dp_4"
+        android:layout_marginRight="@dimen/notif_dp_4"
         android:background="@drawable/notifcenter_bg_variant_container"
         android:orientation="horizontal"
-        android:paddingStart="@dimen/dp_8"
-        android:paddingEnd="@dimen/dp_8">
+        android:paddingStart="@dimen/notif_dp_8"
+        android:paddingEnd="@dimen/notif_dp_8">
 
         <ImageView
             android:id="@+id/iv_variant_color"
-            android:layout_width="@dimen/dp_6"
-            android:layout_height="@dimen/dp_6"
+            android:layout_width="@dimen/notif_dp_6"
+            android:layout_height="@dimen/notif_dp_6"
             android:layout_gravity="center_vertical"
-            android:layout_marginEnd="@dimen/dp_4"
-            android:layout_marginRight="@dimen/dp_4"
+            android:layout_marginEnd="@dimen/notif_dp_4"
+            android:layout_marginRight="@dimen/notif_dp_4"
             tools:background="@color/black" />
 
         <com.tokopedia.design.component.TextViewCompat
@@ -32,7 +33,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:textColor="@color/Neutral_N200"
-            android:textSize="@dimen/sp_10"
+            android:textSize="@dimen/notif_sp_10"
             android:textStyle="bold"
             tools:text="Hitam" />
 
@@ -42,12 +43,12 @@
         android:id="@+id/ll_variant_size"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_marginEnd="@dimen/dp_8"
-        android:layout_marginRight="@dimen/dp_8"
+        android:layout_marginEnd="@dimen/notif_dp_8"
+        android:layout_marginRight="@dimen/notif_dp_8"
         android:background="@drawable/notifcenter_bg_variant_container"
         android:orientation="horizontal"
-        android:paddingStart="@dimen/dp_8"
-        android:paddingEnd="@dimen/dp_8">
+        android:paddingStart="@dimen/notif_dp_8"
+        android:paddingEnd="@dimen/notif_dp_8">
 
         <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/tv_variant_size"
@@ -55,7 +56,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:textColor="@color/Neutral_N200"
-            android:textSize="@dimen/sp_10"
+            android:textSize="@dimen/notif_sp_10"
             android:textStyle="bold"
             tools:text="Besar" />
 

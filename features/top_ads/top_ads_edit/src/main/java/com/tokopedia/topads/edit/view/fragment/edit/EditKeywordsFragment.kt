@@ -164,7 +164,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     private fun showConfirmationDialog(position: Int) {
         val dialog = DialogUnify(context!!, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
         dialog.setTitle(getString(R.string.topads_edit_delete_keyword_conf_dialog_title))
-        dialog.setDescription(getString(R.string.topads_edit_delete_keyword_conf_dialog_desc))
+        dialog.setDescription(String.format(getString(R.string.topads_edit_delete_keyword_conf_dialog_desc),(adapter.items[position] as EditKeywordItemViewModel).data.tag))
         dialog.setPrimaryCTAText(getString(R.string.topads_edit_batal))
         dialog.setSecondaryCTAText(getString(R.string.topads_edit_ya))
         dialog.setPrimaryCTAClickListener {

@@ -91,6 +91,10 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val SET_CASHBACK = "$INTERNAL_MARKETPLACE/set-cashback/{productId}/"
 
+    // CampaignStockActivity
+    @JvmField
+    val RESERVED_STOCK = "$INTERNAL_MARKETPLACE/reserved-stock/{productId}/{shopId}/"
+
     // CreateReviewActivity
     @JvmField
     val CREATE_REVIEW = "$INTERNAL_MARKETPLACE/product-review/create/{reputation_id}/{product_id}/"
@@ -280,10 +284,6 @@ object ApplinkConstInternalMarketplace {
     //MitraToppersDashboardActivity
     @JvmField
     val MITRA_TOPPERS_DASHBOARD = "$INTERNAL_MARKETPLACE/mitra-toppers-dashboard"
-
-    //GMFeaturedProductActivity
-    @JvmField
-    val GOLD_MERCHANT_FEATURED_PRODUCT = "$INTERNAL_MARKETPLACE/gold-merchant-featured-product"
 
     //SellerInfoActivity
     @JvmField

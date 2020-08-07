@@ -44,7 +44,6 @@ android {
 
 dependencies {
     implementation project(rootProject.ext.features.resourcesCommon)
-    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.liveness_lib)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
