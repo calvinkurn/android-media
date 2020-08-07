@@ -28,6 +28,25 @@ class ChatToggleBlockChatUseCase @Inject constructor(
         }
     }
 
+    fun blockChat(
+            messageId: String,
+            onSuccess: (ChatSettingsResponse) -> Unit,
+            onError: (Throwable) -> Unit
+    ) {
+        val params = generateParams(messageId, BlockType.Personal, true)
+        request(params, onSuccess, onError)
+    }
+
+
+    fun unBlockChat(
+            messageId: String,
+            onSuccess: (ChatSettingsResponse) -> Unit,
+            onError: (Throwable) -> Unit
+    ) {
+        val params = generateParams(messageId, BlockType.Personal, false)
+        request(params, onSuccess, onError)
+    }
+
     fun blockPromo(
             msgId: String,
             onSuccess: (String) -> Unit,
@@ -36,7 +55,7 @@ class ChatToggleBlockChatUseCase @Inject constructor(
         if (isPreviousRequestRunning()) return
         promoStateChangerJob = launchCatchError(dispatchers.IO,
                 {
-                    val params = generateParams(msgId, true)
+                    val params = generateParams(msgId, BlockType.Promo, true)
                     val response = gqlUseCase.apply {
                         setTypeClass(ChatSettingsResponse::class.java)
                         setRequestParams(params)
@@ -63,7 +82,7 @@ class ChatToggleBlockChatUseCase @Inject constructor(
         if (isPreviousRequestRunning()) return
         promoStateChangerJob = launchCatchError(dispatchers.IO,
                 {
-                    val params = generateParams(messageId, false)
+                    val params = generateParams(messageId, BlockType.Promo, false)
                     val response = gqlUseCase.apply {
                         setTypeClass(ChatSettingsResponse::class.java)
                         setRequestParams(params)
@@ -81,14 +100,42 @@ class ChatToggleBlockChatUseCase @Inject constructor(
         )
     }
 
+    private fun request(
+            params: Map<String, Any>,
+            onSuccess: (ChatSettingsResponse) -> Unit,
+            onError: (Throwable) -> Unit
+    ): Job {
+        return launchCatchError(dispatchers.IO,
+                {
+                    val response = gqlUseCase.apply {
+                        setTypeClass(ChatSettingsResponse::class.java)
+                        setRequestParams(params)
+                        setGraphqlQuery(query)
+                    }.executeOnBackground()
+                    withContext(dispatchers.Main) {
+                        onSuccess(response)
+                    }
+                },
+                {
+                    withContext(dispatchers.Main) {
+                        onError(it)
+                    }
+                }
+        )
+    }
+
     private fun isPreviousRequestRunning(): Boolean {
         return promoStateChangerJob != null && promoStateChangerJob?.isCompleted == false
     }
 
-    private fun generateParams(msgId: String, isBlocked: Boolean): Map<String, Any> {
+    private fun generateParams(
+            msgId: String,
+            blockType: BlockType,
+            isBlocked: Boolean
+    ): Map<String, Any> {
         return mapOf(
                 paramMsgId to msgId,
-                paramBlockType to BlockType.Promo.value,
+                paramBlockType to blockType.value,
                 paramIsBlocked to isBlocked
         )
     }

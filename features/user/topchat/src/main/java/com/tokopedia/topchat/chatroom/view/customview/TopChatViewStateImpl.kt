@@ -22,7 +22,6 @@ import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
-import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.widget.LongClickMenu
@@ -75,7 +74,9 @@ class TopChatViewStateImpl constructor(
     lateinit var chatRoomViewModel: ChatroomViewModel
 
     var isShopFollowed: Boolean = false
+    val blockStatus: BlockedStatus = BlockedStatus()
     var isPromoBlocked: Boolean = false
+    var isChatBlocked: Boolean = false
 
     var roomMenu = LongClickMenu()
 
@@ -150,6 +151,10 @@ class TopChatViewStateImpl constructor(
         chatStickerMenuButton?.setOnClickListener {
             chatMenu?.toggleStickerMenu()
         }
+    }
+
+    override fun setChatBlockStatus(isBlocked: Boolean) {
+        blockStatus.isBlocked = isBlocked
     }
 
     override fun onKeyboardOpened() {
@@ -324,37 +329,57 @@ class TopChatViewStateImpl constructor(
         val listMenu = ArrayList<Menus.ItemMenus>()
 
         if (userChatRoom.isChattingWithSeller()) {
-            val followStatusTitle: String
-            @DrawableRes val followStatusDrawable: Int
-            val promoStatusTitle: String
-            @DrawableRes val promoStatusDrawable: Int
-
-            if (isShopFollowed) {
-                followStatusTitle = view.context.getString(R.string.already_follow_store)
-                followStatusDrawable = R.drawable.ic_topchat_check_bold_grey
-            } else {
-                followStatusTitle = view.context.getString(R.string.follow_store)
-                followStatusDrawable = R.drawable.ic_topchat_add_bold_grey
-            }
-            val followMenu = Menus.ItemMenus(followStatusTitle, followStatusDrawable)
-
-            if (isPromoBlocked) {
-                promoStatusTitle = view.context.getString(R.string.title_allow_promo)
-                promoStatusDrawable = R.drawable.ic_topchat_allow_promo
-            } else {
-                promoStatusTitle = view.context.getString(R.string.title_block_promo)
-                promoStatusDrawable = R.drawable.ic_topchat_block_promo
-            }
-            val promoStatusMenu = Menus.ItemMenus(promoStatusTitle, promoStatusDrawable)
-
-            listMenu.add(followMenu)
-            listMenu.add(promoStatusMenu)
+            val followStatusMenu = createFollowMenu()
+            val promoStatusChanger = createPromoMenu()
+            listMenu.add(followStatusMenu)
+            listMenu.add(promoStatusChanger)
         }
-
+        val blockChatMenu = createBlockChatMenu()
+        listMenu.add(blockChatMenu)
         listMenu.add(Menus.ItemMenus(view.context.getString(R.string.chat_incoming_settings), R.drawable.ic_topchat_chat_setting_bold_grey))
         listMenu.add(Menus.ItemMenus(view.context.getString(R.string.chat_report_user), R.drawable.ic_topchat_report_bold_grey))
         listMenu.add(Menus.ItemMenus(view.context.getString(R.string.delete_conversation), R.drawable.ic_trash_filled_grey))
         return listMenu
+    }
+
+    private fun createBlockChatMenu(): Menus.ItemMenus {
+        val blockChatStatusTitle: String
+        @DrawableRes val blockChatStatusDrawable: Int
+
+        if (isChatBlocked) {
+            blockChatStatusTitle = view.context.getString(R.string.title_unblock_user_chat)
+            blockChatStatusDrawable = R.drawable.ic_topchat_unblock_user_chat
+        } else {
+            blockChatStatusTitle = view.context.getString(R.string.title_block_user_chat)
+            blockChatStatusDrawable = R.drawable.ic_topchat_block_user_chat
+        }
+        return Menus.ItemMenus(blockChatStatusTitle, blockChatStatusDrawable)
+    }
+
+    private fun createFollowMenu(): Menus.ItemMenus {
+        val followStatusTitle: String
+        @DrawableRes val followStatusDrawable: Int
+        if (isShopFollowed) {
+            followStatusTitle = view.context.getString(R.string.already_follow_store)
+            followStatusDrawable = R.drawable.ic_topchat_check_bold_grey
+        } else {
+            followStatusTitle = view.context.getString(R.string.follow_store)
+            followStatusDrawable = R.drawable.ic_topchat_add_bold_grey
+        }
+        return Menus.ItemMenus(followStatusTitle, followStatusDrawable)
+    }
+
+    private fun createPromoMenu(): Menus.ItemMenus {
+        val promoStatusTitle: String
+        @DrawableRes val promoStatusDrawable: Int
+        if (isPromoBlocked) {
+            promoStatusTitle = view.context.getString(R.string.title_allow_promo)
+            promoStatusDrawable = R.drawable.ic_topchat_allow_promo
+        } else {
+            promoStatusTitle = view.context.getString(R.string.title_block_promo)
+            promoStatusDrawable = R.drawable.ic_topchat_block_promo
+        }
+        return Menus.ItemMenus(promoStatusTitle, promoStatusDrawable)
     }
 
     private fun handleRoomMenuClick(
@@ -364,6 +389,12 @@ class TopChatViewStateImpl constructor(
             alertDialog: Dialog
     ) {
         when {
+            itemMenus.icon == R.drawable.ic_topchat_unblock_user_chat -> {
+//                headerMenuListener.onClickAllowPromo()
+            }
+            itemMenus.icon == R.drawable.ic_topchat_block_user_chat -> {
+                headerMenuListener.blockChat()
+            }
             itemMenus.icon == R.drawable.ic_topchat_allow_promo -> {
                 headerMenuListener.onClickAllowPromo()
             }
@@ -412,11 +443,12 @@ class TopChatViewStateImpl constructor(
         return null
     }
 
-    override fun onCheckChatBlocked(opponentRole: String,
-                                    opponentName: String,
-                                    blockedStatus: BlockedStatus,
-                                    onUnblockChatClicked: () -> Unit) {
-
+    override fun onCheckChatBlocked(
+            opponentRole: String,
+            opponentName: String,
+            blockedStatus: BlockedStatus,
+            onUnblockChatClicked: () -> Unit
+    ) {
 
         val isBlocked = when {
             opponentRole.toLowerCase().contains(ChatRoomHeaderViewModel.Companion.ROLE_OFFICIAL)

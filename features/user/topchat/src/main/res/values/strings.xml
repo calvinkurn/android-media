@@ -179,4 +179,6 @@ yang ditemukan</string>
     <string name="title_block_promo">Berhenti terima chat promosi</string>
     <string name="title_confirm_block_promo">Yakin ingin diblokir?</string>
     <string name="desc_confirm_block_promo">Kalau diblokir, kamu tidak akan menerima chat dari pengguna ini.</string>
+    <string name="title_block_user_chat">Blokir pengguna</string>
+    <string name="title_unblock_user_chat">Batalkan blokir pengguna</string>
 </resources>

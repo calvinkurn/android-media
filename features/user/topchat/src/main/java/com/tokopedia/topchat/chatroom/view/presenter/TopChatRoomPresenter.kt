@@ -43,6 +43,7 @@ import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.domain.usecase.DeleteMessageListUseCase
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
+import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ChatSettingsResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.OrderProgressResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
@@ -857,6 +858,10 @@ class TopChatRoomPresenter @Inject constructor(
 
     override fun requestAllowPromo(messageId: String, onSuccess: () -> Unit, onError: (Throwable) -> Unit) {
         chatToggleBlockChat.allowPromo(messageId, onSuccess, onError)
+    }
+
+    override fun blockChat(messageId: String, onSuccess: (ChatSettingsResponse) -> Unit, onError: (Throwable) -> Unit) {
+        chatToggleBlockChat.blockChat(messageId, onSuccess, onError)
     }
 
     private fun onSuccessGetAttachments(attachments: ArrayMap<String, Attachment>) {

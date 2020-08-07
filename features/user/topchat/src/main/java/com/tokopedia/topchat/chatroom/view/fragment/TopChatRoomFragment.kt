@@ -46,9 +46,7 @@ import com.tokopedia.imagepicker.picker.main.builder.ImagePickerMultipleSelectio
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.imagepreview.ImagePreviewActivity
-import com.tokopedia.kotlin.extensions.view.hideLoadingTransparent
 import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.showLoadingTransparent
 import com.tokopedia.kotlin.util.getParamBoolean
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
@@ -65,6 +63,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.ChatOrderProgress
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
+import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity.Companion.REQUEST_CODE_CHAT_IMAGE
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatRoomAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactoryImpl
@@ -865,23 +864,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
-            REQUEST_GO_TO_SETTING_TEMPLATE -> {
-                presenter.getTemplate(getUserSession().shopId == shopId.toString())
-            }
-            TopChatRoomActivity.REQUEST_CODE_CHAT_IMAGE -> {
-                if (resultCode != RESULT_OK || data == null) {
-                    return
-                }
-                processImagePathToUpload(data)?.let { model ->
-                    remoteConfig?.getBoolean(RemoteConfigKey.TOPCHAT_COMPRESS).let {
-                        if (it == null || it == false) {
-                            presenter.startUploadImages(model)
-                        } else {
-                            presenter.startCompressImages(model)
-                        }
-                    }
-                }
-            }
+            REQUEST_GO_TO_SETTING_TEMPLATE -> onReturnFromSettingTemplate()
+            REQUEST_CODE_CHAT_IMAGE -> onReturnFromChooseImage(resultCode, data)
             TOKOPEDIA_ATTACH_PRODUCT_REQ_CODE -> onProductAttachmentSelected(data)
             REQUEST_GO_TO_SHOP -> onReturnFromShopPage(resultCode, data)
             REQUEST_GO_TO_SETTING_CHAT -> onReturnFromChatSetting(resultCode, data)
@@ -889,6 +873,25 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
             REQUEST_ATTACH_INVOICE -> onAttachInvoiceSelected(data, resultCode)
             REQUEST_ATTACH_VOUCHER -> onAttachVoucherSelected(data, resultCode)
         }
+    }
+
+    private fun onReturnFromChooseImage(resultCode: Int, data: Intent?) {
+        if (resultCode != RESULT_OK || data == null) {
+            return
+        }
+        processImagePathToUpload(data)?.let { model ->
+            remoteConfig?.getBoolean(RemoteConfigKey.TOPCHAT_COMPRESS).let {
+                if (it == null || it == false) {
+                    presenter.startUploadImages(model)
+                } else {
+                    presenter.startCompressImages(model)
+                }
+            }
+        }
+    }
+
+    private fun onReturnFromSettingTemplate() {
+        presenter.getTemplate(getUserSession().shopId == shopId.toString())
     }
 
     private fun onAttachInvoiceSelected(data: Intent?, resultCode: Int) {
@@ -1092,6 +1095,16 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
 
     override fun onClickAllowPromo() {
         requestAllowPromo()
+    }
+
+    override fun blockChat() {
+        presenter.blockChat(messageId, {
+            getViewState().setChatBlockStatus(true)
+            getViewState().onCheckChatBlocked(opponentRole, opponentName, getViewState().blockStatus, onUnblockChatClicked())
+        }, {
+            val errorMessage = ErrorHandler.getErrorMessage(context, it)
+            showToasterError(errorMessage)
+        })
     }
 
     private fun getChatReportUrl() = "${TkpdBaseURL.CHAT_REPORT_URL}$messageId"

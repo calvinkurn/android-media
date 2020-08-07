@@ -30,4 +30,6 @@ interface TopChatViewState : BaseChatViewState {
 
     fun onStickerClosed()
 
+    fun setChatBlockStatus(isBlocked: Boolean)
+
 }

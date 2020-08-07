@@ -5,7 +5,7 @@ import com.tokopedia.chat_common.data.BlockedStatus
 /**
  * @author by nisie on 10/01/19.
  */
-interface HeaderMenuListener{
+interface HeaderMenuListener {
 
     fun onGoToShop()
 
@@ -20,5 +20,7 @@ interface HeaderMenuListener{
     fun onClickBlockPromo()
 
     fun onClickAllowPromo()
+
+    fun blockChat()
 
 }
