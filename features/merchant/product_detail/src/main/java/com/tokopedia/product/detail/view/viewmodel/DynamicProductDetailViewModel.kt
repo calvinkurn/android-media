@@ -190,7 +190,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 getDynamicProductInfoP1?.let {
                     getProductInfoP3(shopDomain, it)?.let { p3Data ->
                         updateShippingValue(p3Data.ratesModel?.getMinimumShippingPrice())
-                        _productInfoP3.value = p3Data
+                        _productInfoP3.postValue(p3Data)
                     }
                 }
             }) {
