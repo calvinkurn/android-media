@@ -57,6 +57,7 @@ object ProductDetailConstant {
     const val KEY_BUTTON_SECONDARY = "secondary"
     const val DEFAULT_PAGE_NUMBER = 1
     const val DEFAULT_PAGE_NAME = "pdp_1,pdp_2,pdp_3,pdp_4"
+    const val KEY_TOP_ADS = "tdn_topads"
 
     const val PDP_P1_TRACE = "mp_pdp_p1"
     const val PDP_P2_TRACE = "mp_pdp_p2"
@@ -133,6 +134,7 @@ object ProductDetailConstant {
     const val LAYOUT_DEFAULT = "Default Layout"
     const val LAYOUT_TAIL_N_SHOULDERS = "tail n shoulders"
     const val BY_ME = "byme"
+    const val TOP_ADS = "banner_ads"
 
 
     //Arguments
@@ -178,4 +180,9 @@ object ProductDetailConstant {
 
     const val ENABLE_NEW_DISCUSSION_REMOTE_CONFIG = "android_enable_new_discussion"
     const val SHOW_LABEL_SHARED_PREFERENCE_KEY = "discussion_show_new_%s"
+
+    //TopAds Banner
+    const val ADS_COUNT = 1
+    const val DIMEN_ID = 3
+    const val PAGE_SOURCE = "1"
 }

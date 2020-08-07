@@ -1125,6 +1125,22 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         observeInitialVariantData()
         observeonVariantClickedData()
         observeDiscussionData()
+        observeTopAdsImageData()
+    }
+
+    private fun observeTopAdsImageData() {
+        viewLifecycleOwner.observe(viewModel.topAdsImageView) { data ->
+            data.doSuccessOrFail({
+                if(!it.data.isNullOrEmpty()){
+                    pdpUiUpdater?.updateTopAdsImageData(it.data)
+                    dynamicAdapter.notifyTopAdsBanner(pdpUiUpdater?.topAdsImageData)
+                } else{
+                    dynamicAdapter.removeComponentSection(pdpUiUpdater?.topAdsImageData)
+                }
+            }, {
+                dynamicAdapter.removeComponentSection(pdpUiUpdater?.topAdsImageData)
+            })
+        }
     }
 
     private fun observeDiscussionData() {

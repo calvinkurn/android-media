@@ -31,6 +31,9 @@ import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpfulRespons
 import com.tokopedia.product.detail.data.util.DynamicProductDetailTalkLastAction
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.ADS_COUNT
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.DIMEN_ID
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.PAGE_SOURCE
 import com.tokopedia.product.detail.usecase.*
 import com.tokopedia.product.detail.view.util.DynamicProductDetailDispatcherProvider
 import com.tokopedia.product.detail.view.util.asFail
@@ -45,6 +48,8 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.domain.usecase.StickyLoginUseCase
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
+import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.user.session.UserSessionInterface
@@ -89,6 +94,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                                                              private val getProductInfoP3VariantUseCase: GetProductInfoP3VariantUseCase,
                                                              private val toggleNotifyMeUseCase: ToggleNotifyMeUseCase,
                                                              private val discussionMostHelpfulUseCase: DiscussionMostHelpfulUseCase,
+                                                             private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
                                                              val userSessionInterface: UserSessionInterface) : BaseViewModel(dispatcher.ui()) {
 
     private val _productLayout = MutableLiveData<Result<List<DynamicPdpDataModel>>>()
@@ -154,6 +160,10 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     private val _discussionMostHelpful = MutableLiveData<Result<DiscussionMostHelpfulResponseWrapper>>()
     val discussionMostHelpful: LiveData<Result<DiscussionMostHelpfulResponseWrapper>>
         get() = _discussionMostHelpful
+
+    private val _topAdsImageView: MutableLiveData<Result<ArrayList<TopAdsImageViewModel>>> = MutableLiveData()
+    val topAdsImageView: LiveData<Result<ArrayList<TopAdsImageViewModel>>>
+        get() = _topAdsImageView
 
     var notifyMeAction: String = ProductDetailCommonConstant.VALUE_TEASER_ACTION_UNREGISTER
     var selectedMultiOrigin: VariantMultiOriginWarehouse = VariantMultiOriginWarehouse()
@@ -442,6 +452,24 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             p2LoginDeferred?.let {
                 _p2Login.value = it.await()
             }
+
+            getTopAdsImageViewData()
+        }
+    }
+
+    private fun getTopAdsImageViewData() {
+        launchCatchError(block = {
+            val result = topAdsImageViewUseCase.getImageData(topAdsImageViewUseCase.getQueryMap(
+                    "",
+                    PAGE_SOURCE,
+                    "",
+                    ADS_COUNT,
+                    DIMEN_ID,
+                    ""
+            ))
+            _topAdsImageView.postValue(result.asSuccess())
+        }){
+            _topAdsImageView.postValue(it.asFail())
         }
     }
 

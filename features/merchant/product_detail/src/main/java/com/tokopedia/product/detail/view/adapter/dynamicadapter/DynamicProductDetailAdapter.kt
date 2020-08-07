@@ -54,6 +54,13 @@ class DynamicProductDetailAdapter(
         }
     }
 
+    fun notifyTopAdsBanner(topAdsImageData: TopAdsImageDataModel?) {
+        topAdsImageData?.let {
+            val indexOfTopAdsImage = list.indexOf(topAdsImageData)
+            notifyItemChanged(indexOfTopAdsImage)
+        }
+    }
+
     fun notifyGeneralInfo(generalInfo: ProductGeneralInfoDataModel?, payload: Int? = null) {
         generalInfo?.let {
             val indexOfGeneralInfo = list.indexOf(generalInfo)
