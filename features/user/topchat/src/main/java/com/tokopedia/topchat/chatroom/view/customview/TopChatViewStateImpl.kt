@@ -22,6 +22,7 @@ import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.widget.LongClickMenu
@@ -400,7 +401,7 @@ class TopChatViewStateImpl constructor(
                 headerMenuListener.unBlockChat()
             }
             itemMenus.icon == R.drawable.ic_topchat_block_user_chat -> {
-                headerMenuListener.blockChat()
+                showConfirmationBlockChat()
             }
             itemMenus.icon == R.drawable.ic_topchat_allow_promo -> {
                 headerMenuListener.onClickAllowPromo()
@@ -426,6 +427,25 @@ class TopChatViewStateImpl constructor(
             else -> {
             }
         }
+    }
+
+    private fun showConfirmationBlockChat() {
+        val title = view.context.getString(R.string.title_confirm_block_promo)
+        val desc = view.context.getString(R.string.desc_confirm_block_promo)
+        val titleCtaBlock = view.context.getString(R.string.title_block_user_chat)
+        val titleCtaCancel = view.context.getString(R.string.cancel)
+        val dialog = DialogUnify(view.context, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
+            setTitle(title)
+            setDescription(desc)
+            setPrimaryCTAText(titleCtaBlock)
+            setPrimaryCTAClickListener {
+                headerMenuListener.blockChat()
+                dismiss()
+            }
+            setSecondaryCTAText(titleCtaCancel)
+            setSecondaryCTAClickListener { dismiss() }
+        }
+        dialog.show()
     }
 
     override fun getLastItem(): Parcelable? {
