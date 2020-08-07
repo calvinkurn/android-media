@@ -58,8 +58,6 @@ abstract class BaseWidgetUiTest{
             getHomeTokopointsDataUseCase = getHomeTokopointsDataUseCase,
             getKeywordSearchUseCase = getKeywordSearchUseCase,
             getPendingCashbackUseCase = getCoroutinePendingCashbackUseCase,
-            playToggleChannelReminderUseCase = playToggleChannelReminderUseCase,
-            getPlayBannerUseCase = getPlayBannerUseCase,
             getPlayCardHomeUseCase = getPlayLiveDynamicUseCase,
             getRecommendationTabUseCase = getRecommendationTabUseCase,
             getWalletBalanceUseCase = getCoroutineWalletBalanceUseCase,
