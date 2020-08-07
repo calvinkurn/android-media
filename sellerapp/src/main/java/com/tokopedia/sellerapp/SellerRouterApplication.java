@@ -56,7 +56,6 @@ import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.common.topads.deposit.data.model.DataDeposit;
 import com.tokopedia.seller.product.etalase.utils.EtalaseUtils;
-import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
 import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
 import com.tokopedia.seller.shop.common.di.module.ShopModule;
@@ -209,11 +208,6 @@ public abstract class SellerRouterApplication extends MainApplication
 
     private Intent getInboxReputationIntent(Context context) {
         return TkpdReputationInternalRouter.getInboxReputationActivityIntent(context);
-    }
-
-    @Override
-    public Fragment getReputationHistoryFragment() {
-        return SellerReputationFragment.createInstance();
     }
 
     @Override
