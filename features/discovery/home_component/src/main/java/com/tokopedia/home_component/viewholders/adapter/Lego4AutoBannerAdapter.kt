@@ -29,7 +29,7 @@ class Lego4AutoBannerAdapter(
     private var itemList: MutableList<Lego4AutoItem> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
-        return Holder(LayoutInflater.from(parent.context).inflate(R.layout.global_component_lego_banner_auto, parent, false))
+        return Holder(LayoutInflater.from(parent.context).inflate(R.layout.layout_lego_4_auto_item, parent, false))
     }
 
     override fun getItemCount(): Int {
