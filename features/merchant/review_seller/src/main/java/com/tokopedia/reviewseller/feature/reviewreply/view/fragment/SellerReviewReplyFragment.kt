@@ -197,7 +197,7 @@ class SellerReviewReplyFragment : BaseDaggerFragment(), ReviewTemplateListViewHo
                 }
                 is Fail -> {
                     view?.let { it1 ->
-                        Toaster.make(it1, it.throwable.message.toString(), type = Toaster.TYPE_ERROR, duration = Toaster.LENGTH_LONG)
+                        Toaster.make(it1, it.throwable.message.orEmpty(), type = Toaster.TYPE_ERROR, duration = Toaster.LENGTH_LONG)
                     }
                 }
             }
