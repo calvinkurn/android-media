@@ -171,7 +171,7 @@ class ProductManageSetCashbackFragment : Fragment(), SelectClickListener,
             viewModel.setCashback(productId, productName, cashback)
             if(shopId != "" && !isDrafting) {
                 ProductManageTracking.eventClickSavePromotion(shopId)
-            } else {
+            } else if (!isDrafting) {
                 ProductManageTracking.eventCashbackSettingsSave(productId)
             }
         }
