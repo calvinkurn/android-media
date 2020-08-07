@@ -208,7 +208,9 @@ data class ShopLayoutWidget(
                     @SerializedName("stockWording")
                     val stockWording: StockWording = StockWording(),
                     @SerializedName("hideGimmick")
-                    val hideGimmick: Boolean = false
+                    val hideGimmick: Boolean = false,
+                    @SerializedName("stockSoldPercentage")
+                    val stockSoldPercentage: Float = 0f
             ){
                 data class StockWording(
                         @SerializedName("title")

@@ -44,7 +44,7 @@ class ShopPageHomeModule {
     @ShopPageHomeScope
     @Provides
     @Named(GQL_GET_SHOP_PAGE_HOME_LAYOUT)
-    fun getShopFeaturedProductQuery(@ApplicationContext context: Context): String {
+    fun getShopPageHomeLayoutQuery(@ApplicationContext context: Context): String {
         return """
             query get_shop_page_home_layout(${'$'}shopId: String!,${'$'}status:String,${'$'}layoutId:String){
               shopPageGetLayout (shopID:${'$'}shopId,status:${'$'}status,layoutID:${'$'}layoutId){
@@ -152,6 +152,7 @@ class ShopPageHomeModule {
                                         title
                                     }
                                     hideGimmick
+                                    stockSoldPercentage
                                }
                     }
                   }

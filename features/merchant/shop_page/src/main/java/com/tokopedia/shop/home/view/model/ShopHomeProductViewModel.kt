@@ -39,8 +39,8 @@ class ShopHomeProductViewModel : Visitable<BaseAdapterTypeFactory>, ImpressHolde
     var isCarousel = false
     var labelGroupList: List<LabelGroupViewModel> = listOf()
     var stockLabel: String = ""
-    var stockPercentage: Int = 0
     var hideGimmick: Boolean = false
+    var stockSoldPercentage: Int = 0
 
     override fun type(typeFactory: BaseAdapterTypeFactory): Int {
         return when(typeFactory){

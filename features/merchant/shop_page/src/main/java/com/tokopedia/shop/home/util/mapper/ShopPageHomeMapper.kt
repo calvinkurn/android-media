@@ -133,7 +133,7 @@ object ShopPageHomeMapper {
                 hasThreeDots = hasThreeDots,
                 hasAddToCartButton = isHasAddToCartButton,
                 stockBarLabel = shopHomeProductViewModel.stockLabel,
-                stockBarPercentage = shopHomeProductViewModel.stockPercentage
+                stockBarPercentage = shopHomeProductViewModel.stockSoldPercentage
         )
     }
 
@@ -251,7 +251,7 @@ object ShopPageHomeMapper {
                 productUrl = it.urlApps
                 if(statusCampaign.toLowerCase() == StatusCampaign.ONGOING.statusCampaign.toLowerCase()){
                     stockLabel = it.stockWording.title
-                    stockPercentage = ((it.stock - it.countSold).toFloat()/it.stock * 100).toInt()
+                    stockSoldPercentage =  it.stockSoldPercentage.toInt()
                 }
                 hideGimmick = it.hideGimmick
             }
