@@ -28,6 +28,7 @@ class LogWorker(appContext: Context, params: WorkerParameters) : CoroutineWorker
     companion object {
         const val MAX_RETRY = 3
         const val WORKER_NAME = "LOG_WORKER"
+        var lastSheduleTimestamp = 0L
         val worker by lazy {
             OneTimeWorkRequest
                     .Builder(LogWorker::class.java)
@@ -39,8 +40,17 @@ class LogWorker(appContext: Context, params: WorkerParameters) : CoroutineWorker
                     .build()
         }
 
+        val thresholdDiff = TimeUnit.SECONDS.toMillis(LOG_SERVICE_DELAY)
+
         fun scheduleWorker(context: Context) {
             try {
+                if (lastSheduleTimestamp > 0L){
+                    val diff = System.currentTimeMillis() - lastSheduleTimestamp
+                    if (diff < thresholdDiff) {
+                        return
+                    }
+                }
+                lastSheduleTimestamp = System.currentTimeMillis()
                 WorkManager.getInstance(context).enqueueUniqueWork(
                         WORKER_NAME,
                         ExistingWorkPolicy.KEEP,
