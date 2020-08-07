@@ -184,10 +184,13 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
             }
         }
         primaryBankAccount?.apply {
+            tvAutoWDBankName.visible()
+            tvAutoWdBankAccountDetail.visible()
+            btnAutoWDAddBankAccount.gone()
+            tvAutoWdBankNote.visible()
             tvAutoWDBankName.text = bankName
             tvAutoWdBankAccountDetail.text = "$accountNo - $accountName"
             tvAutoWdBankNote.text = copyWriting ?: ""
-            btnAutoWDAddBankAccount.gone()
         } ?: run {
             btnAutoWDAddBankAccount.visible()
             tvAutoWDBankName.gone()
@@ -556,16 +559,11 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
                         registerForAutoWithdrawal(data)
                     }
                 }
-                BANK_SETTING_REQUEST_CODE -> {
-                    data?.let {
-                        refreshBankAccountList()
-                    }
-                }
             }
         }
     }
 
-    private fun refreshBankAccountList(){
+     fun refreshBankAccountList(){
         scrollViewAutoWDContent.visible()
         loaderView.visible()
         autoWDSettingsViewModel.getBankAccount()

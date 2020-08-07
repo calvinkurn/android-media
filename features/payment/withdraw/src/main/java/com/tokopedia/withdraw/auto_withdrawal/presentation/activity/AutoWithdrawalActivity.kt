@@ -1,5 +1,7 @@
 package com.tokopedia.withdraw.auto_withdrawal.presentation.activity
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -52,6 +54,23 @@ class AutoWithdrawalActivity : BaseSimpleActivity(), HasComponent<AutoWithdrawal
 
     override fun getTagFragment(): String {
         return TAG_AUTO_WITHDRAWAL_FRAGMENT
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        supportFragmentManager.findFragmentByTag(TAG_AUTO_WITHDRAWAL_FRAGMENT)?.let { fragment ->
+            if (fragment is AutoWithdrawalSettingsFragment) {
+                if (resultCode == Activity.RESULT_OK) {
+                    when (requestCode) {
+                        AutoWithdrawalSettingsFragment.BANK_SETTING_REQUEST_CODE -> {
+                            data?.let {
+                                fragment.refreshBankAccountList()
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     override fun getScreenName(): String = SCREEN_NAME
