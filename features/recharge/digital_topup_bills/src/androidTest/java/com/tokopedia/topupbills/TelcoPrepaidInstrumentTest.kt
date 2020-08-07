@@ -75,6 +75,14 @@ class TelcoPrepaidInstrumentTest {
         Intents.intending(AllOf.allOf(IntentMatchers.hasComponent(
                 ComponentNameMatchers.hasShortClassName(".DigitalSearchNumberFragment"))))
                 .respondWith(createOrderNumberTypeManual())
+        Intents.intending(AllOf.allOf(IntentMatchers.hasComponent(
+                ComponentNameMatchers.hasShortClassName(".LoginActivity"))))
+                .respondWith(loginActivityResult())
+    }
+
+    private fun loginActivityResult(): Instrumentation.ActivityResult {
+        val resultData = Intent()
+        return Instrumentation.ActivityResult(Activity.RESULT_OK, resultData)
     }
 
     private fun createOrderNumberTypeManual(): Instrumentation.ActivityResult {
