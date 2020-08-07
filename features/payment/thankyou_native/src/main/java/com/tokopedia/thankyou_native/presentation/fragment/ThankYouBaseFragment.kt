@@ -21,7 +21,6 @@ import com.tokopedia.thankyou_native.data.mapper.*
 import com.tokopedia.thankyou_native.di.component.ThankYouPageComponent
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.presentation.activity.ThankYouPageActivity
-import com.tokopedia.thankyou_native.presentation.dialog.CloseableBottomSheetFragment
 import com.tokopedia.thankyou_native.presentation.helper.DialogHelper
 import com.tokopedia.thankyou_native.presentation.helper.OnDialogRedirectListener
 import com.tokopedia.thankyou_native.presentation.viewModel.ThanksPageDataViewModel
@@ -43,7 +42,6 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
     abstract fun getLoadingView(): View?
     abstract fun onThankYouPageDataReLoaded(data: ThanksPageData)
 
-    private lateinit var invoiceBottomSheets: CloseableBottomSheetFragment
     private lateinit var dialogHelper: DialogHelper
 
     @Inject
@@ -201,17 +199,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
     }
 
     fun openInvoiceDetail(thanksPageData: ThanksPageData) {
-        if (!::invoiceBottomSheets.isInitialized)
-            invoiceBottomSheets = CloseableBottomSheetFragment
-                    .newInstance(InvoiceFragment.getInvoiceFragment(thanksPageData),
-                            true,
-                            getString(R.string.thank_payment_detail),
-                            null,
-                            CloseableBottomSheetFragment.STATE_FULL)
-        activity?.let {
-            invoiceBottomSheets.showNow(it.supportFragmentManager, "")
-        }
-
+        InvoiceFragment.openInvoiceBottomSheet(activity, thanksPageData)
         thankYouPageAnalytics.get().sendLihatDetailClickEvent(PaymentPageMapper
                 .getPaymentPageType(thanksPageData.pageType), thanksPageData.paymentID.toString())
     }
