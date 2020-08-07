@@ -114,7 +114,7 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
     }
 
     private fun useOldPage(): Boolean {
-        val url = getAbTestPlatform()?.getString(ReviewConstants.AB_TEST_KEY, "")
-        return url.isNullOrEmpty()
+        val abTestValue = getAbTestPlatform()?.getString(ReviewConstants.AB_TEST_KEY, "") ?: return true
+        return abTestValue == ReviewConstants.AB_TEST_KEY
     }
 }
