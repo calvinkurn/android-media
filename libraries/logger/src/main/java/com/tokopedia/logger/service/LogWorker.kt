@@ -2,9 +2,12 @@ package com.tokopedia.logger.service
 
 import android.content.Context
 import androidx.work.*
+import com.tokopedia.logger.LogManager
 import com.tokopedia.logger.utils.Constants.Companion.LOG_SERVICE_BACKOFF
 import com.tokopedia.logger.utils.Constants.Companion.LOG_SERVICE_DELAY
 import com.tokopedia.logger.utils.Constants.Companion.LOG_SERVICE_PERIODIC
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
 
 class LogWorker(appContext: Context, params: WorkerParameters) : CoroutineWorker(appContext, params) {
@@ -12,7 +15,15 @@ class LogWorker(appContext: Context, params: WorkerParameters) : CoroutineWorker
         if (runAttemptCount > MAX_RETRY) {
             return Result.failure()
         }
-        return ServiceLogger.run()
+        return withContext(Dispatchers.IO){
+            try {
+                LogManager.sendLogToServer()
+                LogManager.deleteExpiredLogs()
+            } catch (e:Exception) {
+                e.printStackTrace()
+            }
+            Result.success()
+        }
     }
 
     companion object {
