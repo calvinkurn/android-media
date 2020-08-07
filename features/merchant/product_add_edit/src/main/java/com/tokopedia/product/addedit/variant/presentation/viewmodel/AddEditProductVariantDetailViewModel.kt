@@ -194,9 +194,12 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
         }
     }
 
-    fun updateProductInputModel(inputModel: MultipleVariantEditInputModel) {
+    fun updateProductInputModel(inputModel: MultipleVariantEditInputModel, variantDetailFieldMapLayout: Map<Int, VariantDetailInputLayoutModel>) {
+        val variantDetailInputList = mutableListOf<VariantDetailInputLayoutModel>()
+        variantDetailInputList.addAll(variantDetailFieldMapLayout.values)
+
         productInputModel.value = productInputModel.value?.also {
-            inputModel.selection.forEach { selectedCombination ->
+            inputModel.selection.forEachIndexed { position, selectedCombination ->
                 // search product variant by comparing combination
                 val productVariant = it.variantInputModel.products
                         .find { it.combination == selectedCombination }
@@ -222,6 +225,8 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
                     if (inputModel.sku.isNotEmpty()) {
                         sku = inputModel.sku
                     }
+
+                    status = if(variantDetailInputList[position].isActive) STATUS_ACTIVE_STRING else STATUS_INACTIVE_STRING
                 }
             }
         }
