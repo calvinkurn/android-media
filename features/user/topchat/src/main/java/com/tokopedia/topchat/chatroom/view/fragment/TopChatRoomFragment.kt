@@ -1103,6 +1103,9 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         presenter.blockChat(messageId, {
             getViewState().setChatBlockStatus(true)
             getViewState().onCheckChatBlocked(opponentRole, opponentName, getViewState().blockStatus, onUnblockChatClicked())
+            context?.let {
+                showToasterConfirmation(it.getString(R.string.title_success_block_chat))
+            }
         }, {
             val errorMessage = ErrorHandler.getErrorMessage(context, it)
             showToasterError(errorMessage)
@@ -1113,6 +1116,9 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         presenter.unBlockChat(messageId, {
             getViewState().setChatBlockStatus(false)
             getViewState().onCheckChatBlocked(opponentRole, opponentName, getViewState().blockStatus, onUnblockChatClicked())
+            context?.let {
+                showToasterConfirmation(it.getString(R.string.title_success_unblock_chat))
+            }
         }, {
             val errorMessage = ErrorHandler.getErrorMessage(context, it)
             showToasterError(errorMessage)
