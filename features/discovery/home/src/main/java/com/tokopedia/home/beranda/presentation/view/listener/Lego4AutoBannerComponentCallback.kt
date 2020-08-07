@@ -26,6 +26,7 @@ class Lego4AutoBannerComponentCallback(val context: Context?, val homeCategoryLi
     }
 
     override fun onLegoItemClicked(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int) {
+        RouteManager.route(context, channelGrid.applink)
     }
 
     override fun onChannelLegoImpressed(channelModel: ChannelModel, parentPosition: Int) {
