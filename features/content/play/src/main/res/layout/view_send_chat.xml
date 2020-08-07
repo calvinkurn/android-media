@@ -12,7 +12,7 @@
     tools:background="@color/Neutral_N700_32"
     >
 
-    <androidx.appcompat.widget.AppCompatEditText
+    <com.tokopedia.play_common.view.PlayNoImageEditText
         android:id="@+id/et_chat"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="@dimen/layout_lvl0"

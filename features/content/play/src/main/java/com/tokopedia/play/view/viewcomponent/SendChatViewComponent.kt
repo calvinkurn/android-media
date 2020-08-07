@@ -6,12 +6,13 @@ import android.text.TextWatcher
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.annotation.IdRes
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
+import com.tokopedia.play_common.view.PlayNoImageEditText
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 
 /**
@@ -21,9 +22,9 @@ class SendChatViewComponent(
         container: ViewGroup,
         @IdRes idRes: Int,
         private val listener: Listener
-) : ViewComponent(container, idRes) {
+) : ViewComponent(container, idRes), PlayNoImageEditText.OnErrorListener {
 
-    private val etChat: EditText = findViewById(R.id.et_chat)
+    private val etChat: PlayNoImageEditText = findViewById(R.id.et_chat)
     private val ivSend: ImageView = findViewById(R.id.iv_send)
 
     private var prevText = ""
@@ -53,6 +54,8 @@ class SendChatViewComponent(
             listener.onChatFormClicked(this)
         }
 
+        etChat.setOnErrorListener(this)
+
         etChat.setOnEditorActionListener { textView, actionId, keyEvent ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 send()
@@ -64,6 +67,10 @@ class SendChatViewComponent(
         ivSend.setOnClickListener {
             send()
         }
+    }
+
+    override fun onForbiddenImage(view: PlayNoImageEditText) {
+        Toast.makeText(rootView.context, getString(R.string.play_error_image_edit_text), Toast.LENGTH_SHORT).show()
     }
 
     fun focusChatForm(shouldFocus: Boolean, forceChangeKeyboardState: Boolean = false) {
