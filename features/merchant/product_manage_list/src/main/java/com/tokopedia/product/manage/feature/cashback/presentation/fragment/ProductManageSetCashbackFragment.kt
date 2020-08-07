@@ -169,10 +169,12 @@ class ProductManageSetCashbackFragment : Fragment(), SelectClickListener,
     private fun initButton() {
         submitCashbackButton.setOnClickListener {
             viewModel.setCashback(productId, productName, cashback)
-            if(shopId != "" && !isDrafting) {
-                ProductManageTracking.eventClickSavePromotion(shopId)
-            } else if (!isDrafting) {
-                ProductManageTracking.eventCashbackSettingsSave(productId)
+            if (!isDrafting) {
+                if(shopId != "") {
+                    ProductManageTracking.eventClickSavePromotion(shopId)
+                } else {
+                    ProductManageTracking.eventCashbackSettingsSave(productId)
+                }
             }
         }
     }
