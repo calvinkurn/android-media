@@ -24,8 +24,8 @@ dependencies {
     kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+    implementation rootProject.ext.playServicesDependencies.core
     implementation project(rootProject.ext.libraries.remoteConfig)
-    implementation project(rootProject.ext.libraries.playCore)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.devMonitoringTools)
 

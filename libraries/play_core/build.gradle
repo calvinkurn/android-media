@@ -1,2 +1,0 @@
-configurations.maybeCreate("default")
-artifacts.add("default", file('playcore-1.7.3-fix-for-in-app-review.aar'))
