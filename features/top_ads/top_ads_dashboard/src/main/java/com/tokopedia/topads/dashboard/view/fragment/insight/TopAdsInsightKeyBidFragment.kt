@@ -91,9 +91,9 @@ class TopAdsInsightKeyBidFragment : BaseDaggerFragment() {
     private fun setHeader(totalPotential: Double) {
         insight_title.text = data?.bid?.box?.title
         val text = data?.keyword?.box?.desc
-        val withValue = text?.replace(COUNT, dataInsight?.get(key)?.bid?.size.toString())?.replace("$" + "value", "+" + Utils.convertToCurrencyString(totalPotential.toLong()))
+        val withValue = text?.replace(COUNT, dataInsight?.get(key)?.bid?.size.toString())?.replace(VALUE, "+" + Utils.convertToCurrencyString(totalPotential.toLong()))
         insight_desc.text = Html.fromHtml(withValue)
-        btnTambah.text = data?.bid?.box?.button?.title?.replace("$" + "count", dataInsight?.get(key)?.bid?.size.toString())
+        btnTambah.text = data?.bid?.box?.button?.title?.replace(COUNT, dataInsight?.get(key)?.bid?.size.toString())
     }
 
     private fun getfromArguments() {

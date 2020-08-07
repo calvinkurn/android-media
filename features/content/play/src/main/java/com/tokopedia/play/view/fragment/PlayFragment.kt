@@ -467,9 +467,12 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
     private fun observeGetChannelInfo() {
         playViewModel.observableGetChannelInfo.observe(viewLifecycleOwner, DistinctObserver { result ->
             when (result) {
-                is Success -> PlayAnalytics.sendScreen(channelId, playViewModel.channelType)
+                is Success -> {
+                    PlayAnalytics.sendScreen(channelId, playViewModel.channelType)
+                    showGlobalError(false)
+                }
                 is Fail -> result.throwable.message?.let {
-                    if (GlobalErrorCodeWrapper.wrap(it) != GlobalErrorCodeWrapper.Unknown) showGlobalError()
+                    if (GlobalErrorCodeWrapper.wrap(it) != GlobalErrorCodeWrapper.Unknown) showGlobalError(true)
                 }
             }
         })
@@ -555,10 +558,10 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
         }
     }
 
-    private fun showGlobalError() {
+    private fun showGlobalError(shouldShow: Boolean) {
         scope.launch {
             EventBusFactory.get(viewLifecycleOwner)
-                    .emit(ScreenStateEvent::class.java, ScreenStateEvent.ShowGlobalError)
+                    .emit(ScreenStateEvent::class.java, ScreenStateEvent.ShowGlobalError(shouldShow))
         }
     }
 
