@@ -1,0 +1,916 @@
+{
+  "data": {
+    "rechargeCatalogProductInputMultiTab": {
+      "productInputs": [
+        {
+          "label": "Pulsa",
+          "needEnquiry": false,
+          "isShowingProduct": true,
+          "enquiryFields": [],
+          "product": {
+            "name": "product_id",
+            "text": "Input Nominal",
+            "placeholder": "",
+            "validations": [],
+            "dataCollections": [
+              {
+                "name": "",
+                "products": [
+                  {
+                    "id": "1137",
+                    "attributes": {
+                      "price": "Rp 15.500",
+                      "detail": "Masa berlaku 20 hari",
+                      "info": "Rp 15.500",
+                      "product_labels": [],
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "30",
+                    "attributes": {
+                      "price": "Rp 25.000",
+                      "detail": "Masa berlaku 30 hari",
+                      "info": "Rp 25.000",
+                      "product_labels": [],
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "31",
+                    "attributes": {
+                      "price": "Rp 50.000",
+                      "detail": "Masa berlaku 45 hari",
+                      "info": "Rp 49.500",
+                      "product_labels": [],
+                      "promo": {
+                        "id": "0"
+                      }
+                    }
+                  },
+                  {
+                    "id": "32",
+                    "attributes": {
+                      "price": "Rp 100.000",
+                      "detail": "Masa berlaku 60 hari",
+                      "info": "Rp 99.500",
+                      "product_labels": [],
+                      "promo": {
+                        "id": "0"
+                      }
+                    }
+                  },
+                  {
+                    "id": "347",
+                    "attributes": {
+                      "price": "Rp 150.000",
+                      "detail": "Masa berlaku 90 hari",
+                      "info": "Rp 148.500",
+                      "product_labels": [],
+                      "promo": {
+                        "id": "0"
+                      }
+                    }
+                  },
+                  {
+                    "id": "22",
+                    "attributes": {
+                      "price": "Rp 200.000",
+                      "detail": "Masa berlaku 120 hari",
+                      "info": "Rp 198.500",
+                      "product_labels": [],
+                      "promo": {
+                        "id": "0"
+                      }
+                    }
+                  },
+                  {
+                    "id": "35",
+                    "attributes": {
+                      "price": "Rp 300.000",
+                      "detail": "Masa berlaku 180 hari",
+                      "info": "Rp 296.000",
+                      "product_labels": [],
+                      "promo": {
+                        "id": "0"
+                      }
+                    }
+                  },
+                  {
+                    "id": "36",
+                    "attributes": {
+                      "price": "Rp 500.000",
+                      "detail": "Masa berlaku 240 hari",
+                      "info": "Rp495.000",
+                      "product_labels": [],
+                      "promo": {
+                        "id": "0"
+                      }
+                    }
+                  },
+                  {
+                    "id": "37",
+                    "attributes": {
+                      "price": "Rp 1.000.000",
+                      "detail": "Masa berlaku 360 hari",
+                      "info": "Rp995.000",
+                      "product_labels": [],
+                      "promo": {
+                        "id": "0"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "filterTagComponents": []
+        },
+        {
+          "label": "Paket Data",
+          "needEnquiry": false,
+          "isShowingProduct": true,
+          "enquiryFields": [],
+          "product": {
+            "name": "product_id",
+            "text": "Input Nominal",
+            "placeholder": "",
+            "validations": [],
+            "dataCollections": [
+              {
+                "name": "Yang Terbaru",
+                "products": [
+                  {
+                    "id": "6880",
+                    "attributes": {
+                      "price": "Rp 12.000",
+                      "detail": "15GB akses ke Microsoft Teams, Zoom, Google Meet, Google Hangout, Google Classroom. Masa berlaku 7 Hari.",
+                      "info": "Rp 12.000",
+                      "product_labels": [
+                        "BARU"
+                      ],
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "6879",
+                    "attributes": {
+                      "price": "Rp 5.000",
+                      "detail": "5GB akses ke Microsoft Teams, Zoom, Google Meet, Google Hangout, Google Classroom. Masa berlaku 3 Hari.",
+                      "info": "Rp 5.000",
+                      "product_labels": [
+                        "BARU"
+                      ],
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "6878",
+                    "attributes": {
+                      "price": "Rp 3.000",
+                      "detail": "2GB akses ke Microsoft Teams, Zoom, Google Meet, Google Hangout, Google Classroom. Masa berlaku 1 Hari.",
+                      "info": "Rp 3.000",
+                      "product_labels": [
+                        "BARU"
+                      ],
+                      "promo": null
+                    }
+                  }
+                ]
+              },
+              {
+                "name": "Produk Eksklusif",
+                "products": [
+                  {
+                    "id": "3049",
+                    "attributes": {
+                      "price": "Rp 79.000",
+                      "detail": "5GB Kuota Utama + 5GB Kuota Youtube (00:00 - 24:00) + Unlimited Kuota Youtube (01:00 - 06:00) + 20 menit Nelpon ke Semua Operator & 30 Menit Anynet. Masa aktif 30 hari, sisa kuota dapat digunakan di bulan berikutnya",
+                      "info": "Rp 79.000",
+                      "product_labels": [],
+                      "promo": {
+                        "id": "0"
+                      }
+                    }
+                  },
+                  {
+                    "id": "5717",
+                    "attributes": {
+                      "price": "Rp 79.000",
+                      "detail": "5GB Kuota Utama + 5GB YouTube di jaringan VIP XL, 20 menit nelp ke semua operator dan Xtra Kuota 2GB untuk bebas upload video kreasimu di aplikasi TikTok. Masa aktif 30 hari. Jika saat ini sudah berlangganan XTRA Combo VIP dengan varian lebih besar, maka paket & kuota saat ini akan hangus & digantikan dengan paket yang baru diaktifkan. Perpanjangan hanya berlaku untuk Paket Utama (XTRA Combo VIP)",
+                      "info": "Rp 79.000",
+                      "product_labels": [],
+                      "promo": {
+                        "id": "0"
+                      }
+                    }
+                  },
+                  {
+                    "id": "3050",
+                    "attributes": {
+                      "price": "Rp 109.000",
+                      "detail": "10GB Kuota Utama + 10GB Kuota Youtube (00:00 - 24:00) + Unlimited Kuota Youtube (01:00 - 06:00) + 30 menit Nelpon ke Semua Operator & 30 Menit Anynet Masa aktif 30 hari, sisa kuota dapat digunakan di bulan berikutnya",
+                      "info": "Rp 109.000",
+                      "product_labels": [],
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "4847",
+                    "attributes": {
+                      "price": "Rp 109.000",
+                      "detail": "10GB Kuota Utama + 10GB YouTube di jaringan VIP XL, 30 menit nelp ke semua operator dan Xtra Kuota 2GB untuk bebas upload video kreasimu di aplikasi TikTok. Masa aktif 30 hari. Jika saat ini sudah berlangganan XTRA Combo VIP dengan varian lebih besar, maka paket & kuota saat ini akan hangus & digantikan dengan paket yang baru diaktifkan. Perpanjangan hanya berlaku untuk Paket Utama (XTRA Combo VIP)",
+                      "info": "Rp 109.000",
+                      "product_labels": [],
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "4056",
+                    "attributes": {
+                      "price": "Rp 109.000",
+                      "detail": "10GB Kuota Utama + 10GB Youtube+ Nelp ke semua operator 30 menit + 5GB Netflix. Masa aktif 30 hari. Jika saat ini sudah berlangganan Xtra Combo VIP yang lebih besar, maka paket & kuota saat ini akan hangus & digantikan dengan Xtra Combo VIP yang baru diaktifkan. Perpanjangan hanya berlaku utk paket Utama (Xtra Combo VIP). ",
+                      "info": "Rp 109.000",
+                      "product_labels": [],
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "3051",
+                    "attributes": {
+                      "price": "Rp 149.000",
+                      "detail": "15GB Kuota Utama + 15GB Kuota Youtube (00:00 - 24:00) + Unlimited Kuota Youtube (01:00 - 06:00) + 40 menit Nelpon ke Semua Operator & 30 Menit Anynet. Masa aktif 30 hari, sisa kuota dapat digunakan di bulan berikutnya",
+                      "info": "Rp 149.000",
+                      "product_labels": [],
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "4058",
+                    "attributes": {
+                      "price": "Rp 149.000",
+                      "detail": "15GB Kuota Utama + 15GB YouTube + Nelp ke semua operator 40 menit + 5GB Netflix. Masa aktif 30 hari. Jika saat ini sudah berlangganan Xtra Combo VIP yang lebih besar, maka paket & kuota saat ini akan hangus & digantikan dengan Xtra Combo VIP yang baru diaktifkan. Perpanjangan hanya berlaku utk paket Utama (Xtra Combo VIP).",
+                      "info": "Rp 149.000",
+                      "product_labels": [],
+                      "promo": {
+                        "id": "0"
+                      }
+                    }
+                  },
+                  {
+                    "id": "4848",
+                    "attributes": {
+                      "price": "Rp 149.000",
+                      "detail": "15GB Kuota Utama + 15GB YouTube di jaringan VIP XL, 40 menit nelp ke semua operator dan Xtra Kuota 2GB untuk bebas upload video kreasimu di aplikasi TikTok. Masa aktif 30 hari. Jika saat ini sudah berlangganan XTRA Combo VIP dengan varian lebih besar, maka paket & kuota saat ini akan hangus & digantikan dengan paket yang baru diaktifkan. Perpanjangan hanya berlaku untuk Paket Utama (XTRA Combo VIP)",
+                      "info": "Rp 149.000",
+                      "product_labels": [],
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "3052",
+                    "attributes": {
+                      "price": "Rp 199.000",
+                      "detail": "20GB Kuota Utama + 20GB Kuota Youtube (00:00 - 24:00) + Unlimited Kuota Youtube (01:00 - 06:00) + 60 Menit Nelpon ke Semua Operator & 30 Menit Anynet Masa aktif 30 hari, sisa kuota dapat digunakan di bulan berikutnya",
+                      "info": "Rp 199.000",
+                      "product_labels": [],
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "3053",
+                    "attributes": {
+                      "price": "Rp 259.000",
+                      "detail": "35GB Kuota Utama + 35GB Kuota Youtube (00:00 - 24:00) + Unlimited Kuota Youtube (01:00 - 06:00) + 90 Menit Nelpon ke Semua Operator & 30 Menit AnyNetMasa aktif 30 hari, sisa kuota dapat digunakan di bulan berikutnya",
+                      "info": "Rp 259.000",
+                      "product_labels": [],
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "3340",
+                    "attributes": {
+                      "price": "Rp 10.000",
+                      "detail": "Akses Tokopedia 100MB/hr, 30hr, Rp10rb",
+                      "info": "Rp 9.500",
+                      "product_labels": [],
+                      "promo": {
+                        "id": "0"
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "name": "XTRACOMBO",
+                "products": [
+                  {
+                    "id": "794",
+                    "attributes": {
+                      "price": "Rp 59.500",
+                      "detail": "5GB Kuota Utama + 5GB Kuota Youtube (00:00 - 24:00) + Unlimited Kuota Youtube (01:00 - 06:00) + 20 menit Nelpon ke Semua Operator. Masa aktif 30 hari, sisa kuota (Max. 1GB) dapat digunakan di bulan berikutnya",
+                      "info": "Rp58.400",
+                      "product_labels": [],
+                      "promo": {
+                        "id": "0"
+                      }
+                    }
+                  },
+                  {
+                    "id": "795",
+                    "attributes": {
+                      "price": "Rp 89.000",
+                      "detail": "10GB Kuota Utama + 10GB Kuota Youtube (00:00 - 24:00) + Unlimited Kuota Youtube (01:00 - 06:00) + 30 menit Nelpon ke Semua Operator, Masa aktif 30 hari, sisa kuota (Max. 1GB) dapat digunakan di bulan berikutnya",
+                      "info": "Rp 86.900",
+                      "product_labels": [],
+                      "promo": {
+                        "id": "0"
+                      }
+                    }
+                  },
+                  {
+                    "id": "2699",
+                    "attributes": {
+                      "price": "Rp 69.000",
+                      "detail": "5GB Kuota Utama + 5GB Kuota Youtube (00:00 - 24:00) + Unlimited Kuota Youtube (01:00 - 06:00) + 20 menit Nelpon ke Semua Operator. Masa aktif 30 hari, sisa kuota dapat digunakan di bulan berikutnya",
+                      "info": "Rp 66.900",
+                      "product_labels": [],
+                      "promo": {
+                        "id": "0"
+                      }
+                    }
+                  },
+                  {
+                    "id": "793",
+                    "attributes": {
+                      "price": "Rp 129.000",
+                      "detail": "15GB Kuota Utama +15GB Kuota Youtube (00:00 - 24:00) + Unlimited Kuota Youtube (01:00 - 06:00) + 40 menit Nelpon ke Semua Operator. Masa aktif 30 hari, sisa kuota (Max. 1GB) dapat digunakan di bulan berikutnya",
+                      "info": "Rp 129.000",
+                      "product_labels": [],
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "796",
+                    "attributes": {
+                      "price": "Rp 179.000",
+                      "detail": "20GB Kuota Utama + 20GB Kuota Youtube (00:00 - 24:00) + Unlimited Kuota Youtube (01:00 - 06:00) + 60 Menit Nelpon ke Semua Operator. Masa aktif 30 hari, sisa kuota (Max. 1GB) dapat digunakan di bulan berikutnya",
+                      "info": "Rp 179.000",
+                      "product_labels": [],
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "797",
+                    "attributes": {
+                      "price": "Rp 239.000",
+                      "detail": "35GB Kuota Utama + 35GB Kuota Youtube (00:00 - 24:00) + Unlimited Kuota Youtube (01:00 - 06:00) + 90 Menit Nelpon ke Semua Operator. Masa aktif 30 hari, sisa kuota (Max. 1GB) dapat digunakan di bulan berikutnya",
+                      "info": "Rp 239.000",
+                      "product_labels": [],
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "2700",
+                    "attributes": {
+                      "price": "Rp 99.000",
+                      "detail": "10GB Kuota Utama + 10GB Kuota Youtube (00:00 - 24:00) + Unlimited Kuota Youtube (01:00 - 06:00) + 30 menit Nelpon ke Semua Operator. Masa aktif 30 hari, sisa kuota dapat digunakan di bulan berikutnya.",
+                      "info": "Rp 94.900",
+                      "product_labels": [],
+                      "promo": {
+                        "id": "0"
+                      }
+                    }
+                  },
+                  {
+                    "id": "2701",
+                    "attributes": {
+                      "price": "Rp 139.000",
+                      "detail": "15GB Kuota Utama + 15GB Kuota Youtube (00:00 - 24:00) + Unlimited Kuota Youtube (01:00 - 06:00) + 40 menit Nelpon ke Semua Operator. Masa aktif 30 hari, sisa kuota dapat digunakan di bulan berikutnya.",
+                      "info": "Rp 135.000",
+                      "product_labels": [],
+                      "promo": {
+                        "id": "0"
+                      }
+                    }
+                  },
+                  {
+                    "id": "2702",
+                    "attributes": {
+                      "price": "Rp 189.000",
+                      "detail": "20GB Kuota Utama + 20GB Kuota Youtube (00:00 - 24:00) + Unlimited Kuota Youtube (01:00 - 06:00) + 60 Menit Nelpon ke Semua Operator. Masa aktif 30 hari, sisa kuota dapat digunakan di bulan berikutnya.",
+                      "info": "Rp 188.000",
+                      "product_labels": [],
+                      "promo": {
+                        "id": "0"
+                      }
+                    }
+                  },
+                  {
+                    "id": "2703",
+                    "attributes": {
+                      "price": "Rp 249.000",
+                      "detail": "35GB Kuota Utama + 35GB Kuota Youtube (00:00 - 24:00) + Unlimited Kuota Youtube (01:00 - 06:00) + 90 Menit Nelpon ke Semua Operator. Masa aktif 30 hari, sisa kuota dapat digunakan di bulan berikutnya.",
+                      "info": "Rp 248.500",
+                      "product_labels": [],
+                      "promo": {
+                        "id": "0"
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "name": "HOTROD",
+                "products": [
+                  {
+                    "id": "6588",
+                    "attributes": {
+                      "price": "Rp 5.700",
+                      "detail": "500MB 24jam. Masa aktif 7 hari. Kuota hanya berlaku untuk pelanggan XL Prabayar Kuota dapat digunakan di 2G/3G/4G, dari jam 00.00-24.00 WIB Paket HotRod tidak berlaku perpanjangan otomatis (One Time Charging) ",
+                      "info": "Rp 5.700",
+                      "product_labels": [
+                        "BARU"
+                      ],
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "6590",
+                    "attributes": {
+                      "price": "Rp 11.000",
+                      "detail": "1GB 24jam. Masa aktif 7 hari. Kuota hanya berlaku untuk pelanggan XL Prabayar Kuota dapat digunakan di 2G/3G/4G, dari jam 00.00-24.00 WIB Paket HotRod tidak berlaku perpanjangan otomatis (One Time Charging)",
+                      "info": "Rp 11.000",
+                      "product_labels": [
+                        "BARU"
+                      ],
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "6589",
+                    "attributes": {
+                      "price": "Rp 11.000",
+                      "detail": "1.5GB 24jam. Masa aktif 3 hari. Kuota hanya berlaku untuk pelanggan XL Prabayar Kuota dapat digunakan di 2G/3G/4G, dari jam 00.00-24.00 WIB Paket HotRod tidak berlaku perpanjangan otomatis (One Time Charging)",
+                      "info": "Rp 11.000",
+                      "product_labels": [
+                        "BARU"
+                      ],
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "6591",
+                    "attributes": {
+                      "price": "Rp 21.000",
+                      "detail": "2GB 24jam. Masa aktif 7 hari. Kuota hanya berlaku untuk pelanggan XL Prabayar Kuota dapat digunakan di 2G/3G/4G, dari jam 00.00-24.00 WIB Paket HotRod tidak berlaku perpanjangan otomatis (One Time Charging)",
+                      "info": "Rp 21.000",
+                      "product_labels": [
+                        "BARU"
+                      ],
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "6592",
+                    "attributes": {
+                      "price": "Rp 28.000",
+                      "detail": "3GB 24jam. Masa aktif 7 hari. Kuota hanya berlaku untuk pelanggan XL Prabayar Kuota dapat digunakan di 2G/3G/4G, dari jam 00.00-24.00 WIB Paket HotRod tidak berlaku perpanjangan otomatis (One Time Charging)",
+                      "info": "Rp 28.000",
+                      "product_labels": [
+                        "BARU"
+                      ],
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "163",
+                    "attributes": {
+                      "price": "Rp 30.000",
+                      "detail": "800MB Kuota Utama. Masa aktif 30 hari",
+                      "info": "Rp 30.000",
+                      "product_labels": [],
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "130",
+                    "attributes": {
+                      "price": "Rp 49.600",
+                      "detail": "1.5GB Kuota Utama. Masa aktif 30 hari",
+                      "info": "Rp 49.600",
+                      "product_labels": [],
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "164",
+                    "attributes": {
+                      "price": "Rp 60.000",
+                      "detail": "3GB Kuota Utama. Masa aktif 30 hari",
+                      "info": "Rp 60.000",
+                      "product_labels": [],
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "165",
+                    "attributes": {
+                      "price": "Rp 100.000",
+                      "detail": "6GB Kuota Utama. Masa aktif 30 hari",
+                      "info": "Rp 100.000",
+                      "product_labels": [],
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "166",
+                    "attributes": {
+                      "price": "Rp 130.000",
+                      "detail": "8GB Kuota Utama. Masa aktif 30 hari",
+                      "info": "Rp 130.000",
+                      "product_labels": [],
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "167",
+                    "attributes": {
+                      "price": "Rp 180.000",
+                      "detail": "12GB Kuota Utama. Masa aktif 30 hari",
+                      "info": "Rp 180.000",
+                      "product_labels": [],
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "168",
+                    "attributes": {
+                      "price": "Rp 220.000",
+                      "detail": "16GB Kuota Utama. Masa aktif 30 hari",
+                      "info": "Rp 220.000",
+                      "product_labels": [],
+                      "promo": null
+                    }
+                  }
+                ]
+              },
+              {
+                "name": "ANYNET",
+                "products": [
+                  {
+                    "id": "1899",
+                    "attributes": {
+                      "price": "Rp 12.100",
+                      "detail": "Bebas Nelpon ke semua operator selama 400 menit (370 Menit ke XL + 30 Menit ke Operator Lain). Masa aktif 7 hari. ",
+                      "info": "Rp 12.000",
+                      "product_labels": [],
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "1900",
+                    "attributes": {
+                      "price": "Rp 40.000",
+                      "detail": "Bebas Nelpon ke semua operator selama 150 menit. Masa aktif  30 hari.",
+                      "info": "Rp 40.000",
+                      "product_labels": [],
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "1901",
+                    "attributes": {
+                      "price": "Rp 60.000",
+                      "detail": "Bebas Nelpon ke semua operator selama 250 menit. Masa aktif  30 hari.",
+                      "info": "Rp 60.000",
+                      "product_labels": [],
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "1903",
+                    "attributes": {
+                      "price": "Rp 75.000",
+                      "detail": "Bebas Nelpon ke semua operator selama 325 menit. Masa aktif  30 hari.",
+                      "info": "Rp 75.000",
+                      "product_labels": [],
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "1906",
+                    "attributes": {
+                      "price": "Rp 145.000",
+                      "detail": "Bebas Nelpon ke semua operator selama 500 menit. Masa aktif  30 hari.",
+                      "info": "Rp 140.500",
+                      "product_labels": [],
+                      "promo": {
+                        "id": "0"
+                      }
+                    }
+                  },
+                  {
+                    "id": "1877",
+                    "attributes": {
+                      "price": "Rp 100.000",
+                      "detail": "Bebas Nelpon ke semua operator selama 300 Menit. Masa aktif 90 Hari. ",
+                      "info": "Rp 100.000",
+                      "product_labels": [],
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "1878",
+                    "attributes": {
+                      "price": "Rp 150.500",
+                      "detail": "Bebas Nelpon ke semua operator selama 500 Menit. Masa aktif 90 Hari. ",
+                      "info": "Rp 150.500",
+                      "product_labels": [],
+                      "promo": null
+                    }
+                  }
+                ]
+              },
+              {
+                "name": "12 Bulan",
+                "products": [
+                  {
+                    "id": "807",
+                    "attributes": {
+                      "price": "Rp 708.000",
+                      "detail": "2GB Kuota Utama + 4GB (4G) + Nelpon 20 Menit ke Semua Operator. Masa aktif 30 hari, perpanjang setiap bulan",
+                      "info": "Rp 588.000",
+                      "product_labels": [],
+                      "promo": {
+                        "id": "0"
+                      }
+                    }
+                  },
+                  {
+                    "id": "813",
+                    "attributes": {
+                      "price": "Rp 1.068.000",
+                      "detail": "4GB Kuota Utama + 8GB (4G) + Nelpon 40 menit ke Semua Operator. Masa aktif 30 hari, perpanjang setiap bulan",
+                      "info": "Rp 869.000",
+                      "product_labels": [],
+                      "promo": {
+                        "id": "0"
+                      }
+                    }
+                  },
+                  {
+                    "id": "814",
+                    "attributes": {
+                      "price": "Rp 1.548.000",
+                      "detail": "6GB Kuota Utama + 12GB (4G) + Nelpon 60 menit ke Semua Operator. Masa aktif 30 hari, perpanjang setiap bulan",
+                      "info": "Rp 1.248.000",
+                      "product_labels": [],
+                      "promo": {
+                        "id": "0"
+                      }
+                    }
+                  },
+                  {
+                    "id": "815",
+                    "attributes": {
+                      "price": "Rp 2.148.000",
+                      "detail": "10GB Kuota Utama + 20GB (4G) + Nelpon 100 menit ke Semua Operator. Masa aktif 30 hari, perpanjang setiap bulan",
+                      "info": "Rp 1.628.000",
+                      "product_labels": [],
+                      "promo": {
+                        "id": "0"
+                      }
+                    }
+                  },
+                  {
+                    "id": "816",
+                    "attributes": {
+                      "price": "Rp 2.868.000",
+                      "detail": "14GB Kuota Utama + 28GB (4G) + Nelpon 140 menit ke Semua Operator. Masa aktif 30 hari, perpanjang setiap bulan",
+                      "info": "Rp 2.168.000",
+                      "product_labels": [],
+                      "promo": {
+                        "id": "0"
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "name": "XTRA",
+                "products": [
+                  {
+                    "id": "1981",
+                    "attributes": {
+                      "price": "Rp 12.200",
+                      "detail": "Hanya berlaku sebagai kuota tambahan untuk paket XTRA Combo VIP, XTRA Combo dan HotRod. Masa aktif 30 hari.",
+                      "info": "Rp 12.200",
+                      "product_labels": [],
+                      "promo": null
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "filterTagComponents": [
+            {
+              "name": "filter_tag_kuota",
+              "text": "Kuota",
+              "param_name": "filter_tag_kuota",
+              "data_collections": [
+                {
+                  "key": "606",
+                  "value": "100MB - 900MB"
+                },
+                {
+                  "key": "608",
+                  "value": "5GB - 10GB"
+                },
+                {
+                  "key": "610",
+                  "value": "> 20GB"
+                },
+                {
+                  "key": "612",
+                  "value": "Berlangganan"
+                },
+                {
+                  "key": "607",
+                  "value": "1GB - 5GB"
+                },
+                {
+                  "key": "609",
+                  "value": "11GB - 20GB"
+                },
+                {
+                  "key": "611",
+                  "value": "Unlimited"
+                }
+              ]
+            },
+            {
+              "name": "filter_tag_feature",
+              "text": "Feature",
+              "param_name": "filter_tag_feature",
+              "data_collections": [
+                {
+                  "key": "613",
+                  "value": "Telepon"
+                },
+                {
+                  "key": "614",
+                  "value": "Streaming"
+                },
+                {
+                  "key": "615",
+                  "value": "Xtra Kuota (Adds-On)"
+                },
+                {
+                  "key": "619",
+                  "value": "Games"
+                },
+                {
+                  "key": "620",
+                  "value": "Exclusive"
+                }
+              ]
+            },
+            {
+              "name": "filter_tag_tipe_kuota",
+              "text": "Tipe Kuota",
+              "param_name": "filter_tag_tipe_kuota",
+              "data_collections": [
+                {
+                  "key": "621",
+                  "value": "Kuota Lokal "
+                },
+                {
+                  "key": "622",
+                  "value": "Kuota Malam"
+                },
+                {
+                  "key": "623",
+                  "value": "Kuota Utama"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "label": "Roaming",
+          "needEnquiry": false,
+          "isShowingProduct": true,
+          "enquiryFields": [],
+          "product": {
+            "name": "product_id",
+            "text": "Input Nominal",
+            "placeholder": "",
+            "validations": [],
+            "dataCollections": [
+              {
+                "name": "",
+                "products": [
+                  {
+                    "id": "1173",
+                    "attributes": {
+                      "price": "Rp 160.000",
+                      "detail": "Berlaku untuk pelanggan prabayar. Nikmati 25 SMS + 25 menit telepon dan bebas internet tanpa kuota selama 1 hari. Paket ini berlaku di negara-negara berikut: Malaysia, Singapura, Thailand, Jepang, Hong Kong, Taiwan, Macau, Cambodia, Bangladesh, Sri Lanka, Myanmar, Korea Selatan, dan Australia.  Masa tunggu registrasi paket di Indonesia hingga tiba di Negara tujuan tidak lebih dari  1 hari. Paket Roaming akan langsung  aktif ketika tiba di negara tujuan. Informasi lebih lanjut",
+                      "info": "Rp 160.000",
+                      "product_labels": [],
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "1174",
+                    "attributes": {
+                      "price": "Rp 225.000",
+                      "detail": "Berlaku untuk pelanggan prabayar. Nikmati 50 SMS + 50 menit telepon dan bebas internetan sepuasnya selama 3 hari. Paket ini berlaku di negara-negara berikut: Malaysia, Singapura, Thailand, Jepang, Hong Kong, Taiwan, Australia, UK, dan negera lainnya. Masa tunggu registrasi paket di Indonesia hingga tiba di Negara tujuan tidak lebih dari 3 hari. Paket Roaming akan langsung aktif ketika tiba di negara tujuan. Informasi lebih lanjut",
+                      "info": "Rp 225.000",
+                      "product_labels": [],
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "1175",
+                    "attributes": {
+                      "price": "Rp 425.000",
+                      "detail": "Berlaku untuk pelanggan prabayar. Nikmati 100 SMS + 100 menit telepon dan bebas internetan sepuasnya selama 7 hari. Paket ini berlaku di negara-negara berikut: Malaysia, Singapura, Thailand, Jepang, Hong Kong, Taiwan, Australia, UK, dan negera lainnya. Masa tunggu registrasi paket di Indonesia hingga tiba di Negara tujuan tidak lebih dari 7 hari. Paket Roaming akan langsung aktif ketika tiba di negara tujuan. Informasi lebih lanjut",
+                      "info": "Rp 425.000",
+                      "product_labels": [],
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "1954",
+                    "attributes": {
+                      "price": "Rp 85.000",
+                      "detail": "Hanya Berlaku untuk pelanggan Prabayar pengguna HotRod atau XTRA Combo. Apabila paket Xtra Combo/ HotRod kadarluasa selama masa aktif paket XL Pass, pengguna akan mendapatkan 128kbps koneksi internet tanpa biaya tambahan. Pelanggan harus tiba di hari yang sama dengan pembelian paket hingga 23:59 hari itu.  Paket akan kadarluasa 23:59 WIB di akhir dari masa aktivasi paket. ",
+                      "info": "Rp 85.000",
+                      "product_labels": [],
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "1791",
+                    "attributes": {
+                      "price": "Rp 950.000",
+                      "detail": "Hanya Berlaku untuk pelanggan Prabayar pengguna HotRod atau XTRA Combo. Apabila paket Xtra Combo/ HotRod kadarluasa selama masa aktif paket XL Pass, pengguna akan mendapatkan 128kbps koneksi internet tanpa biaya tambahan. Pelanggan harus tiba tidak lebih dari 30  hari semenjak pembelian paket hingga tiba negara tujuan.  Paket akan kadarluasa 23:59 WIB di akhir dari masa aktivasi paket. ",
+                      "info": "Rp 950.000",
+                      "product_labels": [],
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "1789",
+                    "attributes": {
+                      "price": "Rp 150.000",
+                      "detail": "Hanya Berlaku untuk pelanggan Prabayar pengguna HotRod atau XTRA Combo. Apabila paket Xtra Combo/ HotRod kadarluasa selama masa aktif paket XL Pass, pengguna akan mendapatkan 128kbps koneksi internet tanpa biaya tambahan. Pelanggan harus tiba tidak lebih dari 3 hari semenjak pembelian paket hingga tiba negara tujuan.  Paket akan kadarluasa 23:59 WIB di akhir dari masa aktivasi paket. ",
+                      "info": "Rp 150.000",
+                      "product_labels": [],
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "2995",
+                    "attributes": {
+                      "price": "Rp 250.000",
+                      "detail": "7 hari akses Kuota HotRod, Combo XTRA , XTRA Combo",
+                      "info": "Rp 250.000",
+                      "product_labels": [],
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "3463",
+                    "attributes": {
+                      "price": "Rp 250.000",
+                      "detail": "Hanya untuk modem XL GO IZI",
+                      "info": "Rp 250.000",
+                      "product_labels": [],
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "3464",
+                    "attributes": {
+                      "price": "Rp 350.000",
+                      "detail": "Hanya untuk modem XL GO IZI",
+                      "info": "Rp 350.000",
+                      "product_labels": [
+                        "BARU"
+                      ],
+                      "promo": null
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "filterTagComponents": []
+        }
+      ]
+    }
+  }
+}
