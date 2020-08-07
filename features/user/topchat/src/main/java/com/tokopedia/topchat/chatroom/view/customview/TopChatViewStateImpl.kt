@@ -74,9 +74,8 @@ class TopChatViewStateImpl constructor(
     lateinit var chatRoomViewModel: ChatroomViewModel
 
     var isShopFollowed: Boolean = false
-    val blockStatus: BlockedStatus = BlockedStatus()
+    var blockStatus: BlockedStatus = BlockedStatus()
     var isPromoBlocked: Boolean = false
-    var isChatBlocked: Boolean = false
 
     var roomMenu = LongClickMenu()
 
@@ -250,6 +249,7 @@ class TopChatViewStateImpl constructor(
                                alertDialog: Dialog,
                                onUnblockChatClicked: () -> Unit) {
         chatRoomViewModel = viewModel
+        updateBlockStatus(viewModel)
         scrollToBottom()
         updateHeader(viewModel, onToolbarClicked)
         showLastTimeOnline(viewModel)
@@ -258,6 +258,10 @@ class TopChatViewStateImpl constructor(
         onCheckChatBlocked(viewModel.headerModel.role, viewModel.headerModel.name, viewModel
                 .blockedStatus, onUnblockChatClicked)
 
+    }
+
+    private fun updateBlockStatus(viewModel: ChatroomViewModel) {
+        blockStatus = viewModel.blockedStatus
     }
 
     override fun updateHeader(chatroomViewModel: ChatroomViewModel, onToolbarClicked: () -> Unit) {
@@ -345,8 +349,7 @@ class TopChatViewStateImpl constructor(
     private fun createBlockChatMenu(): Menus.ItemMenus {
         val blockChatStatusTitle: String
         @DrawableRes val blockChatStatusDrawable: Int
-
-        if (isChatBlocked) {
+        if (blockStatus.isBlocked) {
             blockChatStatusTitle = view.context.getString(R.string.title_unblock_user_chat)
             blockChatStatusDrawable = R.drawable.ic_topchat_unblock_user_chat
         } else {
@@ -390,7 +393,7 @@ class TopChatViewStateImpl constructor(
     ) {
         when {
             itemMenus.icon == R.drawable.ic_topchat_unblock_user_chat -> {
-//                headerMenuListener.onClickAllowPromo()
+                headerMenuListener.unBlockChat()
             }
             itemMenus.icon == R.drawable.ic_topchat_block_user_chat -> {
                 headerMenuListener.blockChat()

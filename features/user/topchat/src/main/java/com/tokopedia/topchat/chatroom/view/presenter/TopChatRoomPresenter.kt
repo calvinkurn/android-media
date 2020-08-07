@@ -864,6 +864,10 @@ class TopChatRoomPresenter @Inject constructor(
         chatToggleBlockChat.blockChat(messageId, onSuccess, onError)
     }
 
+    override fun unBlockChat(messageId: String, onSuccess: (ChatSettingsResponse) -> Unit, onError: (Throwable) -> Unit) {
+        chatToggleBlockChat.unBlockChat(messageId, onSuccess, onError)
+    }
+
     private fun onSuccessGetAttachments(attachments: ArrayMap<String, Attachment>) {
         this.attachments.putAll(attachments.toMap())
         view?.updateAttachmentsView(this.attachments)

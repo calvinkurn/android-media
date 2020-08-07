@@ -206,5 +206,7 @@ interface TopChatContract {
         fun requestAllowPromo(messageId: String, onSuccess: () -> Unit, onError: (Throwable) -> Unit)
 
         fun blockChat(messageId: String, onSuccess: (ChatSettingsResponse) -> Unit, onError: (Throwable) -> Unit)
+
+        fun unBlockChat(messageId: String, onSuccess: (ChatSettingsResponse) -> Unit, onError: (Throwable) -> Unit)
     }
 }

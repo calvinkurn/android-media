@@ -393,6 +393,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
                 Toaster.make(it, String.format(getString(com.tokopedia.chat_common.R.string.chat_unblocked_text),
                         opponentName), Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
             }
+            getViewState().setChatBlockStatus(false)
             getViewState().removeChatBlocked(it)
         }
     }
@@ -1100,6 +1101,16 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     override fun blockChat() {
         presenter.blockChat(messageId, {
             getViewState().setChatBlockStatus(true)
+            getViewState().onCheckChatBlocked(opponentRole, opponentName, getViewState().blockStatus, onUnblockChatClicked())
+        }, {
+            val errorMessage = ErrorHandler.getErrorMessage(context, it)
+            showToasterError(errorMessage)
+        })
+    }
+
+    override fun unBlockChat() {
+        presenter.unBlockChat(messageId, {
+            getViewState().setChatBlockStatus(false)
             getViewState().onCheckChatBlocked(opponentRole, opponentName, getViewState().blockStatus, onUnblockChatClicked())
         }, {
             val errorMessage = ErrorHandler.getErrorMessage(context, it)

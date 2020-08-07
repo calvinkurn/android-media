@@ -23,4 +23,6 @@ interface HeaderMenuListener {
 
     fun blockChat()
 
+    fun unBlockChat()
+
 }
