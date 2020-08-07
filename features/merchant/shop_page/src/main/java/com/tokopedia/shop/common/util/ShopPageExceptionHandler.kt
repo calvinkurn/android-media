@@ -1,6 +1,6 @@
 package com.tokopedia.shop.common.util
 
-import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.crashlytics.android.Crashlytics
 import com.tokopedia.shop.BuildConfig
 import com.tokopedia.shop.common.exception.ShopPageException
 
@@ -11,7 +11,7 @@ object ShopPageExceptionHandler {
         try {
             if (!BuildConfig.DEBUG) {
                 val exceptionMessage = "$message - ${throwable.localizedMessage}"
-                FirebaseCrashlytics.getInstance().recordException(ShopPageException(
+                Crashlytics.logException(ShopPageException(
                         message = exceptionMessage,
                         cause = throwable
                 ))

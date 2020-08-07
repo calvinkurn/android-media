@@ -9,5 +9,6 @@
     <color name="progress_bar_empty">#E5E7E9</color>
     <color name="clr_review_not_found">#7031353B</color>
     <color name="clr_read_more">#00ad0e</color>
+    <color name="white_fifty_percent">#F8F8F8</color>
     <color name="clr_unanswered">#EBFFEF</color>
 </resources>
