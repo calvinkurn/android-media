@@ -124,38 +124,6 @@ object MockSearchProductModel {
         )
     }
 
-    fun getQuickFilterViewModel(): QuickFilterViewModel {
-        val quickFilterViewModel = QuickFilterViewModel()
-        quickFilterViewModel.formattedResultCount = "0"
-        quickFilterViewModel.quickFilterList = listOf(Filter(options = getFilterOptions()))
-        quickFilterViewModel.quickFilterOptions = getFilterOptions()
-
-        return quickFilterViewModel
-    }
-
-    private fun getFilterOptions(): List<Option> {
-        return listOf(
-                getOption(1), getOption(2), getOption(3),
-                getOption(4), getOption(5), getOption(6)
-        )
-    }
-
-    private fun getOption(position: Int): Option {
-        return Option(
-                name = "Gratis Ongkir $position",
-                key = "free_shipping",
-                iconUrl = "",
-                value = "true",
-                isNew = false,
-                inputType = "checkbox",
-                totalData = "",
-                valMax = "",
-                valMin = "",
-                hexColor = "",
-                levelTwoCategoryList = listOf()
-        )
-    }
-
     fun getGlobalNavViewModel(): GlobalNavViewModel {
         return GlobalNavViewModel(
                 "recharge",
