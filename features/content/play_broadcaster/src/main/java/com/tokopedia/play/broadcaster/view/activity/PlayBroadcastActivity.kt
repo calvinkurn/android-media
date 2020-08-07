@@ -372,6 +372,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
     }
 
     private fun configureChannelType(channelType: ChannelType) {
+        if (isRecreated) return
         showActionBar(true)
         if (channelType == ChannelType.Pause) {
             showDialogContinueLiveStreaming()
