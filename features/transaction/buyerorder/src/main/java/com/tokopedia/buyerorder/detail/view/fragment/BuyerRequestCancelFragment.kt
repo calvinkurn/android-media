@@ -21,6 +21,8 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.buyerorder.R
 import com.tokopedia.buyerorder.common.util.BuyerConsts
+import com.tokopedia.buyerorder.common.util.BuyerConsts.BUTTON_INSTANT_CANCELATION
+import com.tokopedia.buyerorder.common.util.BuyerConsts.BUTTON_REGULER_CANCELATION
 import com.tokopedia.buyerorder.common.util.BuyerConsts.LAINNYA
 import com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_CODE_INSTANT_CANCEL
 import com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_MSG_INSTANT_CANCEL
@@ -33,6 +35,7 @@ import com.tokopedia.buyerorder.detail.data.getcancellationreason.BuyerGetCancel
 import com.tokopedia.buyerorder.detail.data.getcancellationreason.BuyerGetCancellationReasonData.Data.GetCancellationReason.TickerInfo
 import com.tokopedia.buyerorder.detail.data.instantcancellation.BuyerInstantCancelData
 import com.tokopedia.buyerorder.detail.di.OrderDetailsComponent
+import com.tokopedia.buyerorder.detail.view.activity.BuyerRequestCancelActivity
 import com.tokopedia.buyerorder.detail.view.adapter.BuyerListOfProductsBottomSheetAdapter
 import com.tokopedia.buyerorder.detail.view.adapter.GetCancelReasonBottomSheetAdapter
 import com.tokopedia.buyerorder.detail.view.adapter.GetCancelSubReasonBottomSheetAdapter
@@ -45,6 +48,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
@@ -392,6 +396,13 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
     }
 
     private fun renderPage() {
+        // page title
+        if (cancelReasonResponse.isEligibleInstantCancel) {
+            (activity as BuyerRequestCancelActivity).supportActionBar?.title = BUTTON_INSTANT_CANCELATION
+        } else {
+            (activity as BuyerRequestCancelActivity).supportActionBar?.title = BUTTON_REGULER_CANCELATION
+        }
+
         // cancel reasons
         cancelReasonResponse.reasons.forEach { reasonItem ->
             arrayListOfReason.add(reasonItem.title)
@@ -432,7 +443,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
                         showToaster(getString(R.string.toaster_manual_max), Toaster.TYPE_ERROR)
                     }
                     else -> {
-                        val subReasonLainnya = tf_choose_sub_reason_editable.textFieldInput.text
+                        val subReasonLainnya = tf_choose_sub_reason_editable.textFieldInput.text.trimStart()
                         if (subReasonLainnya.isNotEmpty()) {
                             reasonCancel += " - $subReasonLainnya"
                         }
@@ -693,6 +704,15 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
             setHtmlDescription(tickerInfo.label + " ${getString(R.string.ticker_info_selengkapnya)
                     .replace(TICKER_URL, tickerInfo.linkUrl)
                     .replace(TICKER_LABEL, tickerInfo.linkText)}")
+            setDescriptionClickEvent(object : TickerCallback {
+                override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                    RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
+                }
+
+                override fun onDismiss() {
+                }
+
+            })
         }
     }
 }

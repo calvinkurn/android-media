@@ -961,6 +961,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                             dialogUnify.dismiss();
                             return Unit.INSTANCE;
                         });
+                        dialogUnify.show();
                     }
                 }
             }
