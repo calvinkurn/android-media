@@ -26,13 +26,14 @@ class LogManager(val application: Application) {
     companion object {
         @JvmStatic
         var logentriesToken: Array<String> = arrayOf()
+
         @JvmStatic
         var scalyrConfigList: List<ScalyrConfig> = mutableListOf()
         var scalyrEnabled: Boolean = false
         var logentriesEnabled: Boolean = true
         var isPrimaryLogentries: Boolean = true
         var isPrimaryScalyr: Boolean = false
-        var queryLimits: List<Int> = mutableListOf(5,5)
+        var queryLimits: List<Int> = mutableListOf(5, 5)
 
         @JvmField
         var instance: LogManager? = null
@@ -59,7 +60,6 @@ class LogManager(val application: Application) {
         @JvmStatic
         fun init(application: Application) {
             instance = LogManager(application)
-            LogWorker.scheduleWorker(application)
         }
 
         /**
@@ -81,6 +81,9 @@ class LogManager(val application: Application) {
                 }
                 val log = Logger(timeStamp, serverChannel, priority, truncatedMessage)
                 logger.insert(log)
+                instance?.run {
+                    LogWorker.scheduleWorker(this.application)
+                }
             }
         }
 
