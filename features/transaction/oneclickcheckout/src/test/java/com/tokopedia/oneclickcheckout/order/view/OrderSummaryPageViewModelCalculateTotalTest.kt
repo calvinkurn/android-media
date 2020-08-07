@@ -258,92 +258,92 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         assertEquals(OrderPaymentInstallmentTerm(term = 0, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 100, fee = 23.0, monthlyAmount = 1523.0, isEnable = true, isSelected = true), orderSummaryPageViewModel.orderPayment.value.creditCard.selectedTerm)
     }
 
-    @Test
-    fun `Calculate Total Credit Card Mdr Error Min Amount To Lower Installment`() {
-        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = ButtonBayarState.NORMAL)
-        orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000))
-        orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
-        orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
-        orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true,
-                creditCard = OrderPaymentCreditCard(
-                        numberOfCards = OrderPaymentCreditCardsNumber(1, 0, 1),
-                        availableTerms = listOf(
-                                OrderPaymentInstallmentTerm(term = 0, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 100),
-                                OrderPaymentInstallmentTerm(term = 3, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 1000),
-                                OrderPaymentInstallmentTerm(term = 6, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 10000, isSelected = true)
-                        ),
-                        selectedTerm = OrderPaymentInstallmentTerm(term = 6, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 10000)
-                )
-        )
-
-        orderSummaryPageViewModel.calculateTotal()
-
-        assertEquals(OrderTotal(OrderCost(1523.0, 1000.0, 500.0, paymentFee = 23.0), ButtonBayarState.NORMAL, false, null), orderSummaryPageViewModel.orderTotal.value)
-        assertEquals(listOf(
-                OrderPaymentInstallmentTerm(term = 0, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 100, fee = 23.0, monthlyAmount = 1523.0, isEnable = true),
-                OrderPaymentInstallmentTerm(term = 3, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 1000, fee = 23.0, monthlyAmount = 508.0, isEnable = true, isSelected = true),
-                OrderPaymentInstallmentTerm(term = 6, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 10000, fee = 23.0, monthlyAmount = 254.0, isEnable = false)
-        ), orderSummaryPageViewModel.orderPayment.value.creditCard.availableTerms)
-        assertEquals(OrderPaymentInstallmentTerm(term = 3, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 1000, fee = 23.0, monthlyAmount = 508.0, isEnable = true, isSelected = true), orderSummaryPageViewModel.orderPayment.value.creditCard.selectedTerm)
-    }
-
-    @Test
-    fun `Calculate Total Credit Card Mdr Error Min Amount To Default Installment`() {
-        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = ButtonBayarState.NORMAL)
-        orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000))
-        orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
-        orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
-        orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true,
-                creditCard = OrderPaymentCreditCard(
-                        numberOfCards = OrderPaymentCreditCardsNumber(1, 0, 1),
-                        availableTerms = listOf(
-                                OrderPaymentInstallmentTerm(term = 0, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 100),
-                                OrderPaymentInstallmentTerm(term = 3, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 5000),
-                                OrderPaymentInstallmentTerm(term = 6, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 10000, isSelected = true)
-                        ),
-                        selectedTerm = OrderPaymentInstallmentTerm(term = 6, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 10000)
-                )
-        )
-
-        orderSummaryPageViewModel.calculateTotal()
-
-        assertEquals(OrderTotal(OrderCost(1523.0, 1000.0, 500.0, paymentFee = 23.0), ButtonBayarState.NORMAL, false, null), orderSummaryPageViewModel.orderTotal.value)
-        assertEquals(listOf(
-                OrderPaymentInstallmentTerm(term = 0, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 100, fee = 23.0, monthlyAmount = 1523.0, isEnable = true, isSelected = true),
-                OrderPaymentInstallmentTerm(term = 3, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 5000, fee = 23.0, monthlyAmount = 508.0, isEnable = false),
-                OrderPaymentInstallmentTerm(term = 6, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 10000, fee = 23.0, monthlyAmount = 254.0, isEnable = false)
-        ), orderSummaryPageViewModel.orderPayment.value.creditCard.availableTerms)
-        assertEquals(OrderPaymentInstallmentTerm(term = 0, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 100, fee = 23.0, monthlyAmount = 1523.0, isEnable = true, isSelected = true), orderSummaryPageViewModel.orderPayment.value.creditCard.selectedTerm)
-    }
-
-    @Test
-    fun `Calculate Total Credit Card Mdr Error Min Amount Force Default Installment`() {
-        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = ButtonBayarState.NORMAL)
-        orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000))
-        orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
-        orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
-        orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true,
-                creditCard = OrderPaymentCreditCard(
-                        numberOfCards = OrderPaymentCreditCardsNumber(1, 0, 1),
-                        availableTerms = listOf(
-                                OrderPaymentInstallmentTerm(term = 0, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 5000),
-                                OrderPaymentInstallmentTerm(term = 3, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 5000),
-                                OrderPaymentInstallmentTerm(term = 6, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 10000, isSelected = true)
-                        ),
-                        selectedTerm = OrderPaymentInstallmentTerm(term = 6, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 10000)
-                )
-        )
-
-        orderSummaryPageViewModel.calculateTotal()
-
-        assertEquals(OrderTotal(OrderCost(1523.0, 1000.0, 500.0, paymentFee = 23.0), ButtonBayarState.NORMAL, false, null), orderSummaryPageViewModel.orderTotal.value)
-        assertEquals(listOf(
-                OrderPaymentInstallmentTerm(term = 0, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 5000, fee = 23.0, monthlyAmount = 1523.0, isEnable = false, isSelected = true),
-                OrderPaymentInstallmentTerm(term = 3, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 5000, fee = 23.0, monthlyAmount = 508.0, isEnable = false),
-                OrderPaymentInstallmentTerm(term = 6, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 10000, fee = 23.0, monthlyAmount = 254.0, isEnable = false)
-        ), orderSummaryPageViewModel.orderPayment.value.creditCard.availableTerms)
-        assertEquals(OrderPaymentInstallmentTerm(term = 0, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 5000, fee = 23.0, monthlyAmount = 1523.0, isEnable = false, isSelected = true), orderSummaryPageViewModel.orderPayment.value.creditCard.selectedTerm)
-    }
+//    @Test
+//    fun `Calculate Total Credit Card Mdr Error Min Amount To Lower Installment`() {
+//        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = ButtonBayarState.NORMAL)
+//        orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000))
+//        orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
+//        orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+//        orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true,
+//                creditCard = OrderPaymentCreditCard(
+//                        numberOfCards = OrderPaymentCreditCardsNumber(1, 0, 1),
+//                        availableTerms = listOf(
+//                                OrderPaymentInstallmentTerm(term = 0, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 100),
+//                                OrderPaymentInstallmentTerm(term = 3, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 1000),
+//                                OrderPaymentInstallmentTerm(term = 6, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 10000, isSelected = true)
+//                        ),
+//                        selectedTerm = OrderPaymentInstallmentTerm(term = 6, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 10000)
+//                )
+//        )
+//
+//        orderSummaryPageViewModel.calculateTotal()
+//
+//        assertEquals(OrderTotal(OrderCost(1523.0, 1000.0, 500.0, paymentFee = 23.0), ButtonBayarState.NORMAL, false, null), orderSummaryPageViewModel.orderTotal.value)
+//        assertEquals(listOf(
+//                OrderPaymentInstallmentTerm(term = 0, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 100, fee = 23.0, monthlyAmount = 1523.0, isEnable = true),
+//                OrderPaymentInstallmentTerm(term = 3, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 1000, fee = 23.0, monthlyAmount = 508.0, isEnable = true, isSelected = true),
+//                OrderPaymentInstallmentTerm(term = 6, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 10000, fee = 23.0, monthlyAmount = 254.0, isEnable = false)
+//        ), orderSummaryPageViewModel.orderPayment.value.creditCard.availableTerms)
+//        assertEquals(OrderPaymentInstallmentTerm(term = 3, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 1000, fee = 23.0, monthlyAmount = 508.0, isEnable = true, isSelected = true), orderSummaryPageViewModel.orderPayment.value.creditCard.selectedTerm)
+//    }
+//
+//    @Test
+//    fun `Calculate Total Credit Card Mdr Error Min Amount To Default Installment`() {
+//        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = ButtonBayarState.NORMAL)
+//        orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000))
+//        orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
+//        orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+//        orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true,
+//                creditCard = OrderPaymentCreditCard(
+//                        numberOfCards = OrderPaymentCreditCardsNumber(1, 0, 1),
+//                        availableTerms = listOf(
+//                                OrderPaymentInstallmentTerm(term = 0, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 100),
+//                                OrderPaymentInstallmentTerm(term = 3, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 5000),
+//                                OrderPaymentInstallmentTerm(term = 6, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 10000, isSelected = true)
+//                        ),
+//                        selectedTerm = OrderPaymentInstallmentTerm(term = 6, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 10000)
+//                )
+//        )
+//
+//        orderSummaryPageViewModel.calculateTotal()
+//
+//        assertEquals(OrderTotal(OrderCost(1523.0, 1000.0, 500.0, paymentFee = 23.0), ButtonBayarState.NORMAL, false, null), orderSummaryPageViewModel.orderTotal.value)
+//        assertEquals(listOf(
+//                OrderPaymentInstallmentTerm(term = 0, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 100, fee = 23.0, monthlyAmount = 1523.0, isEnable = true, isSelected = true),
+//                OrderPaymentInstallmentTerm(term = 3, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 5000, fee = 23.0, monthlyAmount = 508.0, isEnable = false),
+//                OrderPaymentInstallmentTerm(term = 6, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 10000, fee = 23.0, monthlyAmount = 254.0, isEnable = false)
+//        ), orderSummaryPageViewModel.orderPayment.value.creditCard.availableTerms)
+//        assertEquals(OrderPaymentInstallmentTerm(term = 0, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 100, fee = 23.0, monthlyAmount = 1523.0, isEnable = true, isSelected = true), orderSummaryPageViewModel.orderPayment.value.creditCard.selectedTerm)
+//    }
+//
+//    @Test
+//    fun `Calculate Total Credit Card Mdr Error Min Amount Force Default Installment`() {
+//        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = ButtonBayarState.NORMAL)
+//        orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000))
+//        orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
+//        orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+//        orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true,
+//                creditCard = OrderPaymentCreditCard(
+//                        numberOfCards = OrderPaymentCreditCardsNumber(1, 0, 1),
+//                        availableTerms = listOf(
+//                                OrderPaymentInstallmentTerm(term = 0, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 5000),
+//                                OrderPaymentInstallmentTerm(term = 3, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 5000),
+//                                OrderPaymentInstallmentTerm(term = 6, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 10000, isSelected = true)
+//                        ),
+//                        selectedTerm = OrderPaymentInstallmentTerm(term = 6, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 10000)
+//                )
+//        )
+//
+//        orderSummaryPageViewModel.calculateTotal()
+//
+//        assertEquals(OrderTotal(OrderCost(1523.0, 1000.0, 500.0, paymentFee = 23.0), ButtonBayarState.NORMAL, false, null), orderSummaryPageViewModel.orderTotal.value)
+//        assertEquals(listOf(
+//                OrderPaymentInstallmentTerm(term = 0, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 5000, fee = 23.0, monthlyAmount = 1523.0, isEnable = false, isSelected = true),
+//                OrderPaymentInstallmentTerm(term = 3, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 5000, fee = 23.0, monthlyAmount = 508.0, isEnable = false),
+//                OrderPaymentInstallmentTerm(term = 6, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 10000, fee = 23.0, monthlyAmount = 254.0, isEnable = false)
+//        ), orderSummaryPageViewModel.orderPayment.value.creditCard.availableTerms)
+//        assertEquals(OrderPaymentInstallmentTerm(term = 0, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 5000, fee = 23.0, monthlyAmount = 1523.0, isEnable = false, isSelected = true), orderSummaryPageViewModel.orderPayment.value.creditCard.selectedTerm)
+//    }
 
     @Test
     fun `Calculate Total Credit Card Mdr Subsidize`() {

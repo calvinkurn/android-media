@@ -58,7 +58,7 @@ class GetOccCartUseCase @Inject constructor(val context: Context, val graphqlUse
                         response.response.data.profileRecommendation,
                         mapProfile(response.response.data.profileResponse),
                         LastApplyMapper.mapPromo(response.response.data.promo),
-                        mapOrderPayment(response.response.data.profileResponse.payment))
+                        mapOrderPayment(response.response.data))
             } else {
                 throw MessageErrorException(DEFAULT_ERROR_MESSAGE)
             }
@@ -199,15 +199,16 @@ class GetOccCartUseCase @Inject constructor(val context: Context, val graphqlUse
     private fun mapPayment(payment: Payment): OrderProfilePayment {
         return OrderProfilePayment(payment.enable, payment.active, payment.gatewayCode, payment.gatewayName, payment.image,
                 payment.description, payment.url, payment.minimumAmount, payment.maximumAmount, payment.fee,
-                payment.walletAmount, payment.metadata, payment.mdr, mapPaymentCreditCard(payment.creditCard),
+                payment.walletAmount, payment.metadata, payment.mdr, mapPaymentCreditCard(payment.creditCard, null),
                 mapPaymentErrorMessage(payment.errorMessage)
         )
     }
 
-    private fun mapOrderPayment(payment: Payment): OrderPayment {
+    private fun mapOrderPayment(data: GetOccCartData): OrderPayment {
+        val payment = data.profileResponse.payment
         return OrderPayment(payment.enable != 0, false, payment.gatewayCode, payment.gatewayName,
                 payment.image, payment.description, payment.minimumAmount, payment.maximumAmount, payment.fee, payment.walletAmount,
-                payment.metadata, mapPaymentCreditCard(payment.creditCard), mapPaymentErrorMessage(payment.errorMessage))
+                payment.metadata, mapPaymentCreditCard(payment.creditCard, data), mapPaymentErrorMessage(payment.errorMessage))
     }
 
     private fun mapPaymentErrorMessage(errorMessage: PaymentErrorMessage): OrderPaymentErrorMessage {
@@ -216,10 +217,10 @@ class GetOccCartUseCase @Inject constructor(val context: Context, val graphqlUse
         )
     }
 
-    private fun mapPaymentCreditCard(creditCard: PaymentCreditCard): OrderPaymentCreditCard {
+    private fun mapPaymentCreditCard(creditCard: PaymentCreditCard, data: GetOccCartData?): OrderPaymentCreditCard {
         val availableTerms = mapPaymentInstallmentTerm(creditCard.availableTerms)
         return OrderPaymentCreditCard(mapPaymentCreditCardNumber(creditCard.numberOfCards), availableTerms, creditCard.bankCode, creditCard.cardType,
-                creditCard.isExpired, creditCard.tncInfo, availableTerms.firstOrNull { it.isSelected })
+                creditCard.isExpired, creditCard.tncInfo, availableTerms.firstOrNull { it.isSelected }, mapPaymentCreditCardAdditionalData(data))
 //        val availableTerms = mapPaymentInstallmentTerm(listOf(
 //                InstallmentTerm(0, 1.5f, 0.5f, 10000, true),
 //                InstallmentTerm(3, 1.5f, 0.5f, 100000, false),
@@ -233,6 +234,15 @@ class GetOccCartUseCase @Inject constructor(val context: Context, val graphqlUse
     private fun mapPaymentCreditCardNumber(numberOfCards: PaymentCreditCardsNumber): OrderPaymentCreditCardsNumber {
         return OrderPaymentCreditCardsNumber(numberOfCards.availableCards, numberOfCards.unavailableCards,
                 numberOfCards.totalCards)
+    }
+
+    private fun mapPaymentCreditCardAdditionalData(data: GetOccCartData?): OrderPaymentCreditCardAdditionalData {
+        if (data == null) {
+            return OrderPaymentCreditCardAdditionalData()
+        }
+        val (id, name, email, msisdn) = data.customerData
+        val (merchantCode, profileCode, signature, changeCcLink) = data.paymentAdditionalData
+        return OrderPaymentCreditCardAdditionalData(id, name, email, msisdn, merchantCode, profileCode, signature, changeCcLink)
     }
 
     private fun mapPaymentInstallmentTerm(availableTerms: List<InstallmentTerm>): List<OrderPaymentInstallmentTerm> {

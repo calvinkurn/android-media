@@ -526,6 +526,18 @@ query get_occ_cart_page($source: String) {
           description
         }
       }
+      customer_data {
+        id
+        name
+        email
+        msisdn
+      }
+      payment_additional_data {
+        merchant_code
+        profile_code
+        signature
+        change_cc_link
+      }
     }
   }
 }
