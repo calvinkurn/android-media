@@ -267,6 +267,8 @@ class CreateReviewFragment : BaseDaggerFragment(),
         createReviewSubmitButton.setOnClickListener {
             submitReview()
         }
+
+        playAnimation()
     }
 
     override fun onDestroy() {

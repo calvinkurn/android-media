@@ -74,12 +74,12 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
                     .cancel(getInt(CreateReviewFragment.REVIEW_NOTIFICATION_ID))
         }
 
-        getAbTestPlatform()?.fetch(null)
-        if(useOldPage()) {
-            startActivity(CreateReviewActivityOld.newInstance(context = this))
-            finish()
-            return
-        }
+//        getAbTestPlatform()?.fetch(null)
+//        if(useOldPage()) {
+//            startActivity(CreateReviewActivityOld.newInstance(context = this))
+//            finish()
+//            return
+//        }
 
         supportActionBar?.elevation = 0f
     }

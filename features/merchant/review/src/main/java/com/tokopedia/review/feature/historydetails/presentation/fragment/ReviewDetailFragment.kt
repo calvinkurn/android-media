@@ -251,7 +251,12 @@ class ReviewDetailFragment : BaseDaggerFragment(),
     }
 
     private fun initHeader() {
-        reviewDetailHeader.title = getString(R.string.review_history_details_toolbar)
+        reviewDetailHeader.apply {
+            title = getString(R.string.review_history_details_toolbar)
+            setNavigationOnClickListener {
+                activity?.onBackPressed()
+            }
+        }
     }
 
     private fun initErrorPage() {

@@ -4,6 +4,8 @@ import android.animation.Animator
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import android.view.animation.AlphaAnimation
+import android.view.animation.AnimationSet
 import androidx.core.content.ContextCompat
 import com.airbnb.lottie.LottieCompositionFactory
 import com.tokopedia.kotlin.extensions.view.hide
@@ -262,6 +264,22 @@ class ReviewSmileyWidget : BaseCustomView {
 
             lottieCompositionLottieTask.addFailureListener { throwable -> }
         }
+    }
+
+    private fun getShowAlphaAnimation(): AnimationSet {
+        val alphaAnimation = AlphaAnimation(0f,1f)
+        alphaAnimation.duration = 500L
+        val animation = AnimationSet(false)
+        animation.addAnimation(alphaAnimation)
+        return animation
+    }
+
+    private fun getHideAlphaAnimation(): AnimationSet {
+        val alphaAnimation = AlphaAnimation(1f,0f)
+        alphaAnimation.duration = 500L
+        val animation = AnimationSet(false)
+        animation.addAnimation(alphaAnimation)
+        return animation
     }
 
 }
