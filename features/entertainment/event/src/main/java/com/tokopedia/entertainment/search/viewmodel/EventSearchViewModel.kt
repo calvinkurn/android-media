@@ -44,27 +44,15 @@ class EventSearchViewModel(private val dispatcher: CoroutineDispatcher,
 
     val errorReport : MutableLiveData<String> by lazy { MutableLiveData<String>() }
 
-    fun getHistorySearch(cacheType: CacheType){
+    fun getHistorySearch(cacheType: CacheType, query: String){
         launchCatchError(
                 block = {
-                    val lists: MutableList<HistoryBackgroundItemViewHolder.EventModel> = mutableListOf()
                     listViewHolder.clear()
                     if(userSession.isLoggedIn){
-                        val data = getHistorySearchData(cacheType)
+                        val data = getHistorySearchData(cacheType,query)
                         data.let {
-                            it.travelCollectiveRecentSearches.let {
-                                if(it.items.isNotEmpty()){
-                                    it.items.forEach {
-                                        lists.add(SearchMapper.mappingRecentSearch(it))
-                                    }
-                                    listViewHolder.add(HistoryModel(lists))
-                                } else{
-                                    listViewHolder.add(FirstTimeModel())
-                                }
-
-                                searchList.postValue(listViewHolder)
+                                searchList.postValue(SearchMapper.mappingHistorytoSearchList(data))
                                 isItRefreshing.postValue(false)
-                            }
                         }
                     }else{
                         listViewHolder.add(FirstTimeModel())
@@ -79,40 +67,16 @@ class EventSearchViewModel(private val dispatcher: CoroutineDispatcher,
         )
     }
 
-    fun getSearchData(text: String, cacheType: CacheType){
+    fun getSearchData(text: String, cacheType: CacheType, query: String){
         job = launchCatchError(
                 block = {
-                    val listsLocation : MutableList<SearchLocationListViewHolder.LocationSuggestion> = mutableListOf()
-                    val listsKegiatan : MutableList<SearchEventListViewHolder.KegiatanSuggestion> = mutableListOf()
-                    val dataLocation = getLocationSuggestionData(text, cacheType)
-                    listViewHolder.clear()
+                    val dataLocation = getLocationSuggestionData(text, cacheType,query)
                     dataLocation.let {
-                        it.eventLocationSearch.let {
-                            if(it.count.toInt()  > 0){
-                                it.locations.forEach {
-                                    listsLocation.add(SearchMapper.mappingLocationSuggestion(it))
-                                }
-                                listViewHolder.add(SearchLocationModel(listsLocation, query = text))
-                            }
-                        }
-                        it.eventSearch.let {
-                            if(it.count.toInt() > 0){
-                                it.products.forEach{
-                                    listsKegiatan.add(SearchMapper.mappingEventSuggestion(it))
-                                }
-                                if(listsKegiatan.size > 0) listViewHolder.add(SearchEventModel(listsKegiatan, resources))
-                            }
-                        }
-                        if(it.eventLocationSearch.locations.isEmpty() && it.eventSearch.products.isEmpty()) {
-                            listViewHolder.clear()
-                            listViewHolder.add(SearchEmptyStateModel())
-                        }
-                        searchList.postValue(listViewHolder)
+                        searchList.postValue(SearchMapper.mappingLocationandKegiatantoSearchList(it,text,resources))
                         isItRefreshing.value = false
                     }
                 },
                 onError = {
-                    it.printStackTrace()
                     errorReport.value = it.message
                     isItRefreshing.value = false
                 }
@@ -124,10 +88,10 @@ class EventSearchViewModel(private val dispatcher: CoroutineDispatcher,
         if(job.isCancelled) Timber.tag("Cancel").w("CANCEL")
     }
 
-    suspend fun getLocationSuggestionData(text: String, cacheType: CacheType) : EventSearchLocationResponse.Data{
-        return withContext(Dispatchers.IO){
+    suspend fun getLocationSuggestionData(text: String, cacheType: CacheType, query: String) : EventSearchLocationResponse.Data{
+        return withContext(dispatcher){
             val req = GraphqlRequest(
-                    GraphqlHelper.loadRawString(resources, R.raw.query_event_search_location),
+                    query,
                     EventSearchLocationResponse.Data::class.java, mapOf(SEARCHQUERY to text)
             )
             val cacheStrategy = GraphqlCacheStrategy.Builder(cacheType).build()
@@ -135,10 +99,10 @@ class EventSearchViewModel(private val dispatcher: CoroutineDispatcher,
         }
     }
 
-    suspend fun getHistorySearchData(cacheType: CacheType): EventSearchHistoryResponse.Data{
-        return withContext(Dispatchers.IO){
+    suspend fun getHistorySearchData(cacheType: CacheType, query:String): EventSearchHistoryResponse.Data{
+        return withContext(dispatcher){
             val req = GraphqlRequest(
-                    GraphqlHelper.loadRawString(resources, R.raw.query_event_search_history),
+                    query,
                     EventSearchHistoryResponse.Data::class.java)
             val cacheStrategy = GraphqlCacheStrategy.Builder(cacheType).build()
             gqlRepository.getReseponse(listOf(req), cacheStrategy).getSuccessData<EventSearchHistoryResponse.Data>()
