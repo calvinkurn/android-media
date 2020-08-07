@@ -28,17 +28,19 @@ class LogWorker(appContext: Context, params: WorkerParameters) : CoroutineWorker
     companion object {
         const val MAX_RETRY = 3
         const val WORKER_NAME = "LOG_WORKER"
+        val worker by lazy {
+            OneTimeWorkRequest
+                    .Builder(LogWorker::class.java)
+                    .setConstraints(Constraints.Builder()
+                            .setRequiredNetworkType(NetworkType.CONNECTED)
+                            .build())
+                    .setBackoffCriteria(BackoffPolicy.LINEAR, LOG_SERVICE_BACKOFF, TimeUnit.SECONDS)
+                    .setInitialDelay(LOG_SERVICE_DELAY, TimeUnit.SECONDS)
+                    .build()
+        }
 
         fun scheduleWorker(context: Context) {
             try {
-                val worker = OneTimeWorkRequest
-                        .Builder(LogWorker::class.java)
-                        .setConstraints(Constraints.Builder()
-                                .setRequiredNetworkType(NetworkType.CONNECTED)
-                                .build())
-                        .setBackoffCriteria(BackoffPolicy.LINEAR, LOG_SERVICE_BACKOFF, TimeUnit.SECONDS)
-                        .setInitialDelay(LOG_SERVICE_DELAY, TimeUnit.SECONDS)
-                        .build()
                 WorkManager.getInstance(context).enqueueUniqueWork(
                         WORKER_NAME,
                         ExistingWorkPolicy.KEEP,
@@ -47,6 +49,5 @@ class LogWorker(appContext: Context, params: WorkerParameters) : CoroutineWorker
 
             }
         }
-
     }
 }
