@@ -118,8 +118,8 @@ object DynamicProductDetailMapper {
     }
 
     private fun assignIdToMedia(listOfMedia: List<Media>){
-        listOfMedia.forEach {
-            it.id = UUID.randomUUID().toString()
+        listOfMedia.forEachIndexed { index, it ->
+            it.id = (index + 1).toString()
         }
     }
 

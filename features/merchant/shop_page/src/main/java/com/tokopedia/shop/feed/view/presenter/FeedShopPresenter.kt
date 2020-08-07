@@ -2,12 +2,13 @@ package com.tokopedia.shop.feed.view.presenter
 
 import android.text.TextUtils
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.affiliatecommon.domain.DeletePostUseCase
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
+import com.tokopedia.config.GlobalConfig
+import com.tokopedia.feedcomponent.analytics.topadstracker.SendTopAdsUseCase
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
@@ -34,7 +35,8 @@ class FeedShopPresenter @Inject constructor(
         private val likeKolPostUseCase: LikeKolPostUseCase,
         private val deletePostUseCase: DeletePostUseCase,
         private val trackAffiliateClickUseCase: TrackAffiliateClickUseCase,
-        private val atcUseCase: AddToCartUseCase
+        private val atcUseCase: AddToCartUseCase,
+        private val sendTopAdsUseCase: SendTopAdsUseCase
 ):
         BaseDaggerPresenter<FeedShopContract.View>(),
         FeedShopContract.Presenter {
@@ -325,6 +327,16 @@ class FeedShopPresenter @Inject constructor(
     override fun clearCache() {
         getDynamicFeedFirstUseCase.clearFeedFirstCache()
     }
+
+    override fun doTopAdsTracker(url: String, shopId: String, shopName: String, imageUrl: String, isClick: Boolean) {
+        if (isClick) {
+            sendTopAdsUseCase.hitClick(url, shopId, shopName, imageUrl)
+        } else {
+            sendTopAdsUseCase.hitImpressions(url, shopId, shopName, imageUrl)
+        }
+    }
+
+
 
     private fun getUserId(): String {
         var userId = "0"

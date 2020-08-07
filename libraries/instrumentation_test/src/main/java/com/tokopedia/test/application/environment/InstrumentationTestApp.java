@@ -35,6 +35,7 @@ import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
+import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface;
 import com.tokopedia.test.application.environment.interceptor.TopAdsDetectorInterceptor;
 import com.tokopedia.test.application.util.DeviceConnectionInfo;
@@ -71,6 +72,7 @@ public class InstrumentationTestApp extends BaseMainApplication
         TrackApp.getInstance().registerImplementation(TrackApp.GTM, GTMAnalytics.class);
         TrackApp.getInstance().registerImplementation(TrackApp.APPSFLYER, DummyAppsFlyerAnalytics.class);
         TrackApp.getInstance().registerImplementation(TrackApp.MOENGAGE, MoengageAnalytics.class);
+        initAkamaiBotManager();
         LinkerManager.initLinkerManager(getApplicationContext()).setGAClientId(TrackingUtils.getClientID(getApplicationContext()));
         TrackApp.getInstance().initializeAllApis();
         NetworkClient.init(this);
@@ -79,7 +81,18 @@ public class InstrumentationTestApp extends BaseMainApplication
         GraphqlClient.init(this);
         com.tokopedia.config.GlobalConfig.DEBUG = true;
         enableTopAdsDetector();
+        RemoteConfigInstance.initAbTestPlatform(this);
         super.onCreate();
+    }
+
+    private void initAkamaiBotManager() {
+        com.tokopedia.akamai_bot_lib.UtilsKt.initAkamaiBotManager(InstrumentationTestApp.this);
+        //Thread sleep to ensure akamai hit properly
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     public void enableTopAdsDetector() {
@@ -174,12 +187,6 @@ public class InstrumentationTestApp extends BaseMainApplication
         }
     }
 
-public void sendAnalyticsAnomalyResponse(String title,
-
-                                      String accessToken, String refreshToken,
-
-                                      String response, String request){}
-
     @Override
     public Class<?> getDeeplinkClass() {
         return null;
@@ -230,11 +237,6 @@ public void sendAnalyticsAnomalyResponse(String title,
         return new SessionHandler(this) {
 
             @Override
-            public String getGTMLoginID() {
-                return "null";
-            }
-
-            @Override
             public String getLoginID() {
                 return "null";
             }
@@ -244,10 +246,6 @@ public void sendAnalyticsAnomalyResponse(String title,
                 return "null";
             }
 
-            @Override
-            public boolean isMsisdnVerified() {
-                return false;
-            }
         };
     }
 
@@ -263,11 +261,6 @@ public void sendAnalyticsAnomalyResponse(String title,
 
     @Override
     public void refreshFCMFromInstantIdService(String token) {
-
-    }
-
-    @Override
-    public void refreshFCMTokenFromForegroundToCM() {
 
     }
 
@@ -420,4 +413,9 @@ public void sendAnalyticsAnomalyResponse(String title,
     public void onNewIntent(Context context, Intent intent) {
 
     }
+    @Override
+    public void sendAnalyticsAnomalyResponse(String s, String s1, String s2, String s3, String s4) {
+
+    }
+
 }

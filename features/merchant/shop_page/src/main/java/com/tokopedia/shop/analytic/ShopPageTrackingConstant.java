@@ -75,6 +75,8 @@ public class ShopPageTrackingConstant {
     public static final String CLICK_SHOP_PROFILE = "click shop profile";
     public static final String CLICK_ADD_ETALASE_BUTTON = "click add etalase button";
     public static final String CLICK_VIEW_ALL_PRODUCT = "click lihat semua produk - %s - %s";
+    public static final String VIEW_WIDGET_BROADCAST = "view widget broadcast";
+    public static final String CLICK_WIDGET_BROADCAST = "click widget broadcast";
     public static final String CLICK_CLOSE_FILTER = "click close filter";
 
     //label
@@ -91,6 +93,8 @@ public class ShopPageTrackingConstant {
     public static final String CLICK_HOW_TO_ACTIVATE_SHOP = "click how to activate shop";
     public static final String CLICK_FOLLOW_FROM_ZERO_FOLLOWER = "click follow from zero follower";
     public static final String IMPRESSION_FOLLOW_FROM_ZERO_FOLLOWER = "impression of follow from zero follower";
+    public static final String IMPRESSION_SGC_CHANNEL = "impression on play sgc channel";
+    public static final String IMPRESSION_SGC_BANNER = "impression on play sgc banner";
     public static final String CLICK_MENU_FROM_MORE_MENU = "click menu from more menu";
     public static final String CLICK_WISHLIST = "clickWishlist";
     public static final String ADD = "add";
@@ -102,6 +106,7 @@ public class ShopPageTrackingConstant {
     public static final String CLICK_FOLLOW = "click follow";
     public static final String CLICK_UNFOLLOW = "click unfollow";
     public static final String CLICK_ADD_NOTE = "click add note";
+    public static final String CLICK_OTHER_CONTENT = "click other content";
     public static final String SEE_ALL = "see all";
     public static final String MVC_DETAIL = "mvc detail";
     public static final String USE_VOUCHER = "use voucher";
@@ -136,6 +141,8 @@ public class ShopPageTrackingConstant {
     public static final String WISHLIST = "wishlist";
     public static final String IMPRESSION_OF_USE_VOUCHER = "impression of use voucher";
     public static final String CLICK_ADD_TO_CART = "click add to cart";
+    public static final String PLAY_SGC_NAME = "/shoppage play inside banner - p%s";
+    public static final String PLAY_LEFT_BANNER_NAME = "/shoppage play outside banner - p%s";
 
 
 
@@ -148,9 +155,11 @@ public class ShopPageTrackingConstant {
     public static final String EVENT_PROMO_ID = "promoId";
     public static final String EVENT_PRODUCT_ID = "productId";
     public static final String SHOP_ID = "shopId";
+    public static final String USER_ID = "userId";
     public static final String SHOP_NAME = "shop_name";
     public static final String PAGE_TYPE = "pageType";
     public static final String PRODUCT_ID = "productId";
+    public static final String PAGE_SOURCE = "pageSource";
     public static final String ECOMMERCE = "ecommerce";
     public static final String ACTION_FIELD = "actionField";
     public static final String SHOPPAGE = "/shoppage";
@@ -202,6 +211,7 @@ public class ShopPageTrackingConstant {
     //SCREEN/PAGES
     public static final String SCREEN_SHOP_PAGE = "Shop Page";
     public static final String SCREEN_SEARCH_BAR = "Search Bar";
+    public static final String SCREEN_ADD_PRODUCT = "/add-product";
 
     //value
     public static final String VALUE_PRODUCT = "Product";

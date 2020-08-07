@@ -1,6 +1,7 @@
 package com.tokopedia.topchat.chatroom.di
 
 import android.content.Context
+import android.content.SharedPreferences
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse
@@ -40,6 +41,7 @@ import com.tokopedia.topchat.common.network.TopchatCacheManagerImpl
 import com.tokopedia.topchat.common.network.XUserIdInterceptor
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.websocket.RxWebSocketUtil
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import dagger.Module
@@ -139,6 +141,16 @@ class ChatModule {
                                    userSessionInterface: UserSessionInterface):
             TkpdAuthInterceptor {
         return TkpdAuthInterceptor(context, networkRouter, userSessionInterface)
+    }
+
+    @ChatScope
+    @Provides
+    fun provideRxWebSocketUtil(
+            tkpdAuthInterceptor: TkpdAuthInterceptor,
+            fingerprintInterceptor: FingerprintInterceptor
+    ): RxWebSocketUtil {
+        val interceptors = listOf(tkpdAuthInterceptor, fingerprintInterceptor)
+        return RxWebSocketUtil.getInstance(interceptors)
     }
 
     @ChatScope
@@ -243,6 +255,12 @@ class ChatModule {
     @Provides
     internal fun provideRemoveWishListUseCase(@TopchatContext context: Context): RemoveWishListUseCase {
         return RemoveWishListUseCase(context)
+    }
+
+    @ChatScope
+    @Provides
+    internal fun provideTopchatSharedPrefs(@TopchatContext context: Context): SharedPreferences {
+        return context.getSharedPreferences("topchat_prefs", Context.MODE_PRIVATE)
     }
 
     @ChatScope

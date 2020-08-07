@@ -127,10 +127,11 @@ object VariantMapper {
             val newMedia = Media(type = "image", uRL300 = newData.picture?.original
                     ?: "", uRLOriginal = newData.picture?.original
                     ?: "", uRLThumbnail = newData.picture?.original ?: "").apply {
-                id = UUID.randomUUID().toString()
+                id = (newData.productId + System.nanoTime()).toString()
             }
 
             copyOfOldMedia?.add(0, newMedia)
+
             copyOfOldMedia ?: mutableListOf()
         } else {
             oldData.data.media

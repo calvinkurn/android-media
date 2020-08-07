@@ -42,7 +42,10 @@ data class RecommendationItem(val productId: Int = 0,
                               val labelGroupList: List<RecommendationLabel> = listOf(),
                               val isGold: Boolean = false): ImpressHolder(){
 
-    fun getPriceIntFromString() = CurrencyFormatHelper.convertRupiahToInt(price)
+    fun getPriceIntFromString() : Int{
+        if(price.isEmpty()) return 0
+        return CurrencyFormatHelper.convertRupiahToInt(price)
+    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

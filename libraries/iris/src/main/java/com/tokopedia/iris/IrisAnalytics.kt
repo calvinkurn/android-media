@@ -90,29 +90,45 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
         }
     }
 
-    override fun saveEvent(bundle: Bundle) {
-        saveEvent(Utils.bundleToMap(bundle))
-    }
-
     override fun saveEvent(map: Map<String, Any>) {
         if (cache.isEnabled()) {
             launch(coroutineContext) {
                 try {
-                    val trackingRepository = TrackingRepository(context)
-
-                    val eventName = map["event"] as? String
-                    val eventCategory = map["eventCategory"] as? String
-                    val eventAction = map["eventAction"] as? String
-
-                    // convert map to json then save as string
-                    val event = gson.toJson(map)
-                    val resultEvent = TrackingMapper.reformatEvent(event, session.getSessionId())
-                    trackingRepository.saveEvent(resultEvent.toString(), session, eventName, eventCategory, eventAction)
-                    setAlarm(true, force = false)
+                    saveEventSuspend(map)
                 } catch (e: Exception) {
                     Timber.e("P1#IRIS#saveEvent %s", e.toString())
                 }
             }
+        }
+    }
+
+    override fun saveEvent(bundle: Bundle) {
+        if (cache.isEnabled()) {
+            launch(coroutineContext) {
+                try {
+                    saveEventSuspend(Utils.bundleToMap(bundle))
+                } catch (e: Exception) {
+                    Timber.e("P1#IRIS#saveEvent %s", e.toString())
+                }
+            }
+        }
+    }
+
+    suspend fun saveEventSuspend(map: Map<String, Any>){
+        val trackingRepository = TrackingRepository(context)
+
+        val eventName = map["event"] as? String
+        val eventCategory = map["eventCategory"] as? String
+        val eventAction = map["eventAction"] as? String
+
+        // convert map to json then save as string
+        val event = gson.toJson(map)
+        val resultEvent = TrackingMapper.reformatEvent(event, session.getSessionId())
+        if(WhiteList.REALTIME_EVENT_LIST.contains(eventName) && trackingRepository.getRemoteConfig().getBoolean(KEY_REMOTE_CONFIG_SEND_REALTIME, false)){
+            sendEvent(map)
+        } else {
+            trackingRepository.saveEvent(resultEvent.toString(), session, eventName, eventCategory, eventAction)
+            setAlarm(true, force = false)
         }
     }
 
@@ -159,6 +175,8 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
     }
 
     companion object {
+
+        const val KEY_REMOTE_CONFIG_SEND_REALTIME = "android_customerapp_iris_realtime"
 
         private val lock = Any()
 
