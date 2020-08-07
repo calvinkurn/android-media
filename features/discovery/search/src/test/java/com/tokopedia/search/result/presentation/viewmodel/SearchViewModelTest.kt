@@ -54,7 +54,6 @@ internal class SearchViewModelTest {
     fun `handle shop view visibilty changed to visible`() {
         val productSearchNavigationOnClick = mockk<SearchNavigationListener.ClickListener>()
         val shopSearchNavigationOnClick = mockk<SearchNavigationListener.ClickListener>()
-        val profileSearchNavigationOnClick = null
 
         val productListVisibilityModel = ChildViewVisibilityChangedModel(
                 isChildViewVisibleToUser = false,
@@ -70,18 +69,10 @@ internal class SearchViewModelTest {
                 isSortEnabled = false,
                 searchNavigationOnClickListener = shopSearchNavigationOnClick
         )
-        val profileListVisibilityModel = ChildViewVisibilityChangedModel(
-                isChildViewVisibleToUser = false,
-                isChildViewReady = true,
-                isFilterEnabled = false,
-                isSortEnabled = false,
-                searchNavigationOnClickListener = profileSearchNavigationOnClick
-        )
 
         `When handle child views visibility changed`(
                 productListVisibilityModel,
-                shopListVisibilityModel,
-                profileListVisibilityModel
+                shopListVisibilityModel
         )
 
         `Then verify event for visible child view`(shopListVisibilityModel)
@@ -89,12 +80,10 @@ internal class SearchViewModelTest {
 
     private fun `When handle child views visibility changed`(
             productListVisibilityModel: ChildViewVisibilityChangedModel,
-            shopListVisibilityModel: ChildViewVisibilityChangedModel,
-            profileListVisibilityModel: ChildViewVisibilityChangedModel
+            shopListVisibilityModel: ChildViewVisibilityChangedModel
     ) {
         searchViewModel.onChildViewVisibilityChanged(productListVisibilityModel)
         searchViewModel.onChildViewVisibilityChanged(shopListVisibilityModel)
-        searchViewModel.onChildViewVisibilityChanged(profileListVisibilityModel)
     }
 
     private fun `Then verify event for visible child view`(childViewVisibilityChangedModel: ChildViewVisibilityChangedModel?) {
@@ -107,7 +96,6 @@ internal class SearchViewModelTest {
     fun `handle no child is visible or ready`() {
         val productSearchNavigationOnClick = mockk<SearchNavigationListener.ClickListener>()
         val shopSearchNavigationOnClick = mockk<SearchNavigationListener.ClickListener>()
-        val profileSearchNavigationOnClick = null
 
         val productListVisibilityModel = ChildViewVisibilityChangedModel(
                 isChildViewVisibleToUser = false,
@@ -123,16 +111,9 @@ internal class SearchViewModelTest {
                 isSortEnabled = false,
                 searchNavigationOnClickListener = shopSearchNavigationOnClick
         )
-        val profileListVisibilityModel = ChildViewVisibilityChangedModel(
-                isChildViewVisibleToUser = false,
-                isChildViewReady = false,
-                isFilterEnabled = false,
-                isSortEnabled = false,
-                searchNavigationOnClickListener = profileSearchNavigationOnClick
-        )
 
         `When handle child views visibility changed`(
-                productListVisibilityModel, shopListVisibilityModel, profileListVisibilityModel
+                productListVisibilityModel, shopListVisibilityModel
         )
 
         `Then verify event for visible child view`(null)

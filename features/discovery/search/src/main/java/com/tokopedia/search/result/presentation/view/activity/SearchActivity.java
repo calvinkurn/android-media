@@ -87,7 +87,6 @@ import static com.tokopedia.discovery.common.constants.SearchConstant.SEARCH_RES
 import static com.tokopedia.discovery.common.constants.SearchConstant.SEARCH_RESULT_TRACE;
 import static com.tokopedia.discovery.common.constants.SearchConstant.SearchTabPosition.TAB_FIRST_POSITION;
 import static com.tokopedia.discovery.common.constants.SearchConstant.SearchTabPosition.TAB_SECOND_POSITION;
-import static com.tokopedia.discovery.common.constants.SearchConstant.SearchTabPosition.TAB_THIRD_POSITION;
 
 public class SearchActivity extends BaseActivity
         implements
@@ -118,7 +117,6 @@ public class SearchActivity extends BaseActivity
 
     private String productTabTitle;
     private String shopTabTitle;
-    private String profileTabTitle;
     private String autocompleteApplink;
 
     @Inject UserSessionInterface userSession;
@@ -428,7 +426,6 @@ public class SearchActivity extends BaseActivity
     private void initResources() {
         productTabTitle = getString(R.string.product_tab_title);
         shopTabTitle = getString(R.string.shop_tab_title);
-        profileTabTitle = getString(R.string.title_profile);
     }
 
     private void initViewModel() {
@@ -548,7 +545,6 @@ public class SearchActivity extends BaseActivity
         List<String> availableSearchTabs = new ArrayList<>();
         availableSearchTabs.add(SearchConstant.ActiveTab.PRODUCT);
         availableSearchTabs.add(SearchConstant.ActiveTab.SHOP);
-        availableSearchTabs.add(SearchConstant.ActiveTab.PROFILE);
 
         return !availableSearchTabs.contains(activeTab);
     }
@@ -598,7 +594,6 @@ public class SearchActivity extends BaseActivity
 
         if (!isLandingPage()) {
             searchSectionItemList.add(shopTabTitle);
-            searchSectionItemList.add(profileTabTitle);
         }
     }
 
@@ -621,9 +616,6 @@ public class SearchActivity extends BaseActivity
                 case TAB_SECOND_POSITION:
                     shopListFragmentExecuteBackToTop();
                     break;
-                case TAB_THIRD_POSITION:
-                    profileListFragmentExecuteBackToTop();
-                    break;
             }
         }
     }
@@ -637,12 +629,6 @@ public class SearchActivity extends BaseActivity
     private void shopListFragmentExecuteBackToTop() {
         if (searchSectionPagerAdapter.getShopListFragment() != null) {
             searchSectionPagerAdapter.getShopListFragment().backToTop();
-        }
-    }
-
-    private void profileListFragmentExecuteBackToTop() {
-        if (searchSectionPagerAdapter.getProfileListFragment() != null) {
-            searchSectionPagerAdapter.getProfileListFragment().backToTop();
         }
     }
 
@@ -662,8 +648,6 @@ public class SearchActivity extends BaseActivity
         switch (activeTab) {
             case SearchConstant.ActiveTab.SHOP:
                 return TAB_SECOND_POSITION;
-            case SearchConstant.ActiveTab.PROFILE:
-                return TAB_THIRD_POSITION;
             default:
                 return TAB_FIRST_POSITION;
         }

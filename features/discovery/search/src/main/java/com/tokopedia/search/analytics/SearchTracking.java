@@ -43,12 +43,8 @@ public class SearchTracking {
     public static final String EVENT_CATEGORY_SEARCH_RESULT = "search result";
     public static final String PROMO_CLICK = "promoClick";
     public static final String PROMOTIONS = "promotions";
-    public static final String VALUE_FOLLOW = "follow";
-    public static final String VALUE_UNFOLLOW = "unfollow";
     public static final String EVENT_CLICK_SEARCH_RESULT = "clickSearchResult";
-    public static final String EVENT_ACTION_CLICK_FOLLOW_ACTION_PROFILE = "click - %s profile";
     public static final String EVENT_ACTION_CLICK_NEW_SEARCH = "click - lakukan pencarian baru";
-    public static final String EVENT_LABEL_CLICK_FOLLOW_ACTION_PROFILE = "keyword: %s - profile: %s - profile id: %s - po: %s";
     public static final String PROMO_VIEW = "promoView";
     public static final String EVENT_ACTION_CLICK_SEE_ALL_NAV_WIDGET = "click - lihat semua widget";
     public static final String EVENT_ACTION_IMPRESSION_WIDGET_DIGITAL_PRODUCT = "impression widget - digital product";
@@ -355,74 +351,6 @@ public class SearchTracking {
         );
     }
 
-    public static void eventUserClickProfileResultInTabProfile(Object profileData,
-                                                               String keyword) {
-        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
-                DataLayer.mapOf(
-                        EVENT, SearchEventTracking.Event.PROMO_CLICK,
-                        EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT_PROFILE,
-                        EVENT_ACTION, SearchEventTracking.Action.CLICK_PROFILE_RESULT,
-                        EVENT_LABEL, keyword,
-                        ECOMMERCE, DataLayer.mapOf(
-                                PROMO_CLICK, DataLayer.mapOf(
-                                        PROMOTIONS, DataLayer.listOf(
-                                                profileData
-                                        )
-                                )
-                        )
-                )
-        );
-    }
-
-    public static void eventClickFollowActionProfileResultProfileTab(Context context,
-                                                                     String keyword,
-                                                                     boolean isFollow,
-                                                                     String profileName,
-                                                                     String profileId,
-                                                                     int position) {
-
-        String foKey = "";
-        if (isFollow) {
-            foKey = VALUE_FOLLOW;
-        } else {
-            foKey = VALUE_UNFOLLOW;
-        }
-
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                EVENT_CLICK_SEARCH_RESULT,
-                SearchEventTracking.Category.SEARCH_RESULT_PROFILE,
-                String.format(
-                        EVENT_ACTION_CLICK_FOLLOW_ACTION_PROFILE,
-                        foKey
-                ),
-                String.format(
-                        EVENT_LABEL_CLICK_FOLLOW_ACTION_PROFILE,
-                        keyword,
-                        profileName.toLowerCase(),
-                        profileId,
-                        position
-                )
-        ));
-    }
-
-    public static void eventUserImpressionProfileResultInTabProfile(TrackingQueue trackingQueue,
-                                                               List<Object> profileListData,
-                                                               String keyword) {
-        trackingQueue.putEETracking(
-                (HashMap<String, Object>) DataLayer.mapOf(
-                        EVENT, SearchEventTracking.Event.PROMO_VIEW,
-                        EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT_PROFILE,
-                        EVENT_ACTION, SearchEventTracking.Action.IMPRESSION_PROFILE,
-                        EVENT_LABEL, keyword,
-                        ECOMMERCE, DataLayer.mapOf(
-                                PROMO_VIEW, DataLayer.mapOf(
-                                        PROMOTIONS, profileListData
-                                )
-                        )
-                )
-        );
-    }
-
     public static void eventUserClickNewSearchOnEmptySearch(Context context, String screenName) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 EVENT_CLICK_SEARCH_RESULT,
@@ -706,42 +634,6 @@ public class SearchTracking {
                                 "click", DataLayer.mapOf(
                                         "actionField", DataLayer.mapOf("list", "/notifcenter"),
                                         "products", DataLayer.listOf(shopItemProduct)
-                                )
-                        )
-                )
-        );
-    }
-
-    public static void trackEventUserImpressionRecommendationProfile(TrackingQueue trackingQueue,
-                                                                     List<Object> profileListData,
-                                                                     String keyword) {
-        trackingQueue.putEETracking(
-                (HashMap<String, Object>) DataLayer.mapOf(
-                        EVENT, SearchEventTracking.Event.PROMO_VIEW,
-                        EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT_PROFILE,
-                        EVENT_ACTION, SearchEventTracking.Action.IMPRESSION_TOP_PROFILE_IN_NO_RESULT_PROFILE,
-                        EVENT_LABEL, keyword,
-                        ECOMMERCE, DataLayer.mapOf(
-                                PROMO_VIEW, DataLayer.mapOf(
-                                        PROMOTIONS, profileListData
-                                )
-                        )
-                )
-        );
-    }
-
-    public static void trackEventUserClickRecommendationProfile(Object profileData, String keyword) {
-        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
-                DataLayer.mapOf(
-                        EVENT, SearchEventTracking.Event.PROMO_CLICK,
-                        EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT_PROFILE,
-                        EVENT_ACTION, SearchEventTracking.Action.CLICK_TOP_PROFILE_IN_NO_RESULT_PROFILE,
-                        EVENT_LABEL, keyword,
-                        ECOMMERCE, DataLayer.mapOf(
-                                PROMO_CLICK, DataLayer.mapOf(
-                                        PROMOTIONS, DataLayer.listOf(
-                                                profileData
-                                        )
                                 )
                         )
                 )
