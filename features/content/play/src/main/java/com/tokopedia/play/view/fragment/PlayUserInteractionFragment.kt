@@ -597,6 +597,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 sendChatView?.focusChatForm(false)
                 sendChatView?.hide()
 
+                videoSettingsViewOnStateChanged(isFreezeOrBanned = true)
                 toolbarViewOnStateChanged(isFreezeOrBanned = true)
                 statsInfoViewOnStateChanged(isFreezeOrBanned = true)
 
