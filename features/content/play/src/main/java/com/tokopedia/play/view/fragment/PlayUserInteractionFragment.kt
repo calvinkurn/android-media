@@ -704,8 +704,13 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun handleVideoHorizontalImmersive(shouldImmersive: Boolean) {
-        if (shouldImmersive) videoSettingsView.fadeOut() else videoSettingsView.fadeIn()
-        if (shouldImmersive) immersiveBoxView.fadeOut() else immersiveBoxView.fadeIn()
+        if (shouldImmersive) {
+            videoSettingsView.fadeOut()
+            immersiveBoxView.fadeOut()
+        } else {
+            videoSettingsView.fadeIn()
+            immersiveBoxView.fadeIn()
+        }
     }
 
     private fun showMoreActionBottomSheet() {
