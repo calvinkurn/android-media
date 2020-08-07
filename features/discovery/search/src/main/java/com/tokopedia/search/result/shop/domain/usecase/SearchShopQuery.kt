@@ -3,11 +3,13 @@ package com.tokopedia.search.result.shop.domain.usecase
 fun getSearchShopFirstPageQuery(): String {
     val params = "\$params"
     val headlineParams = "\$headline_params"
+    val quickFilterParams = "\$quick_filter_params"
 
     return """
-        query SearchShop($params: String!, $headlineParams: String) {
+        query SearchShop($params: String!, $headlineParams: String, $quickFilterParams: String!) {
             ${getAceSearchShopQuery()}
             ${getHeadlineAdsQuery()}
+            ${getQuickFilterQuery()}
         }
     """.trimIndent()
 }
@@ -150,6 +152,35 @@ private fun getHeadlineAdsQuery(): String {
             }
         }
     """.trimIndent()
+}
+
+private fun getQuickFilterQuery(): String {
+    return """
+        quickFilter: filter_sort_product(params:${'$'}quick_filter_params) {
+            data {
+              filter {
+                title
+                template_name
+                search {
+                  placeholder
+                }
+                options {
+                  key
+                  value
+                  name
+                  icon
+                  totalData
+                  valMax
+                  valMin
+                  hexColor
+                  isPopular
+                  isNew
+                  Description
+                }
+              }
+            }
+        }
+    """
 }
 
 fun getSearchShopLoadMoreQuery(): String {

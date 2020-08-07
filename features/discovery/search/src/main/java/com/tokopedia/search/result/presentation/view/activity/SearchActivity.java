@@ -54,9 +54,9 @@ import com.tokopedia.filter.widget.BottomSheetFilterView;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.search.R;
 import com.tokopedia.search.analytics.SearchTracking;
-import com.tokopedia.search.result.presentation.model.ChildViewVisibilityChangedModel;
 import com.tokopedia.search.result.presentation.view.adapter.SearchSectionPagerAdapter;
 import com.tokopedia.search.result.presentation.view.fragment.ProductListFragment;
+import com.tokopedia.search.result.presentation.view.fragment.ProfileListFragment;
 import com.tokopedia.search.result.presentation.view.listener.RedirectionListener;
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener;
 import com.tokopedia.search.result.presentation.view.listener.SearchPerformanceMonitoringListener;
@@ -439,7 +439,6 @@ public class SearchActivity extends BaseActivity
     private void observeViewModel() {
         observeAutoCompleteEvent();
         observeHideLoadingEvent();
-        observeChildViewVisibilityChangedEvent();
         observeBottomNavigationVisibility();
     }
 
@@ -466,23 +465,6 @@ public class SearchActivity extends BaseActivity
 
                 if (content != null && content) {
                     removeSearchPageLoading();
-                }
-            }
-        });
-    }
-
-    private void observeChildViewVisibilityChangedEvent() {
-        if (searchViewModel == null) return;
-
-        searchViewModel.getChildViewVisibleEventLiveData().observe(this, childViewVisibilityChangedEvent -> {
-            if (childViewVisibilityChangedEvent != null) {
-                ChildViewVisibilityChangedModel childViewVisibilityChangedModel = childViewVisibilityChangedEvent.getContentIfNotHandled();
-
-                if (childViewVisibilityChangedModel != null) {
-                    setupSearchNavigation(
-                            childViewVisibilityChangedModel.getSearchNavigationOnClickListener(),
-                            childViewVisibilityChangedModel.isSortEnabled()
-                    );
                 }
             }
         });
@@ -871,7 +853,7 @@ public class SearchActivity extends BaseActivity
     @Override
     public void configureTabLayout(boolean isVisible) {
         Fragment fragmentItem = searchSectionPagerAdapter.getRegisteredFragmentAtPosition(viewPager.getCurrentItem());
-        if (!(fragmentItem instanceof ProductListFragment)) return;
+        if (fragmentItem instanceof ProfileListFragment) return;
 
         animateTab(isVisible);
     }
