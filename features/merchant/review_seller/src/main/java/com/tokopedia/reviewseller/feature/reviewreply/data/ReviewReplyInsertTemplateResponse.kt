@@ -10,7 +10,7 @@ data class ReviewReplyInsertTemplateResponse(
             @SerializedName("success")
             val success: Boolean = false,
             @SerializedName("data")
-            val `data`: InsertTemplateData = InsertTemplateData(),
+            val `data`: List<InsertTemplateData> = listOf(),
             @SerializedName("defaultTemplateID")
             val defaultTemplateID: Int? = 0,
             @SerializedName("error")
