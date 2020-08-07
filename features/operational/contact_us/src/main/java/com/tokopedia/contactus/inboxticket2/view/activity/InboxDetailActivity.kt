@@ -127,7 +127,7 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
                     ContextCompat.getColor(this, com.tokopedia.design.R.color.y_200),
                     ContextCompat.getColor(this, com.tokopedia.design.R.color.orange_500), textSizeLabel, this)
             rvMessageList.setPadding(0, 0, 0,
-                    resources.getDimensionPixelSize(R.dimen.text_toolbar_height_collapsed))
+                    resources.getDimensionPixelSize(R.dimen.contact_us_text_toolbar_height_collapsed))
             if (commentsItems[commentsItems.size - 1].createdBy?.role.equals(ROLE_TYPE_AGENT, ignoreCase = true) && commentsItems[commentsItems.size - 1].rating.equals("", ignoreCase = true)) {
                 viewReplyButton.show()
                 mCommentID = commentsItems[commentsItems.size - 1].id
@@ -179,7 +179,7 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
         imageUploadAdapter.notifyDataSetChanged()
         rvSelectedImages.hide()
         rvMessageList.setPadding(0, 0, 0,
-                resources.getDimensionPixelSize(R.dimen.text_toolbar_height_collapsed))
+                resources.getDimensionPixelSize(R.dimen.contact_us_text_toolbar_height_collapsed))
         detailAdapter.setNeedAttachment(false)
         detailAdapter.notifyItemRangeChanged(detailAdapter.itemCount - 2, 2)
     }
@@ -290,7 +290,7 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
 
     private val onClickCross = {
         rvSelectedImages.hide()
-        rvMessageList.setPadding(0, 0, 0, resources.getDimensionPixelSize(R.dimen.text_toolbar_height_collapsed))
+        rvMessageList.setPadding(0, 0, 0, resources.getDimensionPixelSize(R.dimen.contact_us_text_toolbar_height_collapsed))
     }
 
     private fun showImagePickerDialog() {
@@ -401,7 +401,7 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
         if (rvSelectedImages.visibility != View.VISIBLE) {
             rvSelectedImages.show()
             rvMessageList.setPadding(0, 0, 0,
-                    resources.getDimensionPixelSize(R.dimen.text_toolbar_height_expanded))
+                    resources.getDimensionPixelSize(R.dimen.contact_us_text_toolbar_height_expanded))
         }
         imageUploadAdapter.addImage(image)
     }
@@ -420,7 +420,7 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
         if (visibility == View.VISIBLE) {
             viewHelpRate.hide()
             rvMessageList.setPadding(0, 0, 0,
-                    resources.getDimensionPixelSize(R.dimen.text_toolbar_height_collapsed))
+                    resources.getDimensionPixelSize(R.dimen.contact_us_text_toolbar_height_collapsed))
         } else {
             viewHelpRate.show()
             rvMessageList.setPadding(0, 0, 0,
@@ -438,7 +438,7 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
         viewHelpRate.hide()
         textToolbar.show()
         rvMessageList.setPadding(0, 0, 0,
-                resources.getDimensionPixelSize(R.dimen.text_toolbar_height_collapsed))
+                resources.getDimensionPixelSize(R.dimen.contact_us_text_toolbar_height_collapsed))
         isCustomReason = true
     }
 
@@ -447,7 +447,7 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
         textToolbar.hide()
         viewLinkBottom.show()
         rvMessageList.setPadding(0, 0, 0,
-                resources.getDimensionPixelSize(R.dimen.text_toolbar_height_collapsed))
+                resources.getDimensionPixelSize(R.dimen.contact_us_text_toolbar_height_collapsed))
     }
 
     override fun enterSearchMode(search: String, total: Int) {

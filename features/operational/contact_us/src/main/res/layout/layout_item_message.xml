@@ -75,7 +75,7 @@
         android:clickable="true"
         android:focusable="true"
         android:padding="@dimen/dp_4"
-        android:src="@drawable/thumbs_up"
+        app:srcCompat="@drawable/thumbs_up"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tv_name"/>
 
@@ -90,7 +90,7 @@
         android:focusable="true"
         android:padding="@dimen/dp_4"
         app:layout_goneMarginRight="@dimen/dp_16"
-        android:src="@drawable/thumbs_down"
+        app:srcCompat="@drawable/thumbs_down"
         app:layout_constraintEnd_toEndOf="@id/iv_csast_status_good"
         app:layout_constraintTop_toTopOf="@+id/tv_name"/>
 

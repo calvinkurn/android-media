@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="filterarray">
+    <string-array name="contact_us_filter_array">
         <item>Semua</item>
         <item>Dalam proses</item>
         <item>Beri Penilaian</item>

@@ -42,7 +42,7 @@
     <string name="app_name">contact_us</string>
     <string name="finish_contact_us">Terima kasih telah menghubungi, senang bisa membantu anda.</string>
     <string name="thanks_input">Terima kasih atas masukan Anda</string>
-    <string name="display_a_problem_report_here">Oops, laporanmu tidak ditemukan</string>
+    <string name="contact_us_display_a_problem_report_here">Oops, laporanmu tidak ditemukan</string>
 
     <string name="title_help">Bantuan</string>
     <string name="please_wait">Please Wait...</string>
@@ -114,6 +114,7 @@
     <string name="contact_us_tokopedia_care_team">Tim Tokopedia Care</string>
     <string name="contact_us_ticket_id_prefix">ID: %s</string>
     <string name="contact_us_show_all_ticket">Tampilkan Semua</string>
+    <string name="contact_us_greet_user">Halo, %s!</string>
 
     <string-array name="contactus_csat_question">
         <item>Apa yang bisa diperbaiki dari layanan kami?</item>

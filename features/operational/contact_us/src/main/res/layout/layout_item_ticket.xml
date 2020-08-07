@@ -56,7 +56,7 @@
         android:layout_height="@dimen/dp_16"
         android:layout_marginStart="@dimen/dp_12"
         android:layout_marginLeft="@dimen/dp_12"
-        android:src="@drawable/priority_label_image"
+        app:srcCompat="@drawable/priority_label_image"
         app:layout_constraintBottom_toBottomOf="@+id/view"
         app:layout_constraintStart_toEndOf="@+id/view"
         app:layout_constraintTop_toTopOf="@+id/view" />

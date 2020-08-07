@@ -53,7 +53,7 @@ class InboxListPresenterImpl(private val mUseCase: GetTicketListUseCase,
 
     override fun attachView(view: InboxBaseView?) {
         mView = view as InboxListView
-        filterList.addAll(Arrays.asList(*mView?.getActivity()?.resources?.getStringArray(R.array.filterarray)))
+        filterList.addAll(Arrays.asList(*mView?.getActivity()?.resources?.getStringArray(R.array.contact_us_filter_array)))
     }
 
     override val coroutineContext: CoroutineContext
@@ -66,7 +66,7 @@ class InboxListPresenterImpl(private val mUseCase: GetTicketListUseCase,
                 block = {
                     val ticketListResponse = mUseCase.getTicketListResponse(requestParams
                             ?: mUseCase.getRequestParams(FIRST_PAGE, ALL))
-                    val ticketData = ticketListResponse.ticket?.data
+                    val ticketData = ticketListResponse.ticket?.TicketData
                     when {
                         !ticketData?.ticketItems.isNullOrEmpty() -> {
                             mView?.toggleEmptyLayout(View.GONE)
@@ -245,7 +245,7 @@ class InboxListPresenterImpl(private val mUseCase: GetTicketListUseCase,
                 block = {
                     val requestParams = mUseCase.getRequestParams(page, status, rating)
                     val ticketListResponse = mUseCase.getTicketListResponse(requestParams)
-                    val ticketData = ticketListResponse.ticket?.data
+                    val ticketData = ticketListResponse.ticket?.TicketData
                     if (ticketData?.ticketItems?.isNullOrEmpty() == false) {
                         mView?.removeFooter()
                         originalList.addAll(ticketData.ticketItems)

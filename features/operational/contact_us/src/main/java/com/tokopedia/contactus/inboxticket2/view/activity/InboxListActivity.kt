@@ -75,7 +75,7 @@ class InboxListActivity : InboxBaseActivity(), InboxListView, View.OnClickListen
         tvRaiseTicket?.text = getString(R.string.contact_us_tokopedia_care)
         tvRaiseTicket?.tag = RAISE_TICKET_TAG
         tvRaiseTicket?.visibility = visibility
-        tvGreetNoTicket?.text = String.format("Halo, %s!", name)
+        tvGreetNoTicket?.text = String.format(getString(R.string.contact_us_greet_user), name)
         tvGreetNoTicket?.visibility = visibility
         rvEmailList?.hide()
     }

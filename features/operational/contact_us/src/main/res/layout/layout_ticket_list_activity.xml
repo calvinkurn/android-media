@@ -110,7 +110,7 @@
             android:layout_marginRight="@dimen/dp_16"
             android:layout_marginEnd="@dimen/dp_16"
             android:gravity="center_horizontal"
-            android:text="@string/display_a_problem_report_here"
+            android:text="@string/contact_us_display_a_problem_report_here"
             android:visibility="gone"
             android:textColor="@color/contact_us_text_field_color"
             app:layout_constraintEnd_toEndOf="parent"
