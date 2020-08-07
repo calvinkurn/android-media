@@ -92,7 +92,10 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
         ReviewPendingTracking.eventClickRatingStar(reputationId, productId, rating, viewModel.getUserId())
     }
 
-    override fun onStarsClicked(reputationId: Int, productId: Int, rating: Int) {
+    override fun onStarsClicked(reputationId: Int, productId: Int, rating: Int, inboxReviewId: Int, seen: Boolean) {
+        if(!seen) {
+            viewModel.markAsSeen(inboxReviewId)
+        }
         goToCreateReviewActivity(reputationId, productId, rating)
     }
 
@@ -166,6 +169,7 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
     }
 
     override fun loadInitialData() {
+        clearAllData()
         super.loadInitialData()
         getIncentiveOvoData()
     }
@@ -183,8 +187,11 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if(requestCode == CREATE_REVIEW_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            onSuccessCreateReview()
+        if(requestCode == CREATE_REVIEW_REQUEST_CODE) {
+            loadInitialData()
+            if(resultCode == Activity.RESULT_OK) {
+                onSuccessCreateReview()
+            }
         }
     }
 
@@ -308,7 +315,6 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
     }
 
     private fun onSuccessCreateReview() {
-        loadInitialData()
         showToaster(getString(R.string.review_create_success_toaster, viewModel.getUserName()), getString(R.string.review_oke))
     }
 

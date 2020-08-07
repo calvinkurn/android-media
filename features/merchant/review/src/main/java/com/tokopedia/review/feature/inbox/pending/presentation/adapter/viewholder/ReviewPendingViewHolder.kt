@@ -6,9 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.reputation.common.view.AnimatedReputationView
 import com.tokopedia.review.R
-import com.tokopedia.review.feature.inbox.pending.analytics.ReviewPendingTracking
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.ReviewPendingUiModel
-import com.tokopedia.review.feature.inbox.pending.presentation.fragment.ReviewPendingFragment
 import com.tokopedia.review.feature.inbox.pending.presentation.util.ReviewPendingItemListener
 import kotlinx.android.synthetic.main.item_review_pending.view.*
 
@@ -24,8 +22,8 @@ class ReviewPendingViewHolder(view: View, private val reviewPendingItemListener:
                 showProductImage(productImageUrl)
                 showProductName(productName)
                 showProductVariantName(productVariantName)
-                setListener(reputationId, productId)
-                setupStars(reputationId, productId)
+                setListener(reputationId, productId, inboxReviewId, status.seen)
+                setupStars(reputationId, productId, inboxReviewId, status.seen)
             }
             showDate(timestamp.createTimeFormatted)
             showNew(status.seen)
@@ -62,21 +60,21 @@ class ReviewPendingViewHolder(view: View, private val reviewPendingItemListener:
         }
     }
 
-    private fun setListener(reputationId: Int, productId: Int) {
+    private fun setListener(reputationId: Int, productId: Int, inboxReviewId: Int, seen: Boolean) {
         itemView.setOnClickListener {
             reviewPendingItemListener.trackCardClicked(reputationId, productId)
             itemView.reviewPendingStars.renderInitialReviewWithData(5)
-            Handler().postDelayed({reviewPendingItemListener.onStarsClicked(reputationId, productId, 5)}, 200)
+            Handler().postDelayed({reviewPendingItemListener.onStarsClicked(reputationId, productId, 5, inboxReviewId, seen)}, 200)
         }
     }
 
-    private fun setupStars(reputationId: Int, productId: Int) {
+    private fun setupStars(reputationId: Int, productId: Int, inboxReviewId: Int, seen: Boolean) {
         itemView.reviewPendingStars.apply {
             resetStars()
             setListener(object : AnimatedReputationView.AnimatedReputationListener {
                 override fun onClick(position: Int) {
                     reviewPendingItemListener.trackStarsClicked(reputationId, productId, position)
-                    Handler().postDelayed({reviewPendingItemListener.onStarsClicked(reputationId, productId, position)}, 200)
+                    Handler().postDelayed({reviewPendingItemListener.onStarsClicked(reputationId, productId, position, inboxReviewId, seen)}, 200)
                 }
             })
             show()

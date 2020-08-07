@@ -85,7 +85,6 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
             } else {
                 if (isTaskRoot) {
                     val intent = RouteManager.getIntent(this, ApplinkConst.HOME)
-                    setResult(Activity.RESULT_OK, intent)
                     startActivity(intent)
                 } else {
                     super.onBackPressed()

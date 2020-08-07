@@ -11,6 +11,7 @@ import com.tokopedia.review.common.data.Success
 import com.tokopedia.review.common.util.CoroutineDispatcherProvider
 import com.tokopedia.review.feature.createreputation.domain.usecase.GetProductIncentiveOvo
 import com.tokopedia.review.feature.inbox.pending.data.ProductrevWaitForFeedbackResponse
+import com.tokopedia.review.feature.inbox.pending.domain.usecase.ProductrevMarkAsSeenUseCase
 import com.tokopedia.review.feature.inbox.pending.domain.usecase.ProductrevWaitForFeedbackUseCase
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
 import com.tokopedia.usecase.coroutines.Result
@@ -25,7 +26,8 @@ class ReviewPendingViewModel @Inject constructor(
         private val dispatchers: CoroutineDispatcherProvider,
         private val userSession: UserSessionInterface,
         private val productrevWaitForFeedbackUseCase: ProductrevWaitForFeedbackUseCase,
-        private val getProductIncentiveOvo: GetProductIncentiveOvo
+        private val getProductIncentiveOvo: GetProductIncentiveOvo,
+        private val markAsSeenUseCase: ProductrevMarkAsSeenUseCase
 ) : BaseViewModel(dispatchers.io()) {
 
     private val _reviewList = MutableLiveData<ReviewViewState<ProductrevWaitForFeedbackResponse>>()
@@ -57,6 +59,17 @@ class ReviewPendingViewModel @Inject constructor(
             _incentiveOvo.postValue(CoroutineSuccess(data))
         }) {
             _incentiveOvo.postValue(CoroutineFail(it))
+        }
+    }
+
+    fun markAsSeen(inboxReviewId: Int) {
+        launchCatchError(block = {
+            withContext(dispatchers.io()) {
+                markAsSeenUseCase.setParams(inboxReviewId)
+                markAsSeenUseCase.executeOnBackground()
+            }
+        }) {
+            // No Op
         }
     }
 
