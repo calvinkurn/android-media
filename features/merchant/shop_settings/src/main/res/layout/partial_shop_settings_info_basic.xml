@@ -26,25 +26,14 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:paddingLeft="@dimen/dp_16"
-                android:paddingRight="@dimen/dp_16">
-
-<!--                <androidx.appcompat.widget.AppCompatImageView-->
-<!--                    android:id="@+id/ivShopLogo"-->
-<!--                    android:layout_width="@dimen/dp_72"-->
-<!--                    android:layout_height="@dimen/dp_72"-->
-<!--                    android:layout_marginTop="@dimen/dp_16"-->
-<!--                    android:layout_marginBottom="@dimen/dp_16"-->
-<!--                    android:layout_marginEnd="@dimen/dp_16"-->
-<!--                    android:layout_marginRight="@dimen/dp_16"-->
-<!--                    tools:srcCompat="@drawable/ic_shop_default_empty" />-->
+                android:paddingLeft="@dimen/dp_14"
+                android:paddingRight="@dimen/dp_14">
 
                 <com.tokopedia.shop.settings.widget.RoundedImageView
                     android:id="@+id/ivShopLogo"
-                    android:layout_width="@dimen/dp_72"
-                    android:layout_height="@dimen/dp_72"
+                    android:layout_width="@dimen/dp_64"
+                    android:layout_height="@dimen/dp_64"
                     android:scaleType="fitCenter"
                     android:layout_marginTop="@dimen/dp_16"
                     android:layout_marginBottom="@dimen/dp_16"
@@ -65,6 +54,7 @@
                         android:textColor="@color/title_information"
                         android:textSize="@dimen/sp_14"
                         android:textStyle="bold"
+                        android:layout_marginTop="@dimen/dp_20"
                         tools:text="Toko Kelontong Indonesia" />
 
                     <TextView
@@ -72,8 +62,10 @@
                         android:layout_height="match_parent"
                         android:layout_width="wrap_content"
                         android:textColor="@color/title_subinformation"
+                        android:layout_marginTop="@dimen/dp_4"
+                        android:lineSpacingExtra="@dimen/sp_2"
                         android:textSize="@dimen/sp_12"
-                        tools:text="www.tokopedia.com/tokokelontongindonesia" />
+                        tools:text="www.tokopedia.com/tokokelontongindonesialala" />
                 </LinearLayout>
 
             </LinearLayout>
