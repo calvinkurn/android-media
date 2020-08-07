@@ -223,6 +223,7 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
             enableBankAccountSection(autoWDStatusData.status == 1 && autoWDStatusData.isOwner)
             updateBankAccountSectionState()
             scrollViewAutoWDContent.visible()
+            ivAWBannerClose.setOnClickListener { groupAutoWDBannerViews.gone() }
         }
         loaderView.gone()
     }
