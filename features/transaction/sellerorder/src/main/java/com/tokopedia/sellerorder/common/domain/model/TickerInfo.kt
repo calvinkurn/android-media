@@ -6,21 +6,21 @@ import com.google.gson.annotations.SerializedName
 data class TickerInfo(
         @SerializedName("text")
         @Expose
-        val message: String = "",
-
-        @SerializedName("color")
-        @Expose
-        val textColor: String = "",
+        val text: String = "",
 
         @SerializedName("type")
         @Expose
-        val backgroundColor: String = "",
+        val type: String = "",
 
         @SerializedName("action_text")
         @Expose
-        val linkText: String = "",
+        val actionText: String = "",
+
+        @SerializedName("action_key")
+        @Expose
+        val actionKey: String = "",
 
         @SerializedName("action_url")
         @Expose
-        val linkUrl: String = ""
+        val actionUrl: String = ""
 )
