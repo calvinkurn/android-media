@@ -34,6 +34,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.webview.TkpdWebView
 import com.tokopedia.withdraw.R
+import com.tokopedia.withdraw.auto_withdrawal.analytics.AutoWithdrawAnalytics
 import com.tokopedia.withdraw.auto_withdrawal.di.component.AutoWithdrawalComponent
 import com.tokopedia.withdraw.auto_withdrawal.domain.model.*
 import com.tokopedia.withdraw.auto_withdrawal.presentation.activity.AutoWithdrawalActivity
@@ -51,6 +52,9 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
 
     @Inject
     lateinit var userSession: dagger.Lazy<UserSession>
+
+    @Inject
+    lateinit var analytics: AutoWithdrawAnalytics
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -216,8 +220,8 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
             enableBankAccountSection(autoWDStatusData.status == 1 && autoWDStatusData.isOwner)
             updateBankAccountSectionState()
             scrollViewAutoWDContent.visible()
-            loaderView.gone()
         }
+        loaderView.gone()
     }
 
     private fun setScheduleData() {
@@ -256,7 +260,8 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
                 && autoWDStatusData?.isOwner == true) {
             if ((checkboxAutoWD.isChecked && autoWDStatusData?.status != 1)
                     || (!checkboxAutoWD.isChecked && autoWDStatusData?.status == 1)
-                    || (checkboxAutoWD.isChecked && requestedSchedule != null && currentSchedule?.equals(requestedSchedule) == false)) {
+                    || (checkboxAutoWD.isChecked && requestedSchedule != null
+                            && currentSchedule?.equals(requestedSchedule) == false)) {
                 setSaveSettingBottomViewVisibility(true)
                 btnAutoWDSaveSettings.isEnabled = isPrimaryAccountActive()
             } else
@@ -505,8 +510,9 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
                 } else if (status == 1) {
                     if (checkboxAutoWD.isChecked) {
                         updateAutoWithdrawalSchedule()
-                    } else
-                        openRemoveAutoWDSettingDialog()
+                    } else {
+                        openOptOutAutoWDSettingDialog()
+                    }
                 }
             } else {
                 openJoinRPProgramBottomSheet()
@@ -524,7 +530,7 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
     private fun openAddBankAccount() {
         activity?.apply {
             val intent = RouteManager.getIntent(this, ApplinkConstInternalGlobal.ADD_BANK)
-            startActivityForResult(intent, SaldoWithdrawalFragment.BANK_SETTING_REQUEST_CODE)
+            startActivityForResult(intent, BANK_SETTING_REQUEST_CODE)
         }
     }
 
@@ -543,15 +549,26 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        when (requestCode) {
-            REQUEST_OTP_CODE -> {
-                if (resultCode == Activity.RESULT_OK) {
+        if (resultCode == Activity.RESULT_OK) {
+            when (requestCode) {
+                REQUEST_OTP_CODE -> {
                     data?.let {
                         registerForAutoWithdrawal(data)
                     }
                 }
+                BANK_SETTING_REQUEST_CODE -> {
+                    data?.let {
+                        refreshBankAccountList()
+                    }
+                }
             }
         }
+    }
+
+    private fun refreshBankAccountList(){
+        scrollViewAutoWDContent.visible()
+        loaderView.visible()
+        autoWDSettingsViewModel.getBankAccount()
     }
 
     private fun registerForAutoWithdrawal(data: Intent) {
@@ -564,7 +581,7 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
         }
     }
 
-    private fun openRemoveAutoWDSettingDialog() {
+    private fun openOptOutAutoWDSettingDialog() {
         context?.apply {
             DialogUnify(context = this,
                     actionType = DialogUnify.HORIZONTAL_ACTION,
@@ -618,6 +635,7 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
 
     companion object {
         private const val REQUEST_OTP_CODE = 131
+        const val BANK_SETTING_REQUEST_CODE = 132
 
         fun getInstance(bundle: Bundle): AutoWithdrawalSettingsFragment = AutoWithdrawalSettingsFragment()
                 .apply {

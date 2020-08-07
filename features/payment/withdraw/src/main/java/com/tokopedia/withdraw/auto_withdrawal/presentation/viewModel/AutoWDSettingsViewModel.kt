@@ -2,7 +2,6 @@ package com.tokopedia.withdraw.auto_withdrawal.presentation.viewModel
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -31,31 +30,56 @@ class AutoWDSettingsViewModel @Inject constructor(
 
     fun getAutoWDInfo() {
         autoWDInfoUseCase.cancelJobs()
-        autoWDInfoUseCase.getAutoWDInfo(::onAutoWithdrawalInfoLoaded, ::onAutoWithdrawalInfoFailed)
+        autoWDInfoUseCase.getAutoWDInfo(
+                {
+                    infoAutoWDResultLiveData.value = Success(it)
+                    getBankAccount()
+                },
+                {
+                    infoAutoWDResultLiveData.value = Fail(it)
+                })
     }
 
     fun getAutoWDStatus() {
         autoWDStatusUseCase.cancelJobs()
-        autoWDStatusUseCase.getAutoWDStatus(::onAutoWDStatusSuccess, ::onAutoWDStatusError)
+        autoWDStatusUseCase.getAutoWDStatus(
+                {
+                    autoWDStatusDataResultLiveData.value = Success(it.autoWDStatusData)
+                },
+                {
+                    autoWDStatusDataResultLiveData.value = Fail(it)
+                })
     }
 
     fun getBankAccount() {
         bankAccountListUseCase.cancelJobs()
-        bankAccountListUseCase.getBankAccountList(::onBankAccountListLoaded, ::onBankAccountListFailed)
+        bankAccountListUseCase.getBankAccountList(
+                {
+                    bankListResultLiveData.value = Success(it.bankAccount.bankAccountList)
+                    getAutoWDStatus()
+                },
+                {
+                    bankListResultLiveData.value = Fail(it)
+                })
     }
 
     fun getAutoWDTNC() {
         if (!isTNCLoading) {
             isTNCLoading = true
-            autoWDTNCUseCase.getAutoWDTNC(::onAutoWithdrawalTNCLoaded, ::onAutoWithdrawalTNCFailed)
+            autoWDTNCUseCase.getAutoWDTNC({
+                autoWDTNCResultLiveData.value = Success(it.data.template)
+                isTNCLoading = false
+            }, {
+                autoWDTNCResultLiveData.value = Fail(it)
+                isTNCLoading = false
+            })
         }
     }
 
     fun upsertAutoWithdrawal(request: AutoWithdrawalUpsertRequest) {
         if (!isUpsertAutoWDInProgress) {
             isUpsertAutoWDInProgress = true
-            val requestParamMap = autoWDUpsertUseCase.getRequestParams(request)
-            autoWDUpsertUseCase.getAutoWDUpsert(requestParamMap,
+            autoWDUpsertUseCase.getAutoWDUpsert(request,
                     { upsertResponse ->
                         if (upsertResponse.code == 200)
                             upsertResponseLiveData.value = Success(upsertResponse)
@@ -66,42 +90,6 @@ class AutoWDSettingsViewModel @Inject constructor(
                         isUpsertAutoWDInProgress = false
                     })
         }
-    }
-
-    private fun onAutoWithdrawalTNCLoaded(getTNCAutoWD: GetTNCAutoWD) {
-        autoWDTNCResultLiveData.value = Success(getTNCAutoWD.data.template)
-        isTNCLoading = false
-    }
-
-    private fun onAutoWithdrawalTNCFailed(throwable: Throwable) {
-        autoWDTNCResultLiveData.value = Fail(throwable)
-        isTNCLoading = false
-    }
-
-    private fun onAutoWithdrawalInfoLoaded(getInfoAutoWD: GetInfoAutoWD) {
-        infoAutoWDResultLiveData.value = Success(getInfoAutoWD)
-        getBankAccount()
-    }
-
-    private fun onAutoWithdrawalInfoFailed(throwable: Throwable) {
-        infoAutoWDResultLiveData.value = Fail(throwable)
-    }
-
-    private fun onAutoWDStatusSuccess(autoWDStatus: AutoWDStatus) {
-        autoWDStatusDataResultLiveData.value = Success(autoWDStatus.autoWDStatusData)
-    }
-
-    private fun onAutoWDStatusError(throwable: Throwable) {
-        autoWDStatusDataResultLiveData.value = Fail(throwable)
-    }
-
-    private fun onBankAccountListLoaded(gqlBankListResponse: GqlGetBankDataResponse) {
-        bankListResultLiveData.value = Success(gqlBankListResponse.bankAccount.bankAccountList)
-        getAutoWDStatus()
-    }
-
-    private fun onBankAccountListFailed(throwable: Throwable) {
-        bankListResultLiveData.value = Fail(throwable)
     }
 
     override fun onCleared() {
