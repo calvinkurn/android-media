@@ -124,6 +124,7 @@ class OrderHistoryFragment : BaseListFragment<Visitable<*>, OrderHistoryTypeFact
             putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_TITLE, product.name)
             putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_PRICE, product.priceInt.toFloat())
             putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_ACTION, product.buyEventAction)
+            putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_DIMENSION40, "/chat - buy again")
         }
         startActivityForResult(intent, REQUEST_GO_TO_NORMAL_CHECKOUT)
     }
@@ -132,7 +133,8 @@ class OrderHistoryFragment : BaseListFragment<Visitable<*>, OrderHistoryTypeFact
         viewModel.addToWishList(product.productId, session.userId, this)
     }
 
-    override fun onClickCardProduct(product: Product) {
+    override fun onClickCardProduct(product: Product, position: Int) {
+        analytic.eventClickProduct(context, product, position)
         RouteManager.route(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, product.productId)
     }
 

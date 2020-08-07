@@ -1,7 +1,7 @@
 package com.tokopedia.search.result.presentation.presenter.product
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.search.jsonToObject
+import com.tokopedia.search.*
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.model.BroadMatchItemViewModel
@@ -16,6 +16,7 @@ import rx.Subscriber
 
 private const val broadMatchResponseCode1EmptySearch = "searchproduct/broadmatch/response-code-1-empty-search.json"
 private const val broadMatchResponseCode1NotEmptySearch = "searchproduct/broadmatch/response-code-1-not-empty-search.json"
+private const val broadMatchResponseCode1Page2NotEmptySearch = "searchproduct/broadmatch/response-code-1-page-2-not-empty-search.json"
 private const val broadMatchResponseCode4 = "searchproduct/broadmatch/response-code-4.json"
 private const val broadMatchResponseCode4ButNoBroadmatch = "searchproduct/broadmatch/response-code-4-but-no-broadmatch.json"
 private const val broadMatchResponseCode4NoSuggestion = "searchproduct/broadmatch/response-code-4-no-suggestion.json"
@@ -104,7 +105,7 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
             visitableList: List<Visitable<*>>,
             searchProductModel: SearchProductModel
     ) {
-        val otherRelated = searchProductModel.searchProduct.related.otherRelated
+        val otherRelated = searchProductModel.searchProduct.data.related.otherRelatedList
         visitableList.filterIsInstance<BroadMatchViewModel>().size shouldBe otherRelated.size
 
         var index = visitableList.indexOfFirst { it is BroadMatchViewModel }
@@ -124,9 +125,9 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
     private fun BroadMatchViewModel.assertBroadMatchViewModel(otherRelated: SearchProductModel.OtherRelated) {
         keyword shouldBe otherRelated.keyword
         applink shouldBe otherRelated.applink
-        broadMatchItemViewModelList.size shouldBe otherRelated.otherRelatedProductList.size
+        broadMatchItemViewModelList.size shouldBe otherRelated.productList.size
 
-        otherRelated.otherRelatedProductList.forEachIndexed { index, otherRelatedProduct ->
+        otherRelated.productList.forEachIndexed { index, otherRelatedProduct ->
             broadMatchItemViewModelList[index].assertBroadMatchItemViewModel(
                     otherRelatedProduct, index + 1, otherRelated.keyword
             )
@@ -149,6 +150,16 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
         priceString shouldBe otherRelatedProduct.priceString
         position shouldBe expectedPosition
         alternativeKeyword shouldBe expectedAlternativeKeyword
+        isWishlisted shouldBe otherRelatedProduct.isWishlisted
+        shopLocation shouldBe otherRelatedProduct.shop.city
+
+        badgeItemViewModelList.listShouldBe(otherRelatedProduct.badgeList) { actual, expected ->
+            actual.imageUrl shouldBe expected.imageUrl
+            actual.isShown shouldBe expected.isShown
+        }
+
+        freeOngkirViewModel.isActive shouldBe otherRelatedProduct.freeOngkir.isActive
+        freeOngkirViewModel.imageUrl shouldBe otherRelatedProduct.freeOngkir.imageUrl
     }
 
     private fun `Then assert tracking event impression broad match`(visitableList: List<Visitable<*>>) {
@@ -196,7 +207,16 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
             productListView.setProductList(capture(visitableListSlot))
         }
 
-        visitableListSlot.captured.find { it is BroadMatchViewModel } shouldBe null
+        visitableListSlot.captured.assertNotContainBroadMatch()
+    }
+
+    private fun List<Visitable<*>>.assertNotContainBroadMatch() {
+        val broadMatchIndex = indexOfFirst { it is BroadMatchViewModel }
+
+        broadMatchIndex.shouldBe(
+                -1,
+                "Broad match is found on visitable list index $broadMatchIndex"
+        )
     }
 
     @Test
@@ -307,5 +327,21 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
         val searchProductModelPage2 = broadMatchResponseCode5Page2WithResponseLowerThanCount.jsonToObject<SearchProductModel>()
 
         `Test Broad Match shown from page 2 or above`(searchProductModelPage1, searchProductModelPage2)
+    }
+
+    @Test
+    fun `DO NOT show broad match in load more when response code is NOT 4 or 5`() {
+        val visitableList = mutableListOf<Visitable<*>>()
+        val searchProductModelPage1 = broadMatchResponseCode1NotEmptySearch.jsonToObject<SearchProductModel>()
+        val searchProductModelPage2 = broadMatchResponseCode1Page2NotEmptySearch.jsonToObject<SearchProductModel>()
+
+        `Given Search Product API will return SearchProductModel`(searchProductModelPage1)
+        `Given Search Product Load More API will return SearchProductModel`(searchProductModelPage2)
+        `Given Product List Presenter already load data`(visitableList)
+
+        `When Load More Data`()
+
+        `Then assert view will add product list`(visitableList)
+        visitableList.assertNotContainBroadMatch()
     }
 }

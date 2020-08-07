@@ -1,0 +1,21 @@
+{
+  "coupon_list_recommendation": {
+    "message": [],
+    "error_code": "200",
+    "status": "OK",
+    "data": {
+      "result_status": {
+        "code": "42003",
+        "message": [
+          "Anda tidak dapat menggunakan promo"
+        ],
+        "reason": "Blacklisted user"
+      },
+      "empty_state": {
+        "title": "Anda tidak dapat menggunakan promo!",
+        "description": "Akun anda telah melanggar syarat dan ketentuan",
+        "image_url": "https://ecs7.tokopedia.net/microsite-production/tokopoints/noHp@3x.png"
+      }
+    }
+  }
+}

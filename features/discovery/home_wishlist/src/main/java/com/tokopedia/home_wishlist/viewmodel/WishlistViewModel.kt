@@ -174,7 +174,7 @@ open class WishlistViewModel @Inject constructor(
         }){
             isWishlistErrorInFirstPage.value = true
             it.printStackTrace()
-            wishlistData.value = listOf(ErrorWishlistDataModel(it.message))
+            wishlistData.value = listOf(ErrorWishlistDataModel())
             currentPage--
         }
     }
@@ -764,10 +764,6 @@ open class WishlistViewModel @Inject constructor(
             bulkSelectCountActionData.value = Event(listVisitableMarked.size)
             wishlistData.value = wishlistDataTemp.copy()
         }
-    }
-
-    fun sendTopAds(url: String){
-        sendTopAdsUseCase.executeOnBackground(url)
     }
 
     private fun addWishlistForRecommendationItem(productId: String,

@@ -19,17 +19,44 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:visibility="visible"/>
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/txt_mini_shop_title"
+    <LinearLayout
+        android:id="@+id/shop_name_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
         android:paddingTop="@dimen/dp_16"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/mini_shop_divider"
-        app:typographyType="body_3"
-        tools:text="Dijual oleh BMW Tunas Mandiri" />
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/label_sell"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dp_4"
+            android:layout_marginRight="@dimen/dp_4"
+            app:typographyType="body_3"
+            android:text="@string/label_dijual"
+            tools:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/shop_badge"
+            android:layout_width="@dimen/dp_16"
+            android:layout_height="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_4"
+            android:layout_marginRight="@dimen/dp_4"
+            android:visibility="gone"
+            tools:src="@drawable/ic_power_merchant" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/txt_mini_shop_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:typographyType="body_3"
+            app:typographyWeight="bold"
+            tools:visibility="visible"
+            tools:text="BMW Mobil" />
+    </LinearLayout>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txt_mini_shop_desc"
@@ -40,10 +67,11 @@
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         android:textColor="@color/light_N700_68"
-        app:layout_constraintStart_toStartOf="@+id/txt_mini_shop_title"
-        app:layout_constraintTop_toBottomOf="@+id/txt_mini_shop_title"
+        app:layout_constraintStart_toStartOf="@+id/shop_name_container"
+        app:layout_constraintTop_toBottomOf="@+id/shop_name_container"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:typographyType="body_3" />
+        app:typographyType="body_3"
+        tools:visibility="gone"/>
 
     <include
         android:id="@+id/mini_shop_shimmering"

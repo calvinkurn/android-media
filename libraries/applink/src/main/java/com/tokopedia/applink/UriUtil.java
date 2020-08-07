@@ -154,9 +154,10 @@ public class UriUtil {
                     String segmentName = itr.next().toString();
                     if (segmentName.startsWith("{") &&
                             segmentName.endsWith("}")) {
-                        result.put(segmentName ,
+                        result.put(segmentName.substring(1, segmentName.length() - 1) ,
                                 uri.getPathSegments().get(i));
                     }
+                    i++;
                 }
             }
         } catch (Exception e) {

@@ -160,7 +160,7 @@
     <string name="title_menu_seller_center">Pusat Edukasi Seller</string>
     <string name="title_menu_topads">TopAds</string>
     <string name="label_menu_topads">Lihat dan atur promo Anda</string>
-    <string name="title_menu_voucher_toko">Voucher Toko Cashback</string>
+    <string name="title_menu_voucher_toko">Voucher Cashback</string>
     <string name="description_menu_voucher_toko">Lihat dan kelola promo tokomu</string>
     <string name="label_menu_voucher_toko">Khusus aplikasi Tokopedia Seller</string>
     <string name="label_menu_seller_center">Edukasi dan inspirasi berjualan</string>
@@ -208,7 +208,7 @@
     <string name="title_menu_affiliate">Raih Komisi di By Me</string>
     <string name="label_menu_affiliate">Ajak teman beli produk pilihanmu!</string>
     <string name="curate_product_by_me">Post Rekomendasi By Me</string>
-    <string name="create_post_by_me">Buat Post</string>
+    <string name="create_post_by_me">+ Rekomendasi</string>
     <string name="selesai">Selesai</string>
     <string name="title_seller_saldo">Saldo</string>
 

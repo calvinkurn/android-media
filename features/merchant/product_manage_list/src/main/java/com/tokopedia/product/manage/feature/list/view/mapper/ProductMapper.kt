@@ -1,29 +1,41 @@
 package com.tokopedia.product.manage.feature.list.view.mapper
 
+import androidx.lifecycle.LiveData
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.product.manage.feature.filter.data.model.ProductListMetaResponse
+import com.tokopedia.product.manage.feature.filter.data.model.Tab
 import com.tokopedia.product.manage.feature.list.view.model.FilterTabViewModel
 import com.tokopedia.product.manage.feature.list.view.model.FilterTabViewModel.*
 import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult
+import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult.ShowFilterTab
+import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult.UpdateFilterTab
+import com.tokopedia.product.manage.feature.list.view.model.PriceUiModel
 import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.Product
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus.*
+import com.tokopedia.usecase.coroutines.Result
 
 object ProductMapper {
 
     fun mapToViewModels(productList: List<Product>?, multiSelectActive: Boolean): List<ProductViewModel> {
         return productList?.map {
-            val price = it.price?.min
+            val minPrice = it.price?.min
+            val maxPrice = it.price?.max
             val picture = it.pictures?.firstOrNull()
 
             ProductViewModel(
                 id = it.id,
                 title = it.name,
                 imageUrl = picture?.urlThumbnail,
-                price = price.toString(),
-                priceFormatted = price?.getCurrencyFormatted(),
+                minPrice = PriceUiModel(
+                        price = minPrice.toString(),
+                        priceFormatted = minPrice?.getCurrencyFormatted()
+                ),
+                maxPrice = PriceUiModel(
+                        price = maxPrice.toString(),
+                        priceFormatted = maxPrice?.getCurrencyFormatted()
+                ),
                 status = mapProductStatus(it),
                 stock = it.stock,
                 isVariant = it.isVariant,
@@ -31,7 +43,8 @@ object ProductMapper {
                 url = it.url,
                 cashBack = it.cashback,
                 multiSelectActive = multiSelectActive,
-                isChecked = false
+                isChecked = false,
+                hasStockReserved = it.hasStockReserved
             )
         } ?: emptyList()
     }
@@ -43,10 +56,9 @@ object ProductMapper {
         }
     }
 
-    fun mapToFilterTabResult(response: ProductListMetaResponse, filterCount: Int): GetFilterTabResult {
+    fun LiveData<Result<GetFilterTabResult>>?.mapToFilterTabResult(filterTabs: List<Tab>): GetFilterTabResult {
         var totalProductCount = 0
-        val filterTabs = response.productListMetaWrapper.productListMetaData.tabs
-        val productFilters = mutableListOf<FilterTabViewModel>(MoreFilter(filterCount))
+        val productFilters = mutableListOf<FilterTabViewModel>()
 
         val activeProductFilter = filterTabs.firstOrNull { it.id == FilterId.ACTIVE.name }
         val inActiveProductFilter = filterTabs.firstOrNull { it.id == FilterId.INACTIVE.name }
@@ -74,6 +86,10 @@ object ProductMapper {
             totalProductCount += violationFilterCount
         }
 
-        return GetFilterTabResult(productFilters, totalProductCount)
+        return if(this?.value == null) {
+            ShowFilterTab(productFilters, totalProductCount)
+        } else {
+            UpdateFilterTab(productFilters, totalProductCount)
+        }
     }
 }

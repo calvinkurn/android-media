@@ -19,13 +19,23 @@ class BuyerRequestCancelActivity: BaseSimpleActivity(), HasComponent<OrderDetail
     override fun getNewFragment(): Fragment? {
         var bundle = Bundle()
         if (intent.extras != null) {
-            bundle = intent.extras
+            bundle = intent.extras ?: Bundle()
         } else {
             bundle.putString(BuyerConsts.PARAM_SHOP_NAME, "")
             bundle.putString(BuyerConsts.PARAM_INVOICE, "")
             bundle.putSerializable(BuyerConsts.PARAM_LIST_PRODUCT, null)
             bundle.putString(BuyerConsts.PARAM_ORDER_ID, "")
             bundle.putString(BuyerConsts.PARAM_URI, "")
+            bundle.putBoolean(BuyerConsts.PARAM_IS_CANCEL_ALREADY_REQUESTED, false)
+            bundle.putString(BuyerConsts.PARAM_TITLE_CANCEL_REQUESTED, "")
+            bundle.putString(BuyerConsts.PARAM_BODY_CANCEL_REQUESTED, "")
+            bundle.putInt(BuyerConsts.PARAM_SHOP_ID, -1)
+            bundle.putString(BuyerConsts.PARAM_BOUGHT_DATE, "")
+            bundle.putString(BuyerConsts.PARAM_INVOICE_URL, "")
+            bundle.putString(BuyerConsts.PARAM_STATUS_ID, "")
+            bundle.putString(BuyerConsts.PARAM_STATUS_INFO, "")
+            bundle.putBoolean(BuyerConsts.PARAM_IS_WAIT_TO_CANCEL, false)
+            bundle.putString(BuyerConsts.PARAM_WAIT_MSG, "")
         }
         return BuyerRequestCancelFragment.newInstance(bundle)
     }

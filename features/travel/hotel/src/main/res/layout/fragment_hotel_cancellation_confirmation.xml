@@ -9,10 +9,11 @@
     android:orientation="vertical"
     android:padding="@dimen/layout_lvl2">
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <com.tkpd.remoteresourcerequest.view.DeferredImageView
         android:id="@+id/hotel_cancellation_confirmation_iv"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        app:remoteFileName="ic_hotel_cancellation_success.png"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/hotel_cancellation_confirmation_title"

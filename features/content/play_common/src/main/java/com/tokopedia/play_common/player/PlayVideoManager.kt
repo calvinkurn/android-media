@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ProcessLifecycleOwner
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.database.DatabaseProvider
 import com.google.android.exoplayer2.database.ExoDatabaseProvider
@@ -26,6 +27,7 @@ import com.tokopedia.play_common.state.PlayVideoState
 import com.tokopedia.play_common.state.VideoPositionHandle
 import com.tokopedia.play_common.types.PlayVideoType
 import com.tokopedia.play_common.util.ExoPlaybackExceptionParser
+import com.tokopedia.play_common.util.PlayProcessLifecycleObserver
 import kotlinx.coroutines.*
 import timber.log.Timber
 import java.io.File
@@ -51,21 +53,36 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
         private const val VIDEO_MAX_SOUND = 1f
         private const val VIDEO_MIN_SOUND = 0f
 
+        private const val USE_CACHE = false
+
         @Volatile
         private var INSTANCE: PlayVideoManager? = null
+
+        private var playProcessLifecycleObserver: PlayProcessLifecycleObserver? = null
 
         @JvmStatic
         fun getInstance(context: Context): PlayVideoManager {
             return INSTANCE ?: synchronized(this) {
-                PlayVideoManager(context.applicationContext).also {
+                val player = PlayVideoManager(context.applicationContext).also {
                     INSTANCE = it
                 }
+
+                if (playProcessLifecycleObserver == null)
+                    playProcessLifecycleObserver = PlayProcessLifecycleObserver(context.applicationContext)
+
+                playProcessLifecycleObserver?.let { ProcessLifecycleOwner.get()
+                        .lifecycle.addObserver(it) }
+
+                player
             }
         }
 
         @JvmStatic
         fun deleteInstance() = synchronized(this) {
             if (INSTANCE != null) {
+                playProcessLifecycleObserver?.let { ProcessLifecycleOwner.get()
+                        .lifecycle.removeObserver(it) }
+
                 INSTANCE!!.videoPlayer.removeListener(INSTANCE!!.playerEventListener)
                 INSTANCE = null
             }
@@ -76,6 +93,12 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
         get() = job + Dispatchers.Main
 
     private val job = SupervisorJob()
+
+    /**
+     * VideoPlayer shared state
+     */
+    private var isMuted: Boolean = false
+    private var isRepeated: Boolean = false
 
     private val exoPlaybackExceptionParser = ExoPlaybackExceptionParser()
     private var currentPrepareState: PlayVideoPrepareState = getDefaultPrepareState()
@@ -120,7 +143,6 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
                 val prepareState = currentPrepareState
                 if (prepareState is PlayVideoPrepareState.Prepared) {
                     release()
-                    launch { deleteCache() }
                     playUri(prepareState.uri, videoPlayer.playWhenReady)
                 }
             } else {
@@ -128,7 +150,6 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
                 val prepareState = currentPrepareState
                 if (prepareState is PlayVideoPrepareState.Prepared) {
                     release()
-                    launch { deleteCache() }
                     playUri(prepareState.uri, videoPlayer.playWhenReady)
                 }
             }
@@ -228,7 +249,7 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
     fun release() {
         currentPrepareState = getDefaultPrepareState()
         videoPlayer.release()
-        launch { releaseCache() }
+//        launch { releaseCache() }
         playerModel.copy(cache = null)
     }
 
@@ -269,19 +290,29 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
     fun getCurrentPosition(): Long = videoPlayer.currentPosition
 
     fun isVideoMuted(): Boolean {
-        return videoPlayer.volume == VIDEO_MIN_SOUND
+        return isMuted
     }
 
-    fun mute(shouldMute: Boolean) {
+    fun mute(shouldMute: Boolean) = synchronized(this) {
+        mute(videoPlayer, shouldMute)
+    }
+
+    private fun mute(videoPlayer: SimpleExoPlayer, shouldMute: Boolean) = synchronized(this) {
+        isMuted = shouldMute
         videoPlayer.volume = if (shouldMute) VIDEO_MIN_SOUND else VIDEO_MAX_SOUND
     }
 
-    fun setRepeatMode(shouldRepeat: Boolean) {
+    fun setRepeatMode(shouldRepeat: Boolean) = synchronized(this) {
+        setRepeatMode(videoPlayer, shouldRepeat)
+    }
+
+    private fun setRepeatMode(videoPlayer: SimpleExoPlayer, shouldRepeat: Boolean) = synchronized(this) {
+        isRepeated = shouldRepeat
         videoPlayer.repeatMode = if(shouldRepeat) Player.REPEAT_MODE_ALL else Player.REPEAT_MODE_OFF
     }
 
     fun isVideoRepeat(): Boolean {
-        return videoPlayer.repeatMode != Player.REPEAT_MODE_OFF
+        return isRepeated
     }
 
     fun isVideoLive(): Boolean = videoPlayer.isCurrentWindowLive
@@ -291,14 +322,14 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
 
     //region private method
     private fun getMediaSourceBySource(context: Context, uri: Uri): MediaSource {
-        val mDataSourceFactory = DefaultDataSourceFactory(context, Util.getUserAgent(context, "Tokopedia Android"))
-        val cacheDataSourceFactory = CacheDataSourceFactory(playerModel.cache, mDataSourceFactory)
+        val mDefaultDataSourceFactory = DefaultDataSourceFactory(context, Util.getUserAgent(context, "Tokopedia Android"))
+        val mDataSourceFactory = if (USE_CACHE) CacheDataSourceFactory(playerModel.cache, mDefaultDataSourceFactory) else mDefaultDataSourceFactory
         val errorHandlingPolicy = getErrorHandlingPolicy()
         val mediaSource = when (val type = Util.inferContentType(uri)) {
-            C.TYPE_SS -> SsMediaSource.Factory(cacheDataSourceFactory).setLoadErrorHandlingPolicy(errorHandlingPolicy)
-            C.TYPE_DASH -> DashMediaSource.Factory(cacheDataSourceFactory).setLoadErrorHandlingPolicy(errorHandlingPolicy)
-            C.TYPE_HLS -> HlsMediaSource.Factory(cacheDataSourceFactory).setLoadErrorHandlingPolicy(errorHandlingPolicy)
-            C.TYPE_OTHER -> ProgressiveMediaSource.Factory(cacheDataSourceFactory).setLoadErrorHandlingPolicy(errorHandlingPolicy)
+            C.TYPE_SS -> SsMediaSource.Factory(mDataSourceFactory).setLoadErrorHandlingPolicy(errorHandlingPolicy)
+            C.TYPE_DASH -> DashMediaSource.Factory(mDataSourceFactory).setLoadErrorHandlingPolicy(errorHandlingPolicy)
+            C.TYPE_HLS -> HlsMediaSource.Factory(mDataSourceFactory).setLoadErrorHandlingPolicy(errorHandlingPolicy)
+            C.TYPE_OTHER -> ProgressiveMediaSource.Factory(mDataSourceFactory).setLoadErrorHandlingPolicy(errorHandlingPolicy)
             else -> throw IllegalStateException("Unsupported type: $type")
         }
         return mediaSource.createMediaSource(uri)
@@ -312,7 +343,11 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
             }
 
             override fun getMinimumLoadableRetryCount(dataType: Int): Int {
-                return if (dataType == C.DATA_TYPE_MEDIA_PROGRESSIVE_LIVE) RETRY_COUNT_LIVE else RETRY_COUNT_DEFAULT
+                return when (dataType) {
+                    C.DATA_TYPE_MANIFEST -> 0
+                    C.DATA_TYPE_MEDIA_PROGRESSIVE_LIVE -> RETRY_COUNT_LIVE
+                    else -> RETRY_COUNT_DEFAULT
+                }
             }
         }
     }
@@ -323,42 +358,48 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
         val videoPlayer = SimpleExoPlayer.Builder(applicationContext)
                 .setLoadControl(videoLoadControl)
                 .build()
-                .apply { addListener(playerEventListener) }
+                .apply {
+                    addListener(playerEventListener)
+                }
+                .also {
+                    mute(it, isMuted)
+                    setRepeatMode(it, isRepeated)
+                }
 
-        return PlayPlayerModel(videoPlayer, videoLoadControl, initCache(playerModel))
+        return PlayPlayerModel(videoPlayer, videoLoadControl, null)
     }
 
     private fun initCustomLoadControl(bufferControl: PlayBufferControl): PlayVideoLoadControl {
         return PlayVideoLoadControl(bufferControl)
     }
 
-    private fun initCache(playerModel: PlayPlayerModel?): Cache {
-        return if (playerModel?.cache == null) {
-            SimpleCache(
-                    cacheFile,
-                    cacheEvictor,
-                    cacheDbProvider
-            )
-        } else playerModel.cache
-    }
+//    private fun initCache(playerModel: PlayPlayerModel?): Cache {
+//        return if (playerModel?.cache == null) {
+//            SimpleCache(
+//                    cacheFile,
+//                    cacheEvictor,
+//                    cacheDbProvider
+//            )
+//        } else playerModel.cache
+//    }
 
     /**
      * If and only if these functions cause leak, please contact the owner of this module
      */
-    private suspend fun releaseCache() = withContext(Dispatchers.IO) {
-        try {
-            playerModel.cache?.release()
-        } catch (e: Throwable) {
-            Timber.tag("PlayVideoManager").e("Release cache failed: $e")
-        }
-    }
-
-    private suspend fun deleteCache() = withContext(Dispatchers.IO) {
-        try {
-            SimpleCache.delete(cacheFile, cacheDbProvider)
-        } catch (e: Throwable) {
-            Timber.tag("PlayVideoManager").e("Delete cache failed: $e")
-        }
-    }
+//    private suspend fun releaseCache() = withContext(Dispatchers.IO) {
+//        try {
+//            playerModel.cache?.release()
+//        } catch (e: Throwable) {
+//            Timber.tag("PlayVideoManager").e("Release cache failed: $e")
+//        }
+//    }
+//
+//    private suspend fun deleteCache() = withContext(Dispatchers.IO) {
+//        try {
+//            SimpleCache.delete(cacheFile, cacheDbProvider)
+//        } catch (e: Throwable) {
+//            Timber.tag("PlayVideoManager").e("Delete cache failed: $e")
+//        }
+//    }
     //endregion
 }

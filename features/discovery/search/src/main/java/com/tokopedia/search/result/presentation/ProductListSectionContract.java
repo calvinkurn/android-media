@@ -108,8 +108,6 @@ public interface ProductListSectionContract {
 
         void setTotalSearchResultCount(String formattedResultCount);
 
-        BaseAppComponent getBaseAppComponent();
-
         // Please remove when new bottom sheet filter is already stable
         @Deprecated
         void renderDynamicFilter(DynamicFilterModel dynamicFilterModel);
@@ -150,13 +148,11 @@ public interface ProductListSectionContract {
 
         void logWarning(String message, @Nullable Throwable throwable);
 
-        void sendTopAdsTrackingUrl(String topAdsTrackingUrl);
-
         void sendTopAdsGTMTrackingProductImpression(ProductItemViewModel item);
 
         void sendTopAdsGTMTrackingProductClick(ProductItemViewModel item);
 
-        void sendGTMTrackingProductClick(ProductItemViewModel item, int adapterPosition, String userId);
+        void sendGTMTrackingProductClick(ProductItemViewModel item, String userId);
 
         void routeToProductDetail(ProductItemViewModel item, int adapterPosition);
 
@@ -183,6 +179,8 @@ public interface ProductListSectionContract {
         boolean isQuickFilterSelected(Option option);
 
         void setProductCount(String productCountText);
+
+        String getClassName();
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -194,8 +192,6 @@ public interface ProductListSectionContract {
         void loadData(Map<String, Object> searchParameter);
 
         void onBannedProductsGoToBrowserClick(String url);
-
-        boolean isUsingBottomSheetFilter();
 
         String getUserId();
 
@@ -224,8 +220,6 @@ public interface ProductListSectionContract {
         void onProductImpressed(ProductItemViewModel item);
 
         void onProductClick(ProductItemViewModel item, int adapterPosition);
-
-        boolean isTrackingViewPortEnabled();
 
         List<Option> getQuickFilterOptionList();
 

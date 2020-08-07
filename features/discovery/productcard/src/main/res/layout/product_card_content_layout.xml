@@ -37,6 +37,7 @@
         android:layout_width="wrap_content"
         android:layout_height="@dimen/product_card_flashsale_pdpcount_height"
         android:layout_marginLeft="@dimen/dp_2"
+        android:layout_marginStart="@dimen/dp_2"
         android:visibility="gone"
         android:gravity="center"
         app:layout_constraintStart_toEndOf="@+id/imageViewPdpView"
@@ -81,6 +82,7 @@
         android:id="@+id/textViewSlashedPrice"
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_14"
+        android:layout_marginTop="@dimen/product_card_label_discount_margin_top"
         android:layout_marginStart="@dimen/dp_4"
         android:layout_marginLeft="@dimen/dp_4"
         android:ellipsize="end"
@@ -91,7 +93,7 @@
         app:layout_constraintBottom_toBottomOf="@id/labelDiscount"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/labelDiscount"
-        app:layout_constraintTop_toTopOf="@id/labelDiscount"
+        app:layout_constraintTop_toBottomOf="@id/textViewProductName"
         app:layout_goneMarginLeft="@dimen/dp_0"
         app:typographyType="small"
         tools:text="Rp8.499.000"
@@ -324,31 +326,5 @@
         app:layout_constraintTop_toBottomOf="@id/barrierCredibility"
         tools:visibility="visible"
         tools:text="Ongkir Rp11 rb"/>
-
-    <ProgressBar
-        android:id="@+id/progressBarStock"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/product_card_flashsale_progressbar_height"
-        android:layout_marginTop="@dimen/product_card_flashsale_progressbar_margintop"
-        app:layout_goneMarginTop="@dimen/product_card_flashsale_progressbar_gone_margintop"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:progressDrawable="@drawable/progressbar_flashsale"
-        app:layout_constraintTop_toBottomOf="@+id/imageFreeOngkirPromo"
-        android:max="100"/>
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/textViewStockLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/product_card_flashsale_label_height"
-        android:src="@drawable/ic_pdp_view"
-        android:textStyle="bold"
-        android:textColor="@color/charcoal_grey_68"
-        android:textSize="@dimen/sp_10"
-        android:layout_marginTop="@dimen/product_card_flashsale_label_margintop"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/progressBarStock"
-        app:typographyType="small"
-        app:typographyWeight="bold"
-        tools:text="989jt orang"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

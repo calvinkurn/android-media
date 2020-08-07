@@ -4,7 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 
 import com.tokopedia.analyticconstant.DataLayer;
-import com.tkpd.library.utils.CurrencyFormatHelper;
+import com.tokopedia.utils.text.currency.CurrencyFormatHelper;
+import com.tokopedia.home.analytics.v2.BaseTracking;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeIcon;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
@@ -38,6 +39,8 @@ public class HomePageTracking {
 
     public static final String FORMAT_4_VALUE_UNDERSCORE = "%s_%s_%s_%s";
     public static final String FORMAT_2_VALUE_UNDERSCORE = "%s_%s";
+
+    public static final String FORMAT_3_VALUE_SPACE = "%s %s %s";
 
     public static final String BELI_INI_ITU_CLICK = "beli ini itu click";
     public static final String BAYAR_INI_ITU_CLICK = "bayar ini itu click";
@@ -138,6 +141,7 @@ public class HomePageTracking {
     public static final String NON_LOGIN = "non login";
     public static final String QR_CODE = "qr code";
     public static final String OVO = "ovo";
+    public static final String OVO_TOPUP = "top up ovo";
     public static final String EVENT_ACTION_CLICK_ON_ALLOW_GEOLOCATION = "click on allow geolocation";
     public static final String EVENT_ACTION_CLICK_ON_NOT_ALLOW_GEOLOCATION = "click on not allow geolocation";
     public static final String EVENT_ACTION_CLICK_ON_GEOLOCATION_COMPONENT = "click on geolocation component";
@@ -735,18 +739,6 @@ public class HomePageTracking {
         }
     }
 
-    public static void eventOvo(Context context) {
-        ContextAnalytics tracker = getTracker();
-        if (tracker != null) {
-            tracker.sendGeneralEvent(
-                    EVENT_CLICK_HOME_PAGE,
-                    CATEGORY_HOME_PAGE,
-                    String.format("%s %s %s", CLICK, ON, OVO),
-                    ""
-            );
-        }
-    }
-
     public static void eventQrCode(Context context) {
         ContextAnalytics tracker = getTracker();
         if (tracker != null) {
@@ -1073,7 +1065,7 @@ public class HomePageTracking {
                         DataLayer.mapOf(
                                 FIELD_NAME, grid.getName(),
                                 FIELD_ID, grid.getId(),
-                                FIELD_PRICE, Integer.toString(CurrencyFormatHelper.convertRupiahToInt(
+                                FIELD_PRICE, Integer.toString(CurrencyFormatHelper.INSTANCE.convertRupiahToInt(
                                         grid.getPrice()
                                 )),
                                 FIELD_BRAND, "none / other",
@@ -1118,7 +1110,7 @@ public class HomePageTracking {
                         DataLayer.mapOf(
                                 FIELD_ID, grid.getId(),
                                 FIELD_NAME, grid.getName(),
-                                FIELD_PRICE, Integer.toString(CurrencyFormatHelper.convertRupiahToInt(
+                                FIELD_PRICE, Integer.toString(CurrencyFormatHelper.INSTANCE.convertRupiahToInt(
                                         grid.getPrice()
                                 )),
                                 FIELD_BRAND, NONE_OTHER,
@@ -1172,7 +1164,7 @@ public class HomePageTracking {
                         DataLayer.mapOf(
                                 FIELD_NAME, grid.getName(),
                                 FIELD_ID, grid.getId(),
-                                FIELD_PRICE, Integer.toString(CurrencyFormatHelper.convertRupiahToInt(
+                                FIELD_PRICE, Integer.toString(CurrencyFormatHelper.INSTANCE.convertRupiahToInt(
                                         grid.getPrice()
                                 )),
                                 FIELD_BRAND, NONE_OTHER,

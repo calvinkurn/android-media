@@ -20,7 +20,7 @@ object MixLeftComponentTracking: BaseTracking()  {
     private const val CLICK_MIX_LEFT_BANNER = "click on banner dynamic channel left carousel"
     private const val CLICK_MIX_LEFT = "click on product dynamic channel left carousel"
     private const val PROMOTION_BANNER_ID = "%s_%s_%s_%s"
-    private const val PROMOTION_BANNER_NAME = "'/ - p%s - dynamic channel left carousel - banner - %s"
+    private const val PROMOTION_BANNER_NAME = "/ - p%s - dynamic channel left carousel - banner - %s"
 
 
     private const val CLICK_MIX_LEFT_LOADMORE = "click view all on dynamic channel left carousel"
@@ -31,7 +31,8 @@ object MixLeftComponentTracking: BaseTracking()  {
                 Event.KEY, CustomEvent.CLICK_HOMEPAGE,
                 Category.KEY, Category.HOMEPAGE,
                 Action.KEY, CLICK_MIX_LEFT_LOADMORE,
-                Label.KEY, channel.id + " - " + channel.channelHeader.name
+                Label.KEY, channel.id + " - " + channel.channelHeader.name,
+                ChannelId.KEY, channel.id
         ) as HashMap<String, Any>
     }
 
@@ -42,6 +43,7 @@ object MixLeftComponentTracking: BaseTracking()  {
                 Action.KEY, CLICK_MIX_LEFT_LOADMORE_CARD,
                 Label.KEY, channel.id + " - " + channel.channelHeader.name,
                 CurrentSite.KEY, CurrentSite.DEFAULT,
+                ChannelId.KEY, channel.id,
                 Screen.KEY, Screen.DEFAULT,
                 UserId.KEY, userId,
                 BusinessUnit.KEY, BusinessUnit.DEFAULT
@@ -145,7 +147,7 @@ object MixLeftComponentTracking: BaseTracking()  {
             userId = userId,
             promotions = listOf(
                     Promotion(
-                            id = CustomEvent.FORMAT_4_VALUE_UNDERSCORE.format(channel.id, channel.channelBanner.id, channel.trackingAttributionModel.persoType, channel.trackingAttributionModel.categoryPersona),
+                            id = CustomEvent.FORMAT_4_VALUE_UNDERSCORE.format(channel.id, channel.channelBanner.id, channel.trackingAttributionModel.persoType, channel.trackingAttributionModel.categoryId),
                             creative = channel.channelBanner.attribution,
                             name = PROMOTION_BANNER_NAME.format("1", channel.channelHeader.name),
                             position = position.toString()
@@ -170,7 +172,7 @@ object MixLeftComponentTracking: BaseTracking()  {
             userId = userId,
             promotions = listOf(
                     Promotion(
-                            id = CustomEvent.FORMAT_4_VALUE_UNDERSCORE.format(channel.id, channel.channelBanner.id, channel.channelBanner.attribution, channel.trackingAttributionModel.categoryPersona),
+                            id = CustomEvent.FORMAT_4_VALUE_UNDERSCORE.format(channel.id, channel.channelBanner.id, channel.trackingAttributionModel.persoType, channel.trackingAttributionModel.categoryId),
                             creative = channel.channelBanner.attribution,
                             name = PROMOTION_BANNER_NAME.format("1", channel.channelHeader.name),
                             position = position.toString()

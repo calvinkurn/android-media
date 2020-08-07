@@ -37,6 +37,7 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentInstance
 import com.tokopedia.shop.ShopModuleRouter
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
+import com.tokopedia.shop.analytic.ShopPageTrackingSGCPlayWidget
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.analytic.model.TrackShopTypeDef
 import com.tokopedia.shop.common.constant.ShopHomeType
@@ -55,7 +56,7 @@ import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopPageFragmentPagerAdapter
 import com.tokopedia.shop.pageheader.presentation.holder.ShopPageFragmentHeaderViewHolder
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPageHeaderPerformanceMonitoringListener
-import com.tokopedia.shop.product.view.activity.ShopProductListActivity
+import com.tokopedia.shop.pageheader.presentation.listener.ShopPagePerformanceMonitoringListener
 import com.tokopedia.shop.product.view.fragment.HomeProductFragment
 import com.tokopedia.shop.product.view.fragment.ShopPageProductListFragment
 import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity
@@ -124,6 +125,7 @@ class ShopPageFragment :
     private lateinit var remoteConfig: RemoteConfig
     private lateinit var cartLocalCacheHandler: LocalCacheHandler
     var shopPageTracking: ShopPageTrackingBuyer? = null
+    var shopPageTrackingSGCPlay: ShopPageTrackingSGCPlayWidget? = null
     private var shopId = ""
     var shopRef: String = ""
     var shopDomain: String? = null
@@ -191,7 +193,7 @@ class ShopPageFragment :
         activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
         errorTextView = view.findViewById(R.id.message_retry)
         errorButton = view.findViewById(R.id.button_retry)
-        shopPageFragmentHeaderViewHolder = ShopPageFragmentHeaderViewHolder(view, this, shopPageTracking, view.context)
+        shopPageFragmentHeaderViewHolder = ShopPageFragmentHeaderViewHolder(view, this, shopPageTracking, shopPageTrackingSGCPlay, view.context)
         initToolbar()
         initAdapter()
         appBarLayout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
@@ -312,6 +314,7 @@ class ShopPageFragment :
             remoteConfig = FirebaseRemoteConfigImpl(it)
             cartLocalCacheHandler = LocalCacheHandler(it, CART_LOCAL_CACHE_NAME)
             shopPageTracking = ShopPageTrackingBuyer(TrackingQueue(it))
+            shopPageTrackingSGCPlay = ShopPageTrackingSGCPlayWidget(TrackingQueue(it))
             activity?.intent?.run {
                 shopId = getStringExtra(SHOP_ID).orEmpty()
                 shopRef = getStringExtra(SHOP_REF).orEmpty()
@@ -324,7 +327,7 @@ class ShopPageFragment :
                         if (pathSegments.size > 1) {
                             shopId = pathSegments[1]
                         } else if (!getQueryParameter(SHOP_ID).isNullOrEmpty()) {
-                            shopId = getQueryParameter(SHOP_ID)
+                            shopId = getQueryParameter(SHOP_ID)!!
                         }
                     }
                     if (shopDomain.isNullOrEmpty()) {
@@ -359,14 +362,23 @@ class ShopPageFragment :
     private fun initStickyLogin(view: View) {
         stickyLoginView = view.findViewById(R.id.sticky_login_text)
         stickyLoginView.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
-            updateStickyState()
+            updateViewPagerPadding()
+            updateFloatingChatButtonMargin()
         }
         stickyLoginView.setOnClickListener {
-            stickyLoginView.tracker.clickOnLogin(StickyLoginConstant.Page.SHOP)
+            if (stickyLoginView.isLoginReminder()) {
+                stickyLoginView.trackerLoginReminder.clickOnLogin(StickyLoginConstant.Page.SHOP)
+            } else {
+                stickyLoginView.tracker.clickOnLogin(StickyLoginConstant.Page.SHOP)
+            }
             startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), REQUEST_CODER_USER_LOGIN)
         }
         stickyLoginView.setOnDismissListener(View.OnClickListener {
-            stickyLoginView.tracker.clickOnDismiss(StickyLoginConstant.Page.SHOP)
+            if (stickyLoginView.isLoginReminder()) {
+                stickyLoginView.trackerLoginReminder.clickOnDismiss(StickyLoginConstant.Page.SHOP)
+            } else {
+                stickyLoginView.tracker.clickOnDismiss(StickyLoginConstant.Page.SHOP)
+            }
             stickyLoginView.dismiss(StickyLoginConstant.Page.SHOP)
             updateStickyContent()
         })
@@ -562,6 +574,7 @@ class ShopPageFragment :
     }
 
     private fun onSuccessGetShopPageTabData(shopPageHeaderTabData: ShopPageHeaderTabData) {
+        stopPreparePltShopPage()
         isShowFeed = shopPageHeaderTabData.feedWhitelist.isWhitelist
         createPostUrl = shopPageHeaderTabData.feedWhitelist.url
         shopPageHeaderDataModel = ShopPageHeaderDataModel().apply {
@@ -589,6 +602,14 @@ class ShopPageFragment :
         swipeToRefresh.isRefreshing = false
     }
 
+    protected fun stopPreparePltShopPage(){
+        (activity as? ShopPagePerformanceMonitoringListener)?.let { shopPageActivity ->
+            shopPageActivity.getShopPageLoadTimePerformanceCallback()?.let {
+                shopPageActivity.startMonitoringPltNetworkRequest(it)
+            }
+        }
+    }
+
     private fun onSuccessGetShopPageHeaderContentData(shopPageHeaderContentData: ShopPageHeaderContentData) {
         shopPageHeaderDataModel?.let { shopPageHeaderDataModel ->
             shopPageHeaderDataModel.avatar = shopPageHeaderContentData.shopInfo.shopAssets.avatar
@@ -598,6 +619,7 @@ class ShopPageFragment :
             shopPageHeaderDataModel.statusTitle = shopPageHeaderContentData.shopInfo.statusInfo.statusTitle
             shopPageHeaderDataModel.statusMessage = shopPageHeaderContentData.shopInfo.statusInfo.statusMessage
             shopPageHeaderDataModel.shopStatus = shopPageHeaderContentData.shopInfo.statusInfo.shopStatus
+            shopPageHeaderDataModel.broadcaster = shopPageHeaderContentData.broadcasterConfig
             if (!isMyShop) {
                 button_chat.show()
                 button_chat.setOnClickListener {
@@ -813,14 +835,6 @@ class ShopPageFragment :
                 refreshData()
             }
         }
-//        else if (requestCode == REQUEST_CODE_SORT) {
-//            data?.let {
-//                val sortValue = it.getStringExtra(ShopProductSortActivity.SORT_VALUE)
-//                val sortName = it.getStringExtra(ShopProductSortActivity.SORT_NAME)
-//                shopPageTracking?.sortProduct(sortName, isMyShop, customDimensionShopPage)
-//                redirectToShopSearchProductResultPage(sortValue)
-//            }
-//        }
         else if (requestCode == REQUEST_CODE_USER_LOGIN_CART) {
             if (resultCode == Activity.RESULT_OK) {
                 refreshData()
@@ -958,14 +972,6 @@ class ShopPageFragment :
             return
         }
 
-        val isCanShowing = remoteConfig.getBoolean(StickyLoginConstant.REMOTE_CONFIG_FOR_SHOP, true)
-        if (!isCanShowing) {
-            stickyLoginView.hide()
-            updateViewPagerPadding()
-            updateFloatingChatButtonMargin()
-            return
-        }
-
         val userSession = UserSession(context)
         if (userSession.isLoggedIn) {
             stickyLoginView.hide()
@@ -974,9 +980,25 @@ class ShopPageFragment :
             return
         }
 
-        this.tickerDetail?.let { stickyLoginView.setContent(it) }
-        stickyLoginView.show(StickyLoginConstant.Page.SHOP)
-        stickyLoginView.tracker.viewOnPage(StickyLoginConstant.Page.SHOP)
+        var isCanShowing = remoteConfig.getBoolean(StickyLoginConstant.KEY_STICKY_LOGIN_REMINDER_SHOP, true)
+        if (stickyLoginView.isLoginReminder() && isCanShowing) {
+            stickyLoginView.showLoginReminder(StickyLoginConstant.Page.SHOP)
+            if (stickyLoginView.isShowing()) {
+                stickyLoginView.trackerLoginReminder.viewOnPage(StickyLoginConstant.Page.SHOP)
+            }
+        } else {
+            isCanShowing = remoteConfig.getBoolean(StickyLoginConstant.KEY_STICKY_LOGIN_WIDGET_SHOP, true)
+            if (!isCanShowing) {
+                stickyLoginView.hide()
+                updateViewPagerPadding()
+                updateFloatingChatButtonMargin()
+                return
+            }
+
+            this.tickerDetail?.let { stickyLoginView.setContent(it) }
+            stickyLoginView.show(StickyLoginConstant.Page.SHOP)
+            stickyLoginView.tracker.viewOnPage(StickyLoginConstant.Page.SHOP)
+        }
         updateViewPagerPadding()
         updateFloatingChatButtonMargin()
 

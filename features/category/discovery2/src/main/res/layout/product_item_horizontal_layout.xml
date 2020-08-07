@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cardViewProductCard"
     android:layout_width="@dimen/dp_200"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/dp_2"
     android:layout_marginLeft="@dimen/dp_2"
     android:layout_marginEnd="@dimen/dp_2"
@@ -28,13 +28,12 @@
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
             android:gravity="center"
-            app:layout_constraintDimensionRatio="H,1:1"
             android:scaleType="fitXY"
             android:visibility="visible"
+            app:layout_constraintDimensionRatio="H,1:1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/error_drawable"
             app:unify_image_corner_radius = "0"/>
 
         <androidx.appcompat.widget.AppCompatImageView
@@ -103,7 +102,7 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/textViewProductViewCount"
-            android:layout_width="@dimen/dp_0"
+            android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_16"
             android:layout_marginStart="@dimen/dp_4"
             android:layout_marginLeft="@dimen/dp_4"
@@ -112,9 +111,9 @@
             android:maxLines="1"
             android:textColor="@color/product_card_location_text_color"
             android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@+id/imageViewProductViewCount"
-            app:layout_constraintLeft_toRightOf="@+id/imageViewProductViewCount"
-            app:layout_constraintTop_toTopOf="@+id/imageViewProductViewCount"
+            app:layout_constraintBottom_toBottomOf="@id/imageViewProductViewCount"
+            app:layout_constraintLeft_toRightOf="@id/imageViewProductViewCount"
+            app:layout_constraintTop_toTopOf="@id/imageViewProductViewCount"
             app:typographyType="small"
             app:typographyWeight="bold"
             tools:text="200 rb orang"
@@ -189,7 +188,7 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/textViewPrice"
-            android:layout_width="@dimen/dp_0"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_8"
             android:layout_marginLeft="@dimen/dp_8"
@@ -275,59 +274,84 @@
 
         </LinearLayout>
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/imageViewRating"
-            android:layout_width="@dimen/dp_14"
-            android:layout_height="@dimen/dp_14"
-            android:layout_marginStart="@dimen/dp_8"
+        <LinearLayout
+            android:id="@+id/linearLayoutImageRating"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_18"
             android:layout_marginLeft="@dimen/dp_8"
-            android:layout_marginTop="@dimen/dp_3"
-            android:adjustViewBounds="true"
-            android:gravity="center"
-            android:scaleType="centerCrop"
+            android:layout_marginStart="@dimen/dp_8"
             android:visibility="gone"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginTop="@dimen/dp_3"
             app:layout_constraintStart_toStartOf="@id/imageProduct"
             app:layout_constraintTop_toBottomOf="@id/shopBadgeLinerLayout"
             app:layout_goneMarginTop="@dimen/dp_4"
-            app:srcCompat="@drawable/product_card_ic_rating_active"
-            tools:visibility="visible" />
+            tools:visibility="visible">
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/textViewRatingCount"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_18"
-            android:layout_marginStart="@dimen/dp_4"
-            android:layout_marginLeft="@dimen/dp_4"
-            android:gravity="center_vertical"
-            android:textColor="@color/clr_ae31353b"
-            android:visibility="gone"
-            app:layout_constraintStart_toEndOf="@id/imageViewRating"
-            app:layout_constraintTop_toBottomOf="@id/shopBadgeLinerLayout"
-            app:layout_goneMarginLeft="@dimen/dp_8"
-            app:layout_goneMarginStart="@dimen/dp_8"
-            app:layout_goneMarginTop="@dimen/dp_4"
-            app:typographyType="body_3"
-            app:typographyWeight="bold"
-            tools:text="4.5"
-            tools:visibility="visible" />
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/imageViewRating1"
+                android:layout_width="@dimen/dp_12"
+                android:layout_height="@dimen/dp_12"
+                android:adjustViewBounds="true"
+                android:gravity="center"
+                android:scaleType="centerCrop"
+                app:srcCompat="@drawable/product_card_ic_rating_default" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/imageViewRating2"
+                android:layout_width="@dimen/dp_12"
+                android:layout_height="@dimen/dp_12"
+                android:adjustViewBounds="true"
+                android:gravity="center"
+                android:scaleType="centerCrop"
+                app:srcCompat="@drawable/product_card_ic_rating_default" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/imageViewRating3"
+                android:layout_width="@dimen/dp_12"
+                android:layout_height="@dimen/dp_12"
+                android:adjustViewBounds="true"
+                android:gravity="center"
+                android:scaleType="centerCrop"
+                app:srcCompat="@drawable/product_card_ic_rating_default" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/imageViewRating4"
+                android:layout_width="@dimen/dp_12"
+                android:layout_height="@dimen/dp_12"
+                android:adjustViewBounds="true"
+                android:gravity="center"
+                android:scaleType="centerCrop"
+                app:srcCompat="@drawable/product_card_ic_rating_default" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/imageViewRating5"
+                android:layout_width="@dimen/dp_12"
+                android:layout_height="@dimen/dp_12"
+                android:adjustViewBounds="true"
+                android:gravity="center"
+                android:scaleType="centerCrop"
+                app:srcCompat="@drawable/product_card_ic_rating_default" />
+
+        </LinearLayout>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/textViewReviewCount"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_18"
-            android:layout_marginStart="@dimen/dp_4"
             android:layout_marginLeft="@dimen/dp_4"
+            android:layout_marginStart="@dimen/dp_4"
+            android:layout_marginTop="@dimen/dp_3"
+            android:textColor="@color/product_card_review_count_text_color"
             android:gravity="center_vertical"
-            android:textColor="@color/clr_7031353b"
             android:visibility="gone"
-            app:layout_constraintStart_toEndOf="@id/textViewRatingCount"
+            app:layout_constraintStart_toEndOf="@id/linearLayoutImageRating"
             app:layout_constraintTop_toBottomOf="@id/shopBadgeLinerLayout"
-            app:layout_goneMarginLeft="@dimen/dp_8"
-            app:layout_goneMarginStart="@dimen/dp_8"
-            app:layout_goneMarginTop="@dimen/dp_4"
             app:typographyType="body_3"
-            tools:text="(3000)"
-            tools:visibility="visible" />
+            tools:visibility="visible"
+            app:layout_goneMarginTop="@dimen/dp_4"
+            tools:text="(3000)" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/imageFreeOngkirPromo"
@@ -341,32 +365,33 @@
             android:scaleType="fitStart"
             android:visibility="gone"
             app:layout_constraintStart_toStartOf="@id/imageProduct"
-            app:layout_constraintTop_toBottomOf="@id/imageViewRating"
+            app:layout_constraintTop_toBottomOf="@id/linearLayoutImageRating"
             app:layout_goneMarginTop="@dimen/dp_8"
             tools:srcCompat="@drawable/ic_product_view"
             tools:visibility="visible" />
 
-        <com.tokopedia.unifycomponents.ProgressBarUnify
+        <ProgressBar
             android:id="@+id/stockPercentageProgress"
-            android:layout_width="@dimen/dp_0"
-            android:layout_height="@dimen/dp_7"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_4"
             android:layout_marginStart="@dimen/dp_8"
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginTop="@dimen/dp_8"
             android:layout_marginEnd="@dimen/dp_8"
             android:layout_marginRight="@dimen/dp_8"
             android:visibility="gone"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:progressDrawable="@drawable/product_progress_bar_flash_sale"
             app:layout_constraintEnd_toEndOf="@id/imageProduct"
             app:layout_constraintStart_toStartOf="@id/imageProduct"
             app:layout_constraintTop_toBottomOf="@+id/imageFreeOngkirPromo"
             app:layout_goneMarginTop="@dimen/dp_8"
-            app:unify_progress_bar_from_color="#fa591d"
-            app:unify_progress_bar_to_color="#d6001c"
-            tools:visibility="visible" />
+            android:max="100"
+            tools:visibility="visible"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/stockText"
-            android:layout_width="@dimen/dp_0"
+            android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_16"
             android:layout_marginStart="@dimen/dp_8"
             android:layout_marginLeft="@dimen/dp_8"

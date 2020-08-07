@@ -7,11 +7,15 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.viewholder.EmptyReputationSearchViewHolder;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.viewholder.InboxReputationOvoIncentiveViewHolder;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.viewholder.InboxReputationViewHolder;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.viewholder.LoadingInboxReputationViewholder;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.viewholder.SellerMigrationReviewViewHolder;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputation;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.EmptySearchModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.InboxReputationItemViewModel;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.InboxReputationOvoIncentiveViewModel;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.SellerMigrationReviewModel;
 
 /**
  * @author by nisie on 8/19/17.
@@ -20,11 +24,17 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.InboxReputationIte
 public class InboxReputationTypeFactoryImpl extends BaseAdapterTypeFactory
         implements InboxReputationTypeFactory {
 
-    private final InboxReputation.View viewListener;
+    private final com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputation.View viewListener;
+    private final SellerMigrationReviewViewHolder.SellerMigrationReviewClickListener sellerMigrationReviewClickListener;
     private Context context;
 
-    public InboxReputationTypeFactoryImpl(Context context, InboxReputation.View viewListener) {
+    public InboxReputationTypeFactoryImpl(
+            Context context,
+            InboxReputation.View viewListener,
+            SellerMigrationReviewViewHolder.SellerMigrationReviewClickListener sellerMigrationReviewClickListener
+    ) {
         this.viewListener = viewListener;
+        this.sellerMigrationReviewClickListener = sellerMigrationReviewClickListener;
         this.context = context;
     }
 
@@ -36,6 +46,16 @@ public class InboxReputationTypeFactoryImpl extends BaseAdapterTypeFactory
     @Override
     public int type(EmptySearchModel viewModel) {
         return EmptyReputationSearchViewHolder.LAYOUT;
+    }
+
+    @Override
+    public int type(InboxReputationOvoIncentiveViewModel viewModel) {
+        return InboxReputationOvoIncentiveViewHolder.Companion.getLAYOUT();
+    }
+
+    @Override
+    public int type(SellerMigrationReviewModel model) {
+        return SellerMigrationReviewViewHolder.Companion.getLAYOUT();
     }
 
     @Override
@@ -53,6 +73,10 @@ public class InboxReputationTypeFactoryImpl extends BaseAdapterTypeFactory
             viewHolder = new EmptyReputationSearchViewHolder(view);
         } else if (type == LoadingInboxReputationViewholder.LAYOUT) {
             viewHolder = new LoadingInboxReputationViewholder(view);
+        } else if (type == InboxReputationOvoIncentiveViewHolder.Companion.getLAYOUT()) {
+            viewHolder = new InboxReputationOvoIncentiveViewHolder(view, viewListener);
+        } else if (type == SellerMigrationReviewViewHolder.Companion.getLAYOUT()) {
+            viewHolder = new SellerMigrationReviewViewHolder(view, sellerMigrationReviewClickListener);
         } else
             viewHolder = super.createViewHolder(view, type);
         return viewHolder;

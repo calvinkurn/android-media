@@ -26,10 +26,12 @@ import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringContract
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringListener
-import com.tokopedia.talk.common.analytics.TalkTrackingConstants
 import com.tokopedia.talk.common.constants.TalkConstants
+import com.tokopedia.talk.common.constants.TalkConstants.PARAM_SHOP_ID
+import com.tokopedia.talk.common.constants.TalkConstants.PARAM_SOURCE
 import com.tokopedia.talk.common.constants.TalkConstants.QUESTION_ID
 import com.tokopedia.talk.feature.reply.analytics.TalkReplyTracking
+import com.tokopedia.talk.feature.reply.analytics.TalkReplyTrackingConstants
 import com.tokopedia.talk.feature.reply.data.mapper.TalkReplyMapper
 import com.tokopedia.talk.feature.reply.data.model.discussion.AttachedProduct
 import com.tokopedia.talk.feature.reply.data.model.discussion.DiscussionDataByQuestionIDResponseWrapper
@@ -73,17 +75,13 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         const val MINIMUM_TEXT_LENGTH = 5
 
         @JvmStatic
-        fun createNewInstance(questionId: String, shopId: String, productId: String, isFromInbox: Boolean, isFromWriting: Boolean): TalkReplyFragment =
+        fun createNewInstance(questionId: String, shopId: String, source: String): TalkReplyFragment =
                 TalkReplyFragment().apply {
                     arguments = Bundle()
                     arguments?.apply {
-                        with(TalkConstants) {
-                            putString(QUESTION_ID, questionId)
-                            putString(PARAM_SHOP_ID, shopId)
-                            putString(PARAM_PRODUCT_ID, productId)
-                            putBoolean(IS_FROM_INBOX, isFromInbox)
-                            putBoolean(IS_FROM_WRITING, isFromInbox)
-                        }
+                        putString(QUESTION_ID, questionId)
+                        putString(PARAM_SHOP_ID, shopId)
+                        putString(PARAM_SOURCE, source)
                     }
                 }
     }
@@ -94,15 +92,14 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     private var questionId = ""
     private var shopId = ""
     private var productId = ""
-    private var isFromInbox = false
-    private var isFromWriting = false
+    private var source = ""
     private var adapter: TalkReplyAdapter? = null
     private var attachedProductAdapter: TalkReplyAttachedProductAdapter? = null
     private var talkPerformanceMonitoringListener: TalkPerformanceMonitoringListener? = null
     private var toaster: Snackbar? = null
 
     override fun getScreenName(): String {
-        return TalkTrackingConstants.TALK_SEND_SCREEN_SCREEN_NAME
+        return TalkReplyTrackingConstants.REPLY_SCREEN_NAME
     }
 
     override fun initInjector() {
@@ -257,19 +254,16 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         goToProfileActivity(userId)
     }
 
+    override fun goToProfilePage(userId: String) {
+        goToProfileActivity(userId)
+    }
+
     override fun onUrlClicked(link: String): Boolean {
         return RouteManager.route(context, link)
     }
 
     override fun onProductClicked() {
         goToPdp(productId)
-    }
-
-    override fun onStart() {
-        super.onStart()
-        activity?.run {
-            TalkReplyTracking.sendScreen(screenName)
-        }
     }
 
     private fun goToReportActivity(commentId: String) {
@@ -482,7 +476,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
                         stopNetworkRequestPerformanceMonitoring()
                         startRenderPerformanceMonitoring()
                         talkReplyRecyclerView.visibility = View.VISIBLE
-                        if(isFromInbox && viewModel.isMyShop) {
+                        if(isFromInbox() || isFromNotif()) {
                             adapter?.showProductHeader(TalkReplyProductHeaderModel(discussionDataByQuestionID.productName, discussionDataByQuestionID.thumbnail))
                         }
                         adapter?.showHeader(TalkReplyMapper.mapDiscussionDataResponseToTalkReplyHeaderModel(it.data, viewModel.isMyShop))
@@ -493,6 +487,8 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
                         }
                         setIsFollowing(discussionDataByQuestionID.question.questionState.isFollowed)
                         initTextBox(discussionDataByQuestionID.maxAnswerLength)
+                        setProductId(it.data.discussionDataByQuestionID.productId)
+                        TalkReplyTracking.sendScreen(screenName, productId, viewModel.userId)
                         hidePageError()
                         hidePageLoading()
                         replySwipeRefresh.isRefreshing = false
@@ -672,13 +668,9 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
 
     private fun getDataFromArguments() {
         arguments?.let {
-            with(TalkConstants) {
-                questionId = it.getString(QUESTION_ID, "")
-                shopId = it.getString(PARAM_SHOP_ID, "")
-                productId = it.getString(PARAM_PRODUCT_ID, "")
-                isFromInbox = it.getBoolean(IS_FROM_INBOX)
-                isFromWriting = it.getBoolean(IS_FROM_WRITING)
-            }
+            questionId = it.getString(QUESTION_ID, "")
+            shopId = it.getString(PARAM_SHOP_ID, "")
+            source = it.getString(PARAM_SOURCE, "")
         }
         viewModel.setIsMyShop(shopId)
     }
@@ -711,5 +703,15 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         }
     }
 
+    private fun isFromInbox(): Boolean {
+        return source == TalkConstants.INBOX_SOURCE
+    }
 
+    private fun isFromNotif(): Boolean {
+        return source == TalkConstants.NOTIFICATION_SOURCE
+    }
+
+    private fun setProductId(productId: String) {
+        this.productId = productId
+    }
 }

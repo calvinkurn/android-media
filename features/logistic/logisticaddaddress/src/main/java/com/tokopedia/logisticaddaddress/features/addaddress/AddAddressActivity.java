@@ -14,6 +14,7 @@ import com.tokopedia.applink.UriUtil;
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic;
 import com.tokopedia.logisticaddaddress.R;
 import com.tokopedia.logisticdata.data.entity.address.AddressModel;
+import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 
 import java.util.List;
@@ -68,7 +69,7 @@ public class AddAddressActivity extends BaseSimpleActivity {
 
 
     public static Intent createInstanceEditAddressFromManageAddress(@NonNull Activity activity,
-                                                                    @Nullable AddressModel addressModel,
+                                                                    @Nullable RecipientAddressModel addressModel,
                                                                     @Nullable Token token) {
         return createInstance(
                 activity, addressModel, token,
@@ -84,7 +85,7 @@ public class AddAddressActivity extends BaseSimpleActivity {
 
     private static Intent createInstance(
             @NonNull Activity activity,
-            @Nullable AddressModel data,
+            @Nullable RecipientAddressModel data,
             @Nullable Token token,
             int typeInstance
     ) {

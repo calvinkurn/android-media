@@ -10,17 +10,23 @@ import com.tokopedia.logisticcart.domain.executor.MainScheduler
 import com.tokopedia.logisticcart.domain.executor.SchedulerProvider
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationConverter
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
-import com.tokopedia.oneclickcheckout.common.domain.GetShippingDurationUseCase
+import com.tokopedia.logisticdata.domain.mapper.AddressCornerMapper
+import com.tokopedia.logisticdata.domain.usecase.GetAddressCornerUseCase
+import com.tokopedia.oneclickcheckout.common.dispatchers.DefaultDispatchers
+import com.tokopedia.oneclickcheckout.common.dispatchers.ExecutorDispatchers
+import com.tokopedia.oneclickcheckout.common.domain.mapper.PreferenceModelMapper
 import com.tokopedia.oneclickcheckout.preference.analytics.PreferenceListAnalytics
 import com.tokopedia.oneclickcheckout.preference.edit.domain.create.CreatePreferenceUseCase
+import com.tokopedia.oneclickcheckout.preference.edit.domain.create.CreatePreferenceUseCaseImpl
 import com.tokopedia.oneclickcheckout.preference.edit.domain.create.model.CreatePreferenceGqlResponse
 import com.tokopedia.oneclickcheckout.preference.edit.domain.delete.DeletePreferenceUseCase
+import com.tokopedia.oneclickcheckout.preference.edit.domain.delete.DeletePreferenceUseCaseImpl
 import com.tokopedia.oneclickcheckout.preference.edit.domain.delete.model.DeletePreferenceGqlResponse
 import com.tokopedia.oneclickcheckout.preference.edit.domain.get.model.GetPreferenceByIdGqlResponse
+import com.tokopedia.oneclickcheckout.preference.edit.domain.shipping.GetShippingDurationUseCase
+import com.tokopedia.oneclickcheckout.preference.edit.domain.shipping.mapper.ShippingDurationModelMapper
 import com.tokopedia.oneclickcheckout.preference.edit.domain.update.UpdatePreferenceUseCase
 import com.tokopedia.oneclickcheckout.preference.edit.domain.update.model.UpdatePreferenceGqlResponse
-import com.tokopedia.purchase_platform.common.feature.addresslist.AddressCornerMapper
-import com.tokopedia.purchase_platform.common.feature.addresslist.GetAddressCornerUseCase
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -28,7 +34,6 @@ import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
-@PreferenceEditScope
 @Module
 class PreferenceEditModule(private val activity: Activity) {
 
@@ -39,6 +44,10 @@ class PreferenceEditModule(private val activity: Activity) {
     @PreferenceEditScope
     @Provides
     fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
+
+    @PreferenceEditScope
+    @Provides
+    fun provideExecutorDispatchers(): ExecutorDispatchers = DefaultDispatchers
 
     @PreferenceEditScope
     @Provides
@@ -54,8 +63,8 @@ class PreferenceEditModule(private val activity: Activity) {
 
     @PreferenceEditScope
     @Provides
-    fun provideGetShippingDurationUseCase(graphqlRepository: GraphqlRepository): GetShippingDurationUseCase {
-        return GetShippingDurationUseCase(GraphqlUseCase(graphqlRepository))
+    fun provideGetShippingDurationUseCase(graphqlRepository: GraphqlRepository, mapper: ShippingDurationModelMapper): GetShippingDurationUseCase {
+        return GetShippingDurationUseCase(GraphqlUseCase(graphqlRepository), mapper)
     }
 
     @PreferenceEditScope
@@ -66,6 +75,10 @@ class PreferenceEditModule(private val activity: Activity) {
 
     @PreferenceEditScope
     @Provides
+    fun providesPreferenceModelMapper(): PreferenceModelMapper = PreferenceModelMapper
+
+    @PreferenceEditScope
+    @Provides
     fun providesCreatePreferenceGraphqlUseCase(graphqlRepository: GraphqlRepository): GraphqlUseCase<CreatePreferenceGqlResponse> {
         return GraphqlUseCase(graphqlRepository)
     }
@@ -73,7 +86,7 @@ class PreferenceEditModule(private val activity: Activity) {
     @PreferenceEditScope
     @Provides
     fun providesCreatePreferenceUseCase(graphqlUseCase: GraphqlUseCase<CreatePreferenceGqlResponse>): CreatePreferenceUseCase {
-        return CreatePreferenceUseCase(graphqlUseCase)
+        return CreatePreferenceUseCaseImpl(graphqlUseCase)
     }
 
     @PreferenceEditScope
@@ -85,7 +98,7 @@ class PreferenceEditModule(private val activity: Activity) {
     @PreferenceEditScope
     @Provides
     fun providesDeletePreferenceUseCase(graphqlUseCase: GraphqlUseCase<DeletePreferenceGqlResponse>): DeletePreferenceUseCase {
-        return DeletePreferenceUseCase(graphqlUseCase)
+        return DeletePreferenceUseCaseImpl(graphqlUseCase)
     }
 
     @PreferenceEditScope

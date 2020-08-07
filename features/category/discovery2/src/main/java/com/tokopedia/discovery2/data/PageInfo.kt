@@ -26,5 +26,10 @@ data class PageInfo(
         val tags: String? = "",
 
         @SerializedName("share_config", alternate = ["share"])
-        val share: Share? = null
+        val share: Share? = null,
+
+        @SerializedName("campaign_code")
+        val campaignCode: String? = null,
+
+        var additionalInfo: AdditionalInfo? = null
 )

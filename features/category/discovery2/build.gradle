@@ -23,6 +23,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.trackingOptimizer)
+    implementation project(rootProject.ext.libraries.remoteResourceRequest)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     implementation rootProject.ext.supportLibDependencies.constraintLayout
@@ -48,6 +49,7 @@ dependencies {
     implementation(rootProject.ext.serviceDependencies.crashlytics) {
         transitive = true
     }
+    implementation project(rootProject.ext.features.resourcesCommon)
 
 }
 
@@ -61,5 +63,3 @@ project.ext {
 apply from: '../../../publish_local.gradle'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
-apply from: '../../../jacoco_task.gradle'
-apply from: '../../../sonar_config.gradle'
