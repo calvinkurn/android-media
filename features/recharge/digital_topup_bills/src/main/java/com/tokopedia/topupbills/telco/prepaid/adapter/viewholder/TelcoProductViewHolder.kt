@@ -67,7 +67,7 @@ class TelcoProductViewHolder(itemView: View, private val productType: Int,
                 telco_product_price.setTextColor(itemView.context.resources.getColorFromResources(itemView.context, com.tokopedia.unifyprinciples.R.color.light_N700_44))
             } else {
                 telco_prepaid_title_product.setTextColor(itemView.context.resources.getColorFromResources(itemView.context, com.tokopedia.unifyprinciples.R.color.light_N700_96))
-                telco_product_price.setTextColor(itemView.context.resources.getColorFromResources(itemView.context, R.color.digital_orange_price))
+                telco_product_price.setTextColor(itemView.context.resources.getColorFromResources(itemView.context, com.tokopedia.unifyprinciples.R.color.Yellow_Y500))
             }
         }
     }
