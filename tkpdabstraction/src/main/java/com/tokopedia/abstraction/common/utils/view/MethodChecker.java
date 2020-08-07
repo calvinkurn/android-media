@@ -1,7 +1,6 @@
 package com.tokopedia.abstraction.common.utils.view;
 
 import android.content.Context;
-import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
@@ -15,7 +14,6 @@ import android.webkit.WebSettings;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
-import androidx.core.view.ViewCompat;
 
 import java.io.File;
 
@@ -73,6 +71,19 @@ public class MethodChecker {
     public static Spanned fromHtmlPreserveLineBreak(String text) {
         String lineBreakHtmlResult = text.replace("\n", "<br />");
         return fromHtml(lineBreakHtmlResult);
+    }
+
+    public static CharSequence fromHtmlWithoutExtraSpace(String text) {
+        return trimTrailingWhitespace(fromHtml(text));
+    }
+
+    public static CharSequence trimTrailingWhitespace(CharSequence source) {
+        if (source == null) return "";
+        int i = source.length();
+        do {
+            --i;
+        } while (i >= 0 && Character.isWhitespace(source.charAt(i)));
+        return source.subSequence(0, i + 1);
     }
 
     public static void setAllowMixedContent(WebSettings webSettings) {

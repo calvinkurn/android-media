@@ -22,15 +22,6 @@ class TextComponentViewHolder(itemView: View, private val fragment: Fragment) : 
         textComponentViewModel = discoveryBaseViewModel as TextComponentViewModel
     }
 
-    private fun trimTrailingWhitespace(source: CharSequence?): CharSequence? {
-        if (source == null) return ""
-        var i = source.length
-        do {
-            --i
-        } while (i >= 0 && Character.isWhitespace(source[i]))
-        return source.subSequence(0, i + 1)
-    }
-
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         super.setUpObservers(lifecycleOwner)
         textComponentViewModel.getTextComponentLiveData().observe(fragment.viewLifecycleOwner, Observer {
@@ -41,10 +32,10 @@ class TextComponentViewHolder(itemView: View, private val fragment: Fragment) : 
     }
 
     private fun showBodyInWebView(textComponentBody: String) {
-        bodyTypography.text = trimTrailingWhitespace(MethodChecker.fromHtml(textComponentBody))
+        bodyTypography.text = MethodChecker.fromHtmlWithoutExtraSpace(textComponentBody)
     }
 
     private fun showTitleInWebView(title: String?) {
-        titleTypography.text = trimTrailingWhitespace(MethodChecker.fromHtml(title))
+        titleTypography.text = MethodChecker.fromHtmlWithoutExtraSpace(title)
     }
 }
