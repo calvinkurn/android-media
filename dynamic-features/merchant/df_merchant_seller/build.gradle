@@ -49,6 +49,7 @@ android {
 dependencies {
     implementation project(rootProject.ext.app.customerapp)
 
+    implementation project(rootProject.ext.features.productAddEdit)
     implementation project(rootProject.ext.features.productManageList)
     implementation project(rootProject.ext.features.powerMerchantSubscribe)
     implementation project(rootProject.ext.features.shopSettings)

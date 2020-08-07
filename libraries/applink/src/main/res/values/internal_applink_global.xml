@@ -69,7 +69,9 @@
     <string name="path_add_fingerprint_onboarding">/add-fingerprint-onboarding</string>
     <string name="path_manage_notification">/manage-notification</string>
 
+    <string name="path_seller_seamless_login" translatable="false">/login-seamless</string>
     <string name="path_reply_talk" translatable="false">/reply-talk/.*\\/</string>
+    <string name="two_factor_register">/two-factor-register</string>
 
     <string name="path_screen_recorder">/screen-recorder</string>
 </resources>

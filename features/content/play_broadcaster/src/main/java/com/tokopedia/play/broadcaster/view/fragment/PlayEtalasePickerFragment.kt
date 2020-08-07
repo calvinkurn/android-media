@@ -15,9 +15,15 @@ import androidx.transition.Fade
 import androidx.transition.Slide
 import androidx.transition.TransitionSet
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
-import com.tokopedia.play.broadcaster.util.compatTransitionName
+import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.play.broadcaster.util.extension.compatTransitionName
+import com.tokopedia.play.broadcaster.util.extension.showToaster
 import com.tokopedia.play.broadcaster.view.contract.PlayEtalaseSetupCoordinator
 import com.tokopedia.play.broadcaster.view.contract.ProductSetupListener
 import com.tokopedia.play.broadcaster.view.custom.PlayBottomSheetHeader
@@ -29,14 +35,20 @@ import com.tokopedia.play.broadcaster.view.partial.SelectedProductPagePartialVie
 import com.tokopedia.play.broadcaster.view.viewmodel.DataStoreViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayEtalasePickerViewModel
 import com.tokopedia.unifycomponents.Toaster
+import kotlinx.coroutines.*
 import javax.inject.Inject
 
 /**
  * Created by jegul on 26/05/20
  */
 class PlayEtalasePickerFragment @Inject constructor(
-        private val viewModelFactory: ViewModelFactory
+        private val viewModelFactory: ViewModelFactory,
+        dispatcher: CoroutineDispatcherProvider,
+        private val analytic: PlayBroadcastAnalytic
 ) : PlayBaseSetupFragment(), PlayEtalaseSetupCoordinator {
+
+    private val job = SupervisorJob()
+    private val scope = CoroutineScope(dispatcher.main + job)
 
     private lateinit var viewModel: PlayEtalasePickerViewModel
     private lateinit var dataStoreViewModel: DataStoreViewModel
@@ -45,12 +57,15 @@ class PlayEtalasePickerFragment @Inject constructor(
     private lateinit var tvInfo: TextView
     private lateinit var flEtalaseFlow: FrameLayout
     private lateinit var psbSearch: PlaySearchBar
+    private lateinit var errorEtalase: GlobalError
     private lateinit var bottomSheetHeader : PlayBottomSheetHeader
 
     private lateinit var selectedProductPage: SelectedProductPagePartialView
     private lateinit var bottomActionView: BottomActionPartialView
 
     private var mListener: Listener? = null
+
+    private var toasterBottomMargin = 0
 
     private val fragmentFactory: FragmentFactory
         get() = childFragmentManager.fragmentFactory
@@ -65,6 +80,11 @@ class PlayEtalasePickerFragment @Inject constructor(
         setupTransition()
         viewModel = ViewModelProviders.of(requireParentFragment(), viewModelFactory).get(PlayEtalasePickerViewModel::class.java)
         dataStoreViewModel = ViewModelProviders.of(this, viewModelFactory).get(DataStoreViewModel::class.java)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        analytic.viewProductBottomSheet()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -87,12 +107,33 @@ class PlayEtalasePickerFragment @Inject constructor(
         observeUploadProduct()
     }
 
-    override fun onInterceptBackPressed(): Boolean {
-        return false
+    override fun onPause() {
+        psbSearch.clearFocus()
+        super.onPause()
     }
 
-    override fun openEtalaseDetail(etalaseId: String, sharedElements: List<View>) {
+    override fun onDestroyView() {
+        super.onDestroyView()
+        job.cancelChildren()
+    }
+
+    override fun onInterceptBackPressed(): Boolean {
+        return when {
+            selectedProductPage.isShown -> {
+                selectedProductPage.hide()
+                true
+            }
+            currentFragment !is PlayEtalaseListFragment -> {
+                psbSearch.cancel()
+                true
+            }
+            else -> false
+        }
+    }
+
+    override fun openEtalaseDetail(etalaseId: String, etalaseName: String, sharedElements: List<View>) {
         mListener?.onEtalaseClicked(etalaseId, sharedElements)
+        analytic.clickEtalase(etalaseName)
     }
 
     override fun openSearchPage(keyword: String) {
@@ -134,6 +175,7 @@ class PlayEtalasePickerFragment @Inject constructor(
             tvInfo = findViewById(R.id.tv_info)
             flEtalaseFlow = findViewById(R.id.fl_etalase_flow)
             psbSearch = findViewById(R.id.psb_search)
+            errorEtalase = findViewById(R.id.error_etalase)
             bottomSheetHeader = findViewById(R.id.bottom_sheet_header)
         }
 
@@ -159,7 +201,10 @@ class PlayEtalasePickerFragment @Inject constructor(
         psbSearch.setListener(object : PlaySearchBar.Listener {
 
             override fun onEditStateChanged(view: PlaySearchBar, isEditing: Boolean) {
-                if (isEditing) openSearchPage(view.text)
+                if (isEditing) {
+                    openSearchPage(view.text)
+                    analytic.clickSearchBar(view.text)
+                }
             }
 
             override fun onCanceled(view: PlaySearchBar) {
@@ -185,6 +230,8 @@ class PlayEtalasePickerFragment @Inject constructor(
             }
         })
         bottomSheetHeader.setHeader(getString(R.string.play_etalase_picker_title), isRoot = true)
+
+        errorEtalase.setActionClickListener { viewModel.loadEtalaseList() }
     }
 
 
@@ -219,26 +266,77 @@ class PlayEtalasePickerFragment @Inject constructor(
     }
 
     private fun showSelectedProductPage() {
-        if (selectedProductPage.isShown) return
-
-        selectedProductPage.setSelectedProductList(viewModel.selectedProductList)
-        selectedProductPage.show()
+        if (selectedProductPage.isShown) {
+            selectedProductPage.hide()
+        } else {
+            selectedProductPage.setSelectedProductList(viewModel.selectedProductList)
+            selectedProductPage.show()
+        }
     }
 
     override fun showBottomAction(shouldShow: Boolean) {
         if (shouldShow) bottomActionView.show() else bottomActionView.hide()
     }
 
+    override fun showGlobalError(errorType: Int, errorAction: () -> Unit) {
+        errorEtalase.setType(errorType)
+        errorEtalase.setActionClickListener { errorAction() }
+        errorEtalase.show()
+
+        tvInfo.hide()
+        psbSearch.hide()
+        flEtalaseFlow.hide()
+
+        analytic.viewEtalaseError(errorEtalase.errorTitle.text.toString())
+    }
+
+    override fun hideGlobalError() {
+        errorEtalase.hide()
+
+        tvInfo.show()
+        psbSearch.show()
+        flEtalaseFlow.show()
+    }
+
+    override fun showToaster(message: String, type: Int, duration: Int, actionLabel: String, actionListener: View.OnClickListener) {
+        if (toasterBottomMargin == 0) {
+            val offset8 = resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
+            toasterBottomMargin = bottomActionView.rootView.height + offset8
+        }
+
+        view?.showToaster(
+                message = message,
+                type = type,
+                duration = duration,
+                actionLabel = actionLabel,
+                actionListener = actionListener,
+                bottomMargin = toasterBottomMargin
+        )
+    }
+
     private fun onSelectedProductChanged() {
         (currentFragment as? PlayBaseEtalaseSetupFragment)?.refresh()
     }
 
-    private fun finishSetupProduct(nextBtnView: View) {
-        mListener?.onProductSetupFinished(listOf(nextBtnView), dataStoreViewModel.getDataStore())
+    private fun uploadProduct() {
+        viewModel.uploadProduct()
     }
 
-    private fun uploadProduct() {
-        viewModel.uploadProduct(bottomSheetCoordinator.channelId)
+    private fun onUploadSuccess() {
+        scope.launch {
+            val error = mListener?.onProductSetupFinished(listOf(bottomActionView.getButtonView()), dataStoreViewModel.getDataStore())
+            if (error != null) {
+                yield()
+                onUploadFailed(error)
+            }
+        }
+    }
+
+    private fun onUploadFailed(e: Throwable?) {
+        bottomActionView.setLoading(false)
+        e?.localizedMessage?.let {
+            errMessage -> showToaster(errMessage, type = Toaster.TYPE_ERROR)
+        }
     }
 
     /**
@@ -254,17 +352,13 @@ class PlayEtalasePickerFragment @Inject constructor(
     private fun observeUploadProduct() {
         viewModel.observableUploadProductEvent.observe(viewLifecycleOwner, Observer {
             when (it) {
-                NetworkResult.Loading -> bottomActionView.setLoading(true)
-                is NetworkResult.Fail -> {
-                    bottomActionView.setLoading(false)
-                    Toaster.make(requireView(), it.error.localizedMessage)
+                NetworkResult.Loading -> {
+                    bottomActionView.setLoading(true)
                 }
+                is NetworkResult.Fail -> onUploadFailed(it.error)
                 is NetworkResult.Success -> {
                     val data = it.data.getContentIfNotHandled()
-                    if (data != null) {
-                        bottomActionView.setLoading(false)
-                        finishSetupProduct(bottomActionView.getButtonView())
-                    }
+                    if (data != null) onUploadSuccess()
                 }
             }
         })

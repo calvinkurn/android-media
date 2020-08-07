@@ -2,7 +2,6 @@ package com.tokopedia.common.network.domain;
 
 import android.content.Context;
 
-import com.crashlytics.android.Crashlytics;
 import com.tokopedia.common.network.BuildConfig;
 import com.tokopedia.common.network.data.ObservableFactory;
 import com.tokopedia.common.network.data.model.RestRequest;

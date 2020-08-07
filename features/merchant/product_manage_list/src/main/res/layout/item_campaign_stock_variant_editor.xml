@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/layout_lvl7"
+    android:paddingLeft="@dimen/layout_lvl2"
+    android:paddingStart="@dimen/layout_lvl2"
+    android:paddingEnd="@dimen/layout_lvl2"
+    android:paddingRight="@dimen/layout_lvl2"
+    android:background="@color/transparent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_campaign_stock_variant_editor_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="1"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintWidth_default="wrap"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/guideline_campaign_stock_variant_name"
+        tools:text="Merah | S"/>
+
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/label_campaign_stock_inactive"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/layout_lvl1"
+        android:layout_marginStart="@dimen/layout_lvl1"
+        android:visibility="gone"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintTop_toTopOf="@id/tv_campaign_stock_variant_editor_name"
+        app:layout_constraintBottom_toBottomOf="@id/tv_campaign_stock_variant_editor_name"
+        app:layout_constraintStart_toEndOf="@id/tv_campaign_stock_variant_editor_name"
+        app:layout_constraintEnd_toStartOf="@id/guideline_campaign_stock_variant"
+        app:labelType="general_light_grey"
+        app:labelTitle="@string/product_manage_inactive"
+        tools:visibility="visible"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_campaign_stock_variant"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintGuide_percent="0.5"
+        android:orientation="vertical"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_campaign_stock_variant_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintGuide_percent="0.35"
+        android:orientation="vertical"/>
+
+    <com.tokopedia.unifycomponents.QuantityEditorUnify
+        android:id="@+id/qte_campaign_stock_variant_editor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/guideline_campaign_stock_variant"
+        app:layout_constraintEnd_toStartOf="@id/switch_campaign_stock_variant_editor"/>
+
+    <com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
+        android:id="@+id/switch_campaign_stock_variant_editor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
