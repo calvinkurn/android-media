@@ -189,7 +189,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         webView = view.findViewById(setWebView());
         progressBar = view.findViewById(setProgressBar());
 
-        clearCache();
+        webView.clearCache(true);
         webView.addJavascriptInterface(new WebToastInterface(getActivity()),"Android");
         WebSettings webSettings = webView.getSettings();
         webSettings.setUserAgentString(webSettings.getUserAgentString() + " webview ");
@@ -735,11 +735,6 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             return "";
         }
         return webHistoryItem.getUrl();
-    }
-
-    private void clearCache() {
-        webView.clearCache(true);
-        webView.clearHistory();
     }
 
     public TkpdWebView getWebView() {
