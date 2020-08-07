@@ -1,8 +1,10 @@
 package com.tokopedia.entertainment.search.data.mapper
 
+import com.tokopedia.entertainment.search.adapter.SearchEventItem
 import com.tokopedia.entertainment.search.adapter.viewholder.HistoryBackgroundItemViewHolder
 import com.tokopedia.entertainment.search.adapter.viewholder.SearchEventListViewHolder
 import com.tokopedia.entertainment.search.adapter.viewholder.SearchLocationListViewHolder
+import com.tokopedia.entertainment.search.adapter.viewmodel.SearchLocationModel
 import com.tokopedia.entertainment.search.data.EventSearchFullLocationResponse
 import com.tokopedia.entertainment.search.data.EventSearchHistoryResponse
 import com.tokopedia.entertainment.search.data.EventSearchLocationResponse
@@ -57,4 +59,20 @@ object SearchMapper {
         )
     }
 
+    fun mapperLocationtoSearchList(dataLocation: EventSearchFullLocationResponse.Data): MutableList<SearchEventItem<*>>{
+        val listViewHolder : MutableList<SearchEventItem<*>> = mutableListOf()
+        val lists: MutableList<SearchLocationListViewHolder.LocationSuggestion> = mutableListOf()
+        dataLocation.let {
+            it.eventLocationSearch.let {
+                if(it.count.toInt() > 0){
+                    it.locations.forEach{
+                        lists.add(mappingLocationFullSuggestion(it))
+                    }
+                    listViewHolder.add(SearchLocationModel(lists, allLocation = true))
+                }
+            }
+        }
+
+        return listViewHolder
+    }
 }

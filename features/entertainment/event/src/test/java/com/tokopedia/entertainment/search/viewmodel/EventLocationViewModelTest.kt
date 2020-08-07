@@ -4,7 +4,9 @@ import android.content.Context
 import android.content.res.Resources
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.Gson
+import com.tokopedia.entertainment.search.adapter.viewmodel.SearchLocationModel
 import com.tokopedia.entertainment.search.data.EventSearchFullLocationResponse
+import com.tokopedia.entertainment.search.data.mapper.SearchMapper
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
@@ -41,50 +43,64 @@ class EventLocationViewModelTest {
     @MockK
     lateinit var userSessionInterface: UserSessionInterface
 
-    @MockK
-    lateinit var resources: Resources
-
     val context = mockk<Context>(relaxed = true)
 
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
         eventLocationViewModel = EventLocationViewModel(Dispatchers.Unconfined, graphqlRepository, userSessionInterface)
-        eventLocationViewModel.resources = context.resources
     }
 
     @Test
-    fun checkNull(){
+    fun checkNull() {
         Assert.assertNotNull(eventLocationViewModel.searchList)
         Assert.assertNotNull(eventLocationViewModel.listViewHolder)
     }
 
     @Test
-    fun getLocationData(){
+    fun fetchlocationdata_successfetchlocation_success() {
         Assert.assertNotNull(graphqlRepository)
-        Assert.assertNotNull(eventLocationViewModel.resources)
 
         val dataMock = Gson().fromJson(getJson("full_location_mock.json"), EventSearchFullLocationResponse::class.java)
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns GraphqlResponse(mapOf(
                 EventSearchFullLocationResponse.Data::class.java to dataMock.data
-        )as MutableMap<Type, Any>,  HashMap<Type, List<GraphqlError>>(), false)
+        ) as MutableMap<Type, Any>, HashMap<Type, List<GraphqlError>>(), false)
         Assert.assertNotNull(dataMock)
 
-        every { userSessionInterface.isLoggedIn } returns true
+        val mockMapped = SearchMapper.mapperLocationtoSearchList(dataMock.data)
 
-        runBlocking(Dispatchers.Unconfined){
-            try {
-                val data = eventLocationViewModel.getFullLocationSuggestionData()
-                Assert.assertNotNull(data)
-                Assert.assertEquals(dataMock.data, data)
-                Assert.assertEquals(data.eventLocationSearch.locations.size, 20)
-            }catch (e: Exception){
-                println(e.message)
-            }
-        }
+        eventLocationViewModel.getFullLocationData("")
+
+
+        Assert.assertNotNull(eventLocationViewModel.searchList.value)
+        Assert.assertEquals((mockMapped.get(0) as SearchLocationModel).listLocation , (eventLocationViewModel.searchList.value?.get(0) as SearchLocationModel).listLocation)
+        Assert.assertEquals((eventLocationViewModel.searchList.value?.get(0) as SearchLocationModel).listLocation.size, 20)
+
     }
 
-    private fun getJson(path : String) : String {
+    @Test
+    fun fetchlocationdata_failedfetchlocation_failed() {
+        Assert.assertNotNull(graphqlRepository)
+
+        val errorGql = GraphqlError()
+        errorGql.message = "Error Fetch All Location"
+
+        val errors = HashMap<Type, List<GraphqlError>>()
+        errors[EventSearchFullLocationResponse.Data::class.java] = listOf(errorGql)
+
+        coEvery {
+            graphqlRepository.getReseponse(any(), any())
+        } coAnswers {
+            GraphqlResponse(HashMap<Type, Any?>(), errors, false)
+        }
+
+        eventLocationViewModel.getFullLocationData("")
+
+        Assert.assertNotNull(eventLocationViewModel.errorReport.value)
+        Assert.assertEquals(eventLocationViewModel.errorReport.value, errorGql.message)
+    }
+
+    private fun getJson(path: String): String {
         val uri = this.javaClass.classLoader?.getResource(path)
         val file = File(uri?.path)
         return String(file.readBytes())

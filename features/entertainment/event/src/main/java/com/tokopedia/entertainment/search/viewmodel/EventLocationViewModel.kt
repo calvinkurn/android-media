@@ -30,28 +30,18 @@ EventLocationViewModel(private val dispatcher: CoroutineDispatcher,
         private val TAG = EventSearchViewModel::class.java.simpleName
     }
 
-    lateinit var resources: Resources
     val searchList: MutableLiveData<List<SearchEventItem<*>>> by lazy { MutableLiveData<List<SearchEventItem<*>>>() }
     val listViewHolder : MutableList<SearchEventItem<*>> = mutableListOf()
 
     val errorReport : MutableLiveData<String> by lazy { MutableLiveData<String>() }
 
-    fun getFullLocationData(){
+    fun getFullLocationData(query: String){
         launchCatchError(
                 block = {
-                    val lists: MutableList<SearchLocationListViewHolder.LocationSuggestion> = mutableListOf()
                     listViewHolder.clear()
-                    val dataLocation = getFullLocationSuggestionData()
+                    val dataLocation = getFullLocationSuggestionData(query)
                     dataLocation.let {
-                        it.eventLocationSearch.let {
-                            if(it.count.toInt() > 0){
-                                it.locations.forEach{
-                                    lists.add(SearchMapper.mappingLocationFullSuggestion(it))
-                                }
-                                listViewHolder.add(SearchLocationModel(lists, allLocation = true))
-                            }
-                        }
-                        searchList.value = listViewHolder
+                        searchList.value = SearchMapper.mapperLocationtoSearchList(dataLocation)
                     }
                 },
                 onError = {
@@ -60,10 +50,10 @@ EventLocationViewModel(private val dispatcher: CoroutineDispatcher,
         )
     }
 
-    suspend fun getFullLocationSuggestionData() : EventSearchFullLocationResponse.Data{
-        return withContext(Dispatchers.IO){
+    suspend fun getFullLocationSuggestionData(query:String) : EventSearchFullLocationResponse.Data{
+        return withContext(dispatcher){
             val req = GraphqlRequest(
-                    GraphqlHelper.loadRawString(resources, R.raw.query_event_search_location_full),
+                    query,
                     EventSearchFullLocationResponse.Data::class.java
             )
             val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
