@@ -21,6 +21,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.google.android.play.core.splitcompat.SplitCompat
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
@@ -99,14 +100,14 @@ class PaymentMethodFragment : BaseDaggerFragment() {
         val parent = activity
         if (parent is PreferenceEditParent) {
             parent.hideAddButton()
-//            parent.hideDeleteButton()
-            parent.showDeleteButton()
-            parent.setDeleteButtonOnClickListener {
-                param?.let {
-                    val url = "${TokopediaUrl.getInstance().PAY}/v2/payment/register/listing"
-                    webView?.postUrl(url, getPayload(it).toByteArray())
-                }
-            }
+            parent.hideDeleteButton()
+//            parent.showDeleteButton()
+//            parent.setDeleteButtonOnClickListener {
+//                param?.let {
+//                    val url = "${TokopediaUrl.getInstance().PAY}/v2/payment/register/listing"
+//                    webView?.postUrl(url, getPayload(it).toByteArray())
+//                }
+//            }
             val parentContext: Context = parent
             SplitCompat.installActivity(parentContext)
             parent.setHeaderTitle(parentContext.getString(R.string.lbl_choose_payment_method))
@@ -164,9 +165,9 @@ class PaymentMethodFragment : BaseDaggerFragment() {
 
     private fun loadWebView(param: ListingParam) {
         this.param = param
-//        val url = "${TokopediaUrl.getInstance().PAY}/v2/payment/register/listing"
-//        webView?.postUrl(url, getPayload(param).toByteArray())
-        webView?.loadUrl("https://www.google.com")
+        val url = "${TokopediaUrl.getInstance().PAY}/v2/payment/register/listing"
+        webView?.postUrl(url, getPayload(param).toByteArray())
+//        webView?.loadUrl("https://www.google.com")
         webView?.visible()
         globalError?.gone()
     }
@@ -180,8 +181,8 @@ class PaymentMethodFragment : BaseDaggerFragment() {
                 "customer_msisdn=${getUrlEncoded(param.customerMsisdn)}&" +
                 "address_id=${getUrlEncoded(param.addressId)}&" +
                 "callback_url=${getUrlEncoded(param.callbackUrl)}&" +
-                "signature=${getUrlEncoded(param.hash)}"
-//                "version=${getUrlEncoded(GlobalConfig.VERSION_NAME)}"
+                "signature=${getUrlEncoded(param.hash)}&" +
+                "version=${getUrlEncoded(GlobalConfig.VERSION_NAME)}"
     }
 
     private fun getMerchantCode(): String {
@@ -297,7 +298,6 @@ class PaymentMethodFragment : BaseDaggerFragment() {
         }
 
         override fun shouldInterceptRequest(view: WebView?, url: String?): WebResourceResponse? {
-            //https://m.tokopedia.com/user/payment/creditcard  https://pay-staging.tokopedia.com/v2/payment/register/save/CREDITCARD
             val uri = Uri.parse(url)
             val isSuccess = uri.getQueryParameter("success")
             if (isSuccess != null && isSuccess.equals("true", true)) {

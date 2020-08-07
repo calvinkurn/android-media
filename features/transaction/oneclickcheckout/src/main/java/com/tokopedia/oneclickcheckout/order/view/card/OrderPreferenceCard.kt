@@ -121,11 +121,16 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
         val shipping = shipment
         tvShippingName?.text = view.context.getString(R.string.lbl_shipping_with_name, shipmentModel.serviceName.capitalize())
 
-        if (shipping == null || !shipping.isValid()) {
+        if (shipping == null || shipping.serviceName.isNullOrEmpty()) {
             tvShippingDuration?.text = generateServiceDuration(shipmentModel.serviceDuration)
             tvShippingDuration?.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
             tickerShippingPromo?.gone()
             tvShippingPrice?.gone()
+            tvShippingSlashPrice?.gone()
+            tvShippingCourier?.gone()
+            tvShippingCourierLbl?.gone()
+            tvShippingMessage?.gone()
+            tvShippingChangeDuration?.gone()
         } else {
             if (shipping.serviceErrorMessage == null || shipping.serviceErrorMessage.isBlank()) {
                 if (!shipping.isServicePickerEnable) {
