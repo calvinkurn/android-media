@@ -285,10 +285,6 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val MITRA_TOPPERS_DASHBOARD = "$INTERNAL_MARKETPLACE/mitra-toppers-dashboard"
 
-    //GMFeaturedProductActivity
-    @JvmField
-    val GOLD_MERCHANT_FEATURED_PRODUCT = "$INTERNAL_MARKETPLACE/gold-merchant-featured-product"
-
     //SellerInfoActivity
     @JvmField
     val SELLER_INFO = "$INTERNAL_MARKETPLACE/seller-info"
