@@ -741,8 +741,8 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
             }
 
     private fun validateBirthDate(passengerBirthDate: String): Boolean {
-        val twelveYearsAgo = FlightDateUtil.addTimeToSpesificDate(
-                FlightDateUtil.stringToDate(depatureDate), Calendar.YEAR, MINUS_TWELVE)
+        val twelveYearsAgo = FlightDateUtil.addTimeToSpesificDate(FlightDateUtil.addTimeToSpesificDate(
+                FlightDateUtil.stringToDate(depatureDate), Calendar.YEAR, MINUS_TWELVE), Calendar.DATE, PLUS_ONE)
         val twoYearsAgo = FlightDateUtil.addTimeToSpesificDate(
                 FlightDateUtil.stringToDate(depatureDate), Calendar.YEAR, MINUS_TWO)
 
