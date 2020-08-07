@@ -45,7 +45,7 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
         const val END_POINT = "end_point"
 
         @JvmField
-        var config: String = NATIVE
+        var config: String = ""
 
         @JvmStatic
         fun createDiscoveryIntent(context: Context, endpoint: String): Intent {
