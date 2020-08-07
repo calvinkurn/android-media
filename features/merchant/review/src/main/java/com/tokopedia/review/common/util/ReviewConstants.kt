@@ -95,6 +95,8 @@ object ReviewConstants {
     const val REPUTATION_SCORE_MEDIOCRE = 1
     const val REPUTATION_SCORE_EXCELLENT = 2
     const val REPUTATION_SCORE_EMPTY = 0
+
+    const val AB_TEST_KEY = "Inbox Ulasan Revamp"
 }
 
 

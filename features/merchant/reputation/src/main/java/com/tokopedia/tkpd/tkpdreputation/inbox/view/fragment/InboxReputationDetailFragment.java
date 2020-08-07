@@ -41,7 +41,7 @@ import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.analytic.AppScreen;
 import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking;
-import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.activity.CreateReviewActivity;
+import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.activity.CreateReviewActivityOld;
 import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.fragment.CreateReviewFragment;
 import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.ProductRevIncentiveOvoDomain;
@@ -298,7 +298,7 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
         if (getContext() != null) {
             reputationTracking.onClickGiveReviewTracker(productId, orderId, adapterPosition);
             startActivityForResult(
-                    CreateReviewActivity.Companion.newInstance(getContext())
+                    CreateReviewActivityOld.Companion.newInstance(getContext())
                         .putExtra(InboxReputationFormActivity.ARGS_PRODUCT_ID, productId)
                         .putExtra(InboxReputationFormActivity.ARGS_SHOP_ID, Integer.toString(shopId, 10))
                         .putExtra(InboxReputationFormActivity.ARGS_REPUTATION_ID, reputationId)

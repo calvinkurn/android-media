@@ -13,13 +13,18 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.review.common.analytics.ReviewTracking
 import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.feature.createreputation.analytics.CreateReviewTracking
 import com.tokopedia.review.feature.createreputation.presentation.fragment.CreateReviewFragment
+import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.activity.CreateReviewActivityOld
 
 // ApplinkConstInternalMarketPlace.CREATE_REVIEW
 class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent> {
+
+    private lateinit var remoteConfigInstance: RemoteConfigInstance
 
     private var productId: String = ""
     private var createReviewFragment: CreateReviewFragment? = null
@@ -69,6 +74,13 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
                     .cancel(getInt(CreateReviewFragment.REVIEW_NOTIFICATION_ID))
         }
 
+        getAbTestPlatform()?.fetch(null)
+        if(useOldPage()) {
+            startActivity(CreateReviewActivityOld.newInstance(context = this))
+            finish()
+            return
+        }
+
         supportActionBar?.elevation = 0f
     }
 
@@ -92,5 +104,17 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
                 finish()
             }
         }
+    }
+
+    private fun getAbTestPlatform(): AbTestPlatform? {
+        if (!::remoteConfigInstance.isInitialized) {
+            remoteConfigInstance = RemoteConfigInstance(this.application)
+        }
+        return remoteConfigInstance.abTestPlatform
+    }
+
+    private fun useOldPage(): Boolean {
+        val url = getAbTestPlatform()?.getString(ReviewConstants.AB_TEST_KEY, "")
+        return url.isNullOrEmpty()
     }
 }

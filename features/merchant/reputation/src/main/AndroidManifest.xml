@@ -60,7 +60,7 @@
         </activity>
 
         <activity
-            android:name=".createreputation.ui.activity.CreateReviewActivity"
+            android:name=".createreputation.ui.activity.CreateReviewActivityOld"
             android:label="@string/title_activity_reputation_review"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustPan"

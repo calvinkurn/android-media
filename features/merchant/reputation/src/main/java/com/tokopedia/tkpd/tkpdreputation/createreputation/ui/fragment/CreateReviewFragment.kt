@@ -47,7 +47,7 @@ import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking
 import com.tokopedia.tkpd.tkpdreputation.createreputation.model.ProductRevGetForm
 import com.tokopedia.tkpd.tkpdreputation.createreputation.model.ProductRevIncentiveOvo
 import com.tokopedia.tkpd.tkpdreputation.createreputation.model.ProductRevIncentiveOvoResponse
-import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.activity.CreateReviewActivity
+import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.activity.CreateReviewActivityOld
 import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.adapter.ImageReviewAdapter
 import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.listener.OnAddImageClickListener
 import com.tokopedia.tkpd.tkpdreputation.createreputation.util.Fail
@@ -165,8 +165,8 @@ class CreateReviewFragment : BaseDaggerFragment(), OnAddImageClickListener {
             utmSource = it.getString(UTM_SOURCE, "")
         }
 
-        if (reviewClickAt > CreateReviewActivity.DEFAULT_PRODUCT_RATING || reviewClickAt < 0) {
-            reviewClickAt = CreateReviewActivity.DEFAULT_PRODUCT_RATING
+        if (reviewClickAt > CreateReviewActivityOld.DEFAULT_PRODUCT_RATING || reviewClickAt < 0) {
+            reviewClickAt = CreateReviewActivityOld.DEFAULT_PRODUCT_RATING
         }
 
         createReviewViewModel = ViewModelProviders.of(this, viewModelFactory).get(CreateReviewViewModel::class.java)

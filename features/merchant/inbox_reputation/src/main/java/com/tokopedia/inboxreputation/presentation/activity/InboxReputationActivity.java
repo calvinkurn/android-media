@@ -26,6 +26,10 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst;
 import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigInstance;
+import com.tokopedia.review.common.util.ReviewConstants;
+import com.tokopedia.review.feature.inbox.common.presentation.activity.ReviewInboxActivity;
 import com.tokopedia.review.feature.inboxreview.presentation.fragment.InboxReviewFragment;
 import com.tokopedia.review.feature.reviewlist.view.fragment.RatingProductFragment;
 import com.tokopedia.tkpd.tkpdreputation.R;
@@ -91,6 +95,10 @@ public class  InboxReputationActivity extends BaseActivity implements HasCompone
         userSession = new UserSession(this);
         reputationTracking = new ReputationTracking();
         super.onCreate(savedInstanceState);
+        if(!useOldPage()) {
+            startActivity(ReviewInboxActivity.Companion.createNewInstance(this));
+            finish();
+        }
         setContentView(R.layout.activity_inbox_reputation);
         setupStatusBar();
         clearCacheIfFromNotification();
@@ -310,5 +318,13 @@ public class  InboxReputationActivity extends BaseActivity implements HasCompone
     @Override
     public void updateTickerTitle(@NotNull String title) {
         tickerTitle = title;
+    }
+
+    private RemoteConfig getABTestRemoteConfig() {
+        return RemoteConfigInstance.getInstance().getABTestPlatform();
+    }
+
+    private Boolean useOldPage() {
+        return getABTestRemoteConfig().getString(ReviewConstants.AB_TEST_KEY).isEmpty();
     }
 }

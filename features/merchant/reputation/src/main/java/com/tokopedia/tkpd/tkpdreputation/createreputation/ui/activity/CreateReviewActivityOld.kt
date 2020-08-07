@@ -17,7 +17,7 @@ import com.tokopedia.tkpd.tkpdreputation.createreputation.util.ReviewTracking
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationFormActivity
 
 // ApplinkConstInternalMarketPlace.CREATE_REVIEW
-class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent> {
+class CreateReviewActivityOld : BaseSimpleActivity(), HasComponent<BaseAppComponent> {
 
     private var productId: String = ""
     lateinit var createReviewFragment: CreateReviewFragment
@@ -27,7 +27,7 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
         const val DEFAULT_PRODUCT_RATING = 5
         const val PARAM_UTM_SOURCE = "utm_source"
         const val DEFAULT_UTM_SOURCE = ""
-        fun newInstance(context: Context) = Intent(context, CreateReviewActivity::class.java)
+        fun newInstance(context: Context) = Intent(context, CreateReviewActivityOld::class.java)
     }
 
     override fun getNewFragment(): Fragment {
