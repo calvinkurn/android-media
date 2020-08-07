@@ -584,6 +584,18 @@ const val GET_OCC_CART_DEFAULT_RESPONSE = """
               "title": "",
               "description": ""
             }
+          },
+          "customer_data": {
+            "id": 5512940,
+            "name": "erdepe",
+            "email": "reza.pramitra@tokopedia.com",
+            "msisdn": "081380919101"
+          },
+          "payment_additional_data": {
+            "merchant_code": "tokopedia",
+            "profile_code": "TKPD_DEFAULT",
+            "signature": "f80ab707425ad0a0ca67d58a62f47ef5470d2ff1",
+            "change_cc_link": ""
           }
         }
       }

@@ -77,13 +77,6 @@
       ],
       "eventLabel": "success",
       "checkout_option": "click bayar success"
-    },
-    {
-      "eventCategory": "order summary",
-      "event": "clickCheckoutExpress",
-      "eventAction": "click bayar - not success",
-      "sessionIris": "YW5kcm9pZC10b2tvcGVkaWE=:CD5E07EDD0104075A45391AD6528F96A:1596783346620",
-      "eventLabel": "not success - "
     }
   ],
   "readme": "OCC Order Summary Tracking"
