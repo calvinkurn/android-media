@@ -79,4 +79,6 @@ object TopAdsDashboardConstant {
     const val REQUEST_FROM_NEG = "Negative"
     const val REQUEST_FROM_BID = "Bid"
     const val INVALID_KEYWORD_TAG = "INVALID_KEYWORD_TAG"
+    const val SELLER_EDIT_FORM_PATH = "com.tokopedia.topads.edit.view.activity.EditFormAdActivity"
+    const val SELLER_CREATE_FORM_PATH = "com.tokopedia.topads.view.activity.AdCreationChooserActivity"
 }

@@ -47,6 +47,8 @@ abstract class BaseWidgetUiTest{
     open val topAdsImageViewUseCase = mockk<Lazy<TopAdsImageViewUseCase>>(relaxed = true)
     open val injectCouponTimeBasedUseCase = mockk<Lazy<InjectCouponTimeBasedUseCase>>(relaxed = true)
     open val remoteConfig = mockk<RemoteConfig>(relaxed = true)
+    open val playToggleChannelReminderUseCase = mockk<Lazy<PlayToggleChannelReminderUseCase>> (relaxed = true)
+    open val getPlayBannerUseCase = mockk<Lazy<GetPlayWidgetUseCase>> (relaxed = true)
     open val homeDataMapper = HomeDataMapper(InstrumentationRegistry.getInstrumentation().context, HomeVisitableFactoryImpl(userSessionInterface.get(), remoteConfig), mockk(relaxed = true))
 
     open fun reInitViewModel() = HomeViewModel(
@@ -76,7 +78,9 @@ abstract class BaseWidgetUiTest{
             getSalamWidgetUseCase = getSalamWIdgetUseCase,
             declineSalamWidgetUseCase = declineSalamWIdgetUseCase,
             injectCouponTimeBasedUseCase = injectCouponTimeBasedUseCase,
-            topAdsImageViewUseCase = topAdsImageViewUseCase
+            topAdsImageViewUseCase = topAdsImageViewUseCase,
+            playToggleChannelReminderUseCase = playToggleChannelReminderUseCase,
+            getPlayBannerUseCase = getPlayBannerUseCase
     )
 
     fun <T : ViewModel> createViewModelFactory(viewModel: T): ViewModelProvider.Factory {

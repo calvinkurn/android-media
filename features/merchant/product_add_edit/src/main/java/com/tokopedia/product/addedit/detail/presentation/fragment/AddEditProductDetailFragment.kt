@@ -34,6 +34,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.FIRST_CATEGORY_SELECTED
 import com.tokopedia.product.addedit.common.util.*
 import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity
 import com.tokopedia.product.addedit.description.presentation.fragment.AddEditProductDescriptionFragment.Companion.REQUEST_CODE_DESCRIPTION
@@ -113,6 +114,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     private var selectedDurationPosition: Int = UNIT_DAY
     private var isPreOrderFirstTime = true
     private var countTouchPhoto = 0
+    private var hasCategoryFromPicker = false
 
     // product photo
     private var addProductPhotoButton: AppCompatTextView? = null
@@ -204,6 +206,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
         userSession = UserSession(requireContext())
         shopId = userSession.shopId
+        selectedDurationPosition = viewModel.productInputModel.detailInputModel.preorder.timeUnit
 
         if (viewModel.isAdding) {
             ProductAddMainTracking.trackScreen()
@@ -635,7 +638,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                     }
                 }
                 REQUEST_CODE_CATEGORY -> {
-
+                    hasCategoryFromPicker = true
                     val categoryId = data.getLongExtra(CATEGORY_RESULT_ID, 0)
                     val categoryName = data.getStringExtra(CATEGORY_RESULT_FULL_NAME)
 
@@ -1270,6 +1273,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     }
 
     private fun onGetCategoryRecommendationSuccess(result: Success<List<ListItemUnify>>) {
+        hasCategoryFromPicker = false
         productCategoryLayout?.show()
         productCategoryRecListView?.show()
         val items = ArrayList(result.data.take(3))
@@ -1277,7 +1281,18 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         productCategoryRecListView?.onLoadFinish {
             selectFirstCategoryRecommendation(items)
             createCategoryRecommendationItemClickListener(items)
-            productCategoryRecListView?.onLoadFinish {}
+
+            productCategoryRecListView?.run {
+                this.setOnItemClickListener { _, _, position, _ ->
+                    selectCategoryRecommendation(items, position)
+                }
+            }
+
+            items.forEachIndexed { position, listItemUnify ->
+                listItemUnify.listRightRadiobtn?.setOnClickListener {
+                    selectCategoryRecommendation(items, position)
+                }
+            }
         }
     }
 
@@ -1286,16 +1301,22 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         productCategoryRecListView?.hide()
     }
 
-    private fun selectFirstCategoryRecommendation(items: List<ListItemUnify>) = productCategoryRecListView?.run {
-        adapter?.count?.let { itemSize ->
+    private fun selectFirstCategoryRecommendation(items: List<ListItemUnify>) {
+        productCategoryRecListView?.count?.let { itemSize ->
             if (itemSize > 0) {
-                setSelected(items, 0) {
-                    val categoryId = it.getCategoryId().toString()
-                    val categoryName = it.getCategoryName()
-                    viewModel.productInputModel.detailInputModel.categoryId = categoryId
-                    viewModel.productInputModel.detailInputModel.categoryName = categoryName
-                    true
-                }
+                selectCategoryRecommendation(items, FIRST_CATEGORY_SELECTED)
+            }
+        }
+    }
+
+    private fun selectCategoryRecommendation(items: List<ListItemUnify>, position: Int) = productCategoryRecListView?.run {
+        if (!hasCategoryFromPicker) {
+            setSelected(items, position) {
+                val categoryId = it.getCategoryId().toString()
+                val categoryName = it.getCategoryName()
+                viewModel.productInputModel.detailInputModel.categoryId = categoryId
+                viewModel.productInputModel.detailInputModel.categoryName = categoryName
+                true
             }
         }
     }

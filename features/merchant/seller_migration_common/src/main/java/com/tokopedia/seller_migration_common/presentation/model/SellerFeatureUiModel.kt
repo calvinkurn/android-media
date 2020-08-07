@@ -117,10 +117,10 @@ sealed class SellerFeatureUiModel(
             descriptionId = R.string.seller_migration_fragment_product_tab_stock_reminder_description,
             data = data)
 
-    class SetVariantFeatureWithDataUiModel(data: Any) : SellerFeatureUiModel(
+    class AddEditSetVariantFeatureWithDataUiModel(data: Any) : SellerFeatureUiModel(
             imageId = R.drawable.ic_seller_migration_set_variant,
-            titleId = R.string.seller_migration_fragment_product_tab_set_variant_title,
-            descriptionId = R.string.seller_migration_fragment_product_tab_set_variant_description,
+            titleId = R.string.seller_migration_add_edit_product_set_variant_title,
+            descriptionId = R.string.seller_migration_add_edit_product_set_variant_description,
             data = data)
 
     class ProductManageSetVariantFeatureWithDataUiModel(data: Any) : SellerFeatureUiModel(

@@ -30,6 +30,7 @@ import com.tokopedia.topads.dashboard.view.listener.TopAdsInsightView
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsInsightPresenter
 import com.tokopedia.topads.dashboard.view.sheet.GroupSelectInsightSheet
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.setCustomText
 import kotlinx.android.synthetic.main.topads_dash_insight_key_activity_base_layout.*
 import javax.inject.Inject
 
@@ -47,6 +48,7 @@ class TopAdsKeywordInsightsActivity : BaseActivity(), HasComponent<TopAdsDashboa
     private var keyList: MutableList<String> = mutableListOf()
     private var requestFrom: String = REQUEST_FROM_POS
     private var countToAdd: Int = 1
+    private var currentTabPosition = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,6 +65,7 @@ class TopAdsKeywordInsightsActivity : BaseActivity(), HasComponent<TopAdsDashboa
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {}
         })
+
         changeSelectedGroup.setOnClickListener {
             val sheet = GroupSelectInsightSheet(data, currentGroupId)
             sheet.show(supportFragmentManager, "")
@@ -79,8 +82,8 @@ class TopAdsKeywordInsightsActivity : BaseActivity(), HasComponent<TopAdsDashboa
 
     private fun renderViewPager(it: InsightKeyData) {
         view_pager?.adapter = getViewPagerAdapter(it)
-        view_pager?.currentItem = 0
-        tabUnify.tabLayout.setupWithViewPager(view_pager)
+        view_pager?.currentItem = currentTabPosition
+        tabUnify?.getUnifyTabLayout()?.getTabAt(currentTabPosition)?.select()
     }
 
     override fun getComponent(): TopAdsDashboardComponent = DaggerTopAdsDashboardComponent.builder().baseAppComponent(
@@ -98,10 +101,15 @@ class TopAdsKeywordInsightsActivity : BaseActivity(), HasComponent<TopAdsDashboa
             intent.getStringExtra(KEY_INSIGHT)
         } else
             currentGroupId
+        currentTabPosition = tabUnify.getUnifyTabLayout().selectedTabPosition
         bundle.putString(KEY_INSIGHT, keyToMap)
         selectGroup.text = data.data[keyToMap]?.name
         bundle.putParcelable(INSIGHT_DATA_HEADER, data.header)
         bundle.putSerializable(DATA_INSIGHT, data.data)
+        tabUnify?.getUnifyTabLayout()?.removeAllTabs()
+        tabUnify?.addNewTab(getString(R.string.topads_insight_pos_key_ini))
+        tabUnify?.addNewTab(getString(R.string.topads_insight_neg_key_ini))
+        tabUnify?.addNewTab(getString(R.string.topads_insight_bid_ini))
         list.add(TopAdsInsightKeyPosFragment.createInstance(bundle))
         list.add(TopAdsInsightKeyNegFragment.createInstance(bundle))
         list.add(TopAdsInsightKeyBidFragment.createInstance(bundle))
@@ -144,9 +152,9 @@ class TopAdsKeywordInsightsActivity : BaseActivity(), HasComponent<TopAdsDashboa
     }
 
     override fun setCount(sizePos: Int, sizeNeg: Int, sizeBid: Int) {
-        adapter.setTitle(String.format(resources.getString(R.string.topads_insight_pos_key), sizePos),
-                String.format(resources.getString(R.string.topads_insight_neg_key), sizeNeg),
-                String.format(resources.getString(R.string.topads_insight_bid), sizeBid))
+        tabUnify?.getUnifyTabLayout()?.getTabAt(0)?.setCustomText(String.format(resources.getString(R.string.topads_insight_pos_key), sizePos))
+        tabUnify?.getUnifyTabLayout()?.getTabAt(1)?.setCustomText(String.format(resources.getString(R.string.topads_insight_neg_key), sizeNeg))
+        tabUnify?.getUnifyTabLayout()?.getTabAt(2)?.setCustomText(String.format(resources.getString(R.string.topads_insight_bid), sizeBid))
     }
 
     override fun onButtonClicked(mutationData: List<MutationData>, groupId: String, countToAdd: Int) {

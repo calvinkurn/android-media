@@ -80,5 +80,7 @@ data class BusinessUnitDataModel(
 
 data class BusinessUnitItemDataModel(
         val content: HomeWidget.ContentItemTab,
-        val itemPosition: Int
+        val itemPosition: Int,
+        val tabPosition: Int,
+        val tabName: String
 ): ImpressHolder()

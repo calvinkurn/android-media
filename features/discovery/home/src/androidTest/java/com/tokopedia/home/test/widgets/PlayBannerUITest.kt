@@ -77,6 +77,8 @@ class PlayBannerUITest : BaseWidgetUiTest(){
     override val closeChannelUseCase = mockk<dagger.Lazy<CloseChannelUseCase>>(relaxed = true)
     override val topAdsImageViewUseCase = mockk<Lazy<TopAdsImageViewUseCase>>(relaxed = true)
     override val injectCouponTimeBasedUseCase = mockk<dagger.Lazy<InjectCouponTimeBasedUseCase>>(relaxed = true)
+    override val playToggleChannelReminderUseCase = mockk<Lazy<PlayToggleChannelReminderUseCase>> (relaxed = true)
+    override val getPlayBannerUseCase = mockk<Lazy<GetPlayWidgetUseCase>> (relaxed = true)
     override val remoteConfig = mockk<RemoteConfig>(relaxed = true)
     override val homeDataMapper = HomeDataMapper(InstrumentationRegistry.getInstrumentation().context, HomeVisitableFactoryImpl(userSessionInterface.get(), remoteConfig), mockk(relaxed = true))
     private val context = InstrumentationRegistry.getInstrumentation().context
@@ -370,6 +372,8 @@ class PlayBannerUITest : BaseWidgetUiTest(){
             getSalamWidgetUseCase = getSalamWIdgetUseCase,
             declineSalamWidgetUseCase = declineSalamWIdgetUseCase,
             injectCouponTimeBasedUseCase = injectCouponTimeBasedUseCase,
-            topAdsImageViewUseCase = topAdsImageViewUseCase
+            topAdsImageViewUseCase = topAdsImageViewUseCase,
+            playToggleChannelReminderUseCase = playToggleChannelReminderUseCase,
+            getPlayBannerUseCase = getPlayBannerUseCase
     )
 }

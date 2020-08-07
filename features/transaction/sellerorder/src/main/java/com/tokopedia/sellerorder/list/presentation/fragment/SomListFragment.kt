@@ -222,8 +222,8 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
-        if (isVisibleToUser && !isUserRoleFetched()) checkUserRole()
-        else if (!isVisibleToUser && isUserRoleFetched()) somListViewModel.clearUserRoles()
+        if (isVisibleToUser && !isUserRoleFetched() && ::viewModelFactory.isInitialized) checkUserRole()
+        else if (!isVisibleToUser && isUserRoleFetched() && ::viewModelFactory.isInitialized) somListViewModel.clearUserRoles()
     }
 
     private fun isUserRoleFetched(): Boolean = ::viewModelFactory.isInitialized && somListViewModel.userRoleResult.value is Success
