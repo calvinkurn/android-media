@@ -58,7 +58,7 @@ class DotIndicatorView : LinearLayout {
             dots.add(index, ImageView(context).apply {
                 layoutParams = LayoutParams(dotSize, dotSize)
                 setPadding(5, 0, 5, 0)
-                setImageResource(getDefaultIndicatorUnselected())
+                // setImageResource(getDefaultIndicatorUnselected())
                 setOnClickListener {
                     viewPager.setCurrentItem(index, true)
                 }
