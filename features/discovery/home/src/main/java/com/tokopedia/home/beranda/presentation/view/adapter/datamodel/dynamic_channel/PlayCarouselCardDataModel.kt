@@ -9,7 +9,8 @@ import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarou
 
 data class PlayCarouselCardDataModel(
         val channel: DynamicHomeChannel.Channels? = null,
-        val playBannerCarouselDataModel: PlayBannerCarouselDataModel = PlayBannerCarouselDataModel()
+        val playBannerCarouselDataModel: PlayBannerCarouselDataModel = PlayBannerCarouselDataModel(),
+        val position: Int = -1
 ): HomeVisitable, ImpressHolder() {
     companion object{
         const val UPDATE_REMIND = "update_remind"
