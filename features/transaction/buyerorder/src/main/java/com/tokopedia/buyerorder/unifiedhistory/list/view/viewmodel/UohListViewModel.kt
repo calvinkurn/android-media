@@ -25,7 +25,8 @@ class UohListViewModel @Inject constructor(dispatcher: BuyerDispatcherProvider,
                                            private val uohFinishOrderUseCase: UohFinishOrderUseCase,
                                            private val atcMultiProductsUseCase: AtcMultiProductsUseCase,
                                            private val lsPrintFinishOrderUseCase: LsPrintFinishOrderUseCase,
-                                           private val flightResendEmailUseCase: FlightResendEmailUseCase) : BaseViewModel(dispatcher.ui()) {
+                                           private val flightResendEmailUseCase: FlightResendEmailUseCase,
+                                           private val trainResendEmailUseCase: TrainResendEmailUseCase) : BaseViewModel(dispatcher.ui()) {
 
     private val _orderHistoryListResult = MutableLiveData<Result<UohListOrder.Data.UohOrders>>()
     val orderHistoryListResult: LiveData<Result<UohListOrder.Data.UohOrders>>
@@ -50,6 +51,10 @@ class UohListViewModel @Inject constructor(dispatcher: BuyerDispatcherProvider,
     private val _flightResendEmailResult = MutableLiveData<Result<FlightResendEmail.Data>>()
     val flightResendEmailResult: LiveData<Result<FlightResendEmail.Data>>
         get() = _flightResendEmailResult
+
+    private val _trainResendEmailResult = MutableLiveData<Result<TrainResendEmail.Data>>()
+    val trainResendEmailResult: LiveData<Result<TrainResendEmail.Data>>
+        get() = _trainResendEmailResult
 
     fun loadOrderList(orderQuery: String, paramOrder: UohListParam) {
         launch {
@@ -88,6 +93,12 @@ class UohListViewModel @Inject constructor(dispatcher: BuyerDispatcherProvider,
     fun doFlightResendEmail(flightResendQuery: String, invoiceId: String, email: String) {
         launch {
             _flightResendEmailResult.postValue(flightResendEmailUseCase.execute(flightResendQuery, invoiceId, email))
+        }
+    }
+
+    fun doTrainResendEmail(trainResendQuery: String, param: TrainResendEmailParam) {
+        launch {
+            _trainResendEmailResult.postValue(trainResendEmailUseCase.execute(trainResendQuery, param))
         }
     }
 }

@@ -34,6 +34,7 @@ import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_FLIGHT_
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_LS_FINISH
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_LS_LACAK
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_TRACK
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_TRAIN_EMAIL
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.LS_LACAK_MWEB
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.REPLACE_ORDER_ID
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.START_DATE
@@ -211,6 +212,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         observingAtc()
         observingLsFinishOrder()
         observingFlightResendEmail()
+        observingTrainResendEmail()
     }
 
     private fun prepareLayout() {
@@ -420,6 +422,30 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                         bottomSheetKebabMenu?.tf_email?.setMessage(getString(R.string.toaster_failed_send_email))
                     } else {
                         if (flightEmailResponse.meta.status.equals(FLIGHT_STATUS_OK, true)) {
+                            bottomSheetResendEmail?.dismiss()
+                            bottomSheetKebabMenu?.dismiss()
+                            showToaster(getString(R.string.toaster_succeed_send_email), Toaster.TYPE_NORMAL)
+                        }
+                    }
+                }
+                is Fail -> {
+                    bottomSheetResendEmail?.tf_email?.setError(true)
+                    bottomSheetResendEmail?.tf_email?.setMessage(getString(R.string.toaster_failed_send_email))
+                }
+            }
+        })
+    }
+
+    private fun observingTrainResendEmail() {
+        uohListViewModel.trainResendEmailResult.observe(this, androidx.lifecycle.Observer {
+            when (it) {
+                is Success -> {
+                    val trainEmailResponse = it.data.trainResendBookingEmail
+                    if (trainEmailResponse == null) {
+                        bottomSheetKebabMenu?.tf_email?.setError(true)
+                        bottomSheetKebabMenu?.tf_email?.setMessage(getString(R.string.toaster_failed_send_email))
+                    } else {
+                        if (trainEmailResponse.success) {
                             bottomSheetResendEmail?.dismiss()
                             bottomSheetKebabMenu?.dismiss()
                             showToaster(getString(R.string.toaster_succeed_send_email), Toaster.TYPE_NORMAL)
@@ -814,10 +840,17 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         })
         viewBottomSheet.btn_send_email?.setOnClickListener {
             if (gqlGroup.equals(GQL_FLIGHT_EMAIL, true)) {
-                val flightQueryParams = Gson().fromJson(orderList.orders[index].metadata.queryParams, FlightQueryParams::class.java)
-                val invoiceId = flightQueryParams.invoiceId
+                val flightQueryParam = Gson().fromJson(orderList.orders[index].metadata.queryParams, FlightQueryParams::class.java)
+                val invoiceId = flightQueryParam.invoiceId
                 val email = "${viewBottomSheet.tf_email.textFieldInput.text}"
                 uohListViewModel.doFlightResendEmail(GraphqlHelper.loadRawString(resources, R.raw.uoh_send_eticket_flight), invoiceId, email)
+
+            } else if (gqlGroup.equals(GQL_TRAIN_EMAIL, true)) {
+                val trainQueryParam = Gson().fromJson(orderList.orders[index].metadata.queryParams, TrainQueryParams::class.java)
+                val invoiceId = trainQueryParam.invoiceId
+                val email = "${viewBottomSheet.tf_email.textFieldInput.text}"
+                val param = TrainResendEmailParam(bookCode = invoiceId, email = email)
+                uohListViewModel.doTrainResendEmail(GraphqlHelper.loadRawString(resources, R.raw.uoh_send_eticket_flight), param)
             }
         }
 
@@ -979,6 +1012,9 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             when {
                 dotMenu.actionType.equals(GQL_FLIGHT_EMAIL, true) -> {
                     showBottomSheetSendEmail(GQL_FLIGHT_EMAIL, index)
+                }
+                dotMenu.actionType.equals(GQL_TRAIN_EMAIL, true) -> {
+                    showBottomSheetSendEmail(GQL_TRAIN_EMAIL, index)
                 }
             }
         }
