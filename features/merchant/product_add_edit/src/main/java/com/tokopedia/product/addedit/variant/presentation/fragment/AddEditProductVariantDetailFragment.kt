@@ -192,7 +192,7 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onMultipleEditFinished(multipleVariantEditInputModel: MultipleVariantEditInputModel) {
-        viewModel.updateProductInputModel(multipleVariantEditInputModel, viewModel.getAvailableFields())
+        viewModel.updateProductInputModel(multipleVariantEditInputModel)
     }
 
     override fun onMultipleEditInputValidatePrice(price: BigInteger): String {
