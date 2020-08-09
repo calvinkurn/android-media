@@ -84,7 +84,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     private var tabItems = emptyList<Pair<String, String>>()
     private var isFirstLoad = true
     private var isErrorToastShown = false
-    private var isUserScrolling = false
+    private var canSelectTabEnabled = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return layoutInflater.inflate(R.layout.fragment_stc_statistic, container, false)
@@ -256,6 +256,10 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         setupRecyclerView()
 
         tabLayoutStc.customTabMode = TabLayout.MODE_SCROLLABLE
+        tabLayoutStc.tabLayout.setOnTabSelectedListener {
+            setOnTabSelected()
+        }
+
         swipeRefreshStc.setOnRefreshListener {
             reloadPage()
         }
@@ -308,7 +312,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
             layoutManager = mLayoutManager
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                    isUserScrolling = newState != RecyclerView.SCROLL_STATE_IDLE
+                    canSelectTabEnabled = newState == RecyclerView.SCROLL_STATE_IDLE
                 }
             })
 
@@ -429,7 +433,8 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
             it.second == widgetPair.second || it.second == widgetPair.first
         } ?: return
         val tabIndex: Int = tabItems.map { it.first }.distinct().indexOfFirst { it == tabPair.first }
-        view?.tabLayoutStc?.tabLayout?.getTabAt(tabIndex)?.select()
+        val tab = view?.tabLayoutStc?.tabLayout?.getTabAt(tabIndex)
+        tab?.select()
     }
 
     private fun setOnSuccessGetLayout(widgets: List<BaseWidgetUiModel<*>>) {
@@ -468,14 +473,11 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
                 Pair(sectionTitle, it.dataKey)
             }
         }
-        tabLayoutStc.tabLayout.setOnTabSelectedListener {
-            setOnTabSelected()
-        }
         selectTabOnScrolling()
     }
 
     private fun setOnTabSelected() = view?.run {
-        if (isUserScrolling) return@run
+        if (!canSelectTabEnabled) return@run
 
         val selectedTabIndex = tabLayoutStc.tabLayout.selectedTabPosition
         val tabTitle: String = try {
