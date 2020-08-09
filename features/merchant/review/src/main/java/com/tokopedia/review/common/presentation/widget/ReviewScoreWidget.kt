@@ -33,15 +33,24 @@ class ReviewScoreWidget : BaseCustomView {
         currentScore = score
         when (score) {
             ReviewConstants.REPUTATION_SCORE_BAD -> {
-                this.reviewEditableBadSmiley.setActiveBad()
+                this.reviewEditableBadSmiley.apply {
+                    showActiveBad()
+                    showBadSmileyText()
+                }
                 setDeadline(lockTime)
             }
             ReviewConstants.REPUTATION_SCORE_MEDIOCRE -> {
-                this.reviewEditableMediocreSmiley.setActiveMediocre()
+                this.reviewEditableMediocreSmiley.apply {
+                    showActiveMediocre()
+                    showMediocreSmileyText()
+                }
                 setDeadline(lockTime)
             }
             ReviewConstants.REPUTATION_SCORE_EXCELLENT -> {
-                this.reviewEditableExcellentSmiley.setActiveExcellent()
+                this.reviewEditableExcellentSmiley.apply {
+                    showActiveExcellent()
+                    showExcellentSmileyText()
+                }
                 setDeadline(lockTime)
             }
             else -> {

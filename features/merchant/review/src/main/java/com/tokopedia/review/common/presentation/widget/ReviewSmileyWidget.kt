@@ -5,7 +5,6 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.view.animation.AlphaAnimation
-import android.view.animation.AnimationSet
 import androidx.core.content.ContextCompat
 import com.airbnb.lottie.LottieCompositionFactory
 import com.tokopedia.kotlin.extensions.view.hide
@@ -44,24 +43,21 @@ class ReviewSmileyWidget : BaseCustomView {
     private var isActive = false
     private var score = 0
 
-    fun setActiveBad() {
-        setBadSmileyText()
+    fun showActiveBad() {
         this.isActive = true
         this.reviewEditableImageView.apply {
             setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_smiley_bad_active))
         }
     }
 
-    fun setActiveMediocre() {
-        setMediocreSmileyText()
+    fun showActiveMediocre() {
         this.isActive = true
         this.reviewEditableImageView.apply {
             setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_smiley_neutral_active))
         }
     }
 
-    fun setActiveExcellent() {
-        setExcellentSmileyText()
+    fun showActiveExcellent() {
         this.isActive = true
         this.reviewEditableImageView.apply {
             setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_smiley_great_active))
@@ -98,6 +94,30 @@ class ReviewSmileyWidget : BaseCustomView {
             }
             hideSmileyText()
             isActive = false
+        }
+    }
+
+    fun showBadSmileyText() {
+        this.reviewEditableText.apply {
+            text = context.getString(R.string.review_detail_score_bad)
+            setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Yellow_Y500))
+            animate().alpha(1f)
+        }
+    }
+
+    fun showMediocreSmileyText() {
+        this.reviewEditableText.apply {
+            text = context.getString(R.string.review_detail_score_mediocre)
+            setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Yellow_Y300))
+            animate().alpha(1f)
+        }
+    }
+
+    fun showExcellentSmileyText() {
+        this.reviewEditableText.apply {
+            text = context.getString(R.string.review_detail_score_excellent)
+            setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Green_G500))
+            animate().alpha(1f)
         }
     }
 
@@ -139,6 +159,11 @@ class ReviewSmileyWidget : BaseCustomView {
 
             override fun onAnimationStart(animation: Animator?) {
                 reviewEditableImageView.hide()
+                if (isActive) {
+                    setActiveText(score)
+                } else {
+                    setActiveText(score)
+                }
             }
         })
         typedArray.recycle()
@@ -147,13 +172,27 @@ class ReviewSmileyWidget : BaseCustomView {
     private fun setActiveImage(score: Int) {
         when (score) {
             ReviewConstants.REPUTATION_SCORE_BAD -> {
-                setActiveBad()
+                showActiveBad()
             }
             ReviewConstants.REPUTATION_SCORE_MEDIOCRE -> {
-                setActiveMediocre()
+                showActiveMediocre()
             }
             else -> {
-                setActiveExcellent()
+                showActiveExcellent()
+            }
+        }
+    }
+
+    private fun setActiveText(score: Int) {
+        when (score) {
+            ReviewConstants.REPUTATION_SCORE_BAD -> {
+                showBadSmileyText()
+            }
+            ReviewConstants.REPUTATION_SCORE_MEDIOCRE -> {
+                showMediocreSmileyText()
+            }
+            else -> {
+                showExcellentSmileyText()
             }
         }
     }
@@ -173,33 +212,9 @@ class ReviewSmileyWidget : BaseCustomView {
         }
     }
 
-    private fun setBadSmileyText() {
-        this.reviewEditableText.apply {
-            text = context.getString(R.string.review_detail_score_bad)
-            setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Yellow_Y500))
-            animate().alpha(1.0f)
-        }
-    }
-
-    private fun setMediocreSmileyText() {
-        this.reviewEditableText.apply {
-            text = context.getString(R.string.review_detail_score_mediocre)
-            setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Yellow_Y300))
-            animate().alpha(1.0f)
-        }
-    }
-
-    private fun setExcellentSmileyText() {
-        this.reviewEditableText.apply {
-            text = context.getString(R.string.review_detail_score_excellent)
-            setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Green_G500))
-            animate().alpha(1.0f)
-        }
-    }
-
     private fun hideSmileyText() {
         this.reviewEditableText.apply {
-            animate().alpha(0.0f)
+            animate().alpha(0f)
         }
     }
 
@@ -265,21 +280,4 @@ class ReviewSmileyWidget : BaseCustomView {
             lottieCompositionLottieTask.addFailureListener { throwable -> }
         }
     }
-
-    private fun getShowAlphaAnimation(): AnimationSet {
-        val alphaAnimation = AlphaAnimation(0f,1f)
-        alphaAnimation.duration = 500L
-        val animation = AnimationSet(false)
-        animation.addAnimation(alphaAnimation)
-        return animation
-    }
-
-    private fun getHideAlphaAnimation(): AnimationSet {
-        val alphaAnimation = AlphaAnimation(1f,0f)
-        alphaAnimation.duration = 500L
-        val animation = AnimationSet(false)
-        animation.addAnimation(alphaAnimation)
-        return animation
-    }
-
 }
