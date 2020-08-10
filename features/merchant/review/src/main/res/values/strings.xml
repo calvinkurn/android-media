@@ -109,12 +109,14 @@
     <string name="image_description">Keterangan gambar...</string>
     <string name="review_create_fail_toaster">Ulasan tidak terkirim. Cek koneksi internetmu dan coba lagi, ya</string>
     <string name="review_create_success_toaster">Terima kasih %s, kamu telah membantu jutaan calon pembeli lain.</string>
+    <string name="review_create_worst_title">Apa yang bikin kamu kecewa?</string>
     <string name="review_create_negative_title">Apa yang kamu nggak suka?</string>
     <string name="review_create_neutral_title">Apa yang harus diperbaiki?</string>
     <string name="review_create_positive_title">Apa yang kamu suka?</string>
+    <string name="review_create_best_title">Apa yang bikin kamu puas?</string>
     <string name="review_create_add_picture_title">Fotoin dong barangnya</string>
     <string name="review_create_hide_name">Sembunyikan namamu</string>
-    <string name="review_create_bottom_sheet_title">Kasih tau alasannya</string>
+    <string name="review_create_text_area_placeholder">Ceritakan pengalamanmu terkait barang ini.</string>
     <string name="review_create_empty_photo">Tambah foto</string>
     <string name="review_create_dialog_title">Yakin nggak jadi tulis ulasan?</string>
     <string name="review_create_dialog_body">Tinggal sedikit lagi, lho. Ulasanmu tidak tersimpan jika kamu keluar halaman ini.</string>

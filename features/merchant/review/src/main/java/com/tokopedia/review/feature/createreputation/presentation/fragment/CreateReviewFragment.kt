@@ -313,6 +313,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
             }
         }
         textAreaBottomSheet = CreateReviewTextAreaBottomSheet.createNewInstance(this, text)
+        (textAreaBottomSheet as BottomSheetUnify).setTitle(createReviewTextAreaTitle.text.toString())
         fragmentManager?.let { textAreaBottomSheet?.show(it,"") }
     }
 
@@ -527,9 +528,13 @@ class CreateReviewFragment : BaseDaggerFragment(),
     private fun updateViewBasedOnSelectedRating(position: Int) {
         when {
             position < 3 -> {
+                if(position == 1) {
+                    createReviewTextAreaTitle.text = resources.getString(R.string.review_create_worst_title)
+                } else {
+                    createReviewTextAreaTitle.text = resources.getString(R.string.review_create_negative_title)
+                }
                 txt_review_desc.text = MethodChecker.fromHtml(getString(R.string.review_text_negative, createReviewViewModel.getUserName()))
                 createReviewContainer.setContainerColor(ContainerUnify.RED)
-                createReviewTextAreaTitle.text = resources.getString(R.string.review_create_negative_title)
             }
             position == 3 -> {
                 txt_review_desc.text = MethodChecker.fromHtml(getString(R.string.review_text_neutral, createReviewViewModel.getUserName()))
@@ -537,9 +542,13 @@ class CreateReviewFragment : BaseDaggerFragment(),
                 createReviewTextAreaTitle.text = resources.getString(R.string.review_create_neutral_title)
             }
             else -> {
+                if(position == 4) {
+                    createReviewTextAreaTitle.text = resources.getString(R.string.review_create_positive_title)
+                } else {
+                    createReviewTextAreaTitle.text = resources.getString(R.string.review_create_best_title)
+                }
                 txt_review_desc.text = MethodChecker.fromHtml(getString(R.string.review_text_positive, createReviewViewModel.getUserName()))
                 createReviewContainer.setContainerColor(ContainerUnify.GREEN)
-                createReviewTextAreaTitle.text = resources.getString(R.string.review_create_positive_title)
             }
         }
     }
@@ -635,10 +644,6 @@ class CreateReviewFragment : BaseDaggerFragment(),
 
     private fun stopLoading() {
         createReviewSubmitButton.isLoading = true
-    }
-
-    private fun hideLayout() {
-        createReviewScrollView.hide()
     }
 
     private fun showLayout() {

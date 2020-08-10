@@ -30,7 +30,6 @@ class CreateReviewTextAreaBottomSheet : BottomSheetUnify() {
         context?.let {
             val view = View.inflate(it, R.layout.widget_create_review_expanded_text_area_bottomsheet,null)
             setChild(view)
-            setTitle(resources.getString(R.string.review_create_bottom_sheet_title))
             showCloseIcon = false
             isFullpage = true
             setAction(ContextCompat.getDrawable(it, R.drawable.ic_collapse)) {
