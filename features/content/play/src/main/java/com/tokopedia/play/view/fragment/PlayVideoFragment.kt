@@ -97,10 +97,6 @@ class PlayVideoFragment @Inject constructor(
         return false
     }
 
-    override fun onInterceptSystemUiVisibilityChanged(): Boolean {
-        return false
-    }
-
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         val orientation = ScreenOrientation.getByInt(newConfig.orientation)

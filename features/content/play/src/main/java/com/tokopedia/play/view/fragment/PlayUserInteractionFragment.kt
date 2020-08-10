@@ -167,6 +167,8 @@ class PlayUserInteractionFragment @Inject constructor(
         setupView(view)
         setupInsets(view)
         setupObserve()
+
+        invalidateSystemUiVisibility()
     }
 
     override fun onStart() {
@@ -194,27 +196,16 @@ class PlayUserInteractionFragment @Inject constructor(
         return false
     }
 
-    override fun onInterceptSystemUiVisibilityChanged(): Boolean {
-        return if (orientation.isLandscape) {
-            if (playViewModel.isFreezeOrBanned && orientation.isLandscape) {
-                systemUiVisibility = PlayFullScreenHelper.getHideNavigationBarVisibility()
-                true
-            } else false
-        } else if (!orientation.isLandscape) {
-            systemUiVisibility = if (!playViewModel.videoOrientation.isHorizontal && container.isFullAlpha)
-                PlayFullScreenHelper.getHideSystemUiVisibility()
-            else
-                PlayFullScreenHelper.getShowSystemUiVisibility()
-
-            true
-        } else false
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_CODE_LOGIN && resultCode == Activity.RESULT_OK) {
             val lastAction = viewModel.observableLoggedInInteractionEvent.value?.peekContent()
             if (lastAction != null) handleInteractionEvent(lastAction.event)
         } else super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        invalidateSystemUiVisibility()
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
@@ -407,7 +398,11 @@ class PlayUserInteractionFragment @Inject constructor(
         }
 
         endLiveInfoView.rootView.doOnApplyWindowInsets { v, insets, padding, _ ->
-            v.updatePadding(bottom = padding.bottom + insets.systemWindowInsetBottom)
+            v.updatePadding(
+                    left = padding.left + insets.systemWindowInsetLeft,
+                    right = padding.right + insets.systemWindowInsetRight,
+                    bottom = padding.bottom + insets.systemWindowInsetBottom
+            )
         }
     }
 
@@ -430,6 +425,15 @@ class PlayUserInteractionFragment @Inject constructor(
         observeEventUserInfo()
 
         observeLoggedInInteractionEvent()
+    }
+
+    private fun invalidateSystemUiVisibility() {
+        systemUiVisibility = when {
+            playViewModel.isFreezeOrBanned -> PlayFullScreenHelper.getShowSystemUiVisibility()
+            orientation.isLandscape -> PlayFullScreenHelper.getHideSystemUiVisibility()
+            !playViewModel.videoOrientation.isHorizontal && container.isFullAlpha -> PlayFullScreenHelper.getHideSystemUiVisibility()
+            else -> PlayFullScreenHelper.getShowSystemUiVisibility()
+        }
     }
 
     //region observe

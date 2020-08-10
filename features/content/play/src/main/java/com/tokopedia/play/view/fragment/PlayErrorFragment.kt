@@ -73,10 +73,6 @@ class PlayErrorFragment @Inject constructor(
         return false
     }
 
-    override fun onInterceptSystemUiVisibilityChanged(): Boolean {
-        return false
-    }
-
     private fun initView(view: View) {
         with (view) {
             container = findViewById(R.id.container_global_error)

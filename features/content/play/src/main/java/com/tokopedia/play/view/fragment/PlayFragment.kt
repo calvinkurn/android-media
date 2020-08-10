@@ -150,7 +150,6 @@ class PlayFragment @Inject constructor(
         stopPrepareMonitoring()
         startNetworkMonitoring()
         playViewModel.getChannelInfo(channelId)
-        onInterceptSystemUiVisibilityChanged()
         view?.postDelayed({
             view?.let { registerKeyboardListener(it) }
         }, 200)
@@ -194,18 +193,6 @@ class PlayFragment @Inject constructor(
                 .any { it.onInterceptOrientationChangedEvent(newOrientation) }
         val videoOrientation = playViewModel.videoOrientation
         return isIntercepted || !videoOrientation.isHorizontal
-    }
-
-    override fun onInterceptSystemUiVisibilityChanged(): Boolean {
-        val isIntercepted = childFragmentManager.fragments.asSequence()
-                .filterIsInstance<PlayFragmentContract>()
-                .any { it.onInterceptSystemUiVisibilityChanged() }
-
-        if (!isIntercepted) {
-            if (orientation.isLandscape) systemUiVisibility = PlayFullScreenHelper.getHideSystemUiVisibility()
-        }
-
-        return isIntercepted
     }
 
     /**
@@ -299,7 +286,6 @@ class PlayFragment @Inject constructor(
         if (newOrientation.isLandscape) hideAllInsets()
 
         invalidateVideoTopBounds()
-        onInterceptSystemUiVisibilityChanged()
     }
 
     private fun destroyInsets(view: View) {
