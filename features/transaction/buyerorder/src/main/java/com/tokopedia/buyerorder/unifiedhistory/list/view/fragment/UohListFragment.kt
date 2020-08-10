@@ -33,6 +33,7 @@ import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_FINISH_
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_FLIGHT_EMAIL
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_LS_FINISH
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_LS_LACAK
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_RECHARGE_BATALKAN
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_TRACK
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_TRAIN_EMAIL
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.LS_LACAK_MWEB
@@ -1056,6 +1057,10 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 button.actionType.equals(GQL_LS_LACAK, true) -> {
                     val linkUrl = LS_LACAK_MWEB.replace(REPLACE_ORDER_ID, verticalId)
                     RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
+                }
+                button.actionType.equals(GQL_RECHARGE_BATALKAN, true) -> {
+                    orderIdNeedUpdated = orderUUID
+                    uohListViewModel.doRechargeSetFail(GraphqlHelper.loadRawString(resources, R.raw.recharge_set_fail), verticalId.toInt())
                 }
             }
         }

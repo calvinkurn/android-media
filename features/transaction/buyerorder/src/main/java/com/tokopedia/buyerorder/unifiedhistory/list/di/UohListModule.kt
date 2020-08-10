@@ -60,6 +60,14 @@ class UohListModule {
 
     @UohListScope
     @Provides
+    fun provideTrainResendEmailUseCase(graphqlRepository: GraphqlRepository): GraphqlUseCase<TrainResendEmail> = GraphqlUseCase(graphqlRepository)
+
+    @UohListScope
+    @Provides
+    fun provideRechargeSetFailUseCase(graphqlRepository: GraphqlRepository): GraphqlUseCase<RechargeSetFailData> = GraphqlUseCase(graphqlRepository)
+
+    @UohListScope
+    @Provides
     fun provideGetRecommendationUseCase(graphqlRepository: GraphqlRepository): GetRecommendationUseCase = GetRecommendationUseCase(graphqlRepository)
 
     @UohListScope

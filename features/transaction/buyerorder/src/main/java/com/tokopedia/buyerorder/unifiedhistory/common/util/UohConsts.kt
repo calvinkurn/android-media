@@ -77,4 +77,6 @@ object UohConsts {
     const val FLIGHT_GQL_PARAM_INVOICE_ID = "invoiceID"
     const val FLIGHT_GQL_PARAM_EMAIL_ID = "email"
     const val FLIGHT_STATUS_OK = "OK"
+
+    const val RECHARGE_GQL_PARAM_ORDER_ID = "orderId"
 }

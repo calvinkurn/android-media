@@ -26,7 +26,8 @@ class UohListViewModel @Inject constructor(dispatcher: BuyerDispatcherProvider,
                                            private val atcMultiProductsUseCase: AtcMultiProductsUseCase,
                                            private val lsPrintFinishOrderUseCase: LsPrintFinishOrderUseCase,
                                            private val flightResendEmailUseCase: FlightResendEmailUseCase,
-                                           private val trainResendEmailUseCase: TrainResendEmailUseCase) : BaseViewModel(dispatcher.ui()) {
+                                           private val trainResendEmailUseCase: TrainResendEmailUseCase,
+                                           private val rechargeSetFailUseCase: RechargeSetFailUseCase) : BaseViewModel(dispatcher.ui()) {
 
     private val _orderHistoryListResult = MutableLiveData<Result<UohListOrder.Data.UohOrders>>()
     val orderHistoryListResult: LiveData<Result<UohListOrder.Data.UohOrders>>
@@ -55,6 +56,10 @@ class UohListViewModel @Inject constructor(dispatcher: BuyerDispatcherProvider,
     private val _trainResendEmailResult = MutableLiveData<Result<TrainResendEmail.Data>>()
     val trainResendEmailResult: LiveData<Result<TrainResendEmail.Data>>
         get() = _trainResendEmailResult
+
+    private val _rechargeSetFailResult = MutableLiveData<Result<RechargeSetFailData.Data>>()
+    val rechargeSetFailResult: LiveData<Result<RechargeSetFailData.Data>>
+        get() = _rechargeSetFailResult
 
     fun loadOrderList(orderQuery: String, paramOrder: UohListParam) {
         launch {
@@ -99,6 +104,12 @@ class UohListViewModel @Inject constructor(dispatcher: BuyerDispatcherProvider,
     fun doTrainResendEmail(trainResendQuery: String, param: TrainResendEmailParam) {
         launch {
             _trainResendEmailResult.postValue(trainResendEmailUseCase.execute(trainResendQuery, param))
+        }
+    }
+
+    fun doRechargeSetFail(rechargeSetFailQuery: String, orderId: Int) {
+        launch {
+            _rechargeSetFailResult.postValue(rechargeSetFailUseCase.execute(rechargeSetFailQuery, orderId))
         }
     }
 }
