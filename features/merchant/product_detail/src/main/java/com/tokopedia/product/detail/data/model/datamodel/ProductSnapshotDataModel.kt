@@ -28,7 +28,7 @@ data class ProductSnapshotDataModel(
     override fun type(): String = type
 
     fun isUpcomingNplType() : Boolean  {
-        return upcomingNplData?.upcomingType?.isNotEmpty() && upcomingNplData?.upcomingType.equals(ProductUpcomingTypeDef.UPCOMING_NPL, true) && data?.campaignStatus.equals(ProductCampaignStatusTypeDef.UPCOMING, true)
+        return upcomingNplData.upcomingType.isNotEmpty() && upcomingNplData.upcomingType.equals(ProductUpcomingTypeDef.UPCOMING_NPL, true) && data?.campaignStatus.equals(ProductCampaignStatusTypeDef.UPCOMING, true)
     }
     override fun type(typeFactory: DynamicProductDetailAdapterFactory): Int = typeFactory.type(this)
 
