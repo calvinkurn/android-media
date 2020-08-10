@@ -45,12 +45,18 @@ class ChangeVoucherPeriodViewModelTest {
     @RelaxedMockK
     lateinit var voucherUiModel: VoucherUiModel
 
+    lateinit var mViewModel: ChangeVoucherPeriodViewModel
+    lateinit var testDispatcher: TestCoroutineDispatcher
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
+
+        testDispatcher = TestCoroutineDispatcher()
+        mViewModel = ChangeVoucherPeriodViewModel(testDispatcher, changeVoucherPeriodUseCase, getTokenUseCase)
 
         mViewModel.updateVoucherSuccessLiveData.observeForever(updateVoucherSuccessObserver)
     }
@@ -60,14 +66,6 @@ class ChangeVoucherPeriodViewModelTest {
         testDispatcher.cleanupTestCoroutines()
 
         mViewModel.updateVoucherSuccessLiveData.removeObserver(updateVoucherSuccessObserver)
-    }
-
-    private val testDispatcher by lazy {
-        TestCoroutineDispatcher()
-    }
-
-    private val mViewModel by lazy {
-        ChangeVoucherPeriodViewModel(testDispatcher, changeVoucherPeriodUseCase, getTokenUseCase)
     }
 
     @Test

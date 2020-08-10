@@ -47,12 +47,18 @@ class VoucherDetailViewModelTest {
     @RelaxedMockK
     lateinit var voucherUiModel: VoucherUiModel
 
+    lateinit var mViewModel: VoucherDetailViewModel
+    lateinit var testDispatcher: TestCoroutineDispatcher
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
+
+        testDispatcher = TestCoroutineDispatcher()
+        mViewModel = VoucherDetailViewModel(testDispatcher, voucherDetailUseCase, cancelVoucherUseCase, shopBasicDataUseCase)
 
         with(mViewModel) {
             cancelVoucherResultLiveData.observeForever(cancelVoucherResultObserver)
@@ -68,14 +74,6 @@ class VoucherDetailViewModelTest {
             cancelVoucherResultLiveData.removeObserver(cancelVoucherResultObserver)
             merchantVoucherModelLiveData.removeObserver(merchantVoucherModelObserver)
         }
-    }
-
-    private val testDispatcher by lazy {
-        TestCoroutineDispatcher()
-    }
-
-    private val mViewModel by lazy {
-        VoucherDetailViewModel(testDispatcher, voucherDetailUseCase, cancelVoucherUseCase, shopBasicDataUseCase)
     }
 
     @Test

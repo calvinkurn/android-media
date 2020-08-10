@@ -39,13 +39,17 @@ class FreeDeliveryVoucherCreateViewModelTest {
     @RelaxedMockK
     lateinit var expenseEstimationObserver: Observer<in Int>
 
+    lateinit var testDispatcher: TestCoroutineDispatcher
+    lateinit var mViewModel: FreeDeliveryVoucherCreateViewModel
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-
+        testDispatcher = TestCoroutineDispatcher()
+        mViewModel = FreeDeliveryVoucherCreateViewModel(testDispatcher, freeDeliveryValidationUseCase)
         mViewModel.expensesExtimationLiveData.observeForever(expenseEstimationObserver)
     }
 
@@ -54,14 +58,6 @@ class FreeDeliveryVoucherCreateViewModelTest {
         testDispatcher.cleanupTestCoroutines()
 
         mViewModel.expensesExtimationLiveData.removeObserver(expenseEstimationObserver)
-    }
-
-    private val testDispatcher by lazy {
-        TestCoroutineDispatcher()
-    }
-
-    private val mViewModel by lazy {
-        FreeDeliveryVoucherCreateViewModel(testDispatcher, freeDeliveryValidationUseCase)
     }
 
     @Test

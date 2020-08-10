@@ -29,25 +29,22 @@ class PromotionBudgetAndTypeViewModelTest {
     @RelaxedMockK
     lateinit var userSession: UserSessionInterface
 
+    lateinit var mViewModel: PromotionBudgetAndTypeViewModel
+    lateinit var testDispatcher: TestCoroutineDispatcher
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
+        testDispatcher = TestCoroutineDispatcher()
+        mViewModel = PromotionBudgetAndTypeViewModel(testDispatcher, basicShopInfoUseCase, userSession)
     }
 
     @After
     fun cleanup() {
         testDispatcher.cleanupTestCoroutines()
-    }
-
-    private val testDispatcher by lazy {
-        TestCoroutineDispatcher()
-    }
-
-    private val mViewModel by lazy {
-        PromotionBudgetAndTypeViewModel(testDispatcher, basicShopInfoUseCase, userSession)
     }
 
     @Test

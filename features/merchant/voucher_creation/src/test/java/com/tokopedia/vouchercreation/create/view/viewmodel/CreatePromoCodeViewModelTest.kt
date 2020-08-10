@@ -26,12 +26,17 @@ class CreatePromoCodeViewModelTest {
     @RelaxedMockK
     lateinit var promoCodeValidationUseCase: PromoCodeValidationUseCase
 
+    lateinit var testDispatcher: TestCoroutineDispatcher
+    lateinit var mViewModel: CreatePromoCodeViewModel
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
+        testDispatcher = TestCoroutineDispatcher()
+        mViewModel = CreatePromoCodeViewModel(testDispatcher, promoCodeValidationUseCase)
     }
 
     @After
@@ -39,13 +44,6 @@ class CreatePromoCodeViewModelTest {
         testDispatcher.cleanupTestCoroutines()
     }
 
-    private val testDispatcher by lazy {
-        TestCoroutineDispatcher()
-    }
-
-    private val mViewModel by lazy {
-        CreatePromoCodeViewModel(testDispatcher, promoCodeValidationUseCase)
-    }
 
     @Test
     fun `success validate promo code`() = runBlocking {

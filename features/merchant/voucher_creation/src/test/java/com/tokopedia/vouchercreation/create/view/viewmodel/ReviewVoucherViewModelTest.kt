@@ -48,25 +48,22 @@ class ReviewVoucherViewModelTest {
     @RelaxedMockK
     lateinit var dummyBitmap: Bitmap
 
+    lateinit var mViewModel: ReviewVoucherViewModel
+    lateinit var testDispatcher: TestCoroutineDispatcher
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
+        testDispatcher = TestCoroutineDispatcher()
+        mViewModel = ReviewVoucherViewModel(testDispatcher, createVoucherUseCase, updateVoucherUseCase, uploadVoucherUseCase, saveBannerVoucherUseCase, saveSquareVoucherUseCase)
     }
 
     @After
     fun cleanup() {
         testDispatcher.cleanupTestCoroutines()
-    }
-
-    private val testDispatcher by lazy {
-        TestCoroutineDispatcher()
-    }
-
-    private val mViewModel by lazy {
-        ReviewVoucherViewModel(testDispatcher, createVoucherUseCase, updateVoucherUseCase, uploadVoucherUseCase, saveBannerVoucherUseCase, saveSquareVoucherUseCase)
     }
 
     @Test

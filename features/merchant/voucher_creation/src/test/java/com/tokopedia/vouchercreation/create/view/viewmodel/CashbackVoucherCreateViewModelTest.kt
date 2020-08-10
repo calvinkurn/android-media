@@ -55,10 +55,12 @@ class CashbackVoucherCreateViewModelTest {
     val rule = InstantTaskExecutorRule()
 
     lateinit var mViewModel: CashbackVoucherCreateViewModel
+    lateinit var testDispatcher: TestCoroutineDispatcher
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
+        testDispatcher = TestCoroutineDispatcher()
         mViewModel = CashbackVoucherCreateViewModel(testDispatcher, cashbackRupiahValidationUseCase, cashbackPercentageValidationUseCase)
 
         mViewModel.expenseEstimationLiveData.observeForever(expenseEstimationObserver)
@@ -73,7 +75,6 @@ class CashbackVoucherCreateViewModelTest {
         testDispatcher.cleanupTestCoroutines()
     }
 
-    private val testDispatcher = TestCoroutineDispatcher()
 
     @Test
     fun `adding rupiah maximum discount text field value will change expense estimation value if quota is already set`() {
