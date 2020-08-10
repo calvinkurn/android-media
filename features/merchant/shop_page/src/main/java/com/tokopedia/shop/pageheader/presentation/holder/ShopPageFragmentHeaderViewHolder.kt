@@ -81,7 +81,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         view.play_seller_widget_container.visibility = if(shopPageHeaderDataModel.broadcaster.streamAllowed) View.VISIBLE else View.GONE
         setupTextContentSgcWidget()
         setLottieAnimationFromUrl(context.getString(R.string.shop_page_lottie_sgc_url))
-        shopPageTrackingSGCPlayWidget?.onImpressionSGCContent(shopId = shopPageHeaderDataModel.shopId)
+        if(shopPageHeaderDataModel.broadcaster.streamAllowed) shopPageTrackingSGCPlayWidget?.onImpressionSGCContent(shopId = shopPageHeaderDataModel.shopId)
         view.container_lottie?.setOnClickListener {
             shopPageTrackingSGCPlayWidget?.onClickSGCContent(shopId = shopPageHeaderDataModel.shopId)
             RouteManager.route(view.context, ApplinkConstInternalContent.INTERNAL_PLAY_BROADCASTER)
