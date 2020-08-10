@@ -9,7 +9,7 @@ import com.tokopedia.entertainment.pdp.data.PackageV3
 import com.tokopedia.entertainment.pdp.listener.OnBindItemTicketListener
 import com.tokopedia.entertainment.pdp.listener.OnCoachmarkListener
 
-class PackageTypeFactoryImp(private val onBindItemTicketListener: OnBindItemTicketListener,
+class PackageTypeFactoryImpl(private val onBindItemTicketListener: OnBindItemTicketListener,
                             private val onCoachmarkListener: OnCoachmarkListener): BaseAdapterTypeFactory(), PackageTypeFactory {
 
     override fun type(dataModel: PackageV3): Int {

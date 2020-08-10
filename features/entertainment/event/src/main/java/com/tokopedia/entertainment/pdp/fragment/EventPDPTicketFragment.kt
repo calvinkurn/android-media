@@ -27,7 +27,6 @@ import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.pdp.activity.EventCheckoutActivity
 import com.tokopedia.entertainment.pdp.adapter.factory.PackageTypeFactory
-import com.tokopedia.entertainment.pdp.adapter.factory.PackageTypeFactoryImp
 import com.tokopedia.entertainment.pdp.data.EventPDPTicketModel
 import com.tokopedia.entertainment.pdp.di.EventPDPComponent
 import com.tokopedia.entertainment.pdp.viewmodel.EventPDPTicketViewModel
@@ -37,6 +36,7 @@ import com.tokopedia.entertainment.pdp.activity.EventPDPTicketActivity.Companion
 import com.tokopedia.entertainment.pdp.activity.EventPDPTicketActivity.Companion.SELECTED_DATE
 import com.tokopedia.entertainment.pdp.activity.EventPDPTicketActivity.Companion.END_DATE
 import com.tokopedia.entertainment.pdp.adapter.EventPDPParentPackageAdapter
+import com.tokopedia.entertainment.pdp.adapter.factory.PackageTypeFactoryImpl
 import com.tokopedia.entertainment.pdp.analytic.EventPDPTracking
 import com.tokopedia.entertainment.pdp.common.util.CurrencyFormatter.getRupiahFormat
 import com.tokopedia.entertainment.pdp.data.PackageItem
@@ -81,7 +81,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
     private var eventVerifyRequest: VerifyRequest = VerifyRequest()
     private var hashItemMap: HashMap<String, ItemMap> = hashMapOf()
     private var pdpData: ProductDetailData = ProductDetailData()
-    private var packageTypeFactoryImp = PackageTypeFactoryImp(this,this)
+    private var packageTypeFactoryImp = PackageTypeFactoryImpl(this,this)
 
     @Inject
     lateinit var viewModel: EventPDPTicketViewModel

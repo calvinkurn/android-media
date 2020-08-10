@@ -74,17 +74,18 @@ class EventPDPTicketItemPackageAdapter(
 
                 itemView.post {
                     if(position == 0) heightItemView += itemView.height.toDp()
-                    if (onCoachmarkListener.getLocalCache() && listItemPackage.size == 1 && position == 0) {
-                        onCoachmarkListener.showCoachMark(itemView, 0)
-                    } else if (onCoachmarkListener.getLocalCache() && listItemPackage.size >= 2 && position == 1) {
-                        onCoachmarkListener.showCoachMark(itemView, heightItemView)
+                    if(onCoachmarkListener.getLocalCache()) {
+                        if (listItemPackage.size == 1 && position == 0) {
+                            onCoachmarkListener.showCoachMark(itemView, 0)
+                        } else if (listItemPackage.size >= 2 && position == 1) {
+                            onCoachmarkListener.showCoachMark(itemView, heightItemView)
+                        }
                     }
                 }
 
                 quantityEditor.setValue(items.minQty.toInt())
                 quantityEditor.minValue = items.minQty.toInt() - 1
                 quantityEditor.maxValue = items.maxQty.toInt()
-
 
                 quantityEditor.setValueChangedListener { newValue, _, _ ->
                     isError = !(quantityEditor.getValue() >= items.minQty.toInt() && quantityEditor.getValue() <= items.maxQty.toInt())
@@ -149,7 +150,7 @@ class EventPDPTicketItemPackageAdapter(
                     itemView.greenDivider.visibility = View.VISIBLE
                     itemView.bgTicket.background = ContextCompat.getDrawable(context, R.drawable.ent_pdp_ticket_active_bg)
                     itemView.quantityEditor.visibility = View.VISIBLE
-                    itemView.quantityEditor.setValue(if(items.minQty.toInt()<1) MIN_QTY else items.minQty.toInt())
+                    itemView.quantityEditor.setValue(if (items.minQty.toInt() < 1) MIN_QTY else items.minQty.toInt())
                     itemView.quantityEditor.editText.visibility = View.VISIBLE
                     itemView.quantityEditor.addButton.visibility = View.VISIBLE
                     itemView.quantityEditor.subtractButton.visibility = View.VISIBLE
