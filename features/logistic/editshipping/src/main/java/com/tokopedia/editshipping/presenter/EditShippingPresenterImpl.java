@@ -215,7 +215,7 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
 
                     @Override
                     public void onNoConnection() {
-                        view.showErrorToast(view.getMainContext().getString(R.string.msg_no_connection));
+                        view.showErrorToast(view.getMainContext().getString(com.tokopedia.abstraction.R.string.msg_no_connection));
                     }
                 });
     }
@@ -337,7 +337,7 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
 
             @Override
             public void onNoConnection() {
-                view.showErrorToast(view.getMainContext().getString(R.string.msg_no_connection));
+                view.showErrorToast(view.getMainContext().getString(com.tokopedia.abstraction.R.string.msg_no_connection));
             }
         };
     }
@@ -428,12 +428,12 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
 
                     @Override
                     public void onTimeout() {
-                        view.showErrorToast(view.getMainContext().getString(R.string.title_try_again));
+                        view.showErrorToast(view.getMainContext().getString(com.tokopedia.abstraction.R.string.title_try_again));
                     }
 
                     @Override
                     public void onNoConnection() {
-                        view.showErrorToast(view.getMainContext().getString(R.string.msg_no_connection));
+                        view.showErrorToast(view.getMainContext().getString(com.tokopedia.abstraction.R.string.msg_no_connection));
                     }
                 });
         Timber.d("PORING" + compiledShippingId());
@@ -603,7 +603,7 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
                     @Override
                     public void onNoConnection() {
                         view.showErrorToast(view
-                                .getMainContext().getString(R.string.msg_no_connection));
+                                .getMainContext().getString(com.tokopedia.abstraction.R.string.msg_no_connection));
                     }
                 });
     }

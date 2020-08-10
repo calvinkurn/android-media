@@ -258,7 +258,7 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
 
     override fun onFragmentNoConnection() {
         NetworkErrorHelper.showEmptyState(activity, view,
-                getString(R.string.msg_no_connection),
+                getString(com.tokopedia.abstraction.R.string.msg_no_connection),
                 object : NetworkErrorHelper.RetryClickedListener {
                     override fun onRetryClicked() {
                         if (mapMode == CREATE_SHOP_PAGE) editShippingPresenter?.fetchDataOpenShop() else editShippingPresenter?.fetchData()

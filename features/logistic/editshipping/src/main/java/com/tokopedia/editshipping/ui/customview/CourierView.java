@@ -106,7 +106,7 @@ public class CourierView extends EditShippingCourierView<Courier,
     private void setCourierInformation(final String information, final String courierName,
                                        int visibility){
         if(visibility == VISIBLE){
-            courierNameText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.info_icon, 0);
+            courierNameText.setCompoundDrawablesWithIntrinsicBounds(0, 0, com.tokopedia.design.R.drawable.info_icon, 0);
             courierNamePlaceHolder.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
