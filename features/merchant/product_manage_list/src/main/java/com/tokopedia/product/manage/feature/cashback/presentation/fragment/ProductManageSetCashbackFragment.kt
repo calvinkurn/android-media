@@ -49,9 +49,9 @@ class ProductManageSetCashbackFragment : Fragment(), SelectClickListener,
         const val SET_CASHBACK_PRODUCT_NAME = "product_name"
         const val PARAM_SET_CASHBACK_PRODUCT_PRICE = "price"
         const val PARAM_SET_CASHBACK_SHOP_ID = "shop_id"
+        const val PARAM_SET_CASHBACK_IS_DRAFTING = "is_drafting"
         const val EXTRA_CASHBACK_SHOP_ID = "extra_shop_id"
         const val EXTRA_CASHBACK_IS_DRAFTING = "extra_is_drafting"
-        const val PARAM_SET_CASHBACK_IS_DRAFTING = "extra_is_drafting"
 
         fun createInstance(productId: String, cashback: Int, productName: String, price: String): ProductManageSetCashbackFragment{
             return ProductManageSetCashbackFragment().apply {
