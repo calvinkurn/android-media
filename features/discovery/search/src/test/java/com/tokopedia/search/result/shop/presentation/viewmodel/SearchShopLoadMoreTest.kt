@@ -205,6 +205,8 @@ internal class SearchShopLoadMoreTest: SearchShopViewModelTestFixtures() {
         `Then should NOT post shop item impression tracking event`()
         `Then should NOT post product preview impression tracking event`()
         `Then verify has next page is false`()
+        `Then assert quick filter is shown`(searchShopModel.getQuickFilterList())
+        `Then assert shop list layout is shown`()
     }
 
     private fun `Given impression tracking already consumed by the View`() {
@@ -241,6 +243,10 @@ internal class SearchShopLoadMoreTest: SearchShopViewModelTestFixtures() {
 
         val productPreviewImpressionTracking = productPreviewImpressionTrackingEventLiveData?.getContentIfNotHandled()
         productPreviewImpressionTracking shouldBe null
+    }
+
+    private fun `Then assert shop list layout is shown`() {
+        searchShopViewModel.getRefreshLayoutIsVisibleLiveData().value shouldBe true
     }
 
     @Test

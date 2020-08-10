@@ -84,6 +84,7 @@ class WishlistAdapter(
         val layout = holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams
         when(item){
             is WishlistItemDataModel,
+            is BannerTopAdsDataModel,
             is LoadMoreDataModel,
             is RecommendationCarouselDataModel,
             is LoadingDataModel,

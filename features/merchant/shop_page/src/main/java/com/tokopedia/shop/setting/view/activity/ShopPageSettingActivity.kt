@@ -7,7 +7,7 @@ import android.view.MenuItem
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.shop.R
-import com.tokopedia.shop.ShopComponentInstance
+import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.setting.di.component.DaggerShopPageSettingComponent
 import com.tokopedia.shop.setting.di.component.ShopPageSettingComponent
 import com.tokopedia.shop.setting.di.module.ShopPageSettingModule
@@ -31,7 +31,7 @@ class ShopPageSettingActivity : BaseSimpleActivity(), HasComponent<ShopPageSetti
 
     override fun getComponent(): ShopPageSettingComponent {
         return DaggerShopPageSettingComponent.builder()
-                .shopComponent(ShopComponentInstance.getComponent(application))
+                .shopComponent(ShopComponentHelper().getComponent(application, this))
                 .shopPageSettingModule(ShopPageSettingModule())
                 .build()
     }
@@ -39,5 +39,13 @@ class ShopPageSettingActivity : BaseSimpleActivity(), HasComponent<ShopPageSetti
     override fun onBackPressed() {
         super.onBackPressed()
         (fragment as? ShopPageSettingFragment)?.onBackPressed()
+    }
+
+    override fun getParentViewResourceID(): Int {
+        return R.id.parent_view
+    }
+
+    override fun getToolbarResourceID(): Int {
+        return R.id.toolbar
     }
 }
