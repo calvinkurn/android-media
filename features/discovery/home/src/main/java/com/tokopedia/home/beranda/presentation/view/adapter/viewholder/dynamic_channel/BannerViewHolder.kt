@@ -3,6 +3,7 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_
 import android.view.View
 import android.widget.TextView
 import androidx.annotation.LayoutRes
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularListener
 import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularModel
@@ -31,6 +32,11 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
     private val indicatorView: PageControl = itemView.findViewById(R.id.indicator_banner)
     private val seeAllPromo: TextView = itemView.findViewById(R.id.see_all_promo)
     private val adapter = HomeBannerAdapter(listOf(), this)
+
+    init {
+        indicatorView.activeColor = ContextCompat.getColor(itemView.context, R.color.home_hpb_indicator_active)
+        indicatorView.inactiveColor = ContextCompat.getColor(itemView.context, R.color.home_hpb_indicator_inactive)
+    }
 
     override fun bind(element: HomepageBannerDataModel) {
         BenchmarkHelper.beginSystraceSection(TRACE_ON_BIND_BANNER_VIEWHOLDER)
