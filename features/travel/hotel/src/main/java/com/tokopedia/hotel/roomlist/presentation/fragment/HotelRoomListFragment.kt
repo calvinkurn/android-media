@@ -54,6 +54,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_hotel_room_list.*
 import kotlinx.android.synthetic.main.layout_sticky_hotel_date_and_guest.*
+import kotlinx.coroutines.*
 import java.util.*
 import javax.inject.Inject
 import kotlin.math.roundToLong
@@ -323,15 +324,19 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
     }
 
     override fun onChipClickListener(string: String, isSelected: Boolean) {
-        clearAllData()
-        showLoading()
+        CoroutineScope(Dispatchers.Main).launch {
+            clearAllData()
+            showLoading()
 
-        when (string) {
-            getString(R.string.hotel_room_list_filter_free_breakfast) -> {
-                roomListViewModel.clickFilter(clickFreeBreakfast = true)
-            }
-            getString(R.string.hotel_room_list_filter_free_cancelable) -> {
-                roomListViewModel.clickFilter(clickFreeCancelable = true)
+            delay(DELAY_ROOM_LIST_SHIMMERING)
+
+            when (string) {
+                getString(R.string.hotel_room_list_filter_free_breakfast) -> {
+                    roomListViewModel.clickFilter(clickFreeBreakfast = true)
+                }
+                getString(R.string.hotel_room_list_filter_free_cancelable) -> {
+                    roomListViewModel.clickFilter(clickFreeCancelable = true)
+                }
             }
         }
     }
@@ -455,6 +460,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
     }
 
     companion object {
+        const val DELAY_ROOM_LIST_SHIMMERING: Long = 500
 
         const val RESULT_ROOM_DETAIL = 102
         const val REQ_CODE_LOGIN = 1345

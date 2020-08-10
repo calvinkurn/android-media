@@ -46,12 +46,9 @@ class HotelRoomListViewModel @Inject constructor(
     }
 
     fun clickFilter(clickFreeBreakfast: Boolean = false, clickFreeCancelable: Boolean = false) {
-        launch {
-            delay(DELAY_ROOM_LIST_SHIMMERING)
-            if (clickFreeBreakfast) filterFreeBreakfast = !filterFreeBreakfast
-            if (clickFreeCancelable) filterFreeCancelable = !filterFreeCancelable
-            doFilter()
-        }
+        if (clickFreeBreakfast) filterFreeBreakfast = !filterFreeBreakfast
+        if (clickFreeCancelable) filterFreeCancelable = !filterFreeCancelable
+        doFilter()
     }
 
     private fun doFilter() {
@@ -80,9 +77,5 @@ class HotelRoomListViewModel @Inject constructor(
         filterFreeCancelable = false
         filterFreeBreakfast = false
         roomListResult.postValue(Success(roomList.toMutableList()))
-    }
-
-    companion object {
-        const val DELAY_ROOM_LIST_SHIMMERING: Long = 500
     }
 }
