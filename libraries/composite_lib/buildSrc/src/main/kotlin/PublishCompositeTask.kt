@@ -35,13 +35,13 @@ open class PublishCompositeTask : DefaultTask() {
         println("Dep Hash Set: $dependenciesProjectNameHashSet")
         println("Project to Artifact: ${projectToArtifactInfoList.map {
             it.key + "-" + it.value.groupId + ":" + it.value.artifactId +
-                ":" + it.value.versionName + "/" + it.value.maxCurrentVersionName+ 
-                "/" + it.value.increaseVersionString
+                    ":" + it.value.versionName + "/" + it.value.maxCurrentVersionName +
+                    "/" + it.value.increaseVersionString
         }}")
         println("Artifact to Project: $artifactIdToProjectNameList")
         println("Module to Publish: $moduleToPublishList")
 
-        if (moduleToPublishList.isEmpty()){
+        if (moduleToPublishList.isEmpty()) {
             return
         }
 
@@ -232,10 +232,29 @@ open class PublishCompositeTask : DefaultTask() {
     }
 
     private fun publishModule(module: String): Boolean {
+        //check if the module is android or not
+        val isAndroidProject = projectToArtifactInfoList[module]?.isAndroidProject ?: true
+        println("IsAndroidProject: $isAndroidProject")
+        val extension = if (isAndroidProject) {
+            "aar"
+        } else {
+            "jar"
+        }
+        val buildOutputPath = if (isAndroidProject) {
+            "build/outputs/aar"
+        } else {
+            "build/libs"
+        }
 
-        val outputFile = File("$module/build/outputs/aar/$module.aar")
-        val outputFile2 = File("$module/build/outputs/aar/$module-debug.aar")
-        val outputFile3 = File("$module/build/outputs/aar/$module-release.aar")
+        val command = if (isAndroidProject) {
+            "assembleDebug"
+        } else {
+            "assemble"
+        }
+
+        val outputFile = File("$module/$buildOutputPath/$module.$extension")
+        val outputFile2 = File("$module/$buildOutputPath/$module-debug.$extension")
+        val outputFile3 = File("$module/$buildOutputPath/$module-release.$extension")
         if (outputFile.exists()) {
             outputFile.delete()
         }
@@ -249,12 +268,22 @@ open class PublishCompositeTask : DefaultTask() {
         var gitCommandAssembleString = ""
         var gitCommandAssembleResultString = ""
         try {
-            gitCommandAssembleString = "gradle assembleDebug  -p $module --stacktrace"
-            gitCommandAssembleResultString = gitCommandAssembleString.runCommandGroovy(project.projectDir.absoluteFile)?.trimSpecial() ?: ""
-        } catch (e:java.lang.Exception) {
-            gitCommandAssembleString = "../.././gradlew assembleDebug  -p $module --stacktrace"
-            gitCommandAssembleResultString = gitCommandAssembleString.runCommandGroovy(project.projectDir.absoluteFile)?.trimSpecial() ?: ""
+            gitCommandAssembleString = "gradle $command  -p $module --stacktrace"
+            print("$gitCommandAssembleString\n")
+            gitCommandAssembleResultString = gitCommandAssembleString.runCommandGroovy(project.projectDir.absoluteFile)?.trimSpecial()
+                    ?: ""
+        } catch (e: Exception) {
+            try {
+                gitCommandAssembleString = "../.././gradlew $command  -p $module --stacktrace"
+                print("$gitCommandAssembleString\n")
+                gitCommandAssembleResultString = gitCommandAssembleString.runCommandGroovy(project.projectDir.absoluteFile)?.trimSpecial()
+                        ?: ""
+            } catch (e: Exception) {
+                println(e.stackTrace.toString())
+            }
         }
+
+        println(gitCommandAssembleResultString)
 
         if (!gitCommandAssembleResultString.contains("BUILD SUCCESSFUL")) {
             return false
@@ -262,16 +291,25 @@ open class PublishCompositeTask : DefaultTask() {
         if (outputFile2.exists()) {
             outputFile2.copyTo(outputFile, true)
             outputFile2.copyTo(outputFile3, true)
+        } else if (outputFile.exists()) {
+            outputFile.copyTo(outputFile2, true)
+            outputFile.copyTo(outputFile3, true)
         }
 
         var gitCommandString = ""
         var gitResultLog = ""
         try {
             gitCommandString = "gradle artifactoryPublish  -p $module --stacktrace"
-            gitResultLog = gitCommandString.runCommandGroovy(project.projectDir.absoluteFile)?.trimSpecial() ?: ""
-        } catch (e:java.lang.Exception) {
-            gitCommandString = "../.././gradlew artifactoryPublish  -p $module --stacktrace"
-            gitResultLog = gitCommandString.runCommandGroovy(project.projectDir.absoluteFile)?.trimSpecial() ?: ""
+            gitResultLog = gitCommandString.runCommandGroovy(project.projectDir.absoluteFile)?.trimSpecial()
+                    ?: ""
+        } catch (e: Exception) {
+            try {
+                gitCommandString = "../.././gradlew artifactoryPublish  -p $module --stacktrace"
+                gitResultLog = gitCommandString.runCommandGroovy(project.projectDir.absoluteFile)?.trimSpecial()
+                        ?: ""
+            } catch (e: Exception) {
+                println(e.stackTrace.toString())
+            }
         }
         print(gitResultLog)
         return gitResultLog.contains("BUILD SUCCESSFUL")

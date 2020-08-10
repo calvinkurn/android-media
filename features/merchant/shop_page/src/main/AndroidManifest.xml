@@ -39,13 +39,6 @@
         </activity>
 
         <activity
-            android:name=".address.view.activity.ShopAddressListActivity"
-            android:exported="true"
-            android:label="@string/shop_info_label_physical_shop"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
-
-        <activity
             android:name=".note.view.activity.ShopNoteDetailActivity"
             android:exported="true"
             android:label="@string/note_title"
@@ -53,7 +46,7 @@
             android:theme="@style/Theme.White" />
 
         <activity
-            android:name="com.tokopedia.shop.product.view.activity.ShopProductListActivity"
+            android:name="com.tokopedia.shop.product.view.activity.ShopProductListResultActivity"
             android:exported="true"
             android:label="@string/shop_product_title"
             android:screenOrientation="portrait"
@@ -84,7 +77,17 @@
             android:exported="true"
             android:label="@string/favorited_shop_title"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
+            android:theme="@style/Theme.White">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_marketplace"
+                    android:pathPattern="@string/path_shop_favourite_list"/>
+            </intent-filter>
+        </activity>
 
         <activity android:name="com.tokopedia.shop.product.view.activity.SimpleWebViewActivity"
             android:screenOrientation="portrait"

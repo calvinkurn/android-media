@@ -40,4 +40,13 @@
         <item name="android:windowContentTransitions">true</item>
     </style>
 
+    <style name="ShopPageActivityTheme" parent="Theme.White">
+        <item  name="android:actionButtonStyle">@style/ShopPageActionBarMenuItemStyle</item>
+    </style>
+
+    <style name="ShopPageActionBarMenuItemStyle" >
+        <item name="android:background">?attr/selectableItemBackgroundBorderless</item>
+        <item name="android:padding">@dimen/dp_4</item>
+    </style>
+
 </resources>

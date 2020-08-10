@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:text="@string/settings_free_shipping_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:typographyType="body_2"
+        app:typographyWeight="reguler"/>
+
+    <FrameLayout
+        android:id="@+id/btnFreeShippingDetail"
+        android:paddingTop="@dimen/spacing_lvl4"
+        android:paddingBottom="@dimen/spacing_lvl4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white">
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/settings_free_shipping_detail"
+            app:unifyButtonSize="medium" />
+    </FrameLayout>
+</LinearLayout>

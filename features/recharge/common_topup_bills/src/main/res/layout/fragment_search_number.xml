@@ -6,8 +6,8 @@
     android:orientation="vertical"
     android:background="@color/white">
 
-    <com.tokopedia.common_digital.common.widget.DigitalSearchInputView
-        android:id="@+id/siv_search_number"
+    <com.tokopedia.unifycomponents.SearchBarUnify
+        android:id="@+id/topupbills_search_input_view_number"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_16"
@@ -20,7 +20,7 @@
         android:background="#f3f4f5"/>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvNumberList"
+        android:id="@+id/topupbills_search_number_rv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"

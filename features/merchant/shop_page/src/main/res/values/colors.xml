@@ -18,5 +18,9 @@
     <color name="clr_31353B">#31353B</color>
     <color name="color_chips_etalase_text_selected">#03AC0E</color>
     <color name="color_chips_etalase_text_not_selected">#ae31353b</color>
+    <color name="color_beta_badge">#FF5C84</color>
+    <color name="color_green_shop_tab">#03AC0E</color>
+    <color name="color_gray_shop_tab">#9FA6B0</color>
+
 
 </resources>

@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.design.text.watcher.NumberTextWatcher
+import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.CreateManualAdsStepperModel
 import com.tokopedia.topads.data.response.DataSuggestions
@@ -24,15 +25,15 @@ import com.tokopedia.topads.view.model.BudgetingAdsViewModel
 import com.tokopedia.topads.view.sheet.InfoSheetBudgetList
 import com.tokopedia.topads.view.sheet.TipSheetBudgetList
 import kotlinx.android.synthetic.main.topads_create_fragment_budget_list.*
-import kotlinx.android.synthetic.main.topads_create_fragment_budget_list.budget
-import kotlinx.android.synthetic.main.topads_create_fragment_budget_list.tip_btn
-import java.lang.NumberFormatException
-import java.util.ArrayList
+import java.util.*
 import javax.inject.Inject
 
 /**
  * Author errysuprayogi on 29,October,2019
  */
+
+private const val CLICK_TIPS_BIAYA_IKLAN = "click-tips biaya iklan"
+private const val CLICK_ATUR_BIAYA_IKLAN = "click-atur biaya iklan"
 class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
 
     @Inject
@@ -50,6 +51,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
     companion object {
         private const val MAX_BID = "max"
         private const val MIN_BID = "min"
+        private const val FACTOR = 50
         fun createInstance(): Fragment {
             val fragment = BudgetingAdsFragment()
             val args = Bundle()
@@ -103,9 +105,12 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
         stepperModel?.minBid = minBid
         stepperModel?.minSuggestBidKeyword = minSuggestKeyword
         stepperListener?.goToNextPage(stepperModel)
+        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_ATUR_BIAYA_IKLAN, "")
     }
 
-    override fun populateView(stepperModel: CreateManualAdsStepperModel) {
+    override fun populateView() {
+        if (activity is StepperActivity)
+            (activity as StepperActivity).updateToolbarTitle(getString(R.string.bid_info_step))
     }
 
     override fun getScreenName(): String {
@@ -187,6 +192,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
         }
         tip_btn.setOnClickListener {
             TipSheetBudgetList.newInstance(it.context).show()
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_TIPS_BIAYA_IKLAN,"")
         }
         btn_info.setOnClickListener {
             InfoSheetBudgetList.newInstance(it.context).show()
@@ -205,6 +211,11 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
                     result > maxBid -> {
                         isEnable = false
                         setMessageErrorField(getString(R.string.max_bid_error), maxBid, true)
+                    }
+
+                    result % FACTOR != 0 ->{
+                        isEnable = false
+                        setMessageErrorField(getString(R.string.error_multiple_50),FACTOR ,true)
                     }
                     else -> {
                         isEnable = true
@@ -225,8 +236,4 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
 
     }
 
-    override fun updateToolBar() {
-        (activity as StepperActivity).updateToolbarTitle(getString(R.string.bid_info_step))
-
-    }
 }

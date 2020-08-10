@@ -19,7 +19,7 @@ import com.tokopedia.fcmcommon.FirebaseMessagingManagerImpl;
 import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.pushnotif.ApplinkNotificationHelper;
 import com.tokopedia.pushnotif.PushNotification;
-import com.tokopedia.pushnotif.model.ApplinkNotificationModel;
+import com.tokopedia.pushnotif.data.model.ApplinkNotificationModel;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.ConsumerMainApplication;
@@ -36,7 +36,6 @@ import timber.log.Timber;
 public class AppNotificationReceiver implements IAppNotificationReceiver {
     private AppNotificationReceiverUIBackground mAppNotificationReceiverUIBackground;
     private Context mContext;
-    private ActivitiesLifecycleCallbacks mActivitiesLifecycleCallbacks;
     private UserSession userSession;
 
     String ARG_NOTIFICATION_ISPROMO = "ispromo";
@@ -50,7 +49,6 @@ public class AppNotificationReceiver implements IAppNotificationReceiver {
             mAppNotificationReceiverUIBackground = new AppNotificationReceiverUIBackground(application);
 
         mContext = application.getApplicationContext();
-        mActivitiesLifecycleCallbacks = new ActivitiesLifecycleCallbacks(application);
         userSession = new UserSession(mContext);
     }
 
@@ -76,13 +74,7 @@ public class AppNotificationReceiver implements IAppNotificationReceiver {
 
         if (isApplinkNotification(bundle)) {
             logEvent(bundle, "isApplinkNotification(bundle) == true");
-            if (!isInExcludedActivity(bundle)) {
-                logEvent(bundle, "!isInExcludedActivity(bundle) == true");
-                PushNotification.notify(mContext, bundle);
-            } else {
-                logEvent(bundle, "!isInExcludedActivity(bundle) == false");
-            }
-            extraAction(bundle);
+            PushNotification.notify(mContext, bundle);
         } else {
             logEvent(bundle, "isApplinkNotification(bundle) == false");
             mAppNotificationReceiverUIBackground.notifyReceiverBackgroundMessage(bundle);
@@ -131,57 +123,6 @@ public class AppNotificationReceiver implements IAppNotificationReceiver {
         stringBuilder.append(": ");
         stringBuilder.append(value);
         stringBuilder.append(", \n");
-    }
-
-    private boolean isInExcludedActivity(Bundle data) {
-        ApplinkNotificationModel applinkNotificationModel = ApplinkNotificationHelper.convertToApplinkModel(data);
-        int notificationId = ApplinkNotificationHelper.generateNotifictionId(applinkNotificationModel.getApplinks());
-        return notificationId == getCurrentNotifIdByActivity();
-    }
-
-    private int getCurrentNotifIdByActivity(){
-        if(mActivitiesLifecycleCallbacks.getLiveActivityOrNull() == null){
-            return 0;
-        }
-        return 0;
-    }
-
-    private void extraAction(Bundle data) {
-        String code = data.getString(Constants.ARG_NOTIFICATION_CODE, "0");
-        if (canBroadcastPointReceived(code)) {
-            broadcastPointReceived(data);
-        }
-        if(canBroadcastChat(code)){
-            broadcastNotifTopChat(data);
-        }
-    }
-
-    private void broadcastPointReceived(Bundle data) {
-        Intent loyaltyGroupChat = new Intent(com.tokopedia.abstraction.constant
-                .TkpdState.LOYALTY_GROUP_CHAT);
-        loyaltyGroupChat.putExtras(data);
-        LocalBroadcastManager.getInstance(mContext).sendBroadcast(loyaltyGroupChat);
-    }
-
-
-    private void broadcastNotifTopChat(Bundle data) {
-        Intent loyaltyGroupChat = new Intent(TkpdState.TOPCHAT);
-        loyaltyGroupChat.putExtras(data);
-        LocalBroadcastManager.getInstance(mContext).sendBroadcast(loyaltyGroupChat);
-    }
-
-    private boolean canBroadcastPointReceived(String tkpCode) {
-        final String GROUP_CHAT_BROADCAST_TKP_CODE = "140";
-        final String GROUP_CHAT_BROADCAST_TKP_CODE_GENERAL = "1400";
-
-        return tkpCode.startsWith(GROUP_CHAT_BROADCAST_TKP_CODE)
-                && !tkpCode.equals(GROUP_CHAT_BROADCAST_TKP_CODE_GENERAL);
-    }
-
-
-    private boolean canBroadcastChat(String tkpCode){
-        final String CHAT_BROADCAST_TKP_CODE = "111";
-        return tkpCode.startsWith(CHAT_BROADCAST_TKP_CODE);
     }
 
     private boolean isApplinkNotification(Bundle data) {

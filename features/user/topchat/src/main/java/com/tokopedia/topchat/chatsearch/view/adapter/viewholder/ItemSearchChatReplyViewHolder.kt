@@ -17,7 +17,8 @@ import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
 
 class ItemSearchChatReplyViewHolder(
-        itemView: View?
+        itemView: View?,
+        private val listener: Listener?
 ) : AbstractViewHolder<ChatReplyUiModel>(itemView) {
 
     private val userName: Typography? = itemView?.findViewById(R.id.user_name)
@@ -27,6 +28,10 @@ class ItemSearchChatReplyViewHolder(
     private val time: Typography? = itemView?.findViewById(R.id.time)
     private val label: Label? = itemView?.findViewById(R.id.user_label)
     private var productIcon: ImageView? = itemView?.findViewById(R.id.img_product_icon)
+
+    interface Listener {
+        fun getSearchKeyWord(): String
+    }
 
     override fun bind(element: ChatReplyUiModel) {
         bindUnreadCounter(element)
@@ -82,6 +87,8 @@ class ItemSearchChatReplyViewHolder(
         itemView.setOnClickListener {
             val chatRoomIntent = RouteManager.getIntent(it.context, ApplinkConst.TOPCHAT, element.msgId.toString())
             chatRoomIntent.putExtra(ApplinkConst.Chat.SOURCE_PAGE, ApplinkConst.Chat.SOURCE_CHAT_SEARCH)
+            chatRoomIntent.putExtra(ApplinkConst.Chat.SEARCH_CREATE_TIME, element.modifiedTimeStamp)
+            chatRoomIntent.putExtra(ApplinkConst.Chat.SEARCH_PRODUCT_KEYWORD, listener?.getSearchKeyWord())
             it.context.startActivity(chatRoomIntent)
         }
     }

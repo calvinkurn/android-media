@@ -1,7 +1,7 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply from: "../../../compile-instrument-test.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
-apply plugin: 'de.mannodermaus.android-junit5'
 
 repositories {
     maven { url 'https://hansel.io/maven' }
@@ -28,33 +28,9 @@ android {
         jvmTarget = "1.8"
     }
 
-    flavorDimensions "tier", "client"
-    productFlavors {
-        benchmark {
-            dimension "client"
-            testInstrumentationRunner 'com.tokopedia.test.application.environment.TkpdAndroidBenchmarkTestRunner'
-            testInstrumentationRunnerArgument 'androidx.benchmark.suppressErrors', 'EMULATOR,LOW_BATTERY,ERRORS,UNLOCKED,ENG-BUILD'
-        }
-        prod {
-            dimension "client"
-            testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
-        }
-        live {
-            dimension "tier"
-        }
-        staging {
-            dimension "tier"
-        }
-        dev {
-            dimension "client"
-        }
-    }
-
     defaultConfig {
-        defaultConfig {
-            multiDexEnabled true
-            testInstrumentationRunner "com.tokopedia.test.application.environment.MockInstrumentationTestRunner"
-        }
+        multiDexEnabled true
+
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments = ['targetModuleName': 'TkpdHome']
@@ -65,13 +41,6 @@ android {
     testOptions {
         unitTests {
             includeAndroidResources = true
-        }
-        junitPlatform {
-            filters {
-                engines {
-                    include 'spek2'
-                }
-            }
         }
     }
 }
@@ -101,7 +70,6 @@ dependencies {
     implementation project(rootProject.ext.features.searchbar)
     implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.features.stickyLogin)
-    implementation project(rootProject.ext.features.tkpdcore)
     implementation project(rootProject.ext.features.tokopointsNotification)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.wishlistCommon)
@@ -181,8 +149,6 @@ dependencies {
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
     }
-    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
     debugImplementation rootProject.ext.debugToolsDependencies.stetho
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
@@ -209,12 +175,8 @@ dependencies {
     // Unit test
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.mockk
-    testImplementation rootProject.ext.testDependencies.kotlinMockito2
-    testImplementation rootProject.ext.testDependencies.powerMockito
     testImplementation rootProject.ext.miscDependencies.coroutineCore
     testImplementation rootProject.ext.miscDependencies.coroutineTest
-    testImplementation rootProject.ext.testDependencies.spek2Api
-    testImplementation rootProject.ext.testDependencies.spek2Dsl
 
     debugImplementation (rootProject.ext.testDependencies.fragmentTest, {
         exclude group: 'androidx.test', module: 'core'
@@ -229,6 +191,7 @@ project.ext {
 }
 
 apply from: '../../../publish_local.gradle'
-//apply from: '../../../jacoco_task.gradle'
+apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'

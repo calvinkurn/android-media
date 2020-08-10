@@ -2,6 +2,7 @@ package com.tokopedia.play.view.activity
 
 import android.content.Context
 import android.content.Intent
+import android.media.AudioManager
 import android.net.Uri
 import android.os.Bundle
 import android.view.WindowManager
@@ -66,6 +67,7 @@ class PlayActivity : BaseActivity(), PlayNewChannelInteractor, PlayNavigation {
 
     override fun onResume() {
         super.onResume()
+        volumeControlStream = AudioManager.STREAM_MUSIC
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 

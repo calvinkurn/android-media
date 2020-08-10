@@ -9,13 +9,14 @@ import com.tokopedia.feedcomponent.domain.usecase.GetMentionableUserUseCase.Comp
 import com.tokopedia.feedcomponent.domain.usecase.GetRelatedPostUseCase
 import com.tokopedia.graphql.coroutines.data.Interactor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.topads.sdk.di.TopAdsUrlHitterModule
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named
 
 
-@Module
+@Module(includes = [TopAdsUrlHitterModule::class])
 class FeedComponentModule {
     @Named(GetRelatedPostUseCase.RELATED_POST_KEY)
     @Provides

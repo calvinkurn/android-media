@@ -2,6 +2,7 @@ package com.tokopedia.search.result.shop.domain.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 
 internal data class SearchShopModel(
@@ -11,11 +12,17 @@ internal data class SearchShopModel(
 
         @SerializedName("headlineAds")
         @Expose
-        val cpmModel: CpmModel = CpmModel()
+        val cpmModel: CpmModel = CpmModel(),
+
+        @SerializedName("quickFilter")
+        @Expose
+        var quickFilter: FilterSort = FilterSort()
 ) {
     fun hasShopList() = aceSearchShop.shopList.isNotEmpty()
 
     fun hasRecommendationShopList() = aceSearchShop.topShopList.isNotEmpty()
+
+    fun getQuickFilterList() = quickFilter.data.filter
 
     data class AceSearchShop(
             @SerializedName("source")
@@ -211,4 +218,12 @@ internal data class SearchShopModel(
             }
         }
     }
+
+        data class FilterSort(
+                @SerializedName("data")
+                @Expose
+                var data: DataValue = DataValue()
+        )
+
+        fun getFilterList() = quickFilter.data.filter
 }

@@ -98,13 +98,10 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.seller.LogisticRouter;
-import com.tokopedia.seller.common.logout.TkpdSellerLogout;
 import com.tokopedia.seller.product.etalase.utils.EtalaseUtils;
 import com.tokopedia.seller.purchase.detail.activity.OrderHistoryActivity;
-import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
 import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
-import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.tkpd.applink.ApplinkUnsupportedImpl;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.fcm.AppNotificationReceiver;
@@ -118,6 +115,7 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActi
 import com.tokopedia.tkpd.tkpdreputation.review.shop.view.ReviewShopFragment;
 import com.tokopedia.tkpd.utils.DeferredResourceInitializer;
 import com.tokopedia.tkpd.utils.FingerprintModelGenerator;
+import com.tokopedia.tkpd.utils.GQLPing;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.di.ReactNativeModule;
 import com.tokopedia.tkpdreactnative.router.ReactNativeRouter;
@@ -141,6 +139,8 @@ import dagger.Lazy;
 import io.hansel.hanselsdk.Hansel;
 import okhttp3.Interceptor;
 import okhttp3.Response;
+import retrofit2.Call;
+import retrofit2.Callback;
 import rx.Observable;
 import timber.log.Timber;
 
@@ -159,7 +159,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         AbstractionRouter,
         LogisticRouter,
         ApplinkRouter,
-        ShopModuleRouter,
         LoyaltyModuleRouter,
         GamificationRouter,
         ReactNativeRouter,
@@ -201,10 +200,35 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         initFirebase();
         GraphqlClient.init(getApplicationContext());
         NetworkClient.init(getApplicationContext());
+        warmUpGQLClient();
         initIris();
         performLibraryInitialisation();
         DeeplinkHandlerActivity.createApplinkDelegateInBackground(ConsumerRouterApplication.this);
         initResourceDownloadManager();
+    }
+
+    private void warmUpGQLClient(){
+        if(remoteConfig.getBoolean(RemoteConfigKey.EXECUTE_GQL_CONNECTION_WARM_UP, false)) {
+            try{
+            GQLPing gqlPing = GraphqlClient.getRetrofit().create(GQLPing.class);
+            Call<String> gqlPingCall = gqlPing.pingGQL();
+            gqlPingCall.enqueue(new Callback<String>() {
+                @Override
+                public void onResponse(Call<String> call, retrofit2.Response<String> response) {
+                    if(response != null && response.body() != null) {
+                        Timber.d("Success %s", response.body());
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<String> call, Throwable t) {
+                    Timber.d("Failure");
+                }
+            });
+            } catch (Exception ex){
+                Timber.d("GQL Ping exception %s", ex.getMessage());
+            }
+        }
     }
 
     private void performLibraryInitialisation(){
@@ -398,11 +422,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Fragment getReputationHistoryFragment() {
-        return SellerReputationFragment.createInstance();
-    }
-
-    @Override
     public Intent getOrderHistoryIntent(Context context, String orderId) {
         return OrderHistoryActivity.createInstance(context, orderId, 1);
     }
@@ -413,12 +432,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         sessionHandler.forceLogout();
         PersistentCacheManager.instance.delete(DigitalCache.NEW_DIGITAL_CATEGORY_AND_FAV);
         new CacheApiClearAllUseCase(this).executeSync();
-        TkpdSellerLogout.onLogOut(appComponent, this);
-    }
-
-    @Override
-    public Intent getRegisterIntent(Context context) {
-        return RegisterInitialActivity.getCallingIntent(context);
     }
 
     public Intent getHomeIntent(Context context) {
@@ -531,16 +544,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getGeoLocationActivityIntent(Context context, LocationPass locationPass) {
         return GeolocationActivity.createInstance(context, locationPass, false);
-    }
-
-    @Override
-    public Fragment getReviewFragment(Activity activity, String shopId, String shopDomain) {
-        return ReviewShopFragment.createInstance(shopId, shopDomain);
-    }
-
-    @Override
-    public Class getReviewFragmentClass() {
-        return ReviewShopFragment.class;
     }
 
     @Override
@@ -759,11 +762,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void refreshFCMFromInstantIdService(String token) {
         CMPushNotificationManager.getInstance().refreshFCMTokenFromForeground(token, true);
-    }
-
-    @Override
-    public void refreshFCMTokenFromForegroundToCM() {
-        CMPushNotificationManager.getInstance().refreshFCMTokenFromForeground(FCMCacheManager.getRegistrationId(this), true);
     }
 
     @Override

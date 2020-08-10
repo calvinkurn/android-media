@@ -128,7 +128,7 @@ public class ShopFavouriteListFragment extends BaseListFragment<ShopFollowerUiMo
     @Override
     protected Visitable getEmptyDataViewModel() {
         EmptyModel emptyModel = new EmptyModel();
-        emptyModel.setIconRes(R.drawable.ic_empty_state);
+        emptyModel.setIconRes(com.tokopedia.design.R.drawable.ic_empty_state);
         if (shopFavouriteListPresenter.isMyShop(shopId)) {
             emptyModel.setTitle(getString(R.string.shop_product_my_empty_follower_title));
             emptyModel.setContent("");

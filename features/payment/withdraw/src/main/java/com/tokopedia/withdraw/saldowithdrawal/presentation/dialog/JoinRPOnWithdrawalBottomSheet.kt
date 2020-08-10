@@ -63,8 +63,8 @@ class JoinRPOnWithdrawalBottomSheet : BottomSheetUnify() {
         arguments?.let {
             if (it.containsKey(ARG_JOIN_REKENING_PREMIUM)) {
                 initInjector()
-                bankAccount = it.getParcelable(ARG_BANK_ACCOUNT)
-                joinRekeningPremium = it.getParcelable(ARG_JOIN_REKENING_PREMIUM)
+                bankAccount = it.getParcelable(ARG_BANK_ACCOUNT) ?: BankAccount()
+                joinRekeningPremium = it.getParcelable(ARG_JOIN_REKENING_PREMIUM) ?: JoinRekeningPremium()
                 childView = LayoutInflater.from(context).inflate(childLayoutRes,
                         null, false)
                 setChild(childView)
