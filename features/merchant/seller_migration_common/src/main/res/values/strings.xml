@@ -4,7 +4,8 @@
 
     <string name="seller_migration_warning_title">Semua fitur penjual akan dialihkan pada:</string>
     <string name="seller_migration_ticker_title">Kembangkan bisnismu di Tokopedia Seller</string>
-    <string name="seller_migration_bottom_sheet_redirected_date">Dialihkan pada 11 September 2020</string>
+    <string name="seller_migration_bottom_sheet_redirected">Dialihkan pada</string>
+    <string name="seller_migration_bottom_sheet_redirected_dates">11 September 2020</string>
     <string name="seller_migration_ticker_desc">$s dapat diakses di aplikasi Tokopedia Seller mulai <b>11 Sep 2020.</b> <b>Selengkapnya</b></string>
 
     <string name="seller_migration_generic_ticker_title">Lebih leluasa berjualan dengan Tokopedia Seller</string>
