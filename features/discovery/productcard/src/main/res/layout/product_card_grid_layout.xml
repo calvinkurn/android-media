@@ -159,7 +159,6 @@
             android:gravity="center"
             android:padding="@dimen/dp_8"
             android:text="@string/product_card_text_add_to_cart_grid"
-            android:textAllCaps="false"
             android:textColor="@color/orange_red"
             android:visibility="gone"
             android:clickable="true"

@@ -327,7 +327,7 @@ class CartItemViewHolder constructor(itemView: View,
 
     private fun renderProductPropertiesCashback(data: CartItemHolderData) {
         this.tvInfoCashBack.visibility = if (data.cartItemData?.originData?.isCashBack == true) View.VISIBLE else View.GONE
-        this.tvInfoCashBack.text = data.cartItemData?.originData?.cashBackInfo
+        this.tvInfoCashBack.text = data.cartItemData?.originData?.cashBackInfo?: ""
     }
 
     private fun renderProductPropertiesCod(data: CartItemHolderData) {
@@ -336,7 +336,7 @@ class CartItemViewHolder constructor(itemView: View,
 
     private fun renderProductPropertiesPreOrder(data: CartItemHolderData) {
         if (data.cartItemData?.originData?.isPreOrder == true) {
-            this.tvInfoPreOrder.text = data.cartItemData?.originData?.preOrderInfo
+            this.tvInfoPreOrder.text = data.cartItemData?.originData?.preOrderInfo?: ""
             this.tvInfoPreOrder.visibility = View.VISIBLE
         } else {
             this.tvInfoPreOrder.visibility = View.GONE

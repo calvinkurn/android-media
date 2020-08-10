@@ -47,6 +47,7 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
         imageThreeDots?.showWithCondition(productCardModel.hasThreeDots)
 
         buttonAddToCart?.showWithCondition(productCardModel.hasAddToCartButton)
+        buttonAddToCart?.isAllCaps = false
 
         constraintLayoutProductCard?.post {
             imageThreeDots?.expandTouchArea(

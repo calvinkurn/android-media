@@ -43,7 +43,7 @@
         android:layout_below="@+id/input_number_area"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/layout_lvl3"
-        android:drawableLeft="@drawable/cc_ic_info_full_green"
+        app:drawableLeftCompat="@drawable/cc_ic_info_full_green"
         android:drawablePadding="@dimen/layout_lvl1"
         android:text="@string/cc_label_list_bank"
         android:textColor="@color/light_G500"
