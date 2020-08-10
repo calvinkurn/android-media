@@ -332,7 +332,7 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
                 listener.onInstallmentDetailClicked()
             }
             tvInstallmentErrorMessage?.visible()
-            tvInstallmentErrorMessage?.visible()
+            tvInstallmentErrorAction?.visible()
         }
     }
 

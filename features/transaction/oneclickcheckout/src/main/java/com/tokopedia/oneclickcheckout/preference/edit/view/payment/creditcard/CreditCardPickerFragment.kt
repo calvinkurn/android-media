@@ -18,7 +18,6 @@ import android.webkit.WebViewClient
 import android.widget.ProgressBar
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.oneclickcheckout.R
@@ -93,7 +92,6 @@ class CreditCardPickerFragment : BaseDaggerFragment() {
             activity?.finish()
             return
         }
-//        val url = "${TokopediaUrl.getInstance().PAY}/v3/cardlist"
         webView?.postUrl(additionalData.changeCcLink, getPayload(additionalData).toByteArray())
     }
 
@@ -105,8 +103,8 @@ class CreditCardPickerFragment : BaseDaggerFragment() {
                 "customer_name=${getUrlEncoded(additionalData.name.trim())}&" +
                 "customer_email=${getUrlEncoded(additionalData.email)}&" +
                 "customer_msisdn=${getUrlEncoded(additionalData.msisdn)}&" +
-                "callback_url=${getUrlEncoded("${TokopediaUrl.getInstance().PAY}/v3/cardlist")}&" +
-                "version=${getUrlEncoded(GlobalConfig.VERSION_NAME)}"
+                "callback_url=${getUrlEncoded("${TokopediaUrl.getInstance().PAY}/v3/cardlist")}"
+//                "version=${getUrlEncoded(GlobalConfig.VERSION_NAME)}"
     }
 
     private fun getUrlEncoded(valueStr: String): String {

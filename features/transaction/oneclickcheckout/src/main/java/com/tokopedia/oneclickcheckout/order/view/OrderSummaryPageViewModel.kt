@@ -1419,22 +1419,10 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             return payment
         }
         val installments = payment.creditCard.availableTerms
-        var shouldChooseNextInstallment = false
         var selectedInstallmentTerm: OrderPaymentInstallmentTerm? = null
         for (i in installments.lastIndex downTo 0) {
             val installment = installments[i]
-            if (shouldChooseNextInstallment) {
-                installment.isSelected = true
-                shouldChooseNextInstallment = false
-            }
             installment.isEnable = installment.minAmount <= (subTotal - discount)
-            if (installment.isSelected && !installment.isEnable) {
-                installment.isSelected = false
-                shouldChooseNextInstallment = true
-            }
-            if (shouldChooseNextInstallment && i == 0) {
-                installment.isSelected = true
-            }
             installment.fee = calculateMdrFee(subTotal, installment.mdr, subsidize, installment.mdrSubsidize)
             val total = subTotal + installment.fee - discount
             installment.monthlyAmount = if (installment.term > 0) ceil(total / installment.term) else total
