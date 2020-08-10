@@ -10,7 +10,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
-import com.tokopedia.logisticaddaddress.R;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsChangeAddress;
 
@@ -38,7 +37,7 @@ public class DiscomActivity extends BaseSimpleActivity
         analytics = new CheckoutAnalyticsChangeAddress();
         if (getSupportActionBar() != null) {
             getSupportActionBar().setElevation(0);
-            toolbar.setNavigationIcon(R.drawable.ic_close);
+            toolbar.setNavigationIcon(com.tokopedia.design.R.drawable.ic_close);
         }
     }
 
