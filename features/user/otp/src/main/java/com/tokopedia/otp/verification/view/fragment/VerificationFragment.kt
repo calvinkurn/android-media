@@ -447,8 +447,10 @@ class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
     }
 
     private fun setResendOtpFooterSpan(message: String, spannable: Spannable) {
-        val start = message.indexOf(getString(R.string.resend_otp))
-        val end = message.indexOf(getString(R.string.resend_otp)) + getString(R.string.resend_otp).length
+
+        val otpMsg = getString(R.string.resend_otp)
+        val start = message.indexOf(otpMsg)
+        val end = start + otpMsg.length
 
         if(start < 0 || end < 0) {
             return
