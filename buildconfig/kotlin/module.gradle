@@ -51,6 +51,9 @@ android {
         exclude 'META-INF/LICENSE-notice.md'
         exclude('META-INF/androidx.*.version')
     }
+    lintOptions {
+        abortOnError false
+    }
 }
 
 dependencies {
