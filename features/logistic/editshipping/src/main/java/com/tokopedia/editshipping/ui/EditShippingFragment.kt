@@ -366,10 +366,7 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val fragmentHeader = fragmentShippingHeader?.isShown
-        if (item.itemId == R.id.home) {
-            activity.finish()
-            return true
-        } else if (item.itemId == R.id.action_send) {
+        if (item.itemId == R.id.action_send) {
             if (fragmentHeader != null) {
                 submitData()
             } else showErrorToast(getString(R.string.dialog_on_process))
