@@ -5,8 +5,11 @@ import android.content.res.Resources
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.Gson
 import com.tokopedia.entertainment.search.adapter.viewholder.CategoryTextBubbleAdapter
+import com.tokopedia.entertainment.search.adapter.viewholder.EventGridAdapter
+import com.tokopedia.entertainment.search.data.CategoryModel
 import com.tokopedia.entertainment.search.data.EventDetailResponse
 import com.tokopedia.entertainment.search.data.EventSearchFullLocationResponse
+import com.tokopedia.entertainment.search.data.mapper.SearchMapper
 import com.tokopedia.entertainment.search.viewmodel.EventDetailViewModel
 import com.tokopedia.entertainment.search.viewmodel.EventLocationViewModel
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -57,7 +60,7 @@ class EventDetailViewModelTest {
         MockKAnnotations.init(this)
         eventDetailViewModel = EventDetailViewModel(Dispatchers.Unconfined, graphqlRepository)
         eventDetailViewModel.resources = context.resources
-        setFirstHash()
+
     }
 
     @Test
@@ -68,7 +71,7 @@ class EventDetailViewModelTest {
     }
 
     @Test
-    fun fetchDataCategory_successFetchDataCategory_successs(){
+    fun fetchDataCategory_failedFetchDataCategory_failed(){
         val errorGql = GraphqlError()
         errorGql.message = "Error Fetch Data Category"
 
@@ -93,49 +96,110 @@ class EventDetailViewModelTest {
 
     }
 
-    private fun setFirstHash(){
-        hashSet.add("30")
-        hashSet.add("40")
-        hashSet.add("20")
-        hashSet.remove("40")
-        hashSet.add("31")
-        hashSet.add("44")
-    }
-//
-//    @Test
-//    fun putCategory(){
-//        eventDetailViewModel.putCategoryToQuery("30","")
-//        eventDetailViewModel.putCategoryToQuery("40","")
-//        eventDetailViewModel.putCategoryToQuery("20","")
-//        eventDetailViewModel.putCategoryToQuery("40","")
-//        eventDetailViewModel.putCategoryToQuery("31","")
-//        eventDetailViewModel.putCategoryToQuery("44","")
-//
-//        Assert.assertEquals(eventDetailViewModel.hashSet, hashSet)
-//    }
 
     @Test
-    fun getDataGQL(){
-        Assert.assertNotNull(graphqlRepository)
-        Assert.assertNotNull(eventDetailViewModel.resources)
+    fun fetchDataCategory_successFetchDataCategory_page1(){
+        eventDetailViewModel.page = "1"
 
         val dataMock = Gson().fromJson(getJson("category_mock.json"), EventDetailResponse::class.java)
+        val categoryModel = CategoryModel()
+
+        val eventGrid = SearchMapper.mapSearchtoGrid(dataMock.data.eventSearch)
+        categoryModel.listCategory = SearchMapper.mappingForbiddenID(dataMock.data.eventChildCategory.categories)
+
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns GraphqlResponse(mapOf(
                 EventDetailResponse.Data::class.java to dataMock.data
         )as MutableMap<Type, Any>,  HashMap<Type, List<GraphqlError>>(), false)
-        Assert.assertNotNull(dataMock)
 
-        runBlocking(Dispatchers.Unconfined){
-            try {
-                val data = eventDetailViewModel.getQueryData(CacheType.CACHE_FIRST,"")
-                Assert.assertNotNull(data)
-                Assert.assertEquals(dataMock.data, data)
-                Assert.assertEquals(data.eventChildCategory.categories.size, 7)
-                Assert.assertEquals(data.eventSearch.products.size.toString(), data.eventSearch.count)
-            }catch (e: Exception){
-                println(e.message)
-            }
-        }
+
+        eventDetailViewModel.getData(query = "")
+
+        assertEquals(categoryModel, eventDetailViewModel.catLiveData.value)
+        assertEquals(eventGrid, eventDetailViewModel.eventLiveData.value)
+        assert(!eventDetailViewModel.isItRefreshing.value!!)
+        assert(!eventDetailViewModel.isItShimmering.value!!)
+        assert(eventDetailViewModel.showParentView.value!!)
+        assert(!eventDetailViewModel.showResetFilter.value!!)
+    }
+
+    @Test
+    fun fetchDataCategory_successFetchDataCategory_putCategoryToQuery(){
+        eventDetailViewModel.initCategory = true
+        hashSet.add("12")
+        val dataMock = Gson().fromJson(getJson("category_mock.json"), EventDetailResponse::class.java)
+        val categoryModel = CategoryModel()
+
+        val eventGrid = SearchMapper.mapSearchtoGrid(dataMock.data.eventSearch)
+        categoryModel.listCategory = SearchMapper.mappingForbiddenID(dataMock.data.eventChildCategory.categories)
+        categoryModel.hashSet = hashSet
+        categoryModel.position = 2
+
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns GraphqlResponse(mapOf(
+                EventDetailResponse.Data::class.java to dataMock.data
+        )as MutableMap<Type, Any>,  HashMap<Type, List<GraphqlError>>(), false)
+
+        eventDetailViewModel.putCategoryToQuery("12","")
+
+        assertEquals(categoryModel, eventDetailViewModel.catLiveData.value)
+        assertEquals(eventGrid, eventDetailViewModel.eventLiveData.value)
+        assertEquals(eventDetailViewModel.hashSet, hashSet)
+        assert(!eventDetailViewModel.isItRefreshing.value!!)
+        assert(!eventDetailViewModel.isItShimmering.value!!)
+        assert(eventDetailViewModel.showParentView.value!!)
+        assert(!eventDetailViewModel.showResetFilter.value!!)
+    }
+
+
+    @Test
+    fun fetchDataCategory_successFetchDataCategory_putCategoryToQueryandHashNotNull(){
+        eventDetailViewModel.initCategory = true
+        hashSet.add("12")
+        val dataMock = Gson().fromJson(getJson("category_mock.json"), EventDetailResponse::class.java)
+        val categoryModel = CategoryModel()
+
+        val eventGrid = SearchMapper.mapSearchtoGrid(dataMock.data.eventSearch)
+        categoryModel.listCategory = SearchMapper.mappingForbiddenID(dataMock.data.eventChildCategory.categories)
+        categoryModel.hashSet = hashSet
+        categoryModel.position = 2
+
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns GraphqlResponse(mapOf(
+                EventDetailResponse.Data::class.java to dataMock.data
+        )as MutableMap<Type, Any>,  HashMap<Type, List<GraphqlError>>(), false)
+
+        eventDetailViewModel.putCategoryToQuery("12","")
+
+        eventDetailViewModel.getData(query = "")
+
+        assertEquals(categoryModel, eventDetailViewModel.catLiveData.value)
+        assertEquals(eventGrid, eventDetailViewModel.eventLiveData.value)
+        assertEquals(eventDetailViewModel.hashSet, hashSet)
+        assert(!eventDetailViewModel.isItRefreshing.value!!)
+        assert(!eventDetailViewModel.isItShimmering.value!!)
+        assert(eventDetailViewModel.showParentView.value!!)
+        assert(!eventDetailViewModel.showResetFilter.value!!)
+    }
+
+    @Test
+    fun fetchDataCategory_successFetchDataCategory_clearFilter(){
+
+        val dataMock = Gson().fromJson(getJson("category_mock.json"), EventDetailResponse::class.java)
+        val categoryModel = CategoryModel()
+
+        val eventGrid = SearchMapper.mapSearchtoGrid(dataMock.data.eventSearch)
+        categoryModel.listCategory = SearchMapper.mappingForbiddenID(dataMock.data.eventChildCategory.categories)
+
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns GraphqlResponse(mapOf(
+                EventDetailResponse.Data::class.java to dataMock.data
+        )as MutableMap<Type, Any>,  HashMap<Type, List<GraphqlError>>(), false)
+
+        eventDetailViewModel.clearFilter("")
+
+        assertEquals(categoryModel, eventDetailViewModel.catLiveData.value)
+        assertEquals(eventGrid, eventDetailViewModel.eventLiveData.value)
+        assert(!eventDetailViewModel.isItRefreshing.value!!)
+        assert(!eventDetailViewModel.isItShimmering.value!!)
+        assert(eventDetailViewModel.showParentView.value!!)
+        assert(!eventDetailViewModel.showResetFilter.value!!)
     }
 
 

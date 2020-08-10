@@ -270,10 +270,6 @@ public class MyApplication extends BaseMainApplication
                     new com.tokopedia.user.session.UserSession(this);
             return sessionHandler = new SessionHandler(this) {
 
-                @Override
-                public String getGTMLoginID() {
-                    return userSession.getGTMLoginID();
-                }
 
                 @Override
                 public String getLoginID() {
@@ -285,10 +281,6 @@ public class MyApplication extends BaseMainApplication
                     return userSession.getRefreshTokenIV();
                 }
 
-                @Override
-                public boolean isMsisdnVerified() {
-                    return userSession.isMsisdnVerified();
-                }
             };
         }else{
             return sessionHandler;
@@ -311,11 +303,6 @@ public class MyApplication extends BaseMainApplication
 
     @Override
     public void refreshFCMFromInstantIdService(String token) {
-
-    }
-
-    @Override
-    public void refreshFCMTokenFromForegroundToCM() {
 
     }
 

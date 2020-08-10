@@ -2,13 +2,10 @@ package com.tokopedia.entertainment.search.data.mapper
 
 import android.content.res.Resources
 import com.tokopedia.entertainment.search.adapter.SearchEventItem
-import com.tokopedia.entertainment.search.adapter.viewholder.HistoryBackgroundItemViewHolder
-import com.tokopedia.entertainment.search.adapter.viewholder.SearchEventListViewHolder
-import com.tokopedia.entertainment.search.adapter.viewholder.SearchLocationListViewHolder
+import com.tokopedia.entertainment.search.adapter.viewholder.*
 import com.tokopedia.entertainment.search.adapter.viewmodel.*
-import com.tokopedia.entertainment.search.data.EventSearchFullLocationResponse
-import com.tokopedia.entertainment.search.data.EventSearchHistoryResponse
-import com.tokopedia.entertainment.search.data.EventSearchLocationResponse
+import com.tokopedia.entertainment.search.data.*
+import com.tokopedia.entertainment.search.viewmodel.EventDetailViewModel
 
 /**
  * Author errysuprayogi on 05,March,2020
@@ -121,4 +118,39 @@ object SearchMapper {
         }
         return listViewHolder
     }
+
+    fun mappingForbiddenID( categories: List<EventDetailResponse.Data.EventChildCategory.CategoriesItem>): MutableList<CategoryTextBubbleAdapter.CategoryTextBubble> {
+        val categoryData : MutableList<CategoryTextBubbleAdapter.CategoryTextBubble> = mutableListOf()
+        categories.let{
+           it.forEach {
+                if (it.title != EventDetailViewModel.FORBIDDEN_TITLE || it.id != EventDetailViewModel.FORBIDDEN_ID) { //Feedback #3 Remove Trending Events
+                    categoryData.add(DetailMapper.mapToCategory(it))
+                }
+            }
+        }
+        return categoryData
+    }
+
+    fun mapInitCategory(categoryData:MutableList<CategoryTextBubbleAdapter.CategoryTextBubble>, hashSet:HashSet<String>, categoryModel: CategoryModel){
+        categoryModel.hashSet = hashSet
+        categoryData.forEachIndexed{index, it ->
+            if(hashSet.contains(it.id)){
+                categoryModel.position = index
+                return@forEachIndexed
+            }
+        }
+    }
+
+    fun mapSearchtoGrid(eventSearch : EventDetailResponse.Data.EventSearch): MutableList<EventGridAdapter.EventGrid>{
+        val eventData : MutableList<EventGridAdapter.EventGrid> = mutableListOf()
+        if(eventSearch.products.isNotEmpty()){
+            eventSearch.products.forEach {
+                eventData.add(DetailMapper.mapToGrid(it))
+            }
+        }
+
+        return eventData
+    }
+
+
 }
