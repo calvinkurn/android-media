@@ -917,25 +917,15 @@ final class ProductListPresenter
                     @Override
                     public void onNext(List<? extends RecommendationWidget> recommendationWidgets) {
                         if (!recommendationWidgets.isEmpty() && recommendationWidgets.get(0) != null) {
-                            List<RecommendationItemViewModel> recommendationItemViewModel = new RecommendationViewModelMapper()
-                                    .convertToRecommendationItemViewModel(recommendationWidgets.get(0));
+                            List<RecommendationItemViewModel> recommendationItemViewModel = new RecommendationViewModelMapper().convertToRecommendationItemViewModel(recommendationWidgets.get(0));
                             List<Visitable> items = new ArrayList<>();
                             RecommendationWidget recommendationWidget = recommendationWidgets.get(0);
-                            items.add(createRecommendationTitleViewModel(recommendationWidget));
+                            items.add(new RecommendationTitleViewModel(recommendationWidget.getTitle().isEmpty() ? DEFAULT_PAGE_TITLE_RECOMMENDATION : recommendationWidget.getTitle(), recommendationWidget.getSeeMoreAppLink(), recommendationWidget.getPageName()));
                             items.addAll(recommendationItemViewModel);
                             getView().addRecommendationList(items);
                         }
                     }
                 }
-        );
-    }
-
-    @NotNull
-    private RecommendationTitleViewModel createRecommendationTitleViewModel(RecommendationWidget recommendationWidget) {
-        return new RecommendationTitleViewModel(
-                recommendationWidget.getTitle().isEmpty() ? DEFAULT_PAGE_TITLE_RECOMMENDATION : recommendationWidget.getTitle(),
-                recommendationWidget.getSeeMoreAppLink(),
-                recommendationWidget.getPageName()
         );
     }
 
