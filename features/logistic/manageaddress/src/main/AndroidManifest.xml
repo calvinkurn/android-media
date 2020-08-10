@@ -6,7 +6,7 @@
         android:allowBackup="true"
         android:supportsRtl="true">
         <activity
-            android:name="com.tokopedia.manageaddress.ui.ManageAddressActivity"
+            android:name="com.tokopedia.manageaddress.ui.manageaddress.ManageAddressActivity"
             android:label="@string/label_manage_address"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
@@ -20,6 +20,25 @@
                     android:pathPattern="@string/path_manage_address"
                     android:scheme="@string/internal_scheme" />
 
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.tokopedia.manageaddress.ui.addresschoice.CartAddressChoiceActivity"
+            android:label="@string/checkout_module_title_activity_shipping_address"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="stateHidden">
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_marketplace"
+                    android:path="@string/path_checkout_address_selection"
+                    android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
     </application>

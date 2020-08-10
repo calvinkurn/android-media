@@ -38,8 +38,9 @@
     <dimen name="play_stats_info_height">20dp</dimen>
     <dimen name="play_stats_info_counter_height">26dp</dimen>
 
-    <dimen name="play_summary_cover_width">100dp</dimen>
-    <dimen name="play_summary_cover_height">180dp</dimen>
+    <dimen name="play_summary_cover_width">110dp</dimen>
+    <dimen name="play_summary_cover_height">200dp</dimen>
+    <dimen name="play_summary_margin">11dp</dimen>
 
     <dimen name="play_prepare_broadcast_promo_image_width">240dp</dimen>
 
@@ -68,4 +69,12 @@
     <dimen name="play_change_cover_before_live_width">64dp</dimen>
 
     <dimen name="play_bottom_action_view_height">56dp</dimen>
+
+    <dimen name="play_timer_count_size">64sp</dimen>
+    <dimen name="play_timer_count_width">210dp</dimen>
+    <dimen name="play_timer_count_height">200dp</dimen>
+
+    <dimen name="play_button_medium_height">40dp</dimen>
+
+    <dimen name="play_loader_container_margin">36dp</dimen>
 </resources>

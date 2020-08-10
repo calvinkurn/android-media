@@ -1,7 +1,6 @@
 package com.tokopedia.product.addedit.preview.domain.mapper
 
 import android.net.Uri
-import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.description.presentation.model.*
@@ -11,6 +10,8 @@ import com.tokopedia.product.addedit.detail.presentation.model.PreorderInputMode
 import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
 import com.tokopedia.product.addedit.preview.data.model.params.add.*
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
+import com.tokopedia.product.addedit.variant.presentation.model.*
+import com.tokopedia.product.addedit.variant.presentation.model.ProductVariantInputModel
 import javax.inject.Inject
 
 /**
@@ -27,27 +28,14 @@ class AddProductInputMapper @Inject constructor() {
         const val UNIT_DAY = "DAY"
         const val UNIT_WEEK = "WEEK"
         const val UNIT_MONTH = "MONTH"
-        const val IS_ACTIVE = 1
-        const val IS_INACTIVE = 0
-        const val IS_ACTIVE_STRING = "ACTIVE"
-        const val IS_INACTIVE_STRING = "INACTIVE"
-
-        fun getActiveStatus(status: Int) =
-                when (status) {
-                    IS_INACTIVE -> IS_INACTIVE_STRING
-                    IS_ACTIVE -> IS_ACTIVE_STRING
-                    else -> IS_ACTIVE_STRING
-                }
     }
 
     fun mapInputToParam(shopId: String,
                         uploadIdList: ArrayList<String>,
-                        variantOptionUploadId: List<String>,
-                        sizeChartUploadId: String,
                         detailInputModel: DetailInputModel,
                         descriptionInputModel: DescriptionInputModel,
                         shipmentInputModel: ShipmentInputModel,
-                        variantInputModel: ProductVariantInputModel): ProductAddParam {
+                        variantInputModel: VariantInputModel): ProductAddParam {
 
         return ProductAddParam(
                 detailInputModel.productName,
@@ -70,102 +58,89 @@ class AddProductInputMapper @Inject constructor() {
                 mapPreorderParam(detailInputModel.preorder),
                 mapWholesaleParam(detailInputModel.wholesaleList),
                 mapVideoParam(descriptionInputModel.videoLinkList),
-                mapVariantParam(variantInputModel, sizeChartUploadId, variantOptionUploadId)
-
+                mapVariantParam(variantInputModel)
         )
     }
 
-    private fun mapVariantParam(variantInputModel: ProductVariantInputModel,
-                                sizeChartUploadId: String,
-                                variantOptionUploadId: List<String>): Variant? {
-        if (variantInputModel.productVariant.size == 0) {
-            return null
+    private fun mapVariantParam(variantInputModel: VariantInputModel): Variant? {
+        return if (variantInputModel.selections.isEmpty()) {
+            // if there is no variant input then return null
+            null
+        } else {
+            Variant(
+                    mapVariantSelections(variantInputModel.selections),
+                    mapVariantProducts(variantInputModel.products),
+                    mapSizeChart(variantInputModel.sizecharts)
+            )
         }
+    }
 
-        return Variant(
-                mapVariantSelectionParam(variantInputModel.variantOptionParent),
-                mapVariantProducts(variantInputModel.productVariant, variantOptionUploadId),
-                mapVariantSizeChart(variantInputModel.productSizeChart, sizeChartUploadId)
+    private fun mapVariantSelections(selections: List<SelectionInputModel>) = selections.map {
+        Selection(
+                it.variantId,
+                it.unitID,
+                mapVariantOptions(it.options)
         )
     }
 
-    private fun mapVariantSizeChart(productSizeChart: PictureViewModel?,
-                                    sizeChartUploadId: String): List<Picture> {
-        val sizeCharts: ArrayList<Picture> = ArrayList()
-        productSizeChart?.let {
-            if (productSizeChart.filePath.isNotEmpty()) {
-                val sizeChart = Picture(uploadId = sizeChartUploadId)
-                sizeCharts.add(sizeChart)
-            }
-        }
-        return sizeCharts
+    private fun mapVariantOptions(options: List<OptionInputModel>) = options.map {
+        Option(
+                it.value,
+                it.unitValueID,
+                it.hexCode
+        )
     }
 
-    private fun mapVariantProducts(
-            productVariant: ArrayList<ProductVariantCombinationViewModel>,
-            variantOptionUploadId: List<String>): List<Product> {
-        val products: ArrayList<Product> = ArrayList()
-        productVariant.forEach {
-            val levelIndex = it.opt.firstOrNull()
-            val product = Product(
-                    mapProductCombination(it.opt),
-                    it.priceVar,
-                    it.sku,
-                    getActiveStatus(it.st),
-                    it.stock,
-                    getVariantImage(variantOptionUploadId, levelIndex)
+    private fun mapVariantProducts(products: List<ProductVariantInputModel>) = products.map {
+        Product(
+                it.combination,
+                it.price,
+                it.sku,
+                it.status,
+                it.stock,
+                it.isPrimary,
+                mapPictureVariant(it.pictures)
+        )
+    }
+
+    private fun mapPictureVariant(pictures: List<PictureVariantInputModel>) = pictures.map {
+        Picture(
+                it.description,
+                it.fileName,
+                it.filePath,
+                it.picID,
+                it.isFromIG == "true",
+                it.width.toInt(),
+                it.height.toInt(),
+                it.uploadId
+        )
+    }
+
+    private fun mapSizeChart(sizecharts: PictureVariantInputModel): List<Picture>? {
+        return if (sizecharts.filePath.isEmpty()) {
+            emptyList()
+        } else {
+            val sizechart = Picture(
+                    sizecharts.description,
+                    sizecharts.fileName,
+                    sizecharts.filePath,
+                    sizecharts.picID,
+                    sizecharts.isFromIG == "true",
+                    sizecharts.width.toInt(),
+                    sizecharts.height.toInt(),
+                    sizecharts.uploadId
             )
-            products.add(product)
+
+            listOf(sizechart)
         }
-        return products
-    }
-
-    private fun getVariantImage(variantOptionUploadId: List<String>, index: Int?): List<Picture> {
-        var variantPictureList = listOf<Picture>()
-        index?.apply {
-            variantOptionUploadId.getOrNull(this - 1)?.apply {
-                variantPictureList = listOf(Picture(uploadId = this))
-            }
-        }
-        return variantPictureList
-    }
-
-    private fun mapProductCombination(opt: List<Int>): List<Int> = opt.map { it - 1 }
-
-    private fun mapVariantSelectionParam(
-            variantOptionParent: List<ProductVariantOptionParent>): List<Selection> {
-        val selections: ArrayList<Selection> = ArrayList()
-        variantOptionParent.forEach {
-            val selection = Selection(
-                    it.v.toString(),
-                    it.vu.toString(),
-                    mapVariantOptionParam(it.productVariantOptionChild ?: emptyList())
-            )
-            selections.add(selection)
-        }
-        return selections
-    }
-
-    private fun mapVariantOptionParam(
-            productVariantOptionChild: List<ProductVariantOptionChild>): List<Option> {
-        val options: ArrayList<Option> = ArrayList()
-        productVariantOptionChild.forEach {
-            val option = Option(
-                    it.value,
-                    it.vuv.toString(),
-                    it.hex
-
-            )
-            options.add(option)
-        }
-        return options
     }
 
     private fun mapWholesaleParam(wholesaleList: List<WholeSaleInputModel>): Wholesales? {
         val data: ArrayList<Wholesale> = ArrayList()
         wholesaleList.forEach {
             val quantity = it.quantity.replace(".", "").toIntOrZero()
-            val price = it.price.replace(".", "").toFloatOrZero()
+            val price = it.price.replace(".", "")
+                    .toBigIntegerOrNull() ?: 0.toBigInteger()
             if (quantity > 1) {
                 data.add(Wholesale(
                         quantity,

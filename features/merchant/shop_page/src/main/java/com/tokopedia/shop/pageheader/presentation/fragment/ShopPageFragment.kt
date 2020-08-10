@@ -327,7 +327,7 @@ class ShopPageFragment :
                         if (pathSegments.size > 1) {
                             shopId = pathSegments[1]
                         } else if (!getQueryParameter(SHOP_ID).isNullOrEmpty()) {
-                            shopId = getQueryParameter(SHOP_ID)
+                            shopId = getQueryParameter(SHOP_ID)!!
                         }
                     }
                     if (shopDomain.isNullOrEmpty()) {
@@ -619,6 +619,7 @@ class ShopPageFragment :
             shopPageHeaderDataModel.statusTitle = shopPageHeaderContentData.shopInfo.statusInfo.statusTitle
             shopPageHeaderDataModel.statusMessage = shopPageHeaderContentData.shopInfo.statusInfo.statusMessage
             shopPageHeaderDataModel.shopStatus = shopPageHeaderContentData.shopInfo.statusInfo.shopStatus
+            shopPageHeaderDataModel.broadcaster = shopPageHeaderContentData.broadcasterConfig
             if (!isMyShop) {
                 button_chat.show()
                 button_chat.setOnClickListener {

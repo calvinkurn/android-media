@@ -11,8 +11,9 @@ import com.tokopedia.play.broadcaster.ui.itemdecoration.ProductPreviewItemDecora
 import com.tokopedia.play.broadcaster.ui.model.EtalaseContentUiModel
 import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 import com.tokopedia.play.broadcaster.ui.model.ProductLoadingUiModel
-import com.tokopedia.play.broadcaster.util.doOnPreDraw
+import com.tokopedia.play.broadcaster.util.extension.doOnPreDraw
 import com.tokopedia.play.broadcaster.view.adapter.PlayProductPreviewAdapter
+import kotlin.math.max
 import kotlin.math.min
 
 /**
@@ -52,9 +53,10 @@ class PlayEtalaseViewHolder(itemView: View, private val listener: Listener) : Ba
     fun bind(item: EtalaseContentUiModel) {
         setupProductPreview(item.productMap, item.totalProduct)
 
-        listener.onEtalaseBound(item.id)
+        if (item.productMap.isEmpty() && item.totalProduct > 0) listener.onEtalaseBound(item.id)
+
         vClickArea.setOnClickListener {
-            listener.onEtalaseClicked(item.id, (0 until rvProductPreview.childCount).mapNotNull {
+            listener.onEtalaseClicked(item.id, item.name, (0 until rvProductPreview.childCount).mapNotNull {
                 val childView = rvProductPreview.getChildAt(it)
                 val viewHolder = rvProductPreview.getChildViewHolder(childView)
                 if (viewHolder is ProductPreviewViewHolder) viewHolder.ivImage else null
@@ -66,7 +68,8 @@ class PlayEtalaseViewHolder(itemView: View, private val listener: Listener) : Ba
 
     private fun setupProductPreview(productPreviewMap: Map<Int, List<ProductContentUiModel>>, totalProduct: Int) {
         if (productPreviewMap.isEmpty()) {
-            productPreviewAdapter.setItemsAndAnimateChanges(List(min(MAX_PREVIEW, totalProduct)) { ProductLoadingUiModel })
+            val totalProductValidated = min(MAX_PREVIEW, max(MIN_PREVIEW, totalProduct))
+            productPreviewAdapter.setItemsAndAnimateChanges(List(totalProductValidated) { ProductLoadingUiModel })
         } else {
             productPreviewAdapter.setItemsAndAnimateChanges(productPreviewMap.values.flatten())
         }
@@ -74,6 +77,7 @@ class PlayEtalaseViewHolder(itemView: View, private val listener: Listener) : Ba
 
     companion object {
         private const val MAX_PREVIEW = 4
+        private const val MIN_PREVIEW = 1
 
         val LAYOUT = R.layout.item_play_etalase
     }
@@ -81,6 +85,6 @@ class PlayEtalaseViewHolder(itemView: View, private val listener: Listener) : Ba
     interface Listener {
 
         fun onEtalaseBound(etalaseId: String)
-        fun onEtalaseClicked(etalaseId: String, sharedElements: List<View>)
+        fun onEtalaseClicked(etalaseId: String, etalaseName: String, sharedElements: List<View>)
     }
 }

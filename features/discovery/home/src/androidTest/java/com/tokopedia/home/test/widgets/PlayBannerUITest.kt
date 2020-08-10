@@ -58,6 +58,8 @@ class PlayBannerUITest : BaseWidgetUiTest(){
     override val getRecommendationTabUseCase = mockk<dagger.Lazy<GetRecommendationTabUseCase>>(relaxed = true)
     override val getHomeTokopointsDataUseCase = mockk<dagger.Lazy<GetHomeTokopointsDataUseCase>>(relaxed = true)
     override val getCoroutinePendingCashbackUseCase = mockk<dagger.Lazy<GetCoroutinePendingCashbackUseCase>> (relaxed = true)
+    override val playToggleChannelReminderUseCase = mockk<Lazy<PlayToggleChannelReminderUseCase>> (relaxed = true)
+    override val getPlayBannerUseCase = mockk<Lazy<GetPlayWidgetUseCase>> (relaxed = true)
     override val getPlayLiveDynamicUseCase = mockk<dagger.Lazy<GetPlayLiveDynamicUseCase>> (relaxed = true)
     override val getCoroutineWalletBalanceUseCase = mockk<dagger.Lazy<GetCoroutineWalletBalanceUseCase>> (relaxed = true)
     override val getHomeUseCase = mockk<dagger.Lazy<HomeUseCase>> (relaxed = true)
@@ -330,7 +332,7 @@ class PlayBannerUITest : BaseWidgetUiTest(){
         onView(withId(TITLE)).check(matches(withText("Play Widget")))
         onView(withId(TITLE_CONTENT)).check(matches(withText("Channel 2")))
     }
-  
+
 //    private fun <T : ViewModel> createViewModelFactory(viewModel: T): ViewModelProvider.Factory {
 //        return object : ViewModelProvider.Factory {
 //            override fun <T : ViewModel> create(viewModelClass: Class<T>): T {
@@ -352,6 +354,8 @@ class PlayBannerUITest : BaseWidgetUiTest(){
             getHomeTokopointsDataUseCase = getHomeTokopointsDataUseCase,
             getKeywordSearchUseCase = getKeywordSearchUseCase,
             getPendingCashbackUseCase = getCoroutinePendingCashbackUseCase,
+            playToggleChannelReminderUseCase = playToggleChannelReminderUseCase,
+            getPlayBannerUseCase = getPlayBannerUseCase,
             getPlayCardHomeUseCase = getPlayLiveDynamicUseCase,
             getRecommendationTabUseCase = getRecommendationTabUseCase,
             getWalletBalanceUseCase = getCoroutineWalletBalanceUseCase,
@@ -366,7 +370,7 @@ class PlayBannerUITest : BaseWidgetUiTest(){
             getRechargeRecommendationUseCase = getRechargeRecommendationUseCase,
             declineRechargeRecommendationUseCase = declineRechargeRecommendationUseCase,
             getSalamWidgetUseCase = getSalamWIdgetUseCase,
-            declineSalamWIdgetUseCase = declineSalamWIdgetUseCase,
+            declineSalamWidgetUseCase = declineSalamWIdgetUseCase,
             injectCouponTimeBasedUseCase = injectCouponTimeBasedUseCase,
             topAdsImageViewUseCase = topAdsImageViewUseCase,
             playToggleChannelReminderUseCase = playToggleChannelReminderUseCase,

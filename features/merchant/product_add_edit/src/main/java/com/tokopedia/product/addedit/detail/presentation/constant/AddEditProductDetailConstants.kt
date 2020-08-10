@@ -11,8 +11,7 @@ class AddEditProductDetailConstants {
         const val REQUEST_CODE_DETAIL_EDIT = 3
         const val REQUEST_CODE_DESCRIPTION_EDIT = 4
         const val REQUEST_CODE_SHIPMENT_EDIT = 5
-        const val REQUEST_CODE_VARIANT_EDIT = 6
-        const val REQUEST_CODE_VARIANT_DIALOG_EDIT = 7
+        const val REQUEST_CODE_VARIANT_DIALOG_EDIT = 6
         const val CATEGORY_RESULT_ID = "CATEGORY_RESULT_ID"
         const val CATEGORY_RESULT_FULL_NAME = "CATEGORY_RESULT_FULL_NAME"
         const val UNIT_DAY = 0
@@ -26,6 +25,7 @@ class AddEditProductDetailConstants {
         const val DEBOUNCE_DELAY_MILLIS = 500L
         const val MIN_PRODUCT_PRICE_LIMIT = 100
         const val MIN_PRODUCT_STOCK_LIMIT = 1
+        const val MAX_PRODUCT_PRICE_LIMIT = 100000000
         const val MAX_PRODUCT_STOCK_LIMIT = 999999
         const val MIN_MIN_ORDER_QUANTITY = 1
         const val MIN_PREORDER_DURATION = 1
@@ -33,6 +33,7 @@ class AddEditProductDetailConstants {
         const val MAX_PREORDER_WEEKS = 13
         const val PARAM_SET_CASHBACK_VALUE = "cashback"
         const val PARAM_SET_CASHBACK_PRODUCT_PRICE = "price"
+        const val PARAM_SET_CASHBACK_PRODUCT_NAME = "product_name"
         const val SET_CASHBACK_REQUEST_CODE = 3333
         const val SET_CASHBACK_CACHE_MANAGER_KEY = "set_cashback_cache_id"
         const val SET_CASHBACK_RESULT = "set_cashback_result"

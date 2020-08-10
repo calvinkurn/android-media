@@ -27,7 +27,6 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import kotlinx.android.synthetic.main.partial_new_shop_page_header.view.*
-import kotlinx.android.synthetic.main.partial_new_shop_page_seller_play_widget.view.*
 
 class ShopPageFragmentHeaderViewHolder(private val view: View, private val listener: ShopPageFragmentViewHolderListener,
                                        private val shopPageTracking: ShopPageTrackingBuyer?,
@@ -82,17 +81,9 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         view.play_seller_widget_container.visibility = if(shopPageHeaderDataModel.broadcaster.streamAllowed) View.VISIBLE else View.GONE
         setupTextContentSgcWidget()
         setLottieAnimationFromUrl(context.getString(R.string.shop_page_lottie_sgc_url))
-        shopPageTrackingSGCPlayWidget?.onImpressionSGCContent(shopId = shopPageHeaderDataModel.shopId, customDimensionShopPage = CustomDimensionShopPage.create(
-                shopPageHeaderDataModel.shopId,
-                shopPageHeaderDataModel.isOfficial,
-                shopPageHeaderDataModel.isGoldMerchant
-        ))
+        shopPageTrackingSGCPlayWidget?.onImpressionSGCContent(shopId = shopPageHeaderDataModel.shopId)
         view.container_lottie?.setOnClickListener {
-            shopPageTrackingSGCPlayWidget?.onClickSGCContent(shopId = shopPageHeaderDataModel.shopId, customDimensionShopPage = CustomDimensionShopPage.create(
-                    shopPageHeaderDataModel.shopId,
-                    shopPageHeaderDataModel.isOfficial,
-                    shopPageHeaderDataModel.isGoldMerchant
-            ))
+            shopPageTrackingSGCPlayWidget?.onClickSGCContent(shopId = shopPageHeaderDataModel.shopId)
             RouteManager.route(view.context, ApplinkConstInternalContent.INTERNAL_PLAY_BROADCASTER)
         }
     }

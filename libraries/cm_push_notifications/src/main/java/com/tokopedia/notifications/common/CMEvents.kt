@@ -37,6 +37,8 @@ object IrisAnalyticsEvents {
     const val INAPP_CLICKED = "inappClicked"
     const val INAPP_DISMISSED = "inappDismissed"
     const val INAPP_CANCELLED = "inappCancelled"
+    const val INAPP_DELIVERED = "inappDelivered"
+    const val INAPP_PREREAD = "inappPreread"
 
     private const val EVENT_NAME = "event"
     private const val EVENT_TIME = "event_time"
@@ -47,8 +49,8 @@ object IrisAnalyticsEvents {
     private const val PARENT_ID = "parent_id"
     private const val PUSH_TYPE = "push_type"
     private const val IS_SILENT = "is_silent"
-    private const val CLICKED_ELEMENT_ID="clicked_element_id"
-    private const val INAPP_TYPE="inapp_type"
+    private const val CLICKED_ELEMENT_ID = "clicked_element_id"
+    private const val INAPP_TYPE = "inapp_type"
 
     fun sendPushEvent(context: Context, eventName: String, baseNotificationModel: BaseNotificationModel) {
         if (baseNotificationModel.isTest)
