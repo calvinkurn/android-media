@@ -16,6 +16,7 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.KEY_
 import com.tokopedia.topads.dashboard.data.model.insightkey.Header
 import com.tokopedia.topads.dashboard.data.model.insightkey.KeywordInsightDataMain
 import com.tokopedia.topads.dashboard.data.model.insightkey.MutationData
+import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.adapter.insight.TopAdsInsightNegKeyAdapter
 import com.tokopedia.topads.dashboard.view.sheet.InsightKeyBottomSheet
@@ -95,7 +96,7 @@ class TopAdsInsightKeyNegFragment : BaseDaggerFragment() {
     private fun setHeader(totalPotential: Double) {
         insight_title.text = data?.negative?.box?.title
         val text = data?.negative?.box?.desc
-        val withValue = text?.replace("$" + "count", dataInsight?.get(key)?.negative?.size.toString())?.replace("$" + "value", totalPotential.toString())
+        val withValue = text?.replace("$" + "count", dataInsight?.get(key)?.negative?.size.toString())?.replace("$" + "value", Utils.convertToCurrencyString(totalPotential.toLong()))
         insight_desc.text = Html.fromHtml(withValue)
         btnTambah.text = data?.negative?.box?.button?.title?.replace("$" + "count", dataInsight?.get(key)?.negative?.size.toString())
     }

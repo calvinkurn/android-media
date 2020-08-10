@@ -48,7 +48,7 @@ dependencies {
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
     kapt rootProject.ext.dbDependencies.dbRoomCompiler
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
-    implementation (rootProject.ext.firebase.crashlytics)
+    implementation (rootProject.ext.serviceDependencies.crashlytics)
 
 }
 

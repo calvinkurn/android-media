@@ -27,6 +27,7 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.AUTO_ADS_DISABLED
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.EXPIRE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.FIRST_LAUNCH
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.SELLER_CREATE_FORM_PATH
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.SELLER_PACKAGENAME
 import com.tokopedia.topads.dashboard.data.model.FragmentTabItem
 import com.tokopedia.topads.dashboard.di.DaggerTopAdsDashboardComponent
@@ -43,7 +44,8 @@ import javax.inject.Inject
  * Created by hadi.putra on 23/04/2018.
  */
 
-private const val CLICK_BUAT_IKLAN ="click - tambah iklan"
+private const val CLICK_BUAT_IKLAN = "click - tambah iklan"
+
 class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComponent>, TopAdsProductIklanFragment.AppBarAction, BerandaTabFragment.GoToInsight {
 
     private var tracker: TopAdsDashboardTracking? = null
@@ -63,7 +65,7 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
                 val intent = RouteManager.getIntent(this, ApplinkConstInternalTopAds.TOPADS_CREATE_CHOOSER)
                 startActivityForResult(intent, AUTO_ADS_DISABLED)
             } else {
-                openDashboard()
+                openCreateForm()
             }
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_BUAT_IKLAN, "")
         }
@@ -89,7 +91,7 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
                 val intent = RouteManager.getIntent(this, ApplinkConstInternalTopAds.TOPADS_CREATE_CHOOSER)
                 startActivityForResult(intent, AUTO_ADS_DISABLED)
             } else {
-                openDashboard()
+                openCreateForm()
             }
         }
         createAd?.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
@@ -162,6 +164,7 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
         }
         dialog.show()
     }
+
     private fun getViewPagerAdapter(): PagerAdapter {
         val list: MutableList<FragmentTabItem> = mutableListOf()
         list.add(FragmentTabItem(resources.getString(R.string.topads_dash_beranda), BerandaTabFragment.createInstance()))
@@ -213,10 +216,10 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
         super.onBackPressed()
     }
 
-    private fun openDashboard() {
+    private fun openCreateForm() {
         if (AppUtil.isSellerInstalled(this)) {
-            val intent = RouteManager.getIntent(this, ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL)
-            intent.component = ComponentName(SELLER_PACKAGENAME, TopAdsDashboardActivity::class.java.name)
+            val intent = RouteManager.getIntent(this, ApplinkConstInternalTopAds.TOPADS_CREATE_CHOOSER)
+            intent.component = ComponentName(SELLER_PACKAGENAME, SELLER_CREATE_FORM_PATH)
             startActivity(intent)
         } else {
             RouteManager.route(this, ApplinkConstInternalMechant.MERCHANT_REDIRECT_CREATE_SHOP)

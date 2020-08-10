@@ -100,10 +100,8 @@ import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.product.etalase.utils.EtalaseUtils;
 import com.tokopedia.seller.purchase.detail.activity.OrderHistoryActivity;
-import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
 import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
-import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.tkpd.applink.ApplinkUnsupportedImpl;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.fcm.AppNotificationReceiver;
@@ -161,7 +159,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         AbstractionRouter,
         LogisticRouter,
         ApplinkRouter,
-        ShopModuleRouter,
         LoyaltyModuleRouter,
         GamificationRouter,
         ReactNativeRouter,
@@ -212,13 +209,14 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     private void warmUpGQLClient(){
         if(remoteConfig.getBoolean(RemoteConfigKey.EXECUTE_GQL_CONNECTION_WARM_UP, false)) {
+            try{
             GQLPing gqlPing = GraphqlClient.getRetrofit().create(GQLPing.class);
             Call<String> gqlPingCall = gqlPing.pingGQL();
             gqlPingCall.enqueue(new Callback<String>() {
                 @Override
                 public void onResponse(Call<String> call, retrofit2.Response<String> response) {
-                    if(response.body() != null) {
-                        Timber.d("Success%s", response.body());
+                    if(response != null && response.body() != null) {
+                        Timber.d("Success %s", response.body());
                     }
                 }
 
@@ -227,6 +225,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                     Timber.d("Failure");
                 }
             });
+            } catch (Exception ex){
+                Timber.d("GQL Ping exception %s", ex.getMessage());
+            }
         }
     }
 
@@ -421,11 +422,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Fragment getReputationHistoryFragment() {
-        return SellerReputationFragment.createInstance();
-    }
-
-    @Override
     public Intent getOrderHistoryIntent(Context context, String orderId) {
         return OrderHistoryActivity.createInstance(context, orderId, 1);
     }
@@ -548,16 +544,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getGeoLocationActivityIntent(Context context, LocationPass locationPass) {
         return GeolocationActivity.createInstance(context, locationPass, false);
-    }
-
-    @Override
-    public Fragment getReviewFragment(Activity activity, String shopId, String shopDomain) {
-        return ReviewShopFragment.createInstance(shopId, shopDomain);
-    }
-
-    @Override
-    public Class getReviewFragmentClass() {
-        return ReviewShopFragment.class;
     }
 
     @Override

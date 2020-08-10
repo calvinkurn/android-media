@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:background="@color/white">
 
-    <com.tokopedia.common_digital.common.widget.DigitalSearchInputView
+    <com.tokopedia.unifycomponents.SearchBarUnify
         android:id="@+id/topupbills_search_input_view_number"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

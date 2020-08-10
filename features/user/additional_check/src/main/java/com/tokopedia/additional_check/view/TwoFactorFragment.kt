@@ -6,15 +6,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.additional_check.R
 import com.tokopedia.additional_check.data.TwoFactorResult
 import com.tokopedia.additional_check.internal.AdditionalCheckConstants.POPUP_TYPE_BOTH
 import com.tokopedia.additional_check.internal.AdditionalCheckConstants.POPUP_TYPE_PHONE
 import com.tokopedia.additional_check.internal.AdditionalCheckConstants.POPUP_TYPE_PIN
-import com.tokopedia.additional_check.view.activity.TwoFactorActivity
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import kotlinx.android.synthetic.main.fragment_two_factor.view.*
@@ -57,7 +56,7 @@ class TwoFactorFragment: BaseDaggerFragment() {
             mView?.title_two_factor?.text = getString(R.string.add_pin_heading)
             mView?.body_two_factor?.text = getString(R.string.add_pin_body)
             mView?.btn_two_factor?.text = getString(R.string.add_pin_button_title)
-            mView?.img_view_two_factor?.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.image_pin_two_factor))
+            mView?.img_view_two_factor?.setImageDrawable(MethodChecker.getDrawable(this, R.drawable.image_pin_two_factor))
             mView?.btn_two_factor?.setOnClickListener { goToAddPin() }
         }
     }
@@ -67,7 +66,7 @@ class TwoFactorFragment: BaseDaggerFragment() {
             mView?.title_two_factor?.text = getString(R.string.add_phone_heading)
             mView?.body_two_factor?.text = getString(R.string.add_phone_body)
             mView?.btn_two_factor?.text = getString(R.string.add_phone_button_title)
-            mView?.img_view_two_factor?.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.image_phone_two_factor))
+            mView?.img_view_two_factor?.setImageDrawable(MethodChecker.getDrawable(this, R.drawable.image_phone_two_factor))
             mView?.btn_two_factor?.setOnClickListener { goToAddPhone() }
         }
     }
@@ -77,7 +76,7 @@ class TwoFactorFragment: BaseDaggerFragment() {
             mView?.title_two_factor?.text = getString(R.string.add_pin_success_heading)
             mView?.body_two_factor?.text = getString(R.string.add_pin_success_body)
             mView?.btn_two_factor?.text = getString(R.string.add_pin_success_button_title)
-            mView?.img_view_two_factor?.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.image_pin_success_two_factor))
+            mView?.img_view_two_factor?.setImageDrawable(MethodChecker.getDrawable(this, R.drawable.image_pin_success_two_factor))
             mView?.btn_two_factor?.setOnClickListener { activity?.finish() }
         }
     }
