@@ -1265,10 +1265,7 @@ final class ProductListPresenter
                 if (i < 3) {
                     prodIdArray.add(productViewModel.getProductList().get(i).getProductID());
                     afProdIds.put(productViewModel.getProductList().get(i).getProductID());
-                    moengageTrackingCategory.put(
-                            String.valueOf(productViewModel.getProductList().get(i).getCategoryID()),
-                            productViewModel.getProductList().get(i).getCategoryName()
-                    );
+                    moengageTrackingCategory.put(String.valueOf(productViewModel.getProductList().get(i).getCategoryID()), productViewModel.getProductList().get(i).getCategoryName());
                 }
 
                 categoryIdMapping.add(String.valueOf(productViewModel.getProductList().get(i).getCategoryID()));
@@ -1283,12 +1280,7 @@ final class ProductListPresenter
         isFirstTimeLoad = false;
     }
 
-    private GeneralSearchTrackingModel createGeneralSearchTrackingModel(
-            ProductViewModel productViewModel,
-            String query,
-            Set<String> categoryIdMapping,
-            Set<String> categoryNameMapping
-    ) {
+    private GeneralSearchTrackingModel createGeneralSearchTrackingModel(ProductViewModel productViewModel, String query, Set<String> categoryIdMapping, Set<String> categoryNameMapping) {
         return new GeneralSearchTrackingModel(
                 createGeneralSearchTrackingEventLabel(productViewModel, query),
                 !productViewModel.getProductList().isEmpty(),
