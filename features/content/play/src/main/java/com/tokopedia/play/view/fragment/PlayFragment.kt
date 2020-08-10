@@ -20,6 +20,7 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.ERR_STATE_SOCKET
@@ -48,10 +49,12 @@ import com.tokopedia.play.view.uimodel.VideoPlayerUiModel
 import com.tokopedia.play.view.viewcomponent.*
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.GlobalErrorCodeWrapper
+import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.play_common.viewcomponent.viewComponent
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -70,6 +73,7 @@ class PlayFragment @Inject constructor(
         FragmentYouTubeViewComponent.Listener {
 
     private lateinit var ivClose: ImageView
+    private lateinit var loaderPage: LoaderUnify
     private val fragmentVideoView by viewComponent {
         FragmentVideoViewComponent(channelId, it, R.id.fl_video, childFragmentManager, this)
     }
@@ -92,11 +96,7 @@ class PlayFragment @Inject constructor(
     private val channelId: String
         get() = arguments?.getString(PLAY_KEY_CHANNEL_ID).orEmpty()
 
-    /**
-     * Manager
-     */
     private lateinit var orientationManager: PlaySensorOrientationManager
-
     private val keyboardWatcher = KeyboardWatcher()
 
     private var requestedOrientation: Int
@@ -105,18 +105,14 @@ class PlayFragment @Inject constructor(
             requireActivity().requestedOrientation = value
         }
 
-    private var systemUiVisibility: Int
-        get() = requireActivity().window.decorView.systemUiVisibility
-        set(value) {
-            requireActivity().window.decorView.systemUiVisibility = value
-        }
-
     private val orientation: ScreenOrientation
         get() = ScreenOrientation.getByInt(resources.configuration.orientation)
 
     private var videoScalingManager: VideoScalingManager? = null
     private var videoBoundsManager: VideoBoundsManager? = null
     private val boundsMap = BoundsKey.values.associate { Pair(it, 0) }.toMutableMap()
+
+    private var hasFetchedChannelInfo: Boolean = false
 
     override fun getScreenName(): String = "Play"
 
@@ -299,6 +295,7 @@ class PlayFragment @Inject constructor(
     private fun initView(view: View) {
         with (view) {
             ivClose = findViewById(R.id.iv_close)
+            loaderPage = findViewById(R.id.loader_page)
         }
     }
 
@@ -340,14 +337,21 @@ class PlayFragment @Inject constructor(
     private fun observeGetChannelInfo() {
         playViewModel.observableGetChannelInfo.observe(viewLifecycleOwner, DistinctObserver { result ->
             when (result) {
-                is Success -> {
+                NetworkResult.Loading -> {
+                    if (!hasFetchedChannelInfo) loaderPage.show()
+                    else loaderPage.hide()
+
+                    fragmentErrorViewOnStateChanged(shouldShow = false)
+                }
+                is NetworkResult.Success -> {
+                    hasFetchedChannelInfo = true
+                    loaderPage.hide()
                     fragmentErrorViewOnStateChanged(shouldShow = false)
                     PlayAnalytics.sendScreen(channelId, playViewModel.channelType)
                 }
-                is Fail -> result.throwable.message?.let {
-                    if (GlobalErrorCodeWrapper.wrap(it) != GlobalErrorCodeWrapper.Unknown) {
-                        fragmentErrorViewOnStateChanged(shouldShow = true)
-                    }
+                is NetworkResult.Fail -> {
+                    loaderPage.hide()
+                    if (!hasFetchedChannelInfo) fragmentErrorViewOnStateChanged(shouldShow = true)
                 }
             }
         })

@@ -7,7 +7,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toAmountString
-import com.tokopedia.play.ERR_SERVER_ERROR
 import com.tokopedia.play.data.*
 import com.tokopedia.play.data.mapper.PlaySocketMapper
 import com.tokopedia.play.data.websocket.PlaySocket
@@ -20,14 +19,11 @@ import com.tokopedia.play.util.event.Event
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.mapper.PlayUiMapper
-import com.tokopedia.play.view.wrapper.GlobalErrorCodeWrapper
 import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.model.PlayBufferControl
+import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.player.PlayVideoManager
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import javax.inject.Inject
@@ -51,7 +47,7 @@ class PlayViewModel @Inject constructor(
     /**
      * Not Used for Event to component
      */
-    val observableGetChannelInfo: LiveData<Result<ChannelInfoUiModel>>
+    val observableGetChannelInfo: LiveData<NetworkResult<ChannelInfoUiModel>>
         get() = _observableGetChannelInfo
 
     val observableVideoPlayer: LiveData<VideoPlayerUiModel>
@@ -139,7 +135,7 @@ class PlayViewModel @Inject constructor(
         get() = _observableProductSheetContent.value != null
 
     private val _observableCompleteInfo = MutableLiveData<PlayCompleteInfoUiModel>()
-    private val _observableGetChannelInfo = MutableLiveData<Result<ChannelInfoUiModel>>()
+    private val _observableGetChannelInfo = MutableLiveData<NetworkResult<ChannelInfoUiModel>>()
     private val _observableSocketInfo = MutableLiveData<PlaySocketInfo>()
     private val _observableVideoStream = MutableLiveData<VideoStreamUiModel>()
     private val _observableChatList = MutableLiveData<MutableList<PlayChatUiModel>>()
@@ -408,7 +404,7 @@ class PlayViewModel @Inject constructor(
                 )
                 _observableCompleteInfo.value = completeInfoUiModel
 
-                _observableGetChannelInfo.value = Success(completeInfoUiModel.channelInfo)
+                _observableGetChannelInfo.value = NetworkResult.Success(completeInfoUiModel.channelInfo)
                 _observableTotalViews.value = completeInfoUiModel.totalView
                 _observablePinnedMessage.value = completeInfoUiModel.pinnedMessage
                 _observablePinnedProduct.value = completeInfoUiModel.pinnedProduct
@@ -425,18 +421,16 @@ class PlayViewModel @Inject constructor(
             }) {
                 if (retryCount++ < MAX_RETRY_CHANNEL_INFO) getChannelInfoResponse(channelId)
                 else if (it !is CancellationException) {
-                    val error = if (_observableGetChannelInfo.value == null && GlobalErrorCodeWrapper.wrap(it.message.orEmpty()) == GlobalErrorCodeWrapper.Unknown)
-                        Throwable(ERR_SERVER_ERROR)
-                    else it
-
-                    if (GlobalErrorCodeWrapper.wrap(error.message.orEmpty()) != GlobalErrorCodeWrapper.Unknown) doOnForbidden()
-
-                    _observableGetChannelInfo.value = Fail(error)
+                    if (_observableCompleteInfo.value == null) doOnForbidden()
+                    _observableGetChannelInfo.value = NetworkResult.Fail(it)
                 }
             }
         }
 
-        if (!isFreezeOrBanned) getChannelInfoResponse(channelId)
+        if (!isFreezeOrBanned) {
+            _observableGetChannelInfo.value = NetworkResult.Loading
+            getChannelInfoResponse(channelId)
+        }
     }
 
     fun sendChat(message: String) {
@@ -485,7 +479,7 @@ class PlayViewModel @Inject constructor(
 
     fun updateBadgeCart() {
         val channelInfo = _observableGetChannelInfo.value
-        if (channelInfo != null && channelInfo is Success) {
+        if (channelInfo != null && channelInfo is NetworkResult.Success) {
             scope.launch { getBadgeCart(channelInfo.data.isShowCart) }
         }
     }
