@@ -19,6 +19,7 @@ dependencies {
 
     implementation project(rootProject.ext.libraries.encryption)
     implementation rootProject.ext.miscDependencies.gson
+    implementation rootProject.ext.miscDependencies.workManager
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
     implementation rootProject.ext.dbDependencies.dbRoomKtx
     kapt rootProject.ext.dbDependencies.dbRoomCompiler

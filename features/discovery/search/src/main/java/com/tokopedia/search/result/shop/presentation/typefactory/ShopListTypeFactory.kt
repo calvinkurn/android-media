@@ -2,13 +2,14 @@ package com.tokopedia.search.result.shop.presentation.typefactory
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.search.result.shop.presentation.model.*
+import com.tokopedia.search.result.shop.presentation.model.ShopCpmViewModel
+import com.tokopedia.search.result.shop.presentation.model.ShopEmptySearchViewModel
+import com.tokopedia.search.result.shop.presentation.model.ShopRecommendationTitleViewModel
+import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
 
 internal interface ShopListTypeFactory {
 
     fun type(shopCpmViewModel: ShopCpmViewModel): Int
-
-    fun type(shopTotalCountViewModel: ShopTotalCountViewModel): Int
 
     fun type(shopItem: ShopViewModel.ShopItem): Int
 

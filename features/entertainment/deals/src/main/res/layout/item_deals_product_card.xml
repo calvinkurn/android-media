@@ -10,7 +10,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <ImageView
             android:id="@+id/img_product_card"
@@ -29,7 +29,6 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/deals_dp_12"
             android:layout_marginTop="@dimen/deals_dp_12"
-            android:layout_marginBottom="@dimen/spacing_lvl2"
             android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"

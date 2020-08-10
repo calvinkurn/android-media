@@ -24,7 +24,7 @@ class BenchmarkMixLeftComponent {
     var activityRule: ActivityTestRule<BlankTestActivity> = ActivityTestRule(BlankTestActivity::class.java)
 
     @Test
-    fun benchmark_onCreateViewHolder_mix_left_component() {
+    fun benchmark_onCreateViewHolder_ViewHolder_mix_left_component() {
         val viewGroup = FrameLayout(activityRule.activity)
         val recyclerViewAdapter = simpleAdapter(
                 MixLeftComponentViewHolder.LAYOUT) {
@@ -38,7 +38,7 @@ class BenchmarkMixLeftComponent {
     }
 
     @Test
-    fun benchmark_onBind_mix_left_component() {
+    fun benchmark_onBind_ViewHolder_mix_left_component() {
         val itemView = simpleViewFromLayout(MixLeftComponentViewHolder.LAYOUT, activityRule.activity)
         val viewHolder = MixLeftComponentViewHolder(
                 itemView, null, null, null

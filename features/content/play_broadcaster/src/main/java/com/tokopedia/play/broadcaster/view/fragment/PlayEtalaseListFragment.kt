@@ -13,6 +13,7 @@ import androidx.transition.Slide
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.ui.itemdecoration.PlayGridTwoItemDecoration
 import com.tokopedia.play.broadcaster.ui.model.EtalaseLoadingUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.PageResultState
@@ -26,7 +27,8 @@ import com.tokopedia.play.broadcaster.view.viewmodel.PlayEtalasePickerViewModel
 import javax.inject.Inject
 
 class PlayEtalaseListFragment @Inject constructor(
-        private val viewModelFactory: ViewModelFactory
+        private val viewModelFactory: ViewModelFactory,
+        private val analytic: PlayBroadcastAnalytic
 ) : PlayBaseEtalaseSetupFragment() {
 
     private lateinit var viewModel: PlayEtalasePickerViewModel
@@ -69,6 +71,7 @@ class PlayEtalaseListFragment @Inject constructor(
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         observeEtalase()
+        observeEtalaseStatus()
     }
 
     override fun refresh() {
@@ -119,6 +122,14 @@ class PlayEtalaseListFragment @Inject constructor(
                 }
             }
 
+        })
+    }
+
+    private fun observeEtalaseStatus() {
+        viewModel.observableEtalaseProductState.observe(viewLifecycleOwner, Observer {
+            if (it.state is PageResultState.Fail) {
+                analytic.viewEtalaseError(it.state.error.localizedMessage)
+            }
         })
     }
 
