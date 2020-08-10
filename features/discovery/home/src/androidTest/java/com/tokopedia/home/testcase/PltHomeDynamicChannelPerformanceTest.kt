@@ -1,12 +1,12 @@
 package com.tokopedia.home.testcase
 
+import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analytics.performance.util.PerformanceDataFileUtils.writePLTPerformanceFile
 import com.tokopedia.home.environment.InstrumentationHomeTestActivity
 import com.tokopedia.home.mock.HomeMockResponseConfig
-import com.tokopedia.home.size.HomeSizeResponseConfig
 import com.tokopedia.test.application.TestRepeatRule
-import com.tokopedia.test.application.util.getTotalResponseSize
+import com.tokopedia.test.application.environment.callback.GqlResponseAnalyzerInterface
 import com.tokopedia.test.application.util.setupGraphqlMockResponseWithCheck
 import com.tokopedia.test.application.util.setupTotalSizeInterceptor
 import org.junit.Before
@@ -27,7 +27,7 @@ class PltHomeDynamicChannelPerformanceTest {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
             setupGraphqlMockResponseWithCheck(HomeMockResponseConfig())
-            setupTotalSizeInterceptor(HomeSizeResponseConfig())
+            setupTotalSizeInterceptor(listOf("homeData"))
         }
     }
 
@@ -61,12 +61,17 @@ class PltHomeDynamicChannelPerformanceTest {
             } else if (!performanceData.isSuccess) {
                 datasource = "failed"
             } else datasource = "network"
+            val totalSizeInterface = InstrumentationRegistry.getInstrumentation().targetContext.applicationContext as GqlResponseAnalyzerInterface
             writePLTPerformanceFile(
                     activityRule.activity,
                     tag,
                     performanceData,
                     datasource,
-                    getTotalResponseSize()
+                    totalSizeInterface.responseTotalSize.toString(),
+                    totalSizeInterface.responseTotalTime.toString(),
+                    totalSizeInterface.userNetworkTotalDuration.toString(),
+                    totalSizeInterface.gqlSizeMap.toString().replace(",", ";"),
+                    totalSizeInterface.gqlTimeMap.toString().replace(",", ";")
             )
         }
     }

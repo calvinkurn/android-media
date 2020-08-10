@@ -20,7 +20,7 @@ class TopAdsDetectorInterceptor(private val adder: (Int) -> Unit) : Interceptor 
     override fun intercept(chain: Interceptor.Chain): Response {
         if (BuildConfig.DEBUG) {
             try {
-                val requestCopy = chain.request().newBuilder().build()
+                val requestCopy = chain.request()
                 val buffer = Buffer()
                 requestCopy.body()?.writeTo(buffer)
                 val requestString = buffer.readUtf8()
@@ -35,10 +35,9 @@ class TopAdsDetectorInterceptor(private val adder: (Int) -> Unit) : Interceptor 
                 val firstWord = queryStringCopy.substringBefore(" ", "")
 
                 val response = chain.proceed(chain.request())
-                val responseCopy = response.newBuilder().build()
-                val jsonDataString = responseCopy.body()?.string()
+                val jsonDataString = response.peekBody(Long.MAX_VALUE).string()
                 findTopAds(firstWord, jsonDataString)
-                return chain.proceed(chain.request())
+                return response
             } catch (e: IOException) {
                 "did not work"
             }

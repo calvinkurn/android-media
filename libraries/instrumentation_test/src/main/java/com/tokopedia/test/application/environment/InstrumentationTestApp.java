@@ -36,11 +36,10 @@ import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
-import com.tokopedia.test.application.environment.callback.ResponseTotalSizeInterface;
+import com.tokopedia.test.application.environment.callback.GqlResponseAnalyzerInterface;
 import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface;
 import com.tokopedia.test.application.environment.interceptor.TopAdsDetectorInterceptor;
-import com.tokopedia.test.application.environment.interceptor.size.SizeInterceptor;
-import com.tokopedia.test.application.environment.interceptor.size.SizeModelConfig;
+import com.tokopedia.test.application.environment.interceptor.size.GqlNetworkAnalyzerInterceptor;
 import com.tokopedia.test.application.util.DeviceConnectionInfo;
 import com.tokopedia.test.application.util.DeviceInfo;
 import com.tokopedia.test.application.util.DeviceScreenInfo;
@@ -55,6 +54,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.annotation.Nullable;
+
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
 import okhttp3.Interceptor;
@@ -66,7 +67,7 @@ public class InstrumentationTestApp extends BaseMainApplication
         NetworkRouter,
         ApplinkRouter,
         TopAdsVerificatorInterface,
-        ResponseTotalSizeInterface {
+        GqlResponseAnalyzerInterface {
     public static final String MOCK_ADS_ID = "2df9e57a-849d-4259-99ea-673107469eef";
     public static final String MOCK_FINGERPRINT_HASH = "eyJjYXJyaWVyIjoiQW5kcm9pZCIsImN1cnJlbnRfb3MiOiI4LjAuMCIsImRldmljZV9tYW51ZmFjdHVyZXIiOiJHb29nbGUiLCJkZXZpY2VfbW9kZWwiOiJBbmRyb2lkIFNESyBidWlsdCBmb3IgeDg2IiwiZGV2aWNlX25hbWUiOiJBbmRyb2lkIFNESyBidWlsdCBmb3IgeDg2IiwiZGV2aWNlX3N5c3RlbSI6ImFuZHJvaWQiLCJpc19lbXVsYXRvciI6dHJ1ZSwiaXNfamFpbGJyb2tlbl9yb290ZWQiOmZhbHNlLCJpc190YWJsZXQiOmZhbHNlLCJsYW5ndWFnZSI6ImVuX1VTIiwibG9jYXRpb25fbGF0aXR1ZGUiOiItNi4xNzU3OTQiLCJsb2NhdGlvbl9sb25naXR1ZGUiOiIxMDYuODI2NDU3Iiwic2NyZWVuX3Jlc29sdXRpb24iOiIxMDgwLDE3OTQiLCJzc2lkIjoiXCJBbmRyb2lkV2lmaVwiIiwidGltZXpvbmUiOiJHTVQrNyIsInVzZXJfYWdlbnQiOiJEYWx2aWsvMi4xLjAgKExpbnV4OyBVOyBBbmRyb2lkIDguMC4wOyBBbmRyb2lkIFNESyBidWlsdCBmb3IgeDg2IEJ1aWxkL09TUjEuMTcwOTAxLjA0MykifQ==";
     public static final String MOCK_DEVICE_ID="cx68b1CtPII:APA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR";
@@ -108,7 +109,7 @@ public class InstrumentationTestApp extends BaseMainApplication
 
     public void enableTopAdsDetector() {
         if (GlobalConfig.DEBUG) {
-            addInterceptor(TopAdsDetectorInterceptor.KEY, new TopAdsDetectorInterceptor(new Function1<Integer, Unit>() {
+            addInterceptor(new TopAdsDetectorInterceptor(new Function1<Integer, Unit>() {
                 @Override
                 public Unit invoke(Integer newCount) {
                     topAdsProductCount+=newCount;
@@ -118,23 +119,18 @@ public class InstrumentationTestApp extends BaseMainApplication
         }
     }
 
-    public void enableSizeDetector(SizeModelConfig sizeModelConfig) {
+    public void enableSizeDetector(@Nullable List<String> listToAnalyze) {
         if (GlobalConfig.DEBUG) {
-            sizeModelConfig.createModelConfig(this);
-            addInterceptor(SizeInterceptor.KEY, new SizeInterceptor(sizeModelConfig, new Function1<Integer, Unit>() {
-                @Override
-                public Unit invoke(Integer bytes) {
-                    totalSizeInBytes+=bytes;
-                    return null;
-                }
-            }));
+            addInterceptor(new GqlNetworkAnalyzerInterceptor(listToAnalyze));
         }
     }
 
-    public void addInterceptor(String key, Interceptor interceptor) {
-        testInterceptors.put(key, interceptor);
-        ArrayList<Interceptor> interceptorList = new ArrayList<Interceptor>(testInterceptors.values());
-        GraphqlClient.reInitRetrofitWithInterceptors(interceptorList, this);
+    public void addInterceptor(Interceptor interceptor) {
+        if (!testInterceptors.containsKey(interceptor.getClass().getCanonicalName())) {
+            testInterceptors.put(interceptor.getClass().getCanonicalName(), interceptor);
+            ArrayList<Interceptor> interceptorList = new ArrayList<Interceptor>(testInterceptors.values());
+            GraphqlClient.reInitRetrofitWithInterceptors(interceptorList, this);
+        }
     }
 
     @Override
@@ -173,13 +169,33 @@ public class InstrumentationTestApp extends BaseMainApplication
     }
 
     @Override
-    public Long getResponseTotalSize() {
-        return totalSizeInBytes;
+    public int getResponseTotalSize() {
+        return GqlNetworkAnalyzerInterceptor.Companion.getTotalSize();
     }
 
     @Override
-    public void clearTotalSize() {
-        totalSizeInBytes = 0L;
+    public Long getResponseTotalTime() {
+        return GqlNetworkAnalyzerInterceptor.Companion.getTotalTime();
+    }
+
+    @Override
+    public Long getUserNetworkTotalDuration() {
+        return GqlNetworkAnalyzerInterceptor.Companion.getUserTotalNetworkDuration();
+    }
+
+    @Override
+    public HashMap<String, Integer> getGqlSizeMap() {
+        return GqlNetworkAnalyzerInterceptor.Companion.getSizeInEachRequest();
+    }
+
+    @Override
+    public HashMap<String, Long> getGqlTimeMap() {
+        return GqlNetworkAnalyzerInterceptor.Companion.getTimeInEachRequest();
+    }
+
+    @Override
+    public void reset() {
+        GqlNetworkAnalyzerInterceptor.Companion.reset();
     }
 
     public static class DummyAppsFlyerAnalytics extends ContextAnalytics {

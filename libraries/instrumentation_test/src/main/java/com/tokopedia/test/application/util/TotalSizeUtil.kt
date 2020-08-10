@@ -2,19 +2,10 @@ package com.tokopedia.test.application.util
 
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import com.tokopedia.test.application.environment.InstrumentationTestApp
-import com.tokopedia.test.application.environment.callback.ResponseTotalSizeInterface
-import com.tokopedia.test.application.environment.interceptor.size.SizeModelConfig
+import com.tokopedia.test.application.environment.callback.GqlResponseAnalyzerInterface
 
-fun setupTotalSizeInterceptor(sizeModelConfig: SizeModelConfig) {
+fun setupTotalSizeInterceptor(listToAnalyze: List<String>?) {
     val application = getInstrumentation().targetContext.applicationContext as InstrumentationTestApp
-    val totalSizeInterface = application as ResponseTotalSizeInterface
-    totalSizeInterface.clearTotalSize()
-    application.enableSizeDetector(sizeModelConfig)
-}
-
-//in kb
-fun getTotalResponseSize(): String {
-    val application = getInstrumentation().targetContext.applicationContext as InstrumentationTestApp
-    val totalSizeInterface = application as ResponseTotalSizeInterface
-    return totalSizeInterface.responseTotalSize.toString()
+    application.enableSizeDetector(listToAnalyze)
+    (application as GqlResponseAnalyzerInterface).reset()
 }
