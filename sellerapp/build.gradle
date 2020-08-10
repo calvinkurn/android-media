@@ -214,7 +214,6 @@ dependencies {
     }
     implementation project(rootProject.ext.features.commonDigital)
     implementation project(rootProject.ext.features.tkpdcore)
-    implementation project(rootProject.ext.features.shopPage)
     implementation project(rootProject.ext.features.sellerorder)
     implementation project(rootProject.ext.features.sellerHome)
     implementation project(rootProject.ext.features.sellerOnboarding)

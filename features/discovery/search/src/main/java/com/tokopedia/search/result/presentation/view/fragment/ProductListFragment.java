@@ -97,6 +97,7 @@ import com.tokopedia.search.result.presentation.view.listener.SuggestionListener
 import com.tokopedia.search.result.presentation.view.listener.TickerListener;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactoryImpl;
+import com.tokopedia.search.utils.HideTabOnScrollListener;
 import com.tokopedia.search.utils.SearchKotlinExtKt;
 import com.tokopedia.search.utils.SearchLogger;
 import com.tokopedia.search.utils.UrlParamUtils;
@@ -372,72 +373,7 @@ public class ProductListFragment
         recyclerView.setAdapter(adapter);
         recyclerView.addItemDecoration(createProductItemDecoration());
         recyclerView.addOnScrollListener(staggeredGridLayoutLoadMoreTriggerListener);
-        recyclerView.addOnScrollListener(createHideTabOnScrollListener());
-    }
-
-    private RecyclerView.OnScrollListener createHideTabOnScrollListener() {
-        return new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                if (searchNavigationListener == null) return;
-
-                if (dy > SCROLL_THRESHOLD_TO_ANIMATE_TAB || dy < -SCROLL_THRESHOLD_TO_ANIMATE_TAB || recyclerView.computeVerticalScrollOffset() == 0) {
-                    boolean isVisible = dy <= 0;
-                    searchNavigationListener.configureTabLayout(isVisible);
-                }
-
-                if (recyclerView.computeVerticalScrollOffset() > 0) applyQuickFilterLayoutOnTop();
-                else applyQuickFilterLayoutOnScroll();
-            }
-        };
-    }
-
-    private void applyQuickFilterLayoutOnTop() {
-        if(getContext() == null) return;
-
-        applyQuickFilterElevation(getContext());
-
-        int paddingTop = IntExtKt.dpToPx(8, getContext().getResources().getDisplayMetrics());
-        animateQuickFilterPaddingTopChanges(paddingTop);
-    }
-
-    private void applyQuickFilterElevation(@NonNull Context context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && searchSortFilter != null) {
-            if (searchSortFilter.getElevation() == 0f) {
-                int elevation = IntExtKt.dpToPx(5, context.getResources().getDisplayMetrics());
-                searchSortFilter.setElevation(elevation);
-            }
-        }
-    }
-
-    private void animateQuickFilterPaddingTopChanges(int paddingTop) {
-        ValueAnimator anim = ValueAnimator.ofInt(searchSortFilter.getPaddingTop(), paddingTop);
-        anim.addUpdateListener(animator -> setQuickFilterPaddingTop((Integer)animator.getAnimatedValue()));
-        anim.setDuration(200);
-        anim.start();
-    }
-
-    private void setQuickFilterPaddingTop(int paddingTop) {
-        if (searchSortFilter == null || searchSortFilter.getPaddingTop() == paddingTop) return;
-
-        searchSortFilter.setPadding(searchSortFilter.getPaddingLeft(), paddingTop, searchSortFilter.getPaddingRight(), searchSortFilter.getPaddingBottom());
-    }
-
-    private void applyQuickFilterLayoutOnScroll() {
-        if(getContext() == null) return;
-
-        removeQuickFilterElevation();
-
-        int paddingTop = IntExtKt.dpToPx(16, getContext().getResources().getDisplayMetrics());
-        animateQuickFilterPaddingTopChanges(paddingTop);
-    }
-
-    private void removeQuickFilterElevation() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && searchSortFilter != null) {
-            if (searchSortFilter.getElevation() > 0f) {
-                searchSortFilter.setElevation(0);
-            }
-        }
+        recyclerView.addOnScrollListener(new HideTabOnScrollListener(getContext(), searchNavigationListener, searchSortFilter));
     }
 
     @NonNull
@@ -1994,7 +1930,6 @@ public class ProductListFragment
                 requireFragmentManager(),
                 searchParameter.getSearchParameterHashMap(),
                 presenter.getDynamicFilterModel(),
-                getSortFilterIndicatorCounter() > 0,
                 this
         );
 
