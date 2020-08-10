@@ -24,8 +24,7 @@ import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 class EventDetailViewModel(private val dispatcher: CoroutineDispatcher,
-                           private val gqlRepository: GraphqlRepository,
-                           private val userSession: UserSessionInterface) : BaseViewModel(dispatcher) {
+                           private val gqlRepository: GraphqlRepository) : BaseViewModel(dispatcher) {
 
     companion object{
         private val TAG = EventDetailViewModel::class.java.simpleName

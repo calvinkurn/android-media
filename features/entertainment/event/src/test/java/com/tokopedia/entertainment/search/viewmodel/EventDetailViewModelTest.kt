@@ -46,9 +46,6 @@ class EventDetailViewModelTest {
     lateinit var graphqlRepository: GraphqlRepository
 
     @MockK
-    lateinit var userSessionInterface: UserSessionInterface
-
-    @MockK
     lateinit var resources: Resources
 
     val context = mockk<Context>(relaxed = true)
@@ -57,7 +54,7 @@ class EventDetailViewModelTest {
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
-        eventDetailViewModel = EventDetailViewModel(Dispatchers.Unconfined, graphqlRepository, userSessionInterface)
+        eventDetailViewModel = EventDetailViewModel(Dispatchers.Unconfined, graphqlRepository)
         eventDetailViewModel.resources = context.resources
         setFirstHash()
     }
@@ -93,8 +90,6 @@ class EventDetailViewModelTest {
                 EventDetailResponse.Data::class.java to dataMock.data
         )as MutableMap<Type, Any>,  HashMap<Type, List<GraphqlError>>(), false)
         Assert.assertNotNull(dataMock)
-
-        every { userSessionInterface.isLoggedIn } returns true
 
         runBlocking(Dispatchers.Unconfined){
             try {
