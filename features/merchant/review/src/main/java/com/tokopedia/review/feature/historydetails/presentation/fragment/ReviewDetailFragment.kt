@@ -220,7 +220,10 @@ class ReviewDetailFragment : BaseDaggerFragment(),
             reviewDetailResponse.hide()
             return
         }
-        reviewDetailResponse.setContent(response)
+        reviewDetailResponse.apply {
+            setContent(response)
+            show()
+        }
     }
 
     private fun setReputation(reputation: ProductrevGetReviewDetailReputation, shopName: String) {

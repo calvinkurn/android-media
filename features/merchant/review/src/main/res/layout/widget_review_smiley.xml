@@ -13,12 +13,14 @@
         <ImageView
             android:id="@+id/reviewEditableImageView"
             android:layout_width="48dp"
-            android:layout_height="50dp" />
+            android:layout_height="50dp"
+            android:scaleType="center"/>
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/reviewEditableSmiley"
             android:layout_width="48dp"
-            android:layout_height="50dp" />
+            android:layout_height="50dp"
+            android:scaleType="center"/>
 
     </RelativeLayout>
 

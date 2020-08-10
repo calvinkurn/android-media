@@ -53,14 +53,6 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
 
     override fun onCreate(savedInstanceState: Bundle?) {
         getDataFromApplinkOrIntent()
-        super.onCreate(savedInstanceState)
-
-        intent.extras?.run {
-            (applicationContext
-                    .getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
-                    .cancel(getInt(CreateReviewFragment.REVIEW_NOTIFICATION_ID))
-        }
-
         getAbTestPlatform()?.fetch(null)
         if(useOldPage()) {
             val intent = CreateReviewActivityOld.newInstance(context = this)
@@ -69,6 +61,13 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
             startActivity(intent)
             finish()
             return
+        }
+        super.onCreate(savedInstanceState)
+
+        intent.extras?.run {
+            (applicationContext
+                    .getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
+                    .cancel(getInt(CreateReviewFragment.REVIEW_NOTIFICATION_ID))
         }
 
         supportActionBar?.elevation = 0f

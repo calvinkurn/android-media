@@ -81,6 +81,15 @@ public class InboxReputationDetailActivity extends BaseSimpleActivity implements
         return intent;
     }
 
+    public static Intent getCallingIntent(Context context,
+                                          String reputationId) {
+        Intent intent = new Intent(context, InboxReputationDetailActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(REPUTATION_ID, reputationId);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(getFragment() != null && getFragment() instanceof InboxReputationDetailFragment) {
