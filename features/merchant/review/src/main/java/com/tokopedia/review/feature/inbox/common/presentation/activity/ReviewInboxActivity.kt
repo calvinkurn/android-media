@@ -14,7 +14,7 @@ class ReviewInboxActivity : BaseSimpleActivity() {
     companion object {
         const val GO_TO_REPUTATION_HISTORY = "GO_TO_REPUTATION_HISTORY"
         fun createNewInstance(context: Context): Intent {
-            return Intent(context, CreateReviewActivityOld::class.java)
+            return Intent(context, ReviewInboxActivity::class.java)
         }
     }
 

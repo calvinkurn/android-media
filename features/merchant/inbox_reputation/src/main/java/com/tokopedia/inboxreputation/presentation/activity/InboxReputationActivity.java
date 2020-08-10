@@ -325,6 +325,7 @@ public class  InboxReputationActivity extends BaseActivity implements HasCompone
     }
 
     private Boolean useOldPage() {
-        return getABTestRemoteConfig().getString(ReviewConstants.AB_TEST_KEY).equals(ReviewConstants.AB_TEST_KEY);
+        String remoteConfigValue = getABTestRemoteConfig().getString(ReviewConstants.AB_TEST_KEY);
+        return remoteConfigValue.equals(ReviewConstants.OLD_REVIEW_FLOW);
     }
 }

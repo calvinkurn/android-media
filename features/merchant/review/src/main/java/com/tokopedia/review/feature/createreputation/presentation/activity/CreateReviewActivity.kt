@@ -1,6 +1,5 @@
 package com.tokopedia.review.feature.createreputation.presentation.activity
 
-import android.app.Activity
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
@@ -15,7 +14,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
-import com.tokopedia.review.common.analytics.ReviewTracking
 import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.feature.createreputation.analytics.CreateReviewTracking
 import com.tokopedia.review.feature.createreputation.presentation.fragment.CreateReviewFragment
@@ -28,36 +26,24 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
 
     private var productId: String = ""
     private var createReviewFragment: CreateReviewFragment? = null
+    private var rating = DEFAULT_PRODUCT_RATING
+    private var isEditMode = false
+    private var feedbackId = 0
+    private var reputationId: String = ""
 
     companion object {
         const val PARAM_RATING = "rating"
         const val DEFAULT_PRODUCT_RATING = 5
+        const val ARGS_REPUTATION_ID = "ARGS_REPUTATION_ID"
+        const val ARGS_PRODUCT_ID = "ARGS_PRODUCT_ID"
         fun newInstance(context: Context) = Intent(context, CreateReviewActivity::class.java)
     }
 
     override fun getNewFragment(): Fragment? {
-        val reputationId: String
-        val bundle = intent.extras
-        val uri = intent.data
-        var rating = DEFAULT_PRODUCT_RATING
-        var isEditMode = false
-        var feedbackId = 0
-
-        if (uri != null && uri.pathSegments.size > 0) {
-            val uriSegment = uri.pathSegments
-            productId = uri.lastPathSegment ?: ""
-            reputationId = uriSegment[uriSegment.size - 2]
-            rating = uri.getQueryParameter(PARAM_RATING)?.toIntOrNull() ?: DEFAULT_PRODUCT_RATING
-            isEditMode = uri.getQueryParameter(ReviewConstants.PARAM_IS_EDIT_MODE)?.toBoolean() ?: false
-            feedbackId = uri.getQueryParameter(ReviewConstants.PARAM_FEEDBACK_ID)?.toIntOrZero() ?: 0
-        } else {
-            productId = bundle?.getString(ReviewConstants.ARGS_PRODUCT_ID) ?: ""
-            reputationId = bundle?.getString(ReviewConstants.ARGS_REPUTATION_ID) ?: ""
-        }
         createReviewFragment = CreateReviewFragment.createInstance(
                 productId,
                 reputationId,
-                bundle?.getInt(CreateReviewFragment.REVIEW_CLICK_AT, rating) ?: rating,
+                rating,
                 isEditMode,
                 feedbackId
         )
@@ -66,6 +52,7 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        getDataFromApplinkOrIntent()
         super.onCreate(savedInstanceState)
 
         intent.extras?.run {
@@ -74,12 +61,15 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
                     .cancel(getInt(CreateReviewFragment.REVIEW_NOTIFICATION_ID))
         }
 
-//        getAbTestPlatform()?.fetch(null)
-//        if(useOldPage()) {
-//            startActivity(CreateReviewActivityOld.newInstance(context = this))
-//            finish()
-//            return
-//        }
+        getAbTestPlatform()?.fetch(null)
+        if(useOldPage()) {
+            val intent = CreateReviewActivityOld.newInstance(context = this)
+            intent.putExtra(ARGS_PRODUCT_ID, productId)
+            intent.putExtra(ARGS_REPUTATION_ID, reputationId)
+            startActivity(intent)
+            finish()
+            return
+        }
 
         supportActionBar?.elevation = 0f
     }
@@ -115,6 +105,23 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
 
     private fun useOldPage(): Boolean {
         val abTestValue = getAbTestPlatform()?.getString(ReviewConstants.AB_TEST_KEY, "") ?: return true
-        return abTestValue == ReviewConstants.AB_TEST_KEY
+        return abTestValue == ReviewConstants.OLD_REVIEW_FLOW
+    }
+
+    private fun getDataFromApplinkOrIntent() {
+        val bundle = intent.extras
+        val uri = intent.data
+        if (uri != null && uri.pathSegments.size > 0) {
+            val uriSegment = uri.pathSegments
+            productId = uri.lastPathSegment ?: ""
+            reputationId = uriSegment[uriSegment.size - 2]
+            rating = uri.getQueryParameter(PARAM_RATING)?.toIntOrNull() ?: DEFAULT_PRODUCT_RATING
+            isEditMode = uri.getQueryParameter(ReviewConstants.PARAM_IS_EDIT_MODE)?.toBoolean() ?: false
+            feedbackId = uri.getQueryParameter(ReviewConstants.PARAM_FEEDBACK_ID)?.toIntOrZero() ?: 0
+        } else {
+            productId = bundle?.getString(ReviewConstants.ARGS_PRODUCT_ID) ?: ""
+            reputationId = bundle?.getString(ReviewConstants.ARGS_REPUTATION_ID) ?: ""
+            rating = bundle?.getInt(CreateReviewFragment.REVIEW_CLICK_AT, rating) ?: DEFAULT_PRODUCT_RATING
+        }
     }
 }
