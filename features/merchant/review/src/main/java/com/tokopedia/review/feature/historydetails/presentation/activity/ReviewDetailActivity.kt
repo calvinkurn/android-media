@@ -22,15 +22,15 @@ class ReviewDetailActivity : BaseSimpleActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         getDataFromApplink()
+        reviewDetailFragment = ReviewDetailFragment.createNewInstance(feedbackId)
         getAbTestPlatform()?.fetch(null)
+        super.onCreate(savedInstanceState)
         if(useOldPage()) {
             val intent = InboxReputationDetailActivity.getCallingIntent(this, reputationId)
             startActivity(intent)
             finish()
             return
         }
-        reviewDetailFragment = ReviewDetailFragment.createNewInstance(feedbackId)
-        super.onCreate(savedInstanceState)
         supportActionBar?.hide()
     }
 

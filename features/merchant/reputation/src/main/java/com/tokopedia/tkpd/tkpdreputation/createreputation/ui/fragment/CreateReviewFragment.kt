@@ -310,6 +310,7 @@ class CreateReviewFragment : BaseDaggerFragment(), OnAddImageClickListener {
             submitReview()
         }
 
+        playAnimation()
     }
 
     override fun onDestroy() {

@@ -54,6 +54,7 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
     override fun onCreate(savedInstanceState: Bundle?) {
         getDataFromApplinkOrIntent()
         getAbTestPlatform()?.fetch(null)
+        super.onCreate(savedInstanceState)
         if(useOldPage()) {
             val intent = CreateReviewActivityOld.newInstance(context = this)
             intent.putExtra(ARGS_PRODUCT_ID, productId)
@@ -62,8 +63,6 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
             finish()
             return
         }
-        super.onCreate(savedInstanceState)
-
         intent.extras?.run {
             (applicationContext
                     .getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
