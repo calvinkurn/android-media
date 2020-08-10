@@ -97,6 +97,9 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.benchmark
     androidTestImplementation rootProject.ext.testDependencies.testCore
     androidTestImplementation project(rootProject.ext.libraries.analyticsDebugger)
+    androidTestImplementation(rootProject.ext.testDependencies.espressoIntents) {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    }
 
 
     // Unit test
