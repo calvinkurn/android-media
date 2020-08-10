@@ -304,7 +304,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
             Constants.Applinks.SellerApp.TOPADS_CREDIT,
             Constants.Applinks.SellerApp.TOPADS_PRODUCT_CREATE,
             Constants.Applinks.SellerApp.GOLD_MERCHANT,
-            Constants.Applinks.SellerApp.TOPADS_DASHBOARD,
             Constants.Applinks.SellerApp.TOPADS_PRODUCT_DETAIL,
             Constants.Applinks.SellerApp.TOPADS_PRODUCT_DETAIL_CONSTS,
             Constants.Applinks.SellerApp.BROWSER})
@@ -320,21 +319,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
             launchIntent.putExtra(Constants.EXTRA_APPLINK, extras.getString(DeepLink.URI));
             return launchIntent;
         }
-    }
-
-    @DeepLink(ApplinkConst.BROWSER)
-    public static Intent getCallingIntentOpenBrowser(Context context, Bundle extras) {
-        String webUrl = extras.getString("url", TokopediaUrl.Companion.getInstance().getWEB()
-        );
-        Intent destination = new Intent(Intent.ACTION_VIEW);
-        String decodedUrl;
-        try {
-            decodedUrl = URLDecoder.decode(webUrl, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            decodedUrl = webUrl;
-        }
-        destination.setData(Uri.parse(decodedUrl));
-        return destination;
     }
 
     @Override
