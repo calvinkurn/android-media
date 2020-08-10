@@ -7,11 +7,11 @@ query GETCANCELREASON($input:CancelReasonRequest!) {
     cancellation_min_time,
     cancellation_notes,
     ticker_info{
-      label,
-      color,
-      bg_color,
-      link_text,
-      link_url
+        text,
+        type,
+        action_text,
+        action_key,
+        action_url
     },
     reasons{
       title,

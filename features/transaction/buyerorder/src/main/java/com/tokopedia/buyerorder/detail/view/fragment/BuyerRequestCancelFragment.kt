@@ -30,6 +30,7 @@ import com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_POPUP_BODY_INSTAN
 import com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_POPUP_TITLE_INSTANT_CANCEL
 import com.tokopedia.buyerorder.common.util.BuyerConsts.TICKER_LABEL
 import com.tokopedia.buyerorder.common.util.BuyerConsts.TICKER_URL
+import com.tokopedia.buyerorder.common.util.Utils
 import com.tokopedia.buyerorder.detail.data.Items
 import com.tokopedia.buyerorder.detail.data.getcancellationreason.BuyerGetCancellationReasonData
 import com.tokopedia.buyerorder.detail.data.getcancellationreason.BuyerGetCancellationReasonData.Data.GetCancellationReason.TickerInfo
@@ -229,7 +230,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         btn_chat_penjual?.gone()
 
         tf_choose_reason?.visible()
-        tf_choose_sub_reason?.visible()
+        tf_choose_sub_reason?.gone()
         btn_req_cancel?.visible()
 
         tf_choose_reason?.textFieldInput?.isFocusable = false
@@ -462,6 +463,8 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
 
     override fun onReasonClicked(reason: String) {
         bottomSheet.dismiss()
+        tv_sub_reason?.visible()
+        tf_choose_sub_reason?.visible()
         btn_req_cancel?.isEnabled = false
         tf_choose_reason?.textFieldInput?.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS or InputType.TYPE_TEXT_FLAG_MULTI_LINE
         tf_choose_reason?.textFieldInput?.setSingleLine(false)
@@ -472,11 +475,13 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
 
         if (reason.equals(LAINNYA, true)) {
             reasonCode = BuyerConsts.REASON_CODE_LAINNYA
+            tv_sub_reason?.gone()
             tf_choose_sub_reason?.gone()
+            tv_sub_reason?.text = getString(R.string.ask_2_lainnya)
             tf_choose_sub_reason_editable?.visible()
             tf_choose_sub_reason_editable?.setCounter(160)
             tf_choose_sub_reason_editable?.textFieldInput?.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS or InputType.TYPE_TEXT_FLAG_MULTI_LINE
-            tf_choose_sub_reason_editable?.textFieldInput?.setSingleLine(false)
+            tf_choose_sub_reason_editable?.textFieldInput?.isSingleLine = false
             tf_choose_sub_reason_editable?.textFieldInput?.imeOptions = EditorInfo.IME_FLAG_NO_ENTER_ACTION
             tf_choose_sub_reason_editable?.textFieldInput?.addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
@@ -513,14 +518,15 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
                 tf_choose_sub_reason?.setPlaceholder(getString(R.string.reason_placeholder))
                 tf_choose_sub_reason?.textFieldIcon1?.setImageResource(R.drawable.ic_chevron_down)
                 tf_choose_sub_reason?.textFieldInput?.setText("")
-                tf_choose_sub_reason?.textFiedlLabelText?.setText(R.string.ask_2_placeholder)
+                tv_sub_reason?.text = getString(R.string.ask_2_placeholder)
 
                 cancelReasonResponse.reasons.forEach {
                     if (it.title.equals(reason, true))  {
                         listOfSubReason = it.subReasons
 
+
                         tf_choose_sub_reason?.textFiedlLabelText?.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS or InputType.TYPE_TEXT_FLAG_MULTI_LINE
-                        tf_choose_sub_reason?.textFieldInput?.setSingleLine(false)
+                        tf_choose_sub_reason?.textFieldInput?.isSingleLine = false
                         tf_choose_sub_reason?.textFieldInput?.imeOptions = EditorInfo.IME_FLAG_NO_ENTER_ACTION
                         // tf_choose_sub_reason?.textFiedlLabelText?.text = it.question
                         tf_choose_sub_reason?.textFieldInput?.isFocusable = false
@@ -576,7 +582,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
             })
         } else {*/
             tf_choose_sub_reason?.textFieldInput?.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS or InputType.TYPE_TEXT_FLAG_MULTI_LINE
-            tf_choose_sub_reason?.textFieldInput?.setSingleLine(false)
+            tf_choose_sub_reason?.textFieldInput?.isSingleLine = false
             tf_choose_sub_reason?.textFieldInput?.imeOptions = EditorInfo.IME_FLAG_NO_ENTER_ACTION
             tf_choose_sub_reason?.textFieldInput?.setText(reason)
             reasonCancel += " - $reason"
@@ -699,11 +705,11 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
     private fun renderTicker(tickerInfo: TickerInfo) {
         buyer_ticker_info?.apply {
             visible()
-            tickerType = Ticker.TYPE_ANNOUNCEMENT
+            tickerType = Utils.getTickerType(tickerInfo.type)
             tickerShape = Ticker.SHAPE_LOOSE
-            setHtmlDescription(tickerInfo.label + " ${getString(R.string.ticker_info_selengkapnya)
-                    .replace(TICKER_URL, tickerInfo.linkUrl)
-                    .replace(TICKER_LABEL, tickerInfo.linkText)}")
+            setHtmlDescription(tickerInfo.text + " ${getString(R.string.ticker_info_selengkapnya)
+                    .replace(TICKER_URL, tickerInfo.actionUrl)
+                    .replace(TICKER_LABEL, tickerInfo.actionText)}")
             setDescriptionClickEvent(object : TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
                     RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))

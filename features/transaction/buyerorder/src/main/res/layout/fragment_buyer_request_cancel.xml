@@ -46,7 +46,9 @@
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
-            android:layout_marginEnd="@dimen/dp_16"/>
+            android:layout_marginEnd="@dimen/dp_16"
+            app:typographyWeight="reguler"
+            app:typographyType="body_1"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/label_invoice"
@@ -61,7 +63,9 @@
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
-            android:layout_marginEnd="@dimen/dp_16"/>
+            android:layout_marginEnd="@dimen/dp_16"
+            app:typographyType="body_2"
+            app:typographyWeight="reguler"/>
 
         <View
             android:id="@+id/divider_1"
@@ -106,6 +110,7 @@
             app:layout_constraintStart_toEndOf="@id/cv_product_img"
             app:layout_constraintEnd_toEndOf="parent"
             app:typographyWeight="bold"
+            app:typographyType="body_1"
             android:textColor="@color/Neutral_N700_96"
             tools:text="@string/product_name_placeholder"
             android:text="@string/product_name_placeholder"
@@ -122,10 +127,11 @@
             app:layout_constraintStart_toEndOf="@id/cv_product_img"
             app:layout_constraintTop_toBottomOf="@id/label_product_name"
             android:layout_marginTop="@dimen/dp_1"
-            android:textColor="@color/Yellow_Y500"
+            android:textColor="@color/Neutral_N700_96"
             tools:text="@string/product_price_placeholder"
             android:text="@string/product_price_placeholder"
-            app:typographyWeight="bold"
+            app:typographyWeight="reguler"
+            app:typographyType="body_2"
             android:layout_marginLeft="@dimen/dp_12"
             android:layout_marginStart="@dimen/dp_12"/>
 
@@ -141,7 +147,7 @@
             android:layout_marginStart="@dimen/dp_12"
             android:textColor="@color/Green_G500"
             app:typographyWeight="reguler"
-            app:typographyType="body_3"
+            app:typographyType="body_2"
             tools:visibility="visible"
             tools:text="@string/see_all_placeholder"
             android:text="@string/see_all_placeholder"/>
@@ -280,14 +286,10 @@
 
         <!--start layout available to cancel-->
 
-        <com.tokopedia.unifycomponents.TextFieldUnify
-            android:id="@+id/tf_choose_reason"
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_reason"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:text_field_append_drawable_icon_1="@drawable/ic_chevron_down"
-            app:text_field_placeholder="@string/reason_placeholder"
-            app:text_field_label_static="true"
-            app:text_field_label="@string/ask_1_placeholder"
             android:layout_marginTop="@dimen/dp_16"
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginStart="@dimen/dp_16"
@@ -296,23 +298,54 @@
             app:layout_constraintTop_toBottomOf="@id/divider_2"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:visibility="gone"/>
+            android:text="@string/ask_1_placeholder"
+            app:typographyType="body_1"
+            app:typographyWeight="bold"/>
 
         <com.tokopedia.unifycomponents.TextFieldUnify
-            android:id="@+id/tf_choose_sub_reason"
+            android:id="@+id/tf_choose_reason"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/tf_choose_reason"
             app:text_field_append_drawable_icon_1="@drawable/ic_chevron_down"
             app:text_field_placeholder="@string/reason_placeholder"
-            app:text_field_label_static="true"
-            app:text_field_label="@string/ask_2_placeholder"
-            android:layout_marginTop="@dimen/dp_18"
+            android:layout_marginTop="@dimen/dp_14"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_16"
+            app:layout_constraintTop_toBottomOf="@id/tv_reason"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:visibility="gone"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_sub_reason"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_24"
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
             android:layout_marginEnd="@dimen/dp_16"
             app:layout_constraintTop_toBottomOf="@id/tf_choose_reason"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:text="@string/ask_2_placeholder"
+            app:typographyType="body_1"
+            app:typographyWeight="bold"/>
+
+        <com.tokopedia.unifycomponents.TextFieldUnify
+            android:id="@+id/tf_choose_sub_reason"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:text_field_append_drawable_icon_1="@drawable/ic_chevron_down"
+            app:text_field_placeholder="@string/reason_placeholder"
+            android:layout_marginTop="@dimen/dp_14"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_16"
+            app:layout_constraintTop_toBottomOf="@id/tv_sub_reason"
             android:visibility="gone"/>
 
         <com.tokopedia.unifycomponents.TextFieldUnify
@@ -323,12 +356,12 @@
             app:text_field_placeholder="@string/tulis_alasan"
             app:text_field_label_static="true"
             app:text_field_label="@string/ask_2_lainnya"
-            android:layout_marginTop="@dimen/dp_18"
+            android:layout_marginTop="@dimen/dp_16"
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
             android:layout_marginEnd="@dimen/dp_16"
-            app:layout_constraintTop_toBottomOf="@id/tf_choose_reason"
+            app:layout_constraintTop_toBottomOf="@id/tv_sub_reason"
             android:visibility="gone"/>
 
         <com.tokopedia.unifycomponents.UnifyButton

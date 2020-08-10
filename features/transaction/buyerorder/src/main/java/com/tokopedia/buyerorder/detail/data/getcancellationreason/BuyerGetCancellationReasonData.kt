@@ -48,25 +48,25 @@ data class BuyerGetCancellationReasonData(
 				val tickerInfo: TickerInfo = TickerInfo()) {
 
 			data class TickerInfo (
-					@SerializedName("label")
+					@SerializedName("text")
 					@Expose
-					val label: String = "",
+					val text: String = "",
 
-					@SerializedName("color")
+					@SerializedName("type")
 					@Expose
-					val color: String = "",
+					val type: String = "",
 
-					@SerializedName("bg_color")
+					@SerializedName("action_text")
 					@Expose
-					val bgColor: String = "",
+					val actionText: String = "",
 
-					@SerializedName("link_text")
+					@SerializedName("action_key")
 					@Expose
-					val linkText: String = "",
+					val actionKey: String = "",
 
-					@SerializedName("link_url")
+					@SerializedName("action_url")
 					@Expose
-					val linkUrl: String = ""
+					val actionUrl: String = ""
 			)
 
 			data class ReasonsItem(
