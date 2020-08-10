@@ -129,7 +129,7 @@ class ProductManageSetCashbackFragment : Fragment(), SelectClickListener,
     override fun onSelectClick(element: SelectUiModel) {
         cashback = element.value.toIntOrZero()
         setCashbackList()
-        if(shopId != "" && !isDrafting) {
+        if(shopId.isNotBlank() && !isDrafting) {
             if(cashback != 0) {
                 ProductManageTracking.eventClickCashbackValue(cashback, shopId)
             } else {
@@ -139,7 +139,7 @@ class ProductManageSetCashbackFragment : Fragment(), SelectClickListener,
     }
 
     fun setTrackerOnBackPressed() {
-        if(shopId != "" && !isDrafting) {
+        if(shopId.isNotBlank() && !isDrafting) {
             ProductManageTracking.eventClickBackOnPromotionPage(shopId)
         }
     }
@@ -170,7 +170,7 @@ class ProductManageSetCashbackFragment : Fragment(), SelectClickListener,
         submitCashbackButton.setOnClickListener {
             viewModel.setCashback(productId, productName, cashback)
             if (!isDrafting) {
-                if(shopId != "") {
+                if(shopId.isNotBlank()) {
                     ProductManageTracking.eventClickSavePromotion(shopId)
                 } else {
                     ProductManageTracking.eventCashbackSettingsSave(productId)
