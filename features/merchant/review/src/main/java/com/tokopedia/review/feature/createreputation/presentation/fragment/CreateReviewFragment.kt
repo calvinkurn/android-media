@@ -211,7 +211,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
                         productId.toString(10),
                         (position).toString(10),
                         true,
-                        false
+                        isEditMode
                 )
                 reviewClickAt = position
                 shouldPlayAnimation = true
@@ -247,7 +247,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
 
         createReviewAnonymousCheckbox.setOnClickListener {
             if (createReviewAnonymousCheckbox.isChecked) {
-                CreateReviewTracking.reviewOnAnonymousClickTracker(getOrderId(), productId.toString(10), false)
+                CreateReviewTracking.reviewOnAnonymousClickTracker(getOrderId(), productId.toString(10), isEditMode)
             }
             clearFocusAndHideSoftInput(view)
         }
@@ -353,7 +353,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
                             productId.toString(10),
                             true,
                             selectedImage.size.toString(10),
-                            false
+                            isEditMode
                     )
 
                     val imageListData = createReviewViewModel.getImageList(selectedImage)
@@ -465,6 +465,15 @@ class CreateReviewFragment : BaseDaggerFragment(),
             updateViewBasedOnSelectedRating(rating)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
                 createReviewAnonymousCheckbox.isChecked = sentAsAnonymous
+            }
+            if (attachments.isNotEmpty()) {
+                createReviewViewModel.clearImageData()
+                val attachedThumbnails = arrayListOf<String>()
+                attachments.mapTo(attachedThumbnails) { it.thumbnail }
+                val imageListData = createReviewViewModel.getImageList(attachedThumbnails)
+                imageAdapter.setImageReviewData(imageListData)
+                rv_img_review.show()
+                createReviewAddPhotoEmpty.hide()
             }
         }
     }
