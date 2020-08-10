@@ -133,7 +133,7 @@ class CalendarPicker : BottomSheetUnify() {
     }
 
     private fun getPerWeekSelectedPair(selected: Date): Pair<Date, Date> {
-        val onGoingWeekPair = selectOnGoingWeek(selected)
+        val onGoingWeekPair = onGoingWeekPair(selected)
         if (onGoingWeekPair != null) {
             return onGoingWeekPair
         }
@@ -148,7 +148,7 @@ class CalendarPicker : BottomSheetUnify() {
         return Pair(firstDateOfWeek, lastDateOfWeek)
     }
 
-    private fun selectOnGoingWeek(selected: Date): Pair<Date, Date>? {
+    private fun onGoingWeekPair(selected: Date): Pair<Date, Date>? {
         val firstDayOfOnGoingWeek: Calendar = Calendar.getInstance()
         with(firstDayOfOnGoingWeek) {
             firstDayOfWeek = Calendar.MONDAY
@@ -161,7 +161,7 @@ class CalendarPicker : BottomSheetUnify() {
 
         val firstDayMillis = firstDayOfOnGoingWeek.timeInMillis
         val currentDate = Date()
-        val canSelectOnGoingWeek = selected.time >= firstDayMillis && selected.time <= currentDate.time
+        val canSelectOnGoingWeek = selected.time in firstDayMillis..currentDate.time
 
         return if (canSelectOnGoingWeek) {
             Pair(firstDayOfOnGoingWeek.time, currentDate)
