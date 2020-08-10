@@ -24,6 +24,7 @@ import java.util.concurrent.TimeUnit
 class DateFilterBottomSheet : BottomSheetUnify(), DateFilterAdapterFactoryImpl.Listener {
 
     companion object {
+        const val TAG = "DateFilterBottomSheet"
         private const val DAYS_7 = 7
         private const val DAYS_30 = 30
 
@@ -90,7 +91,7 @@ class DateFilterBottomSheet : BottomSheetUnify(), DateFilterAdapterFactoryImpl.L
 
     fun show() {
         fm?.let {
-            show(it, this::class.java.simpleName)
+            show(it, TAG)
         }
     }
 

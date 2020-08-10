@@ -12,6 +12,7 @@ import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.statistic.R
+import com.tokopedia.statistic.presentation.view.bottomsheet.DateFilterBottomSheet
 import com.tokopedia.statistic.presentation.view.model.DateFilterItem
 import kotlinx.android.synthetic.main.item_stc_month_picker.view.*
 import java.util.*
@@ -30,6 +31,10 @@ class MonthPickerViewHolder(
     companion object {
         @LayoutRes
         val RES_LAYOUT = R.layout.item_stc_month_picker
+    }
+
+    private val dateFilterBottomSheet by lazy {
+        fm.findFragmentByTag(DateFilterBottomSheet.TAG) as? DateFilterBottomSheet
     }
 
     override fun bind(element: DateFilterItem.MonthPickerItem) {
@@ -120,8 +125,21 @@ class MonthPickerViewHolder(
                 dismiss()
             }
 
+            setOnDismissListener {
+                showDateFilterBottomSheet()
+            }
+
+            dismissDateFilterBottomSheet()
             show(fm, element.label)
         }
+    }
+
+    private fun showDateFilterBottomSheet() {
+        dateFilterBottomSheet?.show(fm, DateFilterBottomSheet.TAG)
+    }
+
+    private fun dismissDateFilterBottomSheet() {
+        dateFilterBottomSheet?.dismiss()
     }
 
     private fun showSelectedMonth(element: DateFilterItem.MonthPickerItem) {

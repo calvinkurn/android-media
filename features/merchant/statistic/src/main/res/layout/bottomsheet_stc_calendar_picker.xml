@@ -6,7 +6,7 @@
 
     <com.tokopedia.statistic.presentation.view.customview.DateTextFieldView
         android:id="@+id/edtStcDate"
-        android:layout_width="@dimen/shc_dimen_180dp"
+        android:layout_width="@dimen/shc_dimen_210dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginLeft="@dimen/layout_lvl2" />
