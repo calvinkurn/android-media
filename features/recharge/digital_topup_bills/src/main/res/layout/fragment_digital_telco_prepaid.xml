@@ -13,6 +13,7 @@
         android:id="@+id/telco_main_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/layout_lvl1"
         android:orientation="vertical">
 
         <com.google.android.material.appbar.AppBarLayout
@@ -20,17 +21,25 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@null"
-            app:elevation="4dp">
+            android:orientation="vertical"
+            app:elevation="@dimen/spacing_lvl2">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/layout_lvl1"
+                app:layout_scrollFlags="scroll"/>
 
             <com.tokopedia.unifycomponents.ticker.Ticker
                 android:id="@+id/telco_ticker_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/layout_lvl2"
+                android:layout_marginRight="@dimen/layout_lvl2"
                 android:visibility="gone"
+                app:tickerShapeType="loose"
+                app:closeButtonVisibility="visible"
+                app:enableAutoSlide="true"
                 app:layout_scrollFlags="scroll"
-                app:tckv_content_text_size="@dimen/dp_11"
-                app:tckv_indicator_off_color="@color/grey_550"
-                app:tckv_indicator_on_color="@color/tkpd_main_green"
                 tools:visibility="gone" />
 
             <androidx.cardview.widget.CardView
@@ -39,9 +48,9 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/telco_ticker_view"
                 android:layout_marginLeft="@dimen/layout_lvl2"
-                android:layout_marginTop="@dimen/dp_10"
+                android:layout_marginTop="@dimen/layout_lvl1"
                 android:layout_marginRight="@dimen/layout_lvl2"
-                android:layout_marginBottom="@dimen/spacing_lvl4"
+                android:layout_marginBottom="@dimen/layout_lvl1"
                 app:cardCornerRadius="@dimen/layout_lvl1">
 
                 <com.tokopedia.topupbills.telco.prepaid.widget.DigitalClientNumberWidget
@@ -65,8 +74,8 @@
             <View
                 android:id="@+id/separator"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_1"
-                android:background="@drawable/bg_line_separator" />
+                android:layout_height="@dimen/telco_space_1"
+                android:background="@color/Neutral_N75" />
 
         </com.google.android.material.appbar.AppBarLayout>
 
@@ -75,26 +84,26 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@id/telco_buy_widget"
-            android:layout_marginLeft="@dimen/spacing_lvl4"
-            android:layout_marginRight="@dimen/spacing_lvl4"
+            android:layout_marginLeft="@dimen/layout_lvl2"
+            android:layout_marginRight="@dimen/layout_lvl2"
             android:orientation="horizontal"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-        
+
     </com.tokopedia.topupbills.telco.prepaid.widget.TelcoNestedCoordinatorLayout>
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginTop="@dimen/dp_2"
-        app:cardElevation="@dimen/dp_4">
+        android:layout_marginTop="@dimen/spacing_lvl1"
+        app:cardElevation="@dimen/spacing_lvl2">
 
         <com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
             android:id="@+id/telco_buy_widget"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/spacing_lvl4"
-            android:layout_marginRight="@dimen/spacing_lvl4" />
+            android:layout_marginLeft="@dimen/layout_lvl2"
+            android:layout_marginRight="@dimen/layout_lvl2" />
 
     </androidx.cardview.widget.CardView>
 

@@ -13,8 +13,8 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 
 class InboxFilterAdapter(private val dataSet: List<String>,
+                         private var selected : Int,
                          private val mPresenter: InboxListPresenter) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    private var selected = 0
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(
                 parent.context)
@@ -28,10 +28,6 @@ class InboxFilterAdapter(private val dataSet: List<String>,
 
     override fun getItemCount(): Int {
         return dataSet.size
-    }
-
-    fun setSelected(index: Int) {
-        selected = index
     }
 
     internal inner class FilterHolder constructor(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -52,10 +48,8 @@ class InboxFilterAdapter(private val dataSet: List<String>,
             filterText?.text = valueItem
             if (adapterPosition == selected) {
                 tvDayTime?.show()
-                filterText?.setTextColor(ContextCompat.getColor(mContext, com.tokopedia.design.R.color.green_nob))
             } else {
                 tvDayTime?.hide()
-                filterText?.setTextColor(ContextCompat.getColor(mContext, com.tokopedia.design.R.color.black_70))
             }
             locationDateItem?.setOnClickListener { onClickFilterItem() }
         }

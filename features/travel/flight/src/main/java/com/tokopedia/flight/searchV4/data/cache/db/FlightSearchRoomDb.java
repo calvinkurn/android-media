@@ -51,7 +51,7 @@ public abstract class FlightSearchRoomDb extends RoomDatabase {
 
     }
 
-    private static FlightSearchRoomDb INSTANCE = null;
+    private volatile static FlightSearchRoomDb INSTANCE = null;
 
     public static FlightSearchRoomDb getInstance(Context context) {
         if (INSTANCE == null) {

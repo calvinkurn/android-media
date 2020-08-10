@@ -7,13 +7,10 @@ import com.tokopedia.discovery.common.coroutines.ProductionDispatcherProvider
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.search.result.domain.usecase.getdynamicfilter.GetDynamicFilterCoroutineUseCaseModule
-import com.tokopedia.search.result.presentation.presenter.localcache.SearchLocalCacheHandler
-import com.tokopedia.search.result.presentation.presenter.localcache.SearchLocalCacheHandlerModule
 import com.tokopedia.search.result.shop.domain.model.SearchShopModel
 import com.tokopedia.search.result.shop.domain.usecase.SearchShopUseCaseModule
 import com.tokopedia.search.result.shop.presentation.mapper.ShopViewModelMapperModule
 import com.tokopedia.search.result.shop.presentation.model.ShopCpmViewModel
-import com.tokopedia.search.result.shop.presentation.model.ShopTotalCountViewModel
 import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
@@ -25,8 +22,7 @@ import javax.inject.Named
 @Module(includes = [
     SearchShopUseCaseModule::class,
     GetDynamicFilterCoroutineUseCaseModule::class,
-    ShopViewModelMapperModule::class,
-    SearchLocalCacheHandlerModule::class
+    ShopViewModelMapperModule::class
 ])
 internal class SearchShopViewModelFactoryModule(
         private val searchParameter: Map<String, Any> = mapOf()
@@ -42,10 +38,10 @@ internal class SearchShopViewModelFactoryModule(
             searchShopLoadMoreUseCase: UseCase<SearchShopModel>,
             @Named(SearchConstant.DynamicFilter.GET_DYNAMIC_FILTER_SHOP_USE_CASE)
             getDynamicFilterUseCase: UseCase<DynamicFilterModel>,
+            @Named(SearchConstant.SearchShop.GET_SHOP_COUNT_USE_CASE)
+            getShopCountUseCase: UseCase<Int>,
             shopCpmViewModelMapper: Mapper<SearchShopModel, ShopCpmViewModel>,
-            shopTotalCountViewModelMapper: Mapper<SearchShopModel, ShopTotalCountViewModel>,
             shopViewModelMapper: Mapper<SearchShopModel, ShopViewModel>,
-            searchLocalCacheHandler: SearchLocalCacheHandler,
             userSession: UserSessionInterface
     ): ViewModelProvider.Factory {
         return SearchShopViewModelFactory(
@@ -54,10 +50,9 @@ internal class SearchShopViewModelFactoryModule(
                 searchShopFirstPageUseCase,
                 searchShopLoadMoreUseCase,
                 getDynamicFilterUseCase,
+                getShopCountUseCase,
                 shopCpmViewModelMapper,
-                shopTotalCountViewModelMapper,
                 shopViewModelMapper,
-                searchLocalCacheHandler,
                 userSession
         )
     }

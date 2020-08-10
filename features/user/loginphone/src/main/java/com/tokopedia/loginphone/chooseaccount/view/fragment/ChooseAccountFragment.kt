@@ -17,7 +17,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.crashlytics.android.Crashlytics
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -25,6 +25,8 @@ import com.tokopedia.analytics.mapper.TkpdAppsFlyerMapper
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_IS_SQ_CHECK
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.iris.Iris
+import com.tokopedia.iris.IrisAnalytics
 import com.tokopedia.linker.LinkerConstants
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
@@ -75,7 +77,7 @@ class ChooseAccountFragment : BaseDaggerFragment(),
     private lateinit var progressBar: LoaderUnify
     private lateinit var adapter: AccountAdapter
     private lateinit var toolbarShopCreation: Toolbar
-    private var crashlytics: FirebaseCrashlytics = FirebaseCrashlytics.getInstance()
+
     lateinit var viewModel: com.tokopedia.loginphone.chooseaccount.data.ChooseAccountViewModel
 
     private val viewModelProvider by lazy {
@@ -261,8 +263,8 @@ class ChooseAccountFragment : BaseDaggerFragment(),
             TkpdAppsFlyerMapper.getInstance(activity?.applicationContext).mapAnalytics()
             TrackApp.getInstance().gtm
                     .pushUserId(userId)
-            if (!GlobalConfig.DEBUG && crashlytics != null)
-                crashlytics.setUserId(userId)
+            if (!GlobalConfig.DEBUG && Crashlytics.getInstance() != null)
+                Crashlytics.setUserIdentifier(userId)
 
             if (userSessionInterface.isLoggedIn) {
                 val userData = UserData()
@@ -306,7 +308,7 @@ class ChooseAccountFragment : BaseDaggerFragment(),
 
     private fun logUnknownError(throwable: Throwable) {
         try {
-            crashlytics.recordException(throwable)
+            Crashlytics.logException(throwable)
         } catch (e: IllegalStateException) {
             e.printStackTrace()
         }
@@ -357,6 +359,7 @@ class ChooseAccountFragment : BaseDaggerFragment(),
         this.viewModel.accountList = accountList
 
         if (accountList.userDetails.size == 1 && accountList.msisdn.isNotEmpty()) {
+            adapter.setList(accountList.userDetails, accountList.msisdn)
             val userDetail = accountList.userDetails[0]
             loginToken(userDetail, accountList.msisdn)
         } else {

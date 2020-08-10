@@ -5,7 +5,7 @@
     android:id="@+id/telco_prepaid_title_product"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/spacing_lvl4"
+    android:layout_marginTop="@dimen/layout_lvl2"
     android:layout_marginBottom="@dimen/spacing_lvl2"
     android:layout_marginLeft="@dimen/layout_lvl1"
     android:layout_marginRight="@dimen/layout_lvl1"

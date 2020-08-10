@@ -17,4 +17,8 @@ interface HeaderMenuListener{
 
     fun onGoToReportUser()
 
+    fun onClickBlockPromo()
+
+    fun onClickAllowPromo()
+
 }

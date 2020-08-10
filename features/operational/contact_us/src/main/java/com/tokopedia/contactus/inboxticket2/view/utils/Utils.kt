@@ -7,9 +7,10 @@ import android.text.SpannableString
 import android.text.Spanned
 import android.text.format.DateUtils
 import android.text.format.Time
+import android.text.style.AbsoluteSizeSpan
 import android.text.style.BackgroundColorSpan
 import android.util.TypedValue
-import com.tokopedia.contactus.orderquery.data.ImageUpload
+import com.tokopedia.contactus.inboxticket2.data.ImageUpload
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.File
@@ -67,6 +68,8 @@ class Utils {
         val roundedBackgroundSpan = RoundedBackgroundSpan(background, textColor, convertSpToPx(textSizeSp, mContext),
                 convertDpToPx(8, mContext), convertDpToPx(4, mContext), convertDpToPx(2, mContext), convertDpToPx(2, mContext))
         spannableString.setSpan(roundedBackgroundSpan, start, src.length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
+        spannableString.setSpan(AbsoluteSizeSpan(convertSpToPx(10, mContext).toInt()), start,
+                src.length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
         return spannableString
     }
 

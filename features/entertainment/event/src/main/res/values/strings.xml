@@ -37,7 +37,6 @@
     <string name="ent_pdp_title_form">Data Pemesan</string>
     <string name="ent_pdp_ubah">Ubah</string>
     <string name="ent_pdp_tanggal_kunjungan">Tanggal Kunjungan</string>
-    <string name="ent_pdp_ticket_tickertext">Hanya bisa beli satu jenis tiket, lakukan transaksi baru untuk beli jenis tiket lainnya.</string>
     <string name="ent_pdp_ticket_total_harga">Total Harga</string>
     <string name="ent_pdp_ticket_pesan_text">Pesan Tiket</string>
     <string name="ent_pdp_ticket_pilih">Pilih</string>
@@ -101,4 +100,7 @@
     <string name="ent_checkout_to_order_detail">%s?from_payment=true</string>
     <string name="ent_pdp_param_to_package">%s/%s?selectedDate=%s&amp;startDate=%s&amp;endDate=%s</string>
     <string name="ent_checkout_price_expand">Mulai dari <![CDATA["<font color='black'><b> %s </b></font>]]> </string>
+
+    <string name="ent_home_coachmark_title">Beli tiket kini lebih mudah!</string>
+    <string name="ent_home_coachmark_subtitle">Cobain yuk, sekarang kamu dapat membeli paket lain bersamaan!</string>
 </resources>

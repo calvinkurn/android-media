@@ -377,7 +377,8 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun stopPlayer() {
-        playVideoManager.stop()
+        if (playVideoManager.isVideoLive() || channelType.isLive || isFreezeOrBanned) playVideoManager.release()
+        else playVideoManager.stop()
     }
     //endregion
 
@@ -435,7 +436,7 @@ class PlayViewModel @Inject constructor(
             }
         }
 
-        getChannelInfoResponse(channelId)
+        if (!isFreezeOrBanned) getChannelInfoResponse(channelId)
     }
 
     fun sendChat(message: String) {

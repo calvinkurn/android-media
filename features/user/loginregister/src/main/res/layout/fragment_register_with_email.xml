@@ -1,202 +1,156 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/white"
-                android:clipToPadding="false">
-
-    <RelativeLayout
-        android:id="@+id/container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:fillViewport="true">
-
-            <LinearLayout
-                android:id="@+id/linearLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:orientation="vertical"
-                android:padding="@dimen/dp_20"
-                android:visibility="visible">
-
-                <com.tokopedia.design.text.TkpdHintTextInputLayout
-                    android:id="@+id/wrapper_email"
-                    style="@style/HintTextInputLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/dp_32"
-                    android:hint="@string/title_email"
-                    android:inputType="textCapWords"
-                    >
-
-                    <AutoCompleteTextView
-                        android:id="@+id/register_email"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:ems="10"
-                        android:imeOptions="actionNext"
-                        android:inputType="textEmailAddress"
-                        android:maxLines="1"
-                        android:textColor="@color/black_70"
-                        android:textSize="@dimen/sp_16"
-                        android:enabled="false"/>
-                </com.tokopedia.design.text.TkpdHintTextInputLayout>
-
-                <TextView
-                    android:id="@+id/email_helper"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/dp_20"
-                    android:layout_marginLeft="@dimen/dp_3"
-                    android:fontFamily="sans-serif"
-                    android:lineSpacingExtra="4sp"
-                    android:text="@string/send_verif_to_email"
-                    android:textColor="@color/black_38"
-                    android:textSize="@dimen/sp_12"
-                    android:textStyle="normal"
-                    android:visibility="gone"
-                    />
-
-                <com.tokopedia.design.text.TkpdHintTextInputLayout
-                    android:id="@+id/wrapper_name"
-                    style="@style/HintTextInputLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/dp_20"
-                    android:hint="@string/title_full_name"
-                    android:inputType="textCapWords">
-
-                    <EditText
-                        android:id="@+id/name"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:imeOptions="actionNext"
-                        android:inputType="textCapWords"
-                        android:maxLines="1"
-                        android:textColor="@color/black_70"
-                        android:textSize="@dimen/sp_16"/>
-
-                </com.tokopedia.design.text.TkpdHintTextInputLayout>
-                
-                <com.tokopedia.design.text.TkpdHintTextInputLayout
-                    android:id="@+id/wrapper_password"
-                    style="@style/HintTextInputLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/dp_20"
-                    android:hint="@string/prompt_password"
-                    app:passwordToggleDrawable="@drawable/asl_password_visibility"
-                    app:passwordToggleEnabled="true">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/register_password"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:imeActionId="123321"
-                        android:imeActionLabel="Lanjut"
-                        android:imeOptions="actionUnspecified"
-                        android:inputType="textPassword"
-                        android:maxLines="1"
-                        android:textColor="@color/black_70"
-                        android:textSize="@dimen/sp_16"
-                        android:typeface="sans"/>
-                </com.tokopedia.design.text.TkpdHintTextInputLayout>
-
-                <TextView
-                    android:id="@+id/password_helper"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/dp_20"
-                    android:layout_marginLeft="@dimen/dp_3"
-                    android:lineSpacingExtra="6sp"
-                    android:text="@string/minimal_8_character"
-                    android:textColor="@color/black_38"
-                    android:textSize="@dimen/sp_12"
-                    android:visibility="gone"
-                    />
-
-                <TextView
-                    android:id="@+id/register_button"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_44"
-                    android:layout_marginTop="@dimen/dp_20"
-                    android:background="@drawable/grey_button_rounded"
-                    android:enabled="false"
-                    android:fontFamily="sans-serif-medium"
-                    android:gravity="center"
-                    android:text="@string/title_register_wo_u"
-                    android:textColor="@color/grey_500"
-                    android:textSize="13sp"/>
-
-                <TextView
-                    android:id="@+id/register_next_detail_t_and_p"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/dp_10"
-                    android:layout_marginTop="@dimen/dp_20"
-                    android:fontFamily="sans-serif"
-                    android:gravity="center"
-                    android:lineSpacingExtra="6sp"
-                    android:paddingLeft="@dimen/dp_10"
-                    android:paddingRight="@dimen/dp_10"
-                    android:textColor="@color/black_38"
-                    android:textSize="@dimen/sp_12"
-                    android:textStyle="normal"
-                    tools:text="Dengan menekan "/>
-
-            </LinearLayout>
-        </ScrollView>
-
-    </RelativeLayout>
-
+<androidx.constraintlayout.widget.ConstraintLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:background="@color/white">
+  
+  <ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintRight_toRightOf="parent"
+    app:layout_constraintBottom_toBottomOf="parent">
+    
     <LinearLayout
-        android:id="@+id/redirect_reset_password"
+      android:id="@+id/linearLayout"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:focusable="true"
+      android:focusableInTouchMode="true"
+      android:orientation="vertical"
+      android:padding="@dimen/layout_lvl2"
+      android:visibility="visible">
+      
+      <com.tokopedia.design.text.TkpdHintTextInputLayout
+        android:id="@+id/wrapper_email"
+        style="@style/HintTextInputLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="@dimen/dp_20"
-        android:visibility="gone"
-        android:orientation="vertical">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:text="@string/account_registered_title"
-            android:textColor="@color/black_70"
-            android:textSize="@dimen/sp_18"
-            android:textStyle="bold"/>
-
-        <androidx.legacy.widget.Space
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_30"/>
-
-        <TextView
-            android:id="@+id/body"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:lineSpacingExtra="6sp"
-            android:text="@string/account_registered_body"
-            android:textColor="@color/black_54"/>
-
-    </LinearLayout>
-
-    <ProgressBar
-        android:id="@+id/progress_bar"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:visibility="gone"/>
+        android:hint="@string/title_email"
+        android:layout_marginBottom="@dimen/layout_lvl3"
+        android:inputType="textCapWords">
+        
+        <AutoCompleteTextView
+          android:id="@+id/register_email"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:ems="10"
+          android:imeOptions="actionNext"
+          android:inputType="textEmailAddress"
+          android:maxLines="1"
+          android:textColor="@color/black_70"
+          android:textSize="@dimen/spacing_lvl4"
+          android:enabled="false"/>
+        
+      </com.tokopedia.design.text.TkpdHintTextInputLayout>
+      
+      <com.tokopedia.design.text.TkpdHintTextInputLayout
+        android:id="@+id/wrapper_name"
+        style="@style/HintTextInputLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/layout_lvl3"
+        android:hint="@string/title_full_name"
+        android:inputType="textCapWords">
+        
+        <EditText
+          android:id="@+id/name"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:imeOptions="actionNext"
+          android:inputType="textCapWords"
+          android:maxLines="1"
+          android:textColor="@color/black_70"
+          android:textSize="@dimen/spacing_lvl4"/>
+      
+      </com.tokopedia.design.text.TkpdHintTextInputLayout>
+      
+      <com.tokopedia.design.text.TkpdHintTextInputLayout
+        android:id="@+id/wrapper_password"
+        style="@style/HintTextInputLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/layout_lvl3"
+        android:hint="@string/prompt_password"
+        app:passwordToggleDrawable="@drawable/asl_password_visibility"
+        app:passwordToggleEnabled="true">
+        
+        <com.google.android.material.textfield.TextInputEditText
+          android:id="@+id/register_password"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:imeActionId="123321"
+          android:imeActionLabel="Lanjut"
+          android:imeOptions="actionUnspecified"
+          android:inputType="textPassword"
+          android:maxLines="1"
+          android:textColor="@color/black_70"
+          android:textSize="@dimen/spacing_lvl4"
+          android:typeface="sans"/>
+        
+      </com.tokopedia.design.text.TkpdHintTextInputLayout>
+      
+      <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/register_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/layout_lvl3"
+        android:enabled="false"
+        android:gravity="center"
+        android:text="@string/title_register_wo_u"
+        app:unifyButtonType="main" />
+  
+      <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/register_next_detail_t_and_p"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/layout_lvl1"
+        android:layout_marginTop="@dimen/layout_lvl3"
+        android:gravity="center"
+        app:typographyType="body_2"
+        tools:text="Dengan menekan "/>
+    
+    </LinearLayout>
+    
+  </ScrollView>
+  
+  <LinearLayout
+    android:id="@+id/redirect_reset_password"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="@dimen/layout_lvl2"
+    android:orientation="vertical"
+    android:visibility="gone">
+    
+    <com.tokopedia.unifyprinciples.Typography
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:gravity="center_horizontal"
+      android:text="@string/account_registered_title"
+      app:typographyType="heading_2" />
+    
+    <com.tokopedia.unifyprinciples.Typography
+      android:id="@+id/body"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:gravity="center_horizontal"
+      android:text="@string/account_registered_body"
+      app:typographyType="body_2"/>
+  
+  </LinearLayout>
+  
+  <com.tokopedia.unifycomponents.LoaderUnify
+    android:id="@+id/progress_bar"
+    android:layout_width="@dimen/layout_lvl4"
+    android:layout_height="@dimen/layout_lvl4"
+    android:visibility="gone"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintRight_toRightOf="parent"
+    app:layout_constraintBottom_toBottomOf="parent"/>
 
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
