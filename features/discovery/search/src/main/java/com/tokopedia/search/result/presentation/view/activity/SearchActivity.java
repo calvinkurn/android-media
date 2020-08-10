@@ -56,7 +56,6 @@ import com.tokopedia.search.R;
 import com.tokopedia.search.analytics.SearchTracking;
 import com.tokopedia.search.result.presentation.view.adapter.SearchSectionPagerAdapter;
 import com.tokopedia.search.result.presentation.view.fragment.ProductListFragment;
-import com.tokopedia.search.result.presentation.view.fragment.ProfileListFragment;
 import com.tokopedia.search.result.presentation.view.listener.RedirectionListener;
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener;
 import com.tokopedia.search.result.presentation.view.listener.SearchPerformanceMonitoringListener;
@@ -837,8 +836,6 @@ public class SearchActivity extends BaseActivity
     @Override
     public void configureTabLayout(boolean isVisible) {
         Fragment fragmentItem = searchSectionPagerAdapter.getRegisteredFragmentAtPosition(viewPager.getCurrentItem());
-        if (fragmentItem instanceof ProfileListFragment) return;
-
         animateTab(isVisible);
     }
 
