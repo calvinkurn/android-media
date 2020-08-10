@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
+import androidx.annotation.StringRes
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
@@ -546,6 +547,7 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
                     }
                     TopChatInternalRouter.Companion.CHAT_DELETED_RESULT_CODE -> {
                         adapter?.deleteItem(itemPositionLongClicked)
+                        showToaster(R.string.title_success_delete_chat)
                     }
                 }
                 Unit
@@ -658,6 +660,20 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
 
     override fun getSupportChildFragmentManager(): FragmentManager {
         return childFragmentManager
+    }
+
+    private fun showToaster(message: String) {
+        view?.let {
+            Toaster.build(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+                    .show()
+        }
+    }
+
+    private fun showToaster(@StringRes message: Int) {
+        view?.let {
+            Toaster.build(it, it.context.getString(message), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+                    .show()
+        }
     }
 
     companion object {
