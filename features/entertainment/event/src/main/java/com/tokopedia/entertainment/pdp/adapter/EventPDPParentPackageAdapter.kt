@@ -26,8 +26,13 @@ class EventPDPParentPackageAdapter (packageTypeFactoryImp: PackageTypeFactoryImp
     private fun chooseNewPackage(idPackage: String){
         data.forEachIndexed{index, it ->
             if(it is PackageV3) {
-                it.isChoosen = it.id.equals(idPackage)
-                notifyItemChanged(index)
+                if(it.id.equals(idPackage)){
+                    it.isChoosen = true
+                    notifyItemChanged(index)
+                } else {
+                    it.isChoosen = false
+                    notifyItemChanged(index)
+                }
             }
         }
     }
