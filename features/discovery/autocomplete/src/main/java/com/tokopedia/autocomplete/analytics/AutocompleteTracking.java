@@ -102,7 +102,7 @@ public class AutocompleteTracking {
     public static void eventClickPopularSearch(Context context, String label) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 EVENT_CLICK_SEARCH,
-                EVENTCATEGORY_TOP_NAV,
+                EVENTCATEGORY_TOP_NAV + " - /",
                 CLICK_POPULAR_SEARCH,
                 label
         );
