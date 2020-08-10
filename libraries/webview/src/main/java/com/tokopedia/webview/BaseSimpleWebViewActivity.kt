@@ -256,6 +256,7 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
         }
 
         @DeepLink(ApplinkConst.BROWSER, ApplinkConst.SellerApp.BROWSER)
+        @JvmStatic
         fun getCallingIntentOpenBrowser(context: Context?, extras: Bundle): Intent? {
             val webUrl = extras.getString("url", getInstance().WEB)
             val destinationIntent = Intent(Intent.ACTION_VIEW)
