@@ -116,7 +116,8 @@
     <string name="seller_migration_account_ticker_desc">Fitur unggulan hanya bisa diakses di aplikasi Tokopedia Seller mulai <b>11 Sep 2020</b>. Pelajari <b>di sini</b></string>
     <string name="seller_migration_account_bottom_sheet_header_info">Fitur pengembangan bisnis akan dialihkan ke aplikasi</string>
     <string name="seller_migration_account_bottom_sheet_header_app_name">Tokopedia Seller</string>
-    <string name="seller_migration_account_bottom_sheet_header_start_date">Mulai dari <b>11 September 2020</b></string>
+    <string name="seller_migration_account_bottom_sheet_header_start">Mulai dari</string>
+    <string name="seller_migration_account_bottom_sheet_header_start_date">11 September 2020</string>
     <string name="seller_migration_account_bottom_sheet_detail"><b>Untuk pengalaman berjualan terbaik,</b> berikut alasan menggunakan aplikasi Tokopedia Seller:</string>
     <string name="seller_migration_account_bottom_sheet_item_title_focus">Lebih fokus berjualan</string>
     <string name="seller_migration_account_bottom_sheet_item_title_closer">Dekat dengan pembeli</string>
