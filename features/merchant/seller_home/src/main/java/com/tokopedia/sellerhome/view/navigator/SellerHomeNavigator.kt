@@ -13,129 +13,73 @@ import com.tokopedia.sellerhome.view.fragment.SellerHomeFragment
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
 
 class SellerHomeNavigator(
-    private val context: Context,
-    private val fm: FragmentManager,
-    private val sellerHomeRouter: SellerHomeRouter?
+        private val context: Context,
+        private val fm: FragmentManager,
+        private val sellerHomeRouter: SellerHomeRouter?
 ) {
 
-    private var homeFragment: Fragment? = null
-    private var productManageFragment: Fragment? = null
-    private var chatFragment: Fragment? = null
-    private var somListFragment: Fragment? = null
-    private var otherSettingsFragment: Fragment? = null
+    companion object {
+        const val FRAGMENT_TAG = "BOTTOM_NAV_FRAGMENT_TAG"
+    }
 
     @FragmentType
     private var currentSelectedPage: Int? = null
-    private val pages: MutableMap<Fragment?, String?> = mutableMapOf()
+    private val pages: MutableMap<Int, FragmentPage> = mutableMapOf()
 
     init {
         initFragments()
     }
 
     fun start(@FragmentType page: Int) {
-        val transaction = fm.beginTransaction()
-        val fragment = getPageFragment(page)
-        addAllPages(transaction)
-
-        fragment?.let {
-            transaction
-                .show(fragment)
-                .commit()
-
-            setSelectedPage(page)
-        }
+        showPage(page)
     }
 
     fun showPage(@FragmentType page: Int) {
-        val transaction = fm.beginTransaction()
-        val fragment = getPageFragment(page)
-
-        fragment?.let {
-            hideCurrentPage(transaction)
-
-            transaction
-                .show(it)
-                .commit()
-
+        pages[page]?.lazyFragment?.value?.let { fragment ->
+            replaceFragment(fragment)
             setSelectedPage(page)
         }
-
-        updateFragmentVisibilityHint(fragment)
     }
 
     fun navigateFromAppLink(page: PageFragment) {
         val type = page.type
 
-        getPageFragment(type)?.let { currentPage ->
+        pages[type]?.lazyFragment?.value?.let { currentPage ->
             val fragment = setupPageFromAppLink(page)
 
             fragment?.let { selectedPage ->
-                val tag = page::class.java.simpleName
-                val transaction = fm.beginTransaction()
-                val fragments = fm.fragments
-
                 when {
-                    fragments.isEmpty() -> {
-                        addAllPages(transaction)
-
-                        transaction
-                            .show(selectedPage)
-                            .commit()
-                    }
                     currentPage != selectedPage -> {
-                        transaction
-                            .remove(currentPage)
-                            .add(R.id.sahContainer, selectedPage, tag)
-                            .commit()
+                        replaceFragment(selectedPage)
                     }
                     else -> {
-                        transaction
-                            .show(selectedPage)
-                            .commit()
+                        replaceFragment(currentPage)
                     }
                 }
                 setSelectedPage(type)
-                updateFragmentVisibilityHint(selectedPage)
             }
         }
     }
 
     fun getPageTitle(@FragmentType pageType: Int): String? {
-        return when(pageType) {
-            FragmentType.HOME -> pages[homeFragment]
-            FragmentType.PRODUCT -> pages[productManageFragment]
-            FragmentType.CHAT -> pages[chatFragment]
-            FragmentType.ORDER -> pages[somListFragment]
-            else -> pages[otherSettingsFragment]
-        }
+        return pages[pageType]?.title
     }
 
     private fun setupPageFromAppLink(selectedPage: PageFragment?): Fragment? {
         return selectedPage?.let {
             val pageType = it.type
-            val title = getPageTitle(pageType)
-            val fragment = getPageFragment(pageType)
-            pages.remove(fragment)
 
-            val page = when (pageType) {
+            when (pageType) {
                 FragmentType.PRODUCT -> setupProductManagePage(it)
                 FragmentType.ORDER -> setupSellerOrderPage(it)
-                else -> fragment
             }
 
-            pages[page] = title
-            page
+            pages[pageType]?.lazyFragment?.value
         }
     }
 
     fun setHomeTitle(title: String) {
-        homeFragment?.let {
-            pages[it] = title
-        }
-    }
-
-    fun getHomeFragment(): SellerHomeFragment? {
-        return homeFragment as? SellerHomeFragment
+        pages[FragmentType.HOME]?.title = title
     }
 
     fun isHomePageSelected(): Boolean {
@@ -143,52 +87,17 @@ class SellerHomeNavigator(
     }
 
     private fun initFragments() {
-        homeFragment = SellerHomeFragment.newInstance()
-        productManageFragment = sellerHomeRouter?.getProductManageFragment(arrayListOf(), "")
-        chatFragment = sellerHomeRouter?.getChatListFragment()
-        somListFragment = sellerHomeRouter?.getSomListFragment(SomTabConst.STATUS_NEW_ORDER)
-        otherSettingsFragment = OtherMenuFragment.createInstance()
+        val homeFragment = FragmentPage(context.getString(R.string.sah_home), lazy { SellerHomeFragment.newInstance() })
+        val productManageFragment = FragmentPage(context.getString(R.string.sah_product_list), lazy { sellerHomeRouter?.getProductManageFragment(arrayListOf(), "") })
+        val chatFragment = FragmentPage(context.getString(R.string.sah_chat), lazy { sellerHomeRouter?.getChatListFragment() })
+        val somListFragment = FragmentPage(context.getString(R.string.sah_sale), lazy { sellerHomeRouter?.getSomListFragment(SomTabConst.STATUS_NEW_ORDER) })
+        val otherSettingsFragment = FragmentPage(context.getString(R.string.sah_others), lazy { OtherMenuFragment.createInstance() })
 
-        addPage(homeFragment, context.getString(R.string.sah_home).orEmpty())
-        addPage(productManageFragment, context.getString(R.string.sah_product_list))
-        addPage(chatFragment, context.getString(R.string.sah_chat))
-        addPage(somListFragment, context.getString(R.string.sah_sale))
-        addPage(otherSettingsFragment, context.getString(R.string.sah_sale))
-    }
-
-    private fun addAllPages(transaction: FragmentTransaction) {
-        pages.keys.forEach {
-            it?.let {
-                val tag = it::class.java.simpleName
-                transaction.add(R.id.sahContainer, it, tag)
-                transaction.hide(it)
-            }
-        }
-    }
-
-    private fun getPageFragment(@FragmentType type: Int): Fragment? {
-        return when (type) {
-            FragmentType.HOME -> homeFragment
-            FragmentType.PRODUCT -> productManageFragment
-            FragmentType.CHAT -> chatFragment
-            FragmentType.ORDER -> somListFragment
-            else -> otherSettingsFragment
-        }
-    }
-
-    @Suppress("DEPRECATION")
-    private fun updateFragmentVisibilityHint(visibleFragment: Fragment?) {
-        if (visibleFragment == null) {
-            homeFragment?.userVisibleHint = false
-            productManageFragment?.userVisibleHint = false
-            chatFragment?.userVisibleHint = false
-            somListFragment?.userVisibleHint = false
-        } else {
-            homeFragment?.userVisibleHint = visibleFragment == homeFragment
-            productManageFragment?.userVisibleHint = visibleFragment == productManageFragment
-            chatFragment?.userVisibleHint = visibleFragment == chatFragment
-            somListFragment?.userVisibleHint = visibleFragment == somListFragment
-        }
+        addPage(FragmentType.HOME, homeFragment)
+        addPage(FragmentType.PRODUCT, productManageFragment)
+        addPage(FragmentType.CHAT, chatFragment)
+        addPage(FragmentType.ORDER, somListFragment)
+        addPage(FragmentType.OTHER, otherSettingsFragment)
     }
 
     private fun setupProductManagePage(page: PageFragment) {
@@ -198,34 +107,35 @@ class SellerHomeNavigator(
         when {
             page.tabPage.isNotBlank() && page.tabPage == filterOptionEmptyStock -> {
                 val filterOptions = arrayListOf(filterOptionEmptyStock)
-                productManageFragment = sellerHomeRouter?.getProductManageFragment(filterOptions, searchKeyword)
+                pages[page.type]?.lazyFragment = lazy { sellerHomeRouter?.getProductManageFragment(filterOptions, searchKeyword) }
             }
             page.tabPage.isBlank() && searchKeyword.isNotBlank() -> {
-                productManageFragment = sellerHomeRouter?.getProductManageFragment(arrayListOf(), searchKeyword)
+                pages[page.type]?.lazyFragment = lazy { sellerHomeRouter?.getProductManageFragment(arrayListOf(), searchKeyword) }
             }
         }
-
-        return productManageFragment
     }
 
-    private fun setupSellerOrderPage(page: PageFragment): Fragment? {
-        somListFragment = sellerHomeRouter?.getSomListFragment(page.tabPage)
-        return somListFragment
+    private fun setupSellerOrderPage(page: PageFragment) {
+        pages[page.type]?.lazyFragment = lazy { sellerHomeRouter?.getSomListFragment(page.tabPage) }
     }
 
-    private fun addPage(fragment: Fragment?, title: String?) {
-        fragment?.let { pages[it] = title }
-    }
-
-    private fun hideCurrentPage(transaction: FragmentTransaction) {
-        currentSelectedPage?.let {
-            getPageFragment(it)?.let { currentPage ->
-                transaction.hide(currentPage)
-            }
-        }
+    private fun addPage(@FragmentType key: Int, fragmentPage: FragmentPage) {
+        pages[key] = fragmentPage
     }
 
     private fun setSelectedPage(@FragmentType page: Int) {
         currentSelectedPage = page
     }
+
+    fun getHomeFragment(): SellerHomeFragment? {
+        return pages[FragmentType.HOME]?.lazyFragment?.value as? SellerHomeFragment
+    }
+
+    private fun replaceFragment(fragment: Fragment) {
+        fm.beginTransaction()
+                .replace(R.id.sahContainer, fragment, FRAGMENT_TAG)
+                .commit()
+    }
+
+    inner class FragmentPage(var title: String, var lazyFragment: Lazy<Fragment?>)
 }
