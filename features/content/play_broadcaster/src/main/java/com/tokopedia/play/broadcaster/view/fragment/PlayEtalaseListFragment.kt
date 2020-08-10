@@ -11,12 +11,15 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.Slide
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.ui.itemdecoration.PlayGridTwoItemDecoration
 import com.tokopedia.play.broadcaster.ui.model.EtalaseLoadingUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.PageResultState
 import com.tokopedia.play.broadcaster.ui.viewholder.PlayEtalaseViewHolder
-import com.tokopedia.play.broadcaster.util.doOnPreDraw
+import com.tokopedia.play.broadcaster.util.error.DefaultNetworkThrowable
+import com.tokopedia.play.broadcaster.util.extension.doOnPreDraw
 import com.tokopedia.play.broadcaster.util.scroll.StopFlingScrollListener
 import com.tokopedia.play.broadcaster.view.adapter.PlayEtalaseAdapter
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseEtalaseSetupFragment
@@ -24,7 +27,8 @@ import com.tokopedia.play.broadcaster.view.viewmodel.PlayEtalasePickerViewModel
 import javax.inject.Inject
 
 class PlayEtalaseListFragment @Inject constructor(
-        private val viewModelFactory: ViewModelFactory
+        private val viewModelFactory: ViewModelFactory,
+        private val analytic: PlayBroadcastAnalytic
 ) : PlayBaseEtalaseSetupFragment() {
 
     private lateinit var viewModel: PlayEtalasePickerViewModel
@@ -32,9 +36,10 @@ class PlayEtalaseListFragment @Inject constructor(
     private lateinit var rvEtalase: RecyclerView
 
     private val etalaseAdapter = PlayEtalaseAdapter(object : PlayEtalaseViewHolder.Listener {
-        override fun onEtalaseClicked(etalaseId: String, sharedElements: List<View>) {
+        override fun onEtalaseClicked(etalaseId: String, etalaseName: String, sharedElements: List<View>) {
             etalaseSetupCoordinator.openEtalaseDetail(
                     etalaseId,
+                    etalaseName,
                     sharedElements
             )
         }
@@ -66,6 +71,7 @@ class PlayEtalaseListFragment @Inject constructor(
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         observeEtalase()
+        observeEtalaseStatus()
     }
 
     override fun refresh() {
@@ -100,17 +106,30 @@ class PlayEtalaseListFragment @Inject constructor(
         viewModel.observableEtalase.observe(viewLifecycleOwner, Observer {
             when (it.state) {
                 PageResultState.Loading -> {
+                    etalaseSetupCoordinator.hideGlobalError()
                     etalaseAdapter.setItemsAndAnimateChanges(listOf(EtalaseLoadingUiModel))
                 }
                 is PageResultState.Success -> {
+                    etalaseSetupCoordinator.hideGlobalError()
                     etalaseAdapter.setItemsAndAnimateChanges(it.currentValue)
                     startPostponedTransition()
                 }
                 is PageResultState.Fail -> {
+                    etalaseSetupCoordinator.showGlobalError(if (it.state.error is DefaultNetworkThrowable) GlobalError.NO_CONNECTION else GlobalError.SERVER_ERROR) {
+                        viewModel.loadEtalaseList()
+                    }
                     startPostponedTransition()
                 }
             }
 
+        })
+    }
+
+    private fun observeEtalaseStatus() {
+        viewModel.observableEtalaseProductState.observe(viewLifecycleOwner, Observer {
+            if (it.state is PageResultState.Fail) {
+                analytic.viewEtalaseError(it.state.error.localizedMessage)
+            }
         })
     }
 

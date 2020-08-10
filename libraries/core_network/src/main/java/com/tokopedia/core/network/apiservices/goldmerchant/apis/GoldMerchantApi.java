@@ -19,10 +19,4 @@ public interface GoldMerchantApi {
 
     @GET(TkpdBaseURL.GoldMerchant.GET_PRODUCT_VIDEO+"{productId}")
     Observable<Response<ProductVideoData>> fetchVideo(@Path("productId") String productId);
-
-    @GET(TkpdBaseURL.GoldMerchant.GET_SHOP_SCORE_SUMMARY + "{shopId}")
-    Observable<Response<ShopScoreSummaryServiceModel>> getShopScoreSummary(@Path("shopId") String shopId);
-
-    @GET(TkpdBaseURL.GoldMerchant.GET_SHOP_SCORE_DETAIL + "{shopId}")
-    Observable<Response<ShopScoreDetailServiceModel>> getShopScoreDetail(@Path("shopId") String shopID);
 }

@@ -141,12 +141,8 @@ class ResourceProvider @Inject constructor(@ApplicationContext val context: Cont
         return getString(R.string.label_variant_subtitle_added) + "\n"
     }
 
-    fun getVariantButtonEmptyMessage(): String? {
-        return getString(R.string.label_add_variant)
-    }
-
-    fun getVariantButtonAddedMessage(): String? {
-        return getString(R.string.label_edit_variant)
+    fun getVariantCountSuffix(): String? {
+        return getString(R.string.label_variant_count_suffix)
     }
 
     // product add validation string properties

@@ -542,7 +542,7 @@ class OfficialHomeFragment :
     private fun copyCoupon(view: View, cta: Cta) {
         val clipboard = view.context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val clipData = ClipData.newPlainText(getString(R.string.os_coupon_code_label), cta.couponCode)
-        clipboard.primaryClip = clipData
+        clipboard.setPrimaryClip(clipData)
         Toaster.make(view.parent as ViewGroup,
                 getString(R.string.os_toaster_coupon_copied),
                 Snackbar.LENGTH_LONG)
@@ -674,6 +674,7 @@ class OfficialHomeFragment :
             val gridData = channelData.grids?.get(position)
             val applink = gridData?.applink ?: ""
             val campaignId = channelData.campaignID
+            val campaignCode = channelData.campaignCode
 
             gridData?.let {
                 tracking?.flashSalePDPClick(
@@ -681,7 +682,8 @@ class OfficialHomeFragment :
                         channelData.header?.name ?: "",
                         (position + 1).toString(10),
                         it,
-                        campaignId
+                        campaignId,
+                        campaignCode
                 )
             }
 
@@ -714,7 +716,7 @@ class OfficialHomeFragment :
                         channelData.header?.name ?: "",
                         (position + 1).toString(10),
                         it,
-                        channelData.campaignID
+                        channelData.campaignCode
                 )
             }
 
@@ -763,7 +765,7 @@ class OfficialHomeFragment :
                 viewModel.currentSlug,
                 channel,
                 grid,
-                (position + 1).toString(),
+                position.toString(),
                 viewModel.isLoggedIn()
         )
     }
@@ -783,7 +785,7 @@ class OfficialHomeFragment :
                 viewModel.currentSlug,
                 channel,
                 grid,
-                (position + 1).toString(),
+                position.toString(),
                 viewModel.isLoggedIn()
         )
         RouteManager.route(context, applink)

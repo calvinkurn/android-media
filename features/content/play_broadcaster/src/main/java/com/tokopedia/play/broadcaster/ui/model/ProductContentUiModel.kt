@@ -1,6 +1,8 @@
 package com.tokopedia.play.broadcaster.ui.model
 
 import com.tokopedia.play.broadcaster.data.model.ProductData
+import com.tokopedia.play.broadcaster.type.ProductStock
+import com.tokopedia.play.broadcaster.type.StockAvailable
 import com.tokopedia.play.broadcaster.view.state.NotSelectable
 import com.tokopedia.play.broadcaster.view.state.SelectableState
 
@@ -14,14 +16,14 @@ data class ProductContentUiModel(
         val name: String,
         val imageUrl: String,
         val originalImageUrl: String,
-        val stock: Int,
+        val stock: ProductStock,
         val isSelectedHandler: (Long) -> Boolean,
         val isSelectable: (Boolean) -> SelectableState,
         val transitionName: String? = null
 ) : ProductUiModel() {
 
     val hasStock: Boolean
-        get() = stock != 0
+        get() = stock is StockAvailable
 
     fun extractData() = ProductData(
             id = id,

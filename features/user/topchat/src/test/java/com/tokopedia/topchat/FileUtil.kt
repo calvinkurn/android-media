@@ -5,7 +5,7 @@ import java.io.File
 import java.lang.reflect.Type
 
 object FileUtil {
-    private fun readFileContent(fileName: String): String {
+    fun readFileContent(fileName: String): String {
         val fileContent = StringBuilder()
         val filePath = javaClass.getResource(fileName)?.path
         File(filePath).forEachLine {

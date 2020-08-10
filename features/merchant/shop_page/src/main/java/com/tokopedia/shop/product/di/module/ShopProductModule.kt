@@ -21,6 +21,7 @@ import com.tokopedia.shop.common.constant.ShopCommonParamApiConstant
 import com.tokopedia.shop.common.constant.ShopCommonParamApiConstant.GQL_PRODUCT_LIST
 import com.tokopedia.shop.common.constant.ShopUrl
 import com.tokopedia.shop.common.data.interceptor.ShopAuthInterceptor
+import com.tokopedia.shop.common.di.ShopPageContext
 import com.tokopedia.shop.common.domain.interactor.DeleteShopInfoCacheUseCase
 import com.tokopedia.shop.common.graphql.data.stampprogress.MembershipStampProgress
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.ClaimBenefitMembershipUseCase
@@ -73,7 +74,7 @@ class ShopProductModule {
     @ShopProductScope
     @Provides
     @Named(GQLQueryConstant.SHOP_FEATURED_PRODUCT)
-    fun getShopFeaturedProductQuery(@ApplicationContext context: Context): String {
+    fun getShopFeaturedProductQuery(@ShopPageContext context: Context): String {
         return """
             query getShopFeaturedProduct(${'$'}shopId: Int!,${'$'}userID: Int!){
               shop_featured_product(shopID:${'$'}shopId, userID:${'$'}userID){
@@ -118,7 +119,7 @@ class ShopProductModule {
     @ShopProductScope
     @Provides
     @Named(GQLQueryConstant.SHOP_PRODUCT)
-    fun getShopProductQuery(@ApplicationContext context: Context): String {
+    fun getShopProductQuery(@ShopPageContext context: Context): String {
         return """
             query getShopProduct(${'$'}shopId: String!,${'$'}filter: ProductListFilter!){
               GetShopProduct(shopID:${'$'}shopId, filter:${'$'}filter){
@@ -183,7 +184,7 @@ class ShopProductModule {
 
     @Provides
     @Named(ShopCommonParamApiConstant.QUERY_STAMP_PROGRESS)
-    fun provideQueryStampProgress(@ApplicationContext context: Context): String {
+    fun provideQueryStampProgress(@ShopPageContext context: Context): String {
         return """
             query membershipStampProgress(${'$'}shopId: Int!){
               membershipStampProgress(shopID:${'$'}shopId) {
@@ -223,7 +224,7 @@ class ShopProductModule {
 
     @Provides
     @Named(ShopCommonParamApiConstant.QUERY_CLAIM_MEMBERSHIP)
-    fun provideQueryClaimBenefit(@ApplicationContext context: Context): String {
+    fun provideQueryClaimBenefit(@ShopPageContext context: Context): String {
         return """
             mutation membershipClaimBenefit(${'$'}questUserId:Int!){
               membershipClaimBenefit(questUserID:${'$'}questUserId ){
@@ -261,7 +262,7 @@ class ShopProductModule {
     @ShopProductScope
     @Provides
     @Named(GQL_PRODUCT_LIST)
-    fun provideProductListQuery(@ApplicationContext context: Context): String {
+    fun provideProductListQuery(@ShopPageContext context: Context): String {
         return """
             query GetProductList(${'$'}shopId:String!,${'$'}filter:ProductListFilter!){
               GetProductList(shopID:${'$'}shopId, filter:${'$'}filter){
@@ -316,7 +317,7 @@ class ShopProductModule {
 
     @ShopProductScope
     @Provides
-    fun provideDeleteShopInfoUseCase(@ApplicationContext context: Context ): DeleteShopInfoCacheUseCase {
+    fun provideDeleteShopInfoUseCase(@ShopPageContext context: Context ): DeleteShopInfoCacheUseCase {
         return DeleteShopInfoCacheUseCase(context)
     }
 
@@ -349,7 +350,7 @@ class ShopProductModule {
     }
 
     @Provides
-    fun provideGMAuthInterceptor(@ApplicationContext context: Context?,
+    fun provideGMAuthInterceptor(@ShopPageContext context: Context?,
                                  abstractionRouter: AbstractionRouter?): GMAuthInterceptor {
         return GMAuthInterceptor(context, abstractionRouter)
     }
@@ -402,7 +403,7 @@ class ShopProductModule {
 
     // WishList
     @Provides
-    fun provideWishListAuthInterceptor(@ApplicationContext context: Context?,
+    fun provideWishListAuthInterceptor(@ShopPageContext context: Context?,
                                        networkRouter: NetworkRouter?,
                                        userSessionInterface: UserSessionInterface?): WishListAuthInterceptor {
         return WishListAuthInterceptor(context, networkRouter, userSessionInterface)
@@ -466,19 +467,19 @@ class ShopProductModule {
 
     @ShopProductScope
     @Provides
-    fun provideAddToWishListUseCase(@ApplicationContext context: Context?): AddWishListUseCase {
+    fun provideAddToWishListUseCase(@ShopPageContext context: Context?): AddWishListUseCase {
         return AddWishListUseCase(context)
     }
 
     @ShopProductScope
     @Provides
-    fun provideRemoveFromWishListUseCase(@ApplicationContext context: Context?): RemoveWishListUseCase {
+    fun provideRemoveFromWishListUseCase(@ShopPageContext context: Context?): RemoveWishListUseCase {
         return RemoveWishListUseCase(context)
     }
 
     // Product
     @Provides
-    fun provideShopOfficialStoreAuthInterceptor(@ApplicationContext context: Context?,
+    fun provideShopOfficialStoreAuthInterceptor(@ShopPageContext context: Context?,
                                                 networkRouter: NetworkRouter?,
                                                 userSessionInterface: UserSessionInterface?): ShopOfficialStoreAuthInterceptor {
         return ShopOfficialStoreAuthInterceptor(context, networkRouter, userSessionInterface)
@@ -519,13 +520,13 @@ class ShopProductModule {
 
     @ShopProductScope
     @Provides
-    fun provideDeleteShopProductTomeUseCase(@ApplicationContext context: Context?): DeleteShopProductTomeUseCase {
+    fun provideDeleteShopProductTomeUseCase(@ShopPageContext context: Context?): DeleteShopProductTomeUseCase {
         return DeleteShopProductTomeUseCase(context)
     }
 
     @ShopProductScope
     @Provides
-    fun provideDeleteShopProductAceUseCase(@ApplicationContext context: Context?): DeleteShopProductAceUseCase {
+    fun provideDeleteShopProductAceUseCase(@ShopPageContext context: Context?): DeleteShopProductAceUseCase {
         return DeleteShopProductAceUseCase(context)
     }
 
@@ -537,7 +538,7 @@ class ShopProductModule {
 
     @ShopProductScope
     @Provides
-    fun provideUserSessionInterface(@ApplicationContext context: Context?): UserSessionInterface {
+    fun provideUserSessionInterface(@ShopPageContext context: Context?): UserSessionInterface {
         return UserSession(context)
     }
 

@@ -16,6 +16,7 @@ import com.tokopedia.gm.common.constant.GMParamConstant.PM_HOME_NONACTIVE
 import com.tokopedia.gm.common.constant.GMParamConstant.PM_SUBSCRIBE_SUCCESS
 import com.tokopedia.gm.common.utils.PowerMerchantTracking
 import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.user.session.UserSession
 
 class MerchantCommonBottomSheet : BottomSheets() {
 
@@ -26,7 +27,7 @@ class MerchantCommonBottomSheet : BottomSheets() {
     private lateinit var model: BottomSheetModel
     private var listener: BottomSheetListener? = null
     private val powerMerchantTracking: PowerMerchantTracking by lazy {
-        PowerMerchantTracking()
+        PowerMerchantTracking(UserSession(context))
     }
 
     companion object {

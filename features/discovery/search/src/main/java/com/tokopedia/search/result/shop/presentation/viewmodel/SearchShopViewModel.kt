@@ -18,11 +18,13 @@ import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.filter.newdynamicfilter.helper.FilterHelper
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
-import com.tokopedia.search.result.presentation.presenter.localcache.SearchLocalCacheHandler
 import com.tokopedia.search.result.shop.domain.model.SearchShopModel
 import com.tokopedia.search.result.shop.presentation.model.*
 import com.tokopedia.search.utils.convertValuesToString
+import com.tokopedia.search.utils.createSearchShopDefaultQuickFilter
+import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.topads.sdk.domain.model.Cpm
+import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
@@ -33,10 +35,9 @@ internal class SearchShopViewModel(
         private val searchShopFirstPageUseCase: UseCase<SearchShopModel>,
         private val searchShopLoadMoreUseCase: UseCase<SearchShopModel>,
         private val getDynamicFilterUseCase: UseCase<DynamicFilterModel>,
+        private val getShopCountUseCase: UseCase<Int>,
         private val shopCpmViewModelMapper: Mapper<SearchShopModel, ShopCpmViewModel>,
-        private val shopTotalCountViewModelMapper: Mapper<SearchShopModel, ShopTotalCountViewModel>,
         private val shopViewModelMapper: Mapper<SearchShopModel, ShopViewModel>,
-        private val searchLocalCacheHandler: SearchLocalCacheHandler,
         private val userSession: UserSessionInterface
 ) : BaseViewModel(dispatcher.ui()) {
 
@@ -44,6 +45,7 @@ internal class SearchShopViewModel(
         const val START_ROW_FIRST_TIME_LOAD = 0
         const val SHOP_TAB_TITLE = "Toko"
         const val SCREEN_SEARCH_PAGE_SHOP_TAB = "Search result - Store tab"
+        const val QUICK_FILTER_MINIMUM_SIZE = 2
     }
 
     private val searchShopLiveData = MutableLiveData<State<List<Visitable<*>>>>()
@@ -57,6 +59,7 @@ internal class SearchShopViewModel(
     private var isFilterDataAvailable = false
     private val filterController = FilterController()
     private val dynamicFilterEventLiveData = MutableLiveData<Event<Boolean>>()
+    private val openFilterPageTrackingEventMutableLiveData = MutableLiveData<Event<Boolean>>()
     private val openFilterPageEventLiveData = MutableLiveData<Event<Boolean>>()
     private val shopItemImpressionTrackingEventLiveData = MutableLiveData<Event<List<Any>>>()
     private val productPreviewImpressionTrackingEventLiveData = MutableLiveData<Event<List<Any>>>()
@@ -70,7 +73,14 @@ internal class SearchShopViewModel(
     private val routePageEventLiveData = MutableLiveData<Event<String>>()
     private val clickProductItemTrackingEventLiveData = MutableLiveData<Event<ShopViewModel.ShopItem.ShopItemProduct>>()
     private val clickProductRecommendationItemTrackingEventLiveData = MutableLiveData<Event<ShopViewModel.ShopItem.ShopItemProduct>>()
-    private val bottomNavigationVisibilityEventLiveData = MutableLiveData<Event<Boolean>>()
+    private val sortFilterItemListLiveData = MutableLiveData<List<SortFilterItem>>()
+    private val clickQuickFilterTrackingEventMutableLiveData = MutableLiveData<Event<QuickFilterTrackingData>>()
+    private val quickFilterIsVisible = MutableLiveData<Boolean>()
+    private val shimmeringQuickFilterIsVisible = MutableLiveData<Boolean>()
+    private val refreshLayoutIsVisible = MutableLiveData<Boolean>()
+    private val shopCountMutableLiveData = MutableLiveData<String>()
+    private val activeFilterCountMutableLiveData = MutableLiveData<Int>()
+    var dynamicFilterModel: DynamicFilterModel? = null
 
     init {
         setSearchParameterUniqueId()
@@ -142,14 +152,10 @@ internal class SearchShopViewModel(
 
     private fun updateSearchShopLiveDataStateToLoading() {
         searchShopLiveData.postValue(Loading())
-    }
 
-    private fun onSearchShopSuccess(searchShopModel: SearchShopModel) {
-        processSearchShopFirstPageSuccess(searchShopModel)
-
-        endSearchShopFirstPagePerformanceMonitoring()
-
-        getDynamicFilter()
+        quickFilterIsVisible.value = false
+        shimmeringQuickFilterIsVisible.value = true
+        refreshLayoutIsVisible.value = true
     }
 
     private fun createSearchShopParam(): RequestParams {
@@ -170,6 +176,14 @@ internal class SearchShopViewModel(
         requestParams.putString(SearchApiConst.IMAGE_SQUARE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_IMAGE_SQUARE)
     }
 
+    private fun onSearchShopSuccess(searchShopModel: SearchShopModel) {
+        processSearchShopFirstPageSuccess(searchShopModel)
+
+        endSearchShopFirstPagePerformanceMonitoring()
+
+        getDynamicFilter()
+    }
+
     private fun processSearchShopFirstPageSuccess(searchShopModel: SearchShopModel?) {
         if(searchShopModel == null) return
 
@@ -181,6 +195,8 @@ internal class SearchShopViewModel(
         updateSearchShopLiveDataStateToSuccess()
 
         postLiveDataEventsAfterSearchShop(searchShopModel, visitableList)
+
+        processQuickFilter(searchShopModel)
     }
 
     private fun updateSearchShopStatus(searchShopModel: SearchShopModel) {
@@ -260,9 +276,6 @@ internal class SearchShopViewModel(
             visitableList.add(shopCpmViewModel)
         }
 
-        val shopTotalCountViewModel = createShopTotalCountViewModel(searchShopModel, shouldShowCpmShop)
-        visitableList.add(shopTotalCountViewModel)
-
         val shopViewModelList = createShopItemViewModelList(searchShopModel)
         visitableList.addAll(shopViewModelList)
 
@@ -292,14 +305,6 @@ internal class SearchShopViewModel(
 
     private fun createShopCpmViewModel(searchShopModel: SearchShopModel): Visitable<*> {
         return shopCpmViewModelMapper.convert(searchShopModel)
-    }
-
-    private fun createShopTotalCountViewModel(searchShopModel: SearchShopModel, isAdsBannerVisible: Boolean): Visitable<*> {
-        val shopTotalCountViewModel = shopTotalCountViewModelMapper.convert(searchShopModel)
-        shopTotalCountViewModel.query = getSearchParameterQuery()
-        shopTotalCountViewModel.isAdsBannerVisible = isAdsBannerVisible
-
-        return shopTotalCountViewModel
     }
 
     private fun createShopItemViewModelList(searchShopModel: SearchShopModel): List<Visitable<*>> {
@@ -349,7 +354,6 @@ internal class SearchShopViewModel(
         postImpressionTrackingEvent(searchShopModel, visitableList)
         postEmptySearchTrackingEvent()
         postRecommendationImpressionTrackingEvent(searchShopModel, visitableList)
-        postBottomNavigationVisibilityEvent()
     }
 
     private fun postImpressionTrackingEvent(searchShopModel: SearchShopModel, visitableList: List<Visitable<*>>) {
@@ -412,17 +416,56 @@ internal class SearchShopViewModel(
         return dataLayerShopItemProductList
     }
 
-    private fun postBottomNavigationVisibilityEvent() {
-        if (isEmptySearchShop) {
-            bottomNavigationVisibilityEventLiveData.postValue(Event(false))
-        }
-        else {
-            bottomNavigationVisibilityEventLiveData.postValue(Event(true))
+    private fun endSearchShopFirstPagePerformanceMonitoring() {
+        searchShopFirstPagePerformanceMonitoringEventLiveData.postValue(Event(false))
+    }
+
+    private fun processQuickFilter(searchShopModel: SearchShopModel) {
+        if (searchShopModel.getFilterList().size < QUICK_FILTER_MINIMUM_SIZE)
+            searchShopModel.quickFilter.data = createSearchShopDefaultQuickFilter()
+
+        filterController.initFilterController(searchParameter.convertValuesToString(), searchShopModel.getFilterList())
+
+        val sortFilterItemList = createSortFilterItemList(searchShopModel)
+        sortFilterItemListLiveData.value = sortFilterItemList
+        quickFilterIsVisible.value = true
+        shimmeringQuickFilterIsVisible.value = false
+    }
+
+    private fun createSortFilterItemList(searchShopModel: SearchShopModel): List<SortFilterItem> {
+        val quickFilterOptionList = searchShopModel.getFilterList().map { it.options }.flatten()
+
+        return quickFilterOptionList.map(this::optionToSortFilterItem)
+    }
+
+    private fun optionToSortFilterItem(option: Option): SortFilterItem {
+        val isSelected = filterController.getFilterViewState(option)
+        val sortFilterItem = createSortFilterItem(option, isSelected)
+
+        sortFilterItem.typeUpdated = false
+
+        return sortFilterItem
+    }
+
+    private fun createSortFilterItem(option: Option, isSelected: Boolean): SortFilterItem {
+        val type = if (isSelected) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL
+
+        return SortFilterItem(title = option.name, type = type) {
+            sendTrackingClickQuickFilter(option, isSelected)
+
+            filterController.setFilter(
+                    option,
+                    isFilterApplied = !isSelected,
+                    isCleanUpExistingFilterWithSameKey = option.isCategoryOption
+            )
+
+            onViewApplyFilter(filterController.getParameter())
         }
     }
 
-    private fun endSearchShopFirstPagePerformanceMonitoring() {
-        searchShopFirstPagePerformanceMonitoringEventLiveData.postValue(Event(false))
+    private fun sendTrackingClickQuickFilter(option: Option, isSelected: Boolean) {
+        val quickFilterTrackingData = QuickFilterTrackingData(option, !isSelected)
+        clickQuickFilterTrackingEventMutableLiveData.postValue(Event(quickFilterTrackingData))
     }
 
     private fun catchSearchShopException(e: Throwable?) {
@@ -430,6 +473,12 @@ internal class SearchShopViewModel(
 
         hasNextPage = false
         searchShopLiveData.postValue(Error("", searchShopMutableList))
+
+        if (searchShopMutableList.isEmpty()) {
+            quickFilterIsVisible.value = false
+            shimmeringQuickFilterIsVisible.value = false
+            refreshLayoutIsVisible.value = false
+        }
     }
 
     private fun getDynamicFilter() {
@@ -439,12 +488,12 @@ internal class SearchShopViewModel(
     }
 
     private fun onGetDynamicFilterSuccess(dynamicFilterModel: DynamicFilterModel) {
+        this.dynamicFilterModel = dynamicFilterModel
         dynamicFilterEventLiveData.postValue(Event(true))
 
         isFilterDataAvailable = dynamicFilterModel.data.filter.isNotEmpty()
 
-        saveDynamicFilterModel(dynamicFilterModel)
-        processFilterData(dynamicFilterModel)
+        processFilterData()
     }
 
     private fun createGetDynamicFilterParams(): RequestParams {
@@ -465,21 +514,20 @@ internal class SearchShopViewModel(
                 mutableMapOf())
     }
 
-    private fun saveDynamicFilterModel(dynamicFilterModel: DynamicFilterModel) {
-        searchLocalCacheHandler.saveDynamicFilterModelLocally(SCREEN_SEARCH_PAGE_SHOP_TAB, dynamicFilterModel)
-    }
+    private fun processFilterData() {
+        processFilterIntoFilterController()
 
-    private fun processFilterData(dynamicFilterModel: DynamicFilterModel) {
+        activeFilterCountMutableLiveData.postValue(filterController.getFilterCount())
+
         if (isEmptySearchShop) {
-            processFilterIntoFilterController(dynamicFilterModel)
             updateEmptySearchViewModelWithFilter()
         }
     }
 
-    private fun processFilterIntoFilterController(dynamicFilterModel: DynamicFilterModel) {
-        dynamicFilterModel.data.filter.let { filterList ->
+    private fun processFilterIntoFilterController() {
+        dynamicFilterModel?.data?.filter?.let { filterList ->
             val initializedFilterList = FilterHelper.initializeFilterList(filterList)
-            filterController.initFilterController(searchParameter.convertValuesToString(), initializedFilterList)
+            filterController.appendFilterList(searchParameter.convertValuesToString(), initializedFilterList)
         }
     }
 
@@ -585,6 +633,7 @@ internal class SearchShopViewModel(
 
     fun onViewOpenFilterPage() {
         if (isFilterDataAvailable) {
+            openFilterPageTrackingEventMutableLiveData.postValue(Event(true))
             openFilterPageEventLiveData.postValue(Event(true))
         }
         else {
@@ -680,6 +729,28 @@ internal class SearchShopViewModel(
         }
     }
 
+    fun onViewRequestShopCount(mapParameter: Map<String, Any>) {
+        getShopCountUseCase.execute(
+                this::setShopCount,
+                this::catchRequestShopCountError,
+                createGetShopCountRequestParams(mapParameter)
+        )
+    }
+
+    private fun setShopCount(shopCount: Int) {
+        shopCountMutableLiveData.value = shopCount.toString()
+    }
+
+    private fun catchRequestShopCountError(throwable: Throwable) {
+        setShopCount(0)
+    }
+
+    private fun createGetShopCountRequestParams(mapParameter: Map<String, Any>) =
+        RequestParams.create().also {
+            it.putAll(mapParameter)
+            it.putString(SearchApiConst.ROWS, "0")
+        }
+
     fun getSearchParameter() = searchParameter.toMap()
 
     fun getSearchParameterQuery() : String = (searchParameter[SearchApiConst.Q] ?: "").toString()
@@ -689,6 +760,9 @@ internal class SearchShopViewModel(
     fun getHasNextPage() = hasNextPage
 
     fun getDynamicFilterEventLiveData(): LiveData<Event<Boolean>> = dynamicFilterEventLiveData
+
+    fun getOpenFilterPageTrackingEventLiveData(): LiveData<Event<Boolean>> =
+            openFilterPageTrackingEventMutableLiveData
 
     fun getOpenFilterPageEventLiveData(): LiveData<Event<Boolean>> = openFilterPageEventLiveData
 
@@ -728,6 +802,22 @@ internal class SearchShopViewModel(
     fun getClickProductRecommendationItemTrackingEventLiveData(): LiveData<Event<ShopViewModel.ShopItem.ShopItemProduct>> =
             clickProductRecommendationItemTrackingEventLiveData
 
-    fun getBottomNavigationVisibilityEventLiveData(): LiveData<Event<Boolean>> =
-            bottomNavigationVisibilityEventLiveData
+    fun getSortFilterItemListLiveData(): LiveData<List<SortFilterItem>> =
+            sortFilterItemListLiveData
+
+    fun getQuickFilterIsVisibleLiveData(): LiveData<Boolean> = quickFilterIsVisible
+
+    fun getShimmeringQuickFilterIsVisibleLiveData(): LiveData<Boolean> = shimmeringQuickFilterIsVisible
+
+    fun getRefreshLayoutIsVisibleLiveData(): LiveData<Boolean> = refreshLayoutIsVisible
+
+    fun getClickQuickFilterTrackingEventLiveData(): LiveData<Event<QuickFilterTrackingData>> =
+            clickQuickFilterTrackingEventMutableLiveData
+
+    fun getShopCountLiveData(): LiveData<String> =
+            shopCountMutableLiveData
+
+    fun getActiveFilterCountLiveData(): LiveData<Int> = activeFilterCountMutableLiveData
+
+    data class QuickFilterTrackingData(val option: Option, val isSelected: Boolean)
 }
