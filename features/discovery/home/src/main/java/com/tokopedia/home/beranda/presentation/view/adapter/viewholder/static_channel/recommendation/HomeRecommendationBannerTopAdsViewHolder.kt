@@ -42,6 +42,14 @@ class HomeRecommendationBannerTopAdsViewHolder(view: View) : SmartAbstractViewHo
 
         itemView.home_recom_topads_loader_image?.show()
         itemView.home_recom_topads_loader_image?.hide()
+        TopAdsUrlHitter(itemView.context).hitImpressionUrl(
+                this::class.java.simpleName,
+                recommendationBannerTopAdsDataModelDataModel.topAdsImageViewModel.adViewUrl,
+                "",
+                "",
+                recommendationBannerTopAdsDataModelDataModel.topAdsImageViewModel.imageUrl
+        )
+        listener.onBannerTopAdsImpress(recommendationBannerTopAdsDataModelDataModel, adapterPosition)
         Glide.with(itemView.context)
                 .load(recommendationBannerTopAdsDataModelDataModel.topAdsImageViewModel.imageUrl)
                 .override(itemView.context.resources.displayMetrics.widthPixels,
@@ -57,14 +65,6 @@ class HomeRecommendationBannerTopAdsViewHolder(view: View) : SmartAbstractViewHo
                     override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
                         itemView.home_recom_topads_image_view?.show()
                         itemView.home_recom_topads_loader_image?.hide()
-                        TopAdsUrlHitter(itemView.context).hitImpressionUrl(
-                                this::class.java.simpleName,
-                                recommendationBannerTopAdsDataModelDataModel.topAdsImageViewModel.adViewUrl,
-                                "",
-                                "",
-                                recommendationBannerTopAdsDataModelDataModel.topAdsImageViewModel.imageUrl
-                        )
-                        listener.onBannerTopAdsImpress(recommendationBannerTopAdsDataModelDataModel, adapterPosition)
                         return false
                     }
                 })
