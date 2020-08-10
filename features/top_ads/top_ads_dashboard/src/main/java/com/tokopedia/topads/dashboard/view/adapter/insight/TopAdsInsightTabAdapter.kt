@@ -38,8 +38,6 @@ class TopAdsInsightTabAdapter(private val context: Context) : RecyclerView.Adapt
     fun setTabTitles(resources: Resources,countKey:Int,countBid:Int,countProduct:Int){
         tabMenus.clear()
         tabMenus.add(String.format(resources.getString(R.string.topads_dash_keyword_count),countKey))
-        tabMenus.add(String.format(resources.getString(R.string.topads_dash_product_suggestion_insight_count),countProduct))
-        tabMenus.add(String.format(resources.getString(R.string.topads_dash_bid_suggestion_insight_count),countBid))
         notifyDataSetChanged()
     }
 

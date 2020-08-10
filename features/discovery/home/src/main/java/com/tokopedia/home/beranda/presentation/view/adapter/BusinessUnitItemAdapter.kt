@@ -19,11 +19,11 @@ class BusinessUnitItemAdapter(private val tabIndex: Int, private val tabName: St
         //increase tab index by 1 as  PO requested @rico.ocir
         override fun onClicked(position: Int) {
             val element = getItem(position)
-            listenerBusinessTrackerTracker.onClickTracking(BusinessUnitTracking.getBusinessUnitClick(BusinessUnitTracking.mapToPromotionTracker(element, tabName, tabIndex+1, positionWidgetOnHome)) as HashMap<String, Any>)
+            listenerBusinessTrackerTracker.onClickTracking(BusinessUnitTracking.getBusinessUnitClick(BusinessUnitTracking.mapToPromotionTracker(element, positionWidgetOnHome)) as HashMap<String, Any>)
         }
 
         override fun onImpressed(element: BusinessUnitItemDataModel, position: Int) {
-            listenerBusinessTrackerTracker.onImpressTracking(BusinessUnitTracking.getBusinessUnitView(BusinessUnitTracking.mapToPromotionTracker(element, tabName, tabIndex+1, positionWidgetOnHome)) as HashMap<String, Any>)
+            listenerBusinessTrackerTracker.onImpressTracking(BusinessUnitTracking.getBusinessUnitView(BusinessUnitTracking.mapToPromotionTracker(element, positionWidgetOnHome)) as HashMap<String, Any>)
         }
     }
 

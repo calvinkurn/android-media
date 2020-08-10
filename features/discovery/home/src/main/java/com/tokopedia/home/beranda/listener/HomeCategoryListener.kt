@@ -103,7 +103,7 @@ interface HomeCategoryListener {
 
     fun getTabBusinessWidget(position: Int)
 
-    fun getBusinessUnit(tabId: Int, position: Int)
+    fun getBusinessUnit(tabId: Int, position: Int, tabName: String)
 
     fun getPlayChannel(position: Int)
 

@@ -50,7 +50,7 @@ class SellerReviewReplyFragment : BaseDaggerFragment(), ReviewTemplateListViewHo
         const val EXTRA_SHOP_ID = "EXTRA_SHOP_ID"
         const val IS_EMPTY_REPLY_REVIEW = "IS_EMPTY_REPLY_REVIEW"
         const val DATE_REVIEW_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'"
-        const val TEMPLATE_MAX = 5
+        const val TEMPLATE_MAX = 6
     }
 
     @Inject
@@ -191,11 +191,13 @@ class SellerReviewReplyFragment : BaseDaggerFragment(), ReviewTemplateListViewHo
             bottomSheetAddTemplate?.dismiss()
             when (it) {
                 is Success -> {
-                    getReviewTemplate()
+                    if(it.data.isSuccess) {
+                        getReviewTemplate()
+                    }
                 }
                 is Fail -> {
                     view?.let { it1 ->
-                        Toaster.make(it1, getString(R.string.error_message_maximum_template_reply), type = Toaster.TYPE_ERROR, duration = Toaster.LENGTH_LONG)
+                        Toaster.make(it1, it.throwable.message.orEmpty(), type = Toaster.TYPE_ERROR, duration = Toaster.LENGTH_LONG)
                     }
                 }
             }
@@ -335,6 +337,7 @@ class SellerReviewReplyFragment : BaseDaggerFragment(), ReviewTemplateListViewHo
             isFocusable = true
             requestFocus()
             setText(replyText)
+            text?.length?.let { setSelection(it) }
             imm.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
         }
     }
@@ -440,5 +443,4 @@ class SellerReviewReplyFragment : BaseDaggerFragment(), ReviewTemplateListViewHo
         val replyText = StringBuilder().append(replyEditText?.text.toString()).append(message.orEmpty()).toString()
         showTextReplyEditText(replyText)
     }
-
 }

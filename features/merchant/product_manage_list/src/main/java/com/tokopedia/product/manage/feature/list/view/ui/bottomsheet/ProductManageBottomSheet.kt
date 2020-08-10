@@ -77,7 +77,7 @@ class ProductManageBottomSheet(
             add(Preview(product))
             add(Duplicate(product))
             if (GlobalConfig.isSellerApp()) {
-                StockReminder(product)
+                add(StockReminder(product))
             }
             add(Delete(product))
             if (GlobalConfig.isSellerApp()) {

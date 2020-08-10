@@ -889,7 +889,7 @@ open class HomeViewModel @Inject constructor(
                     val homeDataWithoutExternalComponentPair = evaluateInitialTopAdsBannerComponent(homeDataModel)
                     withContext(homeDispatcher.get().ui()){
                         var homeData = evaluateGeolocationComponent(homeDataModel)
-                        homeData = evaluateAvailableComponent(homeDataModel)
+                        homeData = evaluateAvailableComponent(homeData)
                         _homeLiveData.value = homeData
                     }
                     getPlayBannerCarousel()
@@ -985,10 +985,10 @@ open class HomeViewModel @Inject constructor(
         }
     }
 
-    fun getBusinessUnitData(tabId: Int, position: Int){
+    fun getBusinessUnitData(tabId: Int, position: Int, tabName: String){
         if(buWidgetJob?.isActive == true) return
         buWidgetJob = launchCatchError(coroutineContext, block = {
-            getBusinessUnitDataUseCase.get().setParams(tabId)
+            getBusinessUnitDataUseCase.get().setParams(tabId, position, tabName)
             val data = getBusinessUnitDataUseCase.get().executeOnBackground()
             _homeLiveData.value?.list?.withIndex()?.find { it.value is NewBusinessUnitWidgetDataModel }?.let { buModel ->
                 val oldBuData = buModel.value as NewBusinessUnitWidgetDataModel
