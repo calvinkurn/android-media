@@ -10,11 +10,10 @@ import javax.inject.Inject
 
 class EventDetailViewModelFactory @Inject constructor(
         private val dispatcher: CoroutineDispatcher,
-        private val gqlRepository: GraphqlRepository,
-        private val userSession: UserSessionInterface
+        private val gqlRepository: GraphqlRepository
 ) : ViewModelProvider.NewInstanceFactory() {
 
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return EventDetailViewModel(dispatcher, gqlRepository, userSession) as T
+        return EventDetailViewModel(dispatcher, gqlRepository) as T
     }
 }

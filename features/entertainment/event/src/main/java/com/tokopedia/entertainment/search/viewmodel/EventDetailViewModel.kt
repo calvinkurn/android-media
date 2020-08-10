@@ -53,7 +53,7 @@ class EventDetailViewModel(private val dispatcher: CoroutineDispatcher,
 
     val eventLiveData: MutableLiveData<MutableList<EventGridAdapter.EventGrid>> by lazy { MutableLiveData<MutableList<EventGridAdapter.EventGrid>>() }
 
-    fun getData(cacheType: CacheType = CacheType.CACHE_FIRST){
+    fun getData(cacheType: CacheType = CacheType.CACHE_FIRST, query: String){
         if(category.isBlank()) hashSet.clear()
 
         launchCatchError(
@@ -64,7 +64,7 @@ class EventDetailViewModel(private val dispatcher: CoroutineDispatcher,
                     } else showProgressBar.value = true
                     showResetFilter.value = false
                     val eventData : MutableList<EventGridAdapter.EventGrid> = mutableListOf()
-                    val data = getQueryData(cacheType)
+                    val data = getQueryData(cacheType, query)
                     data.let {
                         it.eventChildCategory.let {
                             if(categoryIsDifferentOrEmpty(it)){
@@ -122,7 +122,7 @@ class EventDetailViewModel(private val dispatcher: CoroutineDispatcher,
         )
     }
 
-    fun categoryIsDifferentOrEmpty(list: EventDetailResponse.Data.EventChildCategory): Boolean{
+    private fun categoryIsDifferentOrEmpty(list: EventDetailResponse.Data.EventChildCategory): Boolean{
         //Case 1 Still empty or Data Category size and API Category Size is different
         if(categoryData.size == 0 || hashSet.isEmpty() || categoryData.size != list.categories.size-1) return true
 
@@ -137,20 +137,20 @@ class EventDetailViewModel(private val dispatcher: CoroutineDispatcher,
         return false
     }
 
-    fun clearFilter(){
+    fun clearFilter(query: String){
         resetPage()
         hashSet.clear()
         hashToString()
-        getData()
+        getData(query=query)
     }
 
-    fun putCategoryToQuery(id : String){
+    fun putCategoryToQuery(id : String, query: String){
         resetPage()
         if(hashSet.contains(id)) hashSet.remove(id)
         else hashSet.add(id)
 
         hashToString()
-        getData()
+        getData(query=query)
     }
 
     private fun resetPage() { page = "1" }
@@ -168,10 +168,10 @@ class EventDetailViewModel(private val dispatcher: CoroutineDispatcher,
         this.cityID = cityID
     }
 
-    suspend fun getQueryData(cacheType: CacheType) : EventDetailResponse.Data{
-        return withContext(Dispatchers.IO){
+    suspend fun getQueryData(cacheType: CacheType, query:String) : EventDetailResponse.Data{
+        return withContext(dispatcher){
             val req = GraphqlRequest(
-                    GraphqlHelper.loadRawString(resources, R.raw.query_event_search_category),
+                    query,
                     EventDetailResponse.Data::class.java, mapOf(CATEGORYID to category, CITIES to cityID, PAGE to page))
             val cacheStrategy = GraphqlCacheStrategy.Builder(cacheType).build()
             gqlRepository.getReseponse(listOf(req), cacheStrategy).getSuccessData<EventDetailResponse.Data>()

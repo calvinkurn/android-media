@@ -19,6 +19,7 @@ import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.mockk
+import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
@@ -59,6 +60,39 @@ class EventDetailViewModelTest {
         setFirstHash()
     }
 
+    @Test
+    fun setCityID_successSetCityID_success(){
+        val cityID = "5"
+        eventDetailViewModel.setData(cityID)
+        assertEquals(cityID, eventDetailViewModel.cityID)
+    }
+
+    @Test
+    fun fetchDataCategory_successFetchDataCategory_successs(){
+        val errorGql = GraphqlError()
+        errorGql.message = "Error Fetch Data Category"
+
+        val errors = HashMap<Type, List<GraphqlError>>()
+        errors[EventDetailResponse.Data::class.java] = listOf(errorGql)
+
+        coEvery {
+            graphqlRepository.getReseponse(any(), any())
+        } coAnswers {
+            GraphqlResponse(HashMap<Type, Any?>(), errors, false)
+        }
+
+        eventDetailViewModel.getData(query = "")
+
+        Assert.assertNotNull(eventDetailViewModel.errorReport.value)
+        Assert.assertEquals(eventDetailViewModel.errorReport.value, errorGql.message)
+        assert(!eventDetailViewModel.isItRefreshing.value!!)
+        assert(!eventDetailViewModel.isItShimmering.value!!)
+        assert(!eventDetailViewModel.showParentView.value!!)
+        assert(!eventDetailViewModel.showProgressBar.value!!)
+        assert(eventDetailViewModel.showResetFilter.value!!)
+
+    }
+
     private fun setFirstHash(){
         hashSet.add("30")
         hashSet.add("40")
@@ -67,18 +101,18 @@ class EventDetailViewModelTest {
         hashSet.add("31")
         hashSet.add("44")
     }
-
-    @Test
-    fun putCategory(){
-        eventDetailViewModel.putCategoryToQuery("30")
-        eventDetailViewModel.putCategoryToQuery("40")
-        eventDetailViewModel.putCategoryToQuery("20")
-        eventDetailViewModel.putCategoryToQuery("40")
-        eventDetailViewModel.putCategoryToQuery("31")
-        eventDetailViewModel.putCategoryToQuery("44")
-
-        Assert.assertEquals(eventDetailViewModel.hashSet, hashSet)
-    }
+//
+//    @Test
+//    fun putCategory(){
+//        eventDetailViewModel.putCategoryToQuery("30","")
+//        eventDetailViewModel.putCategoryToQuery("40","")
+//        eventDetailViewModel.putCategoryToQuery("20","")
+//        eventDetailViewModel.putCategoryToQuery("40","")
+//        eventDetailViewModel.putCategoryToQuery("31","")
+//        eventDetailViewModel.putCategoryToQuery("44","")
+//
+//        Assert.assertEquals(eventDetailViewModel.hashSet, hashSet)
+//    }
 
     @Test
     fun getDataGQL(){
@@ -93,7 +127,7 @@ class EventDetailViewModelTest {
 
         runBlocking(Dispatchers.Unconfined){
             try {
-                val data = eventDetailViewModel.getQueryData(CacheType.CACHE_FIRST)
+                val data = eventDetailViewModel.getQueryData(CacheType.CACHE_FIRST,"")
                 Assert.assertNotNull(data)
                 Assert.assertEquals(dataMock.data, data)
                 Assert.assertEquals(data.eventChildCategory.categories.size, 7)
@@ -104,48 +138,6 @@ class EventDetailViewModelTest {
         }
     }
 
-    @Test
-    fun categoryIsDiffTest(){
-        Assert.assertNotNull(graphqlRepository)
-        Assert.assertNotNull(eventDetailViewModel.resources)
-
-        var event = EventDetailResponse.Data.EventChildCategory()
-        var eventData: MutableList<EventDetailResponse.Data.EventChildCategory.CategoriesItem> = mutableListOf()
-
-        for (i in 1..5){
-            eventData.add(EventDetailResponse.Data.EventChildCategory.CategoriesItem())
-        }
-        event.categories = eventData
-
-        Assert.assertEquals(eventDetailViewModel.categoryIsDifferentOrEmpty(event), true) // First case
-
-        for(i in 1..5){
-            eventDetailViewModel.categoryData.add(CategoryTextBubbleAdapter.CategoryTextBubble("1","TESTONLY"))
-        }
-
-        Assert.assertEquals(eventDetailViewModel.categoryIsDifferentOrEmpty(event), true) // Second case
-
-        eventDetailViewModel.hashSet.add("aaa")
-
-        Assert.assertEquals(eventDetailViewModel.categoryIsDifferentOrEmpty(event), true) // third case
-
-        eventDetailViewModel.hashSet.clear()
-        event = EventDetailResponse.Data.EventChildCategory()
-        eventDetailViewModel.categoryData.clear()
-        eventData.clear()
-
-        eventDetailViewModel.hashSet.add("14")
-        eventDetailViewModel.hashSet.add("3")
-
-        eventDetailViewModel.categoryData.add(CategoryTextBubbleAdapter.CategoryTextBubble("14", "Test"))
-        eventDetailViewModel.categoryData.add(CategoryTextBubbleAdapter.CategoryTextBubble("3", "Test1"))
-
-        eventData.add(EventDetailResponse.Data.EventChildCategory.CategoriesItem(id = "14",title = "Test"))
-        eventData.add(EventDetailResponse.Data.EventChildCategory.CategoriesItem(id = "3",title = "Test1"))
-        event.categories = eventData
-
-        Assert.assertEquals(eventDetailViewModel.categoryIsDifferentOrEmpty(event), true) // fourth casew
-    }
 
     private fun getJson(path : String) : String {
         val uri = this.javaClass.classLoader?.getResource(path)
