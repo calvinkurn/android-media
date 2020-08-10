@@ -23,7 +23,7 @@ class HomeBenchmarkTestRenderPage {
         val lego6ChannelDataModel = DynamicLegoBannerDataModel(createLego6Component())
         val context = ApplicationProvider.getApplicationContext<Context>()
         val root = FrameLayout(context)
-        val view = LayoutInflater.from(context).inflate(R.layout.home_dc_lego_banner, root, false)
+        val view = LayoutInflater.from(context).inflate(R.layout.home_component_lego_banner, root, false)
         val dynamicLegoBannerViewHolder = DynamicLegoBannerViewHolder(
                 view, null, null)
         benchmarkRule.measureRepeated {
