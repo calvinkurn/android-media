@@ -21,9 +21,11 @@ class AddEditAddressActivity: BaseSimpleActivity() {
         return fragment
     }
 
+    override fun getParentViewResourceID(): Int = R.id.add_new_address_parent
+
     override fun onBackPressed() {
         val fragment =
-                this.supportFragmentManager.findFragmentById(R.id.parent_view)
+                this.supportFragmentManager.findFragmentById(R.id.add_new_address_parent)
         (fragment as? IOnBackPressed)?.onBackPressed()?.not()?.let {
             super.onBackPressed()
         }
