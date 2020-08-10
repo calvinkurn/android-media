@@ -16,6 +16,7 @@ import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhomecommon.common.WidgetListener
@@ -35,6 +36,10 @@ import com.tokopedia.statistic.presentation.view.viewhelper.setOnTabSelectedList
 import com.tokopedia.statistic.presentation.view.viewmodel.StatisticViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerData
+import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
+import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -96,6 +101,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
         hideTooltipIfExist()
         setupView()
+        showTickerView()
 
         mViewModel.setDateRange(defaultStartDate, defaultEndDate)
 
@@ -267,6 +273,20 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         globalErrorStc.setActionClickListener {
             reloadPage()
         }
+    }
+
+    private fun showTickerView() = view?.tickerViewStc?.run {
+        val tickerUrl = "https://docs.google.com/forms/d/1t-KeapZJwOeYOBnbXDEmzRJiUqMBicE9cQIauc40qMU"
+        val title = context.getString(R.string.stc_ticker_title)
+        val message = context.getString(R.string.stc_ticker_message, tickerUrl)
+        val tickers = listOf(TickerData(title, message, Ticker.TYPE_ANNOUNCEMENT, true))
+        val tickerAdapter = TickerPagerAdapter(context, tickers)
+        addPagerView(tickerAdapter, tickers)
+        tickerAdapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
+            override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
+                RouteManager.route(context, tickerUrl)
+            }
+        })
     }
 
     private fun getRegularMerchantStatus(): Boolean {
