@@ -103,7 +103,6 @@ class ProfileListFragment :
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         if (userVisibleHint && ::searchNavigationListener.isInitialized) {
-            searchNavigationListener.hideBottomNavigation()
         }
     }
 
@@ -126,7 +125,6 @@ class ProfileListFragment :
             onSwipeRefresh()
         }
         if (isVisibleToUser && view != null && ::searchNavigationListener.isInitialized) {
-            searchNavigationListener.hideBottomNavigation()
         }
     }
 

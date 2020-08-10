@@ -37,15 +37,11 @@ internal open class ProductListPresenterTestFixtures {
     protected val searchProductLoadMoreUseCase = mockk<UseCase<SearchProductModel>>(relaxed = true)
     protected val getDynamicFilterUseCase = mockk<UseCase<DynamicFilterModel>>(relaxed = true)
     protected val getProductCountUseCase = mockk<UseCase<String>>(relaxed = true)
-    protected val searchLocalCacheHandler = mockk<SearchLocalCacheHandler>(relaxed = true)
     protected val recommendationUseCase = mockk<GetRecommendationUseCase>(relaxed = true)
     protected val seamlessLoginUseCase = mockk<SeamlessLoginUsecase>(relaxed = true)
     protected val topAdsUrlHitter = mockk<TopAdsUrlHitter>(relaxed = true)
     protected val userSession = mockk<UserSessionInterface>(relaxed = true)
-    protected val remoteConfig = mockk<RemoteConfig>().also {
-        // Test this toggle as false until old quick filter is not needed anymore
-        every { it.getBoolean(RemoteConfigKey.ENABLE_BOTTOM_SHEET_FILTER_REVAMP, true) } answers { false }
-    }
+    protected val remoteConfig = mockk<RemoteConfig>()
     protected val advertisingLocalCache = mockk<LocalCacheHandler>(relaxed = true)
     protected val searchOnBoardingLocalCache = mockk<LocalCacheHandler>(relaxed = true)
     protected lateinit var productListPresenter: ProductListPresenter
@@ -63,7 +59,6 @@ internal open class ProductListPresenterTestFixtures {
                 getDynamicFilterUseCase,
                 getProductCountUseCase,
                 topAdsUrlHitter,
-                searchLocalCacheHandler,
                 remoteConfig
         )
         productListPresenter.attachView(productListView)

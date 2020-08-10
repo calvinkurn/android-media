@@ -97,15 +97,12 @@ internal class SearchProductLoadMoreTest: ProductListPresenterTestFixtures() {
 
             verifyProcessingData(productListView, searchProductModelFirstPage, slot())
 
-            productListView.showBottomNavigation()
             productListView.updateScrollListener()
 
             verifyHideLoading(productListView)
 
             verifyProcessingNextPage(productListView, visitableListSlot)
         }
-
-        confirmVerified(productListView)
     }
 
     private fun `Then verify start from is incremented twice`() {
@@ -128,11 +125,11 @@ internal class SearchProductLoadMoreTest: ProductListPresenterTestFixtures() {
         `When Product List Presenter Load More Data`(loadMoreSearchParameter)
 
         `Then verify view interaction for load data failed with exception`(slotSearchParameterErrorLog, testException, searchProductModelCommon)
-        `Then verify logged error message is from search parameter`(slotSearchParameterErrorLog, loadMoreSearchParameter)
+        `Then verify logged error message is from search parameter`(slotSearchParameterErrorLog, requestParamsSlot.captured.parameters)
     }
 
     private fun `Given Search Product Load More API will throw exception`(exception: Exception?) {
-        every { searchProductLoadMoreUseCase.execute(any(), any()) }.answers {
+        every { searchProductLoadMoreUseCase.execute(capture(requestParamsSlot), any()) }.answers {
             secondArg<Subscriber<SearchProductModel>>().error(exception)
         }
     }
@@ -149,7 +146,6 @@ internal class SearchProductLoadMoreTest: ProductListPresenterTestFixtures() {
 
             verifyProcessingData(productListView, searchProductModelFirstPage, slot())
 
-            productListView.showBottomNavigation()
             productListView.updateScrollListener()
 
             verifyHideLoading(productListView)
@@ -158,8 +154,6 @@ internal class SearchProductLoadMoreTest: ProductListPresenterTestFixtures() {
 
             productListView.logWarning(capture(slotSearchParameterErrorLog), exception)
         }
-
-        confirmVerified(productListView)
     }
 
     private fun `Then verify logged error message is from search parameter`(slotSearchParameterErrorLog: CapturingSlot<String>, searchParameter: Map<String, Any>) {

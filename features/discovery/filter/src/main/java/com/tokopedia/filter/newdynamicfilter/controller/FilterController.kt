@@ -171,6 +171,14 @@ open class FilterController {
         loadFilterViewState(parameter)
     }
 
+    fun refreshMapParameter(parameter: Map<String, String>) {
+        nonFilterParameter.clear()
+        filterViewState.clear()
+
+        loadParameter(parameter)
+        loadFilterViewState(parameter)
+    }
+
     fun saveSliderValueStates(minValue: Int, maxValue: Int) {
         pressedSliderMinValueState = minValue
         pressedSliderMaxValueState = maxValue

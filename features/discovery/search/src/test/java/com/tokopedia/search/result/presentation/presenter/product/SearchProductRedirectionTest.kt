@@ -26,7 +26,6 @@ internal class SearchProductRedirectionTest: ProductListPresenterTestFixtures() 
 
         `Then verify use case request params START should be 0`()
         `Then verify view interaction for redirection`(searchProductModel.searchProduct.data.redirection.redirectApplink)
-        `Then verify get dynamic filter use case is not executed`()
         `Then verify start from is incremented`()
     }
 
@@ -63,10 +62,6 @@ internal class SearchProductRedirectionTest: ProductListPresenterTestFixtures() 
 
             verifyHideLoading(productListView)
         }
-    }
-
-    private fun `Then verify get dynamic filter use case is not executed`() {
-        verify(exactly = 1) { getDynamicFilterUseCase.execute(any(), any()) }
     }
 
     private fun `Then verify start from is incremented`() {

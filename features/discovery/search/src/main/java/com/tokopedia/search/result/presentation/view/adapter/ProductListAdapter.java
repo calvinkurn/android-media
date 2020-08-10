@@ -19,11 +19,10 @@ import com.tokopedia.search.result.presentation.model.BroadMatchViewModel;
 import com.tokopedia.search.result.presentation.model.EmptySearchProductViewModel;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
-import com.tokopedia.search.result.presentation.model.QuickFilterViewModel;
 import com.tokopedia.search.result.presentation.model.RecommendationItemViewModel;
 import com.tokopedia.search.result.presentation.model.TickerViewModel;
-import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SmallGridInspirationCardViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.RecommendationItemViewHolder;
+import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SmallGridInspirationCardViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SmallGridProductItemViewHolder;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory;
 
@@ -287,16 +286,6 @@ public final class ProductListAdapter extends RecyclerView.Adapter<AbstractViewH
             }
 
             i++;
-        }
-    }
-
-    public void refreshQuickFilter() {
-        for(int i = 0; i < list.size(); i++) {
-            Visitable visitable = list.get(i);
-
-            if (visitable instanceof QuickFilterViewModel) {
-                notifyItemChanged(i);
-            }
         }
     }
 
