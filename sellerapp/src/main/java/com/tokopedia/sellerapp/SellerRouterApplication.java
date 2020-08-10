@@ -51,7 +51,6 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.seller.common.topads.deposit.data.model.DataDeposit;
 import com.tokopedia.seller.product.etalase.utils.EtalaseUtils;
-import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
 import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
 import com.tokopedia.seller.shop.common.di.module.ShopModule;
@@ -67,7 +66,6 @@ import com.tokopedia.selleronboarding.activity.SellerOnboardingActivity;
 import com.tokopedia.selleronboarding.utils.OnboardingPreference;
 import com.tokopedia.sellerorder.common.util.SomConsts;
 import com.tokopedia.sellerorder.list.presentation.fragment.SomListFragment;
-import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.talk_old.inboxtalk.view.activity.InboxTalkActivity;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.TkpdReputationInternalRouter;
@@ -103,7 +101,6 @@ public abstract class SellerRouterApplication extends MainApplication
         implements TkpdCoreRouter, GMModuleRouter, TopAdsModuleRouter,
         ReputationRouter,
         AbstractionRouter,
-        ShopModuleRouter,
         ApplinkRouter,
         NetworkRouter,
         PhoneVerificationRouter,
@@ -204,11 +201,6 @@ public abstract class SellerRouterApplication extends MainApplication
 
     private Intent getInboxReputationIntent(Context context) {
         return TkpdReputationInternalRouter.getInboxReputationActivityIntent(context);
-    }
-
-    @Override
-    public Fragment getReputationHistoryFragment() {
-        return SellerReputationFragment.createInstance();
     }
 
     @Override
@@ -323,16 +315,6 @@ public abstract class SellerRouterApplication extends MainApplication
     public void refreshToken() throws IOException {
         AccessTokenRefresh accessTokenRefresh = new AccessTokenRefresh();
         accessTokenRefresh.refreshToken();
-    }
-
-    @Override
-    public Fragment getReviewFragment(Activity activity, String shopId, String shopDomain) {
-        return ReviewShopFragment.createInstance(shopId, shopDomain);
-    }
-
-    @Override
-    public Class getReviewFragmentClass() {
-        return ReviewShopFragment.class;
     }
 
     @Override

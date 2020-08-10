@@ -21,8 +21,10 @@ class CuratedProductCategoryViewHolder(
 ) : BaseViewHolder(itemView), ProductCardListener {
 
     private var productCardAdapter: DealsProductCardAdapter = DealsProductCardAdapter(this)
+    var sectionTitle: String = ""
 
     fun bindData(curatedProductCategory: CuratedProductCategoryDataView) {
+        sectionTitle = curatedProductCategory.title
         if (!curatedProductCategory.isLoaded) {
             itemView.contentCuratedProductShimmering.show()
             itemView.content_curated_product_category_title.hide()
@@ -67,7 +69,7 @@ class CuratedProductCategoryViewHolder(
             productCardDataView: ProductCardDataView,
             position: Int
     ) {
-        curatedProductCategoryListener.onProductClicked(productCardDataView, position)
+        curatedProductCategoryListener.onProductClicked(productCardDataView, position, sectionTitle)
     }
 
     companion object {

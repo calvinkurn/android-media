@@ -8,6 +8,7 @@ import com.tokopedia.search.result.isNeverExecuted
 import com.tokopedia.search.result.shop.presentation.viewmodel.testinstance.*
 import com.tokopedia.search.result.stubExecute
 import com.tokopedia.search.shouldBe
+import com.tokopedia.search.utils.createSearchShopDefaultQuickFilter
 import org.junit.Test
 
 internal class SearchShopFirstPageTest: SearchShopViewModelTestFixtures() {
@@ -23,24 +24,16 @@ internal class SearchShopFirstPageTest: SearchShopViewModelTestFixtures() {
 
     @Test
     fun `Search Shop First Page Successful`() {
-        `Given search shop API call will be successful and return search shop data`()
+        `Given search shop API call will be successful`()
         `Given search shop first page performance monitoring observer`()
 
         `When handle view is visible and added`()
 
         `Then assert search shop performance monitoring is started and ended`()
-        `Then assert search shop state is success and contains search shop data`()
-        `Then should post shop item impression tracking event`()
-        `Then should post product preview impression tracking event`()
-        `Then should not post empty search tracking event`()
+        `Then assert search shop page first page is successful`()
         `Then assert has next page is true`()
         `Then assert get dynamic filter API called once`()
-        `Then assert bottom navigation visibility event is true (visible)`()
-    }
-
-    private fun `Given search shop API call will be successful and return search shop data`() {
-        searchShopFirstPageUseCase.stubExecute().returns(searchShopModel)
-        getDynamicFilterUseCase.stubExecute().returns(dynamicFilterModel)
+        `Then assert quick filter is shown`(searchShopModel.getQuickFilterList())
     }
 
     private fun `Given search shop first page performance monitoring observer`() {
@@ -58,6 +51,11 @@ internal class SearchShopFirstPageTest: SearchShopViewModelTestFixtures() {
         searchShopFirstPagePerformanceMonitoringIsEnded shouldBe true
     }
 
+    private fun `Then assert search shop page first page is successful`() {
+        `Then assert search shop state is success and contains search shop data`()
+        `Then assert successful search shop tracking`()
+    }
+
     private fun `Then assert search shop state is success and contains search shop data`() {
         val searchShopState = searchShopViewModel.getSearchShopLiveData().value
         val query = searchShopViewModel.getSearchParameterQuery()
@@ -65,6 +63,12 @@ internal class SearchShopFirstPageTest: SearchShopViewModelTestFixtures() {
         searchShopState.shouldBeInstanceOf<State.Success<*>>()
         searchShopState.shouldHaveCorrectVisitableListWithLoadingMoreViewModel(query)
         searchShopState.shouldHaveShopItemCount(shopItemList.size)
+    }
+
+    private fun `Then assert successful search shop tracking`() {
+        `Then should post shop item impression tracking event`()
+        `Then should post product preview impression tracking event`()
+        `Then should not post empty search tracking event`()
     }
 
     private fun `Then should post shop item impression tracking event`() {
@@ -97,13 +101,6 @@ internal class SearchShopFirstPageTest: SearchShopViewModelTestFixtures() {
         getDynamicFilterUseCase.isExecuted()
     }
 
-    private fun `Then assert bottom navigation visibility event is true (visible)`() {
-        val bottomNavigationVisibilityEventLiveData = searchShopViewModel.getBottomNavigationVisibilityEventLiveData().value
-
-        val bottomNavigationVisibilityEvent = bottomNavigationVisibilityEventLiveData?.getContentIfNotHandled()
-        bottomNavigationVisibilityEvent shouldBe true
-    }
-
     @Test
     fun `Search Shop First Page Successful Without Next Page`() {
         `Given search shop API call will be successful and return search shop data without next page`()
@@ -111,11 +108,9 @@ internal class SearchShopFirstPageTest: SearchShopViewModelTestFixtures() {
         `When handle view is visible and added`()
 
         `Then assert search shop state is success and contains search shop data without loading more view model`()
-        `Then should post shop item impression tracking event`()
-        `Then should post product preview impression tracking event`()
-        `Then should not post empty search tracking event`()
+        `Then assert successful search shop tracking`()
         `Then assert has next page is false`()
-        `Then assert bottom navigation visibility event is true (visible)`()
+        `Then assert quick filter is shown`(searchShopModelWithoutNextPage.getQuickFilterList())
     }
 
     private fun `Given search shop API call will be successful and return search shop data without next page`() {
@@ -145,11 +140,9 @@ internal class SearchShopFirstPageTest: SearchShopViewModelTestFixtures() {
         `When handle view is visible and added`()
 
         `Then assert search shop state is success and contains search shop data without CPM`()
-        `Then should post shop item impression tracking event`()
-        `Then should post product preview impression tracking event`()
-        `Then should not post empty search tracking event`()
+        `Then assert successful search shop tracking`()
         `Then assert has next page is true`()
-        `Then assert bottom navigation visibility event is true (visible)`()
+        `Then assert quick filter is shown`(searchShopModelWithoutCpm.getFilterList())
     }
 
     private fun `Given search shop API call will be successful and return search shop data without CPM`() {
@@ -162,7 +155,7 @@ internal class SearchShopFirstPageTest: SearchShopViewModelTestFixtures() {
         val query = searchShopViewModel.getSearchParameterQuery()
 
         searchShopState.shouldBeInstanceOf<State.Success<*>>()
-        searchShopState.shouldHaveCorrectVisitableListWithoutCpmViewModel(query)
+        searchShopState.shouldHaveCorrectVisitableListWithoutCpmViewModel()
         searchShopState.shouldHaveShopItemCount(shopItemList.size)
     }
 
@@ -173,11 +166,9 @@ internal class SearchShopFirstPageTest: SearchShopViewModelTestFixtures() {
         `When handle view is visible and added`()
 
         `Then assert search shop state is success and contains search shop data without CPM Shop`()
-        `Then should post shop item impression tracking event`()
-        `Then should post product preview impression tracking event`()
-        `Then should not post empty search tracking event`()
+        `Then assert successful search shop tracking`()
         `Then assert has next page is true`()
-        `Then assert bottom navigation visibility event is true (visible)`()
+        `Then assert quick filter is shown`(searchShopModelWithoutValidCpmShop.getFilterList())
     }
 
     private fun `Given search shop API call will be successful and return search shop data without Valid CPM Shop`() {
@@ -190,7 +181,7 @@ internal class SearchShopFirstPageTest: SearchShopViewModelTestFixtures() {
         val query = searchShopViewModel.getSearchParameterQuery()
 
         searchShopState.shouldBeInstanceOf<State.Success<*>>()
-        searchShopState.shouldHaveCorrectVisitableListWithoutCpmViewModel(query)
+        searchShopState.shouldHaveCorrectVisitableListWithoutCpmViewModel()
         searchShopState.shouldHaveShopItemCount(shopItemList.size)
     }
 
@@ -206,6 +197,7 @@ internal class SearchShopFirstPageTest: SearchShopViewModelTestFixtures() {
         `Then assert search shop state is error with no data`()
         `Then assert has next page is false`()
         `Then assert get dynamic filter API never called`()
+        `Then assert all view is hidden`()
     }
 
     private fun `Given search shop API call will fail`(exception: Exception) {
@@ -225,5 +217,28 @@ internal class SearchShopFirstPageTest: SearchShopViewModelTestFixtures() {
 
     private fun `Then assert get dynamic filter API never called`() {
         getDynamicFilterUseCase.isNeverExecuted()
+    }
+
+    private fun `Then assert all view is hidden`() {
+        searchShopViewModel.getQuickFilterIsVisibleLiveData().value shouldBe false
+        searchShopViewModel.getShimmeringQuickFilterIsVisibleLiveData().value shouldBe false
+        searchShopViewModel.getRefreshLayoutIsVisibleLiveData().value shouldBe false
+    }
+
+    @Test
+    fun `Search Shop First Page Successful with empty quick filter`() {
+        `Given search shop API call will be successful and return search shop data with empty quick filter`()
+
+        `When handle view is visible and added`()
+
+        `Then assert search shop page first page is successful`()
+        `Then assert has next page is true`()
+        `Then assert get dynamic filter API called once`()
+        `Then assert quick filter is shown`(createSearchShopDefaultQuickFilter().filter)
+    }
+
+    private fun `Given search shop API call will be successful and return search shop data with empty quick filter`() {
+        searchShopFirstPageUseCase.stubExecute().returns(searchShopModelEmptyQuickFilter)
+        getDynamicFilterUseCase.stubExecute().returns(dynamicFilterModel)
     }
 }

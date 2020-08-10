@@ -1,6 +1,5 @@
 package com.tokopedia.filter.bottomsheet
 
-import android.graphics.Typeface
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
@@ -44,7 +43,6 @@ class SortFilterBottomSheet: BottomSheetUnify() {
 
     private var mapParameter: Map<String, String> = mapOf()
     private var dynamicFilterModel: DynamicFilterModel? = null
-    private var isButtonResetVisible = false
     private var sortFilterCallback: Callback? = null
     private var statusBarColorHelper: StatusBarColorHelper? = null
 
@@ -114,14 +112,12 @@ class SortFilterBottomSheet: BottomSheetUnify() {
             fragmentManager: FragmentManager,
             mapParameter: Map<String, String>?,
             dynamicFilterModel: DynamicFilterModel?,
-            isButtonResetVisible: Boolean = false,
             callback: Callback
     ) {
         if (mapParameter == null || dynamicFilterModel == null) return
 
         this.mapParameter = mapParameter
         this.dynamicFilterModel = dynamicFilterModel
-        this.isButtonResetVisible = isButtonResetVisible
         this.sortFilterCallback = callback
 
         show(fragmentManager, SORT_FILTER_BOTTOM_SHEET_TAG)
@@ -161,10 +157,10 @@ class SortFilterBottomSheet: BottomSheetUnify() {
     }
 
     private fun initBottomSheetSettings() {
-        isDragable = true
-        showKnob = true
-        showCloseIcon = false
-        isHideable = true
+        showKnob = sortFilterBottomSheetViewModel?.showKnob ?: false
+        showCloseIcon = !showKnob
+        isDragable = showKnob
+        isHideable = showKnob
         customPeekHeight = (getScreenHeight() / 2).toDp()
     }
 
@@ -172,7 +168,7 @@ class SortFilterBottomSheet: BottomSheetUnify() {
      * Hacky way to show Reset action when SortFilterBottomSheet is just opened
      */
     private fun initBottomSheetAction() {
-        if (isButtonResetVisible) {
+        if (sortFilterBottomSheetViewModel?.isButtonResetVisible() == true) {
             setAction(getString(R.string.filter_button_reset_text)) {
                 sortFilterBottomSheetViewModel?.resetSortAndFilter()
             }
@@ -227,7 +223,7 @@ class SortFilterBottomSheet: BottomSheetUnify() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        configureBottomSheetHeight()
+        if (showKnob) configureBottomSheetHeight()
         setBottomSheetActionBold()
         setStatusBarOverlayColor()
         observeViewModel()
