@@ -100,6 +100,8 @@ class DynamicChannelComponentAnalyticsTest {
 
     private fun doAnalyticDebuggerTest() {
         waitForData()
+
+        //non login state, without userId
 //        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_HOMEPAGE_SCREEN),
 //                hasAllSuccess())
 //        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_HOMEPAGE_BANNER),
@@ -118,7 +120,7 @@ class DynamicChannelComponentAnalyticsTest {
 
     private fun scrollHomeRecyclerViewToPosition(homeRecyclerView: RecyclerView, position: Int) {
         val layoutManager = homeRecyclerView.layoutManager as LinearLayoutManager
-        activityRule.runOnUiThread { layoutManager.scrollToPositionWithOffset(position, 0) }
+        activityRule.runOnUiThread { layoutManager.scrollToPositionWithOffset(position, 350) }
     }
 
     private fun checkProductOnDynamicChannel(homeRecyclerView: RecyclerView, i: Int) {
@@ -135,12 +137,12 @@ class DynamicChannelComponentAnalyticsTest {
             is MixLeftComponentViewHolder -> {
                 logTestMessage("VH MixLeftComponentViewHolder")
                 clickLihatSemuaButtonIfAvailable(viewholder.itemView, "MixLeftComponentViewHolder")
-                clickOnEachItemRecyclerView(viewholder.itemView, R.id.rv_product)
+                clickOnEachItemRecyclerView(viewholder.itemView, R.id.rv_product, "MixLeftComponentViewHolder")
             }
             is MixTopComponentViewHolder -> {
                 logTestMessage("VH MixTopComponentViewHolder")
                 clickLihatSemuaButtonIfAvailable(viewholder.itemView, "MixTopComponentViewHolder")
-                clickOnEachItemRecyclerView(viewholder.itemView, R.id.dc_banner_rv)
+                clickOnEachItemRecyclerView(viewholder.itemView, R.id.dc_banner_rv, "MixTopComponentViewHolder")
                 clickOnMixTopCTA(viewholder.itemView)
             }
         }
@@ -233,20 +235,20 @@ class DynamicChannelComponentAnalyticsTest {
 
     }
 
-    private fun clickOnEachItemRecyclerView(view: View, recyclerViewId: Int) {
+    private fun clickOnEachItemRecyclerView(view: View, recyclerViewId: Int, viewComponent: String) {
         val childView = view
         val childRecyclerView = childView.findViewById<RecyclerView>(recyclerViewId)
         val childItemCount = childRecyclerView.adapter?.itemCount ?: 0
-        logTestMessage("ChildCount Here: " + childItemCount + " item")
+        logTestMessage("ChildCount $viewComponent: " + childItemCount + " item")
 
         for (j in 0 until childItemCount) {
             try {
                 Espresso.onView(firstView(ViewMatchers.withId(recyclerViewId)))
                         .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(j, ViewActions.click()))
-                logTestMessage("Click SUCCESS child pos: " + j)
+                logTestMessage("Click SUCCESS $viewComponent child pos: " + j)
             } catch (e: PerformException) {
                 e.printStackTrace()
-                logTestMessage("Click FAILED child pos: " + j)
+                logTestMessage("Click FAILED $viewComponent child pos: " + j)
             }
         }
     }

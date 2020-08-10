@@ -8,7 +8,7 @@
             "tickers": [{
                 "id": "663",
                 "title": "Info Pengembangan Sistem",
-                "message": "Proses checkout berpotensi lebih lama dari biasanya. Coba sesaat lagi",
+                "message": "&nbsp;<a href=\\\"tokopedia://home\\\"\\>here refresh home</a>",
                 "color": "#cde4c3",
                 "layout": "default",
                 "ticker_type": 1
@@ -260,7 +260,272 @@
             }]
         },
         "dynamicHomeChannel": {
-            "channels": [{
+            "channels": [
+                {
+                    "id": 33851,
+                    "name": "All User Campaign #3 - AB Test Mix Left Exp",
+                    "layout": "left_carousel",
+                    "campaignCode": "testing campaign code",
+                    "type": "inspiration",
+                    "persona": "Homeliving",
+                    "categoryID": "{}",
+                    "galaxy_attribution": "PG",
+                    "header": {
+                        "id": 34090,
+                        "name": "Tes Untuk Ana",
+                        "url": "https://m.tokopedia.com/discovery/tetap-sehat-produktif?source=homepage.left_carousel.0.33846",
+                        "applink": "tokopedia://discovery/tetap-sehat-produktif?source=homepage.left_carousel.0.33846",
+                        "expiredTime": "",
+                        "backColor": "red",
+                        "backImage": ""
+                    },
+                    "banner": {
+                        "id": 4032,
+                        "title": "",
+                        "description": "",
+                        "url": "https://www.tokopedia.com/discovery/pengguna-baru?source=home",
+                        "back_color": "#005C98",
+                        "cta": {
+                            "type": "",
+                            "mode": "",
+                            "text": "",
+                            "coupon_code": ""
+                        },
+                        "applink": "tokopedia://discovery/pengguna-baru?source=home",
+                        "text_color": "#ffffff",
+                        "image_url": "https://ecs7-p.tokopedia.net/img/cache/240/PYbRbC/2020/7/21/15355103-6e76-48ee-a8bb-c455adecdf47.png",
+                        "attribution": "X_PG_NUZ_Deal Pengguna Baru_July 20",
+                        "gradient_color": ["#005C98"]
+                    },
+                    "grids": [
+                        {
+                            "id": 964202709,
+                            "name": "HELM DEWASA SNI MODEL SCOOPS UTK SEPEDA MOTOR SCOOPY - Abu-abu",
+                            "url": "https://m.tokopedia.com/helmkubagus/helm-dewasa-sni-model-scoops-utk-sepeda-motor-scoopy-abu-abu",
+                            "applink": "tokopedia://product/964202709",
+                            "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/product-1/2020/6/5/598065796/598065796_48e30583-18d7-4baa-b0c6-9ed569b1e06d_1152_1152.jpg",
+                            "label": "",
+                            "attribution": "",
+                            "price": "Rp 90.000",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "soldPercentage": 0
+                        },
+                        {
+                            "id": 968560557,
+                            "name": "Case iPad Air 3 2019 / Pro 10.5 Dux Ducis Osom Series Cover Casing - H - Hitam",
+                            "url": "https://m.tokopedia.com/societyacc/case-ipad-air-3-2019-pro-10-5-dux-ducis-osom-series-cover-casing-h-hitam",
+                            "applink": "tokopedia://product/968560557",
+                            "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/product-1/2019/12/17/50079680/50079680_0f5d6d39-696d-4479-a33e-fdf5f7add635_700_700",
+                            "label": "",
+                            "attribution": "",
+                            "price": "Rp 170.000",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "soldPercentage": 0
+                        },
+                        {
+                            "id": 207678079,
+                            "name": "Evamat - Abjad Gambar / Matras / Tikar / Karpet / Puzzle Alas Lantai",
+                            "url": "https://m.tokopedia.com/toyflashsale/evamat-abjad-gambar-matras-tikar-karpet-puzzle-alas-lantai",
+                            "applink": "tokopedia://product/207678079",
+                            "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/product-1/2017/9/8/7382862/7382862_5b098876-17f6-42c0-a5f9-2065bb73a054_800_800.png",
+                            "label": "",
+                            "attribution": "",
+                            "price": "Rp 170.000",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "soldPercentage": 0
+                        },
+                        {
+                            "id": 503515826,
+                            "name": "AC Air Screen Cover Reflektor Talang Penahan Hembusan Angin Flexible",
+                            "url": "https://m.tokopedia.com/bestshopgrosir/ac-air-screen-cover-reflektor-talang-penahan-hembusan-angin-flexible",
+                            "applink": "tokopedia://product/503515826",
+                            "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/product-1/2019/7/6/1284415/1284415_5af013ef-4cb0-4e3d-8ba9-12d187b48617_700_700",
+                            "label": "",
+                            "attribution": "",
+                            "price": "Rp 24.950",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "soldPercentage": 0
+                        },
+                        {
+                            "id": 494592970,
+                            "name": "Apple Watch Silicone Charging Stand for Series 4 3 2 1 PREMIUM QUALITY",
+                            "url": "https://m.tokopedia.com/appshoppe/apple-watch-silicone-charging-stand-for-series-4-3-2-1-premium-quality",
+                            "applink": "tokopedia://product/494592970",
+                            "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/attachment/2019/9/9/156797457499387/156797457499387_9fa9be16-3d06-4934-b836-cbeefe7c7380.png",
+                            "label": "",
+                            "attribution": "",
+                            "price": "Rp 39.000",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "soldPercentage": 0
+                        },
+                        {
+                            "id": 772785887,
+                            "name": "Lifebuoy Sabun Cair Total 10 900ml & Pepsodent Pasta Gigi White 225g",
+                            "url": "https://m.tokopedia.com/unilever/lifebuoy-sabun-cair-total-10-900ml-pepsodent-pasta-gigi-white-225g",
+                            "applink": "tokopedia://product/772785887",
+                            "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/product-1/2020/4/6/16372625/16372625_7cbf92dd-83c6-43b9-89c3-9c31d92d6cfc_1000_1000",
+                            "label": "",
+                            "attribution": "",
+                            "price": "Rp 50.500",
+                            "slashedPrice": "Rp 61.800",
+                            "discount": "18% OFF",
+                            "soldPercentage": 0
+                        }
+                    ]
+                },
+                {
+                    "id": 35510,
+                    "name": "Tokopedia Nyam 5 Agustus - Slot 4",
+                    "layout": "top_carousel",
+                    "type": "sales",
+                    "header": {
+                        "id": 35749,
+                        "name": "Harga Spesial",
+                        "url": "m.tokopedia.com/discovery/tokopedia-nyam-special-deals",
+                        "applink": "tokopedia://discovery/tokopedia-nyam-special-deals",
+                        "expiredTime": "2020-08-05T16:59:00+07:00",
+                        "backColor": "",
+                        "backImage": ""
+                    },
+                    "grids": [
+                        {
+                            "id": 801755874,
+                            "name": "",
+                            "url": "https://m.tokopedia.com/seafoodgrowbuy/fillet-ikan-dory-premium-1kg-seafood-growbuy?trkid=f%3DP0Cb0_src%3Dsprint-sale_page%3D1_ob%3D19_catid%3D2710",
+                            "applink": "tokopedia://product/801755874",
+                            "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/attachment/2020/8/3/18056894/18056894_14de9646-d3c4-485e-80a7-3ac03bf64c4f.jpg",
+                            "label": "Terjual Habis",
+                            "attribution": "",
+                            "price": "Rp 27.950",
+                            "slashedPrice": "Rp 55.900",
+                            "discount": "50%",
+                            "soldPercentage": 100
+                        },
+                        {
+                            "id": 597337486,
+                            "name": "",
+                            "url": "https://m.tokopedia.com/kingsfisher/paket-3-pcs-king-s-fisher-sarden-mini-sambal-hijau-makanan-kaleng-155g?trkid=f%3DP0Cb0_src%3Dsprint-sale_page%3D1_ob%3D19_catid%3D2757",
+                            "applink": "tokopedia://product/597337486",
+                            "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2019/10/27/79552542/79552542_0828f0a8-c27e-4f04-aafb-1a0ea33f7d25_1000_1000",
+                            "label": "Tersedia",
+                            "attribution": "",
+                            "price": "Rp 16.700",
+                            "slashedPrice": "Rp 33.400",
+                            "discount": "50%",
+                            "soldPercentage": 5
+                        },
+                        {
+                            "id": 696067202,
+                            "name": "",
+                            "url": "https://m.tokopedia.com/bwijkt/bakso-goreng-rebutan-ayam-udang-20-pcs?trkid=f%3DP0Cb0_src%3Dsprint-sale_page%3D1_ob%3D19_catid%3D2730",
+                            "applink": "tokopedia://product/696067202",
+                            "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/attachment/2020/8/3/18056894/18056894_64018372-b744-4d10-b2cd-1576e96af1bd.jpg",
+                            "label": "Terjual Habis",
+                            "attribution": "",
+                            "price": "Rp 27.500",
+                            "slashedPrice": "Rp 55.000",
+                            "discount": "50%",
+                            "soldPercentage": 100
+                        },
+                        {
+                            "id": 1030059587,
+                            "name": "",
+                            "url": "https://m.tokopedia.com/northpolegelato/strawberry-shortcake-sundae-in-a-jar-north-pole-gelato-ice-cream?trkid=f%3DP0Cb0_src%3Dsprint-sale_page%3D1_ob%3D19_catid%3D2305",
+                            "applink": "tokopedia://product/1030059587",
+                            "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/attachment/2020/8/3/18056894/18056894_d39dc5c3-4364-47dd-82a4-30e19b931a96.jpg",
+                            "label": "Tersedia",
+                            "attribution": "",
+                            "price": "Rp 84.500",
+                            "slashedPrice": "Rp 169.000",
+                            "discount": "50%",
+                            "soldPercentage": 20
+                        },
+                        {
+                            "id": 1067497307,
+                            "name": "",
+                            "url": "https://m.tokopedia.com/shabujin/chicken-namban-takoyaki-set?trkid=f%3DP0Cb0_src%3Dsprint-sale_page%3D1_ob%3D19_catid%3D2811",
+                            "applink": "tokopedia://product/1067497307",
+                            "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/attachment/2020/8/3/18056894/18056894_ab3699b2-8a66-47ed-9b66-5a1ad9a0996f.jpg",
+                            "label": "Tersedia",
+                            "attribution": "",
+                            "price": "Rp 35.000",
+                            "slashedPrice": "Rp 70.000",
+                            "discount": "50%",
+                            "soldPercentage": 13
+                        },
+                        {
+                            "id": 830076229,
+                            "name": "",
+                            "url": "https://m.tokopedia.com/pandurasastore/beli-1-gratis-1-wernli-biskuit-swiss-chocobelle-100gr?trkid=f%3DP0Cb0_src%3Dsprint-sale_page%3D1_ob%3D19_catid%3D2803",
+                            "applink": "tokopedia://product/830076229",
+                            "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/7/29/45153199/45153199_01eee069-b13a-4d8a-8ce9-0c253c5e41af_1080_1080",
+                            "label": "Tersedia",
+                            "attribution": "",
+                            "price": "Rp 85.000",
+                            "slashedPrice": "Rp 170.000",
+                            "discount": "50%",
+                            "soldPercentage": 6
+                        },
+                        {
+                            "id": 897501787,
+                            "name": "",
+                            "url": "https://m.tokopedia.com/foodandsuch/milo-cube-isi-50?trkid=f%3DP0Cb0_src%3Dsprint-sale_page%3D1_ob%3D19_catid%3D2802",
+                            "applink": "tokopedia://product/897501787",
+                            "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/attachment/2020/8/3/18056894/18056894_5b9f52e6-a33d-4146-af4b-39a14c9bcdd6.jpg",
+                            "label": "Segera Habis",
+                            "attribution": "",
+                            "price": "Rp 25.000",
+                            "slashedPrice": "Rp 50.000",
+                            "discount": "50%",
+                            "soldPercentage": 93
+                        },
+                        {
+                            "id": 602525064,
+                            "name": "",
+                            "url": "https://m.tokopedia.com/royalefoods/hamtari-kuaci-kupas-aneka-varian-rasa-orginal?trkid=f%3DP0Cb0_src%3Dsprint-sale_page%3D1_ob%3D19_catid%3D2753",
+                            "applink": "tokopedia://product/602525064",
+                            "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/1/23/27497493/27497493_132b2320-f6ff-41dc-ad21-f139f08c38f2_2048_2048",
+                            "label": "Tersedia",
+                            "attribution": "",
+                            "price": "Rp 10.000",
+                            "slashedPrice": "Rp 20.000",
+                            "discount": "50%",
+                            "soldPercentage": 20
+                        },
+                        {
+                            "id": 845076497,
+                            "name": "",
+                            "url": "https://m.tokopedia.com/rotiboyindonesia/rotigal-frozen?trkid=f%3DP0Cb0_src%3Dsprint-sale_page%3D1_ob%3D19_catid%3D2731",
+                            "applink": "tokopedia://product/845076497",
+                            "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/5/12/101633707/101633707_5444ef0b-8bd6-4904-aad5-0b1f91c8386b_1280_1280",
+                            "label": "Tersedia",
+                            "attribution": "",
+                            "price": "Rp 50.000",
+                            "slashedPrice": "Rp 100.000",
+                            "discount": "50%",
+                            "soldPercentage": 30
+                        },
+                        {
+                            "id": 225677619,
+                            "name": "",
+                            "url": "https://m.tokopedia.com/el-granola/el-granola-hazelnut-banana-healthy-snack-sereal?trkid=f%3DP0Cb0_src%3Dsprint-sale_page%3D1_ob%3D19_catid%3D2797",
+                            "applink": "tokopedia://product/225677619",
+                            "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/attachment/2020/8/3/18056894/18056894_3f7404d6-20e1-42de-932f-2b5d7e2e63fb.jpg",
+                            "label": "Segera Habis",
+                            "attribution": "",
+                            "price": "Rp 30.000",
+                            "slashedPrice": "Rp 59.999",
+                            "discount": "50%",
+                            "soldPercentage": 80
+                        }
+                    ]
+                },
+                {
                 "id": 34022,
                 "group_id": 206,
                 "galaxy_attribution": "PG",
@@ -287,7 +552,8 @@
                     "backImage": "",
                     "textColor": "#000000"
                 },
-                "grids": [{
+                "grids": [
+                    {
                     "id": 866484030,
                     "back_color": "",
                     "name": "",
@@ -319,7 +585,8 @@
                     "has_buy_button": false,
                     "rating": 0,
                     "count_review": 0
-                }, {
+                },
+                    {
                     "id": 601819486,
                     "back_color": "",
                     "name": "",
@@ -351,7 +618,8 @@
                     "has_buy_button": false,
                     "rating": 0,
                     "count_review": 0
-                }, {
+                },
+                    {
                     "id": 561923083,
                     "back_color": "",
                     "name": "",
@@ -383,7 +651,8 @@
                     "has_buy_button": false,
                     "rating": 0,
                     "count_review": 0
-                }, {
+                },
+                    {
                     "id": 422504860,
                     "back_color": "",
                     "name": "",
@@ -415,7 +684,8 @@
                     "has_buy_button": false,
                     "rating": 0,
                     "count_review": 0
-                }, {
+                },
+                    {
                     "id": 873186192,
                     "back_color": "",
                     "name": "",
@@ -447,7 +717,8 @@
                     "has_buy_button": false,
                     "rating": 0,
                     "count_review": 0
-                }, {
+                },
+                    {
                     "id": 783024051,
                     "back_color": "",
                     "name": "",
@@ -763,7 +1034,8 @@
                     "backImage": "",
                     "textColor": "#000000"
                 },
-                "grids": [{
+                "grids": [
+                    {
                     "id": 252205753,
                     "back_color": "",
                     "name": "PowerBank Anker PowerCore II Slim 10000 mAh Black - A1261",
@@ -799,7 +1071,8 @@
                     "has_buy_button": false,
                     "rating": 5,
                     "count_review": 1
-                }, {
+                },
+                    {
                     "id": 289658572,
                     "back_color": "",
                     "name": "PowerBank Anker PowerCore II 10000 mAh Quick Charge 3.0 Black - A1230",
@@ -835,7 +1108,8 @@
                     "has_buy_button": false,
                     "rating": 5,
                     "count_review": 3
-                }, {
+                },
+                    {
                     "id": 150200592,
                     "back_color": "",
                     "name": "PowerBank Anker PowerCore Speed 10000 Quick Charge 3.0 Black - A1266",
@@ -871,7 +1145,8 @@
                     "has_buy_button": false,
                     "rating": 5,
                     "count_review": 1
-                }, {
+                },
+                    {
                     "id": 1014890025,
                     "back_color": "",
                     "name": "Xiaomi Mi Band 5 Original - Xiaomi Smartwatch Mi Band 5 GLOBAL OLED - no bonus",
@@ -911,7 +1186,8 @@
                     "has_buy_button": false,
                     "rating": 5,
                     "count_review": 80
-                }, {
+                },
+                    {
                     "id": 271266308,
                     "back_color": "",
                     "name": "ORICO K10000 10000mAh Universal Fast Charging Power Bank - Hitam",
@@ -943,7 +1219,8 @@
                     "has_buy_button": false,
                     "rating": 5,
                     "count_review": 1223
-                }, {
+                },
+                    {
                     "id": 250235457,
                     "back_color": "",
                     "name": "dbE Acoustics PR100 Earphone With Microphone",
@@ -975,7 +1252,8 @@
                     "has_buy_button": false,
                     "rating": 5,
                     "count_review": 160
-                }, {
+                },
+                    {
                     "id": 207164972,
                     "back_color": "",
                     "name": "PowerBank Anker PowerCore 10400 mAh White - A1214",
@@ -1011,7 +1289,8 @@
                     "has_buy_button": false,
                     "rating": 5,
                     "count_review": 1016
-                }, {
+                },
+                    {
                     "id": 1020806581,
                     "back_color": "",
                     "name": "Xiaomi Mi Band 5 - China Version",
@@ -1047,7 +1326,8 @@
                     "has_buy_button": false,
                     "rating": 5,
                     "count_review": 74
-                }, {
+                },
+                    {
                     "id": 179753399,
                     "back_color": "",
                     "name": "Lampu LED Bulb PHILIPS 10,5W Paket 3 Free 1 - 10,5 W Watt 10 ,5 Watt",
@@ -1079,7 +1359,8 @@
                     "has_buy_button": false,
                     "rating": 5,
                     "count_review": 2976
-                }, {
+                },
+                    {
                     "id": 237203195,
                     "back_color": "",
                     "name": "JBL Go Blue",
@@ -1119,7 +1400,8 @@
                     "has_buy_button": false,
                     "rating": 5,
                     "count_review": 434
-                }, {
+                },
+                    {
                     "id": 422131677,
                     "back_color": "",
                     "name": "Charger Samsung Galaxy A6 A6+ A7 2018 Micro USB ORIGINAL 100%",
@@ -1151,7 +1433,8 @@
                     "has_buy_button": false,
                     "rating": 5,
                     "count_review": 141
-                }, {
+                },
+                    {
                     "id": 579863453,
                     "back_color": "",
                     "name": "Kabel Data Iphone Original Ori Cable Data Ip 6 6plus 7 7plus 8 8plus",
@@ -1191,7 +1474,8 @@
                     "has_buy_button": false,
                     "rating": 5,
                     "count_review": 534
-                }, {
+                },
+                    {
                     "id": 588894843,
                     "back_color": "",
                     "name": "KABEL DATA TYPE-C BASEUS AUTOMATIC POWER-OFF FAST CHARGE 3A - Hitam",
@@ -1223,7 +1507,8 @@
                     "has_buy_button": false,
                     "rating": 5,
                     "count_review": 3
-                }, {
+                },
+                    {
                     "id": 479814246,
                     "back_color": "",
                     "name": "ECLE Power Strip Stop Kontak 6 EU Socket 4 Smart USB Port Fast Charge",
@@ -1255,7 +1540,8 @@
                     "has_buy_button": false,
                     "rating": 5,
                     "count_review": 357
-                }, {
+                },
+                    {
                     "id": 1000830849,
                     "back_color": "",
                     "name": "BASEUS WIRELESS FAST CHARGING POWER BANK QC3.0+PD3.0 18W 10000MAH - Merah",
@@ -1287,7 +1573,8 @@
                     "has_buy_button": false,
                     "rating": 5,
                     "count_review": 1207
-                }, {
+                },
+                    {
                     "id": 199126479,
                     "back_color": "",
                     "name": "Kabel Charger Anker PowerLine 5Pack (1ft+3ft+6ft) MicroUSB Black-B8133",
@@ -1319,7 +1606,8 @@
                     "has_buy_button": false,
                     "rating": 5,
                     "count_review": 543
-                }, {
+                },
+                    {
                     "id": 1018462927,
                     "back_color": "",
                     "name": "[ MODEL U ] Audio Splitter Jack 3.5mm to dual female U Shape 2in1 - Random",
@@ -1355,7 +1643,8 @@
                     "has_buy_button": false,
                     "rating": 5,
                     "count_review": 251
-                }, {
+                },
+                    {
                     "id": 1003954210,
                     "back_color": "",
                     "name": "Case Cover Casing Sarung Softcase Realme C11",
@@ -1395,7 +1684,8 @@
                     "has_buy_button": false,
                     "rating": 5,
                     "count_review": 17
-                }, {
+                },
+                    {
                     "id": 105978964,
                     "back_color": "",
                     "name": "Kabel Data XIAOMI ORIGINAL 100% Micro USB",
@@ -1435,7 +1725,8 @@
                     "has_buy_button": false,
                     "rating": 5,
                     "count_review": 6356
-                }, {
+                },
+                    {
                     "id": 14214639,
                     "back_color": "",
                     "name": "Donut Foam Replacement Busa Earbud Sponge Eartips",
@@ -1474,17 +1765,17 @@
                 }],
                 "banner": {
                     "id": 2359,
-                    "title": "",
+                    "title": "Cek Sekarang",
                     "description": "",
-                    "url": "",
-                    "back_color": "#ffffff",
+                    "url": "https://www.tokopedia.com/discovery/produk-rekomendasi-new-user?source=homepage.top_carousel.0.25937",
+                    "applink": "tokopedia://discovery/produk-rekomendasi-new-user?source=homepage.top_carousel.0.25937",
+                    "back_color": "#81af43",
                     "cta": {
                         "type": "",
                         "mode": "",
-                        "text": "",
+                        "text": "Cek Sekarang Cu",
                         "coupon_code": ""
                     },
-                    "applink": "",
                     "text_color": "#ffffff",
                     "image_url": "https://ecs7-p.tokopedia.net/img/attachment/2020/4/20/88321389/88321389_45a5c71e-a590-48d8-8753-70ed4a3b6ca0.jpg",
                     "attribution": "",
