@@ -7,7 +7,11 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.talk.common.constants.TalkConstants
+import com.tokopedia.talk.feature.write.presentation.activity.TalkWriteActivity
 import com.tokopedia.talk_old.addtalk.view.fragment.AddTalkFragment
 import com.tokopedia.talk_old.common.di.DaggerTalkComponent
 import com.tokopedia.talk_old.common.di.TalkComponent
@@ -34,11 +38,19 @@ class AddTalkActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
 
     }
 
+    private lateinit var remoteConfigInstance: RemoteConfigInstance
+
     private var productId = ""
     private var source = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         getDataFromAppLink()
+        getAbTestPlatform()?.fetch(null)
+        if (!useOldPage()) {
+            startActivity(TalkWriteActivity.createIntent(this, productId.toIntOrZero()))
+            finish()
+            return
+        }
         super.onCreate(savedInstanceState)
     }
 
@@ -69,4 +81,14 @@ class AddTalkActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
         }
     }
 
+    private fun getAbTestPlatform(): AbTestPlatform? {
+        if (!::remoteConfigInstance.isInitialized) {
+            remoteConfigInstance = RemoteConfigInstance(this.application)
+        }
+        return remoteConfigInstance.abTestPlatform
+    }
+
+    private fun useOldPage(): Boolean {
+        return getAbTestPlatform()?.getString(TalkConstants.AB_TEST_WRITE_KEY).equals(TalkConstants.WRITE_OLD_FLOW)
+    }
 }
