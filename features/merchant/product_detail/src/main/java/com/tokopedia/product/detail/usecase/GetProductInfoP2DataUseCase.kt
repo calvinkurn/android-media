@@ -71,7 +71,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val rawQueries: Ma
             p2UiData.shopCommitment = shopCommitment
             p2UiData.productPurchaseProtectionInfo = productPurchaseProtectionInfo
             p2UiData.validateTradeIn = validateTradeIn
-            p2UiData.cartRedirection = cartRedirection
+            p2UiData.cartRedirection = cartRedirection.data.associateBy({ it.productId }, { it })
             p2UiData.nearestWarehouseInfo = nearestWarehouseInfo.associateBy({ it.productId }, { it.warehouseInfo })
             p2UiData.upcomingCampaigns = upcomingCampaigns.associateBy { it.productId ?: "" }
             p2UiData.vouchers = merchantVoucher.vouchers?.map { MerchantVoucherViewModel(it) } ?: listOf()

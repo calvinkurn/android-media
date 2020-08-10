@@ -82,7 +82,6 @@ data class ProductInfoP2Data(
         @Expose
         var upcomingCampaigns: List<ProductUpcomingData> = listOf(),
 
-
         @SerializedName("merchantVoucher")
         @Expose
         var merchantVoucher: MerchantVoucherQueryResult = MerchantVoucherQueryResult(),

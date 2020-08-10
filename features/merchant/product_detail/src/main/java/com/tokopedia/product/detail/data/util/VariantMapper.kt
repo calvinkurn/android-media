@@ -12,8 +12,6 @@ import com.tokopedia.product.detail.common.data.model.pdplayout.Media
 import com.tokopedia.product.detail.view.util.toDate
 import com.tokopedia.variant_common.model.ProductVariantCommon
 import com.tokopedia.variant_common.model.VariantChildCommon
-import com.tokopedia.variant_common.model.VariantMultiOriginWarehouse
-import java.util.*
 
 /**
  * Created by Yehezkiel on 2020-02-26
@@ -70,32 +68,13 @@ object VariantMapper {
         intent.putExtra(ApplinkConst.Chat.PRODUCT_PREVIEWS, stringProductPreviews)
     }
 
-    fun updateSelectedMultiOrigin(oldData: VariantMultiOriginWarehouse, newData: VariantChildCommon?): VariantMultiOriginWarehouse {
-
-        val newWarehouseInfo = oldData.warehouseInfo.copy(
-                id = newData?.warehouseInfo?.warehouseId ?: "",
-                isFulfillment = newData?.warehouseInfo?.isFulfillment ?: false,
-                districtId = newData?.warehouseInfo?.districtId ?: "",
-                postalCode = newData?.warehouseInfo?.postalCode ?: "",
-                geoLocation = newData?.warehouseInfo?.geoLocation ?: ""
-        )
-
-        return oldData.copy(
-                productId = newData?.productId.toString(),
-                stock = newData?.getVariantFinalStock() ?: 0,
-                price = newData?.price?.toInt() ?: 0,
-                stockWording = newData?.stock?.stockWordingHTML ?: "",
-                warehouseInfo = newWarehouseInfo
-        )
-    }
-
     fun updateDynamicProductInfo(oldData: DynamicProductInfoP1?, newData: VariantChildCommon?, existingListMedia: List<Media>?): DynamicProductInfoP1? {
         if (oldData == null) return null
 
         val basic = oldData.basic.copy(
                 productID = newData?.productId.toString(),
                 sku = newData?.sku ?: "",
-                minOrder = newData?.stock?.minimumOrder ?: 0,
+                minOrder = newData?.getFinalMinOrder() ?: 0,
                 status = if (newData?.isBuyable == true) {
                     ProductStatusTypeDef.ACTIVE
                 } else {

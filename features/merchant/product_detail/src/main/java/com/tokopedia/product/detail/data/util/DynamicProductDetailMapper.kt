@@ -4,14 +4,12 @@ import android.util.SparseArray
 import com.tokopedia.gallery.networkmodel.ImageReviewGqlResponse
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.product.detail.common.data.model.carttype.CartRedirectionParams
 import com.tokopedia.product.detail.common.data.model.pdplayout.*
 import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.data.model.variant.VariantDataModel
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.variant_common.model.*
-import java.util.*
 
 object DynamicProductDetailMapper {
 
@@ -161,7 +159,7 @@ object DynamicProductDetailMapper {
                     campaignType = newCampaignData?.campaignType.toIntOrZero(), campaignTypeName = newCampaignData?.campaignTypeName,
                     startDate = newCampaignData?.startDate, endDateUnix = newCampaignData?.endDateUnix, stock = newCampaignData?.stock, isAppsOnly = newCampaignData?.isAppsOnly, applinks = newCampaignData?.applinks,
                     stockSoldPercentage = newCampaignData?.stockSoldPercentage, isUsingOvo = newCampaignData?.isUsingOvo
-                    ?: false, isCheckImei = newCampaignData?.isCheckImei)
+                    ?: false, isCheckImei = newCampaignData?.isCheckImei, minOrder = newCampaignData?.minOrder)
 
             VariantChildCommon(productId = it.productId.toIntOrZero(), price = it.price, priceFmt = it.priceFmt, sku = it.sku, stock = stock,
                     optionIds = it.optionIds, name = it.name, url = it.url, picture = Picture(original = it.picture?.original, thumbnail = it.picture?.thumbnail),
@@ -176,42 +174,6 @@ object DynamicProductDetailMapper {
                 variant = variants,
                 children = child
         )
-    }
-
-    fun generateCartTypeVariantParams(dynamicProductInfoP1: DynamicProductInfoP1?, productVariant: ProductVariantCommon?): List<CartRedirectionParams> {
-
-        return productVariant?.children?.map {
-            val listOfFlags = mutableListOf<String>()
-            if (dynamicProductInfoP1?.data?.preOrder?.isActive == true) listOfFlags.add(ProductDetailConstant.KEY_PREORDER)
-            if (dynamicProductInfoP1?.basic?.isLeasing == true) listOfFlags.add(ProductDetailConstant.KEY_LEASING)
-            if (it.campaign?.isUsingOvo == true) listOfFlags.add(ProductDetailConstant.KEY_OVO_DEALS)
-
-            CartRedirectionParams(it.campaign?.campaignID?.toIntOrNull() ?: 0,
-                    it.campaign?.campaignType ?: 0, listOfFlags)
-        } ?: listOf()
-    }
-
-    fun generateCartTypeParam(dynamicProductInfoP1: DynamicProductInfoP1?, productVariant: ProductVariantCommon?): List<CartRedirectionParams> {
-        if (dynamicProductInfoP1?.isProductVariant() == false) {
-            val campaignId = dynamicProductInfoP1.data.campaign.campaignID.toIntOrNull() ?: 0
-            val campaignTypeId = dynamicProductInfoP1.data.campaign.campaignType.toIntOrNull() ?: 0
-            val listOfFlags = mutableListOf<String>()
-            if (dynamicProductInfoP1.data.preOrder.isActive) listOfFlags.add(ProductDetailConstant.KEY_PREORDER)
-            if (dynamicProductInfoP1.basic.isLeasing) listOfFlags.add(ProductDetailConstant.KEY_LEASING)
-            if (dynamicProductInfoP1.data.campaign.isUsingOvo) listOfFlags.add(ProductDetailConstant.KEY_OVO_DEALS)
-
-            return listOf(CartRedirectionParams(campaignId, campaignTypeId, listOfFlags))
-        } else {
-            return productVariant?.children?.map {
-                val listOfFlags = mutableListOf<String>()
-                if (dynamicProductInfoP1?.data?.preOrder?.isActive == true) listOfFlags.add(ProductDetailConstant.KEY_PREORDER)
-                if (dynamicProductInfoP1?.basic?.isLeasing == true) listOfFlags.add(ProductDetailConstant.KEY_LEASING)
-                if (it.campaign?.isUsingOvo == true) listOfFlags.add(ProductDetailConstant.KEY_OVO_DEALS)
-
-                CartRedirectionParams(it.campaign?.campaignID?.toIntOrNull() ?: 0,
-                        it.campaign?.campaignType ?: 0, listOfFlags)
-            } ?: listOf()
-        }
     }
 
     fun generateButtonAction(it: String, atcButton: Boolean, leasing: Boolean): Int {

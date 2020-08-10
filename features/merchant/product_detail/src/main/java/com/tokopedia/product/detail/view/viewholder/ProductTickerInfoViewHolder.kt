@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.StringRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
@@ -32,7 +33,7 @@ class ProductTickerInfoViewHolder(private val view: View, private val listener: 
 
     override fun bind(element: ProductTickerInfoDataModel) {
         if (element.generalTickerInfo == null) {
-            hideTicker()
+            hideComponent()
         } else {
             componentTrackDataModel = element.getComponentTrackData(adapterPosition)
             renderTicker(element)
@@ -40,6 +41,7 @@ class ProductTickerInfoViewHolder(private val view: View, private val listener: 
     }
 
     private fun renderTicker(element: ProductTickerInfoDataModel) {
+        showComponent()
         if (element.statusInfo != null && element.statusInfo?.shopStatus != 1 && element.statusInfo?.isIdle == false) {
             setupShopInfoTicker(element.statusInfo, element.closedInfo)
         } else if (element.statusInfo != null && element.statusInfo?.isIdle == true) {
@@ -47,7 +49,7 @@ class ProductTickerInfoViewHolder(private val view: View, private val listener: 
         } else if (element.generalTickerInfo?.isNotEmpty() == true) {
             setupGeneralTicker(element.generalTickerInfo ?: listOf())
         } else {
-            hideTicker()
+            hideComponent()
         }
     }
 
@@ -112,9 +114,12 @@ class ProductTickerInfoViewHolder(private val view: View, private val listener: 
         }
     }
 
-    private fun hideTicker() = with(view) {
-        shop_ticker_info.hide()
-        general_ticker_info.hide()
+    private fun hideComponent() = with(view) {
+        view_ticker_container.layoutParams.height = 0
+    }
+
+    private fun showComponent() = with(view) {
+        view_ticker_container.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
     }
 
     private fun getStringRes(@StringRes value: Int): String = with(view) {

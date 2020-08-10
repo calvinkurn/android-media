@@ -282,8 +282,8 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
             }
 
             tickerInfoMap?.run {
-                statusInfo = it.shopInfo.statusInfo
-                closedInfo = it.shopInfo.closedInfo
+                statusInfo = if (it.shopInfo.isShopInfoNotEmpty()) it.shopInfo.statusInfo else null
+                closedInfo = if (it.shopInfo.isShopInfoNotEmpty()) it.shopInfo.closedInfo else null
             }
 
             shopCredibility?.run {

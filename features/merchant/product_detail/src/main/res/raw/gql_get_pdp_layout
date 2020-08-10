@@ -245,6 +245,7 @@ query pdpGetLayout($productID: String, $shopDomain:String, $productKey:String) {
               hideGimmick
               isCheckImei
               isUsingOvo
+              minOrder
             }
           }
         }

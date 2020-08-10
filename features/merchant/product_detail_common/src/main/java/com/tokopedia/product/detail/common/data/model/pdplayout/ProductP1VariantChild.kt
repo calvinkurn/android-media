@@ -168,5 +168,9 @@ data class ProductP1VariantCampaign(
 
         @SerializedName("isCheckImei")
         @Expose
-        val isCheckImei: Boolean? = null
+        val isCheckImei: Boolean? = null,
+
+        @SerializedName("minOrder")
+        @Expose
+        val minOrder: Int? = null
 )

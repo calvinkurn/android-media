@@ -248,6 +248,7 @@ query GetPdpGetData($productID: String, $pdpSession: String) {
       status
       error_message
       data{
+        product_id
         config_name
         available_buttons {
           text

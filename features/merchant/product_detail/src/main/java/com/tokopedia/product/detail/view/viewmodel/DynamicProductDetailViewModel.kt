@@ -19,7 +19,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
-import com.tokopedia.product.detail.common.data.model.carttype.CartRedirection
+import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.Media
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
@@ -154,10 +154,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         get() = _discussionMostHelpful
 
     var notifyMeAction: String = ProductDetailCommonConstant.VALUE_TEASER_ACTION_UNREGISTER
-    var selectedMultiOrigin: WarehouseInfo = WarehouseInfo()
-    var cartTypeData: CartRedirection? = null
     var getDynamicProductInfoP1: DynamicProductInfoP1? = null
-    var shopInfo: ShopInfo = ShopInfo()
     var tradeInParams: TradeInParams = TradeInParams()
     var enableCaching: Boolean = true
     var variantData: ProductVariantCommon? = null
@@ -173,7 +170,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     private var submitTicketSubscription: Subscription? = null
     private var updateCartCounterSubscription: Subscription? = null
 
-    fun hasShopAuthority(): Boolean = isShopOwner() || shopInfo.allowManage
+    fun hasShopAuthority(): Boolean = isShopOwner() || getShopInfo().allowManage
     fun isShopOwner(): Boolean = isUserSessionActive && userSessionInterface.shopId.toIntOrNull() == getDynamicProductInfoP1?.basic?.getShopId()
     val isUserSessionActive: Boolean
         get() = userSessionInterface.isLoggedIn
@@ -220,6 +217,14 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         discussionMostHelpfulUseCase.cancelJobs()
     }
 
+    fun getShopInfo(): ShopInfo {
+        return p2Data.value?.shopInfo ?: ShopInfo()
+    }
+
+    fun getCartTypeByProductId() : CartTypeData? {
+        return p2Data.value?.cartRedirection?.get(getDynamicProductInfoP1?.basic?.productID ?: "")
+    }
+
     fun updateLastAction(talkLastAction: DynamicProductDetailTalkLastAction) {
         this.talkLastAction = talkLastAction
     }
@@ -233,8 +238,15 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         getDynamicProductInfoP1 = data
     }
 
-    fun updateSelectedMultiOrigin(productId:String) {
-        selectedMultiOrigin = p2Data.value?.nearestWarehouseInfo?.get(productId) ?: WarehouseInfo()
+    /**
+     * If variant change, make sure this function is called after update product Id
+     */
+    fun getMultiOriginByProductId(): WarehouseInfo {
+        getDynamicProductInfoP1?.let {
+            return p2Data.value?.nearestWarehouseInfo?.get(it.basic.productID) ?: WarehouseInfo()
+        }
+
+        return WarehouseInfo()
     }
 
     fun processVariant(data: ProductVariantCommon, mapOfSelectedVariant: MutableMap<String, Int>?) {
@@ -404,8 +416,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             val p2OtherDeffered: Deferred<ProductInfoP2Other> = getProductInfoP2OtherAsync(it.basic.getProductId(), it.basic.getShopId())
 
             _p2Data.value = p2DataDeffered.await().also { value ->
-                shopInfo = value.shopInfo
-                updateSelectedMultiOrigin(it.basic.productID)
                 updateTradeinParams(value.validateTradeIn)
             }
 
@@ -419,8 +429,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
     private suspend fun getProductInfoP3(shopDomain: String?, productInfo: DynamicProductInfoP1): ProductInfoP3? {
         val p2ShopValue = _p2Data.value
-        val domain = shopDomain ?: p2ShopValue?.shopInfo?.shopCore?.domain
-        val origin = if (selectedMultiOrigin.isFulfillment) selectedMultiOrigin.getOrigin() else null
+        val domain = shopDomain ?: getShopInfo().shopCore.domain
+        val origin = if (getMultiOriginByProductId().isFulfillment) getMultiOriginByProductId().getOrigin() else null
 
         return getProductInfoP3(productInfo.basic.getWeightUnit(), domain, origin, productInfo.shouldShowCod)
     }

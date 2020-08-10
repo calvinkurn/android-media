@@ -1,7 +1,7 @@
 package com.tokopedia.product.detail.data.model
 
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
-import com.tokopedia.product.detail.common.data.model.carttype.CartRedirection
+import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.data.model.financing.FtInstallmentCalculationDataResponse
 import com.tokopedia.product.detail.data.model.financing.PDPInstallmentRecommendationData
 import com.tokopedia.product.detail.data.model.purchaseprotection.ProductPurchaseProtectionInfo
@@ -26,7 +26,7 @@ data class ProductInfoP2UiData(
         var shopCommitment: ShopCommitment = ShopCommitment(),
         var productPurchaseProtectionInfo: ProductPurchaseProtectionInfo = ProductPurchaseProtectionInfo(),
         var validateTradeIn: ValidateTradeIn = ValidateTradeIn(),
-        var cartRedirection: CartRedirection = CartRedirection(),
+        var cartRedirection: Map<String, CartTypeData> = mapOf(),
         var nearestWarehouseInfo: Map<String,WarehouseInfo> = mapOf(),
         var upcomingCampaigns: Map<String, ProductUpcomingData> = mapOf(),
         var vouchers: List<MerchantVoucherViewModel> = listOf(),
