@@ -69,7 +69,7 @@ class OrderSummaryPageActivityTest {
     }
 
     @Test
-    fun test() {
+    fun happyFlow_DirectCheckout() {
         activityRule.launchActivity(null)
         intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
 
@@ -98,4 +98,56 @@ class OrderSummaryPageActivityTest {
 
         assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME), hasAllSuccess())
     }
+
+    @Test
+    fun happyFlow_ChangeCourier() {
+        activityRule.launchActivity(null)
+        intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
+
+        onView(withId(R.id.ticker_shipping_promo)).check(matches(isDisplayed()))
+        onView(withId(R.id.tv_shipping_name)).check(matches(withText("Pengiriman Reguler")))
+        onView(withId(R.id.tv_shipping_duration)).check(matches(withText("Durasi 2-4 hari - Kurir Rekomendasi")))
+        onView(withId(R.id.tv_shipping_price)).check(matches(withText("Rp15.000")))
+
+        onView(withId(R.id.tv_shipping_price)).perform(click())
+        onView(withText("AnterAja")).perform(click())
+
+        onView(withId(R.id.nested_scroll_view)).perform(swipeUp())
+        onView(withId(R.id.tv_shipping_price)).check(matches(withText("Rp16.000")))
+        onView(withId(R.id.tv_total_payment_value)).check(matches(withText("Rp117.000")))
+        onView(withId(R.id.btn_pay)).check(matches(withText("Bayar")))
+        onView(withId(R.id.btn_pay)).perform(click())
+
+        val intents = Intents.getIntents()
+        val paymentPassData = intents.first().getParcelableExtra<PaymentPassData>(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA)!!
+        assertEquals("https://www.tokopedia.com/payment", paymentPassData.redirectUrl)
+        assertEquals("transaction_id=123", paymentPassData.queryString)
+        assertEquals("POST", paymentPassData.method)
+    }
+
+//    @Test
+//    fun happyFlow_AddQuantity() {
+//        activityRule.launchActivity(null)
+//        intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
+//
+//        onView(withId(R.id.ticker_shipping_promo)).check(matches(isDisplayed()))
+//        onView(withId(R.id.tv_shipping_name)).check(matches(withText("Pengiriman Reguler")))
+//        onView(withId(R.id.tv_shipping_duration)).check(matches(withText("Durasi 2-4 hari - Kurir Rekomendasi")))
+//        onView(withId(R.id.tv_shipping_price)).check(matches(withText("Rp15.000")))
+//
+//        onView(withId(R.id.tv_shipping_price)).perform(click())
+//        onView(withText("AnterAja")).perform(click())
+//
+//        onView(withId(R.id.nested_scroll_view)).perform(swipeUp())
+//        onView(withId(R.id.tv_shipping_price)).check(matches(withText("Rp16.000")))
+//        onView(withId(R.id.tv_total_payment_value)).check(matches(withText("Rp117.000")))
+//        onView(withId(R.id.btn_pay)).check(matches(withText("Bayar")))
+//        onView(withId(R.id.btn_pay)).perform(click())
+//
+//        val intents = Intents.getIntents()
+//        val paymentPassData = intents.first().getParcelableExtra<PaymentPassData>(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA)!!
+//        assertEquals("https://www.tokopedia.com/payment", paymentPassData.redirectUrl)
+//        assertEquals("transaction_id=123", paymentPassData.queryString)
+//        assertEquals("POST", paymentPassData.method)
+//    }
 }

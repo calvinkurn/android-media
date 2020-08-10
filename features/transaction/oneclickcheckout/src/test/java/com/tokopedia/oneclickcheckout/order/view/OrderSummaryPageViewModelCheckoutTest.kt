@@ -161,6 +161,62 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
     }
 
     @Test
+    fun `Checkout Success Mode 0`() {
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = ButtonBayarState.NORMAL, isButtonChoosePayment = false)
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        every { updateCartOccUseCase.execute(any(), any(), any()) } answers {
+            (secondArg() as ((UpdateCartOccGqlResponse) -> Unit)).invoke(UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc())))
+        }
+        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel())
+        val response = CheckoutOccGqlResponse(CheckoutOccResponse())
+        every {
+            checkoutOccUseCase.execute(match {
+                // validate mode
+                true
+            }, any(), any())
+        } answers {
+            (secondArg() as ((CheckoutOccGqlResponse) -> Unit)).invoke(CheckoutOccGqlResponse(CheckoutOccResponse(status = STATUS_OK, data = Data(success = 1, paymentParameter = PaymentParameter(redirectParam = RedirectParam(url = "testurl"))))))
+        }
+
+        var isOnSuccessCalled = false
+        orderSummaryPageViewModel.finalUpdate({
+            isOnSuccessCalled = true
+        }, false)
+
+        assertEquals(true, isOnSuccessCalled)
+        verify(exactly = 1) { orderSummaryAnalytics.eventClickBayarSuccess(any(), any(), any()) }
+    }
+
+    @Test
+    fun `Checkout Success Mode 1`() {
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = ButtonBayarState.NORMAL, isButtonChoosePayment = true)
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        every { updateCartOccUseCase.execute(any(), any(), any()) } answers {
+            (secondArg() as ((UpdateCartOccGqlResponse) -> Unit)).invoke(UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc())))
+        }
+        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel())
+        val response = CheckoutOccGqlResponse(CheckoutOccResponse())
+        every {
+            checkoutOccUseCase.execute(match {
+                // validate mode
+                true
+            }, any(), any())
+        } answers {
+            (secondArg() as ((CheckoutOccGqlResponse) -> Unit)).invoke(CheckoutOccGqlResponse(CheckoutOccResponse(status = STATUS_OK, data = Data(success = 1, paymentParameter = PaymentParameter(redirectParam = RedirectParam(url = "testurl"))))))
+        }
+
+        var isOnSuccessCalled = false
+        orderSummaryPageViewModel.finalUpdate({
+            isOnSuccessCalled = true
+        }, false)
+
+        assertEquals(true, isOnSuccessCalled)
+        verify(exactly = 1) { orderSummaryAnalytics.eventClickBayarSuccess(any(), any(), any()) }
+    }
+
+    @Test
     fun `Checkout Success Using Promos`() {
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = ButtonBayarState.NORMAL)
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
@@ -401,59 +457,5 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         }, false)
 
         assertEquals(OccGlobalEvent.Error(response), orderSummaryPageViewModel.globalEvent.value)
-    }
-
-    @Test
-    fun `Checkout Mode 0`() {
-        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = ButtonBayarState.NORMAL, isButtonChoosePayment = true)
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment
-        every { updateCartOccUseCase.execute(any(), any(), any()) } answers {
-            (secondArg() as ((UpdateCartOccGqlResponse) -> Unit)).invoke(UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc())))
-        }
-        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel())
-        val response = CheckoutOccGqlResponse(CheckoutOccResponse())
-        every {
-            checkoutOccUseCase.execute(match {
-                // validate mode
-                true
-            }, any(), any())
-        } answers {
-            (secondArg() as ((CheckoutOccGqlResponse) -> Unit)).invoke(CheckoutOccGqlResponse(CheckoutOccResponse(status = STATUS_OK, data = Data(success = 1, paymentParameter = PaymentParameter(redirectParam = RedirectParam(url = "testurl"))))))
-        }
-
-        var isOnSuccessCalled = false
-        orderSummaryPageViewModel.finalUpdate({
-            isOnSuccessCalled = true
-        }, false)
-
-        assertEquals(true, isOnSuccessCalled)
-    }
-
-    @Test
-    fun `Checkout Mode 1`() {
-        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = ButtonBayarState.NORMAL, isButtonChoosePayment = false)
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment
-        every { updateCartOccUseCase.execute(any(), any(), any()) } answers {
-            (secondArg() as ((UpdateCartOccGqlResponse) -> Unit)).invoke(UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc())))
-        }
-        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel())
-        val response = CheckoutOccGqlResponse(CheckoutOccResponse())
-        every {
-            checkoutOccUseCase.execute(match {
-                // validate mode
-                true
-            }, any(), any())
-        } answers {
-            (secondArg() as ((CheckoutOccGqlResponse) -> Unit)).invoke(CheckoutOccGqlResponse(CheckoutOccResponse(status = STATUS_OK, data = Data(success = 1, paymentParameter = PaymentParameter(redirectParam = RedirectParam(url = "testurl"))))))
-        }
-
-        var isOnSuccessCalled = false
-        orderSummaryPageViewModel.finalUpdate({
-            isOnSuccessCalled = true
-        }, false)
-
-        assertEquals(true, isOnSuccessCalled)
     }
 }
