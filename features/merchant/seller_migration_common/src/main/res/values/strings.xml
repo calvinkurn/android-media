@@ -148,5 +148,16 @@
     <string name="seller_migration_feed_bottom_sheet_title">Fitur Post Feed akan dialihkan ke aplikasi Tokopedia Seller</string>
     <string name="seller_migration_feed_bottom_sheet_desc">Kini, posting informasi produk dan kabar terbaru untuk pelanggan setia tokomu jadi semakin mudah dengan aplikasi Tokopedia Seller.</string>
 
+    <!--    modal toko-->
+    <string name="seller_migration_modal_toko_bottom_sheet_title">Modal Toko akan dialihkan ke Layanan Keuangan di aplikasi Tokopedia Seller</string>
+    <string name="seller_migration_modal_toko_bottom_sheet_desc">Tarik dana dengan limit hingga Rp300 juta untuk kembangkan bisnismu. Nikmati keuntungan pakai Modal Toko:</string>
+    <string name="seller_migration_modal_toko_bottom_sheet_item_active"><b>1.</b> Aktifkan Modal Toko hanya dengan upload KTP.</string>
+    <string name="seller_migration_modal_toko_bottom_sheet_item_withdraw"><b>2.</b> Tarik dana hingga ratusan juta kapan saja.</string>
+    <string name="seller_migration_modal_toko_bottom_sheet_item_process"><b>3.</b> Proses cepat &amp; dapat ditarik melalui rekening. </string>
 
+    <string name="seller_migration_saldo_prioritas_bottom_sheet_title">Saldo Prioritas akan dialihkan ke Layanan Keuangan di aplikasi Tokopedia Seller</string>
+    <string name="seller_migration_saldo_prioritas_bottom_sheet_desc">Terima hasil penjualanmu lebih cepat tanpa tunggu konfirmasi pembeli. Nikmati keuntungan pakai Saldo Prioritas:</string>
+    <string name="seller_migration_saldo_prioritas_bottom_sheet_item_active"><b>1.</b> Proses aktivasi cepat maks. 1 hari kerja.</string>
+    <string name="seller_migration_saldo_prioritas_bottom_sheet_item_withdraw"><b>2.</b> Hasil penjualan cair setelah kamu input resi.</string>
+    <string name="seller_migration_saldo_prioritas_bottom_sheet_item_process"><b>3.</b> Pengembalian dana otomatis setelah pesanan selesai.</string>
 </resources>
