@@ -5,21 +5,22 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.preference.edit.data.payment.ListingParam
 import com.tokopedia.oneclickcheckout.preference.edit.data.payment.PaymentListingParamGqlResponse
+import com.tokopedia.oneclickcheckout.preference.edit.data.payment.PaymentListingParamRequest
 import javax.inject.Inject
 
 interface GetPaymentListingParamUseCase {
-    fun execute(merchantCode: String, profileCode: String, callbackUrl: String, addressId: String, onSuccess: (ListingParam) -> Unit, onError: (Throwable) -> Unit)
+    fun execute(param: PaymentListingParamRequest, onSuccess: (ListingParam) -> Unit, onError: (Throwable) -> Unit)
 }
 
-class GetPaymentListingParamUseCaseImpl @Inject constructor(private val graphqlUseCase: GraphqlUseCase<PaymentListingParamGqlResponse>): GetPaymentListingParamUseCase {
+class GetPaymentListingParamUseCaseImpl @Inject constructor(private val graphqlUseCase: GraphqlUseCase<PaymentListingParamGqlResponse>) : GetPaymentListingParamUseCase {
 
-    override fun execute(merchantCode: String, profileCode: String, callbackUrl: String, addressId: String, onSuccess: (ListingParam) -> Unit, onError: (Throwable) -> Unit) {
+    override fun execute(param: PaymentListingParamRequest, onSuccess: (ListingParam) -> Unit, onError: (Throwable) -> Unit) {
         graphqlUseCase.setGraphqlQuery(QUERY)
         graphqlUseCase.setRequestParams(mapOf(
-                PARAM_MERCHANT_CODE to merchantCode,
-                PARAM_PROFILE_CODE to profileCode,
-                PARAM_CALLBACK_URL to callbackUrl,
-                PARAM_ADDRESS_ID to addressId
+                PARAM_MERCHANT_CODE to param.merchantCode,
+                PARAM_PROFILE_CODE to param.profileCode,
+                PARAM_CALLBACK_URL to param.callbackUrl,
+                PARAM_ADDRESS_ID to param.addressId
         ))
         graphqlUseCase.setTypeClass(PaymentListingParamGqlResponse::class.java)
         graphqlUseCase.execute({ response: PaymentListingParamGqlResponse ->
@@ -33,11 +34,11 @@ class GetPaymentListingParamUseCaseImpl @Inject constructor(private val graphqlU
         })
     }
 
-
     private val PARAM_MERCHANT_CODE = "merchantCode"
     private val PARAM_PROFILE_CODE = "profileCode"
     private val PARAM_CALLBACK_URL = "callbackURL"
     private val PARAM_ADDRESS_ID = "addressID"
+
     private val QUERY = """
         query getListingParams(
           ${"$"}merchantCode : String!

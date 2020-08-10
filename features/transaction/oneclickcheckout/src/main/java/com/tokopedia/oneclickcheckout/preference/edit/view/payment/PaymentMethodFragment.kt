@@ -31,6 +31,7 @@ import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
 import com.tokopedia.oneclickcheckout.preference.analytics.PreferenceListAnalytics
 import com.tokopedia.oneclickcheckout.preference.edit.data.payment.ListingParam
+import com.tokopedia.oneclickcheckout.preference.edit.data.payment.PaymentListingParamRequest
 import com.tokopedia.oneclickcheckout.preference.edit.di.PreferenceEditComponent
 import com.tokopedia.oneclickcheckout.preference.edit.view.PreferenceEditParent
 import com.tokopedia.oneclickcheckout.preference.edit.view.summary.PreferenceSummaryFragment
@@ -160,7 +161,7 @@ class PaymentMethodFragment : BaseDaggerFragment() {
             }
         })
 
-        viewModel.getPaymentListingParam(getMerchantCode(), getProfileCode(), getCallbackUrl(), getAddressId())
+        viewModel.getPaymentListingParam(generatePaymentListingRequest())
     }
 
     private fun loadWebView(param: ListingParam) {
@@ -181,16 +182,16 @@ class PaymentMethodFragment : BaseDaggerFragment() {
                 "customer_msisdn=${getUrlEncoded(param.customerMsisdn)}&" +
                 "address_id=${getUrlEncoded(param.addressId)}&" +
                 "callback_url=${getUrlEncoded(param.callbackUrl)}&" +
-                "signature=${getUrlEncoded(param.hash)}&" +
-                "version=${getUrlEncoded(GlobalConfig.VERSION_NAME)}"
+                "signature=${getUrlEncoded(param.hash)}"
+//                "version=${getUrlEncoded(GlobalConfig.VERSION_NAME)}"
     }
 
-    private fun getMerchantCode(): String {
-        return "tokopedia"
-    }
-
-    private fun getProfileCode(): String {
-        return "EXPRESS_SAVE"
+    private fun generatePaymentListingRequest(): PaymentListingParamRequest {
+        return PaymentListingParamRequest("tokopedia",
+                "EXPRESS_SAVE",
+                "${TokopediaUrl.getInstance().PAY}/v2/payment/register/listing",
+                getAddressId(),
+                GlobalConfig.VERSION_NAME)
     }
 
     private fun getAddressId(): String {
@@ -199,10 +200,6 @@ class PaymentMethodFragment : BaseDaggerFragment() {
             return parent.getAddressId().toString()
         }
         return ""
-    }
-
-    private fun getCallbackUrl(): String {
-        return "${TokopediaUrl.getInstance().PAY}/v2/payment/register/listing"
     }
 
     private fun getUrlEncoded(valueStr: String): String {
@@ -243,7 +240,7 @@ class PaymentMethodFragment : BaseDaggerFragment() {
     private fun showGlobalError(type: Int) {
         globalError?.setType(type)
         globalError?.setActionClickListener {
-            viewModel.getPaymentListingParam(getMerchantCode(), getProfileCode(), getCallbackUrl(), getAddressId())
+            viewModel.getPaymentListingParam(generatePaymentListingRequest())
         }
         globalError?.visible()
         webView?.gone()
@@ -277,6 +274,13 @@ class PaymentMethodFragment : BaseDaggerFragment() {
                 parent.addFragment(PreferenceSummaryFragment.newInstance())
             }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        webView = null
+        progressBar = null
+        globalError = null
     }
 
     inner class PaymentMethodWebViewClient : WebViewClient() {

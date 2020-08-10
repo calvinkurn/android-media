@@ -4,6 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.oneclickcheckout.common.view.model.Failure
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
 import com.tokopedia.oneclickcheckout.preference.edit.data.payment.ListingParam
+import com.tokopedia.oneclickcheckout.preference.edit.data.payment.PaymentListingParamRequest
 import com.tokopedia.oneclickcheckout.preference.edit.domain.payment.FakeGetPaymentListingParamUseCase
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -26,7 +27,7 @@ class PaymentMethodViewModelTest {
 
     @Test
     fun `Get Payment Listing Param Success`() {
-        viewModel.getPaymentListingParam("", "", "", "")
+        viewModel.getPaymentListingParam(PaymentListingParamRequest("","","","",""))
 
         assertEquals(OccState.Loading, viewModel.paymentListingParam.value)
 
@@ -38,7 +39,7 @@ class PaymentMethodViewModelTest {
 
     @Test
     fun `Get Payment Listing Param Failed`() {
-        viewModel.getPaymentListingParam("", "", "", "")
+        viewModel.getPaymentListingParam(PaymentListingParamRequest("","","","",""))
 
         assertEquals(OccState.Loading, viewModel.paymentListingParam.value)
 

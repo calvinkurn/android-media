@@ -377,4 +377,16 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
         globalErrorLayout?.visible()
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        searchAddress = null
+        addressListRv = null
+        swipeRefreshLayout = null
+        searchInputView = null
+        buttonSaveAddress = null
+        bottomLayout = null
+        emptyStateLayout = null
+        textSearchError = null
+        globalErrorLayout = null
+    }
 }

@@ -111,6 +111,25 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         removeObserver()
+        progressDialog?.dismiss()
+        swipeRefreshLayout = null
+        mainContent = null
+        buttonSavePreference = null
+        tvPreferenceName = null
+        tvAddressName = null
+        tvAddressReceiver = null
+        tvAddressDetail = null
+        buttonChangeAddress = null
+        tvShippingName = null
+        tvShippingDuration = null
+        buttonChangeDuration = null
+        ivPayment = null
+        tvPaymentName = null
+        tvPaymentDetail = null
+        buttonChangePayment = null
+        cbMainPreference = null
+        tvMainPreference = null
+        globalError = null
     }
 
     private fun removeObserver() {
@@ -447,5 +466,4 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
     override fun initInjector() {
         getComponent(PreferenceEditComponent::class.java).inject(this)
     }
-
 }

@@ -241,4 +241,14 @@ class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapt
         contentLayout?.gone()
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        swipeRefreshLayout = null
+        tickerInfo = null
+        shippingDurationList = null
+        buttonSaveDuration = null
+        bottomLayout = null
+        contentLayout = null
+        globalError = null
+    }
 }

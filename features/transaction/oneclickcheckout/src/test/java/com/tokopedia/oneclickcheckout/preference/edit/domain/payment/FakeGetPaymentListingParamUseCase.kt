@@ -1,6 +1,7 @@
 package com.tokopedia.oneclickcheckout.preference.edit.domain.payment
 
 import com.tokopedia.oneclickcheckout.preference.edit.data.payment.ListingParam
+import com.tokopedia.oneclickcheckout.preference.edit.data.payment.PaymentListingParamRequest
 
 class FakeGetPaymentListingParamUseCase: GetPaymentListingParamUseCase {
 
@@ -15,7 +16,7 @@ class FakeGetPaymentListingParamUseCase: GetPaymentListingParamUseCase {
         internalOnError?.invoke(throwable)
     }
 
-    override fun execute(merchantCode: String, profileCode: String, callbackUrl: String, addressId: String, onSuccess: (ListingParam) -> Unit, onError: (Throwable) -> Unit) {
+    override fun execute(param: PaymentListingParamRequest, onSuccess: (ListingParam) -> Unit, onError: (Throwable) -> Unit) {
         this.internalOnSuccess = onSuccess
         this.internalOnError = onError
     }
