@@ -162,6 +162,11 @@ internal open class BannerView(activity: Activity) {
             appLink: String,
             elementType: ElementType
     ) {
+        if (appLink.equals("close", true)) {
+            dismissInteractionTracking(data)
+            return
+        }
+
         listener?.let {
             it.onCMInAppLinkClick(appLink, data, elementType)
             it.onCMinAppDismiss(data)
