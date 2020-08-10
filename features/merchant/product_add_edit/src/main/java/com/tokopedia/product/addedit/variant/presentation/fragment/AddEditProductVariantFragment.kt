@@ -163,6 +163,7 @@ class AddEditProductVariantFragment :
         recyclerViewVariantType.adapter = variantTypeAdapter
         recyclerViewVariantValueLevel1.adapter = variantValueAdapterLevel1
         recyclerViewVariantValueLevel2.adapter = variantValueAdapterLevel2
+        recyclerViewVariantPhoto.addItemDecoration(RecyclerViewItemDecoration(requireContext()))
         recyclerViewVariantPhoto.adapter = variantPhotoAdapter
         setRecyclerViewToFlex(recyclerViewVariantType)
         setRecyclerViewToFlex(recyclerViewVariantValueLevel1)
