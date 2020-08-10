@@ -116,6 +116,8 @@
     <string name="review_create_hide_name">Sembunyikan namamu</string>
     <string name="review_create_bottom_sheet_title">Kasih tau alasannya</string>
     <string name="review_create_empty_photo">Tambah foto</string>
+    <string name="review_create_dialog_title">Yakin nggak jadi tulis ulasan?</string>
+    <string name="review_create_dialog_body">Tinggal sedikit lagi, lho. Ulasanmu tidak tersimpan jika kamu keluar halaman ini.</string>
 
     <string name="review_date">• %s</string>
     <string name="review_refresh">Refresh</string>

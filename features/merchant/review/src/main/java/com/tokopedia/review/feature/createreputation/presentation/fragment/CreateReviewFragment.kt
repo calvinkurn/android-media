@@ -211,7 +211,8 @@ class CreateReviewFragment : BaseDaggerFragment(),
                         productId.toString(10),
                         (position).toString(10),
                         true,
-                        isEditMode
+                        isEditMode,
+                        feedbackId.toString()
                 )
                 reviewClickAt = position
                 shouldPlayAnimation = true
@@ -247,7 +248,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
 
         createReviewAnonymousCheckbox.setOnClickListener {
             if (createReviewAnonymousCheckbox.isChecked) {
-                CreateReviewTracking.reviewOnAnonymousClickTracker(getOrderId(), productId.toString(10), isEditMode)
+                CreateReviewTracking.reviewOnAnonymousClickTracker(getOrderId(), productId.toString(10), isEditMode, feedbackId.toString())
             }
             clearFocusAndHideSoftInput(view)
         }
@@ -332,6 +333,14 @@ class CreateReviewFragment : BaseDaggerFragment(),
         createReviewScrollView.smoothScrollTo(0, createReviewDivider.bottom)
     }
 
+    override fun trackWhenHasFocus(isEmpty: Boolean) {
+        (createReviewViewModel.getReputationDataForm.value as? CoroutineSuccess<ProductRevGetForm>)?.let {
+            with(it.data.productrevGetForm) {
+                CreateReviewTracking.reviewOnMessageChangedTracker(orderID, productId.toString(), isEmpty, isEditMode, feedbackId.toString())
+            }
+        }
+    }
+
     override fun onReviewScoreClicked(score: Int) {
         (createReviewViewModel.getReputationDataForm.value as? CoroutineSuccess<ProductRevGetForm>)?.let {
             with(it.data.productrevGetForm) {
@@ -353,7 +362,8 @@ class CreateReviewFragment : BaseDaggerFragment(),
                             productId.toString(10),
                             true,
                             selectedImage.size.toString(10),
-                            isEditMode
+                            isEditMode,
+                            feedbackId.toString()
                     )
 
                     val imageListData = createReviewViewModel.getImageList(selectedImage)
@@ -391,7 +401,8 @@ class CreateReviewFragment : BaseDaggerFragment(),
                 reviewMessage.isEmpty(),
                 createReviewViewModel.getSelectedImagesUrl().size.toString(10),
                 createReviewAnonymousCheckbox.isChecked,
-                isEditMode
+                isEditMode,
+                feedbackId.toString()
         )
         createReviewViewModel.submitReview(reputationId, productId, shopId.toIntOrZero(),
                 createReviewScore.getScore(), reviewClickAt, reviewMessage, createReviewAnonymousCheckbox.isChecked)
@@ -704,7 +715,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
                 createReviewAnonymousCheckbox.isChecked = !createReviewAnonymousCheckbox.isChecked
             }
             if (createReviewAnonymousCheckbox.isChecked) {
-                CreateReviewTracking.reviewOnAnonymousClickTracker(getOrderId(), productId.toString(10), isEditMode)
+                CreateReviewTracking.reviewOnAnonymousClickTracker(getOrderId(), productId.toString(10), isEditMode, feedbackId.toString())
             }
         }
     }
@@ -730,15 +741,25 @@ class CreateReviewFragment : BaseDaggerFragment(),
     fun showCancelDialog() {
         context?.let {
             DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
-                setTitle(getString(R.string.review_edit_dialog_title))
-                setDescription(getString(R.string.review_edit_dialog_subtitle))
+                if(isEditMode) {
+                    setTitle(getString(R.string.review_edit_dialog_title))
+                    setDescription(getString(R.string.review_edit_dialog_subtitle))
+                } else {
+                    setTitle(getString(R.string.review_create_dialog_title))
+                    setDescription(getString(R.string.review_create_dialog_body))
+                }
                 setPrimaryCTAText(getString(R.string.review_edit_dialog_continue_writing))
                 setPrimaryCTAClickListener {
                     dismiss()
                 }
                 setSecondaryCTAText(getString(R.string.review_edit_dialog_exit))
                 setSecondaryCTAClickListener {
-                    dismiss()
+                    if (activity?.isTaskRoot == true) {
+                        val intent = RouteManager.getIntent(context, ApplinkConst.HOME)
+                        startActivity(intent)
+                    } else {
+                        dismiss()
+                    }
                     activity?.finish()
                 }
                 show()

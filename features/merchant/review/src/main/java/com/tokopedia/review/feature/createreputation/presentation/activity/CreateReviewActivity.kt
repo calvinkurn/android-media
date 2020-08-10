@@ -80,17 +80,7 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
     override fun onBackPressed() {
         createReviewFragment?.let {
             CreateReviewTracking.reviewOnCloseTracker(it.getOrderId(), productId)
-            if(it.getIsEditMode) {
-                it.showCancelDialog()
-            } else {
-                if (isTaskRoot) {
-                    val intent = RouteManager.getIntent(this, ApplinkConst.HOME)
-                    startActivity(intent)
-                } else {
-                    super.onBackPressed()
-                }
-                finish()
-            }
+            it.showCancelDialog()
         }
     }
 

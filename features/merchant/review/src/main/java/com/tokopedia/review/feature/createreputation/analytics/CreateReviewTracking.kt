@@ -9,13 +9,14 @@ object CreateReviewTracking {
     fun reviewOnAnonymousClickTracker(
             orderId: String,
             productId: String,
-            isEditReview: Boolean
+            isEditReview: Boolean,
+            feedbackId: String
     ) {
         TrackApp.getInstance().gtm.sendGeneralEvent(createEventMap(
                 "clickReview",
                 CreateReviewTrackingConstants.EVENT_CATEGORY + getEditMarker(isEditReview),
                 "click - anonim on ulasan produk",
-                "$orderId - $productId"
+                "${if(isEditReview) feedbackId else orderId} - $productId"
         ))
     }
 
@@ -36,7 +37,8 @@ object CreateReviewTracking {
             isMessageEmpty: Boolean,
             imageNum: String,
             isAnonymous: Boolean,
-            isEditReview: Boolean
+            isEditReview: Boolean,
+            feedbackId: String
     ) {
         val messageState = if (isMessageEmpty) "blank" else "filled"
         val anonymousState = if (isAnonymous) "true" else "false"
@@ -44,7 +46,7 @@ object CreateReviewTracking {
                 "clickReview",
                 CreateReviewTrackingConstants.EVENT_CATEGORY + getEditMarker(isEditReview),
                 "click - kirim ulasan produk",
-                "order_id : " + orderId +
+                "order_id : " + if(isEditReview) orderId else feedbackId +
                         " - product_id : " + productId +
                         " - star : " + ratingValue +
                         " - ulasan : " + messageState +
@@ -57,14 +59,15 @@ object CreateReviewTracking {
             orderId: String,
             productId: String,
             isMessageEmpty: Boolean,
-            isEditReview: Boolean
+            isEditReview: Boolean,
+            feedbackId: String
     ) {
         val messageState = if (isMessageEmpty) "blank" else "filled"
         TrackApp.getInstance().gtm.sendGeneralEvent(createEventMap(
                 "clickReview",
                 CreateReviewTrackingConstants.EVENT_CATEGORY + getEditMarker(isEditReview),
                 "click - ulasan product description",
-                "$orderId - $productId - $messageState"
+                "${if(isEditReview) feedbackId else orderId} - $productId - $messageState"
         ))
     }
 
@@ -91,14 +94,15 @@ object CreateReviewTracking {
             productId: String,
             isSuccessful: Boolean,
             imageNum: String,
-            isEditReview: Boolean
+            isEditReview: Boolean,
+            feedbackId: String
     ) {
         val successState = if (isSuccessful) "success" else "unsuccessful"
         TrackApp.getInstance().gtm.sendGeneralEvent(createEventMap(
                 "clickReview",
                 CreateReviewTrackingConstants.EVENT_CATEGORY + getEditMarker(isEditReview),
                 "click - upload gambar produk",
-                "$orderId - $productId - $successState - $imageNum"
+                "${if(isEditReview) orderId else feedbackId} - $productId - $successState - $imageNum"
         ))
     }
 
@@ -107,14 +111,15 @@ object CreateReviewTracking {
             productId: String,
             ratingValue: String,
             isSuccessful: Boolean,
-            isEditReview: Boolean
+            isEditReview: Boolean,
+            feedbackId: String
     ) {
         val successState = if (isSuccessful) "success" else "unsuccessful"
         TrackApp.getInstance().gtm.sendGeneralEvent(createEventMap(
                 "clickReview",
                 "product review detail page" + getEditMarker(isEditReview),
                 "click - product star rating - $ratingValue",
-                "$orderId - $productId - $successState"
+                "${if(isEditReview) feedbackId else orderId} - $productId - $successState"
         ))
     }
 

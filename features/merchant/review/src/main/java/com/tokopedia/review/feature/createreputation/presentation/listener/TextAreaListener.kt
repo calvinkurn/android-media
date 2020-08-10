@@ -5,4 +5,5 @@ interface TextAreaListener {
     fun onCollapseButtonClicked(text: String)
     fun onDismissBottomSheet(text: String)
     fun scrollToShowTextArea()
+    fun trackWhenHasFocus(isEmpty: Boolean)
 }
