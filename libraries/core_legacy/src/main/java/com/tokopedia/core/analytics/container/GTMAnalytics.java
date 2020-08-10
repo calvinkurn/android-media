@@ -1,5 +1,6 @@
 package com.tokopedia.core.analytics.container;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -35,6 +36,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Callable;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -237,29 +239,33 @@ public class GTMAnalytics extends ContextAnalytics {
         }
         // https://tokopedia.atlassian.net/browse/AN-19138
 
-        // V4
-        clearEnhanceEcommerce();
-        pushGeneralEcommerce(clone(value));
+        Observable.just(value)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .map(it -> {
+                    // V4
+                    clearEnhanceEcommerce();
+                    pushGeneralEcommerce(clone(value));
 
-        // V5
-        try {
-
-            String keyEvent = keyEvent(clone(value));
-
-            // prevent sending null keyevent
-            if (keyEvent == null)
-                return;
-            pushEECommerceInternal(keyEvent, factoryBundle(bruteForceCastToString(value.get("event")), clone(value)));
-        } catch (Exception e) {
-            StringBuilder stacktrace = new StringBuilder();
-            for (StackTraceElement ste : Thread.currentThread().getStackTrace()) {
-                stacktrace.append(String.format("%s\n", ste.toString()));
-            }
-            GtmLogger.getInstance(context).saveError(stacktrace.toString());
-            if (e != null && !TextUtils.isEmpty(e.getMessage())) {
-                Timber.e("P2#GTM_ANALYTIC_ERROR#%s %s", e.getMessage(), stacktrace.toString());
-            }
-        }
+                    // V5
+                    try {
+                        String keyEvent = keyEvent(clone(value));
+                        // prevent sending null keyevent
+                        if (keyEvent == null) return false;
+                        pushEECommerceInternal(keyEvent, factoryBundle(bruteForceCastToString(value.get("event")), clone(value)));
+                    } catch (Exception e) {
+                        StringBuilder stacktrace = new StringBuilder();
+                        for (StackTraceElement ste : Thread.currentThread().getStackTrace()) {
+                            stacktrace.append(String.format("%s\n", ste.toString()));
+                        }
+                        GtmLogger.getInstance(context).saveError(stacktrace.toString());
+                        if (!TextUtils.isEmpty(e.getMessage())) {
+                            Timber.e("P2#GTM_ANALYTIC_ERROR#%s %s", e.getMessage(), stacktrace.toString());
+                        }
+                    }
+                    return true;
+                })
+                .subscribe(getDefaultSubscriber());
     }
 
     public Bundle addWrapperValue(Bundle bundle) {
@@ -961,7 +967,7 @@ public class GTMAnalytics extends ContextAnalytics {
     }
 
     public void sendCampaign(Map<String, Object> param) {
-        if(!TrackingUtils.isValidCampaign(param)) return;
+        if (!TrackingUtils.isValidCampaign(param)) return;
 
         Bundle bundle = new Bundle();
         String afUniqueId = getAfUniqueId(context);
@@ -987,37 +993,44 @@ public class GTMAnalytics extends ContextAnalytics {
     }
 
     public void pushGeneralGtmV5Internal(Map<String, Object> params) {
-        pushGeneral(params);
+        Observable.just(params)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .map(it -> {
+                    pushGeneral(params);
 
-        if (TextUtils.isEmpty((String) params.get(KEY_EVENT)))
-            return;
+                    if (TextUtils.isEmpty((String) params.get(KEY_EVENT)))
+                        return false;
 
-        Bundle bundle = new Bundle();
-        bundle.putString(KEY_CATEGORY, params.get(KEY_CATEGORY) + "");
-        bundle.putString(KEY_ACTION, params.get(KEY_ACTION) + "");
-        bundle.putString(KEY_LABEL, params.get(KEY_LABEL) + "");
-        bundle.putString(KEY_EVENT, params.get(KEY_EVENT) + "");
+                    Bundle bundle = new Bundle();
+                    bundle.putString(KEY_CATEGORY, params.get(KEY_CATEGORY) + "");
+                    bundle.putString(KEY_ACTION, params.get(KEY_ACTION) + "");
+                    bundle.putString(KEY_LABEL, params.get(KEY_LABEL) + "");
+                    bundle.putString(KEY_EVENT, params.get(KEY_EVENT) + "");
 
-        for (Map.Entry<String, Object> entry : params.entrySet()) {
-            if (!Arrays.asList(GENERAL_EVENT_KEYS).contains(entry.getKey()))
-                bundle.putString(entry.getKey(), bruteForceCastToString(entry.getValue()));
-        }
+                    for (Map.Entry<String, Object> entry : params.entrySet()) {
+                        if (!Arrays.asList(GENERAL_EVENT_KEYS).contains(entry.getKey()))
+                            bundle.putString(entry.getKey(), bruteForceCastToString(entry.getValue()));
+                    }
 
-
-        pushEventV5(params.get(KEY_EVENT) + "", wrapWithSessionIris(bundle), context);
+                    pushEventV5(params.get(KEY_EVENT) + "", wrapWithSessionIris(bundle), context);
+                    return true;
+                })
+                .subscribe(getDefaultSubscriber());
     }
 
-    public Bundle wrapWithSessionIris(Bundle bundle){
+    public Bundle wrapWithSessionIris(Bundle bundle) {
         // AN-18166
         // globally put sessionIris
         String sessionIris = bundle.getString(SESSION_IRIS);
-        if (TextUtils.isEmpty(sessionIris))  {
+        if (TextUtils.isEmpty(sessionIris)) {
             bundle.putString(SESSION_IRIS, iris.getSessionId());
         }
         return bundle;
         // end of globally put sessionIris
     }
 
+    @SuppressLint("MissingPermission")
     public void pushEventV5(String eventName, Bundle bundle, Context context) {
         try {
             if (!CommonUtils.checkStringNotNull(bundle.getString(SESSION_IRIS))) {
