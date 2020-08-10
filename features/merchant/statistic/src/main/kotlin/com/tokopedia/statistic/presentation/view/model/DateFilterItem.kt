@@ -1,4 +1,4 @@
-package com.tokopedia.statistic.presentation.model
+package com.tokopedia.statistic.presentation.view.model
 
 import android.content.Context
 import com.tokopedia.abstraction.base.view.adapter.Visitable

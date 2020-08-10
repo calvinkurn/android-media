@@ -28,7 +28,7 @@ import com.tokopedia.sellerhomecommon.utils.Utils
 import com.tokopedia.statistic.R
 import com.tokopedia.statistic.analytics.StatisticTracker
 import com.tokopedia.statistic.di.DaggerStatisticComponent
-import com.tokopedia.statistic.presentation.model.DateFilterItem
+import com.tokopedia.statistic.presentation.view.model.DateFilterItem
 import com.tokopedia.statistic.presentation.view.bottomsheet.DateFilterBottomSheet
 import com.tokopedia.statistic.presentation.view.viewhelper.StatisticLayoutManager
 import com.tokopedia.statistic.presentation.view.viewhelper.setOnTabSelectedListener

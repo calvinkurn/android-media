@@ -9,7 +9,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.statistic.R
-import com.tokopedia.statistic.presentation.model.DateFilterItem
+import com.tokopedia.statistic.presentation.view.model.DateFilterItem
 import com.tokopedia.statistic.presentation.view.adapter.DateFilterAdapter
 import com.tokopedia.statistic.presentation.view.adapter.factory.DateFilterAdapterFactoryImpl
 import com.tokopedia.unifycomponents.BottomSheetUnify

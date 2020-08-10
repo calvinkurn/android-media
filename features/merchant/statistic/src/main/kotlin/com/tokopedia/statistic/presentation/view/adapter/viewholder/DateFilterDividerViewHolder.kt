@@ -4,7 +4,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.statistic.R
-import com.tokopedia.statistic.presentation.model.DateFilterItem
+import com.tokopedia.statistic.presentation.view.model.DateFilterItem
 
 /**
  * Created By @ilhamsuaib on 17/07/20

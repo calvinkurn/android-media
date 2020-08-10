@@ -1,6 +1,6 @@
 package com.tokopedia.statistic.presentation.view.adapter.factory
 
-import com.tokopedia.statistic.presentation.model.DateFilterItem
+import com.tokopedia.statistic.presentation.view.model.DateFilterItem
 
 /**
  * Created By @ilhamsuaib on 15/06/20
