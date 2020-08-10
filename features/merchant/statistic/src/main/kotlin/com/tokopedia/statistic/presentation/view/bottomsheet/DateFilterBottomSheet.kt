@@ -123,16 +123,16 @@ class DateFilterBottomSheet : BottomSheetUnify(), DateFilterAdapterFactoryImpl.L
 
     private fun getDateFilterPerWeek(): DateFilterItem.Pick {
         val calendar: Calendar = Calendar.getInstance()
-        calendar.firstDayOfWeek = Calendar.MONDAY
-        calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY)
-        var firstDateOfWeek = calendar.time
-        val m7Day = TimeUnit.DAYS.toMillis(7)
-        val m6Day = TimeUnit.DAYS.toMillis(6)
-        val now = Calendar.getInstance()
-        if (now.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY) {
-            firstDateOfWeek = Date(firstDateOfWeek.time - m7Day)
+        with(calendar) {
+            firstDayOfWeek = Calendar.MONDAY
+            set(Calendar.DAY_OF_WEEK, Calendar.MONDAY)
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
         }
-        val lastDateOfWeek = Date(firstDateOfWeek.time + m6Day)
+        val firstDateOfWeek = calendar.time
+        val lastDateOfWeek = Date()
         val label = context?.getString(R.string.stc_per_week).orEmpty()
         return DateFilterItem.Pick(label, firstDateOfWeek, lastDateOfWeek, type = DateFilterItem.TYPE_PER_WEEK)
     }
