@@ -3,7 +3,6 @@ package com.tokopedia.sellerhome.view.navigator
 import android.content.Context
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentTransaction
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.SellerHomeRouter
 import com.tokopedia.sellerhome.common.FragmentType
@@ -95,7 +94,6 @@ class SellerHomeNavigator(
                             .commit()
                     }
                 }
-
                 setSelectedPage(type)
                 updateFragmentVisibilityHint(selectedPage)
             }
@@ -193,7 +191,7 @@ class SellerHomeNavigator(
         }
     }
 
-    private fun setupProductManagePage(page: PageFragment): Fragment? {
+    private fun setupProductManagePage(page: PageFragment) {
         val searchKeyword = page.keywordSearch
         val filterOptionEmptyStock = FilterOption.FilterByCondition.EmptyStockOnly.id
 
