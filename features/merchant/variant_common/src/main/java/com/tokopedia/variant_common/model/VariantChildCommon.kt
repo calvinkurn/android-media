@@ -49,6 +49,10 @@ data class VariantChildCommon(
         @Expose
         val campaign: Campaign? = null,
 
+        @SerializedName("campaignStatus")
+        @Expose
+        val campaignStatus: String = "",
+
         @SerializedName("isWishlist")
         @Expose
         val isWishlist: Boolean? = null,
@@ -272,5 +276,13 @@ data class VariantUpcoming(
 
         @SerializedName("notifyMe")
         @Expose
-        val notifyMe: Boolean? = false
+        val notifyMe: Boolean? = false,
+
+        @SerializedName("upcomingType")
+        @Expose
+        val upcomingType: String? = "",
+
+        @SerializedName("ribbonCopy")
+        @Expose
+        val ribbonCopy: String? = ""
 )

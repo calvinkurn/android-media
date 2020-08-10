@@ -135,7 +135,9 @@ object VariantMapper {
                 stock = newStock
         )
 
-        return DynamicProductInfoP1(basic, data, oldData.layoutName)
+        val newCampaignStatus = newData?.campaignStatus ?: ""
+
+        return DynamicProductInfoP1(basic, data, oldData.layoutName, newCampaignStatus)
     }
 
     fun updateMediaToCurrentP1Data(oldData: DynamicProductInfoP1?, media: MutableList<Media>): DynamicProductInfoP1 {

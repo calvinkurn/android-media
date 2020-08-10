@@ -8,7 +8,7 @@ query GetPdpGetData($productID: String, $pdpSession: String) {
     ppGetItemDetailPage{
       program{
         protectionAvailable
-        title
+        titlew
         subTitle
         titlePDP
         subTitlePDP

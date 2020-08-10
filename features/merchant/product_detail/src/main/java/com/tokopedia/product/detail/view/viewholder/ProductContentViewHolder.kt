@@ -34,7 +34,7 @@ class ProductContentViewHolder(private val view: View,
             view.addOnImpressionListener(element.impressHolder) {
                 listener.onImpressComponent(getComponentTrackData(element))
             }
-            header?.renderData(it)
+            header?.renderData(it, element.isUpcomingNplType(), element.upcomingNplData)
         }
 
         header?.updateWishlist(element.isWishlisted, listener.shouldShowWishlist())

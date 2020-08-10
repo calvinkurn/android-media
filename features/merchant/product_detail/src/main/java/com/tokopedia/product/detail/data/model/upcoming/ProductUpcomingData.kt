@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 /**
  * Created by Yehezkiel on 21/07/20
  */
-data class ProductUpcomingData (
+data class ProductUpcomingData(
         @SerializedName("campaignID")
         @Expose
         val campaignId: String? = "",
@@ -33,5 +33,13 @@ data class ProductUpcomingData (
 
         @SerializedName("productID")
         @Expose
-        val productId: String? = ""
+        val productId: String? = "",
+
+        @SerializedName("ribbonCopy")
+        @Expose
+        val ribbonCopy: String? = "",
+
+        @SerializedName("upcomingType")
+        @Expose
+        val upcomingType: String? = ""
 )

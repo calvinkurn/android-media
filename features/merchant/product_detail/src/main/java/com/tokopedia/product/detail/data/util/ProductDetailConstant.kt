@@ -46,9 +46,13 @@ object ProductDetailConstant {
     const val KEY_OCS_BUTTON = "ocs"
     const val KEY_OCC_BUTTON = "occ"
     const val KEY_OVO_DEALS = "ovo_deals"
+    const val KEY_CAMPAIGN_ID = "campaign_id"
+    const val KEY_CAMPAIGN_TYPE_ID = "campaign_type_id"
+    const val KEY_CAMPAIGN_STATUS= "campaign_status"
     const val KEY_CHAT = "chat"
     const val KEY_BYME = "byme"
     const val KEY_BUTTON_PRIMARY = "primary"
+    const val KEY_BUTTON_DISABLE = "disabled"
     const val KEY_BUTTON_SECONDARY = "secondary"
     const val DEFAULT_PAGE_NUMBER = 1
     const val DEFAULT_PAGE_NAME = "pdp_1,pdp_2,pdp_3,pdp_4"

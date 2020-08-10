@@ -1,15 +1,26 @@
 package com.tokopedia.product.detail.common.data.model.pdplayout
 
+
 data class DynamicProductInfoP1(
         val basic: BasicInfo = BasicInfo(),
         val data: ComponentData = ComponentData(),
         val layoutName: String = "",
-        val pdpSession:String = ""
+        val pdpSession:String = "",
+        val campaignStatus:String = ""
 ) {
 
     fun isProductVariant(): Boolean = data.variant.isVariant
 
     fun isProductActive(): Boolean = getFinalStock().toIntOrNull() ?: 0 > 0 && basic.isActive()
+
+    val isPreOrder: Boolean
+        get() = data.preOrder.isActive
+
+    val isUsingOvo: Boolean
+        get() = data.campaign.isUsingOvo
+
+    val isLeasing: Boolean
+        get() = basic.isLeasing
 
     val shopTypeString: String
         get() {

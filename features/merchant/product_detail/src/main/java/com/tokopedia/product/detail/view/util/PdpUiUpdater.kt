@@ -333,6 +333,19 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
     }
 
     fun updateNotifyMeUpcoming(productId:String, upcomingData: Map<String, ProductUpcomingData>?) {
+
+        basicContentMap?.run {
+            val selectedUpcoming = upcomingData?.get(productId)
+            upcomingNplData = UpcomingNplDataModel(selectedUpcoming?.upcomingType ?: "", selectedUpcoming?.ribbonCopy ?: "",
+            selectedUpcoming?.startDate ?: "")
+        }
+
+        snapShotMap?.run {
+            val selectedUpcoming = upcomingData?.get(productId)
+            upcomingNplData = UpcomingNplDataModel(selectedUpcoming?.upcomingType ?: "", selectedUpcoming?.ribbonCopy ?: "",
+                    selectedUpcoming?.startDate ?: "")
+        }
+
         notifyMeMap?.run {
             val selectedUpcoming = upcomingData?.get(productId)
             campaignID = selectedUpcoming?.campaignId ?: ""
