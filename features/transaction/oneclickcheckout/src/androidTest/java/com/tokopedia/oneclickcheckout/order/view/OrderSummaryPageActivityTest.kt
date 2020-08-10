@@ -12,8 +12,7 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.intent.rule.IntentsTestRule
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.analyticsdebugger.validator.core.getAnalyticsWithQuery
@@ -73,8 +72,22 @@ class OrderSummaryPageActivityTest {
     fun test() {
         activityRule.launchActivity(null)
         intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
-        onView(withId(R.id.tv_card_header)).check(matches(isDisplayed()))
+
+        onView(withId(R.id.tv_card_header)).check(matches(withText("Pilihan 1")))
+        onView(withId(R.id.tv_address_name)).check(matches(withText("Address 1")))
+        onView(withId(R.id.tv_address_receiver)).check(matches(withText(" - User 1 (1)")))
+        onView(withId(R.id.tv_address_detail)).check(matches(withText("Address Street 1, District 1, City 1, Province 1 1")))
+        onView(withId(R.id.lbl_main_preference)).check(matches(isDisplayed()))
+
+        onView(withId(R.id.ticker_shipping_promo)).check(matches(isDisplayed()))
+        onView(withId(R.id.tv_shipping_name)).check(matches(withText("Pengiriman Reguler")))
+        onView(withId(R.id.tv_shipping_duration)).check(matches(withText("Durasi 2-4 hari - Kurir Rekomendasi")))
+
+        onView(withId(R.id.tv_payment_name)).check(matches(withText("Payment 1")))
+
         onView(withId(R.id.nested_scroll_view)).perform(swipeUp())
+        onView(withId(R.id.tv_total_payment_value)).check(matches(withText("Rp116.000")))
+        onView(withId(R.id.btn_pay)).check(matches(withText("Bayar")))
         onView(withId(R.id.btn_pay)).perform(click())
 
         val intents = Intents.getIntents()

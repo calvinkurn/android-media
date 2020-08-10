@@ -66,7 +66,7 @@ const val GET_OCC_CART_DEFAULT_RESPONSE = """
                 },
                 "isWishlist": false,
                 "product_id": 15147773,
-                "product_name": "cpl konven",
+                "product_name": "Product1",
                 "product_price_fmt": "Rp100.000",
                 "product_price": 100000,
                 "parent_id": 0,
@@ -452,30 +452,30 @@ const val GET_OCC_CART_DEFAULT_RESPONSE = """
                 "link": "http://pref-ecs.tokopedia.com"
               }
             },
-            "profile_id": 384,
+            "profile_id": 1,
             "status": 2,
             "address": {
-              "address_id": 4678943,
-              "receiver_name": "erdepe",
-              "address_name": "Rumah",
-              "address_street": "bixb idbscwoxh, Setia Budi, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta, 12930",
-              "district_id": 2270,
-              "district_name": "Setiabudi",
-              "city_id": 175,
-              "city_name": "Jakarta Selatan",
-              "province_id": 13,
-              "province_name": "DKI Jakarta",
-              "phone": "6281905001712",
-              "longitude": "106.8325871",
-              "latitude": "-6.2195686",
-              "postal_code": "12930",
-              "geolocation": "-6.2195686,106.8325871"
+              "address_id": 1,
+              "receiver_name": "User 1",
+              "address_name": "Address 1",
+              "address_street": "Address Street 1",
+              "district_id": 1,
+              "district_name": "District 1",
+              "city_id": 1,
+              "city_name": "City 1",
+              "province_id": 1,
+              "province_name": "Province 1",
+              "phone": "1",
+              "longitude": "1",
+              "latitude": "1",
+              "postal_code": "1",
+              "geolocation": "1,1"
             },
             "payment": {
               "enable": 1,
               "active": 1,
-              "gateway_code": "BCAVA",
-              "gateway_name": "BCA Virtual Account",
+              "gateway_code": "PAYMENT1",
+              "gateway_name": "Payment 1",
               "image": "https://ecs7.tokopedia.net/img/toppay/payment-logo/icon-bca.png",
               "description": "",
               "url": "",
@@ -586,10 +586,10 @@ const val GET_OCC_CART_DEFAULT_RESPONSE = """
             }
           },
           "customer_data": {
-            "id": 5512940,
-            "name": "erdepe",
-            "email": "reza.pramitra@tokopedia.com",
-            "msisdn": "081380919101"
+            "id": 1,
+            "name": "User 1",
+            "email": "user1@tokopedia.com",
+            "msisdn": "1"
           },
           "payment_additional_data": {
             "merchant_code": "tokopedia",
