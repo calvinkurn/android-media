@@ -138,6 +138,7 @@ dependencies {
     implementation project(rootProject.ext.features.topchat)
     implementation project(rootProject.ext.features.otp)
     implementation project(rootProject.ext.features.userIdentification)
+    implementation project(rootProject.ext.features.additional_check)
 
     //Entertainment
     implementation project(rootProject.ext.features.orderhistory)
