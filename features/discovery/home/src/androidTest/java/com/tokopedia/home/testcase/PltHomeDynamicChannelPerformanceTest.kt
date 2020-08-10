@@ -5,7 +5,9 @@ import com.tokopedia.analytics.performance.util.PerformanceDataFileUtils.writePL
 import com.tokopedia.home.environment.InstrumentationHomeTestActivity
 import com.tokopedia.home.mock.HomeMockResponseConfig
 import com.tokopedia.test.application.TestRepeatRule
+import com.tokopedia.test.application.environment.interceptor.size.GqlNetworkAnalyzerInterceptor
 import com.tokopedia.test.application.util.setupGraphqlMockResponseWithCheck
+import com.tokopedia.test.application.util.setupTotalSizeInterceptor
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -24,6 +26,7 @@ class PltHomeDynamicChannelPerformanceTest {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
             setupGraphqlMockResponseWithCheck(HomeMockResponseConfig())
+            setupTotalSizeInterceptor(listOf("homeData"))
         }
     }
 
@@ -61,7 +64,9 @@ class PltHomeDynamicChannelPerformanceTest {
                     activityRule.activity,
                     tag,
                     performanceData,
-                    datasource)
+                    datasource,
+                    GqlNetworkAnalyzerInterceptor.getNetworkData()
+            )
         }
     }
 }
