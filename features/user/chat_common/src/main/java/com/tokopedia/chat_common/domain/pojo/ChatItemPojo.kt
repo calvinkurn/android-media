@@ -80,5 +80,5 @@ data class ChatItemPojo(
 
         @Expose
         @SerializedName("source")
-        val source: String = ""
+        val source: String? = ""
 )
