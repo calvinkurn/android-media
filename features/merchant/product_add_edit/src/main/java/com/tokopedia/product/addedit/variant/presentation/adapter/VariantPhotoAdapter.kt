@@ -72,5 +72,4 @@ class VariantPhotoAdapter(private val onItemClickedListener: OnItemClickListener
         onItemClickedListener.onItemClicked(position)
     }
 
-
 }
