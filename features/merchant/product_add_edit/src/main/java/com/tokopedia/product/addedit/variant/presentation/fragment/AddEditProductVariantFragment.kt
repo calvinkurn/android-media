@@ -29,6 +29,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.EXTRA_CACHE_MANAGER_ID
 import com.tokopedia.product.addedit.common.util.HorizontalItemDecoration
+import com.tokopedia.product.addedit.common.util.RecyclerViewItemDecoration
 import com.tokopedia.product.addedit.imagepicker.view.activity.SizechartPickerAddProductActivity
 import com.tokopedia.product.addedit.imagepicker.view.activity.SizechartPickerEditPhotoActivity
 import com.tokopedia.product.addedit.imagepicker.view.activity.VariantPhotoPickerActivity
@@ -554,7 +555,10 @@ class AddEditProductVariantFragment :
         // update photo section state
         if (variantId == COLOUR_VARIANT_TYPE_ID) {
             variantPhotoAdapter?.removeData(position)
-            if (variantPhotoAdapter?.getData()?.size == 0) variantPhotoLayout.hide()
+            if (variantPhotoAdapter?.getData()?.size == 0) {
+                variantPhotoLayout.hide()
+                variantPhotoAdapter?.clearImageData()
+            }
         }
 
         // update sizechart visibility based on variant selected type
