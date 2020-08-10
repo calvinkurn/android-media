@@ -132,6 +132,10 @@ data class SearchProductModel(
             @Expose
             val relatedKeyword: String = "",
 
+            @SerializedName("position")
+            @Expose
+            val position: Int = 0,
+
             @SerializedName("otherRelated")
             @Expose
             val otherRelatedList: List<OtherRelated> = listOf()
