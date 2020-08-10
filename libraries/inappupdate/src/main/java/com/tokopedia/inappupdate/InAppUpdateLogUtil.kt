@@ -16,8 +16,8 @@ object InAppUpdateLogUtil {
     private var LOG_UPDATE_STATUS_OK = "ok"
     private var LOG_UPDATE_STATUS_ERROR = "err"
 
-    fun logStatusCheck(context: Context, status: String, availableVersionCode: Int, updateAvailability: Int,
-                       updateAllowed: Boolean, clientVersionStalenessDays: Int, updatePriority:Int, totalBytesToDownload: Long) {
+    fun logStatusCheck(context: Context, status: String, availableVersionCode: Int?, updateAvailability: Int?,
+                       updateAllowed: Boolean?, clientVersionStalenessDays: Int?, updatePriority:Int?, totalBytesToDownload: Long?) {
         val messageBuilder = StringBuilder()
         messageBuilder.append(status)
         messageBuilder.append(";avail_ver_code=$availableVersionCode")
@@ -25,7 +25,7 @@ object InAppUpdateLogUtil {
         messageBuilder.append(";update_allowed=$updateAllowed")
         messageBuilder.append(";staleness_days=$clientVersionStalenessDays")
         messageBuilder.append(";update_prio=$updatePriority")
-        messageBuilder.append(";dl_size=${getSizeInMB(totalBytesToDownload)}")
+        messageBuilder.append(";dl_size=${getSizeInMB(totalBytesToDownload ?: 0)}")
         messageBuilder.append(";installer_pkg=${getInstallerPackageName(context)}")
         Timber.w("P1#IN_APP_UPDATE_CHECK#$messageBuilder")
     }
