@@ -48,7 +48,6 @@ class TravelDestinationCityRecommendationViewHolder(itemView: View, private val 
         } else {
             itemView.layout_content.hide()
             itemView.layout_shimmering.show()
-            onViewHolderBindListener.onCityRecommendationVHBind()
         }
     }
 

@@ -72,7 +72,6 @@ class TravelDestinationArticleViewHolder(itemView: View, private val onViewHolde
         } else {
             itemView.layout_content.hide()
             itemView.layout_shimmering.show()
-            onViewHolderBindListener.onCityArticleVHBind()
         }
     }
 
