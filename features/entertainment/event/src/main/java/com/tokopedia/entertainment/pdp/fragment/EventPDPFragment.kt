@@ -28,6 +28,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment
 import com.tokopedia.calendar.CalendarPickerView
 import com.tokopedia.calendar.Legend
 import com.tokopedia.entertainment.R
+import com.tokopedia.entertainment.common.util.EventQuery
+import com.tokopedia.entertainment.common.util.EventQuery.eventContentById
 import com.tokopedia.entertainment.pdp.activity.EventPDPActivity
 import com.tokopedia.entertainment.pdp.activity.EventPDPActivity.Companion.EXTRA_URL_PDP
 import com.tokopedia.entertainment.pdp.adapter.EventPDPFacilitiesBottomSheetAdapter
@@ -157,8 +159,8 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
 
     private fun requestData() {
         urlPDP?.let {
-            eventPDPViewModel.getDataProductDetail(GraphqlHelper.loadRawString(resources, R.raw.gql_query_event_product_detail_v3),
-                    GraphqlHelper.loadRawString(resources, R.raw.gql_query_event_content_by_id), it)
+            eventPDPViewModel.getDataProductDetail(EventQuery.eventPDPV3(),
+                    eventContentById(), it)
         }
 
     }

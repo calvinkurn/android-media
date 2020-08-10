@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.entertainment.R
+import com.tokopedia.entertainment.common.util.EventQuery.getEventSearchCategory
 import com.tokopedia.entertainment.search.activity.EventCategoryActivity
 import com.tokopedia.entertainment.search.adapter.viewholder.CategoryTextBubbleAdapter
 import com.tokopedia.entertainment.search.adapter.viewholder.EventGridAdapter
@@ -237,7 +238,7 @@ class EventCategoryFragment : BaseDaggerFragment() {
     }
 
     private fun getQueryCategory():String{
-        return GraphqlHelper.loadRawString(resources, R.raw.query_event_search_category)
+        return getEventSearchCategory()
     }
 
     override fun onDestroyView() {

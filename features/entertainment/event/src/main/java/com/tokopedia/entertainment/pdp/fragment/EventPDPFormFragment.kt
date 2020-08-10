@@ -14,6 +14,8 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.entertainment.R
+import com.tokopedia.entertainment.common.util.EventQuery
+import com.tokopedia.entertainment.common.util.EventQuery.eventContentById
 import com.tokopedia.entertainment.pdp.di.EventPDPComponent
 import com.tokopedia.entertainment.pdp.viewmodel.EventPDPFormViewModel
 import javax.inject.Inject
@@ -134,8 +136,8 @@ class EventPDPFormFragment : BaseDaggerFragment(){
             renderList(mDataIntent.toMutableList())
             showData()
         } else{
-            viewModel.getData(urlPDP, GraphqlHelper.loadRawString(resources, R.raw.gql_query_event_product_detail_v3),
-                    GraphqlHelper.loadRawString(resources, R.raw.gql_query_event_content_by_id))
+            viewModel.getData(urlPDP, EventQuery.eventPDPV3(),
+                    eventContentById())
         }
     }
 

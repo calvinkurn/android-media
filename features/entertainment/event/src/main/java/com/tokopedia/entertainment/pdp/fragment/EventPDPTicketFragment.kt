@@ -21,6 +21,9 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.calendar.CalendarPickerView
 import com.tokopedia.calendar.Legend
 import com.tokopedia.entertainment.R
+import com.tokopedia.entertainment.common.util.EventQuery
+import com.tokopedia.entertainment.common.util.EventQuery.eventContentById
+import com.tokopedia.entertainment.common.util.EventQuery.mutationVerifyV2
 import com.tokopedia.entertainment.pdp.activity.EventCheckoutActivity
 import com.tokopedia.entertainment.pdp.adapter.factory.PackageTypeFactory
 import com.tokopedia.entertainment.pdp.adapter.factory.PackageTypeFactoryImp
@@ -96,8 +99,8 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
     override fun getSwipeRefreshLayoutResourceId(): Int = R.id.swipe_refresh_layout
 
     override fun loadData(p0: Int) {
-        viewModel.getData(urlPDP, selectedDate, swipe_refresh_layout.isRefreshing, GraphqlHelper.loadRawString(resources, R.raw.gql_query_event_product_detail_v3),
-                GraphqlHelper.loadRawString(resources, R.raw.gql_query_event_content_by_id))
+        viewModel.getData(urlPDP, selectedDate, swipe_refresh_layout.isRefreshing, EventQuery.eventPDPV3(),
+                eventContentById())
     }
 
     override fun createAdapterInstance(): BaseListAdapter<EventPDPTicketModel, PackageTypeFactory> {
@@ -238,7 +241,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
             eventVerifyRequest.cartdata.metadata.quantity = getTotalQuantity(hashItemMap)
             eventPDPTracking.onClickPesanTiket(viewModel.categoryData,
                     PRODUCT_NAME, PRODUCT_ID, PRODUCT_PRICE, AMOUNT_TICKET,PACKAGES_ID)
-            viewModel.verify(GraphqlHelper.loadRawString(resources, R.raw.gql_mutation_event_verify_v2), eventVerifyRequest)
+            viewModel.verify(mutationVerifyV2(), eventVerifyRequest)
         }
     }
 

@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.entertainment.R
+import com.tokopedia.entertainment.common.util.EventQuery.eventQueryFullLocation
 import com.tokopedia.entertainment.search.adapter.SearchEventAdapter
 import com.tokopedia.entertainment.search.adapter.factory.SearchTypeFactoryImp
 import com.tokopedia.entertainment.search.di.EventSearchComponent
@@ -75,7 +76,7 @@ class EventLocationFragment : BaseDaggerFragment() {
     }
 
     private fun getLocationData(){
-        viewModel.getFullLocationData( GraphqlHelper.loadRawString(resources, R.raw.query_event_search_location_full))
+        viewModel.getFullLocationData(eventQueryFullLocation())
     }
 
     companion object{
