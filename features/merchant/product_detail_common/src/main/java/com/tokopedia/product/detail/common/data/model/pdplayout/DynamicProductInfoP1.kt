@@ -5,8 +5,7 @@ data class DynamicProductInfoP1(
         val basic: BasicInfo = BasicInfo(),
         val data: ComponentData = ComponentData(),
         val layoutName: String = "",
-        val pdpSession:String = "",
-        val campaignStatus:String = ""
+        val pdpSession:String = ""
 ) {
 
     fun isProductVariant(): Boolean = data.variant.isVariant

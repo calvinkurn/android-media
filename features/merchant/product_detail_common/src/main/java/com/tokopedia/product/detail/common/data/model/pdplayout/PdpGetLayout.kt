@@ -11,12 +11,5 @@ data class PdpGetLayout(
         @SerializedName("name")
         val generalName: String = "",
         @SerializedName("pdpSession")
-        val pdpSession: String = "",
-        @SerializedName("temporaryInfo")
-        val temporaryInfo: TemporaryInfo = TemporaryInfo()
-)
-
-data class TemporaryInfo(
-        @SerializedName("campaignStatus")
-        val campaignStatus: String = ""
+        val pdpSession: String = ""
 )

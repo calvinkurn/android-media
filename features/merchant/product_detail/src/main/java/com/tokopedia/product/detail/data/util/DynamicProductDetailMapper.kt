@@ -112,7 +112,7 @@ object DynamicProductDetailMapper {
         val newDataWithMedia = contentData?.copy(media = mediaData.media, videos = mediaData.videos) ?: ComponentData()
         assignIdToMedia(newDataWithMedia.media)
 
-        return DynamicProductInfoP1(layoutName = data.generalName, basic = data.basicInfo, data = newDataWithMedia, pdpSession = data.pdpSession, campaignStatus = data.temporaryInfo.campaignStatus)
+        return DynamicProductInfoP1(layoutName = data.generalName, basic = data.basicInfo, data = newDataWithMedia, pdpSession = data.pdpSession)
     }
 
     private fun assignIdToMedia(listOfMedia: List<Media>){
@@ -161,10 +161,9 @@ object DynamicProductDetailMapper {
                     stockSoldPercentage = newCampaignData?.stockSoldPercentage, isUsingOvo = newCampaignData?.isUsingOvo
                     ?: false, isCheckImei = newCampaignData?.isCheckImei, minOrder = newCampaignData?.minOrder)
 
-            //TODO cek campaign status
             VariantChildCommon(productId = it.productId.toIntOrZero(), price = it.price, priceFmt = it.priceFmt, sku = it.sku, stock = stock,
                     optionIds = it.optionIds, name = it.name, url = it.url, picture = Picture(original = it.picture?.original, thumbnail = it.picture?.thumbnail),
-                    campaign = campaign, isCod = it.isCod, campaignStatus = it.campaignStatus ?: "")
+                    campaign = campaign, isCod = it.isCod)
         }
 
         return ProductVariantCommon(

@@ -49,10 +49,6 @@ data class VariantChildCommon(
         @Expose
         val campaign: Campaign? = null,
 
-        @SerializedName("campaignStatus")
-        @Expose
-        val campaignStatus: String = "",
-
         @SerializedName("isWishlist")
         @Expose
         val isWishlist: Boolean? = null,

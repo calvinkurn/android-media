@@ -1,7 +1,6 @@
 package com.tokopedia.product.detail.data.model.datamodel
 
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.product.detail.common.data.model.constant.ProductCampaignStatusTypeDef
 import com.tokopedia.product.detail.common.data.model.constant.ProductUpcomingTypeDef
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
@@ -28,7 +27,7 @@ data class ProductSnapshotDataModel(
     override fun type(): String = type
 
     fun isUpcomingNplType() : Boolean  {
-        return upcomingNplData.upcomingType.isNotEmpty() && upcomingNplData.upcomingType.equals(ProductUpcomingTypeDef.UPCOMING_NPL, true) && data?.campaignStatus.equals(ProductCampaignStatusTypeDef.UPCOMING, true)
+        return upcomingNplData.upcomingType.isNotEmpty() && upcomingNplData.upcomingType.equals(ProductUpcomingTypeDef.UPCOMING_NPL, true)
     }
     override fun type(typeFactory: DynamicProductDetailAdapterFactory): Int = typeFactory.type(this)
 

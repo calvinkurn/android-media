@@ -2,9 +2,6 @@ query pdpGetLayout($productID: String, $shopDomain:String, $productKey:String) {
   pdpGetLayout(productID:$productID, shopDomain:$shopDomain,productKey:$productKey, apiVersion: 1) {
     name
     pdpSession
-    temporaryInfo {
-      campaignStatus
-    }
     basicInfo {
       alias
       shopName

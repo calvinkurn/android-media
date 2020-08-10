@@ -34,7 +34,6 @@ query getProductVariant($productID:String!,$option:pdpGetProductVariantReqOption
       productURL
       isCOD
       isWishlist
-      campaignStatus
       campaignInfo{
         campaignID
         isActive
