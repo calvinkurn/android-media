@@ -11,9 +11,6 @@ import com.tokopedia.hotel.roomlist.usecase.GetHotelRoomListUseCase
 import com.tokopedia.hotel.roomlist.usecase.HotelAddToCartUseCase
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
