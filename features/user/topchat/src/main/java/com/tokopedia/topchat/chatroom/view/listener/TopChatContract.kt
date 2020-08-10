@@ -69,6 +69,8 @@ interface TopChatContract {
         fun showUnreadMessage(newUnreadMessage: Int)
 
         fun hideUnreadMessage()
+
+        fun removeBroadcastHandler()
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {
@@ -195,5 +197,11 @@ interface TopChatContract {
         fun resetChatUseCase()
 
         fun resetUnreadMessage()
+
+        fun requestFollowShop(shopId: Int, onSuccess: () -> Unit, onErrorFollowShop: (Throwable) -> Unit)
+
+        fun requestBlockPromo(messageId: String, onSuccess: (String) -> Unit, onError: (Throwable) -> Unit)
+
+        fun requestAllowPromo(messageId: String, onSuccess: () -> Unit, onError: (Throwable) -> Unit)
     }
 }
