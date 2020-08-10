@@ -39,7 +39,8 @@ object PlayWidgetMapper {
                                 channelId = playWidgetItem.id,
                                 videoId = playWidgetItem.video.id,
                                 videoType = playWidgetItem.video.type,
-                                remindMe = playWidgetItem.config.isReminderSet
+                                remindMe = playWidgetItem.config.isReminderSet,
+                                partnerId = playWidgetItem.partner.id
                         )
                     }
                 }
