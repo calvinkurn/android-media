@@ -24,7 +24,7 @@
     <string name="telco_label_out_of_stock">Habis</string>
     <string name="telco_other_recommendation">Rekomendasi Lainnya</string>
     <string name="telco_title_filter_result">Hasil Filter</string>
-    <string name="telco_showcase_finish">OK</string>
     <string name="telco_reset_filter">Reset</string>
     <string name="telco_save_filter">Simpan</string>
+    <string name="telco_pick_product">Pilih</string>
 </resources>

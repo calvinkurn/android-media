@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:visibility="gone"
-    android:padding="@dimen/sp_16">
+    android:padding="@dimen/layout_lvl2">
 
     <ImageView
         android:id="@+id/telco_image_empty"
@@ -40,7 +40,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginLeft="@dimen/layout_lvl3"
-        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginTop="@dimen/layout_lvl1"
         android:layout_marginRight="@dimen/layout_lvl3"
         android:gravity="center_horizontal"
         android:textColor="@color/Neutral_N700_68"

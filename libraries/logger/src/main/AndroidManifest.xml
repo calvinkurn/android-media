@@ -6,16 +6,5 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.INTERNET" />
 
-    <application>
-        <service
-            android:name="com.tokopedia.logger.service.ServerService"
-            android:permission="android.permission.BIND_JOB_SERVICE">
-        </service>
-
-        <service
-            android:name="com.tokopedia.logger.service.ServerJobService"
-            android:permission="android.permission.BIND_JOB_SERVICE">
-        </service>
-    </application>
 </manifest>
 
