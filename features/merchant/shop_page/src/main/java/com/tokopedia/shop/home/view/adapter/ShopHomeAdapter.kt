@@ -91,7 +91,7 @@ class ShopHomeAdapter(
             if(playCarouselUiModel.playBannerCarouselDataModel.channelList.isEmpty()){
                 visitables.removeAt(index)
                 notifyItemRemoved(index)
-            } else {
+            } else if(index != -1){
                 visitables[index] = playCarouselUiModel
                 notifyItemChanged(index)
             }
