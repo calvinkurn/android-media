@@ -522,7 +522,7 @@ final class ProductListPresenter
 
     private void getViewToProcessEmptyResultDuringLoadMore() {
         List<Visitable> list = new ArrayList<>();
-        processSuggestionAndBroadMatch(list);
+        if (isShowBroadMatch()) processSuggestionAndBroadMatch(list);
 
         getView().removeLoading();
         getView().addProductList(list);

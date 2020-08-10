@@ -27,7 +27,6 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import kotlinx.android.synthetic.main.partial_new_shop_page_header.view.*
-import kotlinx.android.synthetic.main.partial_new_shop_page_seller_play_widget.view.*
 
 class ShopPageFragmentHeaderViewHolder(private val view: View, private val listener: ShopPageFragmentViewHolderListener,
                                        private val shopPageTracking: ShopPageTrackingBuyer?,
@@ -60,11 +59,10 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
             }
         }
         if (isMyShop) {
-            displayAsSeller()
+            displayAsSeller(shopPageHeaderDataModel)
         } else {
             displayAsBuyer()
         }
-        setupSgcPlayWidget(shopPageHeaderDataModel, isMyShop)
 
         if (shopPageHeaderDataModel.isFreeOngkir)
             showLabelFreeOngkir(remoteConfig)
@@ -79,16 +77,14 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         }
     }
 
-    private fun setupSgcPlayWidget(shopPageHeaderDataModel: ShopPageHeaderDataModel, isMyShop: Boolean){
-        view.play_seller_widget_container.visibility = if(isMyShop && shopPageHeaderDataModel.broadcaster.streamAllowed) View.VISIBLE else View.GONE
-        if(isMyShop){
-            setupTextContentSgcWidget()
-            setLottieAnimationFromUrl(context.getString(R.string.shop_page_lottie_sgc_url))
-            shopPageTrackingSGCPlayWidget?.onImpressionSGCContent(shopId = shopPageHeaderDataModel.shopId)
-            view.container_lottie?.setOnClickListener {
-                shopPageTrackingSGCPlayWidget?.onClickSGCContent(shopId = shopPageHeaderDataModel.shopId)
-                RouteManager.route(view.context, ApplinkConstInternalContent.INTERNAL_PLAY_BROADCASTER)
-            }
+    private fun setupSgcPlayWidget(shopPageHeaderDataModel: ShopPageHeaderDataModel){
+        view.play_seller_widget_container.visibility = if(shopPageHeaderDataModel.broadcaster.streamAllowed) View.VISIBLE else View.GONE
+        setupTextContentSgcWidget()
+        setLottieAnimationFromUrl(context.getString(R.string.shop_page_lottie_sgc_url))
+        shopPageTrackingSGCPlayWidget?.onImpressionSGCContent(shopId = shopPageHeaderDataModel.shopId)
+        view.container_lottie?.setOnClickListener {
+            shopPageTrackingSGCPlayWidget?.onClickSGCContent(shopId = shopPageHeaderDataModel.shopId)
+            RouteManager.route(view.context, ApplinkConstInternalContent.INTERNAL_PLAY_BROADCASTER)
         }
     }
 
@@ -213,6 +209,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
 
     private fun displayAsBuyer() {
         view.shop_page_follow_unfollow_button.visibility = View.VISIBLE
+        view.play_seller_widget_container.visibility = View.GONE
         updateFavoriteButton()
     }
 
@@ -238,8 +235,9 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         }
     }
 
-    private fun displayAsSeller() {
+    private fun displayAsSeller(shopPageHeaderDataModel: ShopPageHeaderDataModel) {
         view.shop_page_follow_unfollow_button.visibility = View.GONE
+        setupSgcPlayWidget(shopPageHeaderDataModel)
     }
 
     fun showShopReputationBadges(shopBadge: ShopBadge) {
@@ -254,7 +252,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
 
     private fun displayOfficial() {
         view.shop_page_main_profile_badge.visibility = View.VISIBLE
-        view.shop_page_main_profile_badge.setImageResource(R.drawable.ic_badge_shop_official)
+        view.shop_page_main_profile_badge.setImageResource(com.tokopedia.design.R.drawable.ic_badge_shop_official)
     }
 
     /**

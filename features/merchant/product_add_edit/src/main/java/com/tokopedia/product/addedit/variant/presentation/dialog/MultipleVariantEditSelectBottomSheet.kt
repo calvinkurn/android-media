@@ -1,11 +1,9 @@
 package com.tokopedia.product.addedit.variant.presentation.dialog
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.RelativeLayout
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.product.addedit.R
@@ -44,19 +42,11 @@ class MultipleVariantEditSelectBottomSheet(
     init {
         selectAdapter = MultipleVariantEditSelectAdapter()
         selectAdapter?.setOnSelectionsDataListener(this)
-        setBehaviorAsKnob()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         initChildLayout()
         return super.onCreateView(inflater, container, savedInstanceState)
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        removeContainerPadding()
-        addMarginTitle()
     }
 
     override fun onMultipleEditInputFinished(multipleVariantEditInputModel: MultipleVariantEditInputModel) {
@@ -118,26 +108,6 @@ class MultipleVariantEditSelectBottomSheet(
         }
     }
 
-    private fun setBehaviorAsKnob() {
-        showCloseIcon = false
-        showKnob = true
-    }
-
-    private fun removeContainerPadding() {
-        val padding = resources.getDimensionPixelSize(com.tokopedia.product.addedit.R.dimen.tooltip_padding)
-        val paddingTop = resources.getDimensionPixelSize(R.dimen.tooltip_close_margin)
-        bottomSheetWrapper.setPadding(padding, paddingTop, padding, padding)
-    }
-
-    private fun addMarginTitle() {
-        val topMargin = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
-        val horizontalMargin = resources.getDimensionPixelSize(com.tokopedia.product.addedit.R.dimen.tooltip_close_margin)
-        (bottomSheetTitle.layoutParams as RelativeLayout.LayoutParams).apply {
-            setMargins(horizontalMargin, topMargin, horizontalMargin, 0)
-            addRule(RelativeLayout.CENTER_VERTICAL)
-        }
-    }
-
     private fun initChildLayout() {
         setTitle(getString(R.string.label_variant_multiple_select_bottom_sheet_title))
         contentView = View.inflate(context,
@@ -163,6 +133,7 @@ class MultipleVariantEditSelectBottomSheet(
             sendTrackerSelectManageAllData()
         }
         setChild(contentView)
+        clearContentPadding = true
     }
 
     private fun sendTrackerContinueManageAllData() {

@@ -19,6 +19,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.baseList)
+    implementation project(rootProject.ext.libraries.baseListSeller)
+    implementation project(rootProject.ext.libraries.datePickerRange)
     implementation project(rootProject.ext.libraries.linker)
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.applink)
