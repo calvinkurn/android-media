@@ -1,6 +1,7 @@
 package com.tokopedia.search.result.shop.domain.usecase
 
 import com.tokopedia.discovery.common.constants.SearchConstant
+import com.tokopedia.discovery.common.constants.SearchConstant.GQL.*
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -34,8 +35,9 @@ internal class SearchShopFirstPageUseCase(
     private fun createParametersForQuery(): Map<String, Any> {
         val variables = HashMap<String, Any>()
 
-        variables[SearchConstant.GQL.KEY_PARAMS] = UrlParamUtils.generateUrlParamString(useCaseRequestParams.parameters)
-        variables[SearchConstant.GQL.KEY_HEADLINE_PARAMS] = createHeadlineParams(useCaseRequestParams.parameters)
+        variables[KEY_PARAMS] = UrlParamUtils.generateUrlParamString(useCaseRequestParams.parameters)
+        variables[KEY_HEADLINE_PARAMS] = createHeadlineParams(useCaseRequestParams.parameters)
+        variables[KEY_QUICK_FILTER_PARAMS] = createQuickFilterParams(useCaseRequestParams.parameters)
 
         return variables
     }
@@ -50,5 +52,14 @@ internal class SearchShopFirstPageUseCase(
         headlineParams[TopAdsParams.KEY_HEADLINE_PRODUCT_COUNT] = SearchConstant.SearchShop.HEADLINE_PRODUCT_COUNT
 
         return UrlParamUtils.generateUrlParamString(headlineParams)
+    }
+
+    private fun createQuickFilterParams(requestParams: Map<String, Any>): String {
+        val quickFilterParams = HashMap(requestParams)
+
+        quickFilterParams[KEY_PAGE_SOURCE] = PAGE_SOURCE_SEARCH_SHOP
+        quickFilterParams[KEY_SOURCE] = SOURCE_QUICK_FILTER
+
+        return UrlParamUtils.generateUrlParamString(quickFilterParams)
     }
 }
