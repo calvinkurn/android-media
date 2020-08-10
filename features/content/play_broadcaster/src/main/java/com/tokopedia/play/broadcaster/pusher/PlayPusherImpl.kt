@@ -27,13 +27,11 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
 
     private  var mAliVcLivePusher: AlivcLivePusher? = null
     private  var mPlayPusherStatus: PlayPusherStatus = PlayPusherStatus.Idle
-//    private  var frontCamera: Boolean = false
 
     private var  mPusherListener: PlayPusherInfoListener? = null
     private val _observableNetworkState = MutableLiveData<PlayPusherNetworkState>()
     
     private val mAliVcLivePushConfig: PlayPusherConfig = PlayPusherConfig().apply {
-//        frontCamera = builder.cameraType == AlivcLivePushCameraTypeEnum.CAMERA_TYPE_FRONT
         setCameraType(builder.cameraType)
         setPreviewOrientation(builder.orientation)
         previewDisplayMode = builder.previewDisplayMode
