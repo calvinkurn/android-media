@@ -67,9 +67,6 @@ class ReviewSmileyWidget : BaseCustomView {
     fun deactivateBad() {
         if(isActive) {
             setLottieAnimationFromUrl(BAD_SMILEY_ANIMATION_REVERSE)
-            this.reviewEditableImageView.apply {
-                setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_smiley_bad_inactive))
-            }
             hideSmileyText()
             isActive = false
         }
@@ -78,9 +75,6 @@ class ReviewSmileyWidget : BaseCustomView {
     fun deactivateMediocre() {
         if(isActive) {
             setLottieAnimationFromUrl(MEDIOCRE_SMILEY_ANIMATION_REVERSE)
-            this.reviewEditableImageView.apply {
-                setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_smiley_neutral_inactive))
-            }
             hideSmileyText()
             isActive = false
         }
@@ -89,9 +83,6 @@ class ReviewSmileyWidget : BaseCustomView {
     fun deactivateExcellent() {
         if(isActive) {
             setLottieAnimationFromUrl(EXCELLENT_SMILEY_ANIMATION_REVERSE)
-            this.reviewEditableImageView.apply {
-                setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_smiley_great_inactive))
-            }
             hideSmileyText()
             isActive = false
         }

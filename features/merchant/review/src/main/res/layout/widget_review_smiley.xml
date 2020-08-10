@@ -6,21 +6,21 @@
 
     <RelativeLayout
         android:id="@+id/image_container"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/layout_lvl6"
+        android:layout_height="@dimen/layout_lvl6"
         android:layout_centerHorizontal="true">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/reviewEditableImageView"
-            android:layout_width="48dp"
-            android:layout_height="50dp"
-            android:scaleType="centerCrop"/>
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"/>
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/reviewEditableSmiley"
-            android:layout_width="48dp"
-            android:layout_height="50dp"
-            android:scaleType="centerCrop"/>
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"/>
 
     </RelativeLayout>
 
