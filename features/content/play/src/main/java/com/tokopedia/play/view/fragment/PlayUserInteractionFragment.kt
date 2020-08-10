@@ -645,7 +645,7 @@ class PlayUserInteractionFragment @Inject constructor(
             }
             orientation.isLandscape -> triggerFullImmersive(shouldImmersive, true)
             playViewModel.videoOrientation.isHorizontal -> handleVideoHorizontalImmersive(shouldImmersive)
-            else -> {
+            playViewModel.videoOrientation.isVertical -> {
                 systemUiVisibility =
                         if (shouldImmersive) PlayFullScreenHelper.getHideSystemUiVisibility()
                         else PlayFullScreenHelper.getShowSystemUiVisibility()
