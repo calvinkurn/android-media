@@ -90,7 +90,7 @@
                 android:layout_marginEnd="@dimen/spacing_lvl3"
                 android:ellipsize="end"
                 android:maxLines="2"
-                android:textColor="@color/Yellow_Y300"
+                android:textColor="@color/Yellow_Y500"
                 android:textStyle="bold"
                 android:visibility="gone"
                 app:typographyType="small"
