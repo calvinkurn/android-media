@@ -27,13 +27,13 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
 
     private  var mAliVcLivePusher: AlivcLivePusher? = null
     private  var mPlayPusherStatus: PlayPusherStatus = PlayPusherStatus.Idle
-    private  var frontCamera: Boolean = false
+//    private  var frontCamera: Boolean = false
 
     private var  mPusherListener: PlayPusherInfoListener? = null
     private val _observableNetworkState = MutableLiveData<PlayPusherNetworkState>()
     
-    private val mAliVcLivePushConfig: AlivcLivePushConfig = AlivcLivePushConfig().apply {
-        frontCamera = builder.cameraType == AlivcLivePushCameraTypeEnum.CAMERA_TYPE_FRONT
+    private val mAliVcLivePushConfig: PlayPusherConfig = PlayPusherConfig().apply {
+//        frontCamera = builder.cameraType == AlivcLivePushCameraTypeEnum.CAMERA_TYPE_FRONT
         setCameraType(builder.cameraType)
         setPreviewOrientation(builder.orientation)
         previewDisplayMode = builder.previewDisplayMode
@@ -129,9 +129,9 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
 
     override suspend fun switchCamera() {
         try {
-            frontCamera = !frontCamera
             mAliVcLivePusher?.switchCamera()
-            mAliVcLivePusher?.setPushMirror(frontCamera)
+            mAliVcLivePusher?.setPushMirror(mAliVcLivePushConfig.getCameraTypeEnum()
+                    == AlivcLivePushCameraTypeEnum.CAMERA_TYPE_FRONT)
         } catch (e: Exception) {}
     }
 
