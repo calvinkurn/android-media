@@ -20,6 +20,7 @@ import com.tokopedia.shop.home.view.model.BannerType
 import com.tokopedia.shop.home.view.model.ShopHomeNewProductLaunchCampaignUiModel
 import com.tokopedia.shop.home.view.model.StatusCampaign
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.shop.home.view.model.ShopHomeNewProductLaunchCampaignUiModel.Companion.TOTAL_NOTIFY_WORDING_FORMAT_FOR_REPLACED
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.item_shop_home_new_product_launch_campaign.view.*
 import kotlinx.android.synthetic.main.layout_shop_home_npl_remind_me.view.*
@@ -253,13 +254,13 @@ class ShopHomeNplCampaignViewHolder(
             totalNotifyWording: String,
             statusCampaign: String
     ) {
-        if (totalNotifyWording.isNotEmpty() && statusCampaign.toLowerCase() == StatusCampaign.UPCOMING.statusCampaign.toLowerCase()) {
-            val totalCampaignInterestString = totalNotifyWording.replace("{{number_of_users}}", totalNotify.thousandFormatted())
-            itemView.text_description?.text = totalCampaignInterestString
-            itemView.text_description?.show()
-        } else {
+        if (totalNotifyWording.isEmpty() || statusCampaign.toLowerCase() == StatusCampaign.FINISHED.statusCampaign.toLowerCase()) {
             itemView.text_description?.text = ""
             itemView.text_description?.hide()
+        } else {
+            val totalCampaignInterestString = totalNotifyWording.replace(TOTAL_NOTIFY_WORDING_FORMAT_FOR_REPLACED, totalNotify.thousandFormatted())
+            itemView.text_description?.text = totalCampaignInterestString
+            itemView.text_description?.show()
         }
     }
 

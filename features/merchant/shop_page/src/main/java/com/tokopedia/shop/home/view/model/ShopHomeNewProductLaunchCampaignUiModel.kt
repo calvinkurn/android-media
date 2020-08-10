@@ -13,6 +13,10 @@ data class ShopHomeNewProductLaunchCampaignUiModel(
         val data: List<NewProductLaunchCampaignItem>? = null
 ) : BaseShopHomeWidgetUiModel, ImpressHolder() {
 
+    companion object{
+        const val TOTAL_NOTIFY_WORDING_FORMAT_FOR_REPLACED = "{{number_of_users}}"
+    }
+
     data class NewProductLaunchCampaignItem(
             val campaignId: String = "",
             val name: String = "",
