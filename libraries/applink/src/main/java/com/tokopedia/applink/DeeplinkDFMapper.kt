@@ -95,6 +95,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.PREFERENCE
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.PREFERENCE_LIST
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.REPORT_PRODUCT
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.SHOP_PAGE_BASE
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.SHOP_SETTINGS_BASE
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant.BRANDLIST
@@ -274,6 +275,17 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(BRAND_LIST)}, DF_BASE, R.string.title_brandlist))
             add(DFP({ it.startsWith(BRAND_LIST_WITH_SLASH)}, DF_BASE, R.string.title_brandlist))
             add(DFP({ it.startsWith(MERCHANT_OPEN_PRODUCT_PREVIEW) || it.startsWith(PRODUCT_ADD) }, DF_MERCHANT_SELLER, R.string.title_product_add_edit))
+            add(DFP({
+                it.startsWith(SHOP_PAGE_BASE) ||
+                        it.startsWith(SHOP) ||
+                        it.startsWith(SHOP_ETALASE) ||
+                        it.startsWith(SHOP_ETALASE_WITH_KEYWORD_AND_SORT) ||
+                        it.startsWith(SHOP_REVIEW) ||
+                        it.startsWith(SHOP_NOTE) ||
+                        it.startsWith(SHOP_INFO) ||
+                        it.startsWith(SHOP_HOME) ||
+                        it.startsWith(SHOP_SETTINGS_NOTE)
+            }, DF_BASE, R.string.title_shop_page))
 
             // Operational
             add(DFP({
@@ -411,6 +423,19 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWithPattern(ApplinkConstInternalContent.INTERNAL_CONTENT_CREATE_POST) }, DF_BASE_SELLER_APP, R.string.applink_af_title_create_post))
             add(DFP({ it.startsWithPattern(ApplinkConstInternalContent.INTERNAL_CONTENT_DRAFT_POST) }, DF_BASE_SELLER_APP, R.string.applink_af_title_create_post))
             add(DFP({ it.startsWithPattern(ApplinkConstInternalContent.SHOP_POST_EDIT) }, DF_BASE_SELLER_APP, R.string.applink_af_title_create_post))
+            add(DFP({ it.startsWithPattern(PLAY_BROADCASTER) }, DF_BASE_SELLER_APP, R.string.applink_title_play_broadcaster))
+          
+            add(DFP({
+                it.startsWith(SHOP_PAGE_BASE) ||
+                        it.startsWith(SHOP) ||
+                        it.startsWith(SHOP_ETALASE) ||
+                        it.startsWith(SHOP_ETALASE_WITH_KEYWORD_AND_SORT) ||
+                        it.startsWith(SHOP_REVIEW) ||
+                        it.startsWith(SHOP_NOTE) ||
+                        it.startsWith(SHOP_INFO) ||
+                        it.startsWith(SHOP_HOME) ||
+                        it.startsWith(SHOP_SETTINGS_NOTE)
+            }, DF_BASE_SELLER_APP, R.string.title_shop_page))
         }
     }
 

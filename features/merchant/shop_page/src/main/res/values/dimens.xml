@@ -31,4 +31,6 @@
     <dimen name="width_product_empty_state_buyer">133dp</dimen>
     <dimen name="max_width_etalase_chip">180dp</dimen>
     <dimen name="min_add_product_card_height">198dp</dimen>
+    <dimen name="margin_small_sm">12dp</dimen>
+
 </resources>
