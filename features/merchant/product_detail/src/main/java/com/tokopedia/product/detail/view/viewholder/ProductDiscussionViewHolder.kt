@@ -16,7 +16,6 @@ import com.tokopedia.product.detail.data.model.talk.Talk
 import com.tokopedia.product.detail.data.util.productThousandFormatted
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import kotlinx.android.synthetic.main.item_dynamic_discussion.view.*
-import kotlinx.android.synthetic.main.item_ticker_info_view_holder.view.*
 
 class ProductDiscussionViewHolder(val view: View, val listener: DynamicProductDetailListener) : AbstractViewHolder<ProductDiscussionDataModel>(view) {
 
@@ -45,7 +44,7 @@ class ProductDiscussionViewHolder(val view: View, val listener: DynamicProductDe
     }
 
     private fun showComponent() = with(view) {
-        view_ticker_container.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+        product_discussion_container.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
     }
 
     private fun renderData(talk: Talk, productShopId: Int, totalTalk: Int, componentTrackData: ComponentTrackDataModel) {
