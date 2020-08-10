@@ -14,6 +14,8 @@ import com.tokopedia.favorite.domain.interactor.GetAllDataFavoriteUseCase;
 import com.tokopedia.favorite.domain.interactor.GetFavoriteShopUsecase;
 import com.tokopedia.favorite.domain.interactor.GetInitialDataPageUsecase;
 import com.tokopedia.favorite.domain.interactor.GetTopAdsShopUseCase;
+import com.tokopedia.favorite.view.DispatcherProvider;
+import com.tokopedia.favorite.view.DispatcherProviderImpl;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
 
@@ -25,7 +27,7 @@ import retrofit2.Retrofit;
  * @author Kulomady on 1/20/17.
  */
 
-@Module(includes = {TopAdsServiceModule.class})
+@Module(includes = {TopAdsServiceModule.class, FavoriteViewModelModule.class})
 public class FavoriteModule {
 
     @FavoriteScope
@@ -91,4 +93,11 @@ public class FavoriteModule {
     TopAdsService provideTopAdsService(@TopAdsQualifier Retrofit retrofit) {
         return retrofit.create(TopAdsService.class);
     }
+
+    @FavoriteScope
+    @Provides
+    DispatcherProvider provideDispatcherProvider() {
+        return new DispatcherProviderImpl();
+    }
+
 }

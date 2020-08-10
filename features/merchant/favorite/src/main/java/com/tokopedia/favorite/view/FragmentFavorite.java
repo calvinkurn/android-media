@@ -84,6 +84,9 @@ public class FragmentFavorite extends BaseDaggerFragment
     @Inject
     FavoritePresenter favoritePresenter;
 
+    @Inject
+    FavoriteViewModel viewModel;
+
     private FavoriteAdapter favoriteAdapter;
     private EndlessRecyclerViewScrollListener recylerviewScrollListener;
     private SnackbarRetry messageSnackbar;

@@ -9,7 +9,10 @@ import com.tokopedia.favorite.di.scope.FavoriteScope;
 import dagger.Component;
 
 @FavoriteScope
-@Component(modules = {FavoriteModule.class, UserSessionModule.class}, dependencies = BaseAppComponent.class)
+@Component(
+        modules = {FavoriteModule.class, UserSessionModule.class},
+        dependencies = BaseAppComponent.class
+)
 public interface FavoriteComponent {
     void inject(FragmentFavorite fragmentFavorite);
 }
