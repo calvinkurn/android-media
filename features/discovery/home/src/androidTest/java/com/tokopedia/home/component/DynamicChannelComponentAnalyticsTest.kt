@@ -152,22 +152,22 @@ class DynamicChannelComponentAnalyticsTest {
         val closeButton = childView.findViewById<View>(R.id.ticker_close_icon)
         if (textApplink.visibility == View.VISIBLE) {
             try {
-                Espresso.onView(firstView(ViewMatchers.withId(R.id.banner_button)))
+                Espresso.onView(firstView(ViewMatchers.withId(R.id.ticker_description)))
                         .perform(ViewActions.click())
-                logTestMessage("Click SUCCESS mixtop banner Button")
+                logTestMessage("Click SUCCESS ticker text")
             } catch (e: PerformException) {
                 e.printStackTrace()
-                logTestMessage("Click FAILED mixtop banner Button")
+                logTestMessage("Click FAILED ticker text")
             }
         }
         if (closeButton.visibility == View.VISIBLE) {
             try {
-                Espresso.onView(firstView(ViewMatchers.withId(R.id.banner_button)))
+                Espresso.onView(firstView(ViewMatchers.withId(R.id.ticker_close_icon)))
                         .perform(ViewActions.click())
-                logTestMessage("Click SUCCESS mixtop banner Button")
+                logTestMessage("Click SUCCESS ticker close")
             } catch (e: PerformException) {
                 e.printStackTrace()
-                logTestMessage("Click FAILED mixtop banner Button")
+                logTestMessage("Click FAILED ticker close")
             }
         }
     }
