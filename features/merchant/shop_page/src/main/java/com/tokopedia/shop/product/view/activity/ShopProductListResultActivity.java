@@ -14,12 +14,8 @@ import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.cachemanager.CacheManager;
-import com.tokopedia.cachemanager.SaveInstanceCacheManager;
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.shop.R;
-import com.tokopedia.shop.ShopComponentInstance;
+import com.tokopedia.shop.ShopComponentHelper;
 import com.tokopedia.shop.analytic.OldShopPageTrackingBuyer;
 import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.di.component.ShopComponent;
@@ -32,7 +28,6 @@ import com.tokopedia.trackingoptimizer.TrackingQueue;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import static com.tokopedia.shop.analytic.OldShopPageTrackingConstant.SCREEN_SHOP_PAGE;
 
@@ -40,7 +35,7 @@ import static com.tokopedia.shop.analytic.OldShopPageTrackingConstant.SCREEN_SHO
  * Created by nathan on 2/15/18.
  */
 
-public class ShopProductListActivity extends BaseSimpleActivity
+public class ShopProductListResultActivity extends BaseSimpleActivity
         implements HasComponent<ShopComponent>,
         OnShopProductListFragmentListener,
         ShopPageProductListResultFragment.ShopPageProductListResultFragmentListener {
@@ -75,7 +70,7 @@ public class ShopProductListActivity extends BaseSimpleActivity
 
     public static Intent createIntent(Context context, String shopId, String keyword,
                                       String etalaseId, String attribution, String shopRef) {
-        Intent intent = new Intent(context, ShopProductListActivity.class);
+        Intent intent = new Intent(context, ShopProductListResultActivity.class);
         intent.putExtra(ShopParamConstant.EXTRA_SHOP_ID, shopId);
         intent.putExtra(ShopParamConstant.EXTRA_PRODUCT_KEYWORD, keyword);
         intent.putExtra(ShopParamConstant.EXTRA_ETALASE_ID, etalaseId);
@@ -85,7 +80,7 @@ public class ShopProductListActivity extends BaseSimpleActivity
     }
 
     public static Intent createIntent(Context context, String shopId, String shopRef) {
-        Intent intent = new Intent(context, ShopProductListActivity.class);
+        Intent intent = new Intent(context, ShopProductListResultActivity.class);
         intent.putExtra(ShopParamConstant.EXTRA_SHOP_ID, shopId);
         intent.putExtra(ShopParamConstant.EXTRA_SHOP_REF, shopRef);
         return intent;
@@ -188,7 +183,7 @@ public class ShopProductListActivity extends BaseSimpleActivity
     @Override
     public ShopComponent getComponent() {
         if (component == null) {
-            component = ShopComponentInstance.getComponent(getApplication());
+            component = new ShopComponentHelper().getComponent(getApplication(), this);
         }
         return component;
     }
@@ -244,4 +239,10 @@ public class ShopProductListActivity extends BaseSimpleActivity
     public void onSortValueUpdated(@NotNull String sortValue) {
         this.sort = sortValue;
     }
+
+    @Override
+    protected int getParentViewResourceID() {
+        return R.id.parent_view;
+    }
+
 }

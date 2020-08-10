@@ -46,6 +46,6 @@
         android:id="@+id/image_view_etalase_checked"
         android:layout_width="@dimen/dp_24"
         android:layout_height="@dimen/dp_24"
-        app:srcCompat="@drawable/ic_check_green_24dp" />
+        app:srcCompat="@drawable/ic_check_green_24dp_shop_page" />
 
 </LinearLayout>

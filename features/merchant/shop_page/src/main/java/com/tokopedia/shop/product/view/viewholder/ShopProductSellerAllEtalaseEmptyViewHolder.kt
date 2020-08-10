@@ -40,7 +40,7 @@ class ShopProductSellerAllEtalaseEmptyViewHolder(
                 itemView.context,
                 imageViewBackgroundPattern,
                 URL_IMAGE_SELLER_PRODUCT_ALL_ETALASE_EMPTY_STATE_BACKGROUND,
-                R.drawable.ic_loading_image
+                com.tokopedia.design.R.drawable.ic_loading_image
         )
     }
 

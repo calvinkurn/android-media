@@ -94,6 +94,7 @@ object PayloadConverter {
         }
 
         model.status = NotificationStatus.PENDING
+        model.notificationProductType = data.getString(CMConstant.PayloadKeys.NOTIFICATION_PRODUCT_TYPE)
 
         // notification attribution
         model.transactionId = data.getString(CMConstant.PayloadKeys.TRANSACTION_ID)

@@ -9,6 +9,7 @@ import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.shop.common.constant.ShopUrl;
 import com.tokopedia.shop.common.data.interceptor.ShopAuthInterceptor;
+import com.tokopedia.shop.common.di.ShopPageContext;
 import com.tokopedia.shop.sort.data.repository.ShopProductSortRepositoryImpl;
 import com.tokopedia.shop.sort.data.source.cloud.ShopProductSortCloudDataSource;
 import com.tokopedia.shop.sort.data.source.cloud.api.ShopAceApi;
@@ -73,7 +74,7 @@ public class ShopProductSortModule {
 
     @ShopProductSortScope
     @Provides
-    public UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
+    public UserSessionInterface provideUserSessionInterface(@ShopPageContext Context context) {
         return new UserSession(context);
     }
 }
