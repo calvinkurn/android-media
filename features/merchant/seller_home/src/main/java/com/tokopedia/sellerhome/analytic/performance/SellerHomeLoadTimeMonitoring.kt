@@ -1,6 +1,7 @@
 package com.tokopedia.sellerhome.analytic.performance
 
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
+import com.tokopedia.analytics.performance.util.PltPerformanceData
 
 abstract class SellerHomeLoadTimeMonitoring {
 
@@ -22,4 +23,6 @@ abstract class SellerHomeLoadTimeMonitoring {
         pageLoadTimePerformanceMonitoring?.stopRenderPerformanceMonitoring()
         pageLoadTimePerformanceMonitoring?.stopMonitoring()
     }
+
+    fun getPltPerformanceMonitoring(): PltPerformanceData? = pageLoadTimePerformanceMonitoring?.getPltPerformanceData()
 }

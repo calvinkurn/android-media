@@ -2,7 +2,8 @@ package com.tokopedia.test.application.util
 
 import android.app.Application
 import android.content.Context
-import com.tokopedia.authentication.*
+import androidx.test.espresso.idling.CountingIdlingResource
+import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.network.refreshtoken.EncoderDecoder
 import com.tokopedia.test.application.environment.InstrumentationTestApp
 import com.tokopedia.test.application.environment.network.DataSource
@@ -14,7 +15,8 @@ import rx.schedulers.Schedulers
 import java.util.*
 
 object InstrumentationAuthHelper {
-    fun loginToAnUser(application: Application) {
+    fun loginToAnUser(application: Application, idlingResource: CountingIdlingResource? = null) {
+        idlingResource?.increment()
         val userSession = UserSession(application)
 
         val userName = "fauzanofami.luthfi+01@tokopedia.com"
@@ -108,7 +110,9 @@ object InstrumentationAuthHelper {
                     }
 
                     override fun onCompleted() {
-
+                        if (idlingResource?.isIdleNow == false) {
+                            idlingResource.decrement()
+                        }
                     }
                 })
     }

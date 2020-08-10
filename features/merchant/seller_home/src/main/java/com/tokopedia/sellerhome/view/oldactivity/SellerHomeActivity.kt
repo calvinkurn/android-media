@@ -24,9 +24,11 @@ import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.analytic.NavigationTracking
 import com.tokopedia.sellerhome.analytic.TrackingConstant
 import com.tokopedia.sellerhome.analytic.performance.HomeLayoutLoadTimeMonitoring
+import com.tokopedia.sellerhome.analytic.performance.SellerHomeLoadTimeMonitoringListener
 import com.tokopedia.sellerhome.common.DeepLinkHandler
 import com.tokopedia.sellerhome.common.FragmentType
 import com.tokopedia.sellerhome.common.PageFragment
+import com.tokopedia.sellerhome.common.SellerHomeIdlingResource
 import com.tokopedia.sellerhome.common.SellerHomePerformanceMonitoringConstant.SELLER_HOME_LAYOUT_TRACE
 import com.tokopedia.sellerhome.common.appupdate.UpdateCheckerHelper
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
@@ -44,7 +46,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.activity_sah_seller_home_old.*
 import javax.inject.Inject
 
-class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
+class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, SellerHomeLoadTimeMonitoringListener {
 
     companion object {
         @JvmStatic
@@ -83,12 +85,13 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
     private var statusBarCallback: StatusBarCallback? = null
     private var performanceMonitoringSellerHomelayout: PerformanceMonitoring? = null
 
-    var performanceMonitoringSellerHomeLayoutPlt: HomeLayoutLoadTimeMonitoring? = null
+    private var performanceMonitoringSellerHomeLayoutPlt: HomeLayoutLoadTimeMonitoring? = null
 
     private var shouldMoveToReview: Boolean = false
     private var shouldMoveToCentralizedPromo: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        SellerHomeIdlingResource.increment()
         initPerformanceMonitoring()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sah_seller_home_old)
@@ -331,7 +334,11 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         performanceMonitoringSellerHomeLayoutPlt?.initPerformanceMonitoring()
     }
 
-    fun stopPerformanceMonitoringSellerHomeLayout() {
+    override fun stopPerformanceMonitoringSellerHomeLayout() {
         performanceMonitoringSellerHomelayout?.stopTrace()
+    }
+
+    override fun getPerformanceMonitoringSellerHomeLayoutPlt(): HomeLayoutLoadTimeMonitoring? {
+        return performanceMonitoringSellerHomeLayoutPlt
     }
 }
