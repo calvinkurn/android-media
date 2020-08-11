@@ -1,11 +1,13 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.brandrecommendations
 
+import android.content.res.Resources
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.discovery2.Constant.BrandRecommendation.RECTANGLE_DESIGN
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.DataItem
@@ -13,12 +15,13 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
-import com.tokopedia.discovery2.Constant.BrandRecommendation.RECTANGLE_DESIGN
 
 class BrandRecommendationItemViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView) {
 
     private lateinit var brandRecommendationItemViewModel: BrandRecommendationItemViewModel
     private val imageView: ImageView = itemView.findViewById(R.id.brand_recom_iv)
+    private val context = itemView.context
+
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         brandRecommendationItemViewModel = discoveryBaseViewModel as BrandRecommendationItemViewModel
@@ -32,13 +35,14 @@ class BrandRecommendationItemViewHolder(itemView: View, private val fragment: Fr
     }
 
     private fun updateCardDesign() {
-        when(brandRecommendationItemViewModel.getDesignType()){
+        when (brandRecommendationItemViewModel.getDesignType()) {
             RECTANGLE_DESIGN -> {
+                val cardPadding =  context.resources.getDimension(R.dimen.dp_4).toInt()
                 val layoutParams: ViewGroup.LayoutParams = itemView.layoutParams
-                layoutParams.width = Utils.convertDpToPx(90)
-                layoutParams.height = Utils.convertDpToPx(60)
+                layoutParams.width = context.resources.getDimension(R.dimen.dp_90).toInt()
+                layoutParams.height = context.resources.getDimension(R.dimen.dp_60).toInt()
                 imageView.scaleType = ImageView.ScaleType.FIT_CENTER
-                imageView.setPadding(4,4,4,4)
+                imageView.setPadding(cardPadding, cardPadding, cardPadding, cardPadding)
                 itemView.layoutParams = layoutParams
             }
         }

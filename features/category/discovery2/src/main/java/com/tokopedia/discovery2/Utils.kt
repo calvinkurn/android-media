@@ -62,9 +62,5 @@ class Utils {
                 "${convertedValue.toInt()} $text $notifyMeText"
             }
         }
-
-        fun convertDpToPx(dimensionInPixel : Int): Int {
-            return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dimensionInPixel.toFloat(), Resources.getSystem().displayMetrics).toInt()
-        }
     }
 }
