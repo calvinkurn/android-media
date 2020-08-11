@@ -93,6 +93,7 @@ class SearchProductFirstPageGqlUseCase(
                         }
                         related {
                             relatedKeyword
+                            position
                             otherRelated {
                                 keyword
                                 url
