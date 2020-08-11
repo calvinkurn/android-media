@@ -92,7 +92,10 @@ class ReviewSmileyWidget : BaseCustomView {
     }
 
     fun showSmileyText() {
-        this.reviewEditableText.animate().alpha(1f)
+        this.reviewEditableText.apply {
+            show()
+            animate().alpha(1f)
+        }
     }
 
     fun setSmileyClickListener(reviewScoreClickListener: ReviewScoreClickListener) {
@@ -178,6 +181,7 @@ class ReviewSmileyWidget : BaseCustomView {
     private fun hideSmileyText() {
         this.reviewEditableText.apply {
             animate().alpha(0f)
+            hide()
         }
     }
 
