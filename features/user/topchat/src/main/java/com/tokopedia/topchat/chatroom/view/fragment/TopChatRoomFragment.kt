@@ -72,6 +72,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.util.LoadMoreTopBottomScrollL
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.AttachedInvoiceViewHolder.InvoiceThumbnailListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.BroadcastSpamHandlerViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.QuotationViewHolder
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.RoomSettingFraudAlertViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.StickerViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.CommonViewHolderListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredViewHolderAttachment
@@ -111,7 +112,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         InvoiceThumbnailListener, QuotationViewHolder.QuotationListener,
         TransactionOrderProgressLayout.Listener, ChatMenuStickerView.StickerMenuListener,
         StickerViewHolder.Listener, DeferredViewHolderAttachment, CommonViewHolderListener, SearchListener,
-        BroadcastSpamHandlerViewHolder.Listener {
+        BroadcastSpamHandlerViewHolder.Listener, RoomSettingFraudAlertViewHolder.Listener {
 
     @Inject
     lateinit var presenter: TopChatRoomPresenter
@@ -609,7 +610,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         return TopChatTypeFactoryImpl(
                 this, this, this, this,
                 this, this, this, this,
-                this, this, this, this
+                this, this, this, this,
+                this
         )
     }
 
@@ -1080,6 +1082,10 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
 
     override fun onClickAllowPromo() {
         requestAllowPromo()
+    }
+
+    override fun onClickBlockChatFraudAlert() {
+        getViewState().showConfirmationBlockChat()
     }
 
     override fun blockChat() {

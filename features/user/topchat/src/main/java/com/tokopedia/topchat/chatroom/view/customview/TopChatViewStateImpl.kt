@@ -425,7 +425,7 @@ class TopChatViewStateImpl constructor(
         }
     }
 
-    private fun showConfirmationBlockChat() {
+    override fun showConfirmationBlockChat() {
         val title = view.context.getString(R.string.title_confirm_block_promo)
         val desc = view.context.getString(R.string.desc_confirm_block_promo)
         val titleCtaBlock = view.context.getString(R.string.title_block_user_chat)

@@ -34,4 +34,6 @@ interface TopChatViewState : BaseChatViewState {
 
     fun setChatPromoBlockStatus(isBlocked: Boolean, due: String = "")
 
+    fun showConfirmationBlockChat()
+
 }
