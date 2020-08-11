@@ -37,6 +37,7 @@ import com.tokopedia.seller_migration_common.analytics.SellerMigrationTracking.e
 import com.tokopedia.seller_migration_common.getSellerMigrationDate
 import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
 import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
+import com.tokopedia.seller_migration_common.presentation.widget.SellerMigrationAccountCommBottomSheet
 import com.tokopedia.track.TrackApp
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.Toaster.make
@@ -55,6 +56,10 @@ class SellerAccountFragment : BaseAccountFragment(), AccountItemListener, Fragme
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModelFragmentProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     private val viewModel by lazy { viewModelFragmentProvider.get(SellerAccountViewModel::class.java) }
+
+    private val sellerMigrationBottomSheet by lazy {
+        SellerMigrationAccountCommBottomSheet.createInstance(userSession.userId)
+    }
 
     @Inject
     lateinit var sellerAccountMapper: SellerAccountMapper
@@ -240,26 +245,38 @@ class SellerAccountFragment : BaseAccountFragment(), AccountItemListener, Fragme
     override fun onProductRecommendationWishlistClicked(product: RecommendationItem, wishlistStatus: Boolean, callback: (Boolean, Throwable?) -> Unit) {}
     override fun onProductRecommendationThreeDotsClicked(product: RecommendationItem, adapterPosition: Int) {}
     private fun setupSellerMigrationTicker() {
-        if (isSellerMigrationEnabled(this.context)) {
-            migrationTicker.tickerTitle = getString(com.tokopedia.seller_migration_common.R.string.seller_migration_account_home_ticker_title)
-            val remoteConfigDate = getSellerMigrationDate(this.context)
-            if (remoteConfigDate.isEmpty()) {
-                migrationTicker.setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_generic_ticker_content))
-            } else {
-                migrationTicker.setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_account_home_ticker_content, remoteConfigDate))
+        migrationTicker.tickerTitle = getString(com.tokopedia.seller_migration_common.R.string.seller_migration_ticker_title)
+        migrationTicker.setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_account_ticker_desc))
+        migrationTicker.setDescriptionClickEvent(object : TickerCallback {
+            override fun onDescriptionViewClick(charSequence: CharSequence) {
+//                eventOnClickAccountTicker(userSession.userId)
+                fragmentManager?.let { sellerMigrationBottomSheet.show(it, SellerMigrationAccountCommBottomSheet::class.java.name) }
             }
-            migrationTicker.setDescriptionClickEvent(object : TickerCallback {
-                override fun onDescriptionViewClick(charSequence: CharSequence) {
-                    eventOnClickAccountTicker(userSession.userId)
-                }
 
-                override fun onDismiss() {
-                    // No op
-                }
-            })
-        } else {
-            migrationTicker.visibility = View.GONE
-        }
+            override fun onDismiss() {
+                // No op
+            }
+        })
+//        if (isSellerMigrationEnabled(this.context)) {
+//            migrationTicker.tickerTitle = getString(com.tokopedia.seller_migration_common.R.string.seller_migration_account_home_ticker_title)
+//            val remoteConfigDate = getSellerMigrationDate(this.context)
+//            if (remoteConfigDate.isEmpty()) {
+//                migrationTicker.setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_generic_ticker_content))
+//            } else {
+//                migrationTicker.setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_account_home_ticker_content, remoteConfigDate))
+//            }
+//            migrationTicker.setDescriptionClickEvent(object : TickerCallback {
+//                override fun onDescriptionViewClick(charSequence: CharSequence) {
+//                    eventOnClickAccountTicker(userSession.userId)
+//                }
+//
+//                override fun onDismiss() {
+//                    // No op
+//                }
+//            })
+//        } else {
+//            migrationTicker.visibility = View.GONE
+//        }
     }
 
     private fun goToSellerAppProductManage() {

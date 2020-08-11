@@ -10,7 +10,8 @@ interface SellerMigrationCommunication
 sealed class CommunicationInfo(@StringRes val titleRes: Int,
                                val imageUrl: String,
                                @StringRes val descRes: Int,
-                               val benefitPointResList: List<Int> = listOf()): SellerMigrationCommunication {
+                               val benefitPointResList: List<Int> = listOf(),
+                               @StringRes val tickerMessage: Int): SellerMigrationCommunication {
 
     object TopAds: CommunicationInfo(
             R.string.seller_migration_topads_bottom_sheet_title,
@@ -20,7 +21,8 @@ sealed class CommunicationInfo(@StringRes val titleRes: Int,
                     R.string.seller_migration_topads_bottom_sheet_item_product,
                     R.string.seller_migration_topads_bottom_sheet_item_strenghten,
                     R.string.seller_migration_topads_bottom_sheet_item_advertise
-            )
+            ),
+            R.string.seller_migration_topads_ticker_desc_prefix
     )
 
     object BroadcastChat: CommunicationInfo(
@@ -31,13 +33,15 @@ sealed class CommunicationInfo(@StringRes val titleRes: Int,
                     R.string.seller_migration_broadcast_chat_bottom_sheet_item_send,
                     R.string.seller_migration_broadcast_chat_bottom_sheet_item_match,
                     R.string.seller_migration_broadcast_chat_bottom_sheet_item_access
-            )
+            ),
+            R.string.seller_migration_broadcast_chat_ticker_desc_prefix
     )
 
     object PostFeed: CommunicationInfo(
             R.string.seller_migration_feed_bottom_sheet_title,
             CommunicationImageUrl.POST_FEED,
-            R.string.seller_migration_feed_bottom_sheet_desc
+            R.string.seller_migration_feed_bottom_sheet_desc,
+            tickerMessage = R.string.seller_migration_feed_ticker_desc_prefix
     )
 
     object ShopCapital: CommunicationInfo(
@@ -48,7 +52,9 @@ sealed class CommunicationInfo(@StringRes val titleRes: Int,
                     R.string.seller_migration_modal_toko_bottom_sheet_item_active,
                     R.string.seller_migration_modal_toko_bottom_sheet_item_withdraw,
                     R.string.seller_migration_modal_toko_bottom_sheet_item_process
-            )
+            ),
+            R.string.seller_migration_modal_toko_ticker_desc_prefix
+
     )
 
     object PriorityBalance: CommunicationInfo(
@@ -59,7 +65,8 @@ sealed class CommunicationInfo(@StringRes val titleRes: Int,
                     R.string.seller_migration_saldo_prioritas_bottom_sheet_item_process,
                     R.string.seller_migration_saldo_prioritas_bottom_sheet_item_result,
                     R.string.seller_migration_saldo_prioritas_bottom_sheet_item_return
-            )
+            ),
+            R.string.seller_migration_modal_toko_ticker_desc_prefix
     )
 }
 

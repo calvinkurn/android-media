@@ -8,8 +8,8 @@
     android:paddingBottom="@dimen/layout_lvl3"
     android:background="@drawable/bg_seller_migration_green">
 
-    <View
-        android:id="@+id/view_seller_migration_rounded"
+    <com.tokopedia.unifycomponents.CardUnify
+        android:id="@+id/card_seller_migration_account"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@drawable/bg_seller_migration_rounded"
