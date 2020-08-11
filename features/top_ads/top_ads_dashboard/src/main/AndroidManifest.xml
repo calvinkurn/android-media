@@ -84,10 +84,17 @@
         <activity
             android:name=".view.activity.TopAdsGroupDetailViewActivity"
             android:label="@string/topads_group_detail"
+            android:exported="true"
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait" />
         <activity
             android:name=".view.activity.HiddenTrialActivity"
+            android:label="@string/top_ads_title_dashboard"
+            android:theme="@style/Theme.White"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".view.activity.TopAdsKeywordInsightsActivity"
             android:label="@string/top_ads_title_dashboard"
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait" />

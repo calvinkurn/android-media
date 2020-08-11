@@ -25,6 +25,8 @@ import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
 import com.tokopedia.home.test.activity.HomeActivityTest
 import com.tokopedia.home.test.fragment.HomeFragmentTest
 import com.tokopedia.home.test.rules.TestDispatcherProvider
+import com.tokopedia.play_common.domain.usecases.GetPlayWidgetUseCase
+import com.tokopedia.play_common.domain.usecases.PlayToggleChannelReminderUseCase
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
@@ -73,6 +75,8 @@ class PlayBannerUITest : BaseWidgetUiTest(){
     override val closeChannelUseCase = mockk<dagger.Lazy<CloseChannelUseCase>>(relaxed = true)
     override val topAdsImageViewUseCase = mockk<Lazy<TopAdsImageViewUseCase>>(relaxed = true)
     override val injectCouponTimeBasedUseCase = mockk<dagger.Lazy<InjectCouponTimeBasedUseCase>>(relaxed = true)
+    override val playToggleChannelReminderUseCase = mockk<Lazy<PlayToggleChannelReminderUseCase>> (relaxed = true)
+    override val getPlayBannerUseCase = mockk<Lazy<GetPlayWidgetUseCase>> (relaxed = true)
     override val remoteConfig = mockk<RemoteConfig>(relaxed = true)
     override val homeDataMapper = HomeDataMapper(InstrumentationRegistry.getInstrumentation().context, HomeVisitableFactoryImpl(userSessionInterface.get(), remoteConfig), mockk(relaxed = true))
     private val context = InstrumentationRegistry.getInstrumentation().context
@@ -364,6 +368,8 @@ class PlayBannerUITest : BaseWidgetUiTest(){
             getSalamWidgetUseCase = getSalamWIdgetUseCase,
             declineSalamWidgetUseCase = declineSalamWIdgetUseCase,
             injectCouponTimeBasedUseCase = injectCouponTimeBasedUseCase,
-            topAdsImageViewUseCase = topAdsImageViewUseCase
+            topAdsImageViewUseCase = topAdsImageViewUseCase,
+            playToggleChannelReminderUseCase = playToggleChannelReminderUseCase,
+            getPlayBannerUseCase = getPlayBannerUseCase
     )
 }

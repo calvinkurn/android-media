@@ -359,6 +359,7 @@ class ChooseAccountFragment : BaseDaggerFragment(),
         this.viewModel.accountList = accountList
 
         if (accountList.userDetails.size == 1 && accountList.msisdn.isNotEmpty()) {
+            adapter.setList(accountList.userDetails, accountList.msisdn)
             val userDetail = accountList.userDetails[0]
             loginToken(userDetail, accountList.msisdn)
         } else {

@@ -19,7 +19,7 @@
         <item name="android:layout_width">0dp</item>
         <item name="typographyType">body_3</item>
         <item name="typographyWeight">bold</item>
-        <item name="textColor">@color/topads_heading_color</item>
+        <item name="android:textColor">@color/topads_heading_color</item>
     </style>
 
     <style name="CardView.Text">
@@ -27,7 +27,12 @@
         <item name="android:layout_width">0dp</item>
         <item name="typographyWeight">reguler</item>
         <item name="typographyType">small</item>
-        <item name="textColor">@color/topads_common_select_color_unchecked</item>
+        <item name="android:textColor">@color/topads_common_select_color_unchecked</item>
+    </style>
+
+    <style name="TabLayout.Style" parent="TextAppearance.Design.Tab">
+        <item name="textAllCaps">false</item>
+        <item name="android:textAllCaps">false</item>
     </style>
 
     <style name="TopadsDashboardFilterRadioButtonStyle" parent="@android:style/Widget.CompoundButton.RadioButton">
@@ -36,5 +41,21 @@
         <item name="android:textColor">@color/topads_text_filter_color_selector</item>
         <item name="typographyType">body_2</item>
         <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="BottomSheetInsight">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/dp_8</item>
+        <item name="typographyType">heading_6</item>
+        <item name="android:textColor">@color/topads_light_shadow</item>
+    </style>
+
+    <style name="BottomSheetInsightTitle">
+        <item name="typographyType">heading_6</item>
+        <item name="android:textColor">#F531353B</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/dp_8</item>
     </style>
 </resources>

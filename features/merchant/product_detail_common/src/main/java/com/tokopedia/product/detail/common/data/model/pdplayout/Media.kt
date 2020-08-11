@@ -21,5 +21,5 @@ data class Media(
         @SerializedName("videoURLIOS")
         val videoURLIOS: String = ""
 ) {
-        var id: String = ""
+    var id: String = ""
 }

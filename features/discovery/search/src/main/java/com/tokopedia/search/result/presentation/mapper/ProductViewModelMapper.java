@@ -138,6 +138,7 @@ public class ProductViewModelMapper {
 
         return new RelatedViewModel(
                 related.getRelatedKeyword(),
+                related.getPosition(),
                 broadMatchViewModelList
         );
     }
@@ -173,9 +174,39 @@ public class ProductViewModelMapper {
                 otherRelatedProduct.getUrl(),
                 otherRelatedProduct.getApplink(),
                 otherRelatedProduct.getPriceString(),
+                otherRelatedProduct.getShop().getCity(),
+                convertOtherRelatedProductBadgeToBadgesItemList(otherRelatedProduct.getBadgeList()),
+                convertOtherRelatedProductFreeOngkirToFreeOngkirViewModel(otherRelatedProduct.getFreeOngkir()),
+                otherRelatedProduct.isWishlisted(),
                 position,
                 alternativeKeyword
         );
+    }
+
+    private List<BadgeItemViewModel> convertOtherRelatedProductBadgeToBadgesItemList(
+            List<SearchProductModel.OtherRelatedProductBadge> badgesList
+    ) {
+        List<BadgeItemViewModel> badgeItemList = new ArrayList<>();
+
+        for (SearchProductModel.OtherRelatedProductBadge badgeModel : badgesList) {
+            badgeItemList.add(convertOtherRelatedProductBadgeToBadgeItem(badgeModel));
+        }
+        return badgeItemList;
+    }
+
+    private BadgeItemViewModel convertOtherRelatedProductBadgeToBadgeItem(
+            SearchProductModel.OtherRelatedProductBadge badgeModel
+    ) {
+        BadgeItemViewModel badgeItem = new BadgeItemViewModel();
+        badgeItem.setImageUrl(badgeModel.getImageUrl());
+        badgeItem.setShown(badgeModel.isShown());
+        return badgeItem;
+    }
+
+    private FreeOngkirViewModel convertOtherRelatedProductFreeOngkirToFreeOngkirViewModel(
+            SearchProductModel.OtherRelatedProductFreeOngkir freeOngkir
+    ) {
+        return new FreeOngkirViewModel(freeOngkir.isActive(), freeOngkir.getImageUrl());
     }
 
     private List<ProductItemViewModel> convertToProductItemViewModelList(int lastProductItemPositionFromCache, List<SearchProductModel.Product> productModels, boolean useRatingString) {

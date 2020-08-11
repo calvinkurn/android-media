@@ -96,10 +96,10 @@ class DigitalSearchNumberFragment : TopupBillsSearchNumberFragment() {
             if (resultCode == Activity.RESULT_OK) {
                 if (requestCode == REQUEST_CODE_CONTACT_PICKER) {
                     activity?.let {
-                        telco_search_number_input_view.searchText = ""
+                        telco_search_number_input_view.searchBarTextField.setText("")
                         data.data?.run {
                             val contact = this.covertContactUriToContactData(it.contentResolver)
-                            telco_search_number_input_view.searchText = contact.contactNumber
+                            telco_search_number_input_view.searchBarTextField.setText(contact.contactNumber)
                         }
                     }
                 }
@@ -112,6 +112,7 @@ class DigitalSearchNumberFragment : TopupBillsSearchNumberFragment() {
     }
 
     override fun onSearchReset() {
+        super.onSearchReset()
         topupAnalytics.eventClearInputNumber()
     }
 

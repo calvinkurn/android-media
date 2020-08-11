@@ -7,7 +7,6 @@ import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
 import com.tokopedia.kolcommon.view.listener.KolPostLikeListener
 import com.tokopedia.shop.feed.domain.WhitelistDomain
 import com.tokopedia.shop.feed.view.model.WhitelistViewModel
-import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 
 /**
@@ -63,6 +62,8 @@ interface FeedShopContract {
         fun trackPostClick(uniqueTrackingId: String, redirectLink: String)
 
         fun trackPostClickUrl(url:String)
+
+        fun doTopAdsTracker(url: String, shopId: String, shopName: String, imageUrl: String, isClick: Boolean)
 
         fun addPostTagItemToCart(postTagItem: PostTagItem)
 

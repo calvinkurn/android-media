@@ -168,12 +168,12 @@ yang ditemukan</string>
     <string name="title_broadcast_handle_not_follow">Kamu menerima chat promosi ini karena pernah melihat produk toko ini</string>
     <string name="title_broadcast_stop_promo">Berhenti Terima Promo</string>
     <string name="title_broadcast_follow_shop">Follow Toko</string>
-    <string name="title_success_follow_shop">Berhasil follow</string>
-    <string name="title_success_unfollow_shop">Berhasil unfollow</string>
+    <string name="title_success_follow_shop">Toko berhasil di-follow</string>
+    <string name="title_success_unfollow_shop">Toko berhasil di-unfollow</string>
     <string name="title_success_block_promo">Kamu berhenti menerima chat promosi dari toko ini sampai %1$s.</string>
     <string name="title_success_allow_promo">Kamu akan menerima chat promosi dari toko ini lagi.</string>
-    <string name="title_allow_promo">Terima kembali chat promosi</string>
-    <string name="title_block_promo">Berhenti terima chat promosi</string>
+    <string name="title_allow_promo">Terima Kembali Chat Promosi</string>
+    <string name="title_block_promo">Berhenti Terima Chat Promosi</string>
     <string name="title_confirm_block_promo">Yakin ingin diblokir?</string>
     <string name="desc_confirm_block_promo">Kalau diblokir, kamu tidak akan menerima chat dari pengguna ini.</string>
     <string name="title_block_user_chat">Blokir Pengguna</string>
