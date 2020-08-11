@@ -587,7 +587,7 @@ public class ProductListFragment
 
     private void showNetworkErrorOnLoadMore(int startRow) {
         NetworkErrorHelper.createSnackbarWithAction(getActivity(), () -> {
-            presenter.setStartFrom(startRow);
+            addLoading();
             presenter.loadMoreData(searchParameter.getSearchParameterMap());
         }).showRetrySnackbar();
     }

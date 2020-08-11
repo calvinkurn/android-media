@@ -228,11 +228,6 @@ final class ProductListPresenter
     }
 
     @Override
-    public void setStartFrom(int startFrom) {
-        this.startFrom = startFrom;
-    }
-
-    @Override
     public int getStartFrom() {
         return this.startFrom;
     }

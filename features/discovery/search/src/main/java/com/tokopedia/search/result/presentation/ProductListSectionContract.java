@@ -191,8 +191,6 @@ public interface ProductListSectionContract {
 
         void clearData();
 
-        void setStartFrom(int startFrom);
-
         int getStartFrom();
 
         void onViewCreated();
