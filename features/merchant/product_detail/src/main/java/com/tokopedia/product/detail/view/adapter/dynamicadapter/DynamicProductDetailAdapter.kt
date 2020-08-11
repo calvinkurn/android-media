@@ -66,13 +66,6 @@ class DynamicProductDetailAdapter(
         }
     }
 
-    fun notifyShipingInfo(shipingInfo: ProductGeneralInfoDataModel?) {
-        shipingInfo?.let {
-            val indexOfShipingInfo = list.indexOf(it)
-            notifyItemChanged(indexOfShipingInfo)
-        }
-    }
-
     fun notifyRecomAdapter(listOfData: List<ProductRecommendationDataModel>?) {
         listOfData?.run {
             forEach {

@@ -2,6 +2,7 @@ package com.tokopedia.product.detail.data.model.upcoming
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.product.detail.common.data.model.constant.ProductUpcomingTypeDef
 
 /**
  * Created by Yehezkiel on 21/07/20

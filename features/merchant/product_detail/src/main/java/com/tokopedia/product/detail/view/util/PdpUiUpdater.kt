@@ -267,7 +267,7 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
         }
     }
 
-    fun updateDataP2(context:Context?, p2Data: ProductInfoP2UiData, productId: String){
+    fun updateDataP2(context: Context?, p2Data: ProductInfoP2UiData, productId: String) {
         p2Data.let {
 
             shopInfoMap?.run {
@@ -354,6 +354,8 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
             endDate = selectedUpcoming?.endDate ?: ""
             startDate = selectedUpcoming?.startDate ?: ""
             notifyMe = selectedUpcoming?.notifyMe ?: false
+            upcomingNplData = UpcomingNplDataModel(selectedUpcoming?.upcomingType ?: "", selectedUpcoming?.ribbonCopy ?: "",
+                    selectedUpcoming?.startDate ?: "")
         }
     }
 

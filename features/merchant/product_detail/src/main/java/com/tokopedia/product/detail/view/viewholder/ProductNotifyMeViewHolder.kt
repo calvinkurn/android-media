@@ -25,7 +25,7 @@ class ProductNotifyMeViewHolder(view: View, private val listener: DynamicProduct
     }
 
     override fun bind(element: ProductNotifyMeDataModel) {
-        if (element.campaignID.isNotEmpty() && !element.isUpcomingNplType) {
+        if (element.campaignID.isNotEmpty() && !element.isUpcomingNplType()) {
             itemView.layout_notify_me?.layoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
             itemView.layout_notify_me?.requestLayout()
             bindTitle(element)
