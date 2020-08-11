@@ -14,6 +14,12 @@ internal class SearchFilterUtilsTest {
 
         getSortFilterCount(mapOf(SearchApiConst.Q to "samsung", SearchApiConst.PMIN to 100_000)) shouldBe 1
 
+        getSortFilterCount(mapOf(SearchApiConst.Q to "samsung", SearchApiConst.PMIN to 0)) shouldBe 0
+
+        getSortFilterCount(mapOf(SearchApiConst.Q to "samsung", SearchApiConst.PMAX to 0)) shouldBe 0
+
+        getSortFilterCount(mapOf(SearchApiConst.Q to "samsung", SearchApiConst.PMIN to 0, SearchApiConst.PMAX to 0)) shouldBe 0
+
         getSortFilterCount(
                 mapOf(SearchApiConst.Q to "samsung", SearchApiConst.PMIN to 100_000, SearchApiConst.PMAX to 1_000_000)
         ) shouldBe 1

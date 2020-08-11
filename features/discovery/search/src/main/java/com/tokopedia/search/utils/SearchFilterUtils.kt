@@ -21,17 +21,47 @@ internal val nonFilterParameterKeyList = setOf(
 )
 
 internal fun getSortFilterCount(mapParameter: Map<String, Any>): Int {
-    val filterParameter = mapParameter.minus(nonFilterParameterKeyList)
-
     var sortFilterCount = 0
-    filterParameter.values.forEach {
-        sortFilterCount += it.toString().split(OptionHelper.OPTION_SEPARATOR).size
+
+    val mutableMapParameter = mapParameter.toMutableMap()
+    val sortFilterParameter = mutableMapParameter.createAndCountSortFilterParameter {
+        sortFilterCount += it
     }
 
-    if (mapParameter.hasMinAndMaxPriceFilter()) sortFilterCount -= 1
-    if (mapParameter.isSortHasDefaultValue()) sortFilterCount -= 1
+    if (sortFilterParameter.hasMinAndMaxPriceFilter()) sortFilterCount -= 1
+    if (sortFilterParameter.isSortHasDefaultValue()) sortFilterCount -= 1
 
     return sortFilterCount
+}
+
+private fun MutableMap<String, Any>.createAndCountSortFilterParameter(count: (Int) -> Unit): MutableMap<String, Any> {
+    val iterator = iterator()
+
+    while (iterator.hasNext()) {
+        val entry = iterator.next()
+
+        if (entry.isNotSortAndFilterEntry()) {
+            iterator.remove()
+            continue
+        }
+
+        count(entry.value.toString().split(OptionHelper.OPTION_SEPARATOR).size)
+    }
+
+    return this
+}
+
+private fun Map.Entry<String, Any>.isNotSortAndFilterEntry(): Boolean {
+    return isNotFilterAndSortKey() || isPriceFilterWithZeroValue()
+}
+
+private fun Map.Entry<String, Any>.isNotFilterAndSortKey(): Boolean {
+    return nonFilterParameterKeyList.contains(key)
+}
+
+private fun Map.Entry<String, Any>.isPriceFilterWithZeroValue(): Boolean {
+    return (key == SearchApiConst.PMIN && value.toString() == "0")
+            || (key == SearchApiConst.PMAX && value.toString() == "0")
 }
 
 private fun Map<String, Any>.hasMinAndMaxPriceFilter(): Boolean {
@@ -62,7 +92,7 @@ internal fun getSortFilterParamsString(mapParameter: Map<String, Any>): String {
 }
 
 internal fun getFilterParams(mapParameter: Map<String, String>): Map<String, String> {
-    return mapParameter.minus(nonFilterParameterKeyList).minus(SearchApiConst.OB)
+    return mapParameter.minus(nonFilterParameterKeyList + listOf(SearchApiConst.OB))
 }
 
 internal fun createDefaultFilterProduct() = Gson().fromJson(createDefaultFilterProductJSON(), DynamicFilterModel::class.java)
