@@ -5,10 +5,6 @@ import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.Properties
 import com.tokopedia.discovery2.data.categorynavigationresponse.ChildItem
-import com.tokopedia.discovery2.data.cpmtopads.BadgesItem
-import com.tokopedia.discovery2.data.cpmtopads.Headline
-import com.tokopedia.discovery2.data.cpmtopads.ImageProduct
-import com.tokopedia.discovery2.data.cpmtopads.ProductItem
 
 private const val CHIPS = "Chips"
 private const val TABS_ITEM = "tabs_item"
@@ -89,51 +85,6 @@ class DiscoveryDataMapper {
         return list
     }
 
-    fun mapToCpmTopAdsData(headline: Headline, listComponentsItem: ArrayList<ComponentsItem>): CpmTopAdsData {
-        val cpmTitleData = CpmTopAdsData()
-        cpmTitleData.brandName = headline.name.toString()
-        cpmTitleData.promotedText = headline.promotedText.toString()
-        cpmTitleData.imageUrl = headline.badges?.getOrElse(0) { BadgesItem() }?.imageUrl.toString()
-        cpmTitleData.componentList = listComponentsItem
-        return cpmTitleData
-    }
-
-    fun addShopItemToProductList(item: com.tokopedia.discovery2.data.cpmtopads.DataItem): ArrayList<ProductItem?>? {
-        val product = ProductItem()
-        product.name = item.headline?.shop?.slogan
-        product.buttonText = item.headline?.buttonText
-        product.shopAdsClickUrl = item.adClickUrl
-        product.shopAdsViewUrl = item.headline?.image?.fullUrl
-        product.imageProduct = ImageProduct()
-        product.imageProduct?.imageUrl = item.headline?.image?.fullEcs
-        product.applinks = item.applinks
-        item.headline?.shop?.product?.add(0, product)
-        return item.headline?.shop?.product
-    }
-
-    fun mapProductListToComponentsList(listOfProduct: ArrayList<ProductItem?>?): ArrayList<ComponentsItem> {
-        val list = ArrayList<ComponentsItem>()
-        listOfProduct?.forEachIndexed { index, element ->
-            val componentsItem = ComponentsItem()
-            componentsItem.position = index
-            componentsItem.name = getComponentName(index)
-            val litDataItem = mutableListOf<DataItem>()
-            val dataItem = DataItem()
-            dataItem.name = element?.name
-            dataItem.shopAdsClickURL = element?.shopAdsClickUrl
-            dataItem.shopAdsViewURL = element?.shopAdsViewUrl
-            dataItem.imageUrlMobile = element?.imageProduct?.imageUrl
-            dataItem.applinks = element?.applinks
-            dataItem.buttonText = element?.buttonText
-            dataItem.priceFormat = element?.priceFormat
-            dataItem.imageClickUrl = element?.imageProduct?.imageClickUrl
-            litDataItem.add(dataItem)
-            componentsItem.data = litDataItem
-            list.add(componentsItem)
-        }
-        return list
-    }
-
     fun mapListToComponentList(itemList: List<DataItem>?, subComponentName: String = "", properties: Properties?, typeProductCard: String = ""): ArrayList<ComponentsItem> {
         val list = ArrayList<ComponentsItem>()
         itemList?.forEachIndexed { index, it ->
@@ -150,11 +101,6 @@ class DiscoveryDataMapper {
         return list
     }
 
-    private fun getComponentName(index: Int): String {
-        return if (index == 0)
-            ComponentNames.CpmTopAdsShopItem.componentName
-        else ComponentNames.CpmTopAdsProductItem.componentName
-    }
 
     fun mapListToComponentList(child: List<ChildItem?>?): ArrayList<ComponentsItem> {
         val list = ArrayList<ComponentsItem>()
@@ -174,9 +120,4 @@ class DiscoveryDataMapper {
         }
         return list
     }
-
-    data class CpmTopAdsData(var promotedText: String = "",
-                             var imageUrl: String = "",
-                             var brandName: String = "",
-                             var componentList: ArrayList<ComponentsItem> = ArrayList())
 }

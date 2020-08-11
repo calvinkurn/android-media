@@ -19,6 +19,7 @@ interface WishlistTypeFactory : SmartTypeFactory{
     fun type(recommendationCarouselDataModel: RecommendationCarouselDataModel): Int
     fun type(recommendationCarouselItemDataModel: RecommendationCarouselItemDataModel): Int
     fun type(recommendationItemDataModel: RecommendationItemDataModel): Int
+    fun type(bannerTopAdsDataModel: BannerTopAdsDataModel): Int
     fun type(emptyWishlistDataModel: EmptyWishlistDataModel): Int
     fun type(emptyWishlistDataModel: EmptySearchWishlistDataModel): Int
     fun type(loadingDataModel: LoadingDataModel): Int
