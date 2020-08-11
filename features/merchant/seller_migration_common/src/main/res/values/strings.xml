@@ -159,7 +159,7 @@
 
     <string name="seller_migration_saldo_prioritas_bottom_sheet_title">Saldo Prioritas akan dialihkan ke Layanan Keuangan di aplikasi Tokopedia Seller</string>
     <string name="seller_migration_saldo_prioritas_bottom_sheet_desc">Terima hasil penjualanmu lebih cepat tanpa tunggu konfirmasi pembeli. Nikmati keuntungan pakai Saldo Prioritas:</string>
-    <string name="seller_migration_saldo_prioritas_bottom_sheet_item_active"><b>1.</b> Proses aktivasi cepat maks. 1 hari kerja.</string>
-    <string name="seller_migration_saldo_prioritas_bottom_sheet_item_withdraw"><b>2.</b> Hasil penjualan cair setelah kamu input resi.</string>
-    <string name="seller_migration_saldo_prioritas_bottom_sheet_item_process"><b>3.</b> Pengembalian dana otomatis setelah pesanan selesai.</string>
+    <string name="seller_migration_saldo_prioritas_bottom_sheet_item_process"><b>1.</b> Proses aktivasi cepat maks. 1 hari kerja.</string>
+    <string name="seller_migration_saldo_prioritas_bottom_sheet_item_result"><b>2.</b> Hasil penjualan cair setelah kamu input resi.</string>
+    <string name="seller_migration_saldo_prioritas_bottom_sheet_item_return"><b>3.</b> Pengembalian dana otomatis setelah pesanan selesai.</string>
 </resources>
