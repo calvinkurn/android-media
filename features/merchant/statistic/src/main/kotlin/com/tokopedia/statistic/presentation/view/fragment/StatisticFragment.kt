@@ -16,7 +16,6 @@ import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhomecommon.common.WidgetListener
@@ -29,17 +28,13 @@ import com.tokopedia.sellerhomecommon.utils.Utils
 import com.tokopedia.statistic.R
 import com.tokopedia.statistic.analytics.StatisticTracker
 import com.tokopedia.statistic.di.DaggerStatisticComponent
-import com.tokopedia.statistic.presentation.view.model.DateFilterItem
 import com.tokopedia.statistic.presentation.view.bottomsheet.DateFilterBottomSheet
+import com.tokopedia.statistic.presentation.view.model.DateFilterItem
 import com.tokopedia.statistic.presentation.view.viewhelper.StatisticLayoutManager
 import com.tokopedia.statistic.presentation.view.viewhelper.setOnTabSelectedListener
 import com.tokopedia.statistic.presentation.view.viewmodel.StatisticViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.ticker.Ticker
-import com.tokopedia.unifycomponents.ticker.TickerData
-import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
-import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -85,6 +80,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     private val defaultEndDate = Date()
     private val job = Job()
     private val coroutineScope by lazy { CoroutineScope(Dispatchers.Unconfined + job) }
+    private val tickerWidget: TickerWidgetUiModel by getTickerWidget()
 
     private var tabItems = emptyList<Pair<String, String>>()
     private var isFirstLoad = true
@@ -101,7 +97,6 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
         hideTooltipIfExist()
         setupView()
-        showTickerView()
 
         mViewModel.setDateRange(defaultStartDate, defaultEndDate)
 
@@ -275,20 +270,6 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         }
     }
 
-    private fun showTickerView() = view?.tickerViewStc?.run {
-        val tickerUrl = "https://docs.google.com/forms/d/1t-KeapZJwOeYOBnbXDEmzRJiUqMBicE9cQIauc40qMU"
-        val title = context.getString(R.string.stc_ticker_title)
-        val message = context.getString(R.string.stc_ticker_message, tickerUrl)
-        val tickers = listOf(TickerData(title, message, Ticker.TYPE_ANNOUNCEMENT, true))
-        val tickerAdapter = TickerPagerAdapter(context, tickers)
-        addPagerView(tickerAdapter, tickers)
-        tickerAdapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
-            override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
-                RouteManager.route(context, tickerUrl)
-            }
-        })
-    }
-
     private fun getRegularMerchantStatus(): Boolean {
         val isPowerMerchant = userSession.isPowerMerchantIdle || userSession.isGoldMerchant
         val isOfficialStore = userSession.isShopOfficialStore
@@ -435,8 +416,18 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     private fun showTabLayout() = view?.run {
-        val firstVisible: Int = mLayoutManager.findFirstVisibleItemPosition()
-        if (firstVisible > 0) {
+        val firstVisibleIndex: Int = mLayoutManager.findFirstVisibleItemPosition()
+        var shouldShowTabLayout = firstVisibleIndex > 0
+        try {
+            val firstVisibleWidget = adapter.data[0]
+            val isTickerWidget = firstVisibleWidget is TickerWidgetUiModel
+            if (isTickerWidget) {
+                shouldShowTabLayout = firstVisibleIndex > 1
+            }
+        } catch (i: IndexOutOfBoundsException) {
+        }
+
+        if (shouldShowTabLayout) {
             appBarStc.visible()
         } else {
             appBarStc.gone()
@@ -462,6 +453,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         view?.globalErrorStc?.gone()
 
         val mWidgetList = mutableListOf<BaseWidgetUiModel<*>>()
+        mWidgetList.add(tickerWidget)
         mWidgetList.addAll(widgets)
         mWidgetList.add(WhiteSpaceUiModel())
         adapter.data.clear()
@@ -484,15 +476,17 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     private fun setupTabItems() = view?.run {
         tabLayoutStc.tabLayout.removeAllTabs()
         var sectionTitle = ""
-        tabItems = adapter.data.map {
-            return@map if (it.widgetType == WidgetType.SECTION) {
-                tabLayoutStc.addNewTab(it.title)
-                sectionTitle = it.title
-                Pair(it.title, it.title)
-            } else {
-                Pair(sectionTitle, it.dataKey)
-            }
-        }
+
+        tabItems = adapter.data.filter { it !is TickerWidgetUiModel }
+                .map {
+                    return@map if (it.widgetType == WidgetType.SECTION) {
+                        tabLayoutStc.addNewTab(it.title)
+                        sectionTitle = it.title
+                        Pair(it.title, it.title)
+                    } else {
+                        Pair(sectionTitle, it.dataKey)
+                    }
+                }
         selectTabOnScrolling()
     }
 
@@ -698,5 +692,14 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         }
         toaster.show()
         toastCountDown.start()
+    }
+
+    private fun getTickerWidget(): Lazy<TickerWidgetUiModel> = lazy {
+        val tickerUrl = "https://docs.google.com/forms/d/1t-KeapZJwOeYOBnbXDEmzRJiUqMBicE9cQIauc40qMU"
+        val title = context?.getString(R.string.stc_ticker_title).orEmpty()
+        val message = context?.getString(R.string.stc_ticker_message, tickerUrl).orEmpty()
+        val tickerItems = listOf(TickerItemUiModel(title = title, message = message, redirectUrl = tickerUrl))
+        val tickerData = TickerDataUiModel(tickers = tickerItems)
+        return@lazy TickerWidgetUiModel(data = tickerData)
     }
 }
