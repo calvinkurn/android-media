@@ -58,6 +58,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         private const val TOAST_DURATION = 5000L
         private const val SCREEN_NAME = "statistic_page_fragment"
         private const val TAG_TOOLTIP = "statistic_tooltip"
+        private const val TICKER_NAME = "statistic_page_ticker"
 
         fun newInstance(): StatisticFragment {
             return StatisticFragment()
@@ -499,13 +500,18 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         } catch (e: IndexOutOfBoundsException) {
             ""
         }
+
         val adapterIndex: Int = adapter.data.indexOfFirst { it.title == tabTitle }
+
         if (adapterIndex != RecyclerView.NO_POSITION) {
-            mLayoutManager.scrollToPositionWithOffset(adapterIndex, tabLayoutStc.height)
+            val tabLayoutHeight: Int = if (selectedTabIndex != 0) tabLayoutStc.height else 0
+            val widgetPosition: Int = if (selectedTabIndex != 0) adapterIndex else 0
+            mLayoutManager.scrollToPositionWithOffset(widgetPosition, tabLayoutHeight)
             recyclerView.post {
                 requestVisibleWidgetsData()
             }
         }
+
         if (selectedTabIndex == 0) {
             appBarStc.gone()
         }
@@ -699,7 +705,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         val title = context?.getString(R.string.stc_ticker_title).orEmpty()
         val message = context?.getString(R.string.stc_ticker_message, tickerUrl).orEmpty()
         val tickerItems = listOf(TickerItemUiModel(title = title, message = message, redirectUrl = tickerUrl))
-        val tickerData = TickerDataUiModel(tickers = tickerItems)
-        return@lazy TickerWidgetUiModel(data = tickerData)
+        val tickerData = TickerDataUiModel(tickers = tickerItems, dataKey = TICKER_NAME)
+        return@lazy TickerWidgetUiModel(data = tickerData, title = TICKER_NAME, dataKey = TICKER_NAME)
     }
 }
