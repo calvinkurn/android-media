@@ -68,11 +68,8 @@ class FlightCancellationViewHolder(itemView: View,
 
         flightCancellationPassengerAdapter.addData(element.passengerModelList)
 
-        checkBoxJourney.setOnClickListener {
-            uncheckAllData = true
-        }
-
         checkBoxJourney.setOnCheckedChangeListener { compoundButton, isChecked ->
+            if (compoundButton.isPressed) uncheckAllData = !isChecked
             isJourneyChecked = isChecked
 
             if (isJourneyChecked) {
@@ -93,7 +90,7 @@ class FlightCancellationViewHolder(itemView: View,
 
     override fun toggleCheckJourney(uncheckAllData: Boolean) {
         this.uncheckAllData = uncheckAllData
-        checkBoxJourney.isChecked = !isJourneyChecked
+        checkBoxJourney.isChecked = isJourneyChecked
     }
 
     interface FlightCancellationListener {
