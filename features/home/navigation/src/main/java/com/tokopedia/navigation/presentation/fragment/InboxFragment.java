@@ -42,6 +42,7 @@ import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
 import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter;
@@ -76,6 +77,8 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     private static final String WIHSLIST_STATUS_IS_WISHLIST = "isWishlist";
     private static final int REQUEST_FROM_PDP = 138;
     private static final String className = "com.tokopedia.navigation.presentation.fragment.InboxFragment";
+    private static final String AB_TEST_KEY = "Inbox Ulasan Revamp";
+    private static final String OLD_REVIEW_FLOW = "Old Review Flow";
 
     @Inject
     InboxPresenter presenter;
@@ -404,7 +407,11 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     public void onRenderNotifInbox(NotificationsModel entity, String reviewCount) {
         emptyLayout.setVisibility(View.GONE);
         swipeRefreshLayout.setVisibility(View.VISIBLE);
-        adapter.updateValue(entity, reviewCount);
+        if(useOldCounter()) {
+            adapter.updateValue(entity, entity.getInbox().getReview());
+        } else {
+            adapter.updateValue(entity, reviewCount);
+        }
     }
 
     @Override
@@ -467,5 +474,14 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
 
     private void onClickOrganic(RecommendationItem item) {
         InboxGtmTracker.getInstance().eventInboxProductClick(getContext(), item, item.getPosition(), item.isTopAds());
+    }
+
+    private RemoteConfig getABTestRemoteConfig() {
+        return RemoteConfigInstance.getInstance().getABTestPlatform();
+    }
+
+    private Boolean useOldCounter() {
+        String remoteConfigValue = getABTestRemoteConfig().getString(AB_TEST_KEY);
+        return remoteConfigValue.equals(OLD_REVIEW_FLOW);
     }
 }
