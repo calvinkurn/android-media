@@ -75,17 +75,14 @@ yang ditemukan</string>
     <string name="already_follow_store">Following</string>
     <string name="view_profile_container_string">Lihat Profil %s</string>
     <string name="delete_conversation">Hapus Percakapan</string>
-    <string name="chat_incoming_settings">Atur Penerimaan Chat</string>
     <string name="chat_report_user">Laporkan Pengguna</string>
     <string name="delete_chat_question">Hapus chat?</string>
     <string name="delete_chat_warning_message">Chat akan terhapus selamanya</string>
 
     <string name="chat_promotion_text">Chat Promosi</string>
     <string name="chat_information_text">Berisi informasi promo, notifikasi harga, dan penawaran menarik lainnya</string>
-    <string name="chat_promotion_blocked_validity">Anda berhenti menerima chat promosi dari %1$s hingga %2$s</string>
     <string name="chat_personal_text">Chat Personal</string>
     <string name="chat_personal_info_text">Berisi tanggapan langsung dari penjual atas pertanyaan Anda</string>
-    <string name="chat_personal_blocked_validity">Anda berhenti menerima chat personal dari %1$s hingga %2$s</string>
     <string name="enable_chat_settings">klik di sini.</string>
     <string name="enable_chat_personal_settings" formatted="false">Anda berhenti menerima semua chat dari %s</string>
     <string name="disable_chat_personal_settings" formatted="false">Anda kembali menerima semua chat dari %s</string>

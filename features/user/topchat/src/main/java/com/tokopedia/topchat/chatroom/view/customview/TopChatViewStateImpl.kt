@@ -156,7 +156,7 @@ class TopChatViewStateImpl constructor(
         blockStatus.isBlocked = isBlocked
     }
 
-    override fun setChatPromoBlockStatus(isBlocked: Boolean, due: String)  {
+    override fun setChatPromoBlockStatus(isBlocked: Boolean, due: String) {
         blockStatus.isPromoBlocked = isBlocked
         blockStatus.blockedUntil = due
     }
@@ -345,8 +345,6 @@ class TopChatViewStateImpl constructor(
         }
         val blockChatMenu = createBlockChatMenu()
         listMenu.add(blockChatMenu)
-        // TODO: Remove chat setting page code
-//        listMenu.add(Menus.ItemMenus(view.context.getString(R.string.chat_incoming_settings), R.drawable.ic_topchat_chat_setting_bold_grey))
         listMenu.add(Menus.ItemMenus(view.context.getString(R.string.chat_report_user), R.drawable.ic_topchat_report_bold_grey))
         listMenu.add(Menus.ItemMenus(view.context.getString(R.string.delete_conversation), R.drawable.ic_trash_filled_grey))
         return listMenu
@@ -418,9 +416,6 @@ class TopChatViewStateImpl constructor(
             }
             itemMenus.title == view.context.getString(R.string.already_follow_store) -> {
                 headerMenuListener.followUnfollowShop(false)
-            }
-            itemMenus.title == view.context.getString(R.string.chat_incoming_settings) -> {
-                headerMenuListener.onGoToChatSetting(chatroomViewModel.blockedStatus)
             }
             itemMenus.title == view.context.getString(R.string.chat_report_user) -> {
                 headerMenuListener.onGoToReportUser()

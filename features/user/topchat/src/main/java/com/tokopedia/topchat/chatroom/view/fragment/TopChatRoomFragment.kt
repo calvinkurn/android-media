@@ -1064,23 +1064,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         }
     }
 
-    override fun onGoToChatSetting(blockedStatus: BlockedStatus) {
-        (activity as Activity).let {
-            val intent = TopChatInternalRouter.Companion.getChatSettingIntent(it,
-                    messageId,
-                    opponentRole,
-                    opponentName,
-                    getViewState().blockStatus.isBlocked,
-                    getViewState().blockStatus.isPromoBlocked,
-                    getViewState().blockStatus.blockedUntil,
-                    shopId)
-            startActivityForResult(intent, REQUEST_GO_TO_SETTING_CHAT)
-        }
-
-        analytics.trackOpenChatSetting()
-
-    }
-
     override fun onGoToReportUser() {
         context?.let {
             analytics.eventClickReportUser(opponentId)

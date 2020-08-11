@@ -3,11 +3,6 @@ package com.tokopedia.topchat.common
 import android.content.Context
 import android.content.Intent
 import com.tokopedia.attachproduct.view.activity.AttachProductActivity
-import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
-import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ChatBlockResponse
-import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ChatBlockStatus
-import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ChatSettingsResponse
-import com.tokopedia.topchat.chatroom.view.activity.ChatRoomSettingsActivity
 
 /**
  * @author by nisie on 07/01/19.
@@ -39,38 +34,6 @@ open class TopChatInternalRouter {
                                    isSeller: Boolean): Intent {
             return AttachProductActivity.createInstance(context, shopId, shopName, isSeller,
                     AttachProductActivity.SOURCE_TOPCHAT)
-        }
-
-        fun getChatSettingIntent(context: Context, messageId: String, opponentRole: String,
-                                 opponentName: String, isBlocked: Boolean, isPromoBlocked:
-                                 Boolean, blockedUntil: String, shopId: Int): Intent {
-            return ChatRoomSettingsActivity.getIntent(context,
-                    messageId,
-                    ChatSettingsResponse(ChatBlockResponse(
-                            isBlocked,
-                            ChatBlockStatus(
-                                    isBlocked,
-                                    isPromoBlocked,
-                                    blockedUntil
-                            )
-                    )),
-                    isChatEnabled(opponentRole, isBlocked, isPromoBlocked),
-                    opponentRole,
-                    opponentName,
-                    shopId)
-        }
-
-        private fun isChatEnabled(opponentRole: String, isBlocked: Boolean, isPromoBlocked:
-        Boolean): Boolean {
-            return when {
-                opponentRole.toLowerCase().contains(ChatRoomHeaderViewModel.Companion.ROLE_OFFICIAL)
-                -> { !isPromoBlocked }
-                opponentRole.toLowerCase().contains(ChatRoomHeaderViewModel.Companion.ROLE_SHOP)
-                -> { !isBlocked && !isPromoBlocked}
-                opponentRole.toLowerCase().contains(ChatRoomHeaderViewModel.Companion.ROLE_USER)
-                -> { !isBlocked }
-                else -> { true }
-            }
         }
 
     }
