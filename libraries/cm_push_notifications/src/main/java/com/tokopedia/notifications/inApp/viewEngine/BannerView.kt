@@ -39,16 +39,24 @@ internal open class BannerView(activity: Activity) {
         alertDialog.create()
     }
 
-    fun dialog(data: CMInApp) {
+    fun isShowing(): Boolean {
+        return dialog.isShowing
+    }
+
+    fun show() {
+        dialog.show()
+    }
+
+    fun dialog(data: CMInApp): BannerView {
         alertDialog.setView(createView(data))
         alertDialog.setCancelable(false)
-        dialog.show()
 
         // resize dialog's width with 80% of screen
         setWindowAttributes(dialog, getDisplayMetrics(mActivity.get()).first)
 
         // impression tracker
         analytics.impression(data)
+        return this
     }
 
     private fun createView(data: CMInApp): View? {
@@ -193,8 +201,8 @@ internal open class BannerView(activity: Activity) {
         }
 
         @JvmStatic
-        fun create(activity: Activity, data: CMInApp) {
-            BannerView(activity).dialog(data)
+        fun create(activity: Activity, data: CMInApp): BannerView {
+            return BannerView(activity).dialog(data)
         }
     }
 }

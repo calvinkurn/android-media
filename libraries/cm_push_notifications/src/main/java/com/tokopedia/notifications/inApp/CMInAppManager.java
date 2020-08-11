@@ -137,7 +137,9 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
         if (getCurrentActivity() == null) return;
         Activity activity = getCurrentActivity();
         try {
-            BannerView.create(activity, data);
+            BannerView dialog = BannerView.create(activity, data);
+            if (dialog.isShowing()) return;
+            dialog.show();
         } catch (Exception e) {
             onCMInAppInflateException(data);
         }
