@@ -12,23 +12,23 @@ const val DEFAULT_BANNER_IMAGE_URL_2 = "https://ecs7.tokopedia.net/defaultpage/b
 const val DEFAULT_BANNER_IMAGE_URL_3 = "https://ecs7.tokopedia.net/defaultpage/banner/bannerpromo1000.jpg"
 
 //default dynamic icon data
-const val DEFAULT_DYNAMIC_ICON_IMAGE_URL_1 = "https://ecs7.tokopedia.net/defaultpage/icon/icon1.png"
+const val DEFAULT_DYNAMIC_ICON_IMAGE_URL_1 = "https://ecs7.tokopedia.net/defaultpage/icon/SemuaKategori-resize.png"
 const val DEFAULT_DYNAMIC_ICON_APPLINK_1 = "tokopedia://category-explore?type=2&tab=1"
 const val DEFAULT_DYNAMIC_ICON_NAME_1 = "Semua Kategori"
 
-const val DEFAULT_DYNAMIC_ICON_IMAGE_URL_2 = "https://ecs7.tokopedia.net/defaultpage/icon/icon2.png"
+const val DEFAULT_DYNAMIC_ICON_IMAGE_URL_2 = "https://ecs7.tokopedia.net/defaultpage/icon/Belanja-resize.png"
 const val DEFAULT_DYNAMIC_ICON_APPLINK_2 = "tokopedia://category-explore?type=1"
 const val DEFAULT_DYNAMIC_ICON_NAME_2 = "Belanja"
 
-const val DEFAULT_DYNAMIC_ICON_IMAGE_URL_3 = "https://ecs7.tokopedia.net/defaultpage/icon/icon3.png"
+const val DEFAULT_DYNAMIC_ICON_IMAGE_URL_3 = "https://ecs7.tokopedia.net/defaultpage/icon/Topup-resize.png"
 const val DEFAULT_DYNAMIC_ICON_APPLINK_3 = "tokopedia://recharge/home"
 const val DEFAULT_DYNAMIC_ICON_NAME_3 = "Top-up & Tagihan"
 
-const val DEFAULT_DYNAMIC_ICON_IMAGE_URL_4 = "https://ecs7.tokopedia.net/defaultpage/icon/icon4.png"
+const val DEFAULT_DYNAMIC_ICON_IMAGE_URL_4 = "https://ecs7.tokopedia.net/defaultpage/icon/Travel-resize.png"
 const val DEFAULT_DYNAMIC_ICON_APPLINK_4 = "tokopedia://travelentertainment/home"
 const val DEFAULT_DYNAMIC_ICON_NAME_4 = "Travel & Entertainment"
 
-const val DEFAULT_DYNAMIC_ICON_IMAGE_URL_5 = "https://ecs7.tokopedia.net/defaultpage/icon/icon5.png"
+const val DEFAULT_DYNAMIC_ICON_IMAGE_URL_5 = "https://ecs7.tokopedia.net/defaultpage/icon/Keuangan-resize.png"
 const val DEFAULT_DYNAMIC_ICON_APPLINK_5 = "tokopedia://discovery/keuangan"
 const val DEFAULT_DYNAMIC_ICON_NAME_5 = "Keuangan"
 
