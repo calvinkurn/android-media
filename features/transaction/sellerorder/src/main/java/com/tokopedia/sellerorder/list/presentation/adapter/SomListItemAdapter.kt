@@ -48,74 +48,77 @@ class SomListItemAdapter : RecyclerView.Adapter<SomListItemAdapter.ViewHolder>()
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         if (somItemList.isNotEmpty()) {
-            holder.itemView.label_status_order.text = somItemList[position].status
+            somItemList.getOrNull(position)?.let { orderItem ->
+                holder.itemView.label_status_order.text = orderItem.status
 
-            if (somItemList[position].cancelRequest == 1) {
-                somItemList.getOrNull(position)?.tickerInfo?.let { tickerInfo ->
-                    setupTicker(holder.tickerDescriptionClickListener, holder.itemView.ticker_buyer_request_cancel, tickerInfo)
-                    holder.itemView.ticker_buyer_request_cancel?.show()
-                }
-            } else {
-                holder.itemView.ticker_buyer_request_cancel?.hide()
-            }
-
-            if (somItemList[position].statusColor.isNotEmpty() && !somItemList[position].statusColor.equals(LABEL_EMPTY, true)) {
-                holder.itemView.label_status_order.setBackgroundColor(Color.parseColor(somItemList[position].statusColor))
-            }
-            holder.itemView.label_invoice.text = somItemList[position].orderResi
-            if (somItemList[position].listOrderProduct.isNotEmpty()) {
-                holder.itemView.ic_product.loadImage(somItemList[position].listOrderProduct[0].pictureUrl, com.tokopedia.design.R.drawable.ic_loading_image)
-            }
-            holder.itemView.label_date_order.text = somItemList[position].orderDate
-            holder.itemView.label_buyer_name.text = somItemList[position].buyerName
-
-            if (somItemList[position].deadlineText.isEmpty() || somItemList[position].deadlineText.equals(LABEL_EMPTY, true)) {
-                holder.itemView.label_due_response.visibility = View.GONE
-                holder.itemView.ic_label_due_card.visibility = View.GONE
-            } else {
-                if (somItemList[position].orderStatusId == STATUS_ORDER_DELIVERED || somItemList[position].orderStatusId == STATUS_ORDER_DELIVERED_DUE_LIMIT) {
-                    holder.itemView.label_due_response.text = holder.itemView.context.getString(R.string.som_deadline_done)
+                if (orderItem.cancelRequest == 1 && orderItem.tickerInfo.text.isNotBlank()) {
+                    orderItem.tickerInfo.let { tickerInfo ->
+                        holder.setTickerDescriptionClickListener(tickerInfo.actionUrl)
+                        setupTicker(holder.tickerDescriptionClickListener, holder.itemView.ticker_buyer_request_cancel, tickerInfo)
+                        holder.itemView.ticker_buyer_request_cancel?.show()
+                    }
                 } else {
-                    holder.itemView.label_due_response.text = holder.itemView.context.getString(R.string.som_deadline)
+                    holder.itemView.ticker_buyer_request_cancel?.hide()
                 }
-                holder.itemView.label_due_response.visibility = View.VISIBLE
-                holder.itemView.ic_label_due_card.visibility = View.VISIBLE
-                holder.itemView.label_due_response_day_count.text = somItemList[position].deadlineText
-                holder.itemView.ic_time.loadImageDrawable(R.drawable.ic_label_due_time)
-                holder.itemView.ic_time.setColorFilter(Color.WHITE)
-                if (somItemList[position].deadlineColor.isNotEmpty() && !somItemList[position].deadlineColor.equals(LABEL_EMPTY, true)) {
-                    holder.itemView.ic_label_due_card.setCardBackgroundColor(Color.parseColor(somItemList[position].deadlineColor))
+
+                if (orderItem.statusColor.isNotEmpty() && !orderItem.statusColor.equals(LABEL_EMPTY, true)) {
+                    holder.itemView.label_status_order.setBackgroundColor(Color.parseColor(orderItem.statusColor))
                 }
-            }
+                holder.itemView.label_invoice.text = orderItem.orderResi
+                if (orderItem.listOrderProduct.isNotEmpty()) {
+                    holder.itemView.ic_product.loadImage(orderItem.listOrderProduct[0].pictureUrl, com.tokopedia.design.R.drawable.ic_loading_image)
+                }
+                holder.itemView.label_date_order.text = orderItem.orderDate
+                holder.itemView.label_buyer_name.text = orderItem.buyerName
 
-            val totalProducts = somItemList[position].listOrderProduct.size
-            if (totalProducts > 1) {
-                holder.itemView.rl_overlay_product?.visibility = View.VISIBLE
-                holder.itemView.label_total_product?.text = "$totalProducts\n Produk"
-            } else {
-                holder.itemView.rl_overlay_product?.visibility = View.GONE
-            }
+                if (orderItem.deadlineText.isEmpty() || orderItem.deadlineText.equals(LABEL_EMPTY, true)) {
+                    holder.itemView.label_due_response.visibility = View.GONE
+                    holder.itemView.ic_label_due_card.visibility = View.GONE
+                } else {
+                    if (orderItem.orderStatusId == STATUS_ORDER_DELIVERED || orderItem.orderStatusId == STATUS_ORDER_DELIVERED_DUE_LIMIT) {
+                        holder.itemView.label_due_response.text = holder.itemView.context.getString(R.string.som_deadline_done)
+                    } else {
+                        holder.itemView.label_due_response.text = holder.itemView.context.getString(R.string.som_deadline)
+                    }
+                    holder.itemView.label_due_response.visibility = View.VISIBLE
+                    holder.itemView.ic_label_due_card.visibility = View.VISIBLE
+                    holder.itemView.label_due_response_day_count.text = orderItem.deadlineText
+                    holder.itemView.ic_time.loadImageDrawable(R.drawable.ic_label_due_time)
+                    holder.itemView.ic_time.setColorFilter(Color.WHITE)
+                    if (orderItem.deadlineColor.isNotEmpty() && !orderItem.deadlineColor.equals(LABEL_EMPTY, true)) {
+                        holder.itemView.ic_label_due_card.setCardBackgroundColor(Color.parseColor(orderItem.deadlineColor))
+                    }
+                }
 
-            if (somItemList[position].listOrderLabel.isNotEmpty()) {
-                holder.itemView.ll_label_order?.visibility = View.VISIBLE
-                createOrderLabelList(holder, position)
-            } else {
-                holder.itemView.ll_label_order?.visibility = View.GONE
-            }
+                val totalProducts = orderItem.listOrderProduct.size
+                if (totalProducts > 1) {
+                    holder.itemView.rl_overlay_product?.visibility = View.VISIBLE
+                    holder.itemView.label_total_product?.text = "$totalProducts\n Produk"
+                } else {
+                    holder.itemView.rl_overlay_product?.visibility = View.GONE
+                }
 
-            val orderId = somItemList[position].orderId
-            holder.itemView.setOnClickListener {
-                actionListener?.onListItemClicked(orderId)
+                if (orderItem.listOrderLabel.isNotEmpty()) {
+                    holder.itemView.ll_label_order?.visibility = View.VISIBLE
+                    createOrderLabelList(holder, position)
+                } else {
+                    holder.itemView.ll_label_order?.visibility = View.GONE
+                }
+
+                val orderId = orderItem.orderId
+                holder.itemView.setOnClickListener {
+                    actionListener?.onListItemClicked(orderId)
+                }
             }
         }
     }
 
-    private fun setupTicker(listener: TickerCallback, tickerBuyerRequestCancel: Ticker?, tickerInfo: TickerInfo) {
+    private fun setupTicker(listener: TickerCallback?, tickerBuyerRequestCancel: Ticker?, tickerInfo: TickerInfo) {
         tickerBuyerRequestCancel?.apply {
-            setOnClickListener { listener.onDescriptionViewClick(tickerInfo.actionUrl) }
+            setOnClickListener { listener?.onDescriptionViewClick(tickerInfo.actionUrl) }
             val tickerDescription = makeTickerDescription(context, tickerInfo)
             setTextDescription(tickerDescription)
-            setDescriptionClickEvent(listener)
+            listener?.let { setDescriptionClickEvent(it) }
             tickerType = Utils.mapBackgroundColorToUnifyTickerType(tickerInfo.type)
             closeButtonVisibility = View.GONE
         }
@@ -165,7 +168,7 @@ class SomListItemAdapter : RecyclerView.Adapter<SomListItemAdapter.ViewHolder>()
         holder.itemView.ll_label_order?.removeAllViews()
 
         // soon will be change with unify label (for now, label unify cannot set color background & text
-        somItemList[position].listOrderLabel.forEach {
+        somItemList.getOrNull(position)?.listOrderLabel?.forEach {
             val cardView = CardView(holder.itemView.context)
             val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
             cardView.layoutParams = layoutParams
@@ -197,11 +200,19 @@ class SomListItemAdapter : RecyclerView.Adapter<SomListItemAdapter.ViewHolder>()
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val tickerDescriptionClickListener: TickerCallback = object: TickerCallback {
-            override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                RouteManager.route(itemView.context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
+        var tickerDescriptionClickListener: TickerCallback? = null
+
+        fun setTickerDescriptionClickListener(link: String) {
+            tickerDescriptionClickListener = object: TickerCallback {
+                override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                    if (link.isNotBlank()) {
+                        RouteManager.route(itemView.context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, link))
+                    } else {
+                        itemView.performClick()
+                    }
+                }
+                override fun onDismiss() {}
             }
-            override fun onDismiss() {}
         }
     }
 }

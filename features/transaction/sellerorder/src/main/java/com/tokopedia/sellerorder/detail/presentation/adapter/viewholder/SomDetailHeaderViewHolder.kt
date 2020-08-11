@@ -54,7 +54,7 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
                         .putExtra(EXTRA_USER_MODE, 2))
             }
 
-            if (item.dataObject.isBuyerRequestCancel) {
+            if (item.dataObject.isBuyerRequestCancel && item.dataObject.tickerInfo.text.isNotEmpty()) {
                 setupTicker(itemView.ticker_detail_buyer_request_cancel, item.dataObject.tickerInfo)
                 itemView.ticker_detail_buyer_request_cancel?.show()
             } else {

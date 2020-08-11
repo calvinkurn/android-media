@@ -24,6 +24,13 @@ query OrderList($input: OrderListArgs!) {
       cancel_request_note
       cancel_request_time
       cancel_request_origin_note
+      ticker_info {
+        text
+        type
+        action_text
+        action_key
+        action_url
+      }
     }
   }
 }

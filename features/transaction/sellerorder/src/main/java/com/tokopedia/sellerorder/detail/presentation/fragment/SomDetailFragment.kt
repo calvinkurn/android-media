@@ -18,6 +18,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
@@ -33,12 +34,11 @@ import com.tokopedia.datepicker.DatePickerUnify
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.dialog.DialogUnify.Companion.HORIZONTAL_ACTION
 import com.tokopedia.dialog.DialogUnify.Companion.NO_IMAGE
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.convertFormatDate
 import com.tokopedia.kotlin.extensions.convertMonth
 import com.tokopedia.kotlin.extensions.toFormattedString
-import com.tokopedia.kotlin.extensions.view.convertStrObjToHashMap
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickMainActionInOrderDetail
@@ -98,6 +98,7 @@ import com.tokopedia.sellerorder.detail.di.SomDetailComponent
 import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailBookingCodeActivity
 import com.tokopedia.sellerorder.detail.presentation.activity.SomSeeInvoiceActivity
 import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailAdapter
+import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailItemDecoration
 import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBottomSheetCourierProblemsAdapter
 import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBottomSheetRejectOrderAdapter
 import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBottomSheetRejectReasonsAdapter
@@ -130,6 +131,7 @@ import kotlinx.android.synthetic.main.dialog_accept_order_free_shipping_som.view
 import kotlinx.android.synthetic.main.fragment_som_detail.*
 import kotlinx.android.synthetic.main.fragment_som_detail.btn_primary
 import kotlinx.android.synthetic.main.partial_info_layout.view.*
+import java.net.UnknownHostException
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.HashMap
@@ -165,6 +167,8 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
             getString(R.string.coachmark_chat_info)
         )
     }
+
+    private var errorToaster: Snackbar? = null
 
     private var orderId = ""
     private var detailResponse = SomDetailOrder.Data.GetSomDetail()
@@ -312,15 +316,25 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
         rv_detail?.apply {
             layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
             adapter = somDetailAdapter
+            addItemDecoration(SomDetailItemDecoration())
+        }
+        somGlobalError?.setActionClickListener {
+            loadDetail()
         }
     }
 
     private fun loadDetail() {
-        activity?.let {
-            SomAnalytics.sendScreenName(it, SomConsts.DETAIL_ORDER_SCREEN_NAME + orderId)
-            it.resources?.let { r ->
-                somDetailViewModel.loadDetailOrder(GraphqlHelper.loadRawString(r, R.raw.gql_som_detail), orderId)
+        somGlobalError?.hide()
+        progressBarSom?.show()
+        if (Utils.isConnectedToInternet(context)) {
+            activity?.let {
+                SomAnalytics.sendScreenName(it, SomConsts.DETAIL_ORDER_SCREEN_NAME + orderId)
+                it.resources?.let { r ->
+                    somDetailViewModel.loadDetailOrder(GraphqlHelper.loadRawString(r, R.raw.gql_som_detail), orderId)
+                }
             }
+        } else {
+            showNoInternetConnectionGlobalError()
         }
     }
 
@@ -335,13 +349,19 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
             when (it) {
                 is Success -> {
                     detailResponse = it.data
+                    progressBarSom?.hide()
                     renderDetail()
                 }
                 is Fail -> {
+                    if (it.throwable is UnknownHostException) {
+                        showNoInternetConnectionGlobalError()
+                    } else {
+                        showServerErrorGlobalError()
+                    }
                     SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_GET_ORDER_DETAIL)
-                    showToasterError(getString(R.string.global_error), view)
                 }
             }
+            progressBarSom?.hide()
         })
     }
 
@@ -364,6 +384,11 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                 is Fail -> {
                     SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_ACCEPTING_ORDER)
                     SomAnalytics.eventClickAcceptOrderPopup(false)
+                    if (it.throwable is UnknownHostException) {
+                        showNoInternetConnectionToaster()
+                    } else {
+                        showServerErrorToaster()
+                    }
                 }
             }
         })
@@ -413,7 +438,11 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                 }
                 is Fail -> {
                     SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_GET_ORDER_REJECT_REASONS)
-                    showToasterError(getString(R.string.global_error), bottomSheetRejectReason.view)
+                    if (it.throwable is UnknownHostException) {
+                        showNoInternetConnectionToaster()
+                    } else {
+                        showServerErrorToaster()
+                    }
                 }
             }
         })
@@ -434,10 +463,10 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                 }
                 is Fail -> {
                     SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_WHEN_SET_DELIVERED)
-                    view?.let { v ->
-                        val msg = it.throwable.message
-                        val msgProcessed = if (msg.isNullOrBlank()) "Terjadi Kesalahan" else msg
-                        Toaster.make(v, msgProcessed, type = TYPE_ERROR)
+                    if (it.throwable is UnknownHostException) {
+                        showNoInternetConnectionToaster()
+                    } else {
+                        showServerErrorToaster()
                     }
                 }
             }
@@ -457,7 +486,11 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                 }
                 is Fail -> {
                     SomErrorHandler.logExceptionToCrashlytics(result.throwable, String.format(SomConsts.ERROR_GET_USER_ROLES, PAGE_NAME))
-                    showToasterError(getString(R.string.global_error), view)
+                    if (result.throwable is UnknownHostException) {
+                        showNoInternetConnectionToaster()
+                    } else {
+                        showServerErrorToaster()
+                    }
                     refreshHandler?.finishRefresh()
                 }
             }
@@ -584,7 +617,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
     private fun renderButtons() {
         // buttons
         if (detailResponse.button.isNotEmpty()) {
-            rl_btn_detail?.visibility = View.VISIBLE
+            containerBtnDetail?.visibility = View.VISIBLE
             val shouldShowBuyerRequestCancelButton = (detailResponse.statusCode == 220 || detailResponse.statusCode == 400) && detailResponse.buyerRequestCancel.isRequestCancel
             detailResponse.button.first().let { buttonResp ->
                 btn_primary?.apply {
@@ -613,7 +646,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                     somBottomSheetRejectOrderAdapter = SomBottomSheetRejectOrderAdapter(this, hasRadioBtn = false)
                     showTextOnlyBottomSheet()
                     val mapKey = HashMap<String, String>()
-                    detailResponse.button.filterIndexed { index, _ -> (index != 0 || shouldShowBuyerRequestCancelButton) }.forEach { btn ->
+                    detailResponse.button.filterIndexed { index, _ -> (index != 0) }.forEach { btn ->
                         mapKey[btn.key] = btn.displayName
                     }
                     somBottomSheetRejectOrderAdapter?.mapKey = mapKey
@@ -624,7 +657,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
             }
 
         } else {
-            rl_btn_detail?.visibility = View.GONE
+            containerBtnDetail?.visibility = View.GONE
         }
     }
 
@@ -936,7 +969,11 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                     if(failEditAwbResponse.message.isNotEmpty()) {
                         showToasterError(failEditAwbResponse.message, view)
                     } else {
-                        showToasterError(getString(R.string.global_error), view)
+                        if (it.throwable is UnknownHostException) {
+                            showNoInternetConnectionToaster()
+                        } else {
+                            showServerErrorToaster()
+                        }
                     }
                 }
             }
@@ -1347,7 +1384,11 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                 }
                 is Fail -> {
                     SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_REJECT_ORDER)
-                    showToasterError(getString(R.string.global_error), view)
+                    if (it.throwable is UnknownHostException) {
+                        showNoInternetConnectionToaster()
+                    } else {
+                        showServerErrorToaster()
+                    }
                 }
             }
         })
@@ -1522,10 +1563,47 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                 setDescription(description)
                 setPrimaryCTAText(primaryButtonText)
                 setSecondaryCTAText(secondaryButtonText)
-                setPrimaryCTAClickListener { primaryButtonClickAction() }
+                setPrimaryCTAClickListener {
+                    primaryButtonClickAction()
+                    dismiss()
+                }
                 setSecondaryCTAClickListener { dismiss() }
                 show()
             }
         }
+    }
+
+    private fun showNoInternetConnectionGlobalError() {
+        somGlobalError?.setType(GlobalError.NO_CONNECTION)
+        somGlobalError?.show()
+        progressBarSom?.hide()
+    }
+
+    private fun showServerErrorGlobalError() {
+        somGlobalError?.setType(GlobalError.SERVER_ERROR)
+        somGlobalError?.show()
+        progressBarSom?.hide()
+    }
+
+    private fun showErrorToaster(message: String) {
+        view?.run {
+            if (this@SomDetailFragment.errorToaster?.isShown == true)
+                this@SomDetailFragment.errorToaster?.dismiss()
+
+            this@SomDetailFragment.errorToaster = Toaster.build(
+                        this,
+                        message,
+                        LENGTH_SHORT,
+                        TYPE_ERROR)
+            this@SomDetailFragment.errorToaster?.show()
+        }
+    }
+
+    private fun showNoInternetConnectionToaster() {
+        showErrorToaster("Oops, koneksi internetmu terganggu. Silahkan cek koneksi internet dan coba lagi, ya.")
+    }
+
+    private fun showServerErrorToaster() {
+        showErrorToaster("Oops, ada gangguan yang perlu kami bereskan. Silahkan coba lagi, ya.")
     }
 }

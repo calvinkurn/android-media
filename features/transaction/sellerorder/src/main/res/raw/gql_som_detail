@@ -208,5 +208,12 @@ query GetSOMDetail($orderID: String!, $lang: String!){
       is_penalty_reject
       penalty_reject_wording
     }
+    ticker_info {
+      text
+      type
+      action_text
+      action_key
+      action_url
+    }
   }
 }
