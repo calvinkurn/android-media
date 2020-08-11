@@ -449,7 +449,7 @@ dependencies {
     }
     implementation rootProject.ext.tkpdInternalLibDependencies.authentication
     implementation rootProject.ext.playServicesDependencies.maps
-    implementation project(rootProject.ext.libraries.playCore)
+    implementation rootProject.ext.playServicesDependencies.core
     implementation rootProject.ext.playServicesDependencies.auth
     implementation rootProject.ext.supportLibDependencies.kotlinSupport
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7

@@ -106,6 +106,7 @@ public class ProductViewModelMapper {
 
         return new RelatedViewModel(
                 related.getRelatedKeyword(),
+                related.getPosition(),
                 broadMatchViewModelList
         );
     }
