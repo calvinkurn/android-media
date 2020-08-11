@@ -28,8 +28,8 @@ import com.tokopedia.sellerhomecommon.utils.Utils
 import com.tokopedia.statistic.R
 import com.tokopedia.statistic.analytics.StatisticTracker
 import com.tokopedia.statistic.di.DaggerStatisticComponent
-import com.tokopedia.statistic.presentation.view.model.DateFilterItem
 import com.tokopedia.statistic.presentation.view.bottomsheet.DateFilterBottomSheet
+import com.tokopedia.statistic.presentation.view.model.DateFilterItem
 import com.tokopedia.statistic.presentation.view.viewhelper.StatisticLayoutManager
 import com.tokopedia.statistic.presentation.view.viewhelper.setOnTabSelectedListener
 import com.tokopedia.statistic.presentation.view.viewmodel.StatisticViewModel
@@ -58,6 +58,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         private const val TOAST_DURATION = 5000L
         private const val SCREEN_NAME = "statistic_page_fragment"
         private const val TAG_TOOLTIP = "statistic_tooltip"
+        private const val TICKER_NAME = "statistic_page_ticker"
 
         fun newInstance(): StatisticFragment {
             return StatisticFragment()
@@ -80,6 +81,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     private val defaultEndDate = Date()
     private val job = Job()
     private val coroutineScope by lazy { CoroutineScope(Dispatchers.Unconfined + job) }
+    private val tickerWidget: TickerWidgetUiModel by getTickerWidget()
 
     private var tabItems = emptyList<Pair<String, String>>()
     private var isFirstLoad = true
@@ -415,8 +417,18 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     private fun showTabLayout() = view?.run {
-        val firstVisible: Int = mLayoutManager.findFirstVisibleItemPosition()
-        if (firstVisible > 0) {
+        val firstVisibleIndex: Int = mLayoutManager.findFirstVisibleItemPosition()
+        var shouldShowTabLayout = firstVisibleIndex > 0
+        try {
+            val firstVisibleWidget = adapter.data[0]
+            val isTickerWidget = firstVisibleWidget is TickerWidgetUiModel
+            if (isTickerWidget) {
+                shouldShowTabLayout = firstVisibleIndex > 1
+            }
+        } catch (i: IndexOutOfBoundsException) {
+        }
+
+        if (shouldShowTabLayout) {
             appBarStc.visible()
         } else {
             appBarStc.gone()
@@ -442,6 +454,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         view?.globalErrorStc?.gone()
 
         val mWidgetList = mutableListOf<BaseWidgetUiModel<*>>()
+        mWidgetList.add(tickerWidget)
         mWidgetList.addAll(widgets)
         mWidgetList.add(WhiteSpaceUiModel())
         adapter.data.clear()
@@ -464,15 +477,17 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     private fun setupTabItems() = view?.run {
         tabLayoutStc.tabLayout.removeAllTabs()
         var sectionTitle = ""
-        tabItems = adapter.data.map {
-            return@map if (it.widgetType == WidgetType.SECTION) {
-                tabLayoutStc.addNewTab(it.title)
-                sectionTitle = it.title
-                Pair(it.title, it.title)
-            } else {
-                Pair(sectionTitle, it.dataKey)
-            }
-        }
+
+        tabItems = adapter.data.filter { it !is TickerWidgetUiModel }
+                .map {
+                    return@map if (it.widgetType == WidgetType.SECTION) {
+                        tabLayoutStc.addNewTab(it.title)
+                        sectionTitle = it.title
+                        Pair(it.title, it.title)
+                    } else {
+                        Pair(sectionTitle, it.dataKey)
+                    }
+                }
         selectTabOnScrolling()
     }
 
@@ -485,13 +500,18 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         } catch (e: IndexOutOfBoundsException) {
             ""
         }
+
         val adapterIndex: Int = adapter.data.indexOfFirst { it.title == tabTitle }
+
         if (adapterIndex != RecyclerView.NO_POSITION) {
-            mLayoutManager.scrollToPositionWithOffset(adapterIndex, tabLayoutStc.height)
+            val tabLayoutHeight: Int = if (selectedTabIndex != 0) tabLayoutStc.height else 0
+            val widgetPosition: Int = if (selectedTabIndex != 0) adapterIndex else 0
+            mLayoutManager.scrollToPositionWithOffset(widgetPosition, tabLayoutHeight)
             recyclerView.post {
                 requestVisibleWidgetsData()
             }
         }
+
         if (selectedTabIndex == 0) {
             appBarStc.gone()
         }
@@ -678,5 +698,14 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         }
         toaster.show()
         toastCountDown.start()
+    }
+
+    private fun getTickerWidget(): Lazy<TickerWidgetUiModel> = lazy {
+        val tickerUrl = "https://docs.google.com/forms/d/1t-KeapZJwOeYOBnbXDEmzRJiUqMBicE9cQIauc40qMU"
+        val title = context?.getString(R.string.stc_ticker_title).orEmpty()
+        val message = context?.getString(R.string.stc_ticker_message, tickerUrl).orEmpty()
+        val tickerItems = listOf(TickerItemUiModel(title = title, message = message, redirectUrl = tickerUrl))
+        val tickerData = TickerDataUiModel(tickers = tickerItems, dataKey = TICKER_NAME)
+        return@lazy TickerWidgetUiModel(data = tickerData, title = TICKER_NAME, dataKey = TICKER_NAME)
     }
 }

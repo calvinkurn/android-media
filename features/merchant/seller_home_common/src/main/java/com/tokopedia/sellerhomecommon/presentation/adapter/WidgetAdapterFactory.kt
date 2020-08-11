@@ -29,4 +29,6 @@ interface WidgetAdapterFactory {
     fun type(barChartWidget: BarChartWidgetUiModel): Int
 
     fun type(footerLayout: WhiteSpaceUiModel): Int
+
+    fun type(tickerWidget: TickerWidgetUiModel): Int
 }

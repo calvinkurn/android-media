@@ -26,4 +26,6 @@
     <string name="stc_per_day_fmt">Per Hari (%1$s)</string>
     <string name="stc_per_week_fmt">Per Minggu (%1$s)</string>
     <string name="stc_per_month_fmt">Per Bulan (%1$s)</string>
+    <string name="stc_ticker_title">Pengalaman menggunakan fitur statistik</string>
+    <string name="stc_ticker_message"><![CDATA[Bantu kami menjadi lebih baik dengan membagikan pengalamanmu <a href="(%1$s)">di sini\</a>.]]></string>
 </resources>
