@@ -1,5 +1,5 @@
 {
-  "mode": "subset",
+  "mode": "exact",
   "query": [
     {
       "eventCategory": "order summary",
@@ -99,6 +99,13 @@
       "eventAction": "courier - click selected courier option",
       "sessionIris": "{{.*}}",
       "eventLabel": "{{\\d+}}"
+    },
+    {
+      "eventCategory": "order summary",
+      "event": "clickCheckoutExpress",
+      "eventAction": "courier - click pilih on tersedia bebas ongkir",
+      "sessionIris": "{{.*}}",
+      "eventLabel": ""
     }
   ],
   "readme": "OCC Order Summary Tracking"
