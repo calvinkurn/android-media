@@ -1,10 +1,11 @@
 package com.tokopedia.feedplus.view.analytics;
 
 import com.tokopedia.analyticconstant.DataLayer;
+import com.tokopedia.feedcomponent.data.pojo.whitelist.Author;
 import com.tokopedia.feedcomponent.view.viewmodel.banner.TrackingBannerModel;
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.TrackingRecommendationModel;
-import com.tokopedia.feedcomponent.data.pojo.whitelist.Author;
 import com.tokopedia.track.TrackApp;
+import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
@@ -57,6 +58,9 @@ public class FeedAnalytics {
     private UserSessionInterface userSession;
 
     @Inject
+    public TrackingQueue trackingQueue;
+
+    @Inject
     public FeedAnalytics(UserSessionInterface userSession) {
         this.userSession = userSession;
     }
@@ -80,6 +84,18 @@ public class FeedAnalytics {
         TrackApp.getInstance().getGTM().sendScreenAuthenticated(screenName);
     }
 
+    /**
+     * Send all pending analytics in trackingQueue
+     */
+    public void sendPendingAnalytics() {
+        trackingQueue.sendAll();
+    }
+
+    private void trackEnhancedEcommerceEvent(
+            Map<String, Object> eventData) {
+        trackingQueue.putEETracking((HashMap<String, Object>) eventData);
+    }
+
     public void eventFeedViewShop(String screenName, String shopId, String label) {
         HashMap<String, Object> mapEvent = new HashMap<>();
         mapEvent.put("screenName", screenName);
@@ -92,7 +108,7 @@ public class FeedAnalytics {
         mapEvent.put("shopId", shopId);
         mapEvent.put("promoId", "0");
 
-        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(mapEvent);
+        trackEnhancedEcommerceEvent(mapEvent);
     }
 
     public void eventFeedClickProduct(String screenName, String productId, String label) {
@@ -107,7 +123,7 @@ public class FeedAnalytics {
         mapEvent.put("shopId", "0");
         mapEvent.put("promoId", "0");
 
-        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(mapEvent);
+        trackEnhancedEcommerceEvent(mapEvent);
 
     }
 
@@ -123,11 +139,11 @@ public class FeedAnalytics {
         mapEvent.put("shopId", shopId);
         mapEvent.put("promoId", "0");
 
-        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(mapEvent);
+        trackEnhancedEcommerceEvent(mapEvent);
     }
 
     public void eventTrackingEnhancedEcommerce(Map<String, Object> trackingData) {
-        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(trackingData);
+        trackEnhancedEcommerceEvent(trackingData);
     }
 
     private Map<String, Object> getEventEcommerceView(String action, String label,
@@ -179,7 +195,7 @@ public class FeedAnalytics {
                     banner.getTemplateType()
             ));
         }
-        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+        trackEnhancedEcommerceEvent(
                 getEventEcommerceView(
                         "impression banner",
                         String.valueOf(firstPostId),
@@ -205,7 +221,7 @@ public class FeedAnalytics {
                 postId,
                 templateType
         ));
-        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+        trackEnhancedEcommerceEvent(
                 getEventEcommerceClick(
                         "click",
                         "banner - " + String.valueOf(postId),
@@ -244,7 +260,7 @@ public class FeedAnalytics {
                     tracking.getTemplateType()
             ));
         }
-        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+        trackEnhancedEcommerceEvent(
                 getEventEcommerceView(
                         String.format("impression - %s recommendation", firstAuthorType),
                         String.valueOf(firstAuthorId),
@@ -269,7 +285,7 @@ public class FeedAnalytics {
                 0,
                 templateType
         ));
-        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+        trackEnhancedEcommerceEvent(
                 getEventEcommerceClick(
                         "click",
                         String.format("avatar - %s recommendation - %s", authorType, authorId),
@@ -295,7 +311,7 @@ public class FeedAnalytics {
                     tracking.getTemplateType()
             ));
         }
-        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+        trackEnhancedEcommerceEvent(
                 getEventEcommerceView(
                         "impression - topads shop recommendation",
                         String.valueOf(firstAuthorId),
@@ -321,7 +337,7 @@ public class FeedAnalytics {
                 adId,
                 templateType
         ));
-        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+        trackEnhancedEcommerceEvent(
                 getEventEcommerceClick(
                         "click",
                         String.format("avatar - topads shop recommendation - %s", String.valueOf(authorId)),
@@ -394,7 +410,7 @@ public class FeedAnalytics {
                 formatStringToInt(authorId),
                 String.format("%s - %s", templateType, singleOrMultiple(totalContent))
         ));
-        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+        trackEnhancedEcommerceEvent(
                 getEventEcommerceView(
                         String.format("impression - %s - %s", activityName, mediaType),
                         String.format(FORMAT_2_VALUE, postId, recomId),
@@ -419,7 +435,7 @@ public class FeedAnalytics {
                 formatStringToInt(authorId),
                 String.format("%s - %s", templateType, singleOrMultiple(totalContent))
         ));
-        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+        trackEnhancedEcommerceEvent(
                 getEventEcommerceClick(
                         "click",
                         String.format(POST_FORMAT_4_VALUE,activityName, mediaType, postId, recomId),
@@ -431,7 +447,7 @@ public class FeedAnalytics {
 
     public void eventProductGridImpression(List<ProductEcommerce> productList,
                                            String activityName, int postId, int userId, int recomId) {
-        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+        trackEnhancedEcommerceEvent(
                 DataLayer.mapOf(
                         EVENT_NAME, PRODUCT_VIEW,
                         EVENT_CATEGORY, CONTENT_FEED_TIMELINE,
@@ -449,7 +465,7 @@ public class FeedAnalytics {
 
     public void eventProductGridClick(ProductEcommerce product,
                                       String activityName, int postId, int userId, int recomId) {
-        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+        trackEnhancedEcommerceEvent(
                 DataLayer.mapOf(
                         EVENT_NAME, PRODUCT_CLICK,
                         EVENT_CATEGORY, CONTENT_FEED_TIMELINE,
@@ -478,7 +494,7 @@ public class FeedAnalytics {
                 0,
                 ""
         ));
-        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+        trackEnhancedEcommerceEvent(
                 getEventEcommerceView(
                         String.format("impression - %s - %s", activityName, mediaType),
                         String.valueOf(pollId),
@@ -501,7 +517,7 @@ public class FeedAnalytics {
                 0,
                 ""
         ));
-        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+        trackEnhancedEcommerceEvent(
                 getEventEcommerceView(
                         "click",
                         String.format("post - %s - %s - %s - %s - %s", activityName, mediaType, pollId, optionId, optionName),
