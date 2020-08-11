@@ -12,6 +12,7 @@ import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.variant.VariantDataModel
+import com.tokopedia.product.detail.data.util.ProductTrackingConstant.Action.CLICK_ANNOTATION_RECOM_CHIP
 import com.tokopedia.product.detail.data.util.TrackingUtil.removeCurrencyPrice
 import com.tokopedia.product.util.processor.Product
 import com.tokopedia.product.util.processor.ProductDetailViewsBundler
@@ -358,6 +359,16 @@ object DynamicProductDetailTracking {
                     ""
             )
             TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, recomSeeAllAction)
+        }
+
+        fun eventClickSeeFilterAnnotation(chipValue: String) {
+            val mapEvent = TrackAppUtils.gtmData(
+                    ProductTrackingConstant.PDP.EVENT_CLICK_RECOMMENDATION,
+                    ProductTrackingConstant.Category.PDP,
+                    CLICK_ANNOTATION_RECOM_CHIP,
+                    chipValue
+            )
+            TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
         }
 
         fun eventLastDicussionClicked(talkId: String, componentTrackDataModel: ComponentTrackDataModel, productInfo: DynamicProductInfoP1?) {

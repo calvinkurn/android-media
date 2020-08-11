@@ -113,6 +113,7 @@ object ProductTrackingConstant {
         const val CLICK_SEARCH_BOX = "click search box"
         const val CLICK_RIBBON_TRADE_IN = "click - ribbon trade in"
         const val CLICK_SEE_MORE_WIDGET = "click - see more on widget %s"
+        const val CLICK_ANNOTATION_RECOM_CHIP = "click annotation chips"
         const val CLICK_SHARE_PDP = "click - share button"
         const val CLICK_READ_MORE = "click - baca selengkapnya"
         const val CLICK_CATEGORY = "click - category on informasi produk"
@@ -187,6 +188,7 @@ object ProductTrackingConstant {
 
     object PDP {
         const val EVENT_CLICK_PDP = "clickPDP"
+        const val EVENT_CLICK_RECOMMENDATION = "clickRecommendation"
         const val EVENT_VIEW_PDP = "viewPDP"
         const val EVENT_CLICK_TOP_NAV = "clickTopNav"
         const val EVENT_VIEW_PDP_IRIS = "viewPDPIris"
