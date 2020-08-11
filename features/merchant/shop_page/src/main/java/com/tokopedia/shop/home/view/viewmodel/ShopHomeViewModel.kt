@@ -173,7 +173,7 @@ class ShopHomeViewModel @Inject constructor(
     }
 
     fun onRefreshPlayBanner(shopId: String){
-         val result = _shopHomeLayoutData.value
+        val result = _shopHomeLayoutData.value
         if(result is Success){
             launchCatchError(dispatcherProvider.io(), block = {
                 result.data.listWidget.find { data -> data is ShopHomePlayCarouselUiModel }?.let { uiModel ->

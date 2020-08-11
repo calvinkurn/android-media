@@ -397,7 +397,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     }
 
     override fun onSuccessAddWishlist(productId: String) {
-        showToastSuccess(getString(R.string.msg_success_add_wishlist))
+        showToastSuccess(getString(com.tokopedia.wishlist.common.R.string.msg_success_add_wishlist))
         shopProductAdapter.updateWishListStatus(productId, true)
     }
 
@@ -406,7 +406,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     }
 
     override fun onSuccessRemoveWishlist(productId: String) {
-        showToastSuccess(getString(R.string.msg_success_remove_wishlist))
+        showToastSuccess(getString(com.tokopedia.wishlist.common.R.string.msg_success_remove_wishlist))
         shopProductAdapter.updateWishListStatus(productId, false)
     }
 
@@ -768,5 +768,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         loadInitialData()
     }
 
-
+    override fun getRecyclerViewResourceId(): Int {
+        return R.id.recycler_view
+    }
 }

@@ -3,7 +3,10 @@ package com.tokopedia.topads.view.fragment
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -28,7 +31,6 @@ import com.tokopedia.topads.view.adapter.keyword.viewmodel.KeywordItemViewModel
 import com.tokopedia.topads.view.model.KeywordAdsViewModel
 import com.tokopedia.topads.view.sheet.TipSheetKeywordList
 import kotlinx.android.synthetic.main.topads_create_layout_keyword_list.*
-import kotlinx.android.synthetic.main.topads_create_layout_keyword_list.btn_next
 import javax.inject.Inject
 
 /**
@@ -223,7 +225,9 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         return manual
     }
 
-    override fun populateView(stepperModel: CreateManualAdsStepperModel) {
+    override fun populateView() {
+        if (activity is StepperActivity)
+            (activity as StepperActivity).updateToolbarTitle(getString(R.string.keyword_list_step))
     }
 
     override fun getScreenName(): String {
@@ -325,10 +329,4 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
             null
         }
     }
-
-    override fun updateToolBar() {
-        (activity as StepperActivity).updateToolbarTitle(getString(R.string.keyword_list_step))
-
-    }
-
 }

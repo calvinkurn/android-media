@@ -39,7 +39,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.R
-import com.tokopedia.shop.ShopComponentInstance
+import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.*
 import com.tokopedia.shop.analytic.model.*
@@ -61,7 +61,7 @@ import com.tokopedia.shop.pageheader.presentation.listener.ShopPageProductTabPer
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent
 import com.tokopedia.shop.product.di.module.ShopProductModule
 import com.tokopedia.shop.product.util.ShopProductOfficialStoreUtils
-import com.tokopedia.shop.product.view.activity.ShopProductListActivity
+import com.tokopedia.shop.product.view.activity.ShopProductListResultActivity
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapter
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
@@ -210,7 +210,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     override fun onSuccessAddWishlist(productId: String) {
-        showToastSuccess(getString(R.string.msg_success_add_wishlist))
+        showToastSuccess(getString(com.tokopedia.wishlist.common.R.string.msg_success_add_wishlist))
         shopProductAdapter.updateWishListStatus(productId, true)
     }
 
@@ -219,7 +219,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     override fun onSuccessRemoveWishlist(productId: String) {
-        showToastSuccess(getString(R.string.msg_success_remove_wishlist))
+        showToastSuccess(getString(com.tokopedia.wishlist.common.R.string.msg_success_remove_wishlist))
         shopProductAdapter.updateWishListStatus(productId, false)
     }
 
@@ -262,7 +262,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             return
         }
         shopPageTracking!!.clickUseMerchantVoucher(isOwner, merchantVoucherViewModel, shopId, position)
-        showSnackBarClose(getString(R.string.title_voucher_code_copied))
+        showSnackBarClose(getString(com.tokopedia.merchantvoucher.R.string.title_voucher_code_copied))
     }
 
     override fun onItemClicked(merchantVoucherViewModel: MerchantVoucherViewModel) {
@@ -466,7 +466,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                             CustomDimensionShopPage.create(shopId, isOfficialStore, isGoldMerchant)
                     )
                 }
-                val intent = ShopProductListActivity.createIntent(
+                val intent = ShopProductListResultActivity.createIntent(
                         activity,
                         shopId,
                         "",
@@ -630,7 +630,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
 
     override fun onSeeAllClicked(shopProductEtalaseChipItemViewModel: ShopEtalaseItemDataModel) {
         shopPageTracking?.clickHighLightSeeAll(customDimensionShopPage)
-        val intent = ShopProductListActivity.createIntent(activity,
+        val intent = ShopProductListResultActivity.createIntent(activity,
                 shopId,
                 "",
                 shopProductEtalaseChipItemViewModel.etalaseId,
@@ -697,7 +697,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             DaggerShopProductComponent
                     .builder()
                     .shopProductModule(ShopProductModule())
-                    .shopComponent(ShopComponentInstance.getComponent(application))
+                    .shopComponent(ShopComponentHelper().getComponent(application, this))
                     .build()
                     .inject(this@ShopPageProductListFragment)
         }
@@ -757,7 +757,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         activity?.let {
             val snackbar = Snackbar.make(it.findViewById(android.R.id.content), stringToShow,
                     Snackbar.LENGTH_LONG)
-            snackbar.setAction(activity!!.getString(R.string.close)) { snackbar.dismiss() }
+            snackbar.setAction(activity!!.getString(com.tokopedia.design.R.string.close)) { snackbar.dismiss() }
             snackbar.setActionTextColor(Color.WHITE)
             snackbar.show()
         }
@@ -1165,7 +1165,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                 showToasterError(data.membershipClaimBenefitResponse.resultStatus.message.firstOrNull()
                         ?: "")
             } else {
-                showToasterError(getString(R.string.default_request_error_unknown))
+                showToasterError(getString(com.tokopedia.abstraction.R.string.default_request_error_unknown))
             }
         } else {
             val bottomSheetMembership = MembershipBottomSheetSuccess.newInstance(data.membershipClaimBenefitResponse.title,
@@ -1227,6 +1227,10 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     override fun onSortFilterClicked() {
         shopPageTracking?.clickSort(isOwner, customDimensionShopPage)
         redirectToShopSortPickerPage()
+    }
+
+    override fun getRecyclerViewResourceId(): Int {
+        return R.id.recycler_view
     }
 
     override fun onClearFilterClicked() {

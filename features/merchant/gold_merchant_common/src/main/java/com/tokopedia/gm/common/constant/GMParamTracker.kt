@@ -44,7 +44,7 @@ object GMParamTracker {
         const val CLICK_TICK_BOX_TNC = "click tickbox term & condition"
         const val CLICK_KYC_VERIFICATION = "click data verification - kyc"
         const val CLICK_DISMISS_KYC_VERIFICATION = "click close pop up - kyc"
-        const val CLICK_SEE_SHOP_SCORE_TIPS = "power merchant - increase shop performance"
+        const val CLICK_SEE_SHOP_SCORE_TIPS = "click performance tips"
         const val CLICK_DISMISS_SHOP_SCORE = "click close pop up - score below"
         const val CLICK_START_PM_SUCCESS_NOTIFIER = "click mulai - sucess PM notifier"
         const val CLICK_CANCEL_MEMBERSHIP = "click stop subscription - power merchant page"
@@ -54,6 +54,10 @@ object GMParamTracker {
         const val CLICK_SUBMIT_RATING = "submit rating"
         const val CLICK_SUBMIT_CANCELLATION_REASON = "submit cancellation reason"
         const val CLICK_SUBMIT_FEATURES = "submit click features"
+        const val POP_UP_DATA_VERIFICATION = "pop up data verification"
+        const val POP_UP_SCORE_BELOW = "pop up - score below"
+        const val POP_UP_SUCCESS_PM = "pop up - sucess PM notifier"
+        const val CLICK_BACK_POP_UP_CANCEL_MEMBERSHIP = "click back - pop up stop power merchant"
     }
 
     object Label {

@@ -6,11 +6,11 @@ import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.View
 import android.widget.AutoCompleteTextView
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topupbills.R
@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull
  */
 open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context: Context, attrs: AttributeSet? = null,
                                                                defStyleAttr: Int = 0)
-    : BaseCustomView(context, attrs, defStyleAttr) {
+    : FrameLayout(context, attrs, defStyleAttr) {
 
     protected val hintInputNumber: TextView
     protected val imgOperator: ImageView

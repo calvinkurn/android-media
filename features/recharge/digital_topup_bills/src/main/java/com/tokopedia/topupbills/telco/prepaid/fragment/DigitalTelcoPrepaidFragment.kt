@@ -14,7 +14,10 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.coachmark.CoachMarkBuilder
+import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumber
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
 import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
@@ -30,9 +33,6 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.showcase.ShowCaseBuilder
-import com.tokopedia.showcase.ShowCaseObject
-import com.tokopedia.showcase.ShowCasePreference
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.searchnumber.view.DigitalSearchNumberActivity
 import com.tokopedia.topupbills.telco.common.adapter.TelcoTabAdapter
@@ -52,7 +52,6 @@ import com.tokopedia.topupbills.telco.prepaid.widget.TelcoNestedCoordinatorLayou
 import com.tokopedia.unifycomponents.TabsUnify
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_digital_telco_prepaid.*
-import java.util.*
 
 /**
  * Created by nabillasabbaha on 11/04/19.
@@ -70,6 +69,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     private lateinit var tabLayout: TabsUnify
     private lateinit var separator: View
     private lateinit var performanceMonitoring: PerformanceMonitoring
+    private lateinit var localCacheHandler: LocalCacheHandler
 
     override var menuId = TelcoComponentType.TELCO_PREPAID
     private var inputNumberActionType = InputNumberActionType.MANUAL
@@ -85,6 +85,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         super.onCreate(savedInstanceState)
         activity?.let {
             performanceMonitoring = PerformanceMonitoring.start(DG_TELCO_PREPAID_TRACE)
+            localCacheHandler = LocalCacheHandler(context, PREFERENCES_NAME)
 
             val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
             sharedModelPrepaid = viewModelProvider.get(SharedTelcoPrepaidViewModel::class.java)
@@ -295,7 +296,8 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     private fun getDataFromBundle(savedInstanceState: Bundle?) {
         if (savedInstanceState == null) {
             arguments?.run {
-                val digitalTelcoExtraParam = this.getParcelable(EXTRA_PARAM) ?: TopupBillsExtraParam()
+                val digitalTelcoExtraParam = this.getParcelable(EXTRA_PARAM)
+                        ?: TopupBillsExtraParam()
                 clientNumber = digitalTelcoExtraParam.clientNumber
                 productId = digitalTelcoExtraParam.productId.toIntOrNull() ?: 0
                 if (digitalTelcoExtraParam.categoryId.isNotEmpty()) {
@@ -584,28 +586,27 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     }
 
     private fun showOnBoarding() {
-        activity?.run {
-            val showcaseTag = javaClass.name + ".BroadcastMessage"
-            if (ShowCasePreference.hasShown(this, showcaseTag)) {
-                return
-            }
+        val coachMarkHasShown = localCacheHandler.getBoolean(TELCO_COACH_MARK_HAS_SHOWN, false)
+        if (coachMarkHasShown) {
+            return
+        }
 
-            val showCaseDialog = ShowCaseBuilder()
-                    .backgroundContentColorRes(com.tokopedia.design.R.color.black)
-                    .shadowColorRes(com.tokopedia.showcase.R.color.shadow)
-                    .textColorRes(com.tokopedia.design.R.color.grey_400)
-                    .textSizeRes(com.tokopedia.design.R.dimen.sp_12)
-                    .titleTextSizeRes(com.tokopedia.design.R.dimen.sp_16)
-                    .finishStringRes(R.string.telco_showcase_finish)
-                    .clickable(true)
-                    .useArrow(true)
-                    .build()
-            val showCaseList = ArrayList<ShowCaseObject>()
-            showCaseList.add(ShowCaseObject(telcoClientNumberWidget, getString(R.string.Telco_title_showcase_client_number),
-                    getString(R.string.telco_label_showcase_client_number)))
-            showCaseList.add(ShowCaseObject(viewPager, getString(R.string.telco_title_showcase_promo),
-                    getString(R.string.telco_label_showcase_promo)))
-            showCaseDialog.show(activity, showcaseTag, showCaseList)
+        val coachMarks = ArrayList<CoachMarkItem>()
+        coachMarks.add(CoachMarkItem(telcoClientNumberWidget,
+                getString(R.string.Telco_title_showcase_client_number),
+                getString(R.string.telco_label_showcase_client_number)))
+        coachMarks.add(CoachMarkItem(viewPager,
+                getString(R.string.telco_title_showcase_promo),
+                getString(R.string.telco_label_showcase_promo)))
+
+        val coachMark = CoachMarkBuilder().build().apply {
+            enableSkip = true
+        }
+        coachMark.show(activity, javaClass.name, coachMarks)
+
+        localCacheHandler.apply {
+            putBoolean(TELCO_COACH_MARK_HAS_SHOWN, true)
+            applyEditor()
         }
     }
 
@@ -645,10 +646,13 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     }
 
     companion object {
+        const val PREFERENCES_NAME = "telco_prepaid_preferences"
+        const val TELCO_COACH_MARK_HAS_SHOWN = "telco_show_coach_mark"
+        const val ID_PRODUCT_EMPTY = "-1"
+
         private const val CACHE_CLIENT_NUMBER = "cache_client_number"
         private const val EXTRA_PARAM = "extra_param"
         private const val DG_TELCO_PREPAID_TRACE = "dg_telco_prepaid_pdp"
-        const val ID_PRODUCT_EMPTY = "-1"
 
         fun newInstance(telcoExtraParam: TopupBillsExtraParam): Fragment {
             val fragment = DigitalTelcoPrepaidFragment()

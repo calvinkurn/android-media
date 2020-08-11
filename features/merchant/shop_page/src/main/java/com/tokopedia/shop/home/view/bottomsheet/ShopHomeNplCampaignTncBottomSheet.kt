@@ -12,7 +12,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.R
-import com.tokopedia.shop.ShopComponentInstance
+import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.analytic.ShopPageHomeTracking
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.common.util.ShopUtil
@@ -85,7 +85,7 @@ class ShopHomeNplCampaignTncBottomSheet : BottomSheetUnify() {
             DaggerShopPageHomeComponent
                     .builder()
                     .shopPageHomeModule(ShopPageHomeModule())
-                    .shopComponent(ShopComponentInstance.getComponent(application))
+                    .shopComponent(ShopComponentHelper().getComponent(application, this))
                     .build()
                     .inject(this@ShopHomeNplCampaignTncBottomSheet)
         }

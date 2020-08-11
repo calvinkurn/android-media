@@ -40,7 +40,7 @@ class PlayBottomSheetHeader : ConstraintLayout {
 
         ivBack.setImageResource(
                 if (isRoot) com.tokopedia.unifycomponents.R.drawable.unify_bottomsheet_close
-                else R.drawable.ic_system_action_back_grayscale_24
+                else com.tokopedia.resources.common.R.drawable.ic_system_action_back_grayscale_24
         )
     }
 
