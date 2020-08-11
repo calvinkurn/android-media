@@ -4,10 +4,12 @@ import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.common.utils.network.CacheUtil
 import com.tokopedia.product.addedit.description.presentation.model.*
 import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
+import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
 import com.tokopedia.product.manage.common.draft.data.model.ProductDraft
 import com.tokopedia.product.manage.common.draft.data.model.description.VideoLinkListModel
+import com.tokopedia.product.manage.common.draft.data.model.detail.WholeSaleInputModel as DraftWholeSaleInputModel
 
 object AddEditProductMapper {
 
@@ -63,11 +65,8 @@ object AddEditProductMapper {
             timeUnit = productInputModel.detailInputModel.preorder.timeUnit
             isActive = productInputModel.detailInputModel.preorder.isActive
         }
-        productInputModel.detailInputModel.wholesaleList.map { wholeSale ->
-            productDraft.detailInputModel.wholesaleList.map { wholeSaleDraft ->
-                wholeSaleDraft.price = wholeSale.price
-                wholeSaleDraft.quantity = wholeSale.price
-            }
+        productDraft.detailInputModel.wholesaleList = productInputModel.detailInputModel.wholesaleList.map { wholeSale ->
+            DraftWholeSaleInputModel(wholeSale.price, wholeSale.quantity)
         }
         productDraft.descriptionInputModel.apply {
             productDescription = productInputModel.descriptionInputModel.productDescription
@@ -114,11 +113,8 @@ object AddEditProductMapper {
             timeUnit = productDraft.detailInputModel.preorder.timeUnit
             isActive = productDraft.detailInputModel.preorder.isActive
         }
-        productDraft.detailInputModel.wholesaleList.map { wholeSale ->
-            productInputModel.detailInputModel.wholesaleList.map { wholeSaleDraft ->
-                wholeSaleDraft.price = wholeSale.price
-                wholeSaleDraft.quantity = wholeSale.price
-            }
+        productInputModel.detailInputModel.wholesaleList = productDraft.detailInputModel.wholesaleList.map { wholeSale ->
+            WholeSaleInputModel(wholeSale.price, wholeSale.quantity)
         }
         productInputModel.descriptionInputModel.apply {
             productDescription = productDraft.descriptionInputModel.productDescription
