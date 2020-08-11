@@ -14,6 +14,7 @@ import com.tokopedia.flight.orderlist.network.model.FlightOrderException
 object FlightErrorUtil {
 
     private const val KEY_TITLE = "title"
+    private const val KEY_ID = "id"
 
     @JvmStatic
     fun getMessageFromException(context: Context?, e: Throwable?): String {
@@ -24,18 +25,29 @@ object FlightErrorUtil {
         }
     }
 
-    fun getTitleFromFlightError(context: Context, t: Throwable): String {
+    fun getErrorIdAndTitleFromFlightError(context: Context, t: Throwable): Pair<Int, String> {
         val type = object : TypeToken<List<Map<String, Any>>>() {}.type
         val flightErrorList = Gson().fromJson<List<Map<String, Any>>>(t.message, type)
+        var errorId = 0
         return if (flightErrorList.isNotEmpty()) {
             val flightError = flightErrorList[0]
+
+            if (flightError.containsKey(KEY_ID)) {
+                errorId = try {
+                    flightError[KEY_ID].toString().toInt()
+                } catch (t: Throwable) {
+                    t.printStackTrace()
+                    0
+                }
+            }
+
             if (flightError.containsKey(KEY_TITLE)) {
-                flightError[KEY_TITLE].toString()
+                Pair(errorId, flightError[KEY_TITLE].toString())
             } else {
-                "Terjadi kesalahan. Ulangi beberapa saat lagi"
+                Pair(errorId, "Terjadi kesalahan. Ulangi beberapa saat lagi")
             }
         } else {
-            "Terjadi kesalahan. Ulangi beberapa saat lagi"
+            Pair(errorId, "Terjadi kesalahan. Ulangi beberapa saat lagi")
         }
     }
 

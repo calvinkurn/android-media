@@ -62,6 +62,7 @@ class FlightCancellationReasonFragment : BaseDaggerFragment(),
 
             arguments?.let {
                 cancellationReasonViewModel.cancellationWrapperModel = it.getParcelable(FlightCancellationReasonActivity.EXTRA_CANCELLATION_MODEL)
+                        ?: FlightCancellationWrapperModel()
             }
             if (cancellationReasonViewModel.getAttachments().isEmpty()) {
                 cancellationReasonViewModel.buildAttachmentList()
@@ -149,6 +150,14 @@ class FlightCancellationReasonFragment : BaseDaggerFragment(),
             REQUEST_CODE_REVIEW -> {
                 if (resultCode == Activity.RESULT_OK) {
                     closeReasonPage()
+                } else if (resultCode == Activity.RESULT_CANCELED) {
+                    data?.extras?.let {
+                        if (it.containsKey(FlightCancellationReviewFragment.EXTRA_CANCELLATION_ERROR) &&
+                                it.getBoolean(FlightCancellationReviewFragment.EXTRA_CANCELLATION_ERROR)) {
+                            requireActivity().setResult(Activity.RESULT_CANCELED, data)
+                            requireActivity().finish()
+                        }
+                    }
                 }
             }
         }

@@ -61,8 +61,10 @@ class FlightCancellationReviewFragment : BaseListFragment<FlightCancellationMode
             arguments?.let {
                 if (it.containsKey(FlightCancellationReviewActivity.EXTRA_INVOICE_ID))
                     flightCancellationReviewViewModel.invoiceId = it.getString(FlightCancellationReviewActivity.EXTRA_INVOICE_ID)
+                            ?: ""
                 if (it.containsKey(FlightCancellationReviewActivity.EXTRA_CANCEL_WRAPPER))
                     flightCancellationReviewViewModel.cancellationWrapperModel = it.getParcelable(FlightCancellationReviewActivity.EXTRA_CANCEL_WRAPPER)
+                            ?: FlightCancellationWrapperModel()
             }
 
             flightCancellationReviewViewModel.onInit()
@@ -103,7 +105,8 @@ class FlightCancellationReviewFragment : BaseListFragment<FlightCancellationMode
                     }
                 }
                 is Fail -> {
-                    showErrorFetchEstimateRefund(FlightErrorUtil.getTitleFromFlightError(requireContext(), it.throwable))
+                    val errorData = FlightErrorUtil.getErrorIdAndTitleFromFlightError(requireContext(), it.throwable)
+                    showErrorFetchEstimateRefund(errorData.first, errorData.second)
                 }
             }
         })
@@ -234,11 +237,21 @@ class FlightCancellationReviewFragment : BaseListFragment<FlightCancellationMode
         activity?.finish()
     }
 
-    private fun showErrorFetchEstimateRefund(message: String) {
+    private fun showErrorFetchEstimateRefund(errorId: Int, message: String) {
         NetworkErrorHelper.showEmptyState(requireContext(),
                 requireView(),
                 message
-        ) { flightCancellationReviewViewModel.fetchRefundEstimation() }
+        ) {
+            if (errorId == ERROR_ID_NO_MORE_ADULT) {
+                val intent = Intent().also {
+                    it.putExtra(EXTRA_CANCELLATION_ERROR, true)
+                }
+                requireActivity().setResult(Activity.RESULT_CANCELED, intent)
+                requireActivity().finish()
+            } else {
+                flightCancellationReviewViewModel.fetchRefundEstimation()
+            }
+        }
     }
 
     private fun showSuccessDialog(resId: Int) {
@@ -274,14 +287,18 @@ class FlightCancellationReviewFragment : BaseListFragment<FlightCancellationMode
 
     private fun showCancellationError(t: Throwable) {
         Toaster.make(requireView(),
-                FlightErrorUtil.getTitleFromFlightError(requireContext(), t),
+                FlightErrorUtil.getErrorIdAndTitleFromFlightError(requireContext(), t).second,
                 Toaster.LENGTH_SHORT,
                 Toaster.TYPE_ERROR)
     }
 
     companion object {
 
+        const val EXTRA_CANCELLATION_ERROR = "EXTRA_CANCELLATION_ERROR"
+
         private const val REQUEST_CANCELLATION_TNC = 1
+
+        private const val ERROR_ID_NO_MORE_ADULT = 165
 
         private const val LEARN_TEXT = "Pelajari"
 
