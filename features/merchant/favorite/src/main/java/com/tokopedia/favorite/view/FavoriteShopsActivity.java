@@ -11,7 +11,8 @@ public class FavoriteShopsActivity extends BaseSimpleActivity {
 
     @Override
     protected Fragment getNewFragment() {
-        return FragmentFavorite.newInstance();
+        return FragmentFavoriteUsingViewModel.newInstance();
+//        return FragmentFavorite.newInstance();
     }
 
     @Override
