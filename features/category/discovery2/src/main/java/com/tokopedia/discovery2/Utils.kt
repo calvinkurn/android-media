@@ -2,9 +2,9 @@ package com.tokopedia.discovery2
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
+import android.content.res.Resources
 import android.net.Uri
-import android.provider.MediaStore
+import android.util.TypedValue
 import kotlin.math.floor
 
 
@@ -61,6 +61,10 @@ class Utils {
             } else {
                 "${convertedValue.toInt()} $text $notifyMeText"
             }
+        }
+
+        fun convertDpToPx(dimensionInPixel : Int): Int {
+            return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dimensionInPixel.toFloat(), Resources.getSystem().displayMetrics).toInt()
         }
     }
 }
