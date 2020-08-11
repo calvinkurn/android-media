@@ -152,6 +152,7 @@ class ShopPageHomeModule {
                                         title
                                     }
                                     hideGimmick
+                                    stockSoldPercentage
                                }
                     }
                   }
