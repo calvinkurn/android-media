@@ -25,12 +25,8 @@ import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.common.interceptor.OneClickCheckoutInterceptor
 import com.tokopedia.oneclickcheckout.common.interceptor.RATES_RESPONSE_WITH_INSURANCE
 import com.tokopedia.oneclickcheckout.common.rule.FreshIdlingResourceTestRule
-import org.junit.After
+import org.junit.*
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertThat
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
 
 class OrderSummaryPageActivityTest {
 
@@ -110,8 +106,6 @@ class OrderSummaryPageActivityTest {
         assertEquals("https://www.tokopedia.com/payment", paymentPassData.redirectUrl)
         assertEquals("transaction_id=123", paymentPassData.queryString)
         assertEquals("POST", paymentPassData.method)
-
-        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME), hasAllSuccess())
     }
 
     @Test
@@ -143,6 +137,8 @@ class OrderSummaryPageActivityTest {
         assertEquals("https://www.tokopedia.com/payment", paymentPassData.redirectUrl)
         assertEquals("transaction_id=123", paymentPassData.queryString)
         assertEquals("POST", paymentPassData.method)
+
+        Assert.assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME), hasAllSuccess())
     }
 
     @Test

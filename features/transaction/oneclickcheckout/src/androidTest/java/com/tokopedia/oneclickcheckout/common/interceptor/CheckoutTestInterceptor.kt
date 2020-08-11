@@ -69,7 +69,6 @@ class CheckoutTestInterceptor : Interceptor {
         val requestString = buffer.readUtf8()
 
         if (requestString.contains(CHECKOUT_QUERY)) {
-            Thread.sleep(2000)
             if (customCheckoutThrowable != null) {
                 throw customCheckoutThrowable!!
             } else if (customCheckoutResponseString != null) {

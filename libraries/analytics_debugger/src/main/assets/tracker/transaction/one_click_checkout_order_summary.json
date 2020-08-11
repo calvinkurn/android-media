@@ -77,6 +77,28 @@
       ],
       "eventLabel": "success",
       "checkout_option": "click bayar success"
+    },
+    {
+      "eventCategory": "order summary",
+      "event": "viewCheckoutExpressIris",
+      "userId": "{{\\d*}}",
+      "eventAction": "view preselected courier option",
+      "sessionIris": "{{.*}}",
+      "eventLabel": "{{\\d+}}"
+    },
+    {
+      "eventCategory": "order summary",
+      "event": "clickCheckoutExpress",
+      "eventAction": "courier - click arrow to change courier option",
+      "sessionIris": "{{.*}}",
+      "eventLabel": "{{\\d+}}"
+    },
+    {
+      "eventCategory": "order summary",
+      "event": "clickCheckoutExpress",
+      "eventAction": "courier - click selected courier option",
+      "sessionIris": "{{.*}}",
+      "eventLabel": "{{\\d+}}"
     }
   ],
   "readme": "OCC Order Summary Tracking"
