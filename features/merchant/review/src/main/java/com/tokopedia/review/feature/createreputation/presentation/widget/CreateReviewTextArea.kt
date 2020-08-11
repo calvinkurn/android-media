@@ -5,7 +5,6 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.tokopedia.review.R
-import com.tokopedia.review.feature.createreputation.analytics.CreateReviewTracking
 import com.tokopedia.review.feature.createreputation.presentation.listener.TextAreaListener
 import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.widget_create_review_text_area.view.*
@@ -28,15 +27,15 @@ class CreateReviewTextArea : BaseCustomView {
     }
 
     fun setListener(textAreaListener: TextAreaListener) {
-        reviewCreateTextAreaExpandButton.setOnClickListener {
-            textAreaListener.onExpandButtonClicked(reviewCreateTextArea.text.toString())
+        createReviewExpandButton.setOnClickListener {
+            textAreaListener.onExpandButtonClicked(createReviewEditText.text.toString())
         }
-        reviewCreateTextArea.apply {
+        createReviewEditText.apply {
             setOnFocusChangeListener { _, hasFocus ->
                 if(hasFocus) {
                     this@CreateReviewTextArea.createReviewTextAreaContainer.background = ContextCompat.getDrawable(context, R.drawable.bg_review_create_text_area_selected)
                     textAreaListener.apply {
-                        trackWhenHasFocus(reviewCreateTextArea.text.isEmpty())
+                        trackWhenHasFocus(createReviewEditText.text.isEmpty())
                         scrollToShowTextArea()
                     }
                 } else {
@@ -47,10 +46,10 @@ class CreateReviewTextArea : BaseCustomView {
     }
 
     fun setText(text: String) {
-        reviewCreateTextArea.setText(text)
+        createReviewEditText.setText(text)
     }
 
     fun getText(): String {
-        return reviewCreateTextArea.text.toString()
+        return createReviewEditText.text.toString()
     }
 }

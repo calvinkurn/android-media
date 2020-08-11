@@ -9,7 +9,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <EditText
-        android:id="@+id/reviewCreateTextArea"
+        android:id="@+id/createReviewEditText"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="@dimen/layout_lvl0"
         android:layout_marginTop="@dimen/dp_12"
@@ -25,10 +25,10 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/reviewCreateTextAreaExpandButton"/>
+        app:layout_constraintEnd_toStartOf="@id/createReviewExpandButton"/>
 
     <ImageView
-        android:id="@+id/reviewCreateTextAreaExpandButton"
+        android:id="@+id/createReviewExpandButton"
         android:layout_width="@dimen/layout_lvl3"
         android:layout_height="@dimen/layout_lvl3"
         android:layout_marginEnd="@dimen/layout_lvl1"

@@ -57,6 +57,9 @@ import com.tokopedia.unifycomponents.ContainerUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import kotlinx.android.synthetic.main.fragment_create_review.*
+import kotlinx.android.synthetic.main.widget_create_review_text_area.*
+import kotlinx.android.synthetic.main.widget_create_review_text_area.view.*
+import kotlinx.android.synthetic.main.widget_create_review_text_area.view.createReviewEditText
 import javax.inject.Inject
 import com.tokopedia.usecase.coroutines.Fail as CoroutineFail
 import com.tokopedia.usecase.coroutines.Success as CoroutineSuccess
@@ -110,9 +113,6 @@ class CreateReviewFragment : BaseDaggerFragment(),
     private var shopId: String = ""
     private var isEditMode: Boolean = false
     private var feedbackId: Int = 0
-
-    val getIsEditMode
-        get() = isEditMode
 
     lateinit var imgAnimationView: LottieAnimationView
     private var textAreaBottomSheet: CreateReviewTextAreaBottomSheet? = null
@@ -273,8 +273,11 @@ class CreateReviewFragment : BaseDaggerFragment(),
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         createReviewViewModel.getReputationDataForm.removeObservers(this)
+        createReviewViewModel.incentiveOvo.removeObservers(this)
+        createReviewViewModel.reviewDetails.removeObservers(this)
+        createReviewViewModel.submitReviewResult.removeObservers(this)
+        super.onDestroy()
     }
 
     override fun onAddImageClick() {
@@ -307,22 +310,14 @@ class CreateReviewFragment : BaseDaggerFragment(),
     }
 
     override fun onExpandButtonClicked(text: String) {
-        (createReviewViewModel.getReputationDataForm.value as? CoroutineSuccess<ProductRevGetForm>)?.let {
-            with(it.data.productrevGetForm) {
-                CreateReviewTracking.onExpandTextBoxClicked(orderID, productId.toString())
-            }
-        }
+        CreateReviewTracking.onExpandTextBoxClicked(getOrderId(), productId.toString())
         textAreaBottomSheet = CreateReviewTextAreaBottomSheet.createNewInstance(this, text)
         (textAreaBottomSheet as BottomSheetUnify).setTitle(createReviewTextAreaTitle.text.toString())
         fragmentManager?.let { textAreaBottomSheet?.show(it,"") }
     }
 
     override fun onCollapseButtonClicked(text: String) {
-        (createReviewViewModel.getReputationDataForm.value as? CoroutineSuccess<ProductRevGetForm>)?.let {
-            with(it.data.productrevGetForm) {
-                CreateReviewTracking.onCollapseTextBoxClicked(orderID, productId.toString())
-            }
-        }
+        CreateReviewTracking.onCollapseTextBoxClicked(getOrderId(), productId.toString())
         textAreaBottomSheet?.dismiss()
     }
 
@@ -335,19 +330,11 @@ class CreateReviewFragment : BaseDaggerFragment(),
     }
 
     override fun trackWhenHasFocus(isEmpty: Boolean) {
-        (createReviewViewModel.getReputationDataForm.value as? CoroutineSuccess<ProductRevGetForm>)?.let {
-            with(it.data.productrevGetForm) {
-                CreateReviewTracking.reviewOnMessageChangedTracker(orderID, productId.toString(), isEmpty, isEditMode, feedbackId.toString())
-            }
-        }
+        CreateReviewTracking.reviewOnMessageChangedTracker(getOrderId(), productId.toString(), isEmpty, isEditMode, feedbackId.toString())
     }
 
     override fun onReviewScoreClicked(score: Int) {
-        (createReviewViewModel.getReputationDataForm.value as? CoroutineSuccess<ProductRevGetForm>)?.let {
-            with(it.data.productrevGetForm) {
-                CreateReviewTracking.eventClickSmiley(orderID, productId.toString())
-            }
-        }
+        CreateReviewTracking.eventClickSmiley(getOrderId(), productId.toString())
         createReviewScore.onScoreSelected(score)
     }
 
@@ -691,6 +678,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
     }
 
     private fun clearFocusAndHideSoftInput(view: View?) {
+        createReviewEditText.clearFocus()
         val imm = view?.context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
@@ -699,11 +687,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
         createReviewExpandableTextArea.apply {
             setListener(this@CreateReviewFragment)
             addOnImpressionListener(ImpressHolder()) {
-                (createReviewViewModel.getReputationDataForm.value as? CoroutineSuccess<ProductRevGetForm>)?.let {
-                    with(it.data.productrevGetForm) {
-                        CreateReviewTracking.reviewOnScoreVisible(orderID, productId.toString())
-                    }
-                }
+                    CreateReviewTracking.reviewOnScoreVisible(getOrderId(), productId.toString())
             }
         }
     }
