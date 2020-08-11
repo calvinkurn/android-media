@@ -339,16 +339,19 @@ class ShopHomeAdapter(
 
     fun updateRemindMeStatusCampaignNplWidgetData(
             campaignId: String,
-            isRemindMe: Boolean? = null
+            isRemindMe: Boolean? = null,
+            isClickRemindMe: Boolean = false
     ) {
         visitables.filterIsInstance<ShopHomeNewProductLaunchCampaignUiModel>().onEach{nplCampaignUiModel ->
             nplCampaignUiModel.data?.firstOrNull { it.campaignId == campaignId }?.let {
                 isRemindMe?.let{ isRemindMe ->
                     it.isRemindMe = isRemindMe
-                    if(isRemindMe)
-                        ++it.totalNotify
-                    else
-                        --it.totalNotify
+                    if (isClickRemindMe) {
+                        if (isRemindMe)
+                            ++it.totalNotify
+                        else
+                            --it.totalNotify
+                    }
                 }
                 it.showRemindMeLoading = false
                 notifyChangedItem(visitables.indexOf(nplCampaignUiModel))

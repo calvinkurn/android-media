@@ -1,5 +1,6 @@
 package com.tokopedia.shop.common.util
 
+import java.math.RoundingMode
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.text.NumberFormat
@@ -9,6 +10,7 @@ val decimalFormat = DecimalFormat("0", DecimalFormatSymbols.getInstance(Locale("
 
 fun Number.numberFormatted(digits: Int): String {
     decimalFormat.maximumFractionDigits = digits
+    decimalFormat.roundingMode = RoundingMode.DOWN
     return decimalFormat.format(this)
 }
 

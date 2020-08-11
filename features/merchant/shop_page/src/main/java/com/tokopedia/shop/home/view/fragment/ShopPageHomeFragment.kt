@@ -431,7 +431,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         val isRegisterCampaign = data.action.toLowerCase() == NotifyMeAction.REGISTER.action.toLowerCase()
         shopHomeAdapter.updateRemindMeStatusCampaignNplWidgetData(
                 data.campaignId,
-                isRegisterCampaign
+                isRegisterCampaign,
+                true
         )
         shopPageHomeTracking.clickNotifyMeButton(
                 isOwner,
