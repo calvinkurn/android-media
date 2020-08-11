@@ -155,10 +155,13 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
         tickerBuyerRequestCancel?.apply {
             val tickerDescription = makeTickerDescription(context, tickerInfo)
             setTextDescription(tickerDescription)
-            setDescriptionClickEvent(object: TickerCallback {
+            setDescriptionClickEvent(object : TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                    RouteManager.route(context, String.format("%s?=url", ApplinkConst.WEBVIEW, tickerInfo.actionUrl))
+                    if (tickerInfo.actionUrl.isNotBlank()) {
+                        RouteManager.route(context, String.format("%s?=url", ApplinkConst.WEBVIEW, tickerInfo.actionUrl))
+                    }
                 }
+
                 override fun onDismiss() {}
             })
             tickerType = Utils.mapBackgroundColorToUnifyTickerType(tickerInfo.type)
