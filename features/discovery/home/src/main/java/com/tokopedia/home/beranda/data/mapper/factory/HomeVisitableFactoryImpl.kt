@@ -7,6 +7,7 @@ import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.analytics.HomePageTrackingV2
 import com.tokopedia.home.analytics.v2.CategoryWidgetTracking
 import com.tokopedia.home.analytics.v2.ProductHighlightTracking
+import com.tokopedia.home.beranda.data.datasource.default_data_source.HomeDefaultDataSource
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.domain.model.HomeData
 import com.tokopedia.home.beranda.domain.model.HomeFlag
@@ -32,7 +33,8 @@ import java.util.*
 
 class HomeVisitableFactoryImpl(
         val userSessionInterface: UserSessionInterface?,
-        val remoteConfig: RemoteConfig) : HomeVisitableFactory {
+        val remoteConfig: RemoteConfig,
+        private val homeDefaultDataSource: HomeDefaultDataSource) : HomeVisitableFactory {
     private var context: Context? = null
     private var trackingQueue: TrackingQueue? = null
     private var homeData: HomeData? = null
@@ -74,37 +76,18 @@ class HomeVisitableFactoryImpl(
 
     override fun addBannerVisitable(): HomeVisitableFactory {
         val bannerViewModel = HomepageBannerDataModel()
-        val bannerDataModel = homeData?.banner
-        bannerViewModel.isCache = isCache
-
-        if (bannerDataModel?.slides == null || bannerDataModel.slides.isEmpty()) {
-            val defaultSlides = mutableListOf<BannerSlidesModel>()
-            val defaultBannerSlidesModel1 = BannerSlidesModel()
-            defaultBannerSlidesModel1.applink = DEFAULT_BANNER_APPLINK_1
-            defaultBannerSlidesModel1.type = BannerSlidesModel.TYPE_BANNER_DEFAULT
-            defaultBannerSlidesModel1.imageUrl = DEFAULT_BANNER_IMAGE_URL_1
-
-            val defaultBannerSlidesModel2 = BannerSlidesModel()
-            defaultBannerSlidesModel2.applink = DEFAULT_BANNER_APPLINK_2
-            defaultBannerSlidesModel2.type = BannerSlidesModel.TYPE_BANNER_DEFAULT
-            defaultBannerSlidesModel2.imageUrl = DEFAULT_BANNER_IMAGE_URL_2
-
-            val defaultBannerSlidesModel3 = BannerSlidesModel()
-            defaultBannerSlidesModel3.applink = DEFAULT_BANNER_APPLINK_3
-            defaultBannerSlidesModel3.type = BannerSlidesModel.TYPE_BANNER_DEFAULT
-            defaultBannerSlidesModel3.imageUrl = DEFAULT_BANNER_IMAGE_URL_3
-
-            defaultSlides.add(defaultBannerSlidesModel1)
-            defaultSlides.add(defaultBannerSlidesModel2)
-            defaultSlides.add(defaultBannerSlidesModel3)
-
-            bannerViewModel.slides = defaultSlides
+        var bannerDataModel = homeData?.banner
+        if (bannerDataModel?.slides == null || bannerDataModel.slides?.isEmpty() == true) {
+            bannerDataModel = homeDefaultDataSource.createDefaultHomePageBanner()
+            bannerViewModel.slides = bannerDataModel.slides
         } else {
-            bannerDataModel.slides.forEachIndexed { index, bannerSlidesModel ->
+            bannerDataModel.slides?.forEachIndexed { index, bannerSlidesModel ->
                 bannerSlidesModel.position = index+1
             }
             bannerViewModel.slides = bannerDataModel.slides
         }
+        bannerViewModel.isCache = isCache
+
         visitableList.add(bannerViewModel)
         return this
     }
@@ -141,7 +124,11 @@ class HomeVisitableFactoryImpl(
 
     override fun addDynamicIconVisitable(): HomeVisitableFactory {
         val isDynamicIconWrapType = homeData?.homeFlag?.getFlag(HomeFlag.TYPE.DYNAMIC_ICON_WRAP)?: false
-        val iconList = homeData?.dynamicHomeIcon?.dynamicIcon?: listOf()
+        var iconList = homeData?.dynamicHomeIcon?.dynamicIcon?: listOf()
+        if (iconList.isEmpty()) {
+            iconList = homeDefaultDataSource.createDefaultHomeDynamicIcon().dynamicIcon
+        }
+
         val viewModelDynamicIcon = DynamicIconSectionDataModel(
                 dynamicIconWrap = isDynamicIconWrapType,
                 itemList = iconList
@@ -157,7 +144,17 @@ class HomeVisitableFactoryImpl(
     }
 
     override fun addDynamicChannelVisitable(): HomeVisitableFactory {
-        homeData?.dynamicHomeChannel?.channels?.forEachIndexed { index, channel ->
+        var dynamicChannelList = mutableListOf<DynamicHomeChannel.Channels>()
+        if (homeData?.dynamicHomeChannel == null
+                || homeData?.dynamicHomeChannel?.channels == null
+                || homeData?.dynamicHomeChannel?.channels?.isEmpty() == true) {
+            homeDefaultDataSource
+            dynamicChannelList = homeDefaultDataSource.createDefaultHomeDynamicChannel().channels as MutableList<DynamicHomeChannel.Channels>
+        } else {
+            dynamicChannelList = homeData?.dynamicHomeChannel?.channels as MutableList<DynamicHomeChannel.Channels>
+        }
+
+        dynamicChannelList.forEachIndexed { index, channel ->
             val position = index+1
             setDynamicChannelPromoName(position, channel)
             when (channel.layout) {
@@ -222,7 +219,7 @@ class HomeVisitableFactoryImpl(
                 DynamicHomeChannel.Channels.LAYOUT_REVIEW -> { createReviewWidget(channel = channel) }
                 DynamicHomeChannel.Channels.LAYOUT_PLAY_BANNER -> { createPlayWidget(channel) }
                 DynamicHomeChannel.Channels.LAYOUT_MIX_TOP -> {
-                        createMixTopComponent(channel, position, isCache)
+                    createMixTopComponent(channel, position, isCache)
                 }
                 DynamicHomeChannel.Channels.LAYOUT_RECHARGE_RECOMMENDATION -> { createReminderWidget(ReminderEnum.RECHARGE) }
                 DynamicHomeChannel.Channels.LAYOUT_SALAM_WIDGET -> {
