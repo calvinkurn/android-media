@@ -42,7 +42,7 @@ ext {
     playServiceBaseVersion = '17.3.0'
     playServiceFirebaseIidVersion = '17.0.4'
 
-    playCoreVersion = '1.6.3'
+    playCoreVersion = '1.8.0'
     playServiceGms = '16.0.0'
     playServiceBase = '16.1.0'
     playServiceAppIndexing = '17.1.0'
