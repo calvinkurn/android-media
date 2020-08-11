@@ -428,7 +428,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     }
 
     private suspend fun getProductInfoP3(shopDomain: String?, productInfo: DynamicProductInfoP1): ProductInfoP3? {
-        val p2ShopValue = _p2Data.value
         val domain = shopDomain ?: getShopInfo().shopCore.domain
         val origin = if (getMultiOriginByProductId().isFulfillment) getMultiOriginByProductId().getOrigin() else null
 
