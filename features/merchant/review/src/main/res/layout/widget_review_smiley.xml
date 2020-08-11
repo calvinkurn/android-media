@@ -32,6 +32,7 @@
         android:animateLayoutChanges="true"
         android:layout_centerHorizontal="true"
         android:layout_below="@id/image_container"
+        android:alpha="0"
         app:typographyType="body_2"
         app:typographyWeight="bold"/>
 

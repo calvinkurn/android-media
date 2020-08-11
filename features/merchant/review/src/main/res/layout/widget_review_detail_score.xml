@@ -61,12 +61,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl1"
-        android:layout_marginStart="@dimen/layout_lvl7"
-        android:layout_marginLeft="@dimen/layout_lvl7"
+        android:layout_marginEnd="@dimen/layout_lvl5"
         android:visibility="gone"
         app:isSelected="false"
         app:score="bad"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/reviewEditableMediocreSmiley"
         app:layout_constraintTop_toBottomOf="@id/reviewDetailScoreShopName"
         tools:visibility="visible"/>
 
@@ -78,8 +77,8 @@
         android:visibility="gone"
         app:isSelected="false"
         app:score="mediocre"
-        app:layout_constraintStart_toEndOf="@id/reviewEditableBadSmiley"
-        app:layout_constraintEnd_toStartOf="@id/reviewEditableExcellentSmiley"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/reviewDetailScoreShopName"
         tools:visibility="visible"/>
 
@@ -88,12 +87,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl1"
-        android:layout_marginEnd="@dimen/layout_lvl7"
-        android:layout_marginRight="@dimen/layout_lvl7"
+        android:layout_marginStart="@dimen/layout_lvl5"
         android:visibility="gone"
         app:isSelected="false"
         app:score="excellent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/reviewEditableMediocreSmiley"
         app:layout_constraintTop_toBottomOf="@id/reviewDetailScoreShopName"
         tools:visibility="visible"/>
 
