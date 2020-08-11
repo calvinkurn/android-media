@@ -84,12 +84,6 @@ class SellerAccountFragment : BaseAccountFragment(), AccountItemListener, Fragme
         return view
     }
 
-    override fun onResume() {
-        super.onResume()
-        isLoaded = false
-        getData()
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initObserver()

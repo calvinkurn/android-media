@@ -217,8 +217,9 @@ class EditProductFragment : BaseDaggerFragment() {
         /// for the products which are added and removed
         val iterator = addedProducts.iterator()
         while (iterator.hasNext()){
+            val key = iterator.next()
             deletedProducts.forEach { deleted ->
-                if (iterator.next().itemID == deleted.itemID) {
+                if (key.itemID == deleted.itemID) {
                     iterator.remove()
                 }
             }

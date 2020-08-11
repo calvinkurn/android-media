@@ -87,7 +87,9 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
         stepperListener?.goToNextPage(stepperModel)
     }
 
-    override fun populateView(stepperModel: CreateManualAdsStepperModel) {
+    override fun populateView() {
+        if(activity is StepperActivity)
+            (activity as StepperActivity).updateToolbarTitle(getString(R.string.summary_page_step))
     }
 
     override fun getScreenName(): String {
@@ -279,9 +281,5 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
         product_count.text = stepperModel?.selectedProductIds?.count().toString()
         keyword_count.text = stepperModel?.selectedKeywords?.count().toString()
         group_name.text = stepperModel?.groupName
-    }
-
-    override fun updateToolBar() {
-        (activity as StepperActivity).updateToolbarTitle(getString(R.string.summary_page_step))
     }
 }

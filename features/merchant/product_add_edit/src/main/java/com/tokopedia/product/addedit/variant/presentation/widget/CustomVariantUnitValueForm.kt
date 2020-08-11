@@ -2,6 +2,8 @@ package com.tokopedia.product.addedit.variant.presentation.widget
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import android.widget.LinearLayout
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
@@ -33,10 +35,30 @@ class CustomVariantUnitValueForm : LinearLayout {
     }
 
     fun setupVariantCustomInputLayout(selectedVariantUnit: Unit, selectedVariantUnitValues: MutableList<UnitValue>) {
+        setupTextChangedListener(textWatcher = createTextWatcher())
         setupButtonSaveClickListener(layoutPosition, selectedVariantUnit, variantUnitValues, selectedVariantUnitValues)
 
         textFieldUnifyCustomValue.textFieldInput.afterTextChanged {
             buttonSave.isEnabled = it.isNotEmpty()
+        }
+    }
+
+    private fun setupTextChangedListener(textWatcher: TextWatcher) {
+        textFieldUnifyCustomValue?.textFieldInput?.addTextChangedListener(textWatcher)
+    }
+
+    private fun createTextWatcher(): TextWatcher {
+        return object : TextWatcher {
+            override fun afterTextChanged(editable: Editable?) {
+                val input = editable?.toString() ?: ""
+                buttonSave.isEnabled = input.isNotBlank()
+            }
+
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
         }
     }
 
@@ -46,7 +68,7 @@ class CustomVariantUnitValueForm : LinearLayout {
                                              variantUnitValues: List<UnitValue>,
                                              selectedVariantUnitValues: MutableList<UnitValue>) {
         buttonSave.setOnClickListener {
-            val customVariantUnitValueName = textFieldUnifyCustomValue.getText()
+            val customVariantUnitValueName = textFieldUnifyCustomValue.getText().trim()
             val isVariantUnitValueExist = variantUnitValues.any { variantUnitValue ->
                 variantUnitValue.value.toLowerCase() == customVariantUnitValueName.toLowerCase()
             }
@@ -57,14 +79,18 @@ class CustomVariantUnitValueForm : LinearLayout {
                 return@setOnClickListener
             } else {
                 val customVariantUnitValue = UnitValue(value = customVariantUnitValueName)
-                onCustomVariantUnitAddListener?.onCustomVariantUnitValueAdded(layoutPosition, selectedVariantUnit, customVariantUnitValue, selectedVariantUnitValues)
+                onCustomVariantUnitAddListener?.onCustomVariantUnitValueAdded(
+                        layoutPosition,
+                        selectedVariantUnit,
+                        customVariantUnitValue,
+                        selectedVariantUnitValues)
             }
         }
     }
 
     interface OnCustomVariantUnitAddListener {
         fun onCustomVariantUnitValueAdded(layoutPosition: Int,
-                                          selectedVariantUnit: Unit,
+                                          currentSelectedVariantUnit: Unit,
                                           customVariantUnitValue: UnitValue,
                                           currentSelectedVariantUnitValues: MutableList<UnitValue>)
     }

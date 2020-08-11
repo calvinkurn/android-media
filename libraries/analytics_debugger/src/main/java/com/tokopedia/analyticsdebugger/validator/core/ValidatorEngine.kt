@@ -13,9 +13,9 @@ class ValidatorEngine constructor(private val dao: GtmLogDBSource) {
         fun isInExact():Boolean = (this == EXACT_ORDER || this == EXACT_ALL)
     }
 
-    private var currentMode = Mode.SUBSET_ALL
+    private var currentMode = Mode.EXACT_ALL
 
-    fun computeRx(testCases: List<Validator>, mode: String = "subset"): Observable<List<Validator>> {
+    fun computeRx(testCases: List<Validator>, mode: String = "exact"): Observable<List<Validator>> {
         setMode(mode)
 
         return dao.getAllLogs().map { logs ->
@@ -23,7 +23,7 @@ class ValidatorEngine constructor(private val dao: GtmLogDBSource) {
         }
     }
 
-    suspend fun computeCo(testCases: List<Validator>, mode: String = "subset"): List<Validator> {
+    suspend fun computeCo(testCases: List<Validator>, mode: String = "exact"): List<Validator> {
         return compute(testCases, dao.getLogs())
     }
 

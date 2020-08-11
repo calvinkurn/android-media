@@ -36,6 +36,14 @@
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustResize"/>
 
+        <activity
+            android:name=".feature.reputationhistory.view.activity.SellerReputationDatePickerActivity"
+            android:label="@string/set_date" />
+        <activity
+            android:name=".feature.reputationhistory.view.activity.SellerReputationInfoActivity"
+            android:label="@string/reputation_point_calculation"
+            android:theme="@style/AppTheme" />
+
     </application>
 
 </manifest>

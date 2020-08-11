@@ -6,7 +6,7 @@ import android.os.Bundle
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.shop.R
-import com.tokopedia.shop.ShopComponentInstance
+import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.search.view.fragment.ShopSearchProductFragment
 
@@ -100,7 +100,11 @@ class ShopSearchProductActivity : BaseSimpleActivity(), HasComponent<ShopCompone
     )
 
     override fun getComponent(): ShopComponent = component
-            ?: ShopComponentInstance.getComponent(application)
+            ?: ShopComponentHelper().getComponent(application, this)
 
     override fun getLayoutRes() = R.layout.activity_shop_search_product
+
+    override fun getParentViewResourceID(): Int {
+        return R.id.parent_view
+    }
 }

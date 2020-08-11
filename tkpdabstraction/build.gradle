@@ -30,7 +30,7 @@ dependencies {
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
-    implementation rootProject.ext.firebase.crashlytics
+    implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
@@ -40,7 +40,10 @@ dependencies {
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.networkDependencies.glide
-    implementation project(rootProject.ext.libraries.playCore)
+    implementation rootProject.ext.playServicesDependencies.core
+    implementation (rootProject.ext.serviceDependencies.crashlytics) {
+        transitive = true
+    }
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.gson
     api rootProject.ext.miscDependencies.multiDex

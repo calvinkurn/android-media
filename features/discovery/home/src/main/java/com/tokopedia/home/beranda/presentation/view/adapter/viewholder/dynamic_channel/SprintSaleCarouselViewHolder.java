@@ -25,7 +25,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.google.firebase.crashlytics.FirebaseCrashlytics;
+import com.crashlytics.android.Crashlytics;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
@@ -150,7 +150,7 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
             }
         } catch (Exception e) {
             if(!GlobalConfig.DEBUG) {
-                FirebaseCrashlytics.getInstance().log("E/"+TAG+":"+e.getLocalizedMessage());
+                Crashlytics.log(0, TAG, e.getLocalizedMessage());
             }
         }
     }
@@ -225,7 +225,7 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
                     holder.countainer.setOnClickListener(null);
                 }
             } catch (Exception e) {
-                FirebaseCrashlytics.getInstance().log("E/"+TAG+":"+e.getLocalizedMessage());
+                Crashlytics.log(0, TAG, e.getLocalizedMessage());
             }
         }
 
