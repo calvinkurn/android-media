@@ -11,7 +11,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.otp.R
 import com.tokopedia.otp.verification.domain.data.ModeListData
@@ -76,8 +75,6 @@ class VerificationMethodAdapter(
     }
 
     companion object {
-
-        val regexPattern = "\\u003c(\\/)?(b\\b)[^\\u003e]*\\u003e[\\s\\S]*\\u003c(\\/)?(b\\b)[^\\u003e]*\\u003e"
         
         fun createInstance(listener: ClickListener): VerificationMethodAdapter {
             return VerificationMethodAdapter(mutableListOf(), listener)
