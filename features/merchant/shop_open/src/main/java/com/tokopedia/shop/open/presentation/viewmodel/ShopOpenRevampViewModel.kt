@@ -3,6 +3,8 @@ package com.tokopedia.shop.open.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.shop.common.graphql.data.shopopen.ShopDomainSuggestionData
+import com.tokopedia.shop.common.graphql.data.shopopen.ValidateShopDomainNameResult
 import com.tokopedia.shop.common.graphql.domain.usecase.shopopen.GetShopDomainNameSuggestionUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopopen.ShopOpenRevampValidateDomainShopNameUseCase
 import com.tokopedia.shop.open.common.ShopOpenDispatcherProvider
@@ -44,8 +46,8 @@ class ShopOpenRevampViewModel @Inject constructor(
     val getSurveyDataResponse: LiveData<Result<GetSurveyData>>
         get() = _getSurveyDataResponse
 
-    private val _domainShopNameSuggestionsResponse = MutableLiveData<Result<ShopDomainSuggestionResult>>()
-    val domainShopNameSuggestionsResponse: LiveData<Result<ShopDomainSuggestionResult>>
+    private val _domainShopNameSuggestionsResponse = MutableLiveData<Result<ShopDomainSuggestionData>>()
+    val domainShopNameSuggestionsResponse: LiveData<Result<ShopDomainSuggestionData>>
         get() = _domainShopNameSuggestionsResponse
 
     private val _saveShopShipmentLocationResponse = MutableLiveData<Result<SaveShipmentLocation>>()
