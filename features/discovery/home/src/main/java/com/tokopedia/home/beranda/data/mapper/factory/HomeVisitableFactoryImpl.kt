@@ -116,10 +116,11 @@ class HomeVisitableFactoryImpl(
     }
 
     override fun addDynamicIconVisitable(): HomeVisitableFactory {
-        val isDynamicIconWrapType = homeData?.homeFlag?.getFlag(HomeFlag.TYPE.DYNAMIC_ICON_WRAP)?: false
+        var isDynamicIconWrapType = homeData?.homeFlag?.getFlag(HomeFlag.TYPE.DYNAMIC_ICON_WRAP)?: false
         var iconList = homeData?.dynamicHomeIcon?.dynamicIcon?: listOf()
         if (iconList.isEmpty()) {
             iconList = homeDefaultDataSource.createDefaultHomeDynamicIcon().dynamicIcon
+            isDynamicIconWrapType = true
         }
 
         val viewModelDynamicIcon = DynamicIconSectionDataModel(
