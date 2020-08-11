@@ -54,12 +54,14 @@ class TickerViewHolder(
             })
         }
 
-        val shouldHideTicker = element.data?.tickers.isNullOrEmpty()
-        hideTickerIfNoItem(shouldHideTicker)
+        removeTickerIfEmpty(element)
     }
 
-    private fun hideTickerIfNoItem(hideTicker: Boolean) {
-        itemView.tickerViewContainerShc.visibility = if (hideTicker) View.GONE else View.VISIBLE
+    private fun removeTickerIfEmpty(element: TickerWidgetUiModel) {
+        val isEmpty = element.data?.tickers.isNullOrEmpty()
+        if (isEmpty) {
+            listener.removeWidget(adapterPosition, element)
+        }
     }
 
     interface Listener : BaseViewHolderListener
