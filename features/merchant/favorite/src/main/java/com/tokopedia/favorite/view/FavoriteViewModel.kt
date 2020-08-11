@@ -206,7 +206,7 @@ class FavoriteViewModel
 
     private fun validateNetworkTopAdsShop(topAdsShop: TopAdsShop?) {
         if (topAdsShop != null) {
-            _isTopAdsShopNetworkFailed.value = !topAdsShop.isNetworkError
+            _isTopAdsShopNetworkFailed.value = topAdsShop.isNetworkError
         }
     }
 
