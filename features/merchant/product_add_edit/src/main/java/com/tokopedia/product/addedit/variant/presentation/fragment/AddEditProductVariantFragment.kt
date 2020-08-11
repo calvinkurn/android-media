@@ -181,6 +181,7 @@ class AddEditProductVariantFragment :
             }
         }
 
+        observeIsEditMode()
         observeSizechartUrl()
         observeGetVariantCategoryCombinationResult()
         observeProductInputModel()
