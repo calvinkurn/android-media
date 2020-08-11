@@ -51,7 +51,6 @@ class VariantPhotoAdapter(private val onItemClickedListener: OnItemClickListener
 
     fun removeData(position: Int) {
         this.items.removeAt(position)
-        notifyItemRemoved(position)
         notifyDataSetChanged()
     }
 
