@@ -1784,7 +1784,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 DynamicProductDetailTracking.Click.eventClickPdpShare(productInfo)
 
                 val productData = ProductData(
-                        productInfo.data.price.value.getCurrencyFormatted(),
+                        productInfo.finalPrice.getCurrencyFormatted(),
                         "${productInfo.data.isCashback.percentage}%",
                         MethodChecker.fromHtml(productInfo.getProductName).toString(),
                         productInfo.data.price.currency,
