@@ -140,6 +140,7 @@ public class MyApplication extends BaseMainApplication
     }
 
     /*public static class GTMAnalytics extends DummyAnalytics {
+
         public GTMAnalytics(Context context) {
             super(context);
         }
@@ -153,6 +154,7 @@ public class MyApplication extends BaseMainApplication
     }
 
     /*public static class MoengageAnalytics extends DummyAnalytics {
+
         public MoengageAnalytics(Context context) {
             super(context);
         }
