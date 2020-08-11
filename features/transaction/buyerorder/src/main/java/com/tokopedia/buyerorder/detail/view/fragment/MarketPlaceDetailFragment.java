@@ -948,7 +948,6 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                     if (getView() != null) {
                         Toaster.make(getView(), resultMsg, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, "", v -> { });
                     }
-
                 } else if (result == 3) {
                     String popupTitle = data.getStringExtra(RESULT_POPUP_TITLE_INSTANT_CANCEL);
                     String popupBody = data.getStringExtra(RESULT_POPUP_BODY_INSTANT_CANCEL);
@@ -964,6 +963,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                         dialogUnify.show();
                     }
                 }
+                finishOrderDetail();
             }
             orderListAnalytics.sendActionButtonClickEvent(CLICK_SUBMIT_CANCELATION, statusValue.getText().toString() + "-" + reason);
 
