@@ -167,63 +167,39 @@ class SellerMigrationFragment : Fragment(), SellerFeatureCarousel.RecyclerViewLi
         tabList.add(SellerFeatureFragmentAdapter.SellerFeatureFragmentItem(getSellerFeatureStatisticTabFragment(), "statistics"))
     }
 
+    private inline fun <reified T : BaseSellerFeatureTabFragment> getSellerFeatureTabFragment(): T? {
+        return childFragmentManager.fragments.filterIsInstance<T>().firstOrNull()?.apply {
+            recyclerViewListener = this@SellerMigrationFragment
+        }
+    }
+
     private fun getSellerFeatureProductTabFragment(): SellerFeatureProductTabFragment {
-        val fragment = childFragmentManager.fragments.filterIsInstance<SellerFeatureProductTabFragment>().firstOrNull()
-        return if (fragment != null) {
-            fragment.recyclerViewListener = this
-            fragment
-        } else {
-            SellerFeatureProductTabFragment().apply {
-                recyclerViewListener = this@SellerMigrationFragment
-            }
+        return getSellerFeatureTabFragment() ?: SellerFeatureProductTabFragment().apply {
+            recyclerViewListener = this@SellerMigrationFragment
         }
     }
 
     private fun getSellerFeatureChatTabFragment(): SellerFeatureChatTabFragment {
-        val fragment = childFragmentManager.fragments.filterIsInstance<SellerFeatureChatTabFragment>().firstOrNull()
-        return if (fragment != null) {
-            fragment.recyclerViewListener = this
-            fragment
-        } else {
-            SellerFeatureChatTabFragment().apply {
-                recyclerViewListener = this@SellerMigrationFragment
-            }
+        return getSellerFeatureTabFragment() ?: SellerFeatureChatTabFragment().apply {
+            recyclerViewListener = this@SellerMigrationFragment
         }
     }
 
     private fun getSellerFeatureReviewTabFragment(): SellerFeatureReviewTabFragment {
-        val fragment = childFragmentManager.fragments.filterIsInstance<SellerFeatureReviewTabFragment>().firstOrNull()
-        return if (fragment != null) {
-            fragment.recyclerViewListener = this
-            fragment
-        } else {
-            SellerFeatureReviewTabFragment().apply {
-                recyclerViewListener = this@SellerMigrationFragment
-            }
+        return getSellerFeatureTabFragment() ?: SellerFeatureReviewTabFragment().apply {
+            recyclerViewListener = this@SellerMigrationFragment
         }
     }
 
     private fun getSellerFeatureAdsPromoTabFragment(): SellerFeatureAdsPromoTabFragment {
-        val fragment = childFragmentManager.fragments.filterIsInstance<SellerFeatureAdsPromoTabFragment>().firstOrNull()
-        return if (fragment != null) {
-            fragment.recyclerViewListener = this
-            fragment
-        } else {
-            SellerFeatureAdsPromoTabFragment().apply {
-                recyclerViewListener = this@SellerMigrationFragment
-            }
+        return getSellerFeatureTabFragment() ?: SellerFeatureAdsPromoTabFragment().apply {
+            recyclerViewListener = this@SellerMigrationFragment
         }
     }
 
     private fun getSellerFeatureStatisticTabFragment(): SellerFeatureStatisticTabFragment {
-        val fragment = childFragmentManager.fragments.filterIsInstance<SellerFeatureStatisticTabFragment>().firstOrNull()
-        return if (fragment != null) {
-            fragment.recyclerViewListener = this
-            fragment
-        } else {
-            SellerFeatureStatisticTabFragment().apply {
-                recyclerViewListener = this@SellerMigrationFragment
-            }
+        return getSellerFeatureTabFragment() ?: SellerFeatureStatisticTabFragment().apply {
+            recyclerViewListener = this@SellerMigrationFragment
         }
     }
 
