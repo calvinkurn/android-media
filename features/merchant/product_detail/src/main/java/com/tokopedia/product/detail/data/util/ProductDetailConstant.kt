@@ -56,7 +56,6 @@ object ProductDetailConstant {
     const val KEY_BUTTON_PRIMARY = "primary"
     const val KEY_BUTTON_SECONDARY = "secondary"
     const val DEFAULT_PAGE_NUMBER = 1
-    const val DEFAULT_PAGE_NAME = "pdp_1,pdp_2,pdp_3,pdp_4"
     const val DEFAULT_X_SOURCE = "pdp"
 
     const val PDP_P1_TRACE = "mp_pdp_p1"

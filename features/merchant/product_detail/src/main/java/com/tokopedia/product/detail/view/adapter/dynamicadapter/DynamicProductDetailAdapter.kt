@@ -73,18 +73,6 @@ class DynamicProductDetailAdapter(
         }
     }
 
-    fun notifyRecomAdapter(listOfData: List<ProductRecommendationDataModel>?) {
-        listOfData?.run {
-            forEach {
-                if (it.isRecomenDataEmpty) {
-                    clearElement(it)
-                } else {
-                    notifyItemChanged(list.indexOf(it))
-                }
-            }
-        }
-    }
-
     fun notifyRecomAdapter(productRecommendationDataModel: ProductRecommendationDataModel?) {
         val index = list.indexOf(productRecommendationDataModel)
         notifyItemChanged(index)

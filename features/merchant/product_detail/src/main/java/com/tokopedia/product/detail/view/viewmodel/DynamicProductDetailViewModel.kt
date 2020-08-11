@@ -70,31 +70,30 @@ import rx.schedulers.Schedulers
 import timber.log.Timber
 import javax.inject.Inject
 
-open class DynamicProductDetailViewModel @Inject constructor(
-        private val dispatcher: DynamicProductDetailDispatcherProvider,
-        private val stickyLoginUseCase: StickyLoginUseCase,
-        private val getPdpLayoutUseCase: GetPdpLayoutUseCase,
-        private val getProductInfoP2ShopUseCase: GetProductInfoP2ShopUseCase,
-        private val getProductInfoP2LoginUseCase: GetProductInfoP2LoginUseCase,
-        private val getProductInfoP2GeneralUseCase: GetProductInfoP2GeneralUseCase,
-        private val getProductInfoP3RateEstimateUseCase: GetProductInfoP3RateEstimateUseCase,
-        private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
-        private val removeWishlistUseCase: RemoveWishListUseCase,
-        private val addWishListUseCase: AddWishListUseCase,
-        private val getRecommendationUseCase: GetRecommendationUseCase,
-        private val getRecommendationFilterChips: GetRecommendationFilterChips,
-        private val moveProductToWarehouseUseCase: MoveProductToWarehouseUseCase,
-        private val moveProductToEtalaseUseCase: MoveProductToEtalaseUseCase,
-        private val trackAffiliateUseCase: TrackAffiliateUseCase,
-        private val submitHelpTicketUseCase: SubmitHelpTicketUseCase,
-        private val updateCartCounterUseCase: UpdateCartCounterUseCase,
-        private val addToCartUseCase: AddToCartUseCase,
-        private val addToCartOcsUseCase: AddToCartOcsUseCase,
-        private val addToCartOccUseCase: AddToCartOccUseCase,
-        private val getProductInfoP3VariantUseCase: GetProductInfoP3VariantUseCase,
-        private val toggleNotifyMeUseCase: ToggleNotifyMeUseCase,
-        private val discussionMostHelpfulUseCase: DiscussionMostHelpfulUseCase,
-        val userSessionInterface: UserSessionInterface) : BaseViewModel(dispatcher.ui()) {
+open class DynamicProductDetailViewModel @Inject constructor(private val dispatcher: DynamicProductDetailDispatcherProvider,
+                                                             private val stickyLoginUseCase: StickyLoginUseCase,
+                                                             private val getPdpLayoutUseCase: GetPdpLayoutUseCase,
+                                                             private val getProductInfoP2ShopUseCase: GetProductInfoP2ShopUseCase,
+                                                             private val getProductInfoP2LoginUseCase: GetProductInfoP2LoginUseCase,
+                                                             private val getProductInfoP2GeneralUseCase: GetProductInfoP2GeneralUseCase,
+                                                             private val getProductInfoP3RateEstimateUseCase: GetProductInfoP3RateEstimateUseCase,
+                                                             private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
+                                                             private val removeWishlistUseCase: RemoveWishListUseCase,
+                                                             private val addWishListUseCase: AddWishListUseCase,
+                                                             private val getRecommendationUseCase: GetRecommendationUseCase,
+                                                             private val getRecommendationFilterChips: GetRecommendationFilterChips,
+                                                             private val moveProductToWarehouseUseCase: MoveProductToWarehouseUseCase,
+                                                             private val moveProductToEtalaseUseCase: MoveProductToEtalaseUseCase,
+                                                             private val trackAffiliateUseCase: TrackAffiliateUseCase,
+                                                             private val submitHelpTicketUseCase: SubmitHelpTicketUseCase,
+                                                             private val updateCartCounterUseCase: UpdateCartCounterUseCase,
+                                                             private val addToCartUseCase: AddToCartUseCase,
+                                                             private val addToCartOcsUseCase: AddToCartOcsUseCase,
+                                                             private val addToCartOccUseCase: AddToCartOccUseCase,
+                                                             private val getProductInfoP3VariantUseCase: GetProductInfoP3VariantUseCase,
+                                                             private val toggleNotifyMeUseCase: ToggleNotifyMeUseCase,
+                                                             private val discussionMostHelpfulUseCase: DiscussionMostHelpfulUseCase,
+                                                             val userSessionInterface: UserSessionInterface) : BaseViewModel(dispatcher.ui()) {
 
     private val _productLayout = MutableLiveData<Result<List<DynamicPdpDataModel>>>()
     val productLayout: LiveData<Result<List<DynamicPdpDataModel>>>
@@ -622,33 +621,29 @@ open class DynamicProductDetailViewModel @Inject constructor(
                     val newRecommendation = recomData.first()
                     _filterTopAdsProduct.postValue(recommendationDataModel.copy(
                             recomWidgetData = newRecommendation,
-                            filterData = recommendationDataModel.filterData?.map {
-                                it.copy(
-                                    recommendationFilterChip = it.recommendationFilterChip.copy(
-                                        isActivated =
-                                            annotationChip.recommendationFilterChip.name == it.recommendationFilterChip.name
-                                                    && annotationChip.recommendationFilterChip.isActivated
-                                    )
-                                )
-                            }
+                            filterData = selectOrDeselectAnnotationChip(recommendationDataModel.filterData,annotationChip.recommendationFilterChip.name, annotationChip.recommendationFilterChip.isActivated)
                     ))
                     _statusFilterTopAdsProduct.postValue(true.asSuccess())
                 }
             }
         }) { throwable ->
             _filterTopAdsProduct.postValue(recommendationDataModel.copy(
-                    filterData = recommendationDataModel.filterData?.map {
-                        it.copy(
-                                recommendationFilterChip = it.recommendationFilterChip.copy(
-                                        isActivated =
-                                        annotationChip.recommendationFilterChip.name == it.recommendationFilterChip.name
-                                                && annotationChip.recommendationFilterChip.isActivated
-                                )
-                        )
-                    }
+                    filterData = selectOrDeselectAnnotationChip(recommendationDataModel.filterData, annotationChip.recommendationFilterChip.name, annotationChip.recommendationFilterChip.isActivated)
             ))
             _statusFilterTopAdsProduct.postValue(throwable.asFail())
         }
+    }
+
+    private fun selectOrDeselectAnnotationChip(filterData: List<AnnotationChip>?, name: String, isActivated: Boolean): List<AnnotationChip>{
+        return filterData?.map {
+            it.copy(
+                    recommendationFilterChip = it.recommendationFilterChip.copy(
+                            isActivated =
+                            name == it.recommendationFilterChip.name
+                                    && isActivated
+                    )
+            )
+        } ?: listOf()
     }
 
     fun moveProductToWareHouse(productId: String) {
