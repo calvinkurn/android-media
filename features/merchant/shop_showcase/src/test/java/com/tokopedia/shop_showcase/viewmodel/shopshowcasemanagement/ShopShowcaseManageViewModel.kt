@@ -1,7 +1,6 @@
 package com.tokopedia.shop_showcase.viewmodel.shopshowcasemanagement
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.shop_showcase.coroutine.TestCoroutineDispatchers
 import com.tokopedia.shop_showcase.shop_showcase_management.data.model.DeleteShopShowcaseResponse
 import com.tokopedia.shop_showcase.shop_showcase_management.data.model.GetShopProductsResponse
 import com.tokopedia.shop_showcase.shop_showcase_management.data.model.ReorderShopShowcaseResponse
@@ -13,6 +12,7 @@ import com.tokopedia.usecase.coroutines.Success
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
@@ -41,6 +41,10 @@ class ShopShowcaseManageViewModel {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
+    private val testDispatcher by lazy {
+        TestCoroutineDispatcher()
+    }
+
     private lateinit var viewModel: ShopShowcaseListViewModel
 
     @Before
@@ -52,7 +56,7 @@ class ShopShowcaseManageViewModel {
                 deleteShowcase,
                 reorderShowcase,
                 getShopShowcaseTotalProductUseCase,
-                TestCoroutineDispatchers.main()
+                testDispatcher
         )
     }
 
