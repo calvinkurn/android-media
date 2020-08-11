@@ -75,6 +75,7 @@ class PlayVideoBoundsManager(
         if (videoLayoutParams.topMargin != topBounds) {
             videoLayoutParams.topMargin = topBounds
             videoFrameLayout.layoutParams = videoLayoutParams
+            videoFrameLayout.parent.requestLayout()
         }
     }
 }

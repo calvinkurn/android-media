@@ -7,7 +7,7 @@ import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.play.R
 import com.tokopedia.play.view.type.VideoOrientation
-import com.tokopedia.play_common.util.extension.awaitLayout
+import com.tokopedia.play_common.util.extension.awaitMeasured
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
@@ -28,8 +28,8 @@ class PortraitVideoBoundsProvider(
 
     override suspend fun getVideoTopBounds(videoOrientation: VideoOrientation): Int = coroutineScope {
         return@coroutineScope if (videoOrientation.isHorizontal) {
-            val toolbarLayout = async { toolbarView.awaitLayout() }
-            val statsInfoLayout = async { statsInfoView.awaitLayout() }
+            val toolbarLayout = async { toolbarView.awaitMeasured() }
+            val statsInfoLayout = async { statsInfoView.awaitMeasured() }
 
             awaitAll(toolbarLayout, statsInfoLayout)
 
