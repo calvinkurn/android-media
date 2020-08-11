@@ -10,14 +10,14 @@ interface SellerMigrationCommunication
 sealed class CommunicationInfo(@StringRes val titleRes: Int,
                                val imageUrl: String,
                                @StringRes val descRes: Int,
-                               val benefitPointResList: List<Int> = listOf(),
-                               @StringRes val tickerMessage: Int): SellerMigrationCommunication {
+                               val benefitPointResList: ArrayList<Int> = arrayListOf(),
+                               @StringRes val tickerMessageRes: Int): SellerMigrationCommunication {
 
     object TopAds: CommunicationInfo(
             R.string.seller_migration_topads_bottom_sheet_title,
             CommunicationImageUrl.TOPADS,
             R.string.seller_migration_topads_bottom_sheet_desc,
-            listOf(
+            arrayListOf(
                     R.string.seller_migration_topads_bottom_sheet_item_product,
                     R.string.seller_migration_topads_bottom_sheet_item_strenghten,
                     R.string.seller_migration_topads_bottom_sheet_item_advertise
@@ -29,7 +29,7 @@ sealed class CommunicationInfo(@StringRes val titleRes: Int,
             R.string.seller_migration_broadcast_chat_bottom_sheet_title,
             CommunicationImageUrl.BROADCAST_CHAT,
             R.string.seller_migration_broadcast_chat_bottom_sheet_desc,
-            listOf(
+            arrayListOf(
                     R.string.seller_migration_broadcast_chat_bottom_sheet_item_send,
                     R.string.seller_migration_broadcast_chat_bottom_sheet_item_match,
                     R.string.seller_migration_broadcast_chat_bottom_sheet_item_access
@@ -41,14 +41,14 @@ sealed class CommunicationInfo(@StringRes val titleRes: Int,
             R.string.seller_migration_feed_bottom_sheet_title,
             CommunicationImageUrl.POST_FEED,
             R.string.seller_migration_feed_bottom_sheet_desc,
-            tickerMessage = R.string.seller_migration_feed_ticker_desc_prefix
+            tickerMessageRes = R.string.seller_migration_feed_ticker_desc_prefix
     )
 
     object ShopCapital: CommunicationInfo(
             R.string.seller_migration_modal_toko_bottom_sheet_title,
             CommunicationImageUrl.SHOP_CAPITAL,
             R.string.seller_migration_modal_toko_bottom_sheet_desc,
-            listOf(
+            arrayListOf(
                     R.string.seller_migration_modal_toko_bottom_sheet_item_active,
                     R.string.seller_migration_modal_toko_bottom_sheet_item_withdraw,
                     R.string.seller_migration_modal_toko_bottom_sheet_item_process
@@ -61,7 +61,7 @@ sealed class CommunicationInfo(@StringRes val titleRes: Int,
             R.string.seller_migration_saldo_prioritas_bottom_sheet_title,
             CommunicationImageUrl.PRIORITY_BALANCE,
             R.string.seller_migration_saldo_prioritas_bottom_sheet_desc,
-            listOf(
+            arrayListOf(
                     R.string.seller_migration_saldo_prioritas_bottom_sheet_item_process,
                     R.string.seller_migration_saldo_prioritas_bottom_sheet_item_result,
                     R.string.seller_migration_saldo_prioritas_bottom_sheet_item_return
@@ -75,21 +75,7 @@ sealed class CommunicationInfo(@StringRes val titleRes: Int,
  * This object reserved for dynamic Modal Toko and Saldo Prioritas information (eligible for both), so we will provide both infos in pair variable
  */
 object DynamicCommunicationInfo: SellerMigrationCommunication {
-    val titleResPair = Pair(R.string.seller_migration_modal_toko_bottom_sheet_title, R.string.seller_migration_saldo_prioritas_bottom_sheet_title)
-    val carouselImageUrlList = arrayListOf(CommunicationImageUrl.SHOP_CAPITAL, CommunicationImageUrl.PRIORITY_BALANCE)
-    val descResPair = Pair(R.string.seller_migration_modal_toko_bottom_sheet_desc, R.string.seller_migration_saldo_prioritas_bottom_sheet_desc)
-    val benefitPointResPair = Pair(
-            listOf(
-                    R.string.seller_migration_modal_toko_bottom_sheet_item_active,
-                    R.string.seller_migration_modal_toko_bottom_sheet_item_withdraw,
-                    R.string.seller_migration_modal_toko_bottom_sheet_item_process
-            ),
-            listOf(
-                    R.string.seller_migration_saldo_prioritas_bottom_sheet_item_process,
-                    R.string.seller_migration_saldo_prioritas_bottom_sheet_item_result,
-                    R.string.seller_migration_saldo_prioritas_bottom_sheet_item_return
-            )
-    )
+    val communicationInfoList = listOf(CommunicationInfo.ShopCapital, CommunicationInfo.PriorityBalance)
 }
 
 object CommunicationImageUrl {

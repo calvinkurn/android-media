@@ -2,9 +2,9 @@ package com.tokopedia.seller_migration_common.presentation.util
 
 import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Parcelable
 import android.view.View
 import androidx.fragment.app.Fragment
 import com.tokopedia.applink.ApplinkConst
@@ -15,6 +15,7 @@ import com.tokopedia.seller_migration_common.presentation.util.touchlistener.Sel
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
+import kotlinx.android.parcel.Parcelize
 
 @SuppressLint("ClickableViewAccessibility")
 internal fun Fragment.setupMigrationFooter(view: View?,
@@ -53,7 +54,10 @@ private fun Fragment.goToSellerApp(trackGoToSellerApp: () -> Unit,
 }
 
 private fun Fragment.goToInformationWebview(link: String,
-                                   trackLearnMore: () -> Unit): Boolean {
+                                            trackLearnMore: () -> Unit): Boolean {
     trackLearnMore()
     return RouteManager.route(activity, "${ApplinkConst.WEBVIEW}?url=${link}")
 }
+
+@Parcelize
+data class BenefitPoints(val benefitPointsList: List<String>): Parcelable

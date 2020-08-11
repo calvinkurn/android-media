@@ -1,12 +1,8 @@
-package com.tokopedia.seller_migration_common.presentation.widget
+package com.tokopedia.seller_migration_common.presentation.fragment.bottomsheet
 
-import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.seller_migration_common.R
 import com.tokopedia.seller_migration_common.analytics.SellerMigrationTracking
 import com.tokopedia.seller_migration_common.analytics.SellerMigrationTrackingConstants
@@ -30,10 +26,6 @@ class SellerMigrationAccountCommBottomSheet: BottomSheetUnify() {
 
     private val accountBenefitAdapter by lazy {
         context?.let { SellerMigrationAccountBenefitAdapter(it) }
-    }
-
-    private val linearLayoutManager by lazy {
-        LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
     }
 
     private val userId by lazy {
@@ -63,7 +55,7 @@ class SellerMigrationAccountCommBottomSheet: BottomSheetUnify() {
     private fun setupAdapter() {
         rv_seller_migration_account_desc?.run {
             adapter = accountBenefitAdapter
-            layoutManager = linearLayoutManager
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         }
     }
 
