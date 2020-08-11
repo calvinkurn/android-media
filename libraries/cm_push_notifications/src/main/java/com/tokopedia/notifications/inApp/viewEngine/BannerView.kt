@@ -70,6 +70,11 @@ internal open class BannerView(activity: Activity) {
         btnClose = container.findViewById(R.id.btnClose)
         lstActionButton = container.findViewById(R.id.lstActionButton)
 
+        // visibility of close button
+        if (!data.isCancelable) {
+            btnClose.visibility = View.GONE
+        }
+
         // set data view
         setBanner(data)
         setActionButton(data)
