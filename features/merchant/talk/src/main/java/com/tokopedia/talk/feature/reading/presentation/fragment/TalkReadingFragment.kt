@@ -144,7 +144,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     }
 
     override fun onFinishChooseSort(sortOption: SortOption) {
-        TalkReadingTracking.eventClickSort(sortOption.displayName, viewModel.userId, productId)
+        TalkReadingTracking.eventClickSort(sortOption.displayName, viewModel.getUserId(), productId)
         viewModel.updateSelectedSort(sortOption)
     }
 
@@ -162,7 +162,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     override fun onCategorySelected(categoryName: String, chipType: String) {
         val isSelected = chipType == ChipsUnify.TYPE_SELECTED
         if(isSelected) {
-            TalkReadingTracking.eventClickFilter(categoryName, viewModel.userId, productId)
+            TalkReadingTracking.eventClickFilter(categoryName, viewModel.getUserId(), productId)
         }
         selectUnselectCategory(categoryName, isSelected)
     }
@@ -179,7 +179,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     override fun onThreadClicked(questionID: String) {
         TalkReadingTracking.eventClickThread(
                 getSelectedCategoryDisplayName(),
-                viewModel.userId,
+                viewModel.getUserId(),
                 productId,
                 questionID
         )
@@ -268,7 +268,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     override fun onStart() {
         super.onStart()
         activity?.run {
-            TalkReadingTracking.sendScreen(screenName, productId, viewModel.isUserLoggedIn(), viewModel.userId)
+            TalkReadingTracking.sendScreen(screenName, productId, viewModel.isUserLoggedIn(), viewModel.getUserId())
         }
     }
 
@@ -332,7 +332,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
             when (it) {
                 is Success -> {
                     it.data.discussionData.let { data ->
-                        TalkReadingTracking.eventLoadData((viewModel.viewState.value as? ViewState.Success)?.page.toString(), it.data.discussionData.question.size.toString(), viewModel.userId, productId)
+                        TalkReadingTracking.eventLoadData((viewModel.viewState.value as? ViewState.Success)?.page.toString(), it.data.discussionData.question.size.toString(), viewModel.getUserId(), productId)
                         if (data.question.isNotEmpty()) {
                             stopNetworkRequestPerformanceMonitoring()
                             startRenderPerformanceMonitoring()
@@ -513,6 +513,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     private fun initFab() {
         addFloatingActionButton.setOnClickListener {
+            TalkReadingTracking.eventAskNewQuestion(viewModel.getUserId(), productId)
             if(viewModel.isUserLoggedIn()) {
                 goToWriteActivity()
             } else {

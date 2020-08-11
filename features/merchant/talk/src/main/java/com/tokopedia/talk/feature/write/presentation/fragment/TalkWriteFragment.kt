@@ -120,10 +120,12 @@ class TalkWriteFragment : BaseDaggerFragment(),
     }
 
     override fun onChipClicked(category: TalkWriteCategory) {
+        TalkWriteTracking.eventClickChips(viewModel.getUserId(), viewModel.getProductId().toString(), category.categoryName, category.content)
         viewModel.toggleCategory(category)
     }
 
     override fun onClickGoToChat(): Boolean {
+        TalkWriteTracking.eventClickAskSeller()
         return goToChat()
     }
 

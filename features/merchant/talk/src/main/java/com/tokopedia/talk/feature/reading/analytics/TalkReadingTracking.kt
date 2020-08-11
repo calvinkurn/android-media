@@ -75,4 +75,10 @@ object TalkReadingTracking {
             )
         }
     }
+
+    fun eventAskNewQuestion(userId: String, productId: String) {
+        with(TalkReadingTrackingConstants) {
+            eventTalkReading(EVENT_ACTION_CLICK_CREATE_NEW_QUESTION, "", userId, productId)
+        }
+    }
 }
