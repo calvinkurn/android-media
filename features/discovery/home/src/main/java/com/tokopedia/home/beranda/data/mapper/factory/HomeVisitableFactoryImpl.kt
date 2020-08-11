@@ -42,13 +42,6 @@ class HomeVisitableFactoryImpl(
     private var visitableList: MutableList<Visitable<*>> = mutableListOf()
 
     companion object{
-        private const val DEFAULT_BANNER_APPLINK_1 = "tokopedia://category-explore?type=1"
-        private const val DEFAULT_BANNER_APPLINK_2 = ApplinkConst.OFFICIAL_STORE
-        private const val DEFAULT_BANNER_APPLINK_3 = ApplinkConst.PROMO
-
-        private const val DEFAULT_BANNER_IMAGE_URL_1 = "https://ecs7.tokopedia.net/defaultpage/banner/bannerbelanja500new.jpg"
-        private const val DEFAULT_BANNER_IMAGE_URL_2 = "https://ecs7.tokopedia.net/defaultpage/banner/banneros500new.jpg"
-        private const val DEFAULT_BANNER_IMAGE_URL_3 = "https://ecs7.tokopedia.net/defaultpage/banner/bannerpromo500new.jpg"
         private const val PROMO_NAME_LEGO_6_IMAGE = "/ - p%s - lego banner - %s"
         private const val PROMO_NAME_LEGO_3_IMAGE = "/ - p%s - lego banner 3 image - %s"
         private const val PROMO_NAME_LEGO_4_IMAGE = "/ - p%s - lego banner 4 image - %s"
