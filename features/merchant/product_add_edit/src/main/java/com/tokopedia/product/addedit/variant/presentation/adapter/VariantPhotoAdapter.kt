@@ -50,7 +50,7 @@ class VariantPhotoAdapter(private val onItemClickedListener: OnItemClickListener
     }
 
     fun removeData(position: Int) {
-        if (position < this.items.size) {
+        if (position >= 0 && position < this.items.size) {
             this.items.removeAt(position)
             notifyItemRemoved(position)
         }
