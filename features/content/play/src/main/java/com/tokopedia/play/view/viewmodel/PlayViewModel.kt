@@ -363,7 +363,7 @@ class PlayViewModel @Inject constructor(
         } catch (e: Exception) {}
     }
 
-    private fun playGeneralVideoStream(channel: ChannelEntity) {
+    private fun playGeneralVideoStream(channel: Channel) {
         if (channel.configuration.active) initiateVideo(channel.video)
     }
 
@@ -482,10 +482,10 @@ class PlayViewModel @Inject constructor(
         }
     }
 
-    private fun startWebSocket(channelId: String, gcToken: String, settings: Channel.Settings) {
+    private fun startWebSocket(channelId: String, gcToken: String) {
         playSocket.channelId = channelId
         playSocket.gcToken = gcToken
-        playSocket.settings = settings
+//        playSocket.settings = settings
         playSocket.connect(onMessageReceived = { response ->
             scope.launch {
                 val result = withContext(dispatchers.io) {
@@ -537,7 +537,7 @@ class PlayViewModel @Inject constructor(
             _observableSocketInfo.value = PlaySocketInfo.Reconnect
         }, onError = {
             _observableSocketInfo.value = PlaySocketInfo.Error(it)
-            startWebSocket(channelId, gcToken, settings)
+            startWebSocket(channelId, gcToken)
         })
     }
 

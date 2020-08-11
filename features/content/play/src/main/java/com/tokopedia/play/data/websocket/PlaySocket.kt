@@ -24,7 +24,7 @@ open class PlaySocket @Inject constructor(
 
     var channelId: String = ""
     var gcToken: String = ""
-    var settings: Channel.Settings = Channel.Settings(DEFAULT_PING, 0, DEFAULT_MAX_RETRIES, DEFAULT_DELAY)
+//    var settings: Channel.Settings = Channel.Settings(DEFAULT_PING, 0, DEFAULT_MAX_RETRIES, DEFAULT_DELAY)
 
     private val playSocketCache: PlaySocketCache = PlaySocketCache()
 
@@ -67,7 +67,8 @@ open class PlaySocket @Inject constructor(
             }
         }
 
-        rxWebSocketUtil = RxWebSocketUtil.getInstance(null, settings.minReconnectDelay, settings.maxRetries, settings.pingInterval)
+//        rxWebSocketUtil = RxWebSocketUtil.getInstance(null, settings.minReconnectDelay, settings.maxRetries, settings.pingInterval)
+        rxWebSocketUtil = RxWebSocketUtil.getInstance(null)
 
         val webSocketSubscription = rxWebSocketUtil?.
                 getWebSocketInfo(wsConnectUrl, userSessionInterface.accessToken)?.

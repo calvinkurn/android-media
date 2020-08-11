@@ -15,7 +15,7 @@ import com.tokopedia.play_common.model.ui.PlayChatUiModel
 object PlayUiMapper {
 
     fun createCompleteInfoModel(
-            channel: ChannelEntity,
+            channel: Channel,
             partnerName: String,
             isBanned: Boolean,
             exoPlayer: ExoPlayer
@@ -37,23 +37,23 @@ object PlayUiMapper {
                     partnerName,
                     channel.configuration),
             quickReply = mapQuickReply(channel.quickReplies),
-            totalView = mapTotalViews(channel.stats.view.totalView.formatted),
-            event = mapEvent(channel.configuration, isBanned)
+            totalView = mapTotalViews(channel.stats.view.formatted),
+            event = mapEvent(channel, isBanned)
     )
 
-    private fun mapEvent(config: ChannelEntity.Configuration, isBanned: Boolean) = EventUiModel(
+    private fun mapEvent(channel: Channel, isBanned: Boolean) = EventUiModel(
             isBanned = isBanned,
-            isFreeze = !config.active || config.freezed,
-            bannedMessage = config.channelBannedMessage.message,
-            bannedTitle = config.channelBannedMessage.title,
-            bannedButtonTitle = config.channelBannedMessage.buttonText,
-            freezeMessage = config.channelFreezeScreen.desc,
-            freezeTitle = config.channelFreezeScreen.title,
-            freezeButtonTitle = config.channelFreezeScreen.btnTitle,
-            freezeButtonUrl = config.channelFreezeScreen.btnAppLink
+            isFreeze = !channel.configuration.active || channel.configuration.freezed,
+            bannedMessage = channel.configuration.channelBannedMessage.message,
+            bannedTitle = channel.configuration.channelBannedMessage.title,
+            bannedButtonTitle = channel.configuration.channelBannedMessage.buttonText,
+            freezeMessage = channel.configuration.channelFreezeScreen.desc,
+            freezeTitle = String.format(channel.configuration.channelFreezeScreen.title, channel.title),
+            freezeButtonTitle = channel.configuration.channelFreezeScreen.btnTitle,
+            freezeButtonUrl = channel.configuration.channelFreezeScreen.btnAppLink
     )
 
-    private fun mapChannelInfo(channel: ChannelEntity) = ChannelInfoUiModel(
+    private fun mapChannelInfo(channel: Channel) = ChannelInfoUiModel(
             id = channel.channelId,
             partnerInfo = mapPartnerInfo(channel.partner),
             feedInfo = mapFeedInfo(channel.configuration.feedsLikeParams),
@@ -62,7 +62,7 @@ object PlayUiMapper {
             titleBottomSheet = "Barang & Promo Pilihan" // TODO don't hardcode this message
     )
 
-    private fun mapPartnerInfo(partner: ChannelEntity.Partner) = PartnerInfoUiModel(
+    private fun mapPartnerInfo(partner: Channel.Partner) = PartnerInfoUiModel(
             id = partner.id.toLongOrZero(),
             name = partner.name,
             type = PartnerType.getTypeByValue(partner.type),
@@ -70,7 +70,7 @@ object PlayUiMapper {
             isFollowable = false
     )
 
-    private fun mapFeedInfo(feedInfo: ChannelEntity.FeedLikeParam) = FeedInfoUiModel(
+    private fun mapFeedInfo(feedInfo: Channel.FeedLikeParam) = FeedInfoUiModel(
             contentId = feedInfo.contentId,
             contentType = feedInfo.contentType,
             likeType = feedInfo.likeType
@@ -84,7 +84,7 @@ object PlayUiMapper {
         )
     } else null
 
-    private fun mapPinnedMessage(partnerName: String, pinnedMessage: ChannelEntity.PinnedMessage) = if (pinnedMessage.id.isNotEmpty()
+    private fun mapPinnedMessage(partnerName: String, pinnedMessage: Channel.PinnedMessage) = if (pinnedMessage.id.isNotEmpty()
             && !pinnedMessage.id.contentEquals("0")
             && pinnedMessage.title.isNotEmpty()) {
         PinnedMessageUiModel(
@@ -94,7 +94,7 @@ object PlayUiMapper {
         )
     } else null
 
-    private fun mapPinnedProduct(partnerName: String, configuration: ChannelEntity.Configuration) = if (configuration.showPinnedProduct)
+    private fun mapPinnedProduct(partnerName: String, configuration: Channel.Configuration) = if (configuration.showPinnedProduct)
         PinnedProductUiModel(
             partnerName = partnerName,
             title = "Ada promo menarik buat belanja barang pilihan kami", // TODO don't hardcode this message
