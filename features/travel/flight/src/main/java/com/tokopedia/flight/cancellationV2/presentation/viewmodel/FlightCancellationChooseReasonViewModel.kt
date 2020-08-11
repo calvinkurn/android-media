@@ -13,7 +13,7 @@ import javax.inject.Inject
  */
 class FlightCancellationChooseReasonViewModel @Inject constructor(
         private val reasonDataCacheSource: FlightCancellationReasonDataCacheSource,
-        private val dispatcherProvider: TravelDispatcherProvider)
+        dispatcherProvider: TravelDispatcherProvider)
     : BaseViewModel(dispatcherProvider.io()) {
 
     var selectedReason: FlightCancellationPassengerEntity.Reason? = null
