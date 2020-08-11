@@ -959,7 +959,6 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         val shopPromos = generateShopPromos()
         val checkoutPromos = generateCheckoutPromos()
         val allPromoCodes = checkoutPromos.map { it.code } + shopPromos.map { it.code }
-        val mode = if (orderTotal.value.isButtonChoosePayment) 1 else 0
         val param = CheckoutOccRequest(Profile(pref.preference.profileId), ParamCart(data = listOf(ParamData(
                 pref.preference.address.addressId,
                 listOf(
@@ -985,7 +984,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                                 promos = shopPromos
                         )
                 )
-        )), promos = checkoutPromos))
+        )), promos = checkoutPromos, mode = if (orderTotal.value.isButtonChoosePayment) 1 else 0))
         OccIdlingResource.increment()
         checkoutOccUseCase.execute(param, { checkoutOccGqlResponse: CheckoutOccGqlResponse ->
             if (checkoutOccGqlResponse.response.status.equals(STATUS_OK, true)) {

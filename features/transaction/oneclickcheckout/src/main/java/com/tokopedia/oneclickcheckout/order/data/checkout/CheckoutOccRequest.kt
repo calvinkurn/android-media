@@ -25,7 +25,9 @@ data class ParamCart(
         @SerializedName("promos")
         val promos: List<PromoRequest> = emptyList(),
         @SerializedName("data")
-        val data: List<ParamData> = emptyList()
+        val data: List<ParamData> = emptyList(),
+        @SerializedName("mode")
+        val mode: Int = 0 // 0 = instant payment, 1 = scrooge payment page
 )
 
 data class ParamData(

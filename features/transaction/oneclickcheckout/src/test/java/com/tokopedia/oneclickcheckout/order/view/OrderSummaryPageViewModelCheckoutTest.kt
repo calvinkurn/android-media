@@ -169,12 +169,8 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
             (secondArg() as ((UpdateCartOccGqlResponse) -> Unit)).invoke(UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc())))
         }
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel())
-        val response = CheckoutOccGqlResponse(CheckoutOccResponse())
         every {
-            checkoutOccUseCase.execute(match {
-                // validate mode
-                true
-            }, any(), any())
+            checkoutOccUseCase.execute(match { it.carts.mode == 0 }, any(), any())
         } answers {
             (secondArg() as ((CheckoutOccGqlResponse) -> Unit)).invoke(CheckoutOccGqlResponse(CheckoutOccResponse(status = STATUS_OK, data = Data(success = 1, paymentParameter = PaymentParameter(redirectParam = RedirectParam(url = "testurl"))))))
         }
@@ -197,12 +193,8 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
             (secondArg() as ((UpdateCartOccGqlResponse) -> Unit)).invoke(UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc())))
         }
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel())
-        val response = CheckoutOccGqlResponse(CheckoutOccResponse())
         every {
-            checkoutOccUseCase.execute(match {
-                // validate mode
-                true
-            }, any(), any())
+            checkoutOccUseCase.execute(match { it.carts.mode == 1 }, any(), any())
         } answers {
             (secondArg() as ((CheckoutOccGqlResponse) -> Unit)).invoke(CheckoutOccGqlResponse(CheckoutOccResponse(status = STATUS_OK, data = Data(success = 1, paymentParameter = PaymentParameter(redirectParam = RedirectParam(url = "testurl"))))))
         }
