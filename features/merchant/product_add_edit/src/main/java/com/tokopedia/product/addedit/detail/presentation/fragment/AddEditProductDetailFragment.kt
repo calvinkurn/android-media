@@ -1284,12 +1284,18 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
             productCategoryRecListView?.run {
                 this.setOnItemClickListener { _, _, position, _ ->
+                    if (viewModel.isAdding) {
+                        ProductAddMainTracking.clickProductCategoryRecom(shopId)
+                    }
                     selectCategoryRecommendation(items, position)
                 }
             }
 
             items.forEachIndexed { position, listItemUnify ->
                 listItemUnify.listRightRadiobtn?.setOnClickListener {
+                    if (viewModel.isAdding) {
+                        ProductAddMainTracking.clickProductCategoryRecom(shopId)
+                    }
                     selectCategoryRecommendation(items, position)
                 }
             }
