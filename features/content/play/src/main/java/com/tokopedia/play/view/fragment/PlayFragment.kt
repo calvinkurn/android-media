@@ -511,7 +511,7 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
     private fun observeVideoStream() {
         playViewModel.observableVideoStream.observe(viewLifecycleOwner, DistinctObserver {
             setWindowSoftInputMode(it.channelType.isLive)
-            setBackground(it.backgroundUrl)
+            setBackground(it.coverUrl)
         })
     }
 

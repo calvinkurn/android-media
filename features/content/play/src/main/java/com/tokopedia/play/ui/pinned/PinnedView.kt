@@ -86,7 +86,7 @@ class PinnedView(
         tvPinnedProductMessage.text = pinnedProduct.title
 
         animationProduct.setAnimation(
-                if (pinnedProduct.isPromo) R.raw.anim_play_product_promo
+                if (pinnedProduct.hasPromo) R.raw.anim_play_product_promo
                 else R.raw.anim_play_product
         )
         animationProduct.playAnimation()

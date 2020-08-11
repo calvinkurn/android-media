@@ -29,10 +29,12 @@ data class ChannelEntity(
         val quickReplies: List<String> = emptyList(),
         @SerializedName("configurations")
         val configuration: Configuration = Configuration(),
+        @SerializedName("stats")
+        val stats: Statistic = Statistic(),
         @SerializedName("app_link")
         val appLink: String = "",
-        @SerializedName("web")
-        val web: String = ""
+        @SerializedName("webLink")
+        val webLink: String = ""
 ) {
 
     data class Data(
@@ -52,7 +54,7 @@ data class ChannelEntity(
             val type: String = "",
             @SerializedName("name")
             val name: String = "",
-            @SerializedName("thumbnailURL")
+            @SerializedName("thumbnail_url")
             val thumbnailUrl: String = "",
             @SerializedName("badge_url")
             val badgeUrl: String = ""
@@ -89,5 +91,57 @@ data class ChannelEntity(
             @SerializedName("freezed")
             val freezed: Boolean = false,
             @SerializedName("has_promo")
-            val hasPromo: Boolean = false)
+            val hasPromo: Boolean = false,
+            @SerializedName("feeds_like_params")
+            val feedsLikeParams: FeedLikeParam = FeedLikeParam(),
+            @SerializedName("channel_freeze_screen")
+            val channelFreezeScreen: ChannelFreezeScreen = ChannelFreezeScreen(),
+            @SerializedName("channel_banned_message")
+            val channelBannedMessage: ChannelBannedMessage = ChannelBannedMessage())
+
+    data class FeedLikeParam(
+            @SerializedName("content_type")
+            val contentType: Int = 0,
+            @SerializedName("content_id")
+            val contentId: String = "",
+            @SerializedName("like_type")
+            val likeType: Int = 1
+    )
+
+    data class Statistic(
+            @SerializedName("view")
+            val view: ViewStatistic = ViewStatistic()
+    )
+    data class ViewStatistic(
+            @SerializedName("view")
+            val totalView: TotalView = TotalView()
+    )
+    data class TotalView(
+            @SerializedName("value")
+            val value: Long = 0L,
+            @SerializedName("formatted")
+            val formatted: String = ""
+    )
+
+    data class ChannelFreezeScreen(
+            @SerializedName("category")
+            val category: String = "",
+            @SerializedName("title")
+            val title: String = "",
+            @SerializedName("description")
+            val desc: String = "",
+            @SerializedName("button_text")
+            val btnTitle: String = "",
+            @SerializedName("button_app_link")
+            val btnAppLink: String = "")
+
+    data class ChannelBannedMessage(
+            @SerializedName("title")
+            val title: String = "",
+            @SerializedName("message")
+            val message: String = "",
+            @SerializedName("button_text")
+            val buttonText: String = ""
+    )
+
 }

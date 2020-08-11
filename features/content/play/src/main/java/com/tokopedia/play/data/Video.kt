@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName
  * Created by mzennis on 2019-12-05.
  */
 data class Video(
-        @SerializedName("video_stream_id")
+        @SerializedName("id")
         val id: String = "", // vertical or horizontal
         @SerializedName("orientation")
         val orientation: String = "", // vertical or horizontal
@@ -19,15 +19,15 @@ data class Video(
         @SerializedName("stream_source")
         val streamSource: String = "",
         @SerializedName("autoplay")
-        val autoplay: Boolean = false,
+        val autoPlay: Boolean = false,
         @SerializedName("buffer_control")
         val bufferControl: BufferControl? = BufferControl()
 ) {
 
     data class BufferControl(
-            @SerializedName("max_buffer_in_second")
+            @SerializedName("max_buffer_in_seconds")
             val maxBufferingSecond: Int = DefaultLoadControl.DEFAULT_MAX_BUFFER_MS,
-            @SerializedName("min_buffer_in_second")
+            @SerializedName("min_buffer_in_seconds")
             val minBufferingSecond: Int = DefaultLoadControl.DEFAULT_MIN_BUFFER_MS,
             @SerializedName("buffer_for_playback")
             val bufferForPlayback: Int = DefaultLoadControl.DEFAULT_BUFFER_FOR_PLAYBACK_MS,

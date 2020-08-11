@@ -185,7 +185,6 @@ class PlayMiniInteractionFragment : BaseDaggerFragment(), PlayInteractionViewIni
         observeVideoProperty()
         observeVideoStream()
         observeEventUserInfo()
-        observeTitleChannel()
         observeToolbarInfo()
         observeTotalViews()
         observeCartInfo()
@@ -499,12 +498,6 @@ class PlayMiniInteractionFragment : BaseDaggerFragment(), PlayInteractionViewIni
         })
     }
 
-    private fun observeTitleChannel() {
-        playViewModel.observableGetChannelInfo.observe(viewLifecycleOwner, DistinctObserver {
-            if (it is Success) setChannelTitle(it.data.title)
-        })
-    }
-
     private fun observeToolbarInfo() {
         playViewModel.observablePartnerInfo.observe(viewLifecycleOwner, DistinctObserver(::setPartnerInfo))
     }
@@ -602,16 +595,6 @@ class PlayMiniInteractionFragment : BaseDaggerFragment(), PlayInteractionViewIni
         }
     }
 
-    private fun setChannelTitle(title: String) {
-        scope.launch {
-            EventBusFactory.get(viewLifecycleOwner)
-                    .emit(
-                            ScreenStateEvent::class.java,
-                            ScreenStateEvent.SetChannelTitle(title)
-                    )
-        }
-    }
-
     private fun setPartnerInfo(partnerInfo: PartnerInfoUiModel) {
         scope.launch {
             EventBusFactory.get(viewLifecycleOwner)
@@ -656,7 +639,7 @@ class PlayMiniInteractionFragment : BaseDaggerFragment(), PlayInteractionViewIni
 
     private fun openPartnerPage(partnerId: Long, partnerType: PartnerType) {
         if (partnerType == PartnerType.Shop) openShopPage(partnerId)
-        else if (partnerType == PartnerType.Influencer) openProfilePage(partnerId)
+        else if (partnerType == PartnerType.Buyer) openProfilePage(partnerId)
     }
 
     private fun openShopPage(partnerId: Long) {
@@ -694,10 +677,10 @@ class PlayMiniInteractionFragment : BaseDaggerFragment(), PlayInteractionViewIni
         //Used to show mock like when user click like
         playViewModel.changeLikeCount(shouldLike)
 
-        viewModel.doLikeUnlike(playViewModel.contentId,
-                playViewModel.contentType,
-                playViewModel.likeType,
-                shouldLike)
+        viewModel.doLikeUnlike(
+                feedInfoUiModel = playViewModel.feedInfoUiModel,
+                shouldLike = shouldLike
+        )
 
         PlayAnalytics.clickLike(channelId, shouldLike, playViewModel.channelType)
     }
