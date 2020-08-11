@@ -1178,7 +1178,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         pdpUiUpdater?.updateDataP1(context, updatedDynamicProductInfo)
         pdpUiUpdater?.updateNotifyMeUpcoming(selectedChild?.productId.toString(), viewModel.p2Data.value?.upcomingCampaigns)
         pdpUiUpdater?.updateFulfillmentData(context, viewModel.getMultiOriginByProductId().isFulfillment)
-        updateButtonState()
+
+        if (viewModel.p2Data.value != null)
+            updateButtonState()
 
         if (pdpUiUpdater?.productNewVariantDataModel?.isPartialySelected() == false && shouldFireVariantTracker) {
             shouldFireVariantTracker = false
@@ -1198,13 +1200,12 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun updateButtonState() {
-        showOrHideButton()
-
         viewModel.getDynamicProductInfoP1?.let {
             actionButtonView.renderData(!it.isProductActive(),
                     viewModel.hasShopAuthority(), viewModel.isShopOwner(), hasTopAds(),
                     viewModel.getCartTypeByProductId())
         }
+        showOrHideButton()
     }
 
     private fun observeInitialVariantData() {
