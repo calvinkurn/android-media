@@ -34,7 +34,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.webview.TkpdWebView
 import com.tokopedia.withdraw.R
-import com.tokopedia.withdraw.auto_withdrawal.analytics.AutoWithdrawAnalytics
+import com.tokopedia.withdraw.auto_withdrawal.analytics.*
 import com.tokopedia.withdraw.auto_withdrawal.di.component.AutoWithdrawalComponent
 import com.tokopedia.withdraw.auto_withdrawal.domain.model.*
 import com.tokopedia.withdraw.auto_withdrawal.presentation.activity.AutoWithdrawalActivity
@@ -43,7 +43,6 @@ import com.tokopedia.withdraw.auto_withdrawal.presentation.dialog.AutoWDInfoFrag
 import com.tokopedia.withdraw.auto_withdrawal.presentation.dialog.ExclusiveRekPremFragment
 import com.tokopedia.withdraw.auto_withdrawal.presentation.dialog.ScheduleTimingFragment
 import com.tokopedia.withdraw.auto_withdrawal.presentation.viewModel.AutoWDSettingsViewModel
-import com.tokopedia.withdraw.saldowithdrawal.presentation.fragment.SaldoWithdrawalFragment
 import com.tokopedia.withdraw.saldowithdrawal.util.WithdrawConstant
 import kotlinx.android.synthetic.main.swd_fragment_awd_settings.*
 import javax.inject.Inject
@@ -66,6 +65,8 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
     private var primaryBankAccount: BankAccount? = null
     private var tncTemplateStr: String? = null
     private var autoWithdrawalUpsertRequest: AutoWithdrawalUpsertRequest? = null
+
+    private var isAutoWDStatusLoadedFirstTime = false
 
     private val autoWDSettingsViewModel: AutoWDSettingsViewModel by lazy(LazyThreadSafetyMode.NONE) {
         val viewModelProvider = ViewModelProviders.of(this, viewModelFactory.get())
@@ -97,7 +98,10 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
     private fun setActionMenu() {
         val headerUnify = (activity as AutoWithdrawalActivity).getHeader()
         headerUnify.actionText = getString(R.string.swd_info)
-        headerUnify.actionTextView?.setOnClickListener { openInfoBottomSheet() }
+        headerUnify.actionTextView?.setOnClickListener {
+            openInfoBottomSheet()
+            analytics.onClickInfoMenu()
+        }
     }
 
     private fun observeViewModel() {
@@ -135,10 +139,9 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
             when (it) {
                 is Success -> {
                     if (it.data.code == 200) {
-                        Toaster.make(view!!, it.data.message, Toaster.LENGTH_SHORT)
-                        autoWDSettingsViewModel.getAutoWDStatus()
+                        onAutoWDUpsertComplete(it.data)
                     } else {
-                       onAutoWithdrawalUpsertFailed(it.data.message)
+                        onAutoWithdrawalUpsertFailed(it.data.message)
                     }
                 }
                 is Fail -> {
@@ -147,6 +150,21 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
                 }
             }
         })
+    }
+
+    private fun onAutoWDUpsertComplete(data: UpsertResponse) {
+        view?.let { it ->
+            Toaster.make(it, data.message, Toaster.LENGTH_SHORT)
+            autoWDSettingsViewModel.getAutoWDStatus()
+            autoWithdrawalUpsertRequest?.let {autoWithdrawalUpsertRequest->
+                if(autoWithdrawalUpsertRequest.isQuit)
+                    analytics.onViewAutoWdSuccessToaster(EVENT_LABEL_AUTO_WD_SCH_DELETE)
+                else if(autoWithdrawalUpsertRequest.isUpdating)
+                    analytics.onViewAutoWdSuccessToaster(EVENT_LABEL_AUTO_WD_SCH_UPDATED)
+                else
+                    analytics.onViewAutoWdSuccessToaster(EVENT_LABEL_AUTO_WD_SCH_INSERTED)
+            }
+        }
     }
 
 
@@ -226,6 +244,15 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
             ivAWBannerClose.setOnClickListener { groupAutoWDBannerViews.gone() }
         }
         loaderView.gone()
+        onAutoWithdrawalStatusLoadedEvent()
+    }
+
+    private fun onAutoWithdrawalStatusLoadedEvent() {
+        if (!isAutoWDStatusLoadedFirstTime) {
+            analytics.onAutoSettingLoaded(autoWDStatusData?.status == 1)
+            analytics.isUserRekeningPremiumEvent(autoWDStatusData?.isPowerWd ?: false)
+            isAutoWDStatusLoadedFirstTime = true
+        }
     }
 
     private fun setScheduleData() {
@@ -256,6 +283,7 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
             updateBankAccountSectionState()
             enableScheduleSection(isChecked && autoWDStatusData.isOwner)
             showSaveButton()
+            analytics.onSettingCheckBoxToggled(isChecked)
         }
     }
 
@@ -478,6 +506,7 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
                 webView.loadData(tncTemplateStr, "text/html", "utf-8")
                 bottomSheetUnify.setChild(view)
                 bottomSheetUnify.show(activity.supportFragmentManager, "")
+                analytics.onClickViewTermsCondition()
             }
         }
     }
@@ -518,8 +547,10 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
                         openOptOutAutoWDSettingDialog()
                     }
                 }
+                analytics.onSimpanButtonClick(true)
             } else {
                 openJoinRPProgramBottomSheet()
+                analytics.onSimpanButtonClick(false)
             }
         }
     }
@@ -564,7 +595,7 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
         }
     }
 
-     fun refreshBankAccountList(){
+    fun refreshBankAccountList() {
         scrollViewAutoWDContent.visible()
         loaderView.visible()
         autoWDSettingsViewModel.getBankAccount()
@@ -592,13 +623,16 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
                 setPrimaryCTAClickListener {
                     optOutFromAutoWithdrawal()
                     this.dismiss()
+                    analytics.onOptOutDialogAction(EVENT_LABEL_CONTINUE)
 
                 }
                 setSecondaryCTAClickListener {
                     this.dismiss()
+                    analytics.onOptOutDialogAction(EVENT_LABEL_DISMISS)
                 }
                 show()
             }
+            analytics.onViewOptOutDialog()
         }
     }
 
