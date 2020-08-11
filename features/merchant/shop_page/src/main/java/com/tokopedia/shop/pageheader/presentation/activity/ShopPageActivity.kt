@@ -10,7 +10,7 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.shop.R
-import com.tokopedia.shop.ShopComponentInstance
+import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_PAGE_HEADER_RESULT_PLT_NETWORK_METRICS
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_PAGE_HEADER_RESULT_PLT_PREPARE_METRICS
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_PAGE_HEADER_RESULT_PLT_RENDER_METRICS
@@ -80,7 +80,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         return ShopPageFragment.createInstance()
     }
 
-    override fun getComponent(): ShopComponent = ShopComponentInstance.getComponent(application)
+    override fun getComponent(): ShopComponent = ShopComponentHelper().getComponent(application, this)
 
     override fun onBackPressed() {
         super.onBackPressed()
@@ -192,6 +192,10 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     override fun stopMonitoringPltRenderPage(pageLoadTimePerformanceInterface: PageLoadTimePerformanceInterface) {
         pageLoadTimePerformanceInterface.stopRenderPerformanceMonitoring()
         pageLoadTimePerformanceInterface.stopMonitoring()
+    }
+
+    override fun getParentViewResourceID(): Int {
+        return R.id.parent_view
     }
 
 }

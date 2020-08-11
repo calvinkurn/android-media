@@ -131,7 +131,7 @@ dependencies {
     }
 
     androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
-    androidTestImplementation project(rootProject.ext.libraries.playCore)
+    androidTestImplementation rootProject.ext.playServicesDependencies.core
     androidTestImplementation rootProject.ext.firebase.core
 
     testImplementation rootProject.ext.testDependencies.junitJupiterApi

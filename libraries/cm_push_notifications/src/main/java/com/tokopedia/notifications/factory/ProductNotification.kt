@@ -5,34 +5,44 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.graphics.Bitmap
-import androidx.core.app.NotificationCompat
 import android.text.TextUtils
 import android.view.View
 import android.widget.RemoteViews
+import androidx.core.app.NotificationCompat
 import com.tokopedia.notifications.R
+import com.tokopedia.notifications.analytics.ProductAnalytics
 import com.tokopedia.notifications.common.CMConstant
-import com.tokopedia.notifications.common.CMNotificationUtils
+import com.tokopedia.notifications.common.CMConstant.NotificationProductType
 import com.tokopedia.notifications.common.CarouselUtilities
+import com.tokopedia.notifications.model.ActionButton
 import com.tokopedia.notifications.model.BaseNotificationModel
 import com.tokopedia.notifications.model.ProductInfo
+import com.tokopedia.user.session.UserSession
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
+import com.tokopedia.notifications.common.CMNotificationUtils.getSpannedTextFromStr as spanStr
+import com.tokopedia.notifications.common.CarouselUtilities.loadImageFromStorage as loadFileImage
 
-internal class ProductNotification(applicationContext: Context, baseNotificationModel: BaseNotificationModel)
-    : BaseNotification(applicationContext, baseNotificationModel) {
+internal class ProductNotification(
+        applicationContext: Context,
+        baseNotificationModel: BaseNotificationModel
+) : BaseNotification(applicationContext, baseNotificationModel) {
+
+    private val userSession by lazy { UserSession(context) }
 
     override fun createNotification(): Notification? {
         val builder = notificationBuilder
-        if (baseNotificationModel.productInfoList == null || baseNotificationModel.productInfoList!!.isEmpty())
-            return null
-        if (!baseNotificationModel.isUpdateExisting)
-            CarouselUtilities.downloadProductImages(context.applicationContext, baseNotificationModel.productInfoList!!)
 
-        val currentProductInfo = baseNotificationModel.productInfoList!![baseNotificationModel.carouselIndex]
-        val productImage: Bitmap? = CarouselUtilities.loadImageFromStorage(currentProductInfo.productImage)
+        if (baseNotificationModel.productInfoList.isEmpty()) return null
+        if (!baseNotificationModel.isUpdateExisting) {
+            CarouselUtilities.downloadProductImages(context.applicationContext, baseNotificationModel.productInfoList)
+        }
+
+        val currentProductInfo = baseNotificationModel.productInfoList[baseNotificationModel.carouselIndex]
+        val productImage: Bitmap? = loadFileImage(currentProductInfo.productImage)
 
         val collapsedView = RemoteViews(context.applicationContext.packageName, R.layout.cm_layout_collapsed)
         setCollapseViewData(collapsedView)
@@ -57,11 +67,8 @@ internal class ProductNotification(applicationContext: Context, baseNotification
                 remoteView.setImageViewBitmap(R.id.iv_icon_collapsed, it)
             } ?: remoteView.setImageViewBitmap(R.id.iv_icon_collapsed, bitmapLargeIcon)
         }
-        remoteView.setTextViewText(R.id.tv_collapse_title, CMNotificationUtils.getSpannedTextFromStr(baseNotificationModel.title))
-        remoteView.setTextViewText(R.id.tv_collapsed_message, CMNotificationUtils.getSpannedTextFromStr(baseNotificationModel.message))
-        baseNotificationModel.appLink?.let {
-            remoteView.setOnClickPendingIntent(R.id.collapseMainView, getCollapsedPendingIntent())
-        }
+        remoteView.setTextViewText(R.id.tv_collapse_title, spanStr(baseNotificationModel.title))
+        remoteView.setTextViewText(R.id.tv_collapsed_message, spanStr(baseNotificationModel.message))
     }
 
     private fun setExpandViewData(remoteView: RemoteViews, currentProductInfo: ProductInfo, bitmap: Bitmap?) {
@@ -71,30 +78,43 @@ internal class ProductNotification(applicationContext: Context, baseNotification
         } ?: remoteView.setImageViewBitmap(R.id.iv_productImage, bitmapLargeIcon)
 
         remoteView.setTextViewText(R.id.tv_productTitle,
-                CMNotificationUtils.getSpannedTextFromStr(currentProductInfo.productTitle))
+                spanStr(currentProductInfo.productTitle))
         remoteView.setTextViewText(R.id.tv_oldPrice,
-                CMNotificationUtils.getSpannedTextFromStr(currentProductInfo.productActualPrice))
+                spanStr(currentProductInfo.productActualPrice))
 
         if (currentProductInfo.productActualPrice == null ||
                 currentProductInfo.productPriceDroppedPercentage == null) {
             remoteView.setViewVisibility(R.id.ll_oldPriceAndDiscount, View.GONE)
         } else {
             remoteView.setTextViewText(R.id.tv_oldPrice,
-                    CMNotificationUtils.getSpannedTextFromStr("<strike>${currentProductInfo.productActualPrice}</strike>"))
+                    spanStr("<strike>${currentProductInfo.productActualPrice}</strike>"))
             remoteView.setTextViewText(R.id.tv_discountPercent,
-                    CMNotificationUtils.getSpannedTextFromStr(currentProductInfo.productPriceDroppedPercentage))
+                    spanStr(currentProductInfo.productPriceDroppedPercentage))
         }
-        remoteView.setTextViewText(R.id.tv_currentPrice, CMNotificationUtils.getSpannedTextFromStr(currentProductInfo.productCurrentPrice))
-        remoteView.setTextViewText(R.id.tv_productMessage, CMNotificationUtils.getSpannedTextFromStr(currentProductInfo.productMessage))
-        remoteView.setTextViewText(R.id.tv_productButton,
-                CMNotificationUtils.getSpannedTextFromStr(currentProductInfo.productButtonMessage))
-        remoteView.setOnClickPendingIntent(R.id.ll_expandedProductView, getProductPendingIntent(currentProductInfo))
+
+        remoteView.setTextViewText(R.id.tv_currentPrice, spanStr(currentProductInfo.productCurrentPrice))
 
         addLeftCarouselButton(remoteView)
         addRightCarouselButton(remoteView)
 
+        when (baseNotificationModel.notificationProductType) {
+            NotificationProductType.V2 -> productDetailCard(remoteView, currentProductInfo)
+            else -> productStockCard(remoteView, currentProductInfo)
+        }
+    }
+
+    private fun productStockCard(remoteView: RemoteViews, product: ProductInfo) {
+        // collapse
+        remoteView.setOnClickPendingIntent(R.id.collapseMainView, getCollapsedPendingIntent())
+
+        // expand
+        remoteView.setOnClickPendingIntent(R.id.ll_expandedProductView, getProductPendingIntent(product))
+        remoteView.setTextViewText(R.id.tv_productButton, spanStr(product.productButtonMessage))
+        remoteView.setTextViewText(R.id.tv_productMessage, spanStr(product.productMessage))
+
+        // visibility
         when {
-            baseNotificationModel.productInfoList!!.size == 1 -> {
+            baseNotificationModel.productInfoList.size == 1 -> {
                 remoteView.setViewVisibility(R.id.ivArrowLeft, View.INVISIBLE)
                 remoteView.setViewVisibility(R.id.ivArrowRight, View.INVISIBLE)
             }
@@ -102,7 +122,7 @@ internal class ProductNotification(applicationContext: Context, baseNotification
                 remoteView.setViewVisibility(R.id.ivArrowLeft, View.INVISIBLE)
                 remoteView.setViewVisibility(R.id.ivArrowRight, View.VISIBLE)
             }
-            baseNotificationModel.carouselIndex == (baseNotificationModel.productInfoList!!.size - 1) -> {
+            baseNotificationModel.carouselIndex == (baseNotificationModel.productInfoList.size - 1) -> {
                 remoteView.setViewVisibility(R.id.ivArrowLeft, View.VISIBLE)
                 remoteView.setViewVisibility(R.id.ivArrowRight, View.INVISIBLE)
             }
@@ -111,6 +131,49 @@ internal class ProductNotification(applicationContext: Context, baseNotification
                 remoteView.setViewVisibility(R.id.ivArrowRight, View.VISIBLE)
             }
         }
+    }
+
+    private fun productDetailCard(remoteView: RemoteViews, product: ProductInfo) {
+        //tracker
+        ProductAnalytics.impression(userSession.userId, baseNotificationModel, product)
+        ProductAnalytics.impressionExpanded(
+                userSession.userId,
+                baseNotificationModel,
+                product
+        )
+
+        // collapse
+        remoteView.setOnClickPendingIntent(R.id.collapseMainView, getProductPendingIntent(product))
+
+        // expand
+        val actionButton = product.actionButton[baseNotificationModel.carouselIndex]
+
+        if (product.freeOngkirIcon.isNullOrEmpty()) {
+            remoteView.setViewVisibility(R.id.img_campaign, View.GONE)
+        } else {
+            remoteView.setViewVisibility(R.id.img_campaign, View.VISIBLE)
+            loadFileImage(product.freeOngkirIcon)?.let {
+                remoteView.setImageViewBitmap(R.id.img_campaign, it)
+            }
+        }
+
+        // visibility
+        remoteView.setViewVisibility(R.id.tv_productMessage, View.GONE)
+        remoteView.setViewVisibility(R.id.ivArrowLeft, View.GONE)
+        remoteView.setViewVisibility(R.id.ivArrowRight, View.GONE)
+
+        // action button
+        remoteView.setOnClickPendingIntent(R.id.tv_productButton, getButtonPendingIntent(actionButton))
+        remoteView.setOnClickPendingIntent(R.id.iv_productImage, getProductPendingIntent(product))
+        remoteView.setOnClickPendingIntent(R.id.ll_content, getProductPendingIntent(product))
+        remoteView.setTextViewText(R.id.tv_productButton, actionButton.text)
+    }
+
+    private fun getButtonPendingIntent(actionButton: ActionButton): PendingIntent {
+        val intent = getBaseBroadcastIntent(context, baseNotificationModel)
+        intent.action = CMConstant.ReceiverAction.ACTION_BUTTON
+        intent.putExtra(CMConstant.ReceiverExtraData.ACTION_BUTTON_EXTRA, actionButton)
+        return getPendingIntent(context, intent, requestCode)
     }
 
     private fun getCollapsedPendingIntent(): PendingIntent {

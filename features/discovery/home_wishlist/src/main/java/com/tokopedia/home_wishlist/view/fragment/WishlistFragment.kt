@@ -32,10 +32,7 @@ import com.tokopedia.home_wishlist.common.ToolbarElevationOffsetListener
 import com.tokopedia.home_wishlist.component.HasComponent
 import com.tokopedia.home_wishlist.di.WishlistComponent
 import com.tokopedia.home_wishlist.model.action.*
-import com.tokopedia.home_wishlist.model.datamodel.RecommendationCarouselItemDataModel
-import com.tokopedia.home_wishlist.model.datamodel.RecommendationItemDataModel
-import com.tokopedia.home_wishlist.model.datamodel.WishlistDataModel
-import com.tokopedia.home_wishlist.model.datamodel.WishlistItemDataModel
+import com.tokopedia.home_wishlist.model.datamodel.*
 import com.tokopedia.home_wishlist.util.GravitySnapHelper
 import com.tokopedia.home_wishlist.view.adapter.WishlistAdapter
 import com.tokopedia.home_wishlist.view.adapter.WishlistTypeFactoryImpl
@@ -49,6 +46,7 @@ import com.tokopedia.home_wishlist.view.fragment.WishlistFragment.Companion.SAVE
 import com.tokopedia.home_wishlist.view.fragment.WishlistFragment.Companion.SHARE_PRODUCT_TITLE
 import com.tokopedia.home_wishlist.view.fragment.WishlistFragment.Companion.SPAN_COUNT
 import com.tokopedia.home_wishlist.view.fragment.WishlistFragment.Companion.WIHSLIST_STATUS_IS_WISHLIST
+import com.tokopedia.home_wishlist.view.listener.TopAdsListener
 import com.tokopedia.home_wishlist.view.listener.WishlistListener
 import com.tokopedia.home_wishlist.viewmodel.WishlistViewModel
 import com.tokopedia.kotlin.extensions.view.hide
@@ -83,7 +81,7 @@ import javax.inject.Inject
  * @constructor Creates an empty recommendation.
  */
 @SuppressLint("SyntheticAccessor")
-open class WishlistFragment: Fragment(), WishlistListener {
+open class WishlistFragment: Fragment(), WishlistListener, TopAdsListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -485,6 +483,29 @@ open class WishlistFragment: Fragment(), WishlistListener {
                 WishlistTracking.impressionRecommendation(trackingQueue, dataModel.recommendationItem, position)
             }
         }
+    }
+
+    override fun onBannerTopAdsClick(item: BannerTopAdsDataModel, position: Int) {
+        TopAdsUrlHitter(context).hitClickUrl(
+                this::class.java.simpleName,
+                item.topAdsDataModel.adClickUrl,
+                "",
+                "",
+                item.topAdsDataModel.imageUrl
+        )
+        WishlistTracking.clickTopAdsBanner(item, viewModel.getUserId(), position)
+        RouteManager.route(context, item.topAdsDataModel.applink)
+    }
+
+    override fun onBannerTopAdsImpress(item: BannerTopAdsDataModel, position: Int) {
+        TopAdsUrlHitter(context).hitImpressionUrl(
+                this::class.java.simpleName,
+                item.topAdsDataModel.adViewUrl,
+                "",
+                "",
+                item.topAdsDataModel.imageUrl
+        )
+        WishlistTracking.impressionTopAdsBanner(item, viewModel.getUserId(), position)
     }
 
     private fun handleAddToCartActionData(addToCartActionData: AddToCartActionData?){

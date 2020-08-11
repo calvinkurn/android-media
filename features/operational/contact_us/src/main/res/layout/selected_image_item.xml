@@ -5,29 +5,31 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
-    <ImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/selected_image"
         android:layout_width="@dimen/dp_80"
         android:layout_height="@dimen/dp_80"
         android:layout_marginLeft="@dimen/dp_8"
+        android:layout_marginStart="@dimen/dp_8"
         android:scaleType="centerInside"
+        app:unify_image_corner_radius= "10"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:background="@drawable/rounded_rectangle_grey_border"
-        app:srcCompat="@drawable/ic_upload"
         tools:ignore="VectorDrawableCompat" />
 
     <ImageView
         android:id="@+id/delete_image"
-        android:layout_width="@dimen/dp_18"
-        android:layout_height="@dimen/dp_18"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/padding_vvvs"
         android:layout_marginRight="@dimen/margin_default"
         android:layout_marginTop="@dimen/padding_vvvs"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_black_cross" />
+        app:layout_goneMarginTop="@dimen/dp_30"
+        app:layout_constraintCircleAngle="45"
+        app:layout_constraintCircleRadius="@dimen/dp_52"
+        app:layout_constraintCircle="@id/selected_image"
+        app:srcCompat="@drawable/contact_us_ic_circular_cross" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

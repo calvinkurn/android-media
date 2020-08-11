@@ -63,10 +63,11 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/white"
         android:layout_marginTop="?attr/actionBarSize">
 
 
-        <ImageView
+        <com.tkpd.remoteresourcerequest.view.DeferredImageView
             android:id="@+id/iv_no_ticket"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -76,37 +77,61 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_ilustration" />
+            app:remoteFileName="filter_no_message_found.png"/>
 
-        <TextView
-            android:id="@+id/tv_no_ticket"
-            android:layout_width="wrap_content"
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_greeting"
+            android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_24"
-            android:gravity="center_horizontal"
-            android:lineSpacingExtra="6sp"
-            android:text="@string/display_a_problem_report_here"
+            app:typographyType="heading_2"
+            app:typographyWeight="bold"
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:textColor="@color/contact_us_grey_n_700_96"
             android:visibility="gone"
-            android:textColor="@color/black_38"
-            android:textSize="@dimen/sp_14"
+            android:gravity="center_horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/iv_no_ticket" />
+            app:layout_constraintTop_toBottomOf="@+id/iv_no_ticket"
+            tools:text="Halo, Fidelia Zheng!"/>
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_no_ticket"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="wrap_content"
+            app:typographyType="body_2"
+            android:layout_marginTop="@dimen/dp_12"
+            app:layout_goneMarginTop="@dimen/dp_24"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:gravity="center_horizontal"
+            android:text="@string/contact_us_display_a_problem_report_here"
+            android:visibility="gone"
+            android:textColor="@color/contact_us_text_field_color"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_greeting" />
+
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_raise_ticket"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_40"
+            app:typographyType="heading_5"
+            app:typographyWeight="bold"
+            android:layout_marginTop="@dimen/dp_24"
             android:background="@drawable/rounded_rectangle_greenbutton_solid"
             android:gravity="center"
             android:paddingBottom="@dimen/dp_12"
             android:paddingLeft="@dimen/dp_50"
             android:paddingRight="@dimen/dp_50"
             android:paddingTop="@dimen/dp_12"
-            android:text="@string/hubungi_kami"
+            android:text="@string/contact_us_show_all_ticket"
             android:textColor="@color/white"
-            android:textSize="@dimen/sp_13"
             android:visibility="gone"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
@@ -119,8 +144,8 @@
             android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible"
             tools:listitem="@layout/layout_item_ticket" />
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -134,20 +159,21 @@
         android:visibility="visible"
         app:cardCornerRadius="@dimen/dp_22"
         app:cardElevation="@dimen/dp_4"
-        app:contentPaddingBottom="@dimen/dp_12"
-        app:contentPaddingLeft="@dimen/dp_32"
-        app:contentPaddingRight="@dimen/dp_32"
-        app:contentPaddingTop="@dimen/dp_12"
+        app:contentPaddingBottom="@dimen/dp_8"
+        app:contentPaddingLeft="@dimen/dp_16"
+        app:contentPaddingRight="@dimen/dp_16"
+        app:contentPaddingTop="@dimen/dp_8"
         app:layout_behavior="com.tokopedia.contactus.inboxticket2.view.behaviour.QuickHideBehaviour">
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/btn_filter_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:drawablePadding="@dimen/dp_10"
-            android:text="Filter"
-            android:textColor="@color/black_70"
-            android:textSize="@dimen/sp_13" />
+            app:typographyType="heading_6"
+            app:typographyWeight="bold"
+            android:gravity="center"
+            android:text="@string/filter"
+            android:textColor="@color/contact_us_text_field_color" />
     </androidx.cardview.widget.CardView>
 
     <FrameLayout

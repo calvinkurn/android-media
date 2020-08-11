@@ -1,57 +1,92 @@
 package com.tokopedia.topchat.chatroom.domain.usecase
 
-import android.content.res.Resources
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.topchat.R
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.topchat.chatroom.domain.pojo.ShopFollowingPojo
-import rx.Subscriber
+import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatCoroutineContextProvider
+import kotlinx.coroutines.*
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
 /**
  * @author by nisie on 16/01/19.
  */
 
 class GetShopFollowingUseCase @Inject constructor(
-        val resources: Resources,
-        private val graphqlUseCase: GraphqlUseCase
-) {
+        private var dispatchers: TopchatCoroutineContextProvider,
+        private val gqlUseCase: GraphqlUseCase<ShopFollowingPojo>
+) : CoroutineScope {
 
-    fun execute(requestParams: Map<String, Any>, subscriber: Subscriber<GraphqlResponse>) {
-        val query = GraphqlHelper.loadRawString(resources, R.raw.query_get_shop_following_status)
-        val graphqlRequest = GraphqlRequest(query,
-                ShopFollowingPojo::class.java, requestParams, false)
+    private val paramShopIDs = "shopIDs"
+    private val paramInputFields = "inputFields"
 
-        graphqlUseCase.clearRequest()
-        graphqlUseCase.addRequest(graphqlRequest)
-        graphqlUseCase.execute(subscriber)
+    override val coroutineContext: CoroutineContext get() = dispatchers.Main + SupervisorJob()
+
+    fun getStatus(
+            shopId: Int,
+            onError: (Throwable) -> Unit,
+            onSuccessGetShopFollowingStatus: (Boolean) -> Unit
+    ) {
+        launchCatchError(
+                dispatchers.IO,
+                {
+                    val params = generateParam(shopId)
+                    val response = gqlUseCase.apply {
+                        setTypeClass(ShopFollowingPojo::class.java)
+                        setRequestParams(params)
+                        setGraphqlQuery(query)
+                    }.executeOnBackground()
+                    withContext(dispatchers.Main) {
+                        onSuccessGetShopFollowingStatus(response.isFollow)
+                    }
+                },
+                {
+                    withContext(dispatchers.Main) {
+                        onError(it)
+                    }
+                }
+        )
     }
 
-    companion object {
-
-        private val PARAM_SHOP_IDS: String = "shopIDs"
-        private val PARAM_INPUT_FIELDS: String = "inputFields"
-        private val DEFAULT_FAVORITE: String = "favorite"
-
-
-        fun generateParam(shopId: Int):
-                Map<String, Any> {
-            val shopIds = ArrayList<Int>()
-            shopIds.add(shopId)
-
-            val inputFields = ArrayList<String>()
-            inputFields.add(DEFAULT_FAVORITE)
-            val requestParams = HashMap<String, Any>()
-            requestParams[PARAM_SHOP_IDS] = shopIds
-            requestParams[PARAM_INPUT_FIELDS] = inputFields
-            return requestParams
+    fun safeCancel() {
+        if (coroutineContext.isActive) {
+            cancel()
         }
     }
 
-    fun unsubscribe() {
-        graphqlUseCase.unsubscribe()
+    private fun generateParam(shopId: Int): Map<String, Any> {
+        val shopIds = listOf(shopId)
+        val inputFields = listOf(DEFAULT_FAVORITE)
+        return mapOf<String, Any>(
+                PARAM_SHOP_IDS to shopIds,
+                PARAM_INPUT_FIELDS to inputFields
+        )
     }
 
+    private val query = """
+        query get_shop_following_status(
+            $$paramShopIDs: [Int!]!, 
+            $$paramInputFields: [String!]!
+        ) {
+          shopInfoByID(
+            input: {
+                shopIDs: $$paramShopIDs,
+                fields: $$paramInputFields
+            }
+          ) {
+            result {
+              favoriteData {
+                alreadyFavorited
+              }
+            }
+          }
+        }
+
+    """.trimIndent()
+
+    companion object {
+        private val PARAM_SHOP_IDS: String = "shopIDs"
+        private val PARAM_INPUT_FIELDS: String = "inputFields"
+        private val DEFAULT_FAVORITE: String = "favorite"
+    }
 }

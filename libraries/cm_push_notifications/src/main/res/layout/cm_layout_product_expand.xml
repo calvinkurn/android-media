@@ -35,6 +35,7 @@
             </RelativeLayout>
 
             <RelativeLayout
+                android:id="@+id/ll_content"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="@dimen/dp_16"
@@ -103,6 +104,17 @@
                     android:textSize="12sp"
                     tools:text="Stok sisa 2" />
 
+                <ImageView
+                    android:id="@+id/img_campaign"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/dp_20"
+                    android:layout_below="@+id/tv_productMessage"
+                    android:layout_marginTop="@dimen/dp_6"
+                    android:scaleType="fitStart"
+                    android:visibility="gone"
+                    tools:src="@tools:sample/avatars"
+                    tools:visibility="visible" />
+
                 <TextView
                     android:id="@+id/tv_productButton"
                     android:layout_width="match_parent"
@@ -110,12 +122,12 @@
                     android:layout_alignParentBottom="true"
                     android:background="@drawable/cm_background_buy"
                     android:gravity="center"
-                    android:paddingTop="@dimen/dp_5"
-                    android:paddingBottom="@dimen/dp_5"
+                    android:paddingTop="@dimen/dp_8"
+                    android:paddingBottom="@dimen/dp_8"
                     android:textColor="@color/white"
-                    android:textSize="15sp"
+                    android:textSize="@dimen/sp_14"
+                    android:textStyle="bold"
                     tools:text="Beli Sekarang" />
-
 
             </RelativeLayout>
 
@@ -130,6 +142,8 @@
             android:layout_centerVertical="true"
             android:background="@drawable/cm_next_btn_background"
             android:clickable="true"
+            android:visibility="gone"
+            tools:visibility="visible"
             android:padding="8dp"
             android:rotation="180"
             android:src="@drawable/cm_ic_arrow" />
@@ -145,6 +159,8 @@
             android:layout_margin="@dimen/dp_5"
             android:background="@drawable/cm_next_btn_background"
             android:clickable="true"
+            android:visibility="gone"
+            tools:visibility="visible"
             android:padding="8dp"
             android:src="@drawable/cm_ic_arrow" />
 
