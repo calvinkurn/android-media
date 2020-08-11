@@ -82,6 +82,7 @@ class AutoWDInfoFragment : BottomSheetUnify(), TickerCallback {
         if(::analytics.isInitialized){
             analytics.get().onClickMoreInfoOnInfoBottomSheet()
         }
+        dismiss()
     }
 
     companion object {
@@ -101,6 +102,7 @@ class AutoWDInfoFragment : BottomSheetUnify(), TickerCallback {
         if(::analytics.isInitialized){
             analytics.get().clickOnGabungRPInfo()
         }
+        dismiss()
     }
 
     override fun onDismiss() {
