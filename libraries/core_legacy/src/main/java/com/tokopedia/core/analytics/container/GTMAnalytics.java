@@ -85,6 +85,8 @@ public class GTMAnalytics extends ContextAnalytics {
     private Long lastGetConnectionTimeStamp = 0L;
     private String mGclid = "";
 
+    private final String REMOTE_CONFIG_SEND_TRACK_BG = "android_send_track_background";
+
     public GTMAnalytics(Context context) {
         super(context);
         if (GlobalConfig.isAllowDebuggingTools()) {
@@ -238,33 +240,40 @@ public class GTMAnalytics extends ContextAnalytics {
         }
         // https://tokopedia.atlassian.net/browse/AN-19138
 
-        Observable.just(value)
-                .subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.io())
-                .map(it -> {
-                    // V4
-                    clearEnhanceEcommerce();
-                    pushGeneralEcommerce(clone(value));
+        if (remoteConfig.getBoolean(REMOTE_CONFIG_SEND_TRACK_BG, true)) {
+            Observable.just(value)
+                    .subscribeOn(Schedulers.io())
+                    .unsubscribeOn(Schedulers.io())
+                    .map(this::sendEnhanceECommerceEventOrigin)
+                    .subscribe(getDefaultSubscriber());
+        } else {
+            sendEnhanceECommerceEventOrigin(value);
+        }
 
-                    // V5
-                    try {
-                        String keyEvent = keyEvent(clone(value));
-                        // prevent sending null keyevent
-                        if (keyEvent == null) return false;
-                        pushEECommerceInternal(keyEvent, factoryBundle(bruteForceCastToString(value.get("event")), clone(value)));
-                    } catch (Exception e) {
-                        StringBuilder stacktrace = new StringBuilder();
-                        for (StackTraceElement ste : Thread.currentThread().getStackTrace()) {
-                            stacktrace.append(String.format("%s\n", ste.toString()));
-                        }
-                        GtmLogger.getInstance(context).saveError(stacktrace.toString());
-                        if (!TextUtils.isEmpty(e.getMessage())) {
-                            Timber.e("P2#GTM_ANALYTIC_ERROR#%s %s", e.getMessage(), stacktrace.toString());
-                        }
-                    }
-                    return true;
-                })
-                .subscribe(getDefaultSubscriber());
+    }
+
+    private boolean sendEnhanceECommerceEventOrigin(Map<String, Object> value) {
+        // V4
+        clearEnhanceEcommerce();
+        pushGeneralEcommerce(clone(value));
+
+        // V5
+        try {
+            String keyEvent = keyEvent(clone(value));
+            // prevent sending null keyevent
+            if (keyEvent == null) return false;
+            pushEECommerceInternal(keyEvent, factoryBundle(bruteForceCastToString(value.get("event")), clone(value)));
+        } catch (Exception e) {
+            StringBuilder stacktrace = new StringBuilder();
+            for (StackTraceElement ste : Thread.currentThread().getStackTrace()) {
+                stacktrace.append(String.format("%s\n", ste.toString()));
+            }
+            GtmLogger.getInstance(context).saveError(stacktrace.toString());
+            if (!TextUtils.isEmpty(e.getMessage())) {
+                Timber.e("P2#GTM_ANALYTIC_ERROR#%s %s", e.getMessage(), stacktrace.toString());
+            }
+        }
+        return true;
     }
 
     public Bundle addWrapperValue(Bundle bundle) {
@@ -992,30 +1001,36 @@ public class GTMAnalytics extends ContextAnalytics {
     }
 
     public void pushGeneralGtmV5Internal(Map<String, Object> params) {
-        Observable.just(params)
-                .subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.io())
-                .map(it -> {
-                    pushGeneral(params);
+        if (remoteConfig.getBoolean(REMOTE_CONFIG_SEND_TRACK_BG, true)) {
+            Observable.just(params)
+                    .subscribeOn(Schedulers.io())
+                    .unsubscribeOn(Schedulers.io())
+                    .map(this::pushGeneralGtmV5InternalOrigin)
+                    .subscribe(getDefaultSubscriber());
+        } else {
+            pushGeneralGtmV5InternalOrigin(params);
+        }
+    }
 
-                    if (TextUtils.isEmpty((String) params.get(KEY_EVENT)))
-                        return false;
+    private boolean pushGeneralGtmV5InternalOrigin(Map<String, Object> params) {
+        pushGeneral(params);
 
-                    Bundle bundle = new Bundle();
-                    bundle.putString(KEY_CATEGORY, params.get(KEY_CATEGORY) + "");
-                    bundle.putString(KEY_ACTION, params.get(KEY_ACTION) + "");
-                    bundle.putString(KEY_LABEL, params.get(KEY_LABEL) + "");
-                    bundle.putString(KEY_EVENT, params.get(KEY_EVENT) + "");
+        if (TextUtils.isEmpty((String) params.get(KEY_EVENT)))
+            return false;
 
-                    for (Map.Entry<String, Object> entry : params.entrySet()) {
-                        if (!Arrays.asList(GENERAL_EVENT_KEYS).contains(entry.getKey()))
-                            bundle.putString(entry.getKey(), bruteForceCastToString(entry.getValue()));
-                    }
+        Bundle bundle = new Bundle();
+        bundle.putString(KEY_CATEGORY, params.get(KEY_CATEGORY) + "");
+        bundle.putString(KEY_ACTION, params.get(KEY_ACTION) + "");
+        bundle.putString(KEY_LABEL, params.get(KEY_LABEL) + "");
+        bundle.putString(KEY_EVENT, params.get(KEY_EVENT) + "");
 
-                    pushEventV5(params.get(KEY_EVENT) + "", wrapWithSessionIris(bundle), context);
-                    return true;
-                })
-                .subscribe(getDefaultSubscriber());
+        for (Map.Entry<String, Object> entry : params.entrySet()) {
+            if (!Arrays.asList(GENERAL_EVENT_KEYS).contains(entry.getKey()))
+                bundle.putString(entry.getKey(), bruteForceCastToString(entry.getValue()));
+        }
+
+        pushEventV5(params.get(KEY_EVENT) + "", wrapWithSessionIris(bundle), context);
+        return true;
     }
 
     public Bundle wrapWithSessionIris(Bundle bundle) {
@@ -1044,14 +1059,7 @@ public class GTMAnalytics extends ContextAnalytics {
 
     private void pushGeneral(Map<String, Object> values) {
         Map<String, Object> data = new HashMap<>(values);
-        Observable.just(data)
-                .subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.io())
-                .map(it -> {
-                    pushIris("", it);
-                    return true;
-                })
-                .subscribe(getDefaultSubscriber());
+        pushIris("", data);
     }
 
     private void pushGeneralEcommerce(Map<String, Object> values) {
@@ -1098,22 +1106,7 @@ public class GTMAnalytics extends ContextAnalytics {
      * ada skema di gtm yang nge-cache nah ini gimana?
      */
     public void clearEnhanceEcommerce() {
-        pushGeneral(
-                DataLayer.mapOf("event", null,
-                        "eventCategory", null,
-                        "eventAction", null,
-                        "eventLabel", null,
-                        "products", null,
-                        "promotions", null,
-                        "ecommerce", null,
-                        "currentSite", null,
-                        "channelId", null,
-                        "attribution", null,
-                        "affinityLabel", null,
-                        "categoryId", null,
-                        "shopId", null
-                )
-        );
+        // no op. push Iris send null is always ignored.
     }
 
     private void pushIris(String eventName, Map<String, Object> values) {
