@@ -41,6 +41,7 @@ import com.tokopedia.seller_migration_common.presentation.widget.SellerMigration
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.activity.ChatListActivity
 import com.tokopedia.topchat.chatlist.adapter.ChatListAdapter
+import com.tokopedia.topchat.chatlist.adapter.decoration.ChatListItemDecoration
 import com.tokopedia.topchat.chatlist.adapter.typefactory.ChatListTypeFactoryImpl
 import com.tokopedia.topchat.chatlist.adapter.viewholder.ChatItemListViewHolder
 import com.tokopedia.topchat.chatlist.analytic.ChatListAnalytic
@@ -255,6 +256,7 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
         for (i in 0 until recyclerView.itemDecorationCount) {
             recyclerView.removeItemDecorationAt(i)
         }
+        recyclerView.addItemDecoration(ChatListItemDecoration(context))
     }
 
     private fun setObserver() {
