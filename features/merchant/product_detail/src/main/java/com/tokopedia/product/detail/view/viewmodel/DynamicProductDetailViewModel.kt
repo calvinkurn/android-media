@@ -597,7 +597,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
                         if(recomData.isNotEmpty()){
                             val recomWidget = recomData.first().copy(
-                                    recommendationFilterChips = recomFilter.data
+                                    recommendationFilterChips = recomFilter
                             )
                             _loadTopAdsProduct.postValue(recomWidget.asSuccess())
                         }

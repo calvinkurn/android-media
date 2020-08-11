@@ -6,7 +6,6 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
-import kotlinx.coroutines.delay
 
 /**
  * Created by Lukas on 04/08/20.
@@ -14,7 +13,7 @@ import kotlinx.coroutines.delay
 
 class GetRecommendationFilterChips (
         private val graphqlUseCase: GraphqlUseCase<RecommendationFilterChipsEntity>
-): UseCase<RecommendationFilterChipsEntity>() {
+): UseCase<List<RecommendationFilterChipsEntity.RecommendationFilterChip>>() {
 
     private val query = "query getRecommendationFilterChips(\n" +
             "          \$userId:String,\n" +
@@ -28,17 +27,19 @@ class GetRecommendationFilterChips (
             "                    pageName\n" +
             "                }\n" +
             "                data { \n" +
-            "                    name\n" +
-            "                    icon\n" +
-            "                    value\n" +
-            "                    inputType\n" +
-            "                    isActivated\n" +
-            "                    options {\n" +
-            "                        name\n" +
-            "                        icon\n" +
+            "                   filter {\n" +
+            "                       name\n" +
+            "                       icon\n" +
             "                        value\n" +
             "                        inputType\n" +
             "                        isActivated\n" +
+            "                        options {\n" +
+            "                           name\n" +
+            "                           icon\n" +
+            "                           value\n" +
+            "                           inputType\n" +
+            "                           isActivated\n" +
+            "                       }\n" +
             "                    }\n" +
             "                }\n" +
             "            }\n" +
@@ -53,36 +54,10 @@ class GetRecommendationFilterChips (
         params.parameters.clear()
     }
 
-    override suspend fun executeOnBackground(): RecommendationFilterChipsEntity {
+    override suspend fun executeOnBackground(): List<RecommendationFilterChipsEntity.RecommendationFilterChip> {
         graphqlUseCase.setRequestParams(params.parameters)
-
-        delay(1000)
-        return RecommendationFilterChipsEntity(
-                data = listOf(
-                        RecommendationFilterChipsEntity.RecommendationFilterChip(
-                            name = "Cokelat",
-                            value = "&power_badge=true"
-                        ),
-                        RecommendationFilterChipsEntity.RecommendationFilterChip(
-                            name = "Biru",
-                            value = "&power_badge=true",
-                            isActivated = true
-                        ),
-                        RecommendationFilterChipsEntity.RecommendationFilterChip(
-                            name = "Merah",
-                            value = "&power_badge=true"
-                        ),
-                        RecommendationFilterChipsEntity.RecommendationFilterChip(
-                            name = "Hijau",
-                            value = "&power_badge=true"
-                        ),
-                        RecommendationFilterChipsEntity.RecommendationFilterChip(
-                            name = "Ungu",
-                            value = "&power_badge=true"
-                        )
-                )
-        )
-        return graphqlUseCase.executeOnBackground()
+        val recommendationFilterChipsEntity = graphqlUseCase.executeOnBackground()
+        return recommendationFilterChipsEntity.recommendationFilterChips.data.filterChip
     }
 
     fun setParams(userId: String="", productIDs: String="", pageName: String="", xSource: String="", queryParam: String=""){
