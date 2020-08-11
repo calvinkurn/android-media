@@ -214,6 +214,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         observingLsFinishOrder()
         observingFlightResendEmail()
         observingTrainResendEmail()
+        observingRechargeSetFail()
     }
 
     private fun prepareLayout() {
@@ -456,6 +457,25 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 is Fail -> {
                     bottomSheetResendEmail?.tf_email?.setError(true)
                     bottomSheetResendEmail?.tf_email?.setMessage(getString(R.string.toaster_failed_send_email))
+                }
+            }
+        })
+    }
+
+    private fun observingRechargeSetFail() {
+        uohListViewModel.rechargeSetFailResult.observe(this, androidx.lifecycle.Observer {
+            when (it) {
+                is Success -> {
+                    val isSuccess = it.data.rechargeSetOrderToFail.attributes.isSuccess
+                    if (isSuccess) {
+                        currPage -= 1
+                        loadOrderHistoryList()
+                    } else {
+                        showToaster(it.data.rechargeSetOrderToFail.attributes.errorMessage, Toaster.TYPE_ERROR)
+                    }
+                }
+                is Fail -> {
+                    context?.getString(R.string.fail_cancellation)?.let { it1 -> showToaster(it1, Toaster.TYPE_ERROR) }
                 }
             }
         })
