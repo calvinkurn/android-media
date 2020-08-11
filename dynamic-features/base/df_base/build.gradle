@@ -99,7 +99,6 @@ dependencies {
     //implementation project(rootProject.ext.features.referral) //Need to fix the structure
 
     //Logistic
-    implementation project(rootProject.ext.features.dropOff)
     implementation project(rootProject.ext.features.logisticorder)
     implementation project(rootProject.ext.features.manageaddress)
 
