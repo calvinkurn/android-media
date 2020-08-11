@@ -47,31 +47,6 @@ public class TopAdsKeywordFilterStatusFragment extends TopAdsFilterStatusFragmen
     }
 
     @Override
-    protected void onFirstTimeLaunched() {
-
-    }
-
-    @Override
-    protected void initialPresenter() {
-
-    }
-
-    @Override
-    protected void setViewListener() {
-
-    }
-
-    @Override
-    protected void initialVar() {
-
-    }
-
-    @Override
-    protected void setActionVar() {
-
-    }
-
-    @Override
     public Intent addResult(Intent intent) {
         if (selectedAdapterPosition > -1) {
             Bundle extras = new Bundle();
@@ -79,5 +54,10 @@ public class TopAdsKeywordFilterStatusFragment extends TopAdsFilterStatusFragmen
             intent.putExtras(extras);
         }
         return intent;
+    }
+
+    @Override
+    protected String getScreenName() {
+        return null;
     }
 }

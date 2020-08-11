@@ -182,7 +182,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
 
     private fun startPriceActivity() {
         activity?.run {
-            this@BaseProductAddEditFragment.startActivityForResult(ProductEditPriceActivity.createIntent(this, currentProductAddViewModel?.productPrice, officialStore,
+            this@BaseProductAddEditFragment.startActivityForResult(ProductEditPriceActivity.createIntent(this, currentProductAddViewModel?.productPrice, currentProductAddViewModel?.productStock?.stockCount, officialStore,
                     currentProductAddViewModel?.productVariantViewModel?.hasSelectedVariant()
                             ?: false, isGoldMerchant), REQUEST_CODE_GET_PRICE)
         }

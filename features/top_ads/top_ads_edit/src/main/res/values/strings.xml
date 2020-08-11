@@ -1,0 +1,52 @@
+<resources>
+    <string name="topads_edit_nama_grup_iklan">Nama grup iklan</string>
+    <string name="topads_edit_ketik_nama_group_iklan">Ketik nama grup iklan</string>
+    <string name="topads_edit_atur_biaya">ATUR BIAYA</string>
+    <string name="topads_edit_tidak_dibatasi">Tidak dibatasi</string>
+    <string name="topads_edit_dibatasi">Dibatasi</string>
+    <string name="topads_edit_anggaran_harian">Anggaran harian</string>
+    <string name="topads_edit_simpan">Simpan</string>
+    <string name="topads_edit_keluar">Keluar</string>
+    <string name="topads_edit_sudah_diiklankan">Sudah Diiklankan</string>
+    <string name="topads_edit_belum_diiklankan">Belum Diiklankan</string>
+    <string name="topads_edit_cari_produk">Cari Produk</string>
+    <string name="topads_edit_keyword_edit_info_sheet_title_1">Pencarian luas</string>
+    <string name="topads_edit_keyword_edit_info_sheet_desc_1">Pencarian dengan kata kunci luas dapat meningkatkan frekuensi produkmu tampil.</string>
+    <string name="topads_edit_keyword_edit_info_sheet_desc_2">Gunakan pencarian dengan kata kunci spesifik untuk beriklan lebih efektif dan produkmu lebih mudah ditemukan pembeli.</string>
+    <string name="topads_edit_keyword_edit_info_sheet_title_2">Pencarian Spesifik</string>
+    <string name="topads_edit_info_sheet_title">Tipe Pencarian</string>
+    <string name="topads_edit_ubah_group">Ubah Grup</string>
+    <string name="topads_edit_no_keywords_desc">Tambahkan kata kunci agar produkmu lebih mudah ditemukan pembeli</string>
+    <string name="topads_edit_no_keywords_title">Belum ada kata kunci dipilih</string>
+    <string name="topads_edit_add_keword">Tambah Kata Kunci</string>
+    <string name="topads_edit_kata_kunci">Kata Kunci</string>
+    <string name="topads_edit_kata_kunci_negative_count">%d Kata Kunci Negatif</string>
+    <string name="topads_edit_kata_kunci_neg">Kata Kunci Negatif</string>
+    <!-- SELECT PRODUCT AND KEWORDS !-->
+    <string name="topads_edit_urutkan">Urutkan</string>
+    <string name="topads_edit_harga_terendah">Harga Terendah</string>
+    <string name="topads_edit_harga_tertinggi">Harga Tertinggi</string>
+    <string name="topads_edit_terbaru">Terbaru</string>
+    <string name="topads_edit_terlaris">Terlaris</string>
+    <string name="topads_edit_select_sort">Pencarian Luas</string>
+    <string name="topads_edit_leave_page_conf_dialog_title">Simpan Perubahan?</string>
+    <string name="topads_edit_leave_page_conf_dialog_desc">Kamu sudah mengubah pengaturan grup dan belum simpan perubahanmu</string>
+    <string name="topads_edit_delete_keyword_conf_dialog_title">Hapus Kata Kunci?</string>
+    <string name="topads_edit_delete_keyword_conf_dialog_desc">Apakah kamu yakin untuk menghapus kata kunci %s?</string>
+    <string name="topads_edit_delete_neg_keyword_conf_dialog_title">Hapus Kata Kunci Negatif?</string>
+    <string name="topads_edit_delete_neg_keyword_conf_dialog_desc">Apakah kamu yakin untuk menghapus kata kunci %s?</string>
+    <string name="topads_edit_ya">Ya</string>
+    <string name="topads_edit_batal">Batal</string>
+    <string name="topads_edit_no_neg_keyword_title">Belum ada kata kunci negatif</string>
+    <string name="topads_edit_no_neg_keyword_desc">Tambahkan kata kunci negatif agar produkmu tidak tampil di hasil pencarian yang tidak relevan</string>
+    <string name="topads_edit_add_negative_keyword">Tambah Kata Kunci Negatif</string>
+    <string name="topads_edit__0_kata_kunci_dipilih">%d kata kunci dipilih</string>
+    <string name="topads_edit_tambah">Tambah</string>
+    <string name="topads_edit_product_select_label">Pilih Produk</string>
+    <string name="topads_edit_ketik_kata_kunci">Ketik kata kunci</string>
+    <string name="topads_edit_duplicate_group_name_error">Nama grup iklan telah digunakan</string>
+    <string name="topads_edit_duplicate_group_name_error_wrong">Nama Grup Anda telah digunakan</string>
+    <string name="pencarian_bulan">Pencarian / bulan</string>
+
+
+</resources>

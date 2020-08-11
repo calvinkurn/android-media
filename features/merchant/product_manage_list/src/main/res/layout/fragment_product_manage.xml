@@ -45,16 +45,18 @@
                 app:siv_search_icon="@drawable/unify_search_ic"
                 app:layout_scrollFlags="scroll|snap"/>
 
-            <com.tokopedia.product.manage.feature.list.view.ui.tab.ProductManageTabFilter
-                android:id="@+id/tabFilters"
-                android:layout_width="wrap_content"
+            <com.tokopedia.sortfilter.SortFilter
+                android:id="@+id/tabSortFilter"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingLeft="@dimen/product_manage_horizontal_spacing"
                 android:paddingRight="@dimen/product_manage_horizontal_spacing"
                 android:layout_marginTop="@dimen/spacing_lvl2"
-                android:layout_marginBottom="@dimen/product_manage_vertical_spacing"
+                android:layout_marginBottom="@dimen/spacing_lvl3"
                 android:visibility="gone"
-                app:layout_scrollFlags="scroll|snap" />
+                app:layout_scrollFlags="scroll|snap"
+                app:sort_filter_relationship="AND"
+                app:sort_filter_type="advanced" />
 
             <LinearLayout
                 android:id="@+id/multiSelectContainer"

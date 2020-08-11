@@ -14,7 +14,7 @@
         android:layout_marginBottom="@dimen/spacing_lvl3"
         app:loader_type="circular" />
 
-    <WebView
+    <com.tokopedia.webview.TkpdWebView
         android:id="@+id/web_event_pdp_about"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

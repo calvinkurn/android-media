@@ -40,7 +40,7 @@
                     android:adjustViewBounds="true"
                     android:gravity="center"
                     android:scaleType="centerCrop"
-                    tools:src="@drawable/ic_kupon"
+                    tools:src="@drawable/ic_badge_shop_official"
                     tools:visibility="visible" />
 
             </androidx.cardview.widget.CardView>

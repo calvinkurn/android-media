@@ -167,7 +167,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             selectedEtalaseId = savedInstanceState.getString(SAVED_SELECTED_ETALASE_ID) ?: ""
             selectedEtalaseName = savedInstanceState.getString(SAVED_SELECTED_ETALASE_NAME) ?: ""
             keyword = savedInstanceState.getString(SAVED_KEYWORD) ?: ""
-            sortValue = savedInstanceState.getString(SAVED_SORT_VALUE)
+            sortValue = savedInstanceState.getString(SAVED_SORT_VALUE, "")
             shopId = savedInstanceState.getString(SAVED_SHOP_ID)
             shopRef = savedInstanceState.getString(SAVED_SHOP_REF).orEmpty()
             needReloadData = savedInstanceState.getBoolean(ShopParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA)
@@ -304,12 +304,12 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             shopProductAdapter.clearProductList()
             endlessRecyclerViewScrollListener.resetState()
         }
-        shopProductAdapter.setProductListDataModel(productList)
-        updateScrollListenerState(hasNextPage)
 
-        if (shopProductAdapter.shopProductViewModelList.size == 0) {
+        if (productList.isEmpty()) {
             shopProductAdapter.addEmptyDataModel(emptyDataViewModel)
         } else {
+            shopProductAdapter.setProductListDataModel(productList)
+            updateScrollListenerState(hasNextPage)
             isLoadingInitialData = false
         }
     }

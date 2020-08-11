@@ -3,22 +3,24 @@ package com.tokopedia.product.manage.item.catalog.view.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import androidx.recyclerview.widget.LinearLayoutManager
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.TextView
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.listener.EndlessLayoutManagerListener
 import com.tokopedia.core.common.category.di.module.CategoryPickerModule
 import com.tokopedia.product.manage.item.R
 import com.tokopedia.product.manage.item.catalog.view.activity.ProductEditCatalogPickerActivity
-import com.tokopedia.product.manage.item.common.di.component.ProductComponent
-import com.tokopedia.product.manage.item.category.di.ProductEditCategoryCatalogModule
-import com.tokopedia.product.manage.item.catalog.view.model.ProductCatalog
 import com.tokopedia.product.manage.item.catalog.view.adapter.ProductCatalogTypeFactory
 import com.tokopedia.product.manage.item.catalog.view.listener.ProductEditCatalogPickerView
+import com.tokopedia.product.manage.item.catalog.view.model.ProductCatalog
 import com.tokopedia.product.manage.item.catalog.view.presenter.ProductEditCatalogPickerPresenter
 import com.tokopedia.product.manage.item.category.di.DaggerProductEditCategoryCatalogComponent
+import com.tokopedia.product.manage.item.category.di.ProductEditCategoryCatalogModule
+import com.tokopedia.product.manage.item.common.di.component.ProductComponent
 import kotlinx.android.synthetic.main.fragment_product_edit_catalog_picker.*
 import javax.inject.Inject
 
@@ -46,7 +48,6 @@ class ProductEditCatalogPickerFragment : BaseListFragment<ProductCatalog, Produc
     @Inject lateinit var presenter: ProductEditCatalogPickerPresenter
     private var productName = ""
     private var categoryId = -1L
-    private var jsonChosenCatalog = ""
     private var choosenCatalog: ProductCatalog? = ProductCatalog()
     private var selectedPosCatalog = -1
 
@@ -73,12 +74,7 @@ class ProductEditCatalogPickerFragment : BaseListFragment<ProductCatalog, Produc
         arguments?.run {
             productName = getString(ProductEditCatalogPickerActivity.EXTRA_PRODUCT_NAME, "")
             categoryId = getLong(ProductEditCatalogPickerActivity.EXTRA_CATEGORY_ID, -1L)
-            jsonChosenCatalog = getString(ProductEditCatalogPickerActivity.EXTRA_JSON_CATALOG,"")
             choosenCatalog = getParcelable(ProductEditCatalogPickerActivity.EXTRA_CATALOG)
-        }
-
-        if (jsonChosenCatalog.isNotEmpty()) {
-            choosenCatalog = Gson().fromJson(jsonChosenCatalog,ProductCatalog::class.java)
         }
     }
 
@@ -108,7 +104,6 @@ class ProductEditCatalogPickerFragment : BaseListFragment<ProductCatalog, Produc
         val jsonChosenCatalog = Gson().toJson(choosenCatalog)
 
         val intent = Intent()
-        intent.putExtra(ProductEditCatalogPickerActivity.EXTRA_JSON_CATALOG,jsonChosenCatalog)
         intent.putExtra(ProductEditCatalogPickerActivity.EXTRA_CATALOG, choosenCatalog)
 
         activity?.run {
@@ -137,7 +132,6 @@ class ProductEditCatalogPickerFragment : BaseListFragment<ProductCatalog, Produc
                 ProductEditCatalogPickerFragment().apply {
                     arguments = Bundle().apply { putString(ProductEditCatalogPickerActivity.EXTRA_PRODUCT_NAME, productName)
                                                 putLong(ProductEditCatalogPickerActivity.EXTRA_CATEGORY_ID, categoryId)
-                                                putString(ProductEditCatalogPickerActivity.EXTRA_JSON_CATALOG, jsonChosenCatalog)
                                                 putParcelable(ProductEditCatalogPickerActivity.EXTRA_CATALOG, choosenCatalog)}
         }
     }

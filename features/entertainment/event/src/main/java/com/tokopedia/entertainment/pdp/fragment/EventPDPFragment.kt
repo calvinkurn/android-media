@@ -254,6 +254,7 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
                     bottomSheets.show(it, "")
                 }
             } else if(isScheduleWithoutDatePicker(productDetailData)) {
+                selectedDate = productDetailData.dates.first()
                 if (userSession.isLoggedIn) { goToTicketPageWithoutDate() }
                 else {
                     startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
@@ -297,7 +298,7 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
                     context?.let { ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Neutral_N700_96) }?.let {
                         navIcon?.setColorFilter(it, PorterDuff.Mode.SRC_ATOP)
                     }
-                    event_pdp_toolbar.menu.getItem(0).setIcon(R.drawable.ic_event_pdp_share_black)
+                    event_pdp_toolbar.menu.getItem(0).setIcon(com.tokopedia.entertainment.R.drawable.ic_event_pdp_share_black)
                     widget_event_pdp_tab_section.setScrolledMode()
                     widget_event_pdp_tab_section.show()
                     isShow = true
@@ -306,7 +307,7 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
                     context?.let { ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Neutral_N0) }?.let {
                         navIcon?.setColorFilter(it, PorterDuff.Mode.SRC_ATOP)
                     }
-                    event_pdp_toolbar.menu.getItem(0).setIcon(R.drawable.ic_event_pdp_share_white)
+                    event_pdp_toolbar.menu.getItem(0).setIcon(com.tokopedia.entertainment.R.drawable.ic_event_pdp_share_white)
                     widget_event_pdp_tab_section.setNullMode()
                     widget_event_pdp_tab_section.hide()
                     isShow = false
@@ -352,7 +353,7 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
     private fun goToTicketPageWithoutDate() {
         context?.let {
             RouteManager.route(it,
-                    "${ApplinkConstInternalEntertainment.EVENT_PACKAGE}/$urlPDP")
+                    getString(R.string.ent_pdp_param_to_package, ApplinkConstInternalEntertainment.EVENT_PACKAGE, urlPDP, selectedDate, "", ""))
         }
     }
 
@@ -456,7 +457,7 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
 
     fun share(productDetailData: ProductDetailData) {
         activity?.run {
-            EventShare(this).shareTravelAgent(productDetailData, { showLoading() }, { hideLoading() }, this.applicationContext)
+            EventShare(this).shareEvent(productDetailData, { showShareLoading() }, { hideShareLoading() }, this.applicationContext)
         }
     }
 
@@ -486,6 +487,14 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
                 }
             }
         }
+    }
+
+    fun hideShareLoading() {
+        event_pdp_pb.hide()
+    }
+
+    fun showShareLoading() {
+        event_pdp_pb.show()
     }
 
     companion object {

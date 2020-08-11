@@ -65,7 +65,7 @@ class TopChatViewStateImpl(
     private var chatBlockLayout: View = view.findViewById(R.id.chat_blocked_layout)
     private var attachmentPreviewContainer: FrameLayout = view.findViewById(com.tokopedia.chat_common.R.id.cl_attachment_preview)
     private var attachmentPreviewRecyclerView = view.findViewById<RecyclerView>(com.tokopedia.chat_common.R.id.rv_attachment_preview)
-    private var chatStickerMenuButton: ImageView? = view.findViewById(R.id.iv_chat_sticker)
+    var chatStickerMenuButton: ImageView? = view.findViewById(R.id.iv_chat_sticker)
     var chatMenu: ChatMenuView? = view.findViewById(R.id.fl_chat_menu)
 
     lateinit var attachmentPreviewAdapter: AttachmentPreviewAdapter
@@ -79,7 +79,6 @@ class TopChatViewStateImpl(
     override fun getOfflineIndicatorResource() = R.drawable.ic_topchat_status_indicator_offline
     override fun getOnlineIndicatorResource() = R.drawable.ic_topchat_status_indicator_online
     override fun getRecyclerViewId() = R.id.recycler_view
-    override fun getProgressId() = R.id.progress
     override fun getNewCommentId() = R.id.new_comment
     override fun getReplyBoxId() = R.id.reply_box
     override fun getActionBoxId() = R.id.add_comment_area
@@ -96,6 +95,7 @@ class TopChatViewStateImpl(
 
     override fun initView() {
         super.initView()
+        recyclerView.setHasFixedSize(true)
         (recyclerView.layoutManager as LinearLayoutManager).stackFromEnd = false
         (recyclerView.layoutManager as LinearLayoutManager).reverseLayout = true
         replyEditText.setOnFocusChangeListener { v, hasFocus ->
@@ -197,7 +197,7 @@ class TopChatViewStateImpl(
         sendListener.onEmptyProductPreview()
     }
 
-    private fun hideProductPreviewLayout() {
+    override fun hideProductPreviewLayout() {
         attachmentPreviewContainer.hide()
         setChatTemplatesBottomPadding(0)
     }
@@ -242,7 +242,6 @@ class TopChatViewStateImpl(
                                alertDialog: Dialog,
                                onUnblockChatClicked: () -> Unit) {
         chatRoomViewModel = viewModel
-        hideLoading()
         scrollToBottom()
         updateHeader(viewModel, onToolbarClicked)
         showLastTimeOnline(viewModel)

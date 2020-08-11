@@ -46,7 +46,7 @@ import com.tokopedia.withdraw.saldowithdrawal.util.WithdrawConstant
 import kotlinx.android.synthetic.main.swd_fragment_saldo_withdrawal.*
 import javax.inject.Inject
 
-class SaldoWithdrawalFragment : BaseDaggerFragment(), WithdrawalJoinRPCallback {
+class SaldoWithdrawalFragment : BaseDaggerFragment(), WithdrawalJoinRPCallback, CarouselUnify.OnActiveIndexChangedListener {
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -203,18 +203,34 @@ class SaldoWithdrawalFragment : BaseDaggerFragment(), WithdrawalJoinRPCallback {
                     slideToShow = 1.0f
                     addItems(R.layout.swd_widget_banner_single_item, data as ArrayList<Any>, ::carouselItemListener)
                 }
+                onActiveIndexChangedListener = this@SaldoWithdrawalFragment
             }
+        }
+    }
 
+
+    override fun onActiveIndexChanged(prev: Int, current: Int) {
+        if(::bannerList.isInitialized){
+            val bannerData = bannerList[current]
+            if (!bannerData.isInvoke) {
+                bannerData.invoke()
+                if (bannerData.status == BANNER_WITH_CONTENT) {
+                    analytics.get().onViewRekeningPointWidget(bannerData.text1)
+                    analytics.get().onBannerItemView(bannerData.id, true)
+                }else{
+                    analytics.get().onBannerItemView(bannerData.id, false)
+                }
+            }
         }
     }
 
     private fun onCarouselItemClick(bannerData: BannerData) {
-
         WithdrawConstant.openSessionBaseURL(context, bannerData.cta)
         if (bannerData.status == BANNER_WITH_CONTENT) {
-            analytics.get().onRekeningBannerClick()
+            analytics.get().onRekeningBannerClick(bannerData.text1)
+            analytics.get().onBannerItemClick(bannerData.id, true)
         } else {
-            analytics.get().onBannerItemClick()
+            analytics.get().onBannerItemClick(bannerData.id, false)
         }
     }
 
@@ -231,9 +247,7 @@ class SaldoWithdrawalFragment : BaseDaggerFragment(), WithdrawalJoinRPCallback {
             tvBannerDescriptionOne.text = bannerData.text1
             tvBannerDescriptionTwo.text = bannerData.text2
             img.setImageUrl(bannerData.bgURL)
-            analytics.get().onViewRekeningPointWidget(bannerData.text1)
         } else {
-            analytics.get().onBannerItemView()
             bannerTextGroup.gone()
             img.setImageUrl(bannerData.imgURL)
         }
@@ -241,6 +255,10 @@ class SaldoWithdrawalFragment : BaseDaggerFragment(), WithdrawalJoinRPCallback {
         view.setOnClickListener {
             if (it.tag is BannerData)
                 onCarouselItemClick(it.tag as BannerData)
+        }
+        //this is to send first item is visible as carousel lib not sending it...
+        if(!bannerList[0].isInvoke){
+            onActiveIndexChanged(-1, 0)
         }
     }
 
@@ -486,7 +504,7 @@ class SaldoWithdrawalFragment : BaseDaggerFragment(), WithdrawalJoinRPCallback {
         super.onViewStateRestored(savedInstanceState)
         savedInstanceState?.let {
             if (savedInstanceState.containsKey(WITHDRAWAL_REQUEST_DATA)) {
-                withdrawalRequest = savedInstanceState.getParcelable(WITHDRAWAL_REQUEST_DATA)
+                withdrawalRequest = savedInstanceState.getParcelable(WITHDRAWAL_REQUEST_DATA) ?: WithdrawalRequest()
             }
         }
     }

@@ -18,6 +18,8 @@ import com.tokopedia.notifications.di.scope.CMNotificationContext
 import com.tokopedia.notifications.di.scope.CMNotificationScope
 import com.tokopedia.notifications.domain.AmplificationUseCase
 import com.tokopedia.notifications.domain.AttributionUseCase
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named
@@ -28,6 +30,14 @@ import javax.inject.Named
     @CMNotificationContext
     fun provideCMNotificationContext(): Context {
         return context
+    }
+
+    @Provides
+    @CMNotificationScope
+    fun provideUserSession(
+            @CMNotificationContext context: Context
+    ): UserSessionInterface {
+        return UserSession(context)
     }
 
     @Provides

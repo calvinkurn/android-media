@@ -16,6 +16,8 @@ object HomeQuery{
               message
               color
               layout
+              ticker_type
+              title
             }
           }
           slides(device: 32) {
@@ -33,6 +35,7 @@ object HomeQuery{
               promo_code
               creative_name
               type
+              category_id
               campaignCode
             }
           }

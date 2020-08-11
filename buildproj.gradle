@@ -85,6 +85,7 @@ subprojects {
             substitute module('com.google.firebase:firebase-config') with module("com.google.firebase:firebase-config:${playServiceFirebaseConfig}")
             substitute module('com.google.firebase:firebase-iid') with module("com.google.firebase:firebase-iid:${playServiceFirebaseIidVersion}")
             substitute module('com.google.android.gms:play-services-measurement-base') with module("com.google.android.gms:play-services-measurement-base:${playServiceMeasurementBase}")
+            substitute module('com.google.android.gms:play-services-base') with module("com.google.android.gms:play-services-base:${playServiceBase}")
             substitute module('com.facebook.soloader:soloader') with module("com.facebook.soloader:soloader:0.8.0")
             substitute module('org.jetbrains.kotlin:kotlin-reflect') with module("org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}")
             if (!rootProject.ext.debugToolsEnabled) {

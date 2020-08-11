@@ -2,5 +2,4 @@ package com.tokopedia.iris.util
 
 interface Session {
     fun getSessionId(): String
-    fun setSessionId(id: String)
 }

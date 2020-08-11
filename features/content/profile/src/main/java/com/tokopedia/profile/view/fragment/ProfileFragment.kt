@@ -1367,22 +1367,22 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 goToFollower()
             }
 
-            override fun updateDrawState(ds: TextPaint?) {
+            override fun updateDrawState(ds: TextPaint) {
                 super.updateDrawState(ds)
-                ds?.setUnderlineText(false)
-                ds?.color = MethodChecker.getColor(requireContext(), com.tokopedia.design.R.color.white)
+                ds.setUnderlineText(false)
+                ds.color = MethodChecker.getColor(requireContext(), com.tokopedia.design.R.color.white)
             }
         }
 
         val goToFollowing = object : ClickableSpan() {
-            override fun onClick(p0: View?) {
+            override fun onClick(p0: View) {
                 goToFollowing()
             }
 
-            override fun updateDrawState(ds: TextPaint?) {
+            override fun updateDrawState(ds: TextPaint) {
                 super.updateDrawState(ds)
-                ds?.setUnderlineText(false)
-                ds?.color = MethodChecker.getColor(requireContext(), com.tokopedia.design.R.color.white)
+                ds.setUnderlineText(false)
+                ds.color = MethodChecker.getColor(requireContext(), com.tokopedia.design.R.color.white)
             }
         }
         if (spannableString.indexOf(followers) != -1) {

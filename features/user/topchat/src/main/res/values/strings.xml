@@ -33,8 +33,7 @@ yang ditemukan</string>
     <string name="time_machine">Untuk melihat percakapan sebelumnya,\nkunjungi Riwayat
         Pesan</string>
     <string name="string_general_error">Terjadi kesalahan, mohon coba kembali.</string>
-    <string name="error_no_connection_retrying">Terjadi gangguan pada koneksi. Mencoba
-        menghubungkan…</string>
+    <string name="error_no_connection_retrying">Tunggu sebentar, ya. Kami sedang menghubungkanmu.</string>
     <string name="title_time_machine_message">Tokopedia</string>
 
     <!-- Chat Room -->
@@ -167,4 +166,6 @@ yang ditemukan</string>
     <string name="tittle_header_auto_reply">Dibalas oleh Balasan Otomatis</string>
     <string name="tittle_info_auto_reply">Pesan ini dibalas oleh sistem</string>
     <string name="filter_chat_smart_reply">Dibalas oleh Smart Reply</string>
+    <string name="title_topchat_tooltip_sticker_onboarding">Kami punya stiker lucu buatmu, lho. Cobain, yuk!</string>
+    <string name="title_topchat_tooltip_search_onboarding">Kamu bisa cari pengguna, pesan, atau produk. Coba ketik sesuatu.</string>
 </resources>

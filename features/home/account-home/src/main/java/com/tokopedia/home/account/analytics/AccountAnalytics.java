@@ -75,16 +75,19 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.FIELD_POSITI
 import static com.tokopedia.home.account.AccountConstants.Analytics.IDR;
 import static com.tokopedia.home.account.AccountConstants.Analytics.IMPRESSIONS;
 import static com.tokopedia.home.account.AccountConstants.Analytics.INBOX;
+import static com.tokopedia.home.account.AccountConstants.Analytics.ITEM_POWER_MERCHANT;
 import static com.tokopedia.home.account.AccountConstants.Analytics.LIST;
 import static com.tokopedia.home.account.AccountConstants.Analytics.NONE_OTHER;
 import static com.tokopedia.home.account.AccountConstants.Analytics.NOTIFICATION;
 import static com.tokopedia.home.account.AccountConstants.Analytics.PASSWORD;
+import static com.tokopedia.home.account.AccountConstants.Analytics.PENJUAL;
 import static com.tokopedia.home.account.AccountConstants.Analytics.PRODUCTS;
 import static com.tokopedia.home.account.AccountConstants.Analytics.PROMOTIONS;
 import static com.tokopedia.home.account.AccountConstants.Analytics.PROMOTION_CLICK;
 import static com.tokopedia.home.account.AccountConstants.Analytics.PROMOTION_VIEW;
 import static com.tokopedia.home.account.AccountConstants.Analytics.SCREEN_NAME;
 import static com.tokopedia.home.account.AccountConstants.Analytics.SCREEN_NAME_ACCOUNT;
+import static com.tokopedia.home.account.AccountConstants.Analytics.SECTION_OTHER_FEATURE;
 import static com.tokopedia.home.account.AccountConstants.Analytics.SETTING;
 import static com.tokopedia.home.account.AccountConstants.Analytics.SHOP;
 import static com.tokopedia.home.account.AccountConstants.Analytics.TOP_NAV;
@@ -512,27 +515,22 @@ public class AccountAnalytics {
         }
     }
 
-    public void eventAccountPromoClick(String creativeName, String label, int position) {
-        final Analytics tracker = TrackApp.getInstance().getGTM();
-        if (tracker != null) {
-            Map<String, Object> map = DataLayer.mapOf(
-                    EVENT, EVENT_PROMO_CLICK,
-                    EVENT_CATEGORY, EVENT_CATEGORY_AKUN_PEMBELI,
-                    EVENT_ACTION, EVENT_ACTION_ACCOUNT_PROMOTION_CLICK,
-                    EVENT_LABEL, label,
-                    ECOMMERCE, DataLayer.mapOf(
-                            PROMOTION_CLICK, DataLayer.mapOf(
-                                    PROMOTIONS, DataLayer.listOf(DataLayer.mapOf(
-                                            FIELD_ID, 0,
-                                            FIELD_NAME, VALUE_ACCOUNT_PROMOTION_NAME,
-                                            FIELD_CREATIVE, creativeName,
-                                            FIELD_CREATIVE_URL, NONE_OTHER,
-                                            FIELD_POSITION, String.valueOf(position)
-                                    )))
-                    )
-            );
-            tracker.sendEnhanceEcommerceEvent(map);
-        }
+    public void eventAccountPromoClick(String label) {
+        final Analytics analytics = TrackApp.getInstance().getGTM();
+        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT,
+                EVENT_CATEGORY_AKUN_PEMBELI,
+                AccountConstants.Analytics.EVENT_ACTION_ACCOUNT_PROMOTION_CLICK, label
+        ));
+    }
+
+    public void eventAccountPromoRewardClick() {
+        final Analytics analytics = TrackApp.getInstance().getGTM();
+        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT,
+                EVENT_CATEGORY_AKUN_PEMBELI,
+                AccountConstants.Analytics.EVENT_ACTION_ACCOUNT_PROMOTION_REWARD_CLICK, ""
+        ));
     }
 
     public static HashMap<String, Object> getAccountPromoImpression(String creativeName, int position) {
@@ -576,6 +574,33 @@ public class AccountAnalytics {
 
     public void eventTrackingNotifCenter() {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(dataNotifCenter());
+    }
+
+    public void eventClickPowerMerchantSetting() {
+        final Analytics analytics = TrackApp.getInstance().getGTM();
+        final String category = String.format("%s %s", AKUN_SAYA, PENJUAL);
+        final String action = String.format("%s - %s - %s", CLICK, SECTION_OTHER_FEATURE, ITEM_POWER_MERCHANT);
+
+        final Map<String, Object> event = TrackAppUtils.gtmData(
+            CLICK_HOME_PAGE,
+            category,
+            action,
+            ""
+        );
+
+        event.put(AccountConstants.Analytics.FIELD_USER_ID, userSessionInterface.getUserId());
+        event.put(AccountConstants.Analytics.FIELD_SHOP_ID, userSessionInterface.getShopId());
+        event.put(AccountConstants.Analytics.FIELD_SHOP_TYPE, getShopType());
+
+        analytics.sendGeneralEvent(event);
+    }
+
+    private String getShopType() {
+        if(userSessionInterface.isGoldMerchant()) {
+            return AccountConstants.Analytics.SHOP_TYPE_PM;
+        } else {
+            return AccountConstants.Analytics.SHOP_TYPE_RM;
+        }
     }
 
     private Map<String, Object> dataNotifCenter() {

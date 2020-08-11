@@ -97,7 +97,7 @@ public class TopAdsShopAdapter extends RecyclerView.Adapter<TopAdsShopAdapter.Vi
 
     private void setShopCover(ViewHolder holder, final String coverUri, String ecs) {
         if (coverUri == null) {
-            holder.shopCover.setImageResource(R.drawable.ic_loading_toped);
+            holder.shopCover.setImageResource(com.tokopedia.abstraction.R.drawable.ic_loading_toped);
         } else {
             Glide.with(context)
                     .load(ecs)

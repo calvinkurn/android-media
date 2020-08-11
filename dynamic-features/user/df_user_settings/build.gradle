@@ -54,6 +54,4 @@ dependencies {
     implementation project(rootProject.ext.features.settingbank)
     implementation project(rootProject.ext.features.saldodetails)
 
-    implementation project(rootProject.ext.features.report)
-
 }

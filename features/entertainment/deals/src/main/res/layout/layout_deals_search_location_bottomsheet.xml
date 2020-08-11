@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/app_bar_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/Neutral_N0"
+        app:elevation="@dimen/layout_lvl0">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/deals_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:contentInsetLeft="@dimen/layout_lvl0"
+            app:contentInsetStart="@dimen/layout_lvl0"
+            app:contentInsetStartWithNavigation="@dimen/layout_lvl0">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layout_search_location"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <com.tokopedia.unifycomponents.SearchBarUnify
+                    android:id="@+id/sb_location"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    android:layout_marginLeft="@dimen/spacing_lvl4"
+                    android:layout_marginTop="@dimen/spacing_lvl3"
+                    android:layout_marginRight="@dimen/spacing_lvl4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:search_bar_placeholder="@string/deals_search_input_hint_location"
+                    app:search_bar_show_icon="false"/>
+
+                <View
+                    android:id="@+id/divider_search_location"
+                    app:layout_constraintTop_toBottomOf="@+id/sb_location"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/deals_dp_1"
+                    android:layout_marginTop="@dimen/spacing_lvl4"
+                    android:background="@color/deal_grey_300" />
+
+                <ImageView
+                    android:id="@+id/img_current_location"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/deals_dp_18"
+                    android:layout_marginTop="@dimen/deals_dp_14"
+                    android:layout_marginBottom="@dimen/deals_dp_14"
+                    app:layout_constraintTop_toBottomOf="@+id/divider_search_location"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:srcCompat="@drawable/ic_system_action_currentlocation_grayscale_24"/>
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/detect_current_location"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:typographyType="body_2"
+                    android:textColor="@color/deal_product_text_color"
+                    android:gravity="center"
+                    android:layout_marginLeft="@dimen/deals_dp_10"
+                    app:layout_constraintTop_toTopOf="@+id/img_current_location"
+                    app:layout_constraintLeft_toRightOf="@+id/img_current_location"
+                    app:layout_constraintBottom_toBottomOf="@+id/img_current_location"
+                    android:text="@string/deals_detect_current_location"/>
+
+                <View
+                    android:id="@+id/divider_search_location_end"
+                    app:layout_constraintTop_toBottomOf="@+id/detect_current_location"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/deals_dp_1"
+                    android:layout_marginTop="@dimen/spacing_lvl4"
+                    android:background="@color/deal_grey_300" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.appcompat.widget.Toolbar>
+
+    </com.google.android.material.appbar.AppBarLayout>
+</merge>

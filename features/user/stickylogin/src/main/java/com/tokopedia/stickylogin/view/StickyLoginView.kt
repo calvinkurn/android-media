@@ -225,15 +225,15 @@ class StickyLoginView : FrameLayout, CoroutineScope {
      */
     fun isLoginReminder(): Boolean {
         val pref = getSharedPreference(STICKY_LOGIN_REMINDER_PREF)
-        val name = pref.getString(KEY_USER_NAME, "")
-        val picture = pref.getString(KEY_PROFILE_PICTURE, "")
+        val name = pref.getString(KEY_USER_NAME, "") ?: ""
+        val picture = pref.getString(KEY_PROFILE_PICTURE, "") ?: ""
         return name.isNotEmpty() && picture.isNotEmpty()
     }
 
     @SuppressLint("SetTextI18n")
     fun showLoginReminder(page: StickyLoginConstant.Page) {
         val name = getSharedPreference(STICKY_LOGIN_REMINDER_PREF).getString(KEY_USER_NAME, "")
-        val names = name.split(" ")
+        val names = name?.split(" ") ?: emptyList()
         val profilePicture = getSharedPreference(STICKY_LOGIN_REMINDER_PREF).getString(KEY_PROFILE_PICTURE, "")
 
         textContent.text = TEXT_RE_LOGIN + names[0]

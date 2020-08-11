@@ -192,6 +192,7 @@
 
     <!-- Setting-Notif-->
     <string name="setting_notif_app_name">Setting Notif</string>
+    <string name="notif_troubleshooter_app_name">Push Notification Troubleshooter</string>
 
     <!-- Payment-Setting-->
     <string name="df_payment_instant_debit_bca">Instant Debit BCA</string>
@@ -214,6 +215,7 @@
     <string name="filter_expand_activity">Expand</string>
     <string name="product_manage_set_cashback">Cashback</string>
     <string name="product_manage_etalase_picker_title">Pindah Etalase</string>
+    <string name="product_manage_campaign_stock_allocation">Alokasi Stok</string>
 
     <!-- Dynamic feature for manage Seller Order Management-->
     <string name="title_seller_order">Seller Order Management</string>
@@ -244,7 +246,7 @@
 
     <!-- Dynamic feature for user talk-->
     <string name="write_new_talk">Kirim Pertanyaan</string>
-    <string name="title_product_discussion">Q&amp;A</string>
+    <string name="title_product_discussion">Diskusi</string>
     <string name="title_report_talk">Laporkan</string>
 
     <string name="sbank_title_add_bank_account">Tambah Rekening</string>
@@ -294,5 +296,12 @@
     <string name="kol_title_video_detail">Video Detail</string>
     <string name="kol_title_post_youtube">Post Youtube</string>
     <string name="kol_title_report">Laporan Konten</string>
+    <string name="cp_title_create_post">Create Post</string>
+    <string name="cp_title_edit">Edit</string>
+    <string name="cp_title_image_picker">Tambah Foto</string>
+    <string name="cp_title_image_video">Tambah Video</string>
+    <string name="cp_title_image_editor">Edit</string>
 
+    <!-- Merchant Login -->
+    <string name="title_module_merchant_login">Fitur Toko</string>
 </resources>

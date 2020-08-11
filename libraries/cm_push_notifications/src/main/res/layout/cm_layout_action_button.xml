@@ -11,20 +11,67 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <include
-            android:id="@+id/layout_collapsed"
-            layout="@layout/cm_layout_collapsed"
+        <FrameLayout
+            android:id="@+id/collapseMainView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true" />
+            android:tag="base">
+
+            <LinearLayout
+                android:id="@+id/notification_main_column"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="@dimen/spacing_lvl7"
+                android:layout_marginRight="@dimen/spacing_lvl7"
+                android:minHeight="@dimen/cm_dp_45"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_collapse_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="marquee"
+                    android:fadingEdge="horizontal"
+                    android:singleLine="true"
+                    android:textColor="#de000000"
+                    android:textSize="15sp" />
+
+
+                <TextView
+                    android:id="@+id/tv_collapsed_message"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="marquee"
+                    android:fadingEdge="horizontal"
+                    android:singleLine="true"
+                    android:textColor="@color/secondary_text_default_material_light"
+                    android:textSize="@dimen/notification_subtext_size" />
+
+                <TextView
+                    android:id="@+id/tv_expanded_message"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fadingEdge="horizontal"
+                    android:visibility="gone"
+                    android:textColor="@color/secondary_text_default_material_light"
+                    android:textSize="@dimen/notification_subtext_size" />
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/iv_icon_collapsed"
+                android:layout_width="@dimen/cm_dp_38"
+                android:layout_height="@dimen/cm_dp_38"
+                android:layout_gravity="end|right"
+                android:src="@drawable/ic_big_notif_customerapp" />
+
+        </FrameLayout>
 
 
         <ImageView
             android:id="@+id/img_big"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@+id/tv_extra_text"
-            android:layout_below="@+id/layout_collapsed"
             android:layout_gravity="center_horizontal"
             android:paddingBottom="@dimen/dp_10"
             android:visibility="gone"
@@ -34,7 +81,6 @@
             android:id="@+id/tv_extra_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/ll_action"
             android:visibility="gone" />
 
         <LinearLayout

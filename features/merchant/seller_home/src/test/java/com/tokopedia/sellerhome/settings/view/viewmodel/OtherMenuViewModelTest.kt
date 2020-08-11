@@ -2,12 +2,15 @@ package com.tokopedia.sellerhome.settings.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.network.exception.ResponseErrorException
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.sellerhome.common.viewmodel.NonNullLiveData
 import com.tokopedia.sellerhome.settings.domain.usecase.GetAllShopInfoUseCase
 import com.tokopedia.sellerhome.settings.view.uimodel.shopinfo.SettingShopInfoUiModel
 import com.tokopedia.sellerhome.utils.observeOnce
+import com.tokopedia.shop.common.domain.interactor.GetShopFreeShippingInfoUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -28,6 +31,15 @@ class OtherMenuViewModelTest {
     @RelaxedMockK
     lateinit var getAllShopInfoUseCase: GetAllShopInfoUseCase
 
+    @RelaxedMockK
+    lateinit var getShopFreeShippingInfoUseCase: GetShopFreeShippingInfoUseCase
+
+    @RelaxedMockK
+    lateinit var userSession: UserSessionInterface
+
+    @RelaxedMockK
+    lateinit var remoteConfig: FirebaseRemoteConfigImpl
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
@@ -39,7 +51,13 @@ class OtherMenuViewModelTest {
     private val testDispatcher = TestCoroutineDispatcher()
 
     private val mViewModel: OtherMenuViewModel by lazy {
-        OtherMenuViewModel(testDispatcher, getAllShopInfoUseCase)
+        OtherMenuViewModel(
+            testDispatcher,
+            getAllShopInfoUseCase,
+            getShopFreeShippingInfoUseCase,
+            userSession,
+            remoteConfig
+        )
     }
 
     @Test

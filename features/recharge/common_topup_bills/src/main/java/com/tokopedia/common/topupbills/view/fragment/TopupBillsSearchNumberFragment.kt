@@ -1,18 +1,15 @@
 package com.tokopedia.common.topupbills.view.fragment
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
 import android.text.InputType
 import android.text.TextUtils
-import android.text.method.DigitsKeyListener
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,19 +18,18 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.common.topupbills.R
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
-import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity.Companion.EXTRA_CALLBACK_CLIENT_NUMBER
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity.Companion.EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE
 import com.tokopedia.common.topupbills.view.adapter.NumberListAdapter
+import com.tokopedia.common_digital.common.widget.DigitalSearchInputView
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.design.text.SearchInputView
-import kotlinx.android.synthetic.main.view_digital_component_list.*
 import java.util.*
-import javax.inject.Inject
 
 open class TopupBillsSearchNumberFragment : BaseDaggerFragment(),
         NumberListAdapter.OnClientNumberClickListener,
         SearchInputView.Listener,
+        DigitalSearchInputView.DigitalSearchInputListener,
         SearchInputView.FocusChangeListener,
         SearchInputView.ResetListener {
 
@@ -41,7 +37,7 @@ open class TopupBillsSearchNumberFragment : BaseDaggerFragment(),
     private lateinit var clientNumbers: List<TopupBillsFavNumberItem>
     private lateinit var clientNumberType: String
 
-    protected lateinit var searchInputNumber: SearchInputView
+    protected lateinit var searchInputNumber: DigitalSearchInputView
     protected lateinit var favNumberRecyclerView: RecyclerView
 
     private var number: String = ""
@@ -59,14 +55,15 @@ open class TopupBillsSearchNumberFragment : BaseDaggerFragment(),
         arguments?.run {
             clientNumberType = arguments.getString(ARG_PARAM_EXTRA_CLIENT_NUMBER, "")
             number = arguments.getString(ARG_PARAM_EXTRA_NUMBER, "")
-            clientNumbers = arguments.getParcelableArrayList(ARG_PARAM_EXTRA_NUMBER_LIST) ?: listOf()
+            clientNumbers = arguments.getParcelableArrayList(ARG_PARAM_EXTRA_NUMBER_LIST)
+                    ?: listOf()
         }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_search_number, container, false)
-        searchInputNumber = view.findViewById(R.id.siv_search_number)
-        favNumberRecyclerView = view.findViewById(R.id.rvNumberList)
+        searchInputNumber = view.findViewById(R.id.topupbills_search_input_view_number)
+        favNumberRecyclerView = view.findViewById(R.id.topupbills_search_number_rv)
         return view
     }
 
@@ -89,6 +86,7 @@ open class TopupBillsSearchNumberFragment : BaseDaggerFragment(),
             searchInputNumber.searchTextView.setSelection(number.length)
         }
         searchInputNumber.setListener(this)
+        searchInputNumber.setDigitalSearchInputListener(this)
         searchInputNumber.setFocusChangeListener(this)
         searchInputNumber.setResetListener(this)
         searchInputNumber.searchTextView.imeOptions = EditorInfo.IME_ACTION_DONE
@@ -106,7 +104,7 @@ open class TopupBillsSearchNumberFragment : BaseDaggerFragment(),
             ClientNumberType.TYPE_INPUT_TEL -> InputType.TYPE_CLASS_PHONE
             ClientNumberType.TYPE_INPUT_NUMERIC -> InputType.TYPE_CLASS_NUMBER
             ClientNumberType.TYPE_INPUT_ALPHANUMERIC -> InputType.TYPE_CLASS_TEXT
-            else ->  InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
+            else -> InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
         }
     }
 
@@ -154,6 +152,10 @@ open class TopupBillsSearchNumberFragment : BaseDaggerFragment(),
         text?.let { filterData(it) }
     }
 
+    override fun onSearchDone(text: String) {
+
+    }
+
     override fun onFocusChanged(hasFocus: Boolean) {
         if (hasFocus) inputNumberActionType = InputNumberActionType.MANUAL
     }
@@ -178,6 +180,13 @@ open class TopupBillsSearchNumberFragment : BaseDaggerFragment(),
             intent.putExtra(EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE, inputNumberActionType.ordinal)
             setResult(Activity.RESULT_OK, intent)
             finish()
+        }
+    }
+
+    fun pickOrderClientNumber(textNumber: String) {
+        val orderClientNumber = numberListAdapter.clientNumbers.findLast { it.clientNumber == textNumber }
+        orderClientNumber?.let {
+            onClientNumberClicked(it)
         }
     }
 

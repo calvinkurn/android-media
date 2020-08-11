@@ -22,10 +22,10 @@ public class TopAdsEtalaseListRepositoryImpl implements TopAdsEtalaseListReposit
     }
 
     @Override
-    public Observable<List<Etalase>> getEtalaseList(String shopId) {
+    public Observable<List<Etalase>> getEtalaseList(String shopId, String userId, String deviceId) {
         TopAdsEtalaseDataSource topAdsEtalaseDataSource =
                 topAdsEtalaseFactory.createEtalaseDataSource();
-        return topAdsEtalaseDataSource.getEtalaseList(shopId);
+        return topAdsEtalaseDataSource.getEtalaseList(shopId, userId, deviceId);
     }
 
 }

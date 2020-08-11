@@ -8,7 +8,7 @@
     android:padding="@dimen/layout_lvl2">
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/title_detail"
+        android:id="@+id/telco_title_detail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_4"
@@ -17,7 +17,7 @@
         app:typographyType="heading_5"/>
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/details"
+        android:id="@+id/telco_details"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_8"
@@ -26,7 +26,7 @@
 Bonus 1GB Kuota Midnight (00:01-6:59) + 1GB Kuota Midnight RAFI + 3GB Videomax" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/title_price"
+        android:id="@+id/telco_title_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_4"
@@ -35,7 +35,7 @@ Bonus 1GB Kuota Midnight (00:01-6:59) + 1GB Kuota Midnight RAFI + 3GB Videomax" 
         app:typographyType="heading_5" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/product_price"
+        android:id="@+id/telco_product_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_4"
@@ -45,7 +45,7 @@ Bonus 1GB Kuota Midnight (00:01-6:59) + 1GB Kuota Midnight RAFI + 3GB Videomax" 
         tools:text="Rp 40.000" />
 
     <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/button_select_item"
+        android:id="@+id/telco_button_select_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Pilih"

@@ -25,6 +25,7 @@ class Utils {
         private const val SERIBU_TEXT = "rb orang"
         private const val SEJUTA_TEXT = "jt orang"
         private const val SEMILIAR_TEXT = "M orang"
+        var preSelectedTab = -1
 
 
         fun extractDimension(url: String?, dimension: String = "height"): Int? {

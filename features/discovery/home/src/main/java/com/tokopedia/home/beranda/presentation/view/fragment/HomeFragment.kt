@@ -16,10 +16,7 @@ import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.FrameLayout
-import android.widget.LinearLayout
-import android.widget.Toast
 import androidx.annotation.VisibleForTesting
 import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityOptionsCompat
@@ -62,7 +59,6 @@ import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getBannerClick
 import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getBannerImpression
 import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getOverlayBannerClick
 import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getOverlayBannerImpression
-import com.tokopedia.home.analytics.HomePageTrackingV2.MixLeft.getMixLeftIrisProductView
 import com.tokopedia.home.analytics.HomePageTrackingV2.RecommendationList.getAddToCartOnDynamicListCarousel
 import com.tokopedia.home.analytics.HomePageTrackingV2.RecommendationList.getAddToCartOnDynamicListCarouselHomeComponent
 import com.tokopedia.home.analytics.HomePageTrackingV2.RecommendationList.getCloseClickOnDynamicListCarousel
@@ -85,6 +81,7 @@ import com.tokopedia.home.beranda.helper.Result
 import com.tokopedia.home.beranda.helper.ViewHelper
 import com.tokopedia.home.beranda.helper.benchmark.BenchmarkHelper
 import com.tokopedia.home.beranda.helper.benchmark.TRACE_INFLATE_HOME_FRAGMENT
+import com.tokopedia.home.beranda.helper.isSuccess
 import com.tokopedia.home.beranda.listener.*
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
@@ -94,6 +91,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataMo
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomepageBannerDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCarouselCardDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeRecyclerDecoration
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder
@@ -123,6 +121,8 @@ import com.tokopedia.loyalty.view.activity.PromoListActivity
 import com.tokopedia.navigation_common.listener.*
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.permissionchecker.PermissionCheckerHelper.PermissionCheckListener
+import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselItemDataModel
+import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerWidgetType
 import com.tokopedia.promogamification.common.floating.view.fragment.FloatingEggButtonFragment
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -135,6 +135,7 @@ import com.tokopedia.tokopoints.notification.TokoPointsNotificationManager
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.Toaster.make
 import com.tokopedia.user.session.UserSession
@@ -188,6 +189,7 @@ open class HomeFragment : BaseDaggerFragment(),
         private const val EXTRA_TITLE = "core_web_view_extra_title"
         private const val EXTRA_MESSAGE = "EXTRA_MESSAGE"
         private const val EXTRA_TOTAL_VIEW = "EXTRA_TOTAL_VIEW"
+        private const val EXTRA_CHANNEL_ID = "EXTRA_CHANNEL_ID"
         private const val SEND_SCREEN_MIN_INTERVAL_MILLIS: Long = 1000
         private const val DEFAULT_UTM_SOURCE = "home_notif"
         private const val SEE_ALL_CARD = "android_mainapp_home_see_all_card_config"
@@ -275,6 +277,7 @@ open class HomeFragment : BaseDaggerFragment(),
     private var pageLoadTimeCallback: PageLoadTimePerformanceInterface? = null
     private var isOnRecylerViewLayoutAdded = false
     private var fragmentCreatedForFirstTime = false
+    private var shouldPausePlay = true
     private var lock = Object()
     private var autoRefreshFlag = HomeFlag()
     private var autoRefreshHandler = Handler()
@@ -406,7 +409,7 @@ open class HomeFragment : BaseDaggerFragment(),
         val firebaseRemoteConfig = FirebaseRemoteConfigImpl(activity)
         firebaseRemoteConfig.let {
             showRecomendation = it.getBoolean(ConstantKey.RemoteConfigKey.APP_SHOW_RECOMENDATION_BUTTON, false)
-            mShowTokopointNative = it.getBoolean(ConstantKey.RemoteConfigKey.APP_SHOW_TOKOPOINT_NATIVE, true)
+            mShowTokopointNative = it.getBoolean(ConstantKey.RemoteConfigKey.APP_SHOW_TOKOPOINT_NATIVE, false)
             isShowFirstInstallSearch = it.getBoolean(ConstantKey.RemoteConfigKey.REMOTE_CONFIG_KEY_FIRST_INSTALL_SEARCH, false)
             showSeeAllCard = it.getBoolean(SEE_ALL_CARD, true)
         }
@@ -541,6 +544,9 @@ open class HomeFragment : BaseDaggerFragment(),
         })
         stickyLoginView?.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _  ->
             val floatingEggButtonFragment = floatingEggButtonFragment
+            if (stickyLoginView.isShowing()) {
+                positionSticky = stickyLoginView.getLocation()
+            }
             floatingEggButtonFragment?.let {
                 updateEggBottomMargin(it)
             }
@@ -584,8 +590,9 @@ open class HomeFragment : BaseDaggerFragment(),
 
     override fun onResume() {
         super.onResume()
+        shouldPausePlay = true
         createAndCallSendScreen()
-        adapter?.onResume()
+        if (!shouldPausePlay) adapter?.onResume()
         conditionalViewModelRefresh()
         if (activityStateListener != null) {
             activityStateListener!!.onResume()
@@ -621,7 +628,7 @@ open class HomeFragment : BaseDaggerFragment(),
 
     override fun onPause() {
         super.onPause()
-        adapter?.onPause()
+        if(shouldPausePlay) adapter?.onPause()
         getTrackingQueueObj()?.sendAll()
         if (activityStateListener != null) {
             activityStateListener!!.onPause()
@@ -638,6 +645,7 @@ open class HomeFragment : BaseDaggerFragment(),
         adapter = null
         homeRecyclerView?.layoutManager = null
         layoutManager = null
+        getHomeViewModel().onCloseChannel()
         unRegisterBroadcastReceiverTokoCash()
     }
 
@@ -662,10 +670,21 @@ open class HomeFragment : BaseDaggerFragment(),
         observeStickyLogin()
         observeTrackingData()
         observeRequestImagePlayBanner()
+        observeViewModelInitialized()
+        observeHomeRequestNetwork()
         observeSalamWidget()
         observeRechargeRecommendation()
-        observeViewModelInitialized();
-        observeHomeRequestNetwork();
+        observePlayReminder()
+        observeIsNeedRefresh()
+    }
+          
+    private fun observeIsNeedRefresh() {
+        getHomeViewModel().isNeedRefresh.observe(viewLifecycleOwner, Observer { data: Event<Boolean> ->
+            val isNeedRefresh = data.peekContent()
+            if (isNeedRefresh) {
+                adapter?.resetImpressionHomeBanner()
+            }
+        })
     }
 
     private fun observeHomeRequestNetwork() {
@@ -681,7 +700,7 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     private fun observeViewModelInitialized() {
-        getHomeViewModel().isViewModelInitalized.observe(viewLifecycleOwner, Observer { data: Event<Boolean> ->
+        getHomeViewModel().isViewModelInitialized.observe(viewLifecycleOwner, Observer { data: Event<Boolean> ->
             val isViewModelInitialized = data.peekContent()
             if (isViewModelInitialized) {
                 callSubordinateTasks();
@@ -774,6 +793,20 @@ open class HomeFragment : BaseDaggerFragment(),
                         getHomeViewModel().getUserId()
                 ) as HashMap<String, Any>)
                 RouteManager.route(context, ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT)
+            }
+        })
+    }
+
+    private fun observePlayReminder(){
+        getHomeViewModel().reminderPlayLiveData.observe(this, Observer {
+            if(it.isSuccess()){
+                showToaster(
+                        if(it.data == true) getString(R.string.home_page_play_card_success_add_reminder)
+                        else getString(R.string.home_page_play_card_success_remove_reminder),
+                        Toaster.TYPE_NORMAL
+                )
+            } else {
+                showToaster(getString(R.string.home_error_connection), TYPE_ERROR)
             }
         })
     }
@@ -944,9 +977,9 @@ open class HomeFragment : BaseDaggerFragment(),
 
     // https://stackoverflow.com/questions/28672883/java-lang-illegalstateexception-fragment-not-attached-to-activity
     private val floatingEggButtonFragment: FloatingEggButtonFragment?
-        private get() =// https://stackoverflow.com/questions/28672883/java-lang-illegalstateexception-fragment-not-attached-to-activity
+        get() =// https://stackoverflow.com/questions/28672883/java-lang-illegalstateexception-fragment-not-attached-to-activity
             if (activity != null && isAdded && childsFragmentManager != null) {
-                getChildFragmentManager().findFragmentById(R.id.floating_egg_fragment) as FloatingEggButtonFragment?
+                childFragmentManager.findFragmentById(R.id.floating_egg_fragment) as FloatingEggButtonFragment?
             } else null
 
     private fun initAdapter() {
@@ -1180,7 +1213,9 @@ open class HomeFragment : BaseDaggerFragment(),
                     getHomeViewModel().onRemoveSuggestedReview()
                 }
             }
-            REQUEST_CODE_PLAY_ROOM -> if (data != null && data.hasExtra(EXTRA_TOTAL_VIEW)) getHomeViewModel().updateBannerTotalView(data.getStringExtra(EXTRA_TOTAL_VIEW))
+            REQUEST_CODE_PLAY_ROOM -> {
+                if (data != null && data.hasExtra(EXTRA_TOTAL_VIEW) && data.hasExtra(EXTRA_CHANNEL_ID)) viewModel.get().updateBannerTotalView(data.getStringExtra(EXTRA_CHANNEL_ID), data.getStringExtra(EXTRA_TOTAL_VIEW))
+            }
         }
     }
 
@@ -1455,10 +1490,6 @@ open class HomeFragment : BaseDaggerFragment(),
         getHomeViewModel().getDynamicChannelData(dynamicChannelDataModel, position)
     }
 
-    override fun onBuyAgainOneClickCheckOutClick(grid: DynamicHomeChannel.Grid, channel: DynamicHomeChannel.Channels, position: Int) {
-        getHomeViewModel().getOneClickCheckout(channel, grid, position)
-    }
-
     override fun onBuyAgainCloseChannelClick(channel: DynamicHomeChannel.Channels, position: Int) {
         getHomeViewModel().onCloseBuyAgain(channel.id, position)
         TrackApp.getInstance().gtm.sendGeneralEvent(getCloseClickOnDynamicListCarousel(channel, getHomeViewModel().getUserId()))
@@ -1478,6 +1509,23 @@ open class HomeFragment : BaseDaggerFragment(),
             openApplink(actionLink, trackingAttribution)
         } else {
             openWebViewURL(actionLink, activity)
+        }
+    }
+
+    override fun onPlayBannerCarouselRefresh(playCarouselCardDataModel: PlayCarouselCardDataModel, position: Int) {
+        getHomeViewModel().getPlayBannerCarousel(position)
+    }
+
+    override fun onPlayBannerReminderClick(playBannerCarouselItemDataModel: PlayBannerCarouselItemDataModel) {
+        getHomeViewModel().setToggleReminderPlayBanner(playBannerCarouselItemDataModel.channelId, playBannerCarouselItemDataModel.remindMe)
+    }
+
+    override fun onPlayV2Click(playBannerCarouselItemDataModel: PlayBannerCarouselItemDataModel) {
+        if(playBannerCarouselItemDataModel.widgetType != PlayBannerWidgetType.UPCOMING && playBannerCarouselItemDataModel.widgetType != PlayBannerWidgetType.NONE) {
+            val intent = RouteManager.getIntent(activity, ApplinkConstInternalContent.PLAY_DETAIL, playBannerCarouselItemDataModel.channelId)
+            startActivityForResult(intent, REQUEST_CODE_PLAY_ROOM)
+        } else {
+            RouteManager.route(context, playBannerCarouselItemDataModel.applink)
         }
     }
 
@@ -1535,8 +1583,8 @@ open class HomeFragment : BaseDaggerFragment(),
         getHomeViewModel().getBusinessUnitTabData(position)
     }
 
-    override fun getBusinessUnit(tabId: Int, position: Int) {
-        getHomeViewModel().getBusinessUnitData(tabId, position)
+    override fun getBusinessUnit(tabId: Int, position: Int, tabName: String) {
+        getHomeViewModel().getBusinessUnitData(tabId, position, tabName)
     }
 
     override fun getPlayChannel(position: Int) {
@@ -1557,9 +1605,9 @@ open class HomeFragment : BaseDaggerFragment(),
 
     override fun onPromoScrolled(bannerSlidesModel: BannerSlidesModel) {
         HomeTrackingUtils.homeSlidingBannerImpression(context, bannerSlidesModel, bannerSlidesModel.position)
-        if (bannerSlidesModel.type == BannerSlidesModel.TYPE_BANNER_PERSO && !bannerSlidesModel.isInvoke) {
+        if (bannerSlidesModel.type == BannerSlidesModel.TYPE_BANNER_PERSO) {
             putEEToTrackingQueue(getOverlayBannerImpression(bannerSlidesModel) as HashMap<String, Any>)
-        } else if (!bannerSlidesModel.isInvoke) {
+        } else {
             if (bannerSlidesModel.topadsViewUrl.isNotEmpty()) {
                 TopAdsUrlHitter(className).hitImpressionUrl(context, bannerSlidesModel.topadsViewUrl,
                         bannerSlidesModel.id.toString(),
@@ -1574,14 +1622,21 @@ open class HomeFragment : BaseDaggerFragment(),
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
+        resetAutoPlay(isVisibleToUser)
         trackScreen(isVisibleToUser)
-        restartBanner(isVisibleToUser)
+        conditionalViewModelRefresh()
     }
 
     private fun restartBanner(isVisibleToUser: Boolean) {
         if (isVisibleToUser && view != null && adapter != null) {
             adapter?.notifyDataSetChanged()
         }
+    }
+
+    private fun resetAutoPlay(isVisibleToUser: Boolean){
+        shouldPausePlay = !isVisibleToUser
+        if(shouldPausePlay && view != null && adapter != null) adapter?.onPause()
+        else adapter?.onResume()
     }
 
     private fun trackScreen(isVisibleToUser: Boolean) {
@@ -1830,7 +1885,7 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     private fun hideStickyLogin() {
-        stickyLoginView!!.visibility = View.GONE
+        stickyLoginView.visibility = View.GONE
     }
 
     private fun updateStickyState() {
@@ -1849,11 +1904,10 @@ open class HomeFragment : BaseDaggerFragment(),
                 hideStickyLogin()
                 return
             }
-            stickyLoginView?.setContent(tickerDetail!!)
-            stickyLoginView?.show(StickyLoginConstant.Page.HOME)
-            if (stickyLoginView?.isShowing()) {
-                positionSticky = stickyLoginView?.getLocation()
-                stickyLoginView?.tracker.viewOnPage(StickyLoginConstant.Page.HOME)
+            stickyLoginView.setContent(tickerDetail)
+            stickyLoginView.show(StickyLoginConstant.Page.HOME)
+            if (stickyLoginView.isShowing()) {
+                stickyLoginView.tracker.viewOnPage(StickyLoginConstant.Page.HOME)
             }
         }
     }
@@ -1876,12 +1930,12 @@ open class HomeFragment : BaseDaggerFragment(),
 
     private fun updateEggBottomMargin(floatingEggButtonFragment: FloatingEggButtonFragment) {
         val params = floatingEggButtonFragment.view?.layoutParams as FrameLayout.LayoutParams
-        if (stickyLoginView!!.isShowing()) {
-            params.setMargins(0, 0, 0, stickyLoginView!!.height)
+        if (stickyLoginView.isShowing()) {
+            params.setMargins(0, 0, 0, stickyLoginView.height)
             val positionEgg = IntArray(2)
             val eggHeight = floatingEggButtonFragment.egg.height
             floatingEggButtonFragment.egg.getLocationOnScreen(positionEgg)
-            if (positionEgg[1] + eggHeight > positionSticky!![1]) {
+            if (positionEgg[1] + eggHeight > positionSticky?.get(1) ?: 0) {
                 floatingEggButtonFragment.moveEgg(positionSticky!![1] - eggHeight)
             }
         } else {
@@ -1920,6 +1974,7 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     override fun onOpenPlayActivity(root: View, channelId: String?) {
+        shouldPausePlay = false
         val intent = RouteManager.getIntent(activity, ApplinkConstInternalContent.PLAY_DETAIL, channelId)
         val options = ActivityOptionsCompat.makeSceneTransitionAnimation(activity!!,
                 Pair.create(root.findViewById(R.id.exo_content_frame), getString(R.string.home_transition_video))
@@ -1939,7 +1994,7 @@ open class HomeFragment : BaseDaggerFragment(),
         make(root, message, Snackbar.LENGTH_LONG, typeToaster, actionText, clickListener)
     }
 
-    fun addRecyclerViewScrollImpressionListener(dynamicChannelDataModel: DynamicChannelDataModel, adapterPosition: Int) {
+    private fun addRecyclerViewScrollImpressionListener(dynamicChannelDataModel: DynamicChannelDataModel, adapterPosition: Int) {
         if (!impressionScrollListeners.containsKey(dynamicChannelDataModel.channel?.id)) {
             val listener = object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -1974,8 +2029,6 @@ open class HomeFragment : BaseDaggerFragment(),
             )
             DynamicChannelViewHolder.TYPE_GIF_BANNER -> putEEToIris(
                     HomePageTracking.getEnhanceImpressionPromoGifBannerDC(channel))
-            DynamicChannelViewHolder.TYPE_MIX_TOP -> putEEToIris(getMixTopViewIris(mapChannelToProductTracker(channel), channel.header.name, channel.id, position.toString()) as HashMap<String, Any>)
-            DynamicChannelViewHolder.TYPE_MIX_LEFT -> putEEToIris(getMixLeftIrisProductView(channel) as HashMap<String, Any>)
             DynamicChannelViewHolder.TYPE_RECOMMENDATION_LIST -> putEEToIris(getRecommendationListImpression(channel, true, viewModel.get().getUserId()) as HashMap<String, Any>)
             DynamicChannelViewHolder.TYPE_PRODUCT_HIGHLIGHT -> putEEToIris(getProductHighlightImpression(
                     channel, getHomeViewModel().getUserId(), true

@@ -84,7 +84,7 @@ class BuyerAccountPresenterTest {
             secondArg<GetBuyerAccountSubscriber>().onNext(buyerViewModel)
         }
 
-        buyerAccountPresenter.getBuyerData(anyString(), anyString())
+        buyerAccountPresenter.getBuyerData(anyString(), anyString(), anyString())
 
         verify {
             getBuyerAccountUseCase.execute(any(), any())
@@ -106,7 +106,7 @@ class BuyerAccountPresenterTest {
             secondArg<GetBuyerAccountSubscriber>().onError(Throwable())
         }
 
-        buyerAccountPresenter.getBuyerData(anyString(), anyString())
+        buyerAccountPresenter.getBuyerData(anyString(), anyString() , anyString())
 
         verify {
             getBuyerAccountUseCase.execute(any(), any())

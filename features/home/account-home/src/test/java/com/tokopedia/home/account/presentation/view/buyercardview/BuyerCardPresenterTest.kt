@@ -32,46 +32,26 @@ class BuyerCardPresenterTest {
     }
 
     @Test
-    fun `set data | status incomplete`() {
-        buyerCard.progress = 80
-
-        buyerPresenter.setData(buyerCard)
-
-        verify {
-            buyerView.showProfileProgress(buyerCard.progress)
-            buyerView.showIncompleteAvatar(buyerCard.avatar)
-            buyerView.setProfileStatusIncomplete(buyerCard.progress)
-        }
-        
-        verify {
-            buyerView.setAvatarImageUrl(buyerCard.progress, buyerCard.avatar)
-            buyerView.setName(buyerCard.username)
-            buyerView.setTokopoint(buyerCard.tokopointAmount)
-            buyerView.setCoupon(buyerCard.couponAmount)
-            buyerView.setTokoMemberAmount(buyerCard.tokoMemberAmount)
-            buyerView.setEggImage(buyerCard.eggImageUrl)
-        }
-    }
-
-    @Test
     fun `set data | status completed`() {
-        buyerCard.progress = 100
 
         buyerPresenter.setData(buyerCard)
 
         verify {
-            buyerView.hideProfileProgress()
             buyerView.showCompletedAvatar(buyerCard.avatar)
-            buyerView.setProfileStatusCompleted()
         }
-        
+
         verify {
-            buyerView.setAvatarImageUrl(buyerCard.progress, buyerCard.avatar)
             buyerView.setName(buyerCard.username)
             buyerView.setTokopoint(buyerCard.tokopointAmount)
             buyerView.setCoupon(buyerCard.couponAmount)
             buyerView.setTokoMemberAmount(buyerCard.tokoMemberAmount)
             buyerView.setEggImage(buyerCard.eggImageUrl)
+            buyerView.setTokopointImageUrl(buyerCard.tokopointImageUrl)
+            buyerView.setTokopointTitle(buyerCard.tokopointTitle)
+            buyerView.setCouponImageUrl(buyerCard.couponImageUrl)
+            buyerView.setCouponTitle(buyerCard.couponTitle)
+            buyerView.setTokomemberImageUrl(buyerCard.tokopointImageUrl)
+            buyerView.setTokoMemberTitle(buyerCard.tokomemberTitle)
         }
     }
 

@@ -16,8 +16,11 @@ import com.tokopedia.entertainment.pdp.data.PackageItem
 import kotlinx.android.synthetic.main.ent_ticket_adapter_item.view.*
 import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventPackageMapper.getDigit
 import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventDateMapper.checkDate
+import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventDateMapper.checkNotEndSale
+import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventDateMapper.checkStartSale
 import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventDateMapper.getDate
 import com.tokopedia.entertainment.pdp.listener.OnBindItemTicketListener
+import java.util.*
 
 class EventPDPTicketItemPackageAdapter(
         val onBindItemTicketListener: OnBindItemTicketListener
@@ -46,10 +49,23 @@ class EventPDPTicketItemPackageAdapter(
                 txtSubtitle_ticket.text = items.description
                 txtPrice_ticket.text = getRupiahFormat(items.salesPrice.toInt())
 
+                val isSaleStarted = checkStartSale(items.startDate, Calendar.getInstance().time)
+                val isNotEnded = checkNotEndSale(items.endDate, Calendar.getInstance().time)
                 val itemIsAvailable = (checkDate(items.dates,onBindItemTicketListener.getSelectedDate()) && items.available.toInt()>=1)
-
-                txtPilih_ticket.visibility = if(itemIsAvailable) View.VISIBLE else View.GONE
-                txtHabis_ticket.visibility = if(!itemIsAvailable) View.VISIBLE else View.GONE
+                if(isSaleStarted && isNotEnded) {
+                    txtPilih_ticket.visibility = if (itemIsAvailable) View.VISIBLE else View.GONE
+                    txtHabis_ticket.visibility = if (!itemIsAvailable) View.VISIBLE else View.GONE
+                } else if(!isSaleStarted && isNotEnded) {
+                    txtPilih_ticket.visibility = View.GONE
+                    txtHabis_ticket.visibility = View.GONE
+                    txtAlreadyEnd.visibility = View.GONE
+                    txtNotStarted.visibility = View.VISIBLE
+                } else if(isSaleStarted && !isNotEnded){
+                    txtPilih_ticket.visibility = View.GONE
+                    txtHabis_ticket.visibility = View.GONE
+                    txtAlreadyEnd.visibility = View.VISIBLE
+                    txtNotStarted.visibility = View.GONE
+                }
 
                 quantityEditor.minValue = items.minQty.toInt()
                 quantityEditor.maxValue = items.maxQty.toInt()

@@ -334,6 +334,12 @@ data class DataItem(
         @SerializedName("campaign_id")
         val campaignId: String = "",
 
+        @SerializedName("image")
+        val image: String = "",
+
+        @SerializedName("tracking_fields")
+        val trackingFields: TrackingFields? = null,
+
         var shopAdsClickURL : String? = "",
 
         var shopAdsViewURL : String? = "",

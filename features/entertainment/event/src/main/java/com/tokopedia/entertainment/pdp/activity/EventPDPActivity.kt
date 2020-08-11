@@ -28,7 +28,7 @@ class EventPDPActivity : BaseSimpleActivity(), HasComponent<EventPDPComponent> {
     override fun onCreate(savedInstanceState: Bundle?) {
         val uri = intent.data
         if(uri != null){
-            urlPDP = uri.lastPathSegment
+            urlPDP = uri.lastPathSegment ?: ""
         }else if(savedInstanceState != null){
             urlPDP = savedInstanceState.getString(EXTRA_URL_PDP,"")
         }

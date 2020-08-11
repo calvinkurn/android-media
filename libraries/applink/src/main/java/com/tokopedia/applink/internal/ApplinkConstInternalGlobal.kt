@@ -51,6 +51,9 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val PARAM_FACE_PATH = "facePath"
 
+    @JvmField
+    val PARAM_IS_FROM_2FA = "isFromTwoFactor"
+
     //VerificationActivity Param
     @JvmField
     val PARAM_CAN_USE_OTHER_METHOD = "can_use_other_method"
@@ -64,6 +67,8 @@ object ApplinkConstInternalGlobal {
     val PARAM_OTP_CODE = "otp_code"
     @JvmField
     val PARAM_IS_SKIP_OTP = "is_skip_otp"
+    @JvmField
+    val PARAM_TWO_FACTOR_TYPE = "two_factor_type"
 
     @JvmField
     val INTERNAL_GLOBAL = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_GLOBAL}"
@@ -264,11 +269,6 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val COTP = "$INTERNAL_GLOBAL/cotp"
 
-    // ValidatorActivity
-    // tokopedia-android-internal://global/otp-validator
-    @JvmField
-    val OTP_VALIDATOR = "$INTERNAL_GLOBAL/otp-validator"
-
     // ChangePhoneNumberWarningActivity
     // tokopedia-android-internal://global/change-phone-number
     @JvmField
@@ -309,18 +309,6 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val SETTING_BANK = "$INTERNAL_GLOBAL/setting-bank"
 
-    // InstantLoanActivity
-    // tokopedia-android-internal://global/loan
-    @JvmField
-    val GLOBAL_INTERNAL_INSTANT_LOAN = "$INTERNAL_GLOBAL/instant-loan"
-
-    // InstantLoanActivity with specific tab
-    // tokopedia-android-internal://global/loan/category/{tab_name}
-    @JvmField
-    val GLOBAL_INTERNAL_INSTANT_LOAN_TAB = "$INTERNAL_GLOBAL/loan/category/instan/"
-
-    @JvmField
-    val GLOBAL_INTERNAL_PINJAMAN_ONLINE_TAB = "$INTERNAL_GLOBAL/loan/category/pinjamanonline/"
 
     @JvmField
     val GLOBAL_INTERNAL_DIGITAL_DEAL = "$INTERNAL_GLOBAL/deals"
@@ -498,4 +486,14 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/screen-recorder
     @JvmField
     val SCREEN_RECORDER = "$INTERNAL_GLOBAL/screen-recorder"
+
+    // TwoFactorActivity
+    // tokopedia-android-internal://global/two-factor-register
+    @JvmField
+    val TWO_FACTOR_REGISTER = "$INTERNAL_GLOBAL/two-factor-register"
+
+
+    //SeamlessActivity
+    @JvmField
+    val SEAMLESS_LOGIN = "${INTERNAL_GLOBAL}/login-seamless"
 }

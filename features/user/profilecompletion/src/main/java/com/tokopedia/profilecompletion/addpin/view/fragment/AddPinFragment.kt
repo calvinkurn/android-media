@@ -164,11 +164,17 @@ class AddPinFragment: BaseDaggerFragment(){
     private fun onSuccessAddPin(addChangePinData: AddChangePinData){
         if(addChangePinData.success){
             trackingPinUtil.trackSuccessInputConfirmationPin()
-            val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PIN_COMPLETE)
-            intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
-            intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, PinCompleteFragment.SOURCE_ADD_PIN)
-            startActivity(intent)
-            activity?.finish()
+            if(arguments?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_2FA) == true){
+                activity?.setResult(Activity.RESULT_OK)
+                activity?.finish()
+            }
+            else {
+                val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PIN_COMPLETE)
+                intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
+                intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, PinCompleteFragment.SOURCE_ADD_PIN)
+                startActivity(intent)
+                activity?.finish()
+            }
         }
     }
 

@@ -29,8 +29,8 @@ internal object Utils {
     fun listAssetFiles(c: Context, rootPath: String): List<String> {
         val files: MutableList<String> = ArrayList()
         try {
-            val paths = c.assets.list(rootPath)
-            if (paths.size > 0) { // This is a folder
+            val paths = c.assets.list(rootPath) ?: arrayOf()
+            if (paths.isNotEmpty()) { // This is a folder
                 for (file in paths) {
                     val path = "$rootPath/$file"
                     val temp = listAssetFiles(c, path)

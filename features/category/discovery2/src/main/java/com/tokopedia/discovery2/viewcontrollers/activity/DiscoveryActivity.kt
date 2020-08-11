@@ -14,6 +14,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelActivity
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.discovery2.Utils.Companion.preSelectedTab
 import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.discovery2.viewmodel.DiscoveryViewModel
@@ -28,6 +29,7 @@ const val DISCOVERY_RESULT_TRACE = "discovery_result_trace"
 const val DISCOVERY_PLT_PREPARE_METRICS = "discovery_plt_prepare_metrics"
 const val DISCOVERY_PLT_NETWORK_METRICS = "discovery_plt_network_metrics"
 const val DISCOVERY_PLT_RENDER_METRICS = "discovery_plt_render_metrics"
+const val APPLINK_TRACKING_SOURCE = "source"
 
 class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
 
@@ -42,9 +44,10 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
 
     companion object {
         const val END_POINT = "end_point"
+        const val SOURCE_QUERY = "source_query"
 
         @JvmField
-        var config: String = NATIVE
+        var config: String = ""
 
         @JvmStatic
         fun createDiscoveryIntent(context: Context, endpoint: String): Intent {
@@ -65,12 +68,21 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
     }
 
     override fun initView() {
-        if (config != NATIVE) {
-            routeToReactNativeDiscovery()
-        }
+        moveToRnIfRequired()
         toolbar?.hide()
         setObserver()
-        discoveryViewModel.getDiscoveryUIConfig()
+    }
+
+    private fun moveToRnIfRequired() {
+        if (config.isNotEmpty()) {
+            if (config == NATIVE) {
+                inflateFragment()
+            } else {
+                routeToReactNativeDiscovery()
+            }
+        } else {
+            discoveryViewModel.getDiscoveryUIConfig()
+        }
     }
 
     private fun setObserver() {
@@ -78,12 +90,13 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
             when (it) {
                 is Success -> {
                     config = it.data
-                    if (it.data != NATIVE) {
-                        routeToReactNativeDiscovery()
-                    }
+                    moveToRnIfRequired()
                 }
             }
         })
+    }
+
+    override fun setupFragment(savedInstance: Bundle?) {
     }
 
     private fun routeToReactNativeDiscovery() {
@@ -109,8 +122,8 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
 
 
     override fun getNewFragment(): Fragment? {
-        return DiscoveryFragment.getInstance(intent?.data?.lastPathSegment
-                ?: intent?.getStringExtra(END_POINT))
+        val intentData = intent?.data
+        return DiscoveryFragment.getInstance(intentData?.lastPathSegment, intentData?.getQueryParameter(APPLINK_TRACKING_SOURCE))
     }
 
     override fun getViewModelType(): Class<DiscoveryViewModel> {
@@ -138,5 +151,10 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        preSelectedTab = -1
     }
 }

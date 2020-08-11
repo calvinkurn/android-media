@@ -1,8 +1,9 @@
 package com.tokopedia.topads.dashboard.data.source.cloud.apiservice.api;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.network.data.model.response.DataResponse;
+import com.tokopedia.topads.common.model.shopmodel.ShopModel;
 import com.tokopedia.topads.dashboard.data.model.data.DataEtalase;
-import com.tokopedia.product.manage.item.common.data.source.cloud.DataResponse;
 
 import java.util.Map;
 
@@ -19,4 +20,8 @@ public interface TopAdsShopApi {
     @FormUrlEncoded
     @POST(TkpdBaseURL.Shop.PATH_GET_SHOP_ETALASE)
     Observable<Response<DataResponse<DataEtalase>>> getShopEtalase(@FieldMap Map<String, String> params);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.Shop.PATH_SHOP + TkpdBaseURL.Shop.PATH_GET_SHOP_INFO)
+    Observable<Response<DataResponse<ShopModel>>> getShopInfo(@FieldMap Map<String, String> params);
 }

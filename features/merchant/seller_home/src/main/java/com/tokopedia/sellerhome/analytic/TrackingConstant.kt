@@ -18,6 +18,13 @@ object TrackingConstant {
     const val CREATIVE_URL = "creative_url"
     const val POSITION = "position"
     const val PROMOTIONS = "promotions"
+    const val SCREEN_NAME = "screenName"
+    const val IS_LOGGED_IN_STATUS = "isLoggedInStatus"
+    const val CURRENT_SITE = "currentSite"
+    const val USER_ID = "userId"
+    const val SHOP_ID = "shopId"
+    const val SHOP_TYPE = "shopType"
+    const val BUSINESS_UNIT = "businessUnit"
 
     //event
     const val VIEW_SELLER_WIDGET = "viewSellerWidget"
@@ -25,6 +32,7 @@ object TrackingConstant {
     const val PROMO_VIEW = "promoView"
     const val PROMO_CLICK = "promoClick"
     const val CLICK_NAVIGATION_DRAWER = "clickNavigationDrawer"
+    const val OPEN_SCREEN = "openScreen"
 
     //category
     const val HOME = "home"
@@ -53,6 +61,15 @@ object TrackingConstant {
     const val CLICK_ORDER = "click order"
     const val CLICK_OTHERS = "click others"
 
+    //search
+    const val CLICK_SEARCH = "clickSearch"
+    const val GLOBAL_SEARCH = "global search"
+    const val CLICK_SEARCH_BUTTON = "click search button"
+
     //other value
     const val SELLER_WIDGET = "/seller widget"
+    const val SCREEN_NAME_SELLER_HOME = "Seller Home"
+    const val ADS_PROMOTION = "/adspromotion"
+    const val TOKOPEDIA_SELLER = "tokopediaseller"
+    const val PHYSICAL_GOODS = "physical goods"
 }

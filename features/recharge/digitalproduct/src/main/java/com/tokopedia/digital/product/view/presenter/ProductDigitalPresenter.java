@@ -200,9 +200,9 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter<IProductDigita
                 HistoryClientNumber historyClientNumber =
                         productDigitalData.getHistoryClientNumber();
                 if (historyClientNumber.getLastOrderClientNumber() == null) {
-                    String lastSelectedOperatorId = getLastOperatorSelected(categoryData.getCategoryId());
-                    String lastSelectedProductId = getLastProductSelected(categoryData.getCategoryId());
-                    String lastTypedClientNumber = getLastClientNumberTyped(categoryData.getCategoryId());
+                    String lastSelectedOperatorId = getLastOperatorSelected(categoryData.categoryId);
+                    String lastSelectedProductId = getLastProductSelected(categoryData.categoryId);
+                    String lastTypedClientNumber = getLastClientNumberTyped(categoryData.categoryId);
                     String verifiedNumber = userSession.getPhoneNumber();
                     if (!TextUtils.isEmpty(lastTypedClientNumber)) {
                         historyClientNumber.setLastOrderClientNumber(
@@ -211,7 +211,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter<IProductDigita
                                         .operatorId(lastSelectedOperatorId)
                                         .productId(lastSelectedProductId)
                                         .build());
-                    } else if (isPulsaOrPaketDataOrRoaming(categoryData.getCategoryId()) &
+                    } else if (isPulsaOrPaketDataOrRoaming(categoryData.categoryId) &
                             !TextUtils.isEmpty(verifiedNumber)) {
                         historyClientNumber.setLastOrderClientNumber(
                                 new OrderClientNumber.Builder()
@@ -271,7 +271,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter<IProductDigita
         if (categoryData.isSupportedStyle()) {
             BaseDigitalProductView digitalProductView = ViewFactory
                     .renderCategoryDataAndBannerToView(getView().getActivity(),
-                            categoryData.getOperatorStyle());
+                            categoryData.operatorStyle);
 
             getView().renderCategory(digitalProductView, categoryData, historyClientNumber);
 
@@ -288,7 +288,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter<IProductDigita
                 if (bannerDataList.size() > 0 || guideDataList.size() > 0) {
                     getView().showPromoGuideTab();
                     getView().renderBannerListData(
-                            categoryData.getName(),
+                            categoryData.name,
                             bannerDataList != null ? bannerDataList : new ArrayList<BannerData>()
                     );
                     getView().renderOtherBannerListData(
@@ -442,8 +442,8 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter<IProductDigita
         List<Operator> selectedOperatorList = new ArrayList<>();
         String simOperatorName = DeviceUtil.getOperatorName(getView().getActivity(), selectedSim);
         CategoryData categoryData = getView().getCategoryDataState();
-        if (categoryData != null && categoryData.getOperatorList() != null) {
-            for (Operator operator : categoryData.getOperatorList()) {
+        if (categoryData != null && categoryData.operatorList != null) {
+            for (Operator operator : categoryData.operatorList) {
                 if (DeviceUtil.verifyUssdOperator(simOperatorName, operator.getName())) {
                     selectedOperatorList.add(operator);
                 }
@@ -542,7 +542,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter<IProductDigita
     public void renderCheckPulsa() {
         if (!GlobalConfig.isSellerApp()
                 && categoryData != null
-                && categoryData.getSlug().equalsIgnoreCase(CategoryData.SLUG_PRODUCT_CATEGORY_PULSA)
+                && categoryData.slug.equalsIgnoreCase(CategoryData.SLUG_PRODUCT_CATEGORY_PULSA)
                 && android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
                 && getView().isUserLoggedIn()
                 && getView().getActivity() != null) {
@@ -551,7 +551,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter<IProductDigita
 
             if (isOperatorListAvailable(categoryDataState)) {
                 if (RequestPermissionUtil.checkHasPermission(getView().getActivity(), Manifest.permission.READ_PHONE_STATE)) {
-                    List<Validation> validationList = categoryDataState.getClientNumberList().get(0).getValidation();
+                    List<Validation> validationList = categoryDataState.clientNumberList.get(0).getValidation();
                     boolean isCheckUssdButtonActive = true;
 
                     for (int i = 0; i < MAX_SIM_COUNT; i++) {
@@ -595,12 +595,12 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter<IProductDigita
     private void renderCheckETollBalance() {
         if (!GlobalConfig.isSellerApp()
                 && categoryData != null
-                && categoryData.getAdditionalFeature() != null
-                && categoryData.getAdditionalFeature().getFeatureId() == 1
+                && categoryData.additionalFeature != null
+                && categoryData.additionalFeature.getFeatureId() == 1
                 && getView().isDigitalSmartcardEnabled()
                 && getView().getActivity() != null) {
-            getView().renderCheckETollBalance(categoryData.getAdditionalFeature().getText(),
-                    categoryData.getAdditionalFeature().getButtonText());
+            getView().renderCheckETollBalance(categoryData.additionalFeature.getText(),
+                    categoryData.additionalFeature.getButtonText());
         }
     }
 
@@ -617,8 +617,8 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter<IProductDigita
 
     private boolean isOperatorListAvailable(CategoryData categoryDataState) {
         return (categoryDataState != null &&
-                categoryDataState.getOperatorList() != null &&
-                categoryDataState.getOperatorList().size() != 0);
+                categoryDataState.operatorList != null &&
+                categoryDataState.operatorList.size() != 0);
     }
 
     @Override

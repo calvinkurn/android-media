@@ -137,6 +137,7 @@
     <string name="product_error_product_maksimum_order_not_valid">Maksimum pemesanan harus diisi antara %1$s &#8212; %2$s</string>
     <string name="product_error_product_minimum_order_not_valid_2">Minimum pemesanan harus lebih kecil dari Maksimum pemesanan</string>
     <string name="product_error_product_maksimum_order_not_valid_2">Maksimum pemesanan harus lebih besar dari Minimum pemesanan</string>
+    <string name="product_error_product_minimum_order_not_valid_3">Minimum pemesanan harus lebih kecil dari jumlah stok</string>
     <string name="product_error_total_stock_not_valid">Jumlah stok harus diisi antara %1$s &#8212; %2$s</string>
     <string name="global_product_stock_error_maximum">Stok maksimal %1$s</string>
     <string name="global_product_stock_error_minimum">Stok tidak boleh kosong</string>

@@ -10,7 +10,7 @@
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dp_16"
+        android:layout_margin="@dimen/spacing_lvl4"
         android:text="@string/settingnotif_onboarding_message"
         android:textColor="@color/charcoal_grey_68"
         app:typographyType="body_1"

@@ -24,8 +24,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
-import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -35,8 +33,8 @@ import com.tokopedia.attachproduct.view.activity.AttachProductActivity
 import com.tokopedia.chat_common.BaseChatFragment
 import com.tokopedia.chat_common.BaseChatToolbarActivity
 import com.tokopedia.chat_common.data.*
+import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.*
-import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
@@ -48,11 +46,13 @@ import com.tokopedia.imagepicker.picker.main.builder.ImagePickerMultipleSelectio
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.imagepreview.ImagePreviewActivity
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.util.getParamBoolean
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListFragment
 import com.tokopedia.network.constant.TkpdBaseURL
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -66,11 +66,13 @@ import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatRoomAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactoryImpl
+import com.tokopedia.topchat.chatroom.view.adapter.util.LoadMoreTopBottomScrollListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.AttachedInvoiceViewHolder.InvoiceThumbnailListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.QuotationViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.StickerViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.CommonViewHolderListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredViewHolderAttachment
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.SearchListener
 import com.tokopedia.topchat.chatroom.view.custom.ChatMenuStickerView
 import com.tokopedia.topchat.chatroom.view.custom.ChatMenuView
 import com.tokopedia.topchat.chatroom.view.custom.TransactionOrderProgressLayout
@@ -88,7 +90,10 @@ import com.tokopedia.topchat.common.TopChatInternalRouter
 import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.EXTRA_SHOP_STATUS_FAVORITE_FROM_SHOP
 import com.tokopedia.topchat.common.analytics.ChatSettingsAnalytics
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
+import com.tokopedia.topchat.common.custom.ToolTipStickerPopupWindow
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.BaseSimpleWebViewActivity
 import com.tokopedia.wishlist.common.listener.WishListActionListener
@@ -103,16 +108,20 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         HeaderMenuListener, DualAnnouncementListener, TopChatVoucherListener,
         InvoiceThumbnailListener, QuotationViewHolder.QuotationListener,
         TransactionOrderProgressLayout.Listener, ChatMenuStickerView.StickerMenuListener,
-        StickerViewHolder.Listener, DeferredViewHolderAttachment, CommonViewHolderListener {
+        StickerViewHolder.Listener, DeferredViewHolderAttachment, CommonViewHolderListener, SearchListener {
 
     @Inject
     lateinit var presenter: TopChatRoomPresenter
+
     @Inject
     lateinit var topChatRoomDialog: TopChatRoomDialog
+
     @Inject
     lateinit var analytics: TopChatAnalytics
+
     @Inject
     lateinit var settingAnalytics: ChatSettingsAnalytics
+
     @Inject
     lateinit var session: UserSessionInterface
 
@@ -120,10 +129,15 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     private lateinit var alertDialog: Dialog
     private lateinit var customMessage: String
     private lateinit var adapter: TopChatRoomAdapter
+    private lateinit var toolTip: ToolTipStickerPopupWindow
     private var indexFromInbox = -1
     private var isMoveItemInboxToTop = false
     private var remoteConfig: RemoteConfig? = null
     private var sourcePage: String = ""
+    private var createTime: String = ""
+    private var searchQuery: String = ""
+    private var delaySendMessage: String = ""
+    private var delaySendSticker: Sticker? = null
 
     private val REQUEST_GO_TO_SHOP = 111
     private val TOKOPEDIA_ATTACH_PRODUCT_REQ_CODE = 112
@@ -139,26 +153,43 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     private var orderProgress: TransactionOrderProgressLayout? = null
     private var chatMenu: ChatMenuView? = null
     private var rvLayoutManager: LinearLayoutManager? = null
+    private var rvScrollListener: LoadMoreTopBottomScrollListener? = null
+    private var fbNewUnreadMessage: FloatingButtonUnify? = null
+    private var tvTotalUnreadMessage: Typography? = null
+    private var rv: RecyclerView? = null
 
     override fun getRecyclerViewResourceId() = R.id.recycler_view
     override fun getAnalytic(): TopChatAnalytics = analytics
+    override fun isLoadMoreEnabledByDefault(): Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initFireBase()
+        initTooltipPopup()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_topchat_chatroom, container, false).also {
             bindView(it)
             initStickerView()
+            initFbNewUnreadMessage()
         }
+    }
+
+    private fun initFbNewUnreadMessage() {
+        val customView = layoutInflater.inflate(R.layout.custom_fb_new_unread_message, null).apply {
+            tvTotalUnreadMessage = this.findViewById(R.id.txt_new_unread_message)
+        }
+        fbNewUnreadMessage?.setMargins(0, 0, 0, 0)
+        fbNewUnreadMessage?.addItem(customView)
     }
 
     private fun bindView(view: View?) {
         composeArea = view?.findViewById(R.id.new_comment)
         orderProgress = view?.findViewById(R.id.ll_transaction_progress)
         chatMenu = view?.findViewById(R.id.fl_chat_menu)
+        rv = view?.findViewById(recyclerViewResourceId)
+        fbNewUnreadMessage = view?.findViewById(R.id.fb_new_unread_message)
     }
 
     private fun initStickerView() {
@@ -172,7 +203,92 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         setupAttachmentsPreview(savedInstanceState)
         setupAlertDialog()
         setupAnalytic()
+        setupBeforeReplyTime()
         loadInitialData()
+        initLoadMoreListener()
+    }
+
+    private fun setupBeforeReplyTime() {
+        if (createTime.isNotEmpty()) {
+            presenter.setBeforeReplyTime(createTime)
+        }
+    }
+
+    private fun initLoadMoreListener() {
+        rvScrollListener = object : LoadMoreTopBottomScrollListener(rvLayoutManager) {
+            override fun loadMoreTop() {
+                showTopLoading()
+                presenter.loadTopChat(messageId, ::onErrorGetTopChat, ::onSuccessGetTopChat)
+            }
+
+            override fun loadMoreDown() {
+                showBottomLoading()
+                presenter.loadBottomChat(messageId, ::onErrorGetBottomChat, ::onSuccessGetBottomChat)
+            }
+        }.also {
+            rv?.addOnScrollListener(it)
+        }
+    }
+
+    private fun onSuccessGetTopChat(chatRoom: ChatroomViewModel, chat: ChatReplies) {
+        rvScrollListener?.finishTopLoadingState()
+        adapter.removeLastHeaderDateIfSame(chatRoom)
+        renderList(chatRoom.listChat)
+        updateHasNextState(chat)
+        loadChatRoomSettings(chatRoom)
+        presenter.loadAttachmentData(messageId.toInt(), chatRoom)
+    }
+
+    private fun onErrorGetTopChat(throwable: Throwable) {
+        hideTopLoading()
+        showSnackbarError(ErrorHandler.getErrorMessage(view!!.context, throwable))
+        rvScrollListener?.finishTopLoadingState()
+    }
+
+
+    private fun onSuccessGetBottomChat(chatRoom: ChatroomViewModel, chat: ChatReplies) {
+        rvScrollListener?.finishBottomLoadingState()
+        adapter.removeLatestHeaderDateIfSame(chatRoom.listChat)
+        adapter.setLatestHeaderDate(chatRoom.latestHeaderDate)
+        updateNewUnreadMessageState(chat)
+        renderBottomList(chatRoom.listChat)
+        updateHasNextAfterState(chat)
+        presenter.loadAttachmentData(messageId.toInt(), chatRoom)
+    }
+
+    private fun updateNewUnreadMessageState(chat: ChatReplies) {
+        if (!chat.hasNextAfter) {
+            onViewReachBottomMostChat()
+        }
+    }
+
+    private fun renderBottomList(listChat: List<Visitable<*>>) {
+        adapter.hideBottomLoading()
+        if (listChat.isNotEmpty()) {
+            adapter.addBottomData(listChat)
+        }
+    }
+
+    private fun onErrorGetBottomChat(throwable: Throwable) {
+        rvScrollListener?.finishBottomLoadingState()
+        adapter.hideBottomLoading()
+        showSnackbarError(ErrorHandler.getErrorMessage(view?.context, throwable))
+    }
+
+    private fun showBottomLoading() {
+        adapter.showBottomLoading()
+    }
+
+    private fun showTopLoading() {
+        showLoading()
+    }
+
+    private fun hideTopLoading() {
+        hideLoading()
+    }
+
+    private fun initTooltipPopup() {
+        toolTip = ToolTipStickerPopupWindow(context, presenter)
     }
 
     private fun setupAnalytic() {
@@ -201,14 +317,13 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     }
 
     override fun getRecyclerViewLayoutManager(): RecyclerView.LayoutManager {
-        val manager = super.getRecyclerViewLayoutManager()
-        if (manager is LinearLayoutManager) {
-            rvLayoutManager = manager
+        return LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, true).also {
+            rvLayoutManager = it
         }
-        return manager
     }
 
     override fun loadInitialData() {
+        showLoading()
         if (messageId.isNotEmpty()) {
             presenter.getExistingChat(
                     messageId,
@@ -247,6 +362,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         customMessage = getParamString(ApplinkConst.Chat.CUSTOM_MESSAGE, arguments, savedInstanceState)
         sourcePage = getParamString(ApplinkConst.Chat.SOURCE_PAGE, arguments, savedInstanceState)
         indexFromInbox = getParamInt(TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_INDEX, arguments, savedInstanceState)
+        createTime = getParamString(ApplinkConst.Chat.SEARCH_CREATE_TIME, arguments, savedInstanceState)
+        searchQuery = getParamString(ApplinkConst.Chat.SEARCH_PRODUCT_KEYWORD, arguments, savedInstanceState)
     }
 
     private fun setupAttachmentsPreview(savedInstanceState: Bundle?) {
@@ -286,24 +403,53 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         }
     }
 
-    private fun onSuccessGetExistingChatFirstTime(chatRoom: ChatroomViewModel) {
+    private fun onSuccessGetExistingChatFirstTime(chatRoom: ChatroomViewModel, chat: ChatReplies) {
+        setupFirstTimeOnly(chatRoom, chat)
+        setupFirstPage(chatRoom, chat)
+        fpm.stopTrace()
+    }
+
+    private fun setupFirstTimeOnly(chatRoom: ChatroomViewModel, chat: ChatReplies) {
         updateViewData(chatRoom)
         checkCanAttachVoucher()
-        presenter.updateMinReplyTime(chatRoom)
-        presenter.connectWebSocket(messageId)
-        presenter.getShopFollowingStatus(shopId, onErrorGetShopFollowingStatus(),
-                onSuccessGetShopFollowingStatus())
-        adapter.setFirstHeaderDate(chatRoom.latestHeaderDate)
-        renderList(chatRoom.listChat, chatRoom.canLoadMore)
+        presenter.getShopFollowingStatus(shopId, onErrorGetShopFollowingStatus(), onSuccessGetShopFollowingStatus())
         orderProgress?.renderIfExist()
         getViewState().onSuccessLoadFirstTime(chatRoom, onToolbarClicked(), this, alertDialog, onUnblockChatClicked())
         getViewState().onSetCustomMessage(customMessage)
-        presenter.getTemplate(getUserSession().shopId == shopId.toString())
-        loadChatRoomSettings(chatRoom)
+        presenter.getTemplate(chatRoom.isSeller())
         presenter.getStickerGroupList(chatRoom)
-        presenter.loadAttachmentData(messageId.toInt(), chatRoom)
+        showStickerOnBoardingTooltip()
+    }
 
-        fpm.stopTrace()
+    private fun setupFirstPage(chatRoom: ChatroomViewModel, chat: ChatReplies) {
+        adapter.setLatestHeaderDate(chatRoom.latestHeaderDate)
+        renderList(chatRoom.listChat)
+        updateHasNextState(chat)
+        updateHasNextAfterState(chat)
+        loadChatRoomSettings(chatRoom)
+        presenter.loadAttachmentData(messageId.toInt(), chatRoom)
+    }
+
+    private fun updateHasNextAfterState(chat: ChatReplies) {
+        val hasNextAfter = chat.hasNextAfter
+        rvScrollListener?.updateHasNextAfterState(chat)
+        if (hasNextAfter) {
+            showBottomLoading()
+        }
+    }
+
+    private fun updateHasNextState(chat: ChatReplies) {
+        val hasNext = chat.hasNext
+        rvScrollListener?.updateHasNextState(chat)
+        if (hasNext) {
+            showTopLoading()
+        }
+    }
+
+    private fun showStickerOnBoardingTooltip() {
+        if (!presenter.isStickerTooltipAlreadyShow()) {
+            toolTip.showAtTop(getViewState().chatStickerMenuButton)
+        }
     }
 
     private fun checkCanAttachVoucher() {
@@ -347,17 +493,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         getViewState().showErrorWebSocket(isWebSocketError)
     }
 
-    private fun onSuccessGetPreviousChat(): (ChatroomViewModel) -> Unit {
-        return {
-            adapter.removeLastHeaderDateIfSame(it.latestHeaderDate)
-            renderList(it.listChat, it.canLoadMore)
-            checkShowLoading(it.canLoadMore)
-            loadChatRoomSettings(it)
-            presenter.updateMinReplyTime(it)
-            presenter.loadAttachmentData(messageId.toInt(), it)
-        }
-    }
-
     private fun loadChatRoomSettings(chatRoom: ChatroomViewModel) {
         if (chatRoom.canLoadMore) return
         presenter.loadChatRoomSettings(messageId, ::onSuccessLoadChatRoomSetting)
@@ -365,10 +500,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
 
     private fun onSuccessLoadChatRoomSetting(widgets: List<Visitable<TopChatTypeFactory>>) {
         adapter.addWidgetHeader(widgets)
-    }
-
-    private fun checkShowLoading(canLoadMore: Boolean) {
-        if (canLoadMore) super.showLoading()
     }
 
     private fun onError(): (Throwable) -> Unit {
@@ -380,6 +511,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
 
     private fun onErrorInitiateData(throwable: Throwable) {
         hideLoading()
+        showGetListError(throwable)
         showSnackbarError(ErrorHandler.getErrorMessage(view!!.context, throwable))
         fpm.stopTrace()
     }
@@ -433,18 +565,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         isMoveItemInboxToTop = true
     }
 
-    override fun loadData(page: Int) {
-        presenter.loadPreviousChat(messageId, onError(), onSuccessGetPreviousChat())
-    }
-
-    override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
-        return object : EndlessRecyclerViewScrollUpListener(getRecyclerView(view).layoutManager) {
-            override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                showLoading()
-                loadData(page)
-            }
-        }
-    }
+    override fun loadData(page: Int) {}
 
     override fun onImageUploadClicked(imageUrl: String, replyTime: String) {
         analytics.trackClickImageUpload()
@@ -475,7 +596,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         return TopChatTypeFactoryImpl(
                 this, this, this, this,
                 this, this, this, this,
-                this, this
+                this, this, this
         )
     }
 
@@ -491,6 +612,32 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         val firstVisible = getFirstVisibleItemPosition() ?: return
         val lastVisible = getLastVisibleItemPosition() ?: return
         adapter.updateAttachmentView(firstVisible, lastVisible, attachments)
+    }
+
+    override fun showUnreadMessage(newUnreadMessage: Int) {
+        tvTotalUnreadMessage?.text = newUnreadMessage.toString()
+        fbNewUnreadMessage?.setOnClickListener {
+            resetItemList()
+            presenter.getExistingChat(
+                    messageId, ::onErrorResetChatToFirstPage, ::onSuccessResetChatToFirstPage
+            )
+            onViewReachBottomMostChat()
+        }
+        if (fbNewUnreadMessage?.isVisible == false) {
+            fbNewUnreadMessage?.visibility = View.VISIBLE
+        }
+    }
+
+    private fun onViewReachBottomMostChat() {
+        presenter.resetUnreadMessage()
+        presenter.readMessage()
+        hideUnreadMessage()
+    }
+
+    override fun hideUnreadMessage() {
+        if (fbNewUnreadMessage?.isVisible == true) {
+            fbNewUnreadMessage?.visibility = View.GONE
+        }
     }
 
     private fun getFirstVisibleItemPosition(): Int? {
@@ -542,18 +689,90 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     }
 
     override fun onSendButtonClicked() {
-        val sendMessage = composeArea?.text.toString()
+        if (presenter.isInTheMiddleOfThePage() && isValidComposedMessage()) {
+            resetItemList()
+            delaySendMessage()
+            presenter.getExistingChat(
+                    messageId, ::onErrorResetChatToFirstPage, ::onSuccessResetChatToFirstPage
+            )
+        } else {
+            sendMessage()
+        }
+    }
+
+    private fun resetItemList() {
+        rvScrollListener?.reset()
+        adapter.reset()
+        presenter.resetChatUseCase()
+        showLoading()
+        getViewState().hideProductPreviewLayout()
+        getViewState().scrollToBottom()
+    }
+
+
+    private fun isValidComposedMessage(): Boolean {
+        val message = getComposedMessage()
+        return presenter.isValidReply(message)
+    }
+
+    private fun onErrorResetChatToFirstPage(throwable: Throwable) {
+        hideLoading()
+        showSnackbarError(ErrorHandler.getErrorMessage(view!!.context, throwable))
+        clearAttachmentPreviews()
+        delaySendMessage = ""
+    }
+
+    private fun getComposedMessage(message: String? = null): String {
+        return if (message != null && message.isNotEmpty()) {
+            message
+        } else {
+            composeArea?.text?.toString() ?: ""
+        }
+    }
+
+    private fun sendMessage(message: String? = null) {
+        val sendMessage: String = getComposedMessage(message)
         val startTime = SendableViewModel.generateStartTime()
         presenter.sendAttachmentsAndMessage(
-                messageId,
-                sendMessage,
-                startTime,
-                opponentId,
-                onSendingMessage()
+                messageId, sendMessage, startTime, opponentId, onSendingMessage()
         )
     }
 
+    private fun delaySendMessage() {
+        delaySendMessage = getComposedMessage()
+        clearEditText()
+    }
+
+    private fun onSuccessResetChatToFirstPage(chatRoom: ChatroomViewModel, chat: ChatReplies) {
+        if (delaySendMessage.isNotEmpty()) {
+            sendMessage(delaySendMessage)
+        }
+        if (delaySendSticker != null) {
+            sendSticker(delaySendSticker)
+        }
+        setupFirstPage(chatRoom, chat)
+        delaySendMessage = ""
+        delaySendSticker = null
+    }
+
     override fun onClickSticker(sticker: Sticker) {
+        if (presenter.isInTheMiddleOfThePage()) {
+            resetItemList()
+            delaySendSticker(sticker)
+            presenter.getExistingChat(
+                    messageId, ::onErrorResetChatToFirstPage, ::onSuccessResetChatToFirstPage
+            )
+        } else {
+            sendSticker(sticker)
+        }
+    }
+
+    private fun delaySendSticker(sticker: Sticker) {
+        delaySendSticker = sticker
+    }
+
+    private fun sendSticker(sticker: Sticker?) {
+        if (sticker == null) return
         val startTime = SendableViewModel.generateStartTime()
         presenter.sendAttachmentsAndSticker(
                 messageId,
@@ -816,7 +1035,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     }
 
     override fun onGoToChatSetting(blockedStatus: BlockedStatus) {
-
         (activity as Activity).let {
             val intent = TopChatInternalRouter.Companion.getChatSettingIntent(it,
                     messageId,
@@ -899,11 +1117,17 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     override fun onDestroy() {
         super.onDestroy()
         presenter.detachView()
+        toolTip.dismiss()
     }
 
     override fun trackSeenProduct(element: ProductAttachmentViewModel) {
         if (seenAttachedProduct.add(element.productId)) {
             analytics.eventSeenProductAttachment(requireContext(), element, session)
+
+            // this for experimentation of DATA
+            if (remoteConfig?.getBoolean(RemoteConfigKey.CHAT_EVER_SEEN_PRODUCT, false) ?: false) {
+                analytics.eventSeenProductAttachmentBeta(requireContext(), element, session)
+            }
         }
     }
 
@@ -1112,6 +1336,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
 
     override fun onStickerOpened() {
         getViewState().onStickerOpened()
+        toolTip.dismissOnBoarding()
     }
 
     override fun onStickerClosed() {
@@ -1128,5 +1353,9 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
 
     override fun isSeller(): Boolean {
         return amISeller
+    }
+
+    override fun getSearchQuery(): String {
+        return searchQuery
     }
 }

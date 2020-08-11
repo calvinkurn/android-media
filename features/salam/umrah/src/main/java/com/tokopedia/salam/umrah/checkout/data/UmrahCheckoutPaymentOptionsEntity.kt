@@ -4,6 +4,7 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
 /**
  * @author by firman on 27/11/2019
@@ -43,6 +44,7 @@ class PaymentOptions(
         val schemes: ArrayList<Schemes> = arrayListOf()
 )
 
+@Parcelize
 class Schemes(
         @SerializedName("title")
         @Expose
@@ -56,35 +58,9 @@ class Schemes(
         @SerializedName("terms")
         @Expose
         val terms: List<Term> = arrayListOf()
-) : Parcelable {
-    constructor(parcel: Parcel) : this(
-            parcel.readString(),
-            parcel.readInt(),
-            parcel.readString(),
-            parcel.createTypedArrayList(Term))
+) : Parcelable
 
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(title)
-        parcel.writeInt(price)
-        parcel.writeString(firstDueDate)
-        parcel.writeTypedList(terms)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<Schemes> {
-        override fun createFromParcel(parcel: Parcel): Schemes {
-            return Schemes(parcel)
-        }
-
-        override fun newArray(size: Int): Array<Schemes?> {
-            return arrayOfNulls(size)
-        }
-    }
-}
-
+@Parcelize
 class Term(
         @SerializedName("type")
         @Expose
@@ -95,29 +71,4 @@ class Term(
         @SerializedName("dueDate")
         @Expose
         val dueDate: String = ""
-) : Parcelable {
-    constructor(parcel: Parcel) : this(
-            parcel.readInt(),
-            parcel.readInt(),
-            parcel.readString())
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeInt(type)
-        parcel.writeInt(price)
-        parcel.writeString(dueDate)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<Term> {
-        override fun createFromParcel(parcel: Parcel): Term {
-            return Term(parcel)
-        }
-
-        override fun newArray(size: Int): Array<Term?> {
-            return arrayOfNulls(size)
-        }
-    }
-}
+) : Parcelable

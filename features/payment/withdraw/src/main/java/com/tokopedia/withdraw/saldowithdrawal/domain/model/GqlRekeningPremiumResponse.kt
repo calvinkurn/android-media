@@ -1,9 +1,9 @@
 package com.tokopedia.withdraw.saldowithdrawal.domain.model
 
-import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
 data class GqlRekeningPremiumResponse(
         @SerializedName("CheckEligible")
@@ -11,7 +11,7 @@ data class GqlRekeningPremiumResponse(
         var checkEligible: CheckEligible
 )
 
-
+@Parcelize
 data class CheckEligible(
         @SerializedName("status")
         @Expose
@@ -23,36 +23,10 @@ data class CheckEligible(
 
         @SerializedName("data")
         @Expose
-        var data: RekeningData
-) : Parcelable {
-        constructor(parcel: Parcel) : this(
-                parcel.readLong(),
-                parcel.readString(),
-                parcel.readParcelable(RekeningData::class.java.classLoader)) {
-        }
+        var data: RekeningData = RekeningData()
+) : Parcelable
 
-        override fun writeToParcel(parcel: Parcel, flags: Int) {
-                parcel.writeLong(status)
-                parcel.writeString(message)
-                parcel.writeParcelable(data, flags)
-        }
-
-        override fun describeContents(): Int {
-                return 0
-        }
-
-        companion object CREATOR : Parcelable.Creator<CheckEligible> {
-                override fun createFromParcel(parcel: Parcel): CheckEligible {
-                        return CheckEligible(parcel)
-                }
-
-                override fun newArray(size: Int): Array<CheckEligible?> {
-                        return arrayOfNulls(size)
-                }
-        }
-}
-
-
+@Parcelize
 data class RekeningData(
         @SerializedName("isPowerWD")
         @Expose
@@ -95,43 +69,4 @@ data class RekeningData(
         var statusInt: Int = 0
 
 
-) : Parcelable {
-        constructor(parcel: Parcel) : this(
-                parcel.readByte() != 0.toByte(),
-                parcel.readByte() != 0.toByte(),
-                parcel.readLong(),
-                parcel.readString(),
-                parcel.readLong(),
-                parcel.readLong(),
-                parcel.readString(),
-                parcel.readString(),
-                parcel.readLong(),
-                parcel.readInt())
-
-        override fun writeToParcel(parcel: Parcel, flags: Int) {
-                parcel.writeByte(if (isIsPowerWD) 1 else 0)
-                parcel.writeByte(if (isPowerMerchant) 1 else 0)
-                parcel.writeLong(shopID)
-                parcel.writeString(accNum)
-                parcel.writeLong(bankID)
-                parcel.writeLong(userID)
-                parcel.writeString(status)
-                parcel.writeString(program)
-                parcel.writeLong(wdPoints)
-                parcel.writeInt(statusInt)
-        }
-
-        override fun describeContents(): Int {
-                return 0
-        }
-
-        companion object CREATOR : Parcelable.Creator<RekeningData> {
-                override fun createFromParcel(parcel: Parcel): RekeningData {
-                        return RekeningData(parcel)
-                }
-
-                override fun newArray(size: Int): Array<RekeningData?> {
-                        return arrayOfNulls(size)
-                }
-        }
-}
+) : Parcelable

@@ -6,9 +6,10 @@ import android.content.SharedPreferences;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core2.BuildConfig;
 import com.tokopedia.url.TokopediaUrl;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 /**
  * Created by ricoharisin on 9/29/15.
@@ -18,10 +19,11 @@ public class URLGenerator {
     private static final String SEAMLESS_LOGIN = "seamless?";
 
     public static String generateURLContactUs(String url, Context context) {
+        UserSessionInterface userSession = new UserSession(context);
         return getBaseUrl() + SEAMLESS_LOGIN
                 + "token=" + GCMHandler.getRegistrationId(context)
                 + "&os_type=1"
-                + "&uid=" + SessionHandler.getLoginID(context)
+                + "&uid=" + userSession.getUserId()
                 + "&url=" + url;
     }
 

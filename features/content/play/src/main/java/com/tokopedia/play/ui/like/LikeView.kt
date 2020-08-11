@@ -15,7 +15,7 @@ import com.tokopedia.unifyprinciples.Typography
 /**
  * Created by jegul on 02/12/19
  */
-class LikeView(container: ViewGroup, listener: Listener) : UIView(container) {
+class LikeView(container: ViewGroup, private val listener: Listener) : UIView(container) {
 
     private companion object {
 
@@ -49,11 +49,6 @@ class LikeView(container: ViewGroup, listener: Listener) : UIView(container) {
                 vLikeClickArea.isClickable = false
             }
         })
-
-        vLikeClickArea.setOnClickListener {
-            val shouldLike = animationLike.progress == START_ANIMATED_PROGRESS
-            listener.onLikeClicked(this, shouldLike)
-        }
     }
 
     override val containerId: Int = view.id
@@ -64,6 +59,17 @@ class LikeView(container: ViewGroup, listener: Listener) : UIView(container) {
 
     override fun hide() {
         view.hide()
+    }
+
+    internal fun setEnabled(isEnabled: Boolean) {
+        if (isEnabled) {
+            vLikeClickArea.setOnClickListener {
+                val shouldLike = animationLike.progress == START_ANIMATED_PROGRESS
+                listener.onLikeClicked(this, shouldLike)
+            }
+        } else {
+            vLikeClickArea.setOnClickListener {  }
+        }
     }
 
     internal fun setTotalLikes(totalLikes: TotalLikeUiModel) {

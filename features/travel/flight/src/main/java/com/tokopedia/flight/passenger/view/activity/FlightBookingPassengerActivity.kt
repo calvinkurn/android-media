@@ -26,7 +26,7 @@ class FlightBookingPassengerActivity : BaseFlightActivity(), HasComponent<Flight
     var selectedPassengerId: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        val extras = savedInstanceState ?: intent.extras
+        val extras = savedInstanceState ?: intent.extras ?: Bundle()
         passengerModel = extras.getParcelable(EXTRA_PASSENGER)
         selectedPassengerId = extras.getString(EXTRA_SELECTED_PASSENGER_ID)
 

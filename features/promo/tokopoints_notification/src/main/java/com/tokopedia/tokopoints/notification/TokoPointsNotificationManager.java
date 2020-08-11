@@ -23,7 +23,7 @@ public class TokoPointsNotificationManager {
         GraphqlUseCase useCase = new GraphqlUseCase();
         Map<String, Object> variable = new HashMap<>();
         variable.put(Constant.KEY_TYPE, notificationType);
-
+        variable.put(Constant.API_VERSION, Constant.API_VERSION_VALUE);
         GraphqlRequest request = new GraphqlRequest(GraphqlHelper.loadRawString(context.getApplicationContext().getResources(), R.raw.tp_gql_popup_notification),
                 TokoPointDetailEntity.class, variable, false);
         useCase.clearRequest();
@@ -61,6 +61,7 @@ public class TokoPointsNotificationManager {
         GraphqlUseCase useCase = new GraphqlUseCase();
         Map<String, Object> variable = new HashMap<>();
         variable.put(Constant.KEY_TYPE, notificationType);
+        variable.put(Constant.API_VERSION, Constant.API_VERSION_VALUE);
         GraphqlRequest request = new GraphqlRequest(GraphqlHelper.loadRawString(context.getApplicationContext().getResources(), R.raw.tp_gql_popup_notification),
                 TokoPointDetailEntity.class, variable, false);
         useCase.clearRequest();

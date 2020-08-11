@@ -17,7 +17,8 @@ data class CardWidgetUiModel(
         override val dataKey: String,
         override val ctaText: String,
         override var data: CardDataUiModel?,
-        override val impressHolder: ImpressHolder= ImpressHolder()
+        override val impressHolder: ImpressHolder= ImpressHolder(),
+        override var isLoaded: Boolean
 ) : BaseWidgetUiModel<CardDataUiModel> {
 
     override fun type(typeFactory: SellerHomeAdapterTypeFactory): Int {

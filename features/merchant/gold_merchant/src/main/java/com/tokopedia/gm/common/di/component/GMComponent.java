@@ -18,7 +18,6 @@ import com.tokopedia.core.network.di.qualifier.MojitoQualifier;
 import com.tokopedia.core.network.di.qualifier.TomeQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.datepicker.range.view.presenter.DatePickerPresenter;
 import com.tokopedia.gm.common.di.module.GMModule;
 import com.tokopedia.gm.common.di.scope.GMScope;
@@ -79,8 +78,6 @@ public interface GMComponent {
     ThreadExecutor threadExecutor();
 
     PostExecutionThread postExecutionThread();
-
-    SessionHandler sessionHandler();
 
     GCMHandler gcmHandler();
 

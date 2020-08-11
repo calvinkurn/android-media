@@ -18,8 +18,6 @@ public interface TkpdCoreRouter {
 
     void onLogout(AppComponent appComponent);
 
-    Intent getRegisterIntent(Context context);
-
     boolean isSupportedDelegateDeepLink(String appLinks);
 
     Intent getSplashScreenIntent(Context context);

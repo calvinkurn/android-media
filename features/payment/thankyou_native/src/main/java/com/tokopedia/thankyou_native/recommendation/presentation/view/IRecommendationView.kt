@@ -5,6 +5,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
 interface IRecommendationView {
-    fun loadRecommendation(fragment: BaseDaggerFragment, trackingQueue: TrackingQueue)
+    fun loadRecommendation(paymentId : String, fragment: BaseDaggerFragment, trackingQueue: TrackingQueue)
     fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) : Boolean
 }

@@ -29,7 +29,7 @@
     <string name="template_campaign_off">%1$s%%</string>
     <string name="template_review">%1$d Ulasan</string>
     <string name="template_success_rate">%1$s%% (%2$s)</string>
-    <string name="template_talk">%1$d Q&amp;A</string>
+    <string name="template_talk">%1$d Diskusi</string>
     <string name="template_preorder_time">%1$d %2$s</string>
     <string name="template_min_order">%1$d Buah</string>
     <string name="buy_now">Beli Sekarang</string>
@@ -41,7 +41,7 @@
     <string name="buy">Beli</string>
     <string name="promo_hourly">Promo Perjam</string>
     <string name="promote_topads">Iklankan</string>
-    <string name="edit_product_text">Edit Produk</string>
+    <string name="edit_product_text">Ubah Produk</string>
     <string name="rincian_topads">Rincian Iklan</string>
     <string name="no_stock">Stok Kosong</string>
     <string name="stock_habis">Stok Habis</string>
@@ -230,8 +230,8 @@
     <string name="terjual_single_text_template_builder">%1s barang berhasil terjual</string>
     <string name="product_view_single_text__template_builder">%1s orang melihat barang ini</string>
     <string name="label_wishlist">Wishlist</string>
-    <string name="label_qna"><![CDATA[Q&A]]></string>
-    <string name="qna_template_builder"><![CDATA[<b>Q&A</b> %1s]]></string>
+    <string name="label_qna"><![CDATA[Diskusi]]></string>
+    <string name="qna_template_builder"><![CDATA[<b>Diskusi</b> %1s]]></string>
 
     <!--Mini Shop Info-->
     <string name="label_desc_os">Pasti Ori • Pasti Ready • Garansi 7 Hari</string>
@@ -240,17 +240,17 @@
     <string name="slider_counter_builder">%1$d/%2$d</string>
 
     // Discussion Most Helpful
-    <string name="product_detail_discussion_title">Q&amp;A Paling Membantu</string>
+    <string name="product_detail_discussion_title">Diskusi Paling Membantu</string>
     <string name="product_detail_discussion_see_all">Lihat Semua (%d)</string>
     <string name="product_detail_discussion_no_answers">Bantu Jawab</string>
     <string name="product_detail_discussion_attached_products">%d produk</string>
     <string name="product_detail_discussion_empty_subtitle">Punya Pertanyaan?</string>
-    <string name="product_detail_discussion_empty_description">Tanya aja langsung tentang barang ini di Q&amp;A.</string>
+    <string name="product_detail_discussion_empty_description">Tanya aja langsung tentang barang ini di Diskusi.</string>
     <string name="product_detail_discussion_empty_button">Tanya Sekarang</string>
     <string name="product_detail_discussion_formatted_date">• %s</string>
     <string name="product_detail_discussion_total_answers">%d jawaban lainnya</string>
     <string name="product_detail_discussion_seller_label">Penjual</string>
-    <string name="product_detail_discussion_local_load_title">Q&amp;A gagal ditampilkan</string>
+    <string name="product_detail_discussion_local_load_title">Diskusi gagal ditampilkan</string>
     <string name="product_detail_discussion_local_load_description">Klik ikon di samping untuk coba lagi.</string>
     <string name="product_detail_discussion_ellipsis">…</string>
     <string name="product_detail_discussion_dot">•</string>

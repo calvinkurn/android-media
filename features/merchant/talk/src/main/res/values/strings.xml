@@ -2,9 +2,7 @@
     <string name="app_name">Talk</string>
 
     <!-- ACTIVITY TITLE -->
-    <string name="title_product_discussion">Q&amp;A</string>
     <string name="title_report_talk">Laporkan</string>
-    <string name="title_reading_page">Q&amp;A</string>
     <string name="title_talk_discuss">Diskusi</string>
     <string name="title_reply_page">Balas Pertanyaan</string>
     <string name="title_write_page">Kirim Pertanyaan</string>
@@ -101,15 +99,14 @@
     <string name="reading_attached_product">%d produk</string>
     <string name="reading_other_answers">%d jawaban lainnya</string>
     <string name="reading_ellipsis">…</string>
-    <string name="reading_ticker">Diskusi kini ganti tampilan jadi Q&amp;A. Kamu bisa tanya dan jawab seputar info barang di sini.</string>
     <string name="reading_dot">•</string>
 
-    <string name="toaster_follow_success">Kamu berhasil follow Q&amp;A ini. Nantikan notifikasinya di Inbox, ya!</string>
-    <string name="toaster_unfollow_success">Kamu berhasil unfollow Q&amp;A ini.</string>
-    <string name="toaster_follow_fail">Gagal follow Q&amp;A ini. Cek koneksi internetmu dan coba lagi, ya.</string>
-    <string name="toaster_unfollow_fail">Gagal unfollow Q&amp;A ini. Cek koneksi internetmu dan coba lagi, ya.</string>
+    <string name="toaster_follow_success">Kamu berhasil follow Diskusi ini. Nantikan notifikasinya di Inbox, ya!</string>
+    <string name="toaster_unfollow_success">Kamu berhasil unfollow Diskusi ini.</string>
+    <string name="toaster_follow_fail">Gagal follow Diskusi ini. Cek koneksi internetmu dan coba lagi, ya.</string>
+    <string name="toaster_unfollow_fail">Gagal unfollow Diskusi ini. Cek koneksi internetmu dan coba lagi, ya.</string>
     <string name="reply_editText_placeholder">Tulis jawabanmu…</string>
-    <string name="reply_header_tnc">Q&amp;A adalah tempat kamu bertanya dan kasih jawaban seputar produk. Tetap sopan dan jangan lupa &lt;a href = "https://www.tokopedia.com/help/article/a-2480">baca S&amp;K.&lt;/a></string>
+    <string name="reply_header_tnc">Diskusi adalah tempat kamu bertanya dan kasih jawaban seputar produk. Tetap sopan dan jangan lupa &lt;a href = "https://www.tokopedia.com/help/article/a-2480">baca S&amp;K.&lt;/a></string>
     <string name="reply_toaster_success">Yay, jawabanmu berhasil dikirim. Tunggu notifikasi balasan di Inbox, ya.</string>
     <string name="reply_toaster_message_too_long">Jawabanmu sudah melebihi maks. karakter.</string>
     <string name="reply_toaster_network_error">Pertanyaanmu tidak terkirim. Cek koneksi internetmu dan coba lagi, ya.</string>
@@ -118,7 +115,7 @@
     <string name="delete_toaster_network_error">Jawaban belum terhapus. Cek koneksi internetmu dan coba lagi, ya.</string>
     <string name="delete_dialog_title">Beneran mau dihapus?</string>
     <string name="delete_dialog_content">Soalnya, satu jawaban kamu bisa berikan manfaat bagi ratusan calon pembeli lain</string>
-    <string name="delete_dialog_question_description">Semua jawaban di Q&amp;A ini akan hilang jika pertanyaan dihapus</string>
+    <string name="delete_dialog_question_description">Semua jawaban di Diskusi ini akan hilang jika pertanyaan dihapus</string>
     <string name="delete_confirm_button">Hapus</string>
     <string name="delete_cancel_button">Batal</string>
     <string name="delete_question_toaster_fail">Pertanyaan belum terhapus. Cek koneksi internetmu dan coba lagi, ya.</string>

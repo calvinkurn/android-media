@@ -89,7 +89,11 @@ object ApplinkConstInternalMarketplace {
 
     // SetCashbackActivity
     @JvmField
-    val SET_CASHBACK = "$INTERNAL_MARKETPLACE/set-cashback/{productId}/{productName}/"
+    val SET_CASHBACK = "$INTERNAL_MARKETPLACE/set-cashback/{productId}/"
+
+    // CampaignStockActivity
+    @JvmField
+    val RESERVED_STOCK = "$INTERNAL_MARKETPLACE/reserved-stock/{productId}/{shopId}/"
 
     // CreateReviewActivity
     @JvmField
@@ -178,6 +182,9 @@ object ApplinkConstInternalMarketplace {
 
     @JvmField
     val SHOP_EDIT_SCHEDULE = "$SHOP_SETTINGS_BASE-edit-schedule"
+
+    @JvmField
+    val SHOP_SETTINGS_SHIPPING = "$SHOP_SETTINGS_BASE-shipping"
 
     //DistrictRecommendationShopSettingsActivity
     @JvmField
@@ -291,5 +298,23 @@ object ApplinkConstInternalMarketplace {
 
     @JvmField
     val PARAM_FIRST_CREATE_SHOP = "FIRST_CREATE_SHOP"
+
+    //SellerReviewListActivity
+    @JvmField
+    val REVIEW_SELLER = "$INTERNAL_MARKETPLACE/seller-review-page"
+
+    //InboxReputationReportActivity
+    @JvmField
+    val REVIEW_SELLER_REPORT = "$INTERNAL_MARKETPLACE/review-report"
+
+    //ShopFavouriteListActivity
+    @JvmField
+    val SHOP_FAVOURITE_LIST = "$INTERNAL_MARKETPLACE/shop-favourites"
+
+    @JvmField
+    val ARGS_SHOP_ID = "ARGS_SHOP_ID"
+
+    @JvmField
+    val ARGS_REVIEW_ID = "ARGS_REVIEW_ID"
 
 }

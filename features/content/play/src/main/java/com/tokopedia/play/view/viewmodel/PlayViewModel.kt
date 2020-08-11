@@ -1,9 +1,13 @@
 package com.tokopedia.play.view.viewmodel
 
 import android.net.Uri
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toAmountString
+import com.tokopedia.play.ERR_SERVER_ERROR
 import com.tokopedia.play.data.*
 import com.tokopedia.play.data.mapper.PlaySocketMapper
 import com.tokopedia.play.data.websocket.PlaySocket
@@ -12,14 +16,14 @@ import com.tokopedia.play.domain.*
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.play.util.event.Event
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.mapper.PlayUiMapper
-import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play.view.wrapper.GlobalErrorCodeWrapper
-import com.tokopedia.play.ERR_SERVER_ERROR
-import com.tokopedia.play.util.event.Event
+import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.model.PlayBufferControl
+import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.player.PlayVideoManager
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -95,7 +99,7 @@ class PlayViewModel @Inject constructor(
         }
     val videoPlayer: VideoPlayerUiModel
         get() {
-            val videoPlayer = _observableCompleteInfo.value?.videoPlayer
+            val videoPlayer = _observableVideoPlayer.value
             return videoPlayer ?: Unknown
         }
     val contentId: Int
@@ -198,6 +202,8 @@ class PlayViewModel @Inject constructor(
     private val amountStringStepArray = arrayOf("k", "m")
     private fun String.trimMultipleNewlines() = trim().replace(Regex("(\\n+)"), "\n")
     //endregion
+
+    private var channelInfoJob: Job? = null
 
     /**
      * DO NOT CHANGE THIS TO LAMBDA
@@ -357,12 +363,6 @@ class PlayViewModel @Inject constructor(
                 bufferControl = channel.videoStream.bufferControl?.let { mapBufferControl(it) }
                         ?: PlayBufferControl()
         )
-//        startVideoWithUrlString(
-//                "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
-////                "https://assets.mixkit.co/videos/preview/mixkit-womans-feet-splashing-in-the-pool-1261-large.mp4",
-//                bufferControl = channel.videoStream.bufferControl?.let { mapBufferControl(it) }
-//                        ?: PlayBufferControl()
-//        )
         playVideoManager.setRepeatMode(false)
     }
 
@@ -377,7 +377,8 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun stopPlayer() {
-        playVideoManager.stop()
+        if (playVideoManager.isVideoLive() || channelType.isLive || isFreezeOrBanned) playVideoManager.release()
+        else playVideoManager.stop()
     }
     //endregion
 
@@ -385,61 +386,57 @@ class PlayViewModel @Inject constructor(
 
         var retryCount = 0
 
-        fun getChannelInfoResponse(channelId: String): Job = scope.launchCatchError(block = {
-            val channel = withContext(dispatchers.io) {
-                getChannelInfoUseCase.channelId = channelId
-                return@withContext getChannelInfoUseCase.executeOnBackground()
-            }
+        fun getChannelInfoResponse(channelId: String){
+            channelInfoJob = scope.launchCatchError(block = {
+                val channel = withContext(dispatchers.io) {
+                    getChannelInfoUseCase.channelId = channelId
+                    return@withContext getChannelInfoUseCase.executeOnBackground()
+                }
 
-            launch { getTotalLikes(channel.contentId, channel.contentType, channel.likeType) }
-            launch { getIsLike(channel.contentId, channel.contentType) }
-            launch { getBadgeCart(channel.isShowCart) }
-            launch { if (channel.isShowProductTagging) getProductTagItems(channel) }
+                launch { getTotalLikes(channel.contentId, channel.contentType, channel.likeType) }
+                launch { getIsLike(channel.contentId, channel.contentType) }
+                launch { getBadgeCart(channel.isShowCart) }
+                launch { if (channel.isShowProductTagging) getProductTagItems(channel) }
 
-            startWebSocket(channelId, channel.gcToken, channel.settings)
+                startWebSocket(channelId, channel.gcToken, channel.settings)
 
-            val completeInfoUiModel = PlayUiMapper.createCompleteInfoModel(
-                    channel = channel,
-                    partnerName = _observablePartnerInfo.value?.name.orEmpty(),
-                    isBanned = _observableEvent.value?.isBanned ?: false,
-                    exoPlayer = playVideoManager.videoPlayer
-            )
-            _observableCompleteInfo.value = completeInfoUiModel
+                val completeInfoUiModel = PlayUiMapper.createCompleteInfoModel(
+                        channel = channel,
+                        partnerName = _observablePartnerInfo.value?.name.orEmpty(),
+                        isBanned = _observableEvent.value?.isBanned ?: false,
+                        exoPlayer = playVideoManager.videoPlayer
+                )
+                _observableCompleteInfo.value = completeInfoUiModel
 
-            _observableGetChannelInfo.value = Success(completeInfoUiModel.channelInfo)
-            _observableTotalViews.value = completeInfoUiModel.totalView
-            _observablePinnedMessage.value = completeInfoUiModel.pinnedMessage
-            _observablePinnedProduct.value = completeInfoUiModel.pinnedProduct
-            _observableQuickReply.value = completeInfoUiModel.quickReply
-            _observableVideoPlayer.value = completeInfoUiModel.videoPlayer
-            _observableVideoStream.value = completeInfoUiModel.videoStream
-            _observableEvent.value = completeInfoUiModel.event
+                _observableGetChannelInfo.value = Success(completeInfoUiModel.channelInfo)
+                _observableTotalViews.value = completeInfoUiModel.totalView
+                _observablePinnedMessage.value = completeInfoUiModel.pinnedMessage
+                _observablePinnedProduct.value = completeInfoUiModel.pinnedProduct
+                _observableQuickReply.value = completeInfoUiModel.quickReply
+                _observableVideoPlayer.value = completeInfoUiModel.videoPlayer
+                _observableVideoStream.value = completeInfoUiModel.videoStream
+                _observableEvent.value = completeInfoUiModel.event
 
-            if (completeInfoUiModel.videoPlayer.isGeneral) playGeneralVideoStream(channel)
+                if (!isActive) return@launchCatchError
+                if (completeInfoUiModel.videoPlayer.isGeneral) playGeneralVideoStream(channel)
+                else playVideoManager.release()
 
-            _observablePartnerInfo.value = getPartnerInfo(completeInfoUiModel.channelInfo)
+                _observablePartnerInfo.value = getPartnerInfo(completeInfoUiModel.channelInfo)
+            }) {
+                if (retryCount++ < MAX_RETRY_CHANNEL_INFO) getChannelInfoResponse(channelId)
+                else if (it !is CancellationException) {
+                    val error = if (_observableGetChannelInfo.value == null && GlobalErrorCodeWrapper.wrap(it.message.orEmpty()) == GlobalErrorCodeWrapper.Unknown)
+                        Throwable(ERR_SERVER_ERROR)
+                    else it
 
-            launch { getTotalLikes(channel.contentId, channel.contentType, channel.likeType) }
-            launch { getIsLike(channel.contentId, channel.contentType) }
-            launch { getBadgeCart(channel.isShowCart) }
-            launch { if (channel.isShowProductTagging) getProductTagItems(channel) }
+                    if (GlobalErrorCodeWrapper.wrap(error.message.orEmpty()) != GlobalErrorCodeWrapper.Unknown) doOnForbidden()
 
-            startWebSocket(channelId, channel.gcToken, channel.settings)
-
-        }) {
-            if (retryCount++ < MAX_RETRY_CHANNEL_INFO) getChannelInfoResponse(channelId)
-            else if (it !is CancellationException) {
-                val error = if (_observableGetChannelInfo.value == null && GlobalErrorCodeWrapper.wrap(it.message.orEmpty()) == GlobalErrorCodeWrapper.Unknown)
-                    Throwable(ERR_SERVER_ERROR)
-                else it
-
-                if (GlobalErrorCodeWrapper.wrap(error.message.orEmpty()) != GlobalErrorCodeWrapper.Unknown) doOnForbidden()
-
-                _observableGetChannelInfo.value = Fail(error)
+                    _observableGetChannelInfo.value = Fail(error)
+                }
             }
         }
 
-        getChannelInfoResponse(channelId)
+        if (!isFreezeOrBanned) getChannelInfoResponse(channelId)
     }
 
     fun sendChat(message: String) {
@@ -564,6 +561,10 @@ class PlayViewModel @Inject constructor(
                 videoOrientation = videoOrientation,
                 videoState = playVideoManager.getVideoState()
         )
+    }
+
+    fun stopJob() {
+        channelInfoJob?.cancel()
     }
 
     /**

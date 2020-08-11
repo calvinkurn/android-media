@@ -42,6 +42,7 @@ class MarketPlaceRecommendation : FrameLayout, IRecommendationView {
 
     private lateinit var fragment: BaseDaggerFragment
     private lateinit var trackingQueue: TrackingQueue
+    private lateinit var paymentId: String
 
 
     @Inject
@@ -92,7 +93,9 @@ class MarketPlaceRecommendation : FrameLayout, IRecommendationView {
         LayoutInflater.from(context).inflate(getLayout(), this, true)
     }
 
-    override fun loadRecommendation(fragment: BaseDaggerFragment, trackingQueue: TrackingQueue) {
+    override fun loadRecommendation(paymentId: String,
+                                    fragment: BaseDaggerFragment, trackingQueue: TrackingQueue) {
+        this.paymentId = paymentId
         this.fragment = fragment
         this.trackingQueue = trackingQueue
         startViewModelObserver()
@@ -189,7 +192,8 @@ class MarketPlaceRecommendation : FrameLayout, IRecommendationView {
 
             override fun onRecommendationItemDisplayed(recommendationItem: RecommendationItem,
                                                        position: Int) {
-                analytics.get().sendRecommendationItemDisplayed(recommendationItem, position, trackingQueue)
+                analytics.get().sendRecommendationItemDisplayed(recommendationItem, position,
+                        trackingQueue, paymentId)
             }
 
             override fun onWishlistClick(item: RecommendationItem, isAddWishlist: Boolean,
@@ -242,7 +246,8 @@ class MarketPlaceRecommendation : FrameLayout, IRecommendationView {
     }
 
     private fun onRecomProductClick(item: RecommendationItem, position: Int) {
-        analytics.get().sendRecommendationItemClick(item, position = position + 1)
+        analytics.get().sendRecommendationItemClick(item, position = position + 1,
+                paymentId = paymentId)
         val intent = RouteManager.getIntent(context,
                 ApplinkConstInternalMarketplace.PRODUCT_DETAIL, item.productId.toString())
 

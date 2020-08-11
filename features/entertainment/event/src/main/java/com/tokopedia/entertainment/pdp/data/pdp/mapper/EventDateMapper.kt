@@ -35,11 +35,21 @@ object EventDateMapper{
         for(date in listActiveDate){
             if (selectedDate.isEmpty() && listActiveDate.size == 1)
                 return true
-            else if(EventDateUtil.convertUnixToToday(date.toLong()) == selectedDate.toLong()){
+            else if(EventDateUtil.convertUnixToToday(date.toLong()) == EventDateUtil.convertUnixToToday(selectedDate.toLong())){
                 return true
             }
         }
         return false
+    }
+
+    fun checkStartSale(startDateUnix:String, currentDate:Date):Boolean{
+        val startDate = Date(startDateUnix.toLong() * 1000)
+        return currentDate.compareTo(startDate) > 0
+    }
+
+    fun checkNotEndSale(endDateUnix:String, currentDate: Date):Boolean{
+        val endDateUnix = Date(endDateUnix.toLong() * 1000)
+        return endDateUnix.compareTo(currentDate) > 0
     }
 
     fun getDate(listActiveDate : List<String>, selectedDate: String): String {

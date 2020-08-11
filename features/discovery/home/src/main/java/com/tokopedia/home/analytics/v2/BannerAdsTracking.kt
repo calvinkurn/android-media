@@ -9,9 +9,6 @@ object BannerAdsTracking : BaseTracking() {
         companion object {
             val IMPRESSION_ON_BANNER_ADS = Action.IMPRESSION_ON.format("banner dynamic channel ads")
             val CLICK_ON_BANNER_ADS = Action.CLICK_ON.format("banner dynamic channel ads")
-            const val FORMAT_4_VALUE_UNDERSCORE = "%s_%s_%s_%s";
-            const val FORMAT_2_VALUE_UNDERSCORE = "%s_%s";
-            const val FORMAT_CAT_ID_NAME = "%s - %s";
         }
     }
 
@@ -35,6 +32,8 @@ object BannerAdsTracking : BaseTracking() {
                             position = (position+1).toString()
                     )
             ),
+            currentSite = CurrentSite.DEFAULT,
+            businessUnit = BusinessUnit.DEFAULT,
             screen = Screen.DEFAULT
     )
 
@@ -64,6 +63,8 @@ object BannerAdsTracking : BaseTracking() {
                             position = (position+1).toString()
                     )
             ),
+            currentSite = CurrentSite.DEFAULT,
+            businessUnit = BusinessUnit.DEFAULT,
             screen = Screen.DEFAULT
     )
 

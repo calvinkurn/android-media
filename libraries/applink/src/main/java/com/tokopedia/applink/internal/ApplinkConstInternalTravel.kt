@@ -45,6 +45,9 @@ object ApplinkConstInternalTravel {
     val CITY_PAGE_TRAVEL_HOMEPAGE = "$INTERNAL_TRAVEL_HOMEPAGE/home/city"
 
     @JvmField
+    val TRAIN_ORDER_LIST = "tokopedia://webview?url=https://m.tokopedia.com/order-list?tab=TRAINS&allow_override=false"
+
+    @JvmField
     val EXTRA_DESTINATION_WEB_URL = "EXTRA_DESTINATION_WEB_URL"
 
 }

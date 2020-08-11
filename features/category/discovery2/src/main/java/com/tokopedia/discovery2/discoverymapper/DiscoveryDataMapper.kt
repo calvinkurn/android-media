@@ -19,7 +19,7 @@ class DiscoveryDataMapper {
 
         val discoveryDataMapper: DiscoveryDataMapper by lazy { DiscoveryDataMapper() }
 
-        fun mapListToComponentList(itemList: List<DataItem>, subComponentName: String = "", parentComponentName: String?, position: Int): ArrayList<ComponentsItem> {
+        fun mapListToComponentList(itemList: List<DataItem>, subComponentName: String = "", parentComponentName: String?, position: Int, design : String = ""): ArrayList<ComponentsItem> {
             val list = ArrayList<ComponentsItem>()
             itemList.forEachIndexed { index, it ->
                 val componentsItem = ComponentsItem()
@@ -27,6 +27,7 @@ class DiscoveryDataMapper {
                 val id = "${CHIPS}_$index"
                 componentsItem.name = subComponentName
                 componentsItem.id = id
+                componentsItem.design = design
                 it.parentComponentName = parentComponentName
                 it.positionForParentItem = position
                 val dataItem = mutableListOf<DataItem>()
@@ -66,7 +67,6 @@ class DiscoveryDataMapper {
             return bannerComponent.apply {
                 this.data?.forEach {
                     it.id = this.id
-                    it.name = this.name
                 }
             }
         }
