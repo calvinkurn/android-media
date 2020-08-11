@@ -11,7 +11,7 @@
     android:foreground="?attr/selectableItemBackground"
     android:layout_marginRight="@dimen/spacing_lvl2"
     android:layout_marginEnd="@dimen/spacing_lvl2"
-    app:cardCornerRadius="@dimen/spacing_lvl2"
+    app:cardCornerRadius="@dimen/spacing_lvl3"
     app:cardElevation="@dimen/spacing_lvl1"
     app:cardPreventCornerOverlap="false"
     app:cardUseCompatPadding="true">
@@ -78,7 +78,7 @@
             android:id="@+id/container_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/play_background_overlay_N700_62"
+            android:background="@color/play_background_overlay_82"
             android:paddingTop="@dimen/spacing_lvl3"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent">
@@ -104,8 +104,7 @@
                 android:layout_marginEnd="@dimen/spacing_lvl3"
                 android:ellipsize="end"
                 android:maxLines="2"
-                android:textColor="@android:color/white"
-                android:textStyle="bold"
+                android:textColor="@android:color/black"
                 app:typographyType="heading_6"
                 tools:layout_editor_absoluteX="@dimen/spacing_lvl3"
                 tools:text="Google Assistant review with me" />
@@ -117,7 +116,7 @@
                 android:layout_marginStart="@dimen/spacing_lvl3"
                 android:layout_marginEnd="@dimen/spacing_lvl3"
                 android:layout_marginBottom="@dimen/spacing_lvl3"
-                android:textColor="@android:color/white"
+                android:textColor="@android:color/black"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

@@ -132,6 +132,10 @@ data class SearchProductModel(
             @Expose
             val relatedKeyword: String = "",
 
+            @SerializedName("position")
+            @Expose
+            val position: Int = 0,
+
             @SerializedName("otherRelated")
             @Expose
             val otherRelatedList: List<OtherRelated> = listOf()
@@ -190,7 +194,49 @@ data class SearchProductModel(
 
             @SerializedName("priceStr")
             @Expose
-            val priceString: String = ""
+            val priceString: String = "",
+
+            @SerializedName("wishlist")
+            @Expose
+            val isWishlisted: Boolean = false,
+
+            @SerializedName("shop")
+            @Expose
+            val shop: OtherRelatedProductShop = OtherRelatedProductShop(),
+
+            @SerializedName("badges")
+            @Expose
+            val badgeList: List<OtherRelatedProductBadge> = listOf(),
+
+            @SerializedName("freeOngkir")
+            @Expose
+            val freeOngkir: OtherRelatedProductFreeOngkir = OtherRelatedProductFreeOngkir()
+    )
+
+    data class OtherRelatedProductShop(
+            @SerializedName("city")
+            @Expose
+            val city: String = ""
+    )
+
+    data class OtherRelatedProductBadge(
+        @SerializedName("imageUrl")
+        @Expose
+        val imageUrl: String = "",
+
+        @SerializedName("show")
+        @Expose
+        val isShown: Boolean = false
+    )
+
+    data class OtherRelatedProductFreeOngkir(
+        @SerializedName("isActive")
+        @Expose
+        val isActive: Boolean = false,
+
+        @SerializedName("imgUrl")
+        @Expose
+        val imageUrl: String = ""
     )
 
     data class Suggestion(

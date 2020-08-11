@@ -29,7 +29,7 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     ChipsFilterView(R.layout.coming_soon_view, ComponentNames.ChipsFilter.componentName),
     Notifier(R.layout.coming_soon_view, ComponentNames.Notifier.componentName),
     TitleImage(R.layout.coming_soon_view, ComponentNames.TitleImage.componentName),
-    TextComponent(R.layout.coming_soon_view, ComponentNames.TextComponent.componentName),
+    TextComponent(R.layout.discovery_text_component_layout, ComponentNames.TextComponent.componentName),
     ClaimCoupon(R.layout.component_claim_coupon_layout, ComponentNames.ClaimCoupon.componentName),
     ClaimCouponItem(R.layout.component_claim_coupon_item, ComponentNames.ClaimCouponItem.componentName),
     Spacing(R.layout.spacing_layout, ComponentNames.Margin.componentName),

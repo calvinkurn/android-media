@@ -2,11 +2,11 @@ package com.tokopedia.notifications.inApp;
 
 import android.app.Activity;
 import android.app.Application;
-import android.net.Uri;
 import android.view.View;
 import android.widget.FrameLayout;
 
 import com.google.firebase.messaging.RemoteMessage;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.notifications.CMRouter;
 import com.tokopedia.notifications.R;
 import com.tokopedia.notifications.common.IrisAnalyticsEvents;
@@ -201,9 +201,9 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
         try {
             CMInApp cmInApp = CmInAppBundleConvertor.getCmInApp(remoteMessage);
             if (null != cmInApp) {
-                if (currentActivity != null && currentActivity.get() != null) {
+                if (application != null) {
                     sendEventInAppDelivered(cmInApp);
-                    new CMInAppController().downloadImagesAndUpdateDB(currentActivity.get(), cmInApp);
+                    new CMInAppController().downloadImagesAndUpdateDB(application, cmInApp);
                 }
             }
         } catch (Exception e) {
@@ -221,7 +221,12 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
     }
 
     @Override
-    public void onCMInAppLinkClick(Uri deepLinkUri, CMInApp cmInApp, ElementType elementType) {
+    public void onCMInAppLinkClick(String appLink, CMInApp cmInApp, ElementType elementType) {
+        if (getCurrentActivity() != null) {
+            Activity activity = currentActivity.get();
+            activity.startActivity(RouteManager.getIntent(activity, appLink));
+        }
+
         switch (elementType.getViewType()) {
             case ElementType.BUTTON:
                 sendPushEvent(cmInApp, IrisAnalyticsEvents.INAPP_CLICKED, elementType.getElementId());
