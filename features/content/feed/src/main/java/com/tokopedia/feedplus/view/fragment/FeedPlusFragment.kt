@@ -484,6 +484,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     val isHaveNewFeed = intent.getBooleanExtra(PARAM_BROADCAST_NEW_FEED, false)
                     if (isHaveNewFeed) {
                         newFeed.show()
+                        triggerNewFeedNotification()
                     }
                 }
             }
@@ -726,10 +727,18 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun triggerClearNewFeedNotification() {
+    private fun triggerNewFeedNotification() {
         if (context?.applicationContext != null) {
             val intent = Intent(BROADCAST_FEED)
             intent.putExtra(PARAM_BROADCAST_NEW_FEED_CLICKED, true)
+            LocalBroadcastManager.getInstance(requireContext().applicationContext).sendBroadcast(intent)
+        }
+    }
+
+    private fun triggerClearNewFeedNotification() {
+        if (context?.applicationContext != null) {
+            val intent = Intent(BROADCAST_FEED)
+            intent.putExtra(PARAM_BROADCAST_NEW_FEED_CLICKED, false)
             LocalBroadcastManager.getInstance(requireContext().applicationContext).sendBroadcast(intent)
         }
     }
