@@ -42,7 +42,7 @@ abstract class ShopShowCaseAddViewModelTestFixture {
 
     protected lateinit var shopShowCaseAddViewModel: ShopShowcaseAddViewModel
 
-    protected val testDispatcher by lazy {
+    private val testDispatcher by lazy {
         TestCoroutineDispatcher()
     }
 

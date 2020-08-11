@@ -24,7 +24,7 @@ abstract class ShowcaseProductAddViewModelTestFixture {
 
     protected lateinit var showcaseProductAddViewModel: ShowcaseProductAddViewModel
 
-    protected val testDispatcher by lazy {
+    private val testDispatcher by lazy {
         TestCoroutineDispatcher()
     }
 
