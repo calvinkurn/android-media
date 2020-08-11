@@ -98,7 +98,6 @@ class ChatItemListViewHolder(
 
     private fun bindName(chat: ItemChatListPojo) {
         userName.text = MethodChecker.fromHtml(chat.name)
-        userName.setWeight(Typography.REGULAR)
     }
 
     private fun bindProfilePicture(chat: ItemChatListPojo) {
@@ -247,7 +246,6 @@ class ChatItemListViewHolder(
                 unreadCounter.show()
             }
             STATE_CHAT_READ -> {
-                userName.setWeight(Typography.REGULAR)
                 unreadCounter.hide()
             }
         }
