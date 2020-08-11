@@ -40,14 +40,6 @@ public class ShopInfo {
     @Expose
     private String shopDomain;
 
-    public String getShopOpenSince() {
-        return shopOpenSince;
-    }
-
-    public void setShopOpenSince(String shopOpenSince) {
-        this.shopOpenSince = shopOpenSince;
-    }
-
     public String getShopLocation() {
         return shopLocation;
     }
@@ -64,21 +56,6 @@ public class ShopInfo {
         this.shopId = shopId;
     }
 
-    public String getShopTagline() {
-        return shopTagline;
-    }
-
-    public void setShopTagline(String shopTagline) {
-        this.shopTagline = shopTagline;
-    }
-
-    public String getShopUrl() {
-        return shopUrl;
-    }
-
-    public void setShopUrl(String shopUrl) {
-        this.shopUrl = shopUrl;
-    }
 
     public String getShopName() {
         return shopName;
@@ -86,38 +63,6 @@ public class ShopInfo {
 
     public void setShopName(String shopName) {
         this.shopName = shopName;
-    }
-
-    public Integer getShopOwnerId() {
-        return shopOwnerId;
-    }
-
-    public void setShopOwnerId(Integer shopOwnerId) {
-        this.shopOwnerId = shopOwnerId;
-    }
-
-    public String getShopDescription() {
-        return shopDescription;
-    }
-
-    public void setShopDescription(String shopDescription) {
-        this.shopDescription = shopDescription;
-    }
-
-    public String getShopCover() {
-        return shopCover;
-    }
-
-    public void setShopCover(String shopCover) {
-        this.shopCover = shopCover;
-    }
-
-    public String getShopAvatar() {
-        return shopAvatar;
-    }
-
-    public void setShopAvatar(String shopAvatar) {
-        this.shopAvatar = shopAvatar;
     }
 
     public String getShopDomain() {

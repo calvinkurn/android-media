@@ -34,7 +34,7 @@ class TopChatRoomActivity : BaseChatToolbarActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+        super.onCreate(null)
         useLightNotificationBar()
         initWindowBackground()
         initTopchatToolbar()

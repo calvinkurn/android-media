@@ -6,13 +6,13 @@ import com.google.gson.JsonParser;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.thankyou.data.mapper.DigitalTrackerMapper;
 import com.tokopedia.tkpd.thankyou.data.pojo.digital.Attributes;
 import com.tokopedia.tkpd.thankyou.data.pojo.digital.DigitalDataWrapper;
 import com.tokopedia.tkpd.thankyou.data.pojo.digital.DigitalRequestPayload;
 import com.tokopedia.tkpd.thankyou.data.source.api.DigitalTrackerApi;
 import com.tokopedia.tkpd.thankyou.domain.model.ThanksTrackerConst;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import rx.Observable;
 
@@ -26,20 +26,21 @@ public class DigitalTrackerCloudSource extends ThanksTrackerCloudSource {
     private DigitalTrackerApi digitalTrackerApi;
     private DigitalTrackerMapper digitalTrackerMapper;
     private Gson gson;
-    private SessionHandler sessionHandler;
+    private UserSessionInterface userSessionInterface;
+
     private GCMHandler gcmHandler;
 
     public DigitalTrackerCloudSource(RequestParams requestParams,
                                      DigitalTrackerApi digitalTrackerApi,
                                      DigitalTrackerMapper digitalTrackerMapper,
                                      Gson gson,
-                                     SessionHandler sessionHandler,
+                                     UserSessionInterface userSessionInterface,
                                      GCMHandler gcmHandler) {
         super(requestParams);
         this.digitalTrackerApi = digitalTrackerApi;
         this.digitalTrackerMapper = digitalTrackerMapper;
         this.gson = gson;
-        this.sessionHandler = sessionHandler;
+        this.userSessionInterface = userSessionInterface;
         this.gcmHandler = gcmHandler;
     }
 
@@ -71,7 +72,7 @@ public class DigitalTrackerCloudSource extends ThanksTrackerCloudSource {
         RequestBodyIdentifier identifier = new RequestBodyIdentifier();
         identifier.setDeviceToken(gcmHandler.getRegistrationId());
         identifier.setOsType(OS_TYPE_ANDROID);
-        identifier.setUserId(sessionHandler.getLoginID());
+        identifier.setUserId(userSessionInterface.getUserId());
         return identifier;
     }
 }

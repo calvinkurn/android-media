@@ -26,12 +26,14 @@ import com.tokopedia.buyerorder.detail.data.ActionButton;
 import com.tokopedia.buyerorder.detail.data.EntityAddress;
 import com.tokopedia.buyerorder.detail.data.Items;
 import com.tokopedia.buyerorder.detail.data.MetaDataInfo;
+import com.tokopedia.buyerorder.detail.data.OrderDetails;
 import com.tokopedia.buyerorder.detail.view.activity.OrderListwebViewActivity;
 import com.tokopedia.buyerorder.detail.view.customview.BookingCodeView;
 import com.tokopedia.buyerorder.detail.view.customview.CustomTicketView;
 import com.tokopedia.buyerorder.detail.view.customview.RedeemVoucherView;
 import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailContract;
 import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailPresenter;
+import com.tokopedia.buyerorder.list.data.OrderCategory;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 
 import java.io.UnsupportedEncodingException;
@@ -46,9 +48,11 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public static final String KEY_BUTTON = "button";
     public static final String KEY_REFRESH = "refresh";
     public static final String KEY_TEXT = "text";
+    public static final String KEY_VOUCHER_CODE = "vouchercodes";
     public static final String KEY_REDIRECT = "redirect";
     public static final String CONTENT_TYPE = "application/pdf";
     public static final String KEY_QRCODE = "qrcode";
+    public static final String KEY_POPUP = "popup";
     public static final String KEY_RETRY = "Cek Ulang";
     public static final int DEALS_CATEGORY_ID = 35;
     private static final int EVENTS_CATEGORY_ID_1 = 32;
@@ -72,14 +76,16 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private PermissionCheckerHelper permissionCheckerHelper;
     public static final int TEXT_SIZE_LARGE = 14;
     private int totalTicketCount;
+    private OrderDetails orderDetails;
 
-    public ItemsAdapter(Context context, List<Items> itemsList, boolean isShortLayout, OrderListDetailPresenter presenter, SetEventDetails setEventDetails, String orderId) {
+    public ItemsAdapter(Context context, List<Items> itemsList, boolean isShortLayout, OrderListDetailPresenter presenter, SetEventDetails setEventDetails, String orderId, OrderDetails orderDetails) {
         this.context = context;
         this.itemsList = itemsList;
         this.isShortLayout = isShortLayout;
         this.presenter = presenter;
         this.setEventDetails = setEventDetails;
         this.orderId = orderId;
+        this.orderDetails = orderDetails;
     }
 
     @Override
@@ -130,7 +136,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         this.position = position;
         if (holder instanceof ItemViewHolder) {
             ((ItemViewHolder) holder).setIndex(position);
-            ((ItemViewHolder) holder).bindData(itemsList.get(position), holder.getItemViewType());
+            ((ItemViewHolder) holder).bindData(orderDetails,itemsList.get(position), holder.getItemViewType());
         } else {
             ((DefaultViewHolder) holder).setIndex(position);
             ((DefaultViewHolder) holder).bindData(itemsList.get(position), holder.getItemViewType());
@@ -144,7 +150,8 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 return ITEM_DEALS_SHORT;
             else
                 return ITEM_DEALS;
-        } else if (itemsList.get(position).getCategoryID() == EVENTS_CATEGORY_ID_1 || itemsList.get(position).getCategoryID() == EVENTS_CATEGORY_ID_2) {
+        } else if (itemsList.get(position).getCategoryID() == EVENTS_CATEGORY_ID_1 || itemsList.get(position).getCategoryID() == EVENTS_CATEGORY_ID_2
+                || itemsList.get(position).getCategory().equalsIgnoreCase(OrderCategory.EVENT)) {
             return ITEM_EVENTS;
         } else if (itemsList.get(position).getCategoryID() == EVENTS_CATEGORY_INSURANCE) {
             return ITEM_INSURANCE;
@@ -276,7 +283,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
         }
 
-        void bindData(final Items item, int itemType) {
+        void bindData(final OrderDetails details, final Items item, int itemType) {
 
             MetaDataInfo metaDataInfo = null;
 
@@ -285,7 +292,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 metaDataInfo = gson.fromJson(item.getMetaData(), MetaDataInfo.class);
             }
             if (metaDataInfo != null) {
-                if (itemType == ITEM_DEALS || itemType == ITEM_DEALS_SHORT || itemType == ITEM_EVENTS) {
+                if (itemType == ITEM_DEALS || itemType == ITEM_DEALS_SHORT) {
                     if (TextUtils.isEmpty(metaDataInfo.getEntityImage())) {
                         ImageHandler.loadImage(context, dealImage, item.getImageUrl(), R.color.grey_1100, R.color.grey_1100);
                     } else {
@@ -297,6 +304,20 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         dealsDetails.setText(metaDataInfo.getEntityProductName());
                     }
                 }
+
+                if(itemType == ITEM_EVENTS){
+                    if (TextUtils.isEmpty(metaDataInfo.getProductImage())) {
+                        ImageHandler.loadImage(context, dealImage, item.getImageUrl(), R.color.grey_1100, R.color.grey_1100);
+                    } else {
+                        ImageHandler.loadImage(context, dealImage, metaDataInfo.getProductImage(), R.color.grey_1100, R.color.grey_1100);
+                    }
+                    if (TextUtils.isEmpty(metaDataInfo.getProductName())) {
+                        dealsDetails.setText(item.getTitle());
+                    } else {
+                        dealsDetails.setText(metaDataInfo.getProductName());
+                    }
+                }
+
                 if (itemType == ITEM_INSURANCE) {
 
                     if (TextUtils.isEmpty(metaDataInfo.getProuductImage())) {
@@ -351,41 +372,42 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 if (itemType == ITEM_EVENTS) {
                     presenter.sendThankYouEvent(metaDataInfo, ITEM_EVENTS);
                     final MetaDataInfo metaDataInfo1 = metaDataInfo;
-                    if (metaDataInfo.getEntityPackages() != null && !TextUtils.isEmpty(metaDataInfo.getEntityPackages().get(0).getCity())) {
-                        eventCity.setText(metaDataInfo.getEntityPackages().get(0).getCity());
+                    if (!TextUtils.isEmpty(metaDataInfo.getLocationName())) {
+                        eventCity.setText(metaDataInfo.getLocationName());
                     }
-                    if (metaDataInfo.getEntityPackages() != null && !TextUtils.isEmpty(metaDataInfo.getEntityPackages().get(0).getAddress())) {
-                        eventAddress.setText(metaDataInfo.getEntityPackages().get(0).getAddress());
+                    if (!TextUtils.isEmpty(metaDataInfo.getLocationDesc())) {
+                        eventAddress.setText(metaDataInfo.getLocationDesc());
                     }
 
                     if (metaDataInfo.getIsHiburan() == 1) {
-                        if (!TextUtils.isEmpty(metaDataInfo.getEndDate())) {
+                        if (!TextUtils.isEmpty(metaDataInfo.getEndTime())) {
                             tanggalEventsTitle.setVisibility(View.VISIBLE);
                             tanggalEventsTitle.setText(context.getResources().getString(R.string.text_valid_till));
-                            tanggalEvents.setText(metaDataInfo.getEndDate());
+                            tanggalEvents.setText(metaDataInfo.getEndTime());
                         }
                     } else if (metaDataInfo.getIsHiburan() == 0) {
-                        if (!TextUtils.isEmpty(metaDataInfo.getEndDate()) && !TextUtils.isEmpty(metaDataInfo.getStartDate())) {
+                        if (!TextUtils.isEmpty(metaDataInfo.getEndTime()) && !TextUtils.isEmpty(metaDataInfo.getStartTime())) {
                             tanggalEventsTitle.setVisibility(View.VISIBLE);
                             tanggalEventsTitle.setText(context.getResources().getString(R.string.tanggal_events));
-                            tanggalEvents.setText(metaDataInfo.getStartDate() + " - " + metaDataInfo.getEndDate());
+                            tanggalEvents.setText(metaDataInfo.getStartTime() + " - " + metaDataInfo.getEndTime());
                         }
                     }
 
                     if (!TextUtils.isEmpty(item.getCategory())) {
-                        validDate.setText(" ".concat(metaDataInfo.getEntityPackages().get(0).getDisplayName()));
+                        validDate.setText(" ".concat(metaDataInfo.getName()));
                         llValid.setVisibility(View.VISIBLE);
                     } else {
                         llValid.setVisibility(View.GONE);
                     }
-                    if (item.getActionButtons() != null && item.getActionButtons().size() > 0) {
-                        setEventDetails.setEventDetails(item.getActionButtons().get(0), item);
+                    if (orderDetails.actionButtons() != null && orderDetails.actionButtons().size() > 0) {
+                        setEventDetails.setActionButtonEvent(item,orderDetails.actionButtons().get(0), orderDetails);
                     }
+                    setEventDetails.setPassengerEvent(item);
                     setEventDetails.setDetailTitle(context.getResources().getString(R.string.detail_label_events));
                     customTicketView1.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            RouteManager.route(context, ApplinkOMSConstant.INTERNAL_EVENTS + metaDataInfo1.getSeoUrl());
+                            RouteManager.route(context, metaDataInfo1.getProductAppUrl());
                         }
                     });
                 }
@@ -445,74 +467,70 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 }
 
             } else if (itemType == ITEM_EVENTS) {
-                if (item.getTapActions() != null && item.getTapActions().size() > 0 && !item.isTapActionsLoaded()) {
-                    progressBar.setVisibility(View.VISIBLE);
-                    tapActionLayoutEvents.setVisibility(View.GONE);
-                    customTicketView.setVisibility(View.GONE);
-                    presenter.setActionButton(item.getTapActions(), ItemsAdapter.this, getIndex(), true);
-                } else if (item.getTapActions() == null || item.getTapActions().size() == 0) {
-                    if (!TextUtils.isEmpty(item.getTrackingNumber())) {
-                        String[] voucherCodes = item.getTrackingNumber().split(",");
-                        if (voucherCodes.length > 0) {
-                            if (metaDataInfo.getTotalTicketCount() > 0) {
-                                brandName.setText(String.format("%s %s", metaDataInfo.getTotalTicketCount(), context.getResources().getString(R.string.event_ticket_booking_multiple)));
-                            } else {
-                                brandName.setText(context.getResources().getString(R.string.event_ticket_booking_count));
-                            }
-                            voucherCodeLayout.setVisibility(View.VISIBLE);
-                            for (int i = 0; i < voucherCodes.length; i++) {
-                                BookingCodeView bookingCodeView = new BookingCodeView(context, voucherCodes[i], i, context.getResources().getString(R.string.voucher_code_title), voucherCodes.length);
-                                bookingCodeView.setBackground(null);
-                                voucherCodeLayout.addView(bookingCodeView);
-                            }
-                        }
-                    } else {
-                        progressBar.setVisibility(View.GONE);
-                        customTicketView.setVisibility(View.GONE);
-                        tapActionLayoutEvents.setVisibility(View.GONE);
-                    }
-                }
-                if (item.isTapActionsLoaded()) {
+                if(!item.isTapActionsLoaded()) {
                     progressBar.setVisibility(View.GONE);
                     customTicketView.setVisibility(View.VISIBLE);
                     tapActionLayoutEvents.setVisibility(View.VISIBLE);
                     tapActionLayoutEvents.removeAllViews();
-                    totalTicketCount = metaDataInfo.getTotalTicketCount();
-                    int size = item.getTapActions().size();
+                    totalTicketCount = metaDataInfo.getQuantity();
+                    int size = item.getActionButtons().size();
                     tapActionLayoutEvents.removeAllViews();
+                    if(size==0) setETiket(totalTicketCount);
                     for (int i = 0; i < size; i++) {
-                        ActionButton actionButton = item.getTapActions().get(i);
+                        ActionButton actionButton = item.getActionButtons().get(i);
                         TextView tapActionTextView = renderActionButtons(i, actionButton, item);
                         if (actionButton.getControl().equalsIgnoreCase(KEY_REFRESH)) {
                             RedeemVoucherView redeemVoucherView = new RedeemVoucherView(context, i, actionButton, item, actionButton.getBody(), presenter, getIndex(), ItemsAdapter.this);
                             tapActionLayoutEvents.addView(redeemVoucherView);
+                        } else if(actionButton.getControl().equalsIgnoreCase(KEY_VOUCHER_CODE)){
+                            if (!actionButton.getBody().getBody().isEmpty()) {
+                                String[] voucherCodes = actionButton.getBody().getBody().split(",");
+                                if (voucherCodes.length > 0) {
+                                    voucherCodeLayout.setVisibility(View.VISIBLE);
+                                    for (int j = 0; j < voucherCodes.length; j++) {
+                                        BookingCodeView bookingCodeView = new BookingCodeView(context, voucherCodes[i], i, context.getResources().getString(R.string.voucher_code_title), voucherCodes.length);
+                                        bookingCodeView.setBackground(null);
+                                        voucherCodeLayout.addView(bookingCodeView);
+                                    }
+                                }
+                            }
                         } else {
                             if (actionButton.getControl().equalsIgnoreCase(KEY_BUTTON)) {
                                 presenter.setActionButton(item.getTapActions(), ItemsAdapter.this, getIndex(), true);
                             } else {
-                                setActionButtonClick(tapActionTextView, actionButton, item, metaDataInfo.getTotalTicketCount());
+                                setActionButtonClick(tapActionTextView, actionButton, item, metaDataInfo.getQuantity());
                             }
                             tapActionLayoutEvents.addView(tapActionTextView);
                         }
                         setEventInfo(actionButton, totalTicketCount);
                     }
                 }
-            }
+             }
         }
 
         private void setEventInfo(ActionButton actionButton, int totalTicketCount) {
             if (actionButton.getControl().equalsIgnoreCase(KEY_REDIRECT) || actionButton.getControl().equalsIgnoreCase(KEY_REFRESH)) {
-                if (totalTicketCount > 0) {
-                    brandName.setText(String.format("%s %s", totalTicketCount, context.getResources().getString(R.string.event_ticket_voucher_multiple)));
-                } else {
-                    brandName.setText(context.getResources().getString(R.string.event_ticket_voucher_count));
-                }
-            } else if (actionButton.getControl().equalsIgnoreCase(KEY_QRCODE)) {
+                setETiket(totalTicketCount);
+            } else if (actionButton.getControl().equalsIgnoreCase(KEY_POPUP)) {
                 if (totalTicketCount > 0) {
                     brandName.setText(String.format("%s %s", totalTicketCount, context.getResources().getString(R.string.event_ticket_qrcode_multiple)));
                 } else {
                     brandName.setText(context.getResources().getString(R.string.event_ticket_qrcode_count));
                 }
+            } else if(actionButton.getControl().equalsIgnoreCase(KEY_VOUCHER_CODE)){
+                if (totalTicketCount > 0) {
+                    brandName.setText(String.format("%s %s", totalTicketCount, context.getResources().getString(R.string.event_ticket_booking_multiple)));
+                } else {
+                    brandName.setText(context.getResources().getString(R.string.event_ticket_booking_count));
+                }
+            }
+        }
+
+        private void setETiket(int totalTicketCount){
+            if (totalTicketCount > 0) {
+                brandName.setText(String.format("%s %s", totalTicketCount, context.getResources().getString(R.string.event_ticket_voucher_multiple)));
+            } else {
+                brandName.setText(context.getResources().getString(R.string.event_ticket_voucher_count));
             }
         }
 
@@ -531,6 +549,10 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     }
                 }
             } else if (actionButton.getControl().equalsIgnoreCase(KEY_QRCODE)) {
+                view.setOnClickListener(v -> {
+                    setEventDetails.openShowQRFragment(actionButton, item);
+                });
+            } else if (actionButton.getControl().equalsIgnoreCase(KEY_POPUP)) {
                 view.setOnClickListener(v -> {
                     setEventDetails.openShowQRFragment(actionButton, item);
                 });
@@ -611,6 +633,10 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         void setDetailTitle(String title);
 
         void setInsuranceDetail();
+
+        void setPassengerEvent(Items item);
+
+        void setActionButtonEvent(Items item,ActionButton actionButton, OrderDetails orderDetails);
 
     }
 

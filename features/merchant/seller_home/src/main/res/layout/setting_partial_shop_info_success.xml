@@ -16,11 +16,6 @@
 
     <include
         android:id="@+id/freeShippingLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/spacing_lvl4"
-        android:layout_marginRight="@dimen/spacing_lvl4"
-        android:layout_marginBottom="@dimen/spacing_lvl4"
         android:visibility="gone"
         layout="@layout/setting_partial_free_shipping" />
 

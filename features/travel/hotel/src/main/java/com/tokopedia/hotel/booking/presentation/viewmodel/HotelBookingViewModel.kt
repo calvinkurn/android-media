@@ -91,7 +91,7 @@ class HotelBookingViewModel @Inject constructor(private val graphqlRepository: G
 
     fun getTokopointsSumCoupon(rawQuery: String) {
         launchCatchError(block = {
-            val data = withContext(Dispatchers.Default) {
+            val data = withContext(dispatcher.ui()) {
                 val graphqlRequest = GraphqlRequest(rawQuery, TokopointsSumCoupon.Response::class.java)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<TokopointsSumCoupon.Response>()

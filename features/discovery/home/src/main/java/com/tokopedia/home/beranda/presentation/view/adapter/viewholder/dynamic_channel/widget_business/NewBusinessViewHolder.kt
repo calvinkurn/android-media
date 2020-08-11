@@ -8,6 +8,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.BaseOnTabSelectedListener
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.v2.BusinessUnitTracking
 import com.tokopedia.home.beranda.data.model.HomeWidget
@@ -34,6 +35,8 @@ class NewBusinessViewHolder(view: View, private val listener: HomeCategoryListen
     private val loadingView = view.findViewById<LinearLayout>(R.id.loading_view)
     private val loadingGridView = view.findViewById<LinearLayout>(R.id.grid_loading_layout)
     private var model: NewBusinessUnitWidgetDataModel? = null
+    private var performanceMonitoring: PerformanceMonitoring? = null
+    private val performanceTraceName = "mp_home_business_unit_widget_load_time"
     private val adapterBusinessWidget = BusinessUnitAdapter(object: NewBusinessUnitViewHolder.BusinessUnitListener{
         override fun getBusinessUnit(position: Int) {
             if(model?.tabList != null && (model?.tabList?.size ?: -1) > position){
@@ -72,9 +75,12 @@ class NewBusinessViewHolder(view: View, private val listener: HomeCategoryListen
         errorBuWidget.refreshBtn?.setOnClickListener {
             listener.getTabBusinessWidget(adapterPosition)
         }
+        performanceMonitoring = PerformanceMonitoring()
     }
 
     override fun bind(element: NewBusinessUnitWidgetDataModel?) {
+        adapterBusinessWidget.setPositionWidgetOnHome(adapterPosition)
+        performanceMonitoring?.startTrace(performanceTraceName)
         showLoading()
         errorBuWidget.hide()
         tabLayout.show()
@@ -87,6 +93,8 @@ class NewBusinessViewHolder(view: View, private val listener: HomeCategoryListen
         if(element?.tabList != null && tabLayout.tabCount < 1){
             initTabLayout(element.tabList)
             initContainerColor(element.backColor)
+            performanceMonitoring?.stopTrace()
+            performanceMonitoring = null
         }
         if(element?.contentsList != null){
             initViewPager(element.contentsList)
@@ -95,6 +103,7 @@ class NewBusinessViewHolder(view: View, private val listener: HomeCategoryListen
 
     override fun bind(element: NewBusinessUnitWidgetDataModel?, payloads: MutableList<Any>) {
         try {
+            adapterBusinessWidget.setPositionWidgetOnHome(adapterPosition)
             model = element
             if (payloads.isNotEmpty() && payloads.getOrNull(0) is Bundle) {
                 val bundle = (payloads.first() as Bundle)
@@ -118,6 +127,8 @@ class NewBusinessViewHolder(view: View, private val listener: HomeCategoryListen
                     if(element?.backColor?.isNotEmpty() == true){
                         initContainerColor(element.backColor)
                     }
+                    performanceMonitoring?.stopTrace()
+                    performanceMonitoring = null
                 } else if(bundle.containsKey(UPDATE_BUNDLE_CONTENT_LAYOUT)){
                     if(element?.contentsList != null){
                         initViewPager(element.contentsList)

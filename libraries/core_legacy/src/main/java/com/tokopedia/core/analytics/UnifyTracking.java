@@ -286,39 +286,12 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventRegisterError(Context context, String label) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(new EventTracking(
-                AppEventTracking.Event.REGISTER_ERROR,
-                AppEventTracking.Category.REGISTER,
-                AppEventTracking.Action.REGISTER_ERROR,
-                label
-        ).getEvent());
-    }
-
     public static void eventShare(Context context, String label) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(new EventTracking(
                 AppEventTracking.Event.PRODUCT_DETAIL_PAGE,
                 AppEventTracking.Category.PRODUCT_DETAIL,
                 AppEventTracking.Action.CLICK,
                 AppEventTracking.EventLabel.SHARE_TO + label
-        ).getEvent());
-    }
-
-    public static void eventManageShopShipping(Context context) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(new EventTracking(
-                AppEventTracking.Event.SHOP_MANAGE,
-                AppEventTracking.Category.SHOP_MANAGE,
-                AppEventTracking.Action.CLICK,
-                AppEventTracking.EventLabel.SHOP_SHIPPING
-        ).getEvent());
-    }
-
-    public static void eventShopTabSelected(Context context, String label) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(new EventTracking(
-                AppEventTracking.Event.SALES,
-                AppEventTracking.Category.SALES,
-                AppEventTracking.Action.CLICK,
-                label
         ).getEvent());
     }
 
@@ -329,18 +302,6 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.AddProduct.EVENT_ACTION_ERROR,
                 label
         ).getEvent());
-    }
-
-    public static void eventWidgetInstalled(Context context) {
-        eventWidget(context, AppEventTracking.Action.INSTALL, AppEventTracking.EventLabel.WIDGET_ORDER);
-    }
-
-    public static void eventWidgetRemoved(Context context) {
-        eventWidget(context, AppEventTracking.Action.REMOVE, AppEventTracking.EventLabel.WIDGET_ORDER);
-    }
-
-    public static void eventAccessAppViewWidget(Context context) {
-        eventWidget(context, AppEventTracking.Action.CLICK, AppEventTracking.EventLabel.TO_APP_ORDER);
     }
 
     public static void eventWidget(Context context, String action, String eventLabel) {
@@ -359,20 +320,6 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Action.CLICK,
                 eventLabel
         ).getEvent());
-    }
-
-    public static void eventCreateShopFillLogisticError(Context context) {
-        eventCreateShopSellerApp(context, AppEventTracking.EventLabel.SAVE_LOGISTIC_ERROR);
-    }
-
-    public static void eventOpportunity(Context context, String event, String category,
-                                        String action, String label) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(new EventTracking(
-                event,
-                category,
-                action,
-                label)
-                .getEvent());
     }
 
     public static void eventReferralAndShare(Context context, String action, String label) {

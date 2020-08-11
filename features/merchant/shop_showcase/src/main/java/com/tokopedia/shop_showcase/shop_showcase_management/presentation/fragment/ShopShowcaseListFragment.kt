@@ -12,8 +12,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.cardview.widget.CardView
-import androidx.fragment.app.FragmentManager
-
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -23,7 +21,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -33,7 +30,6 @@ import com.tokopedia.design.text.watcher.AfterTextWatcher
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
-
 import com.tokopedia.shop_showcase.R
 import com.tokopedia.shop_showcase.ShopShowcaseInstance
 import com.tokopedia.shop_showcase.common.*
@@ -123,7 +119,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
         return activity?.run {
             DaggerShopShowcaseManagementComponent
                     .builder()
-                    .shopShowcaseManagementModule(ShopShowcaseManagementModule())
+                    .shopShowcaseManagementModule(ShopShowcaseManagementModule(this))
                     .shopShowcaseComponent(ShopShowcaseInstance.getComponent(application))
                     .build()
         }
@@ -172,8 +168,8 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
     override fun onCreate(savedInstanceState: Bundle?) {
         context?.let { tracking = ShopShowcaseTracking(it) }
         arguments?.let {
-            shopId = it.getString(ShopShowcaseListParam.EXTRA_SHOP_ID)
-            shopType = it.getString(ShopShowcaseListParam.EXTRA_SHOP_TYPE)
+            shopId = it.getString(ShopShowcaseListParam.EXTRA_SHOP_ID, "")
+            shopType = it.getString(ShopShowcaseListParam.EXTRA_SHOP_TYPE, "")
             selectedEtalaseId = it.getString(ShopShowcaseListParam.EXTRA_ETALASE_ID)
             isShowDefault = it.getBoolean(ShopShowcaseListParam.EXTRA_IS_SHOW_DEFAULT)
             isShowZeroProduct = it.getBoolean(ShopShowcaseListParam.EXTRA_IS_SHOW_ZERO_PRODUCT)
@@ -312,7 +308,15 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
     override fun sendClickShowcase(dataShowcase: ShowcaseItem, position: Int) {
         tracking?.clickEtalase(shopId, shopType, dataShowcase.name)
         val showcaseId = if (dataShowcase.type == ShowcaseType.GENERATED) dataShowcase.alias else dataShowcase.id
-        gotoShowcaseResultPage(showcaseId, shopId)
+        activity?.run{
+            val intent = Intent()
+            intent.putExtra(ShopShowcaseListParam.EXTRA_ETALASE_ID, showcaseId)
+            intent.putExtra(ShopShowcaseListParam.EXTRA_ETALASE_NAME, dataShowcase.name)
+            intent.putExtra(ShopShowcaseListParam.EXTRA_ETALASE_BADGE, dataShowcase.badge)
+            intent.putExtra(ShopShowcaseListParam.EXTRA_IS_NEED_TO_RELOAD_DATA, true)
+            setResult(Activity.RESULT_OK, intent)
+            finish()
+        }
     }
 
     override fun onSuccessUpdateShowcase() {
@@ -325,6 +329,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
                 is Success -> {
                     stopPerformanceMonitoring()
                     showLoading(false)
+                    showLoadingSwipeToRefresh(false)
                     val errorMessage = it.data.shopShowcasesByShopID.error.message
                     if (errorMessage.isNotEmpty()) {
                         showErrorResponse(errorMessage)
@@ -530,18 +535,6 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
     private fun setupSellerView() {
         btnAddEtalase.visibility = View.VISIBLE
         headerUnify.actionTextView?.visibility = View.VISIBLE
-    }
-
-    private fun gotoShowcaseResultPage(showcaseId: String, shopId: String) {
-        view?.let {
-            val intent = RouteManager.getIntent(it.context, if (showcaseId.isNotBlank()) {
-                UriUtil.buildUri(ApplinkConst.SHOP_ETALASE, shopId, showcaseId)
-            } else {
-                UriUtil.buildUri(ApplinkConst.SHOP, shopId)
-            })
-            intent.putExtra(ShopShowcaseListParam.EXTRA_IS_NEED_TO_RELOAD_DATA, true)
-            it.context?.startActivity(intent)
-        }
     }
 
     private fun stopPerformanceMonitoring() {

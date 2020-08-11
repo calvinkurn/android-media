@@ -18,20 +18,21 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
-import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
-import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
+import com.tokopedia.otp.verification.domain.data.OtpConstant;
 import com.tokopedia.phoneverification.PhoneVerificationAnalytics;
 import com.tokopedia.phoneverification.PhoneVerificationConst;
 import com.tokopedia.phoneverification.R;
 import com.tokopedia.phoneverification.di.DaggerPhoneVerificationComponent;
 import com.tokopedia.phoneverification.di.PhoneVerificationComponent;
-import com.tokopedia.phoneverification.util.CustomPhoneNumberUtil;
 import com.tokopedia.phoneverification.view.activity.ChangePhoneNumberActivity;
 import com.tokopedia.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.phoneverification.view.listener.PhoneVerification;
 import com.tokopedia.phoneverification.view.presenter.VerifyPhoneNumberPresenter;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.user.session.UserSession;
+import com.tokopedia.utils.phonenumber.PhoneNumberUtil;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -178,7 +179,7 @@ public class PhoneVerificationFragment extends BaseDaggerFragment
         setViewListener();
 
         phoneNumberEditText.addTextChangedListener(phoneTextWatcher);
-        phoneNumberEditText.setText(CustomPhoneNumberUtil.transform(
+        phoneNumberEditText.setText(PhoneNumberUtil.transform(
                 userSession.getPhoneNumber()));
 
         if (phoneNumber != null && "".equalsIgnoreCase(phoneNumber.trim())) {
@@ -196,12 +197,11 @@ public class PhoneVerificationFragment extends BaseDaggerFragment
     public void setRequestOtpButtonListener(){
         requestOtpButton.setOnClickListener(v -> {
             if (isValid()) {
-                Intent intent = VerificationActivity.getShowChooseVerificationMethodIntent(
-                        getActivity(),
-                        RequestOtpUseCase.OTP_TYPE_PHONE_NUMBER_VERIFICATION,
-                        getPhoneNumber(),
-                        ""
-                );
+                Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalGlobal.COTP);
+                intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, getPhoneNumber());
+                intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OtpConstant.OtpType.PHONE_NUMBER_VERIFICATION);
+                intent.putExtra(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true);
+                intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, true);
                 startActivityForResult(intent, RESULT_PHONE_VERIFICATION);
             } else {
                 showErrorPhoneNumber(getString(R.string

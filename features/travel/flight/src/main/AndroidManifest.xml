@@ -32,27 +32,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".dashboard.view.activity.FlightDashboardActivity"
-            android:label="@string/flight_dashboard_toolbar_title"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.Flight" />
-        <activity
-            android:name=".dashboard.view.activity.FlightSelectPassengerActivity"
-            android:label="@string/select_passenger_toolbar_title"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.Flight" />
-        <activity
             android:name=".airport.view.activity.FlightAirportPickerActivity"
-            android:label="@string/search_flight"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.Flight" />
-        <activity
-            android:name=".search.presentation.activity.FlightSearchFilterActivity"
-            android:label="@string/flight_filter_label"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.Flight" />
-        <activity
-            android:name=".search.presentation.activity.FlightSearchActivity"
             android:label="@string/search_flight"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight" />
@@ -62,27 +42,8 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight" />
         <activity
-            android:name=".search.presentation.activity.FlightSearchReturnActivity"
-            android:label="@string/search_flight"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.Flight" />
-        <activity
             android:name=".searchV4.presentation.activity.FlightSearchReturnActivity"
             android:label="@string/search_flight"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.Flight" />
-        <activity
-            android:name=".dashboard.view.activity.FlightClassesActivity"
-            android:label="@string/flight_classes_toolbar_title"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.Flight" />
-        <activity
-            android:name=".dashboard.view.activity.FlightDatePickerActivity"
-            android:label="@string/search_flight"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.Flight" />
-        <activity
-            android:name=".detail.view.activity.FlightDetailActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight" />
         <activity

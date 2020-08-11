@@ -5,14 +5,14 @@ import com.tokopedia.common.travel.constant.TravelSortOption
 import com.tokopedia.common.travel.utils.TravelTestDispatcherProvider
 import com.tokopedia.flight.filter.presentation.FlightFilterFacilityEnum
 import com.tokopedia.flight.filter.presentation.model.PriceRangeModel
-import com.tokopedia.flight.search.domain.FlightSearchCountUseCase
-import com.tokopedia.flight.search.domain.FlightSearchStatisticsUseCase
-import com.tokopedia.flight.search.presentation.model.FlightAirlineModel
-import com.tokopedia.flight.search.presentation.model.filter.DepartureTimeEnum
-import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
-import com.tokopedia.flight.search.presentation.model.filter.RefundableEnum
-import com.tokopedia.flight.search.presentation.model.filter.TransitEnum
-import com.tokopedia.flight.search.presentation.model.resultstatistics.*
+import com.tokopedia.flight.searchV4.domain.FlightSearchCountUseCase
+import com.tokopedia.flight.searchV4.domain.FlightSearchStatisticsUseCase
+import com.tokopedia.flight.searchV4.presentation.model.FlightAirlineModel
+import com.tokopedia.flight.searchV4.presentation.model.filter.DepartureTimeEnum
+import com.tokopedia.flight.searchV4.presentation.model.filter.FlightFilterModel
+import com.tokopedia.flight.searchV4.presentation.model.filter.RefundableEnum
+import com.tokopedia.flight.searchV4.presentation.model.filter.TransitEnum
+import com.tokopedia.flight.searchV4.presentation.model.statistics.*
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
@@ -108,7 +108,7 @@ class FlightFilterViewModelTest {
                 transitStats, airlineStats, departureStats, arrivalStats, refundableStats, false, true, true)
 
         coEvery {
-            flightSearchStatisticsUseCase.executeCoroutine(any())
+            flightSearchStatisticsUseCase.execute(any())
         } returns statistics
 
         //when
@@ -185,7 +185,8 @@ class FlightFilterViewModelTest {
         flightFilterViewModel.filterArrivalTime(selectedArrivalTime)
 
         //then
-        val actualArrivalTime = flightFilterViewModel.filterModel.value?.arrivalTimeList ?: mutableListOf()
+        val actualArrivalTime = flightFilterViewModel.filterModel.value?.arrivalTimeList
+                ?: mutableListOf()
         assert(actualArrivalTime.size == selectedArrivalTime.size)
         assert(actualArrivalTime[0] == selectedArrivalTime[0])
     }
@@ -241,7 +242,7 @@ class FlightFilterViewModelTest {
     fun getFlightCount_shouldReturnFlightCount() {
         //given
         coEvery {
-            flightSearchCountUseCase.executeCoroutine(any())
+            flightSearchCountUseCase.execute(any())
         } returns 33
 
         //when
@@ -257,7 +258,6 @@ class FlightFilterViewModelTest {
         val filterModel = FlightFilterModel()
         filterModel.priceMin = 90000
         filterModel.airlineList = mutableListOf("Garuda")
-        flightFilterViewModel.init(TravelSortOption.SHORTEST_DURATION, filterModel)
 
         //when
         flightFilterViewModel.resetFilter()
@@ -300,7 +300,7 @@ class FlightFilterViewModelTest {
     fun getAirlineList_shouldReturnEmptyListWhenDataNull() {
         //given
         coEvery {
-            flightSearchStatisticsUseCase.executeCoroutine(any())
+            flightSearchStatisticsUseCase.execute(any())
         } returns FlightSearchStatisticModel(0, 1000, 60, 90,
                 listOf(), null, listOf(), listOf(), listOf(), false, true, true)
         flightFilterViewModel.init(0, FlightFilterModel())
@@ -325,7 +325,7 @@ class FlightFilterViewModelTest {
     fun getAirlineList_shouldReturnEmptyData() {
         //given
         coEvery {
-            flightSearchStatisticsUseCase.executeCoroutine(any())
+            flightSearchStatisticsUseCase.execute(any())
         } returns FlightSearchStatisticModel(0, 1000, 60, 90,
                 listOf(), listOf(), listOf(), listOf(), listOf(), false, true, true)
         flightFilterViewModel.init(0, FlightFilterModel())
@@ -345,7 +345,7 @@ class FlightFilterViewModelTest {
             airlinesMockData.add(AirlineStat(FlightAirlineModel(i.toString(), "", "", ""), 0, ""))
         }
         coEvery {
-            flightSearchStatisticsUseCase.executeCoroutine(any())
+            flightSearchStatisticsUseCase.execute(any())
         } returns FlightSearchStatisticModel(0, 1000, 60, 90,
                 listOf(), airlinesMockData, listOf(), listOf(), listOf(), false, true, true)
         flightFilterViewModel.init(0, FlightFilterModel())
@@ -363,7 +363,7 @@ class FlightFilterViewModelTest {
     fun mapStatisticToModel_shouldReturnEmptyList() {
         //given
         coEvery {
-            flightSearchStatisticsUseCase.executeCoroutine(any())
+            flightSearchStatisticsUseCase.execute(any())
         } returns null
 
         //when
@@ -380,7 +380,7 @@ class FlightFilterViewModelTest {
         val statistics = FlightSearchStatisticModel(0, 100000, 60, 90,
                 listOf(), listOf(), listOf(), listOf(), listOf(), false, true, true)
         coEvery {
-            flightSearchStatisticsUseCase.executeCoroutine(any())
+            flightSearchStatisticsUseCase.execute(any())
         } returns statistics
 
         val filterModel = FlightFilterModel()
@@ -405,7 +405,7 @@ class FlightFilterViewModelTest {
         val statistics = FlightSearchStatisticModel(30, 100000, 60, 90,
                 listOf(), listOf(), listOf(), listOf(), listOf(), false, true, true)
         coEvery {
-            flightSearchStatisticsUseCase.executeCoroutine(any())
+            flightSearchStatisticsUseCase.execute(any())
         } returns statistics
 
         //when

@@ -1,6 +1,7 @@
 package com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble
 
 import android.view.View
+import android.widget.LinearLayout
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.data.MessageViewModel
@@ -16,11 +17,10 @@ abstract class ChatMessageViewHolder(itemView: View?, private val listener: Chat
 
     open val fxChat: FlexBoxChatLayout? = itemView?.findViewById(R.id.fxChat)
 
-    override fun bind(viewModel: MessageViewModel?) {
-        if (viewModel == null) return
-        verifyReplyTime(viewModel)
-        bindChatMessage(viewModel)
-        bindHour(viewModel)
+    override fun bind(message: MessageViewModel) {
+        verifyReplyTime(message)
+        bindChatMessage(message)
+        bindHour(message)
         bindClick()
     }
 

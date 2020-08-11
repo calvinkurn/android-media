@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.TalkInstance
@@ -25,13 +26,12 @@ import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringContract
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringListener
-import com.tokopedia.talk.common.analytics.TalkTrackingConstants
 import com.tokopedia.talk.common.constants.TalkConstants
-import com.tokopedia.talk.common.constants.TalkConstants.IS_FROM_INBOX
 import com.tokopedia.talk.common.constants.TalkConstants.PARAM_SHOP_ID
-import com.tokopedia.talk.common.constants.TalkConstants.PARAM_PRODUCT_ID
+import com.tokopedia.talk.common.constants.TalkConstants.PARAM_SOURCE
 import com.tokopedia.talk.common.constants.TalkConstants.QUESTION_ID
 import com.tokopedia.talk.feature.reply.analytics.TalkReplyTracking
+import com.tokopedia.talk.feature.reply.analytics.TalkReplyTrackingConstants
 import com.tokopedia.talk.feature.reply.data.mapper.TalkReplyMapper
 import com.tokopedia.talk.feature.reply.data.model.discussion.AttachedProduct
 import com.tokopedia.talk.feature.reply.data.model.discussion.DiscussionDataByQuestionIDResponseWrapper
@@ -50,6 +50,7 @@ import com.tokopedia.talk_old.R
 import com.tokopedia.talk_old.reporttalk.view.activity.ReportTalkActivity
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_talk_reading.pageError
 import kotlinx.android.synthetic.main.fragment_talk_reading.pageLoading
@@ -74,14 +75,13 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         const val MINIMUM_TEXT_LENGTH = 5
 
         @JvmStatic
-        fun createNewInstance(questionId: String, shopId: String, productId: String, isFromInbox: Boolean): TalkReplyFragment =
+        fun createNewInstance(questionId: String, shopId: String, source: String): TalkReplyFragment =
                 TalkReplyFragment().apply {
                     arguments = Bundle()
                     arguments?.apply {
                         putString(QUESTION_ID, questionId)
                         putString(PARAM_SHOP_ID, shopId)
-                        putString(PARAM_PRODUCT_ID, productId)
-                        putBoolean(IS_FROM_INBOX, isFromInbox)
+                        putString(PARAM_SOURCE, source)
                     }
                 }
     }
@@ -92,13 +92,14 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     private var questionId = ""
     private var shopId = ""
     private var productId = ""
-    private var isFromInbox = false
+    private var source = ""
     private var adapter: TalkReplyAdapter? = null
     private var attachedProductAdapter: TalkReplyAttachedProductAdapter? = null
     private var talkPerformanceMonitoringListener: TalkPerformanceMonitoringListener? = null
+    private var toaster: Snackbar? = null
 
     override fun getScreenName(): String {
-        return TalkTrackingConstants.TALK_SEND_SCREEN_SCREEN_NAME
+        return TalkReplyTrackingConstants.REPLY_SCREEN_NAME
     }
 
     override fun initInjector() {
@@ -223,10 +224,13 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
 
     override fun startRenderPerformanceMonitoring() {
         talkPerformanceMonitoringListener?.startRenderPerformanceMonitoring()
-        talkReplyRecyclerView.post {
-            talkPerformanceMonitoringListener?.stopRenderPerformanceMonitoring()
-            talkPerformanceMonitoringListener?.stopPerformanceMonitoring()
-        }
+        talkReplyRecyclerView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                talkPerformanceMonitoringListener?.stopRenderPerformanceMonitoring()
+                talkPerformanceMonitoringListener?.stopPerformanceMonitoring()
+                talkReplyRecyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+            }
+        })
     }
 
     override fun castContextToTalkPerformanceMonitoringListener(context: Context): TalkPerformanceMonitoringListener? {
@@ -239,10 +243,18 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        castContextToTalkPerformanceMonitoringListener(context)
+        talkPerformanceMonitoringListener = castContextToTalkPerformanceMonitoringListener(context)
     }
 
-    override fun onUserDetailsClicked(userId: String) {
+    override fun onUserDetailsClicked(userId: String, isSeller: Boolean, shopdId: String) {
+        if(isSeller) {
+            goToShopPageActivity(shopId)
+            return
+        }
+        goToProfileActivity(userId)
+    }
+
+    override fun goToProfilePage(userId: String) {
         goToProfileActivity(userId)
     }
 
@@ -252,13 +264,6 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
 
     override fun onProductClicked() {
         goToPdp(productId)
-    }
-
-    override fun onStart() {
-        super.onStart()
-        activity?.run {
-            TalkReplyTracking.sendScreen(screenName)
-        }
     }
 
     private fun goToReportActivity(commentId: String) {
@@ -281,6 +286,11 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
 
     private fun goToPdp(productId: String) {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId)
+        startActivity(intent)
+    }
+
+    private fun goToShopPageActivity(shopId: String) {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.SHOP_PAGE, shopId)
         startActivity(intent)
     }
 
@@ -340,7 +350,13 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
             adjustToasterHeight()
         }
         view?.let {
-            Toaster.make(it, successMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(R.string.talk_ok))
+            this.toaster = Toaster.build(it, successMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(R.string.talk_ok))
+            toaster?.let { toaster ->
+                if(toaster.isShownOrQueued) {
+                    return
+                }
+                toaster.show()
+            }
         }
     }
 
@@ -349,7 +365,13 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
             adjustToasterHeight()
         }
         view?.let {
-            Toaster.make(it, errorMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.talk_ok))
+            this.toaster = Toaster.build(it, errorMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.talk_ok))
+            toaster?.let { toaster ->
+                if(toaster.isShownOrQueued) {
+                    return
+                }
+                toaster.show()
+            }
         }
     }
 
@@ -412,9 +434,13 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         showPageLoading()
     }
 
-    private fun onFailCreateComment() {
-        adjustToasterHeight()
-        view?.let { Toaster.make(it, getString(R.string.reply_toaster_network_error), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR, getString(R.string.talk_ok)) }
+    private fun onFailCreateComment(errorMessage: String?) {
+        val newErrorMessage = if(errorMessage.isNullOrEmpty()) {
+            getString(R.string.reply_toaster_network_error)
+        } else {
+            errorMessage
+        }
+        showErrorToaster(newErrorMessage, resources.getBoolean(R.bool.reply_adjust_toaster_height))
     }
 
     private fun adjustToasterHeight() {
@@ -450,7 +476,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
                         stopNetworkRequestPerformanceMonitoring()
                         startRenderPerformanceMonitoring()
                         talkReplyRecyclerView.visibility = View.VISIBLE
-                        if(isFromInbox && viewModel.isMyShop) {
+                        if(isFromInbox() || isFromNotif()) {
                             adapter?.showProductHeader(TalkReplyProductHeaderModel(discussionDataByQuestionID.productName, discussionDataByQuestionID.thumbnail))
                         }
                         adapter?.showHeader(TalkReplyMapper.mapDiscussionDataResponseToTalkReplyHeaderModel(it.data, viewModel.isMyShop))
@@ -461,6 +487,8 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
                         }
                         setIsFollowing(discussionDataByQuestionID.question.questionState.isFollowed)
                         initTextBox(discussionDataByQuestionID.maxAnswerLength)
+                        setProductId(it.data.discussionDataByQuestionID.productId)
+                        TalkReplyTracking.sendScreen(screenName, productId, viewModel.userId)
                         hidePageError()
                         hidePageLoading()
                         replySwipeRefresh.isRefreshing = false
@@ -495,7 +523,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         viewModel.createNewCommentResult.observe(this, Observer {
             when(it) {
                 is Success -> onSuccessCreateComment()
-                else -> onFailCreateComment()
+                is Fail -> onFailCreateComment(it.throwable.message)
             }
         })
     }
@@ -639,8 +667,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         arguments?.let {
             questionId = it.getString(QUESTION_ID, "")
             shopId = it.getString(PARAM_SHOP_ID, "")
-            productId = it.getString(PARAM_PRODUCT_ID, "")
-            isFromInbox = it.getBoolean(IS_FROM_INBOX)
+            source = it.getString(PARAM_SOURCE, "")
         }
         viewModel.setIsMyShop(shopId)
     }
@@ -673,5 +700,15 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         }
     }
 
+    private fun isFromInbox(): Boolean {
+        return source == TalkConstants.INBOX_SOURCE
+    }
 
+    private fun isFromNotif(): Boolean {
+        return source == TalkConstants.NOTIFICATION_SOURCE
+    }
+
+    private fun setProductId(productId: String) {
+        this.productId = productId
+    }
 }

@@ -28,7 +28,7 @@ data class ProductInfoP2General(
         var imageReviews: List<ImageReviewItem> = listOf(),
         var helpfulReviews: List<Review> = listOf(),
         var latestTalk: Talk = Talk(),
-        var discussionMostHelpful: DiscussionMostHelpful = DiscussionMostHelpful(),
+        var discussionMostHelpful: DiscussionMostHelpful? = null,
         var productPurchaseProtectionInfo: ProductPurchaseProtectionInfo = ProductPurchaseProtectionInfo(),
         var variantResp: ProductVariantCommon? = null,
         var shopFeature: ShopFeatureData = ShopFeatureData(),

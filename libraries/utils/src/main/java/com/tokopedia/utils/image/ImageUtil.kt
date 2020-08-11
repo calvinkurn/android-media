@@ -5,8 +5,10 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Point
+import android.net.Uri
 import android.view.Display
 import android.view.WindowManager
+import java.io.File
 import kotlin.math.min
 import kotlin.math.pow
 import kotlin.math.sqrt
@@ -75,5 +77,23 @@ object ImageUtil {
             }
         }
         return inSampleSize
+    }
+
+    @JvmStatic
+    fun getWidthAndHeight(file: File): Pair<Int, Int> {
+        val options = BitmapFactory.Options()
+        options.inJustDecodeBounds = true
+        BitmapFactory.decodeFile(file.absolutePath, options)
+        return options.outWidth to options.outHeight
+    }
+
+    @JvmStatic
+    fun getWidthAndHeight(localUri: Uri): Pair<Int, Int> {
+        return try {
+            getWidthAndHeight(File(localUri.path))
+        } catch (e: Exception) {
+            // handling if uri is not found as local file.
+            0 to 0
+        }
     }
 }

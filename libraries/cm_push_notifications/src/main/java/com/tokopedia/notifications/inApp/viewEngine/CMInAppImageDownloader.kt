@@ -2,9 +2,8 @@ package com.tokopedia.notifications.inApp.viewEngine
 
 import android.content.Context
 import android.content.ContextWrapper
+import android.content.res.Resources
 import android.graphics.Bitmap
-import android.util.DisplayMetrics
-import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.tokopedia.notifications.common.CMNotificationUtils
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp
@@ -88,16 +87,14 @@ abstract class CMInAppImageDownloader(val cmInApp: CMInApp) {
 
 class ImageSizeAndTimeout(internal val width: Int, internal val height: Int, internal val seconds: Long) {
     companion object {
-        fun getBigImageSize(context: Context): ImageSizeAndTimeout {
-            val metrics = DisplayMetrics()
-            (context as AppCompatActivity).windowManager?.defaultDisplay?.getMetrics(metrics)
-            return ImageSizeAndTimeout(metrics.widthPixels, metrics.heightPixels, 10L)
+        fun getBigImageSize(): ImageSizeAndTimeout {
+            val displayMetrics = Resources.getSystem().displayMetrics
+            return ImageSizeAndTimeout(displayMetrics.widthPixels, displayMetrics.heightPixels, 10L)
         }
 
-        fun getCenterImageSize(context: Context): ImageSizeAndTimeout {
-            val metrics = DisplayMetrics()
-            (context as AppCompatActivity).windowManager?.defaultDisplay?.getMetrics(metrics)
-            return ImageSizeAndTimeout(metrics.widthPixels, metrics.widthPixels / 2, 10L)
+        fun getCenterImageSize(): ImageSizeAndTimeout {
+            val displayMetrics = Resources.getSystem().displayMetrics
+            return ImageSizeAndTimeout(displayMetrics.widthPixels, displayMetrics.widthPixels / 2, 10L)
         }
 
         fun getAlertImageSize(context: Context): ImageSizeAndTimeout {

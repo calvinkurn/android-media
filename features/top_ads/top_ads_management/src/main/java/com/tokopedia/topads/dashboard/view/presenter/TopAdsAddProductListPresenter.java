@@ -40,6 +40,7 @@ public class TopAdsAddProductListPresenter extends BaseDaggerPresenter<TopAdsSea
     private DefaultErrorSubscriber.ErrorNetworkListener errorNetworkListener;
     private NetworkStatus networkStatus;
     private int networkCallCount = 0;
+
     public TopAdsAddProductListPresenter() {
         page = 0;
         params = new TKPDMapParam<>();

@@ -5,46 +5,53 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="@dimen/dp_18">
+    android:padding="@dimen/layout_lvl2">
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/title_detail"
+        android:id="@+id/telco_title_detail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_4"
+        android:layout_marginBottom="@dimen/spacing_lvl2"
         android:lines="1"
         android:text="@string/digital_title_details"
-        app:typographyType="body_2"
-        app:typographyWeight="bold" />
+        app:typographyType="heading_5"/>
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/details"
+        android:id="@+id/telco_details"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_8"
+        android:layout_marginBottom="@dimen/layout_lvl1"
         app:typographyType="body_3"
         tools:text="Nikmati kuota 800MB - 1.5GB. BONUS:
 Bonus 1GB Kuota Midnight (00:01-6:59) + 1GB Kuota Midnight RAFI + 3GB Videomax" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/title_price"
+        android:id="@+id/telco_title_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_4"
+        android:layout_marginBottom="@dimen/spacing_lvl2"
         android:lines="1"
         android:text="@string/digital_title_price"
-        app:typographyType="body_2"
-        app:typographyWeight="bold" />
+        app:typographyType="heading_5" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/product_price"
+        android:id="@+id/telco_product_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_4"
+        android:layout_marginBottom="@dimen/spacing_lvl2"
         android:lines="1"
-        android:textColor="@color/tkpd_main_orange"
-        app:typographyType="body_2"
-        app:typographyWeight="bold"
+        android:textColor="@color/Yellow_Y500"
+        app:typographyType="heading_5"
         tools:text="Rp 40.000" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/telco_button_select_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/telco_pick_product"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        app:unifyButtonVariant="filled"
+        app:unifyButtonSize="large"
+        app:unifyButtonType="main"/>
 
 </LinearLayout>

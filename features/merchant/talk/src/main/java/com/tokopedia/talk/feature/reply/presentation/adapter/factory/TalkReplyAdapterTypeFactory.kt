@@ -41,7 +41,7 @@ class TalkReplyAdapterTypeFactory(
             TalkReplyViewHolder.LAYOUT -> TalkReplyViewHolder(parent, attachedProductCardListener, onKebabClickedListener, threadListener)
             TalkReplyEmptyViewHolder.LAYOUT -> TalkReplyEmptyViewHolder(parent)
             TalkReplyAnswerCountViewHolder.LAYOUT -> TalkReplyAnswerCountViewHolder(parent)
-            TalkReplyHeaderViewHolder.LAYOUT -> TalkReplyHeaderViewHolder(parent, onKebabClickedListener, talkReplyHeaderListener)
+            TalkReplyHeaderViewHolder.LAYOUT -> TalkReplyHeaderViewHolder(parent, onKebabClickedListener, talkReplyHeaderListener, threadListener)
             TalkReplyProductHeaderViewHolder.LAYOUT -> TalkReplyProductHeaderViewHolder(parent, talkReplyProductHeaderListener)
             else -> super.createViewHolder(parent, type)
         }

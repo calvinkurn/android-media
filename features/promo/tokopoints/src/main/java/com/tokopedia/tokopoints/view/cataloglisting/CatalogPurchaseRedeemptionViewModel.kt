@@ -23,11 +23,11 @@ open class CatalogPurchaseRedeemptionViewModel(private val repository: CatalogPu
             val message: String
             val title: String
             val validateCoupon = repository.startValidateCoupon(item.id)
-            if ( validateCoupon.validateCoupon != null) {
+            if (validateCoupon.validateCoupon != null) {
                 validateResponseCode = CommonConstant.CouponRedemptionCode.SUCCESS
                 message = validateCoupon.validateCoupon.messageSuccess
                 title = validateCoupon.validateCoupon.messageTitle
-                startValidateCouponLiveData.value = ValidateMessageDialog(item,title, message, validateResponseCode)
+                startValidateCouponLiveData.value = ValidateMessageDialog(item, title, message, validateResponseCode)
             }
         }) {
             if (it is MessageErrorException) {
@@ -36,7 +36,7 @@ open class CatalogPurchaseRedeemptionViewModel(private val repository: CatalogPu
                     val title = errorsMessage[0]
                     val message = errorsMessage[1]
                     val validateResponseCode = errorsMessage[2].toInt()
-                    startValidateCouponLiveData.value = ValidateMessageDialog(item,title, message, validateResponseCode)
+                    startValidateCouponLiveData.value = ValidateMessageDialog(item, title, message, validateResponseCode)
                 }
             }
         }
@@ -57,7 +57,9 @@ open class CatalogPurchaseRedeemptionViewModel(private val repository: CatalogPu
             if (redeemCouponBaseEntity != null && redeemCouponBaseEntity.hachikoRedeem != null) {
                 startSaveCouponLiveData.value = Success(ConfirmRedeemDialog(redeemCouponBaseEntity.hachikoRedeem.coupons[0].cta,
                         redeemCouponBaseEntity.hachikoRedeem.coupons[0].code,
-                        redeemCouponBaseEntity.hachikoRedeem.coupons[0].title))
+                        redeemCouponBaseEntity.hachikoRedeem.coupons[0].title,
+                        redeemCouponBaseEntity.hachikoRedeem.coupons[0].description
+                ))
             }
         }) {
             if (it is MessageErrorException) {
@@ -84,7 +86,8 @@ open class CatalogPurchaseRedeemptionViewModel(private val repository: CatalogPu
                         desc = errorsMessage[1]
                     }
                     if (errorsMessage.size >= 3) validateResponseCode = errorsMessage[2].toInt()
-                    startSaveCouponLiveData.value = ValidationError(ValidateMessageDialog(item, title , desc ?: "",validateResponseCode))
+                    startSaveCouponLiveData.value = ValidationError(ValidateMessageDialog(item, title, desc
+                            ?: "", validateResponseCode))
                 }
             }
         }
@@ -93,5 +96,6 @@ open class CatalogPurchaseRedeemptionViewModel(private val repository: CatalogPu
     override fun showRedeemCouponDialog(cta: String?, code: String?, title: String?) {
     }
 }
+
 data class ValidateMessageDialog(val item: CatalogsValueEntity, val title: String, val desc: String, val messageCode: Int)
-data class ConfirmRedeemDialog(val cta : String, val code : String, val title : String)
+data class ConfirmRedeemDialog(val cta: String, val code: String, val title: String, val description: String)

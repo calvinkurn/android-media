@@ -159,16 +159,6 @@ class LikeComponentTest {
     }
 
     @Test
-    fun `when content is liked, then like should play animation`() = runBlockingTest(testDispatcher) {
-        val shouldLike = true
-        val animate = false
-        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.LikeContent(shouldLike, animate))
-
-        verify { component.uiView.playLikeAnimation(shouldLike, animate) }
-        confirmVerified(component.uiView)
-    }
-
-    @Test
     fun `when channel is frozen, then like should be hidden`() = runBlockingTest(testDispatcher) {
         val mockPlayRoomEvent = modelBuilder.buildPlayRoomFreezeEvent()
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.OnNewPlayRoomEvent(mockPlayRoomEvent))
@@ -195,7 +185,7 @@ class LikeComponentTest {
         confirmVerified(component.uiView)
     }
 
-    class LikeComponentMock(container: ViewGroup, bus: EventBusFactory, coroutineScope: CoroutineScope) : LikeComponent(container, bus, coroutineScope, TestCoroutineDispatchersProvider) {
+    class LikeComponentMock(container: ViewGroup, bus: EventBusFactory, scope: CoroutineScope) : LikeComponent(container, bus, scope, TestCoroutineDispatchersProvider) {
         override fun initView(container: ViewGroup): LikeView {
             return mockk(relaxed = true)
         }

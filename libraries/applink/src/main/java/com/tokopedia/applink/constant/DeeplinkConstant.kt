@@ -2,6 +2,7 @@ package com.tokopedia.applink.constant
 
 object DeeplinkConstant {
     const val SCHEME_HTTP = "http"
+    const val SCHEME_HTTPS = "https"
     const val SCHEME_TOKOPEDIA = "tokopedia"
     const val SCHEME_SELLERAPP = "sellerapp"
 

@@ -127,7 +127,7 @@ public abstract class BaseDigitalProductView<C, O, P, H> extends RelativeLayout 
             else onInstantCheckoutUnChecked();
 
             if (data instanceof CategoryData){
-                actionListener.onInstantCheckoutChanged(((CategoryData) data).getName(), isChecked);
+                actionListener.onInstantCheckoutChanged(((CategoryData) data).name, isChecked);
             }
         };
     }

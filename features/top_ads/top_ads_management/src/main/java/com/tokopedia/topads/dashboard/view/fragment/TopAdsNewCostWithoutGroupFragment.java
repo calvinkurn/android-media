@@ -2,9 +2,10 @@ package com.tokopedia.topads.dashboard.view.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
-import androidx.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
+
+import androidx.annotation.Nullable;
 
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -15,6 +16,7 @@ import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
 import com.tokopedia.topads.dashboard.constant.TopAdsSuggestionBidInteractionTypeDef;
 import com.tokopedia.topads.dashboard.data.model.request.DataSuggestions;
+import com.tokopedia.topads.dashboard.data.model.response.TopAdsDepositResponse;
 import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
 import com.tokopedia.topads.dashboard.di.module.TopAdsCreatePromoModule;
 import com.tokopedia.topads.dashboard.domain.model.MinimumBidDomain;
@@ -87,8 +89,7 @@ public class TopAdsNewCostWithoutGroupFragment extends TopAdsNewCostFragment<Top
                 stepperModel = new TopAdsCreatePromoWithoutGroupModel();
             }
             stepperModel.setDetailGroupCostViewModel(detailAd);
-            topAdsDetailNewProductPresenter.saveAd(stepperModel.getDetailProductViewModel(), new ArrayList<>(stepperModel.getTopAdsProductViewModels()),
-                    stepperModel.getSource());
+            topAdsDetailNewProductPresenter.getBalance(getResources());
         }
     }
 
@@ -115,6 +116,13 @@ public class TopAdsNewCostWithoutGroupFragment extends TopAdsNewCostFragment<Top
             setResultAdSaved(topAdsDetailAdViewModel);
             stepperListener.finishPage();
         }
+    }
+
+    @Override
+    public void onBalanceCheck(TopAdsDepositResponse.Data topAdsDepositResponse) {
+        topAdsDetailNewProductPresenter.saveAd(stepperModel.getDetailProductViewModel(), new ArrayList<>(stepperModel.getTopAdsProductViewModels()),
+                stepperModel.getSource(),topAdsDepositResponse);
+
     }
 
     private void setResultAdSaved(TopAdsDetailAdViewModel topAdsDetailAdViewModel) {

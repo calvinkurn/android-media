@@ -46,6 +46,7 @@ public class Product implements Parcelable {
     private static final String KEY_CAMPAIGN = "campaign";
     private static final String KEY_LABEL_GROUP = "label_group";
     private static final String KEY_FREE_ONGKIR = "free_ongkir";
+    private static final String KEY_CATEGORY_BREADCRUMB = "category_breadcrumb";
 
     @SerializedName(KEY_ID)
     @Expose
@@ -155,6 +156,8 @@ public class Product implements Parcelable {
     @Expose
     private FreeOngkir freeOngkir = new FreeOngkir();
 
+    @SerializedName(KEY_CATEGORY_BREADCRUMB)
+    @Expose
     private String categoryBreadcrumb = "";
 
     private boolean topAds = false;
@@ -263,6 +266,9 @@ public class Product implements Parcelable {
         if(!object.isNull(KEY_FREE_ONGKIR)) {
             setFreeOngkir(new FreeOngkir(object.getJSONObject(KEY_FREE_ONGKIR)));
         }
+        if(!object.isNull(KEY_CATEGORY_BREADCRUMB)){
+            setCategoryBreadcrumb(object.getString(KEY_CATEGORY_BREADCRUMB));
+        }
     }
 
     protected Product(Parcel in) {
@@ -295,6 +301,7 @@ public class Product implements Parcelable {
         campaign = in.readParcelable(Campaign.class.getClassLoader());
         labelGroupList = in.createTypedArrayList(LabelGroup.CREATOR);
         freeOngkir = in.readParcelable(FreeOngkir.class.getClassLoader());
+        categoryBreadcrumb = in.readString();
     }
 
     @Override
@@ -328,6 +335,7 @@ public class Product implements Parcelable {
         dest.writeParcelable(campaign, flags);
         dest.writeTypedList(labelGroupList);
         dest.writeParcelable(freeOngkir, flags);
+        dest.writeString(categoryBreadcrumb);
     }
 
     @Override

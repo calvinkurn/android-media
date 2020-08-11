@@ -20,12 +20,14 @@ include "libraries:core_legacy"
 include "libraries:core_network"
 include 'libraries:date_picker_range'
 include 'libraries:device_info'
+include 'libraries:dev_monitoring_tools'
 include 'libraries:dynamic_features'
 include 'libraries:encryption'
 include "libraries:fingerprint"
 include "libraries:image_picker"
 include "libraries:image_preview"
 include 'libraries:imageuploader'
+
 include "libraries:inappupdate"
 include "libraries:smart_recycler_diffutil_helper"
 include "libraries:kotlin_extensions"
@@ -35,12 +37,10 @@ include "libraries:logger"
 include "libraries:instrumentation_test"
 include 'libraries:iris'
 include 'libraries:iris_session'
-//include 'libraries:iris_no_op'
 include "libraries:mediauploader"
 include "libraries:oms"
 include "libraries:push_notification"
 include 'libraries:permissionchecker'
-include "libraries:play_core"
 include "libraries:product_photo_adapter"
 include "libraries:react_native"
 include "libraries:remote_config"
@@ -64,8 +64,11 @@ include "libraries:linker"
 include "libraries:webview"
 include "libraries:imagepreviewslider"
 include "libraries:weaver"
+include "libraries:lint"
 include "libraries:utils"
 include "libraries:pre_release_inspector"
 include "libraries:pre_release_inspector_no_op"
 include "libraries:mapviewer"
+include "libraries:tokopatch"
 include ':libraries:annotation_proc_central'
+include "libraries:screen_recorder"

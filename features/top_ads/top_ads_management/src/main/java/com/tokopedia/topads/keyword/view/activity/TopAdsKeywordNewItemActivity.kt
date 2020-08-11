@@ -47,7 +47,7 @@ class TopAdsKeywordNewItemActivity : TopAdsBaseActivity(), HasComponent<BaseAppC
         iniateStepperModel()
         intent?.extras?.run {
             localKeywords.clear()
-            localKeywords.addAll(getParcelableArrayList(LOCAL_KEYWORDS_PARAM))
+            localKeywords.addAll(getParcelableArrayList(LOCAL_KEYWORDS_PARAM) ?: emptyList())
             maxCount = getInt(MAX_COUNT_PARAM, 50)
             stepperModel = getParcelable(STEPPERMODEL_PARAM)
         }
@@ -59,7 +59,8 @@ class TopAdsKeywordNewItemActivity : TopAdsBaseActivity(), HasComponent<BaseAppC
     }
 
     override fun getNewFragment(): Fragment {
-        return TopAdsKeywordNewItemFragment.newInstance(localKeywords, maxCount, stepperModel?.isPositive ?: true, stepperModel?.groupId ?: "")
+        return TopAdsKeywordNewItemFragment.newInstance(localKeywords, maxCount, stepperModel?.isPositive
+                ?: true, stepperModel?.groupId ?: "", stepperModel?.priceBid ?: 0)
     }
 
     override fun getComponent(): BaseAppComponent? {

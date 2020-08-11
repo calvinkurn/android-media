@@ -1,6 +1,5 @@
 package com.tokopedia.product.detail.view.adapter.factory
 
-import android.content.SharedPreferences
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
@@ -16,10 +15,6 @@ class DynamicProductDetailAdapterFactoryImpl(private val listener: DynamicProduc
     : BaseAdapterTypeFactory(), DynamicProductDetailAdapterFactory {
     override fun type(data: ProductLastSeenDataModel): Int {
         return ProductLastSeenViewHolder.LAYOUT
-    }
-
-    override fun type(data: ProductOpenShopDataModel): Int {
-        return ProductOpenShopViewHolder.LAYOUT
     }
 
     override fun type(data: ProductRecommendationDataModel): Int {
@@ -82,10 +77,33 @@ class DynamicProductDetailAdapterFactoryImpl(private val listener: DynamicProduc
         return ProductNotifyMeViewHolder.LAYOUT
     }
 
+    override fun type(data: ProductMediaDataModel): Int {
+        return ProductMediaViewHolder.LAYOUT
+    }
+
+    override fun type(data: ProductContentDataModel): Int {
+        return ProductContentViewHolder.LAYOUT
+    }
+
+    override fun type(data: ProductMiniSocialProofDataModel): Int {
+        return ProductMiniSocialProofViewHolder.LAYOUT
+    }
+
+    override fun type(data: ProductMiniShopInfoDataModel): Int {
+        return ProductMiniShopInfoViewHolder.LAYOUT
+    }
+
+    override fun type(data: ProductTickerInfoDataModel): Int {
+        return ProductTickerInfoViewHolder.LAYOUT
+    }
+
+    override fun type(data: ProductShopCredibilityDataModel): Int {
+        return ProductShopCredibilityViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             ProductLastSeenViewHolder.LAYOUT -> ProductLastSeenViewHolder(view)
-            ProductOpenShopViewHolder.LAYOUT -> ProductOpenShopViewHolder(view, listener)
             ProductRecommendationViewHolder.LAYOUT -> ProductRecommendationViewHolder(view, listener)
             ProductMerchantVoucherViewHolder.LAYOUT -> ProductMerchantVoucherViewHolder(view, listener)
             ProductSnapshotViewHolder.LAYOUT -> ProductSnapshotViewHolder(view, listener)
@@ -101,6 +119,12 @@ class DynamicProductDetailAdapterFactoryImpl(private val listener: DynamicProduc
             PageErrorViewHolder.LAYOUT -> PageErrorViewHolder(view, listener)
             ProductVariantViewHolder.LAYOUT -> ProductVariantViewHolder(view, variantListener)
             ProductNotifyMeViewHolder.LAYOUT -> ProductNotifyMeViewHolder(view, listener)
+            ProductMediaViewHolder.LAYOUT -> ProductMediaViewHolder(view, listener)
+            ProductContentViewHolder.LAYOUT -> ProductContentViewHolder(view, listener)
+            ProductMiniSocialProofViewHolder.LAYOUT -> ProductMiniSocialProofViewHolder(view, listener)
+            ProductMiniShopInfoViewHolder.LAYOUT -> ProductMiniShopInfoViewHolder(view, listener)
+            ProductTickerInfoViewHolder.LAYOUT -> ProductTickerInfoViewHolder(view, listener)
+            ProductShopCredibilityViewHolder.LAYOUT -> ProductShopCredibilityViewHolder(view, listener)
             else -> super.createViewHolder(view, type)
         }
     }

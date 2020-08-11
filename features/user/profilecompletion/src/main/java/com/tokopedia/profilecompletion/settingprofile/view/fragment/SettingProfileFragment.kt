@@ -1,21 +1,20 @@
 package com.tokopedia.profilecompletion.settingprofile.view.fragment
 
 import android.app.Activity
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
-import com.tokopedia.abstraction.common.utils.view.PhoneNumberUtils
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
@@ -44,6 +43,7 @@ import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.phonenumber.PhoneNumberUtil
 import kotlinx.android.synthetic.main.fragment_setting_profile.*
 import java.io.File
 import java.net.URLEncoder
@@ -432,7 +432,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
         } else {
             phone.showFilled(
                     getString(R.string.subtitle_phone_setting_profile),
-                    PhoneNumberUtils.transform(profileCompletionData.msisdn),
+                    PhoneNumberUtil.transform(profileCompletionData.msisdn),
                     profileCompletionData.isMsisdnVerified,
                     true,
                     View.OnClickListener {

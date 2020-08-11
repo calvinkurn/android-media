@@ -79,6 +79,13 @@
         </activity>
 
         <activity
+            android:name="com.tokopedia.sellerhome.view.oldactivity.SellerHomeActivity"
+            android:exported="true"
+            android:label="@string/drawer_title_home"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"/>
+
+        <activity
             android:screenOrientation="portrait"
             android:name="com.tokopedia.shop.open.view.activity.ShopOpenMandatoryActivity"/>
 
@@ -247,7 +254,7 @@
         </activity>
         <service android:name="com.tokopedia.sellerhomedrawer.domain.service.SellerDrawerGetNotificationService"
             android:permission="android.permission.BIND_JOB_SERVICE"/>
-        
+
          <receiver android:name="androidx.media.session.MediaButtonReceiver" >
             <intent-filter>
                 <action android:name="android.intent.action.MEDIA_BUTTON" />

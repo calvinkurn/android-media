@@ -10,15 +10,17 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.brandlist.R
 import com.tokopedia.kotlin.extensions.view.inflateLayout
+import java.util.concurrent.TimeUnit
 
-class BrandlistAlphabetHeaderAdapter (
-        val listener: BrandlistHeaderBrandInterface
-): RecyclerView.Adapter<BrandlistAlphabetHeaderAdapter.BrandlistAlphabetHeaderViewHolder>()  {
+
+class BrandlistAlphabetHeaderAdapter(val listener: BrandlistHeaderBrandInterface):
+        RecyclerView.Adapter<BrandlistAlphabetHeaderAdapter.BrandlistAlphabetHeaderViewHolder>() {
 
     private val DEFAULT_SELECTED_POSITION = 1
     var headerList: MutableList<String> = mutableListOf()
     var selectedPosition = DEFAULT_SELECTED_POSITION
     var recyclerViewState: Parcelable? = null
+    var lastTimeChipsClicked: Long = 0L
     private val startPosition = 0
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BrandlistAlphabetHeaderViewHolder {
@@ -58,9 +60,20 @@ class BrandlistAlphabetHeaderAdapter (
             }
 
             chipContainer.setOnClickListener {
-                selectedPosition = position
-                notifyDataSetChanged()
-                listener.onClickedChip(position, headerItem, recyclerViewState)
+                if (position != selectedPosition && position != startPosition) {
+                    val current: Long = System.currentTimeMillis()
+                    val isMoreThanTwoSeconds: Boolean = current >= lastTimeChipsClicked + TimeUnit.SECONDS.toMillis(2) // Prevent spam click
+                    if (isMoreThanTwoSeconds) {
+                        lastTimeChipsClicked = current
+                        selectedPosition = position
+                        notifyDataSetChanged()
+                        listener.onClickedChip(
+                                position,
+                                headerItem,
+                                current,
+                                recyclerViewState)
+                    }
+                }
             }
         }
 

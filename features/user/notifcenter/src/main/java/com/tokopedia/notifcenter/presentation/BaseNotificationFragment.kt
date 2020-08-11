@@ -13,7 +13,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.domain.model.response.DataModel
-import com.tokopedia.design.button.BottomActionView
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.analytics.NotificationTracker
@@ -25,25 +24,27 @@ import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
 import com.tokopedia.notifcenter.listener.NotificationFilterListener
 import com.tokopedia.notifcenter.listener.NotificationItemListener
 import com.tokopedia.notifcenter.presentation.activity.NotificationActivity
-import com.tokopedia.notifcenter.presentation.fragment.ProductCardListDialog
 import com.tokopedia.notifcenter.presentation.fragment.NotificationLongerTextDialog
+import com.tokopedia.notifcenter.presentation.fragment.ProductCardListDialog
 import com.tokopedia.notifcenter.presentation.fragment.ProductStockHandlerDialog
 import com.tokopedia.notifcenter.util.endLess
 import com.tokopedia.purchase_platform.common.constant.ATC_AND_BUY
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-abstract class BaseNotificationFragment: BaseListFragment<Visitable<*>,
+abstract class BaseNotificationFragment : BaseListFragment<Visitable<*>,
         BaseAdapterTypeFactory>(),
         NotificationItemListener,
         NotificationFilterListener {
 
     private lateinit var longerTextDialog: BottomSheetDialogFragment
 
-    @Inject lateinit var userSession: UserSessionInterface
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
-    abstract fun bottomFilterView(): BottomActionView?
+    abstract fun bottomFilterView(): FloatingButtonUnify?
     abstract fun analytics(): NotificationTracker
 
     //last notification id
@@ -128,7 +129,8 @@ abstract class BaseNotificationFragment: BaseListFragment<Visitable<*>,
                 putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_LABEL, element.getAtcEventLabel())
                 putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_ACTION, element.getBuyEventAction())
             })
-        } catch (e: Exception) {}
+        } catch (e: Exception) {
+        }
     }
 
     override fun showNotificationDetail(bottomSheet: BottomSheetType, element: NotificationItemViewBean) {
@@ -169,6 +171,7 @@ abstract class BaseNotificationFragment: BaseListFragment<Visitable<*>,
         bundle.putString(PARAM_CONTENT_TITLE, element.title)
         bundle.putString(PARAM_BUTTON_TEXT, element.btnText)
         bundle.putString(PARAM_TEMPLATE_KEY, element.templateKey)
+        bundle.putString(PARAM_NOTIF_ID, element.notificationId)
 
         if (!::longerTextDialog.isInitialized) {
             longerTextDialog = NotificationLongerTextDialog.createInstance(bundle)
@@ -239,6 +242,7 @@ abstract class BaseNotificationFragment: BaseListFragment<Visitable<*>,
 
     //unused method
     override fun onItemClicked(t: Visitable<*>?) = Unit
+
     override fun getScreenName(): String = ""
     override fun addProductToCart(product: ProductData, onSuccessAddToCart: (DataModel) -> Unit) {}
 
@@ -260,5 +264,6 @@ abstract class BaseNotificationFragment: BaseListFragment<Visitable<*>,
         const val PARAM_CTA_APPLINK = "cta applink"
         const val PARAM_BUTTON_TEXT = "button text"
         const val PARAM_TEMPLATE_KEY = "template key"
+        const val PARAM_NOTIF_ID = "notification id"
     }
 }

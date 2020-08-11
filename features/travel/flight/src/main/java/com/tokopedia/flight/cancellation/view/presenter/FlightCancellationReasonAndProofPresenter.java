@@ -6,17 +6,19 @@ import android.net.Uri;
 import androidx.annotation.NonNull;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.flight.cancellation.data.cloud.entity.CancellationAttachmentUploadEntity;
+import com.tokopedia.flight.cancellation.domain.FlightCancellationAttachmentUploadUseCase;
 import com.tokopedia.flight.cancellation.domain.model.AttachmentImageModel;
 import com.tokopedia.flight.cancellation.view.contract.FlightCancellationReasonAndProofContract;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationAttachmentModel;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationPassengerAttachmentModel;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationPassengerModel;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationReasonAndAttachmentModel;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationWrapperModel;
 import com.tokopedia.flight.passenger.constant.FlightBookingPassenger;
 import com.tokopedia.imageuploader.domain.UploadImageUseCase;
-import com.tokopedia.imageuploader.domain.model.ImageUploadDomainModel;
+import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -60,12 +62,15 @@ public class FlightCancellationReasonAndProofPresenter extends BaseDaggerPresent
     private UploadImageUseCase<AttachmentImageModel> uploadImageUseCase;
     private CompositeSubscription compositeSubscription;
     private UserSessionInterface userSession;
+    private FlightCancellationAttachmentUploadUseCase flightCancellationAttachmentUploadUseCase;
 
     @Inject
     public FlightCancellationReasonAndProofPresenter(UploadImageUseCase<AttachmentImageModel> uploadImageUseCase,
-                                                     UserSessionInterface userSession) {
+                                                     UserSessionInterface userSession,
+                                                     FlightCancellationAttachmentUploadUseCase flightCancellationAttachmentUploadUseCase) {
         this.uploadImageUseCase = uploadImageUseCase;
         this.userSession = userSession;
+        this.flightCancellationAttachmentUploadUseCase = flightCancellationAttachmentUploadUseCase;
         this.compositeSubscription = new CompositeSubscription();
     }
 
@@ -80,15 +85,35 @@ public class FlightCancellationReasonAndProofPresenter extends BaseDaggerPresent
     public List<FlightCancellationAttachmentModel> buildAttachmentList() {
         List<FlightCancellationAttachmentModel> attachmentViewModelList = new ArrayList<>();
 
-        for (String passenger : getUniquePassenger(getView().getCancellationViewModel())) {
-            FlightCancellationAttachmentModel item = new FlightCancellationAttachmentModel();
-            item.setPassengerName(passenger);
-            item.setPercentageUpload(0);
-
-            attachmentViewModelList.add(item);
+        for (FlightCancellationPassengerAttachmentModel passenger : getUniquePassenger(getView().getCancellationViewModel())) {
+            String[] passengerRelations = passenger.getPassengerRelation().split("-");
+            attachmentViewModelList.add(new FlightCancellationAttachmentModel(
+                    "",
+                    "",
+                    passenger.getPassengerId(),
+                    passenger.getPassengerName(),
+                    passenger.getPassengerRelation(),
+                    passengerRelations[0],
+                    0,
+                    0,
+                    false));
         }
 
         return attachmentViewModelList;
+    }
+
+    @Override
+    public List<FlightCancellationAttachmentModel> buildViewAttachmentList(int docType) {
+        List<FlightCancellationAttachmentModel> viewAttachmentList = new ArrayList<>();
+
+        for (FlightCancellationAttachmentModel item : getView().getAttachments()) {
+            item.setDocType(docType);
+            if (!viewAttachmentList.contains(item)) {
+                viewAttachmentList.add(item);
+            }
+        }
+
+        return viewAttachmentList;
     }
 
     @Override
@@ -98,9 +123,8 @@ public class FlightCancellationReasonAndProofPresenter extends BaseDaggerPresent
         if (getView().getReason() == null) {
             shouldEnableNextButton = false;
         } else if (getView().getReason().getRequiredDocs().size() > 0) {
-            for (FlightCancellationAttachmentModel item : getView().getAttachments()) {
-                if (item.getFilename() == null || item.getFilepath() == null ||
-                        item.getFilename().length() <= 0 || item.getFilepath().length() <= 0) {
+            for (FlightCancellationAttachmentModel item : getView().getViewAttachments()) {
+                if (item.getFilename().length() <= 0 || item.getFilepath().length() <= 0) {
                     shouldEnableNextButton = false;
                     break;
                 }
@@ -142,6 +166,7 @@ public class FlightCancellationReasonAndProofPresenter extends BaseDaggerPresent
             FlightCancellationAttachmentModel viewModel = getView().getAttachments().get(position);
             viewModel.setFilepath(filepath);
             viewModel.setFilename(Uri.parse(filepath).getLastPathSegment());
+            viewModel.setUploaded(false);
 
             getView().setAttachment(viewModel, position);
             getView().renderAttachment();
@@ -151,14 +176,11 @@ public class FlightCancellationReasonAndProofPresenter extends BaseDaggerPresent
     @Override
     public void onNextButtonClicked() {
         if (checkIfAttachmentMandatory()) {
-            List<FlightCancellationAttachmentModel> attachments = getView().getAttachments();
+            List<FlightCancellationAttachmentModel> attachments = buildAttachmentsForUpload(
+                    getView().getAttachments(), getView().getViewAttachments());
             Observable<Boolean> isRequiredAttachment = Observable.just(checkIfAttachmentMandatory());
-            Observable<Boolean> isValidRequiredAttachment = Observable.zip(Observable.just(attachments), isRequiredAttachment, new Func2<List<FlightCancellationAttachmentModel>, Boolean, Boolean>() {
-                @Override
-                public Boolean call(List<FlightCancellationAttachmentModel> flightCancellationAttachmentViewModels, Boolean aBoolean) {
-                    return !aBoolean || (aBoolean && flightCancellationAttachmentViewModels.size() > 0);
-                }
-            });
+            Observable<Boolean> isValidRequiredAttachment = Observable.zip(Observable.just(attachments), isRequiredAttachment,
+                    (flightCancellationAttachmentViewModels, aBoolean) -> !aBoolean || (aBoolean && flightCancellationAttachmentViewModels.size() > 0));
 
             isValidRequiredAttachment.subscribe(new Subscriber<Boolean>() {
                 @Override
@@ -241,7 +263,7 @@ public class FlightCancellationReasonAndProofPresenter extends BaseDaggerPresent
             });
         } else {
             getView().hideProgressBar();
-            getView().navigateToNextStep(buildCancellationWrapperModel(getView().getAttachments()));
+            getView().navigateToNextStep(buildCancellationWrapperModel());
         }
     }
 
@@ -264,23 +286,28 @@ public class FlightCancellationReasonAndProofPresenter extends BaseDaggerPresent
     private void actionUploadImageAndBuildModel() {
         getView().showProgressBar();
 
-        List<FlightCancellationAttachmentModel> attachments = getView().getAttachments();
+        List<FlightCancellationAttachmentModel> attachments = buildUnUploadedAttachments(buildAttachmentsForUpload(
+                getView().getAttachments(), getView().getViewAttachments()));
+        String invoiceId = getView().getCancellationViewModel().getInvoice();
+
         compositeSubscription.add(Observable.from(attachments)
                 .flatMap(new Func1<FlightCancellationAttachmentModel, Observable<FlightCancellationAttachmentModel>>() {
                     @Override
-                    public Observable<FlightCancellationAttachmentModel> call(FlightCancellationAttachmentModel attachmentViewModel) {
-                        return Observable.zip(Observable.just(attachmentViewModel),
-                                uploadImageUseCase.createObservable(
-                                        createParam(attachmentViewModel.getFilepath())
-                                ), new Func2<FlightCancellationAttachmentModel, ImageUploadDomainModel<AttachmentImageModel>, FlightCancellationAttachmentModel>() {
+                    public Observable<FlightCancellationAttachmentModel> call(FlightCancellationAttachmentModel flightCancellationAttachmentModel) {
+                        return Observable.zip(Observable.just(flightCancellationAttachmentModel),
+                                flightCancellationAttachmentUploadUseCase.createObservable(
+                                        flightCancellationAttachmentUploadUseCase.createRequestParams(
+                                                flightCancellationAttachmentModel.getFilepath(),
+                                                invoiceId,
+                                                flightCancellationAttachmentModel.getJourneyId(),
+                                                flightCancellationAttachmentModel.getPassengerId(),
+                                                flightCancellationAttachmentModel.getDocType()
+                                        )
+                                ), new Func2<FlightCancellationAttachmentModel, CancellationAttachmentUploadEntity, FlightCancellationAttachmentModel>() {
                                     @Override
-                                    public FlightCancellationAttachmentModel call(FlightCancellationAttachmentModel attachmentViewModel, ImageUploadDomainModel<AttachmentImageModel> uploadDomainModel) {
-                                        String url = uploadDomainModel.getDataResultImageUpload().getData().getPicSrc();
-                                        if (url.contains(DEFAULT_RESOLUTION)) {
-                                            url = url.replaceFirst(DEFAULT_RESOLUTION, RESOLUTION_300);
-                                        }
-                                        attachmentViewModel.setImageurl(url);
-                                        return attachmentViewModel;
+                                    public FlightCancellationAttachmentModel call(FlightCancellationAttachmentModel flightCancellationAttachmentModel, CancellationAttachmentUploadEntity cancellationAttachmentUploadEntity) {
+                                        flightCancellationAttachmentModel.setUploaded(cancellationAttachmentUploadEntity.getAttributes().isUploaded());
+                                        return flightCancellationAttachmentModel;
                                     }
                                 });
                     }
@@ -288,8 +315,15 @@ public class FlightCancellationReasonAndProofPresenter extends BaseDaggerPresent
                 .toList()
                 .map(new Func1<List<FlightCancellationAttachmentModel>, FlightCancellationWrapperModel>() {
                     @Override
-                    public FlightCancellationWrapperModel call(List<FlightCancellationAttachmentModel> flightCancellationAttachmentViewModels) {
-                        return buildCancellationWrapperModel(flightCancellationAttachmentViewModels);
+                    public FlightCancellationWrapperModel call(List<FlightCancellationAttachmentModel> flightCancellationAttachmentModels) {
+                        for (FlightCancellationAttachmentModel item : getView().getAttachments()) {
+                            int indexOfItem = flightCancellationAttachmentModels.indexOf(item);
+                            if (indexOfItem != -1) {
+                                item.setUploaded(flightCancellationAttachmentModels.get(indexOfItem).isUploaded());
+                            }
+                        }
+
+                        return buildCancellationWrapperModel();
                     }
                 })
                 .subscribeOn(Schedulers.io())
@@ -313,20 +347,26 @@ public class FlightCancellationReasonAndProofPresenter extends BaseDaggerPresent
                     @Override
                     public void onNext(FlightCancellationWrapperModel viewModel) {
                         getView().hideProgressBar();
-                        getView().navigateToNextStep(viewModel);
+                        if (checkIfAllAttachmentsUploaded()) {
+                            getView().navigateToNextStep(viewModel);
+                        }
                     }
                 })
         );
     }
 
-    private List<String> getUniquePassenger(FlightCancellationWrapperModel cancellationWrapperViewModel) {
-        List<String> uniquePassengers = new ArrayList<>();
+    private List<FlightCancellationPassengerAttachmentModel> getUniquePassenger(FlightCancellationWrapperModel cancellationWrapperViewModel) {
+        List<FlightCancellationPassengerAttachmentModel> uniquePassengers = new ArrayList<>();
 
         for (FlightCancellationModel viewModel : cancellationWrapperViewModel.getGetCancellations()) {
             for (FlightCancellationPassengerModel passengerViewModel : viewModel.getPassengerViewModelList()) {
-                if (!uniquePassengers.contains(getPassengerName(passengerViewModel)) &&
+                if (!uniquePassengers.contains(passengerViewModel) &&
                         passengerViewModel.getType() == FlightBookingPassenger.ADULT) {
-                    uniquePassengers.add(getPassengerName(passengerViewModel));
+                    uniquePassengers.add(new FlightCancellationPassengerAttachmentModel(
+                            passengerViewModel.getPassengerId(),
+                            getPassengerName(passengerViewModel),
+                            passengerViewModel.getRelationId()
+                    ));
                 }
             }
         }
@@ -370,17 +410,59 @@ public class FlightCancellationReasonAndProofPresenter extends BaseDaggerPresent
         return uploadImageUseCase.createRequestParam(cameraLoc, DEFAULT_UPLOAD_PATH, DEFAULT_UPLOAD_TYPE, maps);
     }
 
-    private FlightCancellationWrapperModel buildCancellationWrapperModel(List<FlightCancellationAttachmentModel> flightCancellationAttachmentViewModels) {
+    private FlightCancellationWrapperModel buildCancellationWrapperModel() {
         FlightCancellationWrapperModel viewModel = getView().getCancellationViewModel();
         FlightCancellationReasonAndAttachmentModel reasonAndAttachmentViewModel = new FlightCancellationReasonAndAttachmentModel();
         reasonAndAttachmentViewModel.setReasonId(getView().getReason().getId());
         reasonAndAttachmentViewModel.setReason(getView().getReason().getDetail());
-        if (checkIfAttachmentMandatory()) {
-            reasonAndAttachmentViewModel.setAttachments(flightCancellationAttachmentViewModels);
-        } else {
-            reasonAndAttachmentViewModel.setAttachments(new ArrayList<>());
-        }
+        reasonAndAttachmentViewModel.setAttachments(getView().getAttachments());
         viewModel.setCancellationReasonAndAttachment(reasonAndAttachmentViewModel);
         return viewModel;
+    }
+
+    private List<FlightCancellationAttachmentModel> buildAttachmentsForUpload(
+            List<FlightCancellationAttachmentModel> allAttachments,
+            List<FlightCancellationAttachmentModel> viewAttachments) {
+
+        List<FlightCancellationAttachmentModel> uploadAttachments = new ArrayList<>();
+
+        for (FlightCancellationAttachmentModel item : allAttachments) {
+            int indexInView = viewAttachments.indexOf(item);
+            if (indexInView != -1) {
+                FlightCancellationAttachmentModel selectedViewAttachment = viewAttachments.get(indexInView);
+                item.setFilename(selectedViewAttachment.getFilename());
+                item.setFilepath(selectedViewAttachment.getFilepath());
+                item.setDocType(selectedViewAttachment.getDocType());
+                item.setUploaded(selectedViewAttachment.isUploaded());
+
+                uploadAttachments.add(item);
+            }
+        }
+
+        return uploadAttachments;
+    }
+
+    private List<FlightCancellationAttachmentModel> buildUnUploadedAttachments(List<FlightCancellationAttachmentModel> attachmentModelList) {
+        List<FlightCancellationAttachmentModel> unUploadedAttachments = new ArrayList<>();
+
+        for (FlightCancellationAttachmentModel item : attachmentModelList) {
+            if (!item.isUploaded()) {
+                unUploadedAttachments.add(item);
+            }
+        }
+
+        return unUploadedAttachments;
+    }
+
+    private boolean checkIfAllAttachmentsUploaded() {
+        boolean isAllUploaded = true;
+
+        for (FlightCancellationAttachmentModel item : getView().getAttachments()) {
+            if (!item.isUploaded()) {
+                isAllUploaded = false;
+            }
+        }
+
+        return isAllUploaded;
     }
 }

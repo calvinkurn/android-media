@@ -1,0 +1,72 @@
+{
+  "readme": "Mix Top component on home; impression, click, and click lihat semua",
+  "mode": "exact",
+  "query": [
+    {
+      "eventCategory": "homepage",
+      "item_list": "{{.*}}",
+      "event": "view_item_list",
+      "eventAction": "impression on product dynamic channel top carousel",
+      "sessionIris": "{{.*}}",
+      "items": [{
+        "dimension83": "{{bebas ongkir|none / other}}",
+        "item_id": "{{.*}}",
+        "dimension96": "{{.*}}",
+        "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
+        "dimension40": "{{.*}}",
+        "dimension84": "{{.*}}",
+        "index": "{{\\d*.\\d*}}",
+        "item_name": "{{.*}}",
+        "item_brand": "{{.*}}",
+        "item_variant": "{{.*}}",
+        "item_category": "{{.*}}"
+      }],
+      "eventLabel": "{{.*}}"
+    },
+    {
+      "eventCategory": "homepage",
+      "item_list": "{{.*}}",
+      "event": "select_content",
+      "eventAction": "click on product dynamic channel top carousel",
+      "sessionIris": "{{.*}}",
+      "items": [{
+        "dimension83": "{{bebas ongkir|none / other}}",
+        "item_id": "{{.*}}",
+        "dimension96": "{{.*}}",
+        "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
+        "dimension40": "{{.*}}",
+        "dimension84": "{{.*}}",
+        "index": "{{\\d*.\\d*}}",
+        "item_name": "{{.*}}",
+        "item_brand": "{{.*}}",
+        "item_variant": "{{.*}}",
+        "item_category": "{{.*}}"
+      }],
+      "eventLabel": "{{.*}}",
+      "channelId": "{{.*}}",
+      "campaignCode": "{{.*}}"
+    },
+    {
+      "businessUnit": "home & browse",
+      "eventCategory": "homepage",
+      "currentSite": "tokopediamarketplace",
+      "screenName": "/",
+      "event": "clickHomepage",
+      "userId": "{{.*}}",
+      "eventAction": "click view all card on dynamic channel top carousel",
+      "sessionIris": "{{.*}}",
+      "eventLabel": "{{.*}}"
+    },
+    {
+      "businessUnit": "home & browse",
+      "eventCategory": "homepage",
+      "currentSite": "tokopediamarketplace",
+      "screenName": "/",
+      "event": "clickHomepage",
+      "userId": "{{.*}}",
+      "eventAction": "click view all card on dynamic channel top carousel",
+      "sessionIris": "{{.*}}",
+      "eventLabel": "{{.*}}"
+    }
+  ]
+}

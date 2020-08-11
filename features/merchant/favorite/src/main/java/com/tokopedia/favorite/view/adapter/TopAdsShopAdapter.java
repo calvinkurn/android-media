@@ -3,7 +3,6 @@ package com.tokopedia.favorite.view.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +13,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -26,21 +24,14 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.favorite.R;
 import com.tokopedia.favorite.utils.TrackingConst;
 import com.tokopedia.favorite.view.viewlistener.FavoriteClickListener;
 import com.tokopedia.favorite.view.viewmodel.TopAdsShopItem;
 import com.tokopedia.topads.sdk.utils.ImageLoader;
-import com.tokopedia.topads.sdk.utils.ImpresionTask;
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter;
 import com.tokopedia.track.TrackApp;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -75,7 +66,7 @@ public class TopAdsShopAdapter extends RecyclerView.Adapter<TopAdsShopAdapter.Vi
         context = parent.getContext();
         imageLoader = new ImageLoader(context);
         View itemLayoutView = LayoutInflater.from(context)
-                .inflate(R.layout.listview_reccommend_shop, parent, false);
+                .inflate(R.layout.favorite_listview_reccommend_shop, parent, false);
         createScaleAnimation();
         return new ViewHolder(itemLayoutView);
     }
@@ -86,7 +77,7 @@ public class TopAdsShopAdapter extends RecyclerView.Adapter<TopAdsShopAdapter.Vi
         holder.shopName.setText(Html.fromHtml(shopItem.getShopName()));
         holder.shopLocation.setText(Html.fromHtml(shopItem.getShopLocation()));
         imageLoader.loadImage(shopItem.getShopImageUrl(), shopItem.getShopImageEcs(), holder.shopIcon);
-        setShopCover(holder, shopItem.getShopCoverUrl(), shopItem.getShopCoverEcs());
+        setShopCover(holder, shopItem);
         setFavorite(holder, shopItem);
         holder.mainContent.setOnClickListener(onShopClicked(shopItem));
         holder.favButton.setOnClickListener(
@@ -95,12 +86,12 @@ public class TopAdsShopAdapter extends RecyclerView.Adapter<TopAdsShopAdapter.Vi
     }
 
 
-    private void setShopCover(ViewHolder holder, final String coverUri, String ecs) {
-        if (coverUri == null) {
-            holder.shopCover.setImageResource(R.drawable.ic_loading_toped);
+    private void setShopCover(ViewHolder holder, TopAdsShopItem shopItem) {
+        if (shopItem.getShopCoverUrl() == null) {
+            holder.shopCover.setImageResource(com.tokopedia.abstraction.R.drawable.ic_loading_toped);
         } else {
             Glide.with(context)
-                    .load(ecs)
+                    .load(shopItem.getShopCoverEcs())
                     .dontAnimate()
                     .placeholder(com.tokopedia.topads.sdk.R.drawable.loading_page)
                     .error(com.tokopedia.topads.sdk.R.drawable.error_drawable)
@@ -115,9 +106,12 @@ public class TopAdsShopAdapter extends RecyclerView.Adapter<TopAdsShopAdapter.Vi
 
                         @Override
                         public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                            if (coverUri.contains(PATH_VIEW) && !isFirstResource) {
-                                new ImpresionTask(className).execute(coverUri);
-                            }
+                            new TopAdsUrlHitter(holder.getContext()).hitImpressionUrl(
+                                    className,
+                                    shopItem.getShopImageUrl(),
+                                    shopItem.getShopId(),
+                                    shopItem.getShopName(),
+                                    shopItem.getShopImageUrl());
                             return false;
                         }
                     })
@@ -158,68 +152,17 @@ public class TopAdsShopAdapter extends RecyclerView.Adapter<TopAdsShopAdapter.Vi
             @Override
             public void onClick(View view) {
                 Context context = view.getContext();
-                new FireTopAdsActionAsyncTask().execute(item.getShopClickUrl());
+                new TopAdsUrlHitter(view.getContext()).hitClickUrl(
+                        className,
+                        item.getShopClickUrl(),
+                        item.getShopId(),
+                        item.getShopName(),
+                        item.getShopImageUrl());
                 eventFavoriteViewRecommendation();
                 Intent intent = RouteManager.getIntent(context, ApplinkConst.SHOP, item.getShopId());
                 context.startActivity(intent);
             }
         };
-    }
-
-    /**
-     * Hack solution using AsyncTask
-     * This is to handled fire and forget url to shopfavorit
-     * Previously was using Volley (TopadsUtil.clickTopAdsAction)
-     */
-    public static class FireTopAdsActionAsyncTask extends AsyncTask<String, Void, Void> {
-
-        @NonNull
-        @Override
-        protected Void doInBackground(@NonNull String... strings) {
-            URL url;
-            HttpURLConnection urlConnection;
-
-            try {
-                String stringBuilder = strings[0] +
-                        "?device=android&os_type=1&appversion=" +
-                        GlobalConfig.VERSION_CODE;
-                url = new URL(stringBuilder);
-                urlConnection = (HttpURLConnection) url.openConnection();
-                urlConnection.setRequestMethod("GET");
-
-                int responseCode = urlConnection.getResponseCode();
-
-                if (responseCode == HttpURLConnection.HTTP_OK) {
-                    readStream(urlConnection.getInputStream());
-                }
-
-            } catch (Throwable e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        private void readStream(InputStream in) {
-            BufferedReader reader = null;
-            StringBuilder response = new StringBuilder();
-            try {
-                reader = new BufferedReader(new InputStreamReader(in));
-                String line = "";
-                while ((line = reader.readLine()) != null) {
-                    response.append(line);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                if (reader != null) {
-                    try {
-                        reader.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
     }
 
     public void eventFavoriteViewRecommendation() {

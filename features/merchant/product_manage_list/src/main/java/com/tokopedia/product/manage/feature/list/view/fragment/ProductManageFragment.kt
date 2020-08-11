@@ -31,8 +31,12 @@ import com.tokopedia.abstraction.constant.TkpdState
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
+import com.tokopedia.applink.productmanage.DeepLinkMapperProductManage
+import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
+import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.text.SearchInputView
@@ -43,9 +47,15 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.manage.R
+import com.tokopedia.product.manage.common.util.ProductManageListErrorHandler
+import com.tokopedia.product.manage.feature.campaignstock.ui.activity.CampaignStockActivity
 import com.tokopedia.product.manage.feature.cashback.data.SetCashbackResult
 import com.tokopedia.product.manage.feature.cashback.presentation.activity.ProductManageSetCashbackActivity
+import com.tokopedia.product.manage.feature.cashback.presentation.fragment.ProductManageSetCashbackFragment.Companion.EXTRA_CASHBACK_SHOP_ID
+import com.tokopedia.product.manage.feature.cashback.presentation.fragment.ProductManageSetCashbackFragment.Companion.PARAM_SET_CASHBACK_PRODUCT_PRICE
+import com.tokopedia.product.manage.feature.cashback.presentation.fragment.ProductManageSetCashbackFragment.Companion.PARAM_SET_CASHBACK_VALUE
 import com.tokopedia.product.manage.feature.cashback.presentation.fragment.ProductManageSetCashbackFragment.Companion.SET_CASHBACK_CACHE_MANAGER_KEY
+import com.tokopedia.product.manage.feature.cashback.presentation.fragment.ProductManageSetCashbackFragment.Companion.SET_CASHBACK_PRODUCT_NAME
 import com.tokopedia.product.manage.feature.cashback.presentation.fragment.ProductManageSetCashbackFragment.Companion.SET_CASHBACK_RESULT
 import com.tokopedia.product.manage.feature.etalase.view.activity.EtalasePickerActivity
 import com.tokopedia.product.manage.feature.etalase.view.fragment.EtalasePickerFragment.Companion.EXTRA_ETALASE_ID
@@ -56,10 +66,15 @@ import com.tokopedia.product.manage.feature.filter.presentation.fragment.Product
 import com.tokopedia.product.manage.feature.list.analytics.ProductManageTracking
 import com.tokopedia.product.manage.feature.list.constant.ProductManageAnalytics.MP_PRODUCT_MANAGE
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant
+import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_PRODUCT_ID
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_PRODUCT_NAME
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_THRESHOLD
+import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_UPDATED_STATUS
+import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_UPDATED_STOCK
+import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_UPDATE_MESSAGE
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.INSTAGRAM_SELECT_REQUEST_CODE
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.REQUEST_CODE_ADD_PRODUCT
+import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.REQUEST_CODE_CAMPAIGN_STOCK
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.REQUEST_CODE_EDIT_PRODUCT
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.REQUEST_CODE_STOCK_REMINDER
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.SET_CASHBACK_REQUEST_CODE
@@ -79,6 +94,7 @@ import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.Edit
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByStatus
 import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel.*
 import com.tokopedia.product.manage.feature.list.view.model.ViewState.*
+import com.tokopedia.product.manage.feature.list.view.ui.bottomsheet.ProductManageAddEditMenuBottomSheet
 import com.tokopedia.product.manage.feature.list.view.ui.bottomsheet.ProductManageBottomSheet
 import com.tokopedia.product.manage.feature.list.view.ui.bottomsheet.ProductManageMoreMenuBottomSheet
 import com.tokopedia.product.manage.feature.list.view.ui.bottomsheet.StockInformationBottomSheet
@@ -95,14 +111,16 @@ import com.tokopedia.product.manage.feature.quickedit.stock.presentation.fragmen
 import com.tokopedia.product.manage.feature.quickedit.variant.presentation.data.EditVariantResult
 import com.tokopedia.product.manage.feature.quickedit.variant.presentation.ui.QuickEditVariantPriceBottomSheet
 import com.tokopedia.product.manage.feature.quickedit.variant.presentation.ui.QuickEditVariantStockBottomSheet
-import com.tokopedia.product.manage.item.imagepicker.imagepickerbuilder.AddProductImagePickerBuilder
 import com.tokopedia.seller.active.common.service.UpdateShopActiveService
+import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
+import com.tokopedia.seller_migration_common.presentation.model.SellerFeatureUiModel
+import com.tokopedia.seller_migration_common.presentation.widget.SellerFeatureCarousel
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus.*
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption.*
 import com.tokopedia.topads.common.data.model.DataDeposit
-import com.tokopedia.topads.common.data.model.FreeDeposit.CREATOR.DEPOSIT_ACTIVE
+import com.tokopedia.topads.common.data.model.FreeDeposit.Companion.DEPOSIT_ACTIVE
 import com.tokopedia.topads.freeclaim.data.constant.TOPADS_FREE_CLAIM_URL
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant
@@ -124,7 +142,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     ProductManageQuickEditPriceFragment.OnFinishedListener,
     ProductManageQuickEditStockFragment.OnFinishedListener,
     ProductManageMoreMenuViewHolder.ProductManageMoreMenuListener,
-    ProductManageListListener{
+    ProductManageListListener, ProductManageAddEditMenuBottomSheet.AddEditMenuClickListener {
 
     @Inject
     lateinit var viewModel: ProductManageViewModel
@@ -141,12 +159,31 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     private var productManageMoreMenuBottomSheet: ProductManageMoreMenuBottomSheet? = null
     private var multiEditBottomSheet: ProductMultiEditBottomSheet? = null
     private val stockInfoBottomSheet by lazy { StockInformationBottomSheet(view, fragmentManager) }
+    private val productManageAddEditMenuBottomSheet by lazy { ProductManageAddEditMenuBottomSheet(view, sellerFeatureCarouselClickListener, this, fragmentManager) }
 
     private val productManageListAdapter by lazy { adapter as ProductManageListAdapter }
     private var defaultFilterOptions: List<FilterOption> = emptyList()
     private var itemsChecked: MutableList<ProductViewModel> = mutableListOf()
     private var performanceMonitoring: PerformanceMonitoring? = null
     private var filterTab: ProductManageFilterTab? = null
+
+    private var shouldEnableMultiEdit: Boolean = false
+    private var shouldAddAsFeatured: Boolean = false
+    private var shouldOpenAppLink: Boolean = false
+    private var sellerFeatureCarouselClickListener: SellerFeatureCarousel.SellerFeatureClickListener = object: SellerFeatureCarousel.SellerFeatureClickListener {
+        override fun onSellerFeatureClicked(item: SellerFeatureUiModel) {
+            when (item) {
+                is SellerFeatureUiModel.MultiEditFeatureWithDataUiModel -> goToSellerAppProductManageMultiEdit()
+                is SellerFeatureUiModel.TopAdsFeatureWithDataUiModel -> goToSellerAppTopAds(item.data as ProductViewModel)
+                is SellerFeatureUiModel.SetCashbackFeatureWithDataUiModel -> goToSellerAppProductManageThenSetCashback(item.data as ProductViewModel)
+                is SellerFeatureUiModel.FeaturedProductFeatureWithDataUiModel -> goToSellerAppProductManageThenAddAsFeatured(item.data as ProductViewModel)
+                is SellerFeatureUiModel.StockReminderFeatureWithDataUiModel -> goToSellerAppSetStockReminder(item.data as ProductViewModel)
+                is SellerFeatureUiModel.ProductManageSetVariantFeatureWithDataUiModel -> goToSellerAppAddProduct()
+            }
+            productManageAddEditMenuBottomSheet.dismiss()
+            productManageBottomSheet?.dismiss()
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(getLayoutRes(), container, false)
@@ -155,6 +192,11 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     override fun onCreate(savedInstanceState: Bundle?) {
         startPerformanceMonitoring()
         super.onCreate(savedInstanceState)
+        activity?.intent?.data?.run {
+            shouldEnableMultiEdit = this.getBooleanQueryParameter(DeepLinkMapperProductManage.QUERY_PARAM_ENABLE_MULTI_EDIT, false)
+            shouldAddAsFeatured = this.getBooleanQueryParameter(DeepLinkMapperProductManage.QUERY_PARAM_ADD_AS_FEATURED, false)
+            shouldOpenAppLink = activity?.intent?.getStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA).orEmpty().isNotEmpty()
+        }
         setHasOptionsMenu(true)
     }
 
@@ -177,6 +219,11 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
         initView()
         loadInitialData()
+    }
+
+    override fun clearAllData() {
+        isLoadingInitialData = true
+        super.clearAllData()
     }
 
     private fun initView() {
@@ -231,16 +278,20 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.add_product_menu) {
-            val subMenu = item.subMenu
-            val addProductMenu = subMenu.findItem(R.id.label_view_add_image)
+            if (GlobalConfig.isSellerApp()) {
+                val subMenu = item.subMenu
+                val addProductMenu = subMenu.findItem(R.id.label_view_add_image)
 
-            addProductMenu.setOnMenuItemClickListener {
-                val intent = RouteManager.getIntent(requireContext(), ApplinkConst.PRODUCT_ADD)
-                startActivityForResult(intent, REQUEST_CODE_ADD_PRODUCT)
-                true
+                addProductMenu.setOnMenuItemClickListener {
+                    val intent = RouteManager.getIntent(requireContext(), ApplinkConst.PRODUCT_ADD)
+                    startActivityForResult(intent, REQUEST_CODE_ADD_PRODUCT)
+                    true
+                }
+
+                ProductManageTracking.eventAddProduct()
+            } else {
+                showAddEditMenuBottomSheet()
             }
-
-            ProductManageTracking.eventAddProduct()
         }
         else if (item.itemId == R.id.action_more_menu) {
             showMoreMenuBottomSheet()
@@ -322,6 +373,83 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         }
     }
 
+    override fun onAddProductWithNoVariantClicked() {
+        val intent = RouteManager.getIntent(requireContext(), ApplinkConst.PRODUCT_ADD)
+        startActivityForResult(intent, REQUEST_CODE_ADD_PRODUCT)
+        productManageAddEditMenuBottomSheet.dismiss()
+    }
+
+    private fun goToSellerAppProductManageMultiEdit() {
+        val appLink = Uri.parse(ApplinkConst.PRODUCT_MANAGE)
+                .buildUpon()
+                .appendQueryParameter(DeepLinkMapperProductManage.QUERY_PARAM_ENABLE_MULTI_EDIT, "true")
+                .build()
+                .toString()
+
+        goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_MULTI_EDIT, arrayListOf(appLink))
+    }
+
+    private fun goToSellerAppTopAds(product: ProductViewModel) {
+        val firstAppLink = ApplinkConst.PRODUCT_MANAGE
+        val secondAppLink = Uri.parse(ApplinkConst.SellerApp.TOPADS_PRODUCT_CREATE).buildUpon()
+                .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_EXTRA_SHOP_ID, userSession.shopId)
+                .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_EXTRA_ITEM_ID, product.id)
+                .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_KEY_SOURCE,
+                        if (GlobalConfig.isSellerApp())
+                            TopAdsSourceOption.SA_MANAGE_LIST_PRODUCT
+                        else
+                            TopAdsSourceOption.MA_MANAGE_LIST_PRODUCT)
+                .build()
+                .toString()
+
+        goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_TOPADS, arrayListOf(firstAppLink, secondAppLink))
+    }
+
+    private fun goToSellerAppProductManageThenSetCashback(product: ProductViewModel) {
+        val firstAppLink = Uri.parse(ApplinkConst.PRODUCT_MANAGE)
+                .buildUpon()
+                .build()
+                .toString()
+        val secondAppLink = Uri.parse(UriUtil.buildUri(ApplinkConstInternalMarketplace.SET_CASHBACK, product.id))
+                .buildUpon()
+                .appendQueryParameter(SET_CASHBACK_PRODUCT_NAME, product.title)
+                .appendQueryParameter(PARAM_SET_CASHBACK_VALUE, product.cashBack.toString())
+                .appendQueryParameter(PARAM_SET_CASHBACK_PRODUCT_PRICE, product.minPrice?.price.toIntOrZero().toString())
+                .appendQueryParameter(EXTRA_CASHBACK_SHOP_ID, userSession.shopId)
+                .build()
+                .toString()
+        goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_SET_CASHBACK, arrayListOf(firstAppLink, secondAppLink))
+    }
+
+    private fun goToSellerAppProductManageThenAddAsFeatured(product: ProductViewModel) {
+        val firstAppLink = Uri.parse(ApplinkConst.PRODUCT_MANAGE)
+                .buildUpon()
+                .appendQueryParameter(DeepLinkMapperProductManage.QUERY_PARAM_ADD_AS_FEATURED, "true")
+                .appendQueryParameter(DeepLinkMapperProductManage.QUERY_PARAM_IS_PRODUCT_FEATURED, product.isFeatured.toString())
+                .appendQueryParameter(DeepLinkMapperProductManage.QUERY_PARAM_SELECTED_PRODUCT_ID, product.id)
+                .build()
+                .toString()
+
+        goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_FEATURED_PRODUCT, arrayListOf(firstAppLink))
+    }
+
+    private fun goToSellerAppSetStockReminder(product: ProductViewModel) {
+        val secondAppLink = UriUtil.buildUri(ApplinkConstInternalMarketplace.STOCK_REMINDER, product.id, product.title, product.stock.toString())
+        goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_STOCK_REMINDER, arrayListOf(ApplinkConst.PRODUCT_MANAGE, secondAppLink))
+    }
+
+    private fun goToSellerAppAddProduct() {
+        val secondAppLink = ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW
+        goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_SET_VARIANT, arrayListOf(ApplinkConst.PRODUCT_MANAGE, secondAppLink))
+    }
+
+    private fun goToSellerMigrationPage(@SellerMigrationFeatureName featureName: String, appLinks: ArrayList<String>) {
+        context?.run {
+            val intent = SellerMigrationActivity.createIntent(this, featureName, screenName, appLinks)
+            startActivity(intent)
+        }
+    }
+
     //set filter options if filterOptions is not null or empty
     private fun setDefaultFilterOption() {
         if (defaultFilterOptions.isNotEmpty()) {
@@ -340,10 +468,20 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         defaultFilterOptions = filterOptions
     }
 
+    fun setSearchKeywordOptions(keyword: String) {
+        isLoadingInitialData = true
+        tabSortFilter?.show()
+        searchBar?.show()
+        searchBar?.searchTextView?.setText(keyword)
+        showLoadingProgress()
+        getProductList()
+        searchBar.clearFocus()
+    }
+
     private fun showProductEmptyState(): Boolean {
         val selectedFilters = viewModel.selectedFilterAndSort.value
         val searchKeyword = searchBar.searchTextView.text.toString()
-        return searchKeyword.isEmpty() && selectedFilters == null && filterTab?.isFilterActive() == false
+        return searchKeyword.isEmpty() && selectedFilters?.selectedFilterCount.orZero() == 0 && filterTab?.isFilterActive() == false
     }
 
     private fun setupInterceptor() {
@@ -381,12 +519,12 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
         context?.let {
             searchBar.closeImageButton.setImageResource(android.R.color.transparent)
-            searchBar.closeImageButton.setBackgroundResource(R.drawable.unify_clear_ic)
+            searchBar.closeImageButton.setBackgroundResource(com.tokopedia.unifycomponents.R.drawable.unify_clear_ic)
         }
     }
 
     private fun setupBottomSheet() {
-        productManageBottomSheet = ProductManageBottomSheet(view, this, fragmentManager)
+        productManageBottomSheet = ProductManageBottomSheet(view, this, sellerFeatureCarouselClickListener, fragmentManager)
         multiEditBottomSheet = ProductMultiEditBottomSheet(view, this, fragmentManager)
         productManageMoreMenuBottomSheet = ProductManageMoreMenuBottomSheet(context, this, fragmentManager)
     }
@@ -512,7 +650,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         return ProductManageAdapterFactoryImpl(this)
     }
 
-    override fun getScreenName(): String = ""
+    override fun getScreenName(): String = "/product list page"
 
     override fun initInjector() {
         getComponent(ProductManageListComponent::class.java).inject(this)
@@ -570,6 +708,11 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             .isNotEmpty()
 
         multiSelectContainer.showWithCondition(shouldShow)
+        textMultipleSelect.showWithCondition(GlobalConfig.isSellerApp())
+        if (shouldEnableMultiEdit) {
+            shouldEnableMultiEdit = false
+            textMultipleSelect.performClick()
+        }
     }
 
     private fun onErrorEditPrice(editPriceResult: EditPriceResult) {
@@ -702,6 +845,26 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         view?.let {
             val onClickActionLabel = View.OnClickListener { listener.invoke() }
             Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, actionLabel, onClickActionLabel)
+        }
+    }
+
+    private fun showRetryToast() {
+        view?.let {
+            val onClickActionLabel = View.OnClickListener {
+                if (isLoadingInitialData) {
+                    onSwipeRefresh()
+                } else {
+                    endlessRecyclerViewScrollListener.loadMoreNextPage()
+                }
+            }
+            Toaster.make(
+                    it,
+                    getString(R.string.product_manage_snack_bar_fail),
+                    Snackbar.LENGTH_INDEFINITE,
+                    Toaster.TYPE_ERROR,
+                    getString(com.tokopedia.abstraction.R.string.retry_label),
+                    onClickActionLabel
+            )
         }
     }
 
@@ -953,8 +1116,16 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     override fun onClickEditStockButton(product: ProductViewModel) {
-        val editStockBottomSheet = context?.let { ProductManageQuickEditStockFragment.createInstance(product, this) }
-        editStockBottomSheet?.show(childFragmentManager, BOTTOM_SHEET_TAG)
+        if (product.hasStockReserved) {
+            context?.run {
+                startActivityForResult(
+                        CampaignStockActivity.createIntent(this, userSession.shopId, arrayOf(product.id)),
+                        REQUEST_CODE_CAMPAIGN_STOCK)
+            }
+        } else {
+            val editStockBottomSheet = context?.let { ProductManageQuickEditStockFragment.createInstance(product, this) }
+            editStockBottomSheet?.show(childFragmentManager, BOTTOM_SHEET_TAG)
+        }
         ProductManageTracking.eventEditStock(product.id)
     }
 
@@ -967,10 +1138,18 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     override fun onClickEditVariantStockButton(product: ProductViewModel) {
-        val editVariantStockBottomSheet = QuickEditVariantStockBottomSheet.createInstance(product.id) { result ->
-            viewModel.editVariantsStock(result)
+        if (product.hasStockReserved) {
+            context?.run {
+                startActivityForResult(
+                        CampaignStockActivity.createIntent(this, userSession.shopId, arrayOf(product.id)),
+                        REQUEST_CODE_CAMPAIGN_STOCK)
+            }
+        } else {
+            val editVariantStockBottomSheet = QuickEditVariantStockBottomSheet.createInstance(product.id) { result ->
+                viewModel.editVariantsStock(result)
+            }
+            editVariantStockBottomSheet.show(childFragmentManager, QuickEditVariantStockBottomSheet.TAG)
         }
-        editVariantStockBottomSheet.show(childFragmentManager, QuickEditVariantStockBottomSheet.TAG)
         ProductManageTracking.eventClickEditStockVariant()
     }
 
@@ -1028,7 +1207,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                 ProductManageTracking.eventSettingsCashback(productId)
             }
             is SetFeaturedProduct -> {
-                onSetFeaturedProductClicked(product)
+                onSetFeaturedProductClicked(product.isFeatured ?: false, product.id)
                 ProductManageTracking.eventSettingsFeatured(productId)
             }
             is RemoveFeaturedProduct -> {
@@ -1058,51 +1237,47 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         }
     }
 
-    private fun onSetFeaturedProductClicked(productManageViewModel: ProductViewModel) {
+    private fun onSetFeaturedProductClicked(isFeatured: Boolean, productId: String) {
         context?.let { context ->
-            if(viewModel.isPowerMerchant() || isOfficialStore) {
-                productManageViewModel.isFeatured?.let { isFeatured ->
-                    if(!isFeatured) {
-                        when (productListFeaturedOnlySize) {
-                            MAX_FEATURED_PRODUCT -> {
-                                setDialogFeaturedProduct(
-                                    ProductManageUrl.ILLUSTRATION_MAX_FEATURED_PRODUCT_DOMAIN,
-                                    getString(R.string.product_featured_max_dialog_title),
-                                    getString(R.string.product_featured_max_dialog_desc),
-                                    getString(R.string.product_featured_max_dialog_primary_cta),
-                                    getString(R.string.product_featured_max_dialog_secondary_cta)
-                                )
-                                dialogFeaturedProduct?.setPrimaryCTAClickListener { dialogFeaturedProduct?.dismiss() }
-                                dialogFeaturedProduct?.setSecondaryCTAClickListener {
-                                    dialogFeaturedProduct?.dismiss()
-                                    viewModel.setSelectedFilter(listOf(FilterByCondition.FeaturedOnly))
-                                }
-                                dialogFeaturedProduct?.show()
-                            }
-                            MIN_FEATURED_PRODUCT -> {
-                                setDialogFeaturedProduct(
-                                    ProductManageUrl.ILLUSTRATION_ADD_FEATURED_PRODUCT_DOMAIN,
-                                    getString(R.string.product_featured_add_dialog_title),
-                                    getString(R.string.product_featured_add_dialog_desc),
-                                    getString(R.string.product_featured_add_dialog_primary_cta),
-                                    getString(R.string.product_featured_add_dialog_secondary_cta)
-                                )
-                                dialogFeaturedProduct?.setPrimaryCTAClickListener {
-                                    addFeaturedProduct(productManageViewModel.id)
-                                    dialogFeaturedProduct?.dismiss()
-                                    ProductManageTracking.eventFeaturedProductPopUpSave()
-                                }
-                                dialogFeaturedProduct?.setSecondaryCTAClickListener { dialogFeaturedProduct?.dismiss() }
-                                dialogFeaturedProduct?.show()
-                            }
-                            else -> {
-                                addFeaturedProduct(productManageViewModel.id)
-                            }
+            if ((viewModel.isPowerMerchant() || isOfficialStore) && !isFeatured) {
+                when (productListFeaturedOnlySize) {
+                    MAX_FEATURED_PRODUCT -> {
+                        setDialogFeaturedProduct(
+                                ProductManageUrl.ILLUSTRATION_MAX_FEATURED_PRODUCT_DOMAIN,
+                                getString(R.string.product_featured_max_dialog_title),
+                                getString(R.string.product_featured_max_dialog_desc),
+                                getString(R.string.product_featured_max_dialog_primary_cta),
+                                getString(R.string.product_featured_max_dialog_secondary_cta)
+                        )
+                        dialogFeaturedProduct?.setPrimaryCTAClickListener { dialogFeaturedProduct?.dismiss() }
+                        dialogFeaturedProduct?.setSecondaryCTAClickListener {
+                            dialogFeaturedProduct?.dismiss()
+                            viewModel.setSelectedFilter(listOf(FilterByCondition.FeaturedOnly))
                         }
+                        dialogFeaturedProduct?.show()
+                    }
+                    MIN_FEATURED_PRODUCT -> {
+                        setDialogFeaturedProduct(
+                                ProductManageUrl.ILLUSTRATION_ADD_FEATURED_PRODUCT_DOMAIN,
+                                getString(R.string.product_featured_add_dialog_title),
+                                getString(R.string.product_featured_add_dialog_desc),
+                                getString(R.string.product_featured_add_dialog_primary_cta),
+                                getString(R.string.product_featured_add_dialog_secondary_cta)
+                        )
+                        dialogFeaturedProduct?.setPrimaryCTAClickListener {
+                            addFeaturedProduct(productId)
+                            dialogFeaturedProduct?.dismiss()
+                            ProductManageTracking.eventFeaturedProductPopUpSave()
+                        }
+                        dialogFeaturedProduct?.setSecondaryCTAClickListener { dialogFeaturedProduct?.dismiss() }
+                        dialogFeaturedProduct?.show()
+                    }
+                    else -> {
+                        addFeaturedProduct(productId)
                     }
                 }
             } else {
-                    setDialogFeaturedProduct(
+                setDialogFeaturedProduct(
                         ProductManageUrl.ILLUSTRATION_SPECIAL_FEATURED_PRODUCT_DOMAIN,
                         getString(R.string.product_featured_special_dialog_title),
                         getString(R.string.product_featured_special_dialog_desc),
@@ -1241,6 +1416,37 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        if (shouldAddAsFeatured) {
+            shouldAddAsFeatured = false
+            val isFeatured = activity?.intent?.data?.getBooleanQueryParameter(DeepLinkMapperProductManage.QUERY_PARAM_IS_PRODUCT_FEATURED, false) ?: false
+            val productId = activity?.intent?.data?.getQueryParameter(DeepLinkMapperProductManage.QUERY_PARAM_SELECTED_PRODUCT_ID).orEmpty()
+            onSetFeaturedProductClicked(isFeatured, productId)
+        }
+        if (shouldOpenAppLink) {
+            shouldOpenAppLink = false
+            val appLinks = ArrayList(activity?.intent?.getStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA).orEmpty())
+            if (appLinks.isNotEmpty()) {
+                val appLinkToOpen = appLinks.firstOrNull().orEmpty()
+                if (appLinkToOpen.isNotBlank()) {
+                    appLinks.removeAt(0)
+                    val intent = RouteManager.getIntent(context, appLinkToOpen).apply {
+                        putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, appLinks)
+                        putExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, activity?.intent?.getStringExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME).orEmpty())
+                    }
+                    when (activity?.intent?.getStringExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME)) {
+                        SellerMigrationFeatureName.FEATURE_SET_CASHBACK -> startActivityForResult(intent, SET_CASHBACK_REQUEST_CODE)
+                        SellerMigrationFeatureName.FEATURE_STOCK_REMINDER -> startActivityForResult(intent, REQUEST_CODE_STOCK_REMINDER)
+                        SellerMigrationFeatureName.FEATURE_SET_VARIANT, SellerMigrationFeatureName.FEATURE_EDIT_PRODUCT_CASHBACK -> startActivityForResult(intent, REQUEST_CODE_ADD_PRODUCT)
+                        SellerMigrationFeatureName.FEATURE_ADS, SellerMigrationFeatureName.FEATURE_ADS_DETAIL -> startActivity(intent)
+                        SellerMigrationFeatureName.FEATURE_TOPADS -> startActivity(intent)
+                    }
+                }
+            }
+        }
+    }
+
     override fun onResume() {
         super.onResume()
         activity?.let {
@@ -1314,9 +1520,51 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                         }
                     }
                 }
+                REQUEST_CODE_CAMPAIGN_STOCK ->
+                    when(resultCode) {
+                        Activity.RESULT_OK -> {
+                            val productId = it.getStringExtra(EXTRA_PRODUCT_ID)
+                            val productName = it.getStringExtra(EXTRA_PRODUCT_NAME)
+                            val stock = it.getIntExtra(EXTRA_UPDATED_STOCK, 0)
+                            val status = valueOf(it.getStringExtra(EXTRA_UPDATED_STATUS))
+
+                            productManageListAdapter.updateStock(productId, stock, status)
+
+                            filterTab?.getSelectedFilter()?.let { productStatus ->
+                                filterProductListByStatus(productStatus)
+                                renderMultiSelectProduct()
+                            }
+
+                            getFiltersTab(withDelay = true)
+
+                            val successMessage = getString(R.string.product_manage_campaign_stock_success_toast, productName)
+                            Toaster.build(
+                                    coordinatorLayout,
+                                    successMessage,
+                                    Snackbar.LENGTH_SHORT,
+                                    Toaster.TYPE_NORMAL)
+                                    .show()
+                        }
+                        Activity.RESULT_CANCELED -> {
+                            val errorMessage = it.getStringExtra(EXTRA_UPDATE_MESSAGE) ?: getString(R.string.product_manage_campaign_stock_error_toast)
+                            Toaster.build(
+                                    coordinatorLayout,
+                                    errorMessage,
+                                    Snackbar.LENGTH_SHORT,
+                                    Toaster.TYPE_ERROR)
+                                    .show()
+                        }
+                        else -> {}
+                    }
                 else -> super.onActivityResult(requestCode, resultCode, it)
             }
         }
+    }
+
+    override fun showGetListError(throwable: Throwable?) {
+        hideLoading()
+        updateStateScrollListener()
+        showRetryToast()
     }
 
     private fun getTopAdsFreeClaim() {
@@ -1345,7 +1593,10 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         observe(viewModel.setFeaturedProductResult) {
             when (it) {
                 is Success -> onSuccessChangeFeaturedProduct(it.data.productId, it.data.status)
-                is Fail -> onFailedChangeFeaturedProduct(it.throwable)
+                is Fail -> {
+                    onFailedChangeFeaturedProduct(it.throwable)
+                    ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)
+                }
             }
         }
     }
@@ -1354,7 +1605,10 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         observe(viewModel.getPopUpResult) {
             when (it) {
                 is Success -> onSuccessGetPopUp(it.data.isSuccess, it.data.productId)
-                is Fail -> onErrorGetPopUp()
+                is Fail -> {
+                    onErrorGetPopUp()
+                    ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)
+                }
             }
         }
     }
@@ -1363,7 +1617,10 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         observe(viewModel.getFreeClaimResult) {
             when (it) {
                 is Success -> onSuccessGetFreeClaim(it.data)
-                is Fail -> onErrorGetFreeClaim()
+                is Fail -> {
+                    onErrorGetFreeClaim()
+                    ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)
+                }
             }
         }
     }
@@ -1374,6 +1631,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                 is Success -> onSuccessEditPrice(it.data.productId, it.data.price, it.data.productName)
                 is Fail -> {
                     onErrorEditPrice(it.throwable as EditPriceResult)
+                    ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)
                 }
             }
         }
@@ -1385,6 +1643,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                 is Success -> onSuccessEditStock(it.data.productId, it.data.stock, it.data.productName, it.data.status)
                 is Fail -> {
                     onErrorEditStock(it.throwable as EditStockResult)
+                    ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)
                 }
             }
         }
@@ -1394,8 +1653,10 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         observe(viewModel.multiEditProductResult) {
             when(it) {
                 is Success -> onSuccessMultiEditProducts(it.data)
-                is Fail -> showErrorToast()
-
+                is Fail -> {
+                    showErrorToast()
+                    ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)
+                }
             }
         }
     }
@@ -1443,7 +1704,10 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                     enableMultiSelect()
                     renderMultiSelectProduct()
                 }
-                is Fail -> showErrorToast()
+                is Fail -> {
+                    showGetListError(it.throwable)
+                    ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)
+                }
             }
             hidePageLoading()
             stopPerformanceMonitoring()
@@ -1536,7 +1800,10 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         observe(viewModel.deleteProductResult) {
             when (it) {
                 is Success -> onSuccessDeleteProduct(it.data.productName, it.data.productId)
-                is Fail -> onErrorDeleteProduct(it.throwable as DeleteProductResult)
+                is Fail -> {
+                    onErrorDeleteProduct(it.throwable as DeleteProductResult)
+                    ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)
+                }
             }
         }
     }
@@ -1581,7 +1848,10 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                     ).orEmpty()
                     showMessageToast(message)
                 }
-                is Fail -> showErrorMessageToast(it)
+                is Fail -> {
+                    showErrorMessageToast(it)
+                    ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)
+                }
             }
         }
     }
@@ -1597,7 +1867,10 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                     updateVariantStock(it.data)
                     showMessageToast(message)
                 }
-                is Fail -> showErrorMessageToast(it)
+                is Fail -> {
+                    showErrorMessageToast(it)
+                    ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)
+                }
             }
         }
     }
@@ -1672,6 +1945,10 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             intent.putStringArrayListExtra(DESC_IMAGE_LIST, imageDescList)
             startActivity(intent)
         }
+    }
+
+    private fun showAddEditMenuBottomSheet() {
+        productManageAddEditMenuBottomSheet.show()
     }
 
     companion object {

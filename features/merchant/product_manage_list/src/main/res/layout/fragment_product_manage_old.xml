@@ -18,7 +18,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            app:layout_constraintTop_toTopOf="parent"
             app:tickerType="announcement" />
 
         <com.tokopedia.topads.freeclaim.view.widget.TopAdsWidgetFreeClaim
@@ -100,17 +99,11 @@
 
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
-    <com.tokopedia.design.button.BottomActionView
+    <com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
         android:id="@+id/bottom_action_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingBottom="@dimen/dp_20"
-        app:bav_1_display="true"
-        app:bav_2_display="true"
-        app:bav_icon_1="@drawable/ic_sort"
-        app:bav_icon_2="@drawable/ic_bottom_action_filter"
-        app:bav_label_1="@string/sort"
-        app:bav_label_2="@string/filter"
         app:layout_anchor="@id/recycler_view"
         app:layout_anchorGravity="bottom|center_horizontal"
         app:layout_behavior="com.tokopedia.design.behavior.QuickReturnFooterBehavior" />

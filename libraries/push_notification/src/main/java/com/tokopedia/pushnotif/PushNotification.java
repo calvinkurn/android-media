@@ -8,24 +8,28 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 
-import androidx.core.app.NotificationManagerCompat;
-
 import com.crashlytics.android.Crashlytics;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.pushnotif.data.constant.Constant;
+import com.tokopedia.pushnotif.data.model.ApplinkNotificationModel;
+import com.tokopedia.pushnotif.data.repository.TransactionRepository;
 import com.tokopedia.pushnotif.factory.ChatNotificationFactory;
 import com.tokopedia.pushnotif.factory.GeneralNotificationFactory;
 import com.tokopedia.pushnotif.factory.ReviewNotificationFactory;
 import com.tokopedia.pushnotif.factory.SummaryNotificationFactory;
 import com.tokopedia.pushnotif.factory.TalkNotificationFactory;
-import com.tokopedia.pushnotif.model.ApplinkNotificationModel;
 import com.tokopedia.pushnotif.util.NotificationTracker;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
+import androidx.core.app.NotificationManagerCompat;
 import timber.log.Timber;
+
+import static com.tokopedia.pushnotif.domain.TrackPushNotificationUseCase.STATUS_DELIVERED;
+import static com.tokopedia.pushnotif.domain.TrackPushNotificationUseCase.STATUS_DROPPED;
 
 /**
  * @author ricoharisin .
@@ -41,7 +45,7 @@ public class PushNotification {
     public static void notify(Context context, Bundle data) {
         ApplinkNotificationModel applinkNotificationModel = ApplinkNotificationHelper.convertToApplinkModel(data);
 
-        if (allowToShowNotification(context, applinkNotificationModel, data)) {
+        if (allowToShowNotification(context, applinkNotificationModel)) {
             NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
             int notificationId = ApplinkNotificationHelper.generateNotifictionId(applinkNotificationModel.getApplinks());
             logEvent(context, applinkNotificationModel, data,
@@ -66,7 +70,9 @@ public class PushNotification {
                 notifyGeneral(context, applinkNotificationModel, notificationId, notificationManagerCompat);
             }
             if (isNotificationEnabled(context)) {
-                NotificationTracker.getInstance(context).trackDeliveredNotification(applinkNotificationModel);
+                NotificationTracker
+                        .getInstance(context)
+                        .trackDeliveredNotification(applinkNotificationModel, STATUS_DELIVERED);
             }
         } else {
             UserSessionInterface userSession = new UserSession(context);
@@ -78,20 +84,23 @@ public class PushNotification {
                             + "; app " + ApplinkNotificationHelper.isTargetApp(applinkNotificationModel)
                             + "; uid " + loginId
             );
+            NotificationTracker
+                    .getInstance(context)
+                    .trackDeliveredNotification(applinkNotificationModel, STATUS_DROPPED);
         }
     }
 
     private static boolean allowToShowNotification(
             Context context,
-            ApplinkNotificationModel applinkNotificationModel,
-            Bundle data
+            ApplinkNotificationModel applinkNotificationModel
     ) {
         UserSessionInterface userSession = new UserSession(context);
         String loginId = userSession.getUserId();
         Boolean sameUserId = applinkNotificationModel.getToUserId().equals(loginId);
         Boolean allowInLocalNotificationSetting = ApplinkNotificationHelper.checkLocalNotificationAppSettings(context, applinkNotificationModel.getTkpCode());
+        Boolean isRenderable = TransactionRepository.isRenderable(context, applinkNotificationModel.getTransactionId());
         Boolean isTargetApp = ApplinkNotificationHelper.isTargetApp(applinkNotificationModel);
-        return sameUserId && allowInLocalNotificationSetting && isTargetApp;
+        return sameUserId && allowInLocalNotificationSetting && isTargetApp && isRenderable;
     }
 
 
@@ -216,14 +225,6 @@ public class PushNotification {
 
     }
 
-    private static void notifyChallenges(Context context, ApplinkNotificationModel applinkNotificationModel,
-                                         int notificationType, NotificationManagerCompat notificationManagerCompat) {
-        Notification notifChat = new GeneralNotificationFactory(context)
-                .createNotification(applinkNotificationModel, notificationType, notificationType);
-
-        notificationManagerCompat.notify(notificationType, notifChat);
-    }
-
     private static boolean isNotificationEnabled(Context context) {
         boolean isAllNotificationEnabled = NotificationManagerCompat.from(context).areNotificationsEnabled();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && isAllNotificationEnabled) {
@@ -241,6 +242,8 @@ public class PushNotification {
         long prevTime = cache.getLong(Constant.PREV_TIME);
         long currTIme = System.currentTimeMillis();
         if (currTIme - prevTime > 15000) {
+            cache.putLong(Constant.PREV_TIME, currTIme);
+            cache.applyEditor();
             return true;
         }
         return false;

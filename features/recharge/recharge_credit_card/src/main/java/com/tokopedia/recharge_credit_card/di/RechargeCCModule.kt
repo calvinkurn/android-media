@@ -1,11 +1,13 @@
 package com.tokopedia.recharge_credit_card.di
 
 import android.content.Context
+import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.google.gson.Gson
 import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.common_digital.common.data.api.DigitalInterceptor
 import com.tokopedia.common_digital.common.di.DigitalCommonScope
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.iris.Iris
@@ -24,6 +26,7 @@ import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -49,6 +52,12 @@ class RechargeCCModule {
         return UserSession(context)
     }
 
+    @RechargeCCScope
+    @Provides
+    fun provideChuckInterceptor(@ApplicationContext context: Context): ChuckerInterceptor {
+        return ChuckerInterceptor(context)
+    }
+
     @Provides
     @RechargeCCScope
     internal fun provideOkHttpRetryPolicy(): OkHttpRetryPolicy {
@@ -66,16 +75,20 @@ class RechargeCCModule {
     internal fun provideOkHttpClient(fingerprintInterceptor: FingerprintInterceptor,
                                      httpLoggingInterceptor: HttpLoggingInterceptor,
                                      digitalInterceptor: DigitalInterceptor,
+                                     chuckInterceptor: ChuckerInterceptor,
                                      okHttpRetryPolicy: OkHttpRetryPolicy): OkHttpClient {
         val builder = OkHttpClient.Builder()
-        return builder
-                .addInterceptor(digitalInterceptor)
+        builder.addInterceptor(digitalInterceptor)
                 .addInterceptor(fingerprintInterceptor)
-                .addInterceptor(httpLoggingInterceptor)
                 .readTimeout(okHttpRetryPolicy.readTimeout.toLong(), TimeUnit.SECONDS)
                 .writeTimeout(okHttpRetryPolicy.writeTimeout.toLong(), TimeUnit.SECONDS)
                 .connectTimeout(okHttpRetryPolicy.connectTimeout.toLong(), TimeUnit.SECONDS)
-                .build()
+
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            builder.addInterceptor(httpLoggingInterceptor)
+                    .addInterceptor(chuckInterceptor)
+        }
+        return builder.build()
     }
 
     @Provides

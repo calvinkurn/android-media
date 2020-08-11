@@ -2,13 +2,12 @@ package com.tokopedia.play.view.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.domain.PostAddToCartUseCase
-import com.tokopedia.play.util.CoroutineDispatcherProvider
+import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.util.event.Event
 import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.DiscountedPrice
@@ -23,7 +22,7 @@ import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.variant_common.use_case.GetProductVariantUseCase
 import com.tokopedia.variant_common.util.VariantCommonMapper
-import kotlinx.coroutines.*
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -34,27 +33,21 @@ class PlayBottomSheetViewModel @Inject constructor(
         private val postAddToCartUseCase: PostAddToCartUseCase,
         private val userSession: UserSessionInterface,
         private val dispatchers: CoroutineDispatcherProvider
-) : BaseViewModel(dispatchers.main) {
+) : PlayBaseViewModel(dispatchers.main) {
 
-    private val job = SupervisorJob()
-
-    private val _observableAddToCart = MutableLiveData<CartFeedbackUiModel>()
+    private val _observableAddToCart = MutableLiveData<PlayResult<Event<CartFeedbackUiModel>>>()
     private val _observableProductVariant = MutableLiveData<PlayResult<VariantSheetUiModel>>()
 
     private val _observableLoggedInInteractionEvent = MutableLiveData<Event<LoginStateEvent>>()
     val observableLoggedInInteractionEvent: LiveData<Event<LoginStateEvent>> = _observableLoggedInInteractionEvent
 
-    val observableAddToCart: LiveData<CartFeedbackUiModel> = _observableAddToCart
+    val observableAddToCart: LiveData<PlayResult<Event<CartFeedbackUiModel>>> = _observableAddToCart
     val observableProductVariant: LiveData<PlayResult<VariantSheetUiModel>> = _observableProductVariant
-
-    override fun flush() {
-        clearJob()
-    }
 
     fun getProductVariant(product: ProductLineUiModel, action: ProductAction) {
         _observableProductVariant.value = PlayResult.Loading(true)
 
-        launchCatchError(block = {
+        scope.launchCatchError(block = {
             val variantSheetUiModel = withContext(dispatchers.io) {
                 getProductVariantUseCase.params = getProductVariantUseCase.createParams(product.id)
                 val response = getProductVariantUseCase.executeOnBackground()
@@ -66,7 +59,7 @@ class PlayBottomSheetViewModel @Inject constructor(
                         action = action,
                         parentVariant = response.data,
                         mapOfSelectedVariants = mapOfSelectedVariants,
-                        listOfVariantCategory = categoryVariants ?: emptyList()
+                        listOfVariantCategory = categoryVariants.orEmpty()
                 )
             }
             _observableProductVariant.value = PlayResult.Success(variantSheetUiModel)
@@ -85,7 +78,10 @@ class PlayBottomSheetViewModel @Inject constructor(
     }
 
     fun addToCart(product: ProductLineUiModel, notes: String = "", action: ProductAction, type: BottomInsetsType) {
-        launchCatchError(block = {
+        _observableAddToCart.value = PlayResult.Loading(showPlaceholder = false)
+
+        //TODO(If isSuccess = false, treat that as Failure instead of Success(isSuccess=true))
+        scope.launchCatchError(block = {
             val responseCart = withContext(dispatchers.io) {
                 postAddToCartUseCase.parameters = AddToCartUseCase.getMinimumParams(
                         product.id,
@@ -102,18 +98,23 @@ class PlayBottomSheetViewModel @Inject constructor(
                 postAddToCartUseCase.executeOnBackground()
             }
 
-            _observableAddToCart.value = mappingResponseCart(responseCart, product, action, type)
-        }) { }
+            _observableAddToCart.value = PlayResult.Success(Event(mappingResponseCart(responseCart, product, action, type)))
+        }) {
+            _observableAddToCart.value = PlayResult.Success(Event(
+                    CartFeedbackUiModel(
+                            isSuccess = false,
+                            errorMessage = it.localizedMessage.orEmpty(),
+                            cartId = "",
+                            product = product,
+                            action = action,
+                            bottomInsetsType = type
+                    )
+            ))
+        }
     }
 
     fun onFreezeBan() {
-        clearJob()
-    }
-
-    private fun clearJob() {
-        if (isActive && !masterJob.isCancelled) {
-            masterJob.cancelChildren()
-        }
+        flush()
     }
 
     private fun mappingResponseCart(addToCartDataModel: AddToCartDataModel,
@@ -129,9 +130,4 @@ class PlayBottomSheetViewModel @Inject constructor(
                     action = action,
                     bottomInsetsType = bottomInsetsType
             )
-
-    override fun onCleared() {
-        super.onCleared()
-        job.cancelChildren()
-    }
 }

@@ -338,7 +338,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_12"
             android:layout_marginStart="@dimen/dp_12"
-            app:srcCompat="@drawable/ic_comment"
+            app:srcCompat="@drawable/kol_ic_comment"
             app:tint="@color/white"
             app:layout_constraintTop_toTopOf="@+id/icon_thumb"
             app:layout_constraintBottom_toBottomOf="@+id/icon_thumb"

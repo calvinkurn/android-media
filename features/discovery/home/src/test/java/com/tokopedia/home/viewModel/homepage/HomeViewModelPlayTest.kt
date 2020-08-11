@@ -1,6 +1,7 @@
 package com.tokopedia.home.viewModel.homepage
 
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.home.beranda.data.model.PlayChannel
 import com.tokopedia.home.beranda.data.usecase.HomeUseCase
 import com.tokopedia.home.beranda.domain.interactor.GetPlayLiveDynamicUseCase
@@ -10,323 +11,308 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
 import com.tokopedia.home.ext.observeOnce
-import com.tokopedia.home.rules.InstantTaskExecutorRuleSpek
+import io.mockk.coEvery
 import io.mockk.coVerify
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import org.spekframework.spek2.Spek
-import org.spekframework.spek2.style.gherkin.Feature
+import io.mockk.mockk
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.flow
+import org.junit.Rule
+import org.junit.Test
 
-@ExperimentalCoroutinesApi
-class HomeViewModelPlayTest : Spek({
-    InstantTaskExecutorRuleSpek(this)
+/**
+ * Created by Lukas on 14/05/20.
+ */
 
-    Feature("Get play data") {
-        lateinit var homeViewModel: HomeViewModel
-        createHomeViewModelTestInstance()
+class HomeViewModelPlayTest{
+    @get:Rule
+    val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-        val getPlayLiveDynamicUseCase by memoized<GetPlayLiveDynamicUseCase>()
-        val getHomeUseCase by memoized<HomeUseCase>()
-        Scenario("Get play data success and image url valid") {
-            val playDataModel = PlayCardDataModel(DynamicHomeChannel.Channels())
-            val playCardHome = PlayChannel(coverUrl = "cobacoba.com")
+    private val getPlayLiveDynamicUseCase = mockk<GetPlayLiveDynamicUseCase>(relaxed = true)
+    private val getHomeUseCase = mockk<HomeUseCase>(relaxed = true)
+    private lateinit var homeViewModel: HomeViewModel
 
-            Given("dynamic banner"){
-                getHomeUseCase.givenGetHomeDataReturn(
-                        HomeDataModel(
-                                list = listOf(playDataModel)
-                        )
+    @Test
+    fun `Get play data success and image url valid and try update view`() {
+        val playDataModel = PlayCardDataModel(DynamicHomeChannel.Channels())
+        val playCardHome = PlayChannel(coverUrl = "cobacoba.com", channelId = "0")
+
+        // dynamic banner
+        getHomeUseCase.givenGetHomeDataReturn(
+                HomeDataModel(
+                        list = listOf(playDataModel)
                 )
-            }
+        )
 
-            Given("home viewmodel") {
-                homeViewModel = createHomeViewModel()
-            }
+        // play data returns success
+        getPlayLiveDynamicUseCase.givenGetPlayLiveDynamicUseCaseReturn(
+                channel = playCardHome
+        )
 
+        // viewModel load play data
+        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, getPlayLiveDynamicUseCase = getPlayLiveDynamicUseCase)
+        homeViewModel.getLoadPlayBannerFromNetwork(playDataModel)
 
-            Given("play data returns success"){
-                getPlayLiveDynamicUseCase.givenGetPlayLiveDynamicUseCaseReturn(
-                    channel = playCardHome
-                )
-            }
-
-            When("viewModel load play data"){
-                homeViewModel.getLoadPlayBannerFromNetwork(playDataModel)
-            }
-
-            Then("Expect the event on live data available and check image"){
-                homeViewModel.requestImageTestLiveData.observeOnce {
-                    assert(it.peekContent().playCardHome != null && it.peekContent().playCardHome!!.coverUrl == playCardHome.coverUrl)
-                }
-            }
-
-            When("Image valid should submit the data on live data home"){
-                homeViewModel.setPlayBanner(playDataModel)
-            }
-
-            Then("Expect the event on live data available"){
-                homeViewModel.homeLiveData.observeOnce {
-                    assert(it.list.contains(playDataModel) && (it.list.find { it == playDataModel } as? PlayCardDataModel)?.playCardHome != null
-                            && (it.list.find { it == playDataModel } as? PlayCardDataModel)?.playCardHome!!.coverUrl == playCardHome.coverUrl
-                    )
-                }
-            }
-        }
-        Scenario("Get play data success and image url valid and try update view") {
-            val playDataModel = PlayCardDataModel(DynamicHomeChannel.Channels())
-            val playCardHome = PlayChannel(coverUrl = "cobacoba.com")
-
-            Given("dynamic banner"){
-                getHomeUseCase.givenGetHomeDataReturn(
-                        HomeDataModel(
-                                list = listOf(playDataModel)
-                        )
-                )
-            }
-
-            Given("home viewmodel") {
-                homeViewModel = createHomeViewModel()
-            }
-
-
-            Given("play data returns success"){
-                getPlayLiveDynamicUseCase.givenGetPlayLiveDynamicUseCaseReturn(
-                    channel = playCardHome
-                )
-            }
-
-            When("viewModel load play data"){
-                homeViewModel.getLoadPlayBannerFromNetwork(playDataModel)
-            }
-
-            Then("Expect the event on live data available and check image"){
-                homeViewModel.requestImageTestLiveData.observeOnce {
-                    assert(it.peekContent().playCardHome != null && it.peekContent().playCardHome!!.coverUrl == playCardHome.coverUrl)
-                }
-            }
-
-            When("Image valid should submit the data on live data home"){
-                homeViewModel.setPlayBanner(playDataModel)
-            }
-
-            Then("Expect the event on live data available"){
-                homeViewModel.homeLiveData.observeOnce {
-                    assert(it.list.contains(playDataModel) && (it.list.find { it == playDataModel } as? PlayCardDataModel)?.playCardHome != null
-                            && (it.list.find { it == playDataModel } as? PlayCardDataModel)?.playCardHome!!.coverUrl == playCardHome.coverUrl
-                    )
-                }
-            }
-
-            When("Update view triggered"){
-                homeViewModel.updateBannerTotalView("0")
-            }
-
-            Then("Expect the view updated"){
-                assert(true)
-            }
+        // Expect the event on live data available and check image
+        homeViewModel.requestImageTestLiveData.observeOnce {
+            assert(it.peekContent().playCardHome != null && it.peekContent().playCardHome!!.coverUrl == playCardHome.coverUrl)
+            // Image valid should submit the data on live data home
+            homeViewModel.setPlayBanner(it.peekContent())
         }
 
-        Scenario("Get play data success and image url not valid") {
-            val playDataModel = PlayCardDataModel(DynamicHomeChannel.Channels())
-            val playCardHome = PlayChannel(coverUrl = "")
-
-            Given("dynamic banner"){
-                getHomeUseCase.givenGetHomeDataReturn(
-                        HomeDataModel(
-                                list = listOf(playDataModel)
-                        )
-                )
-            }
-
-            Given("home viewmodel") {
-                homeViewModel = createHomeViewModel()
-            }
-
-
-            Given("play data returns success"){
-                getPlayLiveDynamicUseCase.givenGetPlayLiveDynamicUseCaseReturn(
-                        channel = playCardHome
-                )
-            }
-
-            When("viewModel load play data"){
-                homeViewModel.getLoadPlayBannerFromNetwork(playDataModel)
-            }
-
-            Then("Expect the event on live data not available"){
-                homeViewModel.requestImageTestLiveData.observeOnce {
-                    assert(it == null)
-                }
-            }
-
-            Then("Expect the event on live data empty"){
-                homeViewModel.homeLiveData.observeOnce {
-                    assert(it.list.isEmpty())
-                }
-            }
+        // Expect the event on live data available
+        homeViewModel.homeLiveData.observeOnce { homeDataModel ->
+            assert((homeDataModel.list.find { it::class.java == playDataModel::class.java } as? PlayCardDataModel)?.playCardHome != null
+                    && (homeDataModel.list.find { it::class.java == playDataModel::class.java } as? PlayCardDataModel)?.playCardHome!!.coverUrl == playCardHome.coverUrl
+            )
         }
 
-        Scenario("Get play data success and image url valid and network some case trouble") {
-            val playDataModel = PlayCardDataModel(DynamicHomeChannel.Channels())
-            val playCardHome = PlayChannel(coverUrl = "cobacoba.com")
+        // Update view triggered
+        homeViewModel.updateBannerTotalView("0", "20 Juta")
 
-            Given("dynamic banner"){
-                getHomeUseCase.givenGetHomeDataReturn(
-                        HomeDataModel(
-                                list = listOf(playDataModel)
-                        )
-                )
-            }
-
-            Given("home viewmodel") {
-                homeViewModel = createHomeViewModel()
-            }
-
-
-            Given("play data returns success"){
-                getPlayLiveDynamicUseCase.givenGetPlayLiveDynamicUseCaseReturn(
-                        channel = playCardHome
-                )
-            }
-
-            When("viewModel load play data"){
-                homeViewModel.getLoadPlayBannerFromNetwork(playDataModel)
-            }
-
-            Then("Expect the event on live data available and check image"){
-                homeViewModel.requestImageTestLiveData.observeOnce {
-                    assert(it == null)
-                }
-            }
-
-            When("Image valid but the network error when try get image"){
-                homeViewModel.clearPlayBanner()
-            }
-
-            Then("Expect the event on live data not available"){
-                homeViewModel.homeLiveData.observeOnce {
-                    assert(it.list.isEmpty())
-                }
-            }
-        }
-
-        Scenario("No play data available") {
-            Given("dynamic banner"){
-                getHomeUseCase.givenGetHomeDataReturn(
-                        HomeDataModel(
-                                list = listOf()
-                        )
-                )
-            }
-
-            Given("home viewmodel") {
-                homeViewModel = createHomeViewModel()
-            }
-
-            Then("Expect the event on live data not available"){
-                homeViewModel.homeLiveData.observeOnce {
-                    assert(it.list.isEmpty())
-                }
-            }
-        }
-
-        Scenario("View rendered but the data play still null, it will load new data with right adapter position"){
-            val playDataModel = PlayCardDataModel(DynamicHomeChannel.Channels())
-            val playCardHome = PlayChannel(coverUrl = "cobacoba.com")
-
-            Given("dynamic banner with another list"){
-                getHomeUseCase.givenGetHomeDataReturn(
-                        HomeDataModel(
-                                list = listOf(
-                                        HomepageBannerDataModel(),
-                                        playDataModel
-                                )
-                        )
-                )
-            }
-
-            Given("home viewmodel") {
-                homeViewModel = createHomeViewModel()
-            }
-
-            Given("simulate play data returns success"){
-                getPlayLiveDynamicUseCase.givenGetPlayLiveDynamicUseCaseReturn(
-                        channel = PlayChannel()
-                )
-            }
-
-            When("simulate view want load play data with position"){
-                homeViewModel.getPlayBanner(1)
-            }
-
-            Then("expect function load from network called"){
-                coVerify { getPlayLiveDynamicUseCase.executeOnBackground() }
-            }
-
-            Then("Expect the event on live data available and check image"){
-                homeViewModel.requestImageTestLiveData.observeOnce {
-                    assert(it == null)
-                }
-            }
-
-            When("Image valid but the network error when try get image"){
-                homeViewModel.clearPlayBanner()
-            }
-
-            Then("Expect the event on live data not available"){
-                homeViewModel.homeLiveData.observeOnce {
-                    assert(it.list.isEmpty())
-                }
-            }
-        }
-
-        Scenario("View rendered but the data play still null, it will load new data with wrong adapter position"){
-            val playDataModel = PlayCardDataModel(DynamicHomeChannel.Channels())
-            val playCardHome = PlayChannel(coverUrl = "cobacoba.com")
-
-            Given("dynamic banner with another list"){
-                getHomeUseCase.givenGetHomeDataReturn(
-                        HomeDataModel(
-                                list = listOf(
-                                        HomepageBannerDataModel(),
-                                        playDataModel
-                                )
-                        )
-                )
-            }
-
-            Given("home viewmodel") {
-                homeViewModel = createHomeViewModel()
-            }
-
-            Given("simulate play data returns success"){
-                getPlayLiveDynamicUseCase.givenGetPlayLiveDynamicUseCaseReturn(
-                        channel = PlayChannel()
-                )
-            }
-
-            When("simulate view want load play data wrong position"){
-                homeViewModel.getPlayBanner(0)
-            }
-
-            Then("expect function load from network called"){
-                coVerify { getPlayLiveDynamicUseCase.executeOnBackground() }
-            }
-
-            Then("Expect the event on live data available and check image"){
-                homeViewModel.requestImageTestLiveData.observeOnce {
-                    assert(it == null)
-                }
-            }
-
-            When("Image valid but the network error when try get image"){
-                homeViewModel.clearPlayBanner()
-            }
-
-            Then("Expect the event on live data not available"){
-                homeViewModel.homeLiveData.observeOnce {
-                    assert(it.list.isEmpty())
-                }
-            }
+        // Expect the view updated
+        homeViewModel.homeLiveData.observeOnce { homeDataModel ->
+            assert((homeDataModel.list.find { it::class.java == playDataModel::class.java } as? PlayCardDataModel)?.playCardHome != null
+                    && (homeDataModel.list.find { it::class.java == playDataModel::class.java } as? PlayCardDataModel)?.playCardHome!!.totalView == "20 Juta"
+            )
         }
     }
-})
+
+    @Test
+    fun `Get play data success and image url valid and home refresh`() {
+        val playDataModel = PlayCardDataModel(DynamicHomeChannel.Channels())
+        val playCardHome = PlayChannel(coverUrl = "cobacoba.com", channelId = "0")
+
+        // dynamic banner
+        coEvery { getHomeUseCase.getHomeData() } returns flow{
+            emit(HomeDataModel(
+                    list = listOf(playDataModel)
+            ))
+            delay(400)
+            emit(HomeDataModel(
+                    list = listOf(playDataModel)
+            ))
+        }
+
+        // play data returns success
+        getPlayLiveDynamicUseCase.givenGetPlayLiveDynamicUseCaseReturn(
+                channel = playCardHome
+        )
+
+        // viewModel load play data
+        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, getPlayLiveDynamicUseCase = getPlayLiveDynamicUseCase)
+        homeViewModel.getLoadPlayBannerFromNetwork(playDataModel)
+
+        // Expect the event on live data available and check image
+        homeViewModel.requestImageTestLiveData.observeOnce {
+            assert(it.peekContent().playCardHome != null && it.peekContent().playCardHome!!.coverUrl == playCardHome.coverUrl)
+            // Image valid should submit the data on live data home
+            homeViewModel.setPlayBanner(it.peekContent())
+        }
+        Thread.sleep(500)
+        // Expect the event on live data available
+        homeViewModel.homeLiveData.observeOnce { homeDataModel ->
+            assert((homeDataModel.list.find { it::class.java == playDataModel::class.java } as? PlayCardDataModel)?.playCardHome != null
+                    && (homeDataModel.list.find { it::class.java == playDataModel::class.java } as? PlayCardDataModel)?.playCardHome!!.coverUrl == playCardHome.coverUrl
+            )
+        }
+
+        // Update view triggered
+        homeViewModel.updateBannerTotalView("0", "20")
+
+        // Expect the view updated
+        homeViewModel.homeLiveData.observeOnce { homeDataModel ->
+            assert((homeDataModel.list.find { it::class.java == playDataModel::class.java } as? PlayCardDataModel)?.playCardHome != null
+                    && (homeDataModel.list.find { it::class.java == playDataModel::class.java } as? PlayCardDataModel)?.playCardHome!!.totalView == "20"
+            )
+        }
+    }
+
+    @Test
+    fun `Get play data success and image url not valid`() {
+        val playDataModel = PlayCardDataModel(DynamicHomeChannel.Channels())
+        val playCardHome = PlayChannel(coverUrl = "")
+
+        // dynamic banner
+        getHomeUseCase.givenGetHomeDataReturn(
+                HomeDataModel(
+                        list = listOf(playDataModel)
+                )
+        )
+
+        // play data returns success
+        getPlayLiveDynamicUseCase.givenGetPlayLiveDynamicUseCaseReturn(
+                channel = playCardHome
+        )
+
+        // viewModel load play data
+        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, getPlayLiveDynamicUseCase = getPlayLiveDynamicUseCase)
+        homeViewModel.getLoadPlayBannerFromNetwork(playDataModel)
+
+        // Expect the event on live data not available
+        homeViewModel.requestImageTestLiveData.observeOnce {
+            assert(it == null)
+        }
+        Thread.sleep(1000)
+        // Expect the event on live data empty
+        homeViewModel.homeLiveData.observeOnce {
+            assert(it.list.filterIsInstance<PlayCardDataModel>().isEmpty())
+        }
+    }
+
+    @Test
+    fun `Get play data success and image url valid and network some case trouble`() {
+        val playDataModel = PlayCardDataModel(DynamicHomeChannel.Channels())
+        val playCardHome = PlayChannel(coverUrl = "cobacoba.com")
+
+        getHomeUseCase.givenGetHomeDataReturn(
+                HomeDataModel(
+                        list = listOf(playDataModel)
+                )
+        )
+
+        // play data returns success
+        getPlayLiveDynamicUseCase.givenGetPlayLiveDynamicUseCaseReturn(
+                channel = playCardHome
+        )
+        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, getPlayLiveDynamicUseCase = getPlayLiveDynamicUseCase)
+        homeViewModel.getLoadPlayBannerFromNetwork(playDataModel)
+
+        // Expect the event on live data available and check image
+        homeViewModel.requestImageTestLiveData.observeOnce {
+            assert(it != null)
+            // Image valid but the network error when try get image
+            homeViewModel.clearPlayBanner()
+        }
+
+        Thread.sleep(1000)
+
+        // Expect the event on live data not available
+        homeViewModel.homeLiveData.observeOnce {
+            assert(it.list.filterIsInstance<PlayCardDataModel>().isEmpty())
+        }
+    }
+
+    @Test
+    fun `No play data available`() {
+        // dynamic banner
+        getHomeUseCase.givenGetHomeDataReturn(
+                HomeDataModel(
+                        list = listOf()
+                )
+        )
+        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, getPlayLiveDynamicUseCase = getPlayLiveDynamicUseCase)
+        // Expect the event on live data not available
+        homeViewModel.homeLiveData.observeOnce {
+            assert(it.list.filterIsInstance<PlayCardDataModel>().isEmpty())
+        }
+    }
+
+    @Test
+    fun `View rendered but the data play still null, it will load new data with right adapter position`(){
+        val playDataModel = PlayCardDataModel(DynamicHomeChannel.Channels())
+
+        // dynamic banner with another list
+        getHomeUseCase.givenGetHomeDataReturn(
+                HomeDataModel(
+                        list = listOf(
+                                HomepageBannerDataModel(),
+                                playDataModel
+                        )
+                )
+        )
+
+        // simulate play data returns success
+        getPlayLiveDynamicUseCase.givenGetPlayLiveDynamicUseCaseReturn(
+                channel = PlayChannel(coverUrl = "tidak kosong")
+        )
+        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, getPlayLiveDynamicUseCase = getPlayLiveDynamicUseCase)
+        // simulate view want load play data with position
+        homeViewModel.getPlayBanner(1)
+
+        // Expect the event on live data available and check image
+        homeViewModel.requestImageTestLiveData.observeOnce {
+            assert(it != null)
+        }
+
+        // Image valid but the network error when try get image
+        homeViewModel.clearPlayBanner()
+
+        // Expect the event on live data not available
+        homeViewModel.homeLiveData.observeOnce {
+            assert(it.list.filterIsInstance<PlayCardDataModel>().isEmpty())
+        }
+    }
+
+    @Test
+    fun `Get play data success and image url valid`() {
+        val playDataModel = PlayCardDataModel(DynamicHomeChannel.Channels())
+        val playCardHome = PlayChannel(coverUrl = "cobacoba.com")
+        getHomeUseCase.givenGetHomeDataReturn(
+                HomeDataModel(
+                        list = listOf(playDataModel)
+                )
+        )
+
+        getPlayLiveDynamicUseCase.givenGetPlayLiveDynamicUseCaseReturn(
+                channel = playCardHome
+        )
+        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, getPlayLiveDynamicUseCase = getPlayLiveDynamicUseCase)
+        homeViewModel.getLoadPlayBannerFromNetwork(playDataModel)
+
+
+        // Expect the event on live data available and check image
+        homeViewModel.requestImageTestLiveData.observeOnce {
+            assert(it.peekContent().playCardHome != null && it.peekContent().playCardHome!!.coverUrl == playCardHome.coverUrl)
+            // Image valid should submit the data on live data home
+            homeViewModel.setPlayBanner(it.peekContent())
+        }
+
+        // Expect the event on live data available
+        homeViewModel.homeLiveData.observeOnce { homeDataModel ->
+            assert((homeDataModel.list.find { it::class.java == playDataModel::class.java } as? PlayCardDataModel)?.playCardHome != null
+                    && (homeDataModel.list.find { it::class.java == playDataModel::class.java } as? PlayCardDataModel)?.playCardHome!!.coverUrl == playCardHome.coverUrl
+            )
+        }
+    }
+
+    @Test
+    fun `View rendered but the data play still null, it will load new data with wrong adapter position`(){
+        val playDataModel = PlayCardDataModel(DynamicHomeChannel.Channels())
+        val playCardHome = PlayChannel(coverUrl = "cobacoba.com")
+
+        // dynamic banner with another list
+        getHomeUseCase.givenGetHomeDataReturn(
+                HomeDataModel(
+                        list = listOf(
+                                HomepageBannerDataModel(),
+                                playDataModel
+                        )
+                )
+        )
+
+        // simulate play data returns success
+        getPlayLiveDynamicUseCase.givenGetPlayLiveDynamicUseCaseReturn(
+                channel = PlayChannel()
+        )
+        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, getPlayLiveDynamicUseCase = getPlayLiveDynamicUseCase)
+        // simulate view want load play data wrong position
+        homeViewModel.getPlayBanner(0)
+
+        // expect function load from network called
+        coVerify { getPlayLiveDynamicUseCase.executeOnBackground() }
+
+
+        // Expect the event on live data available and check image
+        homeViewModel.requestImageTestLiveData.observeOnce {
+            assert(it == null)
+        }
+
+        // Image valid but the network error when try get image
+        homeViewModel.clearPlayBanner()
+
+        // Expect the event on live data not available
+        homeViewModel.homeLiveData.observeOnce {
+            assert(it.list.filterIsInstance<PlayCardDataModel>().isEmpty())
+        }
+    }
+}

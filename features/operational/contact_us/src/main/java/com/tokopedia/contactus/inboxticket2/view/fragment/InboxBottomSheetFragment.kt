@@ -31,7 +31,7 @@ abstract class InboxBottomSheetFragment : BottomSheetDialogFragment() {
                               savedInstanceState: Bundle?): View? {
         val contentView = inflater.inflate(layoutID, container, false)
         title = contentView.findViewById(R.id.tv_bottom_sheet_title)
-        title?.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(activity, com.tokopedia.inbox.R.drawable.ic_close_x_black), null, null, null)
+        title?.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(activity, R.drawable.contact_us_ic_close), null, null, null)
         dialog?.setOnShowListener { dialog: DialogInterface ->
             val d = dialog as BottomSheetDialog
             val bottomSheetInternal = d.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)

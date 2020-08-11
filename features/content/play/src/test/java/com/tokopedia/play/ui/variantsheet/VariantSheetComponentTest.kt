@@ -121,7 +121,7 @@ class VariantSheetComponentTest {
         confirmVerified(component.uiView)
     }
 
-    class VariantSheetComponentMock(container: ViewGroup, bus: EventBusFactory, coroutineScope: CoroutineScope) : VariantSheetComponent(container, bus, coroutineScope, TestCoroutineDispatchersProvider) {
+    class VariantSheetComponentMock(container: ViewGroup, bus: EventBusFactory, scope: CoroutineScope) : VariantSheetComponent(container, bus, scope, TestCoroutineDispatchersProvider) {
         override fun initView(container: ViewGroup): VariantSheetView {
             return mockk(relaxed = true)
         }

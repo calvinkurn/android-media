@@ -33,10 +33,13 @@ class EditQuotaViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
+    @RelaxedMockK
+    lateinit var mViewModel: EditQuotaViewModel
+
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-
+        mViewModel = EditQuotaViewModel(testDispatcher, updateQuotaUseCase)
         mViewModel.editQuotaSuccessLiveData.observeForever(editQuotaSuccessObserver)
     }
 
@@ -51,10 +54,6 @@ class EditQuotaViewModelTest {
         TestCoroutineDispatcher()
     }
 
-    private val mViewModel by lazy {
-        EditQuotaViewModel(testDispatcher, updateQuotaUseCase)
-    }
-
     @Test
     fun `success changing quota value`() = runBlocking {
         val dummyEditQuotaSuccess = true
@@ -64,6 +63,8 @@ class EditQuotaViewModelTest {
         } returns dummyEditQuotaSuccess
 
         mViewModel.changeQuotaValue(anyInt(), anyInt())
+
+        mViewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
         coVerify {
             updateQuotaUseCase.executeOnBackground()

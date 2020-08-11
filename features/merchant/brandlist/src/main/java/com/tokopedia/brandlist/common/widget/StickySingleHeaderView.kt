@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Color
 import android.util.AttributeSet
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -28,15 +29,16 @@ class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
     private var refreshSticky = false
     private var recyclerViewPaddingTop = 0
     private var currentScroll = 0
+    private val headerContainerHeight = 162
 
-    constructor(context: Context?) : super(context) {}
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {}
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {}
+    constructor(context: Context) : super(context) {}
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {}
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {}
 
     val containerHeight: Int
         get() {
             mHeaderContainer!!.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED)
-            return mHeaderContainer?.measuredHeight ?: 0
+            return headerContainerHeight
         }
 
     interface OnStickySingleHeaderAdapter {
@@ -46,7 +48,6 @@ class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
         fun bindSticky(viewHolder: RecyclerView.ViewHolder?)
         fun setListener(onStickySingleHeaderViewListener: OnStickySingleHeaderListener?)
         fun updateEtalaseListViewHolderData()
-        fun updateStickyStatus(isStickyShowed: Boolean)
     }
 
     private fun initView() {
@@ -102,26 +103,25 @@ class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
         mRecyclerView?.addOnScrollListener(onScrollListener)
     }
 
-    private fun convertPixelsToDp(px: Int, context: Context) : Int {
+    private fun convertPixelsToDp(px: Int, context: Context): Int {
         val result = px.toFloat() / (context.getResources().getDisplayMetrics().densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT.toFloat())
         return result.roundToInt()
     }
 
     private fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
         if (mHeaderHeight == -1 || adapter == null || gridLayoutManager == null) return
-        val firstCompletelyVisiblePosition = gridLayoutManager?.findFirstCompletelyVisibleItemPosition() //findFirstCompletelyVisibleItemPositions (null)[0]
-        val firstVisiblePosition = gridLayoutManager?.findFirstVisibleItemPosition()  //findFirstVisibleItemPositions(null)[0]
-        if  (firstCompletelyVisiblePosition != null) {
+        val firstCompletelyVisiblePosition = gridLayoutManager?.findFirstCompletelyVisibleItemPosition()
+        val firstVisiblePosition = gridLayoutManager?.findFirstVisibleItemPosition()
+        if (firstCompletelyVisiblePosition != null) {
             if (firstCompletelyVisiblePosition > -1) {
                 val _stickyPosition = 4
-                adapter?.updateStickyStatus(isStickyShowed)
                 if (firstCompletelyVisiblePosition >= _stickyPosition && currentScroll >= recyclerViewPaddingTop) { // make the etalase label always visible
                     if (!isStickyShowed || refreshSticky) {
                         showSticky()
                         mHeaderContainer?.visibility = View.VISIBLE
                         refreshSticky = false
                     }
-                    if (firstVisiblePosition == stickyPosition) {
+                    if (firstVisiblePosition == _stickyPosition) {
                         adapter?.updateEtalaseListViewHolderData()
                     }
                 } else { // make the etalase label always gone
@@ -158,6 +158,9 @@ class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         initView()
-        super.onLayout(changed, left, top, right, bottom)
+        try {
+            super.onLayout(changed, left, top, right, bottom)
+        } catch (e: IndexOutOfBoundsException) {
+        }
     }
 }

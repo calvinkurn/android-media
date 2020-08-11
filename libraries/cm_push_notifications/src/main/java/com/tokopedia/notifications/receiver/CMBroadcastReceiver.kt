@@ -9,8 +9,12 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.commonpromo.PromoCodeAutoApplyUseCase
 import com.tokopedia.notifications.R
+import com.tokopedia.notifications.analytics.ProductAnalytics
 import com.tokopedia.notifications.common.*
+import com.tokopedia.notifications.common.CMConstant.NotificationType.PRODUCT_NOTIIFICATION
 import com.tokopedia.notifications.common.CMConstant.PayloadKeys.ADD_TO_CART
+import com.tokopedia.notifications.common.CMConstant.PreDefineActionType.ATC
+import com.tokopedia.notifications.common.CMConstant.PreDefineActionType.OCC
 import com.tokopedia.notifications.common.CMConstant.ReceiverExtraData.ACTION_BUTTON_EXTRA
 import com.tokopedia.notifications.data.DataManager
 import com.tokopedia.notifications.di.DaggerCMNotificationComponent
@@ -19,6 +23,7 @@ import com.tokopedia.notifications.factory.CarouselNotification
 import com.tokopedia.notifications.factory.ProductNotification
 import com.tokopedia.notifications.model.*
 import com.tokopedia.usecase.RequestParams
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
@@ -31,6 +36,7 @@ import kotlin.coroutines.CoroutineContext
 class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
 
     @Inject lateinit var dataManager: DataManager
+    @Inject lateinit var userSession: UserSessionInterface
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main
@@ -124,7 +130,7 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
 
                     /*Product Info Carousel Click Handling*/
                     CMConstant.ReceiverAction.ACTION_PRODUCT_CLICK -> {
-                        handleProductClick(context, intent, notificationId)
+                        handleProductClick(context, intent, notificationId, baseNotificationModel)
                         sendClickPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, baseNotificationModel, CMConstant.NotificationType.GENERAL)
                     }
                     CMConstant.ReceiverAction.ACTION_PRODUCT_COLLAPSED_CLICK -> {
@@ -163,12 +169,34 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
         clearCarouselImages(context.applicationContext)
     }
 
-    private fun handleProductClick(context: Context, intent: Intent, notificationId: Int) {
+    private fun handleProductClick(
+            context: Context,
+            intent: Intent,
+            notificationId: Int,
+            element: BaseNotificationModel?
+    ) {
         val productInfo: ProductInfo = intent.getParcelableExtra(CMConstant.EXTRA_PRODUCT_INFO)
-        val appLinkIntent = RouteManager.getIntent(context.applicationContext, productInfo.appLink?:ApplinkConst.HOME)
-        intent.extras?.let { bundle->
-            appLinkIntent.putExtras(bundle)
+
+        element?.let {
+            if (it.type == PRODUCT_NOTIIFICATION) {
+                // tracker for general body click
+                ProductAnalytics.clickBody(
+                        userSession.userId,
+                        element,
+                        productInfo
+                )
+
+                // tracker for product card click
+                ProductAnalytics.clickProductCard(userSession.userId, it, productInfo)
+            }
         }
+
+        val appLinkIntent = RouteManager.getIntent(
+                context.applicationContext,
+                productInfo.appLink?: ApplinkConst.HOME
+        )
+
+        intent.extras?.let { appLinkIntent.putExtras(it) }
         startActivity(context, appLinkIntent)
         context.applicationContext.sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
         NotificationManagerCompat.from(context).cancel(notificationId)
@@ -240,7 +268,7 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
     private fun copyToClipboard(context: Context, contents: String) {
         val clipboard = context.getSystemService(Activity.CLIPBOARD_SERVICE) as ClipboardManager
         val clip = ClipData.newPlainText("Tokopedia", contents)
-        clipboard.primaryClip = clip
+        clipboard.setPrimaryClip(clip)
         applyPromoCode(context, contents)
         Toast.makeText(context, "${context.getString(R.string.cm_tv_coupon_code_copied)} $contents"
                 , Toast.LENGTH_LONG).show()
@@ -271,12 +299,17 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
     ) {
         intent.getParcelableExtra<ActionButton?>(ACTION_BUTTON_EXTRA)?.apply {
             pdActions?.let {
-                handleShareActionButtonClick(context, it, notificationData)
+                if (it.type == ATC || it.type == OCC) {
+                    handleProductPurchaseClick(context, notificationData, this)
+                } else {
+                    handleShareActionButtonClick(context, it, notificationData)
+                }
             }?: let {
-                // validate if the action button is ATC
                 it.type?.let { type ->
-                    if (type == ADD_TO_CART) {
+                    if (type == ADD_TO_CART) { // internal ATC
                         handleAddToCartProduct(notificationData, it.addToCart)
+                    } else if (it.type == ATC || it.type == OCC) { // external appLink
+                        handleProductPurchaseClick(context, notificationData, this)
                     }
                 }
 
@@ -285,19 +318,60 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
                         context.applicationContext,
                         it.appLink?: ApplinkConst.HOME
                 )
-                intent.extras?.let { bundle -> appLinkIntent.putExtras(bundle) }
+                intent.extras?.let { bundle ->
+                    appLinkIntent.putExtras(bundle)
+                }
                 startActivity(context, appLinkIntent)
                 sendElementClickPushEvent(
                         context,
-                        IrisAnalyticsEvents.PUSH_CLICKED,
                         notificationData,
-                        CMConstant.NotificationType.GENERAL,
                         it.element_id
                 )
             }
         }
         NotificationManagerCompat.from(context.applicationContext).cancel(notificationId)
         context.sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
+    }
+
+    private fun handleProductPurchaseClick(
+            context: Context,
+            notificationData: BaseNotificationModel,
+            actionButton: ActionButton
+    ) {
+        if (actionButton.type == OCC) {
+            ProductAnalytics.occCLickButton(
+                    userSession.userId,
+                    notificationData,
+                    notificationData.productInfoList
+            )
+        } else if (actionButton.type == ATC) {
+            ProductAnalytics.atcCLickButton(notificationData, notificationData.productInfoList)
+        }
+
+        actionButton.let {
+            val intent = RouteManager.getIntent(context.applicationContext, it.appLink)
+            startActivity(context, intent)
+
+            sendElementClickPushEvent(
+                    context,
+                    notificationData,
+                    it.pdActions?.element_id
+            )
+        }
+    }
+
+    private fun sendElementClickPushEvent(
+            context: Context,
+            notificationData: BaseNotificationModel,
+            elementId: String?
+    ) {
+        sendElementClickPushEvent(
+                context,
+                IrisAnalyticsEvents.PUSH_CLICKED,
+                notificationData,
+                CMConstant.NotificationType.GENERAL,
+                elementId
+        )
     }
 
     private fun handleAddToCartProduct(data: BaseNotificationModel?, addToCart: AddToCart?) {

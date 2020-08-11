@@ -2,16 +2,17 @@ package com.tokopedia.topads.dashboard.view.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
 import android.text.TextUtils;
 import android.view.View;
 
-import com.tokopedia.topads.R;
+import androidx.fragment.app.Fragment;
+
 import com.tokopedia.seller.common.widget.LabelView;
+import com.tokopedia.topads.R;
+import com.tokopedia.topads.common.data.source.local.TopAdsCacheDataSourceImpl;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.data.model.data.ProductAd;
 import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.TopAdsManagementService;
-import com.tokopedia.topads.common.data.source.local.TopAdsCacheDataSourceImpl;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsProductAdInteractorImpl;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsEditCostProductActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsEditScheduleProductActivity;

@@ -16,6 +16,7 @@ import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.R
+import com.tokopedia.product.manage.common.util.ProductManageListErrorHandler
 import com.tokopedia.product.manage.feature.cashback.data.SetCashbackResult
 import com.tokopedia.product.manage.feature.cashback.di.DaggerProductManageSetCashbackComponent
 import com.tokopedia.product.manage.feature.cashback.di.ProductManageSetCashbackComponent
@@ -219,6 +220,7 @@ class ProductManageSetCashbackFragment : Fragment(), SelectClickListener,
                 }
                 is Fail -> {
                     onErrorSetCashback(it.throwable as SetCashbackResult)
+                    ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)
                 }
             }
         }

@@ -5,7 +5,7 @@ import androidx.annotation.VisibleForTesting
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.ui.sendchat.interaction.SendChatInteractionEvent
-import com.tokopedia.play.util.CoroutineDispatcherProvider
+import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.type.BottomInsetsType
@@ -20,19 +20,19 @@ import kotlinx.coroutines.launch
 open class SendChatComponent(
         container: ViewGroup,
         private val bus: EventBusFactory,
-        private val coroutineScope: CoroutineScope,
+        private val scope: CoroutineScope,
         dispatchers: CoroutineDispatcherProvider
-) : UIComponent<SendChatInteractionEvent>, SendChatView.Listener, CoroutineScope by coroutineScope {
+) : UIComponent<SendChatInteractionEvent>, SendChatView.Listener {
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     val uiView = initView(container)
 
     init {
-        launch(dispatchers.immediate) {
+        scope.launch(dispatchers.immediate) {
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
-                            ScreenStateEvent.Init -> uiView.hide()
+                            is ScreenStateEvent.Init -> uiView.hide()
                             is ScreenStateEvent.VideoStreamChanged -> if (it.videoStream.channelType.isLive) uiView.show() else uiView.hide()
                             is ScreenStateEvent.ComposeChat -> uiView.focusChatForm(shouldFocus = true, forceChangeKeyboardState = true)
                             is ScreenStateEvent.BottomInsetsChanged -> {
@@ -48,7 +48,10 @@ open class SendChatComponent(
 
                                 uiView.focusChatForm(it.stateHelper.channelType.isLive && it.insetsViewMap[BottomInsetsType.Keyboard] is BottomInsetsState.Shown)
                             }
-                            is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze || it.event.isBanned) uiView.hide()
+                            is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze || it.event.isBanned) {
+                                uiView.focusChatForm(false)
+                                uiView.hide()
+                            }
                         }
                     }
         }
@@ -63,13 +66,13 @@ open class SendChatComponent(
     }
 
     override fun onChatFormClicked(view: SendChatView) {
-        launch {
+        scope.launch {
             bus.emit(SendChatInteractionEvent::class.java, SendChatInteractionEvent.FormClicked)
         }
     }
 
     override fun onSendChatClicked(view: SendChatView, message: String) {
-        launch {
+        scope.launch {
             bus.emit(SendChatInteractionEvent::class.java, SendChatInteractionEvent.SendClicked(message))
         }
     }

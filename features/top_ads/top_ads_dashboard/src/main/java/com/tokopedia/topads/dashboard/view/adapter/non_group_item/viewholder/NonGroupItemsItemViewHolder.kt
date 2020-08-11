@@ -3,17 +3,20 @@ package com.tokopedia.topads.dashboard.view.adapter.non_group_item.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.design.image.ImageLoader
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTIVE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TIDAK_AKTIF
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TIDAK_TAMPIL
 import com.tokopedia.topads.dashboard.data.model.nongroupItem.WithoutGroupDataItem
+import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.topads.dashboard.view.adapter.non_group_item.viewmodel.NonGroupItemsItemViewModel
 import com.tokopedia.topads.dashboard.view.sheet.TopadsSelectActionSheet
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import kotlinx.android.synthetic.main.topads_dash_item_non_group_card.view.*
+import java.lang.NumberFormatException
 
 
 /**
@@ -61,7 +64,7 @@ class NonGroupItemsItemViewHolder(val view: View,
             setProgressBar(it.data)
             view.check_box.isChecked = item.isChecked
 
-            if (statsData.isNotEmpty()) {
+            if (statsData.isNotEmpty() && adapterPosition < statsData.size  && adapterPosition != RecyclerView.NO_POSITION) {
                 view.tampil_count.text = statsData[adapterPosition].statTotalImpression
                 view.klik_count.text = statsData[adapterPosition].statTotalClick
                 view.persentase_klik_count.text = statsData[adapterPosition].statTotalCtr
@@ -96,10 +99,12 @@ class NonGroupItemsItemViewHolder(val view: View,
                 editDone.invoke(item.data.adId, item.data.adPriceBid)
             }
             sheet.onDeleteClick = {
-                actionDelete(adapterPosition)
+                if (adapterPosition != RecyclerView.NO_POSITION)
+                    actionDelete(adapterPosition)
             }
             sheet.changeStatus = {
-                actionStatusChange(adapterPosition, it)
+                if (adapterPosition != RecyclerView.NO_POSITION)
+                    actionStatusChange(adapterPosition, it)
             }
         }
 
@@ -116,9 +121,13 @@ class NonGroupItemsItemViewHolder(val view: View,
         if (data.adPriceDailyBar.isNotEmpty()) {
             view.progress_layout.visibility = View.VISIBLE
             view.progress_bar.progressBarColorType = ProgressBarUnify.COLOR_GREEN
-            view.progress_bar.setValue(data.adPriceDailySpentFmt.replace("Rp", "").trim().toInt(), true)
+            try {
+                view.progress_bar.setValue(Utils.convertMoneyToValue(data.adPriceDailySpentFmt), true)
+            }catch(e:NumberFormatException){
+                e.printStackTrace()
+            }
             view.progress_status1.text = data.adPriceDailySpentFmt
-            view.progress_status2.text = String.format(view.context.resources.getString(R.string.topads_dash_group_item_progress_status), data.adPriceDaily)
+            view.progress_status2.text = String.format(view.context.resources.getString(com.tokopedia.topads.common.R.string.topads_dash_group_item_progress_status), data.adPriceDaily)
         } else {
             view.progress_layout.visibility = View.GONE
         }

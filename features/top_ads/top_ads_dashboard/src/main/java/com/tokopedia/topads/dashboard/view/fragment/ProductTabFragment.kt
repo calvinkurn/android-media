@@ -17,6 +17,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTION_ACTIVATE
@@ -24,6 +25,7 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTI
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTION_DELETE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTION_MOVE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TOASTER_DURATION
+import com.tokopedia.topads.dashboard.data.model.CountDataItem
 import com.tokopedia.topads.dashboard.data.model.GroupListDataItem
 import com.tokopedia.topads.dashboard.data.model.nongroupItem.GetDashboardProductStatistics
 import com.tokopedia.topads.dashboard.data.model.nongroupItem.NonGroupResponse
@@ -42,7 +44,6 @@ import com.tokopedia.topads.dashboard.view.sheet.MovetoGroupSheetList
 import com.tokopedia.topads.dashboard.view.sheet.TopadsGroupFilterSheet
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.topads_dash_fragment_non_group_list.actionbar
-import kotlinx.android.synthetic.main.topads_dash_fragment_product_list.*
 import kotlinx.android.synthetic.main.topads_dash_fragment_product_list.loader
 import kotlinx.android.synthetic.main.topads_dash_layout_common_action_bar.*
 import kotlinx.android.synthetic.main.topads_dash_layout_common_searchbar_layout.*
@@ -55,6 +56,8 @@ import javax.inject.Inject
 /**
  * Created by Pika on 15/5/20.
  */
+
+private const val CLICK_TAMBAH_PRODUK = "click - tambah produk"
 class ProductTabFragment : BaseDaggerFragment() {
 
 
@@ -194,6 +197,7 @@ class ProductTabFragment : BaseDaggerFragment() {
             putExtra(TopAdsDashboardConstant.GROUPNAME, arguments?.getString(TopAdsDashboardConstant.GROUP_NAME))
         }
         startActivityForResult(intent, TopAdsDashboardConstant.EDIT_GROUP_REQUEST_CODE)
+        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsDashboardEvent(CLICK_TAMBAH_PRODUK, "")
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -234,16 +238,26 @@ class ProductTabFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessGroupList(list: List<GroupListDataItem>) {
-        val grouplist: MutableList<MovetoGroupViewModel> = mutableListOf()
+        val groupList: MutableList<MovetoGroupViewModel> = mutableListOf()
+        val groupIds: MutableList<String> = mutableListOf()
+
         list.forEach {
-            if (it.groupName != arguments?.getString(TopAdsDashboardConstant.GROUP_NAME))
-                grouplist.add(MovetoGroupItemViewModel(it))
+            if (it.groupName != arguments?.getString(TopAdsDashboardConstant.GROUP_NAME)) {
+                groupList.add(MovetoGroupItemViewModel(it))
+                groupIds.add(it.groupId.toString())
+            }
         }
         if (list.isEmpty()) {
             movetoGroupSheet.setButtonDisable()
-            grouplist.add(MovetoGroupEmptyViewModel())
-        }
-        movetoGroupSheet.updateData(grouplist)
+            groupList.add(MovetoGroupEmptyViewModel())
+        } else
+            viewModel.getCountProductKeyword(resources, groupIds,::onSuccessCount)
+        movetoGroupSheet.updateData(groupList)
+    }
+
+    private fun onSuccessCount(countList: List<CountDataItem>) {
+        movetoGroupSheet.updateKeyCount(countList)
+        loader.visibility = View.GONE
     }
 
     private fun getAdIds(): MutableList<String> {
@@ -342,24 +356,26 @@ class ProductTabFragment : BaseDaggerFragment() {
         when (actionActivate) {
             ACTION_DELETE -> {
                 view.let {
-                    Toaster.make(it!!, getString(R.string.topads_without_product_del_toaster), TOASTER_DURATION.toInt(), Toaster.TYPE_NORMAL, getString(R.string.topads_common_batal), View.OnClickListener {
+                    Toaster.make(it!!, getString(R.string.topads_without_product_del_toaster), TOASTER_DURATION.toInt(), Toaster.TYPE_NORMAL, getString(com.tokopedia.topads.common.R.string.topads_common_batal), View.OnClickListener {
                         deleteCancel = true
                     })
                 }
                 val coroutineScope = CoroutineScope(Dispatchers.Main)
                 coroutineScope.launch {
                     delay(TOASTER_DURATION)
-                    if (!deleteCancel) {
-                        totalProductCount -= getAdIds().size
-                        viewModel.setProductAction(::onSuccessAction, actionActivate, getAdIds(), resources, selectedFilter)
-                        if (totalProductCount == 0) {
-                            viewModel.setGroupAction(ACTION_DELETE, listOf(arguments?.getInt(TopAdsDashboardConstant.GROUP_ID).toString()),
-                                    resources)
-                            activity?.finish()
+                    if (activity != null && isAdded) {
+                        if (!deleteCancel) {
+                            totalProductCount -= getAdIds().size
+                            viewModel.setProductAction(::onSuccessAction, actionActivate, getAdIds(), resources, selectedFilter)
+                            if (totalProductCount == 0) {
+                                viewModel.setGroupAction(ACTION_DELETE, listOf(arguments?.getInt(TopAdsDashboardConstant.GROUP_ID).toString()),
+                                        resources)
+                                activity?.finish()
+                            }
                         }
+                        deleteCancel = false
+                        setSelectMode(false)
                     }
-                    deleteCancel = false
-                    setSelectMode(false)
                 }
             }
             ACTION_MOVE -> {

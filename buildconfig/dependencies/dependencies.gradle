@@ -1,15 +1,15 @@
 ext {
 
-    compileSdkVersion = 28
-    minSdkVersion = 16
+    compileSdkVersion = 29
+    minSdkVersion = 17
     targetSdkVersion = 28
-    buildToolsVersion = "28.0.3"
+    buildToolsVersion = "29.0.2"
 
     jacocoVersion = "0.8.5"
     kotlinVersion = "1.3.70"
 
     lifeCycleVersion = "2.1.0"
-    workManagerVersion = "1.0.1"
+    workManagerVersion = "2.3.4"
 
     appCompatVersion = '1.2.0-rc01'
     supportLibraryVersion = '1.1.0-rc01'
@@ -25,14 +25,13 @@ ext {
     runnerVersion = "1.1.0"
     rulesVersion = "1.1.0"
     apolloVersion = '0.3.0'
-    lottieVersion = '3.4.0'
+    lottieVersion = '3.4.1'
     cardioVersion = '5.5.1'
     reactNativeVersion = '0.60.5'
     powerMockVersion = '1.6.2'
-    roomVersion = '2.2.1'
+    roomVersion = '2.2.5'
     multiDexVersion = '2.0.0'
     twitter4JVersion = '4.0.7'
-    guavaVersion = '21.0'
     constraintLayoutVersion = '2.0.0-beta3'
     materialVersion = '1.0.0'
 
@@ -40,10 +39,10 @@ ext {
     stfalconVersion = '1.0.0'
 
     playServiceFirebaseConfig = '16.1.3'
-    playServiceBaseVersion = '17.0.0'
+    playServiceBaseVersion = '17.3.0'
     playServiceFirebaseIidVersion = '17.0.4'
 
-    playCoreVersion = '1.6.3'
+    playCoreVersion = '1.8.0'
     playServiceGms = '16.0.0'
     playServiceBase = '16.1.0'
     playServiceAppIndexing = '17.1.0'
@@ -75,6 +74,7 @@ ext {
     coroutineTestVersion = '1.3.2'
     chuckerVersion = '3.0.1'
     sliceVersion = '1.0.0-alpha6'
+    transitionVersion = '1.3.1'
 
     benchmarkTestVersion = '1.0.0'
     testCore = '1.2.0'
@@ -91,16 +91,16 @@ ext {
     ]
 
     unifyIconVersion = '0.0.4'
-    unifyCoachMarkVersion = '1.2.3'
     unifyPrinciplesVersion = '1.1.8'
-    unifyComponentsVersion = '1.1.40'
+    unifyComponentsVersion = '1.1.44'
+    unifyCoachMarkVersion = '1.2.6'
     unifyCalendarVersion = '1.0.2'
     unifyBannerVersion = '1.0.4'
     unifyDialogVersion = '1.0.3'
     unifyDatePickerVersion = '1.0.6'
-    unifyPinVersion = '1.0.1'
+    unifyPinVersion = '1.0.2'
     unifyEmptyStateVersion = '1.0.6-beta-1'
-    unifyGlobalErrorVersion = '1.0.8'
+    unifyGlobalErrorVersion = '1.0.9'
     unifyHeaderVersion = '1.1.1'
     unifySortFilterVersion = '1.0.3'
     unifyIconNotificationVersion = '1.0.0'
@@ -148,7 +148,6 @@ ext {
             kotlinSupport     : "org.jetbrains.kotlin:kotlin-stdlib:${kotlinVersion}",
             kotlinSupportJdk7 : "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${kotlinVersion}",
             kotlinSupportJdk8 : "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}",
-            kotlinStdlibCommon: "org.jetbrains.kotlin:kotlin-stdlib-common:${kotlinVersion}",
             kotlinReflection  : "org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}"
     ]
 
@@ -162,7 +161,6 @@ ext {
             auth          : "com.google.android.gms:play-services-auth:${playServiceAuth}",
             places        : "com.google.android.gms:play-services-places:${playServicePlace}",
             phone         : "com.google.android.gms:play-services-auth-api-phone:${playServiceAuthApiPhone}",
-            mapsUtils     : "com.google.maps.android:android-maps-utils:${playServiceMapsUtil}",
             ads           : "com.google.android.gms:play-services-ads-identifier:${playServiceAds}",
             tagManagerImpl: "com.google.android.gms:play-services-tagmanager-v4-impl:${playServiceTagManager}",
             tagManager    : "com.google.android.gms:play-services-tagmanager:${playServiceTagManager}",
@@ -180,7 +178,6 @@ ext {
     ]
 
     viewDependencies = [
-            ahBottomNavigation: "com.aurelhubert:ahbottomnavigation:1.4.0",
             expandableTextview: "at.blogc:expandabletextview:1.0.5",
     ]
 
@@ -190,7 +187,7 @@ ext {
     ]
 
     analyticsDependencies = [
-            appsflyer  : "com.appsflyer:af-android-sdk:5.1.1@aar",
+            appsflyer  : "com.appsflyer:af-android-sdk:5.4.0@aar",
             installRef : "com.android.installreferrer:installreferrer:1.1",
             moengage   : "com.moengage:moe-android-sdk:9.8.02",
             moengageAmp: "com.moengage:push-amp-plus:0.3.00",
@@ -214,7 +211,6 @@ ext {
             rxAndroid             : "io.reactivex:rxandroid:1.0.1",
             rxKotlin              : "io.reactivex:rxkotlin:0.60.0",
             rxJava                : "io.reactivex:rxjava:1.2.9",
-            rxJavaMath            : "io.reactivex:rxjava-math:1.0.0",
             rxJavaComputation     : 'io.reactivex:rxjava-computation-expressions:0.21.0',
             multiDex              : "androidx.multidex:multidex:$multiDexVersion",
             javaxAnnotation       : "javax.annotation:jsr250-api:1.0",
@@ -224,14 +220,13 @@ ext {
 
             chips                 : 'com.beloo.widget:ChipsLayoutManager:0.3.7@aar',
             roundCornerProgressBar: 'com.akexorcist:RoundCornerProgressBar:2.0.3',
-            slidinguppanel        : "com.sothree.slidinguppanel:library:3.3.1",
             lottie                : "com.airbnb.android:lottie:$lottieVersion",
-            cardio                : "io.card:android-sdk:$cardioVersion",
             loaderviewlibrary     : "com.elyeproj.libraries:loaderviewlibrary:1.5.0",
             imagecropper          : "com.theartofdev.edmodo:android-image-cropper:2.5.1",
             reactNative           : "com.facebook.react:react-native:$reactNativeVersion@aar",
             codePushReactNative   : "com.microsoft.codepush:rn-codepush:5.6.0@aar",
             hansel                : "io.hansel.preprocessor:preprocessor:8.3.18",
+            robust                : "com.meituan.robust:robust:0.4.99",
             apacheLang            : "org.apache.commons:commons-lang3:3.0",
             ucrop                 : "com.github.yalantis:ucrop:2.2.2",
             flexBoxLayout         : "com.google.android:flexbox:0.3.2",
@@ -239,7 +234,6 @@ ext {
             coroutineCore         : "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutineVersion",
             coroutineAndroid      : "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineVersion",
             coroutineTest         : "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutineVersion",
-            guava                 : "com.google.guava:guava:$guavaVersion",
             guava24               : 'com.google.guava:guava:24.1-jre',
             incap                 : "net.ltgt.gradle.incap:incap:0.2",
             incapProcessor        : "net.ltgt.gradle.incap:incap-processor:0.2",
@@ -256,15 +250,16 @@ ext {
             archCoreRuntime       : "androidx.arch.core:core-runtime:$lifeCycleVersion",
             archCoreCommon        : "androidx.arch.core:core-common:$lifeCycleVersion",
             twitter               : "org.twitter4j:twitter4j-core:$twitter4JVersion",
-            laku6Sdk              : "com.gitlab.Laku6:laku6-trade-in-sdk-android:1.4.0",
+            laku6Sdk              : "com.gitlab.Laku6:laku6-trade-in-sdk-android:1.4.2",
             androidjunit5         : "de.mannodermaus.gradle.plugins:android-junit5:1.5.1.0",
             rootbeer              : "com.scottyab:rootbeer-lib:0.0.7",
             viewPager2            : "androidx.viewpager2:viewpager2:$viewPager2",
-            workManager           : "android.arch.work:work-runtime-ktx:$workManagerVersion",
+            workManager           : "androidx.work:work-runtime-ktx:$workManagerVersion",
             stfalconImageViewer   : "com.github.stfalcon:stfalcon-imageviewer:$stfalconVersion",
             liveness              : "ai.advance.liveness:guardian_core_v1.6@aar",
             javaxInject           :  "javax.inject:javax.inject:1",
-            slice                 : "androidx.slice:slice-builders-ktx:$sliceVersion"
+            slice                 : "androidx.slice:slice-builders-ktx:$sliceVersion",
+            transition            : "androidx.transition:transition:$transitionVersion"
     ]
 
     testDependencies = [
@@ -275,6 +270,7 @@ ext {
             mockk                 : "io.mockk:mockk:$MockkVersion",
             mockkAndroid          : "io.mockk:mockk-android:$MockkVersion",
             mockitorCore          : "org.mockito:mockito-core:1.10.19",
+            mockitorAndroid       : "org.mockito:mockito-android:2.6.3",
             uiautomator           : 'com.android.support.test.uiautomator:uiautomator-v18:2.1.2',
             spoon                 : 'com.squareup.spoon:spoon-client:1.6.4',
             androidAnnotation     : "androidx.annotation:annotation:$supportLibraryVersion",
@@ -308,20 +304,16 @@ ext {
             json                  : "org.json:json:20140107",
             benchmark             : "androidx.benchmark:benchmark-junit4:$benchmarkTestVersion",
             testCore              : "androidx.test:core:$testCore",
+            testCoreKtx           : "androidx.test:core-ktx:$testCore",
             fragmentTest          : "androidx.fragment:fragment-testing:$fragmentTest"
     ]
 
     debugToolsDependencies = [
             stetho          : "com.facebook.stetho:stetho:1.4.2",
-            stethoOkHttp    : "com.facebook.stetho:stetho-okhttp3:1.4.2",
             chuck           : "com.github.ChuckerTeam.Chucker:library:$chuckerVersion",
             chuckNoOp       : "com.github.ChuckerTeam.Chucker:library-no-op:$chuckerVersion",
-            oldChuck        : "com.github.okasurya.chuck:library:1.0.4-alpha2",
-            oldChuckNoOp    : "com.github.okasurya.chuck:library-no-op:1.0.4-alpha2",
-            toolargetool    : "com.gu.android:toolargetool:0.1.3@aar",
             timber          : "com.jakewharton.timber:timber:4.7.1",
-            blockCanary     : ":libraries:blockcanary",
-            blockCanaryNoOp : "com.github.markzhai:blockcanary-no-op:1.5.0",
+            tooLargeTool    : "com.gu.android:toolargetool:0.2.1@aar",
             leakCanary      : "com.squareup.leakcanary:leakcanary-android:2.2"
     ]
 
@@ -329,10 +321,6 @@ ext {
             expandableOption: "com.tokopedia.tkpdlib:expandableoption:0.7.2",
             showcase        : "com.tokopedia.tkpdlib:showcase-stepper:0.6.1",
             youtubePlayer   : "com.tokopedia.youtube:player:0.0.1"
-    ]
-
-    instabugDependencies = [
-            instabug: "com.instabug.library:instabug:8.0.3"
     ]
 
     unifyDependencies = [

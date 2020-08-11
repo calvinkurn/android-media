@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="info_shipping_unavailable">Pengiriman Tidak Tersedia</string>
+    <string name="choose_this_location">Pilih lokasi ini</string>
+    <string name="error_field_required">Harus diisi</string>
+    <string name="hint_choose_city">Pilih kota/kecamatan</string>
+    <string name="title_edit">Ubah</string>
+    <string name="title_close">Tutup</string>
+    <string name="submit_but">Simpan</string>
+    <string name="choose_location">Pilih Lokasi</string>
+    <string name="desc_delivery_location">Pastikan lokasi yang Anda tandai di peta sesuai dengan alamat yang Anda isi di atas</string>
+    <string name="shop_shipping_additional_option">Opsi Tambahan</string>
+    <string name="prompt_phone">Nomor Ponsel</string>
+    <string name="title_delivery_location">Lokasi Pickup</string>
+    <string name="title_activity_shop_address_form">Alamat Toko</string>
+    <string name="title_shop_location">Lokasi Toko</string>
+    <string name="title_city">Kota</string>
+    <string name="title_post_code">Kode Pos</string>
+    <string name="shop_shipping_setting">Pengaturan Pengiriman</string>
+    <string name="title_select_shop_location">Pilih Lokasi Toko</string>
+    <string name="dialog_on_process">Sedang diproses</string>
+    <string name="title_action_save_shipping">Simpan Pengiriman</string>
+    <string name="error_shipping_must_choose">Agen kurir harus dipilih</string>
+    <string name="hint_type_postal_code">Silakan ketik kode pos Anda jika tidak tercantum di sini</string>
+    <string name="btn_send">Kirim</string>
+    <string name="title_verification_timeout">Maaf, Telah terjadi masalah koneksi</string>
+    <string name="error_shipping_dialog_webview">Terdapat kesalahan dalam pengisian form mohon coba sekali lagi</string>
+
+
+    <!--Charge BO-->
+    <string name="charge_bo_ticker_title">Bebas Ongkir untuk PM akan dikenai biaya</string>
+    <string name="charge_bo_ticker_content">Power Merchant (PM) bisa nonaktifkan Bebas Ongkir saja tanpa harus nonaktifkan SiCepat &amp; AntarAja &lt;a href="#"&gt;di sini.&lt;/a&gt;</string>
+
+</resources>

@@ -13,6 +13,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -51,6 +52,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.buyerorder.R;
+import com.tokopedia.buyerorder.common.util.BuyerConsts;
 import com.tokopedia.buyerorder.common.util.UnifiedOrderListRouter;
 import com.tokopedia.buyerorder.common.view.DoubleTextView;
 import com.tokopedia.buyerorder.detail.data.ActionButton;
@@ -62,6 +64,7 @@ import com.tokopedia.buyerorder.detail.data.DriverDetails;
 import com.tokopedia.buyerorder.detail.data.DropShipper;
 import com.tokopedia.buyerorder.detail.data.Invoice;
 import com.tokopedia.buyerorder.detail.data.Items;
+import com.tokopedia.buyerorder.detail.data.OrderDetails;
 import com.tokopedia.buyerorder.detail.data.OrderToken;
 import com.tokopedia.buyerorder.detail.data.PayMethod;
 import com.tokopedia.buyerorder.detail.data.Pricing;
@@ -71,26 +74,29 @@ import com.tokopedia.buyerorder.detail.data.Title;
 import com.tokopedia.buyerorder.detail.data.recommendationMPPojo.RecommendationResponse;
 import com.tokopedia.buyerorder.detail.di.OrderDetailsComponent;
 import com.tokopedia.buyerorder.detail.view.OrderListAnalytics;
-import com.tokopedia.buyerorder.detail.view.activity.RequestCancelActivity;
+import com.tokopedia.buyerorder.detail.view.activity.BuyerRequestCancelActivity;
 import com.tokopedia.buyerorder.detail.view.activity.SeeInvoiceActivity;
+import com.tokopedia.buyerorder.detail.view.adapter.ProductItemAdapter;
 import com.tokopedia.buyerorder.detail.view.adapter.RecommendationMPAdapter;
 import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailContract;
 import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailPresenter;
 import com.tokopedia.buyerorder.list.common.OrderListContants;
 import com.tokopedia.buyerorder.list.data.ConditionalInfo;
 import com.tokopedia.buyerorder.list.data.PaymentData;
-import com.tokopedia.buyerorder.detail.view.adapter.ProductItemAdapter;
-import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifycomponents.ticker.TickerCallback;
+import com.tokopedia.url.TokopediaUrl;
 
+import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 
 import javax.inject.Inject;
 
 import static android.content.Context.CLIPBOARD_SERVICE;
+import static com.tokopedia.buyerorder.common.util.BuyerConsts.CANCEL_BUYER_REQUEST_TWO_LAYER;
 
 public class MarketPlaceDetailFragment extends BaseDaggerFragment implements RefreshHandler.OnRefreshHandlerListener, OrderListDetailContract.View {
 
@@ -179,7 +185,10 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     private Status status;
     private Ticker mTickerInfos;
     private RecyclerView recommendationList;
-
+    private List<Items> listProducts;
+    private String invoiceNum;
+    private String invoiceUrl;
+    private String boughtDate;
 
     @Override
     protected String getScreenName() {
@@ -330,6 +339,8 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     @Override
     public void setInvoice(final Invoice invoice) {
         if (!invoice.invoiceRefNum().isEmpty()) {
+            invoiceNum = invoice.invoiceRefNum();
+            invoiceUrl = invoice.invoiceUrl();
             dividerInvoice.setVisibility(View.VISIBLE);
             invoiceLayout.setVisibility(View.VISIBLE);
             invoiceView.setText(invoice.invoiceRefNum());
@@ -346,7 +357,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                 orderListAnalytics.sendViewInvoiceClickEvent();
                 orderListAnalytics.sendLihatInvoiceClick(status.status());
 
-                Intent intent = SeeInvoiceActivity.newInstance(getContext(), status, invoice,
+                Intent intent = SeeInvoiceActivity.newInstance(Objects.requireNonNull(getContext()), status, invoice,
                         getString(R.string.title_invoice));
                 startActivity(intent);
             });
@@ -668,6 +679,11 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     }
 
     @Override
+    public void setBoughtDate(String boughtDate) {
+        this.boughtDate = boughtDate;
+    }
+
+    @Override
     public void showReplacementView(List<String> reasons) {
     }
 
@@ -719,60 +735,78 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                 } else if (actionButton.getActionButtonPopUp().getActionButtonList().get(1).getLabel().equalsIgnoreCase("selesai")) {
                     orderListAnalytics.sendActionButtonClickEvent("selesai");
                 }
-                final Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE) {
-                    @Override
-                    public int layoutResId() {
-                        if (actionButton.getActionButtonPopUp().getActionButtonList().get(1).getLabel().equalsIgnoreCase("Selesai")) {
-                            return R.layout.dialog_seller_finish;
-                        } else {
-                            return super.layoutResId();
-                        }
-                    }
-                };
-                dialog.setTitle(actionButton.getActionButtonPopUp().getTitle());
-                dialog.setDesc(actionButton.getActionButtonPopUp().getBody());
-                if (actionButton.getActionButtonPopUp().getActionButtonList() != null && actionButton.getActionButtonPopUp().getActionButtonList().size() > 0) {
-                    dialog.setBtnOk(actionButton.getActionButtonPopUp().getActionButtonList().get(1).getLabel());
-                    dialog.setOnOkClickListener(new View.OnClickListener() {
+
+                if (actionButton.getKey().equalsIgnoreCase(BuyerConsts.KEY_REQUEST_CANCEL)) {
+                    Intent buyerReqCancelIntent = new Intent(getContext(), BuyerRequestCancelActivity.class);
+                    buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_SHOP_NAME, shopInfo.getShopName());
+                    buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_INVOICE, invoiceNum);
+                    buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_LIST_PRODUCT, (Serializable) listProducts);
+                    buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_ORDER_ID, getArguments().getString(KEY_ORDER_ID));
+                    buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_URI, actionButton.getUri());
+                    buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_IS_CANCEL_ALREADY_REQUESTED, true);
+                    buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_TITLE_CANCEL_REQUESTED, actionButton.getActionButtonPopUp().getTitle());
+                    buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_BODY_CANCEL_REQUESTED, actionButton.getActionButtonPopUp().getBody());
+                    buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_SHOP_ID, shopInfo.getShopId());
+                    buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_BOUGHT_DATE, boughtDate);
+                    buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_INVOICE_URL, invoiceUrl);
+                    buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_STATUS_ID, status.status());
+                    buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_STATUS_INFO, status.statusText());
+                    startActivity(buyerReqCancelIntent);
+                } else {
+                    final Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE) {
                         @Override
-                        public void onClick(View v) {
-                            if (!TextUtils.isEmpty(actionButton.getActionButtonPopUp().getActionButtonList().get(1).getUri())) {
-                                if (actionButton.getActionButtonPopUp().getActionButtonList().get(1).getLabel().equalsIgnoreCase("Selesai")) {
-                                    presenter.finishOrder(getArguments().getString(KEY_ORDER_ID), actionButton.getUri());
-                                    dialog.dismiss();
-                                } else if (actionButton.getActionButtonPopUp().getActionButtonList().get(1).getLabel().equalsIgnoreCase("Komplain")) {
-                                    Intent newIntent = InboxRouter.getCreateResCenterActivityIntent(getContext(),
-                                            getArguments().getString(KEY_ORDER_ID));
-                                    startActivityForResult(newIntent, CREATE_RESCENTER_REQUEST_CODE);
-                                    dialog.dismiss();
+                        public int layoutResId() {
+                            if (actionButton.getActionButtonPopUp().getActionButtonList().get(1).getLabel().equalsIgnoreCase("Selesai")) {
+                                return R.layout.dialog_seller_finish;
+                            } else {
+                                return super.layoutResId();
+                            }
+                        }
+                    };
+                    dialog.setTitle(actionButton.getActionButtonPopUp().getTitle());
+                    dialog.setDesc(actionButton.getActionButtonPopUp().getBody());
+                    if (actionButton.getActionButtonPopUp().getActionButtonList() != null && actionButton.getActionButtonPopUp().getActionButtonList().size() > 0) {
+                        dialog.setBtnOk(actionButton.getActionButtonPopUp().getActionButtonList().get(1).getLabel());
+                        dialog.setOnOkClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                if (!TextUtils.isEmpty(actionButton.getActionButtonPopUp().getActionButtonList().get(1).getUri())) {
+                                    if (actionButton.getActionButtonPopUp().getActionButtonList().get(1).getLabel().equalsIgnoreCase("Selesai")) {
+                                        presenter.finishOrder(getArguments().getString(KEY_ORDER_ID), actionButton.getUri());
+                                        dialog.dismiss();
+                                    } else if (actionButton.getActionButtonPopUp().getActionButtonList().get(1).getLabel().equalsIgnoreCase("Komplain") && getArguments()!=null) {
+                                        Intent newIntent = RouteManager.getIntent(getContext(), ApplinkConstInternalGlobal.WEBVIEW, String.format(TokopediaUrl.Companion.getInstance().getMOBILEWEB() + ApplinkConst.ResCenter.RESO_CREATE, getArguments().getString(KEY_ORDER_ID)));
+                                        startActivityForResult(newIntent, CREATE_RESCENTER_REQUEST_CODE);
+                                        dialog.dismiss();
+                                    } else {
+                                        if (actionButton.getActionButtonPopUp().getActionButtonList().get(1).getUri().contains("askseller")) {
+                                            orderListAnalytics.sendActionButtonClickEvent(CLICK_ASK_SELLER_CANCELATION, status.status());
+                                            startSellerAndAddInvoice(actionButton.getActionButtonPopUp().getActionButtonList().get(1).getUri());
+                                        } else
+                                            RouteManager.route(getContext(), actionButton.getActionButtonPopUp().getActionButtonList().get(1).getUri());
+                                    }
                                 } else {
-                                    if (actionButton.getActionButtonPopUp().getActionButtonList().get(1).getUri().contains("askseller")) {
-                                        orderListAnalytics.sendActionButtonClickEvent(CLICK_ASK_SELLER_CANCELATION, status.status());
-                                        startSellerAndAddInvoice(actionButton.getActionButtonPopUp().getActionButtonList().get(1).getUri());
-                                    } else
-                                        RouteManager.route(getContext(), actionButton.getActionButtonPopUp().getActionButtonList().get(1).getUri());
+                                    dialog.dismiss();
                                 }
-                            } else {
-                                dialog.dismiss();
                             }
-                        }
-                    });
-                    dialog.setBtnCancel(actionButton.getActionButtonPopUp().getActionButtonList().get(0).getLabel());
-                    dialog.setOnCancelClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if (!TextUtils.isEmpty(actionButton.getActionButtonPopUp().getActionButtonList().get(0).getUri())) {
-                                RouteManager.route(getContext(), actionButton.getActionButtonPopUp().getActionButtonList().get(0).getUri());
-                            } else {
-                                if (actionButton.getActionButtonPopUp().getActionButtonList().get(0).getLabel().equalsIgnoreCase("Kembali")) {
-                                    orderListAnalytics.sendActionButtonClickEvent(CLICK_KEMBALI, status.status());
+                        });
+                        dialog.setBtnCancel(actionButton.getActionButtonPopUp().getActionButtonList().get(0).getLabel());
+                        dialog.setOnCancelClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                if (!TextUtils.isEmpty(actionButton.getActionButtonPopUp().getActionButtonList().get(0).getUri())) {
+                                    RouteManager.route(getContext(), actionButton.getActionButtonPopUp().getActionButtonList().get(0).getUri());
+                                } else {
+                                    if (actionButton.getActionButtonPopUp().getActionButtonList().get(0).getLabel().equalsIgnoreCase("Kembali")) {
+                                        orderListAnalytics.sendActionButtonClickEvent(CLICK_KEMBALI, status.status());
+                                    }
+                                    dialog.dismiss();
                                 }
-                                dialog.dismiss();
                             }
-                        }
-                    });
+                        });
+                    }
+                    dialog.show();
                 }
-                dialog.show();
             } else if (!TextUtils.isEmpty(actionButton.getUri())) {
                 if (actionButton.getUri().contains("askseller")) {
                     startSellerAndAddInvoice(actionButton.getUri());
@@ -787,22 +821,37 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                     orderListAnalytics.sendTulisReviewEventData(status.status());
                     RouteManager.route(getContext(), actionButton.getUri());
                 } else if (!TextUtils.isEmpty(actionButton.getUri())) {
-                    Intent intent = new Intent(getContext(), RequestCancelActivity.class);
-                    intent.putExtra(KEY_ORDER_ID, getArguments().getString(KEY_ORDER_ID));
-                    intent.putExtra(ACTION_BUTTON_URL, actionButton.getUri());
                     if (this.status.status().equals(STATUS_CODE_220) || this.status.status().equals(STATUS_CODE_400)) {
                         if (presenter.shouldShowTimeForCancellation()) {
-                            Toaster.INSTANCE.showErrorWithAction(mainView,
-                                    presenter.getCancelTime(),
-                                    Snackbar.LENGTH_LONG,
-                                    getResources().getString(R.string.title_ok), v -> {
-                                    });
+                            Intent buyerReqCancelIntent = new Intent(getContext(), BuyerRequestCancelActivity.class);
+                            buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_SHOP_NAME, shopInfo.getShopName());
+                            buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_INVOICE, invoiceNum);
+                            buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_LIST_PRODUCT, (Serializable) listProducts);
+                            buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_ORDER_ID, getArguments().getString(KEY_ORDER_ID));
+                            buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_URI, actionButton.getUri());
+                            buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_WAIT_MSG, presenter.getCancelTime());
+                            buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_IS_WAIT_TO_CANCEL, true);
+                            startActivity(buyerReqCancelIntent);
                         } else {
-                            startActivityForResult(RequestCancelActivity.getInstance(getContext(), getArguments().getString(KEY_ORDER_ID), actionButton.getUri(), 1), REQUEST_CANCEL_ORDER);
+                            Intent buyerReqCancelIntent = new Intent(getContext(), BuyerRequestCancelActivity.class);
+                            buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_SHOP_NAME, shopInfo.getShopName());
+                            buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_INVOICE, invoiceNum);
+                            buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_LIST_PRODUCT, (Serializable) listProducts);
+                            buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_ORDER_ID, getArguments().getString(KEY_ORDER_ID));
+                            buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_URI, actionButton.getUri());
+                            startActivityForResult(buyerReqCancelIntent, REQUEST_CANCEL_ORDER);
+
                             orderListAnalytics.sendActionButtonClickEvent(CLICK_REQUEST_CANCEL, this.status.status());
                         }
+
                     } else if (this.status.status().equals(STATUS_CODE_11)) {
-                        startActivityForResult(RequestCancelActivity.getInstance(getContext(), getArguments().getString(KEY_ORDER_ID), actionButton.getUri(), 0), REQUEST_CANCEL_ORDER);
+                        Intent buyerReqCancelIntent = new Intent(getContext(), BuyerRequestCancelActivity.class);
+                        buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_SHOP_NAME, shopInfo.getShopName());
+                        buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_INVOICE, invoiceNum);
+                        buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_LIST_PRODUCT, (Serializable) listProducts);
+                        buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_ORDER_ID, getArguments().getString(KEY_ORDER_ID));
+                        buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_URI, actionButton.getUri());
+                        startActivityForResult(buyerReqCancelIntent, REQUEST_CANCEL_ORDER);
                     } else if (actionButton.getLabel().equalsIgnoreCase("Lacak")) {
 
                         orderListAnalytics.sendActionButtonClickEvent(CLICK_TRACK);
@@ -855,6 +904,10 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                 reasonCode = data.getIntExtra(OrderListContants.REASON_CODE, 1);
                 presenter.updateOrderCancelReason(reason, getArguments().getString(KEY_ORDER_ID), reasonCode, data.getStringExtra(ACTION_BUTTON_URL));
             } else if (resultCode == CANCEL_BUYER_REQUEST) {
+                reason = data.getStringExtra(OrderListContants.REASON);
+                reasonCode = data.getIntExtra(OrderListContants.REASON_CODE, 1);
+                presenter.updateOrderCancelReason(reason, getArguments().getString(KEY_ORDER_ID), reasonCode, data.getStringExtra(ACTION_BUTTON_URL));
+            } else if (resultCode == CANCEL_BUYER_REQUEST_TWO_LAYER) {
                 reason = data.getStringExtra(OrderListContants.REASON);
                 reasonCode = data.getIntExtra(OrderListContants.REASON_CODE, 1);
                 presenter.updateOrderCancelReason(reason, getArguments().getString(KEY_ORDER_ID), reasonCode, data.getStringExtra(ACTION_BUTTON_URL));
@@ -978,7 +1031,8 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
 
     @SuppressLint("SetTextI18n")
     @Override
-    public void setItems(List<Items> items, boolean isTradeIn) {
+    public void setItems(List<Items> items, boolean isTradeIn, OrderDetails orderDetails) {
+        listProducts = items;
         rlShopInfo.setVisibility(View.VISIBLE);
         String labelShop = shopInformationTitle.getContext().getResources().getString(R.string.label_shop_title) + " ";
         int startLabelShop = labelShop.length();

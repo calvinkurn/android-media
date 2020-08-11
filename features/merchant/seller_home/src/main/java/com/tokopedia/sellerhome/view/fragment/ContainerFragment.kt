@@ -10,16 +10,19 @@ import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.SellerHomeRouter
 import com.tokopedia.sellerhome.common.FragmentType
 import com.tokopedia.sellerhome.common.PageFragment
 import com.tokopedia.sellerhome.common.SomTabConst
 import com.tokopedia.sellerhome.common.StatusbarHelper
-import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.view.model.NotificationCenterUnreadUiModel
+import com.tokopedia.sellerhome.view.viewmodel.SharedViewModel
 import com.tokopedia.sellerhome.view.widget.toolbar.NotificationDotBadge
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
 import kotlinx.android.synthetic.main.fragment_sah_container.view.*
@@ -38,8 +41,14 @@ class ContainerFragment : Fragment() {
     }
 
     @Inject
-    lateinit var remoteConfig: SellerHomeRemoteConfig
+    lateinit var viewModelFactory: ViewModelFactory
 
+    private val sharedViewModel: SharedViewModel? by lazy {
+        return@lazy if (null != activity) {
+            ViewModelProvider(activity!!, viewModelFactory).get(SharedViewModel::class.java)
+        } else
+            null
+    }
     private val sellerHomeRouter: SellerHomeRouter? by lazy {
         val applicationContext = activity?.applicationContext
         return@lazy if (applicationContext is SellerHomeRouter)
@@ -51,7 +60,7 @@ class ContainerFragment : Fragment() {
     private var sellerHomeListener: SellerHomeFragment.Listener? = null
     private val handler = Handler()
     private val homeFragment: SellerHomeFragment by lazy { SellerHomeFragment.newInstance() }
-    private val productManageFragment: Fragment? by lazy { sellerHomeRouter?.getProductManageFragment(arrayListOf()) }
+    private val productManageFragment: Fragment? by lazy { sellerHomeRouter?.getProductManageFragment(arrayListOf(), "") }
     private val chatFragment: Fragment? by lazy { sellerHomeRouter?.getChatListFragment() }
     private val somListFragment: Fragment? by lazy { sellerHomeRouter?.getSomListFragment(SomTabConst.STATUS_NEW_ORDER) }
 
@@ -78,7 +87,7 @@ class ContainerFragment : Fragment() {
         homeFragment.bindListener(sellerHomeListener)
 
         setupView()
-        showHomePage()
+        observeCurrentSelectedPage()
     }
 
     private fun setupView() = view?.run {
@@ -99,9 +108,17 @@ class ContainerFragment : Fragment() {
         }
     }
 
-    private fun showHomePage() {
-        val homePage = PageFragment(FragmentType.HOME)
-        showFragment(homeFragment, homePage, homeFragmentTitle)
+    private fun observeCurrentSelectedPage() {
+        sharedViewModel?.currentSelectedPage?.observe(this, Observer { page ->
+            currentFragmentType = page.type
+            when (page.type) {
+                FragmentType.HOME -> showFragment(homeFragment, page, homeFragmentTitle)
+                FragmentType.PRODUCT -> showFragment(productManageFragment, page, getString(R.string.sah_product_list))
+                FragmentType.CHAT -> showFragment(chatFragment, page, getString(R.string.sah_chat))
+                FragmentType.ORDER -> showFragment(somListFragment, page, getString(R.string.sah_sale))
+                else -> updateFragmentVisibilityHint(null)
+            }
+        })
     }
 
     private fun showFragment(fragment: Fragment?, page: PageFragment, title: String) {
@@ -138,11 +155,7 @@ class ContainerFragment : Fragment() {
                 }
             }
 
-            if(remoteConfig.isImprovementDisabled()) {
-                transaction.commitNowAllowingStateLoss()
-            } else {
-                transaction.commit()
-            }
+            transaction.commitNowAllowingStateLoss()
 
             view?.sahToolbar?.title = title
             if (fragment == homeFragment) {
@@ -176,12 +189,29 @@ class ContainerFragment : Fragment() {
 
     private fun addProductFragment(fragment: Fragment, transaction: FragmentTransaction, page: PageFragment, fragmentName: String) {
         val filterOptionEmptyStock = FilterOption.FilterByCondition.EmptyStockOnly.id
+        val searchKeyword = page.keywordSearch
         if (page.tabPage.isNotBlank() && page.tabPage == filterOptionEmptyStock) {
-            val productManageFragment = sellerHomeRouter?.getProductManageFragment(arrayListOf(filterOptionEmptyStock))
+            val productManageFragment = sellerHomeRouter?.getProductManageFragment(arrayListOf(filterOptionEmptyStock), searchKeyword)
             if (null != productManageFragment) {
                 addFragmentToTransaction(transaction, productManageFragment, fragmentName)
             } else {
                 addFragmentToTransaction(transaction, fragment, fragmentName)
+            }
+        } else if(page.tabPage.isBlank() && searchKeyword.isNotBlank()) {
+            val productManageFragment = sellerHomeRouter?.getProductManageFragment(arrayListOf(), searchKeyword)
+            if (null != productManageFragment) {
+                transaction.remove(fragment)
+                addFragmentToTransaction(transaction, productManageFragment, fragmentName)
+            } else {
+                transaction.show(fragment)
+            }
+        } else if (page.needToRecreate) {
+            val productManageFragment = sellerHomeRouter?.getProductManageFragment(arrayListOf(), "")
+            if (null != productManageFragment) {
+                transaction.remove(fragment)
+                addFragmentToTransaction(transaction, productManageFragment, fragmentName)
+            } else {
+                transaction.show(fragment)
             }
         } else {
             addFragmentToTransaction(transaction, fragment, fragmentName)
@@ -203,8 +233,25 @@ class ContainerFragment : Fragment() {
 
     private fun showProductMangePage(fmt: Fragment, transaction: FragmentTransaction, page: PageFragment, fragmentName: String) {
         val filterOptionEmptyStock = FilterOption.FilterByCondition.EmptyStockOnly.id
+        val searchKeyword = page.keywordSearch
         if (page.tabPage.isNotBlank() && page.tabPage == filterOptionEmptyStock) {
-            val productManageFragment = sellerHomeRouter?.getProductManageFragment(arrayListOf(filterOptionEmptyStock))
+            val productManageFragment = sellerHomeRouter?.getProductManageFragment(arrayListOf(filterOptionEmptyStock), searchKeyword)
+            if (null != productManageFragment) {
+                transaction.remove(fmt)
+                addFragmentToTransaction(transaction, productManageFragment, fragmentName)
+            } else {
+                transaction.show(fmt)
+            }
+        } else if(page.tabPage.isBlank() && searchKeyword.isNotBlank()) {
+            val productManageFragment = sellerHomeRouter?.getProductManageFragment(arrayListOf(), searchKeyword)
+            if (null != productManageFragment) {
+                transaction.remove(fmt)
+                addFragmentToTransaction(transaction, productManageFragment, fragmentName)
+            } else {
+                transaction.show(fmt)
+            }
+        } else if (page.needToRecreate) {
+            val productManageFragment = sellerHomeRouter?.getProductManageFragment(arrayListOf(), "")
             if (null != productManageFragment) {
                 transaction.remove(fmt)
                 addFragmentToTransaction(transaction, productManageFragment, fragmentName)
@@ -227,18 +274,6 @@ class ContainerFragment : Fragment() {
             }
         } else {
             transaction.show(fmt)
-        }
-    }
-
-    fun showSelectedPage(page: PageFragment) {
-        currentFragmentType = page.type
-
-        when (page.type) {
-            FragmentType.HOME -> showFragment(homeFragment, page, homeFragmentTitle)
-            FragmentType.PRODUCT -> showFragment(productManageFragment, page, getString(R.string.sah_product_list))
-            FragmentType.CHAT -> showFragment(chatFragment, page, getString(R.string.sah_chat))
-            FragmentType.ORDER -> showFragment(somListFragment, page, getString(R.string.sah_sale))
-            else -> updateFragmentVisibilityHint(null)
         }
     }
 

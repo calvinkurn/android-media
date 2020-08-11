@@ -16,6 +16,7 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.gms.location.LocationSettingsStatusCodes
 import com.google.android.gms.tasks.OnFailureListener
+import com.tkpd.remoteresourcerequest.view.DeferredImageView
 import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.logisticaddaddress.R
@@ -30,6 +31,7 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewA
 class LocationInfoBottomSheetFragment : BottomSheets() {
     private var bottomSheetView: View? = null
     private lateinit var btnActivateLocation: ButtonCompat
+    private lateinit var imageInvalid: DeferredImageView
     private var isFullFlow: Boolean = true
     private var isLogisticLabel: Boolean = true
 
@@ -43,6 +45,8 @@ class LocationInfoBottomSheetFragment : BottomSheets() {
                 }
             }
         }
+
+        private const val ADDRESS_NOT_DETECTED = "ic_location_not_detected.png"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,6 +68,8 @@ class LocationInfoBottomSheetFragment : BottomSheets() {
     override fun initView(view: View) {
         bottomSheetView = view
         btnActivateLocation = view.findViewById(R.id.btn_activate_location)
+        imageInvalid = view.findViewById(R.id.img_location_not_detected)
+        imageInvalid.loadRemoteImageDrawable(ADDRESS_NOT_DETECTED)
         btnActivateLocation.setOnClickListener {
             AddNewAddressAnalytics.eventClickButtonAktifkanLayananLokasiOnBlockGps(isFullFlow, isLogisticLabel)
             if (!context?.let { it1 -> turnGPSOn(it1) }!!) {

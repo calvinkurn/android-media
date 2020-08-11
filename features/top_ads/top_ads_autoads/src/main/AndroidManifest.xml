@@ -28,7 +28,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
-                    android:scheme="@string/sellerapp_scheme"
+                    android:scheme="@string/internal_scheme"
                     android:host="@string/host_topads"
                     android:path="@string/path_topads_autoads_create"/>
             </intent-filter>

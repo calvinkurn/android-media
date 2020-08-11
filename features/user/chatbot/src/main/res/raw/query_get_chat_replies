@@ -33,6 +33,7 @@ query get_chat_replies($msgId: Int!, $page: Int!) {
           isOpposite
           isHighlight
           isRead
+          source
           attachment {
             id
             type

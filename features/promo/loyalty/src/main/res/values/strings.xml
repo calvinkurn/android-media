@@ -31,4 +31,7 @@
     <string name="with_promo_code">Kode Promo</string>
     <string name="title_activity_promo">Promo</string>
     <string name="activity_title_tokopoints">TokoPoints</string>
+    <string name="loyalty_open_settings">Ke Pengaturan</string>
+    <string name="loyalty_no_promo">Yaah, belum ada promo</string>
+    <string name="loyalty_still_save_without_promo">Jangan khawatir, kamu masih bisa belanja hemat walau tanpa promo, lho!</string>
 </resources>

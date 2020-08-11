@@ -9,6 +9,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.gm.common.data.source.cloud.model.PowerMerchantStatus
 import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel
+import com.tokopedia.gm.common.utils.PowerMerchantTracking
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -16,10 +17,11 @@ import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.view.constant.PowerMerchantUrl
 import com.tokopedia.power_merchant.subscribe.view.fragment.PowerMerchantSubscribeFragment.Companion.MINIMUM_SCORE_ACTIVATE_IDLE
 import com.tokopedia.power_merchant.subscribe.view.util.PowerMerchantDateFormatter.formatCancellationDate
-import com.tokopedia.power_merchant.subscribe.view.util.PowerMerchantSpannableUtil.createSpannableString
 import kotlinx.android.synthetic.main.layout_power_merchant_membership.view.*
 
 class PowerMerchantMembershipView: ConstraintLayout {
+
+    private var tracker: PowerMerchantTracking? = null
 
     constructor (context: Context): super(context)
 
@@ -31,10 +33,15 @@ class PowerMerchantMembershipView: ConstraintLayout {
         inflate(context, R.layout.layout_power_merchant_membership, this)
     }
 
-    fun show(powerMerchantStatus: PowerMerchantStatus, onClickUpgradeBtn: () -> Unit) {
+    fun show(
+        powerMerchantStatus: PowerMerchantStatus,
+        tracker: PowerMerchantTracking,
+        onClickUpgradeBtn: () -> Unit
+    ) {
         val shopScore = powerMerchantStatus.shopScore.data.value
         val shopStatus = powerMerchantStatus.goldGetPmOsStatus.result.data
 
+        setTracker(tracker)
         showTextWarning(shopStatus)
         showShopStatus(shopScore)
         showShopScore(shopScore)
@@ -42,6 +49,10 @@ class PowerMerchantMembershipView: ConstraintLayout {
         showPerformanceTipsBtn(shopScore)
         setUpgradeBtnListener(onClickUpgradeBtn)
         showLayout()
+    }
+
+    private fun setTracker(tracker: PowerMerchantTracking) {
+        this.tracker = tracker
     }
 
     private fun showTextWarning(shopStatus: ShopStatusModel) {
@@ -62,11 +73,11 @@ class PowerMerchantMembershipView: ConstraintLayout {
 
     private fun showShopStatus(shopScore: Int) {
         if(shopScore < MINIMUM_SCORE_ACTIVATE_IDLE) {
-            val textColor = ContextCompat.getColor(context, R.color.light_R500)
+            val textColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.light_R500)
             textStatus.setTextColor(textColor)
             textStatus.text = context.getString(R.string.power_merchant_inactive)
         } else {
-            val textColor = ContextCompat.getColor(context, R.color.light_N700)
+            val textColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.light_N700)
             textStatus.setTextColor(textColor)
             textStatus.text = context.getString(R.string.power_merchant_active)
         }
@@ -89,8 +100,13 @@ class PowerMerchantMembershipView: ConstraintLayout {
         val shouldShow = shopScore < MINIMUM_SCORE_ACTIVATE_IDLE
         btnPerformanceTips.showWithCondition(shouldShow)
         btnPerformanceTips.setOnClickListener {
+            trackClickPerformanceTipsBtn()
             goToWebViewPage(PowerMerchantUrl.URL_SHOP_PERFORMANCE_TIPS)
         }
+    }
+
+    private fun trackClickPerformanceTipsBtn() {
+        tracker?.eventClickPerformanceTipsBtn()
     }
 
     private fun goToWebViewPage(url: String) {

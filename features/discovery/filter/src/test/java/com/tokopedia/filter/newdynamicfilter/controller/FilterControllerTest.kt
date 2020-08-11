@@ -58,8 +58,12 @@ class FilterControllerTest {
         it.isPopular = true
     }
 
-    private val minPriceOption = OptionHelper.generateOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.PMIN, "", "Harga Minimum"))
-    private val maxPriceOption = OptionHelper.generateOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.PMAX, "", "Harga Maximum"))
+    private val minPriceOption = OptionHelper.generateOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.PMIN, "0", "Harga Minimum")).also {
+        it.inputType = Option.INPUT_TYPE_TEXTBOX
+    }
+    private val maxPriceOption = OptionHelper.generateOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.PMAX, "", "Harga Maximum")).also {
+        it.inputType = Option.INPUT_TYPE_TEXTBOX
+    }
 
     private val tokoOptions = mutableListOf<Option>()
     private val locationOptions = mutableListOf<Option>()
@@ -141,7 +145,7 @@ class FilterControllerTest {
         filterController.initFilterController(filterParameter, filterList)
 
         assertFilterViewStateSizeCorrect(1)
-        assertFilterViewStateCorrect(listOf<Option>() + officialOption)
+        assertFilterViewStateCorrect(listOf(officialOption))
     }
 
     private fun createParameter() : Map<String, String> {
@@ -183,7 +187,7 @@ class FilterControllerTest {
     }
 
     @Test
-    fun testFilterControllerInitializedUsingOptionsWithEmptyValue() {
+    fun testFilterControllerInitializedUsingOptionsWithEmptyValueAndTypeTextBox() {
         val filterParameter = HashMap<String, String>(createParameter())
         filterParameter[minPriceOption.key] = 1000.toString()
         filterParameter[maxPriceOption.key] = 10000.toString()
@@ -201,7 +205,7 @@ class FilterControllerTest {
         expectedOptionList.add(createPriceOptionWithValue(minPriceOption, 1000))
         expectedOptionList.add(createPriceOptionWithValue(maxPriceOption, 10000))
 
-        assertFilterViewStateSizeCorrect(expectedOptionList.size)
+        assertFilterViewStateSizeCorrect(2) // Expected is 2, min and max price option counted as 1
         assertFilterViewStateCorrect(expectedOptionList)
     }
 
@@ -216,8 +220,8 @@ class FilterControllerTest {
     fun testLoadFilterViewStateWithBundledOptions() {
         prepareLocationOptions()
 
-        val locationOptionPermutations = getAllOptionPermutations(locationOptions.toTypedArray())
-        for(locationOptionPermutation in locationOptionPermutations!!) {
+        val locationOptionPermutations = getAllOptionPermutations(locationOptions.toTypedArray())!!
+        locationOptionPermutations.forEach { locationOptionPermutation ->
             val locationOptionPermutationList = createOptionsFromPermutations(locationOptionPermutation)
 
             testLoadFilterViewStateWithBundledLocationOptions(locationOptionPermutationList)
@@ -297,7 +301,7 @@ class FilterControllerTest {
         val filterParameter = mutableMapOf<String, String>()
         filterParameter[SearchApiConst.Q] = QUERY_FOR_TEST_SAMSUNG
         filterParameter[SearchApiConst.OFFICIAL] = TRUE_VALUE
-        filterParameter[SearchApiConst.FCITY] = "${jabodetabekOption.value},${bandungOption.value}"
+        filterParameter[SearchApiConst.FCITY] = "${jabodetabekOption.value}${OptionHelper.OPTION_SEPARATOR}${bandungOption.value}"
 
         return filterParameter
     }
@@ -333,6 +337,19 @@ class FilterControllerTest {
 
     private fun printTestPassed() {
         println(".... Passed")
+    }
+
+    @Test
+    fun `test multiple option selected by hashtag`() {
+        val parameter = mapOf(
+                SearchApiConst.Q to QUERY_FOR_TEST_SAMSUNG,
+                SearchApiConst.FCITY to "${jakartaOption.value}${OptionHelper.OPTION_SEPARATOR}${jabodetabekOption.value}"
+        )
+
+        filterController.initFilterController(parameter, createFilterList())
+
+        assertFilterViewStateSizeCorrect(2)
+        assertFilterViewStateCorrect(listOf(jabodetabekOption, jakartaOption))
     }
 
     @Test
@@ -450,7 +467,7 @@ class FilterControllerTest {
                     "Parameter should contain key: $expectedParameterKey, expected: $expectedParameterContainsKey, actual: ${actualParameter.contains(expectedParameterKey)}"
         }
 
-        val actualFilterViewStateSize = filterController.getFilterViewStateSize()
+        val actualFilterViewStateSize = filterController.getFilterCount()
         assert(actualFilterViewStateSize == 0) {
             "Testing reset all filters:\n" +
                     "Filter View State expected size: 0, actual size: $actualFilterViewStateSize"
@@ -632,11 +649,12 @@ class FilterControllerTest {
         filterController.setFilter(createPriceOptionWithValue(maxPriceOption, 3000000), true, isCleanUpExistingFilterWithSameKey = true)
         filterController.setFilter(jakartaOption, true)
         filterController.setFilter(handphoneOption, true, isCleanUpExistingFilterWithSameKey = true)
+        filterController.setFilter(jakartaBaratOption, true)
 
         val expectedMap = mutableMapOf<String, String>()
         expectedMap[officialOption.key] = officialOption.value
         expectedMap[maxPriceOption.key] = 3000000.toString()
-        expectedMap[jakartaOption.key] = jakartaOption.value
+        expectedMap[SearchApiConst.FCITY] = "${jakartaOption.value}${OptionHelper.OPTION_SEPARATOR}${jakartaBaratOption.value}"
         expectedMap[handphoneOption.key] = handphoneOption.value
 
         assertActiveFilterMap(expectedMap)
@@ -669,9 +687,9 @@ class FilterControllerTest {
     }
 
     private fun assertFilterViewStateSizeCorrect(expectedSize: Int) {
-        val actualSize = filterController.getFilterViewStateSize()
+        val actualSize = filterController.getFilterCount()
 
-        assert(filterController.getFilterViewStateSize() == expectedSize) {
+        assert(filterController.getFilterCount() == expectedSize) {
             getAssertFilterViewStateSizeMessage(expectedSize, actualSize)
         }
     }
@@ -762,10 +780,6 @@ class FilterControllerTest {
         val quickFilterList = createQuickFilterList()
 
         filterController.initFilterController(parameter, quickFilterList)
-
-        assert(filterController.getFilterViewState(jakartaOption)) {
-            "Jakarta Option should be selected"
-        }
     }
 
     private fun createParameterWithJabodetabekOptionSelected(): Map<String, String> {

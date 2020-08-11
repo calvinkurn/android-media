@@ -83,6 +83,8 @@ public abstract class ContextAnalytics implements Analytics {
 
     public String getCachedClientIDString(){return "";}
 
+    public String getIrisSessionId(){return "";}
+
     public void pushUserId(String userId){}
 
     public void eventOnline(String uid) {}

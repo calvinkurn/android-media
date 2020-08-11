@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -20,8 +21,11 @@ class IncentiveOvoBottomSheet(private val productRevIncentiveOvoDomain: ProductR
     companion object {
         val TAG = IncentiveOvoBottomSheet::class.qualifiedName
         val layout = R.layout.incentive_ovo_bottom_sheet_dialog
+        var checkBtnContinue = false
         const val url = "https://ecs7.tokopedia.net/android/others/ovo_incentive_bottom_sheet_image.png"
     }
+
+    private val reputationTracking: ReputationTracking by lazy { ReputationTracking() }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = View.inflate(context, layout, null)
@@ -32,7 +36,6 @@ class IncentiveOvoBottomSheet(private val productRevIncentiveOvoDomain: ProductR
 
     private fun initView(view: View) {
         ImageHandler.LoadImage(view.ivIncentiveOvo, url)
-
         view.tgIncentiveOvoTitle.text = productRevIncentiveOvoDomain.productrevIncentiveOvo.title
         view.tgIncentiveOvoSubtitle.text = productRevIncentiveOvoDomain.productrevIncentiveOvo.subtitle
         view.tgIncentiveOvoDescription.text = productRevIncentiveOvoDomain.productrevIncentiveOvo.description
@@ -43,11 +46,27 @@ class IncentiveOvoBottomSheet(private val productRevIncentiveOvoDomain: ProductR
             layoutManager = LinearLayoutManager(context)
             adapter = adapterIncentiveOvo
         }
-
-        val reputationTracking = ReputationTracking()
+        setShowListener {
+            val dpSixteen = 16
+            val dpZero = 0
+            bottomSheetHeader.setPadding(dpSixteen, dpSixteen, dpSixteen, dpZero)
+            (bottomSheetHeader.layoutParams as LinearLayout.LayoutParams).setMargins(dpZero, dpZero, dpZero, dpZero)
+        }
+        setOnDismissListener {
+            hitContinueOrDismissTracker(checkBtnContinue)
+            checkBtnContinue = false
+        }
         view.btnContinueReview.setOnClickListener {
+            checkBtnContinue = true
             dismiss()
+        }
+    }
+
+    private fun hitContinueOrDismissTracker(checkBtnContinue: Boolean) {
+        if(checkBtnContinue) {
             reputationTracking.onClickContinueIncentiveOvoBottomSheetTracker(category)
+        } else {
+            reputationTracking.onClickDismissIncentiveOvoBottomSheetTracker(category)
         }
     }
 

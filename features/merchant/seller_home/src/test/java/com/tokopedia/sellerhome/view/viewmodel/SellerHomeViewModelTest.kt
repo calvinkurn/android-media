@@ -19,10 +19,10 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -82,14 +82,17 @@ class SellerHomeViewModelTest {
     private lateinit var viewModel: SellerHomeViewModel
     private lateinit var dynamicParameter: DynamicParameterModel
 
+    private lateinit var testDispatcher: TestCoroutineDispatcher
+
     @Before
     fun setup() {
         MockKAnnotations.init(this)
+        testDispatcher = TestCoroutineDispatcher()
 
         viewModel = SellerHomeViewModel(getShopStatusUseCase, userSession, getTickerUseCase, getLayoutUseCase,
                 getShopLocationUseCase, getCardDataUseCase, getLineGraphDataUseCase, getProgressDataUseCase,
                 getPostDataUseCase, getCarouselDataUseCase, getTableDataUseCase,
-                getPieChartDataUseCase, getBarChartDataUseCase, Dispatchers.Unconfined)
+                getPieChartDataUseCase, getBarChartDataUseCase, testDispatcher)
 
         dynamicParameter = getDynamicParameter()
     }
@@ -142,7 +145,6 @@ class SellerHomeViewModelTest {
         viewModel.getShopStatus()
 
         viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
-
         coVerify {
             userSession.shopId
         }
@@ -202,7 +204,6 @@ class SellerHomeViewModelTest {
         viewModel.getWidgetLayout()
 
         viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
-
         coVerify {
             userSession.shopId
         }
@@ -262,7 +263,6 @@ class SellerHomeViewModelTest {
         viewModel.getShopLocation()
 
         viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
-
         coVerify {
             userSession.shopId
         }
@@ -382,7 +382,6 @@ class SellerHomeViewModelTest {
         viewModel.getLineGraphWidgetData(dataKeys)
 
         viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
-
         coVerify {
             getLineGraphDataUseCase.executeOnBackground()
         }
@@ -406,7 +405,6 @@ class SellerHomeViewModelTest {
         viewModel.getProgressWidgetData(dataKeys)
 
         viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
-
         coVerify {
             getProgressDataUseCase.executeOnBackground()
         }
@@ -523,7 +521,6 @@ class SellerHomeViewModelTest {
         viewModel.getCarouselWidgetData(dataKeys)
 
         viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
-
         coVerify {
             getCarouselDataUseCase.executeOnBackground()
         }

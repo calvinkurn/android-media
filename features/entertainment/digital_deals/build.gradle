@@ -51,10 +51,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
-    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     implementation rootProject.ext.playServicesDependencies.location
     implementation rootProject.ext.playServicesDependencies.maps
-    annotationProcessor  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 }
 
 project.ext {

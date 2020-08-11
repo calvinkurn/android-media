@@ -111,6 +111,7 @@
             android:id="@+id/hour"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:gravity="center_vertical"
             android:includeFontPadding="false"
             android:textColor="@color/Neutral_N700_44"
             app:typographyType="body_3"

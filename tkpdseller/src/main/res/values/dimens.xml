@@ -68,7 +68,6 @@
     <dimen name="margin_legacy_edittext_hint">4dp</dimen>
     <dimen name="seller_info_radius_image_view">2dp</dimen>
 
-    <dimen name="opportunity_showcase_padding">12dp</dimen>
     <dimen name="image_width_variant">80dp</dimen>
     <dimen name="dp_64">64dp</dimen>
 

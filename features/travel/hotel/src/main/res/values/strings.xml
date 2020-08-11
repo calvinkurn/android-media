@@ -239,4 +239,33 @@
     <string name="hotel_max_date_label">Check-out</string>
     <string name="hotel_global_search_check_availability">Cek Ketersediaan</string>
     <string name="hotel_detail_room_full_desc">Coba ubah tanggal atau jumlah kamar, yuk!</string>
+
+    <string name="hotel_cancellation_page_title">Batalkan Pesanan</string>
+    <string name="hotel_cancellation_page_pay_at_hotel">Bayar di Hotel</string>
+    <string name="hotel_cancellation_page_required_cc">(Perlu Jaminan Kartu Kredit)</string>
+    <string name="hotel_cancellation_button_next">Lanjutkan</string>
+    <string name="hotel_cancellation_button_submit">Batalkan Pesanan</string>
+    <string name="hotel_cancellation_reason_page_title">Kenapa kamu ingin batalkan pesanan?</string>
+    <string name="hotel_cancellation_page_1_subtitle">1 dari 2 Langkah</string>
+    <string name="hotel_cancellation_page_2_subtitle">2 dari 2 Langkah</string>
+    <string name="hotel_cancellation_reason_submit">Ya, Batalkan</string>
+    <string name="hotel_cancellation_reason_dismiss">Kembali</string>
+    <string name="hotel_cancellation_success">Pembatalan Diproses</string>
+    <string name="hotel_cancellation_failed">Pembatalan Gagal</string>
+    <string name="hotel_cancellation_reason_free_text_placeholder">Tulis alasan kamu di sini</string>
+    <string name="hotel_cancellation_reason_free_text_label">Alasan lain</string>
+    <string name="hotel_cancellation_reason_free_text_minimal_10_char">Min. 10 karakter</string>
+    <string name="hotel_cancellation_success_status">success</string>
+    <string name="hotel_cancellation_fail_status">fail</string>
+    <string name="hotel_cancellation_fail_has_been_cancelled_title">Pembatalanmu gagal diproses</string>
+    <string name="hotel_cancellation_fail_has_been_cancelled_description">Kamu sudah membatalkan pesanan ini sebelumnya. Cek info tentang pengajuan pembatalanmu di halaman Daftar Transaksi</string>
+    <string name="hotel_cancellation_fail_has_been_cancelled_cta">Lihat Daftar Transaksi</string>
+    <string name="hotel_cancellation_fail_order_not_found_title">Pesanan ini tidak tersedia</string>
+    <string name="hotel_cancellation_fail_order_not_found_description">Pesanan ini tidak terdaftar di Tokopedia</string>
+    <string name="hotel_cancellation_fail_order_not_found_cta">Lihat Daftar Transaksi</string>
+    <string name="hotel_cancellation_order_list_applink">tokopedia://hotel/order</string>
+    <string name="hotel_cancellation_hyperlink_open_tag">&lt;hyperlink&gt;</string>
+    <string name="hotel_cancellation_hyperlink_close_tag">&lt;&#47;hyperlink&gt;</string>
+    <string name="hotel_cancellation_a_hyperlink_open_tag">&lt;a href=""&gt;</string>
+    <string name="hotel_cancellation_a_hyperlink_close_tag">&lt;&#47;a&gt;</string>
 </resources>

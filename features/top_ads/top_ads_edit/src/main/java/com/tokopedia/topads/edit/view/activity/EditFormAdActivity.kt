@@ -81,7 +81,7 @@ class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>, Sa
         val bundle = intent.extras
         view_pager.adapter = getViewPagerAdapter()
         view_pager.offscreenPageLimit = 3
-        view_pager.currentItem = bundle.getInt(TAB_POSITION, 2)
+        view_pager.currentItem = bundle?.getInt(TAB_POSITION, 2) ?: 2
         view_pager.addOnPageChangeListener(TabLayoutOnPageChangeListener(tab_layout))
         tab_layout.setupWithViewPager(view_pager)
     }

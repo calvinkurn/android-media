@@ -3,11 +3,11 @@
     package="com.tokopedia.withdraw">
 
     <application>
-        <activity android:name=".view.activity.WithdrawActivity"
-            android:label="@string/activity_withdraw"
+        <activity android:name=".saldowithdrawal.presentation.activity.WithdrawActivity"
+            android:label="@string/swd_activity_withdraw"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustResize">
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan">
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -20,6 +20,5 @@
         </activity>
 
     </application>
-
 
 </manifest>

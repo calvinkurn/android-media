@@ -18,9 +18,9 @@ abstract class ProductItemViewHolder(
 
     protected val context = itemView.context!!
 
-    protected fun ProductItemViewModel.toProductCardModel(isUsingBigImageUrl: Boolean): ProductCardModel {
+    protected fun ProductItemViewModel.toProductCardModel(productImage: String): ProductCardModel {
         return ProductCardModel(
-                productImageUrl = if (isUsingBigImageUrl) imageUrl700 else imageUrl,
+                productImageUrl = productImage,
                 productName = productName,
                 discountPercentage = if (discountPercentage > 0) "$discountPercentage%" else "",
                 slashedPrice = if (discountPercentage > 0) originalPrice else "",
@@ -31,7 +31,7 @@ abstract class ProductItemViewHolder(
                 ratingCount = rating.toRatingCount(isTopAds),
                 reviewCount = countReview,
                 freeOngkir = freeOngkirViewModel.toProductCardModelFreeOngkir(),
-                isTopAds = isTopAds,
+                isTopAds = isTopAds || isOrganicAds,
                 ratingString = ratingString,
                 hasThreeDots = true,
                 labelGroupList = labelGroupList.toProductCardModelLabelGroup()
@@ -64,7 +64,7 @@ abstract class ProductItemViewHolder(
     protected fun createImageProductViewHintListener(productItem: ProductItemViewModel): ViewHintListener {
         return object: ViewHintListener {
             override fun onViewHint() {
-                productListener.onProductImpressed(productItem, adapterPosition)
+                productListener.onProductImpressed(productItem)
             }
         }
     }

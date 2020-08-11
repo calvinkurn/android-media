@@ -33,10 +33,14 @@ class QuickEditVariantViewModel @Inject constructor(
     val showErrorView: LiveData<Boolean>
         get() = _showErrorView
 
+    val showStockTicker: LiveData<Boolean>
+        get() = _showStockTicker
+
     private val _getProductVariantsResult = MutableLiveData<GetVariantResult>()
     private val _editVariantResult = MutableLiveData<EditVariantResult>()
     private val _showProgressBar = MutableLiveData<Boolean>()
     private val _showErrorView = MutableLiveData<Boolean>()
+    private val _showStockTicker = MutableLiveData<Boolean>()
 
     fun getProductVariants(productId: String) {
         hideErrorView()
@@ -51,6 +55,7 @@ class QuickEditVariantViewModel @Inject constructor(
             }
 
             if (result.variants.isNotEmpty()) {
+                setShowStockTicker(result)
                 setEditVariantResult(productId, result)
                 _getProductVariantsResult.value = result
             } else {
@@ -76,6 +81,17 @@ class QuickEditVariantViewModel @Inject constructor(
         updateVariant(variantId) { it.copy(status = status) }
     }
 
+    fun setStockWarningTicker() {
+        _editVariantResult.value?.run {
+            val showTicker = _showStockTicker.value ?: false
+            val isAllStockEmpty = isAllStockEmpty()
+
+            if(showTicker != isAllStockEmpty) {
+                _showStockTicker.value = isAllStockEmpty
+            }
+        }
+    }
+
     private fun updateVariant(variantId: String, update: (ProductVariant) -> ProductVariant) {
         editVariantResult.value?.run {
             val editVariantResult = updateVariant(variantId) { update.invoke(it) }
@@ -85,6 +101,12 @@ class QuickEditVariantViewModel @Inject constructor(
 
     private fun setEditVariantResult(productId: String, result: GetVariantResult) {
         _editVariantResult.value = mapVariantsToEditResult(productId, result)
+    }
+
+
+    private fun setShowStockTicker(result: GetVariantResult) {
+        val allStockEmpty = result.isAllStockEmpty()
+        _showStockTicker.value = allStockEmpty
     }
 
     private fun showProgressBar() {

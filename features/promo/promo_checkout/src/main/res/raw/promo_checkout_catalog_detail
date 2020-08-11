@@ -1,5 +1,5 @@
-  query hachikoCatalogDetail($slug:String, $catalog_id:Int){
-   hachikoCatalogDetail(slug: $slug, catalog_id: $catalog_id) {
+  query hachikoCatalogDetail($slug:String, $catalog_id:Int , $apiVersion: String){
+   hachikoCatalogDetail(slug: $slug, catalog_id: $catalog_id , apiVersion: $apiVersion) {
       id
     catalog_type
     expired

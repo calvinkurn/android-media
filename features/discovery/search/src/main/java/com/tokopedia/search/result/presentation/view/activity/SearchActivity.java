@@ -1,13 +1,17 @@
 package com.tokopedia.search.result.presentation.view.activity;
 
+import android.animation.Animator;
+import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
@@ -32,6 +36,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback;
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface;
+import com.tokopedia.analytics.performance.util.PltPerformanceData;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
@@ -47,13 +52,11 @@ import com.tokopedia.filter.newdynamicfilter.analytics.FilterTrackingData;
 import com.tokopedia.filter.newdynamicfilter.view.BottomSheetListener;
 import com.tokopedia.filter.widget.BottomSheetFilterView;
 import com.tokopedia.graphql.data.GraphqlClient;
-import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.search.R;
 import com.tokopedia.search.analytics.SearchTracking;
-import com.tokopedia.search.result.presentation.model.ChildViewVisibilityChangedModel;
 import com.tokopedia.search.result.presentation.view.adapter.SearchSectionPagerAdapter;
 import com.tokopedia.search.result.presentation.view.fragment.ProductListFragment;
+import com.tokopedia.search.result.presentation.view.fragment.ProfileListFragment;
 import com.tokopedia.search.result.presentation.view.listener.RedirectionListener;
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener;
 import com.tokopedia.search.result.presentation.view.listener.SearchPerformanceMonitoringListener;
@@ -109,6 +112,7 @@ public class SearchActivity extends BaseActivity
     private ImageView buttonChangeGrid;
     private ImageView buttonCart;
     private ImageView buttonHome;
+    private View topBarShadow;
     private BottomSheetFilterView bottomSheetFilterView;
     private SearchNavigationListener.ClickListener searchNavigationClickListener;
 
@@ -118,7 +122,6 @@ public class SearchActivity extends BaseActivity
     private String autocompleteApplink;
 
     @Inject UserSessionInterface userSession;
-    @Inject RemoteConfig remoteConfig;
     @Inject @Named(SearchConstant.Cart.CART_LOCAL_CACHE) LocalCacheHandler localCacheHandler;
     @Inject @Named(SearchConstant.SearchShop.SEARCH_SHOP_VIEW_MODEL_FACTORY)
     ViewModelProvider.Factory searchShopViewModelFactory;
@@ -216,6 +219,7 @@ public class SearchActivity extends BaseActivity
         buttonChangeGrid = findViewById(R.id.search_change_grid_button);
         buttonCart = findViewById(R.id.search_cart_button);
         buttonHome = findViewById(R.id.search_home_button);
+        topBarShadow = findViewById(R.id.search_top_bar_shadow);
     }
 
     protected void prepareView() {
@@ -255,7 +259,10 @@ public class SearchActivity extends BaseActivity
     }
 
     private void onSearchBarClicked() {
-        SearchTracking.trackEventClickSearchBar();
+        String keyword = "";
+        if (searchParameter != null) keyword = searchParameter.getSearchQuery();
+
+        SearchTracking.trackEventClickSearchBar(keyword);
         moveToAutoCompleteActivity();
     }
 
@@ -322,6 +329,8 @@ public class SearchActivity extends BaseActivity
     }
 
     private void onPageSelected(int position) {
+        new Handler().postDelayed(() -> animateTab(true), 300);
+
         switch (position) {
             case TAB_FIRST_POSITION:
                 SearchTracking.eventSearchResultTabClick(this, productTabTitle);
@@ -430,7 +439,6 @@ public class SearchActivity extends BaseActivity
     private void observeViewModel() {
         observeAutoCompleteEvent();
         observeHideLoadingEvent();
-        observeChildViewVisibilityChangedEvent();
         observeBottomNavigationVisibility();
     }
 
@@ -457,23 +465,6 @@ public class SearchActivity extends BaseActivity
 
                 if (content != null && content) {
                     removeSearchPageLoading();
-                }
-            }
-        });
-    }
-
-    private void observeChildViewVisibilityChangedEvent() {
-        if (searchViewModel == null) return;
-
-        searchViewModel.getChildViewVisibleEventLiveData().observe(this, childViewVisibilityChangedEvent -> {
-            if (childViewVisibilityChangedEvent != null) {
-                ChildViewVisibilityChangedModel childViewVisibilityChangedModel = childViewVisibilityChangedEvent.getContentIfNotHandled();
-
-                if (childViewVisibilityChangedModel != null) {
-                    setupSearchNavigation(
-                            childViewVisibilityChangedModel.getSearchNavigationOnClickListener(),
-                            childViewVisibilityChangedModel.isSortEnabled()
-                    );
                 }
             }
         });
@@ -668,24 +659,12 @@ public class SearchActivity extends BaseActivity
     @Override
     protected void onResume() {
         super.onResume();
-        configureButtonCart();
+        showButtonCart();
     }
 
     @Override
     public boolean isAllowShake() {
         return false;
-    }
-
-    private void configureButtonCart() {
-        if (isCartIconInSearchEnabled()) {
-            showButtonCart();
-        } else {
-            hideButtonCart();
-        }
-    }
-
-    private boolean isCartIconInSearchEnabled() {
-        return remoteConfig.getBoolean(RemoteConfigKey.ENABLE_CART_ICON_IN_SEARCH, true);
     }
 
     private void showButtonCart() {
@@ -860,7 +839,77 @@ public class SearchActivity extends BaseActivity
     public void stopPerformanceMonitoring() {
         if (pageLoadTimePerformanceMonitoring != null) {
             pageLoadTimePerformanceMonitoring.stopMonitoring();
-            pageLoadTimePerformanceMonitoring = null;
         }
+    }
+
+    @Nullable
+    public PltPerformanceData getPltPerformanceResultData() {
+        if (pageLoadTimePerformanceMonitoring != null) {
+            return pageLoadTimePerformanceMonitoring.getPltPerformanceData();
+        }
+        return null;
+    }
+
+    @Override
+    public void configureTabLayout(boolean isVisible) {
+        Fragment fragmentItem = searchSectionPagerAdapter.getRegisteredFragmentAtPosition(viewPager.getCurrentItem());
+        if (fragmentItem instanceof ProfileListFragment) return;
+
+        animateTab(isVisible);
+    }
+
+    private void animateTab(boolean isVisible) {
+        int targetHeight = isVisible ? getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_40) : 0;
+
+        if (tabLayout == null || tabLayout.getLayoutParams().height == targetHeight) return;
+
+        ValueAnimator anim = ValueAnimator.ofInt(tabLayout.getMeasuredHeight(), targetHeight);
+        anim.addUpdateListener(this::changeTabHeightByAnimator);
+        anim.addListener(createTabAnimatorListener(isVisible));
+        anim.setDuration(200);
+        anim.start();
+    }
+
+    private void changeTabHeightByAnimator(ValueAnimator valueAnimator) {
+        int height = (Integer) valueAnimator.getAnimatedValue();
+
+        changeTabHeight(height);
+    }
+
+    private void changeTabHeight(int height) {
+        ViewGroup.LayoutParams layoutParams = tabLayout.getLayoutParams();
+        layoutParams.height = height;
+        tabLayout.setLayoutParams(layoutParams);
+    }
+
+    private Animator.AnimatorListener createTabAnimatorListener(boolean isVisible) {
+        return new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                onTabAnimationEnd(isVisible);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        };
+    }
+
+    private void onTabAnimationEnd(boolean isVisible) {
+        if (topBarShadow == null) return;
+
+        if (isVisible) topBarShadow.setVisibility(View.VISIBLE);
+        else topBarShadow.setVisibility(View.GONE);
     }
 }

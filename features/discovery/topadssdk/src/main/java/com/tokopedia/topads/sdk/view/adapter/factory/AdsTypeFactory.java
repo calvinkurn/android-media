@@ -3,15 +3,8 @@ package com.tokopedia.topads.sdk.view.adapter.factory;
 import android.view.ViewGroup;
 
 import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ProductBigViewModel;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ProductCarouselListViewModel;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ProductGridViewModel;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ProductListViewModel;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ShopGridViewModel;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ShopListViewModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.feed.ProductFeedViewModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.feed.ShopFeedViewModel;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.home.ProductDynamicChannelViewModel;
 
 /**
  * @author by errysuprayogi on 3/29/17.
@@ -19,23 +12,9 @@ import com.tokopedia.topads.sdk.view.adapter.viewmodel.home.ProductDynamicChanne
 
 public interface AdsTypeFactory {
 
-    int type(ProductGridViewModel viewModel);
-
-    int type(ProductListViewModel viewModel);
-
-    int type(ShopGridViewModel viewModel);
-
-    int type(ShopListViewModel viewModel);
-
     int type(ShopFeedViewModel viewModel);
 
     int type(ProductFeedViewModel viewModel);
-
-    int type(ProductBigViewModel viewModel);
-
-    int type(ProductCarouselListViewModel viewModel);
-
-    int type(ProductDynamicChannelViewModel productDynamicChannelViewModel);
 
     AbstractViewHolder createViewHolder(ViewGroup view, int viewType);
 

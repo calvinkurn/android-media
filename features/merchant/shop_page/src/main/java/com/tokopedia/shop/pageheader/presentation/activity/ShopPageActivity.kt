@@ -10,7 +10,7 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.shop.R
-import com.tokopedia.shop.ShopComponentInstance
+import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_PAGE_HEADER_RESULT_PLT_NETWORK_METRICS
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_PAGE_HEADER_RESULT_PLT_PREPARE_METRICS
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_PAGE_HEADER_RESULT_PLT_RENDER_METRICS
@@ -23,6 +23,10 @@ import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstan
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_PAGE_PRODUCT_TAB_RESULT_PLT_PREPARE_METRICS
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_PAGE_PRODUCT_TAB_RESULT_PLT_RENDER_METRICS
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_PAGE_PRODUCT_TAB_RESULT_TRACE
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_MIDDLE
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_PREPARE
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_RENDER
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_HEADER_TRACE
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_HOME_TAB_TRACE
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_HOME_WEB_VIEW_TRACE
@@ -52,6 +56,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
                 }
     }
 
+    private var performanceMonitoringShop: PageLoadTimePerformanceInterface? = null
     private var performanceMonitoringShopHeader: PerformanceMonitoring? = null
     private var performanceMonitoringShopProductTab: PerformanceMonitoring? = null
     private var performanceMonitoringShopHomeTab: PerformanceMonitoring? = null
@@ -75,11 +80,15 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         return ShopPageFragment.createInstance()
     }
 
-    override fun getComponent(): ShopComponent = ShopComponentInstance.getComponent(application)
+    override fun getComponent(): ShopComponent = ShopComponentHelper().getComponent(application, this)
 
     override fun onBackPressed() {
         super.onBackPressed()
         (fragment as? ShopPageFragment)?.onBackPressed()
+    }
+
+    override fun getShopPageLoadTimePerformanceCallback(): PageLoadTimePerformanceInterface? {
+        return performanceMonitoringShop
     }
 
     fun stopShopHeaderPerformanceMonitoring() {
@@ -99,6 +108,14 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     }
 
     private fun initPerformanceMonitoring() {
+        performanceMonitoringShop = PageLoadTimePerformanceCallback(
+                SHOP_TRACE_PREPARE,
+                SHOP_TRACE_MIDDLE,
+                SHOP_TRACE_RENDER
+        )
+        performanceMonitoringShop?.startMonitoring(SHOP_TRACE)
+        performanceMonitoringShop?.startPreparePagePerformanceMonitoring()
+
         performanceMonitoringShopHeader = PerformanceMonitoring.start(SHOP_HEADER_TRACE)
         performanceMonitoringShopProductTab = PerformanceMonitoring.start(SHOP_PRODUCT_TAB_TRACE)
         performanceMonitoringShopHomeTab = PerformanceMonitoring.start(SHOP_HOME_TAB_TRACE)
@@ -175,6 +192,10 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     override fun stopMonitoringPltRenderPage(pageLoadTimePerformanceInterface: PageLoadTimePerformanceInterface) {
         pageLoadTimePerformanceInterface.stopRenderPerformanceMonitoring()
         pageLoadTimePerformanceInterface.stopMonitoring()
+    }
+
+    override fun getParentViewResourceID(): Int {
+        return R.id.parent_view
     }
 
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/talkReplyContainer"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -25,7 +25,7 @@
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginLeft="@dimen/layout_lvl2"
         android:visibility="gone"
-        app:labelType="general_light_grey"
+        app:labelType="general_light_green"
         app:layout_constraintTop_toTopOf="@id/replyProfilePicture"
         app:layout_constraintStart_toEndOf="@id/replyProfilePicture" />
 
@@ -38,9 +38,17 @@
         android:textColor="@color/Neutral_N700_68"
         app:layout_goneMarginStart="@dimen/layout_lvl2"
         app:typographyType="body_3"
-        app:typographyWeight="reguler"
+        app:typographyWeight="bold"
+        tools:text="Budi"
         app:layout_constraintTop_toTopOf="@id/replyProfilePicture"
         app:layout_constraintStart_toEndOf="@id/replySellerLabel" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrierReplyLabelName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="replyDisplayName, replySellerLabel"
+        app:barrierDirection="end" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/replyDate"
@@ -51,8 +59,17 @@
         android:textColor="@color/Neutral_N700_68"
         app:typographyType="body_3"
         app:typographyWeight="reguler"
-        app:layout_constraintStart_toEndOf="@id/replyDisplayName"
-        app:layout_constraintTop_toTopOf="@id/replyDisplayName" />
+        tools:text="Kemarin"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        app:layout_constraintStart_toEndOf="@+id/barrierReplyLabelName"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrierReplyMessage"
+        android:layout_width="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="replyDisplayName, replySellerLabel, replyDate"
+        android:layout_height="wrap_content"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/replyMessage"
@@ -62,9 +79,10 @@
         android:layout_marginEnd="@dimen/layout_lvl2"
         android:layout_marginRight="@dimen/layout_lvl2"
         app:layout_goneMarginStart="@dimen/layout_lvl2"
+        tools:text="Hai"
         app:layout_constraintStart_toStartOf="@id/replySellerLabel"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/replyDisplayName"
+        app:layout_constraintTop_toBottomOf="@+id/barrierReplyMessage"
         app:typographyType="body_2"
         app:typographyWeight="reguler" />
 

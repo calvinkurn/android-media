@@ -16,10 +16,6 @@ public class NonCarouselItemDecoration extends RecyclerView.ItemDecoration {
         super.getItemOffsets(outRect, view, parent, state);
 
         if (parent.getChildAdapterPosition(view) == 0) {
-            outRect.left += size * 2.5;
-            outRect.right += size;
-        } else {
-            outRect.left += size;
             outRect.right += size;
         }
     }

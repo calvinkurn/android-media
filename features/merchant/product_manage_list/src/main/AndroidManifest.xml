@@ -3,7 +3,7 @@
 
     <application>
         <activity
-            android:name="com.tokopedia.product.manage.oldlist.view.activity.ProductManageActivity"
+            android:name=".feature.list.view.activity.ProductManageActivity"
             android:label="@string/title_activity_manage_product"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
@@ -64,5 +64,22 @@
             android:label="@string/product_manage_etalase_picker_title"
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".feature.campaignstock.ui.activity.CampaignStockActivity"
+            android:label="@string/product_manage_campaign_stock_allocation"
+            android:theme="@style/Theme.White"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_marketplace"
+                    android:pathPattern="@string/path_reserved_stock"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
     </application>
 </manifest>

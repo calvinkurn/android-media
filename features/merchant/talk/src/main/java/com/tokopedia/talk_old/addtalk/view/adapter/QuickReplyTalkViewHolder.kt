@@ -19,7 +19,7 @@ class QuickReplyTalkViewHolder(val v: View,
     }
 
     companion object {
-        val LAYOUT = com.tokopedia.design.R.layout.item_quick_reply
+        val LAYOUT = R.layout.item_quick_reply
     }
 
     val textHolder: TextView = itemView.findViewById(R.id.text)

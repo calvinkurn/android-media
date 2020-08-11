@@ -1,19 +1,15 @@
 package com.tokopedia.brandlist.brandlist_category.domain
 
 import com.tokopedia.brandlist.brandlist_category.data.model.BrandlistCategories
-import com.tokopedia.brandlist.common.GQLQueryConstant
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 import javax.inject.Named
 
-class GetBrandlistCategoriesUseCase @Inject constructor(
-        private val graphqlUseCase: MultiRequestGraphqlUseCase,
-        @Named(GQLQueryConstant.QUERY_BRANDLIST_CATEGORIES) val query: String
-): UseCase<BrandlistCategories>() {
+class GetBrandlistCategoriesUseCase @Inject constructor(private val graphqlUseCase: MultiRequestGraphqlUseCase): UseCase<BrandlistCategories>() {
     override suspend fun executeOnBackground(): BrandlistCategories {
-        val gqlRequest = GraphqlRequest(query, BrandlistCategories.Response::class.java)
+        val gqlRequest = GraphqlRequest(QUERY, BrandlistCategories.Response::class.java)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(gqlRequest)
         val graphqlResponse = graphqlUseCase.executeOnBackground()
@@ -23,5 +19,21 @@ class GetBrandlistCategoriesUseCase @Inject constructor(
         }
     }
 
-    companion object { }
+    companion object {
+        private const val QUERY = "query OfficialStoreCategories{\n" +
+                "  OfficialStoreCategories(lang: \"id\") {\n" +
+                "    categories {\n" +
+                "        id\n" +
+                "        imageUrl\n" +
+                "        name\n" +
+                "        prefixUrl\n" +
+                "        url\n" +
+                "        fullUrl\n" +
+                "        categories\n" +
+                "        imageInactiveURL\n" +
+                "    }\n" +
+                "    total\n" +
+                "  }\n" +
+                "}"
+    }
 }

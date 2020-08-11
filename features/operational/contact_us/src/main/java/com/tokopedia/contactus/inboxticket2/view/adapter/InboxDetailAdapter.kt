@@ -26,6 +26,7 @@ import com.tokopedia.contactus.inboxticket2.view.utils.CLOSED
 import com.tokopedia.contactus.inboxticket2.view.utils.Utils
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.utils.htmltags.HtmlUtil
 
 private const val ROLE_TYPE_AGENT = "agent"
 
@@ -73,7 +74,7 @@ class InboxDetailAdapter(private val mContext: Context,
         return commentList.size
     }
 
-    inner class DetailViewHolder(view: View) : RecyclerView.ViewHolder(view), View.OnClickListener {
+    inner class DetailViewHolder(val view: View) : RecyclerView.ViewHolder(view), View.OnClickListener {
         private var ivProfile: ImageView? = null
         private var tvName: TextView? = null
         private var tvDateRecent: TextView? = null
@@ -117,7 +118,8 @@ class InboxDetailAdapter(private val mContext: Context,
             val item = commentList[position]
             if (item.createdBy != null) {
                 ImageHandler.loadImageCircle2(mContext, ivProfile, item.createdBy?.picture)
-                tvName?.text = item.createdBy?.name
+                if (isRoleAgent(item)) tvName?.text = view.context.getString(R.string.contact_us_tokopedia_care_team)
+                else tvName?.text = item.createdBy?.name
             }
             if (item.rating != null && item.rating == KEY_DIS_LIKED) {
                 ratingThumbsDown.show()
@@ -144,10 +146,10 @@ class InboxDetailAdapter(private val mContext: Context,
                 }
                 if (searchMode) {
                     tvComment?.text = utils.getHighlightText(searchText ?: "",
-                            MethodChecker.fromHtml(item.message).toString())
+                            HtmlUtil.fromHtml(item.message ?: "").toString())
                     tvComment?.movementMethod = LinkMovementMethod.getInstance()
                 } else {
-                    tvComment?.text = MethodChecker.fromHtml(item.message)
+                    tvComment?.text = HtmlUtil.fromHtml(item.message ?: "")
                     tvComment?.movementMethod = LinkMovementMethod.getInstance()
                 }
                 tvComment?.show()
@@ -196,9 +198,7 @@ class InboxDetailAdapter(private val mContext: Context,
         }
 
         private fun isRoleAgent(item: CommentsItem?): Boolean {
-            return if (item?.createdBy?.role != null) {
-                item.createdBy?.role == ROLE_TYPE_AGENT
-            } else false
+            return item?.createdBy?.role == ROLE_TYPE_AGENT
         }
 
         private fun settingRatingButtonsVisibility(visibility: Int) {

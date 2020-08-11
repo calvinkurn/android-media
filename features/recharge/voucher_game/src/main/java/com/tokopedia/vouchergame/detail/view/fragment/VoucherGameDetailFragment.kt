@@ -253,6 +253,10 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
     }
 
+    override fun onLoadingMenuDetail(showLoading: Boolean) {
+        //do nothing
+    }
+
     override fun onCatalogPluginDataError(error: Throwable) {
 
     }
@@ -522,6 +526,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
     override fun loadData() {
         voucherGameExtraParam.menuId.toIntOrNull()?.let {
+            getMenuDetail(it)
             voucherGameViewModel.getVoucherGameProducts(GraphqlHelper.loadRawString(resources,
                     R.raw.query_voucher_game_products),
                     voucherGameViewModel.createParams(it, voucherGameExtraParam.operatorId))
@@ -594,10 +599,10 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
     }
 
     override fun onClickNextBuyButton() {
-        processCheckout()
+        processCheckoutData()
     }
 
-    private fun processCheckout() {
+    private fun processCheckoutData() {
         // Setup checkout pass data
         if (::voucherGameExtraParam.isInitialized) {
             selectedProduct?.run {

@@ -1,4 +1,5 @@
 {
+  "readme": "Search Product P0 Tracking - General Search, Impression Organic and Top Ads, Click Organic And Top Ads",
   "query" : [
     {
       "event": "clickSearch",
@@ -23,7 +24,8 @@
           "item_brand": "{{.*}}",
           "item_variant": "{{.*}}",
           "item_category": "{{.*}}",
-          "price": "{{\\d*.\\d*}}",
+          "index": "{{\\d*.\\d*}}",
+          "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
           "dimension40": "/searchproduct - topads productlist",
           "dimension83": "{{bebas ongkir|none / other}}"
         }
@@ -34,7 +36,7 @@
       "eventCategory": "search result",
       "eventAction": "impression - product",
       "eventLabel": "{{.*}}",
-      "item_list": "{{/searchproduct - .* - product}}",
+      "item_list": "{{/searchproduct - organic|organic ads}}",
       "items": [
         {
           "item_id": "{{.*}}",
@@ -43,15 +45,17 @@
           "item_category": "{{.*}}",
           "item_variant": "{{.*}}",
           "userId": "{{.*}}",
-          "price": "{{\\d*.\\d*}}",
+          "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
           "shopId": "{{.*}}",
-          "dimension40": "{{/searchproduct - .* - product}}",
+          "index": "{{\\d*.\\d*}}",
+          "dimension40": "{{/searchproduct - organic|organic ads}}",
           "dimension61": "{{.*}}",
           "dimension83": "{{bebas ongkir|none / other}}",
           "dimension87": "search result",
           "dimension88": "search - product",
           "dimension90": "{{.*}}",
-          "dimension96": "{{.*}}"
+          "dimension96": "{{.*}}",
+          "dimension100": "{{.*}}"
         }
       ]
     },
@@ -68,7 +72,8 @@
           "item_brand": "{{.*}}",
           "item_variant": "{{.*}}",
           "item_category": "{{.*}}",
-          "price": "{{\\d*.\\d*}}",
+          "index": "{{\\d*.\\d*}}",
+          "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
           "dimension40": "{{.*}}",
           "dimension83": "{{bebas ongkir|none / other}}"
         }
@@ -80,7 +85,7 @@
       "eventAction": "click - product",
       "eventLabel": "{{.*}}",
       "searchFilter": "{{.*}}",
-      "item_list": "{{/searchproduct - .* - product}}",
+      "item_list": "{{/searchproduct - organic|organic ads}}",
       "items": [
         {
           "item_id": "{{.*}}",
@@ -89,29 +94,19 @@
           "item_category": "{{.*}}",
           "item_variant": "{{.*}}",
           "userId": "{{.*}}",
-          "price": "{{\\d*.\\d*}}",
+          "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
           "shopId": "{{.*}}",
-          "dimension40": "{{/searchproduct - .* - product}}",
+          "index": "{{\\d*.\\d*}}",
+          "dimension40": "{{/searchproduct - organic|organic ads}}",
           "dimension61": "{{.*}}",
           "dimension83": "{{bebas ongkir|none / other}}",
           "dimension87": "search result",
           "dimension88": "search - product",
           "dimension90": "{{.*}}",
-          "dimension96": "{{.*}}"
+          "dimension96": "{{.*}}",
+          "dimension100": "{{.*}}"
         }
       ]
-    },
-    {
-      "event": "viewSearchResultIris",
-      "eventCategory": "search result",
-      "eventAction": "impression - ticker",
-      "eventLabel": "{{.* - .*}}"
-    },
-    {
-      "event": "clickSearchResult",
-      "eventCategory": "search result",
-      "eventAction": "click - ticker",
-      "eventLabel": "{{.* - .*}}"
     }
   ]
 }

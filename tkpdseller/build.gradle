@@ -27,7 +27,6 @@ dependencies {
     implementation project(rootProject.ext.features.topAdsManagementSourceTagging)
     implementation project(rootProject.ext.features.topAdsManagementCommon)
     implementation project(rootProject.ext.features.goldMerchantCommon)
-    implementation project(rootProject.ext.features.goldMerchantResource)
     implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.features.tkpdcore)
     implementation project(rootProject.ext.features.payment)
@@ -35,14 +34,10 @@ dependencies {
     implementation project(rootProject.ext.features.reputationCommon)
     implementation project(rootProject.ext.features.productManageItem)
     implementation project(rootProject.ext.features.productManageCommon)
-    implementation project(rootProject.ext.features.productAddEdit)
     implementation project(rootProject.ext.features.logisticdata)
     implementation project(rootProject.ext.features.categoryCommon)
-    implementation project(rootProject.ext.features.logisticdata)
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.purchase_platform_common)
-    implementation project(rootProject.ext.features.opportunity)
-    implementation project(rootProject.ext.features.sellerorder)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.linker)
     implementation project(rootProject.ext.libraries.tkpddesign)
@@ -87,7 +82,7 @@ dependencies {
     kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.playServicesDependencies.maps
-    implementation project(rootProject.ext.libraries.playCore)
+    implementation rootProject.ext.playServicesDependencies.core
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     kapt  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor

@@ -55,6 +55,13 @@ public class ConstantsKeyUnitTest {
     private static final String AUTOFILL_USER_DATA = "AUTOFILL_USER_DATA";
     private static final String LOGIN_METHOD = "LOGIN_METHOD";
     public static final String GCM_ID_TIMESTAMP = "gcm_id_timestamp";
+    public static final String IS_SHOP_OFFICIAL_STORE = "IS_SHOP_OFFICIAL_STORE";
+
+    public static final String ANDROID_ID = "ANDROID_ID";
+    public static final String KEY_ANDROID_ID = "KEY_ANDROID_ID";
+
+    public static final String ADVERTISINGID = "ADVERTISINGID";
+    public static final String KEY_ADVERTISINGID = "KEY_ADVERTISINGID";
 
     /**
      * Twitter Prefs
@@ -72,7 +79,8 @@ public class ConstantsKeyUnitTest {
             SHOP_AVATAR, IS_POWER_MERCHANT_IDLE, AUTOFILL_USER_DATA, LOGIN_METHOD,
             TWITTER_ACCESS_TOKEN, TWITTER_ACCESS_TOKEN_SECRET, TWITTER_SHOULD_POST, GTM_LOGIN_ID,
             TEMP_USER_ID, GCM_ID, IS_AFFILIATE, IS_FIRST_TIME_USER_NEW_ONBOARDING,
-            UUID_KEY, LOGIN_UUID_KEY, GCM_ID_TIMESTAMP
+            UUID_KEY, LOGIN_UUID_KEY, GCM_ID_TIMESTAMP, IS_SHOP_OFFICIAL_STORE,
+            ANDROID_ID, KEY_ANDROID_ID, ADVERTISINGID, KEY_ADVERTISINGID
     };
 
     @Test
@@ -92,8 +100,10 @@ public class ConstantsKeyUnitTest {
     public void encryptKeys() {
         final String KEY_PEMBUKA = "tokopedia1234567";
 
-        String result = EncoderDecoder.Encrypt(GCM_ID_TIMESTAMP, KEY_PEMBUKA);
-        System.out.println(result);
+        for(int i=0;i<KEYS.length;i++){
+            String result = EncoderDecoder.Encrypt(KEYS[i], KEY_PEMBUKA);
+            System.out.println("public static final String  "+KEYS[i]+ " = \""+result+"\";");
+        }
     }
 
     @Test

@@ -10,9 +10,9 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import com.google.android.material.snackbar.Snackbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.csat_rating.ProvideRatingContract
@@ -24,9 +24,9 @@ import com.tokopedia.csat_rating.di.DaggerCsatComponent
 import com.tokopedia.design.quickfilter.QuickFilterItem
 import com.tokopedia.design.quickfilter.QuickSingleFilterView
 import com.tokopedia.design.quickfilter.custom.CustomViewQuickFilterItem
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.unifycomponents.Toaster
 import java.util.*
 
 
@@ -162,7 +162,9 @@ open class BaseFragmentProvideRating : BaseDaggerFragment(), ProvideRatingContra
             if (selectedOption.contains(typeFilter)) {
                 selectedOption.remove(typeFilter)
             } else {
-                sendEventClickReason(filterList[typeFilter.toIntOrNull() ?: 0].message)
+                if (!(filterList.isNotEmpty() && filterList[0].id > 0)) {
+                    sendEventClickReason(filterList[typeFilter.toIntOrNull() ?: 0].message)
+                }
                 selectedOption.add(typeFilter)
             }
 
@@ -181,7 +183,9 @@ open class BaseFragmentProvideRating : BaseDaggerFragment(), ProvideRatingContra
         for (filter in selectedOption) {
             filters += "$filter;"
         }
-        filters = filters.substring(0, filters.length - 1)
+        if (filters.isNotEmpty()){
+            filters = filters.substring(0, filters.length - 1)
+        }
         return filters
     }
 

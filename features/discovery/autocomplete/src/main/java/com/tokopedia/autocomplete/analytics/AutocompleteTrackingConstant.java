@@ -11,6 +11,9 @@ public class AutocompleteTrackingConstant {
     static String EVENT_LABEL = "eventLabel";
 
     static String USER_ID = "userId";
+    static final String SCREEN_NAME = "screenName";
+    static final String CURRENT_SITE = "currentSite";
+    static final String BUSINESS_UNIT = "businessUnit";
 
     static String CLICK_CARI = "Click Cari";
 

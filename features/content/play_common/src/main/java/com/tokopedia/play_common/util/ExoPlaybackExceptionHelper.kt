@@ -3,6 +3,7 @@ package com.tokopedia.play_common.util
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.source.BehindLiveWindowException
 import com.google.android.exoplayer2.upstream.HttpDataSource
+import com.google.android.exoplayer2.upstream.Loader
 import java.net.ConnectException
 import java.net.HttpURLConnection
 import java.net.UnknownHostException
@@ -16,7 +17,8 @@ class ExoPlaybackExceptionParser {
             BehindLiveWindowException::class.java,
             HttpDataSource.InvalidResponseCodeException::class.java,
             ConnectException::class.java,
-            UnknownHostException::class.java
+            UnknownHostException::class.java,
+            Loader.UnexpectedLoaderException::class.java
     )
 
     fun parse(e: ExoPlaybackException): ExceptionWrapper {
@@ -48,6 +50,8 @@ class ExoPlaybackExceptionParser {
             get() = this is KnownException && e is ConnectException
         val isUnknownHostException
             get() = this is KnownException && e is UnknownHostException
+        val isUnexpectedLoaderException
+            get() = this is KnownException && e is Loader.UnexpectedLoaderException
     }
 
 }

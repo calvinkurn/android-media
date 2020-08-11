@@ -1,24 +1,26 @@
 <resources>
-    <string name="seller_migration_bottom_sheet_button">Gunakan Tokopedia Seller</string>
-    <string name="seller_migration_bottom_sheet_footer">Pelajari keuntungan menggunakan Seller App &lt;a href="#"&gt;di sini&lt;/a&gt;</string>
+    <string name="seller_migration_bottom_sheet_button">Beralih ke Tokopedia Seller</string>
+    <string name="seller_migration_bottom_sheet_footer">Pelajari keuntungan lainnya &lt;a href="https://seller.tokopedia.com/edu/aplikasi-topseller/"&gt;di sini&lt;/a&gt;</string>
+
+    <string name="seller_migration_warning_title">Semua fitur penjual akan dialihkan pada:</string>
 
     <string name="seller_migration_generic_ticker_title">Lebih leluasa berjualan dengan Tokopedia Seller</string>
     <string name="seller_migration_generic_ticker_content">Nikmati kendali penuh bertransaksi dengan fitur penjual di aplikasi Tokopedia Seller. &lt;a href="#"&gt;Pelajari Selengkapnya&lt;/a&gt;</string>
     <string name="seller_migration_generic_bottom_sheet_title">Berjualan jadi lebih mudah dengan aplikasi Tokopedia Seller</string>
-    <string name="seller_migration_generic_bottom_sheet_set_stock_description">Atur stok dan terima pesanan dengan cepat dan mudah.</string>
-    <string name="seller_migration_generic_bottom_sheet_reply_chat_description">Balas chat pembelimu di mana saja, kapan saja.</string>
-    <string name="seller_migration_generic_bottom_sheet_promotion_and_ads_description">Pasang promosi dan iklan untuk memajukan bisnismu.</string>
+    <string name="seller_migration_generic_bottom_sheet_set_stock_description">Atur stok dan terima pesanan dengan cepat dan mudah</string>
+    <string name="seller_migration_generic_bottom_sheet_reply_chat_description">Balas chat pembelimu di mana saja, kapan saja</string>
+    <string name="seller_migration_generic_bottom_sheet_promotion_and_ads_description">Pasang promosi dan iklan untuk memajukan bisnismu dengan fitur seperti TopAds, Voucher Toko, Broadcast Chat dan lainnya</string>
 
-    <string name="seller_migration_chat_ticker_title">Cepat balas chat di Tokopedia Seller</string>
+    <string name="seller_migration_chat_ticker_title">Cepat balas chat di aplikasi Tokopedia Seller</string>
     <string name="seller_migration_chat_ticker_description">Kelola chat dari pembeli hanya di aplikasi Tokopedia Seller versi baru. &lt;a href="#"&gt;Pelajari Selengkapnya&lt;/a&gt;</string>
-    <string name="seller_migration_chat_bottom_sheet_title">Balas chat jadi lebih mudah dengan Tokopedia Seller</string>
+    <string name="seller_migration_chat_bottom_sheet_title">Balas chat jadi lebih mudah dengan aplikasi Tokopedia Seller</string>
     <string name="seller_migration_chat_bottom_sheet_title_second_page">Akses cepat untuk menjawab pertanyaan pembeli </string>
     <string name="seller_migration_chat_bottom_sheet_first_page_description">Jawab semua pertanyaan dari pembeli langsung dari notifikasi chat di HP kamu.</string>
     <string name="seller_migration_chat_bottom_sheet_second_page_description">Kamu bisa memantau jumlah chat masuk atau langsung balas chat pembeli di notifikasi.</string>
 
-    <string name="seller_migration_product_manage_ticker_title">Kelola stok langsung di Seller App</string>
+    <string name="seller_migration_product_manage_ticker_title">Kelola stok cepat di aplikasi Tokopedia Seller</string>
     <string name="seller_migration_product_manage_ticker_content">Penuhi permintaan pembeli dengan rutin cek ketersediaan stok produkmu. Pelajari &lt;a href="#"&gt;di sini&lt;/a&gt;</string>
-    <string name="seller_migration_product_bottom_sheet_title">Tampilan baru pengaturan daftar produk di aplikasi Tokopedia Seller</string>
+    <string name="seller_migration_product_bottom_sheet_title">Tampilan baru pengaturan produk di aplikasi Tokopedia Seller</string>
     <string name="seller_migration_product_bottom_sheet_content">Kini kamu bisa langsung menambah stok produk, memasang pengingat stok, dan mengubah harga dengan mudah dan cepat.</string>
 
     <string name="seller_migration_topads_ticker_title">Beragam fitur promosi di Tokopedia Seller</string>
@@ -28,4 +30,82 @@
     <string name="seller_migration_promo_bottom_sheet_content">Pilih jenis promosi yang sesuai strategi bisnismu atau gunakan rekomendasi dari kami agar lebih optimal beriklan.</string>
     <string name="seller_migration_promo_bottom_sheet_content_second_page">Laporan performa iklan akan diperbarui secara berkala, agar kamu bisa mengatur strategi promosi untuk tingkatkan penjualan.</string>
 
+    <string name="seller_migration_review_ticker_title">Ulasan dari pembeli sudah berpindah </string>
+    <string name="seller_migration_review_ticker_description">Lihat penilaian dari pembeli setelah beli produkmu di aplikasi Tokopedia Seller. &lt;a href="#"&gt;Pelajari Selengkapnya&lt;/a&gt;</string>
+    <string name="seller_migration_review_bottom_sheet_title">Cek ulasan dari pembeli langsung di aplikasi Tokopedia Seller</string>
+    <string name="seller_migration_review_bottom_sheet_content">Temukan ulasan lengkap untuk setiap produkmu, mulai dari kemasan hingga kualitas produk.</string>
+
+    <string name="seller_migration_account_home_ticker_title">Kejar peluangmu dengan Tokopedia Seller</string>
+    <string name="seller_migration_account_home_ticker_content">Semua fitur khusus penjual akan dialihkan ke Seller App pada &lt;b&gt;%s&lt;/b&gt;. Pelajari &lt;a href="#"&gt;di sini&lt;/a&gt;</string>
+    <string name="seller_migration_account_home_ticker_default_migration_date">10 Juli 2020</string>
+    <string name="seller_migration_account_home_bottom_sheet_title">Yuk, segera beralih ke aplikasi Tokopedia Seller</string>
+    <string name="seller_migration_account_home_bottom_sheet_content">Tampilan baru aplikasi &lt;b&gt;Tokopedia Seller&lt;/b&gt; membuat pengaturan stok dan berkomunikasi dengan pembeli jadi semakin mudah. Penuhi semua kebutuhanmu sebagai seller cukup dari 1 aplikasi.</string>
+    <string name="seller_migration_account_home_bottom_sheet_subtitle">Kenapa Tokopedia Seller bisa memudahkan kamu berjualan?</string>
+    <string name="seller_migration_account_home_bottom_sheet_footer">&lt;a href="https://seller.tokopedia.com/edu/aplikasi-topseller/"&gt;Pelajari Selengkapnya&lt;/a&gt;</string>
+
+    <string name="seller_migration_voucher_toko_title">Buat Voucher Toko Cashback di aplikasi Tokopedia Seller</string>
+    <string name="seller_migration_voucher_toko_content">Gunakan Voucher Toko Cashback untuk meningkatkan &lt;b&gt;lebih banyak pelanggan&lt;/b&gt;, dengan tetap mempertahankan citra brand toko dan harga barang.</string>
+
+    <string name="seller_migration_label_seller_app_only">Di Tokopedia Seller</string>
+    <string name="seller_migration_fragment_header_title">Fitur unggulan dapat diakses melalui aplikasi Tokopedia Seller</string>
+    <string name="seller_migration_fragment_advantages_title">Keunggulan aplikasi Tokopedia Seller</string>
+    <string name="seller_migration_fragment_body_title">Fitur unggulan yang bisa kamu gunakan di aplikasi Tokopedia Seller</string>
+    <string name="seller_migration_fragment_footer">Pelajari keuntungan lainnya &lt;a href="https://seller.tokopedia.com/edu/aplikasi-topseller/"&gt;di sini&lt;/a&gt;</string>
+
+    <!--    seller migration fragment tabs-->
+    <string name="seller_migration_fragment_tab_product">Produk</string>
+    <string name="seller_migration_fragment_tab_chat">Chat</string>
+    <string name="seller_migration_fragment_tab_review">Ulasan</string>
+    <string name="seller_migration_fragment_tab_promo_and_ads">Iklan &amp; Promosi</string>
+    <string name="seller_migration_fragment_tab_statistic">Statistik</string>
+
+    <string name="seller_migration_product_manage_set_variant_title">PRODUK VARIAN</string>
+    <string name="seller_migration_product_manage_set_variant_description">Tambah produk dengan varian warna dan ukuran dengan mudah.</string>
+
+    <!--    seller migration product seller features-->
+    <string name="seller_migration_fragment_product_tab_set_variant_title">ATUR VARIAN</string>
+    <string name="seller_migration_fragment_product_tab_set_variant_description">Kelola varian warna dan ukuran produk dengan mudah.</string>
+    <string name="seller_migration_fragment_product_tab_multi_edit_title">EDIT SEKALIGUS</string>
+    <string name="seller_migration_fragment_product_tab_multi_edit_description">Ubah info stok dan harga produk dalam waktu bersamaan.</string>
+    <string name="seller_migration_fragment_product_tab_instagram_import_title">INSTOPED</string>
+    <string name="seller_migration_fragment_product_tab_instagram_import_description">Upload produk langsung dari akun Instagram tokomu.</string>
+    <string name="seller_migration_fragment_product_tab_featured_product_title">PRODUK UNGGULAN</string>
+    <string name="seller_migration_fragment_product_tab_featured_product_description">Tampilkan 5 produk andalan dan tarik perhatian pembeli.</string>
+    <string name="seller_migration_fragment_product_tab_set_cashback_title">ATUR CASHBACK</string>
+    <string name="seller_migration_fragment_product_tab_set_cashback_description">Berikan cashback senilai 3% - 5% ke pembeli.</string>
+    <string name="seller_migration_fragment_product_tab_stock_reminder_title">PENGINGAT STOK</string>
+    <string name="seller_migration_fragment_product_tab_stock_reminder_description">Hindari stok kosong di tokomu dengan fitur pengingat.</string>
+
+    <!--    seller migration chat seller features-->
+    <string name="seller_migration_fragment_chat_tab_template_chat_title">TEMPLATE CHAT</string>
+    <string name="seller_migration_fragment_chat_tab_template_chat_description">Atur pesan cepat untuk langsung balas chat dari pembeli.</string>
+    <string name="seller_migration_fragment_chat_tab_attach_voucher_title">LAMPIRKAN VOUCHER</string>
+    <string name="seller_migration_fragment_chat_tab_attach_voucher_description">Kirim voucher tokomu ke pembeli via pesan chat.</string>
+
+    <!--    seller migration review seller features-->
+    <string name="seller_migration_fragment_review_tab_template_review_title">TEMPLATE ULASAN</string>
+    <string name="seller_migration_fragment_review_tab_template_review_description">Atur pesan otomatis untuk membalas ulasan dari pembeli.</string>
+    <string name="seller_migration_fragment_review_tab_review_statistic_title">STATISTIK ULASAN</string>
+    <string name="seller_migration_fragment_review_tab_review_statistic_description">Pantau ulasan untuk melihat tingkat kepuasan pembeli.</string>
+
+    <!--    seller migration ads and promo seller features-->
+    <string name="seller_migration_fragment_ads_and_promo_tab_shop_voucher_title">VOUCHER CASHBACK</string>
+    <string name="seller_migration_fragment_ads_and_promo_tab_shop_voucher_description">Gunakan voucher yang sesuai target pembeli tokomu.</string>
+    <string name="seller_migration_fragment_ads_and_promo_tab_topads_title">TOPADS</string>
+    <string name="seller_migration_fragment_ads_and_promo_tab_topads_description">Iklankan produkmu untuk jangkau lebih banyak pembeli.</string>
+
+    <!--    seller migration statistic seller features-->
+    <string name="seller_migration_fragment_statistic_tab_shop_insight_title">WAWASAN TOKO</string>
+    <string name="seller_migration_fragment_statistic_tab_shop_insight_description">Cek perkembangan statistik produk dan tokomu.</string>
+    <string name="seller_migration_fragment_statistic_tab_market_insight_title">WAWASAN PASAR</string>
+    <string name="seller_migration_fragment_statistic_tab_market_insight_description">Khusus Power Merchant, pantau info pasar agar tokomu jadi lebih kompetitif.</string>
+    <string name="title_fetured_product">Fitur Unggulan</string>
+
+    <!--    product add edit-->
+    <string name="seller_migration_add_edit_no_variant_title">Varian Produk</string>
+    <string name="seller_migration_add_edit_no_variant_description">Kelola varian warna, ukuran, dan detil lainnya secara mudah hanya di aplikasi &lt;b&gt;Tokopedia Seller&lt;/b&gt;</string>
+
+    <!--    product manage list-->
+    <string name="seller_migration_add_product_in_mainapp_title">Tambah produk</string>
+    <string name="seller_migration_add_product_in_mainapp_desc">Pilih produk tanpa varian warna dan ukuran.</string>
 </resources>

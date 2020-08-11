@@ -99,7 +99,6 @@
             android:autoLink="all"
             android:lineSpacingExtra="@dimen/sp_6"
             android:longClickable="true"
-            android:textIsSelectable="true"
             android:transitionName="@string/transition_description"
             app:fontSize="small"
             app:textViewTheme="lightPrimary"

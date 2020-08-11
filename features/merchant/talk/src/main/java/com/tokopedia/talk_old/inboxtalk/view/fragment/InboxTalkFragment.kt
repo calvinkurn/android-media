@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -22,6 +23,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
 import com.tokopedia.seller.active.common.service.UpdateShopActiveService
+import com.tokopedia.talk.common.constants.TalkConstants
 import com.tokopedia.talk.common.constants.TalkConstants.PARAM_PRODUCT_ID
 import com.tokopedia.talk.common.constants.TalkConstants.PARAM_SHOP_ID
 import com.tokopedia.talk_old.R
@@ -49,6 +51,7 @@ import com.tokopedia.talk_old.reporttalk.view.activity.ReportTalkActivity
 import com.tokopedia.talk_old.talkdetails.view.activity.TalkDetailsActivity
 import com.tokopedia.talk_old.talkdetails.view.activity.TalkDetailsActivity.Companion.SOURCE
 import com.tokopedia.talk_old.talkdetails.view.activity.TalkDetailsActivity.Companion.SOURCE_INBOX
+import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonItem
 import kotlinx.android.synthetic.main.fragment_talk_inbox.*
 import java.util.*
 import javax.inject.Inject
@@ -158,7 +161,16 @@ open class InboxTalkFragment : BaseDaggerFragment(),
 
         })
         swipeToRefresh.setOnRefreshListener { onRefreshData() }
-        icon_filter.setButton1OnClickListener(showFilterDialog())
+
+        //setup floatingActionUnify
+        context?.let {
+            val drawable = ContextCompat.getDrawable(it, com.tokopedia.design.R.drawable.ic_filter_button)
+            val item = arrayListOf(
+                    FloatingButtonItem(drawable, it.getString(com.tokopedia.design.R.string.label_filter)
+                            ?: "Filter", false, showFilterDialog)
+            )
+            icon_filter.addItem(item)
+        }
     }
 
     private fun initData() {
@@ -179,18 +191,16 @@ open class InboxTalkFragment : BaseDaggerFragment(),
 
     }
 
-    private fun showFilterDialog(): View.OnClickListener {
-        return View.OnClickListener { _ ->
-            context?.run {
-                if (!::bottomMenu.isInitialized) bottomMenu = Menus(this)
-                bottomMenu.itemMenuList = filterMenuList
-                bottomMenu.setActionText(getString(com.tokopedia.design.R.string.button_cancel))
-                bottomMenu.setOnActionClickListener { bottomMenu.dismiss() }
-                bottomMenu.setOnItemMenuClickListener { _, pos ->
-                    onFilterClicked(pos, bottomMenu)
-                }
-                bottomMenu.show()
+    private val showFilterDialog: () -> Unit = {
+        context?.run {
+            if (!::bottomMenu.isInitialized) bottomMenu = Menus(this)
+            bottomMenu.itemMenuList = filterMenuList
+            bottomMenu.setActionText(getString(com.tokopedia.design.R.string.button_cancel))
+            bottomMenu.setOnActionClickListener { bottomMenu.dismiss() }
+            bottomMenu.setOnItemMenuClickListener { _, pos ->
+                onFilterClicked(pos, bottomMenu)
             }
+            bottomMenu.show()
         }
     }
 
@@ -612,7 +622,7 @@ open class InboxTalkFragment : BaseDaggerFragment(),
 
     private fun getProductIntent(productId: String): Intent? {
         return if (context != null) {
-            RouteManager.getIntent(context!!,ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId)
+            RouteManager.getIntent(context!!, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId)
         } else {
             null
         }
@@ -663,9 +673,8 @@ open class InboxTalkFragment : BaseDaggerFragment(),
                         context,
                         Uri.parse(UriUtil.buildUri(ApplinkConstInternalGlobal.TALK_REPLY, talkId))
                                 .buildUpon()
-                                .appendQueryParameter(PARAM_PRODUCT_ID, productId)
                                 .appendQueryParameter(PARAM_SHOP_ID, shopId)
-                                .appendQueryParameter(SOURCE, SOURCE_INBOX)
+                                .appendQueryParameter(TalkConstants.PARAM_SOURCE, SOURCE_INBOX)
                                 .build().toString()
                 )
                 this@InboxTalkFragment.startActivityForResult(

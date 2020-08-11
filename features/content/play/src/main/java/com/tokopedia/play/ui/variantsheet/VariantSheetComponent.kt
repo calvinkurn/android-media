@@ -5,7 +5,7 @@ import androidx.annotation.VisibleForTesting
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.ui.variantsheet.interaction.VariantSheetInteractionEvent
-import com.tokopedia.play.util.CoroutineDispatcherProvider
+import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.type.BottomInsetsType
@@ -24,19 +24,19 @@ import java.net.UnknownHostException
 open class VariantSheetComponent(
         container: ViewGroup,
         private val bus: EventBusFactory,
-        coroutineScope: CoroutineScope,
+        private val scope: CoroutineScope,
         dispatchers: CoroutineDispatcherProvider
-) : UIComponent<VariantSheetInteractionEvent>, CoroutineScope by coroutineScope, VariantSheetView.Listener {
+) : UIComponent<VariantSheetInteractionEvent>, VariantSheetView.Listener {
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     val uiView = initView(container)
 
     init {
-        launch(dispatchers.immediate) {
+        scope.launch(dispatchers.immediate) {
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
-                            ScreenStateEvent.Init -> uiView.hide()
+                            is ScreenStateEvent.Init -> uiView.hide()
                             is ScreenStateEvent.BottomInsetsChanged -> { it.insetsViewMap[BottomInsetsType.VariantSheet]?.let(::handleShowHideVariantSheet) }
                             is ScreenStateEvent.SetVariantSheet -> when (it.variantResult) {
                                 is PlayResult.Loading -> if (it.variantResult.showPlaceholder) uiView.showPlaceholder()
@@ -61,19 +61,19 @@ open class VariantSheetComponent(
     }
 
     override fun onCloseButtonClicked(view: VariantSheetView) {
-        launch {
+        scope.launch {
             bus.emit(VariantSheetInteractionEvent::class.java, VariantSheetInteractionEvent.OnCloseVariantSheet)
         }
     }
 
     override fun onAddToCartClicked(view: VariantSheetView, productModel: ProductLineUiModel) {
-        launch {
+        scope.launch {
             bus.emit(VariantSheetInteractionEvent::class.java, VariantSheetInteractionEvent.OnAddProductToCart(productModel))
         }
     }
 
     override fun onBuyClicked(view: VariantSheetView, productModel: ProductLineUiModel) {
-        launch {
+        scope.launch {
             bus.emit(VariantSheetInteractionEvent::class.java, VariantSheetInteractionEvent.OnBuyProduct(productModel))
         }
     }

@@ -47,7 +47,11 @@ data class ItemChatListPojo(
     fun ids() = listOf(msgId)
 
     fun isUnread(): Boolean {
-        return attributes?.readStatus == ChatItemListViewHolder.STATE_CHAT_UNREAD
+        return attributes?.readStatus == STATE_CHAT_UNREAD
+    }
+
+    fun isRead(): Boolean {
+        return attributes?.readStatus == STATE_CHAT_READ
     }
 
     fun markAsRead() {
@@ -73,6 +77,10 @@ data class ItemChatListPojo(
             OFFICIAL_TAG -> "OA"
             else -> ""
         }
+    }
+
+    fun isReplyTopBot(): Boolean {
+        return attributes?.isReplyByTopbot == true
     }
 
 }

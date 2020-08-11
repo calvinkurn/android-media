@@ -1,25 +1,27 @@
 package com.tokopedia.play.view.event
 
 import android.view.View
-import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.youtube.player.YouTubePlayer
 import com.tokopedia.play.component.ComponentEvent
 import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.PlayRoomEvent
+import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.wrapper.PlayResult
+import com.tokopedia.play_common.model.ui.PlayChatUiModel
 
 /**
  * Created by jegul on 02/12/19
  */
 sealed class ScreenStateEvent : ComponentEvent {
 
-    object Init : ScreenStateEvent()
+    data class Init(val screenOrientation: ScreenOrientation, val stateHelper: StateHelperUiModel) : ScreenStateEvent()
 
     /**
      * Setter
      */
-    data class SetVideo(val videoPlayer: ExoPlayer) : ScreenStateEvent()
+    data class SetVideo(val videoPlayer: VideoPlayerUiModel) : ScreenStateEvent()
     data class SetChannelTitle(val title: String): ScreenStateEvent()
     data class SetPartnerInfo(val partnerInfo: PartnerInfoUiModel): ScreenStateEvent()
     data class SetTotalCart(val cartUiModel: CartUiModel): ScreenStateEvent()
@@ -29,7 +31,8 @@ sealed class ScreenStateEvent : ComponentEvent {
     data class SetQuickReply(val quickReply: QuickReplyUiModel) : ScreenStateEvent()
     data class SetProductSheet(val productResult: PlayResult<ProductSheetUiModel>) : ScreenStateEvent()
     data class SetVariantSheet(val variantResult: PlayResult<VariantSheetUiModel>) : ScreenStateEvent()
-    data class SetVariantToaster(val toasterType: Int, val message: String, val actionText: String?, val actionClickListener: View.OnClickListener?) : ScreenStateEvent()
+    data class SetVariantToaster(val toasterType: Int, val message: String, val actionText: String, val actionClickListener: View.OnClickListener) : ScreenStateEvent()
+    data class SetChatList(val chatList: List<PlayChatUiModel>) : ScreenStateEvent()
     /**
      * Chat
      */
@@ -38,13 +41,13 @@ sealed class ScreenStateEvent : ComponentEvent {
     /**
      * Like
      */
-    data class LikeContent(val shouldLike: Boolean, val animate: Boolean) : ScreenStateEvent()
+    data class LikeContent(val likeState: LikeStateUiModel, val isFirstTime: Boolean) : ScreenStateEvent()
     /**
      * Follow
      */
     data class FollowPartner(val shouldFollow: Boolean) : ScreenStateEvent()
     /**
-     * Keyboard
+     * Bottom Insets (Keyboard & BottomSheet)
      */
     data class BottomInsetsChanged(
             val insetsViewMap: Map<BottomInsetsType, BottomInsetsState>,
@@ -52,13 +55,6 @@ sealed class ScreenStateEvent : ComponentEvent {
             val isAnyHidden: Boolean,
             val stateHelper: StateHelperUiModel
     ) : ScreenStateEvent()
-
-    @Deprecated(
-            message = "Use BottomInsetsView with type BottomInsetsType.Keyboard",
-            replaceWith = ReplaceWith("BottomInsetsView(BottomInsetsType.Keyboard, isShown)", "com.tokopedia.play.view.event.ScreenStateEvent", "com.tokopedia.play.view.type.BottomInsetsType"),
-            level = DeprecationLevel.WARNING
-    )
-    data class KeyboardStateChanged(val isShown: Boolean) : ScreenStateEvent()
     /**
      * Video
      */
@@ -68,7 +64,25 @@ sealed class ScreenStateEvent : ComponentEvent {
      * Room Event
      */
     data class OnNewPlayRoomEvent(val event: PlayRoomEvent) : ScreenStateEvent()
+    /**
+     * Immersive
+     */
+    data class ImmersiveStateChanged(val shouldImmersive: Boolean) : ScreenStateEvent()
+    /**
+     * Global Error
+     */
+    object ShowGlobalError : ScreenStateEvent()
+
+    /**
+     * Orientation Changed
+     */
+    data class OrientationChanged(val orientation: ScreenOrientation, val stateHelper: StateHelperUiModel) : ScreenStateEvent()
+
+    /**
+     * Analytics
+     */
+    data class YouTubeAnalyticsRequired(val analyticsBlock: (YouTubePlayer) -> Unit) : ScreenStateEvent()
 
     object OnNoMoreAction : ScreenStateEvent()
-    object ShowOneTapOnboarding : ScreenStateEvent()
+    data class ShowOneTapOnboarding(val stateHelper: StateHelperUiModel) : ScreenStateEvent()
 }

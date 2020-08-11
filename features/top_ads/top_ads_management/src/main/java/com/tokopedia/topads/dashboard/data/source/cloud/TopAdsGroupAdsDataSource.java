@@ -8,14 +8,14 @@ import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
 import com.tokopedia.topads.dashboard.data.mapper.TopAdsDetailGroupDomainMapper;
 import com.tokopedia.topads.dashboard.data.mapper.TopAdsDetailGroupMapper;
 import com.tokopedia.topads.dashboard.data.mapper.TopAdsSearchGroupMapper;
+import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.topads.dashboard.data.model.request.CreateGroupRequest;
+import com.tokopedia.topads.dashboard.data.model.request.DataRequest;
 import com.tokopedia.topads.dashboard.data.model.request.EditGroupRequest;
 import com.tokopedia.topads.dashboard.data.model.request.GetSuggestionBody;
 import com.tokopedia.topads.dashboard.data.model.response.DataResponseCreateGroup;
 import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
 import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.api.TopAdsOldManagementApi;
-import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
-import com.tokopedia.topads.dashboard.data.model.request.DataRequest;
 import com.tokopedia.topads.dashboard.domain.model.TopAdsDetailGroupDomainModel;
 import com.tokopedia.user.session.UserSession;
 

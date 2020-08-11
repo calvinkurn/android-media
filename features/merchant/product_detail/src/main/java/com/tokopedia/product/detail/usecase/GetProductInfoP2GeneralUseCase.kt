@@ -21,6 +21,7 @@ import com.tokopedia.product.detail.data.model.purchaseprotection.ProductPurchas
 import com.tokopedia.product.detail.data.model.review.Review
 import com.tokopedia.product.detail.data.model.shopfeature.ShopFeatureResponse
 import com.tokopedia.product.detail.data.model.spesification.ProductSpecificationResponse
+import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpful
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpfulResponseWrapper
 import com.tokopedia.product.detail.data.model.talk.Talk
 import com.tokopedia.product.detail.data.model.talk.TalkList
@@ -215,6 +216,8 @@ class GetProductInfoP2GeneralUseCase @Inject constructor(private val rawQueries:
 
             if (gqlResponse.getError(DiscussionMostHelpfulResponseWrapper::class.java)?.isNotEmpty() != true) {
                 productInfoP2.discussionMostHelpful = gqlResponse.getData<DiscussionMostHelpfulResponseWrapper>(DiscussionMostHelpfulResponseWrapper::class.java).discussionMostHelpful
+            } else {
+                productInfoP2.discussionMostHelpful = DiscussionMostHelpful()
             }
 
             if (gqlResponse.getError(ProductPurchaseProtectionInfo::class.java)?.isNotEmpty() != true) {

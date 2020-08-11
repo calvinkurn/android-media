@@ -17,17 +17,29 @@ interface InitialStateContract {
         fun onRecentSearchImpressed(list: List<Any>)
 
         fun onPopularSearchImpressed(list: List<Any>)
+
+        fun dropKeyBoard()
+
+        fun route(applink: String, searchParameter: Map<String, String>)
+
+        fun finish()
+
+        fun trackEventClickRecentSearch(label: String, adapterPosition: Int)
+
+        fun trackEventClickRecentShop(label: String, userId: String)
     }
 
     interface Presenter : CustomerPresenter<View> {
         fun getInitialStateData()
 
-        fun deleteRecentSearchItem(keyword: String)
+        fun deleteRecentSearchItem(item: BaseItemInitialStateSearch)
 
         fun deleteAllRecentSearch()
 
         fun refreshPopularSearch()
 
         fun getQueryKey(): String
+
+        fun onRecentSearchItemClicked(item: BaseItemInitialStateSearch, adapterPosition: Int)
     }
 }

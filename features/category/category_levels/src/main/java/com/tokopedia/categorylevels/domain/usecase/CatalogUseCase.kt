@@ -1,24 +1,20 @@
 package com.tokopedia.categorylevels.domain.usecase
 
-import android.content.Context
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.categorylevels.R
-import com.tokopedia.categorylevels.data.catalogModel.CatalogListResponse
-import com.tokopedia.categorylevels.data.catalogModel.SearchCatalog
+import com.tokopedia.common_category.data.catalogModel.CatalogListResponse
+import com.tokopedia.common_category.data.catalogModel.SearchCatalog
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
+import com.tokopedia.categorylevels.data.raw.GQL_NAV_SEARCH_CATALOG
 import rx.Observable
 import javax.inject.Inject
 
-class CatalogUseCase @Inject constructor(private val context: Context,
-                                         private val graphqlUseCase: GraphqlUseCase) : UseCase<SearchCatalog>() {
+class CatalogUseCase @Inject constructor(private val graphqlUseCase: GraphqlUseCase) : UseCase<SearchCatalog>() {
     override fun createObservable(requestParams: RequestParams?): Observable<SearchCatalog> {
 
 
-        val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(context.resources,
-                R.raw.gql_nav_search_catalog), CatalogListResponse::class.java, requestParams?.parameters, false)
+        val graphqlRequest = GraphqlRequest(GQL_NAV_SEARCH_CATALOG, CatalogListResponse::class.java, requestParams?.parameters, false)
 
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)

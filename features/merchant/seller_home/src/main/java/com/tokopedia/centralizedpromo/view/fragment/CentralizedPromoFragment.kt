@@ -24,6 +24,7 @@ import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.sellerhome.R
+import com.tokopedia.sellerhome.common.errorhandler.SellerHomeErrorHandler
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -44,6 +45,8 @@ class CentralizedPromoFragment : BaseDaggerFragment(), PartialCentralizedPromoOn
 
         private const val SHARED_PREF_COACH_MARK_ON_GOING_PROMOTION = "onBoardingAdsAndPromotions"
         private const val SHARED_PREF_COACH_MARK_PROMO_RECOMMENDATION = "onBoardingPromoRecommendation"
+
+        private const val ERROR_GET_LAYOUT_DATA = "Error when get layout data for %s."
 
         @JvmStatic
         fun createInstance(): CentralizedPromoFragment = CentralizedPromoFragment()
@@ -175,6 +178,7 @@ class CentralizedPromoFragment : BaseDaggerFragment(), PartialCentralizedPromoOn
     }
 
     private fun Fail.onFailedGetLayoutData(layoutType: LayoutType) {
+        SellerHomeErrorHandler.logExceptionToCrashlytics(throwable, String.format(ERROR_GET_LAYOUT_DATA, layoutType.name))
         partialViews[layoutType]?.renderError(this.throwable)
         showErrorToaster()
     }

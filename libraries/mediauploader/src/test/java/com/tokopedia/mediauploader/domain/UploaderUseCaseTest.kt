@@ -2,7 +2,6 @@ package com.tokopedia.mediauploader.domain
 
 import com.tokopedia.mediauploader.data.entity.*
 import com.tokopedia.mediauploader.data.state.UploadResult
-import com.tokopedia.mediauploader.data.state.UploadErrorState
 import com.tokopedia.usecase.RequestParams
 import io.mockk.coEvery
 import io.mockk.every
@@ -11,7 +10,6 @@ import kotlinx.coroutines.runBlocking
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 import java.io.File
-import kotlin.test.assertEquals
 
 class UploaderUseCaseTest: Spek({
 
@@ -73,7 +71,7 @@ class UploaderUseCaseTest: Spek({
             }
             Given("data policy with file not found") {
                 coEvery {
-                    dataPolicyUseCase(mapOf())
+                    dataPolicyUseCase(RequestParams.EMPTY)
                 } answers {
                     DataUploaderPolicy()
                 }
@@ -82,7 +80,7 @@ class UploaderUseCaseTest: Spek({
                 runBlocking {
                     when(val execute = useCase(requestParams)) {
                         is UploadResult.Error -> {
-                            assertEquals(UploadErrorState.NOT_FOUND, execute.reason)
+                            assert(execute.message.isNotEmpty())
                         }
                     }
                 }
@@ -116,7 +114,7 @@ class UploaderUseCaseTest: Spek({
                 runBlocking {
                     when(val execute = useCase(requestParams)) {
                         is UploadResult.Error -> {
-                            assertEquals(UploadErrorState.EXT_ISSUE, execute.reason)
+                            assert(execute.message.isNotEmpty())
                         }
                     }
                 }
@@ -157,7 +155,7 @@ class UploaderUseCaseTest: Spek({
                 runBlocking {
                     when(val execute = useCase(requestParams)) {
                         is UploadResult.Error -> {
-                            assertEquals(UploadErrorState.MAX_SIZE, execute.reason)
+                            assert(execute.message.isNotEmpty())
                         }
                     }
                 }

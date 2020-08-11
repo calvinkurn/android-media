@@ -28,7 +28,7 @@ data class EntityPackage(
         val commisionType: String = "",
         @SerializedName("currency_price")
         @Expose
-        val currencyPrice: Int = 0,
+        val currencyPrice: Float = 0f,
         @SerializedName("description")
         @Expose
         val description: String = "",

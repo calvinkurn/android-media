@@ -37,7 +37,7 @@ class RoundedBackgroundSpan constructor(private val mBackgroundColor: Int,
         return Math.round(PADDING_X + paint.measureText(text.subSequence(start, end).toString()) + PADDING_X)
     }
 
-    override fun getSize(mPaint: Paint, text: CharSequence, start: Int, end: Int, fm: Paint.FontMetricsInt): Int {
+    override fun getSize(mPaint: Paint, text: CharSequence, start: Int, end: Int, fm: Paint.FontMetricsInt?): Int {
         var paint = mPaint
         paint = Paint(paint) // make a copy for not editing the referenced paint
         paint.textSize = mTextSize

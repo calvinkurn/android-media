@@ -56,6 +56,7 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 import timber.log.Timber;
+import com.tokopedia.tokopatch.TokoPatch;
 
 /**
  * Created by ricoharisin on 11/11/16.
@@ -170,6 +171,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         initAppNotificationReceiver();
         registerActivityLifecycleCallbacks();
         initBlockCanary();
+//        TokoPatch.init(this);
     }
 
     private void initBugsnag() {

@@ -10,15 +10,12 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.R
 import com.tokopedia.play.component.UIView
 import com.tokopedia.play.view.uimodel.PinnedMessageUiModel
 import com.tokopedia.play.view.uimodel.PinnedProductUiModel
-import com.tokopedia.play_common.util.DebouncedOnClickListener
 
 /**
  * Created by jegul on 03/12/19
@@ -38,9 +35,6 @@ class PinnedView(
     private val animationProduct: LottieAnimationView = view.findViewById(R.id.animation_product)
     private val tvPinnedAction: TextView = view.findViewById(R.id.tv_pinned_action)
 
-    private var pinnedMessageDebouncedClick: DebouncedOnClickListener? = null
-    private var pinnedProductDebouncedClick: DebouncedOnClickListener? = null
-
     override val containerId: Int = view.id
 
     override fun show() {
@@ -52,7 +46,7 @@ class PinnedView(
     }
 
     fun setPinnedMessage(pinnedMessage: PinnedMessageUiModel) {
-        llPinnedProduct.gone()
+        llPinnedProduct.hide()
 
         val partnerName = pinnedMessage.partnerName
         val spannableString = SpannableString(
@@ -71,28 +65,22 @@ class PinnedView(
         tvPinnedMessage.text = spannableString
 
         if (!pinnedMessage.applink.isNullOrEmpty()) {
-            tvPinnedAction.visible()
+            tvPinnedAction.show()
 
-            if (pinnedMessageDebouncedClick == null) {
-                pinnedMessageDebouncedClick = DebouncedOnClickListener(1000L) {
-                    listener.onPinnedMessageActionClicked(this, pinnedMessage.applink, pinnedMessage.title)
-                }
+            tvPinnedAction.setOnClickListener {
+                listener.onPinnedMessageActionClicked(this, pinnedMessage.applink, pinnedMessage.title)
             }
-            tvPinnedAction.setOnClickListener(pinnedMessageDebouncedClick)
 
-        } else tvPinnedAction.gone()
+        } else tvPinnedAction.hide()
     }
     
     fun setPinnedProduct(pinnedProduct: PinnedProductUiModel) {
-        llPinnedProduct.visible()
-        tvPinnedAction.visible()
+        llPinnedProduct.show()
+        tvPinnedAction.show()
 
-        if (pinnedProductDebouncedClick == null) {
-            pinnedProductDebouncedClick = DebouncedOnClickListener(1000L) {
-                listener.onPinnedProductActionClicked(this)
-            }
+        tvPinnedAction.setOnClickListener {
+            listener.onPinnedProductActionClicked(this)
         }
-        tvPinnedAction.setOnClickListener(pinnedProductDebouncedClick)
 
         tvPinnedMessage.text = spanPartnerName(pinnedProduct.partnerName, SpannableString(pinnedProduct.partnerName))
         tvPinnedProductMessage.text = pinnedProduct.title
@@ -102,11 +90,6 @@ class PinnedView(
                 else R.raw.anim_play_product
         )
         animationProduct.playAnimation()
-    }
-
-    fun onDestroy() {
-        pinnedMessageDebouncedClick = null
-        pinnedProductDebouncedClick = null
     }
 
     private fun spanPartnerName(partnerName: String, fullMessage: Spannable): Spannable {

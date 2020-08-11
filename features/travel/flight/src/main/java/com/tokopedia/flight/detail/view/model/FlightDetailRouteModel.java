@@ -6,7 +6,7 @@ import android.os.Parcelable;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailRouteTypeFactory;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightStopOverViewModel;
-import com.tokopedia.flight.search.data.api.single.response.Amenity;
+import com.tokopedia.flight.searchV4.data.cloud.single.Amenity;
 
 import java.util.List;
 

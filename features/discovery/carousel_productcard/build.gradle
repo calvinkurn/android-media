@@ -23,7 +23,7 @@ buildscript {
 android {
     defaultConfig {
         multiDexEnabled true
-        testInstrumentationRunner "com.tokopedia.test.application.InstrumentationTestRunner"
+        testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
     }
 
     packagingOptions {

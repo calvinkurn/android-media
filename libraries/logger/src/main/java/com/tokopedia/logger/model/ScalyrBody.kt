@@ -24,9 +24,9 @@ data class ScalyrSessionInfo(
         @SerializedName("parser")
         @Expose
         val parser: String,
-        @SerializedName("appType")
+        @SerializedName("packageName")
         @Expose
-        val appType: String,
+        val packageName: String,
         @SerializedName("debug")
         @Expose
         val debug: Boolean,

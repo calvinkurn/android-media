@@ -21,7 +21,7 @@ class FlightOrder(
         val currency: String,
         val pdf: String,
         val journeys: List<FlightOrderJourney>,
-        val passengerViewModels: List<FlightOrderPassengerViewModel>,
+        val passengerModels: List<FlightOrderPassengerModel>,
         val payment: PaymentInfoEntity,
         val cancellations: List<CancellationEntity>,
         val insurances: List<FlightInsurance>,

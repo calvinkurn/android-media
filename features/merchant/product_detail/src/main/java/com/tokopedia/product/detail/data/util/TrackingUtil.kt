@@ -11,6 +11,7 @@ import com.tokopedia.product.detail.common.data.model.product.Category
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.track.TrackApp
+import com.tokopedia.unifycomponents.ticker.Ticker
 
 /**
  * Created by Yehezkiel on 2020-02-11
@@ -35,6 +36,14 @@ object TrackingUtil {
             }
         }
         return list
+    }
+
+    fun getTickerTypeInfoString(tickerType:Int) : String {
+        return when(tickerType){
+            Ticker.TYPE_INFORMATION -> "info"
+            Ticker.TYPE_WARNING -> "warning"
+            else -> "other"
+        }
     }
 
     fun createMVCMap(vouchers: List<MerchantVoucherViewModel>, shopId: String, position: Int): List<Any> {
@@ -134,7 +143,7 @@ object TrackingUtil {
                     mapOf(
                             KEY_BUSINESS_UNIT to BUSINESS_UNIT,
                             KEY_CURRENT_SITE to CURRENT_SITE,
-                            KEY_DISCUSSION_USER_ID to "{{$userId}}",
+                            KEY_DISCUSSION_USER_ID to userId,
                             KEY_SCREEN_NAME to PRODUCT_DETAIL_SCREEN_NAME
                     )
             )

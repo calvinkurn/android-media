@@ -67,15 +67,15 @@ class CatalogSpecsAndDetailFragment : Fragment() {
             headerView.text = specs.name
             headerView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14.0f)
             headerView.typeface = Typeface.DEFAULT_BOLD
-            headerView.setTextColor(MethodChecker.getColor(context,R.color.grey_796))
+            headerView.setTextColor(MethodChecker.getColor(context,R.color.catalog_grey_796))
             linear_layout.addView(headerView)
             for(row in specs.row){
                 val doubleTextView = DoubleTextView(activity, LinearLayout.HORIZONTAL)
                 doubleTextView.setTopText(MethodChecker.fromHtml(row.key).toString())
                 doubleTextView.setTopTextSize(14.0f)
-                doubleTextView.setTopTextColor(MethodChecker.getColor(context, R.color.unify_N700_44))
+                doubleTextView.setTopTextColor(MethodChecker.getColor(context, R.color.catalog_N700_44))
                 doubleTextView.setBottomTextSize(14.0f)
-                doubleTextView.setBottomTextColor(MethodChecker.getColor(context, R.color.grey_796))
+                doubleTextView.setBottomTextColor(MethodChecker.getColor(context, R.color.catalog_grey_796))
                 doubleTextView.setBottomTextStyle("")
                 doubleTextView.setBottomText(MethodChecker.fromHtml(row.value.joinToString(",\n")).toString())
                 linear_layout.addView(doubleTextView)
@@ -83,7 +83,7 @@ class CatalogSpecsAndDetailFragment : Fragment() {
             val lineView = View(context)
             val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
             lineView.minimumHeight = 3
-            lineView.setBackgroundColor(MethodChecker.getColor(context, R.color.grey_line))
+            lineView.setBackgroundColor(MethodChecker.getColor(context, R.color.catalog_grey_line))
             params.setMargins(0, resources.getDimensionPixelOffset(R.dimen.dp_16), 0, resources.getDimensionPixelOffset(R.dimen.dp_16))
             lineView.layoutParams = params
             linear_layout.addView(lineView)
@@ -97,7 +97,7 @@ class CatalogSpecsAndDetailFragment : Fragment() {
         headerView.layoutParams = params
         headerView.text = MethodChecker.fromHtml(description).toString()
         headerView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14.0f)
-        headerView.setTextColor(MethodChecker.getColor(context,R.color.grey_796))
+        headerView.setTextColor(MethodChecker.getColor(context,R.color.catalog_grey_796))
         linear_layout.addView(headerView)
     }
 

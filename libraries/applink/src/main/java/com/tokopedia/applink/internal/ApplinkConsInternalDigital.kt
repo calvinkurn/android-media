@@ -15,11 +15,13 @@ object ApplinkConsInternalDigital {
     const val INTERNAL_RECHARGE = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_RECHARGE"
 
     const val CART_DIGITAL = "$INTERNAL_DIGITAL/cart"
-    const val TELCO_DIGITAL = "$INTERNAL_DIGITAL/telco"
+    const val TELCO_PREPAID_DIGITAL = "$INTERNAL_DIGITAL/telcopre"
+    const val TELCO_POSTPAID_DIGITAL = "$INTERNAL_DIGITAL/telcopost"
     const val VOUCHER_GAME = "$INTERNAL_DIGITAL/vouchergame"
     const val GENERAL_TEMPLATE = "$INTERNAL_DIGITAL/general"
     const val CAMERA_OCR = "$INTERNAL_RECHARGE/ocr"
     const val CREDIT_CARD_TEMPLATE = "$INTERNAL_RECHARGE/cc"
+    const val SMART_BILLS = "$INTERNAL_RECHARGE/bayarsekaligus"
 
     const val SMARTCARD = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://$HOST_DIGITAL/smartcard?$PARAM_SMARTCARD={type}&$PARAM_BRIZZI={status}"
     const val INTERNAL_SMARTCARD_EMONEY = "$INTERNAL_DIGITAL/smartcard/emoney?$PARAM_SMARTCARD={type}"

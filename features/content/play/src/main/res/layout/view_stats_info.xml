@@ -21,7 +21,7 @@
             tools:visibility="visible"
             />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <include layout="@layout/layout_total_view"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_20"
             android:layout_marginStart="@dimen/spacing_lvl2"
@@ -30,43 +30,7 @@
             app:layout_constraintBottom_toBottomOf="@id/live_badge"
             app:layout_constraintStart_toEndOf="@id/live_badge"
             app:layout_constraintTop_toTopOf="@id/live_badge"
-            >
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/iv_total_view"
-                android:layout_width="@dimen/spacing_lvl4"
-                android:layout_height="@dimen/spacing_lvl4"
-                android:layout_marginStart="@dimen/play_view_stats_info_view_padding"
-                android:layout_marginLeft="@dimen/play_view_stats_info_view_padding"
-                android:layout_marginTop="@dimen/play_view_stats_info_view_padding"
-                android:layout_marginBottom="@dimen/play_view_stats_info_view_padding"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:srcCompat="@drawable/ic_play_eye_white"
-                />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tv_total_views"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/spacing_lvl2"
-                android:layout_marginLeft="@dimen/spacing_lvl2"
-                android:layout_marginEnd="@dimen/play_view_stats_info_view_padding"
-                android:layout_marginRight="@dimen/play_view_stats_info_view_padding"
-                android:layout_marginTop="@dimen/dp_4"
-                android:layout_marginBottom="@dimen/play_view_stats_info_view_padding"
-                android:textColor="@color/Neutral_N0"
-                app:layout_constraintStart_toEndOf="@id/iv_total_view"
-                app:layout_constraintTop_toTopOf="@id/iv_total_view"
-                app:layout_constraintBottom_toBottomOf="@id/iv_total_view"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:typographyType="body_3"
-                android:includeFontPadding="false"
-                tools:text="@string/play_mock_view"
-                />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

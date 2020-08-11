@@ -3,6 +3,7 @@ package com.tokopedia.sellerhome.common
 import android.content.Intent
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.productmanage.DeepLinkMapperProductManage
+import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 
 /**
  * Created By @ilhamsuaib on 2020-03-05
@@ -43,7 +44,9 @@ object DeepLinkHandler {
             data.startsWith(ApplinkConstInternalSellerapp.SELLER_HOME_PRODUCT_MANAGE_LIST) -> {
                 val uri = intent.data
                 val filterId = uri?.getQueryParameter(DeepLinkMapperProductManage.QUERY_PARAM_FILTER).orEmpty()
-                callback(PageFragment(FragmentType.PRODUCT, filterId))
+                val searchKeyword = uri?.getQueryParameter(DeepLinkMapperProductManage.QUERY_PARAM_SEARCH).orEmpty()
+                val featureName = uri?.getQueryParameter(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME).orEmpty()
+                callback(PageFragment(FragmentType.PRODUCT, filterId, searchKeyword, featureName.isNotBlank()))
             }
 
             //Top Chat

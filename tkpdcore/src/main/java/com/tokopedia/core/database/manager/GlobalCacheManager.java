@@ -78,14 +78,6 @@ public class GlobalCacheManager implements CacheManager {
         return gson.fromJson(getValueString(key), clazz);
     }
 
-    public boolean isExpired(long expiredTime) {
-        if (expiredTime == 0) return false;
-        Log.i(TAG, "Cache expired time: " + expiredTime);
-        Log.i(TAG, "Cache current time: " + System.currentTimeMillis());
-        return expiredTime < System.currentTimeMillis();
-    }
-
-
     @Deprecated
     public void deleteAll() {
         PersistentCacheManager.instance.delete();

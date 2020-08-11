@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.common.utils.network.CacheUtil
 import com.tokopedia.product.addedit.description.presentation.model.*
 import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
+import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
 import com.tokopedia.product.manage.common.draft.data.model.ProductDraft
 import com.tokopedia.product.manage.common.draft.data.model.description.VideoLinkListModel
 
@@ -90,7 +91,11 @@ object AddEditProductMapper {
 
     fun mapDraftToProductInputModel(productDraft: ProductDraft): ProductInputModel {
         val productInputModel = ProductInputModel()
-        productInputModel.variantInputModel = mapJsonToProductInputModel(productDraft.variantInputModel)
+        if(productDraft.variantInputModel.isNotEmpty()) {
+            productInputModel.variantInputModel = mapJsonToProductInputModel(productDraft.variantInputModel)
+        } else {
+            productInputModel.variantInputModel = VariantInputModel()
+        }
         productInputModel.productId = productDraft.productId
         productInputModel.detailInputModel.apply {
             productName = productDraft.detailInputModel.productName
@@ -136,12 +141,12 @@ object AddEditProductMapper {
         return productInputModel
     }
 
-    private fun mapProductInputModelToJsonString(productVariantInputModel: ProductVariantInputModel): String {
-        return CacheUtil.convertModelToString(productVariantInputModel, object : TypeToken<ProductVariantInputModel>() {}.type)
+    private fun mapProductInputModelToJsonString(productVariantInputModel: VariantInputModel): String {
+        return CacheUtil.convertModelToString(productVariantInputModel, object : TypeToken<VariantInputModel>() {}.type)
     }
 
-    private fun mapJsonToProductInputModel(jsonData : String): ProductVariantInputModel {
-        return CacheUtil.convertStringToModel(jsonData, ProductVariantInputModel::class.java)
+    private fun mapJsonToProductInputModel(jsonData : String): VariantInputModel {
+        return CacheUtil.convertStringToModel(jsonData, VariantInputModel::class.java)
     }
 }
 

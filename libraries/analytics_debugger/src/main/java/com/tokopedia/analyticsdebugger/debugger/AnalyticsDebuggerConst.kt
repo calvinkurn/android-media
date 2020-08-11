@@ -8,6 +8,10 @@ object AnalyticsDebuggerConst {
     val KEYWORD = "KEYWORD"
     val DATA_DETAIL = "DATA_DETAIL"
     val EVENT_NAME = "EVENT_NAME"
+    val ENVIRONMENT = "ENVIRONMENT"
+
+    val ENVIRONMENT_TEST = "Test"
+    val ENVIRONMENT_PRODUCTION = "Prod"
 
     val TITLE = "TITLE"
     val DATA = "DATA"

@@ -1,8 +1,5 @@
 package com.tokopedia.seller.product.draft.domain.interactor
 
-import com.google.gson.reflect.TypeToken
-import com.tokopedia.abstraction.common.utils.network.CacheUtil
-import com.tokopedia.product.addedit.description.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.manage.common.draft.data.db.repository.AddEditProductDraftRepository
 import com.tokopedia.product.manage.common.draft.data.model.ProductDraft
 import com.tokopedia.product.manage.common.draft.data.model.detail.PictureInputModel
@@ -27,7 +24,6 @@ class SaveInstagramToProductDraftUseCase @Inject constructor(private val addEdit
                     pictureInputModel.filePath = localPath
                     pictureInputModelList.add(pictureInputModel)
                     detailInputModel.pictureList = pictureInputModelList
-                    variantInputModel = CacheUtil.convertModelToString(ProductVariantInputModel(), object : TypeToken<ProductVariantInputModel>() {}.type)
                 }
                 productDraftList.add(productDraft)
             }

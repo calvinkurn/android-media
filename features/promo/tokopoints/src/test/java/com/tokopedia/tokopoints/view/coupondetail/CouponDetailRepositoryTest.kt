@@ -5,13 +5,10 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.tokopoints.view.util.CommonConstant
 import io.mockk.coEvery
 import io.mockk.mockk
-import io.mockk.spyk
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
-
-import org.junit.Assert.*
 
 class CouponDetailRepositoryTest {
 

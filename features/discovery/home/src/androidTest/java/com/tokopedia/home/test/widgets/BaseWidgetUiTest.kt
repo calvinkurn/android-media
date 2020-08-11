@@ -10,35 +10,46 @@ import com.tokopedia.home.beranda.data.usecase.HomeUseCase
 import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
 import com.tokopedia.home.test.rules.TestDispatcherProvider
+import com.tokopedia.play_common.domain.usecases.GetPlayWidgetUseCase
+import com.tokopedia.play_common.domain.usecases.PlayToggleChannelReminderUseCase
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
+import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.user.session.UserSessionInterface
+import dagger.Lazy
 import io.mockk.mockk
 
 abstract class BaseWidgetUiTest{
-    val userSessionInterface = mockk<UserSessionInterface>(relaxed = true)
-    val dismissHomeReviewUseCase = mockk<DismissHomeReviewUseCase>(relaxed = true)
-    val getHomeReviewSuggestedUseCase = mockk<GetHomeReviewSuggestedUseCase>(relaxed = true)
-    val getKeywordSearchUseCase = mockk<GetKeywordSearchUseCase>(relaxed = true)
-    val getRecommendationTabUseCase = mockk<GetRecommendationTabUseCase>(relaxed = true)
-    val getHomeTokopointsDataUseCase = mockk<GetHomeTokopointsDataUseCase>(relaxed = true)
-    val getCoroutinePendingCashbackUseCase = mockk<GetCoroutinePendingCashbackUseCase> (relaxed = true)
-    val getPlayLiveDynamicUseCase = mockk<GetPlayLiveDynamicUseCase> (relaxed = true)
-    val getCoroutineWalletBalanceUseCase = mockk<GetCoroutineWalletBalanceUseCase> (relaxed = true)
-    val getHomeUseCase = mockk<dagger.Lazy<HomeUseCase>> (relaxed = true)
-    val getSendGeolocationInfoUseCase = mockk<dagger.Lazy<SendGeolocationInfoUseCase>> (relaxed = true)
-    val getStickyLoginUseCase = mockk<StickyLoginUseCase> (relaxed = true)
-    val getBusinessWidgetTab = mockk<GetBusinessWidgetTab> (relaxed = true)
-    val getBusinessUnitDataUseCase = mockk<GetBusinessUnitDataUseCase> (relaxed = true)
-    val getPopularKeywordUseCase = mockk<GetPopularKeywordUseCase> (relaxed = true)
-    val getDynamicChannelsUseCase = mockk<GetDynamicChannelsUseCase> (relaxed = true)
-    val getAtcUseCase = mockk<AddToCartOccUseCase>(relaxed = true)
-    val getRechargeRecommendationUseCase = mockk<GetRechargeRecommendationUseCase>(relaxed = true)
-    val declineRechargeRecommendationUseCase = mockk<DeclineRechargeRecommendationUseCase>(relaxed = true)
-    val closeChannelUseCase = mockk<CloseChannelUseCase>(relaxed = true)
-    val injectCouponTimeBasedUseCase = mockk<InjectCouponTimeBasedUseCase>(relaxed = true)
-    val homeDataMapper = HomeDataMapper(InstrumentationRegistry.getInstrumentation().context, HomeVisitableFactoryImpl(userSessionInterface), mockk(relaxed = true))
+    open val userSessionInterface: Lazy<UserSessionInterface> = mockk<Lazy<UserSessionInterface>>(relaxed = true)
+    open val dismissHomeReviewUseCase = mockk<Lazy<DismissHomeReviewUseCase>>(relaxed = true)
+    open val getHomeReviewSuggestedUseCase = mockk<Lazy<GetHomeReviewSuggestedUseCase>>(relaxed = true)
+    open val getKeywordSearchUseCase = mockk<Lazy<GetKeywordSearchUseCase>>(relaxed = true)
+    open val getRecommendationTabUseCase = mockk<Lazy<GetRecommendationTabUseCase>>(relaxed = true)
+    open val getHomeTokopointsDataUseCase = mockk<Lazy<GetHomeTokopointsDataUseCase>>(relaxed = true)
+    open val getCoroutinePendingCashbackUseCase = mockk<Lazy<GetCoroutinePendingCashbackUseCase>> (relaxed = true)
+    open val getPlayLiveDynamicUseCase = mockk<Lazy<GetPlayLiveDynamicUseCase>> (relaxed = true)
+    open val getCoroutineWalletBalanceUseCase = mockk<Lazy<GetCoroutineWalletBalanceUseCase>> (relaxed = true)
+    open val getHomeUseCase = mockk<dagger.Lazy<HomeUseCase>> (relaxed = true)
+    open val getSendGeolocationInfoUseCase = mockk<dagger.Lazy<SendGeolocationInfoUseCase>> (relaxed = true)
+    open val getStickyLoginUseCase = mockk<Lazy<StickyLoginUseCase>> (relaxed = true)
+    open val getBusinessWidgetTab = mockk<Lazy<GetBusinessWidgetTab>> (relaxed = true)
+    open val getBusinessUnitDataUseCase = mockk<Lazy<GetBusinessUnitDataUseCase>> (relaxed = true)
+    open val getPopularKeywordUseCase = mockk<Lazy<GetPopularKeywordUseCase>> (relaxed = true)
+    open val getDynamicChannelsUseCase = mockk<Lazy<GetDynamicChannelsUseCase>> (relaxed = true)
+    open val getAtcUseCase = mockk<Lazy<AddToCartOccUseCase>>(relaxed = true)
+    open val getRechargeRecommendationUseCase = mockk<Lazy<GetRechargeRecommendationUseCase>>(relaxed = true)
+    open val declineRechargeRecommendationUseCase = mockk<Lazy<DeclineRechargeRecommendationUseCase>>(relaxed = true)
+    open val getSalamWIdgetUseCase = mockk<Lazy<GetSalamWidgetUseCase>>(relaxed = true)
+    open val declineSalamWIdgetUseCase = mockk<Lazy<DeclineSalamWIdgetUseCase>>(relaxed = true)
+    open val closeChannelUseCase = mockk<Lazy<CloseChannelUseCase>>(relaxed = true)
+    open val topAdsImageViewUseCase = mockk<Lazy<TopAdsImageViewUseCase>>(relaxed = true)
+    open val injectCouponTimeBasedUseCase = mockk<Lazy<InjectCouponTimeBasedUseCase>>(relaxed = true)
+    open val remoteConfig = mockk<RemoteConfig>(relaxed = true)
+    open val playToggleChannelReminderUseCase = mockk<Lazy<PlayToggleChannelReminderUseCase>> (relaxed = true)
+    open val getPlayBannerUseCase = mockk<Lazy<GetPlayWidgetUseCase>> (relaxed = true)
+    open val homeDataMapper = HomeDataMapper(InstrumentationRegistry.getInstrumentation().context, HomeVisitableFactoryImpl(userSessionInterface.get(), remoteConfig), mockk(relaxed = true))
 
-    fun reInitViewModel() = HomeViewModel(
+    open fun reInitViewModel() = HomeViewModel(
             dismissHomeReviewUseCase = dismissHomeReviewUseCase,
             getBusinessUnitDataUseCase = getBusinessUnitDataUseCase,
             getBusinessWidgetTab = getBusinessWidgetTab,
@@ -60,7 +71,12 @@ abstract class BaseWidgetUiTest{
             closeChannelUseCase = closeChannelUseCase,
             getRechargeRecommendationUseCase = getRechargeRecommendationUseCase,
             declineRechargeRecommendationUseCase = declineRechargeRecommendationUseCase,
-            injectCouponTimeBasedUseCase = injectCouponTimeBasedUseCase
+            getSalamWidgetUseCase = getSalamWIdgetUseCase,
+            declineSalamWidgetUseCase = declineSalamWIdgetUseCase,
+            injectCouponTimeBasedUseCase = injectCouponTimeBasedUseCase,
+            topAdsImageViewUseCase = topAdsImageViewUseCase,
+            playToggleChannelReminderUseCase = playToggleChannelReminderUseCase,
+            getPlayBannerUseCase = getPlayBannerUseCase
     )
 
     fun <T : ViewModel> createViewModelFactory(viewModel: T): ViewModelProvider.Factory {

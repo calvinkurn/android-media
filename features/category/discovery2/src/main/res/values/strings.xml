@@ -1,0 +1,40 @@
+<resources>
+    <string name="promo_code">Promo Code</string>
+    <string name="hari">Hari</string>
+    <string name="jam">Jam</string>
+    <string name="menit">Menit</string>
+    <string name="detik">Detik</string>
+    <string name="time_separator">:</string>
+    <string name="default_timer_value">00</string>
+    <string name="lihat_semua">Lihat Semua</string>
+    <string name="discovery">Discovery</string>
+    <string name="klaim">Klaim</string>
+    <string name="discovery_please_log_in">Please Log in</string>
+    <string name="discovery_login">Login</string>
+    <string name="review_count_format">(%d)</string>
+    <string name="product_card_module_label_subscribe">Ingatkan Saya</string>
+    <string name="product_card_module_label_un_subscribe">Pengingat Aktif</string>
+    <string name="discovery_sale_begins_in">Dimulai dalam</string>
+    <string name="discovery_sale_has_ended">Telah berakhir</string>
+    <string name="discovery_sale_ends_in">Berakhir dalam</string>
+    <string name="topads">Ad</string>
+    <string name="stok_habis">Stok Habis</string>
+    <string name="claim_coupon_redeem_coupon_msg">Selamat, kupon berhasil diklaim! Lihat kupon saya sekarang</string>
+    <string name="claim_coupon_lihat_text">Lihat</string>
+    <string name="coupon_code_successfully_copied">Kode kupon berhasil disalin. Gunakan saat transaksi.</string>
+    <string name="coupon_code_btn_text">S &amp; K</string>
+    <string name="active_reminder_text">Pengingat Aktif</string>
+    <string name="remind_me_text">Ingatkan Saya</string>
+    <string name="product_card_error_msg">Terjadi kesalahan, coba lagi nanti.</string>
+    <string name="terjual_habis">Terjual habis</string>
+    <string name="stok_terakhir_beli_sekarang">Stok terakhir, beli sekarang!</string>
+    <string name="tersisa">Tersisa</string>
+    <string name="terjual">Terjual</string>
+    <string name="masih_tersedia">Masih Tersedia</string>
+    <string name="pakai">Pakai</string>
+    <string name="verify_text">Verifikasi Nomor HP</string>
+    <string name="verify_title">Sebelum menggunakan promo ini, verifikasi dulu nomor HP kamu, ya.</string>
+    <string name="verify_header">Verifikasi Nomor HP</string>
+    <string name="quick_coupon_title">Kupon Cashback 80%</string>
+
+</resources>

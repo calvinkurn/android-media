@@ -77,7 +77,7 @@ class ShopDivider : Visitable<InvoiceTypeFactory>{
 }
 
 data class ShopInvoice(
-        val shopName: String,
+        val shopName: String?,
         val orderedItem: List<OrderedItem>,
         val itemDiscountStr: String?,
         val productProtectionStr: String?,

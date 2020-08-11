@@ -4,6 +4,8 @@ import com.tokopedia.product.detail.common.data.model.carttype.CartRedirectionPa
 import com.tokopedia.product.detail.common.data.model.pdplayout.*
 import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.data.model.variant.VariantDataModel
+import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
+import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.variant_common.model.ProductVariantCommon
 
 object DynamicProductDetailMapper {
@@ -12,22 +14,8 @@ object DynamicProductDetailMapper {
         val listOfComponent: MutableList<DynamicPdpDataModel> = mutableListOf()
         data.forEachIndexed { index, component ->
             when (component.type) {
-                ProductDetailConstant.PRODUCT_SNAPSHOT -> {
-                    listOfComponent.add(ProductSnapshotDataModel(type = component.type, name = component.componentName))
-                }
                 ProductDetailConstant.NOTIFY_ME -> {
-                    listOfComponent.add(ProductNotifyMeDataModel(
-                            type = component.type,
-                            name = component.componentName,
-                            campaignID = component.componentData.firstOrNull()?.campaignId ?: "",
-                            campaignType = component.componentData.firstOrNull()?.campaignType
-                                    ?: "",
-                            campaignTypeName = component.componentData.firstOrNull()?.campaignTypeName
-                                    ?: "",
-                            endDate = component.componentData.firstOrNull()?.endDate ?: "",
-                            startDate = component.componentData.firstOrNull()?.startDate ?: "",
-                            notifyMe = component.componentData.firstOrNull()?.notifyMe ?: false
-                    ))
+                    listOfComponent.add(ProductNotifyMeDataModel(type = component.type, name = component.componentName))
                 }
                 ProductDetailConstant.DISCUSSION -> {
                     listOfComponent.add(ProductDiscussionDataModel(type = component.type, name = component.componentName))
@@ -47,6 +35,9 @@ object DynamicProductDetailMapper {
                     } else {
                         listOfComponent.add(ProductSocialProofDataModel(type = component.type, name = component.componentName, isSocialProofPv = false))
                     }
+                }
+                ProductDetailConstant.MINI_SOCIAL_PROOF -> {
+                    listOfComponent.add(ProductMiniSocialProofDataModel(type = component.type, name = component.componentName))
                 }
                 ProductDetailConstant.MOST_HELPFUL_REVIEW -> {
                     listOfComponent.add(ProductMostHelpfulReviewDataModel(type = component.type, name = component.componentName))
@@ -72,30 +63,68 @@ object DynamicProductDetailMapper {
                 ProductDetailConstant.VARIANT -> {
                     listOfComponent.add(VariantDataModel(type = component.type, name = component.componentName))
                 }
+                ProductDetailConstant.MINI_SHOP_INFO -> {
+                    listOfComponent.add(ProductMiniShopInfoDataModel(type = component.type, name = component.componentName))
+                }
+                ProductDetailConstant.PRODUCT_CONTENT -> {
+                    //Will be remove soon
+                    if (component.componentName == ProductDetailConstant.PRODUCT_CONTENT) {
+                        listOfComponent.add(ProductContentDataModel(type = component.type, name = component.componentName))
+                    } else {
+                        listOfComponent.add(ProductSnapshotDataModel(type = component.type, name = component.componentName))
+                    }
+                }
+                ProductDetailConstant.MEDIA -> {
+                    listOfComponent.add(ProductMediaDataModel(type = component.type, name = component.componentName))
+                }
+                ProductDetailConstant.TICKER_INFO -> {
+                    listOfComponent.add(ProductTickerInfoDataModel(type = component.type, name = component.componentName))
+                }
+                ProductDetailConstant.PRODUCT_SHOP_CREDIBILITY -> {
+                    listOfComponent.add(ProductShopCredibilityDataModel(type = component.type, name = component.componentName))
+                }
             }
         }
         return listOfComponent
     }
 
+    /**
+     * Combine all important data of all component to one Source of Truth
+     * Component need to combine : Snapshot/Content , Notify Me , Media
+     * @param DynamicProductInfoP1 Source of Truth PDP
+     */
     fun mapToDynamicProductDetailP1(data: PdpGetLayout): DynamicProductInfoP1 {
-        val componentData = data.components.find {
-            it.type == ProductDetailConstant.PRODUCT_SNAPSHOT
-        }?.componentData?.firstOrNull() ?: ComponentData()
+        val contentData = data.components.find {
+            it.type == ProductDetailConstant.PRODUCT_CONTENT
+        }?.componentData?.firstOrNull()
 
         val upcomingData = data.components.find {
             it.type == ProductDetailConstant.NOTIFY_ME
         }?.componentData?.firstOrNull() ?: ComponentData()
 
-        val newData = componentData.copy(
+        val mediaData = data.components.find {
+            it.type == ProductDetailConstant.MEDIA
+        }?.componentData?.firstOrNull() ?: ComponentData()
+
+        val newDataWithUpcoming = contentData?.copy(
                 campaignId = upcomingData.campaignId,
                 campaignType = upcomingData.campaignType,
                 campaignTypeName = upcomingData.campaignTypeName,
                 endDate = upcomingData.endDate,
                 startDate = upcomingData.startDate,
                 notifyMe = upcomingData.notifyMe
-        )
+        ) ?: ComponentData()
 
-        return DynamicProductInfoP1(layoutName = data.generalName, basic = data.basicInfo, data = newData)
+        val newDataWithMedia = newDataWithUpcoming.copy(media = mediaData.media, videos = mediaData.videos)
+        assignIdToMedia(newDataWithMedia.media)
+
+        return DynamicProductInfoP1(layoutName = data.generalName, basic = data.basicInfo, data = newDataWithMedia)
+    }
+
+    private fun assignIdToMedia(listOfMedia: List<Media>){
+        listOfMedia.forEachIndexed { index, it ->
+            it.id = (index + 1).toString()
+        }
     }
 
     fun hashMapLayout(data: List<DynamicPdpDataModel>): Map<String, DynamicPdpDataModel> {
@@ -157,9 +186,9 @@ object DynamicProductDetailMapper {
         }
     }
 
-    fun convertMediaToDataModel(media: MutableList<Media>): List<ProductMediaDataModel> {
+    fun convertMediaToDataModel(media: MutableList<Media>): List<MediaDataModel> {
         return media.map { it ->
-            ProductMediaDataModel(it.type, it.uRL300, it.uRLOriginal, it.uRLThumbnail, it.description, it.videoURLAndroid, it.isAutoplay)
+            MediaDataModel(it.id, it.type, it.uRL300, it.uRLOriginal, it.uRLThumbnail, it.description, it.videoURLAndroid, it.isAutoplay)
         }
     }
 
@@ -181,5 +210,16 @@ object DynamicProductDetailMapper {
         fallbackUrl = fallbackUrl.replace("www.", "m.")
         fallbackUrl += "report/"
         return fallbackUrl
+    }
+
+    /**
+     * Ticker is used for show general message like : corona, shipping delay,  etc
+     * since we are using the same GQL as sticky login, we don't want sticky login item so we remove this
+     * LAYOUT_FLOATING should be sticky login
+     */
+    fun getTickerInfoData(tickerData: StickyLoginTickerPojo.TickerResponse): List<StickyLoginTickerPojo.TickerDetail> {
+        return tickerData.response.tickers.filter {
+            it.layout != StickyLoginConstant.LAYOUT_FLOATING
+        }
     }
 }

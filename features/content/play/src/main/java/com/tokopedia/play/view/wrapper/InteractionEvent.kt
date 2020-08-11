@@ -15,9 +15,18 @@ sealed class InteractionEvent {
     object SendChat : InteractionEvent() {
         override val needLogin: Boolean = true
     }
-    data class Like(val shouldLike: Boolean, override val needLogin: Boolean = true) : InteractionEvent()
-    data class Follow(val partnerId: Long, val partnerAction: PartnerFollowAction, override val needLogin: Boolean = true) : InteractionEvent()
-    data class DoActionProduct(val product: ProductLineUiModel, val action: ProductAction, val type: BottomInsetsType, override val needLogin: Boolean = true) : InteractionEvent()
+    data class Like(val shouldLike: Boolean) : InteractionEvent() {
+        override val needLogin: Boolean = true
+    }
+    data class Follow(val partnerId: Long, val partnerAction: PartnerFollowAction) : InteractionEvent() {
+        override val needLogin: Boolean = true
+    }
+    data class DoActionProduct(val product: ProductLineUiModel, val action: ProductAction, val type: BottomInsetsType) : InteractionEvent() {
+        override val needLogin: Boolean = true
+    }
+    data class OpenProductDetail(val product: ProductLineUiModel, val position: Int) : InteractionEvent() {
+        override val needLogin: Boolean = false
+    }
     object CartPage : InteractionEvent() {
         override val needLogin: Boolean = true
     }

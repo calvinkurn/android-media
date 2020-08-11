@@ -55,12 +55,4 @@
 
     </RelativeLayout>
 
-    <com.tokopedia.topads.sdk.widget.TopAdsView
-        android:id="@+id/topads"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:display_type="grid"
-        app:ep="product"
-        app:items="4" />
-
 </LinearLayout>

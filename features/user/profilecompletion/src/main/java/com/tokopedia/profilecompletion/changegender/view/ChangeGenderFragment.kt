@@ -54,16 +54,16 @@ class ChangeGenderFragment : BaseDaggerFragment() {
     }
 
     private fun setListener() {
-        radioGroup.setOnCheckedChangeListener { _: RadioGroup, _: Int ->
+        rg_gender?.setOnCheckedChangeListener { _: RadioGroup, _: Int ->
             buttonSubmit.isEnabled = true
         }
 
         buttonSubmit.setOnClickListener {
             if (radioGroupIsSelected()) {
                 showLoading()
-                val selectedGenderView = radioGroup.findViewById<RadioButton>(radioGroup.checkedRadioButtonId)
-                val selectedGender = radioGroup.indexOfChild(selectedGenderView)
-                viewModel.mutateChangeGender(context!!, mapSelectedGender(selectedGender))
+                val selectedGenderView = rg_gender?.findViewById<RadioButton>(rg_gender?.checkedRadioButtonId?: 0)
+                val selectedGender = rg_gender?.indexOfChild(selectedGenderView)
+                context?.let { ctx -> viewModel.mutateChangeGender(ctx, mapSelectedGender(selectedGender?: 0)) }
             }
         }
     }
@@ -73,7 +73,7 @@ class ChangeGenderFragment : BaseDaggerFragment() {
     }
 
     private fun radioGroupIsSelected(): Boolean {
-        return radioGroup.checkedRadioButtonId != -1
+        return rg_gender?.checkedRadioButtonId != -1
     }
 
     private fun setObserver() {

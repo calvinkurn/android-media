@@ -74,7 +74,7 @@ object SharingUtil {
     fun copyTextToClipboard(context: Context, label: String, text: String) {
         val clipboard: ClipboardManager? = context.getSystemService(Context.CLIPBOARD_SERVICE) as? ClipboardManager
         clipboard?.run {
-            primaryClip = ClipData.newPlainText(label, text)
+            setPrimaryClip(ClipData.newPlainText(label, text))
         }
     }
 

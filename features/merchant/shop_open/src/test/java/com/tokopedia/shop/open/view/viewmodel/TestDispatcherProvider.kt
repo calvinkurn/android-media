@@ -1,6 +1,6 @@
 package com.tokopedia.shop.open.view.viewmodel
 
-import com.tokopedia.shop.open.shop_open_revamp.common.ShopOpenDispatcherProvider
+import com.tokopedia.shop.open.common.ShopOpenDispatcherProvider
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 

@@ -2031,8 +2031,6 @@ di Tokopedia Sekarang!</string>
     <string name="banner_official_store_title_text">Sudah pernah cek Official Store Tokopedia belum?</string>
     <string name="banner_official_store_subtitle_text">Lihat Sekarang</string>
     <string name="error_data_not_found">Data tidak ditemukan.</string>
-    <string name="title_opportunity_list">Peluang</string>
-    <string name="accept_replacement">Ambil Peluang</string>
     <string name="add_favorite_success_message">$1 ditambahkan ke daftar favorit.</string>
     <string name="remove_favorite_success_message">$1 dihapus dari daftar toko favorit.</string>
 
@@ -2054,7 +2052,6 @@ di Tokopedia Sekarang!</string>
     <string name="drawer_title_logout">Keluar</string>
     <string name="drawer_title_confirm_shipping">Konfirmasi Pengiriman</string>
     <string name="drawer_title_list_selling">Daftar Penjualan</string>
-    <string name="drawer_title_opportunity">Peluang</string>
     <string name="drawer_title_add_product">Tambah Produk</string>
     <string name="drawer_title_product_list">Daftar Produk</string>
     <string name="drawer_title_draft_list">Draft Produk</string>

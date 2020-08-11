@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.brandlist.R
 import com.tokopedia.brandlist.brandlist_page.data.model.Shop
-import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.FeaturedBrandViewModel
+import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.FeaturedBrandUiModel
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.widget.FeaturedBrandAdapter
 import com.tokopedia.brandlist.common.listener.BrandlistPageTrackingListener
 import com.tokopedia.kotlin.extensions.view.hide
@@ -17,7 +17,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifyprinciples.Typography
 
 class FeaturedBrandViewHolder(itemView: View?, val listener: BrandlistPageTrackingListener) :
-        AbstractViewHolder<FeaturedBrandViewModel>(itemView) {
+        AbstractViewHolder<FeaturedBrandUiModel>(itemView) {
 
     private var featuredBrandList: List<Shop> = listOf()
     private var incrementalBrandList: List<Shop> = listOf()
@@ -51,7 +51,7 @@ class FeaturedBrandViewHolder(itemView: View?, val listener: BrandlistPageTracki
         }
     }
 
-    override fun bind(element: FeaturedBrandViewModel?) {
+    override fun bind(element: FeaturedBrandUiModel?) {
         headerView?.text = element?.header?.title
 
         element?.featuredBrands?.let {

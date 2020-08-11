@@ -2,7 +2,7 @@
     <string name="app_name">Tokopedia Seller</string>
 
     <string name="GOOGLE_API_KEY_SA">AIzaSyA5wS94D52rNG0ygrt0Od8UdMrLUTBMyB8</string>
-  
+
     <string name="extend_gold_merchant">Perpanjang %1$s</string>
     <string name="upgrade_gold_merchant">Upgrade ke %1$s</string>
     <string name="payment_and_topup">Pembayaran dan Top Up</string>
@@ -87,4 +87,15 @@
 
     <!-- Dynamic features Shop Showcase -->
     <string name="title_shop_showcase">Shop Showcase</string>
+
+    <!-- Shop Score Title  -->
+    <string name="title_shopscore">Performa Toko/ Shop Score</string>
+    
+    <!-- Dynamic feature Product Add Edit -->
+    <string name="action_pick_photo">Pilih Foto</string>
+    <string name="action_edit_photo">Ubah Foto</string>
+    <string name="label_title_add_product">Tambah Produk</string>
+
+    <string name="vidpick_app_name">Video Recorder</string>
+
 </resources>

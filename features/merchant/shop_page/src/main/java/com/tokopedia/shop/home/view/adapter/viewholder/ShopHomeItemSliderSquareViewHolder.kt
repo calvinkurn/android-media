@@ -32,7 +32,12 @@ class ShopHomeItemSliderSquareViewHolder(
 
     fun bind(data: ShopHomeDisplayWidgetUiModel.DisplayWidgetItem) {
         performanceMonitoring = PerformanceMonitoring.start(SHOP_HOME_IMAGE_SLIDER_SQUARE_TRACE)
-        ivSliderSquare.setImageUrl(data.imageUrl, heightRatio = heightRatio)
+        //avoid crash in ImageUnify when image url is returned as base64
+        try {
+            ivSliderSquare.setImageUrl(data.imageUrl, heightRatio = heightRatio)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
         ivSliderSquare.onUrlLoaded = {
             performanceMonitoring?.stopTrace() ?: Unit
         }

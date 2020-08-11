@@ -46,6 +46,7 @@ class ScanFingerprintDialog(val context: FragmentActivity, val listener: ScanFin
     val ANIM_DURATION = 1000L
 
     val TAG = "ScanFingerprintDialog"
+
     companion object {
         const val STATE_INVALID = 2
         const val STATE_SUCCESS = 1
@@ -70,6 +71,9 @@ class ScanFingerprintDialog(val context: FragmentActivity, val listener: ScanFin
                 return fingerprintManager?.isHardwareDetected == true && fingerprintManager.hasEnrolledFingerprints()
             }else return false
         }
+
+        fun newInstance(context: FragmentActivity, listener: ScanFingerprintInterface?): ScanFingerprintDialog
+                = ScanFingerprintDialog(context, listener)
     }
 
     @Inject

@@ -5,12 +5,12 @@ import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatTextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.brandlist.R
-import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.AllBrandHeaderViewModel
+import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.AllBrandHeaderUiModel
 import com.tokopedia.unifyprinciples.Typography
 import java.text.NumberFormat
 import java.util.*
 
-class AllBrandHeaderViewHolder(itemView: View?) : AbstractViewHolder<AllBrandHeaderViewModel>(itemView) {
+class AllBrandHeaderViewHolder(itemView: View?) : AbstractViewHolder<AllBrandHeaderUiModel>(itemView) {
 
     private var headerView: Typography? = null
     private var totalBrandView: AppCompatTextView? = null
@@ -20,7 +20,7 @@ class AllBrandHeaderViewHolder(itemView: View?) : AbstractViewHolder<AllBrandHea
         totalBrandView = itemView?.findViewById(R.id.tv_total_brand)
     }
 
-    override fun bind(element: AllBrandHeaderViewModel?) {
+    override fun bind(element: AllBrandHeaderUiModel?) {
 
         headerView?.text = element?.title
 

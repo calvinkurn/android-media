@@ -23,20 +23,20 @@ dependencies {
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
-    implementation project(rootProject.ext.libraries.reactNative)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.logger)
+    implementation project(rootProject.ext.libraries.screenRecorder)
     if (rootProject.ext.debugToolsEnabled) {
         implementation project(rootProject.ext.libraries.analyticsDebugger)
     } else {
         implementation project(rootProject.ext.libraries.analyticsDebuggerNoop)
     }
     if (rootProject.ext.debugToolsEnabled) {
-        implementation project(project.ext.debugToolsDependencies.blockCanary)
+        implementation project(rootProject.ext.libraries.blockCanary)
     } else {
-        implementation project.ext.debugToolsDependencies.blockCanaryNoOp
+        implementation rootProject.ext.libraries.blockCanaryNoOp
     }
     implementation project(rootProject.ext.libraries.pushNotification)
     implementation project(rootProject.ext.libraries.permissionchecker)
@@ -48,7 +48,6 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
 
-    implementation rootProject.ext.miscDependencies.reactNative
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
@@ -56,11 +55,9 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.maps
 
     implementation rootProject.ext.firebase.messaging
-
-    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
-    debugImplementation project(rootProject.ext.libraries.translator)
-    debugImplementation rootProject.ext.debugToolsDependencies.stetho
+    
+    implementation project(rootProject.ext.libraries.translator)
+    implementation rootProject.ext.debugToolsDependencies.stetho
 
     implementation(rootProject.ext.debugToolsDependencies.timber) {
         exclude group: 'org.jetbrains', module: 'annotations'

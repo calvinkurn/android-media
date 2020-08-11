@@ -33,6 +33,7 @@ import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Con
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.Companion.USER_PHONE
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.QueryConstants.Companion.OLD_PHONE
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.QueryConstants.Companion.USER_ID
+import com.tokopedia.updateinactivephone.common.analytics.UpdateInactivePhoneAnalytics
 import com.tokopedia.updateinactivephone.di.component.DaggerUpdateInactivePhoneComponent
 import com.tokopedia.updateinactivephone.di.module.UpdateInactivePhoneModule
 import com.tokopedia.updateinactivephone.view.fragment.SelectImageNewPhoneFragment
@@ -56,6 +57,8 @@ class ChangeInactiveFormRequestActivity : BaseSimpleActivity(),
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject
+    lateinit var analytics: UpdateInactivePhoneAnalytics
 
     private val viewModelFragmentProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     private val viewModel by lazy { viewModelFragmentProvider.get(ChangeInactiveFormRequestViewModel::class.java) }
@@ -91,6 +94,7 @@ class ChangeInactiveFormRequestActivity : BaseSimpleActivity(),
                 }
                 is Fail -> {
                     dismissLoading()
+                    it.throwable.message?.let { message -> analytics.eventFailedClickButtonSubmission(message) }
                     onPhoneServerError()
                 }
             }
@@ -106,7 +110,10 @@ class ChangeInactiveFormRequestActivity : BaseSimpleActivity(),
                         0 -> { it.data.changeInactivePhoneQuery.error.let { error -> resolveError(error) } }
                     }
                 }
-                is Fail -> { onPhoneServerError() }
+                is Fail -> {
+                    it.throwable.message?.let { message -> analytics.eventFailedClickButtonSubmission(message) }
+                    onPhoneServerError()
+                }
             }
         })
     }
@@ -334,6 +341,7 @@ class ChangeInactiveFormRequestActivity : BaseSimpleActivity(),
     }
 
     override fun onUpdateDataRequestSuccess() {
+        analytics.eventSuccessClickButtonSubmission()
         val bundle = Bundle()
         bundle.putBoolean(IS_DUPLICATE_REQUEST, false)
         bundle.putString(USER_EMAIL, newEmail)
@@ -364,6 +372,7 @@ class ChangeInactiveFormRequestActivity : BaseSimpleActivity(),
     }
 
     private fun resolveError(error: String) {
+        analytics.eventFailedClickButtonSubmission(error)
         when {
             UpdateInactivePhoneConstants.ResponseConstants.SAME_MSISDN.equals(error, ignoreCase = true) -> onSameMsisdn()
             UpdateInactivePhoneConstants.ResponseConstants.PHONE_TOO_SHORT.equals(error, ignoreCase = true) -> onPhoneTooShort()

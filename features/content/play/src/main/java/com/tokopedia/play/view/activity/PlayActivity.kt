@@ -2,11 +2,11 @@ package com.tokopedia.play.view.activity
 
 import android.content.Context
 import android.content.Intent
+import android.media.AudioManager
 import android.net.Uri
 import android.os.Bundle
 import android.view.WindowManager
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ProcessLifecycleOwner
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
@@ -18,10 +18,12 @@ import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.play.*
 import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.di.PlayModule
+import com.tokopedia.play.util.observer.PlayVideoUtilObserver
+import com.tokopedia.play.view.contract.PlayNavigation
 import com.tokopedia.play.view.contract.PlayNewChannelInteractor
 import com.tokopedia.play.view.fragment.PlayFragment
-import com.tokopedia.play_common.util.PlayLifecycleObserver
-import com.tokopedia.play_common.util.PlayProcessLifecycleObserver
+import com.tokopedia.play.view.type.ScreenOrientation
+import com.tokopedia.play_common.util.PlayVideoPlayerObserver
 import org.jetbrains.annotations.TestOnly
 import javax.inject.Inject
 
@@ -29,7 +31,7 @@ import javax.inject.Inject
  * Created by jegul on 29/11/19
  * {@link com.tokopedia.applink.internal.ApplinkConstInternalContent#PLAY_DETAIL}
  */
-class PlayActivity : BaseActivity(), PlayNewChannelInteractor {
+class PlayActivity : BaseActivity(), PlayNewChannelInteractor, PlayNavigation {
 
     companion object {
         private const val PLAY_FRAGMENT_TAG = "FRAGMENT_PLAY"
@@ -42,10 +44,13 @@ class PlayActivity : BaseActivity(), PlayNewChannelInteractor {
     }
 
     @Inject
-    lateinit var playLifecycleObserver: PlayLifecycleObserver
+    lateinit var playLifecycleObserver: PlayVideoPlayerObserver
 
     @Inject
-    lateinit var playProcessLifecycleObserver: PlayProcessLifecycleObserver
+    lateinit var playVideoUtilObserver: PlayVideoUtilObserver
+
+    private val orientation: ScreenOrientation
+        get() = ScreenOrientation.getByInt(resources.configuration.orientation)
 
     private lateinit var pageMonitoring: PageLoadTimePerformanceInterface
 
@@ -62,6 +67,7 @@ class PlayActivity : BaseActivity(), PlayNewChannelInteractor {
 
     override fun onResume() {
         super.onResume()
+        volumeControlStream = AudioManager.STREAM_MUSIC
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
@@ -101,8 +107,7 @@ class PlayActivity : BaseActivity(), PlayNewChannelInteractor {
 
     private fun setupPage() {
         lifecycle.addObserver(playLifecycleObserver)
-        ProcessLifecycleOwner.get()
-                .lifecycle.addObserver(playProcessLifecycleObserver)
+        lifecycle.addObserver(playVideoUtilObserver)
     }
 
     private fun setupView(channelId: String?) {
@@ -111,26 +116,27 @@ class PlayActivity : BaseActivity(), PlayNewChannelInteractor {
         }
     }
 
-    override fun onBackPressed() {
+    override fun onBackPressed(isSystemBack: Boolean) {
         val fragment = supportFragmentManager.findFragmentByTag(PLAY_FRAGMENT_TAG)
         if (fragment != null && fragment is PlayFragment) {
             if (!fragment.onBackPressed()) {
-                if (isTaskRoot) {
-                    val intent = RouteManager.getIntent(this, ApplinkConst.HOME)
-                    startActivity(intent)
-                    finish()
-                } else {
-                    fragment.setResultBeforeFinish()
-                    supportFinishAfterTransition()
+                if (isSystemBack && orientation.isLandscape) fragment.onOrientationChanged(ScreenOrientation.Portrait, false)
+                else {
+                    if (isTaskRoot) {
+                        val intent = RouteManager.getIntent(this, ApplinkConst.HOME)
+                        startActivity(intent)
+                        finish()
+                    } else {
+                        fragment.setResultBeforeFinish()
+                        supportFinishAfterTransition()
+                    }
                 }
             }
         } else super.onBackPressed()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        ProcessLifecycleOwner.get()
-                .lifecycle.removeObserver(playProcessLifecycleObserver)
+    override fun onBackPressed() {
+        onBackPressed(true)
     }
 
     private fun startPageMonitoring() {

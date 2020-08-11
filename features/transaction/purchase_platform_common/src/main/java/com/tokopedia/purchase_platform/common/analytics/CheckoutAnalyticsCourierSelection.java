@@ -337,17 +337,6 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         sendEnhancedEcommerce(dataLayer);
     }
 
-    // GTM v5 EE Step 2 - 4
-    public void sendEnhancedECommerceCheckoutV5(Bundle eCommerceBundle,
-                                                int step,
-                                                String checkoutOption,
-                                                String transactionId,
-                                                boolean isTradeIn,
-                                                String eventAction,
-                                                String eventLabel) {
-
-    }
-
     public void eventClickCourierSelectionClickPilihAlamatLain() {
         sendEventCategoryAction(
                 EventName.CLICK_ATC,
@@ -1009,6 +998,17 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
                 EventAction.CLICK_DONATION,
                 check ? "check" : "uncheck"
         );
+    }
+
+    public void eventViewAutoCheckDonation(String userId) {
+        Map<String, Object> gtmMap = TrackAppUtils.gtmData(
+                EventName.VIEW_COURIER_IRIS,
+                EventCategory.COURIER_SELECTION,
+                EventAction.VIEW_AUTO_CHECK_ON_DONATION,
+                ""
+        );
+        gtmMap.put(ExtraKey.USER_ID, userId);
+        sendGeneralEvent(gtmMap);
     }
 
     public void eventViewCampaignDialog(int productId, String userId) {

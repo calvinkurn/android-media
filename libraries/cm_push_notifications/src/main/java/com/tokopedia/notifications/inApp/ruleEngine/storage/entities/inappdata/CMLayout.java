@@ -7,6 +7,7 @@ import androidx.room.TypeConverters;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.notifications.inApp.ruleEngine.storage.ButtonListConverter;
+import com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,43 +17,42 @@ import java.util.List;
  */
 public class CMLayout {
 
+    @Expose
     @Embedded(prefix = "bg_")
     @SerializedName("bg")
-    @Expose
-    public CMBackground foreground;
+    public CMBackground foreground = new CMBackground();
 
+    @Expose
     @Embedded(prefix = "ttl_")
     @SerializedName("ttl")
+    public CMText titleText = new CMText();
+
     @Expose
-    public CMText titleText;
     @Embedded(prefix = "msg_")
     @SerializedName("msg")
+    public CMText messageText = new CMText();
+
     @Expose
-    public CMText messageText;
     @ColumnInfo(name = "img")
     @SerializedName("img")
-    @Expose
-    public String img;
+    public String img = "";
 
+    @Expose
     @SerializedName("appLink")
     @ColumnInfo(name = "appLink")
-    @Expose
-    public String appLink;
+    public String appLink = "";
 
+    @Expose
     @ColumnInfo(name = "btnOri")
     @SerializedName("btnOri")
-    @Expose
-    public String btnOrientation;
+    public String btnOrientation = CmInAppConstant.ORIENTATION_VERTICAL;
 
+    @Expose
     @ColumnInfo(name = "inAppButtons")
     @SerializedName("inAppButtons")
-    @Expose
-    public ArrayList<CMButton> button;
+    public ArrayList<CMButton> button = new ArrayList<>();
 
-    public CMLayout() {
-
-    }
-
+    public CMLayout() {}
 
     public CMBackground getForeground() {
         return foreground;

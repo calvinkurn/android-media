@@ -5,7 +5,7 @@ import androidx.annotation.VisibleForTesting
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.ui.like.interaction.LikeInteractionEvent
-import com.tokopedia.play.util.CoroutineDispatcherProvider
+import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.view.event.ScreenStateEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -18,21 +18,27 @@ import kotlinx.coroutines.launch
 open class LikeComponent(
         container: ViewGroup,
         private val bus: EventBusFactory,
-        coroutineScope: CoroutineScope,
+        private val scope: CoroutineScope,
         dispatchers: CoroutineDispatcherProvider
-) : UIComponent<LikeInteractionEvent>, LikeView.Listener, CoroutineScope by coroutineScope {
+) : UIComponent<LikeInteractionEvent>, LikeView.Listener {
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     val uiView = initView(container)
 
     init {
-        launch(dispatchers.immediate) {
+        scope.launch(dispatchers.immediate) {
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
-                            ScreenStateEvent.Init -> uiView.show()
+                            is ScreenStateEvent.Init -> {
+                                uiView.setEnabled(false)
+                                uiView.show()
+                            }
                             is ScreenStateEvent.BottomInsetsChanged -> if (it.isAnyShown) uiView.hide() else uiView.show()
-                            is ScreenStateEvent.LikeContent -> uiView.playLikeAnimation(it.shouldLike, it.animate)
+                            is ScreenStateEvent.LikeContent -> {
+                                uiView.setEnabled(true)
+                                uiView.playLikeAnimation(it.likeState.isLiked, !it.likeState.fromNetwork && !it.isFirstTime)
+                            }
                             is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze || it.event.isBanned) uiView.hide()
                             is ScreenStateEvent.SetTotalLikes -> uiView.setTotalLikes(it.totalLikes)
                         }
@@ -49,7 +55,7 @@ open class LikeComponent(
     }
 
     override fun onLikeClicked(view: LikeView, shouldLike: Boolean) {
-        launch {
+        scope.launch {
             bus.emit(
                     LikeInteractionEvent::class.java,
                     LikeInteractionEvent.LikeClicked(shouldLike)

@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTION_DELETE
@@ -45,6 +46,8 @@ import javax.inject.Inject
 /**
  * Created by Pika on 15/5/20.
  */
+
+private const val CLICK_TAMBAH_KATA_KUNCI_NEGATIVE = "click - tambah kata kunci negatif"
 class NegKeywordTabFragment : BaseDaggerFragment() {
 
     private lateinit var adapter: NegKeywordAdapter
@@ -156,6 +159,7 @@ class NegKeywordTabFragment : BaseDaggerFragment() {
             putExtra(TopAdsDashboardConstant.GROUPNAME, arguments?.getString(TopAdsDashboardConstant.GROUP_NAME))
         }
         startActivityForResult(intent, TopAdsDashboardConstant.EDIT_GROUP_REQUEST_CODE)
+        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsDashboardEvent(CLICK_TAMBAH_KATA_KUNCI_NEGATIVE, "")
     }
 
     private fun setSearchBar() {
@@ -170,19 +174,21 @@ class NegKeywordTabFragment : BaseDaggerFragment() {
         if (actionActivate == ACTION_DELETE) {
             view.let {
                 Toaster.make(it!!, String.format(getString(R.string.topads_neg_keyword_del_toaster), getAdIds().size),
-                        TOASTER_DURATION.toInt(), Toaster.TYPE_NORMAL, getString(R.string.topads_common_batal), View.OnClickListener {
+                        TOASTER_DURATION.toInt(), Toaster.TYPE_NORMAL, getString(com.tokopedia.topads.common.R.string.topads_common_batal), View.OnClickListener {
                     deleteCancel = true
                 })
             }
             val coroutineScope = CoroutineScope(Dispatchers.Main)
             coroutineScope.launch {
                 delay(TOASTER_DURATION)
-                if (!deleteCancel) {
-                    viewModel.setKeywordAction(actionActivate, getAdIds(), resources, ::onSuccessAction)
-                    activity?.setResult(Activity.RESULT_OK)
+                if (activity != null && isAdded) {
+                    if (!deleteCancel) {
+                        viewModel.setKeywordAction(actionActivate, getAdIds(), resources, ::onSuccessAction)
+                        activity?.setResult(Activity.RESULT_OK)
+                    }
+                    deleteCancel = false
+                    setSelectMode(false)
                 }
-                deleteCancel = false
-                setSelectMode(false)
             }
         } else {
             viewModel.setKeywordAction(actionActivate, getAdIds(), resources, ::onSuccessAction)
@@ -207,7 +213,7 @@ class NegKeywordTabFragment : BaseDaggerFragment() {
         val dialog = DialogUnify(context, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
         dialog.setDescription(context.getString(R.string.topads_dash_confirm_delete_negkey_desc))
         dialog.setTitle(String.format(context.getString(R.string.topads_dash_confirm_delete_negkey), adapter.getSelectedItems().size))
-        dialog.setPrimaryCTAText(context.getString(R.string.topads_common_cancel_btn))
+        dialog.setPrimaryCTAText(context.getString(com.tokopedia.topads.common.R.string.topads_common_cancel_btn))
         dialog.setSecondaryCTAText(context.getString(R.string.topads_dash_ya_hapus))
         dialog.setPrimaryCTAClickListener {
             dialog.dismiss()

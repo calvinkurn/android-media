@@ -2,6 +2,9 @@ package com.tokopedia.product.detail.di
 
 object RawQueryKeyConstant {
     const val QUERY_SHOP = "query_shop"
+    const val QUERY_SHOP_SPEED = "query_shop_speed"
+    const val QUERY_SHOP_CHAT_SPEED = "query_shop_chat_speed"
+    const val QUERY_SHOP_RATING = "query_shop_rating"
     const val QUERY_SHOP_BADGE = "query_shop_badge"
     const val QUERY_SHOP_COMMITMENT = "query_shop_commitment"
     const val QUERY_PRODUCT_INFO = "query_product_info"
@@ -30,6 +33,7 @@ object RawQueryKeyConstant {
     const val QUERY_RECOMMEN_PRODUCT = "query_recommendation_product"
     const val QUERY_SHOP_FEATURE = "query_shop_feature"
     const val QUERY_GET_PDP_LAYOUT = "query_get_pdp_layout"
+    const val QUERY_TICKER = "query_ticker"
     const val MUTATION_AFFILIATE_TRACKING = "mutation_af_tracking"
     const val QUERY_PDP_FINANCING_RECOMMENDATION = "pdpFinancingRecommendation"
     const val QUERY_PDP_FINANCING_CALCULATION = "pdpFinancingCalculation"

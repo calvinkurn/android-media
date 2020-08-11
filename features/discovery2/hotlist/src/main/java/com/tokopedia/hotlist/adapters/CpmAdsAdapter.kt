@@ -77,9 +77,9 @@ class CpmAdsAdapter(private var cpmItemList: ArrayList<CpmItem>,
         ImageHandler.loadImage(holder.itemView.context,
                 holder.shopBadge,
                 item.badge_url,
-                R.drawable.loading_page)
+                com.tokopedia.topads.sdk.R.drawable.loading_page)
         holder.shopCpmParent.setOnClickListener {
-            cpmTopAdsListener.onCpmClicked(item.applinks ?: "", item.click_url ?: "", item)
+            cpmTopAdsListener.onCpmClicked(item.applinks ?: "", item.click_url ?: "", item, item.id.toString(), item.name ?: "", item.image?: "")
         }
     }
 
@@ -89,9 +89,9 @@ class CpmAdsAdapter(private var cpmItemList: ArrayList<CpmItem>,
         holder.productPrice.text = item.price_format
         ImageHandler.loadImage(holder.itemView.context,
                 holder.productImage,
-                item.image, R.drawable.loading_page)
+                item.image, com.tokopedia.topads.sdk.R.drawable.loading_page)
         holder.productCpmParent.setOnClickListener {
-            cpmTopAdsListener.onCpmClicked(item.applinks ?: "", item.click_url ?: "", item)
+            cpmTopAdsListener.onCpmClicked(item.applinks ?: "", item.click_url ?: "", item, item.id.toString(), item.name?: "", item.image?: "")
         }
     }
 
@@ -143,7 +143,9 @@ class CpmAdsAdapter(private var cpmItemList: ArrayList<CpmItem>,
         val position = holder.adapterPosition
         if (!isCpmImpressionSent && holder.itemViewType == VIEW_SHOP) {
             isCpmImpressionSent = true
-            cpmTopAdsListener.onCpmImpression(cpmItemList[position].impression_url ?: "")
+            cpmItemList[position].apply {
+                cpmTopAdsListener.onCpmImpression(this.impression_url ?: "", this.id.toString(), this.name ?: "", this.image ?: "")
+            }
         }
     }
 }

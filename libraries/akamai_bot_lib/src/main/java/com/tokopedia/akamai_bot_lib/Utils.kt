@@ -28,7 +28,6 @@ val registeredGqlFunctions = mapOf(
         "login_token" to "login",
         "register" to "register",
         "pdpGetLayout" to "pdpGetLayout",
-        "checkout_general" to "checkout",
         "atcOCS" to "atconeclickshipment",
         "getPDPInfo" to "product_info",
         "shopInfoByID" to "shop_info",
@@ -39,7 +38,9 @@ val registeredGqlFunctions = mapOf(
         "add_to_cart_occ" to "atcocc",
         "one_click_checkout" to "checkoutocc",
         "add_to_cart_transactional" to "atc",
-        "add_to_cart" to "atc"
+        "add_to_cart" to "atc",
+        "checkout" to "checkout",
+        "hachikoRedeem" to "claimcoupon"
 )
 
 fun isAkamai(query: String): Boolean {

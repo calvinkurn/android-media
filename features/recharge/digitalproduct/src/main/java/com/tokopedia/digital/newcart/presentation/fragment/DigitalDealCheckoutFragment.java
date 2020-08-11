@@ -418,7 +418,7 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
 
     @Override
     public void showPromoOnlyForTopUpAndBillMessage() {
-        Toaster.INSTANCE.make(getView(), getString(R.string.digital_deal_promo_restriction_message),
+        Toaster.make(getView(), getString(R.string.digital_deal_promo_restriction_message),
                 Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(R.string.digital_deal_promo_restriction_action_label), v->{});
     }
 

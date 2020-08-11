@@ -21,9 +21,6 @@
                     android:scheme="@string/internal_scheme"
                     android:host="@string/host_topads"
                     android:pathPattern="@string/path_topads_dashboard"/>
-                <data
-                    android:scheme="@string/sellerapp_scheme"
-                    android:host="@string/host_topads"/>
             </intent-filter>
         </activity>
         <activity
@@ -66,8 +63,19 @@
             android:name="com.tokopedia.topads.debit.autotopup.view.activity.TopAdsAutoTopUpActivity"
             android:label="@string/title_top_ads_auto_topup"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
+            android:theme="@style/Theme.White">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
 
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_topads"
+                    android:path="@string/path_topads_auto_topup"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".view.activity.TopAdsPaymentCreditActivity"
             android:label="@string/title_top_ads_add_credit"
@@ -76,10 +84,17 @@
         <activity
             android:name=".view.activity.TopAdsGroupDetailViewActivity"
             android:label="@string/topads_group_detail"
+            android:exported="true"
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait" />
         <activity
             android:name=".view.activity.HiddenTrialActivity"
+            android:label="@string/top_ads_title_dashboard"
+            android:theme="@style/Theme.White"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".view.activity.TopAdsKeywordInsightsActivity"
             android:label="@string/top_ads_title_dashboard"
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait" />

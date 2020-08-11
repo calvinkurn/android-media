@@ -81,6 +81,21 @@ class GiftBoxDailyViewModel @Inject constructor(@Named(MAIN) uiDispatcher: Corou
     }
 
     suspend fun composeApi(giftBoxRewardEntity: GiftBoxRewardEntity): CouponDetailResponse? {
+
+        suspend fun getCatalogDetail(ids: List<String>): CouponDetailResponse {
+            return couponDetailUseCase.getResponse(ids)
+        }
+
+        fun mapperGratificationResponseToCouponIds(response: GiftBoxRewardEntity): List<String> {
+            var ids = arrayListOf<String>()
+            response.gamiCrack.benefits?.forEach {
+                if (!it.referenceID.isNullOrEmpty()) {
+                    ids.add(it.referenceID)
+                }
+            }
+            return ids
+        }
+
         val ids = mapperGratificationResponseToCouponIds(giftBoxRewardEntity)
         if (ids.isEmpty()) {
             return null
@@ -92,26 +107,10 @@ class GiftBoxDailyViewModel @Inject constructor(@Named(MAIN) uiDispatcher: Corou
         launchCatchError(block = {
             val map = autoApplyUseCase.getQueryParams(code)
             var response: AutoApplyResponse
-                response = autoApplyUseCase.getResponse(map)
+            response = autoApplyUseCase.getResponse(map)
             autoApplyLiveData.postValue(LiveDataResult.success(response))
         }, onError = {
             autoApplyLiveData.postValue(LiveDataResult.error(it))
         })
-    }
-
-    private fun mapperGratificationResponseToCouponIds(response: GiftBoxRewardEntity): List<String> {
-        var ids = arrayListOf<String>()
-        response.gamiCrack.benefits?.forEach {
-            if (it.referenceID != null) {
-                if (it.referenceID != 0) {
-                    ids.add(it.referenceID.toString())
-                }
-            }
-        }
-        return ids
-    }
-
-    private suspend fun getCatalogDetail(ids: List<String>): CouponDetailResponse {
-        return couponDetailUseCase.getResponse(ids)
     }
 }

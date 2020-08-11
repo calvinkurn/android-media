@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.brandlist.R
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewholder.adapter.BrandlistHeaderBrandInterface
 import com.tokopedia.kotlin.extensions.view.inflateLayout
+import java.util.concurrent.TimeUnit
 
 class BrandlistSearchAlphabetHeaderAdapter (
         val listener: BrandlistHeaderBrandInterface
@@ -20,6 +21,7 @@ class BrandlistSearchAlphabetHeaderAdapter (
     var headerList: MutableList<String> = mutableListOf()
     var selectedPosition: Int = DEFAULT_SELECTED_POSITION
     var recyclerViewState: Parcelable? = null
+    var lastTimeChipsClicked: Long = 0L
     private val startPosition = 0
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BrandlistSearchAlphabetHeaderViewHolder {
@@ -59,10 +61,16 @@ class BrandlistSearchAlphabetHeaderAdapter (
             }
 
             chipContainer.setOnClickListener {
-                selectedPosition = position
-                notifyDataSetChanged()
-                listener.onClickedChip(position, headerItem, recyclerViewState)
-
+                if (position != selectedPosition && position != startPosition) {
+                    val current: Long = System.currentTimeMillis()
+                    val isMoreThanTwoSeconds: Boolean = current >= lastTimeChipsClicked + TimeUnit.SECONDS.toMillis(2)
+                    if (isMoreThanTwoSeconds) {
+                        lastTimeChipsClicked = current
+                        selectedPosition = position
+                        notifyDataSetChanged()
+                        listener.onClickedChip(position, headerItem, current, recyclerViewState)
+                    }
+                }
             }
         }
 

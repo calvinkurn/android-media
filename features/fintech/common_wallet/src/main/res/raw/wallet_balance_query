@@ -27,5 +27,8 @@
     help_applink
     tnc_applink
     show_announcement
+    topup_applink
+    is_show_topup
+    topup_limit
   }
 }

@@ -2,22 +2,18 @@ package com.tokopedia.brandlist.brandlist_page.domain
 
 import com.tokopedia.brandlist.brandlist_page.data.model.BrandlistPopularBrandResponse
 import com.tokopedia.brandlist.brandlist_page.data.model.OfficialStoreBrandsRecommendation
-import com.tokopedia.brandlist.common.GQLQueryConstant
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 import javax.inject.Named
 
-class GetBrandlistPopularBrandUseCase @Inject constructor(
-        private val graphqlUseCase: MultiRequestGraphqlUseCase,
-        @Named(GQLQueryConstant.QUERY_BRANDLIST_RECOMMENDATION) val query: String
-) : UseCase<OfficialStoreBrandsRecommendation>() {
+class GetBrandlistPopularBrandUseCase @Inject constructor(private val graphqlUseCase: MultiRequestGraphqlUseCase) : UseCase<OfficialStoreBrandsRecommendation>() {
 
     var params: Map<String, Any> = mapOf()
 
     override suspend fun executeOnBackground(): OfficialStoreBrandsRecommendation {
-        val gqlRequest = GraphqlRequest(query, BrandlistPopularBrandResponse::class.java, params)
+        val gqlRequest = GraphqlRequest(QUERY, BrandlistPopularBrandResponse::class.java, params)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(gqlRequest)
         val graphqlResponse = graphqlUseCase.executeOnBackground()
@@ -38,6 +34,25 @@ class GetBrandlistPopularBrandUseCase @Inject constructor(
         const val NEW_WIDGET_NAME = "NEW"
         const val POPULAR_WIDGET_NAME = "POPULAR"
         const val WIDGET_NAME = "widgetName"
+        private const val QUERY = "query OfficialStoreBrandsRecommendation(\$userID: Int!, \$device: Int!, \$widgetName: String!, \$categoryIds: String!) {\n" +
+                "    OfficialStoreBrandsRecommendation(userID: \$userID, device: \$device, widgetName: \$widgetName, categoryIDs: \$categoryIds) {\n" +
+                "      totalShops\n" +
+                "      shops {\n" +
+                "        id\n" +
+                "        name\n" +
+                "        url\n" +
+                "        logoUrl\n" +
+                "        imageUrl\n" +
+                "        additionalInformation\n" +
+                "        exclusive_logo_url\n" +
+                "      }\n" +
+                "      header {\n" +
+                "        title\n" +
+                "        ctaText\n" +
+                "        link\n" +
+                "      }\n" +
+                "    }\n" +
+                "}"
 
         fun createParams(userId: Int, categoryId: String, widgetName: String): Map<String, Any> {
             return mutableMapOf<String, Any>().apply {

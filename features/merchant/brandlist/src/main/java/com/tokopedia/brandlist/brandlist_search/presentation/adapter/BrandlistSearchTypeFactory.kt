@@ -5,18 +5,18 @@ import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewmodel.*
 
 interface BrandlistSearchTypeFactory {
 
-    fun type(brandlistSearchResultViewModel: BrandlistSearchResultViewModel): Int
+    fun type(brandlistSearchResultUiModel: BrandlistSearchResultUiModel): Int
 
-    fun type(brandlistSearchRecommendationViewModel: BrandlistSearchRecommendationViewModel): Int
+    fun type(brandlistSearchRecommendationUiModel: BrandlistSearchRecommendationUiModel): Int
 
-    fun type(brandlistSearchNotFoundViewModel: BrandlistSearchNotFoundViewModel): Int
+    fun type(brandlistSearchNotFoundUiModel: BrandlistSearchNotFoundUiModel): Int
 
-    fun type(brandlistSearchHeaderViewModel: BrandlistSearchHeaderViewModel): Int
+    fun type(brandlistSearchHeaderUiModel: BrandlistSearchHeaderUiModel): Int
 
-    fun type(brandlistSearchShimmeringViewModel: BrandlistSearchShimmeringViewModel): Int
+    fun type(brandlistSearchShimmeringUiModel: BrandlistSearchShimmeringUiModel): Int
 
-    fun type(brandlistSearchAllBrandGroupHeaderViewModel: BrandlistSearchAllBrandGroupHeaderViewModel): Int
+    fun type(brandlistSearchAllBrandGroupHeaderUiModel: BrandlistSearchAllBrandGroupHeaderUiModel): Int
 
-    fun type(brandlistSearchRecommendationNotFoundViewModel: BrandlistSearchRecommendationNotFoundViewModel): Int
+    fun type(brandlistSearchRecommendationNotFoundUiModel: BrandlistSearchRecommendationNotFoundUiModel): Int
 
 }

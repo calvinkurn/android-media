@@ -22,9 +22,11 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.seller.active.common.service.UpdateShopActiveService
 import com.tokopedia.sellerhome.BuildConfig
 import com.tokopedia.sellerhome.R
+import com.tokopedia.sellerhome.analytic.NavigationSearchTracking
 import com.tokopedia.sellerhome.analytic.NavigationTracking
 import com.tokopedia.sellerhome.analytic.SellerHomeTracking
 import com.tokopedia.sellerhome.analytic.TrackingConstant
+import com.tokopedia.sellerhome.analytic.performance.HomeLayoutLoadTimeMonitoring
 import com.tokopedia.sellerhome.common.SellerHomePerformanceMonitoringConstant.SELLER_HOME_BAR_CHART_TRACE
 import com.tokopedia.sellerhome.common.SellerHomePerformanceMonitoringConstant.SELLER_HOME_CARD_TRACE
 import com.tokopedia.sellerhome.common.SellerHomePerformanceMonitoringConstant.SELLER_HOME_CAROUSEL_TRACE
@@ -35,6 +37,7 @@ import com.tokopedia.sellerhome.common.SellerHomePerformanceMonitoringConstant.S
 import com.tokopedia.sellerhome.common.SellerHomePerformanceMonitoringConstant.SELLER_HOME_TABLE_TRACE
 import com.tokopedia.sellerhome.common.ShopStatus
 import com.tokopedia.sellerhome.common.exception.SellerHomeException
+import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.domain.model.GetShopStatusResponse
 import com.tokopedia.sellerhome.domain.model.PROVINCE_ID_EMPTY
@@ -58,6 +61,7 @@ import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_sah.view.*
 import javax.inject.Inject
 
@@ -72,6 +76,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         fun newInstance() = SellerHomeFragment()
 
         val NOTIFICATION_MENU_ID = R.id.menu_sah_notification
+        val SEARCH_MENU_ID = R.id.menu_sah_search
         private const val NOTIFICATION_BADGE_DELAY = 2000L
         private const val TAG_TOOLTIP = "seller_home_tooltip"
         private const val ERROR_LAYOUT = "Error get layout data."
@@ -84,6 +89,13 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var remoteConfig: SellerHomeRemoteConfig
+
+    private var widgetHasMap = hashMapOf<String, MutableList<BaseWidgetUiModel<*>>>()
     private val sellerHomeViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(SellerHomeViewModel::class.java)
     }
@@ -107,6 +119,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private var performanceMonitoringSellerHomeTable: PerformanceMonitoring? = null
     private var performanceMonitoringSellerHomePieChart: PerformanceMonitoring? = null
     private var performanceMonitoringSellerHomeBarChart: PerformanceMonitoring? = null
+    private var performanceMonitoringSellerHomePlt: HomeLayoutLoadTimeMonitoring? = null
 
     override fun getScreenName(): String = TrackingConstant.SCREEN_NAME_SELLER_HOME
 
@@ -124,7 +137,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        initPltPerformanceMonitoring()
         hideTooltipIfExist()
         setupView()
 
@@ -163,8 +176,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
+        menu.clear()
         inflater.inflate(R.menu.sah_menu_toolbar_notification, menu)
         this.menu = menu
+        showGlobalSearchIcon()
         showNotificationBadge()
     }
 
@@ -172,8 +187,19 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         if (item.itemId == NOTIFICATION_MENU_ID) {
             RouteManager.route(requireContext(), ApplinkConst.SELLER_INFO)
             NavigationTracking.sendClickNotificationEvent()
+        } else if(item.itemId == SEARCH_MENU_ID) {
+            RouteManager.route(requireContext(), ApplinkConst.SellerApp.SELLER_SEARCH)
+            NavigationSearchTracking.sendClickSearchMenuEvent(userSession.userId.orEmpty())
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun initPltPerformanceMonitoring() {
+        performanceMonitoringSellerHomePlt = if(remoteConfig.isNewSellerHomeDisabled()) {
+            (activity as? com.tokopedia.sellerhome.view.oldactivity.SellerHomeActivity)?.performanceMonitoringSellerHomeLayoutPlt
+        } else {
+            (activity as? SellerHomeActivity)?.performanceMonitoringSellerHomeLayoutPlt
+        }
     }
 
     private fun hideTooltipIfExist() {
@@ -414,6 +440,11 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         SellerHomeTracking.sendBarChartImpressionEvent(model, position)
     }
 
+    private fun showGlobalSearchIcon() {
+        val menuItem = menu?.findItem(SEARCH_MENU_ID)
+        menuItem?.isVisible = remoteConfig.isGlobalSearchEnabled()
+    }
+
     private fun showNotificationBadge() {
         Handler().postDelayed({
             context?.let {
@@ -475,19 +506,23 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     private fun startHomeLayoutNetworkMonitoring() {
-        (activity as? SellerHomeActivity)?.startHomeLayoutNetworkMonitoring()
+        performanceMonitoringSellerHomePlt?.startNetworkPerformanceMonitoring()
     }
 
     private fun startHomeLayoutRenderMonitoring() {
-        (activity as? SellerHomeActivity)?.startHomeLayoutRenderMonitoring()
+        performanceMonitoringSellerHomePlt?.startRenderPerformanceMonitoring()
     }
 
     private fun stopHomeLayoutRenderMonitoring() {
-        (activity as? SellerHomeActivity)?.stopHomeLayoutRenderMonitoring()
+        performanceMonitoringSellerHomePlt?.stopRenderPerformanceMonitoring()
     }
 
     private fun stopPerformanceMonitoringSellerHomeLayout() {
-        (activity as? SellerHomeActivity)?.stopPerformanceMonitoringSellerHomeLayout()
+        if(remoteConfig.isNewSellerHomeDisabled()) {
+            (activity as? com.tokopedia.sellerhome.view.oldactivity.SellerHomeActivity)?.stopPerformanceMonitoringSellerHomeLayout()
+        } else {
+            (activity as? SellerHomeActivity)?.stopPerformanceMonitoringSellerHomeLayout()
+        }
     }
 
     private fun setOnSuccessGetLayout(widgets: List<BaseWidgetUiModel<*>>) {

@@ -17,6 +17,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.EMPTY_SEARCH_VIEW
@@ -47,6 +48,8 @@ import javax.inject.Inject
 /**
  * Created by Pika on 7/6/20.
  */
+
+private const val CLICK_TAMBAH_KATA_KUNCI = "click - tambah kata kunci"
 class KeywordTabFragment : BaseDaggerFragment() {
 
     private lateinit var adapter: KeywordAdapter
@@ -187,6 +190,7 @@ class KeywordTabFragment : BaseDaggerFragment() {
             putExtra(TopAdsDashboardConstant.GROUPNAME, arguments?.getString(TopAdsDashboardConstant.GROUP_NAME))
         }
         startActivityForResult(intent, TopAdsDashboardConstant.EDIT_GROUP_REQUEST_CODE)
+        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsDashboardEvent(CLICK_TAMBAH_KATA_KUNCI, "")
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -273,7 +277,7 @@ class KeywordTabFragment : BaseDaggerFragment() {
 
         if (actionActivate == TopAdsDashboardConstant.ACTION_DELETE) {
             view.let {
-                Toaster.make(it!!, String.format(getString(R.string.topads_keyword_del_toaster), getAdIds().size), TOASTER_DURATION.toInt(), Toaster.TYPE_NORMAL, getString(R.string.topads_common_batal), View.OnClickListener {
+                Toaster.make(it!!, String.format(getString(R.string.topads_keyword_del_toaster), getAdIds().size), TOASTER_DURATION.toInt(), Toaster.TYPE_NORMAL, getString(com.tokopedia.topads.common.R.string.topads_common_batal), View.OnClickListener {
                     deleteCancel = true
 
                 })
@@ -281,13 +285,14 @@ class KeywordTabFragment : BaseDaggerFragment() {
             val coroutineScope = CoroutineScope(Dispatchers.Main)
             coroutineScope.launch {
                 delay(TOASTER_DURATION)
-                if (!deleteCancel) {
-                    viewModel.setKeywordAction(actionActivate, getAdIds(), resources, ::onSuccessAction)
-                    activity?.setResult(Activity.RESULT_OK)
-
+                if (activity != null && isAdded) {
+                    if (!deleteCancel) {
+                        viewModel.setKeywordAction(actionActivate, getAdIds(), resources, ::onSuccessAction)
+                        activity?.setResult(Activity.RESULT_OK)
+                    }
+                    deleteCancel = false
+                    setSelectMode(false)
                 }
-                deleteCancel = false
-                setSelectMode(false)
             }
         } else {
             viewModel.setKeywordAction(actionActivate, getAdIds(), resources, ::onSuccessAction)

@@ -1,465 +1,427 @@
 {
-  "searchProduct": {
-    "query": "bju batik",
-    "source": "universe",
-    "isFilter": false,
-    "response_code": 7,
-    "keyword_process": "1",
-    "count": 54,
-    "count_text": "54",
-    "additional_params": "",
-    "isQuerySafe": true,
-    "autocomplete_applink": "tokopedia://search-autocomplete?q=bju%20batik",
-    "errorMessage": "",
-    "lite_url": "",
-    "default_view": 1,
-    "redirection": {
-      "redirect_applink": ""
+  "ace_search_product_v4": {
+    "header": {
+      "responseCode": 7,
+      "keywordProcess": "1",
+      "totalData": 734255,
+      "totalDataText": "4.3jt+",
+      "additionalParams": "",
+      "errorMessage": "",
+      "defaultView": 1
     },
-    "ticker": {
-      "text": "",
-      "query": ""
-    },
-    "suggestion": {
-      "currentKeyword": "",
-      "suggestion": "baju batik",
-      "suggestionCount": 388189,
-      "instead": "",
-      "insteadCount": 0,
-      "text": "Menampilkan hasil untuk <strong>\"bju batik\"</strong>. </br> Apakah yang anda maksud <strong><font color=\"#42b549\">\"baju batik\"</font></strong> ?",
-      "query": "q=baju batik&rf=true"
-    },
-    "related": {
-      "related_keyword": "",
-      "other_related": []
-    },
-    "products": [
-      {
-        "id": 692817014,
-        "warehouse_id_default": 0,
-        "name": "Bju Batik Lengan Panjang Pria Modern Casual Murah",
-        "childs": [],
-        "url": "https://www.tokopedia.com/larisonlines/bju-batik-lengan-panjang-pria-modern-casual-murah?refined=true&trkid=f%3DCa0000L000P0W0S0Sh%2CCo0Po0Fr0Cb0_src%3Duniverse_page%3D1_ob%3D9_q%3Dbju+batik_bmexp%3D47_po%3D1_catid%3D1829_bmexp%3D47&whid=0",
-        "image_url": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/2/9/88495455/88495455_404bd055-6399-4787-92df-80a2c684866a_820_820",
-        "image_url_700": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/2/9/88495455/88495455_404bd055-6399-4787-92df-80a2c684866a_820_820",
-        "price": "Rp 150.000",
-        "price_range": "",
-        "wishlist": false,
-        "whole_sale_price": [],
-        "courier_count": 2,
-        "condition": 1,
-        "category_id": 1759,
-        "category_name": "Fashion Pria",
-        "category_breadcrumb": "fashion-pria/batik-pria/kemeja-batik-pria",
-        "department_id": 1829,
-        "department_name": "Kemeja Batik Pria",
-        "free_ongkir": {
-          "is_active": false,
-          "img_url": ""
-        },
-        "labels": [],
-        "label_groups": [],
-        "badges": [
-          {
-            "title": "Power Badge",
-            "image_url": "https://ecs7.tokopedia.net/img/power_merchant_badge.png",
-            "show": true
+    "data": {
+      "isQuerySafe": true,
+      "autocompleteApplink": "tokopedia://search-autocomplete?q=samsung",
+      "redirection": {
+        "redirectApplink": ""
+      },
+      "ticker": {
+        "text": "",
+        "query": ""
+      },
+      "suggestion": {
+        "suggestion": "baju batik",
+        "text": "Menampilkan hasil untuk <strong>\"bju batik\"</strong>. </br> Apakah yang anda maksud <strong><font color=\"#42b549\">\"baju batik\"</font></strong> ?",
+        "query": "q=baju batik&rf=true"
+      },
+      "related": {
+        "relatedKeyword": "",
+        "otherRelated": []
+      },
+      "products": [
+        {
+          "id": 574261655,
+          "warehouseIdDefault": 0,
+          "name": "Samsung Galaxy A50S 6/128 Ram 6gb Rom 128 Garansi Resmi",
+          "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "imageUrl700": "https://ecs7.tokopedia.net/img/cache/700/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "price": "Rp 4.155.000",
+          "priceRange": "",
+          "wishlist": false,
+          "categoryId": 1758,
+          "categoryName": "Fashion Wanita",
+          "categoryBreadcrumb": "handphone-tablet/handphone/android-os",
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "labels": [
+            {
+              "title": "Tukar Tambah",
+              "color": "#42b549"
+            }
+          ],
+          "labelGroups": [
+            {
+              "position": "offers",
+              "type": "lightGrey",
+              "title": "Bisa Tukar Tambah"
+            }
+          ],
+          "badges": [
+            {
+              "title": "Official Store",
+              "imageUrl": "https://ecs7.tokopedia.net/img/official_store_badge.png",
+              "show": true
+            }
+          ],
+          "rating": 5,
+          "countReview": 259,
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "shop": {
+            "id": 3102419,
+            "name": "Maxi phone cell",
+            "url": "https://www.tokopedia.com/maxiphonecell",
+            "city": "Jakarta Pusat",
+            "isOfficial": true,
+            "isPowerBadge": false
           }
-        ],
-        "is_featured": 0,
-        "rating": 0,
-        "rating_average": "",
-        "count_review": 0,
-        "original_price": "",
-        "discount_expired_time": "",
-        "discount_start_time": "",
-        "discount_percentage": 0,
-        "sku": "",
-        "stock": 35,
-        "ga_key": "/searchproduct/fashion-pria/batik-pria/kemeja-batik-pria/bju+batik/larisonlines/bju-batik-lengan-panjang-pria-modern-casual-murah",
-        "is_preorder": false,
-        "shop": {
-          "id": 7734843,
-          "name": "Laris Online Store",
-          "url": "https://www.tokopedia.com/larisonlines",
-          "is_gold_shop": false,
-          "is_power_badge": true,
-          "location": "Jakarta Barat",
-          "city": "Jakarta Barat",
-          "reputation": "https://inbox.tokopedia.com/reputation/v1/badge/shop/7734843",
-          "clover": "https://clover.tokopedia.com/badges/merchant/v1?shop_id=7734843",
-          "is_official": false
-        }
-      },
-      {
-        "id": 685332587,
-        "warehouse_id_default": 0,
-        "name": "BATIK MODERN / KEMEJA FORMAL / BJU SLIM FIT PRIA",
-        "childs": [],
-        "url": "https://www.tokopedia.com/shinebatik/batik-modern-kemeja-formal-bju-slim-fit-pria?refined=true&trkid=f%3DCa0000L000P0W0S0Sh%2CCo0Po0Fr0Cb0_src%3Duniverse_page%3D1_ob%3D9_q%3Dbju+batik_bmexp%3D47_po%3D2_catid%3D1829_bmexp%3D47&whid=0",
-        "image_url": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/2/3/5463862/5463862_9f6e5caf-4057-4496-ae77-be556a3837c1_700_700.jpg",
-        "image_url_700": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/2/3/5463862/5463862_9f6e5caf-4057-4496-ae77-be556a3837c1_700_700.jpg",
-        "price": "Rp 125.000",
-        "price_range": "",
-        "wishlist": false,
-        "whole_sale_price": [],
-        "courier_count": 3,
-        "condition": 1,
-        "category_id": 1759,
-        "category_name": "Fashion Pria",
-        "category_breadcrumb": "fashion-pria/batik-pria/kemeja-batik-pria",
-        "department_id": 1829,
-        "department_name": "Kemeja Batik Pria",
-        "free_ongkir": {
-          "is_active": false,
-          "img_url": ""
         },
-        "labels": [],
-        "label_groups": [],
-        "badges": [
-          {
-            "title": "Power Badge",
-            "image_url": "https://ecs7.tokopedia.net/img/power_merchant_badge.png",
-            "show": true
+        {
+          "id": 574261652,
+          "warehouseIdDefault": 0,
+          "name": "Samsung Galaxy A50S 6/128 Ram 6gb Rom 128 Garansi Resmi",
+          "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "imageUrl700": "https://ecs7.tokopedia.net/img/cache/700/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "price": "Rp 4.155.000",
+          "priceRange": "",
+          "wishlist": false,
+          "categoryId": 1758,
+          "categoryName": "Fashion Wanita",
+          "categoryBreadcrumb": "handphone-tablet/handphone/android-os",
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "labels": [
+            {
+              "title": "Tukar Tambah",
+              "color": "#42b549"
+            }
+          ],
+          "labelGroups": [
+            {
+              "position": "offers",
+              "type": "lightGrey",
+              "title": "Bisa Tukar Tambah"
+            }
+          ],
+          "badges": [
+            {
+              "title": "Official Store",
+              "imageUrl": "https://ecs7.tokopedia.net/img/official_store_badge.png",
+              "show": true
+            }
+          ],
+          "rating": 5,
+          "countReview": 259,
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "shop": {
+            "id": 3102419,
+            "name": "Maxi phone cell",
+            "url": "https://www.tokopedia.com/maxiphonecell",
+            "city": "Jakarta Pusat",
+            "isOfficial": true,
+            "isPowerBadge": false
           }
-        ],
-        "is_featured": 0,
-        "rating": 0,
-        "rating_average": "",
-        "count_review": 0,
-        "original_price": "",
-        "discount_expired_time": "",
-        "discount_start_time": "",
-        "discount_percentage": 0,
-        "sku": "",
-        "stock": 20,
-        "ga_key": "/searchproduct/fashion-pria/batik-pria/kemeja-batik-pria/bju+batik/shinebatik/batik-modern-kemeja-formal-bju-slim-fit-pria",
-        "is_preorder": false,
-        "shop": {
-          "id": 5463862,
-          "name": "Shine Batik",
-          "url": "https://www.tokopedia.com/shinebatik",
-          "is_gold_shop": false,
-          "is_power_badge": true,
-          "location": "Jakarta Barat",
-          "city": "Jakarta Barat",
-          "reputation": "https://inbox.tokopedia.com/reputation/v1/badge/shop/5463862",
-          "clover": "https://clover.tokopedia.com/badges/merchant/v1?shop_id=5463862",
-          "is_official": false
-        }
-      },
-      {
-        "id": 630558762,
-        "warehouse_id_default": 0,
-        "name": "bju batik",
-        "childs": [],
-        "url": "https://www.tokopedia.com/fr-fashion-1/bju-batik?refined=true&trkid=f%3DCa0000L000P0W0S0Sh%2CCo0Po0Fr0Cb0_src%3Duniverse_page%3D1_ob%3D9_q%3Dbju+batik_bmexp%3D47_po%3D3_catid%3D1790_bmexp%3D47&whid=0",
-        "image_url": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/12/14/7286888/7286888_eee43400-3c89-42ec-afcb-c4ef93b90875_1280_1280.jpg",
-        "image_url_700": "https://ecs7.tokopedia.net/img/cache/700/product-1/2019/12/14/7286888/7286888_eee43400-3c89-42ec-afcb-c4ef93b90875_1280_1280.jpg",
-        "price": "Rp 50.000",
-        "price_range": "",
-        "wishlist": false,
-        "whole_sale_price": [],
-        "courier_count": 4,
-        "condition": 1,
-        "category_id": 1758,
-        "category_name": "Fashion Wanita",
-        "category_breadcrumb": "fashion-wanita/batik-wanita/blouse-batik",
-        "department_id": 1790,
-        "department_name": "Blouse Batik Wanita",
-        "free_ongkir": {
-          "is_active": false,
-          "img_url": ""
         },
-        "labels": [],
-        "label_groups": [],
-        "badges": [],
-        "is_featured": 0,
-        "rating": 0,
-        "rating_average": "",
-        "count_review": 0,
-        "original_price": "",
-        "discount_expired_time": "",
-        "discount_start_time": "",
-        "discount_percentage": 0,
-        "sku": "",
-        "stock": 6,
-        "ga_key": "/searchproduct/fashion-wanita/batik-wanita/blouse-batik/bju+batik/fr-fashion-1/bju-batik",
-        "is_preorder": false,
-        "shop": {
-          "id": 7286888,
-          "name": "F&amp;R Fashion &amp; Collection",
-          "url": "https://www.tokopedia.com/fr-fashion-1",
-          "is_gold_shop": false,
-          "is_power_badge": false,
-          "location": "Kab. Gresik",
-          "city": "Kab. Gresik",
-          "reputation": "https://inbox.tokopedia.com/reputation/v1/badge/shop/7286888",
-          "clover": "https://clover.tokopedia.com/badges/merchant/v1?shop_id=7286888",
-          "is_official": false
-        }
-      },
-      {
-        "id": 593199271,
-        "warehouse_id_default": 0,
-        "name": "Dress Batik - Terusan Batik - Batik Katun Stretch 546-BJU",
-        "childs": [],
-        "url": "https://www.tokopedia.com/nellesbeauty/dress-batik-terusan-batik-batik-katun-stretch-546-bju?refined=true&trkid=f%3DCa0000L000P0W0S0Sh%2CCo0Po0Fr0Cb0_src%3Duniverse_page%3D1_ob%3D9_q%3Dbju+batik_bmexp%3D47_po%3D4_catid%3D1792_bmexp%3D47&whid=0",
-        "image_url": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/10/22/596231/596231_1ac93e8b-1455-4ced-b644-933ab27b837d_1280_1280",
-        "image_url_700": "https://ecs7.tokopedia.net/img/cache/700/product-1/2019/10/22/596231/596231_1ac93e8b-1455-4ced-b644-933ab27b837d_1280_1280",
-        "price": "Rp 110.000",
-        "price_range": "",
-        "wishlist": false,
-        "whole_sale_price": [],
-        "courier_count": 6,
-        "condition": 1,
-        "category_id": 1758,
-        "category_name": "Fashion Wanita",
-        "category_breadcrumb": "fashion-wanita/batik-wanita/dress-batik-wanita",
-        "department_id": 1792,
-        "department_name": "Dress Batik Wanita",
-        "free_ongkir": {
-          "is_active": false,
-          "img_url": ""
-        },
-        "labels": [],
-        "label_groups": [],
-        "badges": [],
-        "is_featured": 0,
-        "rating": 0,
-        "rating_average": "",
-        "count_review": 0,
-        "original_price": "",
-        "discount_expired_time": "",
-        "discount_start_time": "",
-        "discount_percentage": 0,
-        "sku": "",
-        "stock": 3,
-        "ga_key": "/searchproduct/fashion-wanita/batik-wanita/dress-batik-wanita/bju+batik/nellesbeauty/dress-batik-terusan-batik-batik-katun-stretch-546-bju",
-        "is_preorder": false,
-        "shop": {
-          "id": 127209,
-          "name": "Nelle&#39;s Beauty",
-          "url": "https://www.tokopedia.com/nellesbeauty",
-          "is_gold_shop": false,
-          "is_power_badge": false,
-          "location": "Surabaya",
-          "city": "Surabaya",
-          "reputation": "https://inbox.tokopedia.com/reputation/v1/badge/shop/127209",
-          "clover": "https://clover.tokopedia.com/badges/merchant/v1?shop_id=127209",
-          "is_official": false
-        }
-      },
-      {
-        "id": 575436487,
-        "warehouse_id_default": 0,
-        "name": "bJu batik batu raden",
-        "childs": [],
-        "url": "https://www.tokopedia.com/assyifa13olshop/bju-batik-batu-raden?refined=true&trkid=f%3DCa0000L000P0W0S0Sh%2CCo0Po0Fr0Cb0_src%3Duniverse_page%3D1_ob%3D9_q%3Dbju+batik_bmexp%3D47_po%3D5_catid%3D1790_bmexp%3D47&whid=0",
-        "image_url": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/10/1/6925868/6925868_6d328ae9-a6ac-442b-9c5f-4f2827a3f684_721_721.jpg",
-        "image_url_700": "https://ecs7.tokopedia.net/img/cache/700/product-1/2019/10/1/6925868/6925868_6d328ae9-a6ac-442b-9c5f-4f2827a3f684_721_721.jpg",
-        "price": "Rp 150.000",
-        "price_range": "",
-        "wishlist": false,
-        "whole_sale_price": [],
-        "courier_count": 6,
-        "condition": 1,
-        "category_id": 1758,
-        "category_name": "Fashion Wanita",
-        "category_breadcrumb": "fashion-wanita/batik-wanita/blouse-batik",
-        "department_id": 1790,
-        "department_name": "Blouse Batik Wanita",
-        "free_ongkir": {
-          "is_active": false,
-          "img_url": ""
-        },
-        "labels": [],
-        "label_groups": [],
-        "badges": [],
-        "is_featured": 0,
-        "rating": 0,
-        "rating_average": "",
-        "count_review": 0,
-        "original_price": "",
-        "discount_expired_time": "",
-        "discount_start_time": "",
-        "discount_percentage": 0,
-        "sku": "",
-        "stock": 32767,
-        "ga_key": "/searchproduct/fashion-wanita/batik-wanita/blouse-batik/bju+batik/assyifa13olshop/bju-batik-batu-raden",
-        "is_preorder": false,
-        "shop": {
-          "id": 6925868,
-          "name": "assyifa 13 olshop",
-          "url": "https://www.tokopedia.com/assyifa13olshop",
-          "is_gold_shop": false,
-          "is_power_badge": false,
-          "location": "Bandung",
-          "city": "Bandung",
-          "reputation": "https://inbox.tokopedia.com/reputation/v1/badge/shop/6925868",
-          "clover": "https://clover.tokopedia.com/badges/merchant/v1?shop_id=6925868",
-          "is_official": false
-        }
-      },
-      {
-        "id": 575001170,
-        "warehouse_id_default": 0,
-        "name": "Maxi cardi cendrawasih kupu bJu outet batik wanita modern",
-        "childs": [],
-        "url": "https://www.tokopedia.com/velizaoutfit/maxi-cardi-cendrawasih-kupu-bju-outet-batik-wanita-modern?refined=true&trkid=f%3DCa0000L000P0W0S0Sh%2CCo0Po0Fr0Cb0_src%3Duniverse_page%3D1_ob%3D9_q%3Dbju+batik_bmexp%3D47_po%3D6_catid%3D1797_bmexp%3D47&whid=0",
-        "image_url": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/10/1/5785299/5785299_207d85f1-6dac-49f7-aead-eaa917f5bc0e",
-        "image_url_700": "https://ecs7.tokopedia.net/img/cache/700/product-1/2019/10/1/5785299/5785299_207d85f1-6dac-49f7-aead-eaa917f5bc0e",
-        "price": "Rp 111.000",
-        "price_range": "",
-        "wishlist": false,
-        "whole_sale_price": [],
-        "courier_count": 3,
-        "condition": 1,
-        "category_id": 1758,
-        "category_name": "Fashion Wanita",
-        "category_breadcrumb": "fashion-wanita/outerwear-wanita/cardigan-wanita",
-        "department_id": 1797,
-        "department_name": "Cardigan Wanita",
-        "free_ongkir": {
-          "is_active": false,
-          "img_url": ""
-        },
-        "labels": [],
-        "label_groups": [],
-        "badges": [],
-        "is_featured": 0,
-        "rating": 0,
-        "rating_average": "",
-        "count_review": 0,
-        "original_price": "",
-        "discount_expired_time": "",
-        "discount_start_time": "",
-        "discount_percentage": 0,
-        "sku": "",
-        "stock": 32,
-        "ga_key": "/searchproduct/fashion-wanita/outerwear-wanita/cardigan-wanita/bju+batik/velizaoutfit/maxi-cardi-cendrawasih-kupu-bju-outet-batik-wanita-modern",
-        "is_preorder": false,
-        "shop": {
-          "id": 5785299,
-          "name": "Veliza Outfit",
-          "url": "https://www.tokopedia.com/velizaoutfit",
-          "is_gold_shop": false,
-          "is_power_badge": false,
-          "location": "Surabaya",
-          "city": "Surabaya",
-          "reputation": "https://inbox.tokopedia.com/reputation/v1/badge/shop/5785299",
-          "clover": "https://clover.tokopedia.com/badges/merchant/v1?shop_id=5785299",
-          "is_official": false
-        }
-      },
-      {
-        "id": 557006039,
-        "warehouse_id_default": 0,
-        "name": "bju batik",
-        "childs": [],
-        "url": "https://www.tokopedia.com/aynacollections/bju-batik?refined=true&trkid=f%3DCa0000L000P0W0S0Sh%2CCo0Po0Fr0Cb0_src%3Duniverse_page%3D1_ob%3D9_q%3Dbju+batik_bmexp%3D47_po%3D7_catid%3D1771_bmexp%3D47&whid=0",
-        "image_url": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/9/11/6200628/6200628_58ec3f2e-2147-4aef-94b7-5ef6d9582867_853_853.jpg",
-        "image_url_700": "https://ecs7.tokopedia.net/img/cache/700/product-1/2019/9/11/6200628/6200628_58ec3f2e-2147-4aef-94b7-5ef6d9582867_853_853.jpg",
-        "price": "Rp 150",
-        "price_range": "",
-        "wishlist": false,
-        "whole_sale_price": [],
-        "courier_count": 5,
-        "condition": 1,
-        "category_id": 1758,
-        "category_name": "Fashion Wanita",
-        "category_breadcrumb": "fashion-wanita/atasan-wanita/blouse-wanita",
-        "department_id": 1771,
-        "department_name": "Blouse Wanita",
-        "free_ongkir": {
-          "is_active": false,
-          "img_url": ""
-        },
-        "labels": [],
-        "label_groups": [],
-        "badges": [],
-        "is_featured": 0,
-        "rating": 0,
-        "rating_average": "",
-        "count_review": 0,
-        "original_price": "",
-        "discount_expired_time": "",
-        "discount_start_time": "",
-        "discount_percentage": 0,
-        "sku": "",
-        "stock": 32767,
-        "ga_key": "/searchproduct/fashion-wanita/atasan-wanita/blouse-wanita/bju+batik/aynacollections/bju-batik",
-        "is_preorder": false,
-        "shop": {
-          "id": 6200628,
-          "name": "ayna collections",
-          "url": "https://www.tokopedia.com/aynacollections",
-          "is_gold_shop": false,
-          "is_power_badge": false,
-          "location": "Surakarta",
-          "city": "Surakarta",
-          "reputation": "https://inbox.tokopedia.com/reputation/v1/badge/shop/6200628",
-          "clover": "https://clover.tokopedia.com/badges/merchant/v1?shop_id=6200628",
-          "is_official": false
-        }
-      },
-      {
-        "id": 555942163,
-        "warehouse_id_default": 0,
-        "name": "kemeja couple/bju batik couple/batik couple murah/gamis couple pesta",
-        "childs": [],
-        "url": "https://www.tokopedia.com/maffacollection/kemeja-couple-bju-batik-couple-batik-couple-murah-gamis-couple-pesta?refined=true&trkid=f%3DCa0000L000P0W0S0Sh%2CCo0Po0Fr0Cb0_src%3Duniverse_page%3D1_ob%3D9_q%3Dbju+batik_bmexp%3D47_po%3D8_catid%3D1794_bmexp%3D47&whid=0",
-        "image_url": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/9/10/6784092/6784092_6d931686-2932-4492-bd41-c9abd95c17d5_1920_1920.jpg",
-        "image_url_700": "https://ecs7.tokopedia.net/img/cache/700/product-1/2019/9/10/6784092/6784092_6d931686-2932-4492-bd41-c9abd95c17d5_1920_1920.jpg",
-        "price": "Rp 162.000",
-        "price_range": "",
-        "wishlist": false,
-        "whole_sale_price": [],
-        "courier_count": 6,
-        "condition": 1,
-        "category_id": 1758,
-        "category_name": "Fashion Wanita",
-        "category_breadcrumb": "fashion-wanita/batik-wanita/batik-couple",
-        "department_id": 1794,
-        "department_name": "Batik Couple",
-        "free_ongkir": {
-          "is_active": false,
-          "img_url": ""
-        },
-        "labels": [],
-        "label_groups": [],
-        "badges": [
-          {
-            "title": "Power Badge",
-            "image_url": "https://ecs7.tokopedia.net/img/power_merchant_badge.png",
-            "show": true
+        {
+          "id": 576261652,
+          "warehouseIdDefault": 0,
+          "name": "Samsung Galaxy A50S 6/128 Ram 6gb Rom 128 Garansi Resmi",
+          "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "imageUrl700": "https://ecs7.tokopedia.net/img/cache/700/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "price": "Rp 4.155.000",
+          "priceRange": "",
+          "wishlist": false,
+          "categoryId": 1759,
+          "categoryName": "Fashion Pria",
+          "categoryBreadcrumb": "handphone-tablet/handphone/android-os",
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "labels": [
+            {
+              "title": "Tukar Tambah",
+              "color": "#42b549"
+            }
+          ],
+          "labelGroups": [
+            {
+              "position": "offers",
+              "type": "lightGrey",
+              "title": "Bisa Tukar Tambah"
+            }
+          ],
+          "badges": [
+            {
+              "title": "Official Store",
+              "imageUrl": "https://ecs7.tokopedia.net/img/official_store_badge.png",
+              "show": true
+            }
+          ],
+          "rating": 5,
+          "countReview": 259,
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "shop": {
+            "id": 3102419,
+            "name": "Maxi phone cell",
+            "url": "https://www.tokopedia.com/maxiphonecell",
+            "city": "Jakarta Pusat",
+            "isOfficial": true,
+            "isPowerBadge": false
           }
-        ],
-        "is_featured": 0,
-        "rating": 0,
-        "rating_average": "",
-        "count_review": 0,
-        "original_price": "",
-        "discount_expired_time": "",
-        "discount_start_time": "",
-        "discount_percentage": 0,
-        "sku": "",
-        "stock": 32767,
-        "ga_key": "/searchproduct/fashion-wanita/batik-wanita/batik-couple/bju+batik/maffacollection/kemeja-couple-bju-batik-couple-batik-couple-murah-gamis-couple-pesta",
-        "is_preorder": false,
-        "shop": {
-          "id": 6784092,
-          "name": "Maffa Collection",
-          "url": "https://www.tokopedia.com/maffacollection",
-          "is_gold_shop": false,
-          "is_power_badge": true,
-          "location": "Kab. Pekalongan",
-          "city": "Kab. Pekalongan",
-          "reputation": "https://inbox.tokopedia.com/reputation/v1/badge/shop/6784092",
-          "clover": "https://clover.tokopedia.com/badges/merchant/v1?shop_id=6784092",
-          "is_official": false
+        },
+        {
+          "id": 574211652,
+          "warehouseIdDefault": 0,
+          "name": "Samsung Galaxy A50S 6/128 Ram 6gb Rom 128 Garansi Resmi",
+          "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "imageUrl700": "https://ecs7.tokopedia.net/img/cache/700/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "price": "Rp 4.155.000",
+          "priceRange": "",
+          "wishlist": false,
+          "categoryId": 1758,
+          "categoryName": "Fashion Wanita",
+          "categoryBreadcrumb": "handphone-tablet/handphone/android-os",
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "labels": [
+            {
+              "title": "Tukar Tambah",
+              "color": "#42b549"
+            }
+          ],
+          "labelGroups": [
+            {
+              "position": "offers",
+              "type": "lightGrey",
+              "title": "Bisa Tukar Tambah"
+            }
+          ],
+          "badges": [
+            {
+              "title": "Official Store",
+              "imageUrl": "https://ecs7.tokopedia.net/img/official_store_badge.png",
+              "show": true
+            }
+          ],
+          "rating": 5,
+          "countReview": 259,
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "shop": {
+            "id": 3102419,
+            "name": "Maxi phone cell",
+            "url": "https://www.tokopedia.com/maxiphonecell",
+            "city": "Jakarta Pusat",
+            "isOfficial": true,
+            "isPowerBadge": false
+          }
+        },
+        {
+          "id": 574262652,
+          "warehouseIdDefault": 0,
+          "name": "Samsung Galaxy A50S 6/128 Ram 6gb Rom 128 Garansi Resmi",
+          "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "imageUrl700": "https://ecs7.tokopedia.net/img/cache/700/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "price": "Rp 4.155.000",
+          "priceRange": "",
+          "wishlist": false,
+          "categoryId": 1759,
+          "categoryName": "Fashion Pria",
+          "categoryBreadcrumb": "handphone-tablet/handphone/android-os",
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "labels": [
+            {
+              "title": "Tukar Tambah",
+              "color": "#42b549"
+            }
+          ],
+          "labelGroups": [
+            {
+              "position": "offers",
+              "type": "lightGrey",
+              "title": "Bisa Tukar Tambah"
+            }
+          ],
+          "badges": [
+            {
+              "title": "Official Store",
+              "imageUrl": "https://ecs7.tokopedia.net/img/official_store_badge.png",
+              "show": true
+            }
+          ],
+          "rating": 5,
+          "countReview": 259,
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "shop": {
+            "id": 3102419,
+            "name": "Maxi phone cell",
+            "url": "https://www.tokopedia.com/maxiphonecell",
+            "city": "Jakarta Pusat",
+            "isOfficial": true,
+            "isPowerBadge": false
+          }
+        },
+        {
+          "id": 574262352,
+          "warehouseIdDefault": 0,
+          "name": "Samsung Galaxy A50S 6/128 Ram 6gb Rom 128 Garansi Resmi",
+          "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "imageUrl700": "https://ecs7.tokopedia.net/img/cache/700/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "price": "Rp 4.155.000",
+          "priceRange": "",
+          "wishlist": false,
+          "categoryId": 1758,
+          "categoryName": "Fashion Wanita",
+          "categoryBreadcrumb": "handphone-tablet/handphone/android-os",
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "labels": [
+            {
+              "title": "Tukar Tambah",
+              "color": "#42b549"
+            }
+          ],
+          "labelGroups": [
+            {
+              "position": "offers",
+              "type": "lightGrey",
+              "title": "Bisa Tukar Tambah"
+            }
+          ],
+          "badges": [
+            {
+              "title": "Official Store",
+              "imageUrl": "https://ecs7.tokopedia.net/img/official_store_badge.png",
+              "show": true
+            }
+          ],
+          "rating": 5,
+          "countReview": 259,
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "shop": {
+            "id": 3102419,
+            "name": "Maxi phone cell",
+            "url": "https://www.tokopedia.com/maxiphonecell",
+            "city": "Jakarta Pusat",
+            "isOfficial": true,
+            "isPowerBadge": false
+          }
+        },
+        {
+          "id": 574262659,
+          "warehouseIdDefault": 0,
+          "name": "Samsung Galaxy A50S 6/128 Ram 6gb Rom 128 Garansi Resmi",
+          "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "imageUrl700": "https://ecs7.tokopedia.net/img/cache/700/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "price": "Rp 4.155.000",
+          "priceRange": "",
+          "wishlist": false,
+          "categoryId": 1758,
+          "categoryName": "Fashion Wanita",
+          "categoryBreadcrumb": "handphone-tablet/handphone/android-os",
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "labels": [
+            {
+              "title": "Tukar Tambah",
+              "color": "#42b549"
+            }
+          ],
+          "labelGroups": [
+            {
+              "position": "offers",
+              "type": "lightGrey",
+              "title": "Bisa Tukar Tambah"
+            }
+          ],
+          "badges": [
+            {
+              "title": "Official Store",
+              "imageUrl": "https://ecs7.tokopedia.net/img/official_store_badge.png",
+              "show": true
+            }
+          ],
+          "rating": 5,
+          "countReview": 259,
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "shop": {
+            "id": 3102419,
+            "name": "Maxi phone cell",
+            "url": "https://www.tokopedia.com/maxiphonecell",
+            "city": "Jakarta Pusat",
+            "isOfficial": true,
+            "isPowerBadge": false
+          }
+        },
+        {
+          "id": 674262652,
+          "warehouseIdDefault": 0,
+          "name": "Samsung Galaxy A50S 6/128 Ram 6gb Rom 128 Garansi Resmi",
+          "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "imageUrl700": "https://ecs7.tokopedia.net/img/cache/700/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "price": "Rp 4.155.000",
+          "priceRange": "",
+          "wishlist": false,
+          "categoryId": 1758,
+          "categoryName": "Fashion Wanita",
+          "categoryBreadcrumb": "handphone-tablet/handphone/android-os",
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "labels": [
+            {
+              "title": "Tukar Tambah",
+              "color": "#42b549"
+            }
+          ],
+          "labelGroups": [
+            {
+              "position": "offers",
+              "type": "lightGrey",
+              "title": "Bisa Tukar Tambah"
+            }
+          ],
+          "badges": [
+            {
+              "title": "Official Store",
+              "imageUrl": "https://ecs7.tokopedia.net/img/official_store_badge.png",
+              "show": true
+            }
+          ],
+          "rating": 5,
+          "countReview": 259,
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "shop": {
+            "id": 3102419,
+            "name": "Maxi phone cell",
+            "url": "https://www.tokopedia.com/maxiphonecell",
+            "city": "Jakarta Pusat",
+            "isOfficial": true,
+            "isPowerBadge": false
+          }
         }
-      }
-    ]
+      ]
+    }
   }
 }

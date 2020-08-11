@@ -142,6 +142,7 @@ class ChangeInactivePhoneFragment : BaseDaggerFragment(), ChangeInactivePhone.Vi
             setErrorText("")
             hideKeyboard(v)
             analytics.eventInactivePhoneClick()
+            analytics.eventClickButtonSubmission()
             val status = viewModel.isValidPhoneNumber(inputMobileNumber?.text.toString())
             if(status == 0) {
                 showLoading()
@@ -169,7 +170,9 @@ class ChangeInactivePhoneFragment : BaseDaggerFragment(), ChangeInactivePhone.Vi
     }
 
     override fun showErrorPhoneNumber(resId: Int) {
-        setErrorText(getString(resId))
+        val message = getString(resId)
+        analytics.eventFailedClickButtonSubmission(message)
+        setErrorText(message)
     }
 
     override fun showErrorPhoneNumber(errorMessage: String) {
@@ -189,6 +192,7 @@ class ChangeInactivePhoneFragment : BaseDaggerFragment(), ChangeInactivePhone.Vi
     override fun onForbidden() {}
 
     override fun onPhoneStatusSuccess(userid: String) {
+        analytics.eventSuccessClickButtonSubmission()
         setErrorText("")
         val bundle = Bundle()
         bundle.putString(USER_ID, userid)
@@ -247,6 +251,7 @@ class ChangeInactivePhoneFragment : BaseDaggerFragment(), ChangeInactivePhone.Vi
     }
 
     private fun resolveError(error: String) {
+        analytics.eventFailedClickButtonSubmission(error)
         when {
             UpdateInactivePhoneConstants.ResponseConstants.INVALID_PHONE.equals(error, ignoreCase = true) -> onPhoneInvalid()
             UpdateInactivePhoneConstants.ResponseConstants.PHONE_TOO_SHORT.equals(error, ignoreCase = true) -> onPhoneTooShort()

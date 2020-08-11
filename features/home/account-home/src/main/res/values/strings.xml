@@ -25,7 +25,7 @@
     <string name="account_home_label_logout">Keluar dari Tokopedia</string>
     <string name="account_home_button_logout">Keluar</string>
     <string name="title_personal_data_setting">Data Diri</string>
-    <string name="title_password_setting">Kata Sandi</string>
+    <string name="title_password_setting">Ubah Kata Sandi</string>
     <string name="title_kyc_setting">Verifikasi Data Diri</string>
     <string name="title_setting_pin">PIN Tokopedia</string>
     <string name="title_address_setting">Daftar Alamat</string>
@@ -160,6 +160,9 @@
     <string name="title_menu_seller_center">Pusat Edukasi Seller</string>
     <string name="title_menu_topads">TopAds</string>
     <string name="label_menu_topads">Lihat dan atur promo Anda</string>
+    <string name="title_menu_voucher_toko">Voucher Cashback</string>
+    <string name="description_menu_voucher_toko">Lihat dan kelola promo tokomu</string>
+    <string name="label_menu_voucher_toko">Khusus aplikasi Tokopedia Seller</string>
     <string name="label_menu_seller_center">Edukasi dan inspirasi berjualan</string>
     <string name="title_menu_loan">Modal usaha untuk Toko Anda</string>
     <string name="label_menu_loan">Potensi pinjaman senilai</string>
@@ -205,7 +208,7 @@
     <string name="title_menu_affiliate">Raih Komisi di By Me</string>
     <string name="label_menu_affiliate">Ajak teman beli produk pilihanmu!</string>
     <string name="curate_product_by_me">Post Rekomendasi By Me</string>
-    <string name="create_post_by_me">Buat Post</string>
+    <string name="create_post_by_me">+ Rekomendasi</string>
     <string name="selesai">Selesai</string>
     <string name="title_seller_saldo">Saldo</string>
 

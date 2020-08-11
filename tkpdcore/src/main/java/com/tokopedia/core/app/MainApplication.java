@@ -18,7 +18,6 @@ import com.tokopedia.core.base.di.component.DaggerAppComponent;
 import com.tokopedia.core.base.di.module.AppModule;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.router.InboxRouter;
-import com.tokopedia.core.util.toolargetool.TooLargeTool;
 import com.tokopedia.core2.BuildConfig;
 import com.tokopedia.linker.LinkerConstants;
 import com.tokopedia.linker.LinkerManager;
@@ -30,7 +29,6 @@ import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
-import com.tokopedia.weaver.WeaverFirebaseConditionCheck;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -46,6 +44,8 @@ public abstract class MainApplication extends MainRouterApplication{
     private AppComponent appComponent;
     private UserSession userSession;
     protected RemoteConfig remoteConfig;
+    private String MAINAPP_ADDGAIDTO_BRANCH = "android_addgaid_to_branch";
+    private static final String ENABLE_ASYNC_REMOTECONFIG_MAINAPP_INIT = "android_async_remoteconfig_mainapp_init";
 
 
     public static MainApplication getInstance() {
@@ -60,7 +60,7 @@ public abstract class MainApplication extends MainRouterApplication{
                 return remoteConfig = new FirebaseRemoteConfigImpl(MainApplication.this);
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineNow(remoteConfigWeave);
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(remoteConfigWeave, ENABLE_ASYNC_REMOTECONFIG_MAINAPP_INIT, MainApplication.this);
     }
 
     @Override
@@ -96,8 +96,6 @@ public abstract class MainApplication extends MainRouterApplication{
                 .appModule(new AppModule(this));
         getApplicationComponent().inject(this);
 
-        locationUtils = new LocationUtils(this);
-        locationUtils.initLocationBackground();
         initBranch();
         NotificationUtils.setNotificationChannel(this);
         if(Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
@@ -114,17 +112,17 @@ public abstract class MainApplication extends MainRouterApplication{
                 return executeInBackground();
             }
         };
-        Weaver.Companion.executeWeaveCoRoutine(executeBgWorkWeave,
-                new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_SEQ3_ASYNC, remoteConfig));
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(executeBgWorkWeave,
+                RemoteConfigKey.ENABLE_SEQ3_ASYNC, context);
     }
 
     @NotNull
     private Boolean executeInBackground(){
-        TooLargeTool.startLogging(MainApplication.this);
+        locationUtils = new LocationUtils(MainApplication.this);
+        locationUtils.initLocationBackground();
         if(Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
             upgradeSecurityProvider();
         }
-        init();
         return true;
     }
 
@@ -143,12 +141,8 @@ public abstract class MainApplication extends MainRouterApplication{
     @Override
     public void onTerminate() {
         super.onTerminate();
-        locationUtils.deInitLocationBackground();
-    }
-
-    private void init() {
-        if (BuildConfig.DEBUG && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            registerActivityLifecycleCallbacks(new ActivityFrameMetrics.Builder().build());
+        if(locationUtils != null) {
+            locationUtils.deInitLocationBackground();
         }
     }
 
@@ -176,10 +170,13 @@ public abstract class MainApplication extends MainRouterApplication{
         this.appComponent = appComponent;
     }
 
+    //this method needs to be called from here in case of migration get it tested from CM team
     @NotNull
     private Boolean initBranch(){
-        LinkerManager.initLinkerManager(getApplicationContext()).setGAClientId(TrackingUtils.getClientID(getApplicationContext()));
-
+        LinkerManager.initLinkerManager(getApplicationContext());
+        if(remoteConfig.getBoolean(MAINAPP_ADDGAIDTO_BRANCH, false)){
+            LinkerManager.getInstance().setGAClientId(TrackingUtils.getClientID(getApplicationContext()));
+        }
         if(userSession.isLoggedIn()) {
             UserData userData = new UserData();
             userData.setUserId(userSession.getUserId());

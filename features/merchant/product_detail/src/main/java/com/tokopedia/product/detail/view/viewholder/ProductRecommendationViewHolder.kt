@@ -13,7 +13,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDa
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.topads.sdk.utils.ImpresionTask
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import kotlinx.android.synthetic.main.item_dynamic_recommendation.view.*
 
 class ProductRecommendationViewHolder(private val view: View,
@@ -21,6 +21,8 @@ class ProductRecommendationViewHolder(private val view: View,
 
     companion object {
         val LAYOUT = R.layout.item_dynamic_recommendation
+        private const val EXPERIMENT_NAME = "See more button card"
+        private const val SEE_MORE_CARD_AB_VALUE = "See more card"
     }
 
     override fun bind(element: ProductRecommendationDataModel) {
@@ -36,7 +38,7 @@ class ProductRecommendationViewHolder(private val view: View,
             view.loadingRecom.gone()
             view.titleRecom.text = title
             view.rvProductRecom.show()
-            if (seeMoreAppLink.isNotEmpty()) {
+            if (seeMoreAppLink.isNotEmpty() && RemoteConfigInstance.getInstance().abTestPlatform.getString(EXPERIMENT_NAME) != SEE_MORE_CARD_AB_VALUE) {
                 view.seeMoreRecom.show()
             } else {
                 view.seeMoreRecom.hide()
@@ -44,20 +46,22 @@ class ProductRecommendationViewHolder(private val view: View,
             view.seeMoreRecom.setOnClickListener {
                 listener.onSeeAllRecomClicked(pageName, seeMoreAppLink, getComponentTrackData(element))
             }
-            initAdapter(this, element.cardModel, getComponentTrackData(element))
+            initAdapter(element, this, element.cardModel, getComponentTrackData(element))
         }
     }
 
-    private fun initAdapter(product: RecommendationWidget, cardModel: List<ProductCardModel>?, componentTrackDataModel: ComponentTrackDataModel) {
+    private fun initAdapter(element: ProductRecommendationDataModel, product:RecommendationWidget, cardModel: List<ProductCardModel>?, componentTrackDataModel: ComponentTrackDataModel) {
+
         view.rvProductRecom.bindCarouselProductCardViewGrid(
                 scrollToPosition = listener.getRecommendationCarouselSavedState().get(adapterPosition),
                 recyclerViewPool = listener.getParentRecyclerViewPool(),
+                showSeeMoreCard = RemoteConfigInstance.getInstance().abTestPlatform.getString(EXPERIMENT_NAME) == SEE_MORE_CARD_AB_VALUE && product.seeMoreAppLink.isNotBlank(),
                 carouselProductCardOnItemClickListener = object : CarouselProductCardListener.OnItemClickListener {
                     override fun onItemClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
                         val productRecommendation = product.recommendationItemList.getOrNull(carouselProductCardPosition) ?: return
                         val topAdsClickUrl = productRecommendation.clickUrl
                         if (productCardModel.isTopAds) {
-                            listener.sendTopAds(topAdsClickUrl)
+                            listener.sendTopAdsClick(topAdsClickUrl, productRecommendation.productId.toString(), productRecommendation.name, productRecommendation.imageUrl)
                         }
 
                         listener.eventRecommendationClick(productRecommendation, carouselProductCardPosition, product.pageName, product.title, componentTrackDataModel)
@@ -78,13 +82,18 @@ class ProductRecommendationViewHolder(private val view: View,
                         val productRecommendation = product.recommendationItemList.getOrNull(carouselProductCardPosition) ?: return
                         val topAdsImageUrl = productRecommendation.trackerImageUrl
                         if (productCardModel.isTopAds) {
-                            listener.sendTopAds(topAdsImageUrl)
+                            listener.sendTopAdsImpression(topAdsImageUrl, productRecommendation.productId.toString(), productRecommendation.name, productRecommendation.imageUrl)
                         }
 
                         listener.eventRecommendationImpression(productRecommendation,
                                 carouselProductCardPosition,
                                 product.pageName,
                                 product.title, componentTrackDataModel)
+                    }
+                },
+                carouselSeeMoreClickListener = object : CarouselProductCardListener.OnSeeMoreClickListener{
+                    override fun onSeeMoreClick() {
+                        listener.onSeeAllRecomClicked(product.pageName, product.seeMoreAppLink, getComponentTrackData(element))
                     }
                 },
                 productCardModelList = cardModel?.toMutableList() ?: listOf())

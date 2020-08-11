@@ -144,30 +144,37 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
 
     override fun onItemClicked(applink: String, webUrl: String) {
         dropKeyBoard()
-
-        val modifiedApplink = getModifiedApplink(applink, presenter.getSearchParameter())
-        startActivityFromAutoComplete(modifiedApplink)
+        route(applink, presenter.getSearchParameter())
+        finish()
     }
 
-    private fun dropKeyBoard() {
+    override fun dropKeyBoard() {
         if (activity != null && activity is AutoCompleteActivity) {
             (activity as AutoCompleteActivity).dropKeyboard()
         }
     }
 
-    private fun startActivityFromAutoComplete(applink: String) {
-        if (activity == null) return
+    override fun onRecentSearchItemClicked(item: BaseItemInitialStateSearch, adapterPosition: Int) {
+        presenter.onRecentSearchItemClicked(item, adapterPosition)
+    }
 
-        RouteManager.route(activity, applink)
+    override fun route(applink: String, searchParameter: Map<String, String>) {
+        activity?.let {
+            val modifiedApplink = getModifiedApplink(applink, searchParameter)
+            RouteManager.route(it, modifiedApplink)
+        }
+    }
+
+    override fun finish() {
         activity?.finish()
     }
 
-    override fun onDeleteRecentSearchItem(keyword: String) {
-        deleteRecentSearch(keyword)
+    override fun onDeleteRecentSearchItem(item: BaseItemInitialStateSearch) {
+        deleteRecentSearch(item)
     }
 
-    private fun deleteRecentSearch(keyword: String) {
-        presenter.deleteRecentSearchItem(keyword)
+    private fun deleteRecentSearch(item: BaseItemInitialStateSearch) {
+        presenter.deleteRecentSearchItem(item)
     }
 
     override fun onDeleteAllRecentSearch() {
@@ -206,5 +213,13 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
 
     override fun onPopularSearchImpressed(list: List<Any>) {
         AutocompleteTracking.impressedPopularSearch(iris, list)
+    }
+
+    override fun trackEventClickRecentSearch(label: String, adapterPosition: Int) {
+        AutocompleteTracking.eventClickRecentSearch(label)
+    }
+
+    override fun trackEventClickRecentShop(label: String, userId: String) {
+        AutocompleteTracking.eventClickRecentShop(label, userId)
     }
 }

@@ -25,7 +25,7 @@ import com.tokopedia.track.TrackApp;
 
 public class FavoriteShopViewHolder extends AbstractViewHolder<FavoriteShopViewModel> {
     @LayoutRes
-    public static final int LAYOUT = R.layout.listview_manage_favorited_shop;
+    public static final int LAYOUT = R.layout.favorite_listview_manage_favorited_shop;
 
     private FavoriteShopViewModel favoriteShop;
     private Context context;

@@ -7,7 +7,7 @@ import com.tokopedia.shop.product.data.model.ShopFeaturedProduct
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.shop.product.utils.mapper.ShopPageProductListMapper
-import com.tokopedia.shop.product.view.datamodel.ShopProductEtalaseListViewModel
+import com.tokopedia.shop.product.view.datamodel.ShopProductSortFilterUiModel
 import com.tokopedia.shop.product.view.datamodel.ShopProductFeaturedViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -30,7 +30,7 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
             coEvery { getMembershipUseCase.executeOnBackground() } returns MembershipStampProgress()
 
             viewModelShopPageProductListViewModel.getBuyerShopPageProductTabData(anyString(),
-                    ShopProductEtalaseListViewModel(), false)
+                    ShopProductSortFilterUiModel(), false)
 
             verify { GetMembershipUseCaseNew.createRequestParams(anyInt()) }
 
@@ -45,7 +45,7 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
     fun `check whether response shop featured product error is null`() {
         runBlocking {
             coEvery { getMembershipUseCase.executeOnBackground() } throws Exception()
-            viewModelShopPageProductListViewModel.getBuyerShopPageProductTabData(anyString(), ShopProductEtalaseListViewModel(), anyBoolean())
+            viewModelShopPageProductListViewModel.getBuyerShopPageProductTabData(anyString(), ShopProductSortFilterUiModel(), anyBoolean())
 
             verify { GetMembershipUseCaseNew.createRequestParams(anyInt()) }
 
@@ -60,7 +60,7 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
         runBlocking {
 
             coEvery { getShopProductUseCase.executeOnBackground() } returns ShopProduct.GetShopProduct()
-            viewModelShopPageProductListViewModel.getSellerShopPageProductTabData(anyString(), ShopProductEtalaseListViewModel())
+            viewModelShopPageProductListViewModel.getSellerShopPageProductTabData(anyString(), ShopProductSortFilterUiModel(), sortId)
 
             verify { GqlGetShopProductUseCase.createParams(anyString(), any()) }
 
@@ -75,7 +75,7 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
         runBlocking {
 
             coEvery { getShopProductUseCase.executeOnBackground() } throws Exception()
-            viewModelShopPageProductListViewModel.getSellerShopPageProductTabData(anyString(), ShopProductEtalaseListViewModel())
+            viewModelShopPageProductListViewModel.getSellerShopPageProductTabData(anyString(), ShopProductSortFilterUiModel(), sortId)
 
             verify { GqlGetShopProductUseCase.createParams(anyString(), any()) }
 

@@ -15,6 +15,8 @@ import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommend
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetSingleRecommendationUseCase
 import com.tokopedia.smart_recycler_helper.SmartExecutors
 import com.tokopedia.topads.sdk.di.TopAdsWishlistModule
+import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
+import com.tokopedia.topads.sdk.repository.TopAdsRepository
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
@@ -29,7 +31,7 @@ import javax.inject.Named
  */
 @WishlistScope
 @Module(includes = [TopAdsWishlistModule::class])
-class WishlistModule {
+open class WishlistModule {
     @WishlistScope
     @Provides
     fun provideExecutors(): SmartExecutors = SmartExecutors()
@@ -52,7 +54,7 @@ class WishlistModule {
 
     @Provides
     @WishlistScope
-    fun provideGetWishlistDataUseCase(repository: WishlistRepository): GetWishlistDataUseCase = GetWishlistDataUseCase(repository)
+    open fun provideGetWishlistDataUseCase(repository: WishlistRepository): GetWishlistDataUseCase = GetWishlistDataUseCase(repository)
 
     @Provides
     @WishlistScope
@@ -64,7 +66,7 @@ class WishlistModule {
 
     @Provides
     @WishlistScope
-    fun provideGetSingleRecommendationUseCase(graphqlRepository: GraphqlRepository): GetSingleRecommendationUseCase = GetSingleRecommendationUseCase(graphqlRepository)
+    open fun provideGetSingleRecommendationUseCase(graphqlRepository: GraphqlRepository): GetSingleRecommendationUseCase = GetSingleRecommendationUseCase(graphqlRepository)
 
     @Provides
     @WishlistScope
@@ -77,6 +79,10 @@ class WishlistModule {
     @Provides
     @WishlistScope
     fun provideBulkRemoveWishlistUseCase(graphqlUseCase: GraphqlUseCase): BulkRemoveWishlistUseCase = BulkRemoveWishlistUseCase(graphqlUseCase)
+
+    @Provides
+    @WishlistScope
+    fun provideTopAdsImageViewUseCase(userSession: UserSessionInterface): TopAdsImageViewUseCase = TopAdsImageViewUseCase(userSession.userId, TopAdsRepository())
 
     @Provides
     @WishlistScope

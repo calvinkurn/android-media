@@ -2,7 +2,7 @@ package com.tokopedia.checkers
 object ProductListClickChecker {
 
     fun notContainWords(eventAction: String?) =
-            !(eventAction?.toLowerCase()?.contains("impression") ?: false &&
+            !(eventAction?.toLowerCase()?.contains("impression") ?: false ||
                     eventAction?.toLowerCase()?.contains("view") ?: false)
 
     fun onlySelectContent(event: String?) =

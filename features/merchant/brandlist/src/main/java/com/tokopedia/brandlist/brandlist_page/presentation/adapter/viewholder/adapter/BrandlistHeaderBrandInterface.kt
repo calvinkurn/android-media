@@ -4,6 +4,6 @@ import android.os.Parcelable
 
 interface BrandlistHeaderBrandInterface {
 
-    fun onClickedChip(position: Int, chipName: String, recyclerViewState: Parcelable?)
+    fun onClickedChip(position: Int, chipName: String, current: Long, recyclerViewState: Parcelable?)
 
 }

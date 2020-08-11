@@ -1,9 +1,11 @@
 package com.tokopedia.product.manage.feature.quickedit.variant.presentation.ui
 
 import android.os.Bundle
+import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
+import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.list.analytics.ProductManageTracking
 import com.tokopedia.product.manage.feature.quickedit.variant.adapter.ProductVariantAdapter
@@ -32,12 +34,21 @@ class QuickEditVariantStockBottomSheet(
         }
     }
 
+    private val variantStockAdapter by lazy {
+        ProductVariantAdapter(ProductVariantStockAdapterFactoryImpl(this))
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        observeViewState()
+    }
+
     override fun getTitle(): String {
         return context?.getString(R.string.product_manage_quick_edit_stock_title).orEmpty()
     }
 
     override fun createAdapter(): BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory> {
-        return ProductVariantAdapter(ProductVariantStockAdapterFactoryImpl(this))
+        return variantStockAdapter
     }
 
     override fun onSaveButtonClicked(result: EditVariantResult) {
@@ -46,12 +57,30 @@ class QuickEditVariantStockBottomSheet(
         dismiss()
     }
 
+    override fun onStockBtnClicked() {
+        viewModel.setStockWarningTicker()
+    }
+
     override fun onStockChanged(variantId: String, stock: Int) {
+        variantStockAdapter.updateVariantStock(variantId, stock)
         viewModel.setVariantStock(variantId, stock)
     }
 
     override fun onStatusChanged(variantId: String, status: ProductStatus) {
         ProductManageTracking.eventClickStatusToggleVariant(status)
+        variantStockAdapter.updateVariantStatus(variantId, status)
         viewModel.setVariantStatus(variantId, status)
+    }
+
+    private fun observeViewState() {
+        observe(viewModel.showStockTicker) { showStockTicker ->
+            if (showStockTicker) {
+                variantStockAdapter.showStockTicker()
+                variantStockAdapter.hideStockHint()
+            } else {
+                variantStockAdapter.hideStockTicker()
+                variantStockAdapter.showStockHint()
+            }
+        }
     }
 }

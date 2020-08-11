@@ -61,7 +61,7 @@ class ReviewUITest : BaseWidgetUiTest(){
 
     @Before
     fun setup(){
-        every { userSessionInterface.isLoggedIn } returns false
+        every { userSessionInterface.get().isLoggedIn } returns false
     }
 
     @Test
@@ -69,7 +69,7 @@ class ReviewUITest : BaseWidgetUiTest(){
         val json = GraphqlHelper.loadRawString(context.resources, com.tokopedia.home.test.R.raw.home_empty_dynamic_channel_json)
         val homeData = Gson().fromJson<HomeData>(json, HomeData::class.java)
         coEvery { getHomeUseCase.get().updateHomeData() } returns flow {  }
-        coEvery{getHomeReviewSuggestedUseCase.executeOnBackground()} returns SuggestedProductReview(SuggestedProductReviewResponse())
+        coEvery{getHomeReviewSuggestedUseCase.get().executeOnBackground()} returns SuggestedProductReview(SuggestedProductReviewResponse())
         coEvery { getHomeUseCase.get().getHomeData() } returns flow {
             val data = homeDataMapper.mapToHomeViewModel(homeData, false)
             val newList = data.list.toMutableList()
@@ -77,7 +77,7 @@ class ReviewUITest : BaseWidgetUiTest(){
             emit(data.copy(list = newList))
         }
         viewModel = reInitViewModel()
-        val homeFragment = HomeFragmentTest(createViewModelFactory(viewModel))
+        val homeFragment = HomeFragmentTest()
 
         activityRule.activity.setupFragment(homeFragment)
         Thread.sleep(5000)
@@ -97,7 +97,7 @@ class ReviewUITest : BaseWidgetUiTest(){
             emit(data.copy(list = newList))
         }
         viewModel = reInitViewModel()
-        val homeFragment = HomeFragmentTest(createViewModelFactory(viewModel))
+        val homeFragment = HomeFragmentTest()
 
         activityRule.activity.setupFragment(homeFragment)
         Thread.sleep(5000)
@@ -109,7 +109,7 @@ class ReviewUITest : BaseWidgetUiTest(){
         val json = GraphqlHelper.loadRawString(context.resources, com.tokopedia.home.test.R.raw.home_empty_dynamic_channel_json)
         val homeData = Gson().fromJson<HomeData>(json, HomeData::class.java)
         coEvery { getHomeUseCase.get().updateHomeData() } returns flow {  }
-        coEvery{getHomeReviewSuggestedUseCase.executeOnBackground()} returns SuggestedProductReview(
+        coEvery{getHomeReviewSuggestedUseCase.get().executeOnBackground()} returns SuggestedProductReview(
                 SuggestedProductReviewResponse(
                         linkURL = "KOSONG",
                         imageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/1/20/8744407/8744407_1bc03512-8a00-472b-8e14-560f0cb66d45_700_700.jpg"
@@ -130,7 +130,7 @@ class ReviewUITest : BaseWidgetUiTest(){
         }
 
         viewModel = reInitViewModel()
-        val homeFragment = HomeFragmentTest(createViewModelFactory(viewModel))
+        val homeFragment = HomeFragmentTest()
 
         activityRule.activity.setupFragment(homeFragment)
         Thread.sleep(5000)

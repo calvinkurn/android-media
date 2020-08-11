@@ -7,7 +7,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/spacing_lvl5">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/textTitle"
@@ -199,7 +200,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/power_merchant_back_btn_margin"
-            android:layout_marginBottom="@dimen/spacing_lvl5"
             app:layout_constraintTop_toBottomOf="@id/btnCancel"
             app:unifyButtonSize="medium" />
     </androidx.constraintlayout.widget.ConstraintLayout>

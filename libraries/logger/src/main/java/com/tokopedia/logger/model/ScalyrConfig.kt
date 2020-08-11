@@ -5,6 +5,6 @@ data class ScalyrConfig(
         val session: String = "",
         val serverHost: String = "",
         val parser: String = "",
-        val appType: String = "",
+        val packageName: String = "",
         val debug: Boolean = false,
         val priority: Int = 0)

@@ -51,7 +51,7 @@ class PromotionBudgetAndTypeViewModelTest {
     }
 
     @Test
-    fun `success get basic shop info`() {
+    fun `success get basic shop info`() = runBlocking {
         val dummySuccessShopInfo = ShopInfo()
 
         coEvery {
@@ -62,6 +62,8 @@ class PromotionBudgetAndTypeViewModelTest {
         } returns "1"
 
         mViewModel.getBasicShopInfo()
+
+        mViewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
         coVerify {
             basicShopInfoUseCase.executeOnBackground()

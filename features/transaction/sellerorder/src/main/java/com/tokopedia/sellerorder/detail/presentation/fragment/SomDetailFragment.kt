@@ -38,10 +38,14 @@ import com.tokopedia.kotlin.extensions.convertFormatDate
 import com.tokopedia.kotlin.extensions.convertMonth
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.convertStrObjToHashMap
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickMainActionInOrderDetail
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickSecondaryActionInOrderDetail
+import com.tokopedia.sellerorder.common.errorhandler.SomErrorHandler
+import com.tokopedia.sellerorder.common.presenter.model.Roles
+import com.tokopedia.sellerorder.common.presenter.model.SomGetUserRoleUiModel
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.ACTION_OK
 import com.tokopedia.sellerorder.common.util.SomConsts.ATTRIBUTE_ID
@@ -71,6 +75,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_ORDER_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_SELLER
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_SHOP_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_SOURCE_ASK_BUYER
+import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_USER_ROLES
 import com.tokopedia.sellerorder.common.util.SomConsts.REPLACE_CUST_NAME
 import com.tokopedia.sellerorder.common.util.SomConsts.REPLACE_INVOICE_NO
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_ACCEPT_ORDER
@@ -88,6 +93,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_UBAH_RESI
 import com.tokopedia.sellerorder.common.util.SomConsts.VALUE_COURIER_PROBLEM_OTHERS
 import com.tokopedia.sellerorder.common.util.SomConsts.VALUE_REASON_BUYER_NO_RESPONSE
 import com.tokopedia.sellerorder.common.util.SomConsts.VALUE_REASON_OTHER
+import com.tokopedia.sellerorder.common.util.Utils
 import com.tokopedia.sellerorder.confirmshipping.presentation.activity.SomConfirmShippingActivity
 import com.tokopedia.sellerorder.detail.data.model.*
 import com.tokopedia.sellerorder.detail.di.SomDetailComponent
@@ -109,7 +115,9 @@ import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.KEY_TITLE
 import com.tokopedia.webview.KEY_URL
 import kotlinx.android.synthetic.main.bottomsheet_buyer_request_cancel_order.view.*
@@ -137,6 +145,9 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private val coachMark: CoachMark by lazy {
         CoachMarkBuilder().build()
@@ -186,13 +197,27 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
         ViewModelProviders.of(this, viewModelFactory)[SomDetailViewModel::class.java]
     }
 
+    private var userNotAllowedDialog: DialogUnify? = null
+
     companion object {
         private val TAG_COACHMARK_DETAIL = "coachmark"
+
+        private const val ERROR_GET_ORDER_DETAIL = "Error when get order detail."
+        private const val ERROR_ACCEPTING_ORDER = "Error when accepting order."
+        private const val ERROR_GET_ORDER_REJECT_REASONS = "Error when get order reject reasons."
+        private const val ERROR_WHEN_SET_DELIVERED = "Error when set order status to delivered."
+        private const val ERROR_EDIT_AWB = "Error when edit AWB."
+        private const val ERROR_REJECT_ORDER = "Error when rejecting order."
+        private const val PAGE_NAME = "seller order detail page."
+
+        private val allowedRoles = listOf(Roles.MANAGE_SHOPSTATS, Roles.MANAGE_INBOX, Roles.MANAGE_TA, Roles.MANAGE_TX)
+
         @JvmStatic
         fun newInstance(bundle: Bundle): SomDetailFragment {
             return SomDetailFragment().apply {
                 arguments = Bundle().apply {
                     putString(PARAM_ORDER_ID, bundle.getString(PARAM_ORDER_ID))
+                    putParcelable(PARAM_USER_ROLES, bundle.getParcelable(PARAM_USER_ROLES))
                 }
             }
         }
@@ -231,8 +256,13 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
         super.onCreate(savedInstanceState)
         if (arguments != null) {
             orderId = arguments?.getString(PARAM_ORDER_ID).toString()
+            val userRoles = arguments?.getParcelable<SomGetUserRoleUiModel?>(PARAM_USER_ROLES)
+            if (userRoles != null) {
+                somDetailViewModel.setUserRoles(userRoles)
+            } else {
+                checkUserRole()
+            }
         }
-        loadDetail()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -249,6 +279,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
         observingRejectOrder()
         observingEditAwb()
         observingSetDelivered()
+        observingUserRoles()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -267,6 +298,11 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
     override fun onAddedCoachMarkShipping(coachMarkItemShipping: CoachMarkItem) {
         coachMarkItems.add(coachMarkItemShipping)
         addedCoachMark()
+    }
+
+    private fun checkUserRole() {
+        setLoadingIndicator(true)
+        somDetailViewModel.loadUserRoles(userSession.userId.toIntOrZero())
     }
 
     private fun prepareLayout() {
@@ -304,6 +340,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                     renderDetail()
                 }
                 is Fail -> {
+                    SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_GET_ORDER_DETAIL)
                     showToasterError(getString(R.string.global_error), view)
                 }
             }
@@ -327,6 +364,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                     }
                 }
                 is Fail -> {
+                    SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_ACCEPTING_ORDER)
                     SomAnalytics.eventClickAcceptOrderPopup(false)
                 }
             }
@@ -376,6 +414,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                     fragmentManager?.let { it1 -> bottomSheetRejectReason.show(it1, getString(R.string.show_bottomsheet)) }
                 }
                 is Fail -> {
+                    SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_GET_ORDER_REJECT_REASONS)
                     showToasterError(getString(R.string.global_error), bottomSheetRejectReason.view)
                 }
             }
@@ -396,6 +435,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                     }
                 }
                 is Fail -> {
+                    SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_WHEN_SET_DELIVERED)
                     view?.let { v ->
                         val msg = it.throwable.message
                         val msgProcessed = if (msg.isNullOrBlank()) "Terjadi Kesalahan" else msg
@@ -404,6 +444,39 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                 }
             }
         })
+    }
+
+    private fun observingUserRoles() {
+        somDetailViewModel.userRoleResult.observe(viewLifecycleOwner, Observer { result ->
+            setLoadingIndicator(false)
+            when (result) {
+                is Success -> {
+                    if (result.data.roles.any { allowedRoles.contains(it) }) {
+                        onUserAllowedToViewSOM()
+                    } else {
+                        onUserNotAllowedToViewSOM()
+                    }
+                }
+                is Fail -> {
+                    SomErrorHandler.logExceptionToCrashlytics(result.throwable, String.format(SomConsts.ERROR_GET_USER_ROLES, PAGE_NAME))
+                    showToasterError(getString(R.string.global_error), view)
+                    refreshHandler?.finishRefresh()
+                }
+            }
+        })
+    }
+
+    private fun onUserNotAllowedToViewSOM() {
+        context?.run {
+            if (userNotAllowedDialog == null) {
+                Utils.createUserNotAllowedDialog(this)
+            }
+            userNotAllowedDialog?.show()
+        }
+    }
+
+    private fun onUserAllowedToViewSOM() {
+        loadDetail()
     }
 
     private fun renderDetail() {
@@ -851,6 +924,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                     }
                 }
                 is Fail -> {
+                    SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_EDIT_AWB)
                     failEditAwbResponse.message = it.throwable.message.toString()
                     if(failEditAwbResponse.message.isNotEmpty()) {
                         showToasterError(failEditAwbResponse.message, view)
@@ -902,7 +976,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
             tv_buyer_request_cancel?.text = spanned
 
             val reasonBuyer = detailResponse.buyerRequestCancel.reason
-            buyer_request_cancel_notes?.text = reasonBuyer.replace("\\n", System.getProperty("line.separator"))
+            buyer_request_cancel_notes?.text = reasonBuyer.replace("\\n", System.getProperty("line.separator") ?: "")
 
             if (detailResponse.statusCode != 220 && detailResponse.statusCode != 400) {
                 ll_buyer_req_cancel_buttons?.visibility = View.GONE
@@ -949,7 +1023,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
 
     override fun onTextCopied(label: String, str: String) {
         val clipboardManager = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        clipboardManager.primaryClip = ClipData.newPlainText(label, str)
+        clipboardManager.setPrimaryClip(ClipData.newPlainText(label, str))
         showCommonToaster(getString(R.string.resi_tersalin))
     }
 
@@ -969,13 +1043,13 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
 
     override fun onCopiedInvoice(invoice: String, str: String) {
         val clipboardManager = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        clipboardManager.primaryClip = ClipData.newPlainText(invoice, str)
+        clipboardManager.setPrimaryClip(ClipData.newPlainText(invoice, str))
         showCommonToaster(getString(R.string.invoice_tersalin))
     }
 
     override fun onCopiedAddress(address: String, str: String) {
         val clipboardManager = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        clipboardManager.primaryClip = ClipData.newPlainText(address, str)
+        clipboardManager.setPrimaryClip(ClipData.newPlainText(address, str))
         showCommonToaster(getString(R.string.alamat_pengiriman_tersalin))
     }
 
@@ -1289,6 +1363,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                     }
                 }
                 is Fail -> {
+                    SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_REJECT_ORDER)
                     showToasterError(getString(R.string.global_error), view)
                 }
             }
@@ -1375,10 +1450,16 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
     }
 
     override fun onRefresh(view: View?) {
-        loadDetail()
+        if (isUserRoleFetched(somDetailViewModel.userRoleResult.value)) {
+            loadDetail()
+        } else {
+            checkUserRole()
+        }
     }
 
     private fun openWebview(url: String) {
         startActivity(RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW, url))
     }
+
+    private fun isUserRoleFetched(value: Result<SomGetUserRoleUiModel>?): Boolean = value is Success
 }

@@ -10,26 +10,17 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.airbnb.deeplinkdispatch.DeepLinkHandler;
+import com.tokopedia.applink.AppUtil;
 import com.tokopedia.applink.DeeplinkMapper;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.SessionApplinkModule;
-import com.tokopedia.applink.SessionApplinkModuleLoader;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.createpost.view.applink.CreatePostModule;
-import com.tokopedia.createpost.view.applink.CreatePostModuleLoader;
-import com.tokopedia.developer_options.presentation.applink.RNDevOptionsApplinkModule;
-import com.tokopedia.developer_options.presentation.applink.RNDevOptionsApplinkModuleLoader;
-import com.tokopedia.flashsale.management.applink.FlashsaleDeeplinkModule;
-import com.tokopedia.flashsale.management.applink.FlashsaleDeeplinkModuleLoader;
 import com.tokopedia.gm.applink.GMApplinkModule;
 import com.tokopedia.gm.applink.GMApplinkModuleLoader;
 import com.tokopedia.homecredit.applink.HomeCreditAppLinkModule;
 import com.tokopedia.homecredit.applink.HomeCreditAppLinkModuleLoader;
 import com.tokopedia.loginregister.common.applink.LoginRegisterApplinkModule;
 import com.tokopedia.loginregister.common.applink.LoginRegisterApplinkModuleLoader;
-import com.tokopedia.logisticorder.applink.TrackingAppLinkModule;
-import com.tokopedia.logisticorder.applink.TrackingAppLinkModuleLoader;
 import com.tokopedia.phoneverification.applink.PhoneVerificationApplinkModule;
 import com.tokopedia.phoneverification.applink.PhoneVerificationApplinkModuleLoader;
 import com.tokopedia.product.detail.applink.ProductDetailApplinkModule;
@@ -42,16 +33,12 @@ import com.tokopedia.sellerapp.applink.SellerappAplinkModuleLoader;
 import com.tokopedia.sellerapp.deeplink.presenter.DeepLinkAnalyticsImpl;
 import com.tokopedia.topads.applink.TopAdsApplinkModule;
 import com.tokopedia.topads.applink.TopAdsApplinkModuleLoader;
-import com.tokopedia.topchat.deeplink.TopChatAppLinkModule;
-import com.tokopedia.topchat.deeplink.TopChatAppLinkModuleLoader;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.updateinactivephone.common.applink.ChangeInactivePhoneApplinkModule;
 import com.tokopedia.updateinactivephone.common.applink.ChangeInactivePhoneApplinkModuleLoader;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
-import com.tokopedia.useridentification.applink.UserIdentificationApplinkModule;
-import com.tokopedia.useridentification.applink.UserIdentificationApplinkModuleLoader;
 import com.tokopedia.webview.WebViewApplinkModule;
 import com.tokopedia.webview.WebViewApplinkModuleLoader;
 
@@ -65,17 +52,10 @@ import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPE
         TopAdsApplinkModule.class,
         GMApplinkModule.class,
         SellerappAplinkModule.class,
-        TrackingAppLinkModule.class,
-        TopChatAppLinkModule.class,
-        SessionApplinkModule.class,
         ProductDetailApplinkModule.class,
         LoginRegisterApplinkModule.class,
         ChangeInactivePhoneApplinkModule.class,
         PhoneVerificationApplinkModule.class,
-        UserIdentificationApplinkModule.class,
-        FlashsaleDeeplinkModule.class,
-        CreatePostModule.class,
-        RNDevOptionsApplinkModule.class,
         WebViewApplinkModule.class,
         HomeCreditAppLinkModule.class
 })
@@ -93,17 +73,10 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
                 new TopAdsApplinkModuleLoader(),
                 new GMApplinkModuleLoader(),
                 new SellerappAplinkModuleLoader(),
-                new TrackingAppLinkModuleLoader(),
-                new TopChatAppLinkModuleLoader(),
-                new SessionApplinkModuleLoader(),
                 new ProductDetailApplinkModuleLoader(),
                 new LoginRegisterApplinkModuleLoader(),
                 new ChangeInactivePhoneApplinkModuleLoader(),
                 new PhoneVerificationApplinkModuleLoader(),
-                new UserIdentificationApplinkModuleLoader(),
-                new FlashsaleDeeplinkModuleLoader(),
-                new CreatePostModuleLoader(),
-                new RNDevOptionsApplinkModuleLoader(),
                 new WebViewApplinkModuleLoader(),
                 new HomeCreditAppLinkModuleLoader()
         );
@@ -157,6 +130,7 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
                 Bundle bundle = getIntent().getExtras();
                 eventPersonalizedClicked(bundle.getString(Constants.EXTRA_APPLINK_CATEGORY));
             }
+            AppUtil.logAirBnbUsage(applinkString);
         } else {
             Intent intent = RouteManager.getIntent(this, applinkString);
             startActivity(intent);
@@ -183,13 +157,4 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
         return intent;
     }
 
-    @DeepLink(Constants.Applinks.SellerApp.BROWSER)
-    public static Intent getCallingIntentOpenBrowser(Context context, Bundle extras) {
-        String webUrl = extras.getString(
-                Constants.ARG_NOTIFICATION_URL, TokopediaUrl.Companion.getInstance().getWEB()
-        );
-        Intent destination = new Intent(Intent.ACTION_VIEW);
-        destination.setData(Uri.parse(webUrl));
-        return destination;
-    }
 }

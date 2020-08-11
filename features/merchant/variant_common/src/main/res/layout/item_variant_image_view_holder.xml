@@ -6,23 +6,22 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginEnd="@dimen/dp_12"
-    android:background="@color/white"
     android:layout_marginRight="@dimen/dp_12">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/dp_4"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <FrameLayout
             android:id="@+id/imgContainerVariant"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="@dimen/dp_4"
             android:background="@drawable/bg_variant_img_unselected"
+            android:padding="@dimen/dp_4"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -37,36 +36,33 @@
 
         </FrameLayout>
 
-        <FrameLayout
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/overlayVariantImgContainer"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:layout_gravity="center"
+            android:gravity="center"
             android:background="@drawable/bg_round_corner_variant_overlay"
-            android:visibility="gone"
+            android:text="@string/variant_empty"
+            android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="body_3"
+            tools:visibility="gone"/>
 
-            <com.tokopedia.unifyprinciples.Typography
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="@string/variant_empty"
-                android:textColor="@color/white"
-                app:typographyType="body_3" />
-        </FrameLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.tokopedia.unifycomponents.NotificationUnify
         android:id="@+id/promoVariantImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:notificationTitle="@string/variant_promo"
-        app:notificationType="text_type"
-        app:notificationColor="color_text_type"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        />
+        app:notificationColor="color_text_type"
+        app:notificationTitle="@string/variant_promo"
+        app:notificationType="text_type" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

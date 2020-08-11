@@ -9,6 +9,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.After
@@ -94,6 +95,8 @@ class ReviewVoucherViewModelTest {
                 dummyVoucherReviewUiModel,
                 anyString(),
                 anyInt())
+
+        coroutineContext[Job]?.children?.forEach { it.join() }
 
         coVerify {
             saveBannerVoucherUseCase.executeOnBackground()

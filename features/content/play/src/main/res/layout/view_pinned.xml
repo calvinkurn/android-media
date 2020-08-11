@@ -9,12 +9,11 @@
         android:layout_height="wrap_content"
         android:background="@drawable/bg_play_pinned_message"
         tools:layout_width="match_parent"
-        app:layout_goneMarginBottom="@dimen/play_offset_12"
         tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/cl_pinned_content"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl3"
             android:layout_marginEnd="@dimen/spacing_lvl3"
@@ -39,7 +38,7 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_pinned_message"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/spacing_lvl2"
                 android:layout_marginLeft="@dimen/spacing_lvl2"

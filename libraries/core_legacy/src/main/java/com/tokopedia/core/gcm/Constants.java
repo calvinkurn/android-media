@@ -28,7 +28,6 @@ public interface Constants {
     int REGISTRATION_STATUS_ERROR = 2;
     String REGISTRATION_MESSAGE_OK = "FCM Sucessfully";
     String REGISTRATION_MESSAGE_ERROR = "FCM Error";
-    String URL_MARKET = "market://details?id=";
     String EXTRA_APPLINK = "applink_url";
     String EXTRA_APPLINK_FROM_PUSH = "applink_from_notif";
     String EXTRA_PUSH_PERSONALIZATION = "EXTRA_PUSH_PERSONALIZATION";
@@ -71,8 +70,6 @@ public interface Constants {
         String WISHLIST = "tokopedia://wishlist";
         String LOGIN = "tokopedia://login";
         String OFFICIAL_STORES = "tokopedia://official-stores";
-        String RESCENTER = "tokopedia://resolution/{resolution_id}";
-        String RESCENTER_CENTER = "tokopedia://resolution-center/{resolution_id}";
         String OFFICIAL_STORES_PROMO = "tokopedia://official-stores/promo/{slug}";
         String OFFICIAL_STORE_PROMO = "tokopedia://official-store/promo/{slug}";
         String OFFICIAL_STORES_PROMO_TERMS = "tokopedia://official-stores/promo-terms";

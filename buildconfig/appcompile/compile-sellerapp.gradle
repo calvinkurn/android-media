@@ -1,10 +1,10 @@
 // Sort alphabetically by name
 includeDynamicFeatureIfEnabled("sellerapp")
 
-include "features:category:tradein_common"
 include "features:category:tradein"
 
 include "features:common:developer_options"
+include "features:common:developer_options_noop"
 include "features:common:nps"
 include "features:common:resources_common"
 include "features:category:common_tradein"
@@ -19,14 +19,14 @@ include "features:content:createpost"
 include "features:content:kol"
 include "features:content:kol_common"
 include "features:content:profile"
+include "features:content:play_common"
+include "features:content:play_broadcaster"
 
 include "features:recharge:common_digital"
 include "features:recharge:digitalproduct"
 
 include "features:discovery:discovery_common"
 include "features:discovery:category_common"
-include "features:discovery:flashsale_management"
-include 'features:discovery:flashsale_management_common'
 include 'features:discovery:productcard'
 include 'features:discovery:carousel_productcard'
 include 'features:discovery:recommendation_widget_common'
@@ -38,10 +38,9 @@ include "features:discovery:productcard_options"
 include "features:fintech:home_credit"
 include "features:fintech:saldo_details"
 include "features:fintech:common_wallet"
-include "features:fintech:instant_loan"
 include "features:fintech:layanan_finansial"
 
-include "features:fcm_common"
+include "features:user:fcm_common"
 
 include "features:im:common_promo"
 include "features:im:referral"
@@ -50,12 +49,11 @@ include "features:logistic:logisticaddaddress"
 include "features:logistic:logisticdata"
 include "features:logistic:logisticorder"
 include "features:logistic:logisticcart"
+include "features:logistic:editshipping"
 
 include "features:merchant:gold_merchant"
 include "features:merchant:gold_merchant_common"
-include "features:merchant:gold_merchant_resource"
 include "features:merchant:power_merchant_subscribe"
-include "features:merchant:product_draft_database"
 include "features:merchant:product_detail"
 include "features:merchant:product_detail_common"
 include "features:merchant:product_add_edit"
@@ -72,19 +70,20 @@ include "features:merchant:seller_home_common"
 include "features:merchant:seller_migration_common"
 include "features:merchant:seller_onboarding"
 include "features:merchant:review_seller"
+include "features:merchant:seller_search"
 include "features:merchant:shop_common"
 include "features:merchant:shop_page"
 //include "features:merchant:shop_page_no_op"
+include "features:merchant:shop_score"
 include "features:merchant:shop_showcase"
 include "features:merchant:shop_open"
 include "features:merchant:shop_settings"
 include "features:merchant:shop_etalase_picker"
 include "features:merchant:statistic"
+include "features:merchant:variant_common"
+include "features:merchant:talk"
 include ':features:merchant:youtube_common'
 //include "features:merchant:shop_etalase_picker_no_op"
-include "features:merchant:talk"
-include 'features:merchant:youtube_common'
-include "features:merchant:variant_common"
 include "features:merchant:voucher_creation"
 
 include "features:operational:contact_us"
@@ -115,8 +114,8 @@ include "features:top_ads:top_ads_management_sourcetagging"
 include "features:top_ads:top_ads_detail_sheet"
 
 include "features:transaction:atc_common"
+include "features:transaction:express_checkout_common"
 include "features:transaction:purchase_platform_common"
-include "features:transaction:opportunity"
 include "features:transaction:sellerorder"
 
 include "features:top_ads:top_ads_widget"
@@ -127,11 +126,11 @@ include "features:user:chat_common"
 include "features:user:attachinvoice"
 include "features:user:attachvoucher"
 include "features:user:chatbot"
-include "features:user:changepassword"
 include "features:user:changephonenumber"
 include "features:user:loginregister"
 include "features:user:loginphone"
 include "features:user:logout"
+include "features:user:managepassword"
 include "features:user:notifcenter"
 include "features:user:otp"
 include "features:user:phoneverification"
@@ -150,16 +149,13 @@ include "features:user:kyc_centralized"
 include "features:user:profilecommon"
 include "features:user:liveness"
 include "features:user:loginfingerprint"
+include 'features:user:notif-troubleshooter'
 
 include "features:category:age_restriction"
 include "features:category:basemvvm"
-include "features:common:common_tradein"
 include "features:fintech:merchant_lending_widget"
 
-include 'tkpdloyalty'
 include 'tkpdcore'
-include 'tkpdinbox'
-include 'tkpdsession'
 include 'tkpddesign'
 include 'tkpdseller'
 include 'tkpdabstraction'

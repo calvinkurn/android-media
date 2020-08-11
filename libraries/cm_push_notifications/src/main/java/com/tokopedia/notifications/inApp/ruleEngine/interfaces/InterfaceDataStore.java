@@ -16,4 +16,5 @@ public interface InterfaceDataStore {
     void updateInAppDataFreq(long id);
     void updateInAppDataFreq(long id, long newSt);
     void viewDismissed(long id);
+    void interactedWithView(long id);
 }

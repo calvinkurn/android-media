@@ -244,6 +244,8 @@ public class BranchWrapper implements WrapperInterface {
             deeplinkPath = getApplinkPath(LinkerConstants.DISCOVERY_CATALOG, data.getId());
         } else if (LinkerData.PROMO_TYPE.equalsIgnoreCase(data.getType())) {
             deeplinkPath = getApplinkPath(LinkerConstants.PROMO_DETAIL, data.getId());
+        } else if (LinkerData.PLAY_BROADCASTER.equalsIgnoreCase(data.getType())) {
+            deeplinkPath = data.renderShareUri();
         }
 
         else if (isAppShowReferralButtonActivated(context) && LinkerData.REFERRAL_TYPE.equalsIgnoreCase(data.getType())) {
@@ -284,7 +286,8 @@ public class BranchWrapper implements WrapperInterface {
 
         if (isAndroidIosUrlActivated(context) && !(LinkerData.REFERRAL_TYPE.equalsIgnoreCase(data.getType()) ||
                 LinkerData.INDI_CHALLENGE_TYPE.equalsIgnoreCase(data.getType()) ||
-                LinkerData.GROUPCHAT_TYPE.equalsIgnoreCase(data.getType()))) {
+                LinkerData.GROUPCHAT_TYPE.equalsIgnoreCase(data.getType())) ||
+                LinkerData.PLAY_BROADCASTER.equalsIgnoreCase(data.getType())) {
             linkProperties.addControlParameter(LinkerConstants.ANDROID_DESKTOP_URL_KEY, data.renderShareUri());
             linkProperties.addControlParameter(LinkerConstants.IOS_DESKTOP_URL_KEY, data.renderShareUri());
         }
@@ -330,7 +333,8 @@ public class BranchWrapper implements WrapperInterface {
     private static boolean isBranchUrlActivated(Context context, String type) {
         if (LinkerData.APP_SHARE_TYPE.equalsIgnoreCase(type)
                 || LinkerData.REFERRAL_TYPE.equalsIgnoreCase(type)
-                || LinkerData.GROUPCHAT_TYPE.equalsIgnoreCase(type)) {
+                || LinkerData.GROUPCHAT_TYPE.equalsIgnoreCase(type)
+                || LinkerData.PLAY_BROADCASTER.equalsIgnoreCase(type)) {
             return true;
         } else {
             return ((LinkerRouter)context.getApplicationContext()).
@@ -384,9 +388,11 @@ public class BranchWrapper implements WrapperInterface {
         if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_BRANCH_UTM_SUPPORT) &&
                 !(TextUtils.isEmpty(utmSource) || TextUtils.isEmpty(utmMedium))) {
             Map<String, Object> param = new HashMap<>();
+            param.put(LinkerConstants.SCREEN_NAME, "Deeplink Page");
             param.put(LinkerConstants.UTM_SOURCE, utmSource);
             param.put(LinkerConstants.UTM_CAMPAIGN, utmCampaign);
             param.put(LinkerConstants.UTM_MEDIUM, utmMedium);
+
             TrackApp.getInstance().getGTM().sendCampaign(param);
         }
     }

@@ -1,331 +1,644 @@
 {
-  "searchProduct": {
-    "query": "baju kaos anak balapan",
-    "source": "search",
-    "isFilter": false,
-    "response_code": 4,
-    "keyword_process": "4",
-    "count": 0,
-    "count_text": "0",
-    "additional_params": "",
-    "isQuerySafe": true,
-    "autocomplete_applink": "tokopedia://search-autocomplete?navsource=home&q=baju%20kaos%20anak%20balapan",
-    "errorMessage": "",
-    "lite_url": "",
-    "default_view": 1,
-    "redirection": {
-      "redirect_applink": ""
+  "ace_search_product_v4": {
+    "header": {
+      "responseCode": 4,
+      "keywordProcess": "4",
+      "totalData": 0,
+      "totalDataText": "0",
+      "additionalParams": "",
+      "errorMessage": "",
+      "defaultView": 1
     },
-    "ticker": {
-      "text": "",
-      "query": ""
-    },
-    "suggestion": {
-      "currentKeyword": "",
-      "suggestion": "",
-      "suggestionCount": 0,
-      "instead": "",
-      "insteadCount": 0,
-      "text": "",
-      "query": ""
-    },
-    "related": {
-      "related_keyword": "",
-      "other_related": [
-        {
-          "keyword": "baju kaos anak",
-          "url": "https://staging.tokopedia.com/search?q=baju+kaos+anak&source=related_keyword&st=product",
-          "applink": "tokopedia://search?q=baju kaos anak&source=related_keyword&st=product",
-          "product": [
-            {
-              "id": 15340985,
-              "name": "tes hidden category blazer 1",
-              "price": 150000,
-              "image_url": "",
-              "rating": 0,
-              "count_review": 0,
-              "url": "https://staging.tokopedia.com/aqua/tes-hidden-category-blazer-1-hitam?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D1_catid%3D148_bmexp%3D1&whid=0",
-              "applink": "tokopedia://product/15340985?",
-              "price_str": ""
-            },
-            {
-              "id": 15340991,
-              "name": "test hidden category oy 1",
-              "price": 24000,
-              "image_url": "",
-              "rating": 0,
-              "count_review": 0,
-              "url": "https://staging.tokopedia.com/aqua/test-hidden-category-oy-1?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D2_catid%3D148_bmexp%3D1&whid=0",
-              "applink": "tokopedia://product/15340991?",
-              "price_str": ""
-            },
-            {
-              "id": 15302003,
-              "name": "liquid vape gratis baju anak",
-              "price": 123,
-              "image_url": "",
-              "rating": 0,
-              "count_review": 0,
-              "url": "https://staging.tokopedia.com/ratubadisshop/liquid-vape-gratis-baju-anak?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D3_catid%3D36_bmexp%3D1&whid=0",
-              "applink": "tokopedia://product/15302003?",
-              "price_str": ""
-            },
-            {
-              "id": 15327250,
-              "name": "baju anak",
-              "price": 1000,
-              "image_url": "",
-              "rating": 0,
-              "count_review": 0,
-              "url": "https://staging.tokopedia.com/ratubadisshop/baju-anak?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D4_catid%3D2071_bmexp%3D1&whid=0",
-              "applink": "tokopedia://product/15327250?",
-              "price_str": ""
-            },
-            {
-              "id": 15213541,
-              "name": "Baju Kaos Anak Laki Hijau Mom n Bab - Buaya",
-              "price": 125000,
-              "image_url": "",
-              "rating": 0,
-              "count_review": 0,
-              "url": "https://staging.tokopedia.com/mustika-ratu/baju-kaos-anak-laki-hijau-mom-n-bab-buaya?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D5_catid%3D2144_bmexp%3D1&whid=0",
-              "applink": "tokopedia://product/15213541?",
-              "price_str": ""
-            },
-            {
-              "id": 15213547,
-              "name": "Baju Kaos Anak Laki (isi 2 pcs) Mom n Bab - Pesawat",
-              "price": 108750,
-              "image_url": "",
-              "rating": 0,
-              "count_review": 0,
-              "url": "https://staging.tokopedia.com/mustika-ratu/baju-kaos-anak-laki-isi-2-pcs-mom-n-bab-pesawat?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D6_catid%3D2144_bmexp%3D1&whid=0",
-              "applink": "tokopedia://product/15213547?",
-              "price_str": ""
-            }
-          ]
-        },
-        {
-          "keyword": "baju kaos",
-          "url": "https://staging.tokopedia.com/search?q=baju+kaos&source=related_keyword&st=product",
-          "applink": "tokopedia://search?q=baju kaos&source=related_keyword&st=product",
-          "product": [
-            {
-              "id": 15340985,
-              "name": "tes hidden category blazer 1",
-              "price": 150000,
-              "image_url": "",
-              "rating": 0,
-              "count_review": 0,
-              "url": "https://staging.tokopedia.com/aqua/tes-hidden-category-blazer-1-hitam?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D1_catid%3D148_bmexp%3D1&whid=0",
-              "applink": "tokopedia://product/15340985?",
-              "price_str": ""
-            },
-            {
-              "id": 15340991,
-              "name": "test hidden category oy 1",
-              "price": 24000,
-              "image_url": "",
-              "rating": 0,
-              "count_review": 0,
-              "url": "https://staging.tokopedia.com/aqua/test-hidden-category-oy-1?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D2_catid%3D148_bmexp%3D1&whid=0",
-              "applink": "tokopedia://product/15340991?",
-              "price_str": ""
-            },
-            {
-              "id": 15327250,
-              "name": "baju anak",
-              "price": 1000,
-              "image_url": "",
-              "rating": 0,
-              "count_review": 0,
-              "url": "https://staging.tokopedia.com/ratubadisshop/baju-anak?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D3_catid%3D2071_bmexp%3D1&whid=0",
-              "applink": "tokopedia://product/15327250?",
-              "price_str": ""
-            },
-            {
-              "id": 15356072,
-              "name": "Kaos Disco Testing non var 1",
-              "price": 10000,
-              "image_url": "",
-              "rating": 0,
-              "count_review": 0,
-              "url": "https://staging.tokopedia.com/rshop2/kaos-disco-testing-non-var-1?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D4_catid%3D2072_bmexp%3D1&whid=0",
-              "applink": "tokopedia://product/15356072?",
-              "price_str": ""
-            },
-            {
-              "id": 15356071,
-              "name": "Kaos Disco Testing non var 2",
-              "price": 10000,
-              "image_url": "",
-              "rating": 0,
-              "count_review": 0,
-              "url": "https://staging.tokopedia.com/rshop2/kaos-disco-testing-non-var-2?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D5_catid%3D2072_bmexp%3D1&whid=0",
-              "applink": "tokopedia://product/15356071?",
-              "price_str": ""
-            },
-            {
-              "id": 15356070,
-              "name": "Kaos Disco Testing non var 3",
-              "price": 10000,
-              "image_url": "",
-              "rating": 0,
-              "count_review": 0,
-              "url": "https://staging.tokopedia.com/rshop2/kaos-disco-testing-non-var-3?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D6_catid%3D2072_bmexp%3D1&whid=0",
-              "applink": "tokopedia://product/15356070?",
-              "price_str": ""
-            }
-          ]
-        },
-        {
-          "keyword": "baju anak",
-          "url": "https://staging.tokopedia.com/search?q=baju+anak&source=related_keyword&st=product",
-          "applink": "tokopedia://search?q=baju anak&source=related_keyword&st=product",
-          "product": [
-            {
-              "id": 15340985,
-              "name": "tes hidden category blazer 1",
-              "price": 150000,
-              "image_url": "",
-              "rating": 0,
-              "count_review": 0,
-              "url": "https://staging.tokopedia.com/aqua/tes-hidden-category-blazer-1-hitam?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D1_catid%3D148_bmexp%3D1&whid=0",
-              "applink": "tokopedia://product/15340985?",
-              "price_str": ""
-            },
-            {
-              "id": 15340991,
-              "name": "test hidden category oy 1",
-              "price": 24000,
-              "image_url": "",
-              "rating": 0,
-              "count_review": 0,
-              "url": "https://staging.tokopedia.com/aqua/test-hidden-category-oy-1?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D2_catid%3D148_bmexp%3D1&whid=0",
-              "applink": "tokopedia://product/15340991?",
-              "price_str": ""
-            },
-            {
-              "id": 15327250,
-              "name": "baju anak",
-              "price": 1000,
-              "image_url": "",
-              "rating": 0,
-              "count_review": 0,
-              "url": "https://staging.tokopedia.com/ratubadisshop/baju-anak?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D3_catid%3D2071_bmexp%3D1&whid=0",
-              "applink": "tokopedia://product/15327250?",
-              "price_str": ""
-            },
-            {
-              "id": 15356072,
-              "name": "Kaos Disco Testing non var 1",
-              "price": 10000,
-              "image_url": "",
-              "rating": 0,
-              "count_review": 0,
-              "url": "https://staging.tokopedia.com/rshop2/kaos-disco-testing-non-var-1?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D4_catid%3D2072_bmexp%3D1&whid=0",
-              "applink": "tokopedia://product/15356072?",
-              "price_str": ""
-            },
-            {
-              "id": 15356071,
-              "name": "Kaos Disco Testing non var 2",
-              "price": 10000,
-              "image_url": "",
-              "rating": 0,
-              "count_review": 0,
-              "url": "https://staging.tokopedia.com/rshop2/kaos-disco-testing-non-var-2?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D5_catid%3D2072_bmexp%3D1&whid=0",
-              "applink": "tokopedia://product/15356071?",
-              "price_str": ""
-            },
-            {
-              "id": 15356070,
-              "name": "Kaos Disco Testing non var 3",
-              "price": 10000,
-              "image_url": "",
-              "rating": 0,
-              "count_review": 0,
-              "url": "https://staging.tokopedia.com/rshop2/kaos-disco-testing-non-var-3?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D6_catid%3D2072_bmexp%3D1&whid=0",
-              "applink": "tokopedia://product/15356070?",
-              "price_str": ""
-            }
-          ]
-        },
-        {
-          "keyword": "kaos anak",
-          "url": "https://staging.tokopedia.com/search?q=kaos+anak&source=related_keyword&st=product",
-          "applink": "tokopedia://search?q=kaos anak&source=related_keyword&st=product",
-          "product": [
-            {
-              "id": 15340985,
-              "name": "tes hidden category blazer 1",
-              "price": 150000,
-              "image_url": "",
-              "rating": 0,
-              "count_review": 0,
-              "url": "https://staging.tokopedia.com/aqua/tes-hidden-category-blazer-1-hitam?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D1_catid%3D148_bmexp%3D1&whid=0",
-              "applink": "tokopedia://product/15340985?",
-              "price_str": ""
-            },
-            {
-              "id": 15340991,
-              "name": "test hidden category oy 1",
-              "price": 24000,
-              "image_url": "",
-              "rating": 0,
-              "count_review": 0,
-              "url": "https://staging.tokopedia.com/aqua/test-hidden-category-oy-1?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D2_catid%3D148_bmexp%3D1&whid=0",
-              "applink": "tokopedia://product/15340991?",
-              "price_str": ""
-            },
-            {
-              "id": 15327250,
-              "name": "baju anak",
-              "price": 1000,
-              "image_url": "",
-              "rating": 0,
-              "count_review": 0,
-              "url": "https://staging.tokopedia.com/ratubadisshop/baju-anak?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D3_catid%3D2071_bmexp%3D1&whid=0",
-              "applink": "tokopedia://product/15327250?",
-              "price_str": ""
-            },
-            {
-              "id": 15356072,
-              "name": "Kaos Disco Testing non var 1",
-              "price": 10000,
-              "image_url": "",
-              "rating": 0,
-              "count_review": 0,
-              "url": "https://staging.tokopedia.com/rshop2/kaos-disco-testing-non-var-1?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D4_catid%3D2072_bmexp%3D1&whid=0",
-              "applink": "tokopedia://product/15356072?",
-              "price_str": ""
-            },
-            {
-              "id": 15356071,
-              "name": "Kaos Disco Testing non var 2",
-              "price": 10000,
-              "image_url": "",
-              "rating": 0,
-              "count_review": 0,
-              "url": "https://staging.tokopedia.com/rshop2/kaos-disco-testing-non-var-2?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D5_catid%3D2072_bmexp%3D1&whid=0",
-              "applink": "tokopedia://product/15356071?",
-              "price_str": ""
-            },
-            {
-              "id": 15356070,
-              "name": "Kaos Disco Testing non var 3",
-              "price": 10000,
-              "image_url": "",
-              "rating": 0,
-              "count_review": 0,
-              "url": "https://staging.tokopedia.com/rshop2/kaos-disco-testing-non-var-3?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D6_catid%3D2072_bmexp%3D1&whid=0",
-              "applink": "tokopedia://product/15356070?",
-              "price_str": ""
-            }
-          ]
-        }
-      ]
-    },
-    "products": []
+    "data": {
+      "isQuerySafe": true,
+      "autocompleteApplink": "tokopedia://search-autocomplete?navsource=home&q=baju%20kaos%20anak%20balapan",
+      "redirection": {
+        "redirectApplink": ""
+      },
+      "ticker": {
+        "text": "",
+        "query": ""
+      },
+      "suggestion": {
+        "currentKeyword": "",
+        "suggestion": "",
+        "suggestionCount": 0,
+        "instead": "",
+        "insteadCount": 0,
+        "text": "",
+        "query": ""
+      },
+      "related": {
+        "relatedKeyword": "",
+        "position": 0,
+        "otherRelated": [
+          {
+            "keyword": "baju kaos anak",
+            "url": "https://staging.tokopedia.com/search?q=baju+kaos+anak&source=related_keyword&st=product",
+            "applink": "tokopedia://search?q=baju kaos anak&source=related_keyword&st=product",
+            "product": [
+              {
+                "id": 15340985,
+                "name": "tes hidden category blazer 1",
+                "price": 150000,
+                "imageUrl": "",
+                "rating": 0,
+                "countReview": 0,
+                "url": "https://staging.tokopedia.com/aqua/tes-hidden-category-blazer-1-hitam?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D1_catid%3D148_bmexp%3D1&whid=0",
+                "applink": "tokopedia://product/15340985?",
+                "priceStr": "",
+                "shop": {
+                  "city": "Jakarta Pusat"
+                },
+                "badges": [
+                  {
+                    "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
+                    "show": true
+                  }
+                ],
+                "freeOngkir": {
+                  "isActive": true,
+                  "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                }
+              },
+              {
+                "id": 15340991,
+                "name": "test hidden category oy 1",
+                "price": 24000,
+                "imageUrl": "",
+                "rating": 0,
+                "countReview": 0,
+                "url": "https://staging.tokopedia.com/aqua/test-hidden-category-oy-1?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D2_catid%3D148_bmexp%3D1&whid=0",
+                "applink": "tokopedia://product/15340991?",
+                "price_str": "",
+                "shop": {
+                  "city": "Jakarta Pusat"
+                },
+                "badges": [
+                  {
+                    "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
+                    "show": true
+                  }
+                ],
+                "freeOngkir": {
+                  "isActive": true,
+                  "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                }
+              },
+              {
+                "id": 15302003,
+                "name": "liquid vape gratis baju anak",
+                "price": 123,
+                "imageUrl": "",
+                "rating": 0,
+                "countReview": 0,
+                "url": "https://staging.tokopedia.com/ratubadisshop/liquid-vape-gratis-baju-anak?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D3_catid%3D36_bmexp%3D1&whid=0",
+                "applink": "tokopedia://product/15302003?",
+                "priceStr": "",
+                "shop": {
+                  "city": "Jakarta Pusat"
+                },
+                "badges": [
+                  {
+                    "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
+                    "show": true
+                  }
+                ],
+                "freeOngkir": {
+                  "isActive": true,
+                  "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                }
+              },
+              {
+                "id": 15327250,
+                "name": "baju anak",
+                "price": 1000,
+                "imageUrl": "",
+                "rating": 0,
+                "countReview": 0,
+                "url": "https://staging.tokopedia.com/ratubadisshop/baju-anak?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D4_catid%3D2071_bmexp%3D1&whid=0",
+                "applink": "tokopedia://product/15327250?",
+                "priceStr": "",
+                "shop": {
+                  "city": "Jakarta Pusat"
+                },
+                "badges": [
+                  {
+                    "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
+                    "show": true
+                  }
+                ],
+                "freeOngkir": {
+                  "isActive": true,
+                  "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                }
+              },
+              {
+                "id": 15213541,
+                "name": "Baju Kaos Anak Laki Hijau Mom n Bab - Buaya",
+                "price": 125000,
+                "imageUrl": "",
+                "rating": 0,
+                "countReview": 0,
+                "url": "https://staging.tokopedia.com/mustika-ratu/baju-kaos-anak-laki-hijau-mom-n-bab-buaya?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D5_catid%3D2144_bmexp%3D1&whid=0",
+                "applink": "tokopedia://product/15213541?",
+                "priceStr": "",
+                "shop": {
+                  "city": "Jakarta Pusat"
+                },
+                "badges": [
+                  {
+                    "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
+                    "show": true
+                  }
+                ],
+                "freeOngkir": {
+                  "isActive": true,
+                  "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                }
+              },
+              {
+                "id": 15213547,
+                "name": "Baju Kaos Anak Laki (isi 2 pcs) Mom n Bab - Pesawat",
+                "price": 108750,
+                "imageUrl": "",
+                "rating": 0,
+                "countReview": 0,
+                "url": "https://staging.tokopedia.com/mustika-ratu/baju-kaos-anak-laki-isi-2-pcs-mom-n-bab-pesawat?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D6_catid%3D2144_bmexp%3D1&whid=0",
+                "applink": "tokopedia://product/15213547?",
+                "priceStr": "",
+                "shop": {
+                  "city": "Jakarta Pusat"
+                },
+                "badges": [
+                  {
+                    "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
+                    "show": true
+                  }
+                ],
+                "freeOngkir": {
+                  "isActive": true,
+                  "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                }
+              }
+            ]
+          },
+          {
+            "keyword": "baju kaos",
+            "url": "https://staging.tokopedia.com/search?q=baju+kaos&source=related_keyword&st=product",
+            "applink": "tokopedia://search?q=baju kaos&source=related_keyword&st=product",
+            "product": [
+              {
+                "id": 15340985,
+                "name": "tes hidden category blazer 1",
+                "price": 150000,
+                "imageUrl": "",
+                "rating": 0,
+                "countReview": 0,
+                "url": "https://staging.tokopedia.com/aqua/tes-hidden-category-blazer-1-hitam?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D1_catid%3D148_bmexp%3D1&whid=0",
+                "applink": "tokopedia://product/15340985?",
+                "priceStr": "",
+                "shop": {
+                  "city": "Jakarta Pusat"
+                },
+                "badges": [
+                  {
+                    "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
+                    "show": true
+                  }
+                ],
+                "freeOngkir": {
+                  "isActive": true,
+                  "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                }
+              },
+              {
+                "id": 15340991,
+                "name": "test hidden category oy 1",
+                "price": 24000,
+                "imageUrl": "",
+                "rating": 0,
+                "countReview": 0,
+                "url": "https://staging.tokopedia.com/aqua/test-hidden-category-oy-1?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D2_catid%3D148_bmexp%3D1&whid=0",
+                "applink": "tokopedia://product/15340991?",
+                "priceStr": "",
+                "shop": {
+                  "city": "Jakarta Pusat"
+                },
+                "badges": [
+                  {
+                    "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
+                    "show": true
+                  }
+                ],
+                "freeOngkir": {
+                  "isActive": true,
+                  "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                }
+              },
+              {
+                "id": 15327250,
+                "name": "baju anak",
+                "price": 1000,
+                "imageUrl": "",
+                "rating": 0,
+                "countReview": 0,
+                "url": "https://staging.tokopedia.com/ratubadisshop/baju-anak?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D3_catid%3D2071_bmexp%3D1&whid=0",
+                "applink": "tokopedia://product/15327250?",
+                "priceStr": "",
+                "shop": {
+                  "city": "Jakarta Pusat"
+                },
+                "badges": [
+                  {
+                    "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
+                    "show": true
+                  }
+                ],
+                "freeOngkir": {
+                  "isActive": true,
+                  "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                }
+              },
+              {
+                "id": 15356072,
+                "name": "Kaos Disco Testing non var 1",
+                "price": 10000,
+                "imageUrl": "",
+                "rating": 0,
+                "countReview": 0,
+                "url": "https://staging.tokopedia.com/rshop2/kaos-disco-testing-non-var-1?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D4_catid%3D2072_bmexp%3D1&whid=0",
+                "applink": "tokopedia://product/15356072?",
+                "priceStr": "",
+                "shop": {
+                  "city": "Jakarta Pusat"
+                },
+                "badges": [
+                  {
+                    "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
+                    "show": true
+                  }
+                ],
+                "freeOngkir": {
+                  "isActive": true,
+                  "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                }
+              },
+              {
+                "id": 15356071,
+                "name": "Kaos Disco Testing non var 2",
+                "price": 10000,
+                "imageUrl": "",
+                "rating": 0,
+                "countReview": 0,
+                "url": "https://staging.tokopedia.com/rshop2/kaos-disco-testing-non-var-2?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D5_catid%3D2072_bmexp%3D1&whid=0",
+                "applink": "tokopedia://product/15356071?",
+                "priceStr": "",
+                "shop": {
+                  "city": "Jakarta Pusat"
+                },
+                "badges": [
+                  {
+                    "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
+                    "show": true
+                  }
+                ],
+                "freeOngkir": {
+                  "isActive": true,
+                  "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                }
+              },
+              {
+                "id": 15356070,
+                "name": "Kaos Disco Testing non var 3",
+                "price": 10000,
+                "imageUrl": "",
+                "rating": 0,
+                "countReview": 0,
+                "url": "https://staging.tokopedia.com/rshop2/kaos-disco-testing-non-var-3?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D6_catid%3D2072_bmexp%3D1&whid=0",
+                "applink": "tokopedia://product/15356070?",
+                "priceStr": "",
+                "shop": {
+                  "city": "Jakarta Pusat"
+                },
+                "badges": [
+                  {
+                    "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
+                    "show": true
+                  }
+                ],
+                "freeOngkir": {
+                  "isActive": true,
+                  "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                }
+              }
+            ]
+          },
+          {
+            "keyword": "baju anak",
+            "url": "https://staging.tokopedia.com/search?q=baju+anak&source=related_keyword&st=product",
+            "applink": "tokopedia://search?q=baju anak&source=related_keyword&st=product",
+            "product": [
+              {
+                "id": 15340985,
+                "name": "tes hidden category blazer 1",
+                "price": 150000,
+                "imageUrl": "",
+                "rating": 0,
+                "countReview": 0,
+                "url": "https://staging.tokopedia.com/aqua/tes-hidden-category-blazer-1-hitam?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D1_catid%3D148_bmexp%3D1&whid=0",
+                "applink": "tokopedia://product/15340985?",
+                "priceStr": "",
+                "shop": {
+                  "city": "Jakarta Pusat"
+                },
+                "badges": [
+                  {
+                    "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
+                    "show": true
+                  }
+                ],
+                "freeOngkir": {
+                  "isActive": true,
+                  "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                }
+              },
+              {
+                "id": 15340991,
+                "name": "test hidden category oy 1",
+                "price": 24000,
+                "imageUrl": "",
+                "rating": 0,
+                "countReview": 0,
+                "url": "https://staging.tokopedia.com/aqua/test-hidden-category-oy-1?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D2_catid%3D148_bmexp%3D1&whid=0",
+                "applink": "tokopedia://product/15340991?",
+                "priceStr": "",
+                "shop": {
+                  "city": "Jakarta Pusat"
+                },
+                "badges": [
+                  {
+                    "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
+                    "show": true
+                  }
+                ],
+                "freeOngkir": {
+                  "isActive": true,
+                  "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                }
+              },
+              {
+                "id": 15327250,
+                "name": "baju anak",
+                "price": 1000,
+                "imageUrl": "",
+                "rating": 0,
+                "countReview": 0,
+                "url": "https://staging.tokopedia.com/ratubadisshop/baju-anak?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D3_catid%3D2071_bmexp%3D1&whid=0",
+                "applink": "tokopedia://product/15327250?",
+                "priceStr": "",
+                "shop": {
+                  "city": "Jakarta Pusat"
+                },
+                "badges": [
+                  {
+                    "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
+                    "show": true
+                  }
+                ],
+                "freeOngkir": {
+                  "isActive": true,
+                  "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                }
+              },
+              {
+                "id": 15356072,
+                "name": "Kaos Disco Testing non var 1",
+                "price": 10000,
+                "imageUrl": "",
+                "rating": 0,
+                "countReview": 0,
+                "url": "https://staging.tokopedia.com/rshop2/kaos-disco-testing-non-var-1?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D4_catid%3D2072_bmexp%3D1&whid=0",
+                "applink": "tokopedia://product/15356072?",
+                "priceStr": "",
+                "shop": {
+                  "city": "Jakarta Pusat"
+                },
+                "badges": [
+                  {
+                    "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
+                    "show": true
+                  }
+                ],
+                "freeOngkir": {
+                  "isActive": true,
+                  "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                }
+              },
+              {
+                "id": 15356071,
+                "name": "Kaos Disco Testing non var 2",
+                "price": 10000,
+                "imageUrl": "",
+                "rating": 0,
+                "countReview": 0,
+                "url": "https://staging.tokopedia.com/rshop2/kaos-disco-testing-non-var-2?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D5_catid%3D2072_bmexp%3D1&whid=0",
+                "applink": "tokopedia://product/15356071?",
+                "priceStr": "",
+                "shop": {
+                  "city": "Jakarta Pusat"
+                },
+                "badges": [
+                  {
+                    "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
+                    "show": true
+                  }
+                ],
+                "freeOngkir": {
+                  "isActive": true,
+                  "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                }
+              },
+              {
+                "id": 15356070,
+                "name": "Kaos Disco Testing non var 3",
+                "price": 10000,
+                "imageUrl": "",
+                "rating": 0,
+                "countReview": 0,
+                "url": "https://staging.tokopedia.com/rshop2/kaos-disco-testing-non-var-3?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D6_catid%3D2072_bmexp%3D1&whid=0",
+                "applink": "tokopedia://product/15356070?",
+                "priceStr": "",
+                "shop": {
+                  "city": "Jakarta Pusat"
+                },
+                "badges": [
+                  {
+                    "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
+                    "show": true
+                  }
+                ],
+                "freeOngkir": {
+                  "isActive": true,
+                  "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                }
+              }
+            ]
+          },
+          {
+            "keyword": "kaos anak",
+            "url": "https://staging.tokopedia.com/search?q=kaos+anak&source=related_keyword&st=product",
+            "applink": "tokopedia://search?q=kaos anak&source=related_keyword&st=product",
+            "product": [
+              {
+                "id": 15340985,
+                "name": "tes hidden category blazer 1",
+                "price": 150000,
+                "imageUrl": "",
+                "rating": 0,
+                "countReview": 0,
+                "url": "https://staging.tokopedia.com/aqua/tes-hidden-category-blazer-1-hitam?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D1_catid%3D148_bmexp%3D1&whid=0",
+                "applink": "tokopedia://product/15340985?",
+                "priceStr": "",
+                "shop": {
+                  "city": "Jakarta Pusat"
+                },
+                "badges": [
+                  {
+                    "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
+                    "show": true
+                  }
+                ],
+                "freeOngkir": {
+                  "isActive": true,
+                  "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                }
+              },
+              {
+                "id": 15340991,
+                "name": "test hidden category oy 1",
+                "price": 24000,
+                "imageUrl": "",
+                "rating": 0,
+                "countReview": 0,
+                "url": "https://staging.tokopedia.com/aqua/test-hidden-category-oy-1?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D2_catid%3D148_bmexp%3D1&whid=0",
+                "applink": "tokopedia://product/15340991?",
+                "priceStr": "",
+                "shop": {
+                  "city": "Jakarta Pusat"
+                },
+                "badges": [
+                  {
+                    "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
+                    "show": true
+                  }
+                ],
+                "freeOngkir": {
+                  "isActive": true,
+                  "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                }
+              },
+              {
+                "id": 15327250,
+                "name": "baju anak",
+                "price": 1000,
+                "imageUrl": "",
+                "rating": 0,
+                "countReview": 0,
+                "url": "https://staging.tokopedia.com/ratubadisshop/baju-anak?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D3_catid%3D2071_bmexp%3D1&whid=0",
+                "applink": "tokopedia://product/15327250?",
+                "priceStr": "",
+                "shop": {
+                  "city": "Jakarta Pusat"
+                },
+                "badges": [
+                  {
+                    "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
+                    "show": true
+                  }
+                ],
+                "freeOngkir": {
+                  "isActive": true,
+                  "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                }
+              },
+              {
+                "id": 15356072,
+                "name": "Kaos Disco Testing non var 1",
+                "price": 10000,
+                "imageUrl": "",
+                "rating": 0,
+                "countReview": 0,
+                "url": "https://staging.tokopedia.com/rshop2/kaos-disco-testing-non-var-1?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D4_catid%3D2072_bmexp%3D1&whid=0",
+                "applink": "tokopedia://product/15356072?",
+                "priceStr": "",
+                "shop": {
+                  "city": "Jakarta Pusat"
+                },
+                "badges": [
+                  {
+                    "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
+                    "show": true
+                  }
+                ],
+                "freeOngkir": {
+                  "isActive": true,
+                  "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                }
+              },
+              {
+                "id": 15356071,
+                "name": "Kaos Disco Testing non var 2",
+                "price": 10000,
+                "imageUrl": "",
+                "rating": 0,
+                "countReview": 0,
+                "url": "https://staging.tokopedia.com/rshop2/kaos-disco-testing-non-var-2?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D5_catid%3D2072_bmexp%3D1&whid=0",
+                "applink": "tokopedia://product/15356071?",
+                "priceStr": "",
+                "shop": {
+                  "city": "Jakarta Pusat"
+                },
+                "badges": [
+                  {
+                    "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
+                    "show": true
+                  }
+                ],
+                "freeOngkir": {
+                  "isActive": true,
+                  "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                }
+              },
+              {
+                "id": 15356070,
+                "name": "Kaos Disco Testing non var 3",
+                "price": 10000,
+                "imageUrl": "",
+                "rating": 0,
+                "countReview": 0,
+                "url": "https://staging.tokopedia.com/rshop2/kaos-disco-testing-non-var-3?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D6_catid%3D2072_bmexp%3D1&whid=0",
+                "applink": "tokopedia://product/15356070?",
+                "priceStr": "",
+                "shop": {
+                  "city": "Jakarta Pusat"
+                },
+                "badges": [
+                  {
+                    "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
+                    "show": true
+                  }
+                ],
+                "freeOngkir": {
+                  "isActive": true,
+                  "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "products": []
+    }
   }
 }

@@ -1,8 +1,8 @@
 package com.tokopedia.topads.common.data.response
 
-import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
 data class KeywordSuggestionResponse(
         @SerializedName("data")
@@ -20,6 +20,7 @@ data class KeywordSuggestionResponse(
                 @field:SerializedName("errors")
                 val errors: List<Error> = listOf()
         ) {
+            @Parcelize
             data class DataItem(
 
                     @field:SerializedName("product_id")
@@ -33,12 +34,8 @@ data class KeywordSuggestionResponse(
 
 
             ) : Parcelable {
-                constructor(parcel: Parcel) : this(
-                        parcel.readInt(),
-                        parcel.createTypedArrayList(KeywordDataItem),
-                        parcel.readInt()) {
-                }
 
+                @Parcelize
                 data class KeywordDataItem(
                         @field:SerializedName("bid_suggest")
                         val bidSuggest: Int = 0,
@@ -51,55 +48,8 @@ data class KeywordSuggestionResponse(
 
                         @field:SerializedName("source")
                         val source: String = ""
-                ) : Parcelable {
-                    constructor(parcel: Parcel) : this(
-                            parcel.readInt(),
-                            parcel.readString(),
-                            parcel.readString(),
-                            parcel.readString()) {
-                    }
+                ) : Parcelable
 
-                    override fun writeToParcel(parcel: Parcel, flags: Int) {
-                        parcel.writeInt(bidSuggest)
-                        parcel.writeString(totalSearch)
-                        parcel.writeString(keyword)
-                        parcel.writeString(source)
-                    }
-
-                    override fun describeContents(): Int {
-                        return 0
-                    }
-
-                    companion object CREATOR : Parcelable.Creator<KeywordDataItem> {
-                        override fun createFromParcel(parcel: Parcel): KeywordDataItem {
-                            return KeywordDataItem(parcel)
-                        }
-
-                        override fun newArray(size: Int): Array<KeywordDataItem?> {
-                            return arrayOfNulls(size)
-                        }
-                    }
-                }
-
-                override fun writeToParcel(parcel: Parcel, flags: Int) {
-                    parcel.writeInt(productId)
-                    parcel.writeTypedList(keywordData)
-                    parcel.writeInt(minBid)
-                }
-
-                override fun describeContents(): Int {
-                    return 0
-                }
-
-                companion object CREATOR : Parcelable.Creator<DataItem> {
-                    override fun createFromParcel(parcel: Parcel): DataItem {
-                        return DataItem(parcel)
-                    }
-
-                    override fun newArray(size: Int): Array<DataItem?> {
-                        return arrayOfNulls(size)
-                    }
-                }
             }
         }
     }

@@ -41,6 +41,10 @@ public class FlightError {
         return status;
     }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     public String getTitle() {
         return title;
     }
@@ -49,13 +53,21 @@ public class FlightError {
         this.status = status;
     }
 
-    public String getHead() { return head; }
+    public String getHead() {
+        return head;
+    }
 
-    public void setHead(String head) { this.head = head; }
+    public void setHead(String head) {
+        this.head = head;
+    }
 
-    public void setMessage(String message) { this.message = message; }
+    public void setMessage(String message) {
+        this.message = message;
+    }
 
-    public String getMessage() { return message; }
+    public String getMessage() {
+        return message;
+    }
 
     @Override
     public boolean equals(Object obj) {

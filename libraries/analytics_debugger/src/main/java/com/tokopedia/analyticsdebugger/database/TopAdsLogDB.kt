@@ -26,6 +26,15 @@ data class TopAdsLogDB (
     @ColumnInfo(name = "sourceName")
     var sourceName: String = "",
 
+    @ColumnInfo(name = "productId")
+    var productId: String = "",
+
+    @ColumnInfo(name = "productName")
+    var productName: String = "",
+
+    @ColumnInfo(name = "imageUrl")
+    var imageUrl: String = "",
+
     @ColumnInfo(name = "eventStatus")
     var eventStatus: String = "",
 

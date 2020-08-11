@@ -1,5 +1,6 @@
 package com.tokopedia.analyticsdebugger.debugger.ui.fragment
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -24,10 +25,27 @@ class TopAdsDebuggerDetailFragment : TkpdBaseV4Fragment() {
         timestampText.text = viewModel?.timestamp
         eventTypeText.text = viewModel?.eventType
         sourceNameText.text = viewModel?.sourceName
+        productIdText.text = viewModel?.productId
+        productNameText.text = viewModel?.productName
+        imageUrlText.text = viewModel?.imageUrl
+        paramListText.text = parseParamsFromUrl(viewModel?.url)
         urlText.text = viewModel?.url
         statusText.text = viewModel?.eventStatus
         statusText.setTextColor(getTopAdsStatusColor(context, viewModel?.eventStatus))
         fullResponseText.text = viewModel?.fullResponse
+    }
+
+    private fun parseParamsFromUrl(url: String?): CharSequence? {
+        if (url.isNullOrEmpty()) return ""
+
+        val uri = Uri.parse(url)
+        val params = uri.queryParameterNames
+
+        var result = ""
+        for (param in params) {
+            result += "\n$param:\n${uri.getQueryParameter(param)}\n"
+        }
+        return result
     }
 
     override fun getScreenName(): String {

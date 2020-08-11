@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content">
+    
+    <androidx.constraintlayout.widget.ConstraintLayout
+      android:id="@+id/layout_sticky_container"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:gravity="center"
+      android:clickable="true"
+      android:focusable="true"
+      android:background="@color/sticky_login_background"
+      android:orientation="horizontal">
+        
+        <ImageView
+          android:id="@+id/layout_sticky_image_left"
+          android:layout_width="@dimen/layout_lvl4"
+          android:layout_height="@dimen/layout_lvl4"
+          android:layout_marginLeft="@dimen/layout_lvl2"
+          android:layout_marginStart="@dimen/layout_lvl2"
+          android:layout_marginTop="@dimen/layout_lvl1"
+          android:layout_marginBottom="@dimen/layout_lvl1"
+          app:layout_constraintLeft_toLeftOf="parent"
+          app:layout_constraintTop_toTopOf="parent"
+          app:layout_constraintBottom_toBottomOf="parent"
+          app:srcCompat="@drawable/ic_toped_widget_login"/>
+        
+        <com.tokopedia.unifyprinciples.Typography
+          android:id="@+id/layout_sticky_content"
+          android:layout_width="@dimen/layout_lvl0"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
+          android:layout_marginStart="@dimen/layout_lvl2"
+          android:layout_marginLeft="@dimen/layout_lvl2"
+          android:layout_marginEnd="@dimen/layout_lvl1"
+          android:layout_marginRight="@dimen/layout_lvl1"
+          android:textSize="@dimen/sp_14"
+          app:layout_constraintLeft_toRightOf="@id/layout_sticky_image_left"
+          app:layout_constraintTop_toTopOf="parent"
+          app:layout_constraintBottom_toBottomOf="parent"
+          tools:ignore="MissingPrefix,RtlHardcoded,RtlSymmetry"/>
+        
+        <ImageView
+          android:id="@+id/layout_sticky_image_right"
+          android:layout_width="wrap_content"
+          android:layout_height="match_parent"
+          android:padding="@dimen/layout_lvl2"
+          android:scaleType="center"
+          app:layout_constraintRight_toRightOf="parent"
+          app:layout_constraintTop_toTopOf="parent"
+          app:layout_constraintBottom_toBottomOf="parent"
+          app:srcCompat="@drawable/ic_mask" />
+      
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</merge>

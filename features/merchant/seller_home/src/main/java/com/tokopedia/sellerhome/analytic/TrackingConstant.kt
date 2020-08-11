@@ -25,6 +25,8 @@ object TrackingConstant {
     const val IS_LOGGED_IN_STATUS = "isLoggedInStatus"
     const val CURRENT_SITE = "currentSite"
     const val USER_ID = "userId"
+    const val SHOP_ID = "shopId"
+    const val SHOP_TYPE = "shopType"
     const val BUSINESS_UNIT = "businessUnit"
 
     //event
@@ -64,6 +66,11 @@ object TrackingConstant {
     const val IMPRESSION_WIDGET_TABLE = "impression widget simple table"
     const val IMPRESSION_WIDGET_PIE_CHART = "impression widget pie chart"
     const val IMPRESSION_WIDGET_BAR_CHART = "impression widget bar chart"
+
+    //search
+    const val CLICK_SEARCH = "clickSearch"
+    const val GLOBAL_SEARCH = "global search"
+    const val CLICK_SEARCH_BUTTON = "click search button"
 
     //other value
     const val SELLER_WIDGET = "/seller widget"

@@ -13,30 +13,28 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.ERR_STATE_GLOBAL
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytics
 import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.di.PlayModule
-import com.tokopedia.play.util.CoroutineDispatcherProvider
+import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.play.util.observer.DistinctObserver
+import com.tokopedia.play.view.contract.PlayFragmentContract
+import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.GlobalErrorCodeWrapper
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.SupervisorJob
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
-
 
 /**
  * Created by mzennis on 2020-01-10.
  */
-class PlayErrorFragment: BaseDaggerFragment(), CoroutineScope {
+class PlayErrorFragment: BaseDaggerFragment(), PlayFragmentContract {
 
     companion object {
         fun newInstance(channelId: String?): PlayErrorFragment {
@@ -47,11 +45,6 @@ class PlayErrorFragment: BaseDaggerFragment(), CoroutineScope {
             }
         }
     }
-
-    private val job: Job = SupervisorJob()
-
-    override val coroutineContext: CoroutineContext
-        get() = job + dispatchers.main
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -95,9 +88,12 @@ class PlayErrorFragment: BaseDaggerFragment(), CoroutineScope {
         observeErrorChannel()
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        job.cancel()
+    override fun onInterceptOrientationChangedEvent(newOrientation: ScreenOrientation): Boolean {
+        return false
+    }
+
+    override fun onInterceptSystemUiVisibilityChanged(): Boolean {
+        return false
     }
 
     private fun initComponent(view: View) {
@@ -113,13 +109,13 @@ class PlayErrorFragment: BaseDaggerFragment(), CoroutineScope {
     }
 
     private fun observeErrorChannel() {
-        playViewModel.observableGetChannelInfo.observe(viewLifecycleOwner, Observer {
+        playViewModel.observableGetChannelInfo.observe(viewLifecycleOwner, DistinctObserver {
             when (it) {
                 is Fail -> {
                     showGlobalError(it.throwable)
                 }
                 is Success -> {
-                    container.gone()
+                    container.hide()
                 }
             }
         })
@@ -128,7 +124,10 @@ class PlayErrorFragment: BaseDaggerFragment(), CoroutineScope {
     private fun showGlobalError(throwable: Throwable) {
         throwable.message?.let {
             when(GlobalErrorCodeWrapper.wrap(it)) {
-                is GlobalErrorCodeWrapper.NotFound -> {
+                GlobalErrorCodeWrapper.Unknown -> {
+                    return
+                }
+                GlobalErrorCodeWrapper.NotFound -> {
                     globalError.setType(GlobalError.PAGE_NOT_FOUND)
                     globalError.setActionClickListener {
                         activity?.let { activity ->
@@ -136,14 +135,13 @@ class PlayErrorFragment: BaseDaggerFragment(), CoroutineScope {
                         }
                     }
                 }
-                is GlobalErrorCodeWrapper.PageFull -> {
+                GlobalErrorCodeWrapper.PageFull -> {
                     globalError.setType(GlobalError.PAGE_FULL)
                     globalError.setActionClickListener {
                         playViewModel.getChannelInfo(channelId)
                     }
                 }
-                is GlobalErrorCodeWrapper.ServerError,
-                is GlobalErrorCodeWrapper.Unknown -> {
+                GlobalErrorCodeWrapper.ServerError -> {
                     globalError.setType(GlobalError.SERVER_ERROR)
                     globalError.setActionClickListener {
                         playViewModel.getChannelInfo(channelId)
@@ -151,7 +149,7 @@ class PlayErrorFragment: BaseDaggerFragment(), CoroutineScope {
                 }
             }
             PlayAnalytics.errorState(channelId, "$ERR_STATE_GLOBAL: ${globalError.errorDescription.text}", playViewModel.channelType)
-            container.visible()
+            container.show()
         }
     }
 }

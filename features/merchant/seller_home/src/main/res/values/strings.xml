@@ -22,6 +22,7 @@
 
     <!--toolbar menu-->
     <string name="sah_notification">Notifikasi</string>
+    <string name="sah_search">Search</string>
 
     <string name="sah_ticker_warning">#ecdb77</string>
 
@@ -73,6 +74,7 @@
     <string name="setting_menu_password">Kata Sandi</string>
     <string name="setting_menu_app_setting">Pengaturan aplikasi</string>
     <string name="setting_menu_chat_and_notification">Chat &amp; Notifikasi</string>
+    <string name="setting_notification_troubleshooter">Push Notification Troubleshooter</string>
     <string name="setting_menu_share_app">Bagikan Aplikasi</string>
     <string name="setting_menu_review_app">Review Aplikasi</string>
     <string name="setting_menu_developer_options">Developer Options</string>

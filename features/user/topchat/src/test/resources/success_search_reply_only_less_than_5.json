@@ -1,0 +1,78 @@
+{
+  "searchByName": {
+    "contact": {
+      "hasNext": false,
+      "count": "10+",
+      "data": []
+    }
+  },
+  "searchByReply": {
+    "replies": {
+      "hasNext": true,
+      "count": "99+",
+      "data": [
+        {
+          "contact": {
+            "id": 394674,
+            "role": "shop",
+            "attributes": {
+              "domain": "qc45",
+              "name": "Evelyn's Shopp \u0026 bla#$",
+              "tag": "",
+              "thumbnail": "https://imagerouter-staging.tokopedia.com/image/v1/s/394674/shop_xs_thumbnail/desktop"
+            }
+          },
+          "createBy": 2684597,
+          "createTimeStr": "1592369437000",
+          "lastMessage": "b<b>a</b>jukkk 123",
+          "msgId": 4011832,
+          "oppositeId": 394674,
+          "oppositeType": 2,
+          "replyId": 0,
+          "roomId": "",
+          "productId": "123123"
+        },
+        {
+          "contact": {
+            "id": 394674,
+            "role": "shop",
+            "attributes": {
+              "domain": "qc45",
+              "name": "Evelyn's Shopp \u0026 bla#$",
+              "tag": "",
+              "thumbnail": "https://imagerouter-staging.tokopedia.com/image/v1/s/394674/shop_xs_thumbnail/desktop"
+            }
+          },
+          "createBy": 2684597,
+          "createTimeStr": "1592369163000",
+          "lastMessage": "<b>a</b>sd",
+          "msgId": 4011832,
+          "oppositeId": 394674,
+          "oppositeType": 2,
+          "replyId": 0,
+          "roomId": ""
+        },
+        {
+          "contact": {
+            "id": 479824,
+            "role": "shop",
+            "attributes": {
+              "domain": "lindadelapan",
+              "name": "linda delapan",
+              "tag": "",
+              "thumbnail": "https://imagerouter-staging.tokopedia.com/image/v1/s/479824/shop_xs_thumbnail/desktop"
+            }
+          },
+          "createBy": 2684597,
+          "createTimeStr": "1592368286000",
+          "lastMessage": "Barang Test 42",
+          "msgId": 4011831,
+          "oppositeId": 479824,
+          "oppositeType": 2,
+          "replyId": 0,
+          "roomId": ""
+        }
+      ]
+    }
+  }
+}

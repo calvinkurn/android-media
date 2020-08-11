@@ -54,6 +54,7 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
     private var serviceConnection: RemoteServiceConnection? = null
 
     private var autoLogin = false
+    private var redirectUrl = ""
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -85,6 +86,7 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
 
     companion object {
         private const val KEY_AUTO_LOGIN = "is_auto_login"
+
         fun createInstance(bundle: Bundle): Fragment {
             val fragment = SellerSeamlessLoginFragment()
             fragment.arguments = bundle
@@ -97,7 +99,7 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
             if ((intent?.action == getUserTaskId && getUserTaskId.isNotEmpty())
                     || (intent?.action == getKeyTaskId && getKeyTaskId.isNotEmpty())){
                 activity?.unregisterReceiver(this)
-                handleIntentReceive(intent?.action, intent.extras)
+                handleIntentReceive(intent.action!!, intent.extras)
             }
         }
     }
@@ -106,20 +108,20 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
         if (bundle != null) {
             if (!bundle.containsKey(SeamlessSellerConstant.KEY_ERROR)) {
                 if (taskId == getUserTaskId
-                        && bundle.getString(SeamlessSellerConstant.KEY_SHOP_NAME).isNotEmpty()
-                        && bundle.getString(SeamlessSellerConstant.KEY_EMAIL).isNotEmpty()) {
+                        && bundle.getString(SeamlessSellerConstant.KEY_SHOP_NAME)?.isNotEmpty() == true
+                        && bundle.getString(SeamlessSellerConstant.KEY_EMAIL)?.isNotEmpty() == true) {
                     val drawableLeft = AppCompatResources.getDrawable(seamless_fragment_shop_name.context, R.drawable.ic_shop_dark_grey)
                     ImageHandler.loadImageCircle2(activity, seamless_fragment_avatar, bundle.getString(SeamlessSellerConstant.KEY_SHOP_AVATAR))
                     seamless_fragment_shop_name.text = bundle.getString(SeamlessSellerConstant.KEY_SHOP_NAME)
                     seamless_fragment_shop_name.setCompoundDrawablesWithIntrinsicBounds(drawableLeft, null, null, null)
                     seamless_fragment_name.text = bundle.getString(SeamlessSellerConstant.KEY_NAME)
-                    seamless_fragment_email.text = maskEmail(bundle.getString(SeamlessSellerConstant.KEY_EMAIL))
+                    seamless_fragment_email.text = maskEmail(bundle.getString(SeamlessSellerConstant.KEY_EMAIL, ""))
                     hideProgressBar()
                     if (autoLogin) {
                         onPositiveBtnClick()
                     }
                 } else if (taskId == getKeyTaskId) {
-                    seamlessViewModel.loginSeamless(bundle.getString(SeamlessSellerConstant.KEY_TOKEN))
+                    seamlessViewModel.loginSeamless(bundle.getString(SeamlessSellerConstant.KEY_TOKEN, ""))
                 } else moveToNormalLogin()
             } else moveToNormalLogin()
         } else moveToNormalLogin()
@@ -157,6 +159,7 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
         super.onCreate(savedInstanceState)
         arguments?.run {
             autoLogin = getBoolean(KEY_AUTO_LOGIN, false)
+            redirectUrl = getString(ApplinkConstInternalGlobal.KEY_REDIRECT_SEAMLESS_APPLINK, "")
         }
         if (context?.applicationContext is LoginRouter) {
             (context?.applicationContext as LoginRouter).setOnboardingStatus(true)
@@ -208,9 +211,28 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
 
     private fun goToSecurityQuestion(){
         activity?.let {
-            it.setResult(Activity.RESULT_OK, Intent().putExtra(ApplinkConstInternalGlobal.PARAM_IS_SQ_CHECK, true))
+            val intent = Intent().putExtra(ApplinkConstInternalGlobal.PARAM_IS_SQ_CHECK, true)
+            setApplinkResult(intent)
+            it.setResult(Activity.RESULT_OK, intent)
             it.finish()
         }
+    }
+
+    private fun  setApplinkResult(intent: Intent){
+        if(redirectUrl.isNotEmpty()) {
+            intent.putExtra(ApplinkConstInternalGlobal.KEY_REDIRECT_SEAMLESS_APPLINK, redirectUrl)
+        }
+    }
+
+    private fun finishIntent(){
+        if(redirectUrl.isNotEmpty()) {
+            val intent = Intent()
+            setApplinkResult(intent)
+            activity?.setResult(Activity.RESULT_OK, intent)
+        }else {
+            activity?.setResult(Activity.RESULT_OK)
+        }
+        activity?.finish()
     }
 
     private fun initObserver(){
@@ -226,11 +248,11 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
         })
     }
 
+
     private fun onSuccessLoginToken(){
         analytics.eventClickLoginSeamless(SeamlessLoginAnalytics.LABEL_SUCCESS)
         hideProgressBar()
-        activity?.setResult(Activity.RESULT_OK)
-        activity?.finish()
+        finishIntent()
     }
 
     private fun onErrorLoginToken(throwable: Throwable?){
@@ -248,7 +270,7 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
             val i = Intent().apply {
                 component = ComponentName(SeamlessSellerConstant.MAINAPP_PACKAGE, SeamlessSellerConstant.SERVICE_PACKAGE)
             }
-            val success = activity?.bindService(i, serviceConnection, Context.BIND_AUTO_CREATE)
+            val success = activity?.bindService(i, serviceConnection!!, Context.BIND_AUTO_CREATE)
             if(success == false)  {
                 Timber.w("P2#SEAMLESS_SELLER#'ErrorBindingService';reason='Connect Service Failed';detail='Bind Service: $success'")
                 moveToNormalLogin()

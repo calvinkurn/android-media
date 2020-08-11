@@ -15,4 +15,5 @@ interface RechargeGeneralComponent {
     fun inject(rechargeGeneralRecentTransactionFragment: RechargeGeneralRecentTransactionFragment)
 
     fun inject(rechargeGeneralPromoListFragment: RechargeGeneralPromoListFragment)
+
 }

@@ -1,6 +1,8 @@
 package com.tokopedia.productcard
 
+import android.os.Parcelable
 import com.tokopedia.productcard.utils.*
+import kotlinx.android.parcel.Parcelize
 
 data class ProductCardModel (
         val productImageUrl: String = "",
@@ -38,7 +40,8 @@ data class ProductCardModel (
         val pdpViewCount: String = "",
         val stockBarLabel: String = "",
         val stockBarPercentage: Int = 0,
-        val isOutOfStock: Boolean = false
+        val isOutOfStock: Boolean = false,
+        val addToCardText: String = ""
 ) {
     @Deprecated("replace with labelGroupList")
     var isProductSoldOut: Boolean = false
@@ -64,11 +67,12 @@ data class ProductCardModel (
             val imageUrl: String = ""
     )
 
+    @Parcelize
     data class LabelGroup(
             val position: String = "",
             val title: String = "",
             val type: String = ""
-    )
+    ):Parcelable
 
     fun getLabelProductStatus(): LabelGroup? {
         return findLabelGroup(LABEL_PRODUCT_STATUS)
@@ -97,4 +101,8 @@ data class ProductCardModel (
     fun willShowRatingAndReviewCount(): Boolean {
         return (ratingString.isNotEmpty() || ratingCount > 0) && reviewCount > 0
     }
+
+    fun isShowFreeOngkirBadge() = freeOngkir.isActive && freeOngkir.imageUrl.isNotEmpty()
+
+    fun isShowShopBadge() = shopBadgeList.find { it.isShown && it.imageUrl.isNotEmpty() } != null && shopLocation.isNotEmpty()
 }

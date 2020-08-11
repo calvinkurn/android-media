@@ -116,7 +116,7 @@ open class SimilarProductRecommendationFragment : BaseListFragment<SimilarProduc
                 val wishlistStatusFromPdp = data.getBooleanExtra(WIHSLIST_STATUS_IS_WISHLIST,
                         false)
                 val position = data.getIntExtra(PDP_EXTRA_UPDATED_POSITION, -1)
-                if(position >= 0) {
+                if(position >= 0 && adapter.data.size > position) {
                     (adapter.data[position] as SimilarProductRecommendationItemDataModel).productItem.isWishlist = wishlistStatusFromPdp
                     adapter.notifyItemChanged(position)
                 }

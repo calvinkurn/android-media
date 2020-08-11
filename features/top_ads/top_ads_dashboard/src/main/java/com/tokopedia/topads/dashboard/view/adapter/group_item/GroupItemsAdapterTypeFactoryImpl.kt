@@ -16,7 +16,7 @@ class GroupItemsAdapterTypeFactoryImpl(var selectMode: ((select: Boolean) -> Uni
                                        var actionDelete: ((pos: Int) -> Unit),
                                        var actionStatusChange: ((pos: Int, status: Int) -> Unit),
                                        var editDone: ((groupId: Int, groupName: String) -> Unit),
-                                       var onClickItem: ((id: Int, priceSpent: String) -> Unit)) : GroupItemsAdapterTypeFactory {
+                                       var onClickItem: ((id: Int, priceSpent: String, groupName: String) -> Unit)) : GroupItemsAdapterTypeFactory {
 
     override fun type(model: GroupItemsEmptyViewModel): Int = GroupItemsEmptyViewHolder.LAYOUT
     override fun type(model: GroupItemsItemViewModel): Int = GroupItemsItemViewHolder.LAYOUT

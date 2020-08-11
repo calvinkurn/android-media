@@ -27,6 +27,8 @@ class GetDiscussionDataUseCase @Inject constructor(graphqlRepository: GraphqlRep
             """
             query discussionDataByProductID($productID: String!, $shopID: String, $page: Int!, $limit: Int!, $sortBy: String, $category: String) {
               discussionDataByProductID(productID: $productID, shopID: $shopID, page: $page, limit: $limit, sortBy: $sortBy, category: $category) {
+                shopID
+                shopURL
                 hasNext
                 totalQuestion
                 question {
@@ -34,6 +36,7 @@ class GetDiscussionDataUseCase @Inject constructor(graphqlRepository: GraphqlRep
                   content
                   maskedContent
                   userName
+                  userThumbnail
                   userID
                   createTime
                   createTimeFormatted

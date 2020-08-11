@@ -8,6 +8,8 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.tokopoints.R
@@ -19,7 +21,7 @@ import com.tokopedia.user.session.UserSession
 
 class CatalogListingActivity : BaseSimpleActivity(), HasComponent<TokopointBundleComponent>, onAppBarCollapseListener {
     private val tokoPointComponent: TokopointBundleComponent by lazy { initInjector() }
-    private var mUserSession: UserSession? = null
+    lateinit var mUserSession: UserSession
     private var bundle: Bundle? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         mUserSession = UserSession(applicationContext)
@@ -37,7 +39,12 @@ class CatalogListingActivity : BaseSimpleActivity(), HasComponent<TokopointBundl
     }
 
     override fun getNewFragment(): Fragment? {
-        return CatalogListingFragment.newInstance(bundle)
+        return if (mUserSession.isLoggedIn) {
+            CatalogListingFragment.newInstance(bundle);
+        } else {
+            startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN);
+            null;
+        }
     }
 
     override fun getComponent(): TokopointBundleComponent {
@@ -53,6 +60,11 @@ class CatalogListingActivity : BaseSimpleActivity(), HasComponent<TokopointBundl
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_CODE_LOGIN && resultCode == RESULT_OK) {
+            inflateFragment();
+        } else {
+            finish();
+        }
     }
 
     override fun showToolbarElevation() {
@@ -71,7 +83,7 @@ class CatalogListingActivity : BaseSimpleActivity(), HasComponent<TokopointBundl
         private const val REQUEST_CODE_LOGIN = 1
         fun getCallingIntent(context: Context?, extras: Bundle?): Intent {
             val intent = Intent(context, CatalogListingActivity::class.java)
-            intent.putExtras(extras)
+            intent.putExtras(extras ?: Bundle())
             return intent
         }
     }

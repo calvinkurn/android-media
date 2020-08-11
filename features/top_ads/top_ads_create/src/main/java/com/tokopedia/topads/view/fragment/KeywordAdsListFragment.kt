@@ -3,7 +3,10 @@ package com.tokopedia.topads.view.fragment
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -28,7 +31,6 @@ import com.tokopedia.topads.view.adapter.keyword.viewmodel.KeywordItemViewModel
 import com.tokopedia.topads.view.model.KeywordAdsViewModel
 import com.tokopedia.topads.view.sheet.TipSheetKeywordList
 import kotlinx.android.synthetic.main.topads_create_layout_keyword_list.*
-import kotlinx.android.synthetic.main.topads_create_layout_keyword_list.btn_next
 import javax.inject.Inject
 
 /**
@@ -84,9 +86,8 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        var list = stepperModel?.selectedProductIds!!
-        var s = list.toString()
-        var productId = s.substring(1, s.length - 1)
+        val list = stepperModel?.selectedProductIds!!
+        val productId = list.joinToString(",")
         viewModel.getSugestionKeyword(productId, 0, this::onSuccessSuggestion, this::onErrorSuggestion, this::onEmptySuggestion)
     }
 
@@ -113,15 +114,17 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         }
     }
 
-    private fun onSuccessSuggestion(keywords: List<ResponseKeywordSuggestion.Result.TopAdsGetKeywordSuggestion.Data>) {
+    private fun onSuccessSuggestion(keywords: List<ResponseKeywordSuggestion.KeywordData>) {
         startShowCase()
         keywordListAdapter.items.add(KeywordGroupViewModel("Rekomendasi"))
         coachitem_title.visibility = View.GONE
         keywordListAdapter.favoured.clear()
         keywordListAdapter.manualKeywords.clear()
-        keywords.forEach { index ->
-            keywordListAdapter.items.add(KeywordItemViewModel(index))
-            keywordList.add(KeywordItemViewModel(index).data.keyword)
+        keywords.forEach { key ->
+            key.keywordData.forEach {index->
+                keywordListAdapter.items.add(KeywordItemViewModel(index))
+                keywordList.add(KeywordItemViewModel(index).data.keyword)
+            }
         }
         tip_btn.visibility = View.VISIBLE
         addManualKeywords()
@@ -222,7 +225,9 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         return manual
     }
 
-    override fun populateView(stepperModel: CreateManualAdsStepperModel) {
+    override fun populateView() {
+        if (activity is StepperActivity)
+            (activity as StepperActivity).updateToolbarTitle(getString(R.string.keyword_list_step))
     }
 
     override fun getScreenName(): String {
@@ -324,10 +329,4 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
             null
         }
     }
-
-    override fun updateToolBar() {
-        (activity as StepperActivity).updateToolbarTitle(getString(R.string.keyword_list_step))
-
-    }
-
 }

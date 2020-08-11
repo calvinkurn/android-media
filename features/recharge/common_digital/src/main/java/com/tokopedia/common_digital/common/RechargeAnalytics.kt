@@ -1,23 +1,13 @@
 package com.tokopedia.common_digital.common
 
-import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.common_digital.common.presentation.model.RechargePushEventRecommendationResponseEntity
 import com.tokopedia.common_digital.common.usecase.RechargePushEventRecommendationUseCase
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.track.TrackApp
 import rx.Subscriber
-import java.lang.StringBuilder
-import java.util.HashMap
+import java.util.*
 
 class RechargeAnalytics(private val rechargePushEventRecommendationUseCase: RechargePushEventRecommendationUseCase) {
-
-    fun eventDigitalCategoryScreenLaunch(categoryName: String, categoryId: String) {
-        val value = DataLayer.mapOf(
-                PARAM_CATEGORY_NAME, categoryName,
-                PARAM_CATEGORY_ID, categoryId
-        )
-        TrackApp.getInstance().moEngage.sendTrackEvent(value, EVENT_DIGITAL_CATEGORY_SCREEN_LAUNCH)
-    }
 
     fun eventOpenScreen(isLoginStatus: Boolean, categoryName: String, categoryId: String) {
         val stringScreenName = StringBuilder(RECHARGE_SCREEN_NAME)
@@ -73,17 +63,10 @@ class RechargeAnalytics(private val rechargePushEventRecommendationUseCase: Rech
         const val ACTION_VISIT = "VISIT"
         const val ACTION_ATC = "ATC"
 
-        const val PARAM_CATEGORY_NAME = "category"
-        const val PARAM_CATEGORY_ID = "digital_category_id"
-        const val EVENT_DIGITAL_CATEGORY_SCREEN_LAUNCH = "Digital_Category_Screen_Launched"
-
-        const val CLICK_PDP = "clickPDP"
         const val DIGITAL_HOMEPAGE = "digital - homepage"
-        const val CLICK_UPDATE_SALDO = "click update saldo "
 
         const val EVENT_NAME = "eventName"
         const val OPEN_SCREEN_EVENT = "openScreen"
-        const val SCREEN_NAME = "screenName"
         const val IS_LOGIN_STATUS = "isLoggedInStatus"
         const val CATEGORY = "category"
         const val CATEGORY_ID = "digitalCategoryId"

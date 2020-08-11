@@ -420,7 +420,7 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
         private var isSearchOpen: Boolean = false
         var hint: String? = null
 
-        constructor(superState: Parcelable) : super(superState)
+        constructor(superState: Parcelable?) : super(superState)
 
         constructor(parcel: Parcel): super(parcel) {
             query = parcel.readString()

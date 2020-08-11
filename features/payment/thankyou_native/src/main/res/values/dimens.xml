@@ -3,5 +3,7 @@
     <dimen name="thank_success_img_width">192dp</dimen>
     <dimen name="thank_success_img_height">144dp</dimen>
     <dimen name="thank_product_card_size">155dp</dimen>
+    <dimen name="thank_digital_recom_width">260dp</dimen>
+
 
 </resources>

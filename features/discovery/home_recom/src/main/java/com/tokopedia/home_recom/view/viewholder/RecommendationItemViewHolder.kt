@@ -7,7 +7,7 @@ import com.tokopedia.home_recom.model.datamodel.RecommendationItemDataModel
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.topads.sdk.utils.ImpresionTask
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 
 /**
  * Created by lukas on 21/05/2019
@@ -54,7 +54,13 @@ class RecommendationItemViewHolder(
             setImageProductViewHintListener(element.productItem, object: ViewHintListener {
                 override fun onViewHint() {
                     if(element.productItem.isTopAds){
-                        ImpresionTask(className).execute(element.productItem.trackerImageUrl)
+                        TopAdsUrlHitter(itemView.context).hitImpressionUrl(
+                                this.javaClass.simpleName,
+                                element.productItem.trackerImageUrl,
+                                element.productItem.productId.toString(),
+                                element.productItem.name,
+                                element.productItem.imageUrl
+                        )
                     }
                     element.listener.onProductImpression(element.productItem)
                 }
@@ -62,7 +68,13 @@ class RecommendationItemViewHolder(
 
             setOnClickListener {
                 element.listener.onProductClick(element.productItem, element.productItem.type, adapterPosition)
-                if (element.productItem.isTopAds) ImpresionTask(className).execute(element.productItem.clickUrl)
+                if (element.productItem.isTopAds) TopAdsUrlHitter(itemView.context).hitImpressionUrl(
+                        this.javaClass.simpleName,
+                        element.productItem.clickUrl,
+                        element.productItem.productId.toString(),
+                        element.productItem.name,
+                        element.productItem.imageUrl
+                )
             }
         }
     }

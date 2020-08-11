@@ -1,8 +1,11 @@
 package com.tokopedia.trackingoptimizer.repository
 
 import android.content.Context
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.trackingoptimizer.constant.Constant
 import com.tokopedia.trackingoptimizer.constant.Constant.Companion.ECOMMERCE
+import com.tokopedia.trackingoptimizer.constant.Constant.Companion.TRACKING_QUEUE_SIZE_LIMIT_VALUE_REMOTECONFIGKEY
 import com.tokopedia.trackingoptimizer.constant.Constant.Companion.impressionEventList
 import com.tokopedia.trackingoptimizer.datasource.TrackingEEDataSource
 import com.tokopedia.trackingoptimizer.datasource.TrackingEEFullDataSource
@@ -16,7 +19,7 @@ import com.tokopedia.trackingoptimizer.gson.HashMapJsonUtil
 import com.tokopedia.trackingoptimizer.model.EventModel
 import com.tokopedia.trackingoptimizer.model.ScreenCustomModel
 
-class TrackingRepository(val context: Context) : ITrackingRepository<TrackingRegularDbModel, TrackingEEDbModel,
+class TrackingRepository(val context: Context, val remoteConfig: RemoteConfig = FirebaseRemoteConfigImpl(context)) : ITrackingRepository<TrackingRegularDbModel, TrackingEEDbModel,
         TrackingEEFullDbModel, TrackingScreenNameDbModel> {
 
     val trackingEEDataSource by lazy {
@@ -134,7 +137,12 @@ class TrackingRepository(val context: Context) : ITrackingRepository<TrackingReg
         val currentEESize = trackingEEDbModel.enhanceEcommerce.length +
                 trackingEEDbModel.event.length +
                 trackingEEDbModel.customDimension.length
-        if (currentEESize >= ENHANCE_ECOMMERCE_SIZE_LIMIT) {
+
+        val enhanceEcommerceSizeLimit = remoteConfig.getLong(
+                TRACKING_QUEUE_SIZE_LIMIT_VALUE_REMOTECONFIGKEY,
+                ENHANCE_ECOMMERCE_SIZE_LIMIT_DEFAULT).toInt()
+
+        if (currentEESize >= enhanceEcommerceSizeLimit) {
             moveEETrackingToFull(trackingEEDbModel, inputEvent, inputCustomDimensionMap, inputEnhanceECommerceMap)
             return
         }
@@ -150,7 +158,7 @@ class TrackingRepository(val context: Context) : ITrackingRepository<TrackingReg
         val inputEnhanceECommerceMapString = HashMapJsonUtil.mapToJson(inputEnhanceECommerceMap)
                 ?: return
         val estimatedSizePerItem = inputEnhanceECommerceMapString.length / inputList.size
-        var itemCountToAdd = (ENHANCE_ECOMMERCE_SIZE_LIMIT - currentEESize) / estimatedSizePerItem
+        var itemCountToAdd = (enhanceEcommerceSizeLimit - currentEESize) / estimatedSizePerItem
         if (itemCountToAdd > inputList.size) {
             itemCountToAdd = inputList.size
         }
@@ -215,7 +223,6 @@ class TrackingRepository(val context: Context) : ITrackingRepository<TrackingReg
     }
 
     companion object {
-        const val ENHANCE_ECOMMERCE_SIZE_LIMIT = 7000 // bytes
+        const val ENHANCE_ECOMMERCE_SIZE_LIMIT_DEFAULT = 6700L // bytes
     }
-
 }

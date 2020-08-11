@@ -3,6 +3,7 @@
     <string name="catalog_marketprice">Harga Pasar</string>
     <string name="catalog_complete_specifications">Spesifikasi lengkap</string>
     <string name="catalog_bullet_string">• %1$s</string>
+    <string name="catalog_spesification">Spesifikasi</string>
     <string name="catalog_description">Deskripsi</string>
     <string name="catalog_result_count_template_text">%s Produk</string>
     <string name="catalog_message_share_catalog">Klik link ini untuk menemukan catalog dari Tokopedia. </string>

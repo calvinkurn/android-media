@@ -48,8 +48,8 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
                     anyString(), anyInt(), anyInt(), anyInt(), anyString(), anyString(), anyBoolean()
             )
             verifyGetShopProductUseCaseCalled()
-            assertTrue(viewModelShopPageProductListResultViewModel.productResponse.value is Success)
-            assertNotNull(viewModelShopPageProductListResultViewModel.productResponse.value)
+            assertTrue(viewModelShopPageProductListResultViewModel.productData.value is Success)
+            assertNotNull(viewModelShopPageProductListResultViewModel.productData.value)
         }
     }
 
@@ -64,7 +64,7 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
             )
 
             verifyGetShopProductUseCaseCalled()
-            assertTrue(viewModelShopPageProductListResultViewModel.productResponse.value is Fail)
+            assertTrue(viewModelShopPageProductListResultViewModel.productData.value is Fail)
         }
     }
 

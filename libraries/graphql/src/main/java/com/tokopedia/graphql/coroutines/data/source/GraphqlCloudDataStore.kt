@@ -8,13 +8,16 @@ import com.tokopedia.akamai_bot_lib.isAkamai
 import com.tokopedia.graphql.FingerprintManager
 import com.tokopedia.graphql.GraphqlCacheManager
 import com.tokopedia.graphql.GraphqlConstant
+import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponseInternal
 import com.tokopedia.graphql.data.source.cloud.api.GraphqlApiSuspend
 import com.tokopedia.graphql.util.CacheHelper
+import com.tokopedia.graphql.util.Const
 import com.tokopedia.graphql.util.Const.AKAMAI_SENSOR_DATA_HEADER
+import com.tokopedia.graphql.util.LoggingUtils
 import kotlinx.coroutines.*
 import okhttp3.internal.http2.ConnectionShutdownException
 import retrofit2.Response
@@ -39,7 +42,7 @@ class GraphqlCloudDataStore @Inject constructor(
         CYFMonitor.setLogLevel(CYFMonitor.INFO)
         return if (isAkamai(requests.first().query)) {
             val header = mutableMapOf<String, String>()
-            header[AKAMAI_SENSOR_DATA_HEADER] = CYFMonitor.getSensorData() ?: ""
+            header[AKAMAI_SENSOR_DATA_HEADER] = GraphqlClient.getFunction().getAkamaiValue()
             api.getResponseSuspend(requests.toMutableList(), header, FingerprintManager.getQueryDigest(requests))
         } else {
             api.getResponseSuspend(requests.toMutableList(), mapOf(), FingerprintManager.getQueryDigest(requests))
@@ -63,7 +66,7 @@ class GraphqlCloudDataStore @Inject constructor(
                         e !is InterruptedIOException &&
                         e !is ConnectionShutdownException &&
                         e !is CancellationException) {
-                    Timber.w("P1#GQL_ERROR#kt;err='${Log.getStackTraceString(e).trim()}';req='${requests}'")
+                    LoggingUtils.logGqlError("kt", requests.toString(), e)
                 }
                 if (e !is CancellationException) {
                     throw e
@@ -77,13 +80,16 @@ class GraphqlCloudDataStore @Inject constructor(
             //Checking response CLC headers.
             val cacheHeaders = if (result?.headers()?.get(GraphqlConstant.GqlApiKeys.CACHE) == null) ""
             else result.headers().get(GraphqlConstant.GqlApiKeys.CACHE);
-
             val gResponse = GraphqlResponseInternal(gJsonArray, false, cacheHeaders)
 
             try {
                 result?.let {
 
                     launch(Dispatchers.IO) {
+                        if (result.code() != Const.GQL_RESPONSE_HTTP_OK) {
+                            LoggingUtils.logGqlResponseCode(result.code(), requests.toString(), gResponse.originalResponse.toString())
+                        }
+                        LoggingUtils.logGqlSize("kt", requests.toString(), gResponse.originalResponse.toString())
                         //Handling backend cache
                         val caches = CacheHelper.parseCacheHeaders(gResponse.beCache)
 
@@ -99,6 +105,7 @@ class GraphqlCloudDataStore @Inject constructor(
                                     val objectData = gResponse.originalResponse[index].asJsonObject[GraphqlConstant.GqlApiKeys.DATA]
                                     if (objectData != null && cache != null) {
                                         cacheManager.save(request.cacheKey(), objectData.toString(), cache.maxAge * 1000.toLong())
+                                        Timber.d("Android CLC - Request saved to cache " + CacheHelper.getQueryName(request.query) + " KEY: " + request.cacheKey())
                                     }
                                 }
                             }
@@ -122,7 +129,6 @@ class GraphqlCloudDataStore @Inject constructor(
             } catch (e: Exception) {
                 e.printStackTrace()
             }
-            logGqlSize(requests.toString(), gResponse.toString())
             gResponse
         }
     }
@@ -137,10 +143,5 @@ class GraphqlCloudDataStore @Inject constructor(
             e.printStackTrace()
         }
         return false
-    }
-
-    private fun logGqlSize(requests: String, response: String) {
-        val sampleRequest = requests.substringAfter("[GraphqlRequest{query='").take(100).trim()
-        Timber.w("P1#GQL_SIZE#kt;req_size=${requests.length};resp_size=${response.length};req='$sampleRequest'")
     }
 }

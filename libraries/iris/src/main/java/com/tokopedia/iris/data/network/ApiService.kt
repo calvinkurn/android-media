@@ -20,7 +20,6 @@ import java.util.concurrent.TimeUnit
  */
 class ApiService(private val context: Context) {
 
-    private val session: Session = IrisSession(context)
     private val userSession: UserSessionInterface = UserSession(context)
     private var apiInterface: ApiInterface? = null
 
@@ -40,8 +39,9 @@ class ApiService(private val context: Context) {
                     val original = it.request()
                     val request = original.newBuilder()
                     request.header(HEADER_CONTENT_TYPE, HEADER_JSON)
-                    if (!session.getUserId().isBlank()) {
-                        request.header(HEADER_USER_ID, session.getUserId())
+                    val userId = userSession.userId
+                    if (userId.isNotEmpty()) {
+                        request.header(HEADER_USER_ID, userId)
                     }
                     request.header(HEADER_DEVICE, HEADER_ANDROID + GlobalConfig.VERSION_NAME)
                     request.method(original.method(), original.body())

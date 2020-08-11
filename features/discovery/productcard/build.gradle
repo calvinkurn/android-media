@@ -50,6 +50,7 @@ dependencies {
     androidTestImplementation rootProject.ext.miscDependencies.multiDex
     androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
     androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
+    androidTestImplementation rootProject.ext.playServicesDependencies.analytics
     androidTestImplementation rootProject.ext.playServicesDependencies.core
     androidTestImplementation rootProject.ext.testDependencies.junit
     androidTestImplementation project(rootProject.ext.libraries.akamaiBotLib)

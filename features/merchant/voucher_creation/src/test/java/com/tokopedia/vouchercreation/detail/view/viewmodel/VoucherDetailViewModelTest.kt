@@ -92,6 +92,8 @@ class VoucherDetailViewModelTest {
 
             getVoucherDetail(anyInt())
 
+            coroutineContext[Job]?.children?.forEach { it.join() }
+
             coVerify {
                 voucherDetailUseCase.executeOnBackground()
                 shopBasicDataUseCase.executeOnBackground()
@@ -149,7 +151,7 @@ class VoucherDetailViewModelTest {
                 shopBasicDataUseCase.executeOnBackground()
             }
 
-            assert(shopBasicLiveData.value is Fail)
+            assert(merchantVoucherModelLiveData.value is Fail)
         }
     }
 
@@ -163,6 +165,8 @@ class VoucherDetailViewModelTest {
             } returns dummyCancelVoucherResult
 
             cancelVoucher(anyInt(), anyString())
+
+            coroutineContext[Job]?.children?.forEach { it.join() }
 
             coVerify {
                 cancelVoucherUseCase.executeOnBackground()

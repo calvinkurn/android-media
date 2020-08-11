@@ -19,6 +19,7 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
+import com.tokopedia.hotel.common.data.HotelSourceEnum
 import com.tokopedia.hotel.common.data.HotelTypeEnum
 import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.common.presentation.widget.RatingStarView
@@ -82,6 +83,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
     private var roomPrice: String = "0"
     private var roomPriceAmount: String = ""
     private var isDirectPayment: Boolean = true
+    private var source: String = HotelSourceEnum.SEARCHRESULT.value
 
     private var isHotelDetailSuccess: Boolean = true
     private var isHotelReviewSuccess: Boolean = true
@@ -105,8 +107,9 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
 
         arguments?.let {
             hotelHomepageModel.locId = it.getLong(HotelDetailActivity.EXTRA_PROPERTY_ID)
+            source = it.getString(HotelDetailActivity.EXTRA_SOURCE) ?: HotelSourceEnum.SEARCHRESULT.value
 
-            if (it.getString(HotelDetailActivity.EXTRA_CHECK_IN_DATE).isNotEmpty()) {
+            if (it.getString(HotelDetailActivity.EXTRA_CHECK_IN_DATE)?.isNotEmpty() == true) {
                 hotelHomepageModel.checkInDate = it.getString(HotelDetailActivity.EXTRA_CHECK_IN_DATE,
                         TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, TravelDateUtil.addTimeToSpesificDate(
                                 TravelDateUtil.getCurrentCalendar().time, Calendar.DATE, 1)))
@@ -143,12 +146,12 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                     GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_room_list),
                     GraphqlHelper.loadRawString(resources, R.raw.gql_get_hotel_review),
                     hotelHomepageModel.locId,
-                    hotelHomepageModel)
+                    hotelHomepageModel, source)
         } else {
             detailViewModel.getHotelDetailDataWithoutRoom(
                     GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_info),
                     GraphqlHelper.loadRawString(resources, R.raw.gql_get_hotel_review),
-                    hotelHomepageModel.locId)
+                    hotelHomepageModel.locId, source)
         }
 
         setupGlobalSearchWidget()
@@ -590,12 +593,12 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                     GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_room_list),
                     GraphqlHelper.loadRawString(resources, R.raw.gql_get_hotel_review),
                     hotelHomepageModel.locId,
-                    hotelHomepageModel)
+                    hotelHomepageModel, source)
         } else {
             detailViewModel.getHotelDetailDataWithoutRoom(
                     GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_info),
                     GraphqlHelper.loadRawString(resources, R.raw.gql_get_hotel_review),
-                    hotelHomepageModel.locId)
+                    hotelHomepageModel.locId, source)
         }
     }
 
@@ -648,7 +651,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
 
         fun getInstance(checkInDate: String, checkOutDate: String, propertyId: Long, roomCount: Int,
                         adultCount: Int, destinationType: String, destinationName: String,
-                        isDirectPayment: Boolean, isShowRoom: Boolean): HotelDetailFragment =
+                        isDirectPayment: Boolean, isShowRoom: Boolean, source: String): HotelDetailFragment =
                 HotelDetailFragment().also {
                     it.arguments = Bundle().apply {
                         putString(HotelDetailActivity.EXTRA_CHECK_IN_DATE, checkInDate)
@@ -660,8 +663,8 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                         putString(HotelDetailActivity.EXTRA_DESTINATION_NAME, destinationName)
                         putBoolean(HotelDetailActivity.EXTRA_IS_DIRECT_PAYMENT, isDirectPayment)
                         putBoolean(EXTRA_SHOW_ROOM, isShowRoom)
+                        putString(HotelDetailActivity.EXTRA_SOURCE, source)
                     }
                 }
-
     }
 }

@@ -8,6 +8,7 @@ import com.tokopedia.common.topupbills.data.catalog_plugin.RechargeCatalogPlugin
 import com.tokopedia.common.topupbills.data.express_checkout.RechargeExpressCheckout
 import com.tokopedia.common.topupbills.data.express_checkout.RechargeExpressCheckoutData
 import com.tokopedia.common.topupbills.utils.TopupBillsDispatchersProvider
+import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
@@ -35,7 +36,7 @@ import javax.inject.Inject
 class TopupBillsViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
                                               private val digitalCheckVoucherUseCase: DigitalCheckVoucherUseCase,
                                               val dispatcher: TopupBillsDispatchersProvider)
-    : BaseViewModel(dispatcher.Main) {
+    : BaseViewModel(dispatcher.IO) {
 
     private val _enquiryData = MutableLiveData<Result<TopupBillsEnquiryData>>()
     val enquiryData: LiveData<Result<TopupBillsEnquiryData>>
@@ -92,9 +93,10 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
 
     fun getMenuDetail(rawQuery: String, mapParam: Map<String, Any>, isLoadFromCloud: Boolean = false) {
         launchCatchError(block = {
-            val data = withContext(Dispatchers.IO) {
+            val data = withContext(dispatcher.IO) {
                 val graphqlRequest = GraphqlRequest(rawQuery, TelcoCatalogMenuDetailData::class.java, mapParam)
-                val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST).build()
+                val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST)
+                        .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5).build()
                 graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
             }.getSuccessData<TelcoCatalogMenuDetailData>()
 
@@ -123,9 +125,10 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
 
     fun getFavoriteNumbers(rawQuery: String, mapParam: Map<String, Any>, isLoadFromCloud: Boolean = false) {
         launchCatchError(block = {
-            val data = withContext(Dispatchers.IO) {
+            val data = withContext(dispatcher.IO) {
                 val graphqlRequest = GraphqlRequest(rawQuery, TopupBillsFavNumberData::class.java, mapParam)
-                val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST).build()
+                val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST)
+                        .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5).build()
                 graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
             }.getSuccessData<TopupBillsFavNumberData>()
 
@@ -136,13 +139,17 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
     }
 
     fun checkVoucher(promoCode: String, promoDigitalModel: PromoDigitalModel) {
-        if (checkVoucherJob?.isActive == true) checkVoucherJob?.cancel()
+        stopCheckVoucher()
         checkVoucherJob = CoroutineScope(coroutineContext).launch {
             delay(CHECK_VOUCHER_DEBOUNCE_DELAY)
             digitalCheckVoucherUseCase.execute(
                     digitalCheckVoucherUseCase.createRequestParams(promoCode, promoDigitalModel), getCheckVoucherSubscriber()
             )
         }
+    }
+
+    fun stopCheckVoucher() {
+        if (checkVoucherJob?.isActive == true) checkVoucherJob?.cancel()
     }
 
     private fun getCheckVoucherSubscriber(): Subscriber<GraphqlResponse> {
@@ -173,7 +180,7 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
 
     fun processExpressCheckout(rawQuery: String, mapParam: Map<String, Any>) {
         launchCatchError(block = {
-            val data = withContext(Dispatchers.IO) {
+            val data = withContext(dispatcher.IO) {
                 val graphqlRequest = GraphqlRequest(rawQuery, RechargeExpressCheckout.Response::class.java, mapParam)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<RechargeExpressCheckout.Response>().response
@@ -270,7 +277,7 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
         const val ENQUIRY_PARAM_OPERATOR_ID = "operator_id"
         const val ENQUIRY_PARAM_PRODUCT_ID = "product_id"
         const val ENQUIRY_PARAM_DEVICE_ID = "device_id"
-        const val ENQUIRY_PARAM_DEVICE_ID_DEFAULT_VALUE = "4"
+        const val ENQUIRY_PARAM_DEVICE_ID_DEFAULT_VALUE = "5"
         const val ENQUIRY_PARAM_SOURCE_TYPE = "source_type"
         const val ENQUIRY_PARAM_SOURCE_TYPE_DEFAULT_VALUE = "c20ad4d76fe977"
 

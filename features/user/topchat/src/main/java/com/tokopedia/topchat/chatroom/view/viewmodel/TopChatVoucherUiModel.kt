@@ -25,24 +25,23 @@ class TopChatVoucherUiModel
  * @param redirectUrlBottom redirect url in http for Bottom image click
  * @param blastId           blast id for campaign.
  */
-(
-        messageId: String,
-        fromUid: String,
-        from: String,
-        fromRole: String,
-        attachmentId: String,
-        attachmentType: String,
-        replyTime: String,
-        message: String,
-        isRead: Boolean,
-        isDummy: Boolean,
-        isSender: Boolean,
-        var voucherModel: MerchantVoucherModel,
-        var replyId: String,
-        var blastId: String
-) : SendableViewModel(messageId, fromUid, from, fromRole, attachmentId, attachmentType, replyTime, "", isRead, isDummy, isSender, message), Visitable<TopChatTypeFactory> {
+constructor(
+        messageId: String, fromUid: String, from: String, fromRole: String,
+        attachmentId: String, attachmentType: String, replyTime: String, message: String,
+        isRead: Boolean, isDummy: Boolean, isSender: Boolean, var voucherModel: MerchantVoucherModel,
+        replyId: String, var blastId: String, source: String, val isPublic: Int
+) : SendableViewModel(
+        messageId, fromUid, from, fromRole,
+        attachmentId, attachmentType, replyTime, "",
+        isRead, isDummy, isSender, message,
+        source, replyId
+), Visitable<TopChatTypeFactory> {
 
     override fun type(typeFactory: TopChatTypeFactory): Int {
         return typeFactory.type(this)
+    }
+
+    fun hasCtaCopy(): Boolean {
+        return isPublic == 0
     }
 }

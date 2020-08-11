@@ -29,7 +29,6 @@ public class Utils {
 
     }
 
-
     public static Locale getLocale() {
         if (mLocale == null)
             mLocale = new Locale(LANGUAGE_CODE, COUNTRY_CODE, "");

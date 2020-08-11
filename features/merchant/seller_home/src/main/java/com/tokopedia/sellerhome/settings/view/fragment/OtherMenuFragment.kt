@@ -32,6 +32,8 @@ import com.tokopedia.seller.active.common.service.UpdateShopActiveService
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.common.FragmentType
 import com.tokopedia.sellerhome.common.StatusbarHelper
+import com.tokopedia.sellerhome.common.errorhandler.SellerHomeErrorHandler
+import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.settings.analytics.SettingTrackingConstant
 import com.tokopedia.sellerhome.settings.analytics.SettingTrackingListener
@@ -57,7 +59,7 @@ import kotlinx.android.synthetic.main.fragment_other_menu.*
 import kotlinx.android.synthetic.main.setting_topads_bottomsheet_layout.view.*
 import javax.inject.Inject
 
-class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFactory>(), OtherMenuViewHolder.Listener, StatusBarCallback, SettingTrackingListener {
+class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFactory>(), OtherMenuViewHolder.Listener, StatusBarCallback, SettingTrackingListener{
 
     companion object {
         const val URL_KEY = "url"
@@ -74,6 +76,8 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
         private const val GO_TO_REPUTATION_HISTORY = "GO_TO_REPUTATION_HISTORY"
         private const val EXTRA_SHOP_ID = "EXTRA_SHOP_ID"
 
+        private const val ERROR_GET_SETTING_SHOP_INFO = "Error when get shop info in other setting."
+
         @JvmStatic
         fun createInstance(): OtherMenuFragment = OtherMenuFragment()
     }
@@ -84,6 +88,8 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
     lateinit var userSession: UserSessionInterface
     @Inject
     lateinit var remoteConfig: FirebaseRemoteConfigImpl
+    @Inject
+    lateinit var sellerHomeConfig: SellerHomeRemoteConfig
 
     private var otherMenuViewHolder: OtherMenuViewHolder? = null
 
@@ -127,7 +133,11 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        (activity as? SellerHomeActivity)?.attachCallback(this)
+        if(sellerHomeConfig.isNewSellerHomeDisabled()) {
+            (activity as? com.tokopedia.sellerhome.view.oldactivity.SellerHomeActivity)?.attachCallback(this)
+        } else {
+            (activity as? SellerHomeActivity)?.attachCallback(this)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -183,8 +193,10 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
         val bottomSheet = childFragmentManager.findFragmentByTag(TOPADS_BOTTOMSHEET_TAG)
         if (bottomSheet is BottomSheetUnify) {
             bottomSheet.dismiss()
+            RouteManager.route(context, ApplinkConst.SellerApp.TOPADS_AUTO_TOPUP)
+        } else {
+            RouteManager.route(context, ApplinkConst.SellerApp.TOPADS_CREDIT)
         }
-        RouteManager.route(context, ApplinkConst.SellerApp.TOPADS_DASHBOARD)
     }
 
     override fun onRefreshShopInfo() {
@@ -198,11 +210,13 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun setStatusBar() {
-        (activity as? Activity)?.run {
-            if (isInitialStatusBar && !isDefaultDarkStatusBar) {
-                requestStatusBarLight()
-            } else {
-                requestStatusBarDark()
+        if(isVisible) {
+            (activity as? Activity)?.run {
+                if (isInitialStatusBar && !isDefaultDarkStatusBar) {
+                    requestStatusBarLight()
+                } else {
+                    requestStatusBarDark()
+                }
             }
         }
     }
@@ -276,7 +290,10 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
                         showSettingShopInfoState(result.data)
                         otherMenuViewModel.getFreeShippingStatus()
                     }
-                    is Fail -> showSettingShopInfoState(SettingResponseState.SettingError)
+                    is Fail -> {
+                        SellerHomeErrorHandler.logExceptionToCrashlytics(result.throwable, ERROR_GET_SETTING_SHOP_INFO)
+                        showSettingShopInfoState(SettingResponseState.SettingError)
+                    }
                 }
             })
             isToasterAlreadyShown.observe(viewLifecycleOwner, Observer { isToasterAlreadyShown ->
@@ -418,10 +435,12 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
         recycler_view.layoutManager = LinearLayoutManager(context)
         context?.let { otherMenuViewHolder = OtherMenuViewHolder(view, it, this, this)}
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (isDefaultDarkStatusBar) {
-                activity?.requestStatusBarDark()
-            } else {
-                activity?.requestStatusBarLight()
+            if(isVisible) {
+                if (isDefaultDarkStatusBar) {
+                    activity?.requestStatusBarDark()
+                } else {
+                    activity?.requestStatusBarLight()
+                }
             }
             observeRecyclerViewScrollListener()
         }
@@ -451,7 +470,7 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
 
         //Offset Alpha is not actually needed for changing the status bar color (only needed the offset),
         //but we will preserve the variable in case the stakeholders need to change the status bar alpha according to the scroll position
-        val offsetAlpha = (MAXIMUM_ALPHA / maxTransitionOffset).times(offset - startToTransitionOffset)
+        val offsetAlpha = (MAXIMUM_ALPHA/maxTransitionOffset).times(offset - startToTransitionOffset)
         if (offsetAlpha >= ALPHA_CHANGE_THRESHOLD) {
             if (isInitialStatusBar) {
                 setDarkStatusBar()
@@ -466,8 +485,8 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
     }
 
     private fun setLightStatusBar() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (!isDefaultDarkStatusBar) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && isVisible) {
+            if (!isDefaultDarkStatusBar){
                 activity?.requestStatusBarLight()
             }
             setStatusBarStateInitialIsLight(true)

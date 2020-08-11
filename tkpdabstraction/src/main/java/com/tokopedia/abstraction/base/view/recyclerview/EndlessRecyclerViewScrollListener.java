@@ -7,6 +7,8 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.tokopedia.abstraction.base.view.listener.EndlessLayoutManagerListener;
 
+import org.jetbrains.annotations.Nullable;
+
 /**
  * @author by erry on 02/02/17.
  */
@@ -155,4 +157,8 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
     }
 
     public abstract void onLoadMore(int page, int totalItemsCount);
+
+    public void updateLayoutManager(@Nullable RecyclerView.LayoutManager layoutManager) {
+        this.layoutManager = layoutManager;
+    }
 }

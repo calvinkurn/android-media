@@ -29,7 +29,7 @@ class CommonTopupBillsModule {
 
     @CommonTopupBillsScope
     @Provides
-    fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
+    fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.IO
 
     @CommonTopupBillsScope
     @Provides

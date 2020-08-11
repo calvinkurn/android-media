@@ -63,6 +63,13 @@
             android:screenOrientation="portrait"
             android:theme="@style/Toolbar.White" />
 
+        <activity
+            android:name=".detail.view.activity.BuyerRequestCancelActivity"
+            android:label="@string/title_buyer_request_cancel"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+
     </application>
 
 </manifest>

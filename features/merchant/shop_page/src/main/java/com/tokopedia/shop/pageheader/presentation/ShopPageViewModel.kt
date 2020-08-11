@@ -1,10 +1,8 @@
 package com.tokopedia.shop.pageheader.presentation
 
 import androidx.lifecycle.MutableLiveData
-import android.text.TextUtils
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
-import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
 import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -12,17 +10,32 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestData
+import com.tokopedia.network.exception.UserNotLoginException
+import com.tokopedia.shop.common.di.GqlGetShopInfoForHeaderUseCaseQualifier
+import com.tokopedia.shop.common.di.GqlGetShopInfoForTabUseCaseQualifier
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopFavoriteStatusUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
+import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.FIELD_ALLOW_MANAGE
+import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.FIELD_ASSETS
+import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.FIELD_CLOSED_INFO
+import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.FIELD_CORE
+import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.FIELD_CREATE_INFO
+import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.FIELD_IS_OPEN
+import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.FIELD_IS_OWNER
+import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.FIELD_LAST_ACTIVE
+import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.FIELD_LOCATION
+import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.FIELD_STATUS
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.SHOP_PAGE_SOURCE
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopOperationalHourStatusUseCase
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
+import com.tokopedia.shop.common.graphql.data.shopinfo.Broadcaster
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourstatus.ShopOperationalHourStatus
-import com.tokopedia.shop.pageheader.data.model.ShopInfoShopBadgeFeedWhitelist
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopReputationUseCase
+import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderContentData
+import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderTabData
+import com.tokopedia.shop.pageheader.domain.interactor.GetBroadcasterShopConfigUseCase
 import com.tokopedia.shop.pageheader.domain.interactor.GetModerateShopUseCase
 import com.tokopedia.shop.pageheader.domain.interactor.RequestModerateShopUseCase
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
@@ -32,14 +45,20 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import rx.Subscriber
 import javax.inject.Inject
 
 class ShopPageViewModel @Inject constructor(private val gqlRepository: GraphqlRepository,
                                             private val gqlGetShopFavoriteStatusUseCase: GQLGetShopFavoriteStatusUseCase,
                                             private val userSessionInterface: UserSessionInterface,
-                                            private val gqlGetShopInfoUseCase: GQLGetShopInfoUseCase,
+                                            @GqlGetShopInfoForHeaderUseCaseQualifier
+                                            private val gqlGetShopInfoForHeaderUseCase: GQLGetShopInfoUseCase,
+                                            private val getBroadcasterShopConfigUseCase: GetBroadcasterShopConfigUseCase,
+                                            @GqlGetShopInfoForTabUseCaseQualifier
+                                            private val gqlGetShopInfoForTabUseCase: GQLGetShopInfoUseCase,
                                             private val getWhitelistUseCase: GetWhitelistUseCase,
                                             private val getShopReputationUseCase: GetShopReputationUseCase,
                                             private val toggleFavouriteShopUseCase: ToggleFavouriteShopUseCase,
@@ -49,79 +68,28 @@ class ShopPageViewModel @Inject constructor(private val gqlRepository: GraphqlRe
                                             private val gqlGetShopOperationalHourStatusUseCase: GQLGetShopOperationalHourStatusUseCase,
                                             dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
+    companion object {
+        private const val DATA_NOT_FOUND = "Data not found"
+    }
+
     fun isMyShop(shopId: String) = userSessionInterface.shopId == shopId
 
     val isUserSessionActive: Boolean
         get() = userSessionInterface.isLoggedIn
 
-    val shopInfoResp = MutableLiveData<Result<ShopInfo>>()
-    val whiteListResp = MutableLiveData<Result<Pair<Boolean, String>>>()
-    val shopBadgeResp = MutableLiveData<Pair<Boolean, ShopBadge>>()
-    val shopModerateResp = MutableLiveData<Result<ShopModerateRequestData>>()
-    val shopFavouriteResp = MutableLiveData<ShopInfo.FavoriteData>()
-    val shopTickerData = MutableLiveData<Result<Pair<ShopInfo, ShopOperationalHourStatus>>>()
+    val shopPageHeaderTabData = MutableLiveData<Result<ShopPageHeaderTabData>>()
+    val shopPageHeaderContentData = MutableLiveData<Result<ShopPageHeaderContentData>>()
 
-    fun getShop(shopId: String? = null, shopDomain: String? = null, isRefresh: Boolean = false) {
+    fun getShopPageTabData(shopId: String? = null, shopDomain: String? = null, isRefresh: Boolean = false) {
         val id = shopId?.toIntOrNull() ?: 0
         if (id == 0 && shopDomain == null) return
         launchCatchError(block = {
-            val shopInfoShopBadgeFeedWhitelist = asyncCatchError(
-                    Dispatchers.IO,
-                    block = {
-                        getShopInfoShopReputationDataFeedWhitelist(id, shopDomain, isRefresh)
-                    },
-                    onError = {
-                        shopInfoResp.postValue(Fail(it))
-                        null
-                    }
-            )
-
-            val shopOperationalHourStatus = asyncCatchError(
-                    Dispatchers.IO,
-                    block = { getShopOperationalHourStatus(id) },
-                    onError = {
-                        shopInfoResp.postValue(Fail(it))
-                        null
-                    }
-            )
-
-            val shopFavourite = asyncCatchError(
-                    Dispatchers.IO,
-                    block = { getShopFavoriteStatus(shopId, shopDomain) },
-                    onError = {
-                        shopInfoResp.postValue(Fail(it))
-                        null
-                    }
-            )
-
-            val shopInfoShopBadgeFeedWhitelistResponse = shopInfoShopBadgeFeedWhitelist.await()
-            val shopOperationalHourStatusResponse = shopOperationalHourStatus.await()
-            val shopFavouriteResponse = shopFavourite.await()
-            shopInfoShopBadgeFeedWhitelistResponse?.let{
-                it.feedWhitelist?.let {
-                    if (TextUtils.isEmpty(it.error)) {
-                        whiteListResp.postValue(Success(it.isWhitelist to it.url))
-                    } else {
-                        whiteListResp.postValue(Fail(RuntimeException()))
-                    }
-                }
-                it.shopInfo?.let { shopInfo ->
-                    shopInfoResp.postValue(Success(shopInfo))
-                }
-                it.shopBadge?.let {
-                    shopBadgeResp.postValue((shopInfoShopBadgeFeedWhitelistResponse.shopInfo?.goldOS?.isOfficial != 1) to it)
-                }
-                shopOperationalHourStatusResponse?.let { shopOperationalStatusResponse ->
-                    it.shopInfo?.let { shopInfo ->
-                        shopTickerData.postValue(Success(Pair(shopInfo, shopOperationalStatusResponse)))
-                    }
-                }
-                shopFavouriteResponse?.let {
-                    shopFavouriteResp.postValue(it)
-                }
+            val shopPageTabDataResponse = withContext(Dispatchers.IO) {
+                getShopPageTabData(id, shopDomain, isRefresh)
             }
+            shopPageHeaderTabData.postValue(Success(shopPageTabDataResponse))
         }) {
-            shopInfoResp.postValue(Fail(it))
+            shopPageHeaderTabData.postValue(Fail(it))
         }
     }
 
@@ -130,51 +98,41 @@ class ShopPageViewModel @Inject constructor(private val gqlRepository: GraphqlRe
         return gqlGetShopOperationalHourStatusUseCase.executeOnBackground()
     }
 
-    private suspend fun getShopInfoShopReputationDataFeedWhitelist(shopId: Int, shopDomain: String?, isRefresh: Boolean): ShopInfoShopBadgeFeedWhitelist {
-        val shopInfoShopBadgeFeedWhitelist = ShopInfoShopBadgeFeedWhitelist()
-
-        gqlGetShopInfoUseCase.params = GQLGetShopInfoUseCase
-                .createParams(if (shopId == 0) listOf() else listOf(shopId), shopDomain, source = SHOP_PAGE_SOURCE)
-        val shopInfoRequest = gqlGetShopInfoUseCase.request
-
-        getShopReputationUseCase.params = GetShopReputationUseCase.createParams(shopId)
-        val shopReputationRequest = getShopReputationUseCase.request
-
+    private suspend fun getShopPageTabData(shopId: Int, shopDomain: String?, isRefresh: Boolean): ShopPageHeaderTabData {
+        val shopPageTabData = ShopPageHeaderTabData()
+        gqlGetShopInfoForTabUseCase.params = GQLGetShopInfoUseCase.createParams(
+                if (shopId == 0) listOf() else listOf(shopId),
+                shopDomain,
+                source = SHOP_PAGE_SOURCE,
+                fields = listOf()
+        )
+        val shopInfoForTabDataRequest = gqlGetShopInfoForTabUseCase.request
         val feedWhitelistRequest = getWhitelistUseCase.getRequest(GetWhitelistUseCase.createRequestParams(
                 GetWhitelistUseCase.WHITELIST_SHOP,
                 shopId.toString()
         ))
-        val requests = mutableListOf(shopInfoRequest, shopReputationRequest, feedWhitelistRequest)
+        val requests = mutableListOf(shopInfoForTabDataRequest, feedWhitelistRequest)
         val cacheStrategy = GraphqlCacheStrategy.Builder(if (isRefresh) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST).build()
         val gqlResponse = gqlRepository.getReseponse(requests, cacheStrategy)
         val shopInfoError = gqlResponse.getError(ShopInfo.Response::class.java)
         val shopInfo = gqlResponse.getData<ShopInfo.Response>(ShopInfo.Response::class.java).result.data.firstOrNull()
         if (shopInfoError == null || shopInfoError.isEmpty()) {
             shopInfo?.let {
-                shopInfoShopBadgeFeedWhitelist.shopInfo = it
+                shopPageTabData.shopInfo = it
             }
         } else {
             throw MessageErrorException(shopInfoError.mapNotNull { it.message }.joinToString(separator = ", "))
         }
-        val shopBadgeError = gqlResponse.getError(ShopBadge.Response::class.java)
-        val shopBadge = gqlResponse.getData<ShopBadge.Response>(ShopBadge.Response::class.java).result.firstOrNull()
-        if (shopBadgeError == null || shopBadgeError.isEmpty()) {
-            shopBadge?.let {
-                shopInfoShopBadgeFeedWhitelist.shopBadge = it
-            }
-        } else {
-            throw MessageErrorException(shopBadgeError.mapNotNull { it.message }.joinToString(separator = ", "))
-        }
         val feedWhitelistError = gqlResponse.getError(WhitelistQuery::class.java)
         val feedWhitelist = gqlResponse.getData<WhitelistQuery>(WhitelistQuery::class.java)?.whitelist
         if (feedWhitelistError == null || feedWhitelistError.isEmpty()) {
-            feedWhitelist?.let{
-                shopInfoShopBadgeFeedWhitelist.feedWhitelist = it
+            feedWhitelist?.let {
+                shopPageTabData.feedWhitelist = it
             }
         } else {
             throw MessageErrorException(feedWhitelistError.mapNotNull { it.message }.joinToString(separator = ", "))
         }
-        return shopInfoShopBadgeFeedWhitelist
+        return shopPageTabData
     }
 
     private suspend fun getShopFavoriteStatus(shopId: String? = null, shopDomain: String? = null): ShopInfo.FavoriteData {
@@ -186,6 +144,16 @@ class ShopPageViewModel @Inject constructor(private val gqlRepository: GraphqlRe
         } catch (t: Throwable) {
         }
         return favoritInfo
+    }
+
+    private suspend fun getShopBroadcasterConfig(shopId: String? = null): Broadcaster.Config {
+        var broadcasterConfig = Broadcaster.Config()
+        try {
+            getBroadcasterShopConfigUseCase.params = GetBroadcasterShopConfigUseCase.createParams(shopId ?: "")
+            broadcasterConfig = getBroadcasterShopConfigUseCase.executeOnBackground()
+        } catch (t: Throwable) {
+        }
+        return broadcasterConfig
     }
 
     fun toggleFavorite(shopID: String, onSuccess: (Boolean) -> Unit, onError: (Throwable) -> Unit) {
@@ -208,60 +176,25 @@ class ShopPageViewModel @Inject constructor(private val gqlRepository: GraphqlRe
                 })
     }
 
-    fun getModerateShopInfo() {
-        getModerateShopUseCase.execute(object : Subscriber<ShopModerateRequestData>() {
-            override fun onNext(t: ShopModerateRequestData?) {
-                t?.let { shopModerateResp.value = Success(it) }
-            }
-
-            override fun onCompleted() {}
-
-            override fun onError(e: Throwable?) {
-                e?.let { shopModerateResp.value = Fail(it) }
-            }
-
-        })
-    }
-
-    fun moderateShopRequest(shopId: Int, moderateNotes: String, onSuccess: () -> Unit, onError: (Throwable?) -> Unit) {
-        requestModerateShopUseCase.execute(
-                RequestModerateShopUseCase.createRequestParams(shopId, moderateNotes),
-                object : Subscriber<Boolean>() {
-                    override fun onNext(t: Boolean?) {
-                        if (t == true) {
-                            onSuccess()
-                        } else {
-                            onError(null)
-                        }
-                    }
-
-                    override fun onCompleted() {}
-
-                    override fun onError(e: Throwable?) {
-                        onError(e)
-                    }
-                })
-    }
-
     fun getStickyLoginContent(onSuccess: (StickyLoginTickerPojo.TickerDetail) -> Unit, onError: ((Throwable) -> Unit)?) {
         stickyLoginUseCase.setParams(StickyLoginConstant.Page.SHOP)
         stickyLoginUseCase.execute(
-            onSuccess = {
-                if (it.response.tickers.isNotEmpty()) {
-                    for(tickerDetail in it.response.tickers) {
-                        if (tickerDetail.layout == StickyLoginConstant.LAYOUT_FLOATING) {
-                            onSuccess.invoke(tickerDetail)
-                            return@execute
+                onSuccess = {
+                    if (it.response.tickers.isNotEmpty()) {
+                        for (tickerDetail in it.response.tickers) {
+                            if (tickerDetail.layout == StickyLoginConstant.LAYOUT_FLOATING) {
+                                onSuccess.invoke(tickerDetail)
+                                return@execute
+                            }
                         }
+                        onError?.invoke(Throwable(""))
+                    } else {
+                        onError?.invoke(Throwable(DATA_NOT_FOUND))
                     }
-                    onError?.invoke(Throwable(""))
-                } else {
-                    onError?.invoke(Throwable(DATA_NOT_FOUND))
+                },
+                onError = {
+                    onError?.invoke(it)
                 }
-            },
-            onError = {
-                onError?.invoke(it)
-            }
         )
     }
 
@@ -274,7 +207,101 @@ class ShopPageViewModel @Inject constructor(private val gqlRepository: GraphqlRe
         stickyLoginUseCase.cancelJobs()
     }
 
-    companion object {
-        private const val DATA_NOT_FOUND = "Data not found"
+    fun getShopPageHeaderContentData(shopId: String, shopDomain: String, isRefresh: Boolean) {
+        val id = shopId.toIntOrNull() ?: 0
+        if (id == 0 && shopDomain.isEmpty()) return
+        launchCatchError(block = {
+            val shopInfoForHeaderResponse = asyncCatchError(
+                    Dispatchers.IO,
+                    block = {
+                        getShopInfoHeader(id, shopDomain, isRefresh)
+                    },
+                    onError = {
+                        shopPageHeaderContentData.postValue(Fail(it))
+                        null
+                    }
+            )
+
+            val shopBadgeDataResponse = asyncCatchError(
+                    Dispatchers.IO,
+                    block = {
+                        getShopBadgeData(id, isRefresh)
+                    },
+                    onError = {
+                        shopPageHeaderContentData.postValue(Fail(it))
+                        null
+                    }
+            )
+
+            val shopOperationalHourStatus = asyncCatchError(
+                    Dispatchers.IO,
+                    block = { getShopOperationalHourStatus(id) },
+                    onError = {
+                        shopPageHeaderContentData.postValue(Fail(it))
+                        null
+                    }
+            )
+
+            val shopFavourite = asyncCatchError(
+                    Dispatchers.IO,
+                    block = { getShopFavoriteStatus(shopId, shopDomain) },
+                    onError = {
+                        shopPageHeaderContentData.postValue(Fail(it))
+                        null
+                    }
+            )
+            var broadcasterConfig: Broadcaster.Config = Broadcaster.Config()
+            if(isMyShop(shopId = shopId)) {
+                broadcasterConfig = asyncCatchError(
+                        Dispatchers.IO,
+                        block = { getShopBroadcasterConfig(shopId) },
+                        onError = { null }
+                ).await() ?: Broadcaster.Config()
+            }
+
+            val shopInfoForHeaderData = shopInfoForHeaderResponse.await()
+            val shopBadgeData = shopBadgeDataResponse.await()
+            val shopOperationalHourStatusResponse = shopOperationalHourStatus.await()
+            val shopFavouriteResponse = shopFavourite.await()
+            if (null != shopInfoForHeaderData && null != shopBadgeData && null != shopOperationalHourStatusResponse && null != shopFavouriteResponse) {
+                shopPageHeaderContentData.postValue(Success(ShopPageHeaderContentData(
+                        shopInfoForHeaderData,
+                        shopBadgeData,
+                        shopOperationalHourStatusResponse,
+                        broadcasterConfig,
+                        shopFavouriteResponse
+                )))
+            }
+        }) {
+            shopPageHeaderContentData.postValue(Fail(it))
+        }
+    }
+
+    private suspend fun getShopBadgeData(shopId: Int, refresh: Boolean): ShopBadge {
+        getShopReputationUseCase.isFromCacheFirst = !refresh
+        getShopReputationUseCase.params = GetShopReputationUseCase.createParams(shopId)
+        return getShopReputationUseCase.executeOnBackground()
+    }
+
+    private suspend fun getShopInfoHeader(shopId: Int, shopDomain: String, refresh: Boolean): ShopInfo {
+        gqlGetShopInfoForHeaderUseCase.isFromCacheFirst = !refresh
+        gqlGetShopInfoForHeaderUseCase.params = GQLGetShopInfoUseCase.createParams(
+                if (shopId == 0) listOf() else listOf(shopId),
+                shopDomain,
+                source = SHOP_PAGE_SOURCE,
+                fields = listOf(
+                        FIELD_CORE,
+                        FIELD_ASSETS,
+                        FIELD_LAST_ACTIVE,
+                        FIELD_LOCATION,
+                        FIELD_ALLOW_MANAGE,
+                        FIELD_IS_OWNER,
+                        FIELD_STATUS,
+                        FIELD_IS_OPEN,
+                        FIELD_CLOSED_INFO,
+                        FIELD_CREATE_INFO
+                )
+        )
+        return gqlGetShopInfoForHeaderUseCase.executeOnBackground()
     }
 }

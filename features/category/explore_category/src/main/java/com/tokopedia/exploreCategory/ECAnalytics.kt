@@ -34,7 +34,7 @@ class ECAnalytics {
                         "promoClick", DataLayer.mapOf(
                         "promotions", DataLayer.listOf(DataLayer.mapOf(
                         "id", it.id.toString(),
-                        "name", PROMO_SLOT_NAME,
+                        "name", it.title?.toLowerCase(Locale.getDefault()),
                         "creative", it.title?.toLowerCase(Locale.getDefault()),
                         "creative_url", NONE_OTHER,
                         "position", position + 1,
@@ -60,7 +60,7 @@ class ECAnalytics {
                 val map = HashMap<String, Any>()
                 categoryGroup?.let {
                     map["id"] = it.id.toString()
-                    map["name"] = PROMO_SLOT_NAME
+                    map["name"] = defaultCategoryName?.toLowerCase(Locale.getDefault()) ?: NONE_OTHER
                     map["creative"] = it.title?.toLowerCase(Locale.getDefault())
                             ?: NONE_OTHER
                     map["creative_url"] = NONE_OTHER
@@ -131,7 +131,7 @@ class ECAnalytics {
                     val map = HashMap<String, Any>()
                     icon?.let {
                         map["id"] = it.id.toString()
-                        map["name"] = PROMO_SLOT_NAME
+                        map["name"] = categoryGroup.title?.toLowerCase(Locale.getDefault()) ?: NONE_OTHER
                         map["creative"] = it.name?.toLowerCase(Locale.getDefault())
                                 ?: NONE_OTHER
                         map["creative_url"] = it.imageUrl ?: NONE_OTHER

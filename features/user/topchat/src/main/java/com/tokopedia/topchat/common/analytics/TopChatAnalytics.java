@@ -9,12 +9,13 @@ import com.tokopedia.abstraction.processor.ProductListClickProduct;
 import com.tokopedia.abstraction.processor.ProductListImpressionBundler;
 import com.tokopedia.abstraction.processor.ProductListImpressionProduct;
 import com.tokopedia.analyticconstant.DataLayer;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.attachproduct.analytics.AttachProductAnalytics;
 import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel;
 import com.tokopedia.chat_common.data.BannedProductAttachmentViewModel;
 import com.tokopedia.chat_common.data.ProductAttachmentViewModel;
-import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.ChatOrderProgress;
 import com.tokopedia.iris.IrisAnalytics;
+import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.ChatOrderProgress;
 import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewUiModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationUiModel;
 import com.tokopedia.track.TrackApp;
@@ -34,6 +35,8 @@ import javax.inject.Inject;
  */
 
 public class TopChatAnalytics {
+
+    private String sourcePage = "";
 
     @Inject
     public TopChatAnalytics() {
@@ -122,6 +125,7 @@ public class TopChatAnalytics {
         String CLICK_OP_CARD_DESCRIPTION = "click on order progress card";
         String CLICK_OP_CTA_DESCRIPTION = "click cta on order progress card";
         String CLICK_OP_ORDER_HISTORY = "click on order history";
+        String VIEW_ORDER_PROGRESS_WIDGET = "view on order progress widget";
     }
 
     public interface Label {
@@ -129,6 +133,10 @@ public class TopChatAnalytics {
         public static final String FOLLOW_SHOP = "follow shop";
         public static final String UNFOLLOW_SHOP = "unfollow shop";
         String BUYER = "buyer";
+    }
+
+    public void setSourcePage(String sourcePage) {
+        this.sourcePage = sourcePage;
     }
 
     public void eventClickInboxChannel() {
@@ -289,14 +297,14 @@ public class TopChatAnalytics {
                 null,
                 product.getPriceInt(),
                 null,
-                "/chat",
+                getFrom(product),
                 PRODUCT_INDEX,
                 new HashMap<>()
         );
         products.add(topChatProduct);
 
         Bundle bundle = ProductListClickBundler.getBundle(
-                getField(String.valueOf(product.getBlastId())),
+                getFrom(product),
                 products,
                 Category.CHAT_DETAIL,
                 Action.CLICK_PRODUCT_IMAGE,
@@ -317,9 +325,8 @@ public class TopChatAnalytics {
             @NotNull ProductAttachmentViewModel product,
             @NotNull UserSessionInterface user
     ) {
-
-        ArrayList<ProductListImpressionProduct> products = new ArrayList<>();
-        ProductListImpressionProduct product1 = new ProductListImpressionProduct(
+        ArrayList<com.tokopedia.abstraction.processor.beta.ProductListImpressionProduct> products = new ArrayList<>();
+        com.tokopedia.abstraction.processor.beta.ProductListImpressionProduct product1 = new com.tokopedia.abstraction.processor.beta.ProductListImpressionProduct(
                 product.getIdString(),
                 product.getProductName(),
                 null,
@@ -328,15 +335,15 @@ public class TopChatAnalytics {
                 product.getPriceInt() + 0.0,
                 null,
                 PRODUCT_INDEX,
-                getField(String.valueOf(product.getBlastId())),
-                getField(String.valueOf(product.getBlastId())),
+                getFrom(product),
+                getFrom(product),
                 null,
                 null
         );
         products.add(product1);
 
-        Bundle bundle = ProductListImpressionBundler.getBundle(
-                getField(String.valueOf(product.getBlastId())),
+        Bundle bundle = com.tokopedia.abstraction.processor.beta.ProductListImpressionBundler.getBundle(
+                getFrom(product),
                 products,
                 null,
                 ProductListImpressionBundler.KEY,
@@ -351,6 +358,55 @@ public class TopChatAnalytics {
         );
     }
 
+    // #AP5
+    public void eventSeenProductAttachmentBeta(
+            Context context,
+            @NotNull ProductAttachmentViewModel product,
+            @NotNull UserSessionInterface user
+    ) {
+        String devConst = "-dev";
+
+        ArrayList<ProductListImpressionProduct> products = new ArrayList<>();
+        ProductListImpressionProduct product1 = new ProductListImpressionProduct(
+                product.getIdString(),
+                product.getProductName(),
+                null,
+                product.getCategory(),
+                product.getVariants().toString(),
+                product.getPriceInt() + 0.0,
+                null,
+                PRODUCT_INDEX,
+                getFrom(product),
+                getFrom(product),
+                null,
+                null
+        );
+        products.add(product1);
+
+        Bundle bundle = ProductListImpressionBundler.getBundle(
+                getFrom(product),
+                products,
+                null,
+                ProductListImpressionBundler.KEY,
+                Category.CHAT_DETAIL + devConst,
+                Action.VIEW_PRODUCT_PREVIEW + devConst,
+                null,
+                null
+        );
+        IrisAnalytics.getInstance(context).saveEvent(bundle);
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+                ProductListImpressionBundler.KEY, bundle
+        );
+    }
+
+    private String getFrom(ProductAttachmentViewModel product) {
+        String blastId = product.getStringBlastId();
+        if (!sourcePage.isEmpty() && sourcePage.equals(ApplinkConst.Chat.SOURCE_CHAT_SEARCH)) {
+            return "/chat - search chat";
+        } else {
+            return "/" + getField(blastId);
+        }
+    }
 
     public void trackProductAttachmentClicked() {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
@@ -561,6 +617,16 @@ public class TopChatAnalytics {
                 Category.CHAT_DETAIL,
                 Action.CLICK_OP_ORDER_HISTORY,
                 Label.BUYER
+        );
+    }
+
+    // #OP9
+    public void eventViewOrderProgress(@NotNull ChatOrderProgress chatOrder) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                Name.VIEW_CHAT_DETAIL,
+                Category.CHAT_DETAIL,
+                Action.VIEW_ORDER_PROGRESS_WIDGET,
+                "buyer - " + chatOrder.getStatus()
         );
     }
 }

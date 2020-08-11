@@ -14,13 +14,6 @@ class DynamicProductDetailAdapter(
         val listener: DynamicProductDetailListener
 ) : BaseListAdapter<DynamicPdpDataModel, DynamicProductDetailAdapterFactoryImpl>(adapterTypeFactory) {
 
-    fun notifySnapshot(snapshotData: ProductSnapshotDataModel?) {
-        snapshotData?.let {
-            val indexOfSnapshot = list.indexOf(it)
-            notifyItemChanged(indexOfSnapshot)
-        }
-    }
-
     fun notifySnapshotWithPayloads(snapshotData: ProductSnapshotDataModel?, payload: Int? = null) {
         snapshotData?.let {
             val indexOfSnapshot = list.indexOf(it)
@@ -28,6 +21,28 @@ class DynamicProductDetailAdapter(
                 notifyItemChanged(indexOfSnapshot, payload)
             } else {
                 notifyItemChanged(indexOfSnapshot)
+            }
+        }
+    }
+
+    fun notifyBasicContentWithPayloads(contentData: ProductContentDataModel?, payload: Int? = null) {
+        contentData?.let {
+            val indexOfContent = list.indexOf(it)
+            if (payload != null) {
+                notifyItemChanged(indexOfContent, payload)
+            } else {
+                notifyItemChanged(indexOfContent)
+            }
+        }
+    }
+
+    fun notifyMediaWithPayload(contentData: ProductMediaDataModel?, payload: Int? = null) {
+        contentData?.let {
+            val indexOfMedia = list.indexOf(it)
+            if (payload != null) {
+                notifyItemChanged(indexOfMedia, payload)
+            } else {
+                notifyItemChanged(indexOfMedia)
             }
         }
     }
@@ -77,25 +92,7 @@ class DynamicProductDetailAdapter(
         }
     }
 
-    fun removeDiscussionSection(data: ProductDiscussionDataModel?) {
-        data?.let {
-            clearElement(it)
-        }
-    }
-
-    fun removeGeneralInfo(data: ProductGeneralInfoDataModel?) {
-        data?.let {
-            clearElement(it)
-        }
-    }
-
-    fun removeMostHelpfulReviewSection(data: ProductMostHelpfulReviewDataModel?) {
-        data?.let {
-            clearElement(it)
-        }
-    }
-
-    fun removeMerchantVoucherSection(data: ProductMerchantVoucherDataModel?) {
+    fun <T : DynamicPdpDataModel> removeComponentSection(data: T?) {
         data?.let {
             clearElement(it)
         }
@@ -106,6 +103,14 @@ class DynamicProductDetailAdapter(
             list.indexOf(data)
         } else {
             0
+        }
+    }
+
+    fun getShopInfoPosition(data: ProductShopInfoDataModel?): Int {
+        return if (data != null) {
+            list.indexOf(data)
+        } else {
+            -1
         }
     }
 
@@ -123,7 +128,7 @@ class DynamicProductDetailAdapter(
     }
 
     fun notifyNotifyMe(notifyMeData: ProductNotifyMeDataModel?, payload: Int?) {
-        notifyMeData?.let{
+        notifyMeData?.let {
             val indexOfNotifyMe = list.indexOf(notifyMeData)
             if (payload != null) {
                 notifyItemChanged(indexOfNotifyMe, payload)

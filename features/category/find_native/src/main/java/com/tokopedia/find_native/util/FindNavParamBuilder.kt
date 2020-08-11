@@ -3,6 +3,7 @@ package com.tokopedia.find_native.util
 import com.tokopedia.common_category.model.filter.DAFilterQueryType
 import com.tokopedia.common_category.util.ParamMapToUrl
 import com.tokopedia.usecase.RequestParams
+import javax.inject.Inject
 
 private const val KEY_START = "start"
 private const val KEY_DEVICE = "device"
@@ -18,14 +19,13 @@ private const val KEY_FILTER = "filter"
 private const val KEY_KEYWORD = "keyword"
 private const val KEY_DIRECTORY = "directory"
 private const val KEY_QUICK_FILTER = "quick_filter"
+private const val VALUE_SAFE_SEARCH = "false"
 
-
-class FindNavParamBuilder {
-
+class FindNavParamBuilder @Inject constructor() {
 
     private fun prepareProductListParams(productKey: String, start: Int, rows: Int, uniqueId: String, sortParam: HashMap<String, String>, filterParam: HashMap<String, String>): Map<String, Any> {
         val queryMap = HashMap<String, Any>()
-        queryMap[KEY_SAFE_SEARCH] = "false"
+        queryMap[KEY_SAFE_SEARCH] = VALUE_SAFE_SEARCH
         queryMap[KEY_SOURCE] = KEY_SOURCE_VALUE
         if (filterParam.isNotEmpty()) {
             queryMap.putAll(filterParam)

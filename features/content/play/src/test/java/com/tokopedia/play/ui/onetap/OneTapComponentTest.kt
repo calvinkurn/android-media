@@ -6,6 +6,8 @@ import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.helper.TestCoroutineDispatchersProvider
 import com.tokopedia.play.model.ModelBuilder
 import com.tokopedia.play.view.event.ScreenStateEvent
+import com.tokopedia.play.view.type.ScreenOrientation
+import com.tokopedia.play.view.type.VideoOrientation
 import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.mockk
@@ -49,10 +51,40 @@ class OneTapComponentTest {
     }
 
     @Test
-    fun `when one tap is called, then one tap should shown`() = runBlockingTest(testDispatcher) {
-        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.ShowOneTapOnboarding)
+    fun `given orientation portrait and video vertical, when one tap is called, then one tap should shown`() = runBlockingTest(testDispatcher) {
+        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.ShowOneTapOnboarding(
+                modelBuilder.buildStateHelperUiModel(
+                        videoOrientation = VideoOrientation.Vertical,
+                        screenOrientation = ScreenOrientation.Portrait
+                )
+        ))
 
         verify { component.uiView.showAnimated() }
+        confirmVerified(component.uiView)
+    }
+
+    @Test
+    fun `given orientation portrait and video horizontal, when one tap is called, then one tap should shown`() = runBlockingTest(testDispatcher) {
+        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.ShowOneTapOnboarding(
+                modelBuilder.buildStateHelperUiModel(
+                        videoOrientation = VideoOrientation.Horizontal(16, 9),
+                        screenOrientation = ScreenOrientation.Portrait
+                )
+        ))
+
+        verify(exactly = 0) { component.uiView.showAnimated() }
+        confirmVerified(component.uiView)
+    }
+
+    @Test
+    fun `given orientation landscape, when one tap is called, then one tap should shown`() = runBlockingTest(testDispatcher) {
+        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.ShowOneTapOnboarding(
+                modelBuilder.buildStateHelperUiModel(
+                        screenOrientation = ScreenOrientation.Landscape
+                )
+        ))
+
+        verify(exactly = 0) { component.uiView.showAnimated() }
         confirmVerified(component.uiView)
     }
 
@@ -74,7 +106,7 @@ class OneTapComponentTest {
         confirmVerified(component.uiView)
     }
 
-    class OneTapComponentMock(container: ViewGroup, bus: EventBusFactory, coroutineScope: CoroutineScope) : OneTapComponent(container, bus, coroutineScope, TestCoroutineDispatchersProvider) {
+    class OneTapComponentMock(container: ViewGroup, bus: EventBusFactory, scope: CoroutineScope) : OneTapComponent(container, bus, scope, TestCoroutineDispatchersProvider) {
         override fun initView(container: ViewGroup): OneTapView {
             return mockk(relaxed = true)
         }

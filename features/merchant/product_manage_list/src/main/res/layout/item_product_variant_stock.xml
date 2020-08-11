@@ -45,6 +45,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/product_manage_quick_edit_stock_total_stock"
+        android:textColor="@color/Neutral_N700_68"
         android:layout_marginTop="@dimen/spacing_lvl6"
         app:typographyType="body_3"
         app:typographyWeight="reguler"
@@ -52,6 +53,18 @@
         app:layout_constraintRight_toLeftOf="@id/quantityEditorStock"
         app:layout_constraintLeft_toLeftOf="@id/leftGuideline"
         app:layout_constraintHorizontal_chainStyle="spread_inside" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/textTotalStockHint"
+        android:layout_width="172dp"
+        android:layout_height="wrap_content"
+        android:text="@string/power_merchant_variant_stock_description"
+        android:textColor="@color/pm_light_grey_color"
+        android:visibility="gone"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        app:layout_constraintTop_toBottomOf="@id/textTotalStockLabel"
+        app:layout_constraintLeft_toLeftOf="@id/leftGuideline" />
 
     <com.tokopedia.unifycomponents.QuantityEditorUnify
         android:id="@+id/quantityEditorStock"
@@ -67,7 +80,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_lvl1"
         android:layout_marginTop="@dimen/spacing_lvl4"
-        app:layout_constraintTop_toBottomOf="@id/textTotalStockLabel"/>
+        app:layout_constraintTop_toBottomOf="@id/textTotalStockHint"/>
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/leftGuideline"

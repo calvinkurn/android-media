@@ -1,5 +1,6 @@
 package com.tokopedia.utils.image
 
+import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
@@ -99,7 +100,11 @@ object ImageUtils {
     }
 
     fun loadImageWithoutPlaceholderAndError(imageview: ImageView, url: String) {
-        if (imageview.context != null) {
+        val context = imageview.context
+        if (context != null) {
+            if (context is Activity && (context.isFinishing)) {
+                return
+            }
             Glide.with(imageview.context)
                     .load(url)
                     .dontAnimate()
@@ -196,7 +201,8 @@ object ImageUtils {
                     FIT_CENTER -> fitCenter()
                     CENTER_CROP -> centerCrop()
                     CENTER_INSIDE -> centerInside()
-                    else -> { }
+                    else -> {
+                    }
                 }
 
                 into(object : CustomTarget<Drawable>() {
@@ -229,5 +235,10 @@ object ImageUtils {
         } else {
             imageView.setImageDrawable(drawable)
         }
+    }
+
+    interface ImageLoaderStateListener {
+        fun successLoad()
+        fun failedLoad()
     }
 }

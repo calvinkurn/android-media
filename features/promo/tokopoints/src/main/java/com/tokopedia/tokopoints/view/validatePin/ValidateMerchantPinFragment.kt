@@ -26,7 +26,7 @@ import com.tokopedia.tokopoints.view.util.ErrorMessage
 import com.tokopedia.tokopoints.view.util.Success
 import javax.inject.Inject
 
-class ValidateMerchantPinFragment : BaseDaggerFragment(), ValidateMerchantPinContract.View, View.OnClickListener {
+class ValidateMerchantPinFragment : BaseDaggerFragment(), ValidateMerchantPinContract.View {
     @Inject
     lateinit var factory: ViewModelFactory
 
@@ -59,7 +59,7 @@ class ValidateMerchantPinFragment : BaseDaggerFragment(), ValidateMerchantPinCon
             override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
                 if (charSequence.length == CommonConstant.PIN_COUNT) {
                     mViewModel.swipeMyCoupon(arguments!!.getString(CommonConstant.EXTRA_COUPON_ID)
-                            ?: "", mEditPin?.pinTextField.toString())
+                            ?: "", charSequence.toString())
                 }
             }
 
@@ -81,17 +81,6 @@ class ValidateMerchantPinFragment : BaseDaggerFragment(), ValidateMerchantPinCon
             }
         }
     })
-
-    override fun onClick(view: View) {
-        if (view.id == R.id.button_send) {
-            if (arguments == null || activity == null) {
-                return
-            }
-            KeyboardHandler.hideSoftKeyboard(activity)
-            mViewModel.swipeMyCoupon(arguments!!.getString(CommonConstant.EXTRA_COUPON_ID)
-                    ?: "", mEditPin!!.pinTextField.toString())
-        }
-    }
 
     override fun initInjector() {
         DaggerTokopointBundleComponent.builder()

@@ -1,6 +1,7 @@
 package com.tokopedia.topads.dashboard.view.fragment
 
 import android.app.Activity
+import android.content.ComponentName
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,10 +11,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.applink.AppUtil
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTION_ACTIVATE
@@ -21,6 +25,8 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTI
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.EDIT_GROUP_REQUEST_CODE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.EMPTY_SEARCH_VIEW
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.GROUP_UPDATED
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.SELLER_EDIT_FORM_PATH
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.SELLER_PACKAGENAME
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TOASTER_DURATION
 import com.tokopedia.topads.dashboard.data.model.CountDataItem
 import com.tokopedia.topads.dashboard.data.model.groupitem.GetTopadsDashboardGroupStatistics
@@ -49,6 +55,7 @@ import javax.inject.Inject
  * Created by Pika on 2/6/20.
  */
 
+private const val CLICK_GROUP_TITLE = "click - group title"
 class TopAdsDashGroupFragment : BaseDaggerFragment() {
 
     private lateinit var adapter: GroupItemsListAdapter
@@ -93,19 +100,31 @@ class TopAdsDashGroupFragment : BaseDaggerFragment() {
     }
 
     private fun editGroup(groupId: Int, groupName: String) {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_EDIT_ADS)?.apply {
-            putExtra(TopAdsDashboardConstant.TAB_POSITION, 2)
-            putExtra(TopAdsDashboardConstant.GROUPID, groupId.toString())
-            putExtra(TopAdsDashboardConstant.GROUPNAME, groupName)
+        if (AppUtil.isSellerInstalled(context)) {
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_EDIT_ADS)?.apply {
+                putExtra(TopAdsDashboardConstant.TAB_POSITION, 2)
+                putExtra(TopAdsDashboardConstant.GROUPID, groupId.toString())
+                putExtra(TopAdsDashboardConstant.GROUPNAME, groupName)
+                component = ComponentName(SELLER_PACKAGENAME, SELLER_EDIT_FORM_PATH)
+            }
+            startActivityForResult(intent, EDIT_GROUP_REQUEST_CODE)
+
+        } else {
+            RouteManager.route(context, ApplinkConstInternalMechant.MERCHANT_REDIRECT_CREATE_SHOP)
         }
-        startActivityForResult(intent, EDIT_GROUP_REQUEST_CODE)
     }
 
-    private fun onGroupClicked(id: Int, priceSpent: String) {
-        val intent = Intent(context, TopAdsGroupDetailViewActivity::class.java)
-        intent.putExtra(TopAdsDashboardConstant.GROUP_ID, id)
-        intent.putExtra(TopAdsDashboardConstant.PRICE_SPEND, priceSpent)
-        startActivityForResult(intent, GROUP_UPDATED)
+    private fun onGroupClicked(id: Int, priceSpent: String, groupName: String) {
+        if (AppUtil.isSellerInstalled(context)) {
+            val intent = Intent(context, TopAdsGroupDetailViewActivity::class.java)
+            intent.putExtra(TopAdsDashboardConstant.GROUP_ID, id)
+            intent.putExtra(TopAdsDashboardConstant.PRICE_SPEND, priceSpent)
+            intent.component = ComponentName(SELLER_PACKAGENAME, TopAdsGroupDetailViewActivity::class.java.name)
+            startActivityForResult(intent, GROUP_UPDATED)
+        } else {
+            RouteManager.route(context, ApplinkConstInternalMechant.MERCHANT_REDIRECT_CREATE_SHOP)
+        }
+        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsDashboardEvent(CLICK_GROUP_TITLE, groupName)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -278,21 +297,21 @@ class TopAdsDashGroupFragment : BaseDaggerFragment() {
 
     private fun performAction(actionActivate: String) {
         if (actionActivate == TopAdsDashboardConstant.ACTION_DELETE) {
-            view.let {
                 view.let {
-                    Toaster.make(it!!, getString(R.string.topads_dash_with_grup_delete_toast), TOASTER_DURATION.toInt(), Toaster.TYPE_NORMAL, getString(R.string.topads_common_batal), View.OnClickListener {
+                    Toaster.make(it!!, getString(R.string.topads_dash_with_grup_delete_toast), TOASTER_DURATION.toInt(), Toaster.TYPE_NORMAL, getString(com.tokopedia.topads.common.R.string.topads_common_batal), View.OnClickListener {
                         deleteCancel = true
                     })
                 }
-            }
             val coroutineScope = CoroutineScope(Dispatchers.Main)
             coroutineScope.launch {
                 delay(TOASTER_DURATION)
-                if (!deleteCancel)
-                    topAdsDashboardPresenter.setGroupAction(::onSuccessAction, actionActivate, getAdIds(), resources)
-                deleteCancel = false
-                startSelectMode(false)
-                SingleDelGroupId = ""
+                if(activity != null && isAdded) {
+                    if (!deleteCancel)
+                        topAdsDashboardPresenter.setGroupAction(::onSuccessAction, actionActivate, getAdIds(), resources)
+                    deleteCancel = false
+                    startSelectMode(false)
+                    SingleDelGroupId = ""
+                }
             }
         } else {
             topAdsDashboardPresenter.setGroupAction(::onSuccessAction, actionActivate, getAdIds(), resources)

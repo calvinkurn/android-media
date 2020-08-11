@@ -21,4 +21,8 @@ interface CarouselProductCardListener {
     interface OnItemThreeDotsClickListener {
         fun onItemThreeDotsClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int)
     }
+
+    interface OnSeeMoreClickListener{
+        fun onSeeMoreClick()
+    }
 }

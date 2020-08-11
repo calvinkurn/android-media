@@ -23,6 +23,7 @@ object ChatListQueriesConstant {
     const val PARAM_FILTER_READ = "read"
     const val PARAM_FILTER_UNREAD = "unread"
     const val PARAM_FILTER_UNREPLIED = "unreplied"
+    const val PARAM_FILTER_TOPBOT = "topbot"
 
     const val PARAM_PAGE = "page"
     const val PARAM_PER_PAGE = "per_page"

@@ -14,7 +14,8 @@ data class ProductVariant(
     val price: Int,
     val sku: String,
     val stock: Int,
-    val pictures: List<Picture>
+    val pictures: List<Picture>,
+    val isAllStockEmpty: Boolean = false
 ): Visitable<ProductVariantAdapterFactory> {
 
     override fun type(typeFactory: ProductVariantAdapterFactory): Int {
@@ -25,7 +26,11 @@ data class ProductVariant(
         return status == ProductStatus.ACTIVE
     }
 
-    fun isNotActive(): Boolean {
-        return status != ProductStatus.ACTIVE
+    fun isInactive(): Boolean {
+        return status == ProductStatus.INACTIVE
+    }
+
+    fun isEmpty(): Boolean {
+        return stock == 0
     }
 }

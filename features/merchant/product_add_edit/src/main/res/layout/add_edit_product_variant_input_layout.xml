@@ -1,29 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/containerAddEditDescriptionFragmentInputVariant"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvVariantHeaderTitle"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/label_variant_title"
         android:textColor="@color/grey_796"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_4" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvVariantHeaderSubtitle"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_6"
         android:text="@string/label_variant_subtitle"
-        android:textColor="@color/grey_796"
+        android:textColor="@color/grey_560"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvVariantHeaderTitle"
-        app:typographyType="body_2"/>
+        app:typographyType="body_2" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvAddVariant"
@@ -34,6 +38,16 @@
         android:textColor="@color/unify_G500"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvVariantHeaderSubtitle"
+        app:typographyType="body_2" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvEditVariant"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/label_edit_variant"
+        android:textColor="@color/unify_G500"
+        app:layout_constraintEnd_toEndOf="@+id/tvVariantHeaderTitle"
+        app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_2" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -55,7 +69,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_tips_bulb"
+            app:srcCompat="@drawable/product_add_edit_ic_tips_bulb"
             android:layout_marginStart="@dimen/dp_8" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -77,5 +91,42 @@
             app:typographyType="body_3" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvVariantLevel1Type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/grey_560"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/layoutVariantTips"
+        app:typographyType="body_2" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvVariantLevel1Count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/grey_796"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvVariantLevel1Type"
+        app:typographyType="body_2" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvVariantLevel2Type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/grey_560"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvVariantLevel1Count"
+        app:typographyType="body_2" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvVariantLevel2Count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/grey_796"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvVariantLevel2Type"
+        app:typographyType="body_2" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -194,6 +194,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                     renderInitialData()
                 }
                 is Fail -> {
+                    hideLoading()
                     var throwable = it.throwable
                     if (throwable.message == NULL_PRODUCT_ERROR)
                         throwable = MessageErrorException(getString(R.string.selection_null_product_error))
@@ -209,7 +210,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                     if (hasFavoriteNumbers) {
                         updateFavoriteNumberInputField()
                     }
-                    adapter.hideLoading()
+                    hideLoading()
                 }
                 is Fail -> {
                     val previousOperatorId = operatorId
@@ -223,7 +224,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                         operator_select.setInputText(defaultOperatorName, false)
                         getProductList(menuId, operatorId)
                     } else {
-                        adapter.hideLoading()
+                        hideLoading()
                     }
                     NetworkErrorHelper.showRedSnackbar(activity, getString(R.string.selection_null_product_error))
                 }
@@ -271,6 +272,11 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         recharge_general_enquiry_button.isEnabled = false
         recharge_general_enquiry_button.setOnClickListener {
             enquire()
+        }
+
+        recharge_general_swipe_refresh_layout.setOnRefreshListener{
+            recharge_general_swipe_refresh_layout.isRefreshing = true
+            loadData()
         }
 
         loadData()
@@ -756,14 +762,16 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     private fun getOperatorCluster(menuId: Int) {
         viewModel.getOperatorCluster(
                 GraphqlHelper.loadRawString(resources, R.raw.query_catalog_operator_select_group),
-                viewModel.createOperatorClusterParams(menuId)
+                viewModel.createOperatorClusterParams(menuId),
+                recharge_general_swipe_refresh_layout.isRefreshing
         )
     }
 
     private fun getProductList(menuId: Int, operator: Int) {
         viewModel.getProductList(
                 GraphqlHelper.loadRawString(resources, com.tokopedia.common.topupbills.R.raw.query_catalog_product_input),
-                viewModel.createProductListParams(menuId, operator)
+                viewModel.createProductListParams(menuId, operator),
+                recharge_general_swipe_refresh_layout.isRefreshing
         )
     }
 
@@ -808,8 +816,8 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
     private fun validateEnquiry(): Boolean {
         return operatorId > 0 && selectedProduct != null
-                && inputDataKeys.isNotEmpty()
-                && inputData.keys.toList().sorted() == inputDataKeys.sorted()
+                && (inputDataKeys.isEmpty()
+                || inputData.keys.toList().sorted() == inputDataKeys.sorted())
     }
 
     private fun enquire() {
@@ -850,6 +858,10 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         renderFooter(data)
     }
 
+    override fun onLoadingMenuDetail(showLoading: Boolean) {
+        // do nothing
+    }
+
     override fun processFavoriteNumbers(data: TopupBillsFavNumber) {
         favoriteNumbers = data.favNumberList
         updateFavoriteNumberInputField()
@@ -872,7 +884,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     }
 
     override fun onMenuDetailError(error: Throwable) {
-        showGetListError(error)
+
     }
 
     override fun onCatalogPluginDataError(error: Throwable) {
@@ -1011,6 +1023,12 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
     fun onBackPressed() {
         rechargeGeneralAnalytics.eventClickBackButton(categoryName, operatorName)
+    }
+
+    private fun hideLoading() {
+        recharge_general_swipe_refresh_layout.isEnabled = true
+        recharge_general_swipe_refresh_layout.isRefreshing = false
+        adapter.hideLoading()
     }
 
     override fun getScreenName(): String {

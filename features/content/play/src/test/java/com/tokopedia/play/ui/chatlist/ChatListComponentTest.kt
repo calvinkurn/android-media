@@ -245,7 +245,7 @@ class ChatListComponentTest {
         val mockChat = modelBuilder.buildPlayChatUiModel()
 
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.IncomingChat(mockChat))
-        verify { component.uiView.showChat(mockChat) }
+        verify { component.uiView.showNewChat(mockChat) }
         confirmVerified(component.uiView)
     }
 
@@ -267,7 +267,7 @@ class ChatListComponentTest {
         confirmVerified(component.uiView)
     }
 
-    class ChatListComponentMock(container: ViewGroup, bus: EventBusFactory, coroutineScope: CoroutineScope) : ChatListComponent(container, bus, coroutineScope, TestCoroutineDispatchersProvider) {
+    class ChatListComponentMock(container: ViewGroup, bus: EventBusFactory, scope: CoroutineScope) : ChatListComponent(container, bus, scope, TestCoroutineDispatchersProvider) {
         override fun initView(container: ViewGroup): ChatListView {
             return mockk(relaxed = true)
         }

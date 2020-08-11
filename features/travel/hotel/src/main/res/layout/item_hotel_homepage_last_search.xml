@@ -4,10 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/item_hotel_last_search_container"
     android:layout_width="wrap_content"
-    android:layout_height="@dimen/hotel_last_search_height"
+    android:layout_height="wrap_content"
     android:layout_marginEnd="@dimen/layout_lvl1"
     android:layout_marginRight="@dimen/layout_lvl1"
-    android:minWidth="180dp"
+    android:minHeight="@dimen/hotel_last_search_height"
+    android:maxWidth="@dimen/hotel_last_search_width"
     android:padding="@dimen/layout_lvl2">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -25,16 +26,19 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tg_hotel_homepage_title_last_search"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/layout_lvl1"
             android:ellipsize="end"
+            android:maxLines="1"
+            android:singleLine="true"
             android:textColor="@color/Neutral_N700_96"
             app:layout_constraintLeft_toRightOf="@+id/iv_hotel_homepage_last_search"
+            app:layout_constraintRight_toRightOf="@+id/tg_hotel_homepage_subtitle_last_search"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="body_3"
             app:typographyWeight="bold"
-            tools:text="Jakarta" />
+            tools:text="Jakarta hotel deket jakarta hotel bagus panjang banget ini ceritanya cardnya" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tg_hotel_homepage_subtitle_last_search"
@@ -42,7 +46,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl2"
             android:ellipsize="end"
-            android:lines="2"
+            android:lines="1"
+            android:singleLine="true"
             android:textColor="@color/Neutral_N700_96"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/iv_hotel_homepage_last_search"
@@ -55,9 +60,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/hotel_14dp"
             android:textColor="@color/Neutral_N700_44"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tg_hotel_homepage_subtitle_last_search"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tg_hotel_homepage_subtitle_last_search"
             app:typographyType="body_3"
             tools:text="1 Kamar, 2 Tamu" />
 

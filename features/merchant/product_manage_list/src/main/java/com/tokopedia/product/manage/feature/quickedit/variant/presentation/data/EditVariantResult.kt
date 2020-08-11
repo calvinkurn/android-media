@@ -24,4 +24,8 @@ data class EditVariantResult(
             ProductStatus.INACTIVE
         }
     }
+
+    fun isAllStockEmpty(): Boolean {
+        return variants.all { it.isEmpty() }
+    }
 }

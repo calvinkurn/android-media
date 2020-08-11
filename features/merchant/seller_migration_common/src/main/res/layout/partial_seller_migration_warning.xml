@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:card_type="border"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/seller_migration_warning_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/layout_lvl1"
+            android:layout_marginStart="@dimen/layout_lvl1"
+            android:layout_marginLeft="@dimen/layout_lvl1"
+            app:srcCompat="@drawable/ic_seller_migration_warning"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/seller_migration_warning_title"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:text="@string/seller_migration_warning_title"
+            android:layout_marginStart="@dimen/layout_lvl1"
+            android:layout_marginLeft="@dimen/layout_lvl1"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler"
+            app:layout_constraintStart_toEndOf="@id/seller_migration_warning_icon"
+            app:layout_constraintTop_toTopOf="@id/seller_migration_warning_icon" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/sellerMigrationWarningDate"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/layout_lvl1"
+            app:typographyType="heading_5"
+            app:typographyWeight="bold"
+            app:layout_constraintStart_toStartOf="@id/seller_migration_warning_title"
+            app:layout_constraintTop_toBottomOf="@id/seller_migration_warning_title"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.tokopedia.unifycomponents.CardUnify>

@@ -71,7 +71,8 @@ class ShippingDurationOccBottomSheet : ShippingDurationAdapterListener {
         return false
     }
 
-    override fun onLogisticPromoClicked(data: LogisticPromoUiModel?) {
-
+    override fun onLogisticPromoClicked(data: LogisticPromoUiModel) {
+        listener.onLogisticPromoClicked(data)
+        bottomSheetUnify.dismiss()
     }
 }

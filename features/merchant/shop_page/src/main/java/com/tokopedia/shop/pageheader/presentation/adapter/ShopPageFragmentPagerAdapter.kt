@@ -60,7 +60,7 @@ internal class ShopPageFragmentPagerAdapter(
         }?.also { iconDrawable ->
             DrawableCompat.setTint(iconDrawable, ContextCompat.getColor(
                     this,
-                    if (isActive) R.color.Green_G500 else R.color.Neutral_N200
+                    if (isActive) R.color.color_green_shop_tab else R.color.color_gray_shop_tab
             ))
         }
     }
@@ -91,7 +91,7 @@ internal class ShopPageFragmentPagerAdapter(
     fun getFragmentPosition(classType: Class<*>): Int {
         var fragmentPosition = 0
         listShopPageTabModel.forEachIndexed { index, shopPageTabModel ->
-            if(shopPageTabModel.tabFragment::class == classType){
+            if(shopPageTabModel.tabFragment::class.java == classType){
                 fragmentPosition = index
             }
         }
@@ -100,7 +100,7 @@ internal class ShopPageFragmentPagerAdapter(
 
     fun isFragmentObjectExists(classType: Class<*>): Boolean {
         return listShopPageTabModel.firstOrNull {
-            it.tabFragment::class == classType
+            it.tabFragment::class.java == classType
         } != null
     }
 }

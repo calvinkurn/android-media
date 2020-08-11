@@ -10,6 +10,8 @@
         Otherwise, do not put "/"
     -->
     <string name="path_telco" translatable="false">/telco</string>
+    <string name="path_telco_prepaid" translatable="false">/telcopre</string>
+    <string name="path_telco_postpaid" translatable="false">/telcopost</string>
     <string name="path_telco_cart" translatable="false">/cart</string>
     <string name="path_home" translatable="false">/home</string>
     <string name="title_digital_subhomepage"><![CDATA[Top-up & Tagihan]]></string>
@@ -17,6 +19,7 @@
     <string name="path_general_template" translatable="false">/general</string>
     <string name="path_digital_product" translatable="false">/form</string>
     <string name="path_cc_native" translatable="false">/cc</string>
+    <string name="path_smart_bills" translatable="false">/bayarsekaligus</string>
 
     <string name="path_emoney" translatable="false">/smartcard/emoney</string>
     <string name="path_brizzi" translatable="false">/smartcard/brizzi</string>

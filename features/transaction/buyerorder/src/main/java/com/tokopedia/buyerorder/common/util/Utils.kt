@@ -20,7 +20,7 @@ object Utils {
     fun copyTextToClipBoard(label: String, textVoucherCode: String, context: Context) {
         val clipboard = context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
         val clip = ClipData.newPlainText(label, textVoucherCode)
-        clipboard.primaryClip = clip
+        clipboard.setPrimaryClip(clip)
     }
     @JvmStatic
     fun vibrate(context: Context) {

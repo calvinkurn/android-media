@@ -14,10 +14,13 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.autocomplete.analytics.AutocompleteTrackingConstant.BUSINESS_UNIT;
 import static com.tokopedia.autocomplete.analytics.AutocompleteTrackingConstant.CLICK_CARI;
+import static com.tokopedia.autocomplete.analytics.AutocompleteTrackingConstant.CURRENT_SITE;
 import static com.tokopedia.autocomplete.analytics.AutocompleteTrackingConstant.LONG_CLICK;
 import static com.tokopedia.autocomplete.analytics.AutocompleteTrackingConstant.LONG_PRESS;
 import static com.tokopedia.autocomplete.analytics.AutocompleteTrackingConstant.PRODUCT_SEARCH;
+import static com.tokopedia.autocomplete.analytics.AutocompleteTrackingConstant.SCREEN_NAME;
 import static com.tokopedia.autocomplete.analytics.AutocompleteTrackingConstant.USER_ID;
 
 public class AutocompleteTracking {
@@ -51,7 +54,6 @@ public class AutocompleteTracking {
     public static final String EVENT_IMPRESSED_INITIAL_STATE_PROMO = "promoViewIris";
 
     public static final String EVENTCATEGORY_TOP_NAV = "top nav";
-    public static final String EVENT_CATEGORY_DIGITAL_TOP_NAV = "digital - top nav";
     public static final String EVENT_CATEGORY_INITIAL_STATE = "initial-state";
 
     public static final String CLICK_POPULAR_SEARCH = "click - popular search";
@@ -65,9 +67,12 @@ public class AutocompleteTracking {
     public static final String CLICK_SHOP_SUGGESTION = "click - shop autocomplete";
     public static final String CLICK_KEYWORD_SUGGESTION = "click - product autocomplete";
     public static final String EVENT_ACTION_CLICK_RECENT_SEARCH_AUTOCOMPLETE = "click - recent search autocomplete";
+    public static final String CLICK_RECENT_SHOP = "click - shop - recent search";
     public static final String EVENT_ACTION_IMPRESSED_RECENT_VIEW = "impression - recent view product";
     public static final String EVENT_ACTION_IMPRESSED_RECENT_SEARCH = "impression - recent search";
     public static final String EVENT_ACTION_IMPRESSED_POPULAR_SEARCH = "impression - popular search";
+    public static final String EVENT_ACTION_TOP_SHOP = "click - shop - carousel";
+    public static final String EVENT_ACTION_TOP_SHOP_SEE_MORE = "click - lihat toko lainnya - carousel";
 
     public static final String ECOMMERCE = "ecommerce";
     public static final String PRODUCT_CLICK = "productClick";
@@ -90,6 +95,10 @@ public class AutocompleteTracking {
     public static final String ACTION_CLICK_HOTLIST_SUGGESTION = "click - hotlist suggestion";
     public static final String CAMPAIGN_CODE = "campaignCode";
 
+    public static final String CURRENT_SITE_TKPD = "tokopediamarketplace";
+    public static final String BUSINESS_UNIT_SEARCH = "search";
+
+
     public static void eventClickPopularSearch(Context context, String label) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 EVENT_CLICK_SEARCH,
@@ -99,7 +108,7 @@ public class AutocompleteTracking {
         );
     }
 
-    public static void eventClickRecentSearch(Context context, String label) {
+    public static void eventClickRecentSearch(String label) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 EVENT_CLICK_SEARCH,
                 EVENTCATEGORY_TOP_NAV,
@@ -137,8 +146,8 @@ public class AutocompleteTracking {
 
     public static void eventClickCurated(String label, String campaignCode) {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
-                DataLayer.mapOf(EVENT, EVENT_CLICK_TOP_NAV,
-                        EVENT_CATEGORY, EVENT_CATEGORY_DIGITAL_TOP_NAV,
+                DataLayer.mapOf(EVENT, EVENT_CLICK_SEARCH_RESULT,
+                        EVENT_CATEGORY, EVENTCATEGORY_TOP_NAV + " - /",
                         EVENT_ACTION, CLICK_DIGITAL_PRODUCT_SUGGESTION,
                         EVENT_LABEL, label,
                         CAMPAIGN_CODE, campaignCode
@@ -210,6 +219,21 @@ public class AutocompleteTracking {
         );
     }
 
+    public static void eventClickRecentShop(String label, String userId) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+            DataLayer.mapOf(
+                    EVENT, EVENT_CLICK_TOP_NAV,
+                    EVENT_CATEGORY, EVENTCATEGORY_TOP_NAV + " - /",
+                    EVENT_ACTION, CLICK_RECENT_SHOP,
+                    EVENT_LABEL, label,
+                    SCREEN_NAME, "/",
+                    CURRENT_SITE, CURRENT_SITE_TKPD,
+                    USER_ID, userId,
+                    BUSINESS_UNIT, BUSINESS_UNIT_SEARCH
+            )
+        );
+    }
+
     public static void impressedRecentView(Iris iris, List<Object> list) {
         HashMap<String, Object> map = (HashMap<String, Object>) DataLayer.mapOf(
                 EVENT, EVENT_IMPRESSED_INITIAL_STATE_PRODUCT,
@@ -257,5 +281,27 @@ public class AutocompleteTracking {
                 )
         );
         iris.saveEvent(map);
+    }
+
+    public static void eventClickTopShop(String label) {
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(
+                        EVENT, EVENT_CLICK_TOP_NAV,
+                        EVENT_CATEGORY, EVENTCATEGORY_TOP_NAV + " - /",
+                        EVENT_ACTION, EVENT_ACTION_TOP_SHOP,
+                        EVENT_LABEL, label
+                )
+        );
+    }
+
+    public static void eventClickTopShopSeeMore(String label) {
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(
+                        EVENT, EVENT_CLICK_TOP_NAV,
+                        EVENT_CATEGORY, EVENTCATEGORY_TOP_NAV + " - /",
+                        EVENT_ACTION, EVENT_ACTION_TOP_SHOP_SEE_MORE,
+                        EVENT_LABEL, label
+                )
+        );
     }
 }

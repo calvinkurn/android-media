@@ -93,7 +93,8 @@ class WebSocketViewModel
                 responseData?.from.toString(),
                 0,
                 responseData?.fromRole.toString(),
-                responseData?.imageUri.toString()
+                responseData?.imageUri.toString(),
+                responseData.isAutoReply
         )
         return IncomingChatWebSocketModel(msgId, message, time, contact)
     }

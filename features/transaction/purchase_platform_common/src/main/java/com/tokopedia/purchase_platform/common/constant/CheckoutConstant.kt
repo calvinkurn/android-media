@@ -1,7 +1,5 @@
 package com.tokopedia.purchase_platform.common.constant
 
-import androidx.arch.core.executor.DefaultTaskExecutor
-
 /**
  * Created by Irfan Khoirul on 2019-09-24.
  */
@@ -23,6 +21,21 @@ class CheckoutConstant {
         const val PARAM_DEFAULT = "default"
         const val PARAM_CHECKOUT = "checkout"
         const val PARAM_OCC = "occ"
+        const val RESULT_CODE_FORCE_RESET_CART_FROM_SINGLE_SHIPMENT = 2
+        const val RESULT_CODE_COUPON_STATE_CHANGED = 735
+        const val KERO_TOKEN = "token"
+
+        const val EXTRA_DISTRICT_RECOMMENDATION_TOKEN = "DISTRICT_RECOMMENDATION_TOKEN"
+        const val EXTRA_CURRENT_ADDRESS = "CURRENT_ADDRESS"
+        const val EXTRA_MULTIPLE_ADDRESS_CHILD_INDEX = "EXTRA_MULTIPLE_ADDRESS_CHILD_INDEX"
+        const val EXTRA_MULTIPLE_ADDRESS_DATA_LIST = "EXTRA_MULTIPLE_ADDRESS_DATA_LIST"
+        const val EXTRA_MULTIPLE_ADDRESS_PARENT_INDEX = "EXTRA_MULTIPLE_ADDRESS_PARENT_INDEX"
+        const val TYPE_REQUEST_ADD_SHIPMENT_DEFAULT_ADDRESS = 1
+        const val TYPE_REQUEST_MULTIPLE_ADDRESS_ADD_SHIPMENT = 3
+        const val TYPE_REQUEST_MULTIPLE_ADDRESS_CHANGE_ADDRESS = 2
+        const val TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST = 0
+        const val TYPE_REQUEST_EDIT_ADDRESS_FOR_TRADE_IN = 4
+        const val RESULT_CODE_ACTION_ADD_DEFAULT_ADDRESS = 102
     }
 
 }

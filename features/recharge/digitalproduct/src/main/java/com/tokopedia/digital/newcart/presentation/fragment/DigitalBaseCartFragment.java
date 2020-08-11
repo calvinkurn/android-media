@@ -270,6 +270,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     public void onDisablePromoDiscount() {
         digitalAnalytics.eventclickCancelApplyCoupon(getCategoryName(), promoData.getPromoCode());
         promoData.setPromoCode("");
+        disableVoucherCheckoutDiscount();
     }
 
     private String getCategoryName() {
@@ -286,7 +287,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
         String promoCode = promoData.getPromoCode();
         if (!promoCode.isEmpty()) {
             int requestCode;
-            if (promoData.getTypePromo() == PromoData.CREATOR.getTYPE_VOUCHER()) {
+            if (promoData.getTypePromo() == PromoData.TYPE_VOUCHER) {
                 intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalPromo.PROMO_LIST_DIGITAL);
                 intent.putExtra("EXTRA_PROMO_CODE", promoCode);
                 intent.putExtra("EXTRA_COUPON_ACTIVE",
@@ -326,6 +327,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
         if ((requestCode == ConstantKt.getREQUEST_CODE_PROMO_LIST() || requestCode == ConstantKt.getREQUEST_CODE_PROMO_DETAIL()) && resultCode == Activity.RESULT_OK) {
             if (data.hasExtra(TickerCheckoutUtilKt.getEXTRA_PROMO_DATA())) {
                 promoData = data.getParcelableExtra(TickerCheckoutUtilKt.getEXTRA_PROMO_DATA());
+                disableVoucherCheckoutDiscount();
                 // Check between apply promo code or cancel promo from promo detail
                 switch (promoData.getState()) {
                     case EMPTY: {
@@ -395,7 +397,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     @Override
     public void showToastMessage(String message) {
         View view = getView();
-        if (view != null) Toaster.INSTANCE.make(getView(), message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
+        if (view != null) Toaster.make(getView(), message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
                 getString(com.tokopedia.abstraction.R.string.close), v->{});
         else Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }

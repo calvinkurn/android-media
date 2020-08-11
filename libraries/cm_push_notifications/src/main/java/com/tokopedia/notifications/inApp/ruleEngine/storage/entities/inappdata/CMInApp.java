@@ -16,92 +16,99 @@ import com.google.gson.annotations.SerializedName;
  */
 @Entity(tableName = "inapp_data")
 public class CMInApp {
-    @NonNull
+
+    @Expose
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
-    @Expose
     @SerializedName("notificationId")
     public long id;
 
-//    @Ignore
-    @ColumnInfo(name = "campaignId")
     @Expose
+    @ColumnInfo(name = "campaignId")
     @SerializedName("campaignId")
     public String campaignId;
 
-    @ColumnInfo(name = "freq")
     @Expose
+    @ColumnInfo(name = "freq")
     @SerializedName(value = "freq")
     public int freq = 1;
 
+    @Expose
     @ColumnInfo(name = "notificationType")
     @SerializedName("notificationType")
-    @Expose
-    public String type;
+    public String type = "";
 
-//    @Ignore
+    @Expose
     @ColumnInfo(name = "campaignUserToken")
     @SerializedName("campaignUserToken")
-    @Expose
-    public String campaignUserToken;
+    public String campaignUserToken = "";
 
-//    @Ignore
+    @Expose
     @ColumnInfo(name = "parentId")
     @SerializedName("parentId")
-    @Expose
-    public String parentId;
+    public String parentId = "";
 
+    @Expose
     @ColumnInfo(name = "e")
     @SerializedName("e")
-    @Expose
-    public long expiry;
+    public long expiry = 0;
 
     @Expose
     @ColumnInfo(name = "inAnim")
     @SerializedName("inAnim")
-    public String inAnim;
+    public String inAnim = "";
 
+    @Expose
     @ColumnInfo(name = "s")
     @SerializedName("s")
+    public String screen = "*";
+
     @Expose
-    public String screen;
     @SerializedName("d")
     @ColumnInfo(name = "d")
+    public boolean cancelable = false;
+
     @Expose
-    public boolean cancelable;
     @SerializedName("ui")
     @Embedded(prefix = "ui_")
-    @Expose
-    public CMLayout cmLayout;
+    public CMLayout cmLayout = new CMLayout();
+
     @Expose
     @ColumnInfo(name = "st")
     @SerializedName(value = "st")
-    public long startTime = 0l;
+    public long startTime = 0;
+
     @Expose
     @SerializedName(value = "et")
     @ColumnInfo(name = "et")
-    public long endTime;
+    public long endTime = 0;
+
     @Expose
     @SerializedName(value = "ct")
     @ColumnInfo(name = "ct")
-    public long currentTime = 0l;
+    public long currentTime = 0;
+
     @Expose
     @SerializedName(value = "buf_time")
     @ColumnInfo(name = "buf_time")
-    public long bufTime = 0l;
+    public long bufTime = 0;
+
     @ColumnInfo(name = "shown")
     public boolean isShown = false;
+
     @ColumnInfo(name = "last_shown")
-    public long lastShownTime;
+    public long lastShownTime = 0;
 
     @ColumnInfo(name = "is_test")
-    private boolean isTest;
+    private boolean isTest = false;
 
+    @ColumnInfo(name = "perst_on")
+    private boolean persistentToggle = true;
 
+    @ColumnInfo(name = "is_interacted")
+    private boolean isInteracted = false;
 
-    public CMInApp(){
-
-    }
+    public CMInApp(){}
 
     public String getType() {
         return type;
@@ -142,14 +149,6 @@ public class CMInApp {
     public void setCmLayout(CMLayout cmLayout) {
         this.cmLayout = cmLayout;
     }
-/*
-    public View getCmInAppView() {
-        return cmInAppView;
-    }
-
-    public void setCmInAppView(View cmInAppView) {
-        this.cmInAppView = cmInAppView;
-    }*/
 
     public long getId() {
         return id;
@@ -254,5 +253,21 @@ public class CMInApp {
 
     public void setTest(boolean test) {
         isTest = test;
+    }
+
+    public boolean isPersistentToggle() {
+        return persistentToggle;
+    }
+
+    public void setPersistentToggle(boolean persistentToggle) {
+        this.persistentToggle = persistentToggle;
+    }
+
+    public boolean isInteracted() {
+        return isInteracted;
+    }
+
+    public void setInteracted(boolean interacted) {
+        isInteracted = interacted;
     }
 }

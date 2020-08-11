@@ -15,6 +15,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
@@ -28,27 +29,36 @@ import com.tokopedia.topads.auto.data.network.param.AutoAdsParam
 import com.tokopedia.topads.auto.di.AutoAdsComponent
 import com.tokopedia.topads.auto.di.DaggerAutoAdsComponent
 import com.tokopedia.topads.auto.di.module.AutoAdsQueryModule
-import com.tokopedia.topads.auto.internal.AutoAdsStatus
 import com.tokopedia.topads.auto.internal.NonDeliveryReason
 import com.tokopedia.topads.auto.view.activity.EditBudgetAutoAdsActivity
 import com.tokopedia.topads.auto.view.factory.AutoAdsWidgetViewModelFactory
 import com.tokopedia.topads.auto.view.fragment.AutoAdsBaseBudgetFragment
 import com.tokopedia.topads.auto.view.sheet.ManualAdsConfirmationSheet
 import com.tokopedia.topads.auto.view.viewmodel.AutoAdsWidgetViewModel
+import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
+import com.tokopedia.topads.common.data.internal.AutoAdsStatus
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.topads_auto_edit_status_active_widget.view.*
+
 import javax.inject.Inject
 
 /**
  * Created by Pika on 16/5/20.
  */
-class AutoAdsWidget(context: Context, attrs: AttributeSet) : CardUnify(context, attrs) {
 
+private const val CLICK_TAMBHA_STOK = "click - tambah stok"
+private const val CLICK_TOP_UP_KREDIT = "click - top up kredit"
+private const val CLICK_CEK_STATUS = "click - cek status"
+private const val CLICK_TINGA_KATLAN = "click - tingkatkan"
+private const val CLICK_SETTING_ICON = "click - settings icon"
+
+class AutoAdsWidget(context: Context, attrs: AttributeSet?) : CardUnify(context, attrs) {
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
     @Inject
     lateinit var factory: AutoAdsWidgetViewModelFactory
     private var baseLayout: ConstraintLayout? = null
@@ -119,10 +129,16 @@ class AutoAdsWidget(context: Context, attrs: AttributeSet) : CardUnify(context, 
                 this,
                 false
         )
+        getDrwableforNotDeliverd(view)
         baseLayout?.removeAllViews()
         baseLayout?.addView(view)
         setSpannable(MERCHANT_SETTING, view, merchantClosed)
         setSwitchAction(view)
+    }
+
+    private fun getDrwableforNotDeliverd(view: View) {
+        val imgBg = view.findViewById<ConstraintLayout>(R.id.auto_ad_status_image)
+        imgBg.background = AppCompatResources.getDrawable(context, R.drawable.topads_orange_bg)
     }
 
     private fun setOutOfBudgetView() {
@@ -133,6 +149,7 @@ class AutoAdsWidget(context: Context, attrs: AttributeSet) : CardUnify(context, 
         )
         baseLayout?.removeAllViews()
         baseLayout?.addView(view)
+        getDrwableforNotDeliverd(view)
         val desc = view.findViewById<TextView>(R.id.status_desc)
         if (fromEdit == 1) {
             desc.text = resources.getString(R.string.autoads_outofbudget_desc_edit)
@@ -149,6 +166,7 @@ class AutoAdsWidget(context: Context, attrs: AttributeSet) : CardUnify(context, 
                 this,
                 false
         )
+        getDrwableforNotDeliverd(view)
         baseLayout?.removeAllViews()
         baseLayout?.addView(view)
         setSpannable(MANAGE_PRODUCT, view, outOfStock)
@@ -160,21 +178,33 @@ class AutoAdsWidget(context: Context, attrs: AttributeSet) : CardUnify(context, 
         val spannableText = SpannableString(moreInfo)
         val startIndex = 0
         val endIndex = spannableText.length
-        spannableText.setSpan(ForegroundColorSpan(ContextCompat.getColor(context, R.color.Green_G500)), startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        spannableText.setSpan(ForegroundColorSpan(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Green_G500)), startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         val clickableSpan = object : ClickableSpan() {
             override fun onClick(view: View) {
                 when (status) {
-                    outOfCredit -> RouteManager.route(context, TOPADS_BUY_CREDIT)
-                    outOfStock -> RouteManager.route(context, MANAGE_PRODUCT_LINK)
-                    outOfDailyBudget -> startEditActivity()
-                    merchantClosed -> RouteManager.route(context, MERCHANT_SETTING_LINK)
+                    outOfCredit -> {
+                        RouteManager.route(context, TOPADS_BUY_CREDIT)
+                        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsDashboardEvent(CLICK_TOP_UP_KREDIT, "")
+                    }
+                    outOfStock -> {
+                        RouteManager.route(context, MANAGE_PRODUCT_LINK)
+                        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsDashboardEvent(CLICK_TAMBHA_STOK, "")
+                    }
+                    outOfDailyBudget -> {
+                        startEditActivity()
+                        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsDashboardEvent(CLICK_TINGA_KATLAN, "")
+                    }
+                    merchantClosed -> {
+                        RouteManager.route(context, MERCHANT_SETTING_LINK)
+                        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsDashboardEvent(CLICK_CEK_STATUS, "")
+                    }
                 }
             }
 
             override fun updateDrawState(ds: TextPaint) {
                 super.updateDrawState(ds)
                 ds.isUnderlineText = false
-                ds.color = ContextCompat.getColor(context, R.color.Green_G500)
+                ds.color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Green_G500)
             }
         }
         spannableText.setSpan(clickableSpan, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
@@ -198,6 +228,7 @@ class AutoAdsWidget(context: Context, attrs: AttributeSet) : CardUnify(context, 
             switch.visibility = View.INVISIBLE
             setting.setOnClickListener {
                 startEditActivity()
+                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsDashboardEvent(CLICK_SETTING_ICON, "")
             }
         }
     }
@@ -210,6 +241,7 @@ class AutoAdsWidget(context: Context, attrs: AttributeSet) : CardUnify(context, 
         )
         baseLayout?.removeAllViews()
         baseLayout?.addView(view)
+        getDrwableforNotDeliverd(view)
         val desc = view.findViewById<TextView>(R.id.status_desc)
         view.let {
             if (fromEdit == 1)
@@ -227,6 +259,8 @@ class AutoAdsWidget(context: Context, attrs: AttributeSet) : CardUnify(context, 
                 this,
                 false
         )
+        val imgBg = view.findViewById<ConstraintLayout>(R.id.auto_ad_status_image)
+        imgBg.background = AppCompatResources.getDrawable(context, R.drawable.topads_blue_bg)
         baseLayout?.removeAllViews()
         baseLayout?.addView(view)
     }
@@ -237,11 +271,14 @@ class AutoAdsWidget(context: Context, attrs: AttributeSet) : CardUnify(context, 
                 this,
                 false
         )
+        val imgBg = view.findViewById<ConstraintLayout>(R.id.auto_ad_status_image)
+        val drawable = AppCompatResources.getDrawable(context, R.drawable.topads_green_bg)
         baseLayout?.removeAllViews()
         baseLayout?.addView(view)
         view.let { it ->
+            imgBg.background = drawable
             it.progress_status1.text = "Rp $dailyUsage"
-            it.progress_status2.text = String.format(view.context.resources.getString(R.string.topads_dash_group_item_progress_status), currentBudget)
+            it.progress_status2.text = String.format(view.context.resources.getString(com.tokopedia.topads.common.R.string.topads_dash_group_item_progress_status), currentBudget)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 progress_bar.setProgress(dailyUsage, true)
             } else {
@@ -260,6 +297,7 @@ class AutoAdsWidget(context: Context, attrs: AttributeSet) : CardUnify(context, 
                 it.btn_switch.visibility = View.INVISIBLE
                 it.setting.setOnClickListener {
                     startEditActivity()
+                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsDashboardEvent(CLICK_SETTING_ICON, "")
                 }
             }
         }
@@ -286,10 +324,13 @@ class AutoAdsWidget(context: Context, attrs: AttributeSet) : CardUnify(context, 
     }
 
     private fun initView(context: Context) {
-        getComponent(context).inject(this)
-        View.inflate(context, R.layout.topads_autoads_edit_base_widget, this)
-        baseLayout = findViewById(R.id.base_layout)
-
+        try {
+            getComponent(context).inject(this)
+            View.inflate(context, R.layout.topads_autoads_edit_base_widget, this)
+            baseLayout = findViewById(R.id.base_layout)
+        }catch(e:Exception){
+            e.printStackTrace()
+        }
     }
 
     private fun getComponent(context: Context): AutoAdsComponent = DaggerAutoAdsComponent.builder()

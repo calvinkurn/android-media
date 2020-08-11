@@ -86,12 +86,12 @@ dependencies {
 
     // instrumentation test - disabled for now
 //    implementation 'com.android.support:multidex:1.0.3'
-//    androidTestImplementation 'androidx.test:runner:1.2.0'
+//    androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
 //    androidTestImplementation 'androidx.test:rules:1.2.0'
 //    androidTestImplementation rootProject.ext.playServicesDependencies.core
 //    androidTestImplementation rootProject.ext.firebase.core
 //    androidTestImplementation project(rootProject.ext.libraries.core_legacy)
-//    androidTestImplementation 'junit:junit:4.12'
+//    testImplementation rootProject.ext.testDependencies.junit
 //    androidTestImplementation project(rootProject.ext.libraries.commonNetwork)
 //    androidTestImplementation project(rootProject.ext.libraries.akamaiBotLib)
 //    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.network

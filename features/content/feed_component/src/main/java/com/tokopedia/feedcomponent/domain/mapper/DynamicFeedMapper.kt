@@ -156,13 +156,13 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                               template: Template) {
         val trackingRecommendationList = arrayListOf<TrackingRecommendationModel>()
         val trackingList = arrayListOf<TrackingViewModel>()
-         if (feed.content.cardRecommendation.items.isNotEmpty()) {
+        if (feed.content.cardRecommendation.items.isNotEmpty()) {
 
-             val topAdsShopList = feed.tracking.topads.filter {
-                 it.shop != null && it.shopClickUrl != null
-             } as MutableList
+            val topAdsShopList = feed.tracking.topads.filter {
+                it.shop != null && it.shopClickUrl != null
+            } as MutableList
 
-             feed.content.cardRecommendation.items.forEachIndexed { index, card ->
+            feed.content.cardRecommendation.items.forEachIndexed { index, card ->
                 trackingRecommendationList.add(TrackingRecommendationModel(
                         feed.type,
                         feed.activity,
@@ -350,7 +350,8 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
         return VideoViewModel(
                 media.id,
                 media.thumbnail,
-                media.videoList.getOrNull(0)?.url ?: ""
+                media.videoList.getOrNull(0)?.url ?: "",
+                redirectLink = media.appLink
         )
     }
 

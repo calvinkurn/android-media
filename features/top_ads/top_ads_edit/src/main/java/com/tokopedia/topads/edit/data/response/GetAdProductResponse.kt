@@ -1,8 +1,8 @@
 package com.tokopedia.topads.edit.data.response
 
-import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
 data class GetAdProductResponse(
 
@@ -15,6 +15,7 @@ data class GetAdProductResponse(
             val data: List<DataItem> = listOf()
 
     ) {
+        @Parcelize
         data class DataItem(
 
                 @field:SerializedName("itemID")
@@ -35,14 +36,8 @@ data class GetAdProductResponse(
                 @field:SerializedName("adDetailProduct")
                 val adDetailProduct: AdDetailProduct = AdDetailProduct()
         ) : Parcelable {
-            constructor(parcel: Parcel) : this(
-                    parcel.readInt(),
-                    parcel.readString(),
-                    parcel.readString(),
-                    parcel.readInt(),
-                    parcel.readInt(),
-                    parcel.readParcelable<AdDetailProduct>(AdDetailProduct::class.java.classLoader))
 
+            @Parcelize
             data class AdDetailProduct(
 
                     @field:SerializedName("productURI")
@@ -53,55 +48,8 @@ data class GetAdProductResponse(
 
                     @field:SerializedName("productName")
                     val productName: String = ""
-            ) : Parcelable {
-                constructor(parcel: Parcel) : this(
-                        parcel.readString(),
-                        parcel.readString(),
-                        parcel.readString()) {
-                }
+            ) : Parcelable
 
-                override fun writeToParcel(parcel: Parcel, flags: Int) {
-                    parcel.writeString(productImageURI)
-                    parcel.writeString(productName)
-                    parcel.writeString(productURI)
-                }
-
-                override fun describeContents(): Int {
-                    return 0
-                }
-
-                companion object CREATOR : Parcelable.Creator<AdDetailProduct> {
-                    override fun createFromParcel(parcel: Parcel): AdDetailProduct {
-                        return AdDetailProduct(parcel)
-                    }
-
-                    override fun newArray(size: Int): Array<AdDetailProduct?> {
-                        return arrayOfNulls(size)
-                    }
-                }
-            }
-
-            override fun writeToParcel(parcel: Parcel, flags: Int) {
-                parcel.writeInt(itemID)
-                parcel.writeString(adPriceBidFmt)
-                parcel.writeString(groupName)
-                parcel.writeInt(adID)
-                parcel.writeInt(groupID)
-            }
-
-            override fun describeContents(): Int {
-                return 0
-            }
-
-            companion object CREATOR : Parcelable.Creator<DataItem> {
-                override fun createFromParcel(parcel: Parcel): DataItem {
-                    return DataItem(parcel)
-                }
-
-                override fun newArray(size: Int): Array<DataItem?> {
-                    return arrayOfNulls(size)
-                }
-            }
         }
     }
 }

@@ -32,6 +32,8 @@ interface SellerHomeComponent {
 
     fun inject(sellerHomeActivity: SellerHomeActivity)
 
+    fun inject(sellerHomeActivity: com.tokopedia.sellerhome.view.oldactivity.SellerHomeActivity)
+
     fun inject(sellerHomeFragment: SellerHomeFragment)
 
     fun inject(containerFragment: ContainerFragment)

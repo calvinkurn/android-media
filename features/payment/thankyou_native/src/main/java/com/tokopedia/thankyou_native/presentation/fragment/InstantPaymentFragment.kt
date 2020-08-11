@@ -46,7 +46,7 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
         super.onCreate(savedInstanceState)
         arguments?.let {
             if (it.containsKey(ARG_THANK_PAGE_DATA)) {
-                thanksPageData = it.getParcelable(ARG_THANK_PAGE_DATA)
+                thanksPageData = it.getParcelable(ARG_THANK_PAGE_DATA)!!
             }
         }
     }
@@ -72,8 +72,23 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
 
 
     override fun bindThanksPageDataToUI(thanksPageData: ThanksPageData) {
-        tv_payment_success.text = getString(R.string.thank_instant_payment_successful)
-        tv_payment_success_check_order.text = getString(R.string.thank_instant_payment_check_order)
+        if (thanksPageData.thanksCustomization == null || thanksPageData.thanksCustomization.customTitle.isNullOrBlank()) {
+            tv_payment_success.text = getString(R.string.thank_instant_payment_successful)
+        } else {
+            tv_payment_success.text = thanksPageData.thanksCustomization.customTitle
+        }
+        if (thanksPageData.thanksCustomization == null || thanksPageData.thanksCustomization.customSubtitle.isNullOrBlank()) {
+            tv_payment_success_check_order.text = getString(R.string.thank_instant_payment_check_order)
+        } else {
+            tv_payment_success_check_order.text = thanksPageData.thanksCustomization.customSubtitle
+        }
+
+        if (thanksPageData.thanksCustomization == null || thanksPageData.thanksCustomization.customTitleOrderButton.isNullOrBlank()) {
+            btn_see_transaction_list.text = getString(R.string.thank_see_transaction_list)
+        } else {
+            btn_see_transaction_list.text = thanksPageData.thanksCustomization.customTitleOrderButton
+        }
+
         ImageLoader.LoadImage(iv_payment, thanksPageData.gatewayImage)
         if (thanksPageData.additionalInfo.maskedNumber.isNotBlank()) {
             tv_payment_method_name.text = thanksPageData.additionalInfo.maskedNumber.getMaskedNumberSubStringPayment()
@@ -84,7 +99,20 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
         } else
             tv_payment_method_name.text = thanksPageData.gatewayName
         tv_payment_amount.text = getString(R.string.thankyou_rp_without_space, thanksPageData.amountStr)
-        btn_see_transaction_list.setOnClickListener { gotoOrderList() }
+        btn_see_transaction_list.setOnClickListener {
+            if (thanksPageData.thanksCustomization == null || thanksPageData.thanksCustomization.customOrderUrlApp.isNullOrBlank()) {
+                gotoOrderList()
+            } else {
+                gotoOrderList(thanksPageData.thanksCustomization.customOrderUrlApp)
+            }
+        }
+        btnShopAgain.setOnClickListener {
+            if (thanksPageData.thanksCustomization == null || thanksPageData.thanksCustomization.customOrderUrlApp.isNullOrBlank()) {
+                gotoHomePage()
+            } else {
+                launchApplink(thanksPageData.thanksCustomization.customHomeUrlApp)
+            }
+        }
     }
 
     private fun observeViewModel() {

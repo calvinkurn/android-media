@@ -3,6 +3,7 @@ package com.tokopedia.graphql;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
+import com.google.gson.JsonParseException;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.internal.bind.JsonTreeReader;
 
@@ -24,6 +25,15 @@ public class CommonUtils {
             return null;
         }
         return (T) new Gson().fromJson(new JsonTreeReader(json), typeOfT);
+    }
+
+    public static <T> T fromJson(JsonElement json, Class<T> classOfT) throws JsonSyntaxException {
+        if (json == null) {
+            return null;
+        }
+
+        T t = (T) new Gson().fromJson(new JsonTreeReader(json), classOfT);
+        return t;
     }
 
     public static String toJson(Object src) {

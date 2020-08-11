@@ -10,7 +10,9 @@ import rx.Observable;
 
 /**
  * Data repository interface, It should be implemented by data layer
+ * Use kotlin version
  */
+@Deprecated
 public interface GraphqlRepository {
     Observable<GraphqlResponse> getResponse(List<GraphqlRequest> requests, GraphqlCacheStrategy cacheStrategy);
 }

@@ -21,6 +21,11 @@ class RoomDurationView @JvmOverloads constructor(context: Context, attrs: Attrib
         View.inflate(context, R.layout.widget_hotel_room_duration, this)
     }
 
+    fun setViewLabel(checkInLabel: String, checkOutLabel: String) {
+        hotel_check_in_label.text = checkInLabel
+        hotel_check_out_label.text = checkOutLabel
+    }
+
     fun setRoomDates(checkInDate: String, checkOutDate: String) {
         hotel_check_in_date.text = changeDateStringFormat(checkInDate,
                 TravelDateUtil.YYYY_MM_DD, TravelDateUtil.DEFAULT_VIEW_FORMAT)

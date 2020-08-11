@@ -91,7 +91,7 @@ class SomDetailBookingCodeFragment: BaseDaggerFragment() {
         val code = booking_code?.text.toString().trim { it <= ' ' }
         activity?.let {
             val clipboardManager = it.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-            clipboardManager.primaryClip = ClipData.newPlainText(LABEL_COPY_BOOKING_CODE, code)
+            clipboardManager.setPrimaryClip(ClipData.newPlainText(LABEL_COPY_BOOKING_CODE, code))
             showCommonToaster(getString(R.string.booking_code_copied))
         }
     }

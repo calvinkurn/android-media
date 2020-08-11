@@ -26,11 +26,13 @@ import androidx.appcompat.app.AppCompatActivity
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.webview.CommonWebViewClient
 import com.tokopedia.abstraction.base.view.webview.FilePickerInterface
-import com.tokopedia.abstraction.common.utils.network.AuthUtil
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.authentication.*
+import com.tokopedia.authentication.AuthKey.Companion.KEY_WSV4
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.config.GlobalConfig
@@ -45,12 +47,15 @@ import com.tokopedia.payment.fingerprint.view.FingerprintDialogRegister
 import com.tokopedia.payment.presenter.TopPayContract
 import com.tokopedia.payment.presenter.TopPayPresenter
 import com.tokopedia.payment.utils.Constant
-import com.tokopedia.payment.utils.NetworkAuthUtil
-import com.tokopedia.payment.utils.NetworkAuthUtilKey
+import com.tokopedia.payment.utils.HEADER_TKPD_SESSION_ID
+import com.tokopedia.payment.utils.HEADER_TKPD_USER_AGENT
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.url.TokopediaUrl
+import com.tokopedia.user.session.Constants.GCM_ID
+import com.tokopedia.user.session.Constants.GCM_STORAGE
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.WebViewHelper
 import rx.Observable
 import rx.Subscriber
@@ -61,6 +66,7 @@ import java.io.ByteArrayOutputStream
 import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
 import java.net.URLEncoder
+import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -73,6 +79,9 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
 
     @Inject
     lateinit var presenter: TopPayPresenter
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     override var paymentPassData: PaymentPassData? = null
         private set
@@ -93,6 +102,8 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
     private var mJsHciCallbackFuncName: String? = null
 
     private var webChromeWebviewClient: CommonWebViewClient? = null
+
+    private val localCacheHandler by lazy { LocalCacheHandler(this, GCM_STORAGE) }
 
     private val webViewOnKeyListener: View.OnKeyListener
         get() = View.OnKeyListener { _, keyCode, event ->
@@ -469,6 +480,11 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
                     navigateToActivity(intent)
                     return true
                 }
+                //applink for link aja...
+                if (isLinkAjaAppLink(url)) {
+                    redirectToLinkAjaApp(url)
+                    return true
+                }
 
                 val urlFinal = getGeneratedOverrideRedirectUrlPayment(url)
                 if (urlFinal.isNotEmpty()) {
@@ -558,44 +574,72 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         val originUri = Uri.parse(originUrl)
         val uriBuilder = Uri.parse(originUrl).buildUpon()
         if (!originUri.isOpaque) {
-            if (!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_FLAG_APP))) {
+            if (!TextUtils.isEmpty(originUri.getQueryParameter(WEBVIEW_FLAG_PARAM_FLAG_APP))) {
                 uriBuilder.appendQueryParameter(
-                        AuthUtil.WEBVIEW_FLAG_PARAM_FLAG_APP,
-                        AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_FLAG_APP
+                        WEBVIEW_FLAG_PARAM_FLAG_APP,
+                        DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_FLAG_APP
                 )
             }
-            if (!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_DEVICE))) {
+            if (!TextUtils.isEmpty(originUri.getQueryParameter(WEBVIEW_FLAG_PARAM_DEVICE))) {
                 uriBuilder.appendQueryParameter(
-                        AuthUtil.WEBVIEW_FLAG_PARAM_DEVICE,
-                        AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE
+                        WEBVIEW_FLAG_PARAM_DEVICE,
+                        DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE
                 )
             }
-            if (!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_UTM_SOURCE))) {
+            if (!TextUtils.isEmpty(originUri.getQueryParameter(WEBVIEW_FLAG_PARAM_UTM_SOURCE))) {
                 uriBuilder.appendQueryParameter(
-                        AuthUtil.WEBVIEW_FLAG_PARAM_UTM_SOURCE,
-                        AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_UTM_SOURCE
+                        WEBVIEW_FLAG_PARAM_UTM_SOURCE,
+                        DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_UTM_SOURCE
                 )
             }
-            if (!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_APP_VERSION))) {
+            if (!TextUtils.isEmpty(originUri.getQueryParameter(WEBVIEW_FLAG_PARAM_APP_VERSION))) {
                 uriBuilder.appendQueryParameter(
-                        AuthUtil.WEBVIEW_FLAG_PARAM_APP_VERSION, GlobalConfig.VERSION_NAME
+                        WEBVIEW_FLAG_PARAM_APP_VERSION, GlobalConfig.VERSION_NAME
                 )
             }
         }
         return uriBuilder.build().toString().trim()
     }
 
-    fun getGeneratedOverrideRedirectHeaderUrlPayment(originUrl: String): Map<String?, String?>? {
-        val urlQuery = Uri.parse(originUrl).query
-        return NetworkAuthUtil.generateWebviewHeaders(
-                Uri.parse(originUrl).path,
-                urlQuery ?: "",
-                "GET",
-                NetworkAuthUtilKey.KEY_WSV4)
+    fun getGeneratedOverrideRedirectHeaderUrlPayment(originUrl: String): Map<String, String> {
+        val uri = Uri.parse(originUrl)
+        return generateWebviewHeaders(uri.path ?: "", uri.query ?: "")
+    }
+
+    private fun generateWebviewHeaders(path: String, strParam: String): Map<String, String> {
+        val header = AuthHelper.getDefaultHeaderMapOld(path, strParam, "GET", CONTENT_TYPE, KEY_WSV4, DATE_FORMAT, userSession.userId, userSession)
+        header[HEADER_TKPD_USER_AGENT] = DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE
+        header[HEADER_TKPD_SESSION_ID] = getRegistrationIdWithTemp()
+        return header
+    }
+
+    private fun getRegistrationIdWithTemp(): String {
+        var id = localCacheHandler.getString(GCM_ID, "")
+        if (id.isEmpty()) {
+            id = UUID.randomUUID().toString()
+            localCacheHandler.putString(GCM_ID, id)
+            localCacheHandler.applyEditor()
+        }
+        return id
     }
 
     fun getEnableFingerprintPayment(): Boolean {
         return remoteConfig.getBoolean(FingerprintConstant.ENABLE_FINGERPRINT_MAINAPP)
+    }
+
+    private fun isLinkAjaAppLink(url: String): Boolean {
+        return url.contains(LINK_AJA_APP_LINK)
+    }
+
+    private fun redirectToLinkAjaApp(url: String) {
+        val uri = Uri.parse(url)
+        val linkAjaIntent = Intent(Intent.ACTION_VIEW, uri)
+        val activities = packageManager
+                .queryIntentActivities(linkAjaIntent, 0)
+        val isIntentSafe: Boolean = activities.isNotEmpty()
+        if (isIntentSafe) {
+            startActivity(linkAjaIntent)
+        }
     }
 
     companion object {
@@ -606,6 +650,7 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         const val HCI_CAMERA_REQUEST_CODE = 978
         const val FORCE_TIMEOUT = 90000L
 
+        private const val LINK_AJA_APP_LINK = "https://linkaja.id/applink/payment"
         private const val ACCOUNTS_URL = "accounts.tokopedia.com"
         private const val LOGIN_URL = "login.pl"
         private const val HCI_CAMERA_KTP = "android-js-call://ktp"

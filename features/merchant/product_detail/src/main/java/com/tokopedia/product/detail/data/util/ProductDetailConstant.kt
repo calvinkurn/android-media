@@ -8,7 +8,6 @@ object ProductDetailConstant {
     @JvmField
     var BASE_REST_URL = TokopediaUrl.getInstance().WS
 
-    const val MAINAPP_SHOW_PDP_TOPADS = "mainapp_show_pdp_topads"
 
     //report product
     const val PATH_PRODUCT_TYPE = "v4/product/"
@@ -16,8 +15,6 @@ object ProductDetailConstant {
 
     const val PATH_PRODUCT_ACTION = "v4/action/product/"
     const val PATH_REPORT = "report_product.pl"
-
-    const val PATH_FAVORITE_SHOP_ACTION = "v4/action/favorite-shop/fav_shop.pl"
 
     const val PARAM_PRODUCT_ID = "product_id"
     const val PARAM_REPORT_TYPE = "report_type"
@@ -48,13 +45,6 @@ object ProductDetailConstant {
     const val WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
 
     const val KEY_USER_ID = "userID"
-    const val KEY_PAGE_NAME = "pageName"
-    const val KEY_XDEVICE = "xDevice"
-    const val DEFAULT_DEVICE = "android"
-    const val DEFAULT_SRC_PAGE = "recommen_pdp"
-    const val KEY_PRODUCT_ID = "productIDs"
-    const val KEY_XSOURCE = "xSource"
-    const val KEY_PAGE_NUMBER = "pageNumber"
     const val KEY_PREORDER = "preorder"
     const val KEY_LEASING = "leasing"
     const val KEY_NORMAL_BUTTON = "normal"
@@ -84,21 +74,16 @@ object ProductDetailConstant {
     const val PAYLOAD_P3 = 2
     const val PAYLOAD_TOOGLE_FAVORITE = 2
     const val PAYLOAD_TOOGLE_AND_FAVORITE_SHOP = 3
-    const val PAYLOAD_VARIANT_SELECTED = 5
-    const val PAYLOAD_FULLFILLMENT = 192
+    const val PAYLOAD_UPDATE_IMAGE = 5
     const val PAYLOAD_VARIANT_COMPONENT = 1
     const val PAYLOAD_NOTIFY_ME = 1
 
     //Request Code
-    const val REQUEST_CODE_TALK_PRODUCT = 1
     const val REQUEST_CODE_EDIT_PRODUCT = 2
     const val REQUEST_CODE_LOGIN = 561
     const val REQUEST_CODE_MERCHANT_VOUCHER_DETAIL = 563
     const val REQUEST_CODE_MERCHANT_VOUCHER = 564
     const val REQUEST_CODE_ETALASE = 565
-    const val REQUEST_CODE_NORMAL_CHECKOUT = 566
-    const val REQUEST_CODE_ATC_EXPRESS = 567
-    const val REQUEST_CODE_LOGIN_THEN_BUY_EXPRESS = 569
     const val REQUEST_CODE_REPORT = 570
     const val REQUEST_CODE_SHOP_INFO = 998
     const val REQUEST_CODE_IMAGE_PREVIEW = 999
@@ -109,8 +94,9 @@ object ProductDetailConstant {
 
     //Mapper
     const val SOCIAL_PROOF = "social_proof"
-    const val PRODUCT_SNAPSHOT = "product_snapshot"
+    const val MINI_SOCIAL_PROOF = "social_proof_mini"
     const val SHOP_INFO = "shop_info"
+    const val MINI_SHOP_INFO = "shop_info_mini"
     const val PRODUCT_INFO = "product_info"
     const val DISCUSSION = "discussion"
     const val DISCUSSION_FAQ = "discussion_faq"
@@ -121,6 +107,7 @@ object ProductDetailConstant {
     const val VALUE_PROPOSITION = "value_prop"
     const val PRODUCT_LIST = "product_list"
     const val NOTIFY_ME = "teaser"
+      const val TICKER_INFO = "ticker_info"
     const val UPCOMING_DEALS = "upcoming_deals"
     const val VARIANT_OPTIONS = "variant_options"
     const val VARIANT = "variant"
@@ -132,12 +119,21 @@ object ProductDetailConstant {
     const val PRODUCT_LAST_SEEN = "product_last_seen"
     const val PRODUCT_VARIANT_INFO = "variant"
     const val PRODUCT_WHOLESALE_INFO = "wholesale"
+    const val PRODUCT_SHOP_CREDIBILITY = "shop_credibility"
     const val PRODUCT_INSTALLMENT_INFO = "installment"
     const val PRODUCT_SHIPPING_INFO = "shipping"
     const val ORDER_PRIORITY = "order_prio"
     const val PRODUCT_FULLFILMENT = "fulfillment"
     const val PRODUCT_PROTECTION = "protection"
     const val VALUE_PROP = "value_prop"
+    const val PRODUCT_CONTENT = "product_content"
+    const val PRODUCT_CONTENT_TITLE_TOP = "product_content_title_top"
+    const val MEDIA = "product_media"
+    const val LAYOUT_HEAD_N_SHOULDERS = "head n shoulders"
+    const val LAYOUT_DEFAULT = "Default Layout"
+    const val LAYOUT_TAIL_N_SHOULDERS = "tail n shoulders"
+    const val BY_ME = "byme"
+
 
     //Arguments
     const val ARG_PRODUCT_ID = "ARG_PRODUCT_ID"
@@ -150,6 +146,8 @@ object ProductDetailConstant {
     const val ARG_FROM_AFFILIATE = "ARG_FROM_AFFILIATE"
     const val ARG_AFFILIATE_STRING = "ARG_AFFILIATE_STRING"
     const val ARG_DEEPLINK_URL = "ARG_DEEPLINK_URL"
+    const val REVIEW_PRD_NM = "x_prd_nm"
+
 
     //Animation
     const val CART_MAX_COUNT = 99
@@ -161,10 +159,7 @@ object ProductDetailConstant {
     const val CART_ANIMATION_DURATION = 700L
 
     //Save Instance State
-    const val SAVED_NOTE = "saved_note"
     const val SAVED_ACTIVITY_RESULT = "saved_activity_result"
-    const val SAVED_QUANTITY = "saved_quantity"
-    const val SAVED_VARIANT = "saved_variant"
 
     //Button Action
     const val BUY_BUTTON = 1
@@ -174,11 +169,6 @@ object ProductDetailConstant {
     const val LEASING_BUTTON = 5
     const val TRADEIN_BUTTON = 6
     const val TRADEIN_AFTER_DIAGNOSE = 7
-
-    const val REQUEST_CODE_LOGIN_THEN_ATC = 562
-    const val REQUEST_CODE_LOGIN_THEN_BUY = 563
-    const val REQUEST_CODE_LOGIN_THEN_TRADE_IN = 564
-    const val REQUEST_CODE_LOGIN_THEN_APPLY_CREDIT = 569
 
     const val REQUEST_CODE_CHECKOUT = 12382
 

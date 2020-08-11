@@ -2,14 +2,14 @@ ext {
 
     // Sort alphabetically by package name
     tkpdInternalLibDependencies = [
-            authentication          : "com.tokopedia.authentication:authentication:1.0.12-alpha",
+            authentication          : "com.tokopedia.authentication:authentication:1.0.17",
             cachemanager            : "com.tokopedia.cachemanager:cachemanager:2.24",
             cacheapi                : "com.tokopedia.cacheapi:cache_api:0.0.3",
-            globalconfig            : "com.tokopedia.config:global_config:1.0.3",
+            globalconfig            : "com.tokopedia.config:global_config:1.0.7",
             url                     : "com.tokopedia.url:url:1.0.6-hub",
-            network                 : "com.tokopedia.network:network:1.1.4",
+            network                 : "com.tokopedia.network:network:1.1.7",
             usecase                 : "com.tokopedia.usecase:usecase:1.0.3",
-            usersession             : "com.tokopedia.user.session:user_session:1.0.16",
+            usersession             : "com.tokopedia.user.session:user_session:1.0.19",
             analyticConstants       : "com.tokopedia.analytic_constant:analytic_constant:1.0.3",
             williamchart            : "com.tokopedia.williamchart:williamchart:0.0.6",
             betaNotif               : "com.tokopedia.graphql:beta.notif:0.0.6",
@@ -36,6 +36,8 @@ ext {
             baseList                : ":libraries:base_list",
             baseListSeller          : ":libraries:base_list_seller",
             bannerDynamic           : ":libraries:banner_dynamic",
+            blockCanary             : ":libraries:blockcanary",
+            blockCanaryNoOp         : "com.github.markzhai:blockcanary-no-op:1.5.0",
             bottomSheetBuilder      : ":libraries:bottom_sheet_builder",
             charts                  : ":libraries:charts",
             circularViewPager       : ":libraries:circular_view_pager",
@@ -46,6 +48,7 @@ ext {
             coreNetwork             : ":libraries:core_network",
             datePickerRange         : ":libraries:date_picker_range",
             deviceInfo              : ":libraries:device_info",
+            devMonitoringTools      : ":libraries:dev_monitoring_tools",
             dynamicFeatures         : ":libraries:dynamic_features",
             encryption              : ":libraries:encryption",
             fingerprint             : ":libraries:fingerprint",
@@ -66,7 +69,6 @@ ext {
             mediauploader           : ":libraries:mediauploader",
             oms                     : ":libraries:oms",
             permissionchecker       : ":libraries:permissionchecker",
-            playCore                : ":libraries:play_core",
             productPhotoAdapter     : ":libraries:product_photo_adapter",
             pushNotification        : ":libraries:push_notification",
             reactNative             : ":libraries:react_native",
@@ -97,7 +99,9 @@ ext {
             utils                   : ":libraries:utils",
             imagePreviewSlider      : ":libraries:imagepreviewslider",
             mapviewer               : ":libraries:mapviewer",
-            tokofix                 : ":libraries:tokofix",
-            analyticAnnotationCentral   : ":libraries:annotation_proc_central"
+            tokopatch               : ":libraries:tokopatch",
+            analyticAnnotationCentral   : ":libraries:annotation_proc_central",
+            screenRecorder          : ":libraries:screen_recorder",
+            lint                    : ":libraries:lint"
     ]
 }

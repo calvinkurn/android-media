@@ -10,6 +10,7 @@ import com.tokopedia.play.helper.TestCoroutineDispatchersProvider
 import com.tokopedia.play.model.ModelBuilder
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.type.PlayChannelType
+import com.tokopedia.play.view.uimodel.General
 import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.mockk
@@ -34,6 +35,8 @@ class VideoControlComponentTest {
     private val testDispatcher = TestCoroutineDispatcher()
     private val coroutineScope = CoroutineScope(testDispatcher)
 
+    private val mockGeneralVideoPlayer = General(mockk())
+
     private val modelBuilder = ModelBuilder()
 
     @BeforeEach
@@ -51,11 +54,11 @@ class VideoControlComponentTest {
 
     @Test
     fun `when new video is set, then video should update video`() = runBlockingTest(testDispatcher) {
-        val mockExoPlayer = mockk<ExoPlayer>()
+        val mockGeneralVideoPlayer = modelBuilder.buildGeneralVideoUiModel()
 
-        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.SetVideo(mockExoPlayer))
+        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.SetVideo(mockGeneralVideoPlayer))
 
-        verify { component.uiView.setPlayer(mockExoPlayer) }
+        verify { component.uiView.setPlayer(mockGeneralVideoPlayer.exoPlayer) }
         confirmVerified(component.uiView)
     }
 
@@ -97,7 +100,8 @@ class VideoControlComponentTest {
 
             val mockStateHelper = modelBuilder.buildStateHelperUiModel(
                     channelType = mockChannelType,
-                    bottomInsets = mockBottomInsets
+                    bottomInsets = mockBottomInsets,
+                    videoPlayer = mockGeneralVideoPlayer
             )
 
             EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.BottomInsetsChanged(mockBottomInsets, mockBottomInsets.isAnyShown, mockBottomInsets.isAnyHidden, mockStateHelper))
@@ -113,7 +117,8 @@ class VideoControlComponentTest {
 
             val mockStateHelper = modelBuilder.buildStateHelperUiModel(
                     channelType = mockChannelType,
-                    bottomInsets = mockBottomInsets
+                    bottomInsets = mockBottomInsets,
+                    videoPlayer = mockGeneralVideoPlayer
             )
 
             EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.BottomInsetsChanged(mockBottomInsets, mockBottomInsets.isAnyShown, mockBottomInsets.isAnyHidden, mockStateHelper))
@@ -136,7 +141,8 @@ class VideoControlComponentTest {
 
             val mockStateHelper = modelBuilder.buildStateHelperUiModel(
                     channelType = mockChannelType,
-                    bottomInsets = mockBottomInsets
+                    bottomInsets = mockBottomInsets,
+                    videoPlayer = mockGeneralVideoPlayer
             )
 
             EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.BottomInsetsChanged(mockBottomInsets, mockBottomInsets.isAnyShown, mockBottomInsets.isAnyHidden, mockStateHelper))
@@ -152,7 +158,8 @@ class VideoControlComponentTest {
 
             val mockStateHelper = modelBuilder.buildStateHelperUiModel(
                     channelType = mockChannelType,
-                    bottomInsets = mockBottomInsets
+                    bottomInsets = mockBottomInsets,
+                    videoPlayer = mockGeneralVideoPlayer
             )
 
             EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.BottomInsetsChanged(mockBottomInsets, mockBottomInsets.isAnyShown, mockBottomInsets.isAnyHidden, mockStateHelper))
@@ -177,7 +184,8 @@ class VideoControlComponentTest {
 
             val mockStateHelper = modelBuilder.buildStateHelperUiModel(
                     channelType = mockVideoStream.channelType,
-                    bottomInsets = mockBottomInsets
+                    bottomInsets = mockBottomInsets,
+                    videoPlayer = mockGeneralVideoPlayer
             )
 
             EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoStreamChanged(mockVideoStream, mockStateHelper))
@@ -193,7 +201,8 @@ class VideoControlComponentTest {
 
             val mockStateHelper = modelBuilder.buildStateHelperUiModel(
                     channelType = mockVideoStream.channelType,
-                    bottomInsets = mockBottomInsets
+                    bottomInsets = mockBottomInsets,
+                    videoPlayer = mockGeneralVideoPlayer
             )
 
             EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoStreamChanged(mockVideoStream, mockStateHelper))
@@ -218,7 +227,8 @@ class VideoControlComponentTest {
 
             val mockStateHelper = modelBuilder.buildStateHelperUiModel(
                     channelType = mockVideoStream.channelType,
-                    bottomInsets = mockBottomInsets
+                    bottomInsets = mockBottomInsets,
+                    videoPlayer = mockGeneralVideoPlayer
             )
 
             EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoStreamChanged(mockVideoStream, mockStateHelper))
@@ -234,7 +244,8 @@ class VideoControlComponentTest {
 
             val mockStateHelper = modelBuilder.buildStateHelperUiModel(
                     channelType = mockVideoStream.channelType,
-                    bottomInsets = mockBottomInsets
+                    bottomInsets = mockBottomInsets,
+                    videoPlayer = mockGeneralVideoPlayer
             )
 
             EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoStreamChanged(mockVideoStream, mockStateHelper))
@@ -243,7 +254,7 @@ class VideoControlComponentTest {
         }
     }
 
-    class VideoControlComponentMock(container: ViewGroup, bus: EventBusFactory, coroutineScope: CoroutineScope) : VideoControlComponent(container, bus, coroutineScope, TestCoroutineDispatchersProvider) {
+    class VideoControlComponentMock(container: ViewGroup, bus: EventBusFactory, scope: CoroutineScope) : VideoControlComponent(container, bus, scope, TestCoroutineDispatchersProvider) {
         override fun initView(container: ViewGroup): VideoControlView {
             return mockk(relaxed = true)
         }

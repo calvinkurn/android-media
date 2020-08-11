@@ -22,7 +22,7 @@ import com.tokopedia.topads.auto.data.network.param.AutoAdsParam
 import com.tokopedia.topads.auto.data.network.response.EstimationResponse
 import com.tokopedia.topads.auto.data.network.response.TopadsBidInfo
 import com.tokopedia.topads.auto.di.AutoAdsComponent
-import com.tokopedia.topads.auto.internal.AutoAdsStatus
+import com.tokopedia.topads.common.data.internal.AutoAdsStatus
 import com.tokopedia.topads.auto.view.factory.DailyBudgetViewModelFactory
 import com.tokopedia.topads.auto.view.viewmodel.DailyBudgetViewModel
 import com.tokopedia.topads.auto.view.widget.Range
@@ -88,13 +88,11 @@ abstract class AutoAdsBaseBudgetFragment : BaseDaggerFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
         showLoading()
         budgetViewModel.getTopAdsDeposit(userSession.shopId.toInt())
-        budgetViewModel.getBudgetInfo(userSession.shopId.toInt(), requestType, source, this::onSuccessBudgetInfo)
-
         budgetViewModel.topAdsDeposit.observe(viewLifecycleOwner, Observer {
             topAdsDeposit = it
+            budgetViewModel.getBudgetInfo(userSession.shopId.toInt(), requestType, source, this::onSuccessBudgetInfo)
         })
         budgetViewModel.autoAdsData.observe(this, Observer {
             if (topAdsDeposit <= 0) {

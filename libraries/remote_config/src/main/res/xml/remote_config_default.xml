@@ -323,6 +323,10 @@
         <value>false</value>
     </entry>
     <entry>
+        <key>android_customer_enable_new_deals_revamp_flow</key>
+        <value>true</value>
+    </entry>
+    <entry>
         <key>app_enable_banned_navigation</key>
         <value>true</value>
     </entry>
@@ -435,6 +439,30 @@
         <value>true</value>
     </entry>
     <entry>
+        <key>android_async_home_dagger</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>android_async_cmpushnotif_init</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>android_async_iris_init</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>android_async_remoteconfig_mainapp_init</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>android_async_applink_delegate_creation</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>android_async_remoteresource_init</key>
+        <value>false</value>
+    </entry>
+    <entry>
         <key>excluded_amp</key>
         <value>stories</value>
     </entry>
@@ -445,5 +473,17 @@
     <entry>
         <key>android_mainapp_enable_seller_migration</key>
         <value>true</value>
+    </entry>
+    <entry>
+        <key>android_addgaid_to_branch</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>app_enable_branch_utm_support</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>android_gql_connection_warm_up</key>
+        <value>false</value>
     </entry>
 </defaultsMap>

@@ -103,25 +103,6 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
             val snapHelper = GravitySnapHelper(Gravity.START)
             snapHelper.attachToRecyclerView(list)
 
-            val shopdetail = findViewById<View>(R.id.shop_detail)
-
-            shopdetail.setOnClickListener {
-                if (topAdsBannerClickListener != null) {
-                    topAdsBannerClickListener!!.onBannerAdsClicked(1, cpmData.applinks, cpmData)
-                    ImpresionTask(className).execute(cpmData.adClickUrl)
-                }
-            }
-
-            val shop_image = findViewById<ImageView>(R.id.shop_image)
-            shop_image?.let {
-                Glide.with(context).load(cpmData.cpm.cpmImage.fullEcs).into(shop_image)
-                shop_image.addOnImpressionListener(cpmData.cpm.cpmShop.imageShop) {
-                    impressionListener?.let {
-                        it.onImpressionHeadlineAdsItem(0, cpmData)
-                        ImpresionTask(className).execute(cpmData.cpm.cpmImage.fullUrl)
-                    }
-                }
-            }
             if (cpmData.cpm.cpmShop.isPowerMerchant && !cpmData.cpm.cpmShop.isOfficial) {
                 container?.background = ContextCompat.getDrawable(context, R.drawable.bg_pm_gradient)
             } else if (cpmData.cpm.cpmShop.isOfficial) {
@@ -147,6 +128,29 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
             }
             shop_name?.text = cpmData?.cpm?.cpmShop?.name
             description?.text = cpmData?.cpm?.cpmShop?.slogan
+
+            val shopdetail = findViewById<View>(R.id.shop_detail)
+
+            shopdetail.setOnClickListener {
+                if (topAdsBannerClickListener != null) {
+                    topAdsBannerClickListener!!.onBannerAdsClicked(1, cpmData?.applinks, cpmData)
+                    ImpresionTask(className).execute(cpmData?.adClickUrl)
+                }
+            }
+
+            val shop_image = findViewById<ImageView>(R.id.shop_image)
+            shop_image?.let {
+                Glide.with(context).load(cpmData?.cpm?.cpmImage?.fullEcs).into(shop_image)
+                cpmData?.cpm?.cpmShop?.imageShop?.let { it1 ->
+                    shop_image.addOnImpressionListener(it1) {
+                        impressionListener?.let {
+                            it.onImpressionHeadlineAdsItem(0, cpmData)
+                            ImpresionTask(className).execute(cpmData.cpm.cpmImage.fullUrl)
+                        }
+                    }
+                }
+            }
+
             val items = ArrayList<Item<*>>()
             items.add(BannerShopViewModel(cpmData, appLink, adsClickUrl))
             for (i in 0 until cpmData?.cpm?.cpmShop?.products!!.size) {
