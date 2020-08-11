@@ -1,17 +1,22 @@
 package com.tokopedia.sellerhome.testcase
 
 import android.app.Application
+import android.content.Context
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.IdlingPolicies
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analytics.performance.util.PerformanceDataFileUtils
+import com.tokopedia.instrumentation.test.R
 import com.tokopedia.sellerhome.common.SellerHomeIdlingResource
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity.Companion.createIntent
 import com.tokopedia.test.application.TestRepeatRule
+import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
+import com.tokopedia.test.application.util.InstrumentationMockHelper
+import com.tokopedia.test.application.util.setupGraphqlMockResponseWithCheck
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -27,7 +32,12 @@ class PltSellerHomePerformanceTest {
     private val TEST_CASE_PAGE_LOAD_TIME_PERFORMANCE = "seller_home_test_case_page_load_time"
 
     @get:Rule
-    var activityRule: ActivityTestRule<SellerHomeActivity> = ActivityTestRule(SellerHomeActivity::class.java, false, false)
+    var activityRule: ActivityTestRule<SellerHomeActivity> = object: ActivityTestRule<SellerHomeActivity>(SellerHomeActivity::class.java, false, false) {
+        override fun beforeActivityLaunched() {
+            super.beforeActivityLaunched()
+            setupGraphqlMockResponseWithCheck(createMockModelConfig())
+        }
+    }
 
     @get:Rule
     var testRepeatRule: TestRepeatRule = TestRepeatRule()
@@ -82,5 +92,16 @@ class PltSellerHomePerformanceTest {
 
     private fun unregisterIdlingResources() {
         IdlingRegistry.getInstance().unregister(SellerHomeIdlingResource.idlingResource)
+    }
+
+    private fun createMockModelConfig(): MockModelConfig {
+        return object : MockModelConfig() {
+            override fun createMockModel(context: Context): MockModelConfig {
+                addMockResponse("GetSellerDashboardLayout", InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_seller_home_layout), MockModelConfig.FIND_BY_QUERY_NAME)
+                addMockResponse("getCardWidgetData", InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_seller_home_card_widgets), MockModelConfig.FIND_BY_QUERY_NAME)
+                addMockResponse("getLineGraphData", InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_seller_home_line_graph_widgets), MockModelConfig.FIND_BY_QUERY_NAME)
+                return this
+            }
+        }
     }
 }
