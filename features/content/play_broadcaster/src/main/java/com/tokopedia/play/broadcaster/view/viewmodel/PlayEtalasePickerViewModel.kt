@@ -61,6 +61,10 @@ class PlayEtalasePickerViewModel @Inject constructor(
         get() = _observableSelectedEtalase
     private val _observableSelectedEtalase = MutableLiveData<PageResult<EtalaseContentUiModel>>()
 
+    val observableEtalaseProductState: LiveData<PageResult<String>>
+        get() = _observableEtalaseProductState
+    private val _observableEtalaseProductState = MutableLiveData<PageResult<String>>()
+
     val observableSelectedProducts: LiveData<List<ProductContentUiModel>> = Transformations.map(setupDataStore.getObservableSelectedProducts()) { dataList ->
         dataList.map { ProductContentUiModel.createFromData(it, ::isProductSelected, ::isSelectable) }
     }
@@ -329,6 +333,8 @@ class PlayEtalasePickerViewModel @Inject constructor(
             if (result.state is PageResultState.Success) {
                 val etalaseMap = updateEtalaseMap(listOf(result.currentValue))
                 broadcastNewEtalaseList(etalaseMap)
+            } else if (result.state is PageResultState.Fail) {
+                _observableEtalaseProductState.value = PageResult(result.currentValue.id, result.state)
             }
         }
     }

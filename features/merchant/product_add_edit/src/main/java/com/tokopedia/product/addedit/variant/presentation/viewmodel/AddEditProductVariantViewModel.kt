@@ -192,7 +192,7 @@ class AddEditProductVariantViewModel @Inject constructor(
         productInputModel.value?.variantInputModel?.apply {
             products = mapProducts(selectedVariantDetails, variantPhotos)
             selections = mapSelections(selectedVariantDetails)
-            sizecharts = variantSizechart.value ?: PictureVariantInputModel()
+            sizecharts = mapSizechart(variantSizechart.value)
         }
     }
 
@@ -246,6 +246,10 @@ class AddEditProductVariantViewModel @Inject constructor(
         if (variantDetail.identifier == VARIANT_IDENTIFIER_HAS_SIZECHART) {
             mIsVariantSizechartVisible.value = isVisible
         }
+    }
+
+    fun clearProductVariant() {
+        productInputModel.value?.variantInputModel?.products = emptyList()
     }
 
     fun getSelectedVariantUnit(layoutPosition: Int): Unit {
@@ -333,6 +337,14 @@ class AddEditProductVariantViewModel @Inject constructor(
             }
         }
         return result
+    }
+
+    private fun mapSizechart(pictureVariantInputModel: PictureVariantInputModel?): PictureVariantInputModel {
+        return if (mIsVariantSizechartVisible.value == true) {
+            pictureVariantInputModel ?: PictureVariantInputModel()
+        } else {
+            PictureVariantInputModel()
+        }
     }
 
     private fun mapUnit(variantDetail: VariantDetail, value: List<UnitValue>): Unit? {
