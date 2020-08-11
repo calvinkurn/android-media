@@ -44,9 +44,6 @@ class FlightCancellationReviewViewModelTest {
         // then
         assert(viewmodel.requestCancel.value is Success)
         (viewmodel.requestCancel.value as Success).data shouldBe false
-
-        assert(viewmodel.estimateRefundFinish.value is Success)
-        (viewmodel.estimateRefundFinish.value as Success).data shouldBe false
     }
 
     @Test
@@ -82,7 +79,13 @@ class FlightCancellationReviewViewModelTest {
 
         // then
         assert(viewmodel.estimateRefundFinish.value is Success)
-        (viewmodel.estimateRefundFinish.value as Success).data shouldBe true
+        (viewmodel.estimateRefundFinish.value as Success).data.totalValue shouldBe DUMMY_ESTIMATE_REFUND.totalValue
+        (viewmodel.estimateRefundFinish.value as Success).data.totalValueNumeric shouldBe DUMMY_ESTIMATE_REFUND.totalValueNumeric
+        (viewmodel.estimateRefundFinish.value as Success).data.estimationExistsPolicy.size shouldBe DUMMY_ESTIMATE_REFUND.estimationExistsPolicy.size
+        (viewmodel.estimateRefundFinish.value as Success).data.estimationNotExistPolicy.size shouldBe DUMMY_ESTIMATE_REFUND.estimationNotExistPolicy.size
+        (viewmodel.estimateRefundFinish.value as Success).data.nonRefundableText shouldBe DUMMY_ESTIMATE_REFUND.nonRefundableText
+        (viewmodel.estimateRefundFinish.value as Success).data.showEstimate shouldBe DUMMY_ESTIMATE_REFUND.showEstimate
+        (viewmodel.estimateRefundFinish.value as Success).data.details.size shouldBe DUMMY_ESTIMATE_REFUND.details.size
 
         viewmodel.invoiceId shouldBe "1234567890"
 
