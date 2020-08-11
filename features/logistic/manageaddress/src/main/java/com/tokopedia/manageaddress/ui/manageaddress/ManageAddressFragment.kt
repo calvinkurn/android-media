@@ -28,6 +28,7 @@ import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
 import com.tokopedia.manageaddress.R
 import com.tokopedia.manageaddress.data.analytics.ManageAddressAnalytics
 import com.tokopedia.manageaddress.di.manageaddress.ManageAddressComponent
+import com.tokopedia.manageaddress.domain.mapper.AddressModelMapper
 import com.tokopedia.manageaddress.domain.model.ManageAddressState
 import com.tokopedia.manageaddress.util.ManageAddressConstant.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.manageaddress.util.ManageAddressConstant.EDIT_PARAM
@@ -125,9 +126,9 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     }
 
     private fun initHeader() {
-       manageAddressListener?.setAddButtonOnClickListener {
-           openFormAddressView(null)
-       }
+        manageAddressListener?.setAddButtonOnClickListener {
+            openFormAddressView(null)
+        }
     }
 
     private fun initView() {
@@ -225,7 +226,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     }
 
     override fun onManageAddressEditClicked(peopleAddress: RecipientAddressModel) {
-       openFormAddressView(peopleAddress)
+        openFormAddressView(peopleAddress)
     }
 
     override fun onManageAddressLainnyaClicked(peopleAddress: RecipientAddressModel) {
@@ -234,17 +235,18 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
 
     private fun openFormAddressView(data: RecipientAddressModel?) {
         val token = viewModel.token
-            if(data == null) {
-                activity?.let { ManageAddressAnalytics.sendScreenName(it, SCREEN_NAME_USER_NEW) }
-                val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2)
-                intent.putExtra(KERO_TOKEN, token)
-                startActivityForResult(intent, REQUEST_CODE_PARAM_CREATE)
-            } else {
-                val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V1)
-                intent.putExtra(EDIT_PARAM, data)
-                intent.putExtra(KERO_TOKEN, token)
-                startActivityForResult(intent, REQUEST_CODE_PARAM_EDIT)
-            }
+        if(data == null) {
+            activity?.let { ManageAddressAnalytics.sendScreenName(it, SCREEN_NAME_USER_NEW) }
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2)
+            intent.putExtra(KERO_TOKEN, token)
+            startActivityForResult(intent, REQUEST_CODE_PARAM_CREATE)
+        } else {
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V1)
+            val mapper = AddressModelMapper()
+            intent.putExtra(EDIT_PARAM, mapper.transform(data))
+            intent.putExtra(KERO_TOKEN, token)
+            startActivityForResult(intent, REQUEST_CODE_PARAM_EDIT)
+        }
     }
 
     private fun openBottomSheetView(data: RecipientAddressModel) {

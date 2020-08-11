@@ -19,6 +19,7 @@ import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.GrantPermissionRule
 import androidx.test.runner.AndroidJUnit4
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.analyticsdebugger.validator.core.getAnalyticsWithQuery
 import com.tokopedia.analyticsdebugger.validator.core.hasAllSuccess
@@ -31,6 +32,7 @@ import com.tokopedia.topupbills.telco.data.constant.TelcoCategoryType
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
 import com.tokopedia.topupbills.telco.prepaid.activity.TelcoPrepaidActivity
 import com.tokopedia.topupbills.telco.prepaid.adapter.viewholder.TelcoProductViewHolder
+import com.tokopedia.topupbills.telco.prepaid.fragment.DigitalTelcoPrepaidFragment
 import org.hamcrest.core.AllOf
 import org.hamcrest.core.AnyOf
 import org.hamcrest.core.IsNot
@@ -90,6 +92,7 @@ class TelcoPrepaidInstrumentTest {
 
     @Test
     fun validate_prepaid() {
+        validate_showcase()
         show_contents_pdp_telco_not_login()
         copy_promo_code()
         interaction_menu()
@@ -104,15 +107,26 @@ class TelcoPrepaidInstrumentTest {
                 hasAllSuccess())
     }
 
+    fun validate_showcase() {
+        Thread.sleep(4000)
+        val localCacheHandler = LocalCacheHandler(context, DigitalTelcoPrepaidFragment.PREFERENCES_NAME)
+        if (!localCacheHandler.getBoolean(DigitalTelcoPrepaidFragment.TELCO_COACH_MARK_HAS_SHOWN, false)) {
+            onView(withText(R.string.Telco_title_showcase_client_number)).check(matches(isDisplayed()))
+            onView(withText(R.id.text_next)).perform(click())
+            onView(withText(R.string.telco_title_showcase_promo)).check(matches(isDisplayed()))
+            onView(withText(R.id.text_previous)).perform(click())
+            onView(withText(R.string.Telco_title_showcase_client_number)).check(matches(isDisplayed()))
+            onView(withText(R.id.text_next)).perform(click())
+            onView(withText(R.string.telco_title_showcase_promo)).check(matches(isDisplayed()))
+            onView(withText(R.id.text_next)).perform(click())
+        }
+    }
+
+
     /**
      * activate the comment below if the test is new on the device
      */
     fun show_contents_pdp_telco_not_login() {
-//        Thread.sleep(1000)
-//        onView(withText(R.string.Telco_title_showcase_client_number)).check(matches(isDisplayed()))
-//        onView(withText(R.string.Telco_title_showcase_client_number)).perform(click())
-//        onView(withText(R.string.telco_title_showcase_promo)).check(matches(isDisplayed()))
-//        onView(withText(R.string.telco_title_showcase_promo)).perform(click())
         Thread.sleep(2000)
         onView(withId(R.id.telco_page_container)).check(matches(isDisplayed()))
         onView(withId(R.id.telco_input_number)).check(matches(isDisplayed()))

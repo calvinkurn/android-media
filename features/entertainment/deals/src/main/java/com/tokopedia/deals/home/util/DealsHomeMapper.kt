@@ -51,8 +51,7 @@ class DealsHomeMapper @Inject constructor(@ApplicationContext private val contex
 
             } else if (it.isCard == 1) {
 
-                if (curatedProductCategoryDataViews.size < MAX_CURATED_PRODUCT_SECTION) {
-
+                if (curatedProductCategoryDataViews.size < MAX_CURATED_PRODUCT_SECTION && it.productDetails.isNotEmpty()) {
                     val items = it.productDetails.subList(0,
                             min(MAX_ITEM_ON_CURATED_SECTION_ITEMS, it.productDetails.size)).map { product ->
                         ProductCardDataView(

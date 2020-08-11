@@ -26,6 +26,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst;
 import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.reviewseller.feature.reputationhistory.view.fragment.SellerReputationFragment;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.review.common.util.ReviewConstants;
@@ -116,9 +117,7 @@ public class  InboxReputationActivity extends BaseActivity implements HasCompone
 
         if (getApplicationContext() != null
                 && getApplicationContext() instanceof ReputationRouter) {
-            ReputationRouter applicationContext = (ReputationRouter) getApplicationContext();
-            sellerReputationFragment = applicationContext.getReputationHistoryFragment();
-            reviewSellerFragment = RatingProductFragment.Companion.createInstance();
+            sellerReputationFragment = SellerReputationFragment.createInstance();
         }
         if(GlobalConfig.isSellerApp()) {
             reviewSellerFragment = RatingProductFragment.Companion.createInstance();

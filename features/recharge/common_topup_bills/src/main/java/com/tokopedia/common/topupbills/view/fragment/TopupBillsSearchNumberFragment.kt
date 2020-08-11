@@ -4,12 +4,16 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
+import android.text.Editable
 import android.text.InputType
 import android.text.TextUtils
+import android.text.TextWatcher
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,23 +25,17 @@ import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity.Companion.EXTRA_CALLBACK_CLIENT_NUMBER
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity.Companion.EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE
 import com.tokopedia.common.topupbills.view.adapter.NumberListAdapter
-import com.tokopedia.common_digital.common.widget.DigitalSearchInputView
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
-import com.tokopedia.design.text.SearchInputView
+import com.tokopedia.unifycomponents.SearchBarUnify
 import java.util.*
 
-open class TopupBillsSearchNumberFragment : BaseDaggerFragment(),
-        NumberListAdapter.OnClientNumberClickListener,
-        SearchInputView.Listener,
-        DigitalSearchInputView.DigitalSearchInputListener,
-        SearchInputView.FocusChangeListener,
-        SearchInputView.ResetListener {
+open class TopupBillsSearchNumberFragment : BaseDaggerFragment(), NumberListAdapter.OnClientNumberClickListener {
 
     private lateinit var numberListAdapter: NumberListAdapter
     private lateinit var clientNumbers: List<TopupBillsFavNumberItem>
     private lateinit var clientNumberType: String
 
-    protected lateinit var searchInputNumber: DigitalSearchInputView
+    protected lateinit var searchInputNumber: SearchBarUnify
     protected lateinit var favNumberRecyclerView: RecyclerView
 
     private var number: String = ""
@@ -70,7 +68,7 @@ open class TopupBillsSearchNumberFragment : BaseDaggerFragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
-        searchInputNumber.searchTextView.requestFocus()
+        searchInputNumber.searchBarTextField.requestFocus()
         KeyboardHandler.showSoftKeyboard(activity)
     }
 
@@ -82,14 +80,14 @@ open class TopupBillsSearchNumberFragment : BaseDaggerFragment(),
     open fun initView() {
         setClientNumberInputType()
         if (number.isNotEmpty()) {
-            searchInputNumber.searchTextView.setText(number)
-            searchInputNumber.searchTextView.setSelection(number.length)
+            searchInputNumber.searchBarTextField.setText(number)
+            searchInputNumber.searchBarTextField.setSelection(number.length)
         }
-        searchInputNumber.setListener(this)
-        searchInputNumber.setDigitalSearchInputListener(this)
-        searchInputNumber.setFocusChangeListener(this)
-        searchInputNumber.setResetListener(this)
-        searchInputNumber.searchTextView.imeOptions = EditorInfo.IME_ACTION_DONE
+        searchInputNumber.searchBarTextField.addTextChangedListener(getSearchTextWatcher)
+        searchInputNumber.searchBarTextField.setOnEditorActionListener(getSearchNumberListener)
+        searchInputNumber.searchBarTextField.onFocusChangeListener = getFocusChangeListener
+        searchInputNumber.clearListener  = { onSearchReset() }
+        searchInputNumber.searchBarTextField.imeOptions = EditorInfo.IME_ACTION_DONE
 
         numberListAdapter = NumberListAdapter(this, clientNumbers)
         favNumberRecyclerView.layoutManager = LinearLayoutManager(activity)
@@ -99,8 +97,41 @@ open class TopupBillsSearchNumberFragment : BaseDaggerFragment(),
         favNumberRecyclerView.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
     }
 
+    private val getFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
+        if (hasFocus) inputNumberActionType = InputNumberActionType.MANUAL
+    }
+
+    private val getSearchNumberListener = object : TextView.OnEditorActionListener {
+        override fun onEditorAction(textView: TextView, actionId: Int, event: KeyEvent?): Boolean {
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                KeyboardHandler.hideSoftKeyboard(activity)
+                onSearchSubmitted(textView.text.toString())
+                return true
+            } else if (actionId == EditorInfo.IME_ACTION_DONE) {
+                KeyboardHandler.hideSoftKeyboard(activity)
+                onSearchDone(textView.text.toString())
+                return true
+            }
+            return false
+        }
+    }
+
+    private val getSearchTextWatcher = object : TextWatcher {
+        override fun afterTextChanged(text: Editable?) {
+            text?.let { filterData(text.toString()) }
+        }
+
+        override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            //do nothing
+        }
+
+        override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+           //do nothing
+        }
+    }
+
     private fun setClientNumberInputType() {
-        searchInputNumber.searchTextView.inputType = when (clientNumberType.toLowerCase()) {
+        searchInputNumber.searchBarTextField.inputType = when (clientNumberType.toLowerCase()) {
             ClientNumberType.TYPE_INPUT_TEL -> InputType.TYPE_CLASS_PHONE
             ClientNumberType.TYPE_INPUT_NUMERIC -> InputType.TYPE_CLASS_NUMBER
             ClientNumberType.TYPE_INPUT_ALPHANUMERIC -> InputType.TYPE_CLASS_TEXT
@@ -144,24 +175,17 @@ open class TopupBillsSearchNumberFragment : BaseDaggerFragment(),
         return foundClientNumber
     }
 
-    override fun onSearchSubmitted(text: String?) {
-
+    open fun onSearchSubmitted(text: String?) {
+        //do nothing
     }
 
-    override fun onSearchTextChanged(text: String?) {
-        text?.let { filterData(it) }
+    open fun onSearchDone(text: String) {
+        //do nothing
     }
 
-    override fun onSearchDone(text: String) {
-
-    }
-
-    override fun onFocusChanged(hasFocus: Boolean) {
-        if (hasFocus) inputNumberActionType = InputNumberActionType.MANUAL
-    }
-
-    override fun onSearchReset() {
-
+    open fun onSearchReset() {
+        searchInputNumber.searchBarTextField.setText("")
+        KeyboardHandler.hideSoftKeyboard(activity)
     }
 
     override fun onClientNumberClicked(orderClientNumber: TopupBillsFavNumberItem) {
