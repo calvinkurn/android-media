@@ -262,11 +262,6 @@ class ChatItemListViewHolder(
                 label.setLabelType(Label.GENERAL_LIGHT_BLUE)
                 label.show()
             }
-            SELLER_TAG -> {
-                label.text = chat.tag
-                label.setLabelType(Label.GENERAL_LIGHT_GREEN)
-                label.show()
-            }
             else -> label.hide()
         }
     }
