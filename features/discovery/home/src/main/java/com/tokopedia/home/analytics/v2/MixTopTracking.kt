@@ -61,7 +61,8 @@ object MixTopTracking : BaseTracking() {
             Event.KEY, Event.CLICK_HOMEPAGE,
             Category.KEY, Category.HOMEPAGE,
             Action.KEY, CustomAction.CLICK_VIEW_ALL_CAROUSEL,
-            Label.KEY, channelId + " - " + headerName
+            Label.KEY, channelId + " - " + headerName,
+            ChannelId.KEY, channelId
     )
 
     fun getMixTopSeeAllCardClick(channelId: String, headerName: String, userId: String) = DataLayer.mapOf(
