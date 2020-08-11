@@ -1,4 +1,4 @@
-package com.tokopedia.shop.common.data.model
+package com.tokopedia.shop.common.graphql.data.shopopen
 
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
