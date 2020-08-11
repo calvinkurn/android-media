@@ -394,8 +394,10 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         val isMonthly = item is DateFilterItem.MonthPickerItem
         mViewModel.setDateRange(startDate, endDate, isMonthly)
         adapter.data.forEach {
-            it.isLoaded = false
-            it.data = null
+            if (it !is TickerWidgetUiModel) {
+                it.isLoaded = false
+                it.data = null
+            }
         }
         adapter.notifyDataSetChanged()
         requestVisibleWidgetsData()
