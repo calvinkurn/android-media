@@ -3,6 +3,8 @@ package com.tokopedia.shop.open.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.shop.common.graphql.domain.usecase.shopopen.GetShopDomainNameSuggestionUseCase
+import com.tokopedia.shop.common.graphql.domain.usecase.shopopen.ShopOpenRevampValidateDomainShopNameUseCase
 import com.tokopedia.shop.open.common.ShopOpenDispatcherProvider
 import com.tokopedia.shop.open.data.model.*
 import com.tokopedia.shop.open.domain.*
@@ -16,7 +18,7 @@ import javax.inject.Inject
 
 class ShopOpenRevampViewModel @Inject constructor(
         private val validateDomainShopNameUseCase: ShopOpenRevampValidateDomainShopNameUseCase,
-        private val getDomainNameSuggestionUseCase: ShopOpenRevampGetDomainNameSuggestionUseCase,
+        private val getDomainNameSuggestionUseCase: GetShopDomainNameSuggestionUseCase,
         private val getSurveyUseCase: ShopOpenRevampGetSurveyUseCase,
         private val sendSurveyUseCase: ShopOpenRevampSendSurveyUseCase,
         private val createShopUseCase: ShopOpenRevampCreateShopUseCase,
@@ -112,7 +114,7 @@ class ShopOpenRevampViewModel @Inject constructor(
         getDomainNameSuggestionUseCase.cancelJobs()
         launchCatchError(block = {
             withContext(dispatchers.io()) {
-                getDomainNameSuggestionUseCase.params = ShopOpenRevampGetDomainNameSuggestionUseCase.createRequestParams(shopName)
+                getDomainNameSuggestionUseCase.params = GetShopDomainNameSuggestionUseCase.createRequestParams(shopName)
                 val shopSuggestionsResult = getDomainNameSuggestionUseCase.executeOnBackground()
                 shopSuggestionsResult.let {
                     _domainShopNameSuggestionsResponse.postValue(Success(it))
