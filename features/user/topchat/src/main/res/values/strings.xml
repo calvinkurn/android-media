@@ -123,7 +123,7 @@ yang ditemukan</string>
     <string name="filter_chat_read">Sudah Dibaca</string>
     <string name="filter_chat_unreplied">Belum Dibalas</string>
 
-    <string name="seller_empty_chat_subtitle">Lengkapi tokomu dengan produk unggulan dulu, yuk!</string>
+    <string name="seller_empty_chat_subtitle">Yuk, bikin tokomu ramai pengunjung dengan beriklan dan promosikan produk-produkmu.</string>
     <string name="buyer_empty_chat_subtitle">Coba ngobrol dengan teman penjual, yuk!</string>
     <string name="empty_chat_read_all_title">Mantap! Semua chat sudah kamu baca</string>
     <string name="empty_chat_smart_reply">Belum ada chat yang dibalas Smart Reply</string>
@@ -147,8 +147,8 @@ yang ditemukan</string>
     <string name="empty_state_search_chat">Hiks, nggak ada hasil. Coba cari ulang pakai kata kunci lain</string>
     <string name="empty_state_recent_search_chat">Kamu bisa cari pengguna dan produk yang pernah dilampirkan.</string>
 
-    <string name="title_topchat_empty_chat">Belum ada chat</string>
-    <string name="title_topchat_manage_product">Atur Toko</string>
+    <string name="title_topchat_empty_chat">Belum ada chat, nih</string>
+    <string name="title_topchat_manage_product">Coba Iklan dan Promosi</string>
     <string name="title_topchat_success_atw">Sukses menambah wishlist</string>
     <string name="title_topchat_already_success_atw">Barang sudah di wishlist kamu</string>
     <string name="title_topchat_success_rfw">Anda berhasil menghapus wishlist</string>
