@@ -303,8 +303,13 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
     }
 
     private fun checkUserRole() {
-        setLoadingIndicator(true)
-        somDetailViewModel.loadUserRoles(userSession.userId.toIntOrZero())
+        progressBarSom?.show()
+        if (Utils.isConnectedToInternet(context)) {
+            somDetailViewModel.loadUserRoles(userSession.userId.toIntOrZero())
+        } else {
+            showNoInternetConnectionGlobalError()
+            progressBarSom?.hide()
+        }
     }
 
     private fun prepareLayout() {
@@ -335,6 +340,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
             }
         } else {
             showNoInternetConnectionGlobalError()
+            progressBarSom?.hide()
         }
     }
 
@@ -349,7 +355,6 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
             when (it) {
                 is Success -> {
                     detailResponse = it.data
-                    progressBarSom?.hide()
                     renderDetail()
                 }
                 is Fail -> {
@@ -361,6 +366,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                     SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_GET_ORDER_DETAIL)
                 }
             }
+            setLoadingIndicator(false)
             progressBarSom?.hide()
         })
     }
@@ -511,6 +517,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
     }
 
     private fun renderDetail() {
+        rv_detail?.show()
         refreshHandler?.finishRefresh()
         listDetailData = arrayListOf()
         somDetailAdapter.listDataDetail = arrayListOf()
@@ -625,17 +632,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                     else buttonResp.displayName
                     setOnClickListener {
                         eventClickMainActionInOrderDetail(buttonResp.displayName, detailResponse.statusText)
-                        when {
-                            buttonResp.key.equals(KEY_ACCEPT_ORDER, true) -> setActionAcceptOrder(buttonResp)
-                            buttonResp.key.equals(KEY_TRACK_SELLER, true) -> setActionGoToTrackingPage(buttonResp)
-                            buttonResp.key.equals(KEY_REQUEST_PICKUP, true) -> setActionRequestPickup()
-                            buttonResp.key.equals(KEY_CONFIRM_SHIPPING, true) -> setActionConfirmShipping()
-                            buttonResp.key.equals(KEY_VIEW_COMPLAINT_SELLER, true) -> setActionSeeComplaint(buttonResp.url)
-                            buttonResp.key.equals(KEY_BATALKAN_PESANAN, true) -> setActionRejectOrder()
-                            buttonResp.key.equals(KEY_ASK_BUYER, true) -> goToAskBuyer()
-                            buttonResp.key.equals(KEY_REJECT_ORDER, true) -> setActionRejectOrder()
-                            shouldShowBuyerRequestCancelButton -> showBuyerRequestCancelBottomSheet()
-                        }
+                        performButtonAction(buttonResp, shouldShowBuyerRequestCancelButton)
                     }
                 }
             }
@@ -658,6 +655,22 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
 
         } else {
             containerBtnDetail?.visibility = View.GONE
+        }
+    }
+
+    private fun performButtonAction(buttonResp: SomDetailOrder.Data.GetSomDetail.Button?, shouldShowBuyerRequestCancelButton: Boolean) {
+        buttonResp?.let {
+            when {
+                shouldShowBuyerRequestCancelButton -> showBuyerRequestCancelBottomSheet()
+                it.key.equals(KEY_ACCEPT_ORDER, true) -> setActionAcceptOrder(it)
+                it.key.equals(KEY_TRACK_SELLER, true) -> setActionGoToTrackingPage(it)
+                it.key.equals(KEY_REQUEST_PICKUP, true) -> setActionRequestPickup()
+                it.key.equals(KEY_CONFIRM_SHIPPING, true) -> setActionConfirmShipping()
+                it.key.equals(KEY_VIEW_COMPLAINT_SELLER, true) -> setActionSeeComplaint(it.url)
+                it.key.equals(KEY_BATALKAN_PESANAN, true) -> setActionRejectOrder()
+                it.key.equals(KEY_ASK_BUYER, true) -> goToAskBuyer()
+                it.key.equals(KEY_REJECT_ORDER, true) -> setActionRejectOrder()
+            }
         }
     }
 
@@ -1474,6 +1487,8 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
     }
 
     override fun onRefresh(view: View?) {
+        rv_detail?.hide()
+        containerBtnDetail ?.hide()
         if (isUserRoleFetched(somDetailViewModel.userRoleResult.value)) {
             loadDetail()
         } else {
@@ -1520,7 +1535,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                             secondaryButtonText = "Kembali",
                             primaryButtonClickAction = {
                                 bottomSheetReqCancel.dismiss()
-                                setActionConfirmShipping()
+                                performButtonAction(detailResponse.button.firstOrNull(), false)
                             }
                     )
                 }
@@ -1576,13 +1591,11 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
     private fun showNoInternetConnectionGlobalError() {
         somGlobalError?.setType(GlobalError.NO_CONNECTION)
         somGlobalError?.show()
-        progressBarSom?.hide()
     }
 
     private fun showServerErrorGlobalError() {
         somGlobalError?.setType(GlobalError.SERVER_ERROR)
         somGlobalError?.show()
-        progressBarSom?.hide()
     }
 
     private fun showErrorToaster(message: String) {
