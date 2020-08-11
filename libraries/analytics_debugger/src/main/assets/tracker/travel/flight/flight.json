@@ -45,24 +45,36 @@
       "sessionIris": "{{.*}}"
     },
     {
-      "event": "promoClick",
+      "event": "view_item",
+      "eventAction": "banner impression",
+      "eventCategory": "digital - flight",
+      "eventLabel": "{{flight - \\d* - .*}}",
+      "sessionIris": "{{.*}}",
+      "promotions": [
+        {
+          "item_id": "{{.*}}",
+          "item_name": "{{.* - slider banner}}",
+          "creative_slot": "{{\\d*}}",
+          "creative_name": "{{.*}}",
+          "creative_url": "{{.*}}"
+        }
+      ]
+    },
+    {
+      "event": "select_content",
       "eventAction": "click banner",
       "eventCategory": "digital - flight",
       "eventLabel": "{{flight - \\d* - .*}}",
       "sessionIris": "{{.*}}",
-      "ecommerce": {
-        "promoClick": {
-          "promotions": [
-            {
-              "id": "{{.*}}",
-              "name": "{{.* - slider banner}}",
-              "position": "{{\\d*}}",
-              "creative": "{{.*}}",
-              "creative_url": "{{.*}}"
-            }
-          ]
+      "promotions": [
+        {
+          "item_id": "{{.*}}",
+          "item_name": "{{.* - slider banner}}",
+          "creative_slot": "{{\\d*}}",
+          "creative_name": "{{.*}}",
+          "creative_url": "{{.*}}"
         }
-      }
+      ]
     }
   ]
 }
