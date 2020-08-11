@@ -4,7 +4,7 @@ import com.google.gson.JsonObject
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.play.*
-import com.tokopedia.play.data.Channel
+import com.tokopedia.play.data.SocketCredential
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.*
@@ -24,7 +24,7 @@ open class PlaySocket @Inject constructor(
 
     var channelId: String = ""
     var gcToken: String = ""
-//    var settings: Channel.Settings = Channel.Settings(DEFAULT_PING, 0, DEFAULT_MAX_RETRIES, DEFAULT_DELAY)
+    var settings: SocketCredential.Setting = SocketCredential.Setting(DEFAULT_PING, 0, DEFAULT_MAX_RETRIES, DEFAULT_DELAY)
 
     private val playSocketCache: PlaySocketCache = PlaySocketCache()
 
@@ -67,8 +67,7 @@ open class PlaySocket @Inject constructor(
             }
         }
 
-//        rxWebSocketUtil = RxWebSocketUtil.getInstance(null, settings.minReconnectDelay, settings.maxRetries, settings.pingInterval)
-        rxWebSocketUtil = RxWebSocketUtil.getInstance(null)
+        rxWebSocketUtil = RxWebSocketUtil.getInstance(null, settings.minReconnectDelay, settings.maxRetries, settings.pingInterval)
 
         val webSocketSubscription = rxWebSocketUtil?.
                 getWebSocketInfo(wsConnectUrl, userSessionInterface.accessToken)?.

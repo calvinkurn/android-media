@@ -39,6 +39,7 @@ import javax.inject.Inject
 class PlayViewModel @Inject constructor(
         private val playVideoManager: PlayVideoManager,
         private val getChannelInfoUseCase: GetChannelDetailUseCase,
+        private val getSocketCredentialUseCase: GetSocketCredentialUseCase,
         private val getPartnerInfoUseCase: GetPartnerInfoUseCase,
         private val getTotalLikeUseCase: GetTotalLikeUseCase,
         private val getIsLikeUseCase: GetIsLikeUseCase,
@@ -397,8 +398,6 @@ class PlayViewModel @Inject constructor(
                 launch { getBadgeCart(channel.configuration.showCart) }
                 launch { if (channel.configuration.showPinnedProduct) getProductTagItems(completeInfoUiModel.channelInfo) }
 
-//                startWebSocket(channelId, channel.gcToken, channel.settings) // TODO playGetSocketCredential
-
                 _observableGetChannelInfo.value = Success(completeInfoUiModel.channelInfo)
                 _observableTotalViews.value = completeInfoUiModel.totalView
                 _observablePinnedMessage.value = completeInfoUiModel.pinnedMessage
@@ -411,6 +410,11 @@ class PlayViewModel @Inject constructor(
                 if (!isActive) return@launchCatchError
                 if (completeInfoUiModel.videoPlayer.isGeneral) playGeneralVideoStream(channel)
                 else playVideoManager.release()
+
+                launch {
+                    val socketCredential = getSocketCredential()
+                    startWebSocket(channelId, socketCredential)
+                }
 
                 _observablePartnerInfo.value = getPartnerInfo(completeInfoUiModel.channelInfo)
 
@@ -482,10 +486,10 @@ class PlayViewModel @Inject constructor(
         }
     }
 
-    private fun startWebSocket(channelId: String, gcToken: String) {
+    private fun startWebSocket(channelId: String, socketCredential: SocketCredential) {
         playSocket.channelId = channelId
-        playSocket.gcToken = gcToken
-//        playSocket.settings = settings
+        playSocket.gcToken = socketCredential.gcToken
+        playSocket.settings = socketCredential.setting
         playSocket.connect(onMessageReceived = { response ->
             scope.launch {
                 val result = withContext(dispatchers.io) {
@@ -537,7 +541,7 @@ class PlayViewModel @Inject constructor(
             _observableSocketInfo.value = PlaySocketInfo.Reconnect
         }, onError = {
             _observableSocketInfo.value = PlaySocketInfo.Error(it)
-            startWebSocket(channelId, gcToken)
+            startWebSocket(channelId, socketCredential)
         })
     }
 
@@ -570,6 +574,10 @@ class PlayViewModel @Inject constructor(
         val currentChatList = _observableChatList.value ?: mutableListOf()
         currentChatList.add(chat)
         _observableChatList.value = currentChatList
+    }
+
+    private suspend fun getSocketCredential() = withContext(dispatchers.io) {
+        return@withContext getSocketCredentialUseCase.executeOnBackground()
     }
 
     private suspend fun getTotalLikes(feedInfoUiModel: FeedInfoUiModel) {
