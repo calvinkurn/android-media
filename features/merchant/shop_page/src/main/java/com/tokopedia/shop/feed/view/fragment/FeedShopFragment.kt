@@ -39,6 +39,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.poll.PollAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.RecommendationCardAdapter
+import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsBannerViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
@@ -82,7 +83,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         VideoViewHolder.VideoViewListener,
         FeedMultipleImageView.FeedMultipleImageViewListener,
         HighlightAdapter.HighlightListener,
-        FeedShopContract.View {
+        FeedShopContract.View, TopAdsBannerViewHolder.TopAdsBannerListener {
 
     override val androidContext: Context
         get() = requireContext()
@@ -209,6 +210,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {
         return FeedShopFactoryImpl(this,
+                this,
                 this,
                 this,
                 this,
@@ -850,6 +852,10 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     fun clearCache() {
         presenter.clearCache()
+    }
+
+    override fun onTopAdsViewImpression(bannerId: String, imageUrl: String) {
+
     }
 
 }

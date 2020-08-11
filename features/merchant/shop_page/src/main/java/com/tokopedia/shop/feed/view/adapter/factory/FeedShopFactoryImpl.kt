@@ -49,6 +49,7 @@ class FeedShopFactoryImpl(private val mainView: FeedShopContract.View,
                           private val videoViewListener: VideoViewHolder.VideoViewListener,
                           private val feedMultipleImageViewListener: FeedMultipleImageView.FeedMultipleImageViewListener,
                           private val highlightListener: HighlightAdapter.HighlightListener,
+                          private val topAdsBannerListener: TopAdsBannerViewHolder.TopAdsBannerListener,
                           private val userSession : UserSessionInterface):
         BaseAdapterTypeFactory(), DynamicFeedTypeFactory, FeedShopTypeFactory {
 
@@ -109,7 +110,7 @@ class FeedShopFactoryImpl(private val mainView: FeedShopContract.View,
             EmptyFeedShopViewHolder.LAYOUT ->
                 EmptyFeedShopViewHolder(parent, mainView) as AbstractViewHolder<Visitable<*>>
             TopAdsBannerViewHolder.LAYOUT ->
-                TopAdsBannerViewHolder(parent, cardTitleListener) as AbstractViewHolder<Visitable<*>>
+                TopAdsBannerViewHolder(parent, topAdsBannerListener, cardTitleListener) as AbstractViewHolder<Visitable<*>>
             else -> super.createViewHolder(parent, type)
 
         }

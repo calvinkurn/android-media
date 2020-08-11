@@ -82,7 +82,7 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                 when (feed.type) {
                     TYPE_CARDBANNER -> {
                         if (feed.activity == ACTIVITY_TOPADS_BANNER) {
-                            getTopAdsBannerData(posts, feed, templateData.template)
+                            mapTopAdsBannerData(posts, feed, templateData.template)
                         } else {
                             mapCardBanner(posts, feed, templateData.template)
                         }
@@ -120,7 +120,7 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
         )
     }
 
-    private fun getTopAdsBannerData(posts: MutableList<Visitable<*>>, feed: Feed, template: Template) {
+    private fun mapTopAdsBannerData(posts: MutableList<Visitable<*>>, feed: Feed, template: Template) {
         val topAdsBannerViewModel = TopAdsBannerViewModel()
         topAdsBannerViewModel.title = feed.content.cardbanner.title
         topAdsBannerViewModel.template = template

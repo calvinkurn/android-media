@@ -64,6 +64,7 @@ class FeedPlusTypeFactoryImpl(context: FeedPlusFragment,
     private val emptyFeedBeforeLoginListener: EmptyFeedBeforeLoginViewHolder.EmptyFeedBeforeLoginListener
     private val retryViewHolderListener: RetryViewHolder.RetryViewHolderListener
     private val emptyFeedViewHolderListener: EmptyFeedViewHolder.EmptyFeedListener
+    private val topAdsBannerListener: TopAdsBannerViewHolder.TopAdsBannerListener
 
     init {
         this.kolPostListener = context
@@ -82,6 +83,7 @@ class FeedPlusTypeFactoryImpl(context: FeedPlusFragment,
         this.emptyFeedBeforeLoginListener = context
         this.retryViewHolderListener = context
         this.emptyFeedViewHolderListener = context
+        this.topAdsBannerListener = context
     }
 
     override fun type(emptyModel: EmptyModel): Int {
@@ -156,7 +158,7 @@ class FeedPlusTypeFactoryImpl(context: FeedPlusFragment,
         } else if (type == OnboardingViewHolder.LAYOUT){
             viewHolder = OnboardingViewHolder(view, userSession, interestPickItemListener)
         } else if (type == TopAdsBannerViewHolder.LAYOUT){
-            viewHolder = TopAdsBannerViewHolder(view, cardTitleListener)
+            viewHolder = TopAdsBannerViewHolder(view, topAdsBannerListener, cardTitleListener)
         } else
             viewHolder = super.createViewHolder(view, type)
         return viewHolder

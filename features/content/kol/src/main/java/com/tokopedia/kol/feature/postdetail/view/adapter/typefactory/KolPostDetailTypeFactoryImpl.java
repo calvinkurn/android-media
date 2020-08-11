@@ -68,6 +68,7 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
     private final KolComment.View.SeeAll seeAll;
     private final UserSessionInterface userSession;
     private final KolPostDetailContract.View mainView;
+    private final TopAdsBannerViewHolder.TopAdsBannerListener topAdsBannerListener;
 
     public KolPostDetailTypeFactoryImpl(KolPostDetailContract.View mainView,
                                         KolComment.View.ViewHolder kolCommentListener,
@@ -82,6 +83,7 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
                                         FeedMultipleImageView.FeedMultipleImageViewListener feedMultipleImageViewListener,
                                         RelatedPostAdapter.RelatedPostListener relatedPostListener,
                                         HighlightAdapter.HighlightListener highlightListener,
+                                        TopAdsBannerViewHolder.TopAdsBannerListener topAdsBannerListener,
                                         UserSessionInterface userSession) {
         this.mainView = mainView;
         this.kolCommentListener = kolCommentListener;
@@ -96,6 +98,7 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
         this.feedMultipleImageViewListener = feedMultipleImageViewListener;
         this.highlightListener = highlightListener;
         this.relatedPostListener = relatedPostListener;
+        this.topAdsBannerListener = topAdsBannerListener;
         this.userSession = userSession;
     }
 
@@ -196,7 +199,7 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
         } else if(viewType == RelatedPostViewHolder.LAYOUT) {
             abstractViewHolder = new RelatedPostViewHolder(view, relatedPostListener);
         } else if(viewType == TopAdsBannerViewHolder.Companion.getLAYOUT()) {
-            abstractViewHolder = new TopAdsBannerViewHolder(view, cardTitleListener);
+            abstractViewHolder = new TopAdsBannerViewHolder(view, topAdsBannerListener, cardTitleListener);
         } else {
             abstractViewHolder = super.createViewHolder(view, viewType);
         }

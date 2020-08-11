@@ -53,6 +53,7 @@ class ProfileTypeFactoryImpl(private val viewListener : ProfileEmptyContract.Vie
                              private val onEmptyItemClickedListener: EmptyAffiliateViewHolder.OnEmptyItemClickedListener,
                              private val onOtherProfilePostItemClick: ((applink: String, position: Int, datum: FeedPostRelated.Datum) -> Unit),
                              private val highlightListener: HighlightAdapter.HighlightListener,
+                             private val topAdsBannerListener: TopAdsBannerViewHolder.TopAdsBannerListener,
                              private val userSession : UserSessionInterface)
 
     : BaseAdapterTypeFactory(), ProfileTypeFactory, DynamicFeedTypeFactory {
@@ -140,7 +141,7 @@ class ProfileTypeFactoryImpl(private val viewListener : ProfileEmptyContract.Vie
             HighlightViewHolder.LAYOUT ->
                 HighlightViewHolder(parent, highlightListener, cardTitleListener) as AbstractViewHolder<Visitable<*>>
             TopAdsBannerViewHolder.LAYOUT ->
-                TopAdsBannerViewHolder(parent, cardTitleListener) as AbstractViewHolder<Visitable<*>>
+                TopAdsBannerViewHolder(parent, topAdsBannerListener, cardTitleListener) as AbstractViewHolder<Visitable<*>>
             else -> super.createViewHolder(parent, type)
         }
     }
