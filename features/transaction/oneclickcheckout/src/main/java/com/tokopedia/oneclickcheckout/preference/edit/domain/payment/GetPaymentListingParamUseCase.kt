@@ -20,7 +20,8 @@ class GetPaymentListingParamUseCaseImpl @Inject constructor(private val graphqlU
                 PARAM_MERCHANT_CODE to param.merchantCode,
                 PARAM_PROFILE_CODE to param.profileCode,
                 PARAM_CALLBACK_URL to param.callbackUrl,
-                PARAM_ADDRESS_ID to param.addressId
+                PARAM_ADDRESS_ID to param.addressId,
+                PARAM_VERSION to param.version
         ))
         graphqlUseCase.setTypeClass(PaymentListingParamGqlResponse::class.java)
         graphqlUseCase.execute({ response: PaymentListingParamGqlResponse ->
@@ -38,6 +39,7 @@ class GetPaymentListingParamUseCaseImpl @Inject constructor(private val graphqlU
     private val PARAM_PROFILE_CODE = "profileCode"
     private val PARAM_CALLBACK_URL = "callbackURL"
     private val PARAM_ADDRESS_ID = "addressID"
+    private val PARAM_VERSION = "version"
 
     private val QUERY = """
         query getListingParams(
@@ -45,12 +47,14 @@ class GetPaymentListingParamUseCaseImpl @Inject constructor(private val graphqlU
           ${"$"}profileCode : String!
           ${"$"}callbackURL : String!
           ${"$"}addressID : String!
+          ${"$"}version: String
         ) {
           getListingParams(
             merchantCode: ${"$"}merchantCode
             profileCode: ${"$"}profileCode
             callbackURL: ${"$"}callbackURL
             addressID: ${"$"}addressID
+            version: ${"$"}version
           ) {
             success
             message

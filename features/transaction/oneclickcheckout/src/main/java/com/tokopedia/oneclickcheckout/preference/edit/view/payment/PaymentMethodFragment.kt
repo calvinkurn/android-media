@@ -182,8 +182,8 @@ class PaymentMethodFragment : BaseDaggerFragment() {
                 "customer_msisdn=${getUrlEncoded(param.customerMsisdn)}&" +
                 "address_id=${getUrlEncoded(param.addressId)}&" +
                 "callback_url=${getUrlEncoded(param.callbackUrl)}&" +
+                "version=${getUrlEncoded(GlobalConfig.VERSION_NAME)}&" +
                 "signature=${getUrlEncoded(param.hash)}"
-//                "version=${getUrlEncoded(GlobalConfig.VERSION_NAME)}"
     }
 
     private fun generatePaymentListingRequest(): PaymentListingParamRequest {
