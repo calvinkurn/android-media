@@ -30,7 +30,6 @@ import com.tokopedia.play.analytic.PlayAnalytics
 import com.tokopedia.play.data.websocket.PlaySocketInfo
 import com.tokopedia.play.extensions.isAnyBottomSheetsShown
 import com.tokopedia.play.extensions.isKeyboardShown
-import com.tokopedia.play.util.PlayFullScreenHelper
 import com.tokopedia.play.util.PlaySensorOrientationManager
 import com.tokopedia.play.util.keyboard.KeyboardWatcher
 import com.tokopedia.play.util.observer.DistinctObserver
@@ -48,7 +47,6 @@ import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.VideoPlayerUiModel
 import com.tokopedia.play.view.viewcomponent.*
 import com.tokopedia.play.view.viewmodel.PlayViewModel
-import com.tokopedia.play.view.wrapper.GlobalErrorCodeWrapper
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
@@ -56,8 +54,6 @@ import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 /**
@@ -111,6 +107,8 @@ class PlayFragment @Inject constructor(
     private var videoScalingManager: VideoScalingManager? = null
     private var videoBoundsManager: VideoBoundsManager? = null
     private val boundsMap = BoundsKey.values.associate { Pair(it, 0) }.toMutableMap()
+
+    private var isFirstTopBoundsCalculated = false
 
     private var hasFetchedChannelInfo: Boolean = false
 
@@ -207,6 +205,17 @@ class PlayFragment @Inject constructor(
 
         if (playViewModel.bottomInsets.isKeyboardShown) hideKeyboard()
         else hideAllInsets()
+    }
+
+    fun onFirstTopBoundsCalculated() {
+        isFirstTopBoundsCalculated = true
+        if (playViewModel.videoPlayer.isYouTube) {
+            fragmentYouTubeView.safeInit()
+            fragmentYouTubeView.show()
+        } else {
+            fragmentVideoView.safeInit()
+            fragmentVideoView.show()
+        }
     }
 
     fun onBottomInsetsViewShown(bottomMostBounds: Int) {
@@ -551,7 +560,7 @@ class PlayFragment @Inject constructor(
             return
         }
 
-        if (videoPlayer.isYouTube) {
+        if (videoPlayer.isYouTube && isFirstTopBoundsCalculated) {
             fragmentYouTubeView.safeInit()
             fragmentYouTubeView.show()
         }

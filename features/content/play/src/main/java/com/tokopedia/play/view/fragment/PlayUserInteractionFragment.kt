@@ -51,6 +51,7 @@ import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.state.PlayVideoState
+import com.tokopedia.play_common.util.extension.awaitMeasured
 import com.tokopedia.play_common.util.extension.recreateView
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
@@ -60,10 +61,7 @@ import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.play_common.viewcomponent.viewComponentOrNull
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.coroutines.Fail
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancelChildren
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import javax.inject.Inject
 
 /**
@@ -358,6 +356,8 @@ class PlayUserInteractionFragment @Inject constructor(
             }
         }
 
+        handleVideoHorizontalTopBounds()
+
         likeView.setEnabled(false)
         videoSettingsView.setFullscreen(orientation.isLandscape)
 
@@ -434,6 +434,20 @@ class PlayUserInteractionFragment @Inject constructor(
             !playViewModel.videoOrientation.isHorizontal && container.isFullAlpha -> PlayFullScreenHelper.getHideSystemUiVisibility()
             else -> PlayFullScreenHelper.getShowSystemUiVisibility()
         }
+    }
+
+    private fun handleVideoHorizontalTopBounds() {
+        scope.launch {
+            val toolbarMeasure = async { toolbarView.rootView.awaitMeasured() }
+            val statsInfoMeasure = async { statsInfoView.rootView.awaitMeasured() }
+
+            awaitAll(toolbarMeasure, statsInfoMeasure)
+            playFragment.onFirstTopBoundsCalculated()
+        }
+
+//        scope.launch(dispatchers.immediate) {
+//            playFragment.setCurrentVideoTopBounds(playViewModel.videoOrientation, getVideoTopBounds())
+//        }
     }
 
     //region observe
