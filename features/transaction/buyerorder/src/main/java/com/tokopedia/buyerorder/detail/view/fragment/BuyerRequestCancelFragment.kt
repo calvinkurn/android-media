@@ -23,6 +23,7 @@ import com.tokopedia.buyerorder.R
 import com.tokopedia.buyerorder.common.util.BuyerConsts
 import com.tokopedia.buyerorder.common.util.BuyerConsts.BUTTON_INSTANT_CANCELATION
 import com.tokopedia.buyerorder.common.util.BuyerConsts.BUTTON_REGULER_CANCELATION
+import com.tokopedia.buyerorder.common.util.BuyerConsts.BUYER_CANCEL_REASON_SCREEN_NAME
 import com.tokopedia.buyerorder.common.util.BuyerConsts.LAINNYA
 import com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_CODE_INSTANT_CANCEL
 import com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_MSG_INSTANT_CANCEL
@@ -31,6 +32,7 @@ import com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_POPUP_TITLE_INSTA
 import com.tokopedia.buyerorder.common.util.BuyerConsts.TICKER_LABEL
 import com.tokopedia.buyerorder.common.util.BuyerConsts.TICKER_URL
 import com.tokopedia.buyerorder.common.util.Utils
+import com.tokopedia.buyerorder.detail.analytics.BuyerAnalytics
 import com.tokopedia.buyerorder.detail.data.Items
 import com.tokopedia.buyerorder.detail.data.getcancellationreason.BuyerGetCancellationReasonData
 import com.tokopedia.buyerorder.detail.data.getcancellationreason.BuyerGetCancellationReasonData.Data.GetCancellationReason.TickerInfo
@@ -161,6 +163,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        activity?.let { BuyerAnalytics.sendScreenName(it, BUYER_CANCEL_REASON_SCREEN_NAME) }
         observingCancelReasons()
         observingInstantCancel()
 
