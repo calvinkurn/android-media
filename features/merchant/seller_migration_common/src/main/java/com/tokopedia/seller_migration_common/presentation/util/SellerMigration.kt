@@ -61,3 +61,8 @@ private fun Fragment.goToInformationWebview(link: String,
 
 @Parcelize
 data class BenefitPoints(val benefitPointsList: List<String>): Parcelable
+
+fun getSellerMigrationTickerDescription() {
+
+}
+

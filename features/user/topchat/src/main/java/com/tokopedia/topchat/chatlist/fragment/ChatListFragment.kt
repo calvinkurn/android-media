@@ -30,10 +30,15 @@ import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.component.Menus
 import com.tokopedia.kotlin.extensions.view.goToFirst
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.seller_migration_common.presentation.fragment.bottomsheet.SellerMigrationCommunicationBottomSheet
+import com.tokopedia.seller_migration_common.presentation.model.CommunicationInfo
+import com.tokopedia.seller_migration_common.presentation.model.SellerMigrationCommunication
+import com.tokopedia.seller_migration_common.presentation.widget.SellerMigrationChatBottomSheet
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.activity.ChatListActivity
 import com.tokopedia.topchat.chatlist.adapter.ChatListAdapter
@@ -64,10 +69,12 @@ import com.tokopedia.topchat.chatsetting.view.activity.ChatSettingActivity
 import com.tokopedia.topchat.common.TopChatInternalRouter
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.android.synthetic.main.fragment_chat_list.*
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -102,6 +109,12 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
     private var filterChecked = 0
     private var filterMenu = FilterMenu()
     private lateinit var broadCastButton: FloatingActionButton
+
+    private val sellerMigrationStaticCommunicationBottomSheet by lazy {
+        context?.let {
+            SellerMigrationCommunicationBottomSheet.createInstance(it, CommunicationInfo.BroadcastChat)
+        }
+    }
 
     override fun getRecyclerViewResourceId() = R.id.recycler_view
     override fun getSwipeRefreshLayoutResourceId() = R.id.swipe_refresh_layout
@@ -196,7 +209,27 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
     private fun setupSellerBroadcast() {
         if (!isTabSeller() || !isSellerBroadcastRemoteConfigOn()) return
         setupSellerBroadcastButton()
+        setupTicker()
         chatItemListViewModel.loadChatBlastSellerMetaData()
+    }
+
+    private fun setupTicker() {
+        topChatSellerMigrationTicker?.apply {
+            tickerTitle = getString(com.tokopedia.seller_migration_common.R.string.seller_migration_broadcast_chat_bottom_sheet_title)
+            val featureString = getString(com.tokopedia.seller_migration_common.R.string.seller_migration_broadcast_chat_ticker_desc_prefix)
+            setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_ticker_desc, featureString))
+            setDescriptionClickEvent(object: TickerCallback {
+                override fun onDismiss() {}
+                override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                    openSellerMigrationBottomSheet()
+                }
+            })
+            show()
+        }
+    }
+
+    private fun openSellerMigrationBottomSheet() {
+        sellerMigrationStaticCommunicationBottomSheet?.show(childFragmentManager, SellerMigrationCommunicationBottomSheet::class.java.name)
     }
 
     private fun isSellerBroadcastRemoteConfigOn(): Boolean {

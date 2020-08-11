@@ -33,6 +33,8 @@ import com.tokopedia.home.account.revamp.viewmodel.SellerAccountViewModel
 import com.tokopedia.navigation_common.listener.FragmentListener
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.seller_migration_common.analytics.SellerMigrationTracking.eventOnClickAccountTicker
+import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
 import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
 import com.tokopedia.seller_migration_common.presentation.fragment.bottomsheet.SellerMigrationAccountCommBottomSheet
 import com.tokopedia.track.TrackApp
@@ -242,19 +244,20 @@ class SellerAccountFragment : BaseAccountFragment(), AccountItemListener, Fragme
     override fun onProductRecommendationWishlistClicked(product: RecommendationItem, wishlistStatus: Boolean, callback: (Boolean, Throwable?) -> Unit) {}
     override fun onProductRecommendationThreeDotsClicked(product: RecommendationItem, adapterPosition: Int) {}
     private fun setupSellerMigrationTicker() {
-        migrationTicker.tickerTitle = getString(com.tokopedia.seller_migration_common.R.string.seller_migration_ticker_title)
-        migrationTicker.setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_account_ticker_desc))
-        migrationTicker.setDescriptionClickEvent(object : TickerCallback {
-            override fun onDescriptionViewClick(charSequence: CharSequence) {
-//                eventOnClickAccountTicker(userSession.userId)
-                fragmentManager?.let { sellerMigrationBottomSheet.show(it, SellerMigrationAccountCommBottomSheet::class.java.name) }
-            }
+        if (isSellerMigrationEnabled(this.context)) {
+            migrationTicker.tickerTitle = getString(com.tokopedia.seller_migration_common.R.string.seller_migration_ticker_title)
+            migrationTicker.setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_account_ticker_desc))
+            migrationTicker.setDescriptionClickEvent(object : TickerCallback {
+                override fun onDescriptionViewClick(charSequence: CharSequence) {
+                eventOnClickAccountTicker(userSession.userId)
+                    sellerMigrationBottomSheet.show(childFragmentManager, SellerMigrationAccountCommBottomSheet::class.java.name)
+                }
 
-            override fun onDismiss() {
-                // No op
-            }
-        })
-//        if (isSellerMigrationEnabled(this.context)) {
+                override fun onDismiss() {
+                    // No op
+                }
+            })
+            // Commented as it was used for phase 1 only
 //            migrationTicker.tickerTitle = getString(com.tokopedia.seller_migration_common.R.string.seller_migration_account_home_ticker_title)
 //            val remoteConfigDate = getSellerMigrationDate(this.context)
 //            if (remoteConfigDate.isEmpty()) {
@@ -271,9 +274,9 @@ class SellerAccountFragment : BaseAccountFragment(), AccountItemListener, Fragme
 //                    // No op
 //                }
 //            })
-//        } else {
-//            migrationTicker.visibility = View.GONE
-//        }
+        } else {
+            migrationTicker.visibility = View.GONE
+        }
     }
 
     private fun goToSellerAppProductManage() {
