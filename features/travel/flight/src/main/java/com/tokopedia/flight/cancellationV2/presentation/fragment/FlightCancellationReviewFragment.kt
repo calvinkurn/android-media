@@ -24,11 +24,13 @@ import com.tokopedia.design.component.Dialog
 import com.tokopedia.flight.R
 import com.tokopedia.flight.cancellation.view.activity.FlightCancellationTermsAndConditionsActivity
 import com.tokopedia.flight.cancellation.view.fragment.customview.FlightCancellationRefundBottomSheet
+import com.tokopedia.flight.cancellationV2.data.FlightCancellationEstimateEntity
 import com.tokopedia.flight.cancellationV2.di.FlightCancellationComponent
 import com.tokopedia.flight.cancellationV2.presentation.activity.FlightCancellationReviewActivity
 import com.tokopedia.flight.cancellationV2.presentation.adapter.FlightCancellationAttachmentAdapter
 import com.tokopedia.flight.cancellationV2.presentation.adapter.FlightCancellationAttachmentAdapterTypeFactory
 import com.tokopedia.flight.cancellationV2.presentation.adapter.FlightCancellationReviewAdapterTypeFactory
+import com.tokopedia.flight.cancellationV2.presentation.adapter.FlightCancellationReviewEstimationNotesAdapter
 import com.tokopedia.flight.cancellationV2.presentation.model.FlightCancellationModel
 import com.tokopedia.flight.cancellationV2.presentation.model.FlightCancellationWrapperModel
 import com.tokopedia.flight.cancellationV2.presentation.viewmodel.FlightCancellationReviewViewModel
@@ -50,6 +52,7 @@ class FlightCancellationReviewFragment : BaseListFragment<FlightCancellationMode
     private lateinit var flightCancellationReviewViewModel: FlightCancellationReviewViewModel
 
     private lateinit var attachmentAdapter: FlightCancellationAttachmentAdapter
+    private lateinit var estimationNotesAdapter: FlightCancellationReviewEstimationNotesAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -99,10 +102,8 @@ class FlightCancellationReviewFragment : BaseListFragment<FlightCancellationMode
         flightCancellationReviewViewModel.estimateRefundFinish.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    if (it.data) {
-                        renderView()
-                        renderRefundableView()
-                    }
+                    renderView()
+                    renderRefundableView(it.data)
                 }
                 is Fail -> {
                     val errorData = FlightErrorUtil.getErrorIdAndTitleFromFlightError(requireContext(), it.throwable)
@@ -189,18 +190,18 @@ class FlightCancellationReviewFragment : BaseListFragment<FlightCancellationMode
         tv_total_refund.text = cancellationModel.cancellationReasonAndAttachmentModel.estimateFmt
     }
 
-    private fun renderRefundableView() {
+    private fun renderRefundableView(data: FlightCancellationEstimateEntity) {
         if (flightCancellationReviewViewModel.isRefundable()) {
             if (flightCancellationReviewViewModel.cancellationWrapperModel.cancellationReasonAndAttachmentModel.showEstimateRefund) {
-                showEstimateValue()
+                showEstimateValue(data.estimationExistsPolicy)
                 hideRefundDetail()
             } else {
                 hideEstimateValue()
-                showRefundDetail(R.string.flight_cancellation_review_refund_to_email_detail)
+                showRefundDetail(data.estimationNotExistPolicy.joinToString(separator = "\n"))
             }
         } else {
             hideEstimateValue()
-            showRefundDetail(R.string.flight_cancellation_review_no_refund_detail)
+            showRefundDetail(data.nonRefundableText)
         }
     }
 
@@ -266,18 +267,33 @@ class FlightCancellationReviewFragment : BaseListFragment<FlightCancellationMode
         dialog.show()
     }
 
-    private fun showEstimateValue() {
+    private fun showEstimateValue(estimationNotes: List<String>) {
         container_estimate_refund.visibility = View.VISIBLE
-        container_estimate_notes.visibility = View.VISIBLE
+
+        if (estimationNotes.isNotEmpty()) {
+            tv_refund_star.visibility = View.VISIBLE
+        } else {
+            tv_refund_star.visibility = View.GONE
+        }
+
+        if (!::estimationNotesAdapter.isInitialized) {
+            estimationNotesAdapter = FlightCancellationReviewEstimationNotesAdapter()
+        }
+        estimationNotesAdapter.setData(estimationNotes)
+
+        rvEstimationNotes.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+        rvEstimationNotes.setHasFixedSize(true)
+        rvEstimationNotes.adapter = estimationNotesAdapter
+        rvEstimationNotes.visibility = View.VISIBLE
     }
 
     private fun hideEstimateValue() {
         container_estimate_refund.visibility = View.GONE
-        container_estimate_notes.visibility = View.GONE
+        rvEstimationNotes.visibility = View.GONE
     }
 
-    private fun showRefundDetail(resId: Int) {
-        tv_refund_detail.text = getString(resId)
+    private fun showRefundDetail(message: String) {
+        tv_refund_detail.text = message
         tv_refund_detail.visibility = View.VISIBLE
     }
 

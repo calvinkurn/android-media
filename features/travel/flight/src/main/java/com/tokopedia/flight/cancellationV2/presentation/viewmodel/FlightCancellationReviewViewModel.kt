@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common.travel.utils.TravelDispatcherProvider
+import com.tokopedia.flight.cancellationV2.data.FlightCancellationEstimateEntity
 import com.tokopedia.flight.cancellationV2.domain.FlightCancellationEstimateRefundUseCase
 import com.tokopedia.flight.cancellationV2.domain.FlightCancellationRequestCancelUseCase
 import com.tokopedia.flight.cancellationV2.presentation.model.FlightCancellationWrapperModel
@@ -27,8 +28,8 @@ class FlightCancellationReviewViewModel @Inject constructor(
     var invoiceId: String = ""
     lateinit var cancellationWrapperModel: FlightCancellationWrapperModel
 
-    private val mutableEstimateRefundFinish = MutableLiveData<Result<Boolean>>()
-    val estimateRefundFinish: LiveData<Result<Boolean>>
+    private val mutableEstimateRefundFinish = MutableLiveData<Result<FlightCancellationEstimateEntity>>()
+    val estimateRefundFinish: LiveData<Result<FlightCancellationEstimateEntity>>
         get() = mutableEstimateRefundFinish
 
     private val mutableRequestCancel = MutableLiveData<Result<Boolean>>()
@@ -37,7 +38,6 @@ class FlightCancellationReviewViewModel @Inject constructor(
 
     init {
         mutableRequestCancel.value = Success(false)
-        mutableEstimateRefundFinish.value = Success(false)
     }
 
     fun onInit() {
@@ -67,7 +67,7 @@ class FlightCancellationReviewViewModel @Inject constructor(
             cancellationWrapperModel.cancellationReasonAndAttachmentModel.estimateFmt = estimateRefundData.totalValue
             cancellationWrapperModel.cancellationReasonAndAttachmentModel.showEstimateRefund = estimateRefundData.showEstimate
 
-            mutableEstimateRefundFinish.postValue(Success(true))
+            mutableEstimateRefundFinish.postValue(Success(estimateRefundData))
         }) {
             it.printStackTrace()
             mutableEstimateRefundFinish.postValue(Fail(it))

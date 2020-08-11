@@ -18,7 +18,16 @@ class FlightCancellationEstimateEntity(
         val totalValueNumeric: Long = 0,
         @SerializedName("showEstimate")
         @Expose
-        val showEstimate: Boolean = true
+        val showEstimate: Boolean = true,
+        @SerializedName("estimationExistPolicy")
+        @Expose
+        val estimationExistsPolicy: List<String> = arrayListOf(),
+        @SerializedName("estimationNotExistPolicy")
+        @Expose
+        val estimationNotExistPolicy: List<String> = arrayListOf(),
+        @SerializedName("nonRefundableText")
+        @Expose
+        val nonRefundableText: String = ""
 ) {
     class Response(@SerializedName("flightEstimated")
                    @Expose

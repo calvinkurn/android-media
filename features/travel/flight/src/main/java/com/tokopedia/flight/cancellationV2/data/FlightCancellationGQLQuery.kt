@@ -78,6 +78,9 @@ object FlightCancellationGQLQuery {
             totalValue
             totalValueNumeric
             showEstimate
+            estimationExistPolicy
+            estimationNotExistPolicy
+            nonRefundableText
           }
         }
     """.trimIndent()
