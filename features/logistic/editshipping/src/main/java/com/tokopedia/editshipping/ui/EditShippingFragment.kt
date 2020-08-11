@@ -16,6 +16,7 @@ import androidx.fragment.app.FragmentActivity
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.editshipping.R
@@ -511,7 +512,9 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
             ticker_validation_bo.setHtmlDescription(data.data.tickerContent)
             ticker_validation_bo.setDescriptionClickEvent(object : TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                    goToChargeBoWebview()
+                    val url = data.data.tickerContent.substringAfter("<a href='").substringBefore("'>di sini</a>")
+                    val intent = RouteManager.getIntent(context, String.format("%s?titlebar=false&url=%s", ApplinkConst.WEBVIEW, url))
+                    startActivity(intent)
                 }
 
                 override fun onDismiss() {

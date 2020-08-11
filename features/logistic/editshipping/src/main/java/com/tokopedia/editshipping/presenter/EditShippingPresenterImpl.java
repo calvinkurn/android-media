@@ -852,29 +852,7 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
     @NotNull
     @Override
     public String getCompiledShippingId() {
-        return compiledShippingIdValidateBo();
-    }
-
-    private String compiledShippingIdValidateBo() {
         scanActivatedCourier();
-        JSONObject jsonCompiled = new JSONObject();
-        JSONObject shippingPackage;
-        try {
-            for (int i = 0; i < courierList.size(); i++) {
-                if (activatedCourier.contains(courierList.get(i).id)
-                        && courierList.get(i).available.equals("1")) {
-                    shippingPackage = new JSONObject();
-                    for (int j = 0; j < courierList.get(i).services.size(); j++) {
-                        if (activatedServices.contains(courierList.get(i).services.get(j).id)) {
-                            shippingPackage.put(courierList.get(i).services.get(j).id, "1");
-                        }
-                        jsonCompiled.put(courierList.get(i).id, shippingPackage);
-                    }
-                }
-            }
-            return jsonCompiled.toString();
-        } catch (JSONException e) {
-            return "";
-        }
+        return compiledShippingId();
     }
 }
