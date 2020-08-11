@@ -332,7 +332,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:text="@string/ask_2_placeholder"
             app:typographyType="body_1"
-            app:typographyWeight="bold"/>
+            app:typographyWeight="bold"
+            android:visibility="gone"/>
 
         <com.tokopedia.unifycomponents.TextFieldUnify
             android:id="@+id/tf_choose_sub_reason"
