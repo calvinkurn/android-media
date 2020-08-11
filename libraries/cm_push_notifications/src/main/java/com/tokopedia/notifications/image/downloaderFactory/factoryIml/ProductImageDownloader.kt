@@ -24,10 +24,19 @@ class ProductImageDownloader(baseNotificationModel: BaseNotificationModel)
 
     override suspend fun downloadAndVerify(context: Context): BaseNotificationModel? {
         baseNotificationModel.productInfoList.forEach { productInfo ->
-            val filePath = downloadAndStore(context, productInfo.productImage, ImageSizeAndTimeout.PRODUCT_IMAGE)
-            filePath?.let {
-                productInfo.productImage = it
-            }
+            val productImage = downloadAndStore(
+                    context,
+                    productInfo.productImage,
+                    ImageSizeAndTimeout.PRODUCT_IMAGE
+            )
+            val freeOngkirIcon = downloadAndStore(
+                    context,
+                    productInfo.freeOngkirIcon,
+                    ImageSizeAndTimeout.FREE_ONGKIR
+            )
+
+            productImage?.let { productInfo.productImage = it }
+            freeOngkirIcon?.let { productInfo.freeOngkirIcon = it }
         }
         verifyAndUpdate()
         return baseNotificationModel
