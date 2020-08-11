@@ -285,15 +285,16 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
                             listener.onPreferenceEditClicked(preference)
                         }
                     }
+                    setPaymentErrorAlpha(false)
                 } else {
                     tvPaymentErrorMessage?.gone()
                     tvPaymentErrorAction?.gone()
+                    setPaymentErrorAlpha(true)
                 }
                 tvInstallmentType?.gone()
                 tvInstallmentDetail?.gone()
                 tvInstallmentErrorMessage?.gone()
                 tvInstallmentErrorAction?.gone()
-                setPaymentErrorAlpha()
             }
         }
     }
@@ -350,12 +351,18 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
         }
     }
 
-    private fun setPaymentErrorAlpha() {
+    private fun setPaymentErrorAlpha(isDetailRed: Boolean) {
         ivPayment?.alpha = 0.5f
         tvPaymentName?.alpha = 0.5f
         tvPaymentDetail?.alpha = 0.5f
-        view.context?.resources?.getColor(com.tokopedia.unifyprinciples.R.color.Red_R600)?.let {
-            tvPaymentDetail?.setTextColor(it)
+        if (isDetailRed) {
+            view.context?.resources?.getColor(com.tokopedia.unifyprinciples.R.color.Red_R600)?.let {
+                tvPaymentDetail?.setTextColor(it)
+            }
+        } else {
+            view.context?.resources?.getColor(com.tokopedia.unifyprinciples.R.color.Neutral_N700_68)?.let {
+                tvPaymentDetail?.setTextColor(it)
+            }
         }
     }
 
