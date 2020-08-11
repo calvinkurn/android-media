@@ -308,7 +308,7 @@ final class ProductListPresenter
         requestParams.putString(SearchApiConst.SOURCE, SearchApiConst.DEFAULT_VALUE_SOURCE_SEARCH);
         requestParams.putString(SearchApiConst.DEVICE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE);
         requestParams.putString(SearchApiConst.ROWS, getSearchRows());
-        requestParams.putString(SearchApiConst.OB, String.valueOf(getStartFrom()));
+        requestParams.putString(SearchApiConst.OB, getSearchSort(searchParameter));
         requestParams.putString(SearchApiConst.START, String.valueOf(getStartFrom()));
         requestParams.putString(SearchApiConst.IMAGE_SIZE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_IMAGE_SIZE);
         requestParams.putString(SearchApiConst.IMAGE_SQUARE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_IMAGE_SQUARE);
@@ -319,6 +319,13 @@ final class ProductListPresenter
 
     private String getSearchRows() {
         return SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_ROWS;
+    }
+
+    private String getSearchSort(Map<String, Object> searchParameter) {
+        Object sortObject = searchParameter.get(SearchApiConst.OB);
+        String sort = sortObject == null ? "" : sortObject.toString();
+
+        return !textIsEmpty(sort) ? sort : SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SORT;
     }
 
     private String getSearchQuery(Map<String, Object> searchParameter) {
