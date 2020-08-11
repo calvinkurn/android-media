@@ -133,9 +133,11 @@ class ShopHomeNplCampaignViewHolder(
             it.bannerType.toLowerCase() == selectedBannerType.toLowerCase()
         }?.imageUrl.orEmpty()
         itemView.banner_background?.apply {
-            layoutParams.height = if (statusCampaign == StatusCampaign.FINISHED.statusCampaign) {
+            layoutParams.height = if (statusCampaign.toLowerCase() == StatusCampaign.FINISHED.statusCampaign.toLowerCase()) {
+                adjustViewBounds = true
                 ConstraintLayout.LayoutParams.WRAP_CONTENT
             } else {
+                adjustViewBounds = false
                 0
             }
             setImageUrl(bannerUrl)
