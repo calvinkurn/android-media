@@ -4,7 +4,7 @@
     android:id="@+id/autocompletePopularSearchItem"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:foreground="?attr/selectableItemBackground">
+    android:background="?attr/selectableItemBackground">
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/autocompletePopularSearchIcon"
