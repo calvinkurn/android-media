@@ -1,6 +1,8 @@
 package com.tokopedia.buyerorder.detail.view.fragment
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
@@ -9,7 +11,9 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -232,10 +236,11 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         tv_body_cancel_requested?.gone()
         btn_chat_penjual?.gone()
 
-        tf_choose_reason?.visible()
         tf_choose_sub_reason?.gone()
         btn_req_cancel?.visible()
 
+        tf_choose_reason?.visible()
+        // tf_choose_reason?.setPlaceholder(getString(R.string.reason_placeholder))
         tf_choose_reason?.textFieldInput?.isFocusable = false
         tf_choose_reason?.textFieldInput?.isClickable = true
         setListenersCancelIsAvailable()
@@ -466,11 +471,9 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
 
     override fun onReasonClicked(reason: String) {
         bottomSheet.dismiss()
-        tv_sub_reason?.visible()
-        tf_choose_sub_reason?.visible()
         btn_req_cancel?.isEnabled = false
         tf_choose_reason?.textFieldInput?.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS or InputType.TYPE_TEXT_FLAG_MULTI_LINE
-        tf_choose_reason?.textFieldInput?.setSingleLine(false)
+        tf_choose_reason?.textFieldInput?.isSingleLine = false
         tf_choose_reason?.textFieldInput?.imeOptions = EditorInfo.IME_FLAG_NO_ENTER_ACTION
         tf_choose_reason?.textFieldInput?.setText(reason)
         reasonCancel = reason
@@ -478,10 +481,12 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
 
         if (reason.equals(LAINNYA, true)) {
             reasonCode = BuyerConsts.REASON_CODE_LAINNYA
-            tv_sub_reason?.gone()
             tf_choose_sub_reason?.gone()
+            tv_sub_reason?.visible()
             tv_sub_reason?.text = getString(R.string.ask_2_lainnya)
             tf_choose_sub_reason_editable?.visible()
+            tf_choose_sub_reason_editable?.requestFocus()
+            context?.let { showKeyboard(it) }
             tf_choose_sub_reason_editable?.setCounter(160)
             tf_choose_sub_reason_editable?.textFieldInput?.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS or InputType.TYPE_TEXT_FLAG_MULTI_LINE
             tf_choose_sub_reason_editable?.textFieldInput?.isSingleLine = false
@@ -515,23 +520,24 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
                 }
             })
         } else {
+            context?.let { hideKeyboard(it) }
             if (cancelReasonResponse.reasons.isNotEmpty()) {
-                tf_choose_sub_reason_editable?.gone()
+                tv_sub_reason?.visible()
+                tv_sub_reason?.text = getString(R.string.ask_2_placeholder)
+
                 tf_choose_sub_reason?.visible()
-                tf_choose_sub_reason?.setPlaceholder(getString(R.string.reason_placeholder))
+                tf_choose_sub_reason_editable?.gone()
+                // tf_choose_sub_reason?.setPlaceholder(getString(R.string.reason_placeholder))
                 tf_choose_sub_reason?.textFieldIcon1?.setImageResource(R.drawable.ic_chevron_down)
                 tf_choose_sub_reason?.textFieldInput?.setText("")
-                tv_sub_reason?.text = getString(R.string.ask_2_placeholder)
 
                 cancelReasonResponse.reasons.forEach {
                     if (it.title.equals(reason, true))  {
                         listOfSubReason = it.subReasons
 
-
                         tf_choose_sub_reason?.textFiedlLabelText?.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS or InputType.TYPE_TEXT_FLAG_MULTI_LINE
                         tf_choose_sub_reason?.textFieldInput?.isSingleLine = false
                         tf_choose_sub_reason?.textFieldInput?.imeOptions = EditorInfo.IME_FLAG_NO_ENTER_ACTION
-                        // tf_choose_sub_reason?.textFiedlLabelText?.text = it.question
                         tf_choose_sub_reason?.textFieldInput?.isFocusable = false
                         tf_choose_sub_reason?.textFieldInput?.isClickable = true
                         tf_choose_sub_reason?.setOnClickListener {
@@ -723,5 +729,20 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
 
             })
         }
+    }
+
+    fun hideKeyboard(context: Context) {
+        try {
+            (context as Activity).window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
+            if (context.currentFocus != null && context.currentFocus?.windowToken != null) {
+                (context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(context.currentFocus?.windowToken, 0)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    fun showKeyboard(context: Context) {
+        (context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
     }
 }
