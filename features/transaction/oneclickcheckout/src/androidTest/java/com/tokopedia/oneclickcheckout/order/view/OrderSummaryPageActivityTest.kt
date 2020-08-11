@@ -2,6 +2,7 @@ package com.tokopedia.oneclickcheckout.order.view
 
 import android.app.Activity
 import android.app.Instrumentation.ActivityResult
+import android.view.View
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.IdlingResource
@@ -71,8 +72,21 @@ class OrderSummaryPageActivityTest {
 
     @Test
     fun happyFlow_DirectCheckout() {
+        logisticInterceptor.customRatesResponseString = null
+
         activityRule.launchActivity(null)
         intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
+
+        onView(withId(R.id.tv_shop_name)).check(matches(withText("tokocgk")))
+        onView(withId(R.id.tv_shop_location)).check(matches(withText("Kota Yogyakarta")))
+        onView(withId(R.id.tv_product_name)).check(matches(withText("Product1")))
+        onView(withId(R.id.tv_product_price)).check(matches(withText("Rp100.000")))
+        onView(withId(R.id.tv_product_slash_price)).check { view, noViewFoundException ->
+            noViewFoundException?.printStackTrace()
+            view.visibility = View.GONE
+        }
+        onView(withId(R.id.iv_free_shipping)).check(matches(isDisplayed()))
+        onView(withId(R.id.et_qty)).check(matches(withText("1")))
 
         onView(withId(R.id.tv_card_header)).check(matches(withText("Pilihan 1")))
         onView(withId(R.id.tv_address_name)).check(matches(withText("Address 1")))
@@ -102,6 +116,8 @@ class OrderSummaryPageActivityTest {
 
     @Test
     fun happyFlow_ChangeCourier() {
+        logisticInterceptor.customRatesResponseString = null
+
         activityRule.launchActivity(null)
         intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
 
@@ -113,8 +129,11 @@ class OrderSummaryPageActivityTest {
         onView(withId(R.id.tv_shipping_price)).perform(click())
         onView(withText("AnterAja")).perform(click())
 
-        onView(withId(R.id.nested_scroll_view)).perform(swipeUp())
+        onView(withId(R.id.ticker_shipping_promo)).check(matches(isDisplayed()))
+        onView(withId(R.id.tv_shipping_name)).check(matches(withText("Pengiriman Reguler")))
+        onView(withId(R.id.tv_shipping_duration)).check(matches(withText("Durasi 2-4 hari - AnterAja")))
         onView(withId(R.id.tv_shipping_price)).check(matches(withText("Rp16.000")))
+        onView(withId(R.id.nested_scroll_view)).perform(swipeUp())
         onView(withId(R.id.tv_total_payment_value)).check(matches(withText("Rp117.000")))
         onView(withId(R.id.btn_pay)).check(matches(withText("Bayar")))
         onView(withId(R.id.btn_pay)).perform(click())
@@ -128,11 +147,14 @@ class OrderSummaryPageActivityTest {
 
     @Test
     fun happyFlow_AddQuantity() {
+        logisticInterceptor.customRatesResponseString = null
+
         activityRule.launchActivity(null)
         intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
 
         onView(withId(R.id.btn_qty_plus)).perform(click())
         Thread.sleep(1500)
+        onView(withId(R.id.et_qty)).check(matches(withText("2")))
 
         onView(withId(R.id.nested_scroll_view)).perform(swipeUp())
         onView(withId(R.id.tv_total_payment_value)).check(matches(withText("Rp216.000")))
@@ -148,14 +170,15 @@ class OrderSummaryPageActivityTest {
 
     @Test
     fun happyFlow_CheckInsurance() {
+        logisticInterceptor.customRatesResponseString = RATES_RESPONSE_WITH_INSURANCE
+
         activityRule.launchActivity(null)
         intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
 
-        logisticInterceptor.customRatesResponseString = RATES_RESPONSE_WITH_INSURANCE
-
         onView(withId(R.id.nested_scroll_view)).perform(swipeUp())
         onView(withId(R.id.cb_insurance)).perform(click())
-        onView(withId(R.id.tv_total_payment_value)).check(matches(withText("Rp216.000")))
+        onView(withId(R.id.cb_insurance)).check(matches(isChecked()))
+        onView(withId(R.id.tv_total_payment_value)).check(matches(withText("Rp117.000")))
         onView(withId(R.id.btn_pay)).check(matches(withText("Bayar")))
         onView(withId(R.id.btn_pay)).perform(click())
 
