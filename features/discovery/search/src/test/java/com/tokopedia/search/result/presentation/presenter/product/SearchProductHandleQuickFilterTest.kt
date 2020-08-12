@@ -10,7 +10,7 @@ import com.tokopedia.search.listShouldBe
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.shouldBe
-import com.tokopedia.search.utils.createDefaultQuickFilter
+import com.tokopedia.search.utils.createSearchProductDefaultQuickFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.usecase.RequestParams
 import io.mockk.*
@@ -111,7 +111,7 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
 
         `When Load Data`()
 
-        `Then verify new quick filter interactions`(createDefaultQuickFilter())
+        `Then verify new quick filter interactions`(createSearchProductDefaultQuickFilter())
     }
 
     @Test

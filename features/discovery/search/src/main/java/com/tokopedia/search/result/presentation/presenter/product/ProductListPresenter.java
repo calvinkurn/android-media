@@ -44,7 +44,6 @@ import com.tokopedia.search.result.presentation.model.RecommendationItemViewMode
 import com.tokopedia.search.result.presentation.model.RecommendationTitleViewModel;
 import com.tokopedia.search.result.presentation.model.RelatedViewModel;
 import com.tokopedia.search.result.presentation.model.SuggestionViewModel;
-import com.tokopedia.search.utils.QuickFilterDefaultKt;
 import com.tokopedia.search.utils.SearchFilterUtilsKt;
 import com.tokopedia.search.utils.UrlParamUtils;
 import com.tokopedia.sortfilter.SortFilterItem;
@@ -1082,7 +1081,7 @@ final class ProductListPresenter
         DataValue quickFilter = searchProductModel.getQuickFilterModel();
 
         if (quickFilter.getFilter().size() < QUICK_FILTER_MINIMUM_SIZE) {
-            quickFilter = QuickFilterDefaultKt.createDefaultQuickFilter();
+            quickFilter = SearchFilterUtilsKt.createSearchProductDefaultQuickFilter();
             searchProductModel.setQuickFilterModel(quickFilter);
         }
     }
@@ -1607,7 +1606,7 @@ final class ProductListPresenter
     }
 
     private void handleGetDynamicFilterFailed() {
-        getViewToSetDynamicFilterModel(SearchFilterUtilsKt.createDefaultFilterProduct());
+        getViewToSetDynamicFilterModel(SearchFilterUtilsKt.createSearchProductDefaultFilter());
     }
 
     @Override

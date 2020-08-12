@@ -7,7 +7,7 @@ import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.error
 import com.tokopedia.search.shouldBe
-import com.tokopedia.search.utils.createDefaultFilterProduct
+import com.tokopedia.search.utils.createSearchProductDefaultFilter
 import com.tokopedia.usecase.RequestParams
 import io.mockk.*
 import org.junit.Test
@@ -107,7 +107,7 @@ internal class SearchProductOpenBottomSheetFilter: ProductListPresenterTestFixtu
     }
 
     private fun `Then verify default filter`(defaultDynamicFilterModel: DynamicFilterModel) {
-        val expectedDefaultDynamicFilterModel = createDefaultFilterProduct()
+        val expectedDefaultDynamicFilterModel = createSearchProductDefaultFilter()
 
         val expectedSort = expectedDefaultDynamicFilterModel.data.sort
         val actualSort = defaultDynamicFilterModel.data.sort
