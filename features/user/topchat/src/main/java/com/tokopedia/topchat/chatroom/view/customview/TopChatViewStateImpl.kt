@@ -429,7 +429,7 @@ class TopChatViewStateImpl constructor(
         val title = view.context.getString(R.string.title_confirm_block_promo)
         val desc = view.context.getString(R.string.desc_confirm_block_promo)
         val titleCtaBlock = view.context.getString(R.string.title_block_user_chat)
-        val titleCtaCancel = view.context.getString(R.string.cancel)
+        val titleCtaCancel = view.context.getString(R.string.title_block_and_report_user_chat)
         val dialog = DialogUnify(view.context, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
             setTitle(title)
             setDescription(desc)
@@ -439,7 +439,11 @@ class TopChatViewStateImpl constructor(
                 dismiss()
             }
             setSecondaryCTAText(titleCtaCancel)
-            setSecondaryCTAClickListener { dismiss() }
+            setSecondaryCTAClickListener {
+                headerMenuListener.blockChat()
+                headerMenuListener.onGoToReportUser()
+                dismiss()
+            }
         }
         dialog.show()
     }
