@@ -32,6 +32,8 @@ import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.component.Menus
 import com.tokopedia.kotlin.extensions.view.goToFirst
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -67,6 +69,8 @@ import com.tokopedia.topchat.chatsetting.view.activity.ChatSettingActivity
 import com.tokopedia.topchat.common.TopChatInternalRouter
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -104,6 +108,7 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
     private var itemPositionLongClicked: Int = -1
     private var filterChecked = 0
     private var filterMenu = FilterMenu()
+    private var chatBannedSellerTicker: Ticker? = null
     private lateinit var broadCastButton: FloatingActionButton
 
     override fun getRecyclerViewResourceId() = R.id.recycler_view
@@ -189,6 +194,42 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
         initView(view)
         setObserver()
         setupSellerBroadcast()
+        setupChatSellerBannedStatus()
+    }
+
+    private fun setupChatSellerBannedStatus() {
+        if (!isTabSeller()) return
+        chatItemListViewModel.chatBannedSellerStatus.observe(this, Observer {
+            when (it) {
+                is Success -> updateChatBannedSellerStatus(it.data)
+            }
+        })
+    }
+
+    private fun updateChatBannedSellerStatus(isBanned: Boolean) {
+        if (isBanned) {
+            showBannedTicker()
+        } else {
+            chatBannedSellerTicker?.hide()
+        }
+    }
+
+    private fun showBannedTicker() {
+        chatBannedSellerTicker?.apply {
+            val description = "Menurut laporan pengguna, kamu mengirimkan chat ofensif " +
+                    "ke penjual. Mohon baca kembali <a href=\"" +
+                    "tokopedia://home" +
+                    "\">Ketentuan Pengguna Tokopedia.</a>"
+            show()
+            setHtmlDescription(description)
+            setDescriptionClickEvent(object : TickerCallback {
+                override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                    RouteManager.route(context, linkUrl.toString())
+                }
+
+                override fun onDismiss() {}
+            })
+        }
     }
 
     override fun onPrepareOptionsMenu(menu: Menu) {
@@ -231,6 +272,7 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
     private fun initView(view: View) {
         showLoading()
         broadCastButton = view.findViewById(R.id.fab_broadcast)
+        chatBannedSellerTicker = view.findViewById(R.id.ticker_ban_status)
     }
 
     private fun setUpRecyclerView(view: View) {
@@ -456,6 +498,7 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
         super.loadInitialData()
         if (isTabSeller()) {
             chatItemListViewModel.loadTopBotWhiteList()
+            chatItemListViewModel.loadChatBannedSellerStatus()
         }
     }
 
@@ -551,6 +594,7 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
         chatItemListViewModel.deleteChat.removeObservers(this)
         chatItemListViewModel.broadCastButtonVisibility.removeObservers(this)
         chatItemListViewModel.broadCastButtonUrl.removeObservers(this)
+        chatItemListViewModel.chatBannedSellerStatus.removeObservers(this)
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
