@@ -21,7 +21,6 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_PHONE
-import com.tokopedia.applink.internal.ApplinkConstInternalTestApp
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.analytics.DiscoveryAnalytics
