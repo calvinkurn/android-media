@@ -98,8 +98,9 @@ final class ProductListPresenter
         implements ProductListSectionContract.Presenter {
 
     private static final List<Integer> searchNoResultCodeList = Arrays.asList(1, 2, 3, 4, 5, 6, 8);
-    private static final List<String> showBroadMatchResponseCodeList = Arrays.asList("4", "5");
+    private static final List<String> showBroadMatchResponseCodeList = Arrays.asList("0", "4", "5");
     private static final List<String> generalSearchTrackingRelatedKeywordResponseCodeList = Arrays.asList("3", "4", "5", "6");
+    private static final List<String> showSuggestionResponseCodeList = Arrays.asList("3", "6", "7");
     private static final String SEARCH_PAGE_NAME_RECOMMENDATION = "empty_search";
     private static final String DEFAULT_PAGE_TITLE_RECOMMENDATION = "Rekomendasi untukmu";
     private static final String DEFAULT_USER_ID = "0";
@@ -500,7 +501,7 @@ final class ProductListPresenter
             saveLastProductItemPositionToCache(lastProductItemPositionFromCache, productViewModel.getProductList());
 
             if (productViewModel.getProductList().isEmpty()) {
-                getViewToProcessEmptyResultDuringLoadMore();
+                getViewToProcessEmptyResultDuringLoadMore(searchProductModel.getSearchProduct());
             } else {
                 getViewToShowMoreData(searchParameter, searchProductModel, productViewModel);
             }
@@ -520,9 +521,9 @@ final class ProductListPresenter
         return list != null && !list.isEmpty();
     }
 
-    private void getViewToProcessEmptyResultDuringLoadMore() {
+    private void getViewToProcessEmptyResultDuringLoadMore(SearchProductModel.SearchProduct searchProduct) {
         List<Visitable> list = new ArrayList<>();
-        if (isShowBroadMatch()) processSuggestionAndBroadMatch(list);
+        processBroadMatch(searchProduct, list);
 
         getView().removeLoading();
         getView().addProductList(list);
@@ -534,11 +535,7 @@ final class ProductListPresenter
 
         processInspirationCardPosition(searchParameter, list);
         processInspirationCarouselPosition(searchParameter, list);
-
-        boolean isLastPage = isLastPage(searchProductModel.getSearchProduct());
-        if (isLastPage && isShowBroadMatch()) {
-            processSuggestionAndBroadMatch(list);
-        }
+        processBroadMatch(searchProductModel.getSearchProduct(), list);
 
         getView().removeLoading();
         getView().addProductList(list);
@@ -845,14 +842,14 @@ final class ProductListPresenter
     private void getViewToShowBroadMatchToReplaceEmptySearch() {
         List<Visitable> visitableList = new ArrayList<>();
 
-        processSuggestionAndBroadMatch(visitableList);
+        addBroadMatchToVisitableList(visitableList);
 
         getView().removeLoading();
         getView().setProductList(visitableList);
         getView().backToTop();
     }
 
-    private void processSuggestionAndBroadMatch(List<Visitable> visitableList) {
+    private void addBroadMatchToVisitableList(List<Visitable> visitableList) {
         if (suggestionViewModel != null && !textIsEmpty(suggestionViewModel.getSuggestionText())) {
             visitableList.add(suggestionViewModel);
 
@@ -977,8 +974,7 @@ final class ProductListPresenter
             getView().trackEventImpressionTicker(typeId);
         }
 
-        if (!isShowBroadMatch()
-            && !textIsEmpty(productViewModel.getSuggestionModel().getSuggestionText())) {
+        if (shouldShowSuggestion(productViewModel)) {
             list.add(productViewModel.getSuggestionModel());
         }
 
@@ -1013,9 +1009,7 @@ final class ProductListPresenter
         inspirationCardViewModel = productViewModel.getInspirationCardViewModel();
         processInspirationCardPosition(searchParameter, list);
 
-        if (isLastPage(searchProduct) && isShowBroadMatch()) {
-            processSuggestionAndBroadMatch(list);
-        }
+        processBroadMatch(searchProduct, list);
 
         getView().removeLoading();
         getView().setProductList(list);
@@ -1032,10 +1026,9 @@ final class ProductListPresenter
         getView().stopTracePerformanceMonitoring();
     }
 
-    private boolean isLastPage(@NotNull SearchProductModel.SearchProduct searchProduct) {
-        boolean hasNextPage = startFrom < searchProduct.getHeader().getTotalData();
-
-        return !hasNextPage;
+    private boolean shouldShowSuggestion(ProductViewModel productViewModel) {
+        return showSuggestionResponseCodeList.contains(responseCode)
+                && !textIsEmpty(productViewModel.getSuggestionModel().getSuggestionText());
     }
 
     private boolean shouldShowCpmShop(ProductViewModel productViewModel) {
@@ -1133,6 +1126,50 @@ final class ProductListPresenter
                 }
             }
         }
+    }
+
+    private void processBroadMatch(SearchProductModel.SearchProduct searchProduct, List<Visitable> list) {
+        try {
+            if (isShowBroadMatch()) {
+                int broadMatchPosition = relatedViewModel.getPosition();
+
+                if (broadMatchPosition == 0) processBroadMatchAtBottom(searchProduct, list);
+                else if (broadMatchPosition == 1) processBroadMatchAtTop(list);
+                else if (broadMatchPosition > 1) processBroadMatchAtPosition(list, broadMatchPosition);
+            }
+        }
+        catch (Exception exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    private void processBroadMatchAtBottom(@NotNull SearchProductModel.SearchProduct searchProduct, List<Visitable> list) {
+        if (isLastPage(searchProduct)) addBroadMatchToVisitableList(list);
+    }
+
+    private boolean isLastPage(@NotNull SearchProductModel.SearchProduct searchProduct) {
+        boolean hasNextPage = startFrom < searchProduct.getHeader().getTotalData();
+
+        return !hasNextPage;
+    }
+
+    private void processBroadMatchAtTop(List<Visitable> list) {
+        List<Visitable> broadMatchVisitableList = new ArrayList<>();
+        addBroadMatchToVisitableList(broadMatchVisitableList);
+
+        list.addAll(list.indexOf(productList.get(0)), broadMatchVisitableList);
+    }
+
+    private void processBroadMatchAtPosition(List<Visitable> list, int broadMatchPosition) {
+        if (productList.size() < broadMatchPosition) return;
+
+        List<Visitable> broadMatchVisitableList = new ArrayList<>();
+        addBroadMatchToVisitableList(broadMatchVisitableList);
+
+        Visitable productItemAtBroadMatchPosition = productList.get(broadMatchPosition - 1);
+        int broadMatchIndex = list.indexOf(productItemAtBroadMatchPosition) + 1;
+
+        list.addAll(broadMatchIndex, broadMatchVisitableList);
     }
 
     private boolean isExistsFreeOngkirBadge(List<Visitable> productList) {

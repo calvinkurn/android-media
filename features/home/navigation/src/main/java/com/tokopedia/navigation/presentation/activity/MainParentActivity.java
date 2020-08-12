@@ -27,6 +27,13 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import androidx.annotation.RestrictTo;
+import androidx.core.app.NotificationManagerCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
 import com.airbnb.lottie.LottieDrawable;
 import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
@@ -91,12 +98,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import androidx.annotation.RestrictTo;
-import androidx.core.app.NotificationManagerCompat;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import dagger.Lazy;
 
 import static com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_SOURCE;
@@ -688,7 +689,7 @@ public class MainParentActivity extends BaseActivity implements
                 intent.putExtra(PARAM_BROADCAST_NEW_FEED, notification.getHaveNewFeed());
                 LocalBroadcastManager.getInstance(getContext().getApplicationContext()).sendBroadcast(intent);
             } else {
-                bottomNavigation.setBadge(0, FEED_MENU, View.VISIBLE);
+                bottomNavigation.setBadge(0, FEED_MENU, View.GONE);
             }
         }
         if (currentFragment != null)
@@ -909,6 +910,8 @@ public class MainParentActivity extends BaseActivity implements
                     boolean isHaveNewFeed = intent.getBooleanExtra(PARAM_BROADCAST_NEW_FEED_CLICKED, false);
                     if (isHaveNewFeed) {
                         bottomNavigation.setBadge(0, FEED_MENU, View.VISIBLE);
+                    } else {
+                        bottomNavigation.setBadge(0, FEED_MENU, View.GONE);
                     }
                 }
             }

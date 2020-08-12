@@ -42,7 +42,7 @@ ext {
     playServiceBaseVersion = '17.3.0'
     playServiceFirebaseIidVersion = '17.0.4'
 
-    playCoreVersion = '1.6.3'
+    playCoreVersion = '1.8.0'
     playServiceGms = '16.0.0'
     playServiceBase = '16.1.0'
     playServiceAppIndexing = '17.1.0'
@@ -92,7 +92,7 @@ ext {
 
     unifyIconVersion = '0.0.4'
     unifyPrinciplesVersion = '1.1.8'
-    unifyComponentsVersion = '1.1.42'
+    unifyComponentsVersion = '1.1.44'
     unifyCoachMarkVersion = '1.2.6'
     unifyCalendarVersion = '1.0.2'
     unifyBannerVersion = '1.0.4'
