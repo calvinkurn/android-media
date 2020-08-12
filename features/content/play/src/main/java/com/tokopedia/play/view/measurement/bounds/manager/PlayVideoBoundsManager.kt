@@ -7,7 +7,6 @@ import androidx.constraintlayout.widget.ConstraintSet
 import com.tokopedia.play.R
 import com.tokopedia.play.util.changeConstraint
 import com.tokopedia.play.view.measurement.ScreenOrientationDataSource
-import com.tokopedia.play.view.measurement.bounds.BoundsKey
 import com.tokopedia.play.view.type.VideoOrientation
 import com.tokopedia.play.view.uimodel.VideoPlayerUiModel
 
@@ -35,7 +34,7 @@ class PlayVideoBoundsManager(
 
         if (videoPlayer.isYouTube) changeVideoMargin(flYouTube, finalTopBounds)
         else {
-            reconfigureLayout(videoOrientation, finalTopBounds)
+            reconfigureExoFrame(videoOrientation)
             changeVideoMargin(flVideo, finalTopBounds)
         }
     }
@@ -43,7 +42,7 @@ class PlayVideoBoundsManager(
     /**
      * Private methods
      */
-    private fun reconfigureLayout(videoOrientation: VideoOrientation, topBounds: Int) {
+    private fun reconfigureExoFrame(videoOrientation: VideoOrientation) {
         val paramsHeight = flVideo.layoutParams.height
         val paramsWidth = flVideo.layoutParams.width
 

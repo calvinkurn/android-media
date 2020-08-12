@@ -1,6 +1,5 @@
 package com.tokopedia.play.view.measurement.bounds.provider
 
-import com.tokopedia.play.view.measurement.bounds.provider.VideoBoundsProvider
 import com.tokopedia.play.view.type.VideoOrientation
 
 /**

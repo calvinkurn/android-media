@@ -407,11 +407,10 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun setupObserve() {
-        observeVideoPlayer()
+        observeVideoMeta()
         observeVideoProperty()
         observeTitleChannel()
         observeQuickReply()
-        observeVideoStream()
         observeToolbarInfo()
         observeTotalLikes()
         observeTotalViews()
@@ -444,20 +443,32 @@ class PlayUserInteractionFragment @Inject constructor(
             awaitAll(toolbarMeasure, statsInfoMeasure)
             playFragment.onFirstTopBoundsCalculated()
         }
-
-//        scope.launch(dispatchers.immediate) {
-//            playFragment.setCurrentVideoTopBounds(playViewModel.videoOrientation, getVideoTopBounds())
-//        }
     }
 
     //region observe
     /**
      * Observe
      */
-    private fun observeVideoPlayer() {
-        playViewModel.observableVideoPlayer.observe(viewLifecycleOwner, Observer {
-            changeLayoutBasedOnVideoType(it, playViewModel.channelType)
-            if (it is General) videoControlView.setPlayer(it.exoPlayer)
+    private fun observeVideoMeta() {
+        playViewModel.observableVideoMeta.observe(viewLifecycleOwner, Observer { meta ->
+            meta.videoStream?.let {
+                changeLayoutBasedOnVideoOrientation(it.orientation)
+                triggerImmersive(false)
+
+                scope.launch(dispatchers.immediate) {
+                    playFragment.setCurrentVideoTopBounds(it.orientation, getVideoTopBounds(it.orientation))
+                }
+
+                statsInfoViewOnStateChanged(channelType = it.channelType)
+                videoControlViewOnStateChanged(channelType = it.channelType)
+                sendChatViewOnStateChanged(channelType = it.channelType)
+                chatListViewOnStateChanged(channelType = it.channelType)
+                videoSettingsViewOnStateChanged(videoOrientation = it.orientation)
+                gradientBackgroundViewOnStateChanged(videoOrientation = it.orientation)
+            }
+
+            changeLayoutBasedOnVideoType(meta.videoPlayer, playViewModel.channelType)
+            if (meta.videoPlayer is General) videoControlView.setPlayer(meta.videoPlayer.exoPlayer)
         })
     }
 
@@ -481,24 +492,6 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun observeQuickReply() {
         playViewModel.observableQuickReply.observe(viewLifecycleOwner, DistinctObserver {
             quickReplyView?.setQuickReply(it)
-        })
-    }
-
-    private fun observeVideoStream() {
-        playViewModel.observableVideoStream.observe(viewLifecycleOwner, DistinctObserver {
-            changeLayoutBasedOnVideoOrientation(it.orientation)
-            triggerImmersive(false)
-
-            scope.launch(dispatchers.immediate) {
-                playFragment.setCurrentVideoTopBounds(it.orientation, getVideoTopBounds(it.orientation))
-            }
-
-            statsInfoViewOnStateChanged(channelType = it.channelType)
-            videoControlViewOnStateChanged(channelType = it.channelType)
-            sendChatViewOnStateChanged(channelType = it.channelType)
-            chatListViewOnStateChanged(channelType = it.channelType)
-            videoSettingsViewOnStateChanged(videoOrientation = it.orientation)
-            gradientBackgroundViewOnStateChanged(videoOrientation = it.orientation)
         })
     }
 

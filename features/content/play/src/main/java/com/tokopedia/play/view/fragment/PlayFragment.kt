@@ -334,8 +334,7 @@ class PlayFragment @Inject constructor(
         observeGetChannelInfo()
         observeSocketInfo()
         observeEventUserInfo()
-        observeVideoStream()
-        observeVideoPlayer()
+        observeVideoMeta()
         observeBottomInsetsState()
     }
 
@@ -395,17 +394,15 @@ class PlayFragment @Inject constructor(
         })
     }
 
-    private fun observeVideoStream() {
-        playViewModel.observableVideoStream.observe(viewLifecycleOwner, DistinctObserver {
-            setWindowSoftInputMode(it.channelType.isLive)
-            setBackground(it.backgroundUrl)
-        })
-    }
+    private fun observeVideoMeta() {
+        playViewModel.observableVideoMeta.observe(viewLifecycleOwner, Observer { meta ->
+            meta.videoStream?.let {
+                setWindowSoftInputMode(it.channelType.isLive)
+                setBackground(it.backgroundUrl)
+            }
 
-    private fun observeVideoPlayer() {
-        playViewModel.observableVideoPlayer.observe(viewLifecycleOwner, Observer {
-            fragmentVideoViewOnStateChanged(videoPlayer = it)
-            fragmentYouTubeViewOnStateChanged(videoPlayer = it)
+            fragmentVideoViewOnStateChanged(videoPlayer = meta.videoPlayer)
+            fragmentYouTubeViewOnStateChanged(videoPlayer = meta.videoPlayer)
         })
     }
 

@@ -139,7 +139,7 @@ class PlayYouTubeFragment @Inject constructor(
     }
 
     private fun setupObserve() {
-        observeVideoPlayer()
+        observeVideoMeta()
         observeBottomInsetsState()
         observeEventUserInfo()
     }
@@ -148,9 +148,9 @@ class PlayYouTubeFragment @Inject constructor(
     /**
      * Observe
      */
-    private fun observeVideoPlayer() {
-        playViewModel.observableVideoPlayer.observe(viewLifecycleOwner, Observer {
-            youtubeViewOnStateChanged(videoPlayer = it)
+    private fun observeVideoMeta() {
+        playViewModel.observableVideoMeta.observe(viewLifecycleOwner, Observer {
+            youtubeViewOnStateChanged(videoPlayer = it.videoPlayer)
         })
     }
 

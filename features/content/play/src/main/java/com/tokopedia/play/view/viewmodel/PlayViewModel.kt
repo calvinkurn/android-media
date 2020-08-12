@@ -50,12 +50,10 @@ class PlayViewModel @Inject constructor(
     val observableGetChannelInfo: LiveData<NetworkResult<ChannelInfoUiModel>>
         get() = _observableGetChannelInfo
 
-    val observableVideoPlayer: LiveData<VideoPlayerUiModel>
-        get() = _observableVideoPlayer
+    val observableVideoMeta: LiveData<VideoMetaUiModel>
+        get() = _observableVideoMeta
     val observableSocketInfo: LiveData<PlaySocketInfo>
         get() = _observableSocketInfo
-    val observableVideoStream: LiveData<VideoStreamUiModel>
-        get() = _observableVideoStream
     val observableNewChat: LiveData<Event<PlayChatUiModel>>
         get() = _observableNewChat
     val observableChatList: LiveData<out List<PlayChatUiModel>>
@@ -95,7 +93,7 @@ class PlayViewModel @Inject constructor(
         }
     val videoPlayer: VideoPlayerUiModel
         get() {
-            val videoPlayer = _observableVideoPlayer.value
+            val videoPlayer = _observableVideoMeta.value?.videoPlayer
             return videoPlayer ?: Unknown
         }
     val contentId: Int
@@ -137,7 +135,6 @@ class PlayViewModel @Inject constructor(
     private val _observableCompleteInfo = MutableLiveData<PlayCompleteInfoUiModel>()
     private val _observableGetChannelInfo = MutableLiveData<NetworkResult<ChannelInfoUiModel>>()
     private val _observableSocketInfo = MutableLiveData<PlaySocketInfo>()
-    private val _observableVideoStream = MutableLiveData<VideoStreamUiModel>()
     private val _observableChatList = MutableLiveData<MutableList<PlayChatUiModel>>()
     private val _observableTotalLikes = MutableLiveData<TotalLikeUiModel>()
     private val _observableLikeState = MutableLiveData<LikeStateUiModel>()
@@ -156,9 +153,12 @@ class PlayViewModel @Inject constructor(
         }
     }
     private val _observablePinned = MediatorLiveData<PinnedUiModel>()
-    private val _observableVideoPlayer = MediatorLiveData<VideoPlayerUiModel>().apply {
+    private val _observableVideoMeta = MediatorLiveData<VideoMetaUiModel>().apply {
         addSource(playVideoManager.getObservableVideoPlayer()) {
-            if (!videoPlayer.isYouTube) value = General(it)
+            if (!videoPlayer.isYouTube) {
+                val videoPlayer = General(it)
+                value = value?.copy(videoPlayer = videoPlayer) ?: VideoMetaUiModel(videoPlayer)
+            }
         }
     }
     private val _observableBadgeCart = MutableLiveData<CartUiModel>()
@@ -409,8 +409,7 @@ class PlayViewModel @Inject constructor(
                 _observablePinnedMessage.value = completeInfoUiModel.pinnedMessage
                 _observablePinnedProduct.value = completeInfoUiModel.pinnedProduct
                 _observableQuickReply.value = completeInfoUiModel.quickReply
-                _observableVideoPlayer.value = completeInfoUiModel.videoPlayer
-                _observableVideoStream.value = completeInfoUiModel.videoStream
+                _observableVideoMeta.value = VideoMetaUiModel(completeInfoUiModel.videoPlayer, completeInfoUiModel.videoStream)
                 _observableEvent.value = completeInfoUiModel.event
 
                 if (!isActive) return@launchCatchError

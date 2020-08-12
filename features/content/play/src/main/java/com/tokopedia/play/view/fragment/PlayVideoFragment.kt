@@ -119,18 +119,21 @@ class PlayVideoFragment @Inject constructor(
     }
 
     private fun setupObserve() {
-        observeVideoPlayer()
+        observeVideoMeta()
         observeVideoProperty()
         observeOneTapOnboarding()
         observeBottomInsetsState()
         observeEventUserInfo()
-        observeVideoStream()
     }
 
     //region observe
-    private fun observeVideoPlayer() {
-        playViewModel.observableVideoPlayer.observe(viewLifecycleOwner, Observer {
-            videoViewOnStateChanged(videoPlayer = it)
+    private fun observeVideoMeta() {
+        playViewModel.observableVideoMeta.observe(viewLifecycleOwner, Observer { meta ->
+            meta.videoStream?.let {
+                videoView.setOrientation(orientation, it.orientation)
+            }
+
+            videoViewOnStateChanged(videoPlayer = meta.videoPlayer)
         })
     }
 
@@ -181,12 +184,6 @@ class PlayVideoFragment @Inject constructor(
             }
 
             videoViewOnStateChanged(isFreezeOrBanned = it.isFreeze || it.isBanned)
-        })
-    }
-
-    private fun observeVideoStream() {
-        playViewModel.observableVideoStream.observe(viewLifecycleOwner, DistinctObserver {
-            videoView.setOrientation(orientation, it.orientation)
         })
     }
     //endregion
