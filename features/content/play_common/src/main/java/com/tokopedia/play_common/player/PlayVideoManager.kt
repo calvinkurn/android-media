@@ -280,13 +280,14 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
             }
 
             override fun getBlacklistDurationMsFor(dataType: Int, loadDurationMs: Long, exception: IOException?, errorCount: Int): Long {
-                if (exception is InvalidResponseCodeException) {
-                    val responseCode = exception.responseCode
-                    return if (responseCode == 404 // HTTP 404 Not Found.
-                            || responseCode == 410 // HTTP 410 Gone.
-                            || responseCode == 416 // HTTP 416 Range Not Satisfiable.
-                    ) BLACKLIST_MS else C.TIME_UNSET
-                }
+//                if (exception is InvalidResponseCodeException) {
+//                    val responseCode = exception.responseCode
+//                    return if (responseCode == 404 // HTTP 404 Not Found.
+//                            || responseCode == 410 // HTTP 410 Gone.
+//                            || responseCode == 416 // HTTP 416 Range Not Satisfiable.
+//                    ) BLACKLIST_MS else C.TIME_UNSET
+//                }
+//                return C.TIME_UNSET
                 return C.TIME_UNSET
             }
         }
@@ -332,8 +333,6 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
 
         private const val VIDEO_MAX_SOUND = 1f
         private const val VIDEO_MIN_SOUND = 0f
-
-        private const val USE_CACHE = false
 
         @Volatile
         private var INSTANCE: PlayVideoManager? = null
