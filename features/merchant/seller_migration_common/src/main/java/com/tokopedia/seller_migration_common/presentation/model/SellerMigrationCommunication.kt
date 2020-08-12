@@ -70,7 +70,7 @@ sealed class CommunicationInfo(@StringRes val titleRes: Int,
 
 
 /**
- * This object reserved for dynamic Modal Toko and Saldo Prioritas information (eligible for both), so we will provide both infos in pair variable
+ * This object reserved for dynamic Modal Toko and Saldo Prioritas information (eligible for both), so we will provide both infos in a list
  */
 object DynamicCommunicationInfo: SellerMigrationCommunication {
     val communicationInfoList = listOf(CommunicationInfo.ShopCapital, CommunicationInfo.PriorityBalance)

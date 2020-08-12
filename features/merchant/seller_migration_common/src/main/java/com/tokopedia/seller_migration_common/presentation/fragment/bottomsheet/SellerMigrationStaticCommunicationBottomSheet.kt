@@ -20,7 +20,7 @@ class SellerMigrationStaticCommunicationBottomSheet: SellerMigrationCommunicatio
                            communicationInfo: CommunicationInfo): SellerMigrationStaticCommunicationBottomSheet =
                 SellerMigrationStaticCommunicationBottomSheet().apply {
                     arguments = Bundle().apply {
-                        val benefitArrayList: List<String> = communicationInfo.benefitPointResList.map { context.getString(it) }
+                        val benefitArrayList: List<String> = communicationInfo.benefitPointResList.map { context.getText(it).toString() }
                         putString(TITLE_KEY, context.getString(communicationInfo.titleRes))
                         putString(DESC_KEY, context.getString(communicationInfo.descRes))
                         putString(IMAGE_URL_KEY, communicationInfo.imageUrl)

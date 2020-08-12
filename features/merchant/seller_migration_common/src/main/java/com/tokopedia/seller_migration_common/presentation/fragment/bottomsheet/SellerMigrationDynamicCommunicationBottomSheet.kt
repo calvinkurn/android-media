@@ -23,7 +23,7 @@ class SellerMigrationDynamicCommunicationBottomSheet: SellerMigrationCommunicati
                         val imageUrlList = DynamicCommunicationInfo.communicationInfoList.map { it.imageUrl }
                         val benefitPointsList = DynamicCommunicationInfo.communicationInfoList.map { info ->
                             BenefitPoints(info.benefitPointResList.map { resId ->
-                                context.getString(resId)
+                                context.getText(resId).toString()
                             })
                         }
                         putStringArrayList(TITLE_LIST_KEY, ArrayList(titleList))
