@@ -11,8 +11,7 @@
         android:paddingStart="@dimen/layout_lvl2"
         android:paddingEnd="@dimen/layout_lvl2"
         android:textColor="@color/Neutral_N700_96"
-        app:typographyType="heading_4"
-        app:typographyWeight="bold"
+        app:typographyType="body_2"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
 

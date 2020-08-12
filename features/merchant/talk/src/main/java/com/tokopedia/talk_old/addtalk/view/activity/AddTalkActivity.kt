@@ -47,11 +47,11 @@ class AddTalkActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
         getDataFromAppLink()
         getAbTestPlatform()?.fetch(null)
         super.onCreate(savedInstanceState)
-        if (!useOldPage()) {
+//        if (!useOldPage()) {
             startActivity(TalkWriteActivity.createIntent(this, productId.toIntOrZero()))
             finish()
             return
-        }
+//        }
     }
 
     override fun getNewFragment(): Fragment {
@@ -71,7 +71,7 @@ class AddTalkActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
 
     private fun getDataFromAppLink() {
         val uri = intent.data ?: return
-        val productIdString = uri.pathSegments[uri.pathSegments.size - 1] ?: return
+        val productIdString = uri.getQueryParameter(TalkConstants.PARAM_PRODUCT_ID) ?: return
         if (productIdString.isNotEmpty()) {
             this.productId = productIdString
         }

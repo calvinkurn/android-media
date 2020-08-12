@@ -31,7 +31,7 @@ class TalkWriteCategoryDetails : BaseCustomView {
         if(content.isNullOrEmpty()) {
             return
         }
-        writeCategoryDetailTitle.text = content
+        writeCategoryDetailTitle.text = HtmlLinkHelper(context, content).spannedString
         writeCategoryDetailSubtitle.apply {
             text = HtmlLinkHelper(context, context.getString(R.string.write_category_details_subtitle)).spannedString
             setCustomMovementMethod { talkWriteCategoryDetailsListener.onClickGoToChat() }
