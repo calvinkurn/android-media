@@ -41,6 +41,7 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
     private WeakReference<Activity> currentActivity;
     private CmInAppListener cmInAppListener;
     private final Object lock = new Object();
+    private List<String> excludeScreenList;
 
     static {
         inAppManager = new CMInAppManager();
@@ -79,6 +80,8 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
     }
 
     private void showInAppNotification() {
+        if (excludeScreenList != null && excludeScreenList.contains(currentActivity.get().getClass().getName()))
+            return;
         RulesManager.getInstance().checkValidity(
                 currentActivity.get().getClass().getName(),
                 0L,
@@ -255,5 +258,9 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
     @Override
     public void onCMInAppInflateException(CMInApp inApp) {
         RulesManager.getInstance().dataInflateError(inApp.id);
+    }
+
+    public void setExcludeScreenList(List<String> excludeScreenList) {
+        this.excludeScreenList = excludeScreenList;
     }
 }
