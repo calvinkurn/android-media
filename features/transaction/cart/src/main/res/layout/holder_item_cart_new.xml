@@ -96,7 +96,7 @@
                         android:id="@+id/tv_price_changes"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/product_properties"
+                        android:layout_below="@+id/product_properties"
                         android:layout_marginTop="@dimen/dp_4"
                         android:background="@drawable/bg_price_changes"
                         android:paddingStart="@dimen/dp_4"

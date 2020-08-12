@@ -97,8 +97,37 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
             it.promoCodes = shopGroupAvailable.promoCodes
             it.cartItemHolderDataList = mapCartItemHolderDataList(shopGroupAvailable.cartDetails, shopGroupAvailable, it, cartDataListResponse, false)
 
+            it.preOrderInfo = getPreOrderInfo(shopGroupAvailable.cartDetails)
+            it.freeShippingBadgeUrl = getFreeShippingBadgeUrl(shopGroupAvailable.cartDetails)
+
             it
         }
+    }
+
+    private fun getPreOrderInfo(cartItemDataList: List<CartDetail>): String {
+        var preOrderInfo = ""
+
+        cartItemDataList.forEach {
+            if (it.product.isPreorder == 1) {
+                preOrderInfo =  "Pre Order ${it.product.productPreorder.durationText}"
+                return@forEach
+            }
+        }
+
+        return preOrderInfo
+    }
+
+    private fun getFreeShippingBadgeUrl(cartItemDataList: List<CartDetail>): String {
+        var freeShippingBadgeUrl = ""
+
+        cartItemDataList.forEach {
+            if (it.product.freeShipping.eligible) {
+                freeShippingBadgeUrl = it.product.freeShipping.badgeUrl
+                return@forEach
+            }
+        }
+
+        return freeShippingBadgeUrl
     }
 
     private fun mapShopError(it: ShopGroupWithErrorData, shopGroupWithError: ShopGroupWithError, isDisableAllProducts: Boolean): Boolean {
@@ -492,7 +521,7 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
                 message = promoErrorDetail.message)
     }
 
-    private fun mapEmptyCartInfo(promoEmptyCartInfo: PromoEmptyCartInfo) : LastApplyEmptyCartInfoUiModel {
+    private fun mapEmptyCartInfo(promoEmptyCartInfo: PromoEmptyCartInfo): LastApplyEmptyCartInfoUiModel {
         return LastApplyEmptyCartInfoUiModel(
                 imgUrl = promoEmptyCartInfo.imageUrl,
                 message = promoEmptyCartInfo.message,
@@ -506,7 +535,7 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
                 desc = errorDefault.desc)
     }
 
-    private fun mapCreateListRedPromos(lastApplyPromoData: LastApplyPromoData): List<String>  {
+    private fun mapCreateListRedPromos(lastApplyPromoData: LastApplyPromoData): List<String> {
         val listRedPromos = arrayListOf<String>()
         if (lastApplyPromoData.message.state == STATE_RED) {
             lastApplyPromoData.codes.forEach {

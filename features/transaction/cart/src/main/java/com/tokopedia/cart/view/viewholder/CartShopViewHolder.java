@@ -20,6 +20,7 @@ import com.tokopedia.cart.view.ActionListener;
 import com.tokopedia.cart.view.adapter.CartItemAdapter;
 import com.tokopedia.cart.view.uimodel.CartItemHolderData;
 import com.tokopedia.cart.view.uimodel.CartShopHolderData;
+import com.tokopedia.unifycomponents.Label;
 import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifyprinciples.Typography;
 
@@ -56,6 +57,11 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
     private LinearLayout layoutWarning;
     private Ticker tickerWarning;
 
+    private Typography separatorPreOrder;
+    private Label labelPreOrder;
+    private Typography separatorFreeShipping;
+    private ImageView imgFreeShipping;
+
     private ActionListener actionListener;
     private CartItemAdapter.ActionListener cartItemAdapterListener;
     private CartItemAdapter cartItemAdapter;
@@ -86,6 +92,11 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
 
         imgFulfillment = itemView.findViewById(R.id.img_shop_fulfill);
         tvFulfillDistrict = itemView.findViewById(R.id.tv_fulfill_district);
+
+        separatorPreOrder = itemView.findViewById(R.id.separator_pre_order);
+        labelPreOrder = itemView.findViewById(R.id.label_pre_order);
+        separatorFreeShipping = itemView.findViewById(R.id.separator_free_shipping);
+        imgFreeShipping = itemView.findViewById(R.id.img_free_shipping);
 
         initCheckboxWatcherDebouncer(compositeSubscription);
     }
@@ -171,6 +182,8 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
             tvFulfillDistrict.setVisibility(View.GONE);
         }
 
+        renderPreOrder(cartShopHolderData);
+        renderFreeShipping(cartShopHolderData);
     }
 
     private void renderErrorItemHeader(CartShopHolderData data) {
@@ -266,5 +279,29 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
                 }
             }
         };
+    }
+
+    private void renderPreOrder(CartShopHolderData cartShopHolderData) {
+        if (!TextUtils.isEmpty(cartShopHolderData.getShopGroupAvailableData().getPreOrderInfo())) {
+            labelPreOrder.setText(cartShopHolderData.getShopGroupAvailableData().getPreOrderInfo());
+            labelPreOrder.setVisibility(View.VISIBLE);
+            separatorPreOrder.setVisibility(View.VISIBLE);
+        } else {
+            labelPreOrder.setVisibility(View.GONE);
+            separatorPreOrder.setVisibility(View.GONE);
+        }
+    }
+
+    private void renderFreeShipping(CartShopHolderData cartShopHolderData) {
+        if (!TextUtils.isEmpty(cartShopHolderData.getShopGroupAvailableData().getFreeShippingBadgeUrl())) {
+            ImageHandler.loadImageWithoutPlaceholderAndError(
+                    imgFreeShipping, cartShopHolderData.getShopGroupAvailableData().getFreeShippingBadgeUrl()
+            );
+            imgFreeShipping.setVisibility(View.VISIBLE);
+            separatorFreeShipping.setVisibility(View.VISIBLE);
+        } else {
+            imgFreeShipping.setVisibility(View.GONE);
+            separatorFreeShipping.setVisibility(View.GONE);
+        }
     }
 }
