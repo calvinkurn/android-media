@@ -834,17 +834,17 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                     RouteManager.route(getContext(), actionButton.getUri());
                 } else if (!TextUtils.isEmpty(actionButton.getUri())) {
                     if (this.status.status().equals(STATUS_CODE_220) || this.status.status().equals(STATUS_CODE_400)) {
-                        if (presenter.shouldShowTimeForCancellation()) {
-                            Intent buyerReqCancelIntent = new Intent(getContext(), BuyerRequestCancelActivity.class);
-                            buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_SHOP_NAME, shopInfo.getShopName());
-                            buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_INVOICE, invoiceNum);
-                            buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_LIST_PRODUCT, (Serializable) listProducts);
-                            buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_ORDER_ID, getArguments().getString(KEY_ORDER_ID));
-                            buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_URI, actionButton.getUri());
-                            buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_WAIT_MSG, presenter.getCancelTime());
-                            buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_IS_WAIT_TO_CANCEL, true);
-                            startActivity(buyerReqCancelIntent);
-                        } else {
+//                        if (presenter.shouldShowTimeForCancellation()) {
+//                            Intent buyerReqCancelIntent = new Intent(getContext(), BuyerRequestCancelActivity.class);
+//                            buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_SHOP_NAME, shopInfo.getShopName());
+//                            buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_INVOICE, invoiceNum);
+//                            buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_LIST_PRODUCT, (Serializable) listProducts);
+//                            buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_ORDER_ID, getArguments().getString(KEY_ORDER_ID));
+//                            buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_URI, actionButton.getUri());
+//                            buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_WAIT_MSG, presenter.getCancelTime());
+//                            buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_IS_WAIT_TO_CANCEL, true);
+//                            startActivity(buyerReqCancelIntent);
+//                        } else {
                             Intent buyerReqCancelIntent = new Intent(getContext(), BuyerRequestCancelActivity.class);
                             buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_SHOP_NAME, shopInfo.getShopName());
                             buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_INVOICE, invoiceNum);
@@ -862,7 +862,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                             startActivityForResult(buyerReqCancelIntent, REQUEST_CANCEL_ORDER);
 
                             orderListAnalytics.sendActionButtonClickEvent(CLICK_REQUEST_CANCEL, this.status.status());
-                        }
+                        // }
 
                     } else if (this.status.status().equals(STATUS_CODE_11)) {
                         Intent buyerReqCancelIntent = new Intent(getContext(), BuyerRequestCancelActivity.class);
