@@ -215,7 +215,7 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
     }
 
     private fun setupTicker() {
-        initializeSellerMigrationCommunicationTicker(sellerMigrationStaticCommunicationBottomSheet, topChatSellerMigrationTicker, CommunicationInfo.BroadcastChat)
+        initializeSellerMigrationCommunicationTicker(sellerMigrationStaticCommunicationBottomSheet, ticker_seller_migration_topchat, CommunicationInfo.BroadcastChat)
     }
 
     private fun isSellerBroadcastRemoteConfigOn(): Boolean {

@@ -4,7 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/layout_lvl2"
+    android:paddingStart="@dimen/layout_lvl1"
+    android:paddingEnd="@dimen/layout_lvl1"
     android:paddingBottom="@dimen/layout_lvl3"
     android:background="@drawable/bg_seller_migration_green">
 
@@ -21,7 +22,10 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
-        android:layout_margin="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/layout_lvl3"
+        android:layout_marginBottom="@dimen/layout_lvl2"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:layout_marginStart="@dimen/layout_lvl3"
         app:layout_constraintWidth_percent="0.2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -108,7 +112,7 @@
         android:id="@+id/decoyView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginTop="@dimen/dp_28"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/img_seller_migration_account_warning"/>
 

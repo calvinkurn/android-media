@@ -1,12 +1,14 @@
 package com.tokopedia.seller_migration_common.presentation.util
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.os.Parcelable
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
@@ -70,6 +72,13 @@ private fun Fragment.goToInformationWebview(link: String,
 @Parcelize
 data class BenefitPoints(val benefitPointsList: List<String>): Parcelable
 
+/**
+ * Fragment extension function to initialize phase 3 redirection ticker, which will show bottomsheet if spanned string is clicked
+ *
+ * @param   bottomSheet         SellerMigrationCommunicationBottomSheet to be displayed
+ * @param   ticker              ticker view that should display migration info
+ * @param   communicationInfo   type of migration communication (broadcast chat, topads, etc.)
+ */
 fun Fragment.initializeSellerMigrationCommunicationTicker(bottomSheet: SellerMigrationCommunicationBottomSheet?,
                                                           ticker: Ticker?,
                                                           communicationInfo: CommunicationInfo) {
@@ -78,9 +87,9 @@ fun Fragment.initializeSellerMigrationCommunicationTicker(bottomSheet: SellerMig
             tickerTitle = context?.getString(R.string.seller_migration_ticker_title).orEmpty()
             val remoteConfigDate = getSellerMigrationDate(context).let { date ->
                 if (date.isEmpty()) {
-                    date
+                    getString(R.string.seller_migration_bottom_sheet_redirected_dates_abbv)
                 } else {
-                    getString(R.string.seller_migration_account_ticker_desc)
+                    date
                 }
             }
             val featureString = context?.getString(communicationInfo.tickerMessagePrefixRes).orEmpty()
@@ -100,5 +109,44 @@ fun Fragment.initializeSellerMigrationCommunicationTicker(bottomSheet: SellerMig
 
 private fun Fragment.openSellerMigrationBottomSheet(bottomSheet: SellerMigrationCommunicationBottomSheet?) {
     bottomSheet?.show(childFragmentManager, SellerMigrationCommunicationBottomSheet::class.java.name)
+}
+
+/**
+ * FragmentActivity extension function to initialize phase 3 redirection ticker, which will show bottomsheet if spanned string is clicked
+ *
+ * @param   bottomSheet         SellerMigrationCommunicationBottomSheet to be displayed
+ * @param   ticker              ticker view that should display migration info
+ * @param   communicationInfo   type of migration communication (broadcast chat, topads, etc.)
+ */
+fun FragmentActivity.initializeSellerMigrationCommunicationTicker(bottomSheet: SellerMigrationCommunicationBottomSheet?,
+                                                                  ticker: Ticker?,
+                                                                  communicationInfo: CommunicationInfo) {
+    ticker?.run {
+        if (isSellerMigrationEnabled(context)) {
+            tickerTitle = context?.getString(R.string.seller_migration_ticker_title).orEmpty()
+            val remoteConfigDate = getSellerMigrationDate(context).let { date ->
+                if (date.isEmpty()) {
+                    getString(R.string.seller_migration_bottom_sheet_redirected_dates_abbv)
+                } else {
+                    date
+                }
+            }
+            val featureString = context?.getString(communicationInfo.tickerMessagePrefixRes).orEmpty()
+            setHtmlDescription(context?.getString(R.string.seller_migration_ticker_desc, featureString, remoteConfigDate).orEmpty())
+            setDescriptionClickEvent(object: TickerCallback {
+                override fun onDismiss() {}
+                override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                    openSellerMigrationBottomSheet(bottomSheet)
+                }
+            })
+            show()
+        } else {
+            gone()
+        }
+    }
+}
+
+private fun FragmentActivity.openSellerMigrationBottomSheet(bottomSheet: SellerMigrationCommunicationBottomSheet?) {
+    bottomSheet?.show(supportFragmentManager, SellerMigrationCommunicationBottomSheet::class.java.name)
 }
 

@@ -111,6 +111,7 @@ class SellerMigrationDynamicCommunicationBottomSheet: SellerMigrationCommunicati
                 layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
                 isAdapterInitialized = true
             }
+            visible()
         }
     }
 }

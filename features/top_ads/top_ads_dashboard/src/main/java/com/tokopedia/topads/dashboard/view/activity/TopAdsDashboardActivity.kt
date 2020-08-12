@@ -23,6 +23,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.seller_migration_common.presentation.fragment.bottomsheet.SellerMigrationCommunicationBottomSheet
 import com.tokopedia.seller_migration_common.presentation.model.CommunicationInfo
+import com.tokopedia.seller_migration_common.presentation.util.initializeSellerMigrationCommunicationTicker
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.TopAdsDashboardTracking
@@ -239,22 +240,7 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
     }
 
     private fun setupSellerMigrationTicker() {
-        ticker_seller_migration_topads?.apply {
-            tickerTitle = getString(com.tokopedia.seller_migration_common.R.string.seller_migration_ticker_title)
-            val featureString = getString(com.tokopedia.seller_migration_common.R.string.seller_migration_topads_ticker_desc_prefix)
-            setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_ticker_desc, featureString))
-            setDescriptionClickEvent(object: TickerCallback {
-                override fun onDismiss() {}
-                override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                    openSellerMigrationBottomSheet()
-                }
-            })
-            show()
-        }
-    }
-
-    private fun openSellerMigrationBottomSheet() {
-        sellerMigrationStaticCommunicationBottomSheet.show(supportFragmentManager, SellerMigrationCommunicationBottomSheet::class.java.name)
+        initializeSellerMigrationCommunicationTicker(sellerMigrationStaticCommunicationBottomSheet, ticker_seller_migration_topads, CommunicationInfo.TopAds)
     }
 
     override fun setAppBarState(state: TopAdsProductIklanFragment.State?) {
