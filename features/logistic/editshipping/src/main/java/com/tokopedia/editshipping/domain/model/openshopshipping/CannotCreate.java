@@ -1,5 +1,5 @@
 
-package com.tokopedia.editshipping.model.openshopshipping;
+package com.tokopedia.editshipping.domain.model.openshopshipping;
 
 import android.os.Parcel;
 import android.os.Parcelable;

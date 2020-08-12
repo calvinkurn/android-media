@@ -733,6 +733,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                             context?.run {
                                 activity?.intent?.extras?.clear()
                                 RouteManager.getIntent(this, appLinkToOpen).apply {
+                                    addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                                     startActivityForResult(this, SET_CASHBACK_REQUEST_CODE)
                                 }
                             }
