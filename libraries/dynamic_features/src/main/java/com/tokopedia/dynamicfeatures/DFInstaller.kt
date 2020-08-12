@@ -372,8 +372,13 @@ object SplitInstallListener : SplitInstallStateUpdatedListener {
         }
         if (stateError.isNotEmpty()) {
             val ctx = context
-            if (ctx != null && DFRemoteConfig.getConfig(ctx).returnIfStateInvalid) {
-                return
+            if (ctx != null) {
+                DFInstaller.onErrorInstall(ctx,
+                        stateError + "_" + state.errorCode().toString(),
+                        moduleNameToDownload.first(), onFailedInstall, continuation)
+                if (DFRemoteConfig.getConfig(ctx).returnIfStateInvalid) {
+                    return
+                }
             }
         }
         when (state.status()) {
@@ -400,12 +405,7 @@ object SplitInstallListener : SplitInstallStateUpdatedListener {
                 DFInstaller.previousState = null
                 context?.let { context ->
                     DFInstaller.onErrorInstall(context,
-                            state.errorCode().toString() +
-                                    if (stateError.isNotEmpty()) {
-                                        "_"
-                                    } else {
-                                        ""
-                                    } + stateError,
+                            state.errorCode().toString(),
                             moduleNameToDownload.first(), onFailedInstall, continuation)
                 }
             }
