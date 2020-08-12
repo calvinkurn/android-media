@@ -45,7 +45,6 @@ import com.tokopedia.search.result.presentation.view.listener.GlobalNavListener;
 import com.tokopedia.search.result.presentation.view.listener.InspirationCardListener;
 import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener;
 import com.tokopedia.search.result.presentation.view.listener.ProductListener;
-import com.tokopedia.search.result.presentation.view.listener.QuickFilterListener;
 import com.tokopedia.search.result.presentation.view.listener.SuggestionListener;
 import com.tokopedia.search.result.presentation.view.listener.TickerListener;
 import com.tokopedia.topads.sdk.base.Config;
@@ -55,7 +54,6 @@ public class ProductListTypeFactoryImpl extends BaseAdapterTypeFactory implement
     private final ProductListener productListener;
     private final TickerListener tickerListener;
     private final SuggestionListener suggestionListener;
-    private final QuickFilterListener quickFilterListener;
     private final GlobalNavListener globalNavListener;
     private final BannerAdsListener bannerAdsListener;
     private final EmptyStateListener emptyStateListener;
@@ -70,7 +68,6 @@ public class ProductListTypeFactoryImpl extends BaseAdapterTypeFactory implement
     public ProductListTypeFactoryImpl(ProductListener productListener,
                                       TickerListener tickerListener,
                                       SuggestionListener suggestionListener,
-                                      QuickFilterListener quickFilterListener,
                                       GlobalNavListener globalNavListener,
                                       BannerAdsListener bannerAdsListener,
                                       EmptyStateListener emptyStateListener,
@@ -84,7 +81,6 @@ public class ProductListTypeFactoryImpl extends BaseAdapterTypeFactory implement
         this.productListener = productListener;
         this.tickerListener = tickerListener;
         this.suggestionListener = suggestionListener;
-        this.quickFilterListener = quickFilterListener;
         this.globalNavListener = globalNavListener;
         this.bannerAdsListener = bannerAdsListener;
         this.emptyStateListener = emptyStateListener;
