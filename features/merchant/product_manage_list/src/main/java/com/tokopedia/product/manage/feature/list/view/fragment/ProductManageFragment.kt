@@ -1434,6 +1434,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                     val intent = RouteManager.getIntent(context, appLinkToOpen).apply {
                         putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, appLinks)
                         putExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, activity?.intent?.getStringExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME).orEmpty())
+                        addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                     }
                     when (activity?.intent?.getStringExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME)) {
                         SellerMigrationFeatureName.FEATURE_SET_CASHBACK -> startActivityForResult(intent, SET_CASHBACK_REQUEST_CODE)

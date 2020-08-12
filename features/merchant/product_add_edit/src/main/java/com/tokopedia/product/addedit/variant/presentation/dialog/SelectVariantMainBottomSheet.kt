@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.RelativeLayout
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.product.addedit.R
@@ -30,19 +29,11 @@ class SelectVariantMainBottomSheet(
 
     init {
         selectAdapter = SelectVariantMainAdapter()
-        setBehaviorAsKnob()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         initChildLayout()
         return super.onCreateView(inflater, container, savedInstanceState)
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        removeContainerPadding()
-        addMarginTitle()
     }
 
     fun setData(items: VariantInputModel?) {
@@ -54,26 +45,6 @@ class SelectVariantMainBottomSheet(
     fun show(manager: FragmentManager?) {
         manager?.run {
             super.show(this , TAG)
-        }
-    }
-
-    private fun setBehaviorAsKnob() {
-        showCloseIcon = false
-        showKnob = true
-    }
-
-    private fun removeContainerPadding() {
-        val padding = resources.getDimensionPixelSize(com.tokopedia.product.addedit.R.dimen.tooltip_padding)
-        val paddingTop = resources.getDimensionPixelSize(com.tokopedia.product.addedit.R.dimen.tooltip_close_margin)
-        bottomSheetWrapper.setPadding(padding, paddingTop, padding, padding)
-    }
-
-    private fun addMarginTitle() {
-        val topMargin = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
-        val horizontalMargin = resources.getDimensionPixelSize(com.tokopedia.product.addedit.R.dimen.tooltip_close_margin)
-        (bottomSheetTitle.layoutParams as RelativeLayout.LayoutParams).apply {
-            setMargins(horizontalMargin, topMargin, horizontalMargin, 0)
-            addRule(RelativeLayout.CENTER_VERTICAL)
         }
     }
 
@@ -91,5 +62,6 @@ class SelectVariantMainBottomSheet(
             listener.onSelectVariantMainFinished(selectAdapter?.getSelectedData().orEmpty())
         }
         setChild(contentView)
+        clearContentPadding = true
     }
 }

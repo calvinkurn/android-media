@@ -35,8 +35,8 @@ class InboxModule(private val context: Context) {
 
     @Provides
     @Named("InboxListPresenter")
-    fun provideTicketListPresenter(useCase: GetTicketListUseCase): InboxBasePresenter {
-        return InboxListPresenterImpl(useCase)
+    fun provideTicketListPresenter(useCase: GetTicketListUseCase, userSession: UserSessionInterface): InboxBasePresenter {
+        return InboxListPresenterImpl(useCase, userSession)
     }
 
     @Provides
@@ -50,12 +50,12 @@ class InboxModule(private val context: Context) {
                                   uploadImageUseCase: UploadImageUseCase,
                                   userSession: UserSessionInterface,
                                   dispatcher: CoroutineDispatcher): InboxDetailPresenter {
-        return InboxDetailPresenterImpl(messageUseCase, messageUseCase2, ratingUseCase, inboxOptionUseCase, submitRatingUseCase, closeTicketByUserUseCase, uploadImageUseCase,userSession,dispatcher)
+        return InboxDetailPresenterImpl(messageUseCase, messageUseCase2, ratingUseCase, inboxOptionUseCase, submitRatingUseCase, closeTicketByUserUseCase, uploadImageUseCase, userSession, dispatcher)
     }
 
 
     @Provides
-    fun getDefaultDispatcher():CoroutineDispatcher{
+    fun getDefaultDispatcher(): CoroutineDispatcher {
         return Dispatchers.Default
     }
 
@@ -87,5 +87,4 @@ class InboxModule(private val context: Context) {
     fun provideReplyTicketQuery(): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.reply_ticket_query)
     }
-
 }

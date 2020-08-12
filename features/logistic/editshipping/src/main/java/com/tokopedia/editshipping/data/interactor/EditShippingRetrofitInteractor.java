@@ -4,8 +4,8 @@ import android.content.Context;
 
 import androidx.annotation.NonNull;
 
-import com.tokopedia.editshipping.model.editshipping.EditShippingCouriers;
-import com.tokopedia.editshipping.model.openshopshipping.OpenShopData;
+import com.tokopedia.editshipping.domain.model.editshipping.EditShippingCouriers;
+import com.tokopedia.editshipping.domain.model.openshopshipping.OpenShopData;
 
 import java.util.Map;
 

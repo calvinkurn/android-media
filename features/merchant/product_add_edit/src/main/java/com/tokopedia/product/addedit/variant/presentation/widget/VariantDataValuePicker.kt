@@ -164,7 +164,11 @@ class VariantDataValuePicker : LinearLayout {
                 selectedItem.listRightCheckbox?.isChecked = !isChecked
             } else {
                 // add custom variant unit value
-                onAddCustomVariantUnitValueListener?.onAddCustomButtonClicked(layoutPosition, selectedVariantUnit, variantUnitValues, selectedVariantUnitValues)
+                onAddCustomVariantUnitValueListener?.onAddCustomButtonClicked(
+                        layoutPosition,
+                        selectedVariantUnit,
+                        variantUnitValues,
+                        selectedVariantUnitValues)
 
             }
         }
@@ -222,20 +226,26 @@ class VariantDataValuePicker : LinearLayout {
         }
     }
 
-    private fun configureSaveButton(isEmpty: Boolean, size: Int) {
-        if (size > MAX_SELECTED_VARIANT_UNIT_VALUES) {
+    private fun configureSaveButton(isSelectedUnitValuesEmpty: Boolean, size: Int) {
+        var enableSaveButton = true
+        // disable save button when selection is empty
+        if (isSelectedUnitValuesEmpty) {
+            buttonSave.text = context.getText(R.string.action_variant_save).toString()
+            buttonSave.isEnabled = false
+            enableSaveButton = false
+        }
+        // show "Simpan (maks. 10)" for 10 or more selection
+        if (size >= MAX_SELECTED_VARIANT_UNIT_VALUES) {
             val stringSave = context.getText(R.string.action_variant_save).toString()
             val stringMax = context.getText(R.string.label_variant_max).toString()
             buttonSave.text = "$stringSave($MAX_SELECTED_VARIANT_UNIT_VALUES)$stringMax"
         } else {
-            if (isEmpty) {
-                buttonSave.text = context.getText(R.string.action_variant_save).toString()
-                buttonSave.isEnabled = false
-            } else {
-                buttonSave.text = context.getText(R.string.action_variant_save).toString() + "(" + size.toString() + ")"
-                buttonSave.isEnabled = true
-            }
+            buttonSave.text = context.getText(R.string.action_variant_save).toString() + "(" + size.toString() + ")"
         }
+        // disable save button when selection beyond max limit
+        if (size > MAX_SELECTED_VARIANT_UNIT_VALUES) enableSaveButton = false
+        // configure save button status
+        buttonSave.isEnabled = enableSaveButton
     }
 
     interface OnVariantUnitPickerClickListener {

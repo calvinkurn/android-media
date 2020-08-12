@@ -18,7 +18,9 @@ buildscript {
 
 dependencies {
 
-    api rootProject.ext.firebase.crashlytics
+    api (rootProject.ext.serviceDependencies.crashlytics) {
+        transitive = true
+    }
 
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.track)

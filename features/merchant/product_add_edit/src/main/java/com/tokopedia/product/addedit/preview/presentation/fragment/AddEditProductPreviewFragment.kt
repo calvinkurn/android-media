@@ -19,7 +19,6 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
-import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
@@ -45,6 +44,7 @@ import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.HTT
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.PHOTO_TIPS_URL_1
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.PHOTO_TIPS_URL_2
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.PHOTO_TIPS_URL_3
+import com.tokopedia.product.addedit.common.constant.ProductStatus.STATUS_ACTIVE
 import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.InputPriceUtil
 import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity
@@ -330,14 +330,11 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
             }
         }
 
-        productStatusSwitch?.setOnCheckedChangeListener { _, isChecked ->
-            viewModel.updateProductStatus(isChecked)
-        }
-
-        // track switch status on click
         productStatusSwitch?.setOnClickListener {
-            val isChecked = productStatusSwitch?.isChecked
-            if (isChecked == true && viewModel.isEditing.value == true) {
+            val isChecked = productStatusSwitch?.isChecked ?: false
+            viewModel.updateProductStatus(isChecked)
+            // track switch status on click
+            if (isChecked && viewModel.isEditing.value == true) {
                 ProductEditStepperTracking.trackChangeProductStatus(shopId)
             }
         }
@@ -550,6 +547,9 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                     val cacheManagerId = data.getStringExtra(EXTRA_CACHE_MANAGER_ID) ?: ""
                     SaveInstanceCacheManager(requireContext(), cacheManagerId).run {
                         viewModel.productInputModel.value = get(EXTRA_PRODUCT_INPUT_MODEL, ProductInputModel::class.java)
+                        viewModel.productInputModel.value?.let {
+                            updateProductStatusSwitch(it)
+                        }
                     }
                 }
                 SET_CASHBACK_REQUEST_CODE -> {
@@ -733,6 +733,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                             context?.run {
                                 activity?.intent?.extras?.clear()
                                 RouteManager.getIntent(this, appLinkToOpen).apply {
+                                    addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                                     startActivityForResult(this, SET_CASHBACK_REQUEST_CODE)
                                 }
                             }
@@ -758,6 +759,10 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                 displayEditMode()
             }
         })
+    }
+
+    private fun updateProductStatusSwitch(productInputModel: ProductInputModel) {
+        productStatusSwitch?.isChecked = (productInputModel.detailInputModel.status == STATUS_ACTIVE)
     }
 
     private fun observeProductVariant() {
