@@ -48,7 +48,7 @@ open class TopchatProductAttachmentViewHolder constructor(
 
     private var wishListBtn: UnifyButton? = itemView?.findViewById(R.id.tv_wishlist)
     private var cardContainer: SingleProductAttachmentContainer? = itemView?.findViewById(R.id.containerProductAttachment)
-    private var emptyStock: Label? = itemView?.findViewById(R.id.lb_empty_stock)
+    private var label: Label? = itemView?.findViewById(R.id.lb_product_label)
     private var loadView: LoaderUnify? = itemView?.findViewById(R.id.iv_attachment_shimmer)
     private var freeShippingImage: ImageView? = itemView?.findViewById(R.id.iv_free_shipping)
     private var statusContainer: LinearLayout? = itemView?.findViewById(R.id.ll_status_container)
@@ -298,7 +298,7 @@ open class TopchatProductAttachmentViewHolder constructor(
     }
 
     private fun bindPreOrderLabel(product: ProductAttachmentViewModel) {
-        emptyStock?.apply {
+        label?.apply {
             if (product.isPreOrder) {
                 show()
                 setText(R.string.title_topchat_pre_order)
@@ -311,7 +311,7 @@ open class TopchatProductAttachmentViewHolder constructor(
     }
 
     private fun bindEmptyStockLabel(product: ProductAttachmentViewModel) {
-        emptyStock?.apply {
+        label?.apply {
             if (product.hasEmptyStock()) {
                 show()
                 setText(R.string.title_topchat_empty_stock)
