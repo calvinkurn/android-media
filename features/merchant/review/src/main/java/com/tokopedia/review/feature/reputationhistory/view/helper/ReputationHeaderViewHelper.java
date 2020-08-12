@@ -1,10 +1,10 @@
-package com.tokopedia.reviewseller.feature.reputationhistory.view.helper;
+package com.tokopedia.review.feature.reputationhistory.view.helper;
 
 import androidx.annotation.NonNull;
 
 import android.view.View;
 
-import com.tokopedia.reviewseller.R;
+import com.tokopedia.review.R;
 
 import java.util.Calendar;
 

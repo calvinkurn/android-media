@@ -166,4 +166,19 @@
     <string name="review_edit_dialog_exit">Ya, Keluar</string>
 
     <string name="review_seller_tab_title">Ulasan Pembeli</string>
+
+    <!-- reputation history -->
+    <string name="shop_reputation">Reputasi Toko</string>
+    <string name="reputation_point_calculation">Perhitungan Poin Reputasi</string>
+
+    <string name="point"> poin</string>
+    <string name="reputation_history_label_good_job">Tidak ada penalti pada periode ini</string>
+    <string name="reputation_history_label_info_no_penalty">Ubah tanggal untuk melihat penalti pada periode sebelumnya.</string>
+    <string name="reputation_history_label_change_date">Ubah Tanggal</string>
+    <string name="reputation_history_label_congrats_no_penalty">Anda tidak memiliki Penalti</string>
+    <string name="reputation_history_label_improve_selling_get_badge">Tingkatkan terus penjualan &amp; pelayanan toko Anda untuk mendapatkan badge &amp; poin reputasi</string>
+    <string name="best_deal">BEST DEAL!</string>
+    <string name="message_exception_description">Terjadi kesalahan koneksi.\nSilahkan coba kembali"</string>
+    <string name="try_again">COBA KEMBALI</string>
+    <string name="set_date">Atur Tanggal</string>
 </resources>

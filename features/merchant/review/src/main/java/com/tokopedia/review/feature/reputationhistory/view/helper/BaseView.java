@@ -1,4 +1,4 @@
-package com.tokopedia.reviewseller.feature.reputationhistory.view.helper;
+package com.tokopedia.review.feature.reputationhistory.view.helper;
 
 /**
  * Created by normansyahputa on 8/31/16.

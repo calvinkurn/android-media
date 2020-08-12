@@ -1,7 +1,8 @@
-package com.tokopedia.reviewseller.feature.reputationhistory.data.source.cloud.apiservice.api;
+package com.tokopedia.review.feature.reputationhistory.data.source.cloud.apiservice.api;
 
-import com.tokopedia.reviewseller.feature.reputationhistory.data.model.response.SellerReputationResponse;
-import com.tokopedia.reviewseller.feature.reputationhistory.constant.ReputationNetworkConstant;
+
+import com.tokopedia.review.feature.reputationhistory.constant.ReputationNetworkConstant;
+import com.tokopedia.review.feature.reputationhistory.data.model.response.SellerReputationResponse;
 
 import java.util.Map;
 

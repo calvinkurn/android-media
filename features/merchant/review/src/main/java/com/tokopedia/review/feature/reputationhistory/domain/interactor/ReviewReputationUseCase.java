@@ -1,8 +1,8 @@
-package com.tokopedia.reviewseller.feature.reputationhistory.domain.interactor;
+package com.tokopedia.review.feature.reputationhistory.domain.interactor;
 
-import com.tokopedia.reviewseller.feature.reputationhistory.domain.model.SellerReputationDomain;
-import com.tokopedia.reviewseller.feature.reputationhistory.util.ShopNetworkController;
-import com.tokopedia.reviewseller.feature.reputationhistory.domain.ReputationReviewRepository;
+import com.tokopedia.review.feature.reputationhistory.domain.model.SellerReputationDomain;
+import com.tokopedia.review.feature.reputationhistory.util.ShopNetworkController;
+import com.tokopedia.review.feature.reputationhistory.domain.ReputationReviewRepository;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 

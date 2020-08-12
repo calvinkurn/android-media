@@ -1,12 +1,12 @@
-package com.tokopedia.reviewseller.feature.reputationhistory.data.model.request;
+package com.tokopedia.review.feature.reputationhistory.data.model.request;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import static com.tokopedia.reviewseller.feature.reputationhistory.constant.ReputationNetworkConstant.PARAM_FILTER;
-import static com.tokopedia.reviewseller.feature.reputationhistory.constant.ReputationNetworkConstant.PARAM_PAGE;
+import static com.tokopedia.review.feature.reputationhistory.constant.ReputationNetworkConstant.PARAM_FILTER;
+import static com.tokopedia.review.feature.reputationhistory.constant.ReputationNetworkConstant.PARAM_PAGE;
 
 /**
  * @author normansyahputa on 3/15/17.

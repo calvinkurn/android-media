@@ -15,6 +15,9 @@ buildscript {
 }
 
 dependencies {
+    implementation project(rootProject.ext.libraries.baseListSeller)
+    implementation project(rootProject.ext.libraries.datePickerRange)
+
     implementation project(rootProject.ext.features.reputation)
     implementation project(rootProject.ext.features.review)
     implementation project(rootProject.ext.features.sellerMigrationCommon)

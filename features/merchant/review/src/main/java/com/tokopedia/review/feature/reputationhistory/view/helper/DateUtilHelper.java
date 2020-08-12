@@ -1,16 +1,16 @@
-package com.tokopedia.reviewseller.feature.reputationhistory.view.helper;
+package com.tokopedia.review.feature.reputationhistory.view.helper;
 
 import android.content.Context;
 import android.content.Intent;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import com.tokopedia.reviewseller.feature.reputationhistory.view.adapter.SellerReputationAdapter;
-import com.tokopedia.reviewseller.R;
+import com.tokopedia.review.feature.reputationhistory.view.adapter.SellerReputationAdapter;
+import com.tokopedia.review.R;
 import com.tokopedia.datepicker.range.view.activity.DatePickerActivity;
 import com.tokopedia.datepicker.range.view.constant.DatePickerConstant;
 import com.tokopedia.datepicker.range.view.model.PeriodRangeModel;
-import com.tokopedia.reviewseller.feature.reputationhistory.view.activity.SellerReputationDatePickerActivity;
+import com.tokopedia.review.feature.reputationhistory.view.activity.SellerReputationDatePickerActivity;
 
 import java.text.DateFormat;
 import java.text.ParseException;

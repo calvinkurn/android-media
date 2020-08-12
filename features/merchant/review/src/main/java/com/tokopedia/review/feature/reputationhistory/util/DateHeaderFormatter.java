@@ -1,4 +1,4 @@
-package com.tokopedia.reviewseller.feature.reputationhistory.util;
+package com.tokopedia.review.feature.reputationhistory.util;
 
 import com.db.williamchart.util.GoldMerchantDateUtils;
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils;

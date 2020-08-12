@@ -1,4 +1,4 @@
-package com.tokopedia.reviewseller.feature.reputationhistory.view.activity;
+package com.tokopedia.review.feature.reputationhistory.view.activity;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -6,7 +6,7 @@ import androidx.annotation.Nullable;
 import android.webkit.WebView;
 
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
-import com.tokopedia.reviewseller.R;
+import com.tokopedia.review.R;
 
 /**
  * @author normansyahputa on 3/21/17.

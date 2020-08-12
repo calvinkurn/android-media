@@ -1,6 +1,6 @@
-package com.tokopedia.reviewseller.feature.reputationhistory.domain.interactor;
+package com.tokopedia.review.feature.reputationhistory.domain.interactor;
 
-import com.tokopedia.reviewseller.feature.reputationhistory.util.ShopNetworkController;
+import com.tokopedia.review.feature.reputationhistory.util.ShopNetworkController;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
@@ -14,8 +14,8 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-import static com.tokopedia.reviewseller.feature.reputationhistory.domain.interactor.ReviewReputationMergeUseCase.RequestParamFactory.KEY_REVIEW_REPUTATION_CONTAINER_PARAM;
-import static com.tokopedia.reviewseller.feature.reputationhistory.domain.interactor.ReviewReputationMergeUseCase.RequestParamFactory.KEY_SHOP_INFO_CONTAINER_PARAM;
+import static com.tokopedia.review.feature.reputationhistory.domain.interactor.ReviewReputationMergeUseCase.RequestParamFactory.KEY_REVIEW_REPUTATION_CONTAINER_PARAM;
+import static com.tokopedia.review.feature.reputationhistory.domain.interactor.ReviewReputationMergeUseCase.RequestParamFactory.KEY_SHOP_INFO_CONTAINER_PARAM;
 
 /**
  * @author normansyahputa on 3/17/17.

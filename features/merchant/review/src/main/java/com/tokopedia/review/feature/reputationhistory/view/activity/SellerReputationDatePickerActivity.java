@@ -1,4 +1,4 @@
-package com.tokopedia.reviewseller.feature.reputationhistory.view.activity;
+package com.tokopedia.review.feature.reputationhistory.view.activity;
 
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;

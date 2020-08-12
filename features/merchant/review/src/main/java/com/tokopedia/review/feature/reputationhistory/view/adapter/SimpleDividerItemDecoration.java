@@ -1,4 +1,4 @@
-package com.tokopedia.reviewseller.feature.reputationhistory.view.adapter;
+package com.tokopedia.review.feature.reputationhistory.view.adapter;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -6,7 +6,7 @@ import android.graphics.drawable.Drawable;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 
-import com.tokopedia.reviewseller.R;
+import com.tokopedia.review.R;
 
 /**
  * @author normansyahputa on 3/27/17.

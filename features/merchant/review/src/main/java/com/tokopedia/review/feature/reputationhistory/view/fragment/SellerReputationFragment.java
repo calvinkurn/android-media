@@ -1,4 +1,4 @@
-package com.tokopedia.reviewseller.feature.reputationhistory.view.fragment;
+package com.tokopedia.review.feature.reputationhistory.view.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -21,10 +21,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.appbar.AppBarLayout;
-import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
-import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.base.list.seller.common.util.ItemType;
 import com.tokopedia.base.list.seller.view.adapter.BaseRetryDataBinder;
 import com.tokopedia.base.list.seller.view.old.RetryDataBinder;
@@ -33,24 +31,24 @@ import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
-import com.tokopedia.reviewseller.common.ReviewSellerComponentBuilder;
-import com.tokopedia.reviewseller.feature.reputationhistory.di.DaggerSellerReputationComponent;
-import com.tokopedia.seller.reputation.view.helper.RefreshHandler;
 import com.tokopedia.datepicker.range.view.listener.DatePickerResultListener;
-import com.tokopedia.reviewseller.feature.reputationhistory.di.SellerReputationModule;
-import com.tokopedia.reviewseller.feature.reputationhistory.domain.interactor.ReviewReputationMergeUseCase;
-import com.tokopedia.reviewseller.feature.reputationhistory.domain.interactor.ReviewReputationUseCase;
-import com.tokopedia.reviewseller.feature.reputationhistory.util.DefaultErrorSubscriber;
-import com.tokopedia.reviewseller.feature.reputationhistory.util.NetworkStatus;
-import com.tokopedia.reviewseller.feature.reputationhistory.view.SellerReputationView;
-import com.tokopedia.reviewseller.feature.reputationhistory.view.activity.SellerReputationInfoActivity;
-import com.tokopedia.reviewseller.feature.reputationhistory.view.adapter.SellerReputationAdapter;
-import com.tokopedia.reviewseller.feature.reputationhistory.view.adapter.SimpleDividerItemDecoration;
-import com.tokopedia.reviewseller.feature.reputationhistory.view.helper.GMStatHeaderViewHelper;
-import com.tokopedia.reviewseller.feature.reputationhistory.view.helper.ReputationViewHelper;
-import com.tokopedia.reviewseller.feature.reputationhistory.view.model.SetDateHeaderModel;
-import com.tokopedia.reviewseller.R;
-import com.tokopedia.reviewseller.feature.reputationhistory.view.presenter.SellerReputationFragmentPresenter;
+import com.tokopedia.review.R;
+import com.tokopedia.review.ReviewInstance;
+import com.tokopedia.review.feature.reputationhistory.di.DaggerSellerReputationComponent;
+import com.tokopedia.review.feature.reputationhistory.di.SellerReputationModule;
+import com.tokopedia.review.feature.reputationhistory.domain.interactor.ReviewReputationMergeUseCase;
+import com.tokopedia.review.feature.reputationhistory.domain.interactor.ReviewReputationUseCase;
+import com.tokopedia.review.feature.reputationhistory.util.DefaultErrorSubscriber;
+import com.tokopedia.review.feature.reputationhistory.util.NetworkStatus;
+import com.tokopedia.review.feature.reputationhistory.view.SellerReputationView;
+import com.tokopedia.review.feature.reputationhistory.view.activity.SellerReputationInfoActivity;
+import com.tokopedia.review.feature.reputationhistory.view.adapter.SellerReputationAdapter;
+import com.tokopedia.review.feature.reputationhistory.view.adapter.SimpleDividerItemDecoration;
+import com.tokopedia.review.feature.reputationhistory.view.helper.GMStatHeaderViewHelper;
+import com.tokopedia.review.feature.reputationhistory.view.helper.RefreshHandler;
+import com.tokopedia.review.feature.reputationhistory.view.helper.ReputationViewHelper;
+import com.tokopedia.review.feature.reputationhistory.view.model.SetDateHeaderModel;
+import com.tokopedia.review.feature.reputationhistory.view.presenter.SellerReputationFragmentPresenter;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -313,7 +311,7 @@ public class SellerReputationFragment extends BaseDaggerFragment
            //[START] This is for dependent component
            DaggerSellerReputationComponent.builder()
                    .sellerReputationModule(new SellerReputationModule())
-                   .reviewSellerComponent(ReviewSellerComponentBuilder.Companion.getComponent(getActivity().getApplication()))
+                   .reviewComponent(ReviewInstance.Companion.getComponent(getActivity().getApplication()))
                    .build().inject(this);
            //[END] This is for dependent component
        }

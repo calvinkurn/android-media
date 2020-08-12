@@ -1,4 +1,4 @@
-package com.tokopedia.reviewseller.feature.reputationhistory.constant;
+package com.tokopedia.review.feature.reputationhistory.constant;
 
 /**
  * @author normansyahputa on 3/15/17.

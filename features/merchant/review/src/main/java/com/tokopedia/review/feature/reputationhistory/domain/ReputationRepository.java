@@ -1,4 +1,4 @@
-package com.tokopedia.reviewseller.feature.reputationhistory.domain;
+package com.tokopedia.review.feature.reputationhistory.domain;
 
 /**
  * Created by normansyahputa on 2/13/18.

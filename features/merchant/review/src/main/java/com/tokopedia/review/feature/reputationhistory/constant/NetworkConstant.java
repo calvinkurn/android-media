@@ -1,4 +1,4 @@
-package com.tokopedia.reviewseller.feature.reputationhistory.constant;
+package com.tokopedia.review.feature.reputationhistory.constant;
 
 /**
  * Created by nathan on 9/15/17.

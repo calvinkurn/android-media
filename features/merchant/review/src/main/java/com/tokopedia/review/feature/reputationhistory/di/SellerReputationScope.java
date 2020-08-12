@@ -1,4 +1,4 @@
-package com.tokopedia.reviewseller.feature.reputationhistory.di;
+package com.tokopedia.review.feature.reputationhistory.di;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

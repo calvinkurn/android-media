@@ -1,4 +1,4 @@
-package com.tokopedia.reviewseller.feature.reputationhistory.di;
+package com.tokopedia.review.feature.reputationhistory.di;
 
 import javax.inject.Qualifier;
 

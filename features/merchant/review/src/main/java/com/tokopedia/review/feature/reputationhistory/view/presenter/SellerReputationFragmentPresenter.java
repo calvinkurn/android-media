@@ -1,4 +1,4 @@
-package com.tokopedia.reviewseller.feature.reputationhistory.view.presenter;
+package com.tokopedia.review.feature.reputationhistory.view.presenter;
 
 import android.content.Context;
 
@@ -9,19 +9,19 @@ import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
-import com.tokopedia.reviewseller.feature.reputationhistory.data.model.request.SellerReputationRequest;
-import com.tokopedia.reviewseller.feature.reputationhistory.domain.interactor.ReviewReputationMergeUseCase;
-import com.tokopedia.reviewseller.feature.reputationhistory.domain.interactor.ReviewReputationUseCase;
-import com.tokopedia.reviewseller.feature.reputationhistory.domain.model.SellerReputationDomain;
-import com.tokopedia.reviewseller.feature.reputationhistory.util.DefaultErrorSubscriber;
-import com.tokopedia.reviewseller.feature.reputationhistory.util.NetworkStatus;
-import com.tokopedia.reviewseller.feature.reputationhistory.util.ReputationDateUtils;
-import com.tokopedia.reviewseller.feature.reputationhistory.util.ShopNetworkController;
-import com.tokopedia.reviewseller.feature.reputationhistory.view.SellerReputationView;
-import com.tokopedia.reviewseller.feature.reputationhistory.view.model.EmptyListModel;
-import com.tokopedia.reviewseller.feature.reputationhistory.view.model.ReputationReviewModel;
-import com.tokopedia.reviewseller.feature.reputationhistory.view.model.SetDateHeaderModel;
-import com.tokopedia.reviewseller.R;
+import com.tokopedia.review.feature.reputationhistory.data.model.request.SellerReputationRequest;
+import com.tokopedia.review.feature.reputationhistory.domain.interactor.ReviewReputationMergeUseCase;
+import com.tokopedia.review.feature.reputationhistory.domain.interactor.ReviewReputationUseCase;
+import com.tokopedia.review.feature.reputationhistory.domain.model.SellerReputationDomain;
+import com.tokopedia.review.feature.reputationhistory.util.DefaultErrorSubscriber;
+import com.tokopedia.review.feature.reputationhistory.util.NetworkStatus;
+import com.tokopedia.review.feature.reputationhistory.util.ReputationDateUtils;
+import com.tokopedia.review.feature.reputationhistory.util.ShopNetworkController;
+import com.tokopedia.review.feature.reputationhistory.view.SellerReputationView;
+import com.tokopedia.review.feature.reputationhistory.view.model.EmptyListModel;
+import com.tokopedia.review.feature.reputationhistory.view.model.ReputationReviewModel;
+import com.tokopedia.review.feature.reputationhistory.view.model.SetDateHeaderModel;
+import com.tokopedia.review.R;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSessionInterface;
 

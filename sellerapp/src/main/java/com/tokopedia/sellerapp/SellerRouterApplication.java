@@ -101,7 +101,7 @@ import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 
 public abstract class SellerRouterApplication extends MainApplication
         implements TkpdCoreRouter, GMModuleRouter, TopAdsModuleRouter,
-        ReputationRouter, LogisticRouter,
+        LogisticRouter,
         AbstractionRouter,
         ApplinkRouter,
         NetworkRouter,
@@ -404,11 +404,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void showSimpleAppRatingDialog(Activity activity) {
-
-    }
-
-    @Override
     public boolean isAllowLogOnChuckInterceptorNotification() {
         return DevOptConfig.isChuckNotifEnabled(this);
     }
@@ -459,11 +454,6 @@ public abstract class SellerRouterApplication extends MainApplication
     public void sendForceLogoutAnalytics(Response response, boolean isInvalidToken,
                                          boolean isRequestDenied) {
         ServerErrorHandler.sendForceLogoutAnalytics(response.request().url().toString(), isInvalidToken, isRequestDenied);
-    }
-
-    @Override
-    public void showAppFeedbackRatingDialog(FragmentManager fragmentManager, Context context, BottomSheets.BottomSheetDismissListener listener) {
-
     }
 
     @Override

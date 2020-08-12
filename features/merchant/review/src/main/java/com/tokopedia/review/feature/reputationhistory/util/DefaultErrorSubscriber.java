@@ -1,4 +1,4 @@
-package com.tokopedia.reviewseller.feature.reputationhistory.util;
+package com.tokopedia.review.feature.reputationhistory.util;
 
 
 import androidx.collection.ArrayMap;

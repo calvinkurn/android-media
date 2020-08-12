@@ -1,7 +1,7 @@
-package com.tokopedia.reviewseller.feature.reputationhistory.data.repository;
+package com.tokopedia.review.feature.reputationhistory.data.repository;
 
-import com.tokopedia.reviewseller.feature.reputationhistory.data.source.cloud.CloudReputationReviewDataSource;
-import com.tokopedia.reviewseller.feature.reputationhistory.domain.ReputationRepository;
+import com.tokopedia.review.feature.reputationhistory.data.source.cloud.CloudReputationReviewDataSource;
+import com.tokopedia.review.feature.reputationhistory.domain.ReputationRepository;
 
 import javax.inject.Inject;
 

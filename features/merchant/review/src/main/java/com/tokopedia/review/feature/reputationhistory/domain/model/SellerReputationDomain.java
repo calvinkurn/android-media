@@ -1,4 +1,4 @@
-package com.tokopedia.reviewseller.feature.reputationhistory.domain.model;
+package com.tokopedia.review.feature.reputationhistory.domain.model;
 
 import java.util.ArrayList;
 import java.util.List;

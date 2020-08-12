@@ -1,4 +1,4 @@
-package com.tokopedia.seller.reputation.view.helper;
+package com.tokopedia.review.feature.reputationhistory.view.helper;
 
 import android.view.View;
 

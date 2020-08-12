@@ -1,11 +1,12 @@
-package com.tokopedia.reviewseller.feature.reputationhistory.data.source.cloud;
+package com.tokopedia.review.feature.reputationhistory.data.source.cloud;
 
-import com.tokopedia.reviewseller.feature.reputationhistory.data.model.response.SellerReputationResponse;
-import com.tokopedia.reviewseller.feature.reputationhistory.util.ShopNetworkController;
-import com.tokopedia.reviewseller.feature.reputationhistory.data.mapper.ReputationReviewMapper;
-import com.tokopedia.reviewseller.feature.reputationhistory.data.source.ReputationReviewDataSource;
-import com.tokopedia.reviewseller.feature.reputationhistory.data.source.cloud.apiservice.api.SellerReputationApi;
-import com.tokopedia.reviewseller.feature.reputationhistory.domain.model.SellerReputationDomain;
+import com.tokopedia.review.feature.reputationhistory.data.mapper.ReputationReviewMapper;
+import com.tokopedia.review.feature.reputationhistory.data.model.response.SellerReputationResponse;
+import com.tokopedia.review.feature.reputationhistory.data.source.ReputationReviewDataSource;
+import com.tokopedia.review.feature.reputationhistory.data.source.cloud.apiservice.api.SellerReputationApi;
+
+import com.tokopedia.review.feature.reputationhistory.domain.model.SellerReputationDomain;
+import com.tokopedia.review.feature.reputationhistory.util.ShopNetworkController;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.Map;
@@ -16,7 +17,8 @@ import retrofit2.Response;
 import rx.Observable;
 import rx.functions.Func1;
 
-import static com.tokopedia.reviewseller.feature.reputationhistory.domain.interactor.ReviewReputationUseCase.RequestParamFactory.KEY_REVIEW_REPUTATION_PARAM;
+import static com.tokopedia.review.feature.reputationhistory.domain.interactor.ReviewReputationUseCase.RequestParamFactory.KEY_REVIEW_REPUTATION_PARAM;
+
 
 /**
  * @author normansyahputa on 3/16/17.

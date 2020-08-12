@@ -1,10 +1,10 @@
-package com.tokopedia.reviewseller.feature.reputationhistory.view;
+package com.tokopedia.review.feature.reputationhistory.view;
 
 import com.tokopedia.base.list.seller.common.util.ItemType;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
-import com.tokopedia.reviewseller.feature.reputationhistory.view.adapter.SellerReputationAdapter;
-import com.tokopedia.reviewseller.feature.reputationhistory.view.model.SetDateHeaderModel;
+import com.tokopedia.review.feature.reputationhistory.view.adapter.SellerReputationAdapter;
+import com.tokopedia.review.feature.reputationhistory.view.model.SetDateHeaderModel;
 
 import java.util.List;
 

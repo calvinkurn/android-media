@@ -1,4 +1,4 @@
-package com.tokopedia.reviewseller.feature.reputationhistory.view.helper;
+package com.tokopedia.review.feature.reputationhistory.view.helper;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -11,7 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.LayoutRes;
 
 import com.tokopedia.core.shopinfo.models.shopmodel.Stats;
-import com.tokopedia.reviewseller.R;
+import com.tokopedia.review.R;
 
 /**
  * @author normansyahputa on 3/20/17.

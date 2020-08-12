@@ -1,5 +1,5 @@
 
-package com.tokopedia.reviewseller.feature.reputationhistory.data.model.response;
+package com.tokopedia.review.feature.reputationhistory.data.model.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

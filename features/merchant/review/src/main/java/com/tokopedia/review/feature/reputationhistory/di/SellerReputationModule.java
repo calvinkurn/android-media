@@ -1,4 +1,4 @@
-package com.tokopedia.reviewseller.feature.reputationhistory.di;
+package com.tokopedia.review.feature.reputationhistory.di;
 
 import android.content.Context;
 import com.chuckerteam.chucker.api.ChuckerCollector;
@@ -7,7 +7,6 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.network.di.qualifier.InboxQualifier;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdErrorResponseInterceptor;
 import com.tokopedia.core.network.retrofit.response.TkpdV4ResponseError;
 import com.tokopedia.network.NetworkRouter;
@@ -17,14 +16,14 @@ import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.product.manage.item.common.data.mapper.SimpleDataResponseMapper;
 import com.tokopedia.product.manage.item.common.data.source.ShopInfoDataSource;
 import com.tokopedia.product.manage.item.common.data.source.cloud.ShopInfoCloud;
-import com.tokopedia.reviewseller.feature.reputationhistory.data.repository.ReputationRepositoryImpl;
-import com.tokopedia.reviewseller.feature.reputationhistory.data.repository.ReputationReviewRepositoryImpl;
-import com.tokopedia.reviewseller.feature.reputationhistory.data.source.cloud.CloudReputationReviewDataSource;
-import com.tokopedia.reviewseller.feature.reputationhistory.data.source.cloud.apiservice.api.SellerReputationApi;
-import com.tokopedia.reviewseller.feature.reputationhistory.domain.ReputationRepository;
-import com.tokopedia.reviewseller.feature.reputationhistory.domain.ReputationReviewRepository;
 import com.tokopedia.product.manage.item.common.data.source.cloud.ShopApi;
 import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoRepositoryImpl;
+import com.tokopedia.review.feature.reputationhistory.data.repository.ReputationRepositoryImpl;
+import com.tokopedia.review.feature.reputationhistory.data.repository.ReputationReviewRepositoryImpl;
+import com.tokopedia.review.feature.reputationhistory.data.source.cloud.CloudReputationReviewDataSource;
+import com.tokopedia.review.feature.reputationhistory.data.source.cloud.apiservice.api.SellerReputationApi;
+import com.tokopedia.review.feature.reputationhistory.domain.ReputationRepository;
+import com.tokopedia.review.feature.reputationhistory.domain.ReputationReviewRepository;
 import com.tokopedia.shop.common.constant.ShopCommonUrl;
 import com.tokopedia.user.session.UserSession;
 

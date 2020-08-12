@@ -1,4 +1,4 @@
-package com.tokopedia.reviewseller.feature.reputationhistory.view.adapter;
+package com.tokopedia.review.feature.reputationhistory.view.adapter;
 
 import android.app.Activity;
 import android.content.Context;
@@ -20,14 +20,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.tokopedia.base.list.seller.common.util.ItemType;
 import com.tokopedia.base.list.seller.view.old.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.datepicker.range.view.constant.DatePickerConstant;
-import com.tokopedia.reviewseller.feature.reputationhistory.util.DateHeaderFormatter;
-import com.tokopedia.reviewseller.feature.reputationhistory.view.helper.DateUtilHelper;
-import com.tokopedia.reviewseller.feature.reputationhistory.view.helper.ReputationHeaderViewHelper;
-import com.tokopedia.reviewseller.feature.reputationhistory.view.model.EmptyListModel;
-import com.tokopedia.reviewseller.feature.reputationhistory.view.model.EmptySeparatorModel;
-import com.tokopedia.reviewseller.feature.reputationhistory.view.model.ReputationReviewModel;
-import com.tokopedia.reviewseller.feature.reputationhistory.view.model.SetDateHeaderModel;
-import com.tokopedia.reviewseller.R;
+import com.tokopedia.review.feature.reputationhistory.util.DateHeaderFormatter;
+import com.tokopedia.review.feature.reputationhistory.view.helper.DateUtilHelper;
+import com.tokopedia.review.feature.reputationhistory.view.helper.ReputationHeaderViewHelper;
+import com.tokopedia.review.feature.reputationhistory.view.model.EmptyListModel;
+import com.tokopedia.review.feature.reputationhistory.view.model.EmptySeparatorModel;
+import com.tokopedia.review.feature.reputationhistory.view.model.ReputationReviewModel;
+import com.tokopedia.review.feature.reputationhistory.view.model.SetDateHeaderModel;
+import com.tokopedia.review.R;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;

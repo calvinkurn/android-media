@@ -1,9 +1,9 @@
-package com.tokopedia.reviewseller.feature.reputationhistory.data.mapper;
+package com.tokopedia.review.feature.reputationhistory.data.mapper;
 
 import androidx.annotation.NonNull;
 
-import com.tokopedia.reviewseller.feature.reputationhistory.data.model.response.SellerReputationResponse;
-import com.tokopedia.reviewseller.feature.reputationhistory.domain.model.SellerReputationDomain;
+import com.tokopedia.review.feature.reputationhistory.data.model.response.SellerReputationResponse;
+import com.tokopedia.review.feature.reputationhistory.domain.model.SellerReputationDomain;
 
 import java.util.ArrayList;
 import java.util.List;

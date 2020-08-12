@@ -1,4 +1,4 @@
-package com.tokopedia.reviewseller.feature.reputationhistory.view.model;
+package com.tokopedia.review.feature.reputationhistory.view.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;

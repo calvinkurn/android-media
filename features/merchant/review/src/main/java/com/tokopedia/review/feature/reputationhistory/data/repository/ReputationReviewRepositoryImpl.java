@@ -1,12 +1,12 @@
-package com.tokopedia.reviewseller.feature.reputationhistory.data.repository;
+package com.tokopedia.review.feature.reputationhistory.data.repository;
 
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
-import com.tokopedia.reviewseller.feature.reputationhistory.data.source.cloud.CloudReputationReviewDataSource;
-import com.tokopedia.reviewseller.feature.reputationhistory.util.ShopNetworkController;
-import com.tokopedia.reviewseller.feature.reputationhistory.domain.ReputationReviewRepository;
-import com.tokopedia.reviewseller.feature.reputationhistory.domain.model.SellerReputationDomain;
 import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoRepository;
 import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoRepositoryImpl;
+import com.tokopedia.review.feature.reputationhistory.data.source.cloud.CloudReputationReviewDataSource;
+import com.tokopedia.review.feature.reputationhistory.domain.ReputationReviewRepository;
+import com.tokopedia.review.feature.reputationhistory.domain.model.SellerReputationDomain;
+import com.tokopedia.review.feature.reputationhistory.util.ShopNetworkController;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.Map;

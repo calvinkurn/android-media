@@ -1,6 +1,6 @@
-package com.tokopedia.reviewseller.feature.reputationhistory.util;
+package com.tokopedia.review.feature.reputationhistory.util;
 
-import com.tokopedia.reviewseller.feature.reputationhistory.constant.NetworkConstant;
+import com.tokopedia.review.feature.reputationhistory.constant.NetworkConstant;
 
 /**
  * Created by nathan on 9/15/17.
