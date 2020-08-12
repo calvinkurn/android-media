@@ -85,6 +85,12 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
 
     var performanceMonitoringSellerHomeLayoutPlt: HomeLayoutLoadTimeMonitoring? = null
     var sellerHomeLoadTimeMonitoringListener: SellerHomeLoadTimeMonitoringListener? = null
+        set(value) {
+            field = value
+            if (performanceMonitoringSellerHomeLayoutPlt?.getPltPerformanceMonitoring()?.isSuccess == false) {
+                value?.onStartPltMonitoring()
+            }
+        }
 
     private var shouldMoveToReview: Boolean = false
     private var shouldMoveToCentralizedPromo: Boolean = false
