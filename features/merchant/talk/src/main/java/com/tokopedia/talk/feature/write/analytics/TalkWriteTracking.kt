@@ -23,14 +23,21 @@ object TalkWriteTracking {
         )
     }
 
-    fun eventClickSendButton(userId: String, productId: String) {
-        eventTalkWriting(userId, productId, TalkWriteTrackingConstants.EVENT_ACTION_SEND)
+    fun eventClickSendButton(userId: String, productId: String, category: String, isSuccess: Boolean, errorMessage: String? = null) {
+        with(TalkWriteTrackingConstants) {
+            val successOrFailTag = if(isSuccess) {SEND_SUCCESS} else {SEND_FAIL}
+            val eventLabel = String.format(EVENT_LABEL_CLICK_SEND, category, successOrFailTag, errorMessage.toString())
+            eventTalkWriting(userId, productId, EVENT_ACTION_SEND, eventLabel)
+        }
+
     }
 
     fun eventClickChips(userId: String, productId: String, category: String, message: String) {
-        eventTalkWriting(userId, productId,
-                TalkWriteTrackingConstants.EVENT_ACTION_CLICK_CATEGORY,
-                String.format(TalkWriteTrackingConstants.EVENT_LABEL_CLICK_CATEGORY, category, message))
+        with(TalkWriteTrackingConstants) {
+            eventTalkWriting(userId, productId,
+                    EVENT_ACTION_CLICK_CATEGORY,
+                    String.format(EVENT_LABEL_CLICK_CATEGORY, category, message))
+        }
     }
 
     fun eventClickAskSeller(userId: String, productId: String) {

@@ -286,9 +286,11 @@ class TalkWriteFragment : BaseDaggerFragment(),
         viewModel.submitFormResult.observe(viewLifecycleOwner, Observer {
             when(it) {
                 is Success -> {
+                    TalkWriteTracking.eventClickSendButton(viewModel.getUserId(), viewModel.getProductId().toString(), viewModel.getSelectedCategory()?.categoryName.toString(), true)
                     goToReplyPage(it.data.discussionId.toIntOrZero())
                 }
                 is Fail -> {
+                    TalkWriteTracking.eventClickSendButton(viewModel.getUserId(), viewModel.getProductId().toString(), viewModel.getSelectedCategory()?.categoryName.toString(), false,  it.throwable.message)
                     showErrorToaster()
                 }
             }
@@ -312,7 +314,6 @@ class TalkWriteFragment : BaseDaggerFragment(),
 
     private fun submitNewQuestion() {
         viewModel.submitForm(writeQuestionTextArea.textAreaInput.text.toString())
-        TalkWriteTracking.eventClickSendButton(viewModel.getUserId(), viewModel.getProductId().toString())
     }
 
     private fun setCharLimits(maxChar: Int, minChar: Int) {
