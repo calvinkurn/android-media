@@ -38,6 +38,7 @@ import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.seller_migration_common.presentation.fragment.bottomsheet.SellerMigrationCommunicationBottomSheet
 import com.tokopedia.seller_migration_common.presentation.model.CommunicationInfo
 import com.tokopedia.seller_migration_common.presentation.model.SellerMigrationCommunication
+import com.tokopedia.seller_migration_common.presentation.util.initializeSellerMigrationCommunicationTicker
 import com.tokopedia.seller_migration_common.presentation.widget.SellerMigrationChatBottomSheet
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.activity.ChatListActivity
@@ -214,22 +215,7 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
     }
 
     private fun setupTicker() {
-        topChatSellerMigrationTicker?.apply {
-            tickerTitle = getString(com.tokopedia.seller_migration_common.R.string.seller_migration_ticker_title)
-            val featureString = getString(com.tokopedia.seller_migration_common.R.string.seller_migration_broadcast_chat_ticker_desc_prefix)
-            setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_ticker_desc, featureString))
-            setDescriptionClickEvent(object: TickerCallback {
-                override fun onDismiss() {}
-                override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                    openSellerMigrationBottomSheet()
-                }
-            })
-            show()
-        }
-    }
-
-    private fun openSellerMigrationBottomSheet() {
-        sellerMigrationStaticCommunicationBottomSheet?.show(childFragmentManager, SellerMigrationCommunicationBottomSheet::class.java.name)
+        initializeSellerMigrationCommunicationTicker(sellerMigrationStaticCommunicationBottomSheet, topChatSellerMigrationTicker, CommunicationInfo.BroadcastChat)
     }
 
     private fun isSellerBroadcastRemoteConfigOn(): Boolean {

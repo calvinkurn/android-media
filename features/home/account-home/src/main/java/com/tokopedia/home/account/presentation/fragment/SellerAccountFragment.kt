@@ -263,24 +263,6 @@ class SellerAccountFragment : BaseAccountFragment(), AccountItemListener, Fragme
                     // No op
                 }
             })
-
-            // Commented as it was used for phase 1 only but we will hold it until redirection is completed
-//            migrationTicker.tickerTitle = getString(com.tokopedia.seller_migration_common.R.string.seller_migration_account_home_ticker_title)
-//            val remoteConfigDate = getSellerMigrationDate(this.context)
-//            if (remoteConfigDate.isEmpty()) {
-//                migrationTicker.setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_generic_ticker_content))
-//            } else {
-//                migrationTicker.setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_account_home_ticker_content, remoteConfigDate))
-//            }
-//            migrationTicker.setDescriptionClickEvent(object : TickerCallback {
-//                override fun onDescriptionViewClick(charSequence: CharSequence) {
-//                    eventOnClickAccountTicker(userSession.userId)
-//                }
-//
-//                override fun onDismiss() {
-//                    // No op
-//                }
-//            })
         } else {
             migrationTicker.visibility = View.GONE
         }

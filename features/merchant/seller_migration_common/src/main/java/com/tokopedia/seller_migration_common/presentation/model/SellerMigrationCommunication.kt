@@ -1,9 +1,7 @@
 package com.tokopedia.seller_migration_common.presentation.model
 
-import android.os.Parcelable
 import androidx.annotation.StringRes
 import com.tokopedia.seller_migration_common.R
-import kotlinx.android.parcel.Parcelize
 
 interface SellerMigrationCommunication
 
@@ -11,7 +9,7 @@ sealed class CommunicationInfo(@StringRes val titleRes: Int,
                                val imageUrl: String,
                                @StringRes val descRes: Int,
                                val benefitPointResList: ArrayList<Int> = arrayListOf(),
-                               @StringRes val tickerMessageRes: Int): SellerMigrationCommunication {
+                               @StringRes val tickerMessagePrefixRes: Int): SellerMigrationCommunication {
 
     object TopAds: CommunicationInfo(
             R.string.seller_migration_topads_bottom_sheet_title,
@@ -41,7 +39,7 @@ sealed class CommunicationInfo(@StringRes val titleRes: Int,
             R.string.seller_migration_feed_bottom_sheet_title,
             CommunicationImageUrl.POST_FEED,
             R.string.seller_migration_feed_bottom_sheet_desc,
-            tickerMessageRes = R.string.seller_migration_feed_ticker_desc_prefix
+            tickerMessagePrefixRes = R.string.seller_migration_feed_ticker_desc_prefix
     )
 
     object ShopCapital: CommunicationInfo(

@@ -9,11 +9,19 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.seller_migration_common.R
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants
+import com.tokopedia.seller_migration_common.getSellerMigrationDate
+import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
+import com.tokopedia.seller_migration_common.presentation.fragment.bottomsheet.SellerMigrationCommunicationBottomSheet
+import com.tokopedia.seller_migration_common.presentation.model.CommunicationInfo
 import com.tokopedia.seller_migration_common.presentation.util.touchlistener.SellerMigrationTouchListener
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.parcel.Parcelize
 
@@ -62,7 +70,35 @@ private fun Fragment.goToInformationWebview(link: String,
 @Parcelize
 data class BenefitPoints(val benefitPointsList: List<String>): Parcelable
 
-fun getSellerMigrationTickerDescription() {
+fun Fragment.initializeSellerMigrationCommunicationTicker(bottomSheet: SellerMigrationCommunicationBottomSheet?,
+                                                          ticker: Ticker?,
+                                                          communicationInfo: CommunicationInfo) {
+    ticker?.run {
+        if (isSellerMigrationEnabled(context)) {
+            tickerTitle = context?.getString(R.string.seller_migration_ticker_title).orEmpty()
+            val remoteConfigDate = getSellerMigrationDate(context).let { date ->
+                if (date.isEmpty()) {
+                    date
+                } else {
+                    getString(R.string.seller_migration_account_ticker_desc)
+                }
+            }
+            val featureString = context?.getString(communicationInfo.tickerMessagePrefixRes).orEmpty()
+            setHtmlDescription(context?.getString(R.string.seller_migration_ticker_desc, featureString, remoteConfigDate).orEmpty())
+            setDescriptionClickEvent(object: TickerCallback {
+                override fun onDismiss() {}
+                override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                    openSellerMigrationBottomSheet(bottomSheet)
+                }
+            })
+            show()
+        } else {
+            gone()
+        }
+    }
+}
 
+private fun Fragment.openSellerMigrationBottomSheet(bottomSheet: SellerMigrationCommunicationBottomSheet?) {
+    bottomSheet?.show(childFragmentManager, SellerMigrationCommunicationBottomSheet::class.java.name)
 }
 

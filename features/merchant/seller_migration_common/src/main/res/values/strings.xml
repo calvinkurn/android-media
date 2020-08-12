@@ -6,7 +6,7 @@
     <string name="seller_migration_ticker_title">Kembangkan bisnismu di Tokopedia Seller</string>
     <string name="seller_migration_bottom_sheet_redirected">Dialihkan pada</string>
     <string name="seller_migration_bottom_sheet_redirected_dates">11 September 2020</string>
-    <string name="seller_migration_ticker_desc">%s dapat diakses di aplikasi Tokopedia Seller mulai <b>11 Sep 2020.</b> <b>&lt;a href="#"&gt;Selengkapnya&lt;/a&gt;</b></string>
+    <string name="seller_migration_ticker_desc">%s dapat diakses di aplikasi Tokopedia Seller mulai <b>%s</b> <b>&lt;a href="#"&gt;Selengkapnya&lt;/a&gt;</b></string>
 
     <string name="seller_migration_generic_ticker_title">Lebih leluasa berjualan dengan Tokopedia Seller</string>
     <string name="seller_migration_generic_ticker_content">Nikmati kendali penuh bertransaksi dengan fitur penjual di aplikasi Tokopedia Seller. &lt;a href="#"&gt;Pelajari Selengkapnya&lt;/a&gt;</string>
