@@ -103,7 +103,7 @@ class CreditCardPickerFragment : BaseDaggerFragment() {
                 "customer_email=${getUrlEncoded(additionalData.email)}&" +
                 "customer_msisdn=${getUrlEncoded(additionalData.msisdn)}&" +
                 "signature=${getUrlEncoded(additionalData.signature)}&" +
-                "callback_url=${""}"
+                "callback_url=${getUrlEncoded(additionalData.callbackUrl)}"
     }
 
     private fun getUrlEncoded(valueStr: String): String {

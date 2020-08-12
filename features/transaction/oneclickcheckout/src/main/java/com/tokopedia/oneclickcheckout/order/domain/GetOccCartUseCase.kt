@@ -242,7 +242,7 @@ class GetOccCartUseCase @Inject constructor(val context: Context, val graphqlUse
         }
         val (id, name, email, msisdn) = data.customerData
         val (merchantCode, profileCode, signature, changeCcLink) = data.paymentAdditionalData
-        return OrderPaymentCreditCardAdditionalData(id, name, email, msisdn, merchantCode, profileCode, signature, changeCcLink)
+        return OrderPaymentCreditCardAdditionalData(id, name, email, msisdn, merchantCode, profileCode, signature, changeCcLink, "")
     }
 
     private fun mapPaymentInstallmentTerm(availableTerms: List<InstallmentTerm>): List<OrderPaymentInstallmentTerm> {
