@@ -160,45 +160,15 @@ class SellerMigrationFragment : Fragment(), SellerFeatureCarousel.RecyclerViewLi
     }
 
     private fun addTabFragments() {
-        tabList.add(SellerFeatureFragmentAdapter.SellerFeatureFragmentItem(getSellerFeatureProductTabFragment(), "product"))
-        tabList.add(SellerFeatureFragmentAdapter.SellerFeatureFragmentItem(getSellerFeatureChatTabFragment(), "chat"))
-        tabList.add(SellerFeatureFragmentAdapter.SellerFeatureFragmentItem(getSellerFeatureReviewTabFragment(), "ulasan"))
-        tabList.add(SellerFeatureFragmentAdapter.SellerFeatureFragmentItem(getSellerFeatureAdsPromoTabFragment(), "ads & promo"))
-        tabList.add(SellerFeatureFragmentAdapter.SellerFeatureFragmentItem(getSellerFeatureStatisticTabFragment(), "statistics"))
+        tabList.add(SellerFeatureFragmentAdapter.SellerFeatureFragmentItem(getSellerFeatureTabFragment<SellerFeatureProductTabFragment>(), getString(R.string.seller_migration_fragment_tab_product)))
+        tabList.add(SellerFeatureFragmentAdapter.SellerFeatureFragmentItem(getSellerFeatureTabFragment<SellerFeatureChatTabFragment>(), getString(R.string.seller_migration_fragment_tab_chat)))
+        tabList.add(SellerFeatureFragmentAdapter.SellerFeatureFragmentItem(getSellerFeatureTabFragment<SellerFeatureReviewTabFragment>(), getString(R.string.seller_migration_fragment_tab_review)))
+        tabList.add(SellerFeatureFragmentAdapter.SellerFeatureFragmentItem(getSellerFeatureTabFragment<SellerFeatureAdsPromoTabFragment>(), getString(R.string.seller_migration_fragment_tab_promo_and_ads)))
+        tabList.add(SellerFeatureFragmentAdapter.SellerFeatureFragmentItem(getSellerFeatureTabFragment<SellerFeatureStatisticTabFragment>(), getString(R.string.seller_migration_fragment_tab_statistic)))
     }
 
-    private inline fun <reified T : BaseSellerFeatureTabFragment> getSellerFeatureTabFragment(): T? {
-        return childFragmentManager.fragments.filterIsInstance<T>().firstOrNull()?.apply {
-            recyclerViewListener = this@SellerMigrationFragment
-        }
-    }
-
-    private fun getSellerFeatureProductTabFragment(): SellerFeatureProductTabFragment {
-        return getSellerFeatureTabFragment() ?: SellerFeatureProductTabFragment().apply {
-            recyclerViewListener = this@SellerMigrationFragment
-        }
-    }
-
-    private fun getSellerFeatureChatTabFragment(): SellerFeatureChatTabFragment {
-        return getSellerFeatureTabFragment() ?: SellerFeatureChatTabFragment().apply {
-            recyclerViewListener = this@SellerMigrationFragment
-        }
-    }
-
-    private fun getSellerFeatureReviewTabFragment(): SellerFeatureReviewTabFragment {
-        return getSellerFeatureTabFragment() ?: SellerFeatureReviewTabFragment().apply {
-            recyclerViewListener = this@SellerMigrationFragment
-        }
-    }
-
-    private fun getSellerFeatureAdsPromoTabFragment(): SellerFeatureAdsPromoTabFragment {
-        return getSellerFeatureTabFragment() ?: SellerFeatureAdsPromoTabFragment().apply {
-            recyclerViewListener = this@SellerMigrationFragment
-        }
-    }
-
-    private fun getSellerFeatureStatisticTabFragment(): SellerFeatureStatisticTabFragment {
-        return getSellerFeatureTabFragment() ?: SellerFeatureStatisticTabFragment().apply {
+    private inline fun <reified T : BaseSellerFeatureTabFragment> getSellerFeatureTabFragment(): Fragment {
+        return (childFragmentManager.fragments.filterIsInstance<T>().firstOrNull() ?: T::class.java.newInstance()).apply {
             recyclerViewListener = this@SellerMigrationFragment
         }
     }
