@@ -64,6 +64,7 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     // Product Card Sprint Sale Carousel
     ProductCardSprintSaleCarousel(R.layout.carousel_product_card_recycler_view, ComponentNames.ProductCardSprintSaleCarousel.componentName),
     ProductCardSprintSaleCarouselItem(R.layout.product_item_horizontal_layout, ComponentNames.ProductCardSprintSaleCarouselItem.componentName),
+    ProductListEmptyState(R.layout.product_list_state, ComponentNames.ProductListEmptyState.componentName),
 
 
 }
