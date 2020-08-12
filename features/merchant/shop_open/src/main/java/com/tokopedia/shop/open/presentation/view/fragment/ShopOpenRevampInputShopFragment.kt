@@ -30,6 +30,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.open.R
 import com.tokopedia.shop.open.analytic.ShopOpenRevampTracking
 import com.tokopedia.shop.open.common.PageNameConstant
+import com.tokopedia.shop.open.common.ScreenNameTracker
 import com.tokopedia.shop.open.common.TermsAndConditionsLink.URL_PRIVACY_POLICY
 import com.tokopedia.shop.open.common.TermsAndConditionsLink.URL_TNC
 import com.tokopedia.shop.open.data.model.ValidateShopDomainSuggestionResult
@@ -150,6 +151,7 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        shopOpenRevampTracking?.sendScreenNameTracker(ScreenNameTracker.SCREEN_SHOP_REGISTRATION)
         txtInputShopName.setMessage(getString(R.string.open_shop_revamp_default_hint_input_shop))
         btnShopRegistration.setOnClickListener {
             activity?.let {
