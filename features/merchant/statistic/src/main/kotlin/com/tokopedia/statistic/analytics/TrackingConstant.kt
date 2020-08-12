@@ -43,6 +43,7 @@ object TrackingConstant {
     const val CLICK_DATE_FILTER = "click date filter"
     const val CLICK_SELECT_ON_DATE_FILTER = "click select on date filter"
     const val CLICK_TABS = "click tabs"
+    const val CLICK_INFO_ICON = "click info icon"
     const val IMPRESSION_WIDGET_CARD = "impression widget card"
     const val IMPRESSION_WIDGET_LINE_GRAPH = "impression widget trend line"
     const val IMPRESSION_WIDGET_DESCRIPTION = "impression widget description"

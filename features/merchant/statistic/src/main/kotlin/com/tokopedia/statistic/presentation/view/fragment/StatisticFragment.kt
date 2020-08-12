@@ -248,6 +248,10 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         StatisticTracker.sendBarChartImpressionEvent(model, position)
     }
 
+    override fun sendSectionTooltipClickEvent(model: SectionWidgetUiModel) {
+        StatisticTracker.sendSectionTooltipClickEvent(model.title)
+    }
+
     private fun setupView() = view?.run {
         (activity as? AppCompatActivity)?.let { activity ->
             activity.setSupportActionBar(headerStcStatistic)

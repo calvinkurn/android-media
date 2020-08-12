@@ -8,6 +8,7 @@ import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.presentation.model.SectionWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.TooltipUiModel
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import kotlinx.android.synthetic.main.shc_section_widget.view.*
 
@@ -35,15 +36,20 @@ class SectionViewHolder(
                 if (shouldShowTooltip) {
                     btnSectionInfo.visible()
                     btnSectionInfo.setOnClickListener {
-                        listener.onTooltipClicked(tooltip)
+                        showSectionTooltip(element, tooltip)
                     }
                     tvSectionTitle.setOnClickListener {
-                        listener.onTooltipClicked(tooltip)
+                        showSectionTooltip(element, tooltip)
                     }
                 } else
                     btnSectionInfo.gone()
             }
         }
+    }
+
+    private fun showSectionTooltip(model: SectionWidgetUiModel, tooltip: TooltipUiModel) {
+        listener.sendSectionTooltipClickEvent(model)
+        listener.onTooltipClicked(tooltip)
     }
 
     private fun String.parseDateTemplate(): CharSequence {
@@ -59,5 +65,8 @@ class SectionViewHolder(
         }
     }
 
-    interface Listener : BaseViewHolderListener
+    interface Listener : BaseViewHolderListener {
+
+        fun sendSectionTooltipClickEvent(model: SectionWidgetUiModel) {}
+    }
 }

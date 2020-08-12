@@ -260,6 +260,16 @@ object StatisticTracker {
         TrackingHelper.sendEnhanceEcommerceEvent(eventMap)
     }
 
+    fun sendSectionTooltipClickEvent(sectionTitle: String) {
+        val eventMap = TrackingHelper.createMap(
+                event = TrackingConstant.CLICK_SHOP_INSIGHT,
+                category = TrackingConstant.SHOP_INSIGHT,
+                action = TrackingConstant.CLICK_INFO_ICON,
+                label = sectionTitle
+        )
+        TrackingHelper.sendGeneralEvent(eventMap)
+    }
+
     fun sendScreen(screenName: String) {
         TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
     }
