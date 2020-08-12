@@ -84,7 +84,7 @@
                 app:layout_constraintCircleRadius="@dimen/dp_4"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:visibility="visible">
+                tools:visibility="gone">
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/label_selected_shipping_duration"

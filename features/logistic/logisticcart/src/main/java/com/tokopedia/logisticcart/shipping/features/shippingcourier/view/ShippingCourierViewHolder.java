@@ -64,10 +64,6 @@ public class ShippingCourierViewHolder extends RecyclerView.ViewHolder {
         }
 
         if (shippingCourierUiModel.getProductData().getCodProductData() != null) {
-//            tvCod.setText(shippingCourierUiModel.getProductData().getCodProductData().getCodText());
-//            tvCod.setVisibility(shippingCourierUiModel.getProductData().getCodProductData()
-//                    .getIsCodAvailable() == COD_ENABLE_VALUE ? View.VISIBLE : View.GONE);
-
             /*cod label*/
             codLabel.setVisibility(shippingCourierUiModel.getProductData().getCodProductData().
                     getIsCodAvailable() == COD_ENABLE_VALUE? View.VISIBLE : View.GONE );
