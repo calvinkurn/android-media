@@ -104,7 +104,6 @@
                 android:layout_marginEnd="@dimen/spacing_lvl3"
                 android:ellipsize="end"
                 android:maxLines="2"
-                android:textColor="@android:color/black"
                 app:typographyType="heading_6"
                 tools:layout_editor_absoluteX="@dimen/spacing_lvl3"
                 tools:text="Google Assistant review with me" />
@@ -116,7 +115,6 @@
                 android:layout_marginStart="@dimen/spacing_lvl3"
                 android:layout_marginEnd="@dimen/spacing_lvl3"
                 android:layout_marginBottom="@dimen/spacing_lvl3"
-                android:textColor="@android:color/black"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
