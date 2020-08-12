@@ -174,10 +174,10 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
             case KYCConstant.STATUS_REJECTED:
                 showStatusRejected(reasons);
                 break;
+            case KYCConstant.STATUS_APPROVED:
             case KYCConstant.STATUS_PENDING:
                 showStatusPending();
                 break;
-            case KYCConstant.STATUS_APPROVED:
             case KYCConstant.STATUS_VERIFIED:
                 showStatusVerified();
                 break;
