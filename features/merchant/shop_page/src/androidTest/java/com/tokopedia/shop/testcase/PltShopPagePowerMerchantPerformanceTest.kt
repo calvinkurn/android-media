@@ -9,16 +9,24 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import androidx.test.rule.ActivityTestRule
+import com.tokopedia.analytics.performance.util.NetworkData
 import com.tokopedia.analytics.performance.util.PerformanceDataFileUtils
 import com.tokopedia.analytics.performance.util.PltPerformanceData
 import com.tokopedia.shop.mock.ShopPageWithoutHomeTabMockResponseConfig
+import com.tokopedia.shop.mock.ShopPageWithoutHomeTabMockResponseConfig.Companion.KEY_QUERY_GET_SHOP_PRODUCT
+import com.tokopedia.shop.mock.ShopPageWithoutHomeTabMockResponseConfig.Companion.KEY_QUERY_SHOP_INFO_CORE_AND_ASSETS
+import com.tokopedia.shop.mock.ShopPageWithoutHomeTabMockResponseConfig.Companion.KEY_QUERY_SHOP_INFO_FAVORITE
+import com.tokopedia.shop.mock.ShopPageWithoutHomeTabMockResponseConfig.Companion.KEY_QUERY_SHOP_INFO_GOLD
+import com.tokopedia.shop.mock.ShopPageWithoutHomeTabMockResponseConfig.Companion.KEY_QUERY_SHOP_INFO_HOME_TYPE
+import com.tokopedia.shop.mock.ShopPageWithoutHomeTabMockResponseConfig.Companion.KEY_QUERY_SHOP_INFO_OS
+import com.tokopedia.shop.mock.ShopPageWithoutHomeTabMockResponseConfig.Companion.KEY_QUERY_SHOP_INFO_TOP_CONTENT
+import com.tokopedia.shop.mock.ShopPageWithoutHomeTabMockResponseConfig.Companion.KEY_QUERY_WHITELIST
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
-import com.tokopedia.shop.test.R
-import com.tokopedia.shop.util.Util
-import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
-import com.tokopedia.test.application.util.setupGraphqlMockResponseWithCheck
 import com.tokopedia.test.application.util.TokopediaGraphqlInstrumentationTestHelper
+import com.tokopedia.test.application.environment.interceptor.size.GqlNetworkAnalyzerInterceptor
+import com.tokopedia.test.application.util.setupGraphqlMockResponseWithCheck
 import java.util.HashMap
+import com.tokopedia.test.application.util.setupTotalSizeInterceptor
 
 class PltShopPagePowerMerchantPerformanceTest {
 
@@ -44,6 +52,17 @@ class PltShopPagePowerMerchantPerformanceTest {
         context = InstrumentationRegistry.getInstrumentation().targetContext
         context?.let {
             setupGraphqlMockResponseWithCheck(ShopPageWithoutHomeTabMockResponseConfig())
+            setupTotalSizeInterceptor(listOf(
+                    KEY_QUERY_GET_SHOP_PRODUCT,
+                    KEY_QUERY_SHOP_INFO_OS,
+                    KEY_QUERY_SHOP_INFO_CORE_AND_ASSETS,
+                    KEY_QUERY_SHOP_INFO_HOME_TYPE,
+                    KEY_QUERY_SHOP_INFO_GOLD,
+                    KEY_QUERY_SHOP_INFO_TOP_CONTENT,
+                    KEY_QUERY_SHOP_INFO_FAVORITE,
+                    KEY_QUERY_WHITELIST
+            ))
+
             val intent = Intent()
             intent.putExtra(ShopPageActivity.SHOP_ID, SAMPLE_SHOP_ID)
             activityRule.launchActivity(intent)
@@ -74,7 +93,8 @@ class PltShopPagePowerMerchantPerformanceTest {
         activityRule.activity.getShopPageLoadTimePerformanceCallback()?.let {
             savePLTPerformanceResultData(
                     it.getPltPerformanceData(),
-                    TEST_CASE_SHOP_PAGE_LOAD_TIME_PERFORMANCE
+                    TEST_CASE_SHOP_PAGE_LOAD_TIME_PERFORMANCE,
+                    GqlNetworkAnalyzerInterceptor.getNetworkData()
             )
         }
         TokopediaGraphqlInstrumentationTestHelper.deleteAllDataInDb()
@@ -85,11 +105,16 @@ class PltShopPagePowerMerchantPerformanceTest {
         Thread.sleep(10000)
     }
 
-    private fun savePLTPerformanceResultData(performanceData: PltPerformanceData, testCaseName: String) {
+    private fun savePLTPerformanceResultData(
+            performanceData: PltPerformanceData,
+            testCaseName: String,
+            networkData: NetworkData? = null
+    ) {
         PerformanceDataFileUtils.writePLTPerformanceFile(
                 activityRule.activity,
                 testCaseName,
-                performanceData
+                performanceData,
+                networkData = networkData
         )
     }
 

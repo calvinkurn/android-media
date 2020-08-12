@@ -308,6 +308,7 @@ class ShopPageFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        stopPreparePltShopPage()
         context?.let {
             remoteConfig = FirebaseRemoteConfigImpl(it)
             cartLocalCacheHandler = LocalCacheHandler(it, CART_LOCAL_CACHE_NAME)
@@ -388,6 +389,7 @@ class ShopPageFragment :
         isFirstLoading = true
         if (!swipeToRefresh.isRefreshing)
             setViewState(VIEW_LOADING)
+        startMonitoringNetworkPltShopPage()
         shopViewModel.getShopPageTabData(shopId, shopDomain, isRefresh)
     }
 
@@ -573,7 +575,6 @@ class ShopPageFragment :
     }
 
     private fun onSuccessGetShopPageTabData(shopPageP1Data: ShopPageP1Data) {
-        stopPreparePltShopPage()
         isShowFeed = shopPageP1Data.isWhitelist
         createPostUrl = shopPageP1Data.url
         shopPageHeaderDataModel = ShopPageHeaderDataModel().apply {
@@ -610,6 +611,13 @@ class ShopPageFragment :
         (activity as? ShopPagePerformanceMonitoringListener)?.let { shopPageActivity ->
             shopPageActivity.getShopPageLoadTimePerformanceCallback()?.let {
                 shopPageActivity.stopMonitoringPltPreparePage(it)
+            }
+        }
+    }
+
+    protected fun startMonitoringNetworkPltShopPage(){
+        (activity as? ShopPagePerformanceMonitoringListener)?.let { shopPageActivity ->
+            shopPageActivity.getShopPageLoadTimePerformanceCallback()?.let {
                 shopPageActivity.startMonitoringPltNetworkRequest(it)
             }
         }

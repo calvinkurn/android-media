@@ -54,35 +54,36 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import dagger.Lazy
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import rx.Subscriber
 import javax.inject.Inject
 
 class ShopPageViewModel @Inject constructor(
-                                            private val gqlGetShopFavoriteStatusUseCase: GQLGetShopFavoriteStatusUseCase,
+                                            private val gqlGetShopFavoriteStatusUseCase: Lazy<GQLGetShopFavoriteStatusUseCase>,
                                             private val userSessionInterface: UserSessionInterface,
                                             @GqlGetShopInfoForHeaderUseCaseQualifier
-                                            private val gqlGetShopInfoForHeaderUseCase: GQLGetShopInfoUseCase,
-                                            private val getBroadcasterShopConfigUseCase: GetBroadcasterShopConfigUseCase,
+                                            private val gqlGetShopInfoForHeaderUseCase: Lazy<GQLGetShopInfoUseCase>,
+                                            private val getBroadcasterShopConfigUseCase: Lazy<GetBroadcasterShopConfigUseCase>,
                                             @GqlGetShopInfoUseCaseOsQualifier
-                                            private val gqlGetShopInfobUseCaseOs: GQLGetShopInfoUseCase,
+                                            private val gqlGetShopInfobUseCaseOs: Lazy<GQLGetShopInfoUseCase>,
                                             @GqlGetShopInfoUseCaseGoldQualifier
-                                            private val gqlGetShopInfobUseCaseGold: GQLGetShopInfoUseCase,
+                                            private val gqlGetShopInfobUseCaseGold: Lazy<GQLGetShopInfoUseCase>,
                                             @GqlGetShopInfoUseCaseTopContentQualifier
-                                            private val gqlGetShopInfobUseCaseTopContent: GQLGetShopInfoUseCase,
+                                            private val gqlGetShopInfobUseCaseTopContent: Lazy<GQLGetShopInfoUseCase>,
                                             @GqlGetShopInfoUseCaseHomeTypeQualifier
-                                            private val gqlGetShopInfobUseCaseHomeType: GQLGetShopInfoUseCase,
+                                            private val gqlGetShopInfobUseCaseHomeType: Lazy<GQLGetShopInfoUseCase>,
                                             @GqlGetShopInfoUseCaseCoreAndAssetsQualifier
-                                            private val gqlGetShopInfobUseCaseCoreAndAssets: GQLGetShopInfoUseCase,
-                                            private val getWhitelistUseCase: GetWhitelistUseCase,
-                                            private val getShopReputationUseCase: GetShopReputationUseCase,
-                                            private val toggleFavouriteShopUseCase: ToggleFavouriteShopUseCase,
-                                            private val getModerateShopUseCase: GetModerateShopUseCase,
-                                            private val requestModerateShopUseCase: RequestModerateShopUseCase,
-                                            private val stickyLoginUseCase: StickyLoginUseCase,
-                                            private val gqlGetShopOperationalHourStatusUseCase: GQLGetShopOperationalHourStatusUseCase,
-                                            private val getShopProductUseCase: GqlGetShopProductUseCase,
+                                            private val gqlGetShopInfobUseCaseCoreAndAssets: Lazy<GQLGetShopInfoUseCase>,
+                                            private val getWhitelistUseCase: Lazy<GetWhitelistUseCase>,
+                                            private val getShopReputationUseCase: Lazy<GetShopReputationUseCase>,
+                                            private val toggleFavouriteShopUseCase: Lazy<ToggleFavouriteShopUseCase>,
+                                            private val getModerateShopUseCase: Lazy<GetModerateShopUseCase>,
+                                            private val requestModerateShopUseCase: Lazy<RequestModerateShopUseCase>,
+                                            private val stickyLoginUseCase: Lazy<StickyLoginUseCase>,
+                                            private val gqlGetShopOperationalHourStatusUseCase: Lazy<GQLGetShopOperationalHourStatusUseCase>,
+                                            private val getShopProductUseCase: Lazy<GqlGetShopProductUseCase>,
                                             dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
     companion object {
@@ -169,7 +170,7 @@ class ShopPageViewModel @Inject constructor(
                     Dispatchers.IO,
                     block = {
                         getProductList(
-                                getShopProductUseCase,
+                                getShopProductUseCase.get(),
                                 shopId.orEmpty(),
                                 START_PAGE,
                                 ShopPageConstant.DEFAULT_PER_PAGE,
@@ -211,58 +212,58 @@ class ShopPageViewModel @Inject constructor(
     }
 
     private suspend fun getShopInfoOsData(shopId: Int, shopDomain: String?, isRefresh: Boolean): ShopInfo {
-        gqlGetShopInfobUseCaseOs.params = GQLGetShopInfoUseCase.createParams(
+        gqlGetShopInfobUseCaseOs.get().params = GQLGetShopInfoUseCase.createParams(
                 if (shopId == 0) listOf() else listOf(shopId),
                 shopDomain,
                 source = SHOP_PAGE_SOURCE,
                 fields = listOf(GQLGetShopInfoUseCase.FIELD_OS)
         )
-        gqlGetShopInfobUseCaseOs.isFromCacheFirst = !isRefresh
-        return gqlGetShopInfobUseCaseOs.executeOnBackground()
+        gqlGetShopInfobUseCaseOs.get().isFromCacheFirst = !isRefresh
+        return gqlGetShopInfobUseCaseOs.get().executeOnBackground()
     }
 
     private suspend fun getShopInfoGoldData(shopId: Int, shopDomain: String?, isRefresh: Boolean): ShopInfo {
-        gqlGetShopInfobUseCaseGold.params = GQLGetShopInfoUseCase.createParams(
+        gqlGetShopInfobUseCaseGold.get().params = GQLGetShopInfoUseCase.createParams(
                 if (shopId == 0) listOf() else listOf(shopId),
                 shopDomain,
                 source = SHOP_PAGE_SOURCE,
                 fields = listOf(GQLGetShopInfoUseCase.FIELD_GOLD)
         )
-        gqlGetShopInfobUseCaseGold.isFromCacheFirst = !isRefresh
-        return gqlGetShopInfobUseCaseGold.executeOnBackground()
+        gqlGetShopInfobUseCaseGold.get().isFromCacheFirst = !isRefresh
+        return gqlGetShopInfobUseCaseGold.get().executeOnBackground()
     }
 
     private suspend fun getShopInfoTopContentData(shopId: Int, shopDomain: String?, isRefresh: Boolean): ShopInfo {
-        gqlGetShopInfobUseCaseTopContent.params = GQLGetShopInfoUseCase.createParams(
+        gqlGetShopInfobUseCaseTopContent.get().params = GQLGetShopInfoUseCase.createParams(
                 if (shopId == 0) listOf() else listOf(shopId),
                 shopDomain,
                 source = SHOP_PAGE_SOURCE,
                 fields = listOf(GQLGetShopInfoUseCase.FIELD_TOP_CONTENT)
         )
-        gqlGetShopInfobUseCaseTopContent.isFromCacheFirst = !isRefresh
-        return gqlGetShopInfobUseCaseTopContent.executeOnBackground()
+        gqlGetShopInfobUseCaseTopContent.get().isFromCacheFirst = !isRefresh
+        return gqlGetShopInfobUseCaseTopContent.get().executeOnBackground()
     }
 
     private suspend fun getShopInfoHomeTypeData(shopId: Int, shopDomain: String?, isRefresh: Boolean): ShopInfo {
-        gqlGetShopInfobUseCaseHomeType.params = GQLGetShopInfoUseCase.createParams(
+        gqlGetShopInfobUseCaseHomeType.get().params = GQLGetShopInfoUseCase.createParams(
                 if (shopId == 0) listOf() else listOf(shopId),
                 shopDomain,
                 source = SHOP_PAGE_SOURCE,
                 fields = listOf(GQLGetShopInfoUseCase.FIELD_HOME_TYPE)
         )
-        gqlGetShopInfobUseCaseHomeType.isFromCacheFirst = !isRefresh
-        return gqlGetShopInfobUseCaseHomeType.executeOnBackground()
+        gqlGetShopInfobUseCaseHomeType.get().isFromCacheFirst = !isRefresh
+        return gqlGetShopInfobUseCaseHomeType.get().executeOnBackground()
     }
 
     private suspend fun getShopInfoCoreAndAssetsData(shopId: Int, shopDomain: String?, isRefresh: Boolean): ShopInfo {
-        gqlGetShopInfobUseCaseCoreAndAssets.params = GQLGetShopInfoUseCase.createParams(
+        gqlGetShopInfobUseCaseCoreAndAssets.get().params = GQLGetShopInfoUseCase.createParams(
                 if (shopId == 0) listOf() else listOf(shopId),
                 shopDomain,
                 source = SHOP_PAGE_SOURCE,
                 fields = listOf(GQLGetShopInfoUseCase.FIELD_CORE, GQLGetShopInfoUseCase.FIELD_ASSETS)
         )
-        gqlGetShopInfobUseCaseCoreAndAssets.isFromCacheFirst = !isRefresh
-        return gqlGetShopInfobUseCaseCoreAndAssets.executeOnBackground()
+        gqlGetShopInfobUseCaseCoreAndAssets.get().isFromCacheFirst = !isRefresh
+        return gqlGetShopInfobUseCaseCoreAndAssets.get().executeOnBackground()
     }
 
     private suspend fun getProductList(
@@ -290,19 +291,19 @@ class ShopPageViewModel @Inject constructor(
     private fun isHasNextPage(page: Int, perPage: Int, totalData: Int): Boolean = page * perPage < totalData
 
     private suspend fun getShopOperationalHourStatus(shopId: Int): ShopOperationalHourStatus {
-        gqlGetShopOperationalHourStatusUseCase.params = GQLGetShopOperationalHourStatusUseCase.createParams(shopId.toString())
-        return gqlGetShopOperationalHourStatusUseCase.executeOnBackground()
+        gqlGetShopOperationalHourStatusUseCase.get().params = GQLGetShopOperationalHourStatusUseCase.createParams(shopId.toString())
+        return gqlGetShopOperationalHourStatusUseCase.get().executeOnBackground()
     }
 
     private suspend fun getFeedWhitelist(shopId: Int, isRefresh: Boolean): Whitelist? {
-        val feedWhitelistRequest = getWhitelistUseCase.getRequest(GetWhitelistUseCase.createRequestParams(
+        val feedWhitelistRequest = getWhitelistUseCase.get().getRequest(GetWhitelistUseCase.createRequestParams(
                 GetWhitelistUseCase.WHITELIST_SHOP,
                 shopId.toString()
         ))
-        getWhitelistUseCase.clearRequest()
-        getWhitelistUseCase.addRequest(feedWhitelistRequest)
-        getWhitelistUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(if (isRefresh) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST).build())
-        val gqlResponse = getWhitelistUseCase.createObservable(RequestParams.EMPTY).toBlocking().first()
+        getWhitelistUseCase.get().clearRequest()
+        getWhitelistUseCase.get().addRequest(feedWhitelistRequest)
+        getWhitelistUseCase.get().setCacheStrategy(GraphqlCacheStrategy.Builder(if (isRefresh) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST).build())
+        val gqlResponse = getWhitelistUseCase.get().createObservable(RequestParams.EMPTY).toBlocking().first()
         val feedWhitelistError = gqlResponse.getError(WhitelistQuery::class.java)
         val feedWhitelist = gqlResponse.getData<WhitelistQuery>(WhitelistQuery::class.java)?.whitelist
         if (feedWhitelistError == null || feedWhitelistError.isEmpty()) {
@@ -316,8 +317,8 @@ class ShopPageViewModel @Inject constructor(
         val id = shopId?.toIntOrNull() ?: 0
         var favoritInfo = ShopInfo.FavoriteData()
         try {
-            gqlGetShopFavoriteStatusUseCase.params = GQLGetShopFavoriteStatusUseCase.createParams(if (id == 0) listOf() else listOf(id), shopDomain)
-            favoritInfo = gqlGetShopFavoriteStatusUseCase.executeOnBackground().favoriteData
+            gqlGetShopFavoriteStatusUseCase.get().params = GQLGetShopFavoriteStatusUseCase.createParams(if (id == 0) listOf() else listOf(id), shopDomain)
+            favoritInfo = gqlGetShopFavoriteStatusUseCase.get().executeOnBackground().favoriteData
         } catch (t: Throwable) {
         }
         return favoritInfo
@@ -326,8 +327,8 @@ class ShopPageViewModel @Inject constructor(
     private suspend fun getShopBroadcasterConfig(shopId: String? = null): Broadcaster.Config {
         var broadcasterConfig = Broadcaster.Config()
         try {
-            getBroadcasterShopConfigUseCase.params = GetBroadcasterShopConfigUseCase.createParams(shopId ?: "")
-            broadcasterConfig = getBroadcasterShopConfigUseCase.executeOnBackground()
+            getBroadcasterShopConfigUseCase.get().params = GetBroadcasterShopConfigUseCase.createParams(shopId ?: "")
+            broadcasterConfig = getBroadcasterShopConfigUseCase.get().executeOnBackground()
         } catch (t: Throwable) {
         }
         return broadcasterConfig
@@ -339,7 +340,7 @@ class ShopPageViewModel @Inject constructor(
             return
         }
 
-        toggleFavouriteShopUseCase.execute(ToggleFavouriteShopUseCase.createRequestParam(shopID),
+        toggleFavouriteShopUseCase.get().execute(ToggleFavouriteShopUseCase.createRequestParam(shopID),
                 object : Subscriber<Boolean>() {
                     override fun onCompleted() {}
 
@@ -354,8 +355,8 @@ class ShopPageViewModel @Inject constructor(
     }
 
     fun getStickyLoginContent(onSuccess: (StickyLoginTickerPojo.TickerDetail) -> Unit, onError: ((Throwable) -> Unit)?) {
-        stickyLoginUseCase.setParams(StickyLoginConstant.Page.SHOP)
-        stickyLoginUseCase.execute(
+        stickyLoginUseCase.get().setParams(StickyLoginConstant.Page.SHOP)
+        stickyLoginUseCase.get().execute(
                 onSuccess = {
                     if (it.response.tickers.isNotEmpty()) {
                         for (tickerDetail in it.response.tickers) {
@@ -377,11 +378,11 @@ class ShopPageViewModel @Inject constructor(
 
     override fun flush() {
         super.flush()
-        getWhitelistUseCase.unsubscribe()
-        toggleFavouriteShopUseCase.unsubscribe()
-        getModerateShopUseCase.unsubscribe()
-        requestModerateShopUseCase.unsubscribe()
-        stickyLoginUseCase.cancelJobs()
+        getWhitelistUseCase.get().unsubscribe()
+        toggleFavouriteShopUseCase.get().unsubscribe()
+        getModerateShopUseCase.get().unsubscribe()
+        requestModerateShopUseCase.get().unsubscribe()
+        stickyLoginUseCase.get().cancelJobs()
     }
 
     fun getShopPageHeaderContentData(shopId: String, shopDomain: String, isRefresh: Boolean) {
@@ -455,14 +456,14 @@ class ShopPageViewModel @Inject constructor(
     }
 
     private suspend fun getShopBadgeData(shopId: Int, refresh: Boolean): ShopBadge {
-        getShopReputationUseCase.isFromCacheFirst = !refresh
-        getShopReputationUseCase.params = GetShopReputationUseCase.createParams(shopId)
-        return getShopReputationUseCase.executeOnBackground()
+        getShopReputationUseCase.get().isFromCacheFirst = !refresh
+        getShopReputationUseCase.get().params = GetShopReputationUseCase.createParams(shopId)
+        return getShopReputationUseCase.get().executeOnBackground()
     }
 
     private suspend fun getShopInfoHeader(shopId: Int, shopDomain: String, refresh: Boolean): ShopInfo {
-        gqlGetShopInfoForHeaderUseCase.isFromCacheFirst = !refresh
-        gqlGetShopInfoForHeaderUseCase.params = GQLGetShopInfoUseCase.createParams(
+        gqlGetShopInfoForHeaderUseCase.get().isFromCacheFirst = !refresh
+        gqlGetShopInfoForHeaderUseCase.get().params = GQLGetShopInfoUseCase.createParams(
                 if (shopId == 0) listOf() else listOf(shopId),
                 shopDomain,
                 source = SHOP_PAGE_SOURCE,
@@ -479,6 +480,6 @@ class ShopPageViewModel @Inject constructor(
                         FIELD_CREATE_INFO
                 )
         )
-        return gqlGetShopInfoForHeaderUseCase.executeOnBackground()
+        return gqlGetShopInfoForHeaderUseCase.get().executeOnBackground()
     }
 }
