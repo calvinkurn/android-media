@@ -11,7 +11,7 @@ import android.widget.CompoundButton;
 import androidx.annotation.NonNull;
 
 import com.tokopedia.editshipping.R;
-import com.tokopedia.editshipping.model.editshipping.Service;
+import com.tokopedia.editshipping.domain.model.editshipping.Service;
 import com.tokopedia.editshipping.ui.EditShippingViewListener;
 
 /**

@@ -34,7 +34,10 @@ class FragmentErrorComponent(
                     .collect {
                         when (it) {
                             is ScreenStateEvent.Init -> uiView.hide()
-                            is ScreenStateEvent.ShowGlobalError -> uiView.show()
+                            is ScreenStateEvent.ShowGlobalError -> {
+                                if (it.shouldShow) uiView.show()
+                                else uiView.hide()
+                            }
                         }
                     }
         }

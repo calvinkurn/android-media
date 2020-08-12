@@ -16,7 +16,7 @@ import androidx.annotation.NonNull;
 
 import com.google.android.material.textfield.TextInputLayout;
 import com.tokopedia.editshipping.R;
-import com.tokopedia.editshipping.model.editshipping.ShopShipping;
+import com.tokopedia.editshipping.domain.model.editshipping.ShopShipping;
 import com.tokopedia.editshipping.presenter.EditShippingPresenter;
 import com.tokopedia.editshipping.ui.EditShippingViewListener;
 

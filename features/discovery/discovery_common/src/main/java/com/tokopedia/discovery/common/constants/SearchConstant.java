@@ -159,4 +159,9 @@ public interface SearchConstant {
         String LOCAL_CACHE_NAME = "SEARCH_PRODUCT_ON_BOARDING";
         String FILTER_ONBOARDING_SHOWN = "FILTER_ONBOARDING_SHOWN";
     }
+
+    interface InspirationCarousel {
+        String LAYOUT_INSPIRATION_CAROUSEL_LIST = "list";
+        String LAYOUT_INSPIRATION_CAROUSEL_INFO = "info";
+    }
 }
