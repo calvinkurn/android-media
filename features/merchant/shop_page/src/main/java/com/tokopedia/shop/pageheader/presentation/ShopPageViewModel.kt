@@ -178,7 +178,6 @@ class ShopPageViewModel @Inject constructor(private val gqlRepository: GraphqlRe
     }
 
     private suspend fun getShopBroadcasterConfig(shopId: String? = null): Broadcaster.Config {
-
         var broadcasterConfig = Broadcaster.Config()
         try {
             getBroadcasterShopConfigUseCase.params = GetBroadcasterShopConfigUseCase.createParams(shopId ?: "")

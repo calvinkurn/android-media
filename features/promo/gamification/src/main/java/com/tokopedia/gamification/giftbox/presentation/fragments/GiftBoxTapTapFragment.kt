@@ -113,7 +113,6 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
     lateinit var endTimeMinute: String
     private val LOW_VOLUME = 0.3f
     private val NORMAL_VOLUME = 1f
-    private val LARGE_PHONE_HEIGHT = 1900
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory

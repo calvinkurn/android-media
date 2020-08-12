@@ -65,7 +65,7 @@ dependencies {
     implementation rootProject.ext.debugToolsDependencies.chuck
 
     implementation rootProject.ext.playServicesDependencies.phone
-    api (rootProject.ext.firebase.crashlytics) {
+    api (rootProject.ext.serviceDependencies.crashlytics) {
         transitive = true
     }
 }

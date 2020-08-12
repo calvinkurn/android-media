@@ -30,7 +30,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingShopPageSetting
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.common.constant.ShopParamConstant
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
-import com.tokopedia.shop.product.view.activity.ShopProductListActivity
+import com.tokopedia.shop.product.view.activity.ShopProductListResultActivity
 import com.tokopedia.shop.setting.di.component.ShopPageSettingComponent
 import com.tokopedia.shop.setting.view.adapter.ShopPageSettingAdapter
 import com.tokopedia.shop.setting.view.model.*
@@ -144,8 +144,8 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
         dashboardView = view.findViewById(R.id.dashboard_layout)
         dashboardView.setOnClickListener { onDashboardClick() }
         shopPageSettingView = view.findViewById(R.id.rv_shop_page_setting)
-        retryMessageView = view.findViewById(R.id.message_retry)
-        retryButton = view.findViewById(R.id.button_retry)
+        retryMessageView = view.findViewById(com.tokopedia.abstraction.R.id.message_retry)
+        retryButton = view.findViewById(com.tokopedia.abstraction.R.id.button_retry)
 
         // setup shop page setting recycler view
         val shopPageSettingView: RecyclerView = view.findViewById(R.id.rv_shop_page_setting)
@@ -274,7 +274,7 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
                 val etalaseId = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_PICKER_ETALASE_ID)
                 val etalaseName = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_PICKER_ETALASE_NAME)
                 val isNeedToReloadData = data.getBooleanExtra(ShopParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, false)
-                val intent = ShopProductListActivity.createIntent(
+                val intent = ShopProductListResultActivity.createIntent(
                         activity,
                         shopId,
                         "",

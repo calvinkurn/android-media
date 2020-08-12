@@ -1,7 +1,6 @@
 package com.tokopedia.editshipping.ui;
 
 import android.app.Activity;
-import android.app.DialogFragment;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.http.SslError;
@@ -20,6 +19,7 @@ import android.webkit.WebViewClient;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
 
 import com.tokopedia.abstraction.base.view.webview.TkpdWebView;
 import com.tokopedia.editshipping.R;
@@ -28,7 +28,7 @@ import com.tokopedia.editshipping.R;
  * Created by Kris on 5/12/2016.
  TOKOPEDIA
  */
-public class EditShippingWebViewDialog extends DialogFragment{
+public class EditShippingWebViewDialog extends DialogFragment {
 
     private class AdditionalOptionsWebViewClient extends WebViewClient{
         @Override

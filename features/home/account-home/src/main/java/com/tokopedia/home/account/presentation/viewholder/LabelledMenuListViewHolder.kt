@@ -1,12 +1,15 @@
 package com.tokopedia.home.account.presentation.viewholder
 
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home.account.R
 import com.tokopedia.home.account.presentation.listener.AccountItemListener
 import com.tokopedia.home.account.presentation.viewmodel.LabelledMenuListUiModel
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.unifycomponents.Label
 
 class LabelledMenuListViewHolder(itemView: View, private val listener: AccountItemListener) : AbstractViewHolder<LabelledMenuListUiModel>(itemView) {
 
@@ -22,8 +25,9 @@ class LabelledMenuListViewHolder(itemView: View, private val listener: AccountIt
     private val layout: View = itemView.findViewById(R.id.container)
     private val tvTitle: TextView = itemView.findViewById(R.id.text_view_title)
     private val tvDescription: TextView = itemView.findViewById(R.id.text_view_description)
-    private val label: TextView = itemView.findViewById(R.id.label_menu)
+    private val label: Label = itemView.findViewById(R.id.label_menu)
     private val separator: View = itemView.findViewById(R.id.separator)
+    private val rightArrow: ImageView = itemView.findViewById(R.id.image_arrow)
 
     override fun bind(element: LabelledMenuListUiModel) {
         layout.setOnClickListener { v ->
@@ -36,12 +40,10 @@ class LabelledMenuListViewHolder(itemView: View, private val listener: AccountIt
 
         tvTitle.text = element.menu
         label.text = element.label
+        label.setLabelType(element.labelType)
         tvDescription.text = element.menuDescription
 
-        if (element.isUseSeparator) {
-            separator.visibility = View.VISIBLE
-        } else {
-            separator.visibility = View.GONE
-        }
+        separator.showWithCondition(element.isUseSeparator)
+        rightArrow.showWithCondition(element.isShowRightButton)
     }
 }

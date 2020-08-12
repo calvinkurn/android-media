@@ -26,7 +26,7 @@ class GetBuyerAccountDataUseCase @Inject constructor(
         if (!errors.isNullOrEmpty()) {
             throw MessageErrorException(errors[0].message)
         } else {
-            var data: AccountDataModel = gqlResponse.getData(AccountDataModel::class.java)
+            var data: AccountDataModel? = gqlResponse.getData(AccountDataModel::class.java)
             if (data == null) {
                 data = AccountDataModel()
                 AccountHomeErrorHandler.logDataNull("GetBuyerAccountDataUseCase", Throwable("ShortcutResponse"))

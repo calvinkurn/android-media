@@ -5,7 +5,7 @@ import android.util.AttributeSet;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
-import com.google.firebase.crashlytics.FirebaseCrashlytics;
+import com.crashlytics.android.Crashlytics;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core2.R;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
@@ -56,7 +56,7 @@ public class TkpdWebView extends WebView {
             super.loadUrl(url, additionalHttpHeaders);
         } else {
             if (!GlobalConfig.DEBUG)
-                FirebaseCrashlytics.getInstance().log(getContext().getString(R.string.error_message_url_invalid_crashlytics) + url);
+                Crashlytics.log(getContext().getString(R.string.error_message_url_invalid_crashlytics) + url);
 
             super.loadUrl(url);
         }

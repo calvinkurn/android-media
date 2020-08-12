@@ -17,8 +17,11 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.url.TokopediaUrl
+import com.tokopedia.url.TokopediaUrl.Companion.getInstance
 import com.tokopedia.webview.ext.decode
 import com.tokopedia.webview.ext.encodeOnce
+import java.io.UnsupportedEncodingException
+import java.net.URLDecoder
 
 open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
 
@@ -202,6 +205,9 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
 
     object DeeplinkIntent {
 
+        const val SELLERAPP_PACKAGE = "com.tokopedia.sellerapp"
+        const val CUSTOMERAPP_PACKAGE = "com.tokopedia.tkpd"
+
         @DeepLink(ApplinkConst.WEBVIEW_PARENT_HOME)
         @JvmStatic
         fun getInstanceIntentAppLinkBackToHome(context: Context, extras: Bundle): TaskStackBuilder {
@@ -247,6 +253,40 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
             }
 
             return getStartIntent(context, webUrl, showToolbar, allowOverride, needLogin)
+        }
+
+        @DeepLink(ApplinkConst.BROWSER, ApplinkConst.SellerApp.BROWSER)
+        @JvmStatic
+        fun getCallingIntentOpenBrowser(context: Context?, extras: Bundle): Intent? {
+            val webUrl = extras.getString("url", getInstance().WEB)
+            val destinationIntent = Intent(Intent.ACTION_VIEW)
+            val decodedUrl: String?
+            decodedUrl = webUrl.decode()
+            val uriData = Uri.parse(decodedUrl)
+            destinationIntent.data = uriData
+            if (context == null) {
+                return destinationIntent
+            }
+            val resolveInfos = context.packageManager.queryIntentActivities(destinationIntent, 0)
+            // remove deeplink tokopedia if any
+            for (i in resolveInfos.indices.reversed()) {
+                val resolveInfo = resolveInfos[i]
+                val packageName = resolveInfo.activityInfo.packageName
+                if (packageName == CUSTOMERAPP_PACKAGE || packageName == SELLERAPP_PACKAGE) {
+                    resolveInfos.removeAt(i)
+                }
+            }
+
+            // return the first intent only (only if it is the only available browser)
+            return if (resolveInfos.size == 1) {
+                val resolveInfo = resolveInfos[0]
+                val browserIntent = Intent()
+                browserIntent.setClassName(resolveInfo.activityInfo.packageName, resolveInfo.activityInfo.name)
+                browserIntent.data = uriData
+                browserIntent
+            } else {
+                destinationIntent
+            }
         }
     }
 

@@ -25,18 +25,15 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.component.Menus
 import com.tokopedia.kotlin.extensions.view.goToFirst
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.seller_migration_common.analytics.SellerMigrationTracking
-import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
-import com.tokopedia.seller_migration_common.presentation.widget.SellerMigrationChatBottomSheet
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.activity.ChatListActivity
 import com.tokopedia.topchat.chatlist.adapter.ChatListAdapter
@@ -67,14 +64,11 @@ import com.tokopedia.topchat.chatsetting.view.activity.ChatSettingActivity
 import com.tokopedia.topchat.common.TopChatInternalRouter
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_chat_list.*
 import timber.log.Timber
-import java.util.*
 import javax.inject.Inject
 
 /**
@@ -101,6 +95,7 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
     private var chatTabListContract: ChatListContract.TabFragment? = null
     private var mUserSeen = false
     private var mViewCreated = false
+    private var shouldMoveToChatSettings: Boolean = false
 
     private var sightTag = ""
     private var itemPositionLongClicked: Int = -1
@@ -126,9 +121,26 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        shouldMoveToChatSettings = activity?.intent?.getStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA)?.firstOrNull() == ApplinkConstInternalMarketplace.CHAT_SETTING_TEMPLATE
         performanceMonitoring = PerformanceMonitoring.start(getFpmKey())
         sightTag = getParamString(CHAT_TAB_TITLE, arguments, null, "")
         setHasOptionsMenu(true)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (shouldMoveToChatSettings) {
+            val appLinks = ArrayList(activity?.intent?.extras?.getStringArrayList(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA).orEmpty())
+            if (appLinks.isNotEmpty()) {
+                shouldMoveToChatSettings = false
+                activity?.intent?.extras?.clear()
+                ChatSettingActivity.getIntent(context, true).apply {
+                    putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, appLinks)
+                    addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+                    startActivity(this)
+                }
+            }
+        }
     }
 
     private fun getFpmKey() = if (GlobalConfig.isSellerApp()) {
@@ -149,14 +161,8 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
                 true
             }
             R.id.menu_chat_setting -> {
-                if (GlobalConfig.isSellerApp()) {
-                    context?.let {
-                        RouteManager.route(it, ApplinkConstInternalGlobal.MANAGE_NOTIFICATION)
-                    }
-                } else {
-                    val intent = ChatSettingActivity.getIntent(context, isTabSeller())
-                    startActivity(intent)
-                }
+                val intent = ChatSettingActivity.getIntent(context, isTabSeller())
+                startActivity(intent)
                 true
             }
             R.id.menu_chat_search -> {
@@ -181,7 +187,6 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
         initView(view)
         setObserver()
         setupSellerBroadcast()
-        setupTicker()
     }
 
     override fun onPrepareOptionsMenu(menu: Menu) {
@@ -193,28 +198,6 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
         if (!isTabSeller() || !isSellerBroadcastRemoteConfigOn()) return
         setupSellerBroadcastButton()
         chatItemListViewModel.loadChatBlastSellerMetaData()
-    }
-
-    private fun setupTicker() {
-        if (!isTabSeller() || !isSellerMigrationEnabled(context)) return
-        topChatSellerMigrationTicker?.apply {
-            tickerTitle = getString(com.tokopedia.seller_migration_common.R.string.seller_migration_chat_ticker_title)
-            setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_chat_ticker_description))
-            setDescriptionClickEvent(object : TickerCallback {
-                override fun onDismiss() {}
-                override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                    SellerMigrationTracking.eventOnClickChatTicker(userSession.userId)
-                    openSellerMigrationBottomSheet()
-                }
-            })
-            show()
-        }
-    }
-
-    private fun openSellerMigrationBottomSheet() {
-        context?.let {
-            SellerMigrationChatBottomSheet.createNewInstance(it).show(this.childFragmentManager, "")
-        }
     }
 
     private fun isSellerBroadcastRemoteConfigOn(): Boolean {
