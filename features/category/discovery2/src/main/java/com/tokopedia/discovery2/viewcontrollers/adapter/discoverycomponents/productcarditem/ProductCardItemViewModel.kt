@@ -14,6 +14,7 @@ import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.campaignnotifymeresponse.CampaignNotifyMeRequest
 import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
 import com.tokopedia.discovery2.usecase.campaignusecase.CampaignNotifyUserCase
+import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardItemUseCase
 import com.tokopedia.discovery2.usecase.topAdsUseCase.DiscoveryTopAdsTrackingUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -46,7 +47,8 @@ class ProductCardItemViewModel(val application: Application, val components: Com
 
     @Inject
     lateinit var campaignNotifyUserCase: CampaignNotifyUserCase
-
+    @Inject
+    lateinit var productCardItemUseCase: ProductCardItemUseCase
     @Inject
     lateinit var discoveryTopAdsTrackingUseCase: DiscoveryTopAdsTrackingUseCase
 
@@ -217,7 +219,7 @@ class ProductCardItemViewModel(val application: Application, val components: Com
                             productItemData.notifyMe = !productItemData.notifyMe
                             notifyMeCurrentStatus.value = productItemData.notifyMe
                             showNotifyToast.value = Triple(false, campaignResponse.message, productItemData.campaignId.toIntOrZero())
-
+                            this@ProductCardItemViewModel.syncData.value = productCardItemUseCase.notifyProductComponentUpdate(components.id, components.pageEndPoint)
                         } else {
                             showNotifyToast.value = Triple(true, campaignResponse.errorMessage, 0)
                         }
