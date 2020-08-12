@@ -16,8 +16,7 @@
         app:contentInsetStartWithNavigation="0dp"
         app:subtitleTextAppearance="?subtitleTextAppearance"
         app:titleTextAppearance="?titleTextAppearance"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:android="http://schemas.android.com/apk/res/android" />
+        xmlns:app="http://schemas.android.com/apk/res-auto" />
 
     <include
         android:id="@+id/include_loading"
@@ -39,7 +38,7 @@
             android:id="@+id/shipping_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="right"
+            android:layout_gravity="end"
             android:cacheColorHint="@android:color/transparent"
             android:childDivider="@color/white"
             android:choiceMode="singleChoice"

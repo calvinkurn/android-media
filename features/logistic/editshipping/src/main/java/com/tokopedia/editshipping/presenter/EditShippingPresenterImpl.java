@@ -436,7 +436,7 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
                         view.showErrorToast(view.getMainContext().getString(com.tokopedia.abstraction.R.string.msg_no_connection));
                     }
                 });
-        Timber.d("PORING" + compiledShippingId());
+        Timber.d("PORING %s", compiledShippingId());
     }
 
     private void putDataToHashMap(Map<String, String> shippingParams) {
