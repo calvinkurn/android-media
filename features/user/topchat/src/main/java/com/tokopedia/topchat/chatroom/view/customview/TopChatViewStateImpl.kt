@@ -89,6 +89,7 @@ class TopChatViewStateImpl constructor(
     override fun getNotifierId() = R.id.notifier
     override fun getChatMenuId() = R.id.iv_chat_menu
     override fun getRootViewId() = R.id.main
+    override fun shouldShowSellerLabel(): Boolean = false
 
     init {
         initView()
