@@ -295,6 +295,11 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
                 tvInstallmentDetail?.gone()
                 tvInstallmentErrorMessage?.gone()
                 tvInstallmentErrorAction?.gone()
+
+                tvPaymentDetail?.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_keyboard_arrow_down_grey_20dp, 0)
+                tvPaymentDetail?.setOnClickListener {
+                    listener.onChangeCreditCardClicked(payment.creditCard.additionalData)
+                }
             }
         }
     }

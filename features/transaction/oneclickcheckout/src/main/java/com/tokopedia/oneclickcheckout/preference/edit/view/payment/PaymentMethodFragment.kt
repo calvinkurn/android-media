@@ -14,6 +14,7 @@ import android.webkit.SslErrorHandler
 import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.widget.Button
 import android.widget.ProgressBar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -34,6 +35,7 @@ import com.tokopedia.oneclickcheckout.preference.edit.data.payment.ListingParam
 import com.tokopedia.oneclickcheckout.preference.edit.data.payment.PaymentListingParamRequest
 import com.tokopedia.oneclickcheckout.preference.edit.di.PreferenceEditComponent
 import com.tokopedia.oneclickcheckout.preference.edit.view.PreferenceEditParent
+import com.tokopedia.oneclickcheckout.preference.edit.view.payment.creditcard.CreditCardPickerFragment
 import com.tokopedia.oneclickcheckout.preference.edit.view.summary.PreferenceSummaryFragment
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.url.TokopediaUrl
@@ -95,6 +97,13 @@ class PaymentMethodFragment : BaseDaggerFragment() {
         webView = view.findViewById(R.id.web_view)
         progressBar = view.findViewById(R.id.progress_bar)
         globalError = view.findViewById(R.id.global_error)
+
+        view.findViewById<Button>(R.id.btntesting).setOnClickListener {
+            param?.let {
+                val url = "${TokopediaUrl.getInstance().PAY}/v2/payment/register/listing"
+                webView?.postUrl(url, getPayload(it).toByteArray())
+            }
+        }
     }
 
     private fun initHeader() {
@@ -102,13 +111,6 @@ class PaymentMethodFragment : BaseDaggerFragment() {
         if (parent is PreferenceEditParent) {
             parent.hideAddButton()
             parent.hideDeleteButton()
-//            parent.showDeleteButton()
-//            parent.setDeleteButtonOnClickListener {
-//                param?.let {
-//                    val url = "${TokopediaUrl.getInstance().PAY}/v2/payment/register/listing"
-//                    webView?.postUrl(url, getPayload(it).toByteArray())
-//                }
-//            }
             val parentContext: Context = parent
             SplitCompat.installActivity(parentContext)
             parent.setHeaderTitle(parentContext.getString(R.string.lbl_choose_payment_method))
@@ -133,7 +135,7 @@ class PaymentMethodFragment : BaseDaggerFragment() {
             displayZoomControls = true
             setAppCacheEnabled(true)
         }
-        webView?.webViewClient = PaymentMethodWebViewClient()
+        webView?.webViewClient = CreditCardPickerFragment.PaymentMethodWebViewClient()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             webSettings?.mediaPlaybackRequiresUserGesture = false
         }
@@ -166,9 +168,9 @@ class PaymentMethodFragment : BaseDaggerFragment() {
 
     private fun loadWebView(param: ListingParam) {
         this.param = param
-        val url = "${TokopediaUrl.getInstance().PAY}/v2/payment/register/listing"
-        webView?.postUrl(url, getPayload(param).toByteArray())
-//        webView?.loadUrl("https://www.google.com")
+//        val url = "${TokopediaUrl.getInstance().PAY}/v2/payment/register/listing"
+//        webView?.postUrl(url, getPayload(param).toByteArray())
+        webView?.loadUrl("https://www.google.com")
         webView?.visible()
         globalError?.gone()
     }
@@ -182,16 +184,16 @@ class PaymentMethodFragment : BaseDaggerFragment() {
                 "customer_msisdn=${getUrlEncoded(param.customerMsisdn)}&" +
                 "address_id=${getUrlEncoded(param.addressId)}&" +
                 "callback_url=${getUrlEncoded(param.callbackUrl)}&" +
-                "version=${getUrlEncoded(GlobalConfig.VERSION_NAME)}&" +
+                "version=${getUrlEncoded("android-${GlobalConfig.VERSION_NAME}")}&" +
                 "signature=${getUrlEncoded(param.hash)}"
     }
 
     private fun generatePaymentListingRequest(): PaymentListingParamRequest {
         return PaymentListingParamRequest("tokopedia",
                 "EXPRESS_SAVE",
-                "${TokopediaUrl.getInstance().PAY}/v2/payment/register/listing",
+                "${TokopediaUrl.getInstance().PAY}/dummy/payment/listing",
                 getAddressId(),
-                GlobalConfig.VERSION_NAME)
+                "android-${GlobalConfig.VERSION_NAME}")
     }
 
     private fun getAddressId(): String {
