@@ -3,6 +3,7 @@ package com.tokopedia.sellerhome.view.navigator
 import android.content.Context
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.SellerHomeRouter
 import com.tokopedia.sellerhome.common.FragmentType
@@ -37,9 +38,8 @@ class SellerHomeNavigator(
         val fragment = pages[page]
         if (title.isNotBlank() && fragment != null) {
             val transaction = fm.beginTransaction()
-            val currentPage = pages[currentSelectedPage]
             val isFragmentAdded = fm.findFragmentByTag(title) != null
-            currentPage?.run { transaction.hide(this) }
+            hideCurrentFragmentIfAdded(transaction)
             if (isFragmentAdded) {
                 transaction.show(fragment)
             } else {
@@ -47,13 +47,6 @@ class SellerHomeNavigator(
             }
             transaction.commit()
             setSelectedPage(page)
-        }
-    }
-
-    private fun createFragmentIfNotExist(page: Int) {
-        if (pages[page] == null) {
-            setupPagesTitle()
-            setupPage(PageFragment(page))
         }
     }
 
@@ -66,8 +59,7 @@ class SellerHomeNavigator(
         if (title.isNotBlank() && previousFragment != null) {
             val newFragment = setupPageFromAppLink(page)
             val transaction = fm.beginTransaction()
-            val currentPage = pages[currentSelectedPage]
-            currentPage?.run { transaction.hide(this) }
+            hideCurrentFragmentIfAdded(transaction)
             when {
                 newFragment == null -> {
                     val isFragmentAdded = fm.findFragmentByTag(title) != null
@@ -167,5 +159,17 @@ class SellerHomeNavigator(
 
     fun getHomeFragment(): SellerHomeFragment? {
         return pages[FragmentType.HOME] as? SellerHomeFragment
+    }
+
+    private fun createFragmentIfNotExist(page: Int) {
+        if (pages[page] == null) {
+            setupPagesTitle()
+            setupPage(PageFragment(page))
+        }
+    }
+
+    private fun hideCurrentFragmentIfAdded(transaction: FragmentTransaction) {
+        val currentPage = pages[currentSelectedPage]
+        currentPage?.run { transaction.hide(this) }
     }
 }
