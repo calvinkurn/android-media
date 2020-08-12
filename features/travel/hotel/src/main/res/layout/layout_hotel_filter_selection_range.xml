@@ -1,0 +1,47 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/spacing_lvl4">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/hotel_filter_selection_range_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:textColor="@color/Neutral_N700_96"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
+        tools:text="@string/hotel_search_filter_rating_title" />
+
+    <SeekBar
+        android:id="@+id/hotel_filter_selection_range_seekbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/hotel_12dp"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:layout_marginRight="@dimen/layout_lvl2"
+        android:maxHeight="@dimen/spacing_lvl2"
+        android:minHeight="@dimen/spacing_lvl1"
+        android:paddingStart="@dimen/layout_lvl0"
+        android:paddingLeft="@dimen/layout_lvl0"
+        android:paddingEnd="@dimen/layout_lvl0"
+        android:paddingRight="@dimen/layout_lvl0"
+        android:progressDrawable="@drawable/bg_hotel_seekbar_progress"
+        android:scaleX="-1"
+        android:thumb="@drawable/bg_hotel_thumb"
+        android:thumbOffset="@dimen/layout_lvl0" />
+
+    <LinearLayout
+        android:id="@+id/base_rating_step"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/layout_lvl1"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:layout_marginRight="@dimen/layout_lvl2"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/dp_7"
+        android:paddingRight="@dimen/dp_7" />
+</LinearLayout>

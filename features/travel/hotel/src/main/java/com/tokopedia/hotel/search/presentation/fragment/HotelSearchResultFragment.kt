@@ -26,6 +26,7 @@ import com.tokopedia.hotel.globalsearch.presentation.activity.HotelChangeSearchA
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
 import com.tokopedia.hotel.search.data.model.*
 import com.tokopedia.hotel.search.data.model.params.ParamFilter
+import com.tokopedia.hotel.search.data.model.params.ParamFilterV2
 import com.tokopedia.hotel.search.data.util.CommonParam
 import com.tokopedia.hotel.search.di.HotelSearchPropertyComponent
 import com.tokopedia.hotel.search.presentation.activity.HotelSearchFilterActivity
@@ -38,20 +39,24 @@ import com.tokopedia.hotel.search.presentation.adapter.PropertyAdapterTypeFactor
 import com.tokopedia.hotel.search.presentation.adapter.viewholder.SpaceItemDecoration
 import com.tokopedia.hotel.search.presentation.viewmodel.HotelSearchResultViewModel
 import com.tokopedia.hotel.search.presentation.widget.HotelClosedSortBottomSheets
+import com.tokopedia.hotel.search.presentation.widget.HotelFilterBottomSheets
+import com.tokopedia.hotel.search.presentation.widget.SubmitFilterListener
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_hotel_search_result.*
+import kotlinx.android.synthetic.main.item_property_search_result.*
 import javax.inject.Inject
 
 class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterTypeFactory>(),
-        BaseEmptyViewHolder.Callback, HotelSearchResultAdapter.OnClickListener {
+        BaseEmptyViewHolder.Callback, HotelSearchResultAdapter.OnClickListener, SubmitFilterListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var searchResultviewModel: HotelSearchResultViewModel
     lateinit var sortMenu: HotelClosedSortBottomSheets
+    lateinit var filterBottomSheet: HotelFilterBottomSheets
 
     @Inject
     lateinit var trackingHotelUtil: TrackingHotelUtil
@@ -77,6 +82,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
         searchResultviewModel.liveSearchResult.observe(this, Observer {
             when (it) {
                 is Success -> onSuccessGetResult(it.data)
@@ -104,6 +110,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
             recyclerView.addItemDecoration(SpaceItemDecoration(it.resources.getDimensionPixelSize(R.dimen.hotel_12dp),
                     LinearLayoutManager.VERTICAL))
         }
+
         bottom_action_view.sortItem.title = getString(R.string.hotel_search_sort_label)
         bottom_action_view.sortItem.listener = {
             if (::sortMenu.isInitialized) {
@@ -111,6 +118,30 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
                 sortMenu.show(childFragmentManager, javaClass.simpleName)
             }
         }
+
+        //dummy
+        bottom_action_view.visibility = View.VISIBLE
+        initializeFilterV2BottomSheet(getDummyFilter())
+    }
+
+    private fun getDummyFilter(): List<FilterV2>  {
+        val filterType1 =  FilterV2(type = "Selection", name = "Campaign", displayName = "Promo",
+                options = listOf("Gajian Seru", "Diskon Login", "Flash Sale"))
+        val filterType2 = FilterV2(type= "open range", name = "price", displayName = "Harga per malam",
+                options = listOf("0", "100000"))
+        val filterType3 = FilterV2("selection range", "rating", "Rating",
+                listOf("Semua", "6.0", "7.0", "8.0", "9.0"))
+        val filterType4 = FilterV2("selection", "star", "Bintang",
+                listOf("1", "2", "3"))
+        return listOf(filterType1, filterType2, filterType3, filterType4)
+    }
+
+    private fun getDummySelectedFilter(): List<ParamFilterV2> {
+        val filterType1 = ParamFilterV2(name = "Campaign", values = listOf("Diskon Login"))
+        val filterType2 = ParamFilterV2(name = "price", values = listOf("10000", "50000"))
+        val filterType3 = ParamFilterV2(name = "rating", values = listOf("Semua"))
+        val filterType4 = ParamFilterV2(name = "star", values = listOf("3"))
+        return listOf(filterType1, filterType2, filterType3, filterType4)
     }
 
     private fun stopTrace() {
@@ -159,8 +190,22 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
         bottom_action_view.visibility = View.VISIBLE
 
         super.renderList(searchProperties, searchProperties.isNotEmpty())
+
         generateSortMenu(data.displayInfo.sort)
-        initializeFilterClick(data.displayInfo.filter)
+//        initializeFilterClick(data.displayInfo.filter)
+        initializeFilterV2BottomSheet(data.filters)
+        initializeQuickFilter(data.quickFilter)
+    }
+
+    private fun initializeFilterV2BottomSheet(filterV2s: List<FilterV2>) {
+        filterBottomSheet = HotelFilterBottomSheets()
+                .setSubmitFilterListener(this)
+                .setSelected(getDummySelectedFilter())
+                .setFilter(filterV2s)
+
+        bottom_action_view.filterItem.listener = {
+            filterBottomSheet.show(childFragmentManager, javaClass.simpleName)
+        }
     }
 
     private fun initializeFilterClick(filter: Filter) {
@@ -174,6 +219,10 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
                 startActivityForResult(HotelSearchFilterActivity.createIntent(it, cacheManager.id), REQUEST_FILTER)
             }
         }
+    }
+
+    private fun initializeQuickFilter(quickFilters: List<QuickFilter>) {
+
     }
 
     private fun generateSortMenu(sort: List<Sort>) {
@@ -265,6 +314,12 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
         }
     }
 
+    override fun onSubmitFilter(selectedFilter: List<ParamFilterV2>) {
+        //track
+        searchResultviewModel.addFilter(selectedFilter)
+        loadInitialData()
+    }
+
     override fun onGetListErrorWithEmptyData(throwable: Throwable?) {
         adapter.errorNetworkModel.iconDrawableRes = ErrorHandlerHotel.getErrorImage(throwable)
         adapter.errorNetworkModel.errorMessage = ErrorHandlerHotel.getErrorTitle(context, throwable)
@@ -281,7 +336,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
 
     override fun loadData(page: Int) {
         val searchQuery = GraphqlHelper.loadRawString(resources, R.raw.gql_get_property_search)
-        searchResultviewModel.searchProperty(page, searchQuery)
+//        searchResultviewModel.searchProperty(page, searchQuery)
     }
 
     override fun isAutoLoadEnabled(): Boolean = true

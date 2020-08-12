@@ -12,6 +12,10 @@ data class SearchParam(
         @Expose
         var filter: ParamFilter = ParamFilter(),
 
+        @SerializedName("filters")
+        @Expose
+        var filters: List<ParamFilterV2> = listOf(),
+
         @SerializedName("sort")
         @Expose
         var sort: ParamSort = ParamSort(),

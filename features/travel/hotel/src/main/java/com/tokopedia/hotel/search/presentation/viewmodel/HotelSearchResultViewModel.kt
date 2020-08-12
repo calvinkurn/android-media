@@ -8,10 +8,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.hotel.common.data.HotelTypeEnum
 import com.tokopedia.hotel.search.data.model.*
-import com.tokopedia.hotel.search.data.model.params.ParamFilter
-import com.tokopedia.hotel.search.data.model.params.ParamLocation
-import com.tokopedia.hotel.search.data.model.params.ParamSort
-import com.tokopedia.hotel.search.data.model.params.SearchParam
+import com.tokopedia.hotel.search.data.model.params.*
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -25,10 +22,15 @@ class HotelSearchResultViewModel @Inject constructor(
     : BaseViewModel(dispatcher.io()) {
 
     val searchParam: SearchParam = SearchParam()
+
     var selectedSort: Sort = Sort()
     val selectedFilter: ParamFilter
         get() = searchParam.filter
+    val selectedFilterV2: List<ParamFilterV2>
+        get() = searchParam.filters
+
     var filter: Filter = Filter()
+    var filterV2s: List<FilterV2> = listOf()
 
     val liveSearchResult = MutableLiveData<Result<PropertySearch>>()
 
@@ -99,6 +101,11 @@ class HotelSearchResultViewModel @Inject constructor(
 
     fun addFilter(filter: ParamFilter) {
         searchParam.filter = filter
+        isFilter = true
+    }
+
+    fun addFilter(filterV2: List<ParamFilterV2>) {
+        searchParam.filters = filterV2
         isFilter = true
     }
 
