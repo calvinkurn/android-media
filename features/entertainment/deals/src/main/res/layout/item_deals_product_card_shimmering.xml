@@ -37,7 +37,7 @@
                 android:layout_marginTop="@dimen/deals_dp_12"
                 android:layout_marginRight="@dimen/deals_dp_12"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_image" />
+                app:layout_constraintTop_toBottomOf="@+id/tv_image" />
 
             <com.elyeproj.loaderviewlibrary.LoaderTextView
                 app:corners="16"
@@ -48,7 +48,7 @@
                 android:layout_marginTop="@dimen/deals_dp_12"
                 android:layout_marginRight="@dimen/deals_dp_12"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_title" />
+                app:layout_constraintTop_toBottomOf="@+id/tv_title" />
 
             <com.elyeproj.loaderviewlibrary.LoaderTextView
                 app:corners="16"
@@ -61,7 +61,7 @@
                 android:layout_marginBottom="@dimen/deals_dp_12"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_sub_title"
+                app:layout_constraintTop_toBottomOf="@+id/tv_sub_title"
                 app:layout_constraintWidth_percent="0.5" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -98,7 +98,7 @@
                 android:layout_marginTop="@dimen/deals_dp_12"
                 android:layout_marginRight="@dimen/deals_dp_12"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_image1" />
+                app:layout_constraintTop_toBottomOf="@+id/tv_image1" />
 
             <com.elyeproj.loaderviewlibrary.LoaderTextView
                 app:corners="16"
@@ -109,7 +109,7 @@
                 android:layout_marginTop="@dimen/deals_dp_12"
                 android:layout_marginRight="@dimen/deals_dp_12"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_title1" />
+                app:layout_constraintTop_toBottomOf="@+id/tv_title1" />
 
             <com.elyeproj.loaderviewlibrary.LoaderTextView
                 app:corners="16"
@@ -122,7 +122,7 @@
                 android:layout_marginBottom="@dimen/deals_dp_12"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_sub_title1"
+                app:layout_constraintTop_toBottomOf="@+id/tv_sub_title1"
                 app:layout_constraintWidth_percent="0.5" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

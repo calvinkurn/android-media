@@ -24,7 +24,7 @@ class WebSocketInfo {
 
     private constructor()
 
-    internal constructor(webSocket: WebSocket?, onOpen: Boolean) {
+    constructor(webSocket: WebSocket?, onOpen: Boolean) {
         this.webSocket = webSocket
         this.isOnOpen = onOpen
     }
@@ -34,7 +34,7 @@ class WebSocketInfo {
         this.byteString = byteString
     }
 
-    internal constructor(webSocket: WebSocket, data: String) {
+    constructor(webSocket: WebSocket, data: String) {
         this.webSocket = webSocket
         this.string = data
         this.response = GsonBuilder().create().fromJson(data, WebSocketResponse::class.java)
@@ -43,7 +43,7 @@ class WebSocketInfo {
     companion object {
 
         @JvmOverloads
-        internal fun createReconnect(error: String = ""): WebSocketInfo {
+        fun createReconnect(error: String = ""): WebSocketInfo {
             val socketInfo = WebSocketInfo()
             socketInfo.isOnReconnect = true
             socketInfo.error = error

@@ -287,8 +287,13 @@ class SellerReviewReplyFragment : BaseDaggerFragment(), ReviewTemplateListViewHo
     }
 
     private fun initWidgetView() {
-        productReplyUiModel?.let { productItemReplyWidget?.setItem(it) }
-        feedbackUiModel?.let { feedbackItemReplyWidget?.setData(it) }
+        productReplyUiModel?.let { productReply ->
+            productItemReplyWidget?.setItem(productReply)
+
+            feedbackUiModel?.let { feedback ->
+                feedbackItemReplyWidget?.setData(feedback, productReply)
+            }
+        }
         reviewReplyTextBoxWidget?.setReplyAction()
         initViewReply()
         initAdapterTemplateList()

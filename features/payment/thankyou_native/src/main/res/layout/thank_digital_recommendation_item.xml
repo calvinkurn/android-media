@@ -3,13 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="@dimen/thank_digital_recom_width"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="@dimen/layout_lvl0"
-    android:layout_marginTop="@dimen/layout_lvl2"
-    android:layout_marginRight="@dimen/layout_lvl2"
-    android:layout_marginBottom="@dimen/layout_lvl2"
-    android:paddingBottom="@dimen/layout_lvl1"
     app:cardCornerRadius="@dimen/layout_lvl1"
-    app:cardElevation="@dimen/layout_lvl0">
+    app:cardElevation="@dimen/spacing_lvl2">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/thanks_digital_recommendation_card_content_container"
@@ -25,6 +20,7 @@
             android:layout_marginTop="@dimen/layout_lvl1"
             android:scaleType="fitStart"
             android:layout_marginLeft="@dimen/layout_lvl1"
+            android:layout_marginStart="@dimen/layout_lvl1"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -33,7 +29,9 @@
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/layout_lvl2"
+            android:layout_marginStart="@dimen/layout_lvl2"
             android:layout_marginRight="@dimen/layout_lvl1"
+            android:layout_marginEnd="@dimen/layout_lvl1"
             android:gravity="top"
             app:layout_constraintLeft_toRightOf="@id/thanks_dg_rec_image"
             app:layout_constraintRight_toRightOf="parent"

@@ -12,8 +12,8 @@ data class RecommendationListCarouselDataModel(
     }
 
     override fun equalsWith(b: Any?): Boolean {
-        return if (b is ChannelModel) {
-            channelModel == b
+        return if (b is RecommendationListCarouselDataModel) {
+            channelModel == b.channelModel
         } else false
     }
 

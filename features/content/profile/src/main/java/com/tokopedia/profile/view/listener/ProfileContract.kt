@@ -70,6 +70,8 @@ interface ProfileContract {
 
         fun trackPostClickUrl(url: String)
 
+        fun doTopAdsTracker(url: String, shopId: String, shopName: String, imageUrl: String, isClick: Boolean)
+
         fun shouldChangeUsername(userId: Int, link: String = "")
 
         fun getRelatedProfile(onErrorGetRelatedProfile: ((throwable: Throwable?) -> Unit)?,

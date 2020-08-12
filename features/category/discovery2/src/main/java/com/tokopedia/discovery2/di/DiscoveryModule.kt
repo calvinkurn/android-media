@@ -53,8 +53,8 @@ class DiscoveryModule {
     }
 
     @Provides
-    fun provideCpmTopAdsGQLRepository(@ApplicationContext context: Context): CpmTopAdsRepository {
-        return CpmTopAdsGQLRepository(provideGetStringMethod(context))
+    fun provideCpmTopAdsGQLRepository(): CpmTopAdsRepository {
+        return CpmTopAdsGQLRepository()
     }
 
     @Provides

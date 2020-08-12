@@ -12,8 +12,8 @@ data class DynamicLegoBannerDataModel(
     }
 
     override fun equalsWith(b: Any?): Boolean {
-        return if (b is ChannelModel) {
-            channelModel == b
+        return if (b is DynamicLegoBannerDataModel) {
+            channelModel == b.channelModel
         } else false
     }
 

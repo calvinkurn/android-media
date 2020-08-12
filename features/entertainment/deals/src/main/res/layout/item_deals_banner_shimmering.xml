@@ -19,7 +19,7 @@
     <com.elyeproj.loaderviewlibrary.LoaderImageView
         app:corners="16"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/banner_first"
+        app:layout_constraintLeft_toRightOf="@+id/banner_first"
         app:layout_constraintWidth_percent="0.75"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="@dimen/layout_lvl8"
@@ -37,7 +37,7 @@
         android:layout_marginBottom="@dimen/deals_dp_12"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/banner_first" />
+        app:layout_constraintTop_toBottomOf="@+id/banner_first" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         app:corners="16"
@@ -49,7 +49,7 @@
         android:layout_marginBottom="@dimen/deals_dp_12"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/banner_first" />
+        app:layout_constraintTop_toBottomOf="@+id/banner_first" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

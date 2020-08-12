@@ -1,6 +1,8 @@
 package com.tokopedia.reviewseller.reviewdetail
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleRegistry
 import androidx.lifecycle.LiveData
 import com.tokopedia.reviewseller.coroutine.TestCoroutineDispatchers
 import com.tokopedia.reviewseller.feature.reviewdetail.domain.GetProductFeedbackDetailListUseCase
@@ -10,6 +12,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.mockk
 import junit.framework.TestCase
 import org.junit.Before
 import org.junit.Rule
@@ -29,12 +32,16 @@ abstract class ProductReviewDetailViewModelTestFixture {
     lateinit var getProductFeedbackDetailListUseCase: GetProductFeedbackDetailListUseCase
 
     protected lateinit var viewModel: ProductReviewDetailViewModel
+    protected lateinit var lifecycle: LifecycleRegistry
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
         viewModel = ProductReviewDetailViewModel(TestCoroutineDispatchers, userSession,
                                         getProductReviewInitialUseCase, getProductFeedbackDetailListUseCase)
+        lifecycle = LifecycleRegistry(mockk()).apply {
+            handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
+        }
     }
 
     protected fun LiveData<*>.verifyErrorEquals(expected: Fail) {

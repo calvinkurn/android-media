@@ -9,7 +9,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <androidx.appcompat.widget.AppCompatImageView
@@ -33,12 +33,14 @@
             android:singleLine="false"
             android:textColor="@color/Neutral_N700_96"
             app:autoSizeMaxTextSize="@dimen/fontSize_lvl2"
+            android:paddingTop="@dimen/spacing_lvl1"
+            android:paddingBottom="@dimen/spacing_lvl3"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@id/imgDealsBrand"
-            app:layout_constraintStart_toStartOf="@id/imgDealsBrand"
-            app:layout_constraintTop_toBottomOf="@id/imgDealsBrand"
+            app:layout_constraintEnd_toEndOf="@+id/imgDealsBrand"
+            app:layout_constraintStart_toStartOf="@+id/imgDealsBrand"
+            app:layout_constraintTop_toBottomOf="@+id/imgDealsBrand"
             app:typographyType="small"
-            tools:text="Hello Panda" />
+            tools:text="KOI \n Teppanyaki" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </com.tokopedia.unifycomponents.CardUnify>

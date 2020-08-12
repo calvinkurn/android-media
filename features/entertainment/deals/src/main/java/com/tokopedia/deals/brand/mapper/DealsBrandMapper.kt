@@ -11,6 +11,7 @@ object DealsBrandMapper {
 
     fun mapBrandToBaseItemViewModel(brands: List<Brand>, page: Int) : DealsBrandsDataView {
         val dealsBrandDataView = DealsBrandsDataView()
+        dealsBrandDataView.title = POPULAR
         dealsBrandDataView.brands = mapBrandToDataView(brands, page)
         dealsBrandDataView.isLoadedAndSuccess()
         return dealsBrandDataView
