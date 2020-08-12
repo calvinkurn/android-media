@@ -3,7 +3,9 @@ package com.tokopedia.seller_migration_common.presentation.fragment.bottomsheet
 import android.content.Context
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.loadImageRounded
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.seller_migration_common.presentation.adapter.SellerMigrationBenefitPointAdapter
 import com.tokopedia.seller_migration_common.presentation.model.CommunicationInfo
@@ -21,6 +23,7 @@ class SellerMigrationStaticCommunicationBottomSheet: SellerMigrationCommunicatio
                         val benefitArrayList: List<String> = communicationInfo.benefitPointResList.map { context.getString(it) }
                         putString(TITLE_KEY, context.getString(communicationInfo.titleRes))
                         putString(DESC_KEY, context.getString(communicationInfo.descRes))
+                        putString(IMAGE_URL_KEY, communicationInfo.imageUrl)
                         putStringArrayList(BENEFIT_POINTS_KEY, ArrayList(benefitArrayList))
                     }
                 }
@@ -64,13 +67,9 @@ class SellerMigrationStaticCommunicationBottomSheet: SellerMigrationCommunicatio
     }
 
     private fun setupCommunicationImage() {
-        try {
-            sellerMigrationBottomSheetImage?.run {
-                visible()
-                loadImageRounded(communicationImageUrl)
-            }
-        } catch (ex: Exception) {
-            Timber.e(ex)
+        sellerMigrationBottomSheetImage?.run {
+            loadImage(communicationImageUrl)
+            visible()
         }
     }
 
@@ -78,6 +77,7 @@ class SellerMigrationStaticCommunicationBottomSheet: SellerMigrationCommunicatio
         rv_seller_migration_points?.run {
             adapter = benefitPointAdapter
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            visible()
         }
     }
 }

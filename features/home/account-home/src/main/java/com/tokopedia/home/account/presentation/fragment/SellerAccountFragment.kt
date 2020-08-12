@@ -34,6 +34,7 @@ import com.tokopedia.navigation_common.listener.FragmentListener
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.seller_migration_common.analytics.SellerMigrationTracking.eventOnClickAccountTicker
+import com.tokopedia.seller_migration_common.getSellerMigrationDate
 import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
 import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
 import com.tokopedia.seller_migration_common.presentation.fragment.bottomsheet.SellerMigrationAccountCommBottomSheet
@@ -246,10 +247,15 @@ class SellerAccountFragment : BaseAccountFragment(), AccountItemListener, Fragme
     private fun setupSellerMigrationTicker() {
         if (isSellerMigrationEnabled(this.context)) {
             migrationTicker.tickerTitle = getString(com.tokopedia.seller_migration_common.R.string.seller_migration_ticker_title)
-            migrationTicker.setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_account_ticker_desc))
+            val remoteConfigDate = getSellerMigrationDate(this.context)
+            if (remoteConfigDate.isEmpty()) {
+                migrationTicker.setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_account_ticker_desc))
+            } else {
+                migrationTicker.setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_account_ticker_desc_dynamic, remoteConfigDate))
+            }
             migrationTicker.setDescriptionClickEvent(object : TickerCallback {
                 override fun onDescriptionViewClick(charSequence: CharSequence) {
-                eventOnClickAccountTicker(userSession.userId)
+                    eventOnClickAccountTicker(userSession.userId)
                     sellerMigrationBottomSheet.show(childFragmentManager, SellerMigrationAccountCommBottomSheet::class.java.name)
                 }
 
@@ -257,7 +263,8 @@ class SellerAccountFragment : BaseAccountFragment(), AccountItemListener, Fragme
                     // No op
                 }
             })
-            // Commented as it was used for phase 1 only
+
+            // Commented as it was used for phase 1 only but we will hold it until redirection is completed
 //            migrationTicker.tickerTitle = getString(com.tokopedia.seller_migration_common.R.string.seller_migration_account_home_ticker_title)
 //            val remoteConfigDate = getSellerMigrationDate(this.context)
 //            if (remoteConfigDate.isEmpty()) {

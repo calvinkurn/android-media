@@ -240,7 +240,7 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
 
     private fun setupSellerMigrationTicker() {
         ticker_seller_migration_topads?.apply {
-            tickerTitle = getString(com.tokopedia.seller_migration_common.R.string.seller_migration_topads_bottom_sheet_title)
+            tickerTitle = getString(com.tokopedia.seller_migration_common.R.string.seller_migration_ticker_title)
             val featureString = getString(com.tokopedia.seller_migration_common.R.string.seller_migration_topads_ticker_desc_prefix)
             setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_ticker_desc, featureString))
             setDescriptionClickEvent(object: TickerCallback {

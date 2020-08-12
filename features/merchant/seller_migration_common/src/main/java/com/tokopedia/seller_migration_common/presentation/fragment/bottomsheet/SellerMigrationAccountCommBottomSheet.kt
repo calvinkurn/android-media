@@ -2,6 +2,7 @@ package com.tokopedia.seller_migration_common.presentation.fragment.bottomsheet
 
 import android.os.Bundle
 import android.view.View
+import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.seller_migration_common.R
 import com.tokopedia.seller_migration_common.analytics.SellerMigrationTracking
@@ -9,6 +10,7 @@ import com.tokopedia.seller_migration_common.analytics.SellerMigrationTrackingCo
 import com.tokopedia.seller_migration_common.presentation.adapter.SellerMigrationAccountBenefitAdapter
 import com.tokopedia.seller_migration_common.presentation.util.setupMigrationFooter
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.toPx
 import kotlinx.android.synthetic.main.widget_seller_migration_account_comm_bottom_sheet.*
 
 class SellerMigrationAccountCommBottomSheet: BottomSheetUnify() {
@@ -48,6 +50,7 @@ class SellerMigrationAccountCommBottomSheet: BottomSheetUnify() {
     }
 
     private fun setupView() {
+        setupPadding()
         setupAdapter()
         setupMigrationFooter(view, ::trackGoToSellerApp, ::trackGoToPlayStore)
     }
@@ -56,6 +59,14 @@ class SellerMigrationAccountCommBottomSheet: BottomSheetUnify() {
         rv_seller_migration_account_desc?.run {
             adapter = accountBenefitAdapter
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        }
+    }
+
+    private fun setupPadding() {
+        setShowListener {
+            val headerMargin = 16.toPx()
+            bottomSheetWrapper.setPadding(0, 0, 0, 0)
+            (bottomSheetHeader.layoutParams as LinearLayout.LayoutParams).setMargins(headerMargin, headerMargin, headerMargin, headerMargin)
         }
     }
 

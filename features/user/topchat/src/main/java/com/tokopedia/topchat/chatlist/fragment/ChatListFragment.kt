@@ -215,7 +215,7 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
 
     private fun setupTicker() {
         topChatSellerMigrationTicker?.apply {
-            tickerTitle = getString(com.tokopedia.seller_migration_common.R.string.seller_migration_broadcast_chat_bottom_sheet_title)
+            tickerTitle = getString(com.tokopedia.seller_migration_common.R.string.seller_migration_ticker_title)
             val featureString = getString(com.tokopedia.seller_migration_common.R.string.seller_migration_broadcast_chat_ticker_desc_prefix)
             setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_ticker_desc, featureString))
             setDescriptionClickEvent(object: TickerCallback {
