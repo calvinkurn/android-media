@@ -27,6 +27,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.CommonViewHolderListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredViewHolderAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.SearchListener
 import com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer
@@ -41,7 +42,8 @@ open class TopchatProductAttachmentViewHolder constructor(
         itemView: View?,
         private val listener: ProductAttachmentListener,
         private val deferredAttachment: DeferredViewHolderAttachment,
-        private val searchListener: SearchListener
+        private val searchListener: SearchListener,
+        private val commonListener: CommonViewHolderListener
 ) : BaseChatViewHolder<ProductAttachmentViewModel>(itemView) {
 
     private var wishListBtn: UnifyButton? = itemView?.findViewById(R.id.tv_wishlist)
@@ -262,7 +264,7 @@ open class TopchatProductAttachmentViewHolder constructor(
 
     @SuppressLint("SetTextI18n")
     private fun bindRating(product: ProductAttachmentViewModel) {
-        if (product.hasReview() && product.fromBroadcast()) {
+        if (product.hasReview() && !commonListener.isSeller()) {
             reviewScore?.text = product.rating.score.toString()
             reviewCount?.text = "(${product.rating.count})"
             reviewStar?.show()
