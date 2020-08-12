@@ -240,6 +240,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private val dynamicAdapter by lazy { DynamicProductDetailAdapter(adapterFactory, this) }
     private var menu: Menu? = null
     private var tradeinDialog: ProductAccessRequestDialogFragment? = null
+    private var shouldMoveToTopAds: Boolean = false
     private val recommendationCarouselPositionSavedState = SparseIntArray()
 
     private val irisSessionId by lazy {
@@ -289,6 +290,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             doActivityResult = savedInstanceState.getBoolean(ProductDetailConstant.SAVED_ACTIVITY_RESULT, true)
         }
         super.onCreate(savedInstanceState)
+        shouldMoveToTopAds = activity?.intent?.getStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA)?.firstOrNull() == ApplinkConst.SellerApp.TOPADS_CREATE_ADS
         arguments?.let {
             productId = it.getString(ProductDetailConstant.ARG_PRODUCT_ID)
             warehouseId = it.getString(ProductDetailConstant.ARG_WAREHOUSE_ID)
@@ -321,6 +323,19 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             trackingQueue.sendAll()
         }
     }
+
+    override fun onStart() {
+        super.onStart()
+        if (shouldMoveToTopAds) {
+            val appLinkToOpen = activity?.intent?.getStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA)?.firstOrNull().orEmpty()
+            if (appLinkToOpen.isNotBlank()) {
+                shouldMoveToTopAds = false
+                activity?.intent?.extras?.clear()
+                context?.run { RouteManager.route(this, appLinkToOpen) }
+            }
+        }
+    }
+
     override fun onResume() {
         super.onResume()
         reloadCartCounter()
@@ -1299,7 +1314,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         observe(viewModel.productInfoP3RateEstimate) {
             onSuccessGetDataP3RateEstimate(it)
             (activity as? ProductDetailActivity)?.stopMonitoringFull()
-            if (GlobalConfig.isSellerApp() && !activity?.intent?.data?.getQueryParameter(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME).isNullOrBlank() &&
+            if (!activity?.intent?.data?.getQueryParameter(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME).isNullOrBlank() &&
                     !alreadyPerformSellerMigrationAction) {
                 alreadyPerformSellerMigrationAction = true
                 actionButtonView.rincianTopAdsClick?.invoke()

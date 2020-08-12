@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
-import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.view.activity.StepperActivity
@@ -34,38 +33,13 @@ class OboardingFragment: TkpdBaseV4Fragment() {
         super.onViewCreated(view, savedInstanceState)
         btn_start_auto_ads.setOnClickListener {
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_MULAI_IKLAN, "")
-            RouteManager.getIntent(it.context, ApplinkConstInternalTopAds.TOPADS_AUTOADS_CREATE).apply {
-                if (isFromPdpSellerMigration()) {
-                    putExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, getSellerMigrationFeatureName())
-                    putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, getSellerMigrationRedirectionApplinks())
-                }
-                startActivity(this)
-            }
+            RouteManager.route(it.context, ApplinkConstInternalTopAds.TOPADS_AUTOADS_CREATE)
         }
         btn_start_manual_ads.setOnClickListener {
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_BUAT_IKLAN_MANUAL, "")
-            Intent(activity, StepperActivity::class.java).apply {
-                if (isFromPdpSellerMigration()) {
-                    putExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, getSellerMigrationFeatureName())
-                    putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, getSellerMigrationRedirectionApplinks())
-                }
-                startActivity(this)
-            }
+            startActivity(Intent(activity, StepperActivity::class.java))
         }
     }
-
-    private fun getSellerMigrationRedirectionApplinks(): ArrayList<String> {
-        return ArrayList(activity?.intent?.getStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA).orEmpty())
-    }
-
-    private fun getSellerMigrationFeatureName(): String {
-        return activity?.intent?.getStringExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME).orEmpty()
-    }
-
-    private fun isFromPdpSellerMigration(): Boolean {
-        return !activity?.intent?.getStringExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME).isNullOrEmpty()
-    }
-
     companion object {
 
         fun newInstance(): OboardingFragment {
