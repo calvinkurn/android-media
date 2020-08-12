@@ -59,7 +59,7 @@ open class TopchatProductAttachmentViewHolder constructor(
 
     private val white = "#ffffff"
     private val white2 = "#fff"
-    private val labelEmptyStockColor = "#80000000"
+    private val labelEmptyStockColor = "#AD31353B"
 
     override fun alwaysShowTime(): Boolean = true
 
@@ -93,6 +93,7 @@ open class TopchatProductAttachmentViewHolder constructor(
             bindRating(product)
             bindFreeShipping(product)
             bindFooter(product)
+            bindPreOrderLabel(product)
             bindEmptyStockLabel(product)
             bindChatReadStatus(product)
             listener.trackSeenProduct(product)
@@ -296,14 +297,30 @@ open class TopchatProductAttachmentViewHolder constructor(
         }
     }
 
-    private fun bindEmptyStockLabel(product: ProductAttachmentViewModel) {
+    private fun bindPreOrderLabel(product: ProductAttachmentViewModel) {
         emptyStock?.apply {
-            if (product.hasEmptyStock()) {
+            if (product.isPreOrder) {
                 show()
+                setText(R.string.title_topchat_pre_order)
                 unlockFeature = true
                 setLabelType(labelEmptyStockColor)
             } else {
                 hide()
+            }
+        }
+    }
+
+    private fun bindEmptyStockLabel(product: ProductAttachmentViewModel) {
+        emptyStock?.apply {
+            if (product.hasEmptyStock()) {
+                show()
+                setText(R.string.title_topchat_empty_stock)
+                unlockFeature = true
+                setLabelType(labelEmptyStockColor)
+            } else {
+                if (!product.isPreOrder) {
+                    hide()
+                }
             }
         }
     }

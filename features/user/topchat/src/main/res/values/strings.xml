@@ -154,6 +154,7 @@ yang ditemukan</string>
     <string name="action_wishlist">Tambah ke Wishlist</string>
     <string name="cta_topchat_success_atw">Lihat</string>
     <string name="title_topchat_empty_stock">Stok habis</string>
+    <string name="title_topchat_pre_order">Preorder</string>
     <string name="desc_sub_error_message">Tunggu sebentar, biar Toped bereskan. Coba lagi atau kembali nanti.</string>
     <string name="title_empty_chat_search_result">Oops, tidak ada hasil</string>
     <string name="desc_empty_chat_search_result">Coba cari ulang pakai kata kunci lain.</string>
