@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.config.GlobalConfig
@@ -17,7 +16,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.loginregister.login.router.LoginRouter
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import kotlinx.android.synthetic.main.fragment_login_with_phone.view.*
 
 /**
@@ -77,6 +75,7 @@ class SeamlessLoginEmailPhoneFragment: LoginEmailPhoneFragment() {
                     (context.applicationContext as LoginRouter).setOnboardingStatus(true)
                 }
                 val intent = RouteManager.getIntent(activity, redirectApplink)
+                intent.replaceExtras(activity?.intent?.extras)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
                 if(activity?.intent?.hasExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA)==true){
                     intent.putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, activity?.intent?.getStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA))
