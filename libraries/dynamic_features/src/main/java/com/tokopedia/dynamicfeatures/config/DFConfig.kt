@@ -53,7 +53,11 @@ data class DFConfig(
 
     @SerializedName("dl_in_bg_show_fallback_time")
     @Expose
-    val timeout: Long = 120
+    val timeout: Long = 60,
+
+    @SerializedName("return_if_state_invalid")
+    @Expose
+    val returnIfStateInvalid: Boolean = false
 
 ) {
     fun allowRunningServiceFromActivity(moduleName: String): Boolean {

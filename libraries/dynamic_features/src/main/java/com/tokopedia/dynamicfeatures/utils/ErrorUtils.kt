@@ -10,15 +10,19 @@ object ErrorUtils {
 
     fun getValidatedErrorCode(context: Context, errCode: String, freeInternalStorage: Long): String {
         var errorCodeTemp = errCode
-        val maxThresholdInsufficientStorage = DFRemoteConfig.getConfig(context).maxThresholdInsufficientStorage
-        if (!PlayServiceUtils.isPlayServiceConnected(context)) {
-            errorCodeTemp = ErrorConstant.ERROR_PLAY_SERVICE_NOT_CONNECTED
-        } else if (!PlayServiceUtils.isPlayStoreAvailable(context)) {
-            errorCodeTemp = ErrorConstant.ERROR_PLAY_STORE_NOT_AVAILABLE
-        } else if (SplitInstallErrorCode.INSUFFICIENT_STORAGE.toString() == errorCodeTemp &&
-                maxThresholdInsufficientStorage > 0 &&
-                freeInternalStorage > (maxThresholdInsufficientStorage * CommonConstant.MEGA_BYTE)) {
-            errorCodeTemp = ErrorConstant.ERROR_INVALID_INSUFFICIENT_STORAGE
+        if ( errorCodeTemp == SplitInstallErrorCode.INSUFFICIENT_STORAGE.toString()) {
+            val maxThresholdInsufficientStorage = DFRemoteConfig.getConfig(context).maxThresholdInsufficientStorage
+            if (maxThresholdInsufficientStorage > 0 &&
+                    freeInternalStorage > (maxThresholdInsufficientStorage * CommonConstant.MEGA_BYTE)) {
+                errorCodeTemp = ErrorConstant.ERROR_INVALID_INSUFFICIENT_STORAGE
+            }
+        }
+        if (errorCodeTemp.isEmpty() || errorCodeTemp == SplitInstallErrorCode.NO_ERROR.toString()) {
+            if (!PlayServiceUtils.isPlayServiceConnected(context)) {
+                errorCodeTemp = ErrorConstant.ERROR_PLAY_SERVICE_NOT_CONNECTED
+            } else if (!PlayServiceUtils.isPlayStoreAvailable(context)) {
+                errorCodeTemp = ErrorConstant.ERROR_PLAY_STORE_NOT_AVAILABLE
+            }
         }
         return errorCodeTemp
     }

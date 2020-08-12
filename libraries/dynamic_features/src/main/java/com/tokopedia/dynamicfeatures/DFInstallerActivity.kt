@@ -252,8 +252,19 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
 
     /** Listener used to handle changes in state for install requests. */
     private val listener = SplitInstallStateUpdatedListener { state ->
+        var stateError = ""
         if (state.sessionId() != sessionId) {
-            return@SplitInstallStateUpdatedListener
+            stateError = ErrorConstant.ERROR_SESSION_ID_NOT_MATCH
+            errorList.add(ErrorConstant.ERROR_SESSION_ID_NOT_MATCH)
+        }
+        if (state.hasTerminalStatus()) {
+            stateError = ErrorConstant.ERROR_SESSION_TERMINATED
+            errorList.add(ErrorConstant.ERROR_SESSION_TERMINATED)
+        }
+        if (stateError.isNotEmpty()) {
+            if (dfConfig.returnIfStateInvalid) {
+                return@SplitInstallStateUpdatedListener
+            }
         }
         when (state.status()) {
             SplitInstallSessionStatus.DOWNLOADING -> {
