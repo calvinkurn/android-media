@@ -13,7 +13,7 @@ import io.mockk.*
 import org.junit.Test
 import rx.Subscriber
 
-internal class SearchProductOpenBottomSheetFilter: ProductListPresenterTestFixtures() {
+internal class SearchProductOpenBottomSheetFilterTest: ProductListPresenterTestFixtures() {
 
     @Test
     fun `Open filter page without parameter (edge cases)`() {
