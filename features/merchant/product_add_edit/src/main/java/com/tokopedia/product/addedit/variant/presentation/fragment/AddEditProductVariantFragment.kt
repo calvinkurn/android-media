@@ -375,6 +375,10 @@ class AddEditProductVariantFragment :
         viewModel.clearProductVariant()
         // remove viewmodel's variant details
         viewModel.removeSelectedVariantDetails(variantDetail)
+        // remove all photo adapter data
+        if (variantDetail.variantID == COLOUR_VARIANT_TYPE_ID) {
+            variantPhotoAdapter?.setData(emptyList())
+        }
         when (layoutPosition) {
             VARIANT_VALUE_LEVEL_ONE_POSITION -> {
                 viewModel.updateSelectedVariantUnitValuesLevel1(mutableListOf())
