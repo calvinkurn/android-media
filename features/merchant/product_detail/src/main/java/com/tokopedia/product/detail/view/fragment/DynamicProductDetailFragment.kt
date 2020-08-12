@@ -1498,7 +1498,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             val productStock = p1.getFinalStock(viewModel.selectedMultiOrigin.getOriginStock()).toIntOrZero()
 
             actionButtonView.renderData(!p1.isProductActive(productStock), viewModel.hasShopAuthority(), viewModel.isShopOwner(),
-                    hasTopAds(), it.cartRedirectionResponse.cartRedirection?.data?.firstOrNull())
+                     hasTopAds(), it.cartRedirectionResponse.cartRedirection?.data?.firstOrNull())
             showOrHideButton()
             setupTickerOcc()
 

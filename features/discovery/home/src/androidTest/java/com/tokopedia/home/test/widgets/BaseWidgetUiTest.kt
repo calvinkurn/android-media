@@ -27,8 +27,6 @@ abstract class BaseWidgetUiTest{
     open val getRecommendationTabUseCase = mockk<Lazy<GetRecommendationTabUseCase>>(relaxed = true)
     open val getHomeTokopointsDataUseCase = mockk<Lazy<GetHomeTokopointsDataUseCase>>(relaxed = true)
     open val getCoroutinePendingCashbackUseCase = mockk<Lazy<GetCoroutinePendingCashbackUseCase>> (relaxed = true)
-    open val playToggleChannelReminderUseCase = mockk<Lazy<PlayToggleChannelReminderUseCase>> (relaxed = true)
-    open val getPlayBannerUseCase = mockk<Lazy<GetPlayWidgetUseCase>> (relaxed = true)
     open val getPlayLiveDynamicUseCase = mockk<Lazy<GetPlayLiveDynamicUseCase>> (relaxed = true)
     open val getCoroutineWalletBalanceUseCase = mockk<Lazy<GetCoroutineWalletBalanceUseCase>> (relaxed = true)
     open val getHomeUseCase = mockk<dagger.Lazy<HomeUseCase>> (relaxed = true)
@@ -60,8 +58,6 @@ abstract class BaseWidgetUiTest{
             getHomeTokopointsDataUseCase = getHomeTokopointsDataUseCase,
             getKeywordSearchUseCase = getKeywordSearchUseCase,
             getPendingCashbackUseCase = getCoroutinePendingCashbackUseCase,
-            playToggleChannelReminderUseCase = playToggleChannelReminderUseCase,
-            getPlayBannerUseCase = getPlayBannerUseCase,
             getPlayCardHomeUseCase = getPlayLiveDynamicUseCase,
             getRecommendationTabUseCase = getRecommendationTabUseCase,
             getWalletBalanceUseCase = getCoroutineWalletBalanceUseCase,

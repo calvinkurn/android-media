@@ -1490,10 +1490,6 @@ open class HomeFragment : BaseDaggerFragment(),
         getHomeViewModel().getDynamicChannelData(dynamicChannelDataModel, position)
     }
 
-    override fun onBuyAgainOneClickCheckOutClick(grid: DynamicHomeChannel.Grid, channel: DynamicHomeChannel.Channels, position: Int) {
-        getHomeViewModel().getOneClickCheckout(channel, grid, position)
-    }
-
     override fun onBuyAgainCloseChannelClick(channel: DynamicHomeChannel.Channels, position: Int) {
         getHomeViewModel().onCloseBuyAgain(channel.id, position)
         TrackApp.getInstance().gtm.sendGeneralEvent(getCloseClickOnDynamicListCarousel(channel, getHomeViewModel().getUserId()))
