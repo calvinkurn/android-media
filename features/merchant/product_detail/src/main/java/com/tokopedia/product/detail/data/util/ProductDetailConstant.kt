@@ -184,5 +184,5 @@ object ProductDetailConstant {
     //TopAds Banner
     const val ADS_COUNT = 1
     const val DIMEN_ID = 3
-    const val PAGE_SOURCE = "1"
+    const val PAGE_SOURCE = "3"
 }
