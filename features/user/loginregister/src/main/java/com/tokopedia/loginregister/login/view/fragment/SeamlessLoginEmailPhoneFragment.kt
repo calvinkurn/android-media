@@ -75,7 +75,6 @@ class SeamlessLoginEmailPhoneFragment: LoginEmailPhoneFragment() {
                     (context.applicationContext as LoginRouter).setOnboardingStatus(true)
                 }
                 val intent = RouteManager.getIntent(activity, redirectApplink)
-                intent.replaceExtras(activity?.intent?.extras)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
                 if(activity?.intent?.hasExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA)==true){
                     intent.putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, activity?.intent?.getStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA))
