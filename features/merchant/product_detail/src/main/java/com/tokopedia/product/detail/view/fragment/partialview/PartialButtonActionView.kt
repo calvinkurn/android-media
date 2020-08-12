@@ -74,7 +74,7 @@ class PartialButtonActionView private constructor(val view: View,
             if (isWarehouseProduct) {
                 showWarehouseButton()
             } else {
-                showWarehouseButton()
+                showNewCheckoutButton()
             }
         }
     }

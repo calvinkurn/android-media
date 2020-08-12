@@ -1682,7 +1682,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         viewModel.variantData?.let {
             //Auto select variant will be execute when there is only 1 child left
             val isOnlyHaveOneVariantLeftData = it.autoSelectedOptionIds()
-//            if (isOnlyHaveOneVariantLeftData.isNotEmpty() && viewModel.cartTypeData != null) {
             if (isOnlyHaveOneVariantLeftData.isNotEmpty()) {
                 pdpUiUpdater?.productNewVariantDataModel?.mapOfSelectedVariant = VariantCommonMapper.mapVariantIdentifierWithDefaultSelectedToHashMap(it, isOnlyHaveOneVariantLeftData)
             } else {
