@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/add_template_area"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="@dimen/spacing_lvl4"
+        android:paddingStart="@dimen/spacing_lvl4"
+        android:paddingLeft="@dimen/spacing_lvl4"
+        android:paddingEnd="@dimen/spacing_lvl4"
+        android:paddingRight="@dimen/spacing_lvl4"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/btnAddTemplate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:focusable="true"
+            android:clickable="true"
+            app:srcCompat="@drawable/ic_add_reply_seller"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/list_template"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:clipToPadding="false"
+            android:paddingStart="@dimen/spacing_lvl3"
+            android:paddingEnd="@dimen/spacing_lvl3"
+            tools:listitem="@layout/item_chat_template"
+            tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:orientation="horizontal"/>
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/spacing_lvl4"
+        android:paddingTop="@dimen/dp_12"
+        android:paddingEnd="@dimen/spacing_lvl4"
+        android:paddingBottom="@dimen/spacing_lvl4">
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/replyEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginEnd="@dimen/spacing_lvl3"
+            android:layout_marginRight="@dimen/spacing_lvl3"
+            android:layout_toStartOf="@+id/replySendButton"
+            android:layout_toLeftOf="@+id/replySendButton"
+            android:background="@drawable/bg_rounded_chat_input"
+            android:hint="@string/reply_editText_placeholder"
+            android:inputType="textMultiLine"
+            android:maxLines="4"
+            android:minHeight="@dimen/layout_lvl5"
+            android:paddingStart="@dimen/spacing_lvl4"
+            android:paddingLeft="@dimen/spacing_lvl4"
+            android:paddingTop="@dimen/dp_10"
+            android:paddingEnd="@dimen/spacing_lvl4"
+            android:paddingRight="@dimen/spacing_lvl4"
+            android:paddingBottom="@dimen/dp_10"
+            android:scrollbars="vertical"
+            android:textSize="@dimen/fontSize_lvl4" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/replySendButton"
+            android:layout_width="@dimen/spacing_lvl7"
+            android:layout_height="@dimen/spacing_lvl7"
+            android:layout_alignBottom="@+id/replyEditText"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center"
+            app:srcCompat="@drawable/ic_cta_send" />
+
+    </RelativeLayout>
+</LinearLayout>

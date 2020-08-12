@@ -24,7 +24,15 @@ import com.tokopedia.cacheapi.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.core.TkpdCoreRouter;
+import com.tokopedia.core.analytics.container.GTMAnalytics;
+import com.tokopedia.core.analytics.container.MoengageAnalytics;
+import com.tokopedia.core.deprecated.SessionHandler;
+import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
+import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
@@ -33,8 +41,6 @@ import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.network.DataSource;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.interfaces.ContextAnalytics;
-import com.tokopedia.url.Env;
-import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 
 import java.io.IOException;
@@ -52,12 +58,16 @@ import timber.log.Timber;
 public class MyApplication extends BaseMainApplication
         implements AbstractionRouter,
         NetworkRouter,
-        ApplinkRouter {
+        ApplinkRouter,
+        TkpdCoreRouter {
 
     // Used to loadWishlist the 'native-lib' library on application startup.
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
+
+    GCMHandler gcmHandler;
+    SessionHandler sessionHandler;
 
     @Override
     public void onCreate() {
@@ -101,6 +111,8 @@ public class MyApplication extends BaseMainApplication
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
         }
+
+        IrisAnalytics.Companion.getInstance(this).initialize();
     }
 
 
@@ -127,12 +139,12 @@ public class MyApplication extends BaseMainApplication
 
     }
 
-    public static class GTMAnalytics extends DummyAnalytics {
+    /*public static class GTMAnalytics extends DummyAnalytics {
 
         public GTMAnalytics(Context context) {
             super(context);
         }
-    }
+    }*/
 
     public static class AppsflyerAnalytics extends DummyAnalytics {
 
@@ -141,12 +153,12 @@ public class MyApplication extends BaseMainApplication
         }
     }
 
-    public static class MoengageAnalytics extends DummyAnalytics {
+    /*public static class MoengageAnalytics extends DummyAnalytics {
 
         public MoengageAnalytics(Context context) {
             super(context);
         }
-    }
+    }*/
 
     public static abstract class DummyAnalytics extends ContextAnalytics {
 
@@ -204,6 +216,92 @@ public class MyApplication extends BaseMainApplication
     public static final List<CacheApiWhiteListDomain> getShopWhiteList() {
         List<CacheApiWhiteListDomain> cacheApiWhiteList = new ArrayList<>();
         return cacheApiWhiteList;
+    }
+
+    @Override
+    public Class<?> getDeeplinkClass() {
+        return null;
+    }
+
+    @Override
+    public Intent getInboxTalkCallingIntent(Context mContext) {
+        return null;
+    }
+
+    @Override
+    public IAppNotificationReceiver getAppNotificationReceiver() {
+        return null;
+    }
+
+    @Override
+    public Class<?> getInboxMessageActivityClass() {
+        return null;
+    }
+
+    @Override
+    public Class<?> getInboxResCenterActivityClassReal() {
+        return null;
+    }
+
+    @Override
+    public Intent getHomeIntent(Context context) {
+        return null;
+    }
+
+    @Override
+    public Class<?> getHomeClass() {
+        return null;
+    }
+
+    @Override
+    public NotificationPass setNotificationPass(Context mContext, NotificationPass mNotificationPass, Bundle data, String notifTitle) {
+        return null;
+    }
+
+    @Override
+    public void onAppsFlyerInit() {
+
+    }
+
+    @Override
+    public SessionHandler legacySessionHandler() {
+        if(sessionHandler == null) {
+            com.tokopedia.user.session.UserSession userSession =
+                    new com.tokopedia.user.session.UserSession(this);
+            return sessionHandler = new SessionHandler(this) {
+                @Override
+                public String getLoginID() {
+                    return userSession.getUserId();
+                }
+
+                @Override
+                public String getRefreshToken() {
+                    return userSession.getRefreshTokenIV();
+                }
+
+            };
+        }else{
+            return sessionHandler;
+        }
+    }
+
+    @Override
+    public GCMHandler legacyGCMHandler() {
+        if(gcmHandler == null){
+            return gcmHandler = new GCMHandler(this);
+        }else {
+            return gcmHandler;
+        }
+    }
+
+    @Override
+    public void refreshFCMTokenFromBackgroundToCM(String token, boolean force) {
+
+    }
+
+    @Override
+    public void refreshFCMFromInstantIdService(String token) {
+
     }
 
     @Override

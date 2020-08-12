@@ -48,4 +48,7 @@ object ApplinkConstInternalMechant {
 
     @JvmField
     val MERCHANT_SHOP_SHOWCASE_EDIT = "${INTERNAL_MERCHANT}/shop-showcase-edit"
+
+    @JvmField
+    val MERCHANT_SHOP_SCORE = "${INTERNAL_MERCHANT}/shop-score-detail"
 }

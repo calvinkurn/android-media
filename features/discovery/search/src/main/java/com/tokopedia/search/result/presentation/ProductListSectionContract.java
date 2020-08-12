@@ -5,7 +5,6 @@ import androidx.annotation.Nullable;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel;
 import com.tokopedia.discovery.common.model.WishlistTrackingModel;
 import com.tokopedia.filter.common.data.DynamicFilterModel;
@@ -108,8 +107,6 @@ public interface ProductListSectionContract {
 
         void setTotalSearchResultCount(String formattedResultCount);
 
-        BaseAppComponent getBaseAppComponent();
-
         // Please remove when new bottom sheet filter is already stable
         @Deprecated
         void renderDynamicFilter(DynamicFilterModel dynamicFilterModel);
@@ -128,7 +125,9 @@ public interface ProductListSectionContract {
 
         void hideBottomNavigation();
 
-        void sendImpressionInspirationCarousel(final InspirationCarouselViewModel inspirationCarouselViewModel);
+        void sendImpressionInspirationCarouselList(final InspirationCarouselViewModel inspirationCarouselViewModel);
+
+        void sendImpressionInspirationCarouselInfo(final InspirationCarouselViewModel inspirationCarouselViewModel);
 
         RemoteConfig getABTestRemoteConfig();
 
@@ -149,8 +148,6 @@ public interface ProductListSectionContract {
         boolean isLandingPage();
 
         void logWarning(String message, @Nullable Throwable throwable);
-
-        void sendTopAdsTrackingUrl(String topAdsTrackingUrl);
 
         void sendTopAdsGTMTrackingProductImpression(ProductItemViewModel item);
 
@@ -183,6 +180,8 @@ public interface ProductListSectionContract {
         boolean isQuickFilterSelected(Option option);
 
         void setProductCount(String productCountText);
+
+        String getClassName();
     }
 
     interface Presenter extends CustomerPresenter<View> {

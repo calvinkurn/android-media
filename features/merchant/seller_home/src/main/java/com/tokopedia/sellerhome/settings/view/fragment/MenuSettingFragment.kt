@@ -167,7 +167,11 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
                 SettingTitleMenuUiModel(resources.getString(R.string.setting_menu_app_setting), R.drawable.ic_app_setting),
                 MenuItemUiModel(
                         resources.getString(R.string.setting_menu_chat_and_notification),
-                        clickApplink = ApplinkConstInternalGlobal.MANAGE_NOTIFICATION,
+                        clickApplink = ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING,
+                        settingTypeInfix = SettingTrackingConstant.APP_SETTING),
+                MenuItemUiModel(
+                        resources.getString(R.string.setting_notification_troubleshooter),
+                        clickApplink = ApplinkConstInternalGlobal.PUSH_NOTIFICATION_TROUBLESHOOTER,
                         settingTypeInfix = SettingTrackingConstant.APP_SETTING),
                 MenuItemUiModel(
                         resources.getString(R.string.setting_menu_share_app),

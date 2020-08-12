@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/transparent"
+    android:paddingStart="@dimen/layout_lvl2"
+    android:paddingTop="@dimen/mvc_dimen_20dp"
+    android:paddingEnd="@dimen/layout_lvl2"
+    android:paddingBottom="@dimen/mvc_dimen_20dp">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvMvcPromoPerformanceTitle"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:text="@string/mvc_promo_performance"
+        android:textColor="@color/light_N700_96"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@+id/tvMvcCtaStatisticDetail"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_4" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvMvcCtaStatisticDetail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/mvc_statistic_detail"
+        android:textColor="@color/light_G500"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_2" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvMvcTotalSpending"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginEnd="@dimen/layout_lvl4"
+        android:layout_marginRight="@dimen/layout_lvl4"
+        android:text="@string/mvc_total_spending"
+        android:visibility="gone"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvMvcPromoPerformanceTitle"
+        app:typographyType="body_3" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/mvcImgInfo"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
+        android:background="@android:color/transparent"
+        android:padding="@dimen/mvc_dimen_6dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/tvMvcTotalSpending"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/tvMvcTotalSpending"
+        app:layout_constraintTop_toTopOf="@+id/tvMvcTotalSpending"
+        app:srcCompat="@drawable/ic_info" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvMvcNominalTotalSpending"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/mvc_dimen_6dp"
+        android:textColor="@color/light_N700_96"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvMvcTotalSpending"
+        app:typographyType="heading_3"
+        tools:text="Rp2.600.000" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvMvcVoucherUsage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/mvc_used_voucher"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvMvcPromoPerformanceTitle"
+        app:typographyType="body_3" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvMvcPromoUsedQuota"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/mvc_dimen_6dp"
+        android:layout_marginEnd="@dimen/spacing_lvl2"
+        android:layout_marginRight="@dimen/spacing_lvl2"
+        android:textColor="@color/Neutral_N700_96"
+        app:layout_constraintEnd_toStartOf="@id/tvMvcPromoTotalQuota"
+        app:layout_constraintBottom_toBottomOf="@id/tvMvcVoucherUsage"
+        app:typographyType="heading_3"
+        tools:text="30" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvMvcPromoTotalQuota"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        android:layout_marginLeft="@dimen/spacing_lvl2"
+        android:textColor="@color/Neutral_N700_96"
+        app:layout_constraintBottom_toBottomOf="@+id/tvMvcPromoUsedQuota"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintVertical_bias="0.8"
+        app:typographyType="body_3"
+        tools:text="/120" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

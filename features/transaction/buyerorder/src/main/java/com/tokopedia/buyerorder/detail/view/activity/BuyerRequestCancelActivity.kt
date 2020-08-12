@@ -19,7 +19,7 @@ class BuyerRequestCancelActivity: BaseSimpleActivity(), HasComponent<OrderDetail
     override fun getNewFragment(): Fragment? {
         var bundle = Bundle()
         if (intent.extras != null) {
-            bundle = intent.extras
+            bundle = intent.extras ?: Bundle()
         } else {
             bundle.putString(BuyerConsts.PARAM_SHOP_NAME, "")
             bundle.putString(BuyerConsts.PARAM_INVOICE, "")

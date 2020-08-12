@@ -4,12 +4,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 
-import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.di.component.HasComponent;
-import com.tokopedia.seller.base.view.activity.BaseFilterActivity;
-import com.tokopedia.seller.base.view.fragment.TopAdsFilterListFragment;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.topads.TopAdsComponentInstance;
+import com.tokopedia.topads.common.view.activity.BaseFilterActivity;
+import com.tokopedia.topads.common.view.fragment.TopAdsFilterListFragment;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
+import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsFilterStatusFragment;
 import com.tokopedia.topads.keyword.constant.KeywordStatusTypeDef;
 import com.tokopedia.topads.keyword.view.fragment.TopAdsKeywordFilterStatusFragment;
@@ -23,7 +26,7 @@ import java.util.List;
  * Created by Nathaniel on 1/27/2017.
  */
 public class TopAdsKeywordFilterActivity extends BaseFilterActivity
-        implements HasComponent<AppComponent>, TopAdsKeywordGroupListListener {
+        implements HasComponent<BaseAppComponent>, TopAdsKeywordGroupListListener {
 
     @KeywordStatusTypeDef
     private int selectedFilterStatus;
@@ -72,8 +75,8 @@ public class TopAdsKeywordFilterActivity extends BaseFilterActivity
     }
 
     @Override
-    public AppComponent getComponent() {
-        return getApplicationComponent();
+    public BaseAppComponent getComponent() {
+        return ((BaseMainApplication)getApplication()).getBaseAppComponent();
     }
 
     @Override

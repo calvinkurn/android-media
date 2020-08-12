@@ -147,12 +147,22 @@ open class ProductAttachmentViewModel : SendableViewModel,
             dropPercentage: String, priceBefore: String, shopId: Int, freeShipping: FreeShipping,
             categoryId: Int, playStoreData: PlayStoreData, minOrder: Int, remainingStock: Int,
             status: Int, wishList: Boolean, images: List<String>, source: String,
-            rating: TopchatProductRating
+            rating: TopchatProductRating, replyId: String
     ) : super(
-            messageId, fromUid, from, fromRole,
-            attachmentId, attachmentType, replyTime, "",
-            isRead, false, isSender, message,
-            source
+            messageId = messageId,
+            fromUid = fromUid,
+            from = from,
+            fromRole = fromRole,
+            attachmentId = attachmentId,
+            attachmentType = attachmentType,
+            replyTime = replyTime,
+            startTime = "",
+            isRead = isRead,
+            isDummy = false,
+            isSender = isSender,
+            message = message,
+            source = source,
+            replyId = replyId
     ) {
         this.productId = productId
         this.productName = productName
@@ -357,7 +367,15 @@ open class ProductAttachmentViewModel : SendableViewModel,
     fun getAtcDimension40(sourcePage: String): String {
         return when (sourcePage) {
             ApplinkConst.Chat.SOURCE_CHAT_SEARCH -> "/chat - search chat"
-            else -> "/chat - 0"
+            else -> getField()
+        }
+    }
+
+    private fun getField(): String {
+        return if (blastId > 0) {
+            "/broadcast"
+        } else {
+            "/chat"
         }
     }
 

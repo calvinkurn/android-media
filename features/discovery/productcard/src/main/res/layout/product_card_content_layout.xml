@@ -327,30 +327,4 @@
         tools:visibility="visible"
         tools:text="Ongkir Rp11 rb"/>
 
-    <ProgressBar
-        android:id="@+id/progressBarStock"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/product_card_flashsale_progressbar_height"
-        android:layout_marginTop="@dimen/product_card_flashsale_progressbar_margintop"
-        app:layout_goneMarginTop="@dimen/product_card_flashsale_progressbar_gone_margintop"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:progressDrawable="@drawable/progressbar_flashsale"
-        app:layout_constraintTop_toBottomOf="@+id/imageFreeOngkirPromo"
-        android:max="100"/>
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/textViewStockLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/product_card_flashsale_label_height"
-        android:src="@drawable/ic_pdp_view"
-        android:textStyle="bold"
-        android:textColor="@color/charcoal_grey_68"
-        android:textSize="@dimen/sp_10"
-        android:layout_marginTop="@dimen/product_card_flashsale_label_margintop"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/progressBarStock"
-        app:typographyType="small"
-        app:typographyWeight="bold"
-        tools:text="989jt orang"/>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -60,9 +60,9 @@ class ContainerFragment : Fragment() {
     private var sellerHomeListener: SellerHomeFragment.Listener? = null
     private val handler = Handler()
     private val homeFragment: SellerHomeFragment by lazy { SellerHomeFragment.newInstance() }
-    private val productManageFragment: Fragment? by lazy { sellerHomeRouter?.getProductManageFragment(arrayListOf()) }
+    private val productManageFragment: Fragment? by lazy { sellerHomeRouter?.getProductManageFragment(arrayListOf(), "") }
     private val chatFragment: Fragment? by lazy { sellerHomeRouter?.getChatListFragment() }
-    private val somListFragment: Fragment? by lazy { sellerHomeRouter?.getSomListFragment(SomTabConst.STATUS_ALL_ORDER) }
+    private val somListFragment: Fragment? by lazy { sellerHomeRouter?.getSomListFragment(SomTabConst.STATUS_NEW_ORDER) }
 
     @FragmentType
     private var currentFragmentType: Int = 0
@@ -88,7 +88,6 @@ class ContainerFragment : Fragment() {
 
         setupView()
         observeCurrentSelectedPage()
-        setupDefaultPage()
     }
 
     private fun setupView() = view?.run {
@@ -109,10 +108,6 @@ class ContainerFragment : Fragment() {
         }
     }
 
-    private fun setupDefaultPage() {
-        sharedViewModel?.setCurrentSelectedPage(PageFragment(FragmentType.HOME))
-    }
-
     private fun observeCurrentSelectedPage() {
         sharedViewModel?.currentSelectedPage?.observe(this, Observer { page ->
             currentFragmentType = page.type
@@ -121,16 +116,17 @@ class ContainerFragment : Fragment() {
                 FragmentType.PRODUCT -> showFragment(productManageFragment, page, getString(R.string.sah_product_list))
                 FragmentType.CHAT -> showFragment(chatFragment, page, getString(R.string.sah_chat))
                 FragmentType.ORDER -> showFragment(somListFragment, page, getString(R.string.sah_sale))
+                else -> updateFragmentVisibilityHint(null)
             }
         })
     }
 
     private fun showFragment(fragment: Fragment?, page: PageFragment, title: String) {
-        if (null == fragment || !isAdded) {
-            return
-        }
-
         handler.post {
+            if (null == fragment || !isAdded) {
+                return@post
+            }
+
             val fragmentName = fragment.javaClass.name
             val manager = childFragmentManager
             val transaction = manager.beginTransaction()
@@ -168,6 +164,22 @@ class ContainerFragment : Fragment() {
                     NotificationDotBadge(it).showBadge(menuItem)
                 }
             }
+            updateFragmentVisibilityHint(fragment)
+        }
+    }
+
+    @Suppress("DEPRECATION")
+    private fun updateFragmentVisibilityHint(visibleFragment: Fragment?) {
+        if (visibleFragment == null) {
+            homeFragment.userVisibleHint = false
+            productManageFragment?.userVisibleHint = false
+            chatFragment?.userVisibleHint = false
+            somListFragment?.userVisibleHint = false
+        } else {
+            homeFragment.userVisibleHint = visibleFragment == homeFragment
+            productManageFragment?.userVisibleHint = visibleFragment == productManageFragment
+            chatFragment?.userVisibleHint = visibleFragment == chatFragment
+            somListFragment?.userVisibleHint = visibleFragment == somListFragment
         }
     }
 
@@ -177,12 +189,29 @@ class ContainerFragment : Fragment() {
 
     private fun addProductFragment(fragment: Fragment, transaction: FragmentTransaction, page: PageFragment, fragmentName: String) {
         val filterOptionEmptyStock = FilterOption.FilterByCondition.EmptyStockOnly.id
+        val searchKeyword = page.keywordSearch
         if (page.tabPage.isNotBlank() && page.tabPage == filterOptionEmptyStock) {
-            val productManageFragment = sellerHomeRouter?.getProductManageFragment(arrayListOf(filterOptionEmptyStock))
+            val productManageFragment = sellerHomeRouter?.getProductManageFragment(arrayListOf(filterOptionEmptyStock), searchKeyword)
             if (null != productManageFragment) {
                 addFragmentToTransaction(transaction, productManageFragment, fragmentName)
             } else {
                 addFragmentToTransaction(transaction, fragment, fragmentName)
+            }
+        } else if(page.tabPage.isBlank() && searchKeyword.isNotBlank()) {
+            val productManageFragment = sellerHomeRouter?.getProductManageFragment(arrayListOf(), searchKeyword)
+            if (null != productManageFragment) {
+                transaction.remove(fragment)
+                addFragmentToTransaction(transaction, productManageFragment, fragmentName)
+            } else {
+                transaction.show(fragment)
+            }
+        } else if (page.needToRecreate) {
+            val productManageFragment = sellerHomeRouter?.getProductManageFragment(arrayListOf(), "")
+            if (null != productManageFragment) {
+                transaction.remove(fragment)
+                addFragmentToTransaction(transaction, productManageFragment, fragmentName)
+            } else {
+                transaction.show(fragment)
             }
         } else {
             addFragmentToTransaction(transaction, fragment, fragmentName)
@@ -204,8 +233,25 @@ class ContainerFragment : Fragment() {
 
     private fun showProductMangePage(fmt: Fragment, transaction: FragmentTransaction, page: PageFragment, fragmentName: String) {
         val filterOptionEmptyStock = FilterOption.FilterByCondition.EmptyStockOnly.id
+        val searchKeyword = page.keywordSearch
         if (page.tabPage.isNotBlank() && page.tabPage == filterOptionEmptyStock) {
-            val productManageFragment = sellerHomeRouter?.getProductManageFragment(arrayListOf(filterOptionEmptyStock))
+            val productManageFragment = sellerHomeRouter?.getProductManageFragment(arrayListOf(filterOptionEmptyStock), searchKeyword)
+            if (null != productManageFragment) {
+                transaction.remove(fmt)
+                addFragmentToTransaction(transaction, productManageFragment, fragmentName)
+            } else {
+                transaction.show(fmt)
+            }
+        } else if(page.tabPage.isBlank() && searchKeyword.isNotBlank()) {
+            val productManageFragment = sellerHomeRouter?.getProductManageFragment(arrayListOf(), searchKeyword)
+            if (null != productManageFragment) {
+                transaction.remove(fmt)
+                addFragmentToTransaction(transaction, productManageFragment, fragmentName)
+            } else {
+                transaction.show(fmt)
+            }
+        } else if (page.needToRecreate) {
+            val productManageFragment = sellerHomeRouter?.getProductManageFragment(arrayListOf(), "")
             if (null != productManageFragment) {
                 transaction.remove(fmt)
                 addFragmentToTransaction(transaction, productManageFragment, fragmentName)

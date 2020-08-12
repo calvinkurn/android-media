@@ -17,28 +17,26 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.abstraction.constant.TkpdState;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant;
 import com.tokopedia.base.list.seller.view.adapter.BaseListAdapter;
 import com.tokopedia.base.list.seller.view.fragment.BaseListFragment;
 import com.tokopedia.base.list.seller.view.old.NoResultDataBinder;
-import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
 import com.tokopedia.product.manage.item.imagepicker.imagepickerbuilder.AddProductImagePickerBuilder;
-import com.tokopedia.product.manage.item.main.add.view.activity.ProductAddNameCategoryActivity;
 import com.tokopedia.product.manage.item.main.base.view.service.UploadProductService;
 import com.tokopedia.product.manage.item.main.draft.data.model.ProductDraftViewModel;
 import com.tokopedia.product.manage.item.main.draft.view.activity.ProductDraftAddActivity;
-import com.tokopedia.product.manage.item.main.draft.view.activity.ProductDraftEditActivity;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.presenter.BlankPresenter;
+import com.tokopedia.seller.product.draft.analytic.ProductDraftListTracker;
 import com.tokopedia.seller.product.draft.di.component.DaggerProductDraftListComponent;
 import com.tokopedia.seller.product.draft.di.module.ProductDraftListModule;
 import com.tokopedia.seller.product.draft.tracking.ProductAddEditDraftListPageTracking;
@@ -67,11 +65,17 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
 
     public static final int REQUEST_CODE_ADD_IMAGE = 9001;
     public static final int INSTAGRAM_SELECT_REQUEST_CODE = 9002;
+    public static final int REQUEST_CODE_ADD_PRODUCT = 9003;
 
     public static final String EXTRA_DRAFT_ID = "DRAFT_ID";
 
+    public static final String SCREEN_NAME = "/draft product page";
+
     @Inject
     ProductDraftListPresenter productDraftListPresenter;
+
+    @Inject
+    ProductDraftListTracker tracker;
 
     private BroadcastReceiver draftBroadCastReceiver;
     private TkpdProgressDialog progressDialog;
@@ -82,6 +86,11 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
 
     public interface OnProductDraftListFragmentListener {
         void saveValidImagesToDraft(ArrayList<String> localPaths, @NonNull ArrayList<String> imageDescriptionList);
+    }
+
+    @Override
+    protected String getScreenName() {
+        return SCREEN_NAME;
     }
 
     public static ProductDraftListFragment newInstance() {
@@ -121,7 +130,7 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
                                     // go to empty state if all data has been deleted
                                     resetPageAndSearch();
                                 }
-                                eventDraftProductClicked(AppEventTracking.EventLabel.DELETE_DRAFT);
+                                tracker.sendEventDraftProductClicked(AppEventTracking.EventLabel.DELETE_DRAFT);
                             }
                         }).setNegativeButton(getString(R.string.label_cancel), new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface arg0, int arg1) {
@@ -191,7 +200,8 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
                     ProductAddEditDraftListPageTracking.INSTANCE.eventAddEditDraftClicked(shopId, ProductAddEditDraftListPageTracking.CLICK_ADD_PRODUCT_WITHOUT_DRAFT);
-                    startActivity(ProductAddNameCategoryActivity.Companion.createInstance(getActivity()));
+                    Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW);
+                    startActivityForResult(intent, REQUEST_CODE_ADD_PRODUCT);
                     return true;
                 }
             });
@@ -201,25 +211,17 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
 
     @Override
     public void onItemClicked(ProductDraftViewModel productDraftViewModel) {
-        Intent intent = null;
-        if (GlobalConfig.isSellerApp()) {
-            String uri = Uri.parse(ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW)
-                    .buildUpon()
-                    .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_ID, productDraftViewModel.getProductDraftId() + "")
-                    .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_MODE, ApplinkConstInternalMechant.MODE_EDIT_DRAFT)
-                    .build()
-                    .toString();
-        } else {
-            if (productDraftViewModel.isEdit()) {
-                intent = ProductDraftEditActivity.Companion.createInstance(getActivity(), productDraftViewModel.getProductDraftId());
-            } else {
-                intent = ProductDraftAddActivity.Companion.createInstance(getActivity(), productDraftViewModel.getProductDraftId());
-            }
-        }
+        String uri = Uri.parse(ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW)
+                .buildUpon()
+                .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_ID, productDraftViewModel.getProductDraftId() + "")
+                .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_MODE, ApplinkConstInternalMechant.MODE_EDIT_DRAFT)
+                .build()
+                .toString();
+        Intent intent = RouteManager.getIntent(getContext(), uri);
 
         eventDraftProductClicked(AppEventTracking.EventLabel.EDIT_DRAFT);
         if (intent != null) {
-            startActivity(intent);
+            startActivityForResult(intent, REQUEST_CODE_ADD_PRODUCT);
         }
     }
 
@@ -234,6 +236,11 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
                     if (imageUrlOrPathList != null && imageUrlOrPathList.size() > 0) {
                         onProductDraftListFragmentListener.saveValidImagesToDraft(imageUrlOrPathList, imageDescList);
                     }
+                }
+                break;
+            case REQUEST_CODE_ADD_PRODUCT:
+                if (resultCode == Activity.RESULT_OK) {
+                    tracker.sendScreen(getScreenName(), ProductDraftListTracker.SCREEN_NAME_ADD_PRODUCT);
                 }
                 break;
         }
@@ -273,18 +280,24 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
             draftBroadCastReceiver = new BroadcastReceiver() {
                 @Override
                 public void onReceive(Context context, Intent intent) {
-                    if (intent.getAction().equals(UploadProductService.ACTION_DRAFT_CHANGED)) {
+                    if (intent.getAction().equals(UploadProductService.ACTION_DRAFT_CHANGED) || intent.getAction().equals(TkpdState.ProductService.BROADCAST_ADD_PRODUCT)) {
                         resetPageAndSearch();
                     }
                 }
             };
         }
-        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(
-                draftBroadCastReceiver, new IntentFilter(UploadProductService.ACTION_DRAFT_CHANGED));
+        IntentFilter intentFilters = new IntentFilter();
+        intentFilters.addAction(UploadProductService.ACTION_DRAFT_CHANGED);
+        intentFilters.addAction(TkpdState.ProductService.BROADCAST_ADD_PRODUCT);
+        if (getActivity() != null) {
+            getActivity().registerReceiver(draftBroadCastReceiver, intentFilters);
+        }
     }
 
     private void unregisterDraftReceiver() {
-        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(draftBroadCastReceiver);
+        if (getActivity() != null) {
+            getActivity().unregisterReceiver(draftBroadCastReceiver);
+        }
     }
 
     @Override
@@ -330,7 +343,8 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
     public void onEmptyButtonClicked() {
         eventDraftProductClicked(AppEventTracking.EventLabel.ADD_PRODUCT);
         ProductAddEditDraftListPageTracking.INSTANCE.eventAddEditDraftClicked(shopId, ProductAddEditDraftListPageTracking.CLICK_ADD_PRODUCT);
-        RouteManager.route(getContext(), ApplinkConst.PRODUCT_ADD);
+        Intent intent = RouteManager.getIntent(getContext(), ApplinkConst.PRODUCT_ADD);
+        startActivityForResult(intent, REQUEST_CODE_ADD_PRODUCT);
     }
 
     public void eventDraftProductClicked(String label) {

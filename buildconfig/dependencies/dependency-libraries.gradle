@@ -2,10 +2,10 @@ ext {
 
     // Sort alphabetically by package name
     tkpdInternalLibDependencies = [
-            authentication          : "com.tokopedia.authentication:authentication:1.0.12-alpha",
+            authentication          : "com.tokopedia.authentication:authentication:1.0.17",
             cachemanager            : "com.tokopedia.cachemanager:cachemanager:2.24",
             cacheapi                : "com.tokopedia.cacheapi:cache_api:0.0.3",
-            globalconfig            : "com.tokopedia.config:global_config:1.0.3",
+            globalconfig            : "com.tokopedia.config:global_config:1.0.7",
             url                     : "com.tokopedia.url:url:1.0.6-hub",
             network                 : "com.tokopedia.network:network:1.1.7",
             usecase                 : "com.tokopedia.usecase:usecase:1.0.3",
@@ -17,10 +17,11 @@ ext {
             akamaiBMP               : "AkamaiBMP:AkamaiBMP:2.1.2",
             fakeresponse            : "com.tokopedia.fakeresponse:fakeresponse:0.0.5",
             fakeresponseNoOp        : "com.tokopedia.fakeresponse:fakeresponse_no_op:0.0.4",
-            analyticAnnotation      : "com.tokopedia.analytic:annotation:0.0.1-alpha",
-            analyticParam           : "com.tokopedia.analytic:param:0.0.1-alpha",
-            analyticProcessor       : "com.tokopedia.analytic:processor:0.0.1-alpha",
-            analyticFirebaseRules    : "com.tokopedia.analytic.rules:firebase:0.0.1-alpha2"
+            analyticAnnotation      : "com.tokopedia.analytic:annotation:0.0.3",
+            analyticParam           : "com.tokopedia.analytic:param:0.0.2",
+            analyticProcessor       : "com.tokopedia.analytic:processor:0.0.3",
+            analyticFirebaseRules   : "com.tokopedia.analytic.rules:firebase:0.0.2",
+            analyticGTMUtil         : "com.tokopedia.analytic:gtmutil:0.0.3"
     ]
 
     // Sort and categorize alphabetically by folder name
@@ -67,7 +68,6 @@ ext {
             mediauploader           : ":libraries:mediauploader",
             oms                     : ":libraries:oms",
             permissionchecker       : ":libraries:permissionchecker",
-            playCore                : ":libraries:play_core",
             productPhotoAdapter     : ":libraries:product_photo_adapter",
             pushNotification        : ":libraries:push_notification",
             reactNative             : ":libraries:react_native",
@@ -98,7 +98,7 @@ ext {
             utils                   : ":libraries:utils",
             imagePreviewSlider      : ":libraries:imagepreviewslider",
             mapviewer               : ":libraries:mapviewer",
-            tokofix                 : ":libraries:tokofix",
+            tokopatch               : ":libraries:tokopatch",
             analyticAnnotationCentral   : ":libraries:annotation_proc_central",
             screenRecorder          : ":libraries:screen_recorder",
             lint                    : ":libraries:lint"

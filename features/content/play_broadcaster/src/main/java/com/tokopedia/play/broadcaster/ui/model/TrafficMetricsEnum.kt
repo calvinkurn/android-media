@@ -16,5 +16,8 @@ enum class TrafficMetricsEnum(
     ProductVisit(R.drawable.ic_play_visit_product_white, R.string.play_summary_product_visit),
     NumberOfAtc(R.drawable.ic_play_cart_white, R.string.play_summary_atc),
     NumberOfPaidOrders(R.drawable.ic_play_shop_white, R.string.play_summary_purchased_product),
-    NewFollowers(R.drawable.ic_play_new_follower_white, R.string.play_summary_new_followers);
+    /**
+     * hide for this MVP
+     */
+    /* NewFollowers(R.drawable.ic_play_new_follower_white, R.string.play_summary_new_followers); */
 }

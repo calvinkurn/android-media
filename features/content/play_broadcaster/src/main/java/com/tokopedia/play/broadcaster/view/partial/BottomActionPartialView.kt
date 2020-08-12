@@ -4,6 +4,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.transition.TransitionManager
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
@@ -20,12 +21,13 @@ class BottomActionPartialView(
         listener: Listener
 ) : PartialView(container, R.id.bottom_sheet_action) {
 
+    private val clInventory: ConstraintLayout = findViewById(R.id.cl_inventory)
     private val ivInventory: ImageView = findViewById(R.id.iv_inventory)
     private val btnAction: UnifyButton = findViewById(R.id.btn_action)
     private val tvBadgeCount: TextView = findViewById(R.id.tv_badge_count)
 
     init {
-        ivInventory.setOnClickListener { listener.onInventoryIconClicked() }
+        clInventory.setOnClickListener { listener.onInventoryIconClicked() }
         btnAction.setOnClickListener {
             if (!btnAction.isLoading) listener.onNextButtonClicked()
         }

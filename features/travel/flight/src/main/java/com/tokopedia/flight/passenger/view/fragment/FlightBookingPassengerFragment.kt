@@ -95,14 +95,14 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            passengerModel = it.getParcelable(EXTRA_PASSENGER)
-            luggageModels = it.getParcelableArrayList(EXTRA_LUGGAGES)
-            mealModels = it.getParcelableArrayList(EXTRA_MEALS)
+            passengerModel = it.getParcelable(EXTRA_PASSENGER) ?: FlightBookingPassengerModel()
+            luggageModels = it.getParcelableArrayList(EXTRA_LUGGAGES) ?: arrayListOf()
+            mealModels = it.getParcelableArrayList(EXTRA_MEALS)?: arrayListOf()
             isAirAsiaAirlines = it.getBoolean(EXTRA_IS_AIRASIA)
-            depatureDate = it.getString(EXTRA_DEPARTURE_DATE)
-            requestId = it.getString(EXTRA_REQUEST_ID)
+            depatureDate = it.getString(EXTRA_DEPARTURE_DATE, "")
+            requestId = it.getString(EXTRA_REQUEST_ID, "")
             isDomestic = it.getBoolean(EXTRA_IS_DOMESTIC)
-            autofillName = it.getString(EXTRA_AUTOFILL_NAME)
+            autofillName = it.getString(EXTRA_AUTOFILL_NAME, "")
         }
 
         activity?.run {

@@ -14,7 +14,7 @@ buildscript {
 }
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion rootProject.ext.compileSdkVersion
 }
 
 dependencies {

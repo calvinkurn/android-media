@@ -22,6 +22,11 @@ import androidx.transition.TransitionSet
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.model.PlayMetricUiModel
+import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.BroadcastChannel
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.collect
 
 /**
  * Created by jegul on 10/06/20
@@ -35,43 +40,65 @@ class PlayMetricsView : LinearLayout {
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
 
+    private val job = SupervisorJob()
+    private val scope = CoroutineScope(Dispatchers.Main + job)
+
     private var currentIndex = -1
     private val textViewList: List<TextView>
 
+    private val metricsChannel = BroadcastChannel<PlayMetricUiModel>(Channel.BUFFERED)
+
     init {
+        scope.launch(Dispatchers.Main.immediate) { initMetricsChannel() }
         gravity = Gravity.BOTTOM
         orientation = VERTICAL
         textViewList = List(2) { getTextViewInstance() }
     }
 
-    fun show(metric: PlayMetricUiModel) {
-        val nextIndex = if (currentIndex == textViewList.size - 1) 0 else currentIndex + 1
-        val currentView = if (currentIndex < 0) null else textViewList[currentIndex]
-        val nextView = textViewList[nextIndex]
+    fun addMetricToQueue(metric: PlayMetricUiModel) {
+        addMetricsToQueue(listOf(metric))
+    }
 
-        val transitionSet = TransitionSet()
-        if (currentView != null) {
-            transitionSet
-                    .addTransition(Slide(Gravity.TOP)
-                            .addTarget(currentView))
-                    .addTransition(Fade(Fade.OUT)
-                            .addTarget(currentView))
+    fun addMetricsToQueue(metrics: List<PlayMetricUiModel>) {
+        scope.launch {
+            metrics.forEach { metricsChannel.send(it) }
         }
+    }
+
+    private fun show(metric: PlayMetricUiModel) {
+        val nextIndex = (currentIndex + 1) % textViewList.size
+        val nextView = textViewList[nextIndex]
 
         nextView.text = getSpannedMetric(metric)
 
-        transitionSet
+        val transition = TransitionSet()
                 .addTransition(Slide(Gravity.BOTTOM)
                         .addTarget(nextView))
                 .addTransition(Fade(Fade.IN)
                         .addTarget(nextView))
 
-        TransitionManager.beginDelayedTransition(this, transitionSet)
-
-        removeView(currentView)
+        TransitionManager.beginDelayedTransition(this, transition)
         addView(nextView)
 
         currentIndex = nextIndex
+    }
+
+    private fun removeMetric(view: View) {
+        val transition = TransitionSet()
+                .addTransition(Slide(Gravity.TOP)
+                        .addTarget(view))
+                .addTransition(Fade(Fade.OUT)
+                        .addTarget(view))
+
+        TransitionManager.beginDelayedTransition(this, transition)
+        removeView(view)
+
+        println("MetricView Removed: $view")
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        job.cancelChildren()
     }
 
     private fun getSpannedMetric(metric: PlayMetricUiModel): CharSequence {
@@ -92,5 +119,26 @@ class PlayMetricsView : LinearLayout {
         val view = View.inflate(context, R.layout.item_play_metrics, null) as TextView
         view.layoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         return view
+    }
+
+    private suspend fun initMetricsChannel() = withContext(Dispatchers.Default) {
+        metricsChannel.asFlow().collect {
+            onRetrievedNewMetric(it)
+            delay(it.interval)
+            removeCurrentMetric()
+            delay(IN_BETWEEN_DELAY)
+        }
+    }
+
+    private suspend fun onRetrievedNewMetric(newMetric: PlayMetricUiModel) = withContext(Dispatchers.Main) {
+        show(newMetric)
+    }
+
+    private suspend fun removeCurrentMetric() = withContext(Dispatchers.Main) {
+        removeMetric(textViewList[currentIndex])
+    }
+
+    companion object {
+        private const val IN_BETWEEN_DELAY = 100L
     }
 }

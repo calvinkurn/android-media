@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
+import com.tokopedia.home.beranda.data.datasource.default_data_source.HomeDefaultDataSource
 import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
 import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactoryImpl
 import com.tokopedia.home.beranda.data.usecase.HomeUseCase
@@ -47,7 +48,7 @@ abstract class BaseWidgetUiTest{
     open val remoteConfig = mockk<RemoteConfig>(relaxed = true)
     open val playToggleChannelReminderUseCase = mockk<Lazy<PlayToggleChannelReminderUseCase>> (relaxed = true)
     open val getPlayBannerUseCase = mockk<Lazy<GetPlayWidgetUseCase>> (relaxed = true)
-    open val homeDataMapper = HomeDataMapper(InstrumentationRegistry.getInstrumentation().context, HomeVisitableFactoryImpl(userSessionInterface.get(), remoteConfig), mockk(relaxed = true))
+    open val homeDataMapper = HomeDataMapper(InstrumentationRegistry.getInstrumentation().context, HomeVisitableFactoryImpl(userSessionInterface.get(), remoteConfig, HomeDefaultDataSource()), mockk(relaxed = true))
 
     open fun reInitViewModel() = HomeViewModel(
             dismissHomeReviewUseCase = dismissHomeReviewUseCase,
@@ -72,7 +73,7 @@ abstract class BaseWidgetUiTest{
             getRechargeRecommendationUseCase = getRechargeRecommendationUseCase,
             declineRechargeRecommendationUseCase = declineRechargeRecommendationUseCase,
             getSalamWidgetUseCase = getSalamWIdgetUseCase,
-            declineSalamWIdgetUseCase = declineSalamWIdgetUseCase,
+            declineSalamWidgetUseCase = declineSalamWIdgetUseCase,
             injectCouponTimeBasedUseCase = injectCouponTimeBasedUseCase,
             topAdsImageViewUseCase = topAdsImageViewUseCase,
             playToggleChannelReminderUseCase = playToggleChannelReminderUseCase,

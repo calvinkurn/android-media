@@ -5,7 +5,7 @@ import android.view.View;
 
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.v4.BaseNetworkErrorHandlerImpl;
-import com.tokopedia.topads.dashboard.utils.SnackBar;
+
 
 /**
  * Created by normansyahputa on 1/19/17.

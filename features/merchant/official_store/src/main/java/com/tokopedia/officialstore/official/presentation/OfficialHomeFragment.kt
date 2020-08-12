@@ -542,7 +542,7 @@ class OfficialHomeFragment :
     private fun copyCoupon(view: View, cta: Cta) {
         val clipboard = view.context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val clipData = ClipData.newPlainText(getString(R.string.os_coupon_code_label), cta.couponCode)
-        clipboard.primaryClip = clipData
+        clipboard.setPrimaryClip(clipData)
         Toaster.make(view.parent as ViewGroup,
                 getString(R.string.os_toaster_coupon_copied),
                 Snackbar.LENGTH_LONG)

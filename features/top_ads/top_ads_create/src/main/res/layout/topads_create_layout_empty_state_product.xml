@@ -9,7 +9,7 @@
         android:id="@+id/ilustration"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:src="@drawable/ill_no_product"
+        app:srcCompat="@drawable/ill_no_product"
         app:layout_constraintBottom_toTopOf="@+id/typography34"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintLeft_toLeftOf="parent"

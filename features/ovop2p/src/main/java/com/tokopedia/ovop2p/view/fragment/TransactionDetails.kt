@@ -83,7 +83,7 @@ class TransactionDetails : BaseDaggerFragment(){
     }
 
     private fun getThankyouDataFromArgs(){
-        ovoP2pTransferThankyouBase = arguments?.getParcelable(Constants.Keys.THANKYOU_ARGS) as OvoP2pTransferThankyouBase
+        ovoP2pTransferThankyouBase = arguments?.getParcelable(Constants.Keys.THANKYOU_ARGS) ?: OvoP2pTransferThankyouBase()
     }
 
     private fun setSenderUserData(){

@@ -55,8 +55,8 @@ class SuccessFragmentWithdrawal : BaseDaggerFragment(), TickerCallback {
         arguments?.let {
             if (it.containsKey(ARG_WITHDRAWAL_REQUEST)
                     && it.containsKey(ARG_SUBMIT_WITHDRAWAL_RESPONSE)) {
-                withdrawalRequest = it.getParcelable(ARG_WITHDRAWAL_REQUEST)
-                withdrawalResponse = it.getParcelable(ARG_SUBMIT_WITHDRAWAL_RESPONSE)
+                withdrawalRequest = it.getParcelable(ARG_WITHDRAWAL_REQUEST) ?: WithdrawalRequest()
+                withdrawalResponse = it.getParcelable(ARG_SUBMIT_WITHDRAWAL_RESPONSE) ?: SubmitWithdrawalResponse()
             } else {
                 activity?.finish()
             }

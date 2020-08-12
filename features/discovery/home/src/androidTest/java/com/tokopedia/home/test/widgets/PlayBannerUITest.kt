@@ -11,6 +11,7 @@ import com.google.gson.Gson
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.home.R
+import com.tokopedia.home.beranda.data.datasource.default_data_source.HomeDefaultDataSource
 import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
 import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactoryImpl
 import com.tokopedia.home.beranda.data.model.Config
@@ -78,7 +79,7 @@ class PlayBannerUITest : BaseWidgetUiTest(){
     override val playToggleChannelReminderUseCase = mockk<Lazy<PlayToggleChannelReminderUseCase>> (relaxed = true)
     override val getPlayBannerUseCase = mockk<Lazy<GetPlayWidgetUseCase>> (relaxed = true)
     override val remoteConfig = mockk<RemoteConfig>(relaxed = true)
-    override val homeDataMapper = HomeDataMapper(InstrumentationRegistry.getInstrumentation().context, HomeVisitableFactoryImpl(userSessionInterface.get(), remoteConfig), mockk(relaxed = true))
+    override val homeDataMapper = HomeDataMapper(InstrumentationRegistry.getInstrumentation().context, HomeVisitableFactoryImpl(userSessionInterface.get(), remoteConfig, HomeDefaultDataSource()), mockk(relaxed = true))
     private val context = InstrumentationRegistry.getInstrumentation().context
     private lateinit var viewModel: HomeViewModel
 
@@ -330,7 +331,7 @@ class PlayBannerUITest : BaseWidgetUiTest(){
         onView(withId(TITLE)).check(matches(withText("Play Widget")))
         onView(withId(TITLE_CONTENT)).check(matches(withText("Channel 2")))
     }
-  
+
 //    private fun <T : ViewModel> createViewModelFactory(viewModel: T): ViewModelProvider.Factory {
 //        return object : ViewModelProvider.Factory {
 //            override fun <T : ViewModel> create(viewModelClass: Class<T>): T {
@@ -366,7 +367,7 @@ class PlayBannerUITest : BaseWidgetUiTest(){
             getRechargeRecommendationUseCase = getRechargeRecommendationUseCase,
             declineRechargeRecommendationUseCase = declineRechargeRecommendationUseCase,
             getSalamWidgetUseCase = getSalamWIdgetUseCase,
-            declineSalamWIdgetUseCase = declineSalamWIdgetUseCase,
+            declineSalamWidgetUseCase = declineSalamWIdgetUseCase,
             injectCouponTimeBasedUseCase = injectCouponTimeBasedUseCase,
             topAdsImageViewUseCase = topAdsImageViewUseCase,
             playToggleChannelReminderUseCase = playToggleChannelReminderUseCase,

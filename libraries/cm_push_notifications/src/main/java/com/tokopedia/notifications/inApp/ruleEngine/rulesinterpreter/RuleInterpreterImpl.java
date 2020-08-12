@@ -28,57 +28,59 @@ public class RuleInterpreterImpl implements InterfaceRuleInterpreter {
         makeRequestForData(entity, currentTime, dataProvider);
     }
 
-    private void makeRequestForData(final String entity, final long currentTime,  final DataProvider dataProvider){
+    private void makeRequestForData(
+            final String entity,
+            final long currentTime,
+            final DataProvider dataProvider
+    ){
         Observable.fromCallable(new Callable<ElapsedTime>() {
             @Override
             public ElapsedTime call() throws Exception {
-                return RepositoryManager.
-                        getInstance().getStorageProvider().getElapsedTimeFromStore();
+                return RepositoryManager.getInstance()
+                        .getStorageProvider()
+                        .getElapsedTimeFromStore();
             }
         }).map(new Func1<ElapsedTime, List<CMInApp>>() {
             @Override
             public List<CMInApp> call(ElapsedTime elapsedTime) {
-                if(elapsedTime != null){
+                if (elapsedTime != null) {
                     elapsedTimeObj = elapsedTime;
-                }
-                else {
+                } else {
                     createAndSetElapsedTime();
                 }
-                return RepositoryManager.
-                        getInstance().getStorageProvider().getDataFromStore(entity);
+                return RepositoryManager.getInstance()
+                        .getStorageProvider()
+                        .getDataFromStore(entity);
             }
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<List<CMInApp>>() {
-                    @Override
-                    public void onCompleted() {
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        dataProvider.notificationsDataResult(null);
-
-                    }
-
-                    @Override
-                    public void onNext(List<CMInApp> inAppDataList) {
-                        if( inAppDataList != null){
+                    @Override public void onNext(List<CMInApp> inAppDataList) {
+                        if (inAppDataList != null) {
                             inAppList = inAppDataList;
-                            Iterator<CMInApp> iter = inAppList.iterator();
-                            while (iter.hasNext()) {
-                                CMInApp inAppData = iter.next();
-                                if(!(checkIfActiveInTimeFrame(inAppData, System.currentTimeMillis()) &&
+                            Iterator<CMInApp> inApp = inAppList.iterator();
+                            while (inApp.hasNext()) {
+                                CMInApp inAppData = inApp.next();
+                                if (!(checkIfActiveInTimeFrame(inAppData, System.currentTimeMillis()) &&
                                         checkIfFrequencyIsValid(inAppData, System.currentTimeMillis()) &&
-                                        checkIfBehaviourRulesAreValid(inAppData))){
-                                    iter.remove();
-                                    if(performDeletion(inAppData)) {
-                                        RepositoryManager.getInstance().getStorageProvider().deleteRecord(inAppData.id);
+                                        checkIfBehaviourRulesAreValid(inAppData))) {
+                                    inApp.remove();
+                                    if (performDeletion(inAppData)) {
+                                        RepositoryManager.getInstance()
+                                                .getStorageProvider()
+                                                .deleteRecord(inAppData.id);
                                     }
                                 }
                             }
                         }
                         dataProvider.notificationsDataResult(inAppList);
                     }
+
+                    @Override public void onError(Throwable e) {
+                        dataProvider.notificationsDataResult(null);
+                    }
+
+                    @Override public void onCompleted() {}
                 });
     }
 

@@ -37,6 +37,20 @@ class ThankYouPageAnalytics @Inject constructor(
     private val analyticTracker: ContextAnalytics
         get() = TrackApp.getInstance().gtm
 
+
+    fun postThankYouPageLoadedEvent(thanksPageData: ThanksPageData) {
+        if (thanksPageData.pushGtm) {
+            when (ThankPageTypeMapper.getThankPageType(thanksPageData)) {
+                MarketPlaceThankPage -> sendThankYouPageDataLoadEvent(thanksPageData)
+                else -> sendigitalThankYouPageDataLoadEvent(thanksPageData)
+            }
+            appsFlyerPurchaseEvent(thanksPageData)
+            sendBranchIOEvent(thanksPageData)
+        } else {
+            sendPushGtmFalseEvent(thanksPageData.paymentID.toString())
+        }
+    }
+
     fun sendThankYouPageDataLoadEvent(thanksPageData: ThanksPageData) {
         this.thanksPageData = thanksPageData
         CoroutineScope(mainDispatcher).launchCatchError(block = {

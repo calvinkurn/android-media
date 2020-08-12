@@ -2,7 +2,6 @@ package com.tokopedia.play.broadcaster.view.fragment
 
 import android.Manifest
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.RectF
 import android.graphics.drawable.Drawable
@@ -12,7 +11,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.transition.*
@@ -20,21 +19,32 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.ui.model.CoverSource
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.broadcaster.util.cover.YalantisImageCropper
 import com.tokopedia.play.broadcaster.util.cover.YalantisImageCropperImpl
-import com.tokopedia.play.broadcaster.util.exhaustive
+import com.tokopedia.play.broadcaster.util.extension.exhaustive
+import com.tokopedia.play.broadcaster.util.extension.getDialog
+import com.tokopedia.play.broadcaster.util.extension.showToaster
 import com.tokopedia.play.broadcaster.util.helper.CoverImagePickerHelper
-import com.tokopedia.play.broadcaster.view.activity.PlayCoverCameraActivity
+import com.tokopedia.play.broadcaster.util.permission.PermissionHelper
+import com.tokopedia.play.broadcaster.util.permission.PermissionHelperImpl
+import com.tokopedia.play.broadcaster.util.permission.PermissionResultListener
+import com.tokopedia.play.broadcaster.util.permission.PermissionStatusHandler
+import com.tokopedia.play.broadcaster.util.preference.PermissionSharedPreferences
+import com.tokopedia.play.broadcaster.view.activity.PlayBroadcastActivity
 import com.tokopedia.play.broadcaster.view.custom.PlayBottomSheetHeader
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
 import com.tokopedia.play.broadcaster.view.partial.CoverCropPartialView
 import com.tokopedia.play.broadcaster.view.partial.CoverSetupPartialView
+import com.tokopedia.play.broadcaster.view.state.Changeable
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
+import com.tokopedia.play.broadcaster.view.state.NotChangeable
 import com.tokopedia.play.broadcaster.view.viewmodel.DataStoreViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayCoverSetupViewModel
 import com.tokopedia.unifycomponents.Toaster
@@ -47,7 +57,9 @@ import javax.inject.Inject
  */
 class PlayCoverSetupFragment @Inject constructor(
         private val viewModelFactory: ViewModelFactory,
-        private val dispatcher: CoroutineDispatcherProvider
+        private val dispatcher: CoroutineDispatcherProvider,
+        private val permissionPref: PermissionSharedPreferences,
+        private val analytic: PlayBroadcastAnalytic
 ) : PlayBaseSetupFragment() {
 
     private val job = SupervisorJob()
@@ -65,19 +77,66 @@ class PlayCoverSetupFragment @Inject constructor(
 
     private lateinit var imagePickerHelper: CoverImagePickerHelper
 
+    private lateinit var dialogRationale: DialogUnify
+    private val permissionStatusHandler: PermissionStatusHandler = {
+        if (!isAllGranted()) showToaster(getString(R.string.play_storage_permission_denied_error), Toaster.TYPE_ERROR)
+        else {
+            when (requestCode) {
+                REQUEST_CODE_PERMISSION_CROP_COVER -> {
+                    if (isAllGranted()) coverCropView.clickAdd()
+                    else showToaster(getString(R.string.play_storage_permission_denied_error), Toaster.TYPE_ERROR)
+                }
+                REQUEST_CODE_PERMISSION_UPLOAD -> {
+                    if (isAllGranted()) coverSetupView.clickNext()
+                    else showToaster(getString(R.string.play_storage_permission_denied_error), Toaster.TYPE_ERROR)
+                }
+                REQUEST_CODE_PERMISSION_COVER_CHOOSER -> {
+                    if (isAllGranted()) openCoverChooser(CoverSource.None)
+                }
+            }
+        }
+    }
+    private val permissionResultListener = object : PermissionResultListener {
+        override fun onRequestPermissionResult(): PermissionStatusHandler {
+            return permissionStatusHandler
+        }
+
+        override fun onShouldShowRequestPermissionRationale(permissions: Array<String>, requestCode: Int): Boolean {
+            showDialogPermissionRationale()
+            return true
+        }
+    }
+
     private var mListener: Listener? = null
 
-    private val isTitleEditable: Boolean
-        get() = arguments?.getBoolean(EXTRA_TITLE_EDITABLE, true) ?: true
+    private var toasterBottomMargin = 0
+
+    private val isEditCoverMode: Boolean
+        get() = arguments?.getBoolean(EXTRA_IS_EDIT_COVER_MODE, false) ?: false
+
+    private lateinit var permissionHelper: PermissionHelper
 
     override fun getScreenName(): String = "Play Cover Title Setup"
 
     override fun onInterceptBackPressed(): Boolean {
+        try { Toaster.snackBar.dismiss() } catch (e: Throwable) {}
+
         val state = viewModel.cropState
-        return if (state is CoverSetupState.Cropping) {
-            onCancelCropImage(state.coverSource)
-            true
-        } else false
+        val coverChangeState = viewModel.coverChangeState()
+        return when {
+            state is CoverSetupState.Cropping -> {
+                onChangeCoverFromCropping(state.coverSource)
+                true
+            }
+            coverChangeState is NotChangeable -> {
+                showToaster(
+                        message = coverChangeState.reason.localizedMessage,
+                        type = Toaster.TYPE_NORMAL
+                )
+                true
+            }
+            else -> false
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -87,6 +146,12 @@ class PlayCoverSetupFragment @Inject constructor(
                 .get(PlayCoverSetupViewModel::class.java)
         dataStoreViewModel = ViewModelProviders.of(this, viewModelFactory)
                 .get(DataStoreViewModel::class.java)
+        permissionHelper = PermissionHelperImpl(this, permissionPref)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        analytic.viewAddCoverTitleBottomSheet()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -108,24 +173,27 @@ class PlayCoverSetupFragment @Inject constructor(
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        when (requestCode) {
-            REQUEST_CODE_PERMISSION_COVER_CHOOSER -> onCoverChooserPermissionResult(grantResults)
-            REQUEST_CODE_PERMISSION_CROP_COVER -> onCoverCropAddPermissionResult(grantResults)
-            REQUEST_CODE_PERMISSION_START_CROP_COVER -> {}
-            REQUEST_CODE_PERMISSION_UPLOAD -> onUploadPermissionResult(grantResults)
-            else -> super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        }
+        if (permissionHelper.onRequestPermissionsResult(requestCode, permissions, grantResults)) return
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (!getImagePickerHelper().onActivityResult(requestCode, resultCode, data))
+        if (!getImagePickerHelper().onActivityResult(requestCode, resultCode, data)) {
+            (activity as? PlayBroadcastActivity)?.startPreview()
             super.onActivityResult(requestCode, resultCode, data)
+        }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        job.cancelChildren()
         viewModel.saveCover(coverSetupView.coverTitle)
+        job.cancelChildren()
+    }
+
+    override fun onAttachFragment(childFragment: Fragment) {
+        super.onAttachFragment(childFragment)
+
+        getImagePickerHelper().onAttachFragment(childFragment)
     }
 
     fun setListener(listener: Listener) {
@@ -159,6 +227,10 @@ class PlayCoverSetupFragment @Inject constructor(
         coverSetupView = CoverSetupPartialView(
                 container = view as ViewGroup,
                 dataSource = object : CoverSetupPartialView.DataSource {
+                    override fun getMaxTitleCharacters(): Int {
+                        return viewModel.maxTitleChars
+                    }
+
                     override fun isValidCoverTitle(coverTitle: String): Boolean {
                         return viewModel.isValidCoverTitle(coverTitle)
                     }
@@ -170,18 +242,21 @@ class PlayCoverSetupFragment @Inject constructor(
                 listener = object : CoverSetupPartialView.Listener {
                     override fun onImageAreaClicked(view: CoverSetupPartialView) {
                         viewModel.saveCover(coverSetupView.coverTitle)
-                        openCoverChooser()
+                        requestGalleryPermission(REQUEST_CODE_PERMISSION_COVER_CHOOSER, isFullFlow = true)
+                        analytic.clickAddCover()
                     }
 
                     override fun onNextButtonClicked(view: CoverSetupPartialView, coverTitle: String) {
-                        val coverUri = viewModel.coverUri
-                        if (coverUri != null && viewModel.isValidCoverTitle(coverTitle)) {
-                            if (isGalleryPermissionGranted()) viewModel.uploadCover(bottomSheetCoordinator.channelId, coverTitle)
-                            else requestGalleryPermission(REQUEST_CODE_PERMISSION_UPLOAD)
-                        }
+                        shouldUploadCover(coverTitle)
+                        analytic.clickContinueOnAddCoverAndTitlePage()
+                    }
+
+                    override fun onTitleAreaHasFocus() {
+                        analytic.clickAddTitle()
                     }
                 }
         )
+        viewLifecycleOwner.lifecycle.addObserver(coverSetupView)
 
         coverCropView = CoverCropPartialView(view, object : CoverCropPartialView.Listener {
             override fun onAddButtonClicked(
@@ -208,15 +283,17 @@ class PlayCoverSetupFragment @Inject constructor(
                             )
                         }
 
-                        viewModel.setCroppedCover(croppedUri)
-                        if (!isTitleEditable) finishSetup()
+                        viewModel.setDraftCroppedCover(croppedUri)
+                        if (isEditCoverMode) shouldUploadCover(viewModel.savedCoverTitle)
                     }
                 } else requestGalleryPermission(REQUEST_CODE_PERMISSION_CROP_COVER)
 
+                analytic.clickContinueOnCroppingPage()
             }
 
             override fun onChangeButtonClicked(view: CoverCropPartialView) {
-                onCancelCropImage(CoverSource.None)
+                onChangeCoverFromCropping(viewModel.source)
+                analytic.clickChangeCoverOnCroppingPage()
             }
         })
     }
@@ -232,9 +309,37 @@ class PlayCoverSetupFragment @Inject constructor(
         })
     }
 
-    private fun openCoverChooser() {
-        getImagePickerHelper()
-                .show(CoverSource.None)
+    private fun showToaster(message: String, type: Int = Toaster.TYPE_NORMAL, duration: Int = Toaster.LENGTH_SHORT, actionLabel: String = "", actionListener: View.OnClickListener = View.OnClickListener { }) {
+        if (toasterBottomMargin == 0) {
+            val coverSetupBottomActionHeight = coverSetupView.getBottomActionView().height
+            val bottomActionHeight = if (coverSetupBottomActionHeight != 0) coverSetupBottomActionHeight else coverCropView.getBottomActionView().height
+            val offset8 = resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
+            toasterBottomMargin = bottomActionHeight + offset8
+        }
+
+        view?.showToaster(
+                message = message,
+                type = type,
+                duration = duration,
+                actionLabel = actionLabel,
+                actionListener = actionListener,
+                bottomMargin = toasterBottomMargin
+        )
+    }
+
+    private fun openCoverChooser(coverSource: CoverSource) {
+        when (val coverChangeState = viewModel.coverChangeState()) {
+            Changeable -> {
+                getImagePickerHelper()
+                        .show(coverSource)
+            }
+            is NotChangeable -> {
+                showToaster(
+                        message = coverChangeState.reason.localizedMessage,
+                        type = Toaster.TYPE_NORMAL
+                )
+            }
+        }
     }
 
     private fun showCoverCropLayout(coverImageUri: Uri?) {
@@ -244,25 +349,40 @@ class PlayCoverSetupFragment @Inject constructor(
         coverCropView.show()
 
         coverCropView.setImageForCrop(coverImageUri)
+
+        // called twice, the first one with null coverImageUri
+        if (coverImageUri != null) analytic.viewCroppingPage()
     }
 
     private fun showInitCoverLayout(coverImageUri: Uri?) {
-        if (isTitleEditable) {
-            coverSetupView.show()
-            coverCropView.hide()
+        coverSetupView.show()
+        coverCropView.hide()
 
-            coverSetupView.setImage(coverImageUri)
-        }
+        coverSetupView.setImage(coverImageUri)
     }
 
     private fun removeCover() {
         viewModel.removeCover()
     }
 
-    private fun onCancelCropImage(source: CoverSource) {
-        onBackFromCropping(source)
-        showInitCoverLayout(null)
-        removeCover()
+    private fun onChangeCoverFromCropping(source: CoverSource) {
+        if (mListener?.onCancelCropping(source) == false) {
+            openCoverChooser(source)
+            showInitCoverLayout(null)
+            removeCover()
+        }
+    }
+
+    private fun shouldUploadCover(coverTitle: String) {
+        if (viewModel.isValidCoverTitle(coverTitle)) {
+            if (isGalleryPermissionGranted()) viewModel.uploadCover(coverTitle)
+            else requestGalleryPermission(REQUEST_CODE_PERMISSION_UPLOAD)
+        }
+    }
+
+    private fun showDialogPermissionRationale() {
+        getDialogRationale()
+                .show()
     }
 
     private fun getImagePickerHelper(): CoverImagePickerHelper {
@@ -284,6 +404,7 @@ class PlayCoverSetupFragment @Inject constructor(
                         }
                     },
                     intentHandler = { intent, requestCode ->
+                        (activity as? PlayBroadcastActivity)?.stopPreview()
                         startActivityForResult(intent, requestCode)
                     }
             )
@@ -291,65 +412,48 @@ class PlayCoverSetupFragment @Inject constructor(
         return imagePickerHelper
     }
 
+    private fun getDialogRationale(): DialogUnify {
+        if (!::dialogRationale.isInitialized) {
+            dialogRationale = requireContext().getDialog(
+                    actionType = DialogUnify.HORIZONTAL_ACTION,
+                    title = getString(R.string.play_storage_permission_rationale_title),
+                    desc = getString(R.string.play_storage_permission_rationale_desc),
+                    primaryCta = getString(R.string.play_yes),
+                    primaryListener = { dialog ->
+                        dialog.dismiss()
+                        requestGalleryPermission(REQUEST_CODE_PERMISSION_COVER_CHOOSER, isFullFlow = false)
+                    },
+                    secondaryCta = getString(R.string.play_no),
+                    secondaryListener = { dialog -> dialog.dismiss() }
+            )
+        }
+        return dialogRationale
+    }
+
     /**
      * Permission
      */
     private fun isGalleryPermissionGranted(): Boolean {
-        return arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE).map {
-            ContextCompat.checkSelfPermission(requireContext(), it)
-        }.all { it == PackageManager.PERMISSION_GRANTED }
+        return permissionHelper.isAllPermissionsGranted(
+                arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
+        )
     }
 
-    private fun requestGalleryPermission(requestCode: Int) = requestPermissions(
-            arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE), requestCode
-    )
-
-    private fun onCoverChooserPermissionResult(grantResults: IntArray) {
-        if (grantResults.all { it == PackageManager.PERMISSION_GRANTED }) openCoverChooser()
-        else {
-            Toaster.make(requireView(), "Cover Chooser Permission Failed")
+    private fun requestGalleryPermission(requestCode: Int, isFullFlow: Boolean = true) {
+        val permissions = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
+        if (isFullFlow) {
+            permissionHelper.requestMultiPermissionsFullFlow(
+                    permissions = permissions,
+                    requestCode = requestCode,
+                    permissionResultListener = permissionResultListener
+            )
+        } else {
+            permissionHelper.requestMultiPermissions(
+                    permissions = permissions,
+                    requestCode = requestCode,
+                    statusHandler = permissionStatusHandler
+            )
         }
-    }
-
-    private fun onCoverCropAddPermissionResult(grantResults: IntArray) {
-        if (grantResults.all { it == PackageManager.PERMISSION_GRANTED }) coverCropView.clickAdd()
-        else {
-            Toaster.make(requireView(), "Cover Crop Permission Failed")
-        }
-    }
-
-    private fun onUploadPermissionResult(grantResults: IntArray) {
-        if (grantResults.all { it == PackageManager.PERMISSION_GRANTED }) coverSetupView.clickNext()
-        else {
-            Toaster.make(requireView(), "Upload Permission Failed")
-        }
-    }
-
-    private fun onBackFromCropping(source: CoverSource): Boolean {
-        return when (source) {
-            CoverSource.Gallery -> {
-                openGalleryPage()
-                true
-            }
-            CoverSource.Camera -> {
-                openCameraPage()
-                true
-            }
-            else -> {
-                openCoverChooser()
-                true
-            }
-        }
-    }
-
-    private fun openCameraPage() {
-        val cameraIntent = Intent(context, PlayCoverCameraActivity::class.java)
-        startActivityForResult(cameraIntent, REQUEST_CODE_CAMERA_CAPTURE)
-    }
-
-    private fun openGalleryPage() {
-        getImagePickerHelper()
-                .show(CoverSource.Gallery)
     }
 
     private fun handleCroppingState(state: CoverSetupState.Cropping) {
@@ -361,25 +465,48 @@ class PlayCoverSetupFragment @Inject constructor(
 
     private fun getOriginalProductImage(productCropping: CoverSetupState.Cropping.Product) {
         showCoverCropLayout(null)
-        scope.launch {
-            //TODO("Remove delay")
-            delay(1200)
-            val originalImageUrl = viewModel.getOriginalImageUrl(productCropping.productId, productCropping.imageUrl)
-            Glide.with(requireContext())
-                    .asBitmap()
-                    .load(originalImageUrl)
-                    .into(object : CustomTarget<Bitmap>() {
-                        override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                            viewModel.setCroppingCoverByBitmap(resource, CoverSource.Product(productCropping.productId))
-                        }
 
-                        override fun onLoadCleared(placeholder: Drawable?) {}
-                    })
+        scope.launch {
+            try {
+                val originalImageUrl = viewModel.getOriginalImageUrl(productCropping.productId, productCropping.imageUrl)
+                Glide.with(requireContext())
+                        .asBitmap()
+                        .load(originalImageUrl)
+                        .into(object : CustomTarget<Bitmap>() {
+                            override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                                viewModel.setCroppingCoverByBitmap(resource, CoverSource.Product(productCropping.productId))
+                            }
+
+                            override fun onLoadCleared(placeholder: Drawable?) {}
+                        })
+            } catch (e: Throwable) {
+                showToaster(
+                        message = e.localizedMessage,
+                        type = Toaster.TYPE_ERROR,
+                        duration = Toaster.LENGTH_LONG
+                )
+            }
         }
     }
 
-    private fun finishSetup() {
-        mListener?.onCoverSetupFinished(dataStoreViewModel.getDataStore())
+    private fun onUploadSuccess() {
+        scope.launch {
+            val error = mListener?.onCoverSetupFinished(dataStoreViewModel.getDataStore())
+            error?.let {
+                yield()
+                onUploadFailed(it)
+            }
+        }
+    }
+
+    private fun onUploadFailed(e: Throwable) {
+        coverSetupView.setLoading(false)
+        coverCropView.setLoading(false)
+
+        showToaster(
+                message = e.localizedMessage,
+                type = Toaster.TYPE_ERROR
+        )
     }
 
     //region observe
@@ -388,12 +515,16 @@ class PlayCoverSetupFragment @Inject constructor(
      */
     private fun observeCropState() {
         viewModel.observableCropState.observe(viewLifecycleOwner, Observer {
-            @Suppress("IMPLICIT_CAST_TO_ANY")
             when (it) {
                 CoverSetupState.Blank -> showInitCoverLayout(null)
                 is CoverSetupState.Cropping -> handleCroppingState(it)
-                is CoverSetupState.Cropped -> showInitCoverLayout(it.coverImage)
-            }.exhaustive
+                is CoverSetupState.Cropped.Draft -> {
+                    if (!isEditCoverMode) showInitCoverLayout(it.coverImage)
+                }
+                is CoverSetupState.Cropped.Uploaded -> {
+                    if (!isEditCoverMode) showInitCoverLayout(it.localImage)
+                }
+            }
         })
     }
 
@@ -406,17 +537,14 @@ class PlayCoverSetupFragment @Inject constructor(
     private fun observeUploadCover() {
         viewModel.observableUploadCoverEvent.observe(viewLifecycleOwner, Observer {
             when (it) {
-                NetworkResult.Loading -> coverSetupView.setLoading(true)
-                is NetworkResult.Fail -> {
-                    coverSetupView.setLoading(false)
-                    Toaster.make(requireView(), it.error.localizedMessage)
+                NetworkResult.Loading -> {
+                    coverSetupView.setLoading(true)
+                    coverCropView.setLoading(true)
                 }
+                is NetworkResult.Fail -> onUploadFailed(it.error)
                 is NetworkResult.Success -> {
                     val data = it.data.getContentIfNotHandled()
-                    if (data != null) {
-                        coverSetupView.setLoading(false)
-                        finishSetup()
-                    }
+                    if (data != null) onUploadSuccess()
                 }
             }
         })
@@ -457,17 +585,20 @@ class PlayCoverSetupFragment @Inject constructor(
     }
 
     companion object {
-        const val EXTRA_TITLE_EDITABLE = "title_editable"
+        const val EXTRA_IS_EDIT_COVER_MODE = "is_edit_cover_mode"
 
-        private const val REQUEST_CODE_PERMISSION_COVER_CHOOSER = 9090
         private const val REQUEST_CODE_PERMISSION_CROP_COVER = 9191
         private const val REQUEST_CODE_PERMISSION_START_CROP_COVER = 9292
         private const val REQUEST_CODE_PERMISSION_UPLOAD = 9393
-
-        private const val REQUEST_CODE_CAMERA_CAPTURE = 2222
+        private const val REQUEST_CODE_PERMISSION_COVER_CHOOSER = 9494
     }
 
     interface Listener {
-        fun onCoverSetupFinished(dataStore: PlayBroadcastSetupDataStore)
+
+        /**
+         * @return true means cancel has been handled by the listener
+         */
+        fun onCancelCropping(coverSource: CoverSource): Boolean = false
+        suspend fun onCoverSetupFinished(dataStore: PlayBroadcastSetupDataStore): Throwable?
     }
 }

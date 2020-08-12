@@ -10,9 +10,11 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.notifications.R
+import com.tokopedia.notifications.analytics.InAppAnalytics
 import com.tokopedia.notifications.inApp.CMInAppManager
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMButton
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp
+import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMLayout
 import com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant.*
 import com.tokopedia.notifications.inApp.viewEngine.adapter.ActionButtonAdapter
 import com.tokopedia.unifycomponents.setImage
@@ -26,6 +28,8 @@ internal open class BannerView(activity: Activity) {
     private lateinit var imgBanner: ImageView
     private lateinit var btnClose: ImageView
     private lateinit var lstActionButton: RecyclerView
+
+    private val analytics by lazy { InAppAnalytics }
 
     private val listener by lazy {
         CMInAppManager.getCmInAppListener()
@@ -42,6 +46,9 @@ internal open class BannerView(activity: Activity) {
 
         // resize dialog's width with 80% of screen
         setWindowAttributes(dialog, getDisplayMetrics(mActivity.get()).first)
+
+        // impression tracker
+        analytics.impression(data)
     }
 
     private fun createView(data: CMInApp): View? {
@@ -67,12 +74,13 @@ internal open class BannerView(activity: Activity) {
         setBanner(data)
         setActionButton(data)
         setCloseButton(data)
+        setBannerClicked(data)
     }
 
     private fun viewState(data: CMInApp) {
         when (data.getType()) {
             TYPE_INTERSTITIAL_IMAGE_ONLY -> {
-                fullScreenImageOnly(data)
+                lstActionButton.visibility = View.GONE
             }
         }
     }
@@ -106,6 +114,7 @@ internal open class BannerView(activity: Activity) {
 
     private fun onActionClicked(button: CMButton, data: CMInApp) {
         trackAppLinkClick(data, button.getAppLink(), ElementType(ElementType.BUTTON))
+        analytics.click(data)
         dialog?.dismiss()
     }
 
@@ -116,11 +125,25 @@ internal open class BannerView(activity: Activity) {
         }
     }
 
-    private fun fullScreenImageOnly(data: CMInApp) {
-        lstActionButton.visibility = View.GONE
+    private fun getBannerAppLink(cmLayout: CMLayout): String {
+        return if (cmLayout.getAppLink().isNullOrEmpty() && cmLayout.getButton().isNotEmpty()) {
+            cmLayout.getButton().first().getAppLink()
+        } else {
+            cmLayout.getAppLink()
+        }
+    }
 
-        imgBanner.setOnClickListener {
-            trackAppLinkClick(data, data.getCmLayout().appLink, ElementType(ElementType.MAIN))
+    private fun setBannerClicked(data: CMInApp) {
+        // prevent banner click if has more than one CTA button
+        with(data.getCmLayout()) {
+            if (getButton().size > 1) return
+            val bannerAppLink = getBannerAppLink(this)
+
+            imgBanner.setOnClickListener {
+                trackAppLinkClick(data, bannerAppLink, ElementType(ElementType.MAIN))
+                analytics.click(data)
+                dialog?.dismiss()
+            }
         }
     }
 

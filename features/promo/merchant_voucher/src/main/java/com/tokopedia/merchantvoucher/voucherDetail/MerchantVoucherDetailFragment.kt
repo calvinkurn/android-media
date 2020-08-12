@@ -137,7 +137,7 @@ class MerchantVoucherDetailFragment : BaseDaggerFragment(),
         val voucherCode = merchantVoucherViewModel?.voucherCode
         val clipboard = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val clip = ClipData.newPlainText(voucherCode, voucherCode)
-        clipboard.primaryClip = clip
+        clipboard.setPrimaryClip(clip)
     }
 
     override fun onSuccessUseVoucher(useMerchantVoucherQueryResult: UseMerchantVoucherQueryResult) {

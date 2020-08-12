@@ -25,8 +25,8 @@ android {
 dependencies {
     implementation project(rootProject.ext.features.attachcommon)
     implementation project(rootProject.ext.features.resourcesCommon)
+    implementation project(rootProject.ext.features.sellerActiveCommon)
     implementation project(rootProject.ext.features.atc_common)
-    implementation project(rootProject.ext.features.broadcastMessageCommon)
     implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.features.attachproduct)
     implementation project(rootProject.ext.features.chatcommon)
@@ -58,6 +58,7 @@ dependencies {
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.dialog
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
     implementation rootProject.ext.tkpdInternalLibDependencies.url

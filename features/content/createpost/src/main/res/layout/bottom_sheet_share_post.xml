@@ -14,7 +14,7 @@
         android:layout_marginTop="@dimen/dp_4"
         android:textColor="@color/Neutral_N700_96"
         app:typographyType="heading_4"
-        tools:text="@string/af_share_title" />
+        tools:text="@string/cp_share_title" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/shareSheetSubtitle"
@@ -23,7 +23,7 @@
         android:layout_marginTop="@dimen/dp_2"
         android:textColor="@color/Neutral_N700_96"
         app:typographyType="body_3"
-        tools:text="@string/af_share_subtitle" />
+        tools:text="@string/cp_share_subtitle" />
 
     <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
         android:id="@+id/shareList"
@@ -46,7 +46,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="@string/af_share_post"
+            android:text="@string/cp_share_post"
             android:textColor="@color/WhiteText"
             app:typographyType="heading_5"
             tools:text="Sip, Share Aja!" />

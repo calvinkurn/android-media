@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvLatestSearch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/latest_search_label"
+        android:textAllCaps="true"
+        app:typographyWeight="bold"
+        app:typographyType="body_3"
+        android:layout_marginTop="@dimen/spacing_lvl5"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:textColor="@color/clrAd31353b"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvClearAll"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/clear_all_label"
+        android:background="?selectableItemBackground"
+        app:typographyWeight="bold"
+        app:typographyType="body_3"
+        android:layout_marginTop="@dimen/spacing_lvl5"
+        android:layout_marginRight="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:textColor="@color/clr03AC0E"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -9,7 +9,7 @@
     <string name="lbl_summary_preference_with_number_title">Atur</string>
     <string name="lbl_summary_preference_subtitle">Cek ringkasan pengaturanmu</string>
 
-    <string name="lbl_choose_payment">Pilih Metode Pembayaran</string>
+    <string name="lbl_choose_payment_method">Pilih Metode Pembayaran</string>
     <string name="step_choose_payment">Langkah 3 dari 3</string>
     <string name="lbl_save">Simpan</string>
 
@@ -88,4 +88,5 @@
     <string name="lbl_shipping">Pengiriman</string>
     <string name="lbl_shipping_with_name">Pengiriman %1$s</string>
     <string name="lbl_shipping_duration_prefix">Durasi %1$s</string>
+    <string name="lbl_no_exact_shipping_duration">Durasi tergantung kurir</string>
 </resources>

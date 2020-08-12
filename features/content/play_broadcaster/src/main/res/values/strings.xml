@@ -7,7 +7,7 @@
 
     <string name="play_etalase_picker_title">Pilih Produk</string>
     <string name="play_etalase_picker_info">Pilih produk terbaik di tokomu untuk dijadikan konten yang membuat penonton tertarik membeli.</string>
-    <string name="play_etalase_search_hint">Cari etalase</string>
+    <string name="play_etalase_search_hint">Cari Produk</string>
     <string name="play_etalase_product_amount">%d Produk</string>
     <string name="play_etalase_detail_header">%s (%d)</string>
 
@@ -16,6 +16,9 @@
     <string name="play_empty_stock">Stok Habis</string>
     <string name="play_product_not_found_title">Oops, produk nggak ditemukan</string>
     <string name="play_product_not_found_desc">Coba kata kunci lain untuk menemukan produk yang kamu inginkan</string>
+
+    <string name="play_product_etalase_empty_title">Yaah, etalase produkmu masih kosong</string>
+    <string name="play_product_etalase_empty_desc">Ayo tambah produk dulu supaya bisa ditampilkan di etalase ini</string>
 
     <string name="play_action_bar_prepare_title">Buat Live Streaming</string>
     <string name="play_action_bar_prepare_final_title">Ayo cek lagi info di bawah\n ini sebelum mulai!</string>
@@ -31,6 +34,8 @@
     <string name="play_ok">Oke</string>
     <string name="play_cancel">Cancel</string>
     <string name="play_change">Ganti</string>
+    <string name="play_yes">Ya</string>
+    <string name="play_no">Tidak</string>
     <string name="play_broadcast_try_again">Coba Lagi</string>
     <string name="play_broadcast_exit">Keluar</string>
     <string name="play_broadcast_end">Akhiri</string>
@@ -56,7 +61,7 @@
     <string name="play_prepare_cover_title_title">"Tambah Cover &amp; Judul"</string>
     <string name="play_prepare_cover_title_header_description">Buatlah cover &amp; judul yang kreatif yang bisa bikin calon penonton live streaming tokomu jadi penasaran!</string>
     <string name="play_prepare_cover_title_default_title_label">Judul live streaming</string>
-    <string name="play_prepare_cover_title_default_title_placeholder">Contoh: Sneakers Pria Diskon 50\%</string>
+    <string name="play_prepare_cover_title_default_title_placeholder">Contoh: Sneakers Pria Diskon 50\%%</string>
     <string name="play_prepare_cover_title_counter">%1$d/%2$d</string>
     <string name="play_prepare_cover_choose_from_gallery">Pilih dari galeri foto</string>
     <string name="play_prepare_cover_title_add_cover_label">Tambah Cover</string>
@@ -90,13 +95,17 @@
     <string name="play_live_broadcast_dialog_end_timeout_desc">Yay, kamu telah berhasil melakukan live streaming. Ayo lihat hasil siaranmu!</string>
     <string name="play_live_broadcast_dialog_end_timeout_primary">Lihat Laporan</string>
     <string name="play_live_broadcast_share_link_copied">Link disalin!</string>
-    <string name="play_live_broadcast_network_recover">Yay, koneksi internetmu kembali terhubung!</string>
-    <string name="play_live_broadcast_network_loss">Koneksi internetmu terputus, nih.</string>
-    <string name="play_live_broadcast_network_poor">Koneksi internetmu melambat, nih.</string>
     <string name="play_dialog_continue_live_title">Mau lanjutkan siaranmu?</string>
     <string name="play_dialog_continue_live_desc">Live streaming tokomu berhenti sementara karena kamu sempat keluar dari apli</string>
     <string name="play_dialog_error_active_other_devices_title">Tokomu sedang siaran di\n perangkat lain</string>
     <string name="play_dialog_error_active_other_devices_desc">Akhiri siaran live streaming di perangkat lain\n jika ingin mengambil alih siaran</string>
+    <string name="play_loader_connecting">Menyambungkan…</string>
+    <string name="play_loader_live_paused">Live streaming berhenti sementara.</string>
+
+    <string name="play_live_broadcast_network_recover">Yay, koneksi internetmu kembali terhubung!</string>
+    <string name="play_live_broadcast_network_loss">Koneksi internetmu terputus, nih.</string>
+    <string name="play_live_broadcast_network_poor">Koneksi internetmu melambat, nih.</string>
+    <string name="play_live_broadcast_connect_fail">Oops, gagal menyambungkan siaran.</string>
 
     <string name="play_summary_title">Laporan Live Streaming</string>
     <string name="play_summary_button_finish">Selesai</string>
@@ -107,6 +116,8 @@
     <string name="play_summary_atc">Ditambahkan Ke Keranjang</string>
     <string name="play_summary_purchased_product">Produk Dibeli</string>
     <string name="play_summary_new_followers">Pelanggan Baru</string>
+    <string name="play_summary_error_desc">Yuk, coba lagi untuk menampilkan laporannya.</string>
+    <string name="play_summary_error_title">Laporanmu gagal ditampilkan</string>
 
     <string name="play_terms_condition_full">Dengan menekan tombol %s, saya menyetujui %s live streaming.</string>
     <string name="play_terms_condition">Syarat &amp; Ketentuan</string>
@@ -122,4 +133,13 @@
         <item quantity="one">%d \nFollower</item>
         <item quantity="other">%d \nFollowers</item>
     </plurals>
+
+    <string name="play_dialog_unsupported_device_title">Perangkat tidak mendukung\n layanan live streaming</string>
+    <string name="play_dialog_unsupported_device_desc">Layanan live streaming tidak didukung pada perangkat Anda.</string>
+
+    <string name="play_storage_permission_rationale_title">Aktifkan akses foto, media, &amp; file</string>
+    <string name="play_storage_permission_rationale_desc">Akses ini dibutuhkan untuk memudahkanmu saat tambah cover live streaming.</string>
+    <string name="play_storage_permission_denied_error">Kamu harus mengaktifkan akses foto, media, &amp; file untuk dapat melanjutkan proses</string>
+
+    <string name="play_error_image_edit_text">Gambar/GIF tidak diperbolehkan</string>
 </resources>

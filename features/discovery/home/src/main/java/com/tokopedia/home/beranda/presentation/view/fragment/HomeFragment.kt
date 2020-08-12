@@ -59,7 +59,6 @@ import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getBannerClick
 import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getBannerImpression
 import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getOverlayBannerClick
 import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getOverlayBannerImpression
-import com.tokopedia.home.analytics.HomePageTrackingV2.MixLeft.getMixLeftIrisProductView
 import com.tokopedia.home.analytics.HomePageTrackingV2.RecommendationList.getAddToCartOnDynamicListCarousel
 import com.tokopedia.home.analytics.HomePageTrackingV2.RecommendationList.getAddToCartOnDynamicListCarouselHomeComponent
 import com.tokopedia.home.analytics.HomePageTrackingV2.RecommendationList.getCloseClickOnDynamicListCarousel
@@ -545,6 +544,9 @@ open class HomeFragment : BaseDaggerFragment(),
         })
         stickyLoginView?.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _  ->
             val floatingEggButtonFragment = floatingEggButtonFragment
+            if (stickyLoginView.isShowing()) {
+                positionSticky = stickyLoginView.getLocation()
+            }
             floatingEggButtonFragment?.let {
                 updateEggBottomMargin(it)
             }
@@ -674,6 +676,15 @@ open class HomeFragment : BaseDaggerFragment(),
         observeRechargeRecommendation()
         observePlayReminder()
     }
+          
+    private fun observeIsNeedRefresh() {
+        getHomeViewModel().isNeedRefresh.observe(viewLifecycleOwner, Observer { data: Event<Boolean> ->
+            val isNeedRefresh = data.peekContent()
+            if (isNeedRefresh) {
+                adapter?.resetImpressionHomeBanner()
+            }
+        })
+    }
 
     private fun observeHomeRequestNetwork() {
         getHomeViewModel().isRequestNetworkLiveData.observe(viewLifecycleOwner, Observer { data: Event<Boolean> ->
@@ -688,7 +699,7 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     private fun observeViewModelInitialized() {
-        getHomeViewModel().isViewModelInitalized.observe(viewLifecycleOwner, Observer { data: Event<Boolean> ->
+        getHomeViewModel().isViewModelInitialized.observe(viewLifecycleOwner, Observer { data: Event<Boolean> ->
             val isViewModelInitialized = data.peekContent()
             if (isViewModelInitialized) {
                 callSubordinateTasks();
@@ -1513,7 +1524,7 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     override fun onPlayV2Click(playBannerCarouselItemDataModel: PlayBannerCarouselItemDataModel) {
-        if(playBannerCarouselItemDataModel.widgetType != PlayBannerWidgetType.UPCOMING || playBannerCarouselItemDataModel.widgetType != PlayBannerWidgetType.NONE) {
+        if(playBannerCarouselItemDataModel.widgetType != PlayBannerWidgetType.UPCOMING && playBannerCarouselItemDataModel.widgetType != PlayBannerWidgetType.NONE) {
             val intent = RouteManager.getIntent(activity, ApplinkConstInternalContent.PLAY_DETAIL, playBannerCarouselItemDataModel.channelId)
             startActivityForResult(intent, REQUEST_CODE_PLAY_ROOM)
         } else {
@@ -1597,9 +1608,9 @@ open class HomeFragment : BaseDaggerFragment(),
 
     override fun onPromoScrolled(bannerSlidesModel: BannerSlidesModel) {
         HomeTrackingUtils.homeSlidingBannerImpression(context, bannerSlidesModel, bannerSlidesModel.position)
-        if (bannerSlidesModel.type == BannerSlidesModel.TYPE_BANNER_PERSO && !bannerSlidesModel.isInvoke) {
+        if (bannerSlidesModel.type == BannerSlidesModel.TYPE_BANNER_PERSO) {
             putEEToTrackingQueue(getOverlayBannerImpression(bannerSlidesModel) as HashMap<String, Any>)
-        } else if (!bannerSlidesModel.isInvoke) {
+        } else {
             if (bannerSlidesModel.topadsViewUrl.isNotEmpty()) {
                 TopAdsUrlHitter(className).hitImpressionUrl(context, bannerSlidesModel.topadsViewUrl,
                         bannerSlidesModel.id.toString(),
@@ -1616,7 +1627,7 @@ open class HomeFragment : BaseDaggerFragment(),
         super.setUserVisibleHint(isVisibleToUser)
         resetAutoPlay(isVisibleToUser)
         trackScreen(isVisibleToUser)
-        restartBanner(isVisibleToUser)
+        conditionalViewModelRefresh()
     }
 
     private fun restartBanner(isVisibleToUser: Boolean) {
@@ -1899,7 +1910,6 @@ open class HomeFragment : BaseDaggerFragment(),
             stickyLoginView.setContent(tickerDetail)
             stickyLoginView.show(StickyLoginConstant.Page.HOME)
             if (stickyLoginView.isShowing()) {
-                positionSticky = stickyLoginView?.getLocation()
                 stickyLoginView.tracker.viewOnPage(StickyLoginConstant.Page.HOME)
             }
         }
@@ -2022,8 +2032,6 @@ open class HomeFragment : BaseDaggerFragment(),
             )
             DynamicChannelViewHolder.TYPE_GIF_BANNER -> putEEToIris(
                     HomePageTracking.getEnhanceImpressionPromoGifBannerDC(channel))
-            DynamicChannelViewHolder.TYPE_MIX_TOP -> putEEToIris(getMixTopViewIris(mapChannelToProductTracker(channel), channel.header.name, channel.id, position.toString()) as HashMap<String, Any>)
-            DynamicChannelViewHolder.TYPE_MIX_LEFT -> putEEToIris(getMixLeftIrisProductView(channel) as HashMap<String, Any>)
             DynamicChannelViewHolder.TYPE_RECOMMENDATION_LIST -> putEEToIris(getRecommendationListImpression(channel, true, viewModel.get().getUserId()) as HashMap<String, Any>)
             DynamicChannelViewHolder.TYPE_PRODUCT_HIGHLIGHT -> putEEToIris(getProductHighlightImpression(
                     channel, getHomeViewModel().getUserId(), true

@@ -27,7 +27,7 @@ class BrandlistSearchActivity: BaseSimpleActivity() {
         val bundle = intent.extras
 
         if (bundle != null) {
-            categoryData = bundle.getParcelable(CATEGORY_INTENT) as Category
+            categoryData = bundle.getParcelable(CATEGORY_INTENT) ?: Category()
         }
 
         return BrandlistSearchFragment.createInstance(categoryData)

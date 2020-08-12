@@ -1,12 +1,12 @@
 package com.tokopedia.play.broadcaster.domain.usecase
 
+import com.google.gson.Gson
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.play.broadcaster.domain.model.Config
 import com.tokopedia.play.broadcaster.domain.model.GetBroadcasterShopConfigResponse
-import com.tokopedia.usecase.coroutines.UseCase
+import com.tokopedia.play.broadcaster.util.extension.sendCrashlyticsLog
 import javax.inject.Inject
 
 /**
@@ -14,7 +14,7 @@ import javax.inject.Inject
  */
 class GetConfigurationUseCase @Inject constructor(
         private val graphqlRepository: GraphqlRepository
-) : UseCase<GetBroadcasterShopConfigResponse.GetBroadcasterShopConfig>() {
+) : BaseUseCase<Config>() {
 
     private val query = """
             query getConfig(${'$'}shopId: String!) {
@@ -24,22 +24,30 @@ class GetConfigurationUseCase @Inject constructor(
               }
             }
         """
+    private val gson = Gson()
 
     var params: Map<String, Any> = emptyMap()
 
-    override suspend fun executeOnBackground(): GetBroadcasterShopConfigResponse.GetBroadcasterShopConfig {
-        val gqlRequest = GraphqlRequest(query, GetBroadcasterShopConfigResponse.GetBroadcasterShopConfigData::class.java, params)
-        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
+    override suspend fun executeOnBackground(): Config {
+        val gqlResponse = configureGqlResponse(graphqlRepository, query, GetBroadcasterShopConfigResponse::class.java, params, GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
-        val response = gqlResponse.getData<GetBroadcasterShopConfigResponse.GetBroadcasterShopConfigData>(GetBroadcasterShopConfigResponse.GetBroadcasterShopConfigData::class.java)
-        response?.data?.config?.let {
-            return it
+        val response = gqlResponse.getData<GetBroadcasterShopConfigResponse>(GetBroadcasterShopConfigResponse::class.java)
+        return mapConfiguration(response.shopConfig.config)
+                .copy(streamAllowed = response.shopConfig.streamAllowed)
+    }
+
+    private fun mapConfiguration(config: String): Config {
+        return try {
+            gson.fromJson(config, Config::class.java)
+        } catch (e: Exception) {
+            sendCrashlyticsLog(0, e.localizedMessage)
+            Config()
         }
-        throw MessageErrorException("Terjadi kesalahan pada server") // TODO("replace with default error message")
     }
 
     companion object {
 
+        private const val TAG = "Play-GetConfigurationUseCase"
         private const val PARAMS_SHOP_ID = "shopId"
 
         fun createParams(
@@ -48,5 +56,4 @@ class GetConfigurationUseCase @Inject constructor(
                 PARAMS_SHOP_ID to shopId
         )
     }
-
 }

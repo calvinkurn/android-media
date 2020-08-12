@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.seller.search">
+
+    <application
+        android:allowBackup="true"
+        android:hardwareAccelerated="true"
+        android:largeHeap="true"
+        android:supportsRtl="true">
+        <activity
+            android:name=".feature.initialsearch.view.activity.InitialSellerSearchActivity"
+            android:label="@string/title_global_search_seller"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustNothing"
+            android:theme="@style/Theme.White">
+            <intent-filter>
+
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="@string/sellerapp_scheme"
+                    android:host="@string/path_sellerapp_search"/>
+            </intent-filter>
+
+        </activity>
+    </application>
+
+</manifest>

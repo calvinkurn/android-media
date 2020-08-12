@@ -2,10 +2,10 @@ package com.tokopedia.oneclickcheckout.preference.edit.view.address
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel
+import com.tokopedia.logisticdata.domain.model.AddressListModel
+import com.tokopedia.logisticdata.domain.usecase.GetAddressCornerUseCase
 import com.tokopedia.oneclickcheckout.common.dispatchers.TestDispatchers
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
-import com.tokopedia.purchase_platform.common.feature.addresslist.GetAddressCornerUseCase
-import com.tokopedia.purchase_platform.common.feature.addresslist.domain.model.AddressListModel
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Assert.assertEquals

@@ -66,6 +66,12 @@
         </activity>
 
         <activity
+            android:name="com.tokopedia.sellerhome.view.oldactivity.SellerHomeActivity"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"/>
+
+        <activity
             android:name=".settings.view.activity.MenuSettingActivity"
             android:exported="true"
             android:label="@string/menu_setting_title"
@@ -99,6 +105,11 @@
                 <data
                     android:host="@string/host_sellerapp"
                     android:path="@string/path_centralized_promo"
+                    android:scheme="@string/internal_scheme" />
+
+                <data
+                    android:host="@string/host_sellerapp"
+                    android:path="@string/path_centralized_promo_first_voucher"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>

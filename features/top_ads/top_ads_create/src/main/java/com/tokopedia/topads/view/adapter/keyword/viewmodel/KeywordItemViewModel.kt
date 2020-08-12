@@ -6,10 +6,10 @@ import com.tokopedia.topads.view.adapter.keyword.KeywordListAdapterTypeFactory
 /**
  * Author errysuprayogi on 12,November,2019
  */
-class KeywordItemViewModel(var data: ResponseKeywordSuggestion.Result.TopAdsGetKeywordSuggestion.Data) : KeywordViewModel() {
+class KeywordItemViewModel(var data: ResponseKeywordSuggestion.KeywordDataItem) : KeywordViewModel() {
 
-    var isChecked : Boolean = false
-    
+    var isChecked: Boolean = false
+
     override fun type(typesFactory: KeywordListAdapterTypeFactory): Int {
         return typesFactory.type(this)
     }

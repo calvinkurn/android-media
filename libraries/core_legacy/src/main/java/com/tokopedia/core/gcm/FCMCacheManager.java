@@ -20,11 +20,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import timber.log.Timber;
-
-import static com.tokopedia.user.session.Constants.GCM_ID;
-import static com.tokopedia.user.session.Constants.GCM_STORAGE;
 
 /**
  * @author by Herdi_WORK on 13.12.16.
@@ -32,9 +30,9 @@ import static com.tokopedia.user.session.Constants.GCM_STORAGE;
 
 public class FCMCacheManager {
     public static final String GCM_ID_TIMESTAMP = "gcm_id_timestamp";
+    public static final long GCM_ID_EXPIRED_TIME = TimeUnit.DAYS.toMillis(3);
     private String NOTIFICATION_CODE = "tkp_code";
     private static final String GCM_STORAGE = "GCM_STORAGE";
-    private static final String NOTIFICATION_STORAGE = "NOTIFICATION_STORAGE";
     public static final String SETTING_NOTIFICATION_VIBRATE = "notifications_new_message_vibrate";
     private LocalCacheHandler cache;
     private Context context;
@@ -174,11 +172,8 @@ public class FCMCacheManager {
         return deviceId;
     }
 
-    public String getRegistrationId() {
-        return getRegistrationId(context);
-    }
-
     public void saveIncomingNotification(NotificationEntity notificationEntity) {
+        Timber.w("P2#PUSH_NOTIF_UNUSED#'FCMCacheManager_saveIncomingNotification'");
         boolean isExist = false;
         List<NotificationEntity> notificationEntities = getHistoryPushNotification();
         for (int i = 0; i < notificationEntities.size(); i++) {

@@ -1,21 +1,18 @@
 package com.tokopedia.play.broadcaster.view.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
+import com.tokopedia.play.broadcaster.data.config.ChannelConfigStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
-import com.tokopedia.play.broadcaster.domain.usecase.AddMediaUseCase
-import com.tokopedia.play.broadcaster.domain.usecase.AddProductTagUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.CreateLiveStreamChannelUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetLiveFollowersDataUseCase
-import com.tokopedia.play.broadcaster.mocker.PlayBroadcastMocker
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
-import com.tokopedia.play.broadcaster.ui.model.*
+import com.tokopedia.play.broadcaster.ui.model.FollowerDataUiModel
+import com.tokopedia.play.broadcaster.ui.model.LiveStreamInfoUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
+import com.tokopedia.play.broadcaster.ui.model.result.map
 import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
-import com.tokopedia.play.broadcaster.view.state.SetupDataState
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import javax.inject.Inject
@@ -25,95 +22,88 @@ import javax.inject.Inject
  */
 class PlayBroadcastPrepareViewModel @Inject constructor(
         private val mDataStore: PlayBroadcastDataStore,
+        private val channelConfigStore: ChannelConfigStore,
         private val dispatcher: CoroutineDispatcherProvider,
-        private val addProductTagUseCase: AddProductTagUseCase,
         private val getLiveFollowersDataUseCase: GetLiveFollowersDataUseCase,
-        private val addMediaUseCase: AddMediaUseCase,
         private val createLiveStreamChannelUseCase: CreateLiveStreamChannelUseCase,
         private val userSession: UserSessionInterface
 ) : ViewModel() {
 
+    private val channelId: String
+        get() = channelConfigStore.getChannelId()
+
     private val job: Job = SupervisorJob()
     private val scope = CoroutineScope(job + dispatcher.main)
 
-    var title: String
-        get() = observableSetupChannel.value?.cover?.title ?: throw IllegalStateException("Cover / Cover Title is null")
-        set(value) {
-            val currentDataStore = mDataStore.getSetupDataStore()
-            currentDataStore.updateCoverTitle(value)
-            setDataFromSetupDataStore(currentDataStore)
-        }
+    val title: String
+        get() = mDataStore.getSetupDataStore().getSelectedCover()?.title ?: throw IllegalStateException("Cover / Cover Title is null")
+
+    val maxDurationDesc: String
+        get() = try { channelConfigStore.getMaxDurationDesc() } catch (e: Throwable) { "" }
 
     val observableFollowers: LiveData<FollowerDataUiModel>
         get() = _observableFollowers
     private val _observableFollowers = MutableLiveData<FollowerDataUiModel>()
 
-    val observableSetupChannel: LiveData<ChannelSetupUiModel>
-        get() = _observableSetupChannel
-    private val _observableSetupChannel = MutableLiveData<ChannelSetupUiModel>()
-
     val observableCreateLiveStream: LiveData<NetworkResult<LiveStreamInfoUiModel>>
         get() = _observableCreateLiveStream
     private val _observableCreateLiveStream = MutableLiveData<NetworkResult<LiveStreamInfoUiModel>>()
+    private val _observableIngestUrl: LiveData<String> = MediatorLiveData<String>().apply {
+        addSource(_observableCreateLiveStream) {
+            if (it is NetworkResult.Success) setIngestUrl(it.data.ingestUrl)
+        }
+    }
+
+    private val ingestUrlObserver = object : Observer<String> {
+        override fun onChanged(t: String?) {}
+    }
 
     init {
         _observableFollowers.value = FollowerDataUiModel.init(MAX_FOLLOWERS_PREVIEW)
         scope.launch {
             _observableFollowers.value = getLiveFollowers()
         }
+        _observableIngestUrl.observeForever(ingestUrlObserver)
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        _observableIngestUrl.removeObserver(ingestUrlObserver)
     }
 
     fun setDataFromSetupDataStore(setupDataStore: PlayBroadcastSetupDataStore) {
         mDataStore.setFromSetupStore(setupDataStore)
-        val cover = setupDataStore.getSelectedCover()
-        val productList = setupDataStore.getSelectedProducts()
-        requireNotNull(cover)
-        _observableSetupChannel.value = ChannelSetupUiModel(
-                cover = PlayCoverUiModel(
-                        croppedCover = cover.croppedCover,
-                        title = cover.title,
-                        state = SetupDataState.Uploaded
-                ),
-                selectedProductList = productList.map { ProductContentUiModel.createFromData(it) }
-        )
     }
 
     fun createLiveStream() {
+        if (!isDataAlreadyValid()) {
+            _observableCreateLiveStream.value = NetworkResult.Fail(IllegalStateException("Oops tambah cover dulu sebelum mulai"))
+            return
+        }
+
         _observableCreateLiveStream.value = NetworkResult.Loading
         scope.launch {
-            delay(3000)
-            _observableCreateLiveStream.value =
-                    if (isDataAlreadyValid()) NetworkResult.Success(PlayBroadcastMocker.getLiveStreamingInfo())
-                    else NetworkResult.Fail(IllegalStateException("Oops tambah cover dulu sebelum mulai"))
+            val liveStream = doCreateLiveStream(channelId).map { PlayBroadcastUiMapper.mapLiveStream(channelId, it) }
+            _observableCreateLiveStream.value = liveStream
         }
     }
 
-    private fun selectedProductIds(productList: List<ProductContentUiModel>): List<String> = productList.map { it.id.toString() }.toList()
-
-    private suspend fun updateProduct(channelId: String, productIds: List<String>) = withContext(dispatcher.io) {
-        return@withContext addProductTagUseCase.apply {
-            params = AddProductTagUseCase.createParams(
-                    channelId = channelId,
-                    productIds = productIds
-            )
-        }.executeOnBackground()
-    }
-
-    private suspend fun updateCover(channelId: String, coverUrl: String) = withContext(dispatcher.io) {
-        return@withContext addMediaUseCase.apply {
-            params = AddMediaUseCase.createParams(
-                    channelId = channelId,
-                    coverUrl = coverUrl
-            )
-        }.executeOnBackground()
-    }
-
-    private suspend fun createLiveStream(channelId: String) = withContext(dispatcher.io) {
-        return@withContext createLiveStreamChannelUseCase.apply {
-            params = CreateLiveStreamChannelUseCase.createParams(
-                    channelId = channelId
-            )
-        }.executeOnBackground()
+    private suspend fun doCreateLiveStream(channelId: String) = withContext(dispatcher.io) {
+        return@withContext try {
+            NetworkResult.Success(createLiveStreamChannelUseCase.apply {
+                val cover = mDataStore.getSetupDataStore().getSelectedCover() ?: throw IllegalStateException("Cover is not set")
+                val coverImage =
+                        if (cover.croppedCover !is CoverSetupState.Cropped) throw IllegalStateException("Cover image is not set")
+                        else cover.croppedCover.coverImage
+                params = CreateLiveStreamChannelUseCase.createParams(
+                        channelId = channelId,
+                        title = cover.title,
+                        thumbnail = coverImage.toString()
+                )
+            }.executeOnBackground())
+        } catch (e: Throwable) {
+            NetworkResult.Fail(e)
+        }
     }
 
     private suspend fun getLiveFollowers(): FollowerDataUiModel = withContext(dispatcher.io) {
@@ -133,6 +123,10 @@ class PlayBroadcastPrepareViewModel @Inject constructor(
         val isCoverValid = currentCover?.croppedCover is CoverSetupState.Cropped
 
         return isProductValid && isCoverValid
+    }
+
+    private fun setIngestUrl(ingestUrl: String) {
+        channelConfigStore.setIngestUrl(ingestUrl)
     }
 
     companion object {

@@ -14,6 +14,8 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.search.R;
+import com.tokopedia.search.result.presentation.model.BroadMatchItemViewModel;
+import com.tokopedia.search.result.presentation.model.BroadMatchViewModel;
 import com.tokopedia.search.result.presentation.model.EmptySearchProductViewModel;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
@@ -176,6 +178,13 @@ public final class ProductListAdapter extends RecyclerView.Adapter<AbstractViewH
                 if(productId.equals(String.valueOf(model.getRecommendationItem().getProductId()))){
                     model.getRecommendationItem().setWishlist(isWishlisted);
                     notifyItemChanged(i, "wishlist");
+                }
+            } else if (list.get(i) instanceof BroadMatchViewModel) {
+                BroadMatchViewModel broadMatchViewModel = (BroadMatchViewModel) list.get(i);
+                for (BroadMatchItemViewModel broadMatchItemViewModel : broadMatchViewModel.getBroadMatchItemViewModelList()) {
+                    if (broadMatchItemViewModel.getId().equals(productId)) {
+                        broadMatchItemViewModel.setWishlisted(isWishlisted);
+                    }
                 }
             }
         }

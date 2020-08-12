@@ -171,6 +171,7 @@ abstract class BaseNotificationFragment : BaseListFragment<Visitable<*>,
         bundle.putString(PARAM_CONTENT_TITLE, element.title)
         bundle.putString(PARAM_BUTTON_TEXT, element.btnText)
         bundle.putString(PARAM_TEMPLATE_KEY, element.templateKey)
+        bundle.putString(PARAM_NOTIF_ID, element.notificationId)
 
         if (!::longerTextDialog.isInitialized) {
             longerTextDialog = NotificationLongerTextDialog.createInstance(bundle)
@@ -263,5 +264,6 @@ abstract class BaseNotificationFragment : BaseListFragment<Visitable<*>,
         const val PARAM_CTA_APPLINK = "cta applink"
         const val PARAM_BUTTON_TEXT = "button text"
         const val PARAM_TEMPLATE_KEY = "template key"
+        const val PARAM_NOTIF_ID = "notification id"
     }
 }

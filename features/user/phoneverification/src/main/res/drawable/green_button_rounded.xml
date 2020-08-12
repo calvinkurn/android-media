@@ -5,15 +5,15 @@
         <shape
             android:dither="true"
             android:shape="rectangle" >
-            <solid android:color="@color/tkpd_green_header" />
+            <solid android:color="@color/phoneverification_tkpd_green_header" />
 
-            <corners android:radius="3dp" />
+            <corners android:radius="@dimen/phoneverification_dp_3" />
 
             <padding
-                android:bottom="16dp"
-                android:left="12dp"
-                android:right="12dp"
-                android:top="16dp" />
+                android:bottom="@dimen/spacing_lvl4"
+                android:left="@dimen/phoneverification_dp_12"
+                android:right="@dimen/phoneverification_dp_12"
+                android:top="@dimen/spacing_lvl4" />
         </shape>
     </item>
 

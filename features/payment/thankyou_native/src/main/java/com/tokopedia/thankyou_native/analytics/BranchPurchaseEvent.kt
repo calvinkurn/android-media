@@ -13,10 +13,14 @@ import com.tokopedia.thankyou_native.domain.model.ShopOrder
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.user.session.UserSessionInterface
 
+
+const val CATEGORY_LEVEL_ONE_EGOLD = "egold"
+const val CATEGORY_LEVEL_ONE_PURCHASE_PROTECTION = "purchase-protection"
+
 class BranchPurchaseEvent(val userSession: UserSessionInterface,
                           val thanksPageData: ThanksPageData) {
 
-    fun sendBranchPurchaseEvent(){
+    fun sendBranchPurchaseEvent() {
         thanksPageData.shopOrder.forEach { shopOrder ->
             val linkerCommerceData = LinkerCommerceData()
             linkerCommerceData.userData = getLinkerUserData()
@@ -25,7 +29,7 @@ class BranchPurchaseEvent(val userSession: UserSessionInterface,
         }
     }
 
-    private fun getBranchPaymentData(shopOrder: ShopOrder) : PaymentData {
+    private fun getBranchPaymentData(shopOrder: ShopOrder): PaymentData {
         val paymentData = PaymentData()
         paymentData.isFromNative = true
         paymentData.setPaymentId(thanksPageData.paymentID.toString())
@@ -35,15 +39,24 @@ class BranchPurchaseEvent(val userSession: UserSessionInterface,
         paymentData.isNewBuyer = thanksPageData.isNewUser
         paymentData.isMonthlyNewBuyer = thanksPageData.isMonthlyNewUser
         var revenue = 0F
-        shopOrder.purchaseItemList.forEach { productItem ->
-            revenue += productItem.totalPrice
-            paymentData.setProduct(getPurchasedItemBranch(productItem))
+        shopOrder.purchaseItemList.forEach { purchaseItem ->
+            if (isItemPartOfRevenue(purchaseItem)) {
+                revenue += purchaseItem.totalPrice
+                paymentData.setProduct(getPurchasedItemBranch(purchaseItem))
+            }
         }
         paymentData.setRevenue(revenue.toString())
         return paymentData
     }
 
-    private fun getPurchasedItemBranch(productItem: PurchaseItem) : HashMap<String, String>{
+    private fun isItemPartOfRevenue(purchaseItem: PurchaseItem): Boolean {
+        val categoryLevelOne = getCategoryLevel1(purchaseItem.category)
+        return !(getProductTypeForBranch() == LinkerConstants.PRODUCTTYPE_DIGITAL &&
+                (categoryLevelOne == CATEGORY_LEVEL_ONE_EGOLD ||
+                        categoryLevelOne == CATEGORY_LEVEL_ONE_PURCHASE_PROTECTION))
+    }
+
+    private fun getPurchasedItemBranch(productItem: PurchaseItem): HashMap<String, String> {
         val product = HashMap<String, String>()
         product[LinkerConstants.ID] = productItem.productId
         product[LinkerConstants.NAME] = productItem.productName
@@ -54,7 +67,7 @@ class BranchPurchaseEvent(val userSession: UserSessionInterface,
         return product
     }
 
-    private fun getLinkerUserData() : UserData {
+    private fun getLinkerUserData(): UserData {
         val userData = UserData()
         userData.userId = userSession.userId
         userData.phoneNumber = userSession.phoneNumber
@@ -63,8 +76,8 @@ class BranchPurchaseEvent(val userSession: UserSessionInterface,
         return userData
     }
 
-    private fun getProductTypeForBranch() : String{
-        return  when (ThankPageTypeMapper.getThankPageType(thanksPageData)) {
+    private fun getProductTypeForBranch(): String {
+        return when (ThankPageTypeMapper.getThankPageType(thanksPageData)) {
             DigitalThankPage -> LinkerConstants.PRODUCTTYPE_DIGITAL
             else -> LinkerConstants.PRODUCTTYPE_MARKETPLACE
         }
@@ -78,7 +91,7 @@ class BranchPurchaseEvent(val userSession: UserSessionInterface,
         }
     }
 
-    private fun sendBranchEvent(linkerCommerceData: LinkerCommerceData){
+    private fun sendBranchEvent(linkerCommerceData: LinkerCommerceData) {
         LinkerManager.getInstance()
                 .sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_COMMERCE_VAL,
                         linkerCommerceData))

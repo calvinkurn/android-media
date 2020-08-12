@@ -4,17 +4,19 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.domain.usecase.GetProductsInEtalaseUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetSelfEtalaseListUseCase
+import com.tokopedia.play.broadcaster.error.EventException
 import com.tokopedia.play.broadcaster.error.SelectForbiddenException
-import com.tokopedia.play.broadcaster.mocker.PlayBroadcastMocker
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
 import com.tokopedia.play.broadcaster.ui.model.EtalaseContentUiModel
 import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 import com.tokopedia.play.broadcaster.ui.model.result.PageResult
 import com.tokopedia.play.broadcaster.ui.model.result.PageResultState
+import com.tokopedia.play.broadcaster.ui.model.result.map
 import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.broadcaster.view.state.NotSelectable
 import com.tokopedia.play.broadcaster.view.state.Selectable
@@ -22,6 +24,10 @@ import com.tokopedia.play.broadcaster.view.state.SelectableState
 import com.tokopedia.play_common.util.event.Event
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.BroadcastChannel
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 import kotlin.math.min
 
@@ -29,12 +35,16 @@ import kotlin.math.min
  * Created by jegul on 26/05/20
  */
 class PlayEtalasePickerViewModel @Inject constructor(
+        private val hydraConfigStore: HydraConfigStore,
         private val dispatcher: CoroutineDispatcherProvider,
         private val setupDataStore: PlayBroadcastSetupDataStore,
         private val getSelfEtalaseListUseCase: GetSelfEtalaseListUseCase,
         private val getProductsInEtalaseUseCase: GetProductsInEtalaseUseCase,
         private val userSession: UserSessionInterface
 ) : ViewModel() {
+
+    private val channelId: String
+        get() = hydraConfigStore.getChannelId()
 
     private val job: Job = SupervisorJob()
     private val scope = CoroutineScope(job + dispatcher.main)
@@ -51,6 +61,10 @@ class PlayEtalasePickerViewModel @Inject constructor(
         get() = _observableSelectedEtalase
     private val _observableSelectedEtalase = MutableLiveData<PageResult<EtalaseContentUiModel>>()
 
+    val observableEtalaseProductState: LiveData<PageResult<String>>
+        get() = _observableEtalaseProductState
+    private val _observableEtalaseProductState = MutableLiveData<PageResult<String>>()
+
     val observableSelectedProducts: LiveData<List<ProductContentUiModel>> = Transformations.map(setupDataStore.getObservableSelectedProducts()) { dataList ->
         dataList.map { ProductContentUiModel.createFromData(it, ::isProductSelected, ::isSelectable) }
     }
@@ -59,7 +73,11 @@ class PlayEtalasePickerViewModel @Inject constructor(
         get() = _observableUploadProductEvent
     private val _observableUploadProductEvent = MutableLiveData<NetworkResult<Event<Unit>>>()
 
-    val maxProduct = PlayBroadcastMocker.getMaxSelectedProduct()
+    val maxProductDesc: String
+        get() = hydraConfigStore.getMaxProductDesc()
+
+    private val maxProduct: Int
+        get() = hydraConfigStore.getMaxProduct()
 
     val selectedProductList: List<ProductContentUiModel>
         get() = setupDataStore.getSelectedProducts().map { ProductContentUiModel.createFromData(it, ::isProductSelected, ::isSelectable) }
@@ -67,7 +85,10 @@ class PlayEtalasePickerViewModel @Inject constructor(
     private val etalaseMap = mutableMapOf<String, EtalaseContentUiModel>()
     private val productsMap = mutableMapOf<Long, ProductContentUiModel>()
 
+    private val productPreviewChannel = BroadcastChannel<String>(Channel.BUFFERED)
+
     init {
+        scope.launch { initProductPreviewChannel() }
         loadEtalaseList()
     }
 
@@ -97,17 +118,17 @@ class PlayEtalasePickerViewModel @Inject constructor(
 
     fun loadEtalaseProductPreview(etalaseId: String) {
         scope.launch {
-            fetchEtalaseProduct(etalaseId, 1)
-            broadcastNewEtalaseList(etalaseMap)
+            productPreviewChannel.send(etalaseId)
         }
     }
 
-    fun uploadProduct(channelId: String) {
+    fun uploadProduct() {
         _observableUploadProductEvent.value = NetworkResult.Loading
         scope.launch {
-            val result = setupDataStore.uploadSelectedProducts(channelId)
-                if (result is NetworkResult.Success) _observableUploadProductEvent.value = NetworkResult.Success(Event(Unit))
-                else if (result is NetworkResult.Fail) _observableUploadProductEvent.value = result
+            val result = setupDataStore.uploadSelectedProducts(channelId).map { Event(Unit) }
+            _observableUploadProductEvent.value =
+                    if (result is NetworkResult.Fail) NetworkResult.Fail(EventException(result.error))
+                    else result
         }
     }
 
@@ -120,18 +141,29 @@ class PlayEtalasePickerViewModel @Inject constructor(
                 if (page == 1) emptyList() else currentValue
         )
         scope.launch {
-            val (searchedProducts, totalData) = getProductsByKeyword(keyword, page)
-            updateProductMap(searchedProducts)
-            _observableSearchedProducts.value = getSearchedProducts(searchedProducts, totalData)
+            try {
+                val (searchedProducts, totalData) = getProductsByKeyword(keyword, page)
+                updateProductMap(searchedProducts)
+                _observableSearchedProducts.value = getSearchedProducts(searchedProducts, totalData)
+            } catch (e: Throwable) {
+                _observableSearchedProducts.value = PageResult(
+                        currentValue = _observableSearchedProducts.value?.currentValue.orEmpty(),
+                        state = PageResultState.Fail(e)
+                )
+            }
         }
     }
 
-    private fun loadEtalaseList() {
+    fun loadEtalaseList() {
         _observableEtalase.value = PageResult.Loading(emptyList())
         scope.launch {
-            val etalaseList = getEtalaseList()
-            val newMap = updateEtalaseMap(etalaseList)
-            broadcastNewEtalaseList(newMap)
+            try {
+                val etalaseList = getEtalaseList()
+                val newMap = updateEtalaseMap(etalaseList)
+                broadcastNewEtalaseList(newMap)
+            } catch (e: Throwable) {
+                _observableEtalase.value = PageResult(emptyList(), PageResultState.Fail(e))
+            }
         }
     }
 
@@ -204,12 +236,13 @@ class PlayEtalasePickerViewModel @Inject constructor(
                 val currentProductList = etalase.productMap[1]
                 if (currentProductList != null) {
                     val newProductList = mutableListOf<ProductContentUiModel>()
-                    for (index in 0 until min(currentProductList.size, MAX_PRODUCT_IMAGE_COUNT)) {
+                    val size = min(currentProductList.size, MAX_PRODUCT_IMAGE_COUNT)
+                    for (index in 0 until size) {
                         newProductList.add(
                                 if (index % 2 == 0) {
                                     currentProductList[(index + 1) / 2]
                                 } else {
-                                    currentProductList[index + (MAX_PRODUCT_IMAGE_COUNT - index) / 2]
+                                    currentProductList[index + (size - index) / 2]
                                 }
                         )
                     }
@@ -265,7 +298,7 @@ class PlayEtalasePickerViewModel @Inject constructor(
 
             NetworkResult.Success(Pair(
                     PlayBroadcastUiMapper.mapProductList(productList, ::isProductSelected, ::isSelectable),
-                    productList.totalData
+                    productList.meta.totalHits
             ))
         } catch (e: Throwable) {
             NetworkResult.Fail(e)
@@ -290,8 +323,20 @@ class PlayEtalasePickerViewModel @Inject constructor(
 
         return@withContext Pair(
                 PlayBroadcastUiMapper.mapProductList(productList, ::isProductSelected, ::isSelectable),
-                productList.totalData
+                productList.meta.totalHits
         )
+    }
+
+    private suspend fun initProductPreviewChannel() = withContext(dispatcher.main) {
+        productPreviewChannel.asFlow().collect {
+            val result = fetchEtalaseProduct(it, 1)
+            if (result.state is PageResultState.Success) {
+                val etalaseMap = updateEtalaseMap(listOf(result.currentValue))
+                broadcastNewEtalaseList(etalaseMap)
+            } else if (result.state is PageResultState.Fail) {
+                _observableEtalaseProductState.value = PageResult(result.currentValue.id, result.state)
+            }
+        }
     }
 
     companion object {

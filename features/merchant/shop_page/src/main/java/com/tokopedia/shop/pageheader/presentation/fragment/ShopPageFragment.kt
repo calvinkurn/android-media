@@ -34,8 +34,7 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.shop.R
-import com.tokopedia.shop.ShopComponentInstance
-import com.tokopedia.shop.ShopModuleRouter
+import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.ShopPageTrackingSGCPlayWidget
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
@@ -64,6 +63,7 @@ import com.tokopedia.shop.setting.view.activity.ShopPageSettingActivity
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.stickylogin.view.StickyLoginView
+import com.tokopedia.tkpd.tkpdreputation.review.shop.view.ReviewShopFragment
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -166,7 +166,7 @@ class ShopPageFragment :
 
     override fun getComponent() = activity?.run {
         DaggerShopPageComponent.builder().shopPageModule(ShopPageModule())
-                .shopComponent(ShopComponentInstance.getComponent(application)).build()
+                .shopComponent(ShopComponentHelper().getComponent(application, this)).build()
     }
 
     override fun getScreenName() = ""
@@ -191,8 +191,8 @@ class ShopPageFragment :
 
     private fun initViews(view: View) {
         activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
-        errorTextView = view.findViewById(R.id.message_retry)
-        errorButton = view.findViewById(R.id.button_retry)
+        errorTextView = view.findViewById(com.tokopedia.abstraction.R.id.message_retry)
+        errorButton = view.findViewById(com.tokopedia.abstraction.R.id.button_retry)
         shopPageFragmentHeaderViewHolder = ShopPageFragmentHeaderViewHolder(view, this, shopPageTracking, shopPageTrackingSGCPlay, view.context)
         initToolbar()
         initAdapter()
@@ -327,7 +327,7 @@ class ShopPageFragment :
                         if (pathSegments.size > 1) {
                             shopId = pathSegments[1]
                         } else if (!getQueryParameter(SHOP_ID).isNullOrEmpty()) {
-                            shopId = getQueryParameter(SHOP_ID)
+                            shopId = getQueryParameter(SHOP_ID)!!
                         }
                     }
                     if (shopDomain.isNullOrEmpty()) {
@@ -619,6 +619,7 @@ class ShopPageFragment :
             shopPageHeaderDataModel.statusTitle = shopPageHeaderContentData.shopInfo.statusInfo.statusTitle
             shopPageHeaderDataModel.statusMessage = shopPageHeaderContentData.shopInfo.statusInfo.statusMessage
             shopPageHeaderDataModel.shopStatus = shopPageHeaderContentData.shopInfo.statusInfo.shopStatus
+            shopPageHeaderDataModel.broadcaster = shopPageHeaderContentData.broadcasterConfig
             if (!isMyShop) {
                 button_chat.show()
                 button_chat.setOnClickListener {
@@ -665,8 +666,8 @@ class ShopPageFragment :
             }
         }
         if(shouldOverrideTabToReview){
-            selectedPosition = if(viewPagerAdapter.isFragmentObjectExists((activity?.application as ShopModuleRouter).reviewFragmentClass)){
-                viewPagerAdapter.getFragmentPosition((activity?.application as ShopModuleRouter).reviewFragmentClass)
+            selectedPosition = if(viewPagerAdapter.isFragmentObjectExists(ReviewShopFragment::class.java)){
+                viewPagerAdapter.getFragmentPosition(ReviewShopFragment::class.java)
             } else {
                 selectedPosition
             }
@@ -715,18 +716,15 @@ class ShopPageFragment :
                         feedFragment
                 ))
             }
-            if (activity?.application is ShopModuleRouter) {
-                val shopReviewFragment = (activity?.application as ShopModuleRouter).getReviewFragment(
-                        activity,
-                        shopId,
-                        shopDomain
-                )
-                add(ShopPageTabModel(
-                        getString(R.string.shop_info_title_tab_review),
-                        iconTabReview,
-                        shopReviewFragment
-                ))
-            }
+            val shopReviewFragment = ReviewShopFragment.createInstance(
+                    shopId,
+                    shopDomain
+            )
+            add(ShopPageTabModel(
+                    getString(R.string.shop_info_title_tab_review),
+                    iconTabReview,
+                    shopReviewFragment
+            ))
         }
     }
 

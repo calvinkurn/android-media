@@ -6,6 +6,8 @@ object ManageAddressConstant {
 
     const val LABEL_LAINNYA = "Lainnya"
 
+    const val SUCCESS = "success"
+
     const val STATUS_OK = "OK"
 
     const val REQUEST_CODE_PARAM_CREATE = 101

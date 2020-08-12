@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/sellerMigrationFooter">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvSellerMigrationTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/layout_lvl2"
+                android:layout_marginTop="@dimen/layout_lvl2"
+                android:layout_marginRight="@dimen/layout_lvl2"
+                android:textColor="@color/Neutral_N700_96"
+                app:typographyType="heading_2"
+                android:text="@string/seller_migration_fragment_header_title" />
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/ivSellerMigration"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/layout_lvl2"
+                android:layout_marginTop="@dimen/layout_lvl2"
+                android:layout_marginRight="@dimen/layout_lvl2"/>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvSellerMigrationAdvantageTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/layout_lvl2"
+                android:layout_marginTop="@dimen/layout_lvl2"
+                android:layout_marginRight="@dimen/layout_lvl2"
+                android:text="@string/seller_migration_fragment_advantages_title"
+                android:textColor="@color/Neutral_N700_96"
+                app:typographyType="heading_4" />
+
+            <include
+                android:id="@+id/headerMultiIcon"
+                layout="@layout/partial_seller_migration_multi_icon_information"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/layout_lvl2" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/layout_lvl1"
+                android:layout_marginTop="@dimen/layout_lvl2"
+                android:layout_marginBottom="@dimen/layout_lvl2"
+                android:background="@drawable/line_divider" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvSellerMigrationBodyTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/layout_lvl2"
+                android:layout_marginRight="@dimen/layout_lvl2"
+                android:text="@string/seller_migration_fragment_body_title"
+                android:textColor="@color/Neutral_N700_96"
+                app:typographyType="heading_4" />
+
+            <com.tokopedia.unifycomponents.TabsUnify
+                android:id="@+id/tabSellerMigration"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/layout_lvl2">
+
+                <com.google.android.material.tabs.TabItem
+                    android:id="@+id/tabProduct"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:text="@string/seller_migration_fragment_tab_product" />
+
+                <com.google.android.material.tabs.TabItem
+                    android:id="@+id/tabChat"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/seller_migration_fragment_tab_chat" />
+
+                <com.google.android.material.tabs.TabItem
+                    android:id="@+id/tabReview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/seller_migration_fragment_tab_review" />
+
+                <com.google.android.material.tabs.TabItem
+                    android:id="@+id/tabAdsAndPromo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/seller_migration_fragment_tab_promo_and_ads" />
+
+                <com.google.android.material.tabs.TabItem
+                    android:id="@+id/tabStatistic"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/seller_migration_fragment_tab_statistic" />
+
+            </com.tokopedia.unifycomponents.TabsUnify>
+
+            <androidx.viewpager.widget.ViewPager
+                android:id="@+id/viewPagerSellerMigration"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/layout_lvl1"
+                android:layout_marginTop="@dimen/layout_lvl2"
+                android:background="@drawable/line_divider" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/sellerMigrationFooter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardElevation="@dimen/layout_lvl1"
+        android:layout_alignParentBottom="true"
+        app:cardCornerRadius="@dimen/layout_lvl0">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/sellerMigrationButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/layout_lvl2"
+                android:layout_marginTop="@dimen/layout_lvl2"
+                android:layout_marginEnd="@dimen/layout_lvl2"
+                android:text="@string/seller_migration_bottom_sheet_button"
+                app:unifyButtonSize="medium" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/sellerMigrationLink"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/layout_lvl2"
+                android:layout_marginBottom="@dimen/layout_lvl2"
+                android:gravity="center"
+                app:typographyType="body_3"
+                app:typographyWeight="reguler" />
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+</RelativeLayout>

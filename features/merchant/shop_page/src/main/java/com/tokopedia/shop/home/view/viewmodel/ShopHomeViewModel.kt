@@ -1,12 +1,12 @@
 package com.tokopedia.shop.home.view.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
+import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
@@ -33,12 +33,14 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
-import kotlinx.coroutines.async
+import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
+import com.tokopedia.youtube_common.domain.usecase.GetYoutubeVideoDetailUseCase
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.withContext
+import java.lang.reflect.Type
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -52,13 +54,13 @@ class ShopHomeViewModel @Inject constructor(
         private val playToggleChannelReminderUseCase: PlayToggleChannelReminderUseCase,
         private val addWishListUseCase: AddWishListUseCase,
         private val removeWishlistUseCase: RemoveWishListUseCase,
-        private val gqlCheckWishlistUseCase: Provider<GQLCheckWishlistUseCase>
+        private val gqlCheckWishlistUseCase: Provider<GQLCheckWishlistUseCase>,
+        private val getYoutubeVideoUseCase: GetYoutubeVideoDetailUseCase
 ) : BaseViewModel(dispatcherProvider.main()) {
 
     companion object {
         const val ALL_SHOWCASE_ID = "etalase"
     }
-    private var shopId: String = ""
 
     val initialProductListData: LiveData<Result<Pair<Boolean, List<ShopHomeProductViewModel>>>>
         get() = _initialProductListData
@@ -81,6 +83,10 @@ class ShopHomeViewModel @Inject constructor(
 
     val updatePlayWidgetData: LiveData<ShopHomePlayCarouselUiModel> get() = _updatePlayWidgetData
     private val _updatePlayWidgetData = MutableLiveData<ShopHomePlayCarouselUiModel>()
+
+    val videoYoutube: LiveData<Pair<String, Result<YoutubeVideoDetailModel>>>
+        get() = _videoYoutube
+    private val _videoYoutube = MutableLiveData<Pair<String, Result<YoutubeVideoDetailModel>>>()
 
     val userSessionShopId: String
         get() = userSession.shopId ?: ""
@@ -281,6 +287,22 @@ class ShopHomeViewModel @Inject constructor(
                     )
                 }
         )
+    }
+
+    fun getVideoYoutube(videoUrl: String, widgetId: String) {
+        launchCatchError(block = {
+            getYoutubeVideoUseCase.setVideoUrl(videoUrl)
+            val result = withContext(Dispatchers.IO) {
+                convertToYoutubeResponse(getYoutubeVideoUseCase.executeOnBackground())
+            }
+            _videoYoutube.value = Pair(widgetId, Success(result))
+        }, onError = {
+            _videoYoutube.value = Pair(widgetId, Fail(it))
+        })
+    }
+
+    private fun convertToYoutubeResponse(typeRestResponseMap: Map<Type, RestResponse>): YoutubeVideoDetailModel {
+        return typeRestResponseMap[YoutubeVideoDetailModel::class.java]?.getData() as YoutubeVideoDetailModel
     }
 
     private fun submitAddProductToCart(shopId: String, product: ShopHomeProductViewModel): AddToCartDataModel {
