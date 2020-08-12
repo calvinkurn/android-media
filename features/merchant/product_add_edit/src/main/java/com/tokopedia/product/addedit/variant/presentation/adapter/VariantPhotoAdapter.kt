@@ -61,13 +61,6 @@ class VariantPhotoAdapter(private val onItemClickedListener: OnItemClickListener
         notifyItemChanged(position)
     }
 
-    fun clearImageData() {
-        items.forEach {
-            it.imageUrlOrPath = ""
-        }
-        notifyDataSetChanged()
-    }
-
     override fun onItemClicked(position: Int) {
         onItemClickedListener.onItemClicked(position)
     }
