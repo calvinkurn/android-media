@@ -104,7 +104,9 @@ public interface ProductListSectionContract {
 
         void reloadData();
 
-        void sendImpressionInspirationCarousel(final InspirationCarouselViewModel inspirationCarouselViewModel);
+        void sendImpressionInspirationCarouselList(final InspirationCarouselViewModel inspirationCarouselViewModel);
+
+        void sendImpressionInspirationCarouselInfo(final InspirationCarouselViewModel inspirationCarouselViewModel);
 
         RemoteConfig getABTestRemoteConfig();
 
