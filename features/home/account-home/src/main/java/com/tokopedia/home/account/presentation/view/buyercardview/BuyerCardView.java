@@ -86,20 +86,6 @@ public class BuyerCardView extends BaseCustomView implements BuyerCardContract.V
         widget = view.findViewById(R.id.cardView);
         buyerCardPresenter = new BuyerCardPresenter();
         buyerCardPresenter.attachView(this);
-
-        if (byMeButton.getVisibility() == View.GONE) {
-            ConstraintLayout.LayoutParams textParam = (ConstraintLayout.LayoutParams) textProfileCompletion.getLayoutParams();
-            textParam.height = ConstraintLayout.LayoutParams.WRAP_CONTENT;
-            textParam.width = ConstraintLayout.LayoutParams.WRAP_CONTENT;
-            textProfileCompletion.setLayoutParams(textParam);
-
-            ConstraintSet set = new ConstraintSet();
-            ConstraintLayout layout;
-            layout = findViewById(R.id.viewCardContainer);
-            set.clone(layout);
-            set.clear(R.id.text_profile_completion, ConstraintSet.END);
-            set.applyTo(layout);
-        }
     }
 
     public void renderData(BuyerCard buyerCard) {
@@ -226,6 +212,21 @@ public class BuyerCardView extends BaseCustomView implements BuyerCardContract.V
 
     @Override
     public void setMemberStatus(String status) {
+
+        if (byMeButton.getVisibility() == View.GONE) {
+            ConstraintLayout.LayoutParams textParam = (ConstraintLayout.LayoutParams) textProfileCompletion.getLayoutParams();
+            textParam.height = ConstraintLayout.LayoutParams.WRAP_CONTENT;
+            textParam.width = ConstraintLayout.LayoutParams.WRAP_CONTENT;
+            textProfileCompletion.setLayoutParams(textParam);
+
+            ConstraintSet set = new ConstraintSet();
+            ConstraintLayout layout;
+            layout = findViewById(R.id.viewCardContainer);
+            set.clone(layout);
+            set.clear(R.id.text_profile_completion, ConstraintSet.END);
+            set.applyTo(layout);
+        }
+
         textProfileCompletion.setText(status);
     }
 
