@@ -33,8 +33,9 @@ object TalkWriteTracking {
                 String.format(TalkWriteTrackingConstants.EVENT_LABEL_CLICK_CATEGORY, category, message))
     }
 
-    fun eventClickAskSeller() {
-
+    fun eventClickAskSeller(userId: String, productId: String) {
+        eventTalkWriting(userId, productId,
+                TalkWriteTrackingConstants.EVENT_ACTION_CLICK_CHAT_SELLER)
     }
 
 }

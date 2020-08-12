@@ -8,6 +8,7 @@ object TalkWriteTrackingConstants {
     const val EVENT_ACTION_CLICK_CATEGORY = "${TalkTrackingConstants.EVENT_ACTION_CLICK} category on write questions"
     const val EVENT_LABEL_CLICK_CATEGORY = "talk category:%s;text output:%s;"
     const val EVENT_LABEL_CLICK_SEND = "talk category:%s;%s;%s;"
+    const val EVENT_ACTION_CLICK_CHAT_SELLER = "${TalkTrackingConstants.EVENT_ACTION_CLICK} chat penjual on talk question form"
 
     const val SCREEN_NAME_WRITE = "/talk-question-form"
 }

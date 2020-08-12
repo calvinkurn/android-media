@@ -125,7 +125,7 @@ class TalkWriteFragment : BaseDaggerFragment(),
     }
 
     override fun onClickGoToChat(): Boolean {
-        TalkWriteTracking.eventClickAskSeller()
+        TalkWriteTracking.eventClickAskSeller(viewModel.getUserId(), viewModel.getProductId().toString())
         return goToChat()
     }
 
