@@ -3069,4 +3069,13 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             onSwipeRefresh()
         }
     }
+
+    override fun onTopAdsImageViewClicked(applink: String?, bannerId: String?) {
+        applink?.let { goToApplink(it) }
+        DynamicProductDetailTracking.Click.eventTopAdsImageViewClicked(trackingQueue,viewModel.userId,bannerId)
+    }
+
+    override fun onTopAdsImageViewImpression(bannerId: String?) {
+        DynamicProductDetailTracking.Impression.eventTopAdsImageViewImpression(trackingQueue,viewModel.userId,bannerId)
+    }
 }

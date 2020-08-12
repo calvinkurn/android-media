@@ -167,6 +167,8 @@ object ProductTrackingConstant {
         const val CLICK_SEND_QUESTION = "click - kirim pertanyaan on diskusi"
 
         const val CLICK_SEE_ALL_ULASAN = "click - lihat semua ulasan"
+
+        const val CLICK_TDN_BANNER_ADS_WIDGET= "click - tdn banner ads widget"
     }
 
 
@@ -229,6 +231,7 @@ object ProductTrackingConstant {
 
     object TopAds {
         const val PDP_TOPADS = "/productdetail - top ads'"
+        const val EVENT_CLICK_PDP_TOPADS_IMAGE_VIEW = "select_content"
     }
 
     object Message {

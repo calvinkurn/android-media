@@ -134,4 +134,7 @@ interface DynamicProductDetailListener {
      */
     fun onTickerGeneralClicked(tickerTitle: String, tickerType: Int, url: String, componentTrackDataModel: ComponentTrackDataModel?)
     fun onTickerShopClicked(tickerTitle: String, tickerType: Int, componentTrackDataModel: ComponentTrackDataModel?)
+
+    fun onTopAdsImageViewClicked(applink: String?, bannerId: String?)
+    fun onTopAdsImageViewImpression(bannerId: String?)
 }

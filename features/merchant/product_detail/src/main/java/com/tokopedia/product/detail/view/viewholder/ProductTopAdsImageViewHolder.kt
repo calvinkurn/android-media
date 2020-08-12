@@ -6,13 +6,14 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
+import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewImpressionListener
 import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.topads.sdk.widget.TopAdsImageView
 
-class ProductTopAdsImageViewHolder(private val view: View) : AbstractViewHolder<TopAdsImageDataModel>(view) {
+class ProductTopAdsImageViewHolder(private val view: View, val listener: DynamicProductDetailListener) : AbstractViewHolder<TopAdsImageDataModel>(view) {
 
     private val topAdsImageView:TopAdsImageView = view.findViewById(R.id.adsTopAdsImageView)
 
@@ -28,12 +29,14 @@ class ProductTopAdsImageViewHolder(private val view: View) : AbstractViewHolder<
             topAdsImageView.setTopAdsImageViewClick(object : TopAdsImageViewClickListener {
                 override fun onTopAdsImageViewClicked(applink: String?) {
                     RouteManager.route(view.context, applink)
+                    listener.onTopAdsImageViewClicked(applink, element.data?.get(0)?.bannerId)
                 }
             })
 
             topAdsImageView.setTopAdsImageViewImpression(object : TopAdsImageViewImpressionListener{
                 override fun onTopAdsImageViewImpression(viewUrl: String) {
                     ImpresionTask(this@ProductTopAdsImageViewHolder.javaClass.canonicalName).execute(viewUrl)
+                    listener.onTopAdsImageViewImpression(element.data?.get(0)?.bannerId)
                 }
             })
         }
