@@ -1,6 +1,6 @@
 package com.tokopedia.discovery2
 
-interface Constant {
+object Constant {
 
     object ClaimCouponConstant {
         const val KLAIM = "Klaim"
@@ -8,5 +8,10 @@ interface Constant {
         const val HABIS = "Habis"
         const val NOT_LOGGEDIN = "Not Logged In"
         const val DOUBLE_COLUMNS = "double"
+    }
+
+    object BrandRecommendation {
+        const val SQUARE_DESIGN = "v1"
+        const val RECTANGLE_DESIGN = "v2"
     }
 }
