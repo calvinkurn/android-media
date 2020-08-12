@@ -18,8 +18,6 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
-import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -40,20 +38,13 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselItemDataModel
 import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselOverlayImageDataModel
-import com.tokopedia.shop.BuildConfig
 import com.tokopedia.shop.R
-import com.tokopedia.shop.ShopComponentInstance
+import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.analytic.ShopPageHomeTracking
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageAttribution
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct
 import com.tokopedia.shop.common.constant.ShopParamConstant
-import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_PAGE_HOME_TAB_RESULT_PLT_NETWORK_METRICS
-import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_PAGE_HOME_TAB_RESULT_PLT_PREPARE_METRICS
-import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_PAGE_HOME_TAB_RESULT_PLT_RENDER_METRICS
-import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_PAGE_HOME_TAB_RESULT_TRACE
-import com.tokopedia.shop.common.di.component.ShopComponent
-import com.tokopedia.shop.common.exception.ShopPageException
 import com.tokopedia.shop.common.graphql.data.checkwishlist.CheckWishlistResult
 import com.tokopedia.shop.common.util.ShopPageExceptionHandler.ERROR_WHEN_GET_YOUTUBE_DATA
 import com.tokopedia.shop.common.util.ShopPageExceptionHandler.logExceptionToCrashlytics
@@ -70,7 +61,7 @@ import com.tokopedia.shop.home.view.listener.ShopPageHomeProductClickListener
 import com.tokopedia.shop.home.view.model.*
 import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
-import com.tokopedia.shop.product.view.activity.ShopProductListActivity
+import com.tokopedia.shop.product.view.activity.ShopProductListResultActivity
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPageHomeTabPerformanceMonitoringListener
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.shop.product.view.datamodel.ShopProductSortFilterUiModel
@@ -232,6 +223,10 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         observeShopSortSharedViewModel()
         observeLiveData()
         loadInitialData()
+    }
+
+    override fun getRecyclerViewResourceId(): Int {
+        return R.id.recycler_view
     }
 
     override fun callInitialLoadAutomatically(): Boolean {
@@ -509,10 +504,10 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             DaggerShopPageHomeComponent
                     .builder()
                     .shopPageHomeModule(ShopPageHomeModule())
-                    .shopComponent(ShopComponentInstance.getComponent(application))
+                    .shopComponent(ShopComponentHelper().getComponent(application, this))
                     .build()
                     .inject(this@ShopPageHomeFragment)
-            }
+        }
     }
 
     override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
@@ -546,7 +541,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                         etalaseName,
                         customDimensionShopPage
                 )
-                val intent = ShopProductListActivity.createIntent(
+                val intent = ShopProductListResultActivity.createIntent(
                         activity,
                         shopId,
                         "",
@@ -894,23 +889,25 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         RouteManager.route(context, dataModel.applink)
     }
 
-    override fun onPlayLeftBannerImpressed(dataModel: PlayBannerCarouselOverlayImageDataModel, widgetId: String) {
+    override fun onPlayLeftBannerImpressed(dataModel: PlayBannerCarouselOverlayImageDataModel, widgetId: String, position: Int) {
         shopPageHomeTracking.impressionLeftPlayBanner(
                 shopId = shopId,
                 userId = viewModel?.userId ?: "",
                 bannerId = widgetId,
                 creativeName = dataModel.imageUrl,
-                positionChannel = "0"
+                positionChannel = "1",
+                position = (position + 1).toString()
         )
     }
 
-    override fun onPlayLeftBannerClicked(dataModel: PlayBannerCarouselOverlayImageDataModel, widgetId: String) {
+    override fun onPlayLeftBannerClicked(dataModel: PlayBannerCarouselOverlayImageDataModel, widgetId: String, position: Int) {
         shopPageHomeTracking.clickLeftPlayBanner(
                 shopId = shopId,
                 userId = viewModel?.userId ?: "",
                 bannerId = widgetId,
                 creativeName = dataModel.imageUrl,
-                positionChannel = "0"
+                positionChannel = "1",
+                position = (position + 1).toString()
         )
         RouteManager.route(context, dataModel.applink)
     }
@@ -920,7 +917,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             shopHomeProductViewModel: ShopHomeProductViewModel?
     ) {
         shopHomeProductViewModel?.let {
-            showToastSuccess(getString(R.string.msg_success_remove_wishlist))
+            showToastSuccess(getString(com.tokopedia.wishlist.common.R.string.msg_success_remove_wishlist))
             shopHomeAdapter.updateWishlistProduct(it.id ?: "", false)
             trackClickWishlist(shopHomeCarousellProductUiModel, shopHomeProductViewModel, false)
         }
@@ -976,7 +973,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             shopHomeProductViewModel: ShopHomeProductViewModel?
     ) {
         shopHomeProductViewModel?.let {
-            showToastSuccess(getString(R.string.msg_success_add_wishlist))
+            showToastSuccess(getString(com.tokopedia.wishlist.common.R.string.msg_success_add_wishlist))
             shopHomeAdapter.updateWishlistProduct(it.id ?: "", true)
             trackClickWishlist(shopHomeCarousellProductUiModel, shopHomeProductViewModel, true)
         }

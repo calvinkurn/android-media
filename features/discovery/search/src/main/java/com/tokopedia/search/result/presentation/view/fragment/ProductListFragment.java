@@ -97,6 +97,7 @@ import com.tokopedia.search.result.presentation.view.listener.SuggestionListener
 import com.tokopedia.search.result.presentation.view.listener.TickerListener;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactoryImpl;
+import com.tokopedia.search.utils.HideTabOnScrollListener;
 import com.tokopedia.search.utils.SearchKotlinExtKt;
 import com.tokopedia.search.utils.SearchLogger;
 import com.tokopedia.search.utils.UrlParamUtils;
@@ -110,15 +111,12 @@ import com.tokopedia.topads.sdk.domain.model.Category;
 import com.tokopedia.topads.sdk.domain.model.CpmData;
 import com.tokopedia.topads.sdk.domain.model.FreeOngkir;
 import com.tokopedia.topads.sdk.domain.model.Product;
-import com.tokopedia.topads.sdk.utils.ImpresionTask;
-import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.unifycomponents.ChipsUnify;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -130,6 +128,8 @@ import kotlin.Unit;
 import kotlin.jvm.functions.Function2;
 
 import static com.tokopedia.discovery.common.constants.SearchApiConst.PREVIOUS_KEYWORD;
+import static com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_INFO;
+import static com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_LIST;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ViewType.BIG_GRID;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ViewType.LIST;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ViewType.SMALL_GRID;
@@ -372,72 +372,7 @@ public class ProductListFragment
         recyclerView.setAdapter(adapter);
         recyclerView.addItemDecoration(createProductItemDecoration());
         recyclerView.addOnScrollListener(staggeredGridLayoutLoadMoreTriggerListener);
-        recyclerView.addOnScrollListener(createHideTabOnScrollListener());
-    }
-
-    private RecyclerView.OnScrollListener createHideTabOnScrollListener() {
-        return new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                if (searchNavigationListener == null) return;
-
-                if (dy > SCROLL_THRESHOLD_TO_ANIMATE_TAB || dy < -SCROLL_THRESHOLD_TO_ANIMATE_TAB || recyclerView.computeVerticalScrollOffset() == 0) {
-                    boolean isVisible = dy <= 0;
-                    searchNavigationListener.configureTabLayout(isVisible);
-                }
-
-                if (recyclerView.computeVerticalScrollOffset() > 0) applyQuickFilterLayoutOnTop();
-                else applyQuickFilterLayoutOnScroll();
-            }
-        };
-    }
-
-    private void applyQuickFilterLayoutOnTop() {
-        if(getContext() == null) return;
-
-        applyQuickFilterElevation(getContext());
-
-        int paddingTop = IntExtKt.dpToPx(8, getContext().getResources().getDisplayMetrics());
-        animateQuickFilterPaddingTopChanges(paddingTop);
-    }
-
-    private void applyQuickFilterElevation(@NonNull Context context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && searchSortFilter != null) {
-            if (searchSortFilter.getElevation() == 0f) {
-                int elevation = IntExtKt.dpToPx(5, context.getResources().getDisplayMetrics());
-                searchSortFilter.setElevation(elevation);
-            }
-        }
-    }
-
-    private void animateQuickFilterPaddingTopChanges(int paddingTop) {
-        ValueAnimator anim = ValueAnimator.ofInt(searchSortFilter.getPaddingTop(), paddingTop);
-        anim.addUpdateListener(animator -> setQuickFilterPaddingTop((Integer)animator.getAnimatedValue()));
-        anim.setDuration(200);
-        anim.start();
-    }
-
-    private void setQuickFilterPaddingTop(int paddingTop) {
-        if (searchSortFilter == null || searchSortFilter.getPaddingTop() == paddingTop) return;
-
-        searchSortFilter.setPadding(searchSortFilter.getPaddingLeft(), paddingTop, searchSortFilter.getPaddingRight(), searchSortFilter.getPaddingBottom());
-    }
-
-    private void applyQuickFilterLayoutOnScroll() {
-        if(getContext() == null) return;
-
-        removeQuickFilterElevation();
-
-        int paddingTop = IntExtKt.dpToPx(16, getContext().getResources().getDisplayMetrics());
-        animateQuickFilterPaddingTopChanges(paddingTop);
-    }
-
-    private void removeQuickFilterElevation() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && searchSortFilter != null) {
-            if (searchSortFilter.getElevation() > 0f) {
-                searchSortFilter.setElevation(0);
-            }
-        }
+        recyclerView.addOnScrollListener(new HideTabOnScrollListener(getContext(), searchNavigationListener, searchSortFilter));
     }
 
     @NonNull
@@ -1740,12 +1675,21 @@ public class ProductListFragment
     }
 
     @Override
-    public void onInspirationCarouselProductClicked(@NotNull InspirationCarouselViewModel.Option.Product product) {
+    public void onInspirationCarouselListProductClicked(@NotNull InspirationCarouselViewModel.Option.Product product) {
         redirectionStartActivity(product.getApplink(), product.getUrl());
 
         List<Object> products = new ArrayList<>();
-        products.add(product.getProductAsObjectDataLayer());
-        SearchTracking.trackEventClickInspirationCarouselOptionProduct(product.getInspirationCarouselType(), getQueryKey(), products);
+        products.add(product.getInspirationCarouselListProductAsObjectDataLayer());
+        SearchTracking.trackEventClickInspirationCarouselListProduct(product.getInspirationCarouselType(), getQueryKey(), products);
+    }
+    
+    @Override
+    public void onInspirationCarouselInfoProductClicked(@NotNull InspirationCarouselViewModel.Option.Product product) {
+        redirectionStartActivity(product.getApplink(), product.getUrl());
+
+        List<Object> products = new ArrayList<>();
+        products.add(product.getInspirationCarouselInfoProductAsObjectDataLayer());
+        SearchTracking.trackEventClickInspirationCarouselInfoProduct(product.getInspirationCarouselType(), getQueryKey(), products);
     }
 
     @Override
@@ -1759,15 +1703,29 @@ public class ProductListFragment
     }
 
     @Override
-    public void sendImpressionInspirationCarousel(InspirationCarouselViewModel inspirationCarouselViewModel) {
+    public void sendImpressionInspirationCarouselList(InspirationCarouselViewModel inspirationCarouselViewModel) {
         List<Object> products = new ArrayList<>();
 
         for (InspirationCarouselViewModel.Option option : inspirationCarouselViewModel.getOptions()) {
             for (InspirationCarouselViewModel.Option.Product object : option.getProduct()) {
-                products.add(object.getProductImpressionAsObjectDataLayer());
+                products.add(object.getInspirationCarouselListProductImpressionAsObjectDataLayer());
             }
         }
-        SearchTracking.trackImpressionInspirationCarousel(inspirationCarouselViewModel.getType(), getQueryKey(), products);
+
+        SearchTracking.trackImpressionInspirationCarouselList(inspirationCarouselViewModel.getType(), getQueryKey(), products);
+    }
+
+    @Override
+    public void sendImpressionInspirationCarouselInfo(InspirationCarouselViewModel inspirationCarouselViewModel) {
+        List<Object> products = new ArrayList<>();
+
+        for (InspirationCarouselViewModel.Option option : inspirationCarouselViewModel.getOptions()) {
+            for (InspirationCarouselViewModel.Option.Product object : option.getProduct()) {
+                products.add(object.getInspirationCarouselInfoProductAsObjectDataLayer());
+            }
+        }
+
+        SearchTracking.trackImpressionInspirationCarouselInfo(inspirationCarouselViewModel.getType(), getQueryKey(), products);
     }
 
     @Override
@@ -1994,7 +1952,6 @@ public class ProductListFragment
                 requireFragmentManager(),
                 searchParameter.getSearchParameterHashMap(),
                 presenter.getDynamicFilterModel(),
-                getSortFilterIndicatorCounter() > 0,
                 this
         );
 

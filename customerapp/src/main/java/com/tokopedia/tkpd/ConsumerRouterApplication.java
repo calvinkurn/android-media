@@ -102,7 +102,6 @@ import com.tokopedia.seller.product.etalase.utils.EtalaseUtils;
 import com.tokopedia.seller.purchase.detail.activity.OrderHistoryActivity;
 import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
-import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.tkpd.applink.ApplinkUnsupportedImpl;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.fcm.AppNotificationReceiver;
@@ -160,7 +159,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         AbstractionRouter,
         LogisticRouter,
         ApplinkRouter,
-        ShopModuleRouter,
         LoyaltyModuleRouter,
         GamificationRouter,
         ReactNativeRouter,
@@ -546,16 +544,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getGeoLocationActivityIntent(Context context, LocationPass locationPass) {
         return GeolocationActivity.createInstance(context, locationPass, false);
-    }
-
-    @Override
-    public Fragment getReviewFragment(Activity activity, String shopId, String shopDomain) {
-        return ReviewShopFragment.createInstance(shopId, shopDomain);
-    }
-
-    @Override
-    public Class getReviewFragmentClass() {
-        return ReviewShopFragment.class;
     }
 
     @Override
