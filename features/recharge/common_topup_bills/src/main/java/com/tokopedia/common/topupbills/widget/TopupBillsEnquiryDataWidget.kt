@@ -6,16 +6,12 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.RelativeLayout
-import android.widget.TextView
-import androidx.recyclerview.widget.LinearLayoutManager
+import android.widget.FrameLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.common.topupbills.R
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiry
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryMainInfo
-import com.tokopedia.design.base.BaseCustomView
-import com.tokopedia.design.component.ButtonCompat
 import kotlinx.android.synthetic.main.view_widget_enquiry_data.view.*
 import kotlinx.android.synthetic.main.view_widget_enquiry_data_item.view.*
 import org.jetbrains.annotations.NotNull
@@ -26,24 +22,24 @@ import org.jetbrains.annotations.NotNull
 class TopupBillsEnquiryDataWidget @JvmOverloads constructor(@NotNull context: Context,
                                                             attrs: AttributeSet? = null,
                                                             defStyleAttr: Int = 0)
-    : BaseCustomView(context, attrs, defStyleAttr) {
+    : FrameLayout(context, attrs, defStyleAttr) {
 
     var enquiryData: TopupBillsEnquiry = TopupBillsEnquiry()
-    set(value) {
-        value.attributes?.run {
-            field = value
-            with(rv_enquiry_data.adapter as TopupBillsEnquiryDataAdapter) {
-                items = mainInfoList
-                setupDecoration(mainInfoList)
-                notifyDataSetChanged()
+        set(value) {
+            value.attributes?.run {
+                field = value
+                with(rv_enquiry_data.adapter as TopupBillsEnquiryDataAdapter) {
+                    items = mainInfoList
+                    setupDecoration(mainInfoList)
+                    notifyDataSetChanged()
+                }
             }
         }
-    }
     var title: String = ""
-    set(value) {
-        field = value
-        enquiry_data_title.text = value
-    }
+        set(value) {
+            field = value
+            enquiry_data_title.text = value
+        }
 
     init {
         View.inflate(context, R.layout.view_widget_enquiry_data, this)
@@ -57,7 +53,7 @@ class TopupBillsEnquiryDataWidget @JvmOverloads constructor(@NotNull context: Co
 
     private fun setupDecoration(data: List<TopupBillsEnquiryMainInfo>) {
         (rv_enquiry_data as VerticalRecyclerView).clearItemDecoration()
-        rv_enquiry_data.addItemDecoration(object: RecyclerView.ItemDecoration() {
+        rv_enquiry_data.addItemDecoration(object : RecyclerView.ItemDecoration() {
             override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
                 super.getItemOffsets(outRect, view, parent, state)
                 // Add offset to all items except the last one
@@ -68,7 +64,7 @@ class TopupBillsEnquiryDataWidget @JvmOverloads constructor(@NotNull context: Co
         })
     }
 
-    inner class TopupBillsEnquiryDataAdapter(var items: List<TopupBillsEnquiryMainInfo>): RecyclerView.Adapter<TopupBillsEnquiryDataViewHolder>() {
+    inner class TopupBillsEnquiryDataAdapter(var items: List<TopupBillsEnquiryMainInfo>) : RecyclerView.Adapter<TopupBillsEnquiryDataViewHolder>() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TopupBillsEnquiryDataViewHolder {
             val view = LayoutInflater.from(parent.context).inflate(R.layout.view_widget_enquiry_data_item, parent, false)
             return TopupBillsEnquiryDataViewHolder(view)
@@ -84,7 +80,7 @@ class TopupBillsEnquiryDataWidget @JvmOverloads constructor(@NotNull context: Co
 
     }
 
-    inner class TopupBillsEnquiryDataViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+    inner class TopupBillsEnquiryDataViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(element: TopupBillsEnquiryMainInfo) {
             with(itemView) {
                 enquiry_item_label.text = element.label

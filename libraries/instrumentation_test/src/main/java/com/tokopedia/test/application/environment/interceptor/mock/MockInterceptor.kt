@@ -11,12 +11,16 @@ import java.io.IOException
 
 class MockInterceptor(val responseConfig: MockModelConfig) : Interceptor {
 
+    companion object {
+        const val KEY = "MockInterceptor"
+    }
+
     override fun intercept(chain: Interceptor.Chain): Response {
         if (BuildConfig.DEBUG) {
             try {
-                val copy = chain.request().newBuilder().build()
+                val requestBody = chain.request()
                 val buffer = Buffer()
-                copy.body()?.writeTo(buffer)
+                requestBody.body()?.writeTo(buffer)
                 val requestString = buffer.readUtf8()
 
                 var responseString = ""
@@ -24,13 +28,9 @@ class MockInterceptor(val responseConfig: MockModelConfig) : Interceptor {
                     if (it.value.findType == FIND_BY_CONTAINS) {
                         if (requestString.contains(it.key)) {
                             responseString = it.value.value
-                            return mockResponse(copy, responseString)
+                            return mockResponse(requestBody.newBuilder().build(), responseString)
                         }
                     } else if (it.value.findType == FIND_BY_QUERY_NAME) {
-                        val requestCopy = chain.request().newBuilder().build()
-                        val buffer = Buffer()
-                        requestCopy.body()?.writeTo(buffer)
-                        val requestString = buffer.readUtf8()
                         val requestArray = JSONArray(requestString)
                         val requestObject: JSONObject = requestArray.getJSONObject(0)
                         val queryString = requestObject.getString("query")
@@ -42,7 +42,7 @@ class MockInterceptor(val responseConfig: MockModelConfig) : Interceptor {
                                         .substringBefore("\n", "")
                         if (firstWord == it.key) {
                             responseString = it.value.value
-                            return mockResponse(copy, responseString)
+                            return mockResponse(requestBody.newBuilder().build(), responseString)
                         }
                     }
                 }
@@ -54,6 +54,7 @@ class MockInterceptor(val responseConfig: MockModelConfig) : Interceptor {
             throw IllegalAccessError("MockInterceptor is only meant for Testing Purposes and " +
                     "bound to be used only with DEBUG mode")
         }
+
         return chain.proceed(chain.request())
     }
 

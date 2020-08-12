@@ -71,7 +71,7 @@ sealed class ScreenStateEvent : ComponentEvent {
     /**
      * Global Error
      */
-    object ShowGlobalError : ScreenStateEvent()
+    data class ShowGlobalError(val shouldShow: Boolean) : ScreenStateEvent()
 
     /**
      * Orientation Changed
