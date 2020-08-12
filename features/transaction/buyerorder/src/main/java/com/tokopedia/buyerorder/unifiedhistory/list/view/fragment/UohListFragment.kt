@@ -263,7 +263,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 onLoadMoreRecommendation = true
                 currentPage += 1
-                loadRecommendationList()
+                // loadRecommendationList()
             }
         }
 
