@@ -33,9 +33,10 @@ class PltSellerHomePerformanceTest {
     private val TEST_CASE_PAGE_LOAD_TIME_PERFORMANCE = "seller_home_test_case_page_load_time"
 
     @get:Rule
-    var activityRule: ActivityTestRule<SellerHomeActivity> = object: ActivityTestRule<SellerHomeActivity>(SellerHomeActivity::class.java, false, false) {
+    var activityRule: ActivityTestRule<SellerHomeActivity> = object : ActivityTestRule<SellerHomeActivity>(SellerHomeActivity::class.java, false, false) {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
+            isSellerHomeLoadTimeMonitoringStarted = false
             setupGraphqlMockResponseWithCheck(createMockModelConfig())
         }
 
@@ -48,11 +49,12 @@ class PltSellerHomePerformanceTest {
     @get:Rule
     var testRepeatRule: TestRepeatRule = TestRepeatRule()
 
-    val sellerHomeLoadTimeMonitoringListener = object: SellerHomeLoadTimeMonitoringListener {
-        var isStarted = false
+    var isSellerHomeLoadTimeMonitoringStarted = false
+
+    val sellerHomeLoadTimeMonitoringListener = object : SellerHomeLoadTimeMonitoringListener {
         override fun onStartPltMonitoring() {
-            if (!isStarted) {
-                isStarted = true
+            if (!isSellerHomeLoadTimeMonitoringStarted) {
+                isSellerHomeLoadTimeMonitoringStarted = true
                 SellerHomeIdlingResource.increment()
             }
         }
