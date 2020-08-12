@@ -11,4 +11,15 @@
     <string name="remote_config_type_label">TYPE</string>
     <string name="remote_config_edit_placeholder">Input new value here</string>
     <string name="remote_config_edit_btn_save">Save</string>
+    <string name="bug_type">Bug Type</string>
+    <string name="email">Email</string>
+    <string name="description_of_issue">Description of Issue</string>
+    <string name="affected_page">Affected Page</string>
+    <string name="btn_submit_feedback_page">Submit</string>
+
+    <string-array name="bug_type_array">
+        <item>Crash</item>
+        <item>UI</item>
+        <item>Tracker</item>
+    </string-array>
 </resources>
