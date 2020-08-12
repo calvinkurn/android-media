@@ -174,7 +174,7 @@ class SellerMigrationFragment : Fragment(), SellerFeatureCarousel.RecyclerViewLi
     }
 
     private inline fun <reified T> Iterable<*>.findOrCreate(): T {
-        return find { this is T } as? T ?: T::class.java.newInstance()
+        return find { it is T } as? T ?: T::class.java.newInstance()
     }
 
     private fun goToPlayStore() {
