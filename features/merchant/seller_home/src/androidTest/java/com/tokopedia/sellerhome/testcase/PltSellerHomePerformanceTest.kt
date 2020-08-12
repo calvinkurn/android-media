@@ -36,12 +36,12 @@ class PltSellerHomePerformanceTest {
     var activityRule: ActivityTestRule<SellerHomeActivity> = object : ActivityTestRule<SellerHomeActivity>(SellerHomeActivity::class.java, false, false) {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
-            isSellerHomeLoadTimeMonitoringStarted = false
             setupGraphqlMockResponseWithCheck(createMockModelConfig())
         }
 
         override fun afterActivityLaunched() {
             super.afterActivityLaunched()
+            sellerHomeLoadTimeMonitoringListener.onStartPltMonitoring()
             activity.sellerHomeLoadTimeMonitoringListener = sellerHomeLoadTimeMonitoringListener
         }
     }
@@ -49,14 +49,9 @@ class PltSellerHomePerformanceTest {
     @get:Rule
     var testRepeatRule: TestRepeatRule = TestRepeatRule()
 
-    var isSellerHomeLoadTimeMonitoringStarted = false
-
     val sellerHomeLoadTimeMonitoringListener = object : SellerHomeLoadTimeMonitoringListener {
         override fun onStartPltMonitoring() {
-            if (!isSellerHomeLoadTimeMonitoringStarted) {
-                isSellerHomeLoadTimeMonitoringStarted = true
-                SellerHomeIdlingResource.increment()
-            }
+            SellerHomeIdlingResource.increment()
         }
 
         override fun onStopPltMonitoring() {
