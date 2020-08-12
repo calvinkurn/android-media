@@ -90,10 +90,8 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
             })
 
             productCardItemViewModel.getShowLoginData().observe(lifecycleOwner, Observer { showLogin ->
-                context?.let {
-                    if (showLogin) {
-                        it.startActivity(RouteManager.getIntent(it, ApplinkConst.LOGIN))
-                    }
+                if (showLogin == true) {
+                    (fragment as DiscoveryFragment).openLoginScreen()
                 }
             })
             productCardItemViewModel.notifyMeCurrentStatus().observe(lifecycleOwner, Observer { status ->
