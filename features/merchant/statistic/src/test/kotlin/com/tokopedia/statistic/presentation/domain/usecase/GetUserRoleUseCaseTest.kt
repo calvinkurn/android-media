@@ -1,8 +1,8 @@
 package com.tokopedia.statistic.presentation.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.sellerhomecommon.utils.TestHelper
 import com.tokopedia.statistic.presentation.domain.model.GetUserRoleModel
+import com.tokopedia.statistic.utils.TestHelper
 import com.tokopedia.usecase.RequestParams
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
