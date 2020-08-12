@@ -29,34 +29,20 @@ internal open class BannerView(activity: Activity) {
     private lateinit var btnClose: ImageView
     private lateinit var lstActionButton: RecyclerView
 
+    private val listener by lazy { CMInAppManager.getCmInAppListener() }
+    private val dialog by lazy { alertDialog.create() }
     private val analytics by lazy { InAppAnalytics }
 
-    private val listener by lazy {
-        CMInAppManager.getCmInAppListener()
-    }
-
-    private val dialog by lazy {
-        alertDialog.create()
-    }
-
-    fun isShowing(): Boolean {
-        return dialog.isShowing
-    }
-
-    fun show() {
-        dialog.show()
-    }
-
-    fun dialog(data: CMInApp): BannerView {
+    fun dialog(data: CMInApp) {
         alertDialog.setView(createView(data))
         alertDialog.setCancelable(false)
+        dialog.show()
 
         // resize dialog's width with 80% of screen
         setWindowAttributes(dialog, getDisplayMetrics(mActivity.get()).first)
 
         // impression tracker
         analytics.impression(data)
-        return this
     }
 
     private fun createView(data: CMInApp): View? {
@@ -201,8 +187,9 @@ internal open class BannerView(activity: Activity) {
         }
 
         @JvmStatic
-        fun create(activity: Activity, data: CMInApp): BannerView {
-            return BannerView(activity).dialog(data)
+        fun create(activity: Activity, data: CMInApp) {
+            val bannerView by lazy { BannerView(activity) }
+            bannerView.dialog(data)
         }
     }
 }
