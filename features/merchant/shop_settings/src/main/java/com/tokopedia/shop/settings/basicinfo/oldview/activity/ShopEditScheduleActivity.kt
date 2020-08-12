@@ -1,6 +1,6 @@
 @file:Suppress("DEPRECATION")
 
-package com.tokopedia.shop.settings.basicinfo.view.activity
+package com.tokopedia.shop.settings.basicinfo.oldview.activity
 
 import android.app.Activity
 import android.app.DatePickerDialog

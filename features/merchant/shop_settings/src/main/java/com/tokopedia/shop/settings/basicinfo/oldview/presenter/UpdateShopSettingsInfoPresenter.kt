@@ -1,4 +1,4 @@
-package com.tokopedia.shop.settings.basicinfo.view.presenter
+package com.tokopedia.shop.settings.basicinfo.oldview.presenter
 
 import android.util.Log
 

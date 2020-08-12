@@ -1,4 +1,4 @@
-package com.tokopedia.shop.settings.basicinfo.view.activity
+package com.tokopedia.shop.settings.basicinfo.oldview.activity
 
 import android.content.Context
 import android.content.Intent
