@@ -421,7 +421,7 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
     private View.OnClickListener goToCallBackUrl(String callback){
         return v -> {
             if (callback != null){
-              RouteManager.route(getActivity(),ApplinkConstInternalGlobal.WEBVIEW,callback);
+              RouteManager.route(getActivity(),callback);
               getActivity().finish();
             }
         };
