@@ -3,6 +3,7 @@ package com.tokopedia.sellerhomecommon.domain.model
 import com.google.gson.Gson
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.sellerhomecommon.common.const.DateFilterType
 
 /**
  * Created By @ilhamsuaib on 11/06/20
@@ -29,13 +30,8 @@ data class DynamicParameterModel(
         val limit: Int = 0,
         @Expose
         @SerializedName("date_type")
-        val dateType: String = DATE_TYPE_DAILY
+        val dateType: String = DateFilterType.DATE_TYPE_WEEK
 ) {
-
-    companion object {
-        const val DATE_TYPE_DAILY = "daily"
-        const val DATE_TYPE_MONTHLY = "month"
-    }
 
     fun toJsonString(): String {
         return Gson().toJsonTree(this).toString()

@@ -20,6 +20,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhomecommon.common.WidgetListener
 import com.tokopedia.sellerhomecommon.common.WidgetType
+import com.tokopedia.sellerhomecommon.common.const.DateFilterType
 import com.tokopedia.sellerhomecommon.presentation.adapter.WidgetAdapterFactoryImpl
 import com.tokopedia.sellerhomecommon.presentation.model.*
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.TooltipBottomSheet
@@ -99,7 +100,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         hideTooltipIfExist()
         setupView()
 
-        mViewModel.setDateRange(defaultStartDate, defaultEndDate)
+        mViewModel.setDateRange(defaultStartDate, defaultEndDate, DateFilterType.DATE_TYPE_WEEK)
 
         observeWidgetLayoutLiveData()
         observeUserRole()
@@ -391,8 +392,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         StatisticTracker.sendSetDateFilterEvent(item.label)
         val startDate = item.startDate ?: return
         val endDate = item.endDate ?: return
-        val isMonthly = item is DateFilterItem.MonthPickerItem
-        mViewModel.setDateRange(startDate, endDate, isMonthly)
+        mViewModel.setDateRange(startDate, endDate, item.getDateFilterType())
         adapter.data.forEach {
             if (it !is TickerWidgetUiModel) {
                 it.isLoaded = false

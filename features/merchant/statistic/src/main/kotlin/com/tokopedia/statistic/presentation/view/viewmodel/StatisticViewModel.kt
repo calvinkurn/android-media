@@ -78,18 +78,14 @@ class StatisticViewModel @Inject constructor(
 
     private var dynamicParameter = DynamicParameterModel()
 
-    fun setDateRange(startDate: Date, endDate: Date, isMonthly: Boolean = false) {
+    fun setDateRange(startDate: Date, endDate: Date, filterType: String) {
         val startDateFmt = DateTimeUtil.format(startDate.time, DATE_FORMAT)
         val endDateFmt = DateTimeUtil.format(endDate.time, DATE_FORMAT)
         this.dynamicParameter = DynamicParameterModel(
                 startDate = startDateFmt,
                 endDate = endDateFmt,
                 pageSource = STATISTIC_PAGE_NAME,
-                dateType = if (isMonthly) {
-                    DynamicParameterModel.DATE_TYPE_MONTHLY
-                } else {
-                    DynamicParameterModel.DATE_TYPE_DAILY
-                }
+                dateType = filterType
         )
     }
 

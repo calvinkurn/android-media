@@ -2,6 +2,7 @@ package com.tokopedia.statistic.presentation.view.model
 
 import android.content.Context
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.sellerhomecommon.common.const.DateFilterType
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.statistic.R
 import com.tokopedia.statistic.common.utils.DateFilterFormatUtil
@@ -72,6 +73,15 @@ sealed class DateFilterItem(
             }
         }
         return ""
+    }
+
+    fun getDateFilterType(): String {
+        return when (type) {
+            TYPE_TODAY -> DateFilterType.DATE_TYPE_TODAY
+            TYPE_PER_WEEK -> DateFilterType.DATE_TYPE_WEEK
+            TYPE_PER_MONTH -> DateFilterType.DATE_TYPE_MONTH
+            else -> DateFilterType.DATE_TYPE_DAY
+        }
     }
 
     data class Click(

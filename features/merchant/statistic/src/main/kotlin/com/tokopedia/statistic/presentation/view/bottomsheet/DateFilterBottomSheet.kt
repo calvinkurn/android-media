@@ -9,13 +9,12 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.statistic.R
-import com.tokopedia.statistic.presentation.view.model.DateFilterItem
 import com.tokopedia.statistic.presentation.view.adapter.DateFilterAdapter
 import com.tokopedia.statistic.presentation.view.adapter.factory.DateFilterAdapterFactoryImpl
+import com.tokopedia.statistic.presentation.view.model.DateFilterItem
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.bottomsheet_stc_select_date_range.view.*
 import java.util.*
-import java.util.concurrent.TimeUnit
 
 /**
  * Created By @ilhamsuaib on 15/06/20
@@ -113,7 +112,7 @@ class DateFilterBottomSheet : BottomSheetUnify(), DateFilterAdapterFactoryImpl.L
 
     private fun getFilterPerMonth(): DateFilterItem.MonthPickerItem {
         val perMonthLabel = context?.getString(R.string.stc_per_month) ?: "Per Bulan"
-        return DateFilterItem.MonthPickerItem(perMonthLabel, Date())
+        return DateFilterItem.MonthPickerItem(perMonthLabel, startDate = Date(), endDate = Date())
     }
 
     private fun getDateFilterPerDay(): DateFilterItem.Pick {
