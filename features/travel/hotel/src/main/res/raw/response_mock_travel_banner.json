@@ -1,0 +1,24 @@
+{
+  "data": {
+    "travelBanner": [
+      {
+        "id": "466",
+        "attributes": {
+          "description": "COBATRAVEL",
+          "linkURL": "https://www.tokopedia.com/promo/digital-flight-9/",
+          "imageURL": "https://ecs7.tokopedia.net/img/attachment/2020/8/3/59253604/59253604_396e1465-a3d2-4cfc-ab83-aac3c19f5b1c.jpg",
+          "promoCode": "COBATRAVEL"
+        }
+      },
+      {
+        "id": "467",
+        "attributes": {
+          "description": "TOPED",
+          "linkURL": "https://www.tokopedia.com/promo/digital-cashback-5/",
+          "imageURL": "https://ecs7.tokopedia.net/img/attachment/2020/8/3/59253604/59253604_8328e27c-d46c-4aa7-81ad-9aafa2f8acf7.jpg",
+          "promoCode": "TOPED"
+        }
+      }
+    ]
+  }
+}

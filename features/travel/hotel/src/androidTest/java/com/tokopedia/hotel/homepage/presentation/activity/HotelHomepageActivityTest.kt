@@ -13,12 +13,19 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
+import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity.Companion.HOTEL_DESTINATION_NAME
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity.Companion.HOTEL_DESTINATION_SEARCH_ID
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity.Companion.HOTEL_DESTINATION_SEARCH_TYPE
+import com.tokopedia.hotel.homepage.presentation.activity.HotelHomepageActivity.Companion.getCallingIntent
+import com.tokopedia.hotel.homepage.presentation.activity.mock.HotelMockResponseConfig
+import com.tokopedia.test.application.util.setupGraphqlMockResponse
+import com.tokopedia.test.application.util.setupGraphqlMockResponseWithCheck
 import org.hamcrest.core.AllOf
+import org.junit.After
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -29,12 +36,21 @@ import org.junit.Test
 
 class HotelHomepageActivityTest {
 
+    private val context = InstrumentationRegistry.getInstrumentation().targetContext
+    private val gtmLogDBSource = GtmLogDBSource(context)
+
     @get:Rule
     var activityRule: ActivityTestRule<HotelHomepageActivity> = object : IntentsTestRule<HotelHomepageActivity>(HotelHomepageActivity::class.java) {
         override fun getActivityIntent(): Intent {
             val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
             return Intent(targetContext, HotelHomepageActivity::class.java)
         }
+    }
+
+    @Before
+    fun setUp() {
+        gtmLogDBSource.deleteAll().subscribe()
+        setupGraphqlMockResponse(HotelMockResponseConfig())
     }
 
     private fun createDummyDestination(): Instrumentation.ActivityResult {
@@ -127,5 +143,10 @@ class HotelHomepageActivityTest {
 
     private fun clickRecentSearchWidget() {
 
+    }
+
+    @After
+    fun tearDown() {
+        gtmLogDBSource.deleteAll().subscribe()
     }
 }
