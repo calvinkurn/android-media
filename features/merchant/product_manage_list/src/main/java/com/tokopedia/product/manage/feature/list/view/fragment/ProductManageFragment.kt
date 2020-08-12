@@ -170,6 +170,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     private var shouldEnableMultiEdit: Boolean = false
     private var shouldAddAsFeatured: Boolean = false
     private var shouldOpenAppLink: Boolean = false
+    private var shouldOpenTopAdsFromPdp: Boolean = false
     private var sellerFeatureCarouselClickListener: SellerFeatureCarousel.SellerFeatureClickListener = object: SellerFeatureCarousel.SellerFeatureClickListener {
         override fun onSellerFeatureClicked(item: SellerFeatureUiModel) {
             when (item) {
@@ -196,6 +197,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             shouldEnableMultiEdit = this.getBooleanQueryParameter(DeepLinkMapperProductManage.QUERY_PARAM_ENABLE_MULTI_EDIT, false)
             shouldAddAsFeatured = this.getBooleanQueryParameter(DeepLinkMapperProductManage.QUERY_PARAM_ADD_AS_FEATURED, false)
             shouldOpenAppLink = activity?.intent?.getStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA).orEmpty().isNotEmpty()
+            shouldOpenTopAdsFromPdp = activity?.intent?.getStringExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME).orEmpty() == SellerMigrationFeatureName.FEATURE_ADS
         }
         setHasOptionsMenu(true)
     }
@@ -1428,9 +1430,13 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             shouldOpenAppLink = false
             val appLinks = ArrayList(activity?.intent?.getStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA).orEmpty())
             if (appLinks.isNotEmpty()) {
-                val appLinkToOpen = appLinks.firstOrNull().orEmpty()
-                if (appLinkToOpen.isNotBlank()) {
+                val appLinkToOpen = if (!shouldOpenTopAdsFromPdp) {
+                    appLinks.firstOrNull().orEmpty()
                     appLinks.removeAt(0)
+                } else {
+                    appLinks.lastOrNull().orEmpty()
+                }
+                if (appLinkToOpen.isNotBlank()) {
                     val intent = RouteManager.getIntent(context, appLinkToOpen).apply {
                         putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, appLinks)
                         putExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, activity?.intent?.getStringExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME).orEmpty())
