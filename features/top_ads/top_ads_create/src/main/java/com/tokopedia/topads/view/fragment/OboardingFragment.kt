@@ -10,6 +10,9 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
+import com.tokopedia.topads.common.getSellerMigrationFeatureName
+import com.tokopedia.topads.common.getSellerMigrationRedirectionApplinks
+import com.tokopedia.topads.common.isFromPdpSellerMigration
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.view.activity.StepperActivity
 import kotlinx.android.synthetic.main.topads_create_fragment_onboarding.*
@@ -35,9 +38,9 @@ class OboardingFragment: TkpdBaseV4Fragment() {
         btn_start_auto_ads.setOnClickListener {
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_MULAI_IKLAN, "")
             RouteManager.getIntent(it.context, ApplinkConstInternalTopAds.TOPADS_AUTOADS_CREATE).apply {
-                if (isFromPdpSellerMigration()) {
-                    putExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, getSellerMigrationFeatureName())
-                    putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, getSellerMigrationRedirectionApplinks())
+                if (isFromPdpSellerMigration(activity?.intent?.extras)) {
+                    putExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, getSellerMigrationFeatureName(activity?.intent?.extras))
+                    putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, getSellerMigrationRedirectionApplinks(activity?.intent?.extras))
                 }
                 startActivity(this)
             }
@@ -45,25 +48,13 @@ class OboardingFragment: TkpdBaseV4Fragment() {
         btn_start_manual_ads.setOnClickListener {
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_BUAT_IKLAN_MANUAL, "")
             Intent(activity, StepperActivity::class.java).apply {
-                if (isFromPdpSellerMigration()) {
-                    putExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, getSellerMigrationFeatureName())
-                    putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, getSellerMigrationRedirectionApplinks())
+                if (isFromPdpSellerMigration(activity?.intent?.extras)) {
+                    putExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, getSellerMigrationFeatureName(activity?.intent?.extras))
+                    putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, getSellerMigrationRedirectionApplinks(activity?.intent?.extras))
                 }
                 startActivity(this)
             }
         }
-    }
-
-    private fun getSellerMigrationRedirectionApplinks(): ArrayList<String> {
-        return ArrayList(activity?.intent?.getStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA).orEmpty())
-    }
-
-    private fun getSellerMigrationFeatureName(): String {
-        return activity?.intent?.getStringExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME).orEmpty()
-    }
-
-    private fun isFromPdpSellerMigration(): Boolean {
-        return !activity?.intent?.getStringExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME).isNullOrEmpty()
     }
 
     companion object {
