@@ -11,7 +11,8 @@
 
     <include
         android:id="@+id/ll_warning_and_error"
-        layout="@layout/layout_item_warning_and_error" />
+        layout="@layout/layout_item_warning_and_error"
+        tools:visibility="gone" />
 
     <FrameLayout
         android:id="@+id/fl_shop_item_container"
@@ -69,9 +70,8 @@
                     android:id="@+id/tv_shop_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/text_black"
-                    app:typographyType="body_2"
-                    app:typographyWeight="bold"
+                    android:textColor="@color/Neutral_N700_96"
+                    app:typographyType="heading_6"
                     tools:text="Loaa Store df" />
 
             </LinearLayout>
@@ -131,7 +131,6 @@
                     android:id="@+id/img_free_shipping"
                     android:layout_width="@dimen/dp_120"
                     android:layout_height="@dimen/dp_20"
-                    android:layout_below="@id/tv_price_changes"
                     android:gravity="center_vertical"
                     android:scaleType="fitStart"
                     tools:src="@color/unify_G500" />

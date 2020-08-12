@@ -92,6 +92,7 @@ data class CartItemData(
             var priceCurrency: Int = 0,
             var priceFormatted: String? = null,
             var wholesalePriceFormatted: String? = null,
+            var wholesalePrice: Int = 0,
             var productImage: String? = null,
             var productVarianRemark: String? = null,
             var weightPlan: Double = 0.toDouble(),
@@ -131,7 +132,8 @@ data class CartItemData(
             var priceOriginal: Int = 0,
             var isFreeShipping: Boolean = false,
             var freeShippingBadgeUrl: String? = null,
-            var listPromoCheckout: List<String> = emptyList()
+            var listPromoCheckout: List<String> = emptyList(),
+            var variant: String = ""
     ) : Parcelable {
         constructor(parcel: Parcel) : this(
                 parcel.readInt(),
@@ -150,6 +152,7 @@ data class CartItemData(
                 parcel.readInt(),
                 parcel.readString(),
                 parcel.readString(),
+                parcel.readInt(),
                 parcel.readString(),
                 parcel.readString(),
                 parcel.readDouble(),
@@ -208,6 +211,7 @@ data class CartItemData(
             parcel.writeInt(priceCurrency)
             parcel.writeString(priceFormatted)
             parcel.writeString(wholesalePriceFormatted)
+            parcel.writeInt(wholesalePrice)
             parcel.writeString(productImage)
             parcel.writeString(productVarianRemark)
             parcel.writeDouble(weightPlan)

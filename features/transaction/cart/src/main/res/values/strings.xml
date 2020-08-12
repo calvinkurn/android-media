@@ -29,7 +29,7 @@
     <string name="promo_desc_no_selected_item">Pilih barang dulu sebelum pakai promo</string>
     <string name="promo_choose_item_cart">Pilih barang dulu biar bisa pakai berbagai promo terbaik</string>
     <string name="label_ellipsize">...</string>
-    <string name="label_button_change_note">Ubah Catatan</string>
+    <string name="label_button_change_note">Ubah</string>
     <string name="checkout_module_title_recommendation">Rekomendasi</string>
     <string name="checkout_module_title_wishlist">Wujudkan Wishlist kamu!</string>
     <string name="checkout_module_title_recent_view">Kamu sempat lihat-lihat ini</string>

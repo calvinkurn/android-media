@@ -437,12 +437,15 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         if (!hasCalculateWholesalePrice) {
             if (itemQty > wholesalePriceDataList[wholesalePriceDataList.size - 1].prdPrc) {
                 subTotalWholesalePrice = (itemQty * wholesalePriceDataList[wholesalePriceDataList.size - 1].prdPrc).toDouble()
+                val wholesalePrice = wholesalePriceDataList[wholesalePriceDataList.size - 1].prdPrc
                 val wholesalePriceFormatted = CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                        wholesalePriceDataList[wholesalePriceDataList.size - 1].prdPrc, false).removeDecimalSuffix()
+                        wholesalePrice, false).removeDecimalSuffix()
                 originData.wholesalePriceFormatted = wholesalePriceFormatted
+                originData.wholesalePrice = wholesalePrice
             } else {
                 subTotalWholesalePrice = itemQty * originData.pricePlan
                 originData.wholesalePriceFormatted = null
+                originData.wholesalePrice = 0
             }
         }
 

@@ -23,15 +23,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingLeft="-1dp"
-            android:paddingTop="@dimen/dp_14"
-            android:paddingRight="-1dp"
             android:paddingBottom="@dimen/dp_16">
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingLeft="@dimen/dp_10"
+                android:paddingLeft="@dimen/dp_16"
                 android:paddingRight="@dimen/dp_16">
 
                 <CheckBox
@@ -39,9 +36,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="14dp"
-                    android:layout_marginLeft="@dimen/dp_4"
-                    android:paddingRight="@dimen/dp_10"
-                    android:button="@drawable/ic_cart_check_box" />
+                    android:layout_marginLeft="-3dp"
+                    android:button="@drawable/ic_cart_check_box"
+                    android:paddingRight="@dimen/dp_10" />
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/iv_product_card"
@@ -73,117 +70,257 @@
                     android:paddingLeft="@dimen/dp_8">
 
                     <com.tokopedia.unifyprinciples.Typography
-                        android:id="@+id/tv_product_name"
+                        android:id="@+id/text_product_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:ellipsize="end"
-                        android:maxLines="2"
-                        android:textColor="@color/black"
-                        app:typographyType="body_2"
-                        app:typographyWeight="bold"
+                        android:maxLines="1"
+                        android:textColor="@color/Neutral_N700_96"
+                        app:typographyType="body_3"
                         tools:text="Tas organizerdfnlgjdhdfhn sepeda double container" />
 
-                    <include
-                        android:id="@+id/product_properties"
-                        layout="@layout/layout_cart_item_policy"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/tv_product_name"
-                        android:layout_marginTop="@dimen/dp_4" />
-
                     <com.tokopedia.unifyprinciples.Typography
-                        android:id="@+id/tv_price_changes"
+                        android:id="@+id/text_product_variant"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/product_properties"
-                        android:layout_marginTop="@dimen/dp_4"
-                        android:background="@drawable/bg_price_changes"
-                        android:paddingStart="@dimen/dp_4"
-                        android:paddingLeft="@dimen/dp_4"
-                        android:paddingTop="@dimen/dp_3"
-                        android:paddingEnd="@dimen/dp_5"
-                        android:paddingRight="@dimen/dp_5"
-                        android:paddingBottom="@dimen/dp_3"
-                        android:textColor="@color/price_changes_color_text"
+                        android:layout_below="@+id/text_product_name"
+                        android:paddingTop="@dimen/dp_2"
+                        android:textColor="@color/Neutral_N700_68"
                         android:visibility="gone"
-                        app:typographyType="body_3"
-                        app:typographyWeight="bold"
-                        tools:text="Harga turun"
+                        app:typographyType="small"
+                        tools:text="Merah, XL"
                         tools:visibility="visible" />
 
-                    <ImageView
-                        android:id="@+id/img_free_shipping"
-                        android:layout_width="@dimen/dp_120"
-                        android:layout_height="@dimen/dp_20"
-                        android:layout_below="@id/tv_price_changes"
-                        android:layout_marginTop="@dimen/dp_4"
-                        android:scaleType="fitStart"
-                        tools:src="@color/unify_G500" />
-
                     <com.tokopedia.unifyprinciples.Typography
-                        android:id="@+id/tv_product_price"
+                        android:id="@+id/text_qty_left"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/img_free_shipping"
-                        android:layout_marginTop="@dimen/dp_4"
-                        android:textColor="@color/price_label"
-                        app:typographyType="body_2"
+                        android:layout_below="@+id/text_product_name"
+                        android:layout_marginStart="@dimen/dp_4"
+                        android:layout_marginLeft="@dimen/dp_4"
+                        android:layout_toRightOf="@+id/text_product_variant"
+                        android:paddingTop="@dimen/dp_2"
+                        android:textColor="@color/Red_R600"
+                        android:visibility="gone"
+                        app:typographyType="small"
+                        tools:text="Sisa 3"
+                        tools:visibility="visible" />
+
+                    <com.tokopedia.unifycomponents.Label
+                        android:id="@+id/label_slash_price_percentage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/text_product_variant"
+                        android:layout_marginTop="@dimen/dp_8"
+                        android:layout_marginRight="@dimen/dp_4"
+                        android:gravity="center_vertical"
+                        app:labelType="general_dark_red"
+                        tools:labelTitle="60%"
+                        tools:visibility="visible" />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/text_slash_price"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignTop="@+id/text_product_price"
+                        android:layout_alignBottom="@+id/text_product_price"
+                        android:layout_marginRight="@dimen/dp_4"
+                        android:layout_toRightOf="@+id/label_slash_price_percentage"
+                        android:gravity="center_vertical"
+                        android:textColor="@color/light_N700_96"
+                        app:typographyType="small"
+                        tools:text="Rp300.000"
+                        tools:visibility="visible" />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/text_product_price"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/text_product_variant"
+                        android:layout_alignBottom="@+id/label_slash_price_percentage"
+                        android:layout_marginTop="@dimen/dp_8"
+                        android:layout_toRightOf="@+id/text_slash_price"
+                        android:gravity="center_vertical"
+                        android:textColor="@color/light_N700_96"
+                        app:typographyType="body_3"
                         app:typographyWeight="bold"
-                        tools:text="Rp 200.000" />
+                        tools:text="Rp100.000" />
+
+                    <com.google.android.flexbox.FlexboxLayout
+                        android:id="@+id/layout_product_info"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/text_product_price"
+                        android:layout_marginTop="@dimen/dp_4"
+                        android:foregroundGravity="center_vertical"
+                        app:flexWrap="wrap">
+
+                        <com.tokopedia.unifyprinciples.Typography
+                            android:id="@+id/text_wholesale_price"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/text_product_name"
+                            android:paddingTop="@dimen/dp_2"
+                            android:textColor="@color/Neutral_N700_68"
+                            android:visibility="gone"
+                            app:typographyType="small"
+                            tools:text="Harga Grosir, "
+                            tools:visibility="visible" />
+
+                        <com.tokopedia.unifyprinciples.Typography
+                            android:id="@+id/text_price_down"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/text_product_name"
+                            android:paddingTop="@dimen/dp_2"
+                            android:textColor="@color/Neutral_N700_68"
+                            android:visibility="gone"
+                            app:typographyType="small"
+                            tools:text="Harga Turun, "
+                            tools:visibility="visible" />
+
+                        <com.tokopedia.unifyprinciples.Typography
+                            android:id="@+id/text_cashback"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/text_product_name"
+                            android:paddingTop="@dimen/dp_2"
+                            android:textColor="@color/Neutral_N700_68"
+                            android:visibility="gone"
+                            app:typographyType="small"
+                            tools:text="Cashback 3%"
+                            tools:visibility="visible" />
+
+                    </com.google.android.flexbox.FlexboxLayout>
 
                 </RelativeLayout>
 
-                <RelativeLayout
-                    android:id="@+id/rl_invenage_text"
+                <LinearLayout
+                    android:id="@+id/ll_shop_note_section"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/rl_product_info"
-                    android:layout_marginTop="@dimen/dp_24"
-                    android:background="@drawable/bg_invenage_text"
-                    android:visibility="gone"
-                    tools:visibility="visible">
+                    android:layout_below="@+id/rl_product_info"
+                    android:layout_marginTop="@dimen/dp_14"
+                    android:orientation="vertical">
 
-                    <ImageView
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentTop="true"
-                        app:srcCompat="@drawable/ic_yellow_ticker" />
+                        android:orientation="horizontal">
+
+                        <com.tokopedia.unifyprinciples.Typography
+                            android:id="@+id/tv_label_form_remark"
+                            android:layout_width="@dimen/dp_0"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="2"
+                            android:text="@string/label_note_for_seller"
+                            app:typographyType="body_3"
+                            app:typographyWeight="reguler"
+                            tools:visibility="gone" />
+
+                        <com.tokopedia.unifyprinciples.Typography
+                            android:id="@+id/tv_remark"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:maxLength="20"
+                            android:maxLines="1"
+                            app:typographyType="body_3"
+                            app:typographyWeight="reguler"
+                            android:textColor="@color/light_N700_96"
+                            tools:text="12345123451234512345123 sdkjf skdjbfg jksdg kjsdbg jksdbg!"
+                            tools:visibility="visible" />
+
+                        <com.tokopedia.unifyprinciples.Typography
+                            android:id="@+id/tv_ellipsize"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/dp_2"
+                            android:text="@string/label_ellipsize"
+                            app:typographyType="body_3"
+                            app:typographyWeight="reguler" />
+
+                        <com.tokopedia.unifyprinciples.Typography
+                            android:id="@+id/tv_label_remark_option"
+                            android:layout_width="@dimen/dp_0"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="2"
+                            android:text="@string/label_button_add_note"
+                            android:textColor="@color/Neutral_N700_68"
+                            app:typographyType="body_3"
+                            app:typographyWeight="reguler" />
+
+                    </LinearLayout>
+
+                    <androidx.appcompat.widget.AppCompatEditText
+                        android:id="@+id/et_remark"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/tv_label_form_remark"
+                        android:layout_marginLeft="@dimen/dp_minus4"
+                        android:layout_marginRight="@dimen/dp_minus4"
+                        android:fontFamily="sans-serif"
+                        android:maxLines="3"
+                        android:overScrollMode="always"
+                        android:paddingBottom="@dimen/dp_16"
+                        android:scrollbarStyle="insideInset"
+                        android:scrollbars="vertical"
+                        android:textColor="@color/black_70"
+                        android:textColorHighlight="@color/tkpd_main_green"
+                        android:textSize="@dimen/sp_12"
+                        android:textStyle="normal"
+                        app:backgroundTint="@color/tkpd_main_green"
+                        tools:ignore="TextFields"
+                        tools:text="Saya pesan warna merah yah min.. jangan sampai salah kirim
+barangnya gan!" />
 
                     <com.tokopedia.unifyprinciples.Typography
-                        android:id="@+id/tv_invenage_text"
+                        android:id="@+id/tv_error_form_remark_validation"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/dp_16"
-                        android:layout_marginLeft="@dimen/dp_16"
-                        android:layout_marginTop="@dimen/dp_8"
-                        android:layout_marginEnd="@dimen/dp_16"
-                        android:layout_marginRight="@dimen/dp_16"
-                        android:layout_marginBottom="@dimen/dp_8"
-                        android:lineSpacingMultiplier="1.5"
-                        android:textColor="@color/invenage_text_color"
-                        tools:text="Barang sudah dimasukkan ke kerangjang 5 orang lain"
+                        android:layout_below="@id/et_remark"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:maxLines="1"
+                        android:paddingStart="@dimen/dp_4"
+                        android:paddingLeft="@dimen/dp_4"
+                        android:textColor="@color/text_cart_item_error_red"
+                        android:textSize="@dimen/sp_12"
+                        android:textStyle="normal"
+                        android:visibility="gone"
                         app:typographyType="body_3"
-                        app:typographyWeight="reguler" />
+                        app:typographyWeight="reguler"
+                        tools:ignore="RtlSymmetry,SmallSp"
+                        tools:text="Maksimal 2 broh"
+                        tools:visibility="gone" />
 
-                </RelativeLayout>
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/tv_note_char_counter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/et_remark"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_gravity="end"
+                        android:lineSpacingExtra="0sp"
+                        android:visibility="gone"
+                        app:typographyType="body_3"
+                        app:typographyWeight="reguler"
+                        tools:text="60/140"
+                        tools:visibility="visible" />
+
+                </LinearLayout>
 
                 <RelativeLayout
                     android:id="@+id/rl_product_action"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/rl_invenage_text"
-                    android:layout_toEndOf="@id/iv_product_card"
-                    android:layout_toRightOf="@id/iv_product_card"
-                    android:paddingLeft="@dimen/dp_8">
+                    android:layout_below="@id/ll_shop_note_section">
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/dp_16"
-                        android:gravity="end"
                         android:orientation="vertical">
 
                         <LinearLayout
@@ -192,13 +329,21 @@
                             android:gravity="center_vertical"
                             android:orientation="horizontal">
 
-                            <ImageView
-                                android:id="@+id/img_wishlist"
-                                android:layout_width="@dimen/dp_24"
-                                android:layout_height="@dimen/dp_24"
-                                android:layout_marginEnd="@dimen/dp_18"
-                                android:layout_marginRight="@dimen/dp_18"
-                                app:srcCompat="@drawable/ic_wishlist_checkout_on" />
+                            <com.tokopedia.unifyprinciples.Typography
+                                android:id="@+id/text_move_to_wishlist"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:ellipsize="end"
+                                android:maxLines="1"
+                                android:text="Pindahkan ke Wishlist"
+                                android:textColor="@color/Neutral_N700_68"
+                                app:typographyType="body_3" />
+
+                            <View
+                                android:layout_width="0dp"
+                                android:layout_height="0dp"
+                                android:layout_weight="1" />
 
                             <ImageView
                                 android:id="@+id/btn_delete_cart"
@@ -259,124 +404,6 @@
                 </RelativeLayout>
 
             </RelativeLayout>
-
-            <LinearLayout
-                android:id="@+id/ll_shop_note_section"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_14"
-                android:orientation="vertical"
-                android:paddingLeft="@dimen/dp_16"
-                android:paddingRight="@dimen/dp_16">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <com.tokopedia.unifyprinciples.Typography
-                        android:id="@+id/tv_label_form_remark"
-                        android:layout_width="@dimen/dp_0"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="2"
-                        android:text="@string/label_note_for_seller"
-                        app:typographyType="body_3"
-                        app:typographyWeight="reguler"
-                        tools:visibility="gone" />
-
-                    <com.tokopedia.unifyprinciples.Typography
-                        android:id="@+id/tv_remark"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:maxLength="20"
-                        android:maxLines="1"
-                        app:typographyType="body_3"
-                        app:typographyWeight="reguler"
-                        tools:text="12345123451234512345123 sdkjf skdjbfg jksdg kjsdbg jksdbg!"
-                        tools:visibility="visible" />
-
-                    <com.tokopedia.unifyprinciples.Typography
-                        android:id="@+id/tv_ellipsize"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/dp_2"
-                        android:text="@string/label_ellipsize"
-                        app:typographyType="body_3"
-                        app:typographyWeight="reguler" />
-
-                    <com.tokopedia.unifyprinciples.Typography
-                        android:id="@+id/tv_label_remark_option"
-                        android:layout_width="@dimen/dp_0"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/dp_5"
-                        android:layout_weight="2"
-                        android:fontFamily="sans-serif-medium"
-                        android:text="@string/label_button_add_note"
-                        android:textColor="@color/tkpd_main_green"
-                        android:textStyle="normal"
-                        app:typographyType="body_3"
-                        app:typographyWeight="reguler" />
-
-                </LinearLayout>
-
-                <androidx.appcompat.widget.AppCompatEditText
-                    android:id="@+id/et_remark"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/tv_label_form_remark"
-                    android:layout_marginLeft="@dimen/dp_minus4"
-                    android:layout_marginRight="@dimen/dp_minus4"
-                    android:fontFamily="sans-serif"
-                    android:maxLines="3"
-                    android:overScrollMode="always"
-                    android:paddingBottom="@dimen/dp_16"
-                    android:scrollbarStyle="insideInset"
-                    android:scrollbars="vertical"
-                    android:textColor="@color/black_70"
-                    android:textColorHighlight="@color/tkpd_main_green"
-                    android:textSize="@dimen/sp_12"
-                    android:textStyle="normal"
-                    app:backgroundTint="@color/tkpd_main_green"
-                    tools:ignore="TextFields"
-                    tools:text="Saya pesan warna merah yah min.. jangan sampai salah kirim
-barangnya gan!" />
-
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/tv_error_form_remark_validation"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/et_remark"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
-                    android:maxLines="1"
-                    android:paddingStart="@dimen/dp_4"
-                    android:paddingLeft="@dimen/dp_4"
-                    android:textColor="@color/text_cart_item_error_red"
-                    android:textSize="@dimen/sp_12"
-                    android:textStyle="normal"
-                    android:visibility="gone"
-                    app:typographyType="body_3"
-                    app:typographyWeight="reguler"
-                    tools:ignore="RtlSymmetry,SmallSp"
-                    tools:text="Maksimal 2 broh"
-                    tools:visibility="gone" />
-
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/tv_note_char_counter"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/et_remark"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_gravity="end"
-                    android:lineSpacingExtra="0sp"
-                    android:visibility="gone"
-                    app:typographyType="body_3"
-                    app:typographyWeight="reguler"
-                    tools:text="60/140"
-                    tools:visibility="visible" />
-
-            </LinearLayout>
 
         </LinearLayout>
 

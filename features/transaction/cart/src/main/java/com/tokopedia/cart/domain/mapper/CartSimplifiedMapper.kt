@@ -342,6 +342,8 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
             it.isGoldMerchant = shopGroupWithError.shop.goldMerchant.isGoldBadge
             it.cartString = shopGroupWithError.cartString
             it.warehouseId = shopGroupWithError.warehouse.warehouseId
+            // Todo : map variant
+            it.variant = "XL, Merah"
         }
     }
 
