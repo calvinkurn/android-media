@@ -199,7 +199,7 @@ class VoucherListViewModelTest {
         }
     }
 
-    @Test
+    /*@Test
     fun `fail getting voucher list not for the first time`() = runBlocking {
         with(mViewModel) {
             val dummyThrowable = MessageErrorException("")
@@ -222,7 +222,7 @@ class VoucherListViewModelTest {
 
             assert(voucherList.value is Fail)
         }
-    }
+    }*/
 
     @Test
     fun `success getting voucher list history will add voucher list`() = runBlocking {
