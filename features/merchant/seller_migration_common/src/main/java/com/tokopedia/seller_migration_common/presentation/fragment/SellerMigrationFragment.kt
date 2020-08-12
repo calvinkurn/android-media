@@ -168,9 +168,13 @@ class SellerMigrationFragment : Fragment(), SellerFeatureCarousel.RecyclerViewLi
     }
 
     private inline fun <reified T : BaseSellerFeatureTabFragment> getSellerFeatureTabFragment(): Fragment {
-        return (childFragmentManager.fragments.filterIsInstance<T>().firstOrNull() ?: T::class.java.newInstance()).apply {
+        return childFragmentManager.fragments.findOrCreate<T>().apply {
             recyclerViewListener = this@SellerMigrationFragment
         }
+    }
+
+    private inline fun <reified T> Iterable<*>.findOrCreate(): T {
+        return find { this is T } as? T ?: T::class.java.newInstance()
     }
 
     private fun goToPlayStore() {
