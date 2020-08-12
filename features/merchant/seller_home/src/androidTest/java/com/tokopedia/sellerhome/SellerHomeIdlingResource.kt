@@ -1,4 +1,4 @@
-package com.tokopedia.sellerhome.common
+package com.tokopedia.sellerhome
 
 import androidx.test.espresso.idling.CountingIdlingResource
 

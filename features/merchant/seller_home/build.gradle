@@ -91,7 +91,7 @@ dependencies {
         exclude group: "com.google.android.gms", module: "play-services-auth"
         exclude group: "com.google.android.gms", module: "play-services-places"
     }
-    implementation (rootProject.ext.testDependencies.espressoIdlingResource)
+    androidTestImplementation (rootProject.ext.testDependencies.espressoIdlingResource)
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.loaderviewlibrary

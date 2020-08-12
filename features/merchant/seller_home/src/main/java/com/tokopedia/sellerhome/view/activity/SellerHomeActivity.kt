@@ -30,8 +30,11 @@ import com.tokopedia.sellerhome.analytic.NavigationTracking
 import com.tokopedia.sellerhome.analytic.TrackingConstant
 import com.tokopedia.sellerhome.analytic.performance.HomeLayoutLoadTimeMonitoring
 import com.tokopedia.sellerhome.analytic.performance.SellerHomeLoadTimeMonitoringListener
-import com.tokopedia.sellerhome.common.*
+import com.tokopedia.sellerhome.common.DeepLinkHandler
+import com.tokopedia.sellerhome.common.FragmentType
+import com.tokopedia.sellerhome.common.PageFragment
 import com.tokopedia.sellerhome.common.SellerHomePerformanceMonitoringConstant.SELLER_HOME_LAYOUT_TRACE
+import com.tokopedia.sellerhome.common.StatusbarHelper
 import com.tokopedia.sellerhome.common.appupdate.UpdateCheckerHelper
 import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
@@ -48,7 +51,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.activity_sah_seller_home.*
 import javax.inject.Inject
 
-class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, SellerHomeLoadTimeMonitoringListener {
+class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
 
     companion object {
         @JvmStatic
@@ -80,7 +83,8 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, SellerHo
     private var statusBarCallback: StatusBarCallback? = null
     private var performanceMonitoringSellerHomelayout: PerformanceMonitoring? = null
 
-    private var performanceMonitoringSellerHomeLayoutPlt: HomeLayoutLoadTimeMonitoring? = null
+    var performanceMonitoringSellerHomeLayoutPlt: HomeLayoutLoadTimeMonitoring? = null
+    var sellerHomeLoadTimeMonitoringListener: SellerHomeLoadTimeMonitoringListener? = null
 
     private var shouldMoveToReview: Boolean = false
     private var shouldMoveToCentralizedPromo: Boolean = false
@@ -91,7 +95,6 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, SellerHo
             super.onCreate(savedInstanceState)
             return
         }
-        SellerHomeIdlingResource.increment()
         initPerformanceMonitoring()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sah_seller_home)
@@ -160,12 +163,8 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, SellerHo
         statusBarCallback = callback
     }
 
-    override fun stopPerformanceMonitoringSellerHomeLayout() {
+    fun stopPerformanceMonitoringSellerHomeLayout() {
         performanceMonitoringSellerHomelayout?.stopTrace()
-    }
-
-    override fun getPerformanceMonitoringSellerHomeLayoutPlt(): HomeLayoutLoadTimeMonitoring? {
-        return performanceMonitoringSellerHomeLayoutPlt
     }
 
     private fun startOldSellerHomeIfEnabled(): Boolean {
@@ -391,6 +390,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, SellerHo
     }
 
     private fun initPerformanceMonitoring(){
+        sellerHomeLoadTimeMonitoringListener?.onStartPltMonitoring()
         performanceMonitoringSellerHomelayout = PerformanceMonitoring.start(SELLER_HOME_LAYOUT_TRACE)
         performanceMonitoringSellerHomeLayoutPlt = HomeLayoutLoadTimeMonitoring()
         performanceMonitoringSellerHomeLayoutPlt?.initPerformanceMonitoring()

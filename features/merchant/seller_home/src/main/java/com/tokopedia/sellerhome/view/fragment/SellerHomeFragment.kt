@@ -28,8 +28,6 @@ import com.tokopedia.sellerhome.analytic.NavigationTracking
 import com.tokopedia.sellerhome.analytic.SellerHomeTracking
 import com.tokopedia.sellerhome.analytic.TrackingConstant
 import com.tokopedia.sellerhome.analytic.performance.HomeLayoutLoadTimeMonitoring
-import com.tokopedia.sellerhome.analytic.performance.SellerHomeLoadTimeMonitoringListener
-import com.tokopedia.sellerhome.common.SellerHomeIdlingResource
 import com.tokopedia.sellerhome.common.SellerHomePerformanceMonitoringConstant.SELLER_HOME_CARD_TRACE
 import com.tokopedia.sellerhome.common.SellerHomePerformanceMonitoringConstant.SELLER_HOME_CAROUSEL_TRACE
 import com.tokopedia.sellerhome.common.SellerHomePerformanceMonitoringConstant.SELLER_HOME_LINE_GRAPH_TRACE
@@ -44,6 +42,7 @@ import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.domain.model.GetShopStatusResponse
 import com.tokopedia.sellerhome.domain.model.PROVINCE_ID_EMPTY
 import com.tokopedia.sellerhome.domain.model.ShippingLoc
+import com.tokopedia.sellerhome.view.activity.SellerHomeActivity
 import com.tokopedia.sellerhome.view.adapter.SellerHomeAdapterTypeFactory
 import com.tokopedia.sellerhome.view.bottomsheet.view.SellerHomeBottomSheetContent
 import com.tokopedia.sellerhome.view.model.*
@@ -186,7 +185,11 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
     }
 
     private fun initPltPerformanceMonitoring() {
-        performanceMonitoringSellerHomePlt = (activity as? SellerHomeLoadTimeMonitoringListener)?.getPerformanceMonitoringSellerHomeLayoutPlt()
+        performanceMonitoringSellerHomePlt = if(remoteConfig.isNewSellerHomeDisabled()) {
+            (activity as? com.tokopedia.sellerhome.view.oldactivity.SellerHomeActivity)?.performanceMonitoringSellerHomeLayoutPlt
+        } else {
+            (activity as? SellerHomeActivity)?.performanceMonitoringSellerHomeLayoutPlt
+        }
     }
 
     private fun hideTooltipIfExist() {
@@ -459,11 +462,19 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
 
     private fun stopHomeLayoutRenderMonitoring() {
         performanceMonitoringSellerHomePlt?.stopRenderPerformanceMonitoring()
-        SellerHomeIdlingResource.decrement()
+        if(remoteConfig.isNewSellerHomeDisabled()) {
+            (activity as? com.tokopedia.sellerhome.view.oldactivity.SellerHomeActivity)?.sellerHomeLoadTimeMonitoringListener?.onStopPltMonitoring()
+        } else {
+            (activity as? SellerHomeActivity)?.sellerHomeLoadTimeMonitoringListener?.onStopPltMonitoring()
+        }
     }
 
     private fun stopPerformanceMonitoringSellerHomeLayout() {
-        (activity as? SellerHomeLoadTimeMonitoringListener)?.stopPerformanceMonitoringSellerHomeLayout()
+        if(remoteConfig.isNewSellerHomeDisabled()) {
+            (activity as? com.tokopedia.sellerhome.view.oldactivity.SellerHomeActivity)?.stopPerformanceMonitoringSellerHomeLayout()
+        } else {
+            (activity as? SellerHomeActivity)?.stopPerformanceMonitoringSellerHomeLayout()
+        }
     }
 
     private fun setOnSuccessGetLayout(widgets: List<BaseWidgetUiModel<*>>) {
