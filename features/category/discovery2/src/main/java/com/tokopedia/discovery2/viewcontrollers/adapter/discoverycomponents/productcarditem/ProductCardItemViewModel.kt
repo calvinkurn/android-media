@@ -48,8 +48,10 @@ class ProductCardItemViewModel(val application: Application, val components: Com
 
     @Inject
     lateinit var campaignNotifyUserCase: CampaignNotifyUserCase
+
     @Inject
     lateinit var productCardItemUseCase: ProductCardItemUseCase
+
     @Inject
     lateinit var discoveryTopAdsTrackingUseCase: DiscoveryTopAdsTrackingUseCase
 
@@ -211,7 +213,7 @@ class ProductCardItemViewModel(val application: Application, val components: Com
         return components.properties?.buttonNotification
     }
 
-    fun subscribeUser() {
+    fun subscribeUser(syncSelectedTab: Boolean = false) {
         if (isUserLoggedIn()) {
             dataItem.value?.let { productItemData ->
 
@@ -222,7 +224,7 @@ class ProductCardItemViewModel(val application: Application, val components: Com
                             productItemData.notifyMe = !productItemData.notifyMe
                             notifyMeCurrentStatus.value = productItemData.notifyMe
                             showNotifyToast.value = Triple(false, campaignResponse.message, productItemData.campaignId.toIntOrZero())
-                            this@ProductCardItemViewModel.syncData.value = productCardItemUseCase.notifyProductComponentUpdate(components.id, components.pageEndPoint)
+                            this@ProductCardItemViewModel.syncData.value = productCardItemUseCase.notifyProductComponentUpdate(components.id, components.pageEndPoint, syncSelectedTab)
                         } else {
                             showNotifyToast.value = Triple(true, campaignResponse.errorMessage, 0)
                         }
@@ -238,7 +240,7 @@ class ProductCardItemViewModel(val application: Application, val components: Com
     }
 
     override fun loggedInCallback() {
-        subscribeUser()
+        subscribeUser(true)
     }
 
     fun sendTopAdsClick() {

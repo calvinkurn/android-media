@@ -103,6 +103,12 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
             productCardItemViewModel.getComponentPosition().observe(lifecycleOwner, Observer {
                 componentPosition = it
             })
+            productCardItemViewModel.getSyncPageLiveData().observe(it, Observer { needResync ->
+                if (needResync) {
+                    (fragment as DiscoveryFragment).reSync()
+                }
+
+            })
 
         }
     }

@@ -8,24 +8,22 @@ import javax.inject.Inject
 
 class ProductCardItemUseCase @Inject constructor() {
     private var shouldReSync: Boolean = false
-    fun notifyProductComponentUpdate(componentID: String, pageEndPoint: String): Boolean {
-        shouldReSync = false
+    fun notifyProductComponentUpdate(componentID: String, pageEndPoint: String, componentSync : Boolean = false) : Boolean{
         val productComponent = getComponent(componentID, pageEndPoint)
         val preSelectedTabItemId = productComponent?.parentComponentId
-
         preSelectedTabItemId?.let { tabItemId ->
             val tabItemComponent = getComponent(tabItemId, pageEndPoint)
             tabItemComponent?.let { tabItem ->
                 val tabComponent = getComponent(tabItem.parentComponentId, pageEndPoint)
+                val preSelectedTab = tabComponent?.id
                 tabComponent?.let { tabItem ->
                     val parentTab = getComponent(tabItem.parentComponentId, pageEndPoint)
                     if (parentTab?.getComponentsItem()?.size.isMoreThanZero()) {
                         parentTab?.getComponentsItem()?.forEach { item ->
-
-                            if (item.getComponentsItem()?.size.isMoreThanZero()) {
-                                item.getComponentsItem()?.forEach { tabSubComps ->
-                                    reInitialiseTabComponents(tabSubComps)
-                                }
+                            if(componentSync && item.id == preSelectedTab){
+                                checkComponent(item)
+                            }else if(!componentSync){
+                                checkComponent(item)
                             }
                         }
                     }
@@ -33,6 +31,14 @@ class ProductCardItemUseCase @Inject constructor() {
             }
         }
         return shouldReSync
+    }
+
+    private fun checkComponent(item: ComponentsItem) {
+        if (item.getComponentsItem()?.size.isMoreThanZero()) {
+            item.getComponentsItem()?.forEach { tabSubComps ->
+                reInitialiseTabComponents(tabSubComps)
+            }
+        }
     }
 
     private fun reInitialiseTabComponents(componentsItem: ComponentsItem) {
@@ -43,5 +49,4 @@ class ProductCardItemUseCase @Inject constructor() {
             componentsItem.noOfPagesLoaded = 0
         }
     }
-
 }
