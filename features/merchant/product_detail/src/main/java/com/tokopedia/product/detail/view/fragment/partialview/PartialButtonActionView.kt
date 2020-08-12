@@ -72,7 +72,7 @@ class PartialButtonActionView private constructor(val view: View,
             showCartTypeButton()
         } else if (!GlobalConfig.isSellerApp() && !onSuccessGetCartType) {
             if (isWarehouseProduct) {
-                showNewCheckoutButton()
+                showWarehouseButton()
             } else {
                 showWarehouseButton()
             }
@@ -119,7 +119,7 @@ class PartialButtonActionView private constructor(val view: View,
                 this.buttonType = UnifyButton.Type.TRANSACTION
                 this.isEnabled = true
             }
-            ProductDetailConstant.KEY_BUTTON_DISABLE -> {
+            ProductDetailConstant.KEY_BUTTON_DISABLE  -> {
                 this.buttonVariant = UnifyButton.Variant.FILLED
                 this.buttonType = UnifyButton.Type.MAIN
                 this.isEnabled = false

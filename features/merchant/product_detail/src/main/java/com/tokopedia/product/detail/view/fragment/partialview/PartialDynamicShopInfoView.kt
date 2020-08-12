@@ -36,12 +36,16 @@ class PartialDynamicShopInfoView(val view: View, private val listener: DynamicPr
             }
             shop_location_online.text = templateLocOnline
             if (isAllowManage == TRUE_VALUE) btn_favorite.visible() else btn_favorite.gone()
-            val drawable = if (isOs) {
-                androidx.core.content.ContextCompat.getDrawable(context, R.drawable.ic_official_store_product)
-            } else if (isPm && isOs) {
-                androidx.core.content.ContextCompat.getDrawable(context, R.drawable.ic_power_merchant)
-            } else {
-                null
+            val drawable = when {
+                isOs -> {
+                    androidx.core.content.ContextCompat.getDrawable(context, R.drawable.ic_official_store_product)
+                }
+                isPm -> {
+                    androidx.core.content.ContextCompat.getDrawable(context, R.drawable.ic_power_merchant)
+                }
+                else -> {
+                    null
+                }
             }
 
             if (drawable == null) iv_badge.gone()
