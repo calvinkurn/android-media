@@ -9,7 +9,7 @@ import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 import javax.inject.Named
 
-class ShopOpenRevampValidateDomainShopNameUseCase @Inject constructor(
+class ValidateDomainShopNameUseCase @Inject constructor(
         private val graphqlUseCase: MultiRequestGraphqlUseCase
 ): UseCase<ValidateShopDomainNameResult>() {
 

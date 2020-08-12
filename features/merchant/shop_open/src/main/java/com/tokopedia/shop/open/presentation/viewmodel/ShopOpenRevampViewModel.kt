@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.shop.common.graphql.data.shopopen.ShopDomainSuggestionData
 import com.tokopedia.shop.common.graphql.data.shopopen.ValidateShopDomainNameResult
 import com.tokopedia.shop.common.graphql.domain.usecase.shopopen.GetShopDomainNameSuggestionUseCase
-import com.tokopedia.shop.common.graphql.domain.usecase.shopopen.ShopOpenRevampValidateDomainShopNameUseCase
+import com.tokopedia.shop.common.graphql.domain.usecase.shopopen.ValidateDomainShopNameUseCase
 import com.tokopedia.shop.open.common.ShopOpenDispatcherProvider
 import com.tokopedia.shop.open.data.model.*
 import com.tokopedia.shop.open.domain.*
@@ -19,7 +19,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ShopOpenRevampViewModel @Inject constructor(
-        private val validateDomainShopNameUseCase: ShopOpenRevampValidateDomainShopNameUseCase,
+        private val validateDomainShopNameUseCase: ValidateDomainShopNameUseCase,
         private val getDomainNameSuggestionUseCase: GetShopDomainNameSuggestionUseCase,
         private val getSurveyUseCase: ShopOpenRevampGetSurveyUseCase,
         private val sendSurveyUseCase: ShopOpenRevampSendSurveyUseCase,
@@ -88,7 +88,7 @@ class ShopOpenRevampViewModel @Inject constructor(
                     return@withContext
                 }
 
-                validateDomainShopNameUseCase.params = ShopOpenRevampValidateDomainShopNameUseCase.createRequestParams(shopName)
+                validateDomainShopNameUseCase.params = ValidateDomainShopNameUseCase.createRequestParams(shopName)
                 val validateShopNameResult = validateDomainShopNameUseCase.executeOnBackground()
                 validateShopNameResult.let {
                     _checkShopNameResponse.postValue(Success(validateShopNameResult))
@@ -226,7 +226,7 @@ class ShopOpenRevampViewModel @Inject constructor(
                     return@withContext
                 }
 
-                validateDomainShopNameUseCase.params = ShopOpenRevampValidateDomainShopNameUseCase.createRequestParam(domain)
+                validateDomainShopNameUseCase.params = ValidateDomainShopNameUseCase.createRequestParam(domain)
                 val validateShopDomainNameResult = validateDomainShopNameUseCase.executeOnBackground()
                 validateShopDomainNameResult.let {
                     _checkDomainNameResponse.postValue(Success(it))
