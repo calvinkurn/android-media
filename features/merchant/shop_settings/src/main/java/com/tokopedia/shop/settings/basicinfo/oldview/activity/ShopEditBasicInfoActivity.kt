@@ -1,6 +1,6 @@
 @file:Suppress("DEPRECATION")
 
-package com.tokopedia.shop.settings.basicinfo.view.activity
+package com.tokopedia.shop.settings.basicinfo.oldview.activity
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -32,7 +32,7 @@ import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
 import com.tokopedia.shop.settings.R
-import com.tokopedia.shop.settings.basicinfo.view.presenter.UpdateShopSettingsInfoPresenter
+import com.tokopedia.shop.settings.basicinfo.oldview.presenter.UpdateShopSettingsInfoPresenter
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.activity_shop_edit_basic_info.*

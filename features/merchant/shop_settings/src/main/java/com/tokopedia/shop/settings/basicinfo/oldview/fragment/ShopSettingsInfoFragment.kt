@@ -1,6 +1,6 @@
 @file:Suppress("DEPRECATION")
 
-package com.tokopedia.shop.settings.basicinfo.view.fragment
+package com.tokopedia.shop.settings.basicinfo.oldview.fragment
 
 import android.app.Activity
 import android.app.ProgressDialog
@@ -36,9 +36,9 @@ import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.shop.common.constant.ShopScheduleActionDef
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
 import com.tokopedia.shop.settings.R
-import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditBasicInfoActivity
-import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditScheduleActivity
-import com.tokopedia.shop.settings.basicinfo.view.presenter.ShopSettingsInfoPresenter
+import com.tokopedia.shop.settings.basicinfo.oldview.activity.ShopEditBasicInfoActivity
+import com.tokopedia.shop.settings.basicinfo.oldview.activity.ShopEditScheduleActivity
+import com.tokopedia.shop.settings.basicinfo.oldview.presenter.ShopSettingsInfoPresenter
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
 import com.tokopedia.shop.settings.common.util.FORMAT_DATE
 import com.tokopedia.shop.settings.common.util.toReadableString

@@ -4,7 +4,7 @@
 
     <application>
         <activity
-            android:name=".basicinfo.view.activity.ShopSettingsInfoActivity"
+            android:name=".basicinfo.oldview.activity.ShopSettingsInfoActivity"
             android:label="@string/shop_settings_manage_shop_info"
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait" >
@@ -21,13 +21,13 @@
         </activity>
 
         <activity
-            android:name=".basicinfo.view.activity.ShopEditBasicInfoActivity"
+            android:name=".basicinfo.oldview.activity.ShopEditBasicInfoActivity"
             android:label="@string/shop_settings_basic_info"
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".basicinfo.view.activity.ShopEditScheduleActivity"
+            android:name=".basicinfo.oldview.activity.ShopEditScheduleActivity"
             android:label="@string/shop_settings_shop_status"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
