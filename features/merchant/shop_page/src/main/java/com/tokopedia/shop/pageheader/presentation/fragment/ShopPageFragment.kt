@@ -1,6 +1,7 @@
 package com.tokopedia.shop.pageheader.presentation.fragment
 
 import android.app.Activity
+import android.content.ClipData
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.LayerDrawable
@@ -560,8 +561,11 @@ class ShopPageFragment :
     }
 
     private fun clickShopShare() {
-        // todo please move share tracker from shop info to here
-        shopPageTracking?.clickShareButton(customDimensionShopPage)
+        if(isMyShop) {
+            shopPageTracking?.clickShareButtonSellerView(customDimensionShopPage)
+        } else {
+            shopPageTracking?.clickShareButton(customDimensionShopPage)
+        }
         removeTemporaryShopImage(shopImageFilePath)
         getWriteReadStoragePermission()
     }
@@ -1003,6 +1007,9 @@ class ShopPageFragment :
 
     override fun onItemBottomsheetShareClicked(shopShare: ShopShareModel) {
         val shopImageFileUri = MethodChecker.getUri(context, File(shopImageFilePath))
+        shopShare.appIntent?.clipData = ClipData.newRawUri("", shopImageFileUri)
+        shopShare.appIntent?.removeExtra(Intent.EXTRA_STREAM)
+        shopShare.appIntent?.removeExtra(Intent.EXTRA_TEXT)
         when(shopShare) {
             is ShopShareModel.CopyLink -> {
                 shopPageHeaderDataModel?.let {
