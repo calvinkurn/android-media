@@ -328,7 +328,7 @@ public class InboxReputationFragment extends BaseDaggerFragment
     @Override
     public void onSuccessRefresh(InboxReputationViewModel inboxReputationViewModel) {
         adapter.removeEmpty();
-        if (!GlobalConfig.isSellerApp() && getTab() == InboxReputationActivity.TAB_BUYER_REVIEW) {
+        if (!GlobalConfig.isSellerApp() && getTab() == Constant.TAB_BUYER_REVIEW) {
             adapter.setList(inboxReputationViewModel.getList(), ovoDataModel, sellerMigrationReviewModel);
         } else {
             adapter.setList(inboxReputationViewModel.getList(), ovoDataModel);
