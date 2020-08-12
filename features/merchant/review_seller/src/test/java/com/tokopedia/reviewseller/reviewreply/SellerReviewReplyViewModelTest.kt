@@ -93,6 +93,7 @@ class SellerReviewReplyViewModelTest : SellerReviewReplyViewModelTestFixture() {
             viewModel.getTemplateListReply(anyInt())
             val expectedResult = Fail(error)
             viewModel.reviewTemplate.verifyErrorEquals(expectedResult)
+
         }
     }
 

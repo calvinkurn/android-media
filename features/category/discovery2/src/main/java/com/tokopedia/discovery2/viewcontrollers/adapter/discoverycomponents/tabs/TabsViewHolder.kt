@@ -1,12 +1,13 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs
 
 import android.view.View
+import android.view.ViewGroup
+import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.discovery2.R
-import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.Utils.Companion.preSelectedTab
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
@@ -15,6 +16,7 @@ import com.tokopedia.discovery2.viewcontrollers.customview.CustomViewCreator
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.unifycomponents.TabsUnify
 
+private const val TAB_START_PADDING = 20
 
 class TabsViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner), TabLayout.OnTabSelectedListener {
     private val tabsHolder: TabsUnify = itemView.findViewById(R.id.discovery_tabs_holder)
@@ -41,11 +43,14 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) : AbstractV
                 }
             }
         })
+
         tabsViewModel.getColorTabComponentLiveData().observe(fragment.viewLifecycleOwner, Observer {
             tabsHolder.tabLayout.removeAllTabs()
+            tabsHolder.tabLayout.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
             tabsHolder.getUnifyTabLayout().setSelectedTabIndicator(null)
             it.forEach {
                 val tab = tabsHolder.tabLayout.newTab()
+                ViewCompat.setPaddingRelative(tab.view, TAB_START_PADDING, 0, 0, 0)
                 tab.customView = CustomViewCreator.getCustomViewObject(itemView.context, ComponentsList.TabsItem, it, fragment)
                 tabsHolder.tabLayout.addTab(tab, it.data?.get(0)?.isSelected ?: false)
             }
@@ -86,7 +91,7 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) : AbstractV
     }
 
     private fun trackTabsGTMStatus(tab: TabLayout.Tab) {
-        if(preSelectedTab !=  tab.position){
+        if (preSelectedTab != tab.position) {
             preSelectedTab = tab.position
             sendTabTrackingData(tab)
         }

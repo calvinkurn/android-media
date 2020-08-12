@@ -9,11 +9,14 @@ import com.tokopedia.editshipping.analytics.EditShippingAnalytics;
 import com.tokopedia.editshipping.data.interactor.EditShippingInteractorImpl;
 import com.tokopedia.editshipping.data.interactor.EditShippingRetrofitInteractor;
 import com.tokopedia.editshipping.data.network.ShippingNetworkParam;
-import com.tokopedia.editshipping.model.editshipping.Courier;
-import com.tokopedia.editshipping.model.editshipping.EditShippingCouriers;
-import com.tokopedia.editshipping.model.editshipping.ProvinceCitiesDistrict;
-import com.tokopedia.editshipping.model.editshipping.ShopShipping;
-import com.tokopedia.editshipping.model.openshopshipping.OpenShopData;
+import com.tokopedia.editshipping.domain.ValidateShippingMapper;
+import com.tokopedia.editshipping.domain.ValidateShippingUseCase;
+import com.tokopedia.editshipping.domain.model.ValidateShippingModel;
+import com.tokopedia.editshipping.domain.model.editshipping.Courier;
+import com.tokopedia.editshipping.domain.model.editshipping.EditShippingCouriers;
+import com.tokopedia.editshipping.domain.model.editshipping.ProvinceCitiesDistrict;
+import com.tokopedia.editshipping.domain.model.editshipping.ShopShipping;
+import com.tokopedia.editshipping.domain.model.openshopshipping.OpenShopData;
 import com.tokopedia.editshipping.ui.EditShippingFragment;
 import com.tokopedia.editshipping.ui.EditShippingViewListener;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
@@ -21,9 +24,12 @@ import com.tokopedia.logisticdata.data.entity.address.DistrictRecommendationAddr
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.logisticdata.data.entity.response.KeroMapsAutofill;
 import com.tokopedia.logisticdata.domain.usecase.RevGeocodeUseCase;
+import com.tokopedia.network.utils.ErrorHandler;
+import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -77,11 +83,19 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
 
     private UserSessionInterface userSession;
 
+    private ValidateShippingUseCase validateShippingUseCase;
+
+    private ValidateShippingModel validateBoData;
+
+    private ValidateShippingMapper validateShippingMapper;
+
     public EditShippingPresenterImpl(EditShippingViewListener view) {
         this.view = view;
         editShippingRetrofitInteractor = new EditShippingInteractorImpl();
         revGeocodeUseCase = new RevGeocodeUseCase(view.getMainContext(), new GraphqlUseCase());
         userSession = new UserSession(view.getMainContext());
+        validateShippingMapper = new ValidateShippingMapper();
+        validateShippingUseCase = new ValidateShippingUseCase(view.getMainContext(), new GraphqlUseCase(), validateShippingMapper);
     }
 
     @Override
@@ -417,7 +431,7 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
                     @Override
                     public void onSuccess(String statusMessage) {
                         view.finishLoading();
-                        view.dismissFragment(statusMessage);
+                        view.refreshData(statusMessage);
                     }
 
                     @Override
@@ -802,5 +816,43 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
         for (int i = 0; i < courierList.size(); i++) {
             shippingUpdateParams.putAll(courierList.get(i).getAdditionalOptionDatas());
         }
+    }
+
+    @Override
+    public void validateBo(int shopId, String compiledShippingId) {
+        Map<String, Object> param = new HashMap<>();
+        param.put(ValidateShippingUseCase.SHOP_ID, shopId);
+        param.put(ValidateShippingUseCase.SHIPMENT_IDS, compiledShippingId);
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putAll(param);
+        validateShippingUseCase.execute(requestParams, new Subscriber<ValidateShippingModel>() {
+            @Override
+            public void onCompleted() {
+                //no-op
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                 view.showErrorToast(ErrorHandler.getErrorMessage(view.getMainContext(), e));
+            }
+
+            @Override
+            public void onNext(ValidateShippingModel validateShippingModel) {
+                view.validateShowPopup(validateShippingModel);
+            }
+        });
+    }
+
+    @Override
+    public int getShopId() {
+        int shopId = Integer.parseInt(userSession.getShopId());
+        return shopId;
+    }
+
+    @NotNull
+    @Override
+    public String getCompiledShippingId() {
+        scanActivatedCourier();
+        return compiledShippingId();
     }
 }

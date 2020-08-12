@@ -23,7 +23,7 @@ class BenchmarkProductHighlightComponent {
     var activityRule: ActivityTestRule<BlankTestActivity> = ActivityTestRule(BlankTestActivity::class.java)
 
     @Test
-    fun benchmark_onCreateViewHolder_product_highlight_component() {
+    fun benchmark_onCreateViewHolder_ViewHolder_product_highlight_component() {
         val viewGroup = FrameLayout(activityRule.activity)
         val recyclerViewAdapter = simpleAdapter(
                 ProductHighlightComponentViewHolder.LAYOUT) {
@@ -38,7 +38,7 @@ class BenchmarkProductHighlightComponent {
     }
 
     @Test
-    fun benchmark_onBind_product_highlight_component() {
+    fun benchmark_onBind_ViewHolder_product_highlight_component() {
         val itemView = simpleViewFromLayout(ProductHighlightComponentViewHolder.LAYOUT, activityRule.activity)
         val viewHolder = ProductHighlightComponentViewHolder(
                 itemView, null, null

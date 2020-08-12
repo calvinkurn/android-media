@@ -13,6 +13,7 @@ import com.tokopedia.chat_common.view.adapter.viewholder.MessageViewHolder;
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener;
 import com.tokopedia.chatbot.EllipsizeMaker;
 import com.tokopedia.chatbot.R;
+import com.tokopedia.chatbot.util.ChatBotTimeConverter;
 import com.tokopedia.chatbot.view.customview.ReadMoreBottomSheet;
 
 import static com.tokopedia.chatbot.EllipsizeMaker.MESSAGE_LINE_COUNT;
@@ -55,6 +56,16 @@ public class ChatBotMessageViewHolder extends MessageViewHolder {
             }
         });
 
+    }
+
+    @Override
+    protected boolean alwaysShowTime() {
+        return true;
+    }
+
+    @Override
+    protected String getHourTime(String replyTime) {
+        return ChatBotTimeConverter.INSTANCE.getHourTime(replyTime);
     }
 
     @Override

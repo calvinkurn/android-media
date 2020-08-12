@@ -17,9 +17,6 @@ public class NonCarouselItemDecoration extends RecyclerView.ItemDecoration {
 
         if (parent.getChildAdapterPosition(view) == 0) {
             outRect.right += size;
-        } else {
-            outRect.left += size;
-            outRect.right += size;
         }
     }
 }

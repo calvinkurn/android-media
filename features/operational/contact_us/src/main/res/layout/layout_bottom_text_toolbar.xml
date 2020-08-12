@@ -8,24 +8,24 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_selected_images"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_10"
-        android:background="#fafbfc"
+        android:paddingTop="@dimen/dp_10"
+        android:background="@color/contact_us_input_field_bg_color"
         android:orientation="horizontal"
         android:scrollbars="horizontal"
         android:visibility="gone"
         app:layoutManager="LinearLayoutManager"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
         tools:listitem="@layout/selected_image_item" />
 
     <View
         android:id="@+id/divider_rv"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/dp_1"
-        android:layout_marginTop="@dimen/dp_10"
-        android:background="@color/grey_300"
-        android:visibility="gone"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="@dimen/dp_5"
+        android:background="@drawable/top_shadow_gradient"
+        android:visibility="visible"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rv_selected_images" />
@@ -36,28 +36,31 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_16"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider_rv"
-        app:srcCompat="@drawable/ic_image" />
+        app:srcCompat="@drawable/contact_us_ic_image" />
 
     <EditText
         android:id="@+id/ed_message"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="@dimen/dp_8"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="@dimen/dp_0"
+        android:layout_marginBottom="@dimen/dp_12"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginTop="@dimen/dp_12"
         android:background="@drawable/rounded_grey_rectangle_border"
         android:hint="@string/contact_us_type_here"
+        android:textColorHint="@color/contact_us_grey_n_700_44"
         android:includeFontPadding="false"
         android:lineSpacingExtra="6sp"
         android:maxLines="4"
         android:minHeight="@dimen/dp_40"
         android:paddingLeft="@dimen/dp_16"
+        android:paddingStart="@dimen/dp_16"
         android:textColor="@color/black_70"
         android:textSize="@dimen/sp_14"
         android:maxLength="4000"
@@ -73,11 +76,12 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_16"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider_rv"
-        app:srcCompat="@drawable/ic_send_button" />
+        app:srcCompat="@drawable/contact_us_ic_send_button" />
 
     <ProgressBar
         android:id="@+id/send_progress"

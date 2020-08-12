@@ -53,7 +53,7 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="@dimen/mvc_create_divider_height"
+        android:layout_height="@dimen/mvc_divider_height"
         android:background="@color/Neutral_N75"
         app:layout_constraintTop_toBottomOf="@id/voucherTipsItemRecyclerView"
         app:layout_constraintBottom_toBottomOf="parent"/>

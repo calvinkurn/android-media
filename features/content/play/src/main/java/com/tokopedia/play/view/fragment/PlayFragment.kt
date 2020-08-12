@@ -10,6 +10,7 @@ import android.view.*
 import android.view.inputmethod.InputMethodManager
 import androidx.annotation.Nullable
 import androidx.core.view.ViewCompat
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
@@ -19,21 +20,11 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.play.*
-import com.tokopedia.kotlin.extensions.view.invisible
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.setMargin
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.ERR_STATE_SOCKET
-import com.tokopedia.play.ERR_STATE_VIDEO
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
-import com.tokopedia.play.analytic.BufferTrackingModel
 import com.tokopedia.play.analytic.PlayAnalytics
-import com.tokopedia.play.analytic.VideoAnalyticHelper
 import com.tokopedia.play.component.EventBusFactory
-import com.tokopedia.play.analytic.TrackingField
-import com.tokopedia.play.analytic.WatchDurationModel
 import com.tokopedia.play.data.websocket.PlaySocketInfo
 import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.di.PlayModule
@@ -56,8 +47,8 @@ import com.tokopedia.play.util.PlaySensorOrientationManager
 import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.util.keyboard.KeyboardWatcher
 import com.tokopedia.play.util.observer.DistinctObserver
-import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.activity.PlayActivity
+import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.contract.PlayNewChannelInteractor
 import com.tokopedia.play.view.contract.PlayOrientationListener
 import com.tokopedia.play.view.event.ScreenStateEvent
@@ -78,7 +69,6 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
-import kotlin.math.abs
 
 /**
  * Created by jegul on 29/11/19
@@ -89,6 +79,7 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
         private const val TOP_BOUNDS_LANDSCAPE_VIDEO = "top_bounds_landscape_video"
 
         private const val EXTRA_TOTAL_VIEW = "EXTRA_TOTAL_VIEW"
+        private const val EXTRA_CHANNEL_ID = "EXTRA_CHANNEL_ID"
 
         fun newInstance(channelId: String?): PlayFragment {
             return PlayFragment().apply {
@@ -205,6 +196,7 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
 
     override fun onPause() {
         unregisterKeyboardListener(requireView())
+        playViewModel.stopJob()
         super.onPause()
         if (::orientationManager.isInitialized) orientationManager.disable()
     }
@@ -271,6 +263,7 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
         activity?.setResult(Activity.RESULT_OK, Intent().apply {
             val totalView = playViewModel.totalView
             if (!totalView.isNullOrEmpty()) putExtra(EXTRA_TOTAL_VIEW, totalView)
+            if (!channelId.isNullOrEmpty()) putExtra(EXTRA_CHANNEL_ID, channelId)
         })
     }
 
@@ -474,9 +467,12 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
     private fun observeGetChannelInfo() {
         playViewModel.observableGetChannelInfo.observe(viewLifecycleOwner, DistinctObserver { result ->
             when (result) {
-                is Success -> PlayAnalytics.sendScreen(channelId, playViewModel.channelType)
+                is Success -> {
+                    PlayAnalytics.sendScreen(channelId, playViewModel.channelType)
+                    showGlobalError(false)
+                }
                 is Fail -> result.throwable.message?.let {
-                    if (GlobalErrorCodeWrapper.wrap(it) != GlobalErrorCodeWrapper.Unknown) showGlobalError()
+                    if (GlobalErrorCodeWrapper.wrap(it) != GlobalErrorCodeWrapper.Unknown) showGlobalError(true)
                 }
             }
         })
@@ -523,7 +519,7 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
     }
 
     private fun observeVideoPlayer() {
-        playViewModel.observableVideoPlayer.observe(viewLifecycleOwner, DistinctObserver {
+        playViewModel.observableVideoPlayer.observe(viewLifecycleOwner, Observer {
             scope.launch {
                 EventBusFactory.get(viewLifecycleOwner)
                         .emit(
@@ -562,10 +558,10 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
         }
     }
 
-    private fun showGlobalError() {
+    private fun showGlobalError(shouldShow: Boolean) {
         scope.launch {
             EventBusFactory.get(viewLifecycleOwner)
-                    .emit(ScreenStateEvent::class.java, ScreenStateEvent.ShowGlobalError)
+                    .emit(ScreenStateEvent::class.java, ScreenStateEvent.ShowGlobalError(shouldShow))
         }
     }
 

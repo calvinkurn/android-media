@@ -10,21 +10,29 @@ import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.play_common.domain.model.PlayToggleChannelReminder
+import com.tokopedia.play_common.domain.usecases.GetPlayWidgetUseCase
+import com.tokopedia.play_common.domain.usecases.GetPlayWidgetUseCase.Companion.SHOP_AUTHOR_TYPE
+import com.tokopedia.play_common.domain.usecases.GetPlayWidgetUseCase.Companion.SHOP_WIDGET_TYPE
+import com.tokopedia.play_common.domain.usecases.PlayToggleChannelReminderUseCase
+import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselItemDataModel
 import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.domain.interactor.GQLCheckWishlistUseCase
 import com.tokopedia.shop.common.graphql.data.checkwishlist.CheckWishlistResult
 import com.tokopedia.shop.common.util.ShopUtil
+import com.tokopedia.shop.home.domain.GetShopPageHomeLayoutUseCase
 import com.tokopedia.shop.home.util.CoroutineDispatcherProvider
+import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
+import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
+import com.tokopedia.shop.home.view.model.ShopHomePlayCarouselUiModel
+import com.tokopedia.shop.home.view.model.ShopHomeProductViewModel
+import com.tokopedia.shop.home.view.model.ShopPageHomeLayoutUiModel
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
-import com.tokopedia.shop.home.domain.GetShopPageHomeLayoutUseCase
-import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
-import com.tokopedia.shop.home.view.model.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
@@ -42,6 +50,8 @@ class ShopHomeViewModel @Inject constructor(
         private val getShopProductUseCase: GqlGetShopProductUseCase,
         private val dispatcherProvider: CoroutineDispatcherProvider,
         private val addToCartUseCase: AddToCartUseCase,
+        private val getPlayWidgetUseCase: GetPlayWidgetUseCase,
+        private val playToggleChannelReminderUseCase: PlayToggleChannelReminderUseCase,
         private val addWishListUseCase: AddWishListUseCase,
         private val removeWishlistUseCase: RemoveWishListUseCase,
         private val gqlCheckWishlistUseCase: Provider<GQLCheckWishlistUseCase>,
@@ -67,6 +77,12 @@ class ShopHomeViewModel @Inject constructor(
     val checkWishlistData: LiveData<Result<List<Pair<ShopHomeCarousellProductUiModel, List<CheckWishlistResult>>?>>>
         get() = _checkWishlistData
     private val _checkWishlistData = MutableLiveData<Result<List<Pair<ShopHomeCarousellProductUiModel, List<CheckWishlistResult>>?>>>()
+
+    val reminderPlayLiveData: LiveData<Pair<Int, Result<Boolean>>> get() = _reminderPlayLiveData
+    private val _reminderPlayLiveData = MutableLiveData<Pair<Int, Result<Boolean>>>()
+
+    val updatePlayWidgetData: LiveData<ShopHomePlayCarouselUiModel> get() = _updatePlayWidgetData
+    private val _updatePlayWidgetData = MutableLiveData<ShopHomePlayCarouselUiModel>()
 
     val videoYoutube: LiveData<Pair<String, Result<YoutubeVideoDetailModel>>>
         get() = _videoYoutube
@@ -99,13 +115,24 @@ class ShopHomeViewModel @Inject constructor(
                     block = { getProductListData(shopId, sortId, 1) },
                     onError = { null }
             )
+
             shopLayoutWidget.await()?.let {
-                _shopHomeLayoutData.postValue(Success(it))
+
+                val newShopPageHomeLayoutUiModel = asyncCatchError(
+                        dispatcherProvider.io(),
+                        block = { getPlayWidgetCarousel(shopId, it) },
+                        onError = {null}
+                )
+
+                newShopPageHomeLayoutUiModel.await()?.let { newShopPageHomeLayoutUiModelData ->
+                    _shopHomeLayoutData.postValue(Success(newShopPageHomeLayoutUiModelData))
+                }
                 productList.await()?.let { productListData ->
                     _initialProductListData.postValue(Success(productListData))
                 }
             }
         }) {
+            it.printStackTrace()
         }
     }
 
@@ -122,6 +149,54 @@ class ShopHomeViewModel @Inject constructor(
         }) {
             _newProductListData.postValue(Fail(it))
         }
+    }
+
+    fun onRefreshPlayBanner(shopId: String){
+        val result = _shopHomeLayoutData.value
+        if(result is Success){
+            launchCatchError(dispatcherProvider.io(), block = {
+                result.data.listWidget.find { data -> data is ShopHomePlayCarouselUiModel }?.let { uiModel ->
+                    getPlayWidgetUseCase.setParams(SHOP_WIDGET_TYPE, shopId, SHOP_AUTHOR_TYPE)
+                    val playWidgetEntity = getPlayWidgetUseCase.executeOnBackground()
+                    _updatePlayWidgetData.postValue((uiModel as ShopHomePlayCarouselUiModel).copy(playBannerCarouselDataModel = playWidgetEntity))
+                }
+            }){
+                it.printStackTrace()
+            }
+        }
+    }
+
+    fun setToggleReminderPlayBanner(channelId: String, isSet: Boolean, position: Int){
+        launchCatchError(dispatcherProvider.io(), block = {
+            playToggleChannelReminderUseCase.setParams(channelId, isSet)
+            val reminder = playToggleChannelReminderUseCase.executeOnBackground()
+            if(reminder.playToggleChannelReminder != null && reminder.playToggleChannelReminder?.header?.status == PlayToggleChannelReminder.SUCCESS_STATUS){
+                _reminderPlayLiveData.postValue(Pair(position, Success(isSet)))
+            } else {
+                _reminderPlayLiveData.postValue(Pair(position, Fail(Throwable())))
+            }
+        }){
+            _reminderPlayLiveData.postValue(Pair(position, Fail(it)))
+        }
+    }
+
+    private suspend fun getPlayWidgetCarousel(shopId: String, shopPageHomeLayoutUiModel: ShopPageHomeLayoutUiModel): ShopPageHomeLayoutUiModel?{
+        val index = shopPageHomeLayoutUiModel.listWidget.indexOfFirst { it is ShopHomePlayCarouselUiModel }
+        if(index != -1){
+            val data = shopPageHomeLayoutUiModel.listWidget[index] as ShopHomePlayCarouselUiModel
+            getPlayWidgetUseCase.setParams(SHOP_WIDGET_TYPE, shopId, SHOP_AUTHOR_TYPE)
+            val playBannerDataModel = getPlayWidgetUseCase.executeOnBackground()
+            val newHomeLayout = shopPageHomeLayoutUiModel.listWidget.toMutableList()
+            if(playBannerDataModel.channelList.isNotEmpty()){
+                newHomeLayout[index] = data.copy(playBannerCarouselDataModel = playBannerDataModel)
+            }else{
+                newHomeLayout.remove(data)
+            }
+            return shopPageHomeLayoutUiModel.copy(
+                    listWidget = newHomeLayout
+            )
+        }
+        return shopPageHomeLayoutUiModel
     }
 
     fun addProductToCart(
@@ -161,6 +236,23 @@ class ShopHomeViewModel @Inject constructor(
             }.awaitAll()
             _checkWishlistData.value = Success(listResultCheckWishlist)
         }) {}
+    }
+
+    fun updatePlayWidgetData(channelId: String, totalView: String){
+        val result = _shopHomeLayoutData.value
+        if(result is Success){
+            launchCatchError(block = {
+                result.data.listWidget.withIndex().find { (_, data) -> data is ShopHomePlayCarouselUiModel }?.let { (index, uiModel) ->
+                    val newList = (uiModel as ShopHomePlayCarouselUiModel).playBannerCarouselDataModel.channelList.toMutableList()
+                    val indexOf = newList.indexOfFirst { it is PlayBannerCarouselItemDataModel && it.channelId == channelId }
+                    if(indexOf != -1){
+                        newList[index] = (newList[index] as PlayBannerCarouselItemDataModel).copy(countView = totalView)
+                        _updatePlayWidgetData.postValue(uiModel.copy(playBannerCarouselDataModel = uiModel.playBannerCarouselDataModel.copy(channelList = newList)))
+                    }
+                }
+            }){
+            }
+        }
     }
 
     private suspend fun getShopPageHomeLayout(shopId: String): ShopPageHomeLayoutUiModel {

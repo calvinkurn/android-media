@@ -7,7 +7,6 @@ import android.preference.PreferenceManager;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.drawer2.data.factory.ProfileSourceFactory;
 import com.tokopedia.core.drawer2.data.mapper.ProfileMapper;
 import com.tokopedia.core.drawer2.data.pojo.profile.ProfileModel;
 import com.tokopedia.core.network.apiservices.user.PeopleService;
@@ -23,6 +22,8 @@ import rx.functions.Action1;
  */
 
 public class CloudProfileSource {
+
+    private static final String KEY_PROFILE_DATA = "KEY_PROFILE_DATA";
 
     private final Context context;
     private final PeopleService peopleService;
@@ -55,7 +56,7 @@ public class CloudProfileSource {
             @Override
             public void call(ProfileModel profileModel) {
                 if (profileModel != null && profileModel.isSuccess()) {
-                    peopleCache.setKey(ProfileSourceFactory.KEY_PROFILE_DATA);
+                    peopleCache.setKey(KEY_PROFILE_DATA);
                     peopleCache.setValue(CacheUtil.convertModelToString(profileModel,
                             new TypeToken<ProfileModel>() {
                             }.getType()));

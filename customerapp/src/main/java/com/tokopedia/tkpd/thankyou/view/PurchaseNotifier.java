@@ -13,6 +13,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+import timber.log.Timber;
+
 /**
  * @author okasurya on 2/7/18.
  */
@@ -39,6 +41,8 @@ public class PurchaseNotifier {
                 bundle.putString(Constants.ARG_NOTIFICATION_APPLINK, Constant.PURCHASE_VERIFICATION);
 
                 ApplinkBuildAndShowNotification.showApplinkNotification(context, bundle);
+
+                Timber.w("P2#PUSH_NOTIF_UNUSED#'PurchaseNotifier'");
             }
         } catch (Exception e) {
             e.printStackTrace();

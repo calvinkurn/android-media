@@ -42,6 +42,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     var pageIdentifier: String = ""
     var pageType: String = ""
     var pagePath: String = ""
+    var campaignCode: String = ""
 
     @Inject
     lateinit var customTopChatUseCase: CustomTopChatUseCase
@@ -97,6 +98,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
             pageType = pageInfoData.type ?: ""
             pagePath = pageInfoData.path ?: ""
             pageInfoData.additionalInfo = discoPageData.additionalInfo
+            campaignCode = pageInfoData.campaignCode ?: ""
             discoveryPageInfo.value = Success(pageInfoData)
         }
     }

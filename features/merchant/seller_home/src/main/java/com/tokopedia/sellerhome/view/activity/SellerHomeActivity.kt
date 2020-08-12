@@ -19,6 +19,7 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.requestStatusBarDark
 import com.tokopedia.kotlin.extensions.view.show
@@ -83,6 +84,9 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
 
     var performanceMonitoringSellerHomeLayoutPlt: HomeLayoutLoadTimeMonitoring? = null
 
+    private var shouldMoveToReview: Boolean = false
+    private var shouldMoveToCentralizedPromo: Boolean = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
         if(startOldSellerHomeIfEnabled()) {
@@ -93,14 +97,38 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sah_seller_home)
 
+        with (intent?.getStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA)?.firstOrNull().orEmpty()) {
+            shouldMoveToReview = this == ApplinkConst.REPUTATION
+            shouldMoveToCentralizedPromo = this == ApplinkConstInternalSellerapp.CENTRALIZED_PROMO
+        }
+        val isRedirectedFromSellerMigration = intent?.hasExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA) ?: false ||
+                intent?.hasExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME) ?: false
+
         setupToolbar()
         setupStatusBar()
         setupNavigator()
         setupDefaultPage()
         setupBottomNav()
-        UpdateCheckerHelper.checkAppUpdate(this)
+        UpdateCheckerHelper.checkAppUpdate(this, isRedirectedFromSellerMigration)
         observeNotificationsLiveData()
         observeShopInfoLiveData()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        val appLinks = ArrayList(intent?.getStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA).orEmpty())
+        if (appLinks.isNotEmpty()) {
+            val appLinkToOpen = appLinks.firstOrNull().orEmpty()
+            if (shouldMoveToReview || shouldMoveToCentralizedPromo) {
+                shouldMoveToReview = false
+                shouldMoveToCentralizedPromo = false
+                RouteManager.getIntent(this, appLinkToOpen).apply {
+                    replaceExtras(this@SellerHomeActivity.intent.extras)
+                    addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+                    startActivity(this)
+                }
+            }
+        }
     }
 
     override fun onResume() {

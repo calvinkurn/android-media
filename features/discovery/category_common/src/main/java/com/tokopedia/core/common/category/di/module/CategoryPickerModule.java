@@ -14,14 +14,10 @@ import com.tokopedia.core.common.category.data.network.OkHttpFactory;
 import com.tokopedia.core.common.category.data.network.TopAdsAuthInterceptor;
 import com.tokopedia.core.common.category.data.repository.CategoryRepositoryImpl;
 import com.tokopedia.core.common.category.data.source.CategoryDataSource;
-import com.tokopedia.core.common.category.data.source.CategoryVersionDataSource;
 import com.tokopedia.core.common.category.data.source.FetchCategoryDataSource;
-import com.tokopedia.core.common.category.data.source.cloud.api.HadesCategoryApi;
 import com.tokopedia.core.common.category.data.source.db.CategoryDB;
 import com.tokopedia.core.common.category.data.source.db.CategoryDao;
 import com.tokopedia.core.common.category.domain.CategoryRepository;
-import com.tokopedia.core.common.category.domain.interactor.FetchCategoryFromSelectedUseCase;
-import com.tokopedia.core.common.category.domain.interactor.FetchCategoryWithParentChildUseCase;
 import com.tokopedia.core.common.category.domain.interactor.GetCategoryLiteTreeUseCase;
 import com.tokopedia.core.common.category.presenter.CategoryPickerPresenter;
 import com.tokopedia.core.common.category.presenter.CategoryPickerPresenterImpl;
@@ -62,23 +58,16 @@ public class CategoryPickerModule {
     }
 
     @Provides
-    CategoryRepository provideCategoryRepository(CategoryVersionDataSource categoryVersionDataSource,
-                                                 CategoryDataSource categoryDataSource,
+    CategoryRepository provideCategoryRepository(CategoryDataSource categoryDataSource,
                                                  FetchCategoryDataSource fetchCategoryDataSource) {
-        return new CategoryRepositoryImpl(categoryVersionDataSource, categoryDataSource, fetchCategoryDataSource);
-    }
-
-    @Provides
-    HadesCategoryApi provideHadesCategoryApi(@Named(ConstantCategoryCommon.CATEGORY_PICKER_RETROFIT) Retrofit retrofit) {
-        return retrofit.create(HadesCategoryApi.class);
+        return new CategoryRepositoryImpl(categoryDataSource, fetchCategoryDataSource);
     }
 
     @Provides
     CategoryPickerPresenter provideCategoryPickerPresenter(
-            FetchCategoryWithParentChildUseCase fetchCategoryChildUseCase,
-            FetchCategoryFromSelectedUseCase fetchCategoryFromSelectedUseCase
+            GetCategoryLiteTreeUseCase getCategoryLiteTreeUseCase
     ) {
-        return new CategoryPickerPresenterImpl(fetchCategoryChildUseCase, fetchCategoryFromSelectedUseCase);
+        return new CategoryPickerPresenterImpl(getCategoryLiteTreeUseCase);
     }
 
     @Provides

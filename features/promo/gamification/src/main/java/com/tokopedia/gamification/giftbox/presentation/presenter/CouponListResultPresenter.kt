@@ -20,6 +20,7 @@ class CouponListResultPresenter @Inject constructor(val context: Context,
                                                     @Named(MAIN) val uiDispatcher: CoroutineDispatcher
 ) : CoroutineScope {
     override val coroutineContext: CoroutineContext = workerDispatcher
+    private val HTTP_STATUS_OK = "200"
 
     fun autoApply(code: String, autoApplyMessage: String?) {
         launchCatchError(block = {
@@ -36,7 +37,7 @@ class CouponListResultPresenter @Inject constructor(val context: Context,
     fun showAutoApplyMessage(autoApplyResponse: AutoApplyResponse, autoApplyMessage: String?) {
         val code = autoApplyResponse.tokopointsSetAutoApply?.resultStatus?.code
         val messageList = autoApplyResponse.tokopointsSetAutoApply?.resultStatus?.message
-        if (code == 200) {
+        if (code == HTTP_STATUS_OK) {
             if (!autoApplyMessage.isNullOrEmpty()) {
                 CustomToast.show(context, autoApplyMessage)
             } else {

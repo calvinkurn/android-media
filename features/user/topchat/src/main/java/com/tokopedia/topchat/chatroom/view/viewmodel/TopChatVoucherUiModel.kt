@@ -29,12 +29,12 @@ constructor(
         messageId: String, fromUid: String, from: String, fromRole: String,
         attachmentId: String, attachmentType: String, replyTime: String, message: String,
         isRead: Boolean, isDummy: Boolean, isSender: Boolean, var voucherModel: MerchantVoucherModel,
-        var replyId: String, var blastId: String, source: String, val isPublic: Int
+        replyId: String, var blastId: String, source: String, val isPublic: Int
 ) : SendableViewModel(
         messageId, fromUid, from, fromRole,
         attachmentId, attachmentType, replyTime, "",
         isRead, isDummy, isSender, message,
-        source
+        source, replyId
 ), Visitable<TopChatTypeFactory> {
 
     override fun type(typeFactory: TopChatTypeFactory): Int {

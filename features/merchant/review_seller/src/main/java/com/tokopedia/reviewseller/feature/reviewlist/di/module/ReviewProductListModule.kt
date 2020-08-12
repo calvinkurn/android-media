@@ -12,7 +12,7 @@ import dagger.Module
 import dagger.Provides
 
 @ReviewProductListScope
-@Module
+@Module(includes = [ReviewProductListViewModelModule::class])
 class ReviewProductListModule {
 
     @ReviewProductListScope

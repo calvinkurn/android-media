@@ -12,6 +12,7 @@ import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.contactus.R
 import com.tokopedia.contactus.common.analytics.ContactUsTracking
 import com.tokopedia.contactus.common.analytics.InboxTicketTracking
+import com.tokopedia.contactus.inboxticket2.data.ImageUpload
 import com.tokopedia.contactus.inboxticket2.data.model.Tickets
 import com.tokopedia.contactus.inboxticket2.domain.*
 import com.tokopedia.contactus.inboxticket2.domain.usecase.*
@@ -26,7 +27,6 @@ import com.tokopedia.contactus.inboxticket2.view.utils.CLOSED
 import com.tokopedia.contactus.inboxticket2.view.utils.OPEN
 import com.tokopedia.contactus.inboxticket2.view.utils.SOLVED
 import com.tokopedia.contactus.inboxticket2.view.utils.Utils
-import com.tokopedia.contactus.orderquery.data.ImageUpload
 import com.tokopedia.csat_rating.presenter.BaseProvideRatingFragmentPresenter.Companion.EMOJI_STATE
 import com.tokopedia.csat_rating.presenter.BaseProvideRatingFragmentPresenter.Companion.SELECTED_ITEM
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
@@ -255,13 +255,13 @@ class InboxDetailPresenterImpl(private val postMessageUseCase: PostMessageUseCas
     }
 
     override fun onImageSelect(image: ImageUpload) {
-        if (!getUtils().fileSizeValid(image.fileLoc)) {
+        if (image.fileLoc?.let { getUtils().fileSizeValid(it) } == false) {
             showErrorMessage(MESSAGE_WRONG_FILE_SIZE)
             ContactUsTracking.sendGTMInboxTicket("",
                     InboxTicketTracking.Category.EventInboxTicket,
                     InboxTicketTracking.Action.EventClickAttachImage,
                     InboxTicketTracking.Label.ImageError1)
-        } else if (!getUtils().isBitmapDimenValid(image.fileLoc)) {
+        } else if (image.fileLoc?.let { getUtils().isBitmapDimenValid(it) } == false) {
             showErrorMessage(MESSAGE_WRONG_DIMENSION)
             ContactUsTracking.sendGTMInboxTicket("",
                     InboxTicketTracking.Category.EventInboxTicket,

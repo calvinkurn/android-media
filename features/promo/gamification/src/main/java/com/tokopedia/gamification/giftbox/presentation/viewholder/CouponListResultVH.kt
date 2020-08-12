@@ -1,6 +1,7 @@
 package com.tokopedia.gamification.giftbox.presentation.viewholder
 
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
@@ -10,6 +11,7 @@ import com.tokopedia.gamification.data.entity.CrackButtonEntity
 import com.tokopedia.gamification.di.ActivityContextModule
 import com.tokopedia.gamification.giftbox.analytics.GtmGiftTapTap
 import com.tokopedia.gamification.giftbox.data.di.component.DaggerGiftBoxComponent
+import com.tokopedia.gamification.giftbox.data.di.modules.AppModule
 import com.tokopedia.gamification.giftbox.data.entities.GetCouponDetail
 import com.tokopedia.gamification.giftbox.presentation.presenter.CouponListResultPresenter
 import com.tokopedia.kotlin.extensions.view.gone
@@ -36,6 +38,7 @@ class CouponListResultVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
     init {
         val component = DaggerGiftBoxComponent.builder()
                 .activityContextModule(ActivityContextModule(itemView.context))
+                .appModule(AppModule((itemView.context as AppCompatActivity).application))
                 .build()
         component.inject(this)
     }

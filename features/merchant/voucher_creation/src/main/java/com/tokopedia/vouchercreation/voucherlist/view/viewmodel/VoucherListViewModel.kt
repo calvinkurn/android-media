@@ -20,6 +20,7 @@ import com.tokopedia.vouchercreation.voucherlist.domain.usecase.ShopBasicDataUse
 import com.tokopedia.vouchercreation.voucherlist.model.ui.VoucherUiModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -29,6 +30,7 @@ import javax.inject.Inject
 
 class VoucherListViewModel @Inject constructor(
         private val getVoucherListUseCase: GetVoucherListUseCase,
+        private val getNotStartedVoucherListUseCase: GetVoucherListUseCase,
         private val cancelVoucherUseCase: CancelVoucherUseCase,
         private val shopBasicDataUseCase: ShopBasicDataUseCase,
         private val voucherDetailUseCase: VoucherDetailUseCase,
@@ -53,12 +55,12 @@ class VoucherListViewModel @Inject constructor(
     val voucherList: LiveData<Result<List<VoucherUiModel>>>
         get() = _voucherList
 
-    private val _localVoucherListLiveData = MediatorLiveData<Result<List<VoucherUiModel>>>().apply {
+    private val _localVoucherListLiveData = MediatorLiveData<List<VoucherUiModel>>().apply {
         addSource(_keywordLiveData) { keyword ->
             searchVoucherByKeyword(keyword)
         }
     }
-    val localVoucherListLiveData: LiveData<Result<List<VoucherUiModel>>>
+    val localVoucherListLiveData: LiveData<List<VoucherUiModel>>
         get() = _localVoucherListLiveData
 
     private val _fullVoucherListLiveData = MutableLiveData<MutableList<VoucherUiModel>>().apply { value = mutableListOf() }
@@ -129,12 +131,11 @@ class VoucherListViewModel @Inject constructor(
                 })
             }
             _voucherList.value = Success(withContext(Dispatchers.IO) {
-                mutableListOf<VoucherUiModel>().apply {
-                    getVoucherListUseCase.params = GetVoucherListUseCase.createRequestParam(ongoingVoucherRequestParam)
-                    addAll(getVoucherListUseCase.executeOnBackground())
-                    getVoucherListUseCase.params = GetVoucherListUseCase.createRequestParam(notStartedVoucherRequestParam)
-                    addAll(getVoucherListUseCase.executeOnBackground())
-                }
+                getVoucherListUseCase.params = GetVoucherListUseCase.createRequestParam(ongoingVoucherRequestParam)
+                getNotStartedVoucherListUseCase.params = GetVoucherListUseCase.createRequestParam(notStartedVoucherRequestParam)
+                val ongoingVoucherList = async { getVoucherListUseCase.executeOnBackground() }
+                val notStartedVoucherList = async { getNotStartedVoucherListUseCase.executeOnBackground() }
+                ongoingVoucherList.await() + notStartedVoucherList.await()
             })
         }, onError = {
             _voucherList.value = Fail(it)
@@ -187,12 +188,7 @@ class VoucherListViewModel @Inject constructor(
     }
 
     private fun searchVoucherByKeyword(keyword: String) {
-        launchCatchError(block = {
-            _localVoucherListLiveData.value = Success(
-                    _fullVoucherListLiveData.value?.filter {
-                        it.name.contains(keyword, true) } ?: listOf())
-        }, onError = {
-            _localVoucherListLiveData.value = Fail(it)
-        })
+        _localVoucherListLiveData.value = _fullVoucherListLiveData.value?.filter {
+            it.name.contains(keyword, true) } ?: listOf()
     }
 }

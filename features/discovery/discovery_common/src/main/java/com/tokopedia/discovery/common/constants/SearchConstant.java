@@ -46,6 +46,10 @@ public interface SearchConstant {
         String KEY_PARAMS = "params";
         String KEY_SOURCE = "source";
         String KEY_HEADLINE_PARAMS = "headline_params";
+        String KEY_QUICK_FILTER_PARAMS = "quick_filter_params";
+        String KEY_PAGE_SOURCE = "page_source";
+        String PAGE_SOURCE_SEARCH_SHOP = "search_shop";
+        String SOURCE_QUICK_FILTER = "quick_filter";
     }
 
     interface BaseUrl {
@@ -81,6 +85,7 @@ public interface SearchConstant {
     interface SearchShop {
         String SEARCH_SHOP_FIRST_PAGE_USE_CASE = "search_shop_first_page_use_case";
         String SEARCH_SHOP_LOAD_MORE_USE_CASE = "search_shop_load_more_use_case";
+        String GET_SHOP_COUNT_USE_CASE = "get_shop_count_use_case";
         String HEADLINE = "headline";
         String HEADLINE_TEMPLATE_VALUE = "3";
         String HEADLINE_ITEM_VALUE = "1";
@@ -153,5 +158,10 @@ public interface SearchConstant {
     interface OnBoarding {
         String LOCAL_CACHE_NAME = "SEARCH_PRODUCT_ON_BOARDING";
         String FILTER_ONBOARDING_SHOWN = "FILTER_ONBOARDING_SHOWN";
+    }
+
+    interface InspirationCarousel {
+        String LAYOUT_INSPIRATION_CAROUSEL_LIST = "list";
+        String LAYOUT_INSPIRATION_CAROUSEL_INFO = "info";
     }
 }

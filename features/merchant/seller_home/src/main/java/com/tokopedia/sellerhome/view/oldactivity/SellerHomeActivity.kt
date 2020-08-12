@@ -17,11 +17,13 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.kotlin.extensions.view.requestStatusBarDark
 import com.tokopedia.seller.active.common.service.UpdateShopActiveService
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.analytic.NavigationTracking
 import com.tokopedia.sellerhome.analytic.TrackingConstant
+import com.tokopedia.sellerhome.analytic.performance.HomeLayoutLoadTimeMonitoring
 import com.tokopedia.sellerhome.common.DeepLinkHandler
 import com.tokopedia.sellerhome.common.FragmentType
 import com.tokopedia.sellerhome.common.PageFragment
@@ -35,7 +37,6 @@ import com.tokopedia.sellerhome.view.fragment.SellerHomeFragment
 import com.tokopedia.sellerhome.view.model.NotificationCenterUnreadUiModel
 import com.tokopedia.sellerhome.view.model.NotificationChatUiModel
 import com.tokopedia.sellerhome.view.model.NotificationSellerOrderStatusUiModel
-import com.tokopedia.sellerhome.analytic.performance.HomeLayoutLoadTimeMonitoring
 import com.tokopedia.sellerhome.view.viewmodel.SellerHomeActivityViewModel
 import com.tokopedia.sellerhome.view.viewmodel.SharedViewModel
 import com.tokopedia.usecase.coroutines.Success
@@ -84,19 +85,46 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
 
     var performanceMonitoringSellerHomeLayoutPlt: HomeLayoutLoadTimeMonitoring? = null
 
+    private var shouldMoveToReview: Boolean = false
+    private var shouldMoveToCentralizedPromo: Boolean = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         initPerformanceMonitoring()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sah_seller_home_old)
 
+        with (intent?.getStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA)?.firstOrNull().orEmpty()) {
+            shouldMoveToReview = this == ApplinkConst.REPUTATION
+            shouldMoveToCentralizedPromo = this == ApplinkConst.REPUTATION
+        }
+        val isRedirectedFromSellerMigration = intent?.hasExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA) ?: false ||
+                intent?.hasExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME) ?: false
+
         initInjector()
         setupBottomNav()
         setupDefaultPage()
-        UpdateCheckerHelper.checkAppUpdate(this)
+        UpdateCheckerHelper.checkAppUpdate(this, isRedirectedFromSellerMigration)
         observeNotificationsLiveData()
         observeShopInfoLiveData()
         observeCurrentSelectedPageLiveData()
         setupStatusBar()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        val appLinks = ArrayList(intent?.getStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA).orEmpty())
+        if (appLinks.isNotEmpty()) {
+            val appLinkToOpen = appLinks.firstOrNull().orEmpty()
+            if (shouldMoveToReview || shouldMoveToCentralizedPromo) {
+                shouldMoveToReview = false
+                shouldMoveToCentralizedPromo = false
+                RouteManager.getIntent(this, appLinkToOpen).apply {
+                    replaceExtras(this@SellerHomeActivity.intent.extras)
+                    addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+                    startActivity(this)
+                }
+            }
+        }
     }
 
     override fun onResume() {

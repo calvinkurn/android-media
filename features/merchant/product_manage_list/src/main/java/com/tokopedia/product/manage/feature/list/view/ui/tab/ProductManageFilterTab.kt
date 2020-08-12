@@ -44,7 +44,6 @@ class ProductManageFilterTab(
             }
         }
         // clear old items from sort filter tab
-        sortFilterTab.chipItems.clear()
         sortFilterTab.sortFilterItems.removeAllViews()
 
         // add or remove the tabs

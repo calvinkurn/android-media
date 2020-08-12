@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/containerAddEditDescriptionFragmentNoInputVariant"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_no_variant_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/seller_migration_add_edit_no_variant_title"
+        android:textColor="@color/Neutral_N700_32"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_4" />
+
+    <com.tokopedia.unifycomponents.Label
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_lvl1"
+        android:layout_marginLeft="@dimen/layout_lvl1"
+        android:text="@string/seller_migration_label_seller_app_only"
+        app:labelType="general_light_green"
+        app:layout_constraintBottom_toBottomOf="@id/tv_no_variant_title"
+        app:layout_constraintLeft_toRightOf="@id/tv_no_variant_title"
+        app:layout_constraintStart_toEndOf="@id/tv_no_variant_title"
+        app:layout_constraintTop_toTopOf="@id/tv_no_variant_title" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvNoVariantDescription"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:textColor="@color/light_N700_68"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_no_variant_title"
+        app:typographyType="body_3"
+        tools:text="@string/seller_migration_add_edit_no_variant_description" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

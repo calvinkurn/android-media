@@ -11,6 +11,8 @@ data class Product(
     val price: Price?,
     @SerializedName("stock")
     val stock: Int?,
+    @SerializedName("hasStockReserved")
+    val hasStockReserved: Boolean = false,
     @SerializedName("status")
     val status: ProductStatus?,
     @SerializedName("cashback")

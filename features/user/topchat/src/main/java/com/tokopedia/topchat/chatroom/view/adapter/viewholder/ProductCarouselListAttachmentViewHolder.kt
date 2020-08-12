@@ -11,14 +11,16 @@ import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.ProductListAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredViewHolderAttachment
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.SearchListener
 import com.tokopedia.topchat.chatroom.view.uimodel.ProductCarouselUiModel
 import kotlinx.android.synthetic.main.item_topchat_product_list_attachment.view.*
 
-class ProductCarouselListAttachmentViewHolder(
+class ProductCarouselListAttachmentViewHolder constructor(
         itemView: View?,
         productListener: ProductAttachmentListener,
         private val listener: Listener,
-        private val deferredAttachment: DeferredViewHolderAttachment
+        private val deferredAttachment: DeferredViewHolderAttachment,
+        private val searchListener: SearchListener
 ) : BaseChatViewHolder<ProductCarouselUiModel>(itemView) {
 
     interface Listener {
@@ -26,7 +28,7 @@ class ProductCarouselListAttachmentViewHolder(
         fun getSavedCarouselState(position: Int): Parcelable?
     }
 
-    private val adapter = ProductListAdapter(productListener, deferredAttachment)
+    private val adapter = ProductListAdapter(searchListener, productListener, deferredAttachment)
 
     init {
         initRecyclerView()

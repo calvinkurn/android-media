@@ -13,6 +13,10 @@ interface PatchApiService {
 
     @FormUrlEncoded
     @POST("patch")
-    fun getPatch(@Field(value = "package") packageName: String, @Field(value = "version") versionName: String): Call<DataResponse>
+    fun getPatch(
+            @Field(value = "package") packageName: String,
+            @Field(value = "version") versionName: String,
+            @Field(value = "build_number") buildNumber: String
+    ): Call<DataResponse>
 
 }

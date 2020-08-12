@@ -7,6 +7,9 @@ import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.BackgroundColorSpan
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -25,17 +28,20 @@ import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredViewHolderAttachment
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.SearchListener
 import com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer
+import com.tokopedia.topchat.common.Constant
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.item_topchat_product_card.view.*
 
-open class TopchatProductAttachmentViewHolder(
+open class TopchatProductAttachmentViewHolder constructor(
         itemView: View?,
         private val listener: ProductAttachmentListener,
-        private val deferredAttachment: DeferredViewHolderAttachment
+        private val deferredAttachment: DeferredViewHolderAttachment,
+        private val searchListener: SearchListener
 ) : BaseChatViewHolder<ProductAttachmentViewModel>(itemView) {
 
     private var wishListBtn: UnifyButton? = itemView?.findViewById(R.id.tv_wishlist)
@@ -47,6 +53,7 @@ open class TopchatProductAttachmentViewHolder(
     private var reviewStar: ImageView? = itemView?.findViewById(R.id.iv_review_star)
     private var reviewScore: Typography? = itemView?.findViewById(R.id.tv_review_score)
     private var reviewCount: Typography? = itemView?.findViewById(R.id.tv_review_count)
+    private var productName: Typography? = itemView?.findViewById(R.id.tv_product_name)
 
     private val white = "#ffffff"
     private val white2 = "#fff"
@@ -76,7 +83,7 @@ open class TopchatProductAttachmentViewHolder(
             bindProductClick(product)
             bindImage(product)
             bindImageClick(product)
-            bindName(product)
+            bindProductName(product)
             bindVariant(product)
             bindCampaign(product)
             bindPrice(product)
@@ -144,10 +151,21 @@ open class TopchatProductAttachmentViewHolder(
         }
     }
 
-    private fun bindName(product: ProductAttachmentViewModel) {
-        itemView.tv_product_name?.let {
-            it.text = product.productName
+    private fun bindProductName(product: ProductAttachmentViewModel) {
+        val query = searchListener.getSearchQuery()
+        val spanText = SpannableString(product.productName)
+        if (query.isNotEmpty()) {
+            val color = Constant.searchTextBackgroundColor
+            val index = spanText.indexOf(query, ignoreCase = true)
+            if (index != -1) {
+                var lastIndex = index + query.length
+                if (lastIndex > spanText.lastIndex) {
+                    lastIndex = spanText.lastIndex
+                }
+                spanText.setSpan(BackgroundColorSpan(color), index, lastIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            }
         }
+        productName?.text = spanText
     }
 
     private fun bindVariant(product: ProductAttachmentViewModel) {

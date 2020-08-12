@@ -30,6 +30,8 @@ data class BannerSlidesModel(
         val topadsViewUrl: String = "",
         @SerializedName("type")
         var type: String = "",
+        @SerializedName("category_id")
+        var categoryId: String = "",
         @SerializedName("campaignCode")
         val campaignCode: String = "",
         var position: Int = -1
