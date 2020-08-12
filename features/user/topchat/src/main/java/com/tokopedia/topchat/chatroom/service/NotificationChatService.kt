@@ -128,6 +128,9 @@ class NotificationChatService : JobIntentService() {
                         }
                     }
                 } else {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        jobScheduler?.cancelAll()
+                    }
                     Timber.w("P2#PUSH_NOTIF_REPLY_CHAT#'ErrorReplyChat';error='%s';", e?.message)
                 }
             }
