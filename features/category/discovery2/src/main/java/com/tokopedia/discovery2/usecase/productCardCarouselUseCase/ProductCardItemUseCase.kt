@@ -8,23 +8,20 @@ import javax.inject.Inject
 
 class ProductCardItemUseCase @Inject constructor() {
     private var shouldReSync: Boolean = false
+
     fun notifyProductComponentUpdate(componentID: String, pageEndPoint: String, componentSync : Boolean = false) : Boolean{
         val productComponent = getComponent(componentID, pageEndPoint)
         val preSelectedTabItemId = productComponent?.parentComponentId
+
         preSelectedTabItemId?.let { tabItemId ->
             val tabItemComponent = getComponent(tabItemId, pageEndPoint)
             tabItemComponent?.let { tabItem ->
                 val tabComponent = getComponent(tabItem.parentComponentId, pageEndPoint)
-                val preSelectedTab = tabComponent?.id
-                tabComponent?.let { tabItem ->
-                    val parentTab = getComponent(tabItem.parentComponentId, pageEndPoint)
+                tabComponent?.let { tabItemData ->
+                    val parentTab = getComponent(tabItemData.parentComponentId, pageEndPoint)
                     if (parentTab?.getComponentsItem()?.size.isMoreThanZero()) {
                         parentTab?.getComponentsItem()?.forEach { item ->
-                            if(componentSync && item.id == preSelectedTab){
-                                checkComponent(item)
-                            }else if(!componentSync){
-                                checkComponent(item)
-                            }
+                            checkComponent(item)
                         }
                     }
                 }
