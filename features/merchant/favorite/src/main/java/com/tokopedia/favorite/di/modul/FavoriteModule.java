@@ -11,6 +11,7 @@ import com.tokopedia.favorite.di.qualifier.TopAdsQualifier;
 import com.tokopedia.favorite.di.scope.FavoriteScope;
 import com.tokopedia.favorite.domain.FavoriteRepository;
 import com.tokopedia.favorite.domain.interactor.GetAllDataFavoriteUseCase;
+import com.tokopedia.favorite.domain.interactor.GetFavoriteShopUseCaseWithCoroutine;
 import com.tokopedia.favorite.domain.interactor.GetFavoriteShopUsecase;
 import com.tokopedia.favorite.domain.interactor.GetInitialDataPageUsecase;
 import com.tokopedia.favorite.domain.interactor.GetTopAdsShopUseCase;
@@ -58,6 +59,12 @@ public class FavoriteModule {
     GetFavoriteShopUsecase provideFavoriteShopUsecase(FavoriteRepository favoriteRepository) {
 
         return new GetFavoriteShopUsecase(favoriteRepository);
+    }
+
+    @FavoriteScope
+    @Provides
+    GetFavoriteShopUseCaseWithCoroutine provideFavoriteShopUseCaseWithCoroutine(FavoriteRepository favoriteRepository) {
+        return new GetFavoriteShopUseCaseWithCoroutine(favoriteRepository);
     }
 
     @FavoriteScope

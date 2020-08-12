@@ -48,13 +48,7 @@ public class GetInitialDataPageUsecase extends UseCase<DataFavorite> {
     @Override
     public Observable<DataFavorite> createObservable(RequestParams requestParams) {
         return Observable.zip(getTopAdsShop(), getFavoriteShop(),
-                new Func2<TopAdsShop, FavoriteShop, DataFavorite>() {
-
-                    @Override
-                    public DataFavorite call(TopAdsShop adsShop, FavoriteShop favoriteShop) {
-                        return validateDataFavorite(adsShop, favoriteShop);
-                    }
-                });
+                (adsShop, favoriteShop) -> validateDataFavorite(adsShop, favoriteShop));
     }
 
 

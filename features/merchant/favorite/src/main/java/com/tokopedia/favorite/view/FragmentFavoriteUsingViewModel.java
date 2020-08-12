@@ -111,10 +111,10 @@ public class FragmentFavoriteUsingViewModel extends BaseDaggerFragment
             LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View parentView = inflater.inflate(R.layout.favorite_fragment_index_favorite_v2, container, false);
-        recyclerView = (RecyclerView) parentView.findViewById(R.id.index_favorite_recycler_view);
-        swipeToRefresh = (SwipeToRefresh) parentView.findViewById(R.id.swipe_refresh_layout);
-        progressBar = (ProgressBar) parentView.findViewById(R.id.include_loading);
-        mainContent = (RelativeLayout) parentView.findViewById(R.id.main_content);
+        recyclerView = parentView.findViewById(R.id.index_favorite_recycler_view);
+        swipeToRefresh = parentView.findViewById(R.id.swipe_refresh_layout);
+        progressBar = parentView.findViewById(R.id.include_loading);
+        mainContent = parentView.findViewById(R.id.main_content);
         wishlistNotLoggedIn = parentView.findViewById(R.id.partial_empty_wishlist);
         btnLogin = parentView.findViewById(R.id.btn_login);
 

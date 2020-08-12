@@ -11,7 +11,6 @@ import com.tokopedia.abstraction.common.utils.paging.PagingHandler.PagingHandler
 import com.tokopedia.favorite.domain.interactor.GetAllDataFavoriteUseCase
 import com.tokopedia.favorite.domain.interactor.GetFavoriteShopUsecase
 import com.tokopedia.favorite.domain.interactor.GetInitialDataPageUsecase
-import com.tokopedia.favorite.domain.interactor.GetTopAdsShopUseCase
 import com.tokopedia.favorite.domain.model.DataFavorite
 import com.tokopedia.favorite.domain.model.FavoriteShop
 import com.tokopedia.favorite.domain.model.TopAdsShop
@@ -28,7 +27,6 @@ class FavoriteViewModel
 @Inject constructor(
         private val dispatcherProvider: DispatcherProvider,
         private val getInitialDataPageUsecase: GetInitialDataPageUsecase,
-        private val getTopAdsShopUseCase: GetTopAdsShopUseCase,
         private val toggleFavouriteShopUseCase: ToggleFavouriteShopUseCase,
         private val getAllDataFavoriteUseCase: GetAllDataFavoriteUseCase,
         private val getFavoriteShopUseCase: GetFavoriteShopUsecase,
