@@ -44,7 +44,7 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
 
     /*
     * This flag is used for validation of the dialog to be displayed.
-    * This is useful for avoiding dialogues appearing more than once.
+    * This is useful for avoiding InApp dialog appearing more than once.
     * */
     private Boolean isDialogShowing = false;
 
