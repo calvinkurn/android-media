@@ -35,7 +35,6 @@ import com.tokopedia.oneclickcheckout.preference.edit.data.payment.ListingParam
 import com.tokopedia.oneclickcheckout.preference.edit.data.payment.PaymentListingParamRequest
 import com.tokopedia.oneclickcheckout.preference.edit.di.PreferenceEditComponent
 import com.tokopedia.oneclickcheckout.preference.edit.view.PreferenceEditParent
-import com.tokopedia.oneclickcheckout.preference.edit.view.payment.creditcard.CreditCardPickerFragment
 import com.tokopedia.oneclickcheckout.preference.edit.view.summary.PreferenceSummaryFragment
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.url.TokopediaUrl
@@ -135,7 +134,7 @@ class PaymentMethodFragment : BaseDaggerFragment() {
             displayZoomControls = true
             setAppCacheEnabled(true)
         }
-        webView?.webViewClient = CreditCardPickerFragment.PaymentMethodWebViewClient()
+        webView?.webViewClient = PaymentMethodWebViewClient()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             webSettings?.mediaPlaybackRequiresUserGesture = false
         }
