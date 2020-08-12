@@ -18,6 +18,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
+import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
@@ -70,7 +71,7 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_BUAT_IKLAN, "")
         }
         header_toolbar?.setNavigationOnClickListener {
-            super.onBackPressed()
+            onBackPressed()
         }
         tracker = TopAdsDashboardTracking()
         actionSendAnalyticsIfFromPushNotif()
@@ -197,7 +198,7 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
             (application as BaseMainApplication).baseAppComponent).build()
 
     override fun onBackPressed() {
-        if (isTaskRoot) {
+        if (!moveToPdpIfFromPdpSellerMigration() && isTaskRoot) {
             val applinkConst = ApplinkConst.HOME
             if (intent.extras?.getBoolean(TopAdsDashboardConstant.EXTRA_APPLINK_FROM_PUSH, false) == true) {
                 val homeIntent = RouteManager.getIntent(this, applinkConst)
@@ -214,6 +215,21 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
                 }
         }
         super.onBackPressed()
+    }
+
+    private fun moveToPdpIfFromPdpSellerMigration(): Boolean {
+        if (isFromPdpSellerMigration()) {
+            val pdpAppLink = getPdpAppLink()
+            if (pdpAppLink.isNotEmpty()) {
+                return RouteManager.route(this, pdpAppLink)
+            }
+        }
+
+        return false
+    }
+
+    private fun getPdpAppLink(): String {
+        return intent?.getStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA)?.firstOrNull().orEmpty()
     }
 
     private fun openCreateForm() {
@@ -236,5 +252,9 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
 
     override fun gotToInsights() {
         view_pager?.currentItem = INSIGHT_PAGE
+    }
+
+    private fun isFromPdpSellerMigration(): Boolean {
+        return !intent?.getStringExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME).isNullOrEmpty()
     }
 }
