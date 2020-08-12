@@ -1,7 +1,8 @@
-package com.tokopedia.shop_showcase.viewmodel
+package com.tokopedia.shop_showcase.viewmodel.shopshowcasemanagement
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.shop_showcase.shop_showcase_management.data.model.DeleteShopShowcaseResponse
+import com.tokopedia.shop_showcase.shop_showcase_management.data.model.GetShopProductsResponse
 import com.tokopedia.shop_showcase.shop_showcase_management.data.model.ReorderShopShowcaseResponse
 import com.tokopedia.shop_showcase.shop_showcase_management.data.model.ShowcaseList.ShowcaseListBuyer.ShopShowcaseListBuyerResponse
 import com.tokopedia.shop_showcase.shop_showcase_management.data.model.ShowcaseList.ShowcaseListSeller.ShopShowcaseListSellerResponse
@@ -10,12 +11,13 @@ import com.tokopedia.shop_showcase.shop_showcase_management.presentation.viewmod
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.ArgumentMatchers
 import org.mockito.Matchers.*
 
 @ExperimentalCoroutinesApi
@@ -39,24 +41,23 @@ class ShopShowcaseManageViewModel {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    private val dispatchers by lazy {
-        Dispatchers.Unconfined
+    private val testDispatcher by lazy {
+        TestCoroutineDispatcher()
     }
 
-    private val viewModel by lazy {
-        ShopShowcaseListViewModel(
+    private lateinit var viewModel: ShopShowcaseListViewModel
+
+    @Before
+    fun setup() {
+        MockKAnnotations.init(this)
+        viewModel = ShopShowcaseListViewModel(
                 getBuyerShowcaseList,
                 getSellerShowcaseList,
                 deleteShowcase,
                 reorderShowcase,
                 getShopShowcaseTotalProductUseCase,
-                dispatchers
+                testDispatcher
         )
-    }
-
-    @Before
-    fun setup() {
-        MockKAnnotations.init(this)
     }
 
     @Test
@@ -122,6 +123,40 @@ class ShopShowcaseManageViewModel {
             reorderShowcase.executeOnBackground()
         }
         Assert.assertTrue(viewModel.reoderShopShowcaseResponse.value is Success)
+    }
+
+    @Test
+    fun `when get total product should return success`() {
+        mockkObject(GetShopShowcaseTotalProductUseCase)
+        coEvery {
+            getShopShowcaseTotalProductUseCase.executeOnBackground()
+        } returns GetShopProductsResponse()
+
+        val page = 1
+        val search = "baju"
+        val perPage = 15
+        val etalase = "pakaian"
+
+        val paramInput = mapOf(
+                "page" to page,
+                "fkeyword" to search,
+                "perPage" to perPage,
+                "fmenu" to etalase,
+                "sort" to ArgumentMatchers.anyInt()
+        )
+
+        viewModel.getTotalProduct(ArgumentMatchers.anyString(), page, perPage, ArgumentMatchers.anyInt(), etalase, search)
+
+        verify {
+            GetShopShowcaseTotalProductUseCase.createRequestParam(ArgumentMatchers.anyString(), paramInput)
+        }
+
+        Assert.assertTrue(reorderShowcase.params.parameters.isNotEmpty())
+
+        coEvery {
+            getShopShowcaseTotalProductUseCase.executeOnBackground()
+        }
+        Assert.assertTrue(viewModel.getShopProductResponse.value is Success)
     }
 
 }
