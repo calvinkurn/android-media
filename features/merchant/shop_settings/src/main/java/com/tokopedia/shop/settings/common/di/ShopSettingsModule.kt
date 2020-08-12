@@ -11,6 +11,8 @@ import com.tokopedia.imageuploader.domain.UploadImageRepository
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.imageuploader.utils.ImageUploaderUtils
 import com.tokopedia.shop.settings.basicinfo.data.UploadShopEditImageModel
+import com.tokopedia.shop.settings.common.coroutine.CoroutineDispatchers
+import com.tokopedia.shop.settings.common.coroutine.CoroutineDispatchersProvider
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -39,4 +41,9 @@ class ShopSettingsModule {
         return UserSession(context)
     }
 
+    @Provides
+    @ShopSettingsScope
+    fun provideCoroutineDispatchers(): CoroutineDispatchers {
+        return CoroutineDispatchersProvider
+    }
 }

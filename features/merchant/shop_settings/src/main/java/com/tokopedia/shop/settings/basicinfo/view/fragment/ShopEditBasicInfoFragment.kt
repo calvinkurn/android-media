@@ -1,6 +1,5 @@
 package com.tokopedia.shop.settings.basicinfo.view.fragment
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -25,6 +24,7 @@ import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef
 import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.ErrorHandler
@@ -32,14 +32,16 @@ import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditBasicInfoActivity.Companion.EXTRA_MESSAGE
 import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditBasicInfoActivity.Companion.EXTRA_SHOP_MODEL
-import com.tokopedia.shop.settings.basicinfo.view.presenter.UpdateShopSettingsInfoPresenter
+import com.tokopedia.shop.settings.basicinfo.view.viewmodel.ShopEditBasicInfoViewModel
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_shop_edit_basic_info.*
 import kotlinx.android.synthetic.main.partial_toolbar_save_button.*
 import javax.inject.Inject
 
-class ShopEditBasicInfoFragment: Fragment(), UpdateShopSettingsInfoPresenter.View {
+class ShopEditBasicInfoFragment: Fragment() {
 
     companion object {
         private const val SAVED_IMAGE_PATH = "saved_img_path"
@@ -55,7 +57,7 @@ class ShopEditBasicInfoFragment: Fragment(), UpdateShopSettingsInfoPresenter.Vie
     }
 
     @Inject
-    lateinit var updateShopSettingsInfoPresenter: UpdateShopSettingsInfoPresenter
+    lateinit var viewModel: ShopEditBasicInfoViewModel
 
     private var shopBasicDataModel: ShopBasicDataModel? = null
     private var savedLocalImageUrl: String? = null
@@ -76,8 +78,9 @@ class ShopEditBasicInfoFragment: Fragment(), UpdateShopSettingsInfoPresenter.Vie
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         setupToolbar()
-        updateShopSettingsInfoPresenter.attachView(this)
+        observeLiveData()
 
         parentTvBrowseFile.background = MethodChecker.getDrawable(parentTvBrowseFile.context,
             com.tokopedia.design.R.drawable.ic_balloon_gray)
@@ -119,7 +122,7 @@ class ShopEditBasicInfoFragment: Fragment(), UpdateShopSettingsInfoPresenter.Vie
 
     override fun onDestroy() {
         super.onDestroy()
-        updateShopSettingsInfoPresenter.detachView()
+        viewModel.detachView()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -146,6 +149,38 @@ class ShopEditBasicInfoFragment: Fragment(), UpdateShopSettingsInfoPresenter.Vie
         }
     }
 
+    private fun observeLiveData() {
+        observeGetShopBasicData()
+        observeUploadShopImage()
+        observeUpdateShopData()
+    }
+
+    private fun observeGetShopBasicData() {
+        observe(viewModel.shopBasicData) {
+            when(it) {
+                is Success -> onSuccessGetShopBasicData(it.data)
+                is Fail -> onErrorGetShopBasicData(it.throwable)
+            }
+        }
+    }
+
+    private fun observeUploadShopImage() {
+        observe(viewModel.uploadShopImage) {
+            when(it) {
+                is Fail -> onErrorUploadShopImage(it.throwable)
+            }
+        }
+    }
+
+    private fun observeUpdateShopData() {
+        observe(viewModel.updateShopBasicData) {
+            when(it) {
+                is Success -> onSuccessUpdateShopBasicData(it.data)
+                is Fail -> onErrorUpdateShopBasicData(it.throwable)
+            }
+        }
+    }
+
     private fun initInjector() {
         (activity?.application as? BaseMainApplication)?.baseAppComponent?.let { baseAppComponent ->
             DaggerShopSettingsComponent.builder()
@@ -160,9 +195,9 @@ class ShopEditBasicInfoFragment: Fragment(), UpdateShopSettingsInfoPresenter.Vie
         val tagLine = etShopSlogan.text.toString()
         val desc = etShopDesc.text.toString()
         if (!savedLocalImageUrl.isNullOrEmpty()) {
-            updateShopSettingsInfoPresenter.uploadShopImage(savedLocalImageUrl!!, tagLine, desc)
+            viewModel.uploadShopImage(savedLocalImageUrl!!, tagLine, desc)
         } else {
-            updateShopSettingsInfoPresenter.updateShopBasicData(tagLine, desc)
+            viewModel.updateShopBasicData(tagLine, desc)
         }
     }
 
@@ -177,7 +212,7 @@ class ShopEditBasicInfoFragment: Fragment(), UpdateShopSettingsInfoPresenter.Vie
     }
 
     private fun loadShopBasicData() {
-        updateShopSettingsInfoPresenter.getShopBasicData()
+        viewModel.getShopBasicData()
     }
 
     private fun openImagePicker() {
@@ -192,7 +227,7 @@ class ShopEditBasicInfoFragment: Fragment(), UpdateShopSettingsInfoPresenter.Vie
     }
 
 
-    override fun onSuccessUpdateShopBasicData(successMessage: String) {
+    private fun onSuccessUpdateShopBasicData(successMessage: String) {
         hideSubmitLoading()
 
         val data = Intent().putExtra(EXTRA_MESSAGE, successMessage)
@@ -200,12 +235,12 @@ class ShopEditBasicInfoFragment: Fragment(), UpdateShopSettingsInfoPresenter.Vie
         activity?.finish()
     }
 
-    override fun onErrorUpdateShopBasicData(throwable: Throwable) {
+    private fun onErrorUpdateShopBasicData(throwable: Throwable) {
         hideSubmitLoading()
         showSnackBarErrorSubmitEdit(throwable)
     }
 
-    override fun onSuccessGetShopBasicData(shopBasicDataModel: ShopBasicDataModel?) {
+    private fun onSuccessGetShopBasicData(shopBasicDataModel: ShopBasicDataModel?) {
         shopBasicDataModel?.let {
             this.shopBasicDataModel = it
             setUIShopBasicData(it)
@@ -242,8 +277,7 @@ class ShopEditBasicInfoFragment: Fragment(), UpdateShopSettingsInfoPresenter.Vie
         }
     }
 
-    @SuppressLint("Range")
-    override fun onErrorGetShopBasicData(throwable: Throwable) {
+    private fun onErrorGetShopBasicData(throwable: Throwable) {
         showSnackBarErrorShopInfo(throwable)
     }
 
@@ -255,7 +289,7 @@ class ShopEditBasicInfoFragment: Fragment(), UpdateShopSettingsInfoPresenter.Vie
         })
     }
 
-    override fun onErrorUploadShopImage(throwable: Throwable) {
+    private fun onErrorUploadShopImage(throwable: Throwable) {
         showSnackBarErrorSubmitEdit(throwable)
     }
 

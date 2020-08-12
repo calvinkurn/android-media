@@ -20,7 +20,10 @@ import dagger.Component
  */
 
 @ShopSettingsScope
-@Component(modules = arrayOf(ShopSettingsModule::class), dependencies = arrayOf(BaseAppComponent::class))
+@Component(
+    modules = [ShopSettingsModule::class, ViewModelModule::class],
+    dependencies = [BaseAppComponent::class]
+)
 interface ShopSettingsComponent {
     fun inject(shopSettingsInfoFragment: ShopSettingsInfoFragment)
     fun inject(shopEditBasicInfoActivity: ShopEditBasicInfoActivity)
