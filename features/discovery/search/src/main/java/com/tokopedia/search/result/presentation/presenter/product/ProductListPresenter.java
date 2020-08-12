@@ -77,6 +77,7 @@ import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import dagger.Lazy;
 import kotlin.Unit;
 import kotlin.collections.CollectionsKt;
 import kotlin.jvm.functions.Function1;
@@ -110,8 +111,8 @@ final class ProductListPresenter
     private UserSessionInterface userSession;
     private LocalCacheHandler advertisingLocalCache;
     private LocalCacheHandler searchOnBoardingLocalCache;
-    private UseCase<DynamicFilterModel> getDynamicFilterUseCase;
-    private UseCase<String> getProductCountUseCase;
+    private Lazy<UseCase<DynamicFilterModel>> getDynamicFilterUseCase;
+    private Lazy<UseCase<String>> getProductCountUseCase;
     private TopAdsUrlHitter topAdsUrlHitter;
 
     private boolean enableGlobalNavWidget = true;
@@ -147,11 +148,11 @@ final class ProductListPresenter
             @Named(SearchConstant.OnBoarding.LOCAL_CACHE_NAME)
             LocalCacheHandler searchOnBoardingLocalCache,
             @Named(SearchConstant.DynamicFilter.GET_DYNAMIC_FILTER_USE_CASE)
-            UseCase<DynamicFilterModel> getDynamicFilterUseCase,
+            Lazy<UseCase<DynamicFilterModel>> getDynamicFilterUseCase,
             @Named(SearchConstant.SearchProduct.GET_PRODUCT_COUNT_USE_CASE)
-            UseCase<String> getProductCountUseCase,
+            Lazy<UseCase<String>> getProductCountUseCase,
             TopAdsUrlHitter topAdsUrlHitter,
-            RemoteConfig remoteConfig
+            Lazy<RemoteConfig> remoteConfig
     ) {
         this.searchProductFirstPageUseCase = searchProductFirstPageUseCase;
         this.searchProductLoadMoreUseCase = searchProductLoadMoreUseCase;
@@ -1494,7 +1495,7 @@ final class ProductListPresenter
         RequestParams getProductCountRequestParams = createGetProductCountRequestParams(mapParameter);
         Subscriber<String> getProductCountSubscriber = createGetProductCountSubscriber();
 
-        getProductCountUseCase.execute(getProductCountRequestParams, getProductCountSubscriber);
+        getProductCountUseCase.get().execute(getProductCountRequestParams, getProductCountSubscriber);
     }
 
     private RequestParams createGetProductCountRequestParams(Map<String, String> mapParameter) {
@@ -1556,7 +1557,8 @@ final class ProductListPresenter
         getView().openBottomSheetFilter(this.dynamicFilterModel);
 
         if (this.dynamicFilterModel == null) {
-            getDynamicFilterUseCase.execute(createRequestDynamicFilterParams(searchParameter), createGetDynamicFilterModelSubscriber());
+            getDynamicFilterUseCase.get().
+                    execute(createRequestDynamicFilterParams(searchParameter), createGetDynamicFilterModelSubscriber());
         }
     }
 
@@ -1611,10 +1613,10 @@ final class ProductListPresenter
     @Override
     public void detachView() {
         super.detachView();
-        if (getDynamicFilterUseCase != null) getDynamicFilterUseCase.unsubscribe();
+        if (getDynamicFilterUseCase != null) getDynamicFilterUseCase.get().unsubscribe();
         if (searchProductFirstPageUseCase != null) searchProductFirstPageUseCase.unsubscribe();
         if (searchProductLoadMoreUseCase != null) searchProductLoadMoreUseCase.unsubscribe();
         if (recommendationUseCase != null) recommendationUseCase.unsubscribe();
-        if (getProductCountUseCase != null) getProductCountUseCase.unsubscribe();
+        if (getProductCountUseCase != null) getProductCountUseCase.get().unsubscribe();
     }
 }
