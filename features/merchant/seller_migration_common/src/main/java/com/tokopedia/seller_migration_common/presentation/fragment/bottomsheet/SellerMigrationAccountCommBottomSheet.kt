@@ -7,10 +7,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.seller_migration_common.R
 import com.tokopedia.seller_migration_common.analytics.SellerMigrationTracking
 import com.tokopedia.seller_migration_common.analytics.SellerMigrationTrackingConstants
+import com.tokopedia.seller_migration_common.getSellerMigrationDate
 import com.tokopedia.seller_migration_common.presentation.adapter.SellerMigrationAccountBenefitAdapter
 import com.tokopedia.seller_migration_common.presentation.util.setupMigrationFooter
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.toPx
+import kotlinx.android.synthetic.main.partial_seller_migration_account_header.*
+import kotlinx.android.synthetic.main.partial_seller_migration_date.*
 import kotlinx.android.synthetic.main.widget_seller_migration_account_comm_bottom_sheet.*
 
 class SellerMigrationAccountCommBottomSheet: BottomSheetUnify() {
@@ -52,7 +55,19 @@ class SellerMigrationAccountCommBottomSheet: BottomSheetUnify() {
     private fun setupView() {
         setupPadding()
         setupAdapter()
+        setupRedirectionDate()
         setupMigrationFooter(view, ::trackGoToSellerApp, ::trackGoToPlayStore)
+    }
+
+    private fun setupRedirectionDate() {
+        val remoteConfigDate = getSellerMigrationDate(context).let { date ->
+            if (date.isEmpty()) {
+                getString(R.string.seller_migration_bottom_sheet_redirected_dates)
+            } else {
+                date
+            }
+        }
+        tv_seller_migration_account_header_start_date?.text = remoteConfigDate
     }
 
     private fun setupAdapter() {

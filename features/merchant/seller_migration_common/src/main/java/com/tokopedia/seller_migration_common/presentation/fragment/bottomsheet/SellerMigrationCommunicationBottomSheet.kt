@@ -6,12 +6,14 @@ import android.view.View
 import android.widget.LinearLayout
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.seller_migration_common.R
+import com.tokopedia.seller_migration_common.getSellerMigrationDate
 import com.tokopedia.seller_migration_common.presentation.model.CommunicationInfo
 import com.tokopedia.seller_migration_common.presentation.model.DynamicCommunicationInfo
 import com.tokopedia.seller_migration_common.presentation.model.SellerMigrationCommunication
 import com.tokopedia.seller_migration_common.presentation.util.setupMigrationFooter
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.toPx
+import kotlinx.android.synthetic.main.partial_seller_migration_date.*
 import kotlinx.android.synthetic.main.widget_seller_migration_bottom_sheet.*
 
 open class SellerMigrationCommunicationBottomSheet: BottomSheetUnify() {
@@ -53,8 +55,20 @@ open class SellerMigrationCommunicationBottomSheet: BottomSheetUnify() {
 
     protected open fun setupView() {
         setupPadding()
-        layout_seller_migration_date?.visible()
+        setRedirectionDate()
         setupMigrationFooter(view, ::trackGoToSellerApp, ::trackGoToPlayStore)
+    }
+
+    private fun setRedirectionDate() {
+        layout_seller_migration_date?.visible()
+        val remoteConfigDate = getSellerMigrationDate(context).let { date ->
+            if (date.isEmpty()) {
+                getString(R.string.seller_migration_bottom_sheet_redirected_dates)
+            } else {
+                date
+            }
+        }
+        tv_seller_migration_start_date?.text = remoteConfigDate
     }
 
     protected open fun trackGoToSellerApp() {
