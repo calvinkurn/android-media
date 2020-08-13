@@ -572,29 +572,29 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
     }
 
     private fun stopPrepareMonitoring() {
-        pageMonitoring?.stopPreparePagePerformanceMonitoring()
+        pageMonitoring.stopPreparePagePerformanceMonitoring()
     }
 
     private fun startNetworkMonitoring() {
-        pageMonitoring?.startNetworkRequestPerformanceMonitoring()
+        pageMonitoring.startNetworkRequestPerformanceMonitoring()
     }
 
     private fun stopNetworkMonitoring() {
-        pageMonitoring?.stopNetworkRequestPerformanceMonitoring()
+        pageMonitoring.stopNetworkRequestPerformanceMonitoring()
     }
 
     fun startRenderMonitoring() {
         stopNetworkMonitoring()
-        pageMonitoring?.startRenderPerformanceMonitoring()
+        pageMonitoring.startRenderPerformanceMonitoring()
     }
 
     fun stopRenderMonitoring() {
-        pageMonitoring?.stopRenderPerformanceMonitoring()
+        pageMonitoring.stopRenderPerformanceMonitoring()
         stopPageMonitoring()
     }
 
     private fun stopPageMonitoring() {
-        pageMonitoring?.stopMonitoring()
+        pageMonitoring.stopMonitoring()
     }
 
     private fun hideKeyboard() {
