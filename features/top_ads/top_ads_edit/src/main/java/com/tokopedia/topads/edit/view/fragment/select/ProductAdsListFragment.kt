@@ -176,16 +176,13 @@ class ProductAdsListFragment : BaseDaggerFragment() {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 if (!isDataEnded) {
                     START += ROW
-                    fetchNextPage()
+                    fetchList()
                 }
             }
         }
     }
 
-    private fun fetchNextPage() {
-        swipe_refresh_layout.isRefreshing = true
-        productListAdapter.initLoading()
-        clearRefreshLoading()
+    private fun fetchList() {
         viewModel.productList(getKeyword(),
                 getSelectedEtalaseId(),
                 getSelectedSortId(),
@@ -250,12 +247,7 @@ class ProductAdsListFragment : BaseDaggerFragment() {
         swipe_refresh_layout.isRefreshing = true
         productListAdapter.initLoading()
         clearRefreshLoading()
-        viewModel.productList(getKeyword(),
-                getSelectedEtalaseId(),
-                getSelectedSortId(),
-                getPromoted(),
-                ROW,
-                START, this::onSuccessGetProductList, this::onEmptyProduct, this::onError)
+        fetchList()
     }
 
     private fun clearShimmerList() {

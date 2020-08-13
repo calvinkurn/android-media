@@ -134,15 +134,13 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 if (!isDataEnded) {
                     START += ROW
-                    fetchNextPage()
+                    fetchList()
                 }
             }
         }
     }
 
-    private fun fetchNextPage() {
-        productListAdapter.initLoading()
-        clearRefreshLoading()
+    private fun fetchList() {
         viewModel.productList(getKeyword(),
                 getSelectedEtalaseId(),
                 getSelectedSortId(),
@@ -197,12 +195,7 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         swipe_refresh_layout.isRefreshing = true
         productListAdapter.initLoading()
         clearRefreshLoading()
-        viewModel.productList(getKeyword(),
-                getSelectedEtalaseId(),
-                getSelectedSortId(),
-                getPromoted(),
-                ROW,
-                START, this::onSuccessGetProductList, this::onEmptyProduct, this::onError)
+        fetchList()
     }
 
     private fun clearShimmerList() {
