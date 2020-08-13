@@ -211,7 +211,6 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
     private fun setupSellerBroadcast() {
         if (!isTabSeller() || !isSellerBroadcastRemoteConfigOn()) return
         setupSellerBroadcastButton()
-        setupTicker()
         chatItemListViewModel.loadChatBlastSellerMetaData()
     }
 
@@ -226,7 +225,10 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
     private fun setupSellerBroadcastButton() {
         chatItemListViewModel.broadCastButtonVisibility.observe(viewLifecycleOwner, Observer { visibility ->
             when (visibility) {
-                true -> broadCastButton.show()
+                true -> {
+                    broadCastButton.show()
+                    setupTicker()
+                }
                 false -> broadCastButton.hide()
             }
         })
