@@ -37,7 +37,8 @@ class CloudFavoriteShopDataSource(private val context: Context, private val gson
                     isMustSaveToCache: Boolean): Observable<FavoriteShop> {
         val tkpdMapParam = TKPDMapParam<String, String>()
         tkpdMapParam.putAll(param!!)
-        val paramWithAuth = AuthUtil.generateParamsNetwork(userSession.userId, userSession.deviceId, tkpdMapParam)
+        val paramWithAuth = AuthUtil.generateParamsNetwork(
+                userSession.userId, userSession.deviceId, tkpdMapParam)
         return if (isMustSaveToCache) {
             favoriteShopAuthService.api
                     .getFavoritShopsData(getRequestPayload(context, paramWithAuth))
@@ -84,7 +85,12 @@ class CloudFavoriteShopDataSource(private val context: Context, private val gson
     }
 
     private fun validateResponse(): Action1<Response<GraphqlResponse<FavoritShopResponseData>>> {
-        return FavoriteShopResponseValidator.validate { response -> saveResponseToCache(response) }
+        return FavoriteShopResponseValidator.validate(object : FavoriteShopResponseValidator.HttpValidationListener {
+            override fun OnPassValidation(
+                    response: Response<GraphqlResponse<FavoritShopResponseData>>) {
+                saveResponseToCache(response)
+            }
+        })
     }
 
     private fun saveResponseToCache(response: Response<GraphqlResponse<FavoritShopResponseData>>) {
