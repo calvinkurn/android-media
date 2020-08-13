@@ -172,5 +172,9 @@ data class ProductP1VariantCampaign(
 
         @SerializedName("minOrder")
         @Expose
-        val minOrder: Int? = null
+        val minOrder: Int? = null,
+
+        @SerializedName("hideGimmick")
+        @Expose
+        val hideGimmick: Boolean? = null
 )
