@@ -6,27 +6,29 @@
     android:layout_height="match_parent"
     android:background="@color/Neutral_N0">
 
-    <LinearLayout
+    <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+        android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <com.tokopedia.sortfilter.SortFilter
-            android:id="@+id/quick_filter_sort_filter"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl3"
-            android:clipToPadding="false"
-            android:paddingStart="@dimen/spacing_lvl4"
-            android:paddingLeft="@dimen/spacing_lvl4"
-            app:sort_filter_relationship="AND"
-            app:sort_filter_type="quick" />
+            android:orientation="vertical">
 
-        <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
-            android:id="@+id/swipe_refresh_layout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            <com.tokopedia.sortfilter.SortFilter
+                android:id="@+id/quick_filter_sort_filter"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_lvl3"
+                android:clipToPadding="false"
+                android:paddingStart="@dimen/spacing_lvl4"
+                android:paddingLeft="@dimen/spacing_lvl4"
+                android:paddingBottom="@dimen/spacing_lvl3"
+                app:sort_filter_relationship="AND"
+                app:sort_filter_type="quick"
+                android:visibility="gone"/>
 
             <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
                 android:id="@+id/recycler_view"
@@ -36,9 +38,8 @@
                 android:paddingTop="@dimen/hotel_12dp"
                 android:paddingBottom="@dimen/hotel_12dp"
                 android:scrollbars="vertical" />
-
-        </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
-    </LinearLayout>
+        </LinearLayout>
+    </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
 
     <com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify

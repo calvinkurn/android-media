@@ -32,10 +32,15 @@ class FilterSelectionViewHolder(view: View): HotelSearchResultFilterV2Adapter.Fi
 
         with(itemView) {
             hotel_filter_selection_title.text = filter.displayName
-            val hotelFilterItems = filter.options.map {
+            var hotelFilterItems = filter.options.map {
                 HotelSearchResultFilterAdapter.HotelFilterItem(it, it, filter.name == "star") }
 
             if (filter.name == "star") {
+                if (hotelFilterItems.isEmpty()) {
+                    hotelFilterItems = listOf("1", "2", "3", "4", "5").map {
+                        HotelSearchResultFilterAdapter.HotelFilterItem(it, it, filter.name == "star")
+                    }
+                }
                 hotel_filter_selection_rv.layoutManager = SpanningLinearLayoutManager(context, LinearLayoutManager.HORIZONTAL,
                         false, resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1))
             } else {

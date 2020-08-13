@@ -89,11 +89,11 @@ query PropertySearch($data:PropertySearchRequest!){
                   dark
               }
           }
-          quickFilter {
-              name
-              displayName
-              value
-              selected
-          }
+      quickFilter {
+           name
+           displayName
+           value
+           selected
+       }
     }
 }

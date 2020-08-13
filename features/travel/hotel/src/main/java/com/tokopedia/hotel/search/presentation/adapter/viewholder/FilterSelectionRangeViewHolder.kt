@@ -28,10 +28,13 @@ class FilterSelectionRangeViewHolder(view: View): HotelSearchResultFilterV2Adapt
 
         with(itemView) {
             hotel_filter_selection_range_title.text = filter.displayName
-
             hotel_filter_selection_range_seekbar.max = filter.options.size - 1
 
             val selectedValue =  filter.optionSelected.firstOrNull() ?: "0"
+
+            if (filter.options.isEmpty()) {
+                filter.options = listOf("Semua", "6.0", "7.0", "8.0", "9.0")
+            }
 
             filter.options.forEachIndexed { index, item ->
                 if (item == selectedValue) hotel_filter_selection_range_seekbar.progress = filter.options.size - index - 1

@@ -49,8 +49,8 @@ class HotelSearchResultFilterV2Adapter: RecyclerView.Adapter<HotelSearchResultFi
     override fun getItemViewType(position: Int): Int {
         return when (filters[position].type.toLowerCase()) {
             "selection" -> SELECTION_VIEW_TYPE
-            "open range" -> OPEN_RANGE_VIEW_TYPE
-            "selection range" -> SELECTION_RANGE_TYPE
+            "open_range" -> OPEN_RANGE_VIEW_TYPE
+            "selection_range" -> SELECTION_RANGE_TYPE
             else -> SELECTION_VIEW_TYPE
         }
     }

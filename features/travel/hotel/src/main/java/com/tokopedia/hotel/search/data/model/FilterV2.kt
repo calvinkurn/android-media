@@ -8,21 +8,21 @@ import com.google.gson.annotations.SerializedName
  */
 
 data class FilterV2(
-        @SerializedName("Type")
+        @SerializedName("type")
         @Expose
         val type: String = "",
 
-        @SerializedName("Name")
+        @SerializedName("name")
         @Expose
         val name: String = "",
 
-        @SerializedName("DisplayName")
+        @SerializedName("displayName")
         @Expose
         val displayName: String = "",
 
-        @SerializedName("Options")
+        @SerializedName("options")
         @Expose
-        val options: List<String> = listOf(),
+        var options: List<String> = listOf(),
 
         var optionSelected: List<String> = listOf(),
 

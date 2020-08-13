@@ -21,6 +21,8 @@ class FilterOpenRangeViewHolder(view: View): HotelSearchResultFilterV2Adapter.Fi
     override fun bind(filter: FilterV2) {
         selectedOption.name = filter.name
         selectedOption.values = filter.optionSelected.toMutableList()
+
+        if (filter.options.isEmpty()) filter.options = listOf("0", "15000000")
         initialMaxPrice = filter.options.lastOrNull().toIntOrZero()
 
         val selectedFilterOnlyOne = selectedOption.values.size == 1
