@@ -335,7 +335,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_4"
-        android:drawableRight="@drawable/ic_system_action_arrow_right_grayscale_24"
+        app:drawableRightCompat="@drawable/ic_system_action_arrow_right_grayscale_24"
         android:ellipsize="end"
         android:gravity="center_vertical"
         android:maxLines="1"
