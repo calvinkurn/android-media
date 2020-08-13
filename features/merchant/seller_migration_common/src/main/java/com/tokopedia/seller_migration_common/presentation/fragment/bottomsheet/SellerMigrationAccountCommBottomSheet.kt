@@ -13,7 +13,6 @@ import com.tokopedia.seller_migration_common.presentation.util.setupMigrationFoo
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.toPx
 import kotlinx.android.synthetic.main.partial_seller_migration_account_header.*
-import kotlinx.android.synthetic.main.partial_seller_migration_date.*
 import kotlinx.android.synthetic.main.widget_seller_migration_account_comm_bottom_sheet.*
 
 class SellerMigrationAccountCommBottomSheet: BottomSheetUnify() {

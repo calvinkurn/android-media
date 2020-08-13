@@ -60,7 +60,7 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
     lateinit var topAdsDashboardPresenter: TopAdsDashboardPresenter
 
     private val sellerMigrationStaticCommunicationBottomSheet by lazy {
-        SellerMigrationCommunicationBottomSheet.createInstance(this, CommunicationInfo.TopAds)
+        SellerMigrationCommunicationBottomSheet.createInstance(this, CommunicationInfo.TopAds, screenName)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

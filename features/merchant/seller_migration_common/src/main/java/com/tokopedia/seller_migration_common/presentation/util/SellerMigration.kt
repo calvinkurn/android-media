@@ -1,7 +1,6 @@
 package com.tokopedia.seller_migration_common.presentation.util
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
@@ -31,10 +30,11 @@ import kotlinx.android.parcel.Parcelize
 internal fun Fragment.setupMigrationFooter(view: View?,
                                            trackGoToSellerApp: () -> Unit = {},
                                            trackGoToPlayStore: () -> Unit = {},
-                                           trackLearnMore: () -> Unit = {}) {
+                                           trackLearnMore: () -> Unit = {},
+                                           goToSellerAppFeature: () -> Unit = { goToSellerApp(trackGoToSellerApp, trackGoToPlayStore) }) {
     val sellerMigrationBottomSheetButton: UnifyButton? = view?.findViewById(R.id.sellerMigrationBottomSheetButton)
     sellerMigrationBottomSheetButton?.setOnClickListener {
-        goToSellerApp(trackGoToSellerApp, trackGoToPlayStore)
+        goToSellerAppFeature()
     }
     val sellerMigrationBottomSheetLink: Typography? = view?.findViewById(R.id.sellerMigrationBottomSheetLink)
     sellerMigrationBottomSheetLink?.text = context?.let { HtmlLinkHelper(it, getString(R.string.seller_migration_bottom_sheet_footer)).spannedString }

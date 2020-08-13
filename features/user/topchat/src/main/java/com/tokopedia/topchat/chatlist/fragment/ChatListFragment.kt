@@ -113,7 +113,7 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
 
     private val sellerMigrationStaticCommunicationBottomSheet by lazy {
         context?.let {
-            SellerMigrationCommunicationBottomSheet.createInstance(it, CommunicationInfo.BroadcastChat)
+            SellerMigrationCommunicationBottomSheet.createInstance(it, CommunicationInfo.BroadcastChat, screenName)
         }
     }
 

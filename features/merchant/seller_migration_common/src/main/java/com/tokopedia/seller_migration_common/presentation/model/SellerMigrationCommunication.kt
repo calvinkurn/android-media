@@ -1,9 +1,11 @@
 package com.tokopedia.seller_migration_common.presentation.model
 
+import android.os.Parcelable
 import androidx.annotation.StringRes
 import com.tokopedia.seller_migration_common.R
+import kotlinx.android.parcel.Parcelize
 
-interface SellerMigrationCommunication
+interface SellerMigrationCommunication: Parcelable
 
 sealed class CommunicationInfo(@StringRes val titleRes: Int,
                                val imageUrl: String,
@@ -11,6 +13,7 @@ sealed class CommunicationInfo(@StringRes val titleRes: Int,
                                val benefitPointResList: ArrayList<Int> = arrayListOf(),
                                @StringRes val tickerMessagePrefixRes: Int): SellerMigrationCommunication {
 
+    @Parcelize
     object TopAds: CommunicationInfo(
             R.string.seller_migration_topads_bottom_sheet_title,
             CommunicationImageUrl.TOPADS,
@@ -23,6 +26,7 @@ sealed class CommunicationInfo(@StringRes val titleRes: Int,
             R.string.seller_migration_topads_ticker_desc_prefix
     )
 
+    @Parcelize
     object BroadcastChat: CommunicationInfo(
             R.string.seller_migration_broadcast_chat_bottom_sheet_title,
             CommunicationImageUrl.BROADCAST_CHAT,
@@ -35,6 +39,7 @@ sealed class CommunicationInfo(@StringRes val titleRes: Int,
             R.string.seller_migration_broadcast_chat_ticker_desc_prefix
     )
 
+    @Parcelize
     object PostFeed: CommunicationInfo(
             R.string.seller_migration_feed_bottom_sheet_title,
             CommunicationImageUrl.POST_FEED,
@@ -42,6 +47,7 @@ sealed class CommunicationInfo(@StringRes val titleRes: Int,
             tickerMessagePrefixRes = R.string.seller_migration_feed_ticker_desc_prefix
     )
 
+    @Parcelize
     object ShopCapital: CommunicationInfo(
             R.string.seller_migration_modal_toko_bottom_sheet_title,
             CommunicationImageUrl.SHOP_CAPITAL,
@@ -55,6 +61,7 @@ sealed class CommunicationInfo(@StringRes val titleRes: Int,
 
     )
 
+    @Parcelize
     object PriorityBalance: CommunicationInfo(
             R.string.seller_migration_saldo_prioritas_bottom_sheet_title,
             CommunicationImageUrl.PRIORITY_BALANCE,
@@ -72,6 +79,7 @@ sealed class CommunicationInfo(@StringRes val titleRes: Int,
 /**
  * This object reserved for dynamic Modal Toko and Saldo Prioritas information (eligible for both), so we will provide both infos in a list
  */
+@Parcelize
 object DynamicCommunicationInfo: SellerMigrationCommunication {
     val communicationInfoList = listOf(CommunicationInfo.ShopCapital, CommunicationInfo.PriorityBalance)
 }

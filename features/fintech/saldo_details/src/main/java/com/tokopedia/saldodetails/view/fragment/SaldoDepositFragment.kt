@@ -878,7 +878,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
             }
             context?.let {
                 initializeSellerMigrationCommunicationTicker(
-                        SellerMigrationCommunicationBottomSheet.createInstance(it, communicationType),
+                        SellerMigrationCommunicationBottomSheet.createInstance(it, communicationType, screenName.orEmpty()),
                         sellerMigrationTicker,
                         CommunicationInfo.ShopCapital
                 )
