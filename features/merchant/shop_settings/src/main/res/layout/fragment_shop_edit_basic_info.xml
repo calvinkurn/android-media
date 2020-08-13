@@ -105,9 +105,7 @@
                         android:padding="@dimen/dp_6"
                         android:text="@string/label_browse_file" />
                 </LinearLayout>
-
             </LinearLayout>
-
 
             <com.tokopedia.unifycomponents.ticker.Ticker
                 android:id="@+id/shopEditTicker"
@@ -124,7 +122,7 @@
                 android:id="@+id/shopNameTextField"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="50dp"
+                android:layout_marginTop="@dimen/spacing_lvl4"
                 app:text_field_counter="60"
                 app:text_field_input_type="text"
                 app:text_field_label="Nama Toko" />
@@ -133,7 +131,7 @@
                 android:id="@+id/shopDomainTextField"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="@dimen/spacing_lvl5"
                 app:text_field_counter="24"
                 app:text_field_input_type="text"
                 app:text_field_label="Domain Toko"
@@ -144,7 +142,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"
-                android:layout_marginTop="@dimen/dp_12"
+                android:layout_marginTop="@dimen/spacing_lvl3"
                 android:clickable="false"
                 android:ellipsize="end"
                 android:focusable="false"
