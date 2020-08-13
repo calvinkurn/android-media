@@ -53,6 +53,7 @@ query getProductVariant($productID:String!,$option:pdpGetProductVariantReqOption
         stockSoldPercentage
         isCheckImei
         isUsingOvo
+        hideGimmick
       }
       stock {
         stock
