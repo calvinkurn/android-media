@@ -5,10 +5,8 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.discovery2.Constant.ClaimCouponConstant.DIKLAIM
 import com.tokopedia.discovery2.Constant.ClaimCouponConstant.DOUBLE_COLUMNS
 import com.tokopedia.discovery2.Constant.ClaimCouponConstant.HABIS
-import com.tokopedia.discovery2.Constant.ClaimCouponConstant.KLAIM
 import com.tokopedia.discovery2.Constant.ClaimCouponConstant.NOT_LOGGEDIN
 import com.tokopedia.discovery2.GenerateUrl
 import com.tokopedia.discovery2.data.ComponentsItem
@@ -47,7 +45,7 @@ class ClaimCouponItemViewModel(val application: Application, private val compone
     }
 
     fun getComponentData(): LiveData<DataItem> {
-        val status = checkClaimStatus(components.data?.getOrElse(0) { DataItem() })
+        val status = getClaimStatus(components.data?.getOrElse(0) { DataItem() })
         components.data?.get(0)?.status = status
         componentData.value = components.data?.get(0)
         return componentData
@@ -85,14 +83,11 @@ class ClaimCouponItemViewModel(val application: Application, private val compone
     }
 
 
-    private fun checkClaimStatus(item: DataItem?): String {
-        var claimStatus = KLAIM
-        if(item?.isDisabledBtn == true && !item.couponCode.isNullOrEmpty()){
-            claimStatus = DIKLAIM
-        }else if(item?.isDisabledBtn == true ){
-            claimStatus = HABIS
+    private fun getClaimStatus(item: DataItem?): String {
+        item?.let {
+            return it.claimButtonStr ?: HABIS
         }
-        return claimStatus
+        return HABIS
     }
 
     fun setClick(context: Context, status: String?) {
@@ -100,8 +95,8 @@ class ClaimCouponItemViewModel(val application: Application, private val compone
         navigate(context, applink)
     }
 
-    fun getCouponSlug() : String? {
-        if(components.data.isNullOrEmpty()) return ""
+    fun getCouponSlug(): String? {
+        if (components.data.isNullOrEmpty()) return ""
 
         return components.data?.get(0)?.slug
     }
