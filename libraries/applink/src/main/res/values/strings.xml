@@ -15,6 +15,9 @@
     <string name="host_setting" translatable="false">setting</string>
     <string name="path_dev_opt" translatable="false">/dev-opts</string>
 
+    <!--Feedback Form-->
+    <string name="path_feedback_page" translatable="false">/feedback-page</string>
+
     <!--Shop Settings-->
     <string name="shop_settings_title">Pengaturan Toko</string>
 

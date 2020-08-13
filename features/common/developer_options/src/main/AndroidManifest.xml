@@ -22,6 +22,25 @@
         </activity>
 
         <activity
+            android:name=".presentation.activity.FeedbackPageActivity"
+            android:label="@string/feedback_page_title"
+            android:windowSoftInputMode="stateHidden"
+            android:screenOrientation="portrait" >
+
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="@string/tokopedia_scheme"
+                    android:host="@string/host_setting"
+                    android:pathPrefix="@string/path_feedback_page"/>
+            </intent-filter>
+
+        </activity>
+
+        <activity
             android:name=".remote_config.RemoteConfigFragmentActivity"
             android:label="@string/remote_config_title"
             android:screenOrientation="portrait"

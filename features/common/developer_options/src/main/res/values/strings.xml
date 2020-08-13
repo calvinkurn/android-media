@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Developer Options</string>
     <string name="remote_config_title">Remote Config Editor</string>
+    <string name="feedback_page_title">Feedback Page</string>
     <string name="screen_name">Developer page</string>
 
     <string name="remote_config_prefix_placeholder">(Optional) Find Remote Config by Prefix</string>
