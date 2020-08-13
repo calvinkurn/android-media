@@ -537,6 +537,7 @@ query get_occ_cart_page($source: String) {
         profile_code
         signature
         change_cc_link
+        callback_url
       }
     }
   }

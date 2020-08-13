@@ -62,5 +62,7 @@ data class PaymentAdditionalData(
         @SerializedName("signature")
         val signature: String = "",
         @SerializedName("change_cc_link")
-        val changeCcLink: String = ""
+        val changeCcLink: String = "",
+        @SerializedName("callback_url")
+        val callbackUrl: String = ""
 )
