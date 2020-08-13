@@ -299,10 +299,10 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
             }
             val closeSchedulString = stringBuilder.toString()
             if (TextUtils.isEmpty(closeSchedulString)) {
-                tvShopCloseSchedule.visibility = View.GONE
+//                tvShopCloseSchedule.visibility = View.GONE
             } else {
-                tvShopCloseSchedule.text = stringBuilder.toString()
-                tvShopCloseSchedule.visibility = View.VISIBLE
+//                tvShopCloseSchedule.text = stringBuilder.toString()
+//                tvShopCloseSchedule.visibility = View.VISIBLE
             }
         } else {
             tvShopStatus.text = getString(com.tokopedia.design.R.string.label_close)
@@ -315,10 +315,10 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
             }
 
             if (TextUtils.isEmpty(openScheduleString)) {
-                tvShopCloseSchedule.visibility = View.GONE
+//                tvShopCloseSchedule.visibility = View.GONE
             } else {
-                tvShopCloseSchedule.text = openScheduleString
-                tvShopCloseSchedule.visibility = View.VISIBLE
+//                tvShopCloseSchedule.text = openScheduleString
+//                tvShopCloseSchedule.visibility = View.VISIBLE
             }
         }
     }
