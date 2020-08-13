@@ -45,9 +45,11 @@ import com.tokopedia.shop.settings.common.util.toReadableString
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_shop_settings_info.*
-import kotlinx.android.synthetic.main.partial_shop_settings_info_basic.*
+import kotlinx.android.synthetic.main.old_partial_shop_settings_info_status.*
+import kotlinx.android.synthetic.main.old_partial_shop_settings_info_basic.*
 import kotlinx.android.synthetic.main.partial_shop_settings_info_power_merchant.*
-import kotlinx.android.synthetic.main.partial_shop_settings_info_status.*
+import kotlinx.android.synthetic.main.old_partial_shop_settings_info_status.tvShopStatus
+import kotlinx.android.synthetic.main.old_partial_shop_settings_info_status.vgShopStatusContainer
 import java.util.*
 import javax.inject.Inject
 
@@ -76,7 +78,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_shop_settings_info, container, false)
+        val view = inflater.inflate(R.layout.old_fragment_shop_settings_info, container, false)
         return view
     }
 
@@ -299,10 +301,10 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
             }
             val closeSchedulString = stringBuilder.toString()
             if (TextUtils.isEmpty(closeSchedulString)) {
-//                tvShopCloseSchedule.visibility = View.GONE
+                tvShopCloseSchedule.visibility = View.GONE
             } else {
-//                tvShopCloseSchedule.text = stringBuilder.toString()
-//                tvShopCloseSchedule.visibility = View.VISIBLE
+                tvShopCloseSchedule.text = stringBuilder.toString()
+                tvShopCloseSchedule.visibility = View.VISIBLE
             }
         } else {
             tvShopStatus.text = getString(com.tokopedia.design.R.string.label_close)
@@ -315,10 +317,10 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
             }
 
             if (TextUtils.isEmpty(openScheduleString)) {
-//                tvShopCloseSchedule.visibility = View.GONE
+                tvShopCloseSchedule.visibility = View.GONE
             } else {
-//                tvShopCloseSchedule.text = openScheduleString
-//                tvShopCloseSchedule.visibility = View.VISIBLE
+                tvShopCloseSchedule.text = openScheduleString
+                tvShopCloseSchedule.visibility = View.VISIBLE
             }
         }
     }
@@ -335,7 +337,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
 
     private fun showRegularMerchantMembership(shopStatusModel: ShopStatusModel) {
         tvManageGmSubscribe.visibility = View.GONE
-        iv_logo_power_merchant.visibility = View.GONE
+        iv_power_merchant_logo.visibility = View.GONE
         tv_shop_membership_title.text = getString(com.tokopedia.design.R.string.label_regular_merchant)
         tv_shop_status.visibility = View.GONE
         ticker_container.visibility = View.GONE
@@ -354,8 +356,8 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
         tvManageGmSubscribe.setOnClickListener {
             navigateToPMSubscribe()
         }
-        iv_logo_power_merchant.visibility = View.VISIBLE
-        iv_logo_power_merchant.setImageResource(com.tokopedia.gm.common.R.drawable.ic_power_merchant)
+        iv_power_merchant_logo.visibility = View.VISIBLE
+        iv_power_merchant_logo.setImageResource(com.tokopedia.gm.common.R.drawable.ic_power_merchant)
         tv_shop_membership_title.text = getString(com.tokopedia.design.R.string.label_power_merchant)
         tv_shop_status.visibility = View.VISIBLE
         tv_shop_status.text = getString(if (shopStatusModel.isPowerMerchantActive()) {
@@ -374,8 +376,8 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
     private fun showOfficialStore() {
         tvManageGmSubscribe.visibility = View.GONE
         button_activate.visibility = View.GONE
-        iv_logo_power_merchant.visibility = View.VISIBLE
-        iv_logo_power_merchant.setImageResource(com.tokopedia.design.R.drawable.ic_badge_shop_official)
+        iv_power_merchant_logo.visibility = View.VISIBLE
+        iv_power_merchant_logo.setImageResource(com.tokopedia.design.R.drawable.ic_badge_shop_official)
         tv_shop_membership_title.text = getString(com.tokopedia.design.R.string.label_official_store)
         tv_shop_status.visibility = View.GONE
         ticker_container.visibility = View.GONE
