@@ -234,8 +234,8 @@ class ShopEditBasicInfoFragment: Fragment() {
                 shopNameTextField.isEnabled = true
                 shopDomainTextField.isEnabled = true
             }
-            isNameAllowed -> shopNameTextField.isEnabled = true
-            isDomainAllowed -> shopDomainTextField.isEnabled = true
+            isNameAllowed && !isDomainAllowed -> shopDomainTextField.isEnabled = true
+            isDomainAllowed && !isNameAllowed -> shopNameTextField.isEnabled = true
         }
     }
 
