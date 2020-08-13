@@ -240,7 +240,6 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         btn_req_cancel?.visible()
 
         tf_choose_reason?.visible()
-        // tf_choose_reason?.setPlaceholder(getString(R.string.reason_placeholder))
         tf_choose_reason?.textFieldInput?.isFocusable = false
         tf_choose_reason?.textFieldInput?.isClickable = true
         setListenersCancelIsAvailable()
@@ -383,11 +382,6 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
                     renderPage()
                 }
                 is Fail -> {
-//                    val toasterFail = Toaster
-//                    view?.let { v ->
-//                        toasterFail.make(v, getString(R.string.fail_cancellation), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR, BuyerConsts.ACTION_OK)
-//                    }
-
                     cl_cancellation_content?.gone()
                     empty_state_cancellation?.visible()
                     empty_state_cancellation?.apply {
@@ -558,54 +552,21 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
     override fun onSubReasonClicked(rCode: Int, reason: String) {
         bottomSheet.dismiss()
         reasonCode = rCode
-        /*if (rCode == BuyerConsts.REASON_CODE_LAINNYA) {
-            tf_choose_sub_reason?.gone()
-            tf_choose_sub_reason_editable?.visible()
-            tf_choose_sub_reason_editable?.setCounter(160)
-            tf_choose_sub_reason_editable?.textFieldInput?.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS or InputType.TYPE_TEXT_FLAG_MULTI_LINE
-            tf_choose_sub_reason_editable?.textFieldInput?.setSingleLine(false)
-            tf_choose_sub_reason_editable?.textFieldInput?.imeOptions = EditorInfo.IME_FLAG_NO_ENTER_ACTION
-            tf_choose_sub_reason_editable?.textFieldInput?.addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
-                    //Before user enters the text
-                }
+        tf_choose_sub_reason?.textFieldInput?.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS or InputType.TYPE_TEXT_FLAG_MULTI_LINE
+        tf_choose_sub_reason?.textFieldInput?.isSingleLine = false
+        tf_choose_sub_reason?.textFieldInput?.imeOptions = EditorInfo.IME_FLAG_NO_ENTER_ACTION
+        tf_choose_sub_reason?.textFieldInput?.setText(reason)
+        reasonCancel += " - $reason"
 
-                override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                    //On user changes the text
-                    btn_req_cancel?.isEnabled = s.toString().trim { it <= ' ' }.isNotEmpty()
-                }
-
-                override fun afterTextChanged(s: Editable) {
-                    //After user is done entering the text
-                    if (s.length < 15) {
-                        tf_choose_sub_reason_editable?.setError(true)
-                        tf_choose_sub_reason_editable?.setMessage(getString(R.string.min_char_reason_lainnya))
-                    } else if (s.length > 160) {
-                        tf_choose_sub_reason_editable?.setError(true)
-                        tf_choose_sub_reason_editable?.setMessage(getString(R.string.max_char_reason_lainnya))
-                    } else {
-                        tf_choose_sub_reason_editable?.setError(false)
-                        tf_choose_sub_reason_editable?.setMessage("")
-                    }
-                }
-            })
-        } else {*/
-            tf_choose_sub_reason?.textFieldInput?.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS or InputType.TYPE_TEXT_FLAG_MULTI_LINE
-            tf_choose_sub_reason?.textFieldInput?.isSingleLine = false
-            tf_choose_sub_reason?.textFieldInput?.imeOptions = EditorInfo.IME_FLAG_NO_ENTER_ACTION
-            tf_choose_sub_reason?.textFieldInput?.setText(reason)
-            reasonCancel += " - $reason"
-
-            tf_choose_reason?.textFieldInput?.text?.let { inputReason ->
-                if (inputReason.isNotEmpty()) {
-                    tf_choose_sub_reason?.textFieldInput?.text?.let { inputSubReason ->
-                        if (inputSubReason.isNotEmpty()) {
-                            btn_req_cancel?.isEnabled = true
-                        }
+        tf_choose_reason?.textFieldInput?.text?.let { inputReason ->
+            if (inputReason.isNotEmpty()) {
+                tf_choose_sub_reason?.textFieldInput?.text?.let { inputSubReason ->
+                    if (inputSubReason.isNotEmpty()) {
+                        btn_req_cancel?.isEnabled = true
                     }
                 }
             }
-        // }
+        }
     }
 
     private fun submitResultReason() {
