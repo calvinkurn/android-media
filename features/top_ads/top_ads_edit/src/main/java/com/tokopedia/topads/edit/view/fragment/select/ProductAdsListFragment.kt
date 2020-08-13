@@ -10,7 +10,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.topads.common.data.response.ResponseEtalase
@@ -24,7 +26,6 @@ import com.tokopedia.topads.edit.utils.Constants.RESULT_NAME
 import com.tokopedia.topads.edit.utils.Constants.RESULT_PRICE
 import com.tokopedia.topads.edit.utils.Constants.RESULT_PROUCT
 import com.tokopedia.topads.edit.utils.Constants.ROW
-import com.tokopedia.topads.edit.utils.Constants.START
 import com.tokopedia.topads.edit.view.adapter.etalase.viewmodel.EtalaseItemViewModel
 import com.tokopedia.topads.edit.view.adapter.etalase.viewmodel.EtalaseViewModel
 import com.tokopedia.topads.edit.view.adapter.product.ProductListAdapter
@@ -44,6 +45,10 @@ class ProductAdsListFragment : BaseDaggerFragment() {
     private lateinit var productListAdapter: ProductListAdapter
     private var selectedPrevPro: List<ResponseProductList.Result.TopadsGetListProduct.Data> = listOf()
     private var selectedPrevNonPro: List<ResponseProductList.Result.TopadsGetListProduct.Data> = listOf()
+    private lateinit var recyclerviewScrollListener: EndlessRecyclerViewScrollListener
+    private lateinit var layoutManager: LinearLayoutManager
+    private lateinit var recyclerView: RecyclerView
+    private var isDataEnded = false
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -51,7 +56,7 @@ class ProductAdsListFragment : BaseDaggerFragment() {
     private lateinit var viewModel: ProductAdsListViewModel
 
     companion object {
-
+        private var START = -ROW
         fun createInstance(extras: Bundle?): Fragment {
             val fragment = ProductAdsListFragment()
             fragment.arguments = extras
@@ -141,6 +146,7 @@ class ProductAdsListFragment : BaseDaggerFragment() {
         }
         return list
     }
+
     override fun getScreenName(): String {
         return ProductAdsListFragment::class.java.simpleName
     }
@@ -150,8 +156,44 @@ class ProductAdsListFragment : BaseDaggerFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.topads_edit_fragment_product_list, container, false)
+        val view = inflater.inflate(R.layout.topads_edit_fragment_product_list, container, false)
+        recyclerView = view.findViewById(R.id.product_list)
+        setAdapter()
+        return view
     }
+
+    private fun setAdapter() {
+        layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+        recyclerviewScrollListener = onRecyclerViewListener()
+        recyclerView.itemAnimator = null
+        recyclerView.adapter = productListAdapter
+        recyclerView.layoutManager = layoutManager
+        recyclerView.addOnScrollListener(recyclerviewScrollListener)
+    }
+
+    private fun onRecyclerViewListener(): EndlessRecyclerViewScrollListener {
+        return object : EndlessRecyclerViewScrollListener(layoutManager) {
+            override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                if (!isDataEnded) {
+                    START += ROW
+                    fetchNextPage()
+                }
+            }
+        }
+    }
+
+    private fun fetchNextPage() {
+        swipe_refresh_layout.isRefreshing = true
+        productListAdapter.initLoading()
+        clearRefreshLoading()
+        viewModel.productList(getKeyword(),
+                getSelectedEtalaseId(),
+                getSelectedSortId(),
+                getPromoted(),
+                ROW,
+                START, this::onSuccessGetProductList, this::onEmptyProduct, this::onError)
+    }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -192,9 +234,6 @@ class ProductAdsListFragment : BaseDaggerFragment() {
         swipe_refresh_layout.setOnRefreshListener {
             refreshProduct()
         }
-        product_list.adapter = productListAdapter
-        product_list.layoutManager = LinearLayoutManager(context)
-
     }
 
     private fun getPassingIntent(): Intent {
@@ -207,6 +246,7 @@ class ProductAdsListFragment : BaseDaggerFragment() {
     }
 
     private fun refreshProduct() {
+        START = 0
         swipe_refresh_layout.isRefreshing = true
         productListAdapter.initLoading()
         clearRefreshLoading()
@@ -218,7 +258,7 @@ class ProductAdsListFragment : BaseDaggerFragment() {
                 START, this::onSuccessGetProductList, this::onEmptyProduct, this::onError)
     }
 
-    private fun clearList(){
+    private fun clearShimmerList() {
         productListAdapter.items.clear()
         productListAdapter.notifyDataSetChanged()
     }
@@ -260,7 +300,7 @@ class ProductAdsListFragment : BaseDaggerFragment() {
     }
 
     private fun onEmptyProduct() {
-        clearList()
+        clearShimmerList()
         btn_next.isEnabled = false
         productListAdapter.items = mutableListOf(ProductEmptyViewModel())
         productListAdapter.notifyDataSetChanged()
@@ -270,8 +310,10 @@ class ProductAdsListFragment : BaseDaggerFragment() {
         NetworkErrorHelper.createSnackbarRedWithAction(activity, t.localizedMessage) { refreshProduct() }
     }
 
-    private fun onSuccessGetProductList(data: List<ResponseProductList.Result.TopadsGetListProduct.Data>) {
-        clearList()
+    private fun onSuccessGetProductList(data: List<ResponseProductList.Result.TopadsGetListProduct.Data>, eof: Boolean) {
+        if (START == 0)
+            clearShimmerList()
+        prepareForNextFetch(eof)
         btn_next.isEnabled = false
         data.forEach { result ->
             if (promotedGroup.checkedRadioButtonId == R.id.promoted) {
@@ -297,7 +339,12 @@ class ProductAdsListFragment : BaseDaggerFragment() {
 
         select_product_info.text = String.format(getString(R.string.format_selected_produk), count)
         btn_next.isEnabled = count > 0
+    }
 
+    private fun prepareForNextFetch(eof: Boolean) {
+        isDataEnded = eof
+        if (!isDataEnded)
+            recyclerviewScrollListener.updateStateAfterGetData()
     }
 
     private fun ifExists(productID: Int): Boolean {
