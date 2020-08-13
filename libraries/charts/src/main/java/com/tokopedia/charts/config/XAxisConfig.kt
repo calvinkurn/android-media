@@ -34,7 +34,8 @@ class XAxisConfig : BaseAxisConfig() {
                 isEnabled = isEnabled,
                 isLabelEnabled = isLabelEnabled,
                 isGridEnabled = isGridEnabled,
-                mLabelPosition = labelPosition
+                mLabelPosition = labelPosition,
+                axisMinimum = axisMinimum
         )
     }
 }

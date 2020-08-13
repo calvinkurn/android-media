@@ -2,6 +2,7 @@ package com.tokopedia.charts.model
 
 import android.graphics.Typeface
 import com.github.mikephil.charting.components.YAxis
+import com.tokopedia.charts.common.utils.LabelFormatter
 
 /**
  * Created By @ilhamsuaib on 25/06/20
@@ -13,7 +14,10 @@ data class YAxisConfigModel(
         override val isLabelEnabled: Boolean,
         override val isGridEnabled: Boolean,
         override val mLabelPosition: Int,
-        val spaceTop: Float
+        override val axisMinimum: Float,
+        val spaceTop: Float,
+        val labelFormatter: LabelFormatter,
+        val labelCount: Int
 ): BaseAxisConfigModel {
 
     companion object {

@@ -12,7 +12,8 @@ data class XAxisConfigModel(
         override val isEnabled: Boolean,
         override val isLabelEnabled: Boolean,
         override val isGridEnabled: Boolean,
-        override val mLabelPosition: Int
+        override val mLabelPosition: Int,
+        override val axisMinimum: Float
 ): BaseAxisConfigModel {
 
     companion object {

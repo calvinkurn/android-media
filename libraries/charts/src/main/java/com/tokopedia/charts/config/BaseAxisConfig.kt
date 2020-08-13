@@ -17,6 +17,7 @@ open class BaseAxisConfig {
     protected var isGridEnabled: Boolean = true
     protected var textSize: Float = 12f
     protected var textColor: Int = Color.BLACK
+    protected var axisMinimum: Float = 0f
     open protected var labelPosition: Int = 0
 
     open fun typeface(lambda: () -> Typeface) {
@@ -45,5 +46,9 @@ open class BaseAxisConfig {
 
     open fun textColor(lambda: () -> Int) {
         textColor = lambda()
+    }
+
+    open fun axisMinimum(lambda: () -> Float) {
+        axisMinimum = lambda()
     }
 }

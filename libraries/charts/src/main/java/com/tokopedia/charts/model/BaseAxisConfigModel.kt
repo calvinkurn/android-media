@@ -12,4 +12,5 @@ internal interface BaseAxisConfigModel {
     val isLabelEnabled: Boolean
     val isGridEnabled: Boolean
     val mLabelPosition: Int
+    val axisMinimum: Float
 }

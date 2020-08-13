@@ -1,5 +1,7 @@
 package com.tokopedia.charts.config
 
+import com.tokopedia.charts.common.utils.DefaultYLabelFormatter
+import com.tokopedia.charts.common.utils.LabelFormatter
 import com.tokopedia.charts.config.annotation.ChartConfigDsl
 import com.tokopedia.charts.model.YAxisConfigModel
 
@@ -11,6 +13,8 @@ import com.tokopedia.charts.model.YAxisConfigModel
 class YAxisConfig : BaseAxisConfig() {
 
     companion object {
+        const val DEFAULT_LABEL_COUNT = 6
+
         fun getDefault(): YAxisConfigModel = create { }
 
         fun create(lambda: YAxisConfig.() -> Unit): YAxisConfigModel {
@@ -21,6 +25,8 @@ class YAxisConfig : BaseAxisConfig() {
     override var labelPosition: Int = YAxisConfigModel.LABEL_OUTSIDE_CHART
 
     private var spaceTop: Float = 10f
+    private var labelCount: Int = DEFAULT_LABEL_COUNT
+    private var labelFormatter: LabelFormatter = DefaultYLabelFormatter()
 
     /**
      * Position can be YAxisConfigModel.LABEL_OUTSIDE_CHART or YAxisConfigModel.LABEL_INSIDE_CHART
@@ -33,6 +39,14 @@ class YAxisConfig : BaseAxisConfig() {
         spaceTop = lambda()
     }
 
+    fun labelCount(lambda: () -> Int) {
+        labelCount = lambda()
+    }
+
+    fun labelFormatter(lambda: () -> LabelFormatter) {
+        labelFormatter = lambda()
+    }
+
     fun build(): YAxisConfigModel {
         return YAxisConfigModel(
                 typeface = typeface,
@@ -40,7 +54,10 @@ class YAxisConfig : BaseAxisConfig() {
                 isLabelEnabled = isLabelEnabled,
                 isGridEnabled = isGridEnabled,
                 mLabelPosition = labelPosition,
-                spaceTop = spaceTop
+                axisMinimum = axisMinimum,
+                spaceTop = spaceTop,
+                labelCount = labelCount,
+                labelFormatter = labelFormatter
         )
     }
 }

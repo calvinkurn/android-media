@@ -5,18 +5,20 @@ import android.graphics.Color
 import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
+import com.github.mikephil.charting.components.AxisBase
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
+import com.github.mikephil.charting.formatter.ValueFormatter
 import com.tokopedia.charts.R
 import com.tokopedia.charts.common.ChartColor
+import com.tokopedia.charts.common.utils.LabelFormatter
 import com.tokopedia.charts.config.BarChartConfig
 import com.tokopedia.charts.model.AxisLabel
 import com.tokopedia.charts.model.BarChartConfigModel
 import com.tokopedia.charts.model.BarChartData
 import com.tokopedia.charts.common.utils.RoundedBarChartRenderer
 import com.tokopedia.charts.common.utils.XAxisLabelFormatter
-import com.tokopedia.charts.common.utils.YAxisLabelFormatter
 import com.tokopedia.kotlin.extensions.view.orZero
 import kotlinx.android.synthetic.main.view_bar_chart.view.*
 
@@ -61,7 +63,7 @@ class BarChartView(context: Context, attrs: AttributeSet?) : LinearLayout(contex
 
     fun setData(data: BarChartData) {
         setXAxisLabelFormatter(data.xAxisLabels)
-        setYAxisLabelFormatter(data.yAxis)
+        setYAxisLabelFormatter()
         val barDataSets = mutableListOf<BarDataSet>()
         data.metrics.forEach { metric ->
             val barEntries: List<BarEntry> = metric.values.mapIndexed { i, value ->
@@ -87,11 +89,16 @@ class BarChartView(context: Context, attrs: AttributeSet?) : LinearLayout(contex
         barChart.invalidate()
     }
 
-    private fun setYAxisLabelFormatter(yAxis: List<AxisLabel>) {
-        barChart.axisLeft.axisMinimum = yAxis.minBy { it.value }?.value.orZero()
+    private fun setYAxisLabelFormatter() {
+        val yAxisConfig = config.yAxisConfig
         barChart.axisLeft.run {
-            setLabelCount(yAxis.size, true)
-            valueFormatter = YAxisLabelFormatter(yAxis)
+            axisMinimum = yAxisConfig.axisMinimum
+            setLabelCount(config.yAxisConfig.labelCount, true)
+            valueFormatter = object : ValueFormatter() {
+                override fun getAxisLabel(value: Float, axis: AxisBase?): String {
+                    return config.yAxisConfig.labelFormatter.getAxisLabel(value)
+                }
+            }
         }
     }
 
