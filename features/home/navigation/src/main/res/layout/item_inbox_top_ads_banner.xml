@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="@dimen/spacing_lvl4"
+    android:paddingTop="@dimen/spacing_lvl4"
+    android:paddingEnd="@dimen/spacing_lvl4">
+
+    <com.tokopedia.topads.sdk.widget.TopAdsImageView
+        android:id="@+id/topads_banner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="@dimen/dp_72" />
+
+</FrameLayout>
