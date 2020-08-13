@@ -315,18 +315,11 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
         when (errorCodeTemp) {
             SplitInstallErrorCode.PLAY_STORE_NOT_FOUND.toString() -> {
                 updateInformationView(R.drawable.unify_globalerrors_500,
-                        getString(R.string.download_error_playservice_title),
-                        getString(R.string.download_error_playservice_subtitle),
-                        getString(R.string.start_download),
-                        {
-                            if (PlayServiceUtils.isPlayServiceConnected(this)) {
-                                downloadFeature()
-                            } else {
-                                PlayServiceUtils.showPlayServiceErrorDialog(this)
-                            }
-                        },
+                        getString(R.string.download_error_play_store_title),
+                        getString(R.string.download_error_play_store_subtitle),
+                        getString(R.string.goto_playstore),
+                        { PlayServiceUtils.gotoPlayStore(this) },
                         getString(R.string.continue_without_install))
-                PlayServiceUtils.showPlayServiceErrorDialog(this)
             }
             ErrorConstant.ERROR_INVALID_INSUFFICIENT_STORAGE -> updateInformationView(R.drawable.unify_globalerrors_500,
                     getString(R.string.download_error_os_and_play_store_title),
