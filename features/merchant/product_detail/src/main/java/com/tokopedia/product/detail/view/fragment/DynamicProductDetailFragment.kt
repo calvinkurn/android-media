@@ -89,10 +89,7 @@ import com.tokopedia.product.detail.data.model.ProductInfoP2ShopData
 import com.tokopedia.product.detail.data.model.ProductInfoP3
 import com.tokopedia.product.detail.data.model.TradeinResponse
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
-import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductSnapshotDataModel
+import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.data.model.description.DescriptionData
 import com.tokopedia.product.detail.data.model.financing.FinancingDataResponse
 import com.tokopedia.product.detail.data.model.spesification.Specification
@@ -3070,12 +3067,14 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
     }
 
-    override fun onTopAdsImageViewClicked(applink: String?, bannerId: String?) {
+    override fun onTopAdsImageViewClicked(model: TopAdsImageDataModel, applink: String?, bannerId: String, bannerName: String) {
         applink?.let { goToApplink(it) }
-        DynamicProductDetailTracking.Click.eventTopAdsImageViewClicked(trackingQueue,viewModel.userId,bannerId)
+        val position = dynamicAdapter.getTopAdsBannerPosition(model)
+        DynamicProductDetailTracking.Click.eventTopAdsImageViewClicked(trackingQueue, viewModel.userId, bannerId, position, bannerName)
     }
 
-    override fun onTopAdsImageViewImpression(bannerId: String?) {
-        DynamicProductDetailTracking.Impression.eventTopAdsImageViewImpression(trackingQueue,viewModel.userId,bannerId)
+    override fun onTopAdsImageViewImpression(model: TopAdsImageDataModel, bannerId: String, bannerName: String) {
+        val position = dynamicAdapter.getTopAdsBannerPosition(model)
+        DynamicProductDetailTracking.Impression.eventTopAdsImageViewImpression(trackingQueue, viewModel.userId, bannerId, position, bannerName)
     }
 }

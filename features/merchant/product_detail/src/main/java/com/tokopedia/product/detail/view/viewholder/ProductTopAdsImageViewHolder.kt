@@ -15,28 +15,30 @@ import com.tokopedia.topads.sdk.widget.TopAdsImageView
 
 class ProductTopAdsImageViewHolder(private val view: View, val listener: DynamicProductDetailListener) : AbstractViewHolder<TopAdsImageDataModel>(view) {
 
-    private val topAdsImageView:TopAdsImageView = view.findViewById(R.id.adsTopAdsImageView)
+    private val topAdsImageView: TopAdsImageView = view.findViewById(R.id.adsTopAdsImageView)
 
     companion object {
         val LAYOUT = R.layout.item_top_ads_image_view
     }
 
     override fun bind(element: TopAdsImageDataModel) {
-        if (!element.data.isNullOrEmpty()){
-            topAdsImageView.loadImage(element.data?.get(0)?: TopAdsImageViewModel()){
+        if (!element.data.isNullOrEmpty()) {
+            val bannerId = element.data?.get(0)?.bannerId ?: ""
+            val bannerName = element.data?.get(0)?.bannerName ?: ""
+
+            topAdsImageView.loadImage(element.data?.get(0) ?: TopAdsImageViewModel()) {
                 topAdsImageView.hide()
             }
             topAdsImageView.setTopAdsImageViewClick(object : TopAdsImageViewClickListener {
                 override fun onTopAdsImageViewClicked(applink: String?) {
-                    RouteManager.route(view.context, applink)
-                    listener.onTopAdsImageViewClicked(applink, element.data?.get(0)?.bannerId)
+                    listener.onTopAdsImageViewClicked(element, applink, bannerId, bannerName)
                 }
             })
 
-            topAdsImageView.setTopAdsImageViewImpression(object : TopAdsImageViewImpressionListener{
+            topAdsImageView.setTopAdsImageViewImpression(object : TopAdsImageViewImpressionListener {
                 override fun onTopAdsImageViewImpression(viewUrl: String) {
                     ImpresionTask(this@ProductTopAdsImageViewHolder.javaClass.canonicalName).execute(viewUrl)
-                    listener.onTopAdsImageViewImpression(element.data?.get(0)?.bannerId)
+                    listener.onTopAdsImageViewImpression(element, bannerId, bannerName)
                 }
             })
         }

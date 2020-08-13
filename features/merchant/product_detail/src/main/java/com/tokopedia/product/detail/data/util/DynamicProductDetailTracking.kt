@@ -880,48 +880,29 @@ object DynamicProductDetailTracking {
             TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, "")
         }
 
-//        " 'event' : 'select_content',
-//        'eventCategory' : 'product detail page',
-//        'eventAction' : 'click - tdn banner ads widget',
-//        'eventLabel' : '',
-//        'screenName': '{screen name}'
-//        'currentSite':'{current site}',
-//        'userId':'{user id}',
-//        'businessUnit':'{busines unit}',
-//        'promotions': [
-//        {
-//            'item_id': '{{banner_id}}’,                     // mandatory
-//            'item_name': '/product - tdn banner ads',                 // mandatory
-//            'creative_name': '{{creative name}}',           // name of asset for banner, pass 'none / other' if no creative name available, mandatory
-//            'creative_slot': '{position index}',                 // position number, integer value, mandatory
-//        },
-//        ...
-//        ],
-//
-//        // additional custom dimension
-//        ---
-//        "
+        fun eventTopAdsImageViewClicked(trackingQueue: TrackingQueue, userId: String, bannerId: String, position: Int, bannerName:String) {
+            val mapEvent = hashMapOf<String, Any>(
+                    ProductTrackingConstant.Tracking.KEY_EVENT to ProductTrackingConstant.Tracking.PROMO_CLICK,
+                    ProductTrackingConstant.Tracking.KEY_CATEGORY to ProductTrackingConstant.Category.PDP,
+                    ProductTrackingConstant.Tracking.KEY_ACTION to ProductTrackingConstant.Action.CLICK_TDN_BANNER_ADS_WIDGET,
+                    ProductTrackingConstant.Tracking.KEY_LABEL to "",
+                    ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT to ProductTrackingConstant.Tracking.BUSINESS_UNIT,
+                    ProductTrackingConstant.Tracking.KEY_CURRENT_SITE to ProductTrackingConstant.Tracking.CURRENT_SITE,
+                    ProductTrackingConstant.Tracking.KEY_DISCUSSION_USER_ID to userId,
+                    ProductTrackingConstant.Tracking.KEY_SCREEN_NAME to ProductTrackingConstant.Tracking.PRODUCT_DETAIL_SCREEN_NAME,
+                    ProductTrackingConstant.Tracking.KEY_ECOMMERCE to hashMapOf(
+                            ProductTrackingConstant.Tracking.PROMO_CLICK to hashMapOf(
+                                    ProductTrackingConstant.Tracking.KEY_PROMOTIONS to listOf(
+                                            hashMapOf(
+                                                    ProductTrackingConstant.Tracking.ID to bannerId,
+                                                    ProductTrackingConstant.Tracking.NAME to ProductTrackingConstant.TopAds.PDP_BANNER_TOPADS,
+                                                    ProductTrackingConstant.Tracking.CREATIVE to
+                                                            if (bannerName.isEmpty()) ProductTrackingConstant.TopAds.DFAULT_CREATIVE_NAME_BANNER_TOP_ADS else bannerName,
+                                                    ProductTrackingConstant.Tracking.POSITION to position
+                                            ))
+                            )))
 
-        fun eventTopAdsImageViewClicked(trackingQueue: TrackingQueue, userId: String, bannerId: String?) {
-            val mapEvent = DataLayer.mapOf(
-                    ProductTrackingConstant.Tracking.KEY_EVENT, ProductTrackingConstant.TopAds.EVENT_CLICK_PDP_TOPADS_IMAGE_VIEW,
-                    ProductTrackingConstant.Tracking.KEY_CATEGORY, ProductTrackingConstant.Category.PDP,
-                    ProductTrackingConstant.Tracking.KEY_ACTION, ProductTrackingConstant.Action.CLICK_TDN_BANNER_ADS_WIDGET,
-                    ProductTrackingConstant.Tracking.KEY_LABEL, "",
-                    ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT , ProductTrackingConstant.Tracking.BUSINESS_UNIT,
-                    ProductTrackingConstant.Tracking.KEY_CURRENT_SITE , ProductTrackingConstant.Tracking.CURRENT_SITE,
-                    ProductTrackingConstant.Tracking.KEY_DISCUSSION_USER_ID , userId,
-                    ProductTrackingConstant.Tracking.KEY_SCREEN_NAME , ProductTrackingConstant.Tracking.PRODUCT_DETAIL_SCREEN_NAME,
-                    ProductTrackingConstant.Tracking.KEY_ECOMMERCE, DataLayer.mapOf(
-                    "promoView", DataLayer.mapOf(
-                    "promotions", DataLayer.listOf(
-                    DataLayer.mapOf("item_id", bannerId,
-                    "item_name" , "/product - tdn banner ads",
-                    "creative_name" , "none / other",
-                    "creative_slot" , "3"))
-            )))
-
-            TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(mapEvent)
+            trackingQueue.putEETracking(mapEvent)
         }
     }
 
@@ -1363,68 +1344,29 @@ object DynamicProductDetailTracking {
 
         }
 
-        //    " 'event' : 'view_item',
-//    'eventCategory' : 'product detail page',
-//    'eventAction' : 'view - tdn banner ads widget',
-//    'eventLabel' : '',
-//    'screenName': '{screen name}'
-//    'currentSite':'{current site}',
-//    'userId':'{user id}',
-//    'businessUnit':'{busines unit}',
-//    'promotions': [
-//    {
-//        'item_id': '{{banner_id}}’,                     // mandatory
-//        'item_name': '/product - tdn banner ads',                 // mandatory
-//        'creative_name': '{{creative name}}',           // name of asset for banner, pass 'none / other' if no creative name available, mandatory
-//        'creative_slot': '{position index}',                 // position number, integer value, mandatory
-//    },
-//    ...
-//    ],
-//
-//    // additional custom dimension
-//    ---
-//    "
+        fun eventTopAdsImageViewImpression(trackingQueue: TrackingQueue, userId: String, bannerId: String, position: Int, bannerName: String) {
+            val mapEvent = hashMapOf<String, Any>(
+                    ProductTrackingConstant.Tracking.KEY_EVENT to ProductTrackingConstant.Tracking.PROMO_VIEW,
+                    ProductTrackingConstant.Tracking.KEY_CATEGORY to ProductTrackingConstant.Category.PDP,
+                    ProductTrackingConstant.Tracking.KEY_ACTION to ProductTrackingConstant.Action.VIEW_TDN_BANNER_ADS_WIDGET,
+                    ProductTrackingConstant.Tracking.KEY_LABEL to "",
+                    ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT to ProductTrackingConstant.Tracking.BUSINESS_UNIT,
+                    ProductTrackingConstant.Tracking.KEY_CURRENT_SITE to ProductTrackingConstant.Tracking.CURRENT_SITE,
+                    ProductTrackingConstant.Tracking.KEY_DISCUSSION_USER_ID to userId,
+                    ProductTrackingConstant.Tracking.KEY_SCREEN_NAME to ProductTrackingConstant.Tracking.PRODUCT_DETAIL_SCREEN_NAME,
+                    ProductTrackingConstant.Tracking.KEY_ECOMMERCE to hashMapOf(
+                            ProductTrackingConstant.Tracking.PROMO_VIEW to hashMapOf(
+                                    ProductTrackingConstant.Tracking.KEY_PROMOTIONS to listOf(
+                                            hashMapOf(
+                                                    ProductTrackingConstant.Tracking.ID to bannerId,
+                                                    ProductTrackingConstant.Tracking.NAME to ProductTrackingConstant.TopAds.PDP_BANNER_TOPADS,
+                                                    ProductTrackingConstant.Tracking.CREATIVE to
+                                                            if (bannerName.isEmpty()) ProductTrackingConstant.TopAds.DFAULT_CREATIVE_NAME_BANNER_TOP_ADS else bannerName,
+                                                    ProductTrackingConstant.Tracking.POSITION to position
+                                            ))
+                            )))
 
-        private object Promo {
-            val KEY_IMPRESSION = "promoView"
-            val KEY_CLICK = "promoClick"
-            val PROMOTION = "promotions"
-            val ID = "id"
-            val NAME = "name"
-            val CREATIVE = "creative"
-            val CREATIVE_URL = "creative_url"
-            val POSITION = "position"
-            val CATEGORY = "category"
-            val PROMO_ID = "promo_id"
-            val PROMO_CODE = "promo_code"
-        }
-
-        fun eventTopAdsImageViewImpression(trackingQueue: TrackingQueue, userId: String?, bannerId: String?) {
-            val mapEvent = DataLayer.mapOf(
-                    ProductTrackingConstant.Tracking.KEY_EVENT, "view_item",
-                    ProductTrackingConstant.Tracking.KEY_CATEGORY, ProductTrackingConstant.Category.PDP,
-                    ProductTrackingConstant.Tracking.KEY_ACTION, "view - tdn banner ads widget",
-                    ProductTrackingConstant.Tracking.KEY_LABEL, "",
-                    ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT , ProductTrackingConstant.Tracking.BUSINESS_UNIT,
-                    ProductTrackingConstant.Tracking.KEY_CURRENT_SITE , ProductTrackingConstant.Tracking.CURRENT_SITE,
-                    ProductTrackingConstant.Tracking.KEY_DISCUSSION_USER_ID , userId,
-                    ProductTrackingConstant.Tracking.KEY_SCREEN_NAME , ProductTrackingConstant.Tracking.PRODUCT_DETAIL_SCREEN_NAME,
-                    ProductTrackingConstant.Tracking.KEY_ECOMMERCE, DataLayer.mapOf(
-                    "promoView", DataLayer.mapOf(
-                    "promotions", DataLayer.listOf(
-                    DataLayer.mapOf(
-                    Promo.ID, bannerId,
-                    Promo.NAME, "/product - tdn banner ads",
-                    Promo.CREATIVE, "none / other",
-                    Promo.CREATIVE_URL, "3",
-                    Promo.POSITION, "1",
-                    Promo.PROMO_ID, "",
-                    Promo.PROMO_CODE, ""
-            ))
-            )))
-
-            TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(mapEvent)
-
+            trackingQueue.putEETracking(mapEvent)
         }
     }
 

@@ -123,6 +123,14 @@ class DynamicProductDetailAdapter(
 
     fun getVariantPosition(data: VariantDataModel?): Int = if (data != null) list.indexOf(data) else 0
 
+    fun getTopAdsBannerPosition(data: TopAdsImageDataModel): Int {
+        return if (data != null) {
+            list.indexOf(data)
+        } else {
+            -1
+        }
+    }
+
     fun notifyVariantSection(data: VariantDataModel?, payload: Int?) {
         data?.let {
             val indexOfVariant = list.indexOf(it)

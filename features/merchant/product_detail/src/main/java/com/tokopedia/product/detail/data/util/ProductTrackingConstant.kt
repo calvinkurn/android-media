@@ -47,6 +47,10 @@ object ProductTrackingConstant {
         const val PROMO_POSITION = "position"
         const val PROMO_ID = "promo_id"
         const val PROMO_CODE = "promo_id"
+        const val CREATIVE = "creative"
+        const val POSITION = "position"
+        const val PROMO_CLICK = "promoClick"
+        const val PROMO_VIEW = "promoView"
 
         const val ACTION_FIELD = "actionField"
         const val LIST = "list"
@@ -169,6 +173,7 @@ object ProductTrackingConstant {
         const val CLICK_SEE_ALL_ULASAN = "click - lihat semua ulasan"
 
         const val CLICK_TDN_BANNER_ADS_WIDGET= "click - tdn banner ads widget"
+        const val VIEW_TDN_BANNER_ADS_WIDGET= "view - tdn banner ads widget"
     }
 
 
@@ -231,7 +236,8 @@ object ProductTrackingConstant {
 
     object TopAds {
         const val PDP_TOPADS = "/productdetail - top ads'"
-        const val EVENT_CLICK_PDP_TOPADS_IMAGE_VIEW = "select_content"
+        const val PDP_BANNER_TOPADS = "/product - tdn banner ads"
+        const val DFAULT_CREATIVE_NAME_BANNER_TOP_ADS = "none / other"
     }
 
     object Message {

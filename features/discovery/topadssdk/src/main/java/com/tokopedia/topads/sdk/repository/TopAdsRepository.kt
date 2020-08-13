@@ -50,7 +50,8 @@ class TopAdsRepository {
             val model = TopAdsImageViewModel()
             val image = getImageById(data?.banner?.images, queryParams[DIMEN_ID] as? Int)
             with(model) {
-                bannerId = data?.id.toString() ?: ""
+                bannerId = data?.id.toString()
+                bannerName = data?.banner?.name ?: ""
                 adClickUrl = data?.adClickUrl ?: ""
                 adViewUrl = data?.adViewUrl ?: ""
                 applink = data?.applinks ?: ""
