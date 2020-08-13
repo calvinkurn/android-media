@@ -404,14 +404,10 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     }
 
     @Override
-    public void onRenderNotifInbox(NotificationsModel entity, String reviewCount) {
+    public void onRenderNotifInbox(NotificationsModel entity) {
         emptyLayout.setVisibility(View.GONE);
         swipeRefreshLayout.setVisibility(View.VISIBLE);
-        if(useOldCounter()) {
-            adapter.updateValue(entity, entity.getInbox().getReview());
-        } else {
-            adapter.updateValue(entity, reviewCount);
-        }
+        adapter.updateValue(entity);
     }
 
     @Override
@@ -476,12 +472,4 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
         InboxGtmTracker.getInstance().eventInboxProductClick(getContext(), item, item.getPosition(), item.isTopAds());
     }
 
-    private RemoteConfig getABTestRemoteConfig() {
-        return RemoteConfigInstance.getInstance().getABTestPlatform();
-    }
-
-    private Boolean useOldCounter() {
-        String remoteConfigValue = getABTestRemoteConfig().getString(AB_TEST_KEY);
-        return remoteConfigValue.equals(OLD_REVIEW_FLOW);
-    }
 }

@@ -50,7 +50,4 @@ query Notification($cursor: String) {
     isOSBottomNav
   }
 
-    productrevInboxReviewCounter {
-      count
-    }
 }

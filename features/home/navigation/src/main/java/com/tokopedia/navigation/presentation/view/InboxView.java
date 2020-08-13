@@ -10,7 +10,7 @@ import java.util.List;
  */
 public interface InboxView extends LoadDataView {
 
-    void onRenderNotifInbox(NotificationsModel entity, String reviewCount);
+    void onRenderNotifInbox(NotificationsModel entity);
 
     void onRenderRecomInbox(List<Visitable> list);
 

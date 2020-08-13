@@ -33,7 +33,7 @@ public class InboxAdapter extends BaseAdapter<InboxAdapterTypeFactory> {
         this.typeFactory = adapterTypeFactory;
     }
 
-    public void updateValue(NotificationsModel entity, String reviewCount) {
+    public void updateValue(NotificationsModel entity) {
         if(visitables !=null && visitables.size() > 0){
             if(visitables.get(InboxFragment.CHAT_MENU) instanceof Inbox){
                 ((Inbox) visitables.get(InboxFragment.CHAT_MENU))
@@ -45,7 +45,7 @@ public class InboxAdapter extends BaseAdapter<InboxAdapterTypeFactory> {
             }
             if(visitables.get(InboxFragment.REVIEW_MENU) instanceof Inbox){
                 ((Inbox) visitables.get(InboxFragment.REVIEW_MENU))
-                        .setTotalBadge(reviewCount);
+                        .setTotalBadge(entity.getInbox().getReview());
             }
             if(visitables.get(InboxFragment.HELP_MENU) instanceof Inbox){
                 ((Inbox) visitables.get(InboxFragment.HELP_MENU))
