@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.saldodetails.di.DispatcherModule
 import com.tokopedia.saldodetails.response.model.*
 import com.tokopedia.saldodetails.usecase.*
@@ -28,6 +29,11 @@ class SaldoDetailViewModel @Inject constructor(
         @Named(DispatcherModule.MAIN) val uiDispatcher: CoroutineDispatcher,
         @Named(DispatcherModule.IO) val workerDispatcher: CoroutineDispatcher
 ) : BaseViewModel(uiDispatcher) {
+
+    companion object {
+        private const val MERCHANT_CREDIT_ELIGIBLE_STATUS = 101
+        private const val SALDO_PRIORITY_ELIGIBLE_STATUS = 1
+    }
 
     var isSeller: Boolean = false
 
@@ -115,9 +121,8 @@ class SaldoDetailViewModel @Inject constructor(
 
     private fun checkMigrationEligibility(merchantCreditResult: Resources<GqlMerchantCreditDetailsResponse>,
                                           saldoPriorityResult: Resources<GqlMerchantSaldoDetailsResponse>): Pair<Boolean, Boolean> {
-
-        val isMerchantCreditEligible = (merchantCreditResult as? Success)?.data?.data?.isEligible ?: false
-        val isSaldoPriorityEligible = (saldoPriorityResult as? Success)?.data?.data?.isEligible ?: false
+        val isMerchantCreditEligible = (merchantCreditResult as? Success)?.data?.data?.status.toZeroIfNull() >= MERCHANT_CREDIT_ELIGIBLE_STATUS
+        val isSaldoPriorityEligible = (saldoPriorityResult as? Success)?.data?.data?.status.toZeroIfNull() >= SALDO_PRIORITY_ELIGIBLE_STATUS
         return Pair(isMerchantCreditEligible, isSaldoPriorityEligible)
     }
 
