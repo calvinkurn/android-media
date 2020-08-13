@@ -59,7 +59,6 @@ class PltShopPagePowerMerchantPerformanceTest {
                     KEY_QUERY_SHOP_INFO_HOME_TYPE,
                     KEY_QUERY_SHOP_INFO_GOLD,
                     KEY_QUERY_SHOP_INFO_TOP_CONTENT,
-                    KEY_QUERY_SHOP_INFO_FAVORITE,
                     KEY_QUERY_WHITELIST
             ))
 
