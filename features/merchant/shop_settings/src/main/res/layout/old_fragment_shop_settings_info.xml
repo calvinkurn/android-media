@@ -22,9 +22,9 @@
             android:clipToPadding="false"
             android:paddingBottom="@dimen/dp_4">
 
-            <include layout="@layout/partial_shop_settings_info_basic" />
+            <include layout="@layout/old_partial_shop_settings_info_basic" />
 
-            <include layout="@layout/partial_shop_settings_info_status" />
+            <include layout="@layout/old_partial_shop_settings_info_status" />
 
             <include layout="@layout/partial_shop_settings_info_power_merchant" />
         </LinearLayout>

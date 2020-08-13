@@ -44,7 +44,7 @@ import com.tokopedia.shop.settings.common.util.FORMAT_DATE
 import com.tokopedia.shop.settings.common.util.toReadableString
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_shop_settings_info.*
+import kotlinx.android.synthetic.main.old_fragment_shop_settings_info.*
 import kotlinx.android.synthetic.main.old_partial_shop_settings_info_status.*
 import kotlinx.android.synthetic.main.old_partial_shop_settings_info_basic.*
 import kotlinx.android.synthetic.main.partial_shop_settings_info_power_merchant.*

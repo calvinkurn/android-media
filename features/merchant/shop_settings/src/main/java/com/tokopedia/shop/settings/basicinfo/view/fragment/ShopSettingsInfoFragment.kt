@@ -159,12 +159,14 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
     }
 
     fun showLoading() {
-        scrollViewContent.visibility = View.GONE
+//        scrollViewContent.visibility = View.GONE
+        viewContent.visibility = View.GONE
         loadingView.visibility = View.VISIBLE
     }
 
     fun hideLoading() {
-        scrollViewContent.visibility = View.VISIBLE
+//        scrollViewContent.visibility = View.VISIBLE
+        viewContent.visibility = View.VISIBLE
         loadingView.visibility = View.GONE
     }
 
