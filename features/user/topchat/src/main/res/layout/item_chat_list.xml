@@ -63,6 +63,7 @@
             android:layout_weight="1"
             android:ellipsize="end"
             android:includeFontPadding="false"
+            android:lines="2"
             android:maxLines="2"
             android:textColor="@color/Neutral_N700_68"
             android:visibility="visible"

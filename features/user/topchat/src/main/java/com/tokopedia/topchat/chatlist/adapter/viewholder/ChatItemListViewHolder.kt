@@ -234,6 +234,7 @@ class ChatItemListViewHolder(
 
     private fun bindMessageState(chat: ItemChatListPojo) {
         message.text = MethodChecker.fromHtml(chat.lastReplyMessage)
+        message.setLines(2)
         message.setTypeface(null, NORMAL)
         message.setTextColor(MethodChecker.getColor(message.context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))
     }
