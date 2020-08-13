@@ -21,11 +21,10 @@ import kotlinx.android.synthetic.main.ent_banner_view.view.*
 /**
  * Author errysuprayogi on 27,January,2020
  */
-class BannerEventViewHolder: HomeEventViewHolder<BannerViewModel>, BannerView.OnPromoClickListener,
+class BannerEventViewHolder(itemView: View, val analytic:EventHomePageTracking): HomeEventViewHolder<BannerViewModel>(itemView), BannerView.OnPromoClickListener,
         BannerView.OnPromoAllClickListener, BannerView.OnPromoScrolledListener,
         BannerView.OnPromoDragListener, BannerView.OnPromoLoadedListener {
 
-    constructor(itemView: View) : super(itemView)
     var context : Context
     var el: BannerViewModel? = null
 
@@ -51,7 +50,7 @@ class BannerEventViewHolder: HomeEventViewHolder<BannerViewModel>, BannerView.On
 
     override fun onPromoClick(p: Int) {
         el?.let {
-            EventHomePageTracking.getInstance().clickBanner(it.layout.items.get(p), p)
+            analytic.clickBanner(it.layout.items.get(p), p)
 //            RouteManager.route(context, it.layout.items.get(p).url)
         }
     }
@@ -62,7 +61,7 @@ class BannerEventViewHolder: HomeEventViewHolder<BannerViewModel>, BannerView.On
 
     override fun onPromoScrolled(pos: Int) {
         el?.let {
-            EventHomePageTracking.getInstance().impressionBanner(it.layout.items.get(pos), pos)
+            analytic.impressionBanner(it.layout.items.get(pos), pos)
         }
     }
 
@@ -76,7 +75,7 @@ class BannerEventViewHolder: HomeEventViewHolder<BannerViewModel>, BannerView.On
     override fun onPromoLoaded() {
         el?.let {
             if(it.items.size == 1) {
-                EventHomePageTracking.getInstance().impressionBanner(it.layout.items.get(0), 0)
+                analytic.impressionBanner(it.layout.items.get(0), 0)
             }
         }
     }
