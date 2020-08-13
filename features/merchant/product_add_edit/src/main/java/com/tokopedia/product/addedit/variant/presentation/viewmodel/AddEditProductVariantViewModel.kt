@@ -7,6 +7,7 @@ import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.removeFirst
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.HTTP_PREFIX
 import com.tokopedia.product.addedit.common.constant.ProductStatus.STATUS_ACTIVE_STRING
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
@@ -188,11 +189,11 @@ class AddEditProductVariantViewModel @Inject constructor(
         mSelectedVariantUnitValuesLevel2.value = selectedVariantUnitValues
     }
 
-    fun updateVariantInputModel(selectedVariantDetails: List<VariantDetail>, variantPhotos: List<VariantPhoto>) {
+    fun updateVariantInputModel(variantPhotos: List<VariantPhoto>) {
         productInputModel.value?.variantInputModel?.apply {
             products = mapProducts(selectedVariantDetails, variantPhotos)
             selections = mapSelections(selectedVariantDetails)
-            sizecharts = variantSizechart.value ?: PictureVariantInputModel()
+            sizecharts = mapSizechart(variantSizechart.value)
         }
     }
 
@@ -246,6 +247,10 @@ class AddEditProductVariantViewModel @Inject constructor(
         if (variantDetail.identifier == VARIANT_IDENTIFIER_HAS_SIZECHART) {
             mIsVariantSizechartVisible.value = isVisible
         }
+    }
+
+    fun clearProductVariant() {
+        productInputModel.value?.variantInputModel?.products = emptyList()
     }
 
     fun getSelectedVariantUnit(layoutPosition: Int): Unit {
@@ -316,10 +321,9 @@ class AddEditProductVariantViewModel @Inject constructor(
         var level = 0 // varaint value level
         selectedVariantUnitValuesMap.toSortedMap().forEach {
             // get selected variant detail selected each level
-            variantDetailsSelected.getOrNull(level)?.let { variantDetail ->
-                val unit = mapUnit(variantDetail, it.value) // get unit from variant detail
-                unit?.run {
-                    // if unit is not null then map the SelectionInputModel
+            if (it.value.isNotEmpty()) {
+                variantDetailsSelected.getOrNull(level)?.let { variantDetail ->
+                    val unit = selectedVariantUnitMap.getOrElse(level) { Unit() }
                     result.add(SelectionInputModel(
                             variantDetail.variantID.toString(),
                             variantDetail.name,
@@ -333,6 +337,14 @@ class AddEditProductVariantViewModel @Inject constructor(
             }
         }
         return result
+    }
+
+    private fun mapSizechart(pictureVariantInputModel: PictureVariantInputModel?): PictureVariantInputModel {
+        return if (mIsVariantSizechartVisible.value == true) {
+            pictureVariantInputModel ?: PictureVariantInputModel()
+        } else {
+            PictureVariantInputModel()
+        }
     }
 
     private fun mapUnit(variantDetail: VariantDetail, value: List<UnitValue>): Unit? {
@@ -363,14 +375,16 @@ class AddEditProductVariantViewModel @Inject constructor(
         val result: MutableList<ProductVariantInputModel> = mutableListOf()
         val unitValueList: MutableList<List<UnitValue>> = mutableListOf()
         val variantIdList: MutableList<Int> = mutableListOf()
+        var level = 0
 
         // init unitValueList and variantIdList
         selectedVariantUnitValuesMap.toSortedMap().forEach {
             if (it.value.isNotEmpty()) {
                 unitValueList.add(it.value)
-                variantDetails.getOrNull(it.key)?.let { variantDetail ->
+                variantDetails.getOrNull(level)?.let { variantDetail ->
                     variantIdList.add(variantDetail.variantID)
                 }
+                level++
             }
         }
 
@@ -491,6 +505,12 @@ class AddEditProductVariantViewModel @Inject constructor(
 
     fun setSelectedVariantDetails(selectedVariantDetails: List<VariantDetail>) {
         this.selectedVariantDetails = selectedVariantDetails.toMutableList()
+    }
+
+    fun removeSelectedVariantDetails(variantDetail: VariantDetail) {
+        this.selectedVariantDetails.removeFirst {
+            it.variantID == variantDetail.variantID
+        }
     }
 
     fun getProductVariantPhotos(productInputModel: ProductInputModel): List<VariantPhoto> {

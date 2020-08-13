@@ -45,6 +45,7 @@ import com.tokopedia.product.addedit.variant.presentation.adapter.VariantPhotoAd
 import com.tokopedia.product.addedit.variant.presentation.adapter.VariantTypeAdapter
 import com.tokopedia.product.addedit.variant.presentation.adapter.VariantValueAdapter
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.COLOUR_VARIANT_TYPE_ID
+import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.CUSTOM_VARIANT_UNIT_VALUE_ID
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MAX_SELECTED_VARIANT_TYPE
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.REQUEST_CODE_SIZECHART_IMAGE
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.REQUEST_CODE_VARIANT_DETAIL
@@ -192,6 +193,7 @@ class AddEditProductVariantFragment :
 
         // button "tambah" variant values level 1 on click listener
         linkAddVariantValueLevel1.setOnClickListener {
+            if(variantDataValuePicker?.isVisible == true) return@setOnClickListener
             val variantData: VariantDetail = viewModel.getVariantData(VARIANT_VALUE_LEVEL_ONE_POSITION)
             val selectedVariantUnitValues = mutableListOf<UnitValue>()
             if (variantData.units.isEmpty()) showCustomVariantInputForm(VARIANT_VALUE_LEVEL_ONE_POSITION, variantData, Unit(), listOf(), selectedVariantUnitValues)
@@ -207,6 +209,7 @@ class AddEditProductVariantFragment :
 
         // button "tambah" variant values level 2 on click listener
         linkAddVariantValueLevel2.setOnClickListener {
+            if(variantDataValuePicker?.isVisible == true) return@setOnClickListener
             val variantData: VariantDetail = viewModel.getVariantData(VARIANT_VALUE_LEVEL_TWO_POSITION)
             val selectedVariantUnitValues = mutableListOf<UnitValue>()
             if (variantData.units.isEmpty()) showCustomVariantInputForm(VARIANT_VALUE_LEVEL_TWO_POSITION, variantData, Unit(), listOf(), selectedVariantUnitValues)
@@ -222,9 +225,10 @@ class AddEditProductVariantFragment :
 
         // button save on click listener
         buttonSave.setOnClickListener {
+            // perform the save button function
             val variantPhotos = variantPhotoAdapter?.getData().orEmpty()
             val selectedVariantDetails = variantTypeAdapter?.getSelectedItems().orEmpty()
-            viewModel.updateVariantInputModel(selectedVariantDetails, variantPhotos)
+            viewModel.updateVariantInputModel(variantPhotos)
             startAddEditProductVariantDetailActivity()
         }
 
@@ -325,6 +329,9 @@ class AddEditProductVariantFragment :
 
         // update sizechart visibility based on variant selected type
         viewModel.updateSizechartFieldVisibility(variantTypeAdapter?.getSelectedItems().orEmpty())
+
+        // update viewmodel's variant details
+        viewModel.setSelectedVariantDetails(variantTypeAdapter?.getSelectedItems().orEmpty())
     }
 
     override fun onVariantTypeDeselected(adapterPosition: Int, variantDetail: VariantDetail): Boolean {
@@ -363,6 +370,10 @@ class AddEditProductVariantFragment :
         viewModel.updateSelectedVariantUnitMap(layoutPosition, Unit())
         // update layout - selected unit values map
         viewModel.updateSelectedVariantUnitValuesMap(layoutPosition, mutableListOf())
+        // clear old variant price/ stock
+        viewModel.clearProductVariant()
+        // remove viewmodel's variant details
+        viewModel.removeSelectedVariantDetails(variantDetail)
         when (layoutPosition) {
             VARIANT_VALUE_LEVEL_ONE_POSITION -> {
                 viewModel.updateSelectedVariantUnitValuesLevel1(mutableListOf())
@@ -496,13 +507,13 @@ class AddEditProductVariantFragment :
     }
 
     override fun onCustomVariantUnitValueAdded(layoutPosition: Int,
-                                               selectedVariantUnit: Unit,
+                                               currentSelectedVariantUnit: Unit,
                                                customVariantUnitValue: UnitValue,
                                                currentSelectedVariantUnitValues: MutableList<UnitValue>) {
         // close the custom variant value input form
         customVariantValueInputForm?.dismiss()
         // add the added custom value to variant data and selected variant unit values
-        viewModel.addCustomVariantUnitValue(layoutPosition, selectedVariantUnit, customVariantUnitValue)
+        viewModel.addCustomVariantUnitValue(layoutPosition, currentSelectedVariantUnit, customVariantUnitValue)
         // get the variant data for tracking and showing the variant data picker
         val variantData = viewModel.getVariantData(layoutPosition)
         // track trackSaveCustomVariantUnitValueEvent
@@ -510,13 +521,17 @@ class AddEditProductVariantFragment :
         viewModel.isEditMode.value?.let { isEditMode ->
             trackSaveCustomVariantUnitValueEvent(isEditMode, label, shopId)
         }
-        // original selected variant unit values
+        val selectedVariantUnit = viewModel.getSelectedVariantUnit(layoutPosition)
         val selectedVariantUnitValues = mutableListOf<UnitValue>()
-        selectedVariantUnitValues.addAll((viewModel.getSelectedVariantUnitValues(layoutPosition)))
+        // if the user does not change the variant unit
+        if (currentSelectedVariantUnit.variantUnitID == selectedVariantUnit.variantUnitID) {
+            // retrieve all selected variant unit values inside the view model
+            selectedVariantUnitValues.addAll((viewModel.getSelectedVariantUnitValues(layoutPosition)))
+        }
         // unconfirmed selection during the selection process
         val unConfirmedSelection = currentSelectedVariantUnitValues.minus(selectedVariantUnitValues)
         // show the variant data picker again
-        showVariantDataValuePicker(variantData, layoutPosition, selectedVariantUnit, selectedVariantUnitValues, customVariantUnitValue, unConfirmedSelection)
+        showVariantDataValuePicker(variantData, layoutPosition, currentSelectedVariantUnit, selectedVariantUnitValues, customVariantUnitValue, unConfirmedSelection)
     }
 
     override fun onRemoveButtonClicked(position: Int, layoutPosition: Int, removedUnitValue: UnitValue) {
@@ -587,7 +602,6 @@ class AddEditProductVariantFragment :
                         viewModel.productInputModel.value = saveInstanceCacheManager
                                 .get(EXTRA_PRODUCT_INPUT_MODEL, ProductInputModel::class.java)
                     }
-
                     submitVariantInput()
                 }
             }
@@ -615,8 +629,8 @@ class AddEditProductVariantFragment :
                                            unConfirmedSelection: List<UnitValue> = listOf()) {
         variantDataValuePicker = BottomSheetUnify()
         variantDataValuePicker?.setTitle(getString(R.string.label_variant_choose) + " " + variantData.name)
-        variantDataValuePicker?.clearContentPadding = true
-        variantDataValuePicker?.showKnob = true
+        variantDataValuePicker?.overlayClickDismiss = false
+        variantDataValuePicker?.showCloseIcon = true
         variantDataValuePicker?.clearContentPadding = true
         // set the bottom sheet to full screen
         variantDataValuePicker?.setShowListener {
@@ -634,6 +648,8 @@ class AddEditProductVariantFragment :
                                       hasSelectedValues: Boolean = false) {
         variantUnitPicker = BottomSheetUnify()
         variantUnitPicker?.setTitle(getString(R.string.label_variant_choose) + " " + variantData.name)
+        variantUnitPicker?.overlayClickDismiss = false
+        variantUnitPicker?.showCloseIcon = true
         variantUnitPicker?.clearContentPadding = true
         val variantUnitPickerLayout = VariantUnitPicker(context)
         variantUnitPickerLayout.setLayoutPosition(layoutPosition)
@@ -656,6 +672,7 @@ class AddEditProductVariantFragment :
                                            selectedVariantUnitValues: MutableList<UnitValue>) {
         customVariantValueInputForm = BottomSheetUnify()
         customVariantValueInputForm?.setTitle(getString(R.string.action_variant_add) + " " + variantData.name)
+        customVariantValueInputForm?.overlayClickDismiss = false
         customVariantValueInputForm?.isKeyboardOverlap = false
         val customVariantValueInputLayout = CustomVariantUnitValueForm(requireContext(), layoutPosition, variantUnitValues, this)
         customVariantValueInputLayout.setupVariantCustomInputLayout(selectedVariantUnit, selectedVariantUnitValues)
@@ -805,6 +822,19 @@ class AddEditProductVariantFragment :
             val selectedVariantData = variantDataList.first {
                 it.variantID == variantDetail.variantID
             }
+
+            // add custom unit values to variant data
+            val selectedCustomVariantUnitValues = selectedVariantUnitValues.filter {
+                it.variantUnitValueID == CUSTOM_VARIANT_UNIT_VALUE_ID
+            }
+            // add custom variant unit values to variant data
+            if (selectedCustomVariantUnitValues.isNotEmpty()) {
+                // find the unit and add the values
+                selectedVariantData.units.find {
+                    it.variantUnitID == selectedVariantUnit.variantUnitID
+                }?.unitValues?.addAll(selectedCustomVariantUnitValues)
+            }
+
             val adapterPosition = variantDataList.indexOfFirst {
                 it.variantID == variantDetail.variantID
             }

@@ -13,7 +13,7 @@ buildscript {
 }
 
 dependencies {
-    implementation project(rootProject.ext.libraries.playCore)
+    implementation rootProject.ext.playServicesDependencies.core
 }
 
 project.ext {

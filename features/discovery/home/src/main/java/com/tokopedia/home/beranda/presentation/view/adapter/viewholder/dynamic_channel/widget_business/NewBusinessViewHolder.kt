@@ -40,8 +40,8 @@ class NewBusinessViewHolder(view: View, private val listener: HomeCategoryListen
     private val adapterBusinessWidget = BusinessUnitAdapter(object: NewBusinessUnitViewHolder.BusinessUnitListener{
         override fun getBusinessUnit(position: Int) {
             if(model?.tabList != null && (model?.tabList?.size ?: -1) > position){
-                model?.tabList?.get(position)?.id?.let{
-                    listener.getBusinessUnit(it, position)
+                model?.tabList?.get(position)?.let {
+                    listener.getBusinessUnit(it.id, position, it.name)
                 }
             }
         }
@@ -63,7 +63,7 @@ class NewBusinessViewHolder(view: View, private val listener: HomeCategoryListen
 
         override fun onTabSelected(tab: TabLayout.Tab) {
             listener.sendEETracking(BusinessUnitTracking.getPageSelected(tab.text.toString()) as HashMap<String, Any>)
-            viewPager.currentItem = tab.position
+            viewPager.setCurrentItem(tab.position, false)
         }
     }
 

@@ -148,7 +148,7 @@ class MainSliceProvider : SliceProvider() {
                                     }
                                 }
                             }
-                            if (alreadyLoadData && listProduct.size == 3) {
+                            if (alreadyLoadData && listProduct.isNotEmpty()) {
                                 val trackingImpression = TrackingData(listProduct)
                                 Timber.w(contextNonNull.resources.getString(R.string.slice_track_timber_impression) + trackingImpression)
                             }
@@ -158,7 +158,7 @@ class MainSliceProvider : SliceProvider() {
                     return sliceNotLogin(sliceUri)
                 }
             } catch (e: Exception) {
-                return sliceNotLogin(sliceUri)
+                return sliceNoAccess(sliceUri)
             }
         } else {
             return sliceNoAccess(sliceUri)
