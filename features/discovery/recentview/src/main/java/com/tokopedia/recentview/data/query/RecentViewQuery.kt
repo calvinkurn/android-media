@@ -4,13 +4,10 @@ package com.tokopedia.recentview.data.query
  * @author by yoasfs on 12/08/20
  */
 object RecentViewQuery{
-    private const val userID = "\$userID"
-    private const val count = "\$count"
     fun getQuery() = """
         {
-         query getRecentView($userID: String!, $count:Int) {
-          
-                get_recent_view(userID: $userID, count:$count,filter:{
+         query getRecentView(${'$'}userID: String!, ${'$'}count:Int) {
+                get_recent_view(userID: ${'$'}userID, count:${'$'}count,filter:{
                      blacklistProductIds:"1,2,3",
                      source:"any",
                    }) {
