@@ -533,18 +533,18 @@ class AddEditProductVariantViewModel @Inject constructor(
         colorVariant?.options?.forEachIndexed { index, optionInputModel ->
             val variantUnitValueName = optionInputModel.value
             // get variant image url
-            val pictures = productInputModel.variantInputModel.products.find {
+            val picture = productInputModel.variantInputModel.products.find {
                 it.combination.getOrNull(colorVariantLevel) == index
             }?.pictures?.firstOrNull()
 
-            val photoUrl = pictures?.urlOriginal.orEmpty()
-            val photoPicID = pictures?.picID.orEmpty()
-            val photoDescription = pictures?.description.orEmpty()
-            val photoFileName = pictures?.fileName.orEmpty()
-            val photoWidth = pictures?.width.orZero()
-            val photoHeight = pictures?.height.orZero()
-            val photoIsFromIG = pictures?.isFromIG.orEmpty()
-            val photoUploadId = pictures?.uploadId.orEmpty()
+            val photoUrl = picture?.urlOriginal.orEmpty()
+            val photoPicID = picture?.picID.orEmpty()
+            val photoDescription = picture?.description.orEmpty()
+            val photoFileName = picture?.fileName.orEmpty()
+            val photoWidth = picture?.width.orZero()
+            val photoHeight = picture?.height.orZero()
+            val photoIsFromIG = picture?.isFromIG.orEmpty()
+            val photoUploadId = picture?.uploadId.orEmpty()
 
             variantPhotos.add(VariantPhoto(
                     variantUnitValueName,
