@@ -39,4 +39,10 @@ data class FilterV2(
             @Expose
             val dark: String = ""
     )
+
+    companion object {
+            const val FILTER_TYPE_SELECTION = "selection"
+            const val FILTER_TYPE_OPEN_RANGE = "open_range"
+            const val FILTER_TYPE_SELECTION_RANGE = "selection_range"
+    }
 }

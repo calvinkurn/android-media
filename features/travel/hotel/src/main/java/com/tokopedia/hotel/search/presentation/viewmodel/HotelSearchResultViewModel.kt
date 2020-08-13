@@ -30,7 +30,6 @@ class HotelSearchResultViewModel @Inject constructor(
         get() = searchParam.filters
 
     var filter: Filter = Filter()
-    var filterV2s: List<FilterV2> = listOf()
 
     val liveSearchResult = MutableLiveData<Result<PropertySearch>>()
 

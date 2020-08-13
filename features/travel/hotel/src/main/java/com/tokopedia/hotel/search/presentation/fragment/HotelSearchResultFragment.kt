@@ -166,7 +166,6 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
         super.renderList(searchProperties, searchProperties.isNotEmpty())
 
         generateSortMenu(data.displayInfo.sort)
-//        initializeFilterClick(data.displayInfo.filter)
 
         if (isFirstInitializeFilter)  {
             initializeFilterV2BottomSheet(data.filters)
@@ -187,25 +186,11 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
         }
     }
 
-    private fun initializeFilterClick(filter: Filter) {
-        bottom_action_view.filterItem.listener = {
-            searchResultviewModel.filter = filter
-            context?.let {
-                val cacheManager = SaveInstanceCacheManager(it, true).apply {
-                    put(CommonParam.ARG_FILTER, filter)
-                    put(CommonParam.ARG_SELECTED_FILTER, searchResultviewModel.selectedFilter)
-                }
-                startActivityForResult(HotelSearchFilterActivity.createIntent(it, cacheManager.id), REQUEST_FILTER)
-            }
-        }
-    }
-
     private var quickFilters: List<QuickFilter> = listOf()
 
     private fun initializeQuickFilter(quickFilters: List<QuickFilter>, filters: List<FilterV2>) {
-
         this.quickFilters = quickFilters.map { quickFilter ->
-            val item = filters.filter { it.name == quickFilter.name }
+            val item = filters.filter { it.name.equals(quickFilter.name, true) }
             if (item.isNotEmpty()) {
                 quickFilter.type = (item.firstOrNull() ?: FilterV2()).type
             }
@@ -246,15 +231,16 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
             var isVisited = false
             val isQuickFilterSelected = quick_filter_sort_filter.chipItems[index].type == ChipsUnify.TYPE_SELECTED
             for ((filterIndex, selectedFilter) in searchResultviewModel.selectedFilterV2.withIndex()) {
-                if (quickFilter.name == selectedFilter.name)  {
+                if (quickFilter.name.equals(selectedFilter.name, true))  {
                     for ((valueIndex, value) in selectedFilter.values.withIndex()) {
-                        if (value == quickFilter.value) {
+                        if (value.equals(quickFilter.value, true)) {
                             selectedFilterV2[filterIndex].values.removeAt(valueIndex)
                             break
                         }
                     }
                     if (isQuickFilterSelected) {
-                        if (quickFilter.type == "selection_range" || quickFilter.type == "open_range" )  {
+                        if (quickFilter.type.equals(FilterV2.FILTER_TYPE_SELECTION_RANGE, true) ||
+                                quickFilter.type.equals(FilterV2.FILTER_TYPE_OPEN_RANGE, true) )  {
                             selectedFilterV2[filterIndex].values = mutableListOf(quickFilter.value)
                         } else selectedFilterV2[filterIndex].values.add(quickFilter.value)
                         isVisited = true
@@ -370,17 +356,14 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
             it.type = ChipsUnify.TYPE_NORMAL
         }
 
-        var isVisited = false
         quickFilters.forEachIndexed { index, quickFilter ->
             for (selectedFilter in selectedFilters)  {
-                if (selectedFilter.name == quickFilter.name) {
+                if (selectedFilter.name.equals(quickFilter.name, true)) {
                     for (value in selectedFilter.values) {
-                        if (value == quickFilter.value) {
+                        if (value.equals(quickFilter.value, true)) {
                             quick_filter_sort_filter.chipItems[index].type = ChipsUnify.TYPE_SELECTED
-                            isVisited = true
                         }
                     }
-                    if (!isVisited) quick_filter_sort_filter.chipItems[index].type = ChipsUnify.TYPE_NORMAL
                 }
             }
         }
