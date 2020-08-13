@@ -89,9 +89,7 @@ class ProductManageSellerFragment : ProductManageFragment() {
     override fun onResume() {
         super.onResume()
         registerDraftReceiver()
-        if (isMyServiceRunning(TkpdState.ProductService::class.java)) {
-            productDraftListCountViewModel.getAllDraftCount()
-        }
+        productDraftListCountViewModel.getAllDraftCount()
         if (userVisibleHint) {
             sendNormalSendScreen()
         }
@@ -164,23 +162,6 @@ class ProductManageSellerFragment : ProductManageFragment() {
         val filterOptionKeys: List<String> = arguments?.getStringArrayList(FILTER_OPTIONS).orEmpty()
         val filterOptions: List<FilterOption> = FilterMapper.mapKeysToFilterOptionList(filterOptionKeys)
         super.setDefaultFilterOptions(filterOptions)
-    }
-
-    private fun isMyServiceRunning(serviceClass: Class<*>): Boolean {
-        activity?.let {
-            val manager = it.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-            if (manager.getRunningServices(Integer.MAX_VALUE) != null) {
-                for (service in manager.getRunningServices(Integer.MAX_VALUE)) {
-                    if (serviceClass.name == service.service.className) {
-                        return true
-                    }
-                }
-                return false
-            } else {
-                return false
-            }
-        }
-        return false
     }
 
     private fun registerDraftReceiver() {
