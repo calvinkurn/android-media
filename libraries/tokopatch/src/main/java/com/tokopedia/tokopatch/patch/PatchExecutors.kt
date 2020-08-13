@@ -31,6 +31,8 @@ class PatchExecutors(
                 applyPatchList(patchList)
             } catch (e: Exception) {
                 e.printStackTrace()
+            } finally {
+                callBack.onFinish()
             }
         }
     }
@@ -173,10 +175,8 @@ class PatchExecutors(
                 }
             }
             cleanUp(dexOutputDir)
-            callBack.onFinish()
             return !error
         } catch (throwable: Throwable) {
-            callBack.onFinish()
             throwable.printStackTrace()
         }
         return false
