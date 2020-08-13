@@ -12,7 +12,6 @@
 
         <activity
             android:name=".login.view.activity.LoginActivity"
-            android:exported="true"
             android:label="@string/login"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
