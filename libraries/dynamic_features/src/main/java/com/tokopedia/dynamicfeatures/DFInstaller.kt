@@ -277,7 +277,7 @@ object DFInstaller {
     }
 
     private fun logDeferredStatus(context: Context, message: String, moduleNames: List<String>, errorCode: List<String> = emptyList()) {
-        val errorCodeTemp = ErrorUtils.getValidatedErrorCode(context, errorCode, freeInternalSpaceBeforeDownload)
+        val errorCodeTemp = errorCode.map { ErrorUtils.getValidatedErrorCode(context, it, freeInternalSpaceBeforeDownload) }
         DFInstallerLogUtil.logStatus(context, TAG_DFM_DEFERRED, message, moduleNames.joinToString(),
                 freeInternalSpaceBeforeDownload, moduleSize, errorCodeTemp, 1, false)
     }
@@ -326,7 +326,7 @@ object DFInstaller {
 
     private fun logFailedStatus(tag: String, context: Context, moduleNameToDownload: List<String>,
                                 errorCode: List<String> = emptyList()) {
-        val errorCodeTemp = ErrorUtils.getValidatedErrorCode(context, errorCode, freeInternalSpaceBeforeDownload)
+        val errorCodeTemp = errorCode.map { ErrorUtils.getValidatedErrorCode(context, it, freeInternalSpaceBeforeDownload) }
         DFTracking.trackDownloadDF(moduleNameToDownload, errorCodeTemp, tag == DOWNLOAD_MODE_BACKGROUND)
         DFInstallerLogUtil.logStatus(context, CommonConstant.DFM_TAG, tag, moduleNameToDownload.joinToString(),
                 freeInternalSpaceBeforeDownload, moduleSize, errorCodeTemp, 1, false,

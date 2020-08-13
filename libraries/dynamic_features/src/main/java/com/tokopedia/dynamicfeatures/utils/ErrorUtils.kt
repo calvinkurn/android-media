@@ -17,24 +17,6 @@ object ErrorUtils {
                 errorCodeTemp = ErrorConstant.ERROR_INVALID_INSUFFICIENT_STORAGE
             }
         }
-        if (errorCodeTemp.isEmpty() || errorCodeTemp == SplitInstallErrorCode.NO_ERROR.toString()) {
-            if (!PlayServiceUtils.isPlayServiceConnected(context)) {
-                errorCodeTemp = ErrorConstant.ERROR_PLAY_SERVICE_NOT_CONNECTED
-            } else if (!PlayServiceUtils.isPlayStoreAvailable(context)) {
-                errorCodeTemp = ErrorConstant.ERROR_PLAY_STORE_NOT_AVAILABLE
-            }
-        }
         return errorCodeTemp
-    }
-
-    fun getValidatedErrorCode(context: Context, errorCodeList: List<String>, freeSpace: Long): List<String> {
-        if (errorCodeList.isEmpty()) {
-            return errorCodeList
-        }
-        val errorCodeListTemp = mutableListOf<String>()
-        for(errorCode in errorCodeList){
-            errorCodeListTemp.add(getValidatedErrorCode(context, errorCode, freeSpace))
-        }
-        return errorCodeListTemp
     }
 }
