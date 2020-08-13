@@ -48,7 +48,6 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
     private CheckBox cbSelectShop;
     private Typography tvShopName;
     private ImageView imgShopBadge;
-    private ImageView imgFulfillment;
     private Typography tvFulfillDistrict;
     private RecyclerView rvCartItem;
 
@@ -61,6 +60,7 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
     private Label labelPreOrder;
     private Typography separatorFreeShipping;
     private ImageView imgFreeShipping;
+    private Label labelFulfillment;
 
     private ActionListener actionListener;
     private CartItemAdapter.ActionListener cartItemAdapterListener;
@@ -90,13 +90,13 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
         layoutWarning = itemView.findViewById(R.id.layout_warning);
         tickerWarning = itemView.findViewById(R.id.ticker_warning);
 
-        imgFulfillment = itemView.findViewById(R.id.img_shop_fulfill);
         tvFulfillDistrict = itemView.findViewById(R.id.tv_fulfill_district);
 
         separatorPreOrder = itemView.findViewById(R.id.separator_pre_order);
         labelPreOrder = itemView.findViewById(R.id.label_pre_order);
         separatorFreeShipping = itemView.findViewById(R.id.separator_free_shipping);
         imgFreeShipping = itemView.findViewById(R.id.img_free_shipping);
+        labelFulfillment = itemView.findViewById(R.id.label_fulfillment);
 
         initCheckboxWatcherDebouncer(compositeSubscription);
     }
@@ -173,7 +173,7 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
         cbSelectShop.setChecked(cartShopHolderData.isAllSelected());
         cbSelectShop.setOnClickListener(cbSelectShopClickListener(cartShopHolderData));
         cbSelectShop.setOnCheckedChangeListener(new CheckboxWatcher(checkboxWatcherListener));
-        imgFulfillment.setVisibility(cartShopHolderData.getShopGroupAvailableData().isFulfillment() ?
+        labelFulfillment.setVisibility(cartShopHolderData.getShopGroupAvailableData().isFulfillment() ?
                 View.VISIBLE : View.GONE);
         if (!TextUtils.isEmpty(cartShopHolderData.getShopGroupAvailableData().getFulfillmentName())) {
             tvFulfillDistrict.setVisibility(View.VISIBLE);
