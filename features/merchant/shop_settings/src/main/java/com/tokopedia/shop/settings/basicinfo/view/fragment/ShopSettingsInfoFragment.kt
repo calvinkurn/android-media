@@ -46,7 +46,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_shop_settings_info.*
 import kotlinx.android.synthetic.main.partial_shop_settings_info_basic.*
-import kotlinx.android.synthetic.main.partial_shop_settings_info_power_merchant.*
+//import kotlinx.android.synthetic.main.partial_shop_settings_info_power_merchant.*
 import kotlinx.android.synthetic.main.partial_shop_settings_info_status.*
 import java.util.*
 import javax.inject.Inject
@@ -337,52 +337,52 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
     }
 
     private fun showRegularMerchantMembership(shopStatusModel: ShopStatusModel) {
-        tvManageGmSubscribe.visibility = View.GONE
+//        tvManageGmSubscribe.visibility = View.GONE
         iv_logo_power_merchant.visibility = View.GONE
-        tv_shop_membership_title.text = getString(com.tokopedia.design.R.string.label_regular_merchant)
-        tv_shop_status.visibility = View.GONE
-        ticker_container.visibility = View.GONE
-        tv_ticker_info.visibility = View.VISIBLE
-        tv_ticker_info.text = getString(R.string.regular_merchant_learn_more)
-        button_activate.visibility = View.VISIBLE
-        button_activate.setOnClickListener {
-            powerMerchantTracking.eventUpgradeShopSetting()
-            navigateToPMSubscribe()
-        }
+//        tv_shop_membership_title.text = getString(com.tokopedia.design.R.string.label_regular_merchant)
+//        tv_shop_status.visibility = View.GONE
+//        ticker_container.visibility = View.GONE
+//        tv_ticker_info.visibility = View.VISIBLE
+//        tv_ticker_info.text = getString(R.string.regular_merchant_learn_more)
+//        button_activate.visibility = View.VISIBLE
+//        button_activate.setOnClickListener {
+//            powerMerchantTracking.eventUpgradeShopSetting()
+//            navigateToPMSubscribe()
+//        }
     }
 
     private fun showPowerMerchant(shopStatusModel: ShopStatusModel) {
-        tvManageGmSubscribe.visibility = View.VISIBLE
-        button_activate.visibility = View.GONE
-        tvManageGmSubscribe.setOnClickListener {
-            navigateToPMSubscribe()
-        }
+//        tvManageGmSubscribe.visibility = View.VISIBLE
+//        button_activate.visibility = View.GONE
+//        tvManageGmSubscribe.setOnClickListener {
+//            navigateToPMSubscribe()
+//        }
         iv_logo_power_merchant.visibility = View.VISIBLE
         iv_logo_power_merchant.setImageResource(com.tokopedia.gm.common.R.drawable.ic_power_merchant)
-        tv_shop_membership_title.text = getString(com.tokopedia.design.R.string.label_power_merchant)
-        tv_shop_status.visibility = View.VISIBLE
-        tv_shop_status.text = getString(if (shopStatusModel.isPowerMerchantActive()) {
-            R.string.active_label
-        } else {
-            R.string.inactive_label
-        })
-        ticker_container.visibility = View.VISIBLE
-        setTextViewClickSpan(tv_ticker, MethodChecker.fromHtml(getString(R.string.power_merchant_learn_more)), getString(R.string.learn_more)) {
-            powerMerchantTracking.eventLearnMoreSetting()
-            RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, URL_GAINS_SCORE_POINT)
-        }
-        tv_ticker_info.visibility = View.GONE
+//        tv_shop_membership_title.text = getString(com.tokopedia.design.R.string.label_power_merchant)
+//        tv_shop_status.visibility = View.VISIBLE
+//        tv_shop_status.text = getString(if (shopStatusModel.isPowerMerchantActive()) {
+//            R.string.active_label
+//        } else {
+//            R.string.inactive_label
+//        })
+//        ticker_container.visibility = View.VISIBLE
+//        setTextViewClickSpan(tv_ticker, MethodChecker.fromHtml(getString(R.string.power_merchant_learn_more)), getString(R.string.learn_more)) {
+//            powerMerchantTracking.eventLearnMoreSetting()
+//            RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, URL_GAINS_SCORE_POINT)
+//        }
+//        tv_ticker_info.visibility = View.GONE
     }
 
     private fun showOfficialStore() {
-        tvManageGmSubscribe.visibility = View.GONE
-        button_activate.visibility = View.GONE
+//        tvManageGmSubscribe.visibility = View.GONE
+//        button_activate.visibility = View.GONE
         iv_logo_power_merchant.visibility = View.VISIBLE
         iv_logo_power_merchant.setImageResource(com.tokopedia.design.R.drawable.ic_badge_shop_official)
-        tv_shop_membership_title.text = getString(com.tokopedia.design.R.string.label_official_store)
-        tv_shop_status.visibility = View.GONE
-        ticker_container.visibility = View.GONE
-        tv_ticker_info.visibility = View.GONE
+//        tv_shop_membership_title.text = getString(com.tokopedia.design.R.string.label_official_store)
+//        tv_shop_status.visibility = View.GONE
+//        ticker_container.visibility = View.GONE
+//        tv_ticker_info.visibility = View.GONE
     }
 
     private fun setTextViewClickSpan(textView: TextView, previousText: CharSequence, learnMoreString: String, onClickLearnMore: (() -> (Unit))) {
