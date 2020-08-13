@@ -16,26 +16,37 @@ import kotlinx.android.synthetic.main.layout_hotel_filter_open_range.view.*
 class FilterOpenRangeViewHolder(view: View): HotelSearchResultFilterV2Adapter.FilterBaseViewHolder(view) {
 
     override var selectedOption: ParamFilterV2 = ParamFilterV2()
+    private var initialMaxPrice = 0
 
     override fun bind(filter: FilterV2) {
         selectedOption.name = filter.name
-        selectedOption.values = filter.optionSelected
+        selectedOption.values = filter.optionSelected.toMutableList()
+        initialMaxPrice = filter.options.lastOrNull().toIntOrZero()
+
+        val selectedFilterOnlyOne = selectedOption.values.size == 1
 
         with(itemView) {
             hotel_filter_open_range_title.text = filter.displayName
 
-            hotel_filter_open_range_slider.initView((filter.optionSelected.firstOrNull() ?: "0").toIntOrZero(),
-                    (filter.optionSelected.lastOrNull() ?: "0").toIntOrZero(), filter.options.lastOrNull().toIntOrZero())
+            if (selectedFilterOnlyOne) {
+                hotel_filter_open_range_slider.initView( 0,
+                        (filter.optionSelected.getOrNull(0) ?: initialMaxPrice.toString()).toIntOrZero() , initialMaxPrice)
+            } else {
+                hotel_filter_open_range_slider.initView((filter.optionSelected.firstOrNull() ?: "0").toIntOrZero(),
+                        (filter.optionSelected.getOrNull(1) ?: initialMaxPrice.toString()).toIntOrZero() , initialMaxPrice)
+            }
+
             hotel_filter_open_range_slider.onValueChangedListener = object: HotelFilterPriceRangeSlider.OnValueChangedListener{
                 override fun onValueChanged(startValue: Int, endValue: Int) {
-                    selectedOption.values = listOf(startValue.toString(), endValue.toString())
+                    selectedOption.values = mutableListOf(startValue.toString(), endValue.toString())
                 }
             }
         }
     }
 
     override fun resetSelection() {
-
+        selectedOption = ParamFilterV2()
+        itemView.hotel_filter_open_range_slider.initView(0, initialMaxPrice, initialMaxPrice)
     }
 
     companion object {

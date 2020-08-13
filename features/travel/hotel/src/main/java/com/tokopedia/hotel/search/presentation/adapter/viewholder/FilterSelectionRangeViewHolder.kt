@@ -24,7 +24,7 @@ class FilterSelectionRangeViewHolder(view: View): HotelSearchResultFilterV2Adapt
 
     override fun bind(filter: FilterV2) {
         selectedOption.name  = filter.name
-        selectedOption.values = filter.optionSelected
+        selectedOption.values = filter.optionSelected.toMutableList()
 
         with(itemView) {
             hotel_filter_selection_range_title.text = filter.displayName
@@ -50,10 +50,12 @@ class FilterSelectionRangeViewHolder(view: View): HotelSearchResultFilterV2Adapt
                 }
             }
 
+            if (selectedOption.values.isEmpty()) hotel_filter_selection_range_seekbar.progress = hotel_filter_selection_range_seekbar.max
+
             hotel_filter_selection_range_seekbar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
                 override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
                     if (filter.options.getOrNull(p1) != null) {
-                        selectedOption.values = listOf(filter.options[filter.options.size - p1 - 1])
+                        selectedOption.values = mutableListOf(filter.options[filter.options.size - p1 - 1])
                     }
                 }
 
@@ -66,7 +68,10 @@ class FilterSelectionRangeViewHolder(view: View): HotelSearchResultFilterV2Adapt
     }
 
     override fun resetSelection() {
-
+        selectedOption = ParamFilterV2()
+        with(itemView) {
+            hotel_filter_selection_range_seekbar.progress = hotel_filter_selection_range_seekbar.max
+        }
     }
 
     companion object {

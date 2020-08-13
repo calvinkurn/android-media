@@ -22,7 +22,6 @@ import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.util.ErrorHandlerHotel
 import com.tokopedia.hotel.common.util.TRACKING_HOTEL_SEARCH
-import com.tokopedia.hotel.globalsearch.presentation.activity.HotelChangeSearchActivity
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
 import com.tokopedia.hotel.search.data.model.*
 import com.tokopedia.hotel.search.data.model.params.ParamFilter
@@ -30,7 +29,6 @@ import com.tokopedia.hotel.search.data.model.params.ParamFilterV2
 import com.tokopedia.hotel.search.data.util.CommonParam
 import com.tokopedia.hotel.search.di.HotelSearchPropertyComponent
 import com.tokopedia.hotel.search.presentation.activity.HotelSearchFilterActivity
-import com.tokopedia.hotel.search.presentation.activity.HotelSearchResultActivity.Companion.CHANGE_SEARCH_REQ_CODE
 import com.tokopedia.hotel.search.presentation.activity.HotelSearchResultActivity.Companion.SEARCH_SCREEN_NAME
 import com.tokopedia.hotel.search.presentation.adapter.HotelOptionMenuAdapter
 import com.tokopedia.hotel.search.presentation.adapter.HotelOptionMenuAdapter.Companion.MODE_CHECKED
@@ -41,12 +39,11 @@ import com.tokopedia.hotel.search.presentation.viewmodel.HotelSearchResultViewMo
 import com.tokopedia.hotel.search.presentation.widget.HotelClosedSortBottomSheets
 import com.tokopedia.hotel.search.presentation.widget.HotelFilterBottomSheets
 import com.tokopedia.hotel.search.presentation.widget.SubmitFilterListener
-import com.tokopedia.iris.util.IrisSession
+import com.tokopedia.sortfilter.SortFilterItem
+import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_hotel_search_result.*
-import kotlinx.android.synthetic.main.item_property_search_result.*
 import javax.inject.Inject
 
 class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterTypeFactory>(),
@@ -122,26 +119,27 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
         //dummy
         bottom_action_view.visibility = View.VISIBLE
         initializeFilterV2BottomSheet(getDummyFilter())
+        initializeQuickFilter(getDummyQuickFilter(), getDummyFilter())
     }
 
-    private fun getDummyFilter(): List<FilterV2>  {
-        val filterType1 =  FilterV2(type = "Selection", name = "Campaign", displayName = "Promo",
+    private fun getDummyFilter(): List<FilterV2> {
+        val filterType1 = FilterV2(type = "Selection", name = "Campaign", displayName = "Promo",
                 options = listOf("Gajian Seru", "Diskon Login", "Flash Sale"))
-        val filterType2 = FilterV2(type= "open range", name = "price", displayName = "Harga per malam",
-                options = listOf("0", "100000"))
+        val filterType2 = FilterV2(type = "open range", name = "price", displayName = "Harga per malam",
+                options = listOf("0", "15000000"))
         val filterType3 = FilterV2("selection range", "rating", "Rating",
                 listOf("Semua", "6.0", "7.0", "8.0", "9.0"))
         val filterType4 = FilterV2("selection", "star", "Bintang",
-                listOf("1", "2", "3"))
+                listOf("1", "2", "3", "4", "5"))
         return listOf(filterType1, filterType2, filterType3, filterType4)
     }
 
-    private fun getDummySelectedFilter(): List<ParamFilterV2> {
-        val filterType1 = ParamFilterV2(name = "Campaign", values = listOf("Diskon Login"))
-        val filterType2 = ParamFilterV2(name = "price", values = listOf("10000", "50000"))
-        val filterType3 = ParamFilterV2(name = "rating", values = listOf("Semua"))
-        val filterType4 = ParamFilterV2(name = "star", values = listOf("3"))
-        return listOf(filterType1, filterType2, filterType3, filterType4)
+    private fun getDummyQuickFilter(): List<QuickFilter> {
+        val qFilter1 = QuickFilter(name = "Campaign", displayName = "Gajian Seru", value = "Gajian Seru", selected = true)
+        val qFilter2 = QuickFilter(name = "rating", displayName = "Rating Tamu 8+", value = "8.0", selected = false)
+        val qFilter3 = QuickFilter(name = "star", displayName = "Bintang 2+", value = "2", selected = false)
+        val qFilter4 = QuickFilter(name = "price", displayName = "<= 50.000", value = "50000", selected = true)
+        return listOf(qFilter1, qFilter2, qFilter3, qFilter4)
     }
 
     private fun stopTrace() {
@@ -193,17 +191,18 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
 
         generateSortMenu(data.displayInfo.sort)
 //        initializeFilterClick(data.displayInfo.filter)
+
         initializeFilterV2BottomSheet(data.filters)
-        initializeQuickFilter(data.quickFilter)
+        initializeQuickFilter(data.quickFilter, data.filters)
     }
 
     private fun initializeFilterV2BottomSheet(filterV2s: List<FilterV2>) {
-        filterBottomSheet = HotelFilterBottomSheets()
-                .setSubmitFilterListener(this)
-                .setSelected(getDummySelectedFilter())
-                .setFilter(filterV2s)
 
         bottom_action_view.filterItem.listener = {
+            filterBottomSheet = HotelFilterBottomSheets()
+                    .setSubmitFilterListener(this)
+                    .setSelected(searchResultviewModel.selectedFilterV2)
+                    .setFilter(filterV2s)
             filterBottomSheet.show(childFragmentManager, javaClass.simpleName)
         }
     }
@@ -221,8 +220,60 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
         }
     }
 
-    private fun initializeQuickFilter(quickFilters: List<QuickFilter>) {
+    private var quickFilters: List<QuickFilter> = listOf()
 
+    private fun initializeQuickFilter(quickFilters: List<QuickFilter>, filters: List<FilterV2>) {
+        this.quickFilters = quickFilters.map { quickFilter ->
+            val item = filters.filter { it.name == quickFilter.name }
+            if (item.isNotEmpty()) {
+                quickFilter.type = (item.firstOrNull() ?: FilterV2()).type
+            }
+            quickFilter
+        }
+
+        val sortFilterItem = quickFilters.map {
+            val item =  SortFilterItem(title = it.displayName,
+                type = if (it.selected) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL)
+            item.listener = {
+                item.toggleSelected()
+                refreshSelectedFilter(quickFilters)
+            }
+            return@map item
+        }
+        quick_filter_sort_filter.addItem(ArrayList(sortFilterItem))
+        refreshSelectedFilter(quickFilters)
+        quick_filter_sort_filter.parentListener = { }
+    }
+
+    //to sync bottomsheet with quickfilter
+    private fun refreshSelectedFilter(quickFilters: List<QuickFilter>) {
+        val selectedFilterV2 = searchResultviewModel.selectedFilterV2
+        quickFilters.forEachIndexed { index,  quickFilter ->
+            var isVisited = false
+            val isQuickFilterSelected = quick_filter_sort_filter.chipItems[index].type == ChipsUnify.TYPE_SELECTED
+            for ((filterIndex, selectedFilter) in searchResultviewModel.selectedFilterV2.withIndex()) {
+                if (quickFilter.name == selectedFilter.name)  {
+                    for ((valueIndex, value) in selectedFilter.values.withIndex()) {
+                        if (value == quickFilter.value) {
+                            selectedFilterV2[filterIndex].values.removeAt(valueIndex)
+                            break
+                        }
+                    }
+                    if (isQuickFilterSelected) {
+                        if (quickFilter.type == "selection range" || quickFilter.type == "open range" )  {
+                            selectedFilterV2[filterIndex].values = mutableListOf(quickFilter.value)
+                        } else selectedFilterV2[filterIndex].values.add(quickFilter.value)
+                        isVisited = true
+                        break
+                    }
+                }
+            }
+            if (isQuickFilterSelected && !isVisited) {
+                //if it is the last item
+                selectedFilterV2.add(ParamFilterV2(name = quickFilter.name,  values = mutableListOf(quickFilter.value) ))
+            }
+        }
+        onQuickFilterChanged(selectedFilterV2)
     }
 
     private fun generateSortMenu(sort: List<Sort>) {
@@ -260,7 +311,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
                     this,
                     property,
                     position,
-            SEARCH_SCREEN_NAME)
+                    SEARCH_SCREEN_NAME)
 
             context?.run {
                 startActivityForResult(HotelDetailActivity.getCallingIntent(this,
@@ -317,7 +368,28 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
     override fun onSubmitFilter(selectedFilter: List<ParamFilterV2>) {
         //track
         searchResultviewModel.addFilter(selectedFilter)
+        setUpQuickFilterBaseOnSelectedFilter(selectedFilter)
         loadInitialData()
+    }
+
+    fun onQuickFilterChanged(selectedFilters: List<ParamFilterV2>)  {
+        searchResultviewModel.addFilter(selectedFilters)
+        loadInitialData()
+    }
+
+    private fun setUpQuickFilterBaseOnSelectedFilter(selectedFilters: List<ParamFilterV2>) {
+        quick_filter_sort_filter.resetAllFilters()
+        selectedFilters.forEach { selectedFilter ->
+            for ((indexQuickFilter, quickFilter) in quickFilters.withIndex())  {
+                if (quickFilter.name == selectedFilter.name) {
+                    for (value in selectedFilter.values) {
+                        if (value == quickFilter.value) {
+                            quick_filter_sort_filter.chipItems[indexQuickFilter].type = ChipsUnify.TYPE_SELECTED
+                        }
+                    }
+                }
+            }
+        }
     }
 
     override fun onGetListErrorWithEmptyData(throwable: Throwable?) {

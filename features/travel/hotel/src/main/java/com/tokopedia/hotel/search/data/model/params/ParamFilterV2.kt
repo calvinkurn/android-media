@@ -14,5 +14,5 @@ data class ParamFilterV2(
 
         @SerializedName("values")
         @Expose
-        var values: List<String> = listOf()
+        var values: MutableList<String> = mutableListOf()
 )

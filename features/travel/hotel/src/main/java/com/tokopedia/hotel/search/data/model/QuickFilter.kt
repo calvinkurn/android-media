@@ -22,5 +22,7 @@ data class QuickFilter(
 
         @SerializedName("selected")
         @Expose
-        val selected: Boolean = false
+        val selected: Boolean = false,
+
+        var type: String = ""
 )

@@ -18,7 +18,7 @@ class FilterSelectionViewHolder(view: View): HotelSearchResultFilterV2Adapter.Fi
 
     override var selectedOption = ParamFilterV2()
         get() {
-            field.values = adapter.selectedItems.toList()
+            field.values = adapter.selectedItems.toMutableList()
             return field
         }
 
@@ -28,7 +28,7 @@ class FilterSelectionViewHolder(view: View): HotelSearchResultFilterV2Adapter.Fi
 
     override fun bind(filter: FilterV2) {
         selectedOption.name = filter.name
-        selectedOption.values = filter.optionSelected
+        selectedOption.values = filter.optionSelected.toMutableList()
 
         with(itemView) {
             hotel_filter_selection_title.text = filter.displayName
@@ -50,7 +50,8 @@ class FilterSelectionViewHolder(view: View): HotelSearchResultFilterV2Adapter.Fi
     }
 
     override fun resetSelection() {
-
+        selectedOption = ParamFilterV2()
+        adapter.clearSelection()
     }
 
     companion object {

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
@@ -35,9 +36,6 @@ class HotelFilterBottomSheets: BottomSheetUnify() {
 
     init {
         setTitle("Filter")
-        setAction("Reset") {
-            //reset
-        }
         isFullpage = true
         isDragable = false
     }
@@ -53,14 +51,25 @@ class HotelFilterBottomSheets: BottomSheetUnify() {
         initView(view)
     }
 
-    private fun initView(view: View) {
+    override fun show(manager: FragmentManager, tag: String?) {
+        super.show(manager, tag)
         combineFilterAndSelectedFilter()
+    }
 
+    private fun initView(view: View) {
         val recyclerView = view.findViewById<VerticalRecyclerView>(R.id.rv_hotel_filter)
         recyclerView.clearItemDecoration()
 
         adapter.filters = filters
         recyclerView.adapter = adapter
+
+        setAction("Reset") {
+            for (i in 0 until recyclerView.childCount) {
+                val viewHolder: HotelSearchResultFilterV2Adapter.FilterBaseViewHolder =
+                        recyclerView.findViewHolderForAdapterPosition(i) as HotelSearchResultFilterV2Adapter.FilterBaseViewHolder
+                viewHolder.resetSelection()
+            }
+        }
 
         val submitButton = view.findViewById<UnifyButton>(R.id.hotel_filter_submit_button)
         submitButton.setOnClickListener {
@@ -68,13 +77,17 @@ class HotelFilterBottomSheets: BottomSheetUnify() {
             for (i in 0 until recyclerView.childCount) {
                 val viewHolder: HotelSearchResultFilterV2Adapter.FilterBaseViewHolder =
                         recyclerView.findViewHolderForAdapterPosition(i) as HotelSearchResultFilterV2Adapter.FilterBaseViewHolder
-                selectedFilters.add(viewHolder.selectedOption)
+                if (viewHolder.selectedOption.values.isNotEmpty()) {
+                    selectedFilters.add(viewHolder.selectedOption)
+                }
             }
-            selectedFilters
+            listener.onSubmitFilter(selectedFilters)
+            this.dismiss()
         }
     }
 
     private fun combineFilterAndSelectedFilter() {
+        filters.forEach { it.optionSelected = listOf() }
         selectedFilters.forEach { selectedFilters ->
             for (filter in filters) {
                 if (selectedFilters.name == filter.name) {

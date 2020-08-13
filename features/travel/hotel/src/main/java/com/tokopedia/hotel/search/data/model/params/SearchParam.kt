@@ -14,7 +14,7 @@ data class SearchParam(
 
         @SerializedName("filters")
         @Expose
-        var filters: List<ParamFilterV2> = listOf(),
+        var filters: MutableList<ParamFilterV2> = mutableListOf(),
 
         @SerializedName("sort")
         @Expose
