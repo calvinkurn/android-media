@@ -173,11 +173,12 @@ class PatchExecutors(
                 }
             }
             cleanUp(dexOutputDir)
+            callBack.onFinish()
             return !error
         } catch (throwable: Throwable) {
+            callBack.onFinish()
             throwable.printStackTrace()
         }
-        callBack.onFinish()
         return false
     }
 
