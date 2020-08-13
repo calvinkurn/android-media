@@ -32,19 +32,9 @@ public class RulesUtil {
     public static boolean isValidTimeFrame(long startTime, long endTime,
                                            long currentTimeStamp, ElapsedTime lastElapsedTime){
         //Should you delete all of the time data on reinitialization
-        long deltaTime = 0l;
-        deltaTime = android.os.SystemClock.elapsedRealtime() - lastElapsedTime.elapsedTime;
-        lastElapsedTime.elapsedTime = android.os.SystemClock.elapsedRealtime();
-
         RepositoryManager.getInstance().getStorageProvider().
                 putElapsedTimeToStore(lastElapsedTime);
-        long correctedCurrentTime = currentTimeStamp + deltaTime;
-        if(startTime <= correctedCurrentTime && (endTime >= correctedCurrentTime ||
-                endTime == 0l)){
-            return true;
-        }
-        else {
-            return false;
-        }
+        return startTime <= currentTimeStamp && (endTime >= currentTimeStamp ||
+                endTime == 0l);
     }
 }
