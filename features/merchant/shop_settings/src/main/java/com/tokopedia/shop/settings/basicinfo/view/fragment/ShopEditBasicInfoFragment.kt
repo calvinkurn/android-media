@@ -155,8 +155,8 @@ class ShopEditBasicInfoFragment: Fragment() {
     }
 
     private fun setupTextField() {
-        shopNameTextField.isEnabled = false
-        shopDomainTextField.isEnabled = false
+        shopNameTextField.textFieldInput.isEnabled = false
+        shopDomainTextField.textFieldInput.isEnabled = false
     }
 
     private fun observeLiveData() {
@@ -229,13 +229,16 @@ class ShopEditBasicInfoFragment: Fragment() {
         val isNameAllowed = data.isNameAllowed
         val isDomainAllowed = data.isDomainAllowed
 
+        val shopNameInput = shopNameTextField.textFieldInput
+        val shopDomainInput = shopDomainTextField.textFieldInput
+
         when {
             isNameAllowed && isDomainAllowed -> {
-                shopNameTextField.isEnabled = true
-                shopDomainTextField.isEnabled = true
+                shopNameInput.isEnabled = true
+                shopDomainInput.isEnabled = true
             }
-            isNameAllowed && !isDomainAllowed -> shopDomainTextField.isEnabled = true
-            isDomainAllowed && !isNameAllowed -> shopNameTextField.isEnabled = true
+            isNameAllowed && !isDomainAllowed -> shopDomainInput.isEnabled = true
+            isDomainAllowed && !isNameAllowed -> shopNameInput.isEnabled = true
         }
     }
 
@@ -343,6 +346,9 @@ class ShopEditBasicInfoFragment: Fragment() {
             etShopDesc.setText(shopBasicDataModel.description)
             etShopDesc.text?.length?.let { etShopDesc.setSelection(it) }
         }
+
+        shopNameTextField.textFieldInput.setText(shopBasicDataModel.name)
+        shopDomainTextField.textFieldInput.setText(shopBasicDataModel.domain)
     }
 
     private fun updatePhotoUI(shopBasicDataModel: ShopBasicDataModel?) {
