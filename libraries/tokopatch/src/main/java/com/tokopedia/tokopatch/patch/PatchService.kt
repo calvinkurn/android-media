@@ -42,7 +42,6 @@ class PatchService : JobIntentService() {
     override fun onCreate() {
         super.onCreate()
         logger = PatchLogger.instance
-        logger.onStart()
         val dataDao = RobustDatabase.getDatabase(applicationContext).dataDao()
         repository = PatchRepository.getInstance(dataDao, Utils.versionCode(applicationContext))
     }

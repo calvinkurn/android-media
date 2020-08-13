@@ -28,6 +28,7 @@ class PatchExecutors(
     fun start() {
         GlobalScope.launch(Dispatchers.IO){
             try {
+                callBack.onStart()
                 applyPatchList(patchList)
             } catch (e: Exception) {
                 e.printStackTrace()
