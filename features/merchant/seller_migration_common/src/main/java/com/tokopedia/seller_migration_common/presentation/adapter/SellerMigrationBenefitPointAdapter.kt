@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.seller_migration_common.R
 import kotlinx.android.synthetic.main.item_seller_migration_benefit_point.view.*
 
-class SellerMigrationBenefitPointAdapter(var benefitPoints: List<String>): RecyclerView.Adapter<SellerMigrationBenefitPointAdapter.SellerMigrationBenefitPointViewHolder>() {
+class SellerMigrationBenefitPointAdapter(var benefitPoints: List<CharSequence>): RecyclerView.Adapter<SellerMigrationBenefitPointAdapter.SellerMigrationBenefitPointViewHolder>() {
 
     inner class SellerMigrationBenefitPointViewHolder(itemView: View): RecyclerView.ViewHolder(itemView)
 

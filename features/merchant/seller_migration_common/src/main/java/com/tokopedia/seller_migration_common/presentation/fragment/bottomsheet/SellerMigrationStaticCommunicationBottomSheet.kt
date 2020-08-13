@@ -20,11 +20,11 @@ class SellerMigrationStaticCommunicationBottomSheet: SellerMigrationCommunicatio
                            communicationInfo: CommunicationInfo): SellerMigrationStaticCommunicationBottomSheet =
                 SellerMigrationStaticCommunicationBottomSheet().apply {
                     arguments = Bundle().apply {
-                        val benefitArrayList: List<String> = communicationInfo.benefitPointResList.map { context.getText(it).toString() }
+                        val benefitArrayList: List<CharSequence> = communicationInfo.benefitPointResList.map { context.getText(it) }
                         putString(TITLE_KEY, context.getString(communicationInfo.titleRes))
                         putString(DESC_KEY, context.getString(communicationInfo.descRes))
                         putString(IMAGE_URL_KEY, communicationInfo.imageUrl)
-                        putStringArrayList(BENEFIT_POINTS_KEY, ArrayList(benefitArrayList))
+                        putCharSequenceArrayList(BENEFIT_POINTS_KEY, ArrayList(benefitArrayList))
                     }
                 }
 
@@ -47,7 +47,7 @@ class SellerMigrationStaticCommunicationBottomSheet: SellerMigrationCommunicatio
     }
 
     private val benefitPointList by lazy {
-        arguments?.getStringArrayList(BENEFIT_POINTS_KEY).orEmpty()
+        arguments?.getCharSequenceArrayList(BENEFIT_POINTS_KEY).orEmpty()
     }
 
     private val benefitPointAdapter by lazy {

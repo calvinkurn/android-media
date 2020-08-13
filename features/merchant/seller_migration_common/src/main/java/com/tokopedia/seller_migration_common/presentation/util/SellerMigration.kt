@@ -70,7 +70,7 @@ private fun Fragment.goToInformationWebview(link: String,
 }
 
 @Parcelize
-data class BenefitPoints(val benefitPointsList: List<String>): Parcelable
+data class BenefitPoints(val benefitPointsList: List<CharSequence>): Parcelable
 
 /**
  * Fragment extension function to initialize phase 3 redirection ticker, which will show bottomsheet if spanned string is clicked
