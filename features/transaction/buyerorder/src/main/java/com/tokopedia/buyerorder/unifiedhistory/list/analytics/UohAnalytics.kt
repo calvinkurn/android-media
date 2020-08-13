@@ -4,6 +4,7 @@ import android.app.Activity
 import android.os.Bundle
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.BUSINESS_UNIT_REPLACEE
+import com.tokopedia.buyerorder.unifiedhistory.list.analytics.data.model.ECommerceAdd
 import com.tokopedia.buyerorder.unifiedhistory.list.analytics.data.model.ECommerceClick
 import com.tokopedia.buyerorder.unifiedhistory.list.analytics.data.model.ECommerceImpressions
 import com.tokopedia.track.TrackApp
@@ -51,8 +52,10 @@ object UohAnalytics {
     private const val CLICK_ORDER_LIST = "clickOrderList"
     private const val PRODUCT_VIEW = "productView"
     private const val PRODUCT_CLICK = "productClick"
+    private const val ADD_TO_CART = "addToCart"
     private const val VIEW_ORDER_CARD = "view order card {business_unit}"
     private const val CLICK_ORDER_CARD = "click order card {business_unit}"
+    private const val CLICK_BELI_LAGI = "click beli lagi on order card marketplace"
     private const val ACTION_FIELD_CLICK_ECOMMERCE = "/order list - {business_unit}"
     private const val ORDER_LIST_EVENT_CATEGORY = "order list"
     private const val SUBMIT_SEARCH = "submit search from cari transaksi"
@@ -63,6 +66,13 @@ object UohAnalytics {
     private const val CLICK_CATEGORY_FILTER_CHIPS = "click category filter chips"
     private const val CLICK_TERAPKAN_ON_CATEGORY_FILTER_CHIPS = "click category filter chips"
     private const val CLICK_X_CHIPS_TO_CLEAR_FILTER = "click x chips to clear filter"
+    private const val CLICK_PRIMARY_BUTTON_ON_ORDER_CARD = "click primary button on order card"
+    private const val CLICK_THREE_DOTS_MENU = "click three dot menu"
+    private const val CLICK_SECONDARY_OPTION_ON_THREE_DOT_MENU = "click secondary option on three dot menu"
+    private const val CLICK_MULAI_BELANJA_ON_EMPTY_ORDER_LIST = "click mulai belanja on empty order list"
+    private const val CLICK_RESET_FILTER_ON_EMPTY_FILTER_RESULT = "click reset filter on empty filter result"
+    private const val CLICK_LIHAT_BUTTON_ON_ATC_SUCCESS_TOASTER = "click lihat button on atc success toaster"
+    private const val CLICK_SELESAI_ON_BOTTOM_SHEET_FINISH_TRANSACTION = "click selesai on bottom sheet finish transaction"
 
     @JvmStatic
     fun sendScreenName(activity: Activity, screenName: String) {
@@ -213,5 +223,100 @@ object UohAnalytics {
             putParcelable(ECOMMERCE, eCommerceClick)
         }
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(PRODUCT_CLICK, bundle)
+    }
+
+    private fun clickPrimaryButtonOnOrderCard(verticalLabel: String, primaryButton:String, userId: String) {
+        TrackApp.getInstance().gtm.sendTrackEvent(CLICK_ORDER_LIST, mapOf(
+                EVENT to CLICK_ORDER_LIST,
+                EVENT_CATEGORY to ORDER_LIST_EVENT_CATEGORY,
+                EVENT_ACTION to CLICK_PRIMARY_BUTTON_ON_ORDER_CARD + verticalLabel,
+                EVENT_LABEL to primaryButton,
+                CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
+                USER_ID to userId,
+                BUSINESS_UNIT to ORDER_MANAGEMENT))
+    }
+
+    private fun clickThreeDotsMenu(verticalLabel: String, userId: String) {
+        TrackApp.getInstance().gtm.sendTrackEvent(CLICK_ORDER_LIST, mapOf(
+                EVENT to CLICK_ORDER_LIST,
+                EVENT_CATEGORY to ORDER_LIST_EVENT_CATEGORY,
+                EVENT_ACTION to CLICK_THREE_DOTS_MENU + verticalLabel,
+                EVENT_LABEL to "",
+                CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
+                USER_ID to userId,
+                BUSINESS_UNIT to ORDER_MANAGEMENT))
+    }
+
+    private fun clickSecondaryOptionOnThreeDotsMenu(verticalLabel: String, secondaryOption: String, userId: String) {
+        TrackApp.getInstance().gtm.sendTrackEvent(CLICK_ORDER_LIST, mapOf(
+                EVENT to CLICK_ORDER_LIST,
+                EVENT_CATEGORY to ORDER_LIST_EVENT_CATEGORY,
+                EVENT_ACTION to CLICK_SECONDARY_OPTION_ON_THREE_DOT_MENU + verticalLabel,
+                EVENT_LABEL to secondaryOption,
+                CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
+                USER_ID to userId,
+                BUSINESS_UNIT to ORDER_MANAGEMENT))
+    }
+
+    private fun clickMulaiBelanjaOnEmptyOrderList(userId: String) {
+        TrackApp.getInstance().gtm.sendTrackEvent(CLICK_ORDER_LIST, mapOf(
+                EVENT to CLICK_ORDER_LIST,
+                EVENT_CATEGORY to ORDER_LIST_EVENT_CATEGORY,
+                EVENT_ACTION to CLICK_MULAI_BELANJA_ON_EMPTY_ORDER_LIST,
+                EVENT_LABEL to "",
+                CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
+                USER_ID to userId,
+                BUSINESS_UNIT to ORDER_MANAGEMENT))
+    }
+
+    private fun clickResetFilterOnEmptyFilterResult(userId: String) {
+        TrackApp.getInstance().gtm.sendTrackEvent(CLICK_ORDER_LIST, mapOf(
+                EVENT to CLICK_ORDER_LIST,
+                EVENT_CATEGORY to ORDER_LIST_EVENT_CATEGORY,
+                EVENT_ACTION to CLICK_RESET_FILTER_ON_EMPTY_FILTER_RESULT,
+                EVENT_LABEL to "",
+                CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
+                USER_ID to userId,
+                BUSINESS_UNIT to ORDER_MANAGEMENT))
+    }
+
+    private fun clickLihatButtonOnAtcSuccessToaster(userId: String) {
+        TrackApp.getInstance().gtm.sendTrackEvent(CLICK_ORDER_LIST, mapOf(
+                EVENT to CLICK_ORDER_LIST,
+                EVENT_CATEGORY to ORDER_LIST_EVENT_CATEGORY,
+                EVENT_ACTION to CLICK_LIHAT_BUTTON_ON_ATC_SUCCESS_TOASTER,
+                EVENT_LABEL to "",
+                CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
+                USER_ID to userId,
+                BUSINESS_UNIT to ORDER_MANAGEMENT))
+    }
+
+    private fun clickBeliLagiOnOrderCardMP(screenName: String, userId: String, arrayListProducts: ArrayList<ECommerceAdd.Add.Products>) {
+        val eCommerceAdd = ECommerceAdd(
+                add = ECommerceAdd.Add(products = arrayListProducts)
+        )
+        val bundle = Bundle().apply {
+            putString(EVENT, ADD_TO_CART)
+            putString(EVENT_CATEGORY, ORDER_LIST_EVENT_CATEGORY)
+            putString(EVENT_ACTION, CLICK_BELI_LAGI)
+            putString(EVENT_LABEL, "success")
+            putString(SCREEN_NAME, screenName)
+            putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
+            putString(USER_ID, userId)
+            putString(BUSINESS_UNIT, ORDER_MANAGEMENT)
+            putParcelable(ECOMMERCE, eCommerceAdd)
+        }
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(PRODUCT_CLICK, bundle)
+    }
+
+    private fun clickSelesaiOnBottomSheetFinishTransaction(userId: String) {
+        TrackApp.getInstance().gtm.sendTrackEvent(CLICK_ORDER_LIST, mapOf(
+                EVENT to CLICK_ORDER_LIST,
+                EVENT_CATEGORY to ORDER_LIST_EVENT_CATEGORY,
+                EVENT_ACTION to CLICK_SELESAI_ON_BOTTOM_SHEET_FINISH_TRANSACTION,
+                EVENT_LABEL to "",
+                CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
+                USER_ID to userId,
+                BUSINESS_UNIT to ORDER_MANAGEMENT))
     }
 }
