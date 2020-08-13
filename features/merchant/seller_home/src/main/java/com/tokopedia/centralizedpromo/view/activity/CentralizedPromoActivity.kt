@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.centralizedpromo.view.fragment.CentralizedPromoFragment
 import com.tokopedia.centralizedpromo.view.fragment.FirstVoucherBottomSheetFragment
 import com.tokopedia.kotlin.extensions.view.setStatusBarColor
@@ -51,12 +52,19 @@ class CentralizedPromoActivity : BaseSimpleActivity() {
     override fun getNewFragment(): Fragment = CentralizedPromoFragment.createInstance()
 
     private fun handleIntent(intent: Intent?) {
-        intent?.data?.toString()?.let { uri ->
-            if (uri.startsWith(ApplinkConstInternalSellerapp.CENTRALIZED_PROMO_FIRST_VOUCHER)) {
-                if (promoCreationPreference.getBoolean(IS_MVC_FIRST_TIME, true)) {
-                    showBottomSheet()
-                } else {
-                    RouteManager.route(this, ApplinkConstInternalSellerapp.CREATE_VOUCHER)
+        intent?.run {
+            getStringExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA)?.let { sellerMigrationNextDestinatonApplink ->
+                RouteManager.route(this@CentralizedPromoActivity, sellerMigrationNextDestinatonApplink)
+                removeExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA)
+                return@run
+            }
+            data?.toString()?.let { uri ->
+                if (uri.startsWith(ApplinkConstInternalSellerapp.CENTRALIZED_PROMO_FIRST_VOUCHER)) {
+                    if (promoCreationPreference.getBoolean(IS_MVC_FIRST_TIME, true)) {
+                        showBottomSheet()
+                    } else {
+                        RouteManager.route(this@CentralizedPromoActivity, ApplinkConstInternalSellerapp.CREATE_VOUCHER)
+                    }
                 }
             }
         }

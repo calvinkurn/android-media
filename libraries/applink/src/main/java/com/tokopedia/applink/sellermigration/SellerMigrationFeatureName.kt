@@ -40,5 +40,6 @@ annotation class SellerMigrationFeatureName {
         const val FEATURE_MARKET_INSIGHT = "market_insight"
         const val FEATURE_SELLER_CHAT = "seller_chat"
         const val FEATURE_POST_FEED = "post_feed"
+        const val FEATURE_BALANCE = "balance"
     }
 }

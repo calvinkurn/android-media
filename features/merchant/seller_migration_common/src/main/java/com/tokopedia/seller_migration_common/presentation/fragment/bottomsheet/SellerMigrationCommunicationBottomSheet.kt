@@ -21,7 +21,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.toPx
 import kotlinx.android.synthetic.main.partial_seller_migration_date.*
 import kotlinx.android.synthetic.main.widget_seller_migration_bottom_sheet.*
-import java.util.ArrayList
+import java.util.*
 
 open class SellerMigrationCommunicationBottomSheet: BottomSheetUnify() {
 
@@ -36,7 +36,7 @@ open class SellerMigrationCommunicationBottomSheet: BottomSheetUnify() {
                 is DynamicCommunicationInfo -> SellerMigrationDynamicCommunicationBottomSheet.createInstance(context)
                 else -> SellerMigrationCommunicationBottomSheet()
             }.apply {
-                arguments = Bundle().apply {
+                arguments?.run {
                     putParcelable(COMMUNICATION_KEY, sellerMigrationCommunication)
                     putString(SCREEN_NAME_KEY, screenName)
                     putString(SHOP_ID, shopId)
@@ -135,7 +135,7 @@ open class SellerMigrationCommunicationBottomSheet: BottomSheetUnify() {
                     add(ApplinkConstInternalSellerapp.SELLER_HOME)
                     add(ApplinkConstInternalGlobal.SALDO_DEPOSIT)
                 }
-                goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_POST_FEED, appLinks)
+                goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_BALANCE, appLinks)
             }
         }
     }

@@ -20,7 +20,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.seller_migration_common.presentation.fragment.bottomsheet.SellerMigrationCommunicationBottomSheet
 import com.tokopedia.seller_migration_common.presentation.model.CommunicationInfo
 import com.tokopedia.seller_migration_common.presentation.util.initializeSellerMigrationCommunicationTicker
@@ -41,7 +40,6 @@ import com.tokopedia.topads.dashboard.view.fragment.BerandaTabFragment
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsProductIklanFragment
 import com.tokopedia.topads.dashboard.view.fragment.insight.TopAdsRecommendationFragment
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
-import com.tokopedia.unifycomponents.ticker.TickerCallback
 import kotlinx.android.synthetic.main.topads_dash_activity_base_layout.*
 import javax.inject.Inject
 
@@ -60,7 +58,7 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
     lateinit var topAdsDashboardPresenter: TopAdsDashboardPresenter
 
     private val sellerMigrationStaticCommunicationBottomSheet by lazy {
-        SellerMigrationCommunicationBottomSheet.createInstance(this, CommunicationInfo.TopAds, screenName)
+        SellerMigrationCommunicationBottomSheet.createInstance(this, CommunicationInfo.TopAds, screenName.orEmpty())
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
