@@ -170,6 +170,14 @@ query pdpGetLayout($productID: String, $shopDomain:String, $productKey:String) {
                 text
               }
             }
+            ... on pdpDataCustomInfo {
+               icon
+               title
+               isApplink
+               applink
+               separator
+               description
+            }
             ... on pdpDataUpcomingCampaign {
               campaignID
               campaignType
