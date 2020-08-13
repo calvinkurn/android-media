@@ -71,9 +71,7 @@ class PlayVideoFragment @Inject constructor(
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_play_video, container, false)
-
-        return view
+        return inflater.inflate(R.layout.fragment_play_video, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
