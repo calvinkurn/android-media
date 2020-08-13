@@ -199,7 +199,7 @@ class ShopHomeNplCampaignViewHolder(
 
     private fun setTimer(model: ShopHomeNewProductLaunchCampaignUiModel) {
         val statusCampaign = model.data?.firstOrNull()?.statusCampaign ?: ""
-        if (statusCampaign.toLowerCase() != StatusCampaign.FINISHED.statusCampaign.toLowerCase()) {
+        if (statusCampaign.toLowerCase() != StatusCampaign.FINISHED.statusCampaign.toLowerCase()  && statusCampaign.isNotEmpty()) {
             val timeDescription = model.data?.firstOrNull()?.timeDescription ?: ""
             val timeCounter = model.data?.firstOrNull()?.timeCounter ?: ""
             itemView.text_time_description?.text = timeDescription
@@ -243,10 +243,6 @@ class ShopHomeNplCampaignViewHolder(
             (itemView.timer.colonMinuteView as Typography).setType(Typography.SMALL)
             onFinish = {
                 shopHomeCampaignNplWidgetListener.onTimerFinished(model)
-            }
-            onTick = {
-                val qwe = it
-                val asd = 2
             }
             show()
         }
