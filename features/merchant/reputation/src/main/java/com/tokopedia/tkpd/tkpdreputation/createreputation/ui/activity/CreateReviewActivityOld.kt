@@ -12,7 +12,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.fragment.CreateReviewFragment
+import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.fragment.CreateReviewFragmentOld
 import com.tokopedia.tkpd.tkpdreputation.createreputation.util.ReviewTracking
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationFormActivity
 
@@ -20,7 +20,7 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationForm
 class CreateReviewActivityOld : BaseSimpleActivity(), HasComponent<BaseAppComponent> {
 
     private var productId: String = ""
-    lateinit var createReviewFragment: CreateReviewFragment
+    lateinit var createReviewFragmentOld: CreateReviewFragmentOld
 
     companion object {
         const val PARAM_RATING = "rating"
@@ -47,13 +47,13 @@ class CreateReviewActivityOld : BaseSimpleActivity(), HasComponent<BaseAppCompon
             productId = bundle?.getString(InboxReputationFormActivity.ARGS_PRODUCT_ID) ?: ""
             reputationId = bundle?.getString(InboxReputationFormActivity.ARGS_REPUTATION_ID) ?: ""
         }
-        createReviewFragment = CreateReviewFragment.createInstance(
+        createReviewFragmentOld = CreateReviewFragmentOld.createInstance(
                 productId,
                 reputationId,
-                bundle?.getInt(CreateReviewFragment.REVIEW_CLICK_AT, rating) ?: rating,
+                bundle?.getInt(CreateReviewFragmentOld.REVIEW_CLICK_AT, rating) ?: rating,
                 utmSource
         )
-        return createReviewFragment
+        return createReviewFragmentOld
 
     }
 
@@ -63,7 +63,7 @@ class CreateReviewActivityOld : BaseSimpleActivity(), HasComponent<BaseAppCompon
         intent.extras?.run {
             (applicationContext
                     .getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
-                    .cancel(getInt(CreateReviewFragment.REVIEW_NOTIFICATION_ID))
+                    .cancel(getInt(CreateReviewFragmentOld.REVIEW_NOTIFICATION_ID))
         }
 
         supportActionBar?.elevation = 0f
@@ -75,8 +75,8 @@ class CreateReviewActivityOld : BaseSimpleActivity(), HasComponent<BaseAppCompon
     }
 
     override fun onBackPressed() {
-        if (::createReviewFragment.isInitialized)
-            ReviewTracking.reviewOnCloseTracker(createReviewFragment.getOrderId, productId)
+        if (::createReviewFragmentOld.isInitialized)
+            ReviewTracking.reviewOnCloseTracker(createReviewFragmentOld.getOrderId, productId)
 
         if (isTaskRoot) {
             val intent = RouteManager.getIntent(this, ApplinkConst.HOME)

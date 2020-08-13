@@ -245,11 +245,11 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
     }
 
     private fun showErrorToaster(errorMessage: String, ctaText: String, action: () -> Unit) {
-        view?.let { Toaster.build(it, errorMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, ctaText, View.OnClickListener { action() }).show() }
+        view?.let { Toaster.build(reviewPendingContainer, errorMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, ctaText, View.OnClickListener { action() }).show() }
     }
 
     private fun showToaster(message: String, ctaText: String) {
-        view?.let { Toaster.build(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, ctaText).show() }
+        view?.let { Toaster.build(reviewPendingContainer, message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, ctaText).show() }
     }
 
     private fun getPendingReviewData(page: Int, isRefresh: Boolean = false) {

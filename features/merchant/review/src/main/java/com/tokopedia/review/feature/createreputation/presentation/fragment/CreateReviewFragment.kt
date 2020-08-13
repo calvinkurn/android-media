@@ -494,6 +494,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
                     setReviewScoreClickListener(this@CreateReviewFragment)
                     show()
                 }
+                createReviewScoreDivider.show()
             }
         }
     }

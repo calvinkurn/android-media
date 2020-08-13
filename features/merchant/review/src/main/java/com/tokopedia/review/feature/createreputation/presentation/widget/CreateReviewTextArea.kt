@@ -35,7 +35,7 @@ class CreateReviewTextArea : BaseCustomView {
                 if(hasFocus) {
                     this@CreateReviewTextArea.createReviewTextAreaContainer.background = ContextCompat.getDrawable(context, R.drawable.bg_review_create_text_area_selected)
                     textAreaListener.apply {
-                        trackWhenHasFocus(createReviewEditText.text.isEmpty())
+                        trackWhenHasFocus(createReviewEditText.text.isBlank())
                         scrollToShowTextArea()
                     }
                 } else {

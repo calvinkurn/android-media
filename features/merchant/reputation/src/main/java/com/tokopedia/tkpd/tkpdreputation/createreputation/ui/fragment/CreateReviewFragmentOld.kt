@@ -66,7 +66,7 @@ import javax.inject.Inject
 import com.tokopedia.usecase.coroutines.Fail as CoroutineFail
 import com.tokopedia.usecase.coroutines.Success as CoroutineSuccess
 
-class CreateReviewFragment : BaseDaggerFragment(), OnAddImageClickListener {
+class CreateReviewFragmentOld : BaseDaggerFragment(), OnAddImageClickListener {
 
     companion object {
         private const val REQUEST_CODE_IMAGE = 111
@@ -95,7 +95,7 @@ class CreateReviewFragment : BaseDaggerFragment(), OnAddImageClickListener {
         private const val IMAGE_PEDIE_4 = "https://ecs7.tokopedia.net/android/pedie/4star.png"
         private const val IMAGE_PEDIE_5 = "https://ecs7.tokopedia.net/android/pedie/5star.png"
 
-        fun createInstance(productId: String, reviewId: String, reviewClickAt: Int = 0, utmSource: String) = CreateReviewFragment().also {
+        fun createInstance(productId: String, reviewId: String, reviewClickAt: Int = 0, utmSource: String) = CreateReviewFragmentOld().also {
             it.arguments = Bundle().apply {
                 putString(PRODUCT_ID_REVIEW, productId)
                 putString(REVIEW_ID, reviewId)

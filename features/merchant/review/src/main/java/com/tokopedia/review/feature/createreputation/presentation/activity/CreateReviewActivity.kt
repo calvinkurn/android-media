@@ -1,5 +1,6 @@
 package com.tokopedia.review.feature.createreputation.presentation.activity
 
+import android.app.Activity
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
@@ -18,28 +19,52 @@ import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.feature.createreputation.analytics.CreateReviewTracking
 import com.tokopedia.review.feature.createreputation.presentation.fragment.CreateReviewFragment
 import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.activity.CreateReviewActivityOld
+import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.fragment.CreateReviewFragmentOld
+import com.tokopedia.tkpd.tkpdreputation.createreputation.util.ReviewTracking
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationFormActivity
 
 // ApplinkConstInternalMarketPlace.CREATE_REVIEW
 class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent> {
+
+    companion object {
+        const val PARAM_RATING = "rating"
+        const val DEFAULT_PRODUCT_RATING = 5
+    }
 
     private lateinit var remoteConfigInstance: RemoteConfigInstance
 
     private var productId: String = ""
     private var createReviewFragment: CreateReviewFragment? = null
+    private var createReviewOldFragment: CreateReviewFragmentOld? = null
+    private var utmSource = CreateReviewActivityOld.DEFAULT_UTM_SOURCE
     private var rating = DEFAULT_PRODUCT_RATING
     private var isEditMode = false
     private var feedbackId = 0
     private var reputationId: String = ""
 
-    companion object {
-        const val PARAM_RATING = "rating"
-        const val DEFAULT_PRODUCT_RATING = 5
-        const val ARGS_REPUTATION_ID = "ARGS_REPUTATION_ID"
-        const val ARGS_PRODUCT_ID = "ARGS_PRODUCT_ID"
-        fun newInstance(context: Context) = Intent(context, CreateReviewActivity::class.java)
-    }
-
     override fun getNewFragment(): Fragment? {
+        if(useOldPage()) {
+            val bundle = intent.extras
+            val uri = intent.data
+
+            if (uri != null && uri.pathSegments.size > 0) {
+                val uriSegment = uri.pathSegments
+                productId = uri.lastPathSegment ?: ""
+                reputationId = uriSegment[uriSegment.size - 2]
+                rating = uri.getQueryParameter(CreateReviewActivityOld.PARAM_RATING)?.toIntOrNull() ?: CreateReviewActivityOld.DEFAULT_PRODUCT_RATING
+                utmSource = uri.getQueryParameter(CreateReviewActivityOld.PARAM_UTM_SOURCE) ?: CreateReviewActivityOld.DEFAULT_UTM_SOURCE
+            } else {
+                productId = bundle?.getString(InboxReputationFormActivity.ARGS_PRODUCT_ID) ?: ""
+                reputationId = bundle?.getString(InboxReputationFormActivity.ARGS_REPUTATION_ID) ?: ""
+            }
+            createReviewOldFragment = CreateReviewFragmentOld.createInstance(
+                    productId,
+                    reputationId,
+                    bundle?.getInt(CreateReviewFragmentOld.REVIEW_CLICK_AT, rating) ?: rating,
+                    utmSource
+            )
+            return createReviewOldFragment
+        }
         createReviewFragment = CreateReviewFragment.createInstance(
                 productId,
                 reputationId,
@@ -55,14 +80,6 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
         getDataFromApplinkOrIntent()
         getAbTestPlatform()?.fetch(null)
         super.onCreate(savedInstanceState)
-        if(useOldPage()) {
-            val intent = CreateReviewActivityOld.newInstance(context = this)
-            intent.putExtra(ARGS_PRODUCT_ID, productId)
-            intent.putExtra(ARGS_REPUTATION_ID, reputationId)
-            startActivity(intent)
-            finish()
-            return
-        }
         intent.extras?.run {
             (applicationContext
                     .getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
@@ -78,9 +95,24 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
     }
 
     override fun onBackPressed() {
-        createReviewFragment?.let {
-            CreateReviewTracking.reviewOnCloseTracker(it.getOrderId(), productId)
-            it.showCancelDialog()
+        if(useOldPage()) {
+            createReviewOldFragment?.let {
+                ReviewTracking.reviewOnCloseTracker(it.getOrderId, productId)
+            }
+            if (isTaskRoot) {
+                val intent = RouteManager.getIntent(this, ApplinkConst.HOME)
+
+                setResult(Activity.RESULT_OK, intent)
+                startActivity(intent)
+            } else {
+                super.onBackPressed()
+            }
+            finish()
+        } else {
+            createReviewFragment?.let {
+                CreateReviewTracking.reviewOnCloseTracker(it.getOrderId(), productId)
+                it.showCancelDialog()
+            }
         }
     }
 
