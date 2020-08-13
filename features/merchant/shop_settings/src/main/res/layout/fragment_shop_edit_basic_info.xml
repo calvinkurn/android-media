@@ -110,17 +110,18 @@
 
 
             <com.tokopedia.unifycomponents.ticker.Ticker
-                android:id="@+id/shop_name_change_ticker"
+                android:id="@+id/shopEditTicker"
                 android:layout_width="match_parent"
                 android:layout_height="78dp"
                 android:layout_marginTop="@dimen/dp_12"
                 app:descriptionText="@string/ticker_warning_can_only_change_shopname_once"
                 app:layout_constraintTop_toTopOf="parent"
                 app:tckv_content_text_size="@dimen/dp_12"
-                app:tickerType="warning" />
+                app:tickerType="warning"
+                android:visibility="gone" />
 
             <com.tokopedia.unifycomponents.TextFieldUnify
-                android:id="@+id/shop_name_textfield"
+                android:id="@+id/shopNameTextField"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="50dp"
@@ -129,7 +130,7 @@
                 app:text_field_label="Nama Toko" />
 
             <com.tokopedia.unifycomponents.TextFieldUnify
-                android:id="@+id/shop_domain_textfield"
+                android:id="@+id/shopDomainTextField"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"

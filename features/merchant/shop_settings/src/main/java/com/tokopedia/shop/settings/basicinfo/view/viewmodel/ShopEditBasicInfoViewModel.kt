@@ -8,7 +8,9 @@ import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
 import com.tokopedia.shop.settings.common.coroutine.CoroutineDispatchers
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopBasicDataUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.UpdateShopBasicDataUseCase
+import com.tokopedia.shop.settings.basicinfo.data.AllowShopNameDomainChanges.*
 import com.tokopedia.shop.settings.basicinfo.data.UploadShopEditImageModel
+import com.tokopedia.shop.settings.basicinfo.domain.GetAllowShopNameDomainChanges
 import com.tokopedia.shop.settings.basicinfo.domain.UploadShopImageUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
@@ -21,6 +23,7 @@ class ShopEditBasicInfoViewModel @Inject constructor(
     private val getShopBasicDataUseCase: GetShopBasicDataUseCase,
     private val updateShopBasicDataUseCase: UpdateShopBasicDataUseCase,
     private val uploadShopImageUseCase: UploadShopImageUseCase,
+    private val getAllowShopNameDomainChanges: GetAllowShopNameDomainChanges,
     private val dispatchers: CoroutineDispatchers
 ): BaseViewModel(dispatchers.main) {
 
@@ -30,10 +33,25 @@ class ShopEditBasicInfoViewModel @Inject constructor(
         get() = _uploadShopImage
     val updateShopBasicData: LiveData<Result<String>>
         get() = _updateShopBasicData
+    val allowShopNameDomainChanges: LiveData<Result<AllowShopNameDomainChangesData>>
+        get() = _allowShopNameDomainChanges
 
     private val _shopBasicData = MutableLiveData<Result<ShopBasicDataModel>>()
     private val _uploadShopImage = MutableLiveData<Result<UploadShopEditImageModel>>()
     private val _updateShopBasicData = MutableLiveData<Result<String>>()
+    private val _allowShopNameDomainChanges = MutableLiveData<Result<AllowShopNameDomainChangesData>>()
+
+    fun getAllowShopNameDomainChanges() {
+        launchCatchError(block = {
+            val data = withContext(dispatchers.io) {
+                val allowShopNameDomainChanges = getAllowShopNameDomainChanges.executeOnBackground()
+                allowShopNameDomainChanges.data.copy(isDomainAllowed = false, reasonDomainNotAllowed = "Udah pernah ganti domain")
+            }
+            _allowShopNameDomainChanges.value = Success(data)
+        }) {
+            _allowShopNameDomainChanges.value = Fail(it)
+        }
+    }
 
     fun getShopBasicData() {
         getShopBasicDataUseCase.unsubscribe()

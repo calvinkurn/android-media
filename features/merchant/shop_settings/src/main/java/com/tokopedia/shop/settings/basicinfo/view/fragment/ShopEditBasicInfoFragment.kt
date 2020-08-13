@@ -30,11 +30,13 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
 import com.tokopedia.shop.settings.R
+import com.tokopedia.shop.settings.basicinfo.data.AllowShopNameDomainChanges.*
 import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditBasicInfoActivity.Companion.EXTRA_MESSAGE
 import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditBasicInfoActivity.Companion.EXTRA_SHOP_MODEL
 import com.tokopedia.shop.settings.basicinfo.view.viewmodel.ShopEditBasicInfoViewModel
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_shop_edit_basic_info.*
@@ -80,7 +82,10 @@ class ShopEditBasicInfoFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setupToolbar()
+        setupTextField()
         observeLiveData()
+
+        getAllowShopNameDomainChanges()
 
         parentTvBrowseFile.background = MethodChecker.getDrawable(parentTvBrowseFile.context,
             com.tokopedia.design.R.drawable.ic_balloon_gray)
@@ -149,10 +154,20 @@ class ShopEditBasicInfoFragment: Fragment() {
         }
     }
 
+    private fun setupTextField() {
+        shopNameTextField.isEnabled = false
+        shopDomainTextField.isEnabled = false
+    }
+
     private fun observeLiveData() {
         observeGetShopBasicData()
         observeUploadShopImage()
         observeUpdateShopData()
+        observeAllowShopNameDomainChanges()
+    }
+
+    private fun getAllowShopNameDomainChanges() {
+        viewModel.getAllowShopNameDomainChanges()
     }
 
     private fun observeGetShopBasicData() {
@@ -179,6 +194,75 @@ class ShopEditBasicInfoFragment: Fragment() {
                 is Fail -> onErrorUpdateShopBasicData(it.throwable)
             }
         }
+    }
+
+    private fun observeAllowShopNameDomainChanges() {
+        observe(viewModel.allowShopNameDomainChanges) {
+            when(it) {
+                is Success -> {
+                    val data = it.data
+                    showShopEditShopInfoTicker(data)
+                    showShopNameDomainTextField(data)
+                }
+                is Fail -> {
+                    showAllowShopNameDomainChangesError(it.throwable)
+                }
+            }
+        }
+    }
+
+    private fun showShopEditShopInfoTicker(data: AllowShopNameDomainChangesData) {
+        val isNameAllowed = data.isNameAllowed
+        val isDomainAllowed = data.isDomainAllowed
+
+        when {
+            isNameAllowed && isDomainAllowed -> showWarningTicker()
+            isNameAllowed && !isDomainAllowed -> showDomainNotAllowedTicker(data)
+            isDomainAllowed && !isNameAllowed -> showNameNotAllowedTicker(data)
+            else -> showNameAndDomainNotAllowedTicker()
+        }
+
+        shopEditTicker.show()
+    }
+
+    private fun showShopNameDomainTextField(data: AllowShopNameDomainChangesData) {
+        val isNameAllowed = data.isNameAllowed
+        val isDomainAllowed = data.isDomainAllowed
+
+        when {
+            isNameAllowed && isDomainAllowed -> {
+                shopNameTextField.isEnabled = true
+                shopDomainTextField.isEnabled = true
+            }
+            isNameAllowed -> shopNameTextField.isEnabled = true
+            isDomainAllowed -> shopDomainTextField.isEnabled = true
+        }
+    }
+
+    private fun showWarningTicker() {
+        val message = context?.getString(R.string.ticker_warning_can_only_change_shopname_once).orEmpty()
+        shopEditTicker.tickerType = Ticker.TYPE_WARNING
+        shopEditTicker.setTextDescription(message)
+    }
+
+    private fun showDomainNotAllowedTicker(data: AllowShopNameDomainChangesData) {
+        val message = data.reasonDomainNotAllowed
+        showInfoTicker(message)
+    }
+
+    private fun showNameNotAllowedTicker(data: AllowShopNameDomainChangesData) {
+        val message = data.reasonNameNotAllowed
+        showInfoTicker(message)
+    }
+
+    private fun showNameAndDomainNotAllowedTicker() {
+        val message = "Kamu sudah pernah mengubah nama dan domain toko sebelumnya."
+        showInfoTicker(message)
+    }
+
+    private fun showInfoTicker(message: String) {
+        shopEditTicker.tickerType = Ticker.TYPE_INFORMATION
+        shopEditTicker.setTextDescription(message)
     }
 
     private fun initInjector() {
@@ -298,6 +382,14 @@ class ShopEditBasicInfoFragment: Fragment() {
         Toaster.make(container, message, Snackbar.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
             getString(com.tokopedia.abstraction.R.string.title_try_again), View.OnClickListener {
             onSaveButtonClicked()
+        })
+    }
+
+    private fun showAllowShopNameDomainChangesError(throwable: Throwable) {
+        val message = ErrorHandler.getErrorMessage(context, throwable)
+        Toaster.make(container, message, Snackbar.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+            getString(com.tokopedia.abstraction.R.string.title_try_again), View.OnClickListener {
+            viewModel.getAllowShopNameDomainChanges()
         })
     }
 }
