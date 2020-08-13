@@ -13,8 +13,21 @@ import timber.log.Timber
  */
 class PatchLogger : PatchCallBack {
 
+    private var start: Long = 0L
+    private var end: Long = 0L
+
     private object HOLDER {
         val INSTANCE = PatchLogger()
+    }
+
+    override fun onStart() {
+        start = System.currentTimeMillis()
+    }
+
+    override fun onFinish() {
+        end = System.currentTimeMillis()
+        var elapsed = end - start
+        Timber.i("P1#ROBUST#Measure elapsed time: %s", elapsed.toString())
     }
 
     override fun onPatchListFetched(

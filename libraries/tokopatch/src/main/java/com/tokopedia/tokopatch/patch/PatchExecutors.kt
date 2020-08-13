@@ -177,6 +177,7 @@ class PatchExecutors(
         } catch (throwable: Throwable) {
             throwable.printStackTrace()
         }
+        callBack.onFinish()
         return false
     }
 
