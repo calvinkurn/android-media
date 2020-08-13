@@ -2,6 +2,7 @@ package com.tokopedia.recentview.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.recentview.domain.usecase.GetRecentViewUseCase;
+import com.tokopedia.recentview.domain.usecase.RecentViewUseCase;
 import com.tokopedia.recentview.view.listener.RecentView;
 import com.tokopedia.recentview.view.subscriber.RecentViewSubscriber;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -18,6 +19,7 @@ import javax.inject.Inject;
 public class RecentViewPresenter extends BaseDaggerPresenter<RecentView.View>
         implements RecentView.Presenter {
 
+    private final RecentViewUseCase recentViewUseCase;
     private final GetRecentViewUseCase getRecentProductUseCase;
     private final AddWishListUseCase addWishListUseCase;
     private final RemoveWishListUseCase removeWishListUseCase;
@@ -27,10 +29,12 @@ public class RecentViewPresenter extends BaseDaggerPresenter<RecentView.View>
 
     @Inject
     RecentViewPresenter(GetRecentViewUseCase getRecentProductUseCase,
+                        RecentViewUseCase recentViewUseCase,
                         AddWishListUseCase addWishListUseCase,
                         RemoveWishListUseCase removeWishListUseCase,
                         UserSessionInterface userSession) {
         this.getRecentProductUseCase = getRecentProductUseCase;
+        this.recentViewUseCase =  recentViewUseCase;
         this.addWishListUseCase = addWishListUseCase;
         this.removeWishListUseCase = removeWishListUseCase;
         this.userSession = userSession;
