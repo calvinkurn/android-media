@@ -33,11 +33,14 @@ class RechargeHomepageProductBannerViewHolder(
     override fun bind(element: RechargeHomepageProductBannerModel) {
         val section = element.section
         if (section.items.isNotEmpty()) {
+            itemView.view_recharge_home_product_banner_shimmering.hide()
+
             setBackground(section)
             setHeader(section)
             setProduct(section)
         } else {
-            // TODO: Show shimmering
+            itemView.view_recharge_home_product_banner_shimmering.show()
+
             listener.loadRechargeSectionData(element.visitableId())
         }
     }
@@ -73,7 +76,6 @@ class RechargeHomepageProductBannerViewHolder(
                 listener.onRechargeSectionItemImpression(section)
             }
             iv_recharge_home_product_banner_close_button.setOnClickListener {
-                view_recharge_home_product_banner_container.hide()
                 listener.onRechargeProductBannerClosed(section)
             }
         }

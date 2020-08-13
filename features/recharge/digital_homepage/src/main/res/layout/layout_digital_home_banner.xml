@@ -76,7 +76,7 @@
             android:layout_marginTop="@dimen/dp_32"
             android:layout_marginEnd="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
-            app:corners="@integer/travel_subhomepage_shimmering_corner"
+            app:corners="@integer/section_shimmering_corner"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/guideline" />
 

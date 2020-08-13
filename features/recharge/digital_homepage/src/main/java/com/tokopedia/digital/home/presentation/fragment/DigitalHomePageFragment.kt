@@ -40,6 +40,7 @@ import com.tokopedia.digital.home.presentation.listener.RechargeHomepageDynamicL
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageReminderWidgetCallback
 import com.tokopedia.digital.home.presentation.viewmodel.DigitalHomePageViewModel
 import com.tokopedia.home_component.visitable.HomeComponentVisitable
+import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -225,40 +226,51 @@ class DigitalHomePageFragment : BaseListFragment<Visitable<*>, DigitalHomePageTy
         viewModel.rechargeHomepageSections.observe(this, Observer {
             when (it) {
                 is Success -> {
-                    with (it.data) {
-                        homeComponentsData = sections.filter { section ->
-                            DigitalHomePageViewModel.SECTION_HOME_COMPONENTS.contains(section.template)
-                        }
-                        for (id in requestIDs) {
-                            val sectionTemplate = sectionSkeleton.find { item -> item.id == id }?.template
-                                    ?: ""
-                            val sectionIndex = RechargeHomepageSectionMapper.getSectionIndex(adapter.data, id)
-                            if (sectionTemplate.isNotEmpty() && sectionIndex >= 0) {
-                                val updatedSectionItems = RechargeHomepageSectionMapper.getUpdatedSectionsOfType(sections, sectionTemplate)
+                    with(it.data) {
+                        // If there is an error in the section request, remove such section
+                        if (error.isEmpty() && sections.isNotEmpty()) {
+                            homeComponentsData = sections.filter { section ->
+                                DigitalHomePageViewModel.SECTION_HOME_COMPONENTS.contains(section.template)
+                            }
+                            // Update sections (remove / insert / insert multiple)
+                            for (id in requestIDs) {
                                 recycler_view.post {
-                                    when (updatedSectionItems.size) {
-                                        0 -> {
-                                            adapter.data.removeAt(sectionIndex)
-                                            adapter.notifyItemRemoved(sectionIndex)
-                                        }
-                                        1 -> {
-                                            adapter.data[sectionIndex] = updatedSectionItems.first()
-                                            adapter.notifyItemChanged(sectionIndex)
-                                        }
-                                        else -> {
-                                            adapter.data.removeAt(sectionIndex)
-                                            adapter.notifyItemRemoved(sectionIndex)
-                                            adapter.data.addAll(sectionIndex, updatedSectionItems)
-                                            adapter.notifyItemRangeInserted(sectionIndex, updatedSectionItems.size)
+                                    val sectionTemplate = sectionSkeleton.find { item -> item.id == id }?.template
+                                            ?: ""
+                                    val sectionIndex = RechargeHomepageSectionMapper.getSectionIndex(adapter.data, id)
+                                    if (sectionTemplate.isNotEmpty() && sectionIndex >= 0) {
+                                        val updatedSectionItems = RechargeHomepageSectionMapper.getUpdatedSectionsOfType(sections, sectionTemplate)
+                                        adapter.apply {
+                                            when (updatedSectionItems.size) {
+                                                0 -> {
+                                                    data.removeAt(sectionIndex)
+                                                    notifyItemRemoved(sectionIndex)
+                                                }
+                                                1 -> {
+                                                    data[sectionIndex] = updatedSectionItems.first()
+                                                    notifyItemChanged(sectionIndex)
+                                                }
+                                                else -> {
+//                                                    data[sectionIndex] = updatedSectionItems.first()
+//                                                    notifyItemChanged(sectionIndex)
+//                                                    data.addAll(sectionIndex + 1, updatedSectionItems.subList(1, updatedSectionItems.size))
+//                                                    notifyItemRangeInserted(sectionIndex + 1, updatedSectionItems.size - 1)
+                                                    data.removeAt(sectionIndex)
+                                                    notifyItemRemoved(sectionIndex)
+                                                    data.addAll(sectionIndex, updatedSectionItems)
+                                                    notifyItemRangeInserted(sectionIndex, updatedSectionItems.size)
+                                                }
+                                            }
                                         }
                                     }
                                 }
                             }
+                        } else {
+                            for (sectionId in requestIDs) {
+                                onRechargeSectionEmpty(sectionId)
+                            }
                         }
                     }
-                }
-                is Fail -> {
-                    showGetListError(it.throwable)
                 }
             }
         })
@@ -268,8 +280,7 @@ class DigitalHomePageFragment : BaseListFragment<Visitable<*>, DigitalHomePageTy
         // Load dynamic sub-homepage if platformId is provided; else load old sub-homepage
         if (isDynamicPage()) {
             viewModel.getRechargeHomepageSectionSkeleton(
-                    GraphqlHelper.loadRawString(resources, R.raw.query_recharge_home_dynamic_skeleton),
-                    viewModel.createRechargeHomepageSectionSkeletonParams(platformId, false),
+                    viewModel.createRechargeHomepageSectionSkeletonParams(platformId, enablePersonalize),
                     swipeToRefresh?.isRefreshing ?: false
             )
         } else {
@@ -287,8 +298,7 @@ class DigitalHomePageFragment : BaseListFragment<Visitable<*>, DigitalHomePageTy
     override fun loadRechargeSectionData(sectionID: Int) {
         if (sectionID >= 0) {
             viewModel.getRechargeHomepageSections(
-                    GraphqlHelper.loadRawString(resources, R.raw.query_recharge_home_dynamic),
-                    viewModel.createRechargeHomepageSectionsParams(platformId, listOf(sectionID), false)
+                    viewModel.createRechargeHomepageSectionsParams(platformId, listOf(sectionID), enablePersonalize)
             )
         }
     }
@@ -342,9 +352,9 @@ class DigitalHomePageFragment : BaseListFragment<Visitable<*>, DigitalHomePageTy
         RouteManager.route(context, section.applink)
     }
 
-    override fun onRechargeLegoBannerItemClicked(sectionID: Int, itemPosition: Int) {
+    override fun onRechargeLegoBannerItemClicked(sectionID: Int, itemID: Int, itemPosition: Int) {
         if (::homeComponentsData.isInitialized) {
-            homeComponentsData.find { it.id == sectionID }?.tracking?.find {
+            homeComponentsData.find { it.id == sectionID }?.items?.find { it.id == itemID }?.tracking?.find {
                 it.action == DigitalHomeTrackingUtil.ACTION_CLICK
             }?.run {
                 trackingUtil.rechargeEnhanceEcommerceEvent(data)
@@ -353,7 +363,7 @@ class DigitalHomePageFragment : BaseListFragment<Visitable<*>, DigitalHomePageTy
     }
 
     override fun onRechargeBannerAllItemClicked(section: RechargeHomepageSections.Section) {
-        // TODO: Add click all tracking
+        trackingUtil.eventClickAllBanners()
         RouteManager.route(context, section.applink)
     }
 
@@ -369,12 +379,31 @@ class DigitalHomePageFragment : BaseListFragment<Visitable<*>, DigitalHomePageTy
 
     override fun onRechargeReminderWidgetClosed(sectionID: Int) {
         val index = adapter.data.indexOfFirst { it is HomeComponentVisitable && it.visitableId()?.toIntOrNull() == sectionID }
-        if (index >= 0) onRechargeSectionEmpty(index)
+        if (index >= 0) {
+            // Trigger close reminder widget action
+            val section = homeComponentsData.find { it.id == sectionID }
+            if (section != null && section.items.isNotEmpty()) {
+                viewModel.triggerRechargeSectionAction(
+                        viewModel.createRechargeHomepageSectionAction(sectionID, "ActionClose", section.objectId, section.items.first().objectId)
+                )
+            }
+            onRechargeSectionEmpty(sectionID)
+        }
     }
 
     override fun onRechargeProductBannerClosed(section: RechargeHomepageSections.Section) {
         val index = adapter.data.indexOfFirst { it is RechargeHomepageSectionModel && it.visitableId() == section.id }
-        if (index >= 0) onRechargeSectionEmpty(index)
+        if (index >= 0) {
+            // Trigger close product banner action
+            if (section.items.isNotEmpty()) {
+                with(section) {
+                    viewModel.triggerRechargeSectionAction(
+                            viewModel.createRechargeHomepageSectionAction(id, "ActionClose", objectId, items.first().objectId)
+                    )
+                }
+            }
+            onRechargeSectionEmpty(section.id)
+        }
     }
 
     override fun onRechargeSectionItemImpression(element: RechargeHomepageSections.Section) {
@@ -427,7 +456,6 @@ class DigitalHomePageFragment : BaseListFragment<Visitable<*>, DigitalHomePageTy
                 adapter.apply {
                     data.removeAt(index)
                     notifyItemRemoved(index)
-                    notifyItemRangeChanged(index, dataSize)
                 }
             }
         }

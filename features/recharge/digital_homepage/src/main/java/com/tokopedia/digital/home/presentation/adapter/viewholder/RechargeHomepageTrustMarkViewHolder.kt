@@ -24,6 +24,7 @@ class RechargeHomepageTrustMarkViewHolder(itemView: View?, val listener: OnItemB
         val section = element.section
         with(itemView) {
             if (section.items.isNotEmpty()) {
+                view_recharge_home_trust_mark_container.show()
                 view_recharge_home_trust_mark_shimmering.hide()
 
                 while (rv_recharge_home_trust_mark.itemDecorationCount > 0) {
@@ -44,7 +45,9 @@ class RechargeHomepageTrustMarkViewHolder(itemView: View?, val listener: OnItemB
                         RechargeItemTrustMarkAdapter(trustMarkItems)
 
             } else {
+                view_recharge_home_trust_mark_container.hide()
                 view_recharge_home_trust_mark_shimmering.show()
+
                 listener.loadRechargeSectionData(element.visitableId())
             }
         }

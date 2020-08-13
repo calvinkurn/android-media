@@ -24,12 +24,11 @@
 
     </androidx.cardview.widget.CardView>
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <include
         android:id="@+id/view_recharge_home_trust_mark_shimmering"
+        layout="@layout/view_recharge_home_trustmark_shimmering"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/layout_lvl4"
-        android:layout_marginBottom="@dimen/layout_lvl2"
-        android:visibility="gone"
-        app:corners="16" />
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
 
 </LinearLayout>

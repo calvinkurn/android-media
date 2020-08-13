@@ -5,9 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.model.RechargeHomepageDualBannersModel
 import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.displayTextOrHide
-import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.*
 import kotlinx.android.synthetic.main.view_recharge_home_dual_banners.view.*
 
 /**
@@ -26,6 +24,9 @@ class RechargeHomepageDualBannersViewHolder(itemView: View?, val listener: OnIte
         }
         with (itemView) {
             items?.run {
+                view_recharge_home_dual_banners_container.show()
+                view_recharge_home_dual_banners_shimmering.hide()
+
                 view_recharge_home_dual_banners_title.displayTextOrHide(section.title)
                 view_recharge_home_dual_banners_image_1.loadImage(items[0].mediaUrl)
                 view_recharge_home_dual_banners_image_2.loadImage(items[1].mediaUrl)
@@ -40,7 +41,9 @@ class RechargeHomepageDualBannersViewHolder(itemView: View?, val listener: OnIte
                 }
             }
             if (items == null) {
-                // TODO: Show shimmering
+                view_recharge_home_dual_banners_container.hide()
+                view_recharge_home_dual_banners_shimmering.show()
+
                 listener.loadRechargeSectionData(element.visitableId())
             }
         }

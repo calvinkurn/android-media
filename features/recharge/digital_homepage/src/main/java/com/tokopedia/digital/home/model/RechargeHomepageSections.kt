@@ -10,7 +10,8 @@ data class RechargeHomepageSections (
         @SerializedName("sections")
         @Expose
         val sections: List<Section> = listOf(),
-        var requestIDs: List<Int> = listOf()
+        var requestIDs: List<Int> = listOf(),
+        var error: String = ""
 ) {
     data class Response (
             @SerializedName("rechargeGetDynamicPage")
@@ -22,6 +23,9 @@ data class RechargeHomepageSections (
             @SerializedName("id")
             @Expose
             val id: Int = 0,
+            @SerializedName("object_id")
+            @Expose
+            val objectId: String = "",
             @SerializedName("title")
             @Expose
             val title: String = "",
@@ -46,6 +50,9 @@ data class RechargeHomepageSections (
             @SerializedName("id")
             @Expose
             val id: Int = 0,
+            @SerializedName("object_id")
+            @Expose
+            val objectId: String = "",
             @SerializedName("title")
             @Expose
             val title: String = "",
@@ -100,6 +107,12 @@ data class RechargeHomepageSections (
             @SerializedName("data")
             @Expose
             val data: String = ""
+    )
+
+    data class Action (
+            @SerializedName("message")
+            @Expose
+            val message: String = ""
     )
 }
 

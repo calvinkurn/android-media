@@ -64,7 +64,7 @@ class DynamicLegoBannerViewHolder(itemView: View,
                     element.channelModel,
                     adapterPosition + 1)
         } else {
-            legoListener.getDynamicLegoBanner(element.channelModel)
+            legoListener?.getDynamicLegoBanner(element.channelModel)
         }
     }
 

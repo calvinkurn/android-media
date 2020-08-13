@@ -1,8 +1,0 @@
-query rechargeGetDynamicPageSkeleton($platformID: Int!, $enablePersonalize: Boolean) {
-  rechargeGetDynamicPageSkeleton(platformID: $platformID, enablePersonalize: $enablePersonalize){
-  	sections {
-      id
-      template
-    }
-  }
-}

@@ -11,6 +11,8 @@ import com.tokopedia.digital.home.presentation.adapter.adapter.RechargeItemProdu
 import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.dpToPx
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.android.synthetic.main.view_recharge_home_product_cards.view.*
 
 /**
@@ -24,6 +26,9 @@ class RechargeHomepageProductCardsViewHolder(itemView: View, val listener: OnIte
         val section = element.section
         with(itemView) {
             if (section.items.isNotEmpty()) {
+                view_recharge_home_product_cards_container.show()
+                view_recharge_home_product_cards_shimmering.hide()
+
                 rv_recharge_home_product_cards.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
 
                 val displayMetrics = itemView.context.resources.displayMetrics
@@ -39,7 +44,9 @@ class RechargeHomepageProductCardsViewHolder(itemView: View, val listener: OnIte
                     listener.onRechargeSectionItemImpression(section)
                 }
             } else {
-                // TODO: Show shimmering
+                view_recharge_home_product_cards_container.hide()
+                view_recharge_home_product_cards_shimmering.show()
+
                 listener.loadRechargeSectionData(element.visitableId())
             }
         }

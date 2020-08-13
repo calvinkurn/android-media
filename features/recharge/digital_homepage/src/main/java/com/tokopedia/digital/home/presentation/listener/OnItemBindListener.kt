@@ -31,7 +31,7 @@ interface OnItemBindListener {
     fun onRechargeReminderWidgetClicked(sectionID: Int)
     fun onRechargeReminderWidgetClosed(sectionID: Int)
     fun onRechargeFavoriteAllItemClicked(section: RechargeHomepageSections.Section)
-    fun onRechargeLegoBannerItemClicked(sectionID: Int, itemPosition: Int)
+    fun onRechargeLegoBannerItemClicked(sectionID: Int, itemID: Int, itemPosition: Int)
     fun onRechargeProductBannerClosed(section: RechargeHomepageSections.Section)
 
     fun onRechargeSectionItemImpression(element: RechargeHomepageSections.Section)

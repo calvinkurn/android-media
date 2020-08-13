@@ -17,7 +17,8 @@
             android:id="@+id/tv_digital_homepage_favorites_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:typographyType="heading_5" />
+            app:typographyType="heading_5"
+            android:layout_marginBottom="@dimen/spacing_lvl4"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_digital_homepage_favorites"
