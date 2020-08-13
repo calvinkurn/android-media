@@ -147,143 +147,52 @@ class HomeViewModelListCarouselUnitTest{
 
     }
 
-    @Test
-    fun `Get dynamic channel data success with single data and try express checkout`() {
-        val dataModel = DynamicChannelDataModel()
-        dataModel.channel = DynamicHomeChannel.Channels(id = "1", grids = arrayOf(DynamicHomeChannel.Grid()))
-        val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
-        val observerExpressCheckout: Observer<Event<Any>> = mockk(relaxed = true)
 
-        getHomeUseCase.givenGetHomeDataReturn(
-                HomeDataModel(
-                        list = listOf(dataModel)
-                )
-        )
+//    @Test
+//    fun `Get dynamic channel data success with single data and try express checkout home component`() {
+//        val dataModel = DynamicChannelDataModel()
+//        dataModel.channel = DynamicHomeChannel.Channels(id = "1", grids = arrayOf(DynamicHomeChannel.Grid()))
+//        val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
+//        val observerExpressCheckout: Observer<Event<Any>> = mockk(relaxed = true)
+//
+//        getHomeUseCase.givenGetHomeDataReturn(
+//                HomeDataModel(
+//                        list = listOf(dataModel)
+//                )
+//        )
+//
+//        // Success Express Checkout"){
+//        every{ getAtcUseCase.createObservable(any()) } returns
+//                Observable.just(mockk())
+//
+//        homeViewModel = createHomeViewModel(getDynamicChannelsUseCase = getDynamicChannelsUseCase, getHomeUseCase = getHomeUseCase, getAtcUseCase = getAtcUseCase)
+//        homeViewModel.homeLiveData.observeForever(observerHome)
+//        homeViewModel.oneClickCheckoutHomeComponent.observeForever(observerExpressCheckout)
+//
+//        // dynamic data returns success
+//        getDynamicChannelsUseCase.givenGetDynamicChannelsUseCase(
+//                dynamicChannelDataModels = listOf(dataModel)
+//        )
+//
+//        // Express checkout clicked
+//        homeViewModel.getOneClickCheckoutHomeComponent(ChannelModel(id="1", groupId = "1"), ChannelGrid(), 0)
+//
+//        // Expect channel updated
+//        verifyOrder {
+//            // check on home data initial first channel is dynamic channel
+//            observerHome.onChanged(match {
+//                it.list.isNotEmpty() && it.list.first() is DynamicChannelDataModel &&
+//                        (it.list.first() as DynamicChannelDataModel).channel?.id == "1"
+//            })
+//        }
+//        confirmVerified(observerHome)
+//
+//        // Event express checkout should be triggered
+//        Thread.sleep(100)
+//        verifyOrder {
+//            observerExpressCheckout.onChanged(match { it != null })
+//        }
+//        confirmVerified(observerExpressCheckout)
+//    }
 
-        // Success Express Checkout"){
-        every{ getAtcUseCase.createObservable(any()) } returns
-                Observable.just(mockk())
-
-        homeViewModel = createHomeViewModel(getDynamicChannelsUseCase = getDynamicChannelsUseCase, getHomeUseCase = getHomeUseCase, getAtcUseCase = getAtcUseCase)
-        homeViewModel.homeLiveData.observeForever(observerHome)
-        homeViewModel.oneClickCheckout.observeForever(observerExpressCheckout)
-
-        // dynamic data returns success
-        getDynamicChannelsUseCase.givenGetDynamicChannelsUseCase(
-                dynamicChannelDataModels = listOf(dataModel)
-        )
-
-        // Express checkout clicked
-        homeViewModel.getOneClickCheckout(dataModel.channel!!, dataModel.channel!!.grids.first(), 0)
-
-        // Expect channel updated
-        verifyOrder {
-            // check on home data initial first channel is dynamic channel
-            observerHome.onChanged(match {
-                it.list.isNotEmpty() && it.list.first() is DynamicChannelDataModel &&
-                        (it.list.first() as DynamicChannelDataModel).channel?.id == "1"
-            })
-        }
-        confirmVerified(observerHome)
-
-        // Event express checkout should be triggered
-        Thread.sleep(100)
-        verifyOrder {
-            observerExpressCheckout.onChanged(match { it != null })
-        }
-        confirmVerified(observerExpressCheckout)
-    }
-
-    @Test
-    fun `Get dynamic channel data success with single data and try express checkout home component`() {
-        val dataModel = DynamicChannelDataModel()
-        dataModel.channel = DynamicHomeChannel.Channels(id = "1", grids = arrayOf(DynamicHomeChannel.Grid()))
-        val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
-        val observerExpressCheckout: Observer<Event<Any>> = mockk(relaxed = true)
-
-        getHomeUseCase.givenGetHomeDataReturn(
-                HomeDataModel(
-                        list = listOf(dataModel)
-                )
-        )
-
-        // Success Express Checkout"){
-        every{ getAtcUseCase.createObservable(any()) } returns
-                Observable.just(mockk())
-
-        homeViewModel = createHomeViewModel(getDynamicChannelsUseCase = getDynamicChannelsUseCase, getHomeUseCase = getHomeUseCase, getAtcUseCase = getAtcUseCase)
-        homeViewModel.homeLiveData.observeForever(observerHome)
-        homeViewModel.oneClickCheckoutHomeComponent.observeForever(observerExpressCheckout)
-
-        // dynamic data returns success
-        getDynamicChannelsUseCase.givenGetDynamicChannelsUseCase(
-                dynamicChannelDataModels = listOf(dataModel)
-        )
-
-        // Express checkout clicked
-        homeViewModel.getOneClickCheckoutHomeComponent(ChannelModel(id="1", groupId = "1"), ChannelGrid(), 0)
-
-        // Expect channel updated
-        verifyOrder {
-            // check on home data initial first channel is dynamic channel
-            observerHome.onChanged(match {
-                it.list.isNotEmpty() && it.list.first() is DynamicChannelDataModel &&
-                        (it.list.first() as DynamicChannelDataModel).channel?.id == "1"
-            })
-        }
-        confirmVerified(observerHome)
-
-        // Event express checkout should be triggered
-        Thread.sleep(100)
-        verifyOrder {
-            observerExpressCheckout.onChanged(match { it != null })
-        }
-        confirmVerified(observerExpressCheckout)
-    }
-
-    @Test
-    fun `Get dynamic channel data success with single data and fail express checkout`() {
-        val dataModel = DynamicChannelDataModel()
-        dataModel.channel = DynamicHomeChannel.Channels(id = "1", grids = arrayOf(DynamicHomeChannel.Grid()))
-        val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
-        val observerExpressCheckout: Observer<Event<Any>> = mockk(relaxed = true)
-
-        getHomeUseCase.givenGetHomeDataReturn(
-                HomeDataModel(
-                        list = listOf(dataModel)
-                )
-        )
-
-        // Success Express Checkout
-        every{ getAtcUseCase.createObservable(any()) } returns Observable.error(mockk())
-
-        homeViewModel = createHomeViewModel(getDynamicChannelsUseCase = getDynamicChannelsUseCase, getHomeUseCase = getHomeUseCase, getAtcUseCase = getAtcUseCase)
-        homeViewModel.homeLiveData.observeForever(observerHome)
-        homeViewModel.oneClickCheckout.observeForever(observerExpressCheckout)
-
-        // dynamic data returns success
-        getDynamicChannelsUseCase.givenGetDynamicChannelsUseCase(
-                dynamicChannelDataModels = listOf(dataModel)
-        )
-
-        // Express checkout clicked
-        homeViewModel.getOneClickCheckout(dataModel.channel!!, dataModel.channel!!.grids.first(), 0)
-
-        // Expect channel updated
-        verifyOrder {
-            // check on home data initial first channel is dynamic channel
-            observerHome.onChanged(match {
-                it.list.isNotEmpty() && it.list.first() is DynamicChannelDataModel &&
-                        (it.list.first() as DynamicChannelDataModel).channel?.id == "1"
-            })
-        }
-        confirmVerified(observerHome)
-
-        // Event express checkout should be triggered
-        Thread.sleep(100)
-        verifyOrder {
-            observerExpressCheckout.onChanged(match { it != null })
-        }
-        confirmVerified(observerExpressCheckout)
-    }
 }

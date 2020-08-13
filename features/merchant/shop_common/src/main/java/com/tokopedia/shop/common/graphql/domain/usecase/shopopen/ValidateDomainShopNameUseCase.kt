@@ -1,26 +1,22 @@
-package com.tokopedia.shop.open.domain
+package com.tokopedia.shop.common.graphql.domain.usecase.shopopen
 
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.shop.open.common.GQLQueryConstant
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.shop.common.graphql.data.shopopen.ValidateShopDomainNameResult
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
-
-import com.tokopedia.shop.open.data.model.ValidateShopDomainNameResult
-
 import javax.inject.Inject
 import javax.inject.Named
 
-class ShopOpenRevampValidateDomainShopNameUseCase @Inject constructor(
-        private val graphqlUseCase: MultiRequestGraphqlUseCase,
-        @Named(GQLQueryConstant.QUERY_SHOP_OPEN_REVAMP_VALIDATE_DOMAIN_SHOP_NAME) val queryCheckDomainShopName: String
+class ValidateDomainShopNameUseCase @Inject constructor(
+        private val graphqlUseCase: MultiRequestGraphqlUseCase
 ): UseCase<ValidateShopDomainNameResult>() {
 
     var params: RequestParams = RequestParams.EMPTY
 
     override suspend fun executeOnBackground(): ValidateShopDomainNameResult {
-        val validateShopDomainNameRequest = GraphqlRequest(queryCheckDomainShopName, ValidateShopDomainNameResult::class.java, params.parameters)
+        val validateShopDomainNameRequest = GraphqlRequest(QUERY, ValidateShopDomainNameResult::class.java, params.parameters)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(validateShopDomainNameRequest)
         val gqlResponse = graphqlUseCase.executeOnBackground()
@@ -39,6 +35,14 @@ class ShopOpenRevampValidateDomainShopNameUseCase @Inject constructor(
     companion object {
         const val SHOP_NAME = "shopName"
         const val DOMAIN_NAME = "domain"
+        const val QUERY = "query validateDomainShopName(\$domain:String, \$shopName:String){\n" +
+                "  validateDomainShopName(domain:\$domain, shopName:\$shopName){\n" +
+                "   isValid\n" +
+                "   error{\n" +
+                "      message\n" +
+                "    }\n" +
+                " }\n" +
+                "}"
 
         fun createRequestParam(domainName: String): RequestParams = RequestParams.create().apply {
             putString(DOMAIN_NAME, domainName)
