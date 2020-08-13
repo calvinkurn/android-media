@@ -83,6 +83,10 @@ object DynamicProductDetailMapper {
                 ProductDetailConstant.PRODUCT_SHOP_CREDIBILITY -> {
                     listOfComponent.add(ProductShopCredibilityDataModel(type = component.type, name = component.componentName))
                 }
+                ProductDetailConstant.PRODUCT_CUSTOM_INFO -> {
+                    //TODO
+                    listOfComponent.add(ProductShopCredibilityDataModel(type = component.type, name = component.componentName))
+                }
             }
         }
         return listOfComponent
