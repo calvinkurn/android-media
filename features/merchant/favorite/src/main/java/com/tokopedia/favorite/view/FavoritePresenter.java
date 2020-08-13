@@ -28,6 +28,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Subscriber;
+import timber.log.Timber;
 
 /**
  * @author Kulomady on 1/20/17.
@@ -146,7 +147,7 @@ public class FavoritePresenter
         }
     }
 
-    private void addFavoriteShop(DataFavorite dataFavorite, List<Visitable> dataFavoriteItemList) {
+    private void addFavoriteShop(DataFavorite dataFavorite, List<Visitable<?>> dataFavoriteItemList) {
         if (dataFavorite != null
                 && dataFavorite.getFavoriteShop() != null) {
 
@@ -171,7 +172,7 @@ public class FavoritePresenter
         }
     }
 
-    private void addTopAdsShop(DataFavorite dataFavorite, List<Visitable> dataFavoriteItemList) {
+    private void addTopAdsShop(DataFavorite dataFavorite, List<Visitable<?>> dataFavoriteItemList) {
         if (dataFavorite != null) {
             validateNetworkTopAdsShop(dataFavorite.getTopAdsShop());
             if (dataFavorite.getTopAdsShop() != null
@@ -230,8 +231,8 @@ public class FavoritePresenter
         }
 
         @NonNull
-        private List<Visitable> getDataFavoriteViewModel(DataFavorite dataFavorite) {
-            List<Visitable> elementList = new ArrayList<>();
+        private List<Visitable<?>> getDataFavoriteViewModel(DataFavorite dataFavorite) {
+            List<Visitable<?>> elementList = new ArrayList<>();
             addTopAdsShop(dataFavorite, elementList);
             addFavoriteShop(dataFavorite, elementList);
 
@@ -260,7 +261,7 @@ public class FavoritePresenter
 
         @Override
         public void onNext(DataFavorite dataFavorite) {
-            List<Visitable> dataFavoriteItemList = new ArrayList<>();
+            List<Visitable<?>> dataFavoriteItemList = new ArrayList<>();
             addTopAdsShop(dataFavorite, dataFavoriteItemList);
             addFavoriteShop(dataFavorite, dataFavoriteItemList);
             getView().refreshDataFavorite(dataFavoriteItemList);
@@ -288,7 +289,7 @@ public class FavoritePresenter
         public void onNext(FavoriteShop favoriteShop) {
             if (favoriteShop.isDataValid()) {
                 setNextPaging(favoriteShop.getPagingModel());
-                List<Visitable> elementList = favoriteMapper.prepareListFavoriteShop(favoriteShop);
+                List<Visitable<?>> elementList = favoriteMapper.prepareListFavoriteShop(favoriteShop);
                 getView().showMoreDataFavoriteShop(elementList);
             } else {
                 setNextPaging(favoriteShop.getPagingModel());
@@ -318,7 +319,7 @@ public class FavoritePresenter
 
         @Override
         public void onError(Throwable e) {
-            Log.e(TAG, "onError: ", e);
+            Timber.e(e, "onError: ");
             getView().showErrorAddFavoriteShop();
         }
 

@@ -246,7 +246,7 @@ public class FragmentFavorite extends BaseDaggerFragment
     }
 
     @Override
-    public void refreshDataFavorite(List<Visitable> elementList) {
+    public void refreshDataFavorite(@org.jetbrains.annotations.Nullable List<? extends Visitable<?>> elementList) {
         favoriteAdapter.hideLoading();
         favoriteAdapter.clearData();
         favoriteAdapter.setElement(elementList);
@@ -254,7 +254,7 @@ public class FragmentFavorite extends BaseDaggerFragment
     }
 
     @Override
-    public void showInitialDataPage(List<Visitable> dataFavorite) {
+    public void showInitialDataPage(@org.jetbrains.annotations.Nullable List<? extends Visitable<?>> dataFavorite) {
         sendFavoriteShopScreenTracker(dataFavorite.isEmpty());
         favoriteAdapter.hideLoading();
         favoriteAdapter.clearData();
@@ -268,12 +268,11 @@ public class FragmentFavorite extends BaseDaggerFragment
     }
 
     @Override
-    public void showMoreDataFavoriteShop(List<Visitable> elementList) {
+    public void showMoreDataFavoriteShop(@org.jetbrains.annotations.Nullable List<? extends Visitable<?>> elementList) {
         favoriteAdapter.hideLoading();
         favoriteAdapter.addMoreData(elementList);
         updateEndlessRecyclerViewListener();
     }
-
 
     @Override
     public void showRefreshLoading() {

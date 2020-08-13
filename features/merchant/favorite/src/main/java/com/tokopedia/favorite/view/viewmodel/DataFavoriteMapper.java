@@ -56,8 +56,8 @@ public class DataFavoriteMapper {
         return shopViewModel;
     }
 
-    public List<Visitable> prepareListFavoriteShop(FavoriteShop favoriteShop) {
-        List<Visitable> elementList = new ArrayList<>();
+    public List<Visitable<?>> prepareListFavoriteShop(FavoriteShop favoriteShop) {
+        List<Visitable<?>> elementList = new ArrayList<>();
         for (FavoriteShopItem favoriteShopItem : favoriteShop.getData()) {
             favoriteShopItem.setIsFav(true);
             elementList.add(prepareDataFavoriteShop(favoriteShopItem));
