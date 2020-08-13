@@ -291,7 +291,7 @@ class TalkWriteFragment : BaseDaggerFragment(),
                 }
                 is Fail -> {
                     TalkWriteTracking.eventClickSendButton(viewModel.getUserId(), viewModel.getProductId().toString(), viewModel.getSelectedCategory()?.categoryName.toString(), false,  it.throwable.message)
-                    showErrorToaster()
+                    showErrorToaster(it.throwable.message ?: getString(R.string.write_submit_error))
                 }
             }
         })
@@ -362,8 +362,8 @@ class TalkWriteFragment : BaseDaggerFragment(),
         talkWriteProductImage.loadImage(productUrl)
     }
 
-    private fun showErrorToaster() {
-        view?.let { Toaster.build(it, getString(R.string.write_submit_error), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.talk_ok)).show()}
+    private fun showErrorToaster(message: String) {
+        view?.let { Toaster.build(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.talk_ok)).show()}
     }
 
     private fun showError() {
