@@ -23,10 +23,14 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GENERAL_SETTING
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.removeObservers
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringContract
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringListener
 import com.tokopedia.talk.common.analytics.TalkTrackingConstants
+import com.tokopedia.talk.common.constants.TalkConstants
 import com.tokopedia.talk.common.constants.TalkConstants.PARAM_PRODUCT_ID
 import com.tokopedia.talk.common.constants.TalkConstants.PARAM_SHOP_ID
 import com.tokopedia.talk.common.constants.TalkConstants.QUESTION_ID
@@ -44,16 +48,12 @@ import com.tokopedia.talk.feature.reading.presentation.widget.OnCategoryModified
 import com.tokopedia.talk.feature.reading.presentation.widget.OnFinishedSelectSortListener
 import com.tokopedia.talk.feature.reading.presentation.widget.TalkReadingSortBottomSheet
 import com.tokopedia.talk.feature.reading.presentation.widget.ThreadListener
-import com.tokopedia.talk.feature.write.presentation.activity.TalkWriteActivity
 import com.tokopedia.talk_old.R
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_talk_reading.*
-import kotlinx.android.synthetic.main.fragment_talk_reading.pageError
-import kotlinx.android.synthetic.main.fragment_talk_reading.pageLoading
-import kotlinx.android.synthetic.main.fragment_talk_reply.*
 import kotlinx.android.synthetic.main.partial_talk_connection_error.view.*
 import kotlinx.android.synthetic.main.partial_talk_reading_empty.*
 import javax.inject.Inject
@@ -466,7 +466,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     }
 
     private fun goToWriteActivity() {
-        val intent = context?.let { TalkWriteActivity.createIntent(it, productId.toIntOrZero()) }
+        val intent = RouteManager.getIntent(context, Uri.parse(ApplinkConstInternalGlobal.ADD_TALK).buildUpon().appendQueryParameter(TalkConstants.PARAM_PRODUCT_ID, productId).build().toString())
         startActivity(intent)
     }
 

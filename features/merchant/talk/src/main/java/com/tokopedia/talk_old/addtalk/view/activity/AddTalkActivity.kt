@@ -47,11 +47,11 @@ class AddTalkActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
         getDataFromAppLink()
         getAbTestPlatform()?.fetch(null)
         super.onCreate(savedInstanceState)
-//        if (!useOldPage()) {
+        if (!useOldPage()) {
             startActivity(TalkWriteActivity.createIntent(this, productId.toIntOrZero()))
             finish()
             return
-//        }
+        }
     }
 
     override fun getNewFragment(): Fragment {
