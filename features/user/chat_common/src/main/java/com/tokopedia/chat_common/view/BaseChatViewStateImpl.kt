@@ -131,9 +131,10 @@ open class BaseChatViewStateImpl(
             onlineStatus.setImageResource(getOnlineIndicatorResource())
             onlineDesc.text = view.context.getString(R.string.online)
             onlineDesc.visibility = View.VISIBLE
-        } else
+        } else {
             onlineDesc.visibility = View.GONE
             onlineStatus.setImageResource(getOfflineIndicatorResource())
+        }
 
         title.setOnClickListener { onToolbarClicked() }
         avatar.setOnClickListener { onToolbarClicked() }
