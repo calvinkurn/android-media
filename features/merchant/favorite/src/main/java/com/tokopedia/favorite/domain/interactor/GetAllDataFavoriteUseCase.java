@@ -76,7 +76,7 @@ public class GetAllDataFavoriteUseCase extends UseCase<DataFavorite> {
 
 
     private Observable<TopAdsShop> getTopAdsShop() {
-        RequestParams requestParams = GetTopAdsShopUseCase.defaultParams();
+        RequestParams requestParams = GetTopAdsShopUseCase.Companion.defaultParams();
         requestParams.putBoolean(GetTopAdsShopUseCase.KEY_IS_FORCE_REFRESH, true);
         requestParams.putString(GetTopAdsShopUseCase.KEY_USER_ID, userSession.getUserId());
 
@@ -87,7 +87,7 @@ public class GetAllDataFavoriteUseCase extends UseCase<DataFavorite> {
     }
 
     private Observable<FavoriteShop> getFavoriteShopList(){
-        RequestParams defaultParams = GetFavoriteShopUsecase.getDefaultParams();
+        RequestParams defaultParams = GetFavoriteShopUsecase.Companion.getDefaultParams();
         defaultParams.putBoolean(GetFavoriteShopUsecase.KEY_IS_FIRST_PAGE, true);
         return getFavoriteShopUsecase.createObservable(defaultParams);
     }

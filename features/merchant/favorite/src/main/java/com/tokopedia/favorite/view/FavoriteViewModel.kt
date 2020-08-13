@@ -150,7 +150,7 @@ class FavoriteViewModel
         if (pagingHandler.CheckNextPage()) {
             pagingHandler.nextPage()
             _isLoadingFavoriteShop.value = true
-            val params = GetFavoriteShopUsecase.getDefaultParams()
+            val params = GetFavoriteShopUsecase.defaultParams
             val currentPage = pagingHandler.page.toString()
             params.putString(GetFavoriteShopUsecase.KEY_PAGE, currentPage)
             getFavoriteShopUseCase.execute(params, LoadMoreSubscriber())

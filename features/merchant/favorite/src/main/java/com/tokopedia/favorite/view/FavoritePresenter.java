@@ -100,7 +100,7 @@ public class FavoritePresenter
         if (pagingHandler.CheckNextPage() && !getView().isLoading()) {
             pagingHandler.nextPage();
             getView().showLoadMoreLoading();
-            RequestParams params = GetFavoriteShopUsecase.getDefaultParams();
+            RequestParams params = GetFavoriteShopUsecase.Companion.getDefaultParams();
             String currentPage = String.valueOf(pagingHandler.getPage());
             params.putString(GetFavoriteShopUsecase.KEY_PAGE, currentPage);
             getFavoriteShopUsecase.execute(params, new LoadMoreSubscriber());
