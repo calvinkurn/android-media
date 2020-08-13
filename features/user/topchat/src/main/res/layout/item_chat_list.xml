@@ -64,8 +64,6 @@
             android:ellipsize="end"
             android:includeFontPadding="false"
             android:maxLines="2"
-            android:minHeight="@dimen/dp_topchat_36"
-            android:minLines="2"
             android:textColor="@color/Neutral_N700_68"
             android:visibility="visible"
             app:layout_constraintEnd_toStartOf="@+id/time"
