@@ -15,9 +15,11 @@ import com.tokopedia.sellerhome.view.activity.SellerHomeActivity
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity.Companion.createIntent
 import com.tokopedia.test.application.TestRepeatRule
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
+import com.tokopedia.test.application.environment.interceptor.size.GqlNetworkAnalyzerInterceptor
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.InstrumentationMockHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponseWithCheck
+import com.tokopedia.test.application.util.setupTotalSizeInterceptor
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -37,12 +39,14 @@ class PltSellerHomePerformanceTest {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
             setupGraphqlMockResponseWithCheck(createMockModelConfig())
+            setupTotalSizeInterceptor(listOf("GetSellerDashboardLayout", "getCardWidgetData", "getLineGraphData"))
         }
 
         override fun afterActivityLaunched() {
             super.afterActivityLaunched()
             sellerHomeLoadTimeMonitoringListener.onStartPltMonitoring()
             activity.sellerHomeLoadTimeMonitoringListener = sellerHomeLoadTimeMonitoringListener
+            markAsIdleIfPltIsSucceed()
         }
     }
 
@@ -90,10 +94,13 @@ class PltSellerHomePerformanceTest {
     private fun savePLTPerformanceResultData(tag: String) {
         val performanceData = activityRule.activity.performanceMonitoringSellerHomeLayoutPlt?.getPltPerformanceMonitoring()
         performanceData?.let {
+            val datasource: String = if (!performanceData.isSuccess) "failed" else "network"
             PerformanceDataFileUtils.writePLTPerformanceFile(
                     activityRule.activity,
                     tag,
-                    it
+                    it,
+                    datasource,
+                    GqlNetworkAnalyzerInterceptor.getNetworkData()
             )
         }
     }
@@ -119,6 +126,13 @@ class PltSellerHomePerformanceTest {
                 addMockResponse("getLineGraphData", InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_seller_home_line_graph_widgets), FIND_BY_QUERY_NAME)
                 return this
             }
+        }
+    }
+
+    private fun markAsIdleIfPltIsSucceed() {
+        val performanceData = activityRule.activity.performanceMonitoringSellerHomeLayoutPlt?.getPltPerformanceMonitoring()
+        if (performanceData?.isSuccess == true) {
+            sellerHomeLoadTimeMonitoringListener.onStopPltMonitoring()
         }
     }
 }
