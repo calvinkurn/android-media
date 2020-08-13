@@ -94,8 +94,6 @@ class DiscoveryHomeFactory {
             initializeComponent(ComponentsList.BannerTimer, ::BannerTimerViewHolder, ::BannerTimerViewModel)
             initializeComponent(ComponentsList.LihatSemua, ::LihatSemuaViewHolder, ::LihatSemuaViewModel)
             initializeComponent(ComponentsList.CpmTopAds, ::CpmTopAdsViewHolder, ::CpmTopAdsViewModel)
-            initializeComponent(ComponentsList.CpmTopAdsItem, ::CpmTopadsShopItemViewHolder, ::CpmTopadsShopItemViewModel)
-            initializeComponent(ComponentsList.CpmTopAdsProductItem, ::CpmTopadsProductItemViewHolder, ::CpmTopadsProductItemViewModel)
             initializeComponent(ComponentsList.ChipsFilterView, ::ComingSoonViewHolder, ::ComingSoonViewModel)
             initializeComponent(ComponentsList.SliderBanner, ::SliderBannerViewHolder, ::SliderBannerViewModel)
             initializeComponent(ComponentsList.Notifier, ::ComingSoonViewHolder, ::ComingSoonViewModel)

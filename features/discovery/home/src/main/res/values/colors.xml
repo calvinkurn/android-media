@@ -33,4 +33,9 @@
     <color name="font_subtitle_bu_widget">#ae31353b</color>
     <color name="shadow_6">#60727272</color>
     <color name="sticky_bg_color">#E6EBFFEF</color>
+    <color name="grey_hint_full">#ffe0e0e0</color>
+    <color name="banner_see_more_bg">#31353b</color>
+    
+    <color name="home_hpb_indicator_active">#FFFFFF</color>
+    <color name="home_hpb_indicator_inactive">#44FFFFFF</color>
 </resources>

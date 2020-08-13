@@ -3,6 +3,10 @@ package com.tokopedia.shop.open.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.shop.common.graphql.data.shopopen.ShopDomainSuggestionData
+import com.tokopedia.shop.common.graphql.data.shopopen.ValidateShopDomainNameResult
+import com.tokopedia.shop.common.graphql.domain.usecase.shopopen.GetShopDomainNameSuggestionUseCase
+import com.tokopedia.shop.common.graphql.domain.usecase.shopopen.ValidateDomainShopNameUseCase
 import com.tokopedia.shop.open.common.ShopOpenDispatcherProvider
 import com.tokopedia.shop.open.data.model.*
 import com.tokopedia.shop.open.domain.*
@@ -15,8 +19,8 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ShopOpenRevampViewModel @Inject constructor(
-        private val validateDomainShopNameUseCase: ShopOpenRevampValidateDomainShopNameUseCase,
-        private val getDomainNameSuggestionUseCase: ShopOpenRevampGetDomainNameSuggestionUseCase,
+        private val validateDomainShopNameUseCase: ValidateDomainShopNameUseCase,
+        private val getDomainNameSuggestionUseCase: GetShopDomainNameSuggestionUseCase,
         private val getSurveyUseCase: ShopOpenRevampGetSurveyUseCase,
         private val sendSurveyUseCase: ShopOpenRevampSendSurveyUseCase,
         private val createShopUseCase: ShopOpenRevampCreateShopUseCase,
@@ -42,8 +46,8 @@ class ShopOpenRevampViewModel @Inject constructor(
     val getSurveyDataResponse: LiveData<Result<GetSurveyData>>
         get() = _getSurveyDataResponse
 
-    private val _domainShopNameSuggestionsResponse = MutableLiveData<Result<ShopDomainSuggestionResult>>()
-    val domainShopNameSuggestionsResponse: LiveData<Result<ShopDomainSuggestionResult>>
+    private val _domainShopNameSuggestionsResponse = MutableLiveData<Result<ShopDomainSuggestionData>>()
+    val domainShopNameSuggestionsResponse: LiveData<Result<ShopDomainSuggestionData>>
         get() = _domainShopNameSuggestionsResponse
 
     private val _saveShopShipmentLocationResponse = MutableLiveData<Result<SaveShipmentLocation>>()
@@ -84,7 +88,7 @@ class ShopOpenRevampViewModel @Inject constructor(
                     return@withContext
                 }
 
-                validateDomainShopNameUseCase.params = ShopOpenRevampValidateDomainShopNameUseCase.createRequestParams(shopName)
+                validateDomainShopNameUseCase.params = ValidateDomainShopNameUseCase.createRequestParams(shopName)
                 val validateShopNameResult = validateDomainShopNameUseCase.executeOnBackground()
                 validateShopNameResult.let {
                     _checkShopNameResponse.postValue(Success(validateShopNameResult))
@@ -112,7 +116,7 @@ class ShopOpenRevampViewModel @Inject constructor(
         getDomainNameSuggestionUseCase.cancelJobs()
         launchCatchError(block = {
             withContext(dispatchers.io()) {
-                getDomainNameSuggestionUseCase.params = ShopOpenRevampGetDomainNameSuggestionUseCase.createRequestParams(shopName)
+                getDomainNameSuggestionUseCase.params = GetShopDomainNameSuggestionUseCase.createRequestParams(shopName)
                 val shopSuggestionsResult = getDomainNameSuggestionUseCase.executeOnBackground()
                 shopSuggestionsResult.let {
                     _domainShopNameSuggestionsResponse.postValue(Success(it))
@@ -222,7 +226,7 @@ class ShopOpenRevampViewModel @Inject constructor(
                     return@withContext
                 }
 
-                validateDomainShopNameUseCase.params = ShopOpenRevampValidateDomainShopNameUseCase.createRequestParam(domain)
+                validateDomainShopNameUseCase.params = ValidateDomainShopNameUseCase.createRequestParam(domain)
                 val validateShopDomainNameResult = validateDomainShopNameUseCase.executeOnBackground()
                 validateShopDomainNameResult.let {
                     _checkDomainNameResponse.postValue(Success(it))
