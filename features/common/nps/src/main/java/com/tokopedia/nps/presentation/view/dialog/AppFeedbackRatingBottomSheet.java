@@ -26,6 +26,7 @@ public class AppFeedbackRatingBottomSheet extends AppFeedbackDialog {
     private String[] ratingDetails;
     private LocalCacheHandler cacheHandler;
     private boolean isCancelled = true;
+    private BottomSheetDismissListener dismissListener;
 
     @Override
     public int getLayoutResourceId() {
@@ -61,12 +62,15 @@ public class AppFeedbackRatingBottomSheet extends AppFeedbackDialog {
         if (context != null && manager != null) {
             if (isFeedbackRatingNeeded(context)) {
                 super.show(manager, "AppFeedbackRatingBottomSheet");
+            } else {
+                if (dismissListener != null) { dismissListener.onDismiss(); }
             }
         }
     }
 
     public void setDialogDismissListener(BottomSheetDismissListener dismissListener) {
         setDismissListener(dismissListener);
+        this.dismissListener = dismissListener;
     }
 
     private void setRatingBarChangedListener(RatingBar ratingBarView, Typography ratingLevelView) {

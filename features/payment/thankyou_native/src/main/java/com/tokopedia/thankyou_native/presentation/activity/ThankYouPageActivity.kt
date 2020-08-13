@@ -9,6 +9,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.nps.helper.InAppReviewHelper
+import com.tokopedia.nps.presentation.view.dialog.AppFeedbackRatingBottomSheet
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.analytics.ThankYouPageAnalytics
 import com.tokopedia.thankyou_native.data.mapper.*
@@ -144,17 +145,22 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
         fragment?.let {
             return when (it) {
                 is LoaderFragment -> true
-                else -> {
-                    InAppReviewHelper.launchInAppReview(this, object: InAppReviewHelper.Callback {
-                        override fun onCompleted() {
-                            gotoHomePage()
-                        }
-                    })
-                }
+                else -> showRating()
             }
 
         }
         return false
+    }
+
+    private fun showRating() : Boolean {
+        if (!InAppReviewHelper.launchInAppReview(this, object : InAppReviewHelper.Callback {
+                    override fun onCompleted() { gotoHomePage() }
+                })) {
+            val rating = AppFeedbackRatingBottomSheet()
+            rating.setDialogDismissListener { gotoHomePage() }
+            rating.showDialog(supportFragmentManager, this)
+        }
+        return true
     }
 
     private fun gotoHomePage() {
