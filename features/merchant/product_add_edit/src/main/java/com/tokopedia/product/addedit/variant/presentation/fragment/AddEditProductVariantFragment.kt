@@ -29,6 +29,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.EXTRA_CACHE_MANAGER_ID
 import com.tokopedia.product.addedit.common.util.HorizontalItemDecoration
+import com.tokopedia.product.addedit.common.util.RecyclerViewItemDecoration
 import com.tokopedia.product.addedit.imagepicker.view.activity.SizechartPickerAddProductActivity
 import com.tokopedia.product.addedit.imagepicker.view.activity.SizechartPickerEditPhotoActivity
 import com.tokopedia.product.addedit.imagepicker.view.activity.VariantPhotoPickerActivity
@@ -162,6 +163,7 @@ class AddEditProductVariantFragment :
         recyclerViewVariantType.adapter = variantTypeAdapter
         recyclerViewVariantValueLevel1.adapter = variantValueAdapterLevel1
         recyclerViewVariantValueLevel2.adapter = variantValueAdapterLevel2
+        recyclerViewVariantPhoto.addItemDecoration(RecyclerViewItemDecoration(requireContext()))
         recyclerViewVariantPhoto.adapter = variantPhotoAdapter
         setRecyclerViewToFlex(recyclerViewVariantType)
         setRecyclerViewToFlex(recyclerViewVariantValueLevel1)
@@ -236,10 +238,6 @@ class AddEditProductVariantFragment :
     }
 
     override fun onVariantTypeSelected(adapterPosition: Int, variantDetail: VariantDetail) {
-
-        // clear photo data if have new level structure
-        variantPhotoAdapter?.clearImageData()
-
         // track selected variant type
         viewModel.isEditMode.value?.let { isEditMode ->
             val variantTypeName = variantDetail.name
@@ -335,8 +333,6 @@ class AddEditProductVariantFragment :
     }
 
     override fun onVariantTypeDeselected(adapterPosition: Int, variantDetail: VariantDetail): Boolean {
-        // clear photo data if have new level structure
-        variantPhotoAdapter?.clearImageData()
 
         viewModel.isSingleVariantTypeIsSelected = true
         val layoutPosition = viewModel.getVariantValuesLayoutPosition(adapterPosition)
@@ -558,7 +554,10 @@ class AddEditProductVariantFragment :
         // update photo section state
         if (variantId == COLOUR_VARIANT_TYPE_ID) {
             variantPhotoAdapter?.removeData(position)
-            if (variantPhotoAdapter?.getData()?.size == 0) variantPhotoLayout.hide()
+            if (variantPhotoAdapter?.getData()?.size == 0) {
+                variantPhotoLayout.hide()
+                variantPhotoAdapter?.setData(emptyList())
+            }
         }
 
         // update sizechart visibility based on variant selected type

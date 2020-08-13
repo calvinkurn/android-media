@@ -52,7 +52,7 @@ class VariantPhotoAdapter(private val onItemClickedListener: OnItemClickListener
     fun removeData(position: Int) {
         if (position >= 0 && position < this.items.size) {
             this.items.removeAt(position)
-            notifyItemRemoved(position)
+            notifyDataSetChanged()
         }
     }
 
@@ -61,15 +61,9 @@ class VariantPhotoAdapter(private val onItemClickedListener: OnItemClickListener
         notifyItemChanged(position)
     }
 
-    fun clearImageData() {
-        items.forEach {
-            it.imageUrlOrPath = ""
-        }
-        notifyDataSetChanged()
-    }
-
     override fun onItemClicked(position: Int) {
         onItemClickedListener.onItemClicked(position)
     }
+
 
 }
