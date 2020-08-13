@@ -77,8 +77,6 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     private static final String WIHSLIST_STATUS_IS_WISHLIST = "isWishlist";
     private static final int REQUEST_FROM_PDP = 138;
     private static final String className = "com.tokopedia.navigation.presentation.fragment.InboxFragment";
-    private static final String AB_TEST_KEY = "InboxUlasanRevamp2";
-    private static final String OLD_REVIEW_FLOW = "Old Review Flow";
 
     @Inject
     InboxPresenter presenter;
