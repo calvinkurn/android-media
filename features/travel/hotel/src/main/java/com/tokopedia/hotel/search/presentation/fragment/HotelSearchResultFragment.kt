@@ -221,11 +221,18 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
                 type = if (it.selected) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL)
             item.listener = {
                 item.toggleSelected()
-                refreshSelectedFilter(quickFilters)
             }
             return@map item
         }
         quick_filter_sort_filter.addItem(ArrayList(sortFilterItem))
+
+        for (item in quick_filter_sort_filter.chipItems)  {
+            item.refChipUnify.setOnClickListener {
+                item.toggleSelected()
+                refreshSelectedFilter(quickFilters)
+            }
+        }
+
         refreshSelectedFilter(quickFilters, false)
         quick_filter_sort_filter.parentListener = { }
 
@@ -359,6 +366,10 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
     }
 
     private fun setUpQuickFilterBaseOnSelectedFilter(selectedFilters: List<ParamFilterV2>) {
+        quick_filter_sort_filter.chipItems.forEach {
+            it.type = ChipsUnify.TYPE_NORMAL
+        }
+
         var isVisited = false
         quickFilters.forEachIndexed { index, quickFilter ->
             for (selectedFilter in selectedFilters)  {
@@ -373,8 +384,6 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
                 }
             }
         }
-
-
     }
 
     override fun onGetListErrorWithEmptyData(throwable: Throwable?) {
