@@ -16,7 +16,7 @@ import com.tokopedia.charts.config.LineChartConfig
 import com.tokopedia.charts.model.LineChartConfigModel
 import com.tokopedia.charts.model.LineChartData
 import com.tokopedia.charts.model.LineChartEntry
-import com.tokopedia.charts.common.utils.XAxisLabelFormatter
+import com.tokopedia.charts.common.utils.DefaultXAxisLabelFormatter
 import kotlinx.android.synthetic.main.view_line_chart.view.*
 
 /**
@@ -130,7 +130,7 @@ class LineChartView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
     private fun setXAxisLabelFormatter(entries: List<LineChartEntry>) {
         val xAxisConfig = config.xAxisConfig
         val labelsStr: List<String> = entries.map { it.xLabel }
-        lineChart.xAxis.valueFormatter = XAxisLabelFormatter(labelsStr)
+        lineChart.xAxis.valueFormatter = DefaultXAxisLabelFormatter(labelsStr)
 
         if (labelsStr.size > 7) {
             lineChart.isScaleXEnabled = true
