@@ -15,6 +15,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.presentation.model.LineGraphDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.LineGraphWidgetUiModel
+import com.tokopedia.sellerhomecommon.utils.ChartYAxisLabelFormatter
 import kotlinx.android.synthetic.main.shc_line_graph_widget.view.*
 import kotlinx.android.synthetic.main.shc_partial_chart_tooltip.view.*
 import kotlinx.android.synthetic.main.shc_partial_common_widget_state_error.view.*
@@ -142,7 +143,7 @@ class LineGraphViewHolder(
 
     private fun showLineGraph(element: LineGraphWidgetUiModel) {
         with(itemView.lineGraphView) {
-            init(getLineChartConfig())
+            init(getLineChartConfig(element))
             setData(getLineChartData(element))
             invalidateChart()
         }
@@ -153,9 +154,7 @@ class LineGraphViewHolder(
             LineChartEntry(it.yVal, it.yLabel, it.xLabel)
         }.orEmpty()
 
-        val yAxisLabel = element.data?.yLabels?.map {
-            AxisLabel(it.yVal, it.yLabel)
-        }.orEmpty()
+        val yAxisLabel = getYAxisLabel(element)
 
         return LineChartData(
                 chartEntry = chartEntry,
@@ -163,18 +162,31 @@ class LineGraphViewHolder(
         )
     }
 
-    private fun getLineChartConfig(): LineChartConfigModel {
+    private fun getYAxisLabel(element: LineGraphWidgetUiModel): List<AxisLabel> {
+        return element.data?.yLabels?.map {
+            AxisLabel(it.yVal, it.yLabel)
+        }.orEmpty()
+    }
+
+    private fun getLineChartConfig(element: LineGraphWidgetUiModel): LineChartConfigModel {
         return LineChartConfig.create {
             xAnimationDuration { 200 }
             yAnimationDuration { 200 }
             tooltipEnabled { true }
             setChartTooltip(getLineGraphTooltip())
+
             xAxis {
                 gridEnabled { false }
                 textColor { itemView.context.getResColor(R.color.Neutral_N700_96) }
             }
+
             yAxis {
+                val yAxisLabel = getYAxisLabel(element)
                 textColor { itemView.context.getResColor(R.color.Neutral_N700_96) }
+                labelFormatter {
+                    ChartYAxisLabelFormatter(yAxisLabel)
+                }
+                labelCount { yAxisLabel.size }
             }
             chartLineWidth { 1.8f }
         }

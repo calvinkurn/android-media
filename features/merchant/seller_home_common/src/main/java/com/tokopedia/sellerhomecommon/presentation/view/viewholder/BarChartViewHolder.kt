@@ -14,6 +14,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.BarChartAxisUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.BarChartMetricsUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.BarChartUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.BarChartWidgetUiModel
+import com.tokopedia.sellerhomecommon.utils.ChartYAxisLabelFormatter
 import kotlinx.android.synthetic.main.shc_bar_chart_widget.view.*
 import kotlinx.android.synthetic.main.shc_partial_chart_tooltip.view.*
 import kotlinx.android.synthetic.main.shc_partial_common_widget_state_error.view.*
@@ -91,7 +92,7 @@ class BarChartViewHolder(
             tvShcBarChartValue.text = element.data?.chartData?.summary?.valueFmt.orEmpty()
             tvShcBarChartSubValue.text = element.data?.chartData?.summary?.diffPercentageFmt.orEmpty().parseAsHtml()
 
-            barChartShc.init(getBarChartConfig())
+            barChartShc.init(getBarChartConfig(element))
             barChartShc.setData(getBarChartData(data?.chartData))
             barChartShc.invalidateChart()
 
@@ -116,19 +117,26 @@ class BarChartViewHolder(
         }
     }
 
-    private fun getBarChartConfig(): BarChartConfigModel {
+    private fun getBarChartConfig(element: BarChartWidgetUiModel): BarChartConfigModel {
         val labelTextColor = itemView.context.getResColor(R.color.Neutral_N700_96)
+        val data = getBarChartData(element.data?.chartData)
         return BarChartConfig.create {
             xAnimationDuration { 200 }
             yAnimationDuration { 200 }
             barBorderRadius { itemView.context.resources.getDimensionPixelSize(R.dimen.layout_lvl1) }
+
             xAxis {
                 gridEnabled { false }
                 textColor { labelTextColor }
             }
+
             yAxis {
+                val yAxis = data.yAxis
                 textColor { labelTextColor }
+                labelCount { yAxis.size }
+                labelFormatter { ChartYAxisLabelFormatter(yAxis) }
             }
+
             tooltipEnabled { true }
             setChartTooltip(getBarChartTooltip())
         }
@@ -145,9 +153,7 @@ class BarChartViewHolder(
     }
 
     private fun openAppLink(appLink: String, dataKey: String, value: String) {
-        if (RouteManager.route(itemView.context, appLink)) {
-            //listener.sendLineGraphCtaClickEvent(dataKey, value)
-        }
+        RouteManager.route(itemView.context, appLink)
     }
 
     private fun getBarChartData(data: BarChartUiModel?): BarChartData {
