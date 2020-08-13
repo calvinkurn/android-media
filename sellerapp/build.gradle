@@ -1,8 +1,8 @@
 apply plugin: 'com.android.application'
-if (project.hasProperty("auto-patch")) {
-    apply plugin: 'auto-patch-plugin'
-}
-apply plugin: 'robust'
+//if (project.hasProperty("auto-patch")) {
+//    apply plugin: 'auto-patch-plugin'
+//}
+//apply plugin: 'robust'
 apply plugin: 'io.fabric'
 apply plugin: 'io.hansel.preprocessor'
 apply plugin: 'com.bugsnag.android.gradle'
@@ -214,7 +214,6 @@ dependencies {
     }
     implementation project(rootProject.ext.features.commonDigital)
     implementation project(rootProject.ext.features.tkpdcore)
-    implementation project(rootProject.ext.features.shopPage)
     implementation project(rootProject.ext.features.sellerorder)
     implementation project(rootProject.ext.features.sellerHome)
     implementation project(rootProject.ext.features.sellerOnboarding)
@@ -289,6 +288,8 @@ dependencies {
     implementation project(rootProject.ext.features.attachinvoice)
     implementation project(rootProject.ext.features.attachvoucher)
 
+    implementation project(rootProject.ext.features.playCommon)
+
     implementation rootProject.ext.unifyDependencies.icon
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.principles
@@ -333,10 +334,10 @@ dependencies {
     implementation(rootProject.ext.analyticsDependencies.moengage)
 
     implementation rootProject.ext.playServicesDependencies.analytics
+    implementation rootProject.ext.playServicesDependencies.core
     implementation rootProject.ext.playServicesDependencies.maps
     implementation rootProject.ext.serviceDependencies.crashlytics
 
-    implementation project(rootProject.ext.libraries.playCore)
     implementation rootProject.ext.firebase.config
     implementation rootProject.ext.firebase.messaging
 

@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -160,7 +161,7 @@ class PlayYouTubeFragment : BaseDaggerFragment(), PlayYouTubeViewInitializer, Pl
 
     //region observe
     private fun observeVideoPlayer() {
-        playViewModel.observableVideoPlayer.observe(viewLifecycleOwner, DistinctObserver {
+        playViewModel.observableVideoPlayer.observe(viewLifecycleOwner, Observer {
             scope.launch {
                 EventBusFactory.get(viewLifecycleOwner)
                         .emit(

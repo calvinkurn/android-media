@@ -19,6 +19,7 @@ import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTION_DELETE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TOASTER_DURATION
+import com.tokopedia.topads.dashboard.data.model.CountDataItem
 import com.tokopedia.topads.dashboard.data.model.GroupListDataItem
 import com.tokopedia.topads.dashboard.data.model.nongroupItem.GetDashboardProductStatistics
 import com.tokopedia.topads.dashboard.data.model.nongroupItem.NonGroupResponse
@@ -208,15 +209,24 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessGroupList(list: List<GroupListDataItem>) {
-        val grouplist: MutableList<MovetoGroupViewModel> = mutableListOf()
+        val groupList: MutableList<MovetoGroupViewModel> = mutableListOf()
+        val groupIds: MutableList<String> = mutableListOf()
         list.forEach {
-            grouplist.add(MovetoGroupItemViewModel(it))
+            groupList.add(MovetoGroupItemViewModel(it))
+            groupIds.add(it.groupId.toString())
         }
         if (list.isEmpty()) {
             movetoGroupSheet.setButtonDisable()
-            grouplist.add(MovetoGroupEmptyViewModel())
-        }
-        movetoGroupSheet.updateData(grouplist)
+            groupList.add(MovetoGroupEmptyViewModel())
+        } else
+            topAdsDashboardPresenter.getCountProductKeyword(resources, groupIds, ::onSuccessCount)
+
+        movetoGroupSheet.updateData(groupList)
+    }
+
+    private fun onSuccessCount(countList: List<CountDataItem>) {
+        movetoGroupSheet.updateKeyCount(countList)
+        loader.visibility = View.GONE
     }
 
     private fun showConfirmationDialog(context: Context) {
@@ -246,11 +256,13 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
             val coroutineScope = CoroutineScope(Dispatchers.Main)
             coroutineScope.launch {
                 delay(TOASTER_DURATION)
-                if (!deleteCancel)
-                    topAdsDashboardPresenter.setProductAction(::onSuccessAction, actionActivate, getAdIds(), resources, selectedFilter)
-                SingleDelGroupId = ""
-                deleteCancel = false
-                setSelectMode(false)
+                if(activity != null && isAdded) {
+                    if (!deleteCancel)
+                        topAdsDashboardPresenter.setProductAction(::onSuccessAction, actionActivate, getAdIds(), resources, selectedFilter)
+                    SingleDelGroupId = ""
+                    deleteCancel = false
+                    setSelectMode(false)
+                }
             }
         } else {
             topAdsDashboardPresenter.setProductAction(::onSuccessAction, actionActivate, getAdIds(), resources, selectedFilter)

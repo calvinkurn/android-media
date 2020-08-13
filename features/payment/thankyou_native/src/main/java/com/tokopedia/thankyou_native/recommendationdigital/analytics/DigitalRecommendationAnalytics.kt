@@ -52,7 +52,7 @@ class DigitalRecommendationAnalytics @Inject constructor(
                                 KEY_USER_ID to userSession.get().userId,
                                 KEY_PAYMENT_ID to paymentId,
                                 KEY_BUSINESS_UNIT to KEY_BUSINESS_UNIT_VALUE_RECHARGE,
-                                KEY_EVENT_LABEL to (position + 1),
+                                KEY_EVENT_LABEL to recommendationItem.type + " - " + recommendationItem.categoryName + " - " + (position + 1),
                                 KEY_E_COMMERCE to getProductClickECommerceData(recommendationItem, position))
                         analyticTracker.sendEnhanceEcommerceEvent(data)
                     }

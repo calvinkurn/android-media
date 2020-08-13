@@ -9,6 +9,10 @@ object ProductManageListConstant {
     const val EXTRA_FILTER_SELECTED = "extra_filter_selected"
     const val EXTRA_SORT_SELECTED = "extra_sort_selected"
     const val EXTRA_PRODUCT_NAME = "extra_product_name"
+    const val EXTRA_PRODUCT_ID = "extra_product_id"
+    const val EXTRA_UPDATED_STOCK = "extra_updated_stock"
+    const val EXTRA_UPDATED_STATUS = "extra_update_status"
+    const val EXTRA_UPDATE_MESSAGE = "extra_update_message"
     const val EXTRA_THRESHOLD = "extra_threshold"
     const val GQL_POPUP_NAME = "gql_popup"
     const val URL_TIPS_TRICK = "https://seller.tokopedia.com/edu/cara-cepat-dapat-transaksi/"
@@ -24,6 +28,7 @@ object ProductManageListConstant {
     const val SET_CASHBACK_REQUEST_CODE = 3333
     const val REQUEST_CODE_ADD_PRODUCT = 3697
     const val REQUEST_CODE_EDIT_PRODUCT = 9736
+    const val REQUEST_CODE_CAMPAIGN_STOCK = 4646
 
     const val FILTER_ALL_PRODUK = -2
     const val FILTER_SOLD_PRODUK = -3

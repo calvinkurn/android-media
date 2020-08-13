@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -34,6 +35,7 @@ import com.tokopedia.useridentification.subscriber.GetUserProjectInfoSubcriber;
 import com.tokopedia.useridentification.view.activity.UserIdentificationInfoActivity;
 import com.tokopedia.useridentification.view.listener.UserIdentificationInfo;
 
+import java.util.List;
 import java.util.Objects;
 
 import javax.inject.Inject;
@@ -58,6 +60,11 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
     private View progressBar;
     private View mainView;
     private UnifyButton button;
+    private ConstraintLayout clReason;
+    private TextView reasonOne;
+    private TextView reasonTwo;
+    private View iconOne;
+    private View iconTwo;
     private boolean isSourceSeller;
     private UserIdentificationAnalytics analytics;
     private int statusCode;
@@ -126,6 +133,11 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
         text = parentView.findViewById(R.id.text);
         button = parentView.findViewById(R.id.button);
         progressBar = parentView.findViewById(R.id.progress_bar);
+        clReason = parentView.findViewById(R.id.cl_reason);
+        reasonOne = parentView.findViewById(R.id.txt_reason_1);
+        reasonTwo = parentView.findViewById(R.id.txt_reason_2);
+        iconOne = parentView.findViewById(R.id.ic_x_1);
+        iconTwo = parentView.findViewById(R.id.ic_x_2);
     }
 
     @Override
@@ -152,12 +164,12 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onSuccessGetUserProjectInfo(int status) {
+    public void onSuccessGetUserProjectInfo(int status, List<String> reasons) {
         hideLoading();
         statusCode = status;
         switch (status) {
             case KYCConstant.STATUS_REJECTED:
-                showStatusRejected();
+                showStatusRejected(reasons);
                 break;
             case KYCConstant.STATUS_PENDING:
                 showStatusPending();
@@ -252,14 +264,35 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
         analytics.eventViewPendingPage();
     }
 
-    private void showStatusRejected() {
+    private void showStatusRejected(List<String> reasons) {
         ImageHandler.LoadImage(image, KycUrl.ICON_FAIL_VERIFY);
         title.setText(R.string.kyc_failed_title);
-        text.setText(R.string.kyc_failed_text);
+        if(!reasons.isEmpty()) {
+            text.setText(R.string.kyc_failed_text_with_reason);
+            clReason.setVisibility(View.VISIBLE);
+            showRejectedReason(reasons);
+        } else {
+            text.setText(R.string.kyc_failed_text);
+            clReason.setVisibility(View.GONE);
+        }
         button.setText(R.string.kyc_failed_button);
         button.setVisibility(View.VISIBLE);
         button.setOnClickListener(onGoToFormActivityButton(KYCConstant.STATUS_REJECTED));
         analytics.eventViewRejectedPage();
+    }
+
+    private void showRejectedReason(List<String> reasons) {
+        reasonOne.setVisibility(View.VISIBLE);
+        iconOne.setVisibility(View.VISIBLE);
+        reasonOne.setText(reasons.get(0));
+        if(reasons.size() > 1) {
+            reasonTwo.setVisibility(View.VISIBLE);
+            iconTwo.setVisibility(View.VISIBLE);
+            reasonTwo.setText(reasons.get(1));
+        } else {
+            reasonTwo.setVisibility(View.GONE);
+            iconTwo.setVisibility(View.GONE);
+        }
     }
 
     private void showStatusBlacklist() {

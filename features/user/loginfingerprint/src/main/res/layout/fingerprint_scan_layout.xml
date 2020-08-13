@@ -32,13 +32,13 @@
         android:id="@+id/fingerprint_progressbar"
         android:layout_gravity="center"
         android:visibility="gone"
-        android:layout_width="@dimen/dp_48"
-        android:layout_height="@dimen/dp_48"/>
+        android:layout_width="@dimen/layout_lvl6"
+        android:layout_height="@dimen/layout_lvl6"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/fingerprint_body_text"
-        android:layout_marginTop="@dimen/dp_8"
-        android:layout_marginBottom="@dimen/dp_24"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginBottom="@dimen/spacing_lvl5"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="@color/body_text_color"

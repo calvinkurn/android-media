@@ -17,16 +17,19 @@ import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.ElapsedTime
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp;
 import com.tokopedia.notifications.model.BaseNotificationModel;
 
+import androidx.annotation.NonNull;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
+import androidx.room.migration.Migration;
+import androidx.sqlite.db.SupportSQLiteDatabase;
 
 @Database(entities = {
         CMInApp.class,
         ElapsedTime.class,
         BaseNotificationModel.class
-}, version = 1)
+}, version = 2)
 
 @TypeConverters({ButtonListConverter.class,
         NotificationModeConverter.class,
@@ -47,12 +50,20 @@ public abstract class RoomNotificationDB extends RoomDatabase {
 
     private static volatile RoomNotificationDB INSTANCE;
 
+    private static Migration MIGRATION_1_2 = new Migration(1, 2) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("ALTER TABLE `BaseNotificationModel` ADD COLUMN `notificationProductType` TEXT");
+        }
+    };
+
     public static RoomNotificationDB getDatabase(final Context context) {
         if (INSTANCE == null) {
             synchronized (RoomNotificationDB.class) {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                             RoomNotificationDB.class, "cm_push_notification")
+                            .addMigrations(MIGRATION_1_2)
                             .build();
                 }
             }

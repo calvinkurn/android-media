@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -23,8 +24,8 @@ import com.tokopedia.play.ui.video.VideoComponent
 import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.util.event.DistinctEventObserver
 import com.tokopedia.play.util.observer.DistinctObserver
-import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.util.video.PlayVideoUtil
+import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.custom.RoundedConstraintLayout
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.layout.video.PlayVideoLayoutManager
@@ -171,7 +172,7 @@ class PlayVideoFragment : BaseDaggerFragment(), PlayVideoViewInitializer, PlayFr
 
     //region observe
     private fun observeVideoPlayer() {
-        playViewModel.observableVideoPlayer.observe(viewLifecycleOwner, DistinctObserver {
+        playViewModel.observableVideoPlayer.observe(viewLifecycleOwner, Observer {
             scope.launch {
                 EventBusFactory.get(viewLifecycleOwner)
                         .emit(

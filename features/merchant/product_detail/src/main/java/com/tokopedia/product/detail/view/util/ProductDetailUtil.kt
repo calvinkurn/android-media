@@ -6,7 +6,6 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.TextPaint
-import android.text.format.Time
 import android.text.style.ClickableSpan
 import android.text.style.StyleSpan
 import android.view.View

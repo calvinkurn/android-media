@@ -256,6 +256,7 @@
     <string name="mvc_free_delivery_alert">Untuk ubah dan duplikat Voucher Toko Gratis Ongkir saat ini hanya tersedia di desktop</string>
     <string name="mvc_free_delivery_alert_duplicate">Duplikat Voucher Gratis Ongkir hanya tersedia di desktop</string>
     <string name="mvc_voucher_name">Voucher %s</string>
+    <string name="mvc_general_error">Oops, ada gangguan yang perlu kami bereskan.</string>
 
     <!-- voucher list -->
     <string name="mvc_ongoing">Berlangsung</string>

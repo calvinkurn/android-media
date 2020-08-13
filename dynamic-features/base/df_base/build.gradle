@@ -93,7 +93,6 @@ dependencies {
     //Fintech
     implementation project(rootProject.ext.features.ovoPayWithQr)
     implementation project(rootProject.ext.features.wallet)
-    implementation project(rootProject.ext.features.instantLoan)
     implementation project(rootProject.ext.features.ovop2p)
 
     //IM
@@ -109,6 +108,7 @@ dependencies {
     implementation project(rootProject.ext.features.talk)
     implementation project(rootProject.ext.features.shopShowcase)
     implementation project(rootProject.ext.features.brandlist)
+    implementation project(rootProject.ext.features.shopPage)
     //Operational
 
     //Payment

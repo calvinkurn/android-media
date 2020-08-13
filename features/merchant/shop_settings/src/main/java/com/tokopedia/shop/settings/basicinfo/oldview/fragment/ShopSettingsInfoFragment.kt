@@ -39,7 +39,7 @@ import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.basicinfo.oldview.activity.ShopEditBasicInfoActivity
 import com.tokopedia.shop.settings.basicinfo.oldview.activity.ShopEditScheduleActivity
 import com.tokopedia.shop.settings.basicinfo.oldview.presenter.ShopSettingsInfoPresenter
-import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
+import com.tokopedia.shop.settings.common.olddi.DaggerShopSettingsComponent
 import com.tokopedia.shop.settings.common.util.FORMAT_DATE
 import com.tokopedia.shop.settings.common.util.toReadableString
 import com.tokopedia.unifycomponents.Toaster
@@ -170,7 +170,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        btnChangeShopInfo.setOnClickListener {
+        vgShopInfoContainer.setOnClickListener {
             val intent = ShopEditBasicInfoActivity.createIntent(context!!, shopBasicDataModel)
             startActivityForResult(intent, REQUEST_EDIT_BASIC_INFO)
         }
@@ -272,13 +272,10 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
 
         val logoUrl = shopBasicDataModel.logo
         if (TextUtils.isEmpty(logoUrl)) {
-            ImageHandler.loadImage2(ivShopLogo, logoUrl, com.tokopedia.design.R.drawable.ic_shop_default_empty)
-//            ImageHandler.loadImage2(thumbnail, imageUrl, R.drawable.ic_notifcenter_loading_toped)
-//            ivShopLogo.setImageDrawable(
-//                    MethodChecker.getDrawable(ivShopLogo.getContext(),
-//                            com.tokopedia.design.R.drawable.ic_shop_default_empty))
+            ivShopLogo.setImageDrawable(
+                    MethodChecker.getDrawable(ivShopLogo.getContext(),
+                            com.tokopedia.design.R.drawable.ic_shop_default_empty))
         } else {
-//            ImageHandler.loadImage2(ivShopLogo, logoUrl, R.drawable.ic_loading_toped_new)
             ImageHandler.LoadImage(ivShopLogo, logoUrl)
         }
     }

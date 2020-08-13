@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import com.tokopedia.home.account.data.model.tokopointshortcut.ShortcutResponse;
 import com.tokopedia.home.account.data.pojo.UserProfileCompletion;
 import com.tokopedia.navigation_common.model.DebitInstantModel;
+import com.tokopedia.navigation_common.model.DepositModel;
 import com.tokopedia.navigation_common.model.LePreapproveModel;
 import com.tokopedia.navigation_common.model.MembershipSumUserCard;
 import com.tokopedia.navigation_common.model.NotificationsModel;
@@ -24,7 +25,12 @@ import java.util.List;
 
 /**
  * @author okasurya on 7/20/18.
+ *
+ *
+ * please use AccountDataModel.kt instead
  */
+
+@Deprecated
 public class AccountModel {
     @SerializedName("isAuthenticated")
     @Expose
@@ -64,12 +70,15 @@ public class AccountModel {
     private DebitInstantModel debitInstant = new DebitInstantModel();
 
     @SerializedName("vcc_user_status")
+    @Expose
     private VccUserStatus vccUserStatus = new VccUserStatus();
 
     @SerializedName("vcc_user_balance")
+    @Expose
     private VccUserBalance vccUserBalance = new VccUserBalance();
 
     @SerializedName("kycStatus")
+    @Expose
     private KycStatusPojo kycStatusPojo = new KycStatusPojo();
 
     private SaldoModel saldoModel = new SaldoModel();
@@ -77,10 +86,16 @@ public class AccountModel {
     private ShortcutResponse shortcutResponse = new ShortcutResponse();
 
     @SerializedName("isAffiliate")
+    @Expose
     private boolean isAffiliate = false;
 
     @SerializedName("CheckEligible")
+    @Expose
     private PremiumAccountResponse premiumAccountResponse;
+
+    @SerializedName("balance")
+    @Expose
+    private DepositModel saldo = new DepositModel();
 
     private PendingCashbackModel pendingCashbackModel = new PendingCashbackModel();
 
@@ -207,6 +222,14 @@ public class AccountModel {
 
     public void setSaldoModel(SaldoModel saldoModel) {
         this.saldoModel = saldoModel;
+    }
+
+    public DepositModel getSaldo() {
+        return saldo;
+    }
+
+    public void setSaldo(DepositModel depositModel) {
+        this.saldo = depositModel;
     }
 
     public ShortcutResponse getShortcutResponse() {

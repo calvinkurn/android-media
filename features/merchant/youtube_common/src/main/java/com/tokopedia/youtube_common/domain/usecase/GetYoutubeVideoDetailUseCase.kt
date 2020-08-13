@@ -7,6 +7,7 @@ import com.tokopedia.common.network.data.model.RequestType
 import com.tokopedia.common.network.data.model.RestRequest
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.youtube_common.YoutubeCommonConstant.ENDPOINT_URL
 import com.tokopedia.youtube_common.YoutubeCommonConstant.ID_KEY
 import com.tokopedia.youtube_common.YoutubeCommonConstant.PART_KEY

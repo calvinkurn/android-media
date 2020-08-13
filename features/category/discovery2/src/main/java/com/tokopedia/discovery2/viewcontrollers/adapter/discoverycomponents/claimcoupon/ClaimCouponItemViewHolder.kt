@@ -78,7 +78,7 @@ class ClaimCouponItemViewHolder(itemView: View, private val fragment: Fragment) 
 
     private fun setBtn(status: String?) {
         claimBtn.text = if (status == OUT_OF_STOCK || status == null)
-            UNCLAIMED
+            OUT_OF_STOCK
         else
             status
         claimBtn.isEnabled = status == CLAIMED

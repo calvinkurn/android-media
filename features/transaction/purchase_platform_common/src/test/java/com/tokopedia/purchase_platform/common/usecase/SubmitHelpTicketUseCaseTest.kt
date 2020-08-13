@@ -53,7 +53,7 @@ object SubmitHelpTicketUseCaseTest : Spek({
                 val objectType = SubmitHelpTicketGqlResponse::class.java
                 result[objectType] = SubmitHelpTicketGqlResponse(SubmitHelpTicketResponse(status = SubmitHelpTicketUseCase.STATUS_OK, data = SubmitTicketDataResponse(message = arrayListOf(successMessage))))
                 every { graphqlUseCase.createObservable(any()) } returns Observable.just(GraphqlResponse(
-                        result, null, false))
+                    result, null, false))
             }
 
             When("create observable") {

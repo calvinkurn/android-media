@@ -128,6 +128,8 @@ public class RemoteConfigKey {
 
     public static final String MAINAPP_ENABLE_DIGITAL_VOUCHER_GAME_PDP = "android_customer_enable_voucher_game_pdp";
 
+    public static final String MAINAPP_ENABLE_NEW_DEALS_REVAMP_FLOW = "android_customer_enable_new_deals_revamp_flow";
+
     public static final String ANDROID_CUSTOMER_TRAVEL_ENABLE_CROSS_SELL = "android_customer_travel_enable_cross_sell";
 
     //feed section
@@ -198,6 +200,8 @@ public class RemoteConfigKey {
     public static final String ENABLE_ASYNC_ADDSHORTCUTS = "android_async_addshortcuts";
     public static final String ENABLE_ASYNC_CHECKAPPSIGNATURE = "android_async_checkappsignature";
     public static final String ENABLE_ASYNC_HANSEL_INIT = "android_async_hansel_init";
+
+    public static final String EXECUTE_GQL_CONNECTION_WARM_UP = "android_gql_connection_warm_up";
 
     public static final String WHITELIST_USER_LOG_NOTIFICATION = "key_whitelist_user_log_notification";
     public static final String ENABLE_BRANCH_UTM_SUPPORT = "app_enable_branch_utm_support";

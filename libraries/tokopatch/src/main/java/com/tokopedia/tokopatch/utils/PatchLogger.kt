@@ -18,7 +18,7 @@ class PatchLogger : PatchCallBack {
             context: Context,
             result: Boolean,
             isNet: Boolean,
-            patches: MutableList<Patch>
+            patches: List<Patch>
     ) {
         for (patch in patches) {
             Timber.w("P1#ROBUST#onPatchListFetched patch: %s", patch.name)

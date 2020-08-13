@@ -1,10 +1,14 @@
 package com.tokopedia.reviewseller.common.util
 
+import android.os.Build
 import android.text.Spanned
 import android.widget.ListView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.relativeDate
 import com.tokopedia.reviewseller.R
+import com.tokopedia.reviewseller.common.util.ReviewSellerConstant.ANSWERED_VALUE
+import com.tokopedia.reviewseller.common.util.ReviewSellerConstant.UNANSWERED_VALUE
+import com.tokopedia.reviewseller.feature.reviewdetail.view.model.SortItemUiModel
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.list.ListItemUnify
@@ -52,7 +56,7 @@ fun getReviewStar(ratingCount: Int): Int {
 
 fun String.toReviewDescriptionFormatted(maxChar: Int): Spanned {
     return if (MethodChecker.fromHtml(this).toString().length > maxChar) {
-        val subDescription = MethodChecker.fromHtml(this).toString().substring(0, maxChar )
+        val subDescription = MethodChecker.fromHtml(this).toString().substring(0, maxChar)
         MethodChecker
                 .fromHtml(subDescription.replace("(\r\n|\n)".toRegex(), "<br />") + "... "
                         + "<font color='#42b549'>Selengkapnya</font>")
@@ -97,16 +101,32 @@ fun ChipsUnify.toggle() {
 
 fun ListUnify.setSelectedFilterOrSort(items: List<ListItemUnify>, position: Int) {
     val clickedItem = this.getItemAtPosition(position) as ListItemUnify
-    when (choiceMode) {
-        ListView.CHOICE_MODE_SINGLE -> {
-            items.filter {
-                it.listRightRadiobtn?.isChecked ?: false
-            }.filterNot { it == clickedItem }.onEach { it.listRightRadiobtn?.isChecked = false }
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+        when (choiceMode) {
+            ListView.CHOICE_MODE_SINGLE -> {
+                items.filter {
+                    it.listRightRadiobtn?.isChecked ?: false
+                }.filterNot { it == clickedItem }.onEach { it.listRightRadiobtn?.isChecked = false }
 
-            clickedItem.listRightRadiobtn?.isChecked = true
+                clickedItem.listRightRadiobtn?.isChecked = true
+            }
         }
     }
 }
+
+fun String.getStatusFilter(prefix: String): String {
+    return this.substringAfterLast(prefix)
+}
+
+val String.isAnswered: Boolean
+    get() {
+        return this == ANSWERED_VALUE
+    }
+
+val String.isUnAnswered: Boolean
+    get() {
+        return this == UNANSWERED_VALUE
+    }
 
 fun Float?.roundDecimal(): String {
     val rounded = this?.times(10)?.let { round(it) }?.div(10).toString()
@@ -136,3 +156,27 @@ fun Map<String, List<Any>>.getValueListByKey(key: String?): List<Any>? {
 fun Map<String, Map<String, Any>>.geValueMapByKey(key: String?): Map<String, Any>? {
     return this.filterKeys { it == key }.values.firstOrNull()
 }
+
+val MutableList<String>.getGeneratedFilterByText: String
+    get() {
+        return if (size == 1) {
+            firstOrNull().toString()
+        } else {
+            joinToString(separator = ";")
+        }
+    }
+
+fun MutableList<String>.removeFilterElement(regex: String) {
+    this.removeAll {
+        it.contains(regex)
+    }
+}
+
+fun MutableList<String>.getGeneratedTimeFilterByText(prefixTime: String): String {
+    return this.find { it.contains(prefixTime) } ?: ""
+}
+
+val List<SortItemUiModel>.getSortBy: String
+    get() {
+        return this.firstOrNull { it.isSelected }?.title.orEmpty()
+    }

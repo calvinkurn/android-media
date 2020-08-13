@@ -95,11 +95,9 @@ public interface CommonConstant {
     }
 
     interface WebLink {
-        String MEMBERSHIP = WEB_DOMAIN_MOBILE + "tokopoints/mobile/membership";
-        String HISTORY = WEB_DOMAIN_MOBILE + "tokopoints/mobile/history";
-        String INFO = WEB_DOMAIN_MOBILE + "tokopoints/info";
-        String INFO_EXPIRED_POINTS = WEB_DOMAIN_MOBILE + "tokopoints/info/#expired-points";
-        String DETAIL = WEB_DOMAIN_MOBILE + "tokopoints/detail/";
+        String MEMBERSHIP = WEB_DOMAIN_MOBILE + "rewards/membership";
+        String INFO = WEB_DOMAIN_MOBILE + "rewards/intro";
+        String DETAIL = WEB_DOMAIN_MOBILE + "rewards/kupon/detail";
     }
 
     interface SectionLayoutType {
@@ -138,7 +136,6 @@ public interface CommonConstant {
         String TP_GQL_TOKOPOINT_VALIDATE_REDEEM = "tp_gql_tokopoint_validate_redeem";
         String TP_GQL_PRE_VALIDATE_REDEEM = "tp_gql_pre_validate_redeem";
         String TP_GQL_CATALOG_DETAIL = "tp_gql_catalog_detail";
-        String TP_GQL_CATALOG_BANNER = "tp_gql_catalog_banner";
         String TP_GQL_TOKOPOINT_DETAIL = "tp_gql_tokopoint_detail";
         String TP_GQL_CATALOG_FILTER = "tp_gql_catalog_filter";
         String TP_GQL_LUCKY_EGG_DETAILS = "tp_gql_lucky_egg_detail";

@@ -1,7 +1,7 @@
 package com.tokopedia.logisticorder.view;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
-import com.tokopedia.logisticorder.viewmodel.TrackingUiModel;
+import com.tokopedia.logisticorder.uimodel.TrackingUiModel;
 
 /**
  * Created by kris on 5/14/18. Tokopedia

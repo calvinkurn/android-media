@@ -33,6 +33,7 @@
 /features/home/searchbar/                           	@tokopedia/android-miniondave-dev
 /features/content/play/                                 @tokopedia/android-miniondave-dev
 /features/content/play_common/                          @tokopedia/android-miniondave-dev
+/features/content/play_broadcaster/                     @tokopedia/android-miniondave-dev
 /features/content/interest_pick_common                  @tokopedia/android-miniondarth-dev
 /features/discovery/discovery_common                    @tokopedia/android-miniondave-dev
 /features/discovery/recommendation_widget_common        @tokopedia/android-miniondave-dev
@@ -125,7 +126,7 @@
 
 /features/entertainment/event                 			@tokopedia/android-minionmark-dev
 /features/entertainment/digital_deals         			@tokopedia/android-minionmark-dev
-/features/entertainment/event               	        @tokopedia/android-minionmark-dev
+/features/entertainment/deals               	        @tokopedia/android-minionmark-dev
 
 /features/travel/flight_orderlist                       @tokopedia/android-minionmark-dev
 /features/travel/flight/                                @tokopedia/android-minionmark-dev
@@ -198,6 +199,7 @@
 /features/user/loginfingerprint/                        @tokopedia/android-minionkevin-dev
 /features/user/liveness/                                @tokopedia/android-minionkevin-dev
 /features/user/profilecommon/                           @tokopedia/android-minionkevin-dev
+/features/user/additional_check/                        @tokopedia/android-minionkevin-dev
 
 /features/operational/contact_us        				@tokopedia/android-minionskywalker-dev
 /features/operational/csat_rating        				@tokopedia/android-minionskywalker-dev

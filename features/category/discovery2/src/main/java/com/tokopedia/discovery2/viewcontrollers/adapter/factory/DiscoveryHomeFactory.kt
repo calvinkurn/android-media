@@ -1,12 +1,14 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.factory
 
 import android.app.Application
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.bannercarousel.BannerCarouselItemViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.bannercarousel.BannerCarouselItemViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.bannercarousel.BannerCarouselViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.bannercarousel.BannerCarouselViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.multibanners.MultiBannerViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.multibanners.MultiBannerViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.timerbanners.BannerTimerViewHolder
@@ -63,6 +65,8 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.textcomponent.TextComponentViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.textcomponent.TextComponentViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.timerSprintSale.TimerSprintSaleItemViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.timerSprintSale.TimerSprintSaleItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tokopoints.TokopointsItemViewHolder
@@ -90,15 +94,13 @@ class DiscoveryHomeFactory {
             initializeComponent(ComponentsList.BannerTimer, ::BannerTimerViewHolder, ::BannerTimerViewModel)
             initializeComponent(ComponentsList.LihatSemua, ::LihatSemuaViewHolder, ::LihatSemuaViewModel)
             initializeComponent(ComponentsList.CpmTopAds, ::CpmTopAdsViewHolder, ::CpmTopAdsViewModel)
-            initializeComponent(ComponentsList.CpmTopAdsItem, ::CpmTopadsShopItemViewHolder, ::CpmTopadsShopItemViewModel)
-            initializeComponent(ComponentsList.CpmTopAdsProductItem, ::CpmTopadsProductItemViewHolder, ::CpmTopadsProductItemViewModel)
             initializeComponent(ComponentsList.ChipsFilterView, ::ComingSoonViewHolder, ::ComingSoonViewModel)
             initializeComponent(ComponentsList.SliderBanner, ::SliderBannerViewHolder, ::SliderBannerViewModel)
             initializeComponent(ComponentsList.Notifier, ::ComingSoonViewHolder, ::ComingSoonViewModel)
             initializeComponent(ComponentsList.CarouselBanner, ::CarouselBannerViewHolder, ::CarouselBannerViewModel)
             initializeComponent(ComponentsList.CarouselBannerItemView, ::CarouselBannerItemViewHolder, ::CarouselBannerItemViewModel)
             initializeComponent(ComponentsList.TitleImage, ::ComingSoonViewHolder, ::ComingSoonViewModel)
-            initializeComponent(ComponentsList.TextComponent, ::ComingSoonViewHolder, ::ComingSoonViewModel)
+            initializeComponent(ComponentsList.TextComponent, ::TextComponentViewHolder, ::TextComponentViewModel)
             initializeComponent(ComponentsList.ClaimCoupon, ::ClaimCouponViewHolder, ::ClaimCouponViewModel)
             initializeComponent(ComponentsList.ClaimCouponItem, ::ClaimCouponItemViewHolder, ::ClaimCouponItemViewModel)
             initializeComponent(ComponentsList.BrandRecommendation, ::BrandRecommendationViewHolder, ::BrandRecommendationViewModel)
@@ -119,6 +121,8 @@ class DiscoveryHomeFactory {
             initializeComponent(ComponentsList.ShimmerProductCard, ::ShimmerProductCardViewHolder, ::ShimmerViewModel)
             initializeComponent(ComponentsList.LoadMore, ::LoadMoreViewHolder, ::LoadMoreViewModel)
             initializeComponent(ComponentsList.QuickCoupon, ::QuickCouponViewHolder, ::QuickCouponViewModel)
+            initializeComponent(ComponentsList.BannerCarousel, ::BannerCarouselViewHolder, ::BannerCarouselViewModel)
+            initializeComponent(ComponentsList.BannerCarouselItemView, ::BannerCarouselItemViewHolder, ::BannerCarouselItemViewModel)
 
             // Product Card Revamp
             initializeComponent(ComponentsList.ProductCardRevamp, ::ProductCardRevampViewHolder, ::ProductCardRevampViewModel)
@@ -161,11 +165,7 @@ class DiscoveryHomeFactory {
         }
 
         fun isStickyHeader(viewType:Int):Boolean {
-            return if(viewType != null) {
-                 viewType == ComponentsList.Tabs.ordinal
-            }else {
-                false
-            }
+            return viewType == ComponentsList.Tabs.ordinal
         }
     }
 }

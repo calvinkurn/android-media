@@ -461,12 +461,12 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     }
 
     private fun observeGetCouponRecommendationResult() {
-        viewModel.getCouponRecommendationResponse.observe(this, Observer {
-            when {
-                it.state == GetCouponRecommendationAction.ACTION_CLEAR_DATA -> {
+        viewModel.getPromoListResponseAction.observe(this, Observer {
+            when (it.state) {
+                GetPromoListResponseAction.ACTION_CLEAR_DATA -> {
                     clearAllData()
                 }
-                it.state == GetCouponRecommendationAction.ACTION_SHOW_TOAST_ERROR -> {
+                GetPromoListResponseAction.ACTION_SHOW_TOAST_ERROR -> {
                     it.exception?.let {
                         showToastMessage(it)
                     }
@@ -476,9 +476,9 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     }
 
     private fun observeApplyPromoResult() {
-        viewModel.applyPromoResponse.observe(this, Observer {
-            when {
-                it.state == ApplyPromoResponseAction.ACTION_NAVIGATE_TO_CART -> {
+        viewModel.applyPromoResponseAction.observe(this, Observer {
+            when (it.state) {
+                ApplyPromoResponseAction.ACTION_NAVIGATE_TO_CALLER_PAGE -> {
                     val intent = Intent()
                     if (it.data != null) {
                         intent.putExtra(ARGS_VALIDATE_USE_DATA_RESULT, it.data)
@@ -489,7 +489,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                     activity?.setResult(Activity.RESULT_OK, intent)
                     activity?.finish()
                 }
-                it.state == ApplyPromoResponseAction.ACTION_SHOW_TOAST_AND_RELOAD_PROMO -> {
+                ApplyPromoResponseAction.ACTION_SHOW_TOAST_AND_RELOAD_PROMO -> {
                     buttonApplyPromo?.let {
                         setButtonLoading(it, false)
                     }
@@ -498,7 +498,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                     }
                     reloadData()
                 }
-                it.state == ApplyPromoResponseAction.ACTION_SHOW_TOAST_ERROR -> {
+                ApplyPromoResponseAction.ACTION_SHOW_TOAST_ERROR -> {
                     buttonApplyPromo?.let {
                         setButtonLoading(it, false)
                     }
@@ -513,11 +513,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     private fun observeClearPromoResult() {
         viewModel.clearPromoResponse.observe(this, Observer {
-            buttonApplyNoPromo?.let {
-                setButtonLoading(it, false)
-            }
-            when {
-                it.state == ClearPromoResponseAction.ACTION_STATE_SUCCESS -> {
+            when (it.state) {
+                ClearPromoResponseAction.ACTION_STATE_SUCCESS -> {
                     val intent = Intent()
                     if (it.data != null) {
                         intent.putExtra(ARGS_CLEAR_PROMO_RESULT, it.data)
@@ -528,7 +525,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                     activity?.setResult(Activity.RESULT_OK, intent)
                     activity?.finish()
                 }
-                it.state == ClearPromoResponseAction.ACTION_STATE_ERROR -> it.exception?.let {
+                ClearPromoResponseAction.ACTION_STATE_ERROR -> it.exception?.let {
                     showToastMessage(it)
                 }
             }
@@ -537,13 +534,13 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     private fun observeGetPromoLastSeenResult() {
         viewModel.getPromoLastSeenResponse.observe(this, Observer {
-            when {
-                it.state == GetPromoLastSeenAction.ACTION_SHOW -> {
+            when (it.state) {
+                GetPromoLastSeenAction.ACTION_SHOW -> {
                     it.data?.let {
                         showPromoCheckoutLastSeenBottomsheet(it)
                     }
                 }
-                it.state == GetPromoLastSeenAction.ACTION_RELEASE_LOCK_FLAG -> {
+                GetPromoLastSeenAction.ACTION_RELEASE_LOCK_FLAG -> {
                     hasTriedToGetLastSeenData = false
                 }
             }
@@ -738,7 +735,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             showLoading()
             val promoRequest = arguments?.getParcelable(ARGS_PROMO_REQUEST) ?: PromoRequest()
             val mutation = GraphqlHelper.loadRawString(it.resources, R.raw.get_coupon_list_recommendation)
-            viewModel.loadData(mutation, promoRequest, "")
+            viewModel.getPromoList(mutation, promoRequest, "")
         }
     }
 
@@ -833,7 +830,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         view?.let {
             if (promoCheckoutLastSeenBottomsheet?.state == BottomSheetBehavior.STATE_HIDDEN) {
                 val query = GraphqlHelper.loadRawString(it.resources, R.raw.promo_suggestion_query)
-                viewModel.loadPromoLastSeen(query)
+                viewModel.getPromoLastSeen(query)
             } else {
                 hasTriedToGetLastSeenData = false
             }
@@ -845,7 +842,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             viewModel.updatePromoInputStateBeforeApplyPromo(promoCode, isFromLastSeen)
             val promoRequest = arguments?.getParcelable(ARGS_PROMO_REQUEST) ?: PromoRequest()
             val mutation = GraphqlHelper.loadRawString(it.resources, R.raw.get_coupon_list_recommendation)
-            viewModel.loadData(mutation, promoRequest, promoCode)
+            viewModel.getPromoList(mutation, promoRequest, promoCode)
         }
     }
 

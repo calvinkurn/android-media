@@ -1131,9 +1131,10 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                     }
 
                     if (!hasLoadCourierState) {
-                        if (getAdapterPosition() != RecyclerView.NO_POSITION) {
+                        int position = getAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION) {
                             mActionListener.onLoadShippingState(shipmentCartItemModel.getShippingId(),
-                                    shipmentCartItemModel.getSpId(), getAdapterPosition(), tmpShipmentDetailData,
+                                    shipmentCartItemModel.getSpId(), position, tmpShipmentDetailData,
                                     shipmentCartItemModel, shipmentCartItemModel.getShopShipmentList(),
                                     saveStateType == SHIPPING_SAVE_STATE_TYPE_TRADE_IN_DROP_OFF);
                             shipmentCartItemModel.setStateLoadingCourierState(true);

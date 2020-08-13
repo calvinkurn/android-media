@@ -139,13 +139,17 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
     }
 
     fun checkVoucher(promoCode: String, promoDigitalModel: PromoDigitalModel) {
-        if (checkVoucherJob?.isActive == true) checkVoucherJob?.cancel()
+        stopCheckVoucher()
         checkVoucherJob = CoroutineScope(coroutineContext).launch {
             delay(CHECK_VOUCHER_DEBOUNCE_DELAY)
             digitalCheckVoucherUseCase.execute(
                     digitalCheckVoucherUseCase.createRequestParams(promoCode, promoDigitalModel), getCheckVoucherSubscriber()
             )
         }
+    }
+
+    fun stopCheckVoucher() {
+        if (checkVoucherJob?.isActive == true) checkVoucherJob?.cancel()
     }
 
     private fun getCheckVoucherSubscriber(): Subscriber<GraphqlResponse> {
@@ -273,7 +277,7 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
         const val ENQUIRY_PARAM_OPERATOR_ID = "operator_id"
         const val ENQUIRY_PARAM_PRODUCT_ID = "product_id"
         const val ENQUIRY_PARAM_DEVICE_ID = "device_id"
-        const val ENQUIRY_PARAM_DEVICE_ID_DEFAULT_VALUE = "4"
+        const val ENQUIRY_PARAM_DEVICE_ID_DEFAULT_VALUE = "5"
         const val ENQUIRY_PARAM_SOURCE_TYPE = "source_type"
         const val ENQUIRY_PARAM_SOURCE_TYPE_DEFAULT_VALUE = "c20ad4d76fe977"
 
