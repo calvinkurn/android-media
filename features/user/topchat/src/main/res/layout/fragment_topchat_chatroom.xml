@@ -110,7 +110,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
-                android:text="@string/chat_blocked_text"
+                android:text="@string/desc_chat_blocked"
                 android:textColor="@color/Neutral_N700_68"
                 app:typographyType="body_3" />
 

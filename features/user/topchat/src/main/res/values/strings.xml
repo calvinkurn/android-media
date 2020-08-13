@@ -84,12 +84,10 @@ yang ditemukan</string>
     <string name="chat_personal_text">Chat Personal</string>
     <string name="chat_personal_info_text">Berisi tanggapan langsung dari penjual atas pertanyaan Anda</string>
     <string name="enable_chat_settings">klik di sini.</string>
-    <string name="enable_chat_personal_settings" formatted="false">Anda berhenti menerima semua chat dari %s</string>
-    <string name="disable_chat_personal_settings" formatted="false">Anda kembali menerima semua chat dari %s</string>
     <string name="enable_chat_promotion_settings" formatted="false">Anda berhenti menerima chat promosi dari %s</string>
     <string name="disable_chat_promotion_settings" formatted="false">Anda kembali menerima chat promosi dari %s</string>
     <string name="enable_chat_promotion_blocked_settings">Anda wajib mengaktifkan penerimaan chat personal untuk menerima chat promosi</string>
-    <string name="chat_blocked_text">Kamu telah memblokir pengguna ini dan tidak akan terima chat darinya. Untuk menerima chat-nya kembali,</string>
+    <string name="desc_chat_blocked">Kamu telah memblokir pengguna ini dan tidak akan terima chat darinya. Untuk menerima chat-nya kembali,</string>
     <string name="enable_chat_toast">Anda berhasil menerima %1$s dari %2$s</string>
     <string name="error_chat_message">Mohon maaf, terjadi kendala teknis, cobalah beberapa saat lagi</string>
     <string name="bm_title">Broadcast Chat</string>

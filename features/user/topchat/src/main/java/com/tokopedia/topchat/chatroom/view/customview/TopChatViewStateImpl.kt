@@ -539,12 +539,7 @@ class TopChatViewStateImpl constructor(
                 ""
             }
         }
-        val blockString = String.format(
-                chatBlockLayout.context.getString(com.tokopedia.chat_common.R.string.chat_blocked_text),
-                category,
-                opponentName,
-                Utils.getDateTime(blockedStatus.blockedUntil))
-
+        val blockString = chatBlockLayout.context.getString(R.string.desc_chat_blocked)
         blockText.text = blockString
     }
 
