@@ -162,8 +162,6 @@ open class BerandaTabFragment : BaseDaggerFragment(), CustomDatePicker.ActionLis
         val bundle = Bundle()
         bundle.putSerializable(DATA_INSIGHT, data)
         list.add(TopAdsInsightMiniKeyFragment.createInstance(bundle))
-        list.add(TopAdsInsightMiniProductFragment())
-        list.add(TopAdsInsightMiniBidFragment())
         val adapter = TopAdsDashInsightPagerAdapter(childFragmentManager, 0)
         adapter.setList(list)
         return adapter

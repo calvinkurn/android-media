@@ -16,6 +16,7 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.KEY_
 import com.tokopedia.topads.dashboard.data.model.insightkey.Header
 import com.tokopedia.topads.dashboard.data.model.insightkey.KeywordInsightDataMain
 import com.tokopedia.topads.dashboard.data.model.insightkey.MutationData
+import com.tokopedia.topads.dashboard.data.utils.Utils.convertToCurrencyString
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.adapter.insight.TopAdsInsightPosKeyAdapter
 import com.tokopedia.topads.dashboard.view.fragment.insight.TopAdsInsightKeyBidFragment.Companion.COUNT
@@ -108,10 +109,11 @@ class TopAdsInsightKeyPosFragment : BaseDaggerFragment() {
     private fun setHeader(totalPotential: Double) {
         insight_title.text = data?.keyword?.box?.title
         val text = data?.keyword?.box?.desc
-        val withValue = text?.replace(COUNT, dataInsight?.get(key)?.keyword?.size.toString())?.replace(VALUE, "+$totalPotential")
+        val withValue = text?.replace(COUNT, dataInsight?.get(key)?.keyword?.size.toString())?.replace(VALUE, "+" + convertToCurrencyString(totalPotential.toLong()))
         insight_desc.text = Html.fromHtml(withValue)
         btnTambah.text = data?.keyword?.box?.button?.title?.replace(COUNT, dataInsight?.get(key)?.keyword?.size.toString())
     }
+
 
     override fun onAttach(context: Context) {
         super.onAttach(context)

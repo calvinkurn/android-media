@@ -88,14 +88,6 @@
             android:label="@string/title_activity_draft_product"
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait" />
-
-        <activity
-            android:name=".reputation.view.activity.SellerReputationDatePickerActivity"
-            android:label="@string/set_date" />
-        <activity
-            android:name=".reputation.view.activity.SellerReputationInfoActivity"
-            android:label="@string/reputation_point_calculation"
-            android:theme="@style/AppTheme" />
         <activity
             android:name=".product.etalase.view.activity.EtalaseDynamicPickerActivity"
             android:label="@string/product_title_activity_etalase_picker"

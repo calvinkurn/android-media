@@ -7,6 +7,7 @@ import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.iris.IrisAnalytics
 import com.tokopedia.officialstore.DynamicChannelIdentifiers
 import com.tokopedia.officialstore.category.data.model.Category
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Banner
@@ -28,6 +29,7 @@ class OfficialStoreTracking(context: Context) {
 
     private val tracker: ContextAnalytics by lazy { TrackApp.getInstance().gtm }
     private var trackingQueue = TrackingQueue(context)
+    private var trackingIris = IrisAnalytics.getInstance(context)
 
     private val EVENT = "event"
     private val EVENT_CATEGORY = "eventCategory"
@@ -860,6 +862,7 @@ class OfficialStoreTracking(context: Context) {
         ))
 
         tracker.sendEnhanceEcommerceEvent("view_item", eventDataLayer)
+        trackingIris.saveEvent(eventDataLayer)
     }
 
     private fun createMixLeftEcommerceDataLayer(channelId: String, categoryName: String, headerName: String, bannerPosition: Int, creative: String, creativeUrl: String): ArrayList<Bundle> {

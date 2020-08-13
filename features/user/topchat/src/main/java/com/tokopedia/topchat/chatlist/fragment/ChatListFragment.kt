@@ -136,6 +136,7 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
                 activity?.intent?.extras?.clear()
                 ChatSettingActivity.getIntent(context, true).apply {
                     putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, appLinks)
+                    addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                     startActivity(this)
                 }
             }

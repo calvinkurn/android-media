@@ -28,7 +28,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
-import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.crashlytics.android.Crashlytics
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.youtube.player.YouTubeApiServiceUtil
 import com.google.android.youtube.player.YouTubeInitializationResult
@@ -1675,7 +1675,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                         viewModel.userSessionInterface.email,
                         t.message
                 )
-                FirebaseCrashlytics.getInstance().recordException(Exception(errorMessage))
+                Crashlytics.logException(Exception(errorMessage))
             }
         } catch (ex: IllegalStateException) {
             ex.printStackTrace()
@@ -2318,9 +2318,13 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 }
             } else {
                 val appLink = UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId)
+                val parameterizedAppLink = Uri.parse(appLink).buildUpon()
+                        .appendQueryParameter(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, SellerMigrationFeatureName.FEATURE_ADS_DETAIL)
+                        .build()
+                        .toString()
                 goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_ADS_DETAIL, arrayListOf(
                         ApplinkConst.PRODUCT_MANAGE,
-                        appLink
+                        parameterizedAppLink
                 ))
             }
         }

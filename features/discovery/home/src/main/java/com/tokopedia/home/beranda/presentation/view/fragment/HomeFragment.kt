@@ -544,6 +544,9 @@ open class HomeFragment : BaseDaggerFragment(),
         })
         stickyLoginView?.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _  ->
             val floatingEggButtonFragment = floatingEggButtonFragment
+            if (stickyLoginView.isShowing()) {
+                positionSticky = stickyLoginView.getLocation()
+            }
             floatingEggButtonFragment?.let {
                 updateEggBottomMargin(it)
             }
@@ -589,7 +592,7 @@ open class HomeFragment : BaseDaggerFragment(),
         super.onResume()
         shouldPausePlay = true
         createAndCallSendScreen()
-        adapter?.onResume()
+        if (!shouldPausePlay) adapter?.onResume()
         conditionalViewModelRefresh()
         if (activityStateListener != null) {
             activityStateListener!!.onResume()
@@ -672,6 +675,7 @@ open class HomeFragment : BaseDaggerFragment(),
         observeSalamWidget()
         observeRechargeRecommendation()
         observePlayReminder()
+        observeIsNeedRefresh()
     }
           
     private fun observeIsNeedRefresh() {
@@ -1486,10 +1490,6 @@ open class HomeFragment : BaseDaggerFragment(),
         getHomeViewModel().getDynamicChannelData(dynamicChannelDataModel, position)
     }
 
-    override fun onBuyAgainOneClickCheckOutClick(grid: DynamicHomeChannel.Grid, channel: DynamicHomeChannel.Channels, position: Int) {
-        getHomeViewModel().getOneClickCheckout(channel, grid, position)
-    }
-
     override fun onBuyAgainCloseChannelClick(channel: DynamicHomeChannel.Channels, position: Int) {
         getHomeViewModel().onCloseBuyAgain(channel.id, position)
         TrackApp.getInstance().gtm.sendGeneralEvent(getCloseClickOnDynamicListCarousel(channel, getHomeViewModel().getUserId()))
@@ -1521,7 +1521,7 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     override fun onPlayV2Click(playBannerCarouselItemDataModel: PlayBannerCarouselItemDataModel) {
-        if(playBannerCarouselItemDataModel.widgetType != PlayBannerWidgetType.UPCOMING || playBannerCarouselItemDataModel.widgetType != PlayBannerWidgetType.NONE) {
+        if(playBannerCarouselItemDataModel.widgetType != PlayBannerWidgetType.UPCOMING && playBannerCarouselItemDataModel.widgetType != PlayBannerWidgetType.NONE) {
             val intent = RouteManager.getIntent(activity, ApplinkConstInternalContent.PLAY_DETAIL, playBannerCarouselItemDataModel.channelId)
             startActivityForResult(intent, REQUEST_CODE_PLAY_ROOM)
         } else {
@@ -1583,8 +1583,8 @@ open class HomeFragment : BaseDaggerFragment(),
         getHomeViewModel().getBusinessUnitTabData(position)
     }
 
-    override fun getBusinessUnit(tabId: Int, position: Int) {
-        getHomeViewModel().getBusinessUnitData(tabId, position)
+    override fun getBusinessUnit(tabId: Int, position: Int, tabName: String) {
+        getHomeViewModel().getBusinessUnitData(tabId, position, tabName)
     }
 
     override fun getPlayChannel(position: Int) {
@@ -1907,7 +1907,6 @@ open class HomeFragment : BaseDaggerFragment(),
             stickyLoginView.setContent(tickerDetail)
             stickyLoginView.show(StickyLoginConstant.Page.HOME)
             if (stickyLoginView.isShowing()) {
-                positionSticky = stickyLoginView?.getLocation()
                 stickyLoginView.tracker.viewOnPage(StickyLoginConstant.Page.HOME)
             }
         }

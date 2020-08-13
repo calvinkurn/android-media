@@ -54,6 +54,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_hotel_room_list.*
 import kotlinx.android.synthetic.main.layout_sticky_hotel_date_and_guest.*
+import kotlinx.coroutines.*
 import java.util.*
 import javax.inject.Inject
 import kotlin.math.roundToLong
@@ -123,10 +124,12 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
                                 hotelRoomListPageModel, it.data, ROOM_LIST_SCREEN_NAME)
                     }
                     firstTime = false
+
                     if (!roomListViewModel.isFilter) {
                         roomListViewModel.roomList = it.data
                         showFilterRecyclerView(it.data.size > 0)
                     } else showFilterRecyclerView(true)
+
                     clearAllData()
                     roomList = it.data
                     renderList(roomList, false)
@@ -321,12 +324,19 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
     }
 
     override fun onChipClickListener(string: String, isSelected: Boolean) {
-        when (string) {
-            getString(R.string.hotel_room_list_filter_free_breakfast) -> {
-                roomListViewModel.clickFilter(clickFreeBreakfast = true)
-            }
-            getString(R.string.hotel_room_list_filter_free_cancelable) -> {
-                roomListViewModel.clickFilter(clickFreeCancelable = true)
+        CoroutineScope(Dispatchers.Main).launch {
+            clearAllData()
+            showLoading()
+
+            delay(DELAY_ROOM_LIST_SHIMMERING)
+
+            when (string) {
+                getString(R.string.hotel_room_list_filter_free_breakfast) -> {
+                    roomListViewModel.clickFilter(clickFreeBreakfast = true)
+                }
+                getString(R.string.hotel_room_list_filter_free_cancelable) -> {
+                    roomListViewModel.clickFilter(clickFreeCancelable = true)
+                }
             }
         }
     }
@@ -450,6 +460,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
     }
 
     companion object {
+        const val DELAY_ROOM_LIST_SHIMMERING: Long = 500
 
         const val RESULT_ROOM_DETAIL = 102
         const val REQ_CODE_LOGIN = 1345
