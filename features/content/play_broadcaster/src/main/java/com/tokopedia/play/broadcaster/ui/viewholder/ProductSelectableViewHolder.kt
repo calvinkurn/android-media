@@ -2,10 +2,7 @@ package com.tokopedia.play.broadcaster.ui.viewholder
 
 import android.graphics.drawable.Drawable
 import android.view.View
-import android.widget.CheckBox
-import android.widget.CompoundButton
-import android.widget.ImageView
-import android.widget.TextView
+import android.widget.*
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
@@ -33,6 +30,7 @@ class ProductSelectableViewHolder(
         showSelection: Boolean = true
 ) : BaseViewHolder(itemView) {
 
+    private val flImage: FrameLayout = itemView.findViewById(R.id.fl_image)
     private val ivImage: ImageView = itemView.findViewById(R.id.iv_image)
     private val cbSelected: CheckboxUnify = itemView.findViewById(R.id.cb_selected)
     private val tvProductName: TextView = itemView.findViewById(R.id.tv_product_name)
@@ -54,8 +52,14 @@ class ProductSelectableViewHolder(
     }
 
     init {
-        if (showSelection) cbSelected.show()
-        else cbSelected.gone()
+        if (showSelection) {
+            cbSelected.show()
+            flImage.foreground = MethodChecker.getDrawable(flImage.context, R.drawable.fg_play_image_overlay)
+        }
+        else {
+            cbSelected.gone()
+            flImage.foreground = null
+        }
 
         lblEmptyStock.unlockFeature = true
         lblEmptyStock.setLabelType(
