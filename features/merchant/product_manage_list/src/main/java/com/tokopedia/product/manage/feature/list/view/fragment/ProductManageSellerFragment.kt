@@ -89,7 +89,9 @@ class ProductManageSellerFragment : ProductManageFragment() {
     override fun onResume() {
         super.onResume()
         registerDraftReceiver()
-        productDraftListCountViewModel.getAllDraftCount()
+        if (isMyServiceRunning(TkpdState.ProductService::class.java)) {
+            productDraftListCountViewModel.getAllDraftCount()
+        }
         if (userVisibleHint) {
             sendNormalSendScreen()
         }
