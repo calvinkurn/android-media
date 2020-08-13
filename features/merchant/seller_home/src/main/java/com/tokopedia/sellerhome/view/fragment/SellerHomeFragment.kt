@@ -271,7 +271,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         swipeRefreshLayout.isRefreshing = isAdapterNotEmpty
 
         sahGlobalError.gone()
-        startHomeLayoutNetworkMonitoring()
         sellerHomeViewModel.getWidgetLayout()
         sellerHomeViewModel.getTicker()
     }
@@ -449,6 +448,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         })
 
         setProgressBarVisibility(true)
+        startHomeLayoutNetworkMonitoring()
         sellerHomeViewModel.getWidgetLayout()
     }
 
