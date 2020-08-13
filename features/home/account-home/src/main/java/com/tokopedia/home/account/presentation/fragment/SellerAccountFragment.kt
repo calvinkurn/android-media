@@ -34,10 +34,13 @@ import com.tokopedia.navigation_common.listener.FragmentListener
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.seller_migration_common.analytics.SellerMigrationTracking.eventOnClickAccountTicker
+import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants
 import com.tokopedia.seller_migration_common.getSellerMigrationDate
 import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
 import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
+import com.tokopedia.seller_migration_common.presentation.widget.SellerMigrationAccountBottomSheet
 import com.tokopedia.track.TrackApp
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.Toaster.make
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -251,6 +254,7 @@ class SellerAccountFragment : BaseAccountFragment(), AccountItemListener, Fragme
             migrationTicker.setDescriptionClickEvent(object : TickerCallback {
                 override fun onDescriptionViewClick(charSequence: CharSequence) {
                     eventOnClickAccountTicker(userSession.userId)
+                    openSellerMigrationBottomSheet()
                 }
 
                 override fun onDismiss() {
@@ -259,6 +263,13 @@ class SellerAccountFragment : BaseAccountFragment(), AccountItemListener, Fragme
             })
         } else {
             migrationTicker.visibility = View.GONE
+        }
+    }
+
+    private fun openSellerMigrationBottomSheet() {
+        context?.let {
+            val sellerMigrationBottomSheet: BottomSheetUnify = SellerMigrationAccountBottomSheet.createNewInstance(it)
+            sellerMigrationBottomSheet.show(childFragmentManager, SellerMigrationConstants.TAG_SELLER_MIGRATION_BOTTOM_SHEET)
         }
     }
 
