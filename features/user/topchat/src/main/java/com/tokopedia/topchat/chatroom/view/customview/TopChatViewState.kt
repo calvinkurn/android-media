@@ -17,8 +17,7 @@ interface TopChatViewState : BaseChatViewState {
 
     fun onCheckChatBlocked(opponentRole: String,
                            opponentName: String,
-                           blockedStatus: BlockedStatus,
-                           onUnblockChatClicked: () -> Unit)
+                           blockedStatus: BlockedStatus)
 
     fun showAttachmentPreview(attachmentPreview: ArrayList<SendablePreview>)
 

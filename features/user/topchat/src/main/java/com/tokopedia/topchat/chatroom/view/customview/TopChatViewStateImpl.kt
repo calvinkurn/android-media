@@ -40,7 +40,6 @@ import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatAdapter
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatTypeFactoryImpl
 import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
-import com.tokopedia.topchat.common.util.Utils
 import com.tokopedia.unifycomponents.toPx
 
 /**
@@ -252,8 +251,7 @@ class TopChatViewStateImpl constructor(
     fun onSuccessLoadFirstTime(viewModel: ChatroomViewModel,
                                onToolbarClicked: () -> Unit,
                                headerMenuListener: HeaderMenuListener,
-                               alertDialog: Dialog,
-                               onUnblockChatClicked: () -> Unit) {
+                               alertDialog: Dialog) {
         chatRoomViewModel = viewModel
         updateBlockStatus(viewModel)
         scrollToBottom()
@@ -261,9 +259,7 @@ class TopChatViewStateImpl constructor(
         showLastTimeOnline(viewModel)
         setHeaderMenuButton(headerMenuListener, alertDialog)
         showReplyBox(viewModel.replyable)
-        onCheckChatBlocked(viewModel.headerModel.role, viewModel.headerModel.name, viewModel
-                .blockedStatus, onUnblockChatClicked)
-
+        onCheckChatBlocked(viewModel.headerModel.role, viewModel.headerModel.name, viewModel.blockedStatus)
     }
 
     private fun updateBlockStatus(viewModel: ChatroomViewModel) {
@@ -474,8 +470,7 @@ class TopChatViewStateImpl constructor(
     override fun onCheckChatBlocked(
             opponentRole: String,
             opponentName: String,
-            blockedStatus: BlockedStatus,
-            onUnblockChatClicked: () -> Unit
+            blockedStatus: BlockedStatus
     ) {
 
         val isBlocked = when {
@@ -495,16 +490,13 @@ class TopChatViewStateImpl constructor(
         }
 
         if (isBlocked) {
-            showChatBlocked(blockedStatus, opponentRole, opponentName, onUnblockChatClicked)
+            showChatBlocked(blockedStatus, opponentRole, opponentName)
         } else {
             removeChatBlocked(blockedStatus)
         }
     }
 
-    private fun showChatBlocked(it: BlockedStatus,
-                                opponentRole: String,
-                                opponentName: String,
-                                onUnblockChatClicked: () -> Unit) {
+    private fun showChatBlocked(it: BlockedStatus, opponentRole: String, opponentName: String) {
         updateChatroomBlockedStatus(it)
 
         showReplyBox(false)
@@ -514,7 +506,7 @@ class TopChatViewStateImpl constructor(
         setChatBlockedText(chatBlockLayout, it, opponentRole, opponentName)
 
         val unblockText = chatBlockLayout.findViewById<TextView>(R.id.enable_chat_textView)
-        unblockText.setOnClickListener { onUnblockChatClicked() }
+        unblockText.setOnClickListener { headerMenuListener.unBlockChat() }
 
     }
 

@@ -48,7 +48,6 @@ import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.OrderProgressRes
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.StickerGroup
-import com.tokopedia.topchat.chatroom.domain.subscriber.ChangeChatBlockSettingSubscriber
 import com.tokopedia.topchat.chatroom.domain.subscriber.DeleteMessageAllSubscriber
 import com.tokopedia.topchat.chatroom.domain.subscriber.GetExistingMessageIdSubscriber
 import com.tokopedia.topchat.chatroom.domain.usecase.*
@@ -91,7 +90,6 @@ class TopChatRoomPresenter @Inject constructor(
         private var replyChatUseCase: ReplyChatUseCase,
         private var getExistingMessageIdUseCase: GetExistingMessageIdUseCase,
         private var deleteMessageListUseCase: DeleteMessageListUseCase,
-        private var changeChatBlockSettingUseCase: ChangeChatBlockSettingUseCase,
         private var getShopFollowingUseCase: GetShopFollowingUseCase,
         private var toggleFavouriteShopUseCase: ToggleFavouriteShopUseCase,
         private var addToCartUseCase: AddToCartUseCase,
@@ -528,19 +526,6 @@ class TopChatRoomPresenter @Inject constructor(
                 DeleteMessageAllSubscriber(onError, onSuccessDeleteConversation))
     }
 
-    override fun unblockChat(messageId: String,
-                             opponentRole: String,
-                             onError: (Throwable) -> Unit,
-                             onSuccessUnblockChat: (BlockedStatus) -> Unit) {
-        changeChatBlockSettingUseCase.execute(
-                ChangeChatBlockSettingUseCase.generateParam(
-                        messageId,
-                        ChangeChatBlockSettingUseCase.getBlockType(opponentRole),
-                        false
-                ), ChangeChatBlockSettingSubscriber(onError, onSuccessUnblockChat)
-        )
-    }
-
     override fun getShopFollowingStatus(
             shopId: Int,
             onError: (Throwable) -> Unit,
@@ -556,7 +541,6 @@ class TopChatRoomPresenter @Inject constructor(
         replyChatUseCase.unsubscribe()
         getExistingMessageIdUseCase.unsubscribe()
         deleteMessageListUseCase.unsubscribe()
-        changeChatBlockSettingUseCase.unsubscribe()
         getShopFollowingUseCase.safeCancel()
         addToCartUseCase.unsubscribe()
         if (::addToCardSubscriber.isInitialized) {

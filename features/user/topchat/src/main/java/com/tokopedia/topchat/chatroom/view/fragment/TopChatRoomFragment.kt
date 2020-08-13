@@ -146,7 +146,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     private val REQUEST_GO_TO_SHOP = 111
     private val TOKOPEDIA_ATTACH_PRODUCT_REQ_CODE = 112
     private val REQUEST_GO_TO_SETTING_TEMPLATE = 113
-    private val REQUEST_GO_TO_SETTING_CHAT = 114
     private val REQUEST_GO_TO_NORMAL_CHECKOUT = 115
     private val REQUEST_ATTACH_INVOICE = 116
     private val REQUEST_ATTACH_VOUCHER = 117
@@ -383,24 +382,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         hideLoading()
     }
 
-    private fun onUnblockChatClicked(): () -> Unit {
-        return {
-            analytics.trackClickUnblockChat(shopId)
-            presenter.unblockChat(messageId, opponentRole, onError(), onSuccessUnblockChat())
-        }
-    }
-
-    private fun onSuccessUnblockChat(): (BlockedStatus) -> Unit {
-        return {
-            view?.let {
-                Toaster.make(it, String.format(getString(com.tokopedia.chat_common.R.string.chat_unblocked_text),
-                        opponentName), Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
-            }
-            getViewState().setChatBlockStatus(false)
-            getViewState().removeChatBlocked(it)
-        }
-    }
-
     private fun onSuccessGetMessageId(): (String) -> Unit {
         return {
             this.messageId = it
@@ -419,7 +400,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         checkCanAttachVoucher()
         presenter.getShopFollowingStatus(shopId, ::onErrorGetShopFollowingStatus, ::onSuccessGetShopFollowingStatus)
         orderProgress?.renderIfExist()
-        getViewState().onSuccessLoadFirstTime(chatRoom, onToolbarClicked(), this, alertDialog, onUnblockChatClicked())
+        getViewState().onSuccessLoadFirstTime(chatRoom, onToolbarClicked(), this, alertDialog)
         getViewState().onSetCustomMessage(customMessage)
         presenter.getTemplate(chatRoom.isSeller())
         presenter.getStickerGroupList(chatRoom)
@@ -872,7 +853,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
             REQUEST_CODE_CHAT_IMAGE -> onReturnFromChooseImage(resultCode, data)
             TOKOPEDIA_ATTACH_PRODUCT_REQ_CODE -> onProductAttachmentSelected(data)
             REQUEST_GO_TO_SHOP -> onReturnFromShopPage(resultCode, data)
-            REQUEST_GO_TO_SETTING_CHAT -> onReturnFromChatSetting(resultCode, data)
             REQUEST_GO_TO_NORMAL_CHECKOUT -> onReturnFromNormalCheckout(resultCode, data)
             REQUEST_ATTACH_INVOICE -> onAttachInvoiceSelected(data, resultCode)
             REQUEST_ATTACH_VOUCHER -> onAttachVoucherSelected(data, resultCode)
@@ -931,23 +911,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
             analytics.eventClickSeeButtonOnAtcSuccessToaster()
             RouteManager.route(context, ApplinkConstInternalMarketplace.CART)
         }
-    }
-
-    private fun onReturnFromChatSetting(resultCode: Int, data: Intent?) {
-        data?.let {
-            val blockedStatus = BlockedStatus(
-                    it.getBooleanExtra(TopChatInternalRouter.Companion.RESULT_CHAT_SETTING_IS_BLOCKED, false),
-                    it.getBooleanExtra(TopChatInternalRouter.Companion.RESULT_CHAT_SETTING_IS_PROMO_BLOCKED, false),
-                    it.getStringExtra(TopChatInternalRouter.Companion.RESULT_CHAT_SETTING_BLOCKED_UNTIL)
-            )
-
-            if (resultCode == RESULT_OK) {
-                getViewState().onCheckChatBlocked(opponentRole, opponentName,
-                        blockedStatus, onUnblockChatClicked())
-            }
-
-        }
-
     }
 
     private fun onReturnFromShopPage(resultCode: Int, data: Intent?) {
@@ -1091,7 +1054,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     override fun blockChat() {
         presenter.blockChat(messageId, {
             getViewState().setChatBlockStatus(true)
-            getViewState().onCheckChatBlocked(opponentRole, opponentName, getViewState().blockStatus, onUnblockChatClicked())
+            getViewState().onCheckChatBlocked(opponentRole, opponentName, getViewState().blockStatus)
             context?.let {
                 showToasterConfirmation(it.getString(R.string.title_success_block_chat))
             }
@@ -1102,9 +1065,10 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     }
 
     override fun unBlockChat() {
+        analytics.trackClickUnblockChat(shopId)
         presenter.unBlockChat(messageId, {
             getViewState().setChatBlockStatus(false)
-            getViewState().onCheckChatBlocked(opponentRole, opponentName, getViewState().blockStatus, onUnblockChatClicked())
+            getViewState().onCheckChatBlocked(opponentRole, opponentName, getViewState().blockStatus)
             context?.let {
                 showToasterConfirmation(it.getString(R.string.title_success_unblock_chat))
             }
