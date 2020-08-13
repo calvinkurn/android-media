@@ -1509,10 +1509,10 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                 btnPositive?.text = getString(R.string.bottomsheet_order_cancellation_response_positive_button_code_220)
                 btnNegative?.setOnClickListener {
                     showBuyerRequestCancelOnClickButtonDialog(
-                            title = "Konfirmasi terima pesanan?",
-                            description = "Lanjut memproses pesanan tanpa konfirmasi dari pembeli dapat menyebabkan pengajuan komplain",
-                            primaryButtonText = "Lanjut Terima",
-                            secondaryButtonText = "Kembali",
+                            title = getString(R.string.som_buyer_cancellation_confirm_accept_order_title),
+                            description = getString(R.string.som_buyer_cancellation_confirm_accept_order_description),
+                            primaryButtonText = getString(R.string.som_buyer_cancellation_confirm_accept_order_button),
+                            secondaryButtonText = getString(R.string.som_buyer_cancellation_cancel_button),
                             primaryButtonClickAction = {
                                 bottomSheetReqCancel.dismiss()
                                 acceptOrder(orderId, userSession.userId)
@@ -1529,10 +1529,10 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                 btnPositive?.text = getString(R.string.bottomsheet_order_cancellation_response_positive_button_code_400)
                 btnNegative?.setOnClickListener {
                     showBuyerRequestCancelOnClickButtonDialog(
-                            title = "Kirim pesanan ini?",
-                            description = "Pastikan kamu sudah berdiskusi dengan pembeli. Pesanan yang diproses secara paksa berpotensi komplain.",
-                            primaryButtonText = "Kirim Pesanan",
-                            secondaryButtonText = "Kembali",
+                            title = getString(R.string.som_buyer_cancellation_confirm_shipping_title),
+                            description = getString(R.string.som_buyer_cancellation_confirm_shipping_description),
+                            primaryButtonText = getString(R.string.som_buyer_cancellation_confirm_shipping_button),
+                            secondaryButtonText = getString(R.string.som_buyer_cancellation_cancel_button),
                             primaryButtonClickAction = {
                                 bottomSheetReqCancel.dismiss()
                                 performButtonAction(detailResponse.button.firstOrNull(), false)
@@ -1550,10 +1550,10 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
 
     private fun showPositiveButtonBuyerRequestCancelOnClickButtonDialog(bottomSheetReqCancel: BottomSheetUnify, reasonBuyer: String) {
         showBuyerRequestCancelOnClickButtonDialog(
-                title = "Batalkan pesanan ini?",
-                description = "Skor performa tokomu tidak akan dikurangi untuk pembatalan ini.",
-                primaryButtonText = "Batalkan Pesanan",
-                secondaryButtonText = "Kembali",
+                title = getString(R.string.som_buyer_cancellation_confirm_accept_cancellation_title),
+                description = getString(R.string.som_buyer_cancellation_confirm_accept_cancellation_description),
+                primaryButtonText = getString(R.string.som_buyer_cancellation_confirm_accept_cancellation_button),
+                secondaryButtonText = getString(R.string.som_buyer_cancellation_cancel_button),
                 primaryButtonClickAction = {
                     bottomSheetReqCancel.dismiss()
                     val orderRejectRequest = SomRejectRequest(
@@ -1613,10 +1613,10 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
     }
 
     private fun showNoInternetConnectionToaster() {
-        showErrorToaster("Oops, koneksi internetmu terganggu. Silahkan cek koneksi internet dan coba lagi, ya.")
+        showErrorToaster(getString(R.string.som_error_message_no_internet_connection))
     }
 
     private fun showServerErrorToaster() {
-        showErrorToaster("Oops, ada gangguan yang perlu kami bereskan. Silahkan coba lagi, ya.")
+        showErrorToaster(getString(R.string.som_error_message_server_fault))
     }
 }
