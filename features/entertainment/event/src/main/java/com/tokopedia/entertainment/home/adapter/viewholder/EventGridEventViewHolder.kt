@@ -27,10 +27,10 @@ import kotlinx.android.synthetic.main.ent_layout_viewholder_event_grid_adapter_i
  */
 class EventGridEventViewHolder(itemView: View, action: ((data: EventItemModel,
                                                          onSuccess: (EventItemModel) -> Unit,
-                                                         onError: (Throwable) -> Unit) -> Unit))
+                                                         onError: (Throwable) -> Unit) -> Unit), val analytics:EventHomePageTracking)
     : HomeEventViewHolder<EventGridViewModel>(itemView) {
 
-    var itemAdapter = InnerItemAdapter(action)
+    var itemAdapter = InnerItemAdapter(action,analytics)
 
     init {
         itemView.ent_recycle_view.apply {
@@ -46,7 +46,7 @@ class EventGridEventViewHolder(itemView: View, action: ((data: EventItemModel,
         itemView.btn_see_all.setOnClickListener {
             RouteManager.route(itemView.context, ApplinkConstInternalEntertainment.EVENT_CATEGORY
                     , element.id,  "", "")
-            EventHomePageTracking.getInstance().clickSeeAllCuratedEventProduct(element.title,
+            analytics.clickSeeAllCuratedEventProduct(element.title,
                     adapterPosition + 1)
         }
     }
@@ -60,7 +60,7 @@ class EventGridEventViewHolder(itemView: View, action: ((data: EventItemModel,
 
     class InnerItemAdapter(val action: (data: EventItemModel,
                                         onSuccess: (EventItemModel) -> Unit,
-                                        onError: (Throwable) -> Unit) -> Unit)
+                                        onError: (Throwable) -> Unit) -> Unit, val analytics: EventHomePageTracking)
         : RecyclerView.Adapter<InnerViewHolder>() {
 
         lateinit var items: List<EventItemModel>
@@ -88,11 +88,11 @@ class EventGridEventViewHolder(itemView: View, action: ((data: EventItemModel,
             }
             holder.view.setOnClickListener {
                 RouteManager.route(holder.view.context, item.appUrl)
-                EventHomePageTracking.getInstance().clickSectionEventProduct(item, items, titleGrid,
+                analytics.clickSectionEventProduct(item, items, titleGrid,
                         position + 1)
             }
             holder.view.addOnImpressionListener(item, {
-                EventHomePageTracking.getInstance().impressionSectionEventProduct(item, items, titleGrid,
+                analytics.impressionSectionEventProduct(item, items, titleGrid,
                         position + 1)
             })
             holder.view.iv_favorite.setOnClickListener {

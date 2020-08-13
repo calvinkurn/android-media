@@ -59,6 +59,10 @@ class EventHomeFragment : BaseDaggerFragment(), FragmentView, MenuSheet.ItemClic
     lateinit var viewModel: HomeEventViewModel
     lateinit var homeAdapter: HomeEventAdapter
     lateinit var performanceMonitoring: PerformanceMonitoring
+
+    @Inject
+    lateinit var analytics:EventHomePageTracking
+
     var favMenuItem : View? = null
 
     private fun initializePerformance(){
@@ -93,7 +97,7 @@ class EventHomeFragment : BaseDaggerFragment(), FragmentView, MenuSheet.ItemClic
         recycler_view.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
-            homeAdapter = HomeEventAdapter(HomeTypeFactoryImpl(::actionItemAdapter))
+            homeAdapter = HomeEventAdapter(HomeTypeFactoryImpl(::actionItemAdapter, analytics))
             adapter = homeAdapter
         }
 
@@ -125,8 +129,8 @@ class EventHomeFragment : BaseDaggerFragment(), FragmentView, MenuSheet.ItemClic
     }
 
     private fun onSuccessGetData(data: List<HomeEventItem<*>>) {
-        EventHomePageTracking.getInstance().openHomeEvent()
         shimering_layout.visibility = View.GONE
+        //analytics.openHomeEvent()
         homeAdapter.setItems(data)
         performanceMonitoring.stopTrace()
         swipe_refresh_layout?.isRefreshing = false

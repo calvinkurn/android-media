@@ -38,34 +38,35 @@ class HomeEventActivityTest {
     fun validateHomeEvent() {
         Thread.sleep(5000)
         //banner
-        impression_banner()
-        click_banner()
-        //category
-        click_category_icon()
-        //carousel
-        impression_carousel_product_event()
-//        //click_carousel_product_event()
-
-        //taman bermain lokal
-        impression_taman_bermain_lokal()
-
-        //location event
-        impression_location_event()
-
-        //taman bermain mancanegara
-        impression_taman_bermain_mancanegara()
-
-        //aktivitas
-        impression_aktivitas()
-
-        //festival
-        impression_festival()
-
-        //event
-        impression_event()
-
-        //aktivitas anak
-        impression_aktivitas_anak()
+//        impression_banner()
+          click_banner()
+//        //category
+          click_category_icon()
+//        //carousel
+//        impression_carousel_product_event()
+          click_carousel_product_event()
+//
+//        //taman bermain lokal
+//        impression_taman_bermain_lokal()
+//
+//        //location event
+          impression_location_event()
+          click_location_event()
+//
+//        //taman bermain mancanegara
+//        impression_taman_bermain_mancanegara()
+//
+//        //aktivitas
+//        impression_aktivitas()
+//
+//        //festival
+//        impression_festival()
+//
+//        //event
+//        impression_event()
+//
+//        //aktivitas anak
+//        impression_aktivitas_anak()
         assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ENTERTAINMENT_EVENT_HOME_VALIDATOR_QUERY), hasAllSuccess())
     }
 
@@ -117,6 +118,16 @@ class HomeEventActivityTest {
         viewInteraction.perform(RecyclerViewActions.scrollToPosition<HomeEventViewHolder<*>>(4))
         Thread.sleep(2000)
         onView(withId(R.id.ent_recycle_view_location)).perform(RecyclerViewActions.scrollToPosition<EventLocationEventViewHolder>(3))
+    }
+
+    fun click_location_event(){
+        Thread.sleep(1000)
+        val viewInteraction = onView(AllOf.allOf(
+                AllOf.allOf(withId(R.id.ent_recycle_view_location), isDescendantOfA(withId(R.id.event_home_fragment)),
+                        isDisplayed()))).check(matches(isDisplayed()))
+        viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<EventLocationEventViewHolder>(0, click()))
+        Thread.sleep(5000)
+        onView(isRoot()).perform(pressBack())
     }
 
     fun impression_taman_bermain_mancanegara(){

@@ -21,9 +21,9 @@ import kotlinx.android.synthetic.main.ent_layout_viewholder_event_location_adape
 /**
  * Author errysuprayogi on 27,January,2020
  */
-class EventLocationEventViewHolder(itemView: View) : HomeEventViewHolder<EventLocationViewModel>(itemView) {
+class EventLocationEventViewHolder(itemView: View, val analytics:EventHomePageTracking) : HomeEventViewHolder<EventLocationViewModel>(itemView) {
 
-    var itemAdapter = InnerItemAdapter()
+    var itemAdapter = InnerItemAdapter(analytics)
 
     init {
         itemView.ent_recycle_view_location.apply {
@@ -43,7 +43,7 @@ class EventLocationEventViewHolder(itemView: View) : HomeEventViewHolder<EventLo
         val TAG = EventLocationEventViewHolder::class.java.simpleName
     }
 
-    class InnerItemAdapter : RecyclerView.Adapter<InnerViewHolder>() {
+    class InnerItemAdapter(val analytics: EventHomePageTracking) : RecyclerView.Adapter<InnerViewHolder>() {
 
         lateinit var items: List<EventItemLocationModel>
 
@@ -59,11 +59,11 @@ class EventLocationEventViewHolder(itemView: View) : HomeEventViewHolder<EventLo
             holder.view.txt_title.text = item.title
             holder.view.txt_subtitle.text = item.tagline
             holder.view.addOnImpressionListener(item, {
-                EventHomePageTracking.getInstance().impressionLocationEvent(item, items,
+                analytics.impressionLocationEvent(item, items,
                         position + 1)
             })
             holder.view.setOnClickListener {
-                EventHomePageTracking.getInstance().clickLocationEvent(item, items,
+                analytics.clickLocationEvent(item, items,
                         position + 1)
                 RouteManager.route(holder.view.context,
                         ApplinkConstInternalEntertainment.EVENT_CATEGORY,"", item.id, item.title)

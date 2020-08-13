@@ -19,9 +19,9 @@ import kotlinx.android.synthetic.main.ent_layout_viewholder_category.view.*
 /**
  * Author errysuprayogi on 27,January,2020
  */
-class CategoryEventViewHolder(itemView: View) : HomeEventViewHolder<CategoryViewModel>(itemView) {
+class CategoryEventViewHolder(itemView: View, val analytics: EventHomePageTracking) : HomeEventViewHolder<CategoryViewModel>(itemView) {
 
-    val listAdapter = InnerCategoryItemAdapter()
+    val listAdapter = InnerCategoryItemAdapter(analytics)
 
     init {
         itemView.ent_recycle_view_category.apply {
@@ -44,7 +44,7 @@ class CategoryEventViewHolder(itemView: View) : HomeEventViewHolder<CategoryView
 
     data class CategoryItemModel(var id: String, var imageUrl: String, var title: String, var applink: String)
 
-    class InnerCategoryItemAdapter : RecyclerView.Adapter<InnerViewHolder>() {
+    class InnerCategoryItemAdapter(val analytics: EventHomePageTracking) : RecyclerView.Adapter<InnerViewHolder>() {
 
         lateinit var items: List<CategoryItemModel>
 
@@ -60,7 +60,7 @@ class CategoryEventViewHolder(itemView: View) : HomeEventViewHolder<CategoryView
             holder.view.setOnClickListener {
                 RouteManager.route(holder.view.context,
                         ApplinkConstInternalEntertainment.EVENT_CATEGORY, items.get(position).id, "", "")
-                EventHomePageTracking.getInstance().clickCategoryIcon(items.get(position), position + 1)
+                analytics.clickCategoryIcon(items.get(position), position + 1)
             }
         }
 

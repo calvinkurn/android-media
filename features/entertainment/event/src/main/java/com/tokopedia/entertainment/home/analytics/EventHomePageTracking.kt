@@ -76,12 +76,6 @@ class EventHomePageTracking {
         val CATEGORY = "category"
     }
 
-    companion object {
-        fun getInstance(): EventHomePageTracking {
-            return EventHomePageTracking()
-        }
-    }
-
     private fun getTracker(): Analytics {
         return TrackApp.getInstance().gtm
     }

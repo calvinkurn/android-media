@@ -25,10 +25,10 @@ import java.util.*
  */
 class EventCarouselEventViewHolder(itemView: View, action: ((data: EventItemModel,
                                                              onSuccess: (EventItemModel) -> Unit,
-                                                             onError: (Throwable) -> Unit) -> Unit))
+                                                             onError: (Throwable) -> Unit) -> Unit), val analytics:EventHomePageTracking)
     : HomeEventViewHolder<EventCarouselViewModel>(itemView) {
 
-    var itemAdapter = InnerItemAdapter(action)
+    var itemAdapter = InnerItemAdapter(action,analytics)
 
     init {
         itemView.ent_recycle_view_carousel.apply {
@@ -37,7 +37,7 @@ class EventCarouselEventViewHolder(itemView: View, action: ((data: EventItemMode
             adapter = itemAdapter
         }
         itemView.ent_btn_see_more.setOnClickListener {
-            EventHomePageTracking.getInstance().clickSeeAllTopEventProduct()
+            analytics.clickSeeAllTopEventProduct()
         }
     }
 
@@ -56,7 +56,7 @@ class EventCarouselEventViewHolder(itemView: View, action: ((data: EventItemMode
 
     class InnerItemAdapter(val action: (data: EventItemModel,
                                         onSuccess: (EventItemModel) -> Unit,
-                                        onError: (Throwable) -> Unit) -> Unit)
+                                        onError: (Throwable) -> Unit) -> Unit, val analytics: EventHomePageTracking)
         : RecyclerView.Adapter<InnerViewHolder>() {
 
         lateinit var items: List<EventItemModel>
@@ -87,11 +87,11 @@ class EventCarouselEventViewHolder(itemView: View, action: ((data: EventItemMode
             }
             holder.view.setOnClickListener {
                 RouteManager.route(holder.view.context, item.appUrl)
-                EventHomePageTracking.getInstance().clickTopEventProduct(item, productNames,
+                analytics.clickTopEventProduct(item, productNames,
                         position + 1)
             }
             holder.view.addOnImpressionListener(item, {
-                EventHomePageTracking.getInstance().impressionTopEventProduct(item, productNames,
+                analytics.impressionTopEventProduct(item, productNames,
                         position + 1);
             })
             holder.view.iv_favorite.setOnClickListener {
