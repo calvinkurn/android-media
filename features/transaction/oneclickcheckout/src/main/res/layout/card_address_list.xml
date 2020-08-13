@@ -118,7 +118,7 @@
             app:layout_constraintStart_toEndOf="@+id/img_location_state"
             app:typographyType="body_3" />
 
-        <RadioButton
+        <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
             android:id="@+id/item_address_radio"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -127,7 +127,6 @@
             android:layout_marginRight="@dimen/dp_24"
             android:clickable="false"
             android:focusable="true"
-            android:theme="@style/TransactionToggleButton"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

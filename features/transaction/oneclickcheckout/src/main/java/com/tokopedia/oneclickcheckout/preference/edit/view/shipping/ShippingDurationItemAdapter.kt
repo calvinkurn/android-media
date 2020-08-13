@@ -2,7 +2,6 @@ package com.tokopedia.oneclickcheckout.preference.edit.view.shipping
 
 import android.view.View
 import android.view.ViewGroup
-import android.widget.RadioButton
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.gone
@@ -14,6 +13,7 @@ import com.tokopedia.oneclickcheckout.preference.edit.view.shipping.model.Logist
 import com.tokopedia.oneclickcheckout.preference.edit.view.shipping.model.ServicesItem
 import com.tokopedia.oneclickcheckout.preference.edit.view.shipping.model.ServicesItemModel
 import com.tokopedia.oneclickcheckout.preference.edit.view.shipping.model.ServicesItemModelNoPrice
+import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
 import com.tokopedia.unifyprinciples.Typography
 
 class ShippingDurationItemAdapter(var listener: OnShippingMenuSelected) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -69,7 +69,7 @@ class ShippingDurationItemAdapter(var listener: OnShippingMenuSelected) : Recycl
         private var itemShippingText = itemView.findViewById<Typography>(R.id.text_shipping_item)
         private var itemShippingPrice = itemView.findViewById<Typography>(R.id.item_shipping_price)
         private var itemShippingDesc = itemView.findViewById<Typography>(R.id.item_shipping_desc)
-        private var itemShippingRadio = itemView.findViewById<RadioButton>(R.id.item_shipping_radio)
+        private var itemShippingRadio = itemView.findViewById<RadioButtonUnify>(R.id.item_shipping_radio)
         private var itemList = itemView.findViewById<ConstraintLayout>(R.id.item_shipping_list)
 
 
@@ -78,6 +78,7 @@ class ShippingDurationItemAdapter(var listener: OnShippingMenuSelected) : Recycl
             itemShippingPrice.gone()
             itemShippingDesc.gone()
             itemShippingRadio.isChecked = data.isSelected
+            itemShippingRadio.skipAnimation()
             itemList.setOnClickListener {
                 listener.onSelect(data.serviceId)
             }
