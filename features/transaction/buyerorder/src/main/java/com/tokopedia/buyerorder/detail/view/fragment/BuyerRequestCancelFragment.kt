@@ -673,7 +673,10 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
             setPrimaryCTAText(getString(R.string.button_order_detail_request_cancel))
             setPrimaryCTAClickListener { submitResultReason() }
             setSecondaryCTAText(getString(R.string.popup_selesai_cancel_btn))
-            setSecondaryCTAClickListener { dismiss() }
+            setSecondaryCTAClickListener {
+                dismiss()
+                backToDetailPage(0, "", "", "")
+            }
         }
         dialog?.show()
     }

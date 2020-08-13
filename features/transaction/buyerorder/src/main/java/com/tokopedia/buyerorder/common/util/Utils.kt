@@ -52,6 +52,7 @@ object Utils {
         return result
     }
 
+    @JvmStatic
     fun getTickerType(typeStr: String): Int {
         return when (typeStr) {
             BuyerConsts.TICKER_TYPE_ERROR -> {

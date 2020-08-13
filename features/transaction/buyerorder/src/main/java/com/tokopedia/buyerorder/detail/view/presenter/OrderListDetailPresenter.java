@@ -514,6 +514,10 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             getView().setAdditionalTickerInfo(details.getAdditionalTickerInfos(), url);
         }
 
+        if (details.getTickerInfo() != null) {
+            getView().setTickerInfo(details.getTickerInfo());
+        }
+
         for (PayMethod payMethod : details.getPayMethods()) {
             if (!TextUtils.isEmpty(payMethod.getValue()))
                 getView().setPayMethodInfo(payMethod);

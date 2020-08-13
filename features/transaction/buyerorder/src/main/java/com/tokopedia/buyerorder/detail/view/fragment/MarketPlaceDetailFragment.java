@@ -53,6 +53,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.buyerorder.R;
 import com.tokopedia.buyerorder.common.util.BuyerConsts;
 import com.tokopedia.buyerorder.common.util.UnifiedOrderListRouter;
+import com.tokopedia.buyerorder.common.util.Utils;
 import com.tokopedia.buyerorder.common.view.DoubleTextView;
 import com.tokopedia.buyerorder.detail.data.ActionButton;
 import com.tokopedia.buyerorder.detail.data.AdditionalInfo;
@@ -69,6 +70,7 @@ import com.tokopedia.buyerorder.detail.data.PayMethod;
 import com.tokopedia.buyerorder.detail.data.Pricing;
 import com.tokopedia.buyerorder.detail.data.ShopInfo;
 import com.tokopedia.buyerorder.detail.data.Status;
+import com.tokopedia.buyerorder.detail.data.TickerInfo;
 import com.tokopedia.buyerorder.detail.data.Title;
 import com.tokopedia.buyerorder.detail.data.recommendationMPPojo.RecommendationResponse;
 import com.tokopedia.buyerorder.detail.di.OrderDetailsComponent;
@@ -196,6 +198,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     private String invoiceUrl;
     private String boughtDate;
     private Boolean isRequestedCancel;
+    private String _helplink;
 
     @Override
     protected String getScreenName() {
@@ -465,6 +468,16 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                     }
                 });
             }
+        }
+    }
+
+    @Override
+    public void setTickerInfo(TickerInfo tickerInfo) {
+        if (!tickerInfo.getText().isEmpty()) {
+            mTickerInfos.setVisibility(View.VISIBLE);
+            mTickerInfos.setTextDescription(tickerInfo.getText());
+            mTickerInfos.setTickerShape(Ticker.SHAPE_LOOSE);
+            mTickerInfos.setTickerType(Utils.getTickerType(tickerInfo.getType()));
         }
     }
 
@@ -930,7 +943,6 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
             } else if (resultCode == INSTANT_CANCEL_BUYER_REQUEST) {
                 String resultMsg = data.getStringExtra(RESULT_MSG_INSTANT_CANCEL);
                 int result = data.getIntExtra(RESULT_CODE_INSTANT_CANCEL, 1);
-
                 if (result == 1) {
                     // show toaster
                     if (getView() != null) {
@@ -939,8 +951,8 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                 } else if (result == 3) {
                     String popupTitle = data.getStringExtra(RESULT_POPUP_TITLE_INSTANT_CANCEL);
                     String popupBody = data.getStringExtra(RESULT_POPUP_BODY_INSTANT_CANCEL);
-                    if (getContext() != null) {
-                        DialogUnify dialogUnify = new DialogUnify(getContext(), DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE);
+                    if (getContext() != null && popupTitle != null && popupBody != null) {
+                        DialogUnify dialogUnify = new DialogUnify(getContext(), DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE);
                         dialogUnify.setTitle(popupTitle);
                         dialogUnify.setDescription(popupBody);
                         dialogUnify.setPrimaryCTAText(getString(R.string.mengerti_button));
@@ -948,13 +960,22 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                             dialogUnify.dismiss();
                             return Unit.INSTANCE;
                         });
+                        dialogUnify.setSecondaryCTAText(getString(R.string.pusat_bantuan_button));
+                        dialogUnify.setSecondaryCTAClickListener(() -> {
+                            dialogUnify.dismiss();
+                            if (!_helplink.isEmpty()) {
+                                RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW, _helplink);
+                            }
+                            return Unit.INSTANCE;
+                        });
                         dialogUnify.show();
                     }
                 }
-                finishOrderDetail();
+                if (result != 0) {
+                    finishOrderDetail();
+                }
             }
             orderListAnalytics.sendActionButtonClickEvent(CLICK_SUBMIT_CANCELATION, statusValue.getText().toString() + "-" + reason);
-
 //            presenter.setOrderDetailsContent((String) getArguments().get(KEY_ORDER_ID), (String) getArguments().get(KEY_ORDER_CATEGORY), getArguments().getString(KEY_FROM_PAYMENT));
         }
     }
@@ -987,6 +1008,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
 
     @Override
     public void setContactUs(final ContactUs contactUs, String helpLink) {
+        _helplink = helpLink;
         String text = getResources().getString(R.string.contact_us_text);
         SpannableString spannableString = new SpannableString(text);
         int startIndexOfLink = text.indexOf("disini");

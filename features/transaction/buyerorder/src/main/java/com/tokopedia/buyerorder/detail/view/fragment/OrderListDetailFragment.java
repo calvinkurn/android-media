@@ -49,6 +49,7 @@ import com.tokopedia.buyerorder.detail.data.PayMethod;
 import com.tokopedia.buyerorder.detail.data.Pricing;
 import com.tokopedia.buyerorder.detail.data.ShopInfo;
 import com.tokopedia.buyerorder.detail.data.Status;
+import com.tokopedia.buyerorder.detail.data.TickerInfo;
 import com.tokopedia.buyerorder.detail.data.Title;
 import com.tokopedia.buyerorder.detail.data.recommendationPojo.RechargeWidgetResponse;
 import com.tokopedia.buyerorder.detail.di.OrderDetailsComponent;
@@ -256,6 +257,11 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     @Override
     public void setAdditionalTickerInfo(List<AdditionalTickerInfo> tickerInfos, @Nullable String url) {
 
+    }
+
+    @Override
+    public void setTickerInfo(TickerInfo tickerInfo) {
+        // no-op
     }
 
     @Override
