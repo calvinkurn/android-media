@@ -75,6 +75,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.remoteResourceRequest)
 
+    implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.analyticsDebugger)
     implementation rootProject.ext.firebase.core
     implementation rootProject.ext.testDependencies.androidRulesVersion
