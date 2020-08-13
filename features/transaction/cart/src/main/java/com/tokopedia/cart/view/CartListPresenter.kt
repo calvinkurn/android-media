@@ -430,6 +430,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                 val wholesalePriceFormatted = CurrencyFormatUtil.convertPriceValueToIdrFormat(
                         wholesalePriceData.prdPrc, false).removeDecimalSuffix()
                 originData.wholesalePriceFormatted = wholesalePriceFormatted
+                originData.wholesalePrice = wholesalePriceData.prdPrc
                 break
             }
         }

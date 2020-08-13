@@ -35,8 +35,8 @@
                     android:id="@+id/cb_select_item"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="14dp"
                     android:layout_marginLeft="-3dp"
+                    android:layout_marginTop="14dp"
                     android:button="@drawable/ic_cart_check_box"
                     android:paddingRight="@dimen/dp_10" />
 
@@ -85,11 +85,12 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/text_product_name"
+                        android:gravity="center_vertical"
                         android:paddingTop="@dimen/dp_2"
                         android:textColor="@color/Neutral_N700_68"
                         android:visibility="gone"
                         app:typographyType="small"
-                        tools:text="Merah, XL"
+                        tools:text="Biru, XL"
                         tools:visibility="visible" />
 
                     <com.tokopedia.unifyprinciples.Typography
@@ -97,9 +98,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/text_product_name"
-                        android:layout_marginStart="@dimen/dp_4"
-                        android:layout_marginLeft="@dimen/dp_4"
                         android:layout_toRightOf="@+id/text_product_variant"
+                        android:gravity="center_vertical"
                         android:paddingTop="@dimen/dp_2"
                         android:textColor="@color/Red_R600"
                         android:visibility="gone"
@@ -112,7 +112,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/text_product_variant"
-                        android:layout_marginTop="@dimen/dp_8"
+                        android:layout_marginTop="8dp"
                         android:layout_marginRight="@dimen/dp_4"
                         android:gravity="center_vertical"
                         app:labelType="general_dark_red"
@@ -154,7 +154,8 @@
                         android:layout_below="@+id/text_product_price"
                         android:layout_marginTop="@dimen/dp_4"
                         android:foregroundGravity="center_vertical"
-                        app:flexWrap="wrap">
+                        app:flexWrap="wrap"
+                        tools:visibility="visible">
 
                         <com.tokopedia.unifyprinciples.Typography
                             android:id="@+id/text_wholesale_price"
@@ -165,11 +166,11 @@
                             android:textColor="@color/Neutral_N700_68"
                             android:visibility="gone"
                             app:typographyType="small"
-                            tools:text="Harga Grosir, "
+                            tools:text="Harga Grosir"
                             tools:visibility="visible" />
 
                         <com.tokopedia.unifyprinciples.Typography
-                            android:id="@+id/text_price_down"
+                            android:id="@+id/text_price_drop"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/text_product_name"
@@ -177,7 +178,7 @@
                             android:textColor="@color/Neutral_N700_68"
                             android:visibility="gone"
                             app:typographyType="small"
-                            tools:text="Harga Turun, "
+                            tools:text=", Harga Turun"
                             tools:visibility="visible" />
 
                         <com.tokopedia.unifyprinciples.Typography
@@ -189,7 +190,7 @@
                             android:textColor="@color/Neutral_N700_68"
                             android:visibility="gone"
                             app:typographyType="small"
-                            tools:text="Cashback 3%"
+                            tools:text=", Cashback 3%"
                             tools:visibility="visible" />
 
                     </com.google.android.flexbox.FlexboxLayout>
@@ -201,7 +202,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/rl_product_info"
-                    android:layout_marginTop="@dimen/dp_14"
+                    android:layout_marginTop="@dimen/dp_16"
                     android:orientation="vertical">
 
                     <LinearLayout
@@ -225,9 +226,9 @@
                             android:layout_height="wrap_content"
                             android:maxLength="20"
                             android:maxLines="1"
+                            android:textColor="@color/light_N700_96"
                             app:typographyType="body_3"
                             app:typographyWeight="reguler"
-                            android:textColor="@color/light_N700_96"
                             tools:text="12345123451234512345123 sdkjf skdjbfg jksdg kjsdbg jksdbg!"
                             tools:visibility="visible" />
 
@@ -451,6 +452,7 @@ barangnya gan!" />
         android:layout_height="0.5dp"
         android:layout_marginLeft="@dimen/dp_14"
         android:layout_marginRight="@dimen/dp_14"
+        android:layout_marginBottom="@dimen/dp_16"
         android:background="@color/separator_color" />
 
 </LinearLayout>

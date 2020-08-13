@@ -18,10 +18,7 @@ import com.tokopedia.cart.R
 import com.tokopedia.cart.view.adapter.CartItemAdapter
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.design.utils.CurrencyFormatUtil
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.purchase_platform.common.utils.*
 import com.tokopedia.purchase_platform.common.utils.NoteTextWatcher.TEXTWATCHER_NOTE_DEBOUNCE_TIME
 import com.tokopedia.purchase_platform.common.utils.QuantityTextWatcher.TEXTWATCHER_QUANTITY_DEBOUNCE_TIME
@@ -62,7 +59,7 @@ class CartItemViewHolder constructor(itemView: View,
     private val labelSlashPricePercentage: Label
     private val textSlashPrice: Typography
     private val textWholesalePrice: Typography
-    private val textPriceDown: Typography
+    private val textPriceDrop: Typography
     private val textCashback: Typography
 
     private val textMoveToWishlist: Typography
@@ -120,7 +117,7 @@ class CartItemViewHolder constructor(itemView: View,
         labelSlashPricePercentage = itemView.findViewById(R.id.label_slash_price_percentage)
         textSlashPrice = itemView.findViewById(R.id.text_slash_price)
         textWholesalePrice = itemView.findViewById(R.id.text_wholesale_price)
-        textPriceDown = itemView.findViewById(R.id.text_price_down)
+        textPriceDrop = itemView.findViewById(R.id.text_price_drop)
         textCashback = itemView.findViewById(R.id.text_cashback)
 
         textMoveToWishlist = itemView.findViewById(R.id.text_move_to_wishlist)
@@ -304,12 +301,52 @@ class CartItemViewHolder constructor(itemView: View,
         renderVariant(data)
         renderQtyLeft(data)
         renderSlashPrice(data)
-
-        // Todo : render product properties : harga grosir, harga turun, cashback, cod
+        renderProductProperties(data)
 
         setClickListener(parentPosition, data)
 
         divider.visibility = if (layoutPosition == dataSize - 1) View.GONE else View.VISIBLE
+    }
+
+    private fun renderProductProperties(data: CartItemHolderData) {
+        renderProductPropertiesWholesalePrice(data)
+        renderProductPropertiesPriceDrop(data)
+        renderProductPropertiesCashback(data)
+    }
+
+    private fun renderProductPropertiesWholesalePrice(data: CartItemHolderData) {
+        if (data.cartItemData?.originData?.wholesalePriceData?.isNotEmpty() == true) {
+            textWholesalePrice.text = "Harga Grosir"
+            textWholesalePrice.show()
+        } else {
+            textWholesalePrice.gone()
+        }
+    }
+
+    private fun renderProductPropertiesPriceDrop(data: CartItemHolderData) {
+        if (data.cartItemData?.originData?.priceChangesState == 1) {
+            if (textWholesalePrice.visibility == View.VISIBLE) {
+                textPriceDrop.text = ", Harga Turun"
+            } else {
+                textPriceDrop.text = "Harga Turun"
+            }
+            textPriceDrop.show()
+        } else {
+            textPriceDrop.gone()
+        }
+    }
+
+    private fun renderProductPropertiesCashback(data: CartItemHolderData) {
+        if (data.cartItemData?.originData?.productCashBack?.isNotBlank() == true) {
+            if (textWholesalePrice.visibility == View.VISIBLE || textPriceDrop.visibility == View.VISIBLE) {
+                textCashback.text = ", ${data.cartItemData?.originData?.cashBackInfo}"
+            } else {
+                textCashback.text = data.cartItemData?.originData?.cashBackInfo
+            }
+            textCashback.show()
+        } else {
+            textCashback.gone()
+        }
     }
 
     private fun setClickListener(parentPosition: Int, data: CartItemHolderData) {
@@ -340,16 +377,31 @@ class CartItemViewHolder constructor(itemView: View,
 
     private fun renderSlashPrice(data: CartItemHolderData) {
         if (data.cartItemData?.originData?.priceOriginal != 0 || data.cartItemData?.originData?.wholesalePrice != 0) {
-            textSlashPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(data.cartItemData?.originData?.priceOriginal
-                    ?: 0, false).removeDecimalSuffix()
-            textSlashPrice.paintFlags = textSlashPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-            textSlashPrice.show()
-            val pricePlan = data.cartItemData?.originData?.pricePlan ?: 0.0
-            val priceOriginal = data.cartItemData?.originData?.priceOriginal ?: 1
-            val slashPricePercentage = pricePlan / priceOriginal
+            var slashPricePercentage = 0.0
+            if (data.cartItemData?.originData?.priceOriginal != 0) {
+                textSlashPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(data.cartItemData?.originData?.priceOriginal
+                        ?: 0, false).removeDecimalSuffix()
+                val pricePlan = data.cartItemData?.originData?.pricePlan ?: 0.0
+                val priceOriginal = data.cartItemData?.originData?.priceOriginal ?: 1
+                slashPricePercentage = (priceOriginal - pricePlan) / priceOriginal * 100
+                labelSlashPricePercentage.text = "${slashPricePercentage.roundToInt()}%"
+            } else if (data.cartItemData?.originData?.wholesalePrice != 0) {
+                textSlashPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(data.cartItemData?.originData?.pricePlanInt
+                        ?: 0, false).removeDecimalSuffix()
+                val pricePlan = data.cartItemData?.originData?.pricePlan ?: 0.0
+                val wholesalePrice = data.cartItemData?.originData?.wholesalePrice ?: 0
+                slashPricePercentage = (pricePlan - wholesalePrice) / pricePlan * 100
+                labelSlashPricePercentage.text = "${slashPricePercentage.roundToInt()}%"
+            }
 
-            labelSlashPricePercentage.text = "${slashPricePercentage.roundToInt()}%"
-            labelSlashPricePercentage.show()
+            if (slashPricePercentage in 0.0..100.0) {
+                textSlashPrice.paintFlags = textSlashPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                textSlashPrice.show()
+                labelSlashPricePercentage.show()
+            } else {
+                textSlashPrice.gone()
+                labelSlashPricePercentage.gone()
+            }
         } else {
             textSlashPrice.gone()
             labelSlashPricePercentage.gone()
@@ -358,7 +410,7 @@ class CartItemViewHolder constructor(itemView: View,
 
     private fun renderQtyLeft(data: CartItemHolderData) {
         if (data.cartItemData?.originData?.maxOrder ?: 0 in 0..5) {
-            textQtyLeft.text = (data.cartItemData?.originData?.maxOrder ?: 0).toString()
+            textQtyLeft.text = "Sisa" + (data.cartItemData?.originData?.maxOrder ?: 0)
             textQtyLeft.show()
         } else {
             textQtyLeft.gone()
@@ -366,12 +418,21 @@ class CartItemViewHolder constructor(itemView: View,
     }
 
     private fun renderVariant(data: CartItemHolderData) {
+        var paddingRight = 0
+        val paddingTop = itemView.resources.getDimensionPixelOffset(R.dimen.dp_2)
         if (data.cartItemData?.originData?.variant?.isNotBlank() == true) {
             textProductVariant.text = data.cartItemData?.originData?.variant
             textProductVariant.show()
+            paddingRight = itemView.resources.getDimensionPixelOffset(R.dimen.dp_4)
         } else {
-            textProductVariant.gone()
+            if (data.cartItemData?.originData?.maxOrder ?: 0 in 0..5) {
+                textProductVariant.text = ""
+                textProductVariant.invisible()
+            } else {
+                textProductVariant.gone()
+            }
         }
+        textProductVariant.setPadding(0, paddingTop, paddingRight, 0);
     }
 
     private fun renderRemark(data: CartItemHolderData, parentPosition: Int, viewHolderListener: ViewHolderListener) {
@@ -407,6 +468,7 @@ class CartItemViewHolder constructor(itemView: View,
                 this.tvLabelRemarkOption.visibility = View.GONE
                 this.tvNoteCharCounter.visibility = View.VISIBLE
                 this.tvEllipsize.visibility = View.GONE
+                tvLabelRemarkOption.setPadding(0, 0, 0, 0)
             } else {
                 // Has notes from pdp
                 this.tvLabelFormRemark.visibility = View.GONE
@@ -416,6 +478,7 @@ class CartItemViewHolder constructor(itemView: View,
                 this.tvLabelRemarkOption.visibility = View.VISIBLE
                 this.tvNoteCharCounter.visibility = View.GONE
                 this.tvLabelRemarkOption.text = tvLabelRemarkOption.context.getString(R.string.label_button_change_note)
+                tvLabelRemarkOption.setPadding(itemView.resources.getDimensionPixelOffset(R.dimen.dp_4), 0, 0, 0)
                 if (data.cartItemData?.updatedData?.remark?.length ?: 0 >= MAX_SHOWING_NOTES_CHAR) {
                     this.tvEllipsize.visibility = View.VISIBLE
                 } else {
@@ -434,6 +497,7 @@ class CartItemViewHolder constructor(itemView: View,
             this.etRemark.setText("")
             this.tvEllipsize.visibility = View.GONE
             tvLabelRemarkOption.setTextColor(ContextCompat.getColor(itemView.context, R.color.Neutral_N700_68))
+            tvLabelRemarkOption.setPadding(0, 0, 0, 0)
         }
 
         this.etRemark.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(data.cartItemData?.updatedData?.maxCharRemark

@@ -326,6 +326,8 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
             it.cartString = shopGroupAvailable.cartString
             it.warehouseId = shopGroupAvailable.warehouse.warehouseId
             it.listPromoCheckout = listPromoCheckout
+            // Todo : map variant
+            it.variant = "XL, Merah"
         }
     }
 
