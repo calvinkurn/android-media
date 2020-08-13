@@ -393,13 +393,6 @@ class PlayViewModel @Inject constructor(
                 )
                 _observableCompleteInfo.value = completeInfoUiModel
 
-                launch { getTotalLikes(completeInfoUiModel.channelInfo.feedInfo) }
-                launch { getIsLike(completeInfoUiModel.channelInfo.feedInfo) }
-                launch { getBadgeCart(channel.configuration.showCart) }
-                launch { if (channel.configuration.showPinnedProduct) getProductTagItems(completeInfoUiModel.channelInfo) }
-
-                startWebSocket(channelId)
-
                 _observableGetChannelInfo.value = Success(completeInfoUiModel.channelInfo)
                 _observableTotalViews.value = completeInfoUiModel.totalView
                 _observablePinnedMessage.value = completeInfoUiModel.pinnedMessage
@@ -410,6 +403,14 @@ class PlayViewModel @Inject constructor(
                 _observableEvent.value = completeInfoUiModel.event
 
                 if (!isActive) return@launchCatchError
+
+                launch { getTotalLikes(completeInfoUiModel.channelInfo.feedInfo) }
+                launch { getIsLike(completeInfoUiModel.channelInfo.feedInfo) }
+                launch { getBadgeCart(channel.configuration.showCart) }
+                launch { if (channel.configuration.showPinnedProduct) getProductTagItems(completeInfoUiModel.channelInfo) }
+
+                startWebSocket(channelId)
+
                 if (completeInfoUiModel.videoPlayer.isGeneral) playGeneralVideoStream(channel)
                 else playVideoManager.release()
 
