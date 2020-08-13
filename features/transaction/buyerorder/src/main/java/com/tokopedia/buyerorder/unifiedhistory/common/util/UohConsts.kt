@@ -79,4 +79,5 @@ object UohConsts {
     const val FLIGHT_STATUS_OK = "OK"
 
     const val RECHARGE_GQL_PARAM_ORDER_ID = "orderId"
+    const val BUSINESS_UNIT_REPLACEE = "{business_unit}"
 }

@@ -1,0 +1,217 @@
+package com.tokopedia.buyerorder.unifiedhistory.list.analytics
+
+import android.app.Activity
+import android.os.Bundle
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.BUSINESS_UNIT_REPLACEE
+import com.tokopedia.buyerorder.unifiedhistory.list.analytics.data.model.ECommerceClick
+import com.tokopedia.buyerorder.unifiedhistory.list.analytics.data.model.ECommerceImpressions
+import com.tokopedia.track.TrackApp
+import com.tokopedia.track.TrackAppUtils
+
+/**
+ * Created by fwidjaja on 2019-11-29.
+ */
+object UohAnalytics {
+    private const val OPEN_SCREEN = "openScreen"
+    private const val EVENT = "event"
+    private const val SCREEN_NAME = "screenName"
+    private const val ORDER_LIST_SCREEN_NAME = "order-list"
+    private const val IS_LOGGED_IN_STATUS = "isLoggedInStatus"
+    private const val EVENT_CATEGORY = "eventCategory"
+    private const val EVENT_ACTION = "eventAction"
+    private const val EVENT_LABEL = "eventLabel"
+    private const val CURRENT_SITE = "currentSite"
+    private const val TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"
+    private const val USER_ID = "userId"
+    private const val BUSINESS_UNIT = "businessUnit"
+    private const val ECOMMERCE = "ecommerce"
+    private const val CURRENCY_CODE = "currencyCode"
+    private const val IDR = "IDR"
+    private const val IMPRESSIONS = "impressions"
+    private const val NAME = "name"
+    private const val ID = "id"
+    private const val PRICE = "price"
+    private const val BRAND = "brand"
+    private const val CATEGORY = "category"
+    private const val VARIANT = "variant"
+    private const val LIST = "list"
+    private const val POSITION = "position"
+    private const val CLICK = "click"
+    private const val ACTION_FIELD = "action_field"
+    private const val PRODUCTS = "products"
+    private const val ATTRIBUTION = "attribution"
+    private const val QUANTITY = "quantity"
+    private const val DIMENSION79 = "dimension79"
+    private const val DIMENSION81 = "dimension81"
+    private const val DIMENSION80 = "dimension80"
+    private const val DIMENSION45 = "dimension45"
+    private const val DIMENSION40 = "dimension40"
+    private const val ORDER_MANAGEMENT = "ordermanagement"
+    private const val CLICK_ORDER_LIST = "clickOrderList"
+    private const val PRODUCT_VIEW = "productView"
+    private const val PRODUCT_CLICK = "productClick"
+    private const val VIEW_ORDER_CARD = "view order card {business_unit}"
+    private const val CLICK_ORDER_CARD = "click order card {business_unit}"
+    private const val ACTION_FIELD_CLICK_ECOMMERCE = "/order list - {business_unit}"
+    private const val ORDER_LIST_EVENT_CATEGORY = "order list"
+    private const val SUBMIT_SEARCH = "submit search from cari transaksi"
+    private const val CLICK_DATE_FILTER_CHIPS = "click date filter chips"
+    private const val CLICK_TERAPKAN_ON_DATE_FILTER_CHIPS = "click terapkan on date filter chips"
+    private const val CLICK_STATUS_FILTER_CHIPS = "click status filter chips"
+    private const val CLICK_TERAPKAN_ON_STATUS_FILTER_CHIPS = "click terapkan on status filter chips"
+    private const val CLICK_CATEGORY_FILTER_CHIPS = "click category filter chips"
+    private const val CLICK_TERAPKAN_ON_CATEGORY_FILTER_CHIPS = "click category filter chips"
+    private const val CLICK_X_CHIPS_TO_CLEAR_FILTER = "click x chips to clear filter"
+
+    @JvmStatic
+    fun sendScreenName(activity: Activity, screenName: String) {
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
+    }
+
+    private fun sendEventCategoryAction(event: String, eventCategory: String,
+                                        eventAction: String) {
+        sendEventCategoryActionLabel(event, eventCategory, eventAction, "")
+    }
+
+    private fun sendEventCategoryActionLabel(event: String, eventCategory: String,
+                                             eventAction: String, eventLabel: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                event, eventCategory, eventAction, eventLabel))
+    }
+
+    private fun viewOrderListPage(isLoggedInStatus: Boolean, userId: String) {
+        TrackApp.getInstance().gtm.sendTrackEvent(OPEN_SCREEN, mapOf(
+                EVENT to OPEN_SCREEN,
+                SCREEN_NAME to ORDER_LIST_SCREEN_NAME,
+                IS_LOGGED_IN_STATUS to isLoggedInStatus,
+                CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
+                USER_ID to userId,
+                BUSINESS_UNIT to ORDER_MANAGEMENT))
+    }
+
+    private fun submitSearch(keyword: String, userId: String) {
+        TrackApp.getInstance().gtm.sendTrackEvent(CLICK_ORDER_LIST, mapOf(
+                EVENT to CLICK_ORDER_LIST,
+                EVENT_CATEGORY to ORDER_LIST_EVENT_CATEGORY,
+                EVENT_ACTION to SUBMIT_SEARCH,
+                EVENT_LABEL to keyword,
+                CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
+                USER_ID to userId,
+                BUSINESS_UNIT to ORDER_MANAGEMENT))
+    }
+
+    private fun clickDateFilterChips(userId: String) {
+        TrackApp.getInstance().gtm.sendTrackEvent(CLICK_ORDER_LIST, mapOf(
+                EVENT to CLICK_ORDER_LIST,
+                EVENT_CATEGORY to ORDER_LIST_EVENT_CATEGORY,
+                EVENT_ACTION to CLICK_DATE_FILTER_CHIPS,
+                EVENT_LABEL to "",
+                CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
+                USER_ID to userId,
+                BUSINESS_UNIT to ORDER_MANAGEMENT))
+    }
+
+    private fun clickTerapkanOnDateFilterChips(dateOption: String, userId: String) {
+        TrackApp.getInstance().gtm.sendTrackEvent(CLICK_ORDER_LIST, mapOf(
+                EVENT to CLICK_ORDER_LIST,
+                EVENT_CATEGORY to ORDER_LIST_EVENT_CATEGORY,
+                EVENT_ACTION to CLICK_TERAPKAN_ON_DATE_FILTER_CHIPS,
+                EVENT_LABEL to dateOption,
+                CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
+                USER_ID to userId,
+                BUSINESS_UNIT to ORDER_MANAGEMENT))
+    }
+
+    private fun clickStatusFilterChips(userId: String) {
+        TrackApp.getInstance().gtm.sendTrackEvent(CLICK_ORDER_LIST, mapOf(
+                EVENT to CLICK_ORDER_LIST,
+                EVENT_CATEGORY to ORDER_LIST_EVENT_CATEGORY,
+                EVENT_ACTION to CLICK_STATUS_FILTER_CHIPS,
+                EVENT_LABEL to "",
+                CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
+                USER_ID to userId,
+                BUSINESS_UNIT to ORDER_MANAGEMENT))
+    }
+
+    private fun clickTerapkanOnStatusFilterChips(statusOption: String, userId: String) {
+        TrackApp.getInstance().gtm.sendTrackEvent(CLICK_ORDER_LIST, mapOf(
+                EVENT to CLICK_ORDER_LIST,
+                EVENT_CATEGORY to ORDER_LIST_EVENT_CATEGORY,
+                EVENT_ACTION to CLICK_TERAPKAN_ON_STATUS_FILTER_CHIPS,
+                EVENT_LABEL to statusOption,
+                CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
+                USER_ID to userId,
+                BUSINESS_UNIT to ORDER_MANAGEMENT))
+    }
+
+    private fun clickCategoryFilterChips(userId: String) {
+        TrackApp.getInstance().gtm.sendTrackEvent(CLICK_ORDER_LIST, mapOf(
+                EVENT to CLICK_ORDER_LIST,
+                EVENT_CATEGORY to ORDER_LIST_EVENT_CATEGORY,
+                EVENT_ACTION to CLICK_CATEGORY_FILTER_CHIPS,
+                EVENT_LABEL to "",
+                CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
+                USER_ID to userId,
+                BUSINESS_UNIT to ORDER_MANAGEMENT))
+    }
+
+    private fun clickTerapkanOnCategoryFilterChips(categoryOption: String, userId: String) {
+        TrackApp.getInstance().gtm.sendTrackEvent(CLICK_ORDER_LIST, mapOf(
+                EVENT to CLICK_ORDER_LIST,
+                EVENT_CATEGORY to ORDER_LIST_EVENT_CATEGORY,
+                EVENT_ACTION to CLICK_TERAPKAN_ON_CATEGORY_FILTER_CHIPS,
+                EVENT_LABEL to categoryOption,
+                CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
+                USER_ID to userId,
+                BUSINESS_UNIT to ORDER_MANAGEMENT))
+    }
+
+    private fun clickXChipsToClearFilter(userId: String) {
+        TrackApp.getInstance().gtm.sendTrackEvent(CLICK_ORDER_LIST, mapOf(
+                EVENT to CLICK_ORDER_LIST,
+                EVENT_CATEGORY to ORDER_LIST_EVENT_CATEGORY,
+                EVENT_ACTION to CLICK_X_CHIPS_TO_CLEAR_FILTER,
+                EVENT_LABEL to "",
+                CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
+                USER_ID to userId,
+                BUSINESS_UNIT to ORDER_MANAGEMENT))
+    }
+
+    private fun viewOrderCard(verticalLabel: String, userId: String, impressions: ECommerceImpressions.Impressions) {
+        val arrayListImpressions: ArrayList<ECommerceImpressions.Impressions> = arrayListOf()
+        arrayListImpressions.add(impressions)
+        val eCommerce = ECommerceImpressions(
+                impressions = arrayListImpressions
+        )
+        val bundle = Bundle().apply {
+            putString(EVENT, PRODUCT_VIEW)
+            putString(EVENT_CATEGORY, ORDER_LIST_EVENT_CATEGORY)
+            putString(EVENT_ACTION, VIEW_ORDER_CARD.replace(BUSINESS_UNIT_REPLACEE, verticalLabel))
+            putString(EVENT_LABEL, "")
+            putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
+            putString(USER_ID, userId)
+            putString(BUSINESS_UNIT, ORDER_MANAGEMENT)
+            putParcelable(ECOMMERCE, eCommerce)
+        }
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(PRODUCT_VIEW, bundle)
+    }
+
+    private fun clickOrderCard(verticalLabel: String, userId: String, arrayListProducts: ArrayList<ECommerceClick.Products>) {
+        val eCommerceClick = ECommerceClick(actionField = ECommerceClick.ActionField(
+                                            list = ACTION_FIELD_CLICK_ECOMMERCE.replace(BUSINESS_UNIT_REPLACEE, verticalLabel)
+        ),
+        products = arrayListProducts)
+        val bundle = Bundle().apply {
+            putString(EVENT, PRODUCT_CLICK)
+            putString(EVENT_CATEGORY, ORDER_LIST_EVENT_CATEGORY)
+            putString(EVENT_ACTION, CLICK_ORDER_CARD.replace(BUSINESS_UNIT_REPLACEE, verticalLabel))
+            putString(EVENT_LABEL, "")
+            putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
+            putString(USER_ID, userId)
+            putString(BUSINESS_UNIT, ORDER_MANAGEMENT)
+            putParcelable(ECOMMERCE, eCommerceClick)
+        }
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(PRODUCT_CLICK, bundle)
+    }
+}
