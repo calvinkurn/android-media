@@ -84,7 +84,6 @@ class EventHomeFragment : BaseDaggerFragment(), FragmentView, MenuSheet.ItemClic
 
     override fun onResume() {
         super.onResume()
-        EventHomePageTracking.getInstance().openHomeEvent()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -126,6 +125,7 @@ class EventHomeFragment : BaseDaggerFragment(), FragmentView, MenuSheet.ItemClic
     }
 
     private fun onSuccessGetData(data: List<HomeEventItem<*>>) {
+        EventHomePageTracking.getInstance().openHomeEvent()
         shimering_layout.visibility = View.GONE
         homeAdapter.setItems(data)
         performanceMonitoring.stopTrace()

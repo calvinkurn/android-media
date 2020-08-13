@@ -24,7 +24,7 @@ class CategoryEventViewHolder(itemView: View) : HomeEventViewHolder<CategoryView
     val listAdapter = InnerCategoryItemAdapter()
 
     init {
-        itemView.list.apply {
+        itemView.ent_recycle_view_category.apply {
             setHasFixedSize(true)
             layoutManager = GridLayoutManager(itemView.context, 5)
             adapter = listAdapter

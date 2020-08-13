@@ -26,7 +26,7 @@ class EventLocationEventViewHolder(itemView: View) : HomeEventViewHolder<EventLo
     var itemAdapter = InnerItemAdapter()
 
     init {
-        itemView.ent_recycle_view.apply {
+        itemView.ent_recycle_view_location.apply {
             layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
             adapter = itemAdapter
         }
@@ -63,10 +63,10 @@ class EventLocationEventViewHolder(itemView: View) : HomeEventViewHolder<EventLo
                         position + 1)
             })
             holder.view.setOnClickListener {
-                RouteManager.route(holder.view.context,
-                        ApplinkConstInternalEntertainment.EVENT_CATEGORY,"", item.id, item.title)
                 EventHomePageTracking.getInstance().clickLocationEvent(item, items,
                         position + 1)
+                RouteManager.route(holder.view.context,
+                        ApplinkConstInternalEntertainment.EVENT_CATEGORY,"", item.id, item.title)
             }
         }
 

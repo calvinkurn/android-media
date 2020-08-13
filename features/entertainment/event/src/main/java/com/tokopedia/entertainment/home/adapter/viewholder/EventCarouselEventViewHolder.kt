@@ -31,7 +31,7 @@ class EventCarouselEventViewHolder(itemView: View, action: ((data: EventItemMode
     var itemAdapter = InnerItemAdapter(action)
 
     init {
-        itemView.ent_recycle_view.apply {
+        itemView.ent_recycle_view_carousel.apply {
             layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL,
                     false)
             adapter = itemAdapter
