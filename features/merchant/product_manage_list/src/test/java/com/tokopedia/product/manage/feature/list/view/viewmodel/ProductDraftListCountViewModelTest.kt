@@ -37,33 +37,6 @@ class ProductDraftListCountViewModelTest: ProductDraftListCountViewModelTestFixt
     }
 
     @Test
-    fun `when fetchAllDraftCountWithUpdateUploading success should call getAllDraftCount`() {
-        onFetchAllDraftCountWithUpdateUploading_thenReturn(false)
-
-        viewModel.fetchAllDraftCountWithUpdateUploading()
-
-        verifyGetAllDraftCountCalled()
-    }
-
-    @Test
-    fun `when fetchAllDraftCountWithUpdateUploading error should call getAllDraftCount`() {
-        val error = NullPointerException()
-
-        onFetchAllDraftCountWithUpdateUploading_thenReturn(error)
-
-        viewModel.fetchAllDraftCountWithUpdateUploading()
-
-        verifyGetAllDraftCountCalled()
-    }
-
-    @Test
-    fun `when clearAllDraft should call clear draft use case`() {
-        viewModel.clearAllDraft()
-
-        verifyClearAllDraftCalled()
-    }
-
-    @Test
     fun `when detachView should unsubscribe all use cases`() {
         viewModel.detachView()
 

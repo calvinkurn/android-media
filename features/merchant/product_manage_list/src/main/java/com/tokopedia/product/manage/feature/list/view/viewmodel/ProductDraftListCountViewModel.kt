@@ -5,8 +5,6 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.product.manage.common.coroutine.CoroutineDispatchers
 import com.tokopedia.product.manage.common.draft.domain.usecase.GetAllProductsCountDraftUseCase
-import com.tokopedia.product.manage.feature.list.domain.ClearAllDraftProductUseCase
-import com.tokopedia.product.manage.item.main.draft.domain.UpdateUploadingDraftProductUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -16,8 +14,6 @@ import javax.inject.Inject
 
 class ProductDraftListCountViewModel @Inject constructor(
     private val getAllProductsCountDraftUseCase: GetAllProductsCountDraftUseCase,
-    private val clearAllDraftProductUseCase: ClearAllDraftProductUseCase,
-    private val updateUploadingDraftProductUseCase: UpdateUploadingDraftProductUseCase,
     private val dispatchers: CoroutineDispatchers
 ): BaseViewModel(dispatchers.main) {
 
@@ -37,31 +33,7 @@ class ProductDraftListCountViewModel @Inject constructor(
         }
     }
 
-    fun fetchAllDraftCountWithUpdateUploading() {
-        launchCatchError(block = {
-            withContext(dispatchers.io) {
-                val params = UpdateUploadingDraftProductUseCase.createRequestParamsUpdateAll(false)
-                updateUploadingDraftProductUseCase.getData(params)
-            }
-            getAllDraftCount()
-        }) {
-            getAllDraftCount()
-        }
-    }
-
-    fun clearAllDraft() {
-        launchCatchError(block = {
-            withContext(dispatchers.io) {
-                clearAllDraftProductUseCase.getData(RequestParams.EMPTY)
-            }
-        }) {
-            // do nothing
-        }
-    }
-
     fun detachView() {
         getAllProductsCountDraftUseCase.unsubscribe()
-        clearAllDraftProductUseCase.unsubscribe()
-        updateUploadingDraftProductUseCase.unsubscribe()
     }
 }
