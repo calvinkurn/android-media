@@ -5,18 +5,16 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.navigation.R
 import com.tokopedia.navigation.domain.model.InboxTopAdsBannerUiModel
 import com.tokopedia.topads.sdk.listener.TopAdsImageVieWApiResponseListener
+import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
 import com.tokopedia.topads.sdk.widget.TopAdsImageView
 
 class InboxTopAdsBannerViewHolder constructor(
         itemView: View?,
-        private val listener: Listener
+        private val topAdsResponseListener: TopAdsImageVieWApiResponseListener,
+        private val topAdsClickListener: TopAdsImageViewClickListener
 ) : AbstractViewHolder<InboxTopAdsBannerUiModel>(itemView) {
 
     private val topAdsBanner: TopAdsImageView? = itemView?.findViewById(R.id.topads_banner)
-
-    interface Listener {
-        fun getTopAdsResponseListener(): TopAdsImageVieWApiResponseListener
-    }
 
     override fun bind(element: InboxTopAdsBannerUiModel, payloads: MutableList<Any>) {
         if (payloads.isNotEmpty() && payloads[0] == PAYLOAD_UPDATE_AD) {
@@ -39,11 +37,12 @@ class InboxTopAdsBannerViewHolder constructor(
 
     private fun bindTopAds(element: InboxTopAdsBannerUiModel) {
         if (element.hasAd()) return
-        topAdsBanner?.setApiResponseListener(listener.getTopAdsResponseListener())
+        topAdsBanner?.setApiResponseListener(topAdsResponseListener)
+        topAdsBanner?.setTopAdsImageViewClick(topAdsClickListener)
         topAdsBanner?.getImageData(
                 "5",
                 1,
-                3,
+                4,
                 "",
                 "",
                 ""

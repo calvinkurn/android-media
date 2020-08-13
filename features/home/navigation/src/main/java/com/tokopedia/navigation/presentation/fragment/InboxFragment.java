@@ -47,6 +47,7 @@ import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel;
 import com.tokopedia.topads.sdk.listener.TopAdsImageVieWApiResponseListener;
+import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener;
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
@@ -67,7 +68,7 @@ import kotlin.jvm.functions.Function2;
  * Created by meta on 19/06/18.
  */
 public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent, InboxPresenter> implements
-        InboxView, InboxAdapterListener, RecommendationListener, InboxTopAdsBannerViewHolder.Listener, TopAdsImageVieWApiResponseListener {
+        InboxView, InboxAdapterListener, RecommendationListener, TopAdsImageVieWApiResponseListener, TopAdsImageViewClickListener {
 
     public static final int CHAT_MENU = 0;
     public static final int DISCUSSION_MENU = 1;
@@ -212,7 +213,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
         presenter.setView(this);
 
         List<Visitable> dataInbox = getData();
-        InboxAdapterTypeFactory typeFactory = new InboxAdapterTypeFactory(this, this, this);
+        InboxAdapterTypeFactory typeFactory = new InboxAdapterTypeFactory(this, this, this, this);
         adapter = new InboxAdapter(typeFactory, dataInbox);
 
         emptyLayout = view.findViewById(R.id.empty_layout);
@@ -315,12 +316,6 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
         }else {
             onImpressionOrganic(item);
         }
-    }
-
-    @NotNull
-    @Override
-    public TopAdsImageVieWApiResponseListener getTopAdsResponseListener() {
-        return this;
     }
 
     private void intiInjector() {
@@ -488,5 +483,11 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     @Override
     public void onError(@NotNull Throwable t) {
 
+    }
+
+    @Override
+    public void onTopAdsImageViewClicked(@org.jetbrains.annotations.Nullable String applink) {
+        if (applink == null) return;
+        RouteManager.route(getContext(), applink);
     }
 }

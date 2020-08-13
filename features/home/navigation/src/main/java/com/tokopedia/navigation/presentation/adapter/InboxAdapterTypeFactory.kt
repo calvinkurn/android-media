@@ -16,6 +16,8 @@ import com.tokopedia.navigation.presentation.adapter.viewholder.RecomTitleViewHo
 import com.tokopedia.navigation.presentation.adapter.viewholder.RecommendationViewHolder
 import com.tokopedia.navigation.presentation.view.InboxAdapterListener
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
+import com.tokopedia.topads.sdk.listener.TopAdsImageVieWApiResponseListener
+import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
 
 /**
  * Author errysuprayogi on 13,March,2019
@@ -23,7 +25,8 @@ import com.tokopedia.recommendation_widget_common.listener.RecommendationListene
 class InboxAdapterTypeFactory constructor(
         private val listener: InboxAdapterListener,
         private val recommendationListener: RecommendationListener,
-        private val topAdsListener: InboxTopAdsBannerViewHolder.Listener
+        private val topAdsResponseListener: TopAdsImageVieWApiResponseListener,
+        private val topAdsClickListener: TopAdsImageViewClickListener
 ) : BaseAdapterTypeFactory(), InboxTypeFactory {
 
     override fun type(inbox: Inbox): Int {
@@ -44,11 +47,11 @@ class InboxAdapterTypeFactory constructor(
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
-            InboxTopAdsBannerViewHolder.LAYOUT -> InboxTopAdsBannerViewHolder(view, topAdsListener)
+            InboxTopAdsBannerViewHolder.LAYOUT -> InboxTopAdsBannerViewHolder(view, topAdsResponseListener, topAdsClickListener)
             InboxViewHolder.LAYOUT -> InboxViewHolder(view, listener)
             RecommendationViewHolder.LAYOUT -> RecommendationViewHolder(view, recommendationListener)
             RecomTitleViewHolder.LAYOUT -> RecomTitleViewHolder(view)
-            LoadingMoreViewHolder.LAYOUT -> object : LoadingMoreViewHolder(view){
+            LoadingMoreViewHolder.LAYOUT -> object : LoadingMoreViewHolder(view) {
                 override fun bind(element: LoadingMoreModel?) {
                 }
             }
