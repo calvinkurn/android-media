@@ -84,8 +84,12 @@ object DynamicProductDetailMapper {
                     listOfComponent.add(ProductShopCredibilityDataModel(type = component.type, name = component.componentName))
                 }
                 ProductDetailConstant.PRODUCT_CUSTOM_INFO -> {
-                    //TODO
-                    listOfComponent.add(ProductShopCredibilityDataModel(type = component.type, name = component.componentName))
+                    val contentData = component.componentData.firstOrNull()
+                    val customInfoData = mapToCustomInfoUiModel(contentData, component.componentName, component.type)
+
+                    customInfoData?.let {
+                        listOfComponent.add(it)
+                    }
                 }
             }
         }
@@ -204,6 +208,19 @@ object DynamicProductDetailMapper {
                 ProductInfoContent(it.row, it.content)
             }
         }
+    }
+
+    private fun mapToCustomInfoUiModel(componentData: ComponentData?, componentName: String, componentType: String): ProductCustomInfoDataModel? {
+        if (componentData == null) return null
+
+        return ProductCustomInfoDataModel(
+                name = componentName,
+                type = componentType,
+                title = componentData.title,
+                applink = if (componentData.isApplink) componentData.applink else "",
+                description = componentData.description,
+                icon = componentData.icon,
+                separator = componentData.separator)
     }
 
     fun generateProductReportFallback(productUrl: String): String {
