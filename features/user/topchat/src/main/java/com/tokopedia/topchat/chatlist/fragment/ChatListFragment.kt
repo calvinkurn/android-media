@@ -221,6 +221,7 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
                     "https://www.tokopedia.com/help/article/toko-saya-dimoderasi" +
                     "\">Ketentuan Pengguna Tokopedia.</a>"
             show()
+            tickerTitle = this.context.getString(R.string.title_topchat_chat_banned_seller)
             setHtmlDescription(description)
             setDescriptionClickEvent(object : TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
