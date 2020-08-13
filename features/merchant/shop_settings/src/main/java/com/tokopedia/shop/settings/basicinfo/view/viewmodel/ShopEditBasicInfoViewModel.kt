@@ -45,7 +45,7 @@ class ShopEditBasicInfoViewModel @Inject constructor(
         launchCatchError(block = {
             val data = withContext(dispatchers.io) {
                 val allowShopNameDomainChanges = getAllowShopNameDomainChanges.executeOnBackground()
-                allowShopNameDomainChanges.data.copy(isDomainAllowed = false, reasonDomainNotAllowed = "Udah pernah ganti domain")
+                allowShopNameDomainChanges.data
             }
             _allowShopNameDomainChanges.value = Success(data)
         }) {
