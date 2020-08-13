@@ -318,15 +318,12 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             } else {
                 ProductAddMainTracking.clickAddWholesale(shopId)
             }
-            wholeSaleInputFormsAdapter?.itemCount?.let {
-                if (it >= AddEditProductDetailConstants.MAX_WHOLESALE_PRICES - 1) {
-                    addNewWholeSalePriceButton?.visibility = View.GONE
-                }
-            }
+
             val productPriceInput = productPriceField?.textFieldInput?.editableText.toString().replace(".", "")
             wholeSaleInputFormsAdapter?.setProductPrice(productPriceInput)
             wholeSaleInputFormsAdapter?.addNewWholeSalePriceForm()
             validateWholeSaleInput(viewModel, productWholeSaleInputFormsView, productWholeSaleInputFormsView?.childCount, isAddingWholeSale = true)
+            updateAddNewWholeSalePriceButtonVisibility()
         }
 
         // add edit product stock views
@@ -555,6 +552,14 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         subscribeToPreOrderSwitchStatus()
         subscribeToPreOrderDurationInputStatus()
         subscribeToInputStatus()
+    }
+
+    private fun updateAddNewWholeSalePriceButtonVisibility() {
+        wholeSaleInputFormsAdapter?.itemCount?.let {
+            if (it >= AddEditProductDetailConstants.MAX_WHOLESALE_PRICES) {
+                addNewWholeSalePriceButton?.visibility = View.GONE
+            }
+        }
     }
 
     private fun validateInput() {
@@ -923,6 +928,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             productWholeSaleSwitch?.isChecked = true
             wholeSaleInputFormsAdapter?.setWholeSaleInputModels(detailInputModel.wholesaleList)
             viewModel.isWholeSalePriceActivated.value = true
+            updateAddNewWholeSalePriceButtonVisibility()
         }
 
         // product pre order
