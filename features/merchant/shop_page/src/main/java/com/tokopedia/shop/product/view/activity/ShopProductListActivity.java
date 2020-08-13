@@ -109,6 +109,7 @@ public class ShopProductListActivity extends BaseSimpleActivity
         }
         Uri data = getIntent().getData();
         if (null != data) {
+            data = RouteManager.getIntent(this,getIntent().getData().toString()).getData();
             List<String> pathSegments = data.getPathSegments();
             getShopIdFromUri(data, pathSegments);
             getEtalaseIdFromUri(data, pathSegments);
