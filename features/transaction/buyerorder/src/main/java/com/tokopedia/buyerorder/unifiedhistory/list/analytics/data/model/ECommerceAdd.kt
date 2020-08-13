@@ -2,8 +2,6 @@ package com.tokopedia.buyerorder.unifiedhistory.list.analytics.data.model
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.atc_common.domain.mapper.AddToCartDataMapper
-import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts
 import kotlinx.android.parcel.Parcelize
 
 /**
