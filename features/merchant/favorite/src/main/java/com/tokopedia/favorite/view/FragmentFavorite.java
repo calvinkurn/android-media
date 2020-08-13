@@ -384,7 +384,7 @@ public class FragmentFavorite extends BaseDaggerFragment
         FavoriteAdapterTypeFactory typeFactoryForList = new FavoriteAdapterTypeFactory(this);
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-        favoriteAdapter = new FavoriteAdapter(typeFactoryForList, new ArrayList<Visitable>());
+        favoriteAdapter = new FavoriteAdapter(typeFactoryForList, new ArrayList<>());
         DefaultItemAnimator animator = new DefaultItemAnimator();
         animator.setAddDuration(DURATION_ANIMATOR);
         recylerviewScrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
