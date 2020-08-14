@@ -72,6 +72,12 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
         searchResultviewModel = viewModelProvider.get(HotelSearchResultViewModel::class.java)
         arguments?.let {
             val hotelSearchModel = it.getParcelable(ARG_HOTEL_SEARCH_MODEL) ?: HotelSearchModel()
+
+            val selectedParam = it.getParcelable(ARG_FILTER_PARAM) ?: ParamFilterV2()
+            if (selectedParam.name.isNotEmpty()) {
+                searchResultviewModel.searchParam.filters.add(selectedParam)
+            }
+
             searchResultviewModel.initSearchParam(hotelSearchModel)
             searchDestinationName = hotelSearchModel.name
             searchDestinationType = if (hotelSearchModel.searchType.isNotEmpty()) hotelSearchModel.searchType else hotelSearchModel.type
@@ -396,12 +402,14 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
         private const val REQUEST_CODE_DETAIL_HOTEL = 101
 
         const val ARG_HOTEL_SEARCH_MODEL = "arg_hotel_search_model"
+        const val ARG_FILTER_PARAM = "arg_hotel_filter_param"
 
-        fun createInstance(hotelSearchModel: HotelSearchModel): HotelSearchResultFragment {
+        fun createInstance(hotelSearchModel: HotelSearchModel, selectedParam: ParamFilterV2): HotelSearchResultFragment {
 
             return HotelSearchResultFragment().also {
                 it.arguments = Bundle().apply {
                     putParcelable(ARG_HOTEL_SEARCH_MODEL, hotelSearchModel)
+                    putParcelable(ARG_FILTER_PARAM, selectedParam)
                 }
             }
         }
