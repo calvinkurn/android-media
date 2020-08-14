@@ -6,7 +6,7 @@ import com.tokopedia.usecase.UseCase
 import rx.Observable
 import javax.inject.Inject
 
-class GetAllProductsCountDraftUseCase @Inject constructor(
+class GetAllDraftProductsCountUseCase @Inject constructor(
     private val draftRepository: AddEditProductDraftRepository
 ): UseCase<Long>() {
 

@@ -1,7 +1,6 @@
 package com.tokopedia.product.manage.feature.list.view.fragment
 
 import android.app.Activity.RESULT_OK
-import android.app.ActivityManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -150,6 +149,7 @@ class ProductManageSellerFragment : ProductManageFragment() {
     }
 
     private fun onDraftCountLoadError() {
+        productDraftListCountViewModel.clearAllDraft()
         tvDraftProduct.visibility = View.GONE
     }
 

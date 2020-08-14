@@ -37,6 +37,20 @@ class ProductDraftListCountViewModelTest: ProductDraftListCountViewModelTestFixt
     }
 
     @Test
+    fun `when getAllDraftCount should call get all draft count use case`() {
+        viewModel.getAllDraftCount()
+
+        verifyGetAllDraftCountCalled()
+    }
+
+    @Test
+    fun `when clearAllDraft should call clear draft use case`() {
+        viewModel.clearAllDraft()
+
+        verifyClearAllDraftCalled()
+    }
+
+    @Test
     fun `when detachView should unsubscribe all use cases`() {
         viewModel.detachView()
 
