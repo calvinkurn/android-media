@@ -69,8 +69,8 @@ class ReviewDetailViewModel @Inject constructor(private val coroutineDispatcherP
     }
 
     fun submitReputation(reputationId: Int, reputationScore: Int) {
+        _submitReputationResult.value = LoadingView()
         launchCatchError(block = {
-            _submitReputationResult.value = LoadingView()
             val response = withContext(coroutineDispatcherProvider.io()) {
                 inboxReviewInsertReputationUseCase.setParams(reputationId, reputationScore, userSession.userId.toIntOrZero())
                 inboxReviewInsertReputationUseCase.executeOnBackground()

@@ -128,6 +128,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
             ReviewDetailTracking.eventClickSmiley(it.data.product.productId, it.data.review.feedbackId, viewModel.getUserId())
             viewModel.submitReputation(it.data.reputation.reputationId, score)
         }
+        reviewHistoryDetailReputation.onScoreSelected(score)
     }
 
     private fun getDataFromArguments() {
@@ -263,7 +264,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
                         setShopName(shopName)
                         show()
                     }
-                    editable && !isLocked -> {
+                    !isLocked -> {
                         setShopName(shopName)
                         setEditableScore(score, lockTime)
                         show()

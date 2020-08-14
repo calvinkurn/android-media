@@ -236,7 +236,6 @@
                 android:id="@+id/createReviewScore"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
                 app:layout_constraintTop_toBottomOf="@id/createReviewDivider"/>
 
             <com.tokopedia.unifycomponents.DividerUnify
@@ -244,7 +243,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/layout_lvl1"
                 android:layout_marginTop="@dimen/dp_16"
-                android:visibility="gone"
                 app:layout_constraintTop_toBottomOf="@+id/createReviewScore"/>
 
             <LinearLayout

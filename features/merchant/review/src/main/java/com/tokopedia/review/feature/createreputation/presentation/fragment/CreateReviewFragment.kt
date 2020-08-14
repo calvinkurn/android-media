@@ -196,6 +196,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
         initEmptyPhoto()
         initAnonymousText()
         if(isEditMode) {
+            hideScoreWidgetAndDivider()
             getReviewDetailData()
         } else {
             getReviewData()
@@ -413,6 +414,23 @@ class CreateReviewFragment : BaseDaggerFragment(),
 
             shopId = shopData.shopID.toString()
             setProductDetail(productData.productName, productData.productVariant.variantName, productData.productImageURL)
+            setReputation(reputation, shopData.shopName)
+        }
+    }
+
+    private fun setReputation(reputation: Reputation, shopName: String) {
+        with(reputation) {
+            if(locked) {
+                return
+            } else {
+                createReviewScore.apply {
+                    setEditableScore(score)
+                    setShopName(shopName)
+                    setReviewScoreClickListener(this@CreateReviewFragment)
+                    show()
+                }
+                createReviewScoreDivider.show()
+            }
         }
     }
 
@@ -703,6 +721,11 @@ class CreateReviewFragment : BaseDaggerFragment(),
                 }
             }
         }
+    }
+
+    private fun hideScoreWidgetAndDivider() {
+        createReviewScoreDivider.hide()
+        createReviewScore.hide()
     }
 
     fun getOrderId(): String {
