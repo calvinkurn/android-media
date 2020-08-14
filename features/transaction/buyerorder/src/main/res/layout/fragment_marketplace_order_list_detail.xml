@@ -85,7 +85,7 @@
                             android:layout_height="wrap_content"
                             app:tickerShapeType="loose"
                             app:closeButtonVisibility="gone"
-                            android:visibility="visible"/>
+                            android:visibility="gone"/>
 
                         <TextView
                             android:id="@+id/conditional_info"
