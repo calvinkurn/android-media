@@ -122,6 +122,7 @@ import com.tokopedia.navigation_common.listener.*
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.permissionchecker.PermissionCheckerHelper.PermissionCheckListener
 import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselItemDataModel
+import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerWidgetType
 import com.tokopedia.promogamification.common.floating.view.fragment.FloatingEggButtonFragment
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -276,6 +277,7 @@ open class HomeFragment : BaseDaggerFragment(),
     private var pageLoadTimeCallback: PageLoadTimePerformanceInterface? = null
     private var isOnRecylerViewLayoutAdded = false
     private var fragmentCreatedForFirstTime = false
+    private var shouldPausePlay = true
     private var lock = Object()
     private var autoRefreshFlag = HomeFlag()
     private var autoRefreshHandler = Handler()
@@ -542,6 +544,9 @@ open class HomeFragment : BaseDaggerFragment(),
         })
         stickyLoginView?.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _  ->
             val floatingEggButtonFragment = floatingEggButtonFragment
+            if (stickyLoginView.isShowing()) {
+                positionSticky = stickyLoginView.getLocation()
+            }
             floatingEggButtonFragment?.let {
                 updateEggBottomMargin(it)
             }
@@ -585,8 +590,9 @@ open class HomeFragment : BaseDaggerFragment(),
 
     override fun onResume() {
         super.onResume()
+        shouldPausePlay = true
         createAndCallSendScreen()
-        adapter?.onResume()
+        if (!shouldPausePlay) adapter?.onResume()
         conditionalViewModelRefresh()
         if (activityStateListener != null) {
             activityStateListener!!.onResume()
@@ -622,7 +628,7 @@ open class HomeFragment : BaseDaggerFragment(),
 
     override fun onPause() {
         super.onPause()
-        adapter?.onPause()
+        if(shouldPausePlay) adapter?.onPause()
         getTrackingQueueObj()?.sendAll()
         if (activityStateListener != null) {
             activityStateListener!!.onPause()
@@ -639,6 +645,7 @@ open class HomeFragment : BaseDaggerFragment(),
         adapter = null
         homeRecyclerView?.layoutManager = null
         layoutManager = null
+        getHomeViewModel().onCloseChannel()
         unRegisterBroadcastReceiverTokoCash()
     }
 
@@ -654,24 +661,30 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     private fun subscribeHome() {
-        try{
-            observeHomeData()
-            observeUpdateNetworkStatusData()
-            observeOneClickCheckout()
-            observePopupIntroOvo()
-            observeErrorEvent()
-            observeSendLocation()
-            observeStickyLogin()
-            observeTrackingData()
-            observeRequestImagePlayBanner()
-            observeViewModelInitialized()
-            observeHomeRequestNetwork()
-            observeSalamWidget()
-            observeRechargeRecommendation()
-            observePlayReminder()
-        }catch (e: Exception){
-
-        }
+        observeHomeData()
+        observeUpdateNetworkStatusData()
+        observeOneClickCheckout()
+        observePopupIntroOvo()
+        observeErrorEvent()
+        observeSendLocation()
+        observeStickyLogin()
+        observeTrackingData()
+        observeRequestImagePlayBanner()
+        observeViewModelInitialized()
+        observeHomeRequestNetwork()
+        observeSalamWidget()
+        observeRechargeRecommendation()
+        observePlayReminder()
+        observeIsNeedRefresh()
+    }
+          
+    private fun observeIsNeedRefresh() {
+        getHomeViewModel().isNeedRefresh.observe(viewLifecycleOwner, Observer { data: Event<Boolean> ->
+            val isNeedRefresh = data.peekContent()
+            if (isNeedRefresh) {
+                adapter?.resetImpressionHomeBanner()
+            }
+        })
     }
 
     private fun observeHomeRequestNetwork() {
@@ -1477,10 +1490,6 @@ open class HomeFragment : BaseDaggerFragment(),
         getHomeViewModel().getDynamicChannelData(dynamicChannelDataModel, position)
     }
 
-    override fun onBuyAgainOneClickCheckOutClick(grid: DynamicHomeChannel.Grid, channel: DynamicHomeChannel.Channels, position: Int) {
-        getHomeViewModel().getOneClickCheckout(channel, grid, position)
-    }
-
     override fun onBuyAgainCloseChannelClick(channel: DynamicHomeChannel.Channels, position: Int) {
         getHomeViewModel().onCloseBuyAgain(channel.id, position)
         TrackApp.getInstance().gtm.sendGeneralEvent(getCloseClickOnDynamicListCarousel(channel, getHomeViewModel().getUserId()))
@@ -1509,6 +1518,15 @@ open class HomeFragment : BaseDaggerFragment(),
 
     override fun onPlayBannerReminderClick(playBannerCarouselItemDataModel: PlayBannerCarouselItemDataModel) {
         getHomeViewModel().setToggleReminderPlayBanner(playBannerCarouselItemDataModel.channelId, playBannerCarouselItemDataModel.remindMe)
+    }
+
+    override fun onPlayV2Click(playBannerCarouselItemDataModel: PlayBannerCarouselItemDataModel) {
+        if(playBannerCarouselItemDataModel.widgetType != PlayBannerWidgetType.UPCOMING && playBannerCarouselItemDataModel.widgetType != PlayBannerWidgetType.NONE) {
+            val intent = RouteManager.getIntent(activity, ApplinkConstInternalContent.PLAY_DETAIL, playBannerCarouselItemDataModel.channelId)
+            startActivityForResult(intent, REQUEST_CODE_PLAY_ROOM)
+        } else {
+            RouteManager.route(context, playBannerCarouselItemDataModel.applink)
+        }
     }
 
     private fun openApplink(applink: String, trackingAttribution: String) {
@@ -1565,8 +1583,8 @@ open class HomeFragment : BaseDaggerFragment(),
         getHomeViewModel().getBusinessUnitTabData(position)
     }
 
-    override fun getBusinessUnit(tabId: Int, position: Int) {
-        getHomeViewModel().getBusinessUnitData(tabId, position)
+    override fun getBusinessUnit(tabId: Int, position: Int, tabName: String) {
+        getHomeViewModel().getBusinessUnitData(tabId, position, tabName)
     }
 
     override fun getPlayChannel(position: Int) {
@@ -1587,9 +1605,9 @@ open class HomeFragment : BaseDaggerFragment(),
 
     override fun onPromoScrolled(bannerSlidesModel: BannerSlidesModel) {
         HomeTrackingUtils.homeSlidingBannerImpression(context, bannerSlidesModel, bannerSlidesModel.position)
-        if (bannerSlidesModel.type == BannerSlidesModel.TYPE_BANNER_PERSO && !bannerSlidesModel.isInvoke) {
+        if (bannerSlidesModel.type == BannerSlidesModel.TYPE_BANNER_PERSO) {
             putEEToTrackingQueue(getOverlayBannerImpression(bannerSlidesModel) as HashMap<String, Any>)
-        } else if (!bannerSlidesModel.isInvoke) {
+        } else {
             if (bannerSlidesModel.topadsViewUrl.isNotEmpty()) {
                 TopAdsUrlHitter(className).hitImpressionUrl(context, bannerSlidesModel.topadsViewUrl,
                         bannerSlidesModel.id.toString(),
@@ -1604,14 +1622,21 @@ open class HomeFragment : BaseDaggerFragment(),
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
+        resetAutoPlay(isVisibleToUser)
         trackScreen(isVisibleToUser)
-        restartBanner(isVisibleToUser)
+        conditionalViewModelRefresh()
     }
 
     private fun restartBanner(isVisibleToUser: Boolean) {
         if (isVisibleToUser && view != null && adapter != null) {
             adapter?.notifyDataSetChanged()
         }
+    }
+
+    private fun resetAutoPlay(isVisibleToUser: Boolean){
+        shouldPausePlay = !isVisibleToUser
+        if(shouldPausePlay && view != null && adapter != null) adapter?.onPause()
+        else adapter?.onResume()
     }
 
     private fun trackScreen(isVisibleToUser: Boolean) {
@@ -1882,7 +1907,6 @@ open class HomeFragment : BaseDaggerFragment(),
             stickyLoginView.setContent(tickerDetail)
             stickyLoginView.show(StickyLoginConstant.Page.HOME)
             if (stickyLoginView.isShowing()) {
-                positionSticky = stickyLoginView?.getLocation()
                 stickyLoginView.tracker.viewOnPage(StickyLoginConstant.Page.HOME)
             }
         }
@@ -1950,6 +1974,7 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     override fun onOpenPlayActivity(root: View, channelId: String?) {
+        shouldPausePlay = false
         val intent = RouteManager.getIntent(activity, ApplinkConstInternalContent.PLAY_DETAIL, channelId)
         val options = ActivityOptionsCompat.makeSceneTransitionAnimation(activity!!,
                 Pair.create(root.findViewById(R.id.exo_content_frame), getString(R.string.home_transition_video))

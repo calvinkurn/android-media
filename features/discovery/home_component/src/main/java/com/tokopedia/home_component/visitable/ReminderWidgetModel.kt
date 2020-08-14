@@ -15,8 +15,8 @@ data class ReminderWidgetModel(
     }
 
     override fun equalsWith(b: Any?): Boolean {
-        return if (b is ReminderWidget) {
-            data == b
+        return if (b is ReminderWidgetModel) {
+            data == b.data
         } else false
     }
 

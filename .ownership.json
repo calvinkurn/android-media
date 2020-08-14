@@ -1,21 +1,24 @@
 {
   "repository_name": "android-tokopedia-core",
   "description": "Code base for android application (seller app & customer app).",
-  "security_owner": "ricoharisin",
+  "directorate": "TECH",
+  "namespace": "android",
+  "security_owner": "rico.harisin@tokopedia.com",
   "app": [
     {
       "name": "customerapp",
       "description": "Code base for customerapp",
-      "owner": "ricoharisin",
+      "owner": "rico.harisin@tokopedia.com",
       "slack_channel": "mobileapp",
       "db": []
     },
-    {
+     {
       "name": "sellerapp",
       "description": "Code base for sellerapp",
-      "owner": "milhamj",
+      "owner": "ilham.jamaludin@tokopedia.com",
       "slack_channel": "mobileapp",
       "db": []
     }
-  ]
+  ],
+  "last_update":"04/08/2020"
 }

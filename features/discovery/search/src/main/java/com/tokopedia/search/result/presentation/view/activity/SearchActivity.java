@@ -15,12 +15,11 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -46,17 +45,11 @@ import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.common.model.SearchParameter;
 import com.tokopedia.discovery.common.utils.URLParser;
-import com.tokopedia.filter.common.data.Filter;
-import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking;
-import com.tokopedia.filter.newdynamicfilter.analytics.FilterTrackingData;
-import com.tokopedia.filter.newdynamicfilter.view.BottomSheetListener;
-import com.tokopedia.filter.widget.BottomSheetFilterView;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.search.R;
 import com.tokopedia.search.analytics.SearchTracking;
-import com.tokopedia.search.result.presentation.model.ChildViewVisibilityChangedModel;
 import com.tokopedia.search.result.presentation.view.adapter.SearchSectionPagerAdapter;
-import com.tokopedia.search.result.presentation.view.fragment.ProductListFragment;
+import com.tokopedia.search.result.presentation.view.fragment.ProfileListFragment;
 import com.tokopedia.search.result.presentation.view.listener.RedirectionListener;
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener;
 import com.tokopedia.search.result.presentation.view.listener.SearchPerformanceMonitoringListener;
@@ -67,12 +60,10 @@ import com.tokopedia.search.utils.CountDrawable;
 import com.tokopedia.search.utils.UrlParamUtils;
 import com.tokopedia.user.session.UserSessionInterface;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -92,28 +83,22 @@ import static com.tokopedia.discovery.common.constants.SearchConstant.SearchTabP
 public class SearchActivity extends BaseActivity
         implements
         RedirectionListener,
-        BottomSheetListener,
         SearchNavigationListener,
         SearchPerformanceMonitoringListener,
         HasComponent<BaseAppComponent> {
 
     private Toolbar toolbar;
-    private FrameLayout container;
+    private LinearLayout container;
     private ProgressBar loadingView;
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private SearchSectionPagerAdapter searchSectionPagerAdapter;
-    private View buttonFilter;
-    private View buttonSort;
-    private View searchNavDivider;
-    private View searchNavContainer;
     private View backButton;
     private TextView searchTextView;
     private ImageView buttonChangeGrid;
     private ImageView buttonCart;
     private ImageView buttonHome;
     private View topBarShadow;
-    private BottomSheetFilterView bottomSheetFilterView;
     private SearchNavigationListener.ClickListener searchNavigationClickListener;
 
     private String productTabTitle;
@@ -209,11 +194,6 @@ public class SearchActivity extends BaseActivity
         loadingView = findViewById(R.id.progressBar);
         tabLayout = findViewById(R.id.tabs);
         viewPager = findViewById(R.id.pager);
-        bottomSheetFilterView = findViewById(R.id.bottomSheetFilter);
-        buttonFilter = findViewById(R.id.button_filter);
-        buttonSort = findViewById(R.id.button_sort);
-        searchNavDivider = findViewById(R.id.search_nav_divider);
-        searchNavContainer = findViewById(R.id.search_nav_container);
         backButton = findViewById(R.id.action_up_btn);
         searchTextView = findViewById(R.id.searchTextView);
         buttonChangeGrid = findViewById(R.id.search_change_grid_button);
@@ -225,13 +205,6 @@ public class SearchActivity extends BaseActivity
     protected void prepareView() {
         initToolbar();
         initViewPager();
-        initBottomSheetListener();
-        initSearchNavigationListener();
-        bottomSheetFilterView.initFilterBottomSheet(new FilterTrackingData(
-                FilterEventTracking.Event.CLICK_SEARCH_RESULT,
-                FilterEventTracking.Category.FILTER_PRODUCT,
-                "",
-                FilterEventTracking.Category.PREFIX_SEARCH_RESULT_PAGE));
     }
 
     private void initToolbar() {
@@ -341,82 +314,6 @@ public class SearchActivity extends BaseActivity
         }
     }
 
-    private void initBottomSheetListener() {
-        bottomSheetFilterView.setCallback(new BottomSheetFilterView.Callback() {
-            @Override
-            public void onApplyFilter(Map<String, String> queryParams) {
-                applyBottomSheetFilter(queryParams);
-            }
-
-            @Override
-            public void onShow() { }
-
-            @Override
-            public void onHide() {
-                sendBottomSheetHideEventForProductList();
-            }
-
-            @NotNull
-            @Override
-            public AppCompatActivity getActivity() {
-                return SearchActivity.this;
-            }
-        });
-    }
-
-    private void applyBottomSheetFilter(Map<String, String> queryParams) {
-        if (isViewPagerCurrentItemPositionIsInvalid()) return;
-
-        Fragment fragmentItem = searchSectionPagerAdapter.getRegisteredFragmentAtPosition(viewPager.getCurrentItem());
-        if (fragmentItem instanceof ProductListFragment) {
-            ProductListFragment selectedFragment = (ProductListFragment) fragmentItem;
-
-            selectedFragment.refreshSearchParameter(queryParams);
-            selectedFragment.refreshFilterController(new HashMap<>(queryParams));
-            selectedFragment.clearDataFilterSort();
-            selectedFragment.reloadData();
-        }
-    }
-
-    private boolean isViewPagerCurrentItemPositionIsInvalid() {
-        return viewPager.getCurrentItem() < 0
-                || viewPager.getCurrentItem() >= searchSectionPagerAdapter.getCount();
-    }
-
-    @Override
-    public void hideBottomNavigation() {
-        searchNavContainer.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void showBottomNavigation() {
-        searchNavContainer.setVisibility(View.VISIBLE);
-    }
-
-    private void sendBottomSheetHideEventForProductList() {
-        if (isViewPagerCurrentItemPositionIsInvalid()) return;
-
-        Fragment fragmentItem = searchSectionPagerAdapter.getRegisteredFragmentAtPosition(viewPager.getCurrentItem());
-
-        if (fragmentItem instanceof ProductListFragment) {
-            ProductListFragment selectedFragment = (ProductListFragment) fragmentItem;
-            selectedFragment.onBottomSheetHide();
-        }
-    }
-
-    private void initSearchNavigationListener() {
-        buttonFilter.setOnClickListener(view -> {
-            if (searchNavigationClickListener != null) {
-                searchNavigationClickListener.onFilterClick();
-            }
-        });
-        buttonSort.setOnClickListener(view -> {
-            if (searchNavigationClickListener != null) {
-                searchNavigationClickListener.onSortClick();
-            }
-        });
-    }
-
     private void handleIntent() {
         initResources();
         initViewModel();
@@ -439,8 +336,6 @@ public class SearchActivity extends BaseActivity
     private void observeViewModel() {
         observeAutoCompleteEvent();
         observeHideLoadingEvent();
-        observeChildViewVisibilityChangedEvent();
-        observeBottomNavigationVisibility();
     }
 
     private void observeAutoCompleteEvent() {
@@ -471,36 +366,6 @@ public class SearchActivity extends BaseActivity
         });
     }
 
-    private void observeChildViewVisibilityChangedEvent() {
-        if (searchViewModel == null) return;
-
-        searchViewModel.getChildViewVisibleEventLiveData().observe(this, childViewVisibilityChangedEvent -> {
-            if (childViewVisibilityChangedEvent != null) {
-                ChildViewVisibilityChangedModel childViewVisibilityChangedModel = childViewVisibilityChangedEvent.getContentIfNotHandled();
-
-                if (childViewVisibilityChangedModel != null) {
-                    setupSearchNavigation(
-                            childViewVisibilityChangedModel.getSearchNavigationOnClickListener(),
-                            childViewVisibilityChangedModel.isSortEnabled()
-                    );
-                }
-            }
-        });
-    }
-
-    private void observeBottomNavigationVisibility() {
-        if (searchViewModel == null) return;
-
-        searchViewModel.getBottomNavigationVisibilityLiveData().observe(this, isVisible -> {
-            if (isVisible) {
-                showBottomNavigation();
-            }
-            else {
-                hideBottomNavigation();
-            }
-        });
-    }
-
     private SearchParameter getSearchParameterFromIntentUri(Intent intent) {
         Uri uri = intent.getData();
 
@@ -517,23 +382,7 @@ public class SearchActivity extends BaseActivity
     }
 
     private void updateSearchParameterBeforeSearch() {
-        setSearchParameterUniqueId();
-        setSearchParameterUserIdIfLoggedIn();
         setSearchParameterDefaultActiveTab();
-    }
-
-    private void setSearchParameterUniqueId() {
-        String uniqueId = userSession.isLoggedIn() ?
-                AuthHelper.getMD5Hash(userSession.getUserId()) :
-                AuthHelper.getMD5Hash(userSession.getDeviceId());
-
-        searchParameter.set(SearchApiConst.UNIQUE_ID, uniqueId);
-    }
-
-    private void setSearchParameterUserIdIfLoggedIn() {
-        if(userSession.isLoggedIn()) {
-            searchParameter.set(SearchApiConst.USER_ID, userSession.getUserId());
-        }
     }
 
     private void setSearchParameterDefaultActiveTab() {
@@ -556,7 +405,6 @@ public class SearchActivity extends BaseActivity
     protected void onSearchingStart() {
         showLoadingView(true);
         showContainer(false);
-        hideBottomNavigation();
     }
 
     private void showLoadingView(boolean visible) {
@@ -710,27 +558,6 @@ public class SearchActivity extends BaseActivity
         }
     }
 
-    private void hideButtonCart() {
-        buttonCart.setVisibility(View.GONE);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        onActivityResultBottomSheet(requestCode, resultCode, data);
-    }
-
-    private void onActivityResultBottomSheet(int requestCode, int resultCode, Intent data) {
-        bottomSheetFilterView.onActivityResult(requestCode, resultCode, data);
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (!bottomSheetFilterView.onBackPressed()) {
-            finish();
-        }
-    }
-
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -761,37 +588,8 @@ public class SearchActivity extends BaseActivity
     }
 
     @Override
-    public void loadFilterItems(ArrayList<Filter> filters, Map<String, String> searchParameter) {
-        bottomSheetFilterView.loadFilterItems(filters, searchParameter);
-    }
-
-    @Override
-    public void setFilterResultCount(String formattedResultCount) {
-        bottomSheetFilterView.setFilterResultCount(formattedResultCount);
-    }
-
-    @Override
-    public void launchFilterBottomSheet() {
-        bottomSheetFilterView.launchFilterBottomSheet();
-    }
-
-    @Override
     public void setupSearchNavigation(ClickListener clickListener, boolean isSortEnabled) {
-        searchNavContainer.post(() -> {
-            if (loadingView.getVisibility() != View.VISIBLE) {
-                showBottomNavigation();
-            }
-
-            if (isSortEnabled) {
-                buttonSort.setVisibility(View.VISIBLE);
-                searchNavDivider.setVisibility(View.VISIBLE);
-            } else {
-                buttonSort.setVisibility(View.GONE);
-                searchNavDivider.setVisibility(View.GONE);
-            }
-
-            this.searchNavigationClickListener = clickListener;
-        });
+        this.searchNavigationClickListener = clickListener;
     }
 
     @Override
@@ -871,7 +669,7 @@ public class SearchActivity extends BaseActivity
     @Override
     public void configureTabLayout(boolean isVisible) {
         Fragment fragmentItem = searchSectionPagerAdapter.getRegisteredFragmentAtPosition(viewPager.getCurrentItem());
-        if (!(fragmentItem instanceof ProductListFragment)) return;
+        if (fragmentItem instanceof ProfileListFragment) return;
 
         animateTab(isVisible);
     }

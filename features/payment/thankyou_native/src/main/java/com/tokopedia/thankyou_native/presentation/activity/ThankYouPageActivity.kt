@@ -40,11 +40,6 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
         super.onCreate(savedInstanceState)
         updateTitle("")
         component.inject(this)
-        addThankPageAnalyticFragment()
-    }
-
-    private fun addThankPageAnalyticFragment() {
-        ThanksPageAnalyticsFragment.addFragmentToActivity(supportFragmentManager)
     }
 
     override fun getLayoutRes() = R.layout.thank_activity_thank_you
@@ -78,8 +73,7 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
     }
 
     private fun postEventOnThankPageDataLoaded(thanksPageData: ThanksPageData) {
-        ThanksPageAnalyticsFragment.postThanksPageLoadEvent(supportFragmentManager,
-                thanksPageData)
+        thankYouPageAnalytics.get().postThankYouPageLoadedEvent(thanksPageData)
     }
 
     override fun onInvalidThankYouPage() {

@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.entertainment.R
@@ -20,24 +21,28 @@ import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventDateMapper.checkNotE
 import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventDateMapper.checkStartSale
 import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventDateMapper.getDate
 import com.tokopedia.entertainment.pdp.listener.OnBindItemTicketListener
+import com.tokopedia.entertainment.pdp.listener.OnCoachmarkListener
+import com.tokopedia.unifycomponents.toDp
 import java.util.*
 
 class EventPDPTicketItemPackageAdapter(
-        val onBindItemTicketListener: OnBindItemTicketListener
+        val onBindItemTicketListener: OnBindItemTicketListener,
+        private val onCoachmarkListener: OnCoachmarkListener
 ) : RecyclerView.Adapter<EventPDPTicketItemPackageAdapter.EventPDPTicketItemPackageViewHolder>(){
 
     private var listItemPackage = emptyList<PackageItem>()
     private var isError = false
     private var idPackage = ""
     private var packageName = ""
-
+    private var heightItemView = 0
     lateinit var eventPDPTracking: EventPDPTracking
 
-    inner class EventPDPTicketItemPackageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
+
+    inner class EventPDPTicketItemPackageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val linear = LinearLayout(itemView.context)
         fun bind(items: PackageItem) {
             with(itemView) {
-
                 onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
                     if (!hasFocus) {
                         val imm = context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -67,7 +72,19 @@ class EventPDPTicketItemPackageAdapter(
                     txtNotStarted.visibility = View.GONE
                 }
 
-                quantityEditor.minValue = items.minQty.toInt()
+                itemView.post {
+                    if(position == 0) heightItemView += itemView.height.toDp()
+                    if(onCoachmarkListener.getLocalCache()) {
+                        if (listItemPackage.size == 1 && position == 0) {
+                            onCoachmarkListener.showCoachMark(itemView, 0)
+                        } else if (listItemPackage.size >= 2 && position == 1) {
+                            onCoachmarkListener.showCoachMark(itemView, heightItemView)
+                        }
+                    }
+                }
+
+                quantityEditor.setValue(items.minQty.toInt())
+                quantityEditor.minValue = items.minQty.toInt() - 1
                 quantityEditor.maxValue = items.maxQty.toInt()
 
                 quantityEditor.setValueChangedListener { newValue, _, _ ->
@@ -93,8 +110,10 @@ class EventPDPTicketItemPackageAdapter(
                                 quantityEditor.editText.error = String.format(resources.getString(R.string.ent_error_value_exceeded), items.maxQty)
                                 isError = true
                             } else if (getDigit(txtTotal.toString()) < items.minQty.toInt()) {
-                                quantityEditor.editText.error = String.format(resources.getString(R.string.ent_error_value_under_min), items.minQty)
-                                isError = true
+                                itemView.txtPilih_ticket.visibility = View.VISIBLE
+                                itemView.greenDivider.visibility = View.GONE
+                                itemView.quantityEditor.visibility = View.GONE
+                                itemView.bgTicket.background = ContextCompat.getDrawable(context, R.drawable.ent_pdp_ticket_normal_bg)
                             }
                             if (txtTotal.toString().length > 1) { // zero first checker example: 01 -> 1, 02 -> 2
                                 if (txtTotal.toString().startsWith("0")) {
@@ -131,7 +150,7 @@ class EventPDPTicketItemPackageAdapter(
                     itemView.greenDivider.visibility = View.VISIBLE
                     itemView.bgTicket.background = ContextCompat.getDrawable(context, R.drawable.ent_pdp_ticket_active_bg)
                     itemView.quantityEditor.visibility = View.VISIBLE
-                    itemView.quantityEditor.setValue(MIN_QTY)
+                    itemView.quantityEditor.setValue(if (items.minQty.toInt() < 1) MIN_QTY else items.minQty.toInt())
                     itemView.quantityEditor.editText.visibility = View.VISIBLE
                     itemView.quantityEditor.addButton.visibility = View.VISIBLE
                     itemView.quantityEditor.subtractButton.visibility = View.VISIBLE

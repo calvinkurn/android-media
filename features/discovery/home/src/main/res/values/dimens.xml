@@ -59,5 +59,6 @@
     <dimen name="home_play_banner_viewer_margin_end">4dp</dimen>
 
     <dimen name="new_margin_sm">24dp</dimen>
+    <dimen name="padding_small">10dp</dimen>
 
 </resources>
