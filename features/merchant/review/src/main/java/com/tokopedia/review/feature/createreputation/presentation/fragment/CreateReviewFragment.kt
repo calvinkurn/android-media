@@ -467,9 +467,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
             }
             if (attachments.isNotEmpty()) {
                 createReviewViewModel.clearImageData()
-                val attachedThumbnails = arrayListOf<String>()
-                attachments.mapTo(attachedThumbnails) { it.thumbnail }
-                val imageListData = createReviewViewModel.getImageList(attachedThumbnails)
+                val imageListData = createReviewViewModel.getImageList(attachments)
                 imageAdapter.setImageReviewData(imageListData)
                 rv_img_review.show()
                 createReviewAddPhotoEmpty.hide()

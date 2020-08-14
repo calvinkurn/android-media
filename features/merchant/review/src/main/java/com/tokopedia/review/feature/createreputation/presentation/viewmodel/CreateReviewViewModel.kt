@@ -94,6 +94,23 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
         return imageData
     }
 
+    fun getImageList(selectedImage: List<ProductrevReviewAttachment>): MutableList<BaseImageReviewUiModel> {
+        when (selectedImage.size) {
+            5 -> {
+                imageData = (selectedImage.map {
+                    ImageReviewUiModel(it.thumbnail, it.fullSize)
+                }).toMutableList()
+            }
+            else -> {
+                imageData.addAll(selectedImage.map {
+                    ImageReviewUiModel(it.thumbnail, it.fullSize)
+                })
+                imageData.add(DefaultImageReviewUiModel())
+            }
+        }
+        return imageData
+    }
+
     fun removeImage(image: BaseImageReviewUiModel) {
         imageData.remove(image)
     }
@@ -105,7 +122,11 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
     fun getSelectedImagesUrl(): ArrayList<String> {
         val result = arrayListOf<String>()
         imageData.forEach {
-            val imageUrl = (it as? ImageReviewUiModel)?.imageUrl
+            val imageUrl = if((it as? ImageReviewUiModel)?.fullImageUrl?.isNotBlank() == true) {
+                (it as? ImageReviewUiModel)?.fullImageUrl
+            } else {
+                (it as? ImageReviewUiModel)?.imageUrl
+            }
             if(imageUrl?.isNotEmpty() == true) {
                 result.add(imageUrl)
             }

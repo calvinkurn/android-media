@@ -75,6 +75,7 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
             setupSellerAdapter(reviewSellerBundle)
             setupViewPager(listOf(getString(R.string.title_review_rating_product), getString(R.string.title_review_inbox), getString(R.string.title_reputation_history)))
         } else {
+            viewModel.clearReputationCounter()
             observeReviewTabs()
             viewModel.getTabCounter()
         }
