@@ -64,9 +64,15 @@ class CpmTopAdsViewModel(val application: Application, private val components: C
                 .inject(this)
     }
 
-    fun sendTopAdsTracking(url: String?) {
+    fun sendTopAdsTrackingClick(url: String?, productId: String, productName: String, imageUrl: String) {
         if (url != null) {
-            discoveryTopAdsTrackingUseCase.sendTopAdsTracking(this::class.qualifiedName, url)
+            discoveryTopAdsTrackingUseCase.hitClick(this::class.qualifiedName, url, productId, productName, imageUrl)
+        }
+    }
+
+    fun sendTopAdsTrackingImpressions(url: String?, productId: String, productName: String, imageUrl: String) {
+        if (url != null) {
+            discoveryTopAdsTrackingUseCase.hitImpressions(this::class.qualifiedName, url, productId, productName, imageUrl)
         }
     }
 
