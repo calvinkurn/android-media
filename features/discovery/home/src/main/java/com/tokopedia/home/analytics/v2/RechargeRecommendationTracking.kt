@@ -50,9 +50,12 @@ object RechargeRecommendationTracking : BaseTracking() {
         )
     }
 
-    private fun mapToPromotionTracker(model: RechargeRecommendationData) = Promotion(
-            id = model.contentID,
-            creative = model.iconURL,
-            name = "$RECHARGE_RECOMMENDATION_NAME - ${model.applink}",
-            position = "none/other")
+    private fun mapToPromotionTracker(model: RechargeRecommendationData): Promotion {
+        val productName = model.applink
+        return Promotion(
+                id = model.contentID,
+                creative = model.iconURL,
+                name = "/ - 0 - $RECHARGE_RECOMMENDATION_NAME - $productName",
+                position = "none/other")
+    }
 }
