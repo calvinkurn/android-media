@@ -8,7 +8,6 @@ import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailLayout
 import com.tokopedia.product.detail.data.util.TobacoErrorException
-import com.tokopedia.product.detail.di.RawQueryKeyConstant
 import com.tokopedia.product.detail.usecase.GetPdpLayoutUseCase
 import com.tokopedia.usecase.RequestParams
 import io.mockk.MockKAnnotations
@@ -44,10 +43,7 @@ class GetPdpLayoutUseCaseTest {
     public val thrown = ExpectedException.none()
 
     private val useCaseTest by lazy {
-        GetPdpLayoutUseCase(
-                mapOf(RawQueryKeyConstant.QUERY_GET_PDP_LAYOUT to "test"),
-                gqlUseCase
-        )
+        GetPdpLayoutUseCase(gqlUseCase)
     }
 
     @Before
