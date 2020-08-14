@@ -1372,7 +1372,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             _orderPayment = payment.copy(isCalculationError = true)
             orderPayment.value = _orderPayment
             orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_PAYMENT_OVO_BALANCE)
-        } else if (payment.hasNoCreditCardOption()) {
+        } else if (payment.hasSoftBlockingError()) {
             _orderPayment = payment.copy(isCalculationError = false)
             orderPayment.value = _orderPayment
             orderTotal.value = orderTotal.value.copy(orderCost = orderCost, paymentErrorMessage = null, isButtonChoosePayment = true, buttonState = currentState)

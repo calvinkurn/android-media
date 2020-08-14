@@ -30,6 +30,10 @@ data class OrderPayment(
         return errorMessage.message.isNotEmpty() || creditCard.selectedTerm?.isEnable == false
     }
 
+    fun hasSoftBlockingError(): Boolean {
+        return errorMessage.message.isNotEmpty() && errorMessage.button.text.isEmpty()
+    }
+
     fun hasNoCreditCardOption(): Boolean {
         if (creditCard.numberOfCards.totalCards > 0 && creditCard.numberOfCards.availableCards < 1) return true
         return false
