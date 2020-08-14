@@ -18,37 +18,10 @@
         android:ellipsize="end"
         android:maxLines="1"
         android:textColor="@color/Neutral_N700_96"
-        app:layout_constraintEnd_toStartOf="@+id/label_error"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_6"
         app:typographyWeight="bold"
         tools:text="Makmur Subur Subur Subur Subur Subur Subur adalah " />
-
-    <com.tokopedia.unifycomponents.Label
-        android:id="@+id/label_error"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        app:labelType="general_dark_red"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:labelTitle="Toko Tutup" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/text_shop_location"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_2"
-        android:layout_marginBottom="@dimen/dp_3"
-        android:ellipsize="end"
-        android:maxLines="1"
-        android:textColor="@color/Neutral_N700_96"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/text_shop_name"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_shop_name"
-        app:typographyType="small"
-        tools:text="Tangerang" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

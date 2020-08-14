@@ -19,15 +19,6 @@ class DisabledShopViewHolder(itemView: View, val actionListener: ActionListener?
 
     fun bind(data: DisabledShopHolderData) {
         itemView.text_shop_name.text = data.shopName
-        itemView.text_shop_location.text = data.shopLocation
-        itemView.label_error.apply {
-            text = data.errorLabel
-            if (data.errorLabel.isNotBlank()) {
-                visibility = View.VISIBLE
-            } else {
-                visibility = View.GONE
-            }
-        }
         itemView.text_shop_name.setOnClickListener{ actionListener?.onCartShopNameClicked(data.shopId, data.shopName) }
     }
 
