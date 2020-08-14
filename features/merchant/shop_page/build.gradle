@@ -96,6 +96,8 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
+    implementation (rootProject.ext.firebase.crashlytics) {
+        transitive = true	        }
 
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
