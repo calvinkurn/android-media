@@ -75,7 +75,6 @@ dependencies {
     implementation project(rootProject.ext.features.voucherGame)
     implementation project(rootProject.ext.features.rechargeOcr)
     implementation project(rootProject.ext.features.rechargeGeneral)
-    implementation project(rootProject.ext.features.digitalDeals)
     implementation project(rootProject.ext.features.digitalproduct)
     implementation project(rootProject.ext.features.rechargeCreditCard)
     implementation project(rootProject.ext.features.digitalEmoney)
