@@ -223,7 +223,6 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
             }
         }
 
-        refreshSelectedFilter(quickFilters, false)
         quick_filter_sort_filter.parentListener = { }
 
         quick_filter_sort_filter.show()
@@ -325,57 +324,38 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
     }
 
     //for assign clicked quick filter value to selected filter
-    private fun refreshSelectedFilter(quickFilters: List<QuickFilter>, shouldCallApi: Boolean = true) {
-        var selectedFilterV2 = searchResultviewModel.selectedFilterV2
-        quickFilters.forEachIndexed { index, quickFilter ->
+    private fun refreshSelectedFilter(quickFilters: List<QuickFilter>) {
+        val selectedFilters = searchResultviewModel.selectedFilterV2.associateBy ({it.name}, {it}).toMutableMap()
 
-            var isVisited = false
+        quickFilters.forEachIndexed { index, quickFilter ->
             val isQuickFilterSelected = quick_filter_sort_filter.chipItems[index].type == ChipsUnify.TYPE_SELECTED
-            for ((filterIndex, selectedFilter) in searchResultviewModel.selectedFilterV2.withIndex()) {
-                if (quickFilter.name.equals(selectedFilter.name, true)) {
-                    //remove duplicate value if found, delete
-                    var contains = true
-                    val containIndex = arrayListOf<Int>()
-                    for (quickFilterValue in quickFilter.values) {
-                        for ((valueIndex, value) in selectedFilter.values.withIndex()) {
-                            if (quickFilterValue == value) {
-                                containIndex.add(valueIndex)
-                                break
-                            }
-                            else if (valueIndex == selectedFilter.values.lastIndex) contains = false
-                        }
-                        if (!contains) break
+            if (isQuickFilterSelected) {
+                if (selectedFilters.containsKey(quickFilter.name)) {
+                    val selectedFilter = selectedFilters[quickFilter.name] ?: ParamFilterV2()
+                    val filterValue = selectedFilter.values.toHashSet()
+                    filterValue.addAll(quickFilter.values)
+                    selectedFilters[quickFilter.name] = ParamFilterV2(quickFilter.name, filterValue.toMutableList())
+                } else {
+                    selectedFilters[quickFilter.name] = ParamFilterV2(quickFilter.name, quickFilter.values.toMutableList())
+                }
+            } else {
+                if (selectedFilters.containsKey(quickFilter.name)) {
+                    var isContainsAllValue = true
+                    val selectedFilter = selectedFilters[quickFilter.name] ?: ParamFilterV2()
+                    val filterValue = selectedFilter.values.toHashSet()
+                    for (value in quickFilter.values) {
+                        if (!filterValue.contains(value)) isContainsAllValue = false
                     }
-                    if (contains) {
-                        for (i in containIndex) {
-                            selectedFilterV2[filterIndex].values[i] = ""
+                    if (isContainsAllValue) {
+                        for (value in quickFilter.values) {
+                            filterValue.remove(value)
                         }
                     }
-                    selectedFilterV2[filterIndex].values = selectedFilterV2[filterIndex].values.filter { it.isNotEmpty() }.toMutableList()
-                    if (isQuickFilterSelected) {
-                        //add item if quick filter selected
-                        if (quickFilter.type.equals(FilterV2.FILTER_TYPE_SELECTION_RANGE, true) ||
-                                quickFilter.type.equals(FilterV2.FILTER_TYPE_OPEN_RANGE, true)) {
-                            selectedFilterV2[filterIndex].values = quickFilter.values.toMutableList()
-                        } else {
-                            val temp = selectedFilterV2[filterIndex].values.toHashSet()
-                            temp.addAll(quickFilter.values)
-                            selectedFilterV2[filterIndex].values = temp.toMutableList()
-                        }
-                        isVisited = true
-                        break
-                    }
+                    selectedFilters[quickFilter.name] = ParamFilterV2(quickFilter.name, filterValue.toMutableList())
                 }
             }
-            //if there was no field name found, add new param.
-            if (isQuickFilterSelected && !isVisited) {
-                selectedFilterV2.add(ParamFilterV2(name = quickFilter.name, values = quickFilter.values.toMutableList()))
-            }
         }
-        if (shouldCallApi) {
-            selectedFilterV2 = selectedFilterV2.filter { it.values.isNotEmpty() }.toMutableList()
-            onQuickFilterChanged(selectedFilterV2)
-        }
+        onQuickFilterChanged(selectedFilters.values.toMutableList())
     }
 
 
