@@ -56,6 +56,7 @@ class ReviewHistoryViewHolder(view: View,
 
     private fun showAttachedImages(attachedImages: List<ProductrevReviewAttachment>, productName: String, productId: Int, feedbackId: Int) {
         if(attachedImages.isEmpty()) {
+            itemView.reviewHistoryAttachedImages.hide()
             return
         }
         itemView.reviewHistoryAttachedImages.apply {
@@ -72,6 +73,10 @@ class ReviewHistoryViewHolder(view: View,
     }
 
     private fun showDescription(reviewDescription: String) {
+        if(reviewDescription.isNullOrBlank()) {
+            itemView.reviewHistoryDescription.hide()
+            return
+        }
         itemView.reviewHistoryDescription.setTextAndCheckShow(reviewDescription)
     }
 
@@ -84,6 +89,10 @@ class ReviewHistoryViewHolder(view: View,
     }
 
     private fun showOtherReview(hasResponse: Boolean) {
-        itemView.reviewHistoryReply.showWithCondition(hasResponse)
+        if(hasResponse) {
+            itemView.reviewHistoryReply.show()
+            return
+        }
+        itemView.reviewHistoryReply.hide()
     }
 }
