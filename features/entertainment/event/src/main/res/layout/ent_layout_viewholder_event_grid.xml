@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ent_grid_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="14dp">
@@ -22,7 +23,7 @@
         tools:text="Wahana keren yang wajib dicoba" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/ent_recycle_view"
+        android:id="@+id/ent_recycle_view_grid"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -53,6 +54,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ent_recycle_view" />
+        app:layout_constraintTop_toBottomOf="@+id/ent_recycle_view_grid" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

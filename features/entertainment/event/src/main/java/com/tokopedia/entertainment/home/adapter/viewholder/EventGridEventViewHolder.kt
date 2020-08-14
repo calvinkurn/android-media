@@ -33,7 +33,7 @@ class EventGridEventViewHolder(itemView: View, action: ((data: EventItemModel,
     var itemAdapter = InnerItemAdapter(action,analytics)
 
     init {
-        itemView.ent_recycle_view.apply {
+        itemView.ent_recycle_view_grid.apply {
             layoutManager = GridLayoutManager(itemView.context, 2, LinearLayoutManager.VERTICAL, false)
             adapter = itemAdapter
         }
