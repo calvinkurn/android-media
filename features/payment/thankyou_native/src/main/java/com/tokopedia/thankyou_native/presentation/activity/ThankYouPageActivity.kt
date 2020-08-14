@@ -9,6 +9,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.nps.helper.InAppReviewHelper
+import com.tokopedia.nps.presentation.view.dialog.AppFeedbackRatingBottomSheet
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.analytics.ThankYouPageAnalytics
 import com.tokopedia.thankyou_native.data.mapper.*
@@ -63,13 +64,24 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
 
     override fun onThankYouPageDataLoaded(thanksPageData: ThanksPageData) {
         this.thanksPageData = thanksPageData
-        postEventOnThankPageDataLoaded(thanksPageData)
         val fragment = getGetFragmentByPaymentMode(thanksPageData)
         fragment?.let {
             supportFragmentManager.beginTransaction()
                     .replace(parentViewResourceID, fragment, tagFragment)
                     .commit()
         } ?: run { gotoHomePage() }
+        showAppFeedbackBottomSheet(thanksPageData)
+        postEventOnThankPageDataLoaded(thanksPageData)
+    }
+
+    private fun showAppFeedbackBottomSheet(thanksPageData: ThanksPageData){
+        val paymentStatus = PaymentStatusMapper.getPaymentStatusByInt(thanksPageData.paymentStatus)
+        if(paymentStatus == PaymentVerified || paymentStatus == PaymentPreAuth) {
+            if (!InAppReviewHelper.launchInAppReview(this, null)) {
+                val rating = AppFeedbackRatingBottomSheet()
+                rating.showDialog(supportFragmentManager, this)
+            }
+        }
     }
 
     private fun postEventOnThankPageDataLoaded(thanksPageData: ThanksPageData) {
@@ -144,13 +156,7 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
         fragment?.let {
             return when (it) {
                 is LoaderFragment -> true
-                else -> {
-                    InAppReviewHelper.launchInAppReview(this, object: InAppReviewHelper.Callback {
-                        override fun onCompleted() {
-                            gotoHomePage()
-                        }
-                    })
-                }
+                else -> false
             }
 
         }
