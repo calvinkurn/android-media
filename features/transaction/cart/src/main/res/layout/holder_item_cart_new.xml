@@ -211,16 +211,6 @@
                         android:orientation="horizontal">
 
                         <com.tokopedia.unifyprinciples.Typography
-                            android:id="@+id/tv_label_form_remark"
-                            android:layout_width="@dimen/dp_0"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="2"
-                            android:text="@string/label_note_for_seller"
-                            app:typographyType="body_3"
-                            app:typographyWeight="reguler"
-                            tools:visibility="gone" />
-
-                        <com.tokopedia.unifyprinciples.Typography
                             android:id="@+id/tv_remark"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -257,7 +247,6 @@
                         android:id="@+id/et_remark"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/tv_label_form_remark"
                         android:layout_marginLeft="@dimen/dp_minus4"
                         android:layout_marginRight="@dimen/dp_minus4"
                         android:fontFamily="sans-serif"

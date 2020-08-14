@@ -81,7 +81,6 @@ class CartItemViewHolder constructor(itemView: View,
 
     private val tvNoteCharCounter: TextView
     private val tvRemark: TextView
-    private val tvLabelFormRemark: TextView
     private val tvEllipsize: TextView
     private val divider: View
     private val rlProductAction: RelativeLayout
@@ -139,7 +138,6 @@ class CartItemViewHolder constructor(itemView: View,
 
         tvNoteCharCounter = itemView.findViewById(R.id.tv_note_char_counter)
         tvRemark = itemView.findViewById(R.id.tv_remark)
-        tvLabelFormRemark = itemView.findViewById(R.id.tv_label_form_remark)
         tvEllipsize = itemView.findViewById(R.id.tv_ellipsize)
         divider = itemView.findViewById(R.id.holder_item_cart_divider)
         rlProductAction = itemView.findViewById(R.id.rl_product_action)
@@ -460,7 +458,6 @@ class CartItemViewHolder constructor(itemView: View,
             // Has a notes from pdp or not at all but click add notes button
             if (data.cartItemData?.originData?.originalRemark.isNullOrBlank() == true || data.cartItemData?.updatedData?.remark != data.cartItemData?.originData?.originalRemark) {
                 // Notes is empty after click add notes button or has value after use click change notes button
-                this.tvLabelFormRemark.visibility = View.VISIBLE
                 this.tvRemark.visibility = View.GONE
                 this.etRemark.setText(Utils.getHtmlFormat(data.cartItemData?.updatedData?.remark))
                 this.etRemark.visibility = View.VISIBLE
@@ -471,7 +468,6 @@ class CartItemViewHolder constructor(itemView: View,
                 tvLabelRemarkOption.setPadding(0, 0, 0, 0)
             } else {
                 // Has notes from pdp
-                this.tvLabelFormRemark.visibility = View.GONE
                 this.etRemark.visibility = View.GONE
                 this.tvRemark.text = Utils.getHtmlFormat(data.cartItemData?.updatedData?.remark)
                 this.tvRemark.visibility = View.VISIBLE
@@ -491,7 +487,6 @@ class CartItemViewHolder constructor(itemView: View,
             this.etRemark.visibility = View.GONE
             this.tvRemark.visibility = View.GONE
             this.tvNoteCharCounter.visibility = View.GONE
-            this.tvLabelFormRemark.visibility = View.GONE
             this.tvLabelRemarkOption.text = tvLabelRemarkOption.context.getString(R.string.label_button_add_note)
             this.tvLabelRemarkOption.visibility = View.VISIBLE
             this.etRemark.setText("")
