@@ -14,6 +14,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.BarChartAxisUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.BarChartMetricsUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.BarChartUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.BarChartWidgetUiModel
+import com.tokopedia.sellerhomecommon.utils.ChartXAxisLabelFormatter
 import com.tokopedia.sellerhomecommon.utils.ChartYAxisLabelFormatter
 import kotlinx.android.synthetic.main.shc_bar_chart_widget.view.*
 import kotlinx.android.synthetic.main.shc_partial_chart_tooltip.view.*
@@ -126,15 +127,21 @@ class BarChartViewHolder(
             barBorderRadius { itemView.context.resources.getDimensionPixelSize(R.dimen.layout_lvl1) }
 
             xAxis {
+                val xAxisLabels = data.xAxisLabels.map { it.valueFmt }
                 gridEnabled { false }
                 textColor { labelTextColor }
+                labelFormatter {
+                    ChartXAxisLabelFormatter(xAxisLabels)
+                }
             }
 
             yAxis {
-                val yAxis = data.yAxis
+                val yAxisLabels = data.yAxis
                 textColor { labelTextColor }
-                labelCount { yAxis.size }
-                labelFormatter { ChartYAxisLabelFormatter(yAxis) }
+                labelCount { yAxisLabels.size }
+                labelFormatter {
+                    ChartYAxisLabelFormatter(yAxisLabels)
+                }
             }
 
             tooltipEnabled { true }

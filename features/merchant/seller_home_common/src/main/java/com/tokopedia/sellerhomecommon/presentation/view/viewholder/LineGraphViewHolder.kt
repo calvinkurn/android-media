@@ -15,6 +15,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.presentation.model.LineGraphDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.LineGraphWidgetUiModel
+import com.tokopedia.sellerhomecommon.utils.ChartXAxisLabelFormatter
 import com.tokopedia.sellerhomecommon.utils.ChartYAxisLabelFormatter
 import kotlinx.android.synthetic.main.shc_line_graph_widget.view.*
 import kotlinx.android.synthetic.main.shc_partial_chart_tooltip.view.*
@@ -169,6 +170,7 @@ class LineGraphViewHolder(
     }
 
     private fun getLineChartConfig(element: LineGraphWidgetUiModel): LineChartConfigModel {
+        val lineChartData = getLineChartData(element)
         return LineChartConfig.create {
             xAnimationDuration { 200 }
             yAnimationDuration { 200 }
@@ -176,18 +178,23 @@ class LineGraphViewHolder(
             setChartTooltip(getLineGraphTooltip())
 
             xAxis {
+                val xAxisLabels = lineChartData.chartEntry.map { it.xLabel }
                 gridEnabled { false }
                 textColor { itemView.context.getResColor(R.color.Neutral_N700_96) }
+                labelFormatter {
+                    ChartXAxisLabelFormatter(xAxisLabels)
+                }
             }
 
             yAxis {
-                val yAxisLabel = getYAxisLabel(element)
+                val yAxisLabels = lineChartData.yAxisLabel
                 textColor { itemView.context.getResColor(R.color.Neutral_N700_96) }
                 labelFormatter {
-                    ChartYAxisLabelFormatter(yAxisLabel)
+                    ChartYAxisLabelFormatter(yAxisLabels)
                 }
-                labelCount { yAxisLabel.size }
+                labelCount { yAxisLabels.size }
             }
+
             chartLineWidth { 1.8f }
         }
     }
