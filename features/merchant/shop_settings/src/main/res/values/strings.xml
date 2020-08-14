@@ -154,5 +154,11 @@
     <string name="text_ubah_button">Ubah</string>
     <string name="shop_edit_name_too_short">Nama Toko terlalu pendek, minimum 3 karakter</string>
     <string name="shop_edit_domain_too_short">Domain Toko terlalu pendek, minimum 3 karakter</string>
+    <string name="shop_edit_change_name_and_domain_not_allowed">Kamu sudah pernah mengubah nama dan domain toko sebelumnya.</string>
+    <string name="shop_edit_avatar_label">Gambar Profil</string>
+    <string name="shop_edit_avatar_description">Besar file maks. 10MB dengan format .JPG, JPEG dan PNG.</string>
+    <string name="shop_edit_change_avatar">Ganti Gambar</string>
+    <string name="shop_edit_name_input_label">Nama Toko</string>
+    <string name="shop_edit_domain_input_label">Domain Toko</string>
 
 </resources>
