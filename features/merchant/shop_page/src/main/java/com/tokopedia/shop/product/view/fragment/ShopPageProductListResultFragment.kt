@@ -295,9 +295,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         viewModel.shopSortFilterData.observe(this, Observer {
             when (it) {
                 is Success -> {
-                    if (keyword.isBlank()) {
-                        onSuccessGetSortFilterData(it.data)
-                    }
+                    onSuccessGetSortFilterData(it.data)
                 }
                 is Fail -> showGetListError(it.throwable)
             }
@@ -516,7 +514,9 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 selectedSortId = sortValue,
                 selectedSortName = selectedSortName
         )
-        shopProductAdapter.setSortFilterData(shopProductSortFilterUiModel)
+        if(keyword.isBlank()) {
+            shopProductAdapter.setSortFilterData(shopProductSortFilterUiModel)
+        }
         viewModel.getShopProduct(
                 shopId ?: "",
                 defaultInitialPage,
