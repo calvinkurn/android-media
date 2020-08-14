@@ -463,6 +463,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
         if (moduleSize == 0L) {
             moduleSize = state.totalBytesToDownload()
         }
+        addTimeout()
     }
 
     override fun onRequireUserConfirmation(state: SplitInstallSessionState) {
