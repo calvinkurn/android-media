@@ -78,7 +78,7 @@
         <activity
             android:name=".inboxticket2.view.activity.InboxListActivity"
             android:exported="true"
-            android:label="@string/inbox"
+            android:label="@string/contact_us_inbox"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" >
 

@@ -10,7 +10,7 @@ internal class InitializationTest : SortFilterBottomSheetViewModelTestFixtures()
     fun `Initialization Test with nulls (degenerate cases)`() {
         sortFilterBottomSheetViewModel.init(mapOf(), null)
 
-        `showKnob should be`(false)
+        `showKnob should be`(true)
     }
 
     private fun `showKnob should be`(expectedShowKnob: Boolean) {
