@@ -415,6 +415,7 @@ class ShopPageHomeTracking(
     fun impressionPlayBanner(
             shopId: String,
             channelId: String,
+            positionWidget: Int,
             positionChannel: String,
             autoPlay: String,
             userId: String,
@@ -426,7 +427,7 @@ class ShopPageHomeTracking(
                 EVENT to VIEW_SHOP_PAGE,
                 EVENT_CATEGORY to SHOP_PAGE_BUYER,
                 EVENT_ACTION to IMPRESSION_SGC_CHANNEL,
-                EVENT_LABEL to "view channel - $shopId - $channelId - $positionChannel - $autoPlay",
+                EVENT_LABEL to "view channel - $shopId - $channelId - $positionWidget - $autoPlay",
                 USER_ID to userId,
                 ECOMMERCE to mapOf(
                         PROMO_VIEW to mapOf(
@@ -447,6 +448,7 @@ class ShopPageHomeTracking(
     fun clickPlayBanner(
             shopId: String,
             channelId: String,
+            positionWidget: Int,
             positionChannel: String,
             autoPlay: String,
             userId: String,
@@ -458,7 +460,7 @@ class ShopPageHomeTracking(
                 EVENT to CLICK_SHOP_PAGE,
                 EVENT_CATEGORY to SHOP_PAGE_BUYER,
                 EVENT_ACTION to CLICK,
-                EVENT_LABEL to "click channel - $shopId - $channelId - $positionChannel - $autoPlay",
+                EVENT_LABEL to "click channel - $shopId - $channelId - $positionWidget - $autoPlay",
                 USER_ID to userId,
                 ECOMMERCE to mapOf(
                         PROMO_CLICK to mapOf(

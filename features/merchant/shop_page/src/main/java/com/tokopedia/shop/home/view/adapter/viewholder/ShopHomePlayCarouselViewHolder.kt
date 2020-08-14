@@ -67,6 +67,7 @@ class ShopHomePlayCarouselViewHolder(
                 dataModel,
                 if(playCarouselCardDataModel?.playBannerCarouselDataModel?.isAutoPlay == true) IS_AUTO_PLAY_SUCCESS else IS_AUTO_PLAY_FAILED,
                 playCarouselCardDataModel?.widgetId ?: "",
+                adapterPosition,
                 position
         )
     }
@@ -76,6 +77,7 @@ class ShopHomePlayCarouselViewHolder(
                 dataModel,
                 if(playCarouselCardDataModel?.playBannerCarouselDataModel?.isAutoPlay == true) IS_AUTO_PLAY_SUCCESS else IS_AUTO_PLAY_FAILED,
                 playCarouselCardDataModel?.widgetId ?: "",
+                adapterPosition,
                 position
         )
     }
