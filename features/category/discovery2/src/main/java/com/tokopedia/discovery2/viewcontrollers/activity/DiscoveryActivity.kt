@@ -20,6 +20,7 @@ import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.discovery2.viewmodel.DiscoveryViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.usecase.coroutines.Success
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import javax.inject.Inject
 
 
