@@ -55,7 +55,7 @@ object RechargeRecommendationTracking : BaseTracking() {
         return Promotion(
                 id = model.contentID,
                 creative = model.iconURL,
-                name = "/ - 0 - $RECHARGE_RECOMMENDATION_NAME - $productName",
+                name = "/ - p1 - $RECHARGE_RECOMMENDATION_NAME - $productName",
                 position = "none/other")
     }
 }
