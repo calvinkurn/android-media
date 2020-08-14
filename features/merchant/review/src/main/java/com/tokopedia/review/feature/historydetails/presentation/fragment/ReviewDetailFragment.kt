@@ -81,6 +81,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
         initHeader()
         initErrorPage()
         observeReviewDetails()
+        observeInsertReputationResult()
     }
 
     override fun getComponent(): ReviewDetailComponent? {
@@ -95,6 +96,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
     override fun onDestroy() {
         super.onDestroy()
         removeObservers(viewModel.reviewDetails)
+        removeObservers(viewModel.submitReputationResult)
     }
 
     override fun onAttachedImagesClicked(productName: String, attachedImages: List<String>, position: Int) {
@@ -124,8 +126,8 @@ class ReviewDetailFragment : BaseDaggerFragment(),
     override fun onReviewScoreClicked(score: Int) {
         (viewModel.reviewDetails.value as? Success)?.let {
             ReviewDetailTracking.eventClickSmiley(it.data.product.productId, it.data.review.feedbackId, viewModel.getUserId())
+            viewModel.submitReputation(it.data.reputation.reputationId, score)
         }
-        reviewHistoryDetailReputation.onScoreSelected(score)
     }
 
     private fun getDataFromArguments() {
@@ -154,6 +156,31 @@ class ReviewDetailFragment : BaseDaggerFragment(),
                 is LoadingView -> {
                     showLoading()
                     hideError()
+                }
+            }
+        })
+    }
+
+    private fun observeInsertReputationResult() {
+        viewModel.submitReputationResult.observe(viewLifecycleOwner, Observer {
+            when(it) {
+                is Success -> {
+                    reviewHistoryDetailReputation.apply {
+                        setFinalScore(it.data)
+                        hideLoading()
+                    }
+                    onSuccessInsertReputation()
+                }
+                is Fail -> {
+                    onFailInsertReputation(it.fail.message ?: getString(R.string.review_history_details_toaster_modify_smiley_error_default_message))
+                    reviewHistoryDetailReputation.apply {
+                        hideLoading()
+                        showMultipleSmileys()
+                        showDeadline()
+                    }
+                }
+                is LoadingView -> {
+                    reviewHistoryDetailReputation.showLoading()
                 }
             }
         })
@@ -349,5 +376,13 @@ class ReviewDetailFragment : BaseDaggerFragment(),
 
     private fun onSuccessEditForm() {
         view?.let { Toaster.build(it, getString(R.string.review_history_detail_toaster_edit_success), Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(R.string.review_oke)).show() }
+    }
+
+    private fun onSuccessInsertReputation() {
+        view?.let { Toaster.build(it, getString(R.string.review_history_details_toaster_modify_smiley_success), Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(R.string.review_oke)).show() }
+    }
+
+    private fun onFailInsertReputation(message: String) {
+        view?.let { Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.review_oke)).show() }
     }
 }

@@ -151,6 +151,7 @@
     <string name="review_history_details_by">Oleh &lt;b>%s&lt;/b></string>
     <string name="review_history_details_toaster_modify_smiley_error">Kamu hanya bisa ubah penilaian toko menjadi ‘Puas’.</string>
     <string name="review_history_details_toaster_modify_smiley_success">Penilaian toko berhasil kamu ubah</string>
+    <string name="review_history_details_toaster_modify_smiley_error_default_message">Penilaian toko gagal diubah. Cek koneksi internetmu dan coba lagi, ya.</string>
     <string name="review_detail_score_bad">Kecewa</string>
     <string name="review_detail_score_mediocre">Biasa aja</string>
     <string name="review_detail_score_excellent">Puas</string>

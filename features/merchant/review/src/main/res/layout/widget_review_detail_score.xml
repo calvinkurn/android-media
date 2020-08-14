@@ -120,5 +120,26 @@
         app:typographyType="body_3"
         app:typographyWeight="bold"
         tools:visibility="visible" />
+    
+    <com.elyeproj.loaderviewlibrary.LoaderImageView
+        android:id="@+id/reviewScoreLoadingSmiley"
+        android:layout_width="@dimen/layout_lvl5"
+        android:layout_height="@dimen/layout_lvl5"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/reviewDetailScoreShopName"
+        app:layout_constraintStart_toStartOf="@id/reviewDetailScoreShopName" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/reviewScoreLoadingText"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/dp_12"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginEnd="@dimen/dp_56"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="@id/reviewScoreLoadingSmiley"
+        app:layout_constraintBottom_toBottomOf="@id/reviewScoreLoadingSmiley"
+        app:layout_constraintStart_toEndOf="@id/reviewScoreLoadingSmiley"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -413,7 +413,6 @@ class CreateReviewFragment : BaseDaggerFragment(),
 
             shopId = shopData.shopID.toString()
             setProductDetail(productData.productName, productData.productVariant.variantName, productData.productImageURL)
-            setReputation(reputation, shopData.shopName)
         }
     }
 
@@ -478,22 +477,6 @@ class CreateReviewFragment : BaseDaggerFragment(),
     private fun setProduct(product: ProductrevGetReviewDetailProduct) {
         with(product) {
             setProductDetail(productName, productVariantName, productImageUrl)
-        }
-    }
-
-    private fun setReputation(reputation: Reputation, shopName: String) {
-        with(reputation) {
-            if(locked) {
-                return
-            } else {
-                createReviewScore.apply {
-                    setEditableScore(score)
-                    setShopName(shopName)
-                    setReviewScoreClickListener(this@CreateReviewFragment)
-                    show()
-                }
-                createReviewScoreDivider.show()
-            }
         }
     }
 

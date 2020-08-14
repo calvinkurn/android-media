@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import androidx.core.content.ContextCompat
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.kotlin.extensions.view.show
@@ -122,6 +123,32 @@ class ReviewScoreWidget : BaseCustomView {
                 this.reviewEditableMediocreSmiley.deactivateMediocre()
             }
         }
+    }
+
+    fun showLoading() {
+        reviewScoreLoadingSmiley.show()
+        reviewScoreLoadingText.show()
+        reviewScoreDeadlineLabel.hide()
+        reviewScoreDeadline.hide()
+        reviewEditableExcellentSmiley.hide()
+        reviewEditableMediocreSmiley.hide()
+        reviewEditableBadSmiley.hide()
+    }
+
+    fun hideLoading() {
+        reviewScoreLoadingSmiley.hide()
+        reviewScoreLoadingText.hide()
+    }
+
+    fun showMultipleSmileys() {
+        reviewEditableExcellentSmiley.show()
+        reviewEditableMediocreSmiley.show()
+        reviewEditableBadSmiley.show()
+    }
+
+    fun showDeadline() {
+        reviewScoreDeadlineLabel.show()
+        reviewScoreDeadline.show()
     }
 
     private fun setDeadline(deadline: String) {
