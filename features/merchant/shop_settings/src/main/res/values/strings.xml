@@ -152,5 +152,7 @@
     <string name="shop_settings_set_shop_status">Atur Status Toko</string>
     <string name="ticker_warning_can_only_change_shopname_once">Nama dan domain toko hanya bisa diubah 1 kali.\nPastikan semua sudah benar.</string>
     <string name="text_ubah_button">Ubah</string>
+    <string name="shop_edit_name_too_short">Nama Toko terlalu pendek, minimum 3 karakter</string>
+    <string name="shop_edit_domain_too_short">Domain Toko terlalu pendek, minimum 3 karakter</string>
 
 </resources>
