@@ -1,6 +1,5 @@
 package com.tokopedia.contactus.createticket.activity;
 
-import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -8,6 +7,7 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.applink.ApplinkConst;
@@ -18,8 +18,8 @@ import com.tokopedia.contactus.createticket.ContactUsConstant;
 import com.tokopedia.contactus.createticket.fragment.ContactUsFaqFragment;
 import com.tokopedia.contactus.createticket.fragment.ContactUsFaqFragment.ContactUsFaqListener;
 import com.tokopedia.contactus.createticket.fragment.CreateTicketFormFragment;
+import com.tokopedia.contactus.createticket.router.ContactUsCreateTicketRouter;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -64,7 +64,7 @@ public class ContactUsActivity extends BaseSimpleActivity implements
                 bundle.putString(PARAM_SOLUTION_ID, Uri.parse(url).getQueryParameter("solution_id"));
 
             CreateTicketFormFragment fragment = CreateTicketFormFragment.createInstance(bundle);
-            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             while (getFragmentManager().getBackStackEntryCount() > 0) {
                 getFragmentManager().popBackStackImmediate();
             }
@@ -95,13 +95,13 @@ public class ContactUsActivity extends BaseSimpleActivity implements
         if (bundle == null)
             bundle = new Bundle();
 
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
 
         ContactUsFaqFragment fragment;
         if (getFragmentManager().findFragmentByTag(ContactUsFaqFragment.class.getSimpleName()) == null) {
             fragment = ContactUsFaqFragment.createInstance(bundle);
         } else {
-            fragment = (ContactUsFaqFragment) getFragmentManager().findFragmentByTag(ContactUsFaqFragment.class.getSimpleName());
+            fragment = (ContactUsFaqFragment) getSupportFragmentManager().findFragmentByTag(ContactUsFaqFragment.class.getSimpleName());
         }
 
         listener = fragment.getBackButtonListener();
@@ -130,7 +130,7 @@ public class ContactUsActivity extends BaseSimpleActivity implements
         bundleCreateTicket = bundle;
         if (getFragmentManager().findFragmentByTag(CreateTicketFormFragment.class.getSimpleName()) == null) {
             CreateTicketFormFragment fragment = CreateTicketFormFragment.createInstance(bundle);
-            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.setCustomAnimations(R.animator.contactus_slide_in_left, 0, 0, R.animator.contactus_slide_out_right);
             transaction.add(R.id.main_view, fragment, CreateTicketFormFragment.class.getSimpleName());
             if (!getIntent().getBooleanExtra(ContactUsConstant.EXTRAS_IS_CHAT_BOT, false)) {
@@ -156,7 +156,7 @@ public class ContactUsActivity extends BaseSimpleActivity implements
         Toast.makeText(this, getString(R.string.title_contact_finish), Toast.LENGTH_LONG).show();
         UserSessionInterface userSession = new UserSession(this);
         if (GlobalConfig.isSellerApp() && userSession.isLoggedIn()) {
-            Intent intent = ((TkpdCoreRouter) getApplication()).getHomeIntent(this);
+            Intent intent = ((ContactUsCreateTicketRouter) getApplication()).getHomeIntent(this);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
             finish();

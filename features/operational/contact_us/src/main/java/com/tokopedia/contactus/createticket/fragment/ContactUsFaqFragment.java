@@ -2,12 +2,15 @@ package com.tokopedia.contactus.createticket.fragment;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
@@ -17,13 +20,13 @@ import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.createticket.activity.ContactUsActivity;
 import com.tokopedia.contactus.createticket.activity.ContactUsActivity.BackButtonListener;
-import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.contactus.createticket.utils.URLGenerator;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.url.TokopediaUrl;
@@ -31,19 +34,22 @@ import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.webview.TkpdWebView;
 
+import org.jetbrains.annotations.NotNull;
+
 import static android.app.Activity.RESULT_OK;
 import static com.tokopedia.contactus.createticket.ContactUsConstant.EXTRAS_PARAM_URL;
 
 /**
  * Created by nisie on 8/12/16.
  */
-public class ContactUsFaqFragment extends BasePresenterFragment {
+public class ContactUsFaqFragment extends TkpdBaseV4Fragment {
 
     private static final String SOLUTION_ID = "solution_id";
     private static final String TAGS = "tags";
     private static final String ORDER_ID = "order_id";
     private static final String APPLINK_SCHEME = "tokopedia://";
     private static final String CHATBOT_SCHEME = "tokopedia://topchat";
+    private static final String SAVED_STATE_OF_CONTACT_US_FAQ_FRAGMENT = "saved state of ContactUsFaqFragment";
     private ValueCallback<Uri> uploadMessageBeforeLolipop;
     public ValueCallback<Uri[]> uploadMessageAfterLolipop;
     public final static int ATTACH_FILE_REQUEST = 1;
@@ -53,6 +59,12 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
     private UserSessionInterface session;
     ContactUsFaqListener listener;
     String url;
+    private Bundle savedState;
+
+    @Override
+    protected String getScreenName() {
+        return null;
+    }
 
     public interface ContactUsFaqListener {
         void onGoToCreateTicket(Bundle solutionId);
@@ -69,16 +81,54 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        session = new UserSession(context);
+        setRetainInstance(true);
+        session = new UserSession(getContext());
     }
 
     @Override
-    protected boolean isRetainInstance() {
-        return true;
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(getFragmentLayout(), container, false);
     }
 
     @Override
-    protected void onFirstTimeLaunched() {
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initView(view);
+        initialVar();
+    }
+
+    @Override
+    public void onSaveInstanceState(@NotNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        saveStateToArguments();
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        restoreStateFromArguments();
+    }
+
+    private void saveStateToArguments() {
+        if (getView() != null)
+            savedState = new Bundle();
+        if (savedState != null) {
+            Bundle b = getArguments();
+            if (b == null) b = new Bundle();
+            b.putBundle(SAVED_STATE_OF_CONTACT_US_FAQ_FRAGMENT, savedState);
+        }
+    }
+
+    private void restoreStateFromArguments() {
+        Bundle b = getArguments();
+        if (b == null) b = new Bundle();
+        savedState = b.getBundle(SAVED_STATE_OF_CONTACT_US_FAQ_FRAGMENT);
+        if (savedState == null) {
+            onFirstTimeLaunched();
+        }
+    }
+
+    private void onFirstTimeLaunched() {
         String url;
         if (getArguments().getString(EXTRAS_PARAM_URL, "").equals("")) {
             url = URL_HELP;
@@ -88,43 +138,11 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
         webView.loadAuthUrlWithFlags(url, session);
     }
 
-    @Override
-    public void onSaveState(Bundle state) {
-
-    }
-
-    @Override
-    public void onRestoreState(Bundle savedState) {
-
-    }
-
-    @Override
-    protected boolean getOptionsMenuEnable() {
-        return false;
-    }
-
-    @Override
-    protected void initialPresenter() {
-
-    }
-
-    @Override
-    protected void initialListener(Activity activity) {
-
-    }
-
-    @Override
-    protected void setupArguments(Bundle arguments) {
-
-    }
-
-    @Override
-    protected int getFragmentLayout() {
+    private int getFragmentLayout() {
         return R.layout.fragment_contact_us_faq;
     }
 
-    @Override
-    protected void initView(View view) {
+    private void initView(View view) {
         if (webView != null) {
             webView.clearCache(true);
         }
@@ -143,19 +161,8 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
         webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
     }
 
-    @Override
-    protected void setViewListener() {
-
-    }
-
-    @Override
-    protected void initialVar() {
+    private void initialVar() {
         listener = (ContactUsActivity) getActivity();
-    }
-
-    @Override
-    protected void setActionVar() {
-
     }
 
     @Override
@@ -277,9 +284,12 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
 
         protected boolean onOverrideUrl(Uri url) {
             try {
+                Context mContext = getContext();
                 if (url.getLastPathSegment().equals("contact-us.pl")) {
-                    webView.loadAuthUrlWithFlags(URLGenerator.generateURLContactUs(TkpdBaseURL
-                            .BASE_CONTACT_US, context), session);
+                    if (mContext != null) {
+                        webView.loadAuthUrlWithFlags(URLGenerator.generateURLContactUs(TkpdBaseURL
+                                .BASE_CONTACT_US, mContext), session);
+                    }
                     return true;
                 } else if (url.getQueryParameter("action") != null &&
                         url.getQueryParameter("action").equals("create_ticket")) {
@@ -301,7 +311,7 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
                     return true;
                 } else if (url.toString().contains(CHATBOT_SCHEME)) {
                     String messageId = url.getLastPathSegment();
-                    Intent chatBotIntent = RouteManager.getIntent(context, ApplinkConst.CHATBOT
+                    Intent chatBotIntent = RouteManager.getIntent(getContext(), ApplinkConst.CHATBOT
                             .replace(String.format("{%s}", ApplinkConst.Chat.MESSAGE_ID), messageId));
                     startActivity(chatBotIntent);
                     return true;
@@ -323,6 +333,7 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        saveStateToArguments();
         if (progressBar != null)
             progressBar.setIndeterminate(false);
     }
