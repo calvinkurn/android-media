@@ -230,10 +230,12 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
 
     override fun loadData(page: Int) {
         shopInfo?.let {
-            viewModel.getShopFilterData(
-                    it,
-                    isMyShop
-            )
+            if(keyword.isBlank()) {
+                viewModel.getShopFilterData(
+                        it,
+                        isMyShop
+                )
+            }
         } ?: viewModel.getShop(shopId)
     }
 
@@ -294,7 +296,11 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
 
         viewModel.shopSortFilterData.observe(this, Observer {
             when (it) {
-                is Success -> onSuccessGetSortFilterData(it.data)
+                is Success -> {
+                    if(keyword.isBlank()) {
+                        onSuccessGetSortFilterData(it.data)
+                    }
+                }
                 is Fail -> showGetListError(it.throwable)
             }
         })
