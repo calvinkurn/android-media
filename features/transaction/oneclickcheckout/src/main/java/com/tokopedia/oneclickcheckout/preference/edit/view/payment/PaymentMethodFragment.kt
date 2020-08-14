@@ -14,6 +14,7 @@ import android.webkit.SslErrorHandler
 import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.widget.Button
 import android.widget.ProgressBar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -96,13 +97,12 @@ class PaymentMethodFragment : BaseDaggerFragment() {
         progressBar = view.findViewById(R.id.progress_bar)
         globalError = view.findViewById(R.id.global_error)
 
-//        view.findViewById<Button>(R.id.btntesting).setOnClickListener {
-//            param?.let {
-//                val url = "${TokopediaUrl.getInstance().PAY}/v2/payment/register/listing"
-//                webView?.postUrl(url, getPayload(it).toByteArray())
-//            }
-//        }
-//{"success":false,"message":"invalid signature. got: abac453245db4029410ccd8f34c7ca28923824b3 | expected: e2eb01d1543f827d2d07cd3a95891e938befface","data":{"url":"","method":"","form":null}}
+        view.findViewById<Button>(R.id.btntesting).setOnClickListener {
+            param?.let {
+                val url = "${TokopediaUrl.getInstance().PAY}/v2/payment/register/listing"
+                webView?.postUrl(url, getPayload(it).toByteArray())
+            }
+        }
     }
 
     private fun initHeader() {
@@ -167,9 +167,9 @@ class PaymentMethodFragment : BaseDaggerFragment() {
 
     private fun loadWebView(param: ListingParam) {
         this.param = param
-        val url = "${TokopediaUrl.getInstance().PAY}/v2/payment/register/listing"
-        webView?.postUrl(url, getPayload(param).toByteArray())
-//        webView?.loadUrl("https://www.google.com")
+//        val url = "${TokopediaUrl.getInstance().PAY}/v2/payment/register/listing"
+//        webView?.postUrl(url, getPayload(param).toByteArray())
+        webView?.loadUrl("https://www.google.com")
         webView?.visible()
         globalError?.gone()
     }
