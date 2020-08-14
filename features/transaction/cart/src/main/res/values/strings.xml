@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="checkout_module_title_activity_cart">Keranjang</string>
-    <string name="cart_error_message">Ada %1d barang yang tidak dapat dibeli</string>
+    <string name="cart_error_message">Terdapat %1d produk yang tidak bisa diproses</string>
     <string name="cart_error_action">Hapus Produk Bermasalah</string>
     <string name="label_dialog_title_delete_item">Hapus barang?</string>
     <string name="label_dialog_message_remove_cart_item">Barang ini akan dihapus dari keranjangmu.</string>
