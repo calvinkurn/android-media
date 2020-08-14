@@ -7,8 +7,8 @@
 
     <com.tokopedia.design.image.SquareImageView
         android:id="@+id/thumbnail"
-        android:layout_width="@dimen/dp_topchat_52"
-        android:layout_height="@dimen/dp_topchat_52"
+        android:layout_width="@dimen/dp_topchat_56"
+        android:layout_height="@dimen/dp_topchat_56"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/dp_topchat_14"
         android:layout_marginBottom="@dimen/dp_topchat_14"
@@ -130,7 +130,7 @@
         android:id="@+id/unread_counter"
         android:layout_width="@dimen/layout_lvl2"
         android:layout_height="@dimen/layout_lvl2"
-        android:layout_marginTop="@dimen/dp_topchat_6"
+        android:layout_marginTop="@dimen/spacing_lvl1"
         android:background="@drawable/bg_red_dot_unread"
         android:gravity="center"
         android:includeFontPadding="false"
@@ -147,7 +147,7 @@
         android:id="@+id/view_smart_reply_indicator"
         android:layout_width="@dimen/layout_lvl1"
         android:layout_height="@dimen/layout_lvl1"
-        android:layout_marginTop="@dimen/dp_topchat_10"
+        android:layout_marginTop="@dimen/dp_topchat_6"
         android:layout_marginEnd="@dimen/dp_topchat_4"
         android:layout_marginRight="@dimen/dp_topchat_4"
         android:background="@drawable/circle_blue_notification"
