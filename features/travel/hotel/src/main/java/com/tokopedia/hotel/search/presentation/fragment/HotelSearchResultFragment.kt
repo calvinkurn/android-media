@@ -28,7 +28,6 @@ import com.tokopedia.hotel.search.data.model.params.ParamFilter
 import com.tokopedia.hotel.search.data.model.params.ParamFilterV2
 import com.tokopedia.hotel.search.data.util.CommonParam
 import com.tokopedia.hotel.search.di.HotelSearchPropertyComponent
-import com.tokopedia.hotel.search.presentation.activity.HotelSearchFilterActivity
 import com.tokopedia.hotel.search.presentation.activity.HotelSearchResultActivity.Companion.SEARCH_SCREEN_NAME
 import com.tokopedia.hotel.search.presentation.adapter.HotelOptionMenuAdapter
 import com.tokopedia.hotel.search.presentation.adapter.HotelOptionMenuAdapter.Companion.MODE_CHECKED
@@ -173,7 +172,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
 
         generateSortMenu(data.displayInfo.sort)
 
-        if (isFirstInitializeFilter)  {
+        if (isFirstInitializeFilter) {
             initializeFilterV2BottomSheet(data.filters)
             initializeQuickFilter(data.quickFilter, data.filters)
             isFirstInitializeFilter = false
@@ -208,8 +207,8 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
         }
 
         val sortFilterItem = quickFilters.map {
-            val item =  SortFilterItem(title = it.displayName,
-                type = if (it.selected) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL)
+            val item = SortFilterItem(title = it.displayName,
+                    type = if (it.selected) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL)
             item.listener = {
                 item.toggleSelected()
             }
@@ -217,7 +216,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
         }
         quick_filter_sort_filter.addItem(ArrayList(sortFilterItem))
 
-        for (item in quick_filter_sort_filter.chipItems)  {
+        for (item in quick_filter_sort_filter.chipItems) {
             item.refChipUnify.setOnClickListener {
                 item.toggleSelected()
                 refreshSelectedFilter(quickFilters)
@@ -228,38 +227,6 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
         quick_filter_sort_filter.parentListener = { }
 
         quick_filter_sort_filter.show()
-    }
-
-    //to sync bottomsheet with quickfilter
-    private fun refreshSelectedFilter(quickFilters: List<QuickFilter>, shouldCallApi: Boolean = true) {
-        val selectedFilterV2 = searchResultviewModel.selectedFilterV2
-        quickFilters.forEachIndexed { index,  quickFilter ->
-            var isVisited = false
-            val isQuickFilterSelected = quick_filter_sort_filter.chipItems[index].type == ChipsUnify.TYPE_SELECTED
-            for ((filterIndex, selectedFilter) in searchResultviewModel.selectedFilterV2.withIndex()) {
-                if (quickFilter.name.equals(selectedFilter.name, true))  {
-                    for ((valueIndex, value) in selectedFilter.values.withIndex()) {
-                        if (value.equals(quickFilter.value, true)) {
-                            selectedFilterV2[filterIndex].values.removeAt(valueIndex)
-                            break
-                        }
-                    }
-                    if (isQuickFilterSelected) {
-                        if (quickFilter.type.equals(FilterV2.FILTER_TYPE_SELECTION_RANGE, true) ||
-                                quickFilter.type.equals(FilterV2.FILTER_TYPE_OPEN_RANGE, true) )  {
-                            selectedFilterV2[filterIndex].values = mutableListOf(quickFilter.value)
-                        } else selectedFilterV2[filterIndex].values.add(quickFilter.value)
-                        isVisited = true
-                        break
-                    }
-                }
-            }
-            if (isQuickFilterSelected && !isVisited) {
-                //if it is the last item
-                selectedFilterV2.add(ParamFilterV2(name = quickFilter.name,  values = mutableListOf(quickFilter.value) ))
-            }
-        }
-        if (shouldCallApi) onQuickFilterChanged(selectedFilterV2)
     }
 
     private fun generateSortMenu(sort: List<Sort>) {
@@ -352,24 +319,86 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
         loadInitialData()
     }
 
-    private fun onQuickFilterChanged(selectedFilters: List<ParamFilterV2>)  {
+    private fun onQuickFilterChanged(selectedFilters: List<ParamFilterV2>) {
         searchResultviewModel.addFilter(selectedFilters)
         loadInitialData()
     }
 
-    private fun setUpQuickFilterBaseOnSelectedFilter(selectedFilters: List<ParamFilterV2>) {
-        quick_filter_sort_filter.chipItems.forEach {
-            it.type = ChipsUnify.TYPE_NORMAL
-        }
-
+    //for assign clicked quick filter value to selected filter
+    private fun refreshSelectedFilter(quickFilters: List<QuickFilter>, shouldCallApi: Boolean = true) {
+        var selectedFilterV2 = searchResultviewModel.selectedFilterV2
         quickFilters.forEachIndexed { index, quickFilter ->
-            for (selectedFilter in selectedFilters)  {
-                if (selectedFilter.name.equals(quickFilter.name, true)) {
-                    for (value in selectedFilter.values) {
-                        if (value.equals(quickFilter.value, true)) {
-                            quick_filter_sort_filter.chipItems[index].type = ChipsUnify.TYPE_SELECTED
+
+            var isVisited = false
+            val isQuickFilterSelected = quick_filter_sort_filter.chipItems[index].type == ChipsUnify.TYPE_SELECTED
+            for ((filterIndex, selectedFilter) in searchResultviewModel.selectedFilterV2.withIndex()) {
+                if (quickFilter.name.equals(selectedFilter.name, true)) {
+                    //remove duplicate value if found, delete
+                    var contains = true
+                    val containIndex = arrayListOf<Int>()
+                    for (quickFilterValue in quickFilter.values) {
+                        for ((valueIndex, value) in selectedFilter.values.withIndex()) {
+                            if (quickFilterValue == value) {
+                                containIndex.add(valueIndex)
+                                break
+                            }
+                            else if (valueIndex == selectedFilter.values.lastIndex) contains = false
+                        }
+                        if (!contains) break
+                    }
+                    if (contains) {
+                        for (i in containIndex) {
+                            selectedFilterV2[filterIndex].values[i] = ""
                         }
                     }
+                    selectedFilterV2[filterIndex].values = selectedFilterV2[filterIndex].values.filter { it.isNotEmpty() }.toMutableList()
+                    if (isQuickFilterSelected) {
+                        //add item if quick filter selected
+                        if (quickFilter.type.equals(FilterV2.FILTER_TYPE_SELECTION_RANGE, true) ||
+                                quickFilter.type.equals(FilterV2.FILTER_TYPE_OPEN_RANGE, true)) {
+                            selectedFilterV2[filterIndex].values = quickFilter.values.toMutableList()
+                        } else {
+                            val temp = selectedFilterV2[filterIndex].values.toHashSet()
+                            temp.addAll(quickFilter.values)
+                            selectedFilterV2[filterIndex].values = temp.toMutableList()
+                        }
+                        isVisited = true
+                        break
+                    }
+                }
+            }
+            //if there was no field name found, add new param.
+            if (isQuickFilterSelected && !isVisited) {
+                selectedFilterV2.add(ParamFilterV2(name = quickFilter.name, values = quickFilter.values.toMutableList()))
+            }
+        }
+        if (shouldCallApi) {
+            selectedFilterV2 = selectedFilterV2.filter { it.values.isNotEmpty() }.toMutableList()
+            onQuickFilterChanged(selectedFilterV2)
+        }
+    }
+
+
+    //for setup quick filter after click submit in bottom sheet
+    private fun setUpQuickFilterBaseOnSelectedFilter(selectedFilters: List<ParamFilterV2>) {
+        quick_filter_sort_filter.chipItems.forEach { it.type = ChipsUnify.TYPE_NORMAL }
+        val selectedFiltersMap = selectedFilters.associateBy({ it.name }, { it })
+
+        // example quickfilter {4, 5} , selected {4} -> not found, don't select chips
+        // example quickfilter {5}, selected {4, 5} -> found, select chip
+        quickFilters.forEachIndexed { index, quickFilter ->
+            if (selectedFiltersMap.containsKey(quickFilter.name)) {
+                val selectedFilter = selectedFiltersMap[quickFilter.name]
+                selectedFilter?.let { selectedFilterMap ->
+                    var contains = true
+                    for (quickFilterValue in quickFilter.values) {
+                        for ((i, selectedFilterValue) in selectedFilterMap.values.withIndex()) {
+                            if (quickFilterValue == selectedFilterValue) break
+                            else if (i == selectedFilterMap.values.lastIndex) contains = false
+                        }
+                        if (!contains) break
+                    }
+                    if (contains) quick_filter_sort_filter.chipItems[index].type = ChipsUnify.TYPE_SELECTED
                 }
             }
         }

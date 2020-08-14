@@ -92,7 +92,7 @@ query PropertySearch($data:PropertySearchRequest!){
       quickFilter {
            name
            displayName
-           value
+           values
            selected
        }
     }

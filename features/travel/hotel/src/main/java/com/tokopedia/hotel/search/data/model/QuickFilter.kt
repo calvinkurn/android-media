@@ -16,9 +16,9 @@ data class QuickFilter(
         @Expose
         val displayName: String = "",
 
-        @SerializedName("value")
+        @SerializedName("values")
         @Expose
-        val value: String = "",
+        val values: List<String> = listOf(),
 
         @SerializedName("selected")
         @Expose
