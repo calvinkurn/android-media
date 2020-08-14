@@ -10,7 +10,11 @@ import com.tokopedia.favorite.view.viewmodel.TopAdsShopViewModel
  * @author kulomady on 1/24/17.
  */
 interface FavoriteTypeFactory : AdapterTypeFactory {
+
     fun type(viewModel: TopAdsShopViewModel?): Int
+
     fun type(viewModel: FavoriteShopViewModel?): Int
-    override fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<*>?
+
+    override fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<*>
+
 }
