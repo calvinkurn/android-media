@@ -2,6 +2,7 @@ package com.tokopedia.oneclickcheckout.common.interceptor
 
 import okhttp3.*
 import okio.Buffer
+import java.io.IOException
 
 const val RATES_QUERY = "ratesV3"
 
@@ -1075,7 +1076,7 @@ class LogisticTestInterceptor : Interceptor {
 
     var customRatesResponseString: String? = null
 
-    var customRatesThrowable: Throwable? = null
+    var customRatesThrowable: IOException? = null
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val copy = chain.request().newBuilder().build()

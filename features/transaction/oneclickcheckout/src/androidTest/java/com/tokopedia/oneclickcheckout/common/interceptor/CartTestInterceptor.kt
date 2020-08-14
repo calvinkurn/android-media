@@ -2,6 +2,7 @@ package com.tokopedia.oneclickcheckout.common.interceptor
 
 import okhttp3.*
 import okio.Buffer
+import java.io.IOException
 
 const val GET_OCC_CART_QUERY = "get_occ_cart_page"
 const val UPDATE_CART_OCC_QUERY = "update_cart_occ"
@@ -626,8 +627,8 @@ class CartTestInterceptor : Interceptor {
     var customGetOccCartResponseString: String? = null
     var customUpdateCartOccResponseString: String? = null
 
-    var customGetOccCartThrowable: Throwable? = null
-    var customUpdateCartOccThrowable: Throwable? = null
+    var customGetOccCartThrowable: IOException? = null
+    var customUpdateCartOccThrowable: IOException? = null
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val copy = chain.request().newBuilder().build()

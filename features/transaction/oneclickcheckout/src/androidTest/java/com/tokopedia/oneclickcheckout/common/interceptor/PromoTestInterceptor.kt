@@ -2,6 +2,7 @@ package com.tokopedia.oneclickcheckout.common.interceptor
 
 import okhttp3.*
 import okio.Buffer
+import java.io.IOException
 
 const val VALIDATE_USE_PROMO_REVAMP_QUERY = "validate_use_promo_revamp"
 
@@ -246,7 +247,7 @@ class PromoTestInterceptor : Interceptor {
 
     var customValidateUseResponseString: String? = null
 
-    var customValidateUseThrowable: Throwable? = null
+    var customValidateUseThrowable: IOException? = null
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val copy = chain.request().newBuilder().build()

@@ -2,6 +2,7 @@ package com.tokopedia.oneclickcheckout.common.interceptor
 
 import okhttp3.*
 import okio.Buffer
+import java.io.IOException
 
 const val CHECKOUT_QUERY = "one_click_checkout"
 
@@ -60,7 +61,7 @@ class CheckoutTestInterceptor : Interceptor {
 
     var customCheckoutResponseString: String? = null
 
-    var customCheckoutThrowable: Throwable? = null
+    var customCheckoutThrowable: IOException? = null
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val copy = chain.request().newBuilder().build()

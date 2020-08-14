@@ -2,6 +2,7 @@ package com.tokopedia.oneclickcheckout.common.interceptor
 
 import okhttp3.*
 import okio.Buffer
+import java.io.IOException
 
 const val GET_PREFERENCE_LIST_QUERY = "get_preference_list"
 const val SET_DEFAULT_PROFILE_QUERY = "set_default_profile_occ"
@@ -204,8 +205,8 @@ class PreferenceTestInterceptor : Interceptor {
     var customGetPreferenceListResponseString: String? = null
     var customSetDefaultPreferenceResponseString: String? = null
 
-    var customGetPreferenceListThrowable: Throwable? = null
-    var customSetDefaultPreferenceThrowable: Throwable? = null
+    var customGetPreferenceListThrowable: IOException? = null
+    var customSetDefaultPreferenceThrowable: IOException? = null
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val copy = chain.request().newBuilder().build()

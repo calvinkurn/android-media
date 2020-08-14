@@ -28,6 +28,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import java.io.IOException
 
 class OrderSummaryPageActivityTest {
 
@@ -52,9 +53,32 @@ class OrderSummaryPageActivityTest {
     private val promoInterceptor = OneClickCheckoutInterceptor.promoInterceptor
     private val checkoutInterceptor = OneClickCheckoutInterceptor.checkoutInterceptor
 
+    private fun resetCustomInterception() {
+        cartInterceptor.customGetOccCartThrowable = null
+        cartInterceptor.customGetOccCartResponseString = null
+        cartInterceptor.customUpdateCartOccThrowable = null
+        cartInterceptor.customUpdateCartOccResponseString = null
+
+        preferenceInterceptor.customGetPreferenceListThrowable = null
+        preferenceInterceptor.customGetPreferenceListResponseString = null
+        preferenceInterceptor.customSetDefaultPreferenceThrowable = null
+        preferenceInterceptor.customSetDefaultPreferenceResponseString = null
+
+        logisticInterceptor.customRatesThrowable = null
+        logisticInterceptor.customRatesResponseString = null
+
+        promoInterceptor.customValidateUseThrowable = null
+        promoInterceptor.customValidateUseResponseString = null
+
+        checkoutInterceptor.customCheckoutThrowable = null
+        checkoutInterceptor.customCheckoutResponseString = null
+    }
+
     @Before
     fun setup() {
 //        gtmLogDBSource.deleteAll().subscribe()
+        resetCustomInterception()
+
         OneClickCheckoutInterceptor.setupGraphqlMockResponse(context)
         idlingResource = OccIdlingResource.getIdlingResource()
         IdlingRegistry.getInstance().register(idlingResource)
@@ -70,9 +94,6 @@ class OrderSummaryPageActivityTest {
 
     @Test
     fun happyFlow_DirectCheckout() {
-        logisticInterceptor.customRatesResponseString = null
-        promoInterceptor.customValidateUseResponseString = null
-
         activityRule.launchActivity(null)
         intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
 
@@ -113,9 +134,6 @@ class OrderSummaryPageActivityTest {
 
     @Test
     fun happyFlow_ChangeCourier() {
-        logisticInterceptor.customRatesResponseString = null
-        promoInterceptor.customValidateUseResponseString = null
-
         activityRule.launchActivity(null)
         intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
 
@@ -145,9 +163,6 @@ class OrderSummaryPageActivityTest {
 
     @Test
     fun happyFlow_AddQuantity() {
-        logisticInterceptor.customRatesResponseString = null
-        promoInterceptor.customValidateUseResponseString = null
-
         activityRule.launchActivity(null)
         intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
 
@@ -170,7 +185,6 @@ class OrderSummaryPageActivityTest {
     @Test
     fun happyFlow_CheckInsurance() {
         logisticInterceptor.customRatesResponseString = RATES_RESPONSE_WITH_INSURANCE
-        promoInterceptor.customValidateUseResponseString = null
 
         activityRule.launchActivity(null)
         intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
@@ -191,9 +205,6 @@ class OrderSummaryPageActivityTest {
 
     @Test
     fun happyFlow_ChooseBboFromTicker() {
-        logisticInterceptor.customRatesResponseString = null
-        promoInterceptor.customValidateUseResponseString = null
-
         activityRule.launchActivity(null)
         intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
 
@@ -222,5 +233,22 @@ class OrderSummaryPageActivityTest {
         assertEquals("https://www.tokopedia.com/payment", paymentPassData.redirectUrl)
         assertEquals("transaction_id=123", paymentPassData.queryString)
         assertEquals("POST", paymentPassData.method)
+    }
+
+    @Test
+    fun reloadPage_ErrorGetOccCartPage() {
+        activityRule.launchActivity(null)
+        intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
+
+        onView(withId(R.id.iv_edit_preference)).check(matches(isDisplayed()))
+
+        cartInterceptor.customGetOccCartThrowable = IOException()
+
+        onView(withId(R.id.iv_edit_preference)).perform(click())
+
+        onView(withId(R.id.global_error)).check { view, noViewFoundException ->
+            noViewFoundException?.printStackTrace()
+            assertEquals(View.VISIBLE, view.visibility)
+        }
     }
 }
