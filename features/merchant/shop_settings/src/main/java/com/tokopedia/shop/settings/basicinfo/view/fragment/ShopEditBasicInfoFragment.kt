@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,7 +24,6 @@ import com.tokopedia.imagepicker.picker.main.builder.ImagePickerEditorBuilder
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef
 import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
-import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
@@ -63,6 +63,7 @@ class ShopEditBasicInfoFragment: Fragment() {
     @Inject
     lateinit var viewModel: ShopEditBasicInfoViewModel
 
+    private var shopDomainTextWatcher: TextWatcher? = null
     private var shopBasicDataModel: ShopBasicDataModel? = null
     private var savedLocalImageUrl: String? = null
     private var needUpdatePhotoUI: Boolean = false
@@ -85,6 +86,7 @@ class ShopEditBasicInfoFragment: Fragment() {
 
         setupToolbar()
         setupTextField()
+        setupDomainSuggestion()
         observeLiveData()
 
         getAllowShopNameDomainChanges()
@@ -157,34 +159,80 @@ class ShopEditBasicInfoFragment: Fragment() {
     }
 
     private fun setupTextField() {
-        shopNameTextField.textFieldInput.apply {
-            setText(shopBasicDataModel?.name)
+        setShopDomainTextWatcher()
+        setupShopNameTextField()
+        setupShopDomainTextField()
+    }
 
-            afterTextChanged {
-                if(it.length < MIN_INPUT_LENGTH) {
-                    val message = context.getString(R.string.shop_edit_name_too_short)
-                    showShopNameInputError(message)
-                } else {
-                    resetShopNameInput()
-                    viewModel.validateShopName(it)
-                }
+    private fun setupDomainSuggestion() {
+        shopDomainSuggestions.setOnItemClickListener { domain ->
+            shopDomainTextField.textFieldInput.apply {
+                removeTextChangedListener(shopDomainTextWatcher)
+                setText(domain)
+                addTextChangedListener(shopDomainTextWatcher)
             }
+            shopDomainSuggestions.hide()
+        }
+    }
+
+    private fun setupShopNameTextField() {
+        shopNameTextField.textFieldInput.apply {
+            val textWatcher = createShopNameTextWatcher()
+            setText(shopBasicDataModel?.name)
+            addTextChangedListener(textWatcher)
             isEnabled = false
         }
+    }
 
+    private fun setupShopDomainTextField() {
         shopDomainTextField.textFieldInput.apply {
             setText(shopBasicDataModel?.domain)
+            addTextChangedListener(shopDomainTextWatcher)
+            isEnabled = false
+        }
+    }
 
-            afterTextChanged {
-                if(it.length < MIN_INPUT_LENGTH) {
-                    val message = context.getString(R.string.shop_edit_domain_too_short)
-                    showShopDomainInputError(message)
+    private fun createShopNameTextWatcher(): TextWatcher {
+        return object : TextWatcher {
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                shopDomainSuggestions.hide()
+            }
+
+            override fun afterTextChanged(s: Editable) {
+                val input = s.toString()
+                if (input.length < MIN_INPUT_LENGTH) {
+                    val message = context?.getString(R.string.shop_edit_name_too_short).orEmpty()
+                    showShopNameInputError(message)
+                    viewModel.cancelValidateShopName()
                 } else {
-                    resetShopDomainInput()
-                    viewModel.validateShopDomain(it)
+                    resetShopNameInput()
+                    viewModel.validateShopName(input)
                 }
             }
-            isEnabled = false
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+        }
+    }
+
+    private fun setShopDomainTextWatcher() {
+        shopDomainTextWatcher = object : TextWatcher {
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                shopDomainSuggestions.hide()
+            }
+
+            override fun afterTextChanged(s: Editable) {
+                val input = s.toString()
+                if (input.length < MIN_INPUT_LENGTH) {
+                    val message = context?.getString(R.string.shop_edit_domain_too_short).orEmpty()
+                    showShopDomainInputError(message)
+                    viewModel.cancelValidateShopDomain()
+                } else {
+                    resetShopDomainInput()
+                    viewModel.validateShopDomain(input)
+                }
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
         }
     }
 
@@ -204,8 +252,8 @@ class ShopEditBasicInfoFragment: Fragment() {
     }
 
     private fun resetShopDomainInput() {
-        shopNameTextField.setError(false)
-        shopNameTextField.setMessage("")
+        shopDomainTextField.setError(false)
+        shopDomainTextField.setMessage("")
     }
 
     private fun observeLiveData() {
@@ -214,6 +262,7 @@ class ShopEditBasicInfoFragment: Fragment() {
         observeUpdateShopData()
         observeAllowShopNameDomainChanges()
         observeValidateShopNameDomain()
+        observeShopDomainSuggestions()
     }
 
     private fun getAllowShopNameDomainChanges() {
@@ -273,7 +322,10 @@ class ShopEditBasicInfoFragment: Fragment() {
                         val message = validateDomainShopName.error.message
                         showShopNameInputError(message)
                     }
+
+                    tvSave.isEnabled = validateDomainShopName.isValid
                 }
+                is Fail -> shopDomainSuggestions.hide()
             }
         }
 
@@ -287,6 +339,21 @@ class ShopEditBasicInfoFragment: Fragment() {
                         val message = validateDomainShopName.error.message
                         showShopDomainInputError(message)
                     }
+
+                    tvSave.isEnabled = validateDomainShopName.isValid
+                }
+                is Fail -> shopDomainSuggestions.hide()
+            }
+        }
+    }
+
+    private fun observeShopDomainSuggestions() {
+        observe(viewModel.shopDomainSuggestion) {
+            when(it) {
+                is Success -> {
+                    val result = it.data.shopDomainSuggestion.result
+                    val shopDomains = result.shopDomains
+                    shopDomainSuggestions.show(shopDomains)
                 }
             }
         }
@@ -412,8 +479,14 @@ class ShopEditBasicInfoFragment: Fragment() {
         shopBasicDataModel?.let {
             this.shopBasicDataModel = it
             setUIShopBasicData(it)
+            setShopBasicData(it)
             tvSave.visible()
         }
+    }
+
+    private fun setShopBasicData(shopBasicDataModel: ShopBasicDataModel) {
+        viewModel.setCurrentShopName(shopBasicDataModel.name.orEmpty())
+        viewModel.setCurrentDomainName(shopBasicDataModel.domain.orEmpty())
     }
 
     private fun setUIShopBasicData(shopBasicDataModel: ShopBasicDataModel) {

@@ -137,54 +137,22 @@
                 app:text_field_label="Domain Toko"
                 app:text_field_prepend_text="www.tokopedia.com/" />
 
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/label_shop_recommendation"
+            <com.tokopedia.shop.settings.basicinfo.view.widget.ShopDomainSuggestionView
+                android:id="@+id/shopDomainSuggestions"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="left"
                 android:layout_marginTop="@dimen/spacing_lvl3"
-                android:clickable="false"
-                android:ellipsize="end"
-                android:focusable="false"
-                android:lines="1"
-                android:text="Coba rekomendasi ini"
-                android:textColor="@color/grey_500"
-                android:textSize="@dimen/sp_12"
-                app:typographyType="body_3" />
+                android:visibility="gone"/>
 
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/label_shop_recom_1"
-                android:layout_width="wrap_content"
+            <com.tokopedia.unifycomponents.DividerUnify
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="left"
-                android:clickable="false"
-                android:ellipsize="end"
-                android:focusable="false"
-                android:lines="1"
-                android:text="www.tokopedia.com/toko_1"
-                android:textColor="@color/green_500"
-                android:textSize="@dimen/sp_12"
-                app:typographyType="body_3" />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/label_shop_recom_2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="left"
-                android:clickable="false"
-                android:ellipsize="end"
-                android:focusable="false"
-                android:lines="1"
-                android:text="www.tokopedia.com/toko_2"
-                android:textColor="@color/green_500"
-                android:textSize="@dimen/sp_12"
-                app:typographyType="body_3" />
-
+                android:layout_marginTop="@dimen/spacing_lvl4"/>
 
             <com.tokopedia.design.text.TkpdHintTextInputLayout
                 android:id="@+id/tilShopSlogan"
                 style="@style/HintTextInputLayout"
-                android:layout_marginTop="@dimen/dp_30"
+                android:layout_marginTop="@dimen/spacing_lvl4"
                 android:hint="@string/shop_slogan_label"
                 app:counterEnabled="true"
                 app:counterMaxLength="@integer/max_slogan_char">
