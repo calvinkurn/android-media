@@ -240,6 +240,9 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         setVersionCode();
         setVersionName();
 
+        GlobalConfig.APPLICATION_TYPE = 3;
+        GlobalConfig.PACKAGE_APPLICATION = "com.tokopedia.intl";
+
         GlobalConfig.DEBUG = BuildConfig.DEBUG;
         GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
         com.tokopedia.config.GlobalConfig.DEBUG = BuildConfig.DEBUG;

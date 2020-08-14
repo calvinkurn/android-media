@@ -8,7 +8,7 @@ import android.text.TextUtils;
 
 import com.appsflyer.AppsFlyerConversionListener;
 import com.appsflyer.AppsFlyerLib;
-import com.crashlytics.android.Crashlytics;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.tokopedia.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.tkpd.deeplink.utils.URLParser;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
@@ -93,6 +93,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     private final Activity context;
     private final DeepLinkView viewListener;
+    private final FirebaseCrashlytics crashlytics;
 
     @Inject
     GetShopInfoByDomainUseCase getShopInfoUseCase;
@@ -107,7 +108,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     public DeepLinkPresenterImpl(DeepLinkActivity activity) {
         this.viewListener = activity;
         this.context = activity;
-
+        this.crashlytics = FirebaseCrashlytics.getInstance();
         initInjection(activity);
     }
 
@@ -535,7 +536,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     } else {
                         Timber.w("P1#DEEPLINK_OPEN_WEBVIEW#OneSegment;link_segment='%s';uri='%s'", linkSegment.get(0), uriData.toString());
                         if (!GlobalConfig.DEBUG) {
-                            Crashlytics.logException(new ShopNotFoundException(linkSegment.get(0)));
+                            crashlytics.recordException(new ShopNotFoundException(linkSegment.get(0)));
                         }
                         prepareOpenWebView(uriData);
                     }
@@ -630,8 +631,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                         Timber.w("P1#DEEPLINK_OPEN_WEBVIEW#TwoSegments;link_segment='%s';uri='%s'",
                                 linkSegment.get(0) + "/" + linkSegment.get(1), uriData.toString());
                         if (!GlobalConfig.DEBUG) {
-                            Crashlytics.logException(new ShopNotFoundException(linkSegment.get(0)));
-                            Crashlytics.logException(new ProductNotFoundException(linkSegment.get(0) + "/" + linkSegment.get(1)));
+                            crashlytics.recordException(new ShopNotFoundException(linkSegment.get(0)));
+                            crashlytics.recordException(new ProductNotFoundException(linkSegment.get(0) + "/" + linkSegment.get(1)));
                         }
                         Intent intent = BaseDownloadAppLinkActivity.newIntent(context, uriData.toString(), true);
                         context.startActivity(intent);
@@ -663,7 +664,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             String catalogId = linkSegment.get(1);
             RouteManager.route(context, DeeplinkMapper.getRegisteredNavigation(context, ApplinkConst.DISCOVERY_CATALOG + "/" + catalogId));
         } catch (Exception e) {
-            Crashlytics.log(e.getLocalizedMessage());
+            crashlytics.log(e.getLocalizedMessage());
         }
     }
 

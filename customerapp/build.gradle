@@ -1,5 +1,5 @@
 apply plugin: 'com.android.application'
-apply plugin: 'io.fabric'
+apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'kotlin-android'
 if (project.hasProperty("enable-shrinkresource")) {
     apply from: "$rootProject.projectDir/buildconfig/appcompile/enable-shrinkresource.gradle"
@@ -81,7 +81,7 @@ def enableHermes = project.ext.react.get("enableHermes", false);
 
 buildscript {
     repositories {
-        maven { url 'https://maven.fabric.io/public' }
+        google()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         mavenCentral()
         jcenter()
@@ -462,8 +462,11 @@ dependencies {
 
     implementation rootProject.ext.firebase.config
     implementation rootProject.ext.firebase.messaging
+    implementation rootProject.ext.firebase.auth
     implementation rootProject.ext.playServicesDependencies.analytics
     implementation rootProject.ext.firebase.fireStore
+    implementation (rootProject.ext.firebase.crashlytics) {
+        transitive = true	        }
     implementation rootProject.ext.playServicesDependencies.location
     implementation rootProject.ext.debugToolsDependencies.chuck
     implementation rootProject.ext.supportLibDependencies.design
@@ -500,9 +503,6 @@ dependencies {
     }
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
-    }
-    implementation(rootProject.ext.serviceDependencies.crashlytics) {
-        transitive = true
     }
     implementation(rootProject.ext.analyticsDependencies.branch) {
         exclude module: 'answers-shim'
@@ -601,3 +601,4 @@ dependencies {
 
 apply from: "../buildconfig/reactnative/react.gradle"
 apply from: "../buildconfig/reactnative/codepush.gradle"
+apply plugin: 'com.google.gms.google-services'

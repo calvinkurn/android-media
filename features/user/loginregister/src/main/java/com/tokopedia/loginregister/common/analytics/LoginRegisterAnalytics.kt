@@ -4,7 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.os.Build
 import android.util.Patterns
-import com.crashlytics.android.Crashlytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.analytics.TrackAnalytics
 import com.tokopedia.analytics.firebase.FirebaseEvent
 import com.tokopedia.analytics.firebase.FirebaseParams
@@ -799,7 +799,7 @@ class LoginRegisterAnalytics @Inject constructor(
 
     fun logUnknownError(message: Throwable) {
         try {
-            Crashlytics.logException(message)
+            FirebaseCrashlytics.getInstance().recordException(message)
         } catch (e: IllegalStateException) {
             e.printStackTrace()
         }
