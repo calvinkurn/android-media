@@ -7,13 +7,9 @@ import java.util.List;
 
 public class RecentViewData {
 
-    @SerializedName("list")
+    @SerializedName("items")
     @Expose
     List<ProductItem> list;
-
-    @SerializedName("paging")
-    @Expose
-    PagingData pagingHandlerModel;
 
     public List<ProductItem> getList() {
         return list;
@@ -23,19 +19,10 @@ public class RecentViewData {
         this.list = list;
     }
 
-    public PagingData getPagingHandlerModel() {
-        return pagingHandlerModel;
-    }
-
-    public void setPagingHandlerModel(PagingData pagingHandlerModel) {
-        this.pagingHandlerModel = pagingHandlerModel;
-    }
-
     @Override
     public String toString() {
         return "ProductItemData{" +
                 "list=" + list +
-                ", pagingHandlerModel=" + pagingHandlerModel +
                 '}';
     }
 

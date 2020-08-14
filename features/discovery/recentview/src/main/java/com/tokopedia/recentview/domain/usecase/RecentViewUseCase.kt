@@ -53,9 +53,9 @@ class RecentViewUseCase (
         return convertToViewModel(getProductsFromResponse(data))
     }
 
-    fun getParam(loginID: String?) {
+    fun getParam(loginID: String) {
         params.parameters.clear()
-        params.putString(GetRecentViewUseCase.PARAM_USER_ID, loginID)
+        params.putInt(GetRecentViewUseCase.PARAM_USER_ID, loginID.toInt())
     }
 
     private fun getProductsFromResponse(productItemData: RecentViewData): List<RecentViewProductDomain> {
