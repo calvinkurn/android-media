@@ -16,6 +16,6 @@ message("Thank you for your hard work @#{github.pr_author} 🎉 You might find a
 # AndroidLint
 android_lint.report_file = "report-result.xml"
 android_lint.skip_gradle_task = true
-android_lint.severity = "Error"
+android_lint.severity = "Warning"
 android_lint.filtering = true
 android_lint.lint(inline_mode: true)
