@@ -448,6 +448,8 @@ class ShopEditBasicInfoFragment: Fragment() {
         } else {
             viewModel.updateShopBasicData(name, domain, tagLine, desc)
         }
+
+        tvSave.isEnabled = false
     }
 
     private fun showSubmitLoading() {
@@ -487,6 +489,7 @@ class ShopEditBasicInfoFragment: Fragment() {
     private fun onErrorUpdateShopBasicData(throwable: Throwable) {
         hideSubmitLoading()
         showSnackBarErrorSubmitEdit(throwable)
+        tvSave.isEnabled = true
     }
 
     private fun showShopInformation(shopBasicDataModel: ShopBasicDataModel?) {
