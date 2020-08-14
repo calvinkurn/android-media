@@ -23,4 +23,5 @@ data class LogisticPromoUiModel(val promoCode: String,
                                 val shippingRate: Int,
                                 val benefitAmount: Int,
                                 val disabled: Boolean,
-                                val hideShipperName: Boolean) : RatesViewModelType, Parcelable
+                                val hideShipperName: Boolean,
+                                val isCodAvailable: Int) : RatesViewModelType, Parcelable

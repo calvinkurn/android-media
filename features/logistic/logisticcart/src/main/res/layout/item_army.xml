@@ -40,6 +40,16 @@
 
         </FrameLayout>
 
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/lbl_cod_available"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/fl_image_container"
+            android:layout_toRightOf="@+id/fl_image_container"
+            android:layout_alignBottom="@id/fl_image_container"
+            android:text="Tersedia Bayar di tempat"
+            app:labelType="general_light_green" />
+
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_title"
             android:layout_width="wrap_content"
