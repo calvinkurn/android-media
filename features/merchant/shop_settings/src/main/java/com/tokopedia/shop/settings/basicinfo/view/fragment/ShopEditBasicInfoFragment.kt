@@ -87,33 +87,14 @@ class ShopEditBasicInfoFragment: Fragment() {
         setupToolbar()
         setupTextField()
         setupDomainSuggestion()
+        setupShopAvatar()
+        setupSaveBtn()
+
         observeLiveData()
-
         getAllowShopNameDomainChanges()
-
-        parentTvBrowseFile.background = MethodChecker.getDrawable(parentTvBrowseFile.context,
-            com.tokopedia.design.R.drawable.ic_balloon_gray)
-
-        etShopSlogan.addTextChangedListener(object : AfterTextWatcher() {
-            override fun afterTextChanged(s: Editable) {
-                tilShopSlogan.error = null
-            }
-        })
-
-        etShopDesc.addTextChangedListener(object : AfterTextWatcher() {
-            override fun afterTextChanged(s: Editable) {
-                tilShopDesc.error = null
-            }
-        })
-
-        val onBrowseClickListener = View.OnClickListener { openImagePicker() }
-        ivLogo.setOnClickListener(onBrowseClickListener)
-        tvBrowseFile.setOnClickListener(onBrowseClickListener)
-
-        tvSave.setOnClickListener { onSaveButtonClicked() }
         container.requestFocus()
 
-        onSuccessGetShopBasicData(shopBasicDataModel)
+        showShopInformation(shopBasicDataModel)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -162,6 +143,26 @@ class ShopEditBasicInfoFragment: Fragment() {
         setShopDomainTextWatcher()
         setupShopNameTextField()
         setupShopDomainTextField()
+        setupShopTagLineTextField()
+        setupShopDescriptionTextField()
+    }
+
+    private fun setupShopTagLineTextField() {
+        shopTagLineTextField.textFieldInput.addTextChangedListener(object : AfterTextWatcher() {
+            override fun afterTextChanged(s: Editable) {
+                shopTagLineTextField.setMessage("")
+                shopTagLineTextField.setError(false)
+            }
+        })
+    }
+
+    private fun setupShopDescriptionTextField() {
+        shopDescriptionTextField.textFieldInput.addTextChangedListener(object : AfterTextWatcher() {
+            override fun afterTextChanged(s: Editable) {
+                shopDescriptionTextField.setMessage("")
+                shopDescriptionTextField.setError(false)
+            }
+        })
     }
 
     private fun setupDomainSuggestion() {
@@ -173,6 +174,15 @@ class ShopEditBasicInfoFragment: Fragment() {
             }
             shopDomainSuggestions.hide()
         }
+    }
+
+    private fun setupShopAvatar() {
+        imageAvatar.setOnClickListener { openImagePicker() }
+        textChangeAvatar.setOnClickListener { openImagePicker() }
+    }
+
+    private fun setupSaveBtn() {
+        tvSave.setOnClickListener { onSaveButtonClicked() }
     }
 
     private fun setupShopNameTextField() {
@@ -272,7 +282,7 @@ class ShopEditBasicInfoFragment: Fragment() {
     private fun observeGetShopBasicData() {
         observe(viewModel.shopBasicData) {
             when(it) {
-                is Success -> onSuccessGetShopBasicData(it.data)
+                is Success -> showShopInformation(it.data)
                 is Fail -> onErrorGetShopBasicData(it.throwable)
             }
         }
@@ -407,7 +417,7 @@ class ShopEditBasicInfoFragment: Fragment() {
     }
 
     private fun showNameAndDomainNotAllowedTicker() {
-        val message = "Kamu sudah pernah mengubah nama dan domain toko sebelumnya."
+        val message = getString(R.string.shop_edit_change_name_and_domain_not_allowed)
         showInfoTicker(message)
     }
 
@@ -427,12 +437,16 @@ class ShopEditBasicInfoFragment: Fragment() {
 
     private fun onSaveButtonClicked() {
         showSubmitLoading()
-        val tagLine = etShopSlogan.text.toString()
-        val desc = etShopDesc.text.toString()
+
+        val name = shopNameTextField.textFieldInput.text.toString()
+        val domain = shopDomainTextField.textFieldInput.text.toString()
+        val tagLine = shopTagLineTextField.textFieldInput.text.toString()
+        val desc = shopDescriptionTextField.textFieldInput.text.toString()
+
         if (!savedLocalImageUrl.isNullOrEmpty()) {
-            viewModel.uploadShopImage(savedLocalImageUrl!!, tagLine, desc)
+            viewModel.uploadShopImage(savedLocalImageUrl!!, name, domain, tagLine, desc)
         } else {
-            viewModel.updateShopBasicData(tagLine, desc)
+            viewModel.updateShopBasicData(name, domain, tagLine, desc)
         }
     }
 
@@ -475,7 +489,7 @@ class ShopEditBasicInfoFragment: Fragment() {
         showSnackBarErrorSubmitEdit(throwable)
     }
 
-    private fun onSuccessGetShopBasicData(shopBasicDataModel: ShopBasicDataModel?) {
+    private fun showShopInformation(shopBasicDataModel: ShopBasicDataModel?) {
         shopBasicDataModel?.let {
             this.shopBasicDataModel = it
             setUIShopBasicData(it)
@@ -485,20 +499,24 @@ class ShopEditBasicInfoFragment: Fragment() {
     }
 
     private fun setShopBasicData(shopBasicDataModel: ShopBasicDataModel) {
-        viewModel.setCurrentShopName(shopBasicDataModel.name.orEmpty())
-        viewModel.setCurrentDomainName(shopBasicDataModel.domain.orEmpty())
+        viewModel.setCurrentShopData(shopBasicDataModel)
     }
 
     private fun setUIShopBasicData(shopBasicDataModel: ShopBasicDataModel) {
         updatePhotoUI(shopBasicDataModel)
-        //to reserve saveInstanceState from edittext
-        if (TextUtils.isEmpty(etShopSlogan.text)) {
-            etShopSlogan.setText(shopBasicDataModel.tagline)
-            etShopSlogan.text?.length?.let { etShopSlogan.setSelection(it) }
+
+        shopTagLineTextField.textFieldInput.run {
+            if (TextUtils.isEmpty(text)) {
+                setText(shopBasicDataModel.tagline)
+                text?.length?.let { setSelection(it) }
+            }
         }
-        if (TextUtils.isEmpty(etShopDesc.text)) {
-            etShopDesc.setText(shopBasicDataModel.description)
-            etShopDesc.text?.length?.let { etShopDesc.setSelection(it) }
+
+        shopTagLineTextField.textFieldInput.run {
+            if (TextUtils.isEmpty(text)) {
+                setText(shopBasicDataModel.description)
+                text?.length?.let { setSelection(it) }
+            }
         }
     }
 
@@ -507,13 +525,13 @@ class ShopEditBasicInfoFragment: Fragment() {
             if (TextUtils.isEmpty(savedLocalImageUrl)) {
                 val logoUrl = it.logo
                 if (TextUtils.isEmpty(logoUrl)) {
-                    ivLogo.setImageDrawable(
-                        MethodChecker.getDrawable(ivLogo.context, com.tokopedia.design.R.drawable.ic_camera_add))
+                    imageAvatar.setImageDrawable(
+                        MethodChecker.getDrawable(imageAvatar.context, R.drawable.ic_shop_edit_avatar))
                 } else {
-                    ImageHandler.LoadImage(ivLogo, logoUrl)
+                    ImageHandler.LoadImage(imageAvatar, logoUrl)
                 }
             } else {
-                ImageHandler.LoadImage(ivLogo, savedLocalImageUrl)
+                ImageHandler.LoadImage(imageAvatar, savedLocalImageUrl)
             }
         }
     }

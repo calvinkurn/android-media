@@ -63,7 +63,8 @@ class ShopEditBasicInfoViewModel @Inject constructor(
     private val _shopDomainSuggestion = MutableLiveData<Result<ShopDomainSuggestionData>>()
 
     private var currentShopName: String? = null
-    private var currentDomainName: String? = null
+    private var currentShopDomain: String? = null
+    private var currentShop: ShopBasicDataModel? = null
 
     private var validateShopNameJob: Job? = null
     private var validateShopDomainJob: Job? = null
@@ -86,7 +87,7 @@ class ShopEditBasicInfoViewModel @Inject constructor(
         validateShopNameJob?.cancel()
 
         launchCatchError(block = {
-            val allowChangeDomain = true
+            val allowChangeDomain = isDomainChangeAllowed()
             val data = withContext(dispatchers.io) {
                 delay(INPUT_DELAY)
 
@@ -107,8 +108,8 @@ class ShopEditBasicInfoViewModel @Inject constructor(
         setCurrentShopName(shopName)
     }
 
-    fun validateShopDomain(domainName: String) {
-        if(domainName == currentDomainName) return
+    fun validateShopDomain(domain: String) {
+        if(domain == currentShopDomain) return
 
         validateShopDomainJob?.cancel()
 
@@ -116,7 +117,7 @@ class ShopEditBasicInfoViewModel @Inject constructor(
             val data = withContext(dispatchers.io) {
                 delay(INPUT_DELAY)
 
-                val requestParams = ValidateDomainShopNameUseCase.createRequestParam(domainName)
+                val requestParams = ValidateDomainShopNameUseCase.createRequestParam(domain)
                 validateDomainShopNameUseCase.params = requestParams
                 validateDomainShopNameUseCase.executeOnBackground()
             }
@@ -130,7 +131,7 @@ class ShopEditBasicInfoViewModel @Inject constructor(
             _validateShopDomain.value = Fail(it)
         }.let { validateShopDomainJob = it }
 
-        setCurrentDomainName(domainName)
+        setCurrentShopDomain(domain)
     }
 
     fun getShopBasicData() {
@@ -146,7 +147,13 @@ class ShopEditBasicInfoViewModel @Inject constructor(
         }
     }
 
-    fun uploadShopImage(imagePath: String, tagline: String, description: String) {
+    fun uploadShopImage(
+        imagePath: String,
+        name: String,
+        domain: String,
+        tagline: String,
+        description: String
+    ) {
         uploadShopImageUseCase.unsubscribe()
 
         launchCatchError(block = {
@@ -155,18 +162,30 @@ class ShopEditBasicInfoViewModel @Inject constructor(
                 uploadShopImageUseCase.getData(requestParams)
             }
             uploadShopImage.data?.image?.picCode?.let { picCode ->
-                updateShopBasicData(tagline, description, picCode)
+                updateShopBasicData(name, domain, tagline, description, picCode)
             }
         }) {
             _uploadShopImage.value = Fail(it)
         }
     }
 
-    fun updateShopBasicData(tagline: String, description: String) {
+    fun updateShopBasicData(
+        name: String,
+        domain: String,
+        tagLine: String,
+        description: String,
+        logoCode: String? = null
+    ) {
         updateShopBasicDataUseCase.unsubscribe()
 
-        val requestParams = UpdateShopBasicDataUseCase.createRequestParams(tagline,
-            description, null, null, null)
+        val shopName = name.nullIfNotChanged(currentShop?.name)
+        val shopDomain = domain.nullIfNotChanged(currentShop?.domain)
+        val shopTagLine = tagLine.nullIfNotChanged(currentShop?.tagline)
+        val shopDescription = description.nullIfNotChanged(currentShop?.description)
+
+        val requestParams = UpdateShopBasicDataUseCase.createRequestParam(
+            shopName, shopDomain, shopTagLine, shopDescription, logoCode)
+
         updateShopBasicData(requestParams)
     }
 
@@ -182,6 +201,20 @@ class ShopEditBasicInfoViewModel @Inject constructor(
 
     fun cancelValidateShopDomain() {
         validateShopDomainJob?.cancel()
+    }
+
+    fun setCurrentShopData(data: ShopBasicDataModel) {
+        currentShop = data
+        setCurrentShopName(data.name)
+        setCurrentShopDomain(data.domain)
+    }
+
+    private fun setCurrentShopName(shopName: String?) {
+        currentShopName = shopName
+    }
+
+    private fun setCurrentShopDomain(shopDomain: String?) {
+        currentShopDomain = shopDomain
     }
 
     private fun getShopDomainSuggestion(shopName: String) {
@@ -210,24 +243,13 @@ class ShopEditBasicInfoViewModel @Inject constructor(
         }
     }
 
-    fun setCurrentShopName(shopName: String) {
-        currentShopName = shopName
-    }
-
-    fun setCurrentDomainName(domainName: String) {
-        currentDomainName = domainName
-    }
-
-    private fun updateShopBasicData(tagline: String, description: String, logoCode: String?) {
-        updateShopBasicDataUseCase.unsubscribe()
-
-        val requestParams = UpdateShopBasicDataUseCase.createRequestParams(tagline,
-            description, logoCode, null, null)
-        updateShopBasicData(requestParams)
-    }
-
     private fun isDomainChangeAllowed(): Boolean {
-        val data = (_allowShopNameDomainChanges.value as? Success<AllowShopNameDomainChangesData>)?.data
-        return data?.isDomainAllowed ?: false
+        return (_allowShopNameDomainChanges.value as? Success<AllowShopNameDomainChangesData>)
+            ?.data?.isDomainAllowed ?: false
+    }
+
+    private fun String.nullIfNotChanged(previousValue: String?): String? {
+        val currentValue = this
+        return if(currentValue == previousValue) null else currentValue
     }
 }

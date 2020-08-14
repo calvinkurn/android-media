@@ -3,7 +3,6 @@ package com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata
 import android.content.Context
 import android.text.TextUtils
 
-import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.shop.common.R
@@ -18,7 +17,6 @@ import java.util.HashMap
 import javax.inject.Inject
 
 import rx.Observable
-import rx.functions.Func1
 
 class UpdateShopBasicDataUseCase @Inject
 constructor(@ApplicationContext context: Context) : UseCase<String>() {
@@ -64,11 +62,15 @@ constructor(@ApplicationContext context: Context) : UseCase<String>() {
     }
 
     companion object {
-        val TAGLINE = "tagline"
-        val DESCRIPTION = "description"
-        val LOGO_CODE = "logoCode"
-        val FILE_PATH = "filePath"
-        val FILE_NAME = "fileName"
+        private const val NAME = "name"
+        private const val DOMAIN = "domain"
+        private const val TAGLINE = "tagline"
+        private const val DESCRIPTION = "description"
+        private const val LOGO = "logo"
+        private const val CODE = "code"
+        private const val LOGO_CODE = "logoCode"
+        private const val FILE_PATH = "filePath"
+        private const val FILE_NAME = "fileName"
 
         @JvmStatic
         fun createRequestParams(tagline: String, description: String,
@@ -87,6 +89,30 @@ constructor(@ApplicationContext context: Context) : UseCase<String>() {
             val requestParams = RequestParams.create()
             requestParams.putString(TAGLINE, tagline)
             requestParams.putString(DESCRIPTION, description)
+            return requestParams
+        }
+
+        @JvmStatic
+        fun createRequestParam(
+            name: String?,
+            domain: String?,
+            tagLine: String?,
+            description: String?,
+            logoCode: String?
+        ): RequestParams {
+            val requestParams = RequestParams()
+
+            name?.let { requestParams.putString(NAME, it) }
+            domain?.let { requestParams.putString(DOMAIN, it) }
+            tagLine?.let { requestParams.putString(TAGLINE, it) }
+            description?.let { requestParams.putString(DESCRIPTION, it) }
+
+            logoCode?.let {
+                val logoRequestParam = RequestParams()
+                val logoCodeParam = mapOf(CODE to logoCode)
+                logoRequestParam.putObject(LOGO, logoCodeParam)
+            }
+
             return requestParams
         }
     }
