@@ -3,6 +3,7 @@ package com.tokopedia.test.application.util
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import com.tokopedia.graphql.data.GraphqlClient
+import com.tokopedia.test.application.environment.InstrumentationTestApp
 import com.tokopedia.test.application.environment.interceptor.mock.MockInterceptor
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 
@@ -30,9 +31,8 @@ private fun isMockTest(): Boolean {
  * */
 fun setupGraphqlMockResponse(mockModelConfig: MockModelConfig) {
     val context = getInstrumentation().targetContext
+    val application = context.applicationContext as InstrumentationTestApp
 
     mockModelConfig.createMockModel(context)
-
-    val testInterceptors = listOf(MockInterceptor(mockModelConfig))
-    GraphqlClient.reInitRetrofitWithInterceptors(testInterceptors, context)
+    application.addInterceptor(MockInterceptor(mockModelConfig))
 }
