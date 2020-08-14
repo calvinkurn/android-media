@@ -6,5 +6,4 @@ object ErrorConstant {
     const val ERROR_NOT_AVAILABLE = "-1100"
 
     const val ERROR_SESSION_ID_NOT_MATCH = "-2001"
-    const val ERROR_SESSION_TERMINATED = "-2002"
 }

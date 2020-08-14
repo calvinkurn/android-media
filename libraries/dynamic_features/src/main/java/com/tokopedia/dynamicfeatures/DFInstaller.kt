@@ -367,9 +367,6 @@ object SplitInstallListener : SplitInstallStateUpdatedListener {
         if (state.sessionId() != DFInstaller.sessionId) {
             stateError = ErrorConstant.ERROR_SESSION_ID_NOT_MATCH
         }
-        if (state.hasTerminalStatus()) {
-            stateError = ErrorConstant.ERROR_SESSION_TERMINATED
-        }
         if (stateError.isNotEmpty()) {
             val ctx = context
             if (ctx != null) {

@@ -262,10 +262,6 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
             stateError = ErrorConstant.ERROR_SESSION_ID_NOT_MATCH
             errorList.add(ErrorConstant.ERROR_SESSION_ID_NOT_MATCH + "_" + state.status())
         }
-        if (state.hasTerminalStatus()) {
-            stateError = ErrorConstant.ERROR_SESSION_TERMINATED
-            errorList.add(ErrorConstant.ERROR_SESSION_TERMINATED + "_" + state.status())
-        }
         if (stateError.isNotEmpty()) {
             if (dfConfig.returnIfStateInvalid) {
                 return@SplitInstallStateUpdatedListener
