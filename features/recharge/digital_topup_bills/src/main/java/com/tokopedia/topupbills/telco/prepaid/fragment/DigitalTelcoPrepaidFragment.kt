@@ -217,6 +217,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                 topupAnalytics.eventClickTelcoPrepaidCategory(tabs[position].title)
                 sharedModelPrepaid.setVisibilityTotalPrice(false)
                 sharedModelPrepaid.setProductCatalogSelected(getEmptyProduct())
+                sharedModelPrepaid.setSelectedCategoryViewPager(getLabelActiveCategory())
             } else {
                 setTrackingOnTabMenu(tabs[position].title)
             }

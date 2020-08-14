@@ -273,8 +273,8 @@ class DigitalTopupAnalytics {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DigitalTopupEventTracking.Event.SELECT_CONTENT, eventDataLayer)
     }
 
-    fun impressionPickProductDetail(itemProduct: TelcoProduct,
-                                    operatorName: String, userId: String) {
+    fun pickProductDetail(itemProduct: TelcoProduct,
+                          operatorName: String, userId: String) {
         val productTelcoList = ArrayList<Bundle>()
         productTelcoList.add(Bundle().apply {
             putString(DigitalTopupEventTracking.EnhanceEccomerce.PARAM_ITEM_NAME, itemProduct.attributes.desc)
