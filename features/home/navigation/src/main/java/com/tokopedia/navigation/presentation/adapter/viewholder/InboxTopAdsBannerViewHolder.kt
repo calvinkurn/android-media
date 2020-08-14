@@ -39,18 +39,15 @@ class InboxTopAdsBannerViewHolder constructor(
         if (element.hasAd()) return
         topAdsBanner?.setApiResponseListener(topAdsResponseListener)
         topAdsBanner?.setTopAdsImageViewClick(topAdsClickListener)
-        topAdsBanner?.getImageData(
-                "5",
-                1,
-                4,
-                "",
-                "",
-                ""
-        )
+        topAdsBanner?.getImageData(SOURCE, ADS_COUNT, DIMEN_ID)
     }
 
     companion object {
         val LAYOUT = R.layout.item_inbox_top_ads_banner
+
+        const val SOURCE = "5"
+        const val ADS_COUNT = 1
+        const val DIMEN_ID = 4
 
         @JvmStatic
         val PAYLOAD_UPDATE_AD = "payload_update_ad"
