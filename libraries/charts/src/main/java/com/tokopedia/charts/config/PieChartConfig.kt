@@ -36,7 +36,7 @@ class PieChartConfig {
     private var legendEnabled: Boolean = true
     private var donutStyleConfig: DonutStyleConfigModel = DonutStyleConfig.getDefault()
 
-    fun build(): PieChartConfigModel {
+    internal fun build(): PieChartConfigModel {
         return PieChartConfigModel(
                 entryLabelColor = entryLabelColor,
                 entryLabelTextSize = entryLabelTextSize,

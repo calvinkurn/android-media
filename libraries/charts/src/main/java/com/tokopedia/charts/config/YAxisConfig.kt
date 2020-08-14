@@ -1,7 +1,5 @@
 package com.tokopedia.charts.config
 
-import com.tokopedia.charts.common.utils.DefaultYLabelFormatter
-import com.tokopedia.charts.common.utils.LabelFormatter
 import com.tokopedia.charts.config.annotation.ChartConfigDsl
 import com.tokopedia.charts.model.YAxisConfigModel
 
@@ -26,7 +24,6 @@ class YAxisConfig : BaseAxisConfig() {
 
     private var spaceTop: Float = 10f
     private var labelCount: Int = DEFAULT_LABEL_COUNT
-    private var labelFormatter: LabelFormatter = DefaultYLabelFormatter()
 
     /**
      * Position can be YAxisConfigModel.LABEL_OUTSIDE_CHART or YAxisConfigModel.LABEL_INSIDE_CHART
@@ -43,11 +40,7 @@ class YAxisConfig : BaseAxisConfig() {
         labelCount = lambda()
     }
 
-    fun labelFormatter(lambda: () -> LabelFormatter) {
-        labelFormatter = lambda()
-    }
-
-    fun build(): YAxisConfigModel {
+    internal fun build(): YAxisConfigModel {
         return YAxisConfigModel(
                 typeface = typeface,
                 isEnabled = isEnabled,

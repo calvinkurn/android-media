@@ -2,6 +2,7 @@ package com.tokopedia.charts.model
 
 import android.graphics.Typeface
 import com.github.mikephil.charting.components.XAxis
+import com.tokopedia.charts.common.utils.LabelFormatter
 
 /**
  * Created By @ilhamsuaib on 25/06/20
@@ -13,7 +14,8 @@ data class XAxisConfigModel(
         override val isLabelEnabled: Boolean,
         override val isGridEnabled: Boolean,
         override val mLabelPosition: Int,
-        override val axisMinimum: Float
+        override val axisMinimum: Float,
+        override val labelFormatter: LabelFormatter
 ): BaseAxisConfigModel {
 
     companion object {

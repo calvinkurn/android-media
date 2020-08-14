@@ -32,7 +32,7 @@ class BarChartConfig : BaseChartConfig() {
         highLightAlpha = lambda()
     }
 
-    fun build(): BarChartConfigModel {
+    internal fun build(): BarChartConfigModel {
         return BarChartConfigModel(
                 isTooltipEnabled = isTooltipEnabled,
                 isScaleXEnabled = isScaleXEnabled,

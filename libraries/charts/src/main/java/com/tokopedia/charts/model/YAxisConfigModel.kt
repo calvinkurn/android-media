@@ -15,8 +15,8 @@ data class YAxisConfigModel(
         override val isGridEnabled: Boolean,
         override val mLabelPosition: Int,
         override val axisMinimum: Float,
+        override val labelFormatter: LabelFormatter,
         val spaceTop: Float,
-        val labelFormatter: LabelFormatter,
         val labelCount: Int
 ): BaseAxisConfigModel {
 

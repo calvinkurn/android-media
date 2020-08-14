@@ -28,14 +28,15 @@ class XAxisConfig : BaseAxisConfig() {
         labelPosition = lambda()
     }
 
-    fun build(): XAxisConfigModel {
+    internal fun build(): XAxisConfigModel {
         return XAxisConfigModel(
                 typeface = typeface,
                 isEnabled = isEnabled,
                 isLabelEnabled = isLabelEnabled,
                 isGridEnabled = isGridEnabled,
                 mLabelPosition = labelPosition,
-                axisMinimum = axisMinimum
+                axisMinimum = axisMinimum,
+                labelFormatter = labelFormatter
         )
     }
 }

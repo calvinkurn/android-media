@@ -69,7 +69,7 @@ class LineChartConfig : BaseChartConfig() {
         isChartDotHoleEnabled = lambda()
     }
 
-    fun build(): LineChartConfigModel {
+    internal fun build(): LineChartConfigModel {
         return LineChartConfigModel(
                 isTooltipEnabled = isTooltipEnabled,
                 isScaleXEnabled = isScaleXEnabled,

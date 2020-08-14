@@ -22,7 +22,7 @@ class DonutStyleConfig {
     private var isCurveEnabled: Boolean = false
     private var holeRadius: Float = 50f
 
-    fun build(): DonutStyleConfigModel {
+    internal fun build(): DonutStyleConfigModel {
         return DonutStyleConfigModel(
                 isEnabled = isEnabled,
                 isCurveEnabled = isCurveEnabled,

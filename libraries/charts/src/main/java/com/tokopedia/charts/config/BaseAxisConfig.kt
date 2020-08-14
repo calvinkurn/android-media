@@ -2,6 +2,8 @@ package com.tokopedia.charts.config
 
 import android.graphics.Color
 import android.graphics.Typeface
+import com.tokopedia.charts.common.utils.DefaultAxisLabelFormatter
+import com.tokopedia.charts.common.utils.LabelFormatter
 import com.tokopedia.charts.config.annotation.ChartConfigDsl
 
 /**
@@ -18,6 +20,7 @@ open class BaseAxisConfig {
     protected var textSize: Float = 12f
     protected var textColor: Int = Color.BLACK
     protected var axisMinimum: Float = 0f
+    protected var labelFormatter: LabelFormatter = DefaultAxisLabelFormatter()
     open protected var labelPosition: Int = 0
 
     open fun typeface(lambda: () -> Typeface) {
@@ -50,5 +53,9 @@ open class BaseAxisConfig {
 
     open fun axisMinimum(lambda: () -> Float) {
         axisMinimum = lambda()
+    }
+
+    open fun labelFormatter(lambda: () -> LabelFormatter) {
+        labelFormatter = lambda()
     }
 }

@@ -17,7 +17,6 @@ import com.tokopedia.charts.model.AxisLabel
 import com.tokopedia.charts.model.BarChartConfigModel
 import com.tokopedia.charts.model.BarChartData
 import com.tokopedia.charts.common.utils.RoundedBarChartRenderer
-import com.tokopedia.charts.common.utils.DefaultXAxisLabelFormatter
 import com.tokopedia.kotlin.extensions.view.orZero
 import kotlinx.android.synthetic.main.view_bar_chart.view.*
 
@@ -126,9 +125,18 @@ class BarChartView(context: Context, attrs: AttributeSet?) : LinearLayout(contex
     }
 
     private fun setXAxisLabelFormatter(labels: List<AxisLabel>) {
-        val labelsStr = labels.map { it.valueFmt }
-        barChart.xAxis.valueFormatter = DefaultXAxisLabelFormatter(labelsStr)
-        if (labelsStr.size > 7) {
+        val labelsStrs = labels.map { it.valueFmt }
+        val xAxisConfig = config.xAxisConfig
+
+        with(barChart.xAxis) {
+            valueFormatter = object : ValueFormatter() {
+                override fun getAxisLabel(value: Float, axis: AxisBase?): String {
+                    return xAxisConfig.labelFormatter.getAxisLabel(value)
+                }
+            }
+        }
+
+        if (labelsStrs.size > 7) {
             barChart.isScaleXEnabled = true
         } else {
             barChart.isScaleXEnabled = config.isScaleXEnabled
