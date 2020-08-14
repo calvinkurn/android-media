@@ -26,7 +26,8 @@ class StaticBuyerModelGenerator private constructor() {
             viewItems.add(MenuListViewModel().apply {
                 menu = context.getString(R.string.title_menu_waiting_for_payment)
                 menuDescription = context.getString(R.string.label_menu_waiting_for_payment)
-                count = accountDataModel?.notifications?.buyerOrder?.paymentStatus?.toInt(10) ?: 0
+                val paymentStatus = accountDataModel?.notifications?.buyerOrder?.paymentStatus?: "0"
+                count = if(paymentStatus.isNotEmpty()) { paymentStatus.toInt(10) } else { 0 }
                 applink = ApplinkConst.PMS
                 titleTrack = AccountConstants.Analytics.PEMBELI
                 sectionTrack = context.getString(R.string.title_menu_transaction)

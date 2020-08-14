@@ -2,10 +2,10 @@ ext {
 
     // Sort alphabetically by package name
     tkpdInternalLibDependencies = [
-            authentication          : "com.tokopedia.authentication:authentication:1.0.12-alpha",
+            authentication          : "com.tokopedia.authentication:authentication:1.0.17",
             cachemanager            : "com.tokopedia.cachemanager:cachemanager:2.24",
             cacheapi                : "com.tokopedia.cacheapi:cache_api:0.0.3",
-            globalconfig            : "com.tokopedia.config:global_config:1.0.3",
+            globalconfig            : "com.tokopedia.config:global_config:1.0.7",
             url                     : "com.tokopedia.url:url:1.0.6-hub",
             network                 : "com.tokopedia.network:network:1.1.7",
             usecase                 : "com.tokopedia.usecase:usecase:1.0.3",
@@ -68,7 +68,6 @@ ext {
             mediauploader           : ":libraries:mediauploader",
             oms                     : ":libraries:oms",
             permissionchecker       : ":libraries:permissionchecker",
-            playCore                : ":libraries:play_core",
             productPhotoAdapter     : ":libraries:product_photo_adapter",
             pushNotification        : ":libraries:push_notification",
             reactNative             : ":libraries:react_native",

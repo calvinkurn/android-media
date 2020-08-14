@@ -170,26 +170,30 @@ class PlayBannerCarousel(context: Context, attrs: AttributeSet?, defStyleAttr: I
     }
 
     private fun configureBackground(playBannerCarouselDataModel: PlayBannerCarouselDataModel) {
-        backgroundLoader.show()
-        parallaxImage.loadImage(playBannerCarouselDataModel.imageUrl, object : ImageHandler.ImageLoaderStateListener{
-            override fun successLoad() {
-                if(playBannerCarouselDataModel.gradients.isNotEmpty()){
-                    parallaxBackground.setGradientBackground(playBannerCarouselDataModel.gradients)
-                } else if(playBannerCarouselDataModel.backgroundUrl.isNotBlank()){
-                    parallaxBackground.loadImage(playBannerCarouselDataModel.backgroundUrl)
+        if(playBannerCarouselDataModel.imageUrl.isNotEmpty()) {
+            backgroundLoader.show()
+            parallaxImage.loadImage(playBannerCarouselDataModel.imageUrl, object : ImageHandler.ImageLoaderStateListener {
+                override fun successLoad() {
+                    if (playBannerCarouselDataModel.gradients.isNotEmpty()) {
+                        parallaxBackground.setGradientBackground(playBannerCarouselDataModel.gradients)
+                    } else if (playBannerCarouselDataModel.backgroundUrl.isNotBlank()) {
+                        parallaxBackground.loadImage(playBannerCarouselDataModel.backgroundUrl)
+                    }
+                    backgroundLoader.hide()
                 }
-                backgroundLoader.hide()
-            }
 
-            override fun failedLoad() {
-                if(playBannerCarouselDataModel.gradients.isNotEmpty()){
-                    parallaxBackground.setGradientBackground(playBannerCarouselDataModel.gradients)
-                } else if(playBannerCarouselDataModel.backgroundUrl.isNotBlank()){
-                    parallaxBackground.loadImage(playBannerCarouselDataModel.backgroundUrl)
+                override fun failedLoad() {
+                    if (playBannerCarouselDataModel.gradients.isNotEmpty()) {
+                        parallaxBackground.setGradientBackground(playBannerCarouselDataModel.gradients)
+                    } else if (playBannerCarouselDataModel.backgroundUrl.isNotBlank()) {
+                        parallaxBackground.loadImage(playBannerCarouselDataModel.backgroundUrl)
+                    }
+                    backgroundLoader.hide()
                 }
-                backgroundLoader.hide()
-            }
-        })
+            })
+        } else{
+            backgroundLoader.hide()
+        }
     }
 
     private fun configureParallax(): RecyclerView.OnScrollListener {
@@ -215,7 +219,7 @@ class PlayBannerCarousel(context: Context, attrs: AttributeSet?, defStyleAttr: I
         }
     }
 
-    private fun showRefreshShimmer(){
+    fun showRefreshShimmer(){
         if(shimmeringView.parent == null) containerShimmering.addView(shimmeringView)
         channelTitle.hide()
         channelSubtitle.hide()
@@ -224,7 +228,7 @@ class PlayBannerCarousel(context: Context, attrs: AttributeSet?, defStyleAttr: I
         containerPlayBanner.hide()
     }
 
-    private fun removeRefreshShimmer(){
+    fun removeRefreshShimmer(){
         containerShimmering.removeView(shimmeringView)
         channelTitle.show()
         channelSubtitle.show()
@@ -234,5 +238,6 @@ class PlayBannerCarousel(context: Context, attrs: AttributeSet?, defStyleAttr: I
     }
     companion object{
         private val LAYOUT = R.layout.layout_play_banner_carousel
+        private val TRANSITION_NAME = "root_play"
     }
 }

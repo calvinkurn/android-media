@@ -205,3 +205,6 @@ public protected *;
 -dontwarn com.google.android.exoplayer2.audio.AudioAttributes
 -dontwarn com.google.android.exoplayer2.mediacodec.MediaCodecUtil
 -dontwarn com.google.android.exoplayer2.ui.DefaultTimeBar
+
+-keep class com.alibaba.livecloud.** { *; }
+-keep class com.alivc.** { *; }

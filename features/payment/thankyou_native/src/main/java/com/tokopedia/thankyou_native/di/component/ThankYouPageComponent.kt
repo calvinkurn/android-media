@@ -11,7 +11,6 @@ import com.tokopedia.thankyou_native.presentation.activity.ThankYouPageActivity
 import com.tokopedia.thankyou_native.presentation.fragment.InvoiceFragment
 import com.tokopedia.thankyou_native.presentation.fragment.LoaderFragment
 import com.tokopedia.thankyou_native.presentation.fragment.ThankYouBaseFragment
-import com.tokopedia.thankyou_native.presentation.fragment.ThanksPageAnalyticsFragment
 import dagger.Component
 
 @ThankYouPageScope
@@ -28,5 +27,4 @@ interface ThankYouPageComponent {
     fun inject(loaderFragment: LoaderFragment)
     fun inject(thankYouBaseFragment: ThankYouBaseFragment)
     fun inject(invoiceFragment: InvoiceFragment)
-    fun inject(thanksPageAnalyticsFragment: ThanksPageAnalyticsFragment)
 }

@@ -6,6 +6,7 @@ import androidx.benchmark.junit4.measureRepeated
 import androidx.test.core.app.ApplicationProvider
 import com.google.gson.Gson
 import com.tokopedia.home.benchmark.network_request.HomeMockResponseList.getDynamicHomeChannel
+import com.tokopedia.home.beranda.data.datasource.default_data_source.HomeDefaultDataSource
 import com.tokopedia.home.beranda.data.datasource.local.HomeDatabase
 import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
 import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactoryImpl
@@ -46,7 +47,7 @@ class HomeBenchmarkTestNetworkRequest: CoroutineScope {
     fun benchmark_HomeDataMapper_mapToHomeViewModel() {
         val context = ApplicationProvider.getApplicationContext<Context>()
         val remoteConfig = FirebaseRemoteConfigImpl(context)
-        val homeVisitableFactory = HomeVisitableFactoryImpl(null, remoteConfig)
+        val homeVisitableFactory = HomeVisitableFactoryImpl(null, remoteConfig, HomeDefaultDataSource())
         val trackingQueue = TrackingQueue(context)
         val homeDataMapper = HomeDataMapper(context, homeVisitableFactory, trackingQueue)
 

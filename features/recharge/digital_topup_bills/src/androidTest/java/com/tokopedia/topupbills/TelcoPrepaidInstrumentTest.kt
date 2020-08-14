@@ -21,6 +21,7 @@ import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.GrantPermissionRule
 import androidx.test.runner.AndroidJUnit4
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.analyticsdebugger.validator.core.getAnalyticsWithQuery
 import com.tokopedia.analyticsdebugger.validator.core.hasAllSuccess
@@ -38,6 +39,7 @@ import com.tokopedia.topupbills.telco.data.constant.TelcoCategoryType
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
 import com.tokopedia.topupbills.telco.prepaid.activity.TelcoPrepaidActivity
 import com.tokopedia.topupbills.telco.prepaid.adapter.viewholder.TelcoProductViewHolder
+import com.tokopedia.topupbills.telco.prepaid.fragment.DigitalTelcoPrepaidFragment
 import org.hamcrest.core.AllOf
 import org.hamcrest.core.AnyOf
 import org.hamcrest.core.IsNot
@@ -125,6 +127,25 @@ class TelcoPrepaidInstrumentTest {
                 hasAllSuccess())
     }
 
+    fun validate_showcase() {
+        Thread.sleep(4000)
+        val localCacheHandler = LocalCacheHandler(context, DigitalTelcoPrepaidFragment.PREFERENCES_NAME)
+        if (!localCacheHandler.getBoolean(DigitalTelcoPrepaidFragment.TELCO_COACH_MARK_HAS_SHOWN, false)) {
+            onView(withText(R.string.Telco_title_showcase_client_number)).check(matches(isDisplayed()))
+            onView(withText(R.id.text_next)).perform(click())
+            onView(withText(R.string.telco_title_showcase_promo)).check(matches(isDisplayed()))
+            onView(withText(R.id.text_previous)).perform(click())
+            onView(withText(R.string.Telco_title_showcase_client_number)).check(matches(isDisplayed()))
+            onView(withText(R.id.text_next)).perform(click())
+            onView(withText(R.string.telco_title_showcase_promo)).check(matches(isDisplayed()))
+            onView(withText(R.id.text_next)).perform(click())
+        }
+    }
+
+
+    /**
+     * activate the comment below if the test is new on the device
+     */
     @Test
     fun validate_prepaid_login() {
         stubSearchNumber()

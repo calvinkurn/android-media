@@ -15,7 +15,7 @@ import com.tokopedia.chat_common.BaseChatToolbarActivity
 import com.tokopedia.chat_common.R
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
 import com.tokopedia.chatbot.view.fragment.ChatbotFragment
-import com.tokopedia.pushnotif.Constant
+import com.tokopedia.pushnotif.data.constant.Constant
 import com.tokopedia.pushnotif.PushNotification
 
 

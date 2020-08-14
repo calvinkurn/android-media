@@ -1,7 +1,10 @@
 package com.tokopedia.topads.view.fragment
 
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -22,10 +25,7 @@ import com.tokopedia.topads.view.model.BudgetingAdsViewModel
 import com.tokopedia.topads.view.sheet.InfoSheetBudgetList
 import com.tokopedia.topads.view.sheet.TipSheetBudgetList
 import kotlinx.android.synthetic.main.topads_create_fragment_budget_list.*
-import kotlinx.android.synthetic.main.topads_create_fragment_budget_list.budget
-import kotlinx.android.synthetic.main.topads_create_fragment_budget_list.tip_btn
-import java.lang.NumberFormatException
-import java.util.ArrayList
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -108,7 +108,9 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
         TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_ATUR_BIAYA_IKLAN, "")
     }
 
-    override fun populateView(stepperModel: CreateManualAdsStepperModel) {
+    override fun populateView() {
+        if (activity is StepperActivity)
+            (activity as StepperActivity).updateToolbarTitle(getString(R.string.bid_info_step))
     }
 
     override fun getScreenName(): String {
@@ -234,8 +236,4 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
 
     }
 
-    override fun updateToolBar() {
-        (activity as StepperActivity).updateToolbarTitle(getString(R.string.bid_info_step))
-
-    }
 }

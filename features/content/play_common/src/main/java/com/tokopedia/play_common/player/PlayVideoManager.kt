@@ -143,7 +143,6 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
                 val prepareState = currentPrepareState
                 if (prepareState is PlayVideoPrepareState.Prepared) {
                     release()
-                    launch { deleteCache() }
                     playUri(prepareState.uri, videoPlayer.playWhenReady)
                 }
             } else {
@@ -151,7 +150,6 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
                 val prepareState = currentPrepareState
                 if (prepareState is PlayVideoPrepareState.Prepared) {
                     release()
-                    launch { deleteCache() }
                     playUri(prepareState.uri, videoPlayer.playWhenReady)
                 }
             }
@@ -251,7 +249,7 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
     fun release() {
         currentPrepareState = getDefaultPrepareState()
         videoPlayer.release()
-        launch { releaseCache() }
+//        launch { releaseCache() }
         playerModel.copy(cache = null)
     }
 
@@ -345,7 +343,11 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
             }
 
             override fun getMinimumLoadableRetryCount(dataType: Int): Int {
-                return if (dataType == C.DATA_TYPE_MEDIA_PROGRESSIVE_LIVE) RETRY_COUNT_LIVE else RETRY_COUNT_DEFAULT
+                return when (dataType) {
+                    C.DATA_TYPE_MANIFEST -> 0
+                    C.DATA_TYPE_MEDIA_PROGRESSIVE_LIVE -> RETRY_COUNT_LIVE
+                    else -> RETRY_COUNT_DEFAULT
+                }
             }
         }
     }
@@ -364,40 +366,40 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
                     setRepeatMode(it, isRepeated)
                 }
 
-        return PlayPlayerModel(videoPlayer, videoLoadControl, initCache(playerModel))
+        return PlayPlayerModel(videoPlayer, videoLoadControl, null)
     }
 
     private fun initCustomLoadControl(bufferControl: PlayBufferControl): PlayVideoLoadControl {
         return PlayVideoLoadControl(bufferControl)
     }
 
-    private fun initCache(playerModel: PlayPlayerModel?): Cache {
-        return if (playerModel?.cache == null) {
-            SimpleCache(
-                    cacheFile,
-                    cacheEvictor,
-                    cacheDbProvider
-            )
-        } else playerModel.cache
-    }
+//    private fun initCache(playerModel: PlayPlayerModel?): Cache {
+//        return if (playerModel?.cache == null) {
+//            SimpleCache(
+//                    cacheFile,
+//                    cacheEvictor,
+//                    cacheDbProvider
+//            )
+//        } else playerModel.cache
+//    }
 
     /**
      * If and only if these functions cause leak, please contact the owner of this module
      */
-    private suspend fun releaseCache() = withContext(Dispatchers.IO) {
-        try {
-            playerModel.cache?.release()
-        } catch (e: Throwable) {
-            Timber.tag("PlayVideoManager").e("Release cache failed: $e")
-        }
-    }
-
-    private suspend fun deleteCache() = withContext(Dispatchers.IO) {
-        try {
-            SimpleCache.delete(cacheFile, cacheDbProvider)
-        } catch (e: Throwable) {
-            Timber.tag("PlayVideoManager").e("Delete cache failed: $e")
-        }
-    }
+//    private suspend fun releaseCache() = withContext(Dispatchers.IO) {
+//        try {
+//            playerModel.cache?.release()
+//        } catch (e: Throwable) {
+//            Timber.tag("PlayVideoManager").e("Release cache failed: $e")
+//        }
+//    }
+//
+//    private suspend fun deleteCache() = withContext(Dispatchers.IO) {
+//        try {
+//            SimpleCache.delete(cacheFile, cacheDbProvider)
+//        } catch (e: Throwable) {
+//            Timber.tag("PlayVideoManager").e("Delete cache failed: $e")
+//        }
+//    }
     //endregion
 }

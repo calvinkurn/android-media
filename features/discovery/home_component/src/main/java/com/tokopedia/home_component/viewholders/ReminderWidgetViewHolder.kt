@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.listener.ReminderWidgetListener
+import com.tokopedia.home_component.util.loadImage
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import kotlinx.android.synthetic.main.home_component_reminder_widget.view.*
 import com.tokopedia.kotlin.extensions.view.*
@@ -18,7 +19,8 @@ import com.tokopedia.kotlin.extensions.view.*
 
 class ReminderWidgetViewHolder(
         itemView: View,
-        val reminderWidgetListener : ReminderWidgetListener?
+        val reminderWidgetListener : ReminderWidgetListener?,
+        val disableNetwork: Boolean = false
         ): AbstractViewHolder<ReminderWidgetModel>(itemView){
 
     private var performanceMonitoring: PerformanceMonitoring? = null
@@ -33,7 +35,7 @@ class ReminderWidgetViewHolder(
     }
 
     override fun bind(element: ReminderWidgetModel) {
-        performanceMonitoring?.startTrace(performanceTraceName)
+        if (!disableNetwork) performanceMonitoring?.startTrace(performanceTraceName)
         initView(element, itemView)
     }
 
@@ -45,8 +47,10 @@ class ReminderWidgetViewHolder(
         with(itemView) {
             if(element.data.reminders.isEmpty()){
                 home_reminder_recommendation_loading.show()
-                reminderWidgetListener?.getReminderWidget(element.source)
-                performanceMonitoring?.stopTrace()
+                if (!disableNetwork){
+                    reminderWidgetListener?.getReminderWidget(element.source)
+                    performanceMonitoring?.stopTrace()
+                }
                 performanceMonitoring = null
             } else {
                 home_reminder_recommendation_loading.hide()
@@ -85,7 +89,7 @@ class ReminderWidgetViewHolder(
                 ic_close_reminder_recommendation.setOnClickListener {
                     reminderWidgetListener?.onReminderWidgetDeclineClickListener(element, true)
                 }
-                performanceMonitoring?.stopTrace()
+                if (!disableNetwork) performanceMonitoring?.stopTrace()
                 performanceMonitoring = null
             }
         }

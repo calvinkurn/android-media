@@ -11,11 +11,11 @@
       "businessUnit": "top up and tagihan",
       "category": "{{.*}}",
       "digitalCategoryId": "{{.*}}",
+      "clientId": "{{.*}}",
       "sessionIris": "{{.*}}",
       "shopId": "{{.*}}",
-      "networkSpeed": "{{.*}}",
-      "clientId": "{{.*}}",
-      "appsflyerId": "{{.*}}"
+      "appsflyerId": "{{.*}}",
+      "networkSpeed": "{{.*}}"
     },
     {
       "event": "clickHomepage",
