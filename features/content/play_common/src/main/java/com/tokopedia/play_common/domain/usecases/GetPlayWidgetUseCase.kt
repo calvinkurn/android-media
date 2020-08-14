@@ -112,7 +112,7 @@ class GetPlayWidgetUseCase(
         response.getError(PlayGetWidgetEntity::class.java)?.let {
             if (it.isNotEmpty()) {
                 if (!TextUtils.isEmpty(it[0].message)) {
-                    throw Throwable(it[0].message)
+                    throw Exception(it[0].message)
                 }
             }
         }

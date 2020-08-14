@@ -64,8 +64,9 @@ internal fun createInspirationCardListener(): InspirationCardListener {
 
 internal fun createInspirationCarouselListener(): InspirationCarouselListener {
     return object: InspirationCarouselListener {
-        override fun onInspirationCarouselProductClicked(product: InspirationCarouselViewModel.Option.Product) {}
+        override fun onInspirationCarouselListProductClicked(product: InspirationCarouselViewModel.Option.Product) {}
         override fun onInspirationCarouselSeeAllClicked(inspirationCarouselViewModelOption: InspirationCarouselViewModel.Option) {}
+        override fun onInspirationCarouselInfoProductClicked(product: InspirationCarouselViewModel.Option.Product) {}
     }
 }
 
