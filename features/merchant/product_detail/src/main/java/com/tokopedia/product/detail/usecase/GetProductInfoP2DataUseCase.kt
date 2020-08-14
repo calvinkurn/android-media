@@ -177,6 +177,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                  error_message
                }
             nearestWarehouse {
+              product_id
               warehouse_info {
                 warehouse_id
                 is_fulfillment
