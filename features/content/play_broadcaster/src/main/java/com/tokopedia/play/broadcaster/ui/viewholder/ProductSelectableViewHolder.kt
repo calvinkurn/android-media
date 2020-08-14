@@ -27,7 +27,7 @@ import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 class ProductSelectableViewHolder(
         itemView: View,
         private val listener: Listener? = null,
-        showSelection: Boolean = true
+        showSelection: Boolean = false
 ) : BaseViewHolder(itemView) {
 
     private val flImage: FrameLayout = itemView.findViewById(R.id.fl_image)
@@ -38,6 +38,8 @@ class ProductSelectableViewHolder(
     private val lblEmptyStock: Label = itemView.findViewById(R.id.lbl_empty_stock)
 
     private var onCheckedChangeListener: (CompoundButton, Boolean) -> Unit = { _ , _ -> }
+
+    private val imageOverlayDrawable by lazy { MethodChecker.getDrawable(flImage.context, R.drawable.fg_play_image_overlay) }
 
     private val imageRequestListener = object : RequestListener<Drawable> {
         override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
@@ -54,7 +56,7 @@ class ProductSelectableViewHolder(
     init {
         if (showSelection) {
             cbSelected.show()
-            flImage.foreground = MethodChecker.getDrawable(flImage.context, R.drawable.fg_play_image_overlay)
+            flImage.foreground = imageOverlayDrawable
         }
         else {
             cbSelected.gone()
