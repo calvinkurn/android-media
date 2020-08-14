@@ -3,10 +3,8 @@ package com.tokopedia.product.manage.feature.list.view.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.product.manage.common.draft.domain.usecase.GetAllProductsCountDraftUseCase
 import com.tokopedia.product.manage.coroutine.TestCoroutineDispatchers
-import com.tokopedia.usecase.RequestParams
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verify
 import io.mockk.verifyAll
 import org.junit.Before
 import org.junit.Rule
@@ -36,10 +34,6 @@ abstract class ProductDraftListCountViewModelTestFixture {
 
     protected fun onGetAllDraftCount_thenReturn(error: Throwable) {
         every { getAllProductsCountDraftUseCase.getData(any()) } throws error
-    }
-
-    protected fun verifyGetAllDraftCountCalled() {
-        verify { getAllProductsCountDraftUseCase.getData(RequestParams.EMPTY) }
     }
 
     protected fun verifyUnsubscribeUseCaseCalled() {

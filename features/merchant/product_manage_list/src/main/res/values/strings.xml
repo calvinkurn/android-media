@@ -263,4 +263,26 @@
     <string name="product_manage_max_count">%s+</string>
 
     <string name="popup_tips_trick_clickable">baru di sini.</string>
+    <string name="popup_label_static">Produk pertamamu siap</string>
+    <string name="popup_label_tips_trick">Masih bingung? Cek tip &amp; trik penjual</string>
+
+    <string name="title_activity_manage_product">Daftar Produk</string>
+    <string name="title_currency_rp">Rp</string>
+    <string name="title_save">Simpan</string>
+    <string name="title_cancel">Batal</string>
+    <string name="title_etalase">Etalase</string>
+    <string name="title_category">Kategori</string>
+    <string name="title_condition">Kondisi</string>
+    <string name="title_catalog">Katalog</string>
+    <string name="title_edit">Ubah</string>
+    <string name="title_share">Bagikan</string>
+    <string name="title_add_product">TAMBAH PRODUK</string>
+
+    <string name="product_option">Lihat Produk</string>
+    <string name="product_label_product_price">Harga Produk</string>
+
+    <string name="action_reset">Reset</string>
+    <string name="label_delete">Delete</string>
+
+    <string name="courier_option">Atur Layanan Kurir</string>
 </resources>
