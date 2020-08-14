@@ -453,11 +453,11 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 _p2Login.value = it.await()
             }
 
-            getTopAdsImageViewData()
+            getTopAdsImageViewData(it.basic.productID)
         }
     }
 
-    private fun getTopAdsImageViewData() {
+    private fun getTopAdsImageViewData(productID: String) {
         launchCatchError(block = {
             val result = topAdsImageViewUseCase.getImageData(topAdsImageViewUseCase.getQueryMap(
                     "",
@@ -465,7 +465,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                     "",
                     ADS_COUNT,
                     DIMEN_ID,
-                    ""
+                    "",
+                    productID
             ))
             _topAdsImageView.postValue(result.asSuccess())
         }){
