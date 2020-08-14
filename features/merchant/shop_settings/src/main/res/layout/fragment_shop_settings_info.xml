@@ -9,11 +9,6 @@
         android:id="@+id/loadingView"
         layout="@layout/partial_shop_settings_info_loading_state" />
 
-    <!--    <ScrollView-->
-    <!--        android:id="@+id/scrollViewContent"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="match_parent">-->
-
     <LinearLayout
         android:id="@+id/viewContent"
         android:layout_width="match_parent"
@@ -29,6 +24,5 @@
 
     </LinearLayout>
 
-    <!--    </ScrollView>-->
 </FrameLayout>
 
