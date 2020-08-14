@@ -10,9 +10,11 @@ class InboxReviewReputationClearUseCase @Inject constructor(graphqlRepository: G
     companion object {
         private val query by lazy {
             """
+                {
                   inboxReviewReputationList(page: 1, perPage: 10, role: 1, timeFilter: 4, status: 1) {
-                    hasNext
-                  }
+                                    hasNext
+                                  }
+                }
             """.trimIndent()
         }
     }
