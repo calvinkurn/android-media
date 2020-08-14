@@ -104,7 +104,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     }
 
     private val sellerMigrationCommunicationBottomSheet by lazy {
-        context?.let { SellerMigrationCommunicationBottomSheet.createInstance(it, CommunicationInfo.PostFeed, screenName, userSession.shopId) }
+        context?.let { SellerMigrationCommunicationBottomSheet.createInstance(it, CommunicationInfo.PostFeed, screenName, userSession.userId, userSession.shopId) }
     }
 
     private lateinit var shareDialogView: View

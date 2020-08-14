@@ -11,9 +11,11 @@ import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.seller_migration_common.R
+import com.tokopedia.seller_migration_common.analytics.SellerMigrationTracking
 import com.tokopedia.seller_migration_common.getSellerMigrationDate
 import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
 import com.tokopedia.seller_migration_common.presentation.model.CommunicationInfo
+import com.tokopedia.seller_migration_common.presentation.model.DynamicCommunication
 import com.tokopedia.seller_migration_common.presentation.model.DynamicCommunicationInfo
 import com.tokopedia.seller_migration_common.presentation.model.SellerMigrationCommunication
 import com.tokopedia.seller_migration_common.presentation.util.setupMigrationFooter
@@ -30,6 +32,7 @@ open class SellerMigrationCommunicationBottomSheet: BottomSheetUnify() {
         fun createInstance(context: Context,
                            sellerMigrationCommunication: SellerMigrationCommunication,
                            screenName: String,
+                           userId: String,
                            shopId: String = ""): SellerMigrationCommunicationBottomSheet {
             return when(sellerMigrationCommunication) {
                 is CommunicationInfo -> SellerMigrationStaticCommunicationBottomSheet.createInstance(context, sellerMigrationCommunication)
@@ -39,14 +42,18 @@ open class SellerMigrationCommunicationBottomSheet: BottomSheetUnify() {
                 arguments?.run {
                     putParcelable(COMMUNICATION_KEY, sellerMigrationCommunication)
                     putString(SCREEN_NAME_KEY, screenName)
-                    putString(SHOP_ID, shopId)
+                    putString(USER_ID_KEY, userId)
+                    putString(SHOP_ID_KEY, shopId)
+                    putString(EVENT_CLICK_KEY, sellerMigrationCommunication.trackingEventClick)
                 }
             }
         }
 
         private const val COMMUNICATION_KEY = "communication"
         private const val SCREEN_NAME_KEY = "screen_name"
-        private const val SHOP_ID = "shop_id"
+        private const val SHOP_ID_KEY = "shop_id"
+        private const val USER_ID_KEY = "user_id"
+        private const val EVENT_CLICK_KEY = "event_click"
     }
 
     private val sellerMigrationCommunication by lazy {
@@ -58,7 +65,15 @@ open class SellerMigrationCommunicationBottomSheet: BottomSheetUnify() {
     }
 
     private val shopId by lazy {
-        arguments?.getString(SHOP_ID).orEmpty()
+        arguments?.getString(SHOP_ID_KEY).orEmpty()
+    }
+
+    private val userId by lazy {
+        arguments?.getString(USER_ID_KEY).orEmpty()
+    }
+
+    private val trackingEventClick by lazy {
+        arguments?.getString(EVENT_CLICK_KEY).orEmpty()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -77,9 +92,13 @@ open class SellerMigrationCommunicationBottomSheet: BottomSheetUnify() {
         setupMigrationFooter(view, ::trackGoToSellerApp, ::trackGoToPlayStore, goToSellerAppFeature = ::goToSellerFeature)
     }
 
-    protected open fun trackGoToSellerApp() {}
+    protected open fun trackGoToSellerApp() {
+        SellerMigrationTracking.eventGoToSellerApp(userId, trackingEventClick)
+    }
 
-    protected open fun trackGoToPlayStore() {}
+    protected open fun trackGoToPlayStore() {
+        SellerMigrationTracking.eventGoToPlayStore(userId, trackingEventClick)
+    }
 
     private fun initView() {
         val view = View.inflate(context, R.layout.widget_seller_migration_bottom_sheet, null)
@@ -130,7 +149,7 @@ open class SellerMigrationCommunicationBottomSheet: BottomSheetUnify() {
                 }
                 goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_POST_FEED, appLinks)
             }
-            CommunicationInfo.ShopCapital, CommunicationInfo.PriorityBalance, DynamicCommunicationInfo -> {
+            CommunicationInfo.ShopCapital, CommunicationInfo.PriorityBalance, DynamicCommunication -> {
                 val appLinks = ArrayList<String>().apply {
                     add(ApplinkConstInternalSellerapp.SELLER_HOME)
                     add(ApplinkConstInternalGlobal.SALDO_DEPOSIT)

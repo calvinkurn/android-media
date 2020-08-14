@@ -7,7 +7,7 @@ import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.seller_migration_common.presentation.adapter.SellerMigrationBenefitPointAdapter
-import com.tokopedia.seller_migration_common.presentation.model.DynamicCommunicationInfo
+import com.tokopedia.seller_migration_common.presentation.model.DynamicCommunication
 import com.tokopedia.seller_migration_common.presentation.util.BenefitPoints
 import kotlinx.android.synthetic.main.widget_seller_migration_bottom_sheet.*
 
@@ -18,10 +18,10 @@ class SellerMigrationDynamicCommunicationBottomSheet: SellerMigrationCommunicati
         fun createInstance(context: Context): SellerMigrationDynamicCommunicationBottomSheet =
                 SellerMigrationDynamicCommunicationBottomSheet().apply {
                     arguments = Bundle().apply {
-                        val titleList = DynamicCommunicationInfo.communicationInfoList.map { context.getString(it.titleRes) }
-                        val descList = DynamicCommunicationInfo.communicationInfoList.map { context.getString(it.descRes) }
-                        val imageUrlList = DynamicCommunicationInfo.communicationInfoList.map { it.imageUrl }
-                        val benefitPointsList = DynamicCommunicationInfo.communicationInfoList.map { info ->
+                        val titleList = DynamicCommunication.communicationInfoList.map { context.getString(it.titleRes) }
+                        val descList = DynamicCommunication.communicationInfoList.map { context.getString(it.descRes) }
+                        val imageUrlList = DynamicCommunication.communicationInfoList.map { it.imageUrl }
+                        val benefitPointsList = DynamicCommunication.communicationInfoList.map { info ->
                             BenefitPoints(info.benefitPointResList.map { resId ->
                                 context.getText(resId)
                             })

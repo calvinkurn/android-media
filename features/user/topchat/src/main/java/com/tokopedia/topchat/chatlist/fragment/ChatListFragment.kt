@@ -30,16 +30,13 @@ import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.component.Menus
 import com.tokopedia.kotlin.extensions.view.goToFirst
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.seller_migration_common.presentation.fragment.bottomsheet.SellerMigrationCommunicationBottomSheet
 import com.tokopedia.seller_migration_common.presentation.model.CommunicationInfo
-import com.tokopedia.seller_migration_common.presentation.model.SellerMigrationCommunication
 import com.tokopedia.seller_migration_common.presentation.util.initializeSellerMigrationCommunicationTicker
-import com.tokopedia.seller_migration_common.presentation.widget.SellerMigrationChatBottomSheet
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.activity.ChatListActivity
 import com.tokopedia.topchat.chatlist.adapter.ChatListAdapter
@@ -70,7 +67,6 @@ import com.tokopedia.topchat.chatsetting.view.activity.ChatSettingActivity
 import com.tokopedia.topchat.common.TopChatInternalRouter
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -113,7 +109,7 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
 
     private val sellerMigrationStaticCommunicationBottomSheet by lazy {
         context?.let {
-            SellerMigrationCommunicationBottomSheet.createInstance(it, CommunicationInfo.BroadcastChat, screenName)
+            SellerMigrationCommunicationBottomSheet.createInstance(it, CommunicationInfo.BroadcastChat, screenName, userSession.userId)
         }
     }
 

@@ -54,7 +54,7 @@ import com.tokopedia.saldodetails.viewmodels.SaldoDetailViewModel
 import com.tokopedia.seller.active.common.service.UpdateShopActiveService
 import com.tokopedia.seller_migration_common.presentation.fragment.bottomsheet.SellerMigrationCommunicationBottomSheet
 import com.tokopedia.seller_migration_common.presentation.model.CommunicationInfo
-import com.tokopedia.seller_migration_common.presentation.model.DynamicCommunicationInfo
+import com.tokopedia.seller_migration_common.presentation.model.DynamicCommunication
 import com.tokopedia.seller_migration_common.presentation.model.SellerMigrationCommunication
 import com.tokopedia.seller_migration_common.presentation.util.initializeSellerMigrationCommunicationTicker
 import com.tokopedia.showcase.*
@@ -871,14 +871,14 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     private fun showSellerMigrationTicker(eligibilityPair: Pair<Boolean, Boolean>) {
         with(eligibilityPair) {
             val communicationType: SellerMigrationCommunication = when {
-                first && second -> DynamicCommunicationInfo
+                first && second -> DynamicCommunication
                 first -> CommunicationInfo.ShopCapital
                 second -> CommunicationInfo.PriorityBalance
                 else -> return@with
             }
             context?.let {
                 initializeSellerMigrationCommunicationTicker(
-                        SellerMigrationCommunicationBottomSheet.createInstance(it, communicationType, screenName.orEmpty()),
+                        SellerMigrationCommunicationBottomSheet.createInstance(it, communicationType, screenName.orEmpty(), userSession.userId),
                         sellerMigrationTicker,
                         CommunicationInfo.ShopCapital
                 )

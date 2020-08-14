@@ -40,6 +40,7 @@ import com.tokopedia.topads.dashboard.view.fragment.BerandaTabFragment
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsProductIklanFragment
 import com.tokopedia.topads.dashboard.view.fragment.insight.TopAdsRecommendationFragment
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.topads_dash_activity_base_layout.*
 import javax.inject.Inject
 
@@ -57,8 +58,15 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
     @Inject
     lateinit var topAdsDashboardPresenter: TopAdsDashboardPresenter
 
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
     private val sellerMigrationStaticCommunicationBottomSheet by lazy {
-        SellerMigrationCommunicationBottomSheet.createInstance(this, CommunicationInfo.TopAds, screenName.orEmpty())
+        SellerMigrationCommunicationBottomSheet.createInstance(
+                this,
+                CommunicationInfo.TopAds,
+                screenName.orEmpty(),
+                userSession.userId)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
