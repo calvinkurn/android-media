@@ -5,22 +5,20 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingMoreViewHolder
 import com.tokopedia.shop.analytic.OldShopPageTrackingConstant.ALL_ETALASE
-import com.tokopedia.shop.product.view.viewholder.ShopProductSortFilterViewHolder
+import com.tokopedia.shop.common.constant.ShopPageConstant.*
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
+import com.tokopedia.shop.product.view.datamodel.*
+import com.tokopedia.shop.product.view.viewholder.ShopProductAddViewHolder
+import com.tokopedia.shop.product.view.viewholder.ShopProductSellerAllEtalaseEmptyViewHolder
+import com.tokopedia.shop.product.view.viewholder.ShopProductSortFilterViewHolder
+import com.tokopedia.shop.product.view.viewholder.ShopProductViewHolder
 import com.tokopedia.shop.product.view.widget.OnStickySingleHeaderListener
 import com.tokopedia.shop.product.view.widget.StickySingleHeaderView
-
-import com.tokopedia.shop.common.constant.ShopPageConstant.*
-import com.tokopedia.shop.product.view.datamodel.*
-import com.tokopedia.shop.product.view.viewholder.ShopProductSellerAllEtalaseEmptyViewHolder
-import com.tokopedia.shop.product.view.viewholder.ShopProductAddViewHolder
-import com.tokopedia.shop.product.view.viewholder.ShopProductViewHolder
 
 
 class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductAdapterTypeFactory) : BaseListAdapter<BaseShopProductViewModel, ShopProductAdapterTypeFactory>(shopProductAdapterTypeFactory, null), DataEndlessScrollListener.OnDataEndlessScrollListener, StickySingleHeaderView.OnStickySingleHeaderAdapter {
@@ -389,6 +387,27 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
         visitables.add(emptyDataViewModel)
         notifyChangedDataSet()
         mapDataModel()
+    }
+
+    fun addEmptyStateData(productList: List<ShopProductViewModel>) {
+        if(productList.isNotEmpty()) {
+            if (visitables.getOrNull(lastIndex) !is ShopProductEmptySearchUiModel) {
+                visitables.add(ShopProductEmptySearchUiModel())
+                notifyInsertedItem(lastIndex)
+            }
+            if (visitables.getOrNull(lastIndex) !is ShopProductTitleEmptyUiModel) {
+                visitables.add(ShopProductTitleEmptyUiModel())
+                notifyInsertedItem(lastIndex)
+            }
+            val lastIndex = visitables.size
+            visitables.addAll(productList)
+            notifyItemRangeInserted(lastIndex, productList.size)
+        } else {
+            if (visitables.getOrNull(lastIndex) !is ShopProductEmptySearchUiModel) {
+                visitables.add(ShopProductEmptySearchUiModel())
+                notifyInsertedItem(lastIndex)
+            }
+        }
     }
 
     private fun mapDataModel() {
