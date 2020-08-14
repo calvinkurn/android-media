@@ -5,7 +5,6 @@ package com.tokopedia.recentview.data.query
  */
 object RecentViewQuery{
     fun getQuery() = """
-        {
          query getRecentView(${'$'}userID: String!, ${'$'}count:Int) {
                 get_recent_view(userID: ${'$'}userID, count:${'$'}count,filter:{
                      blacklistProductIds:"1,2,3",
@@ -36,6 +35,5 @@ object RecentViewQuery{
                      }
                    }
             }
-        }
     """.trimIndent()
 }
