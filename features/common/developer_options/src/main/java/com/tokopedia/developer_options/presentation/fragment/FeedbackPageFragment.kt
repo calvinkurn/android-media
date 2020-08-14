@@ -9,8 +9,12 @@ import android.widget.*
 import android.widget.AdapterView.OnItemSelectedListener
 import androidx.fragment.app.Fragment
 import com.tokopedia.developer_options.R
+import com.tokopedia.developer_options.api.*
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import rx.Subscriber
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
 
 
 class FeedbackPageFragment: Fragment() {
@@ -20,6 +24,7 @@ class FeedbackPageFragment: Fragment() {
     private lateinit var issueDesc: EditText
     private lateinit var affectedPage: EditText
     private lateinit var submitButton: View
+    private lateinit var feedbackApi: FeedbackApi
 
     private var userSession: UserSessionInterface? = null
 
@@ -36,6 +41,8 @@ class FeedbackPageFragment: Fragment() {
         issueDesc = mainView.findViewById(R.id.issue_description)
         affectedPage = mainView.findViewById(R.id.affected_page)
         submitButton = mainView.findViewById(R.id.submit_button)
+
+        feedbackApi = ApiClient.getAPIService()
 
         context?.let { ArrayAdapter.createFromResource(it,
                 R.array.bug_type_array,
@@ -80,12 +87,79 @@ class FeedbackPageFragment: Fragment() {
                 }
                 else -> {
                     /*arahin ke submit button*/
+                    submitFeedback(emailText, affectedPageText, issueText)
                 }
             }
         }
 
     }
 
+    private fun submitFeedback(email: String, page: String, desc: String) {
+        feedbackApi.getResponce(requestMapper(email, page, desc))
+                /*Success but error in here*/
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(object : Subscriber<FeedbackResponse>() {
+                    override fun onNext(t: FeedbackResponse?) {
+                        /*Success but error in here*/
+                        Toast.makeText(activity, "Success", Toast.LENGTH_SHORT).show()
+                    }
 
+                    override fun onCompleted() {
+                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                    }
 
+                    override fun onError(e: Throwable?) {
+                        Toast.makeText(activity, e.toString(), Toast.LENGTH_SHORT).show()
+
+                    }
+
+                })
+
+    }
+
+    private fun requestMapper(email: String, page: String, desc: String): FeedbackRequest {
+        return FeedbackRequest(Fields(
+                summary = "[INTERNAL-FEEDBACK] {$email} {$page}",
+                project = Project(
+                        id = "10027",
+                        key = "AN",
+                        name = "[MB] Android"
+                ),
+                issuetype = Issuetype(
+                        id = "10004",
+                        name = "Bug"
+                ),
+                description = Description(
+                        version = 1,
+                        type = "doc",
+                        content = listOf(Content(
+                                type = "paragraph",
+                                content = listOf(DeepContent(
+                                        type = "text",
+                                        text = desc
+                                ))
+                        ))
+                ),
+                customfield_10077 = Customfield_10077(
+                        value = "MB] Android",
+                        id = "10031"
+                ),
+                customfield_10548 = listOf(Customfield_10548(
+                        value = "Main App",
+                        id = "11200"
+                )),
+                customfield_10253 = Customfield_10253(
+                        value = "Release Candidate",
+                        id = "11209"
+                ),
+                customfield_10181 = Customfield_10181(
+                        value = "Android - Minion Jorge",
+                        id = "11144"
+                ),
+                labels = listOf("Internal-Feedback"),
+                customfield_10550 = listOf("Bug")
+        ))
+    }
 }
