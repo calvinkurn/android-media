@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/interactive_adapter_template_chat"
-    android:minHeight="@dimen/dp_topchat_80"
     android:orientation="vertical"
     android:paddingLeft="@dimen/spacing_lvl4"
     android:paddingTop="@dimen/dp_topchat_10"
