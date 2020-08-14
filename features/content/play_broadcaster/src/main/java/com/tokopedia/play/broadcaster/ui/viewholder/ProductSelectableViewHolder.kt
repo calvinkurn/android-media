@@ -27,7 +27,7 @@ import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 class ProductSelectableViewHolder(
         itemView: View,
         private val listener: Listener? = null,
-        showSelection: Boolean = false
+        showSelection: Boolean = true
 ) : BaseViewHolder(itemView) {
 
     private val flImage: FrameLayout = itemView.findViewById(R.id.fl_image)
