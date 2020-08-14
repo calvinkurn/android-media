@@ -67,7 +67,7 @@ class ShopHomePlayCarouselViewHolder(
                 dataModel,
                 if(playCarouselCardDataModel?.playBannerCarouselDataModel?.isAutoPlay == true) IS_AUTO_PLAY_SUCCESS else IS_AUTO_PLAY_FAILED,
                 playCarouselCardDataModel?.widgetId ?: "",
-                adapterPosition,
+                isFoldPosition(adapterPosition),
                 position
         )
     }
@@ -77,7 +77,7 @@ class ShopHomePlayCarouselViewHolder(
                 dataModel,
                 if(playCarouselCardDataModel?.playBannerCarouselDataModel?.isAutoPlay == true) IS_AUTO_PLAY_SUCCESS else IS_AUTO_PLAY_FAILED,
                 playCarouselCardDataModel?.widgetId ?: "",
-                adapterPosition,
+                isFoldPosition(adapterPosition),
                 position
         )
     }
@@ -117,4 +117,6 @@ class ShopHomePlayCarouselViewHolder(
     fun onDestroy(){
         itemView.play_banner_carousel?.onDestroy()
     }
+
+    private fun isFoldPosition(position: Int) = if(position <= 2) 0 else 1
 }
