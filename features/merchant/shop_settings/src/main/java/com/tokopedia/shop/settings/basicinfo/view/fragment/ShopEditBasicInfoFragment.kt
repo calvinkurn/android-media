@@ -515,7 +515,7 @@ class ShopEditBasicInfoFragment: Fragment() {
             }
         }
 
-        shopTagLineTextField.textFieldInput.run {
+        shopDescriptionTextField.textFieldInput.run {
             if (TextUtils.isEmpty(text)) {
                 setText(shopBasicDataModel.description)
                 text?.length?.let { setSelection(it) }
