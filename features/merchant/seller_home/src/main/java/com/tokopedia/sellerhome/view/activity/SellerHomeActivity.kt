@@ -58,6 +58,8 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         fun createIntent(context: Context) = Intent(context, SellerHomeActivity::class.java)
 
         private const val DOUBLE_TAB_EXIT_DELAY = 2000L
+
+        private const val SHOP_PAGE_PREFIX = "tokopedia://shop/"
     }
 
     @Inject lateinit var userSession: UserSessionInterface
@@ -103,7 +105,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         with (intent?.getStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA)?.firstOrNull().orEmpty()) {
             shouldMoveToReview = this == ApplinkConst.REPUTATION
             shouldMoveToCentralizedPromo = this == ApplinkConstInternalSellerapp.CENTRALIZED_PROMO
-            shouldMoveToShopPage = this.startsWith(ApplinkConst.SHOP)
+            shouldMoveToShopPage = this.startsWith(SHOP_PAGE_PREFIX)
             shouldMoveToBalance = this == ApplinkConstInternalGlobal.SALDO_DEPOSIT
         }
         val isRedirectedFromSellerMigration = intent?.hasExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA) ?: false ||
@@ -133,7 +135,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
                     replaceExtras(this@SellerHomeActivity.intent.extras)
                     appLinks.find { it != ApplinkConst.REPUTATION &&
                                     it != ApplinkConstInternalSellerapp.CENTRALIZED_PROMO &&
-                                    it.startsWith(ApplinkConst.SHOP) &&
+                                    !it.startsWith(SHOP_PAGE_PREFIX) &&
                                     it != ApplinkConstInternalGlobal.SALDO_DEPOSIT }?.let { nextDestinationApplink ->
                         putExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, nextDestinationApplink)
                     }

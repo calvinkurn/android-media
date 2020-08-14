@@ -54,7 +54,7 @@
     <string name="seller_migration_label_seller_app_only">Di Tokopedia Seller</string>
     <string name="seller_migration_fragment_header_title">Fitur unggulan dapat diakses melalui aplikasi Tokopedia Seller</string>
     <string name="seller_migration_fragment_advantages_title">Keunggulan aplikasi Tokopedia Seller</string>
-    <string name="seller_migration_fragment_body_title">Fitur unggulan yang bisa kamu gunakan di aplikasi Tokopedia Seller</string>
+    <string name="seller_migration_fragment_body_title">Fitur unggulan yang dapat kamu gunakan di aplikasi Tokopedia Seller</string>
     <string name="seller_migration_fragment_footer">Pelajari keuntungan lainnya &lt;a href="https://seller.tokopedia.com/edu/aplikasi-topseller/"&gt;di sini&lt;/a&gt;</string>
 
     <!--    seller migration fragment tabs-->
