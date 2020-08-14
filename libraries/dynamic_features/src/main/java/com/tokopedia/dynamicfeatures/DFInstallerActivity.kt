@@ -125,7 +125,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
     }
 
     private fun logDownloadPage(){
-        Timber.w("P1#DFM_DOWNLOAD_PAGE#mod_name=%s;dl_service=%s;deeplink='%s';fallback_url='%s'",
+        Timber.w("P1#DFM_DOWNLOAD_PAGE#download;mod_name=%s;dl_service=%s;deeplink='%s';fallback_url='%s'",
                 moduleName, allowRunningServiceFromActivity, deeplink, fallbackUrl)
     }
 
