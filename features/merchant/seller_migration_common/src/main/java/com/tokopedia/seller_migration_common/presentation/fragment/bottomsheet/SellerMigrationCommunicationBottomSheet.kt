@@ -74,7 +74,7 @@ open class SellerMigrationCommunicationBottomSheet: BottomSheetUnify() {
     protected open fun setupView() {
         setupPadding()
         setRedirectionDate()
-        setupMigrationFooter(view, ::trackGoToSellerApp, ::trackGoToPlayStore, ::goToSellerFeature)
+        setupMigrationFooter(view, ::trackGoToSellerApp, ::trackGoToPlayStore, goToSellerAppFeature = ::goToSellerFeature)
     }
 
     protected open fun trackGoToSellerApp() {}

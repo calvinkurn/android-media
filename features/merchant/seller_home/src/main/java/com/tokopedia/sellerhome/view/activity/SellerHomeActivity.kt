@@ -124,7 +124,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         val appLinks = ArrayList(intent?.getStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA).orEmpty())
         if (appLinks.isNotEmpty()) {
             val appLinkToOpen = appLinks.firstOrNull().orEmpty()
-            if (shouldMoveToReview || shouldMoveToCentralizedPromo || shouldMoveToShopPage) {
+            if (shouldMoveToReview || shouldMoveToCentralizedPromo || shouldMoveToShopPage || shouldMoveToBalance) {
                 shouldMoveToReview = false
                 shouldMoveToCentralizedPromo = false
                 shouldMoveToShopPage = false
