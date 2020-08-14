@@ -138,13 +138,15 @@ public interface SearchConstant {
         String AB_TEST_KEY_COMMA_VS_FULL_STAR = "Comma vs Full Star";
         String AB_TEST_VARIANT_FULL_STAR = "Full Star";
         String AB_TEST_VARIANT_COMMA_STAR = "Comma Star";
-        String AB_TEST_OLD_FILER_VS_NEW_FILTER = "SRP Filter Revamp";
-        String AB_TEST_VARIANT_NEW_FILTER = "New Filter";
-        String AB_TEST_VARIANT_OLD_FILTER = "Old Filter";
     }
 
     interface OnBoarding {
         String LOCAL_CACHE_NAME = "SEARCH_PRODUCT_ON_BOARDING";
         String FILTER_ONBOARDING_SHOWN = "FILTER_ONBOARDING_SHOWN";
+    }
+
+    interface InspirationCarousel {
+        String LAYOUT_INSPIRATION_CAROUSEL_LIST = "list";
+        String LAYOUT_INSPIRATION_CAROUSEL_INFO = "info";
     }
 }

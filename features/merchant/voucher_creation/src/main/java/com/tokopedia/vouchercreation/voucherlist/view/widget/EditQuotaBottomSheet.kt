@@ -41,7 +41,7 @@ class EditQuotaBottomSheet : BottomSheetUnify() {
         @JvmStatic
         fun createInstance(voucher: VoucherUiModel) = EditQuotaBottomSheet().apply {
             setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
-
+            isKeyboardOverlap = false
             arguments = Bundle().apply {
                 putParcelable(VOUCHER, voucher)
             }

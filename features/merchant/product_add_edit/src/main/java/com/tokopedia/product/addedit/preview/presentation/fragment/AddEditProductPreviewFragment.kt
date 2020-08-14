@@ -430,7 +430,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                     override fun onSellerFeatureClicked(item: SellerFeatureUiModel) {
                         if (!isDrafting()) {
                             when (item) {
-                                is SellerFeatureUiModel.SetVariantFeatureWithDataUiModel -> goToSellerAppEditProduct(viewModel.getProductId())
+                                is SellerFeatureUiModel.AddEditSetVariantFeatureWithDataUiModel -> goToSellerAppEditProduct(viewModel.getProductId())
                                 is SellerFeatureUiModel.SetCashbackFeatureWithDataUiModel -> goToSellerAppProductManageThenSetCashback()
                             }
                         }
@@ -438,7 +438,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                 })
                 addItemDecoration()
                 setItems(listOf(
-                        SellerFeatureUiModel.SetVariantFeatureWithDataUiModel(Any()),
+                        SellerFeatureUiModel.AddEditSetVariantFeatureWithDataUiModel(Any()),
                         SellerFeatureUiModel.SetCashbackFeatureWithDataUiModel(Any())
                 ))
             }
@@ -733,6 +733,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                             context?.run {
                                 activity?.intent?.extras?.clear()
                                 RouteManager.getIntent(this, appLinkToOpen).apply {
+                                    addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                                     startActivityForResult(this, SET_CASHBACK_REQUEST_CODE)
                                 }
                             }

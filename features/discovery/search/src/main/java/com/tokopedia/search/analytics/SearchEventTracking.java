@@ -63,8 +63,10 @@ public interface SearchEventTracking {
         String CLICK_PRODUCT_SHOP_TAB = "click - product - shop tab";
         String CLICK_PRODUCT_SHOP_TAB_ALTERNATIVE = "click - product - shop tab - alternative";
         String IMPRESSION_INSPIRATION_CAROUSEL_PRODUCT = "impression - inspiration carousel product";
+        String IMPRESSION_INSPIRATION_CAROUSEL_INFO_PRODUCT = "impression - carousel banner";
         String CLICK_INSPIRATION_CAROUSEL_SEARCH = "click - inspiration carousel search";
         String CLICK_INSPIRATION_CAROUSEL_PRODUCT = "click - inspiration carousel product";
+        String CLICK_INSPIRATION_CAROUSEL_INFO_PRODUCT = "click - carousel banner";
         String CLICK = "click";
         String CLICK_FUZZY_KEYWORDS_SUGGESTION = "click - fuzzy keywords - suggestion";
         String IMPRESSION_BROAD_MATCH = "impression - broad match";

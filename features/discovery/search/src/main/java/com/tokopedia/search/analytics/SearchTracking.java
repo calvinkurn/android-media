@@ -300,30 +300,6 @@ public class SearchTracking {
         return TextUtils.join("&", filterList);
     }
 
-    private static String generateSortEventLabel(Map<String, String> selectedSort) {
-        if (selectedSort == null) {
-            return "";
-        }
-        List<String> sortList = new ArrayList<>();
-        for (Map.Entry<String, String> entry : selectedSort.entrySet()) {
-            sortList.add(entry.getKey() + "=" + entry.getValue());
-        }
-        return TextUtils.join("&", sortList);
-    }
-
-    public static String generateFilterAndSortEventLabel(Map<String, String> selectedFilter,
-                                                         Map<String, String> selectedSort) {
-
-        String filterEventLabel = generateFilterEventLabel(selectedFilter);
-        String sortEventLabel = generateSortEventLabel(selectedSort);
-
-        if (TextUtils.isEmpty(filterEventLabel)) {
-            return sortEventLabel;
-        } else {
-            return filterEventLabel + "&" + sortEventLabel;
-        }
-    }
-
     public static void eventSearchNoResult(Context context,
                                            String keyword, String screenName,
                                            Map<String, String> selectedFilter) {
@@ -640,7 +616,7 @@ public class SearchTracking {
         );
     }
 
-    public static void trackImpressionInspirationCarousel(String type, String keyword, List<Object> shopItemProductList) {
+    public static void trackImpressionInspirationCarouselList(String type, String keyword, List<Object> list) {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(EVENT, SearchEventTracking.Event.PRODUCT_VIEW,
                         EVENT_CATEGORY,  SearchEventTracking.Category.SEARCH_RESULT,
@@ -649,9 +625,26 @@ public class SearchTracking {
                         ECOMMERCE, DataLayer.mapOf(
                                 "currencyCode", "IDR",
                                 "impressions", DataLayer.listOf(
-                                        shopItemProductList.toArray(new Object[shopItemProductList.size()])
+                                        list.toArray(new Object[list.size()])
                                 ))
+                )
+        );
+    }
+
+    public static void trackImpressionInspirationCarouselInfo(String type, String keyword, List<Object> list) {
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(EVENT, SearchEventTracking.Event.PROMO_VIEW,
+                        EVENT_CATEGORY,  SearchEventTracking.Category.SEARCH_RESULT,
+                        EVENT_ACTION, SearchEventTracking.Action.IMPRESSION_INSPIRATION_CAROUSEL_INFO_PRODUCT,
+                        EVENT_LABEL, type + " - " + keyword,
+                        ECOMMERCE, DataLayer.mapOf(
+                                SearchEventTracking.Event.PROMO_VIEW, DataLayer.mapOf(
+                                    "promotions", DataLayer.listOf(
+                                                list.toArray(new Object[list.size()])
+                                        )
+                                )
                         )
+                )
         );
     }
 
@@ -665,9 +658,9 @@ public class SearchTracking {
         );
     }
 
-    public static void trackEventClickInspirationCarouselOptionProduct(String type,
-                                                                       String keyword,
-                                                                       List<Object> products) {
+    public static void trackEventClickInspirationCarouselListProduct(String type,
+                                                                     String keyword,
+                                                                     List<Object> products) {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(EVENT, SearchEventTracking.Event.PRODUCT_CLICK,
                         EVENT_CATEGORY,  SearchEventTracking.Category.SEARCH_RESULT,
@@ -677,6 +670,25 @@ public class SearchTracking {
                                 DataLayer.mapOf("actionField",
                                         DataLayer.mapOf("list", "/search - carousel"),
                                         "products", DataLayer.listOf(
+                                                products.toArray(new Object[products.size()])
+                                        )
+                                )
+                        )
+                )
+        );
+    }
+
+    public static void trackEventClickInspirationCarouselInfoProduct(String type,
+                                                                     String keyword,
+                                                                     List<Object> products) {
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(EVENT, SearchEventTracking.Event.PROMO_CLICK,
+                        EVENT_CATEGORY,  SearchEventTracking.Category.SEARCH_RESULT,
+                        EVENT_ACTION, SearchEventTracking.Action.CLICK_INSPIRATION_CAROUSEL_INFO_PRODUCT,
+                        EVENT_LABEL, type + " - " + keyword,
+                        ECOMMERCE, DataLayer.mapOf(
+                                SearchEventTracking.Event.PROMO_CLICK, DataLayer.mapOf(
+                                        "promotions", DataLayer.listOf(
                                                 products.toArray(new Object[products.size()])
                                         )
                                 )

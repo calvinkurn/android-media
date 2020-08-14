@@ -195,7 +195,11 @@ data class Campaign(
 
         @SerializedName("isCheckImei")
         @Expose
-        val isCheckImei: Boolean? = null
+        val isCheckImei: Boolean? = null,
+
+        @SerializedName("hideGimmick")
+        @Expose
+        val hideGimmick: Boolean? = null
 ) {
     val getStockPercentageInt: Int = stockSoldPercentage?.toInt() ?: 0
 
