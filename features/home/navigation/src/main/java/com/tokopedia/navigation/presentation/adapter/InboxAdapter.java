@@ -78,6 +78,7 @@ public class InboxAdapter extends BaseAdapter<InboxAdapterTypeFactory> {
 
     public void updateTopAdsBanner(TopAdsImageViewModel topAdsImageViewModel) {
         int bannerPosition = 4;
+        if (bannerPosition >= visitables.size()) return;
         Visitable item = visitables.get(bannerPosition);
         if (item instanceof InboxTopAdsBannerUiModel) {
             InboxTopAdsBannerUiModel banner = (InboxTopAdsBannerUiModel) item;
