@@ -35,12 +35,14 @@ class FavoriteShopMapper(
     private fun validateResponse(responseBody: String?): FavoriteShop {
         val favoriteShopsResponse = gson.fromJson(responseBody, TopAdsData::class.java)
         return if (favoriteShopsResponse != null) {
-            if (favoriteShopsResponse.messageError != null
-                    && favoriteShopsResponse.messageError.size > 0) {
-                val errorMessage = favoriteShopsResponse.messageError[0]
+            val favShopsError = favoriteShopsResponse.messageError
+            val favShopsData = favoriteShopsResponse.data
+
+            if (favShopsError != null && favShopsError.isNotEmpty()) {
+                val errorMessage = favShopsError[0]
                 invalidResponse(errorMessage)
-            } else if (favoriteShopsResponse.data != null) {
-                mappingValidResponse(favoriteShopsResponse.data)
+            } else if (favShopsData != null) {
+                mappingValidResponse(favShopsData)
             } else {
                 invalidResponse(defaultErrorMessage)
             }
@@ -51,11 +53,14 @@ class FavoriteShopMapper(
 
     private fun mappingValidResponse(shopItemDataResponse: ShopItemData): FavoriteShop {
         return if (shopItemDataResponse.list != null &&
-                shopItemDataResponse.list.size > 0) {
+                shopItemDataResponse.list!!.isNotEmpty()) {
             val favoriteShop = FavoriteShop()
-            favoriteShop.setDataIsValid(true)
+            favoriteShop.isDataValid = true
             favoriteShop.message = successMessage
-            favoriteShop.data = mappingDataShopItem(shopItemDataResponse.list)
+
+            val list = shopItemDataResponse.list
+            favoriteShop.data = if (list == null) null else mappingDataShopItem(list)
+
             favoriteShop.pagingModel = shopItemDataResponse.pagingHandlerModel
             favoriteShop
         } else {
@@ -72,7 +77,7 @@ class FavoriteShopMapper(
             favoriteShopItem.coverUri = shopItem.coverUri
             favoriteShopItem.iconUri = shopItem.iconUri
             favoriteShopItem.id = shopItem.id
-            favoriteShopItem.setIsFav(IS_SHOP_FAVORITE == shopItem.isFav)
+            favoriteShopItem.isFav = (IS_SHOP_FAVORITE == shopItem.isFav)
             favoriteShopItem.location = shopItem.location
             favoriteShopItem.shopClickUrl = shopItem.shopClickUrl
             favoriteShopItem.name = shopItem.name
@@ -96,7 +101,7 @@ class FavoriteShopMapper(
 
     private fun invalidResponse(defaultErrorMessage: String): FavoriteShop {
         val favoriteShop = FavoriteShop()
-        favoriteShop.setDataIsValid(false)
+        favoriteShop.isDataValid = false
         favoriteShop.message = defaultErrorMessage
         return favoriteShop
     }

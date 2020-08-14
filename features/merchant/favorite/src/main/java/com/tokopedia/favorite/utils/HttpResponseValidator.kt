@@ -12,9 +12,11 @@ object HttpResponseValidator {
     private const val HTTP_ERROR_600 = 600
     private const val HTTP_ERROR_400 = 400
 
-    fun validate(listener: HttpValidationListener): Action1<Response<String>> {
+    fun validate(listener: HttpValidationListener): Action1<Response<String?>?> {
         return Action1 { stringResponse ->
-            if (stringResponse.code() >= HTTP_ERROR_500
+            if (stringResponse == null) {
+                listener.onPassValidation(stringResponse)
+            } else if (stringResponse.code() >= HTTP_ERROR_500
                     && stringResponse.code() < HTTP_ERROR_600) {
                 throw RuntimeException("Server Error!")
             } else if (stringResponse.code() >= HTTP_ERROR_400
@@ -27,6 +29,6 @@ object HttpResponseValidator {
     }
 
     interface HttpValidationListener {
-        fun onPassValidation(response: Response<String>?)
+        fun onPassValidation(response: Response<String?>?)
     }
 }

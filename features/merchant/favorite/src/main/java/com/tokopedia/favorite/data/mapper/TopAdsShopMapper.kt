@@ -22,7 +22,9 @@ class TopAdsShopMapper(
     private val emptyErrorMessage: String = context.getString(R.string.msg_empty_wishlist)
 
     override fun call(response: Response<String?>?): TopAdsShop {
-        return if (response != null && response.isSuccessful && response.body() != null) {
+        return if (response != null
+                && response.isSuccessful
+                && response.body() != null) {
             validateResponse(response.body())
         } else invalidResponse(defaultErrorMessage)
     }
@@ -59,20 +61,20 @@ class TopAdsShopMapper(
             topAdsShopItem.redirect = dataResponse.redirect
             topAdsShopItem.id = dataResponse.id
             topAdsShopItem.shopClickUrl = dataResponse.adClickUrl
-            mappingShopResponse(topAdsShopItem, dataResponse.headline.shop)
-            topAdsShopItem.shopImageCover = dataResponse.headline.shop.imageShop.cover
-            topAdsShopItem.shopImageCoverEcs = dataResponse.headline.shop.imageShop.coverEcs
-            topAdsShopItem.shopImageUrl = dataResponse.headline.image.fullUrl
-            topAdsShopItem.shopImageEcs = dataResponse.headline.shop.imageShop.sEcs
+            mappingShopResponse(topAdsShopItem, dataResponse.headline?.shop)
+            topAdsShopItem.shopImageCover = dataResponse.headline?.shop?.imageShop?.cover
+            topAdsShopItem.shopImageCoverEcs = dataResponse.headline?.shop?.imageShop?.coverEcs
+            topAdsShopItem.shopImageUrl = dataResponse.headline?.image?.fullUrl
+            topAdsShopItem.shopImageEcs = dataResponse.headline?.shop?.imageShop?.sEcs
             topAdsShopItems.add(topAdsShopItem)
         }
         return topAdsShopItems
     }
 
-    private fun mappingShopResponse(topAdsShopItem: TopAdsShopItem, shopResponse: TopAdsHome.Shop) {
-        topAdsShopItem.shopId = shopResponse.id
-        topAdsShopItem.shopLocation = shopResponse.location
-        topAdsShopItem.shopName = shopResponse.name
+    private fun mappingShopResponse(topAdsShopItem: TopAdsShopItem, shopResponse: TopAdsHome.Shop?) {
+        topAdsShopItem.shopId = shopResponse?.id
+        topAdsShopItem.shopLocation = shopResponse?.location
+        topAdsShopItem.shopName = shopResponse?.name
     }
 
     private fun invalidResponse(defaultErrorMessage: String): TopAdsShop {

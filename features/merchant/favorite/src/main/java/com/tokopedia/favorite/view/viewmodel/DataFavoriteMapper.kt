@@ -26,8 +26,9 @@ class DataFavoriteMapper @Inject constructor() {
     fun prepareDataTopAdsShop(adsShop: TopAdsShop): TopAdsShopViewModel {
         val shopViewModel = TopAdsShopViewModel()
         val shopItems = ArrayList<TopAdsShopItem>()
-        if (adsShop.topAdsShopItemList != null) {
-            for (item in adsShop.topAdsShopItemList) {
+        val topAdsShopItemList = adsShop.topAdsShopItemList
+        if (topAdsShopItemList != null) {
+            for (item in topAdsShopItemList) {
                 val shopItem = TopAdsShopItem()
                 shopItem.shopId = item.shopId
                 shopItem.shopDomain = item.shopDomain
@@ -49,9 +50,12 @@ class DataFavoriteMapper @Inject constructor() {
 
     fun prepareListFavoriteShop(favoriteShop: FavoriteShop): List<Visitable<*>> {
         val elementList: MutableList<Visitable<*>> = ArrayList()
-        for (favoriteShopItem in favoriteShop.data) {
-            favoriteShopItem.setIsFav(true)
-            elementList.add(prepareDataFavoriteShop(favoriteShopItem))
+        val data = favoriteShop.data
+        if (data != null) {
+            for (favoriteShopItem in data) {
+                favoriteShopItem.isFav = (true)
+                elementList.add(prepareDataFavoriteShop(favoriteShopItem))
+            }
         }
         return elementList
     }

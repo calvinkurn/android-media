@@ -323,7 +323,7 @@ class FragmentFavoriteUsingViewModel() : BaseDaggerFragment(), FavoriteClickList
         viewModel!!.refreshAllDataFavoritePage()
     }
 
-    override fun onFavoriteShopClicked(view: View, shopItemSelected: TopAdsShopItem) {
+    override fun onFavoriteShopClicked(view: View?, shopItem: TopAdsShopItem?) {
         favoriteShopViewSelected = view
         this.shopItemSelected = shopItemSelected
         viewModel!!.addFavoriteShop(favoriteShopViewSelected!!, this.shopItemSelected!!)

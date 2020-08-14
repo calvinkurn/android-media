@@ -31,7 +31,7 @@ class LocalFavoriteShopDataSource(private val context: Context,
     private fun nullResponse(): Func1<Throwable, FavoriteShop> {
         return Func1 {
             val favoriteShop = FavoriteShop()
-            favoriteShop.setDataIsValid(false)
+            favoriteShop.isDataValid = false
             favoriteShop
         }
     }

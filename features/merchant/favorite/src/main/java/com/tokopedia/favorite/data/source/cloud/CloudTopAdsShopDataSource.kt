@@ -21,18 +21,20 @@ class CloudTopAdsShopDataSource(
         private val topAdsService: TopAdsService
 ) {
 
-    fun getTopAdsShop(param: HashMap<String, Any>?): Observable<TopAdsShop> {
+    fun getTopAdsShop(param: HashMap<String, Any>): Observable<TopAdsShop> {
         return topAdsService.getShopTopAds(param)
-                .doOnNext(HttpResponseValidator.validate {
-                    response -> saveResponseToCache(response)
-                })
-                .map(TopAdsShopMapper(context, gson))
+                .doOnNext(HttpResponseValidator.validate(object : HttpResponseValidator.HttpValidationListener {
+                    override fun onPassValidation(response: Response<String?>?) {
+                        saveResponseToCache(response)
+                    }
+                }))
+                .map { response -> TopAdsShopMapper(context, gson).call(response) }
     }
 
-    private fun saveResponseToCache(stringResponse: Response<String>) {
+    private fun saveResponseToCache(stringResponse: Response<String?>?) {
         PersistentCacheManager.instance.put(
                 LocalTopAdsShopDataSource.CACHE_KEY_TOP_ADS_SHOP,
-                stringResponse.body(),
+                stringResponse?.body(),
                 -System.currentTimeMillis()
         )
     }

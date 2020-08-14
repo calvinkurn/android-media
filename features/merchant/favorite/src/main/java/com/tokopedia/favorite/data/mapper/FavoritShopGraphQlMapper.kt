@@ -27,7 +27,7 @@ class FavoritShopGraphQlMapper(
 
     private fun validateResponse(responseBody: FavoritShopResponseData?): FavoriteShop {
         return if (responseBody != null && responseBody.data != null) {
-            mappingValidResponse(responseBody.data)
+            mappingValidResponse(responseBody.data!!)
         } else {
             invalidResponse(defaultErrorMessage)
         }
@@ -35,11 +35,14 @@ class FavoritShopGraphQlMapper(
 
     private fun mappingValidResponse(shopItemDataResponse: FavShopItemData): FavoriteShop {
         return if (shopItemDataResponse.list != null
-                && shopItemDataResponse.list.size > 0) {
+                && shopItemDataResponse.list!!.isNotEmpty()) {
             val favoriteShop = FavoriteShop()
-            favoriteShop.setDataIsValid(true)
+            favoriteShop.isDataValid = true
             favoriteShop.message = successMessage
-            favoriteShop.data = mappingDataShopItem(shopItemDataResponse.list)
+
+            val list = shopItemDataResponse.list
+            favoriteShop.data = if (list == null) null else mappingDataShopItem(list)
+
             favoriteShop.pagingModel = shopItemDataResponse.pagingHandlerModel
             favoriteShop
         } else {
@@ -61,19 +64,19 @@ class FavoritShopGraphQlMapper(
         return favoriteShopItems
     }
 
-    private fun getShopBadgeUrl(shopBadge: List<Badge?>?): String {
+    private fun getShopBadgeUrl(shopBadge: List<Badge?>?): String? {
         return if (shopBadge != null
                 && shopBadge.isNotEmpty()
                 && shopBadge[0] != null
                 && shopBadge[0]!!.imageUrl != null
-                && shopBadge[0]!!.imageUrl.isNotEmpty()) {
+                && shopBadge[0]!!.imageUrl!!.isNotEmpty()) {
             shopBadge[0]!!.imageUrl
         } else ""
     }
 
     private fun invalidResponse(defaultErrorMessage: String): FavoriteShop {
         val favoriteShop = FavoriteShop()
-        favoriteShop.setDataIsValid(false)
+        favoriteShop.isDataValid = false
         favoriteShop.message = defaultErrorMessage
         return favoriteShop
     }

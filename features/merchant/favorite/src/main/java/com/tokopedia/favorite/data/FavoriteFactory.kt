@@ -66,12 +66,12 @@ class FavoriteFactory(
         return Action1 { topAdsShop -> topAdsShop.isNetworkError = true }
     }
 
-    private val isLocalTopAdsShopValid: Func1<TopAdsShop?, Boolean>
-        private get() = Func1 {
-            topAdsShop -> (topAdsShop != null &&
+    private val isLocalTopAdsShopValid: Func1<TopAdsShop, Boolean>
+        get() = Func1 { topAdsShop ->
+            (topAdsShop != null &&
                 topAdsShop.isDataValid &&
                 topAdsShop.topAdsShopItemList != null &&
-                topAdsShop.topAdsShopItemList.size > 0)
+                topAdsShop.topAdsShopItemList!!.size > 0)
         }
 
 }

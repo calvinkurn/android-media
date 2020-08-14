@@ -109,7 +109,7 @@ class TopAdsShopAdapter(
         }
     }
 
-    private fun setShopCover(holder: ViewHolder, coverUri: String?, ecs: String) {
+    private fun setShopCover(holder: ViewHolder, coverUri: String?, ecs: String?) {
         if (coverUri == null) {
             holder.shopCover.setImageResource(com.tokopedia.abstraction.R.drawable.ic_loading_toped)
         } else {

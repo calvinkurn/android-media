@@ -128,7 +128,7 @@ public class FavoritePresenter
     }
 
     private void validateFavoriteShopErrorNetwork(DataFavorite dataFavorite) {
-        if (dataFavorite.getFavoriteShop().isNetworkError()) {
+        if (dataFavorite.favoriteShop.isNetworkError()) {
             getView().showFavoriteShopFailedMessage();
         } else {
             getView().dismissFavoriteShopFailedMessage();
@@ -149,18 +149,18 @@ public class FavoritePresenter
 
     private void addFavoriteShop(DataFavorite dataFavorite, List<Visitable<?>> dataFavoriteItemList) {
         if (dataFavorite != null
-                && dataFavorite.getFavoriteShop() != null) {
+                && dataFavorite.favoriteShop != null) {
 
             validateFavoriteShopErrorNetwork(dataFavorite);
-            if (dataFavorite.getFavoriteShop().getData() != null) {
-                if (dataFavorite.getFavoriteShop().getPagingModel() != null) {
-                    setNextPaging(dataFavorite.getFavoriteShop().getPagingModel());
+            if (dataFavorite.favoriteShop.data != null) {
+                if (dataFavorite.favoriteShop.pagingModel != null) {
+                    setNextPaging(dataFavorite.favoriteShop.pagingModel);
                 }
 
-                if (dataFavorite.getFavoriteShop().getData().size() > 0) {
+                if (dataFavorite.favoriteShop.data.size() > 0) {
 
                     for (FavoriteShopItem favoriteShopItem
-                            : dataFavorite.getFavoriteShop().getData()) {
+                            : dataFavorite.favoriteShop.data) {
 
                         favoriteShopItem.setIsFav(true);
                         dataFavoriteItemList.add(
@@ -174,14 +174,14 @@ public class FavoritePresenter
 
     private void addTopAdsShop(DataFavorite dataFavorite, List<Visitable<?>> dataFavoriteItemList) {
         if (dataFavorite != null) {
-            validateNetworkTopAdsShop(dataFavorite.getTopAdsShop());
-            if (dataFavorite.getTopAdsShop() != null
-                    && dataFavorite.getTopAdsShop().getTopAdsShopItemList() != null
-                    && dataFavorite.getTopAdsShop().getTopAdsShopItemList().size() > 0) {
+            validateNetworkTopAdsShop(dataFavorite.topAdsShop);
+            if (dataFavorite.topAdsShop != null
+                    && dataFavorite.topAdsShop.topAdsShopItemList != null
+                    && dataFavorite.topAdsShop.topAdsShopItemList.size() > 0) {
 
                 dataFavoriteItemList
                         .add(favoriteMapper
-                                .prepareDataTopAdsShop(dataFavorite.getTopAdsShop()));
+                                .prepareDataTopAdsShop(dataFavorite.topAdsShop));
             }
         }
     }
@@ -288,11 +288,11 @@ public class FavoritePresenter
         @Override
         public void onNext(FavoriteShop favoriteShop) {
             if (favoriteShop.isDataValid()) {
-                setNextPaging(favoriteShop.getPagingModel());
+                setNextPaging(favoriteShop.pagingModel);
                 List<Visitable<?>> elementList = favoriteMapper.prepareListFavoriteShop(favoriteShop);
                 getView().showMoreDataFavoriteShop(elementList);
             } else {
-                setNextPaging(favoriteShop.getPagingModel());
+                setNextPaging(favoriteShop.pagingModel);
             }
         }
 

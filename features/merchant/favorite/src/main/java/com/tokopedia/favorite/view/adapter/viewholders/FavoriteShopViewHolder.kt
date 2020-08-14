@@ -14,6 +14,7 @@ import com.tokopedia.favorite.R
 import com.tokopedia.favorite.utils.TrackingConst
 import com.tokopedia.favorite.view.viewmodel.FavoriteShopViewModel
 import com.tokopedia.track.TrackApp
+import java.util.*
 
 /**
  * @author kulomady on 1/24/17.
@@ -64,7 +65,8 @@ class FavoriteShopViewHolder(itemView: View) : AbstractViewHolder<FavoriteShopVi
             ImageHandler.loadImageFit2(
                     itemView.context, avatarImageView, favoriteShop.shopAvatarImageUrl)
         }
-        if (favoriteShop.badgeUrl != null && !favoriteShop.badgeUrl.isEmpty()) {
+        val badgeUrl = favoriteShop.badgeUrl
+        if (badgeUrl != null && !badgeUrl.isEmpty()) {
             badgeIcon!!.visibility = View.VISIBLE
             ImageHandler.loadImageFit2(itemView.context, badgeIcon, favoriteShop.badgeUrl)
         } else {
@@ -81,7 +83,7 @@ class FavoriteShopViewHolder(itemView: View) : AbstractViewHolder<FavoriteShopVi
     fun eventFavoriteShop() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 TrackingConst.Event.FAVORITE,
-                TrackingConst.Category.HOMEPAGE.toLowerCase(),
+                TrackingConst.Category.HOMEPAGE.toLowerCase(Locale.getDefault()),
                 TrackingConst.Action.CLICK_SHOP_FAVORITE,
                 "")
     }

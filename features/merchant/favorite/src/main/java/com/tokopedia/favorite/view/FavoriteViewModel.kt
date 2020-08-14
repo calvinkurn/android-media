@@ -167,13 +167,15 @@ class FavoriteViewModel
     ) {
         if (dataFavorite != null) {
             validateNetworkTopAdsShop(dataFavorite.topAdsShop)
+
+            val topAdsShop = dataFavorite.topAdsShop
+            val topAdsShopItemList = topAdsShop?.topAdsShopItemList
             if (
-                    dataFavorite.topAdsShop != null &&
-                    dataFavorite.topAdsShop.topAdsShopItemList != null &&
-                    dataFavorite.topAdsShop.topAdsShopItemList.size > 0
+                    topAdsShop != null &&
+                    topAdsShopItemList != null &&
+                    topAdsShopItemList.isNotEmpty()
             ) {
-                dataFavoriteItemList.add(
-                        favoriteMapper.prepareDataTopAdsShop(dataFavorite.topAdsShop)
+                dataFavoriteItemList.add(favoriteMapper.prepareDataTopAdsShop(topAdsShop)
                 )
             }
         }
@@ -184,16 +186,20 @@ class FavoriteViewModel
                 (_isFavoriteShopNetworkFailed.value ?: false)
     }
 
-    private fun addFavoriteShop(dataFavorite: DataFavorite?, dataFavoriteItemList: MutableList<Visitable<*>>) {
-        if (dataFavorite != null && dataFavorite.favoriteShop != null) {
+    private fun addFavoriteShop(
+            dataFavorite: DataFavorite?, dataFavoriteItemList: MutableList<Visitable<*>>
+    ) {
+        val favoriteShop: FavoriteShop? = dataFavorite?.favoriteShop
+        if (favoriteShop != null) {
             validateFavoriteShopErrorNetwork(dataFavorite)
-            if (dataFavorite.favoriteShop.data != null) {
-                if (dataFavorite.favoriteShop.pagingModel != null) {
-                    setNextPaging(dataFavorite.favoriteShop.pagingModel)
+            val favoriteShopData = favoriteShop.data
+            if (favoriteShopData != null) {
+                if (favoriteShop.pagingModel != null) {
+                    setNextPaging(favoriteShop.pagingModel)
                 }
-                if (dataFavorite.favoriteShop.data.size > 0) {
-                    for (favoriteShopItem in dataFavorite.favoriteShop.data) {
-                        favoriteShopItem.setIsFav(true)
+                if (favoriteShopData.isNotEmpty()) {
+                    for (favoriteShopItem in favoriteShopData) {
+                        favoriteShopItem.isFav = (true)
                         dataFavoriteItemList.add(
                                 favoriteMapper.prepareDataFavoriteShop(favoriteShopItem))
                     }
@@ -209,7 +215,7 @@ class FavoriteViewModel
     }
 
     private fun validateFavoriteShopErrorNetwork(dataFavorite: DataFavorite) {
-        _isFavoriteShopNetworkFailed.value = dataFavorite.favoriteShop.isNetworkError
+        _isFavoriteShopNetworkFailed.value = (dataFavorite.favoriteShop?.isNetworkError) ?: false
     }
 
     private fun setNextPaging(pagingModel: PagingHandlerModel?) {
