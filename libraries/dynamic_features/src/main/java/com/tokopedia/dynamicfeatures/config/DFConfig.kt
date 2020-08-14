@@ -55,9 +55,9 @@ data class DFConfig(
     @Expose
     val timeout: Long = 30,
 
-    @SerializedName("return_if_state_invalid")
+    @SerializedName("cancel_dl_before_install")
     @Expose
-    val returnIfStateInvalid: Boolean = false
+    val cancelDownloadBeforeInstallInPage: Boolean = true
 
 ) {
     fun allowRunningServiceFromActivity(moduleName: String): Boolean {

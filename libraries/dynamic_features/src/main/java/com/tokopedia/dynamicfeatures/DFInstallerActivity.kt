@@ -76,6 +76,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
     private var successInstall = false
 
     private var allowRunningServiceFromActivity: Boolean = false
+    private var cancelDownloadBeforeInstallInPage: Boolean = false
 
     private var job = Job()
     private var timerJob: Job = Job()
@@ -109,6 +110,8 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
             return
         }
         allowRunningServiceFromActivity = dfConfig.allowRunningServiceFromActivity(moduleName)
+        cancelDownloadBeforeInstallInPage = dfConfig.cancelDownloadBeforeInstallInPage
+
         if (moduleNameTranslated.isNotEmpty()) {
             title = getString(R.string.installing_x, moduleNameTranslated)
         }
@@ -124,7 +127,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
         }
     }
 
-    private fun logDownloadPage(){
+    private fun logDownloadPage() {
         Timber.w("P1#DFM_DOWNLOAD_PAGE#download;mod_name=%s;dl_service=%s;deeplink='%s';fallback_url='%s'",
                 moduleName, allowRunningServiceFromActivity, deeplink, fallbackUrl)
     }
@@ -211,17 +214,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
         timerJob = launch(Dispatchers.IO) {
             delay(TimeUnit.SECONDS.toMillis(timeout))
             withContext(Dispatchers.Main) {
-                try {
-                    if (allowRunningServiceFromActivity) {
-                        DFInstaller.stopInstall(applicationContext)
-                    } else {
-                        sessionId?.let {
-                            manager.cancelInstall(it)
-                        }
-                        sessionId = null
-                    }
-                } catch (ignored: Exception) {
-                }
+                cancelPreviousDownload()
                 //show timeoutError
                 onFailed(TIMEOUT_ERROR_MESSAGE + "after" + timeout)
             }
@@ -257,15 +250,8 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
 
     /** Listener used to handle changes in state for install requests. */
     private val listener = SplitInstallStateUpdatedListener { state ->
-        var stateError = ""
         if (state.sessionId() != sessionId) {
-            stateError = ErrorConstant.ERROR_SESSION_ID_NOT_MATCH
-            errorList.add(ErrorConstant.ERROR_SESSION_ID_NOT_MATCH + "_" + state.status())
-        }
-        if (stateError.isNotEmpty()) {
-            if (dfConfig.returnIfStateInvalid) {
-                return@SplitInstallStateUpdatedListener
-            }
+            return@SplitInstallStateUpdatedListener
         }
         when (state.status()) {
             SplitInstallSessionStatus.DOWNLOADING -> {
@@ -385,10 +371,28 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
     }
 
     private fun downloadFeature() {
+        if (cancelDownloadBeforeInstallInPage) {
+            cancelPreviousDownload()
+        }
         updateInformationView(R.drawable.ic_ill_downloading, getString(R.string.dowload_on_process), getString(R.string.wording_download_waiting))
         progressGroup.visibility = View.VISIBLE
         downloadTimes++
         loadAndLaunchModule(moduleName)
+    }
+
+    private fun cancelPreviousDownload() {
+        try {
+            if (allowRunningServiceFromActivity) {
+                DFInstaller.stopInstall(applicationContext)
+            } else {
+                sessionId?.let {
+                    manager.cancelInstall(it)
+                }
+                sessionId = null
+            }
+        } catch (ignored: Exception) {
+
+        }
     }
 
     private fun updateProgressMessage(message: String) {

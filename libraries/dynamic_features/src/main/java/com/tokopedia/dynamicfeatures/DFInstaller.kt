@@ -363,20 +363,8 @@ object SplitInstallListener : SplitInstallStateUpdatedListener {
     var moduleNameToDownload: List<String> = emptyList()
     var continuation: CancellableContinuation<Pair<Boolean, Boolean>>? = null
     override fun onStateUpdate(state: SplitInstallSessionState) {
-        var stateError = ""
         if (state.sessionId() != DFInstaller.sessionId) {
-            stateError = ErrorConstant.ERROR_SESSION_ID_NOT_MATCH
-        }
-        if (stateError.isNotEmpty()) {
-            val ctx = context
-            if (ctx != null) {
-                DFInstaller.onErrorInstall(ctx,
-                        stateError + "_" + state.errorCode().toString(),
-                        moduleNameToDownload.first(), onFailedInstall, continuation)
-                if (DFRemoteConfig.getConfig(ctx).returnIfStateInvalid) {
-                    return
-                }
-            }
+            return
         }
         when (state.status()) {
             SplitInstallSessionStatus.DOWNLOADING -> {
