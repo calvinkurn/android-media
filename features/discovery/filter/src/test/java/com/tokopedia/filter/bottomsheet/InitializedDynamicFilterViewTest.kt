@@ -17,15 +17,15 @@ import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper.OPTION_SEPARATO
 import com.tokopedia.filter.testutils.jsonToObject
 import org.junit.Test
 
-internal class OnViewCreatedTest: SortFilterBottomSheetViewModelTestFixtures() {
+internal class InitializedDynamicFilterViewTest: SortFilterBottomSheetViewModelTestFixtures() {
 
     @Test
-    fun `onViewCreated with null Dynamic Filter Model (edge cases)`() {
+    fun `onViewCreated with null Dynamic Filter Model`() {
         `Given null dynamic filter model`()
 
         `When view created`()
 
-        `Then assert sort filter list is null`()
+        `Then assert is loading for dynamic filter`(true)
     }
 
     private fun `Given null dynamic filter model`() {
@@ -36,9 +36,9 @@ internal class OnViewCreatedTest: SortFilterBottomSheetViewModelTestFixtures() {
         sortFilterBottomSheetViewModel.onViewCreated()
     }
 
-    private fun `Then assert sort filter list is null`() {
-        assert(sortFilterList == null) {
-            "Sort filter list should be null"
+    private fun `Then assert is loading for dynamic filter`(expectedIsLoading: Boolean) {
+        assert(sortFilterBottomSheetViewModel.isLoadingForDynamicFilterLiveData.value == expectedIsLoading) {
+            "Is loading for requesting dynamic filter data should be $expectedIsLoading."
         }
     }
 
@@ -54,6 +54,12 @@ internal class OnViewCreatedTest: SortFilterBottomSheetViewModelTestFixtures() {
 
     private fun `Given initialized SortFilterBottomSheetViewModel`(mapParameter: Map<String, String>, dynamicFilterModel: DynamicFilterModel) {
         sortFilterBottomSheetViewModel.init(mapParameter, dynamicFilterModel)
+    }
+
+    private fun `Then assert sort filter list is null`() {
+        assert(sortFilterList == null) {
+            "Sort filter list should be null"
+        }
     }
 
     @Test
@@ -399,11 +405,31 @@ internal class OnViewCreatedTest: SortFilterBottomSheetViewModelTestFixtures() {
     }
 
     private fun `Then assert price range option is selected`(priceFilterViewModel: PriceFilterViewModel, selectedPriceRangeKey: String) {
-        priceFilterViewModel.priceRangeOptionViewModelList.forEachIndexed { index, priceRangeOption ->
+        priceFilterViewModel.priceRangeOptionViewModelList.forEachIndexed { _, priceRangeOption ->
             val expectedIsSelected = priceRangeOption.option.key == selectedPriceRangeKey
             assert(expectedIsSelected == priceRangeOption.isSelected) {
                 "Price range option ${priceRangeOption.option.name} is selected should be ${expectedIsSelected}."
             }
         }
+    }
+
+    @Test
+    fun `Late init dynamic filter model`() {
+        `Given null dynamic filter model and view is created`()
+
+        val dynamicFilterModel = "dynamic-filter-model-common.json".jsonToObject<DynamicFilterModel>()
+        `When late init dynamic filter model`(dynamicFilterModel)
+
+        `Then assert is loading for dynamic filter`(false)
+        `Then assert sort filter list is generated based on dynamic filter model`(dynamicFilterModel)
+    }
+
+    private fun `Given null dynamic filter model and view is created`() {
+        sortFilterBottomSheetViewModel.init(mapOf(), null)
+        sortFilterBottomSheetViewModel.onViewCreated()
+    }
+
+    private fun `When late init dynamic filter model`(dynamicFilterModel: DynamicFilterModel) {
+        sortFilterBottomSheetViewModel.lateInitDynamicFilterModel(dynamicFilterModel)
     }
 }
