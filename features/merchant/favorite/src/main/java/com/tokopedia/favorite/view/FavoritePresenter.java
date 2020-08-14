@@ -88,7 +88,7 @@ public class FavoritePresenter
 
     @Override
     public void addFavoriteShop(View view, TopAdsShopItem shopItem) {
-        toggleFavouriteShopUseCase.execute(ToggleFavouriteShopUseCase.createRequestParam(shopItem.getShopId()), new AddFavoriteShopSubscriber(view, shopItem));
+        toggleFavouriteShopUseCase.execute(ToggleFavouriteShopUseCase.createRequestParam(shopItem.shopId), new AddFavoriteShopSubscriber(view, shopItem));
     }
 
     @Override
@@ -328,13 +328,13 @@ public class FavoritePresenter
             view.clearAnimation();
             if (isValid) {
                 FavoriteShopViewModel favoriteShopViewModel = new FavoriteShopViewModel();
-                favoriteShopViewModel.setShopId(shopItem.getShopId());
-                favoriteShopViewModel.setShopName(shopItem.getShopName());
-                favoriteShopViewModel.setShopAvatarImageUrl(shopItem.getShopImageUrl());
-                favoriteShopViewModel.setShopLocation(shopItem.getShopLocation());
+                favoriteShopViewModel.shopId = shopItem.shopId;
+                favoriteShopViewModel.shopName = shopItem.shopName;
+                favoriteShopViewModel.shopAvatarImageUrl = shopItem.shopImageUrl;
+                favoriteShopViewModel.shopLocation = shopItem.shopLocation;
                 favoriteShopViewModel.setFavoriteShop(shopItem.isFav());
                 getView().addFavoriteShop(favoriteShopViewModel);
-                getView().sendFavoriteShopImpression(shopItem.getShopClickUrl());
+                getView().sendFavoriteShopImpression(shopItem.shopClickUrl);
             }
         }
     }

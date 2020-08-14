@@ -141,7 +141,7 @@ class FavoriteViewModel
 
     fun addFavoriteShop(view: View, shopItem: TopAdsShopItem) {
         toggleFavouriteShopUseCase.execute(
-                ToggleFavouriteShopUseCase.createRequestParam(shopItem.getShopId()),
+                ToggleFavouriteShopUseCase.createRequestParam(shopItem.shopId),
                 AddFavoriteShopSubscriber(view, shopItem)
         )
     }
