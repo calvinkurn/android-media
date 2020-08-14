@@ -269,6 +269,22 @@ class ShopPageFragment :
             }
         })
 
+        shopViewModel.shopIdFromDomainData.observe(owner, Observer { result ->
+            when (result) {
+                is Success -> {
+                    onSuccessGetShopIdFromDomain(result.data)
+                }
+                is Fail -> {
+                    onErrorGetShopPageHeaderContentData(result.throwable)
+                }
+            }
+        })
+
+    }
+
+    private fun onSuccessGetShopIdFromDomain(shopId: String) {
+        this.shopId = shopId
+        shopViewModel.getShopPageTabData(shopId, shopDomain, isRefresh)
     }
 
     private fun onErrorGetShopPageHeaderContentData(error: Throwable) {
@@ -390,7 +406,11 @@ class ShopPageFragment :
         if (!swipeToRefresh.isRefreshing)
             setViewState(VIEW_LOADING)
         startMonitoringNetworkPltShopPage()
-        shopViewModel.getShopPageTabData(shopId, shopDomain, isRefresh)
+        if(shopId.isEmpty()){
+            shopViewModel.getShopIdFromDomain(shopDomain.orEmpty())
+        }else{
+            shopViewModel.getShopPageTabData(shopId, shopDomain, isRefresh)
+        }
     }
 
     private fun initToolbar() {

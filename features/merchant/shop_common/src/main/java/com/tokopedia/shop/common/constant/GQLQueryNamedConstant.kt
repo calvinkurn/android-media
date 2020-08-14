@@ -16,6 +16,8 @@ object GQLQueryNamedConstant {
     const val SHOP_INFO_HOME_TYPE_QUERY_NAME = "getShopInfoHomeType"
     const val SHOP_INFO_CORE_AND_ASSETS_QUERY_NAME = "getShopInfoCoreAndAssets"
     const val SHOP_INFO_FAVORITE_QUERY_NAME = "getShopInfoFavorite"
+    const val GET_IS_OFFICIAL = "getIsOfficial"
+    const val GET_IS_POWER_MERCHANT = "getIsPowerMerchant"
 
 
     const val FAVORITE_STATUS_GQL = "favorite_status_gql"
