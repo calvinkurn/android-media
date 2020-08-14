@@ -30,7 +30,7 @@ open class TopupBillsRecentTransactionWidget @JvmOverloads constructor(@NotNull 
 
     init {
         val view = View.inflate(context, R.layout.view_digital_component_list, this)
-        recyclerView = view.findViewById(R.id.recycler_view)
+        recyclerView = view.findViewById(R.id.recycler_view_menu_component)
         titleWidget = view.findViewById(R.id.title_component)
     }
 
