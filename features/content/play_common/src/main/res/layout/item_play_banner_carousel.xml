@@ -70,7 +70,7 @@
             android:layout_height="20dp"
             android:layout_marginStart="@dimen/spacing_lvl3"
             android:layout_marginLeft="@dimen/spacing_lvl3"
-            android:layout_marginBottom="@dimen/spacing_lvl2"
+            android:layout_marginBottom="@dimen/spacing_lvl3"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/container_content" />
 
@@ -89,12 +89,11 @@
                 android:layout_marginStart="@dimen/spacing_lvl3"
                 android:layout_marginEnd="@dimen/spacing_lvl3"
                 android:ellipsize="end"
-                android:maxLines="2"
+                android:maxLines="1"
                 android:textColor="@color/Yellow_Y500"
                 android:textStyle="bold"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:typographyType="small"
-                tools:layout_editor_absoluteX="@dimen/spacing_lvl3"
                 tools:text="10 January 2020 - 17.00" />
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/channel_title"
@@ -103,7 +102,7 @@
                 android:layout_marginStart="@dimen/spacing_lvl3"
                 android:layout_marginEnd="@dimen/spacing_lvl3"
                 android:ellipsize="end"
-                android:maxLines="2"
+                android:lines="2"
                 android:textColor="@android:color/black"
                 app:typographyType="heading_6"
                 tools:layout_editor_absoluteX="@dimen/spacing_lvl3"
@@ -115,8 +114,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/spacing_lvl3"
                 android:layout_marginEnd="@dimen/spacing_lvl3"
-                android:layout_marginBottom="@dimen/spacing_lvl3"
-                android:textColor="@android:color/black"
+                android:layout_marginBottom="@dimen/spacing_lvl2"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
