@@ -6,14 +6,16 @@
       "eventCategory": "sort by",
       "eventAction": "sort by - Search result - Product tab",
       "eventLabel": "{{.*}}",
-      "sessionIris": "{{.*}}"
+      "sessionIris": "{{.*}}",
+      "userId": "{{.*}}"
     },
     {
       "event": "clickSearchResult",
       "eventCategory": "filter product",
       "eventAction": "quick filter",
       "eventLabel": "{{.* - .* - true|false}}",
-      "sessionIris": "{{.*}}"
+      "sessionIris": "{{.*}}",
+      "userId": "{{.*}}"
     },
     {
       "event" : "clickSearchResult",
