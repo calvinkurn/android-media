@@ -1,22 +1,22 @@
 package com.tokopedia.shop.product.view.adapter
 
 import android.view.View
-
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
-import com.tokopedia.abstraction.base.view.adapter.viewholders.*
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
+import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
+import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingShimmeringGridViewHolder
 import com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidget
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.model.ShopTrackProductTypeDef
 import com.tokopedia.shop.common.view.adapter.MembershipStampAdapter
-import com.tokopedia.shop.product.view.listener.ShopProductClickedListener
-import com.tokopedia.shop.product.view.viewholder.ErrorNetworkWrapViewHolder
-import com.tokopedia.shop.product.view.viewholder.ShopProductListEmptyViewHolder
-
 import com.tokopedia.shop.product.view.datamodel.*
 import com.tokopedia.shop.product.view.listener.ShopCarouselSeeAllClickedListener
+import com.tokopedia.shop.product.view.listener.ShopProductClickedListener
+import com.tokopedia.shop.product.view.listener.ShopProductEmptySearchListener
 import com.tokopedia.shop.product.view.listener.ShopProductImpressionListener
 import com.tokopedia.shop.product.view.viewholder.*
 
@@ -29,6 +29,7 @@ class ShopProductAdapterTypeFactory(private val membershipStampAdapterListener: 
                                     private val onMerchantVoucherListWidgetListener: MerchantVoucherListWidget.OnMerchantVoucherListWidgetListener?,
                                     private val shopProductAddViewHolderListener: ShopProductAddViewHolder.ShopProductAddViewHolderListener?,
                                     private val shopProductsEmptyViewHolderListener: ShopProductsEmptyViewHolder.ShopProductsEmptyViewHolderListener?,
+                                    private val shopProductEmptySearchListener: ShopProductEmptySearchListener?,
                                     private val isGridSquareLayout: Boolean,
                                     private val deviceWidth: Int,
                                     @param:ShopTrackProductTypeDef @field:ShopTrackProductTypeDef
@@ -99,11 +100,21 @@ class ShopProductAdapterTypeFactory(private val membershipStampAdapterListener: 
         return ShopProductSellerAllEtalaseEmptyViewHolder.LAYOUT
     }
 
+    fun type(shopProductTitleEmptyUiModel: ShopProductTitleEmptyUiModel): Int {
+        return ShopProductTitleEmptyViewHolder.LAYOUT
+    }
+
+    fun type(shopProductEmptySearchUiModel: ShopProductEmptySearchUiModel): Int {
+        return ShopProductEmptySearchViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         when (type) {
             LoadingShimmeringGridViewHolder.LAYOUT -> return LoadingShimmeringGridViewHolder(parent)
             ShopProductListEmptyViewHolder.LAYOUT -> return ShopProductListEmptyViewHolder(parent, emptyProductOnClickListener)
             ShopProductsEmptyViewHolder.LAYOUT -> return ShopProductsEmptyViewHolder(parent, shopProductsEmptyViewHolderListener)
+            ShopProductTitleEmptyViewHolder.LAYOUT -> ShopProductTitleEmptyViewHolder(parent)
+            ShopProductEmptySearchViewHolder.LAYOUT -> ShopProductEmptySearchViewHolder(parent, shopProductEmptySearchListener)
             ErrorNetworkWrapViewHolder.LAYOUT -> return ErrorNetworkWrapViewHolder(parent)
             ShopProductEtalaseTitleViewHolder.LAYOUT -> return ShopProductEtalaseTitleViewHolder(parent)
             ShopProductSortFilterViewHolder.LAYOUT -> return ShopProductSortFilterViewHolder(parent, shopProductEtalaseListViewHolderListener)
