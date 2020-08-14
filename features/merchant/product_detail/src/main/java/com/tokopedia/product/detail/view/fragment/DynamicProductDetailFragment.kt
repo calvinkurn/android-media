@@ -217,6 +217,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private var pdpUiUpdater: PdpUiUpdater? = PdpUiUpdater(mapOf())
     private var enableCheckImeiRemoteConfig = false
     private var alreadyPerformSellerMigrationAction = false
+    private var isAutoSelectVariant = false
 
     //View
     private lateinit var bottomSheet: ValuePropositionBottomSheet
@@ -1179,7 +1180,11 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         pdpUiUpdater?.updateNotifyMeUpcoming(selectedChild?.productId.toString(), viewModel.p2Data.value?.upcomingCampaigns)
         pdpUiUpdater?.updateFulfillmentData(context, viewModel.getMultiOriginByProductId().isFulfillment)
 
-        if (viewModel.p2Data.value != null)
+        /*
+            If auto select variant but the data p2 cart redirection still empty, dont update the button.
+            It will update after p2 get the value. onSuccessGetDataP2
+         */
+        if (viewModel.p2Data.value != null && isAutoSelectVariant)
             updateButtonState()
 
         if (pdpUiUpdater?.productNewVariantDataModel?.isPartialySelected() == false && shouldFireVariantTracker) {
@@ -1683,9 +1688,11 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             //Auto select variant will be execute when there is only 1 child left
             val isOnlyHaveOneVariantLeftData = it.autoSelectedOptionIds()
             if (isOnlyHaveOneVariantLeftData.isNotEmpty()) {
+                isAutoSelectVariant = true
                 pdpUiUpdater?.productNewVariantDataModel?.mapOfSelectedVariant = VariantCommonMapper.mapVariantIdentifierWithDefaultSelectedToHashMap(it, isOnlyHaveOneVariantLeftData)
             } else {
                 // If there's still many variant others, just render variant as is
+                isAutoSelectVariant = false
                 pdpUiUpdater?.productNewVariantDataModel?.mapOfSelectedVariant = VariantCommonMapper.mapVariantIdentifierToHashMap(it)
             }
         }

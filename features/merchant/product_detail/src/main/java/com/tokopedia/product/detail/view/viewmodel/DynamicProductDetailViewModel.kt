@@ -235,7 +235,9 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     }
 
     fun updateDynamicProductInfoData(data: DynamicProductInfoP1?) {
-        getDynamicProductInfoP1 = data
+        data?.let {
+            getDynamicProductInfoP1 = it
+        }
     }
 
     /**

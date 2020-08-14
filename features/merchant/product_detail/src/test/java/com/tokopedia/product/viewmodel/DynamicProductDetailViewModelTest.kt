@@ -13,7 +13,9 @@ import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartOcsUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
-import com.tokopedia.product.detail.common.data.model.pdplayout.*
+import com.tokopedia.product.detail.common.data.model.pdplayout.BasicInfo
+import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
+import com.tokopedia.product.detail.common.data.model.pdplayout.Media
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.data.model.ProductInfoP2Login
 import com.tokopedia.product.detail.data.model.ProductInfoP2Other
@@ -25,8 +27,6 @@ import com.tokopedia.product.detail.data.util.DynamicProductDetailTalkGoToWriteD
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.usecase.*
 import com.tokopedia.product.detail.view.viewmodel.DynamicProductDetailViewModel
-import com.tokopedia.product.usecase.GetPdpLayoutUseCaseTest.Companion.GQL_GET_PDP_LAYOUT_JSON
-import com.tokopedia.product.usecase.GetPdpLayoutUseCaseTest.Companion.GQL_GET_PDP_LAYOUT_REMOVE_COMPONENT_JSON
 import com.tokopedia.product.util.ProductDetailTestUtil
 import com.tokopedia.product.util.TestDispatcherProvider
 import com.tokopedia.product.warehouse.model.ProductActionSubmit
@@ -121,12 +121,17 @@ class DynamicProductDetailViewModelTest {
     @RelaxedMockK
     lateinit var getProductInfoP2DataUseCase: GetProductInfoP2DataUseCase
 
+    private lateinit var spykViewModel : DynamicProductDetailViewModel
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
+        spykViewModel = spyk(DynamicProductDetailViewModel(TestDispatcherProvider(), stickyLoginUseCase, getPdpLayoutUseCase, getProductInfoP2LoginUseCase, getProductInfoP2OtherUseCase, getProductInfoP2DataUseCase, getProductInfoP3UseCase, toggleFavoriteUseCase, removeWishlistUseCase, addWishListUseCase, getRecommendationUseCase,
+                moveProductToWarehouseUseCase, moveProductToEtalaseUseCase, trackAffiliateUseCase, submitHelpTicketUseCase, updateCartCounterUseCase, addToCartUseCase, addToCartOcsUseCase, addToCartOccUseCase, toggleNotifyMeUseCase, discussionMostHelpfulUseCase, userSessionInterface)
+        )
     }
 
     @After
@@ -162,42 +167,51 @@ class DynamicProductDetailViewModelTest {
 
     @Test
     fun `has shop authority`() {
-        val shopInfo = ShopInfo(isAllowManage = 1)
+        val mockAllowManage = ShopInfo(isAllowManage = 1)
+
         every {
-            viewModel.isShopOwner()
+            spykViewModel.getShopInfo()
+        } returns mockAllowManage
+
+        every {
+            spykViewModel.isShopOwner()
         } returns true
 
-        viewModel.shopInfo = shopInfo
-
-        val hasShopAuthority = viewModel.hasShopAuthority()
+        val hasShopAuthority = spykViewModel.hasShopAuthority()
 
         Assert.assertTrue(hasShopAuthority)
     }
 
     @Test
     fun `has not shop authority shopowner`() {
-        val shopInfo = ShopInfo(isAllowManage = 1)
+        val mockAllowManage = ShopInfo(isAllowManage = 1)
+
         every {
-            viewModel.isShopOwner()
+            spykViewModel.getShopInfo()
+        } returns mockAllowManage
+
+        every {
+            spykViewModel.isShopOwner()
         } returns false
 
-        viewModel.shopInfo = shopInfo
-
-        val hasShopAuthority = viewModel.hasShopAuthority()
+        val hasShopAuthority = spykViewModel.hasShopAuthority()
 
         Assert.assertTrue(hasShopAuthority)
     }
 
     @Test
     fun `has not shop authority allow manage`() {
-        val shopInfo = ShopInfo(isAllowManage = 0)
+        val mockAllowManage = ShopInfo(isAllowManage = 0)
+
         every {
-            viewModel.isShopOwner()
+            spykViewModel.getShopInfo()
+        } returns mockAllowManage
+
+        every {
+            spykViewModel.isShopOwner()
         } returns true
 
-        viewModel.shopInfo = shopInfo
-
-        val hasShopAuthority = viewModel.hasShopAuthority()
+        val hasShopAuthority = spykViewModel.hasShopAuthority()
 
         Assert.assertTrue(hasShopAuthority)
     }
@@ -449,10 +463,49 @@ class DynamicProductDetailViewModelTest {
      * GetProductInfoP1
      */
     @Test
-    fun `on success get product info login`() {
-        val mockData: ProductDetailLayout = ProductDetailTestUtil.createMockGraphqlSuccessResponse(GQL_GET_PDP_LAYOUT_JSON, ProductDetailLayout::class.java)
-        val dataP1 = ProductDetailTestUtil.mapIntoModel(mockData.data ?: PdpGetLayout())
+    fun `test correct product id parameter pdplayout`(){
+        val dataP1 = ProductDetailTestUtil.getMockPdpLayout()
+        val productId = "123"
+        val productParams = ProductParams(productId, "", "", "", "", "")
 
+        `co every p1 success`(dataP1)
+
+        coEvery {
+            getPdpLayoutUseCase.requestParams
+        } returns GetPdpLayoutUseCase.createParams(productParams.productId
+                ?: "", productParams.shopDomain ?: "", productParams.productName ?: "")
+
+        viewModel.getProductP1(productParams, true, false)
+
+        Assert.assertTrue(getPdpLayoutUseCase.requestParams.getString(PARAM_PRODUCT_ID, "") == productId)
+        Assert.assertTrue(getPdpLayoutUseCase.requestParams.getString(PARAM_PRODUCT_KEY, "").isEmpty())
+        Assert.assertTrue(getPdpLayoutUseCase.requestParams.getString(PARAM_SHOP_DOMAIN, "").isEmpty())
+    }
+
+    @Test
+    fun `test correct shop domain and shop key parameter pdplayout`(){
+        val dataP1 = ProductDetailTestUtil.getMockPdpLayout()
+        val shopDomain = "shopYehez"
+        val productKey = "productYehez"
+        val productParams = ProductParams("", shopDomain, productKey, "", "", "")
+
+        `co every p1 success`(dataP1)
+
+        coEvery {
+            getPdpLayoutUseCase.requestParams
+        } returns GetPdpLayoutUseCase.createParams(productParams.productId
+                ?: "", productParams.shopDomain ?: "", productParams.productName ?: "")
+
+        viewModel.getProductP1(productParams, true, false)
+
+        Assert.assertTrue(getPdpLayoutUseCase.requestParams.getString(PARAM_PRODUCT_ID, "").isEmpty())
+        Assert.assertTrue(getPdpLayoutUseCase.requestParams.getString(PARAM_PRODUCT_KEY, "") == productKey)
+        Assert.assertTrue(getPdpLayoutUseCase.requestParams.getString(PARAM_SHOP_DOMAIN, "") == shopDomain)
+    }
+
+    @Test
+    fun `on success get product info login`() {
+        val dataP1 = ProductDetailTestUtil.getMockPdpLayout()
         val productParams = ProductParams("", "", "", "", "", "")
 
         viewModel.productInfoP3.observeForever { }
@@ -492,7 +545,6 @@ class DynamicProductDetailViewModelTest {
         Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.PRODUCT_WHOLESALE_INFO } == 1)
         Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.TRADE_IN } == 1)
         Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.BY_ME } == 1)
-
     }
 
     private fun `co verify p1 success`(){
@@ -580,9 +632,7 @@ class DynamicProductDetailViewModelTest {
 
     @Test
     fun `on success get product info non login`() {
-        val mockData: ProductDetailLayout = ProductDetailTestUtil.createMockGraphqlSuccessResponse(GQL_GET_PDP_LAYOUT_JSON, ProductDetailLayout::class.java)
-        val dataP1 = ProductDetailTestUtil.mapIntoModel(mockData.data ?: PdpGetLayout())
-
+        val dataP1 = ProductDetailTestUtil.getMockPdpLayout()
         val productParams = ProductParams("", "", "", "", "", "")
 
         viewModel.productInfoP3.observeForever { }
@@ -629,9 +679,8 @@ class DynamicProductDetailViewModelTest {
 
     @Test
     fun `on success remove unused component`() {
+        val dataP1 = ProductDetailTestUtil.getMockPdpThatShouldRemoveUnusedComponent()
         val productParams = ProductParams("", "", "", "", "", "")
-        val mockData: ProductDetailLayout = ProductDetailTestUtil.createMockGraphqlSuccessResponse(GQL_GET_PDP_LAYOUT_REMOVE_COMPONENT_JSON, ProductDetailLayout::class.java)
-        val dataP1 = ProductDetailTestUtil.mapIntoModel(mockData.data ?: PdpGetLayout())
 
         every {
             viewModel.userId
@@ -1155,5 +1204,11 @@ class DynamicProductDetailViewModelTest {
         verify {
             removeWishlistUseCase.unsubscribe()
         }
+    }
+
+    companion object{
+        const val PARAM_PRODUCT_ID = "productID"
+        const val PARAM_SHOP_DOMAIN = "shopDomain"
+        const val PARAM_PRODUCT_KEY = "productKey"
     }
 }
