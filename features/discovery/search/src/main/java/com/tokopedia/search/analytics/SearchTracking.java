@@ -304,30 +304,6 @@ public class SearchTracking {
         return TextUtils.join("&", filterList);
     }
 
-    private static String generateSortEventLabel(Map<String, String> selectedSort) {
-        if (selectedSort == null) {
-            return "";
-        }
-        List<String> sortList = new ArrayList<>();
-        for (Map.Entry<String, String> entry : selectedSort.entrySet()) {
-            sortList.add(entry.getKey() + "=" + entry.getValue());
-        }
-        return TextUtils.join("&", sortList);
-    }
-
-    public static String generateFilterAndSortEventLabel(Map<String, String> selectedFilter,
-                                                         Map<String, String> selectedSort) {
-
-        String filterEventLabel = generateFilterEventLabel(selectedFilter);
-        String sortEventLabel = generateSortEventLabel(selectedSort);
-
-        if (TextUtils.isEmpty(filterEventLabel)) {
-            return sortEventLabel;
-        } else {
-            return filterEventLabel + "&" + sortEventLabel;
-        }
-    }
-
     public static void eventSearchNoResult(Context context,
                                            String keyword, String screenName,
                                            Map<String, String> selectedFilter) {
