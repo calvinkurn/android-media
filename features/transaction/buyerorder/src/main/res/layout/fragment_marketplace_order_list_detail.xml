@@ -78,6 +78,15 @@
                             android:layout_marginTop="@dimen/dp_16"
                             android:background="@color/grey_300" />
 
+                        <com.tokopedia.unifycomponents.ticker.Ticker
+                            android:id="@+id/ticker_info_cancellation"
+                            android:layout_marginTop="@dimen/dp_16"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:tickerShapeType="loose"
+                            app:closeButtonVisibility="gone"
+                            android:visibility="visible"/>
+
                         <TextView
                             android:id="@+id/conditional_info"
                             android:layout_width="match_parent"

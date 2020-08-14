@@ -192,6 +192,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     private ShopInfo shopInfo;
     private Status status;
     private Ticker mTickerInfos;
+    private Ticker mTickerCancellationInfo;
     private RecyclerView recommendationList;
     private List<Items> listProducts;
     private String invoiceNum;
@@ -243,6 +244,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         additionalText = view.findViewById(R.id.additional);
         additionalInfoLayout = view.findViewById(R.id.additional_info);
         mTickerInfos = view.findViewById(R.id.additional_ticker_info);
+        mTickerCancellationInfo = view.findViewById(R.id.ticker_info_cancellation);
         infoLabel = view.findViewById(R.id.info_label);
         infoValue = view.findViewById(R.id.info_value);
         totalPrice = view.findViewById(R.id.total_price);
@@ -474,10 +476,10 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     @Override
     public void setTickerInfo(TickerInfo tickerInfo) {
         if (!tickerInfo.getText().isEmpty()) {
-            mTickerInfos.setVisibility(View.VISIBLE);
-            mTickerInfos.setTextDescription(tickerInfo.getText());
-            mTickerInfos.setTickerShape(Ticker.SHAPE_LOOSE);
-            mTickerInfos.setTickerType(Utils.getTickerType(tickerInfo.getType()));
+            mTickerCancellationInfo.setVisibility(View.VISIBLE);
+            mTickerCancellationInfo.setTextDescription(tickerInfo.getText());
+            mTickerCancellationInfo.setTickerShape(Ticker.SHAPE_LOOSE);
+            mTickerCancellationInfo.setTickerType(Utils.getTickerType(tickerInfo.getType()));
         }
     }
 
