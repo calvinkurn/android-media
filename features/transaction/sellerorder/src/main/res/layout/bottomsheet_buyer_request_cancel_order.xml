@@ -27,7 +27,6 @@
         android:layout_marginTop="@dimen/layout_lvl2"
         android:lineSpacingExtra="@dimen/spacing_lvl2"
         android:lineSpacingMultiplier="1.5"
-        android:text="@string/bottomsheet_buyer_request_cancel"
         android:textColor="@color/Neutral_N700_96"
         app:typographyType="body_2"
         app:typographyWeight="reguler" />

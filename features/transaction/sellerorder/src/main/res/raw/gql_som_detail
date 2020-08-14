@@ -183,7 +183,7 @@ query GetSOMDetail($orderID: String!, $lang: String!){
         info_text_long
       }
     }
-    button{
+    button {
       key
       display_name
       priority
@@ -197,6 +197,15 @@ query GetSOMDetail($orderID: String!, $lang: String!){
       title
       content
       param
+      popup {
+        title
+        body
+        actionButton {
+          displayName
+          color
+          type
+        }
+      }
     }
     online_booking {
       is_hide_input_awb

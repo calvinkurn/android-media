@@ -3,22 +3,24 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="@dimen/dp_16"
-    android:layout_marginLeft="@dimen/dp_16"
-    android:layout_marginTop="@dimen/layout_lvl2"
-    android:layout_marginEnd="@dimen/dp_16"
-    android:layout_marginRight="@dimen/dp_16"
-    android:layout_marginBottom="@dimen/layout_lvl3">
+    android:layout_height="wrap_content">
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_lvl1"
+        android:background="@drawable/som_detail_divider"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/payments_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/layout_lvl2"
         android:text="@string/informasi_pembayaran"
         android:textColor="@color/Neutral_N700_96"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/divider"
         app:typographyType="heading_5"
         app:typographyWeight="bold"
         tools:text="@string/informasi_pembayaran" />
@@ -157,5 +159,18 @@
         app:layout_constraintTop_toBottomOf="@id/divider_payments"
         app:typographyWeight="bold"
         tools:text="Rp10.376.650" />
+
+    <androidx.constraintlayout.widget.Group
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/layout_lvl3"
+        app:constraint_referenced_ids="payments_title,product_price_label,product_price_value
+        ,shipping_price_label,shipping_price_value,insurance_price_label,insurance_price_value
+        ,additional_price_label,additional_price_value,divider_payments,total_price_label,total_price_value" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
