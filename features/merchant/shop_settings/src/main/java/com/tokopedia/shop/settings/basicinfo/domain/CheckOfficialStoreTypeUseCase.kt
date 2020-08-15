@@ -33,8 +33,8 @@ class CheckOfficialStoreTypeUseCase @Inject constructor(
 
     companion object {
         private const val SHOP_ID = "shop_id"
-        private const val QUERY = "query{\n" +
-                "  getIsOfficial(shop_id:\$shop_id){\n" +
+        private const val QUERY = "query getIsOfficial(\$shop_id: Int!){\n" +
+                "  getIsOfficial(shop_id: \$shop_id){\n" +
                 "    data{\n" +
                 "      is_official\n" +
                 "      expired_date\n" +

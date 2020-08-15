@@ -34,10 +34,10 @@ class CheckPowerMerchantTypeUseCase @Inject constructor(
     companion object {
         private const val SHOP_ID = "shopID"
         private const val INCLUDE_OS = "includeOS"
-        private const val QUERY = "{\n" +
-                "  goldGetPMOSStatus(shopID:\$shopID, includeOS: \$includeOS) {\n" +
+        private const val QUERY = "query goldGetPMOSStatus(\$shopID: Int!, \$includeOS: Boolean!){\n" +
+                "  goldGetPMOSStatus(shopID: \$shopID, includeOS: \$includeOS) {\n" +
                 "    header {\n" +
-                "      messages\n" +
+                "    \tmessages\n" +
                 "      reason\n" +
                 "    }\n" +
                 "    data {\n" +
