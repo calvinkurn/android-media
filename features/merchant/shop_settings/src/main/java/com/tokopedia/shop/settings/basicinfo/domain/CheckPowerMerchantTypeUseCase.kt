@@ -6,8 +6,9 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.shop.settings.basicinfo.data.CheckShopIsPowerMerchantModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
+import javax.inject.Inject
 
-class CheckPowerMerchantTypeUseCase(
+class CheckPowerMerchantTypeUseCase @Inject constructor(
         private val graphqlUseCase: MultiRequestGraphqlUseCase
 ): UseCase<CheckShopIsPowerMerchantModel>() {
 
