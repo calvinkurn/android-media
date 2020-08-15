@@ -146,6 +146,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         super.onViewCreated(view, savedInstanceState)
         setupOffset()
         setupView(view)
+        setupHeader()
         observeLiveData()
         observeFreeShippingStatus()
         context?.let { UpdateShopActiveService.startService(it) }
@@ -430,6 +431,10 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
             }
             observeRecyclerViewScrollListener()
         }
+    }
+
+    private fun setupHeader() {
+
     }
 
     private fun setupOffset() {

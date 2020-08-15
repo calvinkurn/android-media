@@ -2,11 +2,16 @@ package com.tokopedia.sellerhome.settings.view.viewholder
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Paint
+import android.graphics.Rect
 import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.FragmentManager
@@ -15,6 +20,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.settings.analytics.*
 import com.tokopedia.sellerhome.settings.view.bottomsheet.SettingsFreeShippingBottomSheet
@@ -47,6 +53,9 @@ class OtherMenuViewHolder(private val itemView: View,
         private val GREY_POWER_MERCHANT_ICON = R.drawable.ic_power_merchant_inactive
         private val GREEN_POWER_MERCHANT_ICON = R.drawable.ic_power_merchant
 
+        private const val HEADER_ICON_WIDTH_PERCENTAGE = 0.117
+        private const val HEADER_ICON_X_POSITION = 0.867
+        private const val HEADER_ICON_RATIO = 0.9
     }
 
     fun onSuccessGetSettingShopInfoData(uiModel: SettingShopInfoUiModel) {
@@ -233,14 +242,39 @@ class OtherMenuViewHolder(private val itemView: View,
     }
 
     private fun showShopStatusHeader(shopType: ShopType) {
-        itemView.shopStatusHeader?.setImageDrawable(ContextCompat.getDrawable(context, shopType.shopTypeHeaderRes))
-        itemView.shopStatusHeaderIcon?.run {
-            if (shopType !is RegularMerchant) {
-                visibility = View.VISIBLE
-                setImageDrawable(ContextCompat.getDrawable(context, shopType.shopTypeHeaderIconRes))
-            } else {
-                visibility = View.GONE
+        if (shopType is RegularMerchant) {
+            itemView.shopStatusHeader?.setImageDrawable(ContextCompat.getDrawable(context, shopType.shopTypeHeaderRes))
+        } else {
+            itemView.shopStatusHeader?.setImageBitmap(shopType.shopTypeHeaderIconRes?.let { getShopStatusHeaderBitmap(shopType.shopTypeHeaderRes, it) })
+        }
+    }
+
+    private fun getShopStatusHeaderBitmap(@DrawableRes shopTypeHeaderRes: Int,
+                                          @DrawableRes shopTypeHeaderIconRes: Int): Bitmap? {
+        return try {
+            val iconPaint = Paint().apply {
+                isAntiAlias = true
+                isFilterBitmap = true
+                isDither = true
             }
+
+            ResourcesCompat.getDrawable(context.resources, shopTypeHeaderRes, null)?.toBitmap()?.let { baseBitmap ->
+                ResourcesCompat.getDrawable(context.resources, shopTypeHeaderIconRes, null)?.toBitmap()?.let { iconBitmap ->
+                    val iconWidth = (baseBitmap.width * HEADER_ICON_WIDTH_PERCENTAGE).toInt()
+                    val iconHeight = (iconWidth * HEADER_ICON_RATIO).toInt()
+                    val iconX = (baseBitmap.width * HEADER_ICON_X_POSITION).toInt()
+                    Canvas(baseBitmap).run {
+                        val iconBitmapRect = Rect().apply {
+                            set(iconX - iconWidth, baseBitmap.height - iconHeight, iconX, baseBitmap.height)
+                        }
+                        drawBitmap(iconBitmap, null, iconBitmapRect, iconPaint)
+                    }
+                    baseBitmap
+                }
+            }
+        }
+        catch (ex: Exception) {
+            null
         }
     }
 
