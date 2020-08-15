@@ -382,7 +382,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
 //        tvManageGmSubscribe.visibility = View.GONE
 //        button_activate.visibility = View.GONE
         iv_logo_power_merchant.visibility = View.VISIBLE
-        iv_logo_power_merchant.setImageResource(com.tokopedia.design.R.drawable.ic_badge_shop_official)
+        iv_logo_power_merchant.setImageResource(R.drawable.ic_official_store)
         tv_merchant_type.text = getString(com.tokopedia.design.R.string.label_official_store)
 //        tv_shop_membership_title.text = getString(com.tokopedia.design.R.string.label_official_store)
 //        tv_shop_status.visibility = View.GONE
