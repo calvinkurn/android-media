@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -28,6 +29,7 @@ import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterMapp
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.android.synthetic.main.fragment_product_manage.*
 import kotlinx.android.synthetic.main.fragment_product_manage_seller.*
 import java.util.*
 import javax.inject.Inject
@@ -70,6 +72,7 @@ class ProductManageSellerFragment : ProductManageFragment() {
         checkLogin()
         super.onViewCreated(view, savedInstanceState)
         tvDraftProduct.visibility = View.GONE
+        searchBar?.setBackgroundColor(Color.TRANSPARENT)
         getDefaultKeywordOptionFromArguments()
         getDefaultFilterOptionsFromArguments()
         observeGetAllDraftCount()
