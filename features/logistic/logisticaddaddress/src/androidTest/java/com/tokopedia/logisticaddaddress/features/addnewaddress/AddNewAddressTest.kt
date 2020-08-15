@@ -8,12 +8,10 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import androidx.test.rule.GrantPermissionRule
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.analyticsdebugger.validator.core.getAnalyticsWithQuery
-import com.tokopedia.analyticsdebugger.validator.core.hasAllSuccess
 import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapActivity
+import com.tokopedia.logisticaddaddress.util.getJsonDataFromAsset
 import com.tokopedia.logisticaddaddress.utils.SimpleIdlingResource
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
-import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -52,7 +50,8 @@ class AddNewAddressTest {
 
     @Test
     fun givenCurrentLocationShouldAddAddressPositive() {
-
+        val query = getJsonDataFromAsset(context, "tracker/logistic/add_address_cvr.json")
+                ?: throw AssertionError("Validator Query not found")
         addAddress {
             launchFrom(mActivityTestRule, "/user/address/create")
             searchWithKeyword("jak")
@@ -60,10 +59,11 @@ class AddNewAddressTest {
             addressDetail("no 27 RT 1/ RW X")
             receiver("Anonymous")
             phoneNumber("087255991177")
-        }.submit()
+        }.submit {
+            hasPassedAnalytics(gtmLogDBSource, query)
+        }
 
-        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context,
-                "tracker/logistic/add_address_cvr.json"), hasAllSuccess())
+
     }
 
 }

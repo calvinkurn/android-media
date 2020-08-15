@@ -19,6 +19,14 @@ fun getAnalyticsWithQuery(gtmLogDBSource: GtmLogDBSource,
             .first()
 }
 
+fun getAnalyticsWithQuery(gtmLogDBSource: GtmLogDBSource, queryString: String): List<Validator> {
+    val queryPairs = queryFormat(queryString)
+    return ValidatorEngine(gtmLogDBSource)
+            .computeRx(queryPairs.first, queryPairs.second)
+            .toBlocking()
+            .first()
+}
+
 fun hasAllSuccess(): Matcher<List<Validator>> {
     return object : TypeSafeMatcher<List<Validator>>(ArrayList::class.java) {
         override fun describeTo(description: Description) {
@@ -47,6 +55,12 @@ private fun getTestCases(context: Context, queryFileName: String): Pair<List<Val
     val query = analyticValidatorJSON.toJsonMap().getQueryMap().map { it.toDefaultValidator() }
     val mode = analyticValidatorJSON.toJsonMap().getMode()
 
+    return query to mode
+}
+
+private fun queryFormat(queryString: String): Pair<List<Validator>, String> {
+    val query = queryString.toJsonMap().getQueryMap().map { it.toDefaultValidator() }
+    val mode = queryString.toJsonMap().getMode()
     return query to mode
 }
 

@@ -7,9 +7,13 @@ import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.rule.ActivityTestRule
+import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
+import com.tokopedia.analyticsdebugger.validator.core.getAnalyticsWithQuery
+import com.tokopedia.analyticsdebugger.validator.core.hasAllSuccess
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapActivity
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
+import org.hamcrest.MatcherAssert
 
 fun addAddress(func: AddressRobot.() -> Unit) = AddressRobot().apply(func)
 
@@ -59,7 +63,7 @@ class AddressRobot {
 }
 
 class ResultRobot {
-    fun hasPassedAnalytics(queryPath: String) {
-
+    fun hasPassedAnalytics(repository: GtmLogDBSource, queryString: String) {
+        MatcherAssert.assertThat(getAnalyticsWithQuery(repository, queryString), hasAllSuccess())
     }
 }
