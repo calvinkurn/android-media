@@ -19,12 +19,6 @@
         android:background="@android:color/transparent"
         android:minHeight="?attr/actionBarSize" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/sah_dimen_4dp"
-        android:background="@drawable/sah_shadow"
-        android:layout_below="@id/sahToolbar"/>
-
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/sahContainer"
         android:layout_width="match_parent"
@@ -32,6 +26,12 @@
         android:layout_below="@id/sahToolbar"
         android:layout_above="@+id/sahBottomNav"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/sah_dimen_4dp"
+        android:background="@drawable/sah_shadow"
+        android:layout_below="@id/sahToolbar"/>
 
     <View
         android:layout_width="match_parent"

@@ -95,6 +95,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sah_seller_home)
 
+        setupBackground()
         setupToolbar()
         setupStatusBar()
         setupNavigator()
@@ -150,6 +151,10 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
             return true
         }
         return false
+    }
+
+    private fun setupBackground() {
+        window.decorView.setBackgroundColor(Color.WHITE)
     }
 
     private fun setupToolbar() {
