@@ -12,6 +12,7 @@ import com.tokopedia.imageuploader.domain.UploadImageRepository
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.imageuploader.utils.ImageUploaderUtils
 import com.tokopedia.shop.settings.basicinfo.data.UploadShopEditImageModel
+import com.tokopedia.shop.settings.common.util.ShopSettingDispatcherProvider
 import com.tokopedia.shop.settings.common.util.ShopSettingsDispatcherProviderImpl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -47,6 +48,6 @@ class ShopSettingsModule {
 
     @Provides
     @ShopSettingsScope
-    fun provideDispatcherProvider(): ShopSettingsDispatcherProviderImpl = ShopSettingsDispatcherProviderImpl()
+    fun provideDispatcherProvider(): ShopSettingDispatcherProvider = ShopSettingsDispatcherProviderImpl()
 
 }

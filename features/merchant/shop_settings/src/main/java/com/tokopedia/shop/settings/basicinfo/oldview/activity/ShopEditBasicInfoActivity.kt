@@ -33,7 +33,7 @@ import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RES
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.basicinfo.oldview.presenter.UpdateShopSettingsInfoPresenter
-import com.tokopedia.shop.settings.common.olddi.DaggerShopSettingsComponent
+import com.tokopedia.shop.settings.common.olddi.DaggerOldShopSettingsComponent
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.activity_shop_edit_basic_info.*
 import kotlinx.android.synthetic.main.partial_toolbar_save_button.*
@@ -58,7 +58,7 @@ class ShopEditBasicInfoActivity : BaseSimpleActivity(), UpdateShopSettingsInfoPr
         shopBasicDataModel = intent.getParcelableExtra(EXTRA_SHOP_MODEL)
         super.onCreate(savedInstanceState)
 
-        DaggerShopSettingsComponent.builder()
+        DaggerOldShopSettingsComponent.builder()
                 .baseAppComponent((application as BaseMainApplication).baseAppComponent)
                 .build()
                 .inject(this)

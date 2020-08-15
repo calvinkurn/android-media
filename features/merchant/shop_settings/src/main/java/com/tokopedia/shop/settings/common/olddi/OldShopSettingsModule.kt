@@ -19,9 +19,9 @@ import dagger.Provides
 /**
  * @author by furqan on 21/03/18.
  */
-@ShopSettingsScope
+@OldShopSettingsScope
 @Module(includes = [ImageUploaderModule::class, GmCommonModule::class])
-class ShopSettingsModule {
+class OldShopSettingsModule {
 
     @Provides
     fun provideUploadImageUseCase(
@@ -34,7 +34,7 @@ class ShopSettingsModule {
     }
 
     @Provides
-    @ShopSettingsScope
+    @OldShopSettingsScope
     fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
     }

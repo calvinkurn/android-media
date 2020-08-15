@@ -39,7 +39,7 @@ import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.basicinfo.oldview.activity.ShopEditBasicInfoActivity
 import com.tokopedia.shop.settings.basicinfo.oldview.activity.ShopEditScheduleActivity
 import com.tokopedia.shop.settings.basicinfo.oldview.presenter.ShopSettingsInfoPresenter
-import com.tokopedia.shop.settings.common.olddi.DaggerShopSettingsComponent
+import com.tokopedia.shop.settings.common.olddi.DaggerOldShopSettingsComponent
 import com.tokopedia.shop.settings.common.util.FORMAT_DATE
 import com.tokopedia.shop.settings.common.util.toReadableString
 import com.tokopedia.unifycomponents.Toaster
@@ -223,7 +223,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
     }
 
     override fun initInjector() {
-        DaggerShopSettingsComponent.builder()
+        DaggerOldShopSettingsComponent.builder()
                 .baseAppComponent((activity!!.application as BaseMainApplication).baseAppComponent)
                 .build()
                 .inject(this)

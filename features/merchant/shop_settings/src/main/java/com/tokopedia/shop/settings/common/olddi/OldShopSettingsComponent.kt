@@ -18,12 +18,14 @@ import dagger.Component
  * Created by zulfikarrahman on 6/21/18.
  */
 
-@ShopSettingsScope
-@Component(modules = arrayOf(ShopSettingsModule::class), dependencies = arrayOf(BaseAppComponent::class))
-interface ShopSettingsComponent {
+@OldShopSettingsScope
+@Component(modules = arrayOf(OldShopSettingsModule::class), dependencies = arrayOf(BaseAppComponent::class))
+interface OldShopSettingsComponent {
     fun inject(shopSettingsInfoFragment: ShopSettingsInfoFragment)
     fun inject(shopEditBasicInfoActivity: ShopEditBasicInfoActivity)
     fun inject(shopEditScheduleActivity: ShopEditScheduleActivity)
+
+
 //    fun inject(shopSettingsNotesFragment: ShopSettingsNotesListFragment)
 //    fun inject(shopSettingsNotesFragment: ShopSettingsNotesReorderFragment)
 //
