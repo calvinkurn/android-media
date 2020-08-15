@@ -298,6 +298,7 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
 
     override fun onBannerTopAdsClick(homeTopAdsRecommendationBannerDataModelDataModel: HomeRecommendationBannerTopAdsDataModel, position: Int) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(HomeRecommendationTracking.getClickBannerTopAds(homeTopAdsRecommendationBannerDataModelDataModel, tabIndex, position))
+        RouteManager.route(context, homeTopAdsRecommendationBannerDataModelDataModel.topAdsImageViewModel?.applink)
     }
 
     override fun onBannerTopAdsImpress(homeTopAdsRecommendationBannerDataModelDataModel: HomeRecommendationBannerTopAdsDataModel, position: Int) {

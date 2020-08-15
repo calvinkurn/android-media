@@ -39,36 +39,34 @@ class HomeRecommendationBannerTopAdsViewHolder(view: View) : SmartAbstractViewHo
 
     private fun loadImageTopAds(recommendationBannerTopAdsDataModelDataModel: HomeRecommendationBannerTopAdsDataModel, listener: HomeRecommendationListener){
         recommendationBannerTopAdsDataModelDataModel.topAdsImageViewModel?.let{
+            itemView.home_recom_topads_loader_image?.show()
+            TopAdsUrlHitter(itemView.context).hitImpressionUrl(
+                    this::class.java.simpleName,
+                    recommendationBannerTopAdsDataModelDataModel.topAdsImageViewModel.adViewUrl,
+                    "",
+                    "",
+                    recommendationBannerTopAdsDataModelDataModel.topAdsImageViewModel.imageUrl
+            )
+            listener.onBannerTopAdsImpress(recommendationBannerTopAdsDataModelDataModel, adapterPosition)
+            Glide.with(itemView.context)
+                    .load(recommendationBannerTopAdsDataModelDataModel.topAdsImageViewModel.imageUrl)
+                    .override(itemView.context.resources.displayMetrics.widthPixels,
+                            getHeight(recommendationBannerTopAdsDataModelDataModel.topAdsImageViewModel.imageWidth, recommendationBannerTopAdsDataModelDataModel.topAdsImageViewModel.imageHeight))
+                    .fitCenter()
+                    .addListener(object : RequestListener<Drawable> {
+                        override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                            itemView.home_recom_topads_image_view?.hide()
+                            itemView.home_recom_topads_loader_image?.hide()
+                            return false
+                        }
 
-        itemView.home_recom_topads_loader_image?.show()
-        itemView.home_recom_topads_loader_image?.hide()
-        TopAdsUrlHitter(itemView.context).hitImpressionUrl(
-                this::class.java.simpleName,
-                recommendationBannerTopAdsDataModelDataModel.topAdsImageViewModel.adViewUrl,
-                "",
-                "",
-                recommendationBannerTopAdsDataModelDataModel.topAdsImageViewModel.imageUrl
-        )
-        listener.onBannerTopAdsImpress(recommendationBannerTopAdsDataModelDataModel, adapterPosition)
-        Glide.with(itemView.context)
-                .load(recommendationBannerTopAdsDataModelDataModel.topAdsImageViewModel.imageUrl)
-                .override(itemView.context.resources.displayMetrics.widthPixels,
-                        getHeight(recommendationBannerTopAdsDataModelDataModel.topAdsImageViewModel.imageWidth, recommendationBannerTopAdsDataModelDataModel.topAdsImageViewModel.imageHeight))
-                .fitCenter()
-                .addListener(object : RequestListener<Drawable> {
-                    override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                        itemView.home_recom_topads_image_view?.hide()
-                        itemView.home_recom_topads_loader_image?.hide()
-                        return false
-                    }
-
-                    override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                        itemView.home_recom_topads_image_view?.show()
-                        itemView.home_recom_topads_loader_image?.hide()
-                        return false
-                    }
-                })
-                .into(itemView.home_recom_topads_image_view)
+                        override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                            itemView.home_recom_topads_image_view?.show()
+                            itemView.home_recom_topads_loader_image?.hide()
+                            return false
+                        }
+                    })
+                    .into(itemView.home_recom_topads_image_view)
         }
     }
 
