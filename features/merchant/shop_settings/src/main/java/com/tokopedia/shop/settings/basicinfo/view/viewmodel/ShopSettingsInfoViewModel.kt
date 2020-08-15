@@ -32,7 +32,7 @@ class ShopSettingsInfoViewModel @Inject constructor (
 
 
 
-    fun validateOsMerchantType() {
+    fun validateOsMerchantType(shopId: Int) {
         launchCatchError(block = {
             withContext(dispatchers.io()) {
                 checkOsMerchantUseCase.params = CheckOfficialStoreTypeUseCase
@@ -47,7 +47,7 @@ class ShopSettingsInfoViewModel @Inject constructor (
         }
     }
 
-    fun validatePowerMerchantType() {
+    fun validatePowerMerchantType(shopId: Int) {
         launchCatchError(block = {
             withContext(dispatchers.io()) {
                 checkPowerMerchantUseCase.params = CheckPowerMerchantTypeUseCase

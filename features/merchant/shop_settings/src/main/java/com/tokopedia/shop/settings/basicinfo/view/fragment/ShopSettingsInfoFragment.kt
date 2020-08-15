@@ -16,6 +16,7 @@ import android.view.ViewGroup
 import android.webkit.URLUtil
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -39,10 +40,13 @@ import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditBasicInfoActivity
 import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditScheduleActivity
 import com.tokopedia.shop.settings.basicinfo.view.presenter.ShopSettingsInfoPresenter
+import com.tokopedia.shop.settings.basicinfo.view.viewmodel.ShopSettingsInfoViewModel
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
 import com.tokopedia.shop.settings.common.util.FORMAT_DATE
 import com.tokopedia.shop.settings.common.util.toReadableString
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_shop_settings_info.*
 import kotlinx.android.synthetic.main.partial_shop_settings_info_basic.*
@@ -60,6 +64,9 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
 
     @Inject
     lateinit var powerMerchantTracking: PowerMerchantTracking
+
+    @Inject
+    lateinit var shopSettingsInfoViewModel: ShopSettingsInfoViewModel
 
     private var needReload: Boolean = false
     private var shopBasicDataModel: ShopBasicDataModel? = null
@@ -179,6 +186,40 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
 
         vgShopStatusContainer.setOnClickListener { showShopStatusManageMenu() }
         loadShopBasicData()
+
+        shopSettingsInfoViewModel.validateOsMerchantType(shopId = 67726)
+        shopSettingsInfoViewModel.validatePowerMerchantType(shopId = 67726)
+
+        observePowerMerchantData()
+        observeOsMerchantData()
+    }
+
+    private fun observePowerMerchantData() {
+        shopSettingsInfoViewModel.checkPowerMerchantType.observe(this, Observer {
+            when (it) {
+                is Success -> {
+                    val errMessage = it.data.header.messages
+                    println(it)
+                }
+                is Fail -> {
+                    println(it)
+                }
+            }
+        })
+    }
+
+    private fun observeOsMerchantData() {
+        shopSettingsInfoViewModel.checkOsMerchantType.observe(this, Observer {
+            when (it) {
+                is Success -> {
+                    val errMessage = it.data.getIsOfficial.messageError
+                    println(it)
+                }
+                is Fail -> {
+                    println(it)
+                }
+            }
+        })
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -466,6 +507,9 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
     override fun onDestroy() {
         super.onDestroy()
         shopSettingsInfoPresenter.run { detachView() }
+        shopSettingsInfoViewModel.checkOsMerchantType.removeObservers(this)
+        shopSettingsInfoViewModel.checkPowerMerchantType.removeObservers(this)
+        shopSettingsInfoViewModel.flush()
     }
 
     companion object {
