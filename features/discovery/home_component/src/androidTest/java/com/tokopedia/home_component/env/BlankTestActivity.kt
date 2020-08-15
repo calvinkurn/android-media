@@ -7,8 +7,8 @@ import com.tokopedia.home_component.test.R
 
 class BlankTestActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        window.setSustainedPerformanceMode(true)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_blank_test)
-        window.setSustainedPerformanceMode(true)
     }
 }
