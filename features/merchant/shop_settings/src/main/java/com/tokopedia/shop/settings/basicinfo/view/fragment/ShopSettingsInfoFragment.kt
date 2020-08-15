@@ -198,7 +198,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
         shopSettingsInfoViewModel.checkPowerMerchantType.observe(this, Observer {
             when (it) {
                 is Success -> {
-                    val errMessage = it.data.header.messages
+                    val errMessage = it.data.goldGetPMOSStatus.header.messages
                     println(it)
                 }
                 is Fail -> {
