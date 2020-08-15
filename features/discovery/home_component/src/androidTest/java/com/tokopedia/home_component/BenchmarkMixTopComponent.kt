@@ -6,7 +6,6 @@ import androidx.benchmark.junit4.measureRepeated
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.home_component.mock.channel.MockChannelModel
-import com.tokopedia.home_component.model.DynamicChannelLayout
 import com.tokopedia.home_component.model.DynamicChannelLayout.LAYOUT_MIX_TOP
 import com.tokopedia.home_component.test.env.BlankTestActivity
 import com.tokopedia.home_component.viewholders.MixTopComponentViewHolder

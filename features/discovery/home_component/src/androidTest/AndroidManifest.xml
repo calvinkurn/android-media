@@ -10,7 +10,7 @@
         android:debuggable="false">
 
         <activity
-            android:name="com.tokopedia.home_component.test.env.BlankTestActivity"
+            android:name=".env.BlankTestActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
     </application>
 </manifest>

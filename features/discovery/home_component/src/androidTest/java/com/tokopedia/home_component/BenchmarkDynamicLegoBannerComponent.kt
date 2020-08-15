@@ -11,9 +11,7 @@ import com.tokopedia.home_component.model.DynamicChannelLayout.LAYOUT_LEGO_3_IMA
 import com.tokopedia.home_component.model.DynamicChannelLayout.LAYOUT_LEGO_4_IMAGE
 import com.tokopedia.home_component.test.env.BlankTestActivity
 import com.tokopedia.home_component.viewholders.DynamicLegoBannerViewHolder
-import com.tokopedia.home_component.viewholders.MixTopComponentViewHolder
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
-import com.tokopedia.home_component.visitable.MixTopDataModel
 import com.tokopedia.test.application.benchmark_component.BenchmarkObject.simpleAdapter
 import com.tokopedia.test.application.benchmark_component.BenchmarkObject.simpleViewFromLayout
 import org.junit.Rule

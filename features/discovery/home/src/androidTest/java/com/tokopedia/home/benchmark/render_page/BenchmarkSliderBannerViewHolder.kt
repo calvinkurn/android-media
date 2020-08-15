@@ -1,21 +1,19 @@
-package com.tokopedia.home_component
+package com.tokopedia.home.benchmark.render_page
 
 import android.widget.FrameLayout
 import androidx.benchmark.junit4.BenchmarkRule
 import androidx.benchmark.junit4.measureRepeated
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
-import com.tokopedia.home_component.mock.channel.MockChannelModel
-import com.tokopedia.home_component.model.DynamicChannelLayout.LAYOUT_MIX_LEFT
-import com.tokopedia.home_component.test.env.BlankTestActivity
-import com.tokopedia.home_component.viewholders.MixLeftComponentViewHolder
-import com.tokopedia.home_component.visitable.MixLeftDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.BannerViewHolder
+import com.tokopedia.home.environment.BlankTestActivity
+import com.tokopedia.home.mock.MockSliderBannerModel
 import com.tokopedia.test.application.benchmark_component.BenchmarkObject.simpleAdapter
 import com.tokopedia.test.application.benchmark_component.BenchmarkObject.simpleViewFromLayout
 import org.junit.Rule
 import org.junit.Test
 
-class BenchmarkMixLeftComponent {
+class BenchmarkSliderBannerViewHolder {
     @get:Rule
     val benchmarkRule = BenchmarkRule()
 
@@ -23,12 +21,13 @@ class BenchmarkMixLeftComponent {
     var activityRule: ActivityTestRule<BlankTestActivity> = ActivityTestRule(BlankTestActivity::class.java)
 
     @Test
-    fun benchmark_onCreateViewHolder_ViewHolder_mix_left_component() {
+    fun benchmark_onCreateViewHolder_ViewHolder_home_page_slider_banner() {
         val viewGroup = FrameLayout(activityRule.activity)
         val recyclerViewAdapter = simpleAdapter(
-                MixLeftComponentViewHolder.LAYOUT) {
-            MixLeftComponentViewHolder(it, null, null, null)
+                BannerViewHolder.LAYOUT) {
+            BannerViewHolder(it, null)
         }
+
         benchmarkRule.measureRepeated {
             InstrumentationRegistry.getInstrumentation().runOnMainSync {
                 recyclerViewAdapter.onCreateViewHolder(viewGroup, 0)
@@ -37,12 +36,12 @@ class BenchmarkMixLeftComponent {
     }
 
     @Test
-    fun benchmark_onBind_ViewHolder_mix_left_component() {
-        val itemView = simpleViewFromLayout(MixLeftComponentViewHolder.LAYOUT, activityRule.activity)
-        val viewHolder = MixLeftComponentViewHolder(
-                itemView, null, null, null
+    fun benchmark_onBind_ViewHolder_dynamic_home_page_slider_banner() {
+        val itemView = simpleViewFromLayout(BannerViewHolder.LAYOUT, activityRule.activity)
+        val viewHolder = BannerViewHolder(
+                itemView, null
         )
-        val data = MixLeftDataModel(MockChannelModel.get(LAYOUT_MIX_LEFT))
+        val data = MockSliderBannerModel.get()
         benchmarkRule.measureRepeated {
             InstrumentationRegistry.getInstrumentation().runOnMainSync {
                 viewHolder.bind(data)
