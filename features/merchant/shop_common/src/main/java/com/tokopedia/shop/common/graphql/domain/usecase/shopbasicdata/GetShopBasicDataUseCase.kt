@@ -13,6 +13,7 @@ import com.tokopedia.usecase.UseCase
 import rx.Observable
 import javax.inject.Inject
 
+@Deprecated("Please use GetShopBasicDataUseCaseCoroutine")
 class GetShopBasicDataUseCase @Inject
 constructor(@ApplicationContext context: Context) : UseCase<ShopBasicDataModel>() {
     private val graphQLUseCase: SingleGraphQLUseCase<ShopBasicDataQuery>

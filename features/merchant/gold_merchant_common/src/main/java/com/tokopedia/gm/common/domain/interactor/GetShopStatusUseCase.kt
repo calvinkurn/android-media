@@ -16,6 +16,8 @@ import javax.inject.Named
 /**
  * @author by milhamj on 12/06/19.
  */
+
+@Deprecated("Please use GetShopStatusUseCaseCoroutine")
 class GetShopStatusUseCase @Inject constructor(private val graphqlUseCase: GraphqlUseCase,
                                                @Named(RAW_GM_STATUS) private val rawQuery: String) : UseCase<GoldGetPmOsStatus>() {
     companion object {

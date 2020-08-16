@@ -192,6 +192,35 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
 
         observePowerMerchantData()
         observeOsMerchantData()
+
+        observeShopBasicData()
+        observeShopStatus()
+    }
+
+    private fun observeShopStatus() {
+        shopSettingsInfoViewModel.shopStatusData.observe(this, Observer {
+            when (it) {
+                is Success -> {
+                    println (it)
+                }
+                is Fail -> {
+                    println (it)
+                }
+            }
+        })
+    }
+
+    private fun observeShopBasicData() {
+        shopSettingsInfoViewModel.shopBasicData.observe(this, Observer {
+            when (it) {
+                is Success -> {
+                    println (it)
+                }
+                is Fail -> {
+                    println (it)
+                }
+            }
+        })
     }
 
     private fun observePowerMerchantData() {
@@ -199,6 +228,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
             when (it) {
                 is Success -> {
                     val errMessage = it.data.goldGetPMOSStatus.header.messages
+                    val merchantType = it.data.goldGetPMOSStatus.data.powerMerchant.status
                     println(it)
                 }
                 is Fail -> {
@@ -261,6 +291,10 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
     private fun loadShopBasicData() {
         showLoading()
         shopSettingsInfoPresenter.getShopData()
+        shopSettingsInfoViewModel.getShopData(
+                shopId = 67726,
+                includeOS = false
+        )
     }
 
     override fun initInjector() {
