@@ -8,9 +8,5 @@
         tools:ignore="HardcodedDebugMode"
         tools:replace="android:debuggable,android:label"
         android:debuggable="false">
-
-        <activity
-            android:name=".env.BlankTestActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
     </application>
 </manifest>

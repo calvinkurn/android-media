@@ -4,16 +4,15 @@ import android.widget.FrameLayout
 import androidx.benchmark.junit4.BenchmarkRule
 import androidx.benchmark.junit4.measureRepeated
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.rule.ActivityTestRule
 import com.tokopedia.home_component.mock.channel.MockChannelModel
 import com.tokopedia.home_component.model.DynamicChannelLayout.LAYOUT_6_IMAGE
 import com.tokopedia.home_component.model.DynamicChannelLayout.LAYOUT_LEGO_3_IMAGE
 import com.tokopedia.home_component.model.DynamicChannelLayout.LAYOUT_LEGO_4_IMAGE
-import com.tokopedia.home_component.test.env.BlankTestActivity
 import com.tokopedia.home_component.viewholders.DynamicLegoBannerViewHolder
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
 import com.tokopedia.test.application.benchmark_component.BenchmarkObject.simpleAdapter
 import com.tokopedia.test.application.benchmark_component.BenchmarkObject.simpleViewFromLayout
+import com.tokopedia.test.application.benchmark_component.BenchmarkViewRule
 import org.junit.Rule
 import org.junit.Test
 
@@ -22,11 +21,11 @@ class BenchmarkDynamicLegoBannerComponent {
     val benchmarkRule = BenchmarkRule()
 
     @get:Rule
-    var activityRule: ActivityTestRule<BlankTestActivity> = ActivityTestRule(BlankTestActivity::class.java)
+    val benchmarkViewRule = BenchmarkViewRule()
 
     @Test
     fun benchmark_onCreateViewHolder_ViewHolder_dynamic_lego_component() {
-        val viewGroup = FrameLayout(activityRule.activity)
+        val viewGroup = FrameLayout(benchmarkViewRule.getBenchmarkActivity())
         val recyclerViewAdapter = simpleAdapter(
                 DynamicLegoBannerViewHolder.LAYOUT) {
             DynamicLegoBannerViewHolder(it, null, null)
@@ -41,7 +40,7 @@ class BenchmarkDynamicLegoBannerComponent {
 
     @Test
     fun benchmark_onBind_ViewHolder_dynamic_lego_6_component() {
-        val itemView = simpleViewFromLayout(DynamicLegoBannerViewHolder.LAYOUT, activityRule.activity)
+        val itemView = simpleViewFromLayout(DynamicLegoBannerViewHolder.LAYOUT, benchmarkViewRule.getBenchmarkActivity())
         val viewHolder = DynamicLegoBannerViewHolder(
                 itemView, null, null
         )
@@ -55,7 +54,7 @@ class BenchmarkDynamicLegoBannerComponent {
 
     @Test
     fun benchmark_onBind_ViewHolder_dynamic_lego_4_component() {
-        val itemView = simpleViewFromLayout(DynamicLegoBannerViewHolder.LAYOUT, activityRule.activity)
+        val itemView = simpleViewFromLayout(DynamicLegoBannerViewHolder.LAYOUT, benchmarkViewRule.getBenchmarkActivity())
         val viewHolder = DynamicLegoBannerViewHolder(
                 itemView, null, null
         )
@@ -69,7 +68,7 @@ class BenchmarkDynamicLegoBannerComponent {
 
     @Test
     fun benchmark_onBind_ViewHolder_dynamic_lego_3_component() {
-        val itemView = simpleViewFromLayout(DynamicLegoBannerViewHolder.LAYOUT, activityRule.activity)
+        val itemView = simpleViewFromLayout(DynamicLegoBannerViewHolder.LAYOUT, benchmarkViewRule.getBenchmarkActivity())
         val viewHolder = DynamicLegoBannerViewHolder(
                 itemView, null, null
         )

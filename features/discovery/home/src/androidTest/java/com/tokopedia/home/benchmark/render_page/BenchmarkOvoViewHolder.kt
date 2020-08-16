@@ -4,12 +4,11 @@ import android.widget.FrameLayout
 import androidx.benchmark.junit4.BenchmarkRule
 import androidx.benchmark.junit4.measureRepeated
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.rule.ActivityTestRule
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.OvoViewHolder
-import com.tokopedia.home.environment.BlankTestActivity
 import com.tokopedia.home.mock.MockOvoModel
 import com.tokopedia.test.application.benchmark_component.BenchmarkObject.simpleAdapter
 import com.tokopedia.test.application.benchmark_component.BenchmarkObject.simpleViewFromLayout
+import com.tokopedia.test.application.benchmark_component.BenchmarkViewRule
 import org.junit.Rule
 import org.junit.Test
 
@@ -18,11 +17,11 @@ class BenchmarkOvoViewHolder {
     val benchmarkRule = BenchmarkRule()
 
     @get:Rule
-    var activityRule: ActivityTestRule<BlankTestActivity> = ActivityTestRule(BlankTestActivity::class.java)
+    val benchmarkViewRule = BenchmarkViewRule()
 
     @Test
     fun benchmark_onCreateViewHolder_ViewHolder_home_ovo_tokopoint() {
-        val viewGroup = FrameLayout(activityRule.activity)
+        val viewGroup = FrameLayout(benchmarkViewRule.getBenchmarkActivity())
         val recyclerViewAdapter = simpleAdapter(
                 OvoViewHolder.LAYOUT) {
             OvoViewHolder(it, null)
@@ -37,7 +36,7 @@ class BenchmarkOvoViewHolder {
 
     @Test
     fun benchmark_onBind_ViewHolder_home_ovo_tokopoint() {
-        val itemView = simpleViewFromLayout(OvoViewHolder.LAYOUT, activityRule.activity)
+        val itemView = simpleViewFromLayout(OvoViewHolder.LAYOUT, benchmarkViewRule.getBenchmarkActivity())
         val viewHolder = OvoViewHolder(
                 itemView, null
         )

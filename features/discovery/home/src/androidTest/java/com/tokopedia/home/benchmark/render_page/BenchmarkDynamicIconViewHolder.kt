@@ -4,13 +4,11 @@ import android.widget.FrameLayout
 import androidx.benchmark.junit4.BenchmarkRule
 import androidx.benchmark.junit4.measureRepeated
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.rule.ActivityTestRule
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicIconSectionViewHolder
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.OvoViewHolder
-import com.tokopedia.home.environment.BlankTestActivity
 import com.tokopedia.home.mock.MockDynamicIconModel
 import com.tokopedia.test.application.benchmark_component.BenchmarkObject.simpleAdapter
 import com.tokopedia.test.application.benchmark_component.BenchmarkObject.simpleViewFromLayout
+import com.tokopedia.test.application.benchmark_component.BenchmarkViewRule
 import org.junit.Rule
 import org.junit.Test
 
@@ -19,11 +17,11 @@ class BenchmarkDynamicIconViewHolder {
     val benchmarkRule = BenchmarkRule()
 
     @get:Rule
-    var activityRule: ActivityTestRule<BlankTestActivity> = ActivityTestRule(BlankTestActivity::class.java)
+    val benchmarkViewRule = BenchmarkViewRule()
 
     @Test
     fun benchmark_onCreateViewHolder_ViewHolder_dynamic_icon() {
-        val viewGroup = FrameLayout(activityRule.activity)
+        val viewGroup = FrameLayout(benchmarkViewRule.getBenchmarkActivity())
         val recyclerViewAdapter = simpleAdapter(
                 DynamicIconSectionViewHolder.LAYOUT) {
             DynamicIconSectionViewHolder(it, null)
@@ -38,7 +36,7 @@ class BenchmarkDynamicIconViewHolder {
 
     @Test
     fun benchmark_onBind_ViewHolder_dynamic_icon() {
-        val itemView = simpleViewFromLayout(DynamicIconSectionViewHolder.LAYOUT, activityRule.activity)
+        val itemView = simpleViewFromLayout(DynamicIconSectionViewHolder.LAYOUT, benchmarkViewRule.getBenchmarkActivity())
         val viewHolder = DynamicIconSectionViewHolder(
                 itemView, null
         )
