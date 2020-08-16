@@ -107,6 +107,9 @@ class TopChatRoomPresenterTest {
     private lateinit var chatAttachmentUseCase: ChatAttachmentUseCase
 
     @RelaxedMockK
+    private lateinit var chatToggleBlockChat: ChatToggleBlockChatUseCase
+
+    @RelaxedMockK
     private lateinit var sharedPref: SharedPreferences
 
     @RelaxedMockK
@@ -161,6 +164,7 @@ class TopChatRoomPresenterTest {
                         orderProgressUseCase,
                         groupStickerUseCase,
                         chatAttachmentUseCase,
+                        chatToggleBlockChat,
                         sharedPref
                 )
         )

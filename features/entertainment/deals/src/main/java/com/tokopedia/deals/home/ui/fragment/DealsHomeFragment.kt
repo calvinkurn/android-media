@@ -269,13 +269,13 @@ class DealsHomeFragment : DealsBaseFragment(),
     }
 
     /* PRODUCT SECTION ACTION */
-    override fun onProductClicked(productCardDataView: ProductCardDataView, productItemPosition: Int) {
-        analytics.curatedProductClick(productCardDataView,productItemPosition)
+    override fun onProductClicked(productCardDataView: ProductCardDataView, productItemPosition: Int, sectionTitle: String) {
+        analytics.curatedProductClick(productCardDataView,productItemPosition, sectionTitle)
         RouteManager.route(context, productCardDataView.appUrl)
     }
 
     override fun onSeeAllProductClicked(curatedProductCategoryDataView: CuratedProductCategoryDataView, position: Int) {
-        analytics.clickAllCuratedProduct()
+        analytics.clickAllCuratedProduct(curatedProductCategoryDataView.title)
         val intent = RouteManager.getIntent(context, curatedProductCategoryDataView.seeAllUrl)
         startActivityForResult(intent, DEALS_CATEGORY_REQUEST_CODE)
     }

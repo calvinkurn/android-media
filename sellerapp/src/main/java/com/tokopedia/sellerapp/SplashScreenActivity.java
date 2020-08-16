@@ -63,11 +63,13 @@ public class SplashScreenActivity extends SplashScreen {
             boolean isFromMainApp = uri.getBooleanQueryParameter(RouteManager.KEY_REDIRECT_TO_SELLER_APP, false);
             boolean isAutoLogin = uri.getBooleanQueryParameter(KEY_AUTO_LOGIN, false);
             if (isFromMainApp) {
+                String redirectApplink = uri.getQueryParameter(ApplinkConstInternalGlobal.KEY_REDIRECT_SEAMLESS_APPLINK);
+                Intent intent = RouteManager.getIntent(this, uri.toString());
                 if (isAutoLogin && userSession.getUserId().isEmpty()) {
-                    seamlessLogin(true);
+                    ArrayList<String> remainingAppLinks = getIntent().getStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA);
+                    seamlessLogin(true, remainingAppLinks, redirectApplink);
                     return true;
                 }
-                Intent intent = RouteManager.getIntent(this, uri.toString());
                 if (intent != null) {
                     ArrayList<String> remainingAppLinks = getIntent().getStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA);
                     if (remainingAppLinks != null && !remainingAppLinks.isEmpty()) {
@@ -122,12 +124,12 @@ public class SplashScreenActivity extends SplashScreen {
             startActivity(intent);
         } else {
             boolean isAutoLoginSeamless = getIntent().getBooleanExtra(KEY_AUTO_LOGIN, false);
-            seamlessLogin(isAutoLoginSeamless);
+            seamlessLogin(isAutoLoginSeamless, null, "");
         }
         finish();
     }
 
-    private void seamlessLogin(boolean isAutoLoginSeamless) {
+    private void seamlessLogin(boolean isAutoLoginSeamless, ArrayList<String> remainingApplinks, String redirectApplink) {
         boolean hasOnboarding = new SellerOnboardingPreference(this)
                 .getBoolean(SellerOnboardingPreference.HAS_OPEN_ONBOARDING);
         Intent intent;
@@ -135,6 +137,12 @@ public class SplashScreenActivity extends SplashScreen {
             intent = RouteManager.getIntent(this, ApplinkConstInternalGlobal.SEAMLESS_LOGIN);
             Bundle b = new Bundle();
             b.putBoolean(KEY_AUTO_LOGIN, true);
+            if(!redirectApplink.isEmpty())
+                b.putString(ApplinkConstInternalGlobal.KEY_REDIRECT_SEAMLESS_APPLINK, redirectApplink);
+
+            if (remainingApplinks != null && !remainingApplinks.isEmpty()) {
+                intent.putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, remainingApplinks);
+            }
             intent.putExtras(b);
         } else if (hasOnboarding) {
             intent = RouteManager.getIntent(this, ApplinkConstInternalGlobal.SEAMLESS_LOGIN);

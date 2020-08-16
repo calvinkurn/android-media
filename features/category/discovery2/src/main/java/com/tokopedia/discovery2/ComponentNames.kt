@@ -20,8 +20,6 @@ enum class ComponentNames(val componentName: String) {
     TokopointsItem("tokopoints_item"),
     LihatSemua("lihat_semua"),
     CpmTopAds("topads"),
-    CpmTopAdsShopItem("cpm_topads_shop_item"),
-    CpmTopAdsProductItem("cpm_topads_product_item"),
     Video("video"),
     Notifier("notifier"),
     TitleImage("title_image"),

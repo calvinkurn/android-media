@@ -8,6 +8,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.shop.common.constant.GQLQueryNamedConstant
 import com.tokopedia.shop.common.data.source.cloud.api.ShopApi
 import com.tokopedia.shop.common.di.ShopCommonModule
+import com.tokopedia.shop.common.di.ShopPageContext
 import com.tokopedia.shop.common.di.ShopQualifier
 import com.tokopedia.shop.common.di.scope.ShopScope
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopReputationUseCase
@@ -23,7 +24,12 @@ import javax.inject.Named
  */
 @ShopScope
 @Module(includes = [ShopCommonModule::class])
-class ShopModule {
+class ShopModule(val context: Context) {
+
+    @Provides
+    @ShopPageContext
+    fun provideActivityContext() = context
+
     @ShopScope
     @Provides
     fun provideShopApi(@ShopQualifier retrofit: Retrofit): ShopApi {

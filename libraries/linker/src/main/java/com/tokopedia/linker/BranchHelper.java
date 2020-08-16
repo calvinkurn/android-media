@@ -60,14 +60,13 @@ public class BranchHelper {
             }
 
             double revenuePrice;
-            double shippingPrice;
-            if (LinkerConstants.PRODUCTTYPE_MARKETPLACE.equalsIgnoreCase(branchIOPayment.getProductType())) {
+            if (!branchIOPayment.isFromNative
+                    && LinkerConstants.PRODUCTTYPE_MARKETPLACE.equalsIgnoreCase(branchIOPayment.getProductType())) {
                 revenuePrice = Double.parseDouble(branchIOPayment.getItemPrice());
-                shippingPrice = Double.parseDouble(branchIOPayment.getShipping());
             } else {
                 revenuePrice = LinkerUtils.convertToDouble(branchIOPayment.getRevenue());
-                shippingPrice = LinkerUtils.convertToDouble(branchIOPayment.getShipping());
             }
+            double shippingPrice = LinkerUtils.convertToDouble(branchIOPayment.getShipping());
 
             new BranchEvent(BRANCH_STANDARD_EVENT.PURCHASE)
                     .setTransactionID(branchIOPayment.getOrderId())

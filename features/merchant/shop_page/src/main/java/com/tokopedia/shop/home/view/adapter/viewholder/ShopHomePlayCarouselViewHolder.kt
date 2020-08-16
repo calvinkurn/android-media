@@ -9,7 +9,6 @@ import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarou
 import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselItemDataModel
 import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselOverlayImageDataModel
 import com.tokopedia.shop.R
-import com.tokopedia.shop.home.view.adapter.ShopHomeAdapter
 import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
 import com.tokopedia.shop.home.view.listener.ShopPageHomePlayCarouselListener
 import com.tokopedia.shop.home.view.model.ShopHomePlayCarouselUiModel
@@ -94,11 +93,11 @@ class ShopHomePlayCarouselViewHolder(
     }
 
     override fun onOverlayImageBannerClick(dataModel: PlayBannerCarouselOverlayImageDataModel) {
-        listener.onPlayLeftBannerClicked(dataModel, playCarouselCardDataModel?.widgetId ?: "")
+        listener.onPlayLeftBannerClicked(dataModel, playCarouselCardDataModel?.widgetId ?: "", adapterPosition)
     }
 
     override fun onOverlayImageBannerImpress(dataModel: PlayBannerCarouselOverlayImageDataModel) {
-        listener.onPlayLeftBannerImpressed(dataModel, playCarouselCardDataModel?.widgetId ?: "")
+        listener.onPlayLeftBannerImpressed(dataModel, playCarouselCardDataModel?.widgetId ?: "", adapterPosition)
     }
 
     override fun onRefreshView(dataModel: PlayBannerCarouselDataModel) {
