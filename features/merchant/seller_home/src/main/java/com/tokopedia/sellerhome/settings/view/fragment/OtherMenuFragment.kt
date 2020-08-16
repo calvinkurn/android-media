@@ -146,7 +146,6 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         super.onViewCreated(view, savedInstanceState)
         setupOffset()
         setupView(view)
-        setupHeader()
         observeLiveData()
         observeFreeShippingStatus()
         context?.let { UpdateShopActiveService.startService(it) }
@@ -429,12 +428,8 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                     activity?.requestStatusBarLight()
                 }
             }
-            observeRecyclerViewScrollListener()
         }
-    }
-
-    private fun setupHeader() {
-
+        observeRecyclerViewScrollListener()
     }
 
     private fun setupOffset() {
@@ -447,14 +442,12 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         statusInfoTransitionOffset = statusBarHeight ?: HEIGHT_OFFSET
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
     private fun observeRecyclerViewScrollListener() {
         this.otherMenuScrollView.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { scrollView, _, _, _, _ ->
             calculateSearchBarView(scrollView.scrollY)
         })
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
     private fun calculateSearchBarView(offset: Int) {
         val endToTransitionOffset = startToTransitionOffset + statusInfoTransitionOffset
         val maxTransitionOffset = endToTransitionOffset - startToTransitionOffset

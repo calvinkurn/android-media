@@ -259,17 +259,18 @@ class OtherMenuViewHolder(private val itemView: View,
             }
 
             ResourcesCompat.getDrawable(context.resources, shopTypeHeaderRes, null)?.toBitmap()?.let { baseBitmap ->
+                val baseBitmapCopy = baseBitmap.copy(Bitmap.Config.ARGB_8888, true)
                 ResourcesCompat.getDrawable(context.resources, shopTypeHeaderIconRes, null)?.toBitmap()?.let { iconBitmap ->
-                    val iconWidth = (baseBitmap.width * HEADER_ICON_WIDTH_PERCENTAGE).toInt()
+                    val iconWidth = (baseBitmapCopy.width * HEADER_ICON_WIDTH_PERCENTAGE).toInt()
                     val iconHeight = (iconWidth * HEADER_ICON_RATIO).toInt()
-                    val iconX = (baseBitmap.width * HEADER_ICON_X_POSITION).toInt()
-                    Canvas(baseBitmap).run {
+                    val iconX = (baseBitmapCopy.width * HEADER_ICON_X_POSITION).toInt()
+                    Canvas(baseBitmapCopy).run {
                         val iconBitmapRect = Rect().apply {
-                            set(iconX - iconWidth, baseBitmap.height - iconHeight, iconX, baseBitmap.height)
+                            set(iconX - iconWidth, baseBitmapCopy.height - iconHeight, iconX, baseBitmapCopy.height)
                         }
                         drawBitmap(iconBitmap, null, iconBitmapRect, iconPaint)
                     }
-                    baseBitmap
+                    baseBitmapCopy
                 }
             }
         }

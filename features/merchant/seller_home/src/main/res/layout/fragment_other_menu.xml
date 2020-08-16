@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/white"
+    android:background="@color/transparent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     
     <androidx.appcompat.widget.AppCompatImageView
@@ -35,27 +35,37 @@
         android:orientation="vertical"
         app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:descendantFocusability="blocksDescendants"
-            android:orientation="vertical">
+            android:descendantFocusability="blocksDescendants">
+
+            <View
+                android:id="@+id/bg_white_other_menu"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/setting_header_height_extra"
+                android:layout_marginTop="@dimen/setting_header_height"
+                android:background="@color/Neutral_N0"
+                app:layout_constraintTop_toTopOf="parent"/>
 
             <include
                 android:id="@+id/shopInfoLayout"
-                layout="@layout/setting_partial_shop_info_success"/>
+                layout="@layout/setting_partial_shop_info_success"
+                app:layout_constraintTop_toTopOf="parent"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:overScrollMode="never"
-                android:background="@color/transparent"/>
+                android:background="@android:color/transparent"
+                app:layout_constraintTop_toBottomOf="@id/shopInfoLayout"/>
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/setting_white_space_height" />
-        </LinearLayout>
+                android:layout_height="@dimen/setting_white_space_height"
+                app:layout_constraintTop_toBottomOf="@id/recycler_view"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.core.widget.NestedScrollView>
 
