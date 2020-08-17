@@ -10,7 +10,6 @@ data class DisabledCartItemHolderData(
         var productImage: String = "",
         var productName: String = "",
         var productPrice: Double = 0.0,
-        var error: String? = null,
         var isWishlisted: Boolean = false,
         var tickerMessage: String? = null,
         var similarProduct: SimilarProductData? = null,

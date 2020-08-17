@@ -34,7 +34,6 @@ class ViewHolderDataMapper @Inject constructor() {
                 productName = cartItemHolderData.cartItemData?.originData?.productName ?: "",
                 productPrice = cartItemHolderData.cartItemData?.originData?.pricePlan
                         ?: 0.toDouble(),
-                error = cartItemHolderData.cartItemData?.errorMessageTitle,
                 isWishlisted = cartItemHolderData.cartItemData?.originData?.isWishlisted ?: false,
                 tickerMessage = cartItemHolderData.cartItemData?.warningMessageTitle,
                 similarProduct = cartItemHolderData.cartItemData?.similarProductData,

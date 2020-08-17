@@ -7,6 +7,8 @@ import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.cart.view.ActionListener
 import com.tokopedia.cart.view.uimodel.DisabledCartItemHolderData
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import kotlinx.android.synthetic.main.holder_item_cart_error.view.*
@@ -25,7 +27,6 @@ class DisabledCartItemViewHolder(itemView: View, val actionListener: ActionListe
 
     fun bind(data: DisabledCartItemHolderData) {
         renderProductInfo(data)
-        renderError(data)
         renderTickerMessage(data)
         renderDeleteButton(data)
         renderWishlistButton(data)
@@ -37,16 +38,11 @@ class DisabledCartItemViewHolder(itemView: View, val actionListener: ActionListe
         itemView.tv_product_name.text = data.productName
         itemView.tv_product_price.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(data.productPrice, false).removeDecimalSuffix()
         itemView.iv_image_product.loadImageRounded(data.productImage)
-    }
-
-    private fun renderError(data: DisabledCartItemHolderData) {
-        itemView.label_product_error.apply {
-            if (data.error != null) {
-                text = data.error
-                visibility = View.VISIBLE
-            } else {
-                visibility = View.GONE
-            }
+        if (data.data?.originData?.variant?.isNotBlank() == true) {
+            itemView.text_product_variant.text = data.data?.originData?.variant
+            itemView.text_product_variant.show()
+        } else {
+            itemView.text_product_variant.gone()
         }
     }
 

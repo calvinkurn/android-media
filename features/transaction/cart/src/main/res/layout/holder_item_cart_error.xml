@@ -28,15 +28,6 @@
             app:srcCompat="@drawable/empty_photo"
             tools:ignore="ContentDescription" />
 
-        <com.tokopedia.unifycomponents.Label
-            android:id="@+id/label_product_error"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:gravity="center"
-            app:labelTitle="Dilarang"
-            app:labelType="general_dark_red" />
-
     </androidx.cardview.widget.CardView>
 
     <com.tokopedia.unifyprinciples.Typography
@@ -50,27 +41,41 @@
         android:layout_marginRight="@dimen/dp_16"
         android:alpha="0.5"
         android:ellipsize="end"
-        android:maxLines="2"
-        android:textColor="@color/black"
+        android:maxLines="1"
+        android:textColor="@color/Neutral_N700_96"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/iv_product_card"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="heading_6"
+        app:typographyType="body_3"
         app:typographyWeight="bold"
         tools:text="Tas organizerdfnlgjdhdfhn sepeda double container yang panjang" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_product_variant"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/dp_2"
+        android:textColor="@color/Neutral_N700_68"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@id/tv_product_name"
+        app:layout_constraintStart_toStartOf="@id/tv_product_name"
+        app:layout_constraintTop_toBottomOf="@id/tv_product_name"
+        app:typographyType="small"
+        tools:text="Biru, XL"
+        tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_product_price"
         android:layout_width="@dimen/dp_0"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
         android:alpha="0.5"
         android:ellipsize="end"
         android:maxLines="1"
-        android:textColor="@color/price_label"
-        app:layout_constraintEnd_toEndOf="@id/tv_product_name"
-        app:layout_constraintStart_toStartOf="@id/tv_product_name"
-        app:layout_constraintTop_toBottomOf="@id/tv_product_name"
+        android:textColor="@color/Neutral_N700_96"
+        app:layout_constraintStart_toEndOf="@+id/iv_product_card"
+        app:layout_constraintTop_toBottomOf="@+id/text_product_variant"
         app:typographyType="heading_6"
         app:typographyWeight="bold"
         tools:text="Rp 200.000.000.000.000.000" />
