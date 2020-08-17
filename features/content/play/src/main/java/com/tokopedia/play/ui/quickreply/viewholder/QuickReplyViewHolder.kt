@@ -21,7 +21,7 @@ class QuickReplyViewHolder(
 
     fun bind(quickReplyString: String, onQuickReplyClicked: (String) -> Unit) {
         tvChat.text = quickReplyString
-        if (!itemView.hasOnClickListeners()) itemView.setOnClickListener { onQuickReplyClicked(quickReplyString) }
+        itemView.setOnClickListener { onQuickReplyClicked(quickReplyString) }
     }
 
     companion object {
