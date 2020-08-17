@@ -27,7 +27,6 @@ class DisabledCartItemViewHolder(itemView: View, val actionListener: ActionListe
 
     fun bind(data: DisabledCartItemHolderData) {
         renderProductInfo(data)
-        renderTickerMessage(data)
         renderDeleteButton(data)
         renderWishlistButton(data)
         renderSimilarProduct(data)
@@ -46,6 +45,8 @@ class DisabledCartItemViewHolder(itemView: View, val actionListener: ActionListe
         }
     }
 
+    // Deprecated
+    // Todo : Confirm to PO to delete
     private fun renderTickerMessage(data: DisabledCartItemHolderData) {
         itemView.ticker_message.apply {
             if (data.nicotineLiteMessageData != null) {
@@ -91,12 +92,7 @@ class DisabledCartItemViewHolder(itemView: View, val actionListener: ActionListe
     }
 
     private fun renderWishlistButton(data: DisabledCartItemHolderData) {
-        itemView.img_wishlist.apply {
-            if (data.isWishlisted) {
-                setImageResource(R.drawable.ic_wishlist_checkout_on)
-            } else {
-                setImageResource(R.drawable.ic_wishlist_checkout_off)
-            }
+        itemView.text_move_to_wishlist.apply {
             setOnClickListener {
                 if (data.isWishlisted) {
                     actionListener?.onRemoveDisabledItemFromWishlist(data.productId)
