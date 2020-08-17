@@ -12,6 +12,7 @@ import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
+import com.tokopedia.analyticsdebugger.AnalyticsSource;
 import com.tokopedia.analyticsdebugger.debugger.GtmLogger;
 import com.tokopedia.analyticsdebugger.debugger.TetraDebugger;
 import com.tokopedia.config.GlobalConfig;
@@ -860,7 +861,7 @@ public class GTMAnalytics extends ContextAnalytics {
     private void log(Context context, String eventName, Map<String, Object> values, boolean isGtmV5) {
         String name = eventName == null ? (String) values.get("event") : eventName;
         if (isGtmV5) name += " (v5)";
-        GtmLogger.getInstance(context).save(name, values, 0);
+        GtmLogger.getInstance(context).save(name, values, AnalyticsSource.GTM);
         logEventSize(eventName, values);
         if (tetraDebugger != null) {
             tetraDebugger.send(values);

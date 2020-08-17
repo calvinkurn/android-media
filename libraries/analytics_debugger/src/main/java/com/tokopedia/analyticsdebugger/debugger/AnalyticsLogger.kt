@@ -1,5 +1,7 @@
 package com.tokopedia.analyticsdebugger.debugger
 
+import com.tokopedia.analyticsdebugger.AnalyticsSource
+
 /**
  * @author okasurya on 5/16/18.
  */
@@ -7,7 +9,7 @@ interface AnalyticsLogger {
 
     val isNotificationEnabled: Boolean
 
-    fun save(name: String, data: Map<String, Any>, source:Int)
+    fun save(name: String, data: Map<String, Any>, @AnalyticsSource source:String)
 
     fun saveError(errorData: String)
 

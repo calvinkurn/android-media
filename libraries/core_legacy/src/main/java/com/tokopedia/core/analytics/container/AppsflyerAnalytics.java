@@ -14,6 +14,9 @@ import com.appsflyer.AppsFlyerLib;
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.tokopedia.analyticsdebugger.AnalyticsSource;
+import com.tokopedia.analyticsdebugger.debugger.GtmLogger;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -198,6 +201,7 @@ public class AppsflyerAnalytics extends ContextAnalytics {
 
     public void sendEvent(String eventName, Map<String, Object> eventValue) {
         AppsFlyerLib.getInstance().trackEvent(getContext(), eventName, eventValue);
+        saveAppsFlyerEvent(eventName, eventValue);
     }
 
     //aliasing
@@ -209,6 +213,7 @@ public class AppsflyerAnalytics extends ContextAnalytics {
     @Override
     public void sendTrackEvent(String eventName, Map<String, Object> eventValue) {
         AppsFlyerLib.getInstance().trackEvent(getContext(), eventName, eventValue);
+        saveAppsFlyerEvent(eventName, eventValue);
     }
 
     public void sendDeeplinkData(Activity activity) {
@@ -304,5 +309,17 @@ public class AppsflyerAnalytics extends ContextAnalytics {
     public void setDefferedDeeplinkPathIfExists(String deeplinkPath) {
         deferredDeeplinkPath = deeplinkPath;
 
+    }
+
+    public void saveAppsFlyerEvent(String eventName, Map<String, Object> eventValue) {
+        if (!GlobalConfig.isAllowDebuggingTools()) {
+            return;
+        }
+
+        try {
+            GtmLogger.getInstance(getContext()).save(eventName, eventValue, AnalyticsSource.APPS_FLYER);
+        } catch (Exception e) {
+            Timber.e(e);
+        }
     }
 }

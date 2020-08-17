@@ -3,12 +3,14 @@ package com.tokopedia.analyticsdebugger.database
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.tokopedia.analyticsdebugger.AnalyticsSource
 
 /**
  * @author okasurya on 5/14/18.
  */
 
 const val GTM_LOG_TABLE_NAME = "gtm_log"
+
 @Entity(tableName = GTM_LOG_TABLE_NAME)
 class GtmLogDB {
 
@@ -27,7 +29,8 @@ class GtmLogDB {
     @ColumnInfo(name = "timestamp")
     var timestamp: Long = 0
 
-    //{0 or null :GTM,  1:BranchIO,   2:Appsflyer}
     @ColumnInfo(name = "source")
-    var source: Int? = null
+    @AnalyticsSource
+    var source: String? = null
 }
+
