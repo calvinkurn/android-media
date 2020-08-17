@@ -119,7 +119,7 @@ class SomListItemAdapter : RecyclerView.Adapter<SomListItemAdapter.ViewHolder>()
             val tickerDescription = makeTickerDescription(context, tickerInfo)
             setTextDescription(tickerDescription)
             listener?.let { setDescriptionClickEvent(it) }
-            tickerType = Utils.mapBackgroundColorToUnifyTickerType(tickerInfo.type)
+            tickerType = Utils.mapStringTickerTypeToUnifyTickerType(tickerInfo.type)
             closeButtonVisibility = View.GONE
         }
     }

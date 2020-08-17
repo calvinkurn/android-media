@@ -55,7 +55,7 @@ object Utils {
     }
 
     @JvmStatic
-    fun mapBackgroundColorToUnifyTickerType(typeString: String): Int {
+    fun mapStringTickerTypeToUnifyTickerType(typeString: String): Int {
         return when (typeString) {
             "announcement" -> Ticker.TYPE_ANNOUNCEMENT
             "info" -> Ticker.TYPE_ERROR

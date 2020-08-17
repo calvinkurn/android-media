@@ -164,7 +164,7 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
 
                 override fun onDismiss() {}
             })
-            tickerType = Utils.mapBackgroundColorToUnifyTickerType(tickerInfo.type)
+            tickerType = Utils.mapStringTickerTypeToUnifyTickerType(tickerInfo.type)
             closeButtonVisibility = View.GONE
         }
     }
