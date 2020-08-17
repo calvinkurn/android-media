@@ -1,20 +1,9 @@
 package com.tokopedia.pms.proof.di;
 
-import android.content.Context;
-
-import com.google.gson.Gson;
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.imageuploader.di.ImageUploaderModule;
-import com.tokopedia.imageuploader.di.qualifier.ImageUploaderQualifier;
-import com.tokopedia.imageuploader.domain.GenerateHostRepository;
-import com.tokopedia.imageuploader.domain.UploadImageRepository;
-import com.tokopedia.imageuploader.domain.UploadImageUseCase;
-import com.tokopedia.imageuploader.utils.ImageUploaderUtils;
-import com.tokopedia.pms.proof.domain.UploadProofPaymentUseCase;
-import com.tokopedia.pms.proof.model.ResponseUploadImageProof;
+import com.tokopedia.pms.proof.domain.UploadPaymentProofUseCase;
 import com.tokopedia.pms.proof.view.UploadProofPaymentPresenter;
-import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;
 import dagger.Provides;
@@ -29,11 +18,11 @@ public class UploadProofPaymentModule {
 
     @UploadProofPaymentScope
     @Provides
-    UploadProofPaymentPresenter uploadProofPaymentPresenter(UploadProofPaymentUseCase uploadProofPaymentUseCase) {
-        return new UploadProofPaymentPresenter(uploadProofPaymentUseCase, new GraphqlUseCase());
+    UploadProofPaymentPresenter uploadProofPaymentPresenter(UploadPaymentProofUseCase uploadPaymentProofUseCase) {
+        return new UploadProofPaymentPresenter(new GraphqlUseCase(), uploadPaymentProofUseCase);
     }
 
-    @UploadProofPaymentScope
+  /*  @UploadProofPaymentScope
     @Provides
     UploadProofPaymentUseCase uploadProofPaymentUseCase(UploadImageUseCase<ResponseUploadImageProof> uploadImageUseCase, @ApplicationContext Context context) {
         return new UploadProofPaymentUseCase(uploadImageUseCase, new GraphqlUseCase(), context.getResources());
@@ -47,5 +36,5 @@ public class UploadProofPaymentModule {
                                                                            @ImageUploaderQualifier UserSessionInterface userSession,
                                                                            @ImageUploaderQualifier ImageUploaderUtils imageUploaderUtils) {
         return new UploadImageUseCase<>(uploadImageRepository, generateHostRepository, gson, userSession, ResponseUploadImageProof.class, imageUploaderUtils);
-    }
+    }*/
 }

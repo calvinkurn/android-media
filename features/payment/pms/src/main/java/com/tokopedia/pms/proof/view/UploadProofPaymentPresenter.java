@@ -2,21 +2,24 @@ package com.tokopedia.pms.proof.view;
 
 import android.content.res.Resources;
 
+import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
+import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.pms.R;
 import com.tokopedia.pms.common.Constant;
-import com.tokopedia.pms.payment.data.model.DataPaymentList;
-import com.tokopedia.pms.proof.domain.UploadProofPaymentUseCase;
-import com.tokopedia.pms.proof.model.UploadProof;
+import com.tokopedia.pms.proof.domain.UploadPaymentProofUseCase;
+import com.tokopedia.pms.proof.model.PaymentProofResponse;
 import com.tokopedia.pms.proof.model.getproof.DataResponseGetProof;
 import com.tokopedia.usecase.RequestParams;
 
+import java.lang.reflect.Type;
 import java.util.HashMap;
+import java.util.Map;
 
 import rx.Subscriber;
 
@@ -26,18 +29,20 @@ import rx.Subscriber;
 
 public class UploadProofPaymentPresenter extends BaseDaggerPresenter<UploadProofPaymentContract.View> implements UploadProofPaymentContract.Presenter {
 
-    private UploadProofPaymentUseCase uploadProofPaymentUseCase;
+    private UploadPaymentProofUseCase uploadPaymentProofUseCase;
     private GraphqlUseCase getProofUseCase;
 
-    public UploadProofPaymentPresenter(UploadProofPaymentUseCase uploadProofPaymentUseCase, GraphqlUseCase getProofUseCase) {
-        this.uploadProofPaymentUseCase = uploadProofPaymentUseCase;
+    public UploadProofPaymentPresenter(GraphqlUseCase getProofUseCase,
+                                       UploadPaymentProofUseCase uploadPaymentProofUseCase) {
         this.getProofUseCase = getProofUseCase;
+        this.uploadPaymentProofUseCase = uploadPaymentProofUseCase;
     }
 
     @Override
     public void uploadProofPayment(String transactionId, String merchantCode, String imageUrl) {
         getView().showLoadingDialog();
-        uploadProofPaymentUseCase.execute(uploadProofPaymentUseCase.createRequestParams(transactionId, merchantCode, imageUrl), new Subscriber<UploadProof>() {
+        uploadPaymentProofUseCase.setRequestParams(transactionId, merchantCode, imageUrl);
+        uploadPaymentProofUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override
             public void onCompleted() {
 
@@ -52,9 +57,12 @@ public class UploadProofPaymentPresenter extends BaseDaggerPresenter<UploadProof
             }
 
             @Override
-            public void onNext(UploadProof uploadProof) {
+            public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+                Type token = new TypeToken<PaymentProofResponse>() {}.getType();
+                RestResponse restResponse = typeRestResponseMap.get(token);
+                PaymentProofResponse paymentProofResponse = restResponse.getData();
+                getView().onResultUploadProof(paymentProofResponse);
                 getView().hideLoadingDialog();
-                getView().onResultUploadProof(uploadProof);
             }
         });
     }
@@ -62,7 +70,7 @@ public class UploadProofPaymentPresenter extends BaseDaggerPresenter<UploadProof
     @Override
     public void detachView() {
         super.detachView();
-        uploadProofPaymentUseCase.unsubscribe();
+        uploadPaymentProofUseCase.unsubscribe();
         getProofUseCase.unsubscribe();
     }
 
@@ -71,7 +79,7 @@ public class UploadProofPaymentPresenter extends BaseDaggerPresenter<UploadProof
         HashMap<String, Object> variables = new HashMap<String, Object>();
         variables.put(Constant.TRANSACTION_ID, transactionId);
         variables.put(Constant.MERCHANT_CODE, merchantCode);
-        GraphqlRequest graphqlRequest = new GraphqlRequest(GraphqlHelper.loadRawString(resources, R.raw.get_proof_payment),DataResponseGetProof.class, variables, false);
+        GraphqlRequest graphqlRequest = new GraphqlRequest(GraphqlHelper.loadRawString(resources, R.raw.get_proof_payment), DataResponseGetProof.class, variables, false);
         getProofUseCase.clearRequest();
         getProofUseCase.addRequest(graphqlRequest);
         getProofUseCase.execute(RequestParams.create(), new Subscriber<GraphqlResponse>() {
@@ -82,7 +90,7 @@ public class UploadProofPaymentPresenter extends BaseDaggerPresenter<UploadProof
 
             @Override
             public void onError(Throwable e) {
-                if(isViewAttached()) {
+                if (isViewAttached()) {
                     getView().hideLoadingMain();
                     getView().onErrorGetImageProof(e);
                 }
@@ -92,9 +100,9 @@ public class UploadProofPaymentPresenter extends BaseDaggerPresenter<UploadProof
             public void onNext(GraphqlResponse graphqlResponse) {
                 getView().hideLoadingMain();
                 DataResponseGetProof dataResponseGetProof = graphqlResponse.getData(DataResponseGetProof.class);
-                if(dataResponseGetProof.getGetProof().isSuccess()) {
+                if (dataResponseGetProof.getGetProof().isSuccess()) {
                     getView().onSuccessGetImageProof(dataResponseGetProof.getGetProof().getImageUrl());
-                }else{
+                } else {
                     getView().onErrorGetImageProof(new MessageErrorException(dataResponseGetProof.getGetProof().getMessage()));
                 }
             }
