@@ -7,4 +7,5 @@ class AnalyticsLogData {
     var data: String? = null
     var name: String? = null
     var category: String? = null
+    var source: Int? = null
 }

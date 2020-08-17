@@ -860,7 +860,7 @@ public class GTMAnalytics extends ContextAnalytics {
     private void log(Context context, String eventName, Map<String, Object> values, boolean isGtmV5) {
         String name = eventName == null ? (String) values.get("event") : eventName;
         if (isGtmV5) name += " (v5)";
-        GtmLogger.getInstance(context).save(name, values);
+        GtmLogger.getInstance(context).save(name, values, 0);
         logEventSize(eventName, values);
         if (tetraDebugger != null) {
             tetraDebugger.send(values);

@@ -1,14 +1,23 @@
 package com.tokopedia.linker;
 
+import android.app.Application;
 import android.content.Context;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.tokopedia.analyticsdebugger.debugger.GtmLogger;
 import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.linker.model.PaymentData;
 import com.tokopedia.linker.model.UserData;
 
+import org.json.JSONObject;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import io.branch.indexing.BranchUniversalObject;
 import io.branch.referral.Branch;
@@ -20,6 +29,8 @@ import io.branch.referral.util.CurrencyType;
 import io.branch.referral.util.LinkProperties;
 
 public class BranchHelper {
+    static Gson gson = new Gson();
+    static Type type = new TypeToken<HashMap<String, String>>() {}.getType();
 
     //Set userId to Branch.io sdk, userId, 127 chars or less
     public static void sendIdentityEvent(String userId) {
@@ -28,7 +39,7 @@ public class BranchHelper {
         }
     }
 
-    public static void setCommonLinkProperties(LinkProperties linkProperties, LinkerData data){
+    public static void setCommonLinkProperties(LinkProperties linkProperties, LinkerData data) {
         linkProperties.setCampaign(data.getCampaignName());
         linkProperties.setChannel(LinkerData.ARG_UTM_SOURCE);
         linkProperties.setFeature(LinkerData.ARG_UTM_MEDIUM);
@@ -39,7 +50,7 @@ public class BranchHelper {
         linkProperties.addControlParameter(LinkerConstants.KEY_DESKTOP_URL, data.renderShareUri());
     }
 
-    public static void sendCommerceEvent(PaymentData branchIOPayment, Context context, UserData userData){
+    public static void sendCommerceEvent(PaymentData branchIOPayment, Context context, UserData userData) {
         try {
             List<BranchUniversalObject> branchUniversalObjects = new ArrayList<>();
 
@@ -68,7 +79,7 @@ public class BranchHelper {
             }
             double shippingPrice = LinkerUtils.convertToDouble(branchIOPayment.getShipping());
 
-            new BranchEvent(BRANCH_STANDARD_EVENT.PURCHASE)
+            BranchEvent branchEvent = new BranchEvent(BRANCH_STANDARD_EVENT.PURCHASE)
                     .setTransactionID(branchIOPayment.getOrderId())
                     .setCurrency(CurrencyType.IDR)
                     .setShipping(shippingPrice)
@@ -78,8 +89,9 @@ public class BranchHelper {
                     .addCustomDataProperty(LinkerConstants.KEY_USERID, userData.getUserId())
                     .addContentItems(branchUniversalObjects)
                     .addCustomDataProperty(LinkerConstants.KEY_NEW_BUYER, String.valueOf(branchIOPayment.isNewBuyer()))
-                    .addCustomDataProperty(LinkerConstants.KEY_MONTHLY_NEW_BUYER, String.valueOf(branchIOPayment.isMonthlyNewBuyer()))
-                    .logEvent(context);
+                    .addCustomDataProperty(LinkerConstants.KEY_MONTHLY_NEW_BUYER, String.valueOf(branchIOPayment.isMonthlyNewBuyer()));
+            branchEvent.logEvent(context);
+            printBranchEvent(branchEvent);
 
             if (branchIOPayment.isNewBuyer()) {
                 sendMarketPlaceFirstTxnEvent(context, branchIOPayment, userData.getUserId(), revenuePrice, shippingPrice);
@@ -97,69 +109,74 @@ public class BranchHelper {
     }
 
     public static void sendLoginEvent(Context context, UserData userData) {
-        new BranchEvent(LinkerConstants.EVENT_LOGIN_LABLE)
+        BranchEvent branchEvent = new BranchEvent(LinkerConstants.EVENT_LOGIN_LABLE)
                 .addCustomDataProperty(LinkerConstants.EMAIL_LABLE, userData.getEmail())
                 .addCustomDataProperty(LinkerConstants.USER_ID, userData.getUserId())
-                .addCustomDataProperty(LinkerConstants.PHONE_LABLE, LinkerUtils.normalizePhoneNumber(userData.getPhoneNumber()))
-                .logEvent(context);
-
+                .addCustomDataProperty(LinkerConstants.PHONE_LABLE, LinkerUtils.normalizePhoneNumber(userData.getPhoneNumber()));
+        branchEvent.logEvent(context);
+        printBranchEvent(branchEvent);
     }
 
     public static void sendRegisterEvent(UserData userData, Context context) {
-        new BranchEvent(BRANCH_STANDARD_EVENT.COMPLETE_REGISTRATION)
+        BranchEvent branchEvent = new BranchEvent(BRANCH_STANDARD_EVENT.COMPLETE_REGISTRATION)
                 .addCustomDataProperty(LinkerConstants.EMAIL_LABLE, userData.getEmail())
                 .addCustomDataProperty(LinkerConstants.USER_ID, userData.getUserId())
-                .addCustomDataProperty(LinkerConstants.PHONE_LABLE, LinkerUtils.normalizePhoneNumber(userData.getPhoneNumber()))
-                .logEvent(context);
-
+                .addCustomDataProperty(LinkerConstants.PHONE_LABLE, LinkerUtils.normalizePhoneNumber(userData.getPhoneNumber()));
+        branchEvent.logEvent(context);
+        printBranchEvent(branchEvent);
     }
 
-    public static void sendItemViewEvent(Context context, LinkerData linkerData){
-        new BranchEvent(BRANCH_STANDARD_EVENT.VIEW_ITEM)
+    public static void sendItemViewEvent(Context context, LinkerData linkerData) {
+        BranchEvent branchEvent = new BranchEvent(BRANCH_STANDARD_EVENT.VIEW_ITEM)
                 .addCustomDataProperty(LinkerConstants.PRODUCT_ID, linkerData.getId())
                 .addCustomDataProperty(LinkerConstants.PRICE, linkerData.getPrice())
                 .addCustomDataProperty(LinkerConstants.CATEGORY_LEVEL_1, linkerData.getCatLvl1())
                 .addCustomDataProperty(LinkerConstants.USER_ID, linkerData.getUserId())
                 .addCustomDataProperty(LinkerConstants.DESCRIPTION, linkerData.getDescription())
                 .addCustomDataProperty(LinkerConstants.SHOP_ID, linkerData.getShopId())
-                .addCustomDataProperty(LinkerConstants.CURRENCY, linkerData.getCurrency())
-                .logEvent(context);
+                .addCustomDataProperty(LinkerConstants.CURRENCY, linkerData.getCurrency());
+        branchEvent.logEvent(context);
+        printBranchEvent(branchEvent);
     }
 
-    public static void sendAddToCartEvent(Context context, LinkerData linkerData){
-        new BranchEvent(BRANCH_STANDARD_EVENT.ADD_TO_CART)
+    public static void sendAddToCartEvent(Context context, LinkerData linkerData) {
+        BranchEvent branchEvent = new BranchEvent(BRANCH_STANDARD_EVENT.ADD_TO_CART)
                 .addCustomDataProperty(LinkerConstants.PRODUCT_ID, linkerData.getId())
                 .addCustomDataProperty(LinkerConstants.PRICE, linkerData.getPrice())
                 .addCustomDataProperty(LinkerConstants.CATEGORY_LEVEL_1, linkerData.getCatLvl1())
                 .addCustomDataProperty(LinkerConstants.USER_ID, linkerData.getUserId())
                 .addCustomDataProperty(LinkerConstants.QTY, linkerData.getQuantity())
-                .addCustomDataProperty(LinkerConstants.CURRENCY, linkerData.getCurrency())
-                .logEvent(context);
+                .addCustomDataProperty(LinkerConstants.CURRENCY, linkerData.getCurrency());
+        branchEvent.logEvent(context);
+        printBranchEvent(branchEvent);
     }
 
-    public static void sendAddToWishListEvent(Context context, LinkerData linkerData){
-        new BranchEvent(BRANCH_STANDARD_EVENT.ADD_TO_WISHLIST)
+    public static void sendAddToWishListEvent(Context context, LinkerData linkerData) {
+        BranchEvent branchEvent = new BranchEvent(BRANCH_STANDARD_EVENT.ADD_TO_WISHLIST)
                 .addCustomDataProperty(LinkerConstants.PRODUCT_ID, linkerData.getId())
                 .addCustomDataProperty(LinkerConstants.PRICE, linkerData.getPrice())
                 .addCustomDataProperty(LinkerConstants.CATEGORY_LEVEL_1, linkerData.getCatLvl1())
                 .addCustomDataProperty(LinkerConstants.USER_ID, linkerData.getUserId())
-                .addCustomDataProperty(LinkerConstants.CURRENCY, linkerData.getCurrency())
-                .logEvent(context);
+                .addCustomDataProperty(LinkerConstants.CURRENCY, linkerData.getCurrency());
+        branchEvent.logEvent(context);
+        printBranchEvent(branchEvent);
     }
 
-    public static void sendFlightPurchaseEvent(Context context, LinkerData linkerData){
-        new BranchEvent(LinkerConstants.EVENT_FLIGHT_PURCHASE)
+    public static void sendFlightPurchaseEvent(Context context, LinkerData linkerData) {
+        BranchEvent branchEvent = new BranchEvent(LinkerConstants.EVENT_FLIGHT_PURCHASE)
                 .addCustomDataProperty(LinkerConstants.PRODUCT_CATEGORY, linkerData.getProductCategory())
                 .addCustomDataProperty(LinkerConstants.PRODUCT_NAME, linkerData.getProductName())
                 .addCustomDataProperty(LinkerConstants.JOURNEY_ID, linkerData.getJourneyId())
                 .addCustomDataProperty(LinkerConstants.USER_ID, linkerData.getUserId())
                 .addCustomDataProperty(LinkerConstants.INVOICE_ID, linkerData.getInvoiceId())
                 .addCustomDataProperty(LinkerConstants.KEY_PAYMENT, linkerData.getPaymentId())
-                .addCustomDataProperty(LinkerConstants.PRICE, linkerData.getPrice())
-                .logEvent(context);
+                .addCustomDataProperty(LinkerConstants.PRICE, linkerData.getPrice());
+        branchEvent.logEvent(context);
+        printBranchEvent(branchEvent);
     }
-    private static void sendMarketPlaceFirstTxnEvent(Context context, PaymentData branchIOPayment,  String userId, double revenuePrice,double shippingPrice){
-        new BranchEvent(LinkerConstants.EVENT_MARKETPLACE_FIRST_TXN)
+
+    private static void sendMarketPlaceFirstTxnEvent(Context context, PaymentData branchIOPayment, String userId, double revenuePrice, double shippingPrice) {
+        BranchEvent branchEvent = new BranchEvent(LinkerConstants.EVENT_MARKETPLACE_FIRST_TXN)
                 .setTransactionID(branchIOPayment.getOrderId())
                 .setCurrency(CurrencyType.IDR)
                 .setShipping(shippingPrice)
@@ -168,8 +185,36 @@ public class BranchHelper {
                 .addCustomDataProperty(LinkerConstants.KEY_PRODUCTTYPE, branchIOPayment.getProductType())
                 .addCustomDataProperty(LinkerConstants.KEY_USERID, userId)
                 .addCustomDataProperty(LinkerConstants.KEY_NEW_BUYER, String.valueOf(branchIOPayment.isNewBuyer()))
-                .addCustomDataProperty(LinkerConstants.KEY_MONTHLY_NEW_BUYER, String.valueOf(branchIOPayment.isMonthlyNewBuyer()))
-                .logEvent(context);
+                .addCustomDataProperty(LinkerConstants.KEY_MONTHLY_NEW_BUYER, String.valueOf(branchIOPayment.isMonthlyNewBuyer()));
+        branchEvent.logEvent(context);
+        printBranchEvent(branchEvent);
+    }
+
+    private static void printBranchEvent(BranchEvent branchEvent) {
+        try {
+            //{"email":"rahul.lohra@tokopedia.com","userId":"103306171","phone":""}
+            Field fieldCustomProp = branchEvent.getClass().getDeclaredField("customProperties");
+            fieldCustomProp.setAccessible(true);
+
+            Field fieldStandardProp = branchEvent.getClass().getDeclaredField("standardProperties");
+            fieldStandardProp.setAccessible(true);
+
+            Field fieldEventName = branchEvent.getClass().getDeclaredField("eventName");
+            fieldEventName.setAccessible(true);
+
+            String eventName = (String) fieldEventName.get(branchEvent);
+            JSONObject customPropJson = (JSONObject) fieldCustomProp.get(branchEvent);
+            JSONObject standPropJson = (JSONObject) fieldStandardProp.get(branchEvent);
+
+            HashMap mapCustomProp = gson.fromJson(customPropJson.toString(), type);
+            HashMap mapStandProp = gson.fromJson(standPropJson.toString(), type);
+            mapCustomProp.putAll(mapStandProp);
+
+            GtmLogger.getInstance(LinkerManager.getInstance().getContext()).save(eventName, mapCustomProp, 1);
+
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
     }
 
 }

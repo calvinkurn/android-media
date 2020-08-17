@@ -7,7 +7,7 @@ interface AnalyticsLogger {
 
     val isNotificationEnabled: Boolean
 
-    fun save(name: String, data: Map<String, Any>)
+    fun save(name: String, data: Map<String, Any>, source:Int)
 
     fun saveError(errorData: String)
 

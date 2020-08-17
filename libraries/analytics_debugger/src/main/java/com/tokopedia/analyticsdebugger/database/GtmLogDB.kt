@@ -26,4 +26,8 @@ class GtmLogDB {
 
     @ColumnInfo(name = "timestamp")
     var timestamp: Long = 0
+
+    //{0 or null :GTM,  1:BranchIO,   2:Appsflyer}
+    @ColumnInfo(name = "source")
+    var source: Int? = null
 }

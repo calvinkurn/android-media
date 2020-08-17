@@ -1,0 +1,11 @@
+{
+  "readme": "Login Tracker",
+  "mode": "exact",
+  "query": [
+    {
+      "email": "{{.*}}",
+      "userId": "{{.*}}",
+      "phone": "{{.*}}"
+    }
+  ]
+}

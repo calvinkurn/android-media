@@ -36,11 +36,12 @@ class GtmLogger private constructor(private val context: Context) : AnalyticsLog
         this.cache = LocalCacheHandler(context, ANALYTICS_DEBUGGER)
     }
 
-    override fun save(name: String, mapData: Map<String, Any>) {
+    override fun save(name: String, mapData: Map<String, Any>, source:Int) {
         try {
             val gson = GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create()
 
             val data = AnalyticsLogData()
+            data.source = source
             data.category = mapData["eventCategory"] as String?
             data.name = name
             data.data = URLDecoder.decode(gson.toJson(mapData)
@@ -137,7 +138,7 @@ class GtmLogger private constructor(private val context: Context) : AnalyticsLog
                 override val isNotificationEnabled: Boolean
                     get() = false
 
-                override fun save(name: String, data: Map<String, Any>) {
+                override fun save(name: String, data: Map<String, Any>, source:Int) {
 
                 }
 

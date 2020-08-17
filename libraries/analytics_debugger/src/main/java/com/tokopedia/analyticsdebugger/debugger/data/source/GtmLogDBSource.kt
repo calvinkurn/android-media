@@ -38,6 +38,7 @@ constructor(context: Context) {
             gtmLogDB.category = analyticsLogData.category
             gtmLogDB.data = analyticsLogData.data
             gtmLogDB.timestamp = Date().time
+            gtmLogDB.source = data.source
             gtmLogDao.insertAll(gtmLogDB)
             true
         }
