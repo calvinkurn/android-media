@@ -931,14 +931,17 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
             String reason = "";
             int reasonCode = 1;
             if (resultCode == REJECT_BUYER_REQUEST) {
+                // cuma ada di activity lama (RequestCancelActivity.java, yg skrg udah diarahin ke BuyerRequestCancelActivity.kt) --> gada yg setResult REJECT_BUYER_REQUEST lagi
                 reason = data.getStringExtra(OrderListContants.REASON);
                 reasonCode = data.getIntExtra(OrderListContants.REASON_CODE, 1);
                 presenter.updateOrderCancelReason(reason, getArguments().getString(KEY_ORDER_ID), reasonCode, data.getStringExtra(ACTION_BUTTON_URL));
             } else if (resultCode == CANCEL_BUYER_REQUEST) {
+                // ini dari BuyerRequestCancelFragment juga
                 reason = data.getStringExtra(OrderListContants.REASON);
                 reasonCode = data.getIntExtra(OrderListContants.REASON_CODE, 1);
                 presenter.updateOrderCancelReason(reason, getArguments().getString(KEY_ORDER_ID), reasonCode, data.getStringExtra(ACTION_BUTTON_URL));
             } else if (resultCode == CANCEL_BUYER_REQUEST_TWO_LAYER) {
+                // kok gada ya yg manggil ini hmm
                 reason = data.getStringExtra(OrderListContants.REASON);
                 reasonCode = data.getIntExtra(OrderListContants.REASON_CODE, 1);
                 presenter.updateOrderCancelReason(reason, getArguments().getString(KEY_ORDER_ID), reasonCode, data.getStringExtra(ACTION_BUTTON_URL));
@@ -947,7 +950,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                 int result = data.getIntExtra(RESULT_CODE_INSTANT_CANCEL, 1);
                 if (result == 1) {
                     // show toaster
-                    if (getView() != null) {
+                    if (getView() != null && resultMsg != null) {
                         Toaster.make(getView(), resultMsg, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, "", v -> { });
                     }
                 } else if (result == 3) {

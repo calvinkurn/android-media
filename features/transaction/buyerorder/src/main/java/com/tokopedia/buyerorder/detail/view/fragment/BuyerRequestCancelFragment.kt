@@ -41,12 +41,13 @@ import com.tokopedia.buyerorder.detail.data.Items
 import com.tokopedia.buyerorder.detail.data.getcancellationreason.BuyerGetCancellationReasonData
 import com.tokopedia.buyerorder.detail.data.getcancellationreason.BuyerGetCancellationReasonData.Data.GetCancellationReason.TickerInfo
 import com.tokopedia.buyerorder.detail.data.instantcancellation.BuyerInstantCancelData
+import com.tokopedia.buyerorder.detail.data.requestcancel.BuyerRequestCancelData
 import com.tokopedia.buyerorder.detail.di.OrderDetailsComponent
 import com.tokopedia.buyerorder.detail.view.activity.BuyerRequestCancelActivity
 import com.tokopedia.buyerorder.detail.view.adapter.BuyerListOfProductsBottomSheetAdapter
 import com.tokopedia.buyerorder.detail.view.adapter.GetCancelReasonBottomSheetAdapter
 import com.tokopedia.buyerorder.detail.view.adapter.GetCancelSubReasonBottomSheetAdapter
-import com.tokopedia.buyerorder.detail.view.viewmodel.BuyerGetCancellationReasonViewModel
+import com.tokopedia.buyerorder.detail.view.viewmodel.BuyerCancellationViewModel
 import com.tokopedia.buyerorder.list.common.OrderListContants
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.gone
@@ -94,15 +95,17 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
     private var listProduct = emptyList<Items>()
     private var cancelReasonResponse = BuyerGetCancellationReasonData.Data.GetCancellationReason()
     private var instantCancelResponse = BuyerInstantCancelData.Data.BuyerInstantCancel()
+    private var buyerRequestCancelResponse = BuyerRequestCancelData.Data.BuyerRequestCancel()
     private var bottomSheet = BottomSheetUnify()
     private var reasonCancel = ""
     private var reasonCode = -1
     private var arrayListOfReason = arrayListOf<String>()
     private var listOfSubReason = listOf<BuyerGetCancellationReasonData.Data.GetCancellationReason.ReasonsItem.SubReasonsItem>()
     private var currentReasonStr = ""
+    private var userSession: UserSession? = null
 
-    private val buyerGetCancellationReasonViewModel by lazy {
-        ViewModelProviders.of(this, viewModelFactory)[BuyerGetCancellationReasonViewModel::class.java]
+    private val buyerCancellationViewModel by lazy {
+        ViewModelProviders.of(this, viewModelFactory)[BuyerCancellationViewModel::class.java]
     }
 
     companion object {
@@ -170,6 +173,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         activity?.let { BuyerAnalytics.sendScreenName(it, BUYER_CANCEL_REASON_SCREEN_NAME) }
         observingCancelReasons()
         observingInstantCancel()
+        observingRequestCancel()
 
         btn_req_cancel?.isEnabled = false
         tf_choose_sub_reason?.textFieldInput?.isFocusable = false
@@ -367,18 +371,21 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
     }
 
     private fun getCancelReasons() {
-        val userSession = UserSession(context)
-        buyerGetCancellationReasonViewModel.getCancelReasons(
-                GraphqlHelper.loadRawString(resources, R.raw.get_cancel_reason), userSession.userId, orderId)
+        userSession = UserSession(context)
+        userSession?.let {
+            buyerCancellationViewModel.getCancelReasons(
+                    GraphqlHelper.loadRawString(resources, R.raw.get_cancel_reason), it.userId, orderId)
+        }
     }
 
     private fun observingCancelReasons() {
-        buyerGetCancellationReasonViewModel.cancelReasonResult.observe(this, Observer {
+        buyerCancellationViewModel.cancelReasonResult.observe(this, Observer {
             when (it) {
                 is Success -> {
                     empty_state_cancellation?.gone()
                     cl_cancellation_content?.visible()
                     cancelReasonResponse = it.data.getCancellationReason
+                    cancelReasonResponse.isEligibleInstantCancel = true
                     renderPage()
                 }
                 is Fail -> {
@@ -451,13 +458,19 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
                             reasonCancel += " - $subReasonLainnya"
                         }
                         if (isEligibleInstantCancel) submitInstantCancel()
-                        else submitResultReason()
+                        else {
+                            // submitResultReason()
+                            submitRequestCancel()
+                        }
                     }
                 }
             } else {
                 if (reasonCode != -1) {
                     if (isEligibleInstantCancel) submitInstantCancel()
-                    else submitResultReason()
+                    else {
+                        // submitResultReason()
+                        submitRequestCancel()
+                    }
                 }
             }
         }
@@ -570,6 +583,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
     }
 
     private fun submitResultReason() {
+        // ini jadinya mah, panggil usecase baru aja
         val intent = Intent()
         intent.putExtra(OrderListContants.REASON, reasonCancel)
         intent.putExtra(OrderListContants.REASON_CODE, reasonCode)
@@ -578,13 +592,36 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         activity?.finish()
     }
 
+    private fun submitRequestCancel() {
+        userSession?.let {
+            buyerCancellationViewModel.requestCancel(
+                    GraphqlHelper.loadRawString(resources, R.raw.buyer_request_cancel), it.userId, orderId, "$reasonCode", reasonCancel)
+        }
+    }
+    
+    private fun observingRequestCancel() {
+        buyerCancellationViewModel.requestCancelResult.observe(this, Observer {
+            when (it) {
+                is Success -> {
+                    buyerRequestCancelResponse = it.data.buyerRequestCancel
+                    if (buyerRequestCancelResponse.success == 1 && buyerRequestCancelResponse.message.isNotEmpty()) {
+                        backToDetailPage(1, buyerRequestCancelResponse.message.first(), "", "")
+                    }
+                }
+                is Fail -> {
+                    showToaster(getString(R.string.fail_cancellation), Toaster.TYPE_ERROR)
+                }
+            }
+        })
+    }
+
     private fun submitInstantCancel() {
-        buyerGetCancellationReasonViewModel.instantCancellation(
+        buyerCancellationViewModel.instantCancellation(
                 GraphqlHelper.loadRawString(resources, R.raw.buyer_instant_cancel), orderId, "$reasonCode", reasonCancel)
     }
 
     private fun observingInstantCancel() {
-        buyerGetCancellationReasonViewModel.buyerInstantCancelResult.observe(this, Observer {
+        buyerCancellationViewModel.buyerInstantCancelResult.observe(this, Observer {
             when (it) {
                 is Success -> {
                     instantCancelResponse = it.data.buyerInstantCancel
@@ -632,7 +669,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
             setTitle(instantCancelResponse.popup.title)
             setDescription(instantCancelResponse.popup.body)
             setPrimaryCTAText(getString(R.string.button_order_detail_request_cancel))
-            setPrimaryCTAClickListener { submitResultReason() }
+            setPrimaryCTAClickListener { submitRequestCancel() }
             setSecondaryCTAText(getString(R.string.popup_selesai_cancel_btn))
             setSecondaryCTAClickListener {
                 dismiss()

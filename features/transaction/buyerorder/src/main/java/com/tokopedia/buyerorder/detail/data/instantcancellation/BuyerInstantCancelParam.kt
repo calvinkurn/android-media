@@ -8,7 +8,6 @@ import com.google.gson.annotations.SerializedName
  */
 data class BuyerInstantCancelParam (
         @SerializedName("order_id")
-        @Expose
         val orderId: String = "",
 
         @SerializedName("lang")
