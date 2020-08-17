@@ -14,11 +14,6 @@ class QuickReplyViewHolder(
 
     private val tvChat = itemView.findViewById<TextView>(R.id.tv_quick_reply)
 
-    override fun onViewRecycled() {
-        super.onViewRecycled()
-        itemView.setOnClickListener {  }
-    }
-
     fun bind(quickReplyString: String, onQuickReplyClicked: (String) -> Unit) {
         tvChat.text = quickReplyString
         itemView.setOnClickListener { onQuickReplyClicked(quickReplyString) }
