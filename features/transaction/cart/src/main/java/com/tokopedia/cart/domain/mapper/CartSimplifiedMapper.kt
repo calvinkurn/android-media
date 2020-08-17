@@ -39,8 +39,10 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
         cartListData.isPromoCouponActive = cartDataListResponse.isCouponActive == 1
 
         var errorCount = 0
-        for (shopGroupWithError in cartDataListResponse.unavailableGroups) {
-            errorCount += shopGroupWithError.totalCartDetailsError
+        cartDataListResponse.unavailableSections.forEach {
+            for (shopGroupWithError in it.unavailableGroups) {
+                errorCount += shopGroupWithError.totalCartDetailsError
+            }
         }
         cartListData.isError = errorCount > 0
         if (cartListData.isError) {
@@ -64,7 +66,7 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
 
     private fun mapShopGroupAvailableDataList(cartDataListResponse: CartDataListResponse): List<ShopGroupAvailableData> {
         val shopGroupAvailableDataList = arrayListOf<ShopGroupAvailableData>()
-        cartDataListResponse.availableGroups.forEach {
+        cartDataListResponse.availableSection.availableGroupGroups.forEach {
             val shopGroupAvailableData = mapShopGroupAvailableData(it, cartDataListResponse)
             shopGroupAvailableDataList.add(shopGroupAvailableData)
         }
@@ -109,7 +111,7 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
 
         cartItemDataList.forEach {
             if (it.product.isPreorder == 1) {
-                preOrderInfo =  "Pre Order ${it.product.productPreorder.durationText}"
+                preOrderInfo = "Pre Order ${it.product.productPreorder.durationText}"
                 return@forEach
             }
         }
@@ -415,9 +417,11 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
 
     private fun mapShopGroupWithErrorDataList(cartDataListResponse: CartDataListResponse): List<ShopGroupWithErrorData> {
         val shopGroupWithErrorDataList = arrayListOf<ShopGroupWithErrorData>()
-        cartDataListResponse.unavailableGroups.forEach {
-            val shopGroupWithErrorData = mapShopGroupWithErrorData(it, cartDataListResponse)
-            shopGroupWithErrorDataList.add(shopGroupWithErrorData)
+        cartDataListResponse.unavailableSections.forEach {
+            it.unavailableGroups.forEach {
+                val shopGroupWithErrorData = mapShopGroupWithErrorData(it, cartDataListResponse)
+                shopGroupWithErrorDataList.add(shopGroupWithErrorData)
+            }
         }
 
         return shopGroupWithErrorDataList

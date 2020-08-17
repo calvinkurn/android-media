@@ -22,13 +22,6 @@ data class CartDataListResponse(
         val maxCharNote: Int = 0,
         @SerializedName("messages")
         val messages: Messages = Messages(),
-
-        // Todo : remove shop group available & shop group with error
-        @SerializedName("shop_group_available")
-        val availableGroups: List<AvailableGroup> = ArrayList(),
-        @SerializedName("shop_group_with_errors")
-        val unavailableGroups: List<UnavailableGroup> = ArrayList(),
-
         @SerializedName("donation")
         val donation: Donation = Donation(),
         @SerializedName("global_checkbox_state")
