@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/dp_16"
+    >
+
+
+    <TextView
+        android:id="@+id/tv_topad_title"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:lineSpacingExtra="6sp"
+        android:textColor="#f531353b"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintHeight_default="wrap"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_default="wrap"
+        tools:text="Huge News!" />
+
+    <TextView
+        android:id="@+id/tv_topads_see_all"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:text="Lihat Semua"
+        android:textColor="@color/medium_green"
+        android:textSize="@dimen/sp_13"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_default="wrap"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_default="wrap" />
+
+    <TextView
+        android:id="@+id/tv_topads_sub_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_4"
+        android:lineSpacingExtra="6sp"
+        android:textColor="#8f000000"
+        android:textSize="12sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_topad_title"
+        tools:text="Cari tahu sekarang juga" />
+
+    <com.tokopedia.topads.sdk.widget.TopAdsImageView
+        android:id="@+id/topads_reward"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintDimensionRatio="H,3:1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_topads_sub_title" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

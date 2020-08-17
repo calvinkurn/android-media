@@ -22,10 +22,12 @@ import com.tokopedia.tokopoints.view.model.section.ImageList
 import com.tokopedia.tokopoints.view.model.section.SectionContent
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
 import com.tokopedia.tokopoints.view.util.CommonConstant
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.unifycomponents.TimerUnify
+import kotlinx.android.synthetic.main.tp_topads_reward_layout.view.*
 import java.util.*
 
-class ExploreSectionPagerAdapter(context: Context?, presenter: TokoPointsHomeViewModel, sections: List<SectionContent>?) : PagerAdapter() {
+class ExploreSectionPagerAdapter(context: Context?, presenter: TokoPointsHomeViewModel, sections: List<SectionContent>?, val topAdsImageViewModel: TopAdsImageViewModel?) : PagerAdapter() {
     private val mLayoutInflater: LayoutInflater
     private val mSections: List<SectionContent>?
     private val mPresenter: TokoPointsHomeViewModel
@@ -79,6 +81,12 @@ class ExploreSectionPagerAdapter(context: Context?, presenter: TokoPointsHomeVie
                 container.addView(getCatalogCarousel(sectionContent))
                 continue
             }
+
+            if (sectionContent.layoutTopAdsAttr != null && !sectionContent.layoutTopAdsAttr.jsonTopAdsDisplayParam.isEmpty() && topAdsImageViewModel != null) {
+                container.addView(getTopadsBanner(sectionContent, topAdsImageViewModel))
+                continue
+            }
+
             if (sectionContent.layoutBannerAttr == null
                     || sectionContent.layoutBannerAttr.bannerType == null) {
                 continue
@@ -97,6 +105,37 @@ class ExploreSectionPagerAdapter(context: Context?, presenter: TokoPointsHomeVie
                 }
             }
         }
+    }
+
+    private fun getTopadsBanner(content: SectionContent, topAdsImageViewModel: TopAdsImageViewModel?): View? {
+
+
+        val view = mLayoutInflater.inflate(R.layout.tp_topads_reward_layout ,null, false)
+        if (content == null || content.sectionTitle == null || content.layoutBannerAttr == null) {
+            view.visibility = View.GONE
+            return view
+        }
+        ImageHandler.loadBackgroundImage(view, content.backgroundImgURLMobile)
+        if (!content.cta.isEmpty) {
+            val btnSeeAll = view.findViewById<TextView>(R.id.tv_topads_see_all)
+            btnSeeAll.visibility = View.VISIBLE
+            btnSeeAll.text = content.cta.text
+            btnSeeAll.setOnClickListener { v: View? ->
+                handledClick(content.cta.appLink, content.cta.url,
+                        AnalyticsTrackerUtil.ActionKeys.CLICK_SEE_ALL_EXPLORE_BANNER, "")
+            }
+        }
+        if (!TextUtils.isEmpty(content.sectionTitle)) {
+            view.findViewById<View>(R.id.tv_topad_title).visibility = View.VISIBLE
+            (view.findViewById<View>(R.id.tv_topad_title) as TextView).text = content.sectionTitle
+        }
+        if (!TextUtils.isEmpty(content.sectionSubTitle)) {
+            view.findViewById<View>(R.id.tv_topads_sub_title).visibility = View.VISIBLE
+            (view.findViewById<View>(R.id.tv_topads_sub_title) as TextView).text = content.sectionSubTitle
+        }
+        topAdsImageViewModel?.let { view.topads_reward.loadImage(it) }
+        return view
+
     }
 
     fun getCatalogCarousel(content: SectionContent?): View {

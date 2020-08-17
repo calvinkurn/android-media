@@ -11,6 +11,8 @@ import com.tokopedia.tokopoints.view.model.TokoPointEntity;
 import com.tokopedia.tokopoints.view.model.TokoPointSumCoupon;
 import com.tokopedia.tokopoints.view.model.rewardtopsection.TokopediaRewardTopSection;
 import com.tokopedia.tokopoints.view.model.section.SectionContent;
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel;
+import com.tokopedia.topads.sdk.widget.TopAdsImageView;
 
 import java.util.List;
 
@@ -42,11 +44,11 @@ public interface TokoPointsHomeContract {
 
         void renderToolbarWithHeader(TokopediaRewardTopSection data);
 
-        void renderSections(List<SectionContent> sections);
+        void renderSections(List<SectionContent> sections , TopAdsImageViewModel topAdsImageViewModel);
 
-        void renderExploreSectionTab(List<SectionContent> sections);
+        void renderExploreSectionTab(List<SectionContent> sections , TopAdsImageViewModel topAdsImageViewModel);
 
-        void onSuccessResponse(TokopediaRewardTopSection data, List<SectionContent> sections);
+        void onSuccessResponse(TokopediaRewardTopSection data, List<SectionContent> sections , TopAdsImageViewModel topAdsImageViewModel);
 
     }
 

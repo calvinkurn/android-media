@@ -60,6 +60,7 @@ import com.tokopedia.tokopoints.view.model.rewardtopsection.DynamicActionListIte
 import com.tokopedia.tokopoints.view.model.rewardtopsection.TokopediaRewardTopSection
 import com.tokopedia.tokopoints.view.model.section.SectionContent
 import com.tokopedia.tokopoints.view.util.*
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -110,6 +111,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
     private val dynamicItem = "dynamicItem"
     private val toolbarItemList = mutableListOf<NotificationUnify>()
+    var topAdsImageViewModel = TopAdsImageViewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         startPerformanceMonitoring()
@@ -237,7 +239,9 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                     stopNetworkRequestPerformanceMonitoring()
                     startRenderPerformanceMonitoring()
                     setOnRecyclerViewLayoutReady()
-                    onSuccessResponse(it.data.tokoPointEntity, it.data.sectionList)
+                    it.data.topAdsImageViewModel?.let { it1 -> onSuccessResponse(it.data.tokoPointEntity, it.data.sectionList, it1) }
+                }
+                else -> {
                 }
             }
         }
@@ -247,10 +251,10 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         it?.let { RouteManager.route(context, it) }
     })
 
-    override fun onSuccessResponse(data: TokopediaRewardTopSection?, sections: List<SectionContent>) {
+    override fun onSuccessResponse(data: TokopediaRewardTopSection?, sections: List<SectionContent>, topAdsImageViewModel: TopAdsImageViewModel) {
         mContainerMain?.displayedChild = CONTAINER_DATA
         renderToolbarWithHeader(data)
-        renderSections(sections)
+        renderSections(sections, topAdsImageViewModel)
     }
 
     override fun onError(error: String, hasInternet: Boolean) {
@@ -510,7 +514,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         }
     }
 
-    override fun renderSections(sections: List<SectionContent>) {
+    override fun renderSections(sections: List<SectionContent>, topAdsImageViewModel: TopAdsImageViewModel) {
         if (sections == null) { //TODO hide all section container
             return
         }
@@ -519,45 +523,21 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
             when (sectionContent.layoutType) {
                 CommonConstant.SectionLayoutType.TICKER -> renderTicker(sectionContent)
                 CommonConstant.SectionLayoutType.CATEGORY -> renderCategory(sectionContent)
-                CommonConstant.SectionLayoutType.COUPON, CommonConstant.SectionLayoutType.CATALOG, CommonConstant.SectionLayoutType.BANNER -> exploreSectionItem.add(sectionContent)
+                CommonConstant.SectionLayoutType.COUPON, CommonConstant.SectionLayoutType.CATALOG, CommonConstant.SectionLayoutType.BANNER, CommonConstant.SectionLayoutType.TOPADS -> exploreSectionItem.add(sectionContent)
                 else -> {
                 }
             }
         }
         //init explore and kupon-saya tab
-        renderExploreSectionTab(exploreSectionItem)
+        renderExploreSectionTab(exploreSectionItem, topAdsImageViewModel)
     }
 
-    override fun renderExploreSectionTab(sections: List<SectionContent>) {
+    override fun renderExploreSectionTab(sections: List<SectionContent>, topAdsImageViewModel: TopAdsImageViewModel) {
         if (sections.isEmpty()) { //TODO hide tab or show empty box
         }
-        mExploreSectionPagerAdapter = ExploreSectionPagerAdapter(activityContext, mPresenter, sections)
+        mExploreSectionPagerAdapter = ExploreSectionPagerAdapter(activityContext, mPresenter, sections, topAdsImageViewModel)
         mExploreSectionPagerAdapter?.setRefreshing(false)
         mPagerPromos?.adapter = mExploreSectionPagerAdapter
-        mPagerPromos?.addOnPageChangeListener(TabLayoutOnPageChangeListener(mTabLayoutPromo))
-        mTabLayoutPromo?.addOnTabSelectedListener(ViewPagerOnTabSelectedListener(mPagerPromos))
-        mPagerPromos?.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
-            override fun onPageSelected(position: Int) {
-                if (position == 0) {
-                    mPresenter.pagerSelectedItem = position
-                    AnalyticsTrackerUtil.sendEvent(context,
-                            AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
-                            AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
-                            AnalyticsTrackerUtil.ActionKeys.CLICK_EXPLORE,
-                            "")
-                } else {
-                    mPresenter.pagerSelectedItem = position
-                    AnalyticsTrackerUtil.sendEvent(context,
-                            AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
-                            AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
-                            AnalyticsTrackerUtil.ActionKeys.CLICK_KUPON_SAYA,
-                            "")
-                }
-            }
-
-            override fun onPageScrollStateChanged(state: Int) {}
-        })
     }
 
     override fun onResume() {
