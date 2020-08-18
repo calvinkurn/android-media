@@ -730,7 +730,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         }
 
         override fun onInstallmentDetailClicked() {
-            orderPreferenceCard.showInstallmentDetailBottomSheet(this@OrderSummaryPageFragment)
+            if (viewModel.orderTotal.value.buttonState != ButtonBayarState.LOADING) {
+                orderPreferenceCard.showInstallmentDetailBottomSheet(this@OrderSummaryPageFragment)
+            }
         }
 
         override fun onInstallmentDetailChange(selectedInstallmentTerm: OrderPaymentInstallmentTerm) {
