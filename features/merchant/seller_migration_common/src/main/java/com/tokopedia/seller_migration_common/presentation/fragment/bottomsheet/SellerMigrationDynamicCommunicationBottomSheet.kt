@@ -74,7 +74,6 @@ class SellerMigrationDynamicCommunicationBottomSheet: SellerMigrationCommunicati
         super.setupView()
         setupTitleAndDesc(currentStateIndex)
         setupCommunicationCarousel()
-        setupNumberedPoints(currentStateIndex)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -82,9 +81,15 @@ class SellerMigrationDynamicCommunicationBottomSheet: SellerMigrationCommunicati
         outState.putInt(CURRENT_STATE_KEY, currentStateIndex)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        isAdapterInitialized = false
+    }
+
     private fun setupTitleAndDesc(index: Int) {
         sellerMigrationBottomSheetTitle?.text = communicationTitleList.getOrElse(index) { "" }
         sellerMigrationBottomSheetContent?.text = communicationDescList.getOrElse(index) { "" }
+        setupNumberedPoints(index)
     }
 
     private fun setupCommunicationCarousel() {
