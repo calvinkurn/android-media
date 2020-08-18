@@ -30,9 +30,9 @@ class ShopSettingsInfoViewModel @Inject constructor (
         private val dispatchers: ShopSettingDispatcherProvider
 ): BaseViewModel(dispatchers.ui()) {
 
-    private val _checkOsMerchantType = MutableLiveData<Result<CheckShopIsOfficialModel>>()
-    val checkOsMerchantType: LiveData<Result<CheckShopIsOfficialModel>>
-        get() = _checkOsMerchantType
+    private val _checkOsMerchantTypeData = MutableLiveData<Result<CheckShopIsOfficialModel>>()
+    val checkOsMerchantTypeData: LiveData<Result<CheckShopIsOfficialModel>>
+        get() = _checkOsMerchantTypeData
 
 //    private val _checkPowerMerchantType = MutableLiveData<Result<CheckShopIsPowerMerchantModel>>()
 //    val checkPowerMerchantType: LiveData<Result<CheckShopIsPowerMerchantModel>>
@@ -103,11 +103,11 @@ class ShopSettingsInfoViewModel @Inject constructor (
                         .createRequestParam(shopId = 67726)
                 val osMerchantChecker = checkOsMerchantUseCase.executeOnBackground()
                 osMerchantChecker.let {
-                    _checkOsMerchantType.postValue(Success(it))
+                    _checkOsMerchantTypeData.postValue(Success(it))
                 }
             }
         }) {
-            _checkOsMerchantType.value = Fail(it)
+            _checkOsMerchantTypeData.value = Fail(it)
         }
     }
 }

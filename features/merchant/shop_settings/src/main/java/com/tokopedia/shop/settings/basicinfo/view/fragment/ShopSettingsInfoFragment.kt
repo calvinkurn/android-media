@@ -204,7 +204,12 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
                 is Success -> {
                     val shopStatusData = it.data.result.data
                     userSession.setIsGoldMerchant(!(shopStatusData.isRegularMerchantOrPending() ?: true))
-                    setUIMembership(shopStatusData)
+
+                    if (shopStatusData.isRegularMerchantOrPending()) {
+                        showRegularMerchantMembership(shopStatusData)
+                    } else {
+                        showPowerMerchant(shopStatusData)
+                    }
                 }
                 is Fail -> {
                     println (it)
@@ -230,11 +235,18 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
     }
 
     private fun observeOsMerchantData() {
-        shopSettingsInfoViewModel.checkOsMerchantType.observe(this, Observer {
+        shopSettingsInfoViewModel.checkOsMerchantTypeData.observe(this, Observer {
             when (it) {
                 is Success -> {
-                    val errMessage = it.data.getIsOfficial.messageError
-                    println(it)
+                    it.data.getIsOfficial.let { osData ->
+                        val errMessage = osData.messageError
+                        val isOS = osData.data.isOfficial
+                        val expiration = osData.data.expiredDate
+
+                        if (errMessage.isEmpty() && isOS) {
+                            showOfficialStore(expiration)
+                        }
+                    }
                 }
                 is Fail -> {
                     println(it)
@@ -299,7 +311,6 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
 
     private fun loadShopBasicData() {
         showLoading()
-//        shopSettingsInfoPresenter.getShopData()
         shopSettingsInfoViewModel.getShopData(
                 shopId,
                 includeOS = false
@@ -313,21 +324,6 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
                 .inject(this)
         shopSettingsInfoPresenter.attachView(this)
     }
-
-//    override fun onSuccessGetShopBasicData(result: Pair<ShopBasicDataModel?, GoldGetPmOsStatus?>) {
-//        val (shopBasicDataModel, shopStatusModel) = result
-//        userSession.setIsGoldMerchant(!(shopStatusModel?.result?.data?.isRegularMerchantOrPending()
-//                ?: true))
-//        this.shopBasicDataModel = shopBasicDataModel
-//        hideLoading()
-//        shopBasicDataModel?.let {
-//            setUIShopBasicData(it)
-//            setUIStatus(it)
-//        }
-//        shopStatusModel?.let {
-//            setUIMembership(it.result.data)
-//        }
-//    }
 
     private fun setUIShopBasicData(shopBasicDataModel: ShopBasicDataQuery) {
         shopBasicDataModel.result?.result?.let { shopBasicData ->
@@ -354,165 +350,27 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
         }
     }
 
-    private fun setUIMembership(shopStatusModel: ShopStatusModel) {
-        if (shopStatusModel.isRegularMerchantOrPending()) {
-            showRegularMerchantMembership(shopStatusModel)
-        } else if (shopStatusModel.isOfficialStore()) {
-            showOfficialStore(shopStatusModel)
-        } else {
-            showPowerMerchant(shopStatusModel)
+    private fun showRegularMerchantMembership(shopStatusModel: ShopStatusModel?) {
+        shopStatusModel?.let {
+            iv_logo_power_merchant.visibility = View.GONE
+            tv_merchant_type.text = getString(com.tokopedia.design.R.string.label_regular_merchant)
         }
     }
 
-
-//    private fun setUIShopBasicData(shopBasicDataModel: ShopBasicDataModel) {
-//        tvShopName.text = MethodChecker.fromHtml(shopBasicDataModel.name)
-//        tvShopDomain.text = shopBasicDataModel.domain?.let {
-//            if (URLUtil.isNetworkUrl(it)) {
-//                it
-//            } else {
-//                getString(com.tokopedia.design.R.string.tokopedia_domain) + "/$it"
-//            }
-//        }
-//        if (shopBasicDataModel.tagline.isNullOrBlank()) {
-//            tvShopSloganTitle.visibility = View.GONE
-//            tvShopSlogan.visibility = View.GONE
-//        } else {
-//            tvShopSlogan.text = shopBasicDataModel.tagline
-//            tvShopSloganTitle.visibility = View.VISIBLE
-//            tvShopSlogan.visibility = View.VISIBLE
-//        }
-//
-//        if (shopBasicDataModel.description.isNullOrBlank()) {
-//            tvShopDescriptionTitle.visibility = View.GONE
-//            tvShopDescription.visibility = View.GONE
-//        } else {
-//            tvShopDescription.text = shopBasicDataModel.description
-//            tvShopDescriptionTitle.visibility = View.VISIBLE
-//            tvShopDescription.visibility = View.VISIBLE
-//        }
-//
-//        val logoUrl = shopBasicDataModel.logo
-//        if (TextUtils.isEmpty(logoUrl)) {
-//            ImageHandler.loadImage2(ivShopLogo, logoUrl, com.tokopedia.design.R.drawable.ic_shop_default_empty)
-////            ImageHandler.loadImage2(thumbnail, imageUrl, R.drawable.ic_notifcenter_loading_toped)
-////            ivShopLogo.setImageDrawable(
-////                    MethodChecker.getDrawable(ivShopLogo.getContext(),
-////                            com.tokopedia.design.R.drawable.ic_shop_default_empty))
-//        } else {
-////            ImageHandler.loadImage2(ivShopLogo, logoUrl, R.drawable.ic_loading_toped_new)
-//            ImageHandler.LoadImage(ivShopLogo, logoUrl)
-//        }
-//    }
-
-//    private fun setUIStatus(shopBasicDataModel: ShopBasicDataModel) {
-//        if (shopBasicDataModel.isOpen) {
-//            tvShopStatus.text = getString(com.tokopedia.design.R.string.label_open)
-//
-//            val stringBuilder = StringBuilder()
-//            val closeScheduleUnixString = shopBasicDataModel.closeSchedule
-//            if (!StringUtils.isEmptyNumber(closeScheduleUnixString)) {
-//                val closeString = toReadableString(FORMAT_DATE, closeScheduleUnixString!!)
-//                stringBuilder.append(getString(R.string.closed_schedule, closeString))
-//            }
-//
-//            val closeUntilUnixString = shopBasicDataModel.closeUntil
-//            if (!StringUtils.isEmptyNumber(closeUntilUnixString)) {
-//                val openString = toReadableString(FORMAT_DATE, closeUntilUnixString!!)
-//                stringBuilder.append(" - ")
-//                stringBuilder.append(openString)
-//            }
-//            val closeSchedulString = stringBuilder.toString()
-//            if (TextUtils.isEmpty(closeSchedulString)) {
-////                tvShopCloseSchedule.visibility = View.GONE
-//            } else {
-////                tvShopCloseSchedule.text = stringBuilder.toString()
-////                tvShopCloseSchedule.visibility = View.VISIBLE
-//            }
-//        } else {
-//            tvShopStatus.text = getString(com.tokopedia.design.R.string.label_close)
-//
-//            val openScheduleUnixString = shopBasicDataModel.openSchedule
-//            var openScheduleString: String? = null
-//            if (!StringUtils.isEmptyNumber(openScheduleUnixString)) {
-//                val openString = toReadableString(FORMAT_DATE, openScheduleUnixString!!)
-//                openScheduleString = getString(R.string.open_schedule, openString)
-//            }
-//
-//            if (TextUtils.isEmpty(openScheduleString)) {
-////                tvShopCloseSchedule.visibility = View.GONE
-//            } else {
-////                tvShopCloseSchedule.text = openScheduleString
-////                tvShopCloseSchedule.visibility = View.VISIBLE
-//            }
-//        }
-//    }
-
-//    private fun setUIMembership(shopStatusModel: ShopStatusModel) {
-//        if (shopStatusModel.isRegularMerchantOrPending()) {
-//            showRegularMerchantMembership(shopStatusModel)
-//        } else if (shopStatusModel.isOfficialStore()) {
-//            showOfficialStore()
-//        } else {
-//            showPowerMerchant(shopStatusModel)
-//        }
-//    }
-
-    private fun showRegularMerchantMembership(shopStatusModel: ShopStatusModel) {
-        iv_logo_power_merchant.visibility = View.GONE
-        tv_merchant_type.text = getString(com.tokopedia.design.R.string.label_regular_merchant)
-
-//        tvManageGmSubscribe.visibility = View.GONE
-//        tv_shop_membership_title.text = getString(com.tokopedia.design.R.string.label_regular_merchant)
-//        tv_shop_status.visibility = View.GONE
-//        ticker_container.visibility = View.GONE
-//        tv_ticker_info.visibility = View.VISIBLE
-//        tv_ticker_info.text = getString(R.string.regular_merchant_learn_more)
-//        button_activate.visibility = View.VISIBLE
-//        button_activate.setOnClickListener {
-//            powerMerchantTracking.eventUpgradeShopSetting()
-//            navigateToPMSubscribe()
-//        }
+    private fun showPowerMerchant(shopStatusModel: ShopStatusModel?) {
+        shopStatusModel?.let {
+            iv_logo_power_merchant.visibility = View.VISIBLE
+            iv_logo_power_merchant.setImageResource(com.tokopedia.gm.common.R.drawable.ic_power_merchant)
+            tv_merchant_type.text = getString(com.tokopedia.design.R.string.label_power_merchant)
+            tv_merchant_expiration.text = "Berlaku hingga ${shopStatusModel.powerMerchant.expiredTime}"
+        }
     }
 
-    private fun showPowerMerchant(shopStatusModel: ShopStatusModel) {
-        iv_logo_power_merchant.visibility = View.VISIBLE
-        iv_logo_power_merchant.setImageResource(com.tokopedia.gm.common.R.drawable.ic_power_merchant)
-        tv_merchant_type.text = getString(com.tokopedia.design.R.string.label_power_merchant)
-        tv_merchant_expiration.text = "Berlaku hingga ${shopStatusModel.powerMerchant.expiredTime}"
-
-//        tvManageGmSubscribe.visibility = View.VISIBLE
-//        button_activate.visibility = View.GONE
-//        tvManageGmSubscribe.setOnClickListener {
-//            navigateToPMSubscribe()
-//        }
-//        tv_shop_membership_title.text = getString(com.tokopedia.design.R.string.label_power_merchant)
-//        tv_shop_status.visibility = View.VISIBLE
-//        tv_shop_status.text = getString(if (shopStatusModel.isPowerMerchantActive()) {
-//            R.string.active_label
-//        } else {
-//            R.string.inactive_label
-//        })
-//        ticker_container.visibility = View.VISIBLE
-//        setTextViewClickSpan(tv_ticker, MethodChecker.fromHtml(getString(R.string.power_merchant_learn_more)), getString(R.string.learn_more)) {
-//            powerMerchantTracking.eventLearnMoreSetting()
-//            RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, URL_GAINS_SCORE_POINT)
-//        }
-//        tv_ticker_info.visibility = View.GONE
-    }
-
-    private fun showOfficialStore(shopStatusModel: ShopStatusModel) {
+    private fun showOfficialStore(expirationDate: String) {
         iv_logo_power_merchant.visibility = View.VISIBLE
         iv_logo_power_merchant.setImageResource(R.drawable.ic_official_store)
         tv_merchant_type.text = getString(com.tokopedia.design.R.string.label_official_store)
-        // tv_merchant_expiration.text = shopStatusModel.officialStore
-
-//        tvManageGmSubscribe.visibility = View.GONE
-//        button_activate.visibility = View.GONE
-//        tv_shop_membership_title.text = getString(com.tokopedia.design.R.string.label_official_store)
-//        tv_shop_status.visibility = View.GONE
-//        ticker_container.visibility = View.GONE
-//        tv_ticker_info.visibility = View.GONE
+        tv_merchant_expiration.text = "Berlaku hingga $expirationDate"
     }
 
     private fun setTextViewClickSpan(textView: TextView, previousText: CharSequence, learnMoreString: String, onClickLearnMore: (() -> (Unit))) {
@@ -540,12 +398,6 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
 
 //    private fun navigateToPMSubscribe() {
 //        RouteManager.route(context, ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE)
-//    }
-
-//    override fun onErrorGetShopBasicData(throwable: Throwable) {
-//        hideLoading()
-//        val message = ErrorHandler.getErrorMessage(context, throwable)
-//        NetworkErrorHelper.showEmptyState(context, view, message) { loadShopBasicData() }
 //    }
 
     private fun showErrorGetShopBasicData(throwable: Throwable) {
@@ -599,6 +451,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
         shopSettingsInfoPresenter.run { detachView() }
         shopSettingsInfoViewModel.shopBasicData.removeObservers(this)
         shopSettingsInfoViewModel.shopStatusData.removeObservers(this)
+        shopSettingsInfoViewModel.checkOsMerchantTypeData.removeObservers(this)
         shopSettingsInfoViewModel.flush()
     }
 

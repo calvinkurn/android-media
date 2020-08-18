@@ -23,7 +23,7 @@ data class GetIsOfficial(
 data class Data(
         @SerializedName("expired_date")
         @Expose
-        val expiredDate: String = "2021-07-22T07:00:00+07:00",
+        val expiredDate: String = "",
         @SerializedName("is_official")
         @Expose
         val isOfficial: Boolean = false
