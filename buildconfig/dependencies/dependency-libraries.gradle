@@ -67,6 +67,7 @@ ext {
             locationmanager         : ":libraries:locationmanager",
             logger                  : ":libraries:logger",
             mediauploader           : ":libraries:mediauploader",
+            mpAndroidChart          : "com.github.PhilJay:MPAndroidChart:v3.1.0",
             oms                     : ":libraries:oms",
             permissionchecker       : ":libraries:permissionchecker",
             productPhotoAdapter     : ":libraries:product_photo_adapter",
