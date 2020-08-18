@@ -203,7 +203,8 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
             when (it) {
                 is Success -> {
                     val shopStatusData = it.data.result.data
-                    userSession.setIsGoldMerchant(!(shopStatusData.isRegularMerchantOrPending() ?: true))
+                    userSession.setIsGoldMerchant(!(shopStatusData.isRegularMerchantOrPending()
+                            ?: true))
 
                     if (shopStatusData.isRegularMerchantOrPending()) {
                         showRegularMerchantMembership(shopStatusData)
@@ -212,7 +213,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
                     }
                 }
                 is Fail -> {
-                    println (it)
+                    println(it)
                 }
             }
         })
@@ -335,21 +336,25 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
 
     private fun showRegularMerchantMembership(shopStatusModel: ShopStatusModel?) {
         shopStatusModel?.let {
+            container_power_merchant_official_store.visibility = View.GONE
+            container_regular_merchant.visibility = View.VISIBLE
             iv_logo_power_merchant.visibility = View.GONE
-            tv_merchant_type.text = getString(com.tokopedia.design.R.string.label_regular_merchant)
+            tv_regular_merchant_type.text = getString(com.tokopedia.design.R.string.label_regular_merchant)
         }
     }
 
-    private fun showPowerMerchant(shopStatusModel: ShopStatusModel?) {
-        shopStatusModel?.let {
-            iv_logo_power_merchant.visibility = View.VISIBLE
-            iv_logo_power_merchant.setImageResource(com.tokopedia.gm.common.R.drawable.ic_power_merchant)
-            tv_merchant_type.text = getString(com.tokopedia.design.R.string.label_power_merchant)
-            tv_merchant_expiration.text = "Berlaku hingga ${shopStatusModel.powerMerchant.expiredTime}"
-        }
+    private fun showPowerMerchant(shopStatusModel: ShopStatusModel) {
+        container_power_merchant_official_store.visibility = View.VISIBLE
+        container_regular_merchant.visibility = View.GONE
+        iv_logo_power_merchant.visibility = View.VISIBLE
+        iv_logo_power_merchant.setImageResource(com.tokopedia.gm.common.R.drawable.ic_power_merchant)
+        tv_merchant_type.text = getString(com.tokopedia.design.R.string.label_power_merchant)
+        tv_merchant_expiration.text = "Berlaku hingga ${shopStatusModel.powerMerchant.expiredTime}"
     }
 
     private fun showOfficialStore(expirationDate: String) {
+        container_power_merchant_official_store.visibility = View.VISIBLE
+        container_regular_merchant.visibility = View.GONE
         iv_logo_power_merchant.visibility = View.VISIBLE
         iv_logo_power_merchant.setImageResource(R.drawable.ic_official_store)
         tv_merchant_type.text = getString(com.tokopedia.design.R.string.label_official_store)
