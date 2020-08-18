@@ -106,6 +106,10 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     private var needReloadData: Boolean = false
     private var isOfficialStore: Boolean = false
     private var isGoldMerchant: Boolean = false
+
+    private var shopProductSortFilterUiModel: ShopProductSortFilterUiModel? = null
+    private var keywordEmptyState = ""
+
     private val staggeredGridLayoutManager: StaggeredGridLayoutManager by lazy {
         StaggeredGridLayoutManager(GRID_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
     }
@@ -263,6 +267,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     private fun loadProductDataEmptyState(shopInfo: ShopInfo, page: Int) {
         sortValue = "1"
         selectedEtalaseId = ""
+        keywordEmptyState = keyword
         keyword = ""
 
         viewModel.getShopProductEmptyState(
@@ -338,10 +343,10 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         }
 
         if (productList.isEmpty()) {
-//            shopProductAdapter.addEmptyDataModel(emptyDataViewModel)
             showLoading()
             shopInfo?.let { loadProductDataEmptyState(it, defaultInitialPage) }
         } else {
+            shopProductSortFilterUiModel?.let { shopProductAdapter.setSortFilterData(it) }
             shopProductAdapter.setProductListDataModel(productList)
             updateScrollListenerState(hasNextPage)
             isLoadingInitialData = false
@@ -508,15 +513,12 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 ?: ""
         val selectedSortName = shopStickySortFilter.sortList.firstOrNull { it.value == sortValue }?.name
                 ?: ""
-        val shopProductSortFilterUiModel = ShopProductSortFilterUiModel(
+        shopProductSortFilterUiModel = ShopProductSortFilterUiModel(
                 selectedEtalaseId = selectedEtalaseId.takeIf { it.isNotEmpty() } ?: "",
                 selectedEtalaseName = selectedEtalaseName.takeIf { it.isNotEmpty() } ?: "",
                 selectedSortId = sortValue,
                 selectedSortName = selectedSortName
         )
-        if(keyword.isBlank()) {
-            shopProductAdapter.setSortFilterData(shopProductSortFilterUiModel)
-        }
         viewModel.getShopProduct(
                 shopId ?: "",
                 defaultInitialPage,
@@ -805,7 +807,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     override fun onSecondaryButtonEmptyClicked() {
         RouteManager.route(
                 context,
-                "${ApplinkConst.DISCOVERY_SEARCH}?q=$keyword"
+                "${ApplinkConst.DISCOVERY_SEARCH}?q=$keywordEmptyState"
         )
     }
 }
