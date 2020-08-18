@@ -130,6 +130,7 @@ import kotlinx.android.synthetic.main.dialog_accept_order_free_shipping_som.view
 import kotlinx.android.synthetic.main.fragment_som_detail.*
 import kotlinx.android.synthetic.main.fragment_som_detail.btn_primary
 import kotlinx.android.synthetic.main.partial_info_layout.view.*
+import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.util.*
 import javax.inject.Inject
@@ -302,12 +303,11 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
     }
 
     private fun checkUserRole() {
-        progressBarSom?.show()
+        showLoading()
         if (Utils.isConnectedToInternet(context)) {
             somDetailViewModel.loadUserRoles(userSession.userId.toIntOrZero())
         } else {
-            showNoInternetConnectionGlobalError()
-            progressBarSom?.hide()
+            showErrorState(GlobalError.NO_CONNECTION)
         }
     }
 
@@ -327,8 +327,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
     }
 
     private fun loadDetail() {
-        somGlobalError?.hide()
-        progressBarSom?.show()
+        showLoading()
         if (Utils.isConnectedToInternet(context)) {
             activity?.let {
                 SomAnalytics.sendScreenName(it, SomConsts.DETAIL_ORDER_SCREEN_NAME + orderId)
@@ -337,8 +336,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                 }
             }
         } else {
-            showNoInternetConnectionGlobalError()
-            progressBarSom?.hide()
+            showErrorState(GlobalError.NO_CONNECTION)
         }
     }
 
@@ -356,16 +354,10 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                     renderDetail()
                 }
                 is Fail -> {
-                    if (it.throwable is UnknownHostException) {
-                        showNoInternetConnectionGlobalError()
-                    } else {
-                        showServerErrorGlobalError()
-                    }
+                    it.throwable.showGlobalError()
                     SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_GET_ORDER_DETAIL)
                 }
             }
-            setLoadingIndicator(false)
-            progressBarSom?.hide()
         })
     }
 
@@ -388,11 +380,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                 is Fail -> {
                     SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_ACCEPTING_ORDER)
                     SomAnalytics.eventClickAcceptOrderPopup(false)
-                    if (it.throwable is UnknownHostException) {
-                        showNoInternetConnectionToaster()
-                    } else {
-                        showServerErrorToaster()
-                    }
+                    it.throwable.showErrorToaster()
                 }
             }
         })
@@ -442,11 +430,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                 }
                 is Fail -> {
                     SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_GET_ORDER_REJECT_REASONS)
-                    if (it.throwable is UnknownHostException) {
-                        showNoInternetConnectionToaster()
-                    } else {
-                        showServerErrorToaster()
-                    }
+                    it.throwable.showErrorToaster()
                 }
             }
         })
@@ -467,11 +451,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                 }
                 is Fail -> {
                     SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_WHEN_SET_DELIVERED)
-                    if (it.throwable is UnknownHostException) {
-                        showNoInternetConnectionToaster()
-                    } else {
-                        showServerErrorToaster()
-                    }
+                    it.throwable.showErrorToaster()
                 }
             }
         })
@@ -479,7 +459,6 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
 
     private fun observingUserRoles() {
         somDetailViewModel.userRoleResult.observe(viewLifecycleOwner, Observer { result ->
-            setLoadingIndicator(false)
             when (result) {
                 is Success -> {
                     if (result.data.roles.any { allowedRoles.contains(it) }) {
@@ -490,12 +469,8 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                 }
                 is Fail -> {
                     SomErrorHandler.logExceptionToCrashlytics(result.throwable, String.format(SomConsts.ERROR_GET_USER_ROLES, PAGE_NAME))
-                    if (result.throwable is UnknownHostException) {
-                        showNoInternetConnectionToaster()
-                    } else {
-                        showServerErrorToaster()
-                    }
-                    refreshHandler?.finishRefresh()
+                    result.throwable.showErrorToaster()
+                    result.throwable.showGlobalError()
                 }
             }
         })
@@ -515,8 +490,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
     }
 
     private fun renderDetail() {
-        rv_detail?.show()
-        refreshHandler?.finishRefresh()
+        showSuccessState()
         listDetailData = arrayListOf()
         somDetailAdapter.listDataDetail = arrayListOf()
         renderHeader()
@@ -959,11 +933,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                     if(failEditAwbResponse.message.isNotEmpty()) {
                         showToasterError(failEditAwbResponse.message, view)
                     } else {
-                        if (it.throwable is UnknownHostException) {
-                            showNoInternetConnectionToaster()
-                        } else {
-                            showServerErrorToaster()
-                        }
+                        it.throwable.showErrorToaster()
                     }
                 }
             }
@@ -1375,11 +1345,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                 }
                 is Fail -> {
                     SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_REJECT_ORDER)
-                    if (it.throwable is UnknownHostException) {
-                        showNoInternetConnectionToaster()
-                    } else {
-                        showServerErrorToaster()
-                    }
+                    it.throwable.showErrorToaster()
                 }
             }
         })
@@ -1465,8 +1431,6 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
     }
 
     override fun onRefresh(view: View?) {
-        rv_detail?.hide()
-        containerBtnDetail ?.hide()
         if (isUserRoleFetched(somDetailViewModel.userRoleResult.value)) {
             loadDetail()
         } else {
@@ -1580,6 +1544,23 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
         }
     }
 
+    private fun Throwable.showGlobalError() {
+        val type = if (this is UnknownHostException || this is SocketTimeoutException) {
+            GlobalError.NO_CONNECTION
+        } else {
+            GlobalError.SERVER_ERROR
+        }
+        showErrorState(type)
+    }
+
+    private fun Throwable.showErrorToaster() {
+        if (this is UnknownHostException || this is SocketTimeoutException) {
+            showNoInternetConnectionToaster()
+        } else {
+            showServerErrorToaster()
+        }
+    }
+
     private fun showNoInternetConnectionGlobalError() {
         somGlobalError?.setType(GlobalError.NO_CONNECTION)
         somGlobalError?.show()
@@ -1610,5 +1591,36 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
 
     private fun showServerErrorToaster() {
         showErrorToaster(getString(R.string.som_error_message_server_fault))
+    }
+
+    private fun showLoading() {
+        progressBarSom?.show()
+        rv_detail?.hide()
+        somGlobalError?.hide()
+        containerBtnDetail?.hide()
+        setLoadingIndicator(true)
+        refreshHandler?.finishRefresh()
+    }
+
+    private fun showErrorState(type: Int) {
+        when (type) {
+            GlobalError.NO_CONNECTION -> showNoInternetConnectionGlobalError()
+            GlobalError.SERVER_ERROR -> showServerErrorGlobalError()
+            else -> showNoInternetConnectionGlobalError()
+        }
+        progressBarSom?.hide()
+        rv_detail?.hide()
+        containerBtnDetail?.hide()
+        setLoadingIndicator(false)
+        refreshHandler?.finishRefresh()
+    }
+
+    private fun showSuccessState() {
+        rv_detail?.show()
+        containerBtnDetail?.show()
+        progressBarSom?.hide()
+        somGlobalError?.hide()
+        setLoadingIndicator(false)
+        refreshHandler?.finishRefresh()
     }
 }
