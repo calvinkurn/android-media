@@ -47,8 +47,6 @@ class AddNewAddressTest {
         IdlingRegistry.getInstance().unregister(SimpleIdlingResource.countingIdlingResource)
     }
 
-
-
     @Test
     fun addAddressUserFunnel_PassedAnalyticsTest() {
         val query = getJsonDataFromAsset(context, "tracker/logistic/cvr_user_funnel.json")

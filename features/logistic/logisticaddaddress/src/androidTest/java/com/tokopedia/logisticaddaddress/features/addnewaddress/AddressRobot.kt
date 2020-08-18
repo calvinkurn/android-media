@@ -2,10 +2,12 @@ package com.tokopedia.logisticaddaddress.features.addnewaddress
 
 import android.content.Intent
 import androidx.recyclerview.widget.RecyclerView
-import androidx.test.espresso.Espresso
-import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.contrib.RecyclerViewActions
-import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.*
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.analyticsdebugger.validator.core.getAnalyticsWithQuery
@@ -14,6 +16,7 @@ import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapActivity
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import org.hamcrest.MatcherAssert
+import org.hamcrest.MatcherAssert.assertThat
 
 fun addAddress(func: AddressRobot.() -> Unit) = AddressRobot().apply(func)
 
@@ -23,47 +26,47 @@ class AddressRobot {
         val i = Intent()
         i.putExtra(CheckoutConstant.EXTRA_REF, screenName)
         rule.launchActivity(i)
-        // Startup activity
-        delayShort()
+        // Delay for animation
+        Thread.sleep(500L)
     }
 
     fun searchWithKeyword(keyword: String) {
-        Espresso.onView(ViewMatchers.withId(R.id.et_search)).perform(ViewActions.typeText(keyword), ViewActions.closeSoftKeyboard())
-        delayShort()
+        onView(withId(R.id.et_search))
+                .check(matches(isDisplayed()))
+                .perform (typeText(keyword), closeSoftKeyboard())
+        // delay for text field debounce
+        Thread.sleep(500L)
     }
 
     fun selectFirstItem() {
-        Espresso.onView(ViewMatchers.withId(R.id.rv_poi_list))
-                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(0, ViewActions.click()))
-        delayShort()
+        onView(withId(R.id.rv_poi_list))
+                .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(0, click()))
     }
 
     fun addressDetail(detail: String) {
-        Espresso.onView(ViewMatchers.withId(R.id.et_detail_address))
-                .perform(ViewActions.typeText(detail), ViewActions.closeSoftKeyboard())
-        Espresso.onView(ViewMatchers.withId(R.id.btn_choose_location)).perform(ViewActions.click())
+        onView(withId(R.id.et_detail_address))
+                .perform(typeText(detail), closeSoftKeyboard())
+        onView(withId(R.id.btn_choose_location)).perform(click())
     }
 
     fun receiver(receiver: String) {
-        Espresso.onView(ViewMatchers.withId(R.id.et_receiver_name)).perform(ViewActions.typeText(receiver), ViewActions.closeSoftKeyboard())
+        onView(withId(R.id.et_receiver_name))
+                .perform(typeText(receiver), closeSoftKeyboard())
     }
 
     fun phoneNumber(phone: String) {
-        Espresso.onView(ViewMatchers.withId(R.id.et_phone)).perform(ViewActions.typeText(phone), ViewActions.closeSoftKeyboard())
+        onView(withId(R.id.et_phone)).perform(typeText(phone), closeSoftKeyboard())
     }
 
     infix fun submit(func: ResultRobot.() -> Unit): ResultRobot {
-        Espresso.onView(ViewMatchers.withId(R.id.btn_save_address)).perform(ViewActions.scrollTo(), ViewActions.click())
+        onView(withId(R.id.btn_save_address)).perform(scrollTo(), click())
         return ResultRobot().apply(func)
     }
 
-    private fun delayShort() {
-        Thread.sleep(1000L)
-    }
 }
 
 class ResultRobot {
     fun hasPassedAnalytics(repository: GtmLogDBSource, queryString: String) {
-        MatcherAssert.assertThat(getAnalyticsWithQuery(repository, queryString), hasAllSuccess())
+        assertThat(getAnalyticsWithQuery(repository, queryString), hasAllSuccess())
     }
 }
