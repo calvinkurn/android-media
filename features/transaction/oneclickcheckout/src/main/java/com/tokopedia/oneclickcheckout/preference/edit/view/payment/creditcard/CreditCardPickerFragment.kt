@@ -22,15 +22,9 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentCreditCardAdditionalData
-import com.tokopedia.oneclickcheckout.preference.edit.di.PreferenceEditComponent
-import com.tokopedia.user.session.UserSessionInterface
 import java.net.URLEncoder
-import javax.inject.Inject
 
 class CreditCardPickerFragment : BaseDaggerFragment() {
-
-    @Inject
-    lateinit var userSession: UserSessionInterface
 
     private var webView: WebView? = null
     private var progressBar: ProgressBar? = null
@@ -40,7 +34,7 @@ class CreditCardPickerFragment : BaseDaggerFragment() {
     }
 
     override fun initInjector() {
-        getComponent(PreferenceEditComponent::class.java).inject(this)
+        // no op
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,

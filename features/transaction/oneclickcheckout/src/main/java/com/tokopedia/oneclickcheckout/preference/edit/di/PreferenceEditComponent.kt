@@ -4,7 +4,6 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.oneclickcheckout.preference.edit.view.PreferenceEditActivity
 import com.tokopedia.oneclickcheckout.preference.edit.view.address.AddressListFragment
 import com.tokopedia.oneclickcheckout.preference.edit.view.payment.PaymentMethodFragment
-import com.tokopedia.oneclickcheckout.preference.edit.view.payment.creditcard.CreditCardPickerFragment
 import com.tokopedia.oneclickcheckout.preference.edit.view.shipping.ShippingDurationFragment
 import com.tokopedia.oneclickcheckout.preference.edit.view.summary.PreferenceSummaryFragment
 import dagger.Component
@@ -18,5 +17,4 @@ interface PreferenceEditComponent{
     fun inject(shippingDurationFragment: ShippingDurationFragment)
     fun inject(summaryFragment: PreferenceSummaryFragment)
     fun inject(paymentMethodFragment: PaymentMethodFragment)
-    fun inject(creditCardPickerFragment: CreditCardPickerFragment)
 }
