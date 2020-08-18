@@ -8,9 +8,7 @@ import com.tokopedia.gm.common.domain.interactor.GetShopStatusUseCaseCoroutine
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.gql.ShopBasicDataQuery
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopBasicDataUseCaseCoroutine
 import com.tokopedia.shop.settings.basicinfo.data.CheckShopIsOfficialModel
-import com.tokopedia.shop.settings.basicinfo.data.CheckShopIsPowerMerchantModel
 import com.tokopedia.shop.settings.basicinfo.domain.CheckOfficialStoreTypeUseCase
-import com.tokopedia.shop.settings.basicinfo.domain.CheckPowerMerchantTypeUseCase
 import com.tokopedia.shop.settings.common.util.ShopSettingDispatcherProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -24,7 +22,6 @@ import javax.inject.Inject
 
 class ShopSettingsInfoViewModel @Inject constructor (
         private val checkOsMerchantUseCase: CheckOfficialStoreTypeUseCase,
-        private val checkPowerMerchantUseCase: CheckPowerMerchantTypeUseCase,
         private val getShopBasicDataUseCase: GetShopBasicDataUseCaseCoroutine,
         private val getShopStatusUseCase: GetShopStatusUseCaseCoroutine,
         private val dispatchers: ShopSettingDispatcherProvider
@@ -33,10 +30,6 @@ class ShopSettingsInfoViewModel @Inject constructor (
     private val _checkOsMerchantTypeData = MutableLiveData<Result<CheckShopIsOfficialModel>>()
     val checkOsMerchantTypeData: LiveData<Result<CheckShopIsOfficialModel>>
         get() = _checkOsMerchantTypeData
-
-//    private val _checkPowerMerchantType = MutableLiveData<Result<CheckShopIsPowerMerchantModel>>()
-//    val checkPowerMerchantType: LiveData<Result<CheckShopIsPowerMerchantModel>>
-//        get() = _checkPowerMerchantType
 
     private val _shopBasicData = MutableLiveData<Result<ShopBasicDataQuery>>()
     val shopBasicData: LiveData<Result<ShopBasicDataQuery>>
@@ -47,21 +40,6 @@ class ShopSettingsInfoViewModel @Inject constructor (
         get() = _shopStatusData
 
 
-
-//    fun validatePowerMerchantType(shopId: Int) {
-//        launchCatchError(block = {
-//            withContext(dispatchers.io()) {
-//                checkPowerMerchantUseCase.params = CheckPowerMerchantTypeUseCase
-//                        .createRequestParam(shopID = 67726, includeOS = false)
-//                val osMerchantChecker = checkPowerMerchantUseCase.executeOnBackground()
-//                osMerchantChecker.let {
-//                    _checkPowerMerchantType.postValue(Success(it))
-//                }
-//            }
-//        }) {
-//            _checkPowerMerchantType.value = Fail(it)
-//        }
-//    }
 
     fun getShopData(shopId: Int, includeOS: Boolean) {
         launchCatchError(block = {

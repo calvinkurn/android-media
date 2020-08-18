@@ -256,23 +256,6 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
     }
 
 
-//    private fun observePowerMerchantData() {
-//        shopSettingsInfoViewModel.checkPowerMerchantType.observe(this, Observer {
-//            when (it) {
-//                is Success -> {
-//                    val errMessage = it.data.goldGetPMOSStatus.header.messages
-//                    val merchantType = it.data.goldGetPMOSStatus.data.powerMerchant.status
-//                    println(it)
-//                }
-//                is Fail -> {
-//                    println(it)
-//                }
-//            }
-//        })
-//    }
-
-
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
