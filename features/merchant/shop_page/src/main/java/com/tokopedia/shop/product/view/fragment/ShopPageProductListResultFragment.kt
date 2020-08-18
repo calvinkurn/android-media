@@ -276,7 +276,9 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 ShopPageConstant.SHOP_PRODUCT_EMPTY_STATE_LIMIT,
                 sortValue.toIntOrZero(),
                 selectedEtalaseId,
-                keyword)
+                keyword,
+                isNeedToReloadData
+        )
     }
 
     private fun initRecyclerView(view: View) {
@@ -342,7 +344,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             endlessRecyclerViewScrollListener.resetState()
         }
 
-        if (productList.isEmpty()) {
+        if (productList.isEmpty() && isLoadingInitialData) {
             showLoading()
             shopInfo?.let { loadProductDataEmptyState(it, defaultInitialPage) }
         } else {
@@ -357,6 +359,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         hideLoading()
         shopProductAdapter.clearAllElements()
         shopProductAdapter.addEmptyStateData(productList)
+        isNeedToReloadData = true
     }
 
     override fun onItemClicked(baseShopProductViewModel: BaseShopProductViewModel) {
