@@ -274,14 +274,14 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
 
         val logoUrl = shopBasicDataModel.logo
         if (TextUtils.isEmpty(logoUrl)) {
-            ImageHandler.loadImage2(ivShopLogo, logoUrl, com.tokopedia.design.R.drawable.ic_shop_default_empty)
+//            ImageHandler.loadImage2(ivShopLogo, logoUrl, com.tokopedia.design.R.drawable.ic_shop_default_empty)
 //            ImageHandler.loadImage2(thumbnail, imageUrl, R.drawable.ic_notifcenter_loading_toped)
 //            ivShopLogo.setImageDrawable(
 //                    MethodChecker.getDrawable(ivShopLogo.getContext(),
 //                            com.tokopedia.design.R.drawable.ic_shop_default_empty))
         } else {
 //            ImageHandler.loadImage2(ivShopLogo, logoUrl, R.drawable.ic_loading_toped_new)
-            ImageHandler.LoadImage(ivShopLogo, logoUrl)
+//            ImageHandler.LoadImage(ivShopLogo, logoUrl)
         }
     }
 

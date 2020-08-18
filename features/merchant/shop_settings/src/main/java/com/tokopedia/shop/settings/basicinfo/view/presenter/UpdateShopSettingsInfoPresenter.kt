@@ -1,10 +1,7 @@
 package com.tokopedia.shop.settings.basicinfo.view.presenter
 
-import android.util.Log
-
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
-import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopBasicDataUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.UpdateShopBasicDataUseCase
