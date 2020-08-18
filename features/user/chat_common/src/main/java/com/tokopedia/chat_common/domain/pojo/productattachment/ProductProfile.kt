@@ -59,4 +59,7 @@ class ProductProfile {
     @SerializedName("list_image_url")
     @Expose
     val images: List<String> = emptyList()
+    @SerializedName("rating")
+    @Expose
+    val rating: TopchatProductRating = TopchatProductRating()
 }

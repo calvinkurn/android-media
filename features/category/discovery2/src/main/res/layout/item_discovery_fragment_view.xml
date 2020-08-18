@@ -5,10 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.recyclerview.widget.RecyclerView
+    <com.tokopedia.discovery2.viewcontrollers.customview.StickyHeadRecyclerView
         android:id="@+id/discovery_recyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <com.tokopedia.discovery2.viewcontrollers.customview.CustomTopChatView
         android:id="@+id/fab"

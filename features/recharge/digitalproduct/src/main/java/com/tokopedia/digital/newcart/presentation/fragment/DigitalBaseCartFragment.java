@@ -287,7 +287,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
         String promoCode = promoData.getPromoCode();
         if (!promoCode.isEmpty()) {
             int requestCode;
-            if (promoData.getTypePromo() == PromoData.CREATOR.getTYPE_VOUCHER()) {
+            if (promoData.getTypePromo() == PromoData.TYPE_VOUCHER) {
                 intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalPromo.PROMO_LIST_DIGITAL);
                 intent.putExtra("EXTRA_PROMO_CODE", promoCode);
                 intent.putExtra("EXTRA_COUPON_ACTIVE",

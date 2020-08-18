@@ -61,7 +61,7 @@ dependencies {
     implementation rootProject.ext.debugToolsDependencies.chuck
 
     implementation project(rootProject.ext.features.resourcesCommon)
-    implementation project(rootProject.ext.features.goldMerchantResource)
+    implementation project(rootProject.ext.features.goldMerchantCommon)
     implementation project(rootProject.ext.features.logisticdata)
 
     //-------------------------------------------------------------------//

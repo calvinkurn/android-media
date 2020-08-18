@@ -69,28 +69,24 @@ open class SelectionRangeCalendarWidget : BottomSheetUnify() {
 
         arguments?.let {
             if (it.getString(ARG_MIN_DATE) != null)
-                minDate = it.getString(ARG_MIN_DATE).stringToDate(TRAVEL_CAL_YYYY_MM_DD)
+                minDate = (it.getString(ARG_MIN_DATE)?:"").stringToDate(TRAVEL_CAL_YYYY_MM_DD)
 
             if (it.getString(ARG_MAX_DATE) != null)
-                maxDate = it.getString(ARG_MAX_DATE).stringToDate(TRAVEL_CAL_YYYY_MM_DD)
+                maxDate = (it.getString(ARG_MAX_DATE)?:"").stringToDate(TRAVEL_CAL_YYYY_MM_DD)
 
-            if (it.getInt(ARG_RANGE_YEAR) != null)
-                rangeYear = it.getInt(ARG_RANGE_YEAR)
+            rangeYear = it.getInt(ARG_RANGE_YEAR)
 
-            if (it.getLong(ARG_RANGE_DATE_SELECTED) != null)
-                rangeDateSelected = it.getLong(ARG_RANGE_DATE_SELECTED)
+            rangeDateSelected = it.getLong(ARG_RANGE_DATE_SELECTED)
 
             if (it.getString(ARG_MIN_DATE_LABEL) != null)
-                minDateLabel = it.getString(ARG_MIN_DATE_LABEL)
+                minDateLabel = it.getString(ARG_MIN_DATE_LABEL) ?: ""
 
             if (it.getString(ARG_MAX_DATE_LABEL) != null)
-                maxDateLabel = it.getString(ARG_MAX_DATE_LABEL)
+                maxDateLabel = it.getString(ARG_MAX_DATE_LABEL) ?: ""
 
-            if (it.getInt(ARG_MIN_SELECTABLE_DATE_FROM_TODAY) != null)
-                minSelectableDateFromToday = it.getInt(ARG_MIN_SELECTABLE_DATE_FROM_TODAY)
+            minSelectableDateFromToday = it.getInt(ARG_MIN_SELECTABLE_DATE_FROM_TODAY)
 
-            if (it.getBoolean(ARG_CAN_SELECT_SAME_DAY) != null)
-                canSelectSameDay = it.getBoolean(ARG_CAN_SELECT_SAME_DAY)
+            canSelectSameDay = it.getBoolean(ARG_CAN_SELECT_SAME_DAY)
         }
     }
 

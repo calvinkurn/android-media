@@ -3,7 +3,7 @@ package com.tokopedia.topads.product.view.presenter;
 import com.tokopedia.topads.common.model.request.DataRequest;
 import com.tokopedia.topads.auto.data.AutoAdsUseCase;
 import com.tokopedia.topads.auto.data.entity.TopAdsAutoAdsData;
-import com.tokopedia.topads.auto.internal.AutoAdsStatus;
+import com.tokopedia.topads.common.data.internal.AutoAdsStatus;
 import com.tokopedia.topads.common.domain.interactor.TopAdsDatePickerInteractor;
 import com.tokopedia.topads.common.view.presenter.TopAdsBaseListPresenter;
 import com.tokopedia.topads.dashboard.constant.SortTopAdsOption;

@@ -1,19 +1,17 @@
 package com.tokopedia.topads.dashboard.view.activity;
 
-import android.os.Bundle;
-import android.os.PersistableBundle;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.topads.R;
-import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.topads.common.view.activity.TopAdsBaseActivity;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsAddProductListFragment;
 import com.tokopedia.topads.dashboard.view.model.TopAdsProductViewModel;
 
 import java.util.ArrayList;
 
-public class TopAdsAddProductListActivity extends BaseSimpleActivity{
+public class TopAdsAddProductListActivity extends TopAdsBaseActivity {
 
     @Override
     protected Fragment getNewFragment() {
@@ -23,10 +21,5 @@ public class TopAdsAddProductListActivity extends BaseSimpleActivity{
         boolean isHideEtalase = getIntent().getExtras().getBoolean(TopAdsExtraConstant.EXTRA_HIDE_ETALASE, false);
         int maxNumberSelection = getIntent().getExtras().getInt(TopAdsExtraConstant.EXTRA_MAX_NUMBER_SELECTION, 50);
         return TopAdsAddProductListFragment.newInstance(maxNumberSelection, selectionParcel, isExistingGroup, isHideEtalase);
-    }
-
-    @Override
-    protected boolean isToolbarWhite() {
-        return true;
     }
 }

@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import com.facebook.FacebookSdk
 import com.facebook.login.LoginManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -31,6 +32,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.logout.R
 import com.tokopedia.logout.di.DaggerLogoutComponent
 import com.tokopedia.logout.di.LogoutComponent
+import com.tokopedia.logout.di.module.LogoutModule
 import com.tokopedia.logout.viewmodel.LogoutViewModel
 import com.tokopedia.notifications.CMPushNotificationManager.Companion.instance
 import com.tokopedia.remoteconfig.RemoteConfigInstance
@@ -50,6 +52,8 @@ import javax.inject.Inject
  * @applink : [com.tokopedia.applink.internal.ApplinkConstInternalGlobal.LOGOUT]
  * @param   : [com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_IS_RETURN_HOME]
  * default is 'true', set 'false' if you wan get activity result
+ * @param   : [com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_IS_CLEAR_DATA_ONLY]
+ * default is 'false', set 'true' if you just wan to clear data only
  */
 
 class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
@@ -62,6 +66,7 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
     private val logoutViewModel by lazy { viewModelProvider.get(LogoutViewModel::class.java) }
 
     private var isReturnToHome = true
+    private var isClearDataOnly = false
 
     private lateinit var mGoogleSignInClient: GoogleSignInClient
 
@@ -70,9 +75,10 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
     override fun getNewFragment(): Fragment? = null
 
     override fun getComponent(): LogoutComponent {
-        return DaggerLogoutComponent.builder().baseAppComponent(
-                (application as BaseMainApplication).baseAppComponent
-        ).build()
+        return DaggerLogoutComponent.builder()
+                .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+                .logoutModule(LogoutModule(this))
+                .build()
     }
 
     public override fun onCreate(savedInstanceState: Bundle?) {
@@ -90,12 +96,18 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
 
         showLoading()
         saveLoginReminderData()
-        logoutViewModel.doLogout()
+
+        if (isClearDataOnly) {
+            clearData()
+        } else {
+            logoutViewModel.doLogout()
+        }
     }
 
     private fun getParams() {
         if (intent.extras != null) {
             isReturnToHome = intent.extras?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_RETURN_HOME, true) as Boolean
+            isClearDataOnly = intent.extras?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_CLEAR_DATA_ONLY, false) as Boolean
         }
     }
 
@@ -117,7 +129,7 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
     }
 
     private fun initObservable() {
-        logoutViewModel.logoutLiveData.observe(this, Observer {
+        logoutViewModel.logoutResult.observe(this, Observer {
             when (it) {
                 is Success -> {
                     clearData()
@@ -151,13 +163,13 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         NotificationModHandler.clearCacheAllNotification(applicationContext)
         CacheApiClearAllUseCase(applicationContext).executeSync()
         RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
-
-        val notify = NotificationModHandler(applicationContext)
-        notify.dismissAllActivedNotifications()
+        NotificationModHandler(applicationContext).dismissAllActivedNotifications()
 
         instance.refreshFCMTokenFromForeground(FCMCacheManager.getRegistrationId(applicationContext), true)
 
         tetraDebugger?.setUserId("")
+        userSession.clearToken()
+        userSession.logoutSession()
 
         if (isReturnToHome) {
             if (GlobalConfig.isSellerApp()) {
@@ -167,7 +179,10 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
                 startActivity(mIntent)
                 finish()
             } else {
-                RouteManager.route(this, ApplinkConst.HOME)
+                val intent = RouteManager.getIntent(this, ApplinkConst.HOME)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+                startActivity(intent)
+                finish()
             }
         } else {
             setResult(Activity.RESULT_OK)
@@ -181,6 +196,7 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
     }
 
     private fun logoutFacebook() {
+        FacebookSdk.sdkInitialize(applicationContext)
         LoginManager.getInstance().logOut()
     }
 

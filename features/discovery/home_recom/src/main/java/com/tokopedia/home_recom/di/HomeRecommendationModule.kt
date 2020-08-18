@@ -52,13 +52,13 @@ class HomeRecommendationModule {
     fun provideGetRecommendationUseCase(@ApplicationContext context: Context,
                                         graphqlUseCase: GraphqlUseCase,
                                         userSessionInterface: UserSessionInterface): GetRecommendationUseCase {
-        val recomQuery = GraphqlHelper.loadRawString(context.resources, R.raw.query_recommendation_widget)
+        val recomQuery = GraphqlHelper.loadRawString(context.resources, com.tokopedia.recommendation_widget_common.R.raw.query_recommendation_widget)
         return GetRecommendationUseCase(recomQuery, graphqlUseCase, userSessionInterface)
     }
     @Provides
     @HomeRecommendationScope
     fun provideGetSingleRecommendationUseCase(@ApplicationContext context: Context, graphqlUseCase: GraphqlUseCase, userSessionInterface: UserSessionInterface): GetSingleRecommendationUseCase {
-        val recomQuery = GraphqlHelper.loadRawString(context.resources, R.raw.gql_single_product_recommendation)
+        val recomQuery = GraphqlHelper.loadRawString(context.resources, com.tokopedia.recommendation_widget_common.R.raw.gql_single_product_recommendation)
         return GetSingleRecommendationUseCase(recomQuery, graphqlUseCase, userSessionInterface)
     }
 
@@ -76,6 +76,6 @@ class HomeRecommendationModule {
     @Named("atcMutation")
     fun provideAddToCartMutation(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources,
-                    R.raw.mutation_add_to_cart)
+                    com.tokopedia.atc_common.R.raw.mutation_add_to_cart)
 
 }

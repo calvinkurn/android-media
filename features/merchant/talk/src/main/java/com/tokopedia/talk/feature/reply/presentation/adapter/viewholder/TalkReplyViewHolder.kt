@@ -84,11 +84,13 @@ class TalkReplyViewHolder(view: View,
         }
     }
 
-    private fun showSellerLabelWithCondition(isSeller: Boolean) {
-        if(isSeller) {
-            itemView.replySellerLabel.show()
+    private fun showSellerLabelWithCondition(isSeller: Boolean)  = with(itemView){
+        if (isSeller) {
+            replyDisplayName.hide()
+            replySellerLabel.show()
         } else {
-            itemView.replySellerLabel.hide()
+            replyDisplayName.show()
+            replySellerLabel.hide()
         }
     }
 

@@ -1,15 +1,16 @@
 package com.tokopedia.checkout.subfeature.multiple_address.view;
 
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.tokopedia.checkout.R;
-import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel;
 import com.tokopedia.checkout.subfeature.multiple_address.domain.model.MultipleAddressAdapterData;
 import com.tokopedia.checkout.subfeature.multiple_address.domain.model.MultipleAddressItemData;
 import com.tokopedia.checkout.subfeature.multiple_address.view.viewholder.MultipleAddressItemViewHolder;
+import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel;
 
 import java.util.List;
 

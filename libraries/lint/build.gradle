@@ -2,28 +2,12 @@ apply plugin: 'java-library'
 apply plugin: 'kotlin'
 
 ext {
-    lintVersion = "26.6.3"
+    lintVersion = "26.5.3"
 }
 
-repositories {
-    google()
-    mavenCentral()
-    jcenter()
-}
-
-jar {
-    manifest {
-        attributes 'Manifest-Version': 1.0
-        attributes('Lint-Registry': 'com.tokopedia.linter.IssueRegistry')
-    }
-}
-
-task cleanJar(type: Delete) {
-    delete rootProject.buildDir
-}
 
 dependencies {
-    compileOnly "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     // Lint
     compileOnly "com.android.tools.lint:lint-api:$lintVersion"

@@ -9,6 +9,8 @@
     <dimen name="dp_55">55dp</dimen>
     <dimen name="dp_82">82dp</dimen>
     <dimen name="dp_52">52dp</dimen>
+    <dimen name="dp_8">8dp</dimen>
+    <dimen name="dp_16">16dp</dimen>
     <dimen name="discovery_banner_width">800dp</dimen>
     <dimen name="discovery_banner_height">150dp</dimen>
 

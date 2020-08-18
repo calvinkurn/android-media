@@ -10,6 +10,8 @@ import com.tokopedia.core.gcm.NotificationConfiguration;
 import com.tokopedia.core.gcm.Visitable;
 import com.tokopedia.core.gcm.model.NotificationPass;
 
+import timber.log.Timber;
+
 /**
  * @author  by alvarisi on 1/12/17.
  */
@@ -27,6 +29,8 @@ public abstract class BaseNotification implements Visitable {
         mBuildAndShowNotification = new BuildAndShowNotification(mContext);
         mFCMCacheManager = new FCMCacheManager(mContext);
         configuration = new NotificationConfiguration();
+
+        Timber.w("P2#PUSH_NOTIF_UNUSED#'BaseNotification'");
     }
 
     @Override

@@ -66,6 +66,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel
 import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticCommissionUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticDetailType
+import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.feedcomponent.view.widget.ByMeInstastoryView
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
@@ -915,6 +916,12 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun onShopItemClicked(positionInFeed: Int, adapterPosition: Int, shop: com.tokopedia.topads.sdk.domain.model.Shop) {
+        if (adapter.list[positionInFeed] is TopadsShopViewModel) {
+            val (_, dataList, _, _) = adapter.list[positionInFeed] as TopadsShopViewModel
+            if (adapterPosition != RecyclerView.NO_POSITION) {
+                presenter.doTopAdsTracker(dataList[adapterPosition].shopClickUrl, shop.id, shop.name, dataList[adapterPosition].shop.imageShop.xsEcs, true)
+            }
+        }
         context?.let {
             startActivity(getShopIntent(it, shop.id))
         }
@@ -996,6 +1003,10 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 presenter.trackPostClickUrl(tracking.viewURL)
             }
         }
+    }
+
+    override fun onTopAdsImpression(url: String, shopId: String, shopName: String, imageUrl: String) {
+        presenter.doTopAdsTracker(url, shopId, shopName, imageUrl, false)
     }
 
     override fun onHighlightItemClicked(positionInFeed: Int, item: HighlightCardViewModel) {
@@ -1367,22 +1378,22 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 goToFollower()
             }
 
-            override fun updateDrawState(ds: TextPaint?) {
+            override fun updateDrawState(ds: TextPaint) {
                 super.updateDrawState(ds)
-                ds?.setUnderlineText(false)
-                ds?.color = MethodChecker.getColor(requireContext(), com.tokopedia.design.R.color.white)
+                ds.setUnderlineText(false)
+                ds.color = MethodChecker.getColor(requireContext(), com.tokopedia.design.R.color.white)
             }
         }
 
         val goToFollowing = object : ClickableSpan() {
-            override fun onClick(p0: View?) {
+            override fun onClick(p0: View) {
                 goToFollowing()
             }
 
-            override fun updateDrawState(ds: TextPaint?) {
+            override fun updateDrawState(ds: TextPaint) {
                 super.updateDrawState(ds)
-                ds?.setUnderlineText(false)
-                ds?.color = MethodChecker.getColor(requireContext(), com.tokopedia.design.R.color.white)
+                ds.setUnderlineText(false)
+                ds.color = MethodChecker.getColor(requireContext(), com.tokopedia.design.R.color.white)
             }
         }
         if (spannableString.indexOf(followers) != -1) {

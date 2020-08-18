@@ -296,11 +296,11 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         tvNoteToSellerLabel = itemView.findViewById(R.id.tv_note_to_seller_label);
         tvOptionalNoteToSeller = itemView.findViewById(R.id.tv_optional_note_to_seller);
         llOptionalNoteToSellerLayout = itemView.findViewById(R.id.ll_optional_note_to_seller_layout);
-        tvAddressName = itemView.findViewById(R.id.tv_address_name);
-        tvAddressStatus = itemView.findViewById(R.id.tv_address_status);
-        tvRecipientName = itemView.findViewById(R.id.tv_recipient_name);
-        tvRecipientAddress = itemView.findViewById(R.id.tv_recipient_address);
-        tvRecipientPhone = itemView.findViewById(R.id.tv_recipient_phone);
+        tvAddressName = itemView.findViewById(com.tokopedia.logisticdata.R.id.tv_address_name);
+        tvAddressStatus = itemView.findViewById(com.tokopedia.logisticdata.R.id.tv_address_status);
+        tvRecipientName = itemView.findViewById(com.tokopedia.logisticdata.R.id.tv_recipient_name);
+        tvRecipientAddress = itemView.findViewById(com.tokopedia.logisticdata.R.id.tv_recipient_address);
+        tvRecipientPhone = itemView.findViewById(com.tokopedia.logisticdata.R.id.tv_recipient_phone);
         tvProtectionLabel = itemView.findViewById(R.id.tv_purchase_protection_label);
         tvProtectionFee = itemView.findViewById(R.id.tv_purchase_protection_fee);
         addressLayout = itemView.findViewById(R.id.address_layout);
@@ -1131,9 +1131,10 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                     }
 
                     if (!hasLoadCourierState) {
-                        if (getAdapterPosition() != RecyclerView.NO_POSITION) {
+                        int position = getAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION) {
                             mActionListener.onLoadShippingState(shipmentCartItemModel.getShippingId(),
-                                    shipmentCartItemModel.getSpId(), getAdapterPosition(), tmpShipmentDetailData,
+                                    shipmentCartItemModel.getSpId(), position, tmpShipmentDetailData,
                                     shipmentCartItemModel, shipmentCartItemModel.getShopShipmentList(),
                                     saveStateType == SHIPPING_SAVE_STATE_TYPE_TRADE_IN_DROP_OFF);
                             shipmentCartItemModel.setStateLoadingCourierState(true);

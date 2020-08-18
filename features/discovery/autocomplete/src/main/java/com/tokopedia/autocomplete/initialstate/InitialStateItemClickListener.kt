@@ -1,7 +1,7 @@
 package com.tokopedia.autocomplete.initialstate
 
 interface InitialStateItemClickListener {
-    fun onDeleteRecentSearchItem(keyword: String)
+    fun onDeleteRecentSearchItem(item: BaseItemInitialStateSearch)
 
     fun onDeleteAllRecentSearch()
 

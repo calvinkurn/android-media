@@ -3,26 +3,32 @@ package com.tokopedia.topads.view.fragment
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.topads.Utils
+import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.CreateManualAdsStepperModel
+import com.tokopedia.topads.data.response.ResponseGroupValidateName.TopAdsGroupValidateName
 import com.tokopedia.topads.di.CreateAdsComponent
+import com.tokopedia.topads.view.activity.StepperActivity
 import com.tokopedia.topads.view.model.CreateGroupAdsViewModel
 import com.tokopedia.topads.view.sheet.InfoSheetGroupList
 import kotlinx.android.synthetic.main.topads_create_fragment_group_list.*
 import javax.inject.Inject
-import com.tokopedia.topads.data.response.ResponseGroupValidateName.TopAdsGroupValidateName
-import com.tokopedia.topads.view.activity.StepperActivity
 
 /**
  * Author errysuprayogi on 29,October,2019
  */
+
+private const val CLICK_TIPS_GRUP_IKLAN = "click-tips grup iklan"
+private const val CLICK_BUAT_GRUP_IKLAN = "click-buat grup iklan"
 class CreateGroupAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
 
 
@@ -60,7 +66,9 @@ class CreateGroupAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         stepperListener?.goToNextPage(stepperModel)
     }
 
-    override fun populateView(stepperModel: CreateManualAdsStepperModel) {
+    override fun populateView() {
+        if (activity is StepperActivity)
+            (activity as StepperActivity).updateToolbarTitle(getString(R.string.group_name_step))
     }
 
     override fun getScreenName(): String {
@@ -83,6 +91,7 @@ class CreateGroupAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         }
         tip_btn.setOnClickListener {
             InfoSheetGroupList.newInstance(it.context).show()
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_TIPS_GRUP_IKLAN, "")
         }
         group_name_input.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
@@ -116,6 +125,7 @@ class CreateGroupAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
     private fun validateGroup(s: String?) {
         s?.let {
             viewModel.validateGroup(it, this::onSuccess, this::onError)
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_BUAT_GRUP_IKLAN, it)
         }
     }
 
@@ -123,19 +133,13 @@ class CreateGroupAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         errorTextVisibility(true)
         if (t.localizedMessage == resources.getString(R.string.duplicate_group_name_error_wrong))
             error_text.text = resources.getString(R.string.duplicate_group_name_error)
-        NetworkErrorHelper.createSnackbarRedWithAction(activity, t.localizedMessage) {
-            validateGroup(group_name_input.text.toString())
-        }
+        else
+            error_text.text = t.message
     }
 
     private fun onSuccess(data: TopAdsGroupValidateName.Data) {
         errorTextVisibility(false)
         gotoNextPage()
-
-    }
-
-    override fun updateToolBar() {
-        (activity as StepperActivity).updateToolbarTitle(getString(R.string.group_name_step))
     }
 
     private fun errorTextVisibility(visible: Boolean) {
@@ -149,5 +153,4 @@ class CreateGroupAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
             btn_submit.isEnabled = true
         }
     }
-
 }

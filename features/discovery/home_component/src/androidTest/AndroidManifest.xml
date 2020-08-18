@@ -1,0 +1,16 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:versionCode="1"
+    android:versionName="1.0.0"
+    package="com.tokopedia.home_component.test">
+    <application
+        android:label="Home Component Test"
+        tools:ignore="HardcodedDebugMode"
+        tools:replace="android:debuggable,android:label"
+        android:debuggable="false">
+
+        <activity
+            android:name="com.tokopedia.home_component.test.env.BlankTestActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+    </application>
+</manifest>

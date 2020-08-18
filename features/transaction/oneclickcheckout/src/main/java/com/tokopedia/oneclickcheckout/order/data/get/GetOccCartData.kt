@@ -6,6 +6,8 @@ import com.tokopedia.purchase_platform.common.feature.promo.domain.model.PromoSA
 data class GetOccCartData(
         @SerializedName("messages")
         val messages: CartMessages = CartMessages(),
+        @SerializedName("ticker_message")
+        val tickerMessage: OccTickerMessage = OccTickerMessage(),
         @SerializedName("occ_main_onboarding")
         val occMainOnboarding: OccMainOnboarding = OccMainOnboarding(),
         @SerializedName("kero_token")

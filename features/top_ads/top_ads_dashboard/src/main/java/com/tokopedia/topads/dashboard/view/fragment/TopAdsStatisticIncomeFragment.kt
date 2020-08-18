@@ -11,9 +11,6 @@ import com.tokopedia.topads.dashboard.data.model.Cell
 
 class TopAdsStatisticIncomeFragment : TopAdsDashboardStatisticFragment() {
 
-    override val titleGraph: String
-        get() = getString(R.string.title_top_ads_statistic_graph_total_income)
-
     override fun getValueData(cell: Cell): Float = cell.grossProfit
 
     override fun getValueDisplay(cell: Cell): String = getString(R.string.top_ads_tooltip_statistic_use, cell.grossProfitFmt)

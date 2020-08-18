@@ -7,11 +7,11 @@ import com.tokopedia.travelhomepage.homepage.data.TravelLayoutSubhomepage
  */
 
 interface OnItemBindListener {
-    fun onBannerItemBind(travelLayoutSubhomepage: TravelLayoutSubhomepage.Data, position: Int, isFromCloud: Boolean?)
-    fun onCategoryItemBind(travelLayoutSubhomepage: TravelLayoutSubhomepage.Data, position: Int, isFromCloud: Boolean?)
-    fun onDestinationItemBind(travelLayoutSubhomepage: TravelLayoutSubhomepage.Data, position: Int, isFromCloud: Boolean?)
-    fun onLegoBannerItemBind(travelLayoutSubhomepage: TravelLayoutSubhomepage.Data, position: Int, isFromCloud: Boolean?)
-    fun onProductCardItemBind(travelLayoutSubhomepage: TravelLayoutSubhomepage.Data, position: Int, isFromCloud: Boolean?)
-    fun onHomepageSectionItemBind(travelLayoutSubhomepage: TravelLayoutSubhomepage.Data, position: Int, isFromCloud: Boolean?)
-    fun onItemBindViewHolder(travelLayoutSubhomepage: TravelLayoutSubhomepage.Data, position: Int, isFromCloud: Boolean?)
+    fun onBannerItemBind(travelLayoutSubhomepage: TravelLayoutSubhomepage.Data, isFromCloud: Boolean)
+    fun onCategoryItemBind(travelLayoutSubhomepage: TravelLayoutSubhomepage.Data, isFromCloud: Boolean)
+    fun onDestinationItemBind(travelLayoutSubhomepage: TravelLayoutSubhomepage.Data, isFromCloud: Boolean)
+    fun onLegoBannerItemBind(travelLayoutSubhomepage: TravelLayoutSubhomepage.Data, isFromCloud: Boolean)
+    fun onProductCardItemBind(travelLayoutSubhomepage: TravelLayoutSubhomepage.Data, isFromCloud: Boolean)
+    fun onHomepageSectionItemBind(travelLayoutSubhomepage: TravelLayoutSubhomepage.Data, isFromCloud: Boolean)
+    fun onItemBindViewHolder(travelLayoutSubhomepage: TravelLayoutSubhomepage.Data, isFromCloud: Boolean)
 }

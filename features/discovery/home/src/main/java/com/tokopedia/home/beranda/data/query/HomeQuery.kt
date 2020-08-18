@@ -16,6 +16,8 @@ object HomeQuery{
               message
               color
               layout
+              ticker_type
+              title
             }
           }
           slides(device: 32) {
@@ -33,6 +35,7 @@ object HomeQuery{
               promo_code
               creative_name
               type
+              category_id
               campaignCode
             }
           }
@@ -51,11 +54,14 @@ object HomeQuery{
             }
           }
           homeFlag{
-            flags(name: "has_recom_nav_button,dynamic_icon_wrap,has_tokopoints"){
-              name
-              is_active
+                event_time
+                server_time
+                flags(name: "has_recom_nav_button,dynamic_icon_wrap,has_tokopoints,is_autorefresh"){
+                    name
+                    is_active
+                }
             }
-          }
         }
     """.trimIndent()
 }
+

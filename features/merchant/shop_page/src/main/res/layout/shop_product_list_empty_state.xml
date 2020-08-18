@@ -4,7 +4,6 @@
     android:id="@+id/main_retry"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#EAEAEA"
     android:gravity="center_horizontal"
     android:orientation="vertical">
 

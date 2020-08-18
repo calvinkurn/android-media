@@ -1,5 +1,6 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply from: "../../../compile-instrument-test.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 repositories {
@@ -16,24 +17,6 @@ buildscript {
 }
 
 android {
-    flavorDimensions "tier", "client"
-    productFlavors {
-        prod {
-            dimension "client"
-            testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
-        }
-        live {
-            dimension "tier"
-        }
-        staging {
-            dimension "tier"
-        }
-        dev {
-            dimension "client"
-            testInstrumentationRunner "com.tokopedia.test.application.environment.MockInstrumentationTestRunner"
-        }
-    }
-
     defaultConfig {
         multiDexEnabled true
     }
@@ -41,6 +24,7 @@ android {
 
 dependencies {
     implementation project(rootProject.ext.features.resourcesCommon)
+    implementation project(rootProject.ext.features.playCommon)
     implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.baseList)
@@ -54,7 +38,6 @@ dependencies {
     implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.features.shopEtalasePicker)
     implementation project(rootProject.ext.features.goldMerchantCommon)
-    implementation project(rootProject.ext.features.goldMerchantResource)
     implementation project(rootProject.ext.features.merchantVoucher)
     implementation project(rootProject.ext.features.reputationCommon)
     implementation project(rootProject.ext.features.wishlistCommon)
@@ -63,15 +46,19 @@ dependencies {
     implementation project(rootProject.ext.features.kolCommon)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.atc_common)
+    implementation project(rootProject.ext.features.reputation)
     implementation project(rootProject.ext.libraries.remoteResourceRequest)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.features.stickyLogin)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.features.carouselProductCard)
     implementation project(rootProject.ext.features.discoveryCommon)
+    implementation project(rootProject.ext.features.youtubeCommon)
+    implementation project(rootProject.ext.libraries.commonNetwork)
 
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
     implementation project(rootProject.ext.libraries.youtubeutil)
+    implementation project(rootProject.ext.libraries.videoplayer)
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
@@ -118,6 +105,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.track)
     implementation rootProject.ext.unifyDependencies.components
     implementation project(rootProject.ext.features.productCard)
+    implementation project(rootProject.ext.libraries.imagePreview)
+    implementation rootProject.ext.networkDependencies.glide
 
     // UI Test
     androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
@@ -125,6 +114,7 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
     androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
+    implementation rootProject.ext.tkpdInternalLibDependencies.authentication
 }
 
 project.ext {

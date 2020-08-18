@@ -6,10 +6,9 @@ package com.tokopedia.topads.dashboard.data.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-
 import java.text.ParseException
 import java.text.SimpleDateFormat
-import java.util.Date
+import java.util.*
 
 data class Cell (
 

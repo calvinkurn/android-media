@@ -18,6 +18,9 @@ data class Question(
         @SerializedName("userName")
         @Expose
         val userName: String = "",
+        @SerializedName("userThumbnail")
+        @Expose
+        val userThumbnail: String = "",
         @SerializedName("userID")
         @Expose
         val userId: Int = 0,

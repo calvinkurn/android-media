@@ -4,54 +4,24 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 data class SubmitWithdrawalResponse(
         @SerializedName("process_time")
-        val processTime: Float?,
+        val processTime: Float? = null,
         @SerializedName("message")
-        val messageArrayList: ArrayList<String>?,
+        val messageArrayList: ArrayList<String>? = null,
         @SerializedName("status")
-        val status: String?,
+        val status: String? = null,
         @SerializedName("message_error")
-        val messageErrorStr: String?,
+        val messageErrorStr: String? = null,
         @SerializedName("withdrawalNote")
-        val withdrawalNote: String?,
+        val withdrawalNote: String? = null,
         @SerializedName("errorCode")
-        val errorCode: String?,
+        val errorCode: String? = null,
         @SerializedName("joinPromptMessageResponse")
-        val joinPromptMessageResponse: JoinPromptMessageResponse) : Parcelable {
-    constructor(parcel: Parcel) : this(
-            parcel.readValue(Float::class.java.classLoader) as? Float,
-            parcel.createStringArrayList(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readParcelable(JoinPromptMessageResponse::class.java.classLoader))
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeValue(processTime)
-        parcel.writeString(status)
-        parcel.writeString(messageErrorStr)
-        parcel.writeString(withdrawalNote)
-        parcel.writeString(errorCode)
-        parcel.writeParcelable(joinPromptMessageResponse, flags)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<SubmitWithdrawalResponse> {
-        override fun createFromParcel(parcel: Parcel): SubmitWithdrawalResponse {
-            return SubmitWithdrawalResponse(parcel)
-        }
-
-        override fun newArray(size: Int): Array<SubmitWithdrawalResponse?> {
-            return arrayOfNulls(size)
-        }
-    }
-}
+        val joinPromptMessageResponse: JoinPromptMessageResponse? = null) : Parcelable
 
 data class JoinPromptMessageResponse(
         @SerializedName("title")
@@ -68,10 +38,10 @@ data class JoinPromptMessageResponse(
         val statusCode: Int
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
+            parcel.readString() ?: "",
+            parcel.readString() ?: "",
+            parcel.readString() ?: "",
+            parcel.readString() ?: "",
             parcel.readByte() != 0.toByte(),
             parcel.readInt()) {
     }

@@ -18,7 +18,10 @@ object TalkReplyMapper {
                     questionState.allowReport,
                     questionState.allowDelete,
                     questionState.isMasked,
-                    maskedContent)
+                    maskedContent,
+                    userThumbnail,
+                    userName,
+                    userId)
         }
     }
 

@@ -9,6 +9,7 @@ import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import androidx.fragment.app.Fragment
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
@@ -85,7 +86,7 @@ class ShopShowcaseListActivity : BaseActivity(), ShopShowcaseFragmentNavigation 
         val window: Window = getWindow()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-            getWindow().statusBarColor = resources.getColor(android.R.color.white)
+            getWindow().statusBarColor = ContextCompat.getColor(this, android.R.color.white)
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

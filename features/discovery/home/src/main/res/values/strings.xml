@@ -1,4 +1,4 @@
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="explore">Browse</string>
     <string name="beli">Beli</string>
     <string name="bayar">Bayar</string>
@@ -41,7 +41,7 @@
     <string name="hampir_habis">Hampir Habis</string>
     <string name="home_header_fintech_scan">Scan</string>
     <string name="home_header_fintech_points">Points %1$s</string>
-    <string name="home_header_topup_ovo">Top-up OVO</string>
+    <string name="home_header_topup_ovo"><b>Top-up OVO</b></string>
     <string name="home_header_fintech_cek_sekarang">Cek Sekarang</string>
 
     <string name="sc_notif_title">Notifikasi tersimpan rapi</string>
@@ -86,4 +86,11 @@
     <string name="home_recommendation_empty_description">Produk tidak ada untuk kategori ini</string>
     <string name="home_buy_again">Beli Langsung</string>
 
+    <string name="home_recharge_recommendation_button_label">Bayar Sekarang</string>
+    <string name="home_recharge_recommendation_title">Yuk, segara bayar tagihanmu!</string>
+
+    <string name="home_page_play_card_success_add_reminder">Berhasil pasang pengingat</string>
+    <string name="home_page_play_card_success_remove_reminder">Berhasil menghapus pengingat</string>
+
+    <string name="go_to_wishlist" tools:ignore="ExtraTranslation">Lihat Wishlist</string>
 </resources>

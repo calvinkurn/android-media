@@ -7,6 +7,7 @@ import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_DUAL_A
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_QUOTATION
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_STICKER
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_VOUCHER
+import com.tokopedia.chat_common.data.MessageViewModel
 import com.tokopedia.chat_common.domain.mapper.GetExistingChatMapper
 import com.tokopedia.chat_common.domain.pojo.ChatRepliesItem
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
@@ -19,6 +20,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.sticker.attr.StickerAttributes
 import com.tokopedia.topchat.chatroom.view.uimodel.HeaderDateUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.ProductCarouselUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.StickerUiModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.BroadcastSpamHandlerUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.ImageDualAnnouncementUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherUiModel
@@ -39,23 +41,24 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
                 latestHeaderDate = chatItemPojo.date
             }
             for (chatItemPojoByDate in chatItemPojo.chats) {
-                var index = 0
-                while (index < chatItemPojoByDate.replies.size) {
-                    val chatDateTime = chatItemPojoByDate.replies[index]
+                var replyIndex = 0
+                while (replyIndex < chatItemPojoByDate.replies.size) {
+                    val chatDateTime = chatItemPojoByDate.replies[replyIndex]
                     if (hasAttachment(chatDateTime)) {
-                        val nextItem = chatItemPojoByDate.replies.getOrNull(index + 1)
+                        val nextItem = chatItemPojoByDate.replies.getOrNull(replyIndex + 1)
                         if (chatDateTime.isMultipleProductAttachment(nextItem)) {
-                            val products = mergeProduct(index, chatItemPojoByDate.replies)
+                            val products = mergeProduct(replyIndex, chatItemPojoByDate.replies)
                             val carouselProducts = createCarouselProduct(chatDateTime, products)
                             listChat.add(carouselProducts)
-                            index += products.size
+                            replyIndex += products.size
                         } else {
                             listChat.add(mapAttachment(chatDateTime))
-                            index++
+                            replyIndex++
                         }
                     } else {
-                        listChat.add(convertToMessageViewModel(chatDateTime))
-                        index++
+                        val textMessage = convertToMessageViewModel(chatDateTime)
+                        listChat.add(textMessage)
+                        replyIndex++
                     }
                 }
             }
@@ -147,7 +150,8 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
                 voucherModel,
                 item.replyId.toString(),
                 item.blastId.toString(),
-                item.source
+                item.source,
+                voucher.isPublic
         )
     }
 

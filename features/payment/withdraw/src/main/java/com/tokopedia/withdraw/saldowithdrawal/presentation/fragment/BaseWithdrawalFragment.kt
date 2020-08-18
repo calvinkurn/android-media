@@ -264,6 +264,7 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
             val view = layoutInflater.inflate(R.layout.swd_layout_withdraw_tnc,
                     null, true)
             val webView: TkpdWebView = view.findViewById(R.id.swd_tnc_webview)
+            webView.settings.javaScriptEnabled = true
             webView.loadAuthUrl(WithdrawConstant.WEB_TNC_URL, userSession.get())
             bottomSheetUnify.setChild(view)
             bottomSheetUnify.show(it.supportFragmentManager, "")

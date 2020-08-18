@@ -36,6 +36,7 @@ class GetDiscussionDataUseCase @Inject constructor(graphqlRepository: GraphqlRep
                   content
                   maskedContent
                   userName
+                  userThumbnail
                   userID
                   createTime
                   createTimeFormatted

@@ -256,7 +256,7 @@ object DFInstaller {
             }
             // start downloading the modules using service
             if (eligibleInBgModuleNameList.isNotEmpty()) {
-                DFDownloader.startSchedule(context.applicationContext, eligibleInBgModuleNameList, true)
+                DFDownloader.startSchedule(context.applicationContext, eligibleInBgModuleNameList, true, false)
             }
         } else {
             startDeferredInstall(context, filteredModuleNameList, message)
@@ -287,7 +287,7 @@ object DFInstaller {
      */
     fun getFilteredModuleList(context: Context, moduleNames: List<String>, installed: Boolean = true): List<String> {
         val moduleNameToDownload = mutableListOf<String>()
-        val manager = getManager(context.applicationContext) ?: return moduleNameToDownload
+        getManager(context.applicationContext) ?: return moduleNameToDownload
         moduleNames.forEach { name ->
             if (installed && !isInstalled(context, name)) {
                 moduleNameToDownload.add(name)

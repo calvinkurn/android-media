@@ -80,6 +80,7 @@ class SearchProductLoadMoreGqlUseCase(
                             discountPercentage
                             warehouseIdDefault
                             boosterList
+                            source_engine
                             labelGroups {
                                 title
                                 position

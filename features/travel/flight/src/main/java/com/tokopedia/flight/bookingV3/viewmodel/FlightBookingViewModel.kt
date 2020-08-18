@@ -190,12 +190,13 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
             val flightVerifyData = graphqlRepository.getReseponse(listOf(graphqlRequest))
                     .getSuccessData<FlightVerify.Response>().flightVerify
 
-            if (promoCode.isNotEmpty()) {
-                val checkPromoData = checkVoucher(checkVoucherQuery, getCartId())
-                flightVerifyData.data.cartItems[0].promoEligibility = checkPromoData
-            }
-
             if (!flightVerifyData.meta.needRefresh && flightVerifyData.data.cartItems.isNotEmpty()) {
+
+                if (promoCode.isNotEmpty()) {
+                    val checkPromoData = checkVoucher(checkVoucherQuery, getCartId())
+                    flightVerifyData.data.cartItems[0].promoEligibility = checkPromoData
+                }
+
                 verifyRetryCount = 0
                 isStillLoading = false
                 _flightVerifyResult.postValue(Success(flightVerifyData))
@@ -600,7 +601,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
 
             //update UI promoData
             flightPromoViewEntity.promoData.description = voucher.message
-            _flightPromoResult.value = flightPromoViewEntity
+            _flightPromoResult.postValue(flightPromoViewEntity)
 
             return promoEligibility
         } catch (e: Exception) {

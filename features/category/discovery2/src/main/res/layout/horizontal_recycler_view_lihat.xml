@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/title_tv"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_8"
+        android:layout_marginRight="@dimen/dp_8"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/clr_f231353b"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/lihat_semua_tv"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        app:typographyType="heading_4"
+        app:typographyWeight="bold"
+        tools:text="Earphones on Sale" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/lihat_semua_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:gravity="end"
+        android:maxLines="1"
+        android:textColor="@color/clr_03AC0E"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/title_tv"
+        app:layout_constraintBottom_toBottomOf="@id/title_tv"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        android:text="@string/lihat_semua" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/list_rv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        app:layout_goneMarginTop="@dimen/dp_12"
+        app:layout_constraintLeft_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title_tv" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

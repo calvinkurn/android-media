@@ -32,7 +32,7 @@ interface InitialStateContract {
     interface Presenter : CustomerPresenter<View> {
         fun getInitialStateData()
 
-        fun deleteRecentSearchItem(keyword: String)
+        fun deleteRecentSearchItem(item: BaseItemInitialStateSearch)
 
         fun deleteAllRecentSearch()
 

@@ -5,10 +5,8 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.topads.dashboard.data.model.DataCredit
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGetDataCreditUseCase
 import com.tokopedia.topads.dashboard.view.listener.TopAdsAddCreditView
-
-import javax.inject.Inject
-
 import rx.Subscriber
+import javax.inject.Inject
 
 /**
  * Created by Nisie on 5/9/16.

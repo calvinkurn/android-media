@@ -53,6 +53,40 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
 
+        <activity
+            android:name=".variant.presentation.activity.AddEditProductVariantActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+
+        <activity
+            android:name=".variant.presentation.activity.AddEditProductVariantDetailActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+
+        <activity
+            android:name=".imagepicker.view.activity.SizechartPickerAddProductActivity"
+            android:label="@string/action_pick_photo"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+
+        <activity
+            android:name=".imagepicker.view.activity.SizechartPickerEditPhotoActivity"
+            android:label="@string/action_edit_photo"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+
+        <activity
+            android:name=".imagepicker.view.activity.VariantPhotoPickerActivity"
+            android:label="@string/action_pick_photo"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+
+        <activity
+            android:name=".imagepicker.view.activity.VariantPhotoEditorActivity"
+            android:label="@string/action_edit_photo"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+
         <service
             android:name="com.tokopedia.product.addedit.preview.presentation.service.AddEditProductAddService"
             android:enabled="true"
@@ -62,6 +96,5 @@
             android:name="com.tokopedia.product.addedit.preview.presentation.service.AddEditProductEditService"
             android:enabled="true"
             android:permission="android.permission.BIND_JOB_SERVICE" />
-
     </application>
 </manifest>

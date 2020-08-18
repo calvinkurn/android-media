@@ -23,8 +23,8 @@ open class SomSeeInvoiceActivity : BaseSimpleWebViewActivity() {
     @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (intent.extras != null) {
-            val bundle = intent.extras
+        val bundle = intent.extras
+        if (bundle != null) {
             orderCode = bundle.get(PARAM_ORDER_CODE).toString()
         }
     }

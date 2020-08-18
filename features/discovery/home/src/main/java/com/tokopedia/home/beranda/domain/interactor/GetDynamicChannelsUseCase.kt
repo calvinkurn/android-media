@@ -9,7 +9,7 @@ import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.domain.model.HomeChannelData
 import com.tokopedia.home.beranda.domain.model.HomeData
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
+import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
@@ -35,7 +35,7 @@ class GetDynamicChannelsUseCase @Inject constructor(
         graphqlUseCase.setRequestParams(params.parameters)
         val dynamicChannelData = graphqlUseCase.executeOnBackground()
         val homeViewModel = homeDynamicChannelDataMapper.mapToDynamicChannelDataModel(dynamicChannelData, false)
-        return homeViewModel
+        return homeViewModel.filterIsInstance(HomeComponentVisitable::class.java)
     }
 
     companion object{

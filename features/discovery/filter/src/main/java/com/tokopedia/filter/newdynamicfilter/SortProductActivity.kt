@@ -41,7 +41,7 @@ class SortProductActivity : BaseActivity() {
         recyclerView = findViewById(R.id.list)
         val buttonClose: View = findViewById(R.id.top_bar_close_button)
         buttonClose.setOnClickListener { onBackPressed() }
-        data = intent.extras.getParcelableArrayList(EXTRA_SORT_DATA)
+        data = intent.extras?.getParcelableArrayList(EXTRA_SORT_DATA)
         generateSelectedKeyValue(intent.getSerializableExtra(EXTRA_SELECTED_SORT) as HashMap<String, String>)
         adapter = ListAdapter(data?: listOf(), selectedKey, selectedValue, object : OnItemClickListener {
             override fun onItemClicked(sortItem: Sort) {

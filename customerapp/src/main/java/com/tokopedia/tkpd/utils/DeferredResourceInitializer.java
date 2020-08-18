@@ -44,9 +44,9 @@ public class DeferredResourceInitializer implements DeferredCallback {
     public void logDeferred(@NotNull String message) {
         String[] msg = message.split(",");
         if (msg.length > 2)
-            Timber.w("P1%s#%s;worker=%s;url=%s", MANAGER_TAG, msg[0], msg[1], msg[2]);
+            Timber.w("P1#%s#%s;worker=%s;url=%s", MANAGER_TAG, msg[0], msg[1], msg[2]);
         else
-            Timber.w("P1%s#%s;worker=%s;url=%s", MANAGER_TAG, message, null, null);
+            Timber.w("P1#%s#%s;worker=%s;url=%s", MANAGER_TAG, message, null, null);
 
     }
 

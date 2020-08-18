@@ -34,9 +34,9 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.shop.R
-import com.tokopedia.shop.ShopComponentInstance
-import com.tokopedia.shop.ShopModuleRouter
+import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
+import com.tokopedia.shop.analytic.ShopPageTrackingSGCPlayWidget
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.analytic.model.TrackShopTypeDef
 import com.tokopedia.shop.common.constant.ShopHomeType
@@ -55,6 +55,7 @@ import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopPageFragmentPagerAdapter
 import com.tokopedia.shop.pageheader.presentation.holder.ShopPageFragmentHeaderViewHolder
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPageHeaderPerformanceMonitoringListener
+import com.tokopedia.shop.pageheader.presentation.listener.ShopPagePerformanceMonitoringListener
 import com.tokopedia.shop.product.view.fragment.HomeProductFragment
 import com.tokopedia.shop.product.view.fragment.ShopPageProductListFragment
 import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity
@@ -62,6 +63,7 @@ import com.tokopedia.shop.setting.view.activity.ShopPageSettingActivity
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.stickylogin.view.StickyLoginView
+import com.tokopedia.tkpd.tkpdreputation.review.shop.view.ReviewShopFragment
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -123,6 +125,7 @@ class ShopPageFragment :
     private lateinit var remoteConfig: RemoteConfig
     private lateinit var cartLocalCacheHandler: LocalCacheHandler
     var shopPageTracking: ShopPageTrackingBuyer? = null
+    var shopPageTrackingSGCPlay: ShopPageTrackingSGCPlayWidget? = null
     private var shopId = ""
     var shopRef: String = ""
     var shopDomain: String? = null
@@ -163,7 +166,7 @@ class ShopPageFragment :
 
     override fun getComponent() = activity?.run {
         DaggerShopPageComponent.builder().shopPageModule(ShopPageModule())
-                .shopComponent(ShopComponentInstance.getComponent(application)).build()
+                .shopComponent(ShopComponentHelper().getComponent(application, this)).build()
     }
 
     override fun getScreenName() = ""
@@ -188,9 +191,9 @@ class ShopPageFragment :
 
     private fun initViews(view: View) {
         activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
-        errorTextView = view.findViewById(R.id.message_retry)
-        errorButton = view.findViewById(R.id.button_retry)
-        shopPageFragmentHeaderViewHolder = ShopPageFragmentHeaderViewHolder(view, this, shopPageTracking, view.context)
+        errorTextView = view.findViewById(com.tokopedia.abstraction.R.id.message_retry)
+        errorButton = view.findViewById(com.tokopedia.abstraction.R.id.button_retry)
+        shopPageFragmentHeaderViewHolder = ShopPageFragmentHeaderViewHolder(view, this, shopPageTracking, shopPageTrackingSGCPlay, view.context)
         initToolbar()
         initAdapter()
         appBarLayout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
@@ -311,6 +314,7 @@ class ShopPageFragment :
             remoteConfig = FirebaseRemoteConfigImpl(it)
             cartLocalCacheHandler = LocalCacheHandler(it, CART_LOCAL_CACHE_NAME)
             shopPageTracking = ShopPageTrackingBuyer(TrackingQueue(it))
+            shopPageTrackingSGCPlay = ShopPageTrackingSGCPlayWidget(TrackingQueue(it))
             activity?.intent?.run {
                 shopId = getStringExtra(SHOP_ID).orEmpty()
                 shopRef = getStringExtra(SHOP_REF).orEmpty()
@@ -323,7 +327,7 @@ class ShopPageFragment :
                         if (pathSegments.size > 1) {
                             shopId = pathSegments[1]
                         } else if (!getQueryParameter(SHOP_ID).isNullOrEmpty()) {
-                            shopId = getQueryParameter(SHOP_ID)
+                            shopId = getQueryParameter(SHOP_ID)!!
                         }
                     }
                     if (shopDomain.isNullOrEmpty()) {
@@ -570,6 +574,7 @@ class ShopPageFragment :
     }
 
     private fun onSuccessGetShopPageTabData(shopPageHeaderTabData: ShopPageHeaderTabData) {
+        stopPreparePltShopPage()
         isShowFeed = shopPageHeaderTabData.feedWhitelist.isWhitelist
         createPostUrl = shopPageHeaderTabData.feedWhitelist.url
         shopPageHeaderDataModel = ShopPageHeaderDataModel().apply {
@@ -597,6 +602,14 @@ class ShopPageFragment :
         swipeToRefresh.isRefreshing = false
     }
 
+    protected fun stopPreparePltShopPage(){
+        (activity as? ShopPagePerformanceMonitoringListener)?.let { shopPageActivity ->
+            shopPageActivity.getShopPageLoadTimePerformanceCallback()?.let {
+                shopPageActivity.startMonitoringPltNetworkRequest(it)
+            }
+        }
+    }
+
     private fun onSuccessGetShopPageHeaderContentData(shopPageHeaderContentData: ShopPageHeaderContentData) {
         shopPageHeaderDataModel?.let { shopPageHeaderDataModel ->
             shopPageHeaderDataModel.avatar = shopPageHeaderContentData.shopInfo.shopAssets.avatar
@@ -606,6 +619,7 @@ class ShopPageFragment :
             shopPageHeaderDataModel.statusTitle = shopPageHeaderContentData.shopInfo.statusInfo.statusTitle
             shopPageHeaderDataModel.statusMessage = shopPageHeaderContentData.shopInfo.statusInfo.statusMessage
             shopPageHeaderDataModel.shopStatus = shopPageHeaderContentData.shopInfo.statusInfo.shopStatus
+            shopPageHeaderDataModel.broadcaster = shopPageHeaderContentData.broadcasterConfig
             if (!isMyShop) {
                 button_chat.show()
                 button_chat.setOnClickListener {
@@ -652,8 +666,8 @@ class ShopPageFragment :
             }
         }
         if(shouldOverrideTabToReview){
-            selectedPosition = if(viewPagerAdapter.isFragmentObjectExists((activity?.application as ShopModuleRouter).reviewFragmentClass)){
-                viewPagerAdapter.getFragmentPosition((activity?.application as ShopModuleRouter).reviewFragmentClass)
+            selectedPosition = if(viewPagerAdapter.isFragmentObjectExists(ReviewShopFragment::class.java)){
+                viewPagerAdapter.getFragmentPosition(ReviewShopFragment::class.java)
             } else {
                 selectedPosition
             }
@@ -702,18 +716,15 @@ class ShopPageFragment :
                         feedFragment
                 ))
             }
-            if (activity?.application is ShopModuleRouter) {
-                val shopReviewFragment = (activity?.application as ShopModuleRouter).getReviewFragment(
-                        activity,
-                        shopId,
-                        shopDomain
-                )
-                add(ShopPageTabModel(
-                        getString(R.string.shop_info_title_tab_review),
-                        iconTabReview,
-                        shopReviewFragment
-                ))
-            }
+            val shopReviewFragment = ReviewShopFragment.createInstance(
+                    shopId,
+                    shopDomain
+            )
+            add(ShopPageTabModel(
+                    getString(R.string.shop_info_title_tab_review),
+                    iconTabReview,
+                    shopReviewFragment
+            ))
         }
     }
 
@@ -821,14 +832,6 @@ class ShopPageFragment :
                 refreshData()
             }
         }
-//        else if (requestCode == REQUEST_CODE_SORT) {
-//            data?.let {
-//                val sortValue = it.getStringExtra(ShopProductSortActivity.SORT_VALUE)
-//                val sortName = it.getStringExtra(ShopProductSortActivity.SORT_NAME)
-//                shopPageTracking?.sortProduct(sortName, isMyShop, customDimensionShopPage)
-//                redirectToShopSearchProductResultPage(sortValue)
-//            }
-//        }
         else if (requestCode == REQUEST_CODE_USER_LOGIN_CART) {
             if (resultCode == Activity.RESULT_OK) {
                 refreshData()

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="false">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/txt_start_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_18"
+            android:layout_marginRight="@dimen/dp_16"
+            android:text="@string/mulai_dari"
+            android:textColor="@color/topads_light_shadow"
+            app:typographyType="small" />
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/dateStart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txt_start_date"
+            android:layout_marginLeft="@dimen/dp_12"
+            android:layout_marginRight="@dimen/dp_12"
+            android:clickable="false"
+            android:hint="@string/topads_dash_choose_date"
+            android:textSize="@dimen/sp_16" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/txt_end_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_18"
+            android:layout_marginRight="@dimen/dp_16"
+            android:text="@string/sampai_dengan"
+            android:textColor="@color/topads_light_shadow"
+            app:typographyType="small" />
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/dateEnd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txt_end_date"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginLeft="@dimen/dp_12"
+            android:layout_marginRight="@dimen/dp_12"
+            android:clickable="false"
+            android:gravity="end"
+            android:hint="@string/topads_dash_choose_date"
+            android:textSize="@dimen/sp_16" />
+
+    </RelativeLayout>
+
+    <com.tokopedia.calendar.UnifyCalendar
+        android:id="@+id/calendarUnify"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/dp_12" />
+
+</LinearLayout>

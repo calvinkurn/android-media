@@ -27,7 +27,6 @@ dependencies {
     implementation project(rootProject.ext.features.topAdsManagementSourceTagging)
     implementation project(rootProject.ext.features.topAdsManagementCommon)
     implementation project(rootProject.ext.features.goldMerchantCommon)
-    implementation project(rootProject.ext.features.goldMerchantResource)
     implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.features.tkpdcore)
     implementation project(rootProject.ext.features.payment)
@@ -83,7 +82,7 @@ dependencies {
     kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.playServicesDependencies.maps
-    implementation project(rootProject.ext.libraries.playCore)
+    implementation rootProject.ext.playServicesDependencies.core
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     kapt  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor

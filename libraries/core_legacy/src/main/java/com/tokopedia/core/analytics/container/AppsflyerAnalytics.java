@@ -75,14 +75,14 @@ public class AppsflyerAnalytics extends ContextAnalytics {
                 isAppsflyerCallbackHandled = true;
 
                 try {
-                    String isFirstLaunch = null;
+                    boolean isFirstLaunch = false;
                     String deeplink = null;
                     if (conversionData.containsKey("is_first_launch"))
-                        isFirstLaunch = (String) conversionData.get("is_first_launch");
+                        isFirstLaunch = (boolean) conversionData.get("is_first_launch");
                     if (conversionData.containsKey("af_dp"))
                         deeplink = (String) conversionData.get("af_dp");
 
-                    if (!TextUtils.isEmpty(isFirstLaunch) && isFirstLaunch.equalsIgnoreCase("true") && !TextUtils.isEmpty(deeplink)) {
+                    if (isFirstLaunch && !TextUtils.isEmpty(deeplink)) {
                         setDefferedDeeplinkPathIfExists(deeplink);
                     }
                 } catch (ActivityNotFoundException ex) {

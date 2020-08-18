@@ -1,0 +1,38 @@
+{
+  "coupon_list_recommendation": {
+    "message": [],
+    "error_code": "200",
+    "status": "OK",
+    "data": {
+      "result_status": {
+        "code": "",
+        "message": [],
+        "reason": ""
+      },
+      "empty_state": {
+        "title": "",
+        "description": "",
+        "image_url": ""
+      },
+      "title": "",
+      "sub_title": "",
+      "promo_recommendation": {
+        "codes": [],
+        "message": ""
+      },
+      "coupon_sections": [],
+      "attempted_promo_code_error": {
+        "code": "",
+        "message": ""
+      },
+      "additional_message": "",
+      "reward_points_info": {
+        "message": "",
+        "gain_reward_points_tnc": {
+          "title": "",
+          "tnc_details": []
+        }
+      }
+    }
+  }
+}

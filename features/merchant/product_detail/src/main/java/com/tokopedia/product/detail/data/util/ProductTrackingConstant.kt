@@ -165,6 +165,8 @@ object ProductTrackingConstant {
         const val CLICK_DISCUSSION_SEE_ALL = "click - lihat semua diskusi on diskusi terakhir"
         const val CLICK_THREAD_DETAIL_DISCUSSION = "click - thread detail on diskusi"
         const val CLICK_SEND_QUESTION = "click - kirim pertanyaan on diskusi"
+
+        const val CLICK_SEE_ALL_ULASAN = "click - lihat semua ulasan"
     }
 
 

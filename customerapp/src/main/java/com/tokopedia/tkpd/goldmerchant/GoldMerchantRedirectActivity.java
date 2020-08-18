@@ -1,6 +1,5 @@
 package com.tokopedia.tkpd.goldmerchant;
 
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -9,12 +8,11 @@ import android.widget.TextView;
 
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.tkpd.R;
-import com.tokopedia.gm.resource.GMConstant;
 import com.tokopedia.track.TrackApp;
+
+import static com.tokopedia.gm.common.constant.GMCommonConstantKt.GM_TITLE;
 
 /**
  * Created by kris on 2/6/17. Tokopedia
@@ -38,10 +36,9 @@ public class GoldMerchantRedirectActivity extends TActivity{
         backButton.setOnClickListener(onBackButtonClickedListener());
 
         TextView title = findViewById(R.id.title);
-	String gm = getString(GMConstant.getGMTitleResource(this));
-	title.setText(getString(R.string.title_gold_merchant_redirect, gm));
+	title.setText(getString(R.string.title_gold_merchant_redirect, GM_TITLE));
 
-	getSupportActionBar().setTitle(gm);
+	getSupportActionBar().setTitle(GM_TITLE);
     }
 
     private View.OnClickListener onBackButtonClickedListener() {

@@ -25,6 +25,7 @@ class InactiveOvoFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var tracking: InactiveOvoAnalytics
+
     @Inject
     lateinit var userSession: UserSessionInterface
 
@@ -47,8 +48,8 @@ class InactiveOvoFragment : BaseDaggerFragment() {
         arguments?.let {
             val registerApplink = it.getString(REGISTER_APPLINK)
             val helpApplink = it.getString(HELP_APPLINK)
-            val tncApplink = it.getString(TNC_APPLINK)
-            val productId = it.getString(PRODUCT_ID)
+            val tncApplink = it.getString(TNC_APPLINK, "")
+            val productId = it.getString(PRODUCT_ID, "")
 
             activity?.run {
                 btn_topup_activation.setOnClickListener {

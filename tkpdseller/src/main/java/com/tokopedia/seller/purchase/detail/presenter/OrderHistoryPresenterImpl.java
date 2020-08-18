@@ -4,10 +4,11 @@ import android.content.Context;
 
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.purchase.detail.activity.OrderHistoryView;
 import com.tokopedia.seller.purchase.detail.interactor.OrderHistoryInteractor;
 import com.tokopedia.seller.purchase.detail.model.history.viewmodel.OrderHistoryData;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import rx.Subscriber;
 
@@ -32,9 +33,10 @@ public class OrderHistoryPresenterImpl implements OrderHistoryPresenter {
     @Override
     public void fetchHistoryData(Context context, String orderId, int userMode) {
         mainView.showMainViewLoadingPage();
+        UserSessionInterface userSession = new UserSession(context);
         TKPDMapParam<String, String> temporaryParams = new TKPDMapParam<>();
         temporaryParams.put("order_id", orderId);
-        temporaryParams.put("user_id", SessionHandler.getLoginID(context));
+        temporaryParams.put("user_id", userSession.getUserId());
         temporaryParams.put("lang", "id");
         TKPDMapParam<String, Object> params = new TKPDMapParam<>();
         params.putAll(temporaryParams);

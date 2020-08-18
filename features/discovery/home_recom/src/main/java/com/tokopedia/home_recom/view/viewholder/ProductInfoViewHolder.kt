@@ -43,13 +43,13 @@ class ProductInfoViewHolder(private val view: View) : AbstractViewHolder<Product
 
     private fun getRatingDrawable(rating: Int): Int {
         return when (rating) {
-            0 -> R.drawable.ic_star_none
-            1 -> R.drawable.ic_star_one
-            2 -> R.drawable.ic_star_two
-            3 -> R.drawable.ic_star_three
-            4 -> R.drawable.ic_star_four
-            5 -> R.drawable.ic_star_five
-            else -> R.drawable.ic_star_none
+            0 -> com.tokopedia.productcard.R.drawable.ic_star_none
+            1 -> com.tokopedia.productcard.R.drawable.ic_star_one
+            2 -> com.tokopedia.productcard.R.drawable.ic_star_two
+            3 -> com.tokopedia.productcard.R.drawable.ic_star_three
+            4 -> com.tokopedia.productcard.R.drawable.ic_star_four
+            5 -> com.tokopedia.productcard.R.drawable.ic_star_five
+            else -> com.tokopedia.productcard.R.drawable.ic_star_none
         }
     }
 

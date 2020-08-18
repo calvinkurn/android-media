@@ -30,6 +30,7 @@ abstract class BaseTracking {
     protected object Category{
         const val KEY = "eventCategory"
         const val HOMEPAGE = "homepage"
+        const val HOMEPAGE_TOPADS = "homepage-topads"
     }
 
     protected object Action{
@@ -217,8 +218,8 @@ abstract class BaseTracking {
             map[KEY_CREATIVE] = promotion.creative
             map[KEY_CREATIVE_URL] = promotion.creativeUrl
             map[KEY_POSITION] = promotion.position
-            map[KEY_PROMO_ID] = promotion.promoIds
-            map[KEY_PROMO_CODE] = promotion.promoCodes
+            if(promotion.promoIds.isNotBlank()) map[KEY_PROMO_ID] = promotion.promoIds
+            if(promotion.promoCodes.isNotBlank()) map[KEY_PROMO_CODE] = promotion.promoCodes
             return map
         }
 
@@ -320,11 +321,11 @@ abstract class BaseTracking {
             eventAction: String,
             eventLabel: String,
             channelId: String,
-            affinity: String,
-            attribution: String,
-            categoryId: String,
-            shopId: String,
-            campaignCode: String,
+            affinity: String = "",
+            attribution: String = "",
+            categoryId: String = "",
+            shopId: String = "",
+            campaignCode: String = "",
             promotions: List<Promotion>,
             userId: String = "",
             screen: String = "",
@@ -337,11 +338,6 @@ abstract class BaseTracking {
                 Action.KEY, eventAction,
                 Label.KEY, eventLabel,
                 Label.CHANNEL_LABEL, channelId,
-                Label.AFFINITY_LABEL, affinity,
-                Label.ATTRIBUTION_LABEL, attribution,
-                Label.CATEGORY_LABEL, categoryId,
-                Label.SHOP_LABEL, shopId,
-                Label.CAMPAIGN_CODE, campaignCode,
                 Ecommerce.KEY, Ecommerce.getEcommercePromoClick(promotions),
                 ChannelId.KEY, channelId
         )
@@ -349,6 +345,11 @@ abstract class BaseTracking {
         if(screen.isNotBlank()) dataLayer[Screen.KEY] = screen
         if(currentSite.isNotBlank()) dataLayer[CurrentSite.KEY] = currentSite
         if(businessUnit.isNotBlank()) dataLayer[BusinessUnit.KEY] = businessUnit
+        if(affinity.isNotBlank()) dataLayer[Label.AFFINITY_LABEL] = affinity
+        if(attribution.isNotBlank()) dataLayer[Label.ATTRIBUTION_LABEL] = attribution
+        if(categoryId.isNotBlank()) dataLayer[Label.CATEGORY_LABEL] = categoryId
+        if(shopId.isNotBlank()) dataLayer[Label.SHOP_LABEL] = shopId
+        if(campaignCode.isNotBlank()) dataLayer[Label.CAMPAIGN_CODE] = campaignCode
         return dataLayer
     }
 

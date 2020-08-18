@@ -7,8 +7,11 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.MarginLayoutParams;
 import android.webkit.URLUtil;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
@@ -17,6 +20,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.view.model.section.ImageList;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
+import com.tokopedia.tokopoints.view.util.CommanUtilsKt;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
 
 import java.util.List;
@@ -52,6 +56,14 @@ public class SectionCarouselAdapter extends RecyclerView.Adapter<SectionCarousel
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        MarginLayoutParams params = (MarginLayoutParams) holder.itemView.getLayoutParams();
+        if (position == 0) {
+            params.setMargins(CommanUtilsKt.convertDpToPixel(16,holder.itemView.getContext()),0,0,0);
+        } else {
+            params.setMargins(0,0,0,0);
+        }
+        holder.itemView.setLayoutParams(params);
+
         holder.bindData(mItems.get(position));
     }
 

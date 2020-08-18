@@ -74,6 +74,7 @@ public class ReputationTrackingConstant {
     public static final String CLICK_ON_WHITESPACE = "click on whitespace";
     public static final String CLICK_ON_TEXT_REVIEW = "click on beri ulasan";
     public static final String MESSAGE = "message:";
+    public static final String REVIEW_DETAIL_PAGE_SCREEN = "review detail page - report abuse";
 
 
     //key
@@ -83,4 +84,5 @@ public class ReputationTrackingConstant {
     public static final String EVENT_CATEGORY = "eventCategory";
     public static final String EVENT_ACTION = "eventAction";
     public static final String EVENT_LABEL = "eventLabel";
+    public static final String SCREEN_NAME = "screenName";
 }

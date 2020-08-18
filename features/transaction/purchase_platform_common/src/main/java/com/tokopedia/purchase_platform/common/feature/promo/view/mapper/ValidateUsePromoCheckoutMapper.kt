@@ -2,6 +2,7 @@ package com.tokopedia.purchase_platform.common.feature.promo.view.mapper
 
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.*
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.*
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.TrackingDetailsItemUiModel
 
 /**
  * Created by fwidjaja on 2020-03-05.
@@ -32,8 +33,23 @@ class ValidateUsePromoCheckoutMapper {
                     additionalInfoUiModel = mapToAdditionalInfoUiModel(promo?.additionalInfo),
                     benefitSummaryInfoUiModel = mapToBenefitSummaryInfoUiModel(promo?.benefitSummaryInfo),
                     voucherOrderUiModels = mapListVoucherOrders(promo?.voucherOrders),
-                    tickerInfoUiModel = mapTickerInfoUiModel(promo?.tickerInfo)
+                    tickerInfoUiModel = mapTickerInfoUiModel(promo?.tickerInfo),
+                    trackingDetailUiModels = mapTrackingDetails(promo?.trackingDetails)
             )
+        }
+
+        private fun mapTrackingDetails(trackingDetails: List<TrackingDetailsItem>?): List<TrackingDetailsItemUiModel> {
+            val trackingDetailUiModels = ArrayList<TrackingDetailsItemUiModel>()
+            trackingDetails?.forEach {
+                val trackingDetailsItemUiModel = TrackingDetailsItemUiModel().apply {
+                    promoDetailsTracking = it.promoDetailsTracking
+                    productId = it.productId
+                    promoCodesTracking = it.promoCodesTracking
+                }
+                trackingDetailUiModels.add(trackingDetailsItemUiModel)
+            }
+
+            return trackingDetailUiModels
         }
 
         private fun mapTickerInfoUiModel(tickerInfo: TickerInfo?): TickerInfoUiModel {

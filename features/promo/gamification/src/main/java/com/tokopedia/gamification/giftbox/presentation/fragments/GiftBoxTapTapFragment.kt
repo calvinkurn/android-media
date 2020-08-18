@@ -24,6 +24,7 @@ import com.airbnb.lottie.LottieComposition
 import com.airbnb.lottie.LottieCompositionFactory
 import com.airbnb.lottie.LottieTask
 import com.tkpd.remoteresourcerequest.view.ImageDensityType
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.gamification.R
 import com.tokopedia.gamification.data.entity.CrackBenefitEntity
@@ -33,6 +34,7 @@ import com.tokopedia.gamification.giftbox.Constants
 import com.tokopedia.gamification.giftbox.InactiveImageLoader
 import com.tokopedia.gamification.giftbox.analytics.GtmGiftTapTap
 import com.tokopedia.gamification.giftbox.data.di.component.DaggerGiftBoxComponent
+import com.tokopedia.gamification.giftbox.data.di.modules.AppModule
 import com.tokopedia.gamification.giftbox.data.entities.CouponTapTap
 import com.tokopedia.gamification.giftbox.presentation.entities.RewardSummaryItem
 import com.tokopedia.gamification.giftbox.presentation.fragments.BenefitType.Companion.COUPON
@@ -46,6 +48,7 @@ import com.tokopedia.gamification.giftbox.presentation.fragments.TokenUserStateT
 import com.tokopedia.gamification.giftbox.presentation.fragments.TokenUserStateTapTap.Companion.DEFAULT
 import com.tokopedia.gamification.giftbox.presentation.fragments.TokenUserStateTapTap.Companion.EMPTY
 import com.tokopedia.gamification.giftbox.presentation.fragments.TokenUserStateTapTap.Companion.LOBBY
+import com.tokopedia.gamification.giftbox.presentation.helpers.BgSoundDownloader
 import com.tokopedia.gamification.giftbox.presentation.helpers.addListener
 import com.tokopedia.gamification.giftbox.presentation.helpers.doOnLayout
 import com.tokopedia.gamification.giftbox.presentation.helpers.dpToPx
@@ -90,6 +93,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
     val rewardItems = arrayListOf<RewardSummaryItem>()
     val benefitItems = arrayListOf<Pair<CrackBenefitEntity, CrackButtonEntity?>>()
     var backButton: BackButton? = null
+    val bgSoundDownloader = BgSoundDownloader()
 
     @RewardContainer.RewardState
     var rewardState: Int = RewardContainer.RewardState.COUPON_ONLY
@@ -109,7 +113,6 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
     lateinit var endTimeMinute: String
     private val LOW_VOLUME = 0.3f
     private val NORMAL_VOLUME = 1f
-    private val LARGE_PHONE_HEIGHT = 1900
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -128,6 +131,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         context?.let {
             val component = DaggerGiftBoxComponent.builder()
                     .activityContextModule(ActivityContextModule(it))
+                    .appModule(AppModule((context as AppCompatActivity).application))
                     .build()
             component.inject(this)
 
@@ -141,10 +145,25 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val v = super.onCreateView(inflater, container, savedInstanceState)
 
+        downloadAudios()
         colorDim = ContextCompat.getColor(activity!!, com.tokopedia.gamification.R.color.gf_dim)
         colorBlackTransParent = ContextCompat.getColor(activity!!, com.tokopedia.gamification.R.color.gf_black_transparent)
         viewModel.getGiftBoxHome()
         return v
+    }
+
+    private fun downloadAudios() {
+        bgSoundDownloader.downloadAndPlay("gf_giftbox_bg_tap_60.mp3", {
+            giftBoxTapTapAudio.bgSoundPath = it
+        }, 1000L)
+
+        bgSoundDownloader.downloadAndPlay("gami_count_down.mp3", {
+            giftBoxTapTapAudio.countDownSoundPath = it
+        }, 10000L)
+
+        bgSoundDownloader.downloadAndPlay("gami_timeout.mp3", {
+            giftBoxTapTapAudio.timeUpSoundPath = it
+        }, 10000L)
     }
 
     private fun showRewardAnimation(@RewardContainer.RewardState rewardState: Int, startDelay: Long, isFirstTime: Boolean) {
@@ -460,11 +479,13 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
 
 
         gamiTapEggHome.actionButton?.let { items ->
-            if (!items.isNullOrEmpty())
+            if (!items.isNullOrEmpty()) {
                 btnInactiveFirst.text = items[0].text
 
-            btnInactiveFirst.setOnClickListener {
-                GtmGiftTapTap.clickHomePageButton(userSession?.userId)
+                btnInactiveFirst.setOnClickListener {
+                    RouteManager.route(btnInactiveFirst.context, items[0].applink)
+                    GtmGiftTapTap.clickHomePageButton(userSession?.userId)
+                }
             }
         }
         GtmGiftTapTap.campaignOver(userSession?.userId)
@@ -534,6 +555,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                     imageFrontUrl,
                     bgImageUrl,
                     lidImages,
+                    viewLifecycleOwner,
                     imageCallback = { isLoaded ->
                         giftBoxDailyView.imagesLoaded.lazySet(0)
                         setPositionOfViewsAtBoxOpen()
@@ -605,6 +627,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                         imageFrontUrl,
                         bgImageUrl,
                         lidImages,
+                        viewLifecycleOwner,
                         imageCallback = { isLoaded ->
                             giftBoxDailyView.imagesLoaded.lazySet(0)
                             setPositionOfViewsAtBoxOpen()
@@ -1006,8 +1029,10 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                 GtmGiftTapTap.clickExitButton(userSession?.userId)
                 dialog.dismiss()
             }
-            val layoutParams = dialog.findViewById<View>(com.tokopedia.dialog.R.id.dialog_bg).layoutParams
-            layoutParams.width = (giftBoxDailyView.width - giftBoxDailyView.width * 0.3).toInt()
+            if (isTablet) {
+                val layoutParams = dialog.findViewById<View>(com.tokopedia.dialog.R.id.dialog_bg).layoutParams
+                layoutParams.width = (giftBoxDailyView.width - giftBoxDailyView.width * 0.3).toInt()
+            }
             dialog.show()
         }
     }
@@ -1040,6 +1065,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         bgSoundManager?.destroy()
         hourCountDownTimer?.cancel()
         minuteCountDownTimer?.cancel()
+        bgSoundDownloader.removeAll()
     }
 }
 

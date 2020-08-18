@@ -134,6 +134,7 @@ object ProductDetailConstant {
     const val LAYOUT_TAIL_N_SHOULDERS = "tail n shoulders"
     const val BY_ME = "byme"
 
+
     //Arguments
     const val ARG_PRODUCT_ID = "ARG_PRODUCT_ID"
     const val ARG_WAREHOUSE_ID = "ARG_WAREHOUSE_ID"
@@ -145,6 +146,8 @@ object ProductDetailConstant {
     const val ARG_FROM_AFFILIATE = "ARG_FROM_AFFILIATE"
     const val ARG_AFFILIATE_STRING = "ARG_AFFILIATE_STRING"
     const val ARG_DEEPLINK_URL = "ARG_DEEPLINK_URL"
+    const val REVIEW_PRD_NM = "x_prd_nm"
+
 
     //Animation
     const val CART_MAX_COUNT = 99

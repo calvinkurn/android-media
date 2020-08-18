@@ -33,12 +33,16 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 
 class RecommendationListCarouselViewHolder(itemView: View,
-                                           private val listCarouselListener: RecommendationListCarouselListener,
-                                           private val parentRecycledViewPool: RecyclerView.RecycledViewPool): AbstractViewHolder<RecommendationListCarouselDataModel>(itemView), CoroutineScope {
+                                           private val listCarouselListener: RecommendationListCarouselListener?,
+                                           private val parentRecycledViewPool: RecyclerView.RecycledViewPool?): AbstractViewHolder<RecommendationListCarouselDataModel>(itemView), CoroutineScope {
 
     private val masterJob = SupervisorJob()
 
     override val coroutineContext = masterJob + Dispatchers.Main
+
+    override fun bind(element: RecommendationListCarouselDataModel, payloads: MutableList<Any>) {
+        bind(element)
+    }
 
     override fun bind(element: RecommendationListCarouselDataModel) {
         val listCarouselTitle = itemView.findViewById<Typography>(R.id.list_carousel_title)
@@ -60,7 +64,7 @@ class RecommendationListCarouselViewHolder(itemView: View,
             if(channelConfig.hasCloseButton){
                 listCarouselCloseButton.show()
                 listCarouselCloseButton.setOnClickListener {
-                    listCarouselListener.onBuyAgainCloseChannelClick(channel, adapterPosition)
+                    listCarouselListener?.onBuyAgainCloseChannelClick(channel, adapterPosition)
                 }
             }else {
                 listCarouselCloseButton.hide()
@@ -172,7 +176,7 @@ class RecommendationListCarouselViewHolder(itemView: View,
 
     private fun setViewportImpression(element: RecommendationListCarouselDataModel) {
         itemView.addOnImpressionListener(element.channelModel) {
-            listCarouselListener.onRecommendationCarouselChannelImpression(element.channelModel, adapterPosition)
+            listCarouselListener?.onRecommendationCarouselChannelImpression(element.channelModel, adapterPosition)
         }
     }
 
@@ -193,7 +197,7 @@ class RecommendationListCarouselViewHolder(itemView: View,
 
     class HomeRecommendationListViewHolder(
             itemView: View,
-            val listCarouselListener: RecommendationListCarouselListener
+            val listCarouselListener: RecommendationListCarouselListener?
     ): RecommendationListCarouselItem(itemView) {
         private val recommendationCard = itemView.findViewById<ProductCardListView>(R.id.productCardView)
 
@@ -201,7 +205,7 @@ class RecommendationListCarouselViewHolder(itemView: View,
             recommendationCard.applyCarousel()
             if(recommendation is HomeRecommendationListData) {
                 itemView.addOnImpressionListener(recommendation) {
-                    listCarouselListener.onRecommendationCarouselGridImpression(
+                    listCarouselListener?.onRecommendationCarouselGridImpression(
                             recommendation.channelModel,
                             recommendation.grid,
                             adapterPosition,
@@ -223,10 +227,10 @@ class RecommendationListCarouselViewHolder(itemView: View,
                 val addToCartButton = recommendationCard.findViewById<UnifyButton>(R.id.buttonAddToCart)
                 addToCartButton.text = itemView.context.getString(R.string.home_global_component_buy_again)
                 recommendationCard.setAddToCartOnClickListener {
-                    recommendation.listener.onBuyAgainOneClickCheckOutClick(recommendation.grid, recommendation.channelModel, adapterPosition)
+                    recommendation.listener?.onBuyAgainOneClickCheckOutClick(recommendation.grid, recommendation.channelModel, adapterPosition)
                 }
                 itemView.setOnClickListener {
-                    listCarouselListener.onRecommendationProductClick(
+                    listCarouselListener?.onRecommendationProductClick(
                             recommendation.channelModel,
                             recommendation.grid,
                             adapterPosition,
@@ -235,7 +239,7 @@ class RecommendationListCarouselViewHolder(itemView: View,
                 }
             } else if(recommendation is HomeRecommendationListSeeMoreData) {
                 itemView.addOnImpressionListener(recommendation) {
-                    listCarouselListener.onRecommendationCarouselGridImpression(
+                    listCarouselListener?.onRecommendationCarouselGridImpression(
                             recommendation.channel,
                             null,
                             adapterPosition,
@@ -254,7 +258,7 @@ class RecommendationListCarouselViewHolder(itemView: View,
         override fun bind(homeRecommendationListData: HomeRecommendationListCarousel) {
             if(homeRecommendationListData is HomeRecommendationListSeeMoreData) {
                 container.setOnClickListener {
-                    homeRecommendationListData.listener.onRecommendationSeeMoreClick(
+                    homeRecommendationListData.listener?.onRecommendationSeeMoreClick(
                             applink = homeRecommendationListData.channel.channelHeader.applink,
                             channelModel = homeRecommendationListData.channel
                     )
@@ -278,17 +282,17 @@ class RecommendationListCarouselViewHolder(itemView: View,
             val channelModel: ChannelModel,
             val grid: ChannelGrid,
             val parentPosition: Int,
-            val listener: RecommendationListCarouselListener,
+            val listener: RecommendationListCarouselListener?,
             val productData: ProductCardModel
     ): HomeRecommendationListCarousel()
 
     data class HomeRecommendationListSeeMoreData(
             val channel: ChannelModel,
-            val listener: RecommendationListCarouselListener,
+            val listener: RecommendationListCarouselListener?,
             val parentPosition: Int
     ): HomeRecommendationListCarousel()
 
-    class RecommendationListAdapter(private val recommendationList: List<HomeRecommendationListCarousel>, private val listener: RecommendationListCarouselListener): RecyclerView.Adapter<RecommendationListCarouselItem>() {
+    class RecommendationListAdapter(private val recommendationList: List<HomeRecommendationListCarousel>, private val listener: RecommendationListCarouselListener?): RecyclerView.Adapter<RecommendationListCarouselItem>() {
         companion object{
             private const val LAYOUT_TYPE_CAROUSEL = 87
             private const val LAYOUT_TYPE_NON_CAROUSEL = 90

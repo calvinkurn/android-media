@@ -4,12 +4,18 @@ query discussionMostHelpful($productID: String!, $shopID: String!) {
     question {
       questionID
       content
+      userName
+      userThumbnail
+      userID
+      createTime
+      createTimeFormatted
       totalAnswer
       answer {
         answerID
         content
         userName
         userThumbnail
+        userThumbnail2
         userID
         isSeller
         createTime
@@ -17,5 +23,8 @@ query discussionMostHelpful($productID: String!, $shopID: String!) {
         attachedProductCount
       }
     }
+    productID
+    shopID
+    shopURL
   }
 }

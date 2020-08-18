@@ -16,8 +16,12 @@ class PowerMerchantTermsActivity : BaseSimpleActivity() {
     }
 
     companion object {
-        fun createIntent(context: Context): Intent {
-            return Intent(context, PowerMerchantTermsActivity::class.java)
+        const val EXTRA_SHOP_SCORE = "extra_shop_score"
+
+        fun createIntent(context: Context, shopScore: Int): Intent {
+            return Intent(context, PowerMerchantTermsActivity::class.java).apply {
+                putExtra(EXTRA_SHOP_SCORE, shopScore)
+            }
         }
     }
 }

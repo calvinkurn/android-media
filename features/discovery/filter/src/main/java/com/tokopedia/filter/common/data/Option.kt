@@ -1,70 +1,68 @@
 package com.tokopedia.filter.common.data
 
-import android.os.Parcel
 import android.os.Parcelable
-
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
-class Option() : Parcelable {
+@Parcelize
+class Option(@SerializedName("name")
+             @Expose
+             var name: String = "",
 
-    @SerializedName("name")
-    @Expose
-    var name: String = ""
+             @SerializedName("key")
+             @Expose
+             var key: String = "",
 
-    @SerializedName("key")
-    @Expose
-    var key: String = ""
+             @SerializedName("value")
+             @Expose
+             var value: String = "",
 
-    @SerializedName("value")
-    @Expose
-    var value: String = ""
+             @SerializedName(value = "input_type", alternate = ["inputType"])
+             @Expose
+             var inputType: String = "",
 
-    @SerializedName(value = "input_type", alternate = [ "inputType" ])
-    @Expose
-    var inputType: String = ""
+             @SerializedName(value = "hex_color", alternate = ["hexColor"])
+             @Expose
+             var hexColor: String = "",
 
-    @SerializedName(value = "hex_color", alternate = [ "hexColor" ])
-    @Expose
-    var hexColor: String = ""
+             @SerializedName("metric")
+             @Expose
+             var metric:String = "",
 
-    @SerializedName("metric")
-    @Expose
-    var metric = ""
+             @SerializedName(value = "total_data", alternate = ["totalData"])
+             @Expose
+             private var totalData: String = "",
 
-    @SerializedName(value = "total_data", alternate = [ "totalData" ])
-    @Expose
-    private var totalData: String = ""
+             @SerializedName(value = "val_min", alternate = ["valMin"])
+             @Expose
+             var valMin: String = "",
 
-    @SerializedName(value = "val_min", alternate = [ "valMin" ])
-    @Expose
-    var valMin: String = ""
+             @SerializedName(value = "val_max", alternate = ["valMax"])
+             @Expose
+             var valMax: String = "",
 
-    @SerializedName(value = "val_max", alternate = [ "valMax" ])
-    @Expose
-    var valMax: String = ""
+             @SerializedName("icon")
+             @Expose
+             var iconUrl: String = "",
 
-    @SerializedName("icon")
-    @Expose
-    var iconUrl: String = ""
+             @SerializedName(value = "description", alternate = ["Description"])
+             @Expose
+             var description: String = "",
 
-    @SerializedName(value = "description", alternate = [ "Description" ])
-    @Expose
-    var description: String = ""
+             @SerializedName(value = "is_popular", alternate = ["isPopular"])
+             @Expose
+             var isPopular: Boolean = false,
 
-    @SerializedName(value = "is_popular", alternate = [ "isPopular" ])
-    @Expose
-    var isPopular: Boolean = false
+             @SerializedName(value = "is_new", alternate = ["isNew"])
+             @Expose
+             var isNew: Boolean = false,
 
-    @SerializedName(value = "is_new", alternate = [ "isNew" ])
-    @Expose
-    var isNew: Boolean = false
+             @SerializedName("child")
+             @Expose
+             var levelTwoCategoryList: List<LevelTwoCategory> = listOf(),
 
-    @SerializedName("child")
-    @Expose
-    var levelTwoCategoryList: List<LevelTwoCategory> = listOf()
-
-    var inputState = ""
+             var inputState: String = "") : Parcelable {
 
     val isAnnotation: Boolean
         get() = KEY_ANNOTATION_ID.equals(key)
@@ -99,57 +97,16 @@ class Option() : Parcelable {
     val isRatingOption: Boolean
         get() = key == KEY_RATING
 
-    override fun equals(obj: Any?): Boolean {
-        if (this === obj) return true
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
 
-        if (obj == null || obj.javaClass != this.javaClass) return false
+        if (other == null || other.javaClass != this.javaClass) return false
 
-        val option = obj as Option
+        val option = other as Option
 
         return (this.key == option.key
                 && this.value == option.value
                 && this.name == option.name)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    override fun writeToParcel(dest: Parcel, flags: Int) {
-        dest.writeString(this.name)
-        dest.writeString(this.key)
-        dest.writeString(this.value)
-        dest.writeString(this.inputType)
-        dest.writeString(this.hexColor)
-        dest.writeString(this.metric)
-        dest.writeString(this.totalData)
-        dest.writeString(this.valMin)
-        dest.writeString(this.valMax)
-        dest.writeString(this.iconUrl)
-        dest.writeString(this.description)
-        dest.writeByte(if (this.isPopular) 1.toByte() else 0.toByte())
-        dest.writeByte(if (this.isNew) 1.toByte() else 0.toByte())
-        dest.writeTypedList(this.levelTwoCategoryList)
-        dest.writeString(this.inputState)
-    }
-
-    protected constructor(`in`: Parcel) : this() {
-        val zeroByte = 0
-        this.name = `in`.readString()
-        this.key = `in`.readString()
-        this.value = `in`.readString()
-        this.inputType = `in`.readString()
-        this.hexColor = `in`.readString()
-        this.metric = `in`.readString()
-        this.totalData = `in`.readString()
-        this.valMin = `in`.readString()
-        this.valMax = `in`.readString()
-        this.iconUrl = `in`.readString()
-        this.description = `in`.readString()
-        this.isPopular = `in`.readByte() !== zeroByte.toByte()
-        this.isNew = `in`.readByte() !== zeroByte.toByte()
-        this.levelTwoCategoryList = `in`.createTypedArrayList(LevelTwoCategory.CREATOR)
-        this.inputState = `in`.readString()
     }
 
     companion object {
@@ -176,16 +133,5 @@ class Option() : Parcelable {
         const val RATING_ABOVE_FOUR_NAME = "4 Keatas"
         const val RATING_ABOVE_FOUR_VALUE = "4,5"
 
-        @JvmField
-        val CREATOR: Parcelable.Creator<Option> = object : Parcelable.Creator<Option> {
-
-            override fun createFromParcel(source: Parcel): Option {
-                return Option(source)
-            }
-
-            override fun newArray(size: Int): Array<Option?> {
-                return arrayOfNulls(size)
-            }
-        }
     }
 }

@@ -1,4 +1,4 @@
-hachikoCatalogDetail(catalog_id: param_cId) {
+hachikoCatalogDetail(catalog_id: param_cId , apiVersion : "2.0.0") {
     id
     catalog_type
     icon

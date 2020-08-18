@@ -89,19 +89,6 @@ class CMUserHandler(private val mContext: Context) : CoroutineScope {
             return ""
         }
 
-    private val userIdAsInt: Int
-        get() {
-            val userIdStr = userId
-            var userIdInt = 0
-            if (!TextUtils.isEmpty(userIdStr)) {
-                try {
-                    userIdInt = Integer.parseInt(userIdStr.trim { it <= ' ' })
-                } catch (e: NumberFormatException) {
-                }
-            }
-            return userIdInt
-        }
-
     fun updateToken(token: String, remoteDelaySeconds: Long, userAction: Boolean) {
         try {
             var delay = getRandomDelay(remoteDelaySeconds)
@@ -141,13 +128,14 @@ class CMUserHandler(private val mContext: Context) : CoroutineScope {
                 val requestParams = HashMap<String, Any>()
 
                 requestParams["macAddress"] = ""
-                requestParams[USER_ID] = userIdAsInt
                 requestParams[SOURCE] = SOURCE_ANDROID
                 requestParams[FCM_TOKEN] = token
                 requestParams[APP_ID] = CMNotificationUtils.getUniqueAppId(mContext)
                 requestParams[SDK_VERSION] = CMNotificationUtils.sdkVersion.toString()
                 requestParams[APP_VERSION] = appVersionName
-                requestParams[USER_STATE] = CMNotificationUtils.getUserStatus(mContext, userId)
+                val userIdAndStatus = CMNotificationUtils.getUserIdAndStatus(mContext, userId)
+                requestParams[USER_STATE] = userIdAndStatus.first
+                requestParams[USER_ID] = userIdAndStatus.second
                 requestParams[REQUEST_TIMESTAMP] = CMNotificationUtils.currentLocalTimeStamp.toString() + ""
                 requestParams[APP_NAME] = CMNotificationUtils.getApplicationName(mContext)
 

@@ -18,11 +18,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_ADD_NOTE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_ADD_PRODUCT;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_ADD_PRODUCT_FROM_ZERO_PRODUCT;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_BACK;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_CART_BUTTON;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_DISCUSSION;
@@ -52,6 +50,7 @@ import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.MANAGE_SHOP;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.MERCHANT_VOUCHER;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.MVC_DETAIL;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.NO_SEARCH_RESULT;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PAGE_SOURCE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PAGE_TYPE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PRODUCT_NAVIGATION;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PROMO_CLICK;
@@ -177,6 +176,15 @@ public class ShopPageTracking {
         Map<String,String> customDimension = new HashMap<>();
         customDimension.put(SHOP_TYPE, shopType);
         customDimension.put(PAGE_TYPE, SHOPPAGE);
+        TrackApp.getInstance().getGTM().sendScreenAuthenticated(screenName,customDimension);
+    }
+
+    public void sendScreenShopPage(String shopId, String shopType, String pageSource) {
+        String screenName = joinDash(SHOPPAGE, shopId);
+        Map<String,String> customDimension = new HashMap<>();
+        customDimension.put(SHOP_TYPE, shopType);
+        customDimension.put(PAGE_TYPE, SHOPPAGE);
+        customDimension.put(PAGE_SOURCE, pageSource);
         TrackApp.getInstance().getGTM().sendScreenAuthenticated(screenName,customDimension);
     }
 

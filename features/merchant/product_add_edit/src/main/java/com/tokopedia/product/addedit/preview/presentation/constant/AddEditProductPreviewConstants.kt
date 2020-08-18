@@ -16,5 +16,8 @@ class AddEditProductPreviewConstants {
         const val TYPE_ACTIVE = 1
         const val TYPE_ACTIVE_LIMITED = 2
         const val TYPE_WAREHOUSE = 3
+        const val DETAIL_DATA = 1
+        const val DESCRIPTION_DATA = 2
+        const val SHIPMENT_DATA = 3
     }
 }

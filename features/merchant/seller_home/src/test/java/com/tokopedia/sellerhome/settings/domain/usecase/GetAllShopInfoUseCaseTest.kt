@@ -82,7 +82,8 @@ class GetAllShopInfoUseCaseTest {
                         topAdsDepositSuccess.getCurrencyFormatted(),
                         isTopAdsAutoTopupSuccess,
                         shopBadgeUrlSuccess,
-                        totalFollowersSuccess
+                        totalFollowersSuccess,
+                        userSession
                 )
 
         coEvery {
@@ -144,16 +145,17 @@ class GetAllShopInfoUseCaseTest {
                              shopBadge: String): SettingShopInfoUiModel {
         shopInfo.shopInfoMoengage?.run {
             return SettingShopInfoUiModel(
-                    info?.shopName.toEmptyStringIfNull(),
-                    info?.shopAvatar.toEmptyStringIfNull(),
-                    shopStatusType,
-                    shopInfo.balance?.totalBalance ?: "",
-                    topAdsBalance.getCurrencyFormatted(),
-                    isTopAdsAutoTopup,
-                    shopBadge,
-                    totalFollowers)
+                info?.shopName.toEmptyStringIfNull(),
+                info?.shopAvatar.toEmptyStringIfNull(),
+                shopStatusType,
+                shopInfo.balance?.totalBalance ?: "",
+                topAdsBalance.getCurrencyFormatted(),
+                isTopAdsAutoTopup,
+                shopBadge,
+                totalFollowers,
+                userSession)
         }
-        return SettingShopInfoUiModel()
+        return SettingShopInfoUiModel(user = userSession)
     }
 
 }

@@ -552,7 +552,7 @@ object DynamicProductDetailTracking {
             TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.ImageReview.ACTION_SEE_ITEM)
         }
 
-        fun eventClickReviewOnSeeAllImage(productInfo: DynamicProductInfoP1?, componentTrackDataModel: ComponentTrackDataModel) {
+        fun onSeeAllLastItemImageReview(productInfo: DynamicProductInfoP1?, componentTrackDataModel: ComponentTrackDataModel) {
             val productId = productInfo?.basic?.productID ?: ""
 
             val mapEvent = TrackAppUtils.gtmData(
@@ -562,6 +562,21 @@ object DynamicProductDetailTracking {
                     productId
             )
             TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.ImageReview.ACTION_SEE_ALL)
+        }
+
+        fun onSeeAllReviewTextView(productInfo: DynamicProductInfoP1?, userId: String, componentTrackDataModel: ComponentTrackDataModel) {
+            val mapEvent = TrackAppUtils.gtmData(
+                    ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                    ProductTrackingConstant.Category.PDP,
+                    ProductTrackingConstant.Action.CLICK_SEE_ALL_ULASAN,
+                    ""
+            )
+            mapEvent[ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT] = userId
+            mapEvent[ProductTrackingConstant.Tracking.KEY_SHOP_ID_SELLER] = productInfo?.basic?.shopID
+            mapEvent[ProductTrackingConstant.Tracking.KEY_ISLOGGIN] = (userId.isNotEmpty()).toString()
+            mapEvent[ProductTrackingConstant.Tracking.KEY_SHOP_TYPE] = productInfo?.shopTypeString ?: ""
+
+            TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.CLICK_SEE_ALL_ULASAN)
         }
 
         fun eventClickReviewOnMostHelpfulReview(productInfo: DynamicProductInfoP1?,

@@ -1,5 +1,6 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 repositories {
@@ -22,7 +23,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.baseList)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.features.wishlistCommon)
-    implementation project(rootProject.ext.features.goldMerchantResource)
+    implementation project(rootProject.ext.features.goldMerchantCommon)
     implementation project(rootProject.ext.libraries.track)
 
     implementation rootProject.ext.unifyDependencies.principles
@@ -42,8 +43,6 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.networkDependencies.glide
-    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
     debugImplementation rootProject.ext.debugToolsDependencies.stetho
     implementation rootProject.ext.debugToolsDependencies.chuck
 }

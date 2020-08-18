@@ -18,7 +18,7 @@ public interface SearchEventTracking {
 
     interface Category {
         String EVENT_TOP_NAV = "top nav";
-        String EVENT_TOP_NAV_SEARCH_SRP = "top nav - search - search result page";
+        String EVENT_TOP_NAV_SEARCH_SRP = "top nav - search result page";
         String SEARCH = "Search";
         String FILTER_PRODUCT = "filter product";
         String SEARCH_RESULT = "search result";
@@ -27,7 +27,6 @@ public interface SearchEventTracking {
         String SORT = "Sort";
         String SORT_BY = "sort by";
         String TOP_NAV_SEARCH_RESULT_PAGE = "top nav - search result page";
-        String SEARCH_RESULT_PROFILE = "search result profile";
     }
 
     interface Action {
@@ -63,13 +62,11 @@ public interface SearchEventTracking {
         String IMPRESSION_PRODUCT_SHOP_TAB_ALTERNATIVE = "impression - product - shop tab - alternative";
         String CLICK_PRODUCT_SHOP_TAB = "click - product - shop tab";
         String CLICK_PRODUCT_SHOP_TAB_ALTERNATIVE = "click - product - shop tab - alternative";
-        String IMPRESSION_PROFILE = "impression - profile";
-        String IMPRESSION_TOP_PROFILE_IN_NO_RESULT_PROFILE = "impression - top profile in no result profile";
-        String CLICK_PROFILE_RESULT = "click - profile result";
-        String CLICK_TOP_PROFILE_IN_NO_RESULT_PROFILE = "click - top profile in no result profile";
         String IMPRESSION_INSPIRATION_CAROUSEL_PRODUCT = "impression - inspiration carousel product";
+        String IMPRESSION_INSPIRATION_CAROUSEL_INFO_PRODUCT = "impression - carousel banner";
         String CLICK_INSPIRATION_CAROUSEL_SEARCH = "click - inspiration carousel search";
         String CLICK_INSPIRATION_CAROUSEL_PRODUCT = "click - inspiration carousel product";
+        String CLICK_INSPIRATION_CAROUSEL_INFO_PRODUCT = "click - carousel banner";
         String CLICK = "click";
         String CLICK_FUZZY_KEYWORDS_SUGGESTION = "click - fuzzy keywords - suggestion";
         String IMPRESSION_BROAD_MATCH = "impression - broad match";

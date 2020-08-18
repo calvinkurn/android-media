@@ -47,7 +47,7 @@ public class CategoryDataSource {
         return categoryDataManager.getCategoryName(categoryId);
     }
 
-    private class CheckDatabaseNotNull implements Func1<List<CategoryDataBase>, Boolean> {
+    private static class CheckDatabaseNotNull implements Func1<List<CategoryDataBase>, Boolean> {
         @Override
         public Boolean call(List<CategoryDataBase> categoryDataBases) {
             if(categoryDataBases == null || categoryDataBases.isEmpty()){

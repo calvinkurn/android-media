@@ -113,7 +113,10 @@ class DynamicIconSectionViewHolder(val view: View,
             })
             holder.container.setOnClickListener { view ->
                 eventClickDynamicIcon(view.context, sectionViewModel.itemList[position], position)
-                listener.onSectionItemClicked(DynamicLinkHelper.getActionLink(sectionViewModel.itemList[position]))
+                val link = DynamicLinkHelper.getActionLink(sectionViewModel.itemList[position])
+                link?.let {
+                    listener.onSectionItemClicked(it)
+                }
             }
 
             if(!sectionViewModel.isCache) {

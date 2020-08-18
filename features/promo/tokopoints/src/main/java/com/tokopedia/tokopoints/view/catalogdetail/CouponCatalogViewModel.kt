@@ -12,12 +12,11 @@ import javax.inject.Inject
 import javax.inject.Named
 
 @TokoPointScope
-class CouponCatalogViewModel @Inject constructor(private val repository: CouponCatalogRepository,@Named(BundleModule.tp_send_gift_failed_title) val tp_send_gift_failed_title : String,@Named(BundleModule.tp_send_gift_failed_message) val tp_send_gift_failed_message : String ) : CatalogPurchaseRedeemptionViewModel(repository), CouponCatalogContract.Presenter {
+class CouponCatalogViewModel @Inject constructor(private val repository: CouponCatalogRepository, @Named(BundleModule.tp_send_gift_failed_title) val tp_send_gift_failed_title: String, @Named(BundleModule.tp_send_gift_failed_message) val tp_send_gift_failed_message: String) : CatalogPurchaseRedeemptionViewModel(repository), CouponCatalogContract.Presenter {
 
     val catalogDetailLiveData = MutableLiveData<Resources<CatalogsValueEntity>>()
     val sendGiftPageLiveData = MutableLiveData<Resources<SendGiftPage>>()
     val latestStatusLiveData = MutableLiveData<CatalogStatusItem>()
-    val pointQueryLiveData = MutableLiveData<Resources<String>>()
 
     override fun getCatalogDetail(uniqueCatalogCode: String) {
         launchCatchError(block = {
@@ -25,9 +24,8 @@ class CouponCatalogViewModel @Inject constructor(private val repository: CouponC
             val response = repository.getcatalogDetail(uniqueCatalogCode)
             val data = response.getData<CatalogDetailOuter>(CatalogDetailOuter::class.java)
             data?.let { catalogDetailLiveData.value = Success(data.detail!!) }
-            handlePointQuery(response.getData<TokoPointDetailEntity>(TokoPointDetailEntity::class.java))
         }) {
-            catalogDetailLiveData.value = ErrorMessage(it.toString())
+            catalogDetailLiveData.value = ErrorMessage(it.localizedMessage)
         }
     }
 
@@ -38,17 +36,6 @@ class CouponCatalogViewModel @Inject constructor(private val repository: CouponC
                 latestStatusLiveData.value = data.catalogStatus.catalogs[0]
             }
         }) {}
-    }
-
-
-    private fun handlePointQuery(pointDetailEntity: TokoPointDetailEntity?) { //Handling the point
-        if (pointDetailEntity == null || pointDetailEntity.tokoPoints == null || pointDetailEntity.tokoPoints.resultStatus == null || pointDetailEntity.tokoPoints.status == null || pointDetailEntity.tokoPoints.status.points == null) {
-            pointQueryLiveData.value = ErrorMessage("")
-        } else {
-            if (pointDetailEntity.tokoPoints.resultStatus.code == CommonConstant.CouponRedemptionCode.SUCCESS) {
-                pointQueryLiveData.value = Success(pointDetailEntity.tokoPoints.status.points.rewardStr)
-            }
-        }
     }
 
     override fun startSendGift(id: Int, title: String, pointStr: String, banner: String) {

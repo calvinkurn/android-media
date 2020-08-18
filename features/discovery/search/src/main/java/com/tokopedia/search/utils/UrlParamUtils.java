@@ -1,6 +1,6 @@
 package com.tokopedia.search.utils;
 
-import android.text.TextUtils;
+import com.tokopedia.design.utils.StringUtils;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -16,7 +16,7 @@ public final class UrlParamUtils {
 
     public static HashMap<String, String> getParamMap(String paramString) {
         HashMap<String, String> map = new HashMap<>();
-        if (!TextUtils.isEmpty(paramString)) {
+        if (StringUtils.isNotBlank(paramString)) {
             String[] params = paramString.split("&");
             for (String param : params) {
                 String[] val = param.split("=");

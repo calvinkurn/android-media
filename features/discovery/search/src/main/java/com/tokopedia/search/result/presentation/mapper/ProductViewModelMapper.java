@@ -1,21 +1,17 @@
 package com.tokopedia.search.result.presentation.mapper;
 
-import com.tokopedia.filter.common.data.DataValue;
-import com.tokopedia.filter.common.data.Filter;
-import com.tokopedia.filter.common.data.Option;
 import com.tokopedia.search.result.domain.model.SearchProductModel;
 import com.tokopedia.search.result.presentation.model.BadgeItemViewModel;
 import com.tokopedia.search.result.presentation.model.BroadMatchItemViewModel;
 import com.tokopedia.search.result.presentation.model.BroadMatchViewModel;
 import com.tokopedia.search.result.presentation.model.FreeOngkirViewModel;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
-import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel;
 import com.tokopedia.search.result.presentation.model.InspirationCardOptionViewModel;
 import com.tokopedia.search.result.presentation.model.InspirationCardViewModel;
+import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel;
 import com.tokopedia.search.result.presentation.model.LabelGroupViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.search.result.presentation.model.ProductViewModel;
-import com.tokopedia.search.result.presentation.model.QuickFilterViewModel;
 import com.tokopedia.search.result.presentation.model.RelatedViewModel;
 import com.tokopedia.search.result.presentation.model.SuggestionViewModel;
 import com.tokopedia.search.result.presentation.model.TickerViewModel;
@@ -36,9 +32,7 @@ public class ProductViewModelMapper {
             productViewModel.setGlobalNavViewModel(convertToViewModel(searchProductModel.getGlobalNavModel()));
         }
         productViewModel.setCpmModel(searchProductModel.getCpmModel());
-        if (searchProductData.getRelated() != null) {
-            productViewModel.setRelatedViewModel(convertToRelatedViewModel(searchProductData.getRelated()));
-        }
+        productViewModel.setRelatedViewModel(convertToRelatedViewModel(searchProductData.getRelated()));
         productViewModel.setProductList(convertToProductItemViewModelList(lastProductItemPositionFromCache, searchProductData.getProductList(), useRatingString));
         productViewModel.setAdsModel(searchProductModel.getTopAdsModel());
         productViewModel.setTickerModel(createTickerModel(searchProductData));
@@ -49,54 +43,17 @@ public class ProductViewModelMapper {
         productViewModel.setKeywordProcess(searchProductHeader.getKeywordProcess());
         productViewModel.setErrorMessage(searchProductHeader.getErrorMessage());
         productViewModel.setIsQuerySafe(searchProductData.isQuerySafe());
-        if (searchProductModel.getQuickFilterModel() != null) {
-            productViewModel.setQuickFilterModel(
-                    convertToQuickFilterViewModel(
-                            searchProductModel.getQuickFilterModel(),
-                            searchProductHeader.getTotalDataText()
-                    )
-            );
-        }
-        if (searchProductModel.getSearchInspirationCarousel() != null) {
-            productViewModel
-                    .setInspirationCarouselViewModel(
-                            convertToInspirationCarouselViewModel(searchProductModel.getSearchInspirationCarousel()
-                            )
-                    );
-        }
-        if (searchProductModel.getSearchInspirationCard() != null) {
-            productViewModel
-                    .setInspirationCardViewModel(
-                            convertToInspirationCardViewModel(searchProductModel.getSearchInspirationCard())
-                    );
-        }
+        productViewModel.setInspirationCarouselViewModel(
+            convertToInspirationCarouselViewModel(searchProductModel.getSearchInspirationCarousel())
+        );
+        productViewModel.setInspirationCardViewModel(
+            convertToInspirationCardViewModel(searchProductModel.getSearchInspirationCard())
+        );
         productViewModel.setAdditionalParams(searchProductHeader.getAdditionalParams());
         productViewModel.setAutocompleteApplink(searchProductData.getAutocompleteApplink());
         productViewModel.setDefaultView(searchProductHeader.getDefaultView());
 
         return productViewModel;
-    }
-
-    private QuickFilterViewModel convertToQuickFilterViewModel(DataValue dynamicFilterModel, String formattedResultCount) {
-        QuickFilterViewModel quickFilterViewModel = new QuickFilterViewModel();
-        quickFilterViewModel.setFormattedResultCount(formattedResultCount);
-        quickFilterViewModel.setQuickFilterList(dynamicFilterModel.getFilter());
-        quickFilterViewModel.setQuickFilterOptions(getQuickFilterOptions(dynamicFilterModel));
-        return quickFilterViewModel;
-    }
-
-    private List<Option> getQuickFilterOptions(DataValue dynamicFilterModel) {
-        ArrayList<Option> optionList = new ArrayList<>();
-
-        if (dynamicFilterModel.getFilter() == null) {
-            return optionList;
-        }
-
-        for (Filter filter : dynamicFilterModel.getFilter()) {
-            optionList.addAll(filter.getOptions());
-        }
-
-        return optionList;
     }
 
     private boolean isListContainItems(List list) {
@@ -149,6 +106,7 @@ public class ProductViewModelMapper {
 
         return new RelatedViewModel(
                 related.getRelatedKeyword(),
+                related.getPosition(),
                 broadMatchViewModelList
         );
     }
@@ -184,9 +142,39 @@ public class ProductViewModelMapper {
                 otherRelatedProduct.getUrl(),
                 otherRelatedProduct.getApplink(),
                 otherRelatedProduct.getPriceString(),
+                otherRelatedProduct.getShop().getCity(),
+                convertOtherRelatedProductBadgeToBadgesItemList(otherRelatedProduct.getBadgeList()),
+                convertOtherRelatedProductFreeOngkirToFreeOngkirViewModel(otherRelatedProduct.getFreeOngkir()),
+                otherRelatedProduct.isWishlisted(),
                 position,
                 alternativeKeyword
         );
+    }
+
+    private List<BadgeItemViewModel> convertOtherRelatedProductBadgeToBadgesItemList(
+            List<SearchProductModel.OtherRelatedProductBadge> badgesList
+    ) {
+        List<BadgeItemViewModel> badgeItemList = new ArrayList<>();
+
+        for (SearchProductModel.OtherRelatedProductBadge badgeModel : badgesList) {
+            badgeItemList.add(convertOtherRelatedProductBadgeToBadgeItem(badgeModel));
+        }
+        return badgeItemList;
+    }
+
+    private BadgeItemViewModel convertOtherRelatedProductBadgeToBadgeItem(
+            SearchProductModel.OtherRelatedProductBadge badgeModel
+    ) {
+        BadgeItemViewModel badgeItem = new BadgeItemViewModel();
+        badgeItem.setImageUrl(badgeModel.getImageUrl());
+        badgeItem.setShown(badgeModel.isShown());
+        return badgeItem;
+    }
+
+    private FreeOngkirViewModel convertOtherRelatedProductFreeOngkirToFreeOngkirViewModel(
+            SearchProductModel.OtherRelatedProductFreeOngkir freeOngkir
+    ) {
+        return new FreeOngkirViewModel(freeOngkir.isActive(), freeOngkir.getImageUrl());
     }
 
     private List<ProductItemViewModel> convertToProductItemViewModelList(int lastProductItemPositionFromCache, List<SearchProductModel.Product> productModels, boolean useRatingString) {
@@ -230,6 +218,7 @@ public class ProductViewModelMapper {
         productItem.setLabelGroupList(convertToLabelGroupList(productModel.getLabelGroupList()));
         productItem.setFreeOngkirViewModel(convertToFreeOngkirViewModel(productModel.getFreeOngkir()));
         productItem.setBoosterList(productModel.getBoosterList());
+        productItem.setSourceEngine(productModel.getSourceEngine());
         productItem.setOrganicAds(productModel.isOrganicAds());
         productItem.setTopadsImpressionUrl(productModel.getAds().getProductViewUrl());
         productItem.setTopadsClickUrl(productModel.getAds().getProductClickUrl());
@@ -305,14 +294,15 @@ public class ProductViewModelMapper {
                     data.getTitle(),
                     data.getType(),
                     data.getPosition(),
-                    convertToInspirationCarouselOptionViewModel(data.getInspirationCarouselOptions(), data.getType())
+                    data.getLayout(),
+                    convertToInspirationCarouselOptionViewModel(data.getInspirationCarouselOptions(), data.getType(), data.getLayout())
             ));
         }
 
         return inspirationCarousel;
     }
 
-    private  List<InspirationCarouselViewModel.Option> convertToInspirationCarouselOptionViewModel(List<SearchProductModel.InspirationCarouselOption> inspirationCarouselOptions, String inspirationCarouselType) {
+    private  List<InspirationCarouselViewModel.Option> convertToInspirationCarouselOptionViewModel(List<SearchProductModel.InspirationCarouselOption> inspirationCarouselOptions, String inspirationCarouselType, String layout) {
         List<InspirationCarouselViewModel.Option> options = new ArrayList<>();
 
         for (SearchProductModel.InspirationCarouselOption opt : inspirationCarouselOptions) {
@@ -322,7 +312,8 @@ public class ProductViewModelMapper {
                     opt.getUrl(),
                     opt.getApplink(),
                     convertToInspirationCarouselProductViewModel(opt.getInspirationCarouselProducts(), position, inspirationCarouselType),
-                    inspirationCarouselType
+                    inspirationCarouselType,
+                    layout
             ));
         }
 
@@ -343,6 +334,7 @@ public class ProductViewModelMapper {
                     product.getCountReview(),
                     product.getUrl(),
                     product.getApplink(),
+                    product.getDescription(),
                     position,
                     inspirationCarouselType
             ));

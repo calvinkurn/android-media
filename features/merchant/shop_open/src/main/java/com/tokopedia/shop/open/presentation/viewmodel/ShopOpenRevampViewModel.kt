@@ -3,27 +3,30 @@ package com.tokopedia.shop.open.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.shop.common.graphql.data.shopopen.ShopDomainSuggestionData
+import com.tokopedia.shop.common.graphql.data.shopopen.ValidateShopDomainNameResult
+import com.tokopedia.shop.common.graphql.domain.usecase.shopopen.GetShopDomainNameSuggestionUseCase
+import com.tokopedia.shop.common.graphql.domain.usecase.shopopen.ValidateDomainShopNameUseCase
+import com.tokopedia.shop.open.common.ShopOpenDispatcherProvider
 import com.tokopedia.shop.open.data.model.*
 import com.tokopedia.shop.open.domain.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ShopOpenRevampViewModel @Inject constructor(
-        private val validateDomainShopNameUseCase: ShopOpenRevampValidateDomainShopNameUseCase,
-        private val getDomainNameSuggestionUseCase: ShopOpenRevampGetDomainNameSuggestionUseCase,
+        private val validateDomainShopNameUseCase: ValidateDomainShopNameUseCase,
+        private val getDomainNameSuggestionUseCase: GetShopDomainNameSuggestionUseCase,
         private val getSurveyUseCase: ShopOpenRevampGetSurveyUseCase,
         private val sendSurveyUseCase: ShopOpenRevampSendSurveyUseCase,
         private val createShopUseCase: ShopOpenRevampCreateShopUseCase,
         private val saveShopShipmentLocationUseCase: ShopOpenRevampSaveShipmentLocationUseCase,
-        dispatchers: CoroutineDispatcher
-) : BaseViewModel(dispatchers) {
+        private val dispatchers: ShopOpenDispatcherProvider
+) : BaseViewModel(dispatchers.ui()) {
 
     companion object {
         const val SURVEY_ID  = "surveyID"
@@ -43,8 +46,8 @@ class ShopOpenRevampViewModel @Inject constructor(
     val getSurveyDataResponse: LiveData<Result<GetSurveyData>>
         get() = _getSurveyDataResponse
 
-    private val _domainShopNameSuggestionsResponse = MutableLiveData<Result<ShopDomainSuggestionResult>>()
-    val domainShopNameSuggestionsResponse: LiveData<Result<ShopDomainSuggestionResult>>
+    private val _domainShopNameSuggestionsResponse = MutableLiveData<Result<ShopDomainSuggestionData>>()
+    val domainShopNameSuggestionsResponse: LiveData<Result<ShopDomainSuggestionData>>
         get() = _domainShopNameSuggestionsResponse
 
     private val _saveShopShipmentLocationResponse = MutableLiveData<Result<SaveShipmentLocation>>()
@@ -73,29 +76,32 @@ class ShopOpenRevampViewModel @Inject constructor(
         }
 
         currentShopName = shopName
+        validateShopName(shopName)
+    }
 
+    fun validateShopName(shopName: String) {
         launchCatchError(block = {
-            withContext(Dispatchers.IO) {
+            withContext(dispatchers.io()) {
                 delay(DELAY_TIMER)
 
                 if (currentShopName != shopName) {
                     return@withContext
                 }
 
-                validateDomainShopNameUseCase.params = ShopOpenRevampValidateDomainShopNameUseCase.createRequestParams(shopName)
+                validateDomainShopNameUseCase.params = ValidateDomainShopNameUseCase.createRequestParams(shopName)
                 val validateShopNameResult = validateDomainShopNameUseCase.executeOnBackground()
                 validateShopNameResult.let {
                     _checkShopNameResponse.postValue(Success(validateShopNameResult))
                 }
             }
-         }) {
+        }) {
             _checkShopNameResponse.value = Fail(it)
         }
     }
 
     fun getSurveyQuizionaireData() {
         launchCatchError(block = {
-            withContext(Dispatchers.IO) {
+            withContext(dispatchers.io()) {
                 val surveyDataResult = getSurveyUseCase.executeOnBackground()
                 surveyDataResult.let {
                     _getSurveyDataResponse.postValue(Success(it))
@@ -109,8 +115,8 @@ class ShopOpenRevampViewModel @Inject constructor(
     fun getDomainShopNameSuggestions(shopName: String) {
         getDomainNameSuggestionUseCase.cancelJobs()
         launchCatchError(block = {
-            withContext(Dispatchers.IO) {
-                getDomainNameSuggestionUseCase.params = ShopOpenRevampGetDomainNameSuggestionUseCase.createRequestParams(shopName)
+            withContext(dispatchers.io()) {
+                getDomainNameSuggestionUseCase.params = GetShopDomainNameSuggestionUseCase.createRequestParams(shopName)
                 val shopSuggestionsResult = getDomainNameSuggestionUseCase.executeOnBackground()
                 shopSuggestionsResult.let {
                     _domainShopNameSuggestionsResponse.postValue(Success(it))
@@ -121,18 +127,9 @@ class ShopOpenRevampViewModel @Inject constructor(
         }
     }
 
-    fun saveShippingLocation(
-            shopId: Int,
-            postCode: String,
-            courierOrigin: Int,
-            addrStreet: String,
-            lat: String,
-            long: String
-    ) {
+    fun saveShippingLocation(dataParam: MutableMap<String, Any>) {
         launchCatchError(block = {
-            withContext(Dispatchers.IO) {
-                val dataParam = saveShopShippingLocation(
-                        shopId, postCode, courierOrigin, addrStreet, lat, long)
+            withContext(dispatchers.io()) {
                 saveShopShipmentLocationUseCase.params = ShopOpenRevampSaveShipmentLocationUseCase.createRequestParams(dataParam)
                 val saveShipmentLocationData = saveShopShipmentLocationUseCase.executeOnBackground()
                 saveShipmentLocationData.let {
@@ -144,7 +141,7 @@ class ShopOpenRevampViewModel @Inject constructor(
         }
     }
 
-    private fun saveShopShippingLocation(
+    fun getSaveShopShippingLocationData(
             shopId: Int,
             postCode: String,
             courierOrigin: Int,
@@ -171,7 +168,7 @@ class ShopOpenRevampViewModel @Inject constructor(
 
     fun createShop(domain: String, shopName: String) {
         launchCatchError(block = {
-            withContext(Dispatchers.IO) {
+            withContext(dispatchers.io()) {
                 createShopUseCase.params = ShopOpenRevampCreateShopUseCase.createRequestParams(domain, shopName)
                 val shopRegistrationResult = createShopUseCase.executeOnBackground()
                 shopRegistrationResult.let {
@@ -183,14 +180,9 @@ class ShopOpenRevampViewModel @Inject constructor(
         }
     }
 
-    fun sendInputSurveyData(dataSurvey: MutableMap<Int, MutableList<Int>>) {
-        val dataSurveyInput = getDataSurveyInput(dataSurvey)
-        sendSurveyData(dataSurveyInput)
-    }
-
     fun sendSurveyData(dataSurveyInput: Map<String, Any>) {
         launchCatchError(block = {
-            withContext(Dispatchers.IO) {
+            withContext(dispatchers.io()) {
                 sendSurveyUseCase.params = ShopOpenRevampSendSurveyUseCase.createRequestParams(dataSurveyInput)
                 val sendSurveyData = sendSurveyUseCase.executeOnBackground()
                 sendSurveyData.let {
@@ -202,7 +194,7 @@ class ShopOpenRevampViewModel @Inject constructor(
         }
     }
 
-    private fun getDataSurveyInput(
+    fun getDataSurveyInput(
             dataSurveys: MutableMap<Int, MutableList<Int>>
     ): MutableMap<String, Any> {
         val surveyPayload = mutableMapOf<String, Any>()
@@ -222,16 +214,19 @@ class ShopOpenRevampViewModel @Inject constructor(
         }
 
         currentShopDomain = domain
+        validateDomainName(domain)
+    }
 
+    fun validateDomainName(domain: String){
         launchCatchError(block = {
-            withContext(Dispatchers.IO) {
+            withContext(dispatchers.io()) {
                 delay(DELAY_TIMER)
 
                 if (currentShopDomain != domain) {
                     return@withContext
                 }
 
-                validateDomainShopNameUseCase.params = ShopOpenRevampValidateDomainShopNameUseCase.createRequestParam(domain)
+                validateDomainShopNameUseCase.params = ValidateDomainShopNameUseCase.createRequestParam(domain)
                 val validateShopDomainNameResult = validateDomainShopNameUseCase.executeOnBackground()
                 validateShopDomainNameResult.let {
                     _checkDomainNameResponse.postValue(Success(it))

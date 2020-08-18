@@ -33,8 +33,7 @@ yang ditemukan</string>
     <string name="time_machine">Untuk melihat percakapan sebelumnya,\nkunjungi Riwayat
         Pesan</string>
     <string name="string_general_error">Terjadi kesalahan, mohon coba kembali.</string>
-    <string name="error_no_connection_retrying">Terjadi gangguan pada koneksi. Mencoba
-        menghubungkan…</string>
+    <string name="error_no_connection_retrying">Tunggu sebentar, ya. Kami sedang menghubungkanmu.</string>
     <string name="title_time_machine_message">Tokopedia</string>
 
     <!-- Chat Room -->
@@ -167,4 +166,17 @@ yang ditemukan</string>
     <string name="tittle_header_auto_reply">Dibalas oleh Balasan Otomatis</string>
     <string name="tittle_info_auto_reply">Pesan ini dibalas oleh sistem</string>
     <string name="filter_chat_smart_reply">Dibalas oleh Smart Reply</string>
+    <string name="title_topchat_tooltip_sticker_onboarding">Kami punya stiker lucu buatmu, lho. Cobain, yuk!</string>
+    <string name="title_topchat_tooltip_search_onboarding">Kamu bisa cari pengguna, pesan, atau produk. Coba ketik sesuatu.</string>
+    <string name="title_broadcast_handle_not_follow">Kamu menerima chat promosi ini karena pernah melihat produk toko ini</string>
+    <string name="title_broadcast_stop_promo">Berhenti Terima Promo</string>
+    <string name="title_broadcast_follow_shop">Follow Toko</string>
+    <string name="title_success_follow_shop">Toko berhasil di-follow</string>
+    <string name="title_success_unfollow_shop">Toko berhasil di-unfollow</string>
+    <string name="title_success_block_promo">Kamu berhenti menerima chat promosi dari toko ini sampai %1$s.</string>
+    <string name="title_success_allow_promo">Kamu akan menerima chat promosi dari toko ini lagi.</string>
+    <string name="title_allow_promo">Terima Kembali Chat Promosi</string>
+    <string name="title_block_promo">Berhenti Terima Chat Promosi</string>
+    <string name="title_confirm_block_promo">Yakin ingin diblokir?</string>
+    <string name="desc_confirm_block_promo">Kalau diblokir, kamu tidak akan menerima chat dari pengguna ini.</string>
 </resources>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/icEmptyStateRatingProduct"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_seller_app_scoring" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvNoReviewsYet"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/no_reviews_yet"
+        android:gravity="center"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:textColor="@color/clr_f531353b"
+        app:typographyType="heading_2"
+        app:typographyWeight="bold"
+        app:layout_constraintTop_toBottomOf="@id/icEmptyStateRatingProduct"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvContentNoReviewsYet"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        app:typographyType="body_2"
+        app:typographyWeight="reguler"
+        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginStart="@dimen/spacing_lvl5"
+        android:layout_marginLeft="@dimen/spacing_lvl5"
+        android:layout_marginEnd="@dimen/spacing_lvl5"
+        android:layout_marginRight="@dimen/spacing_lvl5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvNoReviewsYet"
+        tools:text="@string/content_no_reviews_yet"
+ />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

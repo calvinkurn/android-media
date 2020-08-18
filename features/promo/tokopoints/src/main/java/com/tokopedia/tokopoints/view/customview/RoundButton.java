@@ -45,8 +45,8 @@ public class RoundButton extends AppCompatButton {
 
             TypedArray array = getContext().getTheme()
                     .obtainStyledAttributes(attrs, R.styleable.RoundButton, 0, 0);
-            cornerRadius = array.getDimension(R.styleable.RoundButton_cornerRadius, 0);
-            buttonColor = array.getColor(R.styleable.RoundButton_buttonColor, MethodChecker.getColor(getContext(), com.tokopedia.design.R.color.white));
+            cornerRadius = array.getDimension(R.styleable.RoundButton_tpRbCornerRadius, 0);
+            buttonColor = array.getColor(R.styleable.RoundButton_tpRbButtonColor, MethodChecker.getColor(getContext(), com.tokopedia.design.R.color.white));
             array.recycle();
         }
     }

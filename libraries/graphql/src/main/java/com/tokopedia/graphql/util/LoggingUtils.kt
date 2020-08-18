@@ -29,4 +29,10 @@ object LoggingUtils {
         val sampleRequest = request.substringAfter("[GraphqlRequest{query='").take(Const.GQL_RESPONSE_MAX_LENGTH).trim()
         Timber.w("P1#GQL_CACHED_RESP#$classType;req_size=${sampleRequest.length};resp_size=${response.length};req='$sampleRequest'")
     }
+
+    @JvmStatic
+    fun logGqlNullChecker(errorMessage: String, className: String, request: String) {
+        val sampleRequest = request.take(Const.GQL_RESPONSE_MAX_LENGTH).trim()
+        Timber.w("P1#GQL_NULL#'$className';err='$errorMessage';req='$sampleRequest'")
+    }
 }

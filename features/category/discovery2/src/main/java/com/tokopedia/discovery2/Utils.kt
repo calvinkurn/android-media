@@ -25,6 +25,7 @@ class Utils {
         private const val SERIBU_TEXT = "rb orang"
         private const val SEJUTA_TEXT = "jt orang"
         private const val SEMILIAR_TEXT = "M orang"
+        var preSelectedTab = -1
 
 
         fun extractDimension(url: String?, dimension: String = "height"): Int? {
@@ -32,15 +33,9 @@ class Utils {
             return uri?.getQueryParameter(dimension)?.toInt()
         }
 
-        fun shareData(context: Context?, shareTxt: String?, productUri: String?, image: Bitmap?) {
+        fun shareData(context: Context?, shareTxt: String?, productUri: String?) {
             val share = Intent(Intent.ACTION_SEND)
-            share.type = "image/*"
-            if (image != null) {
-                share.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                val path: String = MediaStore.Images.Media.insertImage(context?.contentResolver, image, "Image Description", null)
-                val uri = Uri.parse(path)
-                share.putExtra(Intent.EXTRA_STREAM, uri)
-            }
+            share.type = "text/plain"
             share.putExtra(Intent.EXTRA_TEXT, shareTxt + "\n" + productUri)
             context?.startActivity(Intent.createChooser(share, shareTxt))
         }

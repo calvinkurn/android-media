@@ -1,4 +1,8 @@
 apply plugin: 'com.android.application'
+//if (project.hasProperty("auto-patch")) {
+//    apply plugin: 'auto-patch-plugin'
+//}
+//apply plugin: 'robust'
 apply plugin: 'io.fabric'
 apply plugin: 'io.hansel.preprocessor'
 apply plugin: 'com.bugsnag.android.gradle'
@@ -123,6 +127,7 @@ android {
         applicationId "com.tokopedia.sellerapp"
         versionCode getTkpdVersionCode()
         versionName getTkpdVersionName()
+        resConfigs "en", "id"
         ndk {
             abiFilters "armeabi-v7a", "x86", "arm64-v8a", "x86_64"
         }
@@ -202,7 +207,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.dynamicFeatures)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.deviceInfo)
-    implementation project(rootProject.ext.features.createpost)
     if (rootProject.ext.debugToolsEnabled) {
         implementation project(rootProject.ext.features.developerOptions)
     } else {
@@ -210,14 +214,11 @@ dependencies {
     }
     implementation project(rootProject.ext.features.commonDigital)
     implementation project(rootProject.ext.features.tkpdcore)
-    implementation project(rootProject.ext.features.shopPage)
     implementation project(rootProject.ext.features.sellerorder)
     implementation project(rootProject.ext.features.sellerHome)
-    implementation project(rootProject.ext.features.sellerOnboarding)
     implementation project(rootProject.ext.features.merchantLendingWidget)
     implementation project(rootProject.ext.features.goldMerchantCommon)
     implementation project(rootProject.ext.features.powerMerchantSubscribe)
-    implementation project(rootProject.ext.features.goldMerchantResource)
     implementation project(rootProject.ext.features.goldMerchant)
     implementation project(rootProject.ext.features.topAdsDashboard)
     implementation project(rootProject.ext.features.topAdsWidget)
@@ -229,6 +230,8 @@ dependencies {
     implementation project(rootProject.ext.features.tkpdseller)
     implementation project(rootProject.ext.features.reputation)
     implementation project(rootProject.ext.features.reputationCommon)
+    implementation project(rootProject.ext.features.reviewSeller)
+    implementation project(rootProject.ext.features.sellerActiveCommon)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.payment)
     implementation project(rootProject.ext.features.commonPayment)
@@ -236,7 +239,6 @@ dependencies {
     implementation project(rootProject.ext.features.contactUs)
     implementation project(rootProject.ext.features.otp)
     implementation project(rootProject.ext.features.logout)
-    implementation project(rootProject.ext.features.userIdentification)
     implementation project(rootProject.ext.features.userIdentificationCommon)
     implementation project(rootProject.ext.features.logisticaddaddress)
     implementation project(rootProject.ext.features.saldodetails)
@@ -254,20 +256,15 @@ dependencies {
     implementation project(rootProject.ext.features.attachproduct)
     implementation project(rootProject.ext.features.talk)
     implementation project(rootProject.ext.features.productDetail)
-    implementation project(rootProject.ext.features.productAddEdit)
     implementation project(rootProject.ext.features.productManageItem)
     implementation project(rootProject.ext.features.productManageList)
-    implementation project(rootProject.ext.features.broadcastMessage)
-    implementation project(rootProject.ext.features.broadcastMessageCommon)
-    implementation project(rootProject.ext.features.kol)
     implementation project(rootProject.ext.features.kolCommon)
-    implementation project(rootProject.ext.features.flashsaleManagement)
-    implementation project(rootProject.ext.features.flashsaleManagementCommon)
     implementation project(rootProject.ext.features.merchantVoucher)
     implementation project(rootProject.ext.features.categoryCommon)
     implementation project(rootProject.ext.features.notifCenter)
     implementation project(rootProject.ext.features.settingbank)
     implementation project(rootProject.ext.features.managepassword)
+    implementation project(rootProject.ext.features.voucherCreation)
 
     implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.features.commonDigital)
@@ -289,6 +286,8 @@ dependencies {
 
     implementation project(rootProject.ext.features.attachinvoice)
     implementation project(rootProject.ext.features.attachvoucher)
+
+    implementation project(rootProject.ext.features.playCommon)
 
     implementation rootProject.ext.unifyDependencies.icon
     implementation rootProject.ext.unifyDependencies.components
@@ -321,6 +320,12 @@ dependencies {
     }
 
     if (rootProject.ext.debugToolsEnabled) {
+        implementation project(rootProject.ext.libraries.preReleaseInspector)
+    } else {
+        implementation project(rootProject.ext.libraries.preReleaseInspectorNoop)
+    }
+
+    if (rootProject.ext.debugToolsEnabled) {
         implementation rootProject.ext.tkpdInternalLibDependencies.fakeresponse
     } else {
         implementation rootProject.ext.tkpdInternalLibDependencies.fakeresponseNoOp
@@ -328,10 +333,10 @@ dependencies {
     implementation(rootProject.ext.analyticsDependencies.moengage)
 
     implementation rootProject.ext.playServicesDependencies.analytics
+    implementation rootProject.ext.playServicesDependencies.core
     implementation rootProject.ext.playServicesDependencies.maps
     implementation rootProject.ext.serviceDependencies.crashlytics
 
-    implementation project(rootProject.ext.libraries.playCore)
     implementation rootProject.ext.firebase.config
     implementation rootProject.ext.firebase.messaging
 
@@ -351,12 +356,14 @@ dependencies {
     implementation rootProject.ext.miscDependencies.scannerZxing
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.gson
+    implementation rootProject.ext.miscDependencies.robust
 
     implementation rootProject.ext.miscDependencies.rxAndroid
     implementation rootProject.ext.miscDependencies.rxJava
 
     implementation project(rootProject.ext.libraries.fingerprint)
     implementation project(rootProject.ext.libraries.logger)
+    implementation project(rootProject.ext.libraries.tokopatch)
 
     implementation(rootProject.ext.miscDependencies.imagecropper) {
         exclude group: "com.android.support"

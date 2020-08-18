@@ -53,7 +53,7 @@ public class OrderListInitPresenterImpl implements OrderListInitContract.Present
                 view.removeProgressBarView();
                 if (response != null) {
                     TabData data = response.getData(TabData.class);
-                    if (!data.getOrderLabelList().isEmpty()) {
+                    if (data != null && !data.getOrderLabelList().isEmpty()) {
                         view.renderTabs(data.getOrderLabelList(), orderCategory);
                     }
                 }

@@ -257,7 +257,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_6"
             android:layout_above="@+id/btn_submit"
-            android:background="@drawable/topads_create_bg_shader_gray" />
+            android:background="@drawable/topads_bg_shader_gray" />
 
         <Button
             android:id="@+id/btn_submit"

@@ -46,8 +46,10 @@ class PreferenceListViewHolder(itemView: View, private val listener: PreferenceL
             if (preference.status == 2) {
                 lblMainPreference.visible()
                 cbMainPreference.isChecked = true
-                cbMainPreference.isEnabled = false
-                cbMainPreference.setOnClickListener {  }
+                cbMainPreference.isEnabled = true
+                cbMainPreference.setOnClickListener {
+                    cbMainPreference.isChecked = true
+                }
             } else {
                 lblMainPreference.gone()
                 cbMainPreference.isChecked = false
@@ -102,7 +104,7 @@ class PreferenceListViewHolder(itemView: View, private val listener: PreferenceL
         val serviceDur = if (tempServiceDuration.contains("(") && tempServiceDuration.contains(")")) {
             itemView.context.getString(R.string.lbl_shipping_duration_prefix, tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")")))
         } else {
-            OrderSummaryPageViewModel.NO_EXACT_DURATION_MESSAGE
+            itemView.context.getString(R.string.lbl_no_exact_shipping_duration)
         }
         tvShippingDuration.text = serviceDur
 
