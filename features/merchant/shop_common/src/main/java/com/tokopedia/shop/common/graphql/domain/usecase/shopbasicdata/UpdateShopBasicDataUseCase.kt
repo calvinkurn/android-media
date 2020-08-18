@@ -22,6 +22,7 @@ class UpdateShopBasicDataUseCase @Inject
 constructor(@ApplicationContext context: Context) : UseCase<String>() {
 
     private val graphQLUseCase: SingleGraphQLUseCase<ShopBasicDataMutation>
+    private val paramKeys = listOf(NAME, DOMAIN, TAGLINE, DESCRIPTION, LOGO_CODE, FILE_PATH, FILE_NAME)
 
     init {
         graphQLUseCase = object : SingleGraphQLUseCase<ShopBasicDataMutation>(context, ShopBasicDataMutation::class.java) {
@@ -32,20 +33,12 @@ constructor(@ApplicationContext context: Context) : UseCase<String>() {
 
             override fun createGraphQLVariable(requestParams: RequestParams): HashMap<String, Any> {
                 val variables = HashMap<String, Any>()
-                variables[TAGLINE] = requestParams.getString(TAGLINE, "")
-                variables[DESCRIPTION] = requestParams.getString(DESCRIPTION, "")
-                val logoCode = requestParams.getString(LOGO_CODE, "")
-                if (!TextUtils.isEmpty(logoCode)) {
-                    variables[LOGO_CODE] = logoCode
+
+                paramKeys.forEach { key ->
+                    val value = requestParams.getString(key, "")
+                    if(value.isNotEmpty()) { variables[key] = value }
                 }
-                val filePath = requestParams.getString(FILE_PATH, "")
-                if (!TextUtils.isEmpty(filePath)) {
-                    variables[FILE_PATH] = filePath
-                }
-                val fileName = requestParams.getString(FILE_NAME, "")
-                if (!TextUtils.isEmpty(fileName)) {
-                    variables[FILE_NAME] = fileName
-                }
+
                 return variables
             }
         }
@@ -94,15 +87,14 @@ constructor(@ApplicationContext context: Context) : UseCase<String>() {
         fun createRequestParam(
             name: String?,
             domain: String?,
-            tagLine: String,
-            description: String,
+            tagLine: String?,
+            description: String?,
             logoCode: String?
         ): RequestParams {
             val requestParams = RequestParams()
 
-            name?.let { requestParams.putString(NAME, it) }
-            domain?.let { requestParams.putString(DOMAIN, it) }
-
+            requestParams.putString(NAME, name)
+            requestParams.putString(DOMAIN, domain)
             requestParams.putString(TAGLINE, tagLine)
             requestParams.putString(DESCRIPTION, description)
 
