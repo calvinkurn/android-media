@@ -156,7 +156,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         if (BuildConfig.DEBUG && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             registerActivityLifecycleCallbacks(new JankyFrameActivityLifecycleCallbacks.Builder().build());
         }
-//        registerActivityLifecycleCallbacks(new TwoFactorCheckerSubscriber());
+        registerActivityLifecycleCallbacks(new TwoFactorCheckerSubscriber());
 
     }
 
