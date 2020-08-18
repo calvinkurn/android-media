@@ -891,24 +891,24 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         RouteManager.route(context, dataModel.applink)
     }
 
-    override fun onPlayLeftBannerImpressed(dataModel: PlayBannerCarouselOverlayImageDataModel, widgetId: String, position: Int) {
+    override fun onPlayLeftBannerImpressed(dataModel: PlayBannerCarouselOverlayImageDataModel, widgetId: String, widgetPosition: Int, position: Int) {
         shopPageHomeTracking.impressionLeftPlayBanner(
                 shopId = shopId,
                 userId = viewModel?.userId ?: "",
                 bannerId = widgetId,
                 creativeName = dataModel.imageUrl,
-                positionChannel = "1",
+                positionChannel = widgetPosition.toString(),
                 position = (position + 1).toString()
         )
     }
 
-    override fun onPlayLeftBannerClicked(dataModel: PlayBannerCarouselOverlayImageDataModel, widgetId: String, position: Int) {
+    override fun onPlayLeftBannerClicked(dataModel: PlayBannerCarouselOverlayImageDataModel, widgetId: String, widgetPosition: Int, position: Int) {
         shopPageHomeTracking.clickLeftPlayBanner(
                 shopId = shopId,
                 userId = viewModel?.userId ?: "",
                 bannerId = widgetId,
                 creativeName = dataModel.imageUrl,
-                positionChannel = "1",
+                positionChannel = widgetPosition.toString(),
                 position = (position + 1).toString()
         )
         RouteManager.route(context, dataModel.applink)

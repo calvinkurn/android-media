@@ -65,20 +65,20 @@ class ShopHomePlayCarouselViewHolder(
     override fun onItemClick(dataModel: PlayBannerCarouselItemDataModel, position: Int) {
         listener.onPlayBannerClicked(
                 dataModel,
-                if(playCarouselCardDataModel?.playBannerCarouselDataModel?.isAutoPlay == true) IS_AUTO_PLAY_SUCCESS else IS_AUTO_PLAY_FAILED,
+                playCarouselCardDataModel?.playBannerCarouselDataModel?.isAutoPlay.toString(),
                 playCarouselCardDataModel?.widgetId ?: "",
                 isFoldPosition(adapterPosition),
-                position
+                position + 1
         )
     }
 
     override fun onItemImpress(dataModel: PlayBannerCarouselItemDataModel, position: Int) {
         listener.onPlayBannerImpressed(
                 dataModel,
-                if(playCarouselCardDataModel?.playBannerCarouselDataModel?.isAutoPlay == true) IS_AUTO_PLAY_SUCCESS else IS_AUTO_PLAY_FAILED,
+                playCarouselCardDataModel?.playBannerCarouselDataModel?.isAutoPlay.toString(),
                 playCarouselCardDataModel?.widgetId ?: "",
                 isFoldPosition(adapterPosition),
-                position
+                position + 1
         )
     }
 
@@ -95,11 +95,16 @@ class ShopHomePlayCarouselViewHolder(
     }
 
     override fun onOverlayImageBannerClick(dataModel: PlayBannerCarouselOverlayImageDataModel) {
-        listener.onPlayLeftBannerClicked(dataModel, playCarouselCardDataModel?.widgetId ?: "", adapterPosition)
+        listener.onPlayLeftBannerClicked(dataModel, playCarouselCardDataModel?.widgetId ?: "", isFoldPosition(adapterPosition), 0)
     }
 
     override fun onOverlayImageBannerImpress(dataModel: PlayBannerCarouselOverlayImageDataModel) {
-        listener.onPlayLeftBannerImpressed(dataModel, playCarouselCardDataModel?.widgetId ?: "", adapterPosition)
+        listener.onPlayLeftBannerImpressed(
+                dataModel,
+                playCarouselCardDataModel?.widgetId ?: "",
+                isFoldPosition(adapterPosition),
+                0
+        )
     }
 
     override fun onRefreshView(dataModel: PlayBannerCarouselDataModel) {
