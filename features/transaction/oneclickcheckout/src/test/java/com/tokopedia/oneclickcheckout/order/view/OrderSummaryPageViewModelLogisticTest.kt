@@ -1052,7 +1052,6 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     @Test
     fun `Save Pinpoint Success`() {
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-
         every { editAddressUseCase.createObservable(any()) } returns Observable.just("{\"data\": {\"is_success\": 1}}")
 
         orderSummaryPageViewModel.savePinpoint("", "")
@@ -1072,7 +1071,6 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     @Test
     fun `Save Pinpoint Error`() {
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-
         every { editAddressUseCase.createObservable(any()) } returns Observable.just("{\"data\": {\"is_success\": 0},\"message_error\": [\"error\"]}")
 
         orderSummaryPageViewModel.savePinpoint("", "")

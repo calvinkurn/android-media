@@ -152,6 +152,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         }
 
         orderSummaryPageViewModel.updateCartPromo { _, _, _ -> }
+
         assertEquals(OccGlobalEvent.Error(response), orderSummaryPageViewModel.globalEvent.value)
     }
 
@@ -162,6 +163,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
 
         orderSummaryPageViewModel.updateCartPromo { _, _, _ -> }
+
         assertEquals(OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE), orderSummaryPageViewModel.globalEvent.value)
     }
 
@@ -176,6 +178,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(response)
 
         orderSummaryPageViewModel.validateUsePromo()
+
         verify(inverse = true) {
             orderSummaryAnalytics.eventViewPromoDecreasedOrReleased(true)
         }
@@ -193,6 +196,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.error(Throwable())
 
         orderSummaryPageViewModel.validateUsePromo()
+
         assertEquals(ButtonBayarState.DISABLE, orderSummaryPageViewModel.orderPromo.value.state)
         assertEquals(ButtonBayarState.DISABLE, orderSummaryPageViewModel.orderTotal.value.buttonState)
     }
@@ -209,6 +213,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.validateUsePromoRevampUiModel = response.copy(promoUiModel = response.promoUiModel.copy(messageUiModel = MessageUiModel(state = "green")))
 
         orderSummaryPageViewModel.validateUsePromo()
+
         verify(exactly = 1) {
             orderSummaryAnalytics.eventViewPromoDecreasedOrReleased(true)
         }
@@ -230,6 +235,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
                 voucherOrderUiModels = listOf(PromoCheckoutVoucherOrdersItemUiModel(messageUiModel = MessageUiModel(state = "green")))))
 
         orderSummaryPageViewModel.validateUsePromo()
+
         verify(exactly = 1) {
             orderSummaryAnalytics.eventViewPromoDecreasedOrReleased(false)
         }
@@ -253,6 +259,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         }
 
         orderSummaryPageViewModel.finalUpdate({ }, false)
+
         verify {
             checkoutOccUseCase.execute(match {
                 val globalCode = it.carts.promos.first()
@@ -278,6 +285,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         }
 
         orderSummaryPageViewModel.finalUpdate({ }, false)
+
         verify {
             checkoutOccUseCase.execute(match {
                 val voucherCode = it.carts.data.first().shopProducts.first().promos.first()
@@ -302,6 +310,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         }
 
         orderSummaryPageViewModel.finalUpdate({ }, false)
+
         assertEquals(OccGlobalEvent.PromoClashing(arrayListOf(NotEligiblePromoHolderdata(
                 promoCode = promoCode, shopName = "Kode promo", iconType = 1, showShopSection = true
         ))), orderSummaryPageViewModel.globalEvent.value)
@@ -326,6 +335,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         }
 
         orderSummaryPageViewModel.finalUpdate({ }, false)
+
         assertEquals(OccGlobalEvent.PromoClashing(arrayListOf(NotEligiblePromoHolderdata(
                 promoCode = promoCode, shopName = "Kode promo", iconType = 1, showShopSection = true
         ), NotEligiblePromoHolderdata(showShopSection = true))), orderSummaryPageViewModel.globalEvent.value)
@@ -351,6 +361,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         }
 
         orderSummaryPageViewModel.finalUpdate({ }, false)
+
         assertEquals(OccGlobalEvent.PromoClashing(arrayListOf(
                 NotEligiblePromoHolderdata(showShopSection = true), NotEligiblePromoHolderdata(showShopSection = false)
         )), orderSummaryPageViewModel.globalEvent.value)
@@ -374,6 +385,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         }
 
         orderSummaryPageViewModel.finalUpdate({ }, false)
+
         assertEquals(OccGlobalEvent.PromoClashing(arrayListOf(
                 NotEligiblePromoHolderdata(showShopSection = true, iconType = NotEligiblePromoHolderdata.TYPE_ICON_OFFICIAL_STORE)
         )), orderSummaryPageViewModel.globalEvent.value)
@@ -397,6 +409,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         }
 
         orderSummaryPageViewModel.finalUpdate({ }, false)
+
         assertEquals(OccGlobalEvent.PromoClashing(arrayListOf(
                 NotEligiblePromoHolderdata(showShopSection = true, iconType = NotEligiblePromoHolderdata.TYPE_ICON_POWER_MERCHANT)
         )), orderSummaryPageViewModel.globalEvent.value)

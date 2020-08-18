@@ -180,8 +180,8 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = ButtonBayarState.NORMAL)
-        orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10)))
 
+        orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10)))
         (testDispatchers.main as TestCoroutineDispatcher).advanceUntilIdle()
 
         assertEquals(10, orderSummaryPageViewModel.orderProduct.quantity.orderQuantity)
@@ -196,8 +196,8 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = ButtonBayarState.NORMAL)
-        orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10)), false)
 
+        orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10)), false)
         (testDispatchers.main as TestCoroutineDispatcher).advanceUntilIdle()
 
         verify(inverse = true) { ratesUseCase.execute(any()) }
@@ -209,8 +209,8 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = ButtonBayarState.NORMAL)
-        orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10, isStateError = true)))
 
+        orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10, isStateError = true)))
         (testDispatchers.main as TestCoroutineDispatcher).advanceUntilIdle()
 
         verify(inverse = true) { ratesUseCase.execute(any()) }
