@@ -8,6 +8,7 @@ import com.tokopedia.shop.settings.address.view.ShopSettingAddressAddEditFragmen
 import com.tokopedia.shop.settings.address.view.ShopSettingAddressFragment
 import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditBasicInfoActivity
 import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditScheduleActivity
+import com.tokopedia.shop.settings.basicinfo.view.fragment.ShopEditBasicInfoFragment
 import com.tokopedia.shop.settings.basicinfo.view.fragment.ShopSettingsInfoFragment
 import com.tokopedia.shop.settings.common.util.ShopSettingDispatcherProvider
 import com.tokopedia.shop.settings.etalase.view.fragment.ShopSettingsEtalaseAddEditFragment
@@ -38,6 +39,7 @@ interface ShopSettingsComponent {
 
     fun inject(shopSettingsInfoFragment: ShopSettingsInfoFragment)
     fun inject(shopEditBasicInfoActivity: ShopEditBasicInfoActivity)
+    fun inject(shopEditBasicInfoFragment: ShopEditBasicInfoFragment)
     fun inject(shopEditScheduleActivity: ShopEditScheduleActivity)
     fun inject(shopSettingsNotesFragment: ShopSettingsNotesListFragment)
     fun inject(shopSettingsNotesFragment: ShopSettingsNotesReorderFragment)
