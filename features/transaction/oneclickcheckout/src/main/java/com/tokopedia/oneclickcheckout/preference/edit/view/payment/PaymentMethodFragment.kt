@@ -14,7 +14,6 @@ import android.webkit.SslErrorHandler
 import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import android.widget.Button
 import android.widget.ProgressBar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -96,13 +95,6 @@ class PaymentMethodFragment : BaseDaggerFragment() {
         webView = view.findViewById(R.id.web_view)
         progressBar = view.findViewById(R.id.progress_bar)
         globalError = view.findViewById(R.id.global_error)
-
-        view.findViewById<Button>(R.id.btntesting).setOnClickListener {
-            param?.let {
-                val url = "${TokopediaUrl.getInstance().PAY}/v2/payment/register/listing"
-                webView?.postUrl(url, getPayload(it).toByteArray())
-            }
-        }
     }
 
     private fun initHeader() {
@@ -167,9 +159,8 @@ class PaymentMethodFragment : BaseDaggerFragment() {
 
     private fun loadWebView(param: ListingParam) {
         this.param = param
-//        val url = "${TokopediaUrl.getInstance().PAY}/v2/payment/register/listing"
-//        webView?.postUrl(url, getPayload(param).toByteArray())
-        webView?.loadUrl("https://www.google.com")
+        val url = "${TokopediaUrl.getInstance().PAY}/v2/payment/register/listing"
+        webView?.postUrl(url, getPayload(param).toByteArray())
         webView?.visible()
         globalError?.gone()
     }

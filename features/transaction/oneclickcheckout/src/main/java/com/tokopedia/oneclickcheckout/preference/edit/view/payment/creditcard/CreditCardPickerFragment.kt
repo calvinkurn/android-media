@@ -15,7 +15,6 @@ import android.webkit.SslErrorHandler
 import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import android.widget.Button
 import android.widget.ProgressBar
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -53,10 +52,7 @@ class CreditCardPickerFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         initViews(view)
         initWebView()
-        webView?.loadUrl("https://www.google.com")
-        view.findViewById<Button>(R.id.btntesting).setOnClickListener {
-            loadWebView()
-        }
+        loadWebView()
     }
 
     private fun initViews(view: View) {
@@ -134,7 +130,7 @@ class CreditCardPickerFragment : BaseDaggerFragment() {
             if (isSuccess != null && isSuccess.equals("true", true)) {
                 val gatewayCode = uri.getQueryParameter("gateway_code")
                 if (gatewayCode != null) {
-                    goToNextStep(gatewayCode, generateMetadata(uri))
+                    goToNextStep(generateMetadata(uri))
                 }
             }
             return super.shouldInterceptRequest(view, url)
@@ -149,7 +145,7 @@ class CreditCardPickerFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun goToNextStep(gatewayCode: String, metadata: String) {
+    private fun goToNextStep(metadata: String) {
         activity?.let {
             it.setResult(RESULT_OK, Intent().apply {
                 putExtra(EXTRA_RESULT_METADATA, metadata)
