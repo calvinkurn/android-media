@@ -70,7 +70,7 @@ class CloudFavoriteShopDataSource(private val context: Context, private val gson
     }
 
     private fun streamToString(`in`: InputStream): String {
-        var temp: String
+        var temp: String?
         val bufferedReader = BufferedReader(InputStreamReader(`in`))
         val stringBuilder = StringBuilder()
         try {

@@ -9,6 +9,7 @@ import rx.Observable
 /**
  * @author Kulomady on 12/9/16.
  */
+@JvmSuppressWildcards
 interface TopAdsService {
 
     @GET("promo/v1.3/display/ads")
