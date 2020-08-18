@@ -7,13 +7,17 @@ import com.tokopedia.entertainment.home.data.EventHomeDataResponse
 /**
  * Author errysuprayogi on 27,January,2020
  */
-class BannerViewModel(var layout: EventHomeDataResponse.Data.EventHome.Layout): HomeEventItem<HomeTypeFactory> {
+class EventLocationModel(var loc: EventHomeDataResponse.Data.EventLocationSearch)
+    : HomeEventItem<HomeTypeFactory> {
 
-    var items : MutableList<String> = mutableListOf()
+    var items: MutableList<EventItemLocationModel> = mutableListOf()
 
     init {
-        layout.items.forEach {
-            items.add(it.imageApp)
+        loc.locations.forEach {
+            items.add(EventItemLocationModel(
+                    it.id, it.imageApp,
+                    it.name, it.address,
+                    it.locationType.name))
         }
     }
 
