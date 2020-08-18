@@ -77,9 +77,20 @@ class StatisticViewModelTest {
     fun setup() {
         MockKAnnotations.init(this)
 
-        viewModel = StatisticViewModel(userSession, getUserRoleUseCase, getLayoutUseCase, getCardDataUseCase, getLineGraphDataUseCase,
-                getProgressDataUseCase, getPostDataUseCase, getCarouselDataUseCase, getTableDataUseCase,
-                getPieChartDataUseCase, getBarChartDataUseCase, TestDispatchersProvider)
+        viewModel = StatisticViewModel(
+                userSession,
+                dagger.Lazy { getUserRoleUseCase },
+                dagger.Lazy { getLayoutUseCase },
+                dagger.Lazy { getCardDataUseCase },
+                dagger.Lazy { getLineGraphDataUseCase },
+                dagger.Lazy { getProgressDataUseCase },
+                dagger.Lazy { getPostDataUseCase },
+                dagger.Lazy { getCarouselDataUseCase },
+                dagger.Lazy { getTableDataUseCase },
+                dagger.Lazy { getPieChartDataUseCase },
+                dagger.Lazy { getBarChartDataUseCase },
+                TestDispatchersProvider
+        )
 
         dynamicParameter = getDynamicParameter()
     }
