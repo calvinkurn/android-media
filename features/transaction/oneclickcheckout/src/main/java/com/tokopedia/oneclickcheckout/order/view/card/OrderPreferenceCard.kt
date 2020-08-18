@@ -250,8 +250,6 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
         tvPaymentName?.text = paymentModel.gatewayName
         val description = paymentModel.description
         if (description.isNotBlank()) {
-//            tvPaymentDetail?.text = description
-//            tvPaymentDetail?.text = description.replace('*', '\u00B7')
             tvPaymentDetail?.text = description.replace('*', '\u2022')
             tvPaymentDetail?.visible()
         } else {

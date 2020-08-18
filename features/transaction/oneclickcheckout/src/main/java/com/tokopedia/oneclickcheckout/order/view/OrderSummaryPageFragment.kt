@@ -44,7 +44,6 @@ import com.tokopedia.logisticdata.data.constant.LogisticConstant
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.oneclickcheckout.R
-import com.tokopedia.oneclickcheckout.common.DEFAULT_LOCAL_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
 import com.tokopedia.oneclickcheckout.common.view.model.preference.ProfilesItemModel
@@ -923,7 +922,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             activity?.let {
                 val redirectParam = checkoutData.paymentParameter.redirectParam
                 if (redirectParam.url.isNotEmpty() && redirectParam.method.isNotEmpty()) {
-//                    Log.i("QWERTYUIOP", "SUCCESS CHECKOUT START")
                     val paymentPassData = PaymentPassData()
                     paymentPassData.redirectUrl = redirectParam.url
                     paymentPassData.queryString = redirectParam.form
