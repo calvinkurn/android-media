@@ -71,7 +71,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/layout_lvl1"
-            android:layout_marginBottom="@dimen/layout_lvl2"
+            android:layout_marginBottom="@dimen/dp_12"
             android:visibility="gone"
             app:layout_goneMarginTop="@dimen/layout_lvl1"
             app:layout_constraintStart_toStartOf="@id/reviewPendingProductName"

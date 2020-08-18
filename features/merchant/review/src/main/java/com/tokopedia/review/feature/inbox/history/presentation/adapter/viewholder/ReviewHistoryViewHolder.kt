@@ -82,7 +82,10 @@ class ReviewHistoryViewHolder(view: View,
 
     private fun showDate(date: String) {
         if(date.isNotEmpty()) {
-            itemView.reviewHistoryDate.text = itemView.context.resources.getString(R.string.review_date, date)
+            itemView.reviewHistoryDate.apply {
+                text = itemView.context.resources.getString(R.string.review_date, date)
+                show()
+            }
         } else {
             itemView.reviewHistoryDate.hide()
         }
