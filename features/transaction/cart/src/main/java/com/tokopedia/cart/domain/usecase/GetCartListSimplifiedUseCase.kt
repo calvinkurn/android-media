@@ -1,5 +1,7 @@
 package com.tokopedia.cart.domain.usecase
 
+import com.google.gson.Gson
+import com.tokopedia.cart.RESPONSE
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.ShopGroupSimplifiedGqlResponse
 import com.tokopedia.cart.domain.mapper.CartSimplifiedMapper
 import com.tokopedia.cart.domain.model.cartlist.CartListData
@@ -44,7 +46,8 @@ class GetCartListSimplifiedUseCase @Inject constructor(@Named("shopGroupSimplifi
         graphqlUseCase.addRequest(graphqlRequest)
         return graphqlUseCase.createObservable(RequestParams.EMPTY)
                 .map {
-                    val shopGroupSimplifiedGqlResponse = it.getData<ShopGroupSimplifiedGqlResponse>(ShopGroupSimplifiedGqlResponse::class.java)
+//                    val shopGroupSimplifiedGqlResponse = it.getData<ShopGroupSimplifiedGqlResponse>(ShopGroupSimplifiedGqlResponse::class.java)
+                    val shopGroupSimplifiedGqlResponse = Gson().fromJson(RESPONSE, ShopGroupSimplifiedGqlResponse::class.java)
                     if (shopGroupSimplifiedGqlResponse != null) {
                         if (shopGroupSimplifiedGqlResponse.shopGroupSimplifiedResponse.status == "OK") {
                             cartSimplifiedMapper.convertToCartItemDataList(shopGroupSimplifiedGqlResponse.shopGroupSimplifiedResponse.data)

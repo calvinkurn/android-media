@@ -299,6 +299,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
             is InsuranceCartShops -> InsuranceCartShopViewHolder.TYPE_VIEW_INSURANCE_CART_SHOP
             is DisabledCartItemHolderData -> DisabledCartItemViewHolder.LAYOUT
             is DisabledItemHeaderHolderData -> DisabledItemHeaderViewHolder.LAYOUT
+            is DisabledReasonHolderData -> DisabledReasonViewHolder.LAYOUT
             is DisabledShopHolderData -> DisabledShopViewHolder.LAYOUT
             else -> super.getItemViewType(position)
         }
@@ -379,6 +380,11 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                         .inflate(DisabledItemHeaderViewHolder.LAYOUT, parent, false)
                 return DisabledItemHeaderViewHolder(view, actionListener)
             }
+            DisabledReasonViewHolder.LAYOUT -> {
+                val view = LayoutInflater.from(parent.context)
+                        .inflate(DisabledReasonViewHolder.LAYOUT, parent, false)
+                return DisabledReasonViewHolder(view, actionListener)
+            }
             DisabledShopViewHolder.LAYOUT -> {
                 val view = LayoutInflater.from(parent.context)
                         .inflate(DisabledShopViewHolder.LAYOUT, parent, false)
@@ -446,6 +452,10 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                 val data = cartDataList[position] as DisabledItemHeaderHolderData
                 (holder as DisabledItemHeaderViewHolder).bind(data)
             }
+            viewType == DisabledReasonViewHolder.LAYOUT -> {
+                val data = cartDataList[position] as DisabledReasonHolderData
+                (holder as DisabledReasonViewHolder).bind(data)
+            }
             viewType == DisabledShopViewHolder.LAYOUT -> {
                 val data = cartDataList[position] as DisabledShopHolderData
                 (holder as DisabledShopViewHolder).bind(data)
@@ -509,6 +519,10 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
 
     fun addNotAvailableHeader(disabledItemHeaderHolderData: DisabledItemHeaderHolderData) {
         cartDataList.add(disabledItemHeaderHolderData)
+    }
+
+    fun addNotAvailableReason(disabledReasonHolderData: DisabledReasonHolderData) {
+        cartDataList.add(disabledReasonHolderData)
     }
 
     fun addNotAvailableShop(disabledShopHolderData: DisabledShopHolderData) {

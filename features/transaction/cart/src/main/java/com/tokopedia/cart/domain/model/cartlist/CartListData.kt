@@ -16,7 +16,7 @@ data class CartListData(
         var errorMessage: String? = null,
         var tickerData: TickerData? = null,
         var shopGroupAvailableDataList: List<ShopGroupAvailableData> = ArrayList(),
-        var shopGroupWithErrorDataList: List<ShopGroupWithErrorData> = ArrayList(),
+        var unavailableGroupData: List<UnavailableGroupData> = emptyList(),
         var isPromoCouponActive: Boolean = false,
         var cartTickerErrorData: CartTickerErrorData? = null,
         var defaultPromoDialogTab: String? = null,
@@ -33,7 +33,7 @@ data class CartListData(
             val `object` = other as CartListData?
             return `object`?.isError == isError &&
                     `object`.isAllSelected == isAllSelected &&
-                    `object`.shopGroupWithErrorDataList == shopGroupWithErrorDataList &&
+                    `object`.unavailableGroupData == unavailableGroupData &&
                     `object`.shopGroupAvailableDataList == shopGroupAvailableDataList &&
                     `object`.isShowOnboarding == isShowOnboarding &&
                     `object`.isPromoCouponActive == isPromoCouponActive

@@ -1474,7 +1474,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
             renderTickerAnnouncement(it)
 
-            if (it.shopGroupAvailableDataList.isEmpty() && it.shopGroupWithErrorDataList.isEmpty()) {
+            if (it.shopGroupAvailableDataList.isEmpty() && it.unavailableGroupData.isEmpty()) {
                 renderCartEmpty(it)
             } else {
                 renderCartNotEmpty(it)
@@ -2020,17 +2020,21 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun renderCartNotAvailable(cartListData: CartListData) {
-        if (cartListData.shopGroupWithErrorDataList.isNotEmpty()) {
+        if (cartListData.unavailableGroupData.isNotEmpty()) {
             cartAdapter.addNotAvailableHeader(
                     viewHolderDataMapper.mapDisabledItemHeaderHolderData(cartListData.cartTickerErrorData?.errorCount
                             ?: 0)
             )
-            for (shopGroupWithErrorData in cartListData.shopGroupWithErrorDataList) {
-                val cartItemHolderDataList = shopGroupWithErrorData.cartItemHolderDataList
-                if (cartItemHolderDataList.isNotEmpty()) {
-                    cartAdapter.addNotAvailableShop(viewHolderDataMapper.mapDisabledShopHolderData(shopGroupWithErrorData))
-                    for ((index, value) in cartItemHolderDataList.withIndex()) {
-                        cartAdapter.addNotAvailableProduct(viewHolderDataMapper.mapDisabledItemHolderData(value, index != cartItemHolderDataList.size - 1))
+            cartListData.unavailableGroupData.forEach {
+                val disabledReasonHolderData = viewHolderDataMapper.mapDisabledReasonHolderData(it)
+                cartAdapter.addNotAvailableReason(disabledReasonHolderData)
+                it.shopGroupWithErrorDataList.forEach {
+                    val cartItemHolderDataList = it.cartItemHolderDataList
+                    if (cartItemHolderDataList.isNotEmpty()) {
+                        cartAdapter.addNotAvailableShop(viewHolderDataMapper.mapDisabledShopHolderData(it))
+                        for ((index, value) in cartItemHolderDataList.withIndex()) {
+                            cartAdapter.addNotAvailableProduct(viewHolderDataMapper.mapDisabledItemHolderData(value, index != cartItemHolderDataList.size - 1))
+                        }
                     }
                 }
             }

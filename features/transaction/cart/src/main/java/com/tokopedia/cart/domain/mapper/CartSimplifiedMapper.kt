@@ -35,7 +35,7 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
             cartListData.tickerData = mapTickerData(cartDataListResponse.tickers)
         }
         cartListData.shopGroupAvailableDataList = mapShopGroupAvailableDataList(cartDataListResponse)
-        cartListData.shopGroupWithErrorDataList = mapShopGroupWithErrorDataList(cartDataListResponse)
+        cartListData.unavailableGroupData = mapUnavailableGroupData(cartDataListResponse)
         cartListData.isPromoCouponActive = cartDataListResponse.isCouponActive == 1
 
         var errorCount = 0
@@ -415,13 +415,41 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
         }
     }
 
-    private fun mapShopGroupWithErrorDataList(cartDataListResponse: CartDataListResponse): List<ShopGroupWithErrorData> {
-        val shopGroupWithErrorDataList = arrayListOf<ShopGroupWithErrorData>()
+    private fun mapUnavailableGroupData(cartDataListResponse: CartDataListResponse): List<UnavailableGroupData> {
+        val unavailableGroupDatas = ArrayList<UnavailableGroupData>()
         cartDataListResponse.unavailableSections.forEach {
-            it.unavailableGroups.forEach {
-                val shopGroupWithErrorData = mapShopGroupWithErrorData(it, cartDataListResponse)
-                shopGroupWithErrorDataList.add(shopGroupWithErrorData)
-            }
+            unavailableGroupDatas.add(
+                    UnavailableGroupData().apply {
+                        title = it.title
+                        description = it.unavailableDescription
+                        action = mapActionUnavailableGroupData(it.actions)
+                        shopGroupWithErrorDataList = mapShopGroupWithErrorDataList(it.unavailableGroups, cartDataListResponse)
+                    }
+            )
+        }
+        return unavailableGroupDatas
+    }
+
+    private fun mapActionUnavailableGroupData(actions: List<Action>): List<ActionData> {
+        val actionDatas = ArrayList<ActionData>()
+        actions.forEach {
+            actionDatas.add(
+                    ActionData().apply {
+                        id = it.id
+                        code = it.code
+                        message = it.message
+                    }
+            )
+        }
+        return actionDatas
+    }
+
+    private fun mapShopGroupWithErrorDataList(unavailableGroups: List<UnavailableGroup>,
+                                              cartDataListResponse: CartDataListResponse): List<ShopGroupWithErrorData> {
+        val shopGroupWithErrorDataList = arrayListOf<ShopGroupWithErrorData>()
+        unavailableGroups.forEach {
+            val shopGroupWithErrorData = mapShopGroupWithErrorData(it, cartDataListResponse)
+            shopGroupWithErrorDataList.add(shopGroupWithErrorData)
         }
 
         return shopGroupWithErrorDataList

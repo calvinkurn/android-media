@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class Action(
         @SerializedName("id")
-        val id: String = "",
+        val id: Int = 0,
         @SerializedName("code")
         val code: String = "",
         @SerializedName("message")

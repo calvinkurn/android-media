@@ -1,10 +1,8 @@
 package com.tokopedia.cart.view
 
 import com.tokopedia.cart.domain.model.cartlist.ShopGroupWithErrorData
-import com.tokopedia.cart.view.uimodel.CartItemHolderData
-import com.tokopedia.cart.view.uimodel.DisabledCartItemHolderData
-import com.tokopedia.cart.view.uimodel.DisabledItemHeaderHolderData
-import com.tokopedia.cart.view.uimodel.DisabledShopHolderData
+import com.tokopedia.cart.domain.model.cartlist.UnavailableGroupData
+import com.tokopedia.cart.view.uimodel.*
 import javax.inject.Inject
 
 /**
@@ -17,6 +15,13 @@ class ViewHolderDataMapper @Inject constructor() {
         return DisabledItemHeaderHolderData(
                 disabledItemCount = disabledProductCount
         )
+    }
+
+    fun mapDisabledReasonHolderData(unavailableGroupData: UnavailableGroupData): DisabledReasonHolderData {
+        return DisabledReasonHolderData().apply {
+            title = unavailableGroupData.title
+            subTitle = unavailableGroupData.description
+        }
     }
 
     fun mapDisabledShopHolderData(shopGroupWithErrorData: ShopGroupWithErrorData): DisabledShopHolderData {

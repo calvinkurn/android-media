@@ -28,7 +28,7 @@ class CartItemDecoration : RecyclerView.ItemDecoration() {
             is CartShopViewHolder -> outRect.top = context?.resources?.getDimension(R.dimen.dp_6)?.toInt() ?: 0
             is CartSectionHeaderViewHolder -> outRect.top = context?.resources?.getDimension(R.dimen.dp_6)?.toInt() ?: 0
             is ShipmentSellerCashbackViewHolder -> outRect.top = context?.resources?.getDimension(R.dimen.dp_6)?.toInt() ?: 0
-            is DisabledShopViewHolder -> {
+            is DisabledReasonViewHolder -> {
                 if (parent.adapter?.getItemViewType(viewHolder.getAdapterPosition() - 1) == DisabledItemHeaderViewHolder.LAYOUT) {
                     outRect.top = verticalSpaceHeight
                 } else {
