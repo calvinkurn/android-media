@@ -633,7 +633,10 @@ data class DynamicHomeChannel(
             val countReview: Int = 0,
             @Expose
             @SerializedName("benefit")
-            val benefit: Benefit = Benefit()
+            val benefit: Benefit = Benefit(),
+            @Expose
+            @SerializedName("textColor")
+            val textColor: String = ""
     )
 
     data class Benefit(

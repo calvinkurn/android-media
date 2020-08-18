@@ -120,6 +120,7 @@ object HomeQuery{
                     type
                     value
                 }
+                textColor
               }
               banner {
                 id

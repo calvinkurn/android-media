@@ -96,7 +96,8 @@ object DynamicChannelComponentMapper {
                             benefit = ChannelBenefit(
                                     it.benefit.type,
                                     it.benefit.value
-                            )
+                            ),
+                            textColor = it.textColor
                     )
                 }
         )

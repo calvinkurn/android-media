@@ -1,5 +1,6 @@
 package com.tokopedia.home_component.viewholders.adapter
 
+import android.graphics.Color
 import android.graphics.Typeface
 import android.text.SpannableStringBuilder
 import android.text.Spanned
@@ -66,6 +67,10 @@ class Lego4AutoBannerAdapter(
             itemName.text = item.grid.name
             itemImage.loadImage(item.grid.imageUrl)
             itemDesc.text = constructBoldFont(item.grid.benefit.type, item.grid.benefit.value)
+            if (item.grid.textColor.isNotEmpty()) {
+                itemName.setTextColor(Color.parseColor(item.grid.textColor))
+                itemDesc.setTextColor(Color.parseColor(item.grid.textColor))
+            }
             if (item.grid.backColor.isNotEmpty()) {
                 itemLayout.setGradientBackground(arrayListOf(item.grid.backColor))
             }
