@@ -169,7 +169,9 @@ class ShopEditBasicInfoFragment: Fragment() {
         shopDomainSuggestions.setOnItemClickListener { domain ->
             shopDomainTextField.textFieldInput.apply {
                 removeTextChangedListener(shopDomainTextWatcher)
+                resetShopDomainInput()
                 setText(domain)
+                setSelection(text.length)
                 addTextChangedListener(shopDomainTextWatcher)
             }
             shopDomainSuggestions.hide()
