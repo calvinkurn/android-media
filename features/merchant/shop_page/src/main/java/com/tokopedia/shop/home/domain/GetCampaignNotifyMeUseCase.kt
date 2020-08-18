@@ -1,10 +1,6 @@
 package com.tokopedia.shop.home.domain
 
-import com.google.gson.Gson
-import com.google.gson.JsonObject
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
-import com.tokopedia.graphql.CommonUtils
-import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.*
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -12,8 +8,6 @@ import com.tokopedia.shop.home.GqlQueryConstant.GQL_GET_CAMPAIGN_NOTIFY_ME
 import com.tokopedia.shop.home.data.model.GetCampaignNotifyMeModel
 import com.tokopedia.shop.home.data.model.GetCampaignNotifyMeRequest
 import com.tokopedia.usecase.coroutines.UseCase
-import java.io.File
-import java.lang.reflect.Type
 import javax.inject.Inject
 import javax.inject.Named
 
