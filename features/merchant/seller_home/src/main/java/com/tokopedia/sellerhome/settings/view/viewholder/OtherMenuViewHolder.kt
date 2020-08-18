@@ -38,7 +38,6 @@ import kotlinx.android.synthetic.main.setting_partial_shop_info_error.view.*
 import kotlinx.android.synthetic.main.setting_partial_shop_info_success.view.*
 import kotlinx.android.synthetic.main.setting_shop_status_pm.view.*
 import kotlinx.android.synthetic.main.setting_shop_status_regular.view.*
-import timber.log.Timber
 
 class OtherMenuViewHolder(private val itemView: View,
                           private val context: Context,
@@ -56,7 +55,6 @@ class OtherMenuViewHolder(private val itemView: View,
 
         private const val HEADER_ICON_WIDTH_PERCENTAGE = 0.117
         private const val HEADER_ICON_X_POSITION = 0.867
-        private const val HEADER_ICON_RATIO = 0.9
     }
 
     fun onSuccessGetSettingShopInfoData(uiModel: SettingShopInfoUiModel) {
@@ -246,11 +244,8 @@ class OtherMenuViewHolder(private val itemView: View,
         if (shopType is RegularMerchant) {
             itemView.shopStatusHeader?.setImageDrawable(ContextCompat.getDrawable(context, shopType.shopTypeHeaderRes))
         } else {
-            try {
-                itemView.shopStatusHeader?.setImageBitmap(shopType.shopTypeHeaderIconRes?.let { getShopStatusHeaderBitmap(shopType.shopTypeHeaderRes, it) })
-            } catch (ex: Exception) {
-                Timber.e(ex)
-            }
+            itemView.shopStatusHeader?.setImageBitmap(shopType.shopTypeHeaderIconRes?.let { getShopStatusHeaderBitmap(shopType.shopTypeHeaderRes, it) })
+
         }
     }
 
@@ -266,12 +261,13 @@ class OtherMenuViewHolder(private val itemView: View,
             ResourcesCompat.getDrawable(context.resources, shopTypeHeaderRes, null)?.toBitmap()?.let { baseBitmap ->
                 val baseBitmapCopy = baseBitmap.copy(Bitmap.Config.ARGB_8888, true)
                 ResourcesCompat.getDrawable(context.resources, shopTypeHeaderIconRes, null)?.toBitmap()?.let { iconBitmap ->
-                    val iconWidth = (baseBitmapCopy.width * HEADER_ICON_WIDTH_PERCENTAGE).toInt()
-                    val iconHeight = (iconWidth * HEADER_ICON_RATIO).toInt()
+                    val iconBitmapCopy = iconBitmap.copy(Bitmap.Config.ARGB_8888, true)
+                    val iconWidth = (baseBitmapCopy.width * HEADER_ICON_WIDTH_PERCENTAGE)
+                    val iconHeight = iconBitmapCopy.height * iconWidth / iconBitmapCopy.width
                     val iconX = (baseBitmapCopy.width * HEADER_ICON_X_POSITION).toInt()
                     Canvas(baseBitmapCopy).run {
                         val iconBitmapRect = Rect().apply {
-                            set(iconX - iconWidth, baseBitmapCopy.height - iconHeight, iconX, baseBitmapCopy.height)
+                            set(iconX - iconWidth.toInt(), baseBitmapCopy.height - iconHeight.toInt(), iconX, baseBitmapCopy.height)
                         }
                         drawBitmap(iconBitmap, null, iconBitmapRect, iconPaint)
                     }
