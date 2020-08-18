@@ -16,7 +16,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_percent="0.95">
+        app:layout_constraintWidth_percent="0.925">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/powerMerchantText"
@@ -71,13 +71,12 @@
             app:layout_constraintEnd_toEndOf="@id/badgeBorder"
             app:srcCompat="@drawable/ic_power_merchant"/>
 
-
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/leftGuideline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintGuide_begin="14dp" />
+            app:layout_constraintGuide_begin="@dimen/sah_dimen_14dp" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/middleGuideline"

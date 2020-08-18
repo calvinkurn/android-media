@@ -38,6 +38,7 @@ import kotlinx.android.synthetic.main.setting_partial_shop_info_error.view.*
 import kotlinx.android.synthetic.main.setting_partial_shop_info_success.view.*
 import kotlinx.android.synthetic.main.setting_shop_status_pm.view.*
 import kotlinx.android.synthetic.main.setting_shop_status_regular.view.*
+import timber.log.Timber
 
 class OtherMenuViewHolder(private val itemView: View,
                           private val context: Context,
@@ -245,7 +246,11 @@ class OtherMenuViewHolder(private val itemView: View,
         if (shopType is RegularMerchant) {
             itemView.shopStatusHeader?.setImageDrawable(ContextCompat.getDrawable(context, shopType.shopTypeHeaderRes))
         } else {
-            itemView.shopStatusHeader?.setImageBitmap(shopType.shopTypeHeaderIconRes?.let { getShopStatusHeaderBitmap(shopType.shopTypeHeaderRes, it) })
+            try {
+                itemView.shopStatusHeader?.setImageBitmap(shopType.shopTypeHeaderIconRes?.let { getShopStatusHeaderBitmap(shopType.shopTypeHeaderRes, it) })
+            } catch (ex: Exception) {
+                Timber.e(ex)
+            }
         }
     }
 
