@@ -98,13 +98,12 @@ class TalkReplyHeaderViewHolder(view: View,
     }
 
     private fun showUserNameWithCondition(userName: String, isMyQuestion: Boolean) = with(itemView) {
+        replyUserName.text = userName
         if (isMyQuestion) {
-            replyUserName.hide()
             labelMyQuestion.show()
-        } else {
-            labelMyQuestion.hide()
-            replyUserName.text = userName
+            return
         }
+        labelMyQuestion.hide()
     }
 
     private fun showQuestionWithCondition(isMasked: Boolean, question: String, maskedContent: String) {

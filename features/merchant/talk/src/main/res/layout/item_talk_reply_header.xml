@@ -26,7 +26,7 @@
         android:layout_marginStart="@dimen/layout_lvl1"
         android:layout_marginLeft="@dimen/layout_lvl1"
         android:textColor="@color/light_N700_68"
-        app:layout_constraintStart_toEndOf="@+id/replyUserImage"
+        app:layout_constraintStart_toEndOf="@+id/labelMyQuestion"
         app:layout_constraintTop_toTopOf="@+id/replyUserImage"
         app:typographyType="body_3"
         app:typographyWeight="bold"
@@ -42,7 +42,7 @@
         android:visibility="gone"
         app:labelType="general_light_grey"
         app:layout_constraintTop_toTopOf="@id/replyUserImage"
-        app:layout_constraintStart_toEndOf="@id/replyUserImage" />
+        app:layout_constraintStart_toEndOf="@id/replyUserName" />
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/replyDateBarrier"

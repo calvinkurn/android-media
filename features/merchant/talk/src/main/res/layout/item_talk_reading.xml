@@ -22,6 +22,19 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/readingInquirerYouLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/reading_your_question_label"
+            android:layout_marginStart="@dimen/layout_lvl1"
+            android:layout_marginLeft="@dimen/layout_lvl1"
+            android:visibility="gone"
+            app:labelType="general_light_grey"
+            app:layout_constraintStart_toEndOf="@id/readingInquirerProfilePicture"
+            app:layout_constraintTop_toTopOf="@id/readingInquirerProfilePicture"
+            app:layout_constraintBottom_toBottomOf="@id/readingInquirerProfilePicture"/>
+
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/readingInquirerName"
             android:layout_width="wrap_content"
@@ -35,6 +48,14 @@
             app:layout_constraintBottom_toBottomOf="@id/readingInquirerProfilePicture"
             app:layout_constraintStart_toEndOf="@id/readingInquirerProfilePicture" />
 
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/reading_inquirer_barrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="end"
+            tools:visibility="gone"
+            app:constraint_referenced_ids="readingInquirerYouLabel,readingInquirerName" />
+
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/reading_inquiry_dot"
             android:layout_width="wrap_content"
@@ -43,7 +64,7 @@
             android:layout_marginStart="@dimen/spacing_lvl2"
             android:layout_marginLeft="@dimen/spacing_lvl2"
             android:textColor="@color/Neutral_N700_68"
-            app:layout_constraintStart_toEndOf="@id/readingInquirerName"
+            app:layout_constraintStart_toEndOf="@id/reading_inquirer_barrier"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
             app:layout_constraintTop_toTopOf="@id/readingInquirerProfilePicture"

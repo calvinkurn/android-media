@@ -20,7 +20,7 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
     override fun bind(element: TalkReadingUiModel) {
         element.question.apply {
             itemView.setOnClickListener { threadListener.onThreadClicked(questionID) }
-            showInquirerName(userName)
+            showInquirerName(userName, element.isMyQuestion)
             showInquirerProfilePicture(userThumbnail)
             showInquiryDate(createTimeFormatted)
             showQuestionWithCondition(state.isMasked, content, maskedContent, questionID)
@@ -53,12 +53,20 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
         }
     }
 
-    private fun showInquirerName(inquirerName: String) {
+    private fun showInquirerName(inquirerName: String, isMyQuestion: Boolean) {
+        if(isMyQuestion) {
+            itemView.apply {
+                readingInquirerYouLabel.show()
+                readingInquirerName.hide()
+            }
+            return
+        }
         if(inquirerName.isNotEmpty()) {
             itemView.readingInquirerName.apply{
                 text = inquirerName
                 show()
             }
+            itemView.readingInquirerYouLabel.hide()
         } else {
             itemView.readingInquirerName.hide()
         }

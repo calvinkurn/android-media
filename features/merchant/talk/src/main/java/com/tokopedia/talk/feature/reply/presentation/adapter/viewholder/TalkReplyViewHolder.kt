@@ -38,9 +38,9 @@ class TalkReplyViewHolder(view: View,
         itemView.talkReplyContainer.setBackgroundColor(Color.WHITE)
         element.answer.apply {
             showProfilePicture(userThumbnail, userId, isSeller, element.shopId)
-            showDisplayName(userName, userId, isSeller, element.shopId, element.isMyQuestion)
+            showDisplayName(userName, userId, isSeller, element.shopId)
             showDate(createTimeFormatted)
-            showSellerLabelWithCondition(isSeller, element.isMyQuestion)
+            showLabelWithCondition(isSeller, element.isMyQuestion)
             showAnswer(content, state.isMasked, maskedContent)
             showAttachedProducts(attachedProducts.toMutableList())
             showKebabWithConditions(answerID, state.allowReport, state.allowDelete, onKebabClickedListener)
@@ -61,8 +61,8 @@ class TalkReplyViewHolder(view: View,
         }
     }
 
-    private fun showDisplayName(userName: String, userId: String, isSeller: Boolean, shopId: String, isMyQuestion:Boolean) {
-        if(userName.isNotEmpty() && !isMyQuestion) {
+    private fun showDisplayName(userName: String, userId: String, isSeller: Boolean, shopId: String) {
+        if(userName.isNotEmpty()) {
             itemView.replyDisplayName.apply{
                 text = userName
                 setOnClickListener {
@@ -86,7 +86,7 @@ class TalkReplyViewHolder(view: View,
         }
     }
 
-    private fun showSellerLabelWithCondition(isSeller: Boolean, isMyQuestions:Boolean) = with(itemView){
+    private fun showLabelWithCondition(isSeller: Boolean, isMyQuestions:Boolean) = with(itemView){
         when {
             isSeller -> {
                 replySellerLabel.text = context.getString(R.string.reading_seller_label)

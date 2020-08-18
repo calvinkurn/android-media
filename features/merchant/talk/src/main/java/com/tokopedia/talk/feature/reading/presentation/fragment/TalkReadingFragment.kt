@@ -336,7 +336,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
                         if (data.question.isNotEmpty()) {
                             stopNetworkRequestPerformanceMonitoring()
                             startRenderPerformanceMonitoring()
-                            renderDiscussionData(TalkReadingMapper.mapDiscussionDataResponseToTalkReadingUiModel(data), data.hasNext)
+                            renderDiscussionData(TalkReadingMapper.mapDiscussionDataResponseToTalkReadingUiModel(data, viewModel.getUserId()), data.hasNext)
                         }
                     }
                 }
