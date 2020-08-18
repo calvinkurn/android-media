@@ -558,6 +558,8 @@ class PlayUserInteractionFragment @Inject constructor(
         playViewModel.observableBottomInsetsState.observe(viewLifecycleOwner, DistinctObserver { map ->
             if (!playViewModel.isFreezeOrBanned) view?.hide()
 
+            if (playViewModel.videoOrientation.isVertical) triggerImmersive(false)
+
             val keyboardState = map[BottomInsetsType.Keyboard]
                 if (keyboardState != null && !keyboardState.isPreviousStateSame) {
                     when (keyboardState) {

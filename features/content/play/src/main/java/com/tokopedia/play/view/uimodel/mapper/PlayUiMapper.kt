@@ -89,13 +89,11 @@ object PlayUiMapper {
             backgroundUrl = backgroundUrl,
 //            channelType = PlayChannelType.Live,
 //            orientation = VideoOrientation.Horizontal(16, 9),
-//            backgroundUrl = "https://i.pinimg.com/736x/d3/bb/7b/d3bb7b85f4e160d013f68fcde8d19844.jpg",
             isActive = isActive
     )
 
     private fun mapVideoPlayer(videoStream: VideoStream, exoPlayer: ExoPlayer) = when (videoStream.type) {
         "live", "vod" -> General(exoPlayer)
-//        "live", "vod" -> YouTube("HrjRj4uQQ1o")
         "youtube" -> YouTube(videoStream.config.youtubeId)
         else -> Unknown
     }
