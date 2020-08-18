@@ -93,7 +93,7 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
             sortId: Int = 0,
             etalase: String = "",
             search: String = "",
-            isForceRefresh: Boolean = false
+            isForceRefresh: Boolean = true
     ) {
         launchCatchError(block = {
             val getProductResp = withContext(Dispatchers.IO) {

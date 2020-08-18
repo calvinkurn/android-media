@@ -276,8 +276,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 ShopPageConstant.SHOP_PRODUCT_EMPTY_STATE_LIMIT,
                 sortValue.toIntOrZero(),
                 selectedEtalaseId,
-                keyword,
-                isNeedToReloadData
+                keyword
         )
     }
 
