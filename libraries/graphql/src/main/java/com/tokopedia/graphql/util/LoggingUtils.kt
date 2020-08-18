@@ -21,7 +21,7 @@ object LoggingUtils {
     @JvmStatic
     fun logGqlSize(classType: String, request: String, variable: String, response: String) {
         val sampleRequest = request.substringAfter("[GraphqlRequest{query='").take(Const.GQL_RESPONSE_MAX_LENGTH).trim()
-        val variable = request.substringAfter("variables=").substringBefore(", operationName")
+        val variable = request.substringAfter("variables=").substringBefore(", operationName").trim()
         Timber.w("P1#GQL_SIZE#$classType;req_size=${sampleRequest.length};resp_size=${response.length};req='$sampleRequest';var='$variable'")
     }
 
