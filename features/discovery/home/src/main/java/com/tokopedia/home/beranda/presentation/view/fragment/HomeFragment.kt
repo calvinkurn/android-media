@@ -126,7 +126,9 @@ import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerWidge
 import com.tokopedia.promogamification.common.floating.view.fragment.FloatingEggButtonFragment
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.HomeMainToolbar
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo.TickerDetail
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
@@ -250,6 +252,7 @@ open class HomeFragment : BaseDaggerFragment(),
     private lateinit var statusBarBackground: View
     private lateinit var tickerDetail: TickerDetail
     private lateinit var sharedPrefs: SharedPreferences
+    private lateinit var remoteConfigInstance: RemoteConfigInstance
     private var homeRecyclerView: NestedRecyclerView? = null
     private var homeMainToolbar: HomeMainToolbar? = null
     private var homeSnackbar: Snackbar? = null
@@ -372,6 +375,13 @@ open class HomeFragment : BaseDaggerFragment(),
             }
         }
         return remoteConfig
+    }
+
+    private fun getAbTestPlatform(): AbTestPlatform {
+        if (!::remoteConfigInstance.isInitialized) {
+            remoteConfigInstance = RemoteConfigInstance(activity?.application)
+        }
+        return remoteConfigInstance.abTestPlatform
     }
 
     override fun getTrackingQueueObj() : TrackingQueue?{
@@ -1207,6 +1217,9 @@ open class HomeFragment : BaseDaggerFragment(),
                 }
             }
             REQUEST_CODE_REVIEW -> {
+                if(shouldShowToaster()) {
+                    showToasterReviewSuccess()
+                }
                 adapter?.notifyDataSetChanged()
                 if (resultCode == Activity.RESULT_OK) {
                     getHomeViewModel().onRemoveSuggestedReview()
@@ -2079,4 +2092,14 @@ open class HomeFragment : BaseDaggerFragment(),
         }
         return viewModel.get()
     }
+
+    private fun showToasterReviewSuccess() {
+        view?.let { Toaster.build(it, getString(R.string.review_create_success_toaster, getHomeViewModel().getUserName()), Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(R.string.review_oke)).show() }
+    }
+
+    private fun shouldShowToaster(): Boolean {
+        val abTestValue = getAbTestPlatform().getString(ConstantKey.RemoteConfigKey.AB_TEST_REVIEW_KEY, "")
+        return abTestValue == ConstantKey.ABtestValue.VALUE_NEW_REVIEW_FLOW
+    }
+
 }

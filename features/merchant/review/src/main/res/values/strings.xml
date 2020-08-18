@@ -108,7 +108,7 @@
     <string name="review_msg_placeholder">Kasih Tau Alasannya</string>
     <string name="image_description">Keterangan gambar...</string>
     <string name="review_create_fail_toaster">Ulasan tidak terkirim. Cek koneksi internetmu dan coba lagi, ya</string>
-    <string name="review_create_success_toaster">Terima kasih %s, kamu telah membantu jutaan calon pembeli lain.</string>
+    <string name="review_create_success_toaster">Terima kasih %s sudah bantu pembeli lain lewat ulasanmu</string>
     <string name="review_create_worst_title">Apa yang bikin kamu kecewa?</string>
     <string name="review_create_negative_title">Apa yang kamu nggak suka?</string>
     <string name="review_create_neutral_title">Apa yang harus diperbaiki?</string>

@@ -9,7 +9,6 @@ import com.tokopedia.reputation.common.data.source.cloud.model.ProductrevReviewT
 import com.tokopedia.reputation.common.domain.usecase.ProductrevReviewTabCounterUseCase
 import com.tokopedia.review.common.util.CoroutineDispatcherProvider
 import com.tokopedia.review.feature.inbox.container.data.ReviewInboxTabs
-import com.tokopedia.review.feature.inbox.container.domain.usecase.InboxReviewReputationClearUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -20,8 +19,7 @@ import javax.inject.Inject
 class ReviewInboxContainerViewModel @Inject constructor(
         private val userSessionInterface: UserSessionInterface,
         private val dispatchers: CoroutineDispatcherProvider,
-        private val productrevReviewTabCounterUseCase: ProductrevReviewTabCounterUseCase,
-        private val inboxReviewReputationClearUseCase: InboxReviewReputationClearUseCase
+        private val productrevReviewTabCounterUseCase: ProductrevReviewTabCounterUseCase
 ) : BaseViewModel(dispatchers.io()){
 
     private val _reviewTabs = MutableLiveData<Result<ProductrevReviewTabCount>>()
@@ -39,14 +37,6 @@ class ReviewInboxContainerViewModel @Inject constructor(
             _reviewTabs.postValue(Success(response.productrevReviewTabCount))
         }) {
             _reviewTabs.postValue(Fail(it))
-        }
-    }
-
-    fun clearReputationCounter() {
-        launchCatchError(block = {
-            inboxReviewReputationClearUseCase.executeOnBackground()
-        }) {
-            // No Op
         }
     }
 
