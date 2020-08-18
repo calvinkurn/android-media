@@ -1,11 +1,12 @@
 package com.tokopedia.shop.search.view.adapter.model
 
-import com.tokopedia.shop.R
+import android.text.SpannableStringBuilder
+import android.text.Spanned
 import com.tokopedia.shop.search.view.adapter.ShopSearchProductAdapterTypeFactory
 
 class ShopSearchProductFixedResultDataModel(
         var searchQuery: String = "",
-        var searchTypeLabel: String = "",
+        var searchTypeLabel: Spanned = SpannableStringBuilder(""),
         override var type: Type
 ) : ShopSearchProductDataModel() {
 
