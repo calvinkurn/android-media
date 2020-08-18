@@ -12,10 +12,10 @@ class ShopPageWithoutHomeTabMockResponseConfig : MockModelConfig() {
         const val KEY_QUERY_SHOP_SHOWCASES_BY_ID = "shopShowcasesByShopID"
         const val KEY_QUERY_MEMBERSHIP_STAMP_PROGRESS = "membershipStampProgress"
         const val KEY_QUERY_GET_SHOP_PRODUCT = "GetShopProduct"
-        const val KEY_QUERY_SHOP_INFO_OS = "getShopInfoOS"
+        const val KEY_QUERY_GET_IS_SHOP_OFFICIAL = "getIsOfficial"
         const val KEY_QUERY_SHOP_INFO_CORE_AND_ASSETS = "getShopInfoCoreAndAssets"
-        const val KEY_QUERY_SHOP_INFO_HOME_TYPE = "getShopInfoHomeType"
-        const val KEY_QUERY_SHOP_INFO_GOLD = "getShopInfoGold"
+        const val KEY_QUERY_GET_SHOP_PAGE_HOME_TYPE = "shopPageGetHomeType"
+        const val KEY_QUERY_IS_SHOP_POWER_MERCHANT = "goldGetPMOSStatus"
         const val KEY_QUERY_SHOP_INFO_TOP_CONTENT = "getShopInfoTopContent"
         const val KEY_QUERY_SHOP_BADGE = "getShopBadge"
         const val KEY_QUERY_SHOP_INFO_HEADER_CONTENT_DATA = "getShopInfoHeaderContentData"
@@ -34,8 +34,8 @@ class ShopPageWithoutHomeTabMockResponseConfig : MockModelConfig() {
         )
 
         addMockResponse(
-                KEY_QUERY_SHOP_INFO_OS,
-                getRawString(context, R.raw.response_mock_data_get_shop_info_os_data_without_home_tab),
+                KEY_QUERY_GET_IS_SHOP_OFFICIAL,
+                getRawString(context, R.raw.response_mock_data_get_is_shop_os_data_without_home_tab),
                 FIND_BY_CONTAINS
         )
 
@@ -46,14 +46,14 @@ class ShopPageWithoutHomeTabMockResponseConfig : MockModelConfig() {
         )
 
         addMockResponse(
-                KEY_QUERY_SHOP_INFO_HOME_TYPE,
-                getRawString(context, R.raw.response_mock_data_get_shop_info_home_type_without_home_tab),
+                KEY_QUERY_GET_SHOP_PAGE_HOME_TYPE,
+                getRawString(context, R.raw.response_mock_data_get_shop_page_home_type_without_home_tab),
                 FIND_BY_CONTAINS
         )
 
         addMockResponse(
-                KEY_QUERY_SHOP_INFO_GOLD,
-                getRawString(context, R.raw.response_mock_data_get_shop_info_gold),
+                KEY_QUERY_IS_SHOP_POWER_MERCHANT,
+                getRawString(context, R.raw.response_mock_data_get_is_shop_power_merchant),
                 FIND_BY_CONTAINS
         )
 

@@ -13,12 +13,11 @@ import com.tokopedia.analytics.performance.util.NetworkData
 import com.tokopedia.analytics.performance.util.PerformanceDataFileUtils
 import com.tokopedia.analytics.performance.util.PltPerformanceData
 import com.tokopedia.shop.mock.ShopPageWithoutHomeTabMockResponseConfig
+import com.tokopedia.shop.mock.ShopPageWithoutHomeTabMockResponseConfig.Companion.KEY_QUERY_GET_IS_SHOP_OFFICIAL
+import com.tokopedia.shop.mock.ShopPageWithoutHomeTabMockResponseConfig.Companion.KEY_QUERY_GET_SHOP_PAGE_HOME_TYPE
 import com.tokopedia.shop.mock.ShopPageWithoutHomeTabMockResponseConfig.Companion.KEY_QUERY_GET_SHOP_PRODUCT
+import com.tokopedia.shop.mock.ShopPageWithoutHomeTabMockResponseConfig.Companion.KEY_QUERY_IS_SHOP_POWER_MERCHANT
 import com.tokopedia.shop.mock.ShopPageWithoutHomeTabMockResponseConfig.Companion.KEY_QUERY_SHOP_INFO_CORE_AND_ASSETS
-import com.tokopedia.shop.mock.ShopPageWithoutHomeTabMockResponseConfig.Companion.KEY_QUERY_SHOP_INFO_FAVORITE
-import com.tokopedia.shop.mock.ShopPageWithoutHomeTabMockResponseConfig.Companion.KEY_QUERY_SHOP_INFO_GOLD
-import com.tokopedia.shop.mock.ShopPageWithoutHomeTabMockResponseConfig.Companion.KEY_QUERY_SHOP_INFO_HOME_TYPE
-import com.tokopedia.shop.mock.ShopPageWithoutHomeTabMockResponseConfig.Companion.KEY_QUERY_SHOP_INFO_OS
 import com.tokopedia.shop.mock.ShopPageWithoutHomeTabMockResponseConfig.Companion.KEY_QUERY_SHOP_INFO_TOP_CONTENT
 import com.tokopedia.shop.mock.ShopPageWithoutHomeTabMockResponseConfig.Companion.KEY_QUERY_WHITELIST
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
@@ -54,10 +53,10 @@ class PltShopPagePowerMerchantPerformanceTest {
             setupGraphqlMockResponseWithCheck(ShopPageWithoutHomeTabMockResponseConfig())
             setupTotalSizeInterceptor(listOf(
                     KEY_QUERY_GET_SHOP_PRODUCT,
-                    KEY_QUERY_SHOP_INFO_OS,
+                    KEY_QUERY_GET_IS_SHOP_OFFICIAL,
                     KEY_QUERY_SHOP_INFO_CORE_AND_ASSETS,
-                    KEY_QUERY_SHOP_INFO_HOME_TYPE,
-                    KEY_QUERY_SHOP_INFO_GOLD,
+                    KEY_QUERY_GET_SHOP_PAGE_HOME_TYPE,
+                    KEY_QUERY_IS_SHOP_POWER_MERCHANT,
                     KEY_QUERY_SHOP_INFO_TOP_CONTENT,
                     KEY_QUERY_WHITELIST
             ))
