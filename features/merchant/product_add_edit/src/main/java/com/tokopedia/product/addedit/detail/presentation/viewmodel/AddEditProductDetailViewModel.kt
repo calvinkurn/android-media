@@ -39,6 +39,10 @@ class AddEditProductDetailViewModel @Inject constructor(
 
     var isAdding = false
 
+    var isDrafting = false
+
+    var isFirstMoved = false
+
     var shouldUpdateVariant = false
 
     var productInputModel = ProductInputModel()
@@ -138,7 +142,7 @@ class AddEditProductDetailViewModel @Inject constructor(
         // mandatory fields that empty by default (adding new product)
         val isProductNameError: Boolean
         val isProductPriceError: Boolean
-        if (isAdding) {
+        if (isAdding && isFirstMoved) {
             isProductNameError = mIsProductNameInputError.value ?: !isEditing
             isProductPriceError = mIsProductPriceInputError.value ?: !isEditing
         } else {

@@ -19,8 +19,7 @@ data class ProductInputModel (
         var productId: Long = 0L,
         var completionPercent: Int = 0,
         var draftId: Long = 0L,
-        //used for tracking in add mode on stepper page
-        var didBackPress: Boolean = false
+        var requestCode: Array<Int> = Array(3){0}
 ) : Parcelable {
     companion object {
         val TAG: String get() = ProductInputModel::class.java.simpleName

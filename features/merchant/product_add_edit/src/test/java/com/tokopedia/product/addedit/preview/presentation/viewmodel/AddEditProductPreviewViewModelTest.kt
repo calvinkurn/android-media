@@ -108,7 +108,7 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
 
     @Test
     fun `When CheckUpdateProductInputModel Expect ExpectedBehaviour`() {
-        viewModel.productAddResult.value = ProductInputModel()
+        viewModel.productInputModel.value = ProductInputModel()
         viewModel.productInputModel.getOrAwaitValue()
 
         viewModel.getNewProductInputModel(arrayListOf())
@@ -133,7 +133,7 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
         viewModel.setIsDuplicate(true)
         viewModel.hasOriginalVariantLevel = true
 
-        viewModel.productAddResult.value = ProductInputModel().apply { detailInputModel.wholesaleList = listOf(WholeSaleInputModel()) }
+        viewModel.productInputModel.value = ProductInputModel().apply { detailInputModel.wholesaleList = listOf(WholeSaleInputModel()) }
         viewModel.productInputModel.getOrAwaitValue()
 
         assertEquals(false, viewModel.isAdding)
@@ -151,7 +151,7 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
             detailInputModel.pictureList = listOf(pictureInputModel)
             detailInputModel.imageUrlOrPathList = listOf("ada", "apa")
         }
-        viewModel.productAddResult.value = product
+        viewModel.productInputModel.value = product
         viewModel.productInputModel.getOrAwaitValue()
 
         val imagePickerResult = arrayListOf("pict1","pict2","pict3")
@@ -174,7 +174,7 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
             detailInputModel.status = 0
             variantInputModel.products = listOf(productVariantInputModel)
         }
-        viewModel.productAddResult.value = product
+        viewModel.productInputModel.value = product
         viewModel.productInputModel.getOrAwaitValue()
         val expectedResult = viewModel.productInputModel.value?.detailInputModel?.status
 
@@ -187,15 +187,15 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
 
     @Test
     fun `When get status stock variant Expect status stock variant`() {
-        viewModel.productAddResult.value = ProductInputModel().apply { detailInputModel.stock = 0 }
+        viewModel.productInputModel.value = ProductInputModel().apply { detailInputModel.stock = 0 }
         viewModel.productInputModel.getOrAwaitValue()
         assertEquals(1, viewModel.getStatusStockViewVariant())
 
-        viewModel.productAddResult.value = ProductInputModel().apply { detailInputModel.stock = 4 }
+        viewModel.productInputModel.value = ProductInputModel().apply { detailInputModel.stock = 4 }
         viewModel.productInputModel.getOrAwaitValue()
         assertEquals(2, viewModel.getStatusStockViewVariant())
 
-        viewModel.productAddResult.value = ProductInputModel().apply { detailInputModel.status = 0 }
+        viewModel.productInputModel.value = ProductInputModel().apply { detailInputModel.status = 0 }
         viewModel.productInputModel.getOrAwaitValue()
         assertEquals(3, viewModel.getStatusStockViewVariant())
     }
