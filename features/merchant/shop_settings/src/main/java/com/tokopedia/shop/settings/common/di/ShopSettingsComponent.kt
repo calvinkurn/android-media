@@ -25,7 +25,10 @@ import retrofit2.Retrofit
  */
 
 @ShopSettingsScope
-@Component(modules = arrayOf(ShopSettingsModule::class), dependencies = arrayOf(BaseAppComponent::class))
+@Component(
+    modules = [ShopSettingsModule::class, ViewModelModule::class],
+    dependencies = [BaseAppComponent::class]
+)
 interface ShopSettingsComponent {
 
     @ApplicationContext
@@ -46,4 +49,20 @@ interface ShopSettingsComponent {
     fun inject(fragment: ShopSettingsEtalaseAddEditFragment)
     fun inject(fragment: ShopSettingsEtalaseListFragment)
     fun inject(fragment: ShopSettingsEtalaseReorderFragment)
+
+
+
+//    fun inject(shopSettingsNotesFragment: ShopSettingsNotesListFragment)
+//    fun inject(shopSettingsNotesFragment: ShopSettingsNotesReorderFragment)
+//    fun inject(shopEditScheduleActivity: ShopEditScheduleActivity)
+//    fun inject(shopEditBasicInfoFragment: ShopEditBasicInfoFragment)
+//
+//    fun inject(fragment: ShopSettingAddressFragment)
+//    fun inject(fragment: ShopSettingAddressAddEditFragment)
+//    fun inject(fragment: ShopSettingsNotesAddEditFragment)
+//
+//    fun inject(fragment: ShopSettingsEtalaseAddEditFragment)
+//    fun inject(fragment: ShopSettingsEtalaseListFragment)
+//    fun inject(fragment: ShopSettingsEtalaseReorderFragment)
+//    fun inject(fragment: ShopSettingsInfoFragment)
 }
