@@ -15,6 +15,9 @@ interface TopAdsService {
     @GET("promo/v1.3/display/ads")
     fun getShopTopAds(@QueryMap params: Map<String, Any?>?): Observable<Response<String?>?>
 
+    @GET("promo/v1.3/display/ads")
+    suspend fun suspendGetShopTopAds(@QueryMap params: Map<String, Any?>?): Response<String?>?
+
     @GET
     fun productWishlistUrl(@Url wishlistUrl: String?): Observable<Response<String?>?>?
 

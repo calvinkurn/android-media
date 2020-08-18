@@ -31,6 +31,17 @@ class CloudTopAdsShopDataSource(
                 .map { response -> TopAdsShopMapper(context, gson).call(response) }
     }
 
+    suspend fun suspendGetTopAdsShop(param: HashMap<String, Any>): TopAdsShop {
+        val response = topAdsService.suspendGetShopTopAds(param)
+        HttpResponseValidator.validate(object : HttpResponseValidator.HttpValidationListener {
+            override fun onPassValidation(response: Response<String?>?) {
+                saveResponseToCache(response)
+            }
+        }).call(response)
+        return TopAdsShopMapper(context, gson).call(response)
+    }
+
+
     private fun saveResponseToCache(stringResponse: Response<String?>?) {
         PersistentCacheManager.instance.put(
                 LocalTopAdsShopDataSource.CACHE_KEY_TOP_ADS_SHOP,

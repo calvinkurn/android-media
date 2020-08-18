@@ -11,11 +11,10 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.runBlocking
 import rx.Observable
 import java.util.*
 
-class GetInitialDataPageUseCaseWithCoroutine constructor(
+class GetAllDataFavoriteUseCaseWithCoroutine(
         context: Context,
         private val getFavoriteShopUsecase: GetFavoriteShopUseCaseWithCoroutine,
         private val getTopAdsShopUseCase: GetTopAdsShopUseCaseWithCoroutine
@@ -25,20 +24,15 @@ class GetInitialDataPageUseCaseWithCoroutine constructor(
     private val random: Random = Random()
     private val userSession: UserSessionInterface = UserSession(context)
 
-    override suspend fun executeOnBackground(): DataFavorite {
-        return coroutineScope {
-            val favoriteShop = async { getFavoriteShop() }
-            val topAdsShop = async { getTopAdsShop() }
-            validateDataFavorite(topAdsShop.await(), favoriteShop.await())
-        }
-    }
-
-    private fun validateDataFavorite(adsShop: TopAdsShop, favoriteShop: FavoriteShop): DataFavorite {
-        if (adsShop.isNetworkError &&
-                favoriteShop.isNetworkError &&
-                adsShop.topAdsShopItemList == null &&
-                favoriteShop.data == null) {
-            throw RuntimeException("all request network error")
+    private fun validateDataFavorite(
+            adsShop: TopAdsShop,
+            favoriteShop: FavoriteShop
+    ): DataFavorite {
+        if (adsShop.isNetworkError
+                && favoriteShop.isNetworkError
+                && adsShop.topAdsShopItemList == null
+                && favoriteShop.data == null) {
+            throw RuntimeException("all network error")
         }
         val dataFavorite = DataFavorite()
         dataFavorite.topAdsShop = adsShop
@@ -46,16 +40,9 @@ class GetInitialDataPageUseCaseWithCoroutine constructor(
         return dataFavorite
     }
 
-    private suspend fun getFavoriteShop(): FavoriteShop {
-        val defaultParams = GetFavoriteShopUsecase.defaultParams
-        defaultParams.putBoolean(GetFavoriteShopUsecase.KEY_IS_FIRST_PAGE, true)
-        getFavoriteShopUsecase.requestParams = defaultParams
-        return getFavoriteShopUsecase.executeOnBackground()
-    }
-
     private suspend fun getTopAdsShop(): TopAdsShop {
         val requestParams = GetTopAdsShopUseCase.defaultParams()
-        requestParams.putBoolean(GetTopAdsShopUseCase.KEY_IS_FORCE_REFRESH, false)
+        requestParams.putBoolean(GetTopAdsShopUseCase.KEY_IS_FORCE_REFRESH, true)
         requestParams.putString(GetTopAdsShopUseCase.KEY_USER_ID, userSession.userId)
         val preferredCacheList = cacheHandler.getArrayListInteger(CacheHandler.KEY_PREFERRED_CATEGORY)
         requestParams.putInt(GetTopAdsShopUseCase.KEY_DEP_ID, getRandomId(preferredCacheList))
@@ -64,11 +51,26 @@ class GetInitialDataPageUseCaseWithCoroutine constructor(
         return getTopAdsShopUseCase.executeOnBackground()
     }
 
+    private suspend fun getFavoriteShopList(): FavoriteShop {
+        val defaultParams = GetFavoriteShopUsecase.defaultParams
+        defaultParams.putBoolean(GetFavoriteShopUsecase.KEY_IS_FIRST_PAGE, true)
+        getFavoriteShopUsecase.requestParams = defaultParams
+        return getFavoriteShopUsecase.executeOnBackground()
+    }
+
     private fun getRandomId(ids: List<Int>): Int {
-        return if (ids.isEmpty()) {
-            0
-        } else {
+        return if (ids.isNotEmpty()) {
             ids[random.nextInt(ids.size)]
+        } else {
+            0
+        }
+    }
+
+    override suspend fun executeOnBackground(): DataFavorite {
+        return coroutineScope {
+            val favoriteShopList = async { getFavoriteShopList() }
+            val topAds = async { getTopAdsShop() }
+            validateDataFavorite(topAds.await(), favoriteShopList.await())
         }
     }
 

@@ -12,10 +12,18 @@ interface FavoriteRepository {
 
     fun getFirstPageFavoriteShop(params: HashMap<String, String>): Observable<FavoriteShop>
 
+    suspend fun suspendGetFirstPageFavoriteShop(params: HashMap<String, String>): FavoriteShop
+
     fun getFavoriteShop(param: HashMap<String, String>): Observable<FavoriteShop>
+
+    suspend fun suspendGetFavoriteShop(param: HashMap<String, String>): FavoriteShop
 
     fun getFreshTopAdsShop(params: HashMap<String, Any>): Observable<TopAdsShop>
 
+    suspend fun suspendGetFreshTopAdsShop(params: HashMap<String, Any>): TopAdsShop
+
     fun getTopAdsShop(params: HashMap<String, Any>): Observable<TopAdsShop>
+
+    suspend fun suspendGetTopAdsShop(params: HashMap<String, Any>): TopAdsShop
 
 }

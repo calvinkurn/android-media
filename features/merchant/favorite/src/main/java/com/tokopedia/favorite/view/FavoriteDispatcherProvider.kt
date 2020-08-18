@@ -2,7 +2,7 @@ package com.tokopedia.favorite.view
 
 import kotlinx.coroutines.CoroutineDispatcher
 
-interface DispatcherProvider {
+interface FavoriteDispatcherProvider {
 
     fun io(): CoroutineDispatcher
 

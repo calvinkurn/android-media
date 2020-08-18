@@ -4,13 +4,15 @@ import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler.PagingHandlerModel
-import com.tokopedia.favorite.domain.interactor.GetAllDataFavoriteUseCase
+import com.tokopedia.favorite.domain.interactor.GetAllDataFavoriteUseCaseWithCoroutine
+import com.tokopedia.favorite.domain.interactor.GetFavoriteShopUseCaseWithCoroutine
 import com.tokopedia.favorite.domain.interactor.GetFavoriteShopUsecase
-import com.tokopedia.favorite.domain.interactor.GetInitialDataPageUsecase
+import com.tokopedia.favorite.domain.interactor.GetInitialDataPageUseCaseWithCoroutine
 import com.tokopedia.favorite.domain.model.DataFavorite
 import com.tokopedia.favorite.domain.model.FavoriteShop
 import com.tokopedia.favorite.domain.model.TopAdsShop
@@ -18,18 +20,18 @@ import com.tokopedia.favorite.view.viewmodel.DataFavoriteMapper
 import com.tokopedia.favorite.view.viewmodel.FavoriteShopViewModel
 import com.tokopedia.favorite.view.viewmodel.TopAdsShopItem
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
-import com.tokopedia.usecase.RequestParams
-import rx.Subscriber
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
 
 class FavoriteViewModel
 @Inject constructor(
-        private val dispatcherProvider: DispatcherProvider,
-        private val getInitialDataPageUsecase: GetInitialDataPageUsecase,
+        private val dispatcherProvider: FavoriteDispatcherProvider,
+        private val getInitialDataPageUseCase: GetInitialDataPageUseCaseWithCoroutine,
         private val toggleFavouriteShopUseCase: ToggleFavouriteShopUseCase,
-        private val getAllDataFavoriteUseCase: GetAllDataFavoriteUseCase,
-        private val getFavoriteShopUseCase: GetFavoriteShopUsecase,
+        private val getAllDataFavoriteUseCase: GetAllDataFavoriteUseCaseWithCoroutine,
+        private val getFavoriteShopUseCaseWithCoroutine: GetFavoriteShopUseCaseWithCoroutine,
         private val favoriteMapper: DataFavoriteMapper
 ): BaseViewModel(dispatcherProvider.ui()) {
 
@@ -136,29 +138,107 @@ class FavoriteViewModel
     //==============================
 
     fun loadInitialData() {
-        getInitialDataPageUsecase.execute(RequestParams.EMPTY, InitialDataSubscriber())
+        viewModelScope.launch {
+            try {
+                _refresh.value = true
+                val dataFavorite = withContext(dispatcherProvider.io()) {
+                    getInitialDataPageUseCase.executeOnBackground()
+                }
+                _refresh.value = false
+                _initialData.value = getDataFavoriteViewModel(dataFavorite)
+            } catch (e: Exception) {
+                Timber.e(e, "onError: ")
+                _refresh.value = false
+                _isTopAdsShopNetworkFailed.value = true
+                _isErrorLoad.value = true
+            }
+        }
     }
 
     fun addFavoriteShop(view: View, shopItem: TopAdsShopItem) {
-        toggleFavouriteShopUseCase.execute(
-                ToggleFavouriteShopUseCase.createRequestParam(shopItem.shopId),
-                AddFavoriteShopSubscriber(view, shopItem)
-        )
+        val params = ToggleFavouriteShopUseCase.createRequestParam(shopItem.shopId);
+        viewModelScope.launch {
+            try {
+                view.isEnabled = false
+                val isValid = withContext(dispatcherProvider.io()) {
+                    toggleFavouriteShopUseCase.createObservable(params).toBlocking().single()
+                }
+                view.clearAnimation()
+                if (isValid != null && isValid) {
+                    val favoriteShopViewModel = FavoriteShopViewModel()
+                    favoriteShopViewModel.shopId = shopItem.shopId
+                    favoriteShopViewModel.shopName = shopItem.shopName
+                    favoriteShopViewModel.shopAvatarImageUrl = shopItem.shopImageUrl
+                    favoriteShopViewModel.shopLocation = shopItem.shopLocation
+                    favoriteShopViewModel.isFavoriteShop = shopItem.isFav
+                    _addedFavoriteShop.value = favoriteShopViewModel
+                    _favoriteShopImpression.value = shopItem.shopClickUrl
+                }
+            } catch (e: Exception) {
+                Timber.e("onError: %s", e.toString())
+                _isErrorAddFavoriteShop.value = true
+            }
+        }
     }
 
     fun loadMoreFavoriteShop() {
-        if (pagingHandler.CheckNextPage()) {
-            pagingHandler.nextPage()
+        if (!pagingHandler.CheckNextPage()) return
+
+        pagingHandler.nextPage()
+        viewModelScope.launch {
             _isLoadingFavoriteShop.value = true
+
             val params = GetFavoriteShopUsecase.defaultParams
             val currentPage = pagingHandler.page.toString()
             params.putString(GetFavoriteShopUsecase.KEY_PAGE, currentPage)
-            getFavoriteShopUseCase.execute(params, LoadMoreSubscriber())
+            getFavoriteShopUseCaseWithCoroutine.requestParams = params
+
+            try {
+                val favoriteShop = withContext(dispatcherProvider.io()) {
+                    getFavoriteShopUseCaseWithCoroutine.executeOnBackground()
+                }
+
+                if (favoriteShop.isDataValid) {
+                    setNextPaging(favoriteShop.pagingModel)
+                    val elements = favoriteMapper.prepareListFavoriteShop(favoriteShop)
+                    _moreDataFavoriteShop.value = elements
+                } else {
+                    setNextPaging(favoriteShop.pagingModel)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                returnPagingHandlerToPreviousPage()
+                _isErrorLoadMore.value = true
+            }
         }
     }
 
     fun refreshAllDataFavoritePage() {
-        getAllDataFavoriteUseCase.execute(RequestParams.EMPTY, RefreshFavoriteSubscriber())
+        viewModelScope.launch {
+            _refresh.value = true
+            try {
+                val dataFavorite = withContext(dispatcherProvider.io()) {
+                    getAllDataFavoriteUseCase.executeOnBackground()
+                }
+                val elements = ArrayList<Visitable<*>>(emptyList())
+                addTopAdsShop(dataFavorite, elements)
+                addFavoriteShop(dataFavorite, elements)
+
+                _refreshData.value = elements
+                _refresh.value = false
+
+                pagingHandler.resetPage()
+            } catch (e: Exception) {
+                Timber.e("onError: %s", e.toString())
+            }
+        }
+    }
+
+    private fun getDataFavoriteViewModel(dataFavorite: DataFavorite): List<Visitable<*>> {
+        val elements = ArrayList<Visitable<*>>(emptyList())
+        addTopAdsShop(dataFavorite, elements)
+        addFavoriteShop(dataFavorite, elements)
+        return elements
     }
 
     private fun addTopAdsShop(
@@ -241,105 +321,4 @@ class FavoriteViewModel
         return pagingHandler.CheckNextPage()
     }
 
-    /**
-     * Inner classes
-     */
-
-    inner class InitialDataSubscriber: Subscriber<DataFavorite>() {
-        override fun onStart() {
-            super.onStart()
-            _refresh.value = true
-        }
-
-        override fun onNext(dataFavorite: DataFavorite) {
-            _refresh.value = false
-            _initialData.value = getDataFavoriteViewModel(dataFavorite)
-        }
-
-        override fun onCompleted() { }
-
-        override fun onError(e: Throwable?) {
-            Timber.e(e, "onError: ")
-            _refresh.value = false
-            _isTopAdsShopNetworkFailed.value = true
-            _isErrorLoad.value = true
-        }
-
-        private fun getDataFavoriteViewModel(dataFavorite: DataFavorite): List<Visitable<*>> {
-            val elements = ArrayList<Visitable<*>>(emptyList())
-            addTopAdsShop(dataFavorite, elements)
-            addFavoriteShop(dataFavorite, elements)
-            return elements
-        }
-    }
-
-    inner class AddFavoriteShopSubscriber(private val view: View, private val shopItem: TopAdsShopItem): Subscriber<Boolean>() {
-        override fun onStart() {
-            view.isEnabled = false
-        }
-
-        override fun onNext(isValid: Boolean?) {
-            view.clearAnimation()
-            if (isValid != null && isValid) {
-                val favoriteShopViewModel = FavoriteShopViewModel()
-                favoriteShopViewModel.shopId = shopItem.shopId
-                favoriteShopViewModel.shopName = shopItem.shopName
-                favoriteShopViewModel.shopAvatarImageUrl = shopItem.shopImageUrl
-                favoriteShopViewModel.shopLocation = shopItem.shopLocation
-                favoriteShopViewModel.isFavoriteShop = shopItem.isFav
-                _addedFavoriteShop.value = favoriteShopViewModel
-                _favoriteShopImpression.value = shopItem.shopClickUrl
-            }
-        }
-
-        override fun onCompleted() { }
-
-        override fun onError(e: Throwable?) {
-            Timber.e("onError: %s", e.toString())
-            _isErrorAddFavoriteShop.value = true
-        }
-    }
-
-    inner class LoadMoreSubscriber: Subscriber<FavoriteShop>() {
-        override fun onNext(favoriteShop: FavoriteShop) {
-            if (favoriteShop.isDataValid) {
-                setNextPaging(favoriteShop.pagingModel)
-                val elements  =  favoriteMapper.prepareListFavoriteShop(favoriteShop)
-                _moreDataFavoriteShop.value = elements
-            } else {
-                setNextPaging(favoriteShop.pagingModel)
-            }
-        }
-
-        override fun onCompleted() { }
-
-        override fun onError(e: Throwable?) {
-            e?.printStackTrace()
-            returnPagingHandlerToPreviousPage()
-            _isErrorLoadMore.value = true
-        }
-    }
-
-    inner class RefreshFavoriteSubscriber: Subscriber<DataFavorite>() {
-        override fun onStart() {
-            super.onStart()
-            _refresh.value = true
-        }
-
-        override fun onNext(dataFavorite: DataFavorite) {
-            val elements = ArrayList<Visitable<*>>(emptyList())
-            addTopAdsShop(dataFavorite, elements)
-            addFavoriteShop(dataFavorite, elements)
-            _refreshData.value = elements
-            _refresh.value = false
-            pagingHandler.resetPage()
-        }
-
-        override fun onCompleted() { }
-
-        override fun onError(e: Throwable?) {
-            Timber.e("onError: %s", e.toString())
-        }
-
-    }
 }

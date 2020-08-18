@@ -13,6 +13,7 @@ import rx.Observable
 import rx.functions.Action1
 import rx.functions.Func1
 import java.util.*
+import kotlin.NoSuchElementException
 
 /**
  * @author Kulomady on 1/18/17.
@@ -27,6 +28,10 @@ class FavoriteFactory(
         return CloudFavoriteShopDataSource(context, gson).getFavorite(param, false)
     }
 
+    suspend fun suspendGetFavoriteShop(param: HashMap<String, String>?): FavoriteShop {
+        return CloudFavoriteShopDataSource(context, gson).suspendGetFavorite(param, false)
+    }
+
     fun getFavoriteShopFirstPage(params: HashMap<String, String>): Observable<FavoriteShop> {
         return getCloudFavoriteObservable(params)
                 .onExceptionResumeNext(localFavoriteObservable.doOnNext(setFavoriteErrorNetwork()))
@@ -37,10 +42,33 @@ class FavoriteFactory(
                 .first(isLocalTopAdsShopValid)
     }
 
+    suspend fun suspendGetTopAdsShop(params: HashMap<String, Any>): TopAdsShop {
+        var topAdsShop = LocalTopAdsShopDataSource(context, gson).toAdsShop()
+        if (isLocalTopAdsShopValid.call(topAdsShop)) {
+            return topAdsShop
+        }
+
+        topAdsShop = getCloudTopAds(params)
+        if (isLocalTopAdsShopValid.call(topAdsShop)) {
+            return topAdsShop
+        }
+
+        throw NoSuchElementException()
+    }
+
     fun getFreshTopAdsShop(params: HashMap<String, Any>): Observable<TopAdsShop> {
         val topAdsShopDataSource = CloudTopAdsShopDataSource(context, gson, topAdsService)
         return topAdsShopDataSource.getTopAdsShop(params)
                 .onExceptionResumeNext(localTopAdsShopObservable.doOnNext(setTopAdsShopErrorNetwork()))
+    }
+
+    suspend fun suspendGetFreshTopAdsShop(params: HashMap<String, Any>): TopAdsShop {
+        val topAdsShopDataSource = CloudTopAdsShopDataSource(context, gson, topAdsService)
+        try {
+            return topAdsShopDataSource.suspendGetTopAdsShop(params)
+        } catch (e: Exception) {
+            return LocalTopAdsShopDataSource(context, gson).toAdsShop()
+        }
     }
 
     private fun getCloudTopAdsShopObservable(params: HashMap<String, Any>): Observable<TopAdsShop> {
@@ -48,8 +76,13 @@ class FavoriteFactory(
         return topAdsShopDataSource.getTopAdsShop(params)
     }
 
+    private suspend fun getCloudTopAds(params: HashMap<String, Any>): TopAdsShop {
+        val topAdsShopDataSource = CloudTopAdsShopDataSource(context, gson, topAdsService)
+        return topAdsShopDataSource.suspendGetTopAdsShop(params)
+    }
+
     private val localTopAdsShopObservable: Observable<TopAdsShop>
-        get() = LocalTopAdsShopDataSource(context, gson).topAdsShop
+        get() = LocalTopAdsShopDataSource(context, gson).topAdsShopObs
 
     private val localFavoriteObservable: Observable<FavoriteShop>
         get() = LocalFavoriteShopDataSource(context, gson).favorite
@@ -68,10 +101,9 @@ class FavoriteFactory(
 
     private val isLocalTopAdsShopValid: Func1<TopAdsShop, Boolean>
         get() = Func1 { topAdsShop ->
-            (topAdsShop != null &&
-                topAdsShop.isDataValid &&
-                topAdsShop.topAdsShopItemList != null &&
-                topAdsShop.topAdsShopItemList!!.size > 0)
+            val isDataValid = topAdsShop.isDataValid
+            val itemList = topAdsShop.topAdsShopItemList
+            topAdsShop != null && isDataValid && itemList != null && itemList.isNotEmpty()
         }
 
 }

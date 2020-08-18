@@ -51,6 +51,24 @@ class CloudFavoriteShopDataSource(private val context: Context, private val gson
         }
     }
 
+    suspend fun suspendGetFavorite(param: HashMap<String, String>?, isMustSaveToCache: Boolean): FavoriteShop {
+        val tkpdMapParam = TKPDMapParam<String, String>()
+        tkpdMapParam.putAll(param!!)
+        val paramWithAuth = AuthUtil.generateParamsNetwork(
+                userSession.userId, userSession.deviceId, tkpdMapParam)
+        return if (isMustSaveToCache) {
+            val response = favoriteShopAuthService.api
+                    .suspendGetFavoritShopsData(getRequestPayload(context, paramWithAuth))
+            validateResponse().call(response)
+            FavoritShopGraphQlMapper(context, gson).call(response)
+        } else {
+            val response = favoriteShopAuthService.api
+                    .suspendGetFavoritShopsData(getRequestPayload(context, paramWithAuth))
+            FavoritShopGraphQlMapper(context, gson).call(response)
+        }
+    }
+
+
     private fun getRequestPayload(context: Context, params: TKPDMapParam<String, String>): String {
         return String.format(
                 loadRawString(context.resources, R.raw.favorit_shop_query),

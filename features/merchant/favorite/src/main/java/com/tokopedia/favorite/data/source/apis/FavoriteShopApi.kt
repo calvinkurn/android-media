@@ -17,4 +17,8 @@ interface FavoriteShopApi {
     @Headers("Content-Type: application/json")
     fun getFavoritShopsData(@Body requestBody: String): Observable<Response<GraphqlResponse<FavoritShopResponseData>>>
 
+    @POST("./")
+    @Headers("Content-Type: application/json")
+    suspend fun suspendGetFavoritShopsData(@Body requestBody: String): Response<GraphqlResponse<FavoritShopResponseData>>
+
 }

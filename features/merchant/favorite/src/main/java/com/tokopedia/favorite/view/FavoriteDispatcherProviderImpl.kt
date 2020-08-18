@@ -3,7 +3,7 @@ package com.tokopedia.favorite.view
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
-class DispatcherProviderImpl: DispatcherProvider {
+class FavoriteDispatcherProviderImpl: FavoriteDispatcherProvider {
 
     override fun io(): CoroutineDispatcher {
         return Dispatchers.IO

@@ -16,7 +16,7 @@ import java.util.*
  * @author Kulomady on 1/19/17.
  */
 class GetInitialDataPageUsecase(
-        private val context: Context,
+        context: Context,
         private val getFavoriteShopUsecase: GetFavoriteShopUsecase,
         private val getTopAdsShopUseCase: GetTopAdsShopUseCase
 ) : UseCase<DataFavorite>() {

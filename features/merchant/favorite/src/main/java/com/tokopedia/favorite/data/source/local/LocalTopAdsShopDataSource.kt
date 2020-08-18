@@ -21,7 +21,7 @@ class LocalTopAdsShopDataSource(
         const val CACHE_KEY_TOP_ADS_SHOP = "TOP_ADS_SHOP"
     }
 
-    val topAdsShop: Observable<TopAdsShop>
+    val topAdsShopObs: Observable<TopAdsShop>
         get() {
             val data = Response.success(PersistentCacheManager.instance.getString(CACHE_KEY_TOP_ADS_SHOP, null))
             return Observable.just(data)
@@ -31,6 +31,11 @@ class LocalTopAdsShopDataSource(
 
     private fun nullResponse(): Func1<Throwable, TopAdsShop> {
         return Func1 { null }
+    }
+
+    fun toAdsShop(): TopAdsShop {
+        val data = Response.success(PersistentCacheManager.instance.getString(CACHE_KEY_TOP_ADS_SHOP, null))
+        return TopAdsShopMapper(context, gson).call(data)
     }
 
 }
