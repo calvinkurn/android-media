@@ -17,30 +17,9 @@ constructor(private val getShopBasicDataAndStatusUseCase: GetShopBasicDataAndSta
             private val userSession: UserSessionInterface) : BaseDaggerPresenter<ShopSettingsInfoPresenter.View>() {
 
     interface View : CustomerView {
-//        fun onSuccessGetShopBasicData(result: Pair<ShopBasicDataModel?, GoldGetPmOsStatus?>)
-//        fun onErrorGetShopBasicData(throwable: Throwable)
         fun onSuccessUpdateShopSchedule(successMessage: String)
         fun onErrorUpdateShopSchedule(throwable: Throwable)
     }
-
-//    fun getShopData() {
-//        getShopBasicDataAndStatusUseCase.unsubscribe()
-//        getShopBasicDataAndStatusUseCase.execute(
-//            GetShopBasicDataAndStatusUseCase.createRequestParams(userSession.shopId),
-//            object : Subscriber<Pair<ShopBasicDataModel?, GoldGetPmOsStatus?>>() {
-//            override fun onCompleted() {
-//
-//            }
-//
-//            override fun onError(e: Throwable) {
-////                view?.onErrorGetShopBasicData(e)
-//            }
-//
-//            override fun onNext(result: Pair<ShopBasicDataModel?, GoldGetPmOsStatus?>) {
-////                view?.onSuccessGetShopBasicData(result)
-//            }
-//        })
-//    }
 
     fun updateShopSchedule(@ShopScheduleActionDef action: Int,
                            closeNow: Boolean,
