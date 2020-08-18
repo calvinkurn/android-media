@@ -287,6 +287,31 @@ abstract class BaseTracking {
         return dataLayer
     }
 
+    open fun getBasicPromotionClick(
+        event: String,
+        eventCategory: String,
+        eventAction: String,
+        eventLabel: String,
+        promotions: List<Promotion>,
+        userId: String = "",
+        screen: String = "",
+        currentSite: String = "",
+        businessUnit: String = ""
+    ): Map<String, Any>{
+        val dataLayer = DataLayer.mapOf(
+                Event.KEY, event,
+                Category.KEY, eventCategory,
+                Action.KEY, eventAction,
+                Label.KEY, eventLabel,
+                Ecommerce.KEY, Ecommerce.getEcommercePromoClick(promotions)
+        )
+        if(userId.isNotBlank()) dataLayer[UserId.KEY] = userId
+        if(screen.isNotBlank()) dataLayer[Screen.KEY] = screen
+        if(currentSite.isNotBlank()) dataLayer[CurrentSite.KEY] = currentSite
+        if(businessUnit.isNotBlank()) dataLayer[BusinessUnit.KEY] = businessUnit
+        return dataLayer
+    }
+
     open fun getBasicPromotionChannelView(
             event: String,
             eventCategory: String,

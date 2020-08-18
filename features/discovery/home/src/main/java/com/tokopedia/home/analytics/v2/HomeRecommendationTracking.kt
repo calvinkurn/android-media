@@ -1,7 +1,6 @@
 package com.tokopedia.home.analytics.v2
 
 import com.tokopedia.analyticconstant.DataLayer
-import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.CustomAction.BANNER_ADS_INSIDE_RECOMMENDATION
 import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.CustomAction.BANNER_INSIDE_RECOMMENDATION
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.BannerRecommendationDataModel
@@ -159,7 +158,7 @@ object HomeRecommendationTracking : BaseTracking(){
             )
     )
 
-    fun getClickBannerTopAds(homeRecommendationBannerTopAdsDataModel: HomeRecommendationBannerTopAdsDataModel, tabPosition: Int, position: Int) = getBasicPromotionView(
+    fun getClickBannerTopAds(homeRecommendationBannerTopAdsDataModel: HomeRecommendationBannerTopAdsDataModel, tabPosition: Int, position: Int) = getBasicPromotionClick(
             event = Event.PROMO_CLICK,
             eventCategory = Category.HOMEPAGE_TOPADS,
             eventAction = Action.CLICK_ON.format(BANNER_ADS_INSIDE_RECOMMENDATION),
