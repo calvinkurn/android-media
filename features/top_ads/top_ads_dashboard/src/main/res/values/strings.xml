@@ -128,6 +128,8 @@
     <string name="topads_dash_hari_ini">Hari ini</string>
     <string name="topads_dash_beranda">Beranda</string>
     <string name="topads_dash_iklan_produck">Iklan Produk</string>
+    <string name="topads_dash_recommend">Rekomendasi</string>
+
     <string name="topads_dash_headline">Headline</string>
     <string name="topads_dash_buat_iklan">Buat Iklan</string>
     <string name="auto_ads_status_widget_title">Beriklan nggak pakai ribet</string>
@@ -150,7 +152,7 @@
     <string name="topads_dash_empty_keyword_desc">Gunakan kata kunci spesifik agar produkmu lebih mudah ditemukan pembeli</string>
     <string name="topads_dash_empty_neg_keyword_title">Belum ada kata kunci negatif</string>
     <string name="topads_dash_empty_neg_keyword_desc">Tambahkan kata kunci negatif agar produkmu tampil di pencarian yang relevan.</string>
-   <string name="topads_dash_add_negative_keyword">Tambah Kata Kunci Negatif</string>
+    <string name="topads_dash_add_negative_keyword">Tambah Kata Kunci Negatif</string>
     <string name="topads_dash_group">Grup (%d)</string>
     <string name="topads_dash_non_group">Tanpa Grup (%d)</string>
     <string name="topads_dash_product_count">Produk (%d)</string>
@@ -208,5 +210,78 @@
     <string name="topads_dash_anggaran_harian">Anggaran harian</string>
     <string name="topads_dash_custom_date_desc">Pilih Tanggal</string>
     <string name="topads_dash_klik">/klik</string>
+    <string name="topads_dash_auto_ads_deactivation_progress">Tunggu ya, Iklan Otomatis kamu akan dinonaktifkan sesaat lagi.</string>
+
+
+    <!--Insight-->
+    <string name="topads_dash_insight_sheet_info_title">Tentang rekomendasi kata kunci</string>
+    <string name="topads_dash_insight_sheet_info_subtitle">Keterangan</string>
+    <string name="topads_dash_insight_sheet_page1_title_1">1. Rekomendasi kata kunci baru</string>
+    <string name="topads_dash_insight_sheet_page1_desc_1">Kata kunci ini sering digunakan pembeli untuk mencari produk serupa.</string>
+    <string name="topads_dash_insight_sheet_page1_title_2">2. Jumlah pencarian</string>
+    <string name="topads_dash_insight_sheet_page1_desc_2">Calon pembeli menggunakan kata kunci ini dalam 30 hari terakhir.</string>
+    <string name="topads_dash_insight_sheet_page1_title_3">3. Biaya</string>
+    <string name="topads_dash_insight_sheet_page1_desc_3">Pengeluaran untuk setiap iklan tampil yang diklik oleh pembeli.</string>
+    <string name="topads_dash_insight_sheet_page1_title_4">4. Potensi Tampil</string>
+    <string name="topads_dash_insight_sheet_page1_desc_4">Jumlah rata-rata iklanmu tampil dan dilihat calon pembeli.</string>
+    <string name="topads_dash_insight_sheet_page2_title_1">1. Rekomendasi kata kunci negatif</string>
+    <string name="topads_dash_insight_sheet_page2_desc_1">Gunakan kata kunci ini agar iklanmu tidak tampil di pencarian yang tidak menghasilkan penjualan.</string>
+    <string name="topads_dash_insight_sheet_page2_title_2">2. Tampil</string>
+    <string name="topads_dash_insight_sheet_page2_desc_2">Jumlah iklanmu tampil di hasil pencarian kata kunci ini dalam 7 hari terakhir.</string>
+    <string name="topads_dash_insight_sheet_page2_title_3">3. Terjual</string>
+    <string name="topads_dash_insight_sheet_page2_desc_3">Jumlah produk terjual dari iklan yang tampil di hasil pencarian kata kunci ini dalam 7 hari terakhir.</string>
+    <string name="topads_dash_insight_sheet_page2_title_4">4. Potensi hemat</string>
+    <string name="topads_dash_insight_sheet_page2_desc_4">Rata-rata biaya yang dapat kamu simpan tiap bulan dengan menggunakan kata kunci negatif.</string>
+    <string name="topads_dash_insight_sheet_page3_title_1">1. Rekomendasi biaya kata kunci</string>
+    <string name="topads_dash_insight_sheet_page3_desc_1">Tambahkan biaya beriklan untuk kata kunci pilihan agar iklan produkmu tampil lebih sering.</string>
+    <string name="topads_dash_insight_sheet_page3_title_2">2. Biaya saat ini</string>
+    <string name="topads_dash_insight_sheet_page3_desc_2">Biaya kata kunci yang telah kamu pasang sebelumnya.</string>
+    <string name="topads_dash_insight_sheet_page3_title_3">3. Rekomendasi</string>
+    <string name="topads_dash_insight_sheet_page3_desc_3">Biaya kata kunci yang kami rekomendasikan agar iklanmu bisa tampil lebih serin.</string>
+    <string name="topads_dash_insight_sheet_page3_title_4">4. Potensi tampil</string>
+    <string name="topads_dash_insight_sheet_page3_desc_4">Jumlah rata-rata iklanmu tampil dan dilihat calon pembeli.</string>
+    <string name="topads_dash_insight_dialog_title">Beberapa performa iklanmu masih kurang maksimal</string>
+    <string name="topads_dash_insight_dialog_desc">Cek rekomendasi berikut agar performa iklanmu meningkat.</string>
+    <string name="topads_dash_insight_dialog_btn">Cek Rekomendasi</string>
+    <string name="topads_dash_product_suggestion_insight_count">Produk Berpotensi</string>
+    <string name="topads_dash_bid_suggestion_insight_count">Anggaran Harian</string>
+    <string name="topads_dash_insight_empty_title">Yay, performa iklanmu sudah bagus!</string>
+    <string name="topads_dash_insight_empty_desc">Rutin pantau rekomendasi TopAds agar iklanmu semakin optimal.</string>
+    <string name="topads_dash_insight_widget_title">Rekomendasi TopAds</string>
+    <string name="topads_dash_insight_widget_desc">Performa iklanmu kurang maksimal? Rekomendasi berikut bisa meningkatkan performa iklanmu.</string>
+    <string name="topads_dash_insight_key_item_tampil_potensi">Potensi tampil +%s kali /bulan</string>
+    <string name="topads_dash_insight_key_item_hemat_potensi">Potensi hemat Rp%s /bulan</string>
+    <string name="topads_dash_go_to_insights">Selengkapnya</string>
+    <string name="topads_dash_insight_title_beranda">Rekomendasi TopAds</string>
+    <string name="topads_dash_insight_desc_beranda">Performa iklanmu kurang maksimal? Rekomendasi berikut bisa meningkatkan performa iklanmu.</string>
+    <string name="topads_insight_empty_bid_title">Saat ini belum ada rekomendasi anggaran harian</string>
+    <string name="topads_insight_empty_product_title">Saat ini belum ada rekomendasi produk berpotensi</string>
+    <string name="topads_insight_empty_bid_desc">Pantau terus performa iklan produkmu di TopAds.</string>
+    <string name="topads_insight_empty_product_desc">Pantau terus performa iklan produkmu di TopAds.</string>
+    <string name="topads_insight_pilih_grup_iklan">Pilih grup iklan</string>
+    <string name="topads_insight_pos_key">Kata kunci baru (%d)</string>
+    <string name="topads_insight_neg_key">Kata kunci negatif (%d)</string>
+    <string name="topads_insight_bid">Biaya kata kunci (%d)</string>
+    <string name="topads_insight_pos_key_ini">Kata kunci baru </string>
+    <string name="topads_insight_neg_key_ini">Kata kunci negatif </string>
+    <string name="topads_insight_bid_ini">Biaya kata kunci </string>
+    <string name="topads_insight_item_bid_1">Biaya saat ini</string>
+    <string name="topads_insight_item_bid_2">Rekomendasi</string>
+    <string name="topads_insight_item_bid_3">Potensi tampil +%s kali / bulan</string>
+    <string name="topads_insight_item_neg_1">Tampil</string>
+    <string name="topads_insight_item_neg_2">Terjual</string>
+    <string name="topads_insight_item_neg_3">Potensi hemat Rp%s / bulan</string>
+    <string name="topads_insight_item_pos_1">Jumlah pencarian</string>
+    <string name="topads_insight_item_pos_2">Biaya</string>
+    <string name="topads_insight_item_pos_3">Potensi tampil +%s kali / bulan</string>
+    <string name="topads_insight_btn_tambah">Tambah</string>
+    <string name="topads_insight_btn_terpakan">Terapkan</string>
+    <string name="topads_insight_search_text">"Grup iklan “%s” tidak ditemukan"</string>
+    <string name="topads_insight_add_keyword">[%d] rekomendasi kata kunci berhasil ditambahkan ke grup iklanmu.</string>
+    <string name="topads_insight_add_negative">[%d] rekomendasi kata kunci negatif berhasil ditambahkan ke grup iklanmu.</string>
+    <string name="topads_insight_add_bid">Biaya untuk [%d] kata kunci rekomendasi berhasil diterapkan ke grup iklanmu.</string>
+    <string name="topads_insight_invalid_key_tag_pos">1 atau lebih kata kunci yang kamu pilih sedang aktif di kata kunci negatif di grup kamu, silahkan hapus terlebih dahulu bila ingin menggunakan kata kunci</string>
+    <string name="topads_insight_invalid_key_tag_neg">1 atau lebih kata kunci yang kamu pilih sedang aktif di kata kunci di grup kamu, silahkan hapus terlebih dahulu bila ingin menggunakan kata kunci</string>
 
 </resources>
+

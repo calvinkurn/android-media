@@ -237,6 +237,7 @@ class PlayBeforeLiveFragment @Inject constructor(
                 Bundle().apply {
                     putString(PlayBroadcastUserInteractionFragment.KEY_INGEST_URL, liveStreamInfo.ingestUrl)
                 })
+        analytic.openBroadcastScreen(parentViewModel.channelId)
     }
 
     private fun openEditCoverImagePage() {

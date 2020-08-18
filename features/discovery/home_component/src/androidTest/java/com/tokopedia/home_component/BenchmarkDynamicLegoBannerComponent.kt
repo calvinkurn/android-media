@@ -27,7 +27,7 @@ class BenchmarkDynamicLegoBannerComponent {
     var activityRule: ActivityTestRule<BlankTestActivity> = ActivityTestRule(BlankTestActivity::class.java)
 
     @Test
-    fun benchmark_onCreateViewHolder_dynamic_lego_component() {
+    fun benchmark_onCreateViewHolder_ViewHolder_dynamic_lego_component() {
         val viewGroup = FrameLayout(activityRule.activity)
         val recyclerViewAdapter = simpleAdapter(
                 DynamicLegoBannerViewHolder.LAYOUT) {
@@ -42,7 +42,7 @@ class BenchmarkDynamicLegoBannerComponent {
     }
 
     @Test
-    fun benchmark_onBind_dynamic_lego_6_component() {
+    fun benchmark_onBind_ViewHolder_dynamic_lego_6_component() {
         val itemView = simpleViewFromLayout(DynamicLegoBannerViewHolder.LAYOUT, activityRule.activity)
         val viewHolder = DynamicLegoBannerViewHolder(
                 itemView, null, null
@@ -56,7 +56,7 @@ class BenchmarkDynamicLegoBannerComponent {
     }
 
     @Test
-    fun benchmark_onBind_dynamic_lego_4_component() {
+    fun benchmark_onBind_ViewHolder_dynamic_lego_4_component() {
         val itemView = simpleViewFromLayout(DynamicLegoBannerViewHolder.LAYOUT, activityRule.activity)
         val viewHolder = DynamicLegoBannerViewHolder(
                 itemView, null, null
@@ -70,7 +70,7 @@ class BenchmarkDynamicLegoBannerComponent {
     }
 
     @Test
-    fun benchmark_onBind_dynamic_lego_3_component() {
+    fun benchmark_onBind_ViewHolder_dynamic_lego_3_component() {
         val itemView = simpleViewFromLayout(DynamicLegoBannerViewHolder.LAYOUT, activityRule.activity)
         val viewHolder = DynamicLegoBannerViewHolder(
                 itemView, null, null

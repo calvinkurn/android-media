@@ -78,9 +78,4 @@ abstract class PlayBroadcastSetupFragmentModule {
     @IntoMap
     @FragmentKey(SimpleEditProductBottomSheet::class)
     abstract fun getSimpleEditProductBottomSheet(fragment: SimpleEditProductBottomSheet): Fragment
-
-    @Binds
-    @IntoMap
-    @FragmentKey(ProductSetupBottomSheet::class)
-    abstract fun getProductSetupBottomSheet(fragment: ProductSetupBottomSheet): Fragment
 }

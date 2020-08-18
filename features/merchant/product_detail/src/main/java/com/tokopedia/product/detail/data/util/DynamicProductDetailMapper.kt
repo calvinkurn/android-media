@@ -7,7 +7,6 @@ import com.tokopedia.product.detail.data.model.variant.VariantDataModel
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.variant_common.model.ProductVariantCommon
-import java.util.*
 
 object DynamicProductDetailMapper {
 
@@ -123,8 +122,8 @@ object DynamicProductDetailMapper {
     }
 
     private fun assignIdToMedia(listOfMedia: List<Media>){
-        listOfMedia.forEach {
-            it.id = UUID.randomUUID().toString()
+        listOfMedia.forEachIndexed { index, it ->
+            it.id = (index + 1).toString()
         }
     }
 

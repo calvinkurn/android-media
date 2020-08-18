@@ -5,10 +5,10 @@ import com.tokopedia.entertainment.search.adapter.SearchEventViewHolder
 import com.tokopedia.entertainment.search.adapter.viewmodel.*
 
 interface SearchTypeFactory {
-    fun type(viewModel: FirstTimeViewModel) : Int
-    fun type(viewModel: HistoryViewModel) : Int
-    fun type(viewModel: SearchLocationViewModel) : Int
-    fun type(viewModel: SearchEventViewModel) : Int
-    fun type(viewModel: SearchEmptyStateViewModel): Int
+    fun type(model: FirstTimeModel) : Int
+    fun type(model: HistoryModel) : Int
+    fun type(model: SearchLocationModel) : Int
+    fun type(model: SearchEventModel) : Int
+    fun type(model: SearchEmptyStateModel): Int
     fun createViewHolder(view: ViewGroup, type : Int) : SearchEventViewHolder<*>
 }

@@ -18,6 +18,7 @@ import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp;
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.config.GlobalConfig;
@@ -56,7 +57,6 @@ import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.common.topads.deposit.data.model.DataDeposit;
 import com.tokopedia.seller.product.etalase.utils.EtalaseUtils;
-import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
 import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
 import com.tokopedia.seller.shop.common.di.module.ShopModule;
@@ -66,13 +66,12 @@ import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.fcm.AppNotificationReceiver;
 import com.tokopedia.sellerapp.utils.DeferredResourceInitializer;
 import com.tokopedia.sellerapp.utils.FingerprintModelGenerator;
+import com.tokopedia.sellerapp.utils.SellerOnboardingPreference;
+import com.tokopedia.sellerapp.onboarding.SellerOnboardingBridgeActivity;
 import com.tokopedia.sellerhome.SellerHomeRouter;
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
-import com.tokopedia.selleronboarding.activity.SellerOnboardingActivity;
-import com.tokopedia.selleronboarding.utils.OnboardingPreference;
 import com.tokopedia.sellerorder.common.util.SomConsts;
 import com.tokopedia.sellerorder.list.presentation.fragment.SomListFragment;
-import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.talk_old.inboxtalk.view.activity.InboxTalkActivity;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.TkpdReputationInternalRouter;
@@ -108,7 +107,6 @@ public abstract class SellerRouterApplication extends MainApplication
         implements TkpdCoreRouter, GMModuleRouter, TopAdsModuleRouter,
         ReputationRouter, LogisticRouter,
         AbstractionRouter,
-        ShopModuleRouter,
         ApplinkRouter,
         NetworkRouter,
         PhoneVerificationRouter,
@@ -212,14 +210,9 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Fragment getReputationHistoryFragment() {
-        return SellerReputationFragment.createInstance();
-    }
-
-    @Override
     public Intent getHomeIntent(Context context) {
         UserSessionInterface userSession = new UserSession(context);
-        Intent intent = new Intent(context, SellerOnboardingActivity.class);
+        Intent intent = RouteManager.getIntent(this, ApplinkConstInternalSellerapp.WELCOME);
         if (userSession.isLoggedIn()) {
             if (userSession.hasShop()) {
                 return SellerHomeActivity.createIntent(context);
@@ -237,7 +230,7 @@ public abstract class SellerRouterApplication extends MainApplication
         if (userSession.isLoggedIn()) {
             return SellerHomeActivity.class;
         } else {
-            return SellerOnboardingActivity.class;
+            return SellerOnboardingBridgeActivity.class;
         }
     }
 
@@ -333,16 +326,6 @@ public abstract class SellerRouterApplication extends MainApplication
     public void refreshToken() throws IOException {
         AccessTokenRefresh accessTokenRefresh = new AccessTokenRefresh();
         accessTokenRefresh.refreshToken();
-    }
-
-    @Override
-    public Fragment getReviewFragment(Activity activity, String shopId, String shopDomain) {
-        return ReviewShopFragment.createInstance(shopId, shopDomain);
-    }
-
-    @Override
-    public Class getReviewFragmentClass() {
-        return ReviewShopFragment.class;
     }
 
     @Override
@@ -520,7 +503,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void setOnboardingStatus(boolean status) {
-        OnboardingPreference preference = new OnboardingPreference(this);
-        preference.putBoolean(OnboardingPreference.HAS_OPEN_ONBOARDING, status);
+        SellerOnboardingPreference preference = new SellerOnboardingPreference(this);
+        preference.putBoolean(SellerOnboardingPreference.HAS_OPEN_ONBOARDING, status);
     }
 }

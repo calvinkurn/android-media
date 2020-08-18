@@ -65,7 +65,7 @@
         tools:layout_width="@dimen/dp_16" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/price_bid"
+        android:id="@+id/productCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_4"
@@ -82,7 +82,7 @@
         android:layout_marginStart="@dimen/dp_11"
         android:layout_marginLeft="@dimen/dp_11"
         android:layout_marginTop="@dimen/dp_8"
-        app:layout_constraintStart_toEndOf="@id/price_bid"
+        app:layout_constraintStart_toEndOf="@id/productCount"
         app:layout_constraintTop_toBottomOf="@id/group_title"
         app:srcCompat="@drawable/topads_dashboard_key"
         tools:layout_height="@dimen/dp_16"

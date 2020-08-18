@@ -10,8 +10,9 @@ import com.tokopedia.product.detail.common.data.model.pdplayout.ComponentData
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.Media
 import com.tokopedia.product.detail.view.util.toDate
-import com.tokopedia.variant_common.model.*
-import java.util.*
+import com.tokopedia.variant_common.model.ProductVariantCommon
+import com.tokopedia.variant_common.model.VariantChildCommon
+import com.tokopedia.variant_common.model.VariantMultiOriginWarehouse
 
 /**
  * Created by Yehezkiel on 2020-02-26
@@ -117,7 +118,8 @@ object VariantMapper {
                 percentageAmount = newData?.campaign?.discountedPercentage?.toInt() ?: 0,
                 stockSoldPercentage = newData?.campaign?.stockSoldPercentage?.toInt() ?: 0,
                 isCheckImei = newData?.campaign?.isCheckImei ?: false,
-                isUsingOvo = newData?.campaign?.isUsingOvo ?: false
+                isUsingOvo = newData?.campaign?.isUsingOvo ?: false,
+                hideGimmick = newData?.campaign?.hideGimmick ?: false
         )
 
         val newMedia = if (newData?.hasPicture == true) {
@@ -125,10 +127,11 @@ object VariantMapper {
             val newMedia = Media(type = "image", uRL300 = newData.picture?.original
                     ?: "", uRLOriginal = newData.picture?.original
                     ?: "", uRLThumbnail = newData.picture?.original ?: "").apply {
-                id = UUID.randomUUID().toString()
+                id = (newData.productId + System.nanoTime()).toString()
             }
 
             copyOfOldMedia?.add(0, newMedia)
+
             copyOfOldMedia ?: mutableListOf()
         } else {
             oldData.data.media

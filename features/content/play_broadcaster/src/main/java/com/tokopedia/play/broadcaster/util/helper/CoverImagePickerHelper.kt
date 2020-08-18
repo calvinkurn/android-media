@@ -109,8 +109,6 @@ class CoverImagePickerHelper(
                     PlayGalleryImagePickerBottomSheet::class.java.name
             ) as PlayGalleryImagePickerBottomSheet
 
-            imagePicker.setShowListener { imagePicker.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED }
-
             galleryImagePickerBottomSheet = imagePicker
         }
 
