@@ -17,8 +17,8 @@ constructor(private val getShopBasicDataAndStatusUseCase: GetShopBasicDataAndSta
             private val userSession: UserSessionInterface) : BaseDaggerPresenter<ShopSettingsInfoPresenter.View>() {
 
     interface View : CustomerView {
-        fun onSuccessGetShopBasicData(result: Pair<ShopBasicDataModel?, GoldGetPmOsStatus?>)
-        fun onErrorGetShopBasicData(throwable: Throwable)
+//        fun onSuccessGetShopBasicData(result: Pair<ShopBasicDataModel?, GoldGetPmOsStatus?>)
+//        fun onErrorGetShopBasicData(throwable: Throwable)
         fun onSuccessUpdateShopSchedule(successMessage: String)
         fun onErrorUpdateShopSchedule(throwable: Throwable)
     }
@@ -33,7 +33,7 @@ constructor(private val getShopBasicDataAndStatusUseCase: GetShopBasicDataAndSta
             }
 
             override fun onError(e: Throwable) {
-                view?.onErrorGetShopBasicData(e)
+//                view?.onErrorGetShopBasicData(e)
             }
 
             override fun onNext(result: Pair<ShopBasicDataModel?, GoldGetPmOsStatus?>) {
