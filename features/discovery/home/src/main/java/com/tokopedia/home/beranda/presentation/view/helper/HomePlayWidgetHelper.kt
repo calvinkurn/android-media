@@ -178,9 +178,10 @@ class HomePlayWidgetHelper(
         }
     }
 
-    override fun onActivityPause() {
+    override fun onActivityPause(shouldPausePlay: Boolean) {
         playerPause()
         removeVideoPlayerObserver()
+        if(shouldPausePlay) playManager.stop()
     }
 
     override fun onActivityDestroy() {

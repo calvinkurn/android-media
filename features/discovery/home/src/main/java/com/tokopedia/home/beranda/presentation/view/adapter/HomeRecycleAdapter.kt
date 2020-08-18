@@ -127,11 +127,11 @@ class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<Visitable<*>>, pri
         }
     }
 
-    fun onPausePlayWidget(){
+    fun onPausePlayWidget(shouldPausePlay: Boolean){
         val positions = getPositionPlay()
         if(positions.isNotEmpty()){
             currentSelected = positions.first()
-            (getViewHolder(currentSelected) as? PlayCardViewHolder)?.pause()
+            (getViewHolder(currentSelected) as? PlayCardViewHolder)?.pause(shouldPausePlay)
         }
 
         val playCarouselIndex = getPositionPlayCarousel()

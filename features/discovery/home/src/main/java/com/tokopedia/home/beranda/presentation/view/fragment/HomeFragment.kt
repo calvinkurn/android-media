@@ -627,7 +627,7 @@ open class HomeFragment : BaseDaggerFragment(),
 
     override fun onPause() {
         super.onPause()
-        if(shouldPausePlay) adapter?.onPausePlayWidget()
+        adapter?.onPausePlayWidget(shouldPausePlay)
         adapter?.onPauseBanner()
         getTrackingQueueObj()?.sendAll()
         if (activityStateListener != null) {
@@ -1635,7 +1635,7 @@ open class HomeFragment : BaseDaggerFragment(),
 
     private fun resetAutoPlay(isVisibleToUser: Boolean){
         shouldPausePlay = !isVisibleToUser
-        if(shouldPausePlay && view != null && adapter != null) adapter?.onPausePlayWidget()
+        if(view != null && adapter != null) adapter?.onPausePlayWidget(shouldPausePlay)
         else adapter?.onResumePlayWidget()
     }
 
