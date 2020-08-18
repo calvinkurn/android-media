@@ -144,7 +144,10 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         if (GlobalConfig.isSellerApp()) {
             sellerMigrationDestinationApplink?.let { applink ->
                 intent?.removeExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA)
-                RouteManager.route(this, applink)
+                RouteManager.getIntent(this, applink).run {
+                    addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+                    startActivity(this)
+                }
             }
         }
     }

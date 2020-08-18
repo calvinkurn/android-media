@@ -54,7 +54,10 @@ class CentralizedPromoActivity : BaseSimpleActivity() {
     private fun handleIntent(intent: Intent?) {
         intent?.run {
             getStringExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA)?.let { sellerMigrationNextDestinatonApplink ->
-                RouteManager.route(this@CentralizedPromoActivity, sellerMigrationNextDestinatonApplink)
+                RouteManager.getIntent(this@CentralizedPromoActivity, sellerMigrationNextDestinatonApplink).run {
+                    addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+                    startActivity(this)
+                }
                 removeExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA)
                 return@run
             }
