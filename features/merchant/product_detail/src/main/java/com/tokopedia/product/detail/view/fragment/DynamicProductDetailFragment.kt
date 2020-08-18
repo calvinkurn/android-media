@@ -224,13 +224,21 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private lateinit var varToolbar: Toolbar
     private lateinit var actionButtonView: PartialButtonActionView
     private lateinit var stickyLoginView: StickyLoginView
-    private lateinit var topAdsDetailSheet: TopAdsDetailSheet
     private var shouldShowCartAnimation = false
     private var loadingProgressDialog: ProgressDialog? = null
     private val adapterFactory by lazy { DynamicProductDetailAdapterFactoryImpl(this, this) }
     private val dynamicAdapter by lazy { DynamicProductDetailAdapter(adapterFactory, this) }
     private var menu: Menu? = null
-    private var tradeinDialog: ProductAccessRequestDialogFragment? = null
+
+    private val tradeinDialog: ProductAccessRequestDialogFragment? by lazy {
+        setupTradeinDialog()
+    }
+    private val topAdsDetailSheet: TopAdsDetailSheet? by lazy {
+        context?.let {
+            TopAdsDetailSheet.newInstance(it)
+        }
+    }
+
     private var shouldMoveToTopAds: Boolean = false
     private val recommendationCarouselPositionSavedState = SparseIntArray()
 
@@ -1181,11 +1189,13 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         pdpUiUpdater?.updateFulfillmentData(context, viewModel.getMultiOriginByProductId().isFulfillment)
 
         /*
-            If auto select variant but the data p2 cart redirection still empty, dont update the button.
-            It will update after p2 get the value. onSuccessGetDataP2
+            If the p2 data is empty, dont update the button
+            this condition will be reproduceable when variant auto select is faster then p2 data from network
+            if this happen, the update button will be run in onSuccessGetP2Data
          */
-        if (viewModel.p2Data.value != null && isAutoSelectVariant)
+        if (viewModel.p2Data.value != null || viewModel.p2Data.value == null && !isAutoSelectVariant) {
             updateButtonState()
+        }
 
         if (pdpUiUpdater?.productNewVariantDataModel?.isPartialySelected() == false && shouldFireVariantTracker) {
             shouldFireVariantTracker = false
@@ -2237,10 +2247,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun initBtnAction() {
-        context?.let {
-            topAdsDetailSheet = TopAdsDetailSheet.newInstance(it)
-        }
-
         if (!::actionButtonView.isInitialized) {
             actionButtonView = PartialButtonActionView.build(base_btn_action, onViewClickListener)
         }
@@ -2248,7 +2254,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         actionButtonView.rincianTopAdsClick = {
             if (GlobalConfig.isSellerApp()) {
                 context?.let {
-                    topAdsDetailSheet.show(topAdsGetProductManage.data.adId)
+                    topAdsDetailSheet?.show(topAdsGetProductManage.data.adId)
                 }
             } else {
                 val appLink = UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId)
@@ -2263,7 +2269,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             }
         }
 
-        topAdsDetailSheet.detailTopAdsClick = {
+        topAdsDetailSheet?.detailTopAdsClick = {
             val applink = Uri.parse(ApplinkConst.SellerApp.TOPADS_PRODUCT_CREATE).buildUpon()
                     .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_EXTRA_SHOP_ID, viewModel.getDynamicProductInfoP1?.basic?.shopID
                             ?: "")
@@ -2772,7 +2778,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private fun initTradein() {
         viewModel.deviceId = TradeInUtils.getDeviceId(context)
                 ?: viewModel.userSessionInterface.deviceId
-        tradeinDialog = setupTradeinDialog()
     }
 
     private fun goToHargaFinal() {
