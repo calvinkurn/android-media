@@ -71,7 +71,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
 
     private var needReload: Boolean = false
     private var shopBasicDataModel: ShopBasicDataModel? = null
-    private var shopId: Int = 67726
+    private var shopId: String = "0"     // 67726 for testing
 
     private var progressDialog: ProgressDialog? = null
 
@@ -82,6 +82,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
     override fun onCreate(savedInstanceState: Bundle?) {
         GraphqlClient.init(context!!)
         super.onCreate(savedInstanceState)
+        shopId = userSession.shopId
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -188,10 +189,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
 
         vgShopStatusContainer.setOnClickListener { showShopStatusManageMenu() }
         loadShopBasicData()
-        shopSettingsInfoViewModel.validateOsMerchantType(shopId)
-
-//        shopSettingsInfoViewModel.validatePowerMerchantType(shopId = 67726)
-//        observePowerMerchantData()
+        shopSettingsInfoViewModel.validateOsMerchantType(shopId.toInt())
 
         observeShopBasicData()
         observeShopStatus()
@@ -296,7 +294,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
     private fun loadShopBasicData() {
         showLoading()
         shopSettingsInfoViewModel.getShopData(
-                shopId,
+                shopId.toInt(),
                 includeOS = false
         )
     }
