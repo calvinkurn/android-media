@@ -3,7 +3,6 @@ package com.tokopedia.entertainment.home.fragment
 import android.content.Intent
 import android.content.res.Resources
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProviders
@@ -16,13 +15,12 @@ import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.entertainment.R
+import com.tokopedia.entertainment.common.util.EventQuery
 import com.tokopedia.entertainment.home.adapter.HomeEventAdapter
 import com.tokopedia.entertainment.home.adapter.HomeEventItem
 import com.tokopedia.entertainment.home.adapter.factory.HomeTypeFactoryImpl
 import com.tokopedia.entertainment.home.adapter.viewmodel.EventItemModel
 import com.tokopedia.entertainment.home.analytics.EventHomePageTracking
-import com.tokopedia.entertainment.home.data.ActionLikedResponse
-import com.tokopedia.entertainment.home.data.EventFavoriteResponse
 import com.tokopedia.entertainment.home.di.EventHomeComponent
 import com.tokopedia.entertainment.home.viewmodel.FragmentView
 import com.tokopedia.entertainment.home.viewmodel.HomeEventViewModel
@@ -92,7 +90,7 @@ class EventHomeFragment : BaseDaggerFragment(), FragmentView, MenuSheet.ItemClic
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.getHomeData(this, ::onSuccessGetData, ::onErrorGetData, CacheType.CACHE_FIRST)
+        viewModel.getHomeData(EventQuery.getEventHomeQuery(), ::onSuccessGetData, ::onErrorGetData, CacheType.CACHE_FIRST)
 
         recycler_view.apply {
             setHasFixedSize(true)
@@ -103,7 +101,7 @@ class EventHomeFragment : BaseDaggerFragment(), FragmentView, MenuSheet.ItemClic
 
         swipe_refresh_layout.setOnRefreshListener {
             initializePerformance()
-            viewModel.getHomeData(this, ::onSuccessGetData, ::onErrorGetData, CacheType.CLOUD_THEN_CACHE)
+            viewModel.getHomeData(EventQuery.getEventHomeQuery(), ::onSuccessGetData, ::onErrorGetData, CacheType.CLOUD_THEN_CACHE)
         }
     }
 

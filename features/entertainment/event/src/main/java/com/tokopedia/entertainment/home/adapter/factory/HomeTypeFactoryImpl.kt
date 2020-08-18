@@ -14,23 +14,23 @@ class HomeTypeFactoryImpl(val action:((data: EventItemModel,
                                        onSuccess: (EventItemModel)->Unit,
                                        onError: (Throwable)->Unit) -> Unit), val analytic:EventHomePageTracking) : HomeTypeFactory {
 
-    override fun type(viewModel: BannerViewModel): Int {
+    override fun type(model: BannerModel): Int {
         return BannerEventViewHolder.LAYOUT
     }
 
-    override fun type(viewModel: CategoryViewModel): Int {
+    override fun type(model: CategoryModel): Int {
         return CategoryEventViewHolder.LAYOUT
     }
 
-    override fun type(viewModel: EventCarouselViewModel): Int {
+    override fun type(model: EventCarouselModel): Int {
         return EventCarouselEventViewHolder.LAYOUT
     }
 
-    override fun type(viewModel: EventGridViewModel): Int {
+    override fun type(model: EventGridModel): Int {
         return EventGridEventViewHolder.LAYOUT
     }
 
-    override fun type(viewModel: EventLocationViewModel): Int {
+    override fun type(model: EventLocationModel): Int {
         return EventLocationEventViewHolder.LAYOUT
     }
 

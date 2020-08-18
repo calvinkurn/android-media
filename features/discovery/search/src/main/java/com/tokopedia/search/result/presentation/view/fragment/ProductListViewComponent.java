@@ -13,7 +13,6 @@ import com.tokopedia.search.di.scope.SearchScope;
 import com.tokopedia.search.result.domain.usecase.getdynamicfilter.GetDynamicFilterGqlUseCaseModule;
 import com.tokopedia.search.result.domain.usecase.getproductcount.GetProductCountUseCaseModule;
 import com.tokopedia.search.result.domain.usecase.searchproduct.SearchProductUseCaseModule;
-import com.tokopedia.search.result.presentation.presenter.localcache.SearchLocalCacheHandlerModule;
 import com.tokopedia.search.result.presentation.presenter.product.ProductListPresenterModule;
 import com.tokopedia.topads.sdk.di.TopAdsUrlHitterModule;
 
@@ -28,7 +27,6 @@ import dagger.Component;
         SearchProductUseCaseModule.class,
         GetProductCountUseCaseModule.class,
         GetDynamicFilterGqlUseCaseModule.class,
-        SearchLocalCacheHandlerModule.class,
         ResourcesModule.class,
         GraphqlRepositoryModule.class,
         AdvertisingLocalCacheHandlerModule.class,

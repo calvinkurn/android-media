@@ -11,7 +11,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment
 import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.home.adapter.HomeEventViewHolder
-import com.tokopedia.entertainment.home.adapter.viewmodel.CategoryViewModel
+import com.tokopedia.entertainment.home.adapter.viewmodel.CategoryModel
 import com.tokopedia.entertainment.home.analytics.EventHomePageTracking
 import kotlinx.android.synthetic.main.ent_layout_category_adapter_item.view.*
 import kotlinx.android.synthetic.main.ent_layout_viewholder_category.view.*
@@ -19,7 +19,7 @@ import kotlinx.android.synthetic.main.ent_layout_viewholder_category.view.*
 /**
  * Author errysuprayogi on 27,January,2020
  */
-class CategoryEventViewHolder(itemView: View, val analytics: EventHomePageTracking) : HomeEventViewHolder<CategoryViewModel>(itemView) {
+class CategoryEventViewHolder(itemView: View, val analytics: EventHomePageTracking) : HomeEventViewHolder<CategoryModel>(itemView) {
 
     val listAdapter = InnerCategoryItemAdapter(analytics)
 
@@ -32,7 +32,7 @@ class CategoryEventViewHolder(itemView: View, val analytics: EventHomePageTracki
 
     }
 
-    override fun bind(element: CategoryViewModel) {
+    override fun bind(element: CategoryModel) {
         listAdapter.items = element.items
     }
 

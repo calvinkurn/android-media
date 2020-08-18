@@ -35,7 +35,6 @@ internal class SearchProductFirstPageTest: ProductListPresenterTestFixtures() {
 
         `Then verify use case request params START should be 0`()
         `Then verify view interaction when load data success`(searchProductModel)
-        `Then verify get dynamic filter use case is executed`()
         `Then verify start from is incremented`()
         `Then verify visitable list with product items`(visitableListSlot, searchProductModel)
     }
@@ -64,17 +63,10 @@ internal class SearchProductFirstPageTest: ProductListPresenterTestFixtures() {
 
             verifyProcessingData(productListView, searchProductModel, visitableListSlot)
 
-            productListView.showBottomNavigation()
             productListView.updateScrollListener()
 
             verifyHideLoading(productListView)
         }
-
-        confirmVerified(productListView)
-    }
-
-    private fun `Then verify get dynamic filter use case is executed`() {
-        verify(exactly = 1) { getDynamicFilterUseCase.execute(any(), any()) }
     }
 
     private fun `Then verify start from is incremented`() {
@@ -97,13 +89,12 @@ internal class SearchProductFirstPageTest: ProductListPresenterTestFixtures() {
         `When Load Data`(searchParameter)
 
         `Then verify view interaction for load data failed with exception`(slotSearchParameterErrorLog, testException)
-        `Then verify get dynamic filter use case not executed`()
-        `Then verify start from is incremented`()
-        `Then verify logged error message is from search parameter`(slotSearchParameterErrorLog, searchParameter)
+        `Then verify start from is not incremented`()
+        `Then verify logged error message is from search parameter`(slotSearchParameterErrorLog, requestParamsSlot.captured.parameters)
     }
 
     private fun `Given Search Product API will throw exception`(exception: Exception?) {
-        every { searchProductFirstPageUseCase.execute(any(), any()) }.answers {
+        every { searchProductFirstPageUseCase.execute(capture(requestParamsSlot), any()) }.answers {
             secondArg<Subscriber<SearchProductModel>>().error(exception)
         }
     }
@@ -123,8 +114,10 @@ internal class SearchProductFirstPageTest: ProductListPresenterTestFixtures() {
         confirmVerified(productListView)
     }
 
-    private fun `Then verify get dynamic filter use case not executed`() {
-        verify(exactly = 0) { getDynamicFilterUseCase.execute(any(), any()) }
+    private fun `Then verify start from is not incremented`() {
+        val startFrom = productListPresenter.startFrom
+
+        startFrom shouldBe 0
     }
 
     private fun `Then verify logged error message is from search parameter`(slotSearchParameterErrorLog: CapturingSlot<String>, searchParameter: Map<String, Any>) {
@@ -144,7 +137,6 @@ internal class SearchProductFirstPageTest: ProductListPresenterTestFixtures() {
 
         `Then verify use case request params START should be 0`()
         `Then verify view interaction when created`(searchProductModel)
-        `Then verify get dynamic filter use case is executed`()
         `Then verify start from is incremented`()
         `Then verify visitable list with product items`(visitableListSlot, searchProductModel)
     }
@@ -181,14 +173,11 @@ internal class SearchProductFirstPageTest: ProductListPresenterTestFixtures() {
 
             verifyProcessingData(productListView, searchProductModel, visitableListSlot)
 
-            productListView.showBottomNavigation()
             productListView.updateScrollListener()
 
             verifySendTrackingOnFirstTimeLoad(productListView)
 
             verifyHideLoading(productListView)
         }
-
-        confirmVerified(productListView)
     }
 }

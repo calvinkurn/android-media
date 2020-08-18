@@ -11,7 +11,7 @@ import com.bumptech.glide.Glide
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.home.adapter.HomeEventViewHolder
-import com.tokopedia.entertainment.home.adapter.viewmodel.EventCarouselViewModel
+import com.tokopedia.entertainment.home.adapter.viewmodel.EventCarouselModel
 import com.tokopedia.entertainment.home.adapter.viewmodel.EventItemModel
 import com.tokopedia.entertainment.home.analytics.EventHomePageTracking
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -26,7 +26,7 @@ import java.util.*
 class EventCarouselEventViewHolder(itemView: View, action: ((data: EventItemModel,
                                                              onSuccess: (EventItemModel) -> Unit,
                                                              onError: (Throwable) -> Unit) -> Unit), val analytics:EventHomePageTracking)
-    : HomeEventViewHolder<EventCarouselViewModel>(itemView) {
+    : HomeEventViewHolder<EventCarouselModel>(itemView) {
 
     var itemAdapter = InnerItemAdapter(action,analytics)
 
@@ -41,7 +41,7 @@ class EventCarouselEventViewHolder(itemView: View, action: ((data: EventItemMode
         }
     }
 
-    override fun bind(element: EventCarouselViewModel) {
+    override fun bind(element: EventCarouselModel) {
         itemAdapter.items = element.items
         element.items.forEachIndexed { index, eventItemModel -> itemAdapter.productNames.add(index,
                 eventItemModel.title) }

@@ -30,7 +30,9 @@ import com.tokopedia.filter.common.helper.configureBottomSheetHeight
 import com.tokopedia.filter.common.helper.setBottomSheetActionBold
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterTracking
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.toDp
 import kotlinx.android.synthetic.main.sort_filter_bottom_sheet.view.*
@@ -114,7 +116,7 @@ class SortFilterBottomSheet: BottomSheetUnify() {
             dynamicFilterModel: DynamicFilterModel?,
             callback: Callback
     ) {
-        if (mapParameter == null || dynamicFilterModel == null) return
+        if (mapParameter == null) return
 
         this.mapParameter = mapParameter
         this.dynamicFilterModel = dynamicFilterModel
@@ -128,6 +130,10 @@ class SortFilterBottomSheet: BottomSheetUnify() {
             it.buttonApplySortFilter.isLoading = false
             it.buttonApplySortFilter.text = buttonApplySortFilterText
         }
+    }
+
+    fun setDynamicFilterModel(dynamicFilterModel: DynamicFilterModel) {
+        sortFilterBottomSheetViewModel?.lateInitDynamicFilterModel(dynamicFilterModel)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -164,17 +170,9 @@ class SortFilterBottomSheet: BottomSheetUnify() {
         customPeekHeight = (getScreenHeight() / 2).toDp()
     }
 
-    /**
-     * Hacky way to show Reset action when SortFilterBottomSheet is just opened
-     */
     private fun initBottomSheetAction() {
-        if (sortFilterBottomSheetViewModel?.isButtonResetVisible() == true) {
-            setAction(getString(R.string.filter_button_reset_text)) {
-                sortFilterBottomSheetViewModel?.resetSortAndFilter()
-            }
-        }
-        else {
-            clearAction()
+        setAction(getString(R.string.filter_button_reset_text)) {
+            sortFilterBottomSheetViewModel?.resetSortAndFilter()
         }
     }
 
@@ -260,6 +258,10 @@ class SortFilterBottomSheet: BottomSheetUnify() {
         sortFilterBottomSheetViewModel?.trackPriceRangeClickEventLiveData?.observe(viewLifecycleOwner, EventObserver {
             FilterTracking.sendGeneralEvent(it)
         })
+
+        sortFilterBottomSheetViewModel?.isLoadingForDynamicFilterLiveData?.observe(viewLifecycleOwner, Observer {
+            processLoadingForDynamicFilter(it)
+        })
     }
 
     private fun processSortFilterList(sortFilterList: List<Visitable<SortFilterBottomSheetTypeFactory>>) {
@@ -287,16 +289,38 @@ class SortFilterBottomSheet: BottomSheetUnify() {
     }
 
     private fun setActionResetVisibility(isVisible: Boolean) {
-        bottomSheetAction.shouldShowWithAction(isVisible) {
-            bottomSheetAction.text = getString(R.string.filter_button_reset_text)
-            bottomSheetAction.setOnClickListener {
-                sortFilterBottomSheetViewModel?.resetSortAndFilter()
+        bottomSheetAction.post {
+            bottomSheetAction.shouldShowWithAction(isVisible) {
+                bottomSheetAction.text = getString(R.string.filter_button_reset_text)
+                bottomSheetAction.setOnClickListener {
+                    sortFilterBottomSheetViewModel?.resetSortAndFilter()
+                }
             }
         }
     }
 
     private fun expandBottomSheetView() {
         bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
+    }
+
+    private fun processLoadingForDynamicFilter(isLoadingForDynamicFilter: Boolean) {
+        if (isLoadingForDynamicFilter) showLoadingForDynamicFilter()
+        else finishLoadingForDynamicFilter()
+    }
+
+    private fun showLoadingForDynamicFilter() {
+        sortFilterBottomSheetView?.let {
+            it.progressBarSortFilterBottomSheet?.show()
+            it.recyclerViewSortFilterBottomSheet?.hide()
+            it.buttonApplyContainer?.hide()
+        }
+    }
+
+    private fun finishLoadingForDynamicFilter() {
+        sortFilterBottomSheetView?.let {
+            it.progressBarSortFilterBottomSheet?.hide()
+            it.recyclerViewSortFilterBottomSheet?.show()
+        }
     }
 
     override fun onDestroyView() {

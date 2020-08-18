@@ -12,7 +12,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment
 import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.home.adapter.HomeEventViewHolder
 import com.tokopedia.entertainment.home.adapter.viewmodel.EventItemLocationModel
-import com.tokopedia.entertainment.home.adapter.viewmodel.EventLocationViewModel
+import com.tokopedia.entertainment.home.adapter.viewmodel.EventLocationModel
 import com.tokopedia.entertainment.home.analytics.EventHomePageTracking
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import kotlinx.android.synthetic.main.ent_layout_viewholder_event_location.view.*
@@ -21,7 +21,7 @@ import kotlinx.android.synthetic.main.ent_layout_viewholder_event_location_adape
 /**
  * Author errysuprayogi on 27,January,2020
  */
-class EventLocationEventViewHolder(itemView: View, val analytics:EventHomePageTracking) : HomeEventViewHolder<EventLocationViewModel>(itemView) {
+class EventLocationEventViewHolder(itemView: View, val analytics:EventHomePageTracking) : HomeEventViewHolder<EventLocationModel>(itemView) {
 
     var itemAdapter = InnerItemAdapter(analytics)
 
@@ -32,7 +32,7 @@ class EventLocationEventViewHolder(itemView: View, val analytics:EventHomePageTr
         }
     }
 
-    override fun bind(element: EventLocationViewModel) {
+    override fun bind(element: EventLocationModel) {
         itemAdapter.items = element.items
     }
 
