@@ -47,7 +47,7 @@
         android:layout_below="@id/tv_buyer_request_cancel"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/layout_lvl1"
-        android:layout_marginBottom="@dimen/layout_lvl4"
+        android:layout_marginBottom="@dimen/layout_lvl5"
         android:layout_toEndOf="@id/buyer_request_cancel_notes_left_icon"
         android:paddingStart="@dimen/layout_lvl0"
         android:paddingEnd="@dimen/dp_10"
