@@ -20,7 +20,7 @@ import com.tokopedia.design.utils.StringUtils
 import com.tokopedia.shop.common.constant.ShopScheduleActionDef
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
 import com.tokopedia.shop.settings.R
-import com.tokopedia.shop.settings.basicinfo.oldview.presenter.UpdateShopSchedulePresenter
+import com.tokopedia.shop.settings.basicinfo.view.presenter.UpdateShopSchedulePresenter
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
 import com.tokopedia.shop.settings.common.util.*
 import com.tokopedia.unifycomponents.Toaster
