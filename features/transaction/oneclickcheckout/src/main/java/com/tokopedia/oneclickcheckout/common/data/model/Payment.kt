@@ -78,7 +78,7 @@ data class InstallmentTerm(
         val term: Int = 0,
         @SerializedName("mdr")
         val mdr: Float = 0f,
-        @SerializedName("mdr_subsidize")
+        @SerializedName("mdr_subsidized")
         val mdrSubsidize: Float = 0f,
         @SerializedName("min_amount")
         val minAmount: Long = 0,

@@ -1410,7 +1410,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     }
 
     private fun calculateMdrFee(subTotal: Double, mdr: Float, subsidize: Double, mdrSubsidize: Float): Double {
-        return ceil(subTotal * (mdr / 100) - subsidize * (mdrSubsidize / 100))
+        return ceil(subTotal * (mdr / 100.0) - subsidize * (mdrSubsidize / 100.0))
     }
 
     private fun calculateInstallmentDetails(payment: OrderPayment, subTotal: Double, subsidize: Double, discount: Int): OrderPayment {
