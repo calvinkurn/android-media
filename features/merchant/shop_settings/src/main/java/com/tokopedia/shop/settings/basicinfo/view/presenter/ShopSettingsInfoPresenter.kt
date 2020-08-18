@@ -23,24 +23,24 @@ constructor(private val getShopBasicDataAndStatusUseCase: GetShopBasicDataAndSta
         fun onErrorUpdateShopSchedule(throwable: Throwable)
     }
 
-    fun getShopData() {
-        getShopBasicDataAndStatusUseCase.unsubscribe()
-        getShopBasicDataAndStatusUseCase.execute(
-            GetShopBasicDataAndStatusUseCase.createRequestParams(userSession.shopId),
-            object : Subscriber<Pair<ShopBasicDataModel?, GoldGetPmOsStatus?>>() {
-            override fun onCompleted() {
-
-            }
-
-            override fun onError(e: Throwable) {
-//                view?.onErrorGetShopBasicData(e)
-            }
-
-            override fun onNext(result: Pair<ShopBasicDataModel?, GoldGetPmOsStatus?>) {
-//                view?.onSuccessGetShopBasicData(result)
-            }
-        })
-    }
+//    fun getShopData() {
+//        getShopBasicDataAndStatusUseCase.unsubscribe()
+//        getShopBasicDataAndStatusUseCase.execute(
+//            GetShopBasicDataAndStatusUseCase.createRequestParams(userSession.shopId),
+//            object : Subscriber<Pair<ShopBasicDataModel?, GoldGetPmOsStatus?>>() {
+//            override fun onCompleted() {
+//
+//            }
+//
+//            override fun onError(e: Throwable) {
+////                view?.onErrorGetShopBasicData(e)
+//            }
+//
+//            override fun onNext(result: Pair<ShopBasicDataModel?, GoldGetPmOsStatus?>) {
+////                view?.onSuccessGetShopBasicData(result)
+//            }
+//        })
+//    }
 
     fun updateShopSchedule(@ShopScheduleActionDef action: Int,
                            closeNow: Boolean,

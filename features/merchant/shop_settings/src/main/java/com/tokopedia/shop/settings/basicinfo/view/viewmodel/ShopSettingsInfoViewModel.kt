@@ -30,9 +30,9 @@ class ShopSettingsInfoViewModel @Inject constructor (
         private val dispatchers: ShopSettingDispatcherProvider
 ): BaseViewModel(dispatchers.ui()) {
 
-//    private val _checkOsMerchantType = MutableLiveData<Result<CheckShopIsOfficialModel>>()
-//    val checkOsMerchantType: LiveData<Result<CheckShopIsOfficialModel>>
-//        get() = _checkOsMerchantType
+    private val _checkOsMerchantType = MutableLiveData<Result<CheckShopIsOfficialModel>>()
+    val checkOsMerchantType: LiveData<Result<CheckShopIsOfficialModel>>
+        get() = _checkOsMerchantType
 
 //    private val _checkPowerMerchantType = MutableLiveData<Result<CheckShopIsPowerMerchantModel>>()
 //    val checkPowerMerchantType: LiveData<Result<CheckShopIsPowerMerchantModel>>
@@ -47,21 +47,6 @@ class ShopSettingsInfoViewModel @Inject constructor (
         get() = _shopStatusData
 
 
-
-//    fun validateOsMerchantType(shopId: Int) {
-//        launchCatchError(block = {
-//            withContext(dispatchers.io()) {
-//                checkOsMerchantUseCase.params = CheckOfficialStoreTypeUseCase
-//                        .createRequestParam(shopId = 67726)
-//                val osMerchantChecker = checkOsMerchantUseCase.executeOnBackground()
-//                osMerchantChecker.let {
-//                    _checkOsMerchantType.postValue(Success(it))
-//                }
-//            }
-//        }) {
-//            _checkOsMerchantType.value = Fail(it)
-//        }
-//    }
 
 //    fun validatePowerMerchantType(shopId: Int) {
 //        launchCatchError(block = {
@@ -108,6 +93,21 @@ class ShopSettingsInfoViewModel @Inject constructor (
                 _shopStatusData.postValue(Fail(t))
             }
             shopStatusData
+        }
+    }
+
+    fun validateOsMerchantType(shopId: Int) {
+        launchCatchError(block = {
+            withContext(dispatchers.io()) {
+                checkOsMerchantUseCase.params = CheckOfficialStoreTypeUseCase
+                        .createRequestParam(shopId = 67726)
+                val osMerchantChecker = checkOsMerchantUseCase.executeOnBackground()
+                osMerchantChecker.let {
+                    _checkOsMerchantType.postValue(Success(it))
+                }
+            }
+        }) {
+            _checkOsMerchantType.value = Fail(it)
         }
     }
 }

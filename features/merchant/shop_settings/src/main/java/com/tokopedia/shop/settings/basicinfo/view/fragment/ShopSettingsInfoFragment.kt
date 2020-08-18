@@ -71,6 +71,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
 
     private var needReload: Boolean = false
     private var shopBasicDataModel: ShopBasicDataModel? = null
+    private var shopId: Int = 67726
 
     private var progressDialog: ProgressDialog? = null
 
@@ -187,15 +188,14 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
 
         vgShopStatusContainer.setOnClickListener { showShopStatusManageMenu() }
         loadShopBasicData()
+        shopSettingsInfoViewModel.validateOsMerchantType(shopId)
 
-//        shopSettingsInfoViewModel.validateOsMerchantType(shopId = 67726)
 //        shopSettingsInfoViewModel.validatePowerMerchantType(shopId = 67726)
-
 //        observePowerMerchantData()
-//        observeOsMerchantData()
 
         observeShopBasicData()
         observeShopStatus()
+        observeOsMerchantData()
     }
 
     private fun observeShopStatus() {
@@ -229,6 +229,21 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
         })
     }
 
+    private fun observeOsMerchantData() {
+        shopSettingsInfoViewModel.checkOsMerchantType.observe(this, Observer {
+            when (it) {
+                is Success -> {
+                    val errMessage = it.data.getIsOfficial.messageError
+                    println(it)
+                }
+                is Fail -> {
+                    println(it)
+                }
+            }
+        })
+    }
+
+
 //    private fun observePowerMerchantData() {
 //        shopSettingsInfoViewModel.checkPowerMerchantType.observe(this, Observer {
 //            when (it) {
@@ -244,19 +259,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
 //        })
 //    }
 
-//    private fun observeOsMerchantData() {
-//        shopSettingsInfoViewModel.checkOsMerchantType.observe(this, Observer {
-//            when (it) {
-//                is Success -> {
-//                    val errMessage = it.data.getIsOfficial.messageError
-//                    println(it)
-//                }
-//                is Fail -> {
-//                    println(it)
-//                }
-//            }
-//        })
-//    }
+
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -296,9 +299,9 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
 
     private fun loadShopBasicData() {
         showLoading()
-        shopSettingsInfoPresenter.getShopData()
+//        shopSettingsInfoPresenter.getShopData()
         shopSettingsInfoViewModel.getShopData(
-                shopId = 67726,
+                shopId,
                 includeOS = false
         )
     }
