@@ -25,33 +25,34 @@ class InstallmentDetailBottomSheet {
     private var bottomSheetUnify: BottomSheetUnify? = null
 
     fun show(fragment: OrderSummaryPageFragment, creditCard: OrderPaymentCreditCard, listener: InstallmentDetailBottomSheetListener) {
-            fragment.fragmentManager?.let {
-                this.listener = listener
-                bottomSheetUnify = BottomSheetUnify().apply {
-                    isDragable = true
-                    isHideable = true
-                    showCloseIcon = true
-                    showHeader = true
+        val context: Context? = fragment.activity
+        fragment.fragmentManager?.let {
+            if (context == null) return
+            this.listener = listener
+            bottomSheetUnify = BottomSheetUnify().apply {
+                isDragable = true
+                isHideable = true
+                showCloseIcon = true
+                showHeader = true
                 setTitle(fragment.getString(R.string.lbl_choose_installment_type))
 
                 val child = View.inflate(fragment.context, R.layout.bottom_sheet_installment, null)
-                setupChild(child, fragment, creditCard)
-                    fragment.view?.height?.div(2)?.let { height ->
-                        customPeekHeight = height
-                    }
-                    setChild(child)
-                    show(it, null)
+                setupChild(context, child, fragment, creditCard)
+                fragment.view?.height?.div(2)?.let { height ->
+                    customPeekHeight = height
                 }
+                setChild(child)
+                show(it, null)
             }
         }
-
-    private fun setupChild(child: View, fragment: OrderSummaryPageFragment, creditCard: OrderPaymentCreditCard) {
-        setupTerms(child, creditCard.tncInfo)
-        setupInstallments(child, fragment, creditCard.availableTerms)
     }
 
-    private fun setupInstallments(child: View, fragment: OrderSummaryPageFragment, installmentDetails: List<OrderPaymentInstallmentTerm>) {
-        val context: Context = fragment.activity!!
+    private fun setupChild(context: Context, child: View, fragment: OrderSummaryPageFragment, creditCard: OrderPaymentCreditCard) {
+        setupTerms(child, creditCard.tncInfo)
+        setupInstallments(context, child, fragment, creditCard.availableTerms)
+    }
+
+    private fun setupInstallments(context: Context, child: View, fragment: OrderSummaryPageFragment, installmentDetails: List<OrderPaymentInstallmentTerm>) {
         SplitCompat.installActivity(context)
         val ll = child.findViewById<LinearLayout>(R.id.main_content)
         for (i in installmentDetails.lastIndex downTo 0) {
@@ -91,6 +92,7 @@ class InstallmentDetailBottomSheet {
             installmentMessage.visible()
         }
     }
+
     private fun setupTerms(child: View, tncInfo: String) {
         val webView = child.findViewById<WebView>(R.id.web_view_terms)
         val htmlText = """

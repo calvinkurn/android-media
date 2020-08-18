@@ -387,7 +387,7 @@ object DeeplinkDFMapper : CoroutineScope {
                 it.startsWith(ONE_CLICK_CHECKOUT) ||
                         it.startsWith(PREFERENCE_LIST) ||
                         it.startsWith(PREFERENCE_EDIT)
-            }, DF_BASE, R.string.title_one_click_checkout))
+            }, DF_CATEGORY_TRADE_IN, R.string.title_one_click_checkout))
             add(DFP({ it.startsWith(PROMO_CHECKOUT_MARKETPLACE) }, DF_BASE, R.string.promo_checkout_marketplace_module_title_activity_promo_list))
             add(DFP({ it.startsWith(NORMAL_CHECKOUT)}, DF_BASE, R.string.title_normal_checkout))
         }
