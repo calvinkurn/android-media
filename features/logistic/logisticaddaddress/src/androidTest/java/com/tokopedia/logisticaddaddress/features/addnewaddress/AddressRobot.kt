@@ -49,10 +49,10 @@ class AddressRobot {
     }
 
     fun phoneNumber(phone: String) {
-        Espresso.onView(ViewMatchers.withId(R.id.et_phone)).perform(ViewActions.typeText("087255991177"), ViewActions.closeSoftKeyboard())
+        Espresso.onView(ViewMatchers.withId(R.id.et_phone)).perform(ViewActions.typeText(phone), ViewActions.closeSoftKeyboard())
     }
 
-    fun submit(func: ResultRobot.() -> Unit = {}): ResultRobot {
+    infix fun submit(func: ResultRobot.() -> Unit): ResultRobot {
         Espresso.onView(ViewMatchers.withId(R.id.btn_save_address)).perform(ViewActions.scrollTo(), ViewActions.click())
         return ResultRobot().apply(func)
     }

@@ -39,7 +39,6 @@ class AddNewAddressTest {
     fun setup() {
         gtmLogDBSource.deleteAll().toBlocking().first()
         setupGraphqlMockResponse(AddAddressMockConfig().createMockModel(context))
-
         IdlingRegistry.getInstance().register(SimpleIdlingResource.countingIdlingResource)
     }
 
@@ -48,22 +47,64 @@ class AddNewAddressTest {
         IdlingRegistry.getInstance().unregister(SimpleIdlingResource.countingIdlingResource)
     }
 
+
+
     @Test
-    fun givenCurrentLocationShouldAddAddressPositive() {
-        val query = getJsonDataFromAsset(context, "tracker/logistic/add_address_cvr.json")
+    fun addAddressUserFunnel_PassedAnalyticsTest() {
+        val query = getJsonDataFromAsset(context, "tracker/logistic/cvr_user_funnel.json")
                 ?: throw AssertionError("Validator Query not found")
+        val screenName = "/user/address/create"
         addAddress {
-            launchFrom(mActivityTestRule, "/user/address/create")
-            searchWithKeyword("jak")
+            launchFrom(mActivityTestRule, screenName)
+            searchWithKeyword(JAK_KEYWORD)
             selectFirstItem()
-            addressDetail("no 27 RT 1/ RW X")
-            receiver("Anonymous")
-            phoneNumber("087255991177")
-        }.submit {
+            addressDetail(TEST_DETAILS)
+            receiver(TEST_RECEIVER)
+            phoneNumber(TEST_PHONE)
+        } submit {
             hasPassedAnalytics(gtmLogDBSource, query)
         }
+    }
 
+    @Test
+    fun addAddressCartFunnel_PassedAnalyticsTest() {
+        val query = getJsonDataFromAsset(context, "tracker/logistic/cvr_cart_funnel.json")
+                ?: throw AssertionError("Validator Query not found")
+        val screenName = "/cart/address/create"
+        addAddress {
+            launchFrom(mActivityTestRule, screenName)
+            searchWithKeyword(JAK_KEYWORD)
+            selectFirstItem()
+            addressDetail(TEST_DETAILS)
+            receiver(TEST_RECEIVER)
+            phoneNumber(TEST_PHONE)
+        } submit {
+            hasPassedAnalytics(gtmLogDBSource, query)
+        }
+    }
 
+    @Test
+    fun addAddressNewUserFunnel_PassedAnalyticsTest() {
+        val query = getJsonDataFromAsset(context, "tracker/logistic/cvr_new_user_funnel.json")
+                ?: throw AssertionError("Validator Query not found")
+        val screenName = "/user/address/create/cart"
+        addAddress {
+            launchFrom(mActivityTestRule, screenName)
+            searchWithKeyword(JAK_KEYWORD)
+            selectFirstItem()
+            addressDetail(TEST_DETAILS)
+            receiver(TEST_RECEIVER)
+            phoneNumber(TEST_PHONE)
+        } submit {
+            hasPassedAnalytics(gtmLogDBSource, query)
+        }
+    }
+
+    companion object {
+        const val JAK_KEYWORD = "jak"
+        const val TEST_RECEIVER = "Anonymous"
+        const val TEST_PHONE = "087255991177"
+        const val TEST_DETAILS = "no 27 RT 1/ RW X"
     }
 
 }
