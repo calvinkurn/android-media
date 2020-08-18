@@ -46,6 +46,7 @@ import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickSecondaryActio
 import com.tokopedia.sellerorder.common.errorhandler.SomErrorHandler
 import com.tokopedia.sellerorder.common.presenter.model.Roles
 import com.tokopedia.sellerorder.common.presenter.model.SomGetUserRoleUiModel
+import com.tokopedia.sellerorder.common.util.SomConnectionMonitor
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.ACTION_OK
 import com.tokopedia.sellerorder.common.util.SomConsts.ATTRIBUTE_ID
@@ -201,6 +202,8 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
 
     private var userNotAllowedDialog: DialogUnify? = null
 
+    private val connectionMonitor by lazy { context?.run { SomConnectionMonitor(this) } }
+
     companion object {
         private val TAG_COACHMARK_DETAIL = "coachmark"
 
@@ -284,6 +287,11 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
         observingUserRoles()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        connectionMonitor?.end()
+    }
+
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.chat_menu, menu)
     }
@@ -304,7 +312,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
 
     private fun checkUserRole() {
         showLoading()
-        if (Utils.isConnectedToInternet(context)) {
+        if (connectionMonitor?.isConnected == true) {
             somDetailViewModel.loadUserRoles(userSession.userId.toIntOrZero())
         } else {
             showErrorState(GlobalError.NO_CONNECTION)
@@ -322,13 +330,17 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
             adapter = somDetailAdapter
         }
         somGlobalError?.setActionClickListener {
-            loadDetail()
+            if (isUserRoleFetched(somDetailViewModel.userRoleResult.value)) {
+                loadDetail()
+            } else {
+                checkUserRole()
+            }
         }
     }
 
     private fun loadDetail() {
         showLoading()
-        if (Utils.isConnectedToInternet(context)) {
+        if (connectionMonitor?.isConnected == true) {
             activity?.let {
                 SomAnalytics.sendScreenName(it, SomConsts.DETAIL_ORDER_SCREEN_NAME + orderId)
                 it.resources?.let { r ->

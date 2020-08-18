@@ -2,9 +2,6 @@ package com.tokopedia.sellerorder.common.util
 
 import android.content.Context
 import android.content.Intent
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
-import android.os.Build
 import android.view.View
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -63,39 +60,5 @@ object Utils {
             "error" -> Ticker.TYPE_ERROR
             else -> Ticker.TYPE_ANNOUNCEMENT
         }
-    }
-
-    @JvmStatic
-    fun isConnectedToInternet(context: Context?): Boolean {
-        var result = false
-        if (context == null) {
-            return false
-        }
-        val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager?
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (cm != null) {
-                val capabilities = cm.getNetworkCapabilities(cm.activeNetwork)
-                if (capabilities != null) {
-                    if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
-                        result = true
-                    } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
-                        result = true
-                    }
-                }
-            }
-        } else {
-            if (cm != null) {
-                val activeNetwork = cm.activeNetworkInfo
-                if (activeNetwork != null) {
-                    // connected to the internet
-                    if (activeNetwork.type == ConnectivityManager.TYPE_WIFI) {
-                        result = true
-                    } else if (activeNetwork.type == ConnectivityManager.TYPE_MOBILE) {
-                        result = true
-                    }
-                }
-            }
-        }
-        return result
     }
 }
