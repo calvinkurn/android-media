@@ -1,60 +1,128 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/vgShopStatusContainer"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/dp_16">
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:layout_marginTop="@dimen/dp_16"
+    android:paddingLeft="@dimen/dp_16"
+    android:paddingBottom="@dimen/dp_16">
 
-    <LinearLayout
-        android:id="@+id/vgShopStatusContainer"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:foreground="?attr/selectableItemBackground"
-        android:paddingBottom="@dimen/dp_16">
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="?android:attr/listPreferredItemHeight"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
-            <TextView
-                style="@style/TextView.Title.Bold"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:paddingLeft="@dimen/dp_16"
-                android:text="@string/shop_status_label"
-                />
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="@dimen/dp_16">
 
             <TextView
-                style="@style/TextView.Title.Green"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingRight="@dimen/dp_20"
-                android:text="@string/label_manage" />
+                android:lineSpacingExtra="3sp"
+                android:text="@string/shop_status_label"
+                android:textColor="@color/title_information"
+                android:textSize="@dimen/sp_14"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvShopStatus"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:lineSpacingExtra="4sp"
+                android:paddingTop="@dimen/dp_2"
+                android:textColor="@color/title_subinformation"
+                android:textSize="@dimen/sp_12"
+                tools:text="Buka" />
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/dp_1"
+                android:layout_marginTop="@dimen/dp_15"
+                android:background="@color/line_separator" />
+
         </LinearLayout>
 
+        <ImageView
+            android:layout_width="@dimen/dp_20"
+            android:layout_height="@dimen/dp_20"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="@dimen/dp_26"
+            android:layout_marginRight="22dp"
+            app:srcCompat="@drawable/ic_arrow_head_right" />
+
+    </RelativeLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
         <TextView
-            android:id="@+id/tvShopStatus"
-            style="@style/TextView.Title"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_2"
-            android:paddingLeft="@dimen/dp_16"
-            android:paddingRight="@dimen/dp_16"
-            tools:text="Buka" />
+            android:lineSpacingExtra="3sp"
+            android:paddingTop="@dimen/dp_16"
+            android:paddingBottom="@dimen/dp_12"
+            android:text="@string/shop_settings_membership_label"
+            android:textColor="@color/title_information"
+            android:textSize="@dimen/sp_14"
+            android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/tvShopCloseSchedule"
-            style="@style/TextView.Small.BlackDisabled"
+
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_2"
-            android:paddingLeft="@dimen/dp_16"
-            android:paddingRight="@dimen/dp_16"
-            tools:text="Jadwal Tutup: 10 Juni 2018 - 20 Juni 2018" />
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_logo_power_merchant"
+                    android:layout_width="@dimen/dp_24"
+                    android:layout_height="@dimen/dp_24"
+                    android:layout_gravity="center"
+                    app:srcCompat="@drawable/ic_power_merchant" />
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:paddingLeft="@dimen/dp_15"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/tv_merchant_type"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:lineSpacingExtra="3sp"
+                        tools:text="Power Merchant"
+                        android:textColor="@color/title_subinformation"
+                        android:textSize="@dimen/sp_12"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tv_merchant_expiration"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:lineSpacingExtra="3sp"
+                        tools:text="Berlaku hingga Mon, 13 Jul 2020"
+                        android:textColor="@color/title_subinformation"
+                        android:textSize="@dimen/sp_12" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
     </LinearLayout>
-</androidx.cardview.widget.CardView>
+
+</LinearLayout>
