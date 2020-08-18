@@ -7,15 +7,19 @@ import com.tokopedia.linker.model.PaymentData
 import timber.log.Timber
 
 class BranchHelperValidation() {
-    val TAG = "P1#BRANCH_EVENT_VALIDATIONS#"
+    val TAG = "P2#BRANCH_VALIDATION#"
     fun validatePurchaseEvent(branchIOPayment: PaymentData, revenuePrice: Double, shippingPrice: Double) {
-        validatePaymentId(branchIOPayment.getPaymentId())
-        validateOrderId(branchIOPayment.getOrderId())
-        isFromNotNative(branchIOPayment.isFromNative,branchIOPayment.getPaymentId(),branchIOPayment.getOrderId())
-        validateRevenue(revenuePrice)
-        validateShipping(shippingPrice)
-        validateNewBuyer(branchIOPayment.isNewBuyer, branchIOPayment.productType)
-        validateMonthlyNewBuyer(branchIOPayment.monthlyNewBuyer, branchIOPayment.productType)
+        try {
+            validatePaymentId(branchIOPayment.getPaymentId())
+            validateOrderId(branchIOPayment.getOrderId())
+            isFromNotNative(branchIOPayment.isFromNative, branchIOPayment.getPaymentId(), branchIOPayment.getOrderId())
+            validateRevenue(revenuePrice)
+            validateShipping(shippingPrice)
+            validateNewBuyer(branchIOPayment.isNewBuyer, branchIOPayment.productType)
+            validateMonthlyNewBuyer(branchIOPayment.monthlyNewBuyer, branchIOPayment.productType)
+        }catch (e: Exception){
+            e.printStackTrace()
+        }
 
     }
 
