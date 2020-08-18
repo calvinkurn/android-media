@@ -1,19 +1,12 @@
 package com.tokopedia.sellerorder.list.presentation.adapter
 
-import android.content.Context
 import android.graphics.Color
-import android.text.Spannable
-import android.text.SpannableStringBuilder
-import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.cardview.widget.CardView
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.domain.model.TickerInfo
@@ -23,9 +16,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ORDER_DELIVERED_DU
 import com.tokopedia.sellerorder.common.util.Utils
 import com.tokopedia.sellerorder.list.data.model.SomListOrder
 import com.tokopedia.sellerorder.list.presentation.fragment.SomListFragment
-import com.tokopedia.unifycomponents.UrlSpanNoUnderline
 import com.tokopedia.unifycomponents.ticker.Ticker
-import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.som_list_item.view.*
 
@@ -53,8 +44,7 @@ class SomListItemAdapter : RecyclerView.Adapter<SomListItemAdapter.ViewHolder>()
 
                 if (orderItem.cancelRequest == 1 && orderItem.tickerInfo.text.isNotBlank()) {
                     orderItem.tickerInfo.let { tickerInfo ->
-                        holder.setTickerDescriptionClickListener(tickerInfo.actionUrl)
-                        setupTicker(holder.tickerDescriptionClickListener, holder.itemView.ticker_buyer_request_cancel, tickerInfo)
+                        setupTicker(holder.itemView.ticker_buyer_request_cancel, tickerInfo)
                         holder.itemView.ticker_buyer_request_cancel?.show()
                     }
                 } else {
@@ -113,40 +103,12 @@ class SomListItemAdapter : RecyclerView.Adapter<SomListItemAdapter.ViewHolder>()
         }
     }
 
-    private fun setupTicker(listener: TickerCallback?, tickerBuyerRequestCancel: Ticker?, tickerInfo: TickerInfo) {
+    private fun setupTicker(tickerBuyerRequestCancel: Ticker?, tickerInfo: TickerInfo) {
         tickerBuyerRequestCancel?.apply {
-            setOnClickListener { listener?.onDescriptionViewClick(tickerInfo.actionUrl) }
-            val tickerDescription = makeTickerDescription(context, tickerInfo)
-            setTextDescription(tickerDescription)
-            listener?.let { setDescriptionClickEvent(it) }
+            setTextDescription(tickerInfo.text)
             tickerType = Utils.mapStringTickerTypeToUnifyTickerType(tickerInfo.type)
             closeButtonVisibility = View.GONE
         }
-    }
-
-    private fun makeTickerDescription(context: Context, tickerInfo: TickerInfo): SpannableStringBuilder {
-        val message = tickerInfo.text
-        val messageLink = tickerInfo.actionText
-        val spannedMessage = SpannableStringBuilder()
-                .append(message)
-                .append(" $messageLink")
-
-        if (messageLink.isNotBlank()) {
-            spannedMessage.setSpan(
-                    UrlSpanNoUnderline(messageLink),
-                    message.length,
-                    spannedMessage.length,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
-            spannedMessage.setSpan(
-                    ForegroundColorSpan(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Green_G500)),
-                    message.length,
-                    spannedMessage.length,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
-        }
-
-        return spannedMessage
     }
 
     fun setActionListener(fragment: SomListFragment) {
@@ -199,20 +161,5 @@ class SomListItemAdapter : RecyclerView.Adapter<SomListItemAdapter.ViewHolder>()
         fun onListItemClicked(orderId: String)
     }
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var tickerDescriptionClickListener: TickerCallback? = null
-
-        fun setTickerDescriptionClickListener(link: String) {
-            tickerDescriptionClickListener = object: TickerCallback {
-                override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                    if (link.isNotBlank()) {
-                        RouteManager.route(itemView.context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, link))
-                    } else {
-                        itemView.performClick()
-                    }
-                }
-                override fun onDismiss() {}
-            }
-        }
-    }
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 }
