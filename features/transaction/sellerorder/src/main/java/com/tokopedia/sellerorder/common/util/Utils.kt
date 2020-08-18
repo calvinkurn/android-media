@@ -58,9 +58,9 @@ object Utils {
     fun mapStringTickerTypeToUnifyTickerType(typeString: String): Int {
         return when (typeString) {
             "announcement" -> Ticker.TYPE_ANNOUNCEMENT
-            "info" -> Ticker.TYPE_ERROR
+            "info" -> Ticker.TYPE_INFORMATION
             "warning" -> Ticker.TYPE_WARNING
-            "error" -> Ticker.TYPE_INFORMATION
+            "error" -> Ticker.TYPE_ERROR
             else -> Ticker.TYPE_ANNOUNCEMENT
         }
     }
