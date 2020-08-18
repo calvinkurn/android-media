@@ -399,7 +399,7 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
                 visitables.add(ShopProductTitleEmptyUiModel())
                 notifyInsertedItem(lastIndex)
             }
-            if(visitables.getOrNull(lastIndex) !is ShopProductEmptySearchUiModel) {
+            if(visitables.getOrNull(lastIndex) !is ShopProductViewModel) {
                 val lastIndex = visitables.size
                 visitables.addAll(productList)
                 notifyItemRangeInserted(lastIndex, productList.size)
