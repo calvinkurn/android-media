@@ -286,16 +286,15 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
                     tvPaymentErrorAction?.setOnClickListener {
                         if (payment.hasCreditCardOption()) {
                             listener.onChangeCreditCardClicked(payment.creditCard.additionalData)
-                        } else if (payment.hasNoCreditCardOption()) {
+                        } else {
                             listener.onPreferenceEditClicked(preference)
                         }
                     }
-                    setPaymentErrorAlpha(false)
                 } else {
                     tvPaymentErrorMessage?.gone()
                     tvPaymentErrorAction?.gone()
-                    setPaymentErrorAlpha(true)
                 }
+                setPaymentErrorAlpha(payment.isCalculationError)
                 tvInstallmentType?.gone()
                 tvInstallmentDetail?.gone()
                 tvInstallmentErrorMessage?.gone()

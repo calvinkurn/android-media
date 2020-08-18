@@ -1353,7 +1353,18 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         if (currentState == ButtonBayarState.NORMAL && (!shouldButtonStateEnable(shipping))) {
             currentState = ButtonBayarState.DISABLE
         }
-        if (payment.minimumAmount > subtotal) {
+        if (payment.errorTickerMessage.isNotEmpty()) {
+            _orderPayment = payment.copy(isCalculationError = false)
+            orderPayment.value = _orderPayment
+            orderTotal.value = orderTotal.value.copy(orderCost = orderCost, paymentErrorMessage = payment.errorTickerMessage, isButtonChoosePayment = true, buttonState = currentState)
+        } else if (payment.errorMessage.message.isNotEmpty() && payment.errorMessage.button.text.isNotEmpty()) {
+            if (currentState == ButtonBayarState.NORMAL) {
+                currentState = ButtonBayarState.DISABLE
+            }
+            _orderPayment = payment.copy(isCalculationError = false)
+            orderPayment.value = _orderPayment
+            orderTotal.value = orderTotal.value.copy(orderCost = orderCost, paymentErrorMessage = null, isButtonChoosePayment = false, buttonState = currentState)
+        } else if (payment.minimumAmount > subtotal) {
             orderTotal.value = orderTotal.value.copy(orderCost = orderCost,
                     paymentErrorMessage = "Belanjaanmu kurang dari min. transaksi ${payment.gatewayName} (${CurrencyFormatUtil.convertPriceValueToIdrFormat(payment.minimumAmount, false).removeDecimalSuffix()}). Silahkan pilih pembayaran lain.",
                     isButtonChoosePayment = true, buttonState = currentState)
@@ -1372,12 +1383,8 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             _orderPayment = payment.copy(isCalculationError = true)
             orderPayment.value = _orderPayment
             orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_PAYMENT_OVO_BALANCE)
-        } else if (payment.hasSoftBlockingError()) {
-            _orderPayment = payment.copy(isCalculationError = false)
-            orderPayment.value = _orderPayment
-            orderTotal.value = orderTotal.value.copy(orderCost = orderCost, paymentErrorMessage = null, isButtonChoosePayment = true, buttonState = currentState)
         } else {
-            if (payment.hasBlockingError() && currentState == ButtonBayarState.NORMAL) {
+            if (payment.creditCard.selectedTerm?.isEnable == false && currentState == ButtonBayarState.NORMAL) {
                 currentState = ButtonBayarState.DISABLE
             }
             _orderPayment = payment.copy(isCalculationError = false)
@@ -1458,6 +1465,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             val availableTerms = creditCard.availableTerms
             availableTerms.forEach { it.isSelected = it.term == selectedInstallmentTerm.term }
             _orderPayment = _orderPayment.copy(creditCard = creditCard.copy(selectedTerm = selectedInstallmentTerm, availableTerms = availableTerms))
+            orderTotal.value = orderTotal.value.copy(buttonState = if (shouldButtonStateEnable(_orderShipment)) ButtonBayarState.NORMAL else ButtonBayarState.DISABLE)
             calculateTotal()
             globalEvent.value = OccGlobalEvent.Normal
         }, {
