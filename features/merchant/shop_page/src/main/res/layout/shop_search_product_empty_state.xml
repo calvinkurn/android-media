@@ -13,8 +13,8 @@
         app:unifyEmptyStateDescription="@string/shop_product_search_empty_state_desc"
         app:unifyEmptyStatePrimaryCTAText="@string/shop_product_search_empty_state_btn_primary"
         app:unifyEmptyStateSecondaryCTAText="@string/shop_product_search_empty_state_btn_secondary"
-        app:unifyEmptyStateOrientation="vertical"
-        app:unifyEmptyStateType="page"
+        app:unifyEmptyStateOrientation="horizontal"
+        app:unifyEmptyStateType="section"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
