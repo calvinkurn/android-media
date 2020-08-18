@@ -66,8 +66,6 @@ constructor(@ApplicationContext context: Context) : UseCase<String>() {
         private const val DOMAIN = "domain"
         private const val TAGLINE = "tagline"
         private const val DESCRIPTION = "description"
-        private const val LOGO = "logo"
-        private const val CODE = "code"
         private const val LOGO_CODE = "logoCode"
         private const val FILE_PATH = "filePath"
         private const val FILE_NAME = "fileName"
@@ -96,23 +94,19 @@ constructor(@ApplicationContext context: Context) : UseCase<String>() {
         fun createRequestParam(
             name: String?,
             domain: String?,
-            tagLine: String?,
-            description: String?,
+            tagLine: String,
+            description: String,
             logoCode: String?
         ): RequestParams {
             val requestParams = RequestParams()
 
             name?.let { requestParams.putString(NAME, it) }
             domain?.let { requestParams.putString(DOMAIN, it) }
-            tagLine?.let { requestParams.putString(TAGLINE, it) }
-            description?.let { requestParams.putString(DESCRIPTION, it) }
 
-            logoCode?.let {
-                val logoRequestParam = RequestParams()
-                val logoCodeParam = mapOf(CODE to logoCode)
-                logoRequestParam.putObject(LOGO, logoCodeParam)
-            }
+            requestParams.putString(TAGLINE, tagLine)
+            requestParams.putString(DESCRIPTION, description)
 
+            logoCode?.let { requestParams.putString(LOGO_CODE, logoCode) }
             return requestParams
         }
     }
