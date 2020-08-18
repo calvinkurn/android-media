@@ -51,8 +51,6 @@ class GetCampaignNotifyMeUseCase @Inject constructor(
         val gqlRequest = GraphqlRequest(gqlQuery, GetCampaignNotifyMeModel.Response::class.java, params)
         gqlUseCase.addRequest(gqlRequest)
         val gqlResponse = gqlUseCase.executeOnBackground()
-//        val gqlResponse = createMockGraphQlSuccessResponse()
-
         val error = gqlResponse.getError(GraphqlError::class.java)
         if (error == null || error.isEmpty()) {
             return gqlResponse.getData<GetCampaignNotifyMeModel.Response>(GetCampaignNotifyMeModel.Response::class.java)
@@ -60,42 +58,6 @@ class GetCampaignNotifyMeUseCase @Inject constructor(
         } else {
             throw MessageErrorException(error.joinToString(", ") { it.message })
         }
-    }
-
-
-    private fun createMockGraphQlSuccessResponse(): GraphqlResponse {
-        val result = HashMap<Type, Any>()
-        val errors = HashMap<Type, List<GraphqlError>>()
-        val jsonObject: JsonObject = CommonUtils.fromJson(
-                asdasd,
-                JsonObject::class.java
-        )
-        val data = jsonObject.get(GraphqlConstant.GqlApiKeys.DATA)
-        val objectType = GetCampaignNotifyMeModel.Response::class.java
-        val obj: Any = Gson().fromJson(data, objectType)
-        result[objectType] = obj
-        return GraphqlResponse(result, errors, false)
-    }
-
-    val asdasd = """
-        {
-  "data": {
-    "getCampaignNotifyMe": {
-      "campaign_id": 1473,
-      "success": true,
-      "message": "",
-      "error_message": "",
-      "is_available": false
-    }
-  }
-}
-    """.trimIndent()
-
-
-    private fun String.getJsonFromFile(): String {
-        val uri = ClassLoader.getSystemClassLoader().getResource(this)
-        val file = File(uri.path)
-        return String(file.readBytes())
     }
 
     fun clearCache() {

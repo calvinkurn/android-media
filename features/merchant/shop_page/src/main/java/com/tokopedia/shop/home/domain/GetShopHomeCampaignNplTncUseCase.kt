@@ -59,44 +59,6 @@ class GetShopHomeCampaignNplTncUseCase @Inject constructor(
         }
     }
 
-
-    private fun createMockGraphQlSuccessResponse(): GraphqlResponse {
-        val result = HashMap<Type, Any>()
-        val errors = HashMap<Type, List<GraphqlError>>()
-        val jsonObject: JsonObject = CommonUtils.fromJson(
-                asdasd,
-                JsonObject::class.java
-        )
-        val data = jsonObject.get(GraphqlConstant.GqlApiKeys.DATA)
-        val objectType = ShopHomeCampaignNplTncModel.Response::class.java
-        val obj: Any = Gson().fromJson(data, objectType)
-        result[objectType] = obj
-        return GraphqlResponse(result, errors, false)
-    }
-
-    val asdasd ="""
-        {
-  "data": {
-    "campaignTnc": {
-      "title": "S&K Ketentuan Berlaku",
-      "messages": [
-        "Barang baru bisa dibeli ketika periode peluncuran berjalan",
-        "Pembeli hanya bisa membeli satu varian dalam campaign",
-        "Pembayaran hanya bisa dilakukan dengan instant payment"
-      ]
-    }
-  }
-}
-    """.trimIndent()
-
-
-
-    private fun String.getJsonFromFile(): String {
-        val uri = ClassLoader.getSystemClassLoader().getResource(this)
-        val file = File(uri.path)
-        return String(file.readBytes())
-    }
-
     fun clearCache() {
         gqlUseCase.clearCache()
     }
