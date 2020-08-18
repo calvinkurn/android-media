@@ -1,10 +1,10 @@
 package com.tokopedia.graphql.coroutines.data.source
 
 import com.akamai.botman.CYFMonitor
-import com.google.gson.Gson
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.tokopedia.akamai_bot_lib.isAkamai
+import com.tokopedia.graphql.CommonUtils
 import com.tokopedia.graphql.FingerprintManager
 import com.tokopedia.graphql.GraphqlCacheManager
 import com.tokopedia.graphql.GraphqlConstant
@@ -75,7 +75,7 @@ class GraphqlCloudDataStore @Inject constructor(
 
             yield()
 
-            val gJsonArray = getOriginalResponse(result)
+            val gJsonArray = CommonUtils.getOriginalResponse(result)
 
             //Checking response CLC headers.
             val cacheHeaders = if (result?.headers()?.get(GraphqlConstant.GqlApiKeys.CACHE) == null) ""
@@ -143,19 +143,5 @@ class GraphqlCloudDataStore @Inject constructor(
             e.printStackTrace()
         }
         return false
-    }
-
-    private fun getOriginalResponse(response: Response<JsonArray>?): JsonArray? {
-        if (response?.body() != null)
-            return response.body()
-        if (response?.errorBody() != null) {
-            try {
-                val rawErrorResponse = response.errorBody()?.string()
-                if (rawErrorResponse != null) {
-                    return Gson().fromJson(rawErrorResponse, JsonArray::class.java)
-                }
-            } catch (e: Exception) { }
-        }
-        return JsonArray()
     }
 }
