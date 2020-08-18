@@ -302,12 +302,12 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
         val listData = mutableListOf<ShopSearchProductDataModel>().apply {
             add(ShopSearchProductFixedResultDataModel(
                     searchQuery,
-                    getString(R.string.shop_search_product_in_shop_name, userSession.shopName.orEmpty()),
+                    MethodChecker.fromHtml(getString(R.string.shop_search_product_in_shop_name, userSession.shopName.orEmpty())).toString(),
                     ShopSearchProductDataModel.Type.TYPE_SEARCH_STORE
             ))
             add(ShopSearchProductFixedResultDataModel(
                     searchQuery,
-                    getString(R.string.shop_search_product_in_tokopedia),
+                    MethodChecker.fromHtml(getString(R.string.shop_search_product_in_tokopedia)).toString(),
                     ShopSearchProductDataModel.Type.TYPE_SEARCH_SRP
             ))
         }

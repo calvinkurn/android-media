@@ -177,8 +177,8 @@
 
     <string name="shop_search_product">Search Shop Product</string>
     <string name="shop_search_product_in_this_shop_etalase">di Etalase Toko ini</string>
-    <string name="shop_search_product_in_tokopedia">di Tokopedia</string>
-    <string name="shop_search_product_in_shop_name">di %1s</string>
+    <string name="shop_search_product_in_tokopedia">di <![CDATA[<b>Tokopedia</b>]]></string>
+    <string name="shop_search_product_in_shop_name">di <![CDATA[<b>%1s</b>]]></string>
     <string name="shop_product_list_empty_button_text">Cari di toko lain</string>
     <string name="shop_note_detail_date_format">%1$s, pukul %2$s</string>
     <string name="shop_product_seller_empty_state_label"><![CDATA[Kata orang, <b>jutaan mimpi</b> berawal dari satu langkah kecil.Tambah produk pertamamu]]></string>
