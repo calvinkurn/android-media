@@ -59,7 +59,7 @@ object PlayUiMapper {
             feedInfo = mapFeedInfo(channel.configuration.feedsLikeParams),
             showCart = channel.configuration.showCart,
             showPinnedProduct = channel.configuration.showPinnedProduct,
-            titleBottomSheet = "Barang & Promo Pilihan" // TODO don't hardcode this message
+            titleBottomSheet = channel.configuration.pinnedProduct.titleBottomSheet
     )
 
     private fun mapPartnerInfo(partner: Channel.Partner) = PartnerInfoUiModel(
@@ -97,7 +97,7 @@ object PlayUiMapper {
     private fun mapPinnedProduct(partnerName: String, configuration: Channel.Configuration) = if (configuration.showPinnedProduct)
         PinnedProductUiModel(
             partnerName = partnerName,
-            title = "Ada promo menarik buat belanja barang pilihan kami", // TODO don't hardcode this message
+            title = configuration.pinnedProduct.title,
             hasPromo = configuration.hasPromo
     ) else null
 

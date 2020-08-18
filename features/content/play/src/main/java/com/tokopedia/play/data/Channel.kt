@@ -97,7 +97,9 @@ data class Channel(
             @SerializedName("channel_freeze_screen")
             val channelFreezeScreen: ChannelFreezeScreen = ChannelFreezeScreen(),
             @SerializedName("channel_banned_message")
-            val channelBannedMessage: ChannelBannedMessage = ChannelBannedMessage())
+            val channelBannedMessage: ChannelBannedMessage = ChannelBannedMessage(),
+            @SerializedName("pinned_product_config")
+            val pinnedProduct: PinnedProduct = PinnedProduct())
 
     data class FeedLikeParam(
             @SerializedName("content_type")
@@ -141,4 +143,10 @@ data class Channel(
             val buttonText: String = ""
     )
 
+    data class PinnedProduct(
+            @SerializedName("pin_title")
+            val title: String = "",
+            @SerializedName("bottom_sheet_title")
+            val titleBottomSheet: String = ""
+    )
 }
