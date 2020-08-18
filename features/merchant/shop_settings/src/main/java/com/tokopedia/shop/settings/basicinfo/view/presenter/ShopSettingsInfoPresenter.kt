@@ -37,7 +37,7 @@ constructor(private val getShopBasicDataAndStatusUseCase: GetShopBasicDataAndSta
             }
 
             override fun onNext(result: Pair<ShopBasicDataModel?, GoldGetPmOsStatus?>) {
-                view?.onSuccessGetShopBasicData(result)
+//                view?.onSuccessGetShopBasicData(result)
             }
         })
     }
