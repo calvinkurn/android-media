@@ -419,7 +419,6 @@ class PlayUserInteractionFragment @Inject constructor(
         observeChatList()
         observePinned()
         observeCartInfo()
-        observeFollowShop()
         observeLikeContent()
         observeBottomInsetsState()
         observeEventUserInfo()
@@ -541,12 +540,6 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun observeLoggedInInteractionEvent() {
         viewModel.observableLoggedInInteractionEvent.observe(viewLifecycleOwner, EventObserver(::handleLoginInteractionEvent))
-    }
-
-    private fun observeFollowShop() {
-        viewModel.observableFollowPartner.observe(viewLifecycleOwner, DistinctObserver {
-            if (it is Fail) showToast(it.throwable.message.orEmpty())
-        })
     }
 
     private fun observeLikeContent() {
@@ -704,10 +697,6 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun doLeaveRoom() {
         playNavigation.onBackPressed(isSystemBack = false)
-    }
-
-    private fun showToast(text: String) {
-        Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
     }
 
     private fun doActionFollowPartner(partnerId: Long, action: PartnerFollowAction) {
