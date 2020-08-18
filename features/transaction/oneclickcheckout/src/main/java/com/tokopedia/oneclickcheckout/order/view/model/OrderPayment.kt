@@ -16,10 +16,11 @@ data class OrderPayment(
         val walletAmount: Long = 0,
         val metadata: String = "",
         val creditCard: OrderPaymentCreditCard = OrderPaymentCreditCard(),
-        val errorMessage: OrderPaymentErrorMessage = OrderPaymentErrorMessage()
+        val errorMessage: OrderPaymentErrorMessage = OrderPaymentErrorMessage(),
+        val errorTickerMessage: String = ""
 ) {
     fun isError(): Boolean {
-        return isCalculationError || errorMessage.message.isNotEmpty()
+        return isCalculationError || errorMessage.message.isNotEmpty() || errorTickerMessage.isNotEmpty()
     }
 
     fun getRealFee(): Double {

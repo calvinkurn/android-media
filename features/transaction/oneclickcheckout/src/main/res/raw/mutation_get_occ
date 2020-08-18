@@ -450,6 +450,7 @@ query get_occ_cart_page($source: String) {
         change_cc_link
         callback_url
       }
+      error_ticker
     }
   }
 }
