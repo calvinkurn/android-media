@@ -8,6 +8,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.hotel.common.data.HotelTypeEnum
 import com.tokopedia.hotel.search.data.model.*
 import com.tokopedia.hotel.search.data.model.params.ParamFilter
+import com.tokopedia.hotel.search.data.model.params.ParamFilterV2
 import com.tokopedia.hotel.search.presentation.viewmodel.HotelSearchResultViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -335,6 +336,21 @@ class HotelSearchResultViewModelTest {
         assert(hotelSearchResultViewModel.searchParam.filter.maxPrice == 50000)
         assert(hotelSearchResultViewModel.searchParam.filter.minPrice == 30000)
         assert(hotelSearchResultViewModel.selectedFilter.maxPrice == 50000)
+        assert(hotelSearchResultViewModel.isFilter)
+    }
+
+    @Test
+    fun addFilter_shouldUpdateFilterV2() {
+        //given
+        val filter = listOf(ParamFilterV2(name = "Filter 1"),
+                ParamFilterV2(name = "Filter 2"))
+
+        //when
+        hotelSearchResultViewModel.addFilter(filter)
+
+        //then
+        assert(hotelSearchResultViewModel.searchParam.filters.size == 2)
+        assert(hotelSearchResultViewModel.selectedFilterV2.size == 2)
         assert(hotelSearchResultViewModel.isFilter)
     }
 }
