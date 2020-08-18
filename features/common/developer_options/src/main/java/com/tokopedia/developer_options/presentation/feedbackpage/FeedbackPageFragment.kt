@@ -1,5 +1,6 @@
-package com.tokopedia.developer_options.presentation.fragment
+package com.tokopedia.developer_options.presentation.feedbackpage
 
+import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.LayoutInflater
@@ -10,11 +11,13 @@ import android.widget.AdapterView.OnItemSelectedListener
 import androidx.fragment.app.Fragment
 import com.tokopedia.developer_options.R
 import com.tokopedia.developer_options.api.*
+import com.tokopedia.user.session.BuildConfig
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
+import rx.subscriptions.CompositeSubscription
 
 
 class FeedbackPageFragment: Fragment() {
@@ -25,6 +28,12 @@ class FeedbackPageFragment: Fragment() {
     private lateinit var affectedPage: EditText
     private lateinit var submitButton: View
     private lateinit var feedbackApi: FeedbackApi
+    private lateinit var compositeSubscription: CompositeSubscription
+
+    private var savedEmail: String = ""
+    private var isAlreadyFill: Boolean = false
+    private var deviceInfo: String = ""
+    private var versionCode: String = ""
 
     private var userSession: UserSessionInterface? = null
 
@@ -43,6 +52,7 @@ class FeedbackPageFragment: Fragment() {
         submitButton = mainView.findViewById(R.id.submit_button)
 
         feedbackApi = ApiClient.getAPIService()
+        compositeSubscription = CompositeSubscription()
 
         context?.let { ArrayAdapter.createFromResource(it,
                 R.array.bug_type_array,
@@ -53,15 +63,22 @@ class FeedbackPageFragment: Fragment() {
         } }
 
         userSession = UserSession(activity)
+        deviceInfo = (StringBuilder().append(Build.MANUFACTURER).append(" ").append(Build.MODEL).toString())
+        versionCode = BuildConfig.VERSION_CODE.toString()
     }
 
     private fun initListener() {
-        email.setText(userSession?.email)
+        if(isAlreadyFill) email.setText(savedEmail) else email.setText(userSession?.email)
 
         bugType.onItemSelectedListener = object : OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View, position: Int, id: Long) {
-                /*On Item selected*/
+                val selectedType = parent?.getItemAtPosition(position)
+                when (selectedType) {
+                    0 -> Toast.makeText(context, "Crash", Toast.LENGTH_SHORT).show()
+                    1 -> Toast.makeText(context, "UI", Toast.LENGTH_SHORT).show()
+                    2 -> Toast.makeText(context, "Tracker", Toast.LENGTH_SHORT).show()
                 }
+            }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
                 //no-op
@@ -87,39 +104,41 @@ class FeedbackPageFragment: Fragment() {
                 }
                 else -> {
                     /*arahin ke submit button*/
-                    submitFeedback(emailText, affectedPageText, issueText)
+                    val issueType = bugType.selectedItem.toString()
+                    submitFeedback(emailText, affectedPageText, issueText, issueType)
                 }
             }
         }
 
     }
 
-    private fun submitFeedback(email: String, page: String, desc: String) {
-        feedbackApi.getResponce(requestMapper(email, page, desc))
-                /*Success but error in here*/
-                .subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(object : Subscriber<FeedbackResponse>() {
-                    override fun onNext(t: FeedbackResponse?) {
+    private fun submitFeedback(email: String, page: String, desc: String, issueType: String) {
+        compositeSubscription.add(
+                feedbackApi.getResponse(requestMapper(email, page, desc, issueType))
                         /*Success but error in here*/
-                        Toast.makeText(activity, "Success", Toast.LENGTH_SHORT).show()
-                    }
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+//                        .unsubscribeOn(Schedulers.io())
+                        .subscribe(object : Subscriber<FeedbackResponse>() {
+                            override fun onNext(t: FeedbackResponse) {
+                                /*Success but error in here*/
+                                Toast.makeText(activity, t.key.toString(), Toast.LENGTH_SHORT).show()
+                                activity?.finish()
+                            }
 
-                    override fun onCompleted() {
-                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-                    }
+                            override fun onCompleted() {
+                            }
 
-                    override fun onError(e: Throwable?) {
-                        Toast.makeText(activity, e.toString(), Toast.LENGTH_SHORT).show()
+                            override fun onError(e: Throwable?) {
+                                Toast.makeText(activity, e.toString(), Toast.LENGTH_SHORT).show()
 
-                    }
+                            }
 
-                })
-
+                        })
+        )
     }
 
-    private fun requestMapper(email: String, page: String, desc: String): FeedbackRequest {
+    private fun requestMapper(email: String, page: String, desc: String, issueType: String): FeedbackRequest {
         return FeedbackRequest(Fields(
                 summary = "[INTERNAL-FEEDBACK] {$email} {$page}",
                 project = Project(
@@ -142,8 +161,14 @@ class FeedbackPageFragment: Fragment() {
                                 ))
                         ))
                 ),
+               /* reporter = Reporter(
+                        id = email
+                ),
+                fixVersion = listOf(FixVersion(
+                        id = versionCode
+                )),*/
                 customfield_10077 = Customfield_10077(
-                        value = "MB] Android",
+                        value = "[MB] Android",
                         id = "10031"
                 ),
                 customfield_10548 = listOf(Customfield_10548(
@@ -159,7 +184,7 @@ class FeedbackPageFragment: Fragment() {
                         id = "11144"
                 ),
                 labels = listOf("Internal-Feedback"),
-                customfield_10550 = listOf("Bug")
+                customfield_10550 = listOf(issueType)
         ))
     }
 }

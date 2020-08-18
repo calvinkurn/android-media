@@ -22,9 +22,9 @@
         </activity>
 
         <activity
-            android:name=".presentation.activity.FeedbackPageActivity"
+            android:name=".presentation.feedbackpage.FeedbackPageActivity"
             android:label="@string/feedback_page_title"
-            android:windowSoftInputMode="stateHidden"
+            android:theme="@style/Theme.White"
             android:screenOrientation="portrait" >
 
             <intent-filter android:autoVerify="true">
