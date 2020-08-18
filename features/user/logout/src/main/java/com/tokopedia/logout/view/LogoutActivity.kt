@@ -3,8 +3,12 @@ package com.tokopedia.logout.view
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.webkit.CookieManager
+import android.webkit.CookieSyncManager
+import android.webkit.WebView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -164,6 +168,7 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         CacheApiClearAllUseCase(applicationContext).executeSync()
         RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
         NotificationModHandler(applicationContext).dismissAllActivedNotifications()
+        clearWebView()
 
         instance.refreshFCMTokenFromForeground(FCMCacheManager.getRegistrationId(applicationContext), true)
 
@@ -218,6 +223,19 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
 
     private fun hideLoading() {
         logoutLoading?.visibility = View.GONE
+    }
+
+    private fun clearWebView() {
+        WebView(this).clearCache(true)
+        val cookieManager: CookieManager
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            CookieSyncManager.createInstance(this)
+            cookieManager = CookieManager.getInstance()
+            cookieManager.removeAllCookie()
+        } else {
+            cookieManager = CookieManager.getInstance()
+            cookieManager.removeAllCookies {}
+        }
     }
 
     companion object {
