@@ -236,7 +236,7 @@ class ProductCardItemViewModel(val application: Application, val components: Com
         dataItem.value?.let {
             val topAdsClickUrl = it.topadsClickUrl
             if (it.isTopads == true && topAdsClickUrl != null) {
-                discoveryTopAdsTrackingUseCase.sendTopAdsTracking(this::class.qualifiedName, topAdsClickUrl)
+                discoveryTopAdsTrackingUseCase.hitClick(this::class.qualifiedName, topAdsClickUrl, it.productId ?: "", it.name ?: "", it.imageUrl ?: "")
             }
         }
     }
@@ -245,7 +245,7 @@ class ProductCardItemViewModel(val application: Application, val components: Com
         dataItem.value?.let {
             val topAdsViewUrl = it.topadsViewUrl
             if (it.isTopads == true && topAdsViewUrl != null && !components.topAdsTrackingStatus) {
-                discoveryTopAdsTrackingUseCase.sendTopAdsTracking(this::class.qualifiedName, topAdsViewUrl)
+                discoveryTopAdsTrackingUseCase.hitImpressions(this::class.qualifiedName, topAdsViewUrl, it.productId ?: "", it.name ?: "", it.imageUrl ?: "")
                 components.topAdsTrackingStatus = true
             }
         }
