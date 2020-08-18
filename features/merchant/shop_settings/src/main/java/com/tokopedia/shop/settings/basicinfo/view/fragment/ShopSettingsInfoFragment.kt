@@ -187,11 +187,11 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
         vgShopStatusContainer.setOnClickListener { showShopStatusManageMenu() }
         loadShopBasicData()
 
-        shopSettingsInfoViewModel.validateOsMerchantType(shopId = 67726)
-        shopSettingsInfoViewModel.validatePowerMerchantType(shopId = 67726)
+//        shopSettingsInfoViewModel.validateOsMerchantType(shopId = 67726)
+//        shopSettingsInfoViewModel.validatePowerMerchantType(shopId = 67726)
 
-        observePowerMerchantData()
-        observeOsMerchantData()
+//        observePowerMerchantData()
+//        observeOsMerchantData()
 
         observeShopBasicData()
         observeShopStatus()
@@ -223,34 +223,34 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
         })
     }
 
-    private fun observePowerMerchantData() {
-        shopSettingsInfoViewModel.checkPowerMerchantType.observe(this, Observer {
-            when (it) {
-                is Success -> {
-                    val errMessage = it.data.goldGetPMOSStatus.header.messages
-                    val merchantType = it.data.goldGetPMOSStatus.data.powerMerchant.status
-                    println(it)
-                }
-                is Fail -> {
-                    println(it)
-                }
-            }
-        })
-    }
+//    private fun observePowerMerchantData() {
+//        shopSettingsInfoViewModel.checkPowerMerchantType.observe(this, Observer {
+//            when (it) {
+//                is Success -> {
+//                    val errMessage = it.data.goldGetPMOSStatus.header.messages
+//                    val merchantType = it.data.goldGetPMOSStatus.data.powerMerchant.status
+//                    println(it)
+//                }
+//                is Fail -> {
+//                    println(it)
+//                }
+//            }
+//        })
+//    }
 
-    private fun observeOsMerchantData() {
-        shopSettingsInfoViewModel.checkOsMerchantType.observe(this, Observer {
-            when (it) {
-                is Success -> {
-                    val errMessage = it.data.getIsOfficial.messageError
-                    println(it)
-                }
-                is Fail -> {
-                    println(it)
-                }
-            }
-        })
-    }
+//    private fun observeOsMerchantData() {
+//        shopSettingsInfoViewModel.checkOsMerchantType.observe(this, Observer {
+//            when (it) {
+//                is Success -> {
+//                    val errMessage = it.data.getIsOfficial.messageError
+//                    println(it)
+//                }
+//                is Fail -> {
+//                    println(it)
+//                }
+//            }
+//        })
+//    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -541,8 +541,8 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
     override fun onDestroy() {
         super.onDestroy()
         shopSettingsInfoPresenter.run { detachView() }
-        shopSettingsInfoViewModel.checkOsMerchantType.removeObservers(this)
-        shopSettingsInfoViewModel.checkPowerMerchantType.removeObservers(this)
+        shopSettingsInfoViewModel.shopBasicData.removeObservers(this)
+        shopSettingsInfoViewModel.shopStatusData.removeObservers(this)
         shopSettingsInfoViewModel.flush()
     }
 

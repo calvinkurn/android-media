@@ -30,13 +30,13 @@ class ShopSettingsInfoViewModel @Inject constructor (
         private val dispatchers: ShopSettingDispatcherProvider
 ): BaseViewModel(dispatchers.ui()) {
 
-    private val _checkOsMerchantType = MutableLiveData<Result<CheckShopIsOfficialModel>>()
-    val checkOsMerchantType: LiveData<Result<CheckShopIsOfficialModel>>
-        get() = _checkOsMerchantType
+//    private val _checkOsMerchantType = MutableLiveData<Result<CheckShopIsOfficialModel>>()
+//    val checkOsMerchantType: LiveData<Result<CheckShopIsOfficialModel>>
+//        get() = _checkOsMerchantType
 
-    private val _checkPowerMerchantType = MutableLiveData<Result<CheckShopIsPowerMerchantModel>>()
-    val checkPowerMerchantType: LiveData<Result<CheckShopIsPowerMerchantModel>>
-        get() = _checkPowerMerchantType
+//    private val _checkPowerMerchantType = MutableLiveData<Result<CheckShopIsPowerMerchantModel>>()
+//    val checkPowerMerchantType: LiveData<Result<CheckShopIsPowerMerchantModel>>
+//        get() = _checkPowerMerchantType
 
     private val _shopBasicData = MutableLiveData<Result<ShopBasicDataQuery>>()
     val shopBasicData: LiveData<Result<ShopBasicDataQuery>>
@@ -48,35 +48,35 @@ class ShopSettingsInfoViewModel @Inject constructor (
 
 
 
-    fun validateOsMerchantType(shopId: Int) {
-        launchCatchError(block = {
-            withContext(dispatchers.io()) {
-                checkOsMerchantUseCase.params = CheckOfficialStoreTypeUseCase
-                        .createRequestParam(shopId = 67726)
-                val osMerchantChecker = checkOsMerchantUseCase.executeOnBackground()
-                osMerchantChecker.let {
-                    _checkOsMerchantType.postValue(Success(it))
-                }
-            }
-        }) {
-            _checkOsMerchantType.value = Fail(it)
-        }
-    }
+//    fun validateOsMerchantType(shopId: Int) {
+//        launchCatchError(block = {
+//            withContext(dispatchers.io()) {
+//                checkOsMerchantUseCase.params = CheckOfficialStoreTypeUseCase
+//                        .createRequestParam(shopId = 67726)
+//                val osMerchantChecker = checkOsMerchantUseCase.executeOnBackground()
+//                osMerchantChecker.let {
+//                    _checkOsMerchantType.postValue(Success(it))
+//                }
+//            }
+//        }) {
+//            _checkOsMerchantType.value = Fail(it)
+//        }
+//    }
 
-    fun validatePowerMerchantType(shopId: Int) {
-        launchCatchError(block = {
-            withContext(dispatchers.io()) {
-                checkPowerMerchantUseCase.params = CheckPowerMerchantTypeUseCase
-                        .createRequestParam(shopID = 67726, includeOS = false)
-                val osMerchantChecker = checkPowerMerchantUseCase.executeOnBackground()
-                osMerchantChecker.let {
-                    _checkPowerMerchantType.postValue(Success(it))
-                }
-            }
-        }) {
-            _checkPowerMerchantType.value = Fail(it)
-        }
-    }
+//    fun validatePowerMerchantType(shopId: Int) {
+//        launchCatchError(block = {
+//            withContext(dispatchers.io()) {
+//                checkPowerMerchantUseCase.params = CheckPowerMerchantTypeUseCase
+//                        .createRequestParam(shopID = 67726, includeOS = false)
+//                val osMerchantChecker = checkPowerMerchantUseCase.executeOnBackground()
+//                osMerchantChecker.let {
+//                    _checkPowerMerchantType.postValue(Success(it))
+//                }
+//            }
+//        }) {
+//            _checkPowerMerchantType.value = Fail(it)
+//        }
+//    }
 
     fun getShopData(shopId: Int, includeOS: Boolean) {
         launchCatchError(block = {
