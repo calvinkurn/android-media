@@ -83,6 +83,7 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        fetchAbTestRemoteConfig();
         datePickerPresenter.clearDatePickerSetting();
     }
 
@@ -130,7 +131,6 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        fetchAbTestRemoteConfig();
         disableDateLabelView();
     }
 
