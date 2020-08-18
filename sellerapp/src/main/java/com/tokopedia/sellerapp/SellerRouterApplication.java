@@ -21,7 +21,6 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.config.GlobalConfig;
-import com.tokopedia.contactus.createticket.router.ContactUsCreateTicketRouter;
 import com.tokopedia.core.MaintenancePage;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -114,8 +113,7 @@ public abstract class SellerRouterApplication extends MainApplication
         CoreNetworkRouter,
         LinkerRouter,
         SellerHomeRouter,
-        LoginRouter,
-        ContactUsCreateTicketRouter {
+        LoginRouter{
 
     protected RemoteConfig remoteConfig;
     private DaggerGMComponent.Builder daggerGMBuilder;
