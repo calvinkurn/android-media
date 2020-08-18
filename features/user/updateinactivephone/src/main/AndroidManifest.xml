@@ -1,7 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.tokopedia.updateinactivephone">
-
-
+  
     <application
         android:allowBackup="true"
         android:label="@string/app_name"
@@ -36,6 +36,9 @@
             android:label="Masuk"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan"/>
+  
+        <activity android:name=".revamp.view.activity.InactivePhoneOnboardingActivity"/>
+      
     </application>
 
 </manifest>
