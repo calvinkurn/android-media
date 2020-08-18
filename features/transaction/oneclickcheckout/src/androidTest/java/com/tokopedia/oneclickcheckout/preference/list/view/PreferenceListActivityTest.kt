@@ -43,6 +43,7 @@ class PreferenceListActivityTest {
 
     @Before
     fun setupIdlingResource() {
+        OneClickCheckoutInterceptor.resetAllCustomResponse()
         OneClickCheckoutInterceptor.setupGraphqlMockResponse(context)
         idlingResource = OccIdlingResource.getIdlingResource()
         IdlingRegistry.getInstance().register(idlingResource)
@@ -69,9 +70,6 @@ class PreferenceListActivityTest {
 
     @Test
     fun getPreferenceListSuccess() {
-        interceptor.customGetPreferenceListThrowable = null
-        interceptor.customGetPreferenceListResponseString = null
-
         activityRule.launchActivity(null)
 
         onView(withId(R.id.main_content)).check(matches(isDisplayed()))
@@ -127,15 +125,11 @@ class PreferenceListActivityTest {
 
     @Test
     fun changeDefaultProfileSuccess() {
-        interceptor.customGetPreferenceListThrowable = null
-        interceptor.customGetPreferenceListResponseString = null
         activityRule.launchActivity(null)
 
         onView(withId(R.id.main_content)).check(matches(isDisplayed()))
         onView(withId(R.id.rv_preference_list)).check { view, _ -> (view as RecyclerView).adapter!!.itemCount > 1 }
 
-        interceptor.customSetDefaultPreferenceThrowable = null
-        interceptor.customSetDefaultPreferenceResponseString = null
         interceptor.customGetPreferenceListResponseString = GET_PREFERENCE_LIST_CHANGED_RESPONSE
 
         onView(withId(R.id.rv_preference_list)).perform(actionOnItemAtPosition<PreferenceListViewHolder>(0, SetDefaultProfileAction()))
@@ -145,8 +139,6 @@ class PreferenceListActivityTest {
 
     @Test
     fun changeDefaultProfileFailed() {
-        interceptor.customGetPreferenceListThrowable = null
-        interceptor.customGetPreferenceListResponseString = null
         activityRule.launchActivity(null)
 
         onView(withId(R.id.main_content)).check(matches(isDisplayed()))

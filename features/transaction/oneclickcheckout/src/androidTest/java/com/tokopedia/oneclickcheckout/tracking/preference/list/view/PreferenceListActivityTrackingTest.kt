@@ -1,4 +1,4 @@
-package com.tokopedia.oneclickcheckout.preference.list.view
+package com.tokopedia.oneclickcheckout.tracking.preference.list.view
 
 import android.app.Instrumentation
 import android.content.Context
@@ -26,6 +26,8 @@ import com.tokopedia.oneclickcheckout.common.interceptor.GET_PREFERENCE_LIST_QUE
 import com.tokopedia.oneclickcheckout.common.interceptor.SET_DEFAULT_PROFILE_DEFAULT_RESPONSE
 import com.tokopedia.oneclickcheckout.common.interceptor.SET_DEFAULT_PROFILE_QUERY
 import com.tokopedia.oneclickcheckout.common.rule.FreshIdlingResourceTestRule
+import com.tokopedia.oneclickcheckout.preference.list.view.PreferenceListActivity
+import com.tokopedia.oneclickcheckout.preference.list.view.PreferenceListViewHolder
 import com.tokopedia.test.application.environment.interceptor.mock.MockInterceptor
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify

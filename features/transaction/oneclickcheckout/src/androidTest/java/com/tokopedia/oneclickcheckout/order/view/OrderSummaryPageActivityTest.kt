@@ -32,10 +32,6 @@ import java.io.IOException
 
 class OrderSummaryPageActivityTest {
 
-    companion object {
-        private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME = "tracker/transaction/one_click_checkout_order_summary.json"
-    }
-
     @get:Rule
     var activityRule = IntentsTestRule(OrderSummaryPageActivity::class.java, false, false)
 
@@ -44,8 +40,6 @@ class OrderSummaryPageActivityTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private var idlingResource: IdlingResource? = null
-
-//    private val gtmLogDBSource = GtmLogDBSource(context)
 
     private val cartInterceptor = OneClickCheckoutInterceptor.cartInterceptor
     private val preferenceInterceptor = OneClickCheckoutInterceptor.preferenceInterceptor
@@ -76,9 +70,7 @@ class OrderSummaryPageActivityTest {
 
     @Before
     fun setup() {
-//        gtmLogDBSource.deleteAll().subscribe()
-        resetCustomInterception()
-
+        OneClickCheckoutInterceptor.resetAllCustomResponse()
         OneClickCheckoutInterceptor.setupGraphqlMockResponse(context)
         idlingResource = OccIdlingResource.getIdlingResource()
         IdlingRegistry.getInstance().register(idlingResource)
@@ -86,8 +78,6 @@ class OrderSummaryPageActivityTest {
 
     @After
     fun cleanup() {
-//        Assert.assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME), hasAllSuccess())
-//        gtmLogDBSource.deleteAll().subscribe()
         IdlingRegistry.getInstance().unregister(idlingResource)
         activityRule.finishActivity()
     }

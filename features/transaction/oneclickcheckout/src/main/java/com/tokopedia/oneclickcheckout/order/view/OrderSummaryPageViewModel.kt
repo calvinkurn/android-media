@@ -1258,14 +1258,6 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         }
     }
 
-    private fun hasPromoApplied(validateUsePromoRequest: ValidateUsePromoRequest): Boolean {
-        if (validateUsePromoRequest.codes.isNotEmpty()) return true
-        for (order in validateUsePromoRequest.orders) {
-            if (order?.codes?.isNotEmpty() == true) return true
-        }
-        return false
-    }
-
     fun generateBboPromoCodes(): ArrayList<String> {
         val shipping = _orderShipment
         if (shipping.isApplyLogisticPromo && shipping.logisticPromoViewModel != null && shipping.logisticPromoShipping != null) {
