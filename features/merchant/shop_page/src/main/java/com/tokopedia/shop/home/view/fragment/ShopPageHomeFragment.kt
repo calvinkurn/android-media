@@ -872,7 +872,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 bannerId = widgetId,
                 creativeName = dataModel.coverUrl,
                 autoPlay = autoPlay,
-                positionWidget = widgetPosition + 1,
+                positionWidget = widgetPosition,
                 positionChannel = position.toString()
         )
     }
@@ -885,7 +885,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 bannerId = widgetId,
                 creativeName = dataModel.coverUrl,
                 autoPlay = autoPlay,
-                positionWidget = (widgetPosition + 1),
+                positionWidget = widgetPosition,
                 positionChannel = position.toString()
         )
         RouteManager.route(context, dataModel.applink)
