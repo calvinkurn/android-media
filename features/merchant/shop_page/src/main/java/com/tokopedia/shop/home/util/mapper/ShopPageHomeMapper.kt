@@ -254,6 +254,7 @@ object ShopPageHomeMapper {
                     stockSoldPercentage =  it.stockSoldPercentage.toInt()
                 }
                 hideGimmick = it.hideGimmick
+                labelGroupList  = it.labelGroups.map { labelGroup -> mapToLabelGroupViewModel(labelGroup) }
             }
         }
     }

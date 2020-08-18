@@ -1,6 +1,7 @@
 package com.tokopedia.shop.home.data.model
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.shop.common.data.source.cloud.model.LabelGroup
 
 data class ShopLayoutWidget(
         @SerializedName("layoutID")
@@ -210,7 +211,9 @@ data class ShopLayoutWidget(
                     @SerializedName("hideGimmick")
                     val hideGimmick: Boolean = false,
                     @SerializedName("stockSoldPercentage")
-                    val stockSoldPercentage: Float = 0f
+                    val stockSoldPercentage: Float = 0f,
+                    @SerializedName("labelGroups")
+                    val labelGroups: List<LabelGroup> = listOf()
             ){
                 data class StockWording(
                         @SerializedName("title")

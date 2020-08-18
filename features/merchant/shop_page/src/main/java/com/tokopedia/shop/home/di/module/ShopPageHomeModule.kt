@@ -153,6 +153,11 @@ class ShopPageHomeModule {
                                     }
                                     hideGimmick
                                     stockSoldPercentage
+                                    labelGroups {
+                                        position
+                                        type
+                                        title
+                                    }
                                }
                     }
                   }
