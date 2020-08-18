@@ -38,10 +38,12 @@
         android:textColor="@color/grey_150"
         app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toTopOf="@+id/border_bottom"
-        app:layout_constraintEnd_toEndOf="@+id/category_product_image"
-        app:layout_constraintStart_toStartOf="@+id/category_product_image"
+        app:layout_constraintEnd_toEndOf="@id/border_right"
+        app:layout_constraintStart_toStartOf="@id/border_left"
         app:layout_constraintTop_toBottomOf="@+id/category_product_image"
         app:layout_constraintWidth_default="spread"
+        android:paddingLeft="@dimen/dp_12"
+        android:paddingRight="@dimen/dp_12"
         app:typographyType="body_3"
         tools:text="Atasan" />
 
