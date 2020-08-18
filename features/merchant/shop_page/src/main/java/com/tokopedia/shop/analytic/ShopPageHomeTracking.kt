@@ -475,7 +475,7 @@ class ShopPageHomeTracking(
                         )
                 )
         ) as HashMap<String, Any>
-        trackingQueue.putEETracking(eventMap)
+        sendDataLayerEvent(eventMap)
     }
 
     fun clickSeeMorePlayCarouselBanner(shopId: String, userId: String) {
