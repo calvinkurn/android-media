@@ -66,8 +66,6 @@ import com.tokopedia.home.analytics.HomePageTrackingV2.RecommendationList.getRec
 import com.tokopedia.home.analytics.HomePageTrackingV2.SprintSale.getSprintSaleImpression
 import com.tokopedia.home.analytics.v2.CategoryWidgetTracking
 import com.tokopedia.home.analytics.v2.LegoBannerTracking
-import com.tokopedia.home.analytics.v2.MixTopTracking.getMixTopViewIris
-import com.tokopedia.home.analytics.v2.MixTopTracking.mapChannelToProductTracker
 import com.tokopedia.home.analytics.v2.PopularKeywordTracking
 import com.tokopedia.home.analytics.v2.ProductHighlightTracking.getProductHighlightImpression
 import com.tokopedia.home.beranda.di.BerandaComponent
@@ -592,7 +590,8 @@ open class HomeFragment : BaseDaggerFragment(),
         super.onResume()
         shouldPausePlay = true
         createAndCallSendScreen()
-        if (!shouldPausePlay) adapter?.onResume()
+        if (!shouldPausePlay) adapter?.onResumePlayWidget()
+        adapter?.onResumeBanner()
         conditionalViewModelRefresh()
         if (activityStateListener != null) {
             activityStateListener!!.onResume()
@@ -628,7 +627,8 @@ open class HomeFragment : BaseDaggerFragment(),
 
     override fun onPause() {
         super.onPause()
-        if(shouldPausePlay) adapter?.onPause()
+        if(shouldPausePlay) adapter?.onPausePlayWidget()
+        adapter?.onPauseBanner()
         getTrackingQueueObj()?.sendAll()
         if (activityStateListener != null) {
             activityStateListener!!.onPause()
@@ -1635,8 +1635,8 @@ open class HomeFragment : BaseDaggerFragment(),
 
     private fun resetAutoPlay(isVisibleToUser: Boolean){
         shouldPausePlay = !isVisibleToUser
-        if(shouldPausePlay && view != null && adapter != null) adapter?.onPause()
-        else adapter?.onResume()
+        if(shouldPausePlay && view != null && adapter != null) adapter?.onPausePlayWidget()
+        else adapter?.onResumePlayWidget()
     }
 
     private fun trackScreen(isVisibleToUser: Boolean) {

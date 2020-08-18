@@ -21,9 +21,7 @@ import kotlin.coroutines.CoroutineContext
 class HomePlayWidgetHelper(
         private val context: Context,
         private val exoPlayerView: TokopediaPlayView
-) :
-        ExoPlayerControl,
-        CoroutineScope {
+) : ExoPlayerControl{
 
     companion object{
         private const val DELAY_PLAYING = 2000L
@@ -80,7 +78,7 @@ class HomePlayWidgetHelper(
         }
     }
 
-    private val connectionStateObserver = object :  Observer<PlayConnectionState> {
+    private val connectionStateObserver = object : Observer<PlayConnectionState> {
         override fun onChanged(state: PlayConnectionState?) {
             when (state) {
                 is PlayConnectionState.UnAvailable -> {
@@ -93,13 +91,6 @@ class HomePlayWidgetHelper(
             }
         }
     }
-
-
-    /* Master job */
-    private val masterJob = Job()
-
-    override val coroutineContext: CoroutineContext
-        get() = masterJob + Dispatchers.Main
 
     private fun isDeviceHasRequirementAutoPlay(): Boolean{
         return DimensionUtils.getDensityMatrix(context) >= 1.5f
@@ -130,13 +121,12 @@ class HomePlayWidgetHelper(
     }
 
     override fun playerPause() {
-        masterJob.cancelChildren()
         exoPlayerView.setPlayer(null)
-        playManager.stop()
+        this.timerDelayBack.cancel()
+        this.timerDelayPlay.cancel()
     }
 
     override fun playerPlayWithDelay() {
-        masterJob.cancelChildren()
         timerDelayPlay.start()
     }
 
@@ -182,7 +172,6 @@ class HomePlayWidgetHelper(
 
     override fun onActivityResume() {
         if(DeviceConnectionInfo.isConnectWifi(context) && isDeviceHasRequirementAutoPlay()) {
-            masterJob.cancelChildren()
             timerDelayBack.start()
         } else {
             stopVideoPlayer()
@@ -195,7 +184,8 @@ class HomePlayWidgetHelper(
     }
 
     override fun onActivityDestroy() {
-        masterJob.cancelChildren()
+        timerDelayBack.cancel()
+        timerDelayPlay.cancel()
         exoPlayerView.setPlayer(null)
         releasePlayer()
         mPlayer = null
