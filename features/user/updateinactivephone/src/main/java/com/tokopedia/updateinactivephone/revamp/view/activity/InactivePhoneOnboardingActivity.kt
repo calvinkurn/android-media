@@ -15,7 +15,7 @@ class InactivePhoneOnboardingActivity : BaseSimpleActivity() {
     override fun getNewFragment(): Fragment? {
         val type = intent?.extras?.getString(KEY_ONBOARDING_TYPE) ?: ""
         if (type.isNotEmpty()) {
-            when(type) {
+            when (type) {
                 TYPE_ID_CARD -> {
                     return InactivePhoneOnbaordingFragment.createOnboardingIdCardPage()
                 }
