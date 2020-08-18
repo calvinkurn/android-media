@@ -131,7 +131,6 @@ dependencies {
     implementation (project(rootProject.ext.features.sessioncommon))
     implementation (project(rootProject.ext.libraries.remoteConfig))
     implementation (project(rootProject.ext.libraries.remoteResourceRequest))
-    implementation (project(rootProject.ext.libraries.core_legacy))
 
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
