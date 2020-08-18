@@ -9,8 +9,6 @@ data class Fields(
         var project : Project,
         var issuetype : Issuetype,
         var description : Description,
-//        var reporter: Reporter,
-//        var fixVersions: List<FixVersion>,
         var customfield_10077 : Customfield_10077,
         var customfield_10548 : List<Customfield_10548>,
         var customfield_10253 : Customfield_10253,

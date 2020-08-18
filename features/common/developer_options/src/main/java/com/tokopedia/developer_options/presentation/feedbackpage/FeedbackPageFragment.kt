@@ -1,8 +1,10 @@
 package com.tokopedia.developer_options.presentation.feedbackpage
 
 import android.os.Build
+import android.os.Build.VERSION_CODES
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,14 +13,13 @@ import android.widget.AdapterView.OnItemSelectedListener
 import androidx.fragment.app.Fragment
 import com.tokopedia.developer_options.R
 import com.tokopedia.developer_options.api.*
-import com.tokopedia.user.session.BuildConfig
+import com.tokopedia.developer_options.presentation.preference.Preferences
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import rx.subscriptions.CompositeSubscription
-
 
 class FeedbackPageFragment: Fragment() {
 
@@ -29,11 +30,12 @@ class FeedbackPageFragment: Fragment() {
     private lateinit var submitButton: View
     private lateinit var feedbackApi: FeedbackApi
     private lateinit var compositeSubscription: CompositeSubscription
+    private lateinit var myPreferences: Preferences
 
-    private var savedEmail: String = ""
-    private var isAlreadyFill: Boolean = false
     private var deviceInfo: String = ""
-    private var versionCode: String = ""
+    private var androidVersion: String = ""
+    private var appVersion: String = ""
+
 
     private var userSession: UserSessionInterface? = null
 
@@ -53,6 +55,7 @@ class FeedbackPageFragment: Fragment() {
 
         feedbackApi = ApiClient.getAPIService()
         compositeSubscription = CompositeSubscription()
+        myPreferences = Preferences(context)
 
         context?.let { ArrayAdapter.createFromResource(it,
                 R.array.bug_type_array,
@@ -63,21 +66,41 @@ class FeedbackPageFragment: Fragment() {
         } }
 
         userSession = UserSession(activity)
+        initVersionData()
+
+    }
+
+    private fun initVersionData() {
+        val fields = VERSION_CODES::class.java.fields
+        var codeName = "UNKNOWN"
+        fields.filter { it.getInt(VERSION_CODES::class) == Build.VERSION.SDK_INT }
+                .forEach { codeName = it.name }
+
+        when {
+            codeName.startsWith("M") -> { codeName = "MARSHMALLOW" }
+            codeName.startsWith("N") -> { codeName = "NOUGAT" }
+            codeName.startsWith("O") -> { codeName = "OREO" }
+            codeName.startsWith("N") -> { codeName = "PIE" }
+            codeName.startsWith("Q") -> { codeName = "ANDROID 10" }
+        }
+
         deviceInfo = (StringBuilder().append(Build.MANUFACTURER).append(" ").append(Build.MODEL).toString())
-        versionCode = BuildConfig.VERSION_CODE.toString()
+        androidVersion = codeName
+        appVersion = context?.packageManager?.getPackageInfo(context?.packageName, 0)?.versionName ?: ""
     }
 
     private fun initListener() {
-        if(isAlreadyFill) email.setText(savedEmail) else email.setText(userSession?.email)
+        val savedEmail = myPreferences.getSubmitFlag(userSession?.userId.toString())
+        if (savedEmail != null) {
+            email.setText(savedEmail)
+        } else {
+            email.setText(userSession?.email)
+        }
+
 
         bugType.onItemSelectedListener = object : OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View, position: Int, id: Long) {
-                val selectedType = parent?.getItemAtPosition(position)
-                when (selectedType) {
-                    0 -> Toast.makeText(context, "Crash", Toast.LENGTH_SHORT).show()
-                    1 -> Toast.makeText(context, "UI", Toast.LENGTH_SHORT).show()
-                    2 -> Toast.makeText(context, "Tracker", Toast.LENGTH_SHORT).show()
-                }
+                //no-op
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -103,8 +126,8 @@ class FeedbackPageFragment: Fragment() {
                             "Affected Page should not be empty", Toast.LENGTH_SHORT).show()
                 }
                 else -> {
-                    /*arahin ke submit button*/
                     val issueType = bugType.selectedItem.toString()
+                    Log.d("ANDROID_VERSION", androidVersion)
                     submitFeedback(emailText, affectedPageText, issueText, issueType)
                 }
             }
@@ -115,23 +138,21 @@ class FeedbackPageFragment: Fragment() {
     private fun submitFeedback(email: String, page: String, desc: String, issueType: String) {
         compositeSubscription.add(
                 feedbackApi.getResponse(requestMapper(email, page, desc, issueType))
-                        /*Success but error in here*/
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-//                        .unsubscribeOn(Schedulers.io())
                         .subscribe(object : Subscriber<FeedbackResponse>() {
                             override fun onNext(t: FeedbackResponse) {
-                                /*Success but error in here*/
                                 Toast.makeText(activity, t.key.toString(), Toast.LENGTH_SHORT).show()
+                                myPreferences.setSubmitFlag(email, userSession?.userId.toString())
                                 activity?.finish()
                             }
 
                             override fun onCompleted() {
+                                //no-op
                             }
 
                             override fun onError(e: Throwable?) {
                                 Toast.makeText(activity, e.toString(), Toast.LENGTH_SHORT).show()
-
                             }
 
                         })
@@ -157,16 +178,15 @@ class FeedbackPageFragment: Fragment() {
                                 type = "paragraph",
                                 content = listOf(DeepContent(
                                         type = "text",
-                                        text = desc
+                                        text = "Reporter : $email \n" +
+                                                "Device Info : $deviceInfo | $androidVersion\n" +
+                                                "App Version : $appVersion \n" +
+                                                "Affected Page : $page \n\n" +
+                                                "Description of Issue : \n" +
+                                                desc
                                 ))
                         ))
                 ),
-               /* reporter = Reporter(
-                        id = email
-                ),
-                fixVersion = listOf(FixVersion(
-                        id = versionCode
-                )),*/
                 customfield_10077 = Customfield_10077(
                         value = "[MB] Android",
                         id = "10031"
