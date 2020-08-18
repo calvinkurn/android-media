@@ -385,7 +385,6 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
                     empty_state_cancellation?.gone()
                     cl_cancellation_content?.visible()
                     cancelReasonResponse = it.data.getCancellationReason
-                    cancelReasonResponse.isEligibleInstantCancel = true
                     renderPage()
                 }
                 is Fail -> {
