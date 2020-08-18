@@ -40,7 +40,7 @@ class EventHomePageTracking {
     }
 
     private object Impression {
-        val KEY = "impression"
+        val KEY = "impressions"
         val NAME = "name"
         val ID = "id"
         val PRICE = "price"
@@ -57,7 +57,7 @@ class EventHomePageTracking {
     }
 
     private object Product {
-        val KEY = "product"
+        val KEY = "products"
         val NAME = "name"
         val ID = "id"
         val PRICE = "price"
@@ -67,6 +67,13 @@ class EventHomePageTracking {
         val LIST = "list"
         val POSITION = "position"
         val ATTRIBUTION = "attribution"
+    }
+
+    private object Misc{
+        val SCREENNAME = "screenName"
+        val CURRENTSITE = "currentSite"
+        val BUSINESSUNIT = "businessUnit"
+        val CATEGORY = "category"
     }
 
     companion object {
@@ -80,12 +87,18 @@ class EventHomePageTracking {
     }
 
     fun openHomeEvent() {
-        getTracker().sendGeneralEvent(DataLayer.mapOf(
-                Event.KEY, "",
+        val data = DataLayer.mapOf(
+                Event.KEY, "openScreen",
                 Event.CATEGORY, "",
                 Event.ACTION, "",
-                Event.LABEL, ""
-        ))
+                Event.LABEL, "",
+                Misc.SCREENNAME, "digital/event",
+                Misc.CURRENTSITE, "tokopediadigitalevent",
+                Misc.BUSINESSUNIT, "travel & entertainment",
+                Misc.CATEGORY, "events"
+
+        )
+        getTracker().sendGeneralEvent(data)
     }
 
     fun impressionTopEventProduct(item: EventItemModel,
@@ -96,6 +109,10 @@ class EventHomePageTracking {
                 Event.CATEGORY, "digital - event",
                 Event.ACTION, "impression top event",
                 Event.LABEL, "",
+                Misc.SCREENNAME, "",
+                Misc.CURRENTSITE, "tokopediadigitalevent",
+                Misc.BUSINESSUNIT, "travel & entertainment",
+                Misc.CATEGORY, "events",
                 Ecommerce.KEY, DataLayer.mapOf(
                 Ecommerce.CURRENCY_CODE, "IDR",
                 Impression.KEY, DataLayer.listOf(DataLayer.mapOf(
@@ -115,20 +132,28 @@ class EventHomePageTracking {
                 Event.KEY, "productClick",
                 Event.CATEGORY, "digital - event",
                 Event.ACTION, "click lihat semua on top event",
-                Event.LABEL, ""
+                Event.LABEL, "",
+                Misc.SCREENNAME, "",
+                Misc.CURRENTSITE, "tokopediadigitalevent",
+                Misc.BUSINESSUNIT, "travel & entertainment",
+                Misc.CATEGORY, "events"
         ))
     }
 
     fun clickTopEventProduct(item: EventItemModel,
                              listItems: List<String>,
                              position: Int) {
-        getTracker().sendEnhanceEcommerceEvent(DataLayer.mapOf(
+        val data = DataLayer.mapOf(
                 Event.KEY, "productClick",
                 Event.CATEGORY, "digital - event",
                 Event.ACTION, "click top event",
                 Event.LABEL, String.format("%s - %s", item.title, position.toString()),
+                Misc.SCREENNAME, "",
+                Misc.CURRENTSITE, "tokopediadigitalevent",
+                Misc.BUSINESSUNIT, "travel & entertainment",
+                Misc.CATEGORY, "events",
                 Ecommerce.KEY, DataLayer.mapOf(
-                Click.KEY, DataLayer.listOf(DataLayer.mapOf(
+                Click.KEY, DataLayer.mapOf(
                 Click.ACTION_FIELD, DataLayer.mapOf("list", item.title),
                 Product.KEY, DataLayer.listOf(DataLayer.mapOf(
                 Product.NAME, item.title,
@@ -139,31 +164,40 @@ class EventHomePageTracking {
                 Product.VARIANT, "none",
                 Product.LIST, listItems,
                 Product.POSITION, position)))))
-        ))
+        getTracker().sendEnhanceEcommerceEvent(data)
     }
 
-    fun impressionSectionEventProduct(item: EventItemModel, listItems: List<EventItemModel>, position: Int) {
+    fun impressionSectionEventProduct(item: EventItemModel, listItems: List<EventItemModel>, title:String, position: Int) {
         getTracker().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 Event.KEY, "productView",
                 Event.CATEGORY, "digital - event",
-                Event.ACTION, String.format("%s %s", "impression on curated ", item.title),
+                Event.ACTION, String.format("%s %s", "impression on curated ", getActivityinEnglish(title)),
                 Event.LABEL, String.format("%s - %s", item.title, position.toString()),
+                Misc.SCREENNAME, "",
+                Misc.CURRENTSITE, "tokopediadigitalevent",
+                Misc.BUSINESSUNIT, "travel & entertainment",
+                Misc.CATEGORY, "events",
                 Ecommerce.KEY, DataLayer.mapOf(
                 Ecommerce.CURRENCY_CODE, "IDR",
                 Impression.KEY, getProductList(listItems)
         )))
     }
 
-    fun clickSectionEventProduct(item: EventItemModel, listItems: List<EventItemModel>, position: Int) {
-        getTracker().sendEnhanceEcommerceEvent(DataLayer.mapOf(
+    fun clickSectionEventProduct(item: EventItemModel, listItems: List<EventItemModel>, title:String, position: Int) {
+        val data = DataLayer.mapOf(
                 Event.KEY, "productClick",
                 Event.CATEGORY, "digital - event",
-                Event.ACTION, String.format("%s %s", "click on curated ", item.title),
+                Event.ACTION, String.format("%s %s", "click on curated ", getActivityinEnglish(title)),
                 Event.LABEL, String.format("%s - %s", item.title, position.toString()),
+                Misc.SCREENNAME, "",
+                Misc.CURRENTSITE, "tokopediadigitalevent",
+                Misc.BUSINESSUNIT, "travel & entertainment",
+                Misc.CATEGORY, "events",
                 Ecommerce.KEY, DataLayer.mapOf(
                 Click.KEY, DataLayer.mapOf(Click.ACTION_FIELD, DataLayer.mapOf("list", item.title),
                 Product.KEY, getProductList(listItems))
-        )))
+        ))
+        getTracker().sendEnhanceEcommerceEvent(data)
     }
 
 
@@ -171,8 +205,12 @@ class EventHomePageTracking {
         getTracker().sendGeneralEvent(DataLayer.mapOf(
                 Event.KEY, "clickEvent",
                 Event.CATEGORY, "digital - event",
-                Event.ACTION, String.format("%s %s", "click lihat semua curated", title),
-                Event.LABEL, String.format("%s - %d", title, position)
+                Event.ACTION, String.format("%s %s", "click lihat semua curated", getActivityinEnglish(title)),
+                Event.LABEL, String.format("%s - %d", title, position),
+                Misc.SCREENNAME, "",
+                Misc.CURRENTSITE, "tokopediadigitalevent",
+                Misc.BUSINESSUNIT, "travel & entertainment",
+                Misc.CATEGORY, "events"
         ))
     }
 
@@ -229,12 +267,24 @@ class EventHomePageTracking {
         getTracker().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 Event.KEY, "promoView",
                 Event.CATEGORY, "digital - event",
-                Event.ACTION, "click on section international",
+                Event.ACTION, "impression on section international",
                 Event.LABEL, String.format("%s - %s", item.title, position.toString()),
+                Misc.SCREENNAME, "",
+                Misc.CURRENTSITE, "tokopediadigitalevent",
+                Misc.BUSINESSUNIT, "travel & entertainment",
+                Misc.CATEGORY, "events",
                 Ecommerce.KEY, DataLayer.mapOf(
-                Promo.KEY_CLICK, DataLayer.mapOf(
-                Promo.PROMOTION, DataLayer.listOf(getLocationList(listItems))
-        ))))
+                Promo.KEY_IMPRESSION, DataLayer.mapOf(
+                Promo.PROMOTION, DataLayer.listOf(DataLayer.mapOf(
+                Promo.ID, item.id,
+                Promo.NAME, "promo slot name",
+                Promo.CREATIVE, item.title,
+                Promo.CREATIVE_URL, item.imageUrl,
+                Promo.POSITION, position,
+                Promo.CATEGORY, "hiburan",
+                Promo.PROMO_ID, item.id,
+                Promo.PROMO_CODE, "none"
+        ))))))
     }
 
     fun clickLocationEvent(item: EventItemLocationModel, listItems: List<EventItemLocationModel>, position: Int) {
@@ -243,10 +293,23 @@ class EventHomePageTracking {
                 Event.CATEGORY, "digital - event",
                 Event.ACTION, "click on section international",
                 Event.LABEL, String.format("%s - %s", item.title, position.toString()),
+                Misc.SCREENNAME, "",
+                Misc.CURRENTSITE, "tokopediadigitalevent",
+                Misc.BUSINESSUNIT, "travel & entertainment",
+                Misc.CATEGORY, "events",
                 Ecommerce.KEY, DataLayer.mapOf(
                 Promo.KEY_CLICK, DataLayer.mapOf(
-                Promo.PROMOTION, DataLayer.listOf(getLocationList(listItems))
+                Promo.PROMOTION, DataLayer.listOf(DataLayer.mapOf(
+                Promo.ID, item.id,
+                Promo.NAME, "promo slot name",
+                Promo.CREATIVE, item.title,
+                Promo.CREATIVE_URL, item.imageUrl,
+                Promo.POSITION, position,
+                Promo.CATEGORY, "hiburan",
+                Promo.PROMO_ID, item.id,
+                Promo.PROMO_CODE, "none"
         ))))
+        ))
     }
 
     fun impressionBanner(item: EventHomeDataResponse.Data.EventHome.Layout.Item, position: Int) {
@@ -255,18 +318,22 @@ class EventHomePageTracking {
                 Event.CATEGORY, "digital - event",
                 Event.ACTION, "impression banner",
                 Event.LABEL, "",
+                Misc.SCREENNAME, "",
+                Misc.CURRENTSITE, "tokopediadigitalevent",
+                Misc.BUSINESSUNIT, "travel & entertainment",
+                Misc.CATEGORY, "events",
                 Ecommerce.KEY, DataLayer.mapOf(
                 Promo.KEY_IMPRESSION, DataLayer.mapOf(
                 Promo.PROMOTION, DataLayer.listOf(DataLayer.mapOf(
                 Promo.ID, item.id,
-                Promo.NAME, item.displayName),
+                Promo.NAME, item.displayName,
                 Promo.CREATIVE, item.displayName,
                 Promo.CREATIVE_URL, item.url,
                 Promo.POSITION, position,
                 Promo.CATEGORY, "hiburan",
                 Promo.PROMO_ID, item.id,
                 Promo.PROMO_CODE, "none"
-        )))))
+        ))))))
     }
 
     fun clickCategoryIcon(item: CategoryEventViewHolder.CategoryItemModel, position: Int) {
@@ -274,7 +341,11 @@ class EventHomePageTracking {
                 Event.KEY, "clickEvent",
                 Event.CATEGORY, "digital - event",
                 Event.ACTION, "click category icon",
-                Event.LABEL, String.format("%s - %s", item.title, position)
+                Event.LABEL, String.format("%s - %s", item.title, position),
+                Misc.SCREENNAME, "",
+                Misc.CURRENTSITE, "tokopediadigitalevent",
+                Misc.BUSINESSUNIT, "travel & entertainment",
+                Misc.CATEGORY, "events"
         ))
     }
 
@@ -284,6 +355,10 @@ class EventHomePageTracking {
                 Event.CATEGORY, "digital - event",
                 Event.ACTION, "click banner",
                 Event.LABEL, String.format("%s - %s", item.displayName, position.toString()),
+                Misc.SCREENNAME, "",
+                Misc.CURRENTSITE, "tokopediadigitalevent",
+                Misc.BUSINESSUNIT, "travel & entertainment",
+                Misc.CATEGORY, "events",
                 Ecommerce.KEY, DataLayer.mapOf(
                 Promo.KEY_CLICK, DataLayer.mapOf(
                 Promo.PROMOTION, DataLayer.listOf(DataLayer.mapOf(
@@ -296,5 +371,9 @@ class EventHomePageTracking {
                 Promo.PROMO_ID, item.id,
                 Promo.PROMO_CODE, "none"
         ))))))
+    }
+
+    private fun getActivityinEnglish(title: String):String{
+        return if(title.equals("Aktivitas")) "activity" else title
     }
 }
