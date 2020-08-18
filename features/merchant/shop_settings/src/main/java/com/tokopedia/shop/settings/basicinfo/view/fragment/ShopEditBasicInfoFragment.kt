@@ -390,14 +390,8 @@ class ShopEditBasicInfoFragment: Fragment() {
         val shopNameInput = shopNameTextField.textFieldInput
         val shopDomainInput = shopDomainTextField.textFieldInput
 
-        when {
-            isNameAllowed && isDomainAllowed -> {
-                shopNameInput.isEnabled = true
-                shopDomainInput.isEnabled = true
-            }
-            isNameAllowed && !isDomainAllowed -> shopDomainInput.isEnabled = true
-            isDomainAllowed && !isNameAllowed -> shopNameInput.isEnabled = true
-        }
+        shopNameInput.isEnabled = isNameAllowed
+        shopDomainInput.isEnabled = isDomainAllowed
     }
 
     private fun showWarningTicker() {
