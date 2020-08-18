@@ -337,7 +337,11 @@ class ShopEditBasicInfoFragment: Fragment() {
 
                     tvSave.isEnabled = validateDomainShopName.isValid
                 }
-                is Fail -> shopDomainSuggestions.hide()
+                is Fail -> {
+                    val message = (it as Success).data.validateDomainShopName.error.message
+                    showShopNameInputError(message)
+                    shopDomainSuggestions.hide()
+                }
             }
         }
 
@@ -354,7 +358,11 @@ class ShopEditBasicInfoFragment: Fragment() {
 
                     tvSave.isEnabled = validateDomainShopName.isValid
                 }
-                is Fail -> shopDomainSuggestions.hide()
+                is Fail -> {
+                    val message = (it as Success).data.validateDomainShopName.error.message
+                    showShopNameInputError(message)
+                    shopDomainSuggestions.hide()
+                }
             }
         }
     }
