@@ -63,7 +63,6 @@ class ShopEditBasicInfoViewModel @Inject constructor(
     private val _shopDomainSuggestion = MutableLiveData<Result<ShopDomainSuggestionData>>()
 
     private var currentShopName: String? = null
-    private var currentShopDomain: String? = null
     private var currentShop: ShopBasicDataModel? = null
 
     private var validateShopNameJob: Job? = null
@@ -82,7 +81,7 @@ class ShopEditBasicInfoViewModel @Inject constructor(
     }
 
     fun validateShopName(shopName: String) {
-        if(shopName == currentShopName) return
+        if(shopName == currentShop?.name) return
 
         validateShopNameJob?.cancel()
 
@@ -109,7 +108,7 @@ class ShopEditBasicInfoViewModel @Inject constructor(
     }
 
     fun validateShopDomain(domain: String) {
-        if(domain == currentShopDomain) return
+        if(domain == currentShop?.domain) return
 
         validateShopDomainJob?.cancel()
 
@@ -130,8 +129,6 @@ class ShopEditBasicInfoViewModel @Inject constructor(
         }) {
             _validateShopDomain.value = Fail(it)
         }.let { validateShopDomainJob = it }
-
-        setCurrentShopDomain(domain)
     }
 
     fun getShopBasicData() {
@@ -206,15 +203,10 @@ class ShopEditBasicInfoViewModel @Inject constructor(
     fun setCurrentShopData(data: ShopBasicDataModel) {
         currentShop = data
         setCurrentShopName(data.name)
-        setCurrentShopDomain(data.domain)
     }
 
     private fun setCurrentShopName(shopName: String?) {
         currentShopName = shopName
-    }
-
-    private fun setCurrentShopDomain(shopDomain: String?) {
-        currentShopDomain = shopDomain
     }
 
     private fun getShopDomainSuggestion(shopName: String) {
