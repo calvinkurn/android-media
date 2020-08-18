@@ -144,7 +144,7 @@ dependencies {
 
     //Transaction
     implementation project(rootProject.ext.features.checkout)
-//    implementation project(rootProject.ext.features.oneclickcheckout)
+    implementation project(rootProject.ext.features.oneclickcheckout)
     implementation project(rootProject.ext.features.promoCheckoutMarketplace)
     implementation project(rootProject.ext.features.atc_variant)
 }
