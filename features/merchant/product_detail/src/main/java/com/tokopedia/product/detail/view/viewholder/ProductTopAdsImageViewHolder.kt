@@ -2,7 +2,7 @@ package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
@@ -37,8 +37,10 @@ class ProductTopAdsImageViewHolder(private val view: View, val listener: Dynamic
 
             topAdsImageView.setTopAdsImageViewImpression(object : TopAdsImageViewImpressionListener {
                 override fun onTopAdsImageViewImpression(viewUrl: String) {
-                    ImpresionTask(this@ProductTopAdsImageViewHolder.javaClass.canonicalName).execute(viewUrl)
-                    listener.onTopAdsImageViewImpression(element, bannerId, bannerName)
+                    view.addOnImpressionListener(element.impressHolder) {
+                        ImpresionTask(this@ProductTopAdsImageViewHolder.javaClass.canonicalName).execute(viewUrl)
+                        listener.onTopAdsImageViewImpression(element, bannerId, bannerName)
+                    }
                 }
             })
         }
