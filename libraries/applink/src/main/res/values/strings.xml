@@ -72,7 +72,7 @@
 
     <!-- Shop Score -->
     <string name="title_shop_score_sellerapp">Performa Toko Penjual</string>
-
+    
     <!--Product Add Edit-->
     <string name="title_product_add_edit">Product Add Edit</string>
 
@@ -81,6 +81,11 @@
 
     <!-- ATC Variant -->
     <string name="title_normal_checkout">Detail Produk</string>
+
+
+    <!-- Seller Onboarding -->
+    <string name="title_seller_onboarding">Seller Onboarding</string>
+
 
     <!-- Shop Page -->
     <string name="title_shop_page">Shop Page</string>
