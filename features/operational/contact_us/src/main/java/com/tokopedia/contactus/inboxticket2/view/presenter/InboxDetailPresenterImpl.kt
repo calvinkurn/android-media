@@ -40,6 +40,7 @@ import kotlin.coroutines.CoroutineContext
 
 private const val AGENT = "agent"
 private const val REPLY_TICKET_RESPONSE_STATUS = "OK"
+private const val ROLE_TYPE_CUSTOMER = "customer"
 
 class InboxDetailPresenterImpl(private val postMessageUseCase: PostMessageUseCase,
                                private val postMessageUseCase2: PostMessageUseCase2,
@@ -60,7 +61,6 @@ class InboxDetailPresenterImpl(private val postMessageUseCase: PostMessageUseCas
     var next = 0
         get() = field
         private set
-    private var userData: CreatedBy? = null
     private val reasonList: ArrayList<String> by lazy { ArrayList<String>() }
     private var isIssueClosed = false
 
@@ -184,11 +184,6 @@ class InboxDetailPresenterImpl(private val postMessageUseCase: PostMessageUseCas
                         val commentsItems =
                                 getCommentsWithTopItem(mTicketDetail?.comments, getTopItem(mTicketDetail))
                         for (item in commentsItems) {
-                            if (userData == null) {
-                                if (item.createdBy?.role == "customer") {
-                                    userData = item.createdBy
-                                }
-                            }
                             val createTime = getUtils().getDateTime(item.createTime)
                             item.createTime = createTime
                             item.shortTime = getShortTime(createTime)
@@ -675,10 +670,19 @@ class InboxDetailPresenterImpl(private val postMessageUseCase: PostMessageUseCas
 
     private fun getNewComment(): CommentsItem {
         val newItem = CommentsItem()
-        newItem.createdBy = userData
+        newItem.createdBy = getCommentCreator()
         newItem.message = mView?.userMessage
         newItem.createTime = getUtils().dateTimeCurrent
         return newItem
+    }
+
+    private fun getCommentCreator(): CreatedBy {
+        val creator by lazy { CreatedBy() }
+        return creator.apply {
+            name = userSession.name
+            role = ROLE_TYPE_CUSTOMER
+            picture = userSession.profilePicture
+        }
     }
 
     private fun sendGTMEventView() {
