@@ -361,7 +361,7 @@ class ShopPageHomeTracking(
             position: String
     ){
         val eventMap = mapOf(
-                EVENT to VIEW_SHOP_PAGE,
+                EVENT to PROMO_VIEW,
                 EVENT_CATEGORY to SHOP_PAGE_BUYER,
                 EVENT_ACTION to IMPRESSION_SGC_BANNER,
                 EVENT_LABEL to "view on banner play - $shopId - $position",
@@ -391,7 +391,7 @@ class ShopPageHomeTracking(
             position: String
     ){
         val eventMap = mapOf(
-                EVENT to CLICK_SHOP_PAGE,
+                EVENT to PROMO_CLICK,
                 EVENT_CATEGORY to SHOP_PAGE_BUYER,
                 EVENT_ACTION to CLICK,
                 EVENT_LABEL to "click on banner play - $shopId - $position",
@@ -424,7 +424,7 @@ class ShopPageHomeTracking(
 
     ){
         val eventMap = mapOf(
-                EVENT to VIEW_SHOP_PAGE,
+                EVENT to PROMO_VIEW,
                 EVENT_CATEGORY to SHOP_PAGE_BUYER,
                 EVENT_ACTION to IMPRESSION_SGC_CHANNEL,
                 EVENT_LABEL to "view channel - $shopId - $channelId - $positionWidget - $autoPlay",
@@ -457,7 +457,7 @@ class ShopPageHomeTracking(
 
     ){
         val eventMap = mapOf(
-                EVENT to CLICK_SHOP_PAGE,
+                EVENT to PROMO_CLICK,
                 EVENT_CATEGORY to SHOP_PAGE_BUYER,
                 EVENT_ACTION to CLICK,
                 EVENT_LABEL to "click channel - $shopId - $channelId - $positionWidget - $autoPlay",
