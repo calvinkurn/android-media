@@ -8,7 +8,7 @@ import com.tokopedia.entertainment.home.data.EventHomeDataResponse
 /**
  * Author errysuprayogi on 27,January,2020
  */
-class EventGridViewModel(var layout: EventHomeDataResponse.Data.EventHome.Layout)
+class EventGridModel(var layout: EventHomeDataResponse.Data.EventHome.Layout)
     : HomeEventItem<HomeTypeFactory> {
 
     var id : String = ""
