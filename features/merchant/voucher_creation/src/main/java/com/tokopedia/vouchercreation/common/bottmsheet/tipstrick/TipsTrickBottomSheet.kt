@@ -1,9 +1,9 @@
 package com.tokopedia.vouchercreation.common.bottmsheet.tipstrick
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
@@ -11,10 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.loadImageDrawable
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.parseAsHtml
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.user.session.UserSessionInterface
@@ -38,10 +35,21 @@ import javax.inject.Inject
  * Created By @ilhamsuaib on 08/05/20
  */
 
-class TipsTrickBottomSheet(
-        private val mContext: Context,
-        private val isPrivateVoucher: Boolean
-) : BottomSheetUnify() {
+class TipsTrickBottomSheet: BottomSheetUnify() {
+    
+    companion object {
+        @JvmStatic
+        fun createInstance(isPrivateVoucher: Boolean): TipsTrickBottomSheet {
+            return TipsTrickBottomSheet().apply {
+                setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
+                arguments = Bundle().apply {
+                    putBoolean(IS_PRIVATE, isPrivateVoucher)
+                }
+            }
+        }
+
+        private const val IS_PRIVATE = "is_private"
+    }
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -54,18 +62,18 @@ class TipsTrickBottomSheet(
     private var ctaDownloadCallback: () -> Unit = {}
     private var ctaShareCallback: () -> Unit = {}
 
-    init {
-        val child = LayoutInflater.from(mContext)
-                .inflate(R.layout.bottomsheet_mvc_tips_trick, ConstraintLayout(mContext), false)
-
-        setTitle(getBottomSheetTitle())
-        setChild(child)
-        setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
+    private val isPrivateVoucher: Boolean by lazy {
+        arguments?.getBoolean(IS_PRIVATE) ?: false
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
         super.onCreate(savedInstanceState)
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        initBottomSheet()
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -81,11 +89,21 @@ class TipsTrickBottomSheet(
                 .inject(this)
     }
 
+    private fun initBottomSheet() {
+        context?.run {
+            val child = LayoutInflater.from(this)
+                    .inflate(R.layout.bottomsheet_mvc_tips_trick, ConstraintLayout(this), false)
+
+            setTitle(getBottomSheetTitle())
+            setChild(child)
+        }
+    }
+
     private fun getBottomSheetTitle(): String {
         return if (isPrivateVoucher) {
-            mContext.getString(R.string.mvc_tips_and_trick_private)
+            context?.getString(R.string.mvc_tips_and_trick_private).toBlankOrString()
         } else {
-            mContext.getString(R.string.mvc_tips_and_trick_public)
+            context?.getString(R.string.mvc_tips_and_trick_public).toBlankOrString()
         }
     }
 
@@ -99,16 +117,16 @@ class TipsTrickBottomSheet(
 
     private fun getCarouselInfo(): String {
         return if (isPrivateVoucher) {
-            mContext.getString(R.string.mvc_private_voucher_tips_trick_info)
+            context?.getString(R.string.mvc_private_voucher_tips_trick_info).toBlankOrString()
         } else {
-            mContext.getString(R.string.mvc_public_voucher_tips_trick_info)
+            context?.getString(R.string.mvc_public_voucher_tips_trick_info).toBlankOrString()
         }
     }
 
     private fun setupCarouselImage(child: View) = with(child) {
         rvMvcImageCarousel.run {
             adapter = carouselAdapter
-            layoutManager = LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false)
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
@@ -136,15 +154,15 @@ class TipsTrickBottomSheet(
     private fun showPublicVoucherCarousel() {
         val items = listOf(
                 TipsTrickCarouselModel(
-                        mContext.getString(R.string.mvc_create_public_voucher_display_product_page),
+                        context?.getString(R.string.mvc_create_public_voucher_display_product_page).toBlankOrString(),
                         VoucherDisplay.PUBLIC_PRODUCT
                 ),
                 TipsTrickCarouselModel(
-                        mContext.getString(R.string.mvc_create_public_voucher_display_shop_page),
+                        context?.getString(R.string.mvc_create_public_voucher_display_shop_page).toBlankOrString(),
                         VoucherDisplay.PUBLIC_SHOP
                 ),
                 TipsTrickCarouselModel(
-                        mContext.getString(R.string.mvc_create_public_voucher_display_cart_page),
+                        context?.getString(R.string.mvc_create_public_voucher_display_cart_page).toBlankOrString(),
                         VoucherDisplay.PUBLIC_CART
                 )
         )
@@ -154,15 +172,15 @@ class TipsTrickBottomSheet(
     private fun showPrivateVoucherCarousel() {
         val items = listOf(
                 TipsTrickCarouselModel(
-                        mContext.getString(R.string.mvc_create_private_voucher_display_download_voucher),
+                        context?.getString(R.string.mvc_create_private_voucher_display_download_voucher).toBlankOrString(),
                         VoucherDisplay.PRIVATE_DOWNLOAD
                 ),
                 TipsTrickCarouselModel(
-                        mContext.getString(R.string.mvc_create_private_voucher_display_socmed_post),
+                        context?.getString(R.string.mvc_create_private_voucher_display_socmed_post).toBlankOrString(),
                         VoucherDisplay.PRIVATE_SOCMED
                 ),
                 TipsTrickCarouselModel(
-                        mContext.getString(R.string.mvc_create_private_voucher_display_chat_share),
+                        context?.getString(R.string.mvc_create_private_voucher_display_chat_share).toBlankOrString(),
                         VoucherDisplay.PRIVATE_CHAT
                 )
         )
@@ -171,7 +189,7 @@ class TipsTrickBottomSheet(
 
     private fun setupTipsAndTrick(child: View) = with(child.rvMvcTipsTrick) {
         adapter = tipsTrickAdapter
-        layoutManager = object : LinearLayoutManager(mContext) {
+        layoutManager = object : LinearLayoutManager(context) {
             override fun canScrollVertically(): Boolean = false
         }
 
@@ -181,24 +199,24 @@ class TipsTrickBottomSheet(
     private fun showTipsAndTrick() {
         val items = listOf(
                 TipsTrickModel(
-                        mContext.getString(R.string.mvc_show_voucher_to_your_social_media_title),
-                        mContext.getString(R.string.mvc_show_voucher_to_your_social_media_description)
+                        context?.getString(R.string.mvc_show_voucher_to_your_social_media_title).toBlankOrString(),
+                        context?.getString(R.string.mvc_show_voucher_to_your_social_media_description).toBlankOrString()
                 ),
                 TipsTrickModel(
-                        mContext.getString(R.string.mvc_giveaway_for_followers_title),
-                        mContext.getString(R.string.mvc_giveaway_for_followers_description)
+                        context?.getString(R.string.mvc_giveaway_for_followers_title).toBlankOrString(),
+                        context?.getString(R.string.mvc_giveaway_for_followers_description).toBlankOrString()
                 ),
                 TipsTrickModel(
-                        mContext.getString(R.string.mvc_post_voucher_on_shop_feed_title),
-                        mContext.getString(R.string.mvc_post_voucher_on_shop_feed_description)
+                        context?.getString(R.string.mvc_post_voucher_on_shop_feed_title).toBlankOrString(),
+                        context?.getString(R.string.mvc_post_voucher_on_shop_feed_description).toBlankOrString()
                 ),
                 TipsTrickModel(
-                        mContext.getString(R.string.mvc_set_as_shop_cover_title),
-                        mContext.getString(R.string.mvc_set_as_shop_cover_description)
+                        context?.getString(R.string.mvc_set_as_shop_cover_title).toBlankOrString(),
+                        context?.getString(R.string.mvc_set_as_shop_cover_description).toBlankOrString()
                 ),
                 TipsTrickModel(
-                        mContext.getString(R.string.mvc_share_on_messenger_group_title),
-                        mContext.getString(R.string.mvc_share_on_messenger_group_desription)
+                        context?.getString(R.string.mvc_share_on_messenger_group_title).toBlankOrString(),
+                        context?.getString(R.string.mvc_share_on_messenger_group_desription).toBlankOrString()
                 )
         )
         tipsTrickAdapter.setItems(items)

@@ -15,15 +15,15 @@ import retrofit2.Response
 /**
  * Author errysuprayogi on 09,February,2020
  */
-class PatchRepository(private val dataDao: DataDao, version: String) {
+class PatchRepository(private val dataDao: DataDao, versionCode: String) {
 
     private var TAG : String = PatchRepository::class.java.simpleName
     private var client: PatchApiService = RetrofitClient.webservice
 
-    val allData: LiveData<List<DataResponse.Result>> = getDistinctAllResult(version)
+    val allData: LiveData<List<DataResponse.Result>> = getDistinctAllResult(versionCode)
 
-    private fun getDistinctAllResult(ver: String): LiveData<List<DataResponse.Result>>
-            = dataDao.getAllResult(ver).getDistinct()
+    private fun getDistinctAllResult(versionCode: String): LiveData<List<DataResponse.Result>>
+            = dataDao.getAllResult(versionCode).getDistinct()
 
     private fun <T> LiveData<T>.getDistinct(): LiveData<T> {
         val distinctLiveData = MediatorLiveData<T>()
@@ -36,7 +36,7 @@ class PatchRepository(private val dataDao: DataDao, version: String) {
                     lastObj = obj
                     distinctLiveData.postValue(lastObj)
                 } else if ((obj == null && lastObj != null)
-                    || obj != lastObj) {
+                        || obj != lastObj) {
                     lastObj = obj
                     distinctLiveData.postValue(lastObj)
                 }
@@ -45,17 +45,17 @@ class PatchRepository(private val dataDao: DataDao, version: String) {
         return distinctLiveData
     }
 
-    suspend fun insert(result: DataResponse.Result) {
-        dataDao.insertAll(result)
-    }
-
     suspend fun flush(){
         dataDao.deleteAll()
     }
 
-    fun getPatch(applicationId: String, versionName: String, onSuccess: ((DataResponse) -> Unit),
+    suspend fun insert(result: DataResponse.Result) {
+        dataDao.insertAll(result)
+    }
+
+    fun getPatch(applicationId: String, versionName: String, buildNumber: String, onSuccess: ((DataResponse) -> Unit),
                  onError: ((Throwable) -> Unit)) {
-        client.getPatch(applicationId, versionName).enqueue(object : Callback<DataResponse>{
+        client.getPatch(applicationId, versionName, buildNumber).enqueue(object : Callback<DataResponse>{
             override fun onResponse(call: Call<DataResponse>, response: Response<DataResponse>) {
                 if(response.isSuccessful){
                     response.body()?.let(onSuccess)

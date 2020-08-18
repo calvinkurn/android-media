@@ -51,24 +51,24 @@ class TooltipBottomSheet : BottomSheetUnify() {
         bottomSheetTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize)
         context?.also { context ->
             bottomSheetClose.apply {
-                setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_bottomsheet_close))
+                setImageDrawable(ContextCompat.getDrawable(context, com.tokopedia.product.addedit.R.drawable.ic_bottomsheet_close))
                 layoutParams.apply {
-                    width = context.resources.getDimension(R.dimen.tooltip_close_size).toInt()
-                    height = context.resources.getDimension(R.dimen.tooltip_close_size).toInt()
+                    width = context.resources.getDimension(com.tokopedia.product.addedit.R.dimen.tooltip_close_size).toInt()
+                    height = context.resources.getDimension(com.tokopedia.product.addedit.R.dimen.tooltip_close_size).toInt()
                 }
             }
         }
     }
 
     private fun removeContainerPadding() {
-        val padding = resources.getDimensionPixelSize(R.dimen.tooltip_padding)
-        val paddingTop = resources.getDimensionPixelSize(R.dimen.tooltip_padding_top)
+        val padding = resources.getDimensionPixelSize(com.tokopedia.product.addedit.R.dimen.tooltip_padding)
+        val paddingTop = resources.getDimensionPixelSize(com.tokopedia.product.addedit.R.dimen.tooltip_padding_top)
         bottomSheetWrapper.setPadding(padding, paddingTop, padding, padding)
     }
 
     private fun addMarginCloseButton() {
         val topMargin = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
-        val horizontalMargin = resources.getDimensionPixelSize(R.dimen.tooltip_close_margin)
+        val horizontalMargin = resources.getDimensionPixelSize(com.tokopedia.product.addedit.R.dimen.tooltip_close_margin)
         (bottomSheetClose.layoutParams as RelativeLayout.LayoutParams).apply {
             setMargins(horizontalMargin, topMargin, horizontalMargin, 0)
             addRule(RelativeLayout.CENTER_VERTICAL)
@@ -81,11 +81,11 @@ class TooltipBottomSheet : BottomSheetUnify() {
             setHasFixedSize(true)
             adapter = listAdapter
             if (isDividerVisible) {
-                ContextCompat.getDrawable(context, R.drawable.tooltip_divider)?.also {
+                ContextCompat.getDrawable(context, com.tokopedia.product.addedit.R.drawable.tooltip_divider)?.also {
                     addItemDecoration(TooltipDividerItemDecoration(
                             drawable = it,
                             drawOnLastItem = false,
-                            paddingLeft = context.resources.getDimension(R.dimen.tooltip_divider_padding_left).toInt(),
+                            paddingLeft = context.resources.getDimension(com.tokopedia.product.addedit.R.dimen.tooltip_divider_padding_left).toInt(),
                             paddingTop = context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1).toInt(),
                             paddingBottom = context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1).toInt()))
                 }

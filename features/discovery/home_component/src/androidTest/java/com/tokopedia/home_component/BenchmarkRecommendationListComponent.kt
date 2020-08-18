@@ -23,7 +23,7 @@ class BenchmarkRecommendationListComponent {
     var activityRule: ActivityTestRule<BlankTestActivity> = ActivityTestRule(BlankTestActivity::class.java)
 
     @Test
-    fun benchmark_onCreateViewHolder_recommendation_list_component() {
+    fun benchmark_onCreateViewHolder_ViewHolder_recommendation_list_component() {
         val viewGroup = FrameLayout(activityRule.activity)
         val recyclerViewAdapter = simpleAdapter(
                 RecommendationListCarouselViewHolder.LAYOUT) {
@@ -38,7 +38,7 @@ class BenchmarkRecommendationListComponent {
     }
 
     @Test
-    fun benchmark_onBind_recommendation_list_component() {
+    fun benchmark_onBind_ViewHolder_recommendation_list_component() {
         val itemView = simpleViewFromLayout(RecommendationListCarouselViewHolder.LAYOUT, activityRule.activity)
         val viewHolder = RecommendationListCarouselViewHolder(
                 itemView, null, null

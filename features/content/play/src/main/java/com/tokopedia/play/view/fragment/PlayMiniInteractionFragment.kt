@@ -428,7 +428,7 @@ class PlayMiniInteractionFragment : BaseDaggerFragment(), PlayInteractionViewIni
 
     //region observe
     private fun observeVideoPlayer() {
-        playViewModel.observableVideoPlayer.observe(viewLifecycleOwner, DistinctObserver {
+        playViewModel.observableVideoPlayer.observe(viewLifecycleOwner, Observer {
             layoutManager.onVideoPlayerChanged(container, it, playViewModel.channelType)
             scope.launch {
                 EventBusFactory.get(viewLifecycleOwner)

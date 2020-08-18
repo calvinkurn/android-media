@@ -3,6 +3,7 @@ package com.tokopedia.vouchergame.common.view
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -78,8 +79,11 @@ abstract class BaseVoucherGameActivity: BaseSimpleActivity(), TopupBillsMenuBott
     }
 
     private fun showBottomMenus() {
-        val voucherGameMenuBottomSheets = TopupBillsMenuBottomSheets()
+        val voucherGameMenuBottomSheets = TopupBillsMenuBottomSheets.newInstance()
         voucherGameMenuBottomSheets.listener = this
+        voucherGameMenuBottomSheets.setShowListener {
+            voucherGameMenuBottomSheets.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
+        }
         voucherGameMenuBottomSheets.show(supportFragmentManager, TAG_VOUCHER_GAME_MENU)
     }
 

@@ -162,7 +162,7 @@ public class GraphqlClient {
         }
     }
 
-    private static Retrofit getRetrofit() {
+    public static Retrofit getRetrofit() {
         if (sRetrofit == null) {
             throw new RuntimeException("Please call init() before using graphql library");
         }

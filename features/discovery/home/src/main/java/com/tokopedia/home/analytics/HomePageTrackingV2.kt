@@ -25,7 +25,7 @@ object HomePageTrackingV2 : BaseTracking() {
                 Label.NONE,
                 listOf(
                         Promotion(
-                                id= bannerModel.id.toString(),
+                                id= CustomEvent.FORMAT_4_VALUE_UNDERSCORE.format("0", bannerModel.id, "0", bannerModel.categoryId),
                                 name = PROMO_VALUE,
                                 creative = bannerModel.creativeName,
                                 position = bannerModel.position.toString(),
@@ -42,7 +42,7 @@ object HomePageTrackingV2 : BaseTracking() {
                 Label.NONE,
                 listOf(
                         Promotion(
-                                id= bannerModel.id.toString(),
+                                id= CustomEvent.FORMAT_4_VALUE_UNDERSCORE.format("0", bannerModel.id, "0", bannerModel.categoryId),
                                 name = PROMO_OVERLAY_VALUE,
                                 creative = bannerModel.creativeName,
                                 position = bannerModel.position.toString(),
@@ -65,7 +65,7 @@ object HomePageTrackingV2 : BaseTracking() {
                 campaignCode = bannerModel.campaignCode,
                 promotions = listOf(
                         Promotion(
-                                id= bannerModel.id.toString(),
+                                id= CustomEvent.FORMAT_4_VALUE_UNDERSCORE.format("0", bannerModel.id, "0", bannerModel.categoryId),
                                 name = PROMO_VALUE,
                                 creative = bannerModel.creativeName,
                                 position = bannerModel.position.toString(),
@@ -88,7 +88,7 @@ object HomePageTrackingV2 : BaseTracking() {
                 campaignCode = bannerModel.campaignCode,
                 promotions = listOf(
                         Promotion(
-                                id= bannerModel.id.toString(),
+                                id= CustomEvent.FORMAT_4_VALUE_UNDERSCORE.format("0", bannerModel.id, "0", bannerModel.categoryId),
                                 name = PROMO_OVERLAY_VALUE,
                                 creative = bannerModel.creativeName,
                                 position = bannerModel.position.toString(),
@@ -529,4 +529,5 @@ object HomePageTrackingV2 : BaseTracking() {
             getTracker().sendGeneralEvent(getSprintSaleSeeAllClick(channel))
         }
     }
+
 }

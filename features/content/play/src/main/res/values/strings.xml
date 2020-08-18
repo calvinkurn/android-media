@@ -6,7 +6,6 @@
     <string name="play_duration_divider">/</string>
     <string name="play_follow">Follow</string>
     <string name="play_following">Following</string>
-    <string name="play_try_again">Coba Lagi</string>
     <string name="play_watch_mode">Watch Mode</string>
     <string name="play_message_socket_reconnect">Menghubungkan socket&#8230;</string>
     <string name="play_watch_again">Tonton Ulang</string>
@@ -33,9 +32,7 @@
     <string name="play_mock_view">2k</string>
     <string name="play_mock_like">0 Likes</string>
     <string name="play_mock_pinned_message">Yoenik Apparel Visit my collections here!</string>
-    <string name="play_mock_stream_name">Review Australia Fabulous Shop Fashion Outlet</string>
     <string name="play_mock_shop_name">Yoenik Apparel</string>
-    <string name="play_transition_root">root_play</string>
     <string name="play_transition_video">video_play</string>
 
     <string name="play_general_err_message">Tunggu sebentar, biar Toped bereskan. Coba lagi atau kembali nanti.</string>

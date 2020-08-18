@@ -28,7 +28,6 @@ import com.tokopedia.topads.view.sheet.InfoSheetProductList
 import com.tokopedia.topads.view.sheet.ProductFilterSheetList
 import com.tokopedia.topads.view.sheet.ProductSortSheetList
 import kotlinx.android.synthetic.main.topads_create_fragment_product_list.*
-import kotlinx.android.synthetic.main.topads_create_fragment_product_list.tip_btn
 import javax.inject.Inject
 
 /**
@@ -92,7 +91,10 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         return list
     }
 
-    override fun populateView(stepperModel: CreateManualAdsStepperModel) {}
+    override fun populateView() {
+        if (activity is StepperActivity)
+            (activity as StepperActivity).updateToolbarTitle(getString(R.string.product_list_step))
+    }
 
     override fun getScreenName(): String {
         return ProductAdsListFragment::class.java.simpleName
@@ -247,9 +249,5 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         items.add(0, EtalaseItemViewModel(true, viewModel.addSemuaProduk()))
         data.forEachIndexed { index, result -> items.add(index+1, EtalaseItemViewModel(false, result)) }
         filterSheetProductList.updateData(items)
-    }
-
-    override fun updateToolBar() {
-        (activity as StepperActivity).updateToolbarTitle(getString(R.string.product_list_step))
     }
 }

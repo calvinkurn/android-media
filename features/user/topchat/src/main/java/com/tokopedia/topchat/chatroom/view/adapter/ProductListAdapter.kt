@@ -8,9 +8,11 @@ import com.tokopedia.chat_common.view.adapter.viewholder.listener.ProductAttachm
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ProductCarouselAttachmentViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.TopchatProductAttachmentViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredViewHolderAttachment
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.SearchListener
 import com.tokopedia.topchat.chatroom.view.uimodel.ProductCarouselUiModel
 
-class ProductListAdapter(
+class ProductListAdapter constructor(
+        private val searchListener: SearchListener,
         private val listener: ProductAttachmentListener,
         private val deferredAttachment: DeferredViewHolderAttachment,
         carousel: ProductCarouselUiModel? = null
@@ -27,7 +29,7 @@ class ProductListAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TopchatProductAttachmentViewHolder {
         val view = LayoutInflater.from(parent.context)
                 .inflate(ProductCarouselAttachmentViewHolder.LAYOUT, parent, false)
-        return ProductCarouselAttachmentViewHolder(view, listener, deferredAttachment)
+        return ProductCarouselAttachmentViewHolder(view, listener, deferredAttachment, searchListener)
     }
 
     override fun onBindViewHolder(holder: TopchatProductAttachmentViewHolder, position: Int) {

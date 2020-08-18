@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
+import com.google.android.exoplayer2.ExoPlayer
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
@@ -32,6 +33,8 @@ open class VideoComponent(
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     val uiView = initView(container)
 
+    private var exoPlayer: ExoPlayer? = null
+
     init {
         scope.launch(dispatchers.immediate) {
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
@@ -42,7 +45,10 @@ open class VideoComponent(
                                 uiView.show()
                                 if (it.stateHelper.videoState == PlayVideoState.Ended) showEndImage()
                             }
-                            is ScreenStateEvent.SetVideo -> if (it.videoPlayer is General) uiView.setPlayer(it.videoPlayer.exoPlayer)
+                            is ScreenStateEvent.SetVideo -> if (it.videoPlayer is General) {
+                                exoPlayer = it.videoPlayer.exoPlayer
+                                uiView.setPlayer(it.videoPlayer.exoPlayer)
+                            }
                             is ScreenStateEvent.OnNewPlayRoomEvent -> if (it.event.isFreeze || it.event.isBanned) {
                                 uiView.hide()
                                 uiView.setPlayer(null)
@@ -64,6 +70,16 @@ open class VideoComponent(
                         }
                     }
         }
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+    fun onPause() {
+        uiView.setPlayer(null)
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    fun onResume() {
+        exoPlayer?.let { uiView.setPlayer(it) }
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)

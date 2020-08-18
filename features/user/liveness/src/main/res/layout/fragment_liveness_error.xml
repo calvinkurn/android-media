@@ -69,8 +69,8 @@
                 android:layout_height="@dimen/layout_lvl6"
                 android:gravity="center"
                 android:layout_marginTop="@dimen/spacing_lvl5"
-                android:layout_marginLeft="@dimen/dp_52"
-                android:layout_marginRight="@dimen/dp_52"
+                android:layout_marginLeft="@dimen/liveness_52"
+                android:layout_marginRight="@dimen/liveness_52"
                 app:layout_constraintTop_toBottomOf="@id/subtitle"
                 android:text="@string/liveness_retry"/>
 

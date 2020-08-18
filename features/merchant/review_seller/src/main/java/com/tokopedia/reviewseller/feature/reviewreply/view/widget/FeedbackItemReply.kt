@@ -7,6 +7,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.base.BaseCustomView
+import com.tokopedia.imagepreviewslider.presentation.activity.ImagePreviewSliderActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
@@ -16,9 +17,11 @@ import com.tokopedia.reviewseller.common.util.getReviewStar
 import com.tokopedia.reviewseller.common.util.toRelativeDate
 import com.tokopedia.reviewseller.feature.reviewdetail.view.model.FeedbackUiModel
 import com.tokopedia.reviewseller.feature.reviewreply.view.adapter.ReviewReplyFeedbackImageAdapter
+import com.tokopedia.reviewseller.feature.reviewreply.view.adapter.ReviewReplyListener
+import com.tokopedia.reviewseller.feature.reviewreply.view.model.ProductReplyUiModel
 import kotlinx.android.synthetic.main.widget_reply_feedback_item.view.*
 
-class FeedbackItemReply : BaseCustomView {
+class FeedbackItemReply : BaseCustomView, ReviewReplyListener {
 
     companion object {
         const val DATE_REVIEW_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'"
@@ -26,7 +29,7 @@ class FeedbackItemReply : BaseCustomView {
     }
 
     private val replyReviewFeedbackImageAdapter by lazy {
-        ReviewReplyFeedbackImageAdapter()
+        ReviewReplyFeedbackImageAdapter(this)
     }
 
     constructor(context: Context) : super(context) {
@@ -45,12 +48,12 @@ class FeedbackItemReply : BaseCustomView {
         View.inflate(context, R.layout.widget_reply_feedback_item, this)
     }
 
-    fun setData(data: FeedbackUiModel) {
+    fun setData(data: FeedbackUiModel, productReplyUiModel: ProductReplyUiModel) {
         ivRatingFeedback.setImageResource(getReviewStar(data.rating.orZero()))
         tvFeedbackUser?.text = MethodChecker.fromHtml(context.getString(R.string.label_name_reviewer_builder, data.reviewerName.orEmpty()))
         tvFeedbackDate?.text = data.reviewTime.orEmpty() toRelativeDate  (DATE_REVIEW_FORMAT)
         setupFeedbackReview(data.reviewText.orEmpty())
-        setImageAttachment(data)
+        setImageAttachment(data, productReplyUiModel)
         setReplyView(data)
     }
 
@@ -71,13 +74,12 @@ class FeedbackItemReply : BaseCustomView {
         } else {
             tvFeedbackReview?.apply {
                 setTextColor(ContextCompat.getColor(context, R.color.clr_f531353b))
-                maxLines = Integer.MAX_VALUE
                 text = feedbackText
             }
         }
     }
 
-    private fun setImageAttachment(element: FeedbackUiModel) {
+    private fun setImageAttachment(element: FeedbackUiModel, productReply: ProductReplyUiModel) {
         val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         rvItemAttachmentFeedback?.apply {
             layoutManager = linearLayoutManager
@@ -89,8 +91,24 @@ class FeedbackItemReply : BaseCustomView {
         if (element.attachments.isEmpty()) {
             rvItemAttachmentFeedback?.hide()
         } else {
+            replyReviewFeedbackImageAdapter.setAttachmentUiData(element.attachments)
+            replyReviewFeedbackImageAdapter.setFeedbackId(element.feedbackID.toString())
+            replyReviewFeedbackImageAdapter.setProductTitle(productReply.productName.toString())
             replyReviewFeedbackImageAdapter.submitList(element.attachments)
             rvItemAttachmentFeedback?.show()
+        }
+    }
+
+    override fun onImageItemClicked(imageUrls: List<String>, thumbnailsUrl: List<String>,
+                                    title: String, feedbackId: String, position: Int) {
+        context?.run {
+            startActivity(ImagePreviewSliderActivity.getCallingIntent(
+                    context = this,
+                    title = title,
+                    imageUrls = imageUrls,
+                    imageThumbnailUrls = thumbnailsUrl,
+                    imagePosition = position
+            ))
         }
     }
 }

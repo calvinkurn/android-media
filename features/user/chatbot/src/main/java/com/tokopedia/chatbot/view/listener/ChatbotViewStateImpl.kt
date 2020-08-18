@@ -225,6 +225,13 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
         showQuickReply(quickReplyList)
     }
 
+    override fun hideActionBubble(model: ChatActionSelectionBubbleViewModel) {
+        val adapter = getAdapter()
+        if (adapter.list.isNotEmpty() && adapter.list[0] is ChatActionSelectionBubbleViewModel ){
+            adapter.removeElement(model)
+        }
+    }
+
     override fun getInterlocutorName(headerName: String): String  = headerName
 
     override fun showErrorWebSocket(isWebSocketError: Boolean) {

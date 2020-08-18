@@ -35,6 +35,7 @@ object HomeQuery{
               promo_code
               creative_name
               type
+              category_id
               campaignCode
             }
           }

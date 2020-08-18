@@ -159,16 +159,6 @@ class LikeComponentTest {
     }
 
     @Test
-    fun `when content is liked, then like should match like state`() = runBlockingTest(testDispatcher) {
-        val mockLikeState = modelBuilder.buildLikeStateUiModel(isLiked = true, fromNetwork = false)
-        val mockFirstTime = false
-        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.LikeContent(mockLikeState, mockFirstTime))
-
-        verify { component.uiView.playLikeAnimation(mockLikeState.isLiked, !mockLikeState.fromNetwork && !mockFirstTime) }
-        confirmVerified(component.uiView)
-    }
-
-    @Test
     fun `when channel is frozen, then like should be hidden`() = runBlockingTest(testDispatcher) {
         val mockPlayRoomEvent = modelBuilder.buildPlayRoomFreezeEvent()
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.OnNewPlayRoomEvent(mockPlayRoomEvent))

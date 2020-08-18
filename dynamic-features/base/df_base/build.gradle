@@ -75,7 +75,6 @@ dependencies {
     implementation project(rootProject.ext.features.voucherGame)
     implementation project(rootProject.ext.features.rechargeOcr)
     implementation project(rootProject.ext.features.rechargeGeneral)
-    implementation project(rootProject.ext.features.digitalDeals)
     implementation project(rootProject.ext.features.digitalproduct)
     implementation project(rootProject.ext.features.rechargeCreditCard)
     implementation project(rootProject.ext.features.digitalEmoney)
@@ -93,7 +92,6 @@ dependencies {
     //Fintech
     implementation project(rootProject.ext.features.ovoPayWithQr)
     implementation project(rootProject.ext.features.wallet)
-    implementation project(rootProject.ext.features.instantLoan)
     implementation project(rootProject.ext.features.ovop2p)
 
     //IM
@@ -109,6 +107,7 @@ dependencies {
     implementation project(rootProject.ext.features.talk)
     implementation project(rootProject.ext.features.shopShowcase)
     implementation project(rootProject.ext.features.brandlist)
+    implementation project(rootProject.ext.features.shopPage)
     //Operational
 
     //Payment
@@ -137,6 +136,7 @@ dependencies {
     implementation project(rootProject.ext.features.notifTroubleshooter)
     implementation project(rootProject.ext.features.topchat)
     implementation project(rootProject.ext.features.otp)
+    implementation project(rootProject.ext.features.userIdentification)
 
     //Entertainment
     implementation project(rootProject.ext.features.orderhistory)

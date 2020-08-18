@@ -12,7 +12,7 @@ data class ProductHighlightDataModel (
     }
 
     override fun equalsWith(b: Any?): Boolean {
-        return b is ChannelModel && channelModel == b
+        return b is ProductHighlightDataModel && channelModel == b.channelModel
     }
 
     override fun getChangePayloadFrom(b: Any?): Bundle? {

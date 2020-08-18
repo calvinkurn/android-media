@@ -171,7 +171,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         initAppNotificationReceiver();
         registerActivityLifecycleCallbacks();
         initBlockCanary();
-        TokoPatch.init(this);
+//        TokoPatch.init(this);
     }
 
     private void initBugsnag() {

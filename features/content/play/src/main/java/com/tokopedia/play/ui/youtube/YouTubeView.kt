@@ -19,7 +19,7 @@ import com.tokopedia.play_common.state.PlayVideoState
 class YouTubeView(
         container: ViewGroup,
         fragmentManager: FragmentManager,
-        listener: Listener
+        private val listener: Listener
 ) : UIView(container) {
 
     private val view: View =
@@ -34,7 +34,9 @@ class YouTubeView(
             }
 
     private var youTubePlayer: YouTubePlayer? = null
-    private var videoId: String? = null
+    private var mVideoId: String? = null
+    private var mStartMillis: Int = 0
+    private var mShouldPlayOnReady = true
 
     private var isFullscreen = false
 
@@ -49,6 +51,7 @@ class YouTubeView(
         }
 
         override fun onLoaded(videoId: String?) {
+            if (mShouldPlayOnReady) play() else pause()
             youTubePlayer?.setOnFullscreenListener(onFullscreenListener)
         }
 
@@ -89,21 +92,6 @@ class YouTubeView(
         }
     }
 
-    init {
-        youtubeFragment.initialize(object : YouTubePlayer.OnInitializedListener {
-            override fun onInitializationSuccess(provider: YouTubePlayer.Provider?, player: YouTubePlayer?, wasRestored: Boolean) {
-                player?.let {
-                    youTubePlayer = initYouTubePlayer(it)
-                    videoId?.let { videoId -> playYouTubeFromId(videoId) }
-                }
-            }
-
-            override fun onInitializationFailure(provider: YouTubePlayer.Provider?, error: YouTubeInitializationResult?) {
-                listener.onInitFailure(this@YouTubeView, error ?: YouTubeInitializationResult.UNKNOWN_ERROR)
-            }
-        })
-    }
-
     override val containerId: Int = view.id
 
     override fun show() {
@@ -114,14 +102,25 @@ class YouTubeView(
         view.hide()
     }
 
-    internal fun setYouTubeId(youtubeId: String) {
-        videoId = youtubeId
-        playYouTubeFromId(youtubeId)
+    internal fun setYouTubeId(youtubeId: String, startMillis: Int, playOnReady: Boolean) {
+        if (mVideoId == youtubeId) return
+
+        if (youTubePlayer == null) initYouTubePlayer()
+
+        mVideoId = youtubeId
+        mStartMillis = startMillis
+        mShouldPlayOnReady = playOnReady
+        playYouTubeFromId(youtubeId, startMillis)
     }
 
     internal fun release() {
+        mVideoId = null
         youTubePlayer?.release()
         youTubePlayer = null
+    }
+
+    internal fun getCurrentPosition(): Int {
+        return youTubePlayer?.currentTimeMillis ?: 0
     }
 
     internal fun setFullScreenButton(isFullscreen: Boolean) {
@@ -129,21 +128,40 @@ class YouTubeView(
         youTubePlayer?.setFullscreen(isFullscreen)
     }
 
-    internal fun isPlaying(): Boolean {
-        return youTubePlayer?.isPlaying ?: false
+    internal fun isPlaying(): Boolean? {
+        return youTubePlayer?.isPlaying
     }
 
     internal fun play() {
         youTubePlayer?.play()
     }
 
-    internal fun getPlayer(): YouTubePlayer? = youTubePlayer
-
-    private fun playYouTubeFromId(youtubeId: String) {
-        youTubePlayer?.loadVideo(youtubeId)
+    internal fun pause() {
+        youTubePlayer?.pause()
     }
 
-    private fun initYouTubePlayer(player: YouTubePlayer) : YouTubePlayer {
+    internal fun getPlayer(): YouTubePlayer? = youTubePlayer
+
+    private fun initYouTubePlayer() {
+        youtubeFragment.initialize(object : YouTubePlayer.OnInitializedListener {
+            override fun onInitializationSuccess(provider: YouTubePlayer.Provider?, player: YouTubePlayer?, wasRestored: Boolean) {
+                player?.let {
+                    youTubePlayer = configYouTubePlayer(it)
+                    mVideoId?.let { videoId -> playYouTubeFromId(videoId, mStartMillis) }
+                }
+            }
+
+            override fun onInitializationFailure(provider: YouTubePlayer.Provider?, error: YouTubeInitializationResult?) {
+                listener.onInitFailure(this@YouTubeView, error ?: YouTubeInitializationResult.UNKNOWN_ERROR)
+            }
+        })
+    }
+
+    private fun playYouTubeFromId(youtubeId: String, startMillis: Int) {
+        youTubePlayer?.loadVideo(youtubeId, startMillis)
+    }
+
+    private fun configYouTubePlayer(player: YouTubePlayer) : YouTubePlayer {
         player.setPlayerStateChangeListener(playerStateChangedListener)
         player.setPlaybackEventListener(playbackEventListener)
         player.fullscreenControlFlags = YouTubePlayer.FULLSCREEN_FLAG_CUSTOM_LAYOUT

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_time_counter"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/play_stats_info_counter_height"
+        android:layout_marginBottom="@dimen/spacing_lvl3"
+        android:gravity="center"
+        android:text="@string/play_live_broadcast_time_default"
+        android:textColor="@color/Neutral_N0"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_2" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_time_counter_end"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/spacing_lvl2"
+        android:background="@drawable/bg_play_red_rounded_corner"
+        android:drawablePadding="@dimen/spacing_lvl1"
+        android:gravity="center"
+        android:textColor="@color/Neutral_N0"
+        android:textSize="@dimen/fontSize_lvl1"
+        android:textStyle="bold"
+        android:visibility="invisible"
+        app:drawableLeftCompat="@drawable/ic_play_clock_white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_time_counter" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

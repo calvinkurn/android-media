@@ -62,9 +62,10 @@ dependencies {
     implementation project(rootProject.ext.features.shopSettings)
     implementation project(rootProject.ext.features.layanan)
 
-
     //Content
 //    implementation project(rootProject.ext.features.profile)
+    implementation project(rootProject.ext.features.playBroadcaster)
+
     //Discovery
     implementation project(rootProject.ext.features.productCardOptions)
     //Fintech
@@ -89,9 +90,15 @@ dependencies {
     implementation project(rootProject.ext.features.attachvoucher)
 //    implementation project(rootProject.ext.features.topchat)
     implementation project(rootProject.ext.features.liveness)
+    implementation project(rootProject.ext.features.sellerOnboarding)
     implementation project(rootProject.ext.features.shopShowcase)
     implementation project(rootProject.ext.features.voucherCreation)
     implementation project(rootProject.ext.features.sellerSearch)
+    implementation project(rootProject.ext.features.userIdentification)
     implementation project(rootProject.ext.features.createpost)
     implementation project(rootProject.ext.features.kol)
+    implementation project(rootProject.ext.features.notifTroubleshooter)
+
+//    Merchant
+    implementation project(rootProject.ext.features.shopPage)
 }

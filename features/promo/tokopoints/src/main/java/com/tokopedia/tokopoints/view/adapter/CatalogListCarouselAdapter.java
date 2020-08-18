@@ -84,7 +84,7 @@ public class CatalogListCarouselAdapter extends RecyclerView.Adapter<CatalogList
     public void onBindViewHolder(ViewHolder holder, int position) {
         MarginLayoutParams params =(MarginLayoutParams) holder.itemView.getLayoutParams();
         if (position == 0) {
-            params.setMargins(convertDpToPixel(16, holder.itemView.getContext()), 0, 0, 0);
+            params.setMargins(convertDpToPixel(10, holder.itemView.getContext()), 0, 0, 0);
         } else {
             params.setMargins(0, 0, 0, 0);
         }

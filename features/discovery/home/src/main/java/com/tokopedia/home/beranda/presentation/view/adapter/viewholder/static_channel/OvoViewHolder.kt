@@ -147,6 +147,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
                         if (homeHeaderWalletAction.isShowTopup) {
                             tvBalanceTokocash.setTextColor(itemView.context.getResColor(R.color.tkpd_main_green))
                             tvBalanceTokocash.text = itemView.resources.getString(R.string.home_header_topup_ovo)
+                            tvBalanceTokocash.setTypeface(tvBalanceTokocash.getTypeface(), Typeface.BOLD)
                             tokoCashHolder.setOnClickListener { gotToTopupOvo(homeHeaderWalletAction.topupUrl) }
                         } else {
                             tvBalanceTokocash.text = itemView.resources.getString(R.string.home_header_fintech_points, homeHeaderWalletAction.pointBalance)

@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/Neutral_N700_96"
+    android:fitsSystemWindows="false">
+
+    <com.tokopedia.play.broadcaster.view.custom.PlayCameraView
+        android:id="@+id/cv_camera"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:keepScreenOn="true"
+        app:cameraPlaySounds="true"
+        app:cameraUseDeviceOrientation="false" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginRight="@dimen/spacing_lvl4"
+        android:text="@string/play_camera_cancel_label"
+        android:textColor="@color/Neutral_N0"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_2"
+        app:typographyWeight="bold" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_shutter"
+        android:layout_width="@dimen/layout_lvl6"
+        android:layout_height="@dimen/layout_lvl6"
+        app:layout_constraintBottom_toTopOf="@+id/iv_flash"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_play_camera_shutter" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_flash"
+        android:layout_width="@dimen/layout_lvl4"
+        android:layout_height="@dimen/layout_lvl4"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/ic_play_camera_off_flash" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_reverse"
+        android:layout_width="@dimen/layout_lvl4"
+        android:layout_height="@dimen/layout_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginRight="@dimen/spacing_lvl4"
+        app:layout_constraintBottom_toBottomOf="@id/iv_flash"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_play_switch_camera_white" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_timer_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/play_camera_timer_label"
+        android:textColor="@color/Neutral_N0"
+        app:layout_constraintBottom_toBottomOf="@id/iv_flash"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/tv_timer_0"
+        app:typographyType="body_2" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_timer_0"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:text="@string/play_camera_timer_0_label"
+        android:textColor="@color/Neutral_N0"
+        app:layout_constraintBottom_toBottomOf="@id/tv_timer_label"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toEndOf="@+id/tv_timer_label"
+        app:layout_constraintEnd_toStartOf="@+id/tv_timer_5"
+        app:typographyType="body_2"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_timer_5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:text="@string/play_camera_timer_5_label"
+        android:textColor="@color/play_white_68"
+        app:layout_constraintBottom_toBottomOf="@id/tv_timer_0"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toEndOf="@+id/tv_timer_0"
+        app:layout_constraintEnd_toStartOf="@+id/tv_timer_10"
+        app:typographyType="body_2"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_timer_10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:text="@string/play_camera_timer_10_label"
+        android:textColor="@color/play_white_68"
+        app:layout_constraintBottom_toBottomOf="@id/tv_timer_5"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toEndOf="@+id/tv_timer_5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:typographyType="body_2"
+        app:typographyWeight="bold" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/group_action"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="tv_cancel, iv_shutter, iv_flash, iv_reverse, tv_timer_label, tv_timer_0, tv_timer_5, tv_timer_10"
+        />
+
+    <com.tokopedia.play.broadcaster.view.custom.PlayTimerCountDown
+        android:id="@+id/countdown_timer"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/layout_lvl0"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -48,6 +48,7 @@ import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.text.TextDrawable
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.util.getParamBoolean
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.linker.LinkerConstants
@@ -145,6 +146,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     private var isShowBanner: Boolean = false
     private var isEnableFingerprint = true
     private var activityShouldEnd = true
+    private var isFromRegister = false
 
     private lateinit var partialRegisterInputView: PartialRegisterInputView
     private lateinit var socmedButtonsContainer: LinearLayout
@@ -719,18 +721,20 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         saveFirstInstallTime()
     }
 
-    private fun setLoginSuccessSellerApp() = view?.run {
-        if (context.applicationContext is LoginRouter) {
-            (context.applicationContext as LoginRouter).setOnboardingStatus(true)
+    override fun setLoginSuccessSellerApp() {
+        view?.run {
+            if (context.applicationContext is LoginRouter) {
+                (context.applicationContext as LoginRouter).setOnboardingStatus(true)
+            }
+            val intent = if (userSession.hasShop()) {
+                RouteManager.getIntent(context, ApplinkConstInternalSellerapp.SELLER_HOME)
+            } else {
+                RouteManager.getIntent(context, ApplinkConstInternalMarketplace.OPEN_SHOP)
+            }
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            startActivity(intent)
+            activity?.finish()
         }
-        val intent = if (userSession.hasShop()) {
-            RouteManager.getIntent(context, ApplinkConstInternalSellerapp.SELLER_HOME)
-        } else {
-            RouteManager.getIntent(context, ApplinkConstInternalMarketplace.OPEN_SHOP)
-        }
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
-        startActivity(intent)
-        activity?.finish()
     }
 
     private fun setFCM() {
@@ -761,17 +765,30 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
                 loginEventAppsFlyer(userSession.userId, userSession.email)
             }
 
-            TrackApp.getInstance().moEngage.setMoEUserAttributesLogin(
-                    userSession.userId,
-                    userSession.name,
-                    userSession.email,
-                    userSession.phoneNumber,
-                    userSession.isGoldMerchant,
-                    userSession.shopName,
-                    userSession.shopId,
-                    userSession.hasShop(),
-                    analytics.getLoginMethodMoengage(userSession.loginMethod)
-            )
+            if(isFromRegister) {
+                TrackApp.getInstance().moEngage.sendMoengageRegisterEvent(
+                        userSession.name,
+                        userSession.userId.toIntOrZero().toString(),
+                        userSession.email,
+                        analytics.getLoginMethodMoengage(userSession.loginMethod),
+                        userSession.phoneNumber,
+                        userSession.isGoldMerchant,
+                        userSession.shopId,
+                        userSession.shopName
+                )
+            } else {
+                TrackApp.getInstance().moEngage.setMoEUserAttributesLogin(
+                        userSession.userId,
+                        userSession.name,
+                        userSession.email,
+                        userSession.phoneNumber,
+                        userSession.isGoldMerchant,
+                        userSession.shopName,
+                        userSession.shopId,
+                        userSession.hasShop(),
+                        analytics.getLoginMethodMoengage(userSession.loginMethod)
+                )
+            }
 
         } catch (e: Exception) {
             e.printStackTrace()
@@ -1150,6 +1167,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
                 checkAdditionalLoginOptionsAfterSQ()
             } else if (requestCode == REQUEST_ADD_NAME_REGISTER_PHONE && resultCode == Activity.RESULT_OK) {
                 isAutoLogin = true
+                isFromRegister = true
                 showLoading(true)
                 presenter.getUserInfo()
                 onGoToWelcomeNewUserPage()

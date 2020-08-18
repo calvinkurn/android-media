@@ -3,6 +3,7 @@ package com.tokopedia.vouchercreation.voucherlist.view.widget.filterbottomsheet
 import android.content.Context
 import android.content.DialogInterface
 import android.graphics.Rect
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +11,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.voucherlist.model.ui.BaseFilterUiModel
@@ -21,11 +23,14 @@ import kotlinx.android.synthetic.main.bottomsheet_mvc_filter.view.*
  * Created By @ilhamsuaib on 20/04/20
  */
 
-class FilterBottomSheet(
-        private val parent: ViewGroup
-) : BottomSheetUnify() {
+class FilterBottomSheet : BottomSheetUnify() {
 
     companion object {
+        @JvmStatic
+        fun createInstance(): FilterBottomSheet = FilterBottomSheet().apply {
+            setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
+        }
+
         val TAG: String = FilterBottomSheet::class.java.simpleName
 
         fun getMvcFilterItems(context: Context): MutableList<BaseFilterUiModel> {
@@ -48,14 +53,31 @@ class FilterBottomSheet(
     private val filterAdapter by lazy { FilterAdapter(this::onItemFilterClick) }
     private var tmpFilterList = emptyList<BaseFilterUiModel>()
 
-    init {
-        setTitle(parent.context.getString(R.string.mvc_filter))
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        initBottomSheet()
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
 
-        val childView = LayoutInflater.from(parent.context)
-                .inflate(R.layout.bottomsheet_mvc_filter, parent, false)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupView(view)
+    }
 
-        setupView(childView)
-        setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        if (!applyFilter) {
+            onCancelApply(tmpFilterList)
+        }
+    }
+
+    private fun initBottomSheet() {
+        context?.run {
+            setTitle(getString(R.string.mvc_filter))
+
+            val childView = View.inflate(this, R.layout.bottomsheet_mvc_filter, null)
+            setChild(childView)
+        }
+
     }
 
     private fun setupView(view: View) = with(view) {
@@ -68,8 +90,6 @@ class FilterBottomSheet(
             onApplyClick()
             dismissAllowingStateLoss()
         }
-
-        setChild(this)
     }
 
     private fun getFilterItemDecoration() = object : RecyclerView.ItemDecoration() {
@@ -91,12 +111,12 @@ class FilterBottomSheet(
         val filterItems = filterAdapter.items.filterIsInstance<FilterItem>()
         val canReset = filterItems.any { it.isSelected }
 
-        setupResetButton(canReset, filterItems)
+        setupResetButton(canReset)
     }
 
-    private fun setupResetButton(canReset: Boolean, filterItems: List<FilterItem>) {
+    private fun setupResetButton(canReset: Boolean) {
         if (canReset) {
-            setAction(parent.context.getString(R.string.mvc_reset)) {
+            setAction(context?.getString(R.string.mvc_reset).toBlankOrString()) {
                 resetFilter()
             }
         } else {
@@ -125,13 +145,6 @@ class FilterBottomSheet(
     fun setCancelApplyFilter(callback: (items: List<BaseFilterUiModel>) -> Unit): FilterBottomSheet {
         this.onCancelApply = callback
         return this
-    }
-
-    override fun onDismiss(dialog: DialogInterface) {
-        super.onDismiss(dialog)
-        if (!applyFilter) {
-            onCancelApply(tmpFilterList)
-        }
     }
 
     private fun List<BaseFilterUiModel>.copy(): List<BaseFilterUiModel> {

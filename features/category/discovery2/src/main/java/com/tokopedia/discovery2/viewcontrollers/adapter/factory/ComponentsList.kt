@@ -23,13 +23,11 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     TokopointsItem(R.layout.tokopoints_item_layout, ComponentNames.TokopointsItem.componentName),
     LihatSemua(R.layout.lihat_semua, ComponentNames.LihatSemua.componentName),
     CpmTopAds(R.layout.cpm_topads_layout, ComponentNames.CpmTopAds.componentName),
-    CpmTopAdsItem(R.layout.item_cpm_topads_shop_layout, ComponentNames.CpmTopAdsShopItem.componentName),
-    CpmTopAdsProductItem(R.layout.item_cpm_topads_product_layout, ComponentNames.CpmTopAdsProductItem.componentName),
     YouTubeView(R.layout.youtube_player_view, ComponentNames.Video.componentName),
     ChipsFilterView(R.layout.coming_soon_view, ComponentNames.ChipsFilter.componentName),
     Notifier(R.layout.coming_soon_view, ComponentNames.Notifier.componentName),
     TitleImage(R.layout.coming_soon_view, ComponentNames.TitleImage.componentName),
-    TextComponent(R.layout.coming_soon_view, ComponentNames.TextComponent.componentName),
+    TextComponent(R.layout.discovery_text_component_layout, ComponentNames.TextComponent.componentName),
     ClaimCoupon(R.layout.component_claim_coupon_layout, ComponentNames.ClaimCoupon.componentName),
     ClaimCouponItem(R.layout.component_claim_coupon_item, ComponentNames.ClaimCouponItem.componentName),
     Spacing(R.layout.spacing_layout, ComponentNames.Margin.componentName),
@@ -45,6 +43,8 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     Shimmer(R.layout.discovery_shimmer_layout, ComponentNames.Shimmer.componentName),
     LoadMore(R.layout.discovery_progress_bar_layout, ComponentNames.LoadMore.componentName),
     QuickCoupon(R.layout.quick_coupon_layout, ComponentNames.QuickCoupon.componentName),
+    BannerCarousel(R.layout.horizontal_recycler_view_lihat, ComponentNames.BannerCarousel.componentName),
+    BannerCarouselItemView(R.layout.banner_carousel_item_layout, ComponentNames.BannerCarouselItemView.componentName),
 
     // CustomTopChat(R.layout.coming_soon_view, ComponentNames.CustomTopchat.componentName),
     // Product Card Revamp

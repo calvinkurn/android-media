@@ -1,7 +1,6 @@
 package com.tokopedia.profilecompletion.di
 
 import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -219,4 +218,11 @@ class ProfileCompletionQueryModule {
     @Provides
     fun provideSkipOtpPinGraphQlUseCase(graphqlRepository: GraphqlRepository)
             : GraphqlUseCase<SkipOtpPinPojo> = GraphqlUseCase(graphqlRepository)
+
+    @Provides
+    @IntoMap
+    @StringKey(ProfileCompletionQueryConstant.MUTATION_RESET_PIN)
+    fun provideRawQueryResetPin(@ProfileCompletionContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.mutation_reset_pin)
+
 }

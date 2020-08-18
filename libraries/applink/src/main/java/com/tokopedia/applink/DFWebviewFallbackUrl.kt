@@ -27,6 +27,7 @@ object DFWebviewFallbackUrl {
 
     //Entertainment
     const val ENTERTAINMENT_EVENT = "https://www.tokopedia.com/events"
+    const val ENTERTAINMENT_DEALS = "https://www.tokopedia.com/deals"
 
     const val TRAVEL_FLIGHT = "https://www.tokopedia.com/flight"
 
@@ -36,4 +37,5 @@ object DFWebviewFallbackUrl {
 
     // Merchant
     const val FAVORITE_SHOP = "https://m.tokopedia.com/favorite"
+    const val RECENT_VIEW = "https://m.tokopedia.com/recent"
 }
