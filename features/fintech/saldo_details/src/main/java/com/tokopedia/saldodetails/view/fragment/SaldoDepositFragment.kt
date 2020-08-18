@@ -410,7 +410,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
             }
         })
 
-        saldoDetailViewModel.tickerMigrationEligibilityLiveData.observe(context as AppCompatActivity, androidx.lifecycle.Observer {
+        saldoDetailViewModel.tickerMigrationEligibilityLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             showSellerMigrationTicker(it)
         })
     }
