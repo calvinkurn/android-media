@@ -334,8 +334,6 @@ class ShopEditBasicInfoFragment: Fragment() {
                         val message = validateDomainShopName.error.message
                         showShopNameInputError(message)
                     }
-
-                    tvSave.isEnabled = validateDomainShopName.isValid
                 }
                 is Fail -> {
                     val message = (it as Success).data.validateDomainShopName.error.message
@@ -355,8 +353,6 @@ class ShopEditBasicInfoFragment: Fragment() {
                         val message = validateDomainShopName.error.message
                         showShopDomainInputError(message)
                     }
-
-                    tvSave.isEnabled = validateDomainShopName.isValid
                 }
                 is Fail -> {
                     val message = (it as Success).data.validateDomainShopName.error.message
