@@ -676,6 +676,18 @@ open class HomeFragment : BaseDaggerFragment(),
         observeRechargeRecommendation()
         observePlayReminder()
         observeIsNeedRefresh()
+        observeIsStartToRenderDynamicChannel()
+    }
+
+    private fun observeIsStartToRenderDynamicChannel() {
+        getHomeViewModel().isStartToRenderDynamicChannel.observe(viewLifecycleOwner, Observer { data: Event<Boolean> ->
+            val isStartToRenderDynamicChannel = data.peekContent()
+            if (isStartToRenderDynamicChannel) {
+                if (needToPerformanceMonitoring() && getPageLoadTimeCallback() != null) {
+                    setOnRecyclerViewLayoutReady(false);
+                }
+            }
+        })
     }
           
     private fun observeIsNeedRefresh() {
@@ -881,12 +893,7 @@ open class HomeFragment : BaseDaggerFragment(),
 
     private fun setData(data: List<HomeVisitable?>, isCache: Boolean) {
         if(!data.isEmpty()) {
-            if (needToPerformanceMonitoring() && getPageLoadTimeCallback() != null) {
-                setOnRecyclerViewLayoutReady(isCache);
-                adapter?.submitList(data);
-            } else {
-                adapter?.submitList(data);
-            }
+            adapter?.submitList(data);
 
             if (isDataValid(data)) {
                 removeNetworkError();

@@ -190,6 +190,10 @@ open class HomeViewModel @Inject constructor(
         get() = _isRequestNetworkLiveData
     private val _isRequestNetworkLiveData = MutableLiveData<Event<Boolean>>(null)
 
+    val isStartToRenderDynamicChannel: LiveData<Event<Boolean>>
+        get() = _isStartToRenderDynamicChannel
+    private val _isStartToRenderDynamicChannel = MutableLiveData<Event<Boolean>>(null)
+
     private val _salamWidgetLiveData = MutableLiveData<Event<SalamWidget>>()
     val salamWidgetLiveData: LiveData<Event<SalamWidget>> get() = _salamWidgetLiveData
 
@@ -442,6 +446,7 @@ open class HomeViewModel @Inject constructor(
     private fun evaluateAvailableComponent(homeDataModel: HomeDataModel?, needToEvaluateRecommendation:Boolean = true): HomeDataModel? {
         homeDataModel?.let {
             var newHomeViewModel = homeDataModel
+            newHomeViewModel = evaluateGeolocationComponent(newHomeViewModel)
             if(isNeedShowGeoLocation) newHomeViewModel = onRemoveSuggestedReview(it)
             newHomeViewModel = evaluatePlayWidget(newHomeViewModel)
             newHomeViewModel = evaluatePlayCarouselWidget(newHomeViewModel)
@@ -889,9 +894,9 @@ open class HomeViewModel @Inject constructor(
                 if (homeDataModel?.isCache == false) {
                     _isRequestNetworkLiveData.postValue(Event(false))
                     val homeDataWithoutExternalComponentPair = evaluateInitialTopAdsBannerComponent(homeDataModel)
+                    var homeData: HomeDataModel? = homeDataWithoutExternalComponentPair.first
                     withContext(homeDispatcher.get().ui()){
-                        var homeData = evaluateGeolocationComponent(homeDataModel)
-                        homeData = evaluateAvailableComponent(homeData)
+                        homeData = evaluateAvailableComponent(homeData, false)
                         _homeLiveData.value = homeData
                     }
                     if (isOnlyHomeHeader(homeDataModel)) {
@@ -1031,8 +1036,11 @@ open class HomeViewModel @Inject constructor(
 
                 val newHomeDataModel = _homeLiveData.value?.copy(list = newList?.toList()?: listOf(), isCache = false)
 
-                updateWidget(UpdateLiveDataModel(action = ACTION_UPDATE_HOME_DATA,
-                        homeData = newHomeDataModel
+                _isStartToRenderDynamicChannel.value = Event(true)
+                updateWidget(UpdateLiveDataModel(
+                        action = ACTION_UPDATE_HOME_DATA,
+                        homeData = newHomeDataModel,
+                        needToEvaluateRecommendation = true
                 ))
 
 //                _trackingLiveData.postValue(Event(data) as Event<List<HomeVisitable>>?)
