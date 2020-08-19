@@ -38,7 +38,6 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselItemDataModel
 import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselOverlayImageDataModel
-import com.tokopedia.shop.BuildConfig
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.analytic.ShopPageHomeTracking
@@ -508,7 +507,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     .shopComponent(ShopComponentHelper().getComponent(application, this))
                     .build()
                     .inject(this@ShopPageHomeFragment)
-            }
+        }
     }
 
     override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
@@ -890,23 +889,25 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         RouteManager.route(context, dataModel.applink)
     }
 
-    override fun onPlayLeftBannerImpressed(dataModel: PlayBannerCarouselOverlayImageDataModel, widgetId: String) {
+    override fun onPlayLeftBannerImpressed(dataModel: PlayBannerCarouselOverlayImageDataModel, widgetId: String, position: Int) {
         shopPageHomeTracking.impressionLeftPlayBanner(
                 shopId = shopId,
                 userId = viewModel?.userId ?: "",
                 bannerId = widgetId,
                 creativeName = dataModel.imageUrl,
-                positionChannel = "0"
+                positionChannel = "1",
+                position = (position + 1).toString()
         )
     }
 
-    override fun onPlayLeftBannerClicked(dataModel: PlayBannerCarouselOverlayImageDataModel, widgetId: String) {
+    override fun onPlayLeftBannerClicked(dataModel: PlayBannerCarouselOverlayImageDataModel, widgetId: String, position: Int) {
         shopPageHomeTracking.clickLeftPlayBanner(
                 shopId = shopId,
                 userId = viewModel?.userId ?: "",
                 bannerId = widgetId,
                 creativeName = dataModel.imageUrl,
-                positionChannel = "0"
+                positionChannel = "1",
+                position = (position + 1).toString()
         )
         RouteManager.route(context, dataModel.applink)
     }
