@@ -80,6 +80,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SALDO_INTRO
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SETTING_BANK
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SETTING_PROFILE
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.USER_IDENTIFICATION_FORM
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.ADD_ADDRESS_V1
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.ADD_ADDRESS_V2
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.DROPOFF_PICKER
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.MANAGE_ADDRESS
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.SHIPPING_CONFIRMATION
@@ -87,6 +89,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.ATTACH_INV
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.ATTACH_VOUCHER
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.CHECKOUT
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.CHECKOUT_ADDRESS_SELECTION
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.DISTRICT_RECOMMENDATION_SHOP_SETTINGS
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.GEOLOCATION
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.NORMAL_CHECKOUT
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.ONBOARDING
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT
@@ -251,6 +255,13 @@ object DeeplinkDFMapper : CoroutineScope {
 
             // Logistic
             add(DFP({ it.startsWith(DROPOFF_PICKER) }, DF_BASE, R.string.dropoff_title))
+            add(DFP({ it.startsWith(SHIPPING_CONFIRMATION) }, DF_BASE, R.string.path_shipping_confirmation))
+            add(DFP({ it.startsWith(ORDER_TRACKING) }, DF_BASE, R.string.path_order_tracking))
+            add(DFP({ it.startsWith(MANAGE_ADDRESS) }, DF_BASE, R.string.path_manage_address))
+            add(DFP({ it.startsWith(ADD_ADDRESS_V1) }, DF_BASE, R.string.path_add_address_v1))
+            add(DFP({ it.startsWith(ADD_ADDRESS_V2) }, DF_BASE, R.string.path_add_address_v2))
+            add(DFP({ it.startsWith(DISTRICT_RECOMMENDATION_SHOP_SETTINGS) }, DF_BASE, R.string.path_district_recommendation_shop_settings))
+            add(DFP({ it.startsWith(GEOLOCATION) }, DF_BASE, R.string.path_geolocation))
 
             // Merchant
             add(DFP({ it.startsWith(OPEN_SHOP) }, DF_BASE, R.string.title_open_shop))
@@ -375,10 +386,6 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(NOTIFICATION) }, DF_BASE, R.string.title_notification_center))
             add(DFP({ it.startsWith(NOTIFICATION_BUYER) }, DF_BASE, R.string.title_notification_center))
             add(DFP({ it.startsWith(PUSH_NOTIFICATION_TROUBLESHOOTER) }, DF_BASE, R.string.applink_notif_troubleshooter))
-
-            add(DFP({ it.startsWith(SHIPPING_CONFIRMATION) }, DF_BASE, R.string.path_shipping_confirmation))
-            add(DFP({ it.startsWith(ORDER_TRACKING) }, DF_BASE, R.string.path_order_tracking))
-            add(DFP({ it.startsWith(MANAGE_ADDRESS) }, DF_BASE, R.string.path_manage_address))
 
             add(DFP({ it.startsWith(OTP) }, DF_BASE, R.string.title_otp))
             // Transaction

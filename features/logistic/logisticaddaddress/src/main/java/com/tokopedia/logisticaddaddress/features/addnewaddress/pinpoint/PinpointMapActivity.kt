@@ -59,6 +59,8 @@ class PinpointMapActivity : BaseSimpleActivity() {
 
     override fun getLayoutRes(): Int = R.layout.activity_pinpoint_map
 
+    override fun getParentViewResourceID(): Int = R.id.pinpoint_parent
+
     override fun getNewFragment(): PinpointMapFragment? {
         var bundle = Bundle()
         intent.extras?.let {
