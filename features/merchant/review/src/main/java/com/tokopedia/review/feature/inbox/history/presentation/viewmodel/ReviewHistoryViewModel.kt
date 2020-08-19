@@ -54,7 +54,6 @@ class ReviewHistoryViewModel @Inject constructor(
 
     fun updatePage(page: Int) {
         currentPage.value = page
-        currentPage.notifyObserver()
     }
 
     fun updateKeyWord(keyword: String) {

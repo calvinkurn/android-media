@@ -484,6 +484,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
     private fun setReview(review: ProductrevGetReviewDetailReview) {
         with(review) {
             createReviewExpandableTextArea.setText(reviewText)
+            animatedReviewPicker.renderInitialReviewWithData(rating)
             updateViewBasedOnSelectedRating(rating)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
                 createReviewAnonymousCheckbox.isChecked = sentAsAnonymous
@@ -612,9 +613,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
     private fun onSuccessSubmitReview() {
         stopLoading()
         showLayout()
-        Handler(Looper.getMainLooper()).postDelayed({
-            finishIfRoot(true)
-        }, 800)
+        finishIfRoot(true)
     }
 
     private fun onFailSubmitReview() {
@@ -636,7 +635,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
     }
 
     private fun stopLoading() {
-        createReviewSubmitButton.isLoading = true
+        createReviewSubmitButton.isLoading = false
     }
 
     private fun showLayout() {

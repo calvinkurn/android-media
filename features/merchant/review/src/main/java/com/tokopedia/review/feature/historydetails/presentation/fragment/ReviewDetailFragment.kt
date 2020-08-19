@@ -128,7 +128,6 @@ class ReviewDetailFragment : BaseDaggerFragment(),
             ReviewDetailTracking.eventClickSmiley(it.data.product.productId, it.data.review.feedbackId, viewModel.getUserId())
             viewModel.submitReputation(it.data.reputation.reputationId, score)
         }
-        reviewHistoryDetailReputation.onScoreSelected(score)
     }
 
     private fun getDataFromArguments() {
@@ -152,6 +151,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
                         }
                     } else {
                         with(it.data) {
+                            setReview(review, product.productName)
                             setReputation(reputation, response.shopName)
                         }
                     }
@@ -172,7 +172,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
         viewModel.submitReputationResult.observe(viewLifecycleOwner, Observer {
             when(it) {
                 is Success -> {
-                    onSuccessInsertReputation()
+                    onSuccessInsertReputation(it.data)
                 }
                 is Fail -> {
                     onFailInsertReputation(it.fail.message ?: getString(R.string.review_history_details_toaster_modify_smiley_error_default_message))
@@ -256,6 +256,12 @@ class ReviewDetailFragment : BaseDaggerFragment(),
             reviewHistoryDetailReputation.apply {
                 setReviewScoreClickListener(this@ReviewDetailFragment)
                 when {
+                    !isLocked && !editable && score == 2 -> {
+                        setFinalScore(score)
+                        setShopName(shopName)
+                        hideLoading()
+                        show()
+                    }
                     !editable && isLocked && score != 0  -> {
                         setFinalScore(score)
                         setShopName(shopName)
@@ -369,6 +375,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
     }
 
     private fun retry() {
+        clearIcons()
         viewModel.retry()
     }
 
@@ -376,11 +383,17 @@ class ReviewDetailFragment : BaseDaggerFragment(),
         return UriUtil.buildUri(ApplinkConst.PRODUCT_REPUTATION, (viewModel.reviewDetails.value as Success).data.product.productId.toString())
     }
 
+    private fun clearIcons() {
+        reviewDetailHeader.rightContentView.removeAllViews()
+    }
+
     private fun onSuccessEditForm() {
+        retry()
         view?.let { Toaster.build(it, getString(R.string.review_history_detail_toaster_edit_success), Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(R.string.review_oke)).show() }
     }
 
-    private fun onSuccessInsertReputation() {
+    private fun onSuccessInsertReputation(score: Int) {
+        reviewHistoryDetailReputation.onScoreSelected(score)
         view?.let { Toaster.build(it, getString(R.string.review_history_details_toaster_modify_smiley_success), Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(R.string.review_oke)).show() }
     }
 

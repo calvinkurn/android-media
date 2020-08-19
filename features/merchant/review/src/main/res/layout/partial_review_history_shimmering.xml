@@ -82,6 +82,8 @@
         android:layout_marginTop="@dimen/layout_lvl1"
         android:layout_marginEnd="@dimen/layout_lvl8"
         android:layout_marginRight="@dimen/layout_lvl8"
+        app:corners="8"
+        app:custom_color="@color/shimmer_custom_color"
         app:layout_constraintStart_toStartOf="@id/review_history_shimmer_title_2"
         app:layout_constraintEnd_toEndOf="@id/review_history_shimmer_title_2"
         app:layout_constraintTop_toBottomOf="@id/review_history_shimmer_title_2" />
