@@ -681,7 +681,11 @@ class AddEditProductDetailViewModelTest {
         val originalImageUrl = viewModel.productInputModel.detailInputModel.pictureList.map { it.urlOriginal }
         val editedStatus = arrayListOf(false, false)
 
-        viewModel.updateProductPhotos(imagePickerResult, ArrayList(originalImageUrl), editedStatus)
+        val newUpdatedPhotos = viewModel.updateProductPhotos(imagePickerResult, ArrayList(originalImageUrl), editedStatus)
+        viewModel.productInputModel.detailInputModel.apply {
+            pictureList = newUpdatedPhotos.pictureList
+            imageUrlOrPathList = newUpdatedPhotos.imageUrlOrPathList
+        }
 
         Assert.assertTrue(viewModel.productInputModel.detailInputModel.pictureList == sampleProductPhotos)
     }
@@ -694,7 +698,11 @@ class AddEditProductDetailViewModelTest {
         val originalImageUrl = viewModel.productInputModel.detailInputModel.pictureList.map { it.urlOriginal }
         val editedStatus = arrayListOf(false, false, true)
 
-        viewModel.updateProductPhotos(imagePickerResult, ArrayList(originalImageUrl), editedStatus)
+        val newUpdatedPhotos = viewModel.updateProductPhotos(imagePickerResult, ArrayList(originalImageUrl), editedStatus)
+        viewModel.productInputModel.detailInputModel.apply {
+            pictureList = newUpdatedPhotos.pictureList
+            imageUrlOrPathList = newUpdatedPhotos.imageUrlOrPathList
+        }
 
         Assert.assertTrue(viewModel.productInputModel.detailInputModel.pictureList == sampleProductPhotos &&
                 viewModel.productPhotoPaths.size == 3 &&
@@ -711,7 +719,11 @@ class AddEditProductDetailViewModelTest {
         val originalImageUrl = viewModel.productInputModel.detailInputModel.pictureList.map { it.urlOriginal }
         val editedStatus = arrayListOf(true, false)
 
-        viewModel.updateProductPhotos(imagePickerResult, ArrayList(originalImageUrl), editedStatus)
+        val newUpdatedPhotos = viewModel.updateProductPhotos(imagePickerResult, ArrayList(originalImageUrl), editedStatus)
+        viewModel.productInputModel.detailInputModel.apply {
+            pictureList = newUpdatedPhotos.pictureList
+            imageUrlOrPathList = newUpdatedPhotos.imageUrlOrPathList
+        }
 
         Assert.assertTrue(viewModel.productInputModel.detailInputModel.pictureList.size != sampleProductPhotos.size &&
                 viewModel.productInputModel.detailInputModel.pictureList.size == 1 &&
@@ -728,7 +740,11 @@ class AddEditProductDetailViewModelTest {
         val originalImageUrl = viewModel.productInputModel.detailInputModel.pictureList.map { it.urlOriginal }
         val editedStatus = arrayListOf(false, true)
 
-        viewModel.updateProductPhotos(imagePickerResult, ArrayList(originalImageUrl), editedStatus)
+        val newUpdatedPhotos = viewModel.updateProductPhotos(imagePickerResult, ArrayList(originalImageUrl), editedStatus)
+        viewModel.productInputModel.detailInputModel.apply {
+            pictureList = newUpdatedPhotos.pictureList
+            imageUrlOrPathList = newUpdatedPhotos.imageUrlOrPathList
+        }
 
         Assert.assertTrue(viewModel.productInputModel.detailInputModel.pictureList.size != sampleProductPhotos.size &&
                 viewModel.productInputModel.detailInputModel.pictureList.size == 1 &&
@@ -745,7 +761,11 @@ class AddEditProductDetailViewModelTest {
         val originalImageUrl = viewModel.productInputModel.detailInputModel.pictureList.map { it.urlOriginal }
         val editedStatus = arrayListOf(true, false)
 
-        viewModel.updateProductPhotos(imagePickerResult, ArrayList(originalImageUrl), editedStatus)
+        val newUpdatedPhotos = viewModel.updateProductPhotos(imagePickerResult, ArrayList(originalImageUrl), editedStatus)
+        viewModel.productInputModel.detailInputModel.apply {
+            pictureList = newUpdatedPhotos.pictureList
+            imageUrlOrPathList = newUpdatedPhotos.imageUrlOrPathList
+        }
 
         Assert.assertTrue(viewModel.productInputModel.detailInputModel.pictureList.size != sampleProductPhotos.size &&
                 viewModel.productInputModel.detailInputModel.pictureList.size == 1 &&

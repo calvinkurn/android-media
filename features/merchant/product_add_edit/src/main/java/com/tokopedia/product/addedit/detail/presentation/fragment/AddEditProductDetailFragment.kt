@@ -15,7 +15,6 @@ import android.widget.ImageView
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -40,7 +39,6 @@ import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.FIRST_CATEGORY_SELECTED
 import com.tokopedia.product.addedit.common.util.*
-import com.tokopedia.product.addedit.detail.di.AddEditProductDetailComponent
 import com.tokopedia.product.addedit.detail.di.AddEditProductDetailModule
 import com.tokopedia.product.addedit.detail.di.DaggerAddEditProductDetailComponent
 import com.tokopedia.product.addedit.detail.presentation.adapter.NameRecommendationAdapter
@@ -63,7 +61,6 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.USED_PRODUCT_INDEX
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
-import com.tokopedia.product.addedit.detail.presentation.model.PreorderInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
 import com.tokopedia.product.addedit.detail.presentation.viewholder.WholeSaleInputViewHolder
 import com.tokopedia.product.addedit.detail.presentation.viewmodel.AddEditProductDetailViewModel
@@ -125,6 +122,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     private var productPhotosView: RecyclerView? = null
     private var productPhotoAdapter: ProductPhotoAdapter? = null
     private var photoItemTouchHelper: ItemTouchHelper? = null
+    private var productPictureList: List<PictureInputModel>? = null
 
     // product name
     private var productNameField: TextFieldUnify? = null
@@ -134,6 +132,8 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     private var productNameRecAdapter: NameRecommendationAdapter? = null
 
     // product category
+    private var productCategoryId: String = ""
+    private var productCategoryName: String = ""
     private var productCategoryLayout: ViewGroup? = null
     private var productCategoryRecListView: ListUnify? = null
     private var productCategoryPickerButton: AppCompatTextView? = null
@@ -668,7 +668,8 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                     val imageUrlOrPathList = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS)
                     val originalImageUrl = data.getStringArrayListExtra(ImageEditorActivity.RESULT_PREVIOUS_IMAGE)
                     val isEditted = data.getSerializableExtra(ImageEditorActivity.RESULT_IS_EDITTED) as ArrayList<Boolean>
-                    viewModel.updateProductPhotos(imageUrlOrPathList, originalImageUrl, isEditted)
+                    val newUpdatedPhotos = viewModel.updateProductPhotos(imageUrlOrPathList, originalImageUrl, isEditted)
+                    productPictureList = newUpdatedPhotos.pictureList
                     productPhotoAdapter?.setProductPhotoPaths(viewModel.productPhotoPaths)
                     productPhotoAdapter?.let {
                         viewModel.validateProductPhotoInput(it.itemCount)
@@ -679,8 +680,8 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                     val categoryId = data.getLongExtra(CATEGORY_RESULT_ID, 0)
                     val categoryName = data.getStringExtra(CATEGORY_RESULT_FULL_NAME)
 
-                    viewModel.productInputModel.detailInputModel.categoryId = categoryId.toString()
-                    viewModel.productInputModel.detailInputModel.categoryName = categoryName
+                    productCategoryId = categoryId.toString()
+                    productCategoryName = categoryName ?: ""
 
                     val categoryRecommendationResult = viewModel.productCategoryRecommendationLiveData.value
                     val categoryList = if (categoryRecommendationResult != null && categoryRecommendationResult is Success) {
@@ -762,7 +763,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         if ( productWholeSaleInputFormsView?.layoutManager?.itemCount == wholeSaleInputFormsAdapter?.itemCount) {
             val itemView = productWholeSaleInputFormsView?.layoutManager?.getChildAt(position)
             val quantityField: TextFieldUnify? = itemView?.findViewById(R.id.tfu_wholesale_quantity)
-            val minOrderInput = productMinOrderField?.textFieldInput?.editableText.toString()
+            val minOrderInput = productMinOrderField.getTextIntOrZero().toString()
             val previousQuantity = wholeSaleInputFormsAdapter?.getPreviousQuantity(position) ?: ""
             val errorMessage = viewModel.validateProductWholeSaleQuantityInput(input, minOrderInput, previousQuantity)
             // to avoid enable button submit when we edit the last of whole sale
@@ -840,9 +841,13 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             productName = productNameField.getText()
             price = productPriceField.getTextBigIntegerOrZero()
             stock = productStockField.getTextIntOrZero()
+            condition = if (isProductConditionNew)  CONDITION_NEW else CONDITION_USED
             minOrder = productMinOrderField.getTextIntOrZero()
             sku = productSkuField.getText()
             imageUrlOrPathList = viewModel.productPhotoPaths
+            if (!productPictureList.isNullOrEmpty()) pictureList = productPictureList ?: listOf()
+            if (productCategoryId.isNotBlank()) categoryId = productCategoryId
+            if (categoryName.isNotBlank()) categoryName = productCategoryName
             preorder.apply {
                 duration = preOrderDurationField.getTextIntOrZero()
                 timeUnit = selectedDurationPosition
@@ -850,7 +855,6 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             }
             wholesaleList = getWholesaleInput()
         }
-        updateImageList( viewModel.productInputModel.detailInputModel)
     }
 
     private fun validateWholeSaleInput(viewModel: AddEditProductDetailViewModel, wholesaleInputForms: RecyclerView?, itemCount: Int?, specialIndex: Int = -1, isAddingWholeSale : Boolean = false) {
@@ -865,7 +869,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                 // Minimum amount
                 val productWholeSaleQuantityField: TextFieldUnify? = productWholeSaleFormView?.findViewById(R.id.tfu_wholesale_quantity)
                 productWholeSaleQuantityField?.textFieldInput?.editableText?.run {
-                    val minOrderInput = productMinOrderField?.textFieldInput?.editableText.toString()
+                    val minOrderInput = productMinOrderField.getTextIntOrZero().toString()
                     val previousQuantity = wholeSaleInputFormsAdapter?.getPreviousQuantity(index)
                             ?: ""
                     val errorMessage = viewModel.validateProductWholeSaleQuantityInput(this.toString(), minOrderInput, previousQuantity)
@@ -992,8 +996,8 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             productConditionListView?.run {
                 this.setOnItemClickListener { _, _, position, _ ->
                     setSelected(productConditions, position) {
-                        if (position == NEW_PRODUCT_INDEX) detailInputModel.condition = CONDITION_NEW
-                        else detailInputModel.condition = CONDITION_USED
+                        if (position == NEW_PRODUCT_INDEX) isProductConditionNew = true
+                        else isProductConditionNew = false
                     }
                 }
             }
@@ -1001,8 +1005,8 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             productConditions.forEachIndexed { index, listItemUnify ->
                 listItemUnify.listRightRadiobtn?.setOnClickListener {
                     productConditionListView?.setSelected(productConditions, index) {
-                        if (index == NEW_PRODUCT_INDEX) detailInputModel.condition = CONDITION_NEW
-                        else detailInputModel.condition = CONDITION_USED
+                        if (index == NEW_PRODUCT_INDEX) isProductConditionNew = true
+                        else isProductConditionNew = false
                     }
                 }
             }
@@ -1328,7 +1332,6 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         productCategoryRecListView?.setData(items)
         productCategoryRecListView?.onLoadFinish {
             selectFirstCategoryRecommendation(items)
-            createCategoryRecommendationItemClickListener(items)
 
             productCategoryRecListView?.run {
                 this.setOnItemClickListener { _, _, position, _ ->
@@ -1368,34 +1371,10 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             setSelected(items, position) {
                 val categoryId = it.getCategoryId().toString()
                 val categoryName = it.getCategoryName()
-                viewModel.productInputModel.detailInputModel.categoryId = categoryId
-                viewModel.productInputModel.detailInputModel.categoryName = categoryName
+                productCategoryId = categoryId
+                productCategoryName = categoryName
                 true
             }
-        }
-    }
-
-    private fun createCategoryRecommendationItemClickListener(items: List<ListItemUnify>) = productCategoryRecListView?.run {
-        productCategoryRecListView?.setOnItemClickListener { _, _, position, _ ->
-            setSelected(items, position) {
-                onCategoryRecommendationSelected(it.getCategoryId().toString(), it.getCategoryName())
-            }
-        }
-
-        items.forEachIndexed { index, item ->
-            item.listRightRadiobtn?.setOnClickListener {
-                setSelected(items, index) {
-                    onCategoryRecommendationSelected(it.getCategoryId().toString(), it.getCategoryName())
-                }
-            }
-        }
-    }
-
-    private fun onCategoryRecommendationSelected(categoryId: String, categoryName: String) {
-        productNameRecView?.hide()
-        viewModel.productInputModel.detailInputModel.categoryId = categoryId
-        if (viewModel.isAdding) {
-            ProductAddMainTracking.clickProductCategoryRecom(shopId)
         }
     }
 
@@ -1459,24 +1438,8 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun updateImageList(detailInputModel: DetailInputModel) {
-        // filter product pictureList, so that edited image will be re-uploaded and changed (removed from pictureList) and than reorder the picture if necessary
-        val imageUrlOrPathList = productPhotoAdapter?.getProductPhotoPaths().orEmpty()
-        val pictureList = detailInputModel.pictureList.filter {
-            imageUrlOrPathList.contains(it.urlThumbnail)
-        }
-        val newPictureList = mutableListOf<PictureInputModel>()
-        imageUrlOrPathList.forEach { urlOrPath ->
-            pictureList.find { it.urlThumbnail == urlOrPath }?.run {
-                newPictureList.add(this)
-            }
-        }
-        detailInputModel.pictureList = newPictureList
-        detailInputModel.imageUrlOrPathList = imageUrlOrPathList
-    }
-
     override fun getValidationCurrentWholeSaleQuantity(quantity: String, position: Int): String {
-        val minOrderInput = productMinOrderField?.textFieldInput?.editableText.toString()
+        val minOrderInput = productMinOrderField.getTextIntOrZero().toString()
         val previousQuantity = wholeSaleInputFormsAdapter?.getPreviousQuantity(position - 1) ?: ""
         val validation = viewModel.validateProductWholeSaleQuantityInput(quantity, minOrderInput, previousQuantity)
         viewModel.isTheLastOfWholeSale.value = validation.isNotEmpty()
