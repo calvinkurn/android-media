@@ -340,6 +340,9 @@ data class DataItem(
         @SerializedName("tracking_fields")
         val trackingFields: TrackingFields? = null,
 
+        @SerializedName("buttonStr")
+        val claimButtonStr: String? = null,
+
         var shopAdsClickURL : String? = "",
 
         var shopAdsViewURL : String? = "",
