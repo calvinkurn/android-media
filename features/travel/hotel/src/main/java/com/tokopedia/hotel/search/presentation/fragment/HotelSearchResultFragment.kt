@@ -150,7 +150,6 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
     fun changeSearchParam() {
         onQuickFilterChanged(listOf())
         setUpQuickFilterBaseOnSelectedFilter(listOf())
-        loadInitialData()
     }
 
     override fun createAdapterInstance(): BaseListAdapter<Property, PropertyAdapterTypeFactory> {
