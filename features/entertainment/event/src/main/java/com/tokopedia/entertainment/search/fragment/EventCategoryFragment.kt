@@ -13,9 +13,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.entertainment.R
+import com.tokopedia.entertainment.common.util.EventQuery.getEventSearchCategory
 import com.tokopedia.entertainment.search.activity.EventCategoryActivity
 import com.tokopedia.entertainment.search.adapter.viewholder.CategoryTextBubbleAdapter
 import com.tokopedia.entertainment.search.adapter.viewholder.EventGridAdapter
@@ -127,7 +129,7 @@ class EventCategoryFragment : BaseDaggerFragment() {
             setOnRefreshListener {
                 recycler_viewParent.addOnScrollListener(endlessScroll)
                 viewModel.page = "1"
-                viewModel.getData(CacheType.ALWAYS_CLOUD)
+                viewModel.getData(CacheType.ALWAYS_CLOUD,query = getQueryCategory())
             }
         }
     }
@@ -140,7 +142,7 @@ class EventCategoryFragment : BaseDaggerFragment() {
         return object: EndlessRecyclerViewScrollListener(gridLayoutManager){
             override fun onLoadMore(page: Int, p1: Int) {
                 viewModel.page = (page+1).toString()
-                viewModel.getData()
+                viewModel.getData(query=getQueryCategory())
             }
         }
     }
@@ -150,10 +152,10 @@ class EventCategoryFragment : BaseDaggerFragment() {
         if(CATEGORY_ID.isNotBlank()){
             val cat = CATEGORY_ID.split(",")
             cat.forEach{
-                viewModel.putCategoryToQuery(it)
+                viewModel.putCategoryToQuery(it,getQueryCategory())
             }
             viewModel.initCategory = true
-        } else viewModel.getData()
+        } else viewModel.getData(query=getQueryCategory())
     }
 
     private fun observeErrorReport(){
@@ -161,14 +163,14 @@ class EventCategoryFragment : BaseDaggerFragment() {
             NetworkErrorHelper.createSnackbarRedWithAction(activity, resources.getString(R.string.ent_search_error_message)) {
                 recycler_viewParent.addOnScrollListener(endlessScroll)
                 viewModel.page = "1"
-                viewModel.getData(CacheType.ALWAYS_CLOUD)
+                viewModel.getData(CacheType.ALWAYS_CLOUD,getQueryCategory())
             }.showRetrySnackbar()
         })
     }
 
     private fun resetFilter() {
         setupCategoryAdapter()
-        viewModel.clearFilter()
+        viewModel.clearFilter(getQueryCategory())
     }
 
     private fun setupCategoryAdapter(){
@@ -184,7 +186,7 @@ class EventCategoryFragment : BaseDaggerFragment() {
 
 
     private fun onCategoryClicked(id : Any?){
-        viewModel.putCategoryToQuery(id.toString())
+        viewModel.putCategoryToQuery(id.toString(),getQueryCategory())
     }
 
     private fun observeLiveData(){
@@ -232,11 +234,16 @@ class EventCategoryFragment : BaseDaggerFragment() {
     private fun showOrHideShimmer(state: Boolean){ activity?.shimering_layout?.visibility = if(state) View.VISIBLE else View.GONE }
 
     private fun getEventData(){
-        viewModel.getData()
+        viewModel.getData(query=getQueryCategory())
+    }
+
+    private fun getQueryCategory():String{
+        return getEventSearchCategory()
     }
 
     override fun onDestroyView() {
         performanceMonitoring.stopTrace()
         super.onDestroyView()
     }
+
 }
