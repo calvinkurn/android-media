@@ -120,7 +120,7 @@ class CreditCardPickerFragment : BaseDaggerFragment() {
         override fun shouldInterceptRequest(view: WebView?, url: String?): WebResourceResponse? {
             val uri = Uri.parse(url)
             val isSuccess = uri.getQueryParameter(QUERY_PARAM_SUCCESS)
-            if (isSuccess != null && isSuccess.equals("true", true)) {
+            if (isSuccess != null) {
                 goToNextStep(generateMetadata(uri))
             }
             return super.shouldInterceptRequest(view, url)
