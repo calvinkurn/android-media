@@ -2,7 +2,6 @@ package com.tokopedia.home.analytics.v2
 
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
-import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.track.TrackApp
 
 object CategoryWidgetTracking : BaseTracking() {
@@ -39,7 +38,6 @@ object CategoryWidgetTracking : BaseTracking() {
     )
 
     fun getCategoryWidgetBannerClick(
-            headerName: String,
             channelId: String,
             userId: String,
             position: String,
