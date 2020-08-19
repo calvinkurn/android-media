@@ -355,6 +355,11 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
             if (it is Success) {
                 navigator?.run {
                     val shopName = it.data.shopName
+                    val shopAvatar = it.data.shopAvatar
+
+                    // update userSession
+                    userSession.shopName = shopName
+                    userSession.shopAvatar = shopAvatar
 
                     if(isHomePageSelected()) {
                         supportActionBar?.title = shopName
