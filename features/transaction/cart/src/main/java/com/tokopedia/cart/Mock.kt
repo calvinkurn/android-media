@@ -106,8 +106,8 @@ val RESPONSE = """
                   "shop_location": "Jakarta Selatan",
                   "estimation": "Estimasi Tiba: 2 hari",
                   "free_shipping": {
-                    "eligible": false,
-                    "badge_url": ""
+                    "eligible": true,
+                    "badge_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
                   },
                   "Preorder": {
                     "is_preorder": true,
@@ -967,8 +967,8 @@ val RESPONSE = """
                           }
                         ],
                         "free_shipping": {
-                          "eligible": false,
-                          "badge_url": ""
+                          "eligible": true,
+                          "badge_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
                         }
                       },
                       "errors": [

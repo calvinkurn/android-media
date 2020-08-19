@@ -93,43 +93,17 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
                     else if (availableGroup.shop.goldMerchant.isGoldBadge) availableGroup.shop.goldMerchant.goldMerchantLogoUrl
                     else ""
             it.isFulfillment = availableGroup.isFulFillment
-            it.fulfillmentName = availableGroup.warehouse.cityName
+            it.fulfillmentName = availableGroup.shipmentInformation.shopLocation
             it.isHasPromoList = availableGroup.hasPromoList
             it.cartString = availableGroup.cartString
             it.promoCodes = availableGroup.promoCodes
             it.cartItemHolderDataList = mapCartItemHolderDataList(availableGroup.cartDetails, availableGroup, it, cartDataListResponse, false)
 
-            it.preOrderInfo = getPreOrderInfo(availableGroup.cartDetails)
-            it.freeShippingBadgeUrl = getFreeShippingBadgeUrl(availableGroup.cartDetails)
+            it.preOrderInfo = if (availableGroup.shipmentInformation.preorder.isPreorder) availableGroup.shipmentInformation.preorder.duration else ""
+            it.freeShippingBadgeUrl = if (availableGroup.shipmentInformation.freeShipping.eligible) availableGroup.shipmentInformation.freeShipping.badgeUrl else ""
 
             it
         }
-    }
-
-    private fun getPreOrderInfo(cartItemDataList: List<CartDetail>): String {
-        var preOrderInfo = ""
-
-        cartItemDataList.forEach {
-            if (it.product.isPreorder == 1) {
-                preOrderInfo = "Pre Order ${it.product.productPreorder.durationText}"
-                return@forEach
-            }
-        }
-
-        return preOrderInfo
-    }
-
-    private fun getFreeShippingBadgeUrl(cartItemDataList: List<CartDetail>): String {
-        var freeShippingBadgeUrl = ""
-
-        cartItemDataList.forEach {
-            if (it.product.freeShipping.eligible) {
-                freeShippingBadgeUrl = it.product.freeShipping.badgeUrl
-                return@forEach
-            }
-        }
-
-        return freeShippingBadgeUrl
     }
 
     private fun mapShopError(it: ShopGroupWithErrorData, unavailableGroup: UnavailableGroup, isDisableAllProducts: Boolean): Boolean {
@@ -478,7 +452,7 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
                         else -> ""
                     }
             it.isFulfillment = unavailableGroup.isFulFillment
-            it.fulfillmentName = unavailableGroup.warehouse.cityName
+            it.fulfillmentName = unavailableGroup.shipmentInformation.shopLocation
             it.cartString = unavailableGroup.cartString
 
             var isDisableAllProducts = true
