@@ -141,18 +141,25 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     @Inject
     lateinit var dPresenter: ICartListPresenter
+
     @Inject
     lateinit var cartItemDecoration: RecyclerView.ItemDecoration
+
     @Inject
     lateinit var cartPageAnalytics: CheckoutAnalyticsCart
+
     @Inject
     lateinit var viewHolderDataMapper: ViewHolderDataMapper
+
     @Inject
     lateinit var userSession: UserSessionInterface
+
     @Inject
     lateinit var wishlistMapper: WishlistMapper
+
     @Inject
     lateinit var recentViewMapper: RecentViewMapper
+
     @Inject
     lateinit var compositeSubscription: CompositeSubscription
 
@@ -188,8 +195,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private var isInsuranceEnabled = false
     private var isToolbarWithBackButton = true
     private var noAvailableItems = false
-    private var cbChangeJob: Job? = null
-    private var showPromoButtonJob: Job? = null
+    private var delayCbChangeJob: Job? = null
+    private var delayShowPromoButtonJob: Job? = null
     private var TRANSLATION_LENGTH = 0f
     private var isKeyboardOpened = false
     private var initialPromoButtonPosition = 0f
@@ -401,7 +408,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     override fun onDestroy() {
         cartAdapter.clearCompositeSubscription()
         dPresenter.detachView()
-        showPromoButtonJob?.cancel()
+        delayShowPromoButtonJob?.cancel()
         super.onDestroy()
     }
 
@@ -490,8 +497,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             if (isChecked != prevIsChecked) {
                 prevIsChecked = isChecked
 
-                cbChangeJob?.cancel()
-                cbChangeJob = GlobalScope.launch(Dispatchers.Main) {
+                delayCbChangeJob?.cancel()
+                delayCbChangeJob = GlobalScope.launch(Dispatchers.Main) {
                     delay(500L)
                     if (isChecked == prevIsChecked) {
                         if (isChecked != cartListData?.isAllSelected) {
@@ -577,8 +584,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private fun handlePromoButtonVisibilityOnIdle(newState: Int) {
         if (newState == RecyclerView.SCROLL_STATE_IDLE && initialPromoButtonPosition > 0) {
             // Delay after recycler view idle, then show promo button
-            showPromoButtonJob?.cancel()
-            showPromoButtonJob = GlobalScope.launch(Dispatchers.Main) {
+            delayShowPromoButtonJob?.cancel()
+            delayShowPromoButtonJob = GlobalScope.launch(Dispatchers.Main) {
                 delay(750L)
                 if (llPromoCheckout != null) {
                     llPromoCheckout.animate()

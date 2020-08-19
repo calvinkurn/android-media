@@ -537,11 +537,249 @@ val RESPONSE = """
               }
             ]
           },
-          "unavailable_ticker": "Terdapat NumberOfProducts bermasalah dalam keranjang",
+          "unavailable_ticker": "Terdapat {{NumberOfProducts}} bermasalah dalam keranjang",
           "unavailable_section": [
             {
-              "title": "Toko Tutup",
+              "title": "Barang Dilarang",
               "unavailable_description": "Tidak bisa dibeli di ios dan android",
+              "action": [
+                {
+                  "id": 1,
+                  "code": "NOTIFY",
+                  "message": "Notify me when the stock is ready"
+                },
+                {
+                  "id": 2,
+                  "code": "DELETE",
+                  "message": "Hapus barang"
+                },
+                {
+                  "id": 3,
+                  "code": "CHECKOUTBROWSER",
+                  "message": "Checkout di browser"
+                }
+              ],
+              "unavailable_group": [
+                {
+                  "user_address_id": 0,
+                  "shipment_information": {
+                    "shop_location": "",
+                    "estimation": "",
+                    "is_free_shipping": false
+                  },
+                  "shop": {
+                    "shop_id": 480829,
+                    "user_id": 5510908,
+                    "admin_ids": [],
+                    "shop_name": "mattleeshoppe",
+                    "shop_image": "https://ecs7.tokopedia.net/img/default_v3-shopnophoto.png",
+                    "shop_url": "https://staging.tokopedia.com/mattleeshoppe",
+                    "shop_status": 1,
+                    "is_gold": 0,
+                    "is_gold_badge": false,
+                    "is_official": 0,
+                    "is_free_returns": 0,
+                    "gold_merchant": {
+                      "is_gold": 0,
+                      "is_gold_badge": false,
+                      "gold_merchant_logo_url": ""
+                    },
+                    "official_store": {
+                      "is_official": 0,
+                      "os_logo_url": ""
+                    },
+                    "address_id": 1,
+                    "postal_code": "123456",
+                    "latitude": "123456",
+                    "longitude": "7890",
+                    "district_id": 1,
+                    "district_name": "Kaway XVI",
+                    "origin": 1,
+                    "address_street": "Alamat ini milik Dragon",
+                    "province_id": 1,
+                    "city_id": 1,
+                    "city_name": "Kab. Aceh Barat",
+                    "province_name": "D.I. Aceh",
+                    "country_name": "Indonesia",
+                    "is_allow_manage": false,
+                    "shop_domain": "mattleeshoppe"
+                  },
+                  "cart_string": "480829-0-96",
+                  "cart_details": [
+                    {
+                      "cart_id": 33376874,
+                      "product": {
+                        "variant_description_detail": {
+                          "variant_name": [
+                            "blue",
+                            "23"
+                          ],
+                          "variant_description": "Varian: blue,23"
+                        },
+                        "product_id": 15262849,
+                        "product_name": "Test vdoang",
+                        "product_alias": "test-vdoang",
+                        "parent_id": 0,
+                        "variant": {
+                          "parent_id": 0,
+                          "is_parent": false,
+                          "is_variant": false,
+                          "children_id": 0
+                        },
+                        "sku": "",
+                        "campaign_id": 0,
+                        "is_big_campaign": false,
+                        "initial_price": 0,
+                        "initial_price_fmt": "",
+                        "product_price_fmt": "Rp10.000",
+                        "product_price": 10000,
+                        "product_original_price": 0,
+                        "product_price_original_fmt": "",
+                        "slash_price_label": "50%",
+                        "is_slash_price": false,
+                        "category_id": 636,
+                        "category": "Elektronik / Tool & Kit",
+                        "catalog_id": 0,
+                        "wholesale_price": [],
+                        "product_weight_fmt": "1gr",
+                        "product_condition": 1,
+                        "product_status": 3,
+                        "product_url": "https://staging.tokopedia.com//test-vdoang",
+                        "product_returnable": 0,
+                        "is_freereturns": 0,
+                        "free_returns": {
+                          "free_returns_logo": "https://ecs7.tokopedia.net/img/icon-frs.png"
+                        },
+                        "is_preorder": 0,
+                        "product_cashback": "",
+                        "product_cashback_value": 0,
+                        "product_min_order": 1,
+                        "product_max_order": 10000,
+                        "product_rating": 0,
+                        "product_invenage_value": 2,
+                        "product_switch_invenage": 1,
+                        "product_warning_message": "sisa 3",
+                        "product_alert_message": "FOR URGENCY NEEDS",
+                        "currency_rate": 1,
+                        "product_price_currency": 1,
+                        "product_image": {
+                          "image_src": "https://cdn-staging.tokopedia.com/img/cache/700/product-1/2019/9/26/5510908/5510908_9aae54ab-e648-4baf-b28c-819b0128b63f_1919_1919",
+                          "image_src_100_square": "https://cdn-staging.tokopedia.com/img/cache/100-square/product-1/2019/9/26/5510908/5510908_9aae54ab-e648-4baf-b28c-819b0128b63f_1919_1919",
+                          "image_src_200_square": "https://cdn-staging.tokopedia.com/img/cache/200-square/product-1/2019/9/26/5510908/5510908_9aae54ab-e648-4baf-b28c-819b0128b63f_1919_1919",
+                          "image_src_300": "https://cdn-staging.tokopedia.com/img/cache/300/product-1/2019/9/26/5510908/5510908_9aae54ab-e648-4baf-b28c-819b0128b63f_1919_1919",
+                          "image_src_square": "https://cdn-staging.tokopedia.com/img/cache/500-square/product-1/2019/9/26/5510908/5510908_9aae54ab-e648-4baf-b28c-819b0128b63f_1919_1919"
+                        },
+                        "product_all_images": "[{\"file_path\":\"product-1/2019/9/26/5510908\",\"file_name\":\"5510908_9aae54ab-e648-4baf-b28c-819b0128b63f_1919_1919\",\"status\":2},{\"file_path\":\"product-1/2019/9/26/5510908\",\"file_name\":\"5510908_417e3582-9671-46b4-af26-2c61d0051444_1919_1919\",\"status\":1},{\"file_path\":\"product-1/2019/9/26/5510908\",\"file_name\":\"5510908_8854f7d1-ab75-4b9c-ba15-0a88b6ae27b1_1919_1919\",\"status\":1},{\"file_path\":\"product-1/2019/9/26/5510908\",\"file_name\":\"5510908_345508de-2bfe-4bbd-90f6-7ce86f436f41_1919_1919\",\"status\":1},{\"file_path\":\"product-1/2019/9/26/5510908\",\"file_name\":\"5510908_33a77436-9623-4ceb-93d6-7af16a035eb6_1919_1919\",\"status\":1}]",
+                        "product_notes": "",
+                        "product_quantity": 7,
+                        "price_changes": {
+                          "changes_state": 0,
+                          "amount_difference": 0,
+                          "original_amount": 0,
+                          "description": ""
+                        },
+                        "product_weight": 1,
+                        "product_weight_unit_code": 1,
+                        "product_weight_unit_text": "gr",
+                        "last_update_price": 1569480222,
+                        "is_update_price": false,
+                        "product_preorder": {},
+                        "product_showcase": {
+                          "name": "testing",
+                          "id": 1405133
+                        },
+                        "product_finsurance": 1,
+                        "product_shop_id": 480829,
+                        "is_wishlisted": false,
+                        "product_tracker_data": {
+                          "attribution": "none/other",
+                          "tracker_list_name": "none/other"
+                        },
+                        "is_ppp": false,
+                        "is_cod": false,
+                        "warehouse_id": 96,
+                        "warehouses": {
+                          "96": {
+                            "warehouseID": 96,
+                            "product_price": 10000,
+                            "price_currency": 1,
+                            "price_currency_name": "IDR",
+                            "product_price_idr": 10000,
+                            "last_update_price": {
+                              "unix": 1569505422,
+                              "yyyymmddhhmmss": ""
+                            },
+                            "product_switch_invenage": 1,
+                            "product_invenage_value": 2
+                          }
+                        },
+                        "is_parent": false,
+                        "is_campaign_error": false,
+                        "campaign_type_name": "",
+                        "hide_gimmick": false,
+                        "is_blacklisted": false,
+                        "categories": [
+                          {
+                            "category_id": 60,
+                            "category_name": "Elektronik"
+                          },
+                          {
+                            "category_id": 636,
+                            "category_name": "Tool & Kit"
+                          }
+                        ],
+                        "free_shipping": {
+                          "eligible": false,
+                          "badge_url": ""
+                        }
+                      },
+                      "errors": [
+                        "Stok barang ini kosong."
+                      ],
+                      "messages": [],
+                      "checkbox_state": true,
+                      "similar_product_url": "tokopedia://rekomendasi/15262849?ref=cart",
+                      "similar_product": {
+                        "text": "Lihat Produk Serupa",
+                        "url": "tokopedia://rekomendasi/15262849?ref=cart"
+                      }
+                    }
+                  ],
+                  "total_cart_details_error": 1,
+                  "total_cart_price": 0,
+                  "errors": [],
+                  "sort_key": 33376874,
+                  "is_fulfillment_service": false,
+                  "warehouse": {
+                    "warehouse_id": 96,
+                    "partner_id": 0,
+                    "shop_id": 480829,
+                    "warehouse_name": "Shop Location",
+                    "district_id": 1,
+                    "district_name": "Kaway XVI",
+                    "city_id": 1,
+                    "city_name": "Kab. Aceh Barat",
+                    "province_id": 1,
+                    "province_name": "D.I. Aceh",
+                    "status": 1,
+                    "postal_code": "123456",
+                    "is_default": 1,
+                    "latlon": "123456,7890",
+                    "latitude": "123456",
+                    "longitude": "7890",
+                    "email": "",
+                    "address_detail": "Alamat ini milik Dragon",
+                    "country_name": "Indonesia",
+                    "is_fulfillment": false,
+                    "tkpd_preferred_logistic_spid": []
+                  },
+                  "checkbox_state": true
+                }
+              ]
+            },
+            {
+              "title": "Toko Tutup",
+              "unavailable_description": "",
               "action": [
                 {
                   "id": 1,

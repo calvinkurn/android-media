@@ -728,13 +728,17 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
     fun addCartRecentViewData(cartSectionHeaderHolderData: CartSectionHeaderHolderData,
                               cartRecentViewHolderData: CartRecentViewHolderData) {
         var recentViewIndex = 0
-        for (item in cartDataList) {
+        for ((index, item) in cartDataList.withIndex()) {
             if (item is CartEmptyHolderData ||
                     item is CartShopHolderData ||
                     item is ShipmentSellerCashbackModel ||
                     item is InsuranceCartShops ||
-                    item is DisabledCartItemHolderData) {
-                recentViewIndex = cartDataList.indexOf(item) // 3
+                    item is DisabledItemHeaderHolderData ||
+                    item is DisabledReasonHolderData ||
+                    item is DisabledShopHolderData ||
+                    item is DisabledCartItemHolderData ||
+                    item is DisabledAccordionHolderData) {
+                recentViewIndex = index
             }
         }
         cartDataList.add(++recentViewIndex, cartSectionHeaderHolderData)
@@ -749,15 +753,19 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
     fun addCartWishlistData(cartSectionHeaderHolderData: CartSectionHeaderHolderData,
                             cartWishlistHolderData: CartWishlistHolderData) {
         var wishlistIndex = 0
-        for (item in cartDataList) {
+        for ((index, item) in cartDataList.withIndex()) {
             if (item is CartEmptyHolderData ||
                     item is CartShopHolderData ||
                     item is ShipmentSellerCashbackModel ||
                     item is CartRecentViewHolderData ||
                     item is InsuranceCartShops ||
-                    item is DisabledCartItemHolderData) {
-
-                wishlistIndex = cartDataList.indexOf(item)
+                    item is DisabledItemHeaderHolderData ||
+                    item is DisabledReasonHolderData ||
+                    item is DisabledShopHolderData ||
+                    item is DisabledCartItemHolderData ||
+                    item is DisabledAccordionHolderData
+            ) {
+                wishlistIndex = index
             }
         }
         cartDataList.add(++wishlistIndex, cartSectionHeaderHolderData)
@@ -772,7 +780,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
     fun addCartRecommendationData(cartSectionHeaderHolderData: CartSectionHeaderHolderData?,
                                   cartRecommendationItemHolderDataList: List<CartRecommendationItemHolderData>) {
         var recommendationIndex = 0
-        for (item in cartDataList) {
+        for ((index, item) in cartDataList.withIndex()) {
             if (item is CartEmptyHolderData ||
                     item is CartShopHolderData ||
                     item is ShipmentSellerCashbackModel ||
@@ -780,8 +788,12 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                     item is CartWishlistHolderData ||
                     item is CartRecommendationItemHolderData ||
                     item is InsuranceCartShops ||
-                    item is DisabledCartItemHolderData) {
-                recommendationIndex = cartDataList.indexOf(item)
+                    item is DisabledItemHeaderHolderData ||
+                    item is DisabledReasonHolderData ||
+                    item is DisabledShopHolderData ||
+                    item is DisabledCartItemHolderData ||
+                    item is DisabledAccordionHolderData) {
+                recommendationIndex = index
             }
         }
 
