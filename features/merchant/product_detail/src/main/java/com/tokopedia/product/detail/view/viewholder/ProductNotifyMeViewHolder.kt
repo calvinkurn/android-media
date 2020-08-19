@@ -5,13 +5,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.partial_product_notify_me.view.*
 import java.util.*
@@ -73,9 +76,9 @@ class ProductNotifyMeViewHolder(view: View, private val listener: DynamicProduct
                 }
                 else -> {
                     itemView.notify_count_down?.gone()
-                    itemView.product_notify_subtitle?.text = MethodChecker.fromHtml(
-                            getString(R.string.notify_me_subtitle, dayLeft.toInt().toString())
-                    )
+                    itemView.product_notify_subtitle?.text = HtmlLinkHelper(itemView.context,
+                            itemView.context.getString(R.string.notify_me_subtitle, dayLeft.toInt().toString())
+                    ).spannedString
                 }
             }
         } catch (ex: Exception) {
