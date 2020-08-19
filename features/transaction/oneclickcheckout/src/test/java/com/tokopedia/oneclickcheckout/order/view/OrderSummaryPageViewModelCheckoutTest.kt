@@ -450,4 +450,33 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
 
         assertEquals(OccGlobalEvent.Error(response), orderSummaryPageViewModel.globalEvent.value)
     }
+
+    @Test
+    fun `Checkout With Error Installment`() {
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = ButtonBayarState.NORMAL)
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference.copy(
+                payment = OrderProfilePayment(
+                        metadata = """{"express_checkout_param":{"installment_term":"3"}}""")),
+                isValid = true)
+        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true,
+                creditCard = OrderPaymentCreditCard(
+                        numberOfCards = OrderPaymentCreditCardsNumber(1, 0, 1),
+                        availableTerms = listOf(
+                                OrderPaymentInstallmentTerm(term = 0, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 100),
+                                OrderPaymentInstallmentTerm(term = 3, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 100000, isSelected = true, isEnable = false)
+                        ),
+                        selectedTerm = OrderPaymentInstallmentTerm(term = 3, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 100000, isSelected = true, isEnable = false)
+                )
+        )
+        every { updateCartOccUseCase.execute(any(), any(), any()) } answers {
+            (secondArg() as ((UpdateCartOccGqlResponse) -> Unit)).invoke(UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc())))
+        }
+
+        orderSummaryPageViewModel.finalUpdate({
+            //do nothing
+        }, false)
+
+        assertEquals(OccGlobalEvent.Error(errorMessage = OrderSummaryPageViewModel.INSTALLMENT_INVALID_MIN_AMOUNT), orderSummaryPageViewModel.globalEvent.value)
+    }
 }
