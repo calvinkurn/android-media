@@ -22,7 +22,7 @@ class FilterOpenRangeViewHolder(view: View): HotelSearchResultFilterV2Adapter.Fi
         selectedOption.name = filter.name
         selectedOption.values = filter.optionSelected.toMutableList()
 
-        if (filter.options.isEmpty()) filter.options = listOf("0", "15000000")
+        if (filter.options.isEmpty()) filter.options = listOf(MIN_PRICE, MAX_PRICE)
         initialMaxPrice = filter.options.lastOrNull().toIntOrZero()
 
         val selectedFilterOnlyOne = selectedOption.values.size == 1
@@ -53,5 +53,7 @@ class FilterOpenRangeViewHolder(view: View): HotelSearchResultFilterV2Adapter.Fi
 
     companion object {
         val LAYOUT = R.layout.layout_hotel_filter_open_range
+        const val MIN_PRICE = "0"
+        const val MAX_PRICE = "15000000"
     }
 }

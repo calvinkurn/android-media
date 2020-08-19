@@ -25,7 +25,7 @@
             android:id="@+id/hotel_filter_submit_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Simpan"
+            android:text="@string/hotel_button_save"
             android:background="@color/Neutral_N0"
             android:layout_marginTop="@dimen/spacing_lvl3"
             android:layout_marginBottom="@dimen/spacing_lvl3"
