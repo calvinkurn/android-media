@@ -1,6 +1,5 @@
 package com.tokopedia.topchat.chatlist.analytic
 
-import com.tokopedia.topchat.chatlist.model.EmptyChatModel
 import com.tokopedia.topchat.chatlist.pojo.ItemChatListPojo
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
@@ -19,6 +18,7 @@ class ChatListAnalytic @Inject constructor(
         companion object {
             const val CLICK_INBOX_CHAT = "clickInboxChat"
             const val CLICK_CHAT_DETAIL = "clickChatDetail"
+            const val VIEW_CHAT_DETAIL_IRIS = "viewChatDetailIris"
         }
     }
 
@@ -124,7 +124,7 @@ class ChatListAnalytic @Inject constructor(
     fun eventViewCtaTopAds() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 TrackAppUtils.gtmData(
-                        Event.CLICK_CHAT_DETAIL,
+                        Event.VIEW_CHAT_DETAIL_IRIS,
                         Category.CATEGORY_CHAT_DETAIL,
                         Action.VIEW_CTA_TOPADS,
                         userSession.shopId
