@@ -11,6 +11,7 @@ class GetVariantCategoryCombinationUseCase @Inject constructor(
 
     companion object {
         private const val PARAM_CATEGORY_ID = "categoryID"
+        private const val PARAM_PRODUCT_VARIANTS = "productVariants"
         private const val PARAM_TYPE = "type"
         private val query =
                 """
@@ -59,9 +60,12 @@ class GetVariantCategoryCombinationUseCase @Inject constructor(
         setTypeClass(GetVariantCategoryCombinationResponse::class.java)
     }
 
-    fun setParams(categoryId: Int, type: String) {
+    fun setParams(categoryId: Int, productVariants: List<String>, type: String) {
         val requestParams = RequestParams.create()
         requestParams.putInt(PARAM_CATEGORY_ID, categoryId)
+        if (productVariants.isNotEmpty()) {
+            requestParams.putObject(PARAM_PRODUCT_VARIANTS,productVariants.joinToString(separator = ","))
+        }
         requestParams.putString(PARAM_TYPE, type)
         setRequestParams(requestParams.parameters)
     }

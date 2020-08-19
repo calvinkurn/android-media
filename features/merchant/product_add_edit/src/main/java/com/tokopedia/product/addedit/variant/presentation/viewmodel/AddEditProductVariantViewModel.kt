@@ -106,12 +106,20 @@ class AddEditProductVariantViewModel @Inject constructor(
         return !isVariantUnitValuesLevel1Empty && !isVariantUnitValuesLevel2Empty
     }
 
-    fun getVariantCategoryCombination(categoryId: Int) {
+    fun getVariantCategoryCombination(categoryId: Int, selections: List<SelectionInputModel>) {
+        var productVariants = mutableListOf<String>()
         var type = ADD_MODE
-        isEditMode.value?.let { isEdit -> if (isEdit) type = ALL_MODE }
+        isEditMode.value?.let { isEdit ->
+            if (isEdit) {
+                type = ALL_MODE
+                selections.forEach {
+                    productVariants.add(it.variantId)
+                }
+            }
+        }
         launchCatchError(block = {
             val result = withContext(Dispatchers.IO) {
-                getVariantCategoryCombinationUseCase.setParams(categoryId, type)
+                getVariantCategoryCombinationUseCase.setParams(categoryId, productVariants, type)
                 getVariantCategoryCombinationUseCase.executeOnBackground()
             }
             mGetVariantCategoryCombinationResult.value = Success(result)
@@ -323,7 +331,8 @@ class AddEditProductVariantViewModel @Inject constructor(
 
         productInputModel.value?.detailInputModel?.categoryId?.let {
             val categoryId = it.toIntOrNull()
-            categoryId?.run { getVariantCategoryCombination(this) }
+            val selections = productInputModel.value?.variantInputModel?.selections?: listOf()
+            categoryId?.run { getVariantCategoryCombination(this, selections) }
         }
 
     }

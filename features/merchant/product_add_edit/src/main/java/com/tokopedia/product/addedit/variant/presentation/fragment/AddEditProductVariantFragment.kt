@@ -773,7 +773,8 @@ class AddEditProductVariantFragment :
             viewModel.setSelectedVariantDetails(selectedVariantDetails)
             // get all variant details
             val categoryId = productInputModel.detailInputModel.categoryId.toIntOrNull()
-            categoryId?.run { viewModel.getVariantCategoryCombination(this) }
+            val selections = productInputModel.variantInputModel.selections
+            categoryId?.run { viewModel.getVariantCategoryCombination(this, selections) }
         })
     }
 
@@ -1042,9 +1043,10 @@ class AddEditProductVariantFragment :
                     duration = Snackbar.LENGTH_INDEFINITE,
                     clickListener = View.OnClickListener {
                         val categoryId = viewModel.productInputModel.value?.detailInputModel?.categoryId
+                        val selections = viewModel.productInputModel.value?.variantInputModel?.selections?: listOf()
                         categoryId?.let { id ->
                             val paramId = id.toIntOrNull()
-                            paramId?.run { viewModel.getVariantCategoryCombination(this) }
+                            paramId?.run { viewModel.getVariantCategoryCombination(this, selections) }
                         }
                     })
         }
