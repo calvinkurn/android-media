@@ -3,6 +3,7 @@ package com.tokopedia.kyc_centralized.view.di;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.kyc_centralized.view.fragment.UserIdentificationFormFaceFragment;
 import com.tokopedia.kyc_centralized.view.fragment.UserIdentificationFormFinalFragment;
+import com.tokopedia.kyc_centralized.view.fragment.UserIdentificationInfoFragment;
 
 import dagger.Component;
 
@@ -14,4 +15,5 @@ import dagger.Component;
 public interface UserIdentificationCommonComponent {
     void inject(UserIdentificationFormFaceFragment fragment);
     void inject(UserIdentificationFormFinalFragment fragment);
+    void inject(UserIdentificationInfoFragment fragment);
 }

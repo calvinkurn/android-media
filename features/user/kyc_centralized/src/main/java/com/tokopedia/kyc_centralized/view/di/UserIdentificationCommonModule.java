@@ -11,11 +11,15 @@ import com.tokopedia.imageuploader.domain.GenerateHostRepository;
 import com.tokopedia.imageuploader.domain.UploadImageRepository;
 import com.tokopedia.imageuploader.domain.UploadImageUseCase;
 import com.tokopedia.imageuploader.utils.ImageUploaderUtils;
+import com.tokopedia.kyc_centralized.view.listener.UserIdentificationInfo;
 import com.tokopedia.kyc_centralized.view.listener.UserIdentificationUploadImage;
+import com.tokopedia.kyc_centralized.view.presenter.UserIdentificationInfoPresenter;
 import com.tokopedia.kyc_centralized.view.presenter.UserIdentificationUploadImagePresenter;
+import com.tokopedia.kyc_centralized.view.usecase.GetUserProjectInfoUseCase;
 import com.tokopedia.kyc_centralized.view.viewmodel.AttachmentImageModel;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.user_identification_common.domain.usecase.GetApprovalStatusUseCase;
 import com.tokopedia.user_identification_common.domain.usecase.GetKtpStatusUseCase;
 import com.tokopedia.user_identification_common.domain.usecase.RegisterIdentificationUseCase;
 import com.tokopedia.user_identification_common.domain.usecase.UploadIdentificationUseCase;
@@ -82,5 +86,11 @@ public class UserIdentificationCommonModule {
     @Provides
     public UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
         return new UserSession(context);
+    }
+
+    @UserIdentificationCommonScope
+    @Provides
+    UserIdentificationInfo.Presenter provideUserIdentificationInfoPresenter(GetUserProjectInfoUseCase getUserProjectInfoUseCase, GetApprovalStatusUseCase getApprovalStatusUseCase) {
+        return new UserIdentificationInfoPresenter(getUserProjectInfoUseCase, getApprovalStatusUseCase);
     }
 }
