@@ -11,7 +11,7 @@ import com.tokopedia.banner.BannerView
 import com.tokopedia.banner.Indicator
 import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.home.adapter.HomeEventViewHolder
-import com.tokopedia.entertainment.home.adapter.viewmodel.BannerViewModel
+import com.tokopedia.entertainment.home.adapter.viewmodel.BannerModel
 import com.tokopedia.entertainment.home.analytics.EventHomePageTracking
 import com.tokopedia.entertainment.home.fragment.EventHomeFragment
 import kotlinx.android.synthetic.main.ent_banner_view.view.*
@@ -20,13 +20,13 @@ import kotlinx.android.synthetic.main.ent_banner_view.view.*
 /**
  * Author errysuprayogi on 27,January,2020
  */
-class BannerEventViewHolder: HomeEventViewHolder<BannerViewModel>, BannerView.OnPromoClickListener,
+class BannerEventViewHolder: HomeEventViewHolder<BannerModel>, BannerView.OnPromoClickListener,
 BannerView.OnPromoAllClickListener, BannerView.OnPromoScrolledListener,
 BannerView.OnPromoDragListener, BannerView.OnPromoLoadedListener {
 
     constructor(itemView: View) : super(itemView)
     var context : Context
-    var el: BannerViewModel? = null
+    var el: BannerModel? = null
 
     init {
         context = itemView.context
@@ -73,7 +73,7 @@ BannerView.OnPromoDragListener, BannerView.OnPromoLoadedListener {
     override fun onPromoLoaded() {
     }
 
-    override fun bind(element: BannerViewModel) {
+    override fun bind(element: BannerModel) {
         el = element
         itemView.banner_home_ent?.setPromoList(element.items)
         itemView.banner_home_ent?.buildView()

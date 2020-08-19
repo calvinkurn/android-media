@@ -3,14 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/spacing_lvl3">
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/ivRatingFeedback"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl4"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -34,9 +34,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl2"
-        android:layout_marginLeft="@dimen/spacing_lvl2"
         android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:layout_marginRight="@dimen/spacing_lvl4"
         app:layout_constraintStart_toEndOf="@id/tvFeedbackUser"
         app:layout_constraintTop_toTopOf="@+id/tvFeedbackUser"
         app:typographyType="body_3"
@@ -52,7 +50,6 @@
         android:layout_marginTop="@dimen/spacing_lvl3"
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:layout_marginRight="@dimen/spacing_lvl4"
-        android:maxLines="@integer/int_3"
         android:textColor="@color/clr_f531353b"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -73,7 +70,6 @@
         android:paddingEnd="@dimen/spacing_lvl4"
         android:paddingRight="@dimen/spacing_lvl4"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvFeedbackReview" />
 
@@ -91,7 +87,6 @@
         android:layout_width="@dimen/spacing_lvl2"
         android:layout_height="0dp"
         android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:background="@drawable/rectangle_8"
         app:layout_constraintBottom_toBottomOf="@+id/tvReplyComment"
@@ -103,7 +98,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:textColor="@color/clr_f531353b"
         app:layout_constraintStart_toEndOf="@id/replyFeedbackState"
@@ -117,10 +111,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl2"
-        android:layout_marginLeft="@dimen/spacing_lvl2"
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:layout_marginRight="@dimen/spacing_lvl4"
         android:textColor="@color/clr_ad31353b"
         app:layout_constraintStart_toEndOf="@id/tvReplyUser"
         app:layout_constraintTop_toBottomOf="@id/dividerFeedbackReply"
@@ -132,14 +124,13 @@
         android:id="@+id/tvReplyEdit"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
         android:background="?selectableItemBackground"
         android:paddingStart="@dimen/spacing_lvl2"
         android:paddingLeft="@dimen/spacing_lvl2"
-        android:paddingRight="@dimen/spacing_lvl2"
         android:paddingEnd="@dimen/spacing_lvl2"
-        android:layout_marginTop="@dimen/spacing_lvl4"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:layout_marginRight="@dimen/spacing_lvl4"
+        android:paddingRight="@dimen/spacing_lvl2"
         android:text="@string/label_edit"
         android:textColor="@color/clr_03ac0e"
         app:layout_constraintEnd_toEndOf="parent"
@@ -156,19 +147,22 @@
         android:layout_marginTop="@dimen/spacing_lvl3"
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:layout_marginRight="@dimen/spacing_lvl4"
+        android:scrollbars="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/replyFeedbackState"
         app:layout_constraintTop_toBottomOf="@id/tvReplyUser"
         app:typographyType="body_3"
         app:typographyWeight="reguler"
-        tools:text="Thank you, semoga puas dan ditunggu orderan selanjutnya" />
+        tools:text="Thank you, semoga puas dan ditunggu orderan selanjutnya, Udah nyari Nike Air Force 1 Low White Red Casual Shoes ini akhirnya dapet juga di toko ini, thanks banget gan! barang dijamin ori sesuai deskripsi, kualitas mantap, kemasannya rapih, pengirimannya tepat waktu, recommended seller deh pokoknya gak akan kapok belanja kemari gan! next nya gw cari sepatu rare lagi., Udah nyari Nike Air Force 1 Low White Red Casual Shoes ini akhirnya dapet juga di toko ini, thanks banget gan! barang dijamin ori sesuai deskripsi, kualitas mantap, kemasannya rapih, pengirimannya tepat waktu, recommended seller deh pokoknya gak akan kapok belanja kemari gan! next nya gw cari sepatu rare lagi., Udah nyari Nike Air Force 1 Low White Red Casual Shoes ini akhirnya dapet juga di toko ini, thanks banget gan! barang dijamin ori sesuai deskripsi, kualitas mantap, kemasannya rapih, pengirimannya tepat waktu, recommended seller deh pokoknya gak akan kapok belanja kemari gan! next nya gw cari sepatu rare lagi., Udah nyari Nike Air Force 1 Low White Red Casual Shoes ini akhirnya dapet juga di toko ini, thanks banget gan! barang dijamin ori sesuai deskripsi, kualitas mantap, kemasannya rapih, pengirimannya tepat waktu, recommended seller deh pokoknya gak akan kapok belanja kemari gan! next nya gw cari sepatu rare lagi., Udah nyari Nike Air Force 1 Low White Red Casual Shoes ini akhirnya dapet juga di toko ini, thanks banget gan! barang dijamin ori sesuai deskripsi, kualitas mantap, kemasannya rapih, pengirimannya tepat waktu, recommended seller deh pokoknya gak akan kapok belanja kemari gan! next nya gw cari sepatu rare lagi., Udah nyari Nike Air Force 1 Low White Red Casual Shoes ini akhirnya dapet juga di toko ini, thanks banget gan! barang dijamin ori sesuai deskripsi, kualitas mantap, kemasannya rapih, pengirimannya tepat waktu, recommended seller deh pokoknya gak akan kapok belanja kemari gan! next nya gw cari sepatu rare lagi., Udah nyari Nike Air Force 1 Low White Red Casual Shoes ini akhirnya dapet juga di toko ini, thanks banget gan! barang dijamin ori sesuai deskripsi, kualitas mantap, kemasannya rapih, pengirimannya tepat waktu, recommended seller deh pokoknya gak akan kapok belanja kemari gan! next nya gw cari sepatu rare lagi." />
 
     <androidx.constraintlayout.widget.Group
         android:id="@+id/groupReply"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:scrollbars="vertical"
         app:constraint_referenced_ids="dividerFeedbackReply, replyFeedbackState, tvReplyUser, tvReplyDate, tvReplyComment, tvReplyEdit"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/rvItemAttachmentFeedback" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
-
