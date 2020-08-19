@@ -85,7 +85,7 @@ class MultiBannerViewHolder(customItemView: View, val fragment: Fragment) : Abst
     }
 
     private fun sendImpressionEventForBanners(data: List<DataItem>) {
-        (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackBannerImpression(data)
+        (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackBannerImpression(data, multiBannerViewModel.getComponentPosition())
     }
 
     private fun checkSubscriptionStatus(position: Int) {

@@ -150,4 +150,6 @@ class MultiBannerViewModel(val application: Application, var components: Compone
             it.printStackTrace()
         })
     }
+
+    fun getComponentPosition() = position
 }
