@@ -1,11 +1,12 @@
 package com.tokopedia.user.session.util;
 
 import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 public class EncoderDecoder {
-	
+
 	public static String Encrypt(String text, String initialVector) {
 		byte[] raw = new byte[] {'g','g','g','g','t','t','t','t','t','u','j','k','r','r','r','r'};   
         SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
@@ -50,7 +51,7 @@ public class EncoderDecoder {
     		byte[] data = Base64_.decode(text, Base64_.DEFAULT);
 	    	Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
 	    	cipher.init(Cipher.DECRYPT_MODE, skeySpec, ivs);
-	    	byte[] decryptedData = cipher.doFinal(data);     
+	    	byte[] decryptedData = cipher.doFinal(data);
 	    	decode_result = new String(decryptedData);
     	}
     	catch (Exception e) {
@@ -71,6 +72,9 @@ public class EncoderDecoder {
 			cipher.init(Cipher.DECRYPT_MODE, skeySpec, ivs);
 			byte[] decryptedData = cipher.doFinal(data);
 			decode_result = new String(decryptedData);
+		}
+		catch (IllegalBlockSizeException e){
+			return text;
 		}
 		catch (Exception e) {
 			e.printStackTrace();
