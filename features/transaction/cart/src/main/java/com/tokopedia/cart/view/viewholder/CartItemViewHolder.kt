@@ -376,13 +376,10 @@ class CartItemViewHolder constructor(itemView: View,
     private fun renderSlashPrice(data: CartItemHolderData) {
         if (data.cartItemData?.originData?.priceOriginal != 0 || data.cartItemData?.originData?.wholesalePrice != 0) {
             var slashPricePercentage = 0.0
-            if (data.cartItemData?.originData?.priceOriginal != 0) {
+            if (data.cartItemData?.originData?.slashPriceLabel?.isNotBlank() == true) {
                 textSlashPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(data.cartItemData?.originData?.priceOriginal
                         ?: 0, false).removeDecimalSuffix()
-                val pricePlan = data.cartItemData?.originData?.pricePlan ?: 0.0
-                val priceOriginal = data.cartItemData?.originData?.priceOriginal ?: 1
-                slashPricePercentage = (priceOriginal - pricePlan) / priceOriginal * 100
-                labelSlashPricePercentage.text = "${slashPricePercentage.roundToInt()}%"
+                labelSlashPricePercentage.text = data.cartItemData?.originData?.slashPriceLabel
             } else if (data.cartItemData?.originData?.wholesalePrice != 0) {
                 textSlashPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(data.cartItemData?.originData?.pricePlanInt
                         ?: 0, false).removeDecimalSuffix()
