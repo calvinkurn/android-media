@@ -4,6 +4,7 @@ import android.graphics.Paint
 import android.view.View
 import android.widget.ImageView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticcart.shipping.features.shippingcourierocc.ShippingCourierOccBottomSheet
@@ -353,13 +354,9 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
         tvPaymentName?.alpha = 0.5f
         tvPaymentDetail?.alpha = 0.5f
         if (isDetailRed) {
-            view.context?.resources?.getColor(com.tokopedia.unifyprinciples.R.color.Red_R600)?.let {
-                tvPaymentDetail?.setTextColor(it)
-            }
+            tvPaymentDetail?.setTextColor(MethodChecker.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Red_R600))
         } else {
-            view.context?.resources?.getColor(com.tokopedia.unifyprinciples.R.color.Neutral_N700_68)?.let {
-                tvPaymentDetail?.setTextColor(it)
-            }
+            tvPaymentDetail?.setTextColor(MethodChecker.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))
         }
     }
 
@@ -367,9 +364,7 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
         ivPayment?.alpha = 1f
         tvPaymentName?.alpha = 1f
         tvPaymentDetail?.alpha = 1f
-        view.context?.resources?.getColor(com.tokopedia.unifyprinciples.R.color.Neutral_N700_68)?.let {
-            tvPaymentDetail?.setTextColor(it)
-        }
+        tvPaymentDetail?.setTextColor(MethodChecker.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))
     }
 
     private fun showAddress() {
