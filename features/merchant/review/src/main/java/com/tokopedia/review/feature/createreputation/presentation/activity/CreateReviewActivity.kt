@@ -15,6 +15,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
+import com.tokopedia.review.R
 import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.feature.createreputation.analytics.CreateReviewTracking
 import com.tokopedia.review.feature.createreputation.presentation.fragment.CreateReviewFragment
@@ -65,6 +66,7 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
             )
             return createReviewOldFragment
         }
+        setToolbar()
         createReviewFragment = CreateReviewFragment.createInstance(
                 productId,
                 reputationId,
@@ -143,5 +145,9 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
             reputationId = bundle?.getString(ReviewConstants.ARGS_REPUTATION_ID) ?: ""
             rating = bundle?.getInt(CreateReviewFragment.REVIEW_CLICK_AT, rating) ?: DEFAULT_PRODUCT_RATING
         }
+    }
+
+    private fun setToolbar() {
+        this.supportActionBar?.setTitle(getString(R.string.review_create_activity_title))
     }
 }

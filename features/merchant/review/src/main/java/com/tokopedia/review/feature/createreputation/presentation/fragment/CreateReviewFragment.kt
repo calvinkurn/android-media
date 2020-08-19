@@ -7,8 +7,6 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -32,7 +30,7 @@ import com.tokopedia.imagepicker.picker.main.builder.*
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.reputation.common.view.AnimatedReputationView
+import com.tokopedia.reputation.common.view.AnimatedRatingPickerCreateReviewView
 import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
 import com.tokopedia.review.common.analytics.ReviewTracking
@@ -100,7 +98,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
     @Inject
     lateinit var createReviewViewModel: CreateReviewViewModel
 
-    private lateinit var animatedReviewPicker: AnimatedReputationView
+    private lateinit var animatedReviewPicker: AnimatedRatingPickerCreateReviewView
     private val imageAdapter: ImageReviewAdapter by lazy {
         ImageReviewAdapter(this)
     }
@@ -205,7 +203,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
         animatedReviewPicker = view.findViewById(R.id.animatedReview)
         imgAnimationView = view.findViewById(R.id.img_animation_review)
         animatedReviewPicker.resetStars()
-        animatedReviewPicker.setListener(object : AnimatedReputationView.AnimatedReputationListener {
+        animatedReviewPicker.setListener(object : AnimatedRatingPickerCreateReviewView.AnimatedReputationListener {
             override fun onClick(position: Int) {
                 CreateReviewTracking.reviewOnRatingChangedTracker(
                         getOrderId(),
@@ -228,8 +226,11 @@ class CreateReviewFragment : BaseDaggerFragment(),
                 clearFocusAndHideSoftInput(view)
             }
         })
-        animatedReviewPicker.renderInitialReviewWithData(reviewClickAt)
-        updateViewBasedOnSelectedRating(if (reviewClickAt != 0) reviewClickAt else 5)
+        if(!isEditMode) {
+            animatedReviewPicker.renderInitialReviewWithData(reviewClickAt)
+            updateViewBasedOnSelectedRating(if (reviewClickAt != 0) reviewClickAt else 5)
+            playAnimation()
+        }
 
         imgAnimationView.addAnimatorListener(object : Animator.AnimatorListener {
             override fun onAnimationRepeat(animation: Animator?) {
@@ -269,8 +270,6 @@ class CreateReviewFragment : BaseDaggerFragment(),
         createReviewSubmitButton.setOnClickListener {
             submitReview()
         }
-
-        playAnimation()
     }
 
     override fun onDestroy() {
@@ -488,6 +487,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
         with(review) {
             createReviewExpandableTextArea.setText(reviewText)
             animatedReviewPicker.renderInitialReviewWithData(rating)
+            playAnimation()
             updateViewBasedOnSelectedRating(rating)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
                 createReviewAnonymousCheckbox.isChecked = sentAsAnonymous
