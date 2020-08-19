@@ -38,6 +38,7 @@ class CreateReviewTextAreaBottomSheet : BottomSheetUnify() {
             setOnDismissListener {
                 textAreaListener?.onDismissBottomSheet(reviewCreateTextAreaBottomSheet.text.toString())
             }
+            isKeyboardOverlap = false
         }
     }
 

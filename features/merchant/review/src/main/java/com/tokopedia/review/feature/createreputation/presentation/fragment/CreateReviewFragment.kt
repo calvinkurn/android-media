@@ -324,6 +324,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
 
     override fun onDismissBottomSheet(text: String) {
         createReviewExpandableTextArea.setText(text)
+        clearFocusAndHideSoftInput(view)
     }
 
     override fun scrollToShowTextArea() {
