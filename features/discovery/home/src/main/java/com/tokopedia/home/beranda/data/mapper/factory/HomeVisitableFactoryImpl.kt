@@ -161,8 +161,7 @@ class HomeVisitableFactoryImpl(
                             isCombined = true)
                 DynamicHomeChannel.Channels.LAYOUT_6_IMAGE,
                 DynamicHomeChannel.Channels.LAYOUT_LEGO_3_IMAGE,
-                DynamicHomeChannel.Channels.LAYOUT_LEGO_4_IMAGE,
-                DynamicHomeChannel.Channels.LAYOUT_LEGO_4_AUTO-> {
+                DynamicHomeChannel.Channels.LAYOUT_LEGO_4_IMAGE -> {
                     createDynamicLegoBannerComponent(channel, position, isCache)
                 }
                 DynamicHomeChannel.Channels.LAYOUT_SPRINT -> {
@@ -324,6 +323,11 @@ class HomeVisitableFactoryImpl(
         visitableList.add(mappingLego4BannerAutoComponent(
                 channel, isCache, verticalPosition
         ))
+        if (!isCache) {
+            HomePageTracking.eventEnhanceImpressionLegoAndCuratedHomePage(
+                    trackingQueue,
+                    channel.convertPromoEnhanceLegoBannerDataLayerForCombination())
+        }
         context?.let { HomeTrackingUtils.homeDiscoveryWidgetImpression(it,
                 visitableList.size, channel) }
     }
