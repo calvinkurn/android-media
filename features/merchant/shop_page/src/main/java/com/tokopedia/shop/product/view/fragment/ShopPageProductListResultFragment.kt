@@ -109,6 +109,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
 
     private var shopProductSortFilterUiModel: ShopProductSortFilterUiModel? = null
     private var keywordEmptyState = ""
+    private var isEmptyState = false
 
     private val staggeredGridLayoutManager: StaggeredGridLayoutManager by lazy {
         StaggeredGridLayoutManager(GRID_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
@@ -346,6 +347,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         if (productList.isEmpty() && isLoadingInitialData) {
             showLoading()
             shopInfo?.let { loadProductDataEmptyState(it, defaultInitialPage) }
+            isEmptyState = true
         } else {
             shopProductSortFilterUiModel?.let { shopProductAdapter.setSortFilterData(it) }
             shopProductAdapter.setProductListDataModel(productList)
@@ -358,7 +360,6 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         hideLoading()
         shopProductAdapter.clearAllElements()
         shopProductAdapter.addEmptyStateData(productList)
-        isNeedToReloadData = true
     }
 
     override fun onItemClicked(baseShopProductViewModel: BaseShopProductViewModel) {
@@ -521,15 +522,17 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 selectedSortId = sortValue,
                 selectedSortName = selectedSortName
         )
-        viewModel.getShopProduct(
-                shopId ?: "",
-                defaultInitialPage,
-                ShopPageConstant.DEFAULT_PER_PAGE,
-                sortValue.toIntOrZero(),
-                selectedEtalaseId,
-                keyword,
-                isNeedToReloadData
-        )
+        if(!isEmptyState) {
+            viewModel.getShopProduct(
+                    shopId ?: "",
+                    defaultInitialPage,
+                    ShopPageConstant.DEFAULT_PER_PAGE,
+                    sortValue.toIntOrZero(),
+                    selectedEtalaseId,
+                    keyword,
+                    isNeedToReloadData
+            )
+        }
     }
 
     private fun isEtalaseMatch(model: ShopEtalaseItemDataModel): Boolean {
