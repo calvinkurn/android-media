@@ -17,8 +17,10 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.ProgressBar
 import com.google.gson.Gson
+import com.google.gson.JsonParser
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentCreditCardAdditionalData
@@ -120,20 +122,36 @@ class CreditCardPickerFragment : BaseDaggerFragment() {
 
         override fun shouldInterceptRequest(view: WebView?, url: String?): WebResourceResponse? {
             val uri = Uri.parse(url)
-            val isSuccess = uri.getQueryParameter("success")
+            val isSuccess = uri.getQueryParameter(QUERY_PARAM_SUCCESS)
             if (isSuccess != null && isSuccess.equals("true", true)) {
-                val gatewayCode = uri.getQueryParameter("gateway_code")
-                if (gatewayCode != null) {
-                    goToNextStep(generateMetadata(uri))
-                }
+                goToNextStep(generateMetadata(uri))
             }
             return super.shouldInterceptRequest(view, url)
         }
 
         private fun generateMetadata(uri: Uri): String {
-            val map: HashMap<String, String> = HashMap()
+            val map: HashMap<String, Any> = HashMap()
             for (key in uri.queryParameterNames) {
-                map[key] = uri.getQueryParameter(key) ?: ""
+                val value = uri.getQueryParameter(key) ?: ""
+                when (key) {
+                    QUERY_PARAM_EXPRESS_CHECKOUT_PARAM -> {
+                        try {
+                            map[key] = JsonParser().parse(value)
+                        } catch (e: Exception) {
+                            //failed parse json string
+                            map[key] = value
+                        }
+                    }
+                    QUERY_PARAM_USER_ID -> {
+                        map[key] = value.toLongOrZero()
+                    }
+                    QUERY_PARAM_SUCCESS -> {
+                        map[key] = value.toBoolean()
+                    }
+                    else -> {
+                        map[key] = value
+                    }
+                }
             }
             return Gson().toJson(map)
         }
@@ -149,6 +167,10 @@ class CreditCardPickerFragment : BaseDaggerFragment() {
     }
 
     companion object {
+        private const val QUERY_PARAM_EXPRESS_CHECKOUT_PARAM = "express_checkout_param"
+        private const val QUERY_PARAM_USER_ID = "user_id"
+        private const val QUERY_PARAM_SUCCESS = "success"
+
         const val EXTRA_RESULT_METADATA = "RESULT_METADATA"
 
         const val EXTRA_ADDITIONAL_DATA = "additional_data"
