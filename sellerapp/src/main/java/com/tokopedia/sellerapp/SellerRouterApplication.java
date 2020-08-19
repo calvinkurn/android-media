@@ -18,6 +18,7 @@ import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp;
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.config.GlobalConfig;
@@ -44,9 +45,6 @@ import com.tokopedia.inboxreputation.presentation.activity.InboxReputationActivi
 import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.linker.interfaces.LinkerRouter;
 import com.tokopedia.loginregister.login.router.LoginRouter;
-import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomActivity;
-import com.tokopedia.logisticaddaddress.features.pinpoint.GeolocationActivity;
-import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.phoneverification.PhoneVerificationRouter;
@@ -54,7 +52,6 @@ import com.tokopedia.product.manage.feature.list.view.fragment.ProductManageSell
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.review.feature.reviewlist.view.fragment.RatingProductFragment;
-import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.common.topads.deposit.data.model.DataDeposit;
 import com.tokopedia.seller.product.etalase.utils.EtalaseUtils;
 import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
@@ -66,10 +63,10 @@ import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.fcm.AppNotificationReceiver;
 import com.tokopedia.sellerapp.utils.DeferredResourceInitializer;
 import com.tokopedia.sellerapp.utils.FingerprintModelGenerator;
+import com.tokopedia.sellerapp.utils.SellerOnboardingPreference;
+import com.tokopedia.sellerapp.onboarding.SellerOnboardingBridgeActivity;
 import com.tokopedia.sellerhome.SellerHomeRouter;
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
-import com.tokopedia.selleronboarding.activity.SellerOnboardingActivity;
-import com.tokopedia.selleronboarding.utils.OnboardingPreference;
 import com.tokopedia.sellerorder.common.util.SomConsts;
 import com.tokopedia.sellerorder.list.presentation.fragment.SomListFragment;
 import com.tokopedia.talk_old.inboxtalk.view.activity.InboxTalkActivity;
@@ -101,7 +98,6 @@ import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 
 public abstract class SellerRouterApplication extends MainApplication
         implements TkpdCoreRouter, GMModuleRouter, TopAdsModuleRouter,
-        LogisticRouter,
         AbstractionRouter,
         ApplinkRouter,
         NetworkRouter,
@@ -208,7 +204,7 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getHomeIntent(Context context) {
         UserSessionInterface userSession = new UserSession(context);
-        Intent intent = new Intent(context, SellerOnboardingActivity.class);
+        Intent intent = RouteManager.getIntent(this, ApplinkConstInternalSellerapp.WELCOME);
         if (userSession.isLoggedIn()) {
             if (userSession.hasShop()) {
                 return SellerHomeActivity.createIntent(context);
@@ -226,7 +222,7 @@ public abstract class SellerRouterApplication extends MainApplication
         if (userSession.isLoggedIn()) {
             return SellerHomeActivity.class;
         } else {
-            return SellerOnboardingActivity.class;
+            return SellerOnboardingBridgeActivity.class;
         }
     }
 
@@ -265,11 +261,6 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public ApplinkUnsupported getApplinkUnsupported(Activity activity) {
         return null;
-    }
-
-    @Override
-    public Intent getDistrictRecommendationIntent(Activity activity, Token token) {
-        return DiscomActivity.newInstance(activity, token);
     }
 
     @Override
@@ -409,11 +400,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Intent getGeoLocationActivityIntent(Context context, com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass locationPass) {
-        return GeolocationActivity.createInstance(context, locationPass, false);
-    }
-
-    @Override
     @NonNull
     public Intent getTopAdsDashboardIntent(@NonNull Context context) {
         return RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL);
@@ -489,7 +475,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void setOnboardingStatus(boolean status) {
-        OnboardingPreference preference = new OnboardingPreference(this);
-        preference.putBoolean(OnboardingPreference.HAS_OPEN_ONBOARDING, status);
+        SellerOnboardingPreference preference = new SellerOnboardingPreference(this);
+        preference.putBoolean(SellerOnboardingPreference.HAS_OPEN_ONBOARDING, status);
     }
 }

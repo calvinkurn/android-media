@@ -421,6 +421,15 @@ internal class SearchShopViewModel(
     }
 
     private fun processQuickFilter(searchShopModel: SearchShopModel) {
+        if (!isEmptySearchShop) {
+            processQuickFilterNotEmptySearch(searchShopModel)
+        }
+        else {
+            processQuickFilterEmptySearch()
+        }
+    }
+
+    private fun processQuickFilterNotEmptySearch(searchShopModel: SearchShopModel) {
         if (searchShopModel.getFilterList().size < QUICK_FILTER_MINIMUM_SIZE)
             searchShopModel.quickFilter.data = createSearchShopDefaultQuickFilter()
 
@@ -466,6 +475,11 @@ internal class SearchShopViewModel(
     private fun sendTrackingClickQuickFilter(option: Option, isSelected: Boolean) {
         val quickFilterTrackingData = QuickFilterTrackingData(option, !isSelected)
         clickQuickFilterTrackingEventMutableLiveData.postValue(Event(quickFilterTrackingData))
+    }
+
+    private fun processQuickFilterEmptySearch() {
+        quickFilterIsVisible.value = false
+        shimmeringQuickFilterIsVisible.value = false
     }
 
     private fun catchSearchShopException(e: Throwable?) {

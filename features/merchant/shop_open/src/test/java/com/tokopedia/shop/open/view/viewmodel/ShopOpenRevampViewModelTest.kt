@@ -2,6 +2,10 @@ package com.tokopedia.shop.open.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.LiveData
+import com.tokopedia.shop.common.graphql.data.shopopen.ShopDomainSuggestionData
+import com.tokopedia.shop.common.graphql.data.shopopen.ValidateShopDomainNameResult
+import com.tokopedia.shop.common.graphql.domain.usecase.shopopen.GetShopDomainNameSuggestionUseCase
+import com.tokopedia.shop.common.graphql.domain.usecase.shopopen.ValidateDomainShopNameUseCase
 import com.tokopedia.shop.open.data.model.*
 import com.tokopedia.shop.open.domain.*
 import com.tokopedia.shop.open.presentation.viewmodel.ShopOpenRevampViewModel
@@ -26,10 +30,10 @@ import org.mockito.Matchers.anyInt
 class ShopOpenRevampViewModelTest  {
 
     @RelaxedMockK
-    lateinit var validateDomainShopNameUseCase: ShopOpenRevampValidateDomainShopNameUseCase
+    lateinit var validateDomainShopNameUseCase: ValidateDomainShopNameUseCase
 
     @RelaxedMockK
-    lateinit var getDomainNameSuggestionUseCase: ShopOpenRevampGetDomainNameSuggestionUseCase
+    lateinit var getDomainNameSuggestionUseCase: GetShopDomainNameSuggestionUseCase
 
     @RelaxedMockK
     lateinit var getSurveyUseCase: ShopOpenRevampGetSurveyUseCase
@@ -66,7 +70,7 @@ class ShopOpenRevampViewModelTest  {
 
     @Test
     fun `given shop name validation when shop name is not empty`() {
-        mockkObject(ShopOpenRevampValidateDomainShopNameUseCase)
+        mockkObject(ValidateDomainShopNameUseCase)
         coEvery {
             validateDomainShopNameUseCase.executeOnBackground()
         } returns ValidateShopDomainNameResult()
@@ -75,7 +79,7 @@ class ShopOpenRevampViewModelTest  {
         Thread.sleep(1000)
 
         verify {
-            ShopOpenRevampValidateDomainShopNameUseCase.createRequestParams(shopName)
+            ValidateDomainShopNameUseCase.createRequestParams(shopName)
         }
 
         Assert.assertTrue(validateDomainShopNameUseCase.params.parameters.isNotEmpty())
@@ -87,7 +91,7 @@ class ShopOpenRevampViewModelTest  {
 
     @Test
     fun `given domain name validation when domain name is not empty`() {
-        mockkObject(ShopOpenRevampValidateDomainShopNameUseCase)
+        mockkObject(ValidateDomainShopNameUseCase)
         coEvery {
             validateDomainShopNameUseCase.executeOnBackground()
         } returns ValidateShopDomainNameResult()
@@ -96,7 +100,7 @@ class ShopOpenRevampViewModelTest  {
         Thread.sleep(1000)
 
         verify {
-            ShopOpenRevampValidateDomainShopNameUseCase.createRequestParam(domainName)
+            ValidateDomainShopNameUseCase.createRequestParam(domainName)
         }
 
         Assert.assertTrue(validateDomainShopNameUseCase.params.parameters.isNotEmpty())
@@ -108,13 +112,13 @@ class ShopOpenRevampViewModelTest  {
 
     @Test
     fun `given domain name suggestion when shop name is provided`() {
-        mockkObject(ShopOpenRevampGetDomainNameSuggestionUseCase)
+        mockkObject(GetShopDomainNameSuggestionUseCase)
         coEvery {
             getDomainNameSuggestionUseCase.executeOnBackground()
-        } returns ShopDomainSuggestionResult()
+        } returns ShopDomainSuggestionData()
         viewModel.getDomainShopNameSuggestions(anyString())
         verify {
-            ShopOpenRevampGetDomainNameSuggestionUseCase
+            GetShopDomainNameSuggestionUseCase
                     .createRequestParams(anyString())
         }
         Assert.assertTrue(getDomainNameSuggestionUseCase.params.parameters.isNotEmpty())
@@ -188,7 +192,7 @@ class ShopOpenRevampViewModelTest  {
 
     @Test
     fun `given success response when validate shop name is called`() {
-        mockkObject(ShopOpenRevampValidateDomainShopNameUseCase)
+        mockkObject(ValidateDomainShopNameUseCase)
         val shopName: String = "tokohape"
         viewModel.checkShopName(shopName)
 
@@ -198,7 +202,7 @@ class ShopOpenRevampViewModelTest  {
         Thread.sleep(1000)
 
         verify {
-            ShopOpenRevampValidateDomainShopNameUseCase.createRequestParams(shopName)
+            ValidateDomainShopNameUseCase.createRequestParams(shopName)
         }
 
         Assert.assertTrue(validateDomainShopNameUseCase.params.parameters.isNotEmpty())
@@ -210,7 +214,7 @@ class ShopOpenRevampViewModelTest  {
 
     @Test
     fun `given success response when validate domain name is called`() {
-        mockkObject(ShopOpenRevampValidateDomainShopNameUseCase)
+        mockkObject(ValidateDomainShopNameUseCase)
         coEvery {
             validateDomainShopNameUseCase.executeOnBackground()
         } returns ValidateShopDomainNameResult()
@@ -220,7 +224,7 @@ class ShopOpenRevampViewModelTest  {
         Thread.sleep(1000)
 
         verify {
-            ShopOpenRevampValidateDomainShopNameUseCase.createRequestParam(domainName)
+            ValidateDomainShopNameUseCase.createRequestParam(domainName)
         }
 
         Assert.assertTrue(validateDomainShopNameUseCase.params.parameters.isNotEmpty())

@@ -1,8 +1,9 @@
 package com.tokopedia.editshipping.ui
 
 import android.content.Context
-import com.tokopedia.editshipping.model.editshipping.Courier
-import com.tokopedia.editshipping.model.editshipping.ShopShipping
+import com.tokopedia.editshipping.domain.model.ValidateShippingModel
+import com.tokopedia.editshipping.domain.model.editshipping.Courier
+import com.tokopedia.editshipping.domain.model.editshipping.ShopShipping
 import com.tokopedia.logisticdata.data.entity.address.DistrictRecommendationAddress
 
 /**
@@ -21,6 +22,8 @@ interface EditShippingViewListener {
 
     fun setShopLocationData(shopData: ShopShipping?)
 
+    fun validateShowPopup(data: ValidateShippingModel?)
+
     val districtAndCity: String?
 
     val zipCode: String?
@@ -34,6 +37,8 @@ interface EditShippingViewListener {
     fun noServiceChosen()
 
     fun finishLoading()
+
+    fun refreshData(messageStatus: String?)
 
     fun finishStartingFragment()
 

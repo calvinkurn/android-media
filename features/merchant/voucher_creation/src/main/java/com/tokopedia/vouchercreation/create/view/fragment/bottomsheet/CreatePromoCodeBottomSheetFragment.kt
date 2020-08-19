@@ -49,8 +49,8 @@ class CreatePromoCodeBottomSheetFragment : BottomSheetUnify(), VoucherBottomView
                     setChild(view)
                     setTitle(context.getString(R.string.mvc_create_target_create_promo_code_bottomsheet_title).toBlankOrString())
                     setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
-
-
+                    isKeyboardOverlap = false
+                    
                     this@apply.onNextClick = onNextClick
                     this@apply.getPromoCode = getPromoCode
                     this@apply.getPromoCodePrefix = getPromoCodePrefix

@@ -19,6 +19,7 @@ import android.text.style.StyleSpan
 import android.view.*
 import android.widget.Button
 import android.widget.TextView
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
@@ -921,7 +922,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                 }
                 val backgroundColor = MethodChecker.getColor(context, com.tokopedia.design.R.color.tkpd_main_green)
 
-                val spanText = SpannableString(getString(com.tokopedia.product.manage.item.R.string.popup_tips_trick_clickable))
+                val spanText = SpannableString(getString(R.string.popup_tips_trick_clickable))
                 spanText.setSpan(StyleSpan(Typeface.BOLD),
                     5, spanText.length - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 spanText.setSpan(ForegroundColorSpan(backgroundColor),
@@ -1411,8 +1412,8 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
     override fun onPause() {
         super.onPause()
-        activity?.let {
-            activity?.unregisterReceiver(addProductReceiver)
+        context?.let {
+            LocalBroadcastManager.getInstance(it).unregisterReceiver(addProductReceiver)
         }
     }
 
@@ -1434,6 +1435,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                     val intent = RouteManager.getIntent(context, appLinkToOpen).apply {
                         putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, appLinks)
                         putExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, activity?.intent?.getStringExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME).orEmpty())
+                        addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                     }
                     when (activity?.intent?.getStringExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME)) {
                         SellerMigrationFeatureName.FEATURE_SET_CASHBACK -> startActivityForResult(intent, SET_CASHBACK_REQUEST_CODE)
@@ -1449,19 +1451,19 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
     override fun onResume() {
         super.onResume()
-        activity?.let {
+        context?.let {
             val intentFilter = IntentFilter()
             intentFilter.addAction(TkpdState.ProductService.BROADCAST_ADD_PRODUCT)
-            it.registerReceiver(addProductReceiver, intentFilter)
+            LocalBroadcastManager.getInstance(it).registerReceiver(addProductReceiver, intentFilter)
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
         viewModel.detachView()
-        activity?.let {
+        context?.let {
             if (addProductReceiver.isOrderedBroadcast) {
-                it.unregisterReceiver(addProductReceiver)
+                LocalBroadcastManager.getInstance(it).unregisterReceiver(addProductReceiver)
             }
         }
         removeObservers()
