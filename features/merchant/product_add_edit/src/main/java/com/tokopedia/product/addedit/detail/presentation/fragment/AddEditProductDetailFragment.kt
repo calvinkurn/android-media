@@ -989,8 +989,13 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         // product condition
         productConditionListView?.onLoadFinish {
 
-            if (detailInputModel.condition == CONDITION_NEW) productConditionListView?.setSelected(productConditions, NEW_PRODUCT_INDEX) {}
-            else productConditionListView?.setSelected(productConditions, USED_PRODUCT_INDEX) {}
+            if (detailInputModel.condition == CONDITION_NEW) {
+                isProductConditionNew = true
+                productConditionListView?.setSelected(productConditions, NEW_PRODUCT_INDEX) {}
+            } else {
+                isProductConditionNew = false
+                productConditionListView?.setSelected(productConditions, USED_PRODUCT_INDEX) {}
+            }
 
             // list item click listener
             productConditionListView?.run {
