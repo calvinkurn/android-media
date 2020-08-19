@@ -63,7 +63,9 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         viewModelProvider.get(ThanksPageDataViewModel::class.java)
     }
 
-    private var trackingQueue: TrackingQueue? = null
+    private var topAdsTrackingQueue: TrackingQueue? = null
+    private var nonTopAdsTrackingQueue: TrackingQueue? = null
+    private var digitalRecomTrackingQueue: TrackingQueue? = null
 
     lateinit var thanksPageData: ThanksPageData
 
@@ -78,19 +80,21 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
                 thanksPageData = it.getParcelable(ARG_THANK_PAGE_DATA)!!
             }
         }
-        activity?.let { trackingQueue = TrackingQueue(it) }
+        activity?.apply {
+            nonTopAdsTrackingQueue = TrackingQueue(this)
+            topAdsTrackingQueue = TrackingQueue(this)
+            digitalRecomTrackingQueue = TrackingQueue(this)
+        }
 
     }
 
     override fun onPause() {
         super.onPause()
-        trackingQueue?.sendAll()
+        nonTopAdsTrackingQueue?.sendAll()
+        topAdsTrackingQueue?.sendAll()
+        digitalRecomTrackingQueue?.sendAll()
     }
 
-
-    open fun getTrackingQueue(): TrackingQueue? {
-        return trackingQueue
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -115,7 +119,8 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
             }
         }
     }
-    private fun addMarketPlaceRecommendation(){
+
+    private fun addMarketPlaceRecommendation() {
         val recomContainer = getRecommendationContainer()
         iRecommendationView = recomContainer?.let { container ->
             val view = getRecommendationView(marketRecommendationPlaceLayout)
@@ -123,25 +128,20 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
             view.findViewById<MarketPlaceRecommendation>(R.id.marketPlaceRecommendationView)
         }
         if (::thanksPageData.isInitialized)
-            getTrackingQueue()?.let {
-                iRecommendationView?.loadRecommendation(thanksPageData.paymentID.toString(),
-                        this, it)
-            }
-
+            iRecommendationView?.loadRecommendation(thanksPageData.paymentID.toString(),
+                    this, topAdsTrackingQueue, nonTopAdsTrackingQueue)
     }
-    private fun addDigitalRecommendation(){
+
+    private fun addDigitalRecommendation() {
         val recomContainer = getRecommendationContainer()
-        iDigitalRecommendationView =  recomContainer?.let { container ->
+        iDigitalRecommendationView = recomContainer?.let { container ->
             val view = getRecommendationView(digitalRecommendationLayout)
             container.addView(view)
             view.findViewById<DigitalRecommendation>(R.id.digitalRecommendationView)
         }
         if (::thanksPageData.isInitialized)
-            getTrackingQueue()?.let {
                 iDigitalRecommendationView?.loadRecommendation(thanksPageData.paymentID.toString(),
-                        this, it)
-            }
-
+                        this, digitalRecomTrackingQueue)
     }
 
     private fun getRecommendationView(@LayoutRes layout: Int): View {
@@ -208,7 +208,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         RouteManager.route(context, ApplinkConst.HOME, "")
         thankYouPageAnalytics.get().sendBelanjaLagiClickEvent(
                 PaymentPageMapper.getPaymentPageType(thanksPageData.pageType),
-        thanksPageData.paymentID.toString())
+                thanksPageData.paymentID.toString())
         activity?.finish()
     }
 
@@ -259,7 +259,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
 
     override fun gotoOrderList(applink: String) {
         try {
-            if(applink.isNullOrBlank()){
+            if (applink.isNullOrBlank()) {
                 gotoOrderList()
             } else {
                 thankYouPageAnalytics.get()
