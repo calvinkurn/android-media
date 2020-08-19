@@ -136,7 +136,6 @@ dependencies {
     implementation project(rootProject.ext.features.notifTroubleshooter)
     implementation project(rootProject.ext.features.topchat)
     implementation project(rootProject.ext.features.otp)
-    implementation project(rootProject.ext.features.userIdentification)
 
     //Entertainment
     implementation project(rootProject.ext.features.orderhistory)
