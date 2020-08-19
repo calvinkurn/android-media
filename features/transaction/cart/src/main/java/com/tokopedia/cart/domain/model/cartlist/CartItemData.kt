@@ -133,7 +133,8 @@ data class CartItemData(
             var isFreeShipping: Boolean = false,
             var freeShippingBadgeUrl: String? = null,
             var listPromoCheckout: List<String> = emptyList(),
-            var variant: String = ""
+            var variant: String = "",
+            var warningMessage: String = "" // eg : sisa 3
     ) : Parcelable {
         constructor(parcel: Parcel) : this(
                 parcel.readInt(),

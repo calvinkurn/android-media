@@ -273,6 +273,8 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
                 it.isFreeShipping = true
                 it.freeShippingBadgeUrl = cartDetail.product.freeShipping.badgeUrl
             }
+            it.variant = cartDetail.product.variantDescriptionDetail.variantNames.joinToString(", ")
+            it.warningMessage = cartDetail.product.productWarningMessage
 
             when (shopData) {
                 is AvailableGroup -> mapShopInfoCartItemData(it, shopData)
@@ -302,8 +304,6 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
             it.cartString = availableGroup.cartString
             it.warehouseId = availableGroup.warehouse.warehouseId
             it.listPromoCheckout = listPromoCheckout
-            // Todo : map variant
-            it.variant = "XL, Merah"
         }
     }
 
@@ -320,8 +320,6 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
             it.isGoldMerchant = unavailableGroup.shop.goldMerchant.isGoldBadge
             it.cartString = unavailableGroup.cartString
             it.warehouseId = unavailableGroup.warehouse.warehouseId
-            // Todo : map variant
-            it.variant = "XL, Merah"
         }
     }
 

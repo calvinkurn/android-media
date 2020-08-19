@@ -297,7 +297,7 @@ class CartItemViewHolder constructor(itemView: View,
 
         renderPrice(data)
         renderVariant(data)
-        renderQtyLeft(data)
+        renderWarningMessage(data)
         renderSlashPrice(data)
         renderProductProperties(data)
 
@@ -406,9 +406,9 @@ class CartItemViewHolder constructor(itemView: View,
         }
     }
 
-    private fun renderQtyLeft(data: CartItemHolderData) {
+    private fun renderWarningMessage(data: CartItemHolderData) {
         if (data.cartItemData?.originData?.maxOrder ?: 0 in 0..5) {
-            textQtyLeft.text = "Sisa" + (data.cartItemData?.originData?.maxOrder ?: 0)
+            textQtyLeft.text = data.cartItemData?.originData?.warningMessage ?: ""
             textQtyLeft.show()
         } else {
             textQtyLeft.gone()
