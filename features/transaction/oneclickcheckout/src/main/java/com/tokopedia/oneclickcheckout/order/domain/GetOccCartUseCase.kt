@@ -221,14 +221,6 @@ class GetOccCartUseCase @Inject constructor(val context: Context, val graphqlUse
         val availableTerms = mapPaymentInstallmentTerm(creditCard.availableTerms)
         return OrderPaymentCreditCard(mapPaymentCreditCardNumber(creditCard.numberOfCards), availableTerms, creditCard.bankCode, creditCard.cardType,
                 creditCard.isExpired, creditCard.tncInfo, availableTerms.firstOrNull { it.isSelected }, mapPaymentCreditCardAdditionalData(data))
-//        val availableTerms = mapPaymentInstallmentTerm(listOf(
-//                InstallmentTerm(0, 1.5f, 0.5f, 10000, true),
-//                InstallmentTerm(3, 1.5f, 0.5f, 100000, false),
-//                InstallmentTerm(6, 1.5f, 0.5f, 200000, false)
-//        ))
-//        return OrderPaymentCreditCard(OrderPaymentCreditCardsNumber(2, 0, 2),
-//                availableTerms, "bankCode", "cardType",
-//                false, "tncInfo", availableTerms.firstOrNull { it.isSelected })
     }
 
     private fun mapPaymentCreditCardNumber(numberOfCards: PaymentCreditCardsNumber): OrderPaymentCreditCardsNumber {
@@ -240,9 +232,9 @@ class GetOccCartUseCase @Inject constructor(val context: Context, val graphqlUse
         if (data == null) {
             return OrderPaymentCreditCardAdditionalData()
         }
-        val (id, name, email, msisdn) = data.customerData
-        val (merchantCode, profileCode, signature, changeCcLink, callbackUrl) = data.paymentAdditionalData
-        return OrderPaymentCreditCardAdditionalData(id, name, email, msisdn, merchantCode, profileCode, signature, changeCcLink, callbackUrl)
+        return OrderPaymentCreditCardAdditionalData(data.customerData.id, data.customerData.name, data.customerData.email, data.customerData.msisdn,
+                data.paymentAdditionalData.merchantCode, data.paymentAdditionalData.profileCode, data.paymentAdditionalData.signature, data.paymentAdditionalData.changeCcLink,
+                data.paymentAdditionalData.callbackUrl)
     }
 
     private fun mapPaymentInstallmentTerm(availableTerms: List<InstallmentTerm>): List<OrderPaymentInstallmentTerm> {

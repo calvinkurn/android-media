@@ -304,7 +304,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             orderPreferenceCard.setShipment(it)
             orderInsuranceCard.setupInsurance(it?.insuranceData, viewModel.orderProduct.productId.toString())
             if (it?.needPinpoint == true && orderPreference?.preference?.address != null) {
-                goToPinpoint(orderPreference!!.preference.address)
+                goToPinpoint(orderPreference?.preference?.address)
             } else if (orderPreference != null) {
                 forceShowOnboarding(orderPreference?.onboarding)
             }
@@ -586,17 +586,19 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         }
     }
 
-    private fun goToPinpoint(address: OrderProfileAddress) {
-        val locationPass = LocationPass()
-        locationPass.cityName = address.cityName
-        locationPass.districtName = address.districtName
-        val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.GEOLOCATION)
-        val bundle = Bundle()
-        bundle.putParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass)
-        bundle.putBoolean(LogisticConstant.EXTRA_IS_FROM_MARKETPLACE_CART, true)
-        intent.putExtras(bundle)
-        startActivityForResult(intent, REQUEST_CODE_COURIER_PINPOINT)
-        viewModel.changePinpoint()
+    private fun goToPinpoint(address: OrderProfileAddress?) {
+        address?.let {
+            val locationPass = LocationPass()
+            locationPass.cityName = it.cityName
+            locationPass.districtName = it.districtName
+            val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.GEOLOCATION)
+            val bundle = Bundle()
+            bundle.putParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass)
+            bundle.putBoolean(LogisticConstant.EXTRA_IS_FROM_MARKETPLACE_CART, true)
+            intent.putExtras(bundle)
+            startActivityForResult(intent, REQUEST_CODE_COURIER_PINPOINT)
+            viewModel.changePinpoint()
+        }
     }
 
     private fun getOrderInsuranceCardListener(): OrderInsuranceCard.OrderInsuranceCardListener {

@@ -109,22 +109,9 @@ class PreferenceSummaryViewModelTest {
 
     @Test
     fun `Delete Preference On Invalid State`() {
-//        val response = Throwable()
-//        every {
-//            getPreferenceByIdUseCase.execute(any(), any(), any())
-//        } answers {
-//            assertEquals(OccState.Loading, preferenceSummaryViewModel.preference.value)
-//            (args[0] as ((ProfilesItemModel) -> Unit)).invoke(ProfilesItemModel())
-//        }
-//
-//        preferenceSummaryViewModel.getPreferenceDetail(0, 0, 0, "", "")
         preferenceSummaryViewModel.deletePreference(0)
 
         assertNull(preferenceSummaryViewModel.editResult.value)
-
-//        deletePreferenceUseCase.invokeOnError(response)
-
-//        assertEquals(OccState.Failed(Failure(response)), preferenceSummaryViewModel.editResult.value)
     }
 
     @Test
