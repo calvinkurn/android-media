@@ -188,7 +188,7 @@ class AddEditProductVariantFragment :
         observeSizechartVisibility()
         observeVariantPhotosVisibility()
         observeIsEditMode()
-        observeIsSelectedVariantUnitValuesEmpty()
+        observeisRemovingVariant()
 
         cardSizechart.setOnClickListener {
             onSizechartClicked()
@@ -229,9 +229,13 @@ class AddEditProductVariantFragment :
         // button save on click listener
         buttonSave.setOnClickListener {
             // perform the save button function
-            val variantPhotos = variantPhotoAdapter?.getData().orEmpty()
-            viewModel.updateVariantInputModel(variantPhotos)
-            startAddEditProductVariantDetailActivity()
+            if (viewModel.isRemovingVariant.value == true) {
+                submitVariantInput()
+            } else {
+                val variantPhotos = variantPhotoAdapter?.getData().orEmpty()
+                viewModel.updateVariantInputModel(variantPhotos)
+                startAddEditProductVariantDetailActivity()
+            }
         }
 
         setupToolbarActions()
@@ -244,6 +248,9 @@ class AddEditProductVariantFragment :
             if (isEditMode) ProductEditVariantTracking.selectVariantType(variantTypeName, shopId)
             else ProductAddVariantTracking.selectVariantType(variantTypeName, shopId)
         }
+
+        // disable removing variant state, means it's back to add/edit-ing state
+        viewModel.disableRemovingVariant()
 
         if (viewModel.isVariantUnitValuesLayoutEmpty()) {
             // get selected variant unit values for variant level 1
@@ -349,12 +356,7 @@ class AddEditProductVariantFragment :
     }
 
     fun onBackPressed() {
-        // if removing all variants then save the changes
-        if (viewModel.isSelectedVariantUnitValuesEmpty.value == true) {
-            submitVariantInput()
-        } else {
-            showExitConfirmationDialog()
-        }
+        showExitConfirmationDialog()
     }
 
     private fun deselectVariantType(layoutPosition: Int, adapterPosition: Int, variantDetail: VariantDetail) {
@@ -799,7 +801,12 @@ class AddEditProductVariantFragment :
 
     private fun observeInputStatus() {
         viewModel.isInputValid.observe(this, Observer {
-            buttonSave.isEnabled = it
+            tvDeleteAll?.isEnabled = it
+            if (viewModel.isRemovingVariant.value == true) {
+                buttonSave.isEnabled = true // always enable save button if removing variant activated
+            } else {
+                buttonSave.isEnabled = it
+            }
         })
     }
 
@@ -808,13 +815,6 @@ class AddEditProductVariantFragment :
             // track the screen
             if (isEditMode) ProductEditVariantTracking.trackScreen(isLoggedin, userId)
             else ProductAddVariantTracking.trackScreen(isLoggedin, userId)
-        })
-    }
-
-    private fun observeIsSelectedVariantUnitValuesEmpty() {
-        viewModel.isSelectedVariantUnitValuesEmpty.observe(this, Observer { isSelectedVariantUnitValuesEmpty ->
-            // hide reset button if selected variant unit values exist
-            tvDeleteAll?.visibility = if (!isSelectedVariantUnitValuesEmpty) View.VISIBLE else View.GONE
         })
     }
 
@@ -828,6 +828,16 @@ class AddEditProductVariantFragment :
     private fun observeSizechartVisibility() {
         viewModel.isVariantSizechartVisible.observe(this, Observer {
             layoutSizechart.visibility = if (it) View.VISIBLE else View.GONE
+        })
+    }
+
+    private fun observeisRemovingVariant() {
+        viewModel.isRemovingVariant.observe(this, Observer {
+            buttonSave.text =  if (it) {
+                getString(com.tokopedia.product.addedit.R.string.action_variant_save)
+            } else {
+                getString(com.tokopedia.product.addedit.R.string.action_variant_next)
+            }
         })
     }
 
@@ -1117,6 +1127,8 @@ class AddEditProductVariantFragment :
             }
             actionTextView?.text = getString(R.string.action_variant_delete)
             tvDeleteAll = actionTextView
+            tvDeleteAll?.isEnabled = false
+            tvDeleteAll?.visible()
         }
     }
 }
