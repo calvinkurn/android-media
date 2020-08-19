@@ -46,7 +46,7 @@ public class CreateTicketProgressDialog {
             } else if (state == MAIN_PROGRESS && substate == 0) {
                 progress = new ProgressDialog(context, R.style.CoolDialog);
                 progress.show();
-                progress.setContentView(R.layout.loader);
+                progress.setContentView(R.layout.contact_us_create_ticket_dialog_loader);
                 progress.setCancelable(isCancelable);
                 progress.setOnCancelListener(new OnCancelListener() {
                     @Override
