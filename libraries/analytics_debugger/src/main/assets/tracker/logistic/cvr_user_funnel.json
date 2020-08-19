@@ -6,14 +6,9 @@
     },
     {
       "eventCategory": "cart change address",
-      "eventAction": "click button pilih lokasi",
-      "eventLabel": "logistic"
-    },
-    {
-      "eventCategory": "cart change address",
       "eventAction": "click button pilih lokasi ini",
       "eventLabel": "success - logistic"
     }
   ],
-  "readme": "Tracker to calculate CVR Logistic Add Address. STR: Create New Address"
+  "readme": "CVR Logistic Add Address user funnel. STR: Create New Address from User Settings"
 }
