@@ -3,19 +3,15 @@ package com.tokopedia.entertainment.home.viewmodel
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.common.network.data.model.RequestType
 import com.tokopedia.common.network.data.model.RestRequest
-import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.home.UrlConstant.BASE_REST_URL
 import com.tokopedia.entertainment.home.UrlConstant.PATH_EVENTS_LIKES
-import com.tokopedia.entertainment.home.UrlConstant.PATH_USER_LIKES
 import com.tokopedia.entertainment.home.adapter.HomeEventItem
 import com.tokopedia.entertainment.home.adapter.viewmodel.*
 import com.tokopedia.entertainment.home.data.ActionLikedRequest
 import com.tokopedia.entertainment.home.data.ActionLikedResponse
-import com.tokopedia.entertainment.home.data.EventFavoriteResponse
 import com.tokopedia.entertainment.home.data.EventHomeDataResponse
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -44,30 +40,14 @@ class HomeEventViewModel @Inject constructor(
         val CATEGORY = "category"
     }
 
-    fun getHomeData(v: FragmentView, onSuccess: ((MutableList<HomeEventItem<*>>) -> Unit),
+    fun getHomeData(queryHome: String, onSuccess: ((MutableList<HomeEventItem<*>>) -> Unit),
                     onError: ((Throwable) -> Unit), cacheType: CacheType) {
         launchCatchError(
                 block = {
-                    if(userSession.isLoggedIn){
-                        var data = fetchEventHomeData(v, cacheType)
-//                        var likes = fetchEventLikes().await()
-                        data?.let {
-//                            it.eventHome.layout.forEach{
-//                                it.items.forEach { item ->
-//                                    likes.forEach { likes ->
-//                                        if (likes.productId == item.id){
-//                                            item.isLiked = likes.isLiked
-//                                        }
-//                                    }
-//                                }
-//                            }
-                            onSuccess(mappingItem(it))
-                        }
-                    } else {
-                        fetchEventHomeData(v, cacheType)?.let {
-                            onSuccess(mappingItem(it))
-                        }
-                    }
+                     var data = fetchEventHomeData(queryHome, cacheType)
+                     data?.let {
+                         onSuccess(mappingItem(it))
+                      }
                 },
                 onError = {
                     onError(it)
@@ -75,20 +55,9 @@ class HomeEventViewModel @Inject constructor(
         )
     }
 
-    private suspend fun fetchEventLikes(): Deferred<List<EventFavoriteResponse.Data>> {
-        return async {
-            val request = RestRequest.Builder(BASE_REST_URL + PATH_USER_LIKES,
-                    object : TypeToken<EventFavoriteResponse>() {}.type)
-                    .setRequestType(RequestType.GET)
-                    .build()
-            restRepository.getResponse(request).getData<EventFavoriteResponse>().data
-        }
-    }
-
-    private suspend fun fetchEventHomeData(v: FragmentView, cacheType: CacheType): EventHomeDataResponse.Data {
-        return withContext(Dispatchers.IO) {
-            val request = GraphqlRequest(
-                    GraphqlHelper.loadRawString(v.getRes(), R.raw.event_home_query),
+    private suspend fun fetchEventHomeData(queryHome: String, cacheType: CacheType): EventHomeDataResponse.Data {
+        return withContext(dispatcher){
+            val request = GraphqlRequest(queryHome,
                     EventHomeDataResponse.Data::class.java, mapOf(CATEGORY to "event"))
             val cacheStrategy = GraphqlCacheStrategy
                     .Builder(cacheType).build()
@@ -100,7 +69,7 @@ class HomeEventViewModel @Inject constructor(
                   onErrorPostLike: ((Throwable) -> Unit)) {
         launchCatchError(
                 block = {
-                    val result = withContext(Dispatchers.IO) {
+                    val result = withContext(dispatcher) {
                         val copy = item.copy(isLiked = item.isLiked != true)
                         val actionLikedRequest = ActionLikedRequest(ActionLikedRequest.Rating(
                                 isLiked = copy.isLiked.toString(),
@@ -134,19 +103,19 @@ class HomeEventViewModel @Inject constructor(
             val layouts = it.eventHome.layout
             val bannerItem: EventHomeDataResponse.Data.EventHome.Layout? = layouts.find { it.id.toIntOrZero() == 0 }
             bannerItem?.let {
-                items.add(BannerViewModel(it))
+                items.add(BannerModel(it))
                 layouts.remove(it)
             }
-            items.add(CategoryViewModel(data.eventChildCategory))
+            items.add(CategoryModel(data.eventChildCategory))
             layouts.let {
                 it.forEachIndexed { index, it ->
                     if (index == 2) {
-                        items.add(EventLocationViewModel(data.eventLocationSearch))
+                        items.add(EventLocationModel(data.eventLocationSearch))
                     }
                     if (it.isCard == 1) {
-                        items.add(EventCarouselViewModel(it))
+                        items.add(EventCarouselModel(it))
                     } else {
-                        items.add(EventGridViewModel(it))
+                        items.add(EventGridModel(it))
                     }
                 }
             }
