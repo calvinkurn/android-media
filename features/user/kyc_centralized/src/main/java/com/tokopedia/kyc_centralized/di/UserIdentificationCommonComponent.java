@@ -1,4 +1,4 @@
-package com.tokopedia.kyc_centralized.view.di;
+package com.tokopedia.kyc_centralized.di;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.kyc_centralized.view.fragment.UserIdentificationFormFaceFragment;

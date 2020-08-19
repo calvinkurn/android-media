@@ -1,4 +1,4 @@
-package com.tokopedia.kyc_centralized.view.usecase;
+package com.tokopedia.kyc_centralized.domain;
 
 import android.content.res.Resources;
 

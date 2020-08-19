@@ -1,4 +1,4 @@
-package com.tokopedia.kyc_centralized.view.di;
+package com.tokopedia.kyc_centralized.di;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

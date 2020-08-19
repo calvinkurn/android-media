@@ -3,7 +3,7 @@ package com.tokopedia.kyc_centralized.view.presenter;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.kyc_centralized.view.listener.UserIdentificationInfo;
 import com.tokopedia.kyc_centralized.view.subscriber.GetUserProjectInfoSubcriber;
-import com.tokopedia.kyc_centralized.view.usecase.GetUserProjectInfoUseCase;
+import com.tokopedia.kyc_centralized.domain.GetUserProjectInfoUseCase;
 import com.tokopedia.user_identification_common.domain.usecase.GetApprovalStatusUseCase;
 
 import javax.inject.Inject;

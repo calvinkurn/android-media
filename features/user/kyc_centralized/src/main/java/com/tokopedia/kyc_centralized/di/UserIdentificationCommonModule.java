@@ -1,4 +1,4 @@
-package com.tokopedia.kyc_centralized.view.di;
+package com.tokopedia.kyc_centralized.di;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -15,7 +15,7 @@ import com.tokopedia.kyc_centralized.view.listener.UserIdentificationInfo;
 import com.tokopedia.kyc_centralized.view.listener.UserIdentificationUploadImage;
 import com.tokopedia.kyc_centralized.view.presenter.UserIdentificationInfoPresenter;
 import com.tokopedia.kyc_centralized.view.presenter.UserIdentificationUploadImagePresenter;
-import com.tokopedia.kyc_centralized.view.usecase.GetUserProjectInfoUseCase;
+import com.tokopedia.kyc_centralized.domain.GetUserProjectInfoUseCase;
 import com.tokopedia.kyc_centralized.view.viewmodel.AttachmentImageModel;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;

@@ -1,4 +1,4 @@
-package com.tokopedia.kyc_centralized.view.analytics;
+package com.tokopedia.kyc_centralized.analytics;
 
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;

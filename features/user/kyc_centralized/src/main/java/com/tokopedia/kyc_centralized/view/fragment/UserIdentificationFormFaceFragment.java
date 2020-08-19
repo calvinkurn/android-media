@@ -19,8 +19,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.kyc_centralized.R;
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationCameraActivity;
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationFormActivity;
-import com.tokopedia.kyc_centralized.view.di.DaggerUserIdentificationCommonComponent;
-import com.tokopedia.kyc_centralized.view.di.UserIdentificationCommonComponent;
+import com.tokopedia.kyc_centralized.di.DaggerUserIdentificationCommonComponent;
+import com.tokopedia.kyc_centralized.di.UserIdentificationCommonComponent;
 import com.tokopedia.kyc_centralized.view.viewmodel.UserIdentificationStepperModel;
 import com.tokopedia.user_identification_common.KycUrl;
 

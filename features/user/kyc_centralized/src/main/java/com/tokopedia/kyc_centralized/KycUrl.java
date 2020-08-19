@@ -1,4 +1,4 @@
-package com.tokopedia.kyc_centralized.view;
+package com.tokopedia.kyc_centralized;
 
 /**
  * @author by nisie on 16/11/18.
