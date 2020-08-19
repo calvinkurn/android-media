@@ -31,9 +31,8 @@ class KeywordAdsViewModel @Inject constructor(
         })
     }
 
-    private fun updateList(data: List<KeywordSuggestionResponse.Result.TopAdsGetKeywordSuggestionV3.DataItem>) {
+     private fun updateList(data: List<KeywordSuggestionResponse.Result.TopAdsGetKeywordSuggestionV3.DataItem>) {
         keywordList.clear()
-
         data.forEach { dataItem ->
             dataItem.keywordData.forEach {
                 keywordList.add(KeywordItemViewModel(it).data.keyword)
@@ -53,7 +52,8 @@ class KeywordAdsViewModel @Inject constructor(
         selectedKeywordList.postValue(item)
         return item
     }
-    override fun onCleared() {
+
+    public override fun onCleared() {
         super.onCleared()
         suggestionKeywordUseCase.cancelJobs()
     }

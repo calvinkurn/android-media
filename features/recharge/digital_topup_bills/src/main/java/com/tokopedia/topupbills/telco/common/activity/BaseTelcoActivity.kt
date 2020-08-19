@@ -7,6 +7,7 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.core.content.ContextCompat
 import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
@@ -58,7 +59,7 @@ open abstract class BaseTelcoActivity : BaseSimpleActivity(), HasComponent<Digit
         intent?.handleExtra()
 
         //draw background without overdraw GPU
-        window.setBackgroundDrawableResource(R.color.digital_cardview_light_background)
+        window.setBackgroundDrawableResource(com.tokopedia.unifyprinciples.R.color.Neutral_N0)
 
         setAnimationAppBarLayout()
     }
@@ -148,8 +149,11 @@ open abstract class BaseTelcoActivity : BaseSimpleActivity(), HasComponent<Digit
 
     private fun showBottomMenus() {
         sendTrackingDotsMenuTelco(userSession.userId)
-        val menuBottomSheet = TopupBillsMenuBottomSheets()
+        val menuBottomSheet = TopupBillsMenuBottomSheets.newInstance()
         menuBottomSheet.listener = this
+        menuBottomSheet.setShowListener {
+            menuBottomSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
+        }
         menuBottomSheet.show(supportFragmentManager, TAG_TELCO_MENU)
     }
 

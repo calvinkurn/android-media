@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import androidx.fragment.app.FragmentManager;
 import androidx.appcompat.widget.AppCompatRatingBar;
+
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.RatingBar;
@@ -24,6 +26,7 @@ public class AppFeedbackRatingBottomSheet extends AppFeedbackDialog {
     private String[] ratingDetails;
     private LocalCacheHandler cacheHandler;
     private boolean isCancelled = true;
+    private BottomSheetDismissListener dismissListener;
 
     @Override
     public int getLayoutResourceId() {
@@ -59,16 +62,20 @@ public class AppFeedbackRatingBottomSheet extends AppFeedbackDialog {
         if (context != null && manager != null) {
             if (isFeedbackRatingNeeded(context)) {
                 super.show(manager, "AppFeedbackRatingBottomSheet");
+            } else {
+                if (dismissListener != null) { dismissListener.onDismiss(); }
             }
         }
     }
 
     public void setDialogDismissListener(BottomSheetDismissListener dismissListener) {
         setDismissListener(dismissListener);
+        this.dismissListener = dismissListener;
     }
 
     private void setRatingBarChangedListener(RatingBar ratingBarView, Typography ratingLevelView) {
         if (ratingBarView != null && ratingLevelView != null && buttonView != null) {
+            disableDrag(ratingBarView);
             ratingBarView.setOnRatingBarChangeListener((ratingBar, rating, fromUser) -> {
                 ratingValue = rating;
                 int ratingIndex = ((int) rating) - 1;
@@ -86,6 +93,47 @@ public class AppFeedbackRatingBottomSheet extends AppFeedbackDialog {
                 }
             });
         }
+    }
+
+    private void disableDrag(RatingBar bar) {
+        bar.setOnTouchListener(new View.OnTouchListener()
+        {
+            private float downXValue;
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event)
+            {
+                if (event.getAction() == MotionEvent.ACTION_DOWN)
+                {
+                    downXValue = event.getX();
+                    return false;
+                }
+
+                if(event.getAction() == MotionEvent.ACTION_MOVE)
+                {
+                    // When true is returned, view will not handle this event.
+                    return true;
+                }
+
+                if(event.getAction() == MotionEvent.ACTION_UP)
+                {
+                    float currentX = event.getX();
+                    float difference = 0;
+                    // Swipe on left side
+                    if(currentX < downXValue)
+                        difference = downXValue - currentX;
+                        // Swipe on right side
+                    else if(currentX > downXValue)
+                        difference = currentX - downXValue;
+
+                    if(difference < 10 )
+                        return false;
+
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 
     private void setSendButtonClickListener(FrameLayout button) {
