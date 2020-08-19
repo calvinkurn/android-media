@@ -362,7 +362,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun onSwipeRefresh() {
-        footerOwn.visibility = View.GONE
         app_bar_layout.visibility = View.GONE
         super.onSwipeRefresh()
     }
@@ -414,7 +413,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     override fun loadData(page: Int) {
         if (isLoadingInitialData) {
-            footerOwn.visibility = View.GONE
             app_bar_layout.visibility = View.GONE
             presenter.getProfileFirstPage(userId, false)
         } else {
@@ -482,7 +480,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                         checkShouldChangeUsername(element.profileHeaderViewModel.link) { showShareBottomSheets(this) }
                         profileAnalytics.eventClickShareProfileIni(isOwner, userId.toString())
                     }
-                    onlyOnePost -> showShowCaseDialog(shareProfile)
+//                    onlyOnePost -> showShowCaseDialog(shareProfile)
                     else -> showAfterPostToaster(affiliatePostQuota?.number != 0)
                 }
                 successPost = false
@@ -1256,6 +1254,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         lateinit var action: View.OnClickListener
         action = if (!selfProfile) {
             iv_action_parallax.setImageDrawable(MethodChecker.getDrawable(requireContext(), com.tokopedia.design.R.drawable.ic_share_white))
+            iv_action2_parallax.gone()
             iv_action.gone()
             View.OnClickListener {
                 showShareBottomSheet(
@@ -1269,14 +1268,18 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             }
         } else {
             iv_action_parallax.setImageDrawable(MethodChecker.getDrawable(requireContext(), R.drawable.ic_af_graph))
+            iv_action2_parallax.setImageDrawable(MethodChecker.getDrawable(requireContext(), com.tokopedia.design.R.drawable.ic_share_white))
             iv_action.setImageDrawable(MethodChecker.getDrawable(requireContext(), R.drawable.ic_af_graph))
+            iv_action2.setImageDrawable(MethodChecker.getDrawable(requireContext(), com.tokopedia.design.R.drawable.ic_share_white))
             View.OnClickListener {
                 goToDashboard()
             }
         }
         if (!element.isAffiliate) {
             iv_action_parallax.visibility = View.GONE
+            iv_action2_parallax.visibility = View.GONE
             iv_action.visibility = View.GONE
+            iv_action2.visibility = View.GONE
         }
         iv_action.setOnClickListener(action)
         iv_action_parallax.setOnClickListener(action)
@@ -1486,18 +1489,9 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                           affiliatePostQuota: AffiliatePostQuota) {
         footer.visibility = View.VISIBLE
         if (headerViewModel.isOwner) {
-            footerOwn.visibility = View.VISIBLE
             bindCurationQuota(affiliatePostQuota)
-            addCuration.setOnClickListener {
-                goToAffiliateExplore()
-                profileAnalytics.eventClickTambahRekomendasi()
-            }
-            addCuration.setOnLongClickListener {
-                showToast(getString(R.string.profile_add_recommendation))
-                true
-            }
 
-            shareProfile.setOnClickListener {
+            val onClickListener = View.OnClickListener {
                 checkShouldChangeUsername(headerViewModel.link) {
                     byMeInstastoryView.setAvatarDrawable(iv_profile.drawable)
                     linkerData = showShareBottomSheet(
@@ -1510,22 +1504,26 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                     isShareProfile = true
                 }
             }
-            shareProfile.setOnLongClickListener {
-                showToast(getString(com.tokopedia.feedcomponent.R.string.profile_share_this_profile))
-                true
-            }
-        } else {
-            footerOwn.visibility = View.GONE
+
+            iv_action2_parallax.setOnClickListener(onClickListener)
+            iv_action2.setOnClickListener(onClickListener)
+//            shareProfile.setOnClickListener {
+//                checkShouldChangeUsername(headerViewModel.link) {
+//                    byMeInstastoryView.setAvatarDrawable(iv_profile.drawable)
+//                    linkerData = showShareBottomSheet(
+//                            headerViewModel,
+//                            String.format(getString(com.tokopedia.feedcomponent.R.string.profile_share_text), headerViewModel.link),
+//                            String.format(getString(com.tokopedia.feedcomponent.R.string.profile_share_title)),
+//                            byMeInstastoryView.getTempFileUri()
+//                    )
+//                    profileAnalytics.eventClickShareProfileIni(isOwner, userId.toString())
+//                    isShareProfile = true
+//                }
+//            }
         }
     }
 
     private fun bindCurationQuota(affiliatePostQuota: AffiliatePostQuota) {
-        if (affiliatePostQuota.number == 0) {
-            addCuration.text = getString(R.string.profile_see_by_me_prouct)
-        } else {
-            val addCurationText = "${getString(R.string.profile_add_rec)} (${affiliatePostQuota.number})"
-            addCuration.text = addCurationText
-        }
     }
 
     private fun showAfterPostToast() {
@@ -1662,7 +1660,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     private fun doFollowAfterLogin() {
         swipeToRefresh.isRefreshing = true
-        footerOwn.visibility = View.GONE
         app_bar_layout.visibility = View.GONE
         presenter.getProfileFirstPage(userId, true)
     }
