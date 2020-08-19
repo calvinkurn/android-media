@@ -18,7 +18,9 @@ import com.tokopedia.cart.R
 import com.tokopedia.cart.view.adapter.CartItemAdapter
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.design.utils.CurrencyFormatUtil
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.purchase_platform.common.utils.*
 import com.tokopedia.purchase_platform.common.utils.NoteTextWatcher.TEXTWATCHER_NOTE_DEBOUNCE_TIME
 import com.tokopedia.purchase_platform.common.utils.QuantityTextWatcher.TEXTWATCHER_QUANTITY_DEBOUNCE_TIME
@@ -61,6 +63,7 @@ class CartItemViewHolder constructor(itemView: View,
     private val textWholesalePrice: Typography
     private val textPriceDrop: Typography
     private val textCashback: Typography
+    private val textIncidentLabel: Typography
 
     private val textMoveToWishlist: Typography
 
@@ -118,6 +121,7 @@ class CartItemViewHolder constructor(itemView: View,
         textWholesalePrice = itemView.findViewById(R.id.text_wholesale_price)
         textPriceDrop = itemView.findViewById(R.id.text_price_drop)
         textCashback = itemView.findViewById(R.id.text_cashback)
+        textIncidentLabel = itemView.findViewById(R.id.text_incident)
 
         textMoveToWishlist = itemView.findViewById(R.id.text_move_to_wishlist)
 
@@ -310,6 +314,20 @@ class CartItemViewHolder constructor(itemView: View,
         renderProductPropertiesCashback(data)
         renderProductPropertiesPriceDrop(data)
         renderProductPropertiesWholesalePrice(data)
+        renderProductPropertiesIncidentLabel(data)
+    }
+
+    private fun renderProductPropertiesIncidentLabel(data: CartItemHolderData) {
+        if (data.cartItemData?.originData?.productAlertMessage?.isNotEmpty() == true) {
+            if (textCashback.visibility == View.VISIBLE || textPriceDrop.visibility == View.VISIBLE || textWholesalePrice.visibility == View.VISIBLE) {
+                textIncidentLabel.text = ", ${data.cartItemData?.originData?.productAlertMessage}"
+            } else {
+                textIncidentLabel.text = data.cartItemData?.originData?.productAlertMessage
+            }
+            textIncidentLabel.show()
+        } else {
+            textIncidentLabel.gone()
+        }
     }
 
     private fun renderProductPropertiesWholesalePrice(data: CartItemHolderData) {
