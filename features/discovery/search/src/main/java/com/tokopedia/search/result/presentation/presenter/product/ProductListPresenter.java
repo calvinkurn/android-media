@@ -659,29 +659,12 @@ final class ProductListPresenter
 
     private void getViewToRedirectSearch(SearchProductModel searchProductModel) {
         if (searchProductModel.getSearchProduct().getHeader().getResponseCode().equals("9")) {
-            getViewToSendTrackingOnRedirectSearch(searchProductModel);
+            ProductViewModel productViewModel = createProductViewModelWithPosition(searchProductModel);
+            getViewToSendTrackingSearchAttempt(productViewModel);
         }
 
         String applink = searchProductModel.getSearchProduct().getData().getRedirection().getRedirectApplink();
         getView().redirectSearchToAnotherPage(applink);
-    }
-
-    private void getViewToSendTrackingOnRedirectSearch(SearchProductModel searchProductModel) {
-        if (getView() == null) return;
-
-        ProductViewModel productViewModel = createProductViewModelWithPosition(searchProductModel);
-        Set<String> categoryIdMapping = new HashSet<>();
-        Set<String> categoryNameMapping = new HashSet<>();
-        String query = getView().getQueryKey();
-
-        if (productViewModel.getProductList().size() > 0) {
-            for (int i = 0; i < productViewModel.getProductList().size(); i++) {
-                categoryIdMapping.add(String.valueOf(productViewModel.getProductList().get(i).getCategoryID()));
-                categoryNameMapping.add(productViewModel.getProductList().get(i).getCategoryName());
-            }
-        }
-
-        getView().sendTrackingGTMEventSearchAttempt(createGeneralSearchTrackingModel(productViewModel, query, categoryIdMapping, categoryNameMapping));
     }
 
     private void getViewToProcessSearchResult(Map<String, Object> searchParameter, SearchProductModel searchProductModel) {
@@ -711,7 +694,7 @@ final class ProductListPresenter
         getView().updateScrollListener();
 
         if (isFirstTimeLoad) {
-            getViewToSendTrackingOnFirstTimeLoad(productViewModel);
+            getViewToSendTrackingSearchAttempt(productViewModel);
         }
     }
 
@@ -1172,7 +1155,7 @@ final class ProductListPresenter
         return quickFilterOptionList;
     }
 
-    private void getViewToSendTrackingOnFirstTimeLoad(ProductViewModel productViewModel) {
+    private void getViewToSendTrackingSearchAttempt(ProductViewModel productViewModel) {
         if (getView() == null) return;
 
         JSONArray afProdIds = new JSONArray();
@@ -1184,7 +1167,7 @@ final class ProductListPresenter
 
         if (productViewModel.getProductList().size() > 0) {
             for (int i = 0; i < productViewModel.getProductList().size(); i++) {
-                if (i < 3) {
+                if (i < 3 && isFirstTimeLoad) {
                     prodIdArray.add(productViewModel.getProductList().get(i).getProductID());
                     afProdIds.put(productViewModel.getProductList().get(i).getProductID());
                     moengageTrackingCategory.put(String.valueOf(productViewModel.getProductList().get(i).getCategoryID()), productViewModel.getProductList().get(i).getCategoryName());
@@ -1195,11 +1178,13 @@ final class ProductListPresenter
             }
         }
 
-        getView().sendTrackingEventAppsFlyerViewListingSearch(afProdIds, query, prodIdArray);
-        getView().sendTrackingEventMoEngageSearchAttempt(query, !productViewModel.getProductList().isEmpty(), moengageTrackingCategory);
-        getView().sendTrackingGTMEventSearchAttempt(createGeneralSearchTrackingModel(productViewModel, query, categoryIdMapping, categoryNameMapping));
+        if (isFirstTimeLoad) {
+            getView().sendTrackingEventAppsFlyerViewListingSearch(afProdIds, query, prodIdArray);
+            getView().sendTrackingEventMoEngageSearchAttempt(query, !productViewModel.getProductList().isEmpty(), moengageTrackingCategory);
+            isFirstTimeLoad = false;
+        }
 
-        isFirstTimeLoad = false;
+        getView().sendTrackingGTMEventSearchAttempt(createGeneralSearchTrackingModel(productViewModel, query, categoryIdMapping, categoryNameMapping));
     }
 
     private GeneralSearchTrackingModel createGeneralSearchTrackingModel(ProductViewModel productViewModel, String query, Set<String> categoryIdMapping, Set<String> categoryNameMapping) {
