@@ -22,6 +22,8 @@
         android:textCursorDrawable="@null"
         android:textSize="@dimen/fontSize_lvl4"
         android:gravity="top"
+        android:inputType="textMultiLine"
+        android:scrollbars="vertical"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"

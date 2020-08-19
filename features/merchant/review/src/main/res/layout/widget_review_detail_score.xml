@@ -124,6 +124,7 @@
         android:layout_marginStart="@dimen/spacing_lvl2"
         android:layout_marginLeft="@dimen/spacing_lvl2"
         android:textColor="@color/Neutral_N700_68"
+        android:visibility="gone"
         app:layout_constraintStart_toEndOf="@id/reviewScoreDeadlineLabel"
         app:layout_constraintTop_toTopOf="@id/reviewScoreDeadlineLabel"
         app:typographyType="body_3"
