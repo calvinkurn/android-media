@@ -588,9 +588,8 @@ open class HomeFragment : BaseDaggerFragment(),
 
     override fun onResume() {
         super.onResume()
-        shouldPausePlay = true
         createAndCallSendScreen()
-        if (!shouldPausePlay) adapter?.onResumePlayWidget()
+        if(!shouldPausePlay) adapter?.onResumePlayWidget()
         adapter?.onResumeBanner()
         conditionalViewModelRefresh()
         if (activityStateListener != null) {
@@ -600,6 +599,7 @@ open class HomeFragment : BaseDaggerFragment(),
         if (isEnableToAutoRefresh(autoRefreshFlag)) {
             setAutoRefreshOnHome(autoRefreshFlag)
         }
+        shouldPausePlay = true
     }
 
     private fun conditionalViewModelRefresh(){
