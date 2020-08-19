@@ -158,7 +158,7 @@
                         tools:visibility="visible">
 
                         <com.tokopedia.unifyprinciples.Typography
-                            android:id="@+id/text_wholesale_price"
+                            android:id="@+id/text_cashback"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/text_product_name"
@@ -166,7 +166,7 @@
                             android:textColor="@color/Neutral_N700_68"
                             android:visibility="gone"
                             app:typographyType="small"
-                            tools:text="Harga Grosir"
+                            tools:text="Cashback 3%"
                             tools:visibility="visible" />
 
                         <com.tokopedia.unifyprinciples.Typography
@@ -182,7 +182,7 @@
                             tools:visibility="visible" />
 
                         <com.tokopedia.unifyprinciples.Typography
-                            android:id="@+id/text_cashback"
+                            android:id="@+id/text_wholesale_price"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/text_product_name"
@@ -190,7 +190,7 @@
                             android:textColor="@color/Neutral_N700_68"
                             android:visibility="gone"
                             app:typographyType="small"
-                            tools:text=", Cashback 3%"
+                            tools:text=", Harga Grosir"
                             tools:visibility="visible" />
 
                     </com.google.android.flexbox.FlexboxLayout>

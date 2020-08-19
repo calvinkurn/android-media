@@ -135,7 +135,8 @@ data class CartItemData(
             var listPromoCheckout: List<String> = emptyList(),
             var variant: String = "",
             var warningMessage: String = "", // eg : sisa 3
-            var slashPriceLabel: String = ""
+            var slashPriceLabel: String = "",
+            var initialPriceBeforeDrop: Int = 0
     ) : Parcelable {
         constructor(parcel: Parcel) : this(
                 parcel.readInt(),

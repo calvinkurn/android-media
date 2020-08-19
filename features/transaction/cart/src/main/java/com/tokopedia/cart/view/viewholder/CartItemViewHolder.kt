@@ -307,14 +307,18 @@ class CartItemViewHolder constructor(itemView: View,
     }
 
     private fun renderProductProperties(data: CartItemHolderData) {
-        renderProductPropertiesWholesalePrice(data)
-        renderProductPropertiesPriceDrop(data)
         renderProductPropertiesCashback(data)
+        renderProductPropertiesPriceDrop(data)
+        renderProductPropertiesWholesalePrice(data)
     }
 
     private fun renderProductPropertiesWholesalePrice(data: CartItemHolderData) {
         if (data.cartItemData?.originData?.wholesalePriceData?.isNotEmpty() == true) {
-            textWholesalePrice.text = "Harga Grosir"
+            if (textCashback.visibility == View.VISIBLE || textPriceDrop.visibility == View.VISIBLE) {
+                textWholesalePrice.text = ", Harga Grosir"
+            } else {
+                textWholesalePrice.text = "Harga Grosir"
+            }
             textWholesalePrice.show()
         } else {
             textWholesalePrice.gone()
@@ -322,8 +326,8 @@ class CartItemViewHolder constructor(itemView: View,
     }
 
     private fun renderProductPropertiesPriceDrop(data: CartItemHolderData) {
-        if (data.cartItemData?.originData?.priceChangesState == 1) {
-            if (textWholesalePrice.visibility == View.VISIBLE) {
+        if (data.cartItemData?.originData?.initialPriceBeforeDrop != 0) {
+            if (textCashback.visibility == View.VISIBLE) {
                 textPriceDrop.text = ", Harga Turun"
             } else {
                 textPriceDrop.text = "Harga Turun"
@@ -336,11 +340,7 @@ class CartItemViewHolder constructor(itemView: View,
 
     private fun renderProductPropertiesCashback(data: CartItemHolderData) {
         if (data.cartItemData?.originData?.productCashBack?.isNotBlank() == true) {
-            if (textWholesalePrice.visibility == View.VISIBLE || textPriceDrop.visibility == View.VISIBLE) {
-                textCashback.text = ", ${data.cartItemData?.originData?.cashBackInfo}"
-            } else {
-                textCashback.text = data.cartItemData?.originData?.cashBackInfo
-            }
+            textCashback.text = data.cartItemData?.originData?.cashBackInfo
             textCashback.show()
         } else {
             textCashback.gone()
@@ -377,10 +377,20 @@ class CartItemViewHolder constructor(itemView: View,
         if (data.cartItemData?.originData?.priceOriginal != 0 || data.cartItemData?.originData?.wholesalePrice != 0) {
             var slashPricePercentage = 0.0
             if (data.cartItemData?.originData?.slashPriceLabel?.isNotBlank() == true) {
+                // Slash price
                 textSlashPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(data.cartItemData?.originData?.priceOriginal
                         ?: 0, false).removeDecimalSuffix()
                 labelSlashPricePercentage.text = data.cartItemData?.originData?.slashPriceLabel
+            } else if (data.cartItemData?.originData?.initialPriceBeforeDrop != 0) {
+                // Price drop
+                textSlashPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(data.cartItemData?.originData?.initialPriceBeforeDrop
+                        ?: 0, false).removeDecimalSuffix()
+                val pricePlan = data.cartItemData?.originData?.pricePlan ?: 0.0
+                val priceOriginal = data.cartItemData?.originData?.initialPriceBeforeDrop ?: 1
+                slashPricePercentage = (priceOriginal - pricePlan) / priceOriginal * 100
+                labelSlashPricePercentage.text = "${slashPricePercentage.roundToInt()}%"
             } else if (data.cartItemData?.originData?.wholesalePrice != 0) {
+                // Wholesale
                 textSlashPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(data.cartItemData?.originData?.pricePlanInt
                         ?: 0, false).removeDecimalSuffix()
                 val pricePlan = data.cartItemData?.originData?.pricePlan ?: 0.0
