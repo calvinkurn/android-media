@@ -99,6 +99,7 @@ dependencies {
 
     //Logistic
     implementation project(rootProject.ext.features.logisticorder)
+    implementation project(rootProject.ext.features.logisticaddaddress)
     implementation project(rootProject.ext.features.manageaddress)
 
     //Merchant
