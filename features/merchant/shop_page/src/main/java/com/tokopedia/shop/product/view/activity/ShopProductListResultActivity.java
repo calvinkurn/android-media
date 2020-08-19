@@ -4,9 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.EditText;
 
+import androidx.appcompat.widget.AppCompatImageView;
 import androidx.fragment.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
@@ -59,7 +59,7 @@ public class ShopProductListResultActivity extends BaseSimpleActivity
     private ShopInfo shopInfo;
     private OldShopPageTrackingBuyer shopPageTracking;
     private EditText editTextSearch;
-    private View textViewCancel;
+    private AppCompatImageView actionUpBtn;
 
     public static Intent createIntent(Context context, String shopId, String keyword,
                                       String etalaseId, String attribution, String sortId, String shopRef) {
@@ -146,7 +146,7 @@ public class ShopProductListResultActivity extends BaseSimpleActivity
 
     private void initSearchInputView() {
         editTextSearch = findViewById(R.id.editTextSearchProduct);
-        textViewCancel = findViewById(R.id.text_view_cancel);
+        actionUpBtn = findViewById(R.id.actionUpBtn);
         editTextSearch.setText(keyword);
         editTextSearch.setKeyListener(null);
         editTextSearch.setMovementMethod(null);
@@ -157,7 +157,7 @@ public class ShopProductListResultActivity extends BaseSimpleActivity
                 redirectToShopSearchProduct();
             }
         });
-        textViewCancel.setOnClickListener(view -> {
+        actionUpBtn.setOnClickListener(view -> {
             finish();
         });
     }
