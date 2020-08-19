@@ -30,9 +30,10 @@ fun mapDiscoveryResponseToPageData(discoveryResponse: DiscoveryResponse, queryPa
 }
 
 class DiscoveryPageDataMapper(private val pageInfo: PageInfo, private val queryParameterMap: Map<String, String?>) {
+
     fun getDiscoveryComponentListWithQueryParam(components: List<ComponentsItem>): List<ComponentsItem> {
         val pinnedCompId = queryParameterMap[PINNED_COMP_ID]
-        val componentList = getDiscoveryComponentList(components, queryParameterMap[PINNED_ACTIVE_TAB])
+        val componentList = getDiscoveryComponentList(components)
         if(componentList.isNotEmpty() && !pinnedCompId.isNullOrEmpty()){
             componentList.forEach { item ->
                 if(item.id == pinnedCompId){
@@ -43,7 +44,7 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo, private val queryP
         return componentList
     }
 
-    private fun getDiscoveryComponentList(components: List<ComponentsItem>, pinnedActiveTabId: String?): List<ComponentsItem> {
+    private fun getDiscoveryComponentList(components: List<ComponentsItem>): List<ComponentsItem> {
         val listComponents: ArrayList<ComponentsItem> = ArrayList()
         for ((position, component) in components.withIndex()) {
             listComponents.addAll(parseComponent(component, position))
@@ -113,7 +114,7 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo, private val queryP
         } else {
             listComponents.add(component)
             component.getComponentsItem()?.let {
-                listComponents.addAll(getDiscoveryComponentList(it, queryParameterMap[PINNED_ACTIVE_TAB]))
+                listComponents.addAll(getDiscoveryComponentList(it))
             }
             if (component.getComponentsItem()?.size?.rem(component.componentsPerPage) == 0) {
                 listComponents.add(ComponentsItem(name = ComponentNames.LoadMore.componentName).apply {

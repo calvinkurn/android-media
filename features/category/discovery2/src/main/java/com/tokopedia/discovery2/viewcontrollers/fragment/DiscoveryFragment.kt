@@ -84,6 +84,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     var pageEndPoint = ""
     private var componentPosition: Int? = null
     private var openScreenStatus = false
+    private var pinnedAlreadyScrolled = false
 
     @JvmField
     @Inject
@@ -179,7 +180,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
         setAdapter()
         discoveryViewModel.pageIdentifier = arguments?.getString(END_POINT, "") ?: ""
         pageEndPoint = discoveryViewModel.pageIdentifier
-        discoveryViewModel.getDiscoveryData(discoveryViewModel.getQueryParameterMapFromBundle(arguments))
+        fetchDiscoveryPageData()
         setUpObserver()
     }
 
@@ -194,7 +195,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     }
 
     fun reSync() {
-        discoveryViewModel.getDiscoveryData(discoveryViewModel.getQueryParameterMapFromBundle(arguments))
+        fetchDiscoveryPageData()
     }
 
     private fun setUpObserver() {
@@ -251,21 +252,27 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
                     globalError.show()
                     globalError.setOnClickListener {
                         globalError.hide()
-                        discoveryViewModel.getDiscoveryData(discoveryViewModel.getQueryParameterMapFromBundle(arguments))
+                        fetchDiscoveryPageData()
                     }
                 }
             }
         })
     }
 
+    private fun fetchDiscoveryPageData() {
+        discoveryViewModel.getDiscoveryData(discoveryViewModel.getQueryParameterMapFromBundle(arguments))
+    }
 
     private fun scrollToPinnedComponent(listComponent: List<ComponentsItem>) {
-        val pinnedComponentId = arguments?.getString(PINNED_COMPONENT_ID, "")
-        if(!pinnedComponentId.isNullOrEmpty()){
-            val position = discoveryViewModel.scrollToPinnedComponent(listComponent, pinnedComponentId)
-            if(position >= 0){
-                recyclerView.smoothScrollToPosition(position)
+        if (!pinnedAlreadyScrolled) {
+            val pinnedComponentId = arguments?.getString(PINNED_COMPONENT_ID, "")
+            if (!pinnedComponentId.isNullOrEmpty()) {
+                val position = discoveryViewModel.scrollToPinnedComponent(listComponent, pinnedComponentId)
+                if (position >= 0) {
+                    recyclerView.smoothScrollToPosition(position)
+                }
             }
+            pinnedAlreadyScrolled = true
         }
     }
 
@@ -327,7 +334,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
         trackingQueue.sendAll()
         getDiscoveryAnalytics().clearProductViewIds()
         discoveryViewModel.clearPageData()
-        discoveryViewModel.getDiscoveryData(discoveryViewModel.getQueryParameterMapFromBundle(arguments))
+        fetchDiscoveryPageData()
         getDiscoveryAnalytics().clearProductViewIds()
     }
 

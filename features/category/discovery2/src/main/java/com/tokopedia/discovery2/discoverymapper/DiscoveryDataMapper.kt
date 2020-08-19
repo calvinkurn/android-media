@@ -41,10 +41,6 @@ class DiscoveryDataMapper {
             var isSelectedFound = false
             component.data?.forEachIndexed { index, it ->
                 val id = "${TABS_ITEM}_$index"
-                if (it.isSelected) {
-                    isSelectedFound = true
-                }
-
                 if (!pinnedTabID.isNullOrEmpty()) {
                     var pinnedActiveIndex = pinnedTabID.toIntOrZero()
                     if (pinnedActiveIndex.isMoreThanZero()) {
@@ -54,6 +50,8 @@ class DiscoveryDataMapper {
                             isSelectedFound = true
                         }
                     }
+                } else if (it.isSelected) {
+                    isSelectedFound = true
                 }
                 val componentsItem = ComponentsItem()
                 componentsItem.position = index

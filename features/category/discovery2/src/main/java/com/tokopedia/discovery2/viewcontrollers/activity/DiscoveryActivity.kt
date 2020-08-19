@@ -50,7 +50,7 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
         const val PINNED_PRODUCT = "PinnedProduct"
 
         @JvmField
-        var config: String = ""
+        var config: String = NATIVE
 
         @JvmStatic
         fun createDiscoveryIntent(context: Context, endpoint: String): Intent {
