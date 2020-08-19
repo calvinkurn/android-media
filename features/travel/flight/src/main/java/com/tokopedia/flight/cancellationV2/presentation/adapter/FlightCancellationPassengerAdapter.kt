@@ -33,7 +33,8 @@ class FlightCancellationPassengerAdapter(private val cancellationListener: Fligh
     }
 
     override fun checkIfAllPassengerIsChecked() {
-        var allChecked = true
+        var allChecked = passengerViewHolderList.size > 0
+
         for (item in passengerViewHolderList) {
             if (!item.isPassengerChecked() && item.getPassengerModel().statusString.isEmpty()) {
                 allChecked = false
