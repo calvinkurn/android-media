@@ -532,6 +532,9 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     keyword,
                     isNeedToReloadData
             )
+        } else {
+            hideLoading()
+            endlessRecyclerViewScrollListener.resetState()
         }
     }
 
