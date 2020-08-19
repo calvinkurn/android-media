@@ -111,6 +111,7 @@
         android:layout_marginTop="@dimen/layout_lvl2"
         android:text="@string/review_reputation_deadline"
         android:visibility="gone"
+        android:textColor="@color/Neutral_N700_68"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/smiley_barrier"
         app:typographyType="body_3"
@@ -122,6 +123,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl2"
         android:layout_marginLeft="@dimen/spacing_lvl2"
+        android:textColor="@color/Neutral_N700_68"
         app:layout_constraintStart_toEndOf="@id/reviewScoreDeadlineLabel"
         app:layout_constraintTop_toTopOf="@id/reviewScoreDeadlineLabel"
         app:typographyType="body_3"
@@ -134,6 +136,8 @@
         android:layout_height="@dimen/layout_lvl5"
         android:layout_marginTop="@dimen/layout_lvl2"
         android:visibility="gone"
+        app:corners="100"
+        app:custom_color="@color/shimmer_custom_color"
         app:layout_constraintTop_toBottomOf="@id/reviewDetailScoreShopName"
         app:layout_constraintStart_toStartOf="@id/reviewDetailScoreShopName" />
 
@@ -144,6 +148,8 @@
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginEnd="@dimen/dp_56"
         android:visibility="gone"
+        app:corners="8"
+        app:custom_color="@color/shimmer_custom_color"
         app:layout_constraintTop_toTopOf="@id/reviewScoreLoadingSmiley"
         app:layout_constraintBottom_toBottomOf="@id/reviewScoreLoadingSmiley"
         app:layout_constraintStart_toEndOf="@id/reviewScoreLoadingSmiley"

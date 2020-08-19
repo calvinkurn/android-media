@@ -29,6 +29,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/layout_lvl1"
                 android:layout_marginEnd="@dimen/layout_lvl1"
+                app:card_type="border"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -140,6 +141,7 @@
                 android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_12"
                 app:layout_constraintTop_toBottomOf="@id/reviewDetailContent"/>
 
             <com.tokopedia.review.feature.historydetails.presentation.widget.ReviewDetailResponseWidget

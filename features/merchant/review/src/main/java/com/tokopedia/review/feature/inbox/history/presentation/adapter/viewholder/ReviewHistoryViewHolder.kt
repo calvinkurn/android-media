@@ -75,9 +75,11 @@ class ReviewHistoryViewHolder(view: View,
     private fun showDescription(reviewDescription: String) {
         if(reviewDescription.isNullOrBlank()) {
             itemView.reviewHistoryDescription.hide()
+            itemView.reviewHistoryNoReviewText.show()
             return
         }
-        itemView.reviewHistoryDescription.setTextAndCheckShow(reviewDescription)
+        itemView.reviewHistoryNoReviewText.hide()
+        itemView.reviewHistoryDescription.setTextAndCheckShow(reviewDescription.removeNewLine())
     }
 
     private fun showDate(date: String) {
@@ -97,5 +99,9 @@ class ReviewHistoryViewHolder(view: View,
             return
         }
         itemView.reviewHistoryReply.hide()
+    }
+
+    private fun String.removeNewLine(): String {
+        return this.replace("\n", "")
     }
 }

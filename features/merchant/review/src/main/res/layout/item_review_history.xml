@@ -6,6 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/review_history_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/layout_lvl2"
@@ -51,26 +52,38 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl1"
-            android:textColor="@color/Neutral_N700_96"
             android:visibility="gone"
             app:layout_constraintStart_toStartOf="@id/reviewHistoryProductName"
             app:layout_constraintTop_toBottomOf="@id/review_history_product_name_barrier"
-            tools:visibility="visible"/>
+            tools:visibility="visible"
+            tools:src="@drawable/ic_rating_star_five"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/reviewHistoryDate"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl2"
             android:layout_marginLeft="@dimen/spacing_lvl2"
             android:textColor="@color/Neutral_N700_68"
             android:visibility="gone"
-            android:gravity="center"
             app:layout_constraintTop_toTopOf="@id/reviewHistoryStars"
             app:layout_constraintBottom_toBottomOf="@id/reviewHistoryStars"
             app:layout_constraintStart_toEndOf="@id/reviewHistoryStars"
             app:typographyType="body_3"
-            tools:visibility="visible"/>
+            tools:visibility="visible"
+            tools:text="Kemarin"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/reviewHistoryNoReviewText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Neutral_N700_32"
+            android:visibility="gone"
+            android:text="@string/no_reviews_yet"
+            android:layout_marginStart="@dimen/layout_lvl2"
+            android:layout_marginTop="@dimen/layout_lvl1"
+            app:layout_constraintTop_toBottomOf="@id/reviewHistoryStars"
+            app:typographyType="body_2" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/reviewHistoryDescription"
@@ -79,15 +92,21 @@
             android:layout_marginTop="@dimen/layout_lvl1"
             android:layout_marginStart="@dimen/layout_lvl2"
             android:layout_marginEnd="@dimen/layout_lvl2"
-            android:layout_marginRight="@dimen/layout_lvl2"
             android:maxLines="2"
             android:ellipsize="end"
             android:visibility="gone"
             app:typographyType="body_2"
-            app:layout_constraintTop_toBottomOf="@id/reviewHistoryStars"
+            app:layout_constraintTop_toBottomOf="@id/reviewHistoryDate"
             tools:visibility="visible"
-            tools:text="asdasdasdadadsadsadasdsadasdasdsadasdasdsadsadsadsadsadsadasdsadsadsadsa"
-            />
+            tools:text="asdasdasdadadsadsadasdsadasdasdsadasdasdsadsadsadsadsadsadasdsadsadsadsa" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/review_history_content_barrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="reviewHistoryDescription,reviewHistoryNoReviewText"
+            tools:visibility="gone"/>
 
         <com.tokopedia.review.common.presentation.widget.ReviewAttachedImages
             android:id="@+id/reviewHistoryAttachedImages"
@@ -97,8 +116,16 @@
             android:visibility="gone"
             android:orientation="horizontal"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/reviewHistoryDescription"
+            app:layout_constraintTop_toBottomOf="@id/review_history_content_barrier"
             tools:visibility="visible"/>
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/review_history_image_barrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="reviewHistoryAttachedImages, review_history_content_barrier"
+            tools:visibility="gone"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/reviewHistoryReply"
@@ -110,7 +137,7 @@
             android:visibility="gone"
             app:layout_constraintStart_toStartOf="@id/reviewHistoryProductName"
             app:typographyType="body_3"
-            app:layout_constraintTop_toBottomOf="@id/reviewHistoryAttachedImages"
+            app:layout_constraintTop_toBottomOf="@id/review_history_image_barrier"
             tools:visibility="visible"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -118,6 +145,7 @@
     <com.tokopedia.unifycomponents.DividerUnify
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_lvl1"
+        app:layout_constraintTop_toBottomOf="@id/review_history_container"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

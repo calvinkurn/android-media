@@ -270,6 +270,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
                         show()
                     }
                     isLocked && score == 0 -> {
+                        setShopName(shopName)
                         setExpired()
                         show()
                     }

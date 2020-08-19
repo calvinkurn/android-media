@@ -27,7 +27,7 @@ class ReviewHistoryViewModel @Inject constructor(
     val reviewList: LiveData<ReviewViewState<ProductrevFeedbackHistoryResponse>>
         get() = _reviewList
 
-    private val searchQuery = MutableLiveData("")
+    private var searchQuery = ""
 
     private val currentPage = MutableLiveData(ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE)
 
@@ -43,12 +43,12 @@ class ReviewHistoryViewModel @Inject constructor(
         }
         launchCatchError(block = {
             val response = withContext(dispatchers.io()) {
-                productrevFeedbackHistoryUseCase.setParams(searchQuery.value, page)
+                productrevFeedbackHistoryUseCase.setParams(searchQuery, page)
                 productrevFeedbackHistoryUseCase.executeOnBackground()
             }
-            _reviewList.postValue(Success(response.productrevFeedbackHistoryResponse, page, searchQuery.value ?: ""))
+            _reviewList.postValue(Success(response.productrevFeedbackHistoryResponse, page, searchQuery))
         }) {
-            _reviewList.postValue(Fail(it, page, searchQuery.value ?: ""))
+            _reviewList.postValue(Fail(it, page, searchQuery))
         }
     }
 
@@ -58,8 +58,7 @@ class ReviewHistoryViewModel @Inject constructor(
     }
 
     fun updateKeyWord(keyword: String) {
-        searchQuery.value = keyword
-        searchQuery.notifyObserver()
+        searchQuery = keyword
         resetPage()
     }
 
