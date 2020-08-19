@@ -1167,7 +1167,7 @@ final class ProductListPresenter
 
         if (productViewModel.getProductList().size() > 0) {
             for (int i = 0; i < productViewModel.getProductList().size(); i++) {
-                if (i < 3 && isFirstTimeLoad) {
+                if (i < 3) {
                     prodIdArray.add(productViewModel.getProductList().get(i).getProductID());
                     afProdIds.put(productViewModel.getProductList().get(i).getProductID());
                     moengageTrackingCategory.put(String.valueOf(productViewModel.getProductList().get(i).getCategoryID()), productViewModel.getProductList().get(i).getCategoryName());
@@ -1178,13 +1178,11 @@ final class ProductListPresenter
             }
         }
 
-        if (isFirstTimeLoad) {
-            getView().sendTrackingEventAppsFlyerViewListingSearch(afProdIds, query, prodIdArray);
-            getView().sendTrackingEventMoEngageSearchAttempt(query, !productViewModel.getProductList().isEmpty(), moengageTrackingCategory);
-            isFirstTimeLoad = false;
-        }
-
+        getView().sendTrackingEventAppsFlyerViewListingSearch(afProdIds, query, prodIdArray);
+        getView().sendTrackingEventMoEngageSearchAttempt(query, !productViewModel.getProductList().isEmpty(), moengageTrackingCategory);
         getView().sendTrackingGTMEventSearchAttempt(createGeneralSearchTrackingModel(productViewModel, query, categoryIdMapping, categoryNameMapping));
+
+        isFirstTimeLoad = false;
     }
 
     private GeneralSearchTrackingModel createGeneralSearchTrackingModel(ProductViewModel productViewModel, String query, Set<String> categoryIdMapping, Set<String> categoryNameMapping) {
