@@ -148,6 +148,8 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
     }
 
     fun changeSearchParam() {
+        onQuickFilterChanged(listOf())
+        setUpQuickFilterBaseOnSelectedFilter(listOf())
         loadInitialData()
     }
 
@@ -400,7 +402,6 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
 
     override fun loadData(page: Int) {
         val searchQuery = GraphqlHelper.loadRawString(resources, R.raw.gql_get_property_search)
-        searchResultviewModel.searchParam
         searchResultviewModel.searchProperty(page, searchQuery)
     }
 
