@@ -10,6 +10,7 @@ import com.tokopedia.logisticaddaddress.common.AddressConstants.*
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
 import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticdata.data.entity.address.Token
+import com.tokopedia.track.TrackApp
 
 /**
  * Created by fwidjaja on 2019-05-07.
@@ -21,6 +22,9 @@ class PinpointMapActivity : BaseSimpleActivity() {
     private var isLogisticLabel: Boolean = true
 
     companion object {
+
+        private const val EXTRA_REF = "EXTRA_REF"
+
         @JvmStatic
         fun newInstance(context: Context, lat: Double?, long: Double?, isShowAutoComplete: Boolean, token: Token?, isPolygon: Boolean,
                         isMismatchSolved: Boolean, isMismatch: Boolean, saveAddressDataModel: SaveAddressDataModel?, isChangesRequested: Boolean): Intent =
@@ -43,6 +47,9 @@ class PinpointMapActivity : BaseSimpleActivity() {
         intent?.extras?.let {
             isFullFLow = it.getBoolean(EXTRA_IS_FULL_FLOW, true)
             isLogisticLabel = it.getBoolean(EXTRA_IS_LOGISTIC_LABEL, true)
+            it.getString(EXTRA_REF)?.let { from ->
+                AddNewAddressAnalytics.sendScreenName(from)
+            }
         }
     }
 

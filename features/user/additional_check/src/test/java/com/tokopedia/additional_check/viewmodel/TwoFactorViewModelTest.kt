@@ -49,7 +49,7 @@ class TwoFactorViewModelTest {
 
     @Test
     fun `Execute Check Success`() {
-        val interval = 11111111111111
+        val interval = 10
 
         /* When */
         val twoFactorResult = TwoFactorResult(interval = interval)
@@ -62,10 +62,8 @@ class TwoFactorViewModelTest {
         every { pref.isNeedCheck() } returns true
 
         viewModel.check({
-            assertEquals(it, result)
+            assertEquals(it, result.twoFactorResult)
         }, onError)
-
-        verify { pref.setInterval(interval) }
     }
 
     @Test

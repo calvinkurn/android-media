@@ -74,7 +74,6 @@ class FeedbackItemReply : BaseCustomView, ReviewReplyListener {
         } else {
             tvFeedbackReview?.apply {
                 setTextColor(ContextCompat.getColor(context, R.color.clr_f531353b))
-                maxLines = Integer.MAX_VALUE
                 text = feedbackText
             }
         }
@@ -101,11 +100,11 @@ class FeedbackItemReply : BaseCustomView, ReviewReplyListener {
     }
 
     override fun onImageItemClicked(imageUrls: List<String>, thumbnailsUrl: List<String>,
-                                    productTitle: String, feedbackId: String, position: Int) {
+                                    title: String, feedbackId: String, position: Int) {
         context?.run {
             startActivity(ImagePreviewSliderActivity.getCallingIntent(
                     context = this,
-                    title = productTitle,
+                    title = title,
                     imageUrls = imageUrls,
                     imageThumbnailUrls = thumbnailsUrl,
                     imagePosition = position

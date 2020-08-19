@@ -5,7 +5,6 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Point
-import android.net.Uri
 import android.view.Display
 import android.view.WindowManager
 import java.io.File
@@ -79,21 +78,33 @@ object ImageUtil {
         return inSampleSize
     }
 
-    @JvmStatic
-    fun getWidthAndHeight(file: File): Pair<Int, Int> {
-        val options = BitmapFactory.Options()
-        options.inJustDecodeBounds = true
-        BitmapFactory.decodeFile(file.absolutePath, options)
-        return options.outWidth to options.outHeight
-    }
-
-    @JvmStatic
-    fun getWidthAndHeight(localUri: Uri): Pair<Int, Int> {
+    private fun getWidthAndHeight(file: File): Pair<Int, Int> {
         return try {
-            getWidthAndHeight(File(localUri.path))
-        } catch (e: Exception) {
-            // handling if uri is not found as local file.
+            val options = BitmapFactory.Options()
+            options.inJustDecodeBounds = true
+            BitmapFactory.decodeFile(file.absolutePath, options)
+            options.outWidth to options.outHeight
+        } catch (e:Exception) {
             0 to 0
         }
+    }
+
+    /**
+     * This function is to determine if the image from file should be load as fit center or center crop
+     * If the ratio between width/height is too big, it should be viewed as fit center. Otherwise, it will OOM
+     */
+    @JvmStatic
+    fun shouldLoadFitCenter(file:File) : Boolean {
+        val (width, height) = getWidthAndHeight(file)
+        val min: Int
+        val max: Int
+        if (width > height) {
+            min = height
+            max = width
+        } else {
+            min = width
+            max = height
+        }
+        return min != 0 && max / min > 2
     }
 }

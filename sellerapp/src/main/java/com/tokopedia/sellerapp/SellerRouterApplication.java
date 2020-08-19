@@ -18,6 +18,7 @@ import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp;
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.config.GlobalConfig;
@@ -60,10 +61,10 @@ import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.fcm.AppNotificationReceiver;
 import com.tokopedia.sellerapp.utils.DeferredResourceInitializer;
 import com.tokopedia.sellerapp.utils.FingerprintModelGenerator;
+import com.tokopedia.sellerapp.utils.SellerOnboardingPreference;
+import com.tokopedia.sellerapp.onboarding.SellerOnboardingBridgeActivity;
 import com.tokopedia.sellerhome.SellerHomeRouter;
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
-import com.tokopedia.selleronboarding.activity.SellerOnboardingActivity;
-import com.tokopedia.selleronboarding.utils.OnboardingPreference;
 import com.tokopedia.sellerorder.common.util.SomConsts;
 import com.tokopedia.sellerorder.list.presentation.fragment.SomListFragment;
 import com.tokopedia.talk_old.inboxtalk.view.activity.InboxTalkActivity;
@@ -206,7 +207,7 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getHomeIntent(Context context) {
         UserSessionInterface userSession = new UserSession(context);
-        Intent intent = new Intent(context, SellerOnboardingActivity.class);
+        Intent intent = RouteManager.getIntent(this, ApplinkConstInternalSellerapp.WELCOME);
         if (userSession.isLoggedIn()) {
             if (userSession.hasShop()) {
                 return SellerHomeActivity.createIntent(context);
@@ -224,7 +225,7 @@ public abstract class SellerRouterApplication extends MainApplication
         if (userSession.isLoggedIn()) {
             return SellerHomeActivity.class;
         } else {
-            return SellerOnboardingActivity.class;
+            return SellerOnboardingBridgeActivity.class;
         }
     }
 
@@ -487,7 +488,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void setOnboardingStatus(boolean status) {
-        OnboardingPreference preference = new OnboardingPreference(this);
-        preference.putBoolean(OnboardingPreference.HAS_OPEN_ONBOARDING, status);
+        SellerOnboardingPreference preference = new SellerOnboardingPreference(this);
+        preference.putBoolean(SellerOnboardingPreference.HAS_OPEN_ONBOARDING, status);
     }
 }
