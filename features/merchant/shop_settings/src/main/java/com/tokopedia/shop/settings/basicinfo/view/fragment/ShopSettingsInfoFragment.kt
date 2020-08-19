@@ -169,13 +169,11 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
     }
 
     fun showLoading() {
-//        scrollViewContent.visibility = View.GONE
         viewContent.visibility = View.GONE
         loadingView.visibility = View.VISIBLE
     }
 
     fun hideLoading() {
-//        scrollViewContent.visibility = View.VISIBLE
         viewContent.visibility = View.VISIBLE
         loadingView.visibility = View.GONE
     }
@@ -336,7 +334,6 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
         shopStatusModel?.let {
             container_power_merchant_official_store.visibility = View.GONE
             container_regular_merchant.visibility = View.VISIBLE
-            iv_logo_power_merchant.visibility = View.GONE
             tv_regular_merchant_type.text = getString(com.tokopedia.design.R.string.label_regular_merchant)
         }
     }
