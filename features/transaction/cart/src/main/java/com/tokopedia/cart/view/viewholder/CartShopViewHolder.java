@@ -58,6 +58,8 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
 
     private Typography separatorPreOrder;
     private Label labelPreOrder;
+    private Typography separatorIncident;
+    private Label labelIncident;
     private Typography separatorFreeShipping;
     private ImageView imgFreeShipping;
     private Label labelFulfillment;
@@ -94,6 +96,8 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
 
         separatorPreOrder = itemView.findViewById(R.id.separator_pre_order);
         labelPreOrder = itemView.findViewById(R.id.label_pre_order);
+        separatorIncident = itemView.findViewById(R.id.separator_incident);
+        labelIncident = itemView.findViewById(R.id.label_incident);
         separatorFreeShipping = itemView.findViewById(R.id.separator_free_shipping);
         imgFreeShipping = itemView.findViewById(R.id.img_free_shipping);
         labelFulfillment = itemView.findViewById(R.id.label_fulfillment);
@@ -183,6 +187,7 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
         }
 
         renderPreOrder(cartShopHolderData);
+        renderIncidentLabel(cartShopHolderData);
         renderFreeShipping(cartShopHolderData);
     }
 
@@ -289,6 +294,17 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
         } else {
             labelPreOrder.setVisibility(View.GONE);
             separatorPreOrder.setVisibility(View.GONE);
+        }
+    }
+
+    private void renderIncidentLabel(CartShopHolderData cartShopHolderData) {
+        if (!TextUtils.isEmpty(cartShopHolderData.getShopGroupAvailableData().getIncidentInfo())) {
+            labelIncident.setText(cartShopHolderData.getShopGroupAvailableData().getIncidentInfo());
+            labelIncident.setVisibility(View.VISIBLE);
+            separatorIncident.setVisibility(View.VISIBLE);
+        } else {
+            labelIncident.setVisibility(View.GONE);
+            separatorIncident.setVisibility(View.GONE);
         }
     }
 

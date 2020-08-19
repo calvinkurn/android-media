@@ -38,7 +38,8 @@ data class ShopGroupAvailableData(
         var totalItem: Int = 0,
 
         var preOrderInfo: String = "",
-        var freeShippingBadgeUrl: String = ""
+        var freeShippingBadgeUrl: String = "",
+        var incidentInfo: String = ""
 
 ) : Parcelable {
 

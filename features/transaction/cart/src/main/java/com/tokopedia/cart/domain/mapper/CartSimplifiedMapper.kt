@@ -101,7 +101,7 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
 
             it.preOrderInfo = if (availableGroup.shipmentInformation.preorder.isPreorder) availableGroup.shipmentInformation.preorder.duration else ""
             it.freeShippingBadgeUrl = if (availableGroup.shipmentInformation.freeShipping.eligible) availableGroup.shipmentInformation.freeShipping.badgeUrl else ""
-
+            it.incidentInfo = availableGroup.shop.shopAlertMessage
             it
         }
     }
