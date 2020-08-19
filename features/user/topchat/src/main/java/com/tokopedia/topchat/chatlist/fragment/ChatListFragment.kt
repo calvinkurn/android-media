@@ -450,7 +450,7 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
     }
 
     override fun getAdapterTypeFactory(): ChatListTypeFactoryImpl {
-        return ChatListTypeFactoryImpl(this)
+        return ChatListTypeFactoryImpl(this, chatListAnalytics)
     }
 
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory> {
@@ -634,6 +634,7 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
         var image = ""
         var ctaText = ""
         var ctaApplink = ""
+        var isTopAds = false
         activity?.let {
             when (sightTag) {
                 PARAM_TAB_SELLER -> {
@@ -642,6 +643,7 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
                     image = CHAT_SELLER_EMPTY
                     ctaText = it.getString(R.string.title_topchat_manage_product)
                     ctaApplink = ApplinkConstInternalSellerapp.CENTRALIZED_PROMO + "?redirect_to_sellerapp=true"
+                    isTopAds = true
                 }
                 PARAM_TAB_USER -> {
                     title = it.getString(R.string.title_topchat_empty_chat)
@@ -665,7 +667,7 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
             }
         }
 
-        return EmptyChatModel(title, subtitle, image, ctaText, ctaApplink)
+        return EmptyChatModel(title, subtitle, image, ctaText, ctaApplink, isTopAds)
     }
 
     override fun onSwipeRefresh() {
