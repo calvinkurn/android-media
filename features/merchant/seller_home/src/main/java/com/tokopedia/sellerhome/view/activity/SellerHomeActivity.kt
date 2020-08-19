@@ -30,6 +30,7 @@ import com.tokopedia.sellerhome.SellerHomeRouter
 import com.tokopedia.sellerhome.analytic.NavigationTracking
 import com.tokopedia.sellerhome.analytic.TrackingConstant
 import com.tokopedia.sellerhome.analytic.performance.HomeLayoutLoadTimeMonitoring
+import com.tokopedia.sellerhome.analytic.performance.SellerHomeLoadTimeMonitoringListener
 import com.tokopedia.sellerhome.common.DeepLinkHandler
 import com.tokopedia.sellerhome.common.FragmentType
 import com.tokopedia.sellerhome.common.PageFragment
@@ -86,6 +87,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
     private var performanceMonitoringSellerHomelayout: PerformanceMonitoring? = null
 
     var performanceMonitoringSellerHomeLayoutPlt: HomeLayoutLoadTimeMonitoring? = null
+    var sellerHomeLoadTimeMonitoringListener: SellerHomeLoadTimeMonitoringListener? = null
 
     private var shouldMoveToReview: Boolean = false
     private var shouldMoveToCentralizedPromo: Boolean = false
@@ -370,6 +372,11 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
             if (it is Success) {
                 navigator?.run {
                     val shopName = it.data.shopName
+                    val shopAvatar = it.data.shopAvatar
+
+                    // update userSession
+                    userSession.shopName = shopName
+                    userSession.shopAvatar = shopAvatar
 
                     if(isHomePageSelected()) {
                         supportActionBar?.title = shopName

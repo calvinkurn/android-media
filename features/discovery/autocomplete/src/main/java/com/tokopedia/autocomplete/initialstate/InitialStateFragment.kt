@@ -143,15 +143,8 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
     }
 
     override fun onItemClicked(applink: String, webUrl: String) {
-        dropKeyBoard()
         route(applink, presenter.getSearchParameter())
         finish()
-    }
-
-    override fun dropKeyBoard() {
-        if (activity != null && activity is AutoCompleteActivity) {
-            (activity as AutoCompleteActivity).dropKeyboard()
-        }
     }
 
     override fun onRecentSearchItemClicked(item: BaseItemInitialStateSearch, adapterPosition: Int) {
