@@ -318,11 +318,7 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
     }
 
     private fun setupPaymentInstallmentError(selectedTerm: OrderPaymentInstallmentTerm) {
-        if (selectedTerm.isEnable) {
-            tvInstallmentDetail?.alpha = 1.0f
-            tvInstallmentErrorMessage?.gone()
-            tvInstallmentErrorAction?.gone()
-        } else {
+        if (selectedTerm.isError) {
             tvInstallmentDetail?.alpha = 0.5f
             tvInstallmentErrorMessage?.text = view.context.getString(R.string.lbl_installment_error)
             tvInstallmentErrorAction?.text = view.context.getString(R.string.lbl_change_template)
@@ -331,6 +327,10 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
             }
             tvInstallmentErrorMessage?.visible()
             tvInstallmentErrorAction?.visible()
+        } else {
+            tvInstallmentDetail?.alpha = 1.0f
+            tvInstallmentErrorMessage?.gone()
+            tvInstallmentErrorAction?.gone()
         }
     }
 

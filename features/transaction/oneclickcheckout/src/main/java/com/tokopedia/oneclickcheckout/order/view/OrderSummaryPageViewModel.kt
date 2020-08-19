@@ -902,19 +902,21 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             if (pref.isValid && _orderShipment.getRealShipperProductId() > 0) {
                 val param = generateUpdateCartParam()
                 if (param != null) {
-                    OccIdlingResource.increment()
-                    updateCartOccUseCase.execute(param, {
-                        finalValidateUse(product, shop, pref, onSuccessCheckout, skipCheckIneligiblePromo)
-                        OccIdlingResource.decrement()
-                    }, { throwable: Throwable ->
-                        if (throwable is MessageErrorException && throwable.message != null) {
-                            globalEvent.value = OccGlobalEvent.TriggerRefresh(errorMessage = throwable.message
-                                    ?: DEFAULT_ERROR_MESSAGE)
-                        } else {
-                            globalEvent.value = OccGlobalEvent.TriggerRefresh(throwable = throwable)
-                        }
-                        OccIdlingResource.decrement()
-                    })
+                    if (validateSelectedTerm()) {
+                        OccIdlingResource.increment()
+                        updateCartOccUseCase.execute(param, {
+                            finalValidateUse(product, shop, pref, onSuccessCheckout, skipCheckIneligiblePromo)
+                            OccIdlingResource.decrement()
+                        }, { throwable: Throwable ->
+                            if (throwable is MessageErrorException && throwable.message != null) {
+                                globalEvent.value = OccGlobalEvent.TriggerRefresh(errorMessage = throwable.message
+                                        ?: DEFAULT_ERROR_MESSAGE)
+                            } else {
+                                globalEvent.value = OccGlobalEvent.TriggerRefresh(throwable = throwable)
+                            }
+                            OccIdlingResource.decrement()
+                        })
+                    }
                     return
                 }
             }
@@ -1376,7 +1378,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             orderPayment.value = _orderPayment
             orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_PAYMENT_OVO_BALANCE)
         } else {
-            if (payment.creditCard.selectedTerm?.isEnable == false && currentState == ButtonBayarState.NORMAL) {
+            if (payment.creditCard.selectedTerm?.isError == true && currentState == ButtonBayarState.NORMAL) {
                 currentState = ButtonBayarState.DISABLE
             }
             _orderPayment = payment.copy(isCalculationError = false)
@@ -1422,6 +1424,9 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         for (i in installments.lastIndex downTo 0) {
             val installment = installments[i]
             installment.isEnable = installment.minAmount <= (subTotal - discount)
+            if (installment.isError) {
+                installment.isError = !installment.isEnable
+            }
             installment.fee = calculateMdrFee(subTotal, installment.mdr, subsidize, installment.mdrSubsidize)
             val total = subTotal + installment.fee - discount
             installment.monthlyAmount = if (installment.term > 0) ceil(total / installment.term) else total
@@ -1455,7 +1460,10 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         }
         updateCartOccUseCase.execute(param, {
             val availableTerms = creditCard.availableTerms
-            availableTerms.forEach { it.isSelected = it.term == selectedInstallmentTerm.term }
+            availableTerms.forEach {
+                it.isSelected = it.term == selectedInstallmentTerm.term
+                it.isError = false
+            }
             _orderPayment = _orderPayment.copy(creditCard = creditCard.copy(selectedTerm = selectedInstallmentTerm, availableTerms = availableTerms))
             orderTotal.value = orderTotal.value.copy(buttonState = if (shouldButtonStateEnable(_orderShipment)) ButtonBayarState.NORMAL else ButtonBayarState.DISABLE)
             calculateTotal()
@@ -1489,6 +1497,22 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 globalEvent.value = OccGlobalEvent.Error(throwable)
             }
         })
+    }
+
+    private fun validateSelectedTerm(): Boolean {
+        val creditCard = _orderPayment.creditCard
+        val selectedTerm = creditCard.selectedTerm
+        if (selectedTerm != null && !selectedTerm.isEnable) {
+            val availableTerms = creditCard.availableTerms
+            availableTerms.forEach { it.isError = true }
+            selectedTerm.isError = true
+            _orderPayment = _orderPayment.copy(creditCard = creditCard.copy(selectedTerm = selectedTerm, availableTerms = availableTerms))
+            orderPayment.value = _orderPayment
+            orderTotal.value = orderTotal.value.copy(buttonState = ButtonBayarState.DISABLE)
+            globalEvent.value = OccGlobalEvent.Error(errorMessage = INSTALLMENT_INVALID_MIN_AMOUNT)
+            return false
+        }
+        return true
     }
 
     override fun onCleared() {
@@ -1570,6 +1594,8 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
         const val OVO_GATEWAY_CODE = "OVO"
         const val OVO_INSUFFICIENT_ERROR_MESSAGE = "OVO Cash kamu tidak cukup. Silahkan pilih pembayaran lain."
+
+        const val INSTALLMENT_INVALID_MIN_AMOUNT = "Oops, tidak bisa bayar dengan cicilan karena min. pembeliannya kurang."
 
         private const val TRANSACTION_ID_KEY = "transaction_id"
     }

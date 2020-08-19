@@ -93,6 +93,7 @@ data class OrderPaymentInstallmentTerm(
         val minAmount: Long = 0,
         var isSelected: Boolean = false,
         var isEnable: Boolean = false,
+        var isError: Boolean = false,
         var fee: Double = 0.0,
         var monthlyAmount: Double = 0.0
 )
