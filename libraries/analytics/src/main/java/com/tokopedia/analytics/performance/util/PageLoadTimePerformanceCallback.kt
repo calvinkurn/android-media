@@ -105,9 +105,9 @@ open class PageLoadTimePerformanceCallback(
             Trace.beginSection(sectionName)
         }
 
-        if(GlobalConfig.ENABLE_DEBUG_TRACE && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+        //if(GlobalConfig.ENABLE_DEBUG_TRACE && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
             Debug.startMethodTracingSampling(sectionName , 50 * 1024 * 1024 , 500);
-        }
+        //}
     }
 
     private fun endSystraceSection() {
@@ -115,8 +115,8 @@ open class PageLoadTimePerformanceCallback(
             Trace.endSection()
         }
 
-        if(GlobalConfig.ENABLE_DEBUG_TRACE && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+        //if(GlobalConfig.ENABLE_DEBUG_TRACE && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
             Debug.stopMethodTracing();
-        }
+        //}
     }
 }
