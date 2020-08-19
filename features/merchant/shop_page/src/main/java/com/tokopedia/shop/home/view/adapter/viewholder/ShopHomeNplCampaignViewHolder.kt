@@ -123,17 +123,17 @@ class ShopHomeNplCampaignViewHolder(
 
     private fun setBannerImage(model: ShopHomeNewProductLaunchCampaignUiModel) {
         val statusCampaign = model.data?.firstOrNull()?.statusCampaign.orEmpty()
-        val selectedBannerType = when (statusCampaign.toLowerCase()) {
-            StatusCampaign.UPCOMING.statusCampaign.toLowerCase() -> BannerType.UPCOMING.bannerType
-            StatusCampaign.ONGOING.statusCampaign.toLowerCase() -> BannerType.LIVE.bannerType
-            StatusCampaign.FINISHED.statusCampaign.toLowerCase() -> BannerType.FINISHED.bannerType
+        val selectedBannerType = when {
+            isStatusCampaignUpcoming(statusCampaign) -> BannerType.UPCOMING.bannerType
+            isStatusCampaignOngoing(statusCampaign) -> BannerType.LIVE.bannerType
+            isStatusCampaignFinished(statusCampaign) -> BannerType.FINISHED.bannerType
             else -> ""
         }
         val bannerUrl = model.data?.firstOrNull()?.bannerList?.firstOrNull {
-            it.bannerType.toLowerCase() == selectedBannerType.toLowerCase()
+            it.bannerType.equals(selectedBannerType, true)
         }?.imageUrl.orEmpty()
         itemView.banner_background?.apply {
-            layoutParams.height = if (statusCampaign.toLowerCase() == StatusCampaign.FINISHED.statusCampaign.toLowerCase()) {
+            layoutParams.height = if (isStatusCampaignFinished(statusCampaign)) {
                 adjustViewBounds = true
                 ConstraintLayout.LayoutParams.WRAP_CONTENT
             } else {
@@ -178,7 +178,7 @@ class ShopHomeNplCampaignViewHolder(
         }
     }
 
-    private fun checkRemindMeLoading(model: ShopHomeNewProductLaunchCampaignUiModel){
+    private fun checkRemindMeLoading(model: ShopHomeNewProductLaunchCampaignUiModel) {
         if (model.data?.firstOrNull()?.showRemindMeLoading == true) {
             itemView.image_notification?.hide()
             itemView.text_remind_me?.hide()
@@ -199,20 +199,20 @@ class ShopHomeNplCampaignViewHolder(
 
     private fun setTimer(model: ShopHomeNewProductLaunchCampaignUiModel) {
         val statusCampaign = model.data?.firstOrNull()?.statusCampaign ?: ""
-        if (statusCampaign.toLowerCase() != StatusCampaign.FINISHED.statusCampaign.toLowerCase()  && statusCampaign.isNotEmpty()) {
+        if (!isStatusCampaignFinished(statusCampaign) && statusCampaign.isNotEmpty()) {
             val timeDescription = model.data?.firstOrNull()?.timeDescription ?: ""
             val timeCounter = model.data?.firstOrNull()?.timeCounter ?: ""
             itemView.text_time_description?.text = timeDescription
             val currentTime = Date(System.currentTimeMillis()).time
             itemView.layout_timer?.show()
             if (timeCounter.toLong() != 0L) {
-                val remainingMilliseconds = when (statusCampaign.toLowerCase()) {
-                    StatusCampaign.UPCOMING.statusCampaign.toLowerCase() -> {
+                val remainingMilliseconds = when {
+                    isStatusCampaignUpcoming(statusCampaign) -> {
                         val startDate = DateHelper.getDateFromString(model.data?.firstOrNull()?.startDate
                                 ?: "").time
                         startDate - currentTime
                     }
-                    StatusCampaign.ONGOING.statusCampaign.toLowerCase() -> {
+                    isStatusCampaignOngoing(statusCampaign) -> {
                         val endDate = DateHelper.getDateFromString(model.data?.firstOrNull()?.endDate
                                 ?: "").time
                         endDate - currentTime
@@ -253,7 +253,7 @@ class ShopHomeNplCampaignViewHolder(
             totalNotifyWording: String,
             statusCampaign: String
     ) {
-        if (totalNotifyWording.isEmpty() || statusCampaign.toLowerCase() == StatusCampaign.FINISHED.statusCampaign.toLowerCase()) {
+        if (totalNotifyWording.isEmpty() || isStatusCampaignFinished(statusCampaign)) {
             itemView.text_description?.text = ""
             itemView.text_description?.hide()
         } else {
@@ -266,15 +266,16 @@ class ShopHomeNplCampaignViewHolder(
     private fun setCta(model: ShopHomeNewProductLaunchCampaignUiModel) {
         val ctaText = model.header.ctaText
         itemView.text_see_all?.apply {
-            if (ctaText.isNotEmpty()) {
+            val statusCampaign = model.data?.firstOrNull()?.statusCampaign.orEmpty()
+            if (ctaText.isEmpty() || isStatusCampaignFinished(statusCampaign)) {
+                text = ""
+                hide()
+            } else {
                 text = ctaText
                 setOnClickListener {
                     shopHomeCampaignNplWidgetListener.onClickCtaCampaignNplWidget(model)
                 }
                 show()
-            } else {
-                text = ""
-                hide()
             }
         }
     }
@@ -292,27 +293,40 @@ class ShopHomeNplCampaignViewHolder(
 
     private fun setTnc(title: String, model: ShopHomeNewProductLaunchCampaignUiModel) {
         itemView.image_tnc?.apply {
-            if (title.isNotEmpty()) {
+            val statusCampaign = model.data?.firstOrNull()?.statusCampaign.orEmpty()
+            if (title.isEmpty() || isStatusCampaignFinished(statusCampaign)) {
+                hide()
+            } else {
                 show()
                 setOnClickListener {
                     shopHomeCampaignNplWidgetListener.onClickTncCampaignNplWidget(model)
                 }
-            } else {
-                hide()
             }
         }
     }
 
     private fun setTitle(title: String) {
-        if (title.isNotEmpty()) {
-            itemView.text_title?.text = title
-            itemView.text_title?.show()
-            itemView.image_tnc?.show()
-        } else {
+        if (title.isEmpty()) {
             itemView.text_title?.text = ""
             itemView.text_title?.hide()
             itemView.image_tnc?.hide()
+        } else {
+            itemView.text_title?.text = title
+            itemView.text_title?.show()
+            itemView.image_tnc?.show()
         }
+    }
+
+    private fun isStatusCampaignFinished(statusCampaign: String): Boolean {
+        return statusCampaign.equals(StatusCampaign.FINISHED.statusCampaign, true)
+    }
+
+    private fun isStatusCampaignOngoing(statusCampaign: String): Boolean {
+        return statusCampaign.equals(StatusCampaign.ONGOING.statusCampaign, true)
+    }
+
+    private fun isStatusCampaignUpcoming(statusCampaign: String): Boolean {
+        return statusCampaign.equals(StatusCampaign.UPCOMING.statusCampaign, true)
     }
 
 }
