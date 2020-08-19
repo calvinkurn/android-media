@@ -40,6 +40,9 @@ class CartItemDecoration : RecyclerView.ItemDecoration() {
                 outRect.top = context?.resources?.getDimension(R.dimen.dp_6)?.toInt() ?: 0
                 outRect.bottom = verticalSpaceHeight
             }
+            is DisabledAccordionViewHolder -> {
+                outRect.top = context?.resources?.getDimension(R.dimen.dp_6)?.toInt() ?: 0
+            }
             else -> outRect.bottom = verticalSpaceHeight
         }
     }

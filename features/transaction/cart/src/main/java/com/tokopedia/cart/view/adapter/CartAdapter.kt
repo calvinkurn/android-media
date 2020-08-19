@@ -301,6 +301,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
             is DisabledItemHeaderHolderData -> DisabledItemHeaderViewHolder.LAYOUT
             is DisabledReasonHolderData -> DisabledReasonViewHolder.LAYOUT
             is DisabledShopHolderData -> DisabledShopViewHolder.LAYOUT
+            is DisabledAccordionHolderData -> DisabledAccordionViewHolder.LAYOUT
             else -> super.getItemViewType(position)
         }
     }
@@ -390,6 +391,12 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                         .inflate(DisabledShopViewHolder.LAYOUT, parent, false)
                 return DisabledShopViewHolder(view, actionListener)
             }
+            DisabledAccordionViewHolder.LAYOUT -> {
+                val view = LayoutInflater.from(parent.context)
+                        .inflate(DisabledAccordionViewHolder.LAYOUT, parent, false)
+                return DisabledAccordionViewHolder(view, actionListener)
+            }
+
             else -> throw RuntimeException("No view holder type found")
         }
 
@@ -464,6 +471,10 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                 val data = cartDataList[position] as DisabledCartItemHolderData
                 (holder as DisabledCartItemViewHolder).bind(data)
             }
+            viewType == DisabledAccordionViewHolder.LAYOUT -> {
+                val data = cartDataList[position] as DisabledAccordionHolderData
+                (holder as DisabledAccordionViewHolder).bind(data)
+            }
         }
     }
 
@@ -531,6 +542,10 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
 
     fun addNotAvailableProduct(disabledCartItemHolderData: DisabledCartItemHolderData) {
         cartDataList.add(disabledCartItemHolderData)
+    }
+
+    fun addNotAvailableAccordion(accordionHolderData: DisabledAccordionHolderData) {
+        cartDataList.add(accordionHolderData)
     }
 
     fun setAllShopSelected(selected: Boolean) {
@@ -1130,5 +1145,13 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         val recommendationList = cartDataList.subList(firstRecommendationItemIndex, lastIndex)
 
         return recommendationList as List<CartRecommendationItemHolderData>
+    }
+
+    fun collapseOrExpandDisabledItemAccordion(data: DisabledAccordionHolderData) {
+        data.isCollapsed = !data.isCollapsed
+        val index = cartDataList.indexOf(data)
+        if (index > 0) {
+            notifyItemChanged(index)
+        }
     }
 }

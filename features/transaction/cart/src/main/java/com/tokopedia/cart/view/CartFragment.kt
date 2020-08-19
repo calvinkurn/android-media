@@ -201,6 +201,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private var isKeyboardOpened = false
     private var initialPromoButtonPosition = 0f
     private var recommendationPage = 1
+    private var accordionCollapseState = false
 
     companion object {
 
@@ -2045,6 +2046,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     }
                 }
             }
+
+            cartAdapter.addNotAvailableAccordion(DisabledAccordionHolderData(accordionCollapseState))
         }
     }
 
@@ -2998,5 +3001,13 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         val url = "${recommendationItem.clickUrl}&click_source=ATC_direct_click";
 
         activity?.let { TopAdsUrlHitter(CartFragment::class.qualifiedName).hitClickUrl(it, url, productId, productName, imageUrl) }
+    }
+
+    override fun onAccordionClicked(data: DisabledAccordionHolderData) {
+        accordionCollapseState = data.isCollapsed
+
+        cartAdapter.collapseOrExpandDisabledItemAccordion(data)
+
+        // Todo : collapse / expand data
     }
 }

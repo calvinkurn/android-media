@@ -23,11 +23,15 @@ class DisabledAccordionViewHolder(itemView: View, val actionListener: ActionList
 
     fun bind(data: DisabledAccordionHolderData) {
         if (data.isCollapsed) {
-            imgChevron.rotation = 180f
-            textAccordion.text = "Tampilkan lebih Banyak"
-        } else {
             imgChevron.rotation = 0f
+            textAccordion.text = "Tampilkan Semua"
+        } else {
+            imgChevron.rotation = 180f
             textAccordion.text = "Tampilkan lebih Sedikit"
+        }
+
+        itemView.setOnClickListener {
+            actionListener?.onAccordionClicked(data)
         }
     }
 }

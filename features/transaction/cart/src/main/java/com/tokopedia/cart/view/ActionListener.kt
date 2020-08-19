@@ -2,6 +2,7 @@ package com.tokopedia.cart.view
 
 import com.tokopedia.cart.domain.model.cartlist.CartItemData
 import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
+import com.tokopedia.cart.view.uimodel.DisabledAccordionHolderData
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 
 /**
@@ -73,4 +74,6 @@ interface ActionListener {
     fun onShowTickerTobacco()
 
     fun onCartShopNameChecked(isAllChecked: Boolean)
+
+    fun onAccordionClicked(data: DisabledAccordionHolderData)
 }
