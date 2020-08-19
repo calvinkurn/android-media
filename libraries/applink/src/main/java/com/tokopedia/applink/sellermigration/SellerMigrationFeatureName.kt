@@ -13,13 +13,16 @@ import androidx.annotation.StringDef
     SellerMigrationFeatureName.FEATURE_STOCK_REMINDER,
     SellerMigrationFeatureName.FEATURE_SHOP_CASHBACK_VOUCHER,
     SellerMigrationFeatureName.FEATURE_SET_VARIANT,
+    SellerMigrationFeatureName.FEATURE_EDIT_PRODUCT_CASHBACK,
     SellerMigrationFeatureName.FEATURE_INSTAGRAM_IMPORT,
     SellerMigrationFeatureName.FEATURE_ADS,
     SellerMigrationFeatureName.FEATURE_ADS_DETAIL,
     SellerMigrationFeatureName.FEATURE_REVIEW_TEMPLATE_AND_STATISTICS,
     SellerMigrationFeatureName.FEATURE_SHOP_INSIGHT,
     SellerMigrationFeatureName.FEATURE_MARKET_INSIGHT,
-    SellerMigrationFeatureName.FEATURE_SELLER_CHAT
+    SellerMigrationFeatureName.FEATURE_SELLER_CHAT,
+    SellerMigrationFeatureName.FEATURE_POST_FEED,
+    SellerMigrationFeatureName.FEATURE_BALANCE
 ])
 annotation class SellerMigrationFeatureName {
     companion object {

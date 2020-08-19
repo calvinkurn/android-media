@@ -1,6 +1,5 @@
 package com.tokopedia.seller_migration_common.presentation.adapter
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,6 +20,6 @@ class SellerMigrationBenefitPointAdapter(var benefitPoints: List<CharSequence>):
     override fun getItemCount(): Int = benefitPoints.size
 
     override fun onBindViewHolder(holder: SellerMigrationBenefitPointViewHolder, position: Int) {
-        holder.itemView.tv_seller_migration_benefit_point?.text = benefitPoints[position]
+        holder.itemView.tv_seller_migration_benefit_point?.text = benefitPoints.getOrNull(position) ?: ""
     }
 }
