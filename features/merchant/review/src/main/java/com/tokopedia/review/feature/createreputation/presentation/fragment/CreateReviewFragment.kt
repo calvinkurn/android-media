@@ -426,6 +426,8 @@ class CreateReviewFragment : BaseDaggerFragment(),
     private fun setReputation(reputation: Reputation, shopName: String) {
         with(reputation) {
             if(locked) {
+                createReviewScore.hide()
+                createReviewScoreDivider.hide()
                 return
             } else {
                 createReviewScore.apply {

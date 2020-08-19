@@ -241,15 +241,18 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
     private fun editReviewWithImage(feedbackId: Int, reputationId: Int, productId: Int, shopId: Int, reputationScore: Int, rating: Int,
                                     reviewText: String, isAnonymous: Boolean, listOfImages: List<String>) {
         val uploadIdList: ArrayList<String> = ArrayList()
+        val existingImages = getOriginalImages()
         launchCatchError(block = {
             val response = withContext(coroutineDispatcherProvider.io()) {
                 repeat(listOfImages.size) {
-                    val imageId = uploadImageAndGetId(listOfImages[it])
-                    if(imageId.isEmpty()) {
-                        _submitReviewResult.postValue(Fail(Throwable()))
-                        this@launchCatchError.cancel()
+                    if(!existingImages.contains(listOfImages[it])) {
+                        val imageId = uploadImageAndGetId(listOfImages[it])
+                        if(imageId.isEmpty()) {
+                            _submitReviewResult.postValue(Fail(Throwable()))
+                            this@launchCatchError.cancel()
+                        }
+                        uploadIdList.add(imageId)
                     }
-                    uploadIdList.add(imageId)
                 }
                 editReviewUseCase.setParams(feedbackId, reputationId, productId, shopId, reputationScore, rating, reviewText, isAnonymous, getOriginalImages(), uploadIdList)
                 editReviewUseCase.executeOnBackground()
