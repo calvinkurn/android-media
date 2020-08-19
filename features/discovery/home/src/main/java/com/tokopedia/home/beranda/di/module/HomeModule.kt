@@ -79,7 +79,7 @@ class HomeModule {
 
     @Provides
     @HomeScope
-    fun provideHomeVisitableFactory(userSessionInterface: UserSessionInterface?, remoteConfig: RemoteConfig): HomeVisitableFactory = HomeVisitableFactoryImpl(userSessionInterface!!, remoteConfig)
+    fun provideHomeVisitableFactory(userSessionInterface: UserSessionInterface?, remoteConfig: RemoteConfig): HomeVisitableFactory = HomeVisitableFactoryImpl(userSessionInterface!!, remoteConfig, HomeDefaultDataSource())
 
     @HomeScope
     @Provides

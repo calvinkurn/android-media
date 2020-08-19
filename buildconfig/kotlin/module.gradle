@@ -51,6 +51,11 @@ android {
         exclude 'META-INF/LICENSE-notice.md'
         exclude('META-INF/androidx.*.version')
     }
+    lintOptions {
+        abortOnError false
+        xmlReport true
+        htmlReport false
+    }
 }
 
 dependencies {
@@ -103,4 +108,6 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.mockitorCore,     { exclude group: 'net.bytebuddy' } // DexMaker has it"s own MockMaker==============================--
     androidTestImplementation rootProject.ext.testDependencies.mockitorAndroid
     androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
+
+    lintChecks project(rootProject.ext.libraries.lint)
 }

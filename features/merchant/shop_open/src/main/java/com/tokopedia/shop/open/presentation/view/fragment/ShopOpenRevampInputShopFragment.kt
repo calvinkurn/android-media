@@ -27,12 +27,12 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.shop.common.graphql.data.shopopen.ValidateShopDomainSuggestionResult
 import com.tokopedia.shop.open.R
 import com.tokopedia.shop.open.analytic.ShopOpenRevampTracking
 import com.tokopedia.shop.open.common.PageNameConstant
 import com.tokopedia.shop.open.common.TermsAndConditionsLink.URL_PRIVACY_POLICY
 import com.tokopedia.shop.open.common.TermsAndConditionsLink.URL_TNC
-import com.tokopedia.shop.open.data.model.ValidateShopDomainSuggestionResult
 import com.tokopedia.shop.open.di.DaggerShopOpenRevampComponent
 import com.tokopedia.shop.open.di.ShopOpenRevampComponent
 import com.tokopedia.shop.open.di.ShopOpenRevampModule

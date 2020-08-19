@@ -132,6 +132,10 @@ data class SearchProductModel(
             @Expose
             val relatedKeyword: String = "",
 
+            @SerializedName("position")
+            @Expose
+            val position: Int = 0,
+
             @SerializedName("otherRelated")
             @Expose
             val otherRelatedList: List<OtherRelated> = listOf()
@@ -529,6 +533,10 @@ data class SearchProductModel(
             @Expose
             val position: Int = 0,
 
+            @SerializedName("layout")
+            @Expose
+            val layout: String = "",
+
             @SerializedName("options")
             @Expose
             val inspirationCarouselOptions: List<InspirationCarouselOption> = listOf()
@@ -591,7 +599,11 @@ data class SearchProductModel(
 
             @SerializedName("applink")
             @Expose
-            val applink: String = ""
+            val applink: String = "",
+
+            @SerializedName("description")
+            @Expose
+            val description: List<String> = listOf()
     )
 
     data class SearchInspirationCard(

@@ -8,7 +8,6 @@
 
     <string name="product_tab_title">Produk</string>
     <string name="shop_tab_title">Toko</string>
-    <string name="title_profile">Profil</string>
 
     <string name="title_category">Kategori</string>
 
@@ -37,7 +36,6 @@
     <string name="shop_see_shop_button">Lihat Toko</string>
     <string name="shop_apply_filter">Tampilkan %s Toko</string>
 
-    <string name="value_profile_count">%1$s profil</string>
     <string name="empty_search_button_text">Lakukan Pencarian Baru</string>
     <string name="msg_empty_search_with_filter_1">Oops, %s tidak ditemukan :(</string>
 
@@ -51,11 +49,6 @@
     <string name="msg_empty_search_product_content">Coba kata kunci lain atau cek produk rekomendasi di bawah.</string>
     <string name="msg_empty_search_product_content_with_filter">Coba kurangi salah satu filter yang kamu gunakan :</string>
     <string name="msg_empty_search_product_button">Ganti Kata Kunci</string>
-
-    <string name="empty_search_profile_title">Oops, profil nggak ditemukan</string>
-    <string name="empty_search_profile_content">Coba kata kunci lain untuk menemukan profil yang kamu inginkan.</string>
-    <string name="empty_search_profile_button">Ganti Kata Kunci</string>
-    <string name="empty_search_profile_recommendation_title">Profil rekomendasi</string>
 
     <string name="post_count_value">%1$s post</string>
     <string name="btn_following_text">Following</string>
@@ -76,8 +69,9 @@
 
     <string name="inspiration_carousel_title">Pilih sesuai budget-mu</string>
     <string name="inspiration_carousel_option_title">Rp20,08 jt - Rp21,05 jt</string>
-    <string name="inspiration_carousel_option_view_all">Lihat semua</string>
+    <string name="inspiration_carousel_option_view_all">Lihat Semua</string>
     <string name="inspiration_carousel_product_name">Xiaomi Note 8 4GB/64GB [4GB-64GB] Garansi TAM Original Quality</string>
+    <string name="inspiration_carousel_product_description">Layar 6.22 in.\nKamera 12MP\nRAM 3/4GB\nBaterai 5000mAH</string>
     <string name="inspiration_carousel_product_price">Rp50.000.000</string>
     <string name="inspiration_carousel_review_count">(60)</string>
 
