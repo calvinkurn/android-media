@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName
 import com.tokopedia.discovery2.datamapper.discoveryPageData
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.topads.sdk.domain.model.CpmModel
+import java.util.HashMap
 
 data class ComponentsItem(
 
@@ -46,6 +47,8 @@ data class ComponentsItem(
         var parentComponentId: String = "",
         var cpmData: CpmModel? = null,
         var chipSelectionData: DataItem? = null,
+        var selectedFilters : HashMap<String, String>? = null,
+        var selectedSort : HashMap<String, String>? = null,
         var chipSelectionChange: Boolean = false,
         var couponDetailClicked: Boolean = false,
         var couponAppliedClicked: Boolean = false,
