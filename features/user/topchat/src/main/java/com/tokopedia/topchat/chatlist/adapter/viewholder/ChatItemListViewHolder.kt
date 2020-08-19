@@ -98,7 +98,6 @@ class ChatItemListViewHolder(
 
     private fun bindName(chat: ItemChatListPojo) {
         userName.text = MethodChecker.fromHtml(chat.name)
-        userName.setWeight(Typography.REGULAR)
     }
 
     private fun bindProfilePicture(chat: ItemChatListPojo) {
@@ -235,6 +234,7 @@ class ChatItemListViewHolder(
 
     private fun bindMessageState(chat: ItemChatListPojo) {
         message.text = MethodChecker.fromHtml(chat.lastReplyMessage)
+        message.setLines(2)
         message.setTypeface(null, NORMAL)
         message.setTextColor(MethodChecker.getColor(message.context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))
     }
@@ -247,7 +247,6 @@ class ChatItemListViewHolder(
                 unreadCounter.show()
             }
             STATE_CHAT_READ -> {
-                userName.setWeight(Typography.REGULAR)
                 unreadCounter.hide()
             }
         }
@@ -262,11 +261,6 @@ class ChatItemListViewHolder(
             OFFICIAL_TAG -> {
                 label.text = chat.tag
                 label.setLabelType(Label.GENERAL_LIGHT_BLUE)
-                label.show()
-            }
-            SELLER_TAG -> {
-                label.text = chat.tag
-                label.setLabelType(Label.GENERAL_LIGHT_GREEN)
                 label.show()
             }
             else -> label.hide()
