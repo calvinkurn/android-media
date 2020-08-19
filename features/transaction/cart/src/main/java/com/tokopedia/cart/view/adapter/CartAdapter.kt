@@ -5,26 +5,25 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.cart.R
+import com.tokopedia.cart.domain.model.cartlist.CartItemData
+import com.tokopedia.cart.domain.model.cartlist.ShopGroupAvailableData
+import com.tokopedia.cart.view.ActionListener
+import com.tokopedia.cart.view.uimodel.*
+import com.tokopedia.cart.view.viewholder.*
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData
+import com.tokopedia.purchase_platform.common.feature.insurance.InsuranceCartShopViewHolder
+import com.tokopedia.purchase_platform.common.feature.insurance.InsuranceItemActionListener
+import com.tokopedia.purchase_platform.common.feature.insurance.PAGE_TYPE_CART
 import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceCartDigitalProduct
 import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceCartShops
 import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackModel
 import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackViewHolder
-import com.tokopedia.purchase_platform.common.feature.insurance.PAGE_TYPE_CART
-import com.tokopedia.cart.domain.model.cartlist.CartItemData
-import com.tokopedia.cart.domain.model.cartlist.ShopGroupAvailableData
-import com.tokopedia.cart.view.ActionListener
-import com.tokopedia.purchase_platform.common.feature.insurance.InsuranceItemActionListener
-import com.tokopedia.cart.view.uimodel.*
-import com.tokopedia.cart.view.viewholder.*
-import com.tokopedia.purchase_platform.common.feature.insurance.InsuranceCartShopViewHolder
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementActionListener
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementViewHolder
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import rx.subscriptions.CompositeSubscription
-import java.util.*
 import javax.inject.Inject
 import kotlin.math.min
 
@@ -49,6 +48,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
     private var cartWishlistAdapter: CartWishlistAdapter? = null
     private var cartRecentViewAdapter: CartRecentViewAdapter? = null
     private var sendInsuranceImpressionEvent = false
+    private var tmpCollapsedItem = ArrayList<Any>()
 
     var firstCartSectionHeaderPosition: Int = -1
 
@@ -1154,4 +1154,46 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
             notifyItemChanged(index)
         }
     }
+
+    fun collapseDisabledItems() {
+        val tmpCollapsedItem = ArrayList<Any>()
+        var firstIndex = 0
+        for ((index, item) in cartDataList.withIndex()) {
+            if (item is DisabledCartItemHolderData) {
+                firstIndex = index
+                break
+            }
+        }
+        firstIndex += 1
+
+        for (index in firstIndex until cartDataList.size) {
+            val item = cartDataList[index]
+            if (item is DisabledReasonHolderData ||
+                    item is DisabledShopHolderData ||
+                    item is DisabledCartItemHolderData) {
+                tmpCollapsedItem.add(cartDataList[index])
+            }
+        }
+
+        this.tmpCollapsedItem = tmpCollapsedItem
+
+        cartDataList.removeAll(tmpCollapsedItem)
+        notifyItemRangeRemoved(firstIndex, tmpCollapsedItem.size)
+    }
+
+    fun expandDisabledItems() {
+        if (tmpCollapsedItem.isNotEmpty()) {
+            var headerIndex = 0
+            for ((index, item) in cartDataList.withIndex()) {
+                if (item is DisabledCartItemHolderData) {
+                    headerIndex = index
+                    break
+                }
+            }
+            cartDataList.addAll(++headerIndex, tmpCollapsedItem)
+            notifyItemRangeInserted(headerIndex, tmpCollapsedItem.size)
+            tmpCollapsedItem.clear()
+        }
+    }
+
 }

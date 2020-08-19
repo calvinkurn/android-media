@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.cart.R
 import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackViewHolder
 import com.tokopedia.cart.view.viewholder.*
+import java.lang.Exception
 
 /**
  * @author anggaprasetiyo on 06/02/18.
@@ -29,12 +30,16 @@ class CartItemDecoration : RecyclerView.ItemDecoration() {
             is CartSectionHeaderViewHolder -> outRect.top = context?.resources?.getDimension(R.dimen.dp_6)?.toInt() ?: 0
             is ShipmentSellerCashbackViewHolder -> outRect.top = context?.resources?.getDimension(R.dimen.dp_6)?.toInt() ?: 0
             is DisabledReasonViewHolder -> {
-                if (parent.adapter?.getItemViewType(viewHolder.getAdapterPosition() - 1) == DisabledItemHeaderViewHolder.LAYOUT) {
-                    outRect.top = verticalSpaceHeight
-                } else {
-                    outRect.top = context?.resources?.getDimension(R.dimen.dp_6)?.toInt() ?: 0
+                try {
+                    if (parent.adapter?.getItemViewType(viewHolder.getAdapterPosition() - 1) == DisabledItemHeaderViewHolder.LAYOUT) {
+                        outRect.top = verticalSpaceHeight
+                    } else {
+                        outRect.top = context?.resources?.getDimension(R.dimen.dp_6)?.toInt() ?: 0
+                    }
+                    outRect.bottom = verticalSpaceHeight
+                } catch (e: Exception) {
+
                 }
-                outRect.bottom = verticalSpaceHeight
             }
             is DisabledItemHeaderViewHolder -> {
                 outRect.top = context?.resources?.getDimension(R.dimen.dp_6)?.toInt() ?: 0

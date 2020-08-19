@@ -1473,6 +1473,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     override fun renderInitialGetCartListDataSuccess(cartListData: CartListData?) {
         recommendationPage = 1
         cartListData?.let {
+            accordionCollapseState = false
             sendAnalyticsScreenName(screenName)
 
             endlessRecyclerViewScrollListener.resetState()
@@ -3004,10 +3005,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onAccordionClicked(data: DisabledAccordionHolderData) {
-        accordionCollapseState = data.isCollapsed
-
         cartAdapter.collapseOrExpandDisabledItemAccordion(data)
-
-        // Todo : collapse / expand data
+        accordionCollapseState = data.isCollapsed
+        if (data.isCollapsed) {
+            cartAdapter.collapseDisabledItems()
+        } else {
+            cartAdapter.expandDisabledItems()
+        }
     }
 }
