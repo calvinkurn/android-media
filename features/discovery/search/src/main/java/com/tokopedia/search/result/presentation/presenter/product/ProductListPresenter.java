@@ -658,9 +658,30 @@ final class ProductListPresenter
     }
 
     private void getViewToRedirectSearch(SearchProductModel searchProductModel) {
-        String applink = searchProductModel.getSearchProduct().getData().getRedirection().getRedirectApplink();
+        if (searchProductModel.getSearchProduct().getHeader().getResponseCode().equals("9")) {
+            getViewToSendTrackingOnRedirectSearch(searchProductModel);
+        }
 
+        String applink = searchProductModel.getSearchProduct().getData().getRedirection().getRedirectApplink();
         getView().redirectSearchToAnotherPage(applink);
+    }
+
+    private void getViewToSendTrackingOnRedirectSearch(SearchProductModel searchProductModel) {
+        if (getView() == null) return;
+
+        ProductViewModel productViewModel = createProductViewModelWithPosition(searchProductModel);
+        Set<String> categoryIdMapping = new HashSet<>();
+        Set<String> categoryNameMapping = new HashSet<>();
+        String query = getView().getQueryKey();
+
+        if (productViewModel.getProductList().size() > 0) {
+            for (int i = 0; i < productViewModel.getProductList().size(); i++) {
+                categoryIdMapping.add(String.valueOf(productViewModel.getProductList().get(i).getCategoryID()));
+                categoryNameMapping.add(productViewModel.getProductList().get(i).getCategoryName());
+            }
+        }
+
+        getView().sendTrackingGTMEventSearchAttempt(createGeneralSearchTrackingModel(productViewModel, query, categoryIdMapping, categoryNameMapping));
     }
 
     private void getViewToProcessSearchResult(Map<String, Object> searchParameter, SearchProductModel searchProductModel) {
