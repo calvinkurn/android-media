@@ -33,12 +33,12 @@ class FilterSelectionViewHolder(view: View): HotelSearchResultFilterV2Adapter.Fi
         with(itemView) {
             hotel_filter_selection_title.text = filter.displayName
             var hotelFilterItems = filter.options.map {
-                HotelSearchResultFilterAdapter.HotelFilterItem(it, it, filter.name == "star") }
+                HotelSearchResultFilterAdapter.HotelFilterItem(it, it, filter.name == SELECTION_STAR_TYPE) }
 
-            if (filter.name == "star") {
+            if (filter.name == SELECTION_STAR_TYPE) {
                 if (hotelFilterItems.isEmpty()) {
-                    hotelFilterItems = listOf("1", "2", "3", "4", "5").map {
-                        HotelSearchResultFilterAdapter.HotelFilterItem(it, it, filter.name == "star")
+                    hotelFilterItems = listOf(1, 2, 3, 4, 5).map {
+                        HotelSearchResultFilterAdapter.HotelFilterItem(it.toString(), it.toString(), filter.name == SELECTION_STAR_TYPE)
                     }
                 }
                 hotel_filter_selection_rv.layoutManager = SpanningLinearLayoutManager(context, LinearLayoutManager.HORIZONTAL,
@@ -61,5 +61,6 @@ class FilterSelectionViewHolder(view: View): HotelSearchResultFilterV2Adapter.Fi
 
     companion object {
         val LAYOUT = R.layout.layout_hotel_filter_selection
+        const val SELECTION_STAR_TYPE = "star"
     }
 }

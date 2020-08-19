@@ -21,8 +21,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/hotel_12dp"
-        android:layout_marginEnd="@dimen/layout_lvl2"
-        android:layout_marginRight="@dimen/layout_lvl2"
         android:maxHeight="@dimen/spacing_lvl2"
         android:minHeight="@dimen/spacing_lvl1"
         android:paddingStart="@dimen/layout_lvl0"
