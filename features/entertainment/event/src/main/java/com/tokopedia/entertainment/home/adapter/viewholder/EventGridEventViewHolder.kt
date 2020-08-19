@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -14,8 +13,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment
 import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.home.adapter.HomeEventViewHolder
-import com.tokopedia.entertainment.home.adapter.ItemUtilCallback
-import com.tokopedia.entertainment.home.adapter.viewmodel.EventGridViewModel
+import com.tokopedia.entertainment.home.adapter.viewmodel.EventGridModel
 import com.tokopedia.entertainment.home.adapter.viewmodel.EventItemModel
 import com.tokopedia.entertainment.home.analytics.EventHomePageTracking
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -28,7 +26,7 @@ import kotlinx.android.synthetic.main.ent_layout_viewholder_event_grid_adapter_i
 class EventGridEventViewHolder(itemView: View, action: ((data: EventItemModel,
                                                          onSuccess: (EventItemModel) -> Unit,
                                                          onError: (Throwable) -> Unit) -> Unit))
-    : HomeEventViewHolder<EventGridViewModel>(itemView) {
+    : HomeEventViewHolder<EventGridModel>(itemView) {
 
     var itemAdapter = InnerItemAdapter(action)
 
@@ -39,7 +37,7 @@ class EventGridEventViewHolder(itemView: View, action: ((data: EventItemModel,
         }
     }
 
-    override fun bind(element: EventGridViewModel) {
+    override fun bind(element: EventGridModel) {
         itemView.ent_title_card.text = element.title
         itemAdapter.setList(element.items)
         itemView.btn_see_all.setOnClickListener {

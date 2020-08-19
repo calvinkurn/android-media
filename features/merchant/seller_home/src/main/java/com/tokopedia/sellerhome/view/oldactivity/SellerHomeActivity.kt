@@ -120,6 +120,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
                 shouldMoveToCentralizedPromo = false
                 RouteManager.getIntent(this, appLinkToOpen).apply {
                     replaceExtras(this@SellerHomeActivity.intent.extras)
+                    addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                     startActivity(this)
                 }
             }

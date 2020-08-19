@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp;
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst;
 import com.tokopedia.core.SplashScreen;
 import com.tokopedia.core.gcm.Constants;
@@ -18,9 +19,8 @@ import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.utils.timber.TimberWrapper;
+import com.tokopedia.sellerapp.utils.SellerOnboardingPreference;
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
-import com.tokopedia.selleronboarding.activity.SellerOnboardingActivity;
-import com.tokopedia.selleronboarding.utils.OnboardingPreference;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -63,11 +63,13 @@ public class SplashScreenActivity extends SplashScreen {
             boolean isFromMainApp = uri.getBooleanQueryParameter(RouteManager.KEY_REDIRECT_TO_SELLER_APP, false);
             boolean isAutoLogin = uri.getBooleanQueryParameter(KEY_AUTO_LOGIN, false);
             if (isFromMainApp) {
+                String redirectApplink = uri.getQueryParameter(ApplinkConstInternalGlobal.KEY_REDIRECT_SEAMLESS_APPLINK);
+                Intent intent = RouteManager.getIntent(this, uri.toString());
                 if (isAutoLogin && userSession.getUserId().isEmpty()) {
-                    seamlessLogin(true);
+                    ArrayList<String> remainingAppLinks = getIntent().getStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA);
+                    seamlessLogin(true, remainingAppLinks, redirectApplink);
                     return true;
                 }
-                Intent intent = RouteManager.getIntent(this, uri.toString());
                 if (intent != null) {
                     ArrayList<String> remainingAppLinks = getIntent().getStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA);
                     if (remainingAppLinks != null && !remainingAppLinks.isEmpty()) {
@@ -122,24 +124,30 @@ public class SplashScreenActivity extends SplashScreen {
             startActivity(intent);
         } else {
             boolean isAutoLoginSeamless = getIntent().getBooleanExtra(KEY_AUTO_LOGIN, false);
-            seamlessLogin(isAutoLoginSeamless);
+            seamlessLogin(isAutoLoginSeamless, null, "");
         }
         finish();
     }
 
-    private void seamlessLogin(boolean isAutoLoginSeamless) {
-        boolean hasOnboarding = new OnboardingPreference(this)
-                .getBoolean(OnboardingPreference.HAS_OPEN_ONBOARDING, false);
+    private void seamlessLogin(boolean isAutoLoginSeamless, ArrayList<String> remainingApplinks, String redirectApplink) {
+        boolean hasOnboarding = new SellerOnboardingPreference(this)
+                .getBoolean(SellerOnboardingPreference.HAS_OPEN_ONBOARDING);
         Intent intent;
         if (isAutoLoginSeamless){
             intent = RouteManager.getIntent(this, ApplinkConstInternalGlobal.SEAMLESS_LOGIN);
             Bundle b = new Bundle();
             b.putBoolean(KEY_AUTO_LOGIN, true);
+            if(!redirectApplink.isEmpty())
+                b.putString(ApplinkConstInternalGlobal.KEY_REDIRECT_SEAMLESS_APPLINK, redirectApplink);
+
+            if (remainingApplinks != null && !remainingApplinks.isEmpty()) {
+                intent.putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, remainingApplinks);
+            }
             intent.putExtras(b);
         } else if (hasOnboarding) {
             intent = RouteManager.getIntent(this, ApplinkConstInternalGlobal.SEAMLESS_LOGIN);
         } else {
-            intent = new Intent(this, SellerOnboardingActivity.class);
+            intent = RouteManager.getIntent(this, ApplinkConstInternalSellerapp.WELCOME);
         }
         startActivity(intent);
     }
