@@ -293,5 +293,6 @@
     <string name="som_buyer_cancellation_confirm_accept_order_description">Lanjut memproses pesanan tanpa konfirmasi dari pembeli dapat menyebabkan pengajuan komplain</string>
     <string name="som_buyer_cancellation_confirm_accept_order_button">Lanjut Terima</string>
     <string name="som_buyer_cancellation_cancel_button">Kembali</string>
+    <string name="som_header_detail_ticker_cancellation">Dibatalkan karena</string>
 
 </resources>

@@ -14,6 +14,8 @@ import android.text.SpannableString
 import android.text.style.StyleSpan
 import android.view.*
 import android.widget.ProgressBar
+import androidx.core.app.ActivityCompat.startActivityForResult
+import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -986,7 +988,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
             tickerPerformanceInfo?.setTextDescription(getString(R.string.som_shop_performance_info))
             tv_buyer_request_cancel?.text = it.popUp.body
 
-            val reasonBuyer = detailResponse.buyerRequestCancel.reason
+            val reasonBuyer = detailResponse.buyerRequestCancel.reason.split(" - ").last()
             tvBuyerRequestCancelNotes?.text = reasonBuyer.replace("\\n", System.getProperty("line.separator") ?: "")
 
             setupBuyerRequestCancelBottomSheetButtons(this, bottomSheetReqCancel, reasonBuyer, it.popUp.actionButtons)
