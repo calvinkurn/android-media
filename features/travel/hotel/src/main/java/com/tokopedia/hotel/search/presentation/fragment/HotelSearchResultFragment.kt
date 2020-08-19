@@ -334,6 +334,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
                 if (selectedFilters.containsKey(quickFilter.name)) {
                     val selectedFilter = selectedFilters[quickFilter.name] ?: ParamFilterV2()
                     val filterValue = selectedFilter.values.toHashSet()
+                    if (quickFilter.type == FilterV2.FILTER_TYPE_OPEN_RANGE || quickFilter.type == FilterV2.FILTER_TYPE_SELECTION_RANGE) filterValue.clear()
                     filterValue.addAll(quickFilter.values)
                     selectedFilters[quickFilter.name] = ParamFilterV2(quickFilter.name, filterValue.toMutableList())
                 } else {
