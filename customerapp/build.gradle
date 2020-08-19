@@ -29,6 +29,13 @@ def allowDistribution() {
     return "false";
 }
 
+def isDebugTraceEnabled() {
+    if (project.hasProperty('debugTrace') && debugTrace == "true") {
+        return "true";
+    }
+    return "false";
+}
+
 def isPreInstall() {
     if (project.hasProperty('isPreInstall') && isPreInstall == "true") {
         return "true"
@@ -168,6 +175,7 @@ android {
             buildConfigField "String", "PREINSTALL_NAME", "\"\""
             buildConfigField "String", "PREINSTALL_DESC", "\"\""
             buildConfigField "String", "PREINSTALL_SITE", "\"\""
+            buildConfigField "boolean", "ENABLE_DEBUG_TRACE", isDebugTraceEnabled()
             ext.enableHansel = project.hasProperty('hanselEnableDebug')
             ext.enableCrashlytics = false
             FirebasePerformance {
