@@ -216,10 +216,7 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
 
     private fun showBannedTicker() {
         chatBannedSellerTicker?.apply {
-            val description = "Menurut laporan pengguna, kamu mengirimkan chat ofensif " +
-                    "ke penjual. Mohon baca kembali <a href=\"" +
-                    "https://www.tokopedia.com/help/article/toko-saya-dimoderasi" +
-                    "\">Ketentuan Pengguna Tokopedia.</a>"
+            val description = this.context.getString(R.string.desc_topchat_chat_banned_seller)
             show()
             tickerTitle = this.context.getString(R.string.title_topchat_chat_banned_seller)
             setHtmlDescription(description)
