@@ -6,13 +6,15 @@ import com.tokopedia.navigation.R
 import com.tokopedia.navigation.domain.model.InboxTopAdsBannerUiModel
 import com.tokopedia.topads.sdk.listener.TopAdsImageVieWApiResponseListener
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
+import com.tokopedia.topads.sdk.listener.TopAdsImageViewImpressionListener
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.topads.sdk.widget.TopAdsImageView
 
 class InboxTopAdsBannerViewHolder constructor(
         itemView: View?,
         private val topAdsResponseListener: TopAdsImageVieWApiResponseListener,
         private val topAdsClickListener: TopAdsImageViewClickListener
-) : AbstractViewHolder<InboxTopAdsBannerUiModel>(itemView) {
+) : AbstractViewHolder<InboxTopAdsBannerUiModel>(itemView), TopAdsImageViewImpressionListener {
 
     private val topAdsBanner: TopAdsImageView? = itemView?.findViewById(R.id.topads_banner)
 
@@ -37,9 +39,22 @@ class InboxTopAdsBannerViewHolder constructor(
 
     private fun bindTopAds(element: InboxTopAdsBannerUiModel) {
         if (element.hasAd()) return
+        topAdsBanner?.setTopAdsImageViewImpression(this)
         topAdsBanner?.setApiResponseListener(topAdsResponseListener)
         topAdsBanner?.setTopAdsImageViewClick(topAdsClickListener)
         topAdsBanner?.getImageData(SOURCE, ADS_COUNT, DIMEN_ID)
+    }
+
+    override fun onTopAdsImageViewImpression(viewUrl: String) {
+        itemView.context.let {
+            TopAdsUrlHitter(it).hitImpressionUrl(
+                    this::class.java.simpleName,
+                    viewUrl,
+                    "",
+                    "",
+                    ""
+            )
+        }
     }
 
     companion object {
