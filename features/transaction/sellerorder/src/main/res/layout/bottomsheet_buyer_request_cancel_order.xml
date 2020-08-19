@@ -17,7 +17,7 @@
         android:layout_height="wrap_content"
         app:closeButtonVisibility="gone"
         app:tickerShapeType="loose"
-        app:tickerType="announcement" />
+        app:tickerType="information" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_buyer_request_cancel"
