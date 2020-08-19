@@ -39,18 +39,20 @@ class ReviewDetailViewModel @Inject constructor(private val coroutineDispatcherP
 
     init {
         _reviewDetails.addSource(_feedbackId) {
-            getReviewDetails(it)
+            getReviewDetails(it, true)
         }
     }
 
-    private fun getReviewDetails(feedbackId: Int) {
-        _reviewDetails.value = LoadingView()
+    private fun getReviewDetails(feedbackId: Int, isRefresh: Boolean = false) {
+        if(isRefresh) {
+            _reviewDetails.value = LoadingView()
+        }
         launchCatchError(block = {
             val response = withContext(coroutineDispatcherProvider.io()) {
                 productrevGetReviewDetailUseCase.setRequestParams(feedbackId)
                 productrevGetReviewDetailUseCase.executeOnBackground()
             }
-            _reviewDetails.postValue(Success(response.productrevGetReviewDetail))
+            _reviewDetails.postValue(Success(data = response.productrevGetReviewDetail, isRefresh = isRefresh))
         }) {
             _reviewDetails.postValue(Fail(it))
         }
@@ -69,6 +71,7 @@ class ReviewDetailViewModel @Inject constructor(private val coroutineDispatcherP
     }
 
     fun submitReputation(reputationId: Int, reputationScore: Int) {
+        getReviewDetails(feedbackId, false)
         _submitReputationResult.value = LoadingView()
         launchCatchError(block = {
             val response = withContext(coroutineDispatcherProvider.io()) {

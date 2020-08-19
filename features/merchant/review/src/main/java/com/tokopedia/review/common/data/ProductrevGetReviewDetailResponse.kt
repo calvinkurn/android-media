@@ -12,5 +12,8 @@ data class ProductrevGetReviewDetailResponse(
         val responseTimeFormatted: String = "",
         @SerializedName("shopName")
         @Expose
-        val shopName: String = ""
+        val shopName: String = "",
+        @SerializedName("shopID")
+        @Expose
+        val shopId: String = ""
 )

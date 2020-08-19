@@ -393,8 +393,13 @@ class CreateReviewFragment : BaseDaggerFragment(),
                 isEditMode,
                 feedbackId.toString()
         )
-        createReviewViewModel.submitReview(reputationId, productId, shopId.toIntOrZero(),
-                createReviewScore.getScore(), reviewClickAt, reviewMessage, createReviewAnonymousCheckbox.isChecked)
+        if(isEditMode) {
+            createReviewViewModel.editReview(feedbackId, reputationId, productId, shopId.toIntOrZero(),
+                    createReviewScore.getScore(), reviewClickAt, reviewMessage, createReviewAnonymousCheckbox.isChecked)
+        } else {
+            createReviewViewModel.submitReview(reputationId, productId, shopId.toIntOrZero(),
+                    createReviewScore.getScore(), reviewClickAt, reviewMessage, createReviewAnonymousCheckbox.isChecked)
+        }
     }
 
     private fun onSuccessGetReviewForm(data: ProductRevGetForm) {
@@ -472,6 +477,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
         with(productrevGetReviewDetail) {
             setReview(review)
             setProduct(product)
+            shopId = response.shopId
         }
     }
 

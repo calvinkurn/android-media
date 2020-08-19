@@ -3,8 +3,8 @@ package com.tokopedia.review.feature.createreputation.model
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-data class ProductRevSubmitReview(
-        @SerializedName("success")
+data class ProductRevEditReviewResponseWrapper(
+        @SerializedName("productRevEditReview")
         @Expose
-        val success: Boolean = false
+        val productrevSuccessIndicator: ProductRevSuccessIndicator? = null
 )

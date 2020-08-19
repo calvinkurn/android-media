@@ -38,6 +38,7 @@ class ProductrevGetReviewDetailUseCase @Inject constructor(graphqlRepository: Gr
                       responseText
                       responseTimeFormatted
                       shopName
+                      shopID
                     }
                     reputation {
                       reputationID

@@ -12,6 +12,7 @@ import com.tokopedia.review.common.util.CoroutineDispatcherProvider
 import com.tokopedia.review.feature.createreputation.model.*
 import com.tokopedia.review.feature.createreputation.domain.usecase.GetProductIncentiveOvo
 import com.tokopedia.review.feature.createreputation.domain.usecase.GetProductReputationForm
+import com.tokopedia.review.feature.createreputation.domain.usecase.ProductrevEditReviewUseCase
 import com.tokopedia.review.feature.createreputation.domain.usecase.ProductrevSubmitReviewUseCase
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
 import com.tokopedia.usecase.coroutines.Result
@@ -30,6 +31,7 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
                                                 private val getReviewDetailUseCase: ProductrevGetReviewDetailUseCase,
                                                 private val submitReviewUseCase: ProductrevSubmitReviewUseCase,
                                                 private val uploaderUseCase: UploaderUseCase,
+                                                private val editReviewUseCase: ProductrevEditReviewUseCase,
                                                 private val userSessionInterface: UserSessionInterface
 ) : BaseViewModel(coroutineDispatcherProvider.io()) {
 
@@ -61,6 +63,16 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
             sendReviewWithoutImage(reputationId, productId, shopId, reputationScore, rating, reviewText, isAnonymous)
         } else {
             sendReviewWithImage(reputationId, productId, shopId, reputationScore, rating, reviewText, isAnonymous, getSelectedImagesUrl())
+        }
+    }
+
+    fun editReview(feedbackId: Int, reputationId: Int, productId: Int, shopId: Int, reputationScore: Int = 0, rating: Int,
+                   reviewText: String = "", isAnonymous: Boolean = false) {
+        _submitReviewResult.postValue(LoadingView())
+        if (imageData.isEmpty()) {
+            editReviewWithoutImage(feedbackId, reputationId, productId, shopId, reputationScore, rating, reviewText, isAnonymous)
+        } else {
+            editReviewWithImage(feedbackId, reputationId, productId, shopId, reputationScore, rating, reviewText, isAnonymous, getSelectedImagesUrl())
         }
     }
 
@@ -167,9 +179,9 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
                 submitReviewUseCase.setParams(reputationId, productId, shopId, reputationScore, rating, reviewText, isAnonymous)
                 submitReviewUseCase.executeOnBackground()
             }
-            if(response.productrevSubmitReview != null) {
-                if(response.productrevSubmitReview.success) {
-                    _submitReviewResult.postValue(Success(response.productrevSubmitReview.success))
+            if(response.productrevSuccessIndicator != null) {
+                if(response.productrevSuccessIndicator.success) {
+                    _submitReviewResult.postValue(Success(response.productrevSuccessIndicator.success))
                 } else {
                     _submitReviewResult.postValue(Fail(Throwable()))
                 }
@@ -195,9 +207,56 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
                 submitReviewUseCase.setParams(reputationId, productId, shopId, reputationScore, rating, reviewText, isAnonymous, uploadIdList)
                 submitReviewUseCase.executeOnBackground()
             }
-            if(response.productrevSubmitReview != null) {
-                if(response.productrevSubmitReview.success) {
-                    _submitReviewResult.postValue(Success(response.productrevSubmitReview.success))
+            if(response.productrevSuccessIndicator != null) {
+                if(response.productrevSuccessIndicator.success) {
+                    _submitReviewResult.postValue(Success(response.productrevSuccessIndicator.success))
+                } else {
+                    _submitReviewResult.postValue(Fail(Throwable()))
+                }
+            }
+        }) {
+            _submitReviewResult.postValue(Fail(it))
+        }
+    }
+
+    private fun editReviewWithoutImage(feedbackId: Int, reputationId: Int, productId: Int, shopId: Int, reputationScore: Int, rating: Int,
+                                       reviewText: String, isAnonymous: Boolean) {
+        launchCatchError(block = {
+            val response = withContext(coroutineDispatcherProvider.io()) {
+                editReviewUseCase.setParams(feedbackId, reputationId, productId, shopId, reputationScore, rating, reviewText, isAnonymous, getOriginalImages())
+                editReviewUseCase.executeOnBackground()
+            }
+            if(response.productrevSuccessIndicator != null) {
+                if(response.productrevSuccessIndicator.success) {
+                    _submitReviewResult.postValue(Success(response.productrevSuccessIndicator.success))
+                } else {
+                    _submitReviewResult.postValue(Fail(Throwable()))
+                }
+            }
+        }) {
+            _submitReviewResult.postValue(Fail(it))
+        }
+    }
+
+    private fun editReviewWithImage(feedbackId: Int, reputationId: Int, productId: Int, shopId: Int, reputationScore: Int, rating: Int,
+                                    reviewText: String, isAnonymous: Boolean, listOfImages: List<String>) {
+        val uploadIdList: ArrayList<String> = ArrayList()
+        launchCatchError(block = {
+            val response = withContext(coroutineDispatcherProvider.io()) {
+                repeat(listOfImages.size) {
+                    val imageId = uploadImageAndGetId(listOfImages[it])
+                    if(imageId.isEmpty()) {
+                        _submitReviewResult.postValue(Fail(Throwable()))
+                        this@launchCatchError.cancel()
+                    }
+                    uploadIdList.add(imageId)
+                }
+                editReviewUseCase.setParams(feedbackId, reputationId, productId, shopId, reputationScore, rating, reviewText, isAnonymous, getOriginalImages(), uploadIdList)
+                editReviewUseCase.executeOnBackground()
+            }
+            if(response.productrevSuccessIndicator != null) {
+                if(response.productrevSuccessIndicator.success) {
+                    _submitReviewResult.postValue(Success(response.productrevSuccessIndicator.success))
                 } else {
                     _submitReviewResult.postValue(Fail(Throwable()))
                 }
@@ -227,5 +286,9 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
                 ""
             }
         }
+    }
+
+    private fun getOriginalImages(): List<String> {
+        return (reviewDetails.value as? Success)?.data?.review?.attachments?.map { it.fullSize } ?: emptyList()
     }
 }

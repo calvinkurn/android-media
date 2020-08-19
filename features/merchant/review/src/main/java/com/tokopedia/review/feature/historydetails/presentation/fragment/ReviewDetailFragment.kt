@@ -141,13 +141,19 @@ class ReviewDetailFragment : BaseDaggerFragment(),
         viewModel.reviewDetails.observe(viewLifecycleOwner, Observer {
             when(it) {
                 is Success -> {
-                    hideError()
-                    hideLoading()
-                    with(it.data) {
-                        setProduct(product, review.feedbackId)
-                        setReview(review, product.productName)
-                        setResponse(response)
-                        setReputation(reputation, response.shopName)
+                    if(it.isRefresh) {
+                        hideError()
+                        hideLoading()
+                        with(it.data) {
+                            setProduct(product, review.feedbackId)
+                            setReview(review, product.productName)
+                            setResponse(response)
+                            setReputation(reputation, response.shopName)
+                        }
+                    } else {
+                        with(it.data) {
+                            setReputation(reputation, response.shopName)
+                        }
                     }
                 }
                 is Fail -> {
@@ -166,19 +172,10 @@ class ReviewDetailFragment : BaseDaggerFragment(),
         viewModel.submitReputationResult.observe(viewLifecycleOwner, Observer {
             when(it) {
                 is Success -> {
-                    reviewHistoryDetailReputation.apply {
-                        setFinalScore(it.data)
-                        hideLoading()
-                    }
                     onSuccessInsertReputation()
                 }
                 is Fail -> {
                     onFailInsertReputation(it.fail.message ?: getString(R.string.review_history_details_toaster_modify_smiley_error_default_message))
-                    reviewHistoryDetailReputation.apply {
-                        hideLoading()
-                        showMultipleSmileys()
-                        showDeadline()
-                    }
                 }
                 is LoadingView -> {
                     reviewHistoryDetailReputation.showLoading()
@@ -262,16 +259,19 @@ class ReviewDetailFragment : BaseDaggerFragment(),
                     !editable && isLocked && score != 0  -> {
                         setFinalScore(score)
                         setShopName(shopName)
+                        hideLoading()
                         show()
                     }
                     !isLocked -> {
                         setShopName(shopName)
                         setEditableScore(score, lockTime)
+                        hideLoading()
                         show()
                     }
                     isLocked && score == 0 -> {
                         setShopName(shopName)
                         setExpired()
+                        hideLoading()
                         show()
                     }
                     else -> {

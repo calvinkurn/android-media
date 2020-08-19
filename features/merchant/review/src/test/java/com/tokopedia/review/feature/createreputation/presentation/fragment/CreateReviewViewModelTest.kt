@@ -33,7 +33,7 @@ class  CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
         val rating = 5
         val selectedImages = arrayListOf("ImageUrl1", "ImageUrl2", "ImageUrl3", "ImageUrl4", "ImageUrl5")
         val expectedUploadResponse = UploadResult.Success("uploadId")
-        val expectedResponse = ProductrevSubmitReviewResponseWrapper(ProductRevSubmitReview(true))
+        val expectedResponse = ProductrevSubmitReviewResponseWrapper(ProductRevSuccessIndicator(true))
 
         onSubmitReviewSuccess_thenReturn(expectedResponse)
         onUploadImageSuccess_thenReturn(expectedUploadResponse)
@@ -102,7 +102,7 @@ class  CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
         val productId = anyInt()
         val shopId = anyInt()
         val rating = 5
-        val expectedResponse = ProductrevSubmitReviewResponseWrapper(ProductRevSubmitReview(true))
+        val expectedResponse = ProductrevSubmitReviewResponseWrapper(ProductRevSuccessIndicator(true))
 
         onSubmitReviewSuccess_thenReturn(expectedResponse)
 
