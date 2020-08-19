@@ -57,6 +57,9 @@ class EmptyChatViewHolder constructor(
 
         itemView.btnCta?.text = element.ctaText
         itemView.btnCta?.setOnClickListener {
+            if (element.isTopAds) {
+                chatListAnalytics.eventClickCtaTopAds()
+            }
             RouteManager.route(it.context, element.ctaApplink)
         }
     }

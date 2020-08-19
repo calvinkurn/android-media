@@ -41,6 +41,7 @@ class ChatListAnalytic @Inject constructor(
             const val ACTION_CLICK_BROADCAST_WIZARD = "click on broadcast wizard"
             const val DELETE_CHAT = "click on delete chat"
             const val VIEW_CTA_TOPADS = "view cta iklan promosi"
+            const val CLICK_CTA_TOPADS = "click coba iklan promosi"
         }
     }
 
@@ -126,6 +127,18 @@ class ChatListAnalytic @Inject constructor(
                         Event.CLICK_CHAT_DETAIL,
                         Category.CATEGORY_CHAT_DETAIL,
                         Action.VIEW_CTA_TOPADS,
+                        userSession.shopId
+                )
+        )
+    }
+
+    // #TA2
+    fun eventClickCtaTopAds() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                TrackAppUtils.gtmData(
+                        Event.CLICK_CHAT_DETAIL,
+                        Category.CATEGORY_CHAT_DETAIL,
+                        Action.CLICK_CTA_TOPADS,
                         userSession.shopId
                 )
         )
