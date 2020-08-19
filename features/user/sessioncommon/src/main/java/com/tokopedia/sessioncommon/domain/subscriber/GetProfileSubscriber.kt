@@ -11,7 +11,8 @@ import rx.Subscriber
  */
 class GetProfileSubscriber(val userSession: UserSessionInterface,
                            val onSuccessGetProfile: (pojo: ProfilePojo) -> Unit,
-                           val onErrorGetProfile: (e: Throwable) -> Unit) :
+                           val onErrorGetProfile: (e: Throwable) -> Unit,
+                           val onFinished: () -> Unit? = {}) :
         Subscriber<GraphqlResponse>() {
 
     override fun onNext(response: GraphqlResponse) {
@@ -27,6 +28,7 @@ class GetProfileSubscriber(val userSession: UserSessionInterface,
         } else {
             onErrorGetProfile(Throwable())
         }
+        onFinished.invoke()
     }
 
     private fun saveProfileData(pojo: ProfilePojo?) {
@@ -62,6 +64,7 @@ class GetProfileSubscriber(val userSession: UserSessionInterface,
         e?.run {
             onErrorGetProfile(this)
         }
+        onFinished.invoke()
     }
 
 
