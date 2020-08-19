@@ -199,7 +199,7 @@
     <string name="flight_passenger_passport_expiration_hint">Tanggal Berakhir Paspor</string>
     <string name="flight_passenger_nationality_hint">Kewarganegaraan</string>
     <string name="flight_passenger_passport_issuer_country_hint">Negara Penerbit Paspor</string>
-    <string name="flight_detail_total_stop_over_label">Transit : %1$d kali berhenti</string>
+    <string name="flight_detail_total_stop_over_label">Berhenti %1$d kali</string>
     <string name="flight_detail_transit_stop_over_label">Berhenti di </string>
     <string name="flight_detail_operating_by" formatted="false">Dioperasikan oleh %s</string>
     <string name="flight_booking_passenger_birthdate_child_sholud_lessthan_than_equal_12years">Umur penumpang anak maksimal 11 tahun saat waktu pemberangkatan</string>
