@@ -442,7 +442,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                     element.affiliatePostQuota
             )
         }
-//        setProfileToolbar(element.profileHeaderViewModel, isFromLogin)
+        setProfileToolbar(element.profileHeaderViewModel, isFromLogin)
 
         val visitables: ArrayList<Visitable<*>> = ArrayList()
         if (!element.dynamicFeedDomainModel.postList.isEmpty()) {
