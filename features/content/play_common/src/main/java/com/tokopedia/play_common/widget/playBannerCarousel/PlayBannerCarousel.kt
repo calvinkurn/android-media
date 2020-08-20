@@ -137,7 +137,7 @@ class PlayBannerCarousel(context: Context, attrs: AttributeSet?, defStyleAttr: I
     }
 
     private fun configureSubtitle(playBannerCarouselDataModel: PlayBannerCarouselDataModel){
-//        channelSubtitle.showOrHideView(playBannerCarouselDataModel.subtitle.isNotBlank())
+        channelSubtitle.showOrHideView(playBannerCarouselDataModel.subtitle.isNotBlank())
         channelSubtitle.text = playBannerCarouselDataModel.subtitle
         channelSubtitle.setTextColor(ContextCompat.getColor(context, R.color.Neutral_N700))
     }
