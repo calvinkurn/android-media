@@ -66,7 +66,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toEndOf="@id/reviewPendingProductImage" />
 
-        <com.tokopedia.reputation.common.view.AnimatedReputationView
+        <com.tokopedia.reputation.common.view.AnimatedRatingPickerReviewPendingView
             android:id="@+id/reviewPendingStars"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -76,8 +76,7 @@
             app:layout_goneMarginTop="@dimen/layout_lvl1"
             app:layout_constraintStart_toStartOf="@id/reviewPendingProductName"
             app:layout_constraintTop_toBottomOf="@id/reviewPendingProductVariant"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:show_desc="false" />
+            app:layout_constraintBottom_toBottomOf="parent" />
 
         <com.tokopedia.unifycomponents.NotificationUnify
             android:id="@+id/reviewPendingNewIcon"

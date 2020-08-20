@@ -2,6 +2,7 @@ package com.tokopedia.reputation.common.data.source.cloud.model
 
 import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.reputation.common.view.AnimatedStarsCreateReviewView
+import com.tokopedia.reputation.common.view.AnimatedStarsReviewPendingView
 import com.tokopedia.reputation.common.view.AnimatedStarsView
 
 data class ReviewLottieModel(
@@ -17,4 +18,9 @@ data class AnimModel(
 data class AnimCreateReviewModel(
         var isAnimated: Boolean = false,
         var reviewView: AnimatedStarsCreateReviewView
+)
+
+data class AnimReviewPendingModel(
+        var isAnimated: Boolean = false,
+        var reviewView: AnimatedStarsReviewPendingView
 )
