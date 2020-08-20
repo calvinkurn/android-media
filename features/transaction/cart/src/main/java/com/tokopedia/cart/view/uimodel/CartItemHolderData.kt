@@ -14,7 +14,8 @@ data class CartItemHolderData(
         var errorFormItemValidationType: Int = 0,
         var errorFormItemValidationMessage: String? = null,
         var isEditableRemark: Boolean = false,
-        var isStateRemarkExpanded: Boolean = false,
+        var isStateHasNotes: Boolean = false,
+        var isStateNotesOnFocuss: Boolean = false,
         var isSelected: Boolean = false
 
 ) : Parcelable {
@@ -71,7 +72,7 @@ data class CartItemHolderData(
         parcel.writeInt(errorFormItemValidationType)
         parcel.writeString(errorFormItemValidationMessage)
         parcel.writeByte(if (isEditableRemark) 1 else 0)
-        parcel.writeByte(if (isStateRemarkExpanded) 1 else 0)
+        parcel.writeByte(if (isStateHasNotes) 1 else 0)
         parcel.writeByte(if (isSelected) 1 else 0)
     }
 

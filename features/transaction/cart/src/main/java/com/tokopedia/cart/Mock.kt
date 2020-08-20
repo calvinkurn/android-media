@@ -44,7 +44,7 @@ val RESPONSE = """
           "is_coupon_active": 0,
           "is_one_tab_promo": false,
           "max_quantity": 0,
-          "max_char_note": 0,
+          "max_char_note": 144,
           "messages": {
             "ErrorFieldBetween": "Jumlah harus diisi antara 1 - {{value}}",
             "ErrorFieldMaxChar": "Catatan terlalu panjang, maks. {{value}} karakter.",

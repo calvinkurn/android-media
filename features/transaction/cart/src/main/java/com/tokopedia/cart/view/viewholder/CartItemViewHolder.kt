@@ -3,17 +3,16 @@ package com.tokopedia.cart.view.viewholder
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Paint
-import android.text.Editable
-import android.text.Html
-import android.text.InputFilter
-import android.text.TextUtils
+import android.text.*
 import android.view.MotionEvent
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import android.widget.*
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.cart.R
 import com.tokopedia.cart.view.adapter.CartItemAdapter
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
@@ -21,9 +20,11 @@ import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.purchase_platform.common.utils.*
-import com.tokopedia.purchase_platform.common.utils.NoteTextWatcher.TEXTWATCHER_NOTE_DEBOUNCE_TIME
+import com.tokopedia.purchase_platform.common.utils.QuantityTextWatcher
 import com.tokopedia.purchase_platform.common.utils.QuantityTextWatcher.TEXTWATCHER_QUANTITY_DEBOUNCE_TIME
+import com.tokopedia.purchase_platform.common.utils.QuantityWrapper
+import com.tokopedia.purchase_platform.common.utils.Utils
+import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
@@ -94,7 +95,6 @@ class CartItemViewHolder constructor(itemView: View,
 
     private var cartItemHolderData: CartItemHolderData? = null
     private var quantityTextwatcherListener: QuantityTextWatcher.QuantityTextwatcherListener? = null
-    private var noteTextwatcherListener: NoteTextWatcher.NoteTextwatcherListener? = null
     private var parentPosition: Int = 0
     private var dataSize: Int = 0
     private var quantityDebounceSubscription: Subscription? = null
@@ -191,25 +191,6 @@ class CartItemViewHolder constructor(itemView: View,
                 })
 
         compositeSubscription.add(quantityDebounceSubscription)
-
-        noteDebounceSubscription = Observable.create(Observable.OnSubscribe<Editable> { subscriber -> noteTextwatcherListener = NoteTextWatcher.NoteTextwatcherListener { editable -> subscriber.onNext(editable) } }).debounce(TEXTWATCHER_NOTE_DEBOUNCE_TIME.toLong(), TimeUnit.MILLISECONDS)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(object : Subscriber<Editable>() {
-                    override fun onCompleted() {
-
-                    }
-
-                    override fun onError(e: Throwable) {
-                        e.printStackTrace()
-                    }
-
-                    override fun onNext(editable: Editable) {
-                        itemNoteTextWatcherAction(editable)
-                    }
-                })
-
-        compositeSubscription.add(noteDebounceSubscription)
     }
 
     fun bindData(data: CartItemHolderData, parentPosition: Int, viewHolderListener: ViewHolderListener, dataSize: Int) {
@@ -481,8 +462,19 @@ class CartItemViewHolder constructor(itemView: View,
     }
 
     private fun renderRemark(data: CartItemHolderData, parentPosition: Int, viewHolderListener: ViewHolderListener) {
+        etRemark.setOnEditorActionListener { v, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                data.isStateNotesOnFocuss = false
+                actionListener?.onEditNoteDone(parentPosition)
+                KeyboardHandler.DropKeyboard(etRemark.context, itemView)
+                true
+            } else false
+        }
+
         this.tvLabelRemarkOption.setOnClickListener {
             if (data.cartItemData?.isError == false) {
+                data.isStateNotesOnFocuss = true
+                etRemark.requestFocus()
                 actionListener?.onCartItemLabelInputRemarkClicked()
                 if (tvLabelRemarkOption.text == tvLabelRemarkOption.context.getString(
                                 R.string.label_button_change_note)) {
@@ -490,20 +482,18 @@ class CartItemViewHolder constructor(itemView: View,
                     remark += " "
                     data.cartItemData?.updatedData?.remark = remark
                 }
-                data.isStateRemarkExpanded = true
+                data.isStateHasNotes = true
                 if (adapterPosition != RecyclerView.NO_POSITION) {
                     viewHolderListener.onNeedToRefreshSingleProduct(adapterPosition)
                 }
             }
         }
 
-        if (data.cartItemData?.updatedData?.remark?.isNotBlank() == true) {
-            data.isStateRemarkExpanded = true
-        }
+        data.isStateHasNotes = data.isStateNotesOnFocuss || data.cartItemData?.updatedData?.remark?.isNotBlank() == true
 
-        if (data.isStateRemarkExpanded) {
+        if (data.isStateHasNotes) {
             // Has a notes from pdp or not at all but click add notes button
-            if (data.cartItemData?.originData?.originalRemark.isNullOrBlank() == true || data.cartItemData?.updatedData?.remark != data.cartItemData?.originData?.originalRemark) {
+            if (data.isStateNotesOnFocuss && (data.cartItemData?.originData?.originalRemark.isNullOrBlank() || data.cartItemData?.updatedData?.remark != data.cartItemData?.originData?.originalRemark)) {
                 // Notes is empty after click add notes button or has value after use click change notes button
                 this.tvRemark.visibility = View.GONE
                 this.etRemark.setText(Utils.getHtmlFormat(data.cartItemData?.updatedData?.remark))
@@ -544,7 +534,21 @@ class CartItemViewHolder constructor(itemView: View,
 
         this.etRemark.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(data.cartItemData?.updatedData?.maxCharRemark
                 ?: 0))
-        this.etRemark.addTextChangedListener(NoteTextWatcher(noteTextwatcherListener))
+        etRemark.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(editable: Editable?) {
+                editable?.let {
+                    itemNoteTextWatcherAction(it)
+                }
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+
+            }
+        })
     }
 
     private fun renderQuantity(data: CartItemHolderData, parentPosition: Int, viewHolderListener: ViewHolderListener) {
@@ -654,14 +658,13 @@ class CartItemViewHolder constructor(itemView: View,
                 this.tvErrorFormValidation.visibility = View.VISIBLE
                 this.tvErrorFormRemarkValidation.visibility = View.GONE
                 this.tvErrorFormRemarkValidation.text = ""
-                if (data.cartItemData?.originData?.originalRemark != data.cartItemData?.updatedData?.remark) {
+                if (data.isStateNotesOnFocuss && data.cartItemData?.originData?.originalRemark != data.cartItemData?.updatedData?.remark) {
                     this.tvNoteCharCounter.visibility = View.VISIBLE
                 } else {
                     this.tvNoteCharCounter.visibility = View.GONE
                 }
             }
         }
-        actionListener?.onCartItemAfterErrorChecked()
     }
 
     private fun renderErrorItemHeader(data: CartItemHolderData) {

@@ -263,6 +263,8 @@
                         android:layout_marginRight="@dimen/dp_minus4"
                         android:fontFamily="sans-serif"
                         android:maxLines="3"
+                        android:imeOptions="actionDone"
+                        android:inputType="text"
                         android:overScrollMode="always"
                         android:paddingBottom="@dimen/dp_16"
                         android:scrollbarStyle="insideInset"

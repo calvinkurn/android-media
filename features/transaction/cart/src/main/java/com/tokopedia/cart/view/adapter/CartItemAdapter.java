@@ -2,6 +2,8 @@ package com.tokopedia.cart.view.adapter;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -89,6 +91,8 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public interface ActionListener {
 
+        Activity getFragmentActivity();
+
         void onCartItemDeleteButtonClicked(CartItemHolderData cartItemHolderData, int position, int parentPosition);
 
         void onCartItemQuantityPlusButtonClicked(CartItemHolderData cartItemHolderData, int position, int parentPosition);
@@ -126,5 +130,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         CompositeSubscription onGetCompositeSubscriber();
 
         void onCartItemQuantityChangedThenHitUpdateCartAndValidateUse();
+
+        void onEditNoteDone(int position);
     }
 }

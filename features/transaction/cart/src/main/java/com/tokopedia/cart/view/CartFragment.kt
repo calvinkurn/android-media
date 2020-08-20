@@ -3013,4 +3013,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             cartAdapter.expandDisabledItems()
         }
     }
+
+    override fun onEditNoteDone(parentPosition: Int) {
+        cartAdapter.notifyItemChanged(parentPosition)
+    }
+
+    override fun getFragmentActivity(): Activity {
+        return activity as Activity
+    }
 }

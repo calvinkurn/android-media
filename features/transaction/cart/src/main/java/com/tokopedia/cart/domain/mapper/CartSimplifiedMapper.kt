@@ -141,7 +141,7 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
                     errorFormItemValidationType = 0,
                     errorFormItemValidationMessage = "",
                     isEditableRemark = false,
-                    isStateRemarkExpanded = false,
+                    isStateHasNotes = false,
                     isSelected = if (cartItemData.isError) {
                         false
                     } else {
