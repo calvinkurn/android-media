@@ -22,16 +22,17 @@ import javax.inject.Named
 class GetShopStatusUseCase @Inject constructor(private val graphqlUseCase: GraphqlUseCase,
                                                @Named(RAW_GM_STATUS) private val rawQuery: String) : UseCase<GoldGetPmOsStatus>() {
     companion object {
-        fun createRequestParams(shopId: String): RequestParams {
+        fun createRequestParams(shopId: String, includeOS: Boolean = true): RequestParams {
             return RequestParams.create().apply {
                 putInt(GMParamApiContant.SHOP_ID, shopId.toIntOrNull() ?: 0)
+                putBoolean(INCLUDE_OS, includeOS)
             }
         }
 
-        fun createRequestParams(shopId: String, includeOS: Boolean): RequestParams = RequestParams.create().apply {
-            putInt(GMParamApiContant.SHOP_ID, shopId.toIntOrNull() ?: 0)
-            putBoolean(INCLUDE_OS, includeOS)
-        }
+//        fun createRequestParams(shopId: String, includeOS: Boolean): RequestParams = RequestParams.create().apply {
+//            putInt(GMParamApiContant.SHOP_ID, shopId.toIntOrNull() ?: 0)
+//            putBoolean(INCLUDE_OS, includeOS)
+//        }
     }
 
     override fun createObservable(requestParams: RequestParams): Observable<GoldGetPmOsStatus> {
