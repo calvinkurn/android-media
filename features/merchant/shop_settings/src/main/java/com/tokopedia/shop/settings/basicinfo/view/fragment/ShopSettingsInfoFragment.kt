@@ -24,13 +24,9 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
 import com.tokopedia.design.utils.StringUtils
-import com.tokopedia.gm.common.data.source.cloud.model.GoldGetPmOsStatus
 import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel
 import com.tokopedia.gm.common.utils.PowerMerchantTracking
 import com.tokopedia.graphql.data.GraphqlClient
@@ -40,25 +36,19 @@ import com.tokopedia.shop.common.graphql.data.shopbasicdata.gql.ShopBasicDataQue
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditBasicInfoActivity
 import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditScheduleActivity
-import com.tokopedia.shop.settings.basicinfo.view.presenter.ShopSettingsInfoPresenter
 import com.tokopedia.shop.settings.basicinfo.view.viewmodel.ShopSettingsInfoViewModel
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
-import com.tokopedia.shop.settings.common.util.FORMAT_DATE
-import com.tokopedia.shop.settings.common.util.toReadableString
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_shop_settings_info.*
 import kotlinx.android.synthetic.main.partial_shop_settings_info_basic.*
-//import kotlinx.android.synthetic.main.partial_shop_settings_info_power_merchant.*
 import kotlinx.android.synthetic.main.partial_shop_settings_info_status.*
 import java.util.*
 import javax.inject.Inject
 
 class ShopSettingsInfoFragment : BaseDaggerFragment() {
-//    @Inject
-//    lateinit var shopSettingsInfoPresenter: ShopSettingsInfoPresenter
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -153,13 +143,6 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
                                     closeEnd = "",
                                     closeNote = ""
                             )
-
-//                            shopSettingsInfoPresenter.updateShopSchedule(
-//                                    if (shopBasicDataModel!!.isClosed)
-//                                        ShopScheduleActionDef.CLOSED
-//                                    else
-//                                        ShopScheduleActionDef.OPEN,
-//                                    false, "", "", "")
                             dismiss()
                         }
                         setOnCancelClickListener { dismiss() }
@@ -177,8 +160,6 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
                         closeEnd = "",
                         closeNote = ""
                 )
-//                shopSettingsInfoPresenter.updateShopSchedule(ShopScheduleActionDef.OPEN, false,
-//                        "", "", "")
             }
         }
     }
@@ -246,7 +227,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
                 is Success -> {
                     hideLoading()
                     val shopBasicData = it.data
-                    this.shopBasicDataModel = shopBasicData.result?.result
+                    this.shopBasicDataModel = shopBasicData
                     setUIShopBasicData(shopBasicData)
                 }
                 is Fail -> {
@@ -317,7 +298,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
     private fun loadShopBasicData() {
         showLoading()
         shopSettingsInfoViewModel.getShopData(
-                shopId.toInt(),
+                shopId,
                 includeOS = false
         )
     }
@@ -327,11 +308,10 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
                 .baseAppComponent((activity!!.application as BaseMainApplication).baseAppComponent)
                 .build()
                 .inject(this)
-//        shopSettingsInfoPresenter.attachView(this)
     }
 
-    private fun setUIShopBasicData(shopBasicDataModel: ShopBasicDataQuery) {
-        shopBasicDataModel.result?.result?.let { shopBasicData ->
+    private fun setUIShopBasicData(shopBasicDataModel: ShopBasicDataModel) {
+        shopBasicDataModel.let { shopBasicData ->
             tvShopName.text = MethodChecker.fromHtml(shopBasicData.name)
             tvShopDomain.text = shopBasicData.domain?.let {
                 if (URLUtil.isNetworkUrl(it)) {
@@ -456,8 +436,6 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-//        shopSettingsInfoPresenter.run { detachView() }
-
         shopSettingsInfoViewModel.detachView()
         shopSettingsInfoViewModel.shopBasicData.removeObservers(this)
         shopSettingsInfoViewModel.shopStatusData.removeObservers(this)

@@ -4,9 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.gm.common.data.source.cloud.model.GoldGetPmOsStatus
+import com.tokopedia.gm.common.domain.interactor.GetShopStatusUseCase
 import com.tokopedia.gm.common.domain.interactor.GetShopStatusUseCaseCoroutine
 import com.tokopedia.shop.common.constant.ShopScheduleActionDef
+import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.gql.ShopBasicDataQuery
+import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopBasicDataUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopBasicDataUseCaseCoroutine
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.UpdateShopScheduleUseCase
 import com.tokopedia.shop.settings.basicinfo.data.CheckShopIsOfficialModel
@@ -25,8 +28,8 @@ import javax.inject.Inject
 
 class ShopSettingsInfoViewModel @Inject constructor (
         private val checkOsMerchantUseCase: CheckOfficialStoreTypeUseCase,
-        private val getShopBasicDataUseCase: GetShopBasicDataUseCaseCoroutine,
-        private val getShopStatusUseCase: GetShopStatusUseCaseCoroutine,
+        private val getShopBasicDataUseCase: GetShopBasicDataUseCase, // GetShopBasicDataUseCaseCoroutine,
+        private val getShopStatusUseCase: GetShopStatusUseCase, // GetShopStatusUseCaseCoroutine,
         private val updateShopScheduleUseCase: UpdateShopScheduleUseCase,
         private val dispatchers: CoroutineDispatchers
 ): BaseViewModel(dispatchers.main) {
@@ -35,8 +38,8 @@ class ShopSettingsInfoViewModel @Inject constructor (
     val checkOsMerchantTypeData: LiveData<Result<CheckShopIsOfficialModel>>
         get() = _checkOsMerchantTypeData
 
-    private val _shopBasicData = MutableLiveData<Result<ShopBasicDataQuery>>()
-    val shopBasicData: LiveData<Result<ShopBasicDataQuery>>
+    private val _shopBasicData = MutableLiveData<Result<ShopBasicDataModel>>()
+    val shopBasicData: LiveData<Result<ShopBasicDataModel>>
         get() = _shopBasicData
 
     private val _shopStatusData = MutableLiveData<Result<GoldGetPmOsStatus>>()
@@ -55,7 +58,7 @@ class ShopSettingsInfoViewModel @Inject constructor (
         updateShopScheduleUseCase.unsubscribe()
     }
 
-    fun getShopData(shopId: Int, includeOS: Boolean) {
+    fun getShopData(shopId: String, includeOS: Boolean) {
         launchCatchError(block = {
             _shopBasicData.postValue(Success(getShopBasicData().await()))
             _shopStatusData.postValue(Success(getShopStatus(shopId, includeOS).await()))
@@ -81,11 +84,11 @@ class ShopSettingsInfoViewModel @Inject constructor (
         }
     }
 
-    private fun getShopBasicData(): Deferred<ShopBasicDataQuery> {
+    private fun getShopBasicData(): Deferred<ShopBasicDataModel> {
         return async(dispatchers.io) {
-            var shopBasicData = ShopBasicDataQuery()
+            var shopBasicData = ShopBasicDataModel()
             try {
-                shopBasicData = getShopBasicDataUseCase.executeOnBackground()
+                shopBasicData = getShopBasicDataUseCase.getData(RequestParams.EMPTY) // getShopBasicDataUseCase.executeOnBackground()
             } catch (t: Throwable) {
                 _shopBasicData.postValue(Fail(t))
             }
@@ -93,13 +96,15 @@ class ShopSettingsInfoViewModel @Inject constructor (
         }
     }
 
-    private fun getShopStatus(shopId: Int, includeOS: Boolean): Deferred<GoldGetPmOsStatus> {
+    private fun getShopStatus(shopId: String, includeOS: Boolean): Deferred<GoldGetPmOsStatus> {
         return async(dispatchers.io) {
             var shopStatusData = GoldGetPmOsStatus()
+            val requestParams = GetShopStatusUseCase.createRequestParams(shopId, includeOS)
             try {
-                getShopStatusUseCase.params = GetShopStatusUseCaseCoroutine
-                        .createRequestParam(shopId, includeOS)
-                shopStatusData = getShopStatusUseCase.executeOnBackground()
+//                getShopStatusUseCase.params = GetShopStatusUseCaseCoroutine
+//                        .createRequestParam(shopId, includeOS)
+//                shopStatusData = getShopStatusUseCase.executeOnBackground()
+                shopStatusData = getShopStatusUseCase.getData(requestParams)
             } catch (t: Throwable) {
                 _shopStatusData.postValue(Fail(t))
             }

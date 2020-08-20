@@ -2,6 +2,7 @@ package com.tokopedia.gm.common.domain.interactor
 
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.gm.common.constant.GMParamApiContant
+import com.tokopedia.gm.common.constant.GMParamApiContant.INCLUDE_OS
 import com.tokopedia.gm.common.constant.GMParamConstant.RAW_GM_STATUS
 import com.tokopedia.gm.common.data.source.cloud.model.GoldGetPmOsStatus
 import com.tokopedia.graphql.data.model.GraphqlError
@@ -25,6 +26,11 @@ class GetShopStatusUseCase @Inject constructor(private val graphqlUseCase: Graph
             return RequestParams.create().apply {
                 putInt(GMParamApiContant.SHOP_ID, shopId.toIntOrNull() ?: 0)
             }
+        }
+
+        fun createRequestParams(shopId: String, includeOS: Boolean): RequestParams = RequestParams.create().apply {
+            putInt(GMParamApiContant.SHOP_ID, shopId.toIntOrNull() ?: 0)
+            putBoolean(INCLUDE_OS, includeOS)
         }
     }
 
