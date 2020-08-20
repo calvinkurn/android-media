@@ -43,11 +43,11 @@ import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.domain.usecase.DeleteMessageListUseCase
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
+import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ChatSettingsResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.OrderProgressResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.StickerGroup
-import com.tokopedia.topchat.chatroom.domain.subscriber.ChangeChatBlockSettingSubscriber
 import com.tokopedia.topchat.chatroom.domain.subscriber.DeleteMessageAllSubscriber
 import com.tokopedia.topchat.chatroom.domain.subscriber.GetExistingMessageIdSubscriber
 import com.tokopedia.topchat.chatroom.domain.usecase.*
@@ -90,7 +90,6 @@ class TopChatRoomPresenter @Inject constructor(
         private var replyChatUseCase: ReplyChatUseCase,
         private var getExistingMessageIdUseCase: GetExistingMessageIdUseCase,
         private var deleteMessageListUseCase: DeleteMessageListUseCase,
-        private var changeChatBlockSettingUseCase: ChangeChatBlockSettingUseCase,
         private var getShopFollowingUseCase: GetShopFollowingUseCase,
         private var toggleFavouriteShopUseCase: ToggleFavouriteShopUseCase,
         private var addToCartUseCase: AddToCartUseCase,
@@ -527,19 +526,6 @@ class TopChatRoomPresenter @Inject constructor(
                 DeleteMessageAllSubscriber(onError, onSuccessDeleteConversation))
     }
 
-    override fun unblockChat(messageId: String,
-                             opponentRole: String,
-                             onError: (Throwable) -> Unit,
-                             onSuccessUnblockChat: (BlockedStatus) -> Unit) {
-        changeChatBlockSettingUseCase.execute(
-                ChangeChatBlockSettingUseCase.generateParam(
-                        messageId,
-                        ChangeChatBlockSettingUseCase.getBlockType(opponentRole),
-                        false
-                ), ChangeChatBlockSettingSubscriber(onError, onSuccessUnblockChat)
-        )
-    }
-
     override fun getShopFollowingStatus(
             shopId: Int,
             onError: (Throwable) -> Unit,
@@ -555,7 +541,6 @@ class TopChatRoomPresenter @Inject constructor(
         replyChatUseCase.unsubscribe()
         getExistingMessageIdUseCase.unsubscribe()
         deleteMessageListUseCase.unsubscribe()
-        changeChatBlockSettingUseCase.unsubscribe()
         getShopFollowingUseCase.safeCancel()
         addToCartUseCase.unsubscribe()
         if (::addToCardSubscriber.isInitialized) {
@@ -851,12 +836,20 @@ class TopChatRoomPresenter @Inject constructor(
         })
     }
 
-    override fun requestBlockPromo(messageId: String, onSuccess: (String) -> Unit, onError: (Throwable) -> Unit) {
+    override fun requestBlockPromo(messageId: String, onSuccess: (ChatSettingsResponse) -> Unit, onError: (Throwable) -> Unit) {
         chatToggleBlockChat.blockPromo(messageId, onSuccess, onError)
     }
 
-    override fun requestAllowPromo(messageId: String, onSuccess: () -> Unit, onError: (Throwable) -> Unit) {
+    override fun requestAllowPromo(messageId: String, onSuccess: (ChatSettingsResponse) -> Unit, onError: (Throwable) -> Unit) {
         chatToggleBlockChat.allowPromo(messageId, onSuccess, onError)
+    }
+
+    override fun blockChat(messageId: String, onSuccess: (ChatSettingsResponse) -> Unit, onError: (Throwable) -> Unit) {
+        chatToggleBlockChat.blockChat(messageId, onSuccess, onError)
+    }
+
+    override fun unBlockChat(messageId: String, onSuccess: (ChatSettingsResponse) -> Unit, onError: (Throwable) -> Unit) {
+        chatToggleBlockChat.unBlockChat(messageId, onSuccess, onError)
     }
 
     private fun onSuccessGetAttachments(attachments: ArrayMap<String, Attachment>) {
