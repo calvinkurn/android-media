@@ -18,7 +18,7 @@ import com.tokopedia.unifycomponents.UnifyButton
  */
 class BottomActionPartialView(
         container: ViewGroup,
-        listener: Listener
+        private val listener: Listener
 ) : PartialView(container, R.id.bottom_sheet_action) {
 
     private val clInventory: ConstraintLayout = findViewById(R.id.cl_inventory)
@@ -27,7 +27,7 @@ class BottomActionPartialView(
     private val tvBadgeCount: TextView = findViewById(R.id.tv_badge_count)
 
     init {
-        clInventory.setOnClickListener { listener.onInventoryIconClicked() }
+
         btnAction.setOnClickListener {
             if (!btnAction.isLoading) listener.onNextButtonClicked()
         }
@@ -40,12 +40,14 @@ class BottomActionPartialView(
             ivInventory.isClickable = false
             btnAction.isEnabled = false
             tvBadgeCount.gone()
+            setInventoryClickListener {  }
         } else {
             ivInventory.setImageResource(R.drawable.ic_play_inventory)
             ivInventory.isClickable = true
             btnAction.isEnabled = true
             tvBadgeCount.visible()
             tvBadgeCount.text = productList.size.toString()
+            setInventoryClickListener { listener.onInventoryIconClicked() }
         }
     }
 
@@ -70,6 +72,12 @@ class BottomActionPartialView(
                         .addTarget(tvBadgeCount)
                         .setDuration(300)
         )
+    }
+
+    private fun setInventoryClickListener(clickListener: (View) -> Unit) {
+        clInventory.setOnClickListener(clickListener)
+        ivInventory.setOnClickListener(clickListener)
+        btnAction.setOnClickListener(clickListener)
     }
 
     interface Listener {
