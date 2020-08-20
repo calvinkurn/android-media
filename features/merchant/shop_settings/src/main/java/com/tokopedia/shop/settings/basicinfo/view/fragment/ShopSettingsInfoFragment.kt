@@ -56,9 +56,9 @@ import kotlinx.android.synthetic.main.partial_shop_settings_info_status.*
 import java.util.*
 import javax.inject.Inject
 
-class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter.View {
-    @Inject
-    lateinit var shopSettingsInfoPresenter: ShopSettingsInfoPresenter
+class ShopSettingsInfoFragment : BaseDaggerFragment() {
+//    @Inject
+//    lateinit var shopSettingsInfoPresenter: ShopSettingsInfoPresenter
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -146,12 +146,20 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
                         setOnOkClickListener {
                             //remove schedule
                             showSubmitLoading(getString(com.tokopedia.abstraction.R.string.title_loading))
-                            shopSettingsInfoPresenter.updateShopSchedule(
-                                    if (shopBasicDataModel!!.isClosed)
-                                        ShopScheduleActionDef.CLOSED
-                                    else
-                                        ShopScheduleActionDef.OPEN,
-                                    false, "", "", "")
+                            shopSettingsInfoViewModel.updateShopSchedule(
+                                    action = if (shopBasicDataModel!!.isClosed) ShopScheduleActionDef.CLOSED else ShopScheduleActionDef.OPEN,
+                                    closeNow = false,
+                                    closeStart = "",
+                                    closeEnd = "",
+                                    closeNote = ""
+                            )
+
+//                            shopSettingsInfoPresenter.updateShopSchedule(
+//                                    if (shopBasicDataModel!!.isClosed)
+//                                        ShopScheduleActionDef.CLOSED
+//                                    else
+//                                        ShopScheduleActionDef.OPEN,
+//                                    false, "", "", "")
                             dismiss()
                         }
                         setOnCancelClickListener { dismiss() }
@@ -162,8 +170,15 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
             itemMenuTitle.equals(getString(R.string.label_open_shop_now), ignoreCase = true) -> {
                 // open now
                 showSubmitLoading(getString(com.tokopedia.abstraction.R.string.title_loading))
-                shopSettingsInfoPresenter.updateShopSchedule(ShopScheduleActionDef.OPEN, false,
-                        "", "", "")
+                shopSettingsInfoViewModel.updateShopSchedule(
+                        action = ShopScheduleActionDef.OPEN,
+                        closeNow = false,
+                        closeStart = "",
+                        closeEnd = "",
+                        closeNote = ""
+                )
+//                shopSettingsInfoPresenter.updateShopSchedule(ShopScheduleActionDef.OPEN, false,
+//                        "", "", "")
             }
         }
     }
@@ -192,6 +207,16 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
         observeShopBasicData()
         observeShopStatus()
         observeOsMerchantData()
+        observeUpdateScheduleData()
+    }
+
+    private fun observeUpdateScheduleData() {
+        shopSettingsInfoViewModel.updateScheduleResult.observe(this, Observer {
+            when (it) {
+                is Success -> onSuccessUpdateShopSchedule(it.data)
+                is Fail -> onErrorUpdateShopSchedule(it.throwable)
+            }
+        })
     }
 
     private fun observeShopStatus() {
@@ -302,7 +327,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
                 .baseAppComponent((activity!!.application as BaseMainApplication).baseAppComponent)
                 .build()
                 .inject(this)
-        shopSettingsInfoPresenter.attachView(this)
+//        shopSettingsInfoPresenter.attachView(this)
     }
 
     private fun setUIShopBasicData(shopBasicDataModel: ShopBasicDataQuery) {
@@ -389,7 +414,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
         NetworkErrorHelper.showEmptyState(context, view, message) { loadShopBasicData() }
     }
 
-    override fun onSuccessUpdateShopSchedule(successMessage: String) {
+    private fun onSuccessUpdateShopSchedule(successMessage: String) {
         hideSubmitLoading()
         activity?.setResult(Activity.RESULT_OK)
         view?.let {
@@ -398,7 +423,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
         loadShopBasicData()
     }
 
-    override fun onErrorUpdateShopSchedule(throwable: Throwable) {
+    private fun onErrorUpdateShopSchedule(throwable: Throwable) {
         hideSubmitLoading()
         showSnackbarErrorSubmitEdit(throwable)
     }
@@ -431,7 +456,9 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
 
     override fun onDestroy() {
         super.onDestroy()
-        shopSettingsInfoPresenter.run { detachView() }
+//        shopSettingsInfoPresenter.run { detachView() }
+
+        shopSettingsInfoViewModel.detachView()
         shopSettingsInfoViewModel.shopBasicData.removeObservers(this)
         shopSettingsInfoViewModel.shopStatusData.removeObservers(this)
         shopSettingsInfoViewModel.checkOsMerchantTypeData.removeObservers(this)

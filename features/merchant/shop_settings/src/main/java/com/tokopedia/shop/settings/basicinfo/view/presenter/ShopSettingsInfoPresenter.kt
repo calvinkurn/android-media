@@ -17,40 +17,40 @@ constructor(private val getShopBasicDataAndStatusUseCase: GetShopBasicDataAndSta
             private val userSession: UserSessionInterface) : BaseDaggerPresenter<ShopSettingsInfoPresenter.View>() {
 
     interface View : CustomerView {
-        fun onSuccessUpdateShopSchedule(successMessage: String)
-        fun onErrorUpdateShopSchedule(throwable: Throwable)
+//        fun onSuccessUpdateShopSchedule(successMessage: String)
+//        fun onErrorUpdateShopSchedule(throwable: Throwable)
     }
 
-    fun updateShopSchedule(@ShopScheduleActionDef action: Int,
-                           closeNow: Boolean,
-                           closeStart: String,
-                           closeEnd: String,
-                           closeNote: String) {
-        updateShopScheduleUseCase.unsubscribe()
-        updateShopScheduleUseCase.execute(UpdateShopScheduleUseCase.createRequestParams(
-                action, closeNow, closeStart, closeEnd, closeNote
-        ), createUpdateShopScheduleSubscriber())
-    }
+//    fun updateShopSchedule(@ShopScheduleActionDef action: Int,
+//                           closeNow: Boolean,
+//                           closeStart: String,
+//                           closeEnd: String,
+//                           closeNote: String) {
+//        updateShopScheduleUseCase.unsubscribe()
+//        updateShopScheduleUseCase.execute(UpdateShopScheduleUseCase.createRequestParams(
+//                action, closeNow, closeStart, closeEnd, closeNote
+//        ), createUpdateShopScheduleSubscriber())
+//    }
 
-    private fun createUpdateShopScheduleSubscriber(): Subscriber<String> {
-        return object : Subscriber<String>() {
-            override fun onCompleted() {
+//    private fun createUpdateShopScheduleSubscriber(): Subscriber<String> {
+//        return object : Subscriber<String>() {
+//            override fun onCompleted() {
+//
+//            }
+//
+//            override fun onError(e: Throwable) {
+////                view?.onErrorUpdateShopSchedule(e)
+//            }
+//
+//            override fun onNext(successMessage: String) {
+////                view?.onSuccessUpdateShopSchedule(successMessage)
+//            }
+//        }
+//    }
 
-            }
-
-            override fun onError(e: Throwable) {
-                view?.onErrorUpdateShopSchedule(e)
-            }
-
-            override fun onNext(successMessage: String) {
-                view?.onSuccessUpdateShopSchedule(successMessage)
-            }
-        }
-    }
-
-    override fun detachView() {
-        super.detachView()
-        getShopBasicDataAndStatusUseCase.unsubscribe()
-        updateShopScheduleUseCase.unsubscribe()
-    }
+//    override fun detachView() {
+//        super.detachView()
+//        getShopBasicDataAndStatusUseCase.unsubscribe()
+//        updateShopScheduleUseCase.unsubscribe()
+//    }
 }

@@ -5,11 +5,14 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.gm.common.data.source.cloud.model.GoldGetPmOsStatus
 import com.tokopedia.gm.common.domain.interactor.GetShopStatusUseCaseCoroutine
+import com.tokopedia.shop.common.constant.ShopScheduleActionDef
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.gql.ShopBasicDataQuery
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopBasicDataUseCaseCoroutine
+import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.UpdateShopScheduleUseCase
 import com.tokopedia.shop.settings.basicinfo.data.CheckShopIsOfficialModel
 import com.tokopedia.shop.settings.basicinfo.domain.CheckOfficialStoreTypeUseCase
 import com.tokopedia.shop.settings.common.coroutine.CoroutineDispatchers
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -24,6 +27,7 @@ class ShopSettingsInfoViewModel @Inject constructor (
         private val checkOsMerchantUseCase: CheckOfficialStoreTypeUseCase,
         private val getShopBasicDataUseCase: GetShopBasicDataUseCaseCoroutine,
         private val getShopStatusUseCase: GetShopStatusUseCaseCoroutine,
+        private val updateShopScheduleUseCase: UpdateShopScheduleUseCase,
         private val dispatchers: CoroutineDispatchers
 ): BaseViewModel(dispatchers.main) {
 
@@ -39,13 +43,42 @@ class ShopSettingsInfoViewModel @Inject constructor (
     val shopStatusData: LiveData<Result<GoldGetPmOsStatus>>
         get() = _shopStatusData
 
+    private val _updateScheduleResult = MutableLiveData<Result<String>>()
+    val updateScheduleResult: LiveData<Result<String>>
+        get() = _updateScheduleResult
 
+
+    fun detachView() {
+//        checkOsMerchantUseCase.unsubscribe()
+//        getShopBasicDataUseCase.unsubscribe()
+//        getShopStatusUseCase.unsubscribe()
+        updateShopScheduleUseCase.unsubscribe()
+    }
 
     fun getShopData(shopId: Int, includeOS: Boolean) {
         launchCatchError(block = {
             _shopBasicData.postValue(Success(getShopBasicData().await()))
             _shopStatusData.postValue(Success(getShopStatus(shopId, includeOS).await()))
         }, onError = {})
+    }
+
+    fun updateShopSchedule(
+            @ShopScheduleActionDef action: Int,
+            closeNow: Boolean,
+            closeStart: String,
+            closeEnd: String,
+            closeNote: String
+    ) {
+        updateShopScheduleUseCase.unsubscribe()
+
+        launchCatchError(block = {
+            val updateScheduleResponse: String = withContext(dispatchers.io) {
+                updateShopScheduleUseCase.getData(RequestParams.EMPTY)
+            }
+            _updateScheduleResult.postValue(Success(updateScheduleResponse))
+        }) {
+            _updateScheduleResult.postValue(Fail(it))
+        }
     }
 
     private fun getShopBasicData(): Deferred<ShopBasicDataQuery> {
