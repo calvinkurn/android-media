@@ -112,6 +112,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private var isFirstLoad = true
     private var isErrorToastShown = false
 
+    private var performanceMonitoringSellerHomePltCompleted = false
     private var performanceMonitoringSellerHomeCard: PerformanceMonitoring? = null
     private var performanceMonitoringSellerHomeLineGraph: PerformanceMonitoring? = null
     private var performanceMonitoringSellerHomeProgress: PerformanceMonitoring? = null
