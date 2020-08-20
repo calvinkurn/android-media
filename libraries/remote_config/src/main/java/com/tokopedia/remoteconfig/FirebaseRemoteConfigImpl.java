@@ -2,6 +2,8 @@ package com.tokopedia.remoteconfig;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.text.TextUtils;
+
 import androidx.annotation.Nullable;
 
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
@@ -18,6 +20,7 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
     private static final String CACHE_NAME = "RemoteConfigDebugCache";
     private static final long THREE_HOURS = TimeUnit.HOURS.toSeconds(3);
     private static final long CONFIG_CACHE_EXPIRATION = THREE_HOURS;
+    private static final String MISVALUE = "qxz"; //just a random string
 
     private FirebaseRemoteConfig firebaseRemoteConfig;
     private SharedPreferences sharedPrefs;
@@ -25,7 +28,8 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
     public FirebaseRemoteConfigImpl(Context context) {
         try {
             this.firebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
-        } catch (Exception ignored) { } // FirebaseApp is not intialized, ignoring the error and handle it with default value
+        } catch (Exception ignored) {
+        } // FirebaseApp is not intialized, ignoring the error and handle it with default value
 
         if (GlobalConfig.isAllowDebuggingTools() && context != null) {
             this.sharedPrefs = context.getSharedPreferences(CACHE_NAME, Context.MODE_PRIVATE);
@@ -59,17 +63,21 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
     @Override
     public boolean getBoolean(String key, boolean defaultValue) {
         if (isDebug()) {
-            String cacheValue = sharedPrefs.getString(key, String.valueOf(defaultValue));
+            String cacheValue = sharedPrefs.getString(key, MISVALUE);
 
-            if (isCacheValueValid(cacheValue, String.valueOf(defaultValue))) {
+            if (isCacheValueValid(cacheValue, MISVALUE)) {
                 return cacheValue.equalsIgnoreCase("true");
             }
         }
 
         if (firebaseRemoteConfig != null) {
-            return firebaseRemoteConfig.getBoolean(key);
+            String value = firebaseRemoteConfig.getString(key);
+            if (TextUtils.isEmpty(value)) {
+                return defaultValue;
+            } else {
+                return "true".equalsIgnoreCase(value);
+            }
         }
-
         return defaultValue;
     }
 
@@ -109,9 +117,9 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
     @Override
     public long getLong(String key, long defaultValue) {
         if (isDebug()) {
-            String cacheValue = sharedPrefs.getString(key, String.valueOf(defaultValue));
+            String cacheValue = sharedPrefs.getString(key, MISVALUE);
 
-            if (isCacheValueValid(cacheValue, String.valueOf(defaultValue))) {
+            if (isCacheValueValid(cacheValue, MISVALUE)) {
                 return Long.parseLong(cacheValue);
             }
         }
@@ -131,9 +139,9 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
     @Override
     public String getString(String key, String defaultValue) {
         if (isDebug()) {
-            String cacheValue = sharedPrefs.getString(key, defaultValue);
+            String cacheValue = sharedPrefs.getString(key, MISVALUE);
 
-            if (isCacheValueValid(cacheValue, defaultValue)) {
+            if (isCacheValueValid(cacheValue, MISVALUE)) {
                 return cacheValue;
             }
         }
