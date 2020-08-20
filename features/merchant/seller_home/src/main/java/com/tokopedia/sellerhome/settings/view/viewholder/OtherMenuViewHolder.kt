@@ -2,16 +2,11 @@ package com.tokopedia.sellerhome.settings.view.viewholder
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Paint
-import android.graphics.Rect
 import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
-import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.FragmentManager
@@ -20,7 +15,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.settings.analytics.*
 import com.tokopedia.sellerhome.settings.view.bottomsheet.SettingsFreeShippingBottomSheet
@@ -52,9 +46,6 @@ class OtherMenuViewHolder(private val itemView: View,
         private val RED_TEXT_COLOR = R.color.setting_red_text
         private val GREY_POWER_MERCHANT_ICON = R.drawable.ic_power_merchant_inactive
         private val GREEN_POWER_MERCHANT_ICON = R.drawable.ic_power_merchant
-
-        private const val HEADER_ICON_WIDTH_PERCENTAGE = 0.117
-        private const val HEADER_ICON_X_POSITION = 0.867
     }
 
     fun onSuccessGetSettingShopInfoData(uiModel: SettingShopInfoUiModel) {
@@ -241,42 +232,16 @@ class OtherMenuViewHolder(private val itemView: View,
     }
 
     private fun showShopStatusHeader(shopType: ShopType) {
-        if (shopType is RegularMerchant) {
-            itemView.shopStatusHeader?.setImageDrawable(ContextCompat.getDrawable(context, shopType.shopTypeHeaderRes))
-        } else {
-            itemView.shopStatusHeader?.setImageBitmap(shopType.shopTypeHeaderIconRes?.let { getShopStatusHeaderBitmap(shopType.shopTypeHeaderRes, it) })
-
-        }
-    }
-
-    private fun getShopStatusHeaderBitmap(@DrawableRes shopTypeHeaderRes: Int,
-                                          @DrawableRes shopTypeHeaderIconRes: Int): Bitmap? {
-        return try {
-            val iconPaint = Paint().apply {
-                isAntiAlias = true
-                isFilterBitmap = true
-                isDither = true
-            }
-
-            ResourcesCompat.getDrawable(context.resources, shopTypeHeaderRes, null)?.toBitmap()?.let { baseBitmap ->
-                val baseBitmapCopy = baseBitmap.copy(Bitmap.Config.ARGB_8888, true)
-                ResourcesCompat.getDrawable(context.resources, shopTypeHeaderIconRes, null)?.toBitmap()?.let { iconBitmap ->
-                    val iconBitmapCopy = iconBitmap.copy(Bitmap.Config.ARGB_8888, true)
-                    val iconWidth = (baseBitmapCopy.width * HEADER_ICON_WIDTH_PERCENTAGE)
-                    val iconHeight = iconBitmapCopy.height * iconWidth / iconBitmapCopy.width
-                    val iconX = (baseBitmapCopy.width * HEADER_ICON_X_POSITION).toInt()
-                    Canvas(baseBitmapCopy).run {
-                        val iconBitmapRect = Rect().apply {
-                            set(iconX - iconWidth.toInt(), baseBitmapCopy.height - iconHeight.toInt(), iconX, baseBitmapCopy.height)
-                        }
-                        drawBitmap(iconBitmap, null, iconBitmapRect, iconPaint)
-                    }
-                    baseBitmapCopy
+        itemView.shopStatusHeader?.setImageDrawable(ContextCompat.getDrawable(context, shopType.shopTypeHeaderRes))
+        itemView.shopStatusHeaderIcon?.run {
+            if (shopType !is RegularMerchant) {
+                visibility = View.VISIBLE
+                shopType.shopTypeHeaderIconRes?.let { iconRes ->
+                    setImageDrawable(ContextCompat.getDrawable(context, iconRes))
                 }
+            } else {
+                visibility = View.GONE
             }
-        }
-        catch (ex: Exception) {
-            null
         }
     }
 
