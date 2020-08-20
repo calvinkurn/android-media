@@ -5,12 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.gm.common.data.source.cloud.model.GoldGetPmOsStatus
 import com.tokopedia.gm.common.domain.interactor.GetShopStatusUseCase
-import com.tokopedia.gm.common.domain.interactor.GetShopStatusUseCaseCoroutine
 import com.tokopedia.shop.common.constant.ShopScheduleActionDef
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
-import com.tokopedia.shop.common.graphql.data.shopbasicdata.gql.ShopBasicDataQuery
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopBasicDataUseCase
-import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopBasicDataUseCaseCoroutine
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.UpdateShopScheduleUseCase
 import com.tokopedia.shop.settings.basicinfo.data.CheckShopIsOfficialModel
 import com.tokopedia.shop.settings.basicinfo.domain.CheckOfficialStoreTypeUseCase
@@ -28,8 +25,8 @@ import javax.inject.Inject
 
 class ShopSettingsInfoViewModel @Inject constructor (
         private val checkOsMerchantUseCase: CheckOfficialStoreTypeUseCase,
-        private val getShopBasicDataUseCase: GetShopBasicDataUseCase, // GetShopBasicDataUseCaseCoroutine,
-        private val getShopStatusUseCase: GetShopStatusUseCase, // GetShopStatusUseCaseCoroutine,
+        private val getShopBasicDataUseCase: GetShopBasicDataUseCase,
+        private val getShopStatusUseCase: GetShopStatusUseCase,
         private val updateShopScheduleUseCase: UpdateShopScheduleUseCase,
         private val dispatchers: CoroutineDispatchers
 ): BaseViewModel(dispatchers.main) {
@@ -52,9 +49,9 @@ class ShopSettingsInfoViewModel @Inject constructor (
 
 
     fun detachView() {
-//        checkOsMerchantUseCase.unsubscribe()
-//        getShopBasicDataUseCase.unsubscribe()
-//        getShopStatusUseCase.unsubscribe()
+        // checkOsMerchantUseCase.unsubscribe()
+        getShopBasicDataUseCase.unsubscribe()
+        getShopStatusUseCase.unsubscribe()
         updateShopScheduleUseCase.unsubscribe()
     }
 
@@ -76,7 +73,14 @@ class ShopSettingsInfoViewModel @Inject constructor (
 
         launchCatchError(block = {
             val updateScheduleResponse: String = withContext(dispatchers.io) {
-                updateShopScheduleUseCase.getData(RequestParams.EMPTY)
+                val requestParams = UpdateShopScheduleUseCase.createRequestParams(
+                        action = action,
+                        closeNow = closeNow,
+                        closeStart = closeStart,
+                        closeEnd = closeEnd,
+                        closeNote = closeNote
+                )
+                updateShopScheduleUseCase.getData(requestParams)
             }
             _updateScheduleResult.postValue(Success(updateScheduleResponse))
         }) {
@@ -99,11 +103,8 @@ class ShopSettingsInfoViewModel @Inject constructor (
     private fun getShopStatus(shopId: String, includeOS: Boolean): Deferred<GoldGetPmOsStatus> {
         return async(dispatchers.io) {
             var shopStatusData = GoldGetPmOsStatus()
-            val requestParams = GetShopStatusUseCase.createRequestParams(shopId, includeOS)
             try {
-//                getShopStatusUseCase.params = GetShopStatusUseCaseCoroutine
-//                        .createRequestParam(shopId, includeOS)
-//                shopStatusData = getShopStatusUseCase.executeOnBackground()
+                val requestParams = GetShopStatusUseCase.createRequestParams(shopId, includeOS)
                 shopStatusData = getShopStatusUseCase.getData(requestParams)
             } catch (t: Throwable) {
                 _shopStatusData.postValue(Fail(t))
