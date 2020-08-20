@@ -140,17 +140,6 @@ class ReviewScoreWidget : BaseCustomView {
         reviewScoreLoadingText.hide()
     }
 
-    fun showMultipleSmileys() {
-        reviewEditableExcellentSmiley.show()
-        reviewEditableMediocreSmiley.show()
-        reviewEditableBadSmiley.show()
-    }
-
-    fun showDeadline() {
-        reviewScoreDeadlineLabel.show()
-        reviewScoreDeadline.show()
-    }
-
     private fun setDeadline(deadline: String) {
         if (deadline.isNotBlank()) {
             this.reviewScoreDeadline.apply {

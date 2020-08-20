@@ -2,13 +2,15 @@
 <com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_marginStart="@dimen/dp_12"
     android:layout_marginEnd="@dimen/dp_12"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/dp_12">
         
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/reviewPendingProductImage"
@@ -19,7 +21,8 @@
             android:layout_marginLeft="@dimen/dp_12"
             android:visibility="gone"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
+            app:layout_constraintStart_toStartOf="parent"
+            tools:visibility="visible"/>
         
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/reviewPendingProductName"
@@ -38,7 +41,8 @@
             app:typographyType="body_2"
             app:layout_constraintStart_toEndOf="@id/reviewPendingProductImage"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/reviewPendingDate" />
+            app:layout_constraintTop_toBottomOf="@id/reviewPendingDate"
+            tools:visibility="visible"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/reviewPendingProductVariant"
@@ -50,7 +54,8 @@
             app:typographyWeight="reguler"
             app:typographyType="body_3"
             app:layout_constraintStart_toStartOf="@id/reviewPendingProductName"
-            app:layout_constraintTop_toBottomOf="@id/reviewPendingProductName"/>
+            app:layout_constraintTop_toBottomOf="@id/reviewPendingProductName"
+            tools:visibility="visible"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/reviewPendingDate"
@@ -64,19 +69,19 @@
             app:typographyWeight="reguler"
             app:typographyType="body_3"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toEndOf="@id/reviewPendingProductImage" />
+            app:layout_constraintStart_toEndOf="@id/reviewPendingProductImage"
+            tools:visibility="visible"/>
 
         <com.tokopedia.reputation.common.view.AnimatedRatingPickerReviewPendingView
             android:id="@+id/reviewPendingStars"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/layout_lvl1"
-            android:layout_marginBottom="@dimen/dp_12"
             android:visibility="gone"
             app:layout_goneMarginTop="@dimen/layout_lvl1"
             app:layout_constraintStart_toStartOf="@id/reviewPendingProductName"
             app:layout_constraintTop_toBottomOf="@id/reviewPendingProductVariant"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            tools:visibility="visible"/>
 
         <com.tokopedia.unifycomponents.NotificationUnify
             android:id="@+id/reviewPendingNewIcon"
@@ -88,7 +93,8 @@
             app:layout_constraintTop_toTopOf="@id/reviewPendingStars"
             app:layout_constraintBottom_toBottomOf="@id/reviewPendingStars"
             app:notificationType="none_type"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:visibility="visible"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

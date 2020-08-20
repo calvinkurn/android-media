@@ -24,6 +24,7 @@ class CreateReviewTextArea : BaseCustomView {
 
     private fun init() {
         View.inflate(context, R.layout.widget_create_review_text_area, this)
+        createReviewEditText.setHintTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_32))
     }
 
     fun setListener(textAreaListener: TextAreaListener) {
