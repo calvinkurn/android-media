@@ -922,7 +922,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                 }
                 val backgroundColor = MethodChecker.getColor(context, com.tokopedia.design.R.color.tkpd_main_green)
 
-                val spanText = SpannableString(getString(com.tokopedia.product.manage.item.R.string.popup_tips_trick_clickable))
+                val spanText = SpannableString(getString(R.string.popup_tips_trick_clickable))
                 spanText.setSpan(StyleSpan(Typeface.BOLD),
                     5, spanText.length - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 spanText.setSpan(ForegroundColorSpan(backgroundColor),

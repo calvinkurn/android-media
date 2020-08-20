@@ -74,9 +74,18 @@ class SellerHomeViewModelTest {
     }
 
     private fun createViewModel(): SellerHomeViewModel {
-        return SellerHomeViewModel(getShopStatusUseCase, userSession, getTickerUseCase, getLayoutUseCase,
-                getShopLocationUseCase, getCardDataUseCase, getLineGraphDataUseCase, getProgressDataUseCase,
-                getPostDataUseCase, getCarouselDataUseCase, testDispatcher)
+        return SellerHomeViewModel(
+                dagger.Lazy { getShopStatusUseCase },
+                dagger.Lazy { userSession },
+                dagger.Lazy { getTickerUseCase },
+                dagger.Lazy { getLayoutUseCase },
+                dagger.Lazy { getShopLocationUseCase },
+                dagger.Lazy { getCardDataUseCase },
+                dagger.Lazy { getLineGraphDataUseCase },
+                dagger.Lazy { getProgressDataUseCase },
+                dagger.Lazy { getPostDataUseCase },
+                dagger.Lazy { getCarouselDataUseCase } ,
+                testDispatcher)
     }
 
     @Test
