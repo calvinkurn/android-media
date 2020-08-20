@@ -177,7 +177,7 @@ open class SimilarProductRecommendationFragment : BaseListFragment<SimilarProduc
     private fun showMessageSuccessAddWishlist() {
         if (activity == null) return
         val view = activity!!.findViewById<View>(android.R.id.content)
-        val message = getString(R.string.msg_success_add_wishlist)
+        val message = getString(R.string.recom_msg_success_add_wishlist)
         view?.let {
             Toaster.make(
                     it,
@@ -197,7 +197,7 @@ open class SimilarProductRecommendationFragment : BaseListFragment<SimilarProduc
     private fun showMessageSuccessRemoveWishlist() {
         if (activity == null) return
         val view = activity!!.findViewById<View>(android.R.id.content)
-        val message = getString(R.string.msg_success_remove_wishlist)
+        val message = getString(R.string.recom_msg_success_remove_wishlist)
         Snackbar.make(view, message, Snackbar.LENGTH_LONG).show()
     }
 
