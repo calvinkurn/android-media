@@ -110,19 +110,20 @@ class ReviewScoreWidget : BaseCustomView {
     fun onScoreSelected(score: Int) {
         when (score) {
             ReviewConstants.REPUTATION_SCORE_BAD -> {
-                this.reviewEditableMediocreSmiley.deactivateMediocre()
-                this.reviewEditableExcellentSmiley.deactivateExcellent()
+                this.reviewEditableMediocreSmiley.deactivateMediocre(false)
+                this.reviewEditableExcellentSmiley.deactivateExcellent(false)
             }
             ReviewConstants.REPUTATION_SCORE_MEDIOCRE -> {
-                this.reviewEditableBadSmiley.deactivateBad()
-                this.reviewEditableExcellentSmiley.deactivateExcellent()
+                this.reviewEditableBadSmiley.deactivateBad(false)
+                this.reviewEditableExcellentSmiley.deactivateExcellent(false)
             }
             // ReviewConstants.REPUTATION_SCORE_EXCELLENT
             else -> {
-                this.reviewEditableBadSmiley.deactivateBad()
-                this.reviewEditableMediocreSmiley.deactivateMediocre()
+                this.reviewEditableBadSmiley.deactivateBad(false)
+                this.reviewEditableMediocreSmiley.deactivateMediocre(false)
             }
         }
+        currentScore = score
     }
 
     fun showLoading() {

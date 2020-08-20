@@ -334,9 +334,10 @@ class CreateReviewFragment : BaseDaggerFragment(),
         CreateReviewTracking.reviewOnMessageChangedTracker(getOrderId(), productId.toString(), isEmpty, isEditMode, feedbackId.toString())
     }
 
-    override fun onReviewScoreClicked(score: Int) {
+    override fun onReviewScoreClicked(score: Int): Boolean {
         CreateReviewTracking.eventClickSmiley(getOrderId(), productId.toString())
         createReviewScore.onScoreSelected(score)
+        return true
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

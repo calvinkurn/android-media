@@ -123,11 +123,12 @@ class ReviewDetailFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onReviewScoreClicked(score: Int) {
+    override fun onReviewScoreClicked(score: Int): Boolean {
         (viewModel.reviewDetails.value as? Success)?.let {
             ReviewDetailTracking.eventClickSmiley(it.data.product.productId, it.data.review.feedbackId, viewModel.getUserId())
             viewModel.submitReputation(it.data.reputation.reputationId, score)
         }
+        return false
     }
 
     private fun getDataFromArguments() {
@@ -307,6 +308,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
 
     private fun addHeaderIcons(editable: Boolean) {
         reviewDetailHeader.apply {
+            clearIcons()
             addRightIcon(R.drawable.ic_share)
             rightIcons?.firstOrNull()?.setOnClickListener {
                 (viewModel.reviewDetails.value as? Success)?.let {
@@ -375,7 +377,6 @@ class ReviewDetailFragment : BaseDaggerFragment(),
     }
 
     private fun retry() {
-        clearIcons()
         viewModel.retry()
     }
 

@@ -67,26 +67,26 @@ class ReviewSmileyWidget : BaseCustomView {
         showSmileyText()
     }
 
-    fun deactivateBad() {
+    fun deactivateBad(hideText: Boolean) {
         if(isActive) {
-            setLottieAnimationFromUrl(BAD_SMILEY_ANIMATION_REVERSE)
-            hideSmileyText()
+            setLottieAnimationFromUrl(BAD_SMILEY_ANIMATION_REVERSE, true)
+            hideSmileyText(hideText)
             isActive = false
         }
     }
 
-    fun deactivateMediocre() {
+    fun deactivateMediocre(hideText: Boolean) {
         if(isActive) {
-            setLottieAnimationFromUrl(MEDIOCRE_SMILEY_ANIMATION_REVERSE)
-            hideSmileyText()
+            setLottieAnimationFromUrl(MEDIOCRE_SMILEY_ANIMATION_REVERSE, true)
+            hideSmileyText(hideText)
             isActive = false
         }
     }
 
-    fun deactivateExcellent() {
+    fun deactivateExcellent(hideText: Boolean) {
         if(isActive) {
-            setLottieAnimationFromUrl(EXCELLENT_SMILEY_ANIMATION_REVERSE)
-            hideSmileyText()
+            setLottieAnimationFromUrl(EXCELLENT_SMILEY_ANIMATION_REVERSE, true)
+            hideSmileyText(hideText)
             isActive = false
         }
     }
@@ -178,10 +178,12 @@ class ReviewSmileyWidget : BaseCustomView {
         }
     }
 
-    private fun hideSmileyText() {
+    private fun hideSmileyText(hideText: Boolean = true) {
         this.reviewEditableText.apply {
             animate().alpha(0f)
-            hide()
+            if(hideText) {
+                hide()
+            }
         }
     }
 
@@ -190,49 +192,52 @@ class ReviewSmileyWidget : BaseCustomView {
             ReviewConstants.REPUTATION_SCORE_BAD -> {
                 this.reviewEditableImageView.apply {
                     setOnClickListener {
+                        val shouldAnimate = reviewScoreClickListener.onReviewScoreClicked(score)
                         if(!isActive) {
                             isActive = true
-                            setLottieAnimationFromUrl(BAD_SMILEY_ANIMATION)
+                            setLottieAnimationFromUrl(BAD_SMILEY_ANIMATION, shouldAnimate)
                         } else {
                             isActive = false
-                            setLottieAnimationFromUrl(BAD_SMILEY_ANIMATION_REVERSE)
+                            setLottieAnimationFromUrl(BAD_SMILEY_ANIMATION_REVERSE, shouldAnimate)
                         }
-                        reviewScoreClickListener.onReviewScoreClicked(score)
                     }
                 }
             }
             ReviewConstants.REPUTATION_SCORE_MEDIOCRE -> {
                 this.reviewEditableImageView.apply {
                     setOnClickListener {
+                        val shouldAnimate = reviewScoreClickListener.onReviewScoreClicked(score)
                         if(!isActive) {
                             isActive = true
-                            setLottieAnimationFromUrl(MEDIOCRE_SMILEY_ANIMATION)
+                            setLottieAnimationFromUrl(MEDIOCRE_SMILEY_ANIMATION, shouldAnimate)
                         } else {
                             isActive = false
-                            setLottieAnimationFromUrl(MEDIOCRE_SMILEY_ANIMATION_REVERSE)
+                            setLottieAnimationFromUrl(MEDIOCRE_SMILEY_ANIMATION_REVERSE, shouldAnimate)
                         }
-                        reviewScoreClickListener.onReviewScoreClicked(score)
                     }
                 }
             }
             else -> {
                 this.reviewEditableImageView.apply {
                     setOnClickListener {
+                        val shouldAnimate = reviewScoreClickListener.onReviewScoreClicked(score)
                         if(!isActive) {
                             isActive = true
-                            setLottieAnimationFromUrl(EXCELLENT_SMILEY_ANIMATION)
+                            setLottieAnimationFromUrl(EXCELLENT_SMILEY_ANIMATION, shouldAnimate)
                         } else {
                             isActive = false
-                            setLottieAnimationFromUrl(EXCELLENT_SMILEY_ANIMATION_REVERSE)
+                            setLottieAnimationFromUrl(EXCELLENT_SMILEY_ANIMATION_REVERSE, shouldAnimate)
                         }
-                        reviewScoreClickListener.onReviewScoreClicked(score)
                     }
                 }
             }
         }
     }
 
-    private fun setLottieAnimationFromUrl(animationUrl: String) {
+    private fun setLottieAnimationFromUrl(animationUrl: String, shouldAnimate: Boolean) {
+        if(!shouldAnimate) {
+            return
+        }
         context?.let {
             val lottieCompositionLottieTask = LottieCompositionFactory.fromUrl(it, animationUrl)
 
