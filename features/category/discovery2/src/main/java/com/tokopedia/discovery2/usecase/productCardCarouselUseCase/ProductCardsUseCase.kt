@@ -37,7 +37,7 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
             val parentComponentsItem = getComponent(component1.parentComponentId, pageEndPoint)
             var size = component1.getComponentsItem()?.size
             (component1?.getComponentsItem() as ArrayList<ComponentsItem>).addAll(productCardsRepository.getProducts(component1.id, getQueryParameterMap(size
-                    ?: 0, component1.componentsPerPage, parentComponentsItem?.chipSelectionData, component?.selectedFilters, component?.selectedSort), pageEndPoint, component1.name))
+                    ?: 0, component1.componentsPerPage, parentComponentsItem?.chipSelectionData, component1.selectedFilters, component1.selectedSort), pageEndPoint, component1.name))
             return true
         }
         return false

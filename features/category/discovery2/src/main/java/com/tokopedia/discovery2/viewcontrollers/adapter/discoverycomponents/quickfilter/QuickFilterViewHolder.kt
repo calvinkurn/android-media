@@ -21,7 +21,7 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) : Ab
     private var initializedFilterList: List<Filter>? = null
     private lateinit var quickFilterViewModel: QuickFilterViewModel
     private val quickSortFilter: SortFilter = itemView.findViewById(R.id.quick_sort_filter)
-    private var quickFilterOptionList: java.util.ArrayList<Option> = ArrayList()
+    private var quickFilterOptionList: ArrayList<Option> = ArrayList()
     private var sortFilterBottomSheet: SortFilterBottomSheet = SortFilterBottomSheet()
     private var searchParameter: SearchParameter = SearchParameter()
     private var dynamicFilterModel: DynamicFilterModel? = null
@@ -32,9 +32,9 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) : Ab
     private var filterTrackingData: FilterTrackingData? = null
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
-        quickFilterViewModel = discoveryBaseViewModel as QuickFilterViewModel
-        setObserver()
-        if (getSelectedFilter().isNullOrEmpty()) {
+        if (quickFilterOptionList.isNullOrEmpty()) {
+            quickFilterViewModel = discoveryBaseViewModel as QuickFilterViewModel
+            setObserver()
             setQuickFilters()
             quickFilterViewModel.fetchDynamicFilterModel()
         }
@@ -86,6 +86,7 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) : Ab
         if (quickFilterViewModel.components.data?.isEmpty() == true) return
         val quickFilters = quickFilterViewModel.components.data?.get(0)?.filter ?: ArrayList()
 
+        quickFilterOptionList.clear()
         for (item in quickFilters) {
             quickFilterOptionList.addAll(item.options)
             for (option in item.options) {
@@ -130,24 +131,21 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) : Ab
     }
 
     private fun isQuickFilterSelected(option: Option): Boolean {
-        return getSelectedFilter().containsKey(option.key)
+        for(selectedFilter in filterController.filterViewStateSet){
+            if(option.uniqueId == selectedFilter.replaceAfter("?", "")) return true
+        }
+        return false
     }
 
     private fun onQuickFilterSelected(option: Option) {
         if (!isQuickFilterSelected(option)) {
-            val filter = getSelectedFilter()
-            filter[option.key] = option.value
-            applyFilterToSearchParameter(filter)
-            setSelectedFilter(filter)
+            filterController.setFilter(option, isFilterApplied = true, isCleanUpExistingFilterWithSameKey = false)
             reloadData()
-//            eventQuickFilterClicked(mDepartmentId, option, true)
+//            eventQuickFilterClicked(option, true)
         } else {
-            val filter = getSelectedFilter()
-            filter.remove(option.key)
-            applyFilterToSearchParameter(filter)
-            setSelectedFilter(filter)
+            filterController.setFilter(option, isFilterApplied = false, isCleanUpExistingFilterWithSameKey = false)
             reloadData()
-//            eventQuickFilterClicked(mDepartmentId, option, false)
+//            eventQuickFilterClicked(option, false)
         }
     }
 
