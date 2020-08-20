@@ -48,7 +48,8 @@ data class PaymentInfo(
 
 data class BenefitMap(
         val benefitName: String,
-        val benefitAmount: String
+        val benefitAmount: String,
+        var isBBICashBack : Boolean = false
 )
 
 data class PaymentModeMap(

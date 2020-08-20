@@ -58,7 +58,7 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
                 PaymentDeductionKey.TOTAL_DISCOUNT -> totalDiscountStr = it.amountStr
                 PaymentDeductionKey.REWARDS_POINT -> paymentModeMapList.add(PaymentModeMap(it.itemDesc, it.amountStr))
                 PaymentDeductionKey.CASH_BACK_OVO_POINT -> benefitMapList.add(BenefitMap(it.itemDesc, it.amountStr))
-                PaymentDeductionKey.POTENTIAL_CASH_BACK -> benefitMapList.add(BenefitMap(it.itemDesc, it.amountStr))
+                PaymentDeductionKey.POTENTIAL_CASH_BACK -> benefitMapList.add(BenefitMap(it.itemDesc, it.amountStr, true))
             }
         }
         visitableList.add(PaymentMethodModel(thanksPageData.gatewayName))
