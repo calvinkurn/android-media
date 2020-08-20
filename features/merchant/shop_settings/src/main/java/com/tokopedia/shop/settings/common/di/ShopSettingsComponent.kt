@@ -24,7 +24,7 @@ import dagger.Component
 
 @ShopSettingsScope
 @Component(
-    modules = [ShopSettingsModule::class, ViewModelModule::class],
+    modules = [ShopSettingsModule::class, ViewModelModule::class, ShopSettingsInfoViewModelModule::class],
     dependencies = [BaseAppComponent::class]
 )
 interface ShopSettingsComponent {
@@ -32,7 +32,7 @@ interface ShopSettingsComponent {
     @ApplicationContext
     fun getContext(): Context
     fun getMultiRequestGraphqlUseCase(): MultiRequestGraphqlUseCase
-    fun getDispatcherProvider(): ShopSettingDispatcherProvider
+//    fun getDispatcherProvider(): ShopSettingDispatcherProvider
 
     fun inject(shopSettingsInfoFragment: ShopSettingsInfoFragment)
     fun inject(shopEditBasicInfoActivity: ShopEditBasicInfoActivity)
