@@ -17,6 +17,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import dagger.Lazy
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -29,16 +30,16 @@ import javax.inject.Named
  */
 
 class SellerHomeViewModel @Inject constructor(
-        private val getShopStatusUseCase: GetStatusShopUseCase,
-        private val userSession: UserSessionInterface,
-        private val getTickerUseCase: GetTickerUseCase,
-        private val getLayoutUseCase: GetLayoutUseCase,
-        private val getShopLocationUseCase: GetShopLocationUseCase,
-        private val getCardDataUseCase: GetCardDataUseCase,
-        private val getLineGraphDataUseCase: GetLineGraphDataUseCase,
-        private val getProgressDataUseCase: GetProgressDataUseCase,
-        private val getPostDataUseCase: GetPostDataUseCase,
-        private val getCarouselDataUseCase: GetCarouselDataUseCase,
+        private val getShopStatusUseCase: Lazy<GetStatusShopUseCase>,
+        private val userSession: Lazy<UserSessionInterface>,
+        private val getTickerUseCase: Lazy<GetTickerUseCase>,
+        private val getLayoutUseCase: Lazy<GetLayoutUseCase>,
+        private val getShopLocationUseCase: Lazy<GetShopLocationUseCase>,
+        private val getCardDataUseCase: Lazy<GetCardDataUseCase>,
+        private val getLineGraphDataUseCase: Lazy<GetLineGraphDataUseCase>,
+        private val getProgressDataUseCase: Lazy<GetProgressDataUseCase>,
+        private val getPostDataUseCase: Lazy<GetPostDataUseCase>,
+        private val getCarouselDataUseCase: Lazy<GetCarouselDataUseCase>,
         private val getTableDataUseCase: GetTableDataUseCase,
         private val getPieChartDataUseCase: GetPieChartDataUseCase,
         private val getBarChartDataUseCase: GetBarChartDataUseCase,
@@ -50,7 +51,7 @@ class SellerHomeViewModel @Inject constructor(
         private const val SELLER_HOME_PAGE_NAME = "seller-home"
     }
 
-    private val shopId: String by lazy { userSession.shopId }
+    private val shopId: String by lazy { userSession.get().shopId }
     private val dynamicParameter by lazy {
         val startDateMillis = DateTimeUtil.getNPastDaysTimestamp(daysBefore = 7)
         val endDateMillis = DateTimeUtil.getNPastDaysTimestamp(daysBefore = 1)
@@ -102,7 +103,7 @@ class SellerHomeViewModel @Inject constructor(
     fun getTicker() {
         launchCatchError(block = {
             val result: Success<List<TickerUiModel>> = Success(withContext(Dispatchers.IO) {
-                getTickerUseCase.executeOnBackground()
+                getTickerUseCase.get().executeOnBackground()
             })
             _homeTicker.postValue(result)
         }, onError = {
@@ -111,15 +112,15 @@ class SellerHomeViewModel @Inject constructor(
     }
 
     fun getShopStatus() = executeCall(_shopStatus) {
-        getShopStatusUseCase.params = GetStatusShopUseCase.createRequestParams(userSession.shopId)
-        getShopStatusUseCase.executeOnBackground()
+        getShopStatusUseCase.get().params = GetStatusShopUseCase.createRequestParams(userSession.get().shopId)
+        getShopStatusUseCase.get().executeOnBackground()
     }
 
     fun getWidgetLayout() {
         launchCatchError(block = {
             val result: Success<List<BaseWidgetUiModel<*>>> = Success(withContext(Dispatchers.IO) {
-                getLayoutUseCase.params = GetLayoutUseCase.getRequestParams(shopId, SELLER_HOME_PAGE_NAME)
-                return@withContext getLayoutUseCase.executeOnBackground()
+                getLayoutUseCase.get().params = GetLayoutUseCase.getRequestParams(shopId, SELLER_HOME_PAGE_NAME)
+                return@withContext getLayoutUseCase.get().executeOnBackground()
             })
             _widgetLayout.postValue(result)
         }, onError = {
@@ -130,8 +131,8 @@ class SellerHomeViewModel @Inject constructor(
     fun getShopLocation() {
         launchCatchError(block = {
             val result: Success<ShippingLoc> = Success(withContext(Dispatchers.IO) {
-                getShopLocationUseCase.params = GetShopLocationUseCase.getRequestParams(shopId)
-                return@withContext getShopLocationUseCase.executeOnBackground()
+                getShopLocationUseCase.get().params = GetShopLocationUseCase.getRequestParams(shopId)
+                return@withContext getShopLocationUseCase.get().executeOnBackground()
             })
             _shopLocation.postValue(result)
         }, onError = {
@@ -142,8 +143,8 @@ class SellerHomeViewModel @Inject constructor(
     fun getCardWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
             val result: Success<List<CardDataUiModel>> = Success(withContext(Dispatchers.IO) {
-                getCardDataUseCase.params = GetCardDataUseCase.getRequestParams(dataKeys, dynamicParameter)
-                return@withContext getCardDataUseCase.executeOnBackground()
+                getCardDataUseCase.get().params = GetCardDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+                return@withContext getCardDataUseCase.get().executeOnBackground()
             })
             _cardWidgetData.postValue(result)
         }, onError = {
@@ -154,8 +155,8 @@ class SellerHomeViewModel @Inject constructor(
     fun getLineGraphWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
             val result: Success<List<LineGraphDataUiModel>> = Success(withContext(Dispatchers.IO) {
-                getLineGraphDataUseCase.params = GetLineGraphDataUseCase.getRequestParams(dataKeys, dynamicParameter)
-                return@withContext getLineGraphDataUseCase.executeOnBackground()
+                getLineGraphDataUseCase.get().params = GetLineGraphDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+                return@withContext getLineGraphDataUseCase.get().executeOnBackground()
             })
             _lineGraphWidgetData.postValue(result)
         }, onError = {
@@ -167,8 +168,8 @@ class SellerHomeViewModel @Inject constructor(
         launchCatchError(block = {
             val result: Success<List<ProgressDataUiModel>> = Success(withContext(Dispatchers.IO) {
                 val today = DateTimeUtil.format(Date().time, DATE_FORMAT)
-                getProgressDataUseCase.params = GetProgressDataUseCase.getRequestParams(today, dataKeys)
-                return@withContext getProgressDataUseCase.executeOnBackground()
+                getProgressDataUseCase.get().params = GetProgressDataUseCase.getRequestParams(userSession.get().shopId, today, dataKeys)
+                return@withContext getProgressDataUseCase.get().executeOnBackground()
             })
             _progressWidgetData.postValue(result)
         }, onError = {
@@ -179,8 +180,8 @@ class SellerHomeViewModel @Inject constructor(
     fun getPostWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
             val result: Success<List<PostListDataUiModel>> = Success(withContext(Dispatchers.IO) {
-                getPostDataUseCase.params = GetPostDataUseCase.getRequestParams(dataKeys, dynamicParameter)
-                return@withContext getPostDataUseCase.executeOnBackground()
+                getPostDataUseCase.get().params = GetPostDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+                return@withContext getPostDataUseCase.get().executeOnBackground()
             })
             _postListWidgetData.postValue(result)
         }, onError = {
@@ -191,8 +192,8 @@ class SellerHomeViewModel @Inject constructor(
     fun getCarouselWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
             val result: Success<List<CarouselDataUiModel>> = Success(withContext(Dispatchers.IO) {
-                getCarouselDataUseCase.params = GetCarouselDataUseCase.getRequestParams(dataKeys)
-                return@withContext getCarouselDataUseCase.executeOnBackground()
+                getCarouselDataUseCase.get().params = GetCarouselDataUseCase.getRequestParams(dataKeys)
+                return@withContext getCarouselDataUseCase.get().executeOnBackground()
             })
             _carouselWidgetData.postValue(result)
         }, onError = {
