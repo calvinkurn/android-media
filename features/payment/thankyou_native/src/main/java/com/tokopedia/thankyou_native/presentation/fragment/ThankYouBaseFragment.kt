@@ -211,9 +211,9 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
             homeButton.setOnClickListener {
                 thanksPageData.thanksCustomization?.let {
                     if (it.customHomeUrlApp.isNullOrBlank())
-                        launchApplink(it.customHomeUrlApp!!)
-                    else
                         gotoHomePage()
+                    else
+                        launchApplink(it.customHomeUrlApp)
                 } ?: run {
                     gotoHomePage()
                 }
@@ -303,8 +303,6 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
 
 
     private fun getOrderListPageIntent(): Intent? {
-        //todo need multi deeplink once other type of transaction integrated.
-        // ..currently it is for only market place
         return RouteManager.getIntent(context, ApplinkConst.MARKETPLACE_ORDER)
     }
 
