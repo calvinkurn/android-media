@@ -428,10 +428,10 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         btn_req_cancel?.apply {
             text = when (cancelReasonResponse.isEligibleInstantCancel) {
                 true -> {
-                    BuyerConsts.BUTTON_INSTANT_CANCELATION
+                    BUTTON_INSTANT_CANCELATION
                 }
                 false -> {
-                    BuyerConsts.BUTTON_REGULER_CANCELATION
+                    BUTTON_REGULER_CANCELATION
                 }
             }
             setOnClickListener { cancelBtnClickListener(cancelReasonResponse.isEligibleInstantCancel) }
@@ -582,7 +582,6 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
     }
 
     private fun submitResultReason() {
-        // ini jadinya mah, panggil usecase baru aja
         val intent = Intent()
         intent.putExtra(OrderListContants.REASON, reasonCancel)
         intent.putExtra(OrderListContants.REASON_CODE, reasonCode)
@@ -668,7 +667,10 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
             setTitle(instantCancelResponse.popup.title)
             setDescription(instantCancelResponse.popup.body)
             setPrimaryCTAText(getString(R.string.button_order_detail_request_cancel))
-            setPrimaryCTAClickListener { submitRequestCancel() }
+            setPrimaryCTAClickListener {
+                dismiss()
+                submitRequestCancel()
+            }
             setSecondaryCTAText(getString(R.string.popup_selesai_cancel_btn))
             setSecondaryCTAClickListener {
                 dismiss()
