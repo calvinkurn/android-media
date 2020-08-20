@@ -22,7 +22,7 @@ class ObtainedBenefitViewHolder(val view: View) : AbstractViewHolder<ObtainedAft
 
     private fun addBenefits(container: LinearLayout, obtainedAfterTransaction: ObtainedAfterTransaction) {
         container.removeAllViews()
-        obtainedAfterTransaction.benefitMapList?.forEach {
+        obtainedAfterTransaction.benefitMapList.forEach {
             val view = createBenefitView(context = view.context, benefitMap = it)
             container.addView(view)
         }

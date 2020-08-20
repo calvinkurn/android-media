@@ -74,8 +74,10 @@ class ThankYouPageAnalytics @Inject constructor(
         this.thanksPageData = thanksPageData
         CoroutineScope(mainDispatcher).launchCatchError(block = {
             withContext(bgDispatcher) {
-                thanksPageData.shopOrder.forEach { shopOrder ->
-                    processDataForGTM(thanksPageData.thanksCustomization.trackingData)
+                thanksPageData.thanksCustomization?.apply {
+                    trackingData?.let {
+                        processDataForGTM(it)
+                    }
                 }
             }
         }, onError = {

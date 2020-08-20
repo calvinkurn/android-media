@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -140,8 +141,8 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
             view.findViewById<DigitalRecommendation>(R.id.digitalRecommendationView)
         }
         if (::thanksPageData.isInitialized)
-                iDigitalRecommendationView?.loadRecommendation(thanksPageData.paymentID.toString(),
-                        this, digitalRecomTrackingQueue)
+            iDigitalRecommendationView?.loadRecommendation(thanksPageData.paymentID.toString(),
+                    this, digitalRecomTrackingQueue)
     }
 
     private fun getRecommendationView(@LayoutRes layout: Int): View {
@@ -195,6 +196,28 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         return when (paymentStatus) {
             is PaymentVerified -> true
             else -> false
+        }
+    }
+
+    fun setUpHomeButton(homeButton: TextView?) {
+        homeButton?.let {
+            thanksPageData.thanksCustomization?.let {
+                it.customHomeButtonTitle?.apply {
+                    if (isNotBlank())
+                        homeButton.text = this
+                }
+            }
+
+            homeButton.setOnClickListener {
+                thanksPageData.thanksCustomization?.let {
+                    if (it.customHomeUrlApp.isNullOrBlank())
+                        launchApplink(it.customHomeUrlApp!!)
+                    else
+                        gotoHomePage()
+                } ?: run {
+                    gotoHomePage()
+                }
+            }
         }
     }
 

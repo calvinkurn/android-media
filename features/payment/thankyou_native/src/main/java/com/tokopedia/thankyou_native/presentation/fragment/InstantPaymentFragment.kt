@@ -106,13 +106,7 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
                 gotoOrderList(thanksPageData.thanksCustomization.customOrderUrlApp)
             }
         }
-        btnShopAgain.setOnClickListener {
-            if (thanksPageData.thanksCustomization == null || thanksPageData.thanksCustomization.customOrderUrlApp.isNullOrBlank()) {
-                gotoHomePage()
-            } else {
-                launchApplink(thanksPageData.thanksCustomization.customHomeUrlApp)
-            }
-        }
+        setUpHomeButton(btnShopAgain)
     }
 
     private fun observeViewModel() {

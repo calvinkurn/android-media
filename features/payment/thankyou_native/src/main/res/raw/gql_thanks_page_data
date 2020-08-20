@@ -115,6 +115,7 @@ query ThanksPageData($paymentID : Int!, $merchant: String!){
        custom_subtitle
        custom_title_order_button
        custom_wtv_text
+       custom_title_home_button
     }
   }
 }

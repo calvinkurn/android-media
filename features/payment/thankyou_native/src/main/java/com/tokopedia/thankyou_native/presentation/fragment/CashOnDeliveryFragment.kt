@@ -49,7 +49,7 @@ class CashOnDeliveryFragment : ThankYouBaseFragment() {
             tv_payment_method_name.text = thanksPageData.gatewayName
         tv_payment_amount.text = getString(R.string.thankyou_rp_without_space, thanksPageData.amountStr)
         btn_see_transaction_list.setOnClickListener { gotoOrderList() }
-        btnShopAgain.setOnClickListener { gotoHomePage() }
+        setUpHomeButton(btnShopAgain)
     }
 
     override fun getLoadingView(): View? = null
