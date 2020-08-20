@@ -293,7 +293,7 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
             Toaster.make(
                     it,
                     message,
-                    Snackbar.LENGTH_LONG,
+                    Toaster.LENGTH_LONG,
                     Toaster.TYPE_NORMAL,
                     getString(R.string.home_recom_go_to_wishlist),
                     View.OnClickListener { goToWishlist() })
@@ -309,13 +309,13 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
         if (activity == null) return
         val view = activity!!.findViewById<View>(android.R.id.content)
         val message = getString(R.string.msg_success_remove_wishlist)
-        Snackbar.make(view, message, Snackbar.LENGTH_LONG).show()
+        Toaster.make(view, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL)
     }
 
     private fun showMessageFailedWishlistAction() {
         if (activity == null) return
         val view = activity?.findViewById<View>(android.R.id.content)
-        view?.let { Toaster.make(it, ErrorHandler.getErrorMessage(activity, null), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR) }
+        view?.let { Toaster.make(it, ErrorHandler.getErrorMessage(activity, null), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR) }
     }
 
     private fun observeLiveData(){
