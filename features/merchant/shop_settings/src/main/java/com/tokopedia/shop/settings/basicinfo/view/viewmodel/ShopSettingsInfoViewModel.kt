@@ -9,7 +9,7 @@ import com.tokopedia.shop.common.graphql.data.shopbasicdata.gql.ShopBasicDataQue
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopBasicDataUseCaseCoroutine
 import com.tokopedia.shop.settings.basicinfo.data.CheckShopIsOfficialModel
 import com.tokopedia.shop.settings.basicinfo.domain.CheckOfficialStoreTypeUseCase
-import com.tokopedia.shop.settings.common.util.ShopSettingDispatcherProvider
+import com.tokopedia.shop.settings.common.coroutine.CoroutineDispatchers
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -24,8 +24,8 @@ class ShopSettingsInfoViewModel @Inject constructor (
         private val checkOsMerchantUseCase: CheckOfficialStoreTypeUseCase,
         private val getShopBasicDataUseCase: GetShopBasicDataUseCaseCoroutine,
         private val getShopStatusUseCase: GetShopStatusUseCaseCoroutine,
-        private val dispatchers: ShopSettingDispatcherProvider
-): BaseViewModel(dispatchers.ui()) {
+        private val dispatchers: CoroutineDispatchers
+): BaseViewModel(dispatchers.main) {
 
     private val _checkOsMerchantTypeData = MutableLiveData<Result<CheckShopIsOfficialModel>>()
     val checkOsMerchantTypeData: LiveData<Result<CheckShopIsOfficialModel>>
@@ -49,7 +49,7 @@ class ShopSettingsInfoViewModel @Inject constructor (
     }
 
     private fun getShopBasicData(): Deferred<ShopBasicDataQuery> {
-        return async(dispatchers.io()) {
+        return async(dispatchers.io) {
             var shopBasicData = ShopBasicDataQuery()
             try {
                 shopBasicData = getShopBasicDataUseCase.executeOnBackground()
@@ -61,7 +61,7 @@ class ShopSettingsInfoViewModel @Inject constructor (
     }
 
     private fun getShopStatus(shopId: Int, includeOS: Boolean): Deferred<GoldGetPmOsStatus> {
-        return async(dispatchers.io()) {
+        return async(dispatchers.io) {
             var shopStatusData = GoldGetPmOsStatus()
             try {
                 getShopStatusUseCase.params = GetShopStatusUseCaseCoroutine
@@ -76,7 +76,7 @@ class ShopSettingsInfoViewModel @Inject constructor (
 
     fun validateOsMerchantType(shopId: Int) {
         launchCatchError(block = {
-            withContext(dispatchers.io()) {
+            withContext(dispatchers.io) {
                 checkOsMerchantUseCase.params = CheckOfficialStoreTypeUseCase
                         .createRequestParam(shopId = 67726)
                 val osMerchantChecker = checkOsMerchantUseCase.executeOnBackground()

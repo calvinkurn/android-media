@@ -13,8 +13,6 @@ import com.tokopedia.imageuploader.domain.UploadImageRepository
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.imageuploader.utils.ImageUploaderUtils
 import com.tokopedia.shop.settings.basicinfo.data.UploadShopEditImageModel
-import com.tokopedia.shop.settings.common.util.ShopSettingDispatcherProvider
-import com.tokopedia.shop.settings.common.util.ShopSettingsDispatcherProviderImpl
 import com.tokopedia.shop.settings.common.coroutine.CoroutineDispatchers
 import com.tokopedia.shop.settings.common.coroutine.CoroutineDispatchersProvider
 import com.tokopedia.user.session.UserSession
@@ -48,10 +46,6 @@ class ShopSettingsModule {
     @Provides
     @ShopSettingsScope
     fun provideMultiRequestGraphqlUseCase() = GraphqlInteractor.getInstance().multiRequestGraphqlUseCase
-
-    @Provides
-    @ShopSettingsScope
-    fun provideDispatcherProvider(): ShopSettingDispatcherProvider = ShopSettingsDispatcherProviderImpl()
 
     @Provides
     @ShopSettingsScope
