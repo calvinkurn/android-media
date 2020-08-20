@@ -99,30 +99,31 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/spacing_lvl4"
-            android:layout_marginTop="@dimen/dp_topchat_5"
+            android:layout_marginTop="@dimen/spacing_lvl4"
             android:layout_marginRight="@dimen/spacing_lvl4"
-            android:layout_marginBottom="@dimen/spacing_lvl4"
-            android:background="@drawable/border_green_white_box"
-            android:padding="@dimen/spacing_lvl3"
+            android:layout_marginBottom="@dimen/spacing_lvl5"
             android:visibility="gone"
             tools:visibility="visible">
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/blocked_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/chat_blocked_text"
-                android:textColor="@color/black_70"
-                android:textSize="@dimen/fontSize_lvl2" />
+                android:gravity="center_horizontal"
+                android:text="@string/desc_chat_blocked"
+                android:textColor="@color/Neutral_N700_68"
+                app:typographyType="body_3" />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/enable_chat_textView"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/blocked_text"
+                android:gravity="center_horizontal"
                 android:text="@string/enable_chat_settings"
-                android:textColor="@color/tkpd_main_green"
-                android:textSize="@dimen/fontSize_lvl2" />
+                android:textColor="@color/light_G500"
+                app:typographyType="body_3"
+                app:typographyWeight="bold" />
 
         </RelativeLayout>
 
