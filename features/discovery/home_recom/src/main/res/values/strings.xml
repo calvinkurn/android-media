@@ -16,4 +16,5 @@
     <string name="recom_message_retry_general">Ketuk ikon untuk memuat ulang</string>
     <string name="empty_stock">Stok Habis</string>
     <string name="percentage_template"></string>
+    <string name="home_recom_go_to_wishlist">Lihat Wishlist</string>
 </resources>
