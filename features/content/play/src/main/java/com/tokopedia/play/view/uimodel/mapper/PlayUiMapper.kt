@@ -23,7 +23,7 @@ object PlayUiMapper {
             channelInfo = mapChannelInfo(channel),
             videoStream = mapVideoStream(
                     channel.video,
-                    channel.configuration.active,
+                    channel.configuration,
                     channel.isLive),
             videoPlayer = mapVideoPlayer(
                     channel.video,
@@ -101,12 +101,12 @@ object PlayUiMapper {
             hasPromo = configuration.hasPromo
     ) else null
 
-    private fun mapVideoStream(video: Video, isActive: Boolean, isLive: Boolean) = VideoStreamUiModel(
+    private fun mapVideoStream(video: Video, config: Channel.Configuration, isLive: Boolean) = VideoStreamUiModel(
             uriString = video.streamSource,
             channelType = if (isLive) PlayChannelType.Live else PlayChannelType.VOD,
             orientation = VideoOrientation.getByValue(video.orientation),
-            coverUrl = video.coverUrl,
-            isActive = isActive
+            coverUrl = config.roomBackground.imageUrl,
+            isActive = config.active
     )
 
     private fun mapVideoPlayer(video: Video, exoPlayer: ExoPlayer) = when (video.type) {

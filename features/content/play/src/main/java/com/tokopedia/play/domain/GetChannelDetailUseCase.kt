@@ -87,6 +87,9 @@ class GetChannelDetailUseCase @Inject constructor(private val gqlUseCase: Graphq
                     pinned_product_config {
                       pin_title
                       bottom_sheet_title
+                    }  
+                    room_background {
+                      image_url
                     }
                   }
                   stats {
