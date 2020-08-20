@@ -99,8 +99,12 @@ class SellerHomeViewModelTest {
                 dagger.Lazy { getLineGraphDataUseCase },
                 dagger.Lazy { getProgressDataUseCase },
                 dagger.Lazy { getPostDataUseCase },
-                dagger.Lazy { getCarouselDataUseCase }, getTableDataUseCase,
-                getPieChartDataUseCase, getBarChartDataUseCase, testDispatcher)
+                dagger.Lazy { getCarouselDataUseCase },
+                dagger.Lazy { getTableDataUseCase },
+                dagger.Lazy { getPieChartDataUseCase },
+                dagger.Lazy { getBarChartDataUseCase },
+                testDispatcher
+        )
 
         dynamicParameter = getDynamicParameter()
     }
