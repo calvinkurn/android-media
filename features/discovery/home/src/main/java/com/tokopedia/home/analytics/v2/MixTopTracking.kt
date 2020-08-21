@@ -73,7 +73,8 @@ object MixTopTracking : BaseTracking() {
             CurrentSite.KEY, CurrentSite.DEFAULT,
             Screen.KEY, Screen.DEFAULT,
             UserId.KEY, userId,
-            BusinessUnit.KEY, BusinessUnit.DEFAULT
+            BusinessUnit.KEY, BusinessUnit.DEFAULT,
+            ChannelId.KEY, channelId
     )
 
     fun getMixTopButtonClick(channelId: String,headerName: String, buttonName: String) = DataLayer.mapOf(

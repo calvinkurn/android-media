@@ -23,6 +23,7 @@ import org.jetbrains.annotations.NotNull;
 
 import static com.tokopedia.logisticdata.data.constant.LogisticConstant.INSTANCE_TYPE_EDIT_ADDRESS_FROM_SINGLE_CHECKOUT;
 import static com.tokopedia.purchase_platform.common.constant.CartConstant.SCREEN_NAME_CART_NEW_USER;
+import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.EXTRA_REF;
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.KERO_TOKEN;
 
 /**
@@ -68,9 +69,9 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
         Intent intent;
         switch (typeRequest) {
             case CheckoutConstant.TYPE_REQUEST_ADD_SHIPMENT_DEFAULT_ADDRESS:
-                mAnalytics.sendScreenName(this, SCREEN_NAME_CART_NEW_USER);
                 intent = RouteManager.getIntent(this, ApplinkConstInternalLogistic.ADD_ADDRESS_V2);
                 intent.putExtra(KERO_TOKEN, token);
+                intent.putExtra(EXTRA_REF, SCREEN_NAME_CART_NEW_USER);
                 startActivityForResult(intent, LogisticConstant.ADD_NEW_ADDRESS_CREATED_FROM_EMPTY);
                 break;
             case CheckoutConstant.TYPE_REQUEST_EDIT_ADDRESS_FOR_TRADE_IN:
