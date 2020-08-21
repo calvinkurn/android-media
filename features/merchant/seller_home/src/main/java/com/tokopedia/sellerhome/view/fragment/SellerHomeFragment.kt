@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
@@ -115,6 +116,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
     private var hasLoadProgressData = false
     private var hasLoadPostData = false
     private var hasLoadCarouselData = false
+    private var performanceMonitoringSellerHomePltCompleted = false
     private var performanceMonitoringSellerHomeCard: PerformanceMonitoring? = null
     private var performanceMonitoringSellerHomeLineGraph: PerformanceMonitoring? = null
     private var performanceMonitoringSellerHomeProgress: PerformanceMonitoring? = null
@@ -450,15 +452,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
 
     private fun observeWidgetLayoutLiveData() {
         sellerHomeViewModel.widgetLayout.observe(viewLifecycleOwner, Observer { result ->
-            startHomeLayoutRenderMonitoring()
-
             when (result) {
                 is Success -> setOnSuccessGetLayout(result.data)
                 is Fail -> setOnErrorGetLayout(result.throwable)
             }
-
-            stopPerformanceMonitoringSellerHomeLayout()
-            stopHomeLayoutRenderMonitoring()
         })
 
         setProgressBarVisibility(true)
@@ -476,6 +473,11 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
 
     private fun stopHomeLayoutRenderMonitoring() {
         performanceMonitoringSellerHomePlt?.stopRenderPerformanceMonitoring()
+        if(remoteConfig.isNewSellerHomeDisabled()) {
+            (activity as? com.tokopedia.sellerhome.view.oldactivity.SellerHomeActivity)?.sellerHomeLoadTimeMonitoringListener?.onStopPltMonitoring()
+        } else {
+            (activity as? SellerHomeActivity)?.sellerHomeLoadTimeMonitoringListener?.onStopPltMonitoring()
+        }
     }
 
     private fun stopPerformanceMonitoringSellerHomeLayout() {
@@ -648,11 +650,19 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
 
     private inline fun <reified D : BaseDataUiModel> observeWidgetData(liveData: LiveData<Result<List<D>>>, type: String) {
         liveData.observe(viewLifecycleOwner, Observer { result ->
+            startHomeLayoutRenderMonitoring()
             when (result) {
                 is Success -> result.data.setOnSuccessWidgetState(type)
                 is Fail -> {
                     logToCrashlytics(result.throwable, "$ERROR_WIDGET $type")
                     result.throwable.setOnErrorWidgetState<D, BaseWidgetUiModel<D>>(type)
+                }
+            }
+            if (!performanceMonitoringSellerHomePltCompleted) {
+                performanceMonitoringSellerHomePltCompleted = true
+                recyclerView.addOneTimeGlobalLayoutListener {
+                    stopPerformanceMonitoringSellerHomeLayout()
+                    stopHomeLayoutRenderMonitoring()
                 }
             }
             stopSellerHomeFragmentWidgetPerformanceMonitoring(type)
