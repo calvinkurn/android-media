@@ -111,7 +111,12 @@ object CMNotificationUtils {
         val cacheHandler = CMNotificationCacheHandler(context)
         val oldAppVersionName = cacheHandler.getStringValue(CMConstant.APP_VERSION_CACHE_KEY)
         Timber.d("CMUser-APP_VERSION$oldAppVersionName#new-$appVersionName")
-        return TextUtils.isEmpty(oldAppVersionName) || !oldAppVersionName.equals(appVersionName, ignoreCase = true)
+        return if (TextUtils.isEmpty(oldAppVersionName))
+            true
+        else if (oldAppVersionName.equals(appVersionName, ignoreCase = true)) {
+            false
+        } else
+            false
     }
 
     fun getUniqueAppId(context: Context): String {
