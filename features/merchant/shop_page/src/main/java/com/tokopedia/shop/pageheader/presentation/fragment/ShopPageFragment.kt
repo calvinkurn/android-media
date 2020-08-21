@@ -46,7 +46,7 @@ import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.analytic.model.TrackShopTypeDef
 import com.tokopedia.shop.common.constant.ShopHomeType
 import com.tokopedia.shop.common.view.bottomsheet.ShopShareBottomSheet
-import com.tokopedia.shop.common.view.bottomsheet.viewholder.ShopShareBottomsheetViewHolder
+import com.tokopedia.shop.common.view.bottomsheet.listener.ShopShareBottomsheetListener
 import com.tokopedia.shop.common.view.model.ShopShareModel
 import com.tokopedia.shop.favourite.view.activity.ShopFavouriteListActivity
 import com.tokopedia.shop.feed.view.fragment.FeedShopFragment
@@ -85,7 +85,7 @@ class ShopPageFragment :
         BaseDaggerFragment(),
         HasComponent<ShopPageComponent>,
         ShopPageFragmentHeaderViewHolder.ShopPageFragmentViewHolderListener,
-        ShopShareBottomsheetViewHolder.ShopShareBottomsheetListener{
+        ShopShareBottomsheetListener {
 
     companion object {
         const val SHOP_ID = "EXTRA_SHOP_ID"
@@ -1005,6 +1005,10 @@ class ShopPageFragment :
         RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_SETTINGS_INFO)
     }
 
+    override fun onCloseBottomSheet() {
+        shopPageTracking?.clickCancelShareBottomsheet(customDimensionShopPage, isMyShop)
+    }
+
     override fun onItemBottomsheetShareClicked(shopShare: ShopShareModel) {
         val shopImageFileUri = MethodChecker.getUri(context, File(shopImageFilePath))
         shopShare.appIntent?.clipData = ClipData.newRawUri("", shopImageFileUri)
@@ -1037,14 +1041,25 @@ class ShopPageFragment :
                 startActivity(Intent.createChooser(Intent(Intent.ACTION_SEND).apply {
                     type = ShopShareBottomSheet.MimeType.IMAGE.type
                     putExtra(Intent.EXTRA_STREAM, shopImageFileUri)
+                    type = ShopShareBottomSheet.MimeType.TEXT.type
+                    putExtra(Intent.EXTRA_TEXT, getString(
+                            R.string.shop_page_share_text_with_link,
+                            shopPageHeaderDataModel?.shopName,
+                            shopPageHeaderDataModel?.shopCoreUrl
+                    ))
                 }, getString(R.string.shop_page_share_to_social_media_text)))
             }
             else -> {
                 startActivity(shopShare.appIntent?.apply {
-                    putExtra(Intent.EXTRA_TEXT, shopPageHeaderDataModel?.shopCoreUrl)
+                    putExtra(Intent.EXTRA_TEXT, getString(
+                            R.string.shop_page_share_text_with_link,
+                            shopPageHeaderDataModel?.shopName,
+                            shopPageHeaderDataModel?.shopCoreUrl
+                    ))
                 })
             }
         }
+        shopPageTracking?.clickShareSocialMedia(customDimensionShopPage, isMyShop, shopShare.socialMediaName)
         shopShareBottomSheet?.dismiss()
     }
 

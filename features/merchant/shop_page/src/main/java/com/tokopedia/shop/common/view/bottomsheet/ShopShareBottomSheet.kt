@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.view.bottomsheet.adapter.ShopShareBottomSheetAdapter
-import com.tokopedia.shop.common.view.bottomsheet.viewholder.ShopShareBottomsheetViewHolder
+import com.tokopedia.shop.common.view.bottomsheet.listener.ShopShareBottomsheetListener
 import com.tokopedia.shop.common.view.model.ShopShareModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.shop_page_share_bottomsheet.view.*
@@ -19,7 +19,7 @@ import kotlinx.android.synthetic.main.shop_page_share_bottomsheet.view.*
 class ShopShareBottomSheet(
         context: Context?,
         private val fm: FragmentManager?,
-        private val bottomsheetListener: ShopShareBottomsheetViewHolder.ShopShareBottomsheetListener
+        private val bottomsheetListener: ShopShareBottomsheetListener
 ) : BottomSheetUnify() {
 
     companion object {
@@ -51,6 +51,10 @@ class ShopShareBottomSheet(
         }
         setTitle(itemView.context.getString(R.string.shop_page_share_to_social_media_text))
         setChild(itemView)
+        setCloseClickListener {
+            bottomsheetListener.onCloseBottomSheet()
+            dismiss()
+        }
     }
 
     fun show() {

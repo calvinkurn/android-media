@@ -11,6 +11,8 @@ public class ShopPageTrackingConstant {
 
     //event
     public static final String CLICK_SHOP_PAGE = "clickShopPage";
+    public static final String CLICK_SHOP_SETTING = "clickShopSetting";
+    public static final String CLICK_PROFILE = "clickProfile";
     public static final String VIEW_SHOP_PAGE = "viewShopPage";
     public static final String PROMO_VIEW = "promoView";
     public static final String PROMO_CLICK = "promoClick";
@@ -78,10 +80,12 @@ public class ShopPageTrackingConstant {
     public static final String VIEW_WIDGET_BROADCAST = "view widget broadcast";
     public static final String CLICK_WIDGET_BROADCAST = "click widget broadcast";
     public static final String CLICK_CLOSE_FILTER = "click close filter";
+    public static final String CLICK_SHARE_DETAIL = "click share detail";
 
     //label
     public static final String CLICK_TAB = "click tab";
     public static final String CLICK_SHARE = "click share";
+    public static final String CLICK_BOTTOMSHEET_DISMISS_BUTTON = "x button";
     public static final String CLICK_CART_BUTTON = "click my cart";
     public static final String CLICK_REQUEST_OPEN_SHOP = "click request open shop";
     public static final String IMPRESSION_OF_REQUEST_OPEN_SHOP = "impression of request open shop";

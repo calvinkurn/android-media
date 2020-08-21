@@ -5,6 +5,7 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.shop.R
+import com.tokopedia.shop.common.view.bottomsheet.listener.ShopShareBottomsheetListener
 import com.tokopedia.shop.common.view.model.ShopShareModel
 import kotlinx.android.synthetic.main.item_shop_page_share_bottom_sheet.view.*
 
@@ -24,10 +25,6 @@ class ShopShareBottomsheetViewHolder(itemView: View, private val bottomsheetList
         itemView.setOnClickListener {
             bottomsheetListener.onItemBottomsheetShareClicked(shop)
         }
-    }
-
-    interface ShopShareBottomsheetListener {
-        fun onItemBottomsheetShareClicked(shopShare: ShopShareModel)
     }
 
 }

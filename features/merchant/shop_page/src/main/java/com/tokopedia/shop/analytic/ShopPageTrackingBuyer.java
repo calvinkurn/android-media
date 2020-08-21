@@ -391,6 +391,26 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
                 customDimensionShopPage);
     }
 
+    public void clickCancelShareBottomsheet(CustomDimensionShopPage customDimensionShopPage, boolean isMyShop) {
+        sendGeneralEvent(
+                isMyShop ? CLICK_SHOP_SETTING : CLICK_PROFILE,
+                isMyShop ? SETTING_PAGE_SELLER : SHOP_PROFILE_PAGE_BUYER,
+                CLICK_SHARE_DETAIL,
+                CLICK_BOTTOMSHEET_DISMISS_BUTTON,
+                customDimensionShopPage
+        );
+    }
+
+    public void clickShareSocialMedia(CustomDimensionShopPage customDimensionShopPage, boolean isMyShop, String socialMediaName) {
+        sendGeneralEvent(
+                isMyShop ? CLICK_SHOP_SETTING : CLICK_PROFILE,
+                isMyShop ? SETTING_PAGE_SELLER : SHOP_PROFILE_PAGE_BUYER,
+                CLICK_SHARE_DETAIL,
+                socialMediaName,
+                customDimensionShopPage
+        );
+    }
+
     public void sendEventMembership(String eventAction) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 CLICK_MEMBERSHIP_EVENT,

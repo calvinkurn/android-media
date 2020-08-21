@@ -4,12 +4,13 @@ import android.content.Context
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.shop.common.view.bottomsheet.listener.ShopShareBottomsheetListener
 import com.tokopedia.shop.common.view.bottomsheet.viewholder.ShopShareBottomsheetViewHolder
 import com.tokopedia.shop.common.view.model.ShopShareModel
 
 class ShopShareBottomSheetAdapter (
         val context: Context?,
-        private val bottomsheetListener: ShopShareBottomsheetViewHolder.ShopShareBottomsheetListener,
+        private val bottomsheetListener: ShopShareBottomsheetListener,
         data: List<ShopShareModel>
 ): RecyclerView.Adapter<ShopShareBottomsheetViewHolder>() {
 
