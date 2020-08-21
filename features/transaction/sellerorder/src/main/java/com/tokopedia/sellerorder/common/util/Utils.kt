@@ -64,7 +64,7 @@ object Utils {
     }
 
     @JvmStatic
-    fun getL2CancellationReason(text: String, textToAppend: String): String {
+    fun getL2CancellationReason(text: String, textToAppend: String = ""): String {
         return if (text.contains('-')) {
             "$textToAppend ${text.split(" - ").last().decapitalize()}"
         } else {
