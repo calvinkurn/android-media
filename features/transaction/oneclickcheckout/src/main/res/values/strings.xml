@@ -79,7 +79,7 @@
     <string name="lbl_shipping_duration_prefix">Durasi %1$s</string>
     <string name="lbl_no_exact_shipping_duration">Durasi tergantung kurir</string>
 
-    <string name="title_one_click_checkout_credit_card_and_debit">Kartu Kredit &amp; Debit</string>
+    <string name="title_one_click_checkout_credit_card_and_debit">Kartu Kredit</string>
     <string name="lbl_installment_type">Jenis Pembayaran</string>
     <string name="lbl_installment_not_available">Cicilan tidak tersedia untuk jenis kartu ini</string>
     <string name="lbl_installment_error">Cicilan tidak tersedia.</string>
