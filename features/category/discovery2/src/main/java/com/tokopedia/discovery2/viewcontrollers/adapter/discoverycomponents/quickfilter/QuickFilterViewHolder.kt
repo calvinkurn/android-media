@@ -3,6 +3,7 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.qui
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
@@ -12,7 +13,7 @@ import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.filter.common.data.*
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterTrackingData
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
-import com.tokopedia.filter.newdynamicfilter.helper.FilterHelper
+import com.tokopedia.filter.newdynamicfilter.helper.FilterHelper.initializeFilterList
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -59,7 +60,7 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) : Ab
         setFilterData(data.filter)
         setSortData(data.sort)
 
-        initializedFilterList = FilterHelper.initializeFilterList(filters)
+        initializedFilterList = initializeFilterList(filters)
         filterController.initFilterController(searchParameter.getSearchParameterHashMap(), initializedFilterList)
     }
 
@@ -88,9 +89,11 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) : Ab
 
         quickFilterOptionList.clear()
         for (item in quickFilters) {
-            quickFilterOptionList.addAll(item.options)
-            for (option in item.options) {
-                sortFilterItems.add(createSortFilterItem(option, item.title))
+            if(!item.options.isNullOrEmpty()) {
+                quickFilterOptionList.addAll(item.options)
+                for (option in item.options) {
+                    sortFilterItems.add(createSortFilterItem(option, item.title))
+                }
             }
         }
         quickSortFilter.addItem(sortFilterItems)
@@ -132,7 +135,7 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) : Ab
 
     private fun isQuickFilterSelected(option: Option): Boolean {
         for(selectedFilter in filterController.filterViewStateSet){
-            if(option.uniqueId == selectedFilter.replaceAfter("?", "")) return true
+            if(option.uniqueId == selectedFilter) return true
         }
         return false
     }
@@ -140,13 +143,21 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) : Ab
     private fun onQuickFilterSelected(option: Option) {
         if (!isQuickFilterSelected(option)) {
             filterController.setFilter(option, isFilterApplied = true, isCleanUpExistingFilterWithSameKey = false)
-            reloadData()
 //            eventQuickFilterClicked(option, true)
         } else {
             filterController.setFilter(option, isFilterApplied = false, isCleanUpExistingFilterWithSameKey = false)
-            reloadData()
 //            eventQuickFilterClicked(option, false)
         }
+        applyFilterToSearchParameter(filterController.getParameter())
+        refreshFilterController(HashMap(filterController.getParameter()))
+        reloadData()
+    }
+
+    private fun refreshFilterController(queryParams: HashMap<String, String>) {
+        val params = HashMap(queryParams)
+        params[SearchApiConst.ORIGIN_FILTER] = SearchApiConst.DEFAULT_VALUE_OF_ORIGIN_FILTER_FROM_FILTER_PAGE
+        val initializedFilterList = initializeFilterList(filters)
+        filterController.initFilterController(params, initializedFilterList)
     }
 
     private fun getSelectedFilter(): HashMap<String, String> {
