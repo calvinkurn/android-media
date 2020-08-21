@@ -458,7 +458,6 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
                         }
                         if (isEligibleInstantCancel) submitInstantCancel()
                         else {
-                            // submitResultReason()
                             submitRequestCancel()
                         }
                     }
@@ -582,6 +581,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
     }
 
     private fun submitResultReason() {
+        // old submit cancel
         val intent = Intent()
         intent.putExtra(OrderListContants.REASON, reasonCancel)
         intent.putExtra(OrderListContants.REASON_CODE, reasonCode)
@@ -601,12 +601,16 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         buyerCancellationViewModel.requestCancelResult.observe(this, Observer {
             when (it) {
                 is Success -> {
+                    reasonCancel = ""
                     buyerRequestCancelResponse = it.data.buyerRequestCancel
                     if (buyerRequestCancelResponse.success == 1 && buyerRequestCancelResponse.message.isNotEmpty()) {
                         backToDetailPage(1, buyerRequestCancelResponse.message.first(), "", "")
+                    } else if (buyerRequestCancelResponse.success == 0 && buyerRequestCancelResponse.message.isNotEmpty()) {
+                        showToaster(buyerRequestCancelResponse.message.first(), Toaster.TYPE_ERROR)
                     }
                 }
                 is Fail -> {
+                    reasonCancel = ""
                     showToaster(getString(R.string.fail_cancellation), Toaster.TYPE_ERROR)
                 }
             }
@@ -733,7 +737,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         }
     }
 
-    fun hideKeyboard(context: Context) {
+    private fun hideKeyboard(context: Context) {
         try {
             (context as Activity).window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
             if (context.currentFocus != null && context.currentFocus?.windowToken != null) {
@@ -744,7 +748,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         }
     }
 
-    fun showKeyboard(context: Context) {
+    private fun showKeyboard(context: Context) {
         (context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
     }
 }
