@@ -954,7 +954,7 @@ class ModelBuilder {
             channelType = channelType,
             isActive = isActive,
             orientation = orientation,
-            coverUrl = backgroundUrl
+            backgroundUrl = backgroundUrl
     )
 
     fun buildPlayChatUiModel(

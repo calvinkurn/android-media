@@ -105,7 +105,10 @@ object PlayUiMapper {
             uriString = video.streamSource,
             channelType = if (isLive) PlayChannelType.Live else PlayChannelType.VOD,
             orientation = VideoOrientation.getByValue(video.orientation),
-            coverUrl = config.roomBackground.imageUrl,
+            backgroundUrl = config.roomBackground.imageUrl,
+//            channelType = PlayChannelType.Live,
+//            orientation = VideoOrientation.Horizontal(16, 9),
+//            backgroundUrl = "https://i.pinimg.com/736x/d3/bb/7b/d3bb7b85f4e160d013f68fcde8d19844.jpg",
             isActive = config.active
     )
 

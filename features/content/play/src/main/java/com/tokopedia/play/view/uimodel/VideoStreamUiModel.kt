@@ -10,6 +10,6 @@ data class VideoStreamUiModel(
         val uriString: String,
         val channelType: PlayChannelType,
         val orientation: VideoOrientation,
-        val coverUrl: String,
+        val backgroundUrl: String,
         val isActive: Boolean
 )
