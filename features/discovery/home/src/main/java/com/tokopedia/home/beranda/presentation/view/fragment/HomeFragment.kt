@@ -1000,7 +1000,8 @@ open class HomeFragment : BaseDaggerFragment(),
                 MixTopComponentCallback(this),
                 HomeReminderWidgetCallback(RechargeRecommendationCallback(context,getHomeViewModel(),this),
                         SalamWidgetCallback(context,getHomeViewModel(),this, getUserSession())),
-                ProductHighlightComponentCallback(this)
+                ProductHighlightComponentCallback(this),
+                Lego4AutoBannerComponentCallback(context, this)
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
                 .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
