@@ -30,6 +30,7 @@ ext {
     reactNativeVersion = '0.60.5'
     powerMockVersion = '1.6.2'
     roomVersion = '2.2.5'
+    sqliteFrameworkVersion = '2.1.0'
     multiDexVersion = '2.0.0'
     twitter4JVersion = '4.0.7'
     constraintLayoutVersion = '2.0.0-beta3'
@@ -128,10 +129,11 @@ ext {
     ]
 
     dbDependencies = [
-            dbRoomRuntime : "androidx.room:room-runtime:${roomVersion}",
-            dbRoomKtx     : "androidx.room:room-ktx:${roomVersion}",
-            dbRoomCompiler: "androidx.room:room-compiler:${roomVersion}",
-            dbRoomTesting : "androidx.room:room-testing:${roomVersion}"
+            dbRoomRuntime   : "androidx.room:room-runtime:${roomVersion}",
+            dbRoomKtx       : "androidx.room:room-ktx:${roomVersion}",
+            dbRoomCompiler  : "androidx.room:room-compiler:${roomVersion}",
+            dbRoomTesting   : "androidx.room:room-testing:${roomVersion}",
+            sqliteFramework : "androidx.sqlite:sqlite-framework:${sqliteFrameworkVersion}"
     ]
 
     supportLibDependencies = [
