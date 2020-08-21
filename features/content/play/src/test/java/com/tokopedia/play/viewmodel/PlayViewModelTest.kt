@@ -1,7 +1,6 @@
 package com.tokopedia.play.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.play.data.TotalLike
 import com.tokopedia.play.data.websocket.PlaySocket
@@ -18,8 +17,8 @@ import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.mapper.PlayUiMapper
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.PlayResult
+import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.player.PlayVideoManager
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import org.assertj.core.api.Assertions
@@ -117,7 +116,7 @@ class PlayViewModelTest {
                 showPinnedProduct = mockChannel.configuration.showPinnedProduct,
                 titleBottomSheet = mockChannel.configuration.pinnedProduct.titleBottomSheet
         )
-        val expectedResult = Success(expectedModel)
+        val expectedResult = NetworkResult.Success(expectedModel)
 
         playViewModel.getChannelInfo(mockChannel.channelId)
 
@@ -141,7 +140,7 @@ class PlayViewModelTest {
         playViewModel.getChannelInfo(mockChannel.channelId)
 
         Assertions
-                .assertThat(playViewModel.observableVideoStream.getOrAwaitValue())
+                .assertThat(playViewModel.observableVideoMeta.getOrAwaitValue().videoStream)
                 .isEqualTo(expectedModel)
     }
 
