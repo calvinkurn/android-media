@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toAmountString
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.play.ERR_SERVER_ERROR
 import com.tokopedia.play.data.*
 import com.tokopedia.play.data.mapper.PlaySocketMapper
@@ -37,7 +38,8 @@ import javax.inject.Inject
  */
 class PlayViewModel @Inject constructor(
         private val playVideoManager: PlayVideoManager,
-        private val getChannelInfoUseCase: GetChannelInfoUseCase,
+        private val getChannelInfoUseCase: GetChannelDetailUseCase,
+        private val getSocketCredentialUseCase: GetSocketCredentialUseCase,
         private val getPartnerInfoUseCase: GetPartnerInfoUseCase,
         private val getTotalLikeUseCase: GetTotalLikeUseCase,
         private val getIsLikeUseCase: GetIsLikeUseCase,
@@ -54,6 +56,8 @@ class PlayViewModel @Inject constructor(
     val observableGetChannelInfo: LiveData<Result<ChannelInfoUiModel>>
         get() = _observableGetChannelInfo
 
+    val observableCompleteInfo: LiveData<PlayCompleteInfoUiModel>
+        get() = _observableCompleteInfo
     val observableVideoPlayer: LiveData<VideoPlayerUiModel>
         get() = _observableVideoPlayer
     val observableSocketInfo: LiveData<PlaySocketInfo>
@@ -102,20 +106,10 @@ class PlayViewModel @Inject constructor(
             val videoPlayer = _observableVideoPlayer.value
             return videoPlayer ?: Unknown
         }
-    val contentId: Int
+    val feedInfoUiModel: FeedInfoUiModel?
         get() {
             val channelInfo = _observableCompleteInfo.value?.channelInfo
-            return channelInfo?.contentId ?: 0
-        }
-    val contentType: Int
-        get() {
-            val channelInfo = _observableCompleteInfo.value?.channelInfo
-            return channelInfo?.contentType ?: 0
-        }
-    val likeType: Int
-        get() {
-            val channelInfo = _observableCompleteInfo.value?.channelInfo
-            return channelInfo?.likeType ?: 0
+            return channelInfo?.feedInfo
         }
     val bottomInsets: Map<BottomInsetsType, BottomInsetsState>
         get() {
@@ -357,10 +351,10 @@ class PlayViewModel @Inject constructor(
         return playVideoManager.getVideoDuration()
     }
 
-    private fun initiateVideo(channel: Channel) {
+    private fun initiateVideo(video: Video) {
         startVideoWithUrlString(
-                channel.videoStream.config.streamUrl,
-                bufferControl = channel.videoStream.bufferControl?.let { mapBufferControl(it) }
+                video.streamSource,
+                bufferControl = video.bufferControl?.let { mapBufferControl(it) }
                         ?: PlayBufferControl()
         )
         playVideoManager.setRepeatMode(false)
@@ -373,7 +367,7 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun playGeneralVideoStream(channel: Channel) {
-        if (channel.isActive) initiateVideo(channel)
+        if (channel.configuration.active) initiateVideo(channel.video)
     }
 
     private fun stopPlayer() {
@@ -389,16 +383,9 @@ class PlayViewModel @Inject constructor(
         fun getChannelInfoResponse(channelId: String){
             channelInfoJob = scope.launchCatchError(block = {
                 val channel = withContext(dispatchers.io) {
-                    getChannelInfoUseCase.channelId = channelId
+                    getChannelInfoUseCase.params = GetChannelDetailUseCase.createParams(channelId)
                     return@withContext getChannelInfoUseCase.executeOnBackground()
                 }
-
-                launch { getTotalLikes(channel.contentId, channel.contentType, channel.likeType) }
-                launch { getIsLike(channel.contentId, channel.contentType) }
-                launch { getBadgeCart(channel.isShowCart) }
-                launch { if (channel.isShowProductTagging) getProductTagItems(channel) }
-
-                startWebSocket(channelId, channel.gcToken, channel.settings)
 
                 val completeInfoUiModel = PlayUiMapper.createCompleteInfoModel(
                         channel = channel,
@@ -418,10 +405,19 @@ class PlayViewModel @Inject constructor(
                 _observableEvent.value = completeInfoUiModel.event
 
                 if (!isActive) return@launchCatchError
+
+                launch { getTotalLikes(completeInfoUiModel.channelInfo.feedInfo) }
+                launch { getIsLike(completeInfoUiModel.channelInfo.feedInfo) }
+                launch { getBadgeCart(channel.configuration.showCart) }
+                launch { if (channel.configuration.showPinnedProduct) getProductTagItems(completeInfoUiModel.channelInfo) }
+
+                startWebSocket(channelId)
+
                 if (completeInfoUiModel.videoPlayer.isGeneral) playGeneralVideoStream(channel)
                 else playVideoManager.release()
 
                 _observablePartnerInfo.value = getPartnerInfo(completeInfoUiModel.channelInfo)
+
             }) {
                 if (retryCount++ < MAX_RETRY_CHANNEL_INFO) getChannelInfoResponse(channelId)
                 else if (it !is CancellationException) {
@@ -486,14 +482,31 @@ class PlayViewModel @Inject constructor(
     fun updateBadgeCart() {
         val channelInfo = _observableGetChannelInfo.value
         if (channelInfo != null && channelInfo is Success) {
-            scope.launch { getBadgeCart(channelInfo.data.isShowCart) }
+            scope.launch { getBadgeCart(channelInfo.data.showCart) }
         }
     }
 
-    private fun startWebSocket(channelId: String, gcToken: String, settings: Channel.Settings) {
+    private fun startWebSocket(channelId: String) {
+        scope.launchCatchError(block = {
+            val socketCredential = withContext(dispatchers.io) {
+                return@withContext getSocketCredentialUseCase.executeOnBackground()
+            }
+            connectWebSocket(
+                    channelId = channelId,
+                    socketCredential = socketCredential
+            )
+        }) {
+            connectWebSocket(
+                    channelId = channelId,
+                    socketCredential = SocketCredential()
+            )
+        }
+    }
+
+    private fun connectWebSocket(channelId: String, socketCredential: SocketCredential) {
         playSocket.channelId = channelId
-        playSocket.gcToken = gcToken
-        playSocket.settings = settings
+        playSocket.gcToken = socketCredential.gcToken
+        playSocket.settings = socketCredential.setting
         playSocket.connect(onMessageReceived = { response ->
             scope.launch {
                 val result = withContext(dispatchers.io) {
@@ -545,7 +558,7 @@ class PlayViewModel @Inject constructor(
             _observableSocketInfo.value = PlaySocketInfo.Reconnect
         }, onError = {
             _observableSocketInfo.value = PlaySocketInfo.Error(it)
-            startWebSocket(channelId, gcToken, settings)
+            connectWebSocket(channelId, socketCredential)
         })
     }
 
@@ -580,10 +593,13 @@ class PlayViewModel @Inject constructor(
         _observableChatList.value = currentChatList
     }
 
-    private suspend fun getTotalLikes(contentId: Int, contentType: Int, likeType: Int) {
+    private suspend fun getTotalLikes(feedInfoUiModel: FeedInfoUiModel) {
         try {
             val totalLike = withContext(dispatchers.io) {
-                getTotalLikeUseCase.params = GetTotalLikeUseCase.createParam(contentId, contentType, likeType)
+                getTotalLikeUseCase.params = GetTotalLikeUseCase.createParam(
+                        contentId = feedInfoUiModel.contentId,
+                        contentType = feedInfoUiModel.contentType,
+                        likeType = feedInfoUiModel.likeType)
                 getTotalLikeUseCase.executeOnBackground()
             }
             _observableTotalLikes.value = PlayUiMapper.mapTotalLikes(totalLike)
@@ -591,10 +607,13 @@ class PlayViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getIsLike(contentId: Int, contentType: Int) {
+    private suspend fun getIsLike(feedInfoUiModel: FeedInfoUiModel) {
         try {
             val isLiked = withContext(dispatchers.io) {
-                getIsLikeUseCase.params = GetIsLikeUseCase.createParam(contentId, contentType)
+                getIsLikeUseCase.params = GetIsLikeUseCase.createParam(
+                        contentId = feedInfoUiModel.contentId.toIntOrZero(),
+                        contentType = feedInfoUiModel.contentType
+                )
                 getIsLikeUseCase.executeOnBackground()
             }
             _observableLikeState.value = LikeStateUiModel(isLiked, fromNetwork = true)
@@ -603,17 +622,9 @@ class PlayViewModel @Inject constructor(
     }
 
     private suspend fun getPartnerInfo(channel: ChannelInfoUiModel): PartnerInfoUiModel {
-        val partnerId = channel.partnerId
-        return if (channel.partnerType == PartnerType.Admin) {
-            PartnerInfoUiModel(
-                    id = partnerId,
-                    name = channel.moderatorName,
-                    type = channel.partnerType,
-                    isFollowed = true,
-                    isFollowable = false
-            )
-        } else {
-            val shopInfo = getPartnerInfo(partnerId, channel.partnerType)
+        return if (channel.partnerInfo.type == PartnerType.Tokopedia) channel.partnerInfo
+        else {
+            val shopInfo = getPartnerInfo(channel.partnerInfo.id, channel.partnerInfo.type)
             PlayUiMapper.mapPartnerInfoFromShop(userSession.shopId, shopInfo)
         }
     }
@@ -623,44 +634,43 @@ class PlayViewModel @Inject constructor(
         getPartnerInfoUseCase.executeOnBackground()
     }
 
-    private suspend fun getBadgeCart(isShowCart: Boolean) {
-        if (isShowCart) {
-            try {
-                val countCart = withContext(dispatchers.io) {
-                    getCartCountUseCase.executeOnBackground()
-                }
-                _observableBadgeCart.value = CartUiModel(isShowCart, countCart)
-            } catch (e: Exception) {
+    private suspend fun getBadgeCart(showCart: Boolean) {
+        if (!showCart) return
+        try {
+            val countCart = withContext(dispatchers.io) {
+                getCartCountUseCase.executeOnBackground()
             }
+            _observableBadgeCart.value = CartUiModel(showCart, countCart)
+        } catch (e: Exception) {
         }
     }
 
-    private suspend fun getProductTagItems(channel: Channel) {
+    private suspend fun getProductTagItems(channel: ChannelInfoUiModel) {
         if (!isProductSheetInitialized) _observableProductSheetContent.value = PlayResult.Loading(
                 showPlaceholder = true
         )
 
         try {
             val productTagsItems = withContext(dispatchers.io) {
-                getProductTagItemsUseCase.params = GetProductTagItemsUseCase.createParam(channel.channelId)
+                getProductTagItemsUseCase.params = GetProductTagItemsUseCase.createParam(channel.id)
                 getProductTagItemsUseCase.executeOnBackground()
             }
             val partnerId = partnerId ?: 0L
             _observableProductSheetContent.value = PlayResult.Success(
                     PlayUiMapper.mapProductSheet(
-                            channel.pinnedProduct.titleBottomSheet,
+                            channel.titleBottomSheet,
                             partnerId,
                             productTagsItems)
             )
 
         } catch (e: Exception) {
             _observableProductSheetContent.value = PlayResult.Failure(e) {
-                scope.launch { if (channel.isShowProductTagging) getProductTagItems(channel) }
+                scope.launch { if (channel.showPinnedProduct) getProductTagItems(channel) }
             }
         }
     }
 
-    private fun mapBufferControl(bufferControl: VideoStream.BufferControl) = PlayBufferControl(
+    private fun mapBufferControl(bufferControl: Video.BufferControl) = PlayBufferControl(
             minBufferMs = bufferControl.minBufferingSecond * MS_PER_SECOND,
             maxBufferMs = bufferControl.maxBufferingSecond * MS_PER_SECOND,
             bufferForPlaybackMs = bufferControl.bufferForPlayback * MS_PER_SECOND,
