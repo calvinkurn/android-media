@@ -196,7 +196,7 @@
 
     //Variant section
     <string name="add_to_cart_error_variant">Oops, kamu wajib pilih varian.</string>
-    <string name="variant_failed_load">Variant gagal ditampilkan</string>
+    <string name="variant_failed_load">Varian gagal ditampilkan</string>
     <string name="variant_failed_load_description">Klik ikon disamping untuk coba lagi.</string>
     <string name="product_refresh">Refresh</string>
     <string name="tradein_error_label">Stok sudah habis. Cari barang lain untuk bisa gunakan Tukar Tambah</string>
