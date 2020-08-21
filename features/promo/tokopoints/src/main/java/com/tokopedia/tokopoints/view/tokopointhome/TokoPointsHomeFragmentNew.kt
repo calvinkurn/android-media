@@ -111,7 +111,6 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
     private val dynamicItem = "dynamicItem"
     private val toolbarItemList = mutableListOf<NotificationUnify>()
-    var topAdsImageViewModel = TopAdsImageViewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         startPerformanceMonitoring()

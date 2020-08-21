@@ -30,6 +30,7 @@ class TokoPointsHomeViewModel @Inject constructor(private val repository: Tokopo
     companion object {
         const val ITEM = "item"
         const val INVENTORY_ID = "inventory_id"
+        const val TOPADS_BANNER_DIMENSION = 3
     }
 
     override fun getTokoPointDetail() {
@@ -43,13 +44,14 @@ class TokoPointsHomeViewModel @Inject constructor(private val repository: Tokopo
             val dataSection = graphqlResponse.getData<TokopointsSectionOuter>(TokopointsSectionOuter::class.java)
             var queryString = ""
             for (item in dataSection.sectionContent.sectionContent) {
-                if (item.layoutTopAdsAttr != null && item.layoutTopAdsAttr.jsonTopAdsDisplayParam.isNotEmpty()) {
+                if (item.layoutTopAdsAttr != null && item.layoutTopAdsAttr.jsonTopAdsDisplayParam.isNotEmpty()
+                        && item.layoutTopAdsAttr.jsonTopAdsDisplayParam != null) {
                     queryString = item.layoutTopAdsAttr.jsonTopAdsDisplayParam
                     break
                 }
             }
 
-            if (queryString.isNotEmpty()) {
+            if (queryString.isNotEmpty() && queryString != null) {
                 val result = getTopadsBanner(queryString).await()
 
                 if (result.isNotEmpty()) {
@@ -88,7 +90,7 @@ class TokoPointsHomeViewModel @Inject constructor(private val repository: Tokopo
                             jObject.getString(INVENTORY_ID),
                             "",
                             jObject.getInt(ITEM),
-                            3,
+                            TOPADS_BANNER_DIMENSION,
                             ""
                     )
             )

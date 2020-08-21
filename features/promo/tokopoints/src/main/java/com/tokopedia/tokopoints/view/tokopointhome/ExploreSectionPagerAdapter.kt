@@ -22,6 +22,7 @@ import com.tokopedia.tokopoints.view.model.section.ImageList
 import com.tokopedia.tokopoints.view.model.section.SectionContent
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
 import com.tokopedia.tokopoints.view.util.CommonConstant
+import com.tokopedia.tokopoints.view.util.convertDpToPixel
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewImpressionListener
@@ -138,13 +139,13 @@ class ExploreSectionPagerAdapter(context: Context?, presenter: TokoPointsHomeVie
             (view.findViewById<View>(R.id.tv_topads_sub_title) as TextView).text = content.sectionSubTitle
         }
 
-        topAdsImageViewModel?.let { view.topads_reward.loadImage(it,16) }
+        topAdsImageViewModel?.let { view.topads_reward.loadImage(it, convertDpToPixel(10, view.context)) }
 
         view.topads_reward.setTopAdsImageViewImpression(object : TopAdsImageViewImpressionListener {
             override fun onTopAdsImageViewImpression(viewUrl: String) {
 
                 sendBannerImpression(content.sectionTitle)
-                TopAdsUrlHitter(className).hitImpressionUrl(
+                TopAdsUrlHitter(packageName).hitImpressionUrl(
                         view.context,
                         viewUrl,
                         "",
@@ -743,7 +744,7 @@ class ExploreSectionPagerAdapter(context: Context?, presenter: TokoPointsHomeVie
     companion object {
         const val TAB_EXPLORE = 0
         const val TAB_MY_COUPON = 1
-        private const val className = "com.tokopedia.tokopoints.view.tokopointhome"
+        val packageName= ExploreSectionPagerAdapter::class.java.`package`.toString()
     }
 
     init {
