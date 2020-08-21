@@ -414,7 +414,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     errorMessage,
                     Toaster.LENGTH_LONG,
                     Toaster.TYPE_ERROR,
-                    getString(R.string.OK)
+                    getString(R.string.shop_string_ok)
             )
         }
         shopHomeAdapter.updateRemindMeStatusCampaignNplWidgetData(campaignId)
@@ -439,7 +439,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                         data.message,
                         Snackbar.LENGTH_LONG,
                         Toaster.TYPE_NORMAL,
-                        getString(R.string.OK),
+                        getString(R.string.shop_string_ok),
                         View.OnClickListener {
                             shopPageHomeTracking.toasterActivationClickOk(isOwner, customDimensionShopPage)
                         }

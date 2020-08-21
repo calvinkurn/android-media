@@ -117,7 +117,7 @@ class ShopHomeNplCampaignViewHolder(
     }
 
     private suspend fun getProductCardMaxHeight(productCardModelList: List<ProductCardModel>): Int {
-        val productCardWidth = itemView.context.resources.getDimensionPixelSize(R.dimen.dp_145)
+        val productCardWidth = itemView.context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_145)
         return productCardModelList.getMaxHeightForGridView(itemView.context, Dispatchers.Default, productCardWidth)
     }
 
