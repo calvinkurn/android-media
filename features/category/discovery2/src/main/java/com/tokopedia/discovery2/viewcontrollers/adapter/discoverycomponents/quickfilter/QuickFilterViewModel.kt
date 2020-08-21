@@ -41,7 +41,7 @@ class QuickFilterViewModel(val application: Application, val components: Compone
                 .inject(this)
     }
 
-    private fun getTargetComponent(): ComponentsItem? {
+    fun getTargetComponent(): ComponentsItem? {
         return getComponent(components.properties?.targetId ?: "", components.pageEndPoint)
     }
 

@@ -11,7 +11,6 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewH
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.filter.common.data.*
-import com.tokopedia.filter.newdynamicfilter.analytics.FilterTrackingData
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.filter.newdynamicfilter.helper.FilterHelper.initializeFilterList
 import com.tokopedia.sortfilter.SortFilter
@@ -30,7 +29,7 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) : Ab
     private var filters: ArrayList<Filter> = ArrayList()
     private var sort: ArrayList<Sort> = ArrayList()
     private var selectedSort: HashMap<String, String> = HashMap()
-    private var filterTrackingData: FilterTrackingData? = null
+    private var componentName: String? = null
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         if (quickFilterOptionList.isNullOrEmpty()) {
@@ -86,6 +85,7 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) : Ab
         val sortFilterItems: ArrayList<SortFilterItem> = ArrayList()
         if (quickFilterViewModel.components.data?.isEmpty() == true) return
         val quickFilters = quickFilterViewModel.components.data?.get(0)?.filter ?: ArrayList()
+        componentName = quickFilterViewModel.getTargetComponent()?.name
 
         quickFilterOptionList.clear()
         for (item in quickFilters) {
@@ -143,11 +143,10 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) : Ab
     private fun onQuickFilterSelected(option: Option) {
         if (!isQuickFilterSelected(option)) {
             filterController.setFilter(option, isFilterApplied = true, isCleanUpExistingFilterWithSameKey = false)
-//            eventQuickFilterClicked(option, true)
         } else {
             filterController.setFilter(option, isFilterApplied = false, isCleanUpExistingFilterWithSameKey = false)
-//            eventQuickFilterClicked(option, false)
         }
+        (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackClickQuickFilter(option.name, componentName)
         applyFilterToSearchParameter(filterController.getParameter())
         refreshFilterController(HashMap(filterController.getParameter()))
         reloadData()
@@ -165,7 +164,7 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) : Ab
     }
 
     private fun openBottomSheetFilterRevamp() {
-//        eventOpenFilterPage(getFilterTrackingData())
+        (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackClickDetailedFilter(componentName)
         sortFilterBottomSheet.show(
                 fragment.childFragmentManager,
                 searchParameter.getSearchParameterHashMap(),
@@ -193,25 +192,13 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) : Ab
         selectedSort.putAll(applySortFilterModel.selectedSortMapParameter)
         applyFilterToSearchParameter(applySortFilterModel.mapParameter)
         setSelectedFilter(HashMap(applySortFilterModel.mapParameter))
+        (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackClickApplyFilter(applySortFilterModel.selectedFilterMapParameter)
         reloadData()
     }
 
     override fun getResultCount(mapParameter: Map<String, String>) {
         sortFilterBottomSheet.setResultCountText(fragment.getString(R.string.bottom_sheet_filter_finish_button_text))
     }
-
-    /**comments for tracking in future**/
-//    private fun getFilterTrackingData(): FilterTrackingData? {
-//        if (filterTrackingData == null) {
-//            filterTrackingData = FilterTrackingData(
-//                    FilterEventTracking.Event.CLICK_SEARCH_RESULT,
-//                    FilterEventTracking.Category.FILTER_PRODUCT,
-//                    "",
-//                    FilterEventTracking.Category.PREFIX_SEARCH_RESULT_PAGE
-//            )
-//        }
-//        return filterTrackingData
-//    }
 
 }
 
