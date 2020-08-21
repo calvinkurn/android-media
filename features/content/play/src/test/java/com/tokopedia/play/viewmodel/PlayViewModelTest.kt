@@ -115,7 +115,7 @@ class PlayViewModelTest {
                 ),
                 showCart = mockChannel.configuration.showCart,
                 showPinnedProduct = mockChannel.configuration.showPinnedProduct,
-                titleBottomSheet = "Barang & Promo Pilihan"
+                titleBottomSheet = mockChannel.configuration.pinnedProduct.titleBottomSheet
         )
         val expectedResult = Success(expectedModel)
 
@@ -135,7 +135,7 @@ class PlayViewModelTest {
                     PlayChannelType.Live else PlayChannelType.VOD,
                 isActive = mockChannel.configuration.active,
                 orientation = VideoOrientation.getByValue(mockChannel.video.orientation),
-                backgroundUrl = mockChannel.video.coverUrl
+                backgroundUrl = mockChannel.configuration.roomBackground.imageUrl
         )
 
         playViewModel.getChannelInfo(mockChannel.channelId)
@@ -309,8 +309,8 @@ class PlayViewModelTest {
         val expectedModel = modelBuilder.buildProductTagging()
         val expectedResult = PlayResult.Success(
                 PlayUiMapper.mapProductSheet(
-                        "Barang & Promo Pilihan",
-                        mockChannel.partner.id.toLong(),
+                        mockChannel.configuration.pinnedProduct.titleBottomSheet,
+                        mockChannel.partner.id.toLongOrZero(),
                         expectedModel)
         )
 

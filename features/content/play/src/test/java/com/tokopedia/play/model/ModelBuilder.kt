@@ -315,7 +315,7 @@ class ModelBuilder {
         },
         "video": {
           "id": "6453",
-          "orientation": "portrait",
+          "orientation": "vertical",
           "type": "vod",
           "cover_url": "https://ecs7.tokopedia.net/img/jJtrdn/2020/8/10/d8bff2c4-7ff9-4482-9e71-3c62ae25c826.jpg",
           "stream_source": "https://vod.tokopedia.com/view/adaptive.m3u8?id=d3c51411b12746ca9f03253b10c99e3d",
@@ -328,10 +328,10 @@ class ModelBuilder {
           }
         },
         "pinned_message": {
-          "id": "3187",
-          "title": "Berapa harganya?",
-          "message": "Berapa harganya?",
-          "redirect_url": "tokopedia://shop/321513/etalase/19151054"
+          "id": "",
+          "title": "",
+          "message": "",
+          "redirect_url": ""
         },
         "quick_replies": [
           "Halo",
@@ -371,12 +371,19 @@ class ModelBuilder {
             "title": "Anda diblokir admin",
             "message": "Anda diblokir oleh admin karena melanggar syarat dan ketentuan Channel, sehingga tidak dapat melihat konten ini.",
             "button_text": "OK"
+          },
+          "pinned_product_config": {
+            "pin_title": "Ada promo menarik buat belanja barang pilihan kami",
+            "bottom_sheet_title": "Barang & Promo Pilihan"
+          },
+          "room_background": {
+            "image_url": ""
           }
         },
         "stats": {
           "view": {
-            "value": "8511",
-            "formatted": "8.5 rb"
+            "value": "8685",
+            "formatted": "8.7 rb"
           }
         },
         "app_link": "tokopedia://webview?url=https%3A%2F%2Fwww.tokopedia.com%2Fplay%2Fupdate",
