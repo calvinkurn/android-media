@@ -13,7 +13,6 @@ import com.tokopedia.chat_common.network.ChatUrl
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.mediauploader.di.MediaUploaderModule
 import com.tokopedia.mediauploader.di.MediaUploaderNetworkModule
 import com.tokopedia.mediauploader.di.NetworkModule
@@ -30,9 +29,6 @@ import com.tokopedia.topchat.chatroom.domain.mapper.GetTemplateChatRoomMapper
 import com.tokopedia.topchat.chatroom.domain.pojo.imageserver.ChatImageServerResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingResponse
 import com.tokopedia.topchat.chatroom.domain.usecase.GetTemplateChatRoomUseCase
-import com.tokopedia.topchat.chatroom.view.listener.ChatSettingsInterface
-import com.tokopedia.topchat.chatroom.view.presenter.ChatSettingsPresenter
-import com.tokopedia.topchat.common.analytics.ChatSettingsAnalytics
 import com.tokopedia.topchat.common.chat.api.ChatApi
 import com.tokopedia.topchat.common.di.qualifier.InboxQualifier
 import com.tokopedia.topchat.common.di.qualifier.TopchatContext
@@ -208,14 +204,6 @@ class ChatModule {
     @Provides
     fun provideMessageRepository(messageFactory: MessageFactory): MessageRepository {
         return MessageRepositoryImpl(messageFactory)
-    }
-
-    @ChatScope
-    @Provides
-    fun provideChatSettingsPresenter(graphqlUseCase: GraphqlUseCase,
-                                     chatSettingsAnalytics: ChatSettingsAnalytics):
-            ChatSettingsInterface.Presenter {
-        return ChatSettingsPresenter(graphqlUseCase, chatSettingsAnalytics)
     }
 
     @ChatScope

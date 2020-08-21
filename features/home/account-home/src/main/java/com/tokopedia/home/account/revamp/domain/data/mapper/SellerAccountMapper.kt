@@ -25,13 +25,15 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.topads.common.data.model.DataDeposit
 import com.tokopedia.unifycomponents.Label
+import com.tokopedia.user.session.UserSession
 import com.tokopedia.user_identification_common.KYCConstant
 import rx.functions.Func1
 import java.util.*
 import javax.inject.Inject
 
 class SellerAccountMapper @Inject constructor(
-        @ApplicationContext private val context: Context
+        @ApplicationContext private val context: Context,
+        private val userSession: UserSession
 ) : Func1<GraphqlResponse, SellerViewModel> {
 
     private val remoteConfig: RemoteConfig
@@ -125,6 +127,12 @@ class SellerAccountMapper @Inject constructor(
         if (accountDataModel.shopInfo.info.shopIsOfficial != "1") {
             items.add(getPowerMerchantSettingMenu())
         }
+
+        // update userSession
+        val _shopName = accountDataModel.shopInfo.info.shopName
+        val _shopAvatar = accountDataModel.shopInfo.info.shopAvatar
+        userSession.shopName = _shopName
+        userSession.shopAvatar = _shopAvatar
 
         items.add(getTopAdsMenu())
         items.add(getShopVoucherMenu())

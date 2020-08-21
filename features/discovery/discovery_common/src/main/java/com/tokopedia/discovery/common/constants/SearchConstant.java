@@ -102,19 +102,9 @@ public interface SearchConstant {
         int KEY_SHOP_STATUS_INACTIVE = 4;
     }
 
-    interface SearchCatalog {
-        String SEARCH_CATALOG_USE_CASE = "search_catalog_use_case";
-    }
-
-    interface SearchProfile {
-        String SEARCH_PROFILE_USE_CASE = "search_profile_use_case";
-    }
-
     interface SearchTabPosition {
         int TAB_FIRST_POSITION = 0;
         int TAB_SECOND_POSITION = 1;
-        int TAB_THIRD_POSITION = 2;
-        int TAB_FORTH_POSITION = 3;
     }
 
     interface Cart {
@@ -126,8 +116,6 @@ public interface SearchConstant {
     interface ActiveTab {
         String PRODUCT = "product";
         String SHOP = "shop";
-        String CATALOG = "catalog";
-        String PROFILE = "profile";
     }
 
     interface FreeOngkir {
@@ -150,9 +138,6 @@ public interface SearchConstant {
         String AB_TEST_KEY_COMMA_VS_FULL_STAR = "Comma vs Full Star";
         String AB_TEST_VARIANT_FULL_STAR = "Full Star";
         String AB_TEST_VARIANT_COMMA_STAR = "Comma Star";
-        String AB_TEST_OLD_FILER_VS_NEW_FILTER = "SRP Filter Revamp";
-        String AB_TEST_VARIANT_NEW_FILTER = "New Filter";
-        String AB_TEST_VARIANT_OLD_FILTER = "Old Filter";
     }
 
     interface OnBoarding {

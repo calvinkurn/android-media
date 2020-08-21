@@ -25,4 +25,5 @@
     <string name="suggestion_top_shop_card_title">Toko 1</string>
     <string name="suggestion_top_shop_card_subtitle">Bandung</string>
     <string name="suggestion_top_shop_card_all">Lihat Toko Lainnya</string>
+    <string name="search_title_popular_search">Pencarian populer</string>
 </resources>

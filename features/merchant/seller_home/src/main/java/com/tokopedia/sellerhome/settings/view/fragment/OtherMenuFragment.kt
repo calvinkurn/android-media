@@ -22,9 +22,11 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.seller.active.common.service.UpdateShopActiveService
 import com.tokopedia.sellerhome.R
@@ -246,6 +248,16 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         }
     }
 
+    private fun getStatisticPageApplink(): String {
+        val statisticVariantName = "StatsOverApp"
+        val variant = RemoteConfigInstance.getInstance().abTestPlatform.getString(statisticVariantName, "")
+        return if (variant == statisticVariantName) {
+            ApplinkConstInternalMechant.MERCHANT_STATISTIC_DASHBOARD
+        } else {
+            ApplinkConstInternalMarketplace.GOLD_MERCHANT_STATISTIC_DASHBOARD
+        }
+    }
+
     private fun setupBottomSheetLayout(isTopAdsActive: Boolean) : View? {
         var bottomSheetInfix = ""
         var bottomSheetDescription = ""
@@ -304,12 +316,14 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     }
 
     private fun populateAdapterData() {
+        val statisticPageAppLink = getStatisticPageApplink()
+
         val settingList = mutableListOf(
                 SettingTitleUiModel(resources.getString(R.string.setting_menu_improve_sales)),
                 MenuItemUiModel(
                         resources.getString(R.string.setting_menu_shop_statistic),
                         R.drawable.ic_statistic_setting,
-                        ApplinkConstInternalMarketplace.GOLD_MERCHANT_STATISTIC_DASHBOARD,
+                        statisticPageAppLink,
                         eventActionSuffix = SettingTrackingConstant.SHOP_STATISTIC),
                 MenuItemUiModel(
                         resources.getString(R.string.setting_menu_ads_and_shop_promotion),

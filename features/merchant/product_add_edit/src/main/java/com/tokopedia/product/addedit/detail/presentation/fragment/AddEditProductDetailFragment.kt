@@ -269,7 +269,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             else {
                 ProductAddMainTracking.clickOtherCategory(shopId)
             }
-            if (!viewModel.isAdding && viewModel.hasVariants) {
+            if (viewModel.hasVariants) {
                 showImmutableCategoryDialog()
             } else {
                 val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_CATEGORY_PICKER, 0.toString())
@@ -318,15 +318,12 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             } else {
                 ProductAddMainTracking.clickAddWholesale(shopId)
             }
-            wholeSaleInputFormsAdapter?.itemCount?.let {
-                if (it >= AddEditProductDetailConstants.MAX_WHOLESALE_PRICES - 1) {
-                    addNewWholeSalePriceButton?.visibility = View.GONE
-                }
-            }
+
             val productPriceInput = productPriceField?.textFieldInput?.editableText.toString().replace(".", "")
             wholeSaleInputFormsAdapter?.setProductPrice(productPriceInput)
             wholeSaleInputFormsAdapter?.addNewWholeSalePriceForm()
             validateWholeSaleInput(viewModel, productWholeSaleInputFormsView, productWholeSaleInputFormsView?.childCount, isAddingWholeSale = true)
+            updateAddNewWholeSalePriceButtonVisibility()
         }
 
         // add edit product stock views
@@ -555,6 +552,14 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         subscribeToPreOrderSwitchStatus()
         subscribeToPreOrderDurationInputStatus()
         subscribeToInputStatus()
+    }
+
+    private fun updateAddNewWholeSalePriceButtonVisibility() {
+        wholeSaleInputFormsAdapter?.itemCount?.let {
+            if (it >= AddEditProductDetailConstants.MAX_WHOLESALE_PRICES) {
+                addNewWholeSalePriceButton?.visibility = View.GONE
+            }
+        }
     }
 
     private fun validateInput() {
@@ -923,6 +928,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             productWholeSaleSwitch?.isChecked = true
             wholeSaleInputFormsAdapter?.setWholeSaleInputModels(detailInputModel.wholesaleList)
             viewModel.isWholeSalePriceActivated.value = true
+            updateAddNewWholeSalePriceButtonVisibility()
         }
 
         // product pre order
@@ -987,12 +993,12 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                     viewModel.getProductNameRecommendation(query = productNameInput)
                 }
                 // show category recommendations to the product that has no variants
-                if (viewModel.isAdding) viewModel.getCategoryRecommendation(productNameInput)
+                if (viewModel.isAdding && !viewModel.hasVariants) viewModel.getCategoryRecommendation(productNameInput)
             } else {
                 // show empty recommendations for input with error
                 productNameRecAdapter?.setProductNameRecommendations(emptyList())
                 // keep the category if the product has variants
-                if (viewModel.isAdding) productCategoryRecListView?.setData(ArrayList(emptyList()))
+                if (viewModel.isAdding && !viewModel.hasVariants) productCategoryRecListView?.setData(ArrayList(emptyList()))
             }
             // reset name selection status
             viewModel.isNameRecommendationSelected = false
@@ -1284,12 +1290,18 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
             productCategoryRecListView?.run {
                 this.setOnItemClickListener { _, _, position, _ ->
+                    if (viewModel.isAdding) {
+                        ProductAddMainTracking.clickProductCategoryRecom(shopId)
+                    }
                     selectCategoryRecommendation(items, position)
                 }
             }
 
             items.forEachIndexed { position, listItemUnify ->
                 listItemUnify.listRightRadiobtn?.setOnClickListener {
+                    if (viewModel.isAdding) {
+                        ProductAddMainTracking.clickProductCategoryRecom(shopId)
+                    }
                     selectCategoryRecommendation(items, position)
                 }
             }
