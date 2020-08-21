@@ -9,8 +9,13 @@ import com.tokopedia.cart.data.model.response.shopgroupsimplified.*
 import com.tokopedia.cart.domain.model.cartlist.*
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.purchase_platform.common.constant.CartConstant.STATE_RED
+import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.BenefitSummaryInfo
+import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.SummariesItem
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoCheckoutErrorDefault
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.*
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.BenefitSummaryInfoUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.DetailsItemUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.SummariesItemUiModel
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerData
 import java.util.*
@@ -55,10 +60,21 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
         cartListData.errorDefault = mapPromoCheckoutErrorDefault(cartDataListResponse.promo.errorDefault)
         cartListData.isAllSelected = cartDataListResponse.isGlobalCheckboxState
         cartListData.isShowOnboarding = false
+        cartListData.shoppingSummaryData = mapShoppingSummaryData(cartDataListResponse.shoppingSummary)
 
         mapPromoAnalytics(cartDataListResponse.promo.lastApplyPromo.lastApplyPromoData, cartListData.shopGroupAvailableDataList)
 
         return cartListData
+    }
+
+    private fun mapShoppingSummaryData(shoppingSummary: ShoppingSummary): ShoppingSummaryData {
+        return ShoppingSummaryData().apply {
+            totalWording = shoppingSummary.totalWording
+            discountTotalWording = shoppingSummary.discountTotalWording
+            paymentTotalWording = shoppingSummary.paymentTotalWording
+            promoWording = shoppingSummary.promoWording
+            sellerCashbackWording = shoppingSummary.sellerCashbackWording
+        }
     }
 
     private fun mapTickerData(tickers: List<Ticker>): TickerData {
@@ -200,7 +216,8 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
         when {
             cartItemHolderData.cartItemData?.updatedData?.remark?.length ?: 0 > cartItemHolderData.cartItemData?.updatedData?.maxCharRemark ?: 0 -> {
                 errorFormItemValidationMessage = cartItemHolderData.cartItemData?.messageErrorData?.errorFieldMaxChar
-                        ?.replace("{{value}}", cartItemHolderData.cartItemData?.updatedData?.maxCharRemark.toString()) ?: ""
+                        ?.replace("{{value}}", cartItemHolderData.cartItemData?.updatedData?.maxCharRemark.toString())
+                        ?: ""
             }
             cartItemHolderData.cartItemData?.updatedData?.quantity ?: 0 > cartItemHolderData.cartItemData?.originData?.maxOrder ?: 0 -> {
                 val formattedMaxCharRemark = String.format(Locale.US, "%,d", cartItemHolderData.cartItemData?.originData?.maxOrder).replace(',', '.')
@@ -209,7 +226,8 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
             }
             cartItemHolderData.cartItemData?.updatedData?.quantity ?: 0 < cartItemHolderData.cartItemData?.originData?.minOrder ?: 0 -> {
                 errorFormItemValidationMessage = cartItemHolderData.cartItemData?.messageErrorData?.errorProductMinQuantity
-                        ?.replace("{{value}}", cartItemHolderData.cartItemData?.originData?.minOrder.toString()) ?: ""
+                        ?.replace("{{value}}", cartItemHolderData.cartItemData?.originData?.minOrder.toString())
+                        ?: ""
             }
         }
 
@@ -504,8 +522,35 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
                 voucherOrders = mapListVoucherOrders(lastApplyPromoData.listVoucherOrders),
                 additionalInfo = mapAdditionalInfo(lastApplyPromoData.additionalInfo),
                 message = mapMessageGlobalPromo(lastApplyPromoData.message),
-                listRedPromos = mapCreateListRedPromos(lastApplyPromoData)
+                listRedPromos = mapCreateListRedPromos(lastApplyPromoData),
+                benefitSummaryInfo = mapBenefitSummaryInfo(lastApplyPromoData.benefitSummaryInfo)
         )
+    }
+
+    private fun mapBenefitSummaryInfo(benefitSummaryInfo: BenefitSummaryInfo): BenefitSummaryInfoUiModel {
+        return BenefitSummaryInfoUiModel().apply {
+            finalBenefitAmountStr = benefitSummaryInfo.finalBenefitAmountStr
+            finalBenefitAmount = benefitSummaryInfo.finalBenefitAmount
+            finalBenefitText = benefitSummaryInfo.finalBenefitText
+            summaries = mapSummariesItemUiModel(benefitSummaryInfo.summaries)
+        }
+    }
+
+    private fun mapSummariesItemUiModel(summariesItemList: List<SummariesItem>): List<SummariesItemUiModel> {
+        val summariesItemUiModelList = ArrayList<SummariesItemUiModel>()
+        summariesItemList.forEach { summariesItem ->
+            val summariesItemUiModel = SummariesItemUiModel().apply {
+                amount = summariesItem.amount
+                sectionName = summariesItem.sectionName
+                description = summariesItem.description
+                sectionDescription = summariesItem.sectionDescription
+                type = summariesItem.type
+                amountStr = summariesItem.amountStr
+            }
+            summariesItemUiModelList.add(summariesItemUiModel)
+        }
+
+        return summariesItemUiModelList
     }
 
     private fun mapListVoucherOrders(listVoucherOrdersItem: List<VoucherOrders>): List<LastApplyVoucherOrdersItemUiModel> {

@@ -18,7 +18,7 @@ data class ShoppingSummary(
         @SerializedName("promo_value")
         val promoValue: Int = 0,
         @SerializedName("seller_cashback_wording")
-        val seller_cashback_wording: String = "",
+        val sellerCashbackWording: String = "",
         @SerializedName("seller_cashback_value")
         val sellerCashbackValue: Int = 0
 )

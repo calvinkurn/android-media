@@ -348,14 +348,10 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
 
         view?.updateCashback(subtotalCashback)
 
-        var totalPriceString = "-"
-        if (subtotalPrice > 0) {
-            totalPriceString = CurrencyFormatUtil.convertPriceValueToIdrFormat(subtotalPrice.toLong(), false).removeDecimalSuffix()
-        }
         val selectAllItem = view?.getAllAvailableCartDataList()?.size == allCartItemDataList.size + errorProductCount &&
                 allCartItemDataList.size > 0 && insuranceChecked
         val unSelectAllItem = allCartItemDataList.size == 0
-        view?.renderDetailInfoSubTotal(totalItemQty.toString(), totalPriceString, selectAllItem, unSelectAllItem, dataList.isEmpty())
+        view?.renderDetailInfoSubTotal(totalItemQty.toString(), subtotalPrice, selectAllItem, unSelectAllItem, dataList.isEmpty())
     }
 
     private fun getAvailableCartItemDataList(dataList: List<CartShopHolderData>): ArrayList<CartItemHolderData> {

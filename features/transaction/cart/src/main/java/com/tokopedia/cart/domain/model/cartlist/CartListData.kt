@@ -25,7 +25,8 @@ data class CartListData(
         var promoBenefitInfo: String? = null,
         var promoUsageInfo: String? = null,
         var errorDefault: PromoCheckoutErrorDefault? = null,
-        var lastApplyShopGroupSimplifiedData: LastApplyUiModel? = null
+        var lastApplyShopGroupSimplifiedData: LastApplyUiModel? = null,
+        var shoppingSummaryData: ShoppingSummaryData = ShoppingSummaryData()
 ) : Parcelable {
 
     override fun equals(other: Any?): Boolean {

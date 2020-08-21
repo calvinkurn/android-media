@@ -13,19 +13,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.CheckBox
-import android.widget.LinearLayout
-import android.widget.RelativeLayout
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearSmoothScroller
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.SimpleItemAnimator
+import androidx.recyclerview.widget.*
 import com.google.android.material.appbar.AppBarLayout
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -60,6 +54,7 @@ import com.tokopedia.cart.view.uimodel.*
 import com.tokopedia.cart.view.viewholder.CartRecommendationViewHolder
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.navigation_common.listener.CartNotifyListener
@@ -100,17 +95,20 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementActionListener
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData
 import com.tokopedia.purchase_platform.common.utils.Utils
+import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_INSURANCE_RECOMMENDATION
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist
 import com.tokopedia.wishlist.common.listener.WishListActionListener
+import kotlinx.android.synthetic.main.layout_bottomsheet_summary_transaction.view.*
 import kotlinx.coroutines.*
 import rx.subscriptions.CompositeSubscription
 import javax.inject.Inject
@@ -138,6 +136,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     lateinit var llCartContainer: LinearLayout
     lateinit var llPromoCheckout: LinearLayout
     lateinit var promoCheckoutBtn: ButtonPromoCheckoutView
+    lateinit var imgChevronSummary: ImageView
+    lateinit var textTotalPaymentLabel: Typography
 
     @Inject
     lateinit var dPresenter: ICartListPresenter
@@ -459,6 +459,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         llCartContainer = view.findViewById(R.id.ll_cart_container)
         llPromoCheckout = view.findViewById(R.id.ll_promo_checkout)
         promoCheckoutBtn = view.findViewById(R.id.promo_checkout_btn_cart)
+        imgChevronSummary = view.findViewById(R.id.img_chevron_summary)
+        textTotalPaymentLabel = view.findViewById(R.id.text_total_payment_label)
 
         activity?.let {
             refreshHandler = RefreshHandler(it, view.findViewById(R.id.swipe_refresh_layout), this)
@@ -484,12 +486,104 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         btnToShipment.setOnClickListener { checkGoToShipment("") }
         cbSelectAll.setOnClickListener { onSelectAllClicked() }
         llHeader.setOnClickListener { onSelectAllClicked() }
+        imgChevronSummary.setOnClickListener { onClickChevronSummaryTransaction() }
+        textTotalPaymentLabel.setOnClickListener { onClickChevronSummaryTransaction() }
+        tvTotalPrice.setOnClickListener { onClickChevronSummaryTransaction() }
         btnRemove.setOnClickListener {
             if (btnRemove.isVisible) {
                 onToolbarRemoveAllCart()
             }
         }
         setCbSelectAllOnCheckedChangeListener()
+    }
+
+    private fun onClickChevronSummaryTransaction() {
+        showBottomSheetSummaryTransaction()
+    }
+
+    private fun showBottomSheetSummaryTransaction() {
+        fragmentManager?.let {
+            val bottomSheet = BottomSheetUnify()
+            bottomSheet.showKnob = true
+            bottomSheet.showCloseIcon = false
+
+            val view = View.inflate(context, R.layout.layout_bottomsheet_summary_transaction, null)
+
+            // Render price total
+            view.text_price_total_title?.apply {
+                cartListData?.shoppingSummaryData?.totalWording?.let {
+                    text = it.replace("x", cartListData?.shoppingSummaryData?.qty ?: "0")
+                }
+            }
+            view.text_price_total_value?.apply {
+                this.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(cartListData?.shoppingSummaryData?.totalValue
+                        ?: 0, false).removeDecimalSuffix()
+            }
+
+            // Render Discount
+            if (cartListData?.shoppingSummaryData?.discountValue ?: 0 > 0) {
+                view.text_discount_total_value?.apply {
+                    text = CurrencyFormatUtil.convertPriceValueToIdrFormat(cartListData?.shoppingSummaryData?.discountValue
+                            ?: 0, false).removeDecimalSuffix()
+                    visibility = View.VISIBLE
+                }
+                view.text_discount_total_title?.apply {
+                    text = cartListData?.shoppingSummaryData?.discountTotalWording
+                    visibility = View.VISIBLE
+                }
+            } else {
+                view.text_discount_total_value?.apply {
+                    visibility = View.GONE
+                }
+                view.text_discount_total_title?.apply {
+                    visibility = View.GONE
+                }
+            }
+
+            // Render payment total
+            view.text_total_pay_title?.apply {
+                cartListData?.shoppingSummaryData?.paymentTotalWording?.let {
+                    text = it
+                }
+            }
+            view.text_total_pay_value?.apply {
+                val totalPay = (cartListData?.shoppingSummaryData?.totalValue ?: 0) - (cartListData?.shoppingSummaryData?.discountValue ?: 0)
+                this.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(totalPay
+                        ?: 0, false).removeDecimalSuffix()
+            }
+
+
+            // Render promo
+            if (cartListData?.shoppingSummaryData?.promoValue ?: 0 > 0) {
+                view.text_total_promo_value?.apply {
+                    text = CurrencyFormatUtil.convertPriceValueToIdrFormat(cartListData?.shoppingSummaryData?.promoValue
+                            ?: 0, false).removeDecimalSuffix()
+                    visibility = View.VISIBLE
+                }
+                view.text_total_promo_title?.apply {
+                    text = cartListData?.shoppingSummaryData?.promoWording
+                    visibility = View.VISIBLE
+                }
+            } else {
+                view.text_total_promo_value?.apply {
+                    visibility = View.GONE
+                }
+                view.text_total_promo_title?.apply {
+                    visibility = View.GONE
+                }
+            }
+
+            if (cartListData?.shoppingSummaryData?.promoValue ?: 0 > 0 &&
+                    cartListData?.shoppingSummaryData?.sellerCashbackValue ?: 0 > 0) {
+                view.separator_benefit.gone()
+            } else {
+                view.separator_benefit.show()
+            }
+
+            bottomSheet.setChild(view)
+
+            bottomSheet.show(it, "Cart Summary Transaction")
+        }
     }
 
     private fun setCbSelectAllOnCheckedChangeListener() {
@@ -1670,6 +1764,17 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         if (isApplied) {
             PromoRevampAnalytics.eventCartViewPromoAlreadyApplied()
         }
+
+        lastApplyData.benefitSummaryInfo.summaries.forEach {
+            when {
+                it.type.equals("cashback", true) -> {
+                    cartListData?.shoppingSummaryData?.promoValue = it.amount
+                }
+                it.type.equals("discount", true) -> {
+                    cartListData?.shoppingSummaryData?.discountValue = it.amount
+                }
+            }
+        }
     }
 
     private fun setLastApplyDataToShopGroup(lastApplyData: LastApplyUiModel) {
@@ -2276,7 +2381,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         return cartAdapter.selectedCartItemData
     }
 
-    override fun renderDetailInfoSubTotal(qty: String, subtotalPrice: String, selectAllItem: Boolean, unselectAllItem: Boolean, noAvailableItems: Boolean) {
+    override fun renderDetailInfoSubTotal(qty: String,
+                                          subtotalPrice: Double,
+                                          selectAllItem: Boolean,
+                                          unselectAllItem: Boolean,
+                                          noAvailableItems: Boolean) {
         dPresenter.getCartListData()?.isAllSelected = selectAllItem
         if (cbSelectAll.isChecked != selectAllItem) {
             cbSelectAll.isChecked = selectAllItem
@@ -2294,8 +2403,16 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             }
             cartAdapter.addCartSelectAll()
         }
-        tvTotalPrice.text = subtotalPrice
+        var totalPriceString = "-"
+        if (subtotalPrice > 0) {
+            totalPriceString = CurrencyFormatUtil.convertPriceValueToIdrFormat(subtotalPrice.toLong(), false).removeDecimalSuffix()
+        }
+
+        tvTotalPrice.text = totalPriceString
         btnToShipment.text = String.format(getString(R.string.cart_item_button_checkout_count_format), qty)
+
+        cartListData?.shoppingSummaryData?.qty = qty
+        cartListData?.shoppingSummaryData?.totalValue = subtotalPrice.toInt()
     }
 
     override fun updateCashback(cashback: Double) {
