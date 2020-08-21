@@ -3,6 +3,7 @@ package com.tokopedia.core.util;
 import android.content.Context;
 
 import com.google.gson.GsonBuilder;
+import com.tokopedia.akamai_bot_lib.interceptor.AkamaiBotInterceptor;
 import com.tokopedia.core.network.CoreNetworkApplication;
 import com.tokopedia.core.network.apiservices.accounts.apis.AccountsBasicApi;
 import com.tokopedia.core.network.core.OkHttpFactory;
@@ -99,6 +100,7 @@ public class AccessTokenRefresh {
                 .addConverterFactory(new StringResponseConverter())
                 .client(tkpdOkHttpBuilder.addInterceptor(new AccountsBasicInterceptor(context, networkRouter, userSession))
                         .addInterceptor(new FingerprintInterceptor(networkRouter, userSession))
+                        .addInterceptor(new AkamaiBotInterceptor(context))
                         .build())
                 .build();
     }
