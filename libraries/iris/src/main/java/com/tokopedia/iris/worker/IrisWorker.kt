@@ -14,12 +14,14 @@ import java.util.concurrent.TimeUnit
 class IrisWorker(appContext: Context, params: WorkerParameters) : CoroutineWorker(appContext, params) {
     override suspend fun doWork(): Result {
         return withContext(Dispatchers.IO) {
+            isWorkerRunning = true
             try {
                 val maxRow = inputData.getInt(MAX_ROW, DEFAULT_MAX_ROW)
                 IrisServiceCore.run(applicationContext, maxRow)
             } catch (e: Exception) {
                 Timber.e("P1#IRIS#worker %s", e.toString())
             }
+            isWorkerRunning = false
             Result.success()
         }
     }
@@ -58,7 +60,11 @@ class IrisWorker(appContext: Context, params: WorkerParameters) : CoroutineWorke
                 WorkManager.getInstance(context).enqueueUniqueWork(
                         WORKER_NAME,
                         if (runImmediate) {
-                            ExistingWorkPolicy.REPLACE
+                            if (isWorkerRunning) {
+                                ExistingWorkPolicy.APPEND
+                            } else {
+                                ExistingWorkPolicy.REPLACE
+                            }
                         } else {
                             ExistingWorkPolicy.KEEP
                         },
