@@ -84,6 +84,12 @@ class CreateReviewFragment : BaseDaggerFragment(),
         private const val IMAGE_PEDIE_4 = "https://ecs7.tokopedia.net/android/pedie/4star.png"
         private const val IMAGE_PEDIE_5 = "https://ecs7.tokopedia.net/android/pedie/5star.png"
 
+        private const val RATING_1 = 1
+        private const val RATING_2 = 2
+        private const val RATING_3 = 3
+        private const val RATING_4 = 4
+        private const val RATING_5 = 5
+
         fun createInstance(productId: String, reviewId: String, reviewClickAt: Int = 0, isEditMode: Boolean, feedbackId: Int) = CreateReviewFragment().also {
             it.arguments = Bundle().apply {
                 putString(PRODUCT_ID_REVIEW, productId)
@@ -524,8 +530,8 @@ class CreateReviewFragment : BaseDaggerFragment(),
 
     private fun updateViewBasedOnSelectedRating(position: Int) {
         when {
-            position < 3 -> {
-                if(position == 1) {
+            position < RATING_3 -> {
+                if(position == RATING_1) {
                     createReviewTextAreaTitle.text = resources.getString(R.string.review_create_worst_title)
                 } else {
                     createReviewTextAreaTitle.text = resources.getString(R.string.review_create_negative_title)
@@ -533,13 +539,13 @@ class CreateReviewFragment : BaseDaggerFragment(),
                 txt_review_desc.text = MethodChecker.fromHtml(getString(R.string.review_text_negative, createReviewViewModel.getUserName()))
                 createReviewContainer.setContainerColor(ContainerUnify.RED)
             }
-            position == 3 -> {
+            position == RATING_3 -> {
                 txt_review_desc.text = MethodChecker.fromHtml(getString(R.string.review_text_neutral, createReviewViewModel.getUserName()))
                 createReviewContainer.setContainerColor(ContainerUnify.YELLOW)
                 createReviewTextAreaTitle.text = resources.getString(R.string.review_create_neutral_title)
             }
             else -> {
-                if(position == 4) {
+                if(position == RATING_4) {
                     createReviewTextAreaTitle.text = resources.getString(R.string.review_create_positive_title)
                 } else {
                     createReviewTextAreaTitle.text = resources.getString(R.string.review_create_best_title)
@@ -559,11 +565,11 @@ class CreateReviewFragment : BaseDaggerFragment(),
 
     private fun generatePeddieImageByIndex() {
         val url = when (animatedReviewPicker.getReviewClickAt()) {
-            1 -> IMAGE_PEDIE_1
-            2 -> IMAGE_PEDIE_2
-            3 -> IMAGE_PEDIE_3
-            4 -> IMAGE_PEDIE_4
-            5 -> IMAGE_PEDIE_5
+            RATING_1 -> IMAGE_PEDIE_1
+            RATING_2 -> IMAGE_PEDIE_2
+            RATING_3 -> IMAGE_PEDIE_3
+            RATING_4 -> IMAGE_PEDIE_4
+            RATING_5 -> IMAGE_PEDIE_5
             else -> IMAGE_PEDIE_5
         }
         showImage(url)
@@ -578,19 +584,19 @@ class CreateReviewFragment : BaseDaggerFragment(),
             imgAnimationView.repeatCount = 0
             imgAnimationView.repeatCount = LottieDrawable.INFINITE
             when (index) {
-                1 -> {
+                RATING_1 -> {
                     setLottieAnimationFromUrl(LOTTIE_ANIM_1)
                 }
-                2 -> {
+                RATING_2 -> {
                     setLottieAnimationFromUrl(LOTTIE_ANIM_2)
                 }
-                3 -> {
+                RATING_3 -> {
                     setLottieAnimationFromUrl(LOTTIE_ANIM_3)
                 }
-                4 -> {
+                RATING_4 -> {
                     setLottieAnimationFromUrl(LOTTIE_ANIM_4)
                 }
-                5 -> {
+                RATING_5 -> {
                     setLottieAnimationFromUrl(LOTTIE_ANIM_5)
                 }
             }
@@ -722,7 +728,6 @@ class CreateReviewFragment : BaseDaggerFragment(),
         createReviewProductName.apply {
             text = productName
             if(productVariant.isNotEmpty()) {
-                maxLines = 1
                 createReviewProductVariant.apply{
                     text = resources.getString(R.string.review_pending_variant, productVariant)
                     show()

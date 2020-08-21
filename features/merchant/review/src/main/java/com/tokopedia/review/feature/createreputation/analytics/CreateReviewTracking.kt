@@ -6,13 +6,15 @@ import java.util.HashMap
 
 object CreateReviewTracking {
 
+    val tracker = TrackApp.getInstance().gtm
+
     fun reviewOnAnonymousClickTracker(
             orderId: String,
             productId: String,
             isEditReview: Boolean,
             feedbackId: String
     ) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(createEventMap(
+        tracker.sendGeneralEvent(createEventMap(
                 "clickReview",
                 CreateReviewTrackingConstants.EVENT_CATEGORY + getEditMarker(isEditReview),
                 "click - anonim on ulasan produk",
@@ -22,7 +24,7 @@ object CreateReviewTracking {
 
 
     fun reviewOnCloseTracker(orderId: String, productId: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(createEventMap(
+        tracker.sendGeneralEvent(createEventMap(
                 "clickReview",
                 CreateReviewTrackingConstants.EVENT_CATEGORY,
                 "click - back button on product review detail page",
@@ -42,7 +44,7 @@ object CreateReviewTracking {
     ) {
         val messageState = if (isMessageEmpty) "blank" else "filled"
         val anonymousState = if (isAnonymous) "true" else "false"
-        TrackApp.getInstance().gtm.sendGeneralEvent(createEventMap(
+        tracker.sendGeneralEvent(createEventMap(
                 "clickReview",
                 CreateReviewTrackingConstants.EVENT_CATEGORY + getEditMarker(isEditReview),
                 "click - kirim ulasan produk",
@@ -63,7 +65,7 @@ object CreateReviewTracking {
             feedbackId: String
     ) {
         val messageState = if (isMessageEmpty) "blank" else "filled"
-        TrackApp.getInstance().gtm.sendGeneralEvent(createEventMap(
+        tracker.sendGeneralEvent(createEventMap(
                 "clickReview",
                 CreateReviewTrackingConstants.EVENT_CATEGORY + getEditMarker(isEditReview),
                 "click - ulasan product description",
@@ -72,7 +74,7 @@ object CreateReviewTracking {
     }
 
     fun reviewOnScoreVisible(orderId: String, productId: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(createEventMap(
+        tracker.sendGeneralEvent(createEventMap(
                 ReviewTrackingConstant.EVENT_CLICK_REVIEW,
                 CreateReviewTrackingConstants.EVENT_CATEGORY,
                 CreateReviewTrackingConstants.VIEW_SMILEY,
@@ -81,7 +83,7 @@ object CreateReviewTracking {
     }
 
     fun reviewOnViewTracker(orderId: String, productId: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(createEventMap(
+        tracker.sendGeneralEvent(createEventMap(
                 "viewReviewIris",
                 CreateReviewTrackingConstants.EVENT_CATEGORY,
                 "view - product review detail page",
@@ -98,7 +100,7 @@ object CreateReviewTracking {
             feedbackId: String
     ) {
         val successState = if (isSuccessful) "success" else "unsuccessful"
-        TrackApp.getInstance().gtm.sendGeneralEvent(createEventMap(
+        tracker.sendGeneralEvent(createEventMap(
                 "clickReview",
                 CreateReviewTrackingConstants.EVENT_CATEGORY + getEditMarker(isEditReview),
                 "click - upload gambar produk",
@@ -115,7 +117,7 @@ object CreateReviewTracking {
             feedbackId: String
     ) {
         val successState = if (isSuccessful) "success" else "unsuccessful"
-        TrackApp.getInstance().gtm.sendGeneralEvent(createEventMap(
+        tracker.sendGeneralEvent(createEventMap(
                 "clickReview",
                 "product review detail page" + getEditMarker(isEditReview),
                 "click - product star rating - $ratingValue",
@@ -124,7 +126,7 @@ object CreateReviewTracking {
     }
 
     fun onExpandTextBoxClicked(orderId: String, productId: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(createEventMap(
+        tracker.sendGeneralEvent(createEventMap(
                 ReviewTrackingConstant.EVENT_CLICK_REVIEW,
                 CreateReviewTrackingConstants.EVENT_CATEGORY,
                 CreateReviewTrackingConstants.CLICK_EXPAND_TEXTBOX,
@@ -133,7 +135,7 @@ object CreateReviewTracking {
     }
 
     fun onCollapseTextBoxClicked(orderId: String, productId: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(createEventMap(
+        tracker.sendGeneralEvent(createEventMap(
                 ReviewTrackingConstant.EVENT_CLICK_REVIEW,
                 CreateReviewTrackingConstants.EVENT_CATEGORY,
                 CreateReviewTrackingConstants.CLICK_COLLAPSE_TEXT_BOX,
@@ -142,7 +144,7 @@ object CreateReviewTracking {
     }
 
     fun eventClickSmiley(orderId: String, productId: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(createEventMap(
+        tracker.sendGeneralEvent(createEventMap(
                 ReviewTrackingConstant.EVENT_CLICK_REVIEW,
                 CreateReviewTrackingConstants.EVENT_CATEGORY,
                 ReviewTrackingConstant.CLICK_SMILEY,

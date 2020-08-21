@@ -46,6 +46,9 @@ class ReviewDetailFragment : BaseDaggerFragment(),
         const val EDIT_FORM_REQUEST_CODE = 420
         const val SHARE_TYPE_PLAIN_TEXT = "text/plain"
 
+        const val SCORE_ZERO = 0
+        const val SCORE_MAX = 2
+
         fun createNewInstance(feedbackId: Int) : ReviewDetailFragment{
             return ReviewDetailFragment().apply {
                 arguments = Bundle().apply {
@@ -260,13 +263,13 @@ class ReviewDetailFragment : BaseDaggerFragment(),
             reviewHistoryDetailReputation.apply {
                 setReviewScoreClickListener(this@ReviewDetailFragment)
                 when {
-                    !isLocked && !editable && score == 2 -> {
+                    !isLocked && !editable && score == SCORE_MAX -> {
                         setFinalScore(score)
                         setShopName(shopName)
                         hideLoading()
                         show()
                     }
-                    !editable && isLocked && score != 0  -> {
+                    !editable && isLocked && score != SCORE_ZERO  -> {
                         setFinalScore(score)
                         setShopName(shopName)
                         hideLoading()
