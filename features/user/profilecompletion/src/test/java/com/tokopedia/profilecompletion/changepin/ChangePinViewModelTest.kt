@@ -34,18 +34,21 @@ class ChangePinViewModelTest {
     val resetPinUseCase = mockk<GraphqlUseCase<ResetPinResponse>>(relaxed = true)
     val checkPinUseCase = mockk<GraphqlUseCase<CheckPinPojo>>(relaxed = true)
     val validatePinUseCase = mockk<GraphqlUseCase<ValidatePinPojo>>(relaxed = true)
+    val changePinUseCase = mockk<GraphqlUseCase<ChangePinPojo>>(relaxed = true)
     private val testDispatcher = TestCoroutineDispatcher()
     lateinit var viewModel: ChangePinViewModel
 
     private val rawQueries = mapOf(
             ProfileCompletionQueryConstant.MUTATION_RESET_PIN to ProfileCompletionQueryConstant.MUTATION_RESET_PIN,
             ProfileCompletionQueryConstant.QUERY_CHECK_PIN to ProfileCompletionQueryConstant.QUERY_CHECK_PIN,
-            ProfileCompletionQueryConstant.QUERY_VALIDATE_PIN to ProfileCompletionQueryConstant.QUERY_VALIDATE_PIN
+            ProfileCompletionQueryConstant.QUERY_VALIDATE_PIN to ProfileCompletionQueryConstant.QUERY_VALIDATE_PIN,
+            ProfileCompletionQueryConstant.MUTATION_UPDATE_PIN to ProfileCompletionQueryConstant.MUTATION_UPDATE_PIN
     )
 
     private var resetPinObserver = mockk<Observer<Result<AddChangePinData>>>(relaxed = true)
     private var checkPinObserver = mockk<Observer<Result<CheckPinData>>>(relaxed = true)
     private var validatePinObserver = mockk<Observer<Result<ValidatePinData>>>(relaxed = true)
+    private var changePinObserver = mockk<Observer<Result<AddChangePinData>>>(relaxed = true)
 
     @Before
     fun setUp() {
@@ -53,12 +56,14 @@ class ChangePinViewModelTest {
                 validatePinUseCase,
                 checkPinUseCase,
                 resetPinUseCase,
+                changePinUseCase,
                 rawQueries,
                 testDispatcher
         )
         viewModel.resetPinResponse.observeForever(resetPinObserver)
         viewModel.checkPinResponse.observeForever(checkPinObserver)
         viewModel.validatePinResponse.observeForever(validatePinObserver)
+        viewModel.changePinResponse.observeForever(changePinObserver)
     }
 
     val token = "abcd1234"
@@ -75,6 +80,7 @@ class ChangePinViewModelTest {
 
     val checkPinPojo = CheckPinPojo()
     val validatePinPojo = ValidatePinPojo()
+    val changePinPojo = ChangePinPojo()
 
     @Test
     fun `on resetPin executed`() {
@@ -308,5 +314,86 @@ class ChangePinViewModelTest {
         verify(atLeast = 1){ validatePinObserver.onChanged(any()) }
     }
 
+    @Test
+    fun `on changePin executed`() {
+        val mockParam = mapOf(
+                ProfileCompletionQueryConstant.PARAM_PIN to pin,
+                ProfileCompletionQueryConstant.PARAM_PIN_CONFIRM to pinConfirm,
+                ProfileCompletionQueryConstant.PARAM_PIN_OLD to pinOld
+        )
 
+        viewModel.changePin(pin, pinConfirm, pinOld)
+
+        /* Then */
+        verify {
+            changePinUseCase.setTypeClass(any())
+            changePinUseCase.setRequestParams(mockParam)
+            changePinUseCase.setGraphqlQuery(any())
+            changePinUseCase.execute(any(), any())
+        }
+    }
+
+    @Test
+    fun `on Success Change Pin`() {
+        /* When */
+        changePinPojo.data.success = true
+
+        every { changePinUseCase.execute(any(), any()) } answers {
+            firstArg<(ChangePinPojo) -> Unit>().invoke(changePinPojo)
+        }
+
+        viewModel.changePin(pin, pinConfirm, pinOld)
+
+        /* Then */
+        verify { changePinObserver.onChanged(Success(changePinPojo.data)) }
+    }
+
+    @Test
+    fun `on Error Change Pin`() {
+        /* When */
+
+        every { changePinUseCase.execute(any(), any()) } answers {
+            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
+        }
+
+        viewModel.changePin(pin, pinConfirm, pinOld)
+
+        /* Then */
+        verify { changePinObserver.onChanged(Fail(mockThrowable)) }
+    }
+
+    @Test
+    fun `on Error Change Pin message not empty`() {
+        /* When */
+        changePinPojo.data.errorAddChangePinData = listOf(ErrorAddChangePinData(message = "Error"))
+
+        every { changePinUseCase.execute(any(), any()) } answers {
+            firstArg<(ChangePinPojo) -> Unit>().invoke(changePinPojo)
+        }
+
+        viewModel.changePin(pin, pinConfirm, pinOld)
+
+        /* Then */
+        Assert.assertThat(viewModel.changePinResponse.value, CoreMatchers.instanceOf(Fail::class.java))
+        Assert.assertThat((viewModel.changePinResponse.value as Fail).throwable, CoreMatchers.instanceOf(MessageErrorException::class.java))
+        Assert.assertEquals(changePinPojo.data.errorAddChangePinData[0].message, (viewModel.changePinResponse.value as Fail).throwable.message)
+        verify(atLeast = 1){ changePinObserver.onChanged(any()) }
+    }
+
+    @Test
+    fun `on another Error Change Pin`() {
+        /* When */
+        changePinPojo.data.success = false
+
+        every { changePinUseCase.execute(any(), any()) } answers {
+            firstArg<(ChangePinPojo) -> Unit>().invoke(changePinPojo)
+        }
+
+        viewModel.changePin(pin, pinConfirm, pinOld)
+
+        /* Then */
+        Assert.assertThat(viewModel.changePinResponse.value, CoreMatchers.instanceOf(Fail::class.java))
+        Assert.assertThat((viewModel.changePinResponse.value as Fail).throwable, CoreMatchers.instanceOf(RuntimeException::class.java))
+        verify(atLeast = 1){ changePinObserver.onChanged(any()) }
+    }
 }
