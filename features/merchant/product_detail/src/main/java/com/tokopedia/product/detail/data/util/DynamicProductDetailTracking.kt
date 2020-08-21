@@ -181,7 +181,7 @@ object DynamicProductDetailTracking {
             val mapEvent = TrackAppUtils.gtmData(
                     ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
                     ProductTrackingConstant.Category.PDP,
-                    "click $buttonActionText on pdp - before login",
+                    "click $buttonActionText on pdp - non login",
                     "")
             mapEvent[ProductTrackingConstant.Tracking.KEY_USER_ID] = userId
             mapEvent[ProductTrackingConstant.Tracking.KEY_SHOP_ID_SELLER] = productInfo?.basic?.shopID
@@ -416,7 +416,7 @@ object DynamicProductDetailTracking {
                     ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
                     ProductTrackingConstant.Category.PDP,
                     ProductTrackingConstant.Action.CLICK_DETAIL_MERCHANT_VOUCHER,
-                    ""
+                    productInfo?.basic?.productID ?: ""
             )
 
             mapEvent[ProductTrackingConstant.Tracking.KEY_PROMO_ID] = voucherId.toString()
@@ -429,7 +429,7 @@ object DynamicProductDetailTracking {
                     ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
                     ProductTrackingConstant.Category.PDP,
                     ProductTrackingConstant.Action.CLICK_SEE_ALL_MERCHANT_VOUCHER,
-                    ""
+                    productInfo?.basic?.productID ?: ""
             )
 
             TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.CLICK_SEE_ALL_MERCHANT_VOUCHER)
@@ -901,6 +901,8 @@ object DynamicProductDetailTracking {
                 it.type == "image"
             }?.firstOrNull()?.uRLOriginal ?: ""
 
+            val isOs = productInfo?.data?.isOS == true
+
             val mapOfData = mutableMapOf(ProductTrackingConstant.Tracking.KEY_EVENT to ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
                     ProductTrackingConstant.Tracking.KEY_CATEGORY to ProductTrackingConstant.Category.PDP,
                     ProductTrackingConstant.Tracking.KEY_ACTION to ProductTrackingConstant.Action.CLICK_DISKUSI_PRODUCT_TAB,
@@ -917,7 +919,7 @@ object DynamicProductDetailTracking {
                     "productDeeplinkUrl" to deeplinkUrl,
                     "productImageUrl" to imageUrl,
                     "productPrice" to (productInfo?.data?.price?.value ?: ""),
-                    "isOfficialStore" to (productInfo?.data?.isOS ?: ""),
+                    "isOfficialStore" to isOs.toString(),
                     "shopId" to (productInfo?.basic?.shopID ?: ""),
                     "shopName" to shopName,
                     "productPriceFormatted" to TrackingUtil.getFormattedPrice(productInfo?.data?.price?.value
@@ -942,6 +944,8 @@ object DynamicProductDetailTracking {
                 it.type == "image"
             }?.firstOrNull()?.uRLOriginal ?: ""
 
+            val isOs = productInfo?.data?.isOS == true
+
             val mapOfData: Map<String, Any?> = mapOf(ProductTrackingConstant.Tracking.KEY_EVENT to "clickPDP",
                     ProductTrackingConstant.Tracking.KEY_CATEGORY to "product detail page",
                     ProductTrackingConstant.Tracking.KEY_ACTION to "click - review produk tab",
@@ -958,7 +962,7 @@ object DynamicProductDetailTracking {
                     "productDeeplinkUrl" to deeplinkUrl,
                     "productImageUrl" to imageUrl,
                     "productPrice" to productInfo?.data?.price?.value,
-                    "isOfficialStore" to productInfo?.data?.isOS,
+                    "isOfficialStore" to isOs.toString(),
                     "shopId" to productInfo?.basic?.shopID,
                     "shopName" to shopName,
                     "productPriceFormatted" to TrackingUtil.getFormattedPrice(productInfo?.data?.price?.value
@@ -1197,7 +1201,7 @@ object DynamicProductDetailTracking {
             val products = generateProduct(irisSessionId, trackerListName, productInfo,
                     trackerAttribution, isTradeIn, isDiagnosed, multiOrigin, deeplinkUrl, isStockAvailable)
 
-            val label = productInfo?.shopTypeString ?: "" + " - " + shopInfo?.shopCore?.name+ " - " + productInfo?.data?.name
+            val label = "${productInfo?.shopTypeString ?: ""} - ${productInfo?.basic?.shopName ?: ""} - ${productInfo?.data?.name ?: ""}"
 
             ProductDetailViewsBundler
                     .getBundle(
@@ -1310,10 +1314,10 @@ object DynamicProductDetailTracking {
                     ProductTrackingConstant.MerchantVoucher.PROMO_VIEW,
                     ProductTrackingConstant.Category.PDP,
                     ProductTrackingConstant.Action.IMPRESSION_USE_MERCHANT_VOUCHER,
-                    ""
+                    productInfo?.basic?.productID ?: ""
             )
 
-            mapEvent[ProductTrackingConstant.Tracking.KEY_PROMO_ID] = mapOf(ProductTrackingConstant.Tracking.KEY_PROMO_ID to promoId.toString())
+            mapEvent[ProductTrackingConstant.Tracking.KEY_PROMO_ID] = promoId.toString()
             mapEvent[ProductTrackingConstant.Tracking.KEY_ECOMMERCE] = DataLayer.mapOf(
                     ProductTrackingConstant.MerchantVoucher.PROMO_VIEW, DataLayer.mapOf(
                     ProductTrackingConstant.Tracking.KEY_PROMOTIONS, TrackingUtil.createMvcListMap(merchantVoucherViewModelList, shopId, 0))
@@ -1322,6 +1326,4 @@ object DynamicProductDetailTracking {
 
         }
     }
-
-
 }
