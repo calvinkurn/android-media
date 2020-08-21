@@ -214,7 +214,6 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
             addressList?.gone()
             emptySearchLayout?.gone()
         } else {
-            /*empty search*/
             emptySearchLayout?.visible()
             emptyStateLayout?.gone()
             searchAddress.visible()
