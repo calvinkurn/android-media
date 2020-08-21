@@ -14,6 +14,7 @@ import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.analyticsdebugger.debugger.TetraDebugger;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
@@ -198,7 +199,7 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     private Intent getInboxReputationIntent(Context context) {
-        return InboxReputationActivity.getCallingIntent(context);
+        return RouteManager.getIntent(context, ApplinkConst.REPUTATION);
     }
 
     @Override
