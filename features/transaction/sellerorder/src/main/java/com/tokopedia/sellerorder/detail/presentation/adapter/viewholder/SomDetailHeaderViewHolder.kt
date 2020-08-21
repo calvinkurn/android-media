@@ -170,7 +170,7 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
     }
 
     private fun makeTickerDescription(context: Context, tickerInfo: TickerInfo): String {
-        val message = "${context.getString(R.string.som_header_detail_ticker_cancellation)} ${Utils.getL2CancellationReason(tickerInfo.text)}"
+        val message = Utils.getL2CancellationReason(tickerInfo.text, context.getString(R.string.som_header_detail_ticker_cancellation))
         val messageLink = tickerInfo.actionText
         val spannedMessage = SpannableStringBuilder()
                 .append(message)
