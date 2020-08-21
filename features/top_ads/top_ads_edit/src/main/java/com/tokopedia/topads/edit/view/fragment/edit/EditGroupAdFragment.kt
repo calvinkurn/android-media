@@ -143,11 +143,6 @@ class EditGroupAdFragment : BaseDaggerFragment() {
                 setMessageErrorField(getString(R.string.recommendated_bid_message), suggestBidPerClick, false)
             }
         }
-
-    }
-
-    private fun onError(it: Throwable) {
-        it.printStackTrace()
     }
 
     private fun onBidSuccessSuggestion(data: List<ResponseBidInfo.Result.TopadsBidInfo.DataItem>) {
@@ -261,7 +256,7 @@ class EditGroupAdFragment : BaseDaggerFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         group_name?.textFieldInput?.setText(arguments?.getString(GROUPKEY))
-        viewModel.getGroupInfo(groupId.toString(), this::onSuccessGroupInfo, this::onError)
+        viewModel.getGroupInfo(groupId.toString(), this::onSuccessGroupInfo)
         sharedViewModel.getProuductIds().observe(viewLifecycleOwner, Observer {
             productId = it
             getLatestBid()
