@@ -79,7 +79,10 @@ class ReviewHistoryViewHolder(view: View,
             return
         }
         itemView.reviewHistoryNoReviewText.hide()
-        itemView.reviewHistoryDescription.setTextAndCheckShow(reviewDescription.removeNewLine())
+        itemView.reviewHistoryDescription.apply {
+            text = reviewDescription.removeNewLine()
+            show()
+        }
     }
 
     private fun showDate(date: String) {

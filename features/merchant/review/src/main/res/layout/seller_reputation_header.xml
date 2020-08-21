@@ -16,7 +16,7 @@
         android:layout_marginTop="17dp"
         tools:text="wewe" />
 
-    <com.tokopedia.reviewseller.feature.reputationhistory.view.helper.ReputationView
+    <com.tokopedia.review.feature.reputationhistory.view.helper.ReputationView
         android:id="@+id/seller_reputation_header_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

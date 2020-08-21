@@ -3,6 +3,7 @@ package com.tokopedia.review.feature.historydetails
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.review.common.domain.usecase.ProductrevGetReviewDetailUseCase
 import com.tokopedia.review.coroutine.TestCoroutineDispatchers
+import com.tokopedia.review.feature.historydetails.domain.InboxReviewInsertReputationUseCase
 import com.tokopedia.review.feature.historydetails.presentation.viewmodel.ReviewDetailViewModel
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
@@ -18,6 +19,9 @@ abstract class ReviewDetailViewModelTestFixture {
     @RelaxedMockK
     lateinit var productrevGetReviewDetailUseCase: ProductrevGetReviewDetailUseCase
 
+    @RelaxedMockK
+    lateinit var inboxReviewInsertReputationUseCase: InboxReviewInsertReputationUseCase
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
@@ -26,7 +30,7 @@ abstract class ReviewDetailViewModelTestFixture {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        viewModel = ReviewDetailViewModel(TestCoroutineDispatchers, userSession, productrevGetReviewDetailUseCase)
+        viewModel = ReviewDetailViewModel(TestCoroutineDispatchers, userSession, productrevGetReviewDetailUseCase, inboxReviewInsertReputationUseCase)
         viewModel.reviewDetails.observeForever {  }
     }
 }
