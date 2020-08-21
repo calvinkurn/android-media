@@ -17,6 +17,7 @@ import com.tokopedia.search.result.presentation.model.InspirationCarouselViewMod
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.sortfilter.SortFilterItem;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 
 import java.util.ArrayList;
@@ -55,8 +56,6 @@ public interface ProductListSectionContract {
 
         void stopTracePerformanceMonitoring();
 
-        void initQuickFilter(List<Filter> quickFilterList);
-
         void setAutocompleteApplink(String autocompleteApplink);
 
         void sendTrackingEventAppsFlyerViewListingSearch(JSONArray afProdIds, String query, ArrayList<String> prodIdArray);
@@ -91,27 +90,11 @@ public interface ProductListSectionContract {
 
         void redirectToBrowser(String url);
 
-        HashMap<String, String> getSelectedSort();
-
-        void setSelectedSort(HashMap<String, String> selectedSort);
-
-        HashMap<String, String> getSelectedFilter();
-
-        void refreshFilterController(HashMap<String, String> selectedFilter);
-
         void showRefreshLayout();
 
         void hideRefreshLayout();
 
         String getScreenNameId();
-
-        void setTotalSearchResultCount(String formattedResultCount);
-
-        // Please remove when new bottom sheet filter is already stable
-        @Deprecated
-        void renderDynamicFilter(DynamicFilterModel dynamicFilterModel);
-
-        void renderFailRequestDynamicFilter();
 
         boolean isFirstActiveTab();
 
@@ -120,10 +103,6 @@ public interface ProductListSectionContract {
         void trackScreenAuthenticated();
 
         void reloadData();
-
-        void showBottomNavigation();
-
-        void hideBottomNavigation();
 
         void sendImpressionInspirationCarouselList(final InspirationCarouselViewModel inspirationCarouselViewModel);
 
@@ -171,9 +150,11 @@ public interface ProductListSectionContract {
 
         void onQuickFilterSelected(Option option);
 
+        void initFilterControllerForQuickFilter(List<Filter> quickFilterList);
+
         void hideQuickFilterShimmering();
 
-        void setNewQuickFilter(List<SortFilterItem> items);
+        void setQuickFilter(List<SortFilterItem> items);
 
         void showOnBoarding();
 
@@ -182,11 +163,15 @@ public interface ProductListSectionContract {
         void setProductCount(String productCountText);
 
         String getClassName();
+
+        void sendTrackingOpenFilterPage();
+
+        void openBottomSheetFilter(@Nullable DynamicFilterModel dynamicFilterModel);
+
+        void setDynamicFilter(@NotNull DynamicFilterModel dynamicFilterModel);
     }
 
     interface Presenter extends CustomerPresenter<View> {
-
-        void requestDynamicFilter(Map<String, Object> searchParameter);
 
         void loadMoreData(Map<String, Object> searchParameter);
 
@@ -208,8 +193,6 @@ public interface ProductListSectionContract {
 
         void clearData();
 
-        void setStartFrom(int startFrom);
-
         int getStartFrom();
 
         void onViewCreated();
@@ -229,8 +212,8 @@ public interface ProductListSectionContract {
 
         void getProductCount(Map<String, String> mapParameter);
 
-        boolean isBottomSheetFilterRevampEnabled();
-
         void onFreeOngkirOnBoardingShown();
+
+        void openFilterPage(Map<String, Object> searchParameter);
     }
 }

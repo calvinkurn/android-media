@@ -90,6 +90,7 @@ dependencies {
     implementation project(rootProject.ext.features.attachvoucher)
 //    implementation project(rootProject.ext.features.topchat)
     implementation project(rootProject.ext.features.liveness)
+    implementation project(rootProject.ext.features.sellerOnboarding)
     implementation project(rootProject.ext.features.shopShowcase)
     implementation project(rootProject.ext.features.voucherCreation)
     implementation project(rootProject.ext.features.sellerSearch)
@@ -100,4 +101,5 @@ dependencies {
 
 //    Merchant
     implementation project(rootProject.ext.features.shopPage)
+    implementation project(rootProject.ext.features.statistic)
 }

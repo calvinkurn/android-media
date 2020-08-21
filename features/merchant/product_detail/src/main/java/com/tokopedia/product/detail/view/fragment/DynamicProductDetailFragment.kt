@@ -288,7 +288,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             doActivityResult = savedInstanceState.getBoolean(ProductDetailConstant.SAVED_ACTIVITY_RESULT, true)
         }
         super.onCreate(savedInstanceState)
-        shouldMoveToTopAds = activity?.intent?.getStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA)?.firstOrNull() == ApplinkConst.SellerApp.TOPADS_CREATE_ADS
         arguments?.let {
             productId = it.getString(ProductDetailConstant.ARG_PRODUCT_ID)
             warehouseId = it.getString(ProductDetailConstant.ARG_WAREHOUSE_ID)
@@ -321,19 +320,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             trackingQueue.sendAll()
         }
     }
-
-    override fun onStart() {
-        super.onStart()
-        if (shouldMoveToTopAds) {
-            val appLinkToOpen = activity?.intent?.getStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA)?.firstOrNull().orEmpty()
-            if (appLinkToOpen.isNotBlank()) {
-                shouldMoveToTopAds = false
-                activity?.intent?.extras?.clear()
-                context?.run { RouteManager.route(this, appLinkToOpen) }
-            }
-        }
-    }
-
     override fun onResume() {
         super.onResume()
         reloadCartCounter()
@@ -1315,7 +1301,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         viewLifecycleOwner.observe(viewModel.productInfoP3) {
             onSuccessGetDataP3(it)
             (activity as? ProductDetailActivity)?.stopMonitoringFull()
-            if (!activity?.intent?.data?.getQueryParameter(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME).isNullOrBlank() &&
+            if (GlobalConfig.isSellerApp() && !activity?.intent?.data?.getQueryParameter(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME).isNullOrBlank() &&
                     !alreadyPerformSellerMigrationAction) {
                 alreadyPerformSellerMigrationAction = true
                 actionButtonView.rincianTopAdsClick?.invoke()
