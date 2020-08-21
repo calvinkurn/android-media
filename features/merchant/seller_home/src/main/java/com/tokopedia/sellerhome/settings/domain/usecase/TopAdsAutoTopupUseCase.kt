@@ -2,6 +2,7 @@ package com.tokopedia.sellerhome.settings.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.sellerhome.settings.domain.entity.TopAdsAutoTopupDataModel
 import com.tokopedia.usecase.coroutines.UseCase
@@ -47,7 +48,7 @@ class TopAdsAutoTopupUseCase @Inject constructor(private val graphqlRepository: 
                 }
             }
         }
-        throw ResponseErrorException()
+        throw MessageErrorException(gqlError.joinToString { it.message })
     }
 
     private fun String?.mapToBooleanValue() : Boolean? {

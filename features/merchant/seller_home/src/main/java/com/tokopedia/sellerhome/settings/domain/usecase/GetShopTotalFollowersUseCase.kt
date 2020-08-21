@@ -46,6 +46,7 @@ class GetShopTotalFollowersUseCase @Inject constructor(private val gqlRepository
                 if (isNotEmpty()) throw MessageErrorException(this)
                 else return shopTotalFollowersResponse.shopInfoById.result.firstOrNull()?.favoriteData?.totalFavorite?: 0
             }
-        } else throw MessageErrorException(gqlErrors.firstOrNull()?.message)
+        }
+        throw MessageErrorException(gqlErrors.joinToString { it.message })
     }
 }

@@ -2,7 +2,7 @@ package com.tokopedia.sellerhome.settings.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.network.exception.ResponseErrorException
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sellerhome.settings.domain.entity.TopAdsDepositDataModel
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
@@ -45,6 +45,6 @@ class TopAdsDashboardDepositUseCase @Inject constructor(private val graphqlRepos
                 }
             }
         }
-        throw ResponseErrorException()
+        throw MessageErrorException(gqlError.joinToString { it.message })
     }
 }
