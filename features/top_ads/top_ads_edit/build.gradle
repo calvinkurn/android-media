@@ -41,6 +41,13 @@ dependencies {
     kapt rootProject.ext.miscDependencies.daggerCompiler
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    //test
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.testDependencies.junit
+    testImplementation rootProject.ext.miscDependencies.coroutineTest
+    testImplementation rootProject.ext.miscDependencies.coroutineCore
 }
 
 project.ext {
@@ -50,4 +57,6 @@ project.ext {
     artifactName = "top_ads_edit-release"
 }
 
+apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'
 apply from: '../../../publish_local.gradle'

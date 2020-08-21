@@ -39,7 +39,6 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselItemDataModel
 import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselOverlayImageDataModel
-import com.tokopedia.shop.BuildConfig
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.analytic.ShopPageHomeTracking
@@ -989,7 +988,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         RouteManager.route(context, appLink)
     }
 
-    override fun onPlayBannerImpressed(dataModel: PlayBannerCarouselItemDataModel, autoPlay: String, widgetId: String, position: Int) {
+    override fun onPlayBannerImpressed(dataModel: PlayBannerCarouselItemDataModel, autoPlay: String, widgetId: String, widgetPosition: Int, position: Int) {
         shopPageHomeTracking.impressionPlayBanner(
                 shopId = dataModel.partnerId,
                 userId = viewModel?.userId ?: "",
@@ -997,11 +996,12 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 bannerId = widgetId,
                 creativeName = dataModel.coverUrl,
                 autoPlay = autoPlay,
+                positionWidget = widgetPosition,
                 positionChannel = position.toString()
         )
     }
 
-    override fun onPlayBannerClicked(dataModel: PlayBannerCarouselItemDataModel, autoPlay: String, widgetId: String, position: Int) {
+    override fun onPlayBannerClicked(dataModel: PlayBannerCarouselItemDataModel, autoPlay: String, widgetId: String, widgetPosition: Int, position: Int) {
         shopPageHomeTracking.clickPlayBanner(
                 shopId = dataModel.partnerId,
                 userId = viewModel?.userId ?: "",
@@ -1009,28 +1009,31 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 bannerId = widgetId,
                 creativeName = dataModel.coverUrl,
                 autoPlay = autoPlay,
+                positionWidget = widgetPosition,
                 positionChannel = position.toString()
         )
         RouteManager.route(context, dataModel.applink)
     }
 
-    override fun onPlayLeftBannerImpressed(dataModel: PlayBannerCarouselOverlayImageDataModel, widgetId: String) {
+    override fun onPlayLeftBannerImpressed(dataModel: PlayBannerCarouselOverlayImageDataModel, widgetId: String, widgetPosition: Int, position: Int) {
         shopPageHomeTracking.impressionLeftPlayBanner(
                 shopId = shopId,
                 userId = viewModel?.userId ?: "",
                 bannerId = widgetId,
                 creativeName = dataModel.imageUrl,
-                positionChannel = "0"
+                positionChannel = widgetPosition.toString(),
+                position = (position + 1).toString()
         )
     }
 
-    override fun onPlayLeftBannerClicked(dataModel: PlayBannerCarouselOverlayImageDataModel, widgetId: String) {
+    override fun onPlayLeftBannerClicked(dataModel: PlayBannerCarouselOverlayImageDataModel, widgetId: String, widgetPosition: Int, position: Int) {
         shopPageHomeTracking.clickLeftPlayBanner(
                 shopId = shopId,
                 userId = viewModel?.userId ?: "",
                 bannerId = widgetId,
                 creativeName = dataModel.imageUrl,
-                positionChannel = "0"
+                positionChannel = widgetPosition.toString(),
+                position = (position + 1).toString()
         )
         RouteManager.route(context, dataModel.applink)
     }

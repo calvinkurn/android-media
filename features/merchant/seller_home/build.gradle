@@ -2,6 +2,16 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
+android {
+    packagingOptions {
+        exclude 'META-INF/**'
+    }
+
+    defaultConfig {
+        multiDexEnabled true
+    }
+}
+
 buildscript {
     repositories {
         mavenCentral()
@@ -15,10 +25,12 @@ buildscript {
 }
 
 dependencies {
+    implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
     //features
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.features.sellerActiveCommon)
+    implementation project(rootProject.ext.features.sellerHomeCommon)
 
     //libs
     implementation project(rootProject.ext.libraries.tkpddesign)
@@ -68,6 +80,20 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.junitPlatformRunner
     testImplementation rootProject.ext.testDependencies.couroutinesTest
 
+    // UI Test
+    androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
+    androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
+    androidTestImplementation rootProject.ext.testDependencies.espressoCore
+    androidTestImplementation rootProject.ext.testDependencies.espressoContrib
+    androidTestImplementation project(rootProject.ext.libraries.instrumentation_test), {
+        exclude group: "com.google.android.gms", module: "play-services-plus"
+        exclude group: "com.google.android.gms", module: "play-services-location"
+        exclude group: "com.google.android.gms", module: "play-services-maps"
+        exclude group: "com.google.android.gms", module: "play-services-auth"
+        exclude group: "com.google.android.gms", module: "play-services-places"
+    }
+    androidTestImplementation (rootProject.ext.testDependencies.espressoIdlingResource)
+
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
@@ -89,3 +115,4 @@ project.ext {
 apply from: '../../../publish_local.gradle'
 apply from: '../../../jacoco_task.gradle'
 apply from: '../../../sonar_config.gradle'
+apply from: '../../../compile-instrument-test.gradle'

@@ -49,6 +49,7 @@ import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.InputPriceUtil
 import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity
 import com.tokopedia.product.addedit.detail.presentation.activity.AddEditProductDetailActivity
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.EXTRA_CASHBACK_IS_DRAFTING
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.EXTRA_CASHBACK_SHOP_ID
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_PHOTOS
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.PARAM_SET_CASHBACK_PRODUCT_NAME
@@ -430,7 +431,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                     override fun onSellerFeatureClicked(item: SellerFeatureUiModel) {
                         if (!isDrafting()) {
                             when (item) {
-                                is SellerFeatureUiModel.SetVariantFeatureWithDataUiModel -> goToSellerAppEditProduct(viewModel.getProductId())
+                                is SellerFeatureUiModel.AddEditSetVariantFeatureWithDataUiModel -> goToSellerAppEditProduct(viewModel.getProductId())
                                 is SellerFeatureUiModel.SetCashbackFeatureWithDataUiModel -> goToSellerAppProductManageThenSetCashback()
                             }
                         }
@@ -438,7 +439,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                 })
                 addItemDecoration()
                 setItems(listOf(
-                        SellerFeatureUiModel.SetVariantFeatureWithDataUiModel(Any()),
+                        SellerFeatureUiModel.AddEditSetVariantFeatureWithDataUiModel(Any()),
                         SellerFeatureUiModel.SetCashbackFeatureWithDataUiModel(Any())
                 ))
             }
@@ -733,6 +734,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                             context?.run {
                                 activity?.intent?.extras?.clear()
                                 RouteManager.getIntent(this, appLinkToOpen).apply {
+                                    addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                                     startActivityForResult(this, SET_CASHBACK_REQUEST_CODE)
                                 }
                             }
@@ -818,6 +820,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                     .toString()
             val intent = RouteManager.getIntent(context, uri)
             intent.putExtra(EXTRA_CASHBACK_SHOP_ID, shopId)
+            intent.putExtra(EXTRA_CASHBACK_IS_DRAFTING, isDrafting())
             startActivityForResult(intent, SET_CASHBACK_REQUEST_CODE)
         }
     }

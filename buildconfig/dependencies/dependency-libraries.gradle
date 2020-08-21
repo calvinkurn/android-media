@@ -21,7 +21,9 @@ ext {
             analyticParam           : "com.tokopedia.analytic:param:0.0.2",
             analyticProcessor       : "com.tokopedia.analytic:processor:0.0.3",
             analyticFirebaseRules   : "com.tokopedia.analytic.rules:firebase:0.0.2",
-            analyticGTMUtil         : "com.tokopedia.analytic:gtmutil:0.0.3"
+            analyticGTMUtil         : "com.tokopedia.analytic:gtmutil:0.0.3",
+            gqlquery_annotation     : "com.tokopedia.gql_query_annotation:gqlquery_annotation:0.0.20",
+            gqlquery_annotation_processor       : "com.tokopedia.gqlquery_annotation_processor:gqlquery_annotation_processor:0.0.21"
     ]
 
     // Sort and categorize alphabetically by folder name
@@ -39,6 +41,7 @@ ext {
             blockCanary             : ":libraries:blockcanary",
             blockCanaryNoOp         : "com.github.markzhai:blockcanary-no-op:1.5.0",
             bottomSheetBuilder      : ":libraries:bottom_sheet_builder",
+            charts                  : ":libraries:charts",
             circularViewPager       : ":libraries:circular_view_pager",
             cmPushNotifications     : ":libraries:cm_push_notifications",
             commonNetwork           : ":libraries:common_network",
@@ -66,6 +69,7 @@ ext {
             locationmanager         : ":libraries:locationmanager",
             logger                  : ":libraries:logger",
             mediauploader           : ":libraries:mediauploader",
+            mpAndroidChart          : "com.github.PhilJay:MPAndroidChart:v3.1.0",
             oms                     : ":libraries:oms",
             permissionchecker       : ":libraries:permissionchecker",
             productPhotoAdapter     : ":libraries:product_photo_adapter",

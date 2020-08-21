@@ -103,13 +103,11 @@ interface HomeCategoryListener {
 
     fun getTabBusinessWidget(position: Int)
 
-    fun getBusinessUnit(tabId: Int, position: Int)
+    fun getBusinessUnit(tabId: Int, position: Int, tabName: String)
 
     fun getPlayChannel(position: Int)
 
     fun updateExpiredChannel(dynamicChannelDataModel: DynamicChannelDataModel, position: Int)
-
-    fun onBuyAgainOneClickCheckOutClick(grid: DynamicHomeChannel.Grid, channel: DynamicHomeChannel.Channels, position: Int)
 
     fun onBuyAgainCloseChannelClick(channel: DynamicHomeChannel.Channels, position: Int)
 

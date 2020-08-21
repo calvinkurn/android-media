@@ -9,8 +9,6 @@ import android.text.TextUtils;
 import com.appsflyer.AppsFlyerConversionListener;
 import com.appsflyer.AppsFlyerLib;
 import com.crashlytics.android.Crashlytics;
-import com.tokopedia.phoneverification.view.activity.PhoneVerificationActivationActivity;
-import com.tokopedia.tkpd.deeplink.utils.URLParser;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.DeepLinkChecker;
@@ -45,6 +43,7 @@ import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.deeplink.di.component.DaggerDeeplinkComponent;
 import com.tokopedia.tkpd.deeplink.di.component.DeeplinkComponent;
 import com.tokopedia.tkpd.deeplink.listener.DeepLinkView;
+import com.tokopedia.tkpd.deeplink.utils.URLParser;
 import com.tokopedia.tkpd.utils.ProductNotFoundException;
 import com.tokopedia.tkpd.utils.ShopNotFoundException;
 import com.tokopedia.track.TrackApp;
@@ -669,7 +668,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     private void openHotProduct(List<String> linkSegment, Uri uriData) {
         if (linkSegment.size() > 1) {
-            RouteManager.route(context, DeeplinkMapper.getRegisteredNavigation(context, ApplinkConst.HOME_HOTLIST + "/" + linkSegment.get(1)));
+            RouteManager.route(context, DeeplinkMapper.getRegisteredNavigation(context, ApplinkConst.FIND + "/" + linkSegment.get(1)));
         }
     }
 

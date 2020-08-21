@@ -51,20 +51,6 @@ class ShopOpenRevampModule {
 
     @ShopOpenRevampScope
     @Provides
-    @Named(GQLQueryConstant.QUERY_SHOP_OPEN_REVAMP_VALIDATE_DOMAIN_SHOP_NAME)
-    fun provideQueryShopOpenRevampGetValidateDomainShopName(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.validate_domain_name_shop)
-    }
-
-    @ShopOpenRevampScope
-    @Provides
-    @Named(GQLQueryConstant.QUERY_SHOP_OPEN_REVAMP_DOMAIN_SHOP_SUGGESTION)
-    fun provideQueryDomainShopSuggestion(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.shop_open_revamp_domain_suggestion)
-    }
-
-    @ShopOpenRevampScope
-    @Provides
     @Named(GQLQueryConstant.QUERY_SHOP_OPEN_REVAMP_CREATE_SHOP)
     fun provideQueryCreateShop(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.shop_open_revamp_create_shop)

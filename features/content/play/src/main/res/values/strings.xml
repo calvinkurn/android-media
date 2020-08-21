@@ -37,4 +37,6 @@
 
     <string name="play_general_err_message">Tunggu sebentar, biar Toped bereskan. Coba lagi atau kembali nanti.</string>
 
+    <string name="play_error_image_edit_text">Gambar/GIF tidak diperbolehkan</string>
+
 </resources>

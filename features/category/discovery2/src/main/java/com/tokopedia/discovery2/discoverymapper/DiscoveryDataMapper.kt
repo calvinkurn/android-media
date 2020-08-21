@@ -63,7 +63,6 @@ class DiscoveryDataMapper {
             return bannerComponent.apply {
                 this.data?.forEach {
                     it.id = this.id
-                    it.name = this.name
                 }
             }
         }
