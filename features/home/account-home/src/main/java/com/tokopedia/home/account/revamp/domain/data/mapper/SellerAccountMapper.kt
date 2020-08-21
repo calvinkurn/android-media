@@ -110,7 +110,7 @@ class SellerAccountMapper @Inject constructor(
         }
 
         if (showPinjamanModalOnTop) {
-            if (mitraTopperMaxLoan.isNotEmpty() && mitraTopperMaxLoan != "0" && mitraTopperUrl.isNotEmpty()) {
+            if (mitraTopperMaxLoan.isNotEmpty() && mitraTopperMaxLoan.toLong() > 0 && mitraTopperUrl.isNotEmpty()) {
                 items.add(getInfoCardMenu(mitraTopperMaxLoan, mitraTopperUrl))
             }
         }
