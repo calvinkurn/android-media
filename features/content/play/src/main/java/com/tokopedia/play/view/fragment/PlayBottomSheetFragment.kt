@@ -116,10 +116,6 @@ class PlayBottomSheetFragment @Inject constructor(
         return ::loadingDialog.isInitialized && loadingDialog.isVisible
     }
 
-    override fun onInterceptSystemUiVisibilityChanged(): Boolean {
-        return false
-    }
-
     /**
      * ProductSheet View Component Listener
      */

@@ -15,17 +15,5 @@ import dagger.Component
 )
 interface PlayComponent {
 
-    fun inject(playFragment: PlayFragment)
-
-    fun inject(playVideoFragment: PlayVideoFragment)
-
-    fun inject(playUserInteractionFragment: PlayUserInteractionFragment)
-
-    fun inject(playErrorFragment: PlayErrorFragment)
-
-    fun inject(playBottomSheetFragment: PlayBottomSheetFragment)
-
-    fun inject(playYouTubeFragment: PlayYouTubeFragment)
-
     fun inject(playActivity: PlayActivity)
 }

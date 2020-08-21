@@ -20,6 +20,7 @@ import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.custom.RoundedConstraintLayout
 import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.uimodel.General
+import com.tokopedia.play.view.uimodel.VideoPlayerUiModel
 import com.tokopedia.play.view.viewcomponent.EmptyViewComponent
 import com.tokopedia.play.view.viewcomponent.OneTapViewComponent
 import com.tokopedia.play.view.viewcomponent.VideoViewComponent
@@ -70,9 +71,7 @@ class PlayVideoFragment @Inject constructor(
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_play_video, container, false)
-
-        return view
+        return inflater.inflate(R.layout.fragment_play_video, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -97,10 +96,6 @@ class PlayVideoFragment @Inject constructor(
         return false
     }
 
-    override fun onInterceptSystemUiVisibilityChanged(): Boolean {
-        return false
-    }
-
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         val orientation = ScreenOrientation.getByInt(newConfig.orientation)
@@ -122,18 +117,21 @@ class PlayVideoFragment @Inject constructor(
     }
 
     private fun setupObserve() {
-        observeVideoPlayer()
+        observeVideoMeta()
         observeVideoProperty()
         observeOneTapOnboarding()
         observeBottomInsetsState()
         observeEventUserInfo()
-        observeVideoStream()
     }
 
     //region observe
-    private fun observeVideoPlayer() {
-        playViewModel.observableVideoPlayer.observe(viewLifecycleOwner, Observer {
-            if (it is General) videoView.setPlayer(it.exoPlayer)
+    private fun observeVideoMeta() {
+        playViewModel.observableVideoMeta.observe(viewLifecycleOwner, Observer { meta ->
+            meta.videoStream?.let {
+                videoView.setOrientation(orientation, it.orientation)
+            }
+
+            videoViewOnStateChanged(videoPlayer = meta.videoPlayer)
         })
     }
 
@@ -180,17 +178,10 @@ class PlayVideoFragment @Inject constructor(
     private fun observeEventUserInfo() {
         playViewModel.observableEvent.observe(viewLifecycleOwner, DistinctObserver {
             if (it.isFreeze || it.isBanned) {
-                videoView.hide()
-                videoView.setPlayer(null)
-
                 oneTapView.hide()
             }
-        })
-    }
 
-    private fun observeVideoStream() {
-        playViewModel.observableVideoStream.observe(viewLifecycleOwner, DistinctObserver {
-            videoView.setOrientation(orientation, it.orientation)
+            videoViewOnStateChanged(isFreezeOrBanned = it.isFreeze || it.isBanned)
         })
     }
     //endregion
@@ -209,4 +200,16 @@ class PlayVideoFragment @Inject constructor(
     private fun saveEndImage(bitmap: Bitmap) {
         playVideoUtil.saveEndImage(bitmap)
     }
+
+    //region OnStateChanged
+    private fun videoViewOnStateChanged(
+            videoPlayer: VideoPlayerUiModel = playViewModel.videoPlayer,
+            isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned
+    ) {
+        if (isFreezeOrBanned) {
+            videoView.setPlayer(null)
+            videoView.hide()
+        } else if (videoPlayer is General) videoView.setPlayer(videoPlayer.exoPlayer)
+    }
+    //endregion
 }
