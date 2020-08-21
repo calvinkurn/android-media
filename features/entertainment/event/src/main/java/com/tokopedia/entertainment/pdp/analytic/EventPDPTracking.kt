@@ -2,6 +2,8 @@ package com.tokopedia.entertainment.pdp.analytic
 
 import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.entertainment.pdp.data.*
+import com.tokopedia.entertainment.pdp.data.pdp.ItemMap
+import com.tokopedia.entertainment.pdp.data.pdp.ItemMapResponse
 import com.tokopedia.iris.Iris
 import com.tokopedia.iris.IrisAnalytics
 import com.tokopedia.iris.util.IrisSession
@@ -121,7 +123,8 @@ class EventPDPTracking constructor(val userSession: UserSessionInterface, val ir
         ))
     }
 
-    fun onClickPesanTiket(category: Category, product_name: String, product_id: String, product_price: String, qty: Int, package_id: String){
+    fun onClickPesanTiket(category: Category, package_id: String, listItems:List<ItemMap>){
+        val product_name = listItems.firstOrNull()?.productName
         getTracker().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 Event.KEY, "addToCart",
                 Event.CATEGORY, "digital - event",
@@ -137,29 +140,16 @@ class EventPDPTracking constructor(val userSession: UserSessionInterface, val ir
                 Ecommerce.KEY, DataLayer.mapOf(
                 Ecommerce.CURRENCY_CODE, "IDR",
                 Ecommerce.ADD, DataLayer.mapOf(
-                Product.KEY, DataLayer.listOf(
-                DataLayer.mapOf(
-                        Product.NAME, product_name,
-                        Product.ID, product_id,
-                        Product.PRICE, (product_price.toInt() * qty),
-                        Product.BRAND, "",
-                        Product.CATEGORY, category.title,
-                        Product.VARIANT, package_id,
-                        Product.QUANTITY, qty.toString(),
-                        Product.SHOPID, "",
-                        Product.SHOPTYPE, "",
-                        Product.SHOPNAME, "",
-                        Product.CATEGORY_ID, category.id
-                ))))))
+                Product.KEY, getProductsFromItemMap(listItems,category,package_id)))))
     }
 
-    fun onViewCheckoutPage(mPackage: PackageV3, productDetailData: ProductDetailData, qty: Int){
+    fun onViewCheckoutPage(productDetailData: ProductDetailData,items: List<ItemMapResponse>){
         val title = productDetailData.category.firstOrNull()?.title
         getTracker().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 Event.KEY, "checkout",
                 Event.CATEGORY, "digital - event",
                 Event.ACTION, "view checkout",
-                Event.LABEL, String.format("%s -  %s", title , mPackage.name),
+                Event.LABEL, String.format("%s -  %s", title, productDetailData.displayName),
                 Other.SCREENNAME, "digital/events/summary",
                 Other.CLIENTID, userSession.deviceId,
                 Other.SESSIONIRIS, irisSession.getSessionId(),
@@ -173,28 +163,16 @@ class EventPDPTracking constructor(val userSession: UserSessionInterface, val ir
                 ActionField.STEP, "1",
                 ActionField.OPTION, "cart page loaded"
         ),
-                Product.KEY, DataLayer.listOf(
-                DataLayer.mapOf(
-                        Product.NAME, mPackage.name,
-                        Product.ID, mPackage.id,
-                        Product.PRICE, (mPackage.salesPrice.toInt() * qty),
-                        Product.BRAND, "",
-                        Product.CATEGORY, "",
-                        Product.VARIANT, mPackage.id,
-                        Product.QUANTITY, qty.toString(),
-                        Product.SHOPID, "",
-                        Product.SHOPTYPE, "",
-                        Product.SHOPNAME, ""
-                ))))))
+                Product.KEY, getProductFromMetaData(items,title)))))
     }
 
-    fun onClickCheckoutButton(mPackage: PackageV3, productDetailData: ProductDetailData, qty: Int){
+    fun onClickCheckoutButton(productDetailData: ProductDetailData, items: List<ItemMapResponse>){
         val title = productDetailData.category.firstOrNull()?.title
         getTracker().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 Event.KEY, "checkout",
                 Event.CATEGORY, "digital - event",
                 Event.ACTION, "clicked proceed payment",
-                Event.LABEL, String.format("%s -  %s", title, mPackage.name),
+                Event.LABEL, String.format("%s -  %s", title, productDetailData.displayName),
                 Other.SCREENNAME, "digital/events/summary",
                 Other.CLIENTID, userSession.deviceId,
                 Other.SESSIONIRIS, irisSession.getSessionId(),
@@ -208,23 +186,50 @@ class EventPDPTracking constructor(val userSession: UserSessionInterface, val ir
                 ActionField.STEP, "2",
                 ActionField.OPTION, "click payment option button"
         ),
-                Product.KEY, DataLayer.listOf(
-                DataLayer.mapOf(
-                        Product.NAME, mPackage.name,
-                        Product.ID, mPackage.id,
-                        Product.PRICE, (mPackage.salesPrice.toInt() * qty),
-                        Product.BRAND, "",
-                        Product.CATEGORY, title,
-                        Product.VARIANT, mPackage.id,
-                        Product.QUANTITY, qty.toString(),
-                        Product.SHOPID, "",
-                        Product.SHOPTYPE, "",
-                        Product.SHOPNAME, ""
-                ))))))
+                Product.KEY, getProductFromMetaData(items, title)))))
     }
 
     private fun getTracker() : Analytics {
         return TrackApp.getInstance().gtm
+    }
+
+    private fun getProductsFromItemMap(items: List<ItemMap>, category:Category, packageID:String): Any? {
+        var list = mutableListOf<Any>()
+        items.forEachIndexed { index, it ->
+            list.add(DataLayer.mapOf(
+                    Product.NAME, it.name,
+                    Product.ID, it.productId,
+                    Product.PRICE, (it.price * it.quantity),
+                    Product.BRAND, "",
+                    Product.CATEGORY, category.title,
+                    Product.VARIANT, packageID,
+                    Product.QUANTITY, it.quantity.toString(),
+                    Product.SHOPID, "",
+                    Product.SHOPTYPE, "",
+                    Product.SHOPNAME, "",
+                    Product.CATEGORY_ID, category.id
+            ))
+        }
+        return list
+    }
+
+    private fun getProductFromMetaData(items: List<ItemMapResponse>, category: String?): Any?{
+        var list = mutableListOf<Any>()
+        items.forEachIndexed { index, it ->
+            list.add(DataLayer.mapOf(
+                    Product.NAME, it.name,
+                    Product.ID, it.id,
+                    Product.PRICE, (it.price * it.quantity),
+                    Product.BRAND, "",
+                    Product.CATEGORY, category,
+                    Product.VARIANT, it.id,
+                    Product.QUANTITY, it.quantity.toString(),
+                    Product.SHOPID, "",
+                    Product.SHOPTYPE, "",
+                    Product.SHOPNAME, ""
+            ))
+        }
+        return list
     }
 
 }
