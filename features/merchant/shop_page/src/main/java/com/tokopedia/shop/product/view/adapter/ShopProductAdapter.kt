@@ -212,6 +212,15 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
         } ?: return ALL_ETALASE
     }
 
+    fun getEtalaseNameHighLightType(shopProductViewModel: ShopProductViewModel): Int? {
+        return shopProductEtalaseHighlightViewModel?.let {
+            val matchEtalaseHighlight = it.etalaseHighlightCarouselViewModelList.firstOrNull {
+                it.shopProductViewModelList.firstOrNull { it.id == shopProductViewModel.id } != null
+            }
+            matchEtalaseHighlight?.shopEtalaseViewModel?.type
+        }
+    }
+
     fun changeSelectedSortFilter(sortId: String, sortName: String) {
         shopProductSortFilterUiViewModel?.apply {
             selectedSortId = sortId

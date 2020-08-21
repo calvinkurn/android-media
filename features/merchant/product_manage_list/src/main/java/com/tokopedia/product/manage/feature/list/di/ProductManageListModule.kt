@@ -17,11 +17,6 @@ import com.tokopedia.product.manage.feature.list.constant.GQL_FEATURED_PRODUCT
 import com.tokopedia.product.manage.feature.list.constant.GQL_UPDATE_PRODUCT
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant
 import com.tokopedia.product.manage.feature.multiedit.domain.MultiEditProductUseCase
-import com.tokopedia.product.manage.item.main.draft.data.db.ProductDraftDB
-import com.tokopedia.product.manage.item.main.draft.data.db.ProductDraftDao
-import com.tokopedia.product.manage.item.main.draft.data.repository.ProductDraftRepositoryImpl
-import com.tokopedia.product.manage.item.main.draft.data.source.ProductDraftDataSource
-import com.tokopedia.product.manage.item.main.draft.domain.ProductDraftRepository
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.shop.common.constant.GQLQueryNamedConstant
 import com.tokopedia.shop.common.constant.ShopCommonParamApiConstant
@@ -79,25 +74,6 @@ class ProductManageListModule(private val context: Context) {
     @ProductManageListScope
     fun provideTopAdsSourceTaggingRepository(dataSource: TopAdsSourceTaggingDataSource?): TopAdsSourceTaggingRepository {
         return TopAdsSourceTaggingRepositoryImpl(dataSource)
-    }
-
-    @ProductManageListScope
-    @Provides
-    internal fun provideProductDraftRepository(productDraftDataSource: ProductDraftDataSource?,
-                                               @ProductManageListContext context: Context?): ProductDraftRepository {
-        return ProductDraftRepositoryImpl(productDraftDataSource, context)
-    }
-
-    @ProductManageListScope
-    @Provides
-    internal fun provideProductDraftDb(@ProductManageListContext context: Context?): ProductDraftDB {
-        return ProductDraftDB.getInstance(context!!)
-    }
-
-    @ProductManageListScope
-    @Provides
-    internal fun provideProductDraftDao(productDraftDB: ProductDraftDB): ProductDraftDao {
-        return productDraftDB.getProductDraftDao()
     }
 
     @ProductManageListScope

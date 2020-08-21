@@ -54,6 +54,7 @@ class PartialButtonActionView private constructor(val view: View,
 
     fun setTopAdsButton(hasTopAdsActive: Boolean) {
         this.hasTopAdsActive = hasTopAdsActive
+        updateTopAdsButton()
     }
 
     fun renderData(isWarehouseProduct: Boolean, hasShopAuthority: Boolean, isShopOwner: Boolean, hasTopAdsActive: Boolean, cartTypeData: CartTypeData? = null) {
@@ -64,6 +65,12 @@ class PartialButtonActionView private constructor(val view: View,
         this.isShopOwner = isShopOwner
         this.onSuccessGetCartType = cartTypeData != null && cartTypeData.availableButtons.isNotEmpty()
         renderButton()
+    }
+
+    private fun updateTopAdsButton() {
+        if (hasShopAuthority) {
+            showShopManageButton()
+        }
     }
 
     private fun renderButton() {
@@ -203,18 +210,16 @@ class PartialButtonActionView private constructor(val view: View,
             btn_empty_stock.hide()
             btn_topchat.hide()
             seller_button_container.show()
+            btn_top_ads.buttonVariant = UnifyButton.Variant.GHOST
             if (hasTopAdsActive) {
                 btn_top_ads.setOnClickListener { rincianTopAdsClick?.invoke() }
                 btn_top_ads.text = context.getString(R.string.rincian_topads)
-                btn_top_ads.buttonVariant = UnifyButton.Variant.GHOST
                 btn_top_ads.buttonType = UnifyButton.Type.ALTERNATE
             } else {
                 btn_top_ads.setOnClickListener { promoTopAdsClick?.invoke() }
                 btn_top_ads.text = context.getString(R.string.promote_topads)
-                btn_top_ads.buttonVariant = UnifyButton.Variant.GHOST
                 btn_top_ads.buttonType = UnifyButton.Type.TRANSACTION
             }
-
             btn_edit_product.setOnClickListener(this@PartialButtonActionView)
         }
     }

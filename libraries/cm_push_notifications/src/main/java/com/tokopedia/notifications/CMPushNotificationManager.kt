@@ -10,6 +10,7 @@ import com.tokopedia.notifications.common.CMConstant
 import com.tokopedia.notifications.common.HOURS_24_IN_MILLIS
 import com.tokopedia.notifications.common.PayloadConverter
 import com.tokopedia.notifications.inApp.CMInAppManager
+import com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant
 import com.tokopedia.notifications.worker.PushWorker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -151,7 +152,7 @@ class CMPushNotificationManager : CoroutineScope {
                 val bundle = PayloadConverter.convertMapToBundle(remoteMessage.data)
                 if (confirmationValue.equals(CMConstant.PayloadKeys.SOURCE_VALUE) && isInAppEnable) {
                     CMInAppManager.getInstance().handlePushPayload(remoteMessage)
-                } else if (isPushEnable){
+                } else if (isPushEnable) {
                     PushController(applicationContext).handleNotificationBundle(bundle)
                 }
             }

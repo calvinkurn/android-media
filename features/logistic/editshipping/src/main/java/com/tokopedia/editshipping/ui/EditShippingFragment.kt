@@ -280,7 +280,7 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
 
     override fun onFragmentNoConnection() {
         NetworkErrorHelper.showEmptyState(activity, view,
-                getString(R.string.msg_no_connection),
+                getString(com.tokopedia.abstraction.R.string.msg_no_connection),
                 object : NetworkErrorHelper.RetryClickedListener {
                     override fun onRetryClicked() {
                         if (mapMode == CREATE_SHOP_PAGE) editShippingPresenter?.fetchDataOpenShop() else editShippingPresenter?.fetchData()
@@ -389,10 +389,7 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val fragmentHeader = fragmentShippingHeader?.isShown
-        if (item.itemId == R.id.home) {
-            activity?.finish()
-            return true
-        } else if (item.itemId == R.id.action_send) {
+        if (item.itemId == R.id.action_send) {
             if (fragmentHeader != null) {
                 editShippingPresenter?.getShopId()?.let { editShippingPresenter?.validateBo(it, editShippingPresenter?.getCompiledShippingId().toString()) }
             } else showErrorToast(getString(R.string.dialog_on_process))
