@@ -141,7 +141,6 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
         assertEquals(true, viewModel.isDuplicate)
         assertEquals("112", viewModel.getProductId())
         assertEquals(10L , viewModel.getDraftId())
-        assertEquals(true, viewModel.hasWholesale)
     }
 
     @Test
