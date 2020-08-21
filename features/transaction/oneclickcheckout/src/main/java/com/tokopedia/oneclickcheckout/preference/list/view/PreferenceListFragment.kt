@@ -91,7 +91,7 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
             val message = data?.getStringExtra(PreferenceEditActivity.EXTRA_RESULT_MESSAGE)
             if (message != null && message.isNotBlank()) {
                 view?.let {
-                    Toaster.make(it, message)
+                    Toaster.build(it, message).show()
                 }
             }
             viewModel.getAllPreference()
@@ -153,7 +153,7 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
                     progressDialog?.dismiss()
                     view?.let { view ->
                         it.data.getData()?.let { message ->
-                            Toaster.make(view, message)
+                            Toaster.build(view, message).show()
                         }
                     }
                 }
@@ -163,11 +163,11 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
                     it.getFailure()?.let { failure ->
                         view?.let { view ->
                             if (failure.throwable is MessageErrorException) {
-                                Toaster.make(view, failure.throwable.message
-                                        ?: DEFAULT_LOCAL_ERROR_MESSAGE, type = Toaster.TYPE_ERROR)
+                                Toaster.build(view, failure.throwable.message
+                                        ?: DEFAULT_LOCAL_ERROR_MESSAGE, type = Toaster.TYPE_ERROR).show()
                             } else {
-                                Toaster.make(view, failure.throwable?.localizedMessage
-                                        ?: DEFAULT_LOCAL_ERROR_MESSAGE, type = Toaster.TYPE_ERROR)
+                                Toaster.build(view, failure.throwable?.localizedMessage
+                                        ?: DEFAULT_LOCAL_ERROR_MESSAGE, type = Toaster.TYPE_ERROR).show()
                             }
                         }
                     }
@@ -202,7 +202,7 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
                     else -> {
                         view?.let {
                             showGlobalError(GlobalError.SERVER_ERROR)
-                            Toaster.make(it, DEFAULT_ERROR_MESSAGE, type = Toaster.TYPE_ERROR)
+                            Toaster.build(it, DEFAULT_ERROR_MESSAGE, type = Toaster.TYPE_ERROR).show()
                         }
                     }
                 }
@@ -210,8 +210,8 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
             else -> {
                 view?.let {
                     showGlobalError(GlobalError.SERVER_ERROR)
-                    Toaster.make(it, throwable?.message
-                            ?: DEFAULT_ERROR_MESSAGE, type = Toaster.TYPE_ERROR)
+                    Toaster.build(it, throwable?.message
+                            ?: DEFAULT_ERROR_MESSAGE, type = Toaster.TYPE_ERROR).show()
                 }
             }
         }

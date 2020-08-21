@@ -211,7 +211,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         val message = data?.getStringExtra(PreferenceEditActivity.EXTRA_RESULT_MESSAGE)
         if (message != null && message.isNotBlank()) {
             view?.let {
-                Toaster.make(it, message)
+                Toaster.build(it, message).show()
             }
         }
         viewModel.clearBboIfExist()
@@ -346,7 +346,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                             message = ErrorHandler.getErrorMessage(context, it.throwable)
                         }
                         if (message.isNotBlank()) {
-                            Toaster.make(v, message, type = Toaster.TYPE_ERROR)
+                            Toaster.build(v, message, type = Toaster.TYPE_ERROR).show()
                         }
                         refresh(false, isFullRefresh = it.isFullRefresh)
                     }
@@ -358,7 +358,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                         if (message.isBlank()) {
                             message = ErrorHandler.getErrorMessage(context, it.throwable)
                         }
-                        Toaster.make(v, message, type = Toaster.TYPE_ERROR)
+                        Toaster.build(v, message, type = Toaster.TYPE_ERROR).show()
                     }
                 }
                 is OccGlobalEvent.CheckoutError -> {
@@ -449,7 +449,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                     swipeRefreshLayout?.isRefreshing = false
                     view?.let { v ->
                         if (it.message.isNotBlank()) {
-                            Toaster.make(v, it.message)
+                            Toaster.build(v, it.message).show()
                         }
                     }
                     setSourceFromPDP()
@@ -813,7 +813,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                     else -> {
                         view?.let {
                             showGlobalError(GlobalError.SERVER_ERROR)
-                            Toaster.make(it, getString(R.string.default_osp_error_message), type = Toaster.TYPE_ERROR)
+                            Toaster.build(it, getString(R.string.default_osp_error_message), type = Toaster.TYPE_ERROR).show()
                         }
                     }
                 }
@@ -821,8 +821,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             else -> {
                 view?.let {
                     showGlobalError(GlobalError.SERVER_ERROR)
-                    Toaster.make(it, throwable?.message
-                            ?: getString(R.string.default_osp_error_message), type = Toaster.TYPE_ERROR)
+                    Toaster.build(it, throwable?.message
+                            ?: getString(R.string.default_osp_error_message), type = Toaster.TYPE_ERROR).show()
                 }
             }
         }
@@ -939,7 +939,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                     shouldDismissProgressDialog = true
                 } else {
                     viewModel.globalEvent.value = OccGlobalEvent.Normal
-                    Toaster.make(v, getString(R.string.default_osp_error_message), type = Toaster.TYPE_ERROR)
+                    Toaster.build(v, getString(R.string.default_osp_error_message), type = Toaster.TYPE_ERROR).show()
                 }
             }
         }

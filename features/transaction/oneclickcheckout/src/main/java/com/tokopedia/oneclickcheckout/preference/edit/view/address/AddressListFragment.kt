@@ -222,7 +222,7 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
                         goToPickLocation(REQUEST_CREATE)
                     } else {
                         view?.let {
-                            Toaster.make(it, DEFAULT_LOCAL_ERROR_MESSAGE, type = Toaster.TYPE_ERROR)
+                            Toaster.build(it, DEFAULT_LOCAL_ERROR_MESSAGE, type = Toaster.TYPE_ERROR).show()
                         }
                     }
                 }
@@ -349,7 +349,7 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
                     else -> {
                         view?.let {
                             showGlobalError(GlobalError.SERVER_ERROR)
-                            Toaster.make(it, DEFAULT_ERROR_MESSAGE, type = Toaster.TYPE_ERROR)
+                            Toaster.build(it, DEFAULT_ERROR_MESSAGE, type = Toaster.TYPE_ERROR).show()
                         }
                     }
                 }
@@ -357,8 +357,8 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
             else -> {
                 view?.let {
                     showGlobalError(GlobalError.SERVER_ERROR)
-                    Toaster.make(it, throwable?.message
-                            ?: DEFAULT_ERROR_MESSAGE, type = Toaster.TYPE_ERROR)
+                    Toaster.build(it, throwable?.message
+                            ?: DEFAULT_ERROR_MESSAGE, type = Toaster.TYPE_ERROR).show()
                 }
             }
         }
