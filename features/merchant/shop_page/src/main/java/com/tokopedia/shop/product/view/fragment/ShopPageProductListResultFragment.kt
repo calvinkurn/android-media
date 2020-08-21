@@ -33,7 +33,8 @@ import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
 import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.OldShopPageTrackingConstant
@@ -42,6 +43,8 @@ import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageAttribution
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct
 import com.tokopedia.shop.analytic.model.ShopTrackProductTypeDef
+import com.tokopedia.shop.analytic.model.*
+import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef
 import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.constant.ShopPageConstant.EMPTY_PRODUCT_SEARCH_IMAGE_URL
 import com.tokopedia.shop.common.constant.ShopParamConstant
@@ -101,11 +104,13 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     private var selectedEtalaseId: String = ""
     private var selectedEtalaseName: String = ""
     private var defaultEtalaseName = ""
+    private var selectedEtalaseType: Int = SELECTED_ETALASE_TYPE_DEFAULT_VALUE
     private var onShopProductListFragmentListener: OnShopProductListFragmentListener? = null
     private var shopPageProductListResultFragmentListener: ShopPageProductListResultFragmentListener? = null
     private var needReloadData: Boolean = false
     private var isOfficialStore: Boolean = false
     private var isGoldMerchant: Boolean = false
+    private var threeDotsClickShopProductUiModel: ShopProductViewModel? = null
 
     private var shopProductSortFilterUiModel: ShopProductSortFilterUiModel? = null
     private var keywordEmptyState = ""
@@ -181,6 +186,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             selectedEtalaseList = savedInstanceState.getParcelableArrayList(SAVED_SELECTED_ETALASE_LIST)
             selectedEtalaseId = savedInstanceState.getString(SAVED_SELECTED_ETALASE_ID) ?: ""
             selectedEtalaseName = savedInstanceState.getString(SAVED_SELECTED_ETALASE_NAME) ?: ""
+            selectedEtalaseType = savedInstanceState.getInt(SAVED_SELECTED_ETALASE_TYPE, SELECTED_ETALASE_TYPE_DEFAULT_VALUE)
             keyword = savedInstanceState.getString(SAVED_KEYWORD) ?: ""
             sortValue = savedInstanceState.getString(SAVED_SORT_VALUE, "")
             shopId = savedInstanceState.getString(SAVED_SHOP_ID)
@@ -261,7 +267,8 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 sortValue.toIntOrZero(),
                 selectedEtalaseId,
                 keyword,
-                isNeedToReloadData
+                isNeedToReloadData,
+                selectedEtalaseType
         )
     }
 
@@ -299,9 +306,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
 
         viewModel.shopSortFilterData.observe(this, Observer {
             when (it) {
-                is Success -> {
-                    onSuccessGetSortFilterData(it.data)
-                }
+                is Success -> onSuccessGetSortFilterData(it.data)
                 is Fail -> showGetListError(it.throwable)
             }
         })
@@ -312,12 +317,6 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     renderProductList(productList, it.data.first)
                     isNeedToReloadData = false
                 }
-                is Fail -> showGetListError(it.throwable)
-            }
-        })
-        viewModel.productDataEmpty.observe(this, Observer {
-            when (it) {
-                is Success -> renderProductListEmptyState(it.data)
                 is Fail -> showGetListError(it.throwable)
             }
         })
@@ -403,6 +402,8 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     shopProductViewModel,
                     productPosition + 1,
                     shopId,
+                    shopProductViewModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
+                    shopProductViewModel.isUpcoming,
                     keyword
 
             )
@@ -445,6 +446,8 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     shopProductViewModel,
                     productPosition + 1,
                     shopId,
+                    shopProductViewModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
+                    shopProductViewModel.isUpcoming,
                     keyword
             )
         } else {
@@ -535,6 +538,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     }
 
     override fun onThreeDotsClicked(shopProductViewModel: ShopProductViewModel, @ShopTrackProductTypeDef shopTrackType: Int) {
+        threeDotsClickShopProductUiModel = shopProductViewModel
         showProductCardOptions(
                 this,
                 ProductCardOptionsModel(
@@ -553,13 +557,16 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         sortValue = shopStickySortFilter.sortList.firstOrNull { it.value == sortValue }?.value ?: ""
         selectedEtalaseName = etalaseList.firstOrNull { it.etalaseId == selectedEtalaseId }?.etalaseName
                 ?: ""
+        selectedEtalaseType = etalaseList.firstOrNull { it.etalaseId == selectedEtalaseId }?.type
+                ?: -1
         val selectedSortName = shopStickySortFilter.sortList.firstOrNull { it.value == sortValue }?.name
                 ?: ""
         shopProductSortFilterUiModel = ShopProductSortFilterUiModel(
                 selectedEtalaseId = selectedEtalaseId.takeIf { it.isNotEmpty() } ?: "",
                 selectedEtalaseName = selectedEtalaseName.takeIf { it.isNotEmpty() } ?: "",
                 selectedSortId = sortValue,
-                selectedSortName = selectedSortName
+                selectedSortName = selectedSortName,
+                isShowSortFilter = selectedEtalaseType != ShopEtalaseTypeDef.ETALASE_CAMPAIGN
         )
         if(!isEmptyState) {
             viewModel.getShopProduct(
@@ -569,7 +576,8 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     sortValue.toIntOrZero(),
                     selectedEtalaseId,
                     keyword,
-                    isNeedToReloadData
+                    isNeedToReloadData,
+                    selectedEtalaseType
             )
         } else {
             hideLoading()
@@ -592,10 +600,11 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 data?.let {
                     selectedEtalaseId = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_PICKER_ETALASE_ID)
                     selectedEtalaseName = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_PICKER_ETALASE_NAME)
+                    selectedEtalaseType = data.getIntExtra(ShopParamConstant.EXTRA_ETALASE_PICKER_ETALASE_TYPE, SELECTED_ETALASE_TYPE_DEFAULT_VALUE)
                     needReloadData = data.getBooleanExtra(ShopParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, false)
                     shopPageTracking?.clickMoreMenuChip(
                             isMyShop,
-                            selectedEtalaseName,
+                            getSelectedEtalaseChip(),
                             customDimensionShopPage
                     )
                     shopInfo?.let {
@@ -639,21 +648,28 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     }
 
     private fun handleWishlistAction(productCardOptionsModel: ProductCardOptionsModel) {
-        shopInfo?.let {
-            //shopTrackType is always from Product
-            shopPageTracking?.clickWishlistProductResultPage(
-                    !productCardOptionsModel.isWishlisted,
-                    isLogin,
-                    getSelectedEtalaseChip(),
-                    CustomDimensionShopPageProduct.create(it.shopCore.shopID, it.goldOS.isOfficial == 1,
-                            it.goldOS.isGold == 1, productCardOptionsModel.productId, shopRef))
-        }
-
         if (!productCardOptionsModel.wishlistResult.isUserLoggedIn) {
             onErrorAddToWishList(UserNotLoginException())
         } else {
+            shopInfo?.let {
+                //shopTrackType is always from Product
+                shopPageTracking?.clickWishlistProductResultPage(
+                        !productCardOptionsModel.isWishlisted,
+                        isLogin,
+                        getSelectedEtalaseChip(),
+                        CustomDimensionShopPageProduct.create(
+                                it.shopCore.shopID,
+                                it.goldOS.isOfficial == 1,
+                                it.goldOS.isGold == 1, productCardOptionsModel.productId, shopRef
+                        ),
+                        threeDotsClickShopProductUiModel?.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
+                        threeDotsClickShopProductUiModel?.isUpcoming ?: false
+                )
+            }
+
             handleWishlistActionForLoggedInUser(productCardOptionsModel)
         }
+        threeDotsClickShopProductUiModel = null
     }
 
     private fun handleWishlistActionForLoggedInUser(productCardOptionsModel: ProductCardOptionsModel) {
@@ -728,6 +744,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         outState.putParcelableArrayList(SAVED_SELECTED_ETALASE_LIST, selectedEtalaseList)
         outState.putString(SAVED_SELECTED_ETALASE_ID, selectedEtalaseId)
         outState.putString(SAVED_SELECTED_ETALASE_NAME, selectedEtalaseName)
+        outState.putInt(SAVED_SELECTED_ETALASE_TYPE, selectedEtalaseType)
         outState.putString(SAVED_SORT_VALUE, sortValue)
         outState.putString(SAVED_KEYWORD, keyword)
         outState.putString(SAVED_SHOP_ID, shopId)
@@ -756,7 +773,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         }
     }
 
-    private fun getSelectedEtalaseChip(): String {
+    private fun getSelectedEtalaseChip(): String{
         return selectedEtalaseName.takeIf { it.isNotEmpty() } ?: defaultEtalaseName
     }
 
@@ -773,6 +790,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         val SAVED_SELECTED_ETALASE_LIST = "saved_etalase_list"
         val SAVED_SELECTED_ETALASE_ID = "saved_etalase_id"
         val SAVED_SELECTED_ETALASE_NAME = "saved_etalase_name"
+        val SAVED_SELECTED_ETALASE_TYPE = "saved_etalase_type"
         val SAVED_SHOP_ID = "saved_shop_id"
         val SAVED_SHOP_REF = "saved_shop_ref"
         val SAVED_SHOP_IS_OFFICIAL = "saved_shop_is_official"
@@ -780,6 +798,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         val SAVED_KEYWORD = "saved_keyword"
         val SAVED_SORT_VALUE = "saved_sort_name"
         val BUNDLE = "bundle"
+        private const val SELECTED_ETALASE_TYPE_DEFAULT_VALUE = -10
 
         @JvmStatic
         fun createInstance(shopId: String,
@@ -804,6 +823,11 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     }
 
     override fun onEtalaseFilterClicked() {
+        shopPageTracking?.clickEtalaseChip(
+                isMyShop,
+                getSelectedEtalaseChip(),
+                CustomDimensionShopPage.create(shopId, isOfficialStore, isGoldMerchant)
+        )
         redirectToEtalasePicker()
     }
 
@@ -825,6 +849,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         shopProductAdapter.changeSelectedSortFilter(sortValue ?: "", sortName)
         selectedEtalaseId = ""
         selectedEtalaseName = ""
+        selectedEtalaseType = SELECTED_ETALASE_TYPE_DEFAULT_VALUE
         shopProductAdapter.changeSelectedEtalaseFilter(selectedEtalaseId, selectedEtalaseName)
         shopProductAdapter.refreshSticky()
         loadInitialData()

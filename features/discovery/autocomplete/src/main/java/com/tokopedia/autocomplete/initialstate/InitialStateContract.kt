@@ -18,8 +18,6 @@ interface InitialStateContract {
 
         fun onPopularSearchImpressed(list: List<Any>)
 
-        fun dropKeyBoard()
-
         fun route(applink: String, searchParameter: Map<String, String>)
 
         fun finish()

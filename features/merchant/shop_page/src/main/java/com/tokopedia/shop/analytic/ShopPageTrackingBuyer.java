@@ -304,19 +304,24 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
             CustomDimensionShopPageAttribution customDimensionShopPage,
             ShopProductViewModel shopProductViewModel,
             int productPosStart,
-            String shopId
+            String shopId,
+            boolean isSelectedEtalaseCampaign,
+            boolean isEtalaseSectionCampaign,
+            boolean isUpcoming
     ) {
         String loginNonLoginString = isLogin ? LOGIN : NON_LOGIN;
+        String etalaseNameTrackerString = isSelectedEtalaseCampaign? String.format(LABEL_ETALASE_CAMPAIGN, selectedEtalaseChipName) : selectedEtalaseChipName;
+        String etalaseSectionTrackerString = getEtalaseNameTrackerString(isEtalaseSectionCampaign,  isUpcoming, etalaseSection);
         Map<String, Object> event = createProductClickMap(
                 PRODUCT_CLICK,
                 isOwner,
                 getShopPageCategory(isOwner),
                 loginNonLoginString,
-                joinDash(CLICK_PRODUCT, getProductEtalaseEvent(selectedEtalaseChipName, etalaseSection), loginNonLoginString),
+                joinDash(CLICK_PRODUCT, getProductEtalaseEvent(etalaseNameTrackerString, etalaseSectionTrackerString), loginNonLoginString),
                 shopProductViewModel.getId(),
                 customDimensionShopPage,
                 shopProductViewModel,
-                selectedEtalaseChipName, etalaseSection,
+                etalaseNameTrackerString, etalaseSectionTrackerString,
                 productPosStart,
                 shopId
         );
@@ -332,9 +337,12 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
             ShopProductViewModel shopProductViewModel,
             int productPosStart,
             String shopId,
+            boolean isEtalaseCampaign,
+            boolean isUpcoming,
             String keyword
     ) {
         String loginNonLoginString = isLogin ? LOGIN : NON_LOGIN;
+        String etalaseNameTrackerString = getEtalaseNameTrackerString(isEtalaseCampaign,  isUpcoming, selectedEtalaseChipName);
         Map<String, Object> event = createProductClickSearchResultMap(
                 PRODUCT_CLICK,
                 isOwner,
@@ -344,7 +352,7 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
                 keyword,
                 customDimensionShopPage,
                 shopProductViewModel,
-                selectedEtalaseChipName, etalaseSection,
+                etalaseNameTrackerString, etalaseSection,
                 productPosStart,
                 shopId
         );
@@ -359,19 +367,24 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
             CustomDimensionShopPageAttribution customDimensionShopPage,
             ShopProductViewModel shopProductViewModel,
             int productPosStart,
-            String shopId
+            String shopId,
+            boolean isSelectedEtalaseCampaign,
+            boolean isEtalaseSectionCampaign,
+            boolean isUpcoming
     ) {
         String loginNonLoginString = isLogin ? LOGIN : NON_LOGIN;
+        String etalaseNameTrackerString = isSelectedEtalaseCampaign? String.format(LABEL_ETALASE_CAMPAIGN, selectedEtalaseChipName) : selectedEtalaseChipName;
+        String etalaseSectionTrackerString = getEtalaseNameTrackerString(isEtalaseSectionCampaign,  isUpcoming, etalaseSection);
         Map<String, Object> event = createProductImpressionMap(
                 PRODUCT_VIEW,
                 isOwner,
                 getShopPageCategory(isOwner),
                 loginNonLoginString,
-                joinDash(PRODUCT_LIST_IMPRESSION, getProductEtalaseEvent(selectedEtalaseChipName, etalaseSection), loginNonLoginString),
+                joinDash(PRODUCT_LIST_IMPRESSION, getProductEtalaseEvent(etalaseNameTrackerString, etalaseSectionTrackerString), loginNonLoginString),
                 "",
                 customDimensionShopPage,
                 shopProductViewModel,
-                selectedEtalaseChipName, etalaseSection,
+                etalaseNameTrackerString, etalaseSectionTrackerString,
                 productPosStart,
                 shopId
         );
@@ -387,19 +400,22 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
             ShopProductViewModel shopProductViewModel,
             int productPosStart,
             String shopId,
+            boolean isEtalaseCampaign,
+            boolean isUpcoming,
             String keyword
     ) {
         String loginNonLoginString = isLogin ? LOGIN : NON_LOGIN;
+        String etalaseNameTrackerString = getEtalaseNameTrackerString(isEtalaseCampaign,  isUpcoming, selectedEtalaseChipName);
         Map<String, Object> event = createProductImpressionSearchResultMap(
                 PRODUCT_VIEW,
                 isOwner,
                 getShopPageCategory(isOwner),
                 loginNonLoginString,
-                joinDash(PRODUCT_LIST_IMPRESSION, getProductEtalaseEvent(selectedEtalaseChipName, etalaseSection), loginNonLoginString, SEARCH_RESULT),
+                joinDash(PRODUCT_LIST_IMPRESSION, getProductEtalaseEvent(etalaseNameTrackerString, etalaseSection), loginNonLoginString, SEARCH_RESULT),
                 keyword,
                 customDimensionShopPage,
                 shopProductViewModel,
-                selectedEtalaseChipName, etalaseSection,
+                etalaseNameTrackerString, etalaseSection,
                 productPosStart,
                 shopId
         );
@@ -410,9 +426,14 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
                               boolean isLogin,
                               String selectedEtalaseName,
                               String sectionName,
-                              CustomDimensionShopPageProduct customDimensionShopPage) {
+                              CustomDimensionShopPageProduct customDimensionShopPage,
+                              boolean isSelectedEtalaseCampaign,
+                              boolean isEtalaseSectionCampaign,
+                              boolean isUpcoming) {
         String loginNonLoginString = isLogin ? LOGIN : NON_LOGIN;
-        String etalaseEvent = joinDash(getProductEtalaseEvent(selectedEtalaseName, sectionName), loginNonLoginString);
+        String etalaseNameTrackerString = isSelectedEtalaseCampaign? String.format(LABEL_ETALASE_CAMPAIGN, selectedEtalaseName) : selectedEtalaseName;
+        String etalaseSectionTrackerString = getEtalaseNameTrackerString(isEtalaseSectionCampaign,  isUpcoming, sectionName);
+        String etalaseEvent = joinDash(getProductEtalaseEvent(etalaseNameTrackerString, etalaseSectionTrackerString), loginNonLoginString);
         sendGeneralEvent(CLICK_SHOP_PAGE,
                 SHOP_PAGE_BUYER,
                 joinDash(joinSpace(isAdd ? ADD : REMOVE, WISHLIST), etalaseEvent),
@@ -420,12 +441,17 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
                 customDimensionShopPage);
     }
 
-    public void clickWishlistProductResultPage(boolean isAdd,
-                                               boolean isLogin,
-                                               String selectedEtalaseName,
-                                               CustomDimensionShopPageProduct customDimensionShopPage) {
+    public void clickWishlistProductResultPage(
+            boolean isAdd,
+            boolean isLogin,
+            String selectedEtalaseName,
+            CustomDimensionShopPageProduct customDimensionShopPage,
+            boolean isEtalaseCampaign,
+            boolean isUpcoming
+    ) {
         String loginNonLoginString = isLogin ? LOGIN : NON_LOGIN;
-        String etalaseEvent = joinDash(getProductEtalaseEvent(selectedEtalaseName, ""), loginNonLoginString, SEARCH_RESULT);
+        String etalaseNameTrackerString = getEtalaseNameTrackerString(isEtalaseCampaign,  isUpcoming, selectedEtalaseName);
+        String etalaseEvent = joinDash(getProductEtalaseEvent(etalaseNameTrackerString, ""), loginNonLoginString, SEARCH_RESULT);
         sendGeneralEvent(CLICK_SHOP_PAGE,
                 SHOP_PAGE_BUYER,
                 joinDash(joinSpace(isAdd ? ADD : REMOVE, WISHLIST), etalaseEvent),
@@ -554,6 +580,20 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
                 "",
                 customDimensionShopPage
         );
+    }
+
+    private String getEtalaseNameTrackerString(
+            boolean isEtalaseSectionCampaign,
+            boolean isUpcoming,
+            String etalaseSection
+    ){
+        String etalaseSectionTrackerString;
+        if (isEtalaseSectionCampaign) {
+            etalaseSectionTrackerString = String.format(LABEL_ETALASE_UPCOMING_ONGOING_CAMPAIGN, isUpcoming ? VALUE_UPCOMING : VALUE_ONGOING, etalaseSection);
+        } else {
+            etalaseSectionTrackerString = etalaseSection;
+        }
+        return etalaseSectionTrackerString;
     }
 
     private List<Object> createProductListMapEmptyState(

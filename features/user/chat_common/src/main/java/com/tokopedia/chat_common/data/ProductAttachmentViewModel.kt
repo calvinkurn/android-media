@@ -59,6 +59,7 @@ open class ProductAttachmentViewModel : SendableViewModel,
     var status: Int = 0
     var wishList: Boolean = false
     var rating: TopchatProductRating = TopchatProductRating()
+    var isPreOrder: Boolean = false
     var images: List<String> = emptyList()
         get() {
             return if (field.isNotEmpty()) {
@@ -95,6 +96,7 @@ open class ProductAttachmentViewModel : SendableViewModel,
             wishList = attribute.productProfile.wishList
             images = attribute.productProfile.images
             rating = attribute.productProfile.rating
+            isPreOrder = attribute.productProfile.isPreOrder
             if (variants.isNotEmpty()) {
                 setupVariantsField()
             }

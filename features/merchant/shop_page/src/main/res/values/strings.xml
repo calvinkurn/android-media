@@ -258,5 +258,8 @@
     <string name="close_reply">Tutup Balasan</string>
     <string name="menu_report">Laporkan</string>
 
+    <string name="shop_home_npl_remind_me">Ingatkan</string>
+    <string name="shop_string_ok">OK</string>
+
 
 </resources>
