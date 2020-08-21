@@ -1,31 +1,30 @@
 package com.tokopedia.shop.pageheader.di.module;
 
-import android.content.Context;
-
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.abstraction.common.utils.GraphqlHelper;
+import android.content.Context
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
-import com.tokopedia.shop.R;
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.shop.R
 import com.tokopedia.shop.common.constant.GQLQueryNamedConstant
 import com.tokopedia.shop.common.constant.GqlQueryConstant
-import com.tokopedia.shop.common.constant.ShopPageConstant;
-import com.tokopedia.shop.common.domain.interactor.DeleteShopInfoCacheUseCase;
-import com.tokopedia.shop.pageheader.di.scope.ShopPageScope;
-import com.tokopedia.shop.product.data.GQLQueryConstant;
-import com.tokopedia.shop.product.domain.interactor.DeleteShopProductAceUseCase;
-import com.tokopedia.shop.product.domain.interactor.DeleteShopProductTomeUseCase;
-import com.tokopedia.shop.product.domain.interactor.DeleteShopProductUseCase;
+import com.tokopedia.shop.common.constant.ShopPageConstant
+import com.tokopedia.shop.common.domain.interactor.DeleteShopInfoCacheUseCase
 import com.tokopedia.shop.pageheader.ShopPageHeaderConstant
+import com.tokopedia.shop.pageheader.di.scope.ShopPageScope
+import com.tokopedia.shop.pageheader.domain.interactor.GetBroadcasterShopConfigUseCase
+import com.tokopedia.shop.product.data.GQLQueryConstant
+import com.tokopedia.shop.product.domain.interactor.DeleteShopProductAceUseCase
+import com.tokopedia.shop.product.domain.interactor.DeleteShopProductTomeUseCase
+import com.tokopedia.shop.product.domain.interactor.DeleteShopProductUseCase
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
-import com.tokopedia.stickylogin.domain.usecase.StickyLoginUseCase;
-import com.tokopedia.user.session.UserSession;
-import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.stickylogin.domain.usecase.StickyLoginUseCase
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
+import dagger.Module
+import dagger.Provides
+import javax.inject.Named
 
-import javax.inject.Named;
-
-import dagger.Module;
-import dagger.Provides;
 
 @ShopPageScope
 @Module(includes = [ShopViewModelModule::class])
@@ -69,6 +68,12 @@ class ShopPageModule {
                 context.getResources(),
                 R.raw.shop_moderate_request_status
         );
+    }
+
+    @ShopPageScope
+    @Provides
+    fun provideGetBroadcasterShopConfigUseCase(graphqlUseCase: MultiRequestGraphqlUseCase): GetBroadcasterShopConfigUseCase {
+        return GetBroadcasterShopConfigUseCase(graphqlUseCase)
     }
 
     @ShopPageScope

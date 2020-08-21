@@ -18,7 +18,7 @@ import com.tokopedia.abstraction.common.utils.network.TextApiUtils
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.shop.R
-import com.tokopedia.shop.ShopComponentInstance
+import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent
@@ -70,7 +70,7 @@ class HomeProductFragment : BaseDaggerFragment() {
             DaggerShopProductComponent
                     .builder()
                     .shopProductModule(ShopProductModule())
-                    .shopComponent(ShopComponentInstance.getComponent(it.application))
+                    .shopComponent(ShopComponentHelper().getComponent(it.application, it))
                     .build()
                     .inject(this)
         }
