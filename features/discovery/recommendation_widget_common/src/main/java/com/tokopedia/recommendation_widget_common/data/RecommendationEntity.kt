@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
  * Created by devara fikry on 16/04/19.
  * Credit errysuprayogi
  */
-class RecomendationEntity {
+class RecommendationEntity {
 
     @SerializedName("productRecommendationWidget")
     var productRecommendationWidget: ProductRecommendationWidget? = ProductRecommendationWidget()
