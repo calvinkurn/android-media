@@ -288,7 +288,7 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
     private fun showMessageSuccessAddWishlist() {
         if (activity == null) return
         val view = activity!!.findViewById<View>(android.R.id.content)
-        val message = getString(R.string.msg_success_add_wishlist)
+        val message = getString(R.string.recom_msg_success_add_wishlist)
         view?.let {
             Toaster.make(
                     it,
@@ -308,7 +308,7 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
     private fun showMessageSuccessRemoveWishlist() {
         if (activity == null) return
         val view = activity!!.findViewById<View>(android.R.id.content)
-        val message = getString(R.string.msg_success_remove_wishlist)
+        val message = getString(R.string.recom_msg_success_remove_wishlist)
         Toaster.make(view, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL)
     }
 
