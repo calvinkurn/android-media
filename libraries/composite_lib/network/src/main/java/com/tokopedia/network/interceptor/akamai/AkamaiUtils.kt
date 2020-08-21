@@ -10,7 +10,7 @@ import java.util.regex.Pattern
 
 /*
    * 21 August 2020
-   * Duplicated from Akamai Bot Interceptor Library for composite network lib
+   * Duplicated from Akamai Bot Interceptor Library for composite network lib to accommodate Refresh Token usecase only
  */
 
 const val ERROR_CODE = 403
