@@ -97,5 +97,6 @@ data class OrderedItem(
         val itemName: String,
         val itemCount: Int?,
         val itemPrice: String,
-        val itemTotalPriceStr: String
+        val itemTotalPriceStr: String,
+        val isBBIProduct : Boolean
 )

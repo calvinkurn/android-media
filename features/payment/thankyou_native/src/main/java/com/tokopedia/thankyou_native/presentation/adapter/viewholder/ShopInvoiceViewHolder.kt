@@ -42,13 +42,12 @@ class ShopInvoiceViewHolder(val view: View) : AbstractViewHolder<ShopInvoice>(vi
     private val tvInvoiceShopShippingAddress = view.tvInvoiceShopShippingAddress
 
 
-
     override fun bind(element: ShopInvoice?) {
         element?.let {
-            if(element.shopName.isNullOrBlank()){
+            if (element.shopName.isNullOrBlank()) {
                 tvShopName.gone()
 
-            }else{
+            } else {
                 tvShopName.visible()
                 tvShopName.text = element.shopName
 
@@ -86,10 +85,10 @@ class ShopInvoiceViewHolder(val view: View) : AbstractViewHolder<ShopInvoice>(vi
 
 
             element.shippingTypeStr?.let {
-                if(it.isNotEmpty()) {
+                if (it.isNotEmpty()) {
                     tvInvoiceShopItemCourier.text = element.shippingTypeStr
                     tvInvoiceShopItemCourier.visible()
-                }else{
+                } else {
                     tvInvoiceShopItemCourier.gone()
                 }
             } ?: run {
@@ -114,10 +113,10 @@ class ShopInvoiceViewHolder(val view: View) : AbstractViewHolder<ShopInvoice>(vi
                 tvInvoiceShopItemShippingInsuranceValue.gone()
                 tvInvoiceShopItemShippingInsurance.gone()
             }
-            if(element.shippingAddress.isNullOrBlank()){
+            if (element.shippingAddress.isNullOrBlank()) {
                 tvInvoiceShopShippingAddressValue.gone()
                 tvInvoiceShopShippingAddress.gone()
-            }else{
+            } else {
                 tvInvoiceShopShippingAddressValue.text = element.shippingAddress
                 tvInvoiceShopShippingAddressValue.visible()
                 tvInvoiceShopShippingAddress.visible()
@@ -143,6 +142,9 @@ class ShopInvoiceViewHolder(val view: View) : AbstractViewHolder<ShopInvoice>(vi
 
         shopItemView.findViewById<TextView>(R.id.tvInvoiceShopItemNameCountPrice)
                 .text = itemView.context.getString(R.string.thank_invoice_item_count_price, orderedItem.itemCount, orderedItem.itemPrice)
+        if (orderedItem.isBBIProduct)
+            shopItemView.findViewById<TextView>(R.id.tvInvoiceShopItemNameCountPrice)
+                    .append("\n${getString(R.string.thank_bbi_cash_back)}")
         return shopItemView
     }
 

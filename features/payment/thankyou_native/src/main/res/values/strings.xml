@@ -110,5 +110,6 @@
     <string name="thank_wait_for_minute">Tunggu sebentar, ya..</string>
     <string name="thank_processing_payment">Pembayaranmu lagi diproses</string>
     <string name="thank_bbi">Bangga Buatan Indonesia</string>
+    <string name="thank_bbi_cash_back">Potensi Cashback BBI</string>
 
 </resources>

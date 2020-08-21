@@ -105,7 +105,7 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
             var totalProductProtectionForShop = 0.0
             shopOrder.purchaseItemList.forEach { purchasedItem ->
                 orderedItemList.add(OrderedItem(purchasedItem.productName, purchasedItem.quantity,
-                        purchasedItem.priceStr, purchasedItem.totalPriceStr))
+                        purchasedItem.priceStr, purchasedItem.totalPriceStr, purchasedItem.isBBIProduct))
                 totalProductProtectionForShop += purchasedItem.productPlanProtection
             }
 
