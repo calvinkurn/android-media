@@ -107,6 +107,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMechant.BRANDLIST_SEAR
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant.MERCHANT_SHOP_SCORE
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_LIST
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant.MERCHANT_STATISTIC_DASHBOARD
 import com.tokopedia.applink.internal.ApplinkConstInternalNotification.NOTIFICATION
 import com.tokopedia.applink.internal.ApplinkConstInternalNotification.NOTIFICATION_BUYER
 import com.tokopedia.applink.internal.ApplinkConstInternalOperational.INTERNAL_INBOX_LIST
@@ -434,7 +435,7 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWithPattern(ApplinkConstInternalContent.INTERNAL_CONTENT_DRAFT_POST) }, DF_BASE_SELLER_APP, R.string.applink_af_title_create_post))
             add(DFP({ it.startsWithPattern(ApplinkConstInternalContent.SHOP_POST_EDIT) }, DF_BASE_SELLER_APP, R.string.applink_af_title_create_post))
             add(DFP({ it.startsWithPattern(PLAY_BROADCASTER) }, DF_BASE_SELLER_APP, R.string.applink_title_play_broadcaster))
-          
+
             add(DFP({
                 it.startsWith(SHOP_PAGE_BASE) ||
                         it.startsWith(SHOP) ||
@@ -446,6 +447,7 @@ object DeeplinkDFMapper : CoroutineScope {
                         it.startsWith(SHOP_HOME) ||
                         it.startsWith(SHOP_SETTINGS_NOTE)
             }, DF_BASE_SELLER_APP, R.string.title_shop_page))
+            add(DFP({ it.startsWith(MERCHANT_STATISTIC_DASHBOARD)}, DF_BASE, R.string.title_statistic))
         }
     }
 
