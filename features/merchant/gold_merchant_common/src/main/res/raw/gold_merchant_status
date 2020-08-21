@@ -1,4 +1,4 @@
-query goldGetPMOSStatus($shop_id: Int!, includeOS: Boolean!) {
+query goldGetPMOSStatus($shop_id: Int!, $includeOS: Boolean!) {
   goldGetPMOSStatus(shopID : $shop_id, includeOS: $includeOS) {
     header {
       process_time

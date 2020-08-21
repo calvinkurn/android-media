@@ -28,11 +28,6 @@ class GetShopStatusUseCase @Inject constructor(private val graphqlUseCase: Graph
                 putBoolean(INCLUDE_OS, includeOS)
             }
         }
-
-//        fun createRequestParams(shopId: String, includeOS: Boolean): RequestParams = RequestParams.create().apply {
-//            putInt(GMParamApiContant.SHOP_ID, shopId.toIntOrNull() ?: 0)
-//            putBoolean(INCLUDE_OS, includeOS)
-//        }
     }
 
     override fun createObservable(requestParams: RequestParams): Observable<GoldGetPmOsStatus> {
