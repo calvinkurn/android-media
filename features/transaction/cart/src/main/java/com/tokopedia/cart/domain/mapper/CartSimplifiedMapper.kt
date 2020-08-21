@@ -13,7 +13,9 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoChec
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.*
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerData
+import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 import kotlin.math.min
 
 /**
@@ -148,6 +150,8 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
                         cartItemData.originData?.isCheckboxState ?: true
                     }
             )
+            validateQty(cartItemHolderData)
+
             cartItemHolderDataList.add(cartItemHolderData)
         }
 
@@ -189,6 +193,27 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
 
             it
         }
+    }
+
+    private fun validateQty(cartItemHolderData: CartItemHolderData) {
+        var errorFormItemValidationMessage = ""
+        when {
+            cartItemHolderData.cartItemData?.updatedData?.remark?.length ?: 0 > cartItemHolderData.cartItemData?.updatedData?.maxCharRemark ?: 0 -> {
+                errorFormItemValidationMessage = cartItemHolderData.cartItemData?.messageErrorData?.errorFieldMaxChar
+                        ?.replace("{{value}}", cartItemHolderData.cartItemData?.updatedData?.maxCharRemark.toString()) ?: ""
+            }
+            cartItemHolderData.cartItemData?.updatedData?.quantity ?: 0 > cartItemHolderData.cartItemData?.originData?.maxOrder ?: 0 -> {
+                val formattedMaxCharRemark = String.format(Locale.US, "%,d", cartItemHolderData.cartItemData?.originData?.maxOrder).replace(',', '.')
+                errorFormItemValidationMessage = cartItemHolderData.cartItemData?.messageErrorData?.errorProductMaxQuantity
+                        ?.replace("{{value}}", formattedMaxCharRemark) ?: ""
+            }
+            cartItemHolderData.cartItemData?.updatedData?.quantity ?: 0 < cartItemHolderData.cartItemData?.originData?.minOrder ?: 0 -> {
+                errorFormItemValidationMessage = cartItemHolderData.cartItemData?.messageErrorData?.errorProductMinQuantity
+                        ?.replace("{{value}}", cartItemHolderData.cartItemData?.originData?.minOrder.toString()) ?: ""
+            }
+        }
+
+        cartItemHolderData.errorFormItemValidationMessage = errorFormItemValidationMessage
     }
 
     private fun mapCartItemDataError(cartDetail: CartDetail, it: CartItemData) {

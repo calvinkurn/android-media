@@ -861,6 +861,17 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
             }
         }
 
+        for (any in cartDataList) {
+            if (any is CartShopHolderData && (any.isAllSelected || any.isPartialSelected)) {
+                any.shopGroupAvailableData.cartItemDataList?.forEach {
+                    if (!it.errorFormItemValidationMessage.isNullOrBlank()) {
+                        canProcess = false
+                        return@forEach
+                    }
+                }
+            }
+        }
+
         if (canProcess && checkedCount > 0) {
             actionListener?.onCartDataEnableToCheckout()
         } else {

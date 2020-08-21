@@ -1319,6 +1319,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         dPresenter.setAllInsuranceProductsChecked(cartAdapter.insuranceCartShops, checked)
         cartAdapter.notifyDataSetChanged()
         dPresenter.reCalculateSubTotal(cartAdapter.allShopGroupDataList, cartAdapter.insuranceCartShops)
+        cartAdapter.checkForShipmentForm()
     }
 
     override fun onSeeErrorProductsClicked() {
@@ -1366,13 +1367,15 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun onCartDataEnableToCheckout() {
         if (isAdded) {
+            btnToShipment.isEnabled = true
             btnToShipment.setOnClickListener { checkGoToShipment("") }
         }
     }
 
     override fun onCartDataDisableToCheckout() {
         if (isAdded) {
-            btnToShipment.setOnClickListener { checkGoToShipment(getString(R.string.message_checkout_empty_selection)) }
+            btnToShipment.isEnabled = false
+//            btnToShipment.setOnClickListener { checkGoToShipment(getString(R.string.message_checkout_empty_selection)) }
         }
     }
 
@@ -1536,6 +1539,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     renderPromoCheckout(lastApplyUiModel)
                 }
             }
+
+            cartAdapter.checkForShipmentForm()
         }
     }
 
