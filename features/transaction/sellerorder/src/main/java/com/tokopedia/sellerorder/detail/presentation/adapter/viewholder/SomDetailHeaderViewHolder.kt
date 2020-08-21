@@ -10,6 +10,7 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
@@ -47,7 +48,7 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
     @SuppressLint("Range")
     override fun bind(item: SomDetailData, position: Int) {
         if (item.dataObject is SomDetailHeader) {
-            itemView.header_title?.text = item.dataObject.statusText
+            setupOrderStatus(item.dataObject.statusText, item.dataObject.statusCode)
             itemView.header_see_history?.setOnClickListener {
                 itemView.context.startActivity(RouteManager.getIntent(it.context, ApplinkConstInternalOrder.TRACK, "")
                         .putExtra(EXTRA_ORDER_ID, item.dataObject.orderId)
@@ -149,6 +150,13 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
                 coachmarkHeader
         )
 
+    }
+
+    private fun setupOrderStatus(statusText: String, statusCode: Int) {
+        itemView.header_title?.text = statusText
+        if (statusCode == 0) {
+            itemView.header_title?.setTextColor(MethodChecker.getColor(itemView.context, R.color.Red_R600))
+        }
     }
 
     private fun setupTicker(tickerBuyerRequestCancel: Ticker?, tickerInfo: TickerInfo) {
