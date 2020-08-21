@@ -103,8 +103,7 @@
                 android:layout_marginEnd="@dimen/spacing_lvl3"
                 android:ellipsize="end"
                 android:lines="2"
-                android:textColor="@android:color/black"
-                app:typographyType="heading_6"
+                app:typographyType="body_3"
                 tools:layout_editor_absoluteX="@dimen/spacing_lvl3"
                 tools:text="Google Assistant review with me" />
 

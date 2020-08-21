@@ -225,6 +225,7 @@ public class RemoteConfigKey {
     public static final String FREE_SHIPPING_FEATURE_DISABLED = "android_free_shipping_feature_disabled";
     public static final String NEW_SELLER_HOME_DISABLED = "android_new_seller_home_disabled";
     public static final String ENABLE_GLOBAL_SEARCH_SELLER = "android_sellerapp_global_search_enabled";
+    public static final String ENABLE_PUSH_NOTIFICATION_CHAT_SELLER = "android_sellerapp_enable_push_notif_reply_chat";
 
     public static final String NOTIFICATION_TRAY_CLEAR = "app_notif_tray_clear";
 

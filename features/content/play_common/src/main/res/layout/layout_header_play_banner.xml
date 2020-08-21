@@ -46,6 +46,9 @@
 
     <TextView
         android:id="@+id/see_all_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
         android:fontFamily="sans-serif-medium"
         android:gravity="end"
         android:lineSpacingExtra="3sp"
@@ -53,12 +56,8 @@
         android:textColor="@color/tkpd_main_green"
         android:textSize="@dimen/fontSize_lvl3"
         android:textStyle="bold"
-        android:layout_marginRight="@dimen/spacing_lvl4"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/channel_subtitle"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/channel_title" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
