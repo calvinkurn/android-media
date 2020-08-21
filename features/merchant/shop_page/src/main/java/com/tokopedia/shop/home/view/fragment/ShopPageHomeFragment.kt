@@ -864,7 +864,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         RouteManager.route(context, appLink)
     }
 
-    override fun onPlayBannerImpressed(dataModel: PlayBannerCarouselItemDataModel, autoPlay: String, widgetId: String, position: Int) {
+    override fun onPlayBannerImpressed(dataModel: PlayBannerCarouselItemDataModel, autoPlay: String, widgetId: String, widgetPosition: Int, position: Int) {
         shopPageHomeTracking.impressionPlayBanner(
                 shopId = dataModel.partnerId,
                 userId = viewModel?.userId ?: "",
@@ -872,11 +872,12 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 bannerId = widgetId,
                 creativeName = dataModel.coverUrl,
                 autoPlay = autoPlay,
+                positionWidget = widgetPosition,
                 positionChannel = position.toString()
         )
     }
 
-    override fun onPlayBannerClicked(dataModel: PlayBannerCarouselItemDataModel, autoPlay: String, widgetId: String, position: Int) {
+    override fun onPlayBannerClicked(dataModel: PlayBannerCarouselItemDataModel, autoPlay: String, widgetId: String, widgetPosition: Int, position: Int) {
         shopPageHomeTracking.clickPlayBanner(
                 shopId = dataModel.partnerId,
                 userId = viewModel?.userId ?: "",
@@ -884,29 +885,30 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 bannerId = widgetId,
                 creativeName = dataModel.coverUrl,
                 autoPlay = autoPlay,
+                positionWidget = widgetPosition,
                 positionChannel = position.toString()
         )
         RouteManager.route(context, dataModel.applink)
     }
 
-    override fun onPlayLeftBannerImpressed(dataModel: PlayBannerCarouselOverlayImageDataModel, widgetId: String, position: Int) {
+    override fun onPlayLeftBannerImpressed(dataModel: PlayBannerCarouselOverlayImageDataModel, widgetId: String, widgetPosition: Int, position: Int) {
         shopPageHomeTracking.impressionLeftPlayBanner(
                 shopId = shopId,
                 userId = viewModel?.userId ?: "",
                 bannerId = widgetId,
                 creativeName = dataModel.imageUrl,
-                positionChannel = "1",
+                positionChannel = widgetPosition.toString(),
                 position = (position + 1).toString()
         )
     }
 
-    override fun onPlayLeftBannerClicked(dataModel: PlayBannerCarouselOverlayImageDataModel, widgetId: String, position: Int) {
+    override fun onPlayLeftBannerClicked(dataModel: PlayBannerCarouselOverlayImageDataModel, widgetId: String, widgetPosition: Int, position: Int) {
         shopPageHomeTracking.clickLeftPlayBanner(
                 shopId = shopId,
                 userId = viewModel?.userId ?: "",
                 bannerId = widgetId,
                 creativeName = dataModel.imageUrl,
-                positionChannel = "1",
+                positionChannel = widgetPosition.toString(),
                 position = (position + 1).toString()
         )
         RouteManager.route(context, dataModel.applink)
