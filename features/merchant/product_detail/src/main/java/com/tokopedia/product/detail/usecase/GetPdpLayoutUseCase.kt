@@ -207,6 +207,14 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                         text
                       }
                     }
+                     ... on pdpDataCustomInfo {
+                       icon
+                       title
+                       isApplink
+                       applink
+                       separator
+                       description
+                    }
                     ... on pdpDataProductVariant {
                       errorCode
                       parentID
