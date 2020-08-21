@@ -7,6 +7,7 @@ import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductCustomInfoDataModel
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.unifycomponents.HtmlLinkHelper
@@ -32,7 +33,7 @@ class ProductCustomInfoViewHolder(val view: View, private val listener: DynamicP
         renderSeparator(element.separator)
         renderTitle(element.title, element.icon)
         renderDescription(element.description)
-        setupApplink(element.applink)
+        setupApplink(element.applink, element.title, getComponentTrackData(element))
     }
 
     private fun renderSeparator(separator: String) = with(view) {
@@ -40,10 +41,10 @@ class ProductCustomInfoViewHolder(val view: View, private val listener: DynamicP
         bottom_separator.showWithCondition(separator == ProductCustomInfoDataModel.SEPARATOR_BOTH || separator == ProductCustomInfoDataModel.SEPARATOR_BOTTOM)
     }
 
-    private fun setupApplink(applink: String) = with(view) {
+    private fun setupApplink(applink: String, title: String, componentTrackData: ComponentTrackDataModel) = with(view) {
         custom_arrow.shouldShowWithAction(applink.isNotEmpty()) {
             this.setOnClickListener {
-                listener.goToApplink(applink)
+                listener.onBbiInfoClick(applink, title, componentTrackData)
             }
         }
     }
@@ -62,5 +63,8 @@ class ProductCustomInfoViewHolder(val view: View, private val listener: DynamicP
             custom_title.text = title
         }
     }
+
+    private fun getComponentTrackData(element: ProductCustomInfoDataModel?) = ComponentTrackDataModel(element?.type
+            ?: "", element?.name ?: "", adapterPosition + 1)
 
 }

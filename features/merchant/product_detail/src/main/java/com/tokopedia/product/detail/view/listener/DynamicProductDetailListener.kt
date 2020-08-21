@@ -38,6 +38,8 @@ interface DynamicProductDetailListener {
     fun onEtalaseClicked(url: String, componentTrackDataModel: ComponentTrackDataModel)
     fun goToApplink(url: String)
 
+    fun onBbiInfoClick(url: String, title: String, componentTrackDataModel: ComponentTrackDataModel)
+
     /**
      * ProductDiscussionViewHolder
      */
