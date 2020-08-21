@@ -128,10 +128,11 @@ ext {
     ]
 
     dbDependencies = [
-            dbRoomRuntime : "androidx.room:room-runtime:${roomVersion}",
-            dbRoomKtx     : "androidx.room:room-ktx:${roomVersion}",
-            dbRoomCompiler: "androidx.room:room-compiler:${roomVersion}",
-            dbRoomTesting : "androidx.room:room-testing:${roomVersion}"
+            dbRoomRuntime   : "androidx.room:room-runtime:${roomVersion}",
+            dbRoomKtx       : "androidx.room:room-ktx:${roomVersion}",
+            dbRoomCompiler  : "androidx.room:room-compiler:${roomVersion}",
+            dbRoomTesting   : "androidx.room:room-testing:${roomVersion}",
+            sqliteFramework : "androidx.sqlite:sqlite-framework:2.1.0"
     ]
 
     supportLibDependencies = [
