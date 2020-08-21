@@ -410,7 +410,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun setupObserve() {
         observeVideoMeta()
         observeVideoProperty()
-        observeTitleChannel()
+        observeChannelInfo()
         observeQuickReply()
         observeToolbarInfo()
         observeTotalLikes()
@@ -483,11 +483,9 @@ class PlayUserInteractionFragment @Inject constructor(
         })
     }
 
-    private fun observeTitleChannel() {
-        playViewModel.observableGetChannelInfo.observe(viewLifecycleOwner, DistinctObserver {
-            when (it) {
-                is NetworkResult.Success, is NetworkResult.Fail -> triggerStartMonitoring()
-            }
+    private fun observeChannelInfo() {
+        playViewModel.observableCompleteInfo.observe(viewLifecycleOwner, DistinctObserver {
+            triggerStartMonitoring()
         })
     }
 
@@ -724,7 +722,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun openPartnerPage(partnerId: Long, partnerType: PartnerType) {
         if (partnerType == PartnerType.Shop) openShopPage(partnerId)
-        else if (partnerType == PartnerType.Influencer) openProfilePage(partnerId)
+        else if (partnerType == PartnerType.Buyer) openProfilePage(partnerId)
     }
 
     private fun openShopPage(partnerId: Long) {
@@ -786,10 +784,10 @@ class PlayUserInteractionFragment @Inject constructor(
         //Used to show mock like when user click like
         playViewModel.changeLikeCount(shouldLike)
 
-        viewModel.doLikeUnlike(playViewModel.contentId,
-                playViewModel.contentType,
-                playViewModel.likeType,
-                shouldLike)
+        viewModel.doLikeUnlike(
+                feedInfoUiModel = playViewModel.feedInfoUiModel,
+                shouldLike = shouldLike
+        )
 
         PlayAnalytics.clickLike(channelId, shouldLike, playViewModel.channelType)
     }

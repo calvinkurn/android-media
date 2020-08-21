@@ -1,6 +1,8 @@
 package com.tokopedia.play.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.play.data.TotalLike
 import com.tokopedia.play.data.websocket.PlaySocket
 import com.tokopedia.play.domain.*
@@ -36,7 +38,8 @@ class PlayViewModelTest {
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
     private val mockPlayVideoManager: PlayVideoManager = mockk(relaxed = true)
-    private val mockGetChannelInfoUseCase: GetChannelInfoUseCase = mockk(relaxed = true)
+    private val mockGetChannelInfoUseCase: GetChannelDetailUseCase = mockk(relaxed = true)
+    private val mockGetSocketCredentialUseCase: GetSocketCredentialUseCase = mockk(relaxed = true)
     private val mockGetPartnerInfoUseCase: GetPartnerInfoUseCase = mockk(relaxed = true)
     private val mockGetTotalLikeUseCase: GetTotalLikeUseCase = mockk(relaxed = true)
     private val mockGetIsLikeUseCase: GetIsLikeUseCase = mockk(relaxed = true)
@@ -50,7 +53,8 @@ class PlayViewModelTest {
 
     private val mockChannel = modelBuilder.buildChannel()
     private val mockShopInfo = modelBuilder.buildShopInfo()
-    private val mockNewChat = modelBuilder.buildNewChat()
+    private val mockSocketCredential = modelBuilder.buildSocketCredential()
+//    private val mockNewChat = modelBuilder.buildNewChat()
 
     private val mockTotalLikeContentData = modelBuilder.buildTotalLike()
     private val mockTotalLike = TotalLike(mockTotalLikeContentData.like.value, mockTotalLikeContentData.like.fmt)
@@ -68,6 +72,7 @@ class PlayViewModelTest {
         playViewModel = PlayViewModel(
                 mockPlayVideoManager,
                 mockGetChannelInfoUseCase,
+                mockGetSocketCredentialUseCase,
                 mockGetPartnerInfoUseCase,
                 mockGetTotalLikeUseCase,
                 mockGetIsLikeUseCase,
@@ -79,6 +84,7 @@ class PlayViewModelTest {
         )
 
         coEvery { mockGetChannelInfoUseCase.executeOnBackground() } returns mockChannel
+        coEvery { mockGetSocketCredentialUseCase.executeOnBackground() } returns mockSocketCredential
         coEvery { mockGetPartnerInfoUseCase.executeOnBackground() } returns mockShopInfo
         coEvery { mockGetTotalLikeUseCase.executeOnBackground() } returns mockTotalLike
         coEvery { mockGetIsLikeUseCase.executeOnBackground() } returns mockIsLike
@@ -95,15 +101,21 @@ class PlayViewModelTest {
     fun `test observe get channel info`() {
         val expectedModel = ChannelInfoUiModel(
                 id = mockChannel.channelId,
-                title = mockChannel.title,
-                description = mockChannel.description,
-                moderatorName = mockChannel.moderatorName,
-                partnerId = mockChannel.partnerId,
-                partnerType = PartnerType.getTypeByValue(mockChannel.partnerType),
-                contentId = mockChannel.contentId,
-                contentType = mockChannel.contentType,
-                likeType = mockChannel.likeType,
-                isShowCart = mockChannel.isShowCart
+                partnerInfo = PartnerInfoUiModel(
+                        id = mockChannel.partner.id.toLongOrZero(),
+                        name = mockChannel.partner.name,
+                        type = PartnerType.getTypeByValue(mockChannel.partner.type),
+                        isFollowed = true,
+                        isFollowable = false
+                ),
+                feedInfo = FeedInfoUiModel(
+                        contentId = mockChannel.configuration.feedsLikeParams.contentId,
+                        contentType = mockChannel.configuration.feedsLikeParams.contentType,
+                        likeType = mockChannel.configuration.feedsLikeParams.likeType
+                ),
+                showCart = mockChannel.configuration.showCart,
+                showPinnedProduct = mockChannel.configuration.showPinnedProduct,
+                titleBottomSheet = mockChannel.configuration.pinnedProduct.titleBottomSheet
         )
         val expectedResult = Success(expectedModel)
 
@@ -117,13 +129,13 @@ class PlayViewModelTest {
     @Test
     fun `test observe video stream`() {
         val expectedModel = modelBuilder.buildVideoStreamUiModel(
-                uriString = mockChannel.videoStream.config.streamUrl,
-                channelType = if (mockChannel.videoStream.isLive &&
-                        mockChannel.videoStream.type.equals(PlayChannelType.Live.value, true))
+                uriString = mockChannel.video.streamSource,
+                channelType = if (mockChannel.isLive &&
+                        mockChannel.video.type.equals(PlayChannelType.Live.value, true))
                     PlayChannelType.Live else PlayChannelType.VOD,
-                isActive = mockChannel.isActive,
-                orientation = VideoOrientation.getByValue(mockChannel.videoStream.orientation),
-                backgroundUrl = mockChannel.backgroundUrl
+                isActive = mockChannel.configuration.active,
+                orientation = VideoOrientation.getByValue(mockChannel.video.orientation),
+                backgroundUrl = mockChannel.configuration.roomBackground.imageUrl
         )
 
         playViewModel.getChannelInfo(mockChannel.channelId)
@@ -164,7 +176,7 @@ class PlayViewModelTest {
     @Test
     fun `test observe total views`() {
         val expectedModel = TotalViewUiModel(
-                totalView = mockChannel.totalViews
+                totalView = mockChannel.stats.view.formatted
         )
 
         playViewModel.getChannelInfo(mockChannel.channelId)
@@ -178,9 +190,9 @@ class PlayViewModelTest {
     @Test
     fun `when partner type is admin, then partner info should be of type admin`() {
         val expectedModel = PartnerInfoUiModel(
-                id = mockChannel.partnerId,
-                name = mockChannel.moderatorName,
-                type = PartnerType.Admin,
+                id = mockChannel.partner.id.toLongOrZero(),
+                name = mockChannel.partner.name,
+                type = PartnerType.Tokopedia,
                 isFollowed = true,
                 isFollowable = false
         )
@@ -197,7 +209,7 @@ class PlayViewModelTest {
         val mockChannel = modelBuilder.buildChannelWithShop()
 
         coEvery { mockGetChannelInfoUseCase.executeOnBackground() } returns mockChannel
-        coEvery { userSession.shopId } returns mockChannel.partnerId.toString()
+        coEvery { userSession.shopId } returns mockChannel.partner.id
 
         val expectedModel = PartnerInfoUiModel(
                 id = mockShopInfo.shopCore.shopId.toLong(),
@@ -254,7 +266,7 @@ class PlayViewModelTest {
 
     @Test(expected = TimeoutException::class)
     fun `given channel info is success, when cart should not show, then badge cart should not be updated`() {
-        coEvery { mockGetChannelInfoUseCase.executeOnBackground() } returns mockChannel.copy(isShowCart = false)
+        coEvery { mockGetChannelInfoUseCase.executeOnBackground() } returns mockChannel.copy(configuration = mockChannel.configuration.copy(showCart = false))
 
         playViewModel.getChannelInfo(mockChannel.channelId)
         playViewModel.updateBadgeCart()
@@ -297,8 +309,8 @@ class PlayViewModelTest {
         val expectedModel = modelBuilder.buildProductTagging()
         val expectedResult = PlayResult.Success(
                 PlayUiMapper.mapProductSheet(
-                        mockChannel.pinnedProduct.titleBottomSheet,
-                        mockChannel.partnerId,
+                        mockChannel.configuration.pinnedProduct.titleBottomSheet,
+                        mockChannel.partner.id.toLongOrZero(),
                         expectedModel)
         )
 
@@ -500,7 +512,7 @@ class PlayViewModelTest {
     @Test
     fun `test observe quick reply`() {
         val expectedModel = QuickReplyUiModel(
-                quickReplyList = mockChannel.quickReply
+                quickReplyList = mockChannel.quickReplies
         )
 
         playViewModel.getChannelInfo(mockChannel.channelId)
@@ -510,119 +522,119 @@ class PlayViewModelTest {
                 .isEqualTo(expectedModel)
     }
 
-    //region like type
-    /**
-     * Variable like type
-     */
-    @Test
-    fun `when channel info is success, then like type should match with channel_info's like type`() {
-        val expectedResult = mockChannel.likeType
-
-        playViewModel.getChannelInfo(mockChannel.channelId)
-
-        Assertions
-                .assertThat(playViewModel.likeType)
-                .isEqualTo(expectedResult)
-    }
-
-    @Test
-    fun `when channel info is not success, then like type should be 0`() {
-        coEvery { mockGetChannelInfoUseCase.executeOnBackground() } throws Exception("just throws")
-
-        val expectedResult = 0
-
-        playViewModel.getChannelInfo(mockChannel.channelId)
-
-        Assertions
-                .assertThat(playViewModel.likeType)
-                .isEqualTo(expectedResult)
-    }
-
-    @Test
-    fun `when channel info is null, then like type should be 0`() {
-        val expectedResult = 0
-
-        Assertions
-                .assertThat(playViewModel.likeType)
-                .isEqualTo(expectedResult)
-    }
-    //endregion
-
-    //region content type
-    /**
-     * Variable content type
-     */
-    @Test
-    fun `when channel info is success, then content type should match with channel_info's content type`() {
-        val expectedResult = mockChannel.contentType
-
-        playViewModel.getChannelInfo(mockChannel.channelId)
-
-        Assertions
-                .assertThat(playViewModel.contentType)
-                .isEqualTo(expectedResult)
-    }
-
-    @Test
-    fun `when channel info is not success, then content type should be 0`() {
-        coEvery { mockGetChannelInfoUseCase.executeOnBackground() } throws Exception("just throws")
-
-        val expectedResult = 0
-
-        playViewModel.getChannelInfo(mockChannel.channelId)
-
-        Assertions
-                .assertThat(playViewModel.contentType)
-                .isEqualTo(expectedResult)
-    }
-
-    @Test
-    fun `when channel info is null, then content type should be 0`() {
-        val expectedResult = 0
-
-        Assertions
-                .assertThat(playViewModel.contentType)
-                .isEqualTo(expectedResult)
-    }
-    //endregion
-
-    //region content id
-    /**
-     * Variable content id
-     */
-    @Test
-    fun `when channel info is success, then content id should match with channel_info's content id`() {
-        val expectedResult = mockChannel.contentId
-
-        playViewModel.getChannelInfo(mockChannel.channelId)
-
-        Assertions
-                .assertThat(playViewModel.contentId)
-                .isEqualTo(expectedResult)
-    }
-
-    @Test
-    fun `when channel info is not success, then content id should be 0`() {
-        coEvery { mockGetChannelInfoUseCase.executeOnBackground() } throws Exception("just throws")
-
-        val expectedResult = 0
-
-        playViewModel.getChannelInfo(mockChannel.channelId)
-
-        Assertions
-                .assertThat(playViewModel.contentId)
-                .isEqualTo(expectedResult)
-    }
-
-    @Test
-    fun `when channel info is null, then content id should be 0`() {
-        val expectedResult = 0
-
-        Assertions
-                .assertThat(playViewModel.contentId)
-                .isEqualTo(expectedResult)
-    }
-    //endregion
+//    //region like type
+//    /**
+//     * Variable like type
+//     */
+//    @Test
+//    fun `when channel info is success, then like type should match with channel_info's like type`() {
+//        val expectedResult = mockChannel.likeType
+//
+//        playViewModel.getChannelInfo(mockChannel.channelId)
+//
+//        Assertions
+//                .assertThat(playViewModel.likeType)
+//                .isEqualTo(expectedResult)
+//    }
+//
+//    @Test
+//    fun `when channel info is not success, then like type should be 0`() {
+//        coEvery { mockGetChannelInfoUseCase.executeOnBackground() } throws Exception("just throws")
+//
+//        val expectedResult = 0
+//
+//        playViewModel.getChannelInfo(mockChannel.channelId)
+//
+//        Assertions
+//                .assertThat(playViewModel.likeType)
+//                .isEqualTo(expectedResult)
+//    }
+//
+//    @Test
+//    fun `when channel info is null, then like type should be 0`() {
+//        val expectedResult = 0
+//
+//        Assertions
+//                .assertThat(playViewModel.likeType)
+//                .isEqualTo(expectedResult)
+//    }
+//    //endregion
+//
+//    //region content type
+//    /**
+//     * Variable content type
+//     */
+//    @Test
+//    fun `when channel info is success, then content type should match with channel_info's content type`() {
+//        val expectedResult = mockChannel.contentType
+//
+//        playViewModel.getChannelInfo(mockChannel.channelId)
+//
+//        Assertions
+//                .assertThat(playViewModel.contentType)
+//                .isEqualTo(expectedResult)
+//    }
+//
+//    @Test
+//    fun `when channel info is not success, then content type should be 0`() {
+//        coEvery { mockGetChannelInfoUseCase.executeOnBackground() } throws Exception("just throws")
+//
+//        val expectedResult = 0
+//
+//        playViewModel.getChannelInfo(mockChannel.channelId)
+//
+//        Assertions
+//                .assertThat(playViewModel.contentType)
+//                .isEqualTo(expectedResult)
+//    }
+//
+//    @Test
+//    fun `when channel info is null, then content type should be 0`() {
+//        val expectedResult = 0
+//
+//        Assertions
+//                .assertThat(playViewModel.contentType)
+//                .isEqualTo(expectedResult)
+//    }
+//    //endregion
+//
+//    //region content id
+//    /**
+//     * Variable content id
+//     */
+//    @Test
+//    fun `when channel info is success, then content id should match with channel_info's content id`() {
+//        val expectedResult = mockChannel.contentId
+//
+//        playViewModel.getChannelInfo(mockChannel.channelId)
+//
+//        Assertions
+//                .assertThat(playViewModel.contentId)
+//                .isEqualTo(expectedResult)
+//    }
+//
+//    @Test
+//    fun `when channel info is not success, then content id should be 0`() {
+//        coEvery { mockGetChannelInfoUseCase.executeOnBackground() } throws Exception("just throws")
+//
+//        val expectedResult = 0
+//
+//        playViewModel.getChannelInfo(mockChannel.channelId)
+//
+//        Assertions
+//                .assertThat(playViewModel.contentId)
+//                .isEqualTo(expectedResult)
+//    }
+//
+//    @Test
+//    fun `when channel info is null, then content id should be 0`() {
+//        val expectedResult = 0
+//
+//        Assertions
+//                .assertThat(playViewModel.contentId)
+//                .isEqualTo(expectedResult)
+//    }
+//    //endregion
 
     //region bottom insets
     /**
@@ -660,7 +672,7 @@ class PlayViewModelTest {
     @Test
     fun `when channel info is success, then channel type should match with channel_info's channel type`() {
         val expectedResult =
-                if (mockChannel.videoStream.isLive)
+                if (mockChannel.isLive)
                     PlayChannelType.Live
                 else
                     PlayChannelType.VOD
@@ -705,9 +717,9 @@ class PlayViewModelTest {
 
         coEvery { mockGetChannelInfoUseCase.executeOnBackground() } returns mockChannel.copy(
                 pinnedMessage = mockChannel.pinnedMessage.copy(
-                        pinnedMessageId = 0
+                        id = "0"
                 ),
-                isShowProductTagging = false
+                configuration = mockChannel.configuration.copy(showPinnedProduct = false)
         )
 
         playViewModel.getChannelInfo(mockChannel.channelId)
@@ -722,9 +734,7 @@ class PlayViewModelTest {
     fun `when there is pinned message only, then state helper should show pinned`() {
         val expectedResult = true
 
-        coEvery { mockGetChannelInfoUseCase.executeOnBackground() } returns mockChannel.copy(
-                isShowProductTagging = false
-        )
+        coEvery { mockGetChannelInfoUseCase.executeOnBackground() } returns mockChannel.copy(configuration = mockChannel.configuration.copy(showPinnedProduct = false))
 
         playViewModel.getChannelInfo(mockChannel.channelId)
         playViewModel.observablePinned.getOrAwaitValue()
@@ -740,7 +750,7 @@ class PlayViewModelTest {
 
         coEvery { mockGetChannelInfoUseCase.executeOnBackground() } returns mockChannel.copy(
                 pinnedMessage = mockChannel.pinnedMessage.copy(
-                        pinnedMessageId = 0
+                        id = "0"
                 )
         )
 
@@ -769,8 +779,8 @@ class PlayViewModelTest {
     @Test
     fun `given channel info is success, when channel type is live, then state_helper's channel type should be live`() {
         coEvery { mockGetChannelInfoUseCase.executeOnBackground() } returns mockChannel.copy(
-                videoStream = mockChannel.videoStream.copy(
-                        isLive = PlayChannelType.Live.isLive,
+                isLive = PlayChannelType.Live.isLive,
+                video = mockChannel.video.copy(
                         type = PlayChannelType.Live.value
                 )
         )
@@ -787,8 +797,8 @@ class PlayViewModelTest {
     @Test
     fun `given channel info is success, when channel type is vod, then state_helper's channel type should be vod`() {
         coEvery { mockGetChannelInfoUseCase.executeOnBackground() } returns mockChannel.copy(
-                videoStream = mockChannel.videoStream.copy(
-                        isLive = PlayChannelType.VOD.isLive,
+                isLive = PlayChannelType.VOD.isLive,
+                video = mockChannel.video.copy(
                         type = PlayChannelType.VOD.value
                 )
         )
@@ -827,8 +837,8 @@ class PlayViewModelTest {
     @Test
     fun `given channel is live, when keyboard is shown, then state_helper's keyboard is shown`() {
         coEvery { mockGetChannelInfoUseCase.executeOnBackground() } returns mockChannel.copy(
-                videoStream = mockChannel.videoStream.copy(
-                        isLive = PlayChannelType.Live.isLive,
+                isLive = PlayChannelType.Live.isLive,
+                video = mockChannel.video.copy(
                         type = PlayChannelType.Live.value
                 )
         )
@@ -846,8 +856,8 @@ class PlayViewModelTest {
     @Test
     fun `given channel is vod, when keyboard is shown, then state_helper's keyboard is shown`() {
         coEvery { mockGetChannelInfoUseCase.executeOnBackground() } returns mockChannel.copy(
-                videoStream = mockChannel.videoStream.copy(
-                        isLive = PlayChannelType.VOD.isLive,
+                isLive = PlayChannelType.VOD.isLive,
+                video = mockChannel.video.copy(
                         type = PlayChannelType.VOD.value
                 )
         )
@@ -923,8 +933,8 @@ class PlayViewModelTest {
     @Test
     fun `given keyboard is shown, when back button is clicked, then keyboard should be hidden`() {
         coEvery { mockGetChannelInfoUseCase.executeOnBackground() } returns mockChannel.copy(
-                videoStream = mockChannel.videoStream.copy(
-                        isLive = PlayChannelType.Live.isLive,
+                isLive = PlayChannelType.Live.isLive,
+                video = mockChannel.video.copy(
                         type = PlayChannelType.Live.value
                 )
         )
@@ -960,7 +970,7 @@ class PlayViewModelTest {
     @Test
     fun `when channel is active, then video should be configured`() {
         coEvery { mockGetChannelInfoUseCase.executeOnBackground() } returns mockChannel.copy(
-                isActive = true
+                configuration = mockChannel.configuration.copy(active = true)
         )
 
         playViewModel.getChannelInfo(mockChannel.channelId)
@@ -973,7 +983,7 @@ class PlayViewModelTest {
     @Test
     fun `when channel is not active, then video should not be configured`() {
         coEvery { mockGetChannelInfoUseCase.executeOnBackground() } returns mockChannel.copy(
-                isActive = false
+                configuration = mockChannel.configuration.copy(active = false)
         )
 
         playViewModel.getChannelInfo(mockChannel.channelId)
@@ -1009,8 +1019,8 @@ class PlayViewModelTest {
     @Test
     fun `when hide all insets and keyboard is handled, keyboard should be hidden but same with previous state`() {
         coEvery { mockGetChannelInfoUseCase.executeOnBackground() } returns mockChannel.copy(
-                videoStream = mockChannel.videoStream.copy(
-                        isLive = PlayChannelType.Live.isLive,
+                isLive = PlayChannelType.Live.isLive,
+                video = mockChannel.video.copy(
                         type = PlayChannelType.Live.value
                 )
         )
@@ -1030,8 +1040,8 @@ class PlayViewModelTest {
     @Test
     fun `when hide all insets and keyboard is not handled, keyboard should be hidden with different previous state`() {
         coEvery { mockGetChannelInfoUseCase.executeOnBackground() } returns mockChannel.copy(
-                videoStream = mockChannel.videoStream.copy(
-                        isLive = PlayChannelType.Live.isLive,
+                isLive = PlayChannelType.Live.isLive,
+                video = mockChannel.video.copy(
                         type = PlayChannelType.Live.value
                 )
         )
@@ -1051,7 +1061,7 @@ class PlayViewModelTest {
 
     @Test
     fun `test observe partner id`() {
-        val expectedResult = mockChannel.partnerId
+        val expectedResult = mockChannel.partner.id.toLongOrZero()
 
         playViewModel.getChannelInfo(mockChannel.channelId)
 
@@ -1076,9 +1086,9 @@ class PlayViewModelTest {
 
     @Test
     fun `test observe total view`() {
-        val expectedResult = mockChannel.totalViews
+        val expectedResult = mockChannel.stats.view.formatted
 
-        playViewModel.getChannelInfo(mockChannel.totalViews)
+        playViewModel.getChannelInfo(mockChannel.channelId)
 
         Assertions
                 .assertThat(playViewModel.totalView)
