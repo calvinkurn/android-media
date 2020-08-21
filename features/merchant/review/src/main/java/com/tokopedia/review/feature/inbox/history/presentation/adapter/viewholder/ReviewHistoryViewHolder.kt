@@ -1,6 +1,7 @@
 package com.tokopedia.review.feature.inbox.history.presentation.adapter.viewholder
 
 import android.view.View
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
@@ -74,14 +75,15 @@ class ReviewHistoryViewHolder(view: View,
 
     private fun showDescription(reviewDescription: String) {
         if(reviewDescription.isNullOrBlank()) {
-            itemView.reviewHistoryDescription.hide()
-            itemView.reviewHistoryNoReviewText.show()
+            itemView.reviewHistoryDescription.apply {
+                text = getString(R.string.no_reviews_yet)
+                setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_32))
+            }
             return
         }
-        itemView.reviewHistoryNoReviewText.hide()
         itemView.reviewHistoryDescription.apply {
             text = reviewDescription.removeNewLine()
-            show()
+            setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_96))
         }
     }
 
