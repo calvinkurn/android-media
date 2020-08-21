@@ -162,6 +162,11 @@ class VariantDataValuePicker : LinearLayout {
                 // handle check / uncheck condition
                 val isChecked = selectedItem.listRightCheckbox?.isChecked ?: false
                 selectedItem.listRightCheckbox?.isChecked = !isChecked
+                // track select variant unit value event, when list item is clicked
+                val selectedUnitValue = variantUnitValues[position]
+                if (!isChecked) {
+                    onVariantUnitValuePickListener?.onVariantUnitValuePickListener(variantData.name, selectedUnitValue.value)
+                }
             } else {
                 // add custom variant unit value
                 onAddCustomVariantUnitValueListener?.onAddCustomButtonClicked(
@@ -172,6 +177,17 @@ class VariantDataValuePicker : LinearLayout {
 
             }
         }
+        // track select variant unit value event, when right checkbox is clicked
+        listItemUnifyList.forEachIndexed { index, listItemUnify ->
+            listItemUnify.listRightCheckbox?.setOnClickListener {
+                val selectedUnitValue = variantUnitValues[index]
+                val isChecked = listItemUnify.listRightCheckbox?.isChecked ?: false
+                if (isChecked) {
+                    onVariantUnitValuePickListener?.onVariantUnitValuePickListener(variantData.name, selectedUnitValue.value)
+                }
+            }
+        }
+
     }
 
     private fun setupCheckBoxCheckedChangeListener(listItemUnifyList: List<ListItemUnify>,
@@ -184,8 +200,6 @@ class VariantDataValuePicker : LinearLayout {
                     val selectedUnitValue = variantUnitValues[index]
                     if (isChecked) {
                         selectedVariantUnitValues.add(selectedUnitValue)
-                        // track select variant unit value event
-                        onVariantUnitValuePickListener?.onVariantUnitValuePickListener(variantData.name, selectedUnitValue.value)
                     } else selectedVariantUnitValues.remove(selectedUnitValue)
                     configureSaveButton(selectedVariantUnitValues.isEmpty(), selectedVariantUnitValues.size)
                 }
@@ -212,7 +226,7 @@ class VariantDataValuePicker : LinearLayout {
             val selectedListItemUnify = listItemUnifyList.find { listItemUnify ->
                 listItemUnify.listTitleText == unitValue.value
             }
-            selectedListItemUnify?.listRightCheckbox?.performClick()
+            selectedListItemUnify?.listRightCheckbox?.isChecked = true
         }
     }
 
