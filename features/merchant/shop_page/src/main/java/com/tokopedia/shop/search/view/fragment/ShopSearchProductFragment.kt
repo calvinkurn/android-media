@@ -137,6 +137,8 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
     private var shopRef: String = ""
     private var viewFragment: View? = null
 
+    private var productListData: MutableList<ShopSearchProductDataModel>? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
@@ -199,7 +201,11 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
                 redirectToProductDetailPage(model.appLink)
             }
             ShopSearchProductDataModel.Type.TYPE_SEARCH_STORE -> {
-                shopPageTrackingShopSearchProduct.clickAutocompleteInternalShopPage(isMyShop, searchQuery, customDimensionShopPage)
+                if(productListData?.isNotEmpty() == true) {
+                    shopPageTrackingShopSearchProduct.clickAutocompleteInternalShopPage(isMyShop, searchQuery, customDimensionShopPage)
+                } else {
+                    shopPageTrackingShopSearchProduct.clickAutocompleteInternalShopPageProductEmpty(isMyShop, searchQuery, customDimensionShopPage)
+                }
                 redirectToShopProductListPage()
             }
         }
@@ -315,9 +321,9 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
     }
 
     private fun populateDynamicSearchResult(universeSearchResponse: UniverseSearchResponse) {
-        val listData: MutableList<ShopSearchProductDataModel> = arrayListOf()
+        productListData = arrayListOf()
         universeSearchResponse.universeSearch.data.firstOrNull()?.items?.forEach {
-            listData.add(ShopSearchProductDynamicResultDataModel(
+            productListData?.add(ShopSearchProductDynamicResultDataModel(
                     it.imageUri,
                     it.keyword,
                     it.affiliateUsername,
@@ -327,7 +333,9 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
                     ShopSearchProductDataModel.Type.TYPE_PDP
             ))
         }
-        renderList(listData, false)
+        (productListData as? ArrayList<ShopSearchProductDataModel>)?.let {
+            renderList(it, false)
+        }
     }
 
     private fun initViewNew(view: View) {

@@ -54,6 +54,7 @@ public class ShopPageTrackingConstant {
     public static final String SHOP_SEARCH_PRODUCT_CLICK_SHARE_BUTTON = "click share button - search result";
     public static final String CLICK_SEARCH = "click search";
     public static final String SHOP_SEARCH_PRODUCT_CLICK_ETALASE_AUTOCOMPLETE = "click %1s - etalase shop";
+    public static final String SHOP_SEARCH_PRODUCT_CLICK_ETALASE_AUTOCOMPLETE_EMPTY = "click %1s - etalase shop - no result";
     public static final String SHOP_SEARCH_PRODUCT_CLICK_GLOBAL_SEARCH = "click %1s - tokopedia";
     public static final String SHOP_SEARCH_PRODUCT_CLICK_PRODUCT_AUTOCOMPLETE = "click - global autocomplete";
     public static final String CLICK_BACK = "click back";
@@ -229,5 +230,12 @@ public class ShopPageTrackingConstant {
     public static final String GENERAL = "general";
 
 
+    //empty state
+    public static final String CLICK_SEARCH_PAGE_NO_RESULT = "click search page no result";
+    public static final String TRY_ANOTHER_WORD = "coba kata lain";
+    public static final String SEARCH_ON_TOKOPEDIA = "search on tokopedia";
+    public static final String SEARCH_NO_RESULT_SUGGESTION = "search no result suggestion";
+    public static final String IMPRESSION_PRODUCT_SEARCH_SUGGESTION = "impression product search suggestion";
+    public static final String CLICK_PRODUCT_SEARCH_SUGGESTION = "click product search suggestion";
 
 }

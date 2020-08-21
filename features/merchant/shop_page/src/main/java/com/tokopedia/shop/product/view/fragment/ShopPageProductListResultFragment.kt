@@ -268,8 +268,6 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     private fun loadProductDataEmptyState(shopInfo: ShopInfo, page: Int) {
         sortValue = "1"
         selectedEtalaseId = ""
-        keywordEmptyState = keyword
-        keyword = ""
 
         viewModel.getShopProductEmptyState(
                 shopInfo.shopCore.shopID,
@@ -277,7 +275,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 ShopPageConstant.SHOP_PRODUCT_EMPTY_STATE_LIMIT,
                 sortValue.toIntOrZero(),
                 selectedEtalaseId,
-                keyword
+                keywordEmptyState
         )
     }
 
@@ -342,6 +340,12 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         if (isLoadingInitialData) {
             shopProductAdapter.clearProductList()
             endlessRecyclerViewScrollListener.resetState()
+
+            if(productList.isNotEmpty()) {
+                shopPageTracking?.shopPageProductSearchResult(isMyShop, keyword, customDimensionShopPage)
+            } else {
+                shopPageTracking?.shopPageProductSearchNoResult(isMyShop, keyword, customDimensionShopPage)
+            }
         }
 
         if (productList.isEmpty() && isLoadingInitialData) {
@@ -382,48 +386,83 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
 
     override fun onProductClicked(shopProductViewModel: ShopProductViewModel, @ShopTrackProductTypeDef shopTrackType: Int,
                                   productPosition: Int) {
-        shopPageTracking?.clickProductSearchResult(
-                isMyShop,
-                isLogin,
-                getSelectedEtalaseChip(),
-                "",
-                CustomDimensionShopPageAttribution.create(
-                        shopInfo!!.shopCore.shopID,
-                        shopInfo!!.goldOS.isOfficial == 1,
-                        shopInfo!!.goldOS.isGold == 1,
-                        shopProductViewModel.id,
-                        attribution,
-                        shopRef
-                ),
-                shopProductViewModel,
-                productPosition + 1,
-                shopId
+        if(!isEmptyState) {
+            shopPageTracking?.clickProductSearchResult(
+                    isMyShop,
+                    isLogin,
+                    getSelectedEtalaseChip(),
+                    "",
+                    CustomDimensionShopPageAttribution.create(
+                            shopInfo?.shopCore?.shopID,
+                            shopInfo?.goldOS?.isOfficial == 1,
+                            shopInfo?.goldOS?.isGold == 1,
+                            shopProductViewModel.id,
+                            attribution,
+                            shopRef
+                    ),
+                    shopProductViewModel,
+                    productPosition + 1,
+                    shopId,
+                    keyword
 
-        )
+            )
+        } else {
+            shopPageTracking?.clickProductListEmptyState(
+                    isLogin,
+                    CustomDimensionShopPageAttribution.create(
+                            shopInfo?.shopCore?.shopID,
+                            shopInfo?.goldOS?.isOfficial == 1,
+                            shopInfo?.goldOS?.isGold == 1,
+                            shopProductViewModel.id,
+                            attribution,
+                            shopRef
+                    ),
+                    shopProductViewModel,
+                    productPosition + 1,
+                    shopId
+            )
+        }
         startActivity(getProductIntent(shopProductViewModel.id ?: "", attribution,
                 shopPageTracking?.getListNameOfProduct(OldShopPageTrackingConstant.SEARCH, getSelectedEtalaseChip())
                         ?: ""))
     }
 
     override fun onProductImpression(shopProductViewModel: ShopProductViewModel, shopTrackType: Int, productPosition: Int) {
-        shopPageTracking?.impressionProductListSearchResult(
-                isMyShop,
-                isLogin,
-                getSelectedEtalaseChip(),
-                "",
-                CustomDimensionShopPageAttribution.create(
-                        shopInfo!!.shopCore.shopID,
-                        shopInfo!!.goldOS.isOfficial == 1,
-                        shopInfo!!.goldOS.isGold == 1,
-                        shopProductViewModel.id,
-                        attribution,
-                        shopRef
-                ),
-                shopProductViewModel,
-                productPosition + 1,
-                shopId
-
-        )
+        if(!isEmptyState) {
+            shopPageTracking?.impressionProductListSearchResult(
+                    isMyShop,
+                    isLogin,
+                    getSelectedEtalaseChip(),
+                    "",
+                    CustomDimensionShopPageAttribution.create(
+                            shopInfo?.shopCore?.shopID,
+                            shopInfo?.goldOS?.isOfficial == 1,
+                            shopInfo?.goldOS?.isGold == 1,
+                            shopProductViewModel.id,
+                            attribution,
+                            shopRef
+                    ),
+                    shopProductViewModel,
+                    productPosition + 1,
+                    shopId,
+                    keyword
+            )
+        } else {
+            shopPageTracking?.impressionProductListEmptyState(
+                    isLogin,
+                    CustomDimensionShopPageAttribution.create(
+                            shopInfo?.shopCore?.shopID,
+                            shopInfo?.goldOS?.isOfficial == 1,
+                            shopInfo?.goldOS?.isGold == 1,
+                            shopProductViewModel.id,
+                            attribution,
+                            shopRef
+                    ),
+                    shopProductViewModel,
+                    productPosition + 1,
+                    shopId
+            )
+        }
     }
 
     private fun getProductIntent(productId: String, attribution: String?, listNameOfProduct: String): Intent? {
@@ -796,6 +835,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     }
 
     override fun onPrimaryButtonEmptyClicked() {
+        shopPageTracking?.clickPrimaryBtnEmptyStateSearch(shopId, shopInfo?.shopHomeType)
         context?.let {
             startActivity(
                     createIntent(
@@ -813,9 +853,10 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     }
 
     override fun onSecondaryButtonEmptyClicked() {
+        shopPageTracking?.clickSecondaryBtnEmptyStateSearch(shopId, shopInfo?.shopHomeType)
         RouteManager.route(
                 context,
-                "${ApplinkConst.DISCOVERY_SEARCH}?q=$keywordEmptyState"
+                "${ApplinkConst.DISCOVERY_SEARCH}?q=$keyword"
         )
     }
 }

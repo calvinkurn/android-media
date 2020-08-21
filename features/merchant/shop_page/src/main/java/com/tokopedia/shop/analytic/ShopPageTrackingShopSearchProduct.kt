@@ -34,7 +34,17 @@ class ShopPageTrackingShopSearchProduct(
                 CLICK_SHOP_PAGE,
                 getShopPageCategory(isOwner),
                 String.format(SHOP_SEARCH_PRODUCT_CLICK_ETALASE_AUTOCOMPLETE, keyword),
-                "",
+                keyword,
+                customDimensionShopPage
+        )
+    }
+
+    fun clickAutocompleteInternalShopPageProductEmpty(isOwner: Boolean, keyword: String, customDimensionShopPage: CustomDimensionShopPage) {
+        sendGeneralEvent(
+                CLICK_SHOP_PAGE,
+                getShopPageCategory(isOwner),
+                String.format(SHOP_SEARCH_PRODUCT_CLICK_ETALASE_AUTOCOMPLETE_EMPTY, keyword),
+                keyword,
                 customDimensionShopPage
         )
     }
