@@ -20,6 +20,9 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.seller_migration_common.presentation.fragment.bottomsheet.SellerMigrationCommunicationBottomSheet
+import com.tokopedia.seller_migration_common.presentation.model.CommunicationInfo
+import com.tokopedia.seller_migration_common.presentation.util.initializeSellerMigrationCommunicationTicker
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.getPdpAppLink
 import com.tokopedia.topads.common.isFromPdpSellerMigration
@@ -39,6 +42,7 @@ import com.tokopedia.topads.dashboard.view.fragment.BerandaTabFragment
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsProductIklanFragment
 import com.tokopedia.topads.dashboard.view.fragment.insight.TopAdsRecommendationFragment
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.topads_dash_activity_base_layout.*
 import javax.inject.Inject
 
@@ -55,6 +59,17 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
 
     @Inject
     lateinit var topAdsDashboardPresenter: TopAdsDashboardPresenter
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
+    private val sellerMigrationStaticCommunicationBottomSheet by lazy {
+        SellerMigrationCommunicationBottomSheet.createInstance(
+                this,
+                CommunicationInfo.TopAds,
+                screenName.orEmpty(),
+                userSession.userId)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
@@ -119,6 +134,10 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
             }
         })
         TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsOpenScreenEvent()
+
+        if (!GlobalConfig.isSellerApp()) {
+            setupSellerMigrationTicker()
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -237,6 +256,10 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
         } else {
             RouteManager.route(this, ApplinkConstInternalMechant.MERCHANT_REDIRECT_CREATE_SHOP)
         }
+    }
+
+    private fun setupSellerMigrationTicker() {
+        initializeSellerMigrationCommunicationTicker(sellerMigrationStaticCommunicationBottomSheet, ticker_seller_migration_topads, CommunicationInfo.TopAds)
     }
 
     override fun setAppBarState(state: TopAdsProductIklanFragment.State?) {

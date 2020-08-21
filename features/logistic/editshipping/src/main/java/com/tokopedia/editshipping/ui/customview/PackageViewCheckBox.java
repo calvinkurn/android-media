@@ -10,7 +10,7 @@ import android.widget.CompoundButton;
 import androidx.annotation.NonNull;
 
 import com.tokopedia.editshipping.R;
-import com.tokopedia.editshipping.model.editshipping.Service;
+import com.tokopedia.editshipping.domain.model.editshipping.Service;
 import com.tokopedia.editshipping.ui.EditShippingViewListener;
 
 /**
@@ -52,7 +52,7 @@ public class PackageViewCheckBox extends EditShippingCourierView<Service,
         serviceCheckbox.setChecked(service.getActive());
         this.serviceIndex = serviceIndex;
 
-        serviceCheckbox.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.info_icon, 0);
+        serviceCheckbox.setCompoundDrawablesWithIntrinsicBounds(0, 0, com.tokopedia.design.R.drawable.info_icon, 0);
         serviceCheckbox.setOnTouchListener(onDescriptionTouchedListener(serviceCheckbox,
                 service.description, service.name));
     }

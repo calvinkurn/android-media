@@ -252,7 +252,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
 
     private fun displayOfficial() {
         view.shop_page_main_profile_badge.visibility = View.VISIBLE
-        view.shop_page_main_profile_badge.setImageResource(R.drawable.ic_badge_shop_official)
+        view.shop_page_main_profile_badge.setImageResource(com.tokopedia.design.R.drawable.ic_badge_shop_official)
     }
 
     /**

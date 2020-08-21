@@ -27,7 +27,7 @@ public class FlightOrderToCancellationJourneyMapper {
         flightCancellationJourney.setDepartureTime(flightOrderJourney.getDepartureTime());
         flightCancellationJourney.setDepartureCity(flightOrderJourney.getDepartureCity());
         flightCancellationJourney.setDepartureCityCode(flightOrderJourney.getDepartureCityCode());
-        flightCancellationJourney.setDepartureAiportId(flightOrderJourney.getDepartureAiportId());
+        flightCancellationJourney.setDepartureAirportId(flightOrderJourney.getDepartureAiportId());
         flightCancellationJourney.setArrivalTime(flightOrderJourney.getArrivalTime());
         flightCancellationJourney.setArrivalCity(flightOrderJourney.getArrivalCity());
         flightCancellationJourney.setArrivalCityCode(flightOrderJourney.getArrivalCityCode());
@@ -68,7 +68,7 @@ public class FlightOrderToCancellationJourneyMapper {
             flightCancellationJourney.setDepartureTime(flightOrderJourney.getDepartureTime());
             flightCancellationJourney.setDepartureCity(flightOrderJourney.getDepartureCity());
             flightCancellationJourney.setDepartureCityCode(flightOrderJourney.getDepartureCityCode());
-            flightCancellationJourney.setDepartureAiportId(flightOrderJourney.getDepartureAiportId());
+            flightCancellationJourney.setDepartureAirportId(flightOrderJourney.getDepartureAiportId());
             flightCancellationJourney.setArrivalTime(flightOrderJourney.getArrivalTime());
             flightCancellationJourney.setArrivalCity(flightOrderJourney.getArrivalCity());
             flightCancellationJourney.setArrivalCityCode(flightOrderJourney.getArrivalCityCode());
