@@ -76,7 +76,7 @@ object TalkReadingTracking {
         }
     }
 
-    fun eventWithoutLabel(eventName: String, userId: String, productId: String, action: String) {
+    fun eventWithoutLabel(userId: String, productId: String, action: String) {
         with(TalkTrackingConstants) {
             TrackApp.getInstance().gtm.sendGeneralEvent(
                     mapOf(

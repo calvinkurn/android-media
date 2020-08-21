@@ -36,6 +36,7 @@ import com.tokopedia.talk.common.constants.TalkConstants.QUESTION_ID
 import com.tokopedia.talk.common.constants.TalkConstants.READING_SOURCE
 import com.tokopedia.talk.feature.reading.analytics.TalkReadingTracking
 import com.tokopedia.talk.feature.reading.analytics.TalkReadingTrackingConstants.EVENT_ACTION_CREATE_NEW_QUESTION
+import com.tokopedia.talk.feature.reading.analytics.TalkReadingTrackingConstants.EVENT_ACTION_SEND_QUESTION_AT_EMPTY_TALK
 import com.tokopedia.talk.feature.reading.data.mapper.TalkReadingMapper
 import com.tokopedia.talk.feature.reading.data.model.*
 import com.tokopedia.talk.feature.reading.di.DaggerTalkReadingComponent
@@ -222,7 +223,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
                         goToReplyActivity((viewModel.talkLastAction as TalkGoToReply).questionId)
                     }
                     is TalkGoToWrite -> {
-                        goToWriteActivity()
+                        goToWriteActivity(EVENT_ACTION_CREATE_NEW_QUESTION)
                     }
                 }
             }
@@ -284,7 +285,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         pageEmpty.show()
         readingEmptyAskButton.setOnClickListener {
             if(viewModel.isUserLoggedIn()) {
-                goToWriteActivity()
+                goToWriteActivity(EVENT_ACTION_SEND_QUESTION_AT_EMPTY_TALK)
             } else {
                 updateLastAction(TalkGoToWrite)
                 goToLoginActivity()
@@ -486,10 +487,10 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         }
     }
 
-    private fun goToWriteActivity() {
-        TalkReadingTracking.eventWithoutLabel(viewModel.userId, productId, EVENT_ACTION_CREATE_NEW_QUESTION)
+    private fun goToWriteActivity(eventAction: String) {
         val intent = context?.let { AddTalkActivity.createIntent(it, productId, READING_SOURCE) }
         startActivityForResult(intent, TALK_WRITE_ACTIVITY_REQUEST_CODE)
+        TalkReadingTracking.eventWithoutLabel(viewModel.userId, productId, eventAction)
     }
 
     private fun goToReplyActivity(questionID: String) {
@@ -536,7 +537,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     private fun initFab() {
         addFloatingActionButton.setOnClickListener {
             if(viewModel.isUserLoggedIn()) {
-                goToWriteActivity()
+                goToWriteActivity(EVENT_ACTION_CREATE_NEW_QUESTION)
             } else {
                 updateLastAction(TalkGoToWrite)
                 goToLoginActivity()
