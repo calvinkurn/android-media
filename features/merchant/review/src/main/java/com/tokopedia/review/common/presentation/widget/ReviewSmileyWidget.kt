@@ -139,8 +139,6 @@ class ReviewSmileyWidget : BaseCustomView {
                 reviewEditableImageView.hide()
                 if (isActive) {
                     showSmileyText()
-                } else {
-                    hideSmileyText()
                 }
             }
         })
@@ -178,7 +176,7 @@ class ReviewSmileyWidget : BaseCustomView {
         }
     }
 
-    private fun hideSmileyText(hideText: Boolean = true) {
+    fun hideSmileyText(hideText: Boolean) {
         this.reviewEditableText.apply {
             animate().alpha(0f)
             if(hideText) {

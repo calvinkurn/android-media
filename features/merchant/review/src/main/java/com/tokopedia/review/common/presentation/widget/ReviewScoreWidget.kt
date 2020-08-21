@@ -101,6 +101,9 @@ class ReviewScoreWidget : BaseCustomView {
         }
         reviewDetailScoreSmiley.show()
         reviewDetailScoreText.show()
+        reviewEditableBadSmiley.hide()
+        reviewEditableMediocreSmiley.hide()
+        reviewEditableExcellentSmiley.hide()
     }
 
     fun getScore(): Int {
@@ -108,22 +111,36 @@ class ReviewScoreWidget : BaseCustomView {
     }
 
     fun onScoreSelected(score: Int) {
+        val hideText = score == currentScore
+        currentScore = if(hideText) {
+            0
+        } else {
+            score
+        }
         when (score) {
             ReviewConstants.REPUTATION_SCORE_BAD -> {
-                this.reviewEditableMediocreSmiley.deactivateMediocre(false)
-                this.reviewEditableExcellentSmiley.deactivateExcellent(false)
+                this.reviewEditableMediocreSmiley.deactivateMediocre(hideText)
+                this.reviewEditableExcellentSmiley.deactivateExcellent(hideText)
+                if(hideText) {
+                    this.reviewEditableBadSmiley.hideSmileyText(true)
+                }
             }
             ReviewConstants.REPUTATION_SCORE_MEDIOCRE -> {
-                this.reviewEditableBadSmiley.deactivateBad(false)
-                this.reviewEditableExcellentSmiley.deactivateExcellent(false)
+                this.reviewEditableBadSmiley.deactivateBad(hideText)
+                this.reviewEditableExcellentSmiley.deactivateExcellent(hideText)
+                if(hideText) {
+                    this.reviewEditableMediocreSmiley.hideSmileyText(true)
+                }
             }
             // ReviewConstants.REPUTATION_SCORE_EXCELLENT
             else -> {
-                this.reviewEditableBadSmiley.deactivateBad(false)
-                this.reviewEditableMediocreSmiley.deactivateMediocre(false)
+                this.reviewEditableBadSmiley.deactivateBad(hideText)
+                this.reviewEditableMediocreSmiley.deactivateMediocre(hideText)
+                if(hideText) {
+                    this.reviewEditableExcellentSmiley.hideSmileyText(true)
+                }
             }
         }
-        currentScore = score
     }
 
     fun showLoading() {
