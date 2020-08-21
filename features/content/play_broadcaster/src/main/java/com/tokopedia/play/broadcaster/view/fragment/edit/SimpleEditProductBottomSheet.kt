@@ -168,7 +168,7 @@ class SimpleEditProductBottomSheet @Inject constructor(
                 height = (MAX_HEIGHT_MULTIPLIER * maxHeight()).toInt()
             }
             bottomSheet?.setBackgroundColor(Color.TRANSPARENT)
-            bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet as FrameLayout)
+            bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet as View)
             bottomSheetBehavior.isHideable = true
             bottomSheetBehavior.skipCollapsed = true
             bottomSheetBehavior.peekHeight = (MAX_HEIGHT_MULTIPLIER * maxHeight()).toInt()
