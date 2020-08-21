@@ -22,7 +22,7 @@ data class ProductInputModel (
         var completionPercent: Int = 0,
         var draftId: Long = 0L,
         // requestCode related to checkEnabledOrNot function on preview page,
-        // it's for handle behaviour of enabling shipment and description stepper
+        // it's for handling behaviour of enabling shipment and description stepper
         // when click back pressed in add mode
         var requestCode: Array<Int> = Array(REQUEST_CODE_SIZE){NO_DATA}
 ) : Parcelable {
