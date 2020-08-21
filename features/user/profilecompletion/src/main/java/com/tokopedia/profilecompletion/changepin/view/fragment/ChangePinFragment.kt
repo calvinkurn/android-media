@@ -123,7 +123,11 @@ class ChangePinFragment : BaseDaggerFragment() {
 
     private fun handleConfirmState(input: String){
         if(pin == input){
-            if(isForgotPin) goToVerificationActivity()
+            if(isForgotPin) {
+                goToVerificationActivity()
+            } else {
+                changePinViewModel.changePin(pin, input, oldPin)
+            }
         }else{
             changePinInput.pinTextField.setText("")
             changePinInput.focus()
@@ -272,7 +276,12 @@ class ChangePinFragment : BaseDaggerFragment() {
 
     private fun onSuccessResetPin(data: AddChangePinData){
         if(data.success) goToSuccessPage()
-        else onError(null)
+        else onError(Throwable())
+    }
+
+    private fun onSuccessChangePin(data: AddChangePinData){
+        if(data.success) goToSuccessPage()
+        else onError(Throwable())
     }
 
     private fun initObserver(){
@@ -296,6 +305,14 @@ class ChangePinFragment : BaseDaggerFragment() {
                 is Fail -> onError(it.throwable)
             }
         })
+
+        changePinViewModel.changePinResponse.observe(this, Observer {
+            when(it){
+                is Success -> onSuccessChangePin(it.data)
+                is Fail -> onError(it.throwable)
+            }
+        })
+
     }
 
 }

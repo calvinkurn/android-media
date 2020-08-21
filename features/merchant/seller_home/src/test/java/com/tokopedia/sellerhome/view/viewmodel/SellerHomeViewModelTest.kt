@@ -245,7 +245,6 @@ class SellerHomeViewModelTest {
         viewModel.getWidgetLayout()
 
         viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
-
         coVerify {
             userSession.shopId
         }

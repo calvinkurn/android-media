@@ -1,22 +1,18 @@
 package com.tokopedia.home.account.presentation.view.buyercardview;
 
-import android.animation.ObjectAnimator;
 import android.content.Context;
-import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.cardview.widget.CardView;
-import androidx.core.content.ContextCompat;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
 
-import com.bumptech.glide.Glide;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.home.account.R;
@@ -87,7 +83,7 @@ public class BuyerCardView extends BaseCustomView implements BuyerCardContract.V
         dividerOne = view.findViewById(R.id.divider1);
         dividerTwo = view.findViewById(R.id.divider2);
         ivMemberBadge = view.findViewById(R.id.ivMemberBadge);
-        widget=view.findViewById(R.id.cardView);
+        widget = view.findViewById(R.id.cardView);
         buyerCardPresenter = new BuyerCardPresenter();
         buyerCardPresenter.attachView(this);
     }
@@ -210,12 +206,27 @@ public class BuyerCardView extends BaseCustomView implements BuyerCardContract.V
 
     @Override
     public void setWidgetVisibility(int visibility) {
-         widget.setVisibility(View.GONE);
+        widget.setVisibility(View.GONE);
     }
 
 
     @Override
     public void setMemberStatus(String status) {
+
+        if (byMeButton.getVisibility() == View.GONE) {
+            ConstraintLayout.LayoutParams textParam = (ConstraintLayout.LayoutParams) textProfileCompletion.getLayoutParams();
+            textParam.height = ConstraintLayout.LayoutParams.WRAP_CONTENT;
+            textParam.width = ConstraintLayout.LayoutParams.WRAP_CONTENT;
+            textProfileCompletion.setLayoutParams(textParam);
+
+            ConstraintSet set = new ConstraintSet();
+            ConstraintLayout layout;
+            layout = findViewById(R.id.viewCardContainer);
+            set.clone(layout);
+            set.clear(R.id.text_profile_completion, ConstraintSet.END);
+            set.applyTo(layout);
+        }
+
         textProfileCompletion.setText(status);
     }
 

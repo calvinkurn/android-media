@@ -55,7 +55,8 @@
       "userId": "{{.*}}",
       "eventAction": "click view all card on dynamic channel top carousel",
       "sessionIris": "{{.*}}",
-      "eventLabel": "{{.*}}"
+      "eventLabel": "{{.*}}",
+      "channelId": "{{.*}}"
     },
     {
       "businessUnit": "home & browse",

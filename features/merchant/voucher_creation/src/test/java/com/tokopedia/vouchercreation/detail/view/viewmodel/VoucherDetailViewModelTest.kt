@@ -47,6 +47,9 @@ class VoucherDetailViewModelTest {
     @RelaxedMockK
     lateinit var voucherUiModel: VoucherUiModel
 
+    lateinit var mViewModel: VoucherDetailViewModel
+    lateinit var testDispatcher: TestCoroutineDispatcher
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
