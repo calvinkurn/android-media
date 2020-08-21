@@ -40,10 +40,7 @@ import retrofit2.Retrofit;
 import static com.tokopedia.shop.common.constant.GQLQueryNamedConstant.DEFAULT_SHOP_INFO_QUERY_NAME;
 import static com.tokopedia.shop.common.constant.GQLQueryNamedConstant.SHOP_INFO_CORE_AND_ASSETS_QUERY_NAME;
 import static com.tokopedia.shop.common.constant.GQLQueryNamedConstant.SHOP_INFO_FAVORITE_QUERY_NAME;
-import static com.tokopedia.shop.common.constant.GQLQueryNamedConstant.SHOP_INFO_GOLD_QUERY_NAME;
 import static com.tokopedia.shop.common.constant.GQLQueryNamedConstant.SHOP_INFO_HEADER_CONTENT_DATA_QUERY_NAME;
-import static com.tokopedia.shop.common.constant.GQLQueryNamedConstant.SHOP_INFO_HOME_TYPE_QUERY_NAME;
-import static com.tokopedia.shop.common.constant.GQLQueryNamedConstant.SHOP_INFO_OS_QUERY_NAME;
 import static com.tokopedia.shop.common.constant.GQLQueryNamedConstant.SHOP_TOP_CONTENT_QUERY_NAME;
 import static com.tokopedia.shop.common.constant.GqlQueryConstant.GQL_GET_SHOP_OPERATIONAL_HOUR_STATUS_QUERY_STRING;
 import static com.tokopedia.shop.common.constant.GqlQueryConstant.QUERY_SHOP_SCORE_STRING;
@@ -80,38 +77,11 @@ public class ShopCommonModule {
     }
 
     @Provides
-    @Named(GQLQueryNamedConstant.SHOP_INFO_FOR_OS)
-    public String provideGqlQueryShopInfoForOs(@ApplicationContext Context context) {
-        return GqlQueryConstant.INSTANCE.getShopInfoQuery(
-                GqlQueryConstant.SHOP_INFO_FOR_OS_REQUEST_QUERY_STRING,
-                SHOP_INFO_OS_QUERY_NAME
-        );
-    }
-
-    @Provides
-    @Named(GQLQueryNamedConstant.SHOP_INFO_FOR_GOLD)
-    public String provideGqlQueryShopInfoForGold(@ApplicationContext Context context){
-        return GqlQueryConstant.INSTANCE.getShopInfoQuery(
-                GqlQueryConstant.SHOP_INFO_FOR_GOLD_REQUEST_QUERY_STRING,
-                SHOP_INFO_GOLD_QUERY_NAME
-        );
-    }
-
-    @Provides
     @Named(GQLQueryNamedConstant.SHOP_INFO_FOR_TOP_CONTENT)
     public String provideGqlQueryShopInfoForTopContent(@ApplicationContext Context context){
         return GqlQueryConstant.INSTANCE.getShopInfoQuery(
                 GqlQueryConstant.SHOP_INFO_FOR_TOP_CONTENT_REQUEST_QUERY_STRING,
                 SHOP_TOP_CONTENT_QUERY_NAME
-        );
-    }
-
-    @Provides
-    @Named(GQLQueryNamedConstant.SHOP_INFO_FOR_HOME_TYPE)
-    public String provideGqlQueryShopInfoForHomeType(@ApplicationContext Context context){
-        return GqlQueryConstant.INSTANCE.getShopInfoQuery(
-                GqlQueryConstant.SHOP_INFO_FOR_HOME_TYPE_REQUEST_QUERY_STRING,
-                SHOP_INFO_HOME_TYPE_QUERY_NAME
         );
     }
 
@@ -247,34 +217,10 @@ public class ShopCommonModule {
         return new GQLGetShopInfoUseCase(gqlQuery, graphqlUseCase);
     }
 
-    @GqlGetShopInfoUseCaseOsQualifier
-    @Provides
-    public GQLGetShopInfoUseCase provideGqlGetShopInfoUseCaseOs(MultiRequestGraphqlUseCase graphqlUseCase,
-                                                                    @Named(GQLQueryNamedConstant.SHOP_INFO_FOR_OS)
-                                                                            String gqlQuery) {
-        return new GQLGetShopInfoUseCase(gqlQuery, graphqlUseCase);
-    }
-
-    @GqlGetShopInfoUseCaseGoldQualifier
-    @Provides
-    public GQLGetShopInfoUseCase provideGqlGetShopInfoUseCaseGold(MultiRequestGraphqlUseCase graphqlUseCase,
-                                                                    @Named(GQLQueryNamedConstant.SHOP_INFO_FOR_GOLD)
-                                                                            String gqlQuery) {
-        return new GQLGetShopInfoUseCase(gqlQuery, graphqlUseCase);
-    }
-
     @GqlGetShopInfoUseCaseTopContentQualifier
     @Provides
     public GQLGetShopInfoUseCase provideGqlGetShopInfoUseCaseTopContent(MultiRequestGraphqlUseCase graphqlUseCase,
                                                                     @Named(GQLQueryNamedConstant.SHOP_INFO_FOR_TOP_CONTENT)
-                                                                            String gqlQuery) {
-        return new GQLGetShopInfoUseCase(gqlQuery, graphqlUseCase);
-    }
-
-    @GqlGetShopInfoUseCaseHomeTypeQualifier
-    @Provides
-    public GQLGetShopInfoUseCase provideGqlGetShopInfoUseCaseHomeType(MultiRequestGraphqlUseCase graphqlUseCase,
-                                                                    @Named(GQLQueryNamedConstant.SHOP_INFO_FOR_HOME_TYPE)
                                                                             String gqlQuery) {
         return new GQLGetShopInfoUseCase(gqlQuery, graphqlUseCase);
     }

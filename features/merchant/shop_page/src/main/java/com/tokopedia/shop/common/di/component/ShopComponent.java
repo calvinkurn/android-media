@@ -16,9 +16,6 @@ import com.tokopedia.shop.common.data.source.cloud.api.ShopApi;
 import com.tokopedia.shop.common.di.GqlGetShopInfoForHeaderUseCaseQualifier;
 import com.tokopedia.shop.common.di.ShopPageContext;
 import com.tokopedia.shop.common.di.GqlGetShopInfoUseCaseCoreAndAssetsQualifier;
-import com.tokopedia.shop.common.di.GqlGetShopInfoUseCaseGoldQualifier;
-import com.tokopedia.shop.common.di.GqlGetShopInfoUseCaseHomeTypeQualifier;
-import com.tokopedia.shop.common.di.GqlGetShopInfoUseCaseOsQualifier;
 import com.tokopedia.shop.common.di.GqlGetShopInfoUseCaseTopContentQualifier;
 import com.tokopedia.shop.common.di.module.ShopModule;
 import com.tokopedia.shop.common.di.scope.ShopScope;
@@ -80,17 +77,8 @@ public interface ShopComponent {
     @Named(GQLQueryNamedConstant.GQL_GET_SHOP_OPERATIONAL_HOUR_STATUS)
     String getGqlQueryShopOperationalHourStatus();
 
-    @GqlGetShopInfoUseCaseOsQualifier
-    GQLGetShopInfoUseCase gqlGetShopInfoUseCaseOs();
-
-    @GqlGetShopInfoUseCaseGoldQualifier
-    GQLGetShopInfoUseCase gqlGetShopInfoUseCaseGold();
-
     @GqlGetShopInfoUseCaseTopContentQualifier
     GQLGetShopInfoUseCase gqlGetShopInfoTopContentUseCase();
-
-    @GqlGetShopInfoUseCaseHomeTypeQualifier
-    GQLGetShopInfoUseCase gqlGetShopInfoHomeTypeUseCase();
 
     @GqlGetShopInfoUseCaseCoreAndAssetsQualifier
     GQLGetShopInfoUseCase gqlGetShopInfoCoreAndAssetsUseCase();

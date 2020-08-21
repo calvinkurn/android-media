@@ -83,27 +83,6 @@ object GqlQueryConstant {
             "            shopHomeType\n" +
             "        }"
 
-    const val SHOP_INFO_FOR_TAB_REQUEST_QUERY_STRING = "result {\n" +
-            "              os {\n" +
-            "                isOfficial\n" +
-            "                title\n" +
-            "                badge\n" +
-            "                badgeSVG\n" +
-            "              }\n" +
-            "              gold {\n" +
-            "              \tisGold\n" +
-            "                badge\n" +
-            "        \t\tbadgeSVG\n" +
-            "              }\n" +
-            "              shopCore{\n" +
-            "        \t\tname\n" +
-            "              }\n" +
-            "              topContent {\n" +
-            "                topURL\n" +
-            "              }\n" +
-            "              shopHomeType\n" +
-            "        }"
-
     const val SHOP_INFO_FOR_OS_REQUEST_QUERY_STRING = "result {\n" +
             "            os{\n" +
             "                isOfficial\n" +
@@ -113,22 +92,10 @@ object GqlQueryConstant {
             "            }\n" +
             "        }"
 
-    const val SHOP_INFO_FOR_GOLD_REQUEST_QUERY_STRING = "result {\n" +
-            "            gold{\n" +
-            "                isGold\n" +
-            "                badge\n" +
-            "                badgeSVG\n" +
-            "            }\n" +
-            "        }"
-
     const val SHOP_INFO_FOR_TOP_CONTENT_REQUEST_QUERY_STRING = "result {\n" +
             "            topContent{\n" +
             "                topURL\n" +
             "            }\n" +
-            "        }"
-
-    const val SHOP_INFO_FOR_HOME_TYPE_REQUEST_QUERY_STRING = "result {\n" +
-            "            shopHomeType\n" +
             "        }"
 
     const val SHOP_INFO_FOR_CORE_AND_ASSETS_REQUEST_QUERY_STRING = "result {\n" +
