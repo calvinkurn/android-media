@@ -988,7 +988,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
             tickerPerformanceInfo?.setTextDescription(getString(R.string.som_shop_performance_info))
             tv_buyer_request_cancel?.text = it.popUp.body
 
-            val reasonBuyer = detailResponse.buyerRequestCancel.reason.split(" - ").last()
+            val reasonBuyer = Utils.getL2CancellationReason(detailResponse.buyerRequestCancel.reason)
             tvBuyerRequestCancelNotes?.text = reasonBuyer.replace("\\n", System.getProperty("line.separator") ?: "")
 
             setupBuyerRequestCancelBottomSheetButtons(this, bottomSheetReqCancel, reasonBuyer, it.popUp.actionButtons)

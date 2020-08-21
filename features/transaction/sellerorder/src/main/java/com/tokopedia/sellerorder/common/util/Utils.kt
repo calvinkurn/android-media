@@ -9,6 +9,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.sellerorder.R
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
+import java.util.*
 
 /**
  * Created by fwidjaja on 2019-11-21.
@@ -59,6 +60,15 @@ object Utils {
             "warning" -> Ticker.TYPE_WARNING
             "error" -> Ticker.TYPE_ERROR
             else -> Ticker.TYPE_ANNOUNCEMENT
+        }
+    }
+
+    @JvmStatic
+    fun getL2CancellationReason(text: String): String {
+        return if (text.contains('-')) {
+            text.split(" - ").last().toLowerCase(Locale.getDefault())
+        } else {
+            text
         }
     }
 }
