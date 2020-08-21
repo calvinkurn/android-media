@@ -10,7 +10,7 @@ import dagger.Component
  */
 @PlayScope
 @Component(
-        modules = [PlayModule::class, PlayViewModelModule::class],
+        modules = [PlayModule::class, PlayViewModelModule::class, PlayViewerFragmentModule::class],
         dependencies = [BaseAppComponent::class]
 )
 interface PlayComponent {
@@ -20,8 +20,6 @@ interface PlayComponent {
     fun inject(playVideoFragment: PlayVideoFragment)
 
     fun inject(playUserInteractionFragment: PlayUserInteractionFragment)
-
-    fun inject(playMiniInteractionFragment: PlayMiniInteractionFragment)
 
     fun inject(playErrorFragment: PlayErrorFragment)
 
