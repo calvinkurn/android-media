@@ -35,6 +35,7 @@ import com.tokopedia.talk.common.constants.TalkConstants.PARAM_SHOP_ID
 import com.tokopedia.talk.common.constants.TalkConstants.QUESTION_ID
 import com.tokopedia.talk.common.constants.TalkConstants.READING_SOURCE
 import com.tokopedia.talk.feature.reading.analytics.TalkReadingTracking
+import com.tokopedia.talk.feature.reading.analytics.TalkReadingTrackingConstants.EVENT_ACTION_CREATE_NEW_QUESTION
 import com.tokopedia.talk.feature.reading.data.mapper.TalkReadingMapper
 import com.tokopedia.talk.feature.reading.data.model.*
 import com.tokopedia.talk.feature.reading.di.DaggerTalkReadingComponent
@@ -486,6 +487,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     }
 
     private fun goToWriteActivity() {
+        TalkReadingTracking.eventWithoutLabel(viewModel.userId, productId, EVENT_ACTION_CREATE_NEW_QUESTION)
         val intent = context?.let { AddTalkActivity.createIntent(it, productId, READING_SOURCE) }
         startActivityForResult(intent, TALK_WRITE_ACTIVITY_REQUEST_CODE)
     }
