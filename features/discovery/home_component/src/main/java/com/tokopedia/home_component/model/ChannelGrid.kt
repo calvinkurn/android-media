@@ -26,5 +26,9 @@ data class ChannelGrid(
         val labelGroup: List<LabelGroup> = listOf(),
         val hasBuyButton: Boolean = false,
         val rating: Int = 0,
-        val countReview: Int = 0
+        val countReview: Int = 0,
+        val backColor: String = "",
+        val benefit: ChannelBenefit = ChannelBenefit(),
+        val textColor: String = ""
+
 )

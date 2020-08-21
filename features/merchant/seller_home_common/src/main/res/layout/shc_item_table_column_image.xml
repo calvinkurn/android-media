@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/columnImageContainer"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/spacing_lvl2">
+
+    <ImageView
+        android:id="@+id/imgTableColumn"
+        android:layout_width="@dimen/shc_dimen_46dp"
+        android:layout_height="@dimen/shc_dimen_46dp"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:layout_marginBottom="@dimen/spacing_lvl2"
+        android:scaleType="centerCrop"
+        tools:src="@tools:sample/avatars" />
+</LinearLayout>

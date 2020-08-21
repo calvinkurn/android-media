@@ -6,12 +6,15 @@ import android.content.pm.ResolveInfo
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
+import android.view.View
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.annotation.DrawableRes
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import android.view.View
-import android.widget.*
 import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.linker.LinkerManager
@@ -21,8 +24,6 @@ import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.videoplayer.utils.showToast
-import android.content.Intent
-import android.content.ComponentName
 
 /**
  * @author by yfsx on 17/05/19.
@@ -417,7 +418,7 @@ class ShareBottomSheets : BottomSheets(), ShareAdapter.OnItemClickListener {
             add(ShareType.ActivityShare(KEY_TWITTER, getString(R.string.share_twitter), MimeType.TEXT, getTextIntent(PACKAGE_NAME_TWITTER, CLASS_NAME_TWITTER)))
 
             val mediaUrl: String? = arguments?.getString(EXTRA_MEDIA_URL)
-            if (typeList.contains(MimeType.IMAGE) && mediaUrl != null) {
+            if (typeList.contains(MimeType.IMAGE) && mediaUrl?.isNotEmpty() == true) {
                 add(ShareType.ActivityShare(KEY_INSTAGRAM_FEED, getString(R.string.share_instagram_feed), MimeType.IMAGE, getInstagramFeedIntent(Uri.parse(mediaUrl))))
                 add(ShareType.ActivityShare(KEY_INSTAGRAM_STORY, getString(R.string.share_instagram_story), MimeType.IMAGE, getInstagramStoryIntent(Uri.parse(mediaUrl))))
             }

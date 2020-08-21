@@ -116,7 +116,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoCheckoutVoucherOrdersItemUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.SummariesItemUiModel;
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.TrackingDetailsItem;
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.TrackingDetailsItemUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel;
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata;
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.PromoNotEligibleActionListener;
@@ -1209,19 +1209,32 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
     }
 
-    private void updatePromoTrackingData(List<TrackingDetailsItem> trackingDetailsItems) {
+    private void updatePromoTrackingData(List<TrackingDetailsItemUiModel> trackingDetailsItemUiModels) {
         List<ShipmentCartItemModel> dataList = shipmentAdapter.getShipmentCartItemModelList();
         if (dataList == null) return;
         for (ShipmentCartItemModel shipmentCartItemModel : dataList) {
             for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
-                if (trackingDetailsItems.size() > 0) {
-                    for (TrackingDetailsItem trackingDetailsItem : trackingDetailsItems) {
-                        if (trackingDetailsItem.getProductId() != null && trackingDetailsItem.getProductId() == cartItemModel.getProductId() &&
+                if (trackingDetailsItemUiModels.size() > 0) {
+                    for (TrackingDetailsItemUiModel trackingDetailsItemUiModel : trackingDetailsItemUiModels) {
+                        if (trackingDetailsItemUiModel.getProductId() != null && trackingDetailsItemUiModel.getProductId() == cartItemModel.getProductId() &&
                                 cartItemModel.getAnalyticsProductCheckoutData() != null) {
-                            cartItemModel.getAnalyticsProductCheckoutData().setPromoCode(trackingDetailsItem.getPromoCodesTracking());
-                            cartItemModel.getAnalyticsProductCheckoutData().setPromoDetails(trackingDetailsItem.getPromoDetailsTracking());
+                            cartItemModel.getAnalyticsProductCheckoutData().setPromoCode(trackingDetailsItemUiModel.getPromoCodesTracking());
+                            cartItemModel.getAnalyticsProductCheckoutData().setPromoDetails(trackingDetailsItemUiModel.getPromoDetailsTracking());
                         }
                     }
+                }
+            }
+        }
+    }
+
+    private void clearPromoTrackingData() {
+        List<ShipmentCartItemModel> dataList = shipmentAdapter.getShipmentCartItemModelList();
+        if (dataList == null) return;
+        for (ShipmentCartItemModel shipmentCartItemModel : dataList) {
+            for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
+                if (cartItemModel.getAnalyticsProductCheckoutData() != null) {
+                    cartItemModel.getAnalyticsProductCheckoutData().setPromoCode("");
+                    cartItemModel.getAnalyticsProductCheckoutData().setPromoDetails("");
                 }
             }
         }
@@ -1489,6 +1502,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (stillHasPromo) {
             shipmentPresenter.checkPromoCheckoutFinalShipment(generateValidateUsePromoRequest());
         } else {
+            clearPromoTrackingData();
             sendEEStep3();
         }
     }
@@ -1499,18 +1513,23 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         // if one of courier reseted because of apply promo logistic (PSL) and eventually not eligible after hit validate use, don't send EE
         boolean courierHasReseted = false;
         for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModels) {
-            if (shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null) {
-                List<DataCheckoutRequest> dataCheckoutRequests = shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerShippingData(
-                        shipmentCartItemModel.getCartString(),
-                        String.valueOf(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getServiceId()),
-                        String.valueOf(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getShipperPrice()),
-                        String.valueOf(shipmentCartItemModel.getSpId())
-                );
-                shipmentPresenter.setDataCheckoutRequestList(dataCheckoutRequests);
-            } else {
+            ShipmentDetailData selectedShipmentDetailData = shipmentCartItemModel.getSelectedShipmentDetailData();
+            if (selectedShipmentDetailData == null) {
                 courierHasReseted = true;
                 break;
             }
+            CourierItemData selectedCourier = selectedShipmentDetailData.getSelectedCourier();
+            if (selectedCourier == null) {
+                courierHasReseted = true;
+                break;
+            }
+            List<DataCheckoutRequest> dataCheckoutRequests = shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerShippingData(
+                    shipmentCartItemModel.getCartString(),
+                    String.valueOf(selectedCourier.getServiceId()),
+                    String.valueOf(selectedCourier.getShipperPrice()),
+                    String.valueOf(shipmentCartItemModel.getSpId())
+            );
+            shipmentPresenter.setDataCheckoutRequestList(dataCheckoutRequests);
         }
 
         if (!courierHasReseted) {
@@ -2763,7 +2782,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void updateButtonPromoCheckout(PromoUiModel promoUiModel) {
         doUpdateButtonPromoCheckout(promoUiModel);
-        updatePromoTrackingData(promoUiModel.getTrackingDetails());
+        updatePromoTrackingData(promoUiModel.getTrackingDetailUiModels());
+        sendEEStep3();
         updateLogisticPromoData(promoUiModel);
         if (shipmentAdapter.hasSetAllCourier()) {
             resetPromoBenefit();
@@ -2781,6 +2801,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         shipmentAdapter.resetPromoCheckoutData();
         onNeedUpdateViewItem(shipmentAdapter.getPromoCheckoutPosition());
         resetPromoBenefit();
+        clearPromoTrackingData();
     }
 
     @Override

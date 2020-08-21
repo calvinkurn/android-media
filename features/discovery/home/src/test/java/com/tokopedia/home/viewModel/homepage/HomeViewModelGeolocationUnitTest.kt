@@ -93,9 +93,8 @@ class HomeViewModelGeolocationUnitTest {
         )
 
         // home viewModel
-        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase).apply {
-            setNeedToShowGeolocationComponent(true)
-        }
+        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
+        homeViewModel.setNeedToShowGeolocationComponent(true)
         homeViewModel.homeLiveData.observeForever(observerHome)
 
         // Send geolocation
@@ -106,10 +105,6 @@ class HomeViewModelGeolocationUnitTest {
 
         // Expect geolocation will show on user screen
         verifyOrder {
-            // check on home data initial first channel is dynamic channel
-            observerHome.onChanged(match { homeDataModel ->
-                homeDataModel.list.find{ it is GeoLocationPromptDataModel} != null
-            })
             observerHome.onChanged(match { homeDataModel ->
                 homeDataModel.list.find{ it is GeoLocationPromptDataModel} == null
             })

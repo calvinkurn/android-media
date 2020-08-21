@@ -275,9 +275,12 @@ open class HomeViewModel @Inject constructor(
         if (!compositeSubscription.isUnsubscribed) {
             compositeSubscription.unsubscribe()
         }
-        channel.close()
-        jobChannel?.cancelChildren()
         super.onCleared()
+    }
+
+    fun onCloseChannel(){
+        jobChannel?.cancelChildren()
+        channel.close()
     }
 
     fun getHeaderData() {
@@ -322,7 +325,7 @@ open class HomeViewModel @Inject constructor(
             if(newPlayCarouselDataModel.channelList.isEmpty()){
                 _homeLiveData.value?.list?.indexOfFirst { visitable -> visitable is PlayCarouselCardDataModel }?.let{ playIndex ->
                     logChannelUpdate("delete play banner data: ${newPlayCarouselDataModel.title}")
-                    updateWidget(UpdateLiveDataModel(ACTION_DELETE, playCarouselCardDataModel, playIndex))
+                    updateWidget(UpdateLiveDataModel(ACTION_DELETE, playCarouselCardDataModel))
                 }
             } else {
                 val newList = mutableListOf<Visitable<*>>()
@@ -340,8 +343,7 @@ open class HomeViewModel @Inject constructor(
             if(playCarouselCardDataModel.playBannerCarouselDataModel.channelList.isEmpty()) {
                 val newList = mutableListOf<Visitable<*>>()
                 newList.addAll(_homeLiveData.value?.list ?: listOf())
-                val playIndex = newList.indexOfFirst { visitable -> visitable is PlayCarouselCardDataModel }
-                updateWidget(UpdateLiveDataModel(ACTION_DELETE, playCarouselCardDataModel, playIndex))
+                updateWidget(UpdateLiveDataModel(ACTION_DELETE, playCarouselCardDataModel))
             }
         }
     }
@@ -885,9 +887,10 @@ open class HomeViewModel @Inject constructor(
                 if (homeDataModel?.isCache == false) {
                     _isRequestNetworkLiveData.postValue(Event(false))
                     val homeDataWithoutExternalComponentPair = evaluateInitialTopAdsBannerComponent(homeDataModel)
+                    var homeData: HomeDataModel? = homeDataWithoutExternalComponentPair.first
                     withContext(homeDispatcher.get().ui()){
-                        var homeData = evaluateGeolocationComponent(homeDataModel)
-                        homeData = evaluateAvailableComponent(homeDataModel)
+                        homeData = evaluateGeolocationComponent(homeData)
+                        homeData = evaluateAvailableComponent(homeData)
                         _homeLiveData.value = homeData
                     }
                     getPlayBannerCarousel()
@@ -928,8 +931,21 @@ open class HomeViewModel @Inject constructor(
     private fun initChannel(){
         logChannelUpdate("init channel")
         jobChannel?.cancelChildren()
-        jobChannel = launch(homeDispatcher.get().ui()) {
+        jobChannel = launch (homeDispatcher.get().ui()){
             updateChannel(channel)
+        }
+    }
+
+    private fun reInitChannel(widget: UpdateLiveDataModel){
+        logChannelUpdate("reinit channel")
+        jobChannel?.cancelChildren()
+        jobChannel = launch (homeDispatcher.get().ui()){
+            updateChannel(channel)
+        }
+        launch {
+            if (!channel.isClosedForSend){
+                channel.send(widget)
+            }
         }
     }
 
@@ -970,10 +986,10 @@ open class HomeViewModel @Inject constructor(
         }
     }
 
-    fun getBusinessUnitData(tabId: Int, position: Int){
+    fun getBusinessUnitData(tabId: Int, position: Int, tabName: String){
         if(buWidgetJob?.isActive == true) return
         buWidgetJob = launchCatchError(coroutineContext, block = {
-            getBusinessUnitDataUseCase.get().setParams(tabId)
+            getBusinessUnitDataUseCase.get().setParams(tabId, position, tabName)
             val data = getBusinessUnitDataUseCase.get().executeOnBackground()
             _homeLiveData.value?.list?.withIndex()?.find { it.value is NewBusinessUnitWidgetDataModel }?.let { buModel ->
                 val oldBuData = buModel.value as NewBusinessUnitWidgetDataModel
@@ -1010,7 +1026,7 @@ open class HomeViewModel @Inject constructor(
                 data.reversed().forEach {
                     updateWidget(UpdateLiveDataModel(ACTION_ADD, it, lastIndex))
                 }
-                _trackingLiveData.postValue(Event(data))
+                _trackingLiveData.postValue(Event(data.filterIsInstance(HomeVisitable::class.java)))
             }
         }){
             updateWidget(UpdateLiveDataModel(ACTION_DELETE, dynamicChannelDataModel, position))
@@ -1033,7 +1049,7 @@ open class HomeViewModel @Inject constructor(
                 data.reversed().forEach {
                     updateWidget(UpdateLiveDataModel(ACTION_ADD, it, lastIndex))
                 }
-                _trackingLiveData.postValue(Event(data))
+                _trackingLiveData.postValue(Event(data.filterIsInstance(HomeVisitable::class.java)))
             }
         }){
             updateWidget(UpdateLiveDataModel(ACTION_DELETE, visitable, position))
@@ -1235,44 +1251,6 @@ open class HomeViewModel @Inject constructor(
         }
     }
 
-    fun getOneClickCheckout(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int){
-        val requestParams = RequestParams()
-        val quantity = if(grid.minOrder < 1) "1" else grid.minOrder.toString()
-        requestParams.putObject(AddToCartOccUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, AddToCartOccRequestParams(
-                productId = grid.id,
-                quantity = quantity,
-                shopId = grid.shop.shopId,
-                warehouseId = grid.warehouseId,
-                productName = grid.name,
-                price = grid.price
-        ))
-        getAtcUseCase.get().createObservable(requestParams)
-                .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
-                .subscribe (
-                        {
-                            if(it.status == STATUS_OK) {
-                                _oneClickCheckout.postValue(Event(
-                                        mapOf(
-                                                ATC to it,
-                                                CHANNEL to channel,
-                                                GRID to grid,
-                                                QUANTITY to quantity,
-                                                POSITION to position
-
-                                        )
-                                ))
-                            }
-                            else {
-                                _oneClickCheckout.postValue(Event(Throwable()))
-                            }
-                        },
-                        {
-                            _oneClickCheckout.postValue(Event(it))
-                        }
-                )
-    }
-
     fun getOneClickCheckoutHomeComponent(channel: ChannelModel, grid: ChannelGrid, position: Int){
         val requestParams = RequestParams()
         val quantity = if(grid.minOrder < 1) "1" else grid.minOrder.toString()
@@ -1437,13 +1415,14 @@ open class HomeViewModel @Inject constructor(
             if(updateWidget.visitable != null) logChannelUpdate("Send Update Widget... (send = ${channel.isClosedForSend} | widget = ${updateWidget.visitable.javaClass.simpleName})")
             else logChannelUpdate("Send Widget Processing... (send = ${channel.isClosedForSend} | homeData = ${updateWidget.homeData?.list?.map{ it.javaClass.simpleName }}")
             if(channel.isClosedForSend){
-                initChannel()
+                reInitChannel(updateWidget)
+            } else {
+                channel.send(updateWidget)
             }
-            channel.send(updateWidget)
         }catch (e: ClosedSendChannelException){
             logChannelUpdate("Update Widget Error... (send = ${channel.isClosedForSend} | widget = $updateWidget)")
-            initChannel()
-            updateWidget(updateWidget)
+            logChannelUpdate("init channel")
+            reInitChannel(updateWidget)
         }
     }
 

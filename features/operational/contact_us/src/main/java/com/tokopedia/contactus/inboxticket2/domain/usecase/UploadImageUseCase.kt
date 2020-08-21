@@ -2,9 +2,9 @@ package com.tokopedia.contactus.inboxticket2.domain.usecase
 
 import android.content.Context
 import com.tokopedia.contactus.R
+import com.tokopedia.contactus.inboxticket2.data.ImageUpload
 import com.tokopedia.contactus.inboxticket2.data.UploadImageContactUs
 import com.tokopedia.contactus.inboxticket2.view.presenter.InboxDetailPresenterImpl
-import com.tokopedia.contactus.orderquery.data.ImageUpload
 import com.tokopedia.contactus.orderquery.data.ImageUploadResult
 import com.tokopedia.core.network.retrofit.utils.NetworkCalculator
 import com.tokopedia.core.network.retrofit.utils.RetrofitUtils

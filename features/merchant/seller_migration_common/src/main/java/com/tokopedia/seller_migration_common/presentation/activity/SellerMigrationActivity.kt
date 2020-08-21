@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.seller_migration_common.analytics.SellerMigrationTracking
@@ -55,13 +56,17 @@ class SellerMigrationActivity : BaseSimpleActivity() {
                     val firstAppLink = appLinks.firstOrNull().orEmpty()
                     val parameterizedFirstAppLink = Uri.parse(firstAppLink)
                             .buildUpon()
-                            .appendQueryParameter(RouteManager.KEY_REDIRECT_TO_SELLER_APP, "true")
-                            .appendQueryParameter(SellerMigrationApplinkConst.QUERY_PARAM_IS_AUTO_LOGIN, "true")
                             .appendQueryParameter(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, featureName)
                             .build()
                             .toString()
+                    val sellerAppSeamlessLoginAppLink = Uri.parse(ApplinkConstInternalGlobal.SEAMLESS_LOGIN).buildUpon()
+                            .appendQueryParameter(ApplinkConstInternalGlobal.KEY_REDIRECT_SEAMLESS_APPLINK, parameterizedFirstAppLink)
+                            .appendQueryParameter(RouteManager.KEY_REDIRECT_TO_SELLER_APP, "true")
+                            .appendQueryParameter(SellerMigrationApplinkConst.QUERY_PARAM_IS_AUTO_LOGIN, "true")
+                            .build()
+                            .toString()
                     appLinks.removeAt(0)
-                    RouteManager.getIntent(this, parameterizedFirstAppLink)?.apply {
+                    RouteManager.getIntent(this, sellerAppSeamlessLoginAppLink)?.apply {
                         putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, appLinks)
                         putExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, featureName)
                         flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK

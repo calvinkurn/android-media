@@ -16,23 +16,13 @@ object DeeplinkMapperContent {
         else deeplink
     }
 
-    fun getRegisteredNavigationPlay(deeplink: String): String {
-        return if (deeplink.startsWithPattern(ApplinkConst.PLAY_DETAIL)) getRegisteredNavigation(deeplink)
-        else deeplink
-    }
-
-    fun getRegisteredNavigationInterestPick(deeplink: String): String {
-        return if (deeplink.startsWithPattern(ApplinkConst.INTEREST_PICK)) getRegisteredNavigation(deeplink)
-        else deeplink
-    }
-
     /**
      * tokopedia://people/{user_id}
      * tokopedia://people/{user_id}?after_post=true
      * tokopedia://people/{user_id}?after_edit=true
      * tokopedia://people/{user_id}?success_post=true
      */
-    private fun getRegisteredNavigation(deeplink: String): String {
+    fun getRegisteredNavigation(deeplink: String): String {
         return deeplink.replace(DeeplinkConstant.SCHEME_TOKOPEDIA, DeeplinkConstant.SCHEME_INTERNAL)
     }
 

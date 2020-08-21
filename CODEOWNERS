@@ -74,6 +74,7 @@
 /features/merchant/shop_showcase/                       @tokopedia/android-minionstuart-dev
 /features/merchant/shop_page/                           @tokopedia/android-minionstuart-dev
 /features/merchant/shop_score/                          @tokopedia/android-minionstuart-dev
+/features/merchant/statistic/                           @tokopedia/android-minionstuart-dev
 /features/merchant/youtube_common/                      @tokopedia/android-minionstuart-dev
 /features/merchant/gallery/                             @tokopedia/android-minionstuart-dev
 /features/merchant/favorite/                            @tokopedia/android-minionstuart-dev
@@ -98,6 +99,7 @@
 /features/merchant/variant_common/                      @tokopedia/android-minionstuart-dev
 
 /features/merchant/seller_home/                         @tokopedia/android-minionstuart-dev
+/features/merchant/seller_home_common/                  @tokopedia/android-minionstuart-dev
 /features/merchant/seller_onboarding/                   @tokopedia/android-minionstuart-dev
 /features/merchant/seller_home_drawer/                  @tokopedia/android-minionstuart-dev
 /libraries/kotlin_extensions/                           @tokopedia/android-minionstuart-dev
@@ -199,6 +201,7 @@
 /features/user/loginfingerprint/                        @tokopedia/android-minionkevin-dev
 /features/user/liveness/                                @tokopedia/android-minionkevin-dev
 /features/user/profilecommon/                           @tokopedia/android-minionkevin-dev
+/features/user/additional_check/                        @tokopedia/android-minionkevin-dev
 
 /features/operational/contact_us        				@tokopedia/android-minionskywalker-dev
 /features/operational/csat_rating        				@tokopedia/android-minionskywalker-dev
@@ -247,6 +250,7 @@
 /libraries/bottom_sheet_builder/						@tokopedia/android-core-dev
 /libraries/cache_api/									@tokopedia/android-core-dev
 /libraries/cameraview/									@tokopedia/android-core-dev
+/libraries/charts/				    		            @tokopedia/android-core-dev
 /libraries/circular_view_pager/				    		@tokopedia/android-core-dev
 /libraries/cm_push_notifications/						@tokopedia/android-minionyoda-dev
 /libraries/collapsing_tab_layout/						@tokopedia/android-core-dev
