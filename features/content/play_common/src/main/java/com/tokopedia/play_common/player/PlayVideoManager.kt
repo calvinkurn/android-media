@@ -280,14 +280,6 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
             }
 
             override fun getBlacklistDurationMsFor(dataType: Int, loadDurationMs: Long, exception: IOException?, errorCount: Int): Long {
-//                if (exception is InvalidResponseCodeException) {
-//                    val responseCode = exception.responseCode
-//                    return if (responseCode == 404 // HTTP 404 Not Found.
-//                            || responseCode == 410 // HTTP 410 Gone.
-//                            || responseCode == 416 // HTTP 416 Range Not Satisfiable.
-//                    ) BLACKLIST_MS else C.TIME_UNSET
-//                }
-//                return C.TIME_UNSET
                 return C.TIME_UNSET
             }
         }
@@ -326,8 +318,8 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
     }
 
     companion object {
-        private const val RETRY_COUNT_LIVE = 2
-        private const val RETRY_COUNT_DEFAULT = 3
+        private const val RETRY_COUNT_LIVE = 1
+        private const val RETRY_COUNT_DEFAULT = 2
         private const val RETRY_DELAY = 2000L
         private const val BLACKLIST_MS = 10000L
 
