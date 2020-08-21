@@ -321,7 +321,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             forceRefresh = refreshPage
 
             getPdpLayout(productParams.productId ?: "", productParams.shopDomain
-                    ?: "", productParams.productName ?: "").also {
+                    ?: "", productParams.productName ?: "", productParams.warehouseId ?: "").also {
                 addStaticComponent(it)
                 getDynamicProductInfoP1 = it.layoutData.also {
                     listOfParentMedia = it.data.media.toMutableList()
@@ -703,8 +703,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 isUserSessionActive)
     }
 
-    private suspend fun getPdpLayout(productId: String, shopDomain: String, productKey: String): ProductDetailDataModel {
-        getPdpLayoutUseCase.requestParams = GetPdpLayoutUseCase.createParams(productId, shopDomain, productKey)
+    private suspend fun getPdpLayout(productId: String, shopDomain: String, productKey: String, whId: String): ProductDetailDataModel {
+        getPdpLayoutUseCase.requestParams = GetPdpLayoutUseCase.createParams(productId, shopDomain, productKey, whId)
         getPdpLayoutUseCase.forceRefresh = forceRefresh
         getPdpLayoutUseCase.enableCaching = enableCaching
         return getPdpLayoutUseCase.executeOnBackground()
