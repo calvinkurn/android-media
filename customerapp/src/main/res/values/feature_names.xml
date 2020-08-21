@@ -182,6 +182,9 @@
 
     <string name="label_manage_address">Daftar Alamat</string>
 
+    <string name="title_activity_add_address">Tambah Alamat</string>
+    <string name="title_activity_search_address">Tulis Kota/Kecamatan</string>
+
     <!-- Dynamic feature for Setting Bank-->
     <string name="onboarding_app_name">OnBoarding</string>
 

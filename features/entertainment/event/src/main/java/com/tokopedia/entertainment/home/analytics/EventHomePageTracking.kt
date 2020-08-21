@@ -76,6 +76,11 @@ class EventHomePageTracking {
         val CATEGORY = "category"
     }
 
+    companion object{
+        const val ACTIVITY_IND = "Aktivitas"
+        const val ACTIVITY_ENG = "activity"
+    }
+
     private fun getTracker(): Analytics {
         return TrackApp.getInstance().gtm
     }
@@ -368,6 +373,6 @@ class EventHomePageTracking {
     }
 
     private fun getActivityinEnglish(title: String):String{
-        return if(title.equals("Aktivitas")) "activity" else title
+        return if(title.equals(ACTIVITY_IND)) ACTIVITY_ENG else title
     }
 }

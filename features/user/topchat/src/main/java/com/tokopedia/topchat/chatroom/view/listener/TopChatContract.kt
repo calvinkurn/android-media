@@ -13,6 +13,7 @@ import com.tokopedia.chat_common.data.ProductAttachmentViewModel
 import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.view.listener.BaseChatContract
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
+import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ChatSettingsResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.ChatOrderProgress
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
@@ -117,11 +118,6 @@ interface TopChatContract {
                        onError: (Throwable) -> Unit,
                        onSuccessDeleteConversation: () -> Unit)
 
-        fun unblockChat(messageId: String,
-                        opponentRole: String,
-                        onError: (Throwable) -> Unit,
-                        onSuccessUnblockChat: (BlockedStatus) -> Unit)
-
         fun getShopFollowingStatus(shopId: Int,
                                    onError: (Throwable) -> Unit,
                                    onSuccessGetShopFollowingStatus: (Boolean) -> Unit)
@@ -200,8 +196,12 @@ interface TopChatContract {
 
         fun requestFollowShop(shopId: Int, onSuccess: () -> Unit, onErrorFollowShop: (Throwable) -> Unit)
 
-        fun requestBlockPromo(messageId: String, onSuccess: (String) -> Unit, onError: (Throwable) -> Unit)
+        fun requestBlockPromo(messageId: String, onSuccess: (ChatSettingsResponse) -> Unit, onError: (Throwable) -> Unit)
 
-        fun requestAllowPromo(messageId: String, onSuccess: () -> Unit, onError: (Throwable) -> Unit)
+        fun requestAllowPromo(messageId: String, onSuccess: (ChatSettingsResponse) -> Unit, onError: (Throwable) -> Unit)
+
+        fun blockChat(messageId: String, onSuccess: (ChatSettingsResponse) -> Unit, onError: (Throwable) -> Unit)
+
+        fun unBlockChat(messageId: String, onSuccess: (ChatSettingsResponse) -> Unit, onError: (Throwable) -> Unit)
     }
 }
