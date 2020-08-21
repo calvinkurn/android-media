@@ -12,6 +12,8 @@ data class ResponseProductList(
         data class TopadsGetListProduct(
                 @SerializedName("data")
                 val `data`: List<Data> = listOf(),
+                @SerializedName("eof")
+                val eof: Boolean = false,
                 @SerializedName("errors")
                 val errors: List<Error> = listOf()
         ) {
