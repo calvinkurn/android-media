@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.*
 import android.view.inputmethod.InputMethodManager
+import android.widget.ImageView
 import androidx.annotation.Nullable
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
@@ -15,103 +16,85 @@ import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
-import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.ERR_STATE_SOCKET
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytics
-import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.data.websocket.PlaySocketInfo
-import com.tokopedia.play.di.DaggerPlayComponent
-import com.tokopedia.play.di.PlayModule
 import com.tokopedia.play.extensions.isAnyBottomSheetsShown
-import com.tokopedia.play.extensions.isAnyHidden
-import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.extensions.isKeyboardShown
-import com.tokopedia.play.ui.closebutton.CloseButtonComponent
-import com.tokopedia.play.ui.closebutton.interaction.CloseButtonInteractionEvent
-import com.tokopedia.play.ui.fragment.bottomsheet.FragmentBottomSheetComponent
-import com.tokopedia.play.ui.fragment.error.FragmentErrorComponent
-import com.tokopedia.play.ui.fragment.miniinteraction.FragmentMiniInteractionComponent
-import com.tokopedia.play.ui.fragment.userinteraction.FragmentUserInteractionComponent
-import com.tokopedia.play.ui.fragment.video.FragmentVideoComponent
-import com.tokopedia.play.ui.fragment.video.interaction.FragmentVideoInteractionEvent
-import com.tokopedia.play.ui.fragment.youtube.FragmentYouTubeComponent
-import com.tokopedia.play.ui.fragment.youtube.interaction.FragmentYouTubeInteractionEvent
 import com.tokopedia.play.util.PlayFullScreenHelper
 import com.tokopedia.play.util.PlaySensorOrientationManager
-import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.util.keyboard.KeyboardWatcher
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.view.activity.PlayActivity
 import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.contract.PlayNewChannelInteractor
 import com.tokopedia.play.view.contract.PlayOrientationListener
-import com.tokopedia.play.view.event.ScreenStateEvent
-import com.tokopedia.play.view.layout.parent.PlayParentLayoutManager
-import com.tokopedia.play.view.layout.parent.PlayParentLayoutManagerImpl
-import com.tokopedia.play.view.layout.parent.PlayParentViewInitializer
-import com.tokopedia.play.view.type.PlayRoomEvent
-import com.tokopedia.play.view.type.ScreenOrientation
-import com.tokopedia.play.view.type.VideoOrientation
-import com.tokopedia.play.view.uimodel.EventUiModel
+import com.tokopedia.play.view.measurement.ScreenOrientationDataSource
+import com.tokopedia.play.view.measurement.bounds.BoundsKey
+import com.tokopedia.play.view.measurement.bounds.manager.PlayVideoBoundsManager
+import com.tokopedia.play.view.measurement.bounds.manager.VideoBoundsManager
+import com.tokopedia.play.view.measurement.scaling.PlayVideoScalingManager
+import com.tokopedia.play.view.measurement.scaling.VideoScalingManager
+import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.VideoPlayerUiModel
+import com.tokopedia.play.view.viewcomponent.*
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.GlobalErrorCodeWrapper
+import com.tokopedia.play_common.view.doOnApplyWindowInsets
+import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
+import com.tokopedia.play_common.view.updateMargins
+import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
 
 /**
  * Created by jegul on 29/11/19
  */
-class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragmentContract, PlayParentViewInitializer {
+class PlayFragment @Inject constructor(
+        private val viewModelFactory: ViewModelProvider.Factory
+) :
+        TkpdBaseV4Fragment(),
+        PlayOrientationListener,
+        PlayFragmentContract,
+        FragmentVideoViewComponent.Listener,
+        FragmentYouTubeViewComponent.Listener {
 
-    companion object {
-        private const val TOP_BOUNDS_LANDSCAPE_VIDEO = "top_bounds_landscape_video"
-
-        private const val EXTRA_TOTAL_VIEW = "EXTRA_TOTAL_VIEW"
-        private const val EXTRA_CHANNEL_ID = "EXTRA_CHANNEL_ID"
-
-        fun newInstance(channelId: String?): PlayFragment {
-            return PlayFragment().apply {
-                val args = Bundle()
-                args.putString(PLAY_KEY_CHANNEL_ID, channelId)
-                arguments = args
-            }
-        }
+    private lateinit var ivClose: ImageView
+    private val fragmentVideoView by viewComponent {
+        FragmentVideoViewComponent(channelId, it, R.id.fl_video, childFragmentManager, this)
     }
-
-    private val scope = object : CoroutineScope {
-        override val coroutineContext: CoroutineContext
-            get() = job + dispatchers.main
+    private val fragmentUserInteractionView by viewComponent {
+        FragmentUserInteractionViewComponent(channelId, it, R.id.fl_user_interaction, childFragmentManager)
     }
-    private val job: Job = SupervisorJob()
-
-    @Inject
-    lateinit var dispatchers: CoroutineDispatcherProvider
-
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    private var channelId = ""
-    private var topBounds: Int? = null
+    private val fragmentBottomSheetView by viewComponent {
+        FragmentBottomSheetViewComponent(channelId, it, R.id.fl_bottom_sheet, childFragmentManager)
+    }
+    private val fragmentYouTubeView by viewComponent {
+        FragmentYouTubeViewComponent(channelId, it, R.id.fl_youtube, childFragmentManager, this)
+    }
+    private val fragmentErrorView by viewComponent {
+        FragmentErrorViewComponent(channelId, it, R.id.fl_global_error, childFragmentManager)
+    }
 
     private lateinit var pageMonitoring: PageLoadTimePerformanceInterface
     private lateinit var playViewModel: PlayViewModel
 
+    private val channelId: String
+        get() = arguments?.getString(PLAY_KEY_CHANNEL_ID).orEmpty()
+
     /**
      * Manager
      */
-    private lateinit var layoutManager: PlayParentLayoutManager
     private lateinit var orientationManager: PlaySensorOrientationManager
 
     private val keyboardWatcher = KeyboardWatcher()
@@ -131,54 +114,34 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
     private val orientation: ScreenOrientation
         get() = ScreenOrientation.getByInt(resources.configuration.orientation)
 
-    override fun getScreenName(): String = "Play"
+    private var videoScalingManager: VideoScalingManager? = null
+    private var videoBoundsManager: VideoBoundsManager? = null
+    private val boundsMap = BoundsKey.values.associate { Pair(it, 0) }.toMutableMap()
 
-    override fun initInjector() {
-        DaggerPlayComponent
-                .builder()
-                .baseAppComponent(
-                        (requireContext().applicationContext as BaseMainApplication).baseAppComponent
-                )
-                .playModule(PlayModule(requireContext()))
-                .build()
-                .inject(this)
-    }
+    override fun getScreenName(): String = "Play"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setOrientation()
         setupPageMonitoring()
         playViewModel = ViewModelProvider(this, viewModelFactory).get(PlayViewModel::class.java)
-        channelId = arguments?.getString(PLAY_KEY_CHANNEL_ID).orEmpty()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        if (savedInstanceState?.containsKey(TOP_BOUNDS_LANDSCAPE_VIDEO) == true) {
-            topBounds = savedInstanceState.getInt(TOP_BOUNDS_LANDSCAPE_VIDEO, 0)
-        }
-
-        val view = inflater.inflate(R.layout.fragment_play, container, false)
-        initComponents(view as ViewGroup)
-        return view
+        return inflater.inflate(R.layout.fragment_play, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView(view)
         setupView(view)
-        setupScreen(view)
+        setupInsets(view)
+        setupObserve()
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        observeGetChannelInfo()
-        observeSocketInfo()
-        observeEventUserInfo()
-        observeVideoProperty()
-        observeVideoStream()
-        observeVideoPlayer()
-        observeBottomInsetsState()
+    override fun onStart() {
+        super.onStart()
+        ivClose.requestApplyInsetsWhenAttached()
     }
 
     override fun onResume() {
@@ -188,10 +151,9 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
         startNetworkMonitoring()
         playViewModel.getChannelInfo(channelId)
         onInterceptSystemUiVisibilityChanged()
-        scope.launch {
-            delay(200)
-            registerKeyboardListener(requireView())
-        }
+        view?.postDelayed({
+            view?.let { registerKeyboardListener(it) }
+        }, 200)
     }
 
     override fun onPause() {
@@ -202,10 +164,11 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
     }
 
     override fun onDestroyView() {
+        getVideoScalingManager().onDestroy()
+        videoScalingManager = null
+
         destroyInsets(requireView())
         super.onDestroyView()
-        if (::layoutManager.isInitialized) layoutManager.onDestroy()
-        job.cancelChildren()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -216,11 +179,6 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
             }
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        topBounds?.let { outState.putInt(TOP_BOUNDS_LANDSCAPE_VIDEO, it) }
-        super.onSaveInstanceState(outState)
     }
 
     override fun onOrientationChanged(screenOrientation: ScreenOrientation, isTilting: Boolean) {
@@ -250,13 +208,31 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
         return isIntercepted
     }
 
+    /**
+     * FragmentVideo View Component Listener
+     */
+    override fun onFragmentClicked(view: FragmentVideoViewComponent) {
+        if (playViewModel.bottomInsets.isKeyboardShown) hideKeyboard()
+        else hideAllInsets()
+    }
+
+    /**
+     * FragmentYouTube View Component Listener
+     */
+    override fun onFragmentClicked(view: FragmentYouTubeViewComponent, isScaling: Boolean) {
+        if (!isScaling) return
+
+        if (playViewModel.bottomInsets.isKeyboardShown) hideKeyboard()
+        else hideAllInsets()
+    }
+
     fun onBottomInsetsViewShown(bottomMostBounds: Int) {
         if (orientation.isLandscape) return
-        layoutManager.onBottomInsetsShown(requireView(), bottomMostBounds, playViewModel.videoPlayer, playViewModel.videoOrientation)
+        getVideoScalingManager().onBottomInsetsShown(bottomMostBounds, playViewModel.videoPlayer, playViewModel.videoOrientation)
     }
 
     fun onBottomInsetsViewHidden() {
-        layoutManager.onBottomInsetsHidden(requireView(), playViewModel.videoPlayer)
+        getVideoScalingManager().onBottomInsetsHidden(playViewModel.videoPlayer)
     }
 
     fun setResultBeforeFinish() {
@@ -267,11 +243,11 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
         })
     }
 
-    fun setVideoTopBounds(videoPlayer: VideoPlayerUiModel, videoOrientation: VideoOrientation, topBounds: Int) {
-        if (this.topBounds == null && topBounds > 0) {
-            this.topBounds = topBounds
-        }
-        this.topBounds?.let { layoutManager.onVideoTopBoundsChanged(requireView(), videoPlayer, orientation, videoOrientation, it) }
+    fun setCurrentVideoTopBounds(videoOrientation: VideoOrientation, topBounds: Int) {
+        val key = BoundsKey.getByOrientation(orientation, videoOrientation)
+        boundsMap[key] = topBounds
+
+        invalidateVideoTopBounds(videoOrientation)
     }
 
     /**
@@ -291,149 +267,39 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
         }
     }
 
-    //region init components
-    private fun initComponents(container: ViewGroup) {
-        layoutManager = PlayParentLayoutManagerImpl(
-                container = container,
-                viewInitializer = this
-        )
-
-        sendInitState()
-        layoutManager.layoutView(container)
+    private fun invalidateVideoTopBounds(
+            videoOrientation: VideoOrientation = playViewModel.videoOrientation
+    ) {
+        val key = BoundsKey.getByOrientation(orientation, playViewModel.videoOrientation)
+        val topBounds = boundsMap[key] ?: 0
+        getVideoBoundsManager().invalidateVideoBounds(videoOrientation, playViewModel.videoPlayer, topBounds)
     }
 
-    override fun onInitCloseButton(container: ViewGroup): Int {
-        val closeButtonComponent = CloseButtonComponent(container, EventBusFactory.get(viewLifecycleOwner), scope, dispatchers)
-
-        scope.launch {
-            closeButtonComponent.getUserInteractionEvents()
-                    .collect {
-                        when (it) {
-                            CloseButtonInteractionEvent.OnClicked -> hideKeyboard()
-                        }
-                    }
+    private fun getVideoScalingManager(): VideoScalingManager = synchronized(this) {
+        if (videoScalingManager == null) {
+            videoScalingManager = PlayVideoScalingManager(requireView() as ViewGroup)
         }
-
-        return closeButtonComponent.getContainerId()
+        return videoScalingManager!!
     }
 
-    override fun onInitVideoFragment(container: ViewGroup): Int {
-        val fragmentVideoComponent = FragmentVideoComponent(channelId, container, childFragmentManager, EventBusFactory.get(viewLifecycleOwner), scope, dispatchers)
-
-        scope.launch {
-            fragmentVideoComponent.getUserInteractionEvents()
-                    .collect {
-                        when (it) {
-                            FragmentVideoInteractionEvent.OnClicked -> {
-                                if (playViewModel.bottomInsets.isKeyboardShown) hideKeyboard()
-                                else hideAllInsets()
-                            }
-                        }
-                    }
+    private fun getVideoBoundsManager(): VideoBoundsManager = synchronized(this) {
+        if (videoBoundsManager == null) {
+            videoBoundsManager = PlayVideoBoundsManager(requireView() as ViewGroup, object: ScreenOrientationDataSource {
+                override fun getScreenOrientation(): ScreenOrientation {
+                    return orientation
+                }
+            })
         }
-
-        return fragmentVideoComponent.getContainerId()
+        return videoBoundsManager!!
     }
-
-    override fun onInitUserInteractionFragment(container: ViewGroup): Int {
-        return FragmentUserInteractionComponent(channelId, container, childFragmentManager, EventBusFactory.get(viewLifecycleOwner), scope, dispatchers)
-                .getContainerId()
-    }
-
-    override fun onInitMiniInteractionFragment(container: ViewGroup): Int {
-        return FragmentMiniInteractionComponent(channelId, container, childFragmentManager, EventBusFactory.get(viewLifecycleOwner), scope, dispatchers)
-                .getContainerId()
-    }
-
-    override fun onInitBottomSheetFragment(container: ViewGroup): Int {
-        return FragmentBottomSheetComponent(channelId, container, childFragmentManager, EventBusFactory.get(viewLifecycleOwner), scope, dispatchers)
-                .getContainerId()
-    }
-
-    override fun onInitYouTubeFragment(container: ViewGroup): Int {
-        val fragmentYouTubeComponent = FragmentYouTubeComponent(channelId, container, childFragmentManager, EventBusFactory.get(viewLifecycleOwner), scope, dispatchers)
-
-        scope.launch {
-            fragmentYouTubeComponent.getUserInteractionEvents()
-                    .collect {
-                        when (it) {
-                            is FragmentYouTubeInteractionEvent.OnClicked -> {
-                                if (!it.isScaling) return@collect
-
-                                if (playViewModel.bottomInsets.isKeyboardShown) hideKeyboard()
-                                else hideAllInsets()
-                            }
-                        }
-                    }
-        }
-
-        return fragmentYouTubeComponent.getContainerId()
-    }
-
-    override fun onInitErrorFragment(container: ViewGroup): Int {
-        return FragmentErrorComponent(channelId, container, childFragmentManager, EventBusFactory.get(viewLifecycleOwner), scope, dispatchers)
-                .getContainerId()
-    }
-    //endregion
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         val newOrientation = ScreenOrientation.getByInt(newConfig.orientation)
         if (newOrientation.isLandscape) hideAllInsets()
-        layoutManager.onOrientationChanged(requireView(), newOrientation, playViewModel.videoOrientation, playViewModel.videoPlayer)
-        sendOrientationChangedEvent(newOrientation)
+
+        invalidateVideoTopBounds()
         onInterceptSystemUiVisibilityChanged()
-    }
-
-    private fun sendInitState() {
-        scope.launch(dispatchers.immediate) {
-            EventBusFactory.get(viewLifecycleOwner).emit(
-                    ScreenStateEvent::class.java,
-                    ScreenStateEvent.Init(orientation, playViewModel.getStateHelper(orientation))
-            )
-        }
-    }
-
-    private fun sendEventBanned(event: EventUiModel) {
-        scope.launch {
-            EventBusFactory.get(viewLifecycleOwner)
-                    .emit(
-                            ScreenStateEvent::class.java,
-                            ScreenStateEvent.OnNewPlayRoomEvent(
-                                    PlayRoomEvent.Banned(
-                                            title = event.bannedTitle,
-                                            message = event.bannedMessage,
-                                            btnTitle = event.bannedButtonTitle
-                                    )
-                            )
-                    )
-        }
-    }
-
-    private fun sendEventFreeze(event: EventUiModel) {
-        scope.launch {
-            EventBusFactory.get(viewLifecycleOwner)
-                    .emit(
-                            ScreenStateEvent::class.java,
-                            ScreenStateEvent.OnNewPlayRoomEvent(
-                                    PlayRoomEvent.Freeze(
-                                            title = event.freezeTitle,
-                                            message = event.freezeMessage,
-                                            btnTitle = event.freezeButtonTitle,
-                                            btnUrl = event.freezeButtonUrl
-                                    )
-                            )
-                    )
-        }
-    }
-
-    private fun sendOrientationChangedEvent(orientation: ScreenOrientation) {
-        scope.launch(dispatchers.immediate) {
-            EventBusFactory.get(viewLifecycleOwner).emit(
-                    ScreenStateEvent::class.java,
-                    ScreenStateEvent.OrientationChanged(orientation, playViewModel.getStateHelper(orientation))
-            )
-        }
     }
 
     private fun destroyInsets(view: View) {
@@ -445,34 +311,57 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
     }
 
     private fun initView(view: View) {
-        topBounds?.let { setVideoTopBounds(playViewModel.videoPlayer, playViewModel.videoOrientation, it) }
-    }
-
-    private fun setupView(view: View) {
-        hideAllInsets()
-    }
-
-    private fun setupScreen(view: View) {
-        setInsets(view)
-    }
-
-    private fun setInsets(view: View) {
-        ViewCompat.setOnApplyWindowInsetsListener(view) { _, insets ->
-
-            layoutManager.setupInsets(view, insets)
-            insets
+        with (view) {
+            ivClose = findViewById(R.id.iv_close)
         }
     }
 
+    private fun setupView(view: View) {
+        ivClose.setOnClickListener { hideKeyboard() }
+        fragmentVideoView.safeInit()
+        fragmentUserInteractionView.safeInit()
+        fragmentBottomSheetView.safeInit()
+
+        invalidateVideoTopBounds()
+        hideAllInsets()
+    }
+
+    private fun setupInsets(view: View) {
+        ivClose.doOnApplyWindowInsets { v, insets, _, margin ->
+            val marginLayoutParams = v.layoutParams as ViewGroup.MarginLayoutParams
+
+            val newTopMargin = margin.top + insets.systemWindowInsetTop
+            if (marginLayoutParams.topMargin != newTopMargin) {
+                marginLayoutParams.updateMargins(top = newTopMargin)
+                v.parent.requestLayout()
+            }
+        }
+    }
+
+    private fun setupObserve() {
+        observeGetChannelInfo()
+        observeSocketInfo()
+        observeEventUserInfo()
+        observeVideoStream()
+        observeVideoPlayer()
+        observeBottomInsetsState()
+    }
+
+    //region observe
+    /**
+     * Observe
+     */
     private fun observeGetChannelInfo() {
         playViewModel.observableGetChannelInfo.observe(viewLifecycleOwner, DistinctObserver { result ->
             when (result) {
                 is Success -> {
+                    fragmentErrorViewOnStateChanged(shouldShow = false)
                     PlayAnalytics.sendScreen(channelId, playViewModel.channelType)
-                    showGlobalError(false)
                 }
                 is Fail -> result.throwable.message?.let {
-                    if (GlobalErrorCodeWrapper.wrap(it) != GlobalErrorCodeWrapper.Unknown) showGlobalError(true)
+                    if (GlobalErrorCodeWrapper.wrap(it) != GlobalErrorCodeWrapper.Unknown) {
+                        fragmentErrorViewOnStateChanged(shouldShow = true)
+                    }
                 }
             }
         })
@@ -492,22 +381,18 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
     private fun observeEventUserInfo() {
         playViewModel.observableEvent.observe(viewLifecycleOwner, DistinctObserver {
             if (it.isFreeze) {
-                sendEventFreeze(it)
                 try { Toaster.snackBar.dismiss() } catch (e: Exception) {}
             } else if (it.isBanned) {
-                sendEventBanned(it)
                 showEventDialog(it.bannedTitle, it.bannedMessage, it.bannedButtonTitle)
             }
             if (it.isFreeze || it.isBanned) {
                 unregisterKeyboardListener(requireView())
                 onBottomInsetsViewHidden()
             }
-        })
-    }
 
-    private fun observeVideoProperty() {
-        playViewModel.observableVideoProperty.observe(viewLifecycleOwner, DistinctObserver {
-            layoutManager.onVideoStateChanged(requireView(), it.state, playViewModel.videoOrientation)
+            fragmentVideoViewOnStateChanged(isFreezeOrBanned = it.isFreeze || it.isBanned)
+            fragmentBottomSheetViewOnStateChanged(isFreezeOrBanned = it.isFreeze || it.isBanned)
+            fragmentYouTubeViewOnStateChanged(isFreezeOrBanned = it.isFreeze || it.isBanned)
         })
     }
 
@@ -520,25 +405,14 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
 
     private fun observeVideoPlayer() {
         playViewModel.observableVideoPlayer.observe(viewLifecycleOwner, Observer {
-            scope.launch {
-                EventBusFactory.get(viewLifecycleOwner)
-                        .emit(
-                                ScreenStateEvent::class.java,
-                                ScreenStateEvent.SetVideo(it)
-                        )
-            }
+            fragmentVideoViewOnStateChanged(videoPlayer = it)
+            fragmentYouTubeViewOnStateChanged(videoPlayer = it)
         })
     }
 
     private fun observeBottomInsetsState() {
         playViewModel.observableBottomInsetsState.observe(viewLifecycleOwner, DistinctObserver {
-            scope.launch {
-                EventBusFactory.get(viewLifecycleOwner)
-                        .emit(
-                                ScreenStateEvent::class.java,
-                                ScreenStateEvent.BottomInsetsChanged(it, it.isAnyShown, it.isAnyHidden, playViewModel.getStateHelper(orientation))
-                        )
-            }
+            buttonCloseViewOnStateChanged(bottomInsets = it)
         })
     }
 
@@ -555,13 +429,6 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
             }
             dialog.setOverlayClose(false)
             dialog.show()
-        }
-    }
-
-    private fun showGlobalError(shouldShow: Boolean) {
-        scope.launch {
-            EventBusFactory.get(viewLifecycleOwner)
-                    .emit(ScreenStateEvent::class.java, ScreenStateEvent.ShowGlobalError(shouldShow))
         }
     }
 
@@ -654,5 +521,66 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
                 view?.background = resource
             }
         })
+    }
+
+    //region onStateChanged
+    /**
+     * OnStateChanged
+     */
+    private fun buttonCloseViewOnStateChanged(bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets) {
+        if (bottomInsets.isKeyboardShown) ivClose.show()
+        else ivClose.invisible()
+    }
+
+    private fun fragmentVideoViewOnStateChanged(
+            videoPlayer: VideoPlayerUiModel = playViewModel.videoPlayer,
+            isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned
+    ) {
+        if (videoPlayer.isYouTube || isFreezeOrBanned) {
+            fragmentVideoView.safeRelease()
+            fragmentVideoView.hide()
+        }
+    }
+
+    private fun fragmentBottomSheetViewOnStateChanged(
+            isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned
+    ) {
+        if (isFreezeOrBanned) {
+            fragmentBottomSheetView.safeRelease()
+            fragmentBottomSheetView.hide()
+        }
+    }
+
+    private fun fragmentYouTubeViewOnStateChanged(
+            videoPlayer: VideoPlayerUiModel = playViewModel.videoPlayer,
+            isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned
+    ) {
+        if (isFreezeOrBanned) {
+            fragmentYouTubeView.safeRelease()
+            fragmentYouTubeView.hide()
+            return
+        }
+
+        if (videoPlayer.isYouTube) {
+            fragmentYouTubeView.safeInit()
+            fragmentYouTubeView.show()
+        }
+    }
+
+    private fun fragmentErrorViewOnStateChanged(
+            shouldShow: Boolean
+    ) {
+        if (shouldShow) {
+            fragmentErrorView.safeInit()
+            fragmentErrorView.show()
+        } else {
+            fragmentErrorView.hide()
+        }
+    }
+    //endregion
+
+    companion object {
+        private const val EXTRA_TOTAL_VIEW = "EXTRA_TOTAL_VIEW"
+        private const val EXTRA_CHANNEL_ID = "EXTRA_CHANNEL_ID"
     }
 }

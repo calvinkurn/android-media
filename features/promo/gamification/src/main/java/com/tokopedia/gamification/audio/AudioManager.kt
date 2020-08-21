@@ -14,8 +14,9 @@ class AudioManager(var mContext: Context) {
     }
 
     fun playAudio(filePath: String, isLoop: Boolean = false) {
-        try {
-            mPlayer?.apply {
+
+        mPlayer?.apply {
+            try {
                 setOnPreparedListener { mp ->
                     mp.start()
                     isLooping = isLoop
@@ -26,9 +27,10 @@ class AudioManager(var mContext: Context) {
                 reset()
                 setDataSource(filePath)
                 prepareAsync()
+
+            } catch (ex: Exception) {
+                Timber.e(ex)
             }
-        } catch (ex: Exception) {
-            Timber.e(ex)
         }
     }
 
@@ -38,20 +40,24 @@ class AudioManager(var mContext: Context) {
         }
 
         mPlayer?.apply {
-            setOnPreparedListener { mp ->
-                mp.start()
-                isLooping = isLoop
-            }
+            try {
+                setOnPreparedListener { mp ->
+                    mp.start()
+                    isLooping = isLoop
+                }
 
-            if (isPlaying) {
-                stop()
+                if (isPlaying) {
+                    stop()
+                }
+                reset()
+                val afd: AssetFileDescriptor = mContext.resources.openRawResourceFd(resId)
+                        ?: return
+                setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)
+                afd.close()
+                prepareAsync()
+            } catch (ex: Exception) {
+                Timber.e(ex)
             }
-            reset()
-            val afd: AssetFileDescriptor = mContext.resources.openRawResourceFd(resId)
-                    ?: return
-            setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)
-            afd.close()
-            prepareAsync()
         }
     }
 

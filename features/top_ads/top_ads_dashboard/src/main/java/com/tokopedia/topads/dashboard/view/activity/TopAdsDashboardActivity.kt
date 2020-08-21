@@ -24,6 +24,8 @@ import com.tokopedia.seller_migration_common.presentation.fragment.bottomsheet.S
 import com.tokopedia.seller_migration_common.presentation.model.CommunicationInfo
 import com.tokopedia.seller_migration_common.presentation.util.initializeSellerMigrationCommunicationTicker
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
+import com.tokopedia.topads.common.getPdpAppLink
+import com.tokopedia.topads.common.isFromPdpSellerMigration
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.TopAdsDashboardTracking
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
@@ -85,7 +87,7 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_BUAT_IKLAN, "")
         }
         header_toolbar?.setNavigationOnClickListener {
-            super.onBackPressed()
+            onBackPressed()
         }
         tracker = TopAdsDashboardTracking()
         actionSendAnalyticsIfFromPushNotif()
@@ -216,7 +218,7 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
             (application as BaseMainApplication).baseAppComponent).build()
 
     override fun onBackPressed() {
-        if (isTaskRoot) {
+        if (!moveToPdpIfFromPdpSellerMigration() && isTaskRoot) {
             val applinkConst = ApplinkConst.HOME
             if (intent.extras?.getBoolean(TopAdsDashboardConstant.EXTRA_APPLINK_FROM_PUSH, false) == true) {
                 val homeIntent = RouteManager.getIntent(this, applinkConst)
@@ -233,6 +235,17 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
                 }
         }
         super.onBackPressed()
+    }
+
+    private fun moveToPdpIfFromPdpSellerMigration(): Boolean {
+        if (isFromPdpSellerMigration(intent?.extras)) {
+            val pdpAppLink = getPdpAppLink(intent?.extras)
+            if (pdpAppLink.isNotEmpty()) {
+                return RouteManager.route(this, pdpAppLink)
+            }
+        }
+
+        return false
     }
 
     private fun openCreateForm() {

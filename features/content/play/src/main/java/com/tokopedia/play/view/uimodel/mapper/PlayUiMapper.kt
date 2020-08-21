@@ -88,7 +88,7 @@ object PlayUiMapper {
             orientation = VideoOrientation.getByValue(videoStream.orientation),
             backgroundUrl = backgroundUrl,
 //            channelType = PlayChannelType.Live,
-//            orientation = VideoOrientation.Vertical,
+//            orientation = VideoOrientation.Horizontal(16, 9),
 //            backgroundUrl = "https://i.pinimg.com/736x/d3/bb/7b/d3bb7b85f4e160d013f68fcde8d19844.jpg",
             isActive = isActive
     )

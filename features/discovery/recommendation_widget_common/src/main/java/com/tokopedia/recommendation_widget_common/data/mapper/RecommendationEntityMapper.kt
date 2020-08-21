@@ -79,7 +79,7 @@ class RecommendationEntityMapper : Func1<List<RecommendationEntity.Recomendation
                     data.wishlistUrl ?: "",
                     data.trackerImageUrl ?: "",
                     data.imageUrl ?: "",
-                    data.price ?: "",
+                    data.price ?: "0",
                     data.priceInt,
                     data.departmentId,
                     data.rating,

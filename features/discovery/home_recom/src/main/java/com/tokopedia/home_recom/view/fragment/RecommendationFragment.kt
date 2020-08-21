@@ -568,7 +568,9 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
             LinkerManager.getInstance().executeShareRequest(LinkerUtils.createShareRequest(0,
                     productDataToLinkerDataMapper(id, name, description, imageUrl), object : ShareCallback {
                 override fun urlCreated(linkerShareData: LinkerShareResult) {
-                    openIntentShare(name, context.getString(R.string.recom_home_recommendation), linkerShareData.url)
+                    if(linkerShareData.url != null) {
+                        openIntentShare(name, context.getString(R.string.recom_home_recommendation), linkerShareData.url)
+                    }
                 }
 
                 override fun onError(linkerError: LinkerError) {
