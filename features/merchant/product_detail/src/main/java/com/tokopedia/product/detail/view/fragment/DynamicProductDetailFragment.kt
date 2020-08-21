@@ -240,7 +240,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private val dynamicAdapter by lazy { DynamicProductDetailAdapter(adapterFactory, this) }
     private var menu: Menu? = null
     private var tradeinDialog: ProductAccessRequestDialogFragment? = null
-    private var shouldMoveToTopAds: Boolean = false
     private val recommendationCarouselPositionSavedState = SparseIntArray()
 
     private val irisSessionId by lazy {
@@ -290,7 +289,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             doActivityResult = savedInstanceState.getBoolean(ProductDetailConstant.SAVED_ACTIVITY_RESULT, true)
         }
         super.onCreate(savedInstanceState)
-        shouldMoveToTopAds = activity?.intent?.getStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA)?.firstOrNull() == ApplinkConst.SellerApp.TOPADS_CREATE_ADS
         arguments?.let {
             productId = it.getString(ProductDetailConstant.ARG_PRODUCT_ID)
             warehouseId = it.getString(ProductDetailConstant.ARG_WAREHOUSE_ID)
@@ -323,19 +321,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             trackingQueue.sendAll()
         }
     }
-
-    override fun onStart() {
-        super.onStart()
-        if (shouldMoveToTopAds) {
-            val appLinkToOpen = activity?.intent?.getStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA)?.firstOrNull().orEmpty()
-            if (appLinkToOpen.isNotBlank()) {
-                shouldMoveToTopAds = false
-                activity?.intent?.extras?.clear()
-                context?.run { RouteManager.route(this, appLinkToOpen) }
-            }
-        }
-    }
-
     override fun onResume() {
         super.onResume()
         reloadCartCounter()
@@ -1314,7 +1299,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         observe(viewModel.productInfoP3RateEstimate) {
             onSuccessGetDataP3RateEstimate(it)
             (activity as? ProductDetailActivity)?.stopMonitoringFull()
-            if (!activity?.intent?.data?.getQueryParameter(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME).isNullOrBlank() &&
+            if (GlobalConfig.isSellerApp() && !activity?.intent?.data?.getQueryParameter(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME).isNullOrBlank() &&
                     !alreadyPerformSellerMigrationAction) {
                 alreadyPerformSellerMigrationAction = true
                 actionButtonView.rincianTopAdsClick?.invoke()
@@ -1498,7 +1483,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             val productStock = p1.getFinalStock(viewModel.selectedMultiOrigin.getOriginStock()).toIntOrZero()
 
             actionButtonView.renderData(!p1.isProductActive(productStock), viewModel.hasShopAuthority(), viewModel.isShopOwner(),
-                    hasTopAds(), it.cartRedirectionResponse.cartRedirection?.data?.firstOrNull())
+                     hasTopAds(), it.cartRedirectionResponse.cartRedirection?.data?.firstOrNull())
             showOrHideButton()
             setupTickerOcc()
 
@@ -2318,9 +2303,13 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 }
             } else {
                 val appLink = UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId)
+                val parameterizedAppLink = Uri.parse(appLink).buildUpon()
+                        .appendQueryParameter(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, SellerMigrationFeatureName.FEATURE_ADS_DETAIL)
+                        .build()
+                        .toString()
                 goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_ADS_DETAIL, arrayListOf(
                         ApplinkConst.PRODUCT_MANAGE,
-                        appLink
+                        parameterizedAppLink
                 ))
             }
         }

@@ -32,6 +32,7 @@ import com.tokopedia.topchat.chatlist.pojo.ChatListPojo
 import com.tokopedia.topchat.chatlist.pojo.chatblastseller.BlastSellerMetaDataResponse
 import com.tokopedia.topchat.chatlist.pojo.chatblastseller.ChatBlastSellerMetadata
 import com.tokopedia.topchat.chatlist.pojo.whitelist.ChatWhitelistFeatureResponse
+import com.tokopedia.topchat.chatlist.usecase.ChatBanedSellerUseCase
 import com.tokopedia.topchat.chatlist.usecase.GetChatWhitelistFeature
 import com.tokopedia.topchat.chatroom.view.viewmodel.ReplyParcelableModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -50,6 +51,7 @@ interface ChatItemListContract {
     fun chatMoveToTrash(messageId: Int)
     fun markChatAsRead(msgIds: List<String>, result: (Result<ChatChangeStateResponse>) -> Unit)
     fun markChatAsUnread(msgIds: List<String>, result: (Result<ChatChangeStateResponse>) -> Unit)
+    fun loadChatBannedSellerStatus()
 }
 
 class ChatItemListViewModel @Inject constructor(
@@ -57,6 +59,7 @@ class ChatItemListViewModel @Inject constructor(
         private val chatListUseCase: GraphqlUseCase<ChatListPojo>,
         private val queries: Map<String, String>,
         private val chatWhitelistFeature: GetChatWhitelistFeature,
+        private val chatBannedSellerUseCase: ChatBanedSellerUseCase,
         private val dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher), ChatItemListContract {
 
@@ -75,6 +78,10 @@ class ChatItemListViewModel @Inject constructor(
     private val _broadCastButtonUrl = MutableLiveData<String>()
     val broadCastButtonUrl: LiveData<String>
         get() = _broadCastButtonUrl
+
+    private val _chatBannedSellerStatus = MutableLiveData<Result<Boolean>>()
+    val chatBannedSellerStatus: LiveData<Result<Boolean>>
+        get() = _chatBannedSellerStatus
 
     companion object {
         val arrayFilterParam = arrayListOf(
@@ -136,6 +143,14 @@ class ChatItemListViewModel @Inject constructor(
     override fun markChatAsUnread(msgIds: List<String>, result: (Result<ChatChangeStateResponse>) -> Unit) {
         val query = queries[MUTATION_MARK_CHAT_AS_UNREAD] ?: return
         changeMessageState(query, msgIds, result)
+    }
+
+    override fun loadChatBannedSellerStatus() {
+        chatBannedSellerUseCase.getStatus({
+            _chatBannedSellerStatus.value = Success(it)
+        }, {
+            _chatBannedSellerStatus.value = Fail(it)
+        })
     }
 
     private fun changeMessageState(

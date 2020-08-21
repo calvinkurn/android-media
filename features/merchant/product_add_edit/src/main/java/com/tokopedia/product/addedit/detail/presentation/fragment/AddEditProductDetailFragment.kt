@@ -114,6 +114,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     private var selectedDurationPosition: Int = UNIT_DAY
     private var isPreOrderFirstTime = true
     private var countTouchPhoto = 0
+    private var hasCategoryFromPicker = false
 
     // product photo
     private var addProductPhotoButton: AppCompatTextView? = null
@@ -317,15 +318,12 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             } else {
                 ProductAddMainTracking.clickAddWholesale(shopId)
             }
-            wholeSaleInputFormsAdapter?.itemCount?.let {
-                if (it >= AddEditProductDetailConstants.MAX_WHOLESALE_PRICES - 1) {
-                    addNewWholeSalePriceButton?.visibility = View.GONE
-                }
-            }
+
             val productPriceInput = productPriceField?.textFieldInput?.editableText.toString().replace(".", "")
             wholeSaleInputFormsAdapter?.setProductPrice(productPriceInput)
             wholeSaleInputFormsAdapter?.addNewWholeSalePriceForm()
             validateWholeSaleInput(viewModel, productWholeSaleInputFormsView, productWholeSaleInputFormsView?.childCount, isAddingWholeSale = true)
+            updateAddNewWholeSalePriceButtonVisibility()
         }
 
         // add edit product stock views
@@ -556,6 +554,14 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         subscribeToInputStatus()
     }
 
+    private fun updateAddNewWholeSalePriceButtonVisibility() {
+        wholeSaleInputFormsAdapter?.itemCount?.let {
+            if (it >= AddEditProductDetailConstants.MAX_WHOLESALE_PRICES) {
+                addNewWholeSalePriceButton?.visibility = View.GONE
+            }
+        }
+    }
+
     private fun validateInput() {
 
         var requestedFocus = false
@@ -637,7 +643,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                     }
                 }
                 REQUEST_CODE_CATEGORY -> {
-
+                    hasCategoryFromPicker = true
                     val categoryId = data.getLongExtra(CATEGORY_RESULT_ID, 0)
                     val categoryName = data.getStringExtra(CATEGORY_RESULT_FULL_NAME)
 
@@ -922,6 +928,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             productWholeSaleSwitch?.isChecked = true
             wholeSaleInputFormsAdapter?.setWholeSaleInputModels(detailInputModel.wholesaleList)
             viewModel.isWholeSalePriceActivated.value = true
+            updateAddNewWholeSalePriceButtonVisibility()
         }
 
         // product pre order
@@ -1272,6 +1279,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     }
 
     private fun onGetCategoryRecommendationSuccess(result: Success<List<ListItemUnify>>) {
+        hasCategoryFromPicker = false
         productCategoryLayout?.show()
         productCategoryRecListView?.show()
         val items = ArrayList(result.data.take(3))
@@ -1282,12 +1290,18 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
             productCategoryRecListView?.run {
                 this.setOnItemClickListener { _, _, position, _ ->
+                    if (viewModel.isAdding) {
+                        ProductAddMainTracking.clickProductCategoryRecom(shopId)
+                    }
                     selectCategoryRecommendation(items, position)
                 }
             }
 
             items.forEachIndexed { position, listItemUnify ->
                 listItemUnify.listRightRadiobtn?.setOnClickListener {
+                    if (viewModel.isAdding) {
+                        ProductAddMainTracking.clickProductCategoryRecom(shopId)
+                    }
                     selectCategoryRecommendation(items, position)
                 }
             }
@@ -1308,12 +1322,14 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     }
 
     private fun selectCategoryRecommendation(items: List<ListItemUnify>, position: Int) = productCategoryRecListView?.run {
-        setSelected(items, position) {
-            val categoryId = it.getCategoryId().toString()
-            val categoryName = it.getCategoryName()
-            viewModel.productInputModel.detailInputModel.categoryId = categoryId
-            viewModel.productInputModel.detailInputModel.categoryName = categoryName
-            true
+        if (!hasCategoryFromPicker) {
+            setSelected(items, position) {
+                val categoryId = it.getCategoryId().toString()
+                val categoryName = it.getCategoryName()
+                viewModel.productInputModel.detailInputModel.categoryId = categoryId
+                viewModel.productInputModel.detailInputModel.categoryName = categoryName
+                true
+            }
         }
     }
 
