@@ -44,8 +44,8 @@ class TokoPointsHomeViewModel @Inject constructor(private val repository: Tokopo
             val dataSection = graphqlResponse.getData<TokopointsSectionOuter>(TokopointsSectionOuter::class.java)
             var queryString = ""
             for (item in dataSection.sectionContent.sectionContent) {
-                if (item.layoutTopAdsAttr != null && item.layoutTopAdsAttr.jsonTopAdsDisplayParam.isNotEmpty()
-                        && item.layoutTopAdsAttr.jsonTopAdsDisplayParam != null) {
+                if (item.layoutTopAdsAttr != null && item.layoutTopAdsAttr.jsonTopAdsDisplayParam != null &&
+                        item.layoutTopAdsAttr.jsonTopAdsDisplayParam.isNotEmpty()) {
                     queryString = item.layoutTopAdsAttr.jsonTopAdsDisplayParam
                     break
                 }
