@@ -301,8 +301,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
     }
 
     override fun onRemoveImageClick(item: BaseImageReviewUiModel) {
-        imageAdapter.removeItem(item)
-        createReviewViewModel.removeImage(item)
+        imageAdapter.setImageReviewData(createReviewViewModel.removeImage(item))
         if(imageAdapter.isEmpty()) {
             rv_img_review.hide()
             createReviewAddPhotoEmpty.show()

@@ -123,8 +123,12 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
         return imageData
     }
 
-    fun removeImage(image: BaseImageReviewUiModel) {
+    fun removeImage(image: BaseImageReviewUiModel): MutableList<BaseImageReviewUiModel> {
         imageData.remove(image)
+        if(imageData.size < 5 && !imageData.contains(DefaultImageReviewUiModel())) {
+            imageData.add(DefaultImageReviewUiModel())
+        }
+        return imageData
     }
 
     fun clearImageData() {

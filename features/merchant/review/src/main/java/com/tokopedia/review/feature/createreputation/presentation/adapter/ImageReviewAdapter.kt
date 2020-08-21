@@ -26,12 +26,6 @@ class ImageReviewAdapter(private val imageClickListener: ImageClickListener) : R
         notifyDataSetChanged()
     }
 
-    fun removeItem(item: BaseImageReviewUiModel) {
-        val index = imageReviewData.indexOf(item)
-        imageReviewData.remove(item)
-        notifyItemRemoved(index)
-    }
-
     override fun onCreateViewHolder(view: ViewGroup, position: Int): BaseImageReviewViewHolder<*> {
         return when (position) {
             TYPE_DEFAULT -> {

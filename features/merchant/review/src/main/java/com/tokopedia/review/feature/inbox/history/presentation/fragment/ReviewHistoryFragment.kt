@@ -132,7 +132,7 @@ class ReviewHistoryFragment : BaseListFragment<ReviewHistoryUiModel, ReviewHisto
         if(text.isNotEmpty()) {
             ReviewHistoryTracking.eventSearch(viewModel.getUserId(), text)
         }
-        adapter.clearAllElements()
+        clearAllData()
         viewModel.updateKeyWord(text)
     }
 

@@ -224,6 +224,8 @@ class ReviewDetailFragment : BaseDaggerFragment(),
                     setImages(attachments, productName, this@ReviewDetailFragment)
                     show()
                 }
+            } else {
+                reviewDetailAttachedImages.hide()
             }
             reviewDetailDate.setTextAndCheckShow(getString(R.string.review_date, reviewTimeFormatted))
             if(reviewText.isEmpty()) {
@@ -235,6 +237,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
             } else {
                 reviewDetailContent.apply {
                     text = reviewText
+                    setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_96))
                     show()
                 }
             }
