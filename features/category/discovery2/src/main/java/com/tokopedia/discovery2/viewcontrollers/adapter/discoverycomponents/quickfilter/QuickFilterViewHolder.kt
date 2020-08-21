@@ -92,15 +92,15 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) : Ab
             if(!item.options.isNullOrEmpty()) {
                 quickFilterOptionList.addAll(item.options)
                 for (option in item.options) {
-                    sortFilterItems.add(createSortFilterItem(option, item.title))
+                    sortFilterItems.add(createSortFilterItem(option))
                 }
             }
         }
         quickSortFilter.addItem(sortFilterItems)
     }
 
-    private fun createSortFilterItem(option: Option, title: String): SortFilterItem {
-        val item = SortFilterItem(title)
+    private fun createSortFilterItem(option: Option): SortFilterItem {
+        val item = SortFilterItem(option.name)
         item.listener = {
             onQuickFilterSelected(option)
         }
