@@ -8,6 +8,11 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
+/*
+   * 21 August 2020
+   * Duplicated from Akamai Bot Interceptor Library for composite network lib
+ */
+
 const val ERROR_CODE = 403
 const val HEADER_AKAMAI_KEY = "server"
 const val HEADER_AKAMAI_VALUE = "akamai"

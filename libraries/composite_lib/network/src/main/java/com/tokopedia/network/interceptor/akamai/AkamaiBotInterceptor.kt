@@ -7,6 +7,11 @@ import okhttp3.Request
 import okhttp3.Response
 import java.io.IOException
 
+/*
+   * 21 August 2020
+   * Duplicated from Akamai Bot Interceptor Library for composite network lib
+ */
+
 class AkamaiBotInterceptor(val context: Context) : Interceptor {
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response {
