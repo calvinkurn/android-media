@@ -3,6 +3,7 @@ package com.tokopedia.review.feature.createreputation.presentation.widget
 import android.app.Activity
 import android.content.Context
 import android.os.Bundle
+import android.os.Handler
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
@@ -36,9 +37,15 @@ class CreateReviewTextAreaBottomSheet : BottomSheetUnify() {
                 textAreaListener?.onCollapseButtonClicked(reviewCreateTextAreaBottomSheet.text.toString())
             }
             setOnDismissListener {
+                reviewCreateTextAreaBottomSheet.onFocusChangeListener = null
                 textAreaListener?.onDismissBottomSheet(reviewCreateTextAreaBottomSheet.text.toString())
             }
             isKeyboardOverlap = false
+            setShowListener {
+                Handler().postDelayed( {
+                    reviewCreateTextAreaBottomSheet.requestFocus()
+                }, 100)
+            }
         }
     }
 
@@ -55,13 +62,12 @@ class CreateReviewTextAreaBottomSheet : BottomSheetUnify() {
                 }
             }
             setText(this@CreateReviewTextAreaBottomSheet.text)
-            requestFocus()
         }
     }
 
     private fun View.showKeyboard() {
         val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
+        imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0)
     }
 
     private fun Context.hideKeyboard() {
