@@ -56,6 +56,8 @@ class PlayViewModel @Inject constructor(
     val observableGetChannelInfo: LiveData<Result<ChannelInfoUiModel>>
         get() = _observableGetChannelInfo
 
+    val observableCompleteInfo: LiveData<PlayCompleteInfoUiModel>
+        get() = _observableCompleteInfo
     val observableVideoPlayer: LiveData<VideoPlayerUiModel>
         get() = _observableVideoPlayer
     val observableSocketInfo: LiveData<PlaySocketInfo>

@@ -455,7 +455,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun observeChannelInfo() {
-        playViewModel.observableGetChannelInfo.observe(viewLifecycleOwner, DistinctObserver {
+        playViewModel.observableCompleteInfo.observe(viewLifecycleOwner, DistinctObserver {
             triggerStartMonitoring()
         })
     }
@@ -650,19 +650,19 @@ class PlayUserInteractionFragment @Inject constructor(
         }
     }
 
-    private lateinit var onToolbarGlobalLayoutListener: ViewTreeObserver.OnGlobalLayoutListener
+    private lateinit var onStatsInfoGlobalLayoutListener: ViewTreeObserver.OnGlobalLayoutListener
 
     private fun triggerStartMonitoring() {
         playFragment.startRenderMonitoring()
 
-        if (!this::onToolbarGlobalLayoutListener.isInitialized) {
-            onToolbarGlobalLayoutListener = object : ViewTreeObserver.OnGlobalLayoutListener{
+        if (!this::onStatsInfoGlobalLayoutListener.isInitialized) {
+            onStatsInfoGlobalLayoutListener = object : ViewTreeObserver.OnGlobalLayoutListener{
                 override fun onGlobalLayout() {
                     playFragment.stopRenderMonitoring()
-                    toolbarView.rootView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    statsInfoView.rootView.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 }
             }
-            toolbarView.rootView.viewTreeObserver.addOnGlobalLayoutListener(onToolbarGlobalLayoutListener)
+            statsInfoView.rootView.viewTreeObserver.addOnGlobalLayoutListener(onStatsInfoGlobalLayoutListener)
         }
     }
 
