@@ -187,17 +187,6 @@ class AddEditProductDetailViewModelTest {
     }
 
     @Test
-    fun `isInputValid should return false when no input is error and isAdding is true also isEditing is false`() {
-        viewModel.isAdding = true
-        viewModel.isEditing = false
-        mIsProductNameInputError.value = null
-        mIsProductNameInputError.value = null
-
-        val isValid = viewModel.isInputValid.getOrAwaitValue()
-        Assert.assertFalse(isValid)
-    }
-
-    @Test
     fun `isInputValid should return false when there is no photo`() {
         viewModel.validateProductPhotoInput(0)
 
