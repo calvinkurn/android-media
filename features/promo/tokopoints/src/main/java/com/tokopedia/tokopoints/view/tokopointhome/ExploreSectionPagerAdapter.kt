@@ -23,6 +23,9 @@ import com.tokopedia.tokopoints.view.model.section.SectionContent
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
 import com.tokopedia.tokopoints.view.util.CommonConstant
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
+import com.tokopedia.topads.sdk.listener.TopAdsImageViewImpressionListener
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.unifycomponents.TimerUnify
 import kotlinx.android.synthetic.main.tp_topads_reward_layout.view.*
 import java.util.*
@@ -34,6 +37,7 @@ class ExploreSectionPagerAdapter(context: Context?, presenter: TokoPointsHomeVie
     private val swipeToRefresh = arrayOfNulls<SwipeToRefresh>(2)
     private var countDownView: TimerUnify? = null
     private val mCouponListAdapterList: ArrayList<CouponListAdapter>? = ArrayList()
+
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
         var view: View? = null
         if (position == TAB_EXPLORE) {
@@ -110,7 +114,7 @@ class ExploreSectionPagerAdapter(context: Context?, presenter: TokoPointsHomeVie
     private fun getTopadsBanner(content: SectionContent, topAdsImageViewModel: TopAdsImageViewModel?): View? {
 
 
-        val view = mLayoutInflater.inflate(R.layout.tp_topads_reward_layout ,null, false)
+        val view = mLayoutInflater.inflate(R.layout.tp_topads_reward_layout, null, false)
         if (content == null || content.sectionTitle == null || content.layoutBannerAttr == null) {
             view.visibility = View.GONE
             return view
@@ -133,7 +137,28 @@ class ExploreSectionPagerAdapter(context: Context?, presenter: TokoPointsHomeVie
             view.findViewById<View>(R.id.tv_topads_sub_title).visibility = View.VISIBLE
             (view.findViewById<View>(R.id.tv_topads_sub_title) as TextView).text = content.sectionSubTitle
         }
-        topAdsImageViewModel?.let { view.topads_reward.loadImage(it) }
+
+        topAdsImageViewModel?.let { view.topads_reward.loadImage(it,16) }
+
+        view.topads_reward.setTopAdsImageViewImpression(object : TopAdsImageViewImpressionListener {
+            override fun onTopAdsImageViewImpression(viewUrl: String) {
+
+                sendBannerImpression(content.sectionTitle)
+                TopAdsUrlHitter(className).hitImpressionUrl(
+                        view.context,
+                        viewUrl,
+                        "",
+                        "",
+                        ""
+                )
+            }
+        })
+
+        view.topads_reward.setTopAdsImageViewClick(object : TopAdsImageViewClickListener {
+            override fun onTopAdsImageViewClicked(applink: String?) {
+                RouteManager.route(view.context, applink)
+            }
+        })
         return view
 
     }
@@ -718,6 +743,7 @@ class ExploreSectionPagerAdapter(context: Context?, presenter: TokoPointsHomeVie
     companion object {
         const val TAB_EXPLORE = 0
         const val TAB_MY_COUPON = 1
+        private const val className = "com.tokopedia.tokopoints.view.tokopointhome"
     }
 
     init {

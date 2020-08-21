@@ -88,7 +88,7 @@ class TokoPointsHomeViewModel @Inject constructor(private val repository: Tokopo
                             jObject.getString(INVENTORY_ID),
                             "",
                             jObject.getInt(ITEM),
-                            7,
+                            3,
                             ""
                     )
             )

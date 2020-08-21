@@ -11,6 +11,8 @@ import androidx.lifecycle.ViewModelProviders
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.tokopedia.kotlin.extensions.view.hide
@@ -113,13 +115,19 @@ class TopAdsImageView : AppCompatImageView {
      * If imageUrl is null or empty view will hide itself
      * @param imageData The object of TopAdsViewModel
      * */
-    fun loadImage(imageData: TopAdsImageViewModel, onLoadFailed:() -> Unit = {}) {
+    fun loadImage(imageData: TopAdsImageViewModel, cornerRadius: Int = 0, onLoadFailed: () -> Unit = {}) {
         if (!imageData.imageUrl.isNullOrEmpty()) {
-            Glide.with(context)
+            var glideObject = Glide.with(context)
                     .load(imageData.imageUrl)
                     .override(context.resources.displayMetrics.widthPixels,
                             getHeight(imageData.imageWidth, imageData.imageHeight))
-                    .fitCenter()
+
+            glideObject = if (cornerRadius > 0) {
+                glideObject.transform(CenterCrop(), RoundedCorners(cornerRadius))
+            } else{
+                glideObject.fitCenter()
+            }
+            glideObject
                     .addListener(object : RequestListener<Drawable> {
 
                         override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
@@ -129,7 +137,8 @@ class TopAdsImageView : AppCompatImageView {
                         }
 
                         override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                            topAdsImageViewImpressionListener?.onTopAdsImageViewImpression(imageData.adViewUrl ?: "")
+                            topAdsImageViewImpressionListener?.onTopAdsImageViewImpression(imageData.adViewUrl
+                                    ?: "")
                             Timber.d("TopAdsImageView is loaded successfully")
 
                             this@TopAdsImageView.setOnClickListener {

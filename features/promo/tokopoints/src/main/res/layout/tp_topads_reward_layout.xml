@@ -45,6 +45,7 @@
         android:lineSpacingExtra="6sp"
         android:textColor="#8f000000"
         android:textSize="12sp"
+        android:visibility="gone"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_topad_title"
@@ -52,10 +53,9 @@
 
     <com.tokopedia.topads.sdk.widget.TopAdsImageView
         android:id="@+id/topads_reward"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        app:layout_constraintDimensionRatio="H,3:1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_topads_sub_title" />
 
