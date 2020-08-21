@@ -80,6 +80,8 @@ import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.notifications.CMRouter;
+import com.tokopedia.notifications.inApp.CMInAppManager;
+import com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant;
 import com.tokopedia.officialstore.category.presentation.fragment.OfficialHomeContainerFragment;
 import com.tokopedia.oms.OmsModuleRouter;
 import com.tokopedia.oms.di.DaggerOmsComponent;
@@ -121,6 +123,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -711,6 +714,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     private void initCMPushNotification() {
         CMPushNotificationManager.getInstance().init(ConsumerRouterApplication.this);
+        List<String> excludeScreenList = new ArrayList<>();
+        excludeScreenList.add(CmInAppConstant.ScreenListConstants.SPLASH);
+        excludeScreenList.add(CmInAppConstant.ScreenListConstants.DEEPLINK_ACTIVITY);
+        excludeScreenList.add(CmInAppConstant.ScreenListConstants.DEEPLINK_HANDLER_ACTIVITY);
+        CMInAppManager.getInstance().setExcludeScreenList(excludeScreenList);
         refreshFCMTokenFromBackgroundToCM(FCMCacheManager.getRegistrationId(ConsumerRouterApplication.this), false);
     }
 

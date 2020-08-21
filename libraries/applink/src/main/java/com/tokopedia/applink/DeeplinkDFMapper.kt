@@ -281,7 +281,7 @@ object DeeplinkDFMapper : CoroutineScope {
                 it.startsWith(TOPADS_DASHBOARD_CUSTOMER) || it.startsWith(TOPADS_DASHBOARD_INTERNAL)
             }, DF_MERCHANT_SELLER, R.string.merchant_seller, { DFWebviewFallbackUrl.TOP_ADS_DASHBOARD }))
             add(DFP({ it.startsWith(SELLER_TRANSACTION) }, DF_MERCHANT_SELLER, R.string.merchant_seller, { DFWebviewFallbackUrl.SELLER_ORDER }))
-            add(DFP({ it.startsWith(MERCHANT_SHOP_SHOWCASE_LIST) }, DF_MERCHANT_SELLER, R.string.merchant_seller))
+            add(DFP({ it.startsWith(MERCHANT_SHOP_SHOWCASE_LIST) }, DF_BASE, R.string.merchant_seller))
             add(DFP({ it.startsWith(BRANDLIST)}, DF_BASE, R.string.title_brandlist))
             add(DFP({ it.startsWith(BRANDLIST_SEARCH)}, DF_BASE, R.string.title_brandlist))
             add(DFP({ it.startsWith(BRAND_LIST)}, DF_BASE, R.string.title_brandlist))
