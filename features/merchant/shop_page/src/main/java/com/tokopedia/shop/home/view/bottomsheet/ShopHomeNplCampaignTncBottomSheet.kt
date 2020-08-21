@@ -120,7 +120,7 @@ class ShopHomeNplCampaignTncBottomSheet : BottomSheetUnify() {
     }
 
     private fun observeLiveData() {
-        viewModel?.campaignTncLiveData?.observe(this, Observer {
+        viewModel?.campaignTncLiveData?.observe(viewLifecycleOwner, Observer {
             hideLoading()
             when(it){
                 is Success -> {

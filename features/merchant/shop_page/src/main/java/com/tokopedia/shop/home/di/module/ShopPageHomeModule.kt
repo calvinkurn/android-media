@@ -119,46 +119,46 @@ class ShopPageHomeModule {
                       }
                     }
                     ... on CampaignWidget {
-                               campaignID
-                               name
-                               description
-                               startDate
-                               endDate
-                               statusCampaign
-                               timeDescription
-                               timeCounter
-                               totalNotify
-                               totalNotifyWording
-                               banners {
-                                    imageID
-                                    imageURL
-                                    bannerType
-                               }
-                               products {
-                                    id
-                                    name
-                                    url
-                                    urlApps
-                                    urlMobile
-                                    imageURL
-                                    price
-                                    countSold
-                                    stock
-                                    status
-                                    discountedPrice
-                                    discountPercentage
-                                    position
-                                    stockWording {
-                                        title
-                                    }
-                                    hideGimmick
-                                    stockSoldPercentage
-                                    labelGroups {
-                                        position
-                                        type
-                                        title
-                                    }
-                               }
+                      campaignID
+                      name
+                      description
+                      startDate
+                      endDate
+                      statusCampaign
+                      timeDescription
+                      timeCounter
+                      totalNotify
+                      totalNotifyWording
+                      banners {
+                        imageID
+                        imageURL
+                        bannerType
+                      }
+                      products {
+                        id
+                        name
+                        url
+                        urlApps
+                        urlMobile
+                        imageURL
+                        price
+                        countSold
+                        stock
+                        status
+                        discountedPrice
+                        discountPercentage
+                        position
+                        stockWording {
+                          title
+                        }
+                        hideGimmick
+                        stockSoldPercentage
+                        labelGroups {
+                          position
+                          type
+                          title
+                        }
+                      }
                     }
                   }
                 }
@@ -190,12 +190,12 @@ class ShopPageHomeModule {
         return """
             query get_merchant_campaign_tnc(${'$'}param: GetMerchantCampaignTNCRequest!){
               getMerchantCampaignTNC (params:${'$'}param){
-                            title,
-    						messages,
-    						error {
-    						  error_code
-    						  error_message
-    						}
+                title,
+    			messages,
+    			error {
+    			  error_code
+    			  error_message
+    			}
               }
             }
         """.trimIndent()

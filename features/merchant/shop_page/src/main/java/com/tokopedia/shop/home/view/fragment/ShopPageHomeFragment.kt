@@ -13,7 +13,6 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.SimpleItemAnimator
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.snackbar.Snackbar
-import com.crashlytics.android.Crashlytics
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -24,6 +23,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.atc_common.domain.model.response.DataModel
+import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
 import com.tokopedia.discovery.common.manager.showProductCardOptions
@@ -58,18 +58,13 @@ import com.tokopedia.shop.home.view.adapter.ShopHomeAdapter
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeVoucherViewHolder
 import com.tokopedia.shop.home.view.bottomsheet.ShopHomeNplCampaignTncBottomSheet
-import com.tokopedia.shop.home.view.listener.ShopHomeCampaignNplWidgetListener
-import com.tokopedia.shop.home.view.listener.ShopHomeCarouselProductListener
-import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
-import com.tokopedia.shop.home.view.listener.ShopPageHomePlayCarouselListener
-import com.tokopedia.shop.home.view.model.*
-import com.tokopedia.shop.home.view.listener.ShopHomeEndlessProductListener
+import com.tokopedia.shop.home.view.listener.*
 import com.tokopedia.shop.home.view.model.*
 import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
-import com.tokopedia.shop.product.view.activity.ShopProductListResultActivity
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageFragment
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPageHomeTabPerformanceMonitoringListener
+import com.tokopedia.shop.product.view.activity.ShopProductListResultActivity
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.shop.product.view.datamodel.ShopProductSortFilterUiModel
 import com.tokopedia.shop.product.view.viewholder.ShopProductSortFilterViewHolder
@@ -115,7 +110,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         const val BUNDLE = "bundle"
         const val REGISTER_VALUE = "REGISTER"
         const val UNREGISTER_VALUE = "UNREGISTER"
-        var nplRemindMeCampaignId = ""
+        const val NPL_REMIND_ME_CAMPAIGN_ID =  "NPL_REMIND_ME_CAMPAIGN_ID"
 
         fun createInstance(
                 shopId: String,
@@ -457,12 +452,12 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     private fun onSuccessGetCampaignNplRemindMeStatusData(data: GetCampaignNotifyMeUiModel) {
         shopHomeAdapter.updateRemindMeStatusCampaignNplWidgetData(data.campaignId, data.isAvailable)
-        if (nplRemindMeCampaignId == data.campaignId && !data.isAvailable) {
+        if (getNplRemindMeClickedCampaignId() == data.campaignId && !data.isAvailable) {
             val nplCampaignModel = shopHomeAdapter.getNplCampaignUiModel(data.campaignId)
             nplCampaignModel?.let{
                 shopHomeAdapter.showNplRemindMeLoading(data.campaignId)
                 handleClickRemindMe(it)
-                nplRemindMeCampaignId = ""
+                setNplRemindMeClickedCampaignId("")
             }
         }
     }
@@ -1340,11 +1335,12 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     override fun onClickRemindMe(model: ShopHomeNewProductLaunchCampaignUiModel) {
         viewModel?.let {
+            val campaignId = model.data?.firstOrNull()?.campaignId.orEmpty()
             if (it.isLogin) {
-                shopHomeAdapter.showNplRemindMeLoading(model.data?.firstOrNull()?.campaignId.orEmpty())
+                shopHomeAdapter.showNplRemindMeLoading(campaignId)
                 handleClickRemindMe(model)
             } else {
-                nplRemindMeCampaignId = model.data?.firstOrNull()?.campaignId.orEmpty()
+                setNplRemindMeClickedCampaignId(campaignId)
                 redirectToLoginPage()
             }
         }
@@ -1412,5 +1408,12 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         viewModel?.getShopPageHomeData(shopId, sortId.toIntOrZero(), true)
     }
 
+    private fun setNplRemindMeClickedCampaignId(campaignId: String) {
+        PersistentCacheManager.instance.put(NPL_REMIND_ME_CAMPAIGN_ID, campaignId)
+    }
+
+    private fun getNplRemindMeClickedCampaignId(): String {
+        return PersistentCacheManager.instance.get(NPL_REMIND_ME_CAMPAIGN_ID, String::class.java, "").orEmpty()
+    }
 
 }

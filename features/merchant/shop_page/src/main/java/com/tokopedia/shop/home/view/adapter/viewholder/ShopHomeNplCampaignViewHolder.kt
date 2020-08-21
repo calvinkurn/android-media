@@ -20,7 +20,6 @@ import com.tokopedia.shop.home.view.model.BannerType
 import com.tokopedia.shop.home.view.model.ShopHomeNewProductLaunchCampaignUiModel
 import com.tokopedia.shop.home.view.model.StatusCampaign
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.shop.common.util.thousandFormatted
 import com.tokopedia.shop.home.view.model.ShopHomeNewProductLaunchCampaignUiModel.Companion.TOTAL_NOTIFY_WORDING_FORMAT_FOR_REPLACED
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.item_shop_home_new_product_launch_campaign.view.*
@@ -30,6 +29,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import java.math.RoundingMode
 import java.util.*
 
 /**
@@ -203,7 +203,7 @@ class ShopHomeNplCampaignViewHolder(
             val timeDescription = model.data?.firstOrNull()?.timeDescription ?: ""
             val timeCounter = model.data?.firstOrNull()?.timeCounter ?: ""
             itemView.text_time_description?.text = timeDescription
-            val currentTime = Date(System.currentTimeMillis()).time
+            val currentTime = System.currentTimeMillis()
             itemView.layout_timer?.show()
             if (timeCounter.toLong() != 0L) {
                 val remainingMilliseconds = when {
@@ -231,16 +231,16 @@ class ShopHomeNplCampaignViewHolder(
     private fun setTimerData(remainingMilliseconds: Long, model: ShopHomeNewProductLaunchCampaignUiModel) {
         itemView.timer?.apply {
             this.remainingMilliseconds = remainingMilliseconds
-            (itemView.timer.hourView as Typography).setWeight(Typography.BOLD)
-            (itemView.timer.hourView as Typography).setType(Typography.SMALL)
-            (itemView.timer.minuteView as Typography).setWeight(Typography.BOLD)
-            (itemView.timer.minuteView as Typography).setType(Typography.SMALL)
-            (itemView.timer.secondView as Typography).setWeight(Typography.BOLD)
-            (itemView.timer.secondView as Typography).setType(Typography.SMALL)
-            (itemView.timer.colonHourView as Typography).setWeight(Typography.BOLD)
-            (itemView.timer.colonHourView as Typography).setType(Typography.SMALL)
-            (itemView.timer.colonMinuteView as Typography).setWeight(Typography.BOLD)
-            (itemView.timer.colonMinuteView as Typography).setType(Typography.SMALL)
+            (hourView as? Typography)?.setWeight(Typography.BOLD)
+            (hourView as? Typography)?.setType(Typography.SMALL)
+            (minuteView as? Typography)?.setWeight(Typography.BOLD)
+            (minuteView as? Typography)?.setType(Typography.SMALL)
+            (secondView as? Typography)?.setWeight(Typography.BOLD)
+            (secondView as? Typography)?.setType(Typography.SMALL)
+            (colonHourView as? Typography)?.setWeight(Typography.BOLD)
+            (colonHourView as? Typography)?.setType(Typography.SMALL)
+            (colonMinuteView as? Typography)?.setWeight(Typography.BOLD)
+            (colonMinuteView as? Typography)?.setType(Typography.SMALL)
             onFinish = {
                 shopHomeCampaignNplWidgetListener.onTimerFinished(model)
             }
@@ -257,7 +257,10 @@ class ShopHomeNplCampaignViewHolder(
             itemView.text_description?.text = ""
             itemView.text_description?.hide()
         } else {
-            val totalCampaignInterestString = totalNotifyWording.replace(TOTAL_NOTIFY_WORDING_FORMAT_FOR_REPLACED, totalNotify.thousandFormatted(1))
+            val totalCampaignInterestString = totalNotifyWording.replace(
+                    TOTAL_NOTIFY_WORDING_FORMAT_FOR_REPLACED,
+                    totalNotify.thousandFormatted(1, RoundingMode.DOWN)
+            )
             itemView.text_description?.text = totalCampaignInterestString
             itemView.text_description?.show()
         }
