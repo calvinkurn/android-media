@@ -25,7 +25,7 @@ class ReviewDetailActivity : BaseSimpleActivity() {
         reviewDetailFragment = ReviewDetailFragment.createNewInstance(feedbackId)
         getAbTestPlatform()?.fetch(null)
         super.onCreate(savedInstanceState)
-        if(useOldPage()) {
+        if(!useNewPage()) {
             val intent = InboxReputationDetailActivity.getCallingIntent(this, reputationId)
             startActivity(intent)
             finish()
@@ -56,8 +56,8 @@ class ReviewDetailActivity : BaseSimpleActivity() {
         return remoteConfigInstance.abTestPlatform
     }
 
-    private fun useOldPage(): Boolean {
+    private fun useNewPage(): Boolean {
         val abTestValue = getAbTestPlatform()?.getString(ReviewConstants.AB_TEST_KEY, "") ?: return true
-        return abTestValue == ReviewConstants.OLD_REVIEW_FLOW
+        return abTestValue == ReviewConstants.NEW_REVIEW_FLOW
     }
 }

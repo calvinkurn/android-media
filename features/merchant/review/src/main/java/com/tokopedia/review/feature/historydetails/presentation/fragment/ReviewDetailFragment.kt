@@ -400,7 +400,6 @@ class ReviewDetailFragment : BaseDaggerFragment(),
     }
 
     private fun onSuccessInsertReputation(score: Int) {
-        reviewHistoryDetailReputation.onScoreSelected(score)
         view?.let { Toaster.build(it, getString(R.string.review_history_details_toaster_modify_smiley_success), Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(R.string.review_oke)).show() }
     }
 

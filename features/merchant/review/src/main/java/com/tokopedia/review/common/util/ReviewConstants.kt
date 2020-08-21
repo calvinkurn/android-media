@@ -97,7 +97,7 @@ object ReviewConstants {
     const val REPUTATION_SCORE_EMPTY = 0
 
     const val AB_TEST_KEY = "InboxUlasanRevamp2"
-    const val OLD_REVIEW_FLOW = "Old Review Flow"
+    const val NEW_REVIEW_FLOW = "New Review Flow"
 }
 
 

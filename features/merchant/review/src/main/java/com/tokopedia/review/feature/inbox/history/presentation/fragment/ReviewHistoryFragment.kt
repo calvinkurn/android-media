@@ -65,7 +65,9 @@ class ReviewHistoryFragment : BaseListFragment<ReviewHistoryUiModel, ReviewHisto
     }
 
     override fun getRecyclerView(view: View?): RecyclerView {
-        return reviewHistoryRecyclerView
+        return reviewHistoryRecyclerView.apply {
+            itemAnimator = null
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

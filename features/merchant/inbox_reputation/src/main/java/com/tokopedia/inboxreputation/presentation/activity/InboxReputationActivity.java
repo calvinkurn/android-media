@@ -96,7 +96,7 @@ public class  InboxReputationActivity extends BaseActivity implements HasCompone
         userSession = new UserSession(this);
         reputationTracking = new ReputationTracking();
         super.onCreate(savedInstanceState);
-        if(!useOldPage()) {
+        if(useNewPage()) {
             startActivity(ReviewInboxActivity.Companion.createNewInstance(this));
             finish();
         }
@@ -319,8 +319,8 @@ public class  InboxReputationActivity extends BaseActivity implements HasCompone
         return RemoteConfigInstance.getInstance().getABTestPlatform();
     }
 
-    private Boolean useOldPage() {
+    private Boolean useNewPage() {
         String remoteConfigValue = getABTestRemoteConfig().getString(ReviewConstants.AB_TEST_KEY);
-        return remoteConfigValue.equals(ReviewConstants.OLD_REVIEW_FLOW);
+        return remoteConfigValue.equals(ReviewConstants.NEW_REVIEW_FLOW);
     }
 }

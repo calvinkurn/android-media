@@ -44,38 +44,37 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
     private var reputationId: String = ""
 
     override fun getNewFragment(): Fragment? {
-        if(useOldPage()) {
-            val bundle = intent.extras
-            val uri = intent.data
-
-            if (uri != null && uri.pathSegments.size > 0) {
-                val uriSegment = uri.pathSegments
-                productId = uri.lastPathSegment ?: ""
-                reputationId = uriSegment[uriSegment.size - 2]
-                rating = uri.getQueryParameter(CreateReviewActivityOld.PARAM_RATING)?.toIntOrNull() ?: CreateReviewActivityOld.DEFAULT_PRODUCT_RATING
-                utmSource = uri.getQueryParameter(CreateReviewActivityOld.PARAM_UTM_SOURCE) ?: CreateReviewActivityOld.DEFAULT_UTM_SOURCE
-            } else {
-                productId = bundle?.getString(InboxReputationFormActivity.ARGS_PRODUCT_ID) ?: ""
-                reputationId = bundle?.getString(InboxReputationFormActivity.ARGS_REPUTATION_ID) ?: ""
-            }
-            createReviewOldFragment = CreateReviewFragmentOld.createInstance(
+        if(useNewPage()) {
+            setToolbar()
+            createReviewFragment = CreateReviewFragment.createInstance(
                     productId,
                     reputationId,
-                    bundle?.getInt(CreateReviewFragmentOld.REVIEW_CLICK_AT, rating) ?: rating,
-                    utmSource
+                    rating,
+                    isEditMode,
+                    feedbackId
             )
-            return createReviewOldFragment
+            return createReviewFragment
         }
-        setToolbar()
-        createReviewFragment = CreateReviewFragment.createInstance(
+        val bundle = intent.extras
+        val uri = intent.data
+
+        if (uri != null && uri.pathSegments.size > 0) {
+            val uriSegment = uri.pathSegments
+            productId = uri.lastPathSegment ?: ""
+            reputationId = uriSegment[uriSegment.size - 2]
+            rating = uri.getQueryParameter(CreateReviewActivityOld.PARAM_RATING)?.toIntOrNull() ?: CreateReviewActivityOld.DEFAULT_PRODUCT_RATING
+            utmSource = uri.getQueryParameter(CreateReviewActivityOld.PARAM_UTM_SOURCE) ?: CreateReviewActivityOld.DEFAULT_UTM_SOURCE
+        } else {
+            productId = bundle?.getString(InboxReputationFormActivity.ARGS_PRODUCT_ID) ?: ""
+            reputationId = bundle?.getString(InboxReputationFormActivity.ARGS_REPUTATION_ID) ?: ""
+        }
+        createReviewOldFragment = CreateReviewFragmentOld.createInstance(
                 productId,
                 reputationId,
-                rating,
-                isEditMode,
-                feedbackId
+                bundle?.getInt(CreateReviewFragmentOld.REVIEW_CLICK_AT, rating) ?: rating,
+                utmSource
         )
-        return createReviewFragment
-
+        return createReviewOldFragment
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -97,7 +96,12 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
     }
 
     override fun onBackPressed() {
-        if(useOldPage()) {
+        if(useNewPage()) {
+            createReviewFragment?.let {
+                CreateReviewTracking.reviewOnCloseTracker(it.getOrderId(), productId)
+                it.showCancelDialog()
+            }
+        } else {
             createReviewOldFragment?.let {
                 ReviewTracking.reviewOnCloseTracker(it.getOrderId, productId)
             }
@@ -110,11 +114,6 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
                 super.onBackPressed()
             }
             finish()
-        } else {
-            createReviewFragment?.let {
-                CreateReviewTracking.reviewOnCloseTracker(it.getOrderId(), productId)
-                it.showCancelDialog()
-            }
         }
     }
 
@@ -125,9 +124,9 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
         return remoteConfigInstance.abTestPlatform
     }
 
-    private fun useOldPage(): Boolean {
+    private fun useNewPage(): Boolean {
         val abTestValue = getAbTestPlatform()?.getString(ReviewConstants.AB_TEST_KEY, "") ?: return true
-        return abTestValue == ReviewConstants.OLD_REVIEW_FLOW
+        return abTestValue == ReviewConstants.NEW_REVIEW_FLOW
     }
 
     private fun getDataFromApplinkOrIntent() {
