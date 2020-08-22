@@ -49,7 +49,6 @@ class ShopSettingsInfoViewModel @Inject constructor (
 
 
     fun detachView() {
-        // checkOsMerchantUseCase.unsubscribe()
         getShopBasicDataUseCase.unsubscribe()
         getShopStatusUseCase.unsubscribe()
         updateShopScheduleUseCase.unsubscribe()
