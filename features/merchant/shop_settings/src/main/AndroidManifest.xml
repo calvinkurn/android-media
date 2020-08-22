@@ -5,7 +5,7 @@
     <application>
         <activity
             android:name=".basicinfo.view.activity.ShopSettingsInfoActivity"
-            android:label="@string/shop_settings_basic_info_title"
+            android:label="@string/shop_settings_manage_shop_info"
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait" >
             <intent-filter>
