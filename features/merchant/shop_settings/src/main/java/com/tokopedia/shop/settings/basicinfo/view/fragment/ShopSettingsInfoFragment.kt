@@ -229,6 +229,13 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
                 is Success -> {
                     hideLoading()
                     val shopBasicData = it.data
+
+                    // Update userSession
+                    val shopName: String = shopBasicData.name ?: ""
+                    val shopAvatar = shopBasicData.logo ?: ""
+                    userSession.shopName = shopName
+                    userSession.shopAvatar = shopAvatar
+
                     this.shopBasicDataModel = shopBasicData
                     setUIShopBasicData(shopBasicData)
                 }
@@ -249,7 +256,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
                         val expiration = osData.data.expiredDate
 
                         if (errMessage.isEmpty() && isOS) {
-                            showOfficialStore(expiration)
+                            showOfficialStore(expiration) // Set userSession isOS?
                         }
                     }
                 }

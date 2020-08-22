@@ -54,9 +54,6 @@ class ShopEditBasicInfoViewModel @Inject constructor(
     val shopDomainSuggestion: LiveData<Result<ShopDomainSuggestionData>>
         get() = _shopDomainSuggestion
 
-    var shopName: String? = null
-
-
     private val _shopBasicData = MutableLiveData<Result<ShopBasicDataModel>>()
     private val _uploadShopImage = MutableLiveData<Result<UploadShopEditImageModel>>()
     private val _updateShopBasicData = MutableLiveData<Result<String>>()
@@ -178,7 +175,7 @@ class ShopEditBasicInfoViewModel @Inject constructor(
     ) {
         updateShopBasicDataUseCase.unsubscribe()
 
-        shopName = name.nullIfNotChanged(currentShop?.name)
+        val shopName = name.nullIfNotChanged(currentShop?.name)
         val shopDomain = domain.nullIfNotChanged(currentShop?.domain)
         val shopTagLine = tagLine.nullIfNotChanged(currentShop?.tagline)
         val shopDescription = description.nullIfNotChanged(currentShop?.description)
