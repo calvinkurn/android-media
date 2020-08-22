@@ -59,8 +59,4 @@ class ShopSettingsModule {
     fun provideCoroutineDispatchers(): CoroutineDispatchers {
         return CoroutineDispatchersProvider
     }
-
-    @Provides
-    @ShopSettingsScope
-    fun provideRemoteConfig(@ApplicationContext context: Context): FirebaseRemoteConfigImpl = FirebaseRemoteConfigImpl(context)
 }

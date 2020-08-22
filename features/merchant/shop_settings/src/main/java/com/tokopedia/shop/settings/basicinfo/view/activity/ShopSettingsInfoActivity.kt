@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.shop.settings.basicinfo.oldview.activity.OldShopSettingsInfoActivity
 import com.tokopedia.shop.settings.basicinfo.view.fragment.ShopSettingsInfoFragment
@@ -16,9 +17,6 @@ import javax.inject.Inject
  * deeplink: SHOP_SETTING_INFO
  */
 class ShopSettingsInfoActivity : BaseSimpleActivity() {
-
-    @Inject
-    lateinit var remoteConfig: FirebaseRemoteConfigImpl
 
     companion object {
         @JvmStatic
@@ -32,11 +30,11 @@ class ShopSettingsInfoActivity : BaseSimpleActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val remoteConfig = FirebaseRemoteConfigImpl(this)
         val isNewShopSettings = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_NEW_SHOP_SETTINGS, true)
         if (!isNewShopSettings) {
             val intent = OldShopSettingsInfoActivity.createIntent(this)
             startActivity(intent)
         }
     }
-
 }
