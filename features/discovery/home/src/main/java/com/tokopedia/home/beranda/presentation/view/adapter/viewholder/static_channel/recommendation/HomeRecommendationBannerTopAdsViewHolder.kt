@@ -5,13 +5,14 @@ import android.view.View
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationBannerTopAdsDataModel
+import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.smart_recycler_helper.SmartAbstractViewHolder
@@ -41,15 +42,19 @@ class HomeRecommendationBannerTopAdsViewHolder(view: View) : SmartAbstractViewHo
 
     private fun loadImageTopAds(recommendationBannerTopAdsDataModelDataModel: HomeRecommendationBannerTopAdsDataModel, listener: HomeRecommendationListener){
         recommendationBannerTopAdsDataModelDataModel.topAdsImageViewModel?.let{
+            itemView.addOnImpressionListener(recommendationBannerTopAdsDataModelDataModel, object: ViewHintListener{
+                override fun onViewHint() {
+                    TopAdsUrlHitter(itemView.context).hitImpressionUrl(
+                            this::class.java.simpleName,
+                            recommendationBannerTopAdsDataModelDataModel.topAdsImageViewModel.adViewUrl,
+                            "",
+                            "",
+                            recommendationBannerTopAdsDataModelDataModel.topAdsImageViewModel.imageUrl
+                    )
+                    listener.onBannerTopAdsImpress(recommendationBannerTopAdsDataModelDataModel, adapterPosition)
+                }
+            })
             itemView.home_recom_topads_loader_image?.show()
-            TopAdsUrlHitter(itemView.context).hitImpressionUrl(
-                    this::class.java.simpleName,
-                    recommendationBannerTopAdsDataModelDataModel.topAdsImageViewModel.adViewUrl,
-                    "",
-                    "",
-                    recommendationBannerTopAdsDataModelDataModel.topAdsImageViewModel.imageUrl
-            )
-            listener.onBannerTopAdsImpress(recommendationBannerTopAdsDataModelDataModel, adapterPosition)
             Glide.with(itemView.context)
                     .load(recommendationBannerTopAdsDataModelDataModel.topAdsImageViewModel.imageUrl)
                     .transform(RoundedCorners(8))

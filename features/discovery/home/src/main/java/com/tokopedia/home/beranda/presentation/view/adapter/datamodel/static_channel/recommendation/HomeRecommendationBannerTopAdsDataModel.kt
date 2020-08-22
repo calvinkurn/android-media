@@ -3,13 +3,14 @@ package com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_ch
 import android.os.Bundle
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.homeRecommendation.HomeRecommendationTypeFactory
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.smart_recycler_helper.SmartVisitable
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 
 data class HomeRecommendationBannerTopAdsDataModel(
         val topAdsImageViewModel: TopAdsImageViewModel? = null,
         val position: Int = -1
-) : HomeRecommendationVisitable {
+) : HomeRecommendationVisitable, ImpressHolder() {
     override fun equalsDataModel(dataModel: SmartVisitable<*>): Boolean {
         return dataModel == this
     }
