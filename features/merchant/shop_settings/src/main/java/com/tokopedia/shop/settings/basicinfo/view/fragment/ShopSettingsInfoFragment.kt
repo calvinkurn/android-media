@@ -215,7 +215,9 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
                     }
                 }
                 is Fail -> {
-                    println(it)
+                    view?.let { view ->
+                        Toaster.make(view, getString(R.string.error_get_shop_status), Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
+                    }
                 }
             }
         })
@@ -231,7 +233,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
                     setUIShopBasicData(shopBasicData)
                 }
                 is Fail -> {
-                    showErrorGetShopBasicData(it.throwable)
+                    onErrorGetShopBasicData(it.throwable)
                 }
             }
         })
@@ -252,7 +254,9 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
                     }
                 }
                 is Fail -> {
-                    println(it)
+                    view?.let { view ->
+                        Toaster.make(view, getString(R.string.error_get_os_merchant), Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
+                    }
                 }
             }
         })
@@ -337,28 +341,31 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
 
     private fun showRegularMerchantMembership(shopStatusModel: ShopStatusModel?) {
         shopStatusModel?.let {
-            container_power_merchant_official_store.visibility = View.GONE
             container_regular_merchant.visibility = View.VISIBLE
+            container_power_merchant.visibility = View.GONE
+            container_official_store.visibility = View.GONE
             tv_regular_merchant_type.text = getString(com.tokopedia.design.R.string.label_regular_merchant)
         }
     }
 
     private fun showPowerMerchant(shopStatusModel: ShopStatusModel) {
-        container_power_merchant_official_store.visibility = View.VISIBLE
+        container_power_merchant.visibility = View.VISIBLE
         container_regular_merchant.visibility = View.GONE
+        container_official_store.visibility = View.GONE
         iv_logo_power_merchant.visibility = View.VISIBLE
         iv_logo_power_merchant.setImageResource(com.tokopedia.gm.common.R.drawable.ic_power_merchant)
-        tv_merchant_type.text = getString(com.tokopedia.design.R.string.label_power_merchant)
-        tv_merchant_expiration.text = "Berlaku hingga ${shopStatusModel.powerMerchant.expiredTime}"
+        tv_power_merchant_type.text = getString(com.tokopedia.design.R.string.label_power_merchant)
+        tv_power_merchant_expiration.text = "Berlaku hingga ${shopStatusModel.powerMerchant.expiredTime}"
     }
 
     private fun showOfficialStore(expirationDate: String) {
-        container_power_merchant_official_store.visibility = View.VISIBLE
+        container_official_store.visibility = View.VISIBLE
         container_regular_merchant.visibility = View.GONE
-        iv_logo_power_merchant.visibility = View.VISIBLE
-        iv_logo_power_merchant.setImageResource(R.drawable.ic_official_store)
-        tv_merchant_type.text = getString(com.tokopedia.design.R.string.label_official_store)
-        tv_merchant_expiration.text = "Berlaku hingga $expirationDate"
+        container_power_merchant.visibility = View.GONE
+        iv_logo_official_store.visibility = View.VISIBLE
+        iv_logo_official_store.setImageResource(R.drawable.ic_official_store)
+        tv_official_store.text = getString(com.tokopedia.design.R.string.label_official_store)
+        tv_official_store_expiration.text = "Berlaku hingga $expirationDate"
     }
 
     private fun setTextViewClickSpan(textView: TextView, previousText: CharSequence, learnMoreString: String, onClickLearnMore: (() -> (Unit))) {
@@ -388,7 +395,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
 //        RouteManager.route(context, ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE)
 //    }
 
-    private fun showErrorGetShopBasicData(throwable: Throwable) {
+    private fun onErrorGetShopBasicData(throwable: Throwable) {
         hideLoading()
         val message = ErrorHandler.getErrorMessage(context, throwable)
         NetworkErrorHelper.showEmptyState(context, view, message) { loadShopBasicData() }

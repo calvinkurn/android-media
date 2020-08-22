@@ -161,4 +161,7 @@
     <string name="shop_edit_name_input_label">Nama Toko</string>
     <string name="shop_edit_domain_input_label">Domain Toko</string>
 
+    <string name="error_get_os_merchant">Error getting OS merchant type. Please retry</string>
+    <string name="error_get_shop_status">Error getting shop status. Please retry</string>
+
 </resources>
