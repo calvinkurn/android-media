@@ -24,16 +24,4 @@ interface OldShopSettingsComponent {
     fun inject(shopSettingsInfoFragment: ShopSettingsInfoFragment)
     fun inject(oldShopEditBasicInfoActivity: OldShopEditBasicInfoActivity)
     fun inject(oldShopEditScheduleActivity: OldShopEditScheduleActivity)
-
-
-//    fun inject(shopSettingsNotesFragment: ShopSettingsNotesListFragment)
-//    fun inject(shopSettingsNotesFragment: ShopSettingsNotesReorderFragment)
-//
-//    fun inject(fragment: ShopSettingAddressFragment)
-//    fun inject(fragment: ShopSettingAddressAddEditFragment)
-//    fun inject(fragment: ShopSettingsNotesAddEditFragment)
-//
-//    fun inject(fragment: ShopSettingsEtalaseAddEditFragment)
-//    fun inject(fragment: ShopSettingsEtalaseListFragment)
-//    fun inject(fragment: ShopSettingsEtalaseReorderFragment)
 }
