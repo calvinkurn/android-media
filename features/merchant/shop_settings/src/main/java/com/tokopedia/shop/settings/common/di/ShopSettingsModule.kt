@@ -12,6 +12,7 @@ import com.tokopedia.imageuploader.domain.GenerateHostRepository
 import com.tokopedia.imageuploader.domain.UploadImageRepository
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.imageuploader.utils.ImageUploaderUtils
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.shop.settings.basicinfo.data.UploadShopEditImageModel
 import com.tokopedia.shop.settings.common.coroutine.CoroutineDispatchers
 import com.tokopedia.shop.settings.common.coroutine.CoroutineDispatchersProvider
@@ -58,4 +59,8 @@ class ShopSettingsModule {
     fun provideCoroutineDispatchers(): CoroutineDispatchers {
         return CoroutineDispatchersProvider
     }
+
+    @Provides
+    @ShopSettingsScope
+    fun provideRemoteConfig(@ApplicationContext context: Context): FirebaseRemoteConfigImpl = FirebaseRemoteConfigImpl(context)
 }
