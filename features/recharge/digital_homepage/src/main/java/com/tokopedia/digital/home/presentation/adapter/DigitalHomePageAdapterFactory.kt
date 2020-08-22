@@ -14,7 +14,7 @@ import com.tokopedia.home_component.viewholders.DynamicLegoBannerViewHolder
 import com.tokopedia.home_component.viewholders.ReminderWidgetViewHolder
 import com.tokopedia.home_component.visitable.*
 
-class DigitalHomePageTypeFactory(
+class DigitalHomePageAdapterFactory(
         val listener: OnItemBindListener,
         private val reminderWidgetCallback: RechargeHomepageReminderWidgetCallback,
         private val dynamicLegoBannerCallback: RechargeHomepageDynamicLegoBannerCallback,

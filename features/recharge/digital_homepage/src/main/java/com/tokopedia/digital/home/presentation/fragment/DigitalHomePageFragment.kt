@@ -11,9 +11,9 @@ import android.widget.LinearLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -32,7 +32,8 @@ import com.tokopedia.digital.home.presentation.Util.DigitalHomeTrackingUtil
 import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.SUBSCRIPTION_GUIDE_CLICK
 import com.tokopedia.digital.home.presentation.Util.RechargeHomepageSectionMapper
 import com.tokopedia.digital.home.presentation.activity.DigitalHomePageSearchActivity
-import com.tokopedia.digital.home.presentation.adapter.DigitalHomePageTypeFactory
+import com.tokopedia.digital.home.presentation.adapter.DigitalHomePageAdapterFactory
+import com.tokopedia.digital.home.presentation.adapter.adapter.DigitalHomePageAdapter
 import com.tokopedia.digital.home.presentation.adapter.adapter.RechargeHomeSectionDecoration
 import com.tokopedia.digital.home.presentation.adapter.viewholder.DigitalHomePageTransactionViewHolder
 import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
@@ -40,16 +41,14 @@ import com.tokopedia.digital.home.presentation.listener.RechargeHomepageDynamicL
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageReminderWidgetCallback
 import com.tokopedia.digital.home.presentation.viewmodel.DigitalHomePageViewModel
 import com.tokopedia.home_component.visitable.HomeComponentVisitable
-import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.layout_digital_home.*
 import javax.inject.Inject
 
-class DigitalHomePageFragment : BaseListFragment<Visitable<*>, DigitalHomePageTypeFactory>(),
+class DigitalHomePageFragment : BaseDaggerFragment(),
         OnItemBindListener,
+        DigitalHomePageAdapter.LoaderListener,
         DigitalHomePageTransactionViewHolder.TransactionListener,
         SearchInputView.FocusChangeListener {
 
@@ -62,7 +61,7 @@ class DigitalHomePageFragment : BaseListFragment<Visitable<*>, DigitalHomePageTy
     @Inject
     lateinit var viewModel: DigitalHomePageViewModel
 
-    private lateinit var sections: List<RechargeHomepageSections.Section>
+    lateinit var adapter: DigitalHomePageAdapter
 
     private var searchBarTransitionRange = 0
 
@@ -79,9 +78,14 @@ class DigitalHomePageFragment : BaseListFragment<Visitable<*>, DigitalHomePageTy
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        activity?.run {
+        activity?.let {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
             viewModel = viewModelProvider.get(DigitalHomePageViewModel::class.java)
+
+            adapter = DigitalHomePageAdapter(it, DigitalHomePageAdapterFactory(this,
+                    RechargeHomepageReminderWidgetCallback(this),
+                    RechargeHomepageDynamicLegoBannerCallback(this),
+                    this), this)
         }
 
         arguments?.let {
@@ -99,6 +103,8 @@ class DigitalHomePageFragment : BaseListFragment<Visitable<*>, DigitalHomePageTy
         digital_homepage_search_view.setFocusChangeListener(this)
         calculateToolbarView(0)
 
+        recycler_view.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        recycler_view.adapter = adapter
         while (recycler_view.itemDecorationCount > 0) recycler_view.removeItemDecorationAt(0)
         recycler_view.addItemDecoration(RechargeHomeSectionDecoration(
                 SECTION_SPACING_DP.dpToPx(resources.displayMetrics)
@@ -106,13 +112,20 @@ class DigitalHomePageFragment : BaseListFragment<Visitable<*>, DigitalHomePageTy
         recycler_view.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                calculateToolbarView(getRecyclerView(view).computeVerticalScrollOffset())
+                calculateToolbarView(recycler_view.computeVerticalScrollOffset())
             }
         })
+
+        swipe_refresh_layout.setOnRefreshListener{
+            swipe_refresh_layout.isRefreshing = true
+            loadData()
+        }
 
         digital_homepage_order_list.setOnClickListener {
             onClickOrderList()
         }
+
+        loadData()
     }
 
     private fun hideStatusBar() {
@@ -141,8 +154,6 @@ class DigitalHomePageFragment : BaseListFragment<Visitable<*>, DigitalHomePageTy
             activity?.window?.statusBarColor = Color.TRANSPARENT
         }
     }
-
-    override fun getRecyclerViewResourceId() = R.id.recycler_view
 
     private fun calculateToolbarView(offset: Int) {
 
@@ -177,14 +188,6 @@ class DigitalHomePageFragment : BaseListFragment<Visitable<*>, DigitalHomePageTy
         return ""
     }
 
-    override fun getSwipeRefreshLayoutResourceId(): Int {
-        return R.id.swipe_refresh_layout
-    }
-
-    override fun hasInitialSwipeRefresh(): Boolean {
-        return true
-    }
-
     override fun initInjector() {
         getComponent(DigitalHomePageComponent::class.java).inject(this)
     }
@@ -193,95 +196,46 @@ class DigitalHomePageFragment : BaseListFragment<Visitable<*>, DigitalHomePageTy
         super.onActivityCreated(savedInstanceState)
 
         viewModel.digitalHomePageList.observe(this, Observer {
-            clearAllData()
+            hideLoading()
             it?.run {
                 DigitalHomePageCategoryDataMapper.mapCategoryData(this[DigitalHomePageViewModel.CATEGORY_SECTION_ORDER])?.let { categoryData ->
                     trackingUtil.eventCategoryImpression(categoryData)
                 }
                 val list = this.filter { item -> !item.isLoaded || item.isSuccess }
-                renderList(list)
+                adapter.renderList(list)
             }
         })
 
         viewModel.isAllError.observe(this, Observer {
+            hideLoading()
             it?.let { isAllError ->
-                if (isAllError) NetworkErrorHelper.showEmptyState(context, view?.rootView) { loadInitialData() }
+                if (isAllError) NetworkErrorHelper.showEmptyState(context, view?.rootView) { loadData() }
             }
         })
 
         viewModel.rechargeHomepageSectionSkeleton.observe(this, Observer {
-            hideLoading()
-            when (it) {
-                is Success -> {
-                    sectionSkeleton = it.data
-                    val mappedData = RechargeHomepageSectionMapper.mapHomepageSectionsFromSkeleton(it.data).filterNotNull()
-                    renderList(mappedData)
-                }
-                is Fail -> {
-                    showGetListError(it.throwable)
-                }
-            }
+            if (it is Fail) adapter.showGetListError(it.throwable)
         })
 
         viewModel.rechargeHomepageSections.observe(this, Observer {
-            when (it) {
-                is Success -> {
-                    with(it.data) {
-                        // If there is an error in the section request, remove such section
-                        if (error.isEmpty() && sections.isNotEmpty()) {
-                            homeComponentsData = sections.filter { section ->
-                                DigitalHomePageViewModel.SECTION_HOME_COMPONENTS.contains(section.template)
-                            }
-                            // Update sections (remove / insert / insert multiple)
-                            for (id in requestIDs) {
-                                recycler_view.post {
-                                    val sectionTemplate = sectionSkeleton.find { item -> item.id == id }?.template
-                                            ?: ""
-                                    val sectionIndex = RechargeHomepageSectionMapper.getSectionIndex(adapter.data, id)
-                                    if (sectionTemplate.isNotEmpty() && sectionIndex >= 0) {
-                                        val updatedSectionItems = RechargeHomepageSectionMapper.getUpdatedSectionsOfType(sections, sectionTemplate)
-                                        adapter.apply {
-                                            when (updatedSectionItems.size) {
-                                                0 -> {
-                                                    data.removeAt(sectionIndex)
-                                                    notifyItemRemoved(sectionIndex)
-                                                }
-                                                1 -> {
-                                                    data[sectionIndex] = updatedSectionItems.first()
-                                                    notifyItemChanged(sectionIndex)
-                                                }
-                                                else -> {
-//                                                    data[sectionIndex] = updatedSectionItems.first()
-//                                                    notifyItemChanged(sectionIndex)
-//                                                    data.addAll(sectionIndex + 1, updatedSectionItems.subList(1, updatedSectionItems.size))
-//                                                    notifyItemRangeInserted(sectionIndex + 1, updatedSectionItems.size - 1)
-                                                    data.removeAt(sectionIndex)
-                                                    notifyItemRemoved(sectionIndex)
-                                                    data.addAll(sectionIndex, updatedSectionItems)
-                                                    notifyItemRangeInserted(sectionIndex, updatedSectionItems.size)
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        } else {
-                            for (sectionId in requestIDs) {
-                                onRechargeSectionEmpty(sectionId)
-                            }
-                        }
-                    }
-                }
+            hideLoading()
+
+            val mappedData = RechargeHomepageSectionMapper.mapHomepageSections(it)
+            val homeComponentIDs: List<Int> = mappedData.filterIsInstance<HomeComponentVisitable>().mapNotNull {
+                homeComponent -> homeComponent.visitableId()?.toInt()
             }
+            homeComponentsData = it.filter { section -> section.id in homeComponentIDs }
+            adapter.renderList(mappedData)
         })
     }
 
-    override fun loadData(page: Int) {
+    override fun loadData() {
+        adapter.showLoading()
         // Load dynamic sub-homepage if platformId is provided; else load old sub-homepage
         if (isDynamicPage()) {
             viewModel.getRechargeHomepageSectionSkeleton(
                     viewModel.createRechargeHomepageSectionSkeletonParams(platformId, enablePersonalize),
-                    swipeToRefresh?.isRefreshing ?: false
+                    swipe_refresh_layout.isRefreshing
             )
         } else {
             val queryList = mapOf(
@@ -291,7 +245,7 @@ class DigitalHomePageFragment : BaseListFragment<Visitable<*>, DigitalHomePageTy
                     DigitalHomePageUseCase.QUERY_RECOMMENDATION to GraphqlHelper.loadRawString(resources, com.tokopedia.common_digital.R.raw.digital_recommendation_list)
             )
             viewModel.initialize(queryList)
-            viewModel.getData(swipeToRefresh?.isRefreshing ?: false)
+            viewModel.getData(swipe_refresh_layout.isRefreshing)
         }
     }
 
@@ -379,7 +333,7 @@ class DigitalHomePageFragment : BaseListFragment<Visitable<*>, DigitalHomePageTy
 
     override fun onRechargeReminderWidgetClosed(sectionID: Int) {
         val index = adapter.data.indexOfFirst { it is HomeComponentVisitable && it.visitableId()?.toIntOrNull() == sectionID }
-        if (index >= 0) {
+        if (index >= 0 && ::homeComponentsData.isInitialized) {
             // Trigger close reminder widget action
             val section = homeComponentsData.find { it.id == sectionID }
             if (section != null && section.items.isNotEmpty()) {
@@ -449,7 +403,7 @@ class DigitalHomePageFragment : BaseListFragment<Visitable<*>, DigitalHomePageTy
     override fun onRechargeSectionEmpty(sectionID: Int) {
         val index = adapter.data.indexOfFirst {
             (it is RechargeHomepageSectionModel && it.visitableId() == sectionID) ||
-            (it is HomeComponentVisitable && it.visitableId()?.toIntOrNull() == sectionID)
+                    (it is HomeComponentVisitable && it.visitableId()?.toIntOrNull() == sectionID)
         }
         if (index >= 0) {
             recycler_view.post {
@@ -459,15 +413,6 @@ class DigitalHomePageFragment : BaseListFragment<Visitable<*>, DigitalHomePageTy
                 }
             }
         }
-    }
-
-    override fun getAdapterTypeFactory(): DigitalHomePageTypeFactory {
-        return DigitalHomePageTypeFactory(this, RechargeHomepageReminderWidgetCallback(this),
-                RechargeHomepageDynamicLegoBannerCallback(this), this)
-    }
-
-    override fun onItemClicked(t: Visitable<*>) {
-        // Do nothing
     }
 
     override fun onClickFavNumber() {
@@ -500,6 +445,12 @@ class DigitalHomePageFragment : BaseListFragment<Visitable<*>, DigitalHomePageTy
 
     fun onBackPressed() {
         trackingUtil.eventClickBackButton()
+    }
+
+    private fun hideLoading() {
+        swipe_refresh_layout.isEnabled = true
+        swipe_refresh_layout.isRefreshing = false
+        adapter.hideLoading()
     }
 
     private fun isDynamicPage(): Boolean {

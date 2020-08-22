@@ -2,14 +2,22 @@ package com.tokopedia.digital.home.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.digital.home.presentation.adapter.DigitalHomePageTypeFactory
+import com.tokopedia.digital.home.presentation.adapter.DigitalHomePageAdapterFactory
 
 abstract class DigitalHomePageSectionModel(
         @SerializedName("rechargeSubHomePageSection")
         @Expose
         val data: Data? = null) : DigitalHomePageItemModel() {
 
-    abstract override fun type(typeFactory: DigitalHomePageTypeFactory): Int
+    override fun visitableId(): Int {
+        return data?.section?.id ?: -1
+    }
+
+    override fun equalsWith(b: Any?): Boolean {
+        return if (b is DigitalHomePageSectionModel) {
+            this.data == b.data
+        } else false
+    }
 
     data class Data(@SerializedName("slug_name")
                     @Expose
@@ -18,7 +26,10 @@ abstract class DigitalHomePageSectionModel(
                     @Expose
                     val section: Section = Section())
 
-    data class Section(@SerializedName("title")
+    data class Section(@SerializedName("id")
+                       @Expose
+                       val id: Int = -1,
+                       @SerializedName("title")
                        @Expose
                        val title: String = "",
                        @SerializedName("items")
@@ -49,31 +60,31 @@ abstract class DigitalHomePageSectionModel(
 }
 
 class DigitalHomePageFavoritesModel: DigitalHomePageSectionModel() {
-    override fun type(typeFactory: DigitalHomePageTypeFactory): Int {
+    override fun type(typeFactory: DigitalHomePageAdapterFactory): Int {
         return typeFactory.type(this)
     }
 }
 
 class DigitalHomePageTrustMarkModel: DigitalHomePageSectionModel() {
-    override fun type(typeFactory: DigitalHomePageTypeFactory): Int {
+    override fun type(typeFactory: DigitalHomePageAdapterFactory): Int {
         return typeFactory.type(this)
     }
 }
 
 class DigitalHomePageNewUserZoneModel: DigitalHomePageSectionModel() {
-    override fun type(typeFactory: DigitalHomePageTypeFactory): Int {
+    override fun type(typeFactory: DigitalHomePageAdapterFactory): Int {
         return typeFactory.type(this)
     }
 }
 
 class DigitalHomePageSpotlightModel: DigitalHomePageSectionModel() {
-    override fun type(typeFactory: DigitalHomePageTypeFactory): Int {
+    override fun type(typeFactory: DigitalHomePageAdapterFactory): Int {
         return typeFactory.type(this)
     }
 }
 
 class DigitalHomePageSubscriptionModel: DigitalHomePageSectionModel() {
-    override fun type(typeFactory: DigitalHomePageTypeFactory): Int {
+    override fun type(typeFactory: DigitalHomePageAdapterFactory): Int {
         return typeFactory.type(this)
     }
 }

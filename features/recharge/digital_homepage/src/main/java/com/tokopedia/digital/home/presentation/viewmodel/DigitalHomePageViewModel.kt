@@ -8,6 +8,7 @@ import com.tokopedia.digital.home.model.DigitalHomePageItemModel
 import com.tokopedia.digital.home.model.RechargeHomepageSectionSkeleton
 import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.presentation.Util.DigitalHomePageDispatchersProvider
+import com.tokopedia.digital.home.presentation.Util.RechargeHomepageSectionMapper
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -38,8 +39,9 @@ class DigitalHomePageViewModel @Inject constructor(
     private val mutableRechargeHomepageSectionSkeleton = MutableLiveData<Result<List<RechargeHomepageSectionSkeleton.Item>>>()
     val rechargeHomepageSectionSkeleton: LiveData<Result<List<RechargeHomepageSectionSkeleton.Item>>>
         get() = mutableRechargeHomepageSectionSkeleton
-    private val mutableRechargeHomepageSections = MutableLiveData<Result<RechargeHomepageSections>>()
-    val rechargeHomepageSections: LiveData<Result<RechargeHomepageSections>>
+    var localRechargeHomepageSections: List<RechargeHomepageSections.Section> = listOf()
+    private val mutableRechargeHomepageSections = MutableLiveData<List<RechargeHomepageSections.Section>>()
+    val rechargeHomepageSections: LiveData<List<RechargeHomepageSections.Section>>
         get() = mutableRechargeHomepageSections
     private val mutableRechargeHomepageSectionAction = MutableLiveData<Result<RechargeHomepageSections.Action>>()
     val rechargeHomepageSectionAction: LiveData<Result<RechargeHomepageSections.Action>>
@@ -76,9 +78,11 @@ class DigitalHomePageViewModel @Inject constructor(
                     .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5).build()
             val data = withContext(dispatcher.IO) {
                 graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
-            }.getSuccessData<RechargeHomepageSectionSkeleton.Response>().response
+            }.getSuccessData<RechargeHomepageSectionSkeleton.Response>().response.sections
 
-            mutableRechargeHomepageSectionSkeleton.postValue(Success(data.sections))
+            // Add initial section data
+            localRechargeHomepageSections = RechargeHomepageSectionMapper.mapInitialHomepageSections(data)
+            mutableRechargeHomepageSections.postValue(localRechargeHomepageSections)
         }) {
             mutableRechargeHomepageSectionSkeleton.postValue(Fail(it))
         }
@@ -95,11 +99,56 @@ class DigitalHomePageViewModel @Inject constructor(
             }.getSuccessData<RechargeHomepageSections.Response>().response
             data.requestIDs = requestIDs
 
-            mutableRechargeHomepageSections.postValue(Success(data))
+            /*
+                Update local (viewmodel) section then update LiveData in order to
+                prevent missing section updates caused by postValue override
+             */
+            localRechargeHomepageSections = updateSectionsData(localRechargeHomepageSections, data)
+            mutableRechargeHomepageSections.postValue(localRechargeHomepageSections)
         }) {
-            val emptyData = RechargeHomepageSections(requestIDs = requestIDs, error = it.message ?: "")
-            mutableRechargeHomepageSections.postValue(Success(emptyData))
+            // Because error occured, remove sections
+            localRechargeHomepageSections = updateSectionsData(
+                    localRechargeHomepageSections,
+                    RechargeHomepageSections(requestIDs = requestIDs)
+            )
+            mutableRechargeHomepageSections.postValue(localRechargeHomepageSections)
         }
+    }
+
+    private fun updateSectionsData(
+            oldData: List<RechargeHomepageSections.Section>,
+            incomingData: RechargeHomepageSections): List<RechargeHomepageSections.Section> {
+        var data = oldData.toMutableList()
+        val requestIDs = incomingData.requestIDs
+        when (incomingData.sections.size) {
+            0 -> {
+                // Remove sections
+                data = data.filter { it.id !in requestIDs }.toMutableList()
+            }
+            1 -> {
+                // One on one mapping; remove other IDs except the first one
+                if (requestIDs.size > 1) {
+                    val indexes = requestIDs.subList(1, requestIDs.size)
+                    data = data.filter { it.id !in indexes }.toMutableList()
+                }
+                val index = data.indexOfFirst { it.id == requestIDs.first() }
+                data[index] = incomingData.sections.first()
+            }
+            else -> {
+                /*
+                    Special case; remove other IDs except the first one,
+                    then insert all sections to the appropriate index
+                 */
+                if (requestIDs.size > 1) {
+                    val indexes = requestIDs.subList(1, requestIDs.size)
+                    data = data.filter { it.id !in indexes }.toMutableList()
+                }
+                val index = data.indexOfFirst { it.id == requestIDs.first() }
+                data.removeAt(index)
+                data.addAll(index, incomingData.sections)
+            }
+        }
+        return data.toList()
     }
 
     fun triggerRechargeSectionAction(mapParams: Map<String, Any>) {
@@ -176,8 +225,6 @@ class DigitalHomePageViewModel @Inject constructor(
         const val SECTION_LEGO_BANNERS = "LEGO_BANNERS"
         const val SECTION_PRODUCT_CARD_ROW = "PRODUCT_CARD_ROW"
         const val SECTION_COUNTDOWN_PRODUCT_BANNER = "COUNTDOWN_PRODUCT_BANNER"
-
-        val SECTION_HOME_COMPONENTS = listOf(SECTION_URGENCY_WIDGET, SECTION_LEGO_BANNERS)
 
         val SKELETON_QUERY by lazy {
             val platformID = "\$platformID"
