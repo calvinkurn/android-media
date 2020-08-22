@@ -43,6 +43,11 @@ import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.*
 import com.tokopedia.shop.analytic.model.*
+import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
+import com.tokopedia.shop.analytic.model.CustomDimensionShopPageAttribution
+import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct
+import com.tokopedia.shop.analytic.model.ShopTrackProductTypeDef
+import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef
 import com.tokopedia.shop.common.constant.ShopHomeType
 import com.tokopedia.shop.common.constant.ShopPageConstant.GO_TO_MEMBERSHIP_DETAIL
 import com.tokopedia.shop.common.constant.ShopParamConstant
@@ -103,6 +108,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         private const val REQUEST_CODE_ADD_PRODUCT = 3697
         private const val GRID_SPAN_COUNT = 2
         private const val SHOP_ATTRIBUTION = "EXTRA_SHOP_ATTRIBUTION"
+        private const val SELECTED_ETALASE_TYPE_DEFAULT_VALUE = -10
         const val SAVED_SELECTED_ETALASE_ID = "saved_etalase_id"
         const val SAVED_SELECTED_ETALASE_NAME = "saved_etalase_name"
         const val SAVED_SHOP_ID = "saved_shop_id"
@@ -187,6 +193,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     private var threeDotsClickShopProductViewModel: ShopProductViewModel? = null
     private var shopSortSharedViewModel: ShopSortSharedViewModel? = null
     private var threeDotsClickShopTrackingType = -1
+    private var selectedEtalaseType: Int = SELECTED_ETALASE_TYPE_DEFAULT_VALUE
     private val customDimensionShopPage: CustomDimensionShopPage
         get() {
             return CustomDimensionShopPage.create(shopId, isOfficialStore, isGoldMerchant)
@@ -323,7 +330,10 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                     ),
                     shopProductViewModel,
                     productPosition + 1,
-                    shopId
+                    shopId,
+                    shopProductViewModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
+                    false,
+                    shopProductViewModel.isUpcoming
             )
             ShopTrackProductTypeDef.PRODUCT -> shopPageTracking?.clickProduct(isOwner,
                     isLogin,
@@ -339,7 +349,10 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                     ),
                     shopProductViewModel,
                     productPosition + 1 - shopProductAdapter.shopProductFirstViewModelPosition,
-                    shopId
+                    shopId,
+                    shopProductViewModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
+                    shopProductViewModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
+                    shopProductViewModel.isUpcoming
             )
             ShopTrackProductTypeDef.ETALASE_HIGHLIGHT -> shopPageTracking?.clickProduct(isOwner,
                     isLogin,
@@ -355,7 +368,10 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                     ),
                     shopProductViewModel,
                     productPosition + 1,
-                    shopId
+                    shopId,
+                    shopProductViewModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
+                    shopProductAdapter.getEtalaseNameHighLightType(shopProductViewModel) == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
+                    shopProductViewModel.isUpcoming
             )
         }
         goToPDP(
@@ -383,7 +399,10 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                     ),
                     shopProductViewModel,
                     productPosition + 1,
-                    shopId
+                    shopId,
+                    shopProductViewModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
+                    false,
+                    shopProductViewModel.isUpcoming
             )
             ShopTrackProductTypeDef.PRODUCT -> shopPageTracking?.impressionProductList(isOwner,
                     isLogin,
@@ -399,7 +418,10 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                     ),
                     shopProductViewModel,
                     productPosition + 1 - shopProductAdapter.shopProductFirstViewModelPosition,
-                    shopId
+                    shopId,
+                    shopProductViewModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
+                    shopProductViewModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
+                    shopProductViewModel.isUpcoming
             )
             ShopTrackProductTypeDef.ETALASE_HIGHLIGHT -> shopPageTracking?.impressionProductList(isOwner,
                     isLogin,
@@ -415,7 +437,10 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                     ),
                     shopProductViewModel,
                     productPosition + 1,
-                    shopId
+                    shopId,
+                    shopProductViewModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
+                    shopProductAdapter.getEtalaseNameHighLightType(shopProductViewModel) == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
+                    shopProductViewModel.isUpcoming
             )
         }
     }
@@ -429,10 +454,9 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                 val etalaseId = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_PICKER_ETALASE_ID)
                 val etalaseName = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_PICKER_ETALASE_NAME)
                 val isNeedToReloadData = data.getBooleanExtra(ShopParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, false)
-
                 shopPageTracking?.clickMoreMenuChip(
                         isOwner,
-                        etalaseName,
+                        getSelectedEtalaseChip(),
                         customDimensionShopPage
                 )
                 if (shopPageTracking != null) {
@@ -524,45 +548,53 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     private fun handleWishlistAction(productCardOptionsModel: ProductCardOptionsModel) {
-        threeDotsClickShopProductViewModel?.let { shopProductViewModel ->
-            when (threeDotsClickShopTrackingType) {
-                ShopTrackProductTypeDef.FEATURED -> shopPageTracking?.clickWishlist(
-                        !shopProductViewModel.isWishList,
-                        isLogin,
-                        getSelectedEtalaseChip(), FEATURED_PRODUCT,
-                        CustomDimensionShopPageProduct.create(
-                                shopId,
-                                isOfficialStore,
-                                isGoldMerchant,
-                                shopProductViewModel.id, shopRef
-                        ))
-                ShopTrackProductTypeDef.PRODUCT -> shopPageTracking?.clickWishlist(
-                        !shopProductViewModel.isWishList,
-                        isLogin,
-                        getSelectedEtalaseChip(), getSelectedEtalaseChip(),
-                        CustomDimensionShopPageProduct.create(
-                                shopId,
-                                isOfficialStore,
-                                isGoldMerchant,
-                                shopProductViewModel.id, shopRef))
-                else -> // highlight
-                    shopPageTracking?.clickWishlist(
+        if (!productCardOptionsModel.wishlistResult.isUserLoggedIn) {
+            onErrorAddToWishList(UserNotLoginException())
+        } else {
+            threeDotsClickShopProductViewModel?.let { shopProductViewModel ->
+                when (threeDotsClickShopTrackingType) {
+                    ShopTrackProductTypeDef.FEATURED -> shopPageTracking?.clickWishlist(
                             !shopProductViewModel.isWishList,
                             isLogin,
-                            getSelectedEtalaseChip(),
-                            shopProductAdapter.getEtalaseNameHighLight(shopProductViewModel),
+                            getSelectedEtalaseChip(), FEATURED_PRODUCT,
                             CustomDimensionShopPageProduct.create(
                                     shopId,
                                     isOfficialStore,
                                     isGoldMerchant,
                                     shopProductViewModel.id, shopRef
-                            ))
+                            ),
+                            shopProductViewModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
+                            false,
+                            shopProductViewModel.isUpcoming)
+                    ShopTrackProductTypeDef.PRODUCT -> shopPageTracking?.clickWishlist(
+                            !shopProductViewModel.isWishList,
+                            isLogin,
+                            getSelectedEtalaseChip(), getSelectedEtalaseChip(),
+                            CustomDimensionShopPageProduct.create(
+                                    shopId,
+                                    isOfficialStore,
+                                    isGoldMerchant,
+                                    shopProductViewModel.id, shopRef),
+                            shopProductViewModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
+                            shopProductViewModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
+                            shopProductViewModel.isUpcoming)
+                    else -> // highlight
+                        shopPageTracking?.clickWishlist(
+                                !shopProductViewModel.isWishList,
+                                isLogin,
+                                getSelectedEtalaseChip(),
+                                shopProductAdapter.getEtalaseNameHighLight(shopProductViewModel),
+                                CustomDimensionShopPageProduct.create(
+                                        shopId,
+                                        isOfficialStore,
+                                        isGoldMerchant,
+                                        shopProductViewModel.id, shopRef
+                                ),
+                                shopProductViewModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
+                                shopProductAdapter.getEtalaseNameHighLightType(shopProductViewModel) == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
+                                shopProductViewModel.isUpcoming)
+                }
             }
-        }
-
-        if (!productCardOptionsModel.wishlistResult.isUserLoggedIn) {
-            onErrorAddToWishList(UserNotLoginException())
-        } else {
             handleWishlistActionForLoggedInUser(productCardOptionsModel)
         }
 
@@ -1184,6 +1216,11 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     override fun onEtalaseFilterClicked() {
+        shopPageTracking?.clickEtalaseChip(
+                isOwner,
+                getSelectedEtalaseChip(),
+                CustomDimensionShopPage.create(shopId, isOfficialStore, isGoldMerchant)
+        )
         redirectToEtalasePicker()
     }
 
