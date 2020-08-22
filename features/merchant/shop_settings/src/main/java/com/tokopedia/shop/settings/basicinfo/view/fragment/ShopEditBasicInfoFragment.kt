@@ -32,6 +32,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.basicinfo.data.AllowShopNameDomainChanges.*
+import com.tokopedia.shop.settings.basicinfo.data.UploadShopEditImageModel
 import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditBasicInfoActivity.Companion.EXTRA_MESSAGE
 import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditBasicInfoActivity.Companion.EXTRA_SHOP_MODEL
 import com.tokopedia.shop.settings.basicinfo.view.viewmodel.ShopEditBasicInfoViewModel
@@ -40,6 +41,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_shop_edit_basic_info.*
 import kotlinx.android.synthetic.main.partial_toolbar_save_button.*
 import javax.inject.Inject
@@ -62,6 +64,9 @@ class ShopEditBasicInfoFragment: Fragment() {
 
     @Inject
     lateinit var viewModel: ShopEditBasicInfoViewModel
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private var shopDomainTextWatcher: TextWatcher? = null
     private var shopBasicDataModel: ShopBasicDataModel? = null
@@ -293,6 +298,7 @@ class ShopEditBasicInfoFragment: Fragment() {
     private fun observeUploadShopImage() {
         observe(viewModel.uploadShopImage) {
             when(it) {
+                is Success -> onSuccessUploadShopImage(it.data)
                 is Fail -> onErrorUploadShopImage(it.throwable)
             }
         }
@@ -372,6 +378,12 @@ class ShopEditBasicInfoFragment: Fragment() {
                     shopDomainSuggestions.show(shopDomains)
                 }
             }
+        }
+    }
+
+    private fun onSuccessUploadShopImage(uploadShopEditImageModel: UploadShopEditImageModel) {
+        uploadShopEditImageModel.data?.image?.picSrc?.let {
+            userSession.shopAvatar = it
         }
     }
 
@@ -480,6 +492,8 @@ class ShopEditBasicInfoFragment: Fragment() {
 
     private fun onSuccessUpdateShopBasicData(successMessage: String) {
         hideSubmitLoading()
+
+        userSession.shopName = viewModel.shopName ?: ""
 
         val data = Intent().putExtra(EXTRA_MESSAGE, successMessage)
         activity?.setResult(Activity.RESULT_OK, data)
