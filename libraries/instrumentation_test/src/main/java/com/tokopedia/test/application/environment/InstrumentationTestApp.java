@@ -141,7 +141,7 @@ public class InstrumentationTestApp extends BaseMainApplication
         for (Map.Entry<String, String> entry : remoteConfigDatas.entrySet()) {
             editor.putString(entry.getKey(), entry.getValue());
         }
-        editor.apply();
+        editor.commit();
     }
 
     @Override
