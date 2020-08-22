@@ -591,15 +591,30 @@ open class HomeFragment : BaseDaggerFragment(),
     override fun onResume() {
         super.onResume()
         shouldPausePlay = true
+        BenchmarkHelper.beginSystraceSection("HomeFragment.OnResume.CreateAndCallSendScreen")
         createAndCallSendScreen()
-        if (!shouldPausePlay) adapter?.onResume()
-        conditionalViewModelRefresh()
-        if (activityStateListener != null) {
-            activityStateListener!!.onResume()
+        BenchmarkHelper.endSystraceSection()
+
+        if (!shouldPausePlay) {
+            BenchmarkHelper.beginSystraceSection("HomeFragment.OnResume.adapter.onResume()")
+            adapter?.onResume()
+            BenchmarkHelper.endSystraceSection()
         }
+        BenchmarkHelper.beginSystraceSection("HomeFragment.OnResume.ConditionalViewModelRefresh")
+        conditionalViewModelRefresh()
+        BenchmarkHelper.endSystraceSection()
+        if (activityStateListener != null) {
+            BenchmarkHelper.beginSystraceSection("HomeFragment.OnResume.ActivityStateListener.OnResume")
+            activityStateListener!!.onResume()
+            BenchmarkHelper.endSystraceSection()
+        }
+        BenchmarkHelper.beginSystraceSection("HomeFragment.OnResume.AdjustStatusBarColor")
         adjustStatusBarColor()
+        BenchmarkHelper.endSystraceSection()
         if (isEnableToAutoRefresh(autoRefreshFlag)) {
+            BenchmarkHelper.beginSystraceSection("HomeFragment.OnResume.SetAutoRefreshOnHome")
             setAutoRefreshOnHome(autoRefreshFlag)
+            BenchmarkHelper.endSystraceSection()
         }
     }
 

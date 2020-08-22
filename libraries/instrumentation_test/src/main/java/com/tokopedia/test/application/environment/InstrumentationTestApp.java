@@ -3,8 +3,11 @@ package com.tokopedia.test.application.environment;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Base64;
+
+import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
@@ -35,6 +38,8 @@ import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface;
 import com.tokopedia.test.application.environment.interceptor.TopAdsDetectorInterceptor;
@@ -75,6 +80,8 @@ public class InstrumentationTestApp extends BaseMainApplication
 
     @Override
     public void onCreate() {
+        GlobalConfig.DEBUG = true;
+        GlobalConfig.VERSION_NAME = "3.66";
         SplitCompat.install(this);
         FirebaseApp.initializeApp(this);
         FpmLogger.init(this);
@@ -86,8 +93,6 @@ public class InstrumentationTestApp extends BaseMainApplication
         LinkerManager.initLinkerManager(getApplicationContext()).setGAClientId(TrackingUtils.getClientID(getApplicationContext()));
         TrackApp.getInstance().initializeAllApis();
         NetworkClient.init(this);
-        GlobalConfig.DEBUG = true;
-        GlobalConfig.VERSION_NAME = "3.66";
         GraphqlClient.init(this);
         com.tokopedia.config.GlobalConfig.DEBUG = true;
         RemoteConfigInstance.initAbTestPlatform(this);
@@ -128,6 +133,15 @@ public class InstrumentationTestApp extends BaseMainApplication
             ArrayList<Interceptor> interceptorList = new ArrayList<Interceptor>(testInterceptors.values());
             GraphqlClient.reInitRetrofitWithInterceptors(interceptorList, this);
         }
+    }
+
+    public void enableRemoteConfig(Map<String, String> remoteConfigDatas) {
+        Context context = InstrumentationRegistry.getInstrumentation().getContext();
+        SharedPreferences.Editor editor = context.getSharedPreferences("RemoteConfigDebugCache", Context.MODE_PRIVATE).edit();
+        for (Map.Entry<String, String> entry : remoteConfigDatas.entrySet()) {
+            editor.putString(entry.getKey(), entry.getValue());
+        }
+        editor.apply();
     }
 
     @Override

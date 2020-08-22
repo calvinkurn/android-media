@@ -1,10 +1,13 @@
 package com.tokopedia.home.testcase
 
+import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analytics.performance.util.PerformanceDataFileUtils.writePLTPerformanceFile
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.home.environment.InstrumentationHomeTestActivity
 import com.tokopedia.home.mock.HomeMockResponseConfig
 import com.tokopedia.test.application.TestRepeatRule
+import com.tokopedia.test.application.environment.InstrumentationTestApp
 import com.tokopedia.test.application.environment.interceptor.size.GqlNetworkAnalyzerInterceptor
 import com.tokopedia.test.application.util.setupGraphqlMockResponseWithCheck
 import com.tokopedia.test.application.util.setupTotalSizeInterceptor
@@ -27,6 +30,14 @@ class PltHomeDynamicChannelPerformanceTest {
             super.beforeActivityLaunched()
             setupGraphqlMockResponseWithCheck(HomeMockResponseConfig())
             setupTotalSizeInterceptor(listOf("homeData"))
+            GlobalConfig.DEBUG = true
+            val application = InstrumentationRegistry.getInstrumentation().targetContext.applicationContext as InstrumentationTestApp
+            application.enableRemoteConfig(
+                    mapOf(
+                            Pair("android_enable_home_sndscr", "true"),
+                            Pair("android_flag_enable_new_wishlist_page", "true")
+                    )
+            )
         }
     }
 
