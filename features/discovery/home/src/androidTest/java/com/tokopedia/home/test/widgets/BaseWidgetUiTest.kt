@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
+import com.tokopedia.home.beranda.data.datasource.default_data_source.HomeDefaultDataSource
 import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
 import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactoryImpl
 import com.tokopedia.home.beranda.data.usecase.HomeUseCase
