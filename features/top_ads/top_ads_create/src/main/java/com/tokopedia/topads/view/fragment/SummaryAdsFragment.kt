@@ -15,11 +15,15 @@ import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.design.text.watcher.NumberTextWatcher
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.topads.common.activity.NoCreditActivity
 import com.tokopedia.topads.common.activity.SuccessActivity
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
+import com.tokopedia.topads.common.getSellerMigrationFeatureName
+import com.tokopedia.topads.common.getSellerMigrationRedirectionApplinks
+import com.tokopedia.topads.common.isFromPdpSellerMigration
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.CreateManualAdsStepperModel
 import com.tokopedia.topads.data.param.AdsItem
@@ -87,7 +91,9 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
         stepperListener?.goToNextPage(stepperModel)
     }
 
-    override fun populateView(stepperModel: CreateManualAdsStepperModel) {
+    override fun populateView() {
+        if(activity is StepperActivity)
+            (activity as StepperActivity).updateToolbarTitle(getString(R.string.summary_page_step))
     }
 
     override fun getScreenName(): String {
@@ -110,9 +116,19 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
     private fun onSuccess(data: TopAdsDepositResponse.Data) {
         isEnoughDeposit = data.topadsDashboardDeposits.data.amount > 0
         val intent: Intent = if (isEnoughDeposit) {
-            Intent(context, SuccessActivity::class.java)
+            Intent(context, SuccessActivity::class.java).apply {
+                if (isFromPdpSellerMigration(activity?.intent?.extras)) {
+                    putExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, getSellerMigrationFeatureName(activity?.intent?.extras))
+                    putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, getSellerMigrationRedirectionApplinks(activity?.intent?.extras))
+                }
+            }
         } else {
-            Intent(context, NoCreditActivity::class.java)
+            Intent(context, NoCreditActivity::class.java).apply {
+                if (isFromPdpSellerMigration(activity?.intent?.extras)) {
+                    putExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, getSellerMigrationFeatureName(activity?.intent?.extras))
+                    putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, getSellerMigrationRedirectionApplinks(activity?.intent?.extras))
+                }
+            }
         }
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
@@ -279,9 +295,5 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
         product_count.text = stepperModel?.selectedProductIds?.count().toString()
         keyword_count.text = stepperModel?.selectedKeywords?.count().toString()
         group_name.text = stepperModel?.groupName
-    }
-
-    override fun updateToolBar() {
-        (activity as StepperActivity).updateToolbarTitle(getString(R.string.summary_page_step))
     }
 }

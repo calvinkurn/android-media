@@ -45,7 +45,7 @@
     <string name="deals_search_location_error">Terjadi Kesalahan, tidak dapat menemukan pencarian. Silakan coba lagi nanti.</string>
     <string name="deals_search_location_more_error">Terjadi Kesalahan, tidak dapat memuat hasil lanjutan pencarian. Silakan coba lagi nanti.</string>
     <string name="deals_current_location_error">Tidak dapat mendapatkan lokasi saat ini.</string>
-    <string name="deals_menu_coach_mark_title">Check e-voucher kamu</string>
+    <string name="deals_menu_coach_mark_title">Cek e-voucher kamu</string>
     <string name="deals_menu_coach_mark_description">Sudah beli voucher? Lihat cara pakai dan redeem voucher kamu di sini!</string>
     <string name="deals_popular_place_coach_mark_title">Pilihan voucher di tempat populer</string>
     <string name="deals_popular_places_coach_mark_description">Lihat berbagai voucher yang bisa kamu pakai di tempat hangout paling hits.</string>

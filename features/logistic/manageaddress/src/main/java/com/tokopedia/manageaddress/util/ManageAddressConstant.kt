@@ -15,6 +15,7 @@ object ManageAddressConstant {
 
     const val KERO_TOKEN = "token"
     const val EDIT_PARAM = "EDIT_PARAM"
+    const val EXTRA_REF = "EXTRA_REF"
 
     const val SCREEN_NAME_USER_NEW = "/user/address/create"
 }

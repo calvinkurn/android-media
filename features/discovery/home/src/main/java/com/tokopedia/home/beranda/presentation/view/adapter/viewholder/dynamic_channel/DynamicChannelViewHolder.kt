@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewStub
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.crashlytics.android.Crashlytics
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.design.countdown.CountDownView
 import com.tokopedia.home.R
@@ -93,7 +93,7 @@ abstract class DynamicChannelViewHolder(itemView: View,
                 setupContent(channel, payloads)
             }
         } catch (e: Exception) {
-            FirebaseCrashlytics.getInstance().log("E/${getViewHolderClassName()}:${e.localizedMessage}")
+            Crashlytics.log(0, getViewHolderClassName(), e.localizedMessage)
         }
         BenchmarkHelper.endSystraceSection()
     }
@@ -113,7 +113,7 @@ abstract class DynamicChannelViewHolder(itemView: View,
                 setupContent(channel)
             }
         } catch (e: Exception) {
-            FirebaseCrashlytics.getInstance().log("E/${getViewHolderClassName()}:${e.localizedMessage}")
+            Crashlytics.log(0, getViewHolderClassName(), e.localizedMessage)
         }
         BenchmarkHelper.endSystraceSection()
     }

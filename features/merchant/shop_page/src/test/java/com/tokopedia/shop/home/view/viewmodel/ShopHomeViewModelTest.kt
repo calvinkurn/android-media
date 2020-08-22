@@ -13,6 +13,8 @@ import com.tokopedia.shop.home.data.model.ShopLayoutWidget
 import com.tokopedia.shop.home.domain.GetShopPageHomeLayoutUseCase
 import com.tokopedia.shop.home.view.model.ShopHomePlayCarouselUiModel
 import com.tokopedia.shop.home.view.model.ShopPageHomeLayoutUiModel
+import com.tokopedia.shop.home.domain.CheckCampaignNotifyMeUseCase
+import com.tokopedia.shop.home.domain.GetCampaignNotifyMeUseCase
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -45,19 +47,22 @@ class ShopHomeViewModelTest {
     }
 
     private val getShopProductUseCase: GqlGetShopProductUseCase = mockk(relaxed = true)
+    @RelaxedMockK
+    lateinit var getCampaignNotifyMeUseCase: Provider<GetCampaignNotifyMeUseCase>
+    @RelaxedMockK
+    lateinit var checkCampaignNotifyMeUseCase: Provider<CheckCampaignNotifyMeUseCase>
     private val getShopPageHomeLayoutUseCase: GetShopPageHomeLayoutUseCase = mockk(relaxed = true)
     private val addToCartUseCase: AddToCartUseCase = mockk(relaxed = true)
-    private val addWishListUseCase: AddWishListUseCase = mockk(relaxed = true)
-    private val removeWishListUseCase: RemoveWishListUseCase = mockk(relaxed = true)
     private val userSessionInterface: UserSessionInterface = mockk(relaxed = true)
     private val getPlayWidgetUseCase: GetPlayWidgetUseCase = mockk(relaxed = true)
     private val playToggleChannelReminderUseCase: PlayToggleChannelReminderUseCase = mockk(relaxed = true)
     @RelaxedMockK
     lateinit var gqlCheckWishlistUseCaseProvider: Provider<GQLCheckWishlistUseCase>
-    @RelaxedMockK
-    lateinit var gqlCheckWishlistUseCase: GQLCheckWishlistUseCase
 
     private lateinit var viewModel: ShopHomeViewModel
+    private val mockShopId = "1234"
+    private val mockSortId = 2
+    private val mockPage = 2
 
     @Before
     fun setup() {
@@ -72,19 +77,18 @@ class ShopHomeViewModelTest {
                 playToggleChannelReminderUseCase,
                 addWishListUseCase,
                 removeWishListUseCase,
-                gqlCheckWishlistUseCaseProvider
+                gqlCheckWishlistUseCaseProvider,
+                getCampaignNotifyMeUseCase,
+                checkCampaignNotifyMeUseCase
         )
     }
 
     @Test
     fun `check whether response get home layout success is not null`() {
-
-        val mockShopId = "1234"
-
         coEvery { getShopPageHomeLayoutUseCase.executeOnBackground() } returns ShopLayoutWidget()
         coEvery { getShopProductUseCase.executeOnBackground() } returns ShopProduct.GetShopProduct()
 
-        viewModel.getShopPageHomeData(mockShopId)
+        viewModel.getShopPageHomeData(mockShopId, mockSortId)
 
         coVerify {
             getShopPageHomeLayoutUseCase.executeOnBackground()
@@ -92,20 +96,17 @@ class ShopHomeViewModelTest {
         }
 
         assertTrue(viewModel.shopHomeLayoutData.value is Success)
-        assertTrue(viewModel.productListData.value is Success)
+        assertTrue(viewModel.initialProductListData.value is Success)
         assertNotNull(viewModel.shopHomeLayoutData.value)
-        assertNotNull(viewModel.productListData.value)
+        assertNotNull(viewModel.initialProductListData.value)
     }
 
     @Test
     fun `check whether response get home layout error is null`() {
-
-        val mockShopId = "1234"
-
         coEvery { getShopPageHomeLayoutUseCase.executeOnBackground() } throws Exception()
         coEvery { getShopProductUseCase.executeOnBackground() } throws Exception()
 
-        viewModel.getShopPageHomeData(mockShopId)
+        viewModel.getShopPageHomeData(mockShopId, mockSortId)
 
         coVerify {
             getShopPageHomeLayoutUseCase.executeOnBackground()
@@ -113,38 +114,34 @@ class ShopHomeViewModelTest {
         }
 
         assert(viewModel.shopHomeLayoutData.value is Fail)
-        assertNull(viewModel.productListData.value)
+        assertNull(viewModel.initialProductListData.value)
     }
 
     @Test
     fun `check whether response get lazy load product success is not null`() {
-        val mockShopId = "1234"
-
         coEvery { getShopProductUseCase.executeOnBackground() } returns ShopProduct.GetShopProduct()
 
-        viewModel.getNewProductList(mockShopId, 2)
+        viewModel.getNewProductList(mockShopId, mockSortId, mockPage)
 
         coVerify {
             getShopProductUseCase.executeOnBackground()
         }
 
-        assertTrue(viewModel.productListData.value is Success)
-        assertNotNull(viewModel.productListData.value)
+        assertTrue(viewModel.newProductListData.value is Success)
+        assertNotNull(viewModel.newProductListData.value)
     }
 
     @Test
     fun `check whether response get lazy load product failed is null`() {
-        val mockShopId = "1234"
-
         coEvery { getShopProductUseCase.executeOnBackground() } throws Exception()
 
-        viewModel.getNewProductList(mockShopId, anyInt())
+        viewModel.getNewProductList(mockShopId, mockSortId, mockPage)
 
         coVerify {
             getShopProductUseCase.executeOnBackground()
         }
 
-        assertTrue(viewModel.productListData.value is Fail)
+        assertTrue(viewModel.newProductListData.value is Fail)
     }
 
     @Test

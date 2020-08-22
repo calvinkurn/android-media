@@ -18,6 +18,7 @@ object ShopShowcaseListParam {
     const val EXTRA_SHOP_ID = "SHOP_ID"
     const val EXTRA_ETALASE_ID = "ETALASE_ID"
     const val EXTRA_ETALASE_NAME = "ETALASE_NAME"
+    const val EXTRA_ETALASE_TYPE = "ETALASE_TYPE"
     const val EXTRA_ETALASE_BADGE = "ETALASE_BADGE"
     const val EXTRA_SELECTED_ETALASE_ID = "EXTRA_SELECTED_ETALASE_ID"
     const val EXTRA_EDIT_SHOWCASE_RESULT = "IS_EDIT_SHOWCASE_SUCCESS"
@@ -37,6 +38,7 @@ object ShopShowcaseEditParam {
 
 object ShowcaseType {
     const val GENERATED: Int = -1
+    const val CAMPAIGN: Int = -2
     const val CUSTOM: Int = 1
 }
 

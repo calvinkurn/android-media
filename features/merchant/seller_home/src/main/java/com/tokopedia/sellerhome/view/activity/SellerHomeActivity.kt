@@ -18,7 +18,9 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.requestStatusBarDark
 import com.tokopedia.kotlin.extensions.view.show
@@ -28,6 +30,7 @@ import com.tokopedia.sellerhome.SellerHomeRouter
 import com.tokopedia.sellerhome.analytic.NavigationTracking
 import com.tokopedia.sellerhome.analytic.TrackingConstant
 import com.tokopedia.sellerhome.analytic.performance.HomeLayoutLoadTimeMonitoring
+import com.tokopedia.sellerhome.analytic.performance.SellerHomeLoadTimeMonitoringListener
 import com.tokopedia.sellerhome.common.DeepLinkHandler
 import com.tokopedia.sellerhome.common.FragmentType
 import com.tokopedia.sellerhome.common.PageFragment
@@ -56,6 +59,8 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         fun createIntent(context: Context) = Intent(context, SellerHomeActivity::class.java)
 
         private const val DOUBLE_TAB_EXIT_DELAY = 2000L
+
+        private const val SHOP_PAGE_PREFIX = "tokopedia://shop/"
     }
 
     @Inject lateinit var userSession: UserSessionInterface
@@ -82,6 +87,12 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
     private var performanceMonitoringSellerHomelayout: PerformanceMonitoring? = null
 
     var performanceMonitoringSellerHomeLayoutPlt: HomeLayoutLoadTimeMonitoring? = null
+    var sellerHomeLoadTimeMonitoringListener: SellerHomeLoadTimeMonitoringListener? = null
+
+    private var shouldMoveToReview: Boolean = false
+    private var shouldMoveToCentralizedPromo: Boolean = false
+    private var shouldMoveToShopPage: Boolean = false
+    private var shouldMoveToBalance: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
@@ -93,14 +104,48 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sah_seller_home)
 
+        with (intent?.getStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA)?.firstOrNull().orEmpty()) {
+            shouldMoveToReview = this == ApplinkConst.REPUTATION
+            shouldMoveToCentralizedPromo = this == ApplinkConstInternalSellerapp.CENTRALIZED_PROMO
+            shouldMoveToShopPage = this.startsWith(SHOP_PAGE_PREFIX)
+            shouldMoveToBalance = this == ApplinkConstInternalGlobal.SALDO_DEPOSIT
+        }
+        val isRedirectedFromSellerMigration = intent?.hasExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA) ?: false ||
+                intent?.hasExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME) ?: false
+
         setupToolbar()
         setupStatusBar()
         setupNavigator()
         setupDefaultPage()
         setupBottomNav()
-        UpdateCheckerHelper.checkAppUpdate(this)
+        UpdateCheckerHelper.checkAppUpdate(this, isRedirectedFromSellerMigration)
         observeNotificationsLiveData()
         observeShopInfoLiveData()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        val appLinks = ArrayList(intent?.getStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA).orEmpty())
+        if (appLinks.isNotEmpty()) {
+            val appLinkToOpen = appLinks.firstOrNull().orEmpty()
+            if (shouldMoveToReview || shouldMoveToCentralizedPromo || shouldMoveToShopPage || shouldMoveToBalance) {
+                shouldMoveToReview = false
+                shouldMoveToCentralizedPromo = false
+                shouldMoveToShopPage = false
+                shouldMoveToBalance = false
+                RouteManager.getIntent(this, appLinkToOpen).apply {
+                    replaceExtras(this@SellerHomeActivity.intent.extras)
+                    appLinks.find { it != ApplinkConst.REPUTATION &&
+                                    it != ApplinkConstInternalSellerapp.CENTRALIZED_PROMO &&
+                                    !it.startsWith(SHOP_PAGE_PREFIX) &&
+                                    it != ApplinkConstInternalGlobal.SALDO_DEPOSIT }?.let { nextDestinationApplink ->
+                        putExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, nextDestinationApplink)
+                    }
+                    addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+                    startActivity(this)
+                }
+            }
+        }
     }
 
     override fun onResume() {
@@ -327,6 +372,11 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
             if (it is Success) {
                 navigator?.run {
                     val shopName = it.data.shopName
+                    val shopAvatar = it.data.shopAvatar
+
+                    // update userSession
+                    userSession.shopName = shopName
+                    userSession.shopAvatar = shopAvatar
 
                     if(isHomePageSelected()) {
                         supportActionBar?.title = shopName

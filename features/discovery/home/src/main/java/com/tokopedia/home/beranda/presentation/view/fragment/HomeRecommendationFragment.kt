@@ -419,7 +419,7 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
             Toaster.make(
                     it,
                     message,
-                    Snackbar.LENGTH_LONG,
+                    Toaster.LENGTH_LONG,
                     Toaster.TYPE_NORMAL,
                     getString(R.string.go_to_wishlist),
                     View.OnClickListener { goToWishlist() })
@@ -435,7 +435,7 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
         if (activity == null) return
         val view = activity!!.findViewById<View>(android.R.id.content)
         val message = getString(R.string.msg_success_remove_wishlist)
-        Snackbar.make(view, message, Snackbar.LENGTH_LONG).show()
+        Toaster.make(view, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL)
     }
 
     private fun showMessageFailedWishlistAction() {

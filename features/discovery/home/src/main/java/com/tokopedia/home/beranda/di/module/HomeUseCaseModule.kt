@@ -119,8 +119,8 @@ class HomeUseCaseModule {
             "}\n" +
             "\n"
 
-    private val tokopointsQuery : String = "{\n" +
-            "    tokopointsDrawer{\n" +
+    val tokopointsQuery: String = "query(\$apiVersion:String){\n" +
+            "    tokopointsDrawer(apiVersion: \$apiVersion){\n" +
             "        iconImageURL\n" +
             "        redirectURL\n" +
             "        redirectAppLink\n" +
@@ -140,7 +140,7 @@ class HomeUseCaseModule {
             "}"
 
     private val walletBalanceQuery : String = "{\n" +
-            "  wallet {\n" +
+            "  wallet(isGetTopup:true) {\n" +
             "    linked\n" +
             "    balance\n" +
             "    rawBalance\n" +

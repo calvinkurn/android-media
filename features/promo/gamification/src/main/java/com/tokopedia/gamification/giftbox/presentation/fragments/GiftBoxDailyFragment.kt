@@ -29,6 +29,7 @@ import com.tokopedia.gamification.di.ActivityContextModule
 import com.tokopedia.gamification.giftbox.analytics.GtmEvents
 import com.tokopedia.gamification.giftbox.data.di.GAMI_GIFT_DAILY_TRACE_PAGE
 import com.tokopedia.gamification.giftbox.data.di.component.DaggerGiftBoxComponent
+import com.tokopedia.gamification.giftbox.data.di.modules.AppModule
 import com.tokopedia.gamification.giftbox.data.di.modules.PltModule
 import com.tokopedia.gamification.giftbox.data.entities.*
 import com.tokopedia.gamification.giftbox.presentation.fragments.TokenUserState.Companion.ACTIVE
@@ -76,6 +77,8 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     var tokenUserState: String = TokenUserState.DEFAULT
     var disableGiftBoxTap = false
     var autoApplyMessage = ""
+    var totalPrizeImagesCount = 0
+    var loadedPrizeImagesCount = 0
     private val HTTP_STATUS_OK = "200"
 
     override fun getLayout() = com.tokopedia.gamification.R.layout.fragment_gift_box_daily
@@ -86,6 +89,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         context?.let {
             val component = DaggerGiftBoxComponent.builder()
                     .activityContextModule(ActivityContextModule(it))
+                    .appModule(AppModule((context as AppCompatActivity).application))
                     .build()
             component.inject(this)
 
@@ -563,8 +567,17 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
 
             rewardContainer.rvCoupons.translationY = translationY
             val distanceFromLidTop = fmGiftBox.dpToPx(29)
-            val heightOfRewardText = fmGiftBox.dpToPx(31)
             rewardContainer.llRewardTextLayout.translationY = lidTop + distanceFromLidTop
+
+            tvTapHint.doOnLayout { tapHint ->
+                if (giftBoxDailyView.height > LARGE_PHONE_HEIGHT) {
+                    tapHint.translationY = lidTop - fmGiftBox.context.resources.getDimension(R.dimen.gami_tap_hint_margin) - tapHint.height
+                }
+
+                if (isTablet) {
+                    tapHint.translationY = lidTop - fmGiftBox.context.resources.getDimension(R.dimen.gami_tap_hint_margin_tablet) - tapHint.height
+                }
+            }
 
         }
         giftBoxDailyView.imageBoxFront.doOnLayout { imageBoxFront ->
@@ -674,18 +687,18 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     }
 
     fun loadPrizeImagesAsync(entity: GiftBoxEntity, imageCallback: (() -> Unit)) {
-        var totalImagesCount = 0
-        var loadedImagesCount = 0
+        loadedPrizeImagesCount = 0
+        totalPrizeImagesCount = 0
 
         fun checkImageLoadStatus() {
-            loadedImagesCount += 1
-            if (loadedImagesCount == totalImagesCount) {
+            loadedPrizeImagesCount += 1
+            if (loadedPrizeImagesCount == totalPrizeImagesCount) {
                 imageCallback.invoke()
             }
         }
         entity.gamiLuckyHome.prizeList?.forEach {
             if (it.isSpecial) {
-                totalImagesCount += 1
+                totalPrizeImagesCount += 1
                 prizeViewLarge.setData(it.imageURL, it.text) {
                     checkImageLoadStatus()
                 }
@@ -696,17 +709,17 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                         checkImageLoadStatus()
                     }
                     prizeViewSmallFirst.visibility = View.VISIBLE
-                    totalImagesCount += 1
+                    totalPrizeImagesCount += 1
                 } else {
                     prizeViewSmallSecond.setData(it.imageURL, it.text) {
                         checkImageLoadStatus()
                     }
                     prizeViewSmallSecond.visibility = View.VISIBLE
-                    totalImagesCount += 1
+                    totalPrizeImagesCount += 1
                 }
             }
         }
-        if (totalImagesCount == loadedImagesCount) {
+        if (totalPrizeImagesCount == loadedPrizeImagesCount) {
             imageCallback.invoke()
         }
     }
@@ -725,7 +738,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     }
 
     private fun fadeInActiveStateViews(frontImageUrl: String, imageBgUrl: String, lidImages: List<String>) {
-        giftBoxDailyView.loadFiles(tokenUserState, frontImageUrl, imageBgUrl, lidImages, imageCallback = {
+        giftBoxDailyView.loadFiles(tokenUserState, frontImageUrl, imageBgUrl, lidImages,viewLifecycleOwner, imageCallback = {
             giftBoxDailyView.imagesLoaded.lazySet(0)
             if (it) {
                 setPositionOfViewsAtBoxOpen(tokenUserState)

@@ -11,11 +11,12 @@ import com.tokopedia.abstraction.base.view.appupdate.model.DetailUpdate
 
 object UpdateCheckerHelper {
 
-    fun checkAppUpdate(activity: Activity) {
+    fun checkAppUpdate(activity: Activity, isRedirectedFromSellerMigration: Boolean) {
         val appUpdate: ApplicationUpdate = SellerRemoteConfigAppUpdate(activity)
         appUpdate.checkApplicationUpdate(object : ApplicationUpdate.OnUpdateListener {
             override fun onNeedUpdate(detail: DetailUpdate?) {
-                if (detail != null && !activity.isFinishing) {
+                val shouldNotShowPopUp = isRedirectedFromSellerMigration && !(detail?.isForceUpdate ?: false)
+                if (!shouldNotShowPopUp && detail != null && !activity.isFinishing && !isRedirectedFromSellerMigration) {
                     AppUpdateDialogBuilder(activity, detail,
                             object : AppUpdateDialogBuilder.Listener {
                                 override fun onPositiveButtonClicked(detail: DetailUpdate?) {

@@ -24,13 +24,16 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.topads.common.data.model.DataDeposit
+import com.tokopedia.unifycomponents.Label
+import com.tokopedia.user.session.UserSession
 import com.tokopedia.user_identification_common.KYCConstant
 import rx.functions.Func1
 import java.util.*
 import javax.inject.Inject
 
 class SellerAccountMapper @Inject constructor(
-        @ApplicationContext private val context: Context
+        @ApplicationContext private val context: Context,
+        private val userSession: UserSession
 ) : Func1<GraphqlResponse, SellerViewModel> {
 
     private val remoteConfig: RemoteConfig
@@ -41,7 +44,7 @@ class SellerAccountMapper @Inject constructor(
 
     override fun call(graphqlResponse: GraphqlResponse): SellerViewModel {
         val sellerViewModel: SellerViewModel
-        var accountDataModel: AccountDataModel = graphqlResponse.getData(AccountDataModel::class.java)
+        var accountDataModel: AccountDataModel? = graphqlResponse.getData(AccountDataModel::class.java)
 
         if (accountDataModel == null) {
             accountDataModel = AccountDataModel()
@@ -61,7 +64,7 @@ class SellerAccountMapper @Inject constructor(
     private fun isShopHaveProvinceId(graphqlResponse: GraphqlResponse): Boolean {
         val error = graphqlResponse.getError(ShopInfoLocation::class.java)
         if (error.isNullOrEmpty()) {
-            var data : ShopInfoLocation = graphqlResponse.getData(ShopInfoLocation::class.java)
+            var data : ShopInfoLocation? = graphqlResponse.getData(ShopInfoLocation::class.java)
             if (data == null) {
                 data = ShopInfoLocation()
                 AccountHomeErrorHandler.logDataNull("SellerAccountMapper", Throwable("ShopInfoLocation"))
@@ -74,7 +77,7 @@ class SellerAccountMapper @Inject constructor(
     private fun getDataDeposit(graphqlResponse: GraphqlResponse): DataDeposit {
         val error = graphqlResponse.getError(DataDeposit.Response::class.java)
         if (error.isNullOrEmpty()) {
-            var data : DataDeposit.Response = graphqlResponse.getData(DataDeposit.Response::class.java)
+            var data : DataDeposit.Response? = graphqlResponse.getData(DataDeposit.Response::class.java)
             if (data == null) {
                 data = DataDeposit.Response()
                 AccountHomeErrorHandler.logDataNull("SellerAccountMapper", Throwable("DataDeposit.Response"))
@@ -124,6 +127,12 @@ class SellerAccountMapper @Inject constructor(
         if (accountDataModel.shopInfo.info.shopIsOfficial != "1") {
             items.add(getPowerMerchantSettingMenu())
         }
+
+        // update userSession
+        val _shopName = accountDataModel.shopInfo.info.shopName
+        val _shopAvatar = accountDataModel.shopInfo.info.shopAvatar
+        userSession.shopName = _shopName
+        userSession.shopAvatar = _shopAvatar
 
         items.add(getTopAdsMenu())
         items.add(getShopVoucherMenu())
@@ -241,12 +250,15 @@ class SellerAccountMapper @Inject constructor(
     }
 
     private fun getProductFeatureMenu(): MenuListViewModel {
-        return MenuListViewModel().apply {
-            menu = context.getString(R.string.title_menu_product_feature)
-            menuDescription = context.getString(R.string.label_menu_product_feature)
-            applink = AccountConstants.Navigation.FEATURED_PRODUCT
-            titleTrack = PENJUAL
-            sectionTrack = context.getString(R.string.title_menu_product)
+        return LabelledMenuListUiModel().apply {
+                menu = context.getString(R.string.title_menu_product_feature)
+                label = context.getString(com.tokopedia.seller_migration_common.R.string.seller_migration_label_seller_app_only)
+                labelType = Label.GENERAL_LIGHT_GREEN
+                menuDescription = context.getString(R.string.label_menu_product_feature)
+                applink = ApplinkConst.PRODUCT_MANAGE
+                titleTrack = PENJUAL
+                sectionTrack = context.getString(R.string.title_menu_product)
+                isShowRightButton = true
         }
     }
 
@@ -281,11 +293,13 @@ class SellerAccountMapper @Inject constructor(
     private fun getShopVoucherMenu(): LabelledMenuListUiModel {
         return LabelledMenuListUiModel().apply {
             menu = context.getString(R.string.title_menu_voucher_toko)
-            label = context.getString(R.string.label_menu_voucher_toko)
+            label = context.getString(com.tokopedia.seller_migration_common.R.string.seller_migration_label_seller_app_only)
+            labelType = Label.GENERAL_LIGHT_GREEN
             menuDescription = context.getString(R.string.description_menu_voucher_toko)
             applink = ""
             titleTrack = PENJUAL
             sectionTrack = context.getString(R.string.title_menu_other_features)
+            isShowRightButton = true
         }
     }
 

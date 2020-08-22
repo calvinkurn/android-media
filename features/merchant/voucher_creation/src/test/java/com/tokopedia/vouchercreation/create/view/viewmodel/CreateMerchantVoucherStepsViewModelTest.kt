@@ -40,23 +40,22 @@ class CreateMerchantVoucherStepsViewModelTest {
     @RelaxedMockK
     lateinit var userSession: UserSessionInterface
 
+    lateinit var mViewModel: CreateMerchantVoucherStepsViewModel
+    lateinit var testDispatcher: TestCoroutineDispatcher
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
+        testDispatcher = TestCoroutineDispatcher()
+        mViewModel = CreateMerchantVoucherStepsViewModel(testDispatcher, initiateVoucherUseCase, basicShopInfoUseCase, userSession)
     }
 
     @After
     fun cleanup() {
         testDispatcher.cleanupTestCoroutines()
-    }
-
-    private val testDispatcher = TestCoroutineDispatcher()
-
-    private val mViewModel by lazy {
-        CreateMerchantVoucherStepsViewModel(testDispatcher, initiateVoucherUseCase, basicShopInfoUseCase, userSession)
     }
 
     @Test

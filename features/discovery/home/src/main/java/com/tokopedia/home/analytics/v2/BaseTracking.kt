@@ -464,11 +464,11 @@ abstract class BaseTracking {
         return dataLayer
     }
 
-    fun ChannelGrid.convertToHomePromotionModel(channelModel: ChannelModel, position: String) = Promotion(
+    fun ChannelGrid.convertToHomePromotionModel(channelModel: ChannelModel, position: Int) = Promotion(
             id = channelModel.id + "_" + id + "_" + channelModel.trackingAttributionModel.persoType+ "_" + channelModel.trackingAttributionModel.categoryId,
             name = channelModel.trackingAttributionModel.promoName,
             creative = attribution,
-            position = position
+            position = (position+1).toString()
     )
 
     protected fun convertRupiahToInt(rupiah: String): Int {
