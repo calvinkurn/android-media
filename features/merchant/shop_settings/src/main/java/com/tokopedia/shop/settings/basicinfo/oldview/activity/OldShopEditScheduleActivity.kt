@@ -29,7 +29,7 @@ import kotlinx.android.synthetic.main.partial_toolbar_save_button.*
 import java.util.*
 import javax.inject.Inject
 
-class ShopEditScheduleActivity : BaseSimpleActivity(), UpdateShopSchedulePresenter.View {
+class OldShopEditScheduleActivity : BaseSimpleActivity(), UpdateShopSchedulePresenter.View {
 
     @Inject
     lateinit var updateShopSchedulePresenter: UpdateShopSchedulePresenter
@@ -297,7 +297,7 @@ class ShopEditScheduleActivity : BaseSimpleActivity(), UpdateShopSchedulePresent
         fun createIntent(context: Context, shopBasicDataModel: ShopBasicDataModel,
                          title: String,
                          isClosedNow: Boolean): Intent {
-            val intent = Intent(context, ShopEditScheduleActivity::class.java)
+            val intent = Intent(context, OldShopEditScheduleActivity::class.java)
             intent.putExtra(EXTRA_SHOP_MODEL, shopBasicDataModel)
             intent.putExtra(EXTRA_TITLE, title)
             intent.putExtra(EXTRA_IS_CLOSED_NOW, isClosedNow)

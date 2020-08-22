@@ -3,8 +3,8 @@ package com.tokopedia.shop.settings.common.olddi
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 //import com.tokopedia.shop.settings.address.view.ShopSettingAddressAddEditFragment
 //import com.tokopedia.shop.settings.address.view.ShopSettingAddressFragment
-import com.tokopedia.shop.settings.basicinfo.oldview.activity.ShopEditBasicInfoActivity
-import com.tokopedia.shop.settings.basicinfo.oldview.activity.ShopEditScheduleActivity
+import com.tokopedia.shop.settings.basicinfo.oldview.activity.OldShopEditBasicInfoActivity
+import com.tokopedia.shop.settings.basicinfo.oldview.activity.OldShopEditScheduleActivity
 import com.tokopedia.shop.settings.basicinfo.oldview.fragment.ShopSettingsInfoFragment
 //import com.tokopedia.shop.settings.etalase.view.fragment.ShopSettingsEtalaseAddEditFragment
 //import com.tokopedia.shop.settings.etalase.view.fragment.ShopSettingsEtalaseListFragment
@@ -22,8 +22,8 @@ import dagger.Component
 @Component(modules = arrayOf(OldShopSettingsModule::class), dependencies = arrayOf(BaseAppComponent::class))
 interface OldShopSettingsComponent {
     fun inject(shopSettingsInfoFragment: ShopSettingsInfoFragment)
-    fun inject(shopEditBasicInfoActivity: ShopEditBasicInfoActivity)
-    fun inject(shopEditScheduleActivity: ShopEditScheduleActivity)
+    fun inject(oldShopEditBasicInfoActivity: OldShopEditBasicInfoActivity)
+    fun inject(oldShopEditScheduleActivity: OldShopEditScheduleActivity)
 
 
 //    fun inject(shopSettingsNotesFragment: ShopSettingsNotesListFragment)

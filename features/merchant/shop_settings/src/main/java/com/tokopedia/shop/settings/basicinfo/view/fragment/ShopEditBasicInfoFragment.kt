@@ -135,7 +135,7 @@ class ShopEditBasicInfoFragment: Fragment() {
             setSupportActionBar(toolbar)
             supportActionBar?.setDisplayHomeAsUpEnabled(true)
             supportActionBar?.setDisplayShowTitleEnabled(true)
-            supportActionBar?.setTitle(R.string.shop_settings_information_edit)
+            supportActionBar?.setTitle(getString(R.string.shop_settings_basic_info_title))
         }
     }
 

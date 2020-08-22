@@ -5,7 +5,7 @@
     <application>
         <activity
             android:name=".basicinfo.view.activity.ShopSettingsInfoActivity"
-            android:label="@string/shop_settings_manage_shop_info"
+            android:label="@string/shop_settings_basic_info_title"
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait" >
             <intent-filter>
@@ -19,6 +19,24 @@
                     android:pathPattern="@string/path_shop_settings_info"/>
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".basicinfo.oldview.activity.OldShopEditBasicInfoActivity"
+            android:label="@string/shop_settings_basic_info"
+            android:theme="@style/Theme.White"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".basicinfo.oldview.activity.OldShopSettingsInfoActivity"
+            android:label="@string/shop_settings_manage_shop_info"
+            android:theme="@style/Theme.White"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".basicinfo.oldview.activity.OldShopEditScheduleActivity"
+            android:label="@string/shop_settings_shop_status"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
 
         <activity
             android:name=".basicinfo.view.activity.ShopEditBasicInfoActivity"

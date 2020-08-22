@@ -36,8 +36,8 @@ import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.shop.common.constant.ShopScheduleActionDef
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
 import com.tokopedia.shop.settings.R
-import com.tokopedia.shop.settings.basicinfo.oldview.activity.ShopEditBasicInfoActivity
-import com.tokopedia.shop.settings.basicinfo.oldview.activity.ShopEditScheduleActivity
+import com.tokopedia.shop.settings.basicinfo.oldview.activity.OldShopEditBasicInfoActivity
+import com.tokopedia.shop.settings.basicinfo.oldview.activity.OldShopEditScheduleActivity
 import com.tokopedia.shop.settings.basicinfo.oldview.presenter.ShopSettingsInfoPresenter
 import com.tokopedia.shop.settings.common.olddi.DaggerOldShopSettingsComponent
 import com.tokopedia.shop.settings.common.util.FORMAT_DATE
@@ -114,17 +114,17 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
     fun onItemMenuClicked(itemMenuTitle: String) {
         when {
             itemMenuTitle.equals(getString(R.string.schedule_your_shop_close), ignoreCase = true) -> {
-                val intent = ShopEditScheduleActivity.createIntent(context!!, shopBasicDataModel!!,
+                val intent = OldShopEditScheduleActivity.createIntent(context!!, shopBasicDataModel!!,
                         getString(R.string.schedule_shop_close), false)
                 startActivityForResult(intent, REQUEST_EDIT_SCHEDULE)
             }
             itemMenuTitle.equals(getString(R.string.label_close_shop_now), ignoreCase = true) -> {
-                val intent = ShopEditScheduleActivity.createIntent(context!!, shopBasicDataModel!!,
+                val intent = OldShopEditScheduleActivity.createIntent(context!!, shopBasicDataModel!!,
                         getString(R.string.label_close_shop_now), true)
                 startActivityForResult(intent, REQUEST_EDIT_SCHEDULE)
             }
             itemMenuTitle.equals(getString(R.string.change_schedule), ignoreCase = true) -> {
-                val intent = ShopEditScheduleActivity.createIntent(context!!, shopBasicDataModel!!,
+                val intent = OldShopEditScheduleActivity.createIntent(context!!, shopBasicDataModel!!,
                         getString(R.string.change_schedule), false)
                 startActivityForResult(intent, REQUEST_EDIT_SCHEDULE)
             }
@@ -173,7 +173,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         vgShopInfoContainer.setOnClickListener {
-            val intent = ShopEditBasicInfoActivity.createIntent(context!!, shopBasicDataModel)
+            val intent = OldShopEditBasicInfoActivity.createIntent(context!!, shopBasicDataModel)
             startActivityForResult(intent, REQUEST_EDIT_BASIC_INFO)
         }
 
@@ -187,7 +187,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
             REQUEST_EDIT_SCHEDULE -> if (resultCode == Activity.RESULT_OK) {
                 needReload = true
                 if (requestCode == REQUEST_EDIT_SCHEDULE && data != null) {
-                    val message: String = data.getStringExtra(ShopEditScheduleActivity.EXTRA_MESSAGE)
+                    val message: String = data.getStringExtra(OldShopEditScheduleActivity.EXTRA_MESSAGE)
                     if (!message.isEmpty()) {
                         view?.let {
                             Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
@@ -198,7 +198,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
             REQUEST_EDIT_BASIC_INFO -> if (resultCode == Activity.RESULT_OK) {
                 needReload = true
                 if (requestCode == REQUEST_EDIT_BASIC_INFO && data != null) {
-                    val message: String = data.getStringExtra(ShopEditBasicInfoActivity.EXTRA_MESSAGE)
+                    val message: String = data.getStringExtra(OldShopEditBasicInfoActivity.EXTRA_MESSAGE)
                     if (!message.isEmpty()) {
                         view?.let {
                             Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
