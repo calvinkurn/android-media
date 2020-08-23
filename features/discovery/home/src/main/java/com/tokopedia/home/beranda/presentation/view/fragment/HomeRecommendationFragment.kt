@@ -44,6 +44,7 @@ import com.tokopedia.home.beranda.listener.HomeTabFeedListener
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.BannerRecommendationDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationBannerTopAdsDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.homeRecommendation.HomeRecommendationTypeFactoryImpl
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeFeedItemDecoration
@@ -293,6 +294,15 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
 
     override fun onBannerImpression(bannerRecommendationDataModel: BannerRecommendationDataModel) {
         trackingQueue.putEETracking(HomeRecommendationTracking.getBannerRecommendation(bannerRecommendationDataModel) as HashMap<String, Any>)
+    }
+
+    override fun onBannerTopAdsClick(homeTopAdsRecommendationBannerDataModelDataModel: HomeRecommendationBannerTopAdsDataModel, position: Int) {
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(HomeRecommendationTracking.getClickBannerTopAds(homeTopAdsRecommendationBannerDataModelDataModel, tabIndex, position))
+        RouteManager.route(context, homeTopAdsRecommendationBannerDataModelDataModel.topAdsImageViewModel?.applink)
+    }
+
+    override fun onBannerTopAdsImpress(homeTopAdsRecommendationBannerDataModelDataModel: HomeRecommendationBannerTopAdsDataModel, position: Int) {
+        trackingQueue.putEETracking(HomeRecommendationTracking.getImpressionBannerTopAds(homeTopAdsRecommendationBannerDataModelDataModel, tabIndex, position) as HashMap<String, Any>)
     }
 
     override fun onRetryGetProductRecommendationData() {
