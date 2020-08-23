@@ -180,6 +180,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
                     onSuccessInsertReputation()
                 }
                 is Fail -> {
+                    viewModel.getReviewDetails(viewModel.feedbackId, false)
                     onFailInsertReputation(it.fail.message ?: getString(R.string.review_history_details_toaster_modify_smiley_error_default_message))
                 }
                 is LoadingView -> {
