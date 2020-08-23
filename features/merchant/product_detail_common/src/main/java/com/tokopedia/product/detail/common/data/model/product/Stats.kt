@@ -12,10 +12,6 @@ data class Stats(
         @Expose
         val countTalk: Int = 0,
 
-        @SerializedName("countView")
-        @Expose
-        val countView: Int = 0,
-
         @SerializedName("rating")
         @Expose
         val rating: Float = 0f

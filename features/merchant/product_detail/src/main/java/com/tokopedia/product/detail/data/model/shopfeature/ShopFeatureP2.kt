@@ -3,8 +3,11 @@ package com.tokopedia.product.detail.data.model.shopfeature
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-data class ShopFeature(
-        @SerializedName("data")
+/**
+ * Created by Yehezkiel on 21/07/20
+ */
+data class ShopFeatureP2(
+        @SerializedName("IsGoApotik")
         @Expose
-        val `data`: ShopFeatureData = ShopFeatureData()
+        val isGoApotik: Boolean = false
 )
