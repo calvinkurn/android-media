@@ -20,7 +20,7 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
     override fun bind(element: TalkReadingUiModel) {
         element.question.apply {
             itemView.setOnClickListener { threadListener.onThreadClicked(questionID) }
-            showInquirerName(userName, element.isMyQuestion)
+            showInquirerName(userName, state.isYours)
             showInquirerProfilePicture(userThumbnail)
             showInquiryDate(createTimeFormatted)
             showQuestionWithCondition(state.isMasked, content, maskedContent, questionID)

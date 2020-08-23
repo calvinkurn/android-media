@@ -479,7 +479,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
                         if(isFromInbox() || isFromNotif()) {
                             adapter?.showProductHeader(TalkReplyProductHeaderModel(discussionDataByQuestionID.productName, discussionDataByQuestionID.thumbnail))
                         }
-                        adapter?.showHeader(TalkReplyMapper.mapDiscussionDataResponseToTalkReplyHeaderModel(it.data, viewModel.isMyShop, viewModel.isMyQuestion(it.data.discussionDataByQuestionID.question.userId)))
+                        adapter?.showHeader(TalkReplyMapper.mapDiscussionDataResponseToTalkReplyHeaderModel(it.data, viewModel.isMyShop))
                         if(discussionDataByQuestionID.question.totalAnswer > 0) {
                             showAnswers(this, viewModel.userId)
                         } else {

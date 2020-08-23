@@ -6,8 +6,7 @@ import com.tokopedia.talk.feature.reading.presentation.adapter.TalkReadingAdapte
 
 class TalkReadingUiModel(
         val question: Question,
-        val shopId: String,
-        val isMyQuestion: Boolean
+        val shopId: String
 ) : Visitable<TalkReadingAdapterTypeFactory>{
 
     override fun type(typeFactory: TalkReadingAdapterTypeFactory): Int {

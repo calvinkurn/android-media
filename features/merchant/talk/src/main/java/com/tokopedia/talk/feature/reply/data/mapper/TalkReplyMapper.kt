@@ -8,7 +8,7 @@ import com.tokopedia.talk.feature.reply.presentation.adapter.uimodel.TalkReplyHe
 
 object TalkReplyMapper {
 
-    fun mapDiscussionDataResponseToTalkReplyHeaderModel(discussionDataByQuestionIDResponseWrapper: DiscussionDataByQuestionIDResponseWrapper, isMyShop: Boolean, isMyQuestion: Boolean): TalkReplyHeaderModel {
+    fun mapDiscussionDataResponseToTalkReplyHeaderModel(discussionDataByQuestionIDResponseWrapper: DiscussionDataByQuestionIDResponseWrapper, isMyShop: Boolean): TalkReplyHeaderModel {
         discussionDataByQuestionIDResponseWrapper.discussionDataByQuestionID.question.apply {
             return TalkReplyHeaderModel(
                     createTimeFormatted,
@@ -22,7 +22,7 @@ object TalkReplyMapper {
                     userThumbnail,
                     userName,
                     userId,
-                    isMyQuestion)
+                    questionState.isYours)
         }
     }
 

@@ -166,8 +166,4 @@ class TalkReplyViewModel @Inject constructor(
     fun setIsMyShop(shopId: String) {
         isMyShop = shopId == userSession.shopId
     }
-
-    fun isMyQuestion(userId: Int): Boolean {
-        return userId.toString() == userSession.userId
-    }
 }

@@ -28,10 +28,10 @@ object TalkReadingMapper {
         )
     }
 
-    fun mapDiscussionDataResponseToTalkReadingUiModel(discussionDataResponse: DiscussionDataResponse, currentUserId: String): List<TalkReadingUiModel> {
+    fun mapDiscussionDataResponseToTalkReadingUiModel(discussionDataResponse: DiscussionDataResponse): List<TalkReadingUiModel> {
         val result = mutableListOf<TalkReadingUiModel>()
         discussionDataResponse.question.forEach {
-            result.add(TalkReadingUiModel(it, discussionDataResponse.shopID, currentUserId == it.userId.toString()))
+            result.add(TalkReadingUiModel(it, discussionDataResponse.shopID))
         }
         return result
     }
