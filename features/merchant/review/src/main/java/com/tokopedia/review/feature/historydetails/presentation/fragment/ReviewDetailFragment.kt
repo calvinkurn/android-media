@@ -176,7 +176,8 @@ class ReviewDetailFragment : BaseDaggerFragment(),
         viewModel.submitReputationResult.observe(viewLifecycleOwner, Observer {
             when(it) {
                 is Success -> {
-                    onSuccessInsertReputation(it.data)
+                    viewModel.getReviewDetails(viewModel.feedbackId, false)
+                    onSuccessInsertReputation()
                 }
                 is Fail -> {
                     onFailInsertReputation(it.fail.message ?: getString(R.string.review_history_details_toaster_modify_smiley_error_default_message))
@@ -261,6 +262,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
     private fun setReputation(reputation: ProductrevGetReviewDetailReputation, shopName: String) {
         with(reputation) {
             reviewHistoryDetailReputation.apply {
+                resetState()
                 setReviewScoreClickListener(this@ReviewDetailFragment)
                 when {
                     !isLocked && !editable && score == SCORE_MAX -> {
@@ -399,7 +401,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
         view?.let { Toaster.build(it, getString(R.string.review_history_detail_toaster_edit_success), Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(R.string.review_oke)).show() }
     }
 
-    private fun onSuccessInsertReputation(score: Int) {
+    private fun onSuccessInsertReputation() {
         view?.let { Toaster.build(it, getString(R.string.review_history_details_toaster_modify_smiley_success), Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(R.string.review_oke)).show() }
     }
 

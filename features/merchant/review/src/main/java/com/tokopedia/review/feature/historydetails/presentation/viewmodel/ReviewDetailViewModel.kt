@@ -43,7 +43,7 @@ class ReviewDetailViewModel @Inject constructor(private val coroutineDispatcherP
         }
     }
 
-    private fun getReviewDetails(feedbackId: Int, isRefresh: Boolean = false) {
+    fun getReviewDetails(feedbackId: Int, isRefresh: Boolean = false) {
         if(isRefresh) {
             _reviewDetails.value = LoadingView()
         }
@@ -71,7 +71,6 @@ class ReviewDetailViewModel @Inject constructor(private val coroutineDispatcherP
     }
 
     fun submitReputation(reputationId: Int, reputationScore: Int) {
-        getReviewDetails(feedbackId, false)
         _submitReputationResult.value = LoadingView()
         launchCatchError(block = {
             val response = withContext(coroutineDispatcherProvider.io()) {

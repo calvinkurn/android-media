@@ -158,6 +158,12 @@ class ReviewScoreWidget : BaseCustomView {
         reviewScoreLoadingText.hide()
     }
 
+    fun resetState() {
+        this.reviewEditableBadSmiley.deactivateBad(true)
+        this.reviewEditableMediocreSmiley.deactivateMediocre(true)
+        this.reviewEditableExcellentSmiley.deactivateExcellent(true)
+    }
+
     private fun setDeadline(deadline: String) {
         if (deadline.isNotBlank()) {
             this.reviewScoreDeadline.apply {
