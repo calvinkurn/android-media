@@ -24,54 +24,6 @@ import java.util.concurrent.TimeUnit
 
 class  CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
 
-
-    @Test
-    fun `when submit review with image should execute expected usecase`() {
-        val reputationId = anyInt()
-        val productId = anyInt()
-        val shopId = anyInt()
-        val rating = 5
-        val selectedImages = arrayListOf("ImageUrl1", "ImageUrl2", "ImageUrl3", "ImageUrl4", "ImageUrl5")
-        val expectedUploadResponse = UploadResult.Success("uploadId")
-        val expectedResponse = ProductrevSubmitReviewResponseWrapper(ProductRevSuccessIndicator(true))
-
-        onSubmitReviewSuccess_thenReturn(expectedResponse)
-        onUploadImageSuccess_thenReturn(expectedUploadResponse)
-
-        viewModel.getImageList(selectedImages)
-        viewModel.submitReview(reputationId = reputationId, productId = productId, shopId = shopId, rating = rating)
-
-        verifyImageUploaderUseCaseCalledBasedOnSizeOfList(selectedImages.size)
-        verifySubmitReviewUseCaseCalled()
-        verifySubmitReviewSuccess()
-    }
-
-    @Test
-    fun `when submit review with image fail should set expected error`() {
-        val reputationId = anyInt()
-        val productId = anyInt()
-        val shopId = anyInt()
-        val rating = 5
-        val selectedImages = arrayListOf("ImageUrl1", "ImageUrl2", "ImageUrl3", "ImageUrl4", "ImageUrl5")
-        val expectedUploadResponse = UploadResult.Success(anyString())
-        val expectedResponse = Throwable()
-
-        onSubmitReviewFails_thenReturn(expectedResponse)
-        onUploadImageSuccess_thenReturn(expectedUploadResponse)
-
-        viewModel.getImageList(selectedImages)
-        viewModel.submitReview(reputationId = reputationId, productId = productId, shopId = shopId, rating = rating)
-
-        verifyImageUploaderUseCaseCalledBasedOnSizeOfList(selectedImages.size)
-        verifySubmitReviewUseCaseCalled()
-        verifySubmitReviewFail()
-    }
-
-    @Test
-    fun `when submit review with imageuploader fails should set expected error`() {
-
-    }
-
     @Test
     fun `when getSelectedImagesUrl should return expected list of Url`() {
         val selectedImages = arrayListOf("ImageUrl1", "ImageUrl2", "ImageUrl3", "ImageUrl4", "ImageUrl5")
@@ -94,38 +46,6 @@ class  CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
         val expectedData = arrayListOf("ImageUrl2", "ImageUrl3", "ImageUrl4", "ImageUrl5")
 
         Assert.assertEquals(actualData, expectedData)
-    }
-
-    @Test
-    fun `when submit review without image success should execute expected usecase`() {
-        val reputationId = anyInt()
-        val productId = anyInt()
-        val shopId = anyInt()
-        val rating = 5
-        val expectedResponse = ProductrevSubmitReviewResponseWrapper(ProductRevSuccessIndicator(true))
-
-        onSubmitReviewSuccess_thenReturn(expectedResponse)
-
-        viewModel.submitReview(reputationId = reputationId, productId = productId, shopId = shopId, rating = rating)
-
-        verifySubmitReviewUseCaseCalled()
-        verifySubmitReviewSuccess()
-    }
-
-    @Test
-    fun `when submit review without image fail should set expected error`() {
-        val reputationId = anyInt()
-        val productId = anyInt()
-        val shopId = anyInt()
-        val rating = 5
-        val expectedResponse = Throwable()
-
-        onSubmitReviewFails_thenReturn(expectedResponse)
-
-        viewModel.submitReview(reputationId = reputationId, productId = productId, shopId = shopId, rating = rating)
-
-        verifySubmitReviewUseCaseCalled()
-        verifySubmitReviewFail()
     }
 
     @Test
@@ -260,32 +180,12 @@ class  CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
         coEvery { getReviewDetailUseCase.executeOnBackground() } throws throwable
     }
 
-    private fun onSubmitReviewSuccess_thenReturn(response: ProductrevSubmitReviewResponseWrapper) {
-        coEvery { submitReviewUseCase.executeOnBackground() } returns response
-    }
-
-    private fun onSubmitReviewFails_thenReturn(throwable: Throwable) {
-        coEvery { submitReviewUseCase.executeOnBackground() } throws throwable
-    }
-
-    private fun onUploadImageSuccess_thenReturn(response: UploadResult) {
-        coEvery { uploaderUseCase(RequestParams()) } returns response
-    }
-
     private fun verifyReviewDetailsSuccess(viewState: com.tokopedia.review.common.data.Success<ProductrevGetReviewDetail>) {
         viewModel.reviewDetails.verifySuccessEquals(viewState)
     }
 
     private fun verifyReviewDetailsError(viewState: com.tokopedia.review.common.data.Fail<ProductrevGetReviewDetail>) {
         viewModel.reviewDetails.verifyErrorEquals(viewState)
-    }
-
-    private fun verifySubmitReviewSuccess() {
-        viewModel.submitReviewResult.verifyValueEquals(true)
-    }
-
-    private fun verifySubmitReviewFail() {
-        viewModel.submitReviewResult.verifyValueEquals(false)
     }
 
     private fun <T> LiveData<T>.observeAwaitValue(): T? {
