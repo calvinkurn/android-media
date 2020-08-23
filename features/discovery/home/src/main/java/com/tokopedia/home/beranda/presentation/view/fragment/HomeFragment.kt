@@ -10,6 +10,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.os.Trace
 import android.provider.Settings
 import android.text.TextUtils
 import android.util.DisplayMetrics
@@ -589,33 +590,35 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     override fun onResume() {
+        Trace.beginSection("HomeFragment.OnResume")
         super.onResume()
         shouldPausePlay = true
-        BenchmarkHelper.beginSystraceSection("HomeFragment.OnResume.CreateAndCallSendScreen")
+//        BenchmarkHelper.beginSystraceSection("HomeFragment.OnResume.CreateAndCallSendScreen")
         createAndCallSendScreen()
-        BenchmarkHelper.endSystraceSection()
+//        BenchmarkHelper.endSystraceSection()
 
         if (!shouldPausePlay) {
-            BenchmarkHelper.beginSystraceSection("HomeFragment.OnResume.adapter.onResume()")
+//            BenchmarkHelper.beginSystraceSection("HomeFragment.OnResume.adapter.onResume()")
             adapter?.onResume()
-            BenchmarkHelper.endSystraceSection()
+//            BenchmarkHelper.endSystraceSection()
         }
-        BenchmarkHelper.beginSystraceSection("HomeFragment.OnResume.ConditionalViewModelRefresh")
+//        BenchmarkHelper.beginSystraceSection("HomeFragment.OnResume.ConditionalViewModelRefresh")
         conditionalViewModelRefresh()
-        BenchmarkHelper.endSystraceSection()
+//        BenchmarkHelper.endSystraceSection()
         if (activityStateListener != null) {
-            BenchmarkHelper.beginSystraceSection("HomeFragment.OnResume.ActivityStateListener.OnResume")
+//            BenchmarkHelper.beginSystraceSection("HomeFragment.OnResume.ActivityStateListener.OnResume")
             activityStateListener!!.onResume()
-            BenchmarkHelper.endSystraceSection()
+//            BenchmarkHelper.endSystraceSection()
         }
-        BenchmarkHelper.beginSystraceSection("HomeFragment.OnResume.AdjustStatusBarColor")
+//        BenchmarkHelper.beginSystraceSection("HomeFragment.OnResume.AdjustStatusBarColor")
         adjustStatusBarColor()
-        BenchmarkHelper.endSystraceSection()
+//        BenchmarkHelper.endSystraceSection()
         if (isEnableToAutoRefresh(autoRefreshFlag)) {
-            BenchmarkHelper.beginSystraceSection("HomeFragment.OnResume.SetAutoRefreshOnHome")
+//            BenchmarkHelper.beginSystraceSection("HomeFragment.OnResume.SetAutoRefreshOnHome")
             setAutoRefreshOnHome(autoRefreshFlag)
-            BenchmarkHelper.endSystraceSection()
+//            BenchmarkHelper.endSystraceSection()
         }
+        Trace.endSection()
     }
 
     private fun conditionalViewModelRefresh(){
@@ -635,6 +638,7 @@ open class HomeFragment : BaseDaggerFragment(),
     private fun createAndCallSendScreen() {
         val sendScrWeave: WeaveInterface = object : WeaveInterface {
             override fun execute(): Any {
+                Trace.beginAsyncSection("HomeFragment.CreateAndCallSendScreen", 11)
                 return sendScreen()
             }
         }
@@ -1665,6 +1669,7 @@ open class HomeFragment : BaseDaggerFragment(),
             lastSendScreenTimeMillis = System.currentTimeMillis()
             HomePageTracking.sendScreen(activity, screenName, getUserSession().isLoggedIn)
         }
+        Trace.endAsyncSection("HomeFragment.CreateAndCallSendScreen", 11)
         return true
     }
 

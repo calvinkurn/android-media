@@ -52,6 +52,7 @@ open class PageLoadTimePerformanceCallback(
     override fun startPreparePagePerformanceMonitoring() {
         if (preparePageDuration == 0L) {
             beginSystraceSection("PageLoadTime.preparePage$traceName")
+            Trace.beginAsyncSection("PageLoadTime.AsyncPreparePage$traceName",11)
             preparePageDuration = System.currentTimeMillis()
         }
     }
@@ -62,12 +63,14 @@ open class PageLoadTimePerformanceCallback(
             performanceMonitoring?.putMetric(tagPrepareDuration, preparePageDuration)
             isPrepareDone = true
             endSystraceSection()
+            Trace.endAsyncSection("PageLoadTime.AsyncPreparePage$traceName",11)
         }
     }
 
     override fun startNetworkRequestPerformanceMonitoring() {
         if (requestNetworkDuration == 0L) {
             beginSystraceSection("PageLoadTime.networkRequest$traceName")
+            Trace.beginAsyncSection("PageLoadTime.AsyncNetworkRequest$traceName",22)
             requestNetworkDuration = System.currentTimeMillis()
         }
     }
@@ -78,12 +81,14 @@ open class PageLoadTimePerformanceCallback(
             performanceMonitoring?.putMetric(tagNetworkRequestDuration, requestNetworkDuration)
             isNetworkDone = true
             endSystraceSection()
+            Trace.endAsyncSection("PageLoadTime.AsyncNetworkRequest$traceName",22)
         }
     }
 
     override fun startRenderPerformanceMonitoring() {
         if (renderDuration == 0L) {
             beginSystraceSection("PageLoadTime.renderPage$traceName")
+            Trace.beginAsyncSection("PageLoadTime.AsyncRenderPage$traceName",33)
             renderDuration = System.currentTimeMillis()
         }
     }
@@ -94,6 +99,7 @@ open class PageLoadTimePerformanceCallback(
             performanceMonitoring?.putMetric(tagRenderDuration, renderDuration)
             isRenderDone = true
             endSystraceSection()
+            Trace.endAsyncSection("PageLoadTime.AsyncRenderPage$traceName",33)
         }
     }
 
