@@ -31,10 +31,11 @@ class ShopSettingsInfoActivity : BaseSimpleActivity() {
         super.onCreate(savedInstanceState)
 
         val remoteConfig = FirebaseRemoteConfigImpl(this)
-        val isNewShopSettings = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_NEW_SHOP_SETTINGS, true)
-        if (!isNewShopSettings) {
+        val isOldShopSettings = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_NEW_SHOP_SETTINGS, false)
+        if (isOldShopSettings) {
             val intent = OldShopSettingsInfoActivity.createIntent(this)
             startActivity(intent)
+            finish()
         }
     }
 }
