@@ -98,6 +98,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
     private var buyerRequestCancelResponse = BuyerRequestCancelData.Data.BuyerRequestCancel()
     private var bottomSheet = BottomSheetUnify()
     private var reasonCancel = ""
+    private var isCancelAlreadyClicked = false
     private var reasonCode = -1
     private var arrayListOfReason = arrayListOf<String>()
     private var listOfSubReason = listOf<BuyerGetCancellationReasonData.Data.GetCancellationReason.ReasonsItem.SubReasonsItem>()
@@ -168,6 +169,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         getComponent(OrderDetailsComponent::class.java).inject(this)
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         activity?.let { BuyerAnalytics.sendScreenName(it, BUYER_CANCEL_REASON_SCREEN_NAME) }
@@ -191,6 +193,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
 
             if (listProduct.size > 1) {
                 label_see_all_products?.visible()
+                label_see_all_products?.text = "${getString(R.string.see_all_placeholder)} (${listProduct.size})"
                 label_see_all_products?.setOnClickListener { showProductsBottomSheet() }
             } else {
                 label_see_all_products?.gone()
@@ -453,8 +456,9 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
                     }
                     else -> {
                         val subReasonLainnya = tf_choose_sub_reason_editable.textFieldInput.text.trimStart()
-                        if (subReasonLainnya.isNotEmpty()) {
+                        if (subReasonLainnya.isNotEmpty() && !isCancelAlreadyClicked) {
                             reasonCancel += " - $subReasonLainnya"
+                            isCancelAlreadyClicked = true
                         }
                         if (isEligibleInstantCancel) submitInstantCancel()
                         else {
@@ -601,7 +605,6 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         buyerCancellationViewModel.requestCancelResult.observe(this, Observer {
             when (it) {
                 is Success -> {
-                    reasonCancel = ""
                     buyerRequestCancelResponse = it.data.buyerRequestCancel
                     if (buyerRequestCancelResponse.success == 1 && buyerRequestCancelResponse.message.isNotEmpty()) {
                         backToDetailPage(1, buyerRequestCancelResponse.message.first(), "", "")
@@ -610,7 +613,6 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
                     }
                 }
                 is Fail -> {
-                    reasonCancel = ""
                     showToaster(getString(R.string.fail_cancellation), Toaster.TYPE_ERROR)
                 }
             }
