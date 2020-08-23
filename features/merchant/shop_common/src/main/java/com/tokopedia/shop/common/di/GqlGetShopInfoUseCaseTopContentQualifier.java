@@ -7,5 +7,5 @@ import javax.inject.Qualifier;
  */
 
 @Qualifier
-public @interface GqlGetShopInfoForTabUseCaseQualifier {
+public @interface GqlGetShopInfoUseCaseTopContentQualifier {
 }

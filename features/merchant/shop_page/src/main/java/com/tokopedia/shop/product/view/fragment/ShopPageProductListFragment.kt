@@ -193,6 +193,10 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     private var threeDotsClickShopProductViewModel: ShopProductViewModel? = null
     private var shopSortSharedViewModel: ShopSortSharedViewModel? = null
     private var threeDotsClickShopTrackingType = -1
+    private var initialProductListData : Pair<Boolean, List<ShopProductViewModel>> = Pair(false, listOf())
+    private var staggeredGridLayoutManager: StaggeredGridLayoutManager? = null
+    private val shopProductAdapter: ShopProductAdapter
+        get() = adapter as ShopProductAdapter
     private var selectedEtalaseType: Int = SELECTED_ETALASE_TYPE_DEFAULT_VALUE
     private val customDimensionShopPage: CustomDimensionShopPage
         get() {
@@ -238,8 +242,11 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     private fun initRecyclerView(view: View) {
-        recyclerView = super.getRecyclerView(view)
-        recyclerView?.let {
+        getRecyclerView(view)?.let {
+            it.clearOnScrollListeners()
+            it.layoutManager = staggeredGridLayoutManager
+            endlessRecyclerViewScrollListener = createEndlessRecyclerViewListener()
+            it.addOnScrollListener(endlessRecyclerViewScrollListener)
             val animator = it.itemAnimator
             if (animator is SimpleItemAnimator) {
                 animator.supportsChangeAnimations = false
@@ -249,7 +256,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
-        return object : DataEndlessScrollListener(recyclerView?.layoutManager, shopProductAdapter) {
+        return object : DataEndlessScrollListener(staggeredGridLayoutManager, shopProductAdapter) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 shopProductAdapter.showLoading()
                 loadData(page)
@@ -533,7 +540,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     private fun scrollToProductEtalaseSegment() {
         //multiply with 2 to make first dy value on onScroll function greater than rv top padding
         recyclerView?.smoothScrollBy(0, recyclerViewTopPadding * 2)
-        gridLayoutManager.scrollToPositionWithOffset(
+        staggeredGridLayoutManager?.scrollToPositionWithOffset(
                 shopProductAdapter.shopProductEtalaseTitlePosition,
                 stickySingleHeaderView.containerHeight
         )
@@ -716,8 +723,9 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     override fun loadInitialData() {
         isLoadingNewProductData = true
         shopProductAdapter.clearAllElements()
-        showLoading()
         startMonitoringPltNetworkRequest()
+        showLoading()
+        viewModel.setInitialProductList(initialProductListData)
         viewModel.getEtalaseData(shopId)
     }
 
@@ -839,6 +847,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(ShopPageProductListViewModel::class.java)
         shopSortSharedViewModel = ViewModelProviders.of(requireActivity()).get(ShopSortSharedViewModel::class.java)
         attribution = arguments?.getString(SHOP_ATTRIBUTION, "") ?: ""
+        staggeredGridLayoutManager = StaggeredGridLayoutManager(GRID_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
     }
 
     private fun initPltMonitoring() {
@@ -848,6 +857,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     private fun startMonitoringPltNetworkRequest() {
         (activity as? ShopPageProductTabPerformanceMonitoringListener)?.let { shopPageActivity ->
             shopPageActivity.getShopPageProductTabLoadTimePerformanceCallback()?.let {
+                shopPageActivity.stopMonitoringPltPreparePage(it)
                 shopPageActivity.startMonitoringPltNetworkRequest(it)
             }
         }
@@ -902,8 +912,8 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             sortId = it.getString(SAVED_SHOP_SORT_ID, "")
             sortName = it.getString(SAVED_SHOP_SORT_NAME, "")
         }
-        initRecyclerView(view)
         super.onViewCreated(view, savedInstanceState)
+        initRecyclerView(view)
         loadInitialData()
         observeShopSortSharedViewModel()
         observeViewModelLiveData()
@@ -949,15 +959,6 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         viewModel.flush()
         shopSortSharedViewModel?.sharedSortData?.removeObservers(this)
         super.onDestroy()
-    }
-
-    private val shopProductAdapter: ShopProductAdapter by lazy { adapter as ShopProductAdapter }
-    private val gridLayoutManager: StaggeredGridLayoutManager by lazy {
-        StaggeredGridLayoutManager(GRID_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
-    }
-
-    override fun getRecyclerViewLayoutManager(): RecyclerView.LayoutManager {
-        return gridLayoutManager
     }
 
     private fun observeViewModelLiveData() {
@@ -1022,10 +1023,10 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                     showErrorToasterWithRetry(it.throwable)
                 }
             }
-            recyclerView?.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            getRecyclerView(view)?.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
                     stopMonitoringPltRenderPage()
-                    recyclerView?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
+                    getRecyclerView(view)?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
                 }
             })
         })
@@ -1148,10 +1149,14 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                 selectedSortName = sortName
         )
         shopProductAdapter.setSortFilterData(shopProductSortFilterUiModel)
-        if (viewModel.isMyShop(shopId)) {
-            viewModel.getSellerShopPageProductTabData(shopId, etalaseItemDataModel, sortId)
-        } else {
-            viewModel.getBuyerShopPageProductTabData(shopId, data, etalaseItemDataModel, sortId, isShowNewShopHomeTab())
+        if (!viewModel.isMyShop(shopId)) {
+            viewModel.getBuyerShopPageProductTabData(
+                    shopId,
+                    data,
+                    etalaseItemDataModel,
+                    isShowNewShopHomeTab(),
+                    initialProductListData.second.isEmpty()
+            )
         }
     }
 
@@ -1248,11 +1253,15 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         shopProductAdapter.refreshSticky()
         //multiply with 2 to make first dy value on onScroll function greater than rv top padding
         recyclerView?.smoothScrollBy(0, recyclerViewTopPadding * 2)
-        gridLayoutManager.scrollToPositionWithOffset(
+        staggeredGridLayoutManager?.scrollToPositionWithOffset(
                 shopProductAdapter.shopProductEtalaseTitlePosition,
                 stickySingleHeaderView.containerHeight
         )
         loadNewProductData()
+    }
+
+    fun setInitialProductListData(initialProductListData: Pair<Boolean, List<ShopProductViewModel>>) {
+        this.initialProductListData = initialProductListData
     }
 
 }

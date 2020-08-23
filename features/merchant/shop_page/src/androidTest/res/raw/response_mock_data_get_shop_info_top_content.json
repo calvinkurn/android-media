@@ -1,0 +1,11 @@
+[{
+  "data": {
+    "shopInfoByID": {
+      "result": [{
+        "topContent": {
+          "topURL": "https://ws.tokopedia.com/ssi/shop-static/dettolstore/_apps/top"
+        }
+      }]
+    }
+  }
+}]

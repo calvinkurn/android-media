@@ -496,6 +496,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 isNeedToReloadData,
                 selectedEtalaseType
         )
+        hideLoading()
     }
 
     private fun isEtalaseMatch(model: ShopEtalaseItemDataModel): Boolean {
