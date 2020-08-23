@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
-import com.tokopedia.buyerorder.detail.view.viewmodel.BuyerGetCancellationReasonViewModel
+import com.tokopedia.buyerorder.detail.view.viewmodel.BuyerCancellationViewModel
 import com.tokopedia.buyerorder.list.di.OrderListModuleScope
 import dagger.Binds
 import dagger.Module
@@ -23,6 +23,6 @@ abstract class GetCancellationReasonViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(BuyerGetCancellationReasonViewModel::class)
-    internal abstract fun buyerGetCancellationReasonViewModel(viewModel: BuyerGetCancellationReasonViewModel): ViewModel
+    @ViewModelKey(BuyerCancellationViewModel::class)
+    internal abstract fun buyerGetCancellationReasonViewModel(viewModel: BuyerCancellationViewModel): ViewModel
 }
