@@ -473,7 +473,7 @@ class DynamicProductDetailViewModelTest {
         coEvery {
             getPdpLayoutUseCase.requestParams
         } returns GetPdpLayoutUseCase.createParams(productParams.productId
-                ?: "", productParams.shopDomain ?: "", productParams.productName ?: "")
+                ?: "", productParams.shopDomain ?: "", productParams.productName ?: "", productParams.warehouseId ?: "")
 
         viewModel.getProductP1(productParams, true, false)
 
@@ -494,7 +494,7 @@ class DynamicProductDetailViewModelTest {
         coEvery {
             getPdpLayoutUseCase.requestParams
         } returns GetPdpLayoutUseCase.createParams(productParams.productId
-                ?: "", productParams.shopDomain ?: "", productParams.productName ?: "")
+                ?: "", productParams.shopDomain ?: "", productParams.productName ?: "", productParams.warehouseId ?: "")
 
         viewModel.getProductP1(productParams, true, false)
 
