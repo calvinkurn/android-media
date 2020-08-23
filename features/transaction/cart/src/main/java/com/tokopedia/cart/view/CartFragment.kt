@@ -92,6 +92,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.LastAppl
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
+import com.tokopedia.purchase_platform.common.feature.sellercashback.SellerCashbackListener
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementActionListener
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData
 import com.tokopedia.purchase_platform.common.utils.Utils
@@ -101,9 +102,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_INSURANCE_RECOMMENDATION
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
-import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist
@@ -119,7 +118,7 @@ import javax.inject.Inject
 
 class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, CartItemAdapter.ActionListener,
         RefreshHandler.OnRefreshHandlerListener, ICartListAnalyticsListener, ToolbarRemoveView.ToolbarCartListener,
-        InsuranceItemActionListener, TickerAnnouncementActionListener {
+        InsuranceItemActionListener, TickerAnnouncementActionListener, SellerCashbackListener {
 
     lateinit var appBarLayout: AppBarLayout
     lateinit var cartRecyclerView: RecyclerView
@@ -136,7 +135,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     lateinit var llCartContainer: LinearLayout
     lateinit var llPromoCheckout: LinearLayout
     lateinit var promoCheckoutBtn: ButtonPromoCheckoutView
-    lateinit var imgChevronSummary: ImageView
+    lateinit var imgChevronSummary: UnifyImageButton
     lateinit var textTotalPaymentLabel: Typography
 
     @Inject
@@ -421,7 +420,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     .build()
                     .inject(this)
         }
-        cartAdapter = CartAdapter(this, this, this, this)
+        cartAdapter = CartAdapter(this, this, this, this, this)
     }
 
     override fun getOptionsMenuEnable(): Boolean {
@@ -547,7 +546,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 }
             }
             view.text_total_pay_value?.apply {
-                val totalPay = (cartListData?.shoppingSummaryData?.totalValue ?: 0) - (cartListData?.shoppingSummaryData?.discountValue ?: 0)
+                val totalPay = (cartListData?.shoppingSummaryData?.totalValue
+                        ?: 0) - (cartListData?.shoppingSummaryData?.discountValue ?: 0)
                 this.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(totalPay
                         ?: 0, false).removeDecimalSuffix()
             }
@@ -573,11 +573,31 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 }
             }
 
-            if (cartListData?.shoppingSummaryData?.promoValue ?: 0 > 0 &&
-                    cartListData?.shoppingSummaryData?.sellerCashbackValue ?: 0 > 0) {
-                view.separator_benefit.gone()
+            // Render Seller cashback
+            if (cartListData?.shoppingSummaryData?.sellerCashbackValue ?: 0 > 0) {
+                view.text_total_cashback_value?.apply {
+                    text = CurrencyFormatUtil.convertPriceValueToIdrFormat(cartListData?.shoppingSummaryData?.sellerCashbackValue
+                            ?: 0, false).removeDecimalSuffix()
+                    visibility = View.VISIBLE
+                }
+                view.text_total_cashback_title?.apply {
+                    text = cartListData?.shoppingSummaryData?.sellerCashbackWording
+                    visibility = View.VISIBLE
+                }
             } else {
+                view.text_total_cashback_value?.apply {
+                    visibility = View.GONE
+                }
+                view.text_total_cashback_title?.apply {
+                    visibility = View.GONE
+                }
+            }
+
+            if (cartListData?.shoppingSummaryData?.promoValue ?: 0 > 0 ||
+                    cartListData?.shoppingSummaryData?.sellerCashbackValue ?: 0 > 0) {
                 view.separator_benefit.show()
+            } else {
+                view.separator_benefit.gone()
             }
 
             bottomSheet.setChild(view)
@@ -3142,5 +3162,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun getFragmentActivity(): Activity {
         return activity as Activity
+    }
+
+    override fun onCashbackUpdated(amount: Int) {
+        cartListData?.shoppingSummaryData?.sellerCashbackValue = amount
     }
 }

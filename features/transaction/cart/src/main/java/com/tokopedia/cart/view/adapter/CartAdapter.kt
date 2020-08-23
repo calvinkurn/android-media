@@ -17,6 +17,7 @@ import com.tokopedia.purchase_platform.common.feature.insurance.InsuranceItemAct
 import com.tokopedia.purchase_platform.common.feature.insurance.PAGE_TYPE_CART
 import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceCartDigitalProduct
 import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceCartShops
+import com.tokopedia.purchase_platform.common.feature.sellercashback.SellerCashbackListener
 import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackModel
 import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackViewHolder
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementActionListener
@@ -34,7 +35,8 @@ import kotlin.math.min
 class CartAdapter @Inject constructor(private val actionListener: ActionListener?,
                                       private val cartItemActionListener: CartItemAdapter.ActionListener?,
                                       private val insuranceItemActionlistener: InsuranceItemActionListener?,
-                                      private val tickerAnnouncementActionListener: TickerAnnouncementActionListener?) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+                                      private val tickerAnnouncementActionListener: TickerAnnouncementActionListener?,
+                                      private val sellerCashbackListener: SellerCashbackListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val cartDataList = ArrayList<Any>()
     private var compositeSubscription = CompositeSubscription()
@@ -324,7 +326,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
             ShipmentSellerCashbackViewHolder.ITEM_VIEW_SELLER_CASHBACK -> {
                 val view = LayoutInflater.from(parent.context)
                         .inflate(ShipmentSellerCashbackViewHolder.ITEM_VIEW_SELLER_CASHBACK, parent, false)
-                return ShipmentSellerCashbackViewHolder(view)
+                return ShipmentSellerCashbackViewHolder(view, sellerCashbackListener)
             }
             CartEmptyViewHolder.LAYOUT -> {
                 val view = LayoutInflater.from(parent.context)
@@ -890,15 +892,17 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                 }
                 shipmentSellerCashbackModel = ShipmentSellerCashbackModel()
                 shipmentSellerCashbackModel?.let {
+                    it.sellerCashback = cashback.toInt()
                     it.isVisible = true
-                    it.sellerCashback = CurrencyFormatUtil.convertPriceValueToIdrFormat(cashback.toLong(), false).removeDecimalSuffix()
+                    it.sellerCashbackFmt = CurrencyFormatUtil.convertPriceValueToIdrFormat(cashback.toLong(), false).removeDecimalSuffix()
                     cartDataList.add(++index, it)
                     notifyItemInserted(index)
                 }
             } else {
                 shipmentSellerCashbackModel?.let {
+                    it.sellerCashback = cashback.toInt()
                     it.isVisible = true
-                    it.sellerCashback = CurrencyFormatUtil.convertPriceValueToIdrFormat(cashback.toLong(), false).removeDecimalSuffix()
+                    it.sellerCashbackFmt = CurrencyFormatUtil.convertPriceValueToIdrFormat(cashback.toLong(), false).removeDecimalSuffix()
                     val index = cartDataList.indexOf(it)
                     notifyItemChanged(index)
                 }

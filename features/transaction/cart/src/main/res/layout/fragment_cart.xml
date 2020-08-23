@@ -140,12 +140,14 @@
                                     android:textColor="@color/text_black"
                                     app:typographyType="body_2" />
 
-                                <ImageView
+                                <com.tokopedia.unifycomponents.UnifyImageButton
                                     android:id="@+id/img_chevron_summary"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:rotation="180"
+                                    app:unifyImageButtonVariant="image"
                                     app:srcCompat="@drawable/unify_chips_ic_chevron_normal" />
+
                             </LinearLayout>
 
                             <com.tokopedia.unifyprinciples.Typography
