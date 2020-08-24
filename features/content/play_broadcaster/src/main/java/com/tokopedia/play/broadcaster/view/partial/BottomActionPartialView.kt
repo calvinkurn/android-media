@@ -27,7 +27,6 @@ class BottomActionPartialView(
     private val tvBadgeCount: TextView = findViewById(R.id.tv_badge_count)
 
     init {
-
         btnAction.setOnClickListener {
             if (!btnAction.isLoading) listener.onNextButtonClicked()
         }
@@ -77,7 +76,7 @@ class BottomActionPartialView(
     private fun setInventoryClickListener(clickListener: (View) -> Unit) {
         clInventory.setOnClickListener(clickListener)
         ivInventory.setOnClickListener(clickListener)
-        btnAction.setOnClickListener(clickListener)
+        tvBadgeCount.setOnClickListener(clickListener)
     }
 
     interface Listener {
