@@ -352,7 +352,7 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
                 isOwner,
                 getShopPageCategory(isOwner),
                 loginNonLoginString,
-                joinDash(CLICK_PRODUCT, getProductEtalaseEvent(selectedEtalaseChipName, etalaseSection), loginNonLoginString, SEARCH_RESULT),
+                joinDash(CLICK_PRODUCT, getProductEtalaseEvent(etalaseNameTrackerString, etalaseSection), loginNonLoginString, SEARCH_RESULT),
                 keyword,
                 customDimensionShopPage,
                 shopProductViewModel,

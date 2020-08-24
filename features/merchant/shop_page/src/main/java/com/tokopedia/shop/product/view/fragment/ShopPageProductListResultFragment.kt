@@ -271,8 +271,8 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     }
 
     private fun loadProductDataEmptyState(shopInfo: ShopInfo, page: Int) {
-        sortValue = "1"
         selectedEtalaseId = ""
+        sortValue = SORT_NEWEST
 
         viewModel.getShopProductEmptyState(
                 shopInfo.shopCore.shopID,
@@ -784,6 +784,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         val REQUEST_CODE_SORT = 300
 
         private val GRID_SPAN_COUNT = 2
+        private const val SORT_NEWEST = "1"
 
         val SAVED_SELECTED_ETALASE_LIST = "saved_etalase_list"
         val SAVED_SELECTED_ETALASE_ID = "saved_etalase_id"
@@ -796,6 +797,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         val SAVED_KEYWORD = "saved_keyword"
         val SAVED_SORT_VALUE = "saved_sort_name"
         val BUNDLE = "bundle"
+
         private const val SELECTED_ETALASE_TYPE_DEFAULT_VALUE = -10
 
         @JvmStatic
