@@ -39,7 +39,6 @@ public class CreateTicketProgressDialog {
                     progress.setMessage(message);
                     progress.setTitle(title);
                     progress.setCancelable(isCancelable);
-                    isShow = true;
                     progress.show();
                 }
             } else if (state == MAIN_PROGRESS && substate == 0) {
@@ -53,11 +52,10 @@ public class CreateTicketProgressDialog {
                         ((Activity) context).finish();
                     }
                 });
-                isShow = true;
             } else {
                 view.findViewById(loadingViewId).setVisibility(View.VISIBLE);
-                isShow = true;
             }
+            isShow = true;
         } catch (Exception e) {
         }
     }
