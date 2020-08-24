@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -39,6 +38,7 @@ import com.tokopedia.oneclickcheckout.preference.edit.view.shipping.ShippingDura
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.Companion.KERO_TOKEN
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.empty_list_address.*
 import java.net.ConnectException
 import java.net.SocketTimeoutException
@@ -68,7 +68,7 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
 
     private var emptyStateLayout: LinearLayout? = null
 
-    private var textSearchError: TextView? = null
+    private var textSearchError: Typography? = null
     private var globalErrorLayout: GlobalError? = null
 
     companion object {
