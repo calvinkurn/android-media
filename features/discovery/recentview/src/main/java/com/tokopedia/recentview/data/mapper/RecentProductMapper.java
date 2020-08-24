@@ -62,14 +62,14 @@ public class RecentProductMapper
                     productItem.getName(),
                     productItem.getPrice(),
                     productItem.getImgUri(),
-                    String.valueOf(productItem.getIsNewGold()),
+                    String.valueOf(productItem.isNewGold()),
                     getProductLabelFromResponse(productItem.getLabels()),
                     productItem.getRating(),
                     productItem.getReviewCount(),
-                    productItem.getFree_return(),
+                    "",
                     getProductBadgeFromResponse(productItem),
-                    productItem.getWholesale(),
-                    productItem.getPreorder(),
+                    "",
+                    "",
                     productItem.getWishlist()));
         }
         return results;
@@ -86,8 +86,8 @@ public class RecentProductMapper
     private RecentViewShopDomain getShopFromResponse(ProductItem productItem) {
         return new RecentViewShopDomain(String.valueOf(productItem.getShopId()),
                 productItem.getShop(),
-                productItem.getIsGold(),
-                productItem.getLuckyShop(),
+                productItem.isGold(),
+                "",
                 productItem.getShop_location());
     }
 

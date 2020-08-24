@@ -85,7 +85,6 @@ class RecentViewFragment : BaseDaggerFragment(), RecentView.View, WishListAction
                 when (it) {
                     is Success ->  {
                         if(it.data.isNotEmpty()) {
-
                             val visitableList: ArrayList<Visitable<*>> = ArrayList(it.data)
                             onSuccessGetRecentView(visitableList)
                             sendRecentViewImpressionTracking(it.data)
