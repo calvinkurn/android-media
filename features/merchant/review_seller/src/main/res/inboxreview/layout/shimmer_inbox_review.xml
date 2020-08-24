@@ -32,12 +32,11 @@
         app:layout_constraintStart_toStartOf="@+id/guideline"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.tokopedia.design.loading.LoadingStateView
+    <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/line_1"
         android:layout_width="@dimen/dp_0"
         android:layout_height="@dimen/dp_1"
-        android:layout_marginTop="17dp"
-        android:background="@drawable/line"
+        android:layout_marginTop="@dimen/spacing_lvl4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/skeleton_2" />
@@ -48,7 +47,6 @@
         android:layout_height="@dimen/dp_32"
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginLeft="@dimen/spacing_lvl4"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/line_1"
         app:corners="35" />
@@ -58,12 +56,10 @@
         android:layout_width="@dimen/dp_120"
         android:layout_height="@dimen/spacing_lvl6"
         android:layout_marginTop="@dimen/spacing_lvl4"
-        android:layout_marginLeft="@dimen/spacing_lvl3"
         android:layout_marginStart="@dimen/spacing_lvl3"
         app:layout_constraintStart_toEndOf="@id/filterShimmer1"
         app:layout_constraintTop_toBottomOf="@id/line_1"
         android:layout_marginEnd="@dimen/spacing_lvl2"
-        android:layout_marginRight="@dimen/spacing_lvl2"
         app:corners="35" />
 
     <androidx.constraintlayout.widget.Guideline
