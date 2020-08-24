@@ -339,6 +339,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             endlessRecyclerViewScrollListener.resetState()
 
             if(productList.isNotEmpty()) {
+                shopProductSortFilterUiModel?.let { shopProductAdapter.setSortFilterData(it) }
                 shopPageTracking?.shopPageProductSearchResult(isMyShop, keyword, customDimensionShopPage)
             } else {
                 shopPageTracking?.shopPageProductSearchNoResult(isMyShop, keyword, customDimensionShopPage)
@@ -350,7 +351,6 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             shopInfo?.let { loadProductDataEmptyState(it, defaultInitialPage) }
             isEmptyState = true
         } else {
-            shopProductSortFilterUiModel?.let { shopProductAdapter.setSortFilterData(it) }
             shopProductAdapter.setProductListDataModel(productList)
             updateScrollListenerState(hasNextPage)
             isLoadingInitialData = false
