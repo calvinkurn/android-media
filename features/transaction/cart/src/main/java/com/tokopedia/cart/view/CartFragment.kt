@@ -504,109 +504,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun showBottomSheetSummaryTransaction() {
-        fragmentManager?.let {
-            val bottomSheet = BottomSheetUnify()
-            bottomSheet.showKnob = true
-            bottomSheet.showCloseIcon = false
-            bottomSheet.showHeader = false
-
-            val view = View.inflate(context, R.layout.layout_bottomsheet_summary_transaction, null)
-
-            // Render price total
-            view.text_price_total_title?.apply {
-                cartListData?.shoppingSummaryData?.totalWording?.let {
-                    text = it.replace("x", cartListData?.shoppingSummaryData?.qty ?: "0")
-                }
-            }
-            view.text_price_total_value?.apply {
-                this.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(cartListData?.shoppingSummaryData?.totalValue
-                        ?: 0, false).removeDecimalSuffix()
-            }
-
-            // Render Discount
-            if (cartListData?.shoppingSummaryData?.discountValue ?: 0 > 0) {
-                view.text_discount_total_value?.apply {
-                    text = CurrencyFormatUtil.convertPriceValueToIdrFormat(cartListData?.shoppingSummaryData?.discountValue
-                            ?: 0, false).removeDecimalSuffix()
-                    visibility = View.VISIBLE
-                }
-                view.text_discount_total_title?.apply {
-                    text = cartListData?.shoppingSummaryData?.discountTotalWording
-                    visibility = View.VISIBLE
-                }
-            } else {
-                view.text_discount_total_value?.apply {
-                    visibility = View.GONE
-                }
-                view.text_discount_total_title?.apply {
-                    visibility = View.GONE
-                }
-            }
-
-            // Render payment total
-            view.text_total_pay_title?.apply {
-                cartListData?.shoppingSummaryData?.paymentTotalWording?.let {
-                    text = it
-                }
-            }
-            view.text_total_pay_value?.apply {
-                val totalPay = (cartListData?.shoppingSummaryData?.totalValue
-                        ?: 0) - (cartListData?.shoppingSummaryData?.discountValue ?: 0)
-                this.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(totalPay
-                        ?: 0, false).removeDecimalSuffix()
-            }
-
-
-            // Render promo
-            if (cartListData?.shoppingSummaryData?.promoValue ?: 0 > 0) {
-                view.text_total_promo_value?.apply {
-                    text = CurrencyFormatUtil.convertPriceValueToIdrFormat(cartListData?.shoppingSummaryData?.promoValue
-                            ?: 0, false).removeDecimalSuffix()
-                    visibility = View.VISIBLE
-                }
-                view.text_total_promo_title?.apply {
-                    text = cartListData?.shoppingSummaryData?.promoWording
-                    visibility = View.VISIBLE
-                }
-            } else {
-                view.text_total_promo_value?.apply {
-                    visibility = View.GONE
-                }
-                view.text_total_promo_title?.apply {
-                    visibility = View.GONE
-                }
-            }
-
-            // Render Seller cashback
-            if (cartListData?.shoppingSummaryData?.sellerCashbackValue ?: 0 > 0) {
-                view.text_total_cashback_value?.apply {
-                    text = CurrencyFormatUtil.convertPriceValueToIdrFormat(cartListData?.shoppingSummaryData?.sellerCashbackValue
-                            ?: 0, false).removeDecimalSuffix()
-                    visibility = View.VISIBLE
-                }
-                view.text_total_cashback_title?.apply {
-                    text = cartListData?.shoppingSummaryData?.sellerCashbackWording
-                    visibility = View.VISIBLE
-                }
-            } else {
-                view.text_total_cashback_value?.apply {
-                    visibility = View.GONE
-                }
-                view.text_total_cashback_title?.apply {
-                    visibility = View.GONE
-                }
-            }
-
-            if (cartListData?.shoppingSummaryData?.promoValue ?: 0 > 0 ||
-                    cartListData?.shoppingSummaryData?.sellerCashbackValue ?: 0 > 0) {
-                view.separator_benefit.show()
-            } else {
-                view.separator_benefit.gone()
-            }
-
-            bottomSheet.setChild(view)
-
-            bottomSheet.show(it, "Cart Summary Transaction")
+        if (cartListData != null && fragmentManager != null && context != null) {
+            showSummaryTransactionBottomsheet(cartListData!!, fragmentManager!!, context!!)
         }
     }
 
@@ -1497,7 +1396,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     override fun onCartDataDisableToCheckout() {
         if (isAdded) {
             btnToShipment.isEnabled = false
-//            btnToShipment.setOnClickListener { checkGoToShipment(getString(R.string.message_checkout_empty_selection)) }
         }
     }
 
@@ -2392,6 +2290,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         var errorMessage = throwable.message ?: ""
         if (throwable !is CartResponseErrorException) {
             errorMessage = ErrorHandler.getErrorMessage(activity, throwable)
+        }
+
+        if (throwable is UnknownHostException) {
+            // Todo : show bottomsheet
         }
 
         renderErrorToShipmentForm(errorMessage)
