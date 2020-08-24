@@ -36,12 +36,14 @@ class IncentiveOvoBottomSheet(private val productRevIncentiveOvoDomain: ProductR
 
     private fun initView(view: View) {
         ImageHandler.LoadImage(view.ivIncentiveOvo, url)
-        view.tgIncentiveOvoTitle.text = productRevIncentiveOvoDomain.productrevIncentiveOvo.title
-        view.tgIncentiveOvoSubtitle.text = productRevIncentiveOvoDomain.productrevIncentiveOvo.subtitle
-        view.tgIncentiveOvoDescription.text = productRevIncentiveOvoDomain.productrevIncentiveOvo.description
-        view.btnContinueReview.text = productRevIncentiveOvoDomain.productrevIncentiveOvo.ctaText
+        productRevIncentiveOvoDomain.productrevIncentiveOvo?.let {
+            view.tgIncentiveOvoTitle.text = it.title
+            view.tgIncentiveOvoSubtitle.text = it.subtitle
+            view.tgIncentiveOvoDescription.text = it.description
+            view.btnContinueReview.text = it.ctaText
+        }
 
-        val adapterIncentiveOvo = ProductRevIncentiveOvoAdapter(productRevIncentiveOvoDomain.productrevIncentiveOvo.numberedList)
+        val adapterIncentiveOvo = ProductRevIncentiveOvoAdapter(productRevIncentiveOvoDomain.productrevIncentiveOvo?.numberedList ?: listOf())
         view.rvIncentiveOvoExplain.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = adapterIncentiveOvo

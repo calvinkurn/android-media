@@ -312,31 +312,33 @@ public class InboxReputationDetailHeaderViewHolder extends
     }
 
     public void showIncentiveOvo() {
-        if (productRevIncentiveOvoDomain == null) {
-            ovoTicker.setVisibility(View.GONE);
-        } else {
-            ReputationTracking reputationTracking = new ReputationTracking();
-            String title = productRevIncentiveOvoDomain.getProductrevIncentiveOvo().getTicker().getTitle();
-            String subtitle = productRevIncentiveOvoDomain.getProductrevIncentiveOvo().getTicker().getSubtitle();
-            ovoTicker.setVisibility(View.VISIBLE);
-            ovoTicker.setTickerTitle(title);
-            ovoTicker.setHtmlDescription(subtitle);
-            ovoTicker.setDescriptionClickEvent(new TickerCallback() {
-                @Override
-                public void onDescriptionViewClick(@NotNull CharSequence charSequence) {
-                    BottomSheetUnify bottomSheet = new IncentiveOvoBottomSheet(productRevIncentiveOvoDomain, ReputationTrackingConstant.INVOICE);
-                    if(fragmentManager != null) {
-                        bottomSheet.show(fragmentManager,IncentiveOvoBottomSheet.Companion.getTAG());
+        if (productRevIncentiveOvoDomain != null) {
+            if (productRevIncentiveOvoDomain.getProductrevIncentiveOvo() == null) {
+                ovoTicker.setVisibility(View.GONE);
+            } else {
+                ReputationTracking reputationTracking = new ReputationTracking();
+                String title = productRevIncentiveOvoDomain.getProductrevIncentiveOvo().getTicker().getTitle();
+                String subtitle = productRevIncentiveOvoDomain.getProductrevIncentiveOvo().getSubtitle();
+                ovoTicker.setVisibility(View.VISIBLE);
+                ovoTicker.setTickerTitle(title);
+                ovoTicker.setHtmlDescription(subtitle);
+                ovoTicker.setDescriptionClickEvent(new TickerCallback() {
+                    @Override
+                    public void onDescriptionViewClick(@NotNull CharSequence charSequence) {
+                        BottomSheetUnify bottomSheet = new IncentiveOvoBottomSheet(productRevIncentiveOvoDomain, ReputationTrackingConstant.INVOICE);
+                        if(fragmentManager != null) {
+                            bottomSheet.show(fragmentManager,IncentiveOvoBottomSheet.Companion.getTAG());
+                        }
+                        reputationTracking.onClickReadSkIncentiveOvoTracker(title, ReputationTrackingConstant.INVOICE);
                     }
-                    reputationTracking.onClickReadSkIncentiveOvoTracker(title, ReputationTrackingConstant.INVOICE);
-                }
 
-                @Override
-                public void onDismiss() {
-                    reputationTracking.onClickDismissIncentiveOvoTracker(title, ReputationTrackingConstant.INVOICE);
-                }
-            });
-            reputationTracking.onSuccessGetIncentiveOvoTracker(title, ReputationTrackingConstant.INVOICE);
+                    @Override
+                    public void onDismiss() {
+                        reputationTracking.onClickDismissIncentiveOvoTracker(title, ReputationTrackingConstant.INVOICE);
+                    }
+                });
+                reputationTracking.onSuccessGetIncentiveOvoTracker(title, ReputationTrackingConstant.INVOICE);
+            }
         }
     }
 }
