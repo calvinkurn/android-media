@@ -86,8 +86,6 @@ import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_NAME;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_BUYER;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_SELLER;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_REF;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_SEARCH_PRODUCT_CLICK_ETALASE_AUTOCOMPLETE;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_SEARCH_PRODUCT_CLICK_ETALASE_AUTOCOMPLETE_EMPTY;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_TYPE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.TRY_ANOTHER_WORD;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.UNFOLLOW;
@@ -743,25 +741,5 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
                 SHOP_TYPE, shopType,
                 PAGE_TYPE, SHOPPAGE
         ));
-    }
-
-    public void shopPageProductSearchResult(Boolean isOwner, String keyword, CustomDimensionShopPage customDimensionShopPage) {
-        sendGeneralEvent(
-                CLICK_SHOP_PAGE,
-                getShopPageCategory(isOwner),
-                String.format(SHOP_SEARCH_PRODUCT_CLICK_ETALASE_AUTOCOMPLETE, keyword),
-                keyword,
-                customDimensionShopPage
-        );
-    }
-
-    public void shopPageProductSearchNoResult(Boolean isOwner, String keyword, CustomDimensionShopPage customDimensionShopPage) {
-        sendGeneralEvent(
-                CLICK_SHOP_PAGE,
-                getShopPageCategory(isOwner),
-                String.format(SHOP_SEARCH_PRODUCT_CLICK_ETALASE_AUTOCOMPLETE_EMPTY, keyword),
-                keyword,
-                customDimensionShopPage
-        );
     }
 }

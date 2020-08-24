@@ -346,11 +346,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
 
             if(productList.isNotEmpty()) {
                 shopProductSortFilterUiModel?.let { shopProductAdapter.setSortFilterData(it) }
-                shopPageTracking?.shopPageProductSearchResult(isMyShop, keyword, customDimensionShopPage)
-            } else {
-                shopPageTracking?.shopPageProductSearchNoResult(isMyShop, keyword, customDimensionShopPage)
             }
-        }
 
         if (productList.isEmpty() && isLoadingInitialData) {
             showLoading()

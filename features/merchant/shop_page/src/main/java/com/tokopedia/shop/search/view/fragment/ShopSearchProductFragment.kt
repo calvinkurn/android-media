@@ -231,6 +231,11 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
         searchQuery = keyword
         if (searchQuery.isNotEmpty()) {
             shopPageTrackingShopSearchProduct.typeSearch(isMyShop, keyword, customDimensionShopPage)
+            if(productListData?.isNotEmpty() == true) {
+                shopPageTrackingShopSearchProduct.shopPageProductSearchResult(isMyShop, keyword, customDimensionShopPage)
+            } else {
+                shopPageTrackingShopSearchProduct.shopPageProductSearchNoResult(isMyShop, keyword, customDimensionShopPage)
+            }
             redirectToShopProductListPage()
             activity?.finish()
         }
