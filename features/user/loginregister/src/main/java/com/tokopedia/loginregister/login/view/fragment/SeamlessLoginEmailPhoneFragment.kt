@@ -8,12 +8,16 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.loginregister.login.router.LoginRouter
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import kotlinx.android.synthetic.main.fragment_login_with_phone.view.*
 
 /**
@@ -25,6 +29,7 @@ class SeamlessLoginEmailPhoneFragment: LoginEmailPhoneFragment() {
 
     private lateinit var remoteConfig: RemoteConfig
     private var isEnableSeamlessLogin = false
+    private var redirectApplink: String? = ""
 
     companion object {
         private const val REMOTE_CONFIG_SEAMLESS_LOGIN = "android_user_seamless_login"
@@ -65,11 +70,30 @@ class SeamlessLoginEmailPhoneFragment: LoginEmailPhoneFragment() {
         })
     }
 
+    override fun setLoginSuccessSellerApp() {
+        if(redirectApplink?.isNotEmpty() == true){
+            view?.run {
+                if (context.applicationContext is LoginRouter) {
+                    (context.applicationContext as LoginRouter).setOnboardingStatus(true)
+                }
+                val intent = RouteManager.getIntent(activity, redirectApplink)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+                if(activity?.intent?.hasExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA)==true){
+                    intent.putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, activity?.intent?.getStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA))
+                }
+                startActivity(intent)
+                activity?.finish()
+            }
+        } else super.setLoginSuccessSellerApp()
+    }
+
     private fun checkForSeamless(){
         if(isEnableSeamlessLogin && GlobalConfig.isSellerApp() && isAdded) {
             context?.run {
                 val intent = RouteManager.getIntent(context, ApplinkConstInternalSellerapp.SEAMLESS_CHOOSE_ACCOUNT)
-                arguments?.run { intent.putExtras(this) }
+                arguments?.run {
+                    intent.putExtras(this)
+                }
                 startActivityForResult(intent, REQUEST_SEAMLESS_LOGIN)
             }
         }else {
@@ -99,10 +123,14 @@ class SeamlessLoginEmailPhoneFragment: LoginEmailPhoneFragment() {
                             presenter.getUserInfo()
                         }
                     }
+                    if(data.hasExtra(ApplinkConstInternalGlobal.KEY_REDIRECT_SEAMLESS_APPLINK)){
+                        redirectApplink = data.getStringExtra(ApplinkConstInternalGlobal.KEY_REDIRECT_SEAMLESS_APPLINK)
+                    }
                 } else {
                     presenter.getUserInfo()
                 }
-            }else {
+            }
+            else {
                 activity?.finish()
             }
         }else if (requestCode == REQUEST_SECURITY_QUESTION

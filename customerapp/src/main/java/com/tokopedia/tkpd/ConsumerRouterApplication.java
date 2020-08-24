@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.text.TextUtils;
 
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
@@ -28,9 +27,11 @@ import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.analytics.mapper.TkpdAppsFlyerMapper;
 import com.tokopedia.analytics.mapper.TkpdAppsFlyerRouter;
 import com.tokopedia.analyticsdebugger.debugger.TetraDebugger;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.buyerorder.common.util.UnifiedOrderListRouter;
 import com.tokopedia.buyerorder.others.CreditCardFingerPrintUseCase;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
@@ -65,15 +66,11 @@ import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.home.HomeInternalRouter;
 import com.tokopedia.homecredit.view.fragment.FragmentCardIdCamera;
 import com.tokopedia.homecredit.view.fragment.FragmentSelfieIdCamera;
+import com.tokopedia.inboxreputation.presentation.activity.InboxReputationActivity;
 import com.tokopedia.iris.Iris;
 import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.kyc.KYCRouter;
 import com.tokopedia.linker.interfaces.LinkerRouter;
-import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity;
-import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomActivity;
-import com.tokopedia.logisticaddaddress.features.pinpoint.GeolocationActivity;
-import com.tokopedia.logisticdata.data.entity.address.Token;
-import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.loyalty.di.component.TokopointComponent;
 import com.tokopedia.loyalty.router.LoyaltyModuleRouter;
 import com.tokopedia.loyalty.view.data.VoucherViewModel;
@@ -85,9 +82,6 @@ import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.notifications.CMRouter;
 import com.tokopedia.notifications.inApp.CMInAppManager;
 import com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant;
-import com.tokopedia.nps.helper.InAppReviewHelper;
-import com.tokopedia.nps.presentation.view.dialog.AppFeedbackRatingBottomSheet;
-import com.tokopedia.nps.presentation.view.dialog.SimpleAppRatingDialog;
 import com.tokopedia.officialstore.category.presentation.fragment.OfficialHomeContainerFragment;
 import com.tokopedia.oms.OmsModuleRouter;
 import com.tokopedia.oms.di.DaggerOmsComponent;
@@ -99,13 +93,10 @@ import com.tokopedia.purchase_platform.common.constant.CartConstant;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
-import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.product.etalase.utils.EtalaseUtils;
 import com.tokopedia.seller.purchase.detail.activity.OrderHistoryActivity;
-import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
 import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
-import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.tkpd.applink.ApplinkUnsupportedImpl;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.fcm.AppNotificationReceiver;
@@ -113,9 +104,6 @@ import com.tokopedia.tkpd.fcm.appupdate.FirebaseRemoteAppUpdate;
 import com.tokopedia.tkpd.nfc.NFCSubscriber;
 import com.tokopedia.tkpd.react.DaggerReactNativeComponent;
 import com.tokopedia.tkpd.react.ReactNativeComponent;
-import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
-import com.tokopedia.tkpd.tkpdreputation.TkpdReputationInternalRouter;
-import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
 import com.tokopedia.tkpd.tkpdreputation.review.shop.view.ReviewShopFragment;
 import com.tokopedia.tkpd.utils.DeferredResourceInitializer;
 import com.tokopedia.tkpd.utils.FingerprintModelGenerator;
@@ -160,11 +148,8 @@ import static com.tokopedia.kyc.Constants.Keys.KYC_SELFIEID_CAMERA;
 public abstract class ConsumerRouterApplication extends MainApplication implements
         TkpdCoreRouter,
         ReactApplication,
-        ReputationRouter,
         AbstractionRouter,
-        LogisticRouter,
         ApplinkRouter,
-        ShopModuleRouter,
         LoyaltyModuleRouter,
         GamificationRouter,
         ReactNativeRouter,
@@ -424,12 +409,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     private Intent getInboxReputationIntent(Context context) {
-        return TkpdReputationInternalRouter.getInboxReputationActivityIntent(context);
-    }
-
-    @Override
-    public Fragment getReputationHistoryFragment() {
-        return SellerReputationFragment.createInstance();
+        return RouteManager.getIntent(context, ApplinkConst.REPUTATION);
     }
 
     @Override
@@ -545,26 +525,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
             cacheManager = new GlobalCacheManager();
         }
         return cacheManager;
-    }
-
-    @Override
-    public Intent getDistrictRecommendationIntent(Activity activity, Token token) {
-        return DiscomActivity.newInstance(activity, token);
-    }
-
-    @Override
-    public Intent getGeoLocationActivityIntent(Context context, LocationPass locationPass) {
-        return GeolocationActivity.createInstance(context, locationPass, false);
-    }
-
-    @Override
-    public Fragment getReviewFragment(Activity activity, String shopId, String shopDomain) {
-        return ReviewShopFragment.createInstance(shopId, shopDomain);
-    }
-
-    @Override
-    public Class getReviewFragmentClass() {
-        return ReviewShopFragment.class;
     }
 
     @Override
@@ -750,24 +710,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public boolean isAllowLogOnChuckInterceptorNotification() {
         return DevOptConfig.isChuckNotifEnabled(this);
-    }
-
-    @Override
-    public void showAppFeedbackRatingDialog(
-            FragmentManager manager,
-            Context context,
-            BottomSheets.BottomSheetDismissListener dismissListener
-    ) {
-        AppFeedbackRatingBottomSheet rating = new AppFeedbackRatingBottomSheet();
-        rating.setDialogDismissListener(dismissListener);
-        rating.showDialog(manager, context);
-    }
-
-    @Override
-    public void showSimpleAppRatingDialog(Activity activity) {
-        if(!InAppReviewHelper.launchInAppReview(activity)) {
-            SimpleAppRatingDialog.show(activity);
-        }
     }
 
     private void initCMPushNotification() {

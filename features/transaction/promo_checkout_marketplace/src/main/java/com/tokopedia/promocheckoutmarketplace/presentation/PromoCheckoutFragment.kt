@@ -288,7 +288,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     private fun initializePromoCheckoutLastSeenBottomsheet() {
         if (promoCheckoutLastSeenBottomsheet == null) {
-            promoCheckoutLastSeenBottomsheet = BottomSheetBehavior.from(bottomsheetPromoLastSeenContainer)
+            promoCheckoutLastSeenBottomsheet = BottomSheetBehavior.from(bottomsheetPromoLastSeenContainer as FrameLayout)
             promoCheckoutLastSeenBottomsheet?.state = BottomSheetBehavior.STATE_HIDDEN
         }
     }

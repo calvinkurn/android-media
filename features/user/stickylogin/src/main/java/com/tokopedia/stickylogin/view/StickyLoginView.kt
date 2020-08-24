@@ -3,31 +3,23 @@ package com.tokopedia.stickylogin.view
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
-import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.os.Build
-import android.text.Spannable
 import android.text.SpannableString
-import android.text.style.ForegroundColorSpan
-import android.text.style.StyleSpan
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.loadImageCircle
 import com.tokopedia.stickylogin.R
 import com.tokopedia.stickylogin.analytics.StickyLoginReminderTracker
 import com.tokopedia.stickylogin.analytics.StickyLoginTracking
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
-import com.tokopedia.stickylogin.utils.StripedUnderlineUtil
-import com.tokopedia.unifycomponents.setBodyText
 import kotlinx.coroutines.*
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.CoroutineContext
@@ -39,9 +31,12 @@ class StickyLoginView : FrameLayout, CoroutineScope {
     private lateinit var layoutContainer: ConstraintLayout
     private lateinit var imageViewLeft: ImageView
     private lateinit var imageViewRight: ImageView
-    private lateinit var textContent: TextView
+    private lateinit var textContent: EllipsizedTextView
     private var leftImage: Drawable? = null
-    private var spannable: SpannableString? = null
+
+    private var content = ""
+    private var highlight = ""
+    private var highlightColor = -1
 
     val tracker: StickyLoginTracking
         get() = StickyLoginTracking()
@@ -91,21 +86,9 @@ class StickyLoginView : FrameLayout, CoroutineScope {
     private fun initAttributeSet(attributeSet: AttributeSet) {
         val styleable = context.obtainStyledAttributes(attributeSet, R.styleable.StickyLoginView, 0, 0)
         try {
-            var text = styleable.getString(R.styleable.StickyLoginView_sticky_text)
-            val textHighlight = styleable.getString(R.styleable.StickyLoginView_sticky_text_highlight)
-            val highlightColor = styleable.getColor(R.styleable.StickyLoginView_sticky_highlight_color, -1)
-
-            spannable = SpannableString("")
-            if (text != null) {
-                if (textHighlight != null) {
-                    text += " $textHighlight"
-                    spannable = SpannableString(text)
-                    if (highlightColor != -1) {
-                        spannable.run { this?.setSpan(ForegroundColorSpan(highlightColor), text.length - textHighlight.length, text.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE) }
-                    }
-                    spannable.run { this?.setSpan(StyleSpan(Typeface.BOLD), text.length - textHighlight.length, text.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE) }
-                }
-            }
+            content = styleable.getString(R.styleable.StickyLoginView_sticky_text) ?: ""
+            highlight = styleable.getString(R.styleable.StickyLoginView_sticky_text_highlight) ?: ""
+            highlightColor = styleable.getColor(R.styleable.StickyLoginView_sticky_highlight_color, -1)
 
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
                 leftImage = styleable.getDrawable(R.styleable.StickyLoginView_sticky_left_icon)
@@ -116,15 +99,12 @@ class StickyLoginView : FrameLayout, CoroutineScope {
                 }
             }
         } finally {
+            setContent(content, highlight)
             styleable.recycle()
         }
     }
 
     private fun initView() {
-        if (!spannable.isNullOrEmpty() || !spannable.isNullOrEmpty()) {
-            textContent.text = spannable
-        }
-
         if (leftImage != null) {
             imageViewLeft.setImageDrawable(leftImage)
         }
@@ -139,8 +119,17 @@ class StickyLoginView : FrameLayout, CoroutineScope {
     }
 
     fun setContent(stickyLoginTickerDetail: StickyLoginTickerPojo.TickerDetail) {
-        textContent.text = MethodChecker.fromHtml(stickyLoginTickerDetail.message)
-        StripedUnderlineUtil.stripUnderlines(textContent)
+        val content = stickyLoginTickerDetail.message
+        if (content.contains(REGEX_HTML_TAG)) {
+            val contents = content.split(REGEX_HTML_TAG)
+            setContent(contents[0], " ${contents[2]}")
+        } else {
+            setContent(stickyLoginTickerDetail.message, "")
+        }
+    }
+
+    fun setContent(content: String, highlight: String) {
+        textContent.setContent(content, highlight)
     }
 
     fun show(page: StickyLoginConstant.Page) {
@@ -161,13 +150,6 @@ class StickyLoginView : FrameLayout, CoroutineScope {
 
             setLastSeen(page, System.currentTimeMillis())
         }
-    }
-
-    /**
-     * @param minutes delay time in minutes
-     **/
-    fun setDelayTime(minutes: Int) {
-        this.timeDelay = minutes
     }
 
     fun isShowing(): Boolean {
@@ -233,11 +215,9 @@ class StickyLoginView : FrameLayout, CoroutineScope {
     @SuppressLint("SetTextI18n")
     fun showLoginReminder(page: StickyLoginConstant.Page) {
         val name = getSharedPreference(STICKY_LOGIN_REMINDER_PREF).getString(KEY_USER_NAME, "")
-        val names = name?.split(" ") ?: emptyList()
         val profilePicture = getSharedPreference(STICKY_LOGIN_REMINDER_PREF).getString(KEY_PROFILE_PICTURE, "")
 
-        textContent.text = TEXT_RE_LOGIN + names[0]
-        textContent.setBodyText(isBold = true)
+        textContent.setContent(TEXT_RE_LOGIN + name)
         textContent.setTextColor(ContextCompat.getColor(context, R.color.Green_G500))
 
         profilePicture?.let {
@@ -261,5 +241,7 @@ class StickyLoginView : FrameLayout, CoroutineScope {
         private const val KEY_PROFILE_PICTURE = "profile_picture"
 
         private const val TEXT_RE_LOGIN = "Masuk sebagai "
+
+        private val REGEX_HTML_TAG = "<[^>]+>".toRegex()
     }
 }

@@ -76,6 +76,7 @@ class VideoViewHolder(private val listener: VideoViewListener) : BasePostViewHol
                 override fun onPrepared(mp: MediaPlayer) {
                     mp.isLooping = true
                     itemView.ic_play.visibility = View.GONE
+                    itemView.image.visibility = View.GONE
                     mp.setOnInfoListener(object : MediaPlayer.OnInfoListener {
                         override fun onInfo(mp: MediaPlayer?, what: Int, extra: Int): Boolean {
                             if (what == MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START) {

@@ -91,7 +91,13 @@ object DynamicChannelComponentMapper {
                             },
                             hasBuyButton = it.hasBuyButton,
                             rating = it.rating,
-                            countReview = it.countReview
+                            countReview = it.countReview,
+                            backColor = it.backColor,
+                            benefit = ChannelBenefit(
+                                    it.benefit.type,
+                                    it.benefit.value
+                            ),
+                            textColor = it.textColor
                     )
                 }
         )
