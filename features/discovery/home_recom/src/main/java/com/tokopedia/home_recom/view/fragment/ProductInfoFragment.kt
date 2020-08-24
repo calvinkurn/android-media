@@ -149,7 +149,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
         setRatingReviewCount(productDataModel.productDetailData.rating, productDataModel.productDetailData.countReview)
         updateWishlist(productDataModel.productDetailData.isWishlist)
         context?.let{
-            ImageHandler.loadImageRounded2(context, product_image, productDataModel.productDetailData.imageUrl)
+            ImageHandler.loadImageRounded2(it, product_image, productDataModel.productDetailData.imageUrl)
         }
         handleDiscount(productDataModel.productDetailData.discountPercentage, productDataModel.productDetailData.slashedPrice)
 
