@@ -49,5 +49,4 @@ query Notification($cursor: String) {
   homeFlag {
     isOSBottomNav
   }
-
 }
