@@ -41,6 +41,7 @@ import com.tokopedia.cart.R
 import com.tokopedia.cart.data.model.response.recentview.RecentView
 import com.tokopedia.cart.domain.model.cartlist.CartItemData
 import com.tokopedia.cart.domain.model.cartlist.CartListData
+import com.tokopedia.cart.domain.model.cartlist.OutOfServiceData
 import com.tokopedia.cart.domain.model.cartlist.ShopGroupAvailableData
 import com.tokopedia.cart.view.CartActivity.Companion.INVALID_PRODUCT_ID
 import com.tokopedia.cart.view.adapter.CartAdapter
@@ -1597,6 +1598,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     override fun renderInitialGetCartListDataSuccess(cartListData: CartListData?) {
         recommendationPage = 1
         cartListData?.let {
+            if (it.outOfServiceData.id != 0) {
+                renderCartOutOfService(it.outOfServiceData)
+                return@let
+            }
+
             accordionCollapseState = false
             sendAnalyticsScreenName(screenName)
 
@@ -1663,6 +1669,13 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
             cartAdapter.checkForShipmentForm()
         }
+    }
+
+    private fun renderCartOutOfService(outOfServiceData: OutOfServiceData) {
+        layoutGlobalError.errorTitle.text = outOfServiceData.title
+        layoutGlobalError.errorDescription.text = outOfServiceData.description
+        layoutGlobalError.errorIllustration.setImage(outOfServiceData.image, 0f)
+        showErrorContainer()
     }
 
     private fun renderCartNotEmpty(cartListData: CartListData) {

@@ -22,10 +22,10 @@ val RESPONSE = """
             ]
           },
           "out_of_service": {
-            "id": 1,
-            "image": "ecs7.tokopedia.com/................",
-            "title": "Waktunya kerja bakti!",
-            "description": "Kami sedang bersih-bersih........",
+            "id": 0,
+            "image": "https://i1.wp.com/netjurnal.com/wp-content/uploads/2016/12/Tokopedia-kepenuhan-pengunjung.png",
+            "title": "Waktunya kerja bakti bos!",
+            "description": "Kami sedang bersih-bersih........ bos",
             "buttons": [
               {
                 "id": "1",
@@ -44,7 +44,7 @@ val RESPONSE = """
           "is_coupon_active": 0,
           "is_one_tab_promo": false,
           "max_quantity": 0,
-          "max_char_note": 144,
+          "max_char_note": 0,
           "messages": {
             "ErrorFieldBetween": "Jumlah harus diisi antara 1 - {{value}}",
             "ErrorFieldMaxChar": "Catatan terlalu panjang, maks. {{value}} karakter.",
@@ -106,8 +106,8 @@ val RESPONSE = """
                   "shop_location": "Jakarta Selatan",
                   "estimation": "Estimasi Tiba: 2 hari",
                   "free_shipping": {
-                    "eligible": true,
-                    "badge_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                    "eligible": false,
+                    "badge_url": ""
                   },
                   "Preorder": {
                     "is_preorder": true,
@@ -968,7 +968,7 @@ val RESPONSE = """
                         ],
                         "free_shipping": {
                           "eligible": true,
-                          "badge_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                          "badge_url": "https://ecs7.tokopedi.net/img/ic_bebas_ongkir.png"
                         }
                       },
                       "errors": [
