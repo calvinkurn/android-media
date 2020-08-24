@@ -16,14 +16,14 @@ import com.tokopedia.contactus.inboxticket2.data.ImageUpload
 import com.tokopedia.contactus.inboxticket2.data.model.Tickets
 import com.tokopedia.contactus.inboxticket2.domain.*
 import com.tokopedia.contactus.inboxticket2.domain.usecase.*
-import com.tokopedia.contactus.inboxticket2.view.activity.ContactUsProvideRatingActivity
-import com.tokopedia.contactus.inboxticket2.view.activity.InboxDetailActivity
+import com.tokopedia.contactus.inboxticket2.view.activity.*
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract.InboxBaseView
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxDetailContract.InboxDetailPresenter
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxDetailContract.InboxDetailView
 import com.tokopedia.contactus.inboxticket2.view.customview.CustomEditText
 import com.tokopedia.contactus.inboxticket2.view.fragment.InboxBottomSheetFragment
 import com.tokopedia.contactus.inboxticket2.view.utils.CLOSED
+import com.tokopedia.contactus.inboxticket2.view.utils.NEW
 import com.tokopedia.contactus.inboxticket2.view.utils.OPEN
 import com.tokopedia.contactus.inboxticket2.view.utils.SOLVED
 import com.tokopedia.contactus.inboxticket2.view.utils.Utils
@@ -106,8 +106,7 @@ class InboxDetailPresenterImpl(private val postMessageUseCase: PostMessageUseCas
                                 ?: "")
                         mView?.showIssueClosed()
                         isIssueClosed = true
-                        delay(DELAY_FOUR_MILLIS.toLong())
-                        getTicketDetails(getTicketId())
+                        mView?.updateClosedStatus()
                     }
 
                 },
@@ -181,12 +180,13 @@ class InboxDetailPresenterImpl(private val postMessageUseCase: PostMessageUseCas
                     val chipGetInboxDetail = inboxOptionUseCase.getChipInboxDetail(requestParams)
                     if (chipGetInboxDetail?.data?.isSuccess == 1) {
                         mTicketDetail = chipGetInboxDetail.data?.tickets
-                        val commentsItems =
-                                getCommentsWithTopItem(mTicketDetail?.comments, getTopItem(mTicketDetail))
+                        val commentsItems = mTicketDetail?.comments ?: mutableListOf()
+                        addItemAtTopOfComment(commentsItems, getTopItem(mTicketDetail))
+                        addItemAtTopOfComment(commentsItems, getCommentHeader(mTicketDetail))
                         for (item in commentsItems) {
-                            val createTime = getUtils().getDateTime(item.createTime)
+                            val createTime = item.createTime?.let { getUtils().getDateTime(it) }
                             item.createTime = createTime
-                            item.shortTime = getShortTime(createTime)
+                            item.shortTime = createTime?.let { getShortTime(it) }
                         }
                         if (isIssueClosed) {
                             mTicketDetail?.isShowRating = false
@@ -205,6 +205,35 @@ class InboxDetailPresenterImpl(private val postMessageUseCase: PostMessageUseCas
         )
     }
 
+    private fun getCommentHeader(mTicketDetail: Tickets?): CommentsItem {
+        return CommentsItem().apply {
+            ticketTitle = mTicketDetail?.subject
+            ticketId = mTicketDetail?.number
+            this.ticketStatus = getStatus()
+        }
+    }
+
+    private fun getStatus(): String? {
+        val status = getTicketStatus()
+        return when {
+            status.equals(SOLVED, ignoreCase = true) ||
+                    status.equals(OPEN, ignoreCase = true) ||
+                    status.equals(NEW, ignoreCase = true) -> {
+                TICKET_STATUS_IN_PROCESS
+            }
+            status.equals(CLOSED, ignoreCase = true) &&
+                    mTicketDetail?.isShowRating == false -> {
+                TICKET_STATUS_CLOSED
+            }
+            mTicketDetail?.isShowRating == true -> {
+                TICKET_STATUS_NEED_RATING
+            }
+            else -> {
+                ""
+            }
+        }
+    }
+
     override fun getTicketId(): String? {
         var tId = mView?.getActivity()?.intent?.getStringExtra(InboxDetailActivity.PARAM_TICKET_T_ID)
         if (tId == null) {
@@ -213,22 +242,22 @@ class InboxDetailPresenterImpl(private val postMessageUseCase: PostMessageUseCas
         return tId
     }
 
-    private fun getShortTime(createTime: String?): String? {
+    private fun getShortTime(createTime: String): String? {
         var count = 0
         var i = 0
-        while (i < createTime?.length ?: 0) {
-            val c = createTime?.get(i)
+        while (i < createTime.length) {
+            val c = createTime.get(i)
             if (c == ' ') {
                 count++
                 if (count == 2) break
             }
             i++
         }
-        return createTime?.substring(0, i)
+        return createTime.substring(0, i)
 
     }
 
-    private fun getCommentsWithTopItem(commentsItems: MutableList<CommentsItem>?, topItem: CommentsItem): MutableList<CommentsItem> {
+    private fun addItemAtTopOfComment(commentsItems: MutableList<CommentsItem>?, topItem: CommentsItem) {
         var mCommentsItem = commentsItems
         if (mCommentsItem == null) {
             mCommentsItem = ArrayList()
@@ -236,7 +265,6 @@ class InboxDetailPresenterImpl(private val postMessageUseCase: PostMessageUseCas
         } else {
             mCommentsItem.add(0, topItem)
         }
-        return mCommentsItem
     }
 
     private fun getTopItem(mTicketDetail: Tickets?): CommentsItem {
@@ -520,7 +548,7 @@ class InboxDetailPresenterImpl(private val postMessageUseCase: PostMessageUseCas
                         mView?.toggleTextToolbar(View.VISIBLE)
                     } else {
                         mView?.showIssueClosed()
-                        mView?.updateClosedStatus(mTicketDetail?.subject)
+                        mView?.updateClosedStatus()
                     }
                 } else {
                     mView?.setSnackBarErrorMessage(ticketListResponse.errorMessage?.get(0)
@@ -663,9 +691,8 @@ class InboxDetailPresenterImpl(private val postMessageUseCase: PostMessageUseCas
             }
             newItem.attachment = attachmentItems
         }
-        mTicketDetail?.comments?.add(newItem)
         mTicketDetail?.isNeedAttachment = false
-        mView?.updateAddComment()
+        mView?.updateAddComment(newItem)
     }
 
     private fun getNewComment(): CommentsItem {
