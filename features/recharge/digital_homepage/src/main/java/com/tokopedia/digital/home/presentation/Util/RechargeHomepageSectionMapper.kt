@@ -16,6 +16,44 @@ import java.util.*
 
 object RechargeHomepageSectionMapper {
 
+    fun updateSectionsData(
+            oldData: List<RechargeHomepageSections.Section>,
+            newData: RechargeHomepageSections): List<RechargeHomepageSections.Section> {
+        // Remove empty sections
+        var sections = oldData.toMutableList()
+        val updatedSections = newData.sections.filter { it.items.isNotEmpty() }
+        val requestIDs = newData.requestIDs
+        when (updatedSections.size) {
+            0 -> {
+                // Remove sections
+                sections = sections.filter { it.id !in requestIDs }.toMutableList()
+            }
+            1 -> {
+                // One on one mapping; remove other IDs except the first one
+                if (requestIDs.size > 1) {
+                    val indexes = requestIDs.subList(1, requestIDs.size)
+                    sections = sections.filter { it.id !in indexes }.toMutableList()
+                }
+                val index = sections.indexOfFirst { it.id == requestIDs.first() }
+                sections[index] = updatedSections.first()
+            }
+            else -> {
+                /*
+                    Special case; remove other IDs except the first one,
+                    then insert all sections to the appropriate index
+                 */
+                if (requestIDs.size > 1) {
+                    val indexes = requestIDs.subList(1, requestIDs.size)
+                    sections = sections.filter { it.id !in indexes }.toMutableList()
+                }
+                val index = sections.indexOfFirst { it.id == requestIDs.first() }
+                sections.removeAt(index)
+                sections.addAll(index, updatedSections)
+            }
+        }
+        return sections.toList()
+    }
+
     fun mapInitialHomepageSections(sections: List<RechargeHomepageSectionSkeleton.Item>): List<RechargeHomepageSections.Section> {
         return sections.map { RechargeHomepageSections.Section(it.id, template = it.template) }
     }

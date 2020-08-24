@@ -103,52 +103,16 @@ class DigitalHomePageViewModel @Inject constructor(
                 Update local (viewmodel) section then update LiveData in order to
                 prevent missing section updates caused by postValue override
              */
-            localRechargeHomepageSections = updateSectionsData(localRechargeHomepageSections, data)
+            localRechargeHomepageSections = RechargeHomepageSectionMapper.updateSectionsData(localRechargeHomepageSections, data)
             mutableRechargeHomepageSections.postValue(localRechargeHomepageSections)
         }) {
             // Because error occured, remove sections
-            localRechargeHomepageSections = updateSectionsData(
+            localRechargeHomepageSections = RechargeHomepageSectionMapper.updateSectionsData(
                     localRechargeHomepageSections,
                     RechargeHomepageSections(requestIDs = requestIDs)
             )
             mutableRechargeHomepageSections.postValue(localRechargeHomepageSections)
         }
-    }
-
-    private fun updateSectionsData(
-            oldData: List<RechargeHomepageSections.Section>,
-            incomingData: RechargeHomepageSections): List<RechargeHomepageSections.Section> {
-        var data = oldData.toMutableList()
-        val requestIDs = incomingData.requestIDs
-        when (incomingData.sections.size) {
-            0 -> {
-                // Remove sections
-                data = data.filter { it.id !in requestIDs }.toMutableList()
-            }
-            1 -> {
-                // One on one mapping; remove other IDs except the first one
-                if (requestIDs.size > 1) {
-                    val indexes = requestIDs.subList(1, requestIDs.size)
-                    data = data.filter { it.id !in indexes }.toMutableList()
-                }
-                val index = data.indexOfFirst { it.id == requestIDs.first() }
-                data[index] = incomingData.sections.first()
-            }
-            else -> {
-                /*
-                    Special case; remove other IDs except the first one,
-                    then insert all sections to the appropriate index
-                 */
-                if (requestIDs.size > 1) {
-                    val indexes = requestIDs.subList(1, requestIDs.size)
-                    data = data.filter { it.id !in indexes }.toMutableList()
-                }
-                val index = data.indexOfFirst { it.id == requestIDs.first() }
-                data.removeAt(index)
-                data.addAll(index, incomingData.sections)
-            }
-        }
-        return data.toList()
     }
 
     fun triggerRechargeSectionAction(mapParams: Map<String, Any>) {
