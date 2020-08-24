@@ -48,6 +48,7 @@
             android:layout_height="20dp"
             android:layout_marginStart="@dimen/spacing_lvl3"
             android:layout_marginLeft="@dimen/spacing_lvl3"
+            tools:visibility="gone"
             android:layout_marginTop="@dimen/spacing_lvl3"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -60,6 +61,7 @@
             android:layout_marginStart="@dimen/spacing_lvl1"
             android:layout_marginLeft="@dimen/spacing_lvl1"
             android:layout_marginTop="@dimen/spacing_lvl3"
+            app:layout_goneMarginStart="@dimen/spacing_lvl3"
             app:layout_constraintStart_toEndOf="@+id/live_badge"
             app:layout_constraintTop_toTopOf="parent" />
 
