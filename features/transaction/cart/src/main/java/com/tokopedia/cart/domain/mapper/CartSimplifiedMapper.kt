@@ -61,10 +61,37 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
         cartListData.isAllSelected = cartDataListResponse.isGlobalCheckboxState
         cartListData.isShowOnboarding = false
         cartListData.shoppingSummaryData = mapShoppingSummaryData(cartDataListResponse.shoppingSummary)
+        cartListData.outOfServiceData = mapOutOfServiceData(cartDataListResponse.outOfService)
 
         mapPromoAnalytics(cartDataListResponse.promo.lastApplyPromo.lastApplyPromoData, cartListData.shopGroupAvailableDataList)
 
         return cartListData
+    }
+
+    private fun mapOutOfServiceData(outOfService: OutOfService): OutOfServiceData {
+        return OutOfServiceData().apply {
+            id = outOfService.id
+            image = outOfService.image
+            title = outOfService.title
+            description = outOfService.description
+            buttons = mapButtonListData(outOfService.buttons)
+        }
+    }
+
+    private fun mapButtonListData(buttons: List<Button>): List<ButtonData> {
+        val buttonListData = ArrayList<ButtonData>()
+        buttons.forEach {
+            buttonListData.add(
+                    ButtonData().apply {
+                        id = it.id
+                        code = it.code
+                        message = it.message
+                        color = it.color
+                    }
+            )
+        }
+
+        return buttonListData
     }
 
     private fun mapShoppingSummaryData(shoppingSummary: ShoppingSummary): ShoppingSummaryData {
