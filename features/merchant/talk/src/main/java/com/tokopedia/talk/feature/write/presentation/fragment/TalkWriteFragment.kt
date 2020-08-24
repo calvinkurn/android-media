@@ -1,6 +1,5 @@
 package com.tokopedia.talk.feature.write.presentation.fragment
 
-import android.app.Activity
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
@@ -15,7 +14,6 @@ import androidx.lifecycle.Observer
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
-import com.google.gson.JsonNull
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
@@ -24,21 +22,17 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.chat_common.data.preview.ProductPreview
-import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringContract
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringListener
 import com.tokopedia.talk.common.constants.TalkConstants
 import com.tokopedia.talk.common.di.TalkComponent
 import com.tokopedia.talk.common.utils.setCustomMovementMethod
-import com.tokopedia.talk.feature.reading.presentation.fragment.TalkReadingFragment
-import com.tokopedia.talk.feature.reply.presentation.activity.TalkReplyActivity
 import com.tokopedia.talk.feature.write.analytics.TalkWriteTracking
 import com.tokopedia.talk.feature.write.data.model.DiscussionGetWritingForm
 import com.tokopedia.talk.feature.write.di.DaggerTalkWriteComponent
 import com.tokopedia.talk.feature.write.di.TalkWriteComponent
 import com.tokopedia.talk.feature.write.presentation.decorator.SpacingItemDecoration
-import com.tokopedia.talk.feature.write.presentation.listener.TalkWriteCategoryDetailsListener
 import com.tokopedia.talk.feature.write.presentation.uimodel.TalkWriteCategory
 import com.tokopedia.talk.feature.write.presentation.viewmodel.TalkWriteViewModel
 import com.tokopedia.talk.feature.write.presentation.widget.TalkWriteCategoryChipsWidget
@@ -47,18 +41,15 @@ import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import kotlinx.android.synthetic.main.fragment_talk_write.*
 import kotlinx.android.synthetic.main.partial_talk_connection_error.*
 import kotlinx.android.synthetic.main.widget_talk_write_header.*
 import javax.inject.Inject
 
 class TalkWriteFragment : BaseDaggerFragment(),
-        HasComponent<TalkWriteComponent>, TalkWriteCategoryChipsWidget.ChipClickListener,
-        TalkWriteCategoryDetailsListener, TalkPerformanceMonitoringContract {
+        HasComponent<TalkWriteComponent>, TalkWriteCategoryChipsWidget.ChipClickListener, TalkPerformanceMonitoringContract {
 
     companion object {
-        const val TOP_CHAT_APPLINK = "tokopedia://topchat/askseller/"
         const val KEY_CACHE_MANAGER = "cache_manager_id"
         const val KEY_SELECTED_CATEGORY = "selected_category"
 
@@ -122,11 +113,6 @@ class TalkWriteFragment : BaseDaggerFragment(),
     override fun onChipClicked(category: TalkWriteCategory) {
         TalkWriteTracking.eventClickChips(viewModel.getUserId(), viewModel.getProductId().toString(), category.categoryName, category.content)
         viewModel.toggleCategory(category)
-    }
-
-    override fun onClickGoToChat(): Boolean {
-        TalkWriteTracking.eventClickAskSeller(viewModel.getUserId(), viewModel.getProductId().toString())
-        return goToChat()
     }
 
     override fun onAttach(context: Context) {
@@ -206,13 +192,6 @@ class TalkWriteFragment : BaseDaggerFragment(),
                 setCustomMovementMethod { goToTermsAndConditionsPage() }
             }
         }
-    }
-
-    private fun goToChat(): Boolean {
-        val intent = RouteManager.getIntent(context, TOP_CHAT_APPLINK + viewModel.shopId)
-        intent.putExtra(ApplinkConst.Chat.PRODUCT_PREVIEWS, getProductInfoToJson())
-        startActivity(intent)
-        return true
     }
 
     private fun goToReplyPage(questionId: Int) {
@@ -342,6 +321,7 @@ class TalkWriteFragment : BaseDaggerFragment(),
             })
             textAreaInput.setOnFocusChangeListener { v, hasFocus ->
                 if(!hasFocus) {
+                    this.textAreaLabel = ""
                     val editText = v as? EditText
                     editText?.let {
                         if(it.text.isNotEmpty() && it.text.length < minChar) {
@@ -349,7 +329,9 @@ class TalkWriteFragment : BaseDaggerFragment(),
                             textAreaMessage = getString(R.string.write_question_length_minimum_error)
                         }
                     }
+                    talkWriteScrollView.smoothScrollTo(0, writeTNC.top)
                 } else {
+                    this.textAreaLabel = getString(R.string.write_question_placeholder)
                     isError = false
                     textAreaMessage = ""
                 }
@@ -389,16 +371,7 @@ class TalkWriteFragment : BaseDaggerFragment(),
         }
         writeCategoryDetails.apply {
             show()
-            setContent(content, this@TalkWriteFragment)
+            setContent(content)
         }
-    }
-
-    private fun getProductInfoToJson(): String {
-        (viewModel.writeFormData.value as? Success)?.let {
-            val productInfo = listOf(ProductPreview(id = viewModel.getProductId().toString(), name = it.data.productName, imageUrl = it.data.productThumbnailUrl, price = it.data.productPrice.toIntOrZero().getCurrencyFormatted()))
-            val gson = Gson()
-            return gson.toJson(productInfo, productInfo.javaClass)
-        }
-        return ""
     }
 }

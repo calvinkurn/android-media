@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/talkWriteScrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white"
@@ -42,7 +43,7 @@
             android:id="@+id/writeCategoryDetails"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/layout_lvl3"
+            android:layout_marginTop="@dimen/layout_lvl2"
             android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@id/writeCategoryChips"/>
 
@@ -67,7 +68,6 @@
             app:layout_constraintEnd_toEndOf="@id/write_category_header"
             app:text_area_label_static="true"
             app:text_area_clearable="false"
-            app:text_area_label="@string/write_question_placeholder"
             app:text_area_placeholder="@string/write_question_placeholder"
             app:layout_constraintTop_toBottomOf="@id/write_question_header"/>
 

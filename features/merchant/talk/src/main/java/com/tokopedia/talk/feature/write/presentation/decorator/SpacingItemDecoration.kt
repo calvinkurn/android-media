@@ -8,7 +8,7 @@ class SpacingItemDecoration(private val dimen: Int) : RecyclerView.ItemDecoratio
 
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
         outRect.right = this.dimen
-        outRect.top = this.dimen / 2
-        outRect.bottom = this.dimen / 2
+        outRect.top = this.dimen
+        outRect.bottom = this.dimen
     }
 }

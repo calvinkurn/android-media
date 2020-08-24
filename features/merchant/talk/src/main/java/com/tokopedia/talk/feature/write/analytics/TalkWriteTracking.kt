@@ -40,9 +40,4 @@ object TalkWriteTracking {
         }
     }
 
-    fun eventClickAskSeller(userId: String, productId: String) {
-        eventTalkWriting(userId, productId,
-                TalkWriteTrackingConstants.EVENT_ACTION_CLICK_CHAT_SELLER)
-    }
-
 }

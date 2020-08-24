@@ -15,16 +15,4 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/writeCategoryDetailSubtitle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingStart="@dimen/layout_lvl2"
-        android:paddingEnd="@dimen/layout_lvl2"
-        android:layout_marginTop="@dimen/spacing_lvl2"
-        android:textColor="@color/Neutral_N700_68"
-        app:typographyType="body_3"
-        app:layout_constraintTop_toBottomOf="@id/writeCategoryDetailTitle"
-        app:layout_constraintStart_toStartOf="parent"/>
-
 </androidx.constraintlayout.widget.ConstraintLayout>
