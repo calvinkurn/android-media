@@ -134,16 +134,6 @@ public class InstrumentationTestApp extends BaseMainApplication
             GraphqlClient.reInitRetrofitWithInterceptors(interceptorList, this);
         }
     }
-
-    public void enableRemoteConfig(Map<String, String> remoteConfigDatas) {
-        Context context = InstrumentationRegistry.getInstrumentation().getContext();
-        SharedPreferences.Editor editor = context.getSharedPreferences("RemoteConfigDebugCache", Context.MODE_PRIVATE).edit();
-        for (Map.Entry<String, String> entry : remoteConfigDatas.entrySet()) {
-            editor.putString(entry.getKey(), entry.getValue());
-        }
-        editor.commit();
-    }
-
     @Override
     public int getMinimumTopAdsProductFromResponse() {
         return topAdsProductCount;
