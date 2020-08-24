@@ -42,7 +42,7 @@ class SomListItemAdapter : RecyclerView.Adapter<SomListItemAdapter.ViewHolder>()
             somItemList.getOrNull(position)?.let { orderItem ->
                 holder.itemView.label_status_order.text = orderItem.status
 
-                if (orderItem.cancelRequest == 1 && orderItem.tickerInfo.text.isNotBlank()) {
+                if (orderItem.tickerInfo.text.isNotBlank()) {
                     orderItem.tickerInfo.let { tickerInfo ->
                         setupTicker(holder.itemView.ticker_buyer_request_cancel, tickerInfo)
                         holder.itemView.ticker_buyer_request_cancel?.show()
