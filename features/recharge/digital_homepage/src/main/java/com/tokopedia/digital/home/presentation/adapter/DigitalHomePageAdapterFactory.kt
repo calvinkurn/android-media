@@ -101,6 +101,10 @@ class DigitalHomePageAdapterFactory(
         return DynamicLegoBannerViewHolder.LAYOUT
     }
 
+    override fun type(lego4AutoDataModel: Lego4AutoDataModel): Int {
+        return 0
+    }
+
     override fun type(recommendationListCarouselDataModel: RecommendationListCarouselDataModel): Int {
         return 0
     }
