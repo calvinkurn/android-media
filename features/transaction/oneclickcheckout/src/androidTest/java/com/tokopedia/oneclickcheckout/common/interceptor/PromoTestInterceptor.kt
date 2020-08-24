@@ -1,8 +1,30 @@
 package com.tokopedia.oneclickcheckout.common.interceptor
 
-import okhttp3.*
-import okio.Buffer
+import okhttp3.Interceptor
+import okhttp3.Response
 import java.io.IOException
+
+class PromoTestInterceptor : BaseOccInterceptor() {
+
+    var customValidateUseResponseString: String? = null
+
+    var customValidateUseThrowable: IOException? = null
+
+    override fun intercept(chain: Interceptor.Chain): Response {
+        val copy = chain.request().newBuilder().build()
+        val requestString = readRequestString(copy)
+
+        if (requestString.contains(VALIDATE_USE_PROMO_REVAMP_QUERY)) {
+            if (customValidateUseThrowable != null) {
+                throw customValidateUseThrowable!!
+            } else if (customValidateUseResponseString != null) {
+                return mockResponse(copy, customValidateUseResponseString!!)
+            }
+            return mockResponse(copy, VALIDATE_USE_PROMO_REVAMP_DEFAULT_RESPONSE)
+        }
+        return chain.proceed(chain.request())
+    }
+}
 
 const val VALIDATE_USE_PROMO_REVAMP_QUERY = "validate_use_promo_revamp"
 
@@ -242,39 +264,3 @@ const val VALIDATE_USE_PROMO_REVAMP_BBO_APPLIED_RESPONSE = """
   }
 ]
 """
-
-class PromoTestInterceptor : Interceptor {
-
-    var customValidateUseResponseString: String? = null
-
-    var customValidateUseThrowable: IOException? = null
-
-    override fun intercept(chain: Interceptor.Chain): Response {
-        val copy = chain.request().newBuilder().build()
-        val buffer = Buffer()
-        copy.body()?.writeTo(buffer)
-        val requestString = buffer.readUtf8()
-
-        if (requestString.contains(VALIDATE_USE_PROMO_REVAMP_QUERY)) {
-            if (customValidateUseThrowable != null) {
-                throw customValidateUseThrowable!!
-            } else if (customValidateUseResponseString != null) {
-                return mockResponse(copy, customValidateUseResponseString!!)
-            }
-            return mockResponse(copy, VALIDATE_USE_PROMO_REVAMP_DEFAULT_RESPONSE)
-        }
-        return chain.proceed(chain.request())
-    }
-
-    private fun mockResponse(copy: Request, responseString: String): Response {
-        return Response.Builder()
-                .request(copy)
-                .code(200)
-                .protocol(Protocol.HTTP_2)
-                .message(responseString)
-                .body(ResponseBody.create(MediaType.parse("application/json"),
-                        responseString.toByteArray()))
-                .addHeader("content-type", "application/json")
-                .build()
-    }
-}

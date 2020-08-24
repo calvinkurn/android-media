@@ -1,8 +1,40 @@
 package com.tokopedia.oneclickcheckout.common.interceptor
 
-import okhttp3.*
-import okio.Buffer
+import okhttp3.Interceptor
+import okhttp3.Response
 import java.io.IOException
+
+class CartTestInterceptor : BaseOccInterceptor() {
+
+    var customGetOccCartResponseString: String? = null
+    var customUpdateCartOccResponseString: String? = null
+
+    var customGetOccCartThrowable: IOException? = null
+    var customUpdateCartOccThrowable: IOException? = null
+
+    override fun intercept(chain: Interceptor.Chain): Response {
+        val copy = chain.request().newBuilder().build()
+        val requestString = readRequestString(copy)
+
+        if (requestString.contains(GET_OCC_CART_QUERY)) {
+            if (customGetOccCartThrowable != null) {
+                throw customGetOccCartThrowable!!
+            } else if (customGetOccCartResponseString != null) {
+                return mockResponse(copy, customGetOccCartResponseString!!)
+            }
+            return mockResponse(copy, GET_OCC_CART_DEFAULT_RESPONSE)
+        }
+        if (requestString.contains(UPDATE_CART_OCC_QUERY)) {
+            if (customUpdateCartOccThrowable != null) {
+                throw customUpdateCartOccThrowable!!
+            } else if (customUpdateCartOccResponseString != null) {
+                return mockResponse(copy, customUpdateCartOccResponseString!!)
+            }
+            return mockResponse(copy, UPDATE_CART_OCC_DEFAULT_RESPONSE)
+        }
+        return chain.proceed(chain.request())
+    }
+}
 
 const val GET_OCC_CART_QUERY = "get_occ_cart_page"
 const val UPDATE_CART_OCC_QUERY = "update_cart_occ"
@@ -621,49 +653,3 @@ const val UPDATE_CART_OCC_DEFAULT_RESPONSE = """
   }
 ]
 """
-
-class CartTestInterceptor : Interceptor {
-
-    var customGetOccCartResponseString: String? = null
-    var customUpdateCartOccResponseString: String? = null
-
-    var customGetOccCartThrowable: IOException? = null
-    var customUpdateCartOccThrowable: IOException? = null
-
-    override fun intercept(chain: Interceptor.Chain): Response {
-        val copy = chain.request().newBuilder().build()
-        val buffer = Buffer()
-        copy.body()?.writeTo(buffer)
-        val requestString = buffer.readUtf8()
-
-        if (requestString.contains(GET_OCC_CART_QUERY)) {
-            if (customGetOccCartThrowable != null) {
-                throw customGetOccCartThrowable!!
-            } else if (customGetOccCartResponseString != null) {
-                return mockResponse(copy, customGetOccCartResponseString!!)
-            }
-            return mockResponse(copy, GET_OCC_CART_DEFAULT_RESPONSE)
-        }
-        if (requestString.contains(UPDATE_CART_OCC_QUERY)) {
-            if (customUpdateCartOccThrowable != null) {
-                throw customUpdateCartOccThrowable!!
-            } else if (customUpdateCartOccResponseString != null) {
-                return mockResponse(copy, customUpdateCartOccResponseString!!)
-            }
-            return mockResponse(copy, UPDATE_CART_OCC_DEFAULT_RESPONSE)
-        }
-        return chain.proceed(chain.request())
-    }
-
-    private fun mockResponse(copy: Request, responseString: String): Response {
-        return Response.Builder()
-                .request(copy)
-                .code(200)
-                .protocol(Protocol.HTTP_2)
-                .message(responseString)
-                .body(ResponseBody.create(MediaType.parse("application/json"),
-                        responseString.toByteArray()))
-                .addHeader("content-type", "application/json")
-                .build()
-    }
-}

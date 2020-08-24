@@ -141,9 +141,9 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
                 is OccState.Failed -> {
                     swipeRefreshLayout?.isRefreshing = false
                     it.getFailure()?.let { failure ->
-                            handleError(failure.throwable)
-                        }
+                        handleError(failure.throwable)
                     }
+                }
                 else -> swipeRefreshLayout?.isRefreshing = true
             }
         })
@@ -190,9 +190,7 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
     private fun handleError(throwable: Throwable?) {
         when (throwable) {
             is SocketTimeoutException, is UnknownHostException, is ConnectException -> {
-                view?.let {
-                    showGlobalError(GlobalError.NO_CONNECTION)
-                }
+                showGlobalError(GlobalError.NO_CONNECTION)
             }
             is RuntimeException -> {
                 when (throwable.localizedMessage?.toIntOrNull()) {

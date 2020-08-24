@@ -54,13 +54,11 @@ class PreferenceListBottomSheet(
                 showGlobalError(GlobalError.NO_CONNECTION)
             }
             is RuntimeException -> {
-                when (throwable.localizedMessage.toIntOrNull()) {
+                when (throwable.localizedMessage?.toIntOrNull()) {
                     ReponseStatus.GATEWAY_TIMEOUT, ReponseStatus.REQUEST_TIMEOUT -> showGlobalError(GlobalError.NO_CONNECTION)
                     ReponseStatus.NOT_FOUND -> showGlobalError(GlobalError.PAGE_NOT_FOUND)
                     ReponseStatus.INTERNAL_SERVER_ERROR -> showGlobalError(GlobalError.SERVER_ERROR)
-                    else -> {
-                        showGlobalError(GlobalError.SERVER_ERROR)
-                    }
+                    else -> showGlobalError(GlobalError.SERVER_ERROR)
                 }
             }
             else -> {

@@ -1,8 +1,30 @@
 package com.tokopedia.oneclickcheckout.common.interceptor
 
-import okhttp3.*
-import okio.Buffer
+import okhttp3.Interceptor
+import okhttp3.Response
 import java.io.IOException
+
+class LogisticTestInterceptor : BaseOccInterceptor() {
+
+    var customRatesResponseString: String? = null
+
+    var customRatesThrowable: IOException? = null
+
+    override fun intercept(chain: Interceptor.Chain): Response {
+        val copy = chain.request().newBuilder().build()
+        val requestString = readRequestString(copy)
+
+        if (requestString.contains(RATES_QUERY)) {
+            if (customRatesThrowable != null) {
+                throw customRatesThrowable!!
+            } else if (customRatesResponseString != null) {
+                return mockResponse(copy, customRatesResponseString!!)
+            }
+            return mockResponse(copy, RATES_DEFAULT_RESPONSE)
+        }
+        return chain.proceed(chain.request())
+    }
+}
 
 const val RATES_QUERY = "ratesV3"
 
@@ -1071,39 +1093,3 @@ const val RATES_RESPONSE_WITH_INSURANCE = """
   }
 ]
 """
-
-class LogisticTestInterceptor : Interceptor {
-
-    var customRatesResponseString: String? = null
-
-    var customRatesThrowable: IOException? = null
-
-    override fun intercept(chain: Interceptor.Chain): Response {
-        val copy = chain.request().newBuilder().build()
-        val buffer = Buffer()
-        copy.body()?.writeTo(buffer)
-        val requestString = buffer.readUtf8()
-
-        if (requestString.contains(RATES_QUERY)) {
-            if (customRatesThrowable != null) {
-                throw customRatesThrowable!!
-            } else if (customRatesResponseString != null) {
-                return mockResponse(copy, customRatesResponseString!!)
-            }
-            return mockResponse(copy, RATES_DEFAULT_RESPONSE)
-        }
-        return chain.proceed(chain.request())
-    }
-
-    private fun mockResponse(copy: Request, responseString: String): Response {
-        return Response.Builder()
-                .request(copy)
-                .code(200)
-                .protocol(Protocol.HTTP_2)
-                .message(responseString)
-                .body(ResponseBody.create(MediaType.parse("application/json"),
-                        responseString.toByteArray()))
-                .addHeader("content-type", "application/json")
-                .build()
-    }
-}

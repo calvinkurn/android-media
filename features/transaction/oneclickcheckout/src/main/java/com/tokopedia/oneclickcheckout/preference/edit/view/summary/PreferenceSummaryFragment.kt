@@ -273,9 +273,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
     private fun handleError(throwable: Throwable?) {
         when (throwable) {
             is SocketTimeoutException, is UnknownHostException, is ConnectException -> {
-                view?.let {
-                    showGlobalError(GlobalError.NO_CONNECTION)
-                }
+                showGlobalError(GlobalError.NO_CONNECTION)
             }
             is RuntimeException -> {
                 when (throwable.localizedMessage?.toIntOrNull()) {

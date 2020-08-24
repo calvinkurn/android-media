@@ -2,8 +2,6 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
-apply from: '../../../compile-instrument-test.gradle'
-
 repositories {
     maven { url 'https://hansel.io/maven' }
 }
@@ -70,6 +68,9 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.couroutinesTest
     testImplementation rootProject.ext.testDependencies.mockk
+
+    // for instrument test dependency error
+    implementation rootProject.ext.dbDependencies.sqliteFramework
 
     implementation rootProject.ext.testDependencies.espressoIdlingResource
     androidTestImplementation rootProject.ext.testDependencies.androidxTest

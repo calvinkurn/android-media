@@ -31,28 +31,35 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
 
     @Test
     fun `Generate Promo Request With Insurance`() {
+        // Given
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment.copy(isCheckInsurance = true, insuranceData = helper.firstCourierFirstDuration.productData.insurance)
 
+        // When
         val promoRequest = orderSummaryPageViewModel.generatePromoRequest()
 
+        // Then
         assertEquals(1, promoRequest.orders.first().isInsurancePrice)
     }
 
     @Test
     fun `Generate Promo Request With Insurance Checked And No Data`() {
+        // Given
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment.copy(isCheckInsurance = true)
 
+        // When
         val promoRequest = orderSummaryPageViewModel.generatePromoRequest()
 
+        // Then
         assertEquals(0, promoRequest.orders.first().isInsurancePrice)
     }
 
     @Test
     fun `Generate Validate Use Promo Request With Last Apply And Bbo`() {
+        // Given
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         val promoCode = "123"
@@ -60,28 +67,34 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
                 voucherOrders = listOf(LastApplyVoucherOrdersItemUiModel(code = promoCode))))
         orderSummaryPageViewModel._orderShipment = helper.orderShipment.copy(isApplyLogisticPromo = true, logisticPromoViewModel = helper.logisticPromo, logisticPromoShipping = helper.firstCourierSecondDuration)
 
+        // When
         val promoRequest = orderSummaryPageViewModel.generateValidateUsePromoRequest()
 
+        // Then
         assertEquals(promoCode, promoRequest.codes.first())
         assertEquals(listOf(promoCode, helper.logisticPromo.promoCode), promoRequest.orders.first()!!.codes)
     }
 
     @Test
     fun `Generate Validate Use Promo Request With Invalid Last Apply And No Bbo`() {
+        // Given
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         val promoCode = "123"
         orderSummaryPageViewModel.orderPromo.value = OrderPromo(lastApply = LastApplyUiModel(voucherOrders = listOf(LastApplyVoucherOrdersItemUiModel(code = promoCode, uniqueId = promoCode))))
         orderSummaryPageViewModel._orderShipment = helper.orderShipment.copy(logisticPromoViewModel = null, logisticPromoTickerMessage = null)
 
+        // When
         val promoRequest = orderSummaryPageViewModel.generateValidateUsePromoRequest()
 
+        // Then
         assertEquals(true, promoRequest.codes.isEmpty())
         assertEquals(true, promoRequest.orders.first()!!.codes.isEmpty())
     }
 
     @Test
     fun `Generate Validate Use Promo Request With Multiple Last Apply`() {
+        // Given
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         val promoCode = "123"
@@ -89,14 +102,17 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
                 voucherOrders = listOf(LastApplyVoucherOrdersItemUiModel(code = promoCode), LastApplyVoucherOrdersItemUiModel(code = promoCode))))
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
 
+        // When
         val promoRequest = orderSummaryPageViewModel.generateValidateUsePromoRequest()
 
+        // Then
         assertEquals(true, promoRequest.codes.isEmpty())
         assertEquals(listOf(promoCode), promoRequest.orders.first()!!.codes)
     }
 
     @Test
     fun `Update Cart Promo Success Without Promo`() {
+        // Given
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
@@ -104,7 +120,9 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
             (secondArg() as ((UpdateCartOccGqlResponse) -> Unit)).invoke(UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc())))
         }
 
+        // When
         orderSummaryPageViewModel.updateCartPromo { validateUsePromoRequest, promoRequest, bboCodes ->
+            // Then
             assertEquals(ValidateUsePromoRequest(isSuggested = 0, skipApply = 0, cartType = "occ", state = "checkout",
                     orders = listOf(OrdersItem(shippingId = helper.firstCourierFirstDuration.productData.shipperId, spId = helper.firstCourierFirstDuration.productData.shipperProductId,
                             productDetails = listOf(ProductDetailsItem(helper.product.quantity.orderQuantity, helper.product.productId))))), validateUsePromoRequest)
@@ -117,6 +135,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
 
     @Test
     fun `Update Cart Promo Success With BBO`() {
+        // Given
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
@@ -128,7 +147,9 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
             (secondArg() as ((UpdateCartOccGqlResponse) -> Unit)).invoke(UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc())))
         }
 
+        // When
         orderSummaryPageViewModel.updateCartPromo { validateUsePromoRequest, promoRequest, bboCodes ->
+            // Then
             assertEquals(ValidateUsePromoRequest(isSuggested = 0, skipApply = 0, cartType = "occ", state = "checkout",
                     orders = listOf(OrdersItem(shippingId = helper.logisticPromo.shipperId, spId = helper.logisticPromo.shipperProductId,
                             codes = mutableListOf(helper.logisticPromo.promoCode),
@@ -143,6 +164,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
 
     @Test
     fun `Update Cart Promo Error`() {
+        // Given
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
@@ -151,24 +173,30 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
             (thirdArg() as ((Throwable) -> Unit)).invoke(response)
         }
 
+        // When
         orderSummaryPageViewModel.updateCartPromo { _, _, _ -> }
 
+        // Then
         assertEquals(OccGlobalEvent.Error(response), orderSummaryPageViewModel.globalEvent.value)
     }
 
     @Test
     fun `Update Cart Promo Invalid Preference State`() {
+        // Given
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = false)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
 
+        // When
         orderSummaryPageViewModel.updateCartPromo { _, _, _ -> }
 
+        // Then
         assertEquals(OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE), orderSummaryPageViewModel.globalEvent.value)
     }
 
     @Test
     fun `Validate Use Promo Success`() {
+        // Given
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
@@ -177,8 +205,10 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         val response = ValidateUsePromoRevampUiModel(promoUiModel = PromoUiModel(codes = listOf(promoCode), messageUiModel = MessageUiModel(state = "green")))
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(response)
 
+        // When
         orderSummaryPageViewModel.validateUsePromo()
 
+        // Then
         verify(inverse = true) {
             orderSummaryAnalytics.eventViewPromoDecreasedOrReleased(true)
         }
@@ -188,6 +218,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
 
     @Test
     fun `Validate Use Promo Error`() {
+        // Given
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
@@ -195,14 +226,17 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.lastValidateUsePromoRequest = ValidateUsePromoRequest(codes = mutableListOf(promoCode))
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.error(Throwable())
 
+        // When
         orderSummaryPageViewModel.validateUsePromo()
 
+        // Then
         assertEquals(ButtonBayarState.DISABLE, orderSummaryPageViewModel.orderPromo.value.state)
         assertEquals(ButtonBayarState.DISABLE, orderSummaryPageViewModel.orderTotal.value.buttonState)
     }
 
     @Test
     fun `Validate Use Promo Red State Released`() {
+        // Given
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
@@ -212,8 +246,10 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.lastValidateUsePromoRequest = ValidateUsePromoRequest(codes = mutableListOf(promoCode))
         orderSummaryPageViewModel.validateUsePromoRevampUiModel = response.copy(promoUiModel = response.promoUiModel.copy(messageUiModel = MessageUiModel(state = "green")))
 
+        // When
         orderSummaryPageViewModel.validateUsePromo()
 
+        // Then
         verify(exactly = 1) {
             orderSummaryAnalytics.eventViewPromoDecreasedOrReleased(true)
         }
@@ -223,6 +259,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
 
     @Test
     fun `Validate Use Promo Benefit Decreased`() {
+        // Given
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
@@ -234,8 +271,10 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.validateUsePromoRevampUiModel = response.copy(promoUiModel = PromoUiModel(messageUiModel = MessageUiModel(state = "green"), benefitSummaryInfoUiModel = BenefitSummaryInfoUiModel(finalBenefitAmount = 1000),
                 voucherOrderUiModels = listOf(PromoCheckoutVoucherOrdersItemUiModel(messageUiModel = MessageUiModel(state = "green")))))
 
+        // When
         orderSummaryPageViewModel.validateUsePromo()
 
+        // Then
         verify(exactly = 1) {
             orderSummaryAnalytics.eventViewPromoDecreasedOrReleased(false)
         }
@@ -245,6 +284,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
 
     @Test
     fun `Final Validate Use Promo Global Code Success`() {
+        // Given
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
@@ -258,8 +298,10 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
             (secondArg() as ((UpdateCartOccGqlResponse) -> Unit)).invoke(UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc())))
         }
 
+        // When
         orderSummaryPageViewModel.finalUpdate({ }, false)
 
+        // Then
         verify {
             checkoutOccUseCase.execute(match {
                 val globalCode = it.carts.promos.first()
@@ -270,6 +312,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
 
     @Test
     fun `Final Validate Use Promo Voucher Success`() {
+        // Given
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
@@ -284,8 +327,10 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
             (secondArg() as ((UpdateCartOccGqlResponse) -> Unit)).invoke(UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc())))
         }
 
+        // When
         orderSummaryPageViewModel.finalUpdate({ }, false)
 
+        // Then
         verify {
             checkoutOccUseCase.execute(match {
                 val voucherCode = it.carts.data.first().shopProducts.first().promos.first()
@@ -296,6 +341,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
 
     @Test
     fun `Final Validate Use Promo Red State`() {
+        // Given
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
@@ -309,8 +355,10 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
             (secondArg() as ((UpdateCartOccGqlResponse) -> Unit)).invoke(UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc())))
         }
 
+        // When
         orderSummaryPageViewModel.finalUpdate({ }, false)
 
+        // Then
         assertEquals(OccGlobalEvent.PromoClashing(arrayListOf(NotEligiblePromoHolderdata(
                 promoCode = promoCode, shopName = "Kode promo", iconType = 1, showShopSection = true
         ))), orderSummaryPageViewModel.globalEvent.value)
@@ -318,6 +366,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
 
     @Test
     fun `Final Validate Use Promo Red State Voucher`() {
+        // Given
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
@@ -334,8 +383,10 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
             (secondArg() as ((UpdateCartOccGqlResponse) -> Unit)).invoke(UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc())))
         }
 
+        // When
         orderSummaryPageViewModel.finalUpdate({ }, false)
 
+        // Then
         assertEquals(OccGlobalEvent.PromoClashing(arrayListOf(NotEligiblePromoHolderdata(
                 promoCode = promoCode, shopName = "Kode promo", iconType = 1, showShopSection = true
         ), NotEligiblePromoHolderdata(showShopSection = true))), orderSummaryPageViewModel.globalEvent.value)
@@ -343,6 +394,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
 
     @Test
     fun `Final Validate Use Promo Red State Multiple Voucher`() {
+        // Given
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
@@ -360,8 +412,10 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
             (secondArg() as ((UpdateCartOccGqlResponse) -> Unit)).invoke(UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc())))
         }
 
+        // When
         orderSummaryPageViewModel.finalUpdate({ }, false)
 
+        // Then
         assertEquals(OccGlobalEvent.PromoClashing(arrayListOf(
                 NotEligiblePromoHolderdata(showShopSection = true), NotEligiblePromoHolderdata(showShopSection = false)
         )), orderSummaryPageViewModel.globalEvent.value)
@@ -369,6 +423,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
 
     @Test
     fun `Final Validate Use Promo Red State Official Store`() {
+        // Given
         orderSummaryPageViewModel.orderCart = helper.orderData.cart.copy(shop = OrderShop(isOfficial = 1))
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
@@ -384,8 +439,10 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
             (secondArg() as ((UpdateCartOccGqlResponse) -> Unit)).invoke(UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc())))
         }
 
+        // When
         orderSummaryPageViewModel.finalUpdate({ }, false)
 
+        // Then
         assertEquals(OccGlobalEvent.PromoClashing(arrayListOf(
                 NotEligiblePromoHolderdata(showShopSection = true, iconType = NotEligiblePromoHolderdata.TYPE_ICON_OFFICIAL_STORE)
         )), orderSummaryPageViewModel.globalEvent.value)
@@ -393,6 +450,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
 
     @Test
     fun `Final Validate Use Promo Red State Power Merchant`() {
+        // Given
         orderSummaryPageViewModel.orderCart = helper.orderData.cart.copy(shop = OrderShop(isGold = 1))
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
@@ -408,8 +466,10 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
             (secondArg() as ((UpdateCartOccGqlResponse) -> Unit)).invoke(UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc())))
         }
 
+        // When
         orderSummaryPageViewModel.finalUpdate({ }, false)
 
+        // Then
         assertEquals(OccGlobalEvent.PromoClashing(arrayListOf(
                 NotEligiblePromoHolderdata(showShopSection = true, iconType = NotEligiblePromoHolderdata.TYPE_ICON_POWER_MERCHANT)
         )), orderSummaryPageViewModel.globalEvent.value)
@@ -417,6 +477,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
 
     @Test
     fun `Cancel Ineligible Promo Checkout Success`() {
+        // Given
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
@@ -430,16 +491,19 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
             (secondArg() as ((CheckoutOccGqlResponse) -> Unit)).invoke(CheckoutOccGqlResponse(CheckoutOccResponse(status = STATUS_OK, data = Data(success = 1, paymentParameter = PaymentParameter(redirectParam = RedirectParam(url = "testurl"))))))
         }
 
+        // When
         var isSuccess = false
         orderSummaryPageViewModel.cancelIneligiblePromoCheckout(arrayListOf()) {
             isSuccess = true
         }
 
+        // Then
         assertEquals(true, isSuccess)
     }
 
     @Test
     fun `Cancel Ineligible Promo Checkout Error`() {
+        // Given
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
@@ -453,11 +517,13 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
             (secondArg() as ((CheckoutOccGqlResponse) -> Unit)).invoke(CheckoutOccGqlResponse(CheckoutOccResponse(status = STATUS_OK, data = Data(success = 1, paymentParameter = PaymentParameter(redirectParam = RedirectParam(url = "testurl"))))))
         }
 
+        // When
         var isSuccess = false
         orderSummaryPageViewModel.cancelIneligiblePromoCheckout(arrayListOf()) {
             isSuccess = true
         }
 
+        // Then
         assertEquals(false, isSuccess)
         assertEquals(OccGlobalEvent.Error(response), orderSummaryPageViewModel.globalEvent.value)
     }

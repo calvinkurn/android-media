@@ -18,7 +18,7 @@ import com.tokopedia.unifyprinciples.Typography
 
 class ShippingDurationItemAdapter(var listener: OnShippingMenuSelected) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private var shippingDurationList = mutableListOf<ServicesItem>()
+    private val shippingDurationList = mutableListOf<ServicesItem>()
 
     companion object {
         private const val SHIPPING_DURATION_VIEW_TYPE = 1

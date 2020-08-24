@@ -1,8 +1,30 @@
 package com.tokopedia.oneclickcheckout.common.interceptor
 
-import okhttp3.*
-import okio.Buffer
+import okhttp3.Interceptor
+import okhttp3.Response
 import java.io.IOException
+
+class CheckoutTestInterceptor : BaseOccInterceptor() {
+
+    var customCheckoutResponseString: String? = null
+
+    var customCheckoutThrowable: IOException? = null
+
+    override fun intercept(chain: Interceptor.Chain): Response {
+        val copy = chain.request().newBuilder().build()
+        val requestString = readRequestString(copy)
+
+        if (requestString.contains(CHECKOUT_QUERY)) {
+            if (customCheckoutThrowable != null) {
+                throw customCheckoutThrowable!!
+            } else if (customCheckoutResponseString != null) {
+                return mockResponse(copy, customCheckoutResponseString!!)
+            }
+            return mockResponse(copy, CHECKOUT_DEFAULT_RESPONSE)
+        }
+        return chain.proceed(chain.request())
+    }
+}
 
 const val CHECKOUT_QUERY = "one_click_checkout"
 
@@ -56,39 +78,3 @@ const val CHECKOUT_DEFAULT_RESPONSE = """
   }
 ]
 """
-
-class CheckoutTestInterceptor : Interceptor {
-
-    var customCheckoutResponseString: String? = null
-
-    var customCheckoutThrowable: IOException? = null
-
-    override fun intercept(chain: Interceptor.Chain): Response {
-        val copy = chain.request().newBuilder().build()
-        val buffer = Buffer()
-        copy.body()?.writeTo(buffer)
-        val requestString = buffer.readUtf8()
-
-        if (requestString.contains(CHECKOUT_QUERY)) {
-            if (customCheckoutThrowable != null) {
-                throw customCheckoutThrowable!!
-            } else if (customCheckoutResponseString != null) {
-                return mockResponse(copy, customCheckoutResponseString!!)
-            }
-            return mockResponse(copy, CHECKOUT_DEFAULT_RESPONSE)
-        }
-        return chain.proceed(chain.request())
-    }
-
-    private fun mockResponse(copy: Request, responseString: String): Response {
-        return Response.Builder()
-                .request(copy)
-                .code(200)
-                .protocol(Protocol.HTTP_2)
-                .message(responseString)
-                .body(ResponseBody.create(MediaType.parse("application/json"),
-                        responseString.toByteArray()))
-                .addHeader("content-type", "application/json")
-                .build()
-    }
-}

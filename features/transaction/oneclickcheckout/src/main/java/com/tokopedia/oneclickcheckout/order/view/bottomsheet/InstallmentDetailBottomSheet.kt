@@ -25,9 +25,8 @@ class InstallmentDetailBottomSheet {
     private var bottomSheetUnify: BottomSheetUnify? = null
 
     fun show(fragment: OrderSummaryPageFragment, creditCard: OrderPaymentCreditCard, listener: InstallmentDetailBottomSheetListener) {
-        val context: Context? = fragment.activity
+        val context: Context = fragment.activity ?: return
         fragment.fragmentManager?.let {
-            if (context == null) return
             this.listener = listener
             bottomSheetUnify = BottomSheetUnify().apply {
                 isDragable = true
