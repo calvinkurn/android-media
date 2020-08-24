@@ -20,9 +20,9 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.analytic.AppScreen;
 import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking;
+import com.tokopedia.tkpd.tkpdreputation.constant.Constant;
 import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inbox.GetFirstTimeInboxReputationUseCase;
-import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationFilterActivity;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.InboxReputationFilterAdapter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.filter.HeaderOptionViewModel;
@@ -169,7 +169,7 @@ public class InboxReputationFilterFragment extends BaseDaggerFragment
 
         if (getArguments() != null
                 && getArguments().getInt(InboxReputationFragment.PARAM_TAB) ==
-                InboxReputationActivity.TAB_BUYER_REVIEW) {
+                Constant.TAB_BUYER_REVIEW) {
             list.add(new HeaderOptionViewModel(getString(R.string.filter_status)));
             list.add(new OptionViewModel(getString(R.string.filter_given_reputation),
                     GetFirstTimeInboxReputationUseCase.PARAM_SCORE_FILTER, FILTER_GIVEN_SCORE, list
