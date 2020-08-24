@@ -1,0 +1,113 @@
+{
+  "readme": "Tracking Event Home",
+  "mode": "exact",
+  "query": [
+    {
+      "eventCategory": "digital - event",
+      "event": "clickEvent",
+      "eventAction": "click search box",
+      "sessionIris": "{{.*}}",
+      "eventLabel": "{{.*}}"
+    },
+    {
+      "eventLabel": "click search,no"
+    },
+    {
+      "eventCategory": "digital - event",
+      "item_list": "{{.*}}",
+      "event": "view_item_list",
+      "eventAction": "impression event suggestion",
+      "sessionIris": "{{.*}}",
+      "items": [
+        {
+          "item_id": "{{.*}}",
+          "price": "{{.*}}",
+          "dimension40": "{{.*}}",
+          "index": "{{.*}}",
+          "item_name": "{{.*}}",
+          "item_brand": "none / other",
+          "item_variant": "none / other",
+          "item_category": "none / other"
+        }
+      ],
+      "eventLabel": "{{.*}}"
+    },
+    {
+      "eventLabel": "click event suggestion"
+    },
+    {
+      "eventLabel": "impression city suggestion,no"
+    },
+    {
+      "promotions": [
+        {
+          "creative_name": "{{.*}}",
+          "creative_slot": "{{.*}}",
+          "item_id": "{{.*}}",
+          "item_name": "{{.*}}",
+          "promo_code": "{{.*}}",
+          "promo_id": "{{.*}}",
+          "creative_url": "{{.*}}"
+        }
+      ],
+      "eventCategory": "digital - event",
+      "event": "select_content",
+      "eventAction": "click city suggestion",
+      "sessionIris": "{{.*}}",
+      "eventLabel": "{{.*}}"
+    },
+    {
+      "checkout_option": "impression product result,no"
+    },
+    {
+      "eventLabel": "click product result, no"
+    },
+    {
+      "promotions": [
+        {
+          "creative_name": "{{.*}}",
+          "creative_slot": "{{.*}}",
+          "item_id": "{{.*}}",
+          "item_name": "{{.*}}",
+          "promo_code": "{{.*}}",
+          "promo_id": "{{.*}}",
+          "creative_url": "{{.*}}"
+        }
+      ],
+      "eventCategory": "digital - event",
+      "event": "view_item",
+      "eventAction": "impression city result",
+      "sessionIris": "{{.*}}",
+      "eventLabel": "{{.*}}"
+    },
+    {
+      "eventLabel": "click city result, no"
+    },
+    {
+      "eventCategory": "digital - event",
+      "item_list": "{{.*}}",
+      "event": "view_item_list",
+      "eventAction": "impression page product",
+      "sessionIris": "{{.*}}",
+      "items": [
+        {
+          "item_id": "{{.*}}",
+          "price": "{{.*}}",
+          "dimension40": "{{.*}}",
+          "index": "{{.*}}",
+          "item_name": "{{.*}}",
+          "item_brand": "none / other",
+          "item_variant": "none / other",
+          "item_category": "none / other"
+        }
+      ],
+      "eventLabel": "{{.*}}"
+    },
+    {
+      "eventLabel": "click page product"
+    },
+    {
+      "eventLabel": "click filter"
+    }
+  ]
+}

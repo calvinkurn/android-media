@@ -20,7 +20,7 @@ class EventCategoryPageTracking {
     }
 
     private object Impression {
-        val KEY = "impression"
+        val KEY = "impressions"
         val NAME = "name"
         val ID = "id"
         val PRICE = "price"
@@ -55,7 +55,7 @@ class EventCategoryPageTracking {
                 Event.KEY, "productClick",
                 Event.CATEGORY, "digital - event",
                 Event.ACTION, "click page product",
-                Event.LABEL, String.format("%s %s", event.nama_event, position.toString()),
+                Event.LABEL, String.format("%s - %s", event.nama_event, position.toString()),
                 Ecommerce.KEY, DataLayer.mapOf(
                 Click.KEY, DataLayer.mapOf(
                 Click.ACTION_FIELD, DataLayer.mapOf("list", event.nama_event),
@@ -98,10 +98,10 @@ class EventCategoryPageTracking {
                 Event.KEY, "productView",
                 Event.CATEGORY, "digital - event",
                 Event.ACTION, "impression page product",
-                Event.LABEL, String.format("%s %s", event.nama_event, position.toString()),
+                Event.LABEL, String.format("%s - %s", event.nama_event, position.toString()),
                 Ecommerce.KEY, DataLayer.mapOf(
                 Ecommerce.CURRENCY_CODE, "IDR",
-                Impression.KEY, DataLayer.mapOf(
+                Impression.KEY, listOf(DataLayer.mapOf(
                 Impression.NAME, event.nama_event,
                 Impression.ID, event.id,
                 Impression.PRICE, event.harga_now,
@@ -110,7 +110,7 @@ class EventCategoryPageTracking {
                 Impression.VARIANT, "",
                 Impression.LIST, listsEvent,
                 Impression.POSITION, position
-                )
+                ))
         )))
     }
 

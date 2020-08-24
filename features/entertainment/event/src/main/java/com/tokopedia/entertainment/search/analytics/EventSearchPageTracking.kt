@@ -21,7 +21,7 @@ class EventSearchPageTracking {
     }
 
     private object Impression {
-        val KEY = "impression"
+        val KEY = "impressions"
         val NAME = "name"
         val ID = "id"
         val PRICE = "price"
