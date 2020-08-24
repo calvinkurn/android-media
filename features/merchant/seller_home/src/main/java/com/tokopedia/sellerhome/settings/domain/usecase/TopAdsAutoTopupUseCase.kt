@@ -23,6 +23,7 @@ class TopAdsAutoTopupUseCase @Inject constructor(private val graphqlRepository: 
                 "      Object {\n" +
                 "       Text\n" +
                 "       Type\n" +
+                "      }\n" +
                 "    }\n" +
                 "  }\n" +
                 "}"

@@ -18,6 +18,12 @@ class TopAdsDashboardDepositUseCase @Inject constructor(private val graphqlRepos
                 "    }\n" +
                 "    errors {\n" +
                 "      code\n" +
+                "      title\n" +
+                "      detail\n" +
+                "      object {\n" +
+                "       type\n" +
+                "       text\n" +
+                "      }\n" +
                 "    }\n" +
                 "  }\n" +
                 "}"
