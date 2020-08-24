@@ -14,7 +14,6 @@ import android.webkit.SslErrorHandler
 import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import android.widget.ProgressBar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -35,6 +34,7 @@ import com.tokopedia.oneclickcheckout.preference.edit.data.payment.PaymentListin
 import com.tokopedia.oneclickcheckout.preference.edit.di.PreferenceEditComponent
 import com.tokopedia.oneclickcheckout.preference.edit.view.PreferenceEditParent
 import com.tokopedia.oneclickcheckout.preference.edit.view.summary.PreferenceSummaryFragment
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
@@ -73,7 +73,7 @@ class PaymentMethodFragment : BaseDaggerFragment() {
     }
 
     private var webView: WebView? = null
-    private var progressBar: ProgressBar? = null
+    private var progressBar: LoaderUnify? = null
     private var globalError: GlobalError? = null
 
     private var param: ListingParam? = null
