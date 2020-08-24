@@ -162,8 +162,8 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
                 SHOP_PAGE_HEADER_RESULT_PLT_NETWORK_METRICS,
                 SHOP_PAGE_HEADER_RESULT_PLT_RENDER_METRICS
         )
-        shopPageHeaderLoadTimePerformanceCallback?.startMonitoring(SHOP_PAGE_HEADER_RESULT_TRACE)
-        shopPageHeaderLoadTimePerformanceCallback?.startPreparePagePerformanceMonitoring()
+        performanceMonitoringShop?.startMonitoring(SHOP_PAGE_HEADER_RESULT_TRACE)
+        performanceMonitoringShop?.startPreparePagePerformanceMonitoring()
     }
 
     override fun initShopPageHomeTabPerformanceMonitoring() {
@@ -199,8 +199,11 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         return shopPageProductTabLoadTimePerformanceCallback
     }
 
-    override fun startMonitoringPltNetworkRequest(pageLoadTimePerformanceInterface: PageLoadTimePerformanceInterface) {
+    override fun stopMonitoringPltPreparePage(pageLoadTimePerformanceInterface: PageLoadTimePerformanceInterface) {
         pageLoadTimePerformanceInterface.stopPreparePagePerformanceMonitoring()
+    }
+
+    override fun startMonitoringPltNetworkRequest(pageLoadTimePerformanceInterface: PageLoadTimePerformanceInterface) {
         pageLoadTimePerformanceInterface.startNetworkRequestPerformanceMonitoring()
     }
 
