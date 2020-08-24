@@ -1,6 +1,5 @@
 package com.tokopedia.linker.validation
 
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.linker.LinkerConstants
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.model.PaymentData
@@ -71,7 +70,7 @@ class BranchHelperValidation {
 
     private fun validateMonthlyNewBuyer(isMonthlyNewBuyer: Boolean, productType: String) {
         if (isMonthlyNewBuyer && LinkerConstants.PRODUCTTYPE_DIGITAL.equals(productType, true)) {
-            logging("validation;reason= validateMonthlyNewBuyer;monthly_new_buyer=$isMonthlyNewBuyer;product_type=$productType")
+            logging("validation;reason=validateMonthlyNewBuyer;monthly_new_buyer=$isMonthlyNewBuyer;product_type=$productType")
         }
     }
 
