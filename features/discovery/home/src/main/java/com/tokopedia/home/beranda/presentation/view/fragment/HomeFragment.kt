@@ -592,10 +592,7 @@ open class HomeFragment : BaseDaggerFragment(),
         super.onResume()
         shouldPausePlay = true
         createAndCallSendScreen()
-
-        if (!shouldPausePlay) {
-            adapter?.onResume()
-        }
+        if (!shouldPausePlay) adapter?.onResume()
         conditionalViewModelRefresh()
         if (activityStateListener != null) {
             activityStateListener!!.onResume()
