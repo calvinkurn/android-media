@@ -170,7 +170,10 @@ public class ContactUsActivity extends BaseSimpleActivity implements
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putString(CURRENT_FRAGMENT_BACKSTACK, getFragmentManager().findFragmentById(R.id.main_view).getTag());
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.main_view);
+        if (fragment!=null){
+            outState.putString(CURRENT_FRAGMENT_BACKSTACK, fragment.getTag());
+        }
         outState.putString(EXTRAS_PARAM_URL, url);
         outState.putBundle(PARAM_BUNDLE, bundleCreateTicket);
         super.onSaveInstanceState(outState);

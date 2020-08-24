@@ -49,7 +49,6 @@ public class ContactUsFaqFragment extends TkpdBaseV4Fragment {
     private static final String ORDER_ID = "order_id";
     private static final String APPLINK_SCHEME = "tokopedia://";
     private static final String CHATBOT_SCHEME = "tokopedia://topchat";
-    private static final String SAVED_STATE_OF_CONTACT_US_FAQ_FRAGMENT = "saved state of ContactUsFaqFragment";
     private ValueCallback<Uri> uploadMessageBeforeLolipop;
     public ValueCallback<Uri[]> uploadMessageAfterLolipop;
     public final static int ATTACH_FILE_REQUEST = 1;
@@ -81,7 +80,6 @@ public class ContactUsFaqFragment extends TkpdBaseV4Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRetainInstance(true);
         session = new UserSession(getContext());
     }
 
@@ -98,37 +96,12 @@ public class ContactUsFaqFragment extends TkpdBaseV4Fragment {
     }
 
     @Override
-    public void onSaveInstanceState(@NotNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        saveStateToArguments();
-    }
-
-    @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        restoreStateFromArguments();
+        lauchWebView();
     }
 
-    private void saveStateToArguments() {
-        if (getView() != null)
-            savedState = new Bundle();
-        if (savedState != null) {
-            Bundle b = getArguments();
-            if (b == null) b = new Bundle();
-            b.putBundle(SAVED_STATE_OF_CONTACT_US_FAQ_FRAGMENT, savedState);
-        }
-    }
-
-    private void restoreStateFromArguments() {
-        Bundle b = getArguments();
-        if (b == null) b = new Bundle();
-        savedState = b.getBundle(SAVED_STATE_OF_CONTACT_US_FAQ_FRAGMENT);
-        if (savedState == null) {
-            onFirstTimeLaunched();
-        }
-    }
-
-    private void onFirstTimeLaunched() {
+    private void lauchWebView() {
         String url;
         if (getArguments().getString(EXTRAS_PARAM_URL, "").equals("")) {
             url = URL_HELP;
@@ -333,7 +306,6 @@ public class ContactUsFaqFragment extends TkpdBaseV4Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        saveStateToArguments();
         if (progressBar != null)
             progressBar.setIndeterminate(false);
     }
