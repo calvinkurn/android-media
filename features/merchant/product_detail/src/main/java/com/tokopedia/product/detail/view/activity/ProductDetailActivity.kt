@@ -22,8 +22,6 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.di.DaggerProductDetailComponent
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.view.fragment.DynamicProductDetailFragment
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 
@@ -76,16 +74,13 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
     private var affiliateString: String? = null
     private var deeplinkUrl: String? = null
     private var userSessionInterface: UserSessionInterface? = null
-    private val remoteConfig: RemoteConfig by lazy {
-        FirebaseRemoteConfigImpl(this)
-    }
 
     //Performance Monitoring
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
-
     private var performanceMonitoringP1: PerformanceMonitoring? = null
-    private var performanceMonitoringP2: PerformanceMonitoring? = null
-    private var performanceMonitoringP2General: PerformanceMonitoring? = null
+    private var performanceMonitoringP2Data: PerformanceMonitoring? = null
+    //Temporary (disscussion/talk, review/ulasan)
+    private var performanceMonitoringP2Other: PerformanceMonitoring? = null
     private var performanceMonitoringP2Login: PerformanceMonitoring? = null
     private var performanceMonitoringFull: PerformanceMonitoring? = null
 
@@ -115,12 +110,12 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
         performanceMonitoringP1?.stopTrace()
     }
 
-    fun stopMonitoringP2() {
-        performanceMonitoringP2?.stopTrace()
+    fun stopMonitoringP2Data() {
+        performanceMonitoringP2Data?.stopTrace()
     }
 
-    fun stopMonitoringP2General() {
-        performanceMonitoringP2General?.stopTrace()
+    fun stopMonitoringP2Other() {
+        performanceMonitoringP2Other?.stopTrace()
     }
 
     fun stopMonitoringP2Login() {
@@ -250,8 +245,8 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
 
     private fun initPerformanceMonitoring() {
         performanceMonitoringP1 = PerformanceMonitoring.start(ProductDetailConstant.PDP_P1_TRACE)
-        performanceMonitoringP2 = PerformanceMonitoring.start(ProductDetailConstant.PDP_P2_TRACE)
-        performanceMonitoringP2General = PerformanceMonitoring.start(ProductDetailConstant.PDP_P2_GENERAL_TRACE)
+        performanceMonitoringP2Data = PerformanceMonitoring.start(ProductDetailConstant.PDP_P2_DATA_TRACE)
+        performanceMonitoringP2Other = PerformanceMonitoring.start(ProductDetailConstant.PDP_P2_OTHER_TRACE)
 
         if (userSessionInterface?.isLoggedIn == true) {
             performanceMonitoringP2Login = PerformanceMonitoring.start(ProductDetailConstant.PDP_P2_LOGIN_TRACE)

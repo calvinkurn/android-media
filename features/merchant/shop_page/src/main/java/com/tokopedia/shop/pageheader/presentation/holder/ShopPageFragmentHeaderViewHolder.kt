@@ -41,7 +41,16 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
     fun bind(shopPageHeaderDataModel: ShopPageHeaderDataModel, isMyShop: Boolean, remoteConfig: RemoteConfig) {
         view.shop_page_main_profile_name.text = MethodChecker.fromHtml(shopPageHeaderDataModel.shopName).toString()
         view.shop_page_main_profile_follower.setOnClickListener { listener.onFollowerTextClicked(isShopFavorite) }
-        view.shop_page_main_profile_location.text = shopPageHeaderDataModel.location
+        val shopLocation = shopPageHeaderDataModel.location
+        if(shopLocation.isNotEmpty()){
+            view.shop_page_main_profile_location_icon.show()
+            view.shop_page_main_profile_location.show()
+            view.shop_page_main_profile_location.text = shopLocation
+        }else{
+            view.shop_page_main_profile_location_icon.hide()
+            view.shop_page_main_profile_location.hide()
+            view.shop_page_main_profile_location.text = shopLocation
+        }
         ImageHandler.loadImageCircle2(view.context, view.shop_page_main_profile_image, shopPageHeaderDataModel.avatar)
         if (isMyShop) {
             view.shop_page_main_profile_background.setOnClickListener {
@@ -127,6 +136,8 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
 
     fun updateFavoriteData(favoriteData: ShopInfo.FavoriteData) {
         isShopFavorite = TextApiUtils.isValueTrue(favoriteData.alreadyFavorited.toString())
+        view.shop_page_main_profile_follower_icon.show()
+        view.shop_page_main_profile_follower.show()
         if (favoriteData.totalFavorite > 1) {
             view.shop_page_main_profile_follower.text = MethodChecker.fromHtml(view.context.getString(R.string.shop_page_header_total_followers,
                     favoriteData.totalFavorite.toDouble().formatToSimpleNumber()))
@@ -252,7 +263,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
 
     private fun displayOfficial() {
         view.shop_page_main_profile_badge.visibility = View.VISIBLE
-        view.shop_page_main_profile_badge.setImageResource(R.drawable.ic_badge_shop_official)
+        view.shop_page_main_profile_badge.setImageResource(com.tokopedia.design.R.drawable.ic_badge_shop_official)
     }
 
     /**

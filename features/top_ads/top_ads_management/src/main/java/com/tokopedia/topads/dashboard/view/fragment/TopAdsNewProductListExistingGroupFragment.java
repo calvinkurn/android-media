@@ -11,6 +11,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.common.util.TopAdsComponentUtils;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.topads.dashboard.data.model.response.TopAdsDepositResponse;
 import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
 import com.tokopedia.topads.dashboard.di.module.TopAdsCreatePromoModule;
 import com.tokopedia.topads.dashboard.domain.model.MinimumBidDomain;
@@ -51,7 +52,7 @@ public class TopAdsNewProductListExistingGroupFragment extends TopAdsNewProductL
     @Override
     protected void goToNextPage() {
         UnifyTracking.eventTopAdsProductAddPromoExistingGroupStep1(getActivity());
-        daggerPresenter.saveAdExisting(stepperModel.getGroupId(), stepperModel.getTopAdsProductViewModels(), stepperModel.getSource());
+        daggerPresenter.getBalance(getResources());
     }
 
 
@@ -80,6 +81,11 @@ public class TopAdsNewProductListExistingGroupFragment extends TopAdsNewProductL
         if (stepperListener != null) {
             stepperListener.finishPage();
         }
+    }
+
+    @Override
+    public void onBalanceCheck(TopAdsDepositResponse.Data topAdsDepositResponse) {
+        daggerPresenter.saveAdExisting(stepperModel.getGroupId(), stepperModel.getTopAdsProductViewModels(), stepperModel.getSource(),topAdsDepositResponse);
     }
 
     @Override

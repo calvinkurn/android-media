@@ -7,7 +7,7 @@ import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.sellerhome.domain.model.GetPostDataResponse
+import com.tokopedia.centralizedpromo.domain.model.GetPostDataResponse
 import com.tokopedia.sellerhome.domain.usecase.BaseGqlUseCase
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject

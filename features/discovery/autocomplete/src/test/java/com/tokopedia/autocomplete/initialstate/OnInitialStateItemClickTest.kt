@@ -48,7 +48,6 @@ internal class OnInitialStateItemClickTest: InitialStatePresenterTestFixtures(){
 
     private fun InitialStateContract.View.onClickRecentSearch(item: BaseItemInitialStateSearch) {
         trackEventClickRecentSearch(getItemEventLabelForTracking(item, 0), 0)
-        dropKeyBoard()
         route(item.applink, initialStatePresenter.getSearchParameter())
         finish()
     }
@@ -86,7 +85,6 @@ internal class OnInitialStateItemClickTest: InitialStatePresenterTestFixtures(){
 
     private fun InitialStateContract.View.onClickRecentShop(item: BaseItemInitialStateSearch) {
         trackEventClickRecentShop(getRecentShopLabelForTracking(item), "0")
-        dropKeyBoard()
         route(item.applink, initialStatePresenter.getSearchParameter())
         finish()
     }
