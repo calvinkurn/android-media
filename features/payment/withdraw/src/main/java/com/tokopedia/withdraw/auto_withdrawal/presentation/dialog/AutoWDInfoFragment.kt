@@ -1,8 +1,10 @@
 package com.tokopedia.withdraw.auto_withdrawal.presentation.dialog
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -86,14 +88,18 @@ class AutoWDInfoFragment : BottomSheetUnify(), TickerCallback {
     }
 
     companion object {
+        private const val TAG_BOTTOM_SHEET = "AutoWDInfoFragment"
         private const val ARG_AWD_INFO = "arg_awd_info"
-        fun getInstance(getInfoAutoWD: GetInfoAutoWD)
-                : AutoWDInfoFragment {
-            return AutoWDInfoFragment().apply {
+        fun show(context: Context?,fragmentManager: FragmentManager, getInfoAutoWD: GetInfoAutoWD){
+            val autoWDInfoFragment = AutoWDInfoFragment().apply {
                 val bundle = Bundle()
                 bundle.putParcelable(ARG_AWD_INFO, getInfoAutoWD)
                 arguments = bundle
             }
+            context?.let {
+                autoWDInfoFragment.setTitle(it.getString(R.string.swd_auto_wd_info_title))
+            }
+            autoWDInfoFragment.show(fragmentManager, TAG_BOTTOM_SHEET)
         }
     }
 

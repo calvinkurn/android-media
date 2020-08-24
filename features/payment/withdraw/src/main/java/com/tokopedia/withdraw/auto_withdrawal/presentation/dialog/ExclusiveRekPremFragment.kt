@@ -3,6 +3,7 @@ package com.tokopedia.withdraw.auto_withdrawal.presentation.dialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -50,8 +51,10 @@ class ExclusiveRekPremFragment : BottomSheetUnify() {
 
 
     companion object {
-        fun getInstance(): ExclusiveRekPremFragment {
-            return ExclusiveRekPremFragment()
+        private const val TAG_BOTTOM_SHEET = "ExclusiveRekPremFragment"
+        fun show(fragmentManager: FragmentManager)  {
+            val exclusiveRekPremFragment =  ExclusiveRekPremFragment()
+            exclusiveRekPremFragment.show(fragmentManager, TAG_BOTTOM_SHEET)
         }
     }
 

@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -78,11 +79,14 @@ class ScheduleTimingFragment : BottomSheetUnify(), ScheduleChangeListener {
     }
 
     companion object {
+
+        const val TAG_BOTTOM_SHEET = "ScheduleTimingFragment"
         const val ARG_SCHEDULE_LIST = "arg_schedule_list"
         const val ARG_CURRENT_SELECTED_SCHEDULE_LIST = "arg_current_selected_schedule_list"
-        fun getInstance(scheduleList: ArrayList<Schedule>, currentSelectedSchedule: Schedule?)
-                : ScheduleTimingFragment {
-            return ScheduleTimingFragment().apply {
+
+        fun show(context: Context?, fragmentManager: FragmentManager,
+                        scheduleList: ArrayList<Schedule>, currentSelectedSchedule: Schedule?) {
+            val bottomSheet = ScheduleTimingFragment().apply {
                 val bundle = Bundle()
                 bundle.putParcelableArrayList(ARG_SCHEDULE_LIST, scheduleList)
                 currentSelectedSchedule?.let {
@@ -90,6 +94,10 @@ class ScheduleTimingFragment : BottomSheetUnify(), ScheduleChangeListener {
                 }
                 arguments = bundle
             }
+            context?.let {
+                bottomSheet.setTitle(context.getString(R.string.swd_withdrawal_schedule))
+            }
+            bottomSheet.show(fragmentManager, TAG_BOTTOM_SHEET)
         }
     }
 

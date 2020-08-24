@@ -4,17 +4,10 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <androidx.core.widget.NestedScrollView
+    <com.tokopedia.webview.TkpdWebView
+        android:id="@+id/swd_tnc_webview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:scrollbars="none">
-
-        <com.tokopedia.webview.TkpdWebView
-            android:id="@+id/swd_tnc_webview"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/spacing_lvl4"
-            android:scrollbars="none" />
-    </androidx.core.widget.NestedScrollView>
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
+        android:scrollbars="none" />
 </LinearLayout>
