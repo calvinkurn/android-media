@@ -115,7 +115,7 @@ class SellerHomeModule {
     @SellerHomeScope
     @Provides
     fun provideFreeShippingTracker(userSession: UserSessionInterface): SettingFreeShippingTracker {
-        val tracker = TrackApp.getInstance().gtm
-        return SettingFreeShippingTracker(tracker, userSession)
+        val analytics = TrackApp.getInstance().gtm
+        return SettingFreeShippingTracker(analytics, userSession)
     }
 }
