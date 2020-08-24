@@ -7,13 +7,8 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.recentview.data.entity.Badge
 import com.tokopedia.recentview.data.entity.Label
-import com.tokopedia.recentview.data.entity.ProductItem
 import com.tokopedia.recentview.data.entity.RecentViewData
 import com.tokopedia.recentview.data.query.RecentViewQuery
-import com.tokopedia.recentview.domain.model.RecentViewBadgeDomain
-import com.tokopedia.recentview.domain.model.RecentViewLabelDomain
-import com.tokopedia.recentview.domain.model.RecentViewProductDomain
-import com.tokopedia.recentview.domain.model.RecentViewShopDomain
 import com.tokopedia.recentview.view.viewmodel.LabelsViewModel
 import com.tokopedia.recentview.view.viewmodel.RecentViewDetailProductViewModel
 import com.tokopedia.usecase.RequestParams
@@ -31,6 +26,7 @@ class RecentViewUseCase (
 
     private val CASHBACK = "Cashback"
     private val OFFICIAL_STORE = "Official Store"
+    private val PARAM_USER_ID = "userID";
 
     override suspend fun executeOnBackground(): ArrayList<RecentViewDetailProductViewModel> {
         val cacheStrategy =
@@ -56,7 +52,7 @@ class RecentViewUseCase (
 
     fun getParam(loginID: String) {
         params.parameters.clear()
-        params.putInt(GetRecentViewUseCase.PARAM_USER_ID, loginID.toInt())
+        params.putInt(PARAM_USER_ID, loginID.toInt())
     }
 
     private fun convertToViewModel(productItemData: RecentViewData): ArrayList<RecentViewDetailProductViewModel> {
