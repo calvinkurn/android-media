@@ -169,7 +169,7 @@ class PlayBroadcastSocketImpl constructor(
         try {
             return gson.fromJson(jsonElement, classOfT)
         } catch (e: Exception) {
-            sendCrashlyticsLog(0, e.localizedMessage)
+            sendCrashlyticsLog(e)
         }
         return null
     }

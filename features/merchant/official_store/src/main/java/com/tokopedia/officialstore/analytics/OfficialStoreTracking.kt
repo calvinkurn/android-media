@@ -651,7 +651,7 @@ class OfficialStoreTracking(context: Context) {
         return DataLayer.mapOf(
                 FIELD_PRODUCT_NAME, item.name,
                 FIELD_PRODUCT_ID, item.productId.toString(),
-                FIELD_PRODUCT_PRICE, item.getPriceIntFromString(),
+                FIELD_PRODUCT_PRICE, item.priceInt.toString(),
                 FIELD_PRODUCT_BRAND, item.shopName,
                 FIELD_PRODUCT_CATEGORY, item.categoryBreadcrumbs,
                 FIELD_PRODUCT_VARIANT, VALUE_NONE_OTHER,

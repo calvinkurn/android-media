@@ -42,12 +42,6 @@ class EmptyStateViewHolder(itemView: View?,
             tvMvcEmptyStateViewHistory?.setOnClickListener {
                 element.onSeeHistoryClicked()
             }
-
-            try {
-                imgMvcEmptyState.loadImageDrawable(R.drawable.il_mvc_no_result)
-            } catch (e: Exception) {
-                Timber.e(e)
-            }
         }
     }
 }

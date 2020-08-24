@@ -22,7 +22,7 @@ object PopularKeywordTracking: BaseTracking() {
             event = Event.PROMO_VIEW,
             eventCategory = Category.HOMEPAGE,
             eventAction = IMPRESSION_POPULAR_KEYWORDS,
-            eventLabel = String.format(Label.FORMAT_2_ITEMS, channel.header.name, keyword),
+            eventLabel = channel.header.name,
             promotions = listOf(
                 Promotion(
                         id = channel.id,
