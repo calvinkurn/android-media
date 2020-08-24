@@ -10,7 +10,6 @@ import com.tokopedia.gallery.customview.RatingView
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.common.data.model.product.Rating
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMostHelpfulReviewDataModel
 import com.tokopedia.product.detail.data.model.review.Review
@@ -49,11 +48,11 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
         }
 
         element?.imageReviews?.let {
-            renderImageReview(it, element.rating ?: Rating(), getComponentTrackData(element))
+            renderImageReview(it, element.totalRating, element.ratingScore, getComponentTrackData(element))
         }
     }
 
-    private fun renderImageReview(imageReviews: List<ImageReviewItem>, rating: Rating, componentTrackDataModel: ComponentTrackDataModel) {
+    private fun renderImageReview(imageReviews: List<ImageReviewItem>, totalRating: Int, ratingScore: Float, componentTrackDataModel: ComponentTrackDataModel) {
         val showSeeAll = if (imageReviews.isNotEmpty()) {
             imageReviews.first().hasNext
         } else {
@@ -67,11 +66,11 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
             txt_see_all_partial.setOnClickListener {
                 listener.onSeeAllTextView(componentTrackDataModel)
             }
-            review_count.text = context.getString(R.string.review_counter, rating.totalRating)
+            review_count.text = context.getString(R.string.review_counter, totalRating)
             review_rating.setCompoundDrawablesWithIntrinsicBounds(null, null, MethodChecker.getDrawable(context, R.drawable.ic_rating_gold), null)
-            review_rating.text = context.getString(R.string.counter_pattern_string, rating.ratingScore, 5)
+            review_rating.text = ratingScore.toString()
 
-            if (rating.totalRating > 0) container_image_review.visible() else container_image_review.gone()
+            if (totalRating > 0) container_image_review.visible() else container_image_review.gone()
 
             if (imageReviews.isNotEmpty())
                 image_review_list.visible()

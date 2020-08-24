@@ -11,7 +11,6 @@ import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.settings.analytics.SettingFreeShippingTracker
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.bottom_sheet_settings_free_shipping.*
 import javax.inject.Inject
 
@@ -26,7 +25,7 @@ class SettingsFreeShippingBottomSheet: BottomSheetUnify() {
     }
 
     @Inject
-    lateinit var userSession: UserSessionInterface
+    lateinit var freeShippingTracker: SettingFreeShippingTracker
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
@@ -42,7 +41,7 @@ class SettingsFreeShippingBottomSheet: BottomSheetUnify() {
         super.onViewCreated(view, savedInstanceState)
 
         btnFreeShippingDetail.setOnClickListener {
-            SettingFreeShippingTracker.trackFreeShippingDetailClick(userSession)
+            freeShippingTracker.trackFreeShippingDetailClick()
             RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW,
                 CentralizedPromoUrl.URL_FREE_SHIPPING_INTERIM_PAGE)
             dismiss()

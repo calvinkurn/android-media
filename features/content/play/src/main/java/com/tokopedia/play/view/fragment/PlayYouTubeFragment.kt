@@ -18,6 +18,7 @@ import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.contract.PlayOrientationListener
 import com.tokopedia.play.view.custom.RoundedConstraintLayout
 import com.tokopedia.play.view.type.ScreenOrientation
+import com.tokopedia.play.view.uimodel.VideoPlayerUiModel
 import com.tokopedia.play.view.uimodel.YouTube
 import com.tokopedia.play.view.viewcomponent.YouTubeViewComponent
 import com.tokopedia.play.view.viewmodel.PlayViewModel
@@ -87,10 +88,6 @@ class PlayYouTubeFragment @Inject constructor(
         return false
     }
 
-    override fun onInterceptSystemUiVisibilityChanged(): Boolean {
-        return false
-    }
-
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         val orientation = ScreenOrientation.getByInt(newConfig.orientation)
@@ -142,23 +139,18 @@ class PlayYouTubeFragment @Inject constructor(
     }
 
     private fun setupObserve() {
-        observeVideoPlayer()
+        observeVideoMeta()
         observeBottomInsetsState()
+        observeEventUserInfo()
     }
 
     //region observe
     /**
      * Observe
      */
-    private fun observeVideoPlayer() {
-        playViewModel.observableVideoPlayer.observe(viewLifecycleOwner, Observer {
-            if (it is YouTube) {
-                youtubeView.setYouTubeId(it.youtubeId)
-                youtubeView.show()
-            } else {
-                youtubeView.release()
-                youtubeView.hide()
-            }
+    private fun observeVideoMeta() {
+        playViewModel.observableVideoMeta.observe(viewLifecycleOwner, Observer {
+            youtubeViewOnStateChanged(videoPlayer = it.videoPlayer)
         })
     }
 
@@ -169,6 +161,34 @@ class PlayYouTubeFragment @Inject constructor(
                 else containerYouTube.setCornerRadius(0f)
             }
         })
+    }
+
+    private fun observeEventUserInfo() {
+        playViewModel.observableEvent.observe(viewLifecycleOwner, DistinctObserver {
+            youtubeViewOnStateChanged(isFreezeOrBanned = it.isFreeze || it.isBanned)
+        })
+    }
+    //endregion
+
+    //region OnStateChanged
+    private fun youtubeViewOnStateChanged(
+            videoPlayer: VideoPlayerUiModel = playViewModel.videoPlayer,
+            isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned
+    ) {
+        when {
+            isFreezeOrBanned -> {
+                youtubeView.release()
+                youtubeView.hide()
+            }
+            videoPlayer is YouTube -> {
+                youtubeView.setYouTubeId(videoPlayer.youtubeId)
+                youtubeView.show()
+            }
+            else -> {
+                youtubeView.release()
+                youtubeView.hide()
+            }
+        }
     }
     //endregion
 }

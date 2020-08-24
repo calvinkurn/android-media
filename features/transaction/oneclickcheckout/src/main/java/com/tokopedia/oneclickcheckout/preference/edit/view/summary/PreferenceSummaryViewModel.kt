@@ -27,14 +27,27 @@ class PreferenceSummaryViewModel @Inject constructor(private val getPreferenceBy
     val editResult: LiveData<OccState<String>>
         get() = _editResult
 
-    var profileAddressId: Int = 0
-    var profileServiceId: Int = 0
-    var profileGatewayCode: String = ""
-    var profilePaymentMetadata: String = ""
+    private var profileAddressId: Int = 0
+    private var profileServiceId: Int = 0
+    private var profileGatewayCode: String = ""
+    private var profilePaymentMetadata: String = ""
+
+    fun setProfileAddressId(profileAddressId: Int) {
+        this.profileAddressId = profileAddressId
+    }
+    fun setProfileServiceId(profileServiceId: Int) {
+        this.profileServiceId = profileServiceId
+    }
+    fun setProfileGatewayCode(profileGatewayCode: String) {
+        this.profileGatewayCode = profileGatewayCode
+    }
+    fun setProfilePaymentMetadata(profilePaymentMetadata: String) {
+        this.profilePaymentMetadata = profilePaymentMetadata
+    }
 
     fun isDataChanged(): Boolean {
         val currentPref = _preference.value
-        if (currentPref != null && currentPref is OccState.Success) {
+        if (currentPref is OccState.Success) {
             return when {
                 currentPref.data.addressModel.addressId != profileAddressId -> true
                 currentPref.data.shipmentModel.serviceId != profileServiceId -> true

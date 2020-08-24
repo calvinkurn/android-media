@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName
 import com.tokopedia.product.detail.common.data.model.product.*
 
 data class ComponentData(
+        //region General data
         @SerializedName("applink")
         val applink: String = "",
         @SerializedName("content")
@@ -17,8 +18,13 @@ data class ComponentData(
         val isApplink: Boolean = true,
         @SerializedName("icon")
         val icon: String = "",
+        @SerializedName("separator")
+        val separator: String = "",
+        @SerializedName("description")
+        val description: String = "",
+        //endregion
 
-        // Snapshot data
+        //region Content data
         @SerializedName("campaign")
         val campaign: CampaignModular = CampaignModular(),
         @SerializedName("isCOD")
@@ -51,21 +57,22 @@ data class ComponentData(
         val wholesale: List<Wholesale>? = null,
         @SerializedName("preorder")
         val preOrder: PreOrder = PreOrder(),
-
-        //upcoming deals / notifyMe
-        @SerializedName("campaignID")
-        val campaignId: String = "",
-        @SerializedName("campaignType")
-        val campaignType: String = "",
-        @SerializedName("campaignTypeName")
-        val campaignTypeName: String = "",
-        @SerializedName("endDate")
-        val endDate: String = "",
-        @SerializedName("startDate")
-        val startDate: String = "",
-        @SerializedName("notifyMe")
-        val notifyMe: Boolean = false
-) {
+        //endregion
+        //region Variant data
+        @SerializedName("parentID")
+        val parentId: String = "",
+        @SerializedName("errorCode")
+        val errorCode: Int = 0,
+        @SerializedName("sizeChart")
+        val sizeChart: String = "",
+        @SerializedName("defaultChild")
+        val defaultChild: String = "",
+        @SerializedName("variants")
+        val variants: List<ProductP1Variant> = listOf(),
+        @SerializedName("children")
+        val children : List<ProductP1VariantChild> = listOf()
+        //endregion
+)  {
 
     val hasWholesale: Boolean
         get() = wholesale != null && wholesale.isNotEmpty()

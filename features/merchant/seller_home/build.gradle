@@ -98,11 +98,14 @@ dependencies {
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.dagger
+    implementation rootProject.ext.miscDependencies.liveData
     kapt rootProject.ext.miscDependencies.daggerCompiler
 
     implementation (rootProject.ext.serviceDependencies.crashlytics) {
         transitive = true
     }
+
+    implementation rootProject.ext.dbDependencies.sqliteFramework
 }
 
 project.ext {

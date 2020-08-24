@@ -20,7 +20,6 @@
                 android:id="@+id/iv_card_header"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/dp_52"
-                android:src="@color/white"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -45,8 +44,7 @@
                 app:layout_constraintStart_toStartOf="@+id/iv_card_header"
                 app:layout_constraintTop_toTopOf="@+id/iv_card_header"
                 app:typographyType="heading_5"
-                app:typographyWeight="bold"
-                tools:text="Rekomendasi Pilihan" />
+                app:typographyWeight="bold" />
 
             <com.tokopedia.unifycomponents.Label
                 android:id="@+id/lbl_main_preference"
@@ -84,8 +82,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/iv_card_header"
                 app:typographyType="body_3"
-                app:typographyWeight="bold"
-                tools:text="Kantor baba asd a sdf asdf " />
+                app:typographyWeight="bold" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_address_receiver"
@@ -101,8 +98,7 @@
                 app:layout_constraintStart_toEndOf="@+id/tv_address_name"
                 app:layout_constraintTop_toTopOf="@+id/tv_address_name"
                 app:typographyType="body_3"
-                app:typographyWeight="reguler"
-                tools:text="- Tari (08xxxxxxxxxxxx)" />
+                app:typographyWeight="reguler" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_address_detail"
@@ -120,8 +116,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_address_name"
                 app:typographyType="body_3"
-                app:typographyWeight="reguler"
-                tools:text="tokopedia tower lantai asdfl jalan lasdfj lajsdf lkasjdf lj" />
+                app:typographyWeight="reguler" />
 
             <View
                 android:id="@+id/divider"
@@ -141,74 +136,24 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/divider" />
 
-            <ImageView
-                android:id="@+id/iv_payment"
-                android:layout_width="@dimen/dp_45"
-                android:layout_height="@dimen/dp_45"
-                android:layout_marginStart="@dimen/dp_16"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:scaleType="fitCenter"
-                app:layout_constraintBottom_toBottomOf="@+id/tv_payment_detail"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/tv_payment_name"
-                tools:ignore="ContentDescription" />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tv_payment_name"
-                android:layout_width="0dp"
+            <include
+                android:id="@+id/layout_order_preference_payment"
+                layout="@layout/layout_order_preference_payment"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_6"
-                android:layout_marginLeft="@dimen/dp_6"
-                android:layout_marginTop="@dimen/dp_16"
-                android:layout_marginEnd="@dimen/dp_16"
-                android:layout_marginRight="@dimen/dp_16"
-                android:lines="1"
-                android:paddingBottom="@dimen/dp_2"
-                android:textColor="@color/Neutral_N700_96"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/iv_payment"
-                app:layout_constraintTop_toBottomOf="@+id/layout_order_preference_shipping"
-                app:typographyType="body_3"
-                app:typographyWeight="bold"
-                tools:text="Virtual Account" />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tv_payment_detail"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_2"
-                android:lines="1"
-                android:textColor="@color/Neutral_N700_68"
-                app:layout_constraintEnd_toEndOf="@+id/tv_payment_name"
-                app:layout_constraintStart_toStartOf="@+id/tv_payment_name"
-                app:layout_constraintTop_toBottomOf="@+id/tv_payment_name"
-                app:typographyType="body_3"
-                app:typographyWeight="reguler"
-                tools:text="8098097230948209384" />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tv_payment_message"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_4"
-                android:textColor="@color/Red_R600"
-                android:visibility="gone"
-                app:layout_constraintEnd_toEndOf="@+id/tv_payment_name"
-                app:layout_constraintStart_toStartOf="@+id/iv_payment"
-                app:layout_constraintTop_toBottomOf="@+id/tv_payment_detail"
-                app:typographyType="body_3"
-                app:typographyWeight="reguler"
-                tools:text="pembayaran ini sedang tidak dapat digunakan, silahkan pilih preferensi lainnya" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/layout_order_preference_shipping" />
 
             <View
                 android:id="@+id/divider3"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/dp_1"
-                android:layout_marginTop="@dimen/dp_20"
+                android:layout_marginTop="@dimen/dp_12"
                 android:background="@color/Neutral_N75"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_payment_message" />
+                app:layout_constraintTop_toBottomOf="@+id/layout_order_preference_payment" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_choose_preference"
