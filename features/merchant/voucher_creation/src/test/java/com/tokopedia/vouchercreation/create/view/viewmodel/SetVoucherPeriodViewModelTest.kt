@@ -37,25 +37,22 @@ class SetVoucherPeriodViewModelTest {
     @RelaxedMockK
     lateinit var periodValidationUseCase: PeriodValidationUseCase
 
+    lateinit var mViewModel: SetVoucherPeriodViewModel
+    lateinit var testDispatcher: TestCoroutineDispatcher
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
+        testDispatcher = TestCoroutineDispatcher()
+        mViewModel = SetVoucherPeriodViewModel(testDispatcher, periodValidationUseCase)
     }
 
     @After
     fun cleanup() {
         testDispatcher.cleanupTestCoroutines()
-    }
-
-    private val testDispatcher by lazy {
-        TestCoroutineDispatcher()
-    }
-
-    private val mViewModel by lazy {
-        SetVoucherPeriodViewModel(testDispatcher, periodValidationUseCase)
     }
 
     @Test

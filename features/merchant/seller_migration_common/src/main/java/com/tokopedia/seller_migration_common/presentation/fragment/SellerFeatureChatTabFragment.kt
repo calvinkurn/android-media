@@ -2,4 +2,4 @@ package com.tokopedia.seller_migration_common.presentation.fragment
 
 import com.tokopedia.seller_migration_common.presentation.SellerFeatureChatStaticDataProvider
 
-class SellerFeatureChatTabFragment(recyclerViewListener: SellerMigrationFragment) : BaseSellerFeatureTabFragment(recyclerViewListener, SellerFeatureChatStaticDataProvider)
+class SellerFeatureChatTabFragment : BaseSellerFeatureTabFragment(SellerFeatureChatStaticDataProvider)

@@ -315,7 +315,6 @@ dependencies {
     implementation project(rootProject.ext.features.cart)
     implementation project(rootProject.ext.features.logisticcart)
     implementation project(rootProject.ext.features.logisticdata)
-    implementation project(rootProject.ext.features.logisticaddaddress)
     implementation project(rootProject.ext.features.chatcommon)
     implementation project(rootProject.ext.features.nps)
     if (rootProject.ext.debugToolsEnabled) {
@@ -575,6 +574,7 @@ dependencies {
         exclude group: 'org.hamcrest', module: 'hamcrest-core, mockito-core'
         exclude group: 'org.mockito'
     }
+    implementation rootProject.ext.testDependencies.espressoIdlingResource
     // Cloud testing
     androidTestImplementation(name: 'cloudtestingscreenshotter_lib', ext: 'aar')
     androidTestImplementation(rootProject.ext.miscDependencies.facebook) {

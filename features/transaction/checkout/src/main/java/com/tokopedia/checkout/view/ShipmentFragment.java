@@ -1513,18 +1513,23 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         // if one of courier reseted because of apply promo logistic (PSL) and eventually not eligible after hit validate use, don't send EE
         boolean courierHasReseted = false;
         for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModels) {
-            if (shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null) {
-                List<DataCheckoutRequest> dataCheckoutRequests = shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerShippingData(
-                        shipmentCartItemModel.getCartString(),
-                        String.valueOf(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getServiceId()),
-                        String.valueOf(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getShipperPrice()),
-                        String.valueOf(shipmentCartItemModel.getSpId())
-                );
-                shipmentPresenter.setDataCheckoutRequestList(dataCheckoutRequests);
-            } else {
+            ShipmentDetailData selectedShipmentDetailData = shipmentCartItemModel.getSelectedShipmentDetailData();
+            if (selectedShipmentDetailData == null) {
                 courierHasReseted = true;
                 break;
             }
+            CourierItemData selectedCourier = selectedShipmentDetailData.getSelectedCourier();
+            if (selectedCourier == null) {
+                courierHasReseted = true;
+                break;
+            }
+            List<DataCheckoutRequest> dataCheckoutRequests = shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerShippingData(
+                    shipmentCartItemModel.getCartString(),
+                    String.valueOf(selectedCourier.getServiceId()),
+                    String.valueOf(selectedCourier.getShipperPrice()),
+                    String.valueOf(shipmentCartItemModel.getSpId())
+            );
+            shipmentPresenter.setDataCheckoutRequestList(dataCheckoutRequests);
         }
 
         if (!courierHasReseted) {

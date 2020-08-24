@@ -314,6 +314,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
             intent.putExtra(ShopShowcaseListParam.EXTRA_ETALASE_NAME, dataShowcase.name)
             intent.putExtra(ShopShowcaseListParam.EXTRA_ETALASE_BADGE, dataShowcase.badge)
             intent.putExtra(ShopShowcaseListParam.EXTRA_IS_NEED_TO_RELOAD_DATA, true)
+            intent.putExtra(ShopShowcaseListParam.EXTRA_ETALASE_TYPE, dataShowcase.type)
             setResult(Activity.RESULT_OK, intent)
             finish()
         }
