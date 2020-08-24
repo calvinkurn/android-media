@@ -62,4 +62,7 @@ class ProductProfile {
     @SerializedName("rating")
     @Expose
     val rating: TopchatProductRating = TopchatProductRating()
+    @SerializedName("is_preorder")
+    @Expose
+    val isPreOrder: Boolean = false
 }

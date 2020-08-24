@@ -9,6 +9,7 @@ query topadsGetListProduct($shopID: Int!, $keyword: String, $etalase: String, $s
       priceBid
       suggestedBid
     }
+    eof
     errors {
       code
       detail

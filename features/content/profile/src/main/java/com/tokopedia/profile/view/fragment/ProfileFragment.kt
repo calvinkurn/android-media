@@ -60,6 +60,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.poll.PollAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.RecommendationCardAdapter
+import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsBannerViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
@@ -125,7 +126,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         FeedMultipleImageView.FeedMultipleImageViewListener,
         EmptyAffiliateViewHolder.OnEmptyItemClickedListener,
         HighlightAdapter.HighlightListener,
-        ShareBottomSheets.OnShareItemClickListener {
+        ShareBottomSheets.OnShareItemClickListener, TopAdsBannerViewHolder.TopAdsBannerListener {
 
     companion object {
         private const val PARAM_TAB_NAME = "{tab_name}"
@@ -397,6 +398,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 this,
                 this,
                 this::onOtherProfilePostItemClick,
+                this,
                 this,
                 userSession)
     }
@@ -1898,5 +1900,9 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                             }
                         }
                 )
+    }
+
+    override fun onTopAdsViewImpression(bannerId: String, imageUrl: String) {
+
     }
 }

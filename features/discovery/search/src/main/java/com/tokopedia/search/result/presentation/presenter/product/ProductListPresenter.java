@@ -658,8 +658,12 @@ final class ProductListPresenter
     }
 
     private void getViewToRedirectSearch(SearchProductModel searchProductModel) {
-        String applink = searchProductModel.getSearchProduct().getData().getRedirection().getRedirectApplink();
+        if (searchProductModel.getSearchProduct().getHeader().getResponseCode().equals("9")) {
+            ProductViewModel productViewModel = createProductViewModelWithPosition(searchProductModel);
+            getViewToSendTrackingSearchAttempt(productViewModel);
+        }
 
+        String applink = searchProductModel.getSearchProduct().getData().getRedirection().getRedirectApplink();
         getView().redirectSearchToAnotherPage(applink);
     }
 
@@ -690,7 +694,7 @@ final class ProductListPresenter
         getView().updateScrollListener();
 
         if (isFirstTimeLoad) {
-            getViewToSendTrackingOnFirstTimeLoad(productViewModel);
+            getViewToSendTrackingSearchAttempt(productViewModel);
         }
     }
 
@@ -1151,7 +1155,7 @@ final class ProductListPresenter
         return quickFilterOptionList;
     }
 
-    private void getViewToSendTrackingOnFirstTimeLoad(ProductViewModel productViewModel) {
+    private void getViewToSendTrackingSearchAttempt(ProductViewModel productViewModel) {
         if (getView() == null) return;
 
         JSONArray afProdIds = new JSONArray();
