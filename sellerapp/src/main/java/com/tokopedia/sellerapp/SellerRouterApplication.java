@@ -14,6 +14,7 @@ import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.analyticsdebugger.debugger.TetraDebugger;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
@@ -41,6 +42,7 @@ import com.tokopedia.gm.GMModuleRouter;
 import com.tokopedia.gm.common.di.component.DaggerGMComponent;
 import com.tokopedia.gm.common.di.component.GMComponent;
 import com.tokopedia.gm.common.di.module.GMModule;
+import com.tokopedia.inboxreputation.presentation.activity.InboxReputationActivity;
 import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.linker.interfaces.LinkerRouter;
 import com.tokopedia.loginregister.login.router.LoginRouter;
@@ -50,6 +52,7 @@ import com.tokopedia.phoneverification.PhoneVerificationRouter;
 import com.tokopedia.product.manage.feature.list.view.fragment.ProductManageSellerFragment;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.review.feature.reviewlist.view.fragment.RatingProductFragment;
 import com.tokopedia.seller.common.topads.deposit.data.model.DataDeposit;
 import com.tokopedia.seller.product.etalase.utils.EtalaseUtils;
 import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
@@ -68,10 +71,6 @@ import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
 import com.tokopedia.sellerorder.common.util.SomConsts;
 import com.tokopedia.sellerorder.list.presentation.fragment.SomListFragment;
 import com.tokopedia.talk_old.inboxtalk.view.activity.InboxTalkActivity;
-import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
-import com.tokopedia.tkpd.tkpdreputation.TkpdReputationInternalRouter;
-import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
-import com.tokopedia.tkpd.tkpdreputation.review.shop.view.ReviewShopFragment;
 import com.tokopedia.topads.TopAdsComponentInstance;
 import com.tokopedia.topads.TopAdsManagementRouter;
 import com.tokopedia.topads.TopAdsModuleRouter;
@@ -100,7 +99,6 @@ import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 
 public abstract class SellerRouterApplication extends MainApplication
         implements TkpdCoreRouter, GMModuleRouter, TopAdsModuleRouter,
-        ReputationRouter,
         AbstractionRouter,
         ApplinkRouter,
         NetworkRouter,
@@ -201,7 +199,7 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     private Intent getInboxReputationIntent(Context context) {
-        return TkpdReputationInternalRouter.getInboxReputationActivityIntent(context);
+        return RouteManager.getIntent(context, ApplinkConst.REPUTATION);
     }
 
     @Override
@@ -398,11 +396,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void showSimpleAppRatingDialog(Activity activity) {
-
-    }
-
-    @Override
     public boolean isAllowLogOnChuckInterceptorNotification() {
         return DevOptConfig.isChuckNotifEnabled(this);
     }
@@ -448,11 +441,6 @@ public abstract class SellerRouterApplication extends MainApplication
     public void sendForceLogoutAnalytics(Response response, boolean isInvalidToken,
                                          boolean isRequestDenied) {
         ServerErrorHandler.sendForceLogoutAnalytics(response.request().url().toString(), isInvalidToken, isRequestDenied);
-    }
-
-    @Override
-    public void showAppFeedbackRatingDialog(FragmentManager fragmentManager, Context context, BottomSheets.BottomSheetDismissListener listener) {
-
     }
 
     @Override
