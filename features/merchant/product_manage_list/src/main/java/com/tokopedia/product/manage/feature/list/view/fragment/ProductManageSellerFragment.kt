@@ -87,6 +87,14 @@ class ProductManageSellerFragment : ProductManageFragment() {
         productDraftListCountViewModel.detachView()
     }
 
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+
+        if(!hidden) {
+            sendNormalSendScreen()
+        }
+    }
+
     override fun onResume() {
         super.onResume()
         registerDraftReceiver()
@@ -94,9 +102,6 @@ class ProductManageSellerFragment : ProductManageFragment() {
             productDraftListCountViewModel.getAllDraftCount()
         } else {
             productDraftListCountViewModel.fetchAllDraftCountWithUpdateUploading()
-        }
-        if (userVisibleHint) {
-            sendNormalSendScreen()
         }
     }
 
@@ -106,13 +111,6 @@ class ProductManageSellerFragment : ProductManageFragment() {
     }
 
     override fun callInitialLoadAutomatically() = false
-
-    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
-        super.setUserVisibleHint(isVisibleToUser)
-        if (isVisibleToUser) {
-            sendNormalSendScreen()
-        }
-    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
         if (resultCode == RESULT_OK) {
