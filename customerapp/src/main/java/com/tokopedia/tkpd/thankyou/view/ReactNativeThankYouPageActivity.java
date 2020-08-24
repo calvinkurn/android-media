@@ -79,7 +79,7 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
                 .getReactNativeHost().getReactInstanceManager();
         PurchaseNotifier.notify(this, getIntent().getExtras());
         resetWalletCache();
-        Timber.w("P2#RN_THANK_YOU#ReactNativeThankYouPageActivity_open");
+        Timber.w("P2#RN_THANK_YOU#open");
     }
 
     @Override
@@ -129,7 +129,7 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
             }
         }
         ThanksTrackerService.start(this, data);
-        Timber.w("P2#RN_THANK_YOU#ReactNativeThankYouPageActivity_sendAnalytics id=%s,platform=%s ",data.getId(),data.getPlatform());
+        Timber.w("P2#RN_THANK_YOU#sendAnalytics;id=%s;platform=%s", data.getId(), data.getPlatform());
     }
 
     /* Check savedVersion in sharedpreferences
