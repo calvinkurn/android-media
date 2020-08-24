@@ -399,4 +399,18 @@
                 android:layout_gravity="center" />
         </FrameLayout>
     </RelativeLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_create_post"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginBottom="@dimen/fab_create_post_bottom_margin"
+        android:tint="@color/Neutral_N0"
+        android:visibility="gone"
+        app:backgroundTint="@color/Green_G400"
+        app:srcCompat="@drawable/ic_plus_add"
+        />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

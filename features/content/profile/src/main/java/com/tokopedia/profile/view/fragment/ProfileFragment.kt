@@ -439,6 +439,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                     element.profileHeaderViewModel,
                     element.affiliatePostQuota
             )
+            setCreatePostButton(element.profileHeaderViewModel)
         }
         setProfileToolbar(element.profileHeaderViewModel, isFromLogin)
 
@@ -1521,6 +1522,19 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 //                }
 //            }
         }
+    }
+
+    private fun setCreatePostButton(model: ProfileHeaderViewModel) {
+        if (model.isOwner) {
+            fab_create_post.visibility = View.VISIBLE
+            fab_create_post.setOnClickListener {
+                goToAffiliateExplore()
+                profileAnalytics.eventClickTambahRekomendasi()
+            }
+        } else {
+            fab_create_post.visibility = View.GONE
+        }
+
     }
 
     private fun bindCurationQuota(affiliatePostQuota: AffiliatePostQuota) {
