@@ -134,6 +134,7 @@ public class InstrumentationTestApp extends BaseMainApplication
             GraphqlClient.reInitRetrofitWithInterceptors(interceptorList, this);
         }
     }
+
     @Override
     public int getMinimumTopAdsProductFromResponse() {
         return topAdsProductCount;
