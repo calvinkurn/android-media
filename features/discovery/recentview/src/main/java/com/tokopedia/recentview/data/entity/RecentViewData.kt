@@ -10,7 +10,7 @@ class RecentViewData {
 
     override fun toString(): String {
         return "ProductItemData{" +
-                "list=" + list +
+                "items=" + list +
                 '}'
     }
 }

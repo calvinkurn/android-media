@@ -8,6 +8,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.recentview.data.entity.Badge
 import com.tokopedia.recentview.data.entity.Label
 import com.tokopedia.recentview.data.entity.RecentViewData
+import com.tokopedia.recentview.data.entity.RecentViewResult
 import com.tokopedia.recentview.data.query.RecentViewQuery
 import com.tokopedia.recentview.view.viewmodel.LabelsViewModel
 import com.tokopedia.recentview.view.viewmodel.RecentViewDetailProductViewModel
@@ -34,11 +35,11 @@ class RecentViewUseCase (
 
         val request = GraphqlRequest(
                 RecentViewQuery.getQuery(),
-                RecentViewData::class.java,
+                RecentViewResult::class.java,
                 params.parameters
         )
         val response = graphqlRepository.getReseponse(listOf(request), cacheStrategy)
-        response.getError(RecentViewData::class.java)?.let {
+        response.getError(RecentViewResult::class.java)?.let {
             if (it.isNotEmpty()) {
                 if (!TextUtils.isEmpty(it[0].message)) {
                     throw Throwable(it[0].message)
@@ -46,8 +47,8 @@ class RecentViewUseCase (
             }
         }
 
-        val data = response.getData<RecentViewData>(RecentViewData::class.java)
-        return convertToViewModel(data)
+        val data = response.getData<RecentViewResult>(RecentViewResult::class.java)
+        return convertToViewModel(data.item)
     }
 
     fun getParam(loginID: String) {
