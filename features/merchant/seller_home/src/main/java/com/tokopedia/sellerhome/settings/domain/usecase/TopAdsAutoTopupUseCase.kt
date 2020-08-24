@@ -53,9 +53,9 @@ class TopAdsAutoTopupUseCase @Inject constructor(private val graphqlRepository: 
                 }
             } else {
                 val topadsErrorObjectMessage = responseError.joinToString {
-                    it.errorObject.errorTextList.let { errorList ->
+                    it.errorObject?.errorTextList.let { errorList ->
                         if (errorList.isNullOrEmpty()) {
-                            it.detail
+                            it.detail.orEmpty()
                         } else {
                             errorList.joinToString()
                         }

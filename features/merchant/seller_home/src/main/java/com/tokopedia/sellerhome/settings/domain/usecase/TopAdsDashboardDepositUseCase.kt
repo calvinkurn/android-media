@@ -43,6 +43,17 @@ class TopAdsDashboardDepositUseCase @Inject constructor(private val graphqlRepos
                 topAdsDepositResponse.topAdsDashboardDeposits?.depositData?.amount?.let {
                     return it
                 }
+            } else {
+                val topAdsDepositErrorObjectMessage = responseError.joinToString {
+                    it.errorObject?.errorTextList.let { errorList ->
+                        if (errorList.isNullOrEmpty()) {
+                            it.detail.orEmpty()
+                        } else {
+                            errorList.joinToString()
+                        }
+                    }
+                }
+                throw MessageErrorException(topAdsDepositErrorObjectMessage)
             }
         }
         throw MessageErrorException(gqlError.joinToString { it.message })
