@@ -95,7 +95,7 @@
                 android:visibility="visible"
                 app:typographyType="small"
                 tools:text="10 January 2020 - 17.00" />
-            <com.tokopedia.unifyprinciples.Typography
+            <TextView
                 android:id="@+id/channel_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -103,22 +103,25 @@
                 android:layout_marginEnd="@dimen/spacing_lvl3"
                 android:ellipsize="end"
                 android:lines="2"
-                app:typographyType="body_3"
-                tools:layout_editor_absoluteX="@dimen/spacing_lvl3"
-                tools:text="Google Assistant review with me" />
+                android:textColor="@color/Neutral_N700_96"
+                android:textIsSelectable="false"
+                tools:text="Google Assistant" />
 
-            <com.tokopedia.unifyprinciples.Typography
+            <TextView
                 android:id="@+id/channel_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/spacing_lvl3"
                 android:layout_marginEnd="@dimen/spacing_lvl3"
                 android:layout_marginBottom="@dimen/spacing_lvl2"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/Neutral_N700_68"
+                android:textIsSelectable="false"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:typographyType="small"
-                tools:text="Google" />
+                tools:text="Google abcd asda sda sdaa" />
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
