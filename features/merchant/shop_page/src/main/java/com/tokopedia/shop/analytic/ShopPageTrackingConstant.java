@@ -262,5 +262,6 @@ public class ShopPageTrackingConstant {
     public static final String SEARCH_NO_RESULT_SUGGESTION = "search no result suggestion";
     public static final String IMPRESSION_PRODUCT_SEARCH_SUGGESTION = "impression product search suggestion";
     public static final String CLICK_PRODUCT_SEARCH_SUGGESTION = "click product search suggestion";
+    public static final String SEARCH_NO_RESULT = "search - no result";
 
 }

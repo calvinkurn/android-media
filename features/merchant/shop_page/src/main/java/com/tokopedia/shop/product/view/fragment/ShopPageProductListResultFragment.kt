@@ -344,7 +344,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             shopProductAdapter.clearProductList()
             endlessRecyclerViewScrollListener.resetState()
 
-            if(productList.isNotEmpty()) {
+            if (productList.isNotEmpty()) {
                 shopProductSortFilterUiModel?.let { shopProductAdapter.setSortFilterData(it) }
             }
         }
@@ -386,7 +386,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
 
     override fun onProductClicked(shopProductViewModel: ShopProductViewModel, @ShopTrackProductTypeDef shopTrackType: Int,
                                   productPosition: Int) {
-        if(!isEmptyState) {
+        if (!isEmptyState) {
             shopPageTracking?.clickProductSearchResult(
                     isMyShop,
                     isLogin,
@@ -411,6 +411,8 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         } else {
             shopPageTracking?.clickProductListEmptyState(
                     isLogin,
+                    getSelectedEtalaseChip(),
+                    "",
                     CustomDimensionShopPageAttribution.create(
                             shopInfo?.shopCore?.shopID,
                             shopInfo?.goldOS?.isOfficial == 1,
@@ -421,7 +423,9 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     ),
                     shopProductViewModel,
                     productPosition + 1,
-                    shopId
+                    shopId,
+                    shopProductViewModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
+                    shopProductViewModel.isUpcoming,
             )
         }
         startActivity(getProductIntent(shopProductViewModel.id ?: "", attribution,
@@ -430,7 +434,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     }
 
     override fun onProductImpression(shopProductViewModel: ShopProductViewModel, shopTrackType: Int, productPosition: Int) {
-        if(!isEmptyState) {
+        if (!isEmptyState) {
             shopPageTracking?.impressionProductListSearchResult(
                     isMyShop,
                     isLogin,
@@ -569,7 +573,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 selectedSortName = selectedSortName,
                 isShowSortFilter = selectedEtalaseType != ShopEtalaseTypeDef.ETALASE_CAMPAIGN
         )
-        if(!isEmptyState) {
+        if (!isEmptyState) {
             viewModel.getShopProduct(
                     shopId ?: "",
                     defaultInitialPage,
@@ -774,7 +778,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         }
     }
 
-    private fun getSelectedEtalaseChip(): String{
+    private fun getSelectedEtalaseChip(): String {
         return selectedEtalaseName.takeIf { it.isNotEmpty() } ?: defaultEtalaseName
     }
 

@@ -361,6 +361,61 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
         sendDataLayerEvent(event);
     }
 
+    public void clickProductListEmptyState(boolean isLogin,
+                                           String selectedEtalaseChipName,
+                                           String etalaseSection,
+                                           CustomDimensionShopPageAttribution customDimensionShopPage,
+                                           ShopProductViewModel shopProductViewModel,
+                                           int productPosStart,
+                                           String shopId,
+                                           boolean isEtalaseCampaign,
+                                           boolean isUpcoming) {
+        String loginNonLoginString = isLogin ? LOGIN : NON_LOGIN;
+        String etalaseNameTrackerString = getEtalaseNameTrackerString(isEtalaseCampaign,  isUpcoming, selectedEtalaseChipName);
+        Map<String, Object> event = createProductClickEmptyStateMap(
+                PRODUCT_CLICK,
+                SHOP_PAGE_BUYER,
+                CLICK_PRODUCT_SEARCH_SUGGESTION,
+                "",
+                loginNonLoginString,
+                customDimensionShopPage,
+                shopProductViewModel,
+                etalaseNameTrackerString, etalaseSection,
+                productPosStart,
+                shopId
+        );
+        sendDataLayerEvent(event);
+    }
+
+
+    private HashMap<String, Object> createProductClickEmptyStateMap(String event, String category, String action, String label,
+                                                                    String loginNonLoginString,
+                                                                    CustomDimensionShopPageAttribution customDimensionShopPage,
+                                                                    ShopProductViewModel shopProductViewModel,
+                                                                    String selectedEtalaseChipName, String etalaseName,
+                                                                    int productPositionStart,
+                                                                    String shopId) {
+        ArrayList<ShopProductViewModel> shopProductViewModelArrayList = new ArrayList<>();
+        shopProductViewModelArrayList.add(shopProductViewModel);
+        HashMap<String, Object> eventMap = createMap(event, category, action, label, customDimensionShopPage);
+        eventMap.put(ECOMMERCE, DataLayer.mapOf(
+                CLICK,
+                DataLayer.mapOf(
+                        ACTION_FIELD, DataLayer.mapOf(LIST, joinDash(SHOPPAGE, shopId, SEARCH_NO_RESULT_SUGGESTION, loginNonLoginString, SEARCH_RESULT)),
+                        PRODUCTS, createProductListSearchResultMap(
+                                shopProductViewModelArrayList,
+                                selectedEtalaseChipName,
+                                etalaseName,
+                                productPositionStart,
+                                customDimensionShopPage.shopType,
+                                loginNonLoginString,
+                                shopId,
+                                customDimensionShopPage.shopRef
+                        ))
+        ));
+        return eventMap;
+    }
+
     public void impressionProductList(
             boolean isOwner,
             boolean isLogin,
@@ -662,53 +717,6 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
                 PRODUCT_VIEW,
                 SHOP_PAGE_BUYER,
                 IMPRESSION_PRODUCT_SEARCH_SUGGESTION,
-                "",
-                loginNonLoginString,
-                customDimensionShopPage,
-                shopProductViewModel,
-                productPosStart,
-                shopId
-        );
-        sendDataLayerEvent(event);
-    }
-
-    private HashMap<String, Object> createProductClickEmptyStateMap(String event, String category, String action, String label,
-                                                                    String loginNonLoginString,
-                                                                    CustomDimensionShopPageAttribution customDimensionShopPage,
-                                                                    ShopProductViewModel shopProductViewModel,
-                                                                    int productPositionStart,
-                                                                    String shopId) {
-        ArrayList<ShopProductViewModel> shopProductViewModelArrayList = new ArrayList<>();
-        shopProductViewModelArrayList.add(shopProductViewModel);
-        HashMap<String, Object> eventMap = createMap(event, category, action, label, customDimensionShopPage);
-        eventMap.put(ECOMMERCE, DataLayer.mapOf(
-                CLICK,
-                DataLayer.mapOf(
-                        ACTION_FIELD, DataLayer.mapOf(LIST, joinDash(SHOPPAGE, shopId, SEARCH_NO_RESULT_SUGGESTION, loginNonLoginString, SEARCH_RESULT)),
-                        PRODUCTS, createProductListMapEmptyState(
-                                shopProductViewModelArrayList,
-                                productPositionStart,
-                                customDimensionShopPage.shopType,
-                                loginNonLoginString,
-                                shopId,
-                                customDimensionShopPage.shopRef
-                        ))
-        ));
-        return eventMap;
-    }
-
-
-
-    public void clickProductListEmptyState(boolean isLogin,
-                                           CustomDimensionShopPageAttribution customDimensionShopPage,
-                                           ShopProductViewModel shopProductViewModel,
-                                           int productPosStart,
-                                           String shopId) {
-        String loginNonLoginString = isLogin ? LOGIN : NON_LOGIN;
-        Map<String, Object> event = createProductClickEmptyStateMap(
-                PRODUCT_VIEW,
-                SHOP_PAGE_BUYER,
-                CLICK_PRODUCT_SEARCH_SUGGESTION,
                 "",
                 loginNonLoginString,
                 customDimensionShopPage,
