@@ -140,7 +140,7 @@
 
     <string name="write_category_title">Pilih kategori</string>
     <string name="write_question_title">Tulis pertanyaan</string>
-    <string name="write_question_placeholder">Pertanyaan</string>
+    <string name="write_question_placeholder">Tulis Pertanyaanmu</string>
     <string name="write_question_error_message">Oops, sudah melebihi maks. karakter.</string>
     <string name="write_question_length_minimum_error">Oops, minimal 5 karakter.</string>
     <string name="write_category_details_subtitle">Hal lain terkait stok bisa &lt;a href = "#">chat penjual.&lt;/a></string>

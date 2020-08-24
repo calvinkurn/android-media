@@ -47,17 +47,12 @@
             android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@id/writeCategoryChips"/>
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/write_question_header"
-            android:layout_width="@dimen/layout_lvl0"
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/write_barrier"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/write_question_title"
-            android:layout_marginTop="@dimen/layout_lvl3"
-            app:layout_constraintStart_toStartOf="@id/write_category_header"
-            app:layout_constraintEnd_toEndOf="@id/write_category_header"
-            app:typographyWeight="bold"
-            app:typographyType="heading_4"
-            app:layout_constraintTop_toBottomOf="@id/writeCategoryDetails" />
+            app:constraint_referenced_ids="writeCategoryChips, writeCategoryDetails"
+            app:barrierDirection="bottom" />
 
         <com.tokopedia.unifycomponents.TextAreaUnify
             android:id="@+id/writeQuestionTextArea"
@@ -66,10 +61,9 @@
             android:layout_marginTop="@dimen/layout_lvl1"
             app:layout_constraintStart_toStartOf="@id/write_category_header"
             app:layout_constraintEnd_toEndOf="@id/write_category_header"
-            app:text_area_label_static="true"
+            app:text_area_label="@string/write_question_placeholder"
             app:text_area_clearable="false"
-            app:text_area_placeholder="@string/write_question_placeholder"
-            app:layout_constraintTop_toBottomOf="@id/write_question_header"/>
+            app:layout_constraintTop_toBottomOf="@id/write_barrier"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/writeTNC"

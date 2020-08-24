@@ -321,7 +321,6 @@ class TalkWriteFragment : BaseDaggerFragment(),
             })
             textAreaInput.setOnFocusChangeListener { v, hasFocus ->
                 if(!hasFocus) {
-                    this.textAreaLabel = ""
                     val editText = v as? EditText
                     editText?.let {
                         if(it.text.isNotEmpty() && it.text.length < minChar) {
@@ -331,7 +330,6 @@ class TalkWriteFragment : BaseDaggerFragment(),
                     }
                     talkWriteScrollView.smoothScrollTo(0, writeTNC.top)
                 } else {
-                    this.textAreaLabel = getString(R.string.write_question_placeholder)
                     isError = false
                     textAreaMessage = ""
                 }
