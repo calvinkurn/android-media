@@ -116,8 +116,8 @@ class AnalyticsIrisSendDebuggerPresenter(private val getUseCase: GetIrisSendLogU
                 e.printStackTrace()
             }
 
-            override fun onNext(visitables: Int) {
-
+            override fun onNext(count: Int) {
+                view?.showCount(count)
             }
         }
     }
