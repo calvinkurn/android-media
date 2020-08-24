@@ -1,6 +1,7 @@
 package com.tokopedia.recentview.view.presenter
 
 import android.annotation.SuppressLint
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.recentview.di.RecentViewDispatcherProvider
@@ -27,15 +28,17 @@ open class RecentViewViewModel @Inject constructor(
 ): BaseViewModel(baseDispatcher.ui()) {
 
 
-    val recentViewResp = MutableLiveData<Result<ArrayList<RecentViewDetailProductViewModel>>>()
+    val recentViewResp : LiveData<Result<ArrayList<RecentViewDetailProductViewModel>>>
+        get() = _recentViewResp
+    private val _recentViewResp : MutableLiveData<Result<ArrayList<RecentViewDetailProductViewModel>>> = MutableLiveData()
 
     fun getRecentView() {
         recentViewUseCase.apply {
             getParam(userSession.userId)
         }.execute({
-            recentViewResp.value = Success(it)
+            _recentViewResp.value = Success(it)
         },{
-           recentViewResp.value = Fail(it)
+            _recentViewResp.value = Fail(it)
         })
     }
 

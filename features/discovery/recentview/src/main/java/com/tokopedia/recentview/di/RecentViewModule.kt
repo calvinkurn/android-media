@@ -13,6 +13,7 @@ import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.utils.OkHttpRetryPolicy
 import com.tokopedia.recentview.data.api.RecentViewApi
 import com.tokopedia.recentview.data.api.RecentViewUrl
+import com.tokopedia.recentview.data.mapper.RecentViewMapper
 import com.tokopedia.recentview.domain.usecase.RecentViewUseCase
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -35,9 +36,9 @@ import java.util.concurrent.TimeUnit
 class RecentViewModule {
     @Provides
     @RecentViewQualifier
-    fun provideChuckerInterceptor(@ApplicationContext context: Context?): ChuckerInterceptor {
+    fun provideChuckerInterceptor(@ApplicationContext context: Context): ChuckerInterceptor {
         val collector = ChuckerCollector(
-                context!!, GlobalConfig.isAllowDebuggingTools())
+                context, GlobalConfig.isAllowDebuggingTools())
         return ChuckerInterceptor(
                 context, collector)
     }
@@ -51,26 +52,26 @@ class RecentViewModule {
 
     @RecentViewScope
     @Provides
-    fun provideNetworkRouter(@ApplicationContext context: Context?): NetworkRouter? {
-        return context as NetworkRouter?
+    fun provideNetworkRouter(@ApplicationContext context: Context): NetworkRouter {
+        return context as NetworkRouter
     }
 
     @RecentViewScope
     @Provides
-    fun provideMojitoInterceptor(@ApplicationContext context: Context?,
-                                 networkRouter: NetworkRouter?,
-                                 userSession: UserSessionInterface?): MojitoInterceptor {
+    fun provideMojitoInterceptor(@ApplicationContext context: Context,
+                                 networkRouter: NetworkRouter,
+                                 userSession: UserSessionInterface): MojitoInterceptor {
         return MojitoInterceptor(context, networkRouter, userSession)
     }
 
     @RecentViewScope
     @Provides
     @RecentViewQualifier
-    fun provideMojitoOkHttpClient(@ApplicationScope httpLoggingInterceptor: HttpLoggingInterceptor?,
+    fun provideMojitoOkHttpClient(@ApplicationScope httpLoggingInterceptor: HttpLoggingInterceptor,
                                   @RecentViewQualifier retryPolicy: OkHttpRetryPolicy,
-                                  @RecentViewQualifier chuckInterceptor: ChuckerInterceptor?,
-                                  errorResponseInterceptor: HeaderErrorResponseInterceptor?,
-                                  mojitoInterceptor: MojitoInterceptor?): OkHttpClient {
+                                  @RecentViewQualifier chuckInterceptor: ChuckerInterceptor,
+                                  errorResponseInterceptor: HeaderErrorResponseInterceptor,
+                                  mojitoInterceptor: MojitoInterceptor): OkHttpClient {
         val clientBuilder = OkHttpClient.Builder()
                 .connectTimeout(retryPolicy.connectTimeout.toLong(), TimeUnit.SECONDS)
                 .readTimeout(retryPolicy.readTimeout.toLong(), TimeUnit.SECONDS)
@@ -87,7 +88,7 @@ class RecentViewModule {
     @RecentViewScope
     @Provides
     fun provideRecentProductService(builder: Retrofit.Builder,
-                                    @RecentViewQualifier okHttpClient: OkHttpClient?): RecentViewApi {
+                                    @RecentViewQualifier okHttpClient: OkHttpClient): RecentViewApi {
         return builder.baseUrl(RecentViewUrl.MOJITO_DOMAIN)
                 .client(okHttpClient)
                 .build()
@@ -96,18 +97,18 @@ class RecentViewModule {
 
     @RecentViewScope
     @Provides
-    fun providesTkpTkpdAddWishListUseCase(@ApplicationContext context: Context?): AddWishListUseCase {
+    fun providesTkpTkpdAddWishListUseCase(@ApplicationContext context: Context): AddWishListUseCase {
         return AddWishListUseCase(context)
     }
 
     @RecentViewScope
     @Provides
-    fun providesTkpdRemoveWishListUseCase(@ApplicationContext context: Context?): RemoveWishListUseCase {
+    fun providesTkpdRemoveWishListUseCase(@ApplicationContext context: Context): RemoveWishListUseCase {
         return RemoveWishListUseCase(context)
     }
 
     @Provides
-    fun provideUserSessionInterface(@ApplicationContext context: Context?): UserSessionInterface {
+    fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
     }
 
@@ -119,8 +120,8 @@ class RecentViewModule {
 
     @Provides
     @RecentViewScope
-    fun provideRecentViewUseCase(graphqlRepository: GraphqlRepository?): RecentViewUseCase {
-        return RecentViewUseCase(graphqlRepository!!)
+    fun provideRecentViewUseCase(graphqlRepository: GraphqlRepository, recentViewMapper: RecentViewMapper): RecentViewUseCase {
+        return RecentViewUseCase(graphqlRepository, recentViewMapper )
     }
 
     @Provides
@@ -133,5 +134,11 @@ class RecentViewModule {
     @RecentViewScope
     fun provideRecentViewDispatcherProvider(): RecentViewDispatcherProvider {
         return RecentViewProductionDispatcherProvider()
+    }
+
+    @Provides
+    @RecentViewScope
+    fun provideRecentViewRecentViewMapper(): RecentViewMapper {
+        return RecentViewMapper()
     }
 }

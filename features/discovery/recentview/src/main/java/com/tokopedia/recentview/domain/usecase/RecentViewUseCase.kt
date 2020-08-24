@@ -9,6 +9,7 @@ import com.tokopedia.recentview.data.entity.Badge
 import com.tokopedia.recentview.data.entity.Label
 import com.tokopedia.recentview.data.entity.RecentViewData
 import com.tokopedia.recentview.data.entity.RecentViewResult
+import com.tokopedia.recentview.data.mapper.RecentViewMapper
 import com.tokopedia.recentview.data.query.RecentViewQuery
 import com.tokopedia.recentview.view.viewmodel.LabelsViewModel
 import com.tokopedia.recentview.view.viewmodel.RecentViewDetailProductViewModel
@@ -20,13 +21,12 @@ import java.util.*
  * @author by yoasfs on 13/08/20
  */
 class RecentViewUseCase (
-        private val graphqlRepository: GraphqlRepository
+        private val graphqlRepository: GraphqlRepository,
+        private val recentViewMapper: RecentViewMapper
 ): UseCase<ArrayList<RecentViewDetailProductViewModel>>() {
 
     private val params = RequestParams.create()
 
-    private val CASHBACK = "Cashback"
-    private val OFFICIAL_STORE = "Official Store"
     private val PARAM_USER_ID = "userID";
 
     override suspend fun executeOnBackground(): ArrayList<RecentViewDetailProductViewModel> {
@@ -48,55 +48,12 @@ class RecentViewUseCase (
         }
 
         val data = response.getData<RecentViewResult>(RecentViewResult::class.java)
-        return convertToViewModel(data.item)
+        return recentViewMapper.convertToViewModel(data.item)
     }
 
     fun getParam(loginID: String) {
         params.parameters.clear()
         params.putInt(PARAM_USER_ID, loginID.toInt())
-    }
-
-    private fun convertToViewModel(productItemData: RecentViewData): ArrayList<RecentViewDetailProductViewModel> {
-        val listProduct = ArrayList<RecentViewDetailProductViewModel>()
-        var position = 1
-        for (domain in productItemData.list) {
-            listProduct.add(RecentViewDetailProductViewModel(domain.id.toInt(),
-                    domain.name,
-                    domain.price,
-                    domain.imgUri,
-                    convertLabels(domain.labels),
-                    false,
-                    domain.wishlist,
-                    if (domain.rating.isNotEmpty()) domain.rating.toInt() else "0".toInt(),
-                    domain.isNewGold == 1,
-                    convertToIsOfficial(domain.badges),
-                    domain.shop,
-                    domain.shop_location,
-                    position
-            ))
-            position++
-        }
-        return listProduct
-    }
-
-    private fun convertLabels(labels: List<Label>): List<LabelsViewModel>? {
-        val labelsViewModels: MutableList<LabelsViewModel> = ArrayList()
-        for (labelDomain in labels) {
-            labelsViewModels.add(LabelsViewModel(labelDomain.title,
-                    labelDomain.color))
-        }
-        return labelsViewModels
-    }
-
-    private fun convertToIsOfficial(badges: List<Badge>): Boolean {
-        if (!badges.isEmpty()) {
-            for (domain in badges) {
-                if (domain.title.contains(OFFICIAL_STORE)) {
-                    return true
-                }
-            }
-        }
-        return false
     }
 
 }
