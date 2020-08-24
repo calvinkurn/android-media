@@ -10,6 +10,7 @@ import com.tokopedia.search.shouldBe
 import io.mockk.every
 import io.mockk.slot
 import io.mockk.verify
+import io.mockk.verifyOrder
 import org.junit.Test
 import rx.Subscriber
 
@@ -23,9 +24,11 @@ private const val responseCode4NoRelatedKeyword = "${generalSearchTrackingDirect
 private const val responseCode5RelatedSearch = "${generalSearchTrackingDirectory}response-code-5-related-search.json"
 private const val responseCode6RelatedSearch = "${generalSearchTrackingDirectory}response-code-6-related-search.json"
 private const val responseCode7SuggestedSearch = "${generalSearchTrackingDirectory}response-code-7-suggested-search.json"
+private const val responseCode9 = "${generalSearchTrackingDirectory}response-code-9.json"
 
 internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestFixtures() {
 
+    private val generalSearchTrackingModelSlot = slot<GeneralSearchTrackingModel>()
     private val keyword = "samsung"
 
     private fun `Test General Search Tracking`(searchProductModel: SearchProductModel, previousKeyword: String, expectedGeneralSearchTrackingModel: GeneralSearchTrackingModel) {
@@ -294,5 +297,60 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
         )
 
         `Test General Search Tracking`(searchProductModel, previousKeyword, expectedGeneralSearchTrackingModel)
+    }
+
+    @Test
+    fun `Load Data Success With Redirection Response Code 9`() {
+        val searchProductModel = responseCode9.jsonToObject<SearchProductModel>()
+        val expectedGeneralSearchTrackingModel = GeneralSearchTrackingModel(
+                eventLabel = String.format(
+                        SearchEventTracking.Label.KEYWORD_TREATMENT_RESPONSE,
+                        keyword,
+                        searchProductModel.searchProduct.header.keywordProcess,
+                        searchProductModel.searchProduct.header.responseCode
+                ),
+                isResultFound = true,
+                categoryIdMapping = "65",
+                categoryNameMapping = "Handphone & Tablet",
+                relatedKeyword = "none - none"
+        )
+
+        `Given Search Product API will return SearchProductModel`(searchProductModel)
+        `Given View getQueryKey will return the keyword`()
+
+        `When Load Data`()
+
+        `Then verify view interaction for general search with response code 9`(searchProductModel.searchProduct.data.redirection.redirectApplink)
+        `Then verify general search tracking model for response code 9 is correct`(expectedGeneralSearchTrackingModel)
+    }
+
+    private fun `When Load Data`() {
+        val searchParameter : Map<String, Any> = mutableMapOf<String, Any>().also {
+            it[SearchApiConst.Q] = keyword
+            it[SearchApiConst.START] = "0"
+            it[SearchApiConst.UNIQUE_ID] = "unique_id"
+            it[SearchApiConst.USER_ID] = productListPresenter.userId
+        }
+
+        productListPresenter.loadData(searchParameter)
+    }
+
+    private fun `Then verify view interaction for general search with response code 9`(redirectApplink: String) {
+        verifyOrder {
+            productListView.isAnyFilterActive
+
+            verifyShowLoading(productListView)
+
+            productListView.sendTrackingGTMEventSearchAttempt(capture(generalSearchTrackingModelSlot))
+            productListView.redirectSearchToAnotherPage(redirectApplink)
+
+            verifyHideLoading(productListView)
+        }
+    }
+
+    private fun `Then verify general search tracking model for response code 9 is correct`(expectedGeneralSearchTrackingModel: GeneralSearchTrackingModel) {
+        val actualGeneralSearchTrackingModel = generalSearchTrackingModelSlot.captured
+
+        actualGeneralSearchTrackingModel shouldBe expectedGeneralSearchTrackingModel
     }
 }

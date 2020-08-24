@@ -91,6 +91,10 @@ data class ShopInfo(
         val shopSnippetUrl: String = ""
 
 ) {
+    fun isShopInfoNotEmpty():Boolean {
+        return shopCore.shopID.isNotEmpty()
+    }
+
     fun mapToShopInfoData(): ShopInfoData {
         val shipmentsData = shipments.map {
             it.mapToShipmentData()

@@ -101,7 +101,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_top_ads"
@@ -163,7 +163,7 @@
         app:unifyButtonVariant="filled"
         app:unifyButtonType="main"
         android:enabled="false"
-        android:visibility="visible"
+        android:visibility="gone"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

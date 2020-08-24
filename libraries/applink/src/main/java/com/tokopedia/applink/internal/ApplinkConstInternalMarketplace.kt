@@ -120,7 +120,7 @@ object ApplinkConstInternalMarketplace {
     val SHOP_PAGE_BASE = "$INTERNAL_MARKETPLACE/shop-page"
 
     @JvmField
-    val SHOP_PAGE_DOMAIN = "$SHOP_PAGE_BASE/?domain={domain}"
+    val SHOP_PAGE_DOMAIN = "$SHOP_PAGE_BASE?domain={domain}"
 
     //ShopInfoActivity
     @JvmField

@@ -30,6 +30,7 @@ dependencies {
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.features.sellerActiveCommon)
+    implementation project(rootProject.ext.features.sellerHomeCommon)
 
     //libs
     implementation project(rootProject.ext.libraries.tkpddesign)
@@ -97,11 +98,14 @@ dependencies {
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.dagger
+    implementation rootProject.ext.miscDependencies.liveData
     kapt rootProject.ext.miscDependencies.daggerCompiler
 
     implementation (rootProject.ext.serviceDependencies.crashlytics) {
         transitive = true
     }
+
+    implementation rootProject.ext.dbDependencies.sqliteFramework
 }
 
 project.ext {
