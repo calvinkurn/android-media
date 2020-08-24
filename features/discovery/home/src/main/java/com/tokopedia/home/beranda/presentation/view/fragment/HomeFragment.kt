@@ -598,9 +598,9 @@ open class HomeFragment : BaseDaggerFragment(),
 
     override fun onResume() {
         super.onResume()
-        shouldPausePlay = true
         createAndCallSendScreen()
-        if (!shouldPausePlay) adapter?.onResume()
+        if(!shouldPausePlay) adapter?.onResumePlayWidget()
+        adapter?.onResumeBanner()
         conditionalViewModelRefresh()
         if (activityStateListener != null) {
             activityStateListener!!.onResume()
@@ -609,6 +609,7 @@ open class HomeFragment : BaseDaggerFragment(),
         if (isEnableToAutoRefresh(autoRefreshFlag)) {
             setAutoRefreshOnHome(autoRefreshFlag)
         }
+        shouldPausePlay = true
     }
 
     private fun conditionalViewModelRefresh(){
@@ -636,7 +637,8 @@ open class HomeFragment : BaseDaggerFragment(),
 
     override fun onPause() {
         super.onPause()
-        if(shouldPausePlay) adapter?.onPause()
+        adapter?.onPausePlayWidget(shouldPausePlay)
+        adapter?.onPauseBanner()
         getTrackingQueueObj()?.sendAll()
         if (activityStateListener != null) {
             activityStateListener!!.onPause()
@@ -1647,8 +1649,8 @@ open class HomeFragment : BaseDaggerFragment(),
 
     private fun resetAutoPlay(isVisibleToUser: Boolean){
         shouldPausePlay = !isVisibleToUser
-        if(shouldPausePlay && view != null && adapter != null) adapter?.onPause()
-        else adapter?.onResume()
+        if(isVisibleToUser) adapter?.onResumePlayWidget()
+        else adapter?.onPausePlayWidget(shouldPausePlay)
     }
 
     private fun trackScreen(isVisibleToUser: Boolean) {
