@@ -55,12 +55,16 @@ class SomDetailViewModelTest {
     @RelaxedMockK
     lateinit var somGetUserRoleUseCase: SomGetUserRoleUseCase
 
+    @RelaxedMockK
+    lateinit var somRejectCancelOrderUseCase: SomRejectCancelOrderUseCase
+
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
         somDetailViewModel = SomDetailViewModel(dispatcher, somGetOrderDetailUseCase,
                 somAcceptOrderUseCase, somReasonRejectUseCase, somRejectOrderUseCase,
-                somEditRefNumUseCase, somSetDeliveredUseCase, somGetUserRoleUseCase)
+                somEditRefNumUseCase, somSetDeliveredUseCase, somGetUserRoleUseCase,
+                somRejectCancelOrderUseCase)
 
         val product1 = SomDetailOrder.Data.GetSomDetail.Products(123)
         listProducts = arrayListOf(product1).toMutableList()
@@ -367,6 +371,28 @@ class SomDetailViewModelTest {
 
         //then
         assert(somDetailViewModel.userRoleResult.value is Fail)
+    }
+
+    @Test
+    fun rejectCancelOrder_shouldReturnSuccess() {
+        coEvery {
+            somRejectCancelOrderUseCase.execute(any())
+        } returns Success(SomRejectCancelOrderResponse.Data())
+
+        somDetailViewModel.rejectCancelOrder("123456")
+
+        assert(somDetailViewModel.rejectCancelOrderResult.value is Success)
+    }
+
+    @Test
+    fun rejectCancelOrder_shouldReturnFail() {
+        coEvery {
+            somRejectCancelOrderUseCase.execute(any())
+        } returns Fail(Throwable())
+
+        somDetailViewModel.rejectCancelOrder("123456")
+
+        assert(somDetailViewModel.rejectCancelOrderResult.value is Fail)
     }
 }
 

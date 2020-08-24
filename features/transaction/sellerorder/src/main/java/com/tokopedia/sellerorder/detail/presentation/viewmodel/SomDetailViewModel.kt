@@ -122,9 +122,9 @@ class SomDetailViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
 
     fun rejectCancelOrder(orderId: String) {
         launchCatchError(block = {
-            _rejectCancelOrderResult.postValue(somRejectCancelOrderRequest.execute(SomRejectCancelOrderRequest(orderId)))
-        }, onError = {
-            _rejectCancelOrderResult.postValue(Fail(it))
-        })
+            _rejectCancelOrderResult.postValue(
+                    somRejectCancelOrderRequest.execute(SomRejectCancelOrderRequest(orderId))
+            )
+        }, onError = { _rejectCancelOrderResult.postValue(Fail(it)) })
     }
 }

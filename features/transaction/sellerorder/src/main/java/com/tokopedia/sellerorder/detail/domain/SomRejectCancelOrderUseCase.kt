@@ -10,8 +10,9 @@ import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 /**
- * Created by yusuf.hendrawan on 11/05/20.
+ * Created by yusuf.hendrawan on 24/08/20.
  */
+
 class SomRejectCancelOrderUseCase @Inject constructor(private val useCase: GraphqlUseCase<SomRejectCancelOrderResponse.Data>) {
 
     init {
