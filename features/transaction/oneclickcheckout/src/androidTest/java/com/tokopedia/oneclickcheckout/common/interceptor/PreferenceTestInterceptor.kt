@@ -1,7 +1,39 @@
-package com.tokopedia.oneclickcheckout.preference.list.view
+package com.tokopedia.oneclickcheckout.common.interceptor
 
-import okhttp3.*
-import okio.Buffer
+import okhttp3.Interceptor
+import okhttp3.Response
+import java.io.IOException
+
+class PreferenceTestInterceptor : BaseOccInterceptor() {
+
+    var customGetPreferenceListResponseString: String? = null
+    var customSetDefaultPreferenceResponseString: String? = null
+
+    var customGetPreferenceListThrowable: IOException? = null
+    var customSetDefaultPreferenceThrowable: IOException? = null
+
+    override fun intercept(chain: Interceptor.Chain): Response {
+        val copy = chain.request().newBuilder().build()
+        val requestString = readRequestString(copy)
+
+        if (requestString.contains(GET_PREFERENCE_LIST_QUERY)) {
+            if (customGetPreferenceListThrowable != null) {
+                throw customGetPreferenceListThrowable!!
+            } else if (customGetPreferenceListResponseString != null) {
+                return mockResponse(copy, customGetPreferenceListResponseString!!)
+            }
+            return mockResponse(copy, GET_PREFERENCE_LIST_DEFAULT_RESPONSE)
+        } else if (requestString.contains(SET_DEFAULT_PROFILE_QUERY)) {
+            if (customSetDefaultPreferenceThrowable != null) {
+                throw customSetDefaultPreferenceThrowable!!
+            } else if (customSetDefaultPreferenceResponseString != null) {
+                return mockResponse(copy, customSetDefaultPreferenceResponseString!!)
+            }
+            return mockResponse(copy, SET_DEFAULT_PROFILE_DEFAULT_RESPONSE)
+        }
+        return chain.proceed(chain.request())
+    }
+}
 
 const val GET_PREFERENCE_LIST_QUERY = "get_preference_list"
 const val SET_DEFAULT_PROFILE_QUERY = "set_default_profile_occ"
@@ -198,52 +230,3 @@ val SET_DEFAULT_PROFILE_DEFAULT_RESPONSE = """
                 }
             }]
         """.trimIndent()
-
-class PreferenceListActivityTestInterceptor : Interceptor {
-
-    var customGetPreferenceListResponseString: String? = null
-    var customSetDefaultPreferenceResponseString: String? = null
-
-    var customGetPreferenceListThrowable: Throwable? = null
-    var customSetDefaultPreferenceThrowable: Throwable? = null
-
-    override fun intercept(chain: Interceptor.Chain): Response {
-        val copy = chain.request().newBuilder().build()
-        val buffer = Buffer()
-        copy.body()?.writeTo(buffer)
-        val requestString = buffer.readUtf8()
-
-        if (requestString.contains(GET_PREFERENCE_LIST_QUERY)) {
-            if (customGetPreferenceListThrowable != null) {
-                throw customGetPreferenceListThrowable!!
-            } else if (customGetPreferenceListResponseString != null) {
-                return mockResponse(copy, customGetPreferenceListResponseString!!)
-            }
-            return mockResponse(copy, GET_PREFERENCE_LIST_DEFAULT_RESPONSE)
-        } else if (requestString.contains(SET_DEFAULT_PROFILE_QUERY)) {
-            if (customSetDefaultPreferenceThrowable != null) {
-                throw customSetDefaultPreferenceThrowable!!
-            } else if (customSetDefaultPreferenceResponseString != null) {
-                return mockResponse(copy, customSetDefaultPreferenceResponseString!!)
-            }
-            return mockResponse(copy, SET_DEFAULT_PROFILE_DEFAULT_RESPONSE)
-        }
-        return chain.proceed(chain.request())
-    }
-
-    private fun mockResponse(copy: Request, responseString: String): Response {
-        return Response.Builder()
-                .request(copy)
-                .code(200)
-                .protocol(Protocol.HTTP_2)
-                .message(responseString)
-                .body(ResponseBody.create(MediaType.parse("application/json"),
-                        responseString.toByteArray()))
-                .addHeader("content-type", "application/json")
-                .build()
-    }
-}
-
-object PreferenceListInterceptor {
-    val interceptor = PreferenceListActivityTestInterceptor()
-}
