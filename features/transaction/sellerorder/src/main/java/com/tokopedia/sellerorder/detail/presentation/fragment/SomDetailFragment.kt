@@ -171,7 +171,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
         )
     }
 
-    private var errorToaster: Snackbar? = null
+    private var somToaster: Snackbar? = null
 
     private var orderId = ""
     private var detailResponse = SomDetailOrder.Data.GetSomDetail()
@@ -287,6 +287,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
         observingEditAwb()
         observingSetDelivered()
         observingUserRoles()
+        observeRejectCancelOrder()
     }
 
     override fun onDestroy() {
@@ -490,6 +491,23 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
         })
     }
 
+    private fun observeRejectCancelOrder() {
+        somDetailViewModel.rejectCancelOrderResult.observe(viewLifecycleOwner, Observer { result ->
+            when (result) {
+                is Success -> {
+                    if (result.data.rejectCancelRequest.success == 1) {
+                        loadDetail()
+                    }
+                    showCommonToaster(result.data.rejectCancelRequest.message)
+                }
+                is Fail -> {
+                    SomErrorHandler.logExceptionToCrashlytics(result.throwable, SomConsts.ERROR_REJECT_CANCEL_ORDER)
+                    result.throwable.showErrorToaster()
+                }
+            }
+        })
+    }
+
     private fun onUserNotAllowedToViewSOM() {
         context?.run {
             if (userNotAllowedDialog == null) {
@@ -668,6 +686,12 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
         if (orderId.isNotBlank() && shopId.isNotBlank()) {
             somDetailViewModel.acceptOrder(GraphqlHelper.loadRawString(resources, R.raw.gql_som_accept_order),
                     orderId, shopId)
+        }
+    }
+
+    private fun rejectCancelOrder() {
+        if (orderId.isNotBlank()) {
+            somDetailViewModel.rejectCancelOrder(orderId)
         }
     }
 
@@ -1366,9 +1390,16 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
     }
 
     private fun showCommonToaster(message: String) {
-        val toasterCommon = Toaster
-        view?.let { v ->
-            toasterCommon.make(v, message, LENGTH_SHORT, TYPE_NORMAL)
+        view?.run {
+            if (this@SomDetailFragment.somToaster?.isShown == true)
+                this@SomDetailFragment.somToaster?.dismiss()
+
+            this@SomDetailFragment.somToaster = Toaster.build(
+                    this,
+                    message,
+                    LENGTH_SHORT,
+                    TYPE_NORMAL)
+            this@SomDetailFragment.somToaster?.show()
         }
     }
 
@@ -1471,7 +1502,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                                         setActionAcceptOrder(orderId, userSession.shopId)
                                     }
                                     400 -> {
-                                        //TODO: Hit kasih tau BE, ini udah ditolak permintaan batalnya
+                                        rejectCancelOrder()
                                     }
                                 }
                             }
@@ -1580,15 +1611,15 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
 
     private fun showErrorToaster(message: String) {
         view?.run {
-            if (this@SomDetailFragment.errorToaster?.isShown == true)
-                this@SomDetailFragment.errorToaster?.dismiss()
+            if (this@SomDetailFragment.somToaster?.isShown == true)
+                this@SomDetailFragment.somToaster?.dismiss()
 
-            this@SomDetailFragment.errorToaster = Toaster.build(
+            this@SomDetailFragment.somToaster = Toaster.build(
                     this,
                     message,
                     LENGTH_SHORT,
                     TYPE_ERROR)
-            this@SomDetailFragment.errorToaster?.show()
+            this@SomDetailFragment.somToaster?.show()
         }
     }
 

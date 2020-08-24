@@ -24,7 +24,8 @@ class SomDetailViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
                                              private val somRejectOrderUseCase: SomRejectOrderUseCase,
                                              private val somEditRefNumUseCase: SomEditRefNumUseCase,
                                              private val somSetDeliveredUseCase: SomSetDeliveredUseCase,
-                                             private val getUserRoleUseCase: SomGetUserRoleUseCase) : BaseViewModel(dispatcher.ui()) {
+                                             private val getUserRoleUseCase: SomGetUserRoleUseCase,
+                                             private val somRejectCancelOrderRequest: SomRejectCancelOrderUseCase) : BaseViewModel(dispatcher.ui()) {
 
     private val _orderDetailResult = MutableLiveData<Result<SomDetailOrder.Data.GetSomDetail>>()
     val orderDetailResult: LiveData<Result<SomDetailOrder.Data.GetSomDetail>>
@@ -53,6 +54,10 @@ class SomDetailViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
     private val _userRoleResult = MutableLiveData<Result<SomGetUserRoleUiModel>>()
     val userRoleResult: LiveData<Result<SomGetUserRoleUiModel>>
         get() = _userRoleResult
+
+    private val _rejectCancelOrderResult = MutableLiveData<Result<SomRejectCancelOrderResponse.Data>>()
+    val rejectCancelOrderResult: LiveData<Result<SomRejectCancelOrderResponse.Data>>
+        get() = _rejectCancelOrderResult
 
     fun loadDetailOrder(detailQuery: String, orderId: String) {
         launchCatchError(block = {
@@ -113,5 +118,13 @@ class SomDetailViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
 
     fun setUserRoles(userRoles: SomGetUserRoleUiModel) {
         _userRoleResult.postValue(Success(userRoles))
+    }
+
+    fun rejectCancelOrder(orderId: String) {
+        launchCatchError(block = {
+            _rejectCancelOrderResult.postValue(somRejectCancelOrderRequest.execute(SomRejectCancelOrderRequest(orderId)))
+        }, onError = {
+            _rejectCancelOrderResult.postValue(Fail(it))
+        })
     }
 }

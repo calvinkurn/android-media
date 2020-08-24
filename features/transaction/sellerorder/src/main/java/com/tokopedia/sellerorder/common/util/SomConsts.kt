@@ -150,4 +150,5 @@ object SomConsts {
     const val SORT_DESCENDING = 2
 
     const val ERROR_GET_USER_ROLES = "Error when get user roles in %s."
+    const val ERROR_REJECT_CANCEL_ORDER = "Error when rejecting cancel order."
 }
