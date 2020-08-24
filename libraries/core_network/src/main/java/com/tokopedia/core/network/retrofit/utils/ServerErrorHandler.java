@@ -36,8 +36,6 @@ public class ServerErrorHandler {
     public static void sendForceLogoutAnalytics(String url, boolean isInvalidToken, boolean isRequestDenied) {
         AnalyticsLog.logForceLogout(
                 CoreNetworkApplication.getAppContext(),
-                CoreNetworkApplication.getCoreNetworkRouter().legacyGCMHandler(),
-                CoreNetworkApplication.getCoreNetworkRouter().legacySessionHandler(),
                 url,
                 isInvalidToken,
                 isRequestDenied);
@@ -46,8 +44,6 @@ public class ServerErrorHandler {
     public static void sendErrorNetworkAnalytics(String url, int errorCode) {
         AnalyticsLog.logNetworkError(
                 CoreNetworkApplication.getAppContext(),
-                CoreNetworkApplication.getCoreNetworkRouter().legacyGCMHandler(),
-                CoreNetworkApplication.getCoreNetworkRouter().legacySessionHandler(),
                 url, errorCode);
     }
 
@@ -60,8 +56,6 @@ public class ServerErrorHandler {
     public static void sendForceLogoutTokenAnalytics(String url) {
         Context appContext = CoreNetworkApplication.getAppContext();
         AnalyticsLog.logForceLogoutToken(appContext,
-                CoreNetworkApplication.getCoreNetworkRouter().legacyGCMHandler(),
-                CoreNetworkApplication.getCoreNetworkRouter().legacySessionHandler(),
                 url);
     }
 }
