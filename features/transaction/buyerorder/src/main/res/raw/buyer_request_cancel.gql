@@ -1,0 +1,6 @@
+mutation BuyerRequestCancel($input:BuyerRequestCancelRequest!) {
+  buyer_request_cancel(input: $input) {
+    success
+    message
+  }
+}

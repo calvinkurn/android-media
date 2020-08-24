@@ -22,20 +22,22 @@ class DigitalRecommendationAnalytics @Inject constructor(
         get() = TrackApp.getInstance().gtm
 
 
-    fun sendDigitalRecommendationItemDisplayed(trackingQueue: TrackingQueue,
+    fun sendDigitalRecommendationItemDisplayed(trackingQueue: TrackingQueue?,
                                                recommendationItem: RecommendationsItem,
                                                position: Int, paymentId: String) {
-        val data: MutableMap<String, Any> = mutableMapOf(
-                KEY_EVENT to EVENT_PRODUCT_VIEW,
-                KEY_EVENT_CATEGORY to EVENT_CATEGORY_ORDER_COMPLETE,
-                KEY_EVENT_ACTION to EVENT_ACTION_PRODUCT_VIEW,
-                KEY_USER_ID to userSession.get().userId,
-                KEY_PAYMENT_ID to paymentId,
-                KEY_BUSINESS_UNIT to KEY_BUSINESS_UNIT_VALUE_RECHARGE,
-                KEY_EVENT_LABEL to recommendationItem.type + " - " + recommendationItem.categoryName + " - " + (position + 1),
-                KEY_E_COMMERCE to getProductViewECommerceData(recommendationItem, position))
+        trackingQueue?.apply {
+            val data: MutableMap<String, Any> = mutableMapOf(
+                    KEY_EVENT to EVENT_PRODUCT_VIEW,
+                    KEY_EVENT_CATEGORY to EVENT_CATEGORY_ORDER_COMPLETE,
+                    KEY_EVENT_ACTION to EVENT_ACTION_PRODUCT_VIEW,
+                    KEY_USER_ID to userSession.get().userId,
+                    KEY_PAYMENT_ID to paymentId,
+                    KEY_BUSINESS_UNIT to KEY_BUSINESS_UNIT_VALUE_RECHARGE,
+                    KEY_EVENT_LABEL to recommendationItem.type + " - " + recommendationItem.categoryName + " - " + (position + 1),
+                    KEY_E_COMMERCE to getProductViewECommerceData(recommendationItem, position))
+            putEETracking(data as HashMap<String, Any>)
+        }
 
-        trackingQueue.putEETracking(data as HashMap<String, Any>)
     }
 
 
@@ -52,7 +54,7 @@ class DigitalRecommendationAnalytics @Inject constructor(
                                 KEY_USER_ID to userSession.get().userId,
                                 KEY_PAYMENT_ID to paymentId,
                                 KEY_BUSINESS_UNIT to KEY_BUSINESS_UNIT_VALUE_RECHARGE,
-                                KEY_EVENT_LABEL to (position + 1),
+                                KEY_EVENT_LABEL to recommendationItem.type + " - " + recommendationItem.categoryName + " - " + (position + 1),
                                 KEY_E_COMMERCE to getProductClickECommerceData(recommendationItem, position))
                         analyticTracker.sendEnhanceEcommerceEvent(data)
                     }

@@ -150,7 +150,7 @@
     <string name="submit_ticket_title">Form Bantuan</string>
     <string name="survey_layanan">Survey Layanan</string>
     <string name="detail_kendala">Detail Kendala</string>
-    <string name="inbox">Inbox</string>
+    <string name="contact_us_inbox">Pesan Bantuan</string>
 
     <string name="instant_loan_app_name">Dana Instan</string>
 
@@ -181,6 +181,9 @@
     <string name="title_confirm_shipment_logistic_module">Konfirmasi Pengiriman</string>
 
     <string name="label_manage_address">Daftar Alamat</string>
+
+    <string name="title_activity_add_address">Tambah Alamat</string>
+    <string name="title_activity_search_address">Tulis Kota/Kecamatan</string>
 
     <!-- Dynamic feature for Setting Bank-->
     <string name="onboarding_app_name">OnBoarding</string>
@@ -215,6 +218,7 @@
     <string name="filter_expand_activity">Expand</string>
     <string name="product_manage_set_cashback">Cashback</string>
     <string name="product_manage_etalase_picker_title">Pindah Etalase</string>
+    <string name="product_manage_campaign_stock_allocation">Alokasi Stok</string>
 
     <!-- Dynamic feature for manage Seller Order Management-->
     <string name="title_seller_order">Seller Order Management</string>
@@ -286,6 +290,7 @@
     <string name="checkout_module_title_activity_multiple_address">Kirim ke Banyak Alamat</string>
     <string name="title_one_click_checkout">Beli Langsung</string>
     <string name="title_one_click_checkout_preference">Pengaturan Beli Langsung</string>
+    <string name="title_one_click_checkout_credit_card_and_debit">Kartu Kredit</string>
     <string name="promo_checkout_marketplace_module_title_activity_promo_list">Pakai Promo</string>
 
     <!-- Content -->
@@ -303,4 +308,15 @@
 
     <!-- Merchant Login -->
     <string name="title_module_merchant_login">Fitur Toko</string>
+
+    <!-- Shop Page -->
+    <string name="shop_info_title">Shop Info</string>
+    <string name="shop_info_label_physical_shop">Toko Fisik</string>
+    <string name="note_title">Catatan</string>
+    <string name="shop_sort_title">Urutkan</string>
+    <string name="shop_product_title">Produk</string>
+    <string name="favorited_shop_title">Followers Toko</string>
+    <string name="shop_search_product">Search Shop Product</string>
+    <string name="shop_page_setting_title">Toko Kamu</string>
+
 </resources>

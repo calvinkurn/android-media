@@ -33,6 +33,8 @@ object InAppReviewHelper {
                             setInAppReviewHasShownBefore(activity)
                             callback?.onCompleted()
                         }
+                    } else {
+                        callback?.onCompleted()
                     }
                 }
                 return true

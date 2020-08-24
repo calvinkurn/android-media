@@ -43,4 +43,6 @@ interface BaseChatViewState {
 
     fun showErrorWebSocket(isWebSocketError: Boolean)
 
+    fun loadAvatar(avatarUrl: String)
+
 }

@@ -32,8 +32,6 @@ object ProductTrackingConstant {
         const val KEY_CURRENT_SITE = "currentSite"
         const val KEY_SCREEN_NAME = "screenName"
         const val KEY_TICKER_TYPE = "tickerType"
-        const val KEY_PRODUCT_PRICE = "productPrice"
-        const val KEY_PRODUCT_NAME = "productName"
         const val KEY_GROUP_NAME = "productGroupName"
         const val KEY_GROUP_ID = "productGroupId"
 
@@ -122,10 +120,6 @@ object ProductTrackingConstant {
         const val CLICK_TAB_SPECIFICATION_ON_PRODUCT_DESCRIPTION = "click - tab spesifikasi on description area"
         const val CLICK_LIHAT_SEMUA_ON_SIMULASI_CICILAN = "click - info cicilan"
         const val CLICK_PAGE_CHAT = "click - page chat"
-        const val CLICK_BELI = "click - beli"
-        const val CLICK_ADD_TO_CART = "click - tambah ke keranjang"
-        const val CLICK_ADD_TO_CART_BEFORE_LOGIN = "click - tambah ke keranjang - before login"
-        const val CLICK_BELI_BEFORE_LOGIN = "click - beli - before login"
         const val CLICK_BUTTON_CHAT = "click - sticky chat"
         const val ADD_WISHLIST = "add wishlist"
         const val REMOVE_WISHLIST = "remove wishlist"
@@ -144,11 +138,12 @@ object ProductTrackingConstant {
         const val CLICK_CHOOSE_PRODUCT_VARIANT = "click - choose product variant"
         const val CLICK_VARIANT_GUIDELINE = "click - lihat panduan on size chart"
         const val IMPRESSION_CHOOSE_VARIANT_NOTIFICATION = "impression - choose variant notification"
-        const val CLICK_ATC_NON_LOGIN = "click - tambah ke keranjang on pdp - before login"
+        const val CLICK_ATC_NON_LOGIN = "click - tambah ke keranjang on pdp - non login"
         const val CLICK_WHOLESALE = "click - info harga grosir"
         const val CLICK_REVIEW_IMAGE_MEDIA = "click - foto dari pembeli on product image"
         const val CLICK_SHOP_INFO_MINI = "click - shop info mini"
         const val CLICK_TICKER = "click - selengkapnya on component ticker"
+        const val CLICK_CUSTOM_INFO = "click - custom info component"
 
         const val CLICK_REQUEST_PERMISSION_IMEI = "click - beli then show popup"
         const val CLICK_ACCEPT_PERMISSION = "click -  berikan akses on bottomsheet"
@@ -229,19 +224,8 @@ object ProductTrackingConstant {
         const val SEE_ALL = "see all"
     }
 
-    object TopAds {
-        const val PDP_TOPADS = "/productdetail - top ads'"
-    }
-
     object Message {
         const val EVENT = "clickMessageShop"
         const val LABEL = "Message Shop"
-    }
-
-    object PageNameRecommendation {
-        const val PDP_1 = "pdp_1"
-        const val PDP_2 = "pdp_2"
-        const val PDP_3 = "pdp_3"
-        const val PDP_4 = "pdp_4"
     }
 }

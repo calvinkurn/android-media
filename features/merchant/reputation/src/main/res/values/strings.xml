@@ -141,6 +141,8 @@
     <string name="review_min_character">Minimal 30 karakter</string>
     <string name="review_label_all">Semua</string>
     <string name="review_label_with_photo">Dengan Foto</string>
+    <string name="seller_migration_review_title">Ulasan produk dan template</string>
+    <string name="seller_migration_review_description">Fitur unggulan untuk mempermudah pantau dan balas ulasan pembeli.</string>
 
     <string name="review_add_photo_txt">Tambah \nfoto</string>
     <string name="image_picker_title">Pilih foto</string>
@@ -162,4 +164,6 @@
         <item>Semua</item>
         <item>Belum Dibaca</item>
     </string-array>
+
+    <string name="title_review_inbox">Inbox Ulasan</string>
 </resources>

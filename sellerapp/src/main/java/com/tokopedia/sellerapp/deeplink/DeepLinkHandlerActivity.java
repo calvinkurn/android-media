@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.airbnb.deeplinkdispatch.DeepLinkHandler;
+import com.tokopedia.applink.AppUtil;
 import com.tokopedia.applink.DeeplinkMapper;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -129,6 +130,7 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
                 Bundle bundle = getIntent().getExtras();
                 eventPersonalizedClicked(bundle.getString(Constants.EXTRA_APPLINK_CATEGORY));
             }
+            AppUtil.logAirBnbUsage(applinkString);
         } else {
             Intent intent = RouteManager.getIntent(this, applinkString);
             startActivity(intent);
@@ -155,13 +157,4 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
         return intent;
     }
 
-    @DeepLink(Constants.Applinks.SellerApp.BROWSER)
-    public static Intent getCallingIntentOpenBrowser(Context context, Bundle extras) {
-        String webUrl = extras.getString(
-                Constants.ARG_NOTIFICATION_URL, TokopediaUrl.Companion.getInstance().getWEB()
-        );
-        Intent destination = new Intent(Intent.ACTION_VIEW);
-        destination.setData(Uri.parse(webUrl));
-        return destination;
-    }
 }

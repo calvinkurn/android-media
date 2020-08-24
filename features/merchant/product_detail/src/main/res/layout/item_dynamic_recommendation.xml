@@ -76,7 +76,6 @@
             android:scrollbars="none"
             android:visibility="gone"
             tools:layoutManager="LinearLayoutManager"
-            tools:listitem="@layout/item_product_recommendation"
             tools:orientation="horizontal"
             tools:visibility="visible" />
 
@@ -86,7 +85,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            tools:visibility="visible" />
+            tools:visibility="gone" />
 
     </FrameLayout>
 </LinearLayout>

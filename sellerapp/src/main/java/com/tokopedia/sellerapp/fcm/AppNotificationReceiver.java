@@ -4,9 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.os.Bundle;
 
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-
-import com.google.firebase.crashlytics.FirebaseCrashlytics;
+import com.crashlytics.android.Crashlytics;
 import com.google.firebase.messaging.RemoteMessage;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.moengage.push.PushManager;
@@ -75,7 +73,7 @@ public class AppNotificationReceiver  implements IAppNotificationReceiver {
     private void executeCrashlyticLog(Bundle data, String message) {
         if (!BuildConfig.DEBUG) {
             String logMessage = generateLogMessage(data, message);
-            FirebaseCrashlytics.getInstance().recordException(new Exception(logMessage));
+            Crashlytics.logException(new Exception(logMessage));
             Timber.w(
                     "P2#LOG_PUSH_NOTIF#'%s';data='%s'",
                     "AppNotificationReceiver::onNotificationReceived(String from, Bundle data)",

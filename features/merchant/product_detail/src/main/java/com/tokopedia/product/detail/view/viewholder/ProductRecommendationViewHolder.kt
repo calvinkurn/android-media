@@ -75,7 +75,7 @@ class ProductRecommendationViewHolder(
             view.loadingRecom.gone()
             view.titleRecom.text = title
             view.rvProductRecom.show()
-            if (seeMoreAppLink.isNotEmpty() && RemoteConfigInstance.getInstance().abTestPlatform.getString(EXPERIMENT_NAME) != SEE_MORE_CARD_AB_VALUE) {
+            if (seeMoreAppLink.isNotEmpty()) {
                 view.seeMoreRecom.show()
             } else {
                 view.seeMoreRecom.hide()

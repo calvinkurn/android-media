@@ -8,6 +8,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
@@ -28,7 +30,6 @@ import com.tokopedia.topads.view.sheet.InfoSheetProductList
 import com.tokopedia.topads.view.sheet.ProductFilterSheetList
 import com.tokopedia.topads.view.sheet.ProductSortSheetList
 import kotlinx.android.synthetic.main.topads_create_fragment_product_list.*
-import kotlinx.android.synthetic.main.topads_create_fragment_product_list.tip_btn
 import javax.inject.Inject
 
 /**
@@ -37,20 +38,26 @@ import javax.inject.Inject
 
 private const val CLICK_TIPS_PRODUCT_IKLAN = "click-tips memilih produk"
 private const val CLICK_PRODUCT_IKLAN = "click-pilih produk"
+
 class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
 
     private lateinit var sortProductList: ProductSortSheetList
     private lateinit var filterSheetProductList: ProductFilterSheetList
     private lateinit var productListAdapter: ProductListAdapter
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var viewModel: ProductAdsListViewModel
+    private lateinit var recyclerviewScrollListener: EndlessRecyclerViewScrollListener
+    private lateinit var layoutManager: LinearLayoutManager
+    private lateinit var recyclerView: RecyclerView
+    private var isDataEnded = false
 
     companion object {
 
         private const val ALL = "all"
         private const val ROW = 50
-        private const val START = 0
+        private var START = -ROW
 
         fun createInstance(): Fragment {
             val fragment = ProductAdsListFragment()
@@ -84,6 +91,7 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         }
         return list
     }
+
     private fun getSelectedProductAdId(): MutableList<Int> {
         var list = mutableListOf<Int>()
         productListAdapter.getSelectedItems().forEach {
@@ -92,7 +100,10 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         return list
     }
 
-    override fun populateView(stepperModel: CreateManualAdsStepperModel) {}
+    override fun populateView() {
+        if (activity is StepperActivity)
+            (activity as StepperActivity).updateToolbarTitle(getString(R.string.product_list_step))
+    }
 
     override fun getScreenName(): String {
         return ProductAdsListFragment::class.java.simpleName
@@ -103,8 +114,41 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.topads_create_fragment_product_list, container, false)
+        val view = inflater.inflate(R.layout.topads_create_fragment_product_list, container, false)
+        recyclerView = view.findViewById(R.id.product_list)
+        setAdapter()
+        return view
     }
+
+    private fun setAdapter() {
+        layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+        recyclerviewScrollListener = onRecyclerViewListener()
+        recyclerView.itemAnimator = null
+        recyclerView.adapter = productListAdapter
+        recyclerView.layoutManager = layoutManager
+        recyclerView.addOnScrollListener(recyclerviewScrollListener)
+    }
+
+    private fun onRecyclerViewListener(): EndlessRecyclerViewScrollListener {
+        return object : EndlessRecyclerViewScrollListener(layoutManager) {
+            override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                if (!isDataEnded) {
+                    START += ROW
+                    fetchList()
+                }
+            }
+        }
+    }
+
+    private fun fetchList() {
+        viewModel.productList(getKeyword(),
+                getSelectedEtalaseId(),
+                getSelectedSortId(),
+                getPromoted(),
+                ROW,
+                START, this::onSuccessGetProductList, this::onEmptyProduct, this::onError)
+    }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -143,24 +187,18 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         swipe_refresh_layout.setOnRefreshListener {
             refreshProduct()
         }
-        product_list.itemAnimator = null
-        product_list.adapter = productListAdapter
-        product_list.layoutManager = LinearLayoutManager(context)
+
     }
 
     private fun refreshProduct() {
+        START = 0
         swipe_refresh_layout.isRefreshing = true
         productListAdapter.initLoading()
         clearRefreshLoading()
-        viewModel.productList(getKeyword(),
-                getSelectedEtalaseId(),
-                getSelectedSortId(),
-                getPromoted(),
-                ROW,
-                START, this::onSuccessGetProductList, this::onEmptyProduct, this::onError)
+        fetchList()
     }
 
-    private fun clearList(){
+    private fun clearShimmerList() {
         productListAdapter.items.clear()
         productListAdapter.notifyDataSetChanged()
     }
@@ -203,7 +241,7 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
     }
 
     private fun onEmptyProduct() {
-        clearList()
+        clearShimmerList()
         btn_next.isEnabled = false
         productListAdapter.items = mutableListOf(ProductEmptyViewModel())
         productListAdapter.notifyDataSetChanged()
@@ -214,8 +252,10 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         NetworkErrorHelper.createSnackbarRedWithAction(activity, t.localizedMessage) { refreshProduct() }
     }
 
-    private fun onSuccessGetProductList(data: List<ResponseProductList.Result.TopadsGetListProduct.Data>) {
-        clearList()
+    private fun onSuccessGetProductList(data: List<ResponseProductList.Result.TopadsGetListProduct.Data>, eof: Boolean) {
+        if (START == 0)
+            clearShimmerList()
+        prepareForNextFetch(eof)
         btn_next.isEnabled = false
         data.forEach { result ->
             if (promotedGroup.checkedRadioButtonId == R.id.promoted) {
@@ -238,6 +278,12 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         productListAdapter.notifyDataSetChanged()
     }
 
+    private fun prepareForNextFetch(eof: Boolean) {
+        isDataEnded = eof
+        if (!isDataEnded)
+            recyclerviewScrollListener.updateStateAfterGetData()
+    }
+
     private fun clearRefreshLoading() {
         swipe_refresh_layout.isRefreshing = false
     }
@@ -245,11 +291,7 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
     private fun onSuccessGetEtalase(data: List<ResponseEtalase.Data.ShopShowcasesByShopID.Result>) {
         var items = mutableListOf<EtalaseViewModel>()
         items.add(0, EtalaseItemViewModel(true, viewModel.addSemuaProduk()))
-        data.forEachIndexed { index, result -> items.add(index+1, EtalaseItemViewModel(false, result)) }
+        data.forEachIndexed { index, result -> items.add(index + 1, EtalaseItemViewModel(false, result)) }
         filterSheetProductList.updateData(items)
-    }
-
-    override fun updateToolBar() {
-        (activity as StepperActivity).updateToolbarTitle(getString(R.string.product_list_step))
     }
 }

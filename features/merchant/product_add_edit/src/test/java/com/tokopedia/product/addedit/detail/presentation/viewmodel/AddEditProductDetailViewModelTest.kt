@@ -15,6 +15,7 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MIN_PRODUCT_STOCK_LIMIT
 import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
 import com.tokopedia.product.addedit.util.getOrAwaitValue
+import com.tokopedia.product.addedit.variant.presentation.model.SelectionInputModel
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -183,17 +184,6 @@ class AddEditProductDetailViewModelTest {
 
         val isValid = viewModel.isInputValid.getOrAwaitValue()
         Assert.assertTrue(isValid)
-    }
-
-    @Test
-    fun `isInputValid should return false when no input is error and isAdding is true also isEditing is false`() {
-        viewModel.isAdding = true
-        viewModel.isEditing = false
-        mIsProductNameInputError.value = null
-        mIsProductNameInputError.value = null
-
-        val isValid = viewModel.isInputValid.getOrAwaitValue()
-        Assert.assertFalse(isValid)
     }
 
     @Test
@@ -505,7 +495,8 @@ class AddEditProductDetailViewModelTest {
         mIsProductStockInputError.value = false
         val previousValue = mIsProductStockInputError.getOrAwaitValue()
 
-        viewModel.hasVariants = true
+        val selection = SelectionInputModel()
+        viewModel.productInputModel.variantInputModel.selections = listOf(selection)
 
         viewModel.validateProductStockInput("")
         val newValue = viewModel.isProductStockInputError.getOrAwaitValue()
@@ -565,8 +556,8 @@ class AddEditProductDetailViewModelTest {
 
     @Test
     fun `validateProductMinOrderInput should valid when productStockInput is blank or not, minOrderQuantityInput is greater or equal to min order quantity and product has variant`() {
-        viewModel.hasVariants = true
-
+        val selection = SelectionInputModel()
+        viewModel.productInputModel.variantInputModel.selections = listOf(selection)
         viewModel.validateProductMinOrderInput("${MIN_MIN_ORDER_QUANTITY - 1}", "$MIN_MIN_ORDER_QUANTITY")
 
         val isError = viewModel.isOrderQuantityInputError.getOrAwaitValue()
@@ -679,7 +670,11 @@ class AddEditProductDetailViewModelTest {
         val originalImageUrl = viewModel.productInputModel.detailInputModel.pictureList.map { it.urlOriginal }
         val editedStatus = arrayListOf(false, false)
 
-        viewModel.updateProductPhotos(imagePickerResult, ArrayList(originalImageUrl), editedStatus)
+        val newUpdatedPhotos = viewModel.updateProductPhotos(imagePickerResult, ArrayList(originalImageUrl), editedStatus)
+        viewModel.productInputModel.detailInputModel.apply {
+            pictureList = newUpdatedPhotos.pictureList
+            imageUrlOrPathList = newUpdatedPhotos.imageUrlOrPathList
+        }
 
         Assert.assertTrue(viewModel.productInputModel.detailInputModel.pictureList == sampleProductPhotos)
     }
@@ -692,7 +687,11 @@ class AddEditProductDetailViewModelTest {
         val originalImageUrl = viewModel.productInputModel.detailInputModel.pictureList.map { it.urlOriginal }
         val editedStatus = arrayListOf(false, false, true)
 
-        viewModel.updateProductPhotos(imagePickerResult, ArrayList(originalImageUrl), editedStatus)
+        val newUpdatedPhotos = viewModel.updateProductPhotos(imagePickerResult, ArrayList(originalImageUrl), editedStatus)
+        viewModel.productInputModel.detailInputModel.apply {
+            pictureList = newUpdatedPhotos.pictureList
+            imageUrlOrPathList = newUpdatedPhotos.imageUrlOrPathList
+        }
 
         Assert.assertTrue(viewModel.productInputModel.detailInputModel.pictureList == sampleProductPhotos &&
                 viewModel.productPhotoPaths.size == 3 &&
@@ -709,7 +708,11 @@ class AddEditProductDetailViewModelTest {
         val originalImageUrl = viewModel.productInputModel.detailInputModel.pictureList.map { it.urlOriginal }
         val editedStatus = arrayListOf(true, false)
 
-        viewModel.updateProductPhotos(imagePickerResult, ArrayList(originalImageUrl), editedStatus)
+        val newUpdatedPhotos = viewModel.updateProductPhotos(imagePickerResult, ArrayList(originalImageUrl), editedStatus)
+        viewModel.productInputModel.detailInputModel.apply {
+            pictureList = newUpdatedPhotos.pictureList
+            imageUrlOrPathList = newUpdatedPhotos.imageUrlOrPathList
+        }
 
         Assert.assertTrue(viewModel.productInputModel.detailInputModel.pictureList.size != sampleProductPhotos.size &&
                 viewModel.productInputModel.detailInputModel.pictureList.size == 1 &&
@@ -726,7 +729,11 @@ class AddEditProductDetailViewModelTest {
         val originalImageUrl = viewModel.productInputModel.detailInputModel.pictureList.map { it.urlOriginal }
         val editedStatus = arrayListOf(false, true)
 
-        viewModel.updateProductPhotos(imagePickerResult, ArrayList(originalImageUrl), editedStatus)
+        val newUpdatedPhotos = viewModel.updateProductPhotos(imagePickerResult, ArrayList(originalImageUrl), editedStatus)
+        viewModel.productInputModel.detailInputModel.apply {
+            pictureList = newUpdatedPhotos.pictureList
+            imageUrlOrPathList = newUpdatedPhotos.imageUrlOrPathList
+        }
 
         Assert.assertTrue(viewModel.productInputModel.detailInputModel.pictureList.size != sampleProductPhotos.size &&
                 viewModel.productInputModel.detailInputModel.pictureList.size == 1 &&
@@ -743,7 +750,11 @@ class AddEditProductDetailViewModelTest {
         val originalImageUrl = viewModel.productInputModel.detailInputModel.pictureList.map { it.urlOriginal }
         val editedStatus = arrayListOf(true, false)
 
-        viewModel.updateProductPhotos(imagePickerResult, ArrayList(originalImageUrl), editedStatus)
+        val newUpdatedPhotos = viewModel.updateProductPhotos(imagePickerResult, ArrayList(originalImageUrl), editedStatus)
+        viewModel.productInputModel.detailInputModel.apply {
+            pictureList = newUpdatedPhotos.pictureList
+            imageUrlOrPathList = newUpdatedPhotos.imageUrlOrPathList
+        }
 
         Assert.assertTrue(viewModel.productInputModel.detailInputModel.pictureList.size != sampleProductPhotos.size &&
                 viewModel.productInputModel.detailInputModel.pictureList.size == 1 &&

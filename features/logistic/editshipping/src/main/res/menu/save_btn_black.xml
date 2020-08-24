@@ -3,7 +3,7 @@
 
     <item
         android:id="@+id/action_send"
-        android:icon="@drawable/ic_tick"
+        android:icon="@drawable/ic_tick_shipping"
         android:orderInCategory="100"
         android:title="@string/btn_send"
         app:showAsAction="always"/>
