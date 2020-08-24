@@ -3,6 +3,7 @@ package com.tokopedia.analytics.performance.util
 import android.os.Build
 import android.os.Trace
 import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.config.GlobalConfig
 
 open class PageLoadTimePerformanceCallback(
         val tagPrepareDuration: String,
@@ -51,8 +52,7 @@ open class PageLoadTimePerformanceCallback(
 
     override fun startPreparePagePerformanceMonitoring() {
         if (preparePageDuration == 0L) {
-            beginSystraceSection("PageLoadTime.preparePage$traceName")
-            Trace.beginAsyncSection("PageLoadTime.AsyncPreparePage$traceName",11)
+            beginAsyncSystraceSection("PageLoadTime.AsyncPreparePage$traceName",11)
             preparePageDuration = System.currentTimeMillis()
         }
     }
@@ -62,15 +62,13 @@ open class PageLoadTimePerformanceCallback(
             preparePageDuration = System.currentTimeMillis() - preparePageDuration
             performanceMonitoring?.putMetric(tagPrepareDuration, preparePageDuration)
             isPrepareDone = true
-            endSystraceSection()
-            Trace.endAsyncSection("PageLoadTime.AsyncPreparePage$traceName",11)
+            endAsyncSystraceSection("PageLoadTime.AsyncPreparePage$traceName",11)
         }
     }
 
     override fun startNetworkRequestPerformanceMonitoring() {
         if (requestNetworkDuration == 0L) {
-            beginSystraceSection("PageLoadTime.networkRequest$traceName")
-            Trace.beginAsyncSection("PageLoadTime.AsyncNetworkRequest$traceName",22)
+            beginAsyncSystraceSection("PageLoadTime.AsyncNetworkRequest$traceName",22)
             requestNetworkDuration = System.currentTimeMillis()
         }
     }
@@ -80,15 +78,13 @@ open class PageLoadTimePerformanceCallback(
             requestNetworkDuration = System.currentTimeMillis() - requestNetworkDuration
             performanceMonitoring?.putMetric(tagNetworkRequestDuration, requestNetworkDuration)
             isNetworkDone = true
-            endSystraceSection()
-            Trace.endAsyncSection("PageLoadTime.AsyncNetworkRequest$traceName",22)
+            endAsyncSystraceSection("PageLoadTime.AsyncNetworkRequest$traceName",22)
         }
     }
 
     override fun startRenderPerformanceMonitoring() {
         if (renderDuration == 0L) {
-            beginSystraceSection("PageLoadTime.renderPage$traceName")
-            Trace.beginAsyncSection("PageLoadTime.AsyncRenderPage$traceName",33)
+            beginAsyncSystraceSection("PageLoadTime.AsyncRenderPage$traceName",33)
             renderDuration = System.currentTimeMillis()
         }
     }
@@ -98,20 +94,19 @@ open class PageLoadTimePerformanceCallback(
             renderDuration = System.currentTimeMillis() - renderDuration
             performanceMonitoring?.putMetric(tagRenderDuration, renderDuration)
             isRenderDone = true
-            endSystraceSection()
-            Trace.endAsyncSection("PageLoadTime.AsyncRenderPage$traceName",33)
+            endAsyncSystraceSection("PageLoadTime.AsyncRenderPage$traceName",33)
         }
     }
 
-    private fun beginSystraceSection(sectionName: String) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            Trace.beginSection(sectionName)
+    fun beginAsyncSystraceSection(methodName: String, cookie: Int) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2 && GlobalConfig.DEBUG) {
+            Trace.beginAsyncSection(methodName, cookie)
         }
     }
 
-    private fun endSystraceSection() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            Trace.endSection()
+    fun endAsyncSystraceSection(methodName: String, cookie: Int) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2 && GlobalConfig.DEBUG) {
+            Trace.endAsyncSection(methodName, cookie)
         }
     }
 }

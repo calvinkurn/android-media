@@ -1,13 +1,15 @@
 package com.tokopedia.home.testcase
 
+import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analytics.performance.util.PerformanceDataFileUtils.writePLTPerformanceFile
 import com.tokopedia.home.environment.InstrumentationHomeTestActivity
 import com.tokopedia.home.mock.HomeMockResponseConfig
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.test.application.TestRepeatRule
 import com.tokopedia.test.application.environment.interceptor.size.GqlNetworkAnalyzerInterceptor
 import com.tokopedia.test.application.util.setupGraphqlMockResponseWithCheck
-import com.tokopedia.test.application.util.setupRemoteConfig
 import com.tokopedia.test.application.util.setupTotalSizeInterceptor
 import org.junit.Before
 import org.junit.Rule
@@ -28,10 +30,15 @@ class PltHomeDynamicChannelPerformanceTest {
             super.beforeActivityLaunched()
             setupGraphqlMockResponseWithCheck(HomeMockResponseConfig())
             setupTotalSizeInterceptor(listOf("homeData"))
-            setupRemoteConfig(mapOf(
-                    Pair("android_enable_home_sndscr", "true"),
-            ))
+            setupRemoteConfig()
         }
+    }
+
+    private fun setupRemoteConfig() {
+        val remoteConfig = FirebaseRemoteConfigImpl(
+                InstrumentationRegistry.getInstrumentation().context
+        )
+        remoteConfig.setString(RemoteConfigKey.ENABLE_ASYNC_HOME_SNDSCR, "true")
     }
 
     @get:Rule
