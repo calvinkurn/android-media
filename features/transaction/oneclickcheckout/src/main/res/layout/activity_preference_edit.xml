@@ -34,15 +34,9 @@
                 android:id="@+id/tv_title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_alignWithParentIfMissing="true"
                 android:layout_above="@+id/tv_subtitle"
-                android:layout_alignParentTop="true"
-                android:layout_marginStart="@dimen/dp_16"
                 android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginEnd="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
-                android:layout_toEndOf="@+id/btn_back"
-                android:layout_toRightOf="@+id/btn_back"
                 android:textColor="@color/Neutral_N700_96"
                 app:layout_constraintBottom_toTopOf="@+id/tv_subtitle"
                 app:layout_constraintEnd_toStartOf="@+id/btn_delete"
@@ -50,25 +44,18 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_chainStyle="packed"
                 app:typographyType="heading_4"
-                app:typographyWeight="bold"
-                tools:text="Pilih Alamat Pengiriman" />
+                app:typographyWeight="bold" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_subtitle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_above="@+id/stepper"
-                android:layout_alignStart="@+id/tv_title"
-                android:layout_alignLeft="@+id/tv_title"
-                android:layout_centerVertical="true"
                 android:textColor="@color/Neutral_N700_44"
                 app:layout_constraintBottom_toTopOf="@+id/stepper"
                 app:layout_constraintEnd_toStartOf="@+id/btn_delete"
                 app:layout_constraintStart_toStartOf="@+id/tv_title"
                 app:layout_constraintTop_toBottomOf="@+id/tv_title"
-                app:typographyType="body_3"
-                tools:text="Langkah 1 dari 3"
-                tools:visibility="visible" />
+                app:typographyType="body_3" />
 
             <ImageView
                 android:id="@+id/btn_add"
@@ -96,24 +83,13 @@
                 app:srcCompat="@drawable/ic_delete_cart"
                 tools:ignore="ContentDescription" />
 
-            <ProgressBar
+            <com.tokopedia.unifycomponents.ProgressBarUnify
                 android:id="@+id/stepper"
-                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
                 android:layout_width="0dp"
-                android:layout_height="@dimen/dp_2"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentBottom="true"
-                android:progressBackgroundTint="@color/Neutral_N75"
-                android:progressTint="@color/Green_G500"
+                android:layout_height="wrap_content"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                tools:progress="50"
-                tools:targetApi="lollipop"
-                tools:visibility="visible" />
+                app:layout_constraintStart_toStartOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

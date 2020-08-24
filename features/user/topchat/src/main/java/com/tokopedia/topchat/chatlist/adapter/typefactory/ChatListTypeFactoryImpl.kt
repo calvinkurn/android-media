@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.topchat.chatlist.adapter.viewholder.ChatItemListViewHolder
 import com.tokopedia.topchat.chatlist.adapter.viewholder.ChatListLoadingViewHolder
 import com.tokopedia.topchat.chatlist.adapter.viewholder.EmptyChatViewHolder
+import com.tokopedia.topchat.chatlist.analytic.ChatListAnalytic
 import com.tokopedia.topchat.chatlist.listener.ChatListItemListener
 import com.tokopedia.topchat.chatlist.model.EmptyChatModel
 import com.tokopedia.topchat.chatlist.pojo.ItemChatListPojo
@@ -14,8 +15,10 @@ import com.tokopedia.topchat.chatlist.pojo.ItemChatListPojo
 /**
  * @author : Steven 2019-08-06
  */
-class ChatListTypeFactoryImpl(var listener: ChatListItemListener)
-    : BaseAdapterTypeFactory(), ChatListTypeFactory {
+class ChatListTypeFactoryImpl(
+        private val listener: ChatListItemListener,
+        private val chatListAnalytics: ChatListAnalytic
+) : BaseAdapterTypeFactory(), ChatListTypeFactory {
 
     override fun type(emptyChatItemListViewModel: EmptyChatModel): Int {
         return EmptyChatViewHolder.LAYOUT
@@ -33,7 +36,7 @@ class ChatListTypeFactoryImpl(var listener: ChatListItemListener)
         return when (type) {
             ChatListLoadingViewHolder.LAYOUT -> ChatListLoadingViewHolder(parent)
             ChatItemListViewHolder.LAYOUT -> ChatItemListViewHolder(parent, listener)
-            EmptyChatViewHolder.LAYOUT -> EmptyChatViewHolder(parent, listener)
+            EmptyChatViewHolder.LAYOUT -> EmptyChatViewHolder(parent, chatListAnalytics)
             else -> super.createViewHolder(parent, type)
         }
     }

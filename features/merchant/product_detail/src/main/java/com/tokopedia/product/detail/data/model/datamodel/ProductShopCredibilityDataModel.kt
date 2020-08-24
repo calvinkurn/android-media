@@ -7,7 +7,6 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.data.model.shopfeature.ShopFeatureData
 import com.tokopedia.product.detail.data.util.productThousandFormatted
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
 import com.tokopedia.product.detail.view.util.getIdLocale
@@ -23,11 +22,13 @@ class ProductShopCredibilityDataModel(
         val name: String = "",
         val type: String = "",
 
-        var shopInfo: ShopInfo? = null,
+        var shopInfo: ShopInfo = ShopInfo(),
+        var isOs: Boolean = false,
+        var isPm: Boolean = false,
         var shopSpeed: Int = 0,
         var shopChatSpeed: Int = 0,
         var shopRating: Float = 0F,
-        var shopFeature: ShopFeatureData = ShopFeatureData()
+        var isGoApotik:Boolean = false
 ) : DynamicPdpDataModel {
     override val impressHolder: ImpressHolder = ImpressHolder()
 
@@ -47,11 +48,11 @@ class ProductShopCredibilityDataModel(
             shopRating > 0 -> {
                 ShopCredibilityUiData(shopRating.toString(), context.getString(R.string.product_shop_rating), R.drawable.ic_review_gray)
             }
-            shopInfo?.shopStats?.productSold.toIntOrZero() > 0 -> {
-                ShopCredibilityUiData(shopInfo?.shopStats?.productSold.toIntOrZero().productThousandFormatted(0), context.getString(R.string.product_shop_transaction), R.drawable.ic_product_sold_grey)
+            shopInfo.shopStats.productSold.toIntOrZero() > 0 -> {
+                ShopCredibilityUiData(shopInfo.shopStats.productSold.toIntOrZero().productThousandFormatted(0), context.getString(R.string.product_shop_transaction), R.drawable.ic_product_sold_grey)
             }
-            shopInfo?.activeProduct.orZero() > 0 -> {
-                ShopCredibilityUiData(shopInfo?.activeProduct?.productThousandFormatted(0)
+            shopInfo.activeProduct.orZero() > 0 -> {
+                ShopCredibilityUiData(shopInfo.activeProduct.productThousandFormatted(0)
                         ?: "", context.getString(R.string.product_shop_total_product), R.drawable.ic_product_grey)
             }
             else -> {

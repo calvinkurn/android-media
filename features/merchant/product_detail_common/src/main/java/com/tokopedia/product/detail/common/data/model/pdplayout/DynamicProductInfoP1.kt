@@ -1,14 +1,25 @@
 package com.tokopedia.product.detail.common.data.model.pdplayout
 
-import java.util.concurrent.TimeUnit
 
 data class DynamicProductInfoP1(
         val basic: BasicInfo = BasicInfo(),
         val data: ComponentData = ComponentData(),
-        val layoutName: String = ""
+        val layoutName: String = "",
+        val pdpSession:String = ""
 ) {
 
-    fun isProductActive(nearestWarehouseStock: Int): Boolean = nearestWarehouseStock > 0 && basic.isActive()
+    fun isProductVariant(): Boolean = data.variant.isVariant
+
+    fun isProductActive(): Boolean = getFinalStock().toIntOrNull() ?: 0 > 0 && basic.isActive()
+
+    val isPreOrder: Boolean
+        get() = data.preOrder.isActive
+
+    val isUsingOvo: Boolean
+        get() = data.campaign.isUsingOvo
+
+    val isLeasing: Boolean
+        get() = basic.isLeasing
 
     val shopTypeString: String
         get() {
@@ -65,26 +76,11 @@ data class DynamicProductInfoP1(
         return imeiRemoteConfig && data.campaign.isCheckImei
     }
 
-    fun getFinalStock(multiOriginStock: String): String {
-        return if (multiOriginStock.isEmpty()) {
-            if (data.campaign.isActive) {
-                data.campaign.stock.toString()
-            } else {
-                data.stock.value.toString()
-            }
+    fun getFinalStock(): String {
+        return if (data.campaign.isActive) {
+            data.campaign.stock.toString()
         } else {
-            multiOriginStock
-        }
-    }
-
-    fun shouldShowNotifyMe(): Boolean {
-        return try {
-            val now = System.currentTimeMillis()
-            val startTime = (data.startDate.toLongOrNull() ?: 0) * 1000L
-            val dayLeft = TimeUnit.MICROSECONDS.toDays(now - startTime)
-            !(data.campaignId.isEmpty() || dayLeft > 3)
-        } catch (ex: Exception) {
-            false
+            data.stock.value.toString()
         }
     }
 }

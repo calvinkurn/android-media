@@ -1,0 +1,48 @@
+[
+  {
+    "data": {
+      "kero_places_get_district": {
+        "data": {
+          "title": "Jakarta",
+          "formatted_address": "Jl. Sultan Agung, Kecamatan Setiabudi, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta, 12970",
+          "district_id": 2270,
+          "city_id": 175,
+          "province_id": 13,
+          "district_name": "Setiabudi",
+          "postal_code": "12970",
+          "latitude": "-6.2087634",
+          "longitude": "106.845599",
+          "full_data": [
+            {
+              "long_name": "Jakarta",
+              "short_name": "Jakarta",
+              "types": [
+                "colloquial_area",
+                "locality",
+                "political"
+              ]
+            },
+            {
+              "long_name": "Daerah Khusus Ibukota Jakarta",
+              "short_name": "Daerah Khusus Ibukota Jakarta",
+              "types": [
+                "administrative_area_level_1",
+                "political"
+              ]
+            },
+            {
+              "long_name": "Indonesia",
+              "short_name": "ID",
+              "types": [
+                "country",
+                "political"
+              ]
+            }
+          ]
+        },
+        "status": "OK",
+        "message_error": []
+      }
+    }
+  }
+]

@@ -42,13 +42,16 @@ data class CampaignModular(
         @SerializedName("isUsingOvo")
         val isUsingOvo: Boolean = false
 ) {
+    companion object {
+        const val CAMPAIGN_ID_NEW_USER = 68
+    }
 
     private fun timeIsUnder1Day(): Boolean {
         return try {
             val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
             val endDate = dateFormat.parse(endDate)
             val now = System.currentTimeMillis()
-            val diff = (endDate.time - now).toFloat()
+            val diff = (endDate?.time ?: 0 - now).toFloat()
             if (diff < 0) {
                 //End date is out dated
                 false
@@ -59,6 +62,13 @@ data class CampaignModular(
             false
         }
     }
+
+    /**
+     * Campaign For New User, always show even when timer > 24H but remove count down timer
+     * when timer < 24H show count down timer
+     */
+    val isCampaignNewUser
+        get() = isActive && (campaignType.toIntOrNull() == CAMPAIGN_ID_NEW_USER)
 
     val shouldShowRibbonCampaign
         get() = isActive && timeIsUnder1Day()

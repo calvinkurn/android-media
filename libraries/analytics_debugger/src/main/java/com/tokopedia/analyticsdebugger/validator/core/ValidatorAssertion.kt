@@ -14,7 +14,15 @@ fun getAnalyticsWithQuery(gtmLogDBSource: GtmLogDBSource,
                           queryFileName: String): List<Validator> {
     val testCases = getTestCases(context, queryFileName)
     return ValidatorEngine(gtmLogDBSource)
-            .computeRx(testCases)
+            .computeRx(testCases.first, testCases.second)
+            .toBlocking()
+            .first()
+}
+
+fun getAnalyticsWithQuery(gtmLogDBSource: GtmLogDBSource, queryString: String): List<Validator> {
+    val queryPairs = queryFormat(queryString)
+    return ValidatorEngine(gtmLogDBSource)
+            .computeRx(queryPairs.first, queryPairs.second)
             .toBlocking()
             .first()
 }
@@ -40,12 +48,20 @@ fun hasAllSuccess(): Matcher<List<Validator>> {
     }
 }
 
-private fun getTestCases(context: Context, queryFileName: String): List<Validator> {
+private fun getTestCases(context: Context, queryFileName: String): Pair<List<Validator>, String> {
     val analyticValidatorJSON =
             Utils.getJsonDataFromAsset(context, queryFileName)
                     ?: throw AssertionError("Validator Query not found: \"$queryFileName\"")
+    val query = analyticValidatorJSON.toJsonMap().getQueryMap().map { it.toDefaultValidator() }
+    val mode = analyticValidatorJSON.toJsonMap().getMode()
 
-    return analyticValidatorJSON.toJsonMap().getQueryMap().map { it.toDefaultValidator() }
+    return query to mode
+}
+
+private fun queryFormat(queryString: String): Pair<List<Validator>, String> {
+    val query = queryString.toJsonMap().getQueryMap().map { it.toDefaultValidator() }
+    val mode = queryString.toJsonMap().getMode()
+    return query to mode
 }
 
 private fun <T> Observable<T>.test(onNext: (T) -> Unit) {

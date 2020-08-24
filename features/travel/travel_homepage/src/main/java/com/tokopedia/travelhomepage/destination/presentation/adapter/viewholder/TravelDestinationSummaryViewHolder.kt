@@ -2,11 +2,13 @@ package com.tokopedia.travelhomepage.destination.presentation.adapter.viewholder
 
 import android.text.Html
 import android.view.View
+import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.view.animation.Animation
 import android.view.animation.TranslateAnimation
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.travelhomepage.R
 import com.tokopedia.travelhomepage.destination.listener.OnViewHolderBindListener
 import com.tokopedia.travelhomepage.destination.model.TravelDestinationSummaryModel
@@ -22,6 +24,10 @@ class TravelDestinationSummaryViewHolder(itemView: View, private val onViewHolde
     override fun bind(element: TravelDestinationSummaryModel) {
         if (element.isLoaded) {
             with(itemView) {
+                shimmering.hide()
+                content_destination_summary.show()
+                layout_destination_summary.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+
                 var list = mutableListOf<String>()
                 for (img in element.images) {
                     list.add(img.imageUrl)
@@ -44,7 +50,8 @@ class TravelDestinationSummaryViewHolder(itemView: View, private val onViewHolde
                 onViewHolderBindListener.onCitySummaryLoaded(list, peek_layout.height, element.title)
             }
         } else {
-            onViewHolderBindListener.onCitySummaryVHBind()
+            itemView.shimmering.show()
+            itemView.content_destination_summary.hide()
         }
     }
 

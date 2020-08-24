@@ -103,7 +103,7 @@ object ApplinkConstInternalMarketplace {
     val INBOX_REPUTATION = "$INTERNAL_MARKETPLACE/review"
 
     // InboxReputationDetailActivity
-    val INBOX_REPUTATION_DETAIL = "$INTERNAL_MARKETPLACE/review/{reputation_id}/"
+    val INBOX_REPUTATION_DETAIL = "$INTERNAL_MARKETPLACE/review/{feedback_id}/"
 
     @JvmField
     val HOME_RECOMMENDATION = "$INTERNAL_MARKETPLACE/rekomendasi/{id}/?ref={ref}"
@@ -120,7 +120,7 @@ object ApplinkConstInternalMarketplace {
     val SHOP_PAGE_BASE = "$INTERNAL_MARKETPLACE/shop-page"
 
     @JvmField
-    val SHOP_PAGE_DOMAIN = "$SHOP_PAGE_BASE/?domain={domain}"
+    val SHOP_PAGE_DOMAIN = "$SHOP_PAGE_BASE?domain={domain}"
 
     //ShopInfoActivity
     @JvmField
