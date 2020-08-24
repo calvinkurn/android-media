@@ -13,20 +13,25 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.*
+import android.widget.CheckBox
+import android.widget.LinearLayout
+import android.widget.RelativeLayout
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.*
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearSmoothScroller
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SimpleItemAnimator
 import com.google.android.material.appbar.AppBarLayout
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.analytics.performance.PerformanceMonitoring
@@ -104,14 +109,17 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_INSURANCE_RECOMMENDATION
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
-import com.tokopedia.unifycomponents.*
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.UnifyImageButton
+import com.tokopedia.unifycomponents.setImage
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist
 import com.tokopedia.wishlist.common.listener.WishListActionListener
-import kotlinx.android.synthetic.main.layout_bottomsheet_summary_transaction.view.*
 import kotlinx.coroutines.*
 import rx.subscriptions.CompositeSubscription
+import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
@@ -2179,7 +2187,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun getGlobalErrorType(throwable: Throwable): Int {
-        return if (throwable is UnknownHostException) {
+        return if (throwable is UnknownHostException || throwable is SocketTimeoutException) {
             GlobalError.NO_CONNECTION
         } else {
             GlobalError.SERVER_ERROR
@@ -2286,17 +2294,30 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         refreshCart()
     }
 
+    private fun renderGlobalErrorBottomsheet(message: String) {
+        sendAnalyticsOnButtonCheckoutClickedFailed()
+        sendAnalyticsOnGoToShipmentFailed(message)
+
+        if (fragmentManager != null && context != null) {
+            showGlobalErrorBottomsheet(fragmentManager!!, context!!, ::retryGoToShipment)
+        }
+    }
+
+    private fun retryGoToShipment() {
+        dPresenter.processUpdateCartData(false)
+    }
+
     override fun renderErrorToShipmentForm(throwable: Throwable) {
         var errorMessage = throwable.message ?: ""
         if (throwable !is CartResponseErrorException) {
             errorMessage = ErrorHandler.getErrorMessage(activity, throwable)
         }
 
-        if (throwable is UnknownHostException) {
-            // Todo : show bottomsheet
+        if (throwable is UnknownHostException || throwable is SocketTimeoutException) {
+            renderGlobalErrorBottomsheet(errorMessage)
+        } else {
+            renderErrorToShipmentForm(errorMessage)
         }
-
-        renderErrorToShipmentForm(errorMessage)
     }
 
     override fun onHiddenChanged(hidden: Boolean) {
