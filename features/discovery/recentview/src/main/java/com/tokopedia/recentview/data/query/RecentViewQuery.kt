@@ -22,15 +22,10 @@ object RecentViewQuery{
                        shop_id
                        shop_url
                        shop_location
-                       shop_lucky
                        shop_name
                        shop_gold_status
-                       product_preorder
-                       product_wholesale
-                       free_return
                        rating
                        review_count
-                       official_store
                        wishlist
                        badges{
                          title

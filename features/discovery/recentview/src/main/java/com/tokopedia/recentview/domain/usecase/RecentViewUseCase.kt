@@ -5,6 +5,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.recentview.data.entity.Badge
 import com.tokopedia.recentview.data.entity.Label
 import com.tokopedia.recentview.data.entity.ProductItem
 import com.tokopedia.recentview.data.entity.RecentViewData
@@ -50,7 +51,7 @@ class RecentViewUseCase (
         }
 
         val data = response.getData<RecentViewData>(RecentViewData::class.java)
-        return convertToViewModel(getProductsFromResponse(data))
+        return convertToViewModel(data)
     }
 
     fun getParam(loginID: String) {
@@ -58,68 +59,22 @@ class RecentViewUseCase (
         params.putInt(GetRecentViewUseCase.PARAM_USER_ID, loginID.toInt())
     }
 
-    private fun getProductsFromResponse(productItemData: RecentViewData): List<RecentViewProductDomain> {
-        val results: MutableList<RecentViewProductDomain> = ArrayList()
-        for (productItem in productItemData.list) {
-            results.add(RecentViewProductDomain(
-                    getShopFromResponse(productItem),
-                    productItem.getId(),
-                    productItem.getName(),
-                    productItem.getPrice(),
-                    productItem.getImgUri(), productItem.getIsNewGold().toString(),
-                    getProductLabelFromResponse(productItem.getLabels()),
-                    productItem.getRating(),
-                    productItem.getReviewCount(),
-                    productItem.getFree_return(),
-                    getProductBadgeFromResponse(productItem),
-                    productItem.getWholesale(),
-                    productItem.getPreorder(),
-                    productItem.wishlist))
-        }
-        return results
-    }
-
-    private fun getProductLabelFromResponse(labels: List<Label>): List<RecentViewLabelDomain>? {
-        val list: MutableList<RecentViewLabelDomain> = ArrayList()
-        for (label in labels) {
-            list.add(RecentViewLabelDomain(label.title, label.color))
-        }
-        return list
-    }
-
-    private fun getShopFromResponse(productItem: ProductItem): RecentViewShopDomain? {
-        return RecentViewShopDomain(productItem.shopId.toString(),
-                productItem.getShop(),
-                productItem.getIsGold(),
-                productItem.getLuckyShop(),
-                productItem.getShop_location())
-    }
-
-
-    private fun getProductBadgeFromResponse(productItem: ProductItem): List<RecentViewBadgeDomain>? {
-        val badgeList: MutableList<RecentViewBadgeDomain> = ArrayList()
-        for (badgeResponse in productItem.getBadges()) {
-            badgeList.add(RecentViewBadgeDomain(badgeResponse.title, badgeResponse.imageUrl))
-        }
-        return badgeList
-    }
-
-    private fun convertToViewModel(recentViewProductDomains: List<RecentViewProductDomain>): ArrayList<RecentViewDetailProductViewModel> {
+    private fun convertToViewModel(productItemData: RecentViewData): ArrayList<RecentViewDetailProductViewModel> {
         val listProduct = ArrayList<RecentViewDetailProductViewModel>()
         var position = 1
-        for (domain in recentViewProductDomains) {
+        for (domain in productItemData.list) {
             listProduct.add(RecentViewDetailProductViewModel(domain.id.toInt(),
                     domain.name,
                     domain.price,
                     domain.imgUri,
                     convertLabels(domain.labels),
-                    domain.freeReturn != null && domain.freeReturn == "1",
+                    false,
                     domain.wishlist,
                     if (domain.rating != null) domain.rating.toInt() else "0".toInt(),
                     domain.isGold != null && domain.isGold == "1",
                     convertToIsOfficial(domain.badges),
-                    domain.shop.name,
-                    domain.shop.location,
+                    domain.shop,
+                    domain.shop_location,
                     position
             ))
             position++
@@ -127,7 +82,7 @@ class RecentViewUseCase (
         return listProduct
     }
 
-    private fun convertLabels(labels: List<RecentViewLabelDomain>): List<LabelsViewModel>? {
+    private fun convertLabels(labels: List<Label>): List<LabelsViewModel>? {
         val labelsViewModels: MutableList<LabelsViewModel> = ArrayList()
         for (labelDomain in labels) {
             labelsViewModels.add(LabelsViewModel(labelDomain.title,
@@ -136,7 +91,7 @@ class RecentViewUseCase (
         return labelsViewModels
     }
 
-    private fun convertToIsOfficial(badges: List<RecentViewBadgeDomain>): Boolean {
+    private fun convertToIsOfficial(badges: List<Badge>): Boolean {
         if (!badges.isEmpty()) {
             for (domain in badges) {
                 if (domain.title.contains(OFFICIAL_STORE)) {
@@ -146,4 +101,5 @@ class RecentViewUseCase (
         }
         return false
     }
+
 }
