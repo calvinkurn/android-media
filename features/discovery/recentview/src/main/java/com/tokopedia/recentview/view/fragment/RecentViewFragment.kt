@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.applink.RouteManager
@@ -93,7 +94,7 @@ class RecentViewFragment : BaseDaggerFragment(), RecentView.View, WishListAction
                         }
                     }
                     is Fail -> {
-
+                        onErrorGetRecentView(ErrorHandler.getErrorMessage(context, it.throwable))
                     }
                 }
             })
@@ -131,6 +132,7 @@ class RecentViewFragment : BaseDaggerFragment(), RecentView.View, WishListAction
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        showLoading()
         viewModel?.getRecentView()
     }
 
@@ -164,8 +166,11 @@ class RecentViewFragment : BaseDaggerFragment(), RecentView.View, WishListAction
     override fun showLoadingProgress() {}
     override fun onErrorGetRecentView(errorMessage: String) {
         adapter.dismissLoading()
-        if (activity != null && view != null && presenter != null) NetworkErrorHelper.showEmptyState(activity, view,
-                errorMessage) { presenter?.getRecentViewProduct() }
+        if (activity != null && view != null) NetworkErrorHelper.showEmptyState(activity, view,
+                errorMessage) {
+            showLoading()
+            viewModel?.getRecentView()
+        }
     }
 
     override fun onSuccessGetRecentView(recentViewProductViewModels: ArrayList<Visitable<*>>) {

@@ -1,10 +1,7 @@
 package com.tokopedia.recentview.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.recentview.domain.usecase.GetRecentViewUseCase;
-import com.tokopedia.recentview.domain.usecase.RecentViewUseCase;
 import com.tokopedia.recentview.view.listener.RecentView;
-import com.tokopedia.recentview.view.subscriber.RecentViewSubscriber;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
@@ -19,8 +16,6 @@ import javax.inject.Inject;
 public class RecentViewPresenter extends BaseDaggerPresenter<RecentView.View>
         implements RecentView.Presenter {
 
-    private final RecentViewUseCase recentViewUseCase;
-    private final GetRecentViewUseCase getRecentProductUseCase;
     private final AddWishListUseCase addWishListUseCase;
     private final RemoveWishListUseCase removeWishListUseCase;
     private final UserSessionInterface userSession;
@@ -28,13 +23,9 @@ public class RecentViewPresenter extends BaseDaggerPresenter<RecentView.View>
     private WishListActionListener wishListActionListener;
 
     @Inject
-    RecentViewPresenter(GetRecentViewUseCase getRecentProductUseCase,
-                        RecentViewUseCase recentViewUseCase,
-                        AddWishListUseCase addWishListUseCase,
+    RecentViewPresenter(AddWishListUseCase addWishListUseCase,
                         RemoveWishListUseCase removeWishListUseCase,
                         UserSessionInterface userSession) {
-        this.getRecentProductUseCase = getRecentProductUseCase;
-        this.recentViewUseCase =  recentViewUseCase;
         this.addWishListUseCase = addWishListUseCase;
         this.removeWishListUseCase = removeWishListUseCase;
         this.userSession = userSession;
@@ -49,7 +40,6 @@ public class RecentViewPresenter extends BaseDaggerPresenter<RecentView.View>
     @Override
     public void detachView() {
         super.detachView();
-        getRecentProductUseCase.unsubscribe();
         if (removeWishListUseCase != null) {
             removeWishListUseCase.unsubscribe();
         }
@@ -57,17 +47,6 @@ public class RecentViewPresenter extends BaseDaggerPresenter<RecentView.View>
         if (addWishListUseCase != null) {
             addWishListUseCase.unsubscribe();
         }
-    }
-
-
-    @Override
-    public void getRecentViewProduct() {
-        viewListener.showLoading();
-        getRecentProductUseCase.execute(
-                getRecentProductUseCase.getParam(
-                        userSession.getUserId()),
-                new RecentViewSubscriber(viewListener)
-        );
     }
 
     public void addToWishlist(int adapterPosition, String productId) {
