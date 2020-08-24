@@ -347,6 +347,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             if(productList.isNotEmpty()) {
                 shopProductSortFilterUiModel?.let { shopProductAdapter.setSortFilterData(it) }
             }
+        }
 
         if (productList.isEmpty() && isLoadingInitialData) {
             showLoading()
