@@ -25,66 +25,63 @@ class BranchHelperValidation {
 
     private fun validatePaymentId(paymentId: String) {
         if (paymentId.isNullOrBlank()) {
-            logging( "paymentId_blank =$paymentId")
+            logging("validation;reason=paymentId_blank")
         }
     }
 
     private fun validateOrderId(orderID: String) {
         if (orderID.isNullOrBlank()) {
-            logging( "orderId_blank =$orderID")
+            logging("validation;reason=orderId_blank")
         }
     }
 
     private fun isFromNotNative(isFromNative: Boolean, paymentId: String, orderId:String) {
         if (!isFromNative) {
-            logging( "transaction_not_new_thankspage id=$paymentId order_id=$orderId")
+            logging("validation;reason=transaction_not_new_thankspage;id=$paymentId;order_id=$orderId")
         }
     }
 
     private fun validateRevenue(revenuePrice: Double) {
         if (revenuePrice <= 0) {
-            logging( "revenue_blank =$revenuePrice")
+            logging("validation;reason=revenue_blank;revenue=$revenuePrice")
         }
     }
 
 
     private fun validateShipping(shippingPrice: Double) {
         if (shippingPrice <= 0) {
-            logging( "shippingPrice_blank =$shippingPrice")
+            logging("validation;reason=shippingPrice_blank;shipping_price=$shippingPrice")
         }
     }
 
 
     fun exceptionStringToDouble(ex: String, type: String) {
-        logging( "exceptionStringToDouble $ex$type")
+        logging("error;reason=exceptionStringToDouble;err=$ex;type=$type")
     }
 
     fun exceptionToSendEvent(ex: String, type: String) {
-        logging( "exceptionToSendEvent $ex$type")
+        logging("error;reason=exceptionToSendEvent;err=$ex;type=$type")
     }
 
     private fun validateNewBuyer(isNewBuyer: Boolean, productType: String) {
         if (isNewBuyer && LinkerConstants.PRODUCTTYPE_DIGITAL.equals(productType, true)) {
-            logging( "validateNewBuyer $isNewBuyer product_type=$productType")
+            logging("validation;reason=validateNewBuyer;new_buyer=$isNewBuyer;product_type=$productType")
         }
     }
 
     private fun validateMonthlyNewBuyer(isMonthlyNewBuyer: Boolean, productType: String) {
         if (isMonthlyNewBuyer && LinkerConstants.PRODUCTTYPE_DIGITAL.equals(productType, true)) {
-            logging( "validateMonthlyNewBuyer $isMonthlyNewBuyer product_type= $productType")
+            logging("validation;reason= validateMonthlyNewBuyer;monthly_new_buyer=$isMonthlyNewBuyer;product_type=$productType")
         }
     }
 
     fun validateCartQuantity(quantity: String) {
         if (LinkerUtils.convertToDouble(quantity,"cart quantity validation" ) <= 0) {
-            logging("add_to_cart_quantity  =$quantity")
+            logging("validation;reason=add_to_cart;quantity=$quantity")
         }
     }
 
     private fun logging(log:String){
-        if(GlobalConfig.DEBUG){
-            //add alert dialog
-        }
         Timber.w(TAG + log)
     }
 }
