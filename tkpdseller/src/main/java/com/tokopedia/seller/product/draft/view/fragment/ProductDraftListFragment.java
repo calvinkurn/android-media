@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
@@ -30,7 +31,6 @@ import com.tokopedia.base.list.seller.view.old.NoResultDataBinder;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
-import com.tokopedia.product.manage.item.imagepicker.imagepickerbuilder.AddProductImagePickerBuilder;
 import com.tokopedia.product.manage.item.main.base.view.service.UploadProductService;
 import com.tokopedia.product.manage.item.main.draft.data.model.ProductDraftViewModel;
 import com.tokopedia.product.manage.item.main.draft.view.activity.ProductDraftAddActivity;
@@ -289,14 +289,14 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
         IntentFilter intentFilters = new IntentFilter();
         intentFilters.addAction(UploadProductService.ACTION_DRAFT_CHANGED);
         intentFilters.addAction(TkpdState.ProductService.BROADCAST_ADD_PRODUCT);
-        if (getActivity() != null) {
-            getActivity().registerReceiver(draftBroadCastReceiver, intentFilters);
+        if (getContext() != null) {
+            LocalBroadcastManager.getInstance(getContext()).registerReceiver(draftBroadCastReceiver, intentFilters);
         }
     }
 
     private void unregisterDraftReceiver() {
-        if (getActivity() != null) {
-            getActivity().unregisterReceiver(draftBroadCastReceiver);
+        if (getContext() != null) {
+            LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(draftBroadCastReceiver);
         }
     }
 

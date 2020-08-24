@@ -5,7 +5,6 @@ import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.PARENT_ID
 import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.UNSET
-import com.tokopedia.affiliatecommon.data.pojo.productaffiliate.TopAdsPdpAffiliateResponse
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.detail.R
@@ -54,6 +53,7 @@ class PartialButtonActionView private constructor(val view: View,
 
     fun setTopAdsButton(hasTopAdsActive: Boolean) {
         this.hasTopAdsActive = hasTopAdsActive
+        updateTopAdsButton()
     }
 
     fun renderData(isWarehouseProduct: Boolean, hasShopAuthority: Boolean, isShopOwner: Boolean, hasTopAdsActive: Boolean, cartTypeData: CartTypeData? = null) {
@@ -66,15 +66,23 @@ class PartialButtonActionView private constructor(val view: View,
         renderButton()
     }
 
+    private fun updateTopAdsButton() {
+        if (hasShopAuthority) {
+            showShopManageButton()
+        }
+    }
+
     private fun renderButton() {
-        if (isWarehouseProduct) {
-            showWarehouseButton()
-        } else if (hasShopAuthority) {
+        if (hasShopAuthority) {
             showShopManageButton()
         } else if (!GlobalConfig.isSellerApp() && onSuccessGetCartType) {
             showCartTypeButton()
         } else if (!GlobalConfig.isSellerApp() && !onSuccessGetCartType) {
-            showNewCheckoutButton()
+            if (isWarehouseProduct) {
+                showWarehouseButton()
+            } else {
+                showNewCheckoutButton()
+            }
         }
     }
 
@@ -112,12 +120,22 @@ class PartialButtonActionView private constructor(val view: View,
     }
 
     private fun UnifyButton.generateTheme(colorDescription: String) {
-        if (colorDescription == ProductDetailConstant.KEY_BUTTON_PRIMARY) {
-            this.buttonVariant = UnifyButton.Variant.FILLED
-            this.buttonType = UnifyButton.Type.TRANSACTION
-        } else {
-            this.buttonVariant = UnifyButton.Variant.GHOST
-            this.buttonType = UnifyButton.Type.TRANSACTION
+        when (colorDescription) {
+            ProductDetailConstant.KEY_BUTTON_PRIMARY -> {
+                this.buttonVariant = UnifyButton.Variant.FILLED
+                this.buttonType = UnifyButton.Type.TRANSACTION
+                this.isEnabled = true
+            }
+            ProductDetailConstant.KEY_BUTTON_DISABLE  -> {
+                this.buttonVariant = UnifyButton.Variant.FILLED
+                this.buttonType = UnifyButton.Type.MAIN
+                this.isEnabled = false
+            }
+            else -> {
+                this.buttonVariant = UnifyButton.Variant.GHOST
+                this.buttonType = UnifyButton.Type.TRANSACTION
+                this.isEnabled = true
+            }
         }
     }
 
@@ -203,18 +221,16 @@ class PartialButtonActionView private constructor(val view: View,
             btn_empty_stock.hide()
             btn_topchat.hide()
             seller_button_container.show()
+            btn_top_ads.buttonVariant = UnifyButton.Variant.GHOST
             if (hasTopAdsActive) {
                 btn_top_ads.setOnClickListener { rincianTopAdsClick?.invoke() }
                 btn_top_ads.text = context.getString(R.string.rincian_topads)
-                btn_top_ads.buttonVariant = UnifyButton.Variant.GHOST
                 btn_top_ads.buttonType = UnifyButton.Type.ALTERNATE
             } else {
                 btn_top_ads.setOnClickListener { promoTopAdsClick?.invoke() }
                 btn_top_ads.text = context.getString(R.string.promote_topads)
-                btn_top_ads.buttonVariant = UnifyButton.Variant.GHOST
                 btn_top_ads.buttonType = UnifyButton.Type.TRANSACTION
             }
-
             btn_edit_product.setOnClickListener(this@PartialButtonActionView)
         }
     }

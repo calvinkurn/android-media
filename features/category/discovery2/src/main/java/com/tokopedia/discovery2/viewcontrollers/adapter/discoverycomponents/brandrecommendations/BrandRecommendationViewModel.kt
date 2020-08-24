@@ -11,6 +11,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlin.coroutines.CoroutineContext
+import com.tokopedia.discovery2.Constant.BrandRecommendation.SQUARE_DESIGN
+
 
 class BrandRecommendationViewModel(val application: Application, components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
 
@@ -25,7 +27,7 @@ class BrandRecommendationViewModel(val application: Application, components: Com
         componentData.value = components
         components.data?.let {
             listData.value = DiscoveryDataMapper.mapListToComponentList(it, ComponentNames.BrandRecommendationItem.componentName,
-                    components.name, position)
+                    components.name, position, components.properties?.type ?: SQUARE_DESIGN)
         }
     }
 

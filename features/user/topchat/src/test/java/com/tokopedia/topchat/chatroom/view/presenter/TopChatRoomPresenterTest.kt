@@ -68,9 +68,6 @@ class TopChatRoomPresenterTest {
     private lateinit var deleteMessageListUseCase: DeleteMessageListUseCase
 
     @RelaxedMockK
-    private lateinit var changeChatBlockSettingUseCase: ChangeChatBlockSettingUseCase
-
-    @RelaxedMockK
     private lateinit var getShopFollowingUseCase: GetShopFollowingUseCase
 
     @RelaxedMockK
@@ -105,6 +102,9 @@ class TopChatRoomPresenterTest {
 
     @RelaxedMockK
     private lateinit var chatAttachmentUseCase: ChatAttachmentUseCase
+
+    @RelaxedMockK
+    private lateinit var chatToggleBlockChat: ChatToggleBlockChatUseCase
 
     @RelaxedMockK
     private lateinit var sharedPref: SharedPreferences
@@ -148,7 +148,6 @@ class TopChatRoomPresenterTest {
                         replyChatUseCase,
                         getExistingMessageIdUseCase,
                         deleteMessageListUseCase,
-                        changeChatBlockSettingUseCase,
                         getShopFollowingUseCase,
                         toggleFavouriteShopUseCase,
                         addToCartUseCase,
@@ -161,6 +160,7 @@ class TopChatRoomPresenterTest {
                         orderProgressUseCase,
                         groupStickerUseCase,
                         chatAttachmentUseCase,
+                        chatToggleBlockChat,
                         sharedPref
                 )
         )

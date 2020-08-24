@@ -447,6 +447,15 @@ class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
     }
 
     private fun setResendOtpFooterSpan(message: String, spannable: Spannable) {
+
+        val otpMsg = getString(R.string.resend_otp)
+        val start = message.indexOf(otpMsg)
+        val end = start + otpMsg.length
+
+        if(start < 0 || end < 0) {
+            return
+        }
+
         spannable.setSpan(
                 object : ClickableSpan() {
                     override fun onClick(view: View) {
@@ -471,8 +480,8 @@ class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
                         ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
                     }
                 },
-                message.indexOf(getString(R.string.resend_otp)),
-                message.indexOf(getString(R.string.resend_otp)) + getString(R.string.resend_otp).length,
+                start,
+                end,
                 0
         )
     }

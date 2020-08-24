@@ -2,5 +2,6 @@
 <resources>
     <declare-styleable name="VideoPlayerView">
         <attr name="onMeasure" format="boolean"/>
+        <attr name="autoSize" format="boolean"/>
     </declare-styleable>
 </resources>

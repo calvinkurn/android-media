@@ -134,8 +134,7 @@ class EditProductInputMapper @Inject constructor() {
             products: List<ProductVariantInputModel>
     ): List<PictureVariantInputModel> {
         val existingPicture = products.find {
-            val urlOriginal = it.pictures.firstOrNull()?.urlOriginal
-            return@find urlOriginal == filePath && picID.isEmpty()
+            it.pictures.firstOrNull()?.filePath == filePath && picID.isNotEmpty()
         }?.pictures
 
         return existingPicture ?: emptyList()
