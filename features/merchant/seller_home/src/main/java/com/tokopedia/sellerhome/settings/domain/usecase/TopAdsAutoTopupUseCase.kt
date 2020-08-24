@@ -18,6 +18,11 @@ class TopAdsAutoTopupUseCase @Inject constructor(private val graphqlRepository: 
                 "    }\n" +
                 "    errors {\n" +
                 "      Code\n" +
+                "      Title\n" +
+                "      Detail\n" +
+                "      Object {\n" +
+                "       Text\n" +
+                "       Type\n" +
                 "    }\n" +
                 "  }\n" +
                 "}"
@@ -46,6 +51,17 @@ class TopAdsAutoTopupUseCase @Inject constructor(private val graphqlRepository: 
                 topAdsAutoTopupResponse.topAdsAutoTopup?.autoTopupStatus?.status?.mapToBooleanValue()?.let {
                     return it
                 }
+            } else {
+                val topadsErrorObjectMessage = responseError.joinToString {
+                    it.errorObject.errorTextList.let { errorList ->
+                        if (errorList.isNullOrEmpty()) {
+                            it.detail
+                        } else {
+                            errorList.joinToString()
+                        }
+                    }
+                }
+                throw MessageErrorException(topadsErrorObjectMessage)
             }
         }
         throw MessageErrorException(gqlError.joinToString { it.message })
