@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
+import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -25,12 +26,25 @@ class ProductDiscussionViewHolder(val view: View, val listener: DynamicProductDe
     }
 
     override fun bind(element: ProductDiscussionDataModel) {
-        element.latestTalk?.let {
-            renderData(it, element.shopId.toInt(), element.talkCount, getComponentTrackData(element))
-            view.addOnImpressionListener(element.impressHolder) {
-                listener.onImpressComponent(getComponentTrackData(element))
+        if (element.latestTalk == null) {
+            hideComponent()
+        } else {
+            showComponent()
+            element.latestTalk?.let {
+                renderData(it, element.shopId.toInt(), element.talkCount, getComponentTrackData(element))
+                view.addOnImpressionListener(element.impressHolder) {
+                    listener.onImpressComponent(getComponentTrackData(element))
+                }
             }
         }
+    }
+
+    private fun hideComponent() = with(view) {
+        product_discussion_container.layoutParams.height = 0
+    }
+
+    private fun showComponent() = with(view) {
+        product_discussion_container.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
     }
 
     private fun renderData(talk: Talk, productShopId: Int, totalTalk: Int, componentTrackData: ComponentTrackDataModel) {

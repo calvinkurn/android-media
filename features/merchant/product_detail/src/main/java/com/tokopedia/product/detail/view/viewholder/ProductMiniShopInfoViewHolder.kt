@@ -38,19 +38,15 @@ class ProductMiniShopInfoViewHolder(private val view: View, private val listener
     }
 
     override fun bind(element: ProductMiniShopInfoDataModel) {
-        if (element.shopName.isEmpty()) {
-            showLoading()
+        if (!element.isOS && !element.isGoldMerchant || element.shopName.isEmpty()) {
+            view.setPadding(0, 0, 0, 0)
+            view.layoutParams.height = 0
         } else {
-            if (!element.isOS && !element.isGoldMerchant) {
-                view.setPadding(0, 0, 0, 0)
-                view.layoutParams.height = 0
-            } else {
-                hideLoading()
-                view.setOnClickListener { listener.onMiniShopInfoClicked(getComponentTrackData(element)) }
-                view.setPadding(16.toPx(), 0, 16.toPx(), 16.toPx())
-                view.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
-                showOfficialStore(element.isGoldMerchant, element.isOS, element.shopName)
-            }
+            view.shop_name_container.show()
+            view.setOnClickListener { listener.onMiniShopInfoClicked(getComponentTrackData(element)) }
+            view.setPadding(16.toPx(), 0, 16.toPx(), 16.toPx())
+            view.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+            showOfficialStore(element.isGoldMerchant, element.isOS, element.shopName)
         }
     }
 
@@ -76,18 +72,6 @@ class ProductMiniShopInfoViewHolder(private val view: View, private val listener
         txt_mini_shop_title.typeface = boldTypeface
         txt_mini_shop_title.text = MethodChecker.fromHtml(shopname)
         txt_mini_shop_title.show()
-    }
-
-    private fun showLoading() = with(view) {
-        mini_shop_shimmering?.show()
-        txt_mini_shop_desc?.hide()
-        shop_name_container?.hide()
-    }
-
-    private fun hideLoading() = with(view) {
-        mini_shop_shimmering?.hide()
-        shop_name_container?.show()
-        txt_mini_shop_desc?.show()
     }
 
     private fun getComponentTrackData(element: ProductMiniShopInfoDataModel?) = ComponentTrackDataModel(element?.type
