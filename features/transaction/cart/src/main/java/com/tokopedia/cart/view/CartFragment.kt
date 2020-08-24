@@ -56,6 +56,7 @@ import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.navigation_common.listener.CartNotifyListener
 import com.tokopedia.network.exception.MessageErrorException
@@ -110,6 +111,7 @@ import com.tokopedia.wishlist.common.listener.WishListActionListener
 import kotlinx.android.synthetic.main.layout_bottomsheet_summary_transaction.view.*
 import kotlinx.coroutines.*
 import rx.subscriptions.CompositeSubscription
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 /**
@@ -131,7 +133,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     lateinit var cardHeader: CardView
     lateinit var bottomLayout: LinearLayout
     lateinit var bottomLayoutShadow: View
-    lateinit var llNetworkErrorView: LinearLayout
+    lateinit var layoutGlobalError: GlobalError
     lateinit var llCartContainer: LinearLayout
     lateinit var llPromoCheckout: LinearLayout
     lateinit var promoCheckoutBtn: ButtonPromoCheckoutView
@@ -448,7 +450,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         btnToShipment = view.findViewById(R.id.go_to_courier_page_button)
         tvTotalPrice = view.findViewById(R.id.tv_total_prices)
         rlContent = view.findViewById(R.id.rl_content)
-        llNetworkErrorView = view.findViewById(R.id.ll_network_error_view)
+        layoutGlobalError = view.findViewById(R.id.layout_global_error)
         cardHeader = view.findViewById(R.id.card_header)
         bottomLayout = view.findViewById(R.id.bottom_layout)
         bottomLayoutShadow = view.findViewById(R.id.bottom_layout_shadow)
@@ -1049,6 +1051,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun onClickShopNow() {
         cartPageAnalytics.eventClickAtcCartClickBelanjaSekarangOnEmptyCart()
+        goToHome()
+    }
+
+    private fun goToHome() {
         val intent = RouteManager.getIntent(activity, ApplinkConst.HOME)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
@@ -2234,25 +2240,43 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
-    private fun showErrorLayout(message: String) {
+    private fun showErrorLayout(throwable: Throwable) {
         activity?.let {
             enableSwipeRefresh()
             it.invalidateOptionsMenu()
             refreshHandler?.finishRefresh()
             showErrorContainer()
             setToolbarShadowVisibility(true)
-            NetworkErrorHelper.showEmptyState(it, llNetworkErrorView, message) {
-                llNetworkErrorView.gone()
-                rlContent.show()
-                refreshHandler?.isRefreshing = true
-                cartAdapter.resetData()
-                dPresenter.processInitialGetCartData(getCartId(), dPresenter.getCartListData() == null, false)
+            val errorType = getGlobalErrorType(throwable)
+            layoutGlobalError.setType(errorType)
+            if (errorType == GlobalError.SERVER_ERROR) {
+                layoutGlobalError.errorAction.text = "Kembali ke Homepage"
+                layoutGlobalError.setActionClickListener {
+                    goToHome()
+                }
+            } else {
+                layoutGlobalError.setActionClickListener {
+                    layoutGlobalError.gone()
+                    rlContent.show()
+                    refreshHandler?.isRefreshing = true
+                    cartAdapter.resetData()
+                    dPresenter.processInitialGetCartData(getCartId(), dPresenter.getCartListData() == null, false)
+                }
             }
+            layoutGlobalError.show()
+        }
+    }
+
+    private fun getGlobalErrorType(throwable: Throwable): Int {
+        return if (throwable is UnknownHostException) {
+            GlobalError.NO_CONNECTION
+        } else {
+            GlobalError.SERVER_ERROR
         }
     }
 
     private fun showMainContainerLoadingInitData() {
-        llNetworkErrorView.gone()
+        layoutGlobalError.gone()
         rlContent.show()
         bottomLayout.gone()
         bottomLayoutShadow.gone()
@@ -2261,7 +2285,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun showMainContainer() {
-        llNetworkErrorView.gone()
+        layoutGlobalError.gone()
         rlContent.show()
         bottomLayout.show()
         bottomLayoutShadow.show()
@@ -2276,7 +2300,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     private fun showErrorContainer() {
         rlContent.gone()
-        llNetworkErrorView.show()
+        layoutGlobalError.show()
         bottomLayout.gone()
         bottomLayoutShadow.gone()
         cardHeader.gone()
@@ -2284,7 +2308,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun showEmptyCartContainer() {
-        llNetworkErrorView.gone()
+        layoutGlobalError.gone()
         bottomLayout.gone()
         bottomLayoutShadow.gone()
         cardHeader.gone()
@@ -2310,7 +2334,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         if (cartAdapter.itemCount > 0) {
             showSnackbarRetry(errorMessage)
         } else {
-            showErrorLayout(errorMessage)
+            showErrorLayout(throwable)
         }
     }
 
