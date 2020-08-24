@@ -425,7 +425,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     productPosition + 1,
                     shopId,
                     shopProductViewModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
-                    shopProductViewModel.isUpcoming,
+                    shopProductViewModel.isUpcoming
             )
         }
         startActivity(getProductIntent(shopProductViewModel.id ?: "", attribution,
