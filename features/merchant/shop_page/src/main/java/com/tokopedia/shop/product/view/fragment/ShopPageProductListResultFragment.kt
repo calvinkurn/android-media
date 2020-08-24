@@ -295,26 +295,32 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     }
 
     private fun observeLiveData() {
-        viewModel.shopInfoResp.observe(this, Observer {
+        viewModel.shopInfoResp.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessGetShopInfo(it.data)
                 is Fail -> onErrorGetShopInfo(it.throwable)
             }
         })
 
-        viewModel.shopSortFilterData.observe(this, Observer {
+        viewModel.shopSortFilterData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessGetSortFilterData(it.data)
                 is Fail -> showGetListError(it.throwable)
             }
         })
-        viewModel.productData.observe(this, Observer {
+        viewModel.productData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     val productList = it.data.second
                     renderProductList(productList, it.data.first)
                     isNeedToReloadData = false
                 }
+                is Fail -> showGetListError(it.throwable)
+            }
+        })
+        viewModel.productDataEmpty.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> renderProductListEmptyState(it.data)
                 is Fail -> showGetListError(it.throwable)
             }
         })
