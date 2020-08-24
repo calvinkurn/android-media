@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking;
 import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTrackingConstant;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.ProductRevIncentiveOvoDomain;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.ProductRevIncentiveOvoResponse;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.bottomsheet.IncentiveOvoBottomSheet;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.customview.ShopReputationView;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.customview.UserReputationView;
@@ -313,12 +314,13 @@ public class InboxReputationDetailHeaderViewHolder extends
 
     public void showIncentiveOvo() {
         if (productRevIncentiveOvoDomain != null) {
-            if (productRevIncentiveOvoDomain.getProductrevIncentiveOvo() == null) {
+            ProductRevIncentiveOvoResponse productRevIncentiveOvo = productRevIncentiveOvoDomain.getProductrevIncentiveOvo();
+            if (productRevIncentiveOvo == null) {
                 ovoTicker.setVisibility(View.GONE);
             } else {
                 ReputationTracking reputationTracking = new ReputationTracking();
-                String title = productRevIncentiveOvoDomain.getProductrevIncentiveOvo().getTicker().getTitle();
-                String subtitle = productRevIncentiveOvoDomain.getProductrevIncentiveOvo().getSubtitle();
+                String title = productRevIncentiveOvo.getTicker().getTitle();
+                String subtitle = productRevIncentiveOvo.getSubtitle();
                 ovoTicker.setVisibility(View.VISIBLE);
                 ovoTicker.setTickerTitle(title);
                 ovoTicker.setHtmlDescription(subtitle);
