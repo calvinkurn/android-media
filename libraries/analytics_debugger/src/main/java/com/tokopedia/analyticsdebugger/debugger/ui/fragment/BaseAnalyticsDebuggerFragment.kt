@@ -126,6 +126,10 @@ abstract class BaseAnalyticsDebuggerFragment : BaseSearchListFragment<Visitable<
         presenter!!.reloadData()
     }
 
+    override fun showCount(count: Int) {
+        //noop
+    }
+
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_analytics_debugger, menu)
         super.onCreateOptionsMenu(menu, inflater)
