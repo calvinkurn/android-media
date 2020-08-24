@@ -48,8 +48,7 @@ data class PaymentInfo(
 
 data class BenefitMap(
         val benefitName: String,
-        val benefitAmount: String,
-        var isBBICashBack : Boolean = false
+        val benefitAmount: String
 )
 
 data class PaymentModeMap(
@@ -97,6 +96,5 @@ data class OrderedItem(
         val itemName: String,
         val itemCount: Int?,
         val itemPrice: String,
-        val itemTotalPriceStr: String,
-        val isBBIProduct : Boolean
+        val itemTotalPriceStr: String
 )

@@ -6,8 +6,6 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.presentation.adapter.model.BenefitMap
 import com.tokopedia.thankyou_native.presentation.adapter.model.ObtainedAfterTransaction
@@ -24,7 +22,7 @@ class ObtainedBenefitViewHolder(val view: View) : AbstractViewHolder<ObtainedAft
 
     private fun addBenefits(container: LinearLayout, obtainedAfterTransaction: ObtainedAfterTransaction) {
         container.removeAllViews()
-        obtainedAfterTransaction.benefitMapList.forEach {
+        obtainedAfterTransaction.benefitMapList?.forEach {
             val view = createBenefitView(context = view.context, benefitMap = it)
             container.addView(view)
         }
@@ -38,12 +36,6 @@ class ObtainedBenefitViewHolder(val view: View) : AbstractViewHolder<ObtainedAft
                 .text = benefitMap.benefitName
         paymentModeItemView.findViewById<TextView>(R.id.tvInvoicePaidWithModeValue)
                 .text = benefitMap.benefitAmount
-        val description = paymentModeItemView.findViewById<TextView>(R.id.tvInvoicePaymentModeDescription)
-        if(benefitMap.isBBICashBack){
-            description.visible()
-            description.text = getString(R.string.thank_bbi)
-        }else
-            description.gone()
         return paymentModeItemView
     }
 

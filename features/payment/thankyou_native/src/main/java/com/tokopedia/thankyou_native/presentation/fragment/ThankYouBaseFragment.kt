@@ -201,13 +201,6 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
 
     fun setUpHomeButton(homeButton: TextView?) {
         homeButton?.let {
-            thanksPageData.thanksCustomization?.let {
-                it.customHomeButtonTitle?.apply {
-                    if (isNotBlank())
-                        homeButton.text = this
-                }
-            }
-
             homeButton.setOnClickListener {
                 thanksPageData.thanksCustomization?.let {
                     if (it.customHomeUrlApp.isNullOrBlank())
@@ -282,7 +275,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
 
     override fun gotoOrderList(applink: String) {
         try {
-            if (applink.isNullOrBlank()) {
+            if(applink.isNullOrBlank()){
                 gotoOrderList()
             } else {
                 thankYouPageAnalytics.get()
