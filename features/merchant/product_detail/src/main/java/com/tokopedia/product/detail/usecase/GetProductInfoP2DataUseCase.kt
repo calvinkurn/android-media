@@ -358,7 +358,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
             p2UiData.wishlistCount = wishlistCount
             p2UiData.isGoApotik = shopFeature.isGoApotik
             p2UiData.shopBadge = shopBadge.badge
-            p2UiData.shopCommitment = shopCommitment
+            p2UiData.shopCommitment = shopCommitment.shopCommitment
             p2UiData.productPurchaseProtectionInfo = productPurchaseProtectionInfo
             p2UiData.validateTradeIn = validateTradeIn
             p2UiData.cartRedirection = cartRedirection.data.associateBy({ it.productId }, { it })
