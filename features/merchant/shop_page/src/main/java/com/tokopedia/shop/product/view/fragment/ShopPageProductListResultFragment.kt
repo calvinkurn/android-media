@@ -411,8 +411,6 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         } else {
             shopPageTracking?.clickProductListEmptyState(
                     isLogin,
-                    getSelectedEtalaseChip(),
-                    "",
                     CustomDimensionShopPageAttribution.create(
                             shopInfo?.shopCore?.shopID,
                             shopInfo?.goldOS?.isOfficial == 1,
@@ -423,9 +421,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     ),
                     shopProductViewModel,
                     productPosition + 1,
-                    shopId,
-                    shopProductViewModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
-                    shopProductViewModel.isUpcoming
+                    shopId
             )
         }
         startActivity(getProductIntent(shopProductViewModel.id ?: "", attribution,

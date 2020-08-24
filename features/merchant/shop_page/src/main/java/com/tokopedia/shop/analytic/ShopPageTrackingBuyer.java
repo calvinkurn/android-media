@@ -362,16 +362,11 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
     }
 
     public void clickProductListEmptyState(boolean isLogin,
-                                           String selectedEtalaseChipName,
-                                           String etalaseSection,
                                            CustomDimensionShopPageAttribution customDimensionShopPage,
                                            ShopProductViewModel shopProductViewModel,
                                            int productPosStart,
-                                           String shopId,
-                                           boolean isEtalaseCampaign,
-                                           boolean isUpcoming) {
+                                           String shopId) {
         String loginNonLoginString = isLogin ? LOGIN : NON_LOGIN;
-        String etalaseNameTrackerString = getEtalaseNameTrackerString(isEtalaseCampaign,  isUpcoming, selectedEtalaseChipName);
         Map<String, Object> event = createProductClickEmptyStateMap(
                 PRODUCT_CLICK,
                 SHOP_PAGE_BUYER,
@@ -380,7 +375,6 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
                 loginNonLoginString,
                 customDimensionShopPage,
                 shopProductViewModel,
-                etalaseNameTrackerString, etalaseSection,
                 productPosStart,
                 shopId
         );
@@ -392,7 +386,6 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
                                                                     String loginNonLoginString,
                                                                     CustomDimensionShopPageAttribution customDimensionShopPage,
                                                                     ShopProductViewModel shopProductViewModel,
-                                                                    String selectedEtalaseChipName, String etalaseName,
                                                                     int productPositionStart,
                                                                     String shopId) {
         ArrayList<ShopProductViewModel> shopProductViewModelArrayList = new ArrayList<>();
@@ -402,10 +395,8 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
                 CLICK,
                 DataLayer.mapOf(
                         ACTION_FIELD, DataLayer.mapOf(LIST, joinDash(SHOPPAGE, shopId, SEARCH_NO_RESULT_SUGGESTION, loginNonLoginString)),
-                        PRODUCTS, createProductListSearchResultMap(
+                        PRODUCTS, createProductListMapEmptyState(
                                 shopProductViewModelArrayList,
-                                selectedEtalaseChipName,
-                                etalaseName,
                                 productPositionStart,
                                 customDimensionShopPage.shopType,
                                 loginNonLoginString,

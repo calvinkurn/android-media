@@ -69,16 +69,6 @@ class ShopPageTrackingShopSearchProduct(
         )
     }
 
-    fun typeSearch(isOwner: Boolean,keyword: String, customDimensionShopPage: CustomDimensionShopPage) {
-        sendEvent(
-                CLICK_SHOP_PAGE,
-                getShopPageCategory(isOwner),
-                SEARCH,
-                keyword,
-                customDimensionShopPage
-        )
-    }
-
     fun shopPageProductSearchResult(isOwner: Boolean, keyword: String, customDimensionShopPage: CustomDimensionShopPage) {
         sendGeneralEvent(
                 CLICK_SHOP_PAGE,

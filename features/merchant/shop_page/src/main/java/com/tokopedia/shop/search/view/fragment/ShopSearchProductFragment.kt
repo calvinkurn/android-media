@@ -230,7 +230,6 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
     override fun onSearchSubmitted(keyword: String) {
         searchQuery = keyword
         if (searchQuery.isNotEmpty()) {
-            shopPageTrackingShopSearchProduct.typeSearch(isMyShop, keyword, customDimensionShopPage)
             if(productListData?.isNotEmpty() == true) {
                 shopPageTrackingShopSearchProduct.shopPageProductSearchResult(isMyShop, keyword, customDimensionShopPage)
             } else {
@@ -292,7 +291,7 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
     }
 
     private fun observeShopSearchProductResult() {
-        viewModel.shopSearchProductResult.observe(this, Observer {
+        viewModel.shopSearchProductResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     populateDynamicSearchResult(it.data)
