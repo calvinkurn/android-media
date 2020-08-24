@@ -24,8 +24,8 @@ object RecentViewQuery{
                        shop_location
                        shop_name
                        shop_gold_status
-                       rating
-                       review_count
+                       product_rating
+                       product_review_count
                        wishlist
                        badges{
                          title

@@ -65,10 +65,10 @@ public class ProductItem {
     @SerializedName("free_return")
     public String free_return;
 
-    @SerializedName("rating")
+    @SerializedName("product_rating")
     public String rating;
 
-    @SerializedName("review_count")
+    @SerializedName("product_review_count")
     public String reviewCount;
 
     @SerializedName("official_store")
