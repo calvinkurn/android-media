@@ -1,11 +1,13 @@
 package com.tokopedia.cart.view.viewholder
 
+import android.graphics.Paint
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.cart.R
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.cart.view.ActionListener
+import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.uimodel.DisabledCartItemHolderData
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
@@ -27,6 +29,7 @@ class DisabledCartItemViewHolder(itemView: View, val actionListener: ActionListe
 
     fun bind(data: DisabledCartItemHolderData) {
         renderProductInfo(data)
+        renderSlashPrice(data)
         renderDeleteButton(data)
         renderWishlistButton(data)
         renderSimilarProduct(data)
@@ -35,13 +38,41 @@ class DisabledCartItemViewHolder(itemView: View, val actionListener: ActionListe
 
     private fun renderProductInfo(data: DisabledCartItemHolderData) {
         itemView.tv_product_name.text = data.productName
-        itemView.tv_product_price.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(data.productPrice, false).removeDecimalSuffix()
+        itemView.text_product_price.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(data.productPrice, false).removeDecimalSuffix()
         itemView.iv_image_product.loadImageRounded(data.productImage)
         if (data.data?.originData?.variant?.isNotBlank() == true) {
             itemView.text_product_variant.text = data.data?.originData?.variant
             itemView.text_product_variant.show()
         } else {
             itemView.text_product_variant.gone()
+        }
+    }
+
+    private fun renderSlashPrice(data: DisabledCartItemHolderData) {
+        if (data.data?.originData?.priceOriginal != 0) {
+            var hasSlashPrice = false
+            if (data.data?.originData?.slashPriceLabel?.isNotBlank() == true) {
+                itemView.text_slash_price.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(data.data?.originData?.priceOriginal
+                        ?: 0, false).removeDecimalSuffix()
+                itemView.label_slash_price_percentage.text = data.data?.originData?.slashPriceLabel
+
+                hasSlashPrice = true
+            }
+
+            if (hasSlashPrice) {
+                itemView.text_slash_price.paintFlags = itemView.text_slash_price.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                itemView.text_slash_price.show()
+                itemView.label_slash_price_percentage.show()
+                itemView.text_product_price.setPadding(itemView.resources.getDimensionPixelOffset(R.dimen.dp_4), 0, 0, 0)
+            } else {
+                itemView.text_slash_price.gone()
+                itemView.label_slash_price_percentage.gone()
+                itemView.text_product_price.setPadding(itemView.resources.getDimensionPixelOffset(R.dimen.dp_16), 0, 0, 0)
+            }
+        } else {
+            itemView.text_slash_price.gone()
+            itemView.label_slash_price_percentage.gone()
+            itemView.text_product_price.setPadding(itemView.resources.getDimensionPixelOffset(R.dimen.dp_16), 0, 0, 0)
         }
     }
 
