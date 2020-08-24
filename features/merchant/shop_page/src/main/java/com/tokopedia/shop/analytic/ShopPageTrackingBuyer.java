@@ -153,7 +153,7 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
                     BRAND, NONE,
                     CATEGORY, NONE,
                     VARIANT, NONE,
-                    LIST, joinDash(SHOPPAGE, shopId, getProductEtalaseEvent(selectedEtalaseName, etalaseName), loginNonLoginString, SEARCH_RESULT),
+                    LIST, joinDash(SHOPPAGE, shopId, getProductEtalaseEvent(selectedEtalaseName, etalaseName), loginNonLoginString),
                     POSITION, productPosition,
                     DIMENSION_81, shopTypeDef,
                     DIMENSION_79, shopId,
@@ -401,7 +401,7 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
         eventMap.put(ECOMMERCE, DataLayer.mapOf(
                 CLICK,
                 DataLayer.mapOf(
-                        ACTION_FIELD, DataLayer.mapOf(LIST, joinDash(SHOPPAGE, shopId, SEARCH_NO_RESULT_SUGGESTION, loginNonLoginString, SEARCH_RESULT)),
+                        ACTION_FIELD, DataLayer.mapOf(LIST, joinDash(SHOPPAGE, shopId, SEARCH_NO_RESULT_SUGGESTION, loginNonLoginString)),
                         PRODUCTS, createProductListSearchResultMap(
                                 shopProductViewModelArrayList,
                                 selectedEtalaseChipName,
