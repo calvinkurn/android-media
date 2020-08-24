@@ -20,7 +20,6 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
     private static final String CACHE_NAME = "RemoteConfigDebugCache";
     private static final long THREE_HOURS = TimeUnit.HOURS.toSeconds(3);
     private static final long CONFIG_CACHE_EXPIRATION = THREE_HOURS;
-    private static final String MISVALUE = "qxz"; //just a random string
 
     private FirebaseRemoteConfig firebaseRemoteConfig;
     private SharedPreferences sharedPrefs;
@@ -34,12 +33,6 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
         if (GlobalConfig.isAllowDebuggingTools() && context != null) {
             this.sharedPrefs = context.getSharedPreferences(CACHE_NAME, Context.MODE_PRIVATE);
         }
-    }
-
-    private boolean isCacheValueValid(String cacheValue, String defaultValue) {
-        return cacheValue != null &&
-                !cacheValue.isEmpty() &&
-                !cacheValue.equalsIgnoreCase(defaultValue);
     }
 
     private boolean isDebug() {
@@ -63,9 +56,9 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
     @Override
     public boolean getBoolean(String key, boolean defaultValue) {
         if (isDebug()) {
-            String cacheValue = sharedPrefs.getString(key, MISVALUE);
+            String cacheValue = sharedPrefs.getString(key, null);
 
-            if (isCacheValueValid(cacheValue, MISVALUE)) {
+            if (cacheValue != null) {
                 return cacheValue.equalsIgnoreCase("true");
             }
         }
@@ -117,9 +110,9 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
     @Override
     public long getLong(String key, long defaultValue) {
         if (isDebug()) {
-            String cacheValue = sharedPrefs.getString(key, MISVALUE);
+            String cacheValue = sharedPrefs.getString(key, null);
 
-            if (isCacheValueValid(cacheValue, MISVALUE)) {
+            if (cacheValue != null) {
                 return Long.parseLong(cacheValue);
             }
         }
@@ -139,9 +132,9 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
     @Override
     public String getString(String key, String defaultValue) {
         if (isDebug()) {
-            String cacheValue = sharedPrefs.getString(key, MISVALUE);
+            String cacheValue = sharedPrefs.getString(key, null);
 
-            if (isCacheValueValid(cacheValue, MISVALUE)) {
+            if (cacheValue != null) {
                 return cacheValue;
             }
         }
