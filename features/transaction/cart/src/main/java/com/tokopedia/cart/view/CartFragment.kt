@@ -505,6 +505,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             val bottomSheet = BottomSheetUnify()
             bottomSheet.showKnob = true
             bottomSheet.showCloseIcon = false
+            bottomSheet.showHeader = false
 
             val view = View.inflate(context, R.layout.layout_bottomsheet_summary_transaction, null)
 
