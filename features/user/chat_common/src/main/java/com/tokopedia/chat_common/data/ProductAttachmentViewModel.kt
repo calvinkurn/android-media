@@ -389,6 +389,10 @@ open class ProductAttachmentViewModel : SendableViewModel,
         return blastId != 0
     }
 
+    fun isEligibleOcc(): Boolean {
+        return !isPreOrder
+    }
+
     companion object {
         const val statusDeleted = 0
         const val statusActive = 1

@@ -46,7 +46,10 @@ open class TopchatProductAttachmentViewHolder constructor(
         private val commonListener: CommonViewHolderListener
 ) : BaseChatViewHolder<ProductAttachmentViewModel>(itemView) {
 
-    private var wishListBtn: UnifyButton? = itemView?.findViewById(R.id.tv_wishlist)
+    private var btnWishList: UnifyButton? = itemView?.findViewById(R.id.tv_wishlist)
+    private var btnOcc: UnifyButton? = itemView?.findViewById(R.id.tv_occ)
+    private var btnBuy: UnifyButton? = itemView?.findViewById(R.id.tv_buy)
+    private var btnAtc: UnifyButton? = itemView?.findViewById(R.id.tv_atc)
     private var cardContainer: SingleProductAttachmentContainer? = itemView?.findViewById(R.id.containerProductAttachment)
     private var label: Label? = itemView?.findViewById(R.id.lb_product_label)
     private var loadView: LoaderUnify? = itemView?.findViewById(R.id.iv_attachment_shimmer)
@@ -288,13 +291,43 @@ open class TopchatProductAttachmentViewHolder constructor(
     }
 
     private fun bindFooter(product: ProductAttachmentViewModel) {
+        val abTestVariant = getOccAbTestVariant()
         if (product.canShowFooter && !GlobalConfig.isSellerApp()) {
-            bindBuy(product)
-            bindAtc(product)
+            if (product.isEligibleOcc() && isEligibleOccAbTest(abTestVariant)) {
+                when (abTestVariant) {
+                    VARIANT_A -> {
+                        btnBuy?.hide()
+                        bindOcc(product)
+                        bindAtc(product)
+                    }
+                    VARIANT_B -> {
+                        btnBuy?.hide()
+                        btnAtc?.hide()
+                        bindOcc(product)
+                    }
+                }
+            } else {
+                bindBuy(product)
+                bindAtc(product)
+                btnOcc?.hide()
+            }
             bindWishList(product)
         } else {
             hideFooter()
         }
+    }
+
+    private fun getOccAbTestVariant(): String {
+        // TODO: impl abtest occ
+        return VARIANT_B
+    }
+
+    private fun isEligibleOccAbTest(variant: String): Boolean {
+        return (variant == VARIANT_A || variant == VARIANT_B)
+    }
+
+    private fun bindOcc(product: ProductAttachmentViewModel) {
+        btnOcc?.show()
     }
 
     private fun bindPreOrderLabel(product: ProductAttachmentViewModel) {
@@ -326,17 +359,17 @@ open class TopchatProductAttachmentViewHolder constructor(
     }
 
     private fun hideFooter() {
-        itemView.tv_buy?.hide()
-        itemView.tv_atc?.hide()
-        itemView.tv_wishlist?.hide()
+        btnBuy?.hide()
+        btnAtc?.hide()
+        btnWishList?.hide()
+        btnOcc?.hide()
     }
 
     private fun bindBuy(product: ProductAttachmentViewModel) {
-        itemView.tv_buy?.let {
+        btnBuy?.let {
             it.show()
             if (product.hasEmptyStock()) {
-                it.isEnabled = false
-                it.setText(com.tokopedia.chat_common.R.string.action_empty_stock)
+                it.hide()
             } else {
                 it.isEnabled = true
                 it.setText(com.tokopedia.chat_common.R.string.action_buy)
@@ -348,7 +381,7 @@ open class TopchatProductAttachmentViewHolder constructor(
     }
 
     private fun bindAtc(product: ProductAttachmentViewModel) {
-        itemView.tv_atc?.let {
+        btnAtc?.let {
             if (product.hasEmptyStock()) {
                 it.hide()
             } else {
@@ -362,14 +395,14 @@ open class TopchatProductAttachmentViewHolder constructor(
 
     private fun bindWishList(product: ProductAttachmentViewModel) {
         if (product.hasEmptyStock()) {
-            wishListBtn?.show()
-            wishListBtn?.setOnClickListener {
+            btnWishList?.show()
+            btnWishList?.setOnClickListener {
                 listener.onClickAddToWishList(product) {
                     product.wishList = true
                 }
             }
         } else {
-            wishListBtn?.hide()
+            btnWishList?.hide()
         }
     }
 
@@ -382,5 +415,9 @@ open class TopchatProductAttachmentViewHolder constructor(
 
     companion object {
         val LAYOUT = R.layout.item_topchat_product_attachment
+
+        const val VARIANT_DEFAULT = "default"
+        const val VARIANT_A = "a"
+        const val VARIANT_B = "b"
     }
 }
