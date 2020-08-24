@@ -15,6 +15,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.URLUtil
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
@@ -176,6 +177,8 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        setupToolbar()
         btnChangeShopInfo.setOnClickListener {
             val intent = ShopEditBasicInfoActivity.createIntent(context!!, shopBasicDataModel)
             startActivityForResult(intent, REQUEST_EDIT_BASIC_INFO)
@@ -267,6 +270,14 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
                 }
             }
         })
+    }
+
+    private fun setupToolbar() {
+        (activity as? AppCompatActivity)?.run {
+            supportActionBar?.setDisplayHomeAsUpEnabled(true)
+            supportActionBar?.setDisplayShowTitleEnabled(true)
+            supportActionBar?.setTitle(getString(R.string.shop_settings_basic_info_title))
+        }
     }
 
 
