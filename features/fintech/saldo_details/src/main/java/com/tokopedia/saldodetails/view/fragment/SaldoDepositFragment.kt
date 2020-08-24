@@ -43,6 +43,7 @@ import com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_LOCK
 import com.tokopedia.saldodetails.BuildConfig
 import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants
 import com.tokopedia.saldodetails.design.UserStatusInfoBottomSheet
+import com.tokopedia.saldodetails.di.SaldoDetailsComponent
 import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance
 import com.tokopedia.saldodetails.response.model.GqlDetailsResponse
 import com.tokopedia.saldodetails.response.model.GqlMerchantCreditResponse
@@ -626,7 +627,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     override fun initInjector() {
 
         activity?.let {
-            val saldoDetailsComponent = SaldoDetailsComponentInstance.getComponent(it)
+            val saldoDetailsComponent = getComponent(SaldoDetailsComponent::class.java)
             saldoDetailsComponent.inject(this)
 
 
