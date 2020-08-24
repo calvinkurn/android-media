@@ -2,6 +2,8 @@ package com.tokopedia.remoteconfig;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.text.TextUtils;
+
 import androidx.annotation.Nullable;
 
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
@@ -58,17 +60,21 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
     @Override
     public boolean getBoolean(String key, boolean defaultValue) {
         if (isDebug()) {
-            String cacheValue = sharedPrefs.getString(key, String.valueOf(defaultValue));
+            String cacheValue = sharedPrefs.getString(key, null);
 
-            if (isCacheValueValid(cacheValue, String.valueOf(defaultValue))) {
+            if (cacheValue != null) {
                 return cacheValue.equalsIgnoreCase("true");
             }
         }
 
         if (firebaseRemoteConfig != null) {
-            return firebaseRemoteConfig.getBoolean(key);
+            String value = firebaseRemoteConfig.getString(key);
+            if (TextUtils.isEmpty(value)) {
+                return defaultValue;
+            } else {
+                return "true".equalsIgnoreCase(value);
+            }
         }
-
         return defaultValue;
     }
 
@@ -108,9 +114,9 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
     @Override
     public long getLong(String key, long defaultValue) {
         if (isDebug()) {
-            String cacheValue = sharedPrefs.getString(key, String.valueOf(defaultValue));
+            String cacheValue = sharedPrefs.getString(key, null);
 
-            if (isCacheValueValid(cacheValue, String.valueOf(defaultValue))) {
+            if (cacheValue != null) {
                 return Long.parseLong(cacheValue);
             }
         }
@@ -130,9 +136,9 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
     @Override
     public String getString(String key, String defaultValue) {
         if (isDebug()) {
-            String cacheValue = sharedPrefs.getString(key, defaultValue);
+            String cacheValue = sharedPrefs.getString(key, null);
 
-            if (isCacheValueValid(cacheValue, defaultValue)) {
+            if (cacheValue != null) {
                 return cacheValue;
             }
         }
