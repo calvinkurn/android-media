@@ -20,6 +20,8 @@ import com.tokopedia.kyc_centralized.view.viewmodel.AttachmentImageModel;
 import com.tokopedia.kyc_centralized.view.viewmodel.ImageUploadModel;
 import com.tokopedia.kyc_centralized.view.viewmodel.UserIdentificationStepperModel;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -84,16 +86,16 @@ public class UserIdentificationUploadImagePresenter extends
                 uploadImageUseCase.createObservable(createParam(imageUploadModel.getFilePath())),
                 (imageUploadModel1, uploadDomainModel) -> {
                     imageUploadModel1.setPicObjKyc(uploadDomainModel
-                            .getDataResultImageUpload()
-                            .getPictureObj());
+                            .getDataResultImageUpload().getPictureObj());
                     return imageUploadModel1;
                 });
     }
 
 
 
+    @Nullable
     @Override
-    public Observable<ImageUploadModel> uploadIdentificationUseCase(List<ImageUploadModel> imageUploadModels, int projectId) {
+    public Observable<ImageUploadModel> uploadIdentificationUseCase(@Nullable List<ImageUploadModel> imageUploadModels, int projectId) {
         return Observable.from(imageUploadModels)
                 .flatMap((Func1<ImageUploadModel, Observable<ImageUploadModel>>) imageUploadModel ->
                         Observable.zip(Observable.just(imageUploadModel),
@@ -107,7 +109,7 @@ public class UserIdentificationUploadImagePresenter extends
                                 ), (imageUploadModel1, graphqlResponse) -> {
                                     UploadIdentificationPojo pojo = graphqlResponse.getData(UploadIdentificationPojo.class);
                                     imageUploadModel1.setError(pojo != null ? pojo.getKycUpload().getError() : null);
-                                    imageUploadModel1.setIsSuccess(pojo != null ? pojo.getKycUpload().getIsSuccess() : 0);
+                                    imageUploadModel1.setSuccess(pojo != null ? pojo.getKycUpload().getIsSuccess() : 0);
                                     return imageUploadModel1;
                                 }));
 
@@ -124,11 +126,12 @@ public class UserIdentificationUploadImagePresenter extends
     }
 
 
+    @Nullable
     @Override
-    public Observable<Boolean> isAllMutationSuccess(List<ImageUploadModel> imageUploadModels) {
+    public Observable<Boolean> isAllMutationSuccess(@Nullable List<ImageUploadModel> imageUploadModels) {
         int totalSuccess = 0;
         for (ImageUploadModel imageUploadModel : imageUploadModels) {
-            totalSuccess = totalSuccess + imageUploadModel.getIsSuccess();
+            totalSuccess = totalSuccess + imageUploadModel.isSuccess();
         }
         return Observable.just(totalSuccess == KYCConstant.IS_ALL_MUTATION_SUCCESS);
     }
@@ -170,7 +173,7 @@ public class UserIdentificationUploadImagePresenter extends
 
                     @Override
                     public void onError(Throwable throwable) {
-                        getView().onErrorUpload(ErrorHandler.getErrorMessage(getView().getContext(), throwable));
+                        getView().onErrorUpload(ErrorHandler.getErrorMessage(getView().getGetContext(), throwable));
                     }
 
                     @Override
@@ -179,7 +182,7 @@ public class UserIdentificationUploadImagePresenter extends
                             getView().onSuccessUpload();
                         } else {
                             getView().onErrorUpload(
-                                    String.format(getView().getContext().getString(R.string.error_upload_image_kyc),
+                                    String.format(getView().getGetContext().getString(R.string.error_upload_image_kyc),
                                     KYCConstant.ERROR_UPLOAD_IMAGE)
                             );
                         }

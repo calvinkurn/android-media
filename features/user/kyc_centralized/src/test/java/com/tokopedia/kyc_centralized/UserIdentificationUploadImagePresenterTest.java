@@ -8,13 +8,14 @@ import com.tokopedia.imageuploader.domain.model.ImageUploadDomainModel;
 import com.tokopedia.imageuploader.utils.ImageUploaderUtils;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSessionInterface;
-import com.tokopedia.kyc_centralized.domain.usecase.RegisterIdentificationUseCase;
-import com.tokopedia.kyc_centralized.domain.usecase.UploadIdentificationUseCase;
-import com.tokopedia.kyc_centralized.util.TestSchedulerProvider;
 import com.tokopedia.kyc_centralized.view.listener.UserIdentificationUploadImage;
 import com.tokopedia.kyc_centralized.view.presenter.UserIdentificationUploadImagePresenter;
 import com.tokopedia.kyc_centralized.view.viewmodel.AttachmentImageModel;
 import com.tokopedia.kyc_centralized.view.viewmodel.ImageUploadModel;
+import com.tokopedia.user_identification_common.domain.usecase.GetKtpStatusUseCase;
+import com.tokopedia.user_identification_common.domain.usecase.RegisterIdentificationUseCase;
+import com.tokopedia.user_identification_common.domain.usecase.UploadIdentificationUseCase;
+import com.tokopedia.user_identification_common.util.TestSchedulerProvider;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -35,6 +36,7 @@ public class UserIdentificationUploadImagePresenterTest {
     private UploadImageUseCase<AttachmentImageModel> uploadImageUseCase = mock(MockUploadImageUseCase.class);
     private UploadIdentificationUseCase uploadIdentificationUseCase = mock(UploadIdentificationUseCase.class);
     private RegisterIdentificationUseCase registerIdentificationUseCase = mock(RegisterIdentificationUseCase.class);
+    private GetKtpStatusUseCase getKtpStatusUseCase = mock(GetKtpStatusUseCase.class);
     private UserSessionInterface userSession = mock(UserSessionInterface.class);
 
     //presenter
@@ -48,6 +50,7 @@ public class UserIdentificationUploadImagePresenterTest {
         presenter = new UserIdentificationUploadImagePresenter(uploadImageUseCase,
                 uploadIdentificationUseCase,
                 registerIdentificationUseCase,
+                getKtpStatusUseCase,
                 userSession,
                 compositeSubscription,
                 new TestSchedulerProvider());
@@ -72,7 +75,7 @@ public class UserIdentificationUploadImagePresenterTest {
         imageUploadModel.setPicObjKyc("");
         imageUploadModel.setError("");
         imageUploadModel.setFileName("");
-        imageUploadModel.setIsSuccess(0);
+        imageUploadModel.setSuccess(0);
         return imageUploadModel;
     }
 
