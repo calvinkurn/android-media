@@ -1525,7 +1525,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     private fun setCreatePostButton(model: ProfileHeaderViewModel) {
-        if (model.isOwner) {
+        if (model.isOwner && model.isCreatePostToggleOn) {
             fab_create_post.visibility = View.VISIBLE
             fab_create_post.setOnClickListener {
                 goToAffiliateExplore()
