@@ -116,7 +116,7 @@ class ShopSettingsInfoViewModel @Inject constructor (
         launchCatchError(block = {
             withContext(dispatchers.io) {
                 checkOsMerchantUseCase.params = CheckOfficialStoreTypeUseCase
-                        .createRequestParam(shopId = 67726)
+                        .createRequestParam(shopId)
                 val osMerchantChecker = checkOsMerchantUseCase.executeOnBackground()
                 osMerchantChecker.let {
                     _checkOsMerchantTypeData.postValue(Success(it))
