@@ -41,7 +41,7 @@ abstract class BaseAnalyticsDebuggerFragment : BaseSearchListFragment<Visitable<
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        buttonSearch!!.setOnClickListener { v ->
+        buttonSearch!!.setOnClickListener { _ ->
             if (TextUtils.isEmpty(searchInputView.searchText)) {
                 presenter!!.reloadData()
             } else {
