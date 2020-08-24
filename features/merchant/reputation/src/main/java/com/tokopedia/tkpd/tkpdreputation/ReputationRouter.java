@@ -14,8 +14,6 @@ import com.tokopedia.design.component.BottomSheets;
 
 public interface ReputationRouter {
 
-    Fragment getReputationHistoryFragment();
-
     void showAppFeedbackRatingDialog(
             FragmentManager fragmentManager,
             Context context,

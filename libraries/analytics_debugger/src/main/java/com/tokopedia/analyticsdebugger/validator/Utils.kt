@@ -21,7 +21,7 @@ internal object Utils {
     }
 
     fun getAnalyticsName(item: Map<String, Any>): String {
-        return if (item.containsKey("event")) item["event"] as String
+        return if (item.containsKey("eventAction")) item["eventAction"] as String
         else if (item.isNotEmpty()) item[item.keys.first()] as String
         else ""
     }

@@ -27,8 +27,8 @@ object DeeplinkMapperMerchant {
             val parsedUri = Uri.parse(deeplink)
             val segments = parsedUri.pathSegments
             if(segments.size > 0) {
-                val reputationId = segments.last()
-                return UriUtil.buildUri(ApplinkConstInternalMarketplace.INBOX_REPUTATION_DETAIL, reputationId)
+                val feedbackId = segments.last()
+                return UriUtil.buildUri(ApplinkConstInternalMarketplace.INBOX_REPUTATION_DETAIL, feedbackId)
             }
             return ApplinkConstInternalMarketplace.INBOX_REPUTATION
         }
@@ -87,6 +87,16 @@ object DeeplinkMapperMerchant {
                     .toString()
         }
         return deeplink
+    }
+
+    fun getRegisteredNavigationProductDetailReview(uri: Uri): String {
+        val segments = uri.pathSegments
+        val productId = segments.first()
+        val newUri = UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_REVIEW, productId)
+        return Uri.parse(newUri)
+                .buildUpon()
+                .build()
+                .toString()
     }
 
     fun isShopPageDeeplink(uri: Uri?): Boolean {

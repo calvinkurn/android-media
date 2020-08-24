@@ -72,7 +72,7 @@ data class ThanksPageData(
         @SerializedName("is_mub")
         val isMonthlyNewUser: Boolean,
         @SerializedName("custom_data")
-        val thanksCustomization: ThanksCustomization
+        val thanksCustomization: ThanksCustomization?
 ) : Parcelable
 
 data class PaymentDetail(
@@ -344,16 +344,16 @@ data class PaymentItem(
 @Parcelize
 data class ThanksCustomization(
         @SerializedName("tracking_data")
-        val trackingData: String,
+        val trackingData: String?,
         @SerializedName("custom_order_url_app")
-        val customOrderUrlApp: String,
+        val customOrderUrlApp: String?,
         @SerializedName("custom_home_url_app")
-        val customHomeUrlApp: String,
+        val customHomeUrlApp: String?,
         @SerializedName("custom_title")
-        val customTitle: String,
+        val customTitle: String?,
         @SerializedName("custom_subtitle")
-        val customSubtitle: String,
+        val customSubtitle: String?,
         @SerializedName("custom_title_order_button")
-        val customTitleOrderButton: String,
+        val customTitleOrderButton: String?,
         @SerializedName("custom_wtv_text")
-        val customWtvText: String) : Parcelable
+        val customWtvText: String?) : Parcelable
