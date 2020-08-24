@@ -41,7 +41,6 @@ public class CreateTicketProgressDialog {
                     progress.setCancelable(isCancelable);
                     isShow = true;
                     progress.show();
-                    isShow = true;
                 }
             } else if (state == MAIN_PROGRESS && substate == 0) {
                 progress = new ProgressDialog(context, R.style.CoolDialog);
@@ -70,7 +69,7 @@ public class CreateTicketProgressDialog {
 
 
     public void dismiss() {
-        if (state == MAIN_PROGRESS && substate == 1) {
+        if (state == MAIN_PROGRESS && substate == NORMAL_PROGRESS) {
             view.findViewById(loadingViewId).setVisibility(View.GONE);
         } else {
             if (progress != null) {
