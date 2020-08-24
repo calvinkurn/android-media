@@ -40,6 +40,7 @@ import kotlin.coroutines.CoroutineContext
 
 private const val AGENT = "agent"
 private const val REPLY_TICKET_RESPONSE_STATUS = "OK"
+private const val ROLE_TYPE_CUSTOMER = "customer"
 
 class InboxDetailPresenterImpl(private val postMessageUseCase: PostMessageUseCase,
                                private val postMessageUseCase2: PostMessageUseCase2,
@@ -47,7 +48,7 @@ class InboxDetailPresenterImpl(private val postMessageUseCase: PostMessageUseCas
                                private val inboxOptionUseCase: InboxOptionUseCase,
                                private val submitRatingUseCase: SubmitRatingUseCase,
                                private val closeTicketByUserUseCase: CloseTicketByUserUseCase,
-                               private val uploadImageUseCase: UploadImageUseCase,
+                               private val contactUsUploadImageUseCase: ContactUsUploadImageUseCase,
                                private val userSession: UserSessionInterface,
                                private val defaultDispatcher: CoroutineDispatcher) : InboxDetailPresenter, CustomEditText.Listener, CoroutineScope {
     private var mView: InboxDetailView? = null
@@ -60,7 +61,6 @@ class InboxDetailPresenterImpl(private val postMessageUseCase: PostMessageUseCas
     var next = 0
         get() = field
         private set
-    private var userData: CreatedBy? = null
     private val reasonList: ArrayList<String> by lazy { ArrayList<String>() }
     private var isIssueClosed = false
 
@@ -184,11 +184,6 @@ class InboxDetailPresenterImpl(private val postMessageUseCase: PostMessageUseCas
                         val commentsItems =
                                 getCommentsWithTopItem(mTicketDetail?.comments, getTopItem(mTicketDetail))
                         for (item in commentsItems) {
-                            if (userData == null) {
-                                if (item.createdBy?.role == "customer") {
-                                    userData = item.createdBy
-                                }
-                            }
                             val createTime = getUtils().getDateTime(item.createTime)
                             item.createTime = createTime
                             item.shortTime = getShortTime(createTime)
@@ -257,13 +252,13 @@ class InboxDetailPresenterImpl(private val postMessageUseCase: PostMessageUseCas
     override fun onImageSelect(image: ImageUpload) {
         if (image.fileLoc?.let { getUtils().fileSizeValid(it) } == false) {
             showErrorMessage(MESSAGE_WRONG_FILE_SIZE)
-            ContactUsTracking.sendGTMInboxTicket("",
+            ContactUsTracking.sendGTMInboxTicket(mView?.getActivity(), "",
                     InboxTicketTracking.Category.EventInboxTicket,
                     InboxTicketTracking.Action.EventClickAttachImage,
                     InboxTicketTracking.Label.ImageError1)
         } else if (image.fileLoc?.let { getUtils().isBitmapDimenValid(it) } == false) {
             showErrorMessage(MESSAGE_WRONG_DIMENSION)
-            ContactUsTracking.sendGTMInboxTicket("",
+            ContactUsTracking.sendGTMInboxTicket(mView?.getActivity(), "",
                     InboxTicketTracking.Category.EventInboxTicket,
                     InboxTicketTracking.Action.EventClickAttachImage,
                     InboxTicketTracking.Label.ImageError2)
@@ -348,20 +343,20 @@ class InboxDetailPresenterImpl(private val postMessageUseCase: PostMessageUseCas
     private fun sendMessageWithImages() {
         launchCatchError(
                 block = {
-                    val networkCalculatorList =
-                            uploadImageUseCase.getNetworkCalculatorList(
-                                    mView?.imageList)
-                    val files = uploadImageUseCase.getFile(mView?.imageList)
-                    val list = uploadImageUseCase.uploadFile(
-                            mView?.imageList,
-                            networkCalculatorList,
-                            files,
-                    userSession.isLoggedIn)
+                    val files = contactUsUploadImageUseCase.getFile(mView?.imageList)
+                    val list = arrayListOf<ImageUpload>()
+
+                    withContext(Dispatchers.IO) {
+                        list.addAll(contactUsUploadImageUseCase.uploadFile(
+                                userSession.userId,
+                                mView?.imageList,
+                                files))
+                    }
                     val requestParam = postMessageUseCase.createRequestParams(
                             mTicketDetail?.id ?: "",
                             mView?.userMessage ?: "",
                             1,
-                            getUtils().getAttachmentAsString(list),
+                            getUtils().getAttachmentAsString(mView?.imageList?: listOf()),
                             getLastReplyFromAgent(),
                             userSession.userId)
 
@@ -420,7 +415,7 @@ class InboxDetailPresenterImpl(private val postMessageUseCase: PostMessageUseCas
             mView?.showProgressBar()
             mView?.toggleTextToolbar(View.VISIBLE)
             sendRating()
-            ContactUsTracking.sendGTMInboxTicket("",
+            ContactUsTracking.sendGTMInboxTicket(mView?.getActivity(), "",
                     InboxTicketTracking.Category.EventInboxTicket,
                     InboxTicketTracking.Action.EventClickReason,
                     reasonList[position - 1])
@@ -431,7 +426,7 @@ class InboxDetailPresenterImpl(private val postMessageUseCase: PostMessageUseCas
         mView?.showSendProgress()
         postRatingUseCase.setQueryMap(rateCommentID, no, 1, 7, customReason)
         sendRating()
-        ContactUsTracking.sendGTMInboxTicket("",
+        ContactUsTracking.sendGTMInboxTicket(mView?.getActivity(), "",
                 InboxTicketTracking.Category.EventInboxTicket,
                 InboxTicketTracking.Action.EventClickReason,
                 customReason)
@@ -497,7 +492,7 @@ class InboxDetailPresenterImpl(private val postMessageUseCase: PostMessageUseCas
         mView?.setSnackBarErrorMessage(mView?.getActivity()?.getString(R.string.attachment_required)
                 ?: "", true)
         mView?.hideSendProgress()
-        ContactUsTracking.sendGTMInboxTicket("",
+        ContactUsTracking.sendGTMInboxTicket(mView?.getActivity(), "",
                 InboxTicketTracking.Category.EventInboxTicket,
                 InboxTicketTracking.Action.EventNotAttachImageRequired,
                 "")
@@ -549,7 +544,7 @@ class InboxDetailPresenterImpl(private val postMessageUseCase: PostMessageUseCas
                         }
                     }
                     if (searchIndices.size > 0) {
-                        ContactUsTracking.sendGTMInboxTicket("",
+                        ContactUsTracking.sendGTMInboxTicket(mView?.getActivity(), "",
                                 InboxTicketTracking.Category.EventInboxTicket,
                                 InboxTicketTracking.Action.EventClickSearchDetails,
                                 InboxTicketTracking.Label.GetResult)
@@ -558,7 +553,7 @@ class InboxDetailPresenterImpl(private val postMessageUseCase: PostMessageUseCas
                             mView?.setSnackBarErrorMessage(mView?.getActivity()?.getString(R.string.no_search_result)
                                     ?: "", false)
                         }
-                        ContactUsTracking.sendGTMInboxTicket("",
+                        ContactUsTracking.sendGTMInboxTicket(mView?.getActivity(), "",
                                 InboxTicketTracking.Category.EventInboxTicket,
                                 InboxTicketTracking.Action.EventClickSearchDetails,
                                 InboxTicketTracking.Label.NoResult)
@@ -588,7 +583,7 @@ class InboxDetailPresenterImpl(private val postMessageUseCase: PostMessageUseCas
     override fun getUtils() = Utils()
 
     override fun showImagePreview(position: Int, imagesURL: List<AttachmentItem>) {
-        ContactUsTracking.sendGTMInboxTicket("",
+        ContactUsTracking.sendGTMInboxTicket(mView?.getActivity(), "",
                 InboxTicketTracking.Category.EventInboxTicket,
                 InboxTicketTracking.Action.EventClickAttachImage,
                 InboxTicketTracking.Label.ImageAttached)
@@ -675,14 +670,23 @@ class InboxDetailPresenterImpl(private val postMessageUseCase: PostMessageUseCas
 
     private fun getNewComment(): CommentsItem {
         val newItem = CommentsItem()
-        newItem.createdBy = userData
+        newItem.createdBy = getCommentCreator()
         newItem.message = mView?.userMessage
         newItem.createTime = getUtils().dateTimeCurrent
         return newItem
     }
 
+    private fun getCommentCreator(): CreatedBy {
+        val creator by lazy { CreatedBy() }
+        return creator.apply {
+            name = userSession.name
+            role = ROLE_TYPE_CUSTOMER
+            picture = userSession.profilePicture
+        }
+    }
+
     private fun sendGTMEventView() {
-        ContactUsTracking.sendGTMInboxTicket(InboxTicketTracking.Event.EventView,
+        ContactUsTracking.sendGTMInboxTicket(mView?.getActivity(), InboxTicketTracking.Event.EventView,
                 InboxTicketTracking.Category.EventHelpMessageInbox,
                 InboxTicketTracking.Action.EventImpressionOnCsatRating,
                 mView?.ticketID)
