@@ -35,6 +35,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.Arrays;
 
+import timber.log.Timber;
+
 
 public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<ReactNativeThankYouPageFragment> implements ReputationRouter {
     public static final String EXTRA_TITLE = "EXTRA_TITLE";
@@ -48,7 +50,7 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
     private static final String SAVED_VERSION = "SAVED_VERSION";
     private static final String REACT_NAVIGATION_MODULE = "REACT_NAVIGATION_MODULE";
     private static final String IS_SHOWING_APP_RATING = "isShowAppRating";
-
+    private static final String  TAG = "P2#BRANCH_VALIDATION#";
     @DeepLink("tokopedia://thankyou/{platform}/{template}")
     public static Intent getThankYouPageApplinkIntent(Context context, Bundle bundle) {
         ReactUtils.startTracing(GL_THANK_YOU_PAGE);
@@ -78,6 +80,7 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
                 .getReactNativeHost().getReactInstanceManager();
         PurchaseNotifier.notify(this, getIntent().getExtras());
         resetWalletCache();
+        Timber.w("P2#RN_THANK_YOU#ReactNativeThankYouPageActivity_open");
     }
 
     @Override
@@ -127,6 +130,7 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
             }
         }
         ThanksTrackerService.start(this, data);
+        Timber.w("P2#RN_THANK_YOU#ReactNativeThankYouPageActivity_sendAnalytics id=%s,platform=%s ",data.getId(),data.getPlatform());
     }
 
     /* Check savedVersion in sharedpreferences
@@ -210,5 +214,10 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
     @Override
     public void showSimpleAppRatingDialog(Activity activity) {
 
+    }
+
+    private void logging(String log){
+
+        Timber.w(TAG + log);
     }
 }

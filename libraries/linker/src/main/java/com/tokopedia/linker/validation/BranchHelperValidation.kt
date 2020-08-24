@@ -6,7 +6,7 @@ import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.model.PaymentData
 import timber.log.Timber
 
-class BranchHelperValidation() {
+class BranchHelperValidation {
     val TAG = "P2#BRANCH_VALIDATION#"
     fun validatePurchaseEvent(branchIOPayment: PaymentData, revenuePrice: Double, shippingPrice: Double) {
         try {
@@ -37,7 +37,7 @@ class BranchHelperValidation() {
 
     private fun isFromNotNative(isFromNative: Boolean, paymentId: String, orderId:String) {
         if (!isFromNative) {
-            logging( "transaction_not__new_thankspage =$paymentId$orderId")
+            logging( "transaction_not_new_thankspage id=$paymentId order_id=$orderId")
         }
     }
 
@@ -65,13 +65,13 @@ class BranchHelperValidation() {
 
     private fun validateNewBuyer(isNewBuyer: Boolean, productType: String) {
         if (isNewBuyer && LinkerConstants.PRODUCTTYPE_DIGITAL.equals(productType, true)) {
-            logging( "validateNewBuyer $isNewBuyer$productType")
+            logging( "validateNewBuyer $isNewBuyer product_type=$productType")
         }
     }
 
     private fun validateMonthlyNewBuyer(isMonthlyNewBuyer: Boolean, productType: String) {
         if (isMonthlyNewBuyer && LinkerConstants.PRODUCTTYPE_DIGITAL.equals(productType, true)) {
-            logging( "validateMonthlyNewBuyer $isMonthlyNewBuyer$productType")
+            logging( "validateMonthlyNewBuyer $isMonthlyNewBuyer product_type= $productType")
         }
     }
 
