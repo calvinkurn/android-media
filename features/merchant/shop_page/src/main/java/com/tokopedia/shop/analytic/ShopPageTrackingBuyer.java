@@ -54,6 +54,8 @@ import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.IDR;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.IMPRESSIONS;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.IMPRESSION_PRODUCT_SEARCH_SUGGESTION;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.IS_OFFICIAL_STORE;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.LABEL_ETALASE_CAMPAIGN;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.LABEL_ETALASE_UPCOMING_ONGOING_CAMPAIGN;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.LIST;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.LOGIN;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.MEMBERSHIP_SHOP_PAGE;
@@ -90,6 +92,8 @@ import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_TYPE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.TRY_ANOTHER_WORD;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.UNFOLLOW;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.URL_SLUG;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_ONGOING;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_UPCOMING;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.VARIANT;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.WISHLIST;
 
