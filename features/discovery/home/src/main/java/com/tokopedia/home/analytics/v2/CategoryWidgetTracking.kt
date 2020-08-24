@@ -15,7 +15,7 @@ object CategoryWidgetTracking : BaseTracking() {
         }
     }
 
-    fun getCategoryWidgetBanneImpression(
+    fun getCategoryWidgetBannerImpression(
             banner: List<DynamicHomeChannel.Grid>,
             userId: String,
             isToIris: Boolean = false,
@@ -27,6 +27,9 @@ object CategoryWidgetTracking : BaseTracking() {
             eventLabel = channel.header.name,
             channelId = channel.id,
             userId = userId,
+            screen = Screen.DEFAULT,
+            currentSite = CurrentSite.DEFAULT,
+            businessUnit = BusinessUnit.DEFAULT,
             promotions = banner.mapIndexed { position, grid ->
                 Promotion(
                         id = CustomAction.FORMAT_4_VALUE_UNDERSCORE.format(channel.id, grid.id, channel.persoType, channel.categoryID),
@@ -55,6 +58,9 @@ object CategoryWidgetTracking : BaseTracking() {
             shopId = channel.brandId,
             userId = userId,
             campaignCode = channel.campaignCode,
+            screen = Screen.DEFAULT,
+            currentSite = CurrentSite.DEFAULT,
+            businessUnit = BusinessUnit.DEFAULT,
             promotions = listOf(
                     Promotion(
                             id = CustomAction.FORMAT_4_VALUE_UNDERSCORE.format(channel.id, grid.id, channel.persoType, channel.categoryID),
