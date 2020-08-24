@@ -21,6 +21,7 @@ import kotlinx.coroutines.SupervisorJob
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.collections.isNotEmpty
@@ -38,10 +39,7 @@ class QuickFilterViewModel(val application: Application, val components: Compone
     lateinit var quickFilterUseCase: QuickFilterUseCase
 
     private var selectedSort: HashMap<String, String> = HashMap()
-    private var filters: ArrayList<Filter> = ArrayList()
     private var sort: ArrayList<Sort> = ArrayList()
-    private var initializedFilterList: List<Filter>? = null
-    private var searchParameter: SearchParameter = SearchParameter()
     private val quickFilterOptionList: ArrayList<Option> = ArrayList()
 
     private val dynamicFilterModel: MutableLiveData<DynamicFilterModel> = MutableLiveData()
@@ -106,20 +104,19 @@ class QuickFilterViewModel(val application: Application, val components: Compone
         setSortData(data?.sort)
 
         if (components.filterController.filterViewStateSet.isNullOrEmpty()) {
-            initializedFilterList = FilterHelper.initializeFilterList(filters)
-            components.filterController.initFilterController(searchParameter.getSearchParameterHashMap(), initializedFilterList)
+            val initializedFilterList = FilterHelper.initializeFilterList(components.filters)
+            components.filterController.initFilterController(components.searchParameter.getSearchParameterHashMap(), initializedFilterList)
         }
     }
 
     private fun clearDataFilterSort() {
-        this.filters.clear()
+        components.filters.clear()
         this.sort.clear()
     }
 
     private fun setFilterData(filters: List<Filter>?) {
-        this.filters = ArrayList()
         if (filters?.isNotEmpty() == true)
-            this.filters.addAll(filters)
+            components.filters.addAll(filters)
     }
 
     private fun setSortData(sort: List<Sort>?) {
@@ -142,17 +139,19 @@ class QuickFilterViewModel(val application: Application, val components: Compone
             components.filterController.setFilter(option, isFilterApplied = false, isCleanUpExistingFilterWithSameKey = false)
         }
         applyFilterToSearchParameter(components.filterController.getParameter())
+//        refreshFilterController(HashMap(components.filterController.getParameter()))
         reloadData()
     }
 
     private fun applyFilterToSearchParameter(filterParameter: Map<String, String>) {
-        this.searchParameter.getSearchParameterHashMap().clear()
-        this.searchParameter.getSearchParameterHashMap().putAll(filterParameter)
+        components.searchParameter.getSearchParameterHashMap().clear()
+        components.searchParameter.getSearchParameterHashMap().putAll(filterParameter)
     }
 
     private fun refreshFilterController(queryParams: HashMap<String, String>) {
         val params = HashMap(queryParams)
         params[SearchApiConst.ORIGIN_FILTER] = SearchApiConst.DEFAULT_VALUE_OF_ORIGIN_FILTER_FROM_FILTER_PAGE
+        val initializedFilterList = FilterHelper.initializeFilterList(components.filters)
         components.filterController.initFilterController(params, initializedFilterList)
     }
 
@@ -161,7 +160,8 @@ class QuickFilterViewModel(val application: Application, val components: Compone
     }
 
     private fun setSelectedFilter(selectedFilter: HashMap<String, String>) {
-        if (filters.isEmpty()) return
+        if (components.filters.isEmpty()) return
+        val initializedFilterList = FilterHelper.initializeFilterList(components.filters)
         components.filterController.initFilterController(selectedFilter, initializedFilterList)
     }
 
@@ -174,7 +174,7 @@ class QuickFilterViewModel(val application: Application, val components: Compone
         return HashMap(components.filterController.getActiveFilterMap())
     }
 
-    fun getSearchParameterHashMap() = searchParameter.getSearchParameterHashMap()
+    fun getSearchParameterHashMap() = components.searchParameter.getSearchParameterHashMap()
 
     fun onApplySortFilter(applySortFilterModel: SortFilterBottomSheet.ApplySortFilterModel) {
         setSelectedSort(applySortFilterModel.selectedSortMapParameter)

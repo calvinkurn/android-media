@@ -11,6 +11,7 @@ import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Option
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -69,6 +70,7 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) : Ab
         item.listener = {
             quickFilterViewModel.onQuickFilterSelected(option)
             (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackClickQuickFilter(option.name, componentName)
+            quickSortFilter.indicatorCounter = Int.MIN_VALUE
         }
         if (quickFilterViewModel.isQuickFilterSelected(option)) {
             item.type = ChipsUnify.TYPE_SELECTED
@@ -110,6 +112,7 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) : Ab
     }
 
     override fun onApplySortFilter(applySortFilterModel: SortFilterBottomSheet.ApplySortFilterModel) {
+        quickSortFilter.indicatorCounter = Int.MIN_VALUE
         quickFilterViewModel.onApplySortFilter(applySortFilterModel)
         (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackClickApplyFilter(applySortFilterModel.selectedFilterMapParameter)
     }

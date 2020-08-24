@@ -1,8 +1,10 @@
 package com.tokopedia.discovery2.data
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.discovery2.datamapper.discoveryPageData
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
+import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import java.util.HashMap
@@ -56,7 +58,11 @@ data class ComponentsItem(
         var position: Int = 0,
         var couponViewImpression: Boolean = false,
         var design: String = "",
-        val filterController: FilterController = FilterController()) {
+        val filterController: FilterController = FilterController(),
+        var searchParameter: SearchParameter = SearchParameter(),
+        var filters: ArrayList<Filter> = ArrayList()
+
+) {
 
     private var componentsItem: List<ComponentsItem>? = null
 
