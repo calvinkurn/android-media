@@ -44,6 +44,11 @@ dependencies {
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.networkDependencies.glide
+
+    testImplementation rootProject.ext.testDependencies.assertJ
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+
 }
 
 project.ext {

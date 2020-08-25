@@ -20,6 +20,7 @@ import com.tokopedia.favorite.view.viewmodel.DataFavoriteMapper
 import com.tokopedia.favorite.view.viewmodel.FavoriteShopViewModel
 import com.tokopedia.favorite.view.viewmodel.TopAdsShopItem
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
+import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -138,21 +139,20 @@ class FavoriteViewModel
     //==============================
 
     fun loadInitialData() {
-        viewModelScope.launch {
-            try {
-                _refresh.value = true
-                val dataFavorite = withContext(dispatcherProvider.io()) {
-                    getInitialDataPageUseCase.executeOnBackground()
-                }
-                _refresh.value = false
-                _initialData.value = getDataFavoriteViewModel(dataFavorite)
-            } catch (e: Exception) {
-                Timber.e(e, "onError: ")
-                _refresh.value = false
-                _isTopAdsShopNetworkFailed.value = true
-                _isErrorLoad.value = true
+        launchCatchError(block = {
+            _refresh.value = true
+            val dataFavorite = withContext(dispatcherProvider.io()) {
+                getInitialDataPageUseCase.executeOnBackground()
             }
-        }
+            _refresh.value = false
+            _initialData.value = getDataFavoriteViewModel(dataFavorite)
+
+        }, onError = {
+            Timber.e(it, "onError: ")
+            _refresh.value = false
+            _isTopAdsShopNetworkFailed.value = true
+            _isErrorLoad.value = true
+        })
     }
 
     fun addFavoriteShop(view: View, shopItem: TopAdsShopItem) {
@@ -235,10 +235,10 @@ class FavoriteViewModel
     }
 
     private fun getDataFavoriteViewModel(dataFavorite: DataFavorite): List<Visitable<*>> {
-        val elements = ArrayList<Visitable<*>>(emptyList())
-        addTopAdsShop(dataFavorite, elements)
-        addFavoriteShop(dataFavorite, elements)
-        return elements
+        val visitables = ArrayList<Visitable<*>>()
+        addTopAdsShop(dataFavorite, visitables)
+        addFavoriteShop(dataFavorite, visitables)
+        return visitables
     }
 
     private fun addTopAdsShop(
@@ -255,8 +255,7 @@ class FavoriteViewModel
                     topAdsShopItemList != null &&
                     topAdsShopItemList.isNotEmpty()
             ) {
-                dataFavoriteItemList.add(favoriteMapper.prepareDataTopAdsShop(topAdsShop)
-                )
+                dataFavoriteItemList.add(favoriteMapper.prepareDataTopAdsShop(topAdsShop))
             }
         }
     }

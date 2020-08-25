@@ -23,29 +23,31 @@ class DataFavoriteMapper @Inject constructor() {
         return favoriteShopViewModel
     }
 
-    fun prepareDataTopAdsShop(adsShop: TopAdsShop): TopAdsShopViewModel {
-        val shopViewModel = TopAdsShopViewModel()
-        val shopItems = ArrayList<TopAdsShopItem>()
-        val topAdsShopItemList = adsShop.topAdsShopItemList
+    fun prepareDataTopAdsShop(topAdsShop: TopAdsShop): TopAdsShopViewModel {
+        val topAdsShopViewModel = TopAdsShopViewModel()
+        val viewModelTopAdsShopItemList = ArrayList<TopAdsShopItem>()
+        val topAdsShopItemList = topAdsShop.topAdsShopItemList
+
         if (topAdsShopItemList != null) {
-            for (item in topAdsShopItemList) {
+            for (topAdsShopItem in topAdsShopItemList) {
                 val shopItem = TopAdsShopItem()
-                shopItem.shopId = item.shopId
-                shopItem.shopDomain = item.shopDomain
-                shopItem.shopName = item.shopName
-                shopItem.adKey = item.adRefKey
-                shopItem.shopClickUrl = item.shopClickUrl
-                shopItem.shopCoverUrl = item.shopImageCover
-                shopItem.shopCoverEcs = item.shopImageCoverEcs
-                shopItem.shopImageUrl = item.shopImageUrl
-                shopItem.shopImageEcs = item.shopImageEcs
-                shopItem.shopLocation = item.shopLocation
-                shopItem.isFav = item.isSelected
-                shopItems.add(shopItem)
+                shopItem.shopId = topAdsShopItem.shopId
+                shopItem.shopDomain = topAdsShopItem.shopDomain
+                shopItem.shopName = topAdsShopItem.shopName
+                shopItem.adKey = topAdsShopItem.adRefKey
+                shopItem.shopClickUrl = topAdsShopItem.shopClickUrl
+                shopItem.shopCoverUrl = topAdsShopItem.shopImageCover
+                shopItem.shopCoverEcs = topAdsShopItem.shopImageCoverEcs
+                shopItem.shopImageUrl = topAdsShopItem.shopImageUrl
+                shopItem.shopImageEcs = topAdsShopItem.shopImageEcs
+                shopItem.shopLocation = topAdsShopItem.shopLocation
+                shopItem.isFav = topAdsShopItem.isSelected
+                viewModelTopAdsShopItemList.add(shopItem)
             }
         }
-        shopViewModel.adsShopItems = shopItems
-        return shopViewModel
+
+        topAdsShopViewModel.adsShopItems = viewModelTopAdsShopItemList
+        return topAdsShopViewModel
     }
 
     fun prepareListFavoriteShop(favoriteShop: FavoriteShop): List<Visitable<*>> {
@@ -53,7 +55,7 @@ class DataFavoriteMapper @Inject constructor() {
         val data = favoriteShop.data
         if (data != null) {
             for (favoriteShopItem in data) {
-                favoriteShopItem.isFav = (true)
+                favoriteShopItem.isFav = true
                 elementList.add(prepareDataFavoriteShop(favoriteShopItem))
             }
         }
