@@ -226,7 +226,7 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
         if (ActivityCompat.checkSelfPermission(getContext(), permission) == PackageManager.PERMISSION_GRANTED) {
             switch (id) {
                 case ALBUM_LOADER_ID:
-                    return AlbumLoader.createInstance(getContext(), galleryType);
+                    return AlbumLoader.newInstance(getContext());// ignore galleryType
                 case MEDIA_LOADER_ID:
                     return AlbumMediaLoader.newInstance(getContext(), selectedAlbumItem, galleryType);
                 default:

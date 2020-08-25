@@ -112,7 +112,7 @@ public class AlbumPickerActivity extends BaseSimpleActivity implements LoaderMan
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return AlbumLoader.newInstance(this);
+        return AlbumLoader.newInstance(this);// ignore galleryType
     }
 
     @Override
