@@ -26,6 +26,10 @@ query productRecommendationSingle($userID: Int!, $pageNumber: Int!, $ref: String
                wishlistUrl
                trackerImageUrl
                imageUrl
+               discountPercentage
+               slashedPrice
+               slashedPriceInt
+               isWishlist
                relatedProductAppLink
                relatedProductUrlLink
                price
@@ -49,6 +53,10 @@ query productRecommendationSingle($userID: Int!, $pageNumber: Int!, $ref: String
                   quantityMax
                   quantityMin
                   priceString
+              }
+              freeOngkir{
+                isActive
+                imageUrl
               }
               rating
               countReview

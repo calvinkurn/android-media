@@ -48,7 +48,7 @@ class ProductAdsListViewModel @Inject constructor(
         return ResponseEtalase.Data.ShopShowcasesByShopID.Result(totalCount, "", "Semua Etalase", 0)
     }
 
-    override fun onCleared() {
+    public override fun onCleared() {
         super.onCleared()
         getEtalaseUseCase.cancelJobs()
         getProductUseCase.cancelJobs()

@@ -39,5 +39,11 @@ class AddEditProductDetailConstants {
         const val SET_CASHBACK_RESULT = "set_cashback_result"
         const val EXTRA_CASHBACK_SHOP_ID = "extra_shop_id"
         const val EXTRA_CASHBACK_IS_DRAFTING = "extra_is_drafting"
+        // request key for set fragment result
+        const val REQUEST_KEY_ADD_MODE = "request_key_add_mode"
+        const val REQUEST_KEY_DESCRIPTION = "request_key_description"
+        const val REQUEST_KEY_DETAIL = "request_key_detail"
+        const val REQUEST_KEY_SHIPMENT = "request_key_shipment"
+        const val BUNDLE_CACHE_MANAGER_ID = "bundle_cache_manager_id"
     }
 }

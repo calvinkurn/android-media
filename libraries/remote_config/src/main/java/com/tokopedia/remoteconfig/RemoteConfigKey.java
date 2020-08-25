@@ -51,8 +51,6 @@ public class RemoteConfigKey {
 
     public static final String IMAGE_HOST = "image_host";
 
-    public static final String ENABLE_BOTTOM_SHEET_FILTER_REVAMP = "android_customer_enable_bottom_sheet_filter_revamp";
-
     public static final String FIREBASE_DIGITAL_OMS_REMOTE_CONFIG_KEY = "app_enable_oms_native";
     public static final String SHOW_INSTANT_LOAN = "app_enable_instant_loan";
     public static final String SHOW_TOKOCARD = "app_enable_toko_card";
@@ -80,6 +78,7 @@ public class RemoteConfigKey {
     public static final String IRIS_GTM_ENABLED_TOGGLE = "app_iris_gtm_enabled";
     public static final String IRIS_LOG_ENABLED_TOGGLE = "android_iris_log_enabled";
     public static final String IRIS_GTM_CONFIG_TOGGLE = "android_customer_iris_config";
+    public static final String IRIS_WORK_MANAGER_ENABLE = "android_iris_work_manager_enabled";
 
     public static final String APP_WEBVIEW_RESO_ENABLED_TOGGLE = "android_webview_resolution_enabled";
 

@@ -245,7 +245,7 @@ public class BranchWrapper implements WrapperInterface {
         } else if (LinkerData.PROMO_TYPE.equalsIgnoreCase(data.getType())) {
             deeplinkPath = getApplinkPath(LinkerConstants.PROMO_DETAIL, data.getId());
         } else if (LinkerData.PLAY_BROADCASTER.equalsIgnoreCase(data.getType())) {
-            deeplinkPath = data.renderShareUri();
+            deeplinkPath = data.getUri();
         }
 
         else if (isAppShowReferralButtonActivated(context) && LinkerData.REFERRAL_TYPE.equalsIgnoreCase(data.getType())) {
@@ -269,6 +269,9 @@ public class BranchWrapper implements WrapperInterface {
             }
         } else if (LinkerData.INDI_CHALLENGE_TYPE.equalsIgnoreCase(data.getType())) {
             deeplinkPath = data.getDeepLink();
+        } else if (LinkerData.PLAY_BROADCASTER.equalsIgnoreCase(data.getType())) {
+            linkProperties.addControlParameter(LinkerConstants.ANDROID_DESKTOP_URL_KEY, desktopUrl);
+            linkProperties.addControlParameter(LinkerConstants.IOS_DESKTOP_URL_KEY, desktopUrl);
         }
 
         if (LinkerData.INDI_CHALLENGE_TYPE.equalsIgnoreCase(data.getType())) {
@@ -286,8 +289,8 @@ public class BranchWrapper implements WrapperInterface {
 
         if (isAndroidIosUrlActivated(context) && !(LinkerData.REFERRAL_TYPE.equalsIgnoreCase(data.getType()) ||
                 LinkerData.INDI_CHALLENGE_TYPE.equalsIgnoreCase(data.getType()) ||
-                LinkerData.GROUPCHAT_TYPE.equalsIgnoreCase(data.getType())) ||
-                LinkerData.PLAY_BROADCASTER.equalsIgnoreCase(data.getType())) {
+                LinkerData.GROUPCHAT_TYPE.equalsIgnoreCase(data.getType()) ||
+                LinkerData.PLAY_BROADCASTER.equalsIgnoreCase(data.getType()))) {
             linkProperties.addControlParameter(LinkerConstants.ANDROID_DESKTOP_URL_KEY, data.renderShareUri());
             linkProperties.addControlParameter(LinkerConstants.IOS_DESKTOP_URL_KEY, data.renderShareUri());
         }

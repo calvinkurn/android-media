@@ -27,7 +27,6 @@
     <string name="label_pay_total">Total Bayar</string>
 
     <string name="lbl_osp_free_shipping">Pengiriman Bebas Ongkir</string>
-    <string name="lbl_osp_free_shipping_with_price">Bebas Ongkir - Rp 0</string>
     <string name="lbl_osp_free_shipping_only_price">Rp 0</string>
 
     <string name="lbl_osp_header">Barang yang dibeli</string>
@@ -47,10 +46,6 @@
 
     <!--Choose Address-->
     <string name="label_button_save_address">Simpan Alamat</string>
-    <string name="text_detail_address">Tokopedia Tower Ciputra World 2 Lantai 46, Jl. Prof. Dr. Satrio No. Kav. 11, RT.3/RW.3, Kota Jakarta Selatan 12950</string>
-    <string name="text_address_type">Kantor</string>
-    <string name="text_address_name">Tari</string>
-    <string name="text_address_number">081808180008</string>
     <string name="title_empty_address">Mau dikirim ke mana barangmu?</string>
     <string name="text_empty_address">Tambahkan alamat pengiriman barang untuk mempermudah proses pembelian</string>
     <string name="label_button_input_address">Simpan Alamat</string>
@@ -62,20 +57,14 @@
 
     <!--Shipping Duration-->
     <string name="label_button_choose_shipping_duration">Simpan Durasi Pengiriman</string>
-    <string name="text_shipping_duration">Instan (3 jam)</string>
-    <string name="text_shipping_price">Rp15.000 - Rp17.000</string>
-    <string name="text_shipping_desc">Pembelian di atas 14:00 WIB berpotensi dikirim besok</string>
     <string name="activity_title_shipping_duration">Pilih Durasi Pengiriman</string>
     <string name="activity_subtitle_shipping_address">Langkah 2 dari 3</string>
     <string name="ticker_label_text">Perkiraan tiba dihitung sejak pesanan dikirim</string>
     <string name="logistic_promo_info_title">Bebas Ongkir</string>
     <string name="logistic_promo_info_desc">Bebas Ongkir tidak bisa disimpan sebagai pilihan pengiriman, tapi bisa digunakan saat Beli Langsung.</string>
 
-    <string name="min_order_x">Jumlah minimum %1$d</string>
-    <string name="max_order_x">Jumlah maksimum %1$d</string>
     <string name="default_action_occ_info_bottom_sheet">Lanjut Belanja</string>
     <string name="search_not_found">Pencarian tidak dapat ditemukan</string>
-    <string name="more_info">Selengkapnya</string>
     <string name="lbl_shipping_insurance">Asuransi Pengiriman</string>
     <string name="lbl_change_template">Ubah</string>
     <string name="lbl_order_summary">Ringkasan Belanja</string>
@@ -89,4 +78,15 @@
     <string name="lbl_shipping_with_name">Pengiriman %1$s</string>
     <string name="lbl_shipping_duration_prefix">Durasi %1$s</string>
     <string name="lbl_no_exact_shipping_duration">Durasi tergantung kurir</string>
+
+    <string name="title_one_click_checkout_credit_card_and_debit">Kartu Kredit</string>
+    <string name="lbl_installment_type">Jenis Pembayaran</string>
+    <string name="lbl_installment_not_available">Cicilan tidak tersedia untuk jenis kartu ini</string>
+    <string name="lbl_installment_error">Cicilan tidak tersedia.</string>
+    <string name="lbl_see_installment_terms_and_condition">Lihat Syarat &amp; Ketentuan</string>
+    <string name="lbl_installment_full_payment">Bayar Penuh</string>
+    <string name="lbl_installment_payment_fee">+ Biaya Layanan %1$s</string>
+    <string name="lbl_installment_payment_minimum_before_fee">Min. %1$s sebelum biaya layanan</string>
+    <string name="lbl_installment_payment_monthly">%1$s/bulan</string>
+    <string name="lbl_choose_installment_type">Pilih Jenis Pembayaran</string>
 </resources>
