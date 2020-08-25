@@ -43,7 +43,6 @@ class QuickFilterViewModel(val application: Application, val components: Compone
     private val quickFilterOptionList: ArrayList<Option> = ArrayList()
 
     private val dynamicFilterModel: MutableLiveData<DynamicFilterModel> = MutableLiveData()
-    private val refreshQuickFilterModel: MutableLiveData<Boolean> = MutableLiveData()
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
@@ -73,7 +72,6 @@ class QuickFilterViewModel(val application: Application, val components: Compone
     }
 
     fun getDynamicFilterModelLiveData() = dynamicFilterModel
-    fun getRefreshQuickFilterModelLiveData() = refreshQuickFilterModel
 
     private fun onFilterApplied(selectedFilter: HashMap<String, String>?, selectedSort: HashMap<String, String>?) {
         getTargetComponent()?.let { component ->
@@ -139,7 +137,6 @@ class QuickFilterViewModel(val application: Application, val components: Compone
             components.filterController.setFilter(option, isFilterApplied = false, isCleanUpExistingFilterWithSameKey = false)
         }
         applyFilterToSearchParameter(components.filterController.getParameter())
-//        refreshFilterController(HashMap(components.filterController.getParameter()))
         reloadData()
     }
 
@@ -166,7 +163,6 @@ class QuickFilterViewModel(val application: Application, val components: Compone
     }
 
     private fun reloadData() {
-        refreshQuickFilterModel.value = true
         onFilterApplied(getSelectedFilter(), selectedSort)
     }
 
