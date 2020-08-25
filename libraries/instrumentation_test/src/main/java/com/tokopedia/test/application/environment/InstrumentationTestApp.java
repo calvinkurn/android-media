@@ -78,7 +78,6 @@ public class InstrumentationTestApp extends BaseMainApplication
     @Override
     public void onCreate() {
         SplitCompat.install(this);
-        FirebaseApp.initializeApp(this);
         FpmLogger.init(this);
         TrackApp.initTrackApp(this);
         TrackApp.getInstance().registerImplementation(TrackApp.GTM, GTMAnalytics.class);

@@ -30,11 +30,6 @@
             android:theme="@style/Theme.AppCompat"/>
 
         <meta-data
-            android:name="com.crashlytics.ApiKey"
-            android:value="d02324f74e70ffcd2dc00ab722d32baecf1884b4"
-            tools:replace="android:value"/>
-
-        <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyAqJLm1orGnm6BYnTu0a9uIjwS4gd8ThRY"
             tools:replace="android:value" />

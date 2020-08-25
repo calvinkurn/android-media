@@ -59,11 +59,11 @@ ext {
     playServicePlace = '17.0.0'
     playServiceAuthApiPhone = '16.0.0'
     playServiceMapsUtil = '1.0.2'
-    playServiceFirebaseRemoteConfig = '16.1.3'
-    playServiceFirebasePerfMon = '16.2.3'
+    playServiceFirebaseRemoteConfig = '19.2.0'
+    playServiceFirebasePerfMon = '19.0.8'
     playServiceFirebaseFirestore = '17.1.2'
-    firebaseCrashlyticsVersion = '17.1.0'
-    firebaseAnalyticsVersion = '17.4.4'
+    firebaseCrashlyticsVersion = '17.2.1'
+    firebaseAnalyticsVersion = '17.5.0'
     firebaseAuthVersion = '17.0.0'
     playServiceAds = '17.0.0'
     playServiceFirebaseCore = '16.0.6'
@@ -186,7 +186,7 @@ ext {
             config     : "com.google.firebase:firebase-config:${playServiceFirebaseRemoteConfig}",
             performance: "com.google.firebase:firebase-perf:${playServiceFirebasePerfMon}",
             fireStore  : "com.google.firebase:firebase-firestore:${playServiceFirebaseFirestore}",
-            crashlytics: "com.google.firebase:firebase-crashlytics:${firebaseCrashlyticsVersion}",
+            crashlytics: "com.google.firebase:firebase-crashlytics-ktx:${firebaseCrashlyticsVersion}",
             analytics  : "com.google.firebase:firebase-analytics-ktx:${firebaseAnalyticsVersion}",
             auth       : "com.google.firebase:firebase-auth:${firebaseAuthVersion}"
     ]
@@ -196,7 +196,6 @@ ext {
     ]
 
     serviceDependencies = [
-            crashlytics : "com.crashlytics.sdk.android:crashlytics:2.9.9",
             anrWatchDogs: "com.salomonbrys.anrwatchdog:anrwatchdog:1.3.0"
     ]
 
