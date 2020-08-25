@@ -320,7 +320,7 @@ public class InboxReputationDetailHeaderViewHolder extends
             } else {
                 ReputationTracking reputationTracking = new ReputationTracking();
                 String title = productRevIncentiveOvo.getTicker().getTitle();
-                String subtitle = productRevIncentiveOvo.getSubtitle();
+                String subtitle = productRevIncentiveOvo.getTicker().getSubtitle();
                 ovoTicker.setVisibility(View.VISIBLE);
                 ovoTicker.setTickerTitle(title);
                 ovoTicker.setHtmlDescription(subtitle);
