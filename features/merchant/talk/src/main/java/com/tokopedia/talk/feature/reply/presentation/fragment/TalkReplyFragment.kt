@@ -486,7 +486,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
                         if(discussionDataByQuestionID.question.totalAnswer > 0) {
                             showAnswers(this, viewModel.userId)
                         } else {
-                            onAnswersEmpty(discussionDataByQuestionID.question.userId)
+                            onAnswersEmpty(discussionDataByQuestionID.question.questionState.isYours)
                         }
                         setIsFollowing(discussionDataByQuestionID.question.questionState.isFollowed)
                         initTextBox(discussionDataByQuestionID.maxAnswerLength)
@@ -611,8 +611,8 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         dialog.show()
     }
 
-    private fun onAnswersEmpty(userId: Int) {
-        showEmpty(userId)
+    private fun onAnswersEmpty(isYours: Boolean) {
+        showEmpty(isYours)
     }
 
     private fun showAnswers(discussionDataByQuestionIDResponseWrapper: DiscussionDataByQuestionIDResponseWrapper, userId:String) {
@@ -688,11 +688,11 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         viewModel.setAttachedProducts(mutableListOf())
     }
 
-    private fun showEmpty(userId: Int) {
-        adapter?.showEmpty(TalkReplyEmptyModel(viewModel.userId == userId.toString()))
+    private fun showEmpty(isYours: Boolean) {
+        adapter?.showEmpty(TalkReplyEmptyModel(isYours))
         replyEditText.apply {
             setOnFocusChangeListener { v, hasFocus ->
-                if (hasFocus && viewModel.userId != userId.toString()) {
+                if (hasFocus && !isYours) {
                     activity.let {
                         KeyboardHandler.showSoftKeyboard(it)
                     }
