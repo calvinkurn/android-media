@@ -79,7 +79,7 @@ object MixLeftComponentTracking: BaseTracking()  {
 
     fun getMixLeftProductView(channel: ChannelModel, grid: ChannelGrid, position:Int): Map<String, Any> {
         val trackingBuilder = BaseTrackingBuilder()
-        return trackingBuilder.constructBasicProduct(
+        return trackingBuilder.constructBasicProductView(
                 event = Event.PRODUCT_VIEW,
                 eventCategory = Category.HOMEPAGE,
                 eventAction = IMPRESSION_MIX_LEFT,
@@ -169,7 +169,7 @@ object MixLeftComponentTracking: BaseTracking()  {
 
     fun getMixLeftProductClick(channel: ChannelModel, grid: ChannelGrid, position: Int) : Map<String, Any> {
         val trackingBuilder = BaseTrackingBuilder()
-        return trackingBuilder.constructBasicProduct(
+        return trackingBuilder.constructBasicProductClick(
                 event = Event.PRODUCT_CLICK,
                 eventCategory = Category.HOMEPAGE,
                 eventAction = CLICK_MIX_LEFT,
@@ -223,7 +223,7 @@ object MixLeftComponentTracking: BaseTracking()  {
 
     fun getMixLeftBannerView(channel: ChannelModel, position: Int, userId: String): Map<String, Any> {
         val trackingBuilder = BaseTrackingBuilder()
-        return trackingBuilder.constructBasicPromotion(
+        return trackingBuilder.constructBasicPromotionView(
                 event = Event.PROMO_VIEW,
                 eventCategory = Category.HOMEPAGE,
                 eventAction = IMPRESSION_MIX_LEFT_BANNER,
@@ -270,7 +270,7 @@ object MixLeftComponentTracking: BaseTracking()  {
 
     fun getMixLeftBannerClick(channel: ChannelModel, position: Int, userId: String): Map<String, Any> {
         val trackingBuilder = BaseTrackingBuilder()
-        return trackingBuilder.constructBasicPromotion(
+        return trackingBuilder.constructBasicPromotionClick(
                 event = Event.PROMO_CLICK,
                 eventCategory = Category.HOMEPAGE,
                 eventAction = CLICK_MIX_LEFT_BANNER,

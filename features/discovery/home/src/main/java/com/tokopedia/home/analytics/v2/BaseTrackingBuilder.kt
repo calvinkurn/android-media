@@ -10,7 +10,44 @@ class BaseTrackingBuilder: BaseTracking(), BaseTrackingBuilderInterface {
 
     private var dataLayer: MutableMap<String, Any> = mutableMapOf()
 
-    override fun constructBasicPromotion(
+    override fun constructBasicPromotionView(
+            event: String,
+            eventCategory: String,
+            eventAction: String,
+            eventLabel: String,
+            promotions: List<Promotion>,
+            userId: String
+    ): BaseTrackingBuilderInterface {
+        dataLayer = DataLayer.mapOf(
+                Event.KEY, event,
+                Category.KEY, eventCategory,
+                Action.KEY, eventAction,
+                Label.KEY, eventLabel,
+                Ecommerce.KEY, Ecommerce.getEcommercePromoView(promotions),
+                UserId.KEY, userId)
+        return this
+    }
+
+    override fun constructBasicProductView(
+            event: String,
+            eventCategory: String,
+            eventAction: String,
+            eventLabel: String,
+            list: String,
+            products: List<Product>,
+            userId: String
+    ): BaseTrackingBuilderInterface {
+        dataLayer = DataLayer.mapOf(
+                Event.KEY, event,
+                Category.KEY, eventCategory,
+                Action.KEY, eventAction,
+                Label.KEY, eventLabel,
+                Ecommerce.KEY, Ecommerce.getEcommerceProductView(products, list),
+                UserId.KEY, userId)
+        return this
+    }
+
+    override fun constructBasicPromotionClick(
             event: String,
             eventCategory: String,
             eventAction: String,
@@ -28,7 +65,7 @@ class BaseTrackingBuilder: BaseTracking(), BaseTrackingBuilderInterface {
         return this
     }
 
-    override fun constructBasicProduct(
+    override fun constructBasicProductClick(
             event: String,
             eventCategory: String,
             eventAction: String,
@@ -42,8 +79,8 @@ class BaseTrackingBuilder: BaseTracking(), BaseTrackingBuilderInterface {
                 Category.KEY, eventCategory,
                 Action.KEY, eventAction,
                 Label.KEY, eventLabel,
-                Ecommerce.KEY, Ecommerce.getEcommerceProductClick(products, list)
-        )
+                Ecommerce.KEY, Ecommerce.getEcommerceProductClick(products, list),
+                UserId.KEY, userId)
         return this
     }
 

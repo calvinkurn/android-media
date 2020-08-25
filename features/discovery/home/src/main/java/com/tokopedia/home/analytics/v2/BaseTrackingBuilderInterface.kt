@@ -6,7 +6,7 @@ package com.tokopedia.home.analytics.v2
 
 interface BaseTrackingBuilderInterface {
 
-    fun constructBasicPromotion(event: String,
+    fun constructBasicPromotionView(event: String,
                                 eventCategory: String,
                                 eventAction: String,
                                 eventLabel: String,
@@ -14,7 +14,24 @@ interface BaseTrackingBuilderInterface {
                                 userId: String
     ): BaseTrackingBuilderInterface
 
-    fun constructBasicProduct(event: String,
+    fun constructBasicProductView(event: String,
+                              eventCategory: String,
+                              eventAction: String,
+                              eventLabel: String,
+                              list: String,
+                              products: List<BaseTracking.Product>,
+                              userId: String
+    ): BaseTrackingBuilderInterface
+
+    fun constructBasicPromotionClick(event: String,
+                                eventCategory: String,
+                                eventAction: String,
+                                eventLabel: String,
+                                promotions: List<BaseTracking.Promotion>,
+                                userId: String
+    ): BaseTrackingBuilderInterface
+
+    fun constructBasicProductClick(event: String,
                               eventCategory: String,
                               eventAction: String,
                               eventLabel: String,
