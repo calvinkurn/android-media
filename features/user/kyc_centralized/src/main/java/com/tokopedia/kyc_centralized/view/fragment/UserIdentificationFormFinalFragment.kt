@@ -35,7 +35,7 @@ import com.tokopedia.kyc_centralized.di.DaggerUserIdentificationCommonComponent
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationCameraActivity.Companion.createIntent
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationFormActivity
 import com.tokopedia.kyc_centralized.view.listener.UserIdentificationUploadImage
-import com.tokopedia.kyc_centralized.view.viewmodel.UserIdentificationStepperModel
+import com.tokopedia.kyc_centralized.view.model.UserIdentificationStepperModel
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.user_identification_common.KYCConstant

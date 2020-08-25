@@ -24,12 +24,12 @@ import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.view.fragment.UserIdentificationFormFaceFragment
 import com.tokopedia.kyc_centralized.view.fragment.UserIdentificationFormFinalFragment
 import com.tokopedia.kyc_centralized.view.fragment.UserIdentificationFormKtpFragment
-import com.tokopedia.kyc_centralized.view.viewmodel.UserIdentificationStepperModel
+import com.tokopedia.kyc_centralized.view.model.UserIdentificationStepperModel
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.Typography.Companion.BODY_2
 import com.tokopedia.user_identification_common.KYCConstant
 import com.tokopedia.user_identification_common.analytics.UserIdentificationCommonAnalytics
-import com.tokopedia.user_identification_common.view.fragment.NotFoundFragment.Companion.createInstance
+import com.tokopedia.kyc_centralized.view.customview.fragment.NotFoundFragment.Companion.createInstance
 import kotlin.collections.ArrayList
 
 /**

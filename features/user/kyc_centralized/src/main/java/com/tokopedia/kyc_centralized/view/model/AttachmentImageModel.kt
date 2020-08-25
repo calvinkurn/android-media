@@ -1,4 +1,4 @@
-package com.tokopedia.kyc_centralized.view.viewmodel
+package com.tokopedia.kyc_centralized.view.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName

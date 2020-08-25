@@ -14,7 +14,7 @@ import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.di.DaggerUserIdentificationCommonComponent
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationCameraActivity.Companion.createIntent
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationFormActivity
-import com.tokopedia.kyc_centralized.view.viewmodel.UserIdentificationStepperModel
+import com.tokopedia.kyc_centralized.view.model.UserIdentificationStepperModel
 import com.tokopedia.user_identification_common.KYCConstant
 import com.tokopedia.user_identification_common.KycUrl
 

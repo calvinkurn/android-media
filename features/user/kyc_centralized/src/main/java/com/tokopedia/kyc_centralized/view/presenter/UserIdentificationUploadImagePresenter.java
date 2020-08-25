@@ -16,9 +16,9 @@ import com.tokopedia.user_identification_common.domain.usecase.UploadIdentificat
 import com.tokopedia.user_identification_common.subscriber.GetKtpStatusSubscriber;
 import com.tokopedia.user_identification_common.util.SchedulerProvider;
 import com.tokopedia.kyc_centralized.view.listener.UserIdentificationUploadImage;
-import com.tokopedia.kyc_centralized.view.viewmodel.AttachmentImageModel;
-import com.tokopedia.kyc_centralized.view.viewmodel.ImageUploadModel;
-import com.tokopedia.kyc_centralized.view.viewmodel.UserIdentificationStepperModel;
+import com.tokopedia.kyc_centralized.view.model.AttachmentImageModel;
+import com.tokopedia.kyc_centralized.view.model.ImageUploadModel;
+import com.tokopedia.kyc_centralized.view.model.UserIdentificationStepperModel;
 
 import org.jetbrains.annotations.Nullable;
 

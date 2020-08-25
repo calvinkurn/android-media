@@ -1,4 +1,4 @@
-package com.tokopedia.kyc_centralized.view.viewmodel
+package com.tokopedia.kyc_centralized.view.model
 
 import android.os.Parcel
 import android.os.Parcelable
