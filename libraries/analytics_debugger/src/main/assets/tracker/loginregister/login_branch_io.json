@@ -3,9 +3,19 @@
   "mode": "exact",
   "query": [
     {
-      "email": "{{.*}}",
-      "userId": "{{.*}}",
-      "phone": "{{.*}}"
+      "customProperties": {
+        "nameValuePairs": {
+          "email": "{{.*}}",
+          "userId": "{{\\w+}}",
+          "phone": "{{.*}}"
+        }
+      },
+      "eventName": "login",
+      "buoList": [],
+      "isStandardEvent": "{{true|false}}",
+      "standardProperties": {
+        "nameValuePairs": {}
+      }
     }
   ]
 }
