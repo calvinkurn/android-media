@@ -63,6 +63,8 @@
     <string name="seller_migration_fragment_tab_review">Ulasan</string>
     <string name="seller_migration_fragment_tab_promo_and_ads">Iklan &amp; Promosi</string>
     <string name="seller_migration_fragment_tab_statistic">Statistik</string>
+    <string name="seller_migration_fragment_tab_feed_play">Feed and Play</string>
+    <string name="seller_migration_fragment_tab_financial_services">Layanan Keuangan</string>
 
     <string name="seller_migration_product_manage_set_variant_title">PRODUK VARIAN</string>
     <string name="seller_migration_product_manage_set_variant_description">Tambah produk dengan varian warna dan ukuran dengan mudah.</string>
@@ -116,10 +118,10 @@
     <string name="seller_migration_fragment_feed_play_tab_live_video_description">Media streaming video untuk promo khusus secara live.</string>
 
     <!--    seller migration layanan keuangan seller features-->
-    <string name="seller_migration_fragment_financial_service_tab_modal_toko_title">MODAL TOKO</string>
-    <string name="seller_migration_fragment_finanlcial_service_tab_post_feed_description">Tarik kredit fleksibel hingga Rp300 jt secara instan.</string>
-    <string name="seller_migration_fragment_financial_service_tab_saldo_prioritas_title">SALDO PRIORITAS</string>
-    <string name="seller_migration_fragment_feed_play_tab_live_video_description">Tarik hasil jualan tanpa tunggu transaksi selesai.</string>
+    <string name="seller_migration_fragment_financial_service_tab_shop_capital_title">MODAL TOKO</string>
+    <string name="seller_migration_fragment_financial_service_tab_shop_capital_description">Tarik kredit fleksibel hingga Rp300 jt secara instan.</string>
+    <string name="seller_migration_fragment_financial_service_tab_priority_balance_title">SALDO PRIORITAS</string>
+    <string name="seller_migration_fragment_financial_service_tab_priority_balance_description">Tarik hasil jualan tanpa tunggu transaksi selesai.</string>
 
     <!--    product add edit-->
     <string name="seller_migration_add_edit_no_variant_title">Varian Produk</string>

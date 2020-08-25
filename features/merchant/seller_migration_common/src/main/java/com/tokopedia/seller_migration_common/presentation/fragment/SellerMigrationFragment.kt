@@ -165,7 +165,8 @@ class SellerMigrationFragment : Fragment(), SellerFeatureCarousel.RecyclerViewLi
         tabList.add(SellerFeatureFragmentAdapter.SellerFeatureFragmentItem(getSellerFeatureTabFragment<SellerFeatureReviewTabFragment>(), getString(R.string.seller_migration_fragment_tab_review)))
         tabList.add(SellerFeatureFragmentAdapter.SellerFeatureFragmentItem(getSellerFeatureTabFragment<SellerFeatureAdsPromoTabFragment>(), getString(R.string.seller_migration_fragment_tab_promo_and_ads)))
         tabList.add(SellerFeatureFragmentAdapter.SellerFeatureFragmentItem(getSellerFeatureTabFragment<SellerFeatureStatisticTabFragment>(), getString(R.string.seller_migration_fragment_tab_statistic)))
-
+        tabList.add(SellerFeatureFragmentAdapter.SellerFeatureFragmentItem(getSellerFeatureTabFragment<SellerFeatureFeedPlayTabFragment>(), getString(R.string.seller_migration_fragment_tab_feed_play)))
+        tabList.add(SellerFeatureFragmentAdapter.SellerFeatureFragmentItem(getSellerFeatureTabFragment<SellerFeatureFinancialServicesTabFragment>(), getString(R.string.seller_migration_fragment_tab_financial_services)))
     }
 
     private inline fun <reified T : BaseSellerFeatureTabFragment> getSellerFeatureTabFragment(): Fragment {

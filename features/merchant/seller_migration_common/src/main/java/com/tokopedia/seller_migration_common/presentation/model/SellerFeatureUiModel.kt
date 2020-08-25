@@ -135,7 +135,29 @@ sealed class SellerFeatureUiModel(
             descriptionId = R.string.seller_migration_fragment_product_tab_instagram_import_description,
             data = data)
 
-    class FeedPlayPostFeedDataUiModel
+    class PostFeedDataUiModel: SellerFeatureUiModel(
+            imageId = R.drawable.ic_seller_migration_feed,
+            titleId = R.string.seller_migration_fragment_feed_play_tab_post_feed_title,
+            descriptionId = R.string.seller_migration_fragment_feed_play_tab_post_feed_description
+    )
+
+    class LiveVideoDataUiModel: SellerFeatureUiModel(
+            imageId = R.drawable.ic_seller_migration_tokopedia_play,
+            titleId = R.string.seller_migration_fragment_feed_play_tab_live_video_title,
+            descriptionId = R.string.seller_migration_fragment_feed_play_tab_live_video_description
+    )
+
+    class ShopCapitalDataUiModel: SellerFeatureUiModel(
+            imageId = R.drawable.ic_seller_migration_modal_toko,
+            titleId = R.string.seller_migration_fragment_financial_service_tab_shop_capital_title,
+            descriptionId = R.string.seller_migration_fragment_financial_service_tab_shop_capital_description
+    )
+
+    class PriorityBalanceDataUiModel: SellerFeatureUiModel(
+            imageId = R.drawable.ic_seller_migration_saldo_prio,
+            titleId = R.string.seller_migration_fragment_financial_service_tab_priority_balance_title,
+            descriptionId = R.string.seller_migration_fragment_financial_service_tab_priority_balance_description
+    )
 
     override fun type(typeFactory: SellerFeatureAdapterTypeFactory): Int {
         return typeFactory.type(this)
