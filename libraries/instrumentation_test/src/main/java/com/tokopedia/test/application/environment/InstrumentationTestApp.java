@@ -12,6 +12,7 @@ import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.play.core.splitcompat.SplitCompat;
 import com.google.firebase.FirebaseApp;
 import com.google.gson.Gson;
+import com.tkpd.remoteresourcerequest.task.ResourceDownloadManager;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
@@ -36,6 +37,7 @@ import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.instrumentation.test.R;
 import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
@@ -98,6 +100,11 @@ public class InstrumentationTestApp extends BaseMainApplication
         enableTopAdsDetector();
         RemoteConfigInstance.initAbTestPlatform(this);
         super.onCreate();
+
+        ResourceDownloadManager
+                .Companion.getManager()
+                .setBaseAndRelativeUrl("http://dummy.dummy", "dummy")
+                .initialize(this, R.raw.dummy_description);
     }
 
     private void initAkamaiBotManager() {

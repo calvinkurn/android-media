@@ -27,6 +27,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.CommonViewHolderListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredViewHolderAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.SearchListener
 import com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer
@@ -41,12 +42,13 @@ open class TopchatProductAttachmentViewHolder constructor(
         itemView: View?,
         private val listener: ProductAttachmentListener,
         private val deferredAttachment: DeferredViewHolderAttachment,
-        private val searchListener: SearchListener
+        private val searchListener: SearchListener,
+        private val commonListener: CommonViewHolderListener
 ) : BaseChatViewHolder<ProductAttachmentViewModel>(itemView) {
 
     private var wishListBtn: UnifyButton? = itemView?.findViewById(R.id.tv_wishlist)
     private var cardContainer: SingleProductAttachmentContainer? = itemView?.findViewById(R.id.containerProductAttachment)
-    private var emptyStock: Label? = itemView?.findViewById(R.id.lb_empty_stock)
+    private var label: Label? = itemView?.findViewById(R.id.lb_product_label)
     private var loadView: LoaderUnify? = itemView?.findViewById(R.id.iv_attachment_shimmer)
     private var freeShippingImage: ImageView? = itemView?.findViewById(R.id.iv_free_shipping)
     private var statusContainer: LinearLayout? = itemView?.findViewById(R.id.ll_status_container)
@@ -57,7 +59,7 @@ open class TopchatProductAttachmentViewHolder constructor(
 
     private val white = "#ffffff"
     private val white2 = "#fff"
-    private val labelEmptyStockColor = "#80000000"
+    private val labelEmptyStockColor = "#AD31353B"
 
     override fun alwaysShowTime(): Boolean = true
 
@@ -91,6 +93,7 @@ open class TopchatProductAttachmentViewHolder constructor(
             bindRating(product)
             bindFreeShipping(product)
             bindFooter(product)
+            bindPreOrderLabel(product)
             bindEmptyStockLabel(product)
             bindChatReadStatus(product)
             listener.trackSeenProduct(product)
@@ -262,7 +265,7 @@ open class TopchatProductAttachmentViewHolder constructor(
 
     @SuppressLint("SetTextI18n")
     private fun bindRating(product: ProductAttachmentViewModel) {
-        if (product.hasReview() && product.fromBroadcast()) {
+        if (product.hasReview() && !commonListener.isSeller()) {
             reviewScore?.text = product.rating.score.toString()
             reviewCount?.text = "(${product.rating.count})"
             reviewStar?.show()
@@ -294,14 +297,30 @@ open class TopchatProductAttachmentViewHolder constructor(
         }
     }
 
-    private fun bindEmptyStockLabel(product: ProductAttachmentViewModel) {
-        emptyStock?.apply {
-            if (product.hasEmptyStock()) {
+    private fun bindPreOrderLabel(product: ProductAttachmentViewModel) {
+        label?.apply {
+            if (product.isPreOrder) {
                 show()
+                setText(R.string.title_topchat_pre_order)
                 unlockFeature = true
                 setLabelType(labelEmptyStockColor)
             } else {
                 hide()
+            }
+        }
+    }
+
+    private fun bindEmptyStockLabel(product: ProductAttachmentViewModel) {
+        label?.apply {
+            if (product.hasEmptyStock()) {
+                show()
+                setText(R.string.title_topchat_empty_stock)
+                unlockFeature = true
+                setLabelType(labelEmptyStockColor)
+            } else {
+                if (!product.isPreOrder) {
+                    hide()
+                }
             }
         }
     }

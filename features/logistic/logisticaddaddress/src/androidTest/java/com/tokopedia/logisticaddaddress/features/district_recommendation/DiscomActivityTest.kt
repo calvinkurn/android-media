@@ -44,7 +44,7 @@ class DiscomActivityTest {
 
     @Before
     fun setup() {
-        gtmLogDBSource.deleteAll().toBlocking()
+        gtmLogDBSource.deleteAll().subscribe()
 
         activityRule.launchActivity(createIntent())
         IdlingRegistry.getInstance().register(SimpleIdlingResource.countingIdlingResource)

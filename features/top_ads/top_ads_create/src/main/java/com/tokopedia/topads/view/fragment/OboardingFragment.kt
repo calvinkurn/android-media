@@ -8,7 +8,11 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
+import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
+import com.tokopedia.topads.common.getSellerMigrationFeatureName
+import com.tokopedia.topads.common.getSellerMigrationRedirectionApplinks
+import com.tokopedia.topads.common.isFromPdpSellerMigration
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.view.activity.StepperActivity
 import kotlinx.android.synthetic.main.topads_create_fragment_onboarding.*
@@ -33,13 +37,26 @@ class OboardingFragment: TkpdBaseV4Fragment() {
         super.onViewCreated(view, savedInstanceState)
         btn_start_auto_ads.setOnClickListener {
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_MULAI_IKLAN, "")
-            RouteManager.route(it.context, ApplinkConstInternalTopAds.TOPADS_AUTOADS_CREATE)
+            RouteManager.getIntent(it.context, ApplinkConstInternalTopAds.TOPADS_AUTOADS_CREATE).apply {
+                if (isFromPdpSellerMigration(activity?.intent?.extras)) {
+                    putExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, getSellerMigrationFeatureName(activity?.intent?.extras))
+                    putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, getSellerMigrationRedirectionApplinks(activity?.intent?.extras))
+                }
+                startActivity(this)
+            }
         }
         btn_start_manual_ads.setOnClickListener {
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_BUAT_IKLAN_MANUAL, "")
-            startActivity(Intent(activity, StepperActivity::class.java))
+            Intent(activity, StepperActivity::class.java).apply {
+                if (isFromPdpSellerMigration(activity?.intent?.extras)) {
+                    putExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, getSellerMigrationFeatureName(activity?.intent?.extras))
+                    putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, getSellerMigrationRedirectionApplinks(activity?.intent?.extras))
+                }
+                startActivity(this)
+            }
         }
     }
+
     companion object {
 
         fun newInstance(): OboardingFragment {

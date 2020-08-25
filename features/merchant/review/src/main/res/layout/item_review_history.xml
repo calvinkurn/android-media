@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/layout_lvl2"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/review_history_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/layout_lvl2"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/reviewHistoryProductName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textColor="@color/Neutral_N700_96"
+            android:visibility="gone"
+            android:layout_marginStart="@dimen/layout_lvl2"
+            android:layout_marginEnd="@dimen/layout_lvl2"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/reviewHistoryProductVariant"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl1"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="@id/reviewHistoryProductName"
+            app:layout_constraintTop_toBottomOf="@id/reviewHistoryProductName"
+            app:typographyType="body_3"
+            tools:visibility="visible"/>
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/review_history_product_name_barrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="reviewHistoryProductVariant, reviewHistoryProductName"
+            tools:visibility="gone"/>
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/reviewHistoryStars"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="@id/reviewHistoryProductName"
+            app:layout_constraintTop_toTopOf="@id/reviewHistoryDate"
+            app:layout_constraintBottom_toBottomOf="@id/reviewHistoryDate"
+            tools:visibility="visible"
+            tools:src="@drawable/ic_rating_star_five"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/reviewHistoryDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl2"
+            android:layout_marginLeft="@dimen/spacing_lvl2"
+            android:textColor="@color/Neutral_N700_68"
+            android:visibility="gone"
+            android:layout_marginTop="@dimen/spacing_lvl1"
+            app:layout_constraintTop_toBottomOf="@id/review_history_product_name_barrier"
+            app:layout_constraintStart_toEndOf="@id/reviewHistoryStars"
+            app:typographyType="body_3"
+            tools:visibility="visible"
+            tools:text="Kemarin"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/reviewHistoryDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/layout_lvl1"
+            android:layout_marginStart="@dimen/layout_lvl2"
+            android:layout_marginEnd="@dimen/layout_lvl2"
+            android:maxLines="2"
+            android:ellipsize="end"
+            app:typographyType="body_2"
+            app:layout_constraintTop_toBottomOf="@id/reviewHistoryDate"
+            tools:visibility="visible"
+            tools:text="asdasdasdadadsadsadasdsadasdasdsadasdasdsadsadsadsadsadsadasdsadsadsadsa" />
+
+        <com.tokopedia.review.common.presentation.widget.ReviewAttachedImages
+            android:id="@+id/reviewHistoryAttachedImages"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_10"
+            android:visibility="gone"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/reviewHistoryDescription"
+            tools:visibility="visible"/>
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/review_history_image_barrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="reviewHistoryAttachedImages, reviewHistoryDescription"
+            tools:visibility="gone"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/reviewHistoryReply"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Neutral_N700_68"
+            android:text="@string/review_history_reply_exists"
+            android:layout_marginTop="@dimen/dp_10"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="@id/reviewHistoryProductName"
+            app:typographyType="body_3"
+            app:layout_constraintTop_toBottomOf="@id/review_history_image_barrier"
+            tools:visibility="visible"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_lvl1"
+        app:layout_constraintTop_toBottomOf="@id/review_history_container"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
