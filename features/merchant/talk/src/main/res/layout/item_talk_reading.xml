@@ -138,14 +138,14 @@
                 android:id="@+id/readingRespondentDisplayName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/layout_lvl1"
-                android:layout_marginLeft="@dimen/layout_lvl1"
+                android:layout_marginStart="@dimen/spacing_lvl1"
+                android:layout_marginLeft="@dimen/spacing_lvl1"
                 android:textColor="@color/Neutral_N700_68"
                 android:visibility="gone"
                 app:layout_goneMarginStart="@dimen/layout_lvl2"
                 app:typographyType="body_3"
                 app:typographyWeight="bold"
-                app:layout_constraintStart_toEndOf="@id/readingRespondentProfilePicture"
+                app:layout_constraintStart_toEndOf="@id/readingRespondentSellerLabel"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent" />
 

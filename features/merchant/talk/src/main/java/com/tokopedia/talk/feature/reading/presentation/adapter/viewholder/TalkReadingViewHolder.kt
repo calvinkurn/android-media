@@ -171,20 +171,20 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
     private fun showLabelWithCondition(isSeller: Boolean, isYours: Boolean) {
         with(itemView) {
             when {
-                isYours -> {
+                isSeller -> {
                     readingRespondentSellerLabel.apply {
                         text = context.getString(R.string.reading_seller_label)
                         setLabelType(Label.GENERAL_LIGHT_GREEN)
                         show()
                     }
+                    readingRespondentDisplayName.hide()
                 }
-                isSeller -> {
+                isYours -> {
                     readingRespondentSellerLabel.apply {
                         text = context.getString(R.string.reading_your_question_label)
                         setLabelType(Label.GENERAL_LIGHT_GREY)
                         show()
                     }
-                    readingRespondentDisplayName.hide()
                 }
                 else -> {
                     readingRespondentSellerLabel.hide()
