@@ -26,13 +26,17 @@ object MixLeftComponentTracking: BaseTracking()  {
     private const val CLICK_MIX_LEFT_LOADMORE = "click view all on dynamic channel left carousel"
     private const val CLICK_MIX_LEFT_LOADMORE_CARD = "click view all card on dynamic channel left carousel"
 
-    fun getMixLeftClickLoadMore(channel: ChannelModel): HashMap<String, Any> {
+    fun getMixLeftClickLoadMore(channel: ChannelModel, userId: String): HashMap<String, Any> {
         return DataLayer.mapOf(
                 Event.KEY, CustomEvent.CLICK_HOMEPAGE,
                 Category.KEY, Category.HOMEPAGE,
                 Action.KEY, CLICK_MIX_LEFT_LOADMORE,
                 Label.KEY, channel.id + " - " + channel.channelHeader.name,
-                ChannelId.KEY, channel.id
+                ChannelId.KEY, channel.id,
+                Screen.KEY, Screen.DEFAULT,
+                CurrentSite.KEY, CurrentSite.DEFAULT,
+                UserId.KEY, userId,
+                BusinessUnit.KEY, BusinessUnit.DEFAULT
         ) as HashMap<String, Any>
     }
 
@@ -305,7 +309,7 @@ object MixLeftComponentTracking: BaseTracking()  {
     }
 
     fun sendMixLeftSeeAllClick(channel: ChannelModel, userId: String) {
-        getTracker().sendEnhanceEcommerceEvent(getMixLeftClickLoadMore(channel))
+        getTracker().sendEnhanceEcommerceEvent(getMixLeftClickLoadMore(channel, userId))
     }
 
     fun sendMixLeftBannerClick(channel: ChannelModel, position: Int,  userId: String){

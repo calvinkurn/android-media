@@ -117,21 +117,40 @@ object LegoBannerTracking : BaseTracking() {
             attribution = channelModel.trackingAttributionModel.galaxyAttribution
     )
 
-    private fun getLegoBannerFourClick(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int) = getBasicPromotionChannelClick(
-            event = Event.PROMO_CLICK,
-            eventCategory = Category.HOMEPAGE,
-            eventAction = CLICK_ON_LEGO_4,
-            eventLabel = Value.FORMAT_2_ITEMS_DASH.format(channelModel.id, channelModel.channelHeader.name),
-            channelId = channelModel.id,
-            affinity = channelModel.trackingAttributionModel.persona,
-            categoryId = channelModel.trackingAttributionModel.categoryPersona,
-            shopId = channelModel.trackingAttributionModel.brandId,
-            campaignCode = channelModel.trackingAttributionModel.campaignCode,
-            promotions = listOf(
-                    channelGrid.convertToHomePromotionModel(channelModel, position)
-            ),
-            attribution = channelModel.trackingAttributionModel.galaxyAttribution
-    )
+//    private fun getLegoBannerFourClick(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int) = getBasicPromotionChannelClick(
+//            event = Event.PROMO_CLICK,
+//            eventCategory = Category.HOMEPAGE,
+//            eventAction = CLICK_ON_LEGO_4,
+//            eventLabel = Value.FORMAT_2_ITEMS_DASH.format(channelModel.id, channelModel.channelHeader.name),
+//            channelId = channelModel.id,
+//            affinity = channelModel.trackingAttributionModel.persona,
+//            categoryId = channelModel.trackingAttributionModel.categoryPersona,
+//            shopId = channelModel.trackingAttributionModel.brandId,
+//            campaignCode = channelModel.trackingAttributionModel.campaignCode,
+//            promotions = listOf(
+//                    channelGrid.convertToHomePromotionModel(channelModel, position)
+//            ),
+//            attribution = channelModel.trackingAttributionModel.galaxyAttribution
+//    )
+
+    private fun getLegoBannerFourClick(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int): Map<String, Any> {
+        val trackingBuilder = BaseTrackingBuilder()
+        return trackingBuilder.constructBasicPromotionClick(
+                event = Event.PROMO_CLICK,
+                eventCategory = Category.HOMEPAGE,
+                eventAction = CLICK_ON_LEGO_4,
+                eventLabel = Value.FORMAT_2_ITEMS_DASH.format(channelModel.id, channelModel.channelHeader.name),
+                promotions = listOf(
+                        channelGrid.convertToHomePromotionModel(channelModel, position)
+                ),
+                userId = "")
+                .appendChannelId(channelModel.id)
+                .appendAffinity(channelModel.trackingAttributionModel.persona)
+                .appendCategoryId(channelModel.trackingAttributionModel.categoryPersona)
+                .appendShopId(channelModel.trackingAttributionModel.brandId)
+                .appendCampaignCode(channelModel.trackingAttributionModel.campaignCode)
+                .appendAttribution(channelModel.trackingAttributionModel.galaxyAttribution).build()
+    }
 
     private fun getLegoBannerThreeClick(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int) = getBasicPromotionChannelClick(
             event = Event.PROMO_CLICK,
