@@ -11,7 +11,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.autocomplete.AutoCompleteActivity
 import com.tokopedia.autocomplete.OnScrollListenerAutocomplete
 import com.tokopedia.autocomplete.R
 import com.tokopedia.autocomplete.analytics.AppScreen
@@ -97,8 +96,8 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
         return AppScreen.SCREEN_UNIVERSEARCH
     }
 
-    override fun showInitialStateResult(initialStateVisitableList: List<Visitable<*>>) {
-        notifyAdapter(initialStateVisitableList)
+    override fun showInitialStateResult(list: List<Visitable<*>>) {
+        notifyAdapter(list)
     }
 
     private fun notifyAdapter(list: List<Visitable<*>>) {
@@ -111,14 +110,6 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
 
     private fun stopTracePerformanceMonitoring() {
         performanceMonitoring?.stopTrace()
-    }
-
-    override fun refreshPopularSearch(list: List<Visitable<*>>) {
-        notifyAdapter(list)
-    }
-
-    override fun deleteRecentSearch(list: List<Visitable<*>>) {
-        notifyAdapter(list)
     }
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
@@ -178,13 +169,13 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
         presenter.deleteAllRecentSearch()
     }
 
-    override fun onRefreshPopularSearch() {
-        refreshPopularSearch()
+    override fun onRefreshPopularSearch(id: String) {
+        refreshPopularSearch(id)
     }
 
-    private fun refreshPopularSearch() {
+    private fun refreshPopularSearch(id: String) {
         AutocompleteTracking.eventClickRefreshPopularSearch()
-        presenter.refreshPopularSearch()
+        presenter.refreshPopularSearch(id)
     }
 
     fun setSearchParameter(searchParameter: HashMap<String, String> ) {
@@ -193,6 +184,11 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
 
     fun setInitialStateViewUpdateListener(initialStateViewUpdateListener: InitialStateViewUpdateListener) {
         this.initialStateViewUpdateListener = initialStateViewUpdateListener
+    }
+
+    override fun onRefreshDynamicSection(id: String) {
+//        AutocompleteTracking.eventClickRefreshDynamicSection()
+        presenter.refreshDynamicSection(id)
     }
 
     override fun onRecentViewImpressed(list: List<Any>) {

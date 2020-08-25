@@ -12,14 +12,13 @@ class RecentSearchTitleViewHolder(itemView: View, private val clickListener: Ini
 
     override fun bind(element: RecentSearchTitleViewModel) {
         itemView.titleTextView?.text = element.title
-        itemView.actionDeleteButton?.visibility = if (element.isVisible) View.VISIBLE else View.GONE
         bindActionDeleteButton(element)
-        itemView.actionDeleteButton?.setOnClickListener { clickListener.onDeleteAllRecentSearch() }
     }
 
     private fun bindActionDeleteButton(item: RecentSearchTitleViewModel) {
         itemView.actionDeleteButton?.shouldShowWithAction(item.labelAction.isNotEmpty()) {
             itemView.actionDeleteButton?.text = item.labelAction
+            itemView.actionDeleteButton?.setOnClickListener { clickListener.onDeleteAllRecentSearch() }
         }
     }
 

@@ -1,4 +1,4 @@
-package com.tokopedia.autocomplete.initialstate.popularsearch
+package com.tokopedia.autocomplete.initialstate.dynamic
 
 import android.view.LayoutInflater
 import android.view.View
@@ -11,7 +11,6 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.autocomplete.R
-import com.tokopedia.autocomplete.analytics.AutocompleteTracking
 import com.tokopedia.autocomplete.initialstate.BaseItemInitialStateSearch
 import com.tokopedia.autocomplete.initialstate.InitialStateItemClickListener
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
@@ -20,10 +19,10 @@ import com.tokopedia.unifycomponents.toDp
 import kotlinx.android.synthetic.main.layout_dynamic_item_initial_state.view.*
 import kotlinx.android.synthetic.main.layout_recyclerview_autocomplete.view.*
 
-class PopularSearchViewHolder(
+class DynamicInitialStateViewHolder(
         itemView: View,
         listener: InitialStateItemClickListener
-) : AbstractViewHolder<PopularSearchViewModel>(itemView) {
+) : AbstractViewHolder<DynamicInitialStateSearchViewModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -40,7 +39,7 @@ class PopularSearchViewHolder(
         itemView.recyclerView?.adapter = adapter
     }
 
-    override fun bind(element: PopularSearchViewModel) {
+    override fun bind(element: DynamicInitialStateSearchViewModel) {
         adapter.setData(element.list)
     }
 
@@ -95,15 +94,6 @@ class PopularSearchViewHolder(
 
             private fun bindListener(item: BaseItemInitialStateSearch) {
                 itemView.initialStateDynamicItem?.setOnClickListener {
-                    AutocompleteTracking.eventClickPopularSearch(
-                            itemView.context,
-                            String.format(
-                                    "value: %s - po: %s - applink: %s",
-                                    item.title,
-                                    (adapterPosition + 1).toString(),
-                                    item.applink
-                            )
-                    )
                     clickListener.onItemClicked(item.applink, item.url)
                 }
             }

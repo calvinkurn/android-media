@@ -8,10 +8,6 @@ interface InitialStateContract {
     interface View : CustomerView {
         fun showInitialStateResult(initialStateVisitableList: List<Visitable<*>>)
 
-        fun refreshPopularSearch(list: List<Visitable<*>>)
-
-        fun deleteRecentSearch(list: List<Visitable<*>>)
-
         fun onRecentViewImpressed(list: List<Any>)
 
         fun onRecentSearchImpressed(list: List<Any>)
@@ -34,7 +30,9 @@ interface InitialStateContract {
 
         fun deleteAllRecentSearch()
 
-        fun refreshPopularSearch()
+        fun refreshPopularSearch(id: String)
+
+        fun refreshDynamicSection(id: String)
 
         fun getQueryKey(): String
 
