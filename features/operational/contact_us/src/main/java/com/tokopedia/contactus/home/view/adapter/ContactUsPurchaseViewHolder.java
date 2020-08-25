@@ -34,7 +34,7 @@ class ContactUsPurchaseViewHolder extends RecyclerView.ViewHolder {
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ContactUsTracking.eventHomeInvoiceClick(type,txtOrderId.getText().toString());
+                ContactUsTracking.eventHomeInvoiceClick(view.getContext(), type,txtOrderId.getText().toString());
                 view.getContext().startActivity(OrderQueryTicketActivity.getOrderQueryTicketIntent(view.getContext(), buyerPurchaseList));
             }
         });

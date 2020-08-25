@@ -22,5 +22,10 @@
     <color name="color_green_shop_tab">#03AC0E</color>
     <color name="color_gray_shop_tab">#9FA6B0</color>
 
+    <color name="clr_00AC47">#00AC47</color>
+    <color name="clr_9FA6B0">#9FA6B0</color>
+    <color name="clr_EF144A">#EF144A</color>
+    <color name="clr_03AC0E">#03AC0E</color>
+    <color name="clr_transparent_black">#8000</color>
 
 </resources>

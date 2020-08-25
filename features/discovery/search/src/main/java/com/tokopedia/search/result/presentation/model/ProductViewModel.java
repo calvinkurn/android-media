@@ -23,7 +23,6 @@ public class ProductViewModel implements Parcelable {
     private int totalData;
     private int totalItem;
     private boolean isQuerySafe;
-    private QuickFilterViewModel quickFilterModel;
     private TopAdsModel adsModel;
     private CpmModel cpmModel;
     private GlobalNavViewModel globalNavViewModel;
@@ -55,14 +54,6 @@ public class ProductViewModel implements Parcelable {
 
     public void setIsQuerySafe(boolean querySafe) {
         isQuerySafe = querySafe;
-    }
-
-    public QuickFilterViewModel getQuickFilterModel() {
-        return quickFilterModel;
-    }
-
-    public void setQuickFilterModel(QuickFilterViewModel quickFilterModel) {
-        this.quickFilterModel = quickFilterModel;
     }
 
     public ProductViewModel() {

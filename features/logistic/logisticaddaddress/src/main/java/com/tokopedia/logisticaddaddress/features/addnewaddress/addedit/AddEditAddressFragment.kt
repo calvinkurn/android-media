@@ -62,7 +62,6 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
     private var isMismatchSolved: Boolean = false
     private var isUnnamedRoad: Boolean = false
     private var isNullZipcode: Boolean = false
-    private val EXTRA_ADDRESS_NEW = "EXTRA_ADDRESS_NEW"
     private val EXTRA_DETAIL_ADDRESS_LATEST = "EXTRA_DETAIL_ADDRESS_LATEST"
     private lateinit var zipCodeChipsAdapter: ZipCodeChipsAdapter
     private lateinit var chipsLayoutManager: ChipsLayoutManager
@@ -88,6 +87,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
     lateinit var userSession: UserSessionInterface
 
     companion object {
+        const val EXTRA_ADDRESS_NEW = "EXTRA_ADDRESS_NEW"
         @JvmStatic
         fun newInstance(extra: Bundle): AddEditAddressFragment {
             return AddEditAddressFragment().apply {
@@ -163,7 +163,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
                 .setOrientation(ChipsLayoutManager.HORIZONTAL)
                 .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
                 .build()
-        staticDimen8dp = context?.resources?.getDimensionPixelOffset(R.dimen.dp_8)
+        staticDimen8dp = context?.resources?.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_8)
 
         et_label_address.setText(labelRumah)
         et_receiver_name.setText(userSession.name)
