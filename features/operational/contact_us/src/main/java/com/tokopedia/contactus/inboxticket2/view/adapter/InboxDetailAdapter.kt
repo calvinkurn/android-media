@@ -191,7 +191,7 @@ class InboxDetailAdapter(private val mContext: Context,
         }
 
         private fun sendGTMEvent(eventLabel: String) {
-            ContactUsTracking.sendGTMInboxTicket(InboxTicketTracking.Event.EventName,
+            ContactUsTracking.sendGTMInboxTicket(view.context, InboxTicketTracking.Event.EventName,
                     InboxTicketTracking.Category.EventHelpMessageInbox,
                     InboxTicketTracking.Action.EventClickCsatPerReply,
                     eventLabel)

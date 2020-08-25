@@ -34,7 +34,4 @@
 
     <color name="cart_count_color">#ef144a</color>
     <color name="search_text_view_color">#F531353B</color>
-
-    <color name="profile_empty_search_title_color">#f531353b</color>
-    <color name="profile_empty_search_recommendation_title_color">#f531353b</color>
 </resources>

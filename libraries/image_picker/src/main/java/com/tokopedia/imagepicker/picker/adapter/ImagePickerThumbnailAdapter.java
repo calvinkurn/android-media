@@ -16,10 +16,13 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.imagepicker.R;
+import com.tokopedia.utils.image.ImageUtil;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -85,7 +88,7 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    if (canReorder && onImageEditThumbnailAdapterListener!= null) {
+                    if (canReorder && onImageEditThumbnailAdapterListener != null) {
                         int position = getAdapterPosition();
                         String imagePath = imagePathList.get(position);
                         onImageEditThumbnailAdapterListener.onPickerThumbnailItemLongClicked(imagePath, position);
@@ -108,12 +111,21 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
         }
 
         public void bind(String imagePath, int position) {
-            Glide.with(context)
+            File file = new File(imagePath);
+            boolean loadFitCenter = false;
+            if (file.exists()) {
+                loadFitCenter = ImageUtil.shouldLoadFitCenter(file);
+            }
+            RequestBuilder<Bitmap> requestBuilder = Glide.with(context)
                     .asBitmap()
                     .load(imagePath)
-                    .override(thumbnailSize, thumbnailSize)
-                    .centerCrop()
-                    .into(new BitmapImageViewTarget(imageView) {
+                    .override(thumbnailSize, thumbnailSize);
+            if (loadFitCenter) {
+                requestBuilder = requestBuilder.fitCenter();
+            } else {
+                requestBuilder = requestBuilder.centerCrop();
+            }
+            requestBuilder.into(new BitmapImageViewTarget(imageView) {
                         @Override
                         protected void setResource(Bitmap resource) {
                             RoundedBitmapDrawable circularBitmapDrawable =
@@ -147,7 +159,7 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
 
         public void bind(@DrawableRes int drawableRes, int backgroundColor) {
             vFrameImage.setBackgroundColor(backgroundColor);
-            ivPlaceholder.setImageDrawable(MethodChecker.getDrawable(ivPlaceholder.getContext(),drawableRes));
+            ivPlaceholder.setImageDrawable(MethodChecker.getDrawable(ivPlaceholder.getContext(), drawableRes));
         }
     }
 

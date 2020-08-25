@@ -35,7 +35,7 @@ abstract class InboxBottomSheetFragment : BottomSheetDialogFragment() {
         dialog?.setOnShowListener { dialog: DialogInterface ->
             val d = dialog as BottomSheetDialog
             val bottomSheetInternal = d.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
-            BottomSheetBehavior.from(bottomSheetInternal).setState(BottomSheetBehavior.STATE_EXPANDED)
+            BottomSheetBehavior.from(bottomSheetInternal as View).setState(BottomSheetBehavior.STATE_EXPANDED)
         }
         title?.setOnClickListener { closeBottomSheet() }
         return contentView
@@ -43,12 +43,12 @@ abstract class InboxBottomSheetFragment : BottomSheetDialogFragment() {
 
     private fun closeBottomSheet() {
         if (activity is InboxDetailActivity) {
-            ContactUsTracking.sendGTMInboxTicket("",
+            ContactUsTracking.sendGTMInboxTicket(context, "",
                     InboxTicketTracking.Category.EventInboxTicket,
                     InboxTicketTracking.Action.EventClickReason,
                     "Closing Reason Pop Up")
         } else {
-            ContactUsTracking.sendGTMInboxTicket("",
+            ContactUsTracking.sendGTMInboxTicket(context, "",
                     InboxTicketTracking.Category.EventInboxTicket,
                     InboxTicketTracking.Action.EventClickFilter,
                     "Closing Status Pop Up")

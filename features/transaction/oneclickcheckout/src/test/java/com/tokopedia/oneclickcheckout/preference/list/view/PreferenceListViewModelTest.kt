@@ -80,17 +80,4 @@ class PreferenceListViewModelTest {
 
         assertEquals(OccState.Failed(Failure(response)), preferenceListViewModel.setDefaultPreference.value)
     }
-
-    @Test
-    fun `Consume Preference List Fail`() {
-        val response = Throwable()
-        getPreferenceListUseCase.onFinish = { throw response }
-
-        preferenceListViewModel.getAllPreference()
-
-        //consume failure
-        (preferenceListViewModel.preferenceList.value as OccState.Failed).getFailure()
-
-        assertEquals(null, (preferenceListViewModel.preferenceList.value as OccState.Failed).getFailure())
-    }
 }

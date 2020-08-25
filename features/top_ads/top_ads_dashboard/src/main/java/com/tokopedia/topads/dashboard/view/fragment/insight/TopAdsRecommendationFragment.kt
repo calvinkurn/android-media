@@ -106,8 +106,6 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
     private fun getViewPagerAdapter(): TopAdsDashInsightPagerAdapter? {
         val list: ArrayList<Fragment> = arrayListOf()
         list.add(TopadsInsightBaseKeywordFragment.createInstance())
-        list.add(TopAdsInsightBaseProductFragment())
-        list.add(TopAdsInsightBaseBidFragment())
         val pagerAdapter = TopAdsDashInsightPagerAdapter(childFragmentManager, 0)
         pagerAdapter.setList(list)
         return pagerAdapter

@@ -5,14 +5,18 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.core.view.ViewCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.autocomplete.R
-import com.tokopedia.autocomplete.adapter.decorater.SpacingItemDecoration
 import com.tokopedia.autocomplete.analytics.AutocompleteTracking
 import com.tokopedia.autocomplete.initialstate.BaseItemInitialStateSearch
 import com.tokopedia.autocomplete.initialstate.InitialStateItemClickListener
+import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.unifycomponents.toDp
 import kotlinx.android.synthetic.main.layout_popular_item_autocomplete.view.*
 import kotlinx.android.synthetic.main.layout_recyclerview_autocomplete.view.*
 
@@ -29,12 +33,7 @@ class PopularSearchViewHolder(
     private val adapter: ItemAdapter
 
     init {
-        val layoutManager = ChipsLayoutManager.newBuilder(itemView.context)
-                .setOrientation(ChipsLayoutManager.HORIZONTAL)
-                .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
-                .build()
-        val staticDimen8dp = itemView.context.resources.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_8)
-        itemView.recyclerView?.addItemDecoration(SpacingItemDecoration(staticDimen8dp))
+        val layoutManager = LinearLayoutManager(itemView.context)
         itemView.recyclerView?.layoutManager = layoutManager
         ViewCompat.setLayoutDirection(itemView.recyclerView, ViewCompat.LAYOUT_DIRECTION_LTR)
         adapter = ItemAdapter(listener)
@@ -70,7 +69,31 @@ class PopularSearchViewHolder(
         inner class ItemViewHolder(itemView: View, private val clickListener: InitialStateItemClickListener) : RecyclerView.ViewHolder(itemView) {
 
             fun bind(item: BaseItemInitialStateSearch) {
-                itemView.autocompletePopularSearchItem?.chip_text?.text = item.title
+                bindIcon(item)
+                bindTitle(item)
+                bindSubtitle(item)
+                bindListener((item))
+            }
+
+            private fun bindIcon(item: BaseItemInitialStateSearch) {
+                itemView.autocompletePopularSearchIcon?.shouldShowWithAction(item.imageUrl.isNotEmpty()) {
+                    ImageHandler.loadImageRounded(itemView.context, itemView.autocompletePopularSearchIcon, item.imageUrl, 6.toDp().toFloat())
+                }
+            }
+
+            private fun bindTitle(item: BaseItemInitialStateSearch) {
+                itemView.autocompletePopularSearchTitle?.shouldShowWithAction(item.title.isNotEmpty()) {
+                    itemView.autocompletePopularSearchTitle?.setTextAndCheckShow(MethodChecker.fromHtml(item.title).toString())
+                }
+            }
+
+            private fun bindSubtitle(item: BaseItemInitialStateSearch) {
+                itemView.autocompletePopularSearchSubtitle?.shouldShowWithAction(item.subtitle.isNotEmpty()) {
+                    itemView.autocompletePopularSearchSubtitle?.setTextAndCheckShow(MethodChecker.fromHtml(item.subtitle).toString())
+                }
+            }
+
+            private fun bindListener(item: BaseItemInitialStateSearch) {
                 itemView.autocompletePopularSearchItem?.setOnClickListener {
                     AutocompleteTracking.eventClickPopularSearch(
                             itemView.context,

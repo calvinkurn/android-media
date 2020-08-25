@@ -117,6 +117,11 @@ object HomeQuery{
                 has_buy_button
                 rating
                 count_review
+                benefit {
+                    type
+                    value
+                }
+                textColor
               }
               banner {
                 id

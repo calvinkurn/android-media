@@ -76,9 +76,21 @@ object TalkReadingTracking {
         }
     }
 
-    fun eventAskNewQuestion(userId: String, productId: String) {
-        with(TalkReadingTrackingConstants) {
-            eventTalkReading(EVENT_ACTION_CLICK_CREATE_NEW_QUESTION, "", userId, productId)
+    fun eventWithoutLabel(userId: String, productId: String, action: String) {
+        with(TalkTrackingConstants) {
+            TrackApp.getInstance().gtm.sendGeneralEvent(
+                    mapOf(
+                            TRACKING_EVENT to EVENT_TALK,
+                            TRACKING_EVENT_CATEGORY to EVENT_CATEGORY_TALK,
+                            TRACKING_EVENT_ACTION to action,
+                            TRACKING_EVENT_LABEL to "",
+                            TRACKING_SCREEN_NAME to SCREEN_NAME_TALK,
+                            TRACKING_CURRENT_SITE to CURRENT_SITE_TALK,
+                            TRACKING_USER_ID to userId,
+                            TRACKING_BUSINESS_UNIT to BUSINESS_UNIT_TALK,
+                            TRACKING_PRODUCT_ID to productId
+                    )
+            )
         }
     }
 }
