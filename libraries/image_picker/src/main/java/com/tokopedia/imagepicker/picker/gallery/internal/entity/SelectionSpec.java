@@ -16,14 +16,14 @@ import java.util.Set;
 
 public final class SelectionSpec {
 
-    public Set<MimeType> mimeTypeSet;
-    public boolean mediaTypeExclusive;
+    public Set<MimeType> mimeTypeSet = MimeType.ofImage();
+    public boolean mediaTypeExclusive = false;
     public boolean showSingleMediaType;
     @StyleRes
     public int themeId;
-    public int orientation;
-    public boolean countable;
-    public int maxSelectable;
+    public int orientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
+    public boolean countable = true;
+    public int maxSelectable = 100;
     public int maxImageSelectable;
     public int maxVideoSelectable;
     public List<Filter> filters;
@@ -31,8 +31,8 @@ public final class SelectionSpec {
     public CaptureStrategy captureStrategy;
     public int spanCount;
     public int gridExpectedSize;
-    public float thumbnailScale;
-    public ImageEngine imageEngine;
+    public float thumbnailScale = 0.85f;
+    public ImageEngine imageEngine = new GlideEngine();
     public boolean hasInited;
     public OnSelectedListener onSelectedListener;
     public boolean originalable;
