@@ -318,9 +318,6 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         pageError.talkConnectionErrorRetryButton.setOnClickListener {
             getHeaderData()
         }
-        pageError.talkConnectionErrorGoToSettingsButton.setOnClickListener {
-            RouteManager.route(context, GENERAL_SETTING)
-        }
     }
 
     private fun hidePageError() {
@@ -514,7 +511,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
             return
         }
         val intent = RouteManager.getIntent(context, Uri.parse(ApplinkConstInternalGlobal.ADD_TALK).buildUpon().appendQueryParameter(TalkConstants.PARAM_PRODUCT_ID, productId).build().toString())
-        startActivityForResult(intent, TALK_WRITE_ACTIVITY_REQUEST_CODE)
+        startActivity(intent)
     }
 
     private fun goToReplyActivity(questionID: String) {

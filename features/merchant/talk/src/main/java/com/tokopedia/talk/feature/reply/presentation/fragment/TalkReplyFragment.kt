@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -17,6 +18,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.attachproduct.resultmodel.ResultProduct
@@ -322,9 +324,6 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
             showPageLoading()
             hidePageError()
             getDiscussionData()
-        }
-        pageError.talkConnectionErrorGoToSettingsButton.setOnClickListener {
-            RouteManager.route(context, ApplinkConstInternalGlobal.GENERAL_SETTING)
         }
     }
 
@@ -726,5 +725,15 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
 
     fun getDidUserWriteQuestion(): Boolean {
         return didUserWriteQuestion || isFromWrite()
+    }
+
+    fun goToReading() {
+        val intent = RouteManager.getIntent(context,
+                Uri.parse(UriUtil.buildUri(ApplinkConstInternalGlobal.PRODUCT_TALK, productId))
+                        .buildUpon()
+                        .appendQueryParameter(PARAM_SHOP_ID, shopId)
+                        .build().toString()
+        )
+        startActivity(intent)
     }
 }

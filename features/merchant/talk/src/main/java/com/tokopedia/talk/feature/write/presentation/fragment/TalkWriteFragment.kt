@@ -171,9 +171,6 @@ class TalkWriteFragment : BaseDaggerFragment(),
             viewModel.refresh()
             showLoading()
         }
-        talkConnectionErrorGoToSettingsButton.setOnClickListener {
-            goToSettingsPage()
-        }
     }
 
     private fun initRecycleView() {
@@ -206,13 +203,9 @@ class TalkWriteFragment : BaseDaggerFragment(),
                         .appendQueryParameter(TalkConstants.PARAM_SOURCE, TalkConstants.WRITING_SOURCE)
                         .build().toString()
         )
-        intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
         activity?.finish()
-    }
-
-    private fun goToSettingsPage() {
-        RouteManager.route(context, ApplinkConstInternalGlobal.GENERAL_SETTING)
     }
 
     private fun goToTermsAndConditionsPage() : Boolean {

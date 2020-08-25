@@ -1,6 +1,5 @@
 package com.tokopedia.talk.feature.reply.presentation.activity
 
-import android.app.Activity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -130,7 +129,7 @@ class TalkReplyActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, Tal
 
     override fun onBackPressed() {
         if(talkReplyFragment?.getDidUserWriteQuestion() == true) {
-            setResult(Activity.RESULT_OK)
+            talkReplyFragment?.goToReading()
             finish()
         } else {
             super.onBackPressed()

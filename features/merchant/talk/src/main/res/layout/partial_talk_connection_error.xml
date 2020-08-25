@@ -51,15 +51,4 @@
         android:text="@string/reading_connection_error_retry_button"
         app:layout_constraintTop_toBottomOf="@id/reading_connection_error_subtitle"/>
 
-    <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/talkConnectionErrorGoToSettingsButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/reading_connection_error_go_to_settings_page"
-        android:layout_marginStart="@dimen/dp_60"
-        android:layout_marginEnd="@dimen/dp_60"
-        android:layout_marginTop="@dimen/layout_lvl1"
-        app:layout_constraintTop_toBottomOf="@id/talkConnectionErrorRetryButton"
-        app:unifyButtonVariant="ghost"/>
-
 </androidx.constraintlayout.widget.ConstraintLayout>
