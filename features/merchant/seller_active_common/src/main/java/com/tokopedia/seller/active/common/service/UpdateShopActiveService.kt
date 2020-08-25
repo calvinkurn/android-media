@@ -23,7 +23,7 @@ class UpdateShopActiveService: JobIntentService(), CoroutineScope  {
                 enqueueWork(context, UpdateShopActiveService::class.java, JOB_ID, work)
             } catch (e: Exception) {
                 e.printStackTrace()
-                logExceptionToCrashlytics(e)
+                logExceptionToCrashlytics(e.fillInStackTrace())
             }
         }
 
