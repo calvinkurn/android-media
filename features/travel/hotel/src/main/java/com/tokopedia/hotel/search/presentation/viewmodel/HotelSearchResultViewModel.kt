@@ -28,6 +28,7 @@ class HotelSearchResultViewModel @Inject constructor(
         get() = searchParam.filter
     val selectedFilterV2: MutableList<ParamFilterV2>
         get() = searchParam.filters
+    var defaultSort = ""
 
     var filter: Filter = Filter()
 

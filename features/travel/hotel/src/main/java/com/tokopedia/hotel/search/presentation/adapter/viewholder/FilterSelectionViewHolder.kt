@@ -42,7 +42,7 @@ class FilterSelectionViewHolder(view: View): HotelSearchResultFilterV2Adapter.Fi
                     }
                 }
                 hotel_filter_selection_rv.layoutManager = SpanningLinearLayoutManager(context, LinearLayoutManager.HORIZONTAL,
-                        false, resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1))
+                        false, resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2))
             } else {
                 hotel_filter_selection_rv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             }

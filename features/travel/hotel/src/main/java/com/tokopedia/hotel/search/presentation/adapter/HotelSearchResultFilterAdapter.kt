@@ -13,7 +13,7 @@ import kotlinx.android.synthetic.main.item_hotel_search_filter.view.*
 class HotelSearchResultFilterAdapter(private val mode: Int = MODE_SINGLE)
     : RecyclerView.Adapter<HotelSearchResultFilterAdapter.HotelSearchResultFilterViewHolder>() {
 
-    val selectedItems: MutableSet<String> = mutableSetOf()
+    var selectedItems: MutableSet<String> = mutableSetOf()
     private val _item: MutableList<HotelFilterItem> = mutableListOf()
 
     fun updateItems(items: List<HotelFilterItem>, selected: Set<String>? = null){
@@ -38,6 +38,7 @@ class HotelSearchResultFilterAdapter(private val mode: Int = MODE_SINGLE)
         val item = _item[position]
         holder.bindItem(item, selectedItems.contains(item.itemId))
         holder.itemView.setOnClickListener {
+            if (mode == MODE_SINGLE) selectedItems.clear()
             if (selectedItems.contains(item.itemId))
                 selectedItems.remove(item.itemId)
             else

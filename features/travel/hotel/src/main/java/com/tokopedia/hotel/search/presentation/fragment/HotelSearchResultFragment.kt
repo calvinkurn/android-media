@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -15,6 +16,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
@@ -24,6 +26,7 @@ import com.tokopedia.hotel.common.util.ErrorHandlerHotel
 import com.tokopedia.hotel.common.util.TRACKING_HOTEL_SEARCH
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
 import com.tokopedia.hotel.search.data.model.*
+import com.tokopedia.hotel.search.data.model.FilterV2.Companion.FILTER_TYPE_SORT
 import com.tokopedia.hotel.search.data.model.params.ParamFilter
 import com.tokopedia.hotel.search.data.model.params.ParamFilterV2
 import com.tokopedia.hotel.search.data.util.CommonParam
@@ -38,7 +41,9 @@ import com.tokopedia.hotel.search.presentation.viewmodel.HotelSearchResultViewMo
 import com.tokopedia.hotel.search.presentation.widget.HotelClosedSortBottomSheets
 import com.tokopedia.hotel.search.presentation.widget.HotelFilterBottomSheets
 import com.tokopedia.hotel.search.presentation.widget.SubmitFilterListener
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.coroutines.Fail
@@ -167,22 +172,26 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
 
         val searchProperties = data.properties
 
-        bottom_action_view.visibility = View.VISIBLE
+        if (true) {
+            bottom_action_view.visibility = View.GONE
+        } else {
+            bottom_action_view.visibility = View.VISIBLE
+        }
 
         super.renderList(searchProperties, searchProperties.isNotEmpty())
 
         generateSortMenu(data.displayInfo.sort)
 
         if (isFirstInitializeFilter) {
-            initializeFilterV2BottomSheet(data.filters)
-            initializeQuickFilter(data.quickFilter, data.filters)
+            initializeFilterV2BottomSheet(data.filters.toMutableList())
+            initializeQuickFilter(data.quickFilter, data.filters, data.displayInfo.sort)
             isFirstInitializeFilter = false
         }
     }
 
     private var isFirstInitializeFilter = true
 
-    private fun initializeFilterV2BottomSheet(filterV2s: List<FilterV2>) {
+    private fun initializeFilterV2BottomSheet(filterV2s: MutableList<FilterV2>) {
         bottom_action_view.filterItem.listener = {
             filterBottomSheet = HotelFilterBottomSheets()
                     .setSubmitFilterListener(this)
@@ -194,7 +203,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
 
     private var quickFilters: List<QuickFilter> = listOf()
 
-    private fun initializeQuickFilter(quickFilters: List<QuickFilter>, filters: List<FilterV2>) {
+    private fun initializeQuickFilter(quickFilters: List<QuickFilter>, filters: List<FilterV2>, sort: List<Sort>) {
         this.quickFilters = quickFilters.map { quickFilter ->
             val item = filters.filter { it.name.equals(quickFilter.name, true) }
             if (item.isNotEmpty()) {
@@ -207,11 +216,22 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
             refreshSelectedFilter(quickFilters)
         }
 
+        if (true) {
+            val param: CoordinatorLayout.LayoutParams = bottom_action_view.layoutParams as CoordinatorLayout.LayoutParams
+            param.behavior = null
+            bottom_action_view.hide()
+
+            quick_filter_sort_filter.filterType = SortFilter.TYPE_ADVANCED
+            quick_filter_sort_filter.parentListener = { initiateAdvancedFilter(filters.toMutableList(), sort) }
+        }
+
         val sortFilterItem = quickFilters.map {
             val item = SortFilterItem(title = it.displayName,
                     type = if (it.selected) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL)
             item.listener = {
                 item.toggleSelected()
+                quick_filter_sort_filter.indicatorCounter = 0
+                quick_filter_sort_filter.indicatorNotifView.visibility = View.GONE
             }
             return@map item
         }
@@ -221,12 +241,35 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
             item.refChipUnify.setOnClickListener {
                 item.toggleSelected()
                 refreshSelectedFilter(quickFilters)
+                quick_filter_sort_filter.indicatorCounter = 0
+                quick_filter_sort_filter.indicatorNotifView.visibility = View.GONE
             }
         }
 
-        quick_filter_sort_filter.parentListener = { }
-
         quick_filter_sort_filter.show()
+    }
+
+    private fun initiateAdvancedFilter(filterV2s: MutableList<FilterV2>, sort: List<Sort>) {
+        val sortInFilterBottomSheet = FilterV2(type = FILTER_TYPE_SORT, name = FILTER_TYPE_SORT, displayName = "Urutkan Berdasarkan")
+        if (searchResultviewModel.selectedSort.displayName.isEmpty()) {
+            val sortDisplayName = sort.filter { it.name == searchResultviewModel.selectedSort.name }.firstOrNull()
+                    ?: Sort()
+            searchResultviewModel.selectedSort.displayName = sortDisplayName.displayName
+            searchResultviewModel.defaultSort = sortDisplayName.displayName
+        }
+        sortInFilterBottomSheet.options = sort.map { it.displayName }
+        sortInFilterBottomSheet.defaultOption = searchResultviewModel.defaultSort
+        filterV2s.add(0, sortInFilterBottomSheet)
+
+
+        val selectedFilter = searchResultviewModel.selectedFilterV2
+        selectedFilter.add(ParamFilterV2(FILTER_TYPE_SORT, mutableListOf(searchResultviewModel.selectedSort.displayName)))
+
+        filterBottomSheet = HotelFilterBottomSheets()
+                .setSubmitFilterListener(this)
+                .setSelected(searchResultviewModel.selectedFilterV2)
+                .setFilter(filterV2s)
+        filterBottomSheet.show(childFragmentManager, javaClass.simpleName)
     }
 
     private fun generateSortMenu(sort: List<Sort>) {
@@ -308,15 +351,31 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
     override fun onEmptyButtonClicked() {
         if (!searchResultviewModel.isFilter) activity?.onBackPressed()
         else {
-            onSubmitFilter(listOf())
+            onSubmitFilter(mutableListOf())
         }
     }
 
-    override fun onSubmitFilter(selectedFilter: List<ParamFilterV2>) {
+    override fun onSubmitFilter(selectedFilter: MutableList<ParamFilterV2>) {
         //track
+        if (selectedFilter.isNotEmpty()) {
+            if (selectedFilter.first().name == FILTER_TYPE_SORT) {
+                val sort = findSortValue(selectedFilter.first())
+                sort?.let { searchResultviewModel.addSort(it) }
+                selectedFilter.removeAt(0)
+            }
+        }
         searchResultviewModel.addFilter(selectedFilter)
         setUpQuickFilterBaseOnSelectedFilter(selectedFilter)
         loadInitialData()
+    }
+
+    private fun findSortValue(filter: ParamFilterV2): Sort? {
+        return if (searchResultviewModel.liveSearchResult.value != null
+                && searchResultviewModel.liveSearchResult.value is Success) {
+            var sortOption = (searchResultviewModel.liveSearchResult.value as Success).data.displayInfo.sort
+            sortOption = sortOption.filter { it.displayName == filter.values.firstOrNull() }
+            sortOption.firstOrNull()
+        } else null
     }
 
     private fun onQuickFilterChanged(selectedFilters: List<ParamFilterV2>) {
@@ -326,7 +385,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
 
     //for assign clicked quick filter value to selected filter
     private fun refreshSelectedFilter(quickFilters: List<QuickFilter>) {
-        val selectedFilters = searchResultviewModel.selectedFilterV2.associateBy ({it.name}, {it}).toMutableMap()
+        val selectedFilters = searchResultviewModel.selectedFilterV2.associateBy({ it.name }, { it }).toMutableMap()
 
         quickFilters.forEachIndexed { index, quickFilter ->
             val isQuickFilterSelected = quick_filter_sort_filter.chipItems[index].type == ChipsUnify.TYPE_SELECTED

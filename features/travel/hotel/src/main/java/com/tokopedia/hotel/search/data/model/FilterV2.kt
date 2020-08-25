@@ -26,6 +26,8 @@ data class FilterV2(
 
         var optionSelected: List<String> = listOf(),
 
+        var defaultOption: String = "",
+
         @SerializedName("image")
         @Expose
         val image: Images = Images()
@@ -44,5 +46,6 @@ data class FilterV2(
             const val FILTER_TYPE_SELECTION = "selection"
             const val FILTER_TYPE_OPEN_RANGE = "open_range"
             const val FILTER_TYPE_SELECTION_RANGE = "selection_range"
+            const val FILTER_TYPE_SORT = "sort"
     }
 }
