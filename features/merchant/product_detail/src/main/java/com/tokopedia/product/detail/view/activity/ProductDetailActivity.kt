@@ -42,6 +42,7 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
         private const val PARAM_TRACKER_ATTRIBUTION = "tracker_attribution"
         private const val PARAM_TRACKER_LIST_NAME = "tracker_list_name"
         private const val PARAM_AFFILIATE_STRING = "aff"
+        private const val PARAM_LAYOUT_ID = "layoutID"
 
         private const val AFFILIATE_HOST = "affiliate"
 
@@ -73,6 +74,7 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
     private var trackerListName: String? = null
     private var affiliateString: String? = null
     private var deeplinkUrl: String? = null
+    private var layoutId: String? = null
     private var userSessionInterface: UserSessionInterface? = null
 
     //Performance Monitoring
@@ -159,8 +161,7 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
     override fun getNewFragment(): Fragment = DynamicProductDetailFragment.newInstance(productId, warehouseId, shopDomain,
             productKey, isFromDeeplink,
             isFromAffiliate, trackerAttribution,
-            trackerListName, affiliateString, deeplinkUrl)
-
+            trackerListName, affiliateString, deeplinkUrl, layoutId)
 
     override fun getComponent(): ProductDetailComponent = DaggerProductDetailComponent.builder()
             .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent).build()
@@ -172,9 +173,6 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
         isFromDeeplink = intent.getBooleanExtra(PARAM_IS_FROM_DEEPLINK, false)
         val uri = intent.data
         val bundle = intent.extras
-        bundle?.let {
-            warehouseId = it.getString("warehouse_id")
-        }
         if (uri != null) {
             deeplinkUrl = generateApplink(uri.toString())
             if (uri.scheme == DeeplinkConstant.SCHEME_INTERNAL) {
@@ -200,6 +198,9 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
             affiliateString = uri.getQueryParameter(PARAM_AFFILIATE_STRING)
         }
         bundle?.let {
+            warehouseId = it.getString("warehouse_id")
+            layoutId = it.getString(PARAM_LAYOUT_ID)
+
             if (productId.isNullOrBlank()) {
                 productId = it.getString(PARAM_PRODUCT_ID)
             }

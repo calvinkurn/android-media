@@ -315,13 +315,13 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         }
     }
 
-    fun getProductP1(productParams: ProductParams, refreshPage: Boolean = false, isAffiliate: Boolean = false) {
+    fun getProductP1(productParams: ProductParams, refreshPage: Boolean = false, isAffiliate: Boolean = false, layoutId: String = "") {
         launchCatchError(block = {
             shopDomain = productParams.shopDomain
             forceRefresh = refreshPage
 
             getPdpLayout(productParams.productId ?: "", productParams.shopDomain
-                    ?: "", productParams.productName ?: "", productParams.warehouseId ?: "").also {
+                    ?: "", productParams.productName ?: "", productParams.warehouseId ?: "", layoutId).also {
                 addStaticComponent(it)
                 getDynamicProductInfoP1 = it.layoutData.also {
                     listOfParentMedia = it.data.media.toMutableList()
@@ -704,8 +704,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 isUserSessionActive)
     }
 
-    private suspend fun getPdpLayout(productId: String, shopDomain: String, productKey: String, whId: String): ProductDetailDataModel {
-        getPdpLayoutUseCase.requestParams = GetPdpLayoutUseCase.createParams(productId, shopDomain, productKey, whId)
+    private suspend fun getPdpLayout(productId: String, shopDomain: String, productKey: String, whId: String, layoutId: String): ProductDetailDataModel {
+        getPdpLayoutUseCase.requestParams = GetPdpLayoutUseCase.createParams(productId, shopDomain, productKey, whId, layoutId)
         getPdpLayoutUseCase.forceRefresh = forceRefresh
         getPdpLayoutUseCase.enableCaching = enableCaching
         return getPdpLayoutUseCase.executeOnBackground()

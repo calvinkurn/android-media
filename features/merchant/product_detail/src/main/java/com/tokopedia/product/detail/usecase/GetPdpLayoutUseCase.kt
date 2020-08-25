@@ -284,12 +284,13 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
             }
         """.trimIndent()
 
-        fun createParams(productId: String, shopDomain: String, productKey: String, whId: String): RequestParams =
+        fun createParams(productId: String, shopDomain: String, productKey: String, whId: String, layoutId: String): RequestParams =
                 RequestParams.create().apply {
                     putString(ProductDetailCommonConstant.PARAM_PRODUCT_ID, productId)
                     putString(ProductDetailCommonConstant.PARAM_SHOP_DOMAIN, shopDomain)
                     putString(ProductDetailCommonConstant.PARAM_PRODUCT_KEY, productKey)
                     putString(ProductDetailCommonConstant.PARAM_WAREHOUSE_ID, whId)
+                    putString(ProductDetailCommonConstant.PARAM_LAYOUT_ID, layoutId)
                 }
     }
 

@@ -615,16 +615,23 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     if (shopInfo != null && shopInfo.getInfo() != null) {
                         //Add Affiliate string for tracking
                         String affiliateString = "";
+                        String layoutTesting = "";
                         if (!TextUtils.isEmpty(uriData.getQueryParameter("aff"))) {
                             affiliateString = uriData.getQueryParameter("aff");
                         }
 
-                        context.startActivity(RouteManager.getIntent(context,
+                        if (!TextUtils.isEmpty(uriData.getQueryParameter("layoutID"))) {
+                            layoutTesting = uriData.getQueryParameter("layoutID");
+                        }
+
+                        Intent productIntent = RouteManager.getIntent(context,
                                 ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN_WITH_AFFILIATE,
                                 uriData,
                                 linkSegment.get(0),
                                 linkSegment.get(1),
-                                affiliateString));
+                                affiliateString);
+                        productIntent.putExtra("layoutID", layoutTesting);
+                        context.startActivity(productIntent);
                     } else {
                         Timber.w("P1#DEEPLINK_OPEN_WEBVIEW#TwoSegments;link_segment='%s';uri='%s'",
                                 linkSegment.get(0) + "/" + linkSegment.get(1), uriData.toString());

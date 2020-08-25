@@ -473,9 +473,9 @@ class DynamicProductDetailViewModelTest {
         coEvery {
             getPdpLayoutUseCase.requestParams
         } returns GetPdpLayoutUseCase.createParams(productParams.productId
-                ?: "", productParams.shopDomain ?: "", productParams.productName ?: "", productParams.warehouseId ?: "")
+                ?: "", productParams.shopDomain ?: "", productParams.productName ?: "", productParams.warehouseId ?: "", "")
 
-        viewModel.getProductP1(productParams, true, false)
+        viewModel.getProductP1(productParams, true, false, "")
 
         Assert.assertTrue(getPdpLayoutUseCase.requestParams.getString(PARAM_PRODUCT_ID, "") == productId)
         Assert.assertTrue(getPdpLayoutUseCase.requestParams.getString(PARAM_PRODUCT_KEY, "").isEmpty())
@@ -494,9 +494,9 @@ class DynamicProductDetailViewModelTest {
         coEvery {
             getPdpLayoutUseCase.requestParams
         } returns GetPdpLayoutUseCase.createParams(productParams.productId
-                ?: "", productParams.shopDomain ?: "", productParams.productName ?: "", productParams.warehouseId ?: "")
+                ?: "", productParams.shopDomain ?: "", productParams.productName ?: "", productParams.warehouseId ?: "", "")
 
-        viewModel.getProductP1(productParams, true, false)
+        viewModel.getProductP1(productParams, true, false, " ")
 
         Assert.assertTrue(getPdpLayoutUseCase.requestParams.getString(PARAM_PRODUCT_ID, "").isEmpty())
         Assert.assertTrue(getPdpLayoutUseCase.requestParams.getString(PARAM_PRODUCT_KEY, "") == productKey)
@@ -526,7 +526,7 @@ class DynamicProductDetailViewModelTest {
 
        `co every p1 success`(dataP1)
 
-        viewModel.getProductP1(productParams, true, false)
+        viewModel.getProductP1(productParams, true, false, "")
 
         `co verify p1 success`()
 
