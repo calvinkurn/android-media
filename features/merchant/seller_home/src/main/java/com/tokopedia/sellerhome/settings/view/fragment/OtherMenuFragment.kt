@@ -213,13 +213,11 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun setStatusBar() {
-        if(isVisible) {
-            (activity as? Activity)?.run {
-                if (isInitialStatusBar && !isDefaultDarkStatusBar) {
-                    requestStatusBarLight()
-                } else {
-                    requestStatusBarDark()
-                }
+        (activity as? Activity)?.run {
+            if (isInitialStatusBar && !isDefaultDarkStatusBar) {
+                requestStatusBarLight()
+            } else {
+                requestStatusBarDark()
             }
         }
     }
@@ -435,12 +433,10 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         recycler_view.layoutManager = LinearLayoutManager(context)
         context?.let { otherMenuViewHolder = OtherMenuViewHolder(view, it, this, this, freeShippingTracker)}
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if(isVisible) {
-                if (isDefaultDarkStatusBar) {
-                    activity?.requestStatusBarDark()
-                } else {
-                    activity?.requestStatusBarLight()
-                }
+            if (isDefaultDarkStatusBar) {
+                activity?.requestStatusBarDark()
+            } else {
+                activity?.requestStatusBarLight()
             }
             observeRecyclerViewScrollListener()
         }
@@ -485,7 +481,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     }
 
     private fun setLightStatusBar() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && isVisible) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (!isDefaultDarkStatusBar){
                 activity?.requestStatusBarLight()
             }
