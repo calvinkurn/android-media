@@ -239,7 +239,7 @@ class SquareVoucherPainter(private val context: Context,
     }
 
     private fun Canvas.drawValueText(value: Int, @PostValuePosition postValuePosition: Int) {
-        val isPercentagePosition = postValuePosition == PostValuePosition.RIGHT
+        val isPercentagePosition = postValuePosition == PostValuePosition.LEFT
         val horizontalLinearLayout = getValueLinearLayout(value, isPercentagePosition)
         val xPosition: Float = when(postValuePosition) {
             PostValuePosition.LEFT -> leftPromoInfoX
