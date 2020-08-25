@@ -29,6 +29,7 @@ import com.tokopedia.design.label.LabelView;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.picker.album.AlbumPickerActivity;
 import com.tokopedia.imagepicker.picker.gallery.adapter.AlbumMediaAdapter;
+import com.tokopedia.imagepicker.picker.gallery.internal.entity.Album;
 import com.tokopedia.imagepicker.picker.gallery.loader.AlbumLoader;
 import com.tokopedia.imagepicker.picker.gallery.loader.AlbumMediaLoader;
 import com.tokopedia.imagepicker.picker.gallery.model.AlbumItem;
@@ -228,7 +229,8 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
                 case ALBUM_LOADER_ID:
                     return AlbumLoader.newInstance(getContext());// ignore galleryType
                 case MEDIA_LOADER_ID:
-                    return AlbumMediaLoader.newInstance(getContext(), selectedAlbumItem, galleryType);
+                    Album album = selectedAlbumItem.intoAlbum();
+                    return AlbumMediaLoader.newInstance(getContext(), album, false);// ignore , selectedAlbumItem, galleryType
                 default:
                     return new Loader<>(getContext());
             }

@@ -7,8 +7,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.tokopedia.imagepicker.R;
+import com.tokopedia.imagepicker.picker.gallery.internal.entity.Album;
 import com.tokopedia.imagepicker.picker.gallery.loader.AlbumLoader;
-import com.tokopedia.imagepicker.picker.gallery.loader.AlbumMediaLoader;
 
 /**
  * Created by hangnadi on 5/22/17.
@@ -86,9 +86,9 @@ public class AlbumItem implements Parcelable {
     public static AlbumItem valueOf(Cursor cursor) {
         String clumn = cursor.getString(cursor.getColumnIndex(AlbumLoader.COLUMN_URI));
         return new AlbumItem(
-                cursor.getString(cursor.getColumnIndex(AlbumMediaLoader.BUCKET_ID)),
+                cursor.getString(cursor.getColumnIndex("bucket_id")),
                 Uri.parse(clumn != null ? clumn : ""),
-                cursor.getString(cursor.getColumnIndex(AlbumMediaLoader.BUCKET_DISPLAY_NAME)),
+                cursor.getString(cursor.getColumnIndex("bucket_display_name")),
                 cursor.getLong(cursor.getColumnIndex(AlbumLoader.COLUMN_COUNT)));
     }
 
@@ -113,5 +113,15 @@ public class AlbumItem implements Parcelable {
 
     public boolean isEmpty() {
         return mCount == 0;
+    }
+
+    public Album intoAlbum() {
+
+        return new Album(
+                mId,
+                mCoverUri,
+                displayName,
+                mCount
+        );
     }
 }
