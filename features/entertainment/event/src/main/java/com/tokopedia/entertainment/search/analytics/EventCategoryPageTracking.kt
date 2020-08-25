@@ -57,29 +57,20 @@ class EventCategoryPageTracking {
                 Event.ACTION, "click page product",
                 Event.LABEL, String.format("%s - %s", event.nama_event, position.toString()),
                 Ecommerce.KEY, DataLayer.mapOf(
-                Click.KEY, DataLayer.mapOf(
-                Click.ACTION_FIELD, DataLayer.mapOf("list", event.nama_event),
-                Product.KEY, getProductGridView(listsEvent)
-        )
-        )
+                Click.KEY, DataLayer.mapOf(Click.ACTION_FIELD, DataLayer.mapOf("list", event.nama_event),
+                Product.KEY, DataLayer.listOf(
+                DataLayer.mapOf(
+                        Product.NAME, event.nama_event,
+                        Product.ID, event.id,
+                        Product.PRICE, event.harga_now,
+                        Product.BRAND, "",
+                        Product.CATEGORY, "",
+                        Product.VARIANT, "",
+                        Product.LIST, event.nama_event,
+                        Product.POSITION, position
+                )
         ))
-    }
-
-    private fun getProductGridView(listsEvent: List<EventGridAdapter.EventGrid>): Any{
-        val list = mutableListOf<Any>()
-        listsEvent.forEachIndexed { index, eventGrid ->
-            list.add(DataLayer.mapOf(
-                    Product.NAME, eventGrid.nama_event,
-                    Product.ID, eventGrid.id,
-                    Product.PRICE, eventGrid.harga_now,
-                    Product.BRAND, "",
-                    Product.CATEGORY, "",
-                    Product.VARIANT, "",
-                    Product.LIST, eventGrid.nama_event,
-                    Product.POSITION, index+1
-            ))
-        }
-        return list
+        )))
     }
 
     fun onClickCategoryBubble(category: CategoryTextBubbleAdapter.CategoryTextBubble){

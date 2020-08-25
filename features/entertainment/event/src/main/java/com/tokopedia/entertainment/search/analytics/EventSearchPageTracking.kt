@@ -144,28 +144,20 @@ class EventSearchPageTracking {
                 Event.LABEL, String.format("%s - %s", event.nama_kegiatan, position.toString()),
                 Ecommerce.KEY, DataLayer.mapOf(
                 Click.KEY, DataLayer.mapOf(
-                Click.ACTION_FIELD, DataLayer.mapOf("list", listsEvent),
-                Product.KEY, getProductEventSearchList(listsEvent)))))
+                Click.ACTION_FIELD, DataLayer.mapOf("list", event.nama_kegiatan),
+                Product.KEY, DataLayer.listOf(
+                DataLayer.mapOf(
+                        Product.NAME, event.nama_kegiatan,
+                        Product.ID, event.id,
+                        Product.PRICE, event.price,
+                        Product.BRAND, "",
+                        Product.CATEGORY, "",
+                        Product.VARIANT, "",
+                        Product.LIST, event.nama_kegiatan,
+                        Product.POSITION, position
+                )
+        )))))
     }
-
-    private fun getProductEventSearchList(listsEvent: List<SearchEventListViewHolder.KegiatanSuggestion>) : Any?{
-        val list = mutableListOf<Any>()
-        listsEvent.forEachIndexed { index, it ->
-            list.add(DataLayer.mapOf(
-                    Product.NAME, it.nama_kegiatan,
-                    Product.ID, it.id,
-                    Product.PRICE, it.price,
-                    Product.BRAND, "",
-                    Product.CATEGORY, "",
-                    Product.VARIANT, "",
-                    Product.LIST, it.nama_kegiatan,
-                    Product.POSITION, index + 1
-            ))
-        }
-
-        return list
-    }
-
 
     fun clickSearchBarOnSearchActivity() : Boolean{
         getTracker().sendGeneralEvent(DataLayer.mapOf(
