@@ -86,14 +86,15 @@ class TalkReplyViewHolder(view: View,
         }
     }
 
-    private fun showLabelWithCondition(isSeller: Boolean, isMyQuestions:Boolean) = with(itemView){
+    private fun showLabelWithCondition(isSeller: Boolean, isMyQuestion :Boolean) = with(itemView){
         when {
             isSeller -> {
                 replySellerLabel.text = context.getString(R.string.reading_seller_label)
                 replySellerLabel.setLabelType(GENERAL_LIGHT_GREEN)
+                replyDisplayName.hide()
                 replySellerLabel.show()
             }
-            isMyQuestions -> {
+            isMyQuestion -> {
                 replySellerLabel.text = context.getString(R.string.reading_your_question_label)
                 replySellerLabel.setLabelType(GENERAL_LIGHT_GREY)
                 replySellerLabel.show()
