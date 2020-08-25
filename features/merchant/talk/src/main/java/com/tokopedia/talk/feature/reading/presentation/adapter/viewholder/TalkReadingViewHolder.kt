@@ -56,18 +56,15 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
 
     private fun showInquirerName(inquirerName: String, isMyQuestion: Boolean) {
         if(isMyQuestion) {
-            itemView.apply {
-                readingInquirerYouLabel.show()
-                readingInquirerName.hide()
-            }
-            return
+            itemView.readingInquirerYouLabel.show()
+        } else {
+            itemView.readingInquirerYouLabel.hide()
         }
         if(inquirerName.isNotEmpty()) {
             itemView.readingInquirerName.apply{
                 text = inquirerName
                 show()
             }
-            itemView.readingInquirerYouLabel.hide()
         } else {
             itemView.readingInquirerName.hide()
         }
