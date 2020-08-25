@@ -272,6 +272,7 @@
 /libraries/image_preview/								@tokopedia/android-core-dev
 /libraries/imageuploader/								@tokopedia/android-core-dev
 /libraries/inappupdate/									@tokopedia/android-core-dev
+/libraries/instrumentation_test                         @tokopedia/android-core-dev
 /libraries/iris/										@tokopedia/android-gatekeeperanalytic-dev
 /libraries/iris_session/	                            @tokopedia/android-gatekeeperanalytic-dev
 /libraries/kotlin_extensions/							@tokopedia/android-core-dev
