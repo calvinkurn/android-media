@@ -153,7 +153,7 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
                     BRAND, NONE,
                     CATEGORY, NONE,
                     VARIANT, NONE,
-                    LIST, joinDash(SHOPPAGE, shopId, getProductEtalaseEvent(selectedEtalaseName, etalaseName), loginNonLoginString),
+                    LIST, joinDash(SHOPPAGE, shopId, getProductEtalaseEvent(selectedEtalaseName, etalaseName), loginNonLoginString, SEARCH_RESULT),
                     POSITION, productPosition,
                     DIMENSION_81, shopTypeDef,
                     DIMENSION_79, shopId,

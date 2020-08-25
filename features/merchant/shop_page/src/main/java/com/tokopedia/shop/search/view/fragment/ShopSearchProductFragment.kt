@@ -325,7 +325,7 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
     }
 
     private fun populateDynamicSearchResult(universeSearchResponse: UniverseSearchResponse) {
-        productListData = arrayListOf()
+        productListData?.clear()
         universeSearchResponse.universeSearch.data.firstOrNull()?.items?.forEach {
             productListData?.add(ShopSearchProductDynamicResultDataModel(
                     it.imageUri,
