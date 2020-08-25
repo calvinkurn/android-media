@@ -1,0 +1,50 @@
+{
+  "readme": "Purchase IO Tracker",
+  "mode": "exact",
+  "query": [
+    {
+      "buoList": [
+        {
+          "canonicalIdentifier_": "{{.*}}",
+          "canonicalUrl_": "{{.*}}",
+          "creationTimeStamp_": "{{\\d+}}",
+          "description_": "{{.*}}",
+          "expirationInMilliSec_": "{{\\d+}}",
+          "indexMode_": "{{\\w+}}",
+          "localIndexMode_": "{{\\w+}}",
+          "metadata_": {
+            "contentSchema": "{{\\w+}}",
+            "currencyType": "IDR",
+            "customMetadata": {
+              "ProductCategory": "{{\\w+}}"
+            },
+            "price": "{{\\d+}}",
+            "productName": "{{\\w+}}",
+            "quantity": "{{\\d+}}",
+            "sku": "{{\\w+}}"
+          },
+          "title_": "{{\\w+}}"
+        }
+      ],
+      "customProperties": {
+        "nameValuePairs": {
+          "paymentID": "{{\\w+}}",
+          "productType": "{{\\w+}}",
+          "userId": "{{\\w+}}",
+          "new_buyer": "{{true|false}}",
+          "monthly_new_buyer": "{{true|false}}"
+        }
+      },
+      "eventName": "PURCHASE",
+      "isStandardEvent": "{{true|false}}",
+      "standardProperties": {
+        "nameValuePairs": {
+          "transaction_id": "{{\\d+}}",
+          "currency": "{{\\w+}}",
+          "shipping": "{{\\d+}}",
+          "revenue": "{{\\d+}}"
+        }
+      }
+    }
+  ]
+}
