@@ -3,12 +3,8 @@ package com.tokopedia.test.application.environment;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Base64;
-
-import androidx.test.platform.app.InstrumentationRegistry;
-
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -38,8 +34,6 @@ import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface;
 import com.tokopedia.test.application.environment.interceptor.TopAdsDetectorInterceptor;
@@ -49,7 +43,6 @@ import com.tokopedia.test.application.util.DeviceInfo;
 import com.tokopedia.test.application.util.DeviceScreenInfo;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.interfaces.ContextAnalytics;
-
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
