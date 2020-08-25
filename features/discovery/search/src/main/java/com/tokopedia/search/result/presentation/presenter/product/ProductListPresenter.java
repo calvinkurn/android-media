@@ -27,6 +27,7 @@ import com.tokopedia.search.analytics.SearchEventTracking;
 import com.tokopedia.search.result.domain.model.SearchProductModel;
 import com.tokopedia.search.result.presentation.ProductListSectionContract;
 import com.tokopedia.search.result.presentation.mapper.ProductViewModelMapper;
+import com.tokopedia.search.result.presentation.ShopRatingABTest;
 import com.tokopedia.search.result.presentation.mapper.RecommendationViewModelMapper;
 import com.tokopedia.search.result.presentation.model.BadgeItemViewModel;
 import com.tokopedia.search.result.presentation.model.BannedProductsEmptySearchViewModel;
@@ -82,6 +83,10 @@ import kotlin.collections.CollectionsKt;
 import kotlin.jvm.functions.Function1;
 import rx.Subscriber;
 
+import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_SHOP_RATING;
+import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_SHOP_RATING_VARIANT_A;
+import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_SHOP_RATING_VARIANT_B;
+import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_SHOP_RATING_VARIANT_C;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_KEY_COMMA_VS_FULL_STAR;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_VARIANT_COMMA_STAR;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_VARIANT_FULL_STAR;
@@ -126,6 +131,7 @@ final class ProductListPresenter
     private boolean useRatingString = false;
     private String responseCode = "";
     private int topAdsCount = 1;
+    private String shopRatingABVariant = "";
 
     private List<Visitable> productList;
     private List<InspirationCarouselViewModel> inspirationCarouselViewModel;
@@ -172,6 +178,7 @@ final class ProductListPresenter
         super.attachView(view);
 
         useRatingString = getIsUseRatingString();
+        shopRatingABVariant = getShopRatingABVariant();
     }
 
     private boolean getIsUseRatingString() {
@@ -183,6 +190,16 @@ final class ProductListPresenter
         catch (Exception e) {
             e.printStackTrace();
             return false;
+        }
+    }
+
+    private String getShopRatingABVariant() {
+        try {
+            return getView().getABTestRemoteConfig().getString(AB_TEST_SHOP_RATING);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return "";
         }
     }
 
@@ -413,7 +430,9 @@ final class ProductListPresenter
         if (isViewAttached()) {
             int lastProductItemPositionFromCache = getView().getLastProductItemPositionFromCache();
 
-            ProductViewModel productViewModel = new ProductViewModelMapper().convertToProductViewModel(lastProductItemPositionFromCache, searchProductModel, useRatingString);
+            ProductViewModelMapper mapper = createProductViewModelMapper();
+            ProductViewModel productViewModel = mapper
+                    .convertToProductViewModel(lastProductItemPositionFromCache, searchProductModel, useRatingString);
 
             saveLastProductItemPositionToCache(lastProductItemPositionFromCache, productViewModel.getProductList());
 
@@ -724,11 +743,28 @@ final class ProductListPresenter
 
         int lastProductItemPositionFromCache = getView().getLastProductItemPositionFromCache();
 
-        ProductViewModel productViewModel = new ProductViewModelMapper().convertToProductViewModel(lastProductItemPositionFromCache, searchProductModel, useRatingString);
+        ProductViewModelMapper mapper = createProductViewModelMapper();
+        ProductViewModel productViewModel = mapper
+                .convertToProductViewModel(lastProductItemPositionFromCache, searchProductModel, useRatingString);
 
         saveLastProductItemPositionToCache(lastProductItemPositionFromCache, productViewModel.getProductList());
 
         return productViewModel;
+    }
+
+    private ProductViewModelMapper createProductViewModelMapper() {
+        ShopRatingABTest shopRatingABTest = createShopRatingABTest();
+
+        return new ProductViewModelMapper(shopRatingABTest);
+    }
+
+    private ShopRatingABTest createShopRatingABTest() {
+        switch(shopRatingABVariant) {
+            case AB_TEST_SHOP_RATING_VARIANT_A: return new ShopRatingABTestVariantA();
+            case AB_TEST_SHOP_RATING_VARIANT_B: return new ShopRatingABTestVariantB();
+            case AB_TEST_SHOP_RATING_VARIANT_C: return new ShopRatingABTestVariantC();
+            default: return null;
+        }
     }
 
     private void setResponseCode(String responseCode) {

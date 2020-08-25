@@ -302,6 +302,36 @@
         app:constraint_referenced_ids="imageRatingString,textViewRatingString,textViewReviewCount,textViewIntegrity" />
 
     <ImageView
+        android:id="@+id/imageShopRating"
+        android:layout_width="@dimen/product_card_icon_shop_rating_size"
+        android:layout_height="@dimen/product_card_icon_shop_rating_size"
+        android:layout_marginTop="@dimen/product_card_icon_shop_rating_margin_top"
+        android:adjustViewBounds="true"
+        android:gravity="center"
+        android:scaleType="centerCrop"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/barrierCredibility"
+        app:srcCompat="@drawable/product_card_ic_shop_rating"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/textViewShopRating"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/product_card_text_shop_rating_height"
+        android:layout_marginStart="@dimen/dp_4"
+        android:layout_marginLeft="@dimen/dp_4"
+        android:layout_marginTop="@dimen/product_card_text_shop_rating_margin_top"
+        android:gravity="center_vertical"
+        android:textColor="@color/charcoal_grey_68"
+        android:visibility="gone"
+        app:layout_constraintStart_toEndOf="@id/imageShopRating"
+        app:layout_constraintTop_toBottomOf="@id/barrierCredibility"
+        app:typographyType="body_3"
+        tools:text="14.5 Rating Toko"
+        tools:visibility="visible" />
+
+    <ImageView
         android:id="@+id/imageFreeOngkirPromo"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/product_card_free_ongkir_badge_height"
@@ -311,7 +341,7 @@
         android:scaleType="fitStart"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/barrierCredibility"
+        app:layout_constraintTop_toBottomOf="@id/imageShopRating"
         tools:layout_width="67dp"
         tools:visibility="visible" />
 
@@ -323,7 +353,7 @@
         android:visibility="gone"
         app:typographyType="body_3"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/barrierCredibility"
+        app:layout_constraintTop_toBottomOf="@id/imageShopRating"
         tools:visibility="visible"
         tools:text="Ongkir Rp11 rb"/>
 

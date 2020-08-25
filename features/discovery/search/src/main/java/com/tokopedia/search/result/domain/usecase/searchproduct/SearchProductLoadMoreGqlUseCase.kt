@@ -60,6 +60,7 @@ class SearchProductLoadMoreGqlUseCase(
                                 id
                                 name
                                 city
+                                rating_average
                             }
                             freeOngkir {
                                 isActive
@@ -92,6 +93,7 @@ class SearchProductLoadMoreGqlUseCase(
                                 show
                             }
                             wishlist
+                            count_sold
                         }
                     }
                 }

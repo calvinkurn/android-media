@@ -1,5 +1,7 @@
 package com.tokopedia.search.result.presentation.mapper;
 
+import androidx.annotation.Nullable;
+
 import com.tokopedia.search.result.domain.model.SearchProductModel;
 import com.tokopedia.search.result.presentation.model.BadgeItemViewModel;
 import com.tokopedia.search.result.presentation.model.BroadMatchItemViewModel;
@@ -15,11 +17,18 @@ import com.tokopedia.search.result.presentation.model.ProductViewModel;
 import com.tokopedia.search.result.presentation.model.RelatedViewModel;
 import com.tokopedia.search.result.presentation.model.SuggestionViewModel;
 import com.tokopedia.search.result.presentation.model.TickerViewModel;
+import com.tokopedia.search.result.presentation.ShopRatingABTest;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ProductViewModelMapper {
+
+    @Nullable private final ShopRatingABTest shopRatingABTest;
+
+    public ProductViewModelMapper(@Nullable ShopRatingABTest shopRatingABTest) {
+        this.shopRatingABTest = shopRatingABTest;
+    }
 
     public ProductViewModel convertToProductViewModel(int lastProductItemPositionFromCache, SearchProductModel searchProductModel, boolean useRatingString) {
         SearchProductModel.SearchProduct aceSearchProduct = searchProductModel.getSearchProduct();
@@ -223,6 +232,11 @@ public class ProductViewModelMapper {
         productItem.setTopadsImpressionUrl(productModel.getAds().getProductViewUrl());
         productItem.setTopadsClickUrl(productModel.getAds().getProductClickUrl());
         productItem.setTopadsWishlistUrl(productModel.getAds().getProductWishlistUrl());
+
+        if (shopRatingABTest != null) {
+            shopRatingABTest.processShopRatingVariant(productModel, productItem);
+        }
+
         return productItem;
     }
 

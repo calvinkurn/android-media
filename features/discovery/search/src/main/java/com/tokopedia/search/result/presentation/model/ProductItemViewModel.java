@@ -6,6 +6,7 @@ import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.analyticconstant.DataLayer;
+import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.kotlin.model.ImpressHolder;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory;
@@ -34,6 +35,7 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
     private String shopID;
     private String shopName;
     private String shopCity;
+    private String shopRating = "";
     private boolean isWishlisted;
     private boolean isWishlistButtonEnabled = true;
     private List<BadgeItemViewModel> badgesList;
@@ -53,6 +55,7 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
     private FreeOngkirViewModel freeOngkirViewModel = new FreeOngkirViewModel();
     private String boosterList = "";
     private String sourceEngine = "";
+    private boolean isShopRatingYellow = false;
 
     public boolean isTopAds() {
         return isTopAds;
@@ -200,6 +203,22 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
 
     public boolean isWishlisted() {
         return isWishlisted;
+    }
+
+    public void setShopRating(String shopRating) {
+        this.shopRating = shopRating;
+    }
+
+    public String getShopRating() {
+        return shopRating;
+    }
+
+    public void setShopRatingYellow(boolean isShopRatingYellow) {
+        this.isShopRatingYellow = isShopRatingYellow;
+    }
+
+    public boolean isShopRatingYellow() {
+        return isShopRatingYellow;
     }
 
     public void setWishlisted(boolean wishlisted) {
@@ -369,6 +388,11 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
         String organicStatus = isOrganicAds() ? ORGANIC_ADS : ORGANIC;
 
         return String.format(ACTION_FIELD, organicStatus);
+    }
+
+    public boolean willShowRatingAndReview() {
+        return (getRating() > 0 || StringUtils.isNotBlank(getRatingString()))
+                && getCountReview() > 0;
     }
 
     @Override

@@ -4,10 +4,7 @@ import android.graphics.Paint
 import android.view.View
 import androidx.annotation.DrawableRes
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.productcard.utils.initLabelGroup
 import com.tokopedia.productcard.utils.loadIcon
 import com.tokopedia.productcard.utils.shouldShowWithAction
@@ -25,6 +22,7 @@ internal fun View.renderProductCardContent(productCardModel: ProductCardModel) {
     renderRating(productCardModel)
     renderTextReview(productCardModel)
     renderTextCredibility(productCardModel)
+    renderShopRating(productCardModel)
     renderFreeOngkir(productCardModel)
     renderTextShipping(productCardModel)
 }
@@ -60,7 +58,10 @@ private fun View.renderDiscount(productCardModel: ProductCardModel) {
 }
 
 private fun View.renderLabelPrice(productCardModel: ProductCardModel) {
-    labelPrice?.initLabelGroup(productCardModel.getLabelPrice())
+    if (productCardModel.isShowDiscountOrSlashPrice())
+        labelPrice?.initLabelGroup(null)
+    else
+        labelPrice?.initLabelGroup(productCardModel.getLabelPrice())
 }
 
 private fun View.renderTextPrice(productCardModel: ProductCardModel) {
@@ -144,6 +145,24 @@ private fun View.renderTextCredibility(productCardModel: ProductCardModel) {
     else
         textViewIntegrity?.initLabelGroup(productCardModel.getLabelIntegrity())
 }
+
+private fun View.renderShopRating(productCardModel: ProductCardModel) {
+    if (productCardModel.isShowShopRating()) {
+        imageShopRating?.visible()
+        imageShopRating.setImageResource(getShopRatingDrawable(productCardModel))
+        textViewShopRating?.shouldShowWithAction(productCardModel.isShowShopRating()) {
+            it.text = MethodChecker.fromHtml(productCardModel.shopRating)
+        }
+    }
+    else {
+        imageShopRating?.gone()
+        textViewShopRating?.gone()
+    }
+}
+
+private fun getShopRatingDrawable(productCardModel: ProductCardModel) =
+        if (productCardModel.isShopRatingYellow) R.drawable.product_card_ic_rating_active
+        else R.drawable.product_card_ic_shop_rating
 
 private fun View.renderFreeOngkir(productCardModel: ProductCardModel) {
     imageFreeOngkirPromo?.shouldShowWithAction(productCardModel.isShowFreeOngkirBadge()) {

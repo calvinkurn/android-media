@@ -141,6 +141,7 @@ class SearchProductFirstPageGqlUseCase(
                                 id
                                 name
                                 city
+                                rating_average
                             }
                             freeOngkir {
                                 isActive
@@ -173,6 +174,7 @@ class SearchProductFirstPageGqlUseCase(
                                 show
                             }
                             wishlist
+                            count_sold
                         }
                     }
                 }
