@@ -31,10 +31,7 @@ import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.component.Menus
-import com.tokopedia.kotlin.extensions.view.goToFirst
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toZeroIfNull
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -220,6 +217,7 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
     private fun updateChatBannedSellerStatus(isBanned: Boolean) {
         if (isBanned) {
             showBannedTicker()
+            ticker_seller_migration_topchat?.hide()
         } else {
             chatBannedSellerTicker?.hide()
         }
@@ -253,7 +251,11 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
     }
 
     private fun setupTicker() {
-        initializeSellerMigrationCommunicationTicker(sellerMigrationStaticCommunicationBottomSheet, ticker_seller_migration_topchat, CommunicationInfo.BroadcastChat)
+        initializeSellerMigrationCommunicationTicker(sellerMigrationStaticCommunicationBottomSheet, ticker_seller_migration_topchat, CommunicationInfo.BroadcastChat) {
+            if (chatBannedSellerTicker?.isVisible == false) {
+                ticker_seller_migration_topchat?.show()
+            }
+        }
     }
 
     private fun isSellerBroadcastRemoteConfigOn(): Boolean {

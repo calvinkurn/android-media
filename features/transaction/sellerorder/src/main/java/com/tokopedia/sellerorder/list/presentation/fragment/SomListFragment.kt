@@ -220,13 +220,13 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         context?.let { UpdateShopActiveService.startService(it) }
     }
 
-    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
-        super.setUserVisibleHint(isVisibleToUser)
-        if (isVisibleToUser && !isUserRoleFetched() && ::viewModelFactory.isInitialized) checkUserRole()
-        else if (!isVisibleToUser && isUserRoleFetched() && ::viewModelFactory.isInitialized) somListViewModel.clearUserRoles()
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+        if (!hidden && !isUserRoleFetched()) checkUserRole()
+        else if (hidden && isUserRoleFetched()) somListViewModel.clearUserRoles()
     }
 
-    private fun isUserRoleFetched(): Boolean = ::viewModelFactory.isInitialized && somListViewModel.userRoleResult.value is Success
+    private fun isUserRoleFetched(): Boolean = somListViewModel.userRoleResult.value is Success
 
     private fun checkUserRole() {
         toggleSomLayout(true)

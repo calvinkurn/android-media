@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
+import androidx.lifecycle.Lifecycle
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.SellerHomeRouter
 import com.tokopedia.sellerhome.common.FragmentType
@@ -36,15 +37,14 @@ class SellerHomeNavigator(
     fun start(@FragmentType page: Int) {
         val transaction = fm.beginTransaction()
         val fragment = getPageFragment(page)
-        addAllPages(transaction)
+        addAllPages(fragment, transaction)
 
         fragment?.let {
-            transaction
-                .show(fragment)
-                .commit()
-
+            showFragment(it, transaction)
             setSelectedPage(page)
         }
+
+        updateFragmentVisibilityHint(fragment)
     }
 
     fun showPage(@FragmentType page: Int) {
@@ -53,11 +53,7 @@ class SellerHomeNavigator(
 
         fragment?.let {
             hideCurrentPage(transaction)
-
-            transaction
-                .show(it)
-                .commit()
-
+            showFragment(it, transaction)
             setSelectedPage(page)
         }
 
@@ -77,11 +73,8 @@ class SellerHomeNavigator(
 
                 when {
                     fragments.isEmpty() -> {
-                        addAllPages(transaction)
-
-                        transaction
-                            .show(selectedPage)
-                            .commit()
+                        addAllPages(selectedPage, transaction)
+                        showFragment(selectedPage, transaction)
                     }
                     currentPage != selectedPage -> {
                         transaction
@@ -89,11 +82,7 @@ class SellerHomeNavigator(
                             .add(R.id.sahContainer, selectedPage, tag)
                             .commit()
                     }
-                    else -> {
-                        transaction
-                            .show(selectedPage)
-                            .commit()
-                    }
+                    else -> showFragment(selectedPage, transaction)
                 }
 
                 setSelectedPage(type)
@@ -151,21 +140,39 @@ class SellerHomeNavigator(
         somListFragment = sellerHomeRouter?.getSomListFragment(SomTabConst.STATUS_NEW_ORDER)
         otherSettingsFragment = OtherMenuFragment.createInstance()
 
-        addPage(homeFragment, context.getString(R.string.sah_home).orEmpty())
+        addPage(homeFragment, context.getString(R.string.sah_home))
         addPage(productManageFragment, context.getString(R.string.sah_product_list))
         addPage(chatFragment, context.getString(R.string.sah_chat))
         addPage(somListFragment, context.getString(R.string.sah_sale))
         addPage(otherSettingsFragment, context.getString(R.string.sah_sale))
     }
 
-    private fun addAllPages(transaction: FragmentTransaction) {
+    private fun addAllPages(selectedPage: Fragment?, transaction: FragmentTransaction) {
         pages.keys.forEach {
             it?.let {
                 val tag = it::class.java.simpleName
                 transaction.add(R.id.sahContainer, it, tag)
+
+                if(it != selectedPage) {
+                    transaction.setMaxLifecycle(it, Lifecycle.State.CREATED)
+                }
+
                 transaction.hide(it)
             }
         }
+    }
+
+    private fun showFragment(fragment: Fragment, transaction: FragmentTransaction) {
+        val currentState = fragment.lifecycle.currentState
+        val isFragmentNotResumed = !currentState.isAtLeast(Lifecycle.State.RESUMED)
+
+        if(isFragmentNotResumed) {
+            transaction.setMaxLifecycle(fragment, Lifecycle.State.RESUMED)
+        }
+
+        transaction
+            .show(fragment)
+            .commit()
     }
 
     private fun getPageFragment(@FragmentType type: Int): Fragment? {

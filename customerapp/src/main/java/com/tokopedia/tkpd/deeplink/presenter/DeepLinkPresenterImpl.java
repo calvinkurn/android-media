@@ -548,7 +548,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         return lastSegment.equals("preorder")
                 || lastSegment.equals("sold")
                 || lastSegment.equals("discount")
-                || (linkSegment.size() > 1 && linkSegment.get(1).equals("etalase"));
+                || (linkSegment.size() > 1 && (linkSegment.get(1).equals("etalase") || linkSegment.get(1).equals("campaign")));
     }
 
     private boolean isShopHome(List<String> linkSegment) {

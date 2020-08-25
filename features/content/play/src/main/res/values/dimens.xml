@@ -25,7 +25,9 @@
     <dimen name="play_product_line_buy_padding_start_end">20dp</dimen>
     <dimen name="play_product_line_divider_height">1dp</dimen>
     <dimen name="play_product_line_divider_start_offset">96dp</dimen>
-    
+    <dimen name="play_product_line_image_border_width">2px</dimen>
+    <dimen name="play_product_line_image_border_padding">1dp</dimen>
+
     <dimen name="play_voucher_title_image_margin">10dp</dimen>
     <dimen name="play_voucher_sheet_title_margin">20dp</dimen>
     <dimen name="play_voucher_divider_width">18dp</dimen>
@@ -47,6 +49,8 @@
     <dimen name="play_product_pinned_lottie_bottom_margin">10dp</dimen>
 
     <dimen name="play_send_chat_height">40dp</dimen>
+
+    <dimen name="play_viewer_loading_size">40dp</dimen>
 
     <!--General Dimension-->
     <dimen name="play_offset_12">12dp</dimen>

@@ -49,8 +49,10 @@ import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
+import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.state.PlayVideoState
+import com.tokopedia.play_common.util.extension.awaitMeasured
 import com.tokopedia.play_common.util.extension.recreateView
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
@@ -60,10 +62,7 @@ import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.play_common.viewcomponent.viewComponentOrNull
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.coroutines.Fail
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancelChildren
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import javax.inject.Inject
 
 /**
@@ -167,6 +166,8 @@ class PlayUserInteractionFragment @Inject constructor(
         setupView(view)
         setupInsets(view)
         setupObserve()
+
+        invalidateSystemUiVisibility()
     }
 
     override fun onStart() {
@@ -194,27 +195,16 @@ class PlayUserInteractionFragment @Inject constructor(
         return false
     }
 
-    override fun onInterceptSystemUiVisibilityChanged(): Boolean {
-        return if (orientation.isLandscape) {
-            if (playViewModel.isFreezeOrBanned && orientation.isLandscape) {
-                systemUiVisibility = PlayFullScreenHelper.getHideNavigationBarVisibility()
-                true
-            } else false
-        } else if (!orientation.isLandscape) {
-            systemUiVisibility = if (!playViewModel.videoOrientation.isHorizontal && container.isFullAlpha)
-                PlayFullScreenHelper.getHideSystemUiVisibility()
-            else
-                PlayFullScreenHelper.getShowSystemUiVisibility()
-
-            true
-        } else false
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_CODE_LOGIN && resultCode == Activity.RESULT_OK) {
             val lastAction = viewModel.observableLoggedInInteractionEvent.value?.peekContent()
             if (lastAction != null) handleInteractionEvent(lastAction.event)
         } else super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        invalidateSystemUiVisibility()
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
@@ -367,6 +357,8 @@ class PlayUserInteractionFragment @Inject constructor(
             }
         }
 
+        handleVideoHorizontalTopBounds()
+
         likeView.setEnabled(false)
         videoSettingsView.setFullscreen(orientation.isLandscape)
 
@@ -407,16 +399,19 @@ class PlayUserInteractionFragment @Inject constructor(
         }
 
         endLiveInfoView.rootView.doOnApplyWindowInsets { v, insets, padding, _ ->
-            v.updatePadding(bottom = padding.bottom + insets.systemWindowInsetBottom)
+            v.updatePadding(
+                    left = padding.left + insets.systemWindowInsetLeft,
+                    right = padding.right + insets.systemWindowInsetRight,
+                    bottom = padding.bottom + insets.systemWindowInsetBottom
+            )
         }
     }
 
     private fun setupObserve() {
-        observeVideoPlayer()
+        observeVideoMeta()
         observeVideoProperty()
-        observeTitleChannel()
+        observeChannelInfo()
         observeQuickReply()
-        observeVideoStream()
         observeToolbarInfo()
         observeTotalLikes()
         observeTotalViews()
@@ -424,7 +419,6 @@ class PlayUserInteractionFragment @Inject constructor(
         observeChatList()
         observePinned()
         observeCartInfo()
-        observeFollowShop()
         observeLikeContent()
         observeBottomInsetsState()
         observeEventUserInfo()
@@ -432,14 +426,49 @@ class PlayUserInteractionFragment @Inject constructor(
         observeLoggedInInteractionEvent()
     }
 
+    private fun invalidateSystemUiVisibility() {
+        systemUiVisibility = when {
+            playViewModel.isFreezeOrBanned -> PlayFullScreenHelper.getShowSystemUiVisibility()
+            orientation.isLandscape -> PlayFullScreenHelper.getHideSystemUiVisibility()
+            !playViewModel.videoOrientation.isHorizontal && container.isFullAlpha -> PlayFullScreenHelper.getHideSystemUiVisibility()
+            else -> PlayFullScreenHelper.getShowSystemUiVisibility()
+        }
+    }
+
+    private fun handleVideoHorizontalTopBounds() {
+        scope.launch {
+            val toolbarMeasure = async { toolbarView.rootView.awaitMeasured() }
+            val statsInfoMeasure = async { statsInfoView.rootView.awaitMeasured() }
+
+            awaitAll(toolbarMeasure, statsInfoMeasure)
+            playFragment.onFirstTopBoundsCalculated()
+        }
+    }
+
     //region observe
     /**
      * Observe
      */
-    private fun observeVideoPlayer() {
-        playViewModel.observableVideoPlayer.observe(viewLifecycleOwner, Observer {
-            changeLayoutBasedOnVideoType(it, playViewModel.channelType)
-            if (it is General) videoControlView.setPlayer(it.exoPlayer)
+    private fun observeVideoMeta() {
+        playViewModel.observableVideoMeta.observe(viewLifecycleOwner, Observer { meta ->
+            meta.videoStream?.let {
+                changeLayoutBasedOnVideoOrientation(it.orientation)
+                triggerImmersive(false)
+
+                scope.launch(dispatchers.immediate) {
+                    playFragment.setCurrentVideoTopBounds(it.orientation, getVideoTopBounds(it.orientation))
+                }
+
+                statsInfoViewOnStateChanged(channelType = it.channelType)
+                videoControlViewOnStateChanged(channelType = it.channelType)
+                sendChatViewOnStateChanged(channelType = it.channelType)
+                chatListViewOnStateChanged(channelType = it.channelType)
+                videoSettingsViewOnStateChanged(videoOrientation = it.orientation)
+                gradientBackgroundViewOnStateChanged(videoOrientation = it.orientation)
+            }
+
+            changeLayoutBasedOnVideoType(meta.videoPlayer, playViewModel.channelType)
+            if (meta.videoPlayer is General) videoControlView.setPlayer(meta.videoPlayer.exoPlayer)
         })
     }
 
@@ -454,8 +483,8 @@ class PlayUserInteractionFragment @Inject constructor(
         })
     }
 
-    private fun observeTitleChannel() {
-        playViewModel.observableGetChannelInfo.observe(viewLifecycleOwner, DistinctObserver {
+    private fun observeChannelInfo() {
+        playViewModel.observableCompleteInfo.observe(viewLifecycleOwner, DistinctObserver {
             triggerStartMonitoring()
         })
     }
@@ -463,24 +492,6 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun observeQuickReply() {
         playViewModel.observableQuickReply.observe(viewLifecycleOwner, DistinctObserver {
             quickReplyView?.setQuickReply(it)
-        })
-    }
-
-    private fun observeVideoStream() {
-        playViewModel.observableVideoStream.observe(viewLifecycleOwner, DistinctObserver {
-            changeLayoutBasedOnVideoOrientation(it.orientation)
-            triggerImmersive(false)
-
-            scope.launch(dispatchers.immediate) {
-                playFragment.setCurrentVideoTopBounds(it.orientation, getVideoTopBounds(it.orientation))
-            }
-
-            statsInfoViewOnStateChanged(channelType = it.channelType)
-            videoControlViewOnStateChanged(channelType = it.channelType)
-            sendChatViewOnStateChanged(channelType = it.channelType)
-            chatListViewOnStateChanged(channelType = it.channelType)
-            videoSettingsViewOnStateChanged(videoOrientation = it.orientation)
-            gradientBackgroundViewOnStateChanged(videoOrientation = it.orientation)
         })
     }
 
@@ -529,12 +540,6 @@ class PlayUserInteractionFragment @Inject constructor(
         viewModel.observableLoggedInInteractionEvent.observe(viewLifecycleOwner, EventObserver(::handleLoginInteractionEvent))
     }
 
-    private fun observeFollowShop() {
-        viewModel.observableFollowPartner.observe(viewLifecycleOwner, DistinctObserver {
-            if (it is Fail) showToast(it.throwable.message.orEmpty())
-        })
-    }
-
     private fun observeLikeContent() {
         playViewModel.observableLikeState.observe(viewLifecycleOwner, object : Observer<LikeStateUiModel> {
             private var isFirstTime = true
@@ -550,6 +555,8 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun observeBottomInsetsState() {
         playViewModel.observableBottomInsetsState.observe(viewLifecycleOwner, DistinctObserver { map ->
             if (!playViewModel.isFreezeOrBanned) view?.hide()
+
+            if (playViewModel.videoOrientation.isVertical) triggerImmersive(false)
 
             val keyboardState = map[BottomInsetsType.Keyboard]
                 if (keyboardState != null && !keyboardState.isPreviousStateSame) {
@@ -641,7 +648,7 @@ class PlayUserInteractionFragment @Inject constructor(
             }
             orientation.isLandscape -> triggerFullImmersive(shouldImmersive, true)
             playViewModel.videoOrientation.isHorizontal -> handleVideoHorizontalImmersive(shouldImmersive)
-            else -> {
+            playViewModel.videoOrientation.isVertical -> {
                 systemUiVisibility =
                         if (shouldImmersive) PlayFullScreenHelper.getHideSystemUiVisibility()
                         else PlayFullScreenHelper.getShowSystemUiVisibility()
@@ -650,19 +657,19 @@ class PlayUserInteractionFragment @Inject constructor(
         }
     }
 
-    private lateinit var onToolbarGlobalLayoutListener: ViewTreeObserver.OnGlobalLayoutListener
+    private lateinit var onStatsInfoGlobalLayoutListener: ViewTreeObserver.OnGlobalLayoutListener
 
     private fun triggerStartMonitoring() {
         playFragment.startRenderMonitoring()
 
-        if (!this::onToolbarGlobalLayoutListener.isInitialized) {
-            onToolbarGlobalLayoutListener = object : ViewTreeObserver.OnGlobalLayoutListener{
+        if (!this::onStatsInfoGlobalLayoutListener.isInitialized) {
+            onStatsInfoGlobalLayoutListener = object : ViewTreeObserver.OnGlobalLayoutListener{
                 override fun onGlobalLayout() {
                     playFragment.stopRenderMonitoring()
-                    toolbarView.rootView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    statsInfoView.rootView.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 }
             }
-            toolbarView.rootView.viewTreeObserver.addOnGlobalLayoutListener(onToolbarGlobalLayoutListener)
+            statsInfoView.rootView.viewTreeObserver.addOnGlobalLayoutListener(onStatsInfoGlobalLayoutListener)
         }
     }
 
@@ -692,10 +699,6 @@ class PlayUserInteractionFragment @Inject constructor(
         playNavigation.onBackPressed(isSystemBack = false)
     }
 
-    private fun showToast(text: String) {
-        Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
-    }
-
     private fun doActionFollowPartner(partnerId: Long, action: PartnerFollowAction) {
         PlayAnalytics.clickFollowShop(channelId, partnerId.toString(), action.value, playViewModel.channelType)
         viewModel.doFollow(partnerId, action)
@@ -719,7 +722,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun openPartnerPage(partnerId: Long, partnerType: PartnerType) {
         if (partnerType == PartnerType.Shop) openShopPage(partnerId)
-        else if (partnerType == PartnerType.Influencer) openProfilePage(partnerId)
+        else if (partnerType == PartnerType.Buyer) openProfilePage(partnerId)
     }
 
     private fun openShopPage(partnerId: Long) {
@@ -781,10 +784,10 @@ class PlayUserInteractionFragment @Inject constructor(
         //Used to show mock like when user click like
         playViewModel.changeLikeCount(shouldLike)
 
-        viewModel.doLikeUnlike(playViewModel.contentId,
-                playViewModel.contentType,
-                playViewModel.likeType,
-                shouldLike)
+        viewModel.doLikeUnlike(
+                feedInfoUiModel = playViewModel.feedInfoUiModel,
+                shouldLike = shouldLike
+        )
 
         PlayAnalytics.clickLike(channelId, shouldLike, playViewModel.channelType)
     }
