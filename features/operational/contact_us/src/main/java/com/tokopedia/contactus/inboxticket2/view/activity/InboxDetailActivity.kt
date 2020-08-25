@@ -117,28 +117,8 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
         viewHelpRate.hide()
         textToolbar.show()
         if (!commentsItems.isNullOrEmpty()){
-            when (commentsItems[0].ticketStatus) {
-                TICKET_STATUS_IN_PROCESS -> {
-                    rvMessageList.setPadding(0, 0, 0,
-                            resources.getDimensionPixelSize(R.dimen.contact_us_text_toolbar_height_collapsed))
-                    if (ROLE_TYPE_AGENT.equals(commentsItems[commentsItems.size - 1].createdBy?.role, ignoreCase = true) && "".equals(commentsItems[commentsItems.size - 1].rating, ignoreCase = true)) {
-                        viewReplyButton.show()
-                        mCommentID = commentsItems[commentsItems.size - 1].id
-                    }
-                    if (ticketDetail.isShowRating) {
-                        toggleTextToolbar(View.GONE)
-                        mCommentID = commentsItems[commentsItems.size - 1].id
-                    }
-                }
-                TICKET_STATUS_CLOSED -> {
-                    showIssueClosed()
-                }
-                TICKET_STATUS_NEED_RATING -> {
-                    toggleTextToolbar(View.GONE)
-                    mCommentID = commentsItems[commentsItems.size - 1].id
-                }
-            }
-            commentsItems[0].priorityLabel = intent.getBooleanExtra(IS_OFFICIAL_STORE, false)
+            updateUiBasedOnStatus(ticketDetail)
+            setHeaderPriorityLabel()
             detailAdapter = InboxDetailAdapter(this,
                     commentsItems,
                     ticketDetail.isNeedAttachment,
@@ -149,6 +129,34 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
             scrollTo(detailAdapter.itemCount - 1)
         }else{
             rvMessageList.hide()
+        }
+    }
+
+    private fun setHeaderPriorityLabel() {
+        commentsItems[0].priorityLabel = intent.getBooleanExtra(IS_OFFICIAL_STORE, false)
+    }
+
+    private fun updateUiBasedOnStatus(ticketDetail: Tickets) {
+        when (commentsItems[0].ticketStatus) {
+            TICKET_STATUS_IN_PROCESS -> {
+                rvMessageList.setPadding(0, 0, 0,
+                        resources.getDimensionPixelSize(R.dimen.contact_us_text_toolbar_height_collapsed))
+                if (ROLE_TYPE_AGENT.equals(commentsItems[commentsItems.size - 1].createdBy?.role, ignoreCase = true) && "".equals(commentsItems[commentsItems.size - 1].rating, ignoreCase = true)) {
+                    viewReplyButton.show()
+                    mCommentID = commentsItems[commentsItems.size - 1].id
+                }
+                if (ticketDetail.isShowRating) {
+                    toggleTextToolbar(View.GONE)
+                    mCommentID = commentsItems[commentsItems.size - 1].id
+                }
+            }
+            TICKET_STATUS_CLOSED -> {
+                showIssueClosed()
+            }
+            TICKET_STATUS_NEED_RATING -> {
+                toggleTextToolbar(View.GONE)
+                mCommentID = commentsItems[commentsItems.size - 1].id
+            }
         }
     }
 

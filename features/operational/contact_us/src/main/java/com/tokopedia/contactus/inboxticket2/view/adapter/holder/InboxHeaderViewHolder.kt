@@ -24,6 +24,7 @@ class InboxHeaderViewHolder(val view: View) : InboxDetailViewHolder(view) {
 
     fun bind(header: CommentsItem, inboxDetailListener: InboxDetailListener, utils: Utils) {
         ticketTitle.text = setTitle(header.ticketTitle ?: "", header.ticketStatus ?: "", utils)
+                ?: header.ticketTitle ?: ""
         setPriorityLabel(header.priorityLabel, inboxDetailListener)
         setTicketId(header.ticketId ?: "")
         ticketTransactionDetails.setOnClickListener { inboxDetailListener.onTransactionDetailsClick() }
@@ -47,7 +48,7 @@ class InboxHeaderViewHolder(val view: View) : InboxDetailViewHolder(view) {
         }
     }
 
-    private fun setTitle(ticketTitle: String, ticketStatus: String, utils: Utils): SpannableString {
+    private fun setTitle(ticketTitle: String, ticketStatus: String, utils: Utils): SpannableString? {
         val context = view.context
         return when (ticketStatus) {
             TICKET_STATUS_IN_PROCESS -> utils.getStatusTitle(ticketTitle + ".   " + context.getString(R.string.on_going),
@@ -61,7 +62,7 @@ class InboxHeaderViewHolder(val view: View) : InboxDetailViewHolder(view) {
                 utils.getStatusTitle(ticketTitle + ".   " + context.getString(R.string.closed),
                         ContextCompat.getColor(context, com.tokopedia.design.R.color.grey_200),
                         ContextCompat.getColor(context, com.tokopedia.design.R.color.black_38), context.resources.getDimensionPixelSize(R.dimen.sp_11), context)
-            else -> SpannableString("")
+            else -> null
         }
 
     }
