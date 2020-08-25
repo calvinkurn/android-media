@@ -68,10 +68,6 @@ class TrackingRepository(
                 } else if (dbCount >= getLineDBSend()) {
                     // if the line is big, send it
                     if (dbCount % 5 == 0) {
-                        val i = Intent(context, IrisService::class.java)
-                        i.putExtra(MAX_ROW, DEFAULT_MAX_ROW)
-                        IrisService.enqueueWork(context, i)
-
                         IrisAnalytics.getInstance(context).setAlarm(true, force = true)
                         if (dbCount % 50 == 0) {
                             Timber.w("P1#IRIS#dbCountSend %d lines", dbCount)
