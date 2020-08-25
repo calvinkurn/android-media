@@ -43,16 +43,16 @@ class HomeTopAdsVerificationTest {
 
     @Test
     fun testTopAdsHome() {
-//        waitForData()
-//
-//        val homeRecyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.home_fragment_recycler_view)
-//        val itemCount = homeRecyclerView.adapter?.itemCount?:0
-//
-//        for (i in 0 until itemCount) {
-//            scrollHomeRecyclerViewToPosition(homeRecyclerView, i)
-//            checkProductOnDynamicChannel(homeRecyclerView, i)
-//        }
-//        topAdsAssertion?.assert()
+        waitForData()
+
+        val homeRecyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.home_fragment_recycler_view)
+        val itemCount = homeRecyclerView.adapter?.itemCount?:0
+
+        for (i in 0 until itemCount) {
+            scrollHomeRecyclerViewToPosition(homeRecyclerView, i)
+            checkProductOnDynamicChannel(homeRecyclerView, i)
+        }
+        topAdsAssertion?.assert()
     }
 
     private fun checkProductOnDynamicChannel(homeRecyclerView: RecyclerView, i: Int) {
