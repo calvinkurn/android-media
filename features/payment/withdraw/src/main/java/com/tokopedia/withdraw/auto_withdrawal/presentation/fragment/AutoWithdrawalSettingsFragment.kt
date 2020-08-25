@@ -27,6 +27,7 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -134,7 +135,7 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
             when (it) {
                 is Success -> onTermsAndConditionLoaded(it.data)
                 is Fail -> {
-                    //todo tnc load fail
+                    showErrorMessage(it.throwable)
                 }
             }
         })
@@ -149,11 +150,20 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
                     }
                 }
                 is Fail -> {
-                    //todo upsert Network fail...
+                    showErrorMessage(it.throwable)
                     loaderView.gone()
                 }
             }
         })
+    }
+
+    private fun showErrorMessage(throwable: Throwable) {
+        context?.let {
+            val message = ErrorHandler.getErrorMessage(it, throwable)
+            view?.let { view ->
+                Toaster.make(view, message, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
+            }
+        }
     }
 
     private fun onAutoWDUpsertComplete(data: UpsertResponse) {
@@ -181,6 +191,7 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
         getInfoAutoWD = data
         setActionMenu()
     }
+
 
     private fun showGlobalError(throwable: Throwable, retryAction: () -> Unit) {
         loaderView.gone()
@@ -663,14 +674,13 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
         loaderView.visible()
         autoWDSettingsViewModel.upsertAutoWithdrawal(autoWithdrawalUpsertRequest)
     }
-    
+
     private fun onAutoWithdrawalUpsertFailed(message: String) {
         loaderView.gone()
         view?.apply {
             Toaster.make(this, message, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
         }
     }
-
 
     companion object {
         private const val AUTO_WITHDRAWAL_STATUS_NEW = 0
