@@ -110,6 +110,8 @@ class DisabledCartItemViewHolder(itemView: View, val actionListener: ActionListe
                     }
                     actionListener?.onShowTickerOutOfStock(data.productId)
                     itemView.tv_product_unavailable_action.visibility = View.VISIBLE
+                } else {
+                    itemView.tv_product_unavailable_action.visibility = View.VISIBLE
                 }
             }
         } else {
