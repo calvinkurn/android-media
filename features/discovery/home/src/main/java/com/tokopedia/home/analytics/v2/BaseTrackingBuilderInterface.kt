@@ -10,8 +10,7 @@ interface BaseTrackingBuilderInterface {
                                 eventCategory: String,
                                 eventAction: String,
                                 eventLabel: String,
-                                promotions: List<BaseTracking.Promotion>,
-                                userId: String
+                                promotions: List<BaseTracking.Promotion>
     ): BaseTrackingBuilderInterface
 
     fun constructBasicProductView(event: String,
@@ -19,16 +18,14 @@ interface BaseTrackingBuilderInterface {
                               eventAction: String,
                               eventLabel: String,
                               list: String,
-                              products: List<BaseTracking.Product>,
-                              userId: String
+                              products: List<BaseTracking.Product>
     ): BaseTrackingBuilderInterface
 
     fun constructBasicPromotionClick(event: String,
                                 eventCategory: String,
                                 eventAction: String,
                                 eventLabel: String,
-                                promotions: List<BaseTracking.Promotion>,
-                                userId: String
+                                promotions: List<BaseTracking.Promotion>
     ): BaseTrackingBuilderInterface
 
     fun constructBasicProductClick(event: String,
@@ -36,27 +33,18 @@ interface BaseTrackingBuilderInterface {
                               eventAction: String,
                               eventLabel: String,
                               list: String,
-                              products: List<BaseTracking.Product>,
-                              userId: String
+                              products: List<BaseTracking.Product>
     ): BaseTrackingBuilderInterface
 
+    fun appendUserId(value: String): BaseTrackingBuilderInterface
     fun appendChannelId(value: String): BaseTrackingBuilderInterface
-
     fun appendCampaignCode(value: String): BaseTrackingBuilderInterface
-
     fun appendScreen(value: String): BaseTrackingBuilderInterface
-
     fun appendCurrentSite(value: String): BaseTrackingBuilderInterface
-
     fun appendBusinessUnit(value: String): BaseTrackingBuilderInterface
-
     fun appendAffinity(value: String): BaseTrackingBuilderInterface
-
     fun appendAttribution(value: String): BaseTrackingBuilderInterface
-
     fun appendCategoryId(value: String): BaseTrackingBuilderInterface
-
     fun appendShopId(value: String): BaseTrackingBuilderInterface
-
     fun build(): Map<String, Any>
 }

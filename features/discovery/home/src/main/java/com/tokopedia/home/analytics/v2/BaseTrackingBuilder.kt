@@ -15,16 +15,14 @@ class BaseTrackingBuilder: BaseTracking(), BaseTrackingBuilderInterface {
             eventCategory: String,
             eventAction: String,
             eventLabel: String,
-            promotions: List<Promotion>,
-            userId: String
+            promotions: List<Promotion>
     ): BaseTrackingBuilderInterface {
         dataLayer = DataLayer.mapOf(
                 Event.KEY, event,
                 Category.KEY, eventCategory,
                 Action.KEY, eventAction,
                 Label.KEY, eventLabel,
-                Ecommerce.KEY, Ecommerce.getEcommercePromoView(promotions),
-                UserId.KEY, userId)
+                Ecommerce.KEY, Ecommerce.getEcommercePromoView(promotions))
         return this
     }
 
@@ -34,16 +32,14 @@ class BaseTrackingBuilder: BaseTracking(), BaseTrackingBuilderInterface {
             eventAction: String,
             eventLabel: String,
             list: String,
-            products: List<Product>,
-            userId: String
+            products: List<Product>
     ): BaseTrackingBuilderInterface {
         dataLayer = DataLayer.mapOf(
                 Event.KEY, event,
                 Category.KEY, eventCategory,
                 Action.KEY, eventAction,
                 Label.KEY, eventLabel,
-                Ecommerce.KEY, Ecommerce.getEcommerceProductView(products, list),
-                UserId.KEY, userId)
+                Ecommerce.KEY, Ecommerce.getEcommerceProductView(products, list))
         return this
     }
 
@@ -52,16 +48,14 @@ class BaseTrackingBuilder: BaseTracking(), BaseTrackingBuilderInterface {
             eventCategory: String,
             eventAction: String,
             eventLabel: String,
-            promotions: List<Promotion>,
-            userId: String
+            promotions: List<Promotion>
     ): BaseTrackingBuilderInterface {
         dataLayer = DataLayer.mapOf(
                 Event.KEY, event,
                 Category.KEY, eventCategory,
                 Action.KEY, eventAction,
                 Label.KEY, eventLabel,
-                Ecommerce.KEY, Ecommerce.getEcommercePromoClick(promotions),
-                UserId.KEY, userId)
+                Ecommerce.KEY, Ecommerce.getEcommercePromoClick(promotions))
         return this
     }
 
@@ -71,16 +65,19 @@ class BaseTrackingBuilder: BaseTracking(), BaseTrackingBuilderInterface {
             eventAction: String,
             eventLabel: String,
             list: String,
-            products: List<Product>,
-            userId: String
+            products: List<Product>
     ): BaseTrackingBuilderInterface {
         dataLayer = DataLayer.mapOf(
                 Event.KEY, event,
                 Category.KEY, eventCategory,
                 Action.KEY, eventAction,
                 Label.KEY, eventLabel,
-                Ecommerce.KEY, Ecommerce.getEcommerceProductClick(products, list),
-                UserId.KEY, userId)
+                Ecommerce.KEY, Ecommerce.getEcommerceProductClick(products, list))
+        return this
+    }
+
+    override fun appendUserId(value: String): BaseTrackingBuilderInterface {
+        dataLayer[UserId.KEY] = value
         return this
     }
 

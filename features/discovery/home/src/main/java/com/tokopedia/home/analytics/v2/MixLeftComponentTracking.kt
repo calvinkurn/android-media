@@ -54,33 +54,6 @@ object MixLeftComponentTracking: BaseTracking()  {
         ) as HashMap<String, Any>
     }
 
-//    fun getMixLeftProductView(channel: ChannelModel, grid: ChannelGrid, position:Int) = getBasicProductChannelView(
-//            event = Event.PRODUCT_VIEW,
-//            eventCategory = Category.HOMEPAGE,
-//            eventAction = IMPRESSION_MIX_LEFT,
-//            eventLabel = channel.id + " - " + channel.channelHeader.name,
-//            products =  listOf(Product(
-//                    name = grid.name,
-//                    id = grid.id,
-//                    productPrice = convertRupiahToInt(
-//                            grid.price
-//                    ).toString(),
-//                    brand = Value.NONE_OTHER,
-//                    category = Value.NONE_OTHER,
-//                    variant = Value.NONE_OTHER,
-//                    productPosition = (position + 1).toString(),
-//                    channelId = channel.id,
-//                    isFreeOngkir = grid.isFreeOngkirActive,
-//                    persoType = channel.trackingAttributionModel.persoType,
-//                    categoryId = channel.trackingAttributionModel.categoryId,
-//                    isTopAds = grid.isTopads
-//            )),
-//            list = String.format(
-//                    Value.LIST_WITH_HEADER, "1", LIST_MIX_LEFT, channel.channelHeader.name
-//            ),
-//            channelId = channel.id
-//    )
-
     fun getMixLeftProductView(channel: ChannelModel, grid: ChannelGrid, position:Int): Map<String, Any> {
         val trackingBuilder = BaseTrackingBuilder()
         return trackingBuilder.constructBasicProductView(
@@ -106,8 +79,7 @@ object MixLeftComponentTracking: BaseTracking()  {
                 )),
                 list = String.format(
                         Value.LIST_WITH_HEADER, "1", LIST_MIX_LEFT, channel.channelHeader.name
-                ),
-                userId = "")
+                ))
                 .appendChannelId(channel.id)
                 .build()
     }
@@ -141,36 +113,6 @@ object MixLeftComponentTracking: BaseTracking()  {
             channelId = channel.id
     )
 
-//    fun getMixLeftProductClick(channel: ChannelModel, grid: ChannelGrid, position: Int) = getBasicProductChannelClick(
-//            event = Event.PRODUCT_CLICK,
-//            eventCategory = Category.HOMEPAGE,
-//            eventAction = CLICK_MIX_LEFT,
-//            eventLabel = channel.id +  " - " + channel.channelHeader.name,
-//            channelId = channel.id,
-//            campaignCode = channel.trackingAttributionModel.campaignCode,
-//            products = listOf(
-//                    Product(
-//                            name = grid.name,
-//                            id = grid.id,
-//                            productPrice = convertRupiahToInt(
-//                                    grid.price
-//                            ).toString(),
-//                            brand = Value.NONE_OTHER,
-//                            category = Value.NONE_OTHER,
-//                            variant = Value.NONE_OTHER,
-//                            productPosition = (position + 1).toString(),
-//                            channelId = channel.id,
-//                            isFreeOngkir = grid.isFreeOngkirActive,
-//                            persoType = channel.trackingAttributionModel.persoType,
-//                            categoryId = channel.trackingAttributionModel.categoryId,
-//                            isTopAds = grid.isTopads
-//                    )
-//            ),
-//            list = String.format(
-//                    Value.LIST_WITH_HEADER, "1", LIST_MIX_LEFT, channel.channelHeader.name
-//            )
-//    )
-
     fun getMixLeftProductClick(channel: ChannelModel, grid: ChannelGrid, position: Int) : Map<String, Any> {
         val trackingBuilder = BaseTrackingBuilder()
         return trackingBuilder.constructBasicProductClick(
@@ -198,32 +140,12 @@ object MixLeftComponentTracking: BaseTracking()  {
                 ),
                 list = String.format(
                         Value.LIST_WITH_HEADER, "1", LIST_MIX_LEFT, channel.channelHeader.name
-                ),
-                userId = "")
+                ))
                 .appendChannelId(channel.id)
                 .appendCampaignCode(channel.trackingAttributionModel.campaignCode)
                 .build()
 
     }
-
-//    fun getMixLeftBannerView(channel: ChannelModel, position: Int, userId: String) = getBasicPromotionView(
-//            event = Event.PROMO_VIEW,
-//            eventCategory = Category.HOMEPAGE,
-//            eventAction = IMPRESSION_MIX_LEFT_BANNER,
-//            eventLabel = Label.NONE,
-//            screen = Screen.DEFAULT,
-//            currentSite = CurrentSite.DEFAULT,
-//            businessUnit = BusinessUnit.DEFAULT,
-//            userId = userId,
-//            promotions = listOf(
-//                    Promotion(
-//                            id = CustomEvent.FORMAT_4_VALUE_UNDERSCORE.format(channel.id, channel.channelBanner.id, channel.trackingAttributionModel.persoType, channel.trackingAttributionModel.categoryId),
-//                            creative = channel.channelBanner.attribution,
-//                            name = PROMOTION_BANNER_NAME.format("1", channel.channelHeader.name),
-//                            position = position.toString()
-//                    )
-//            )
-//    )
 
     fun getMixLeftBannerView(channel: ChannelModel, position: Int, userId: String): Map<String, Any> {
         val trackingBuilder = BaseTrackingBuilder()
@@ -232,10 +154,13 @@ object MixLeftComponentTracking: BaseTracking()  {
                 eventCategory = Category.HOMEPAGE,
                 eventAction = IMPRESSION_MIX_LEFT_BANNER,
                 eventLabel = Label.NONE,
-                userId = userId,
                 promotions = listOf(
                         Promotion(
-                                id = CustomEvent.FORMAT_4_VALUE_UNDERSCORE.format(channel.id, channel.channelBanner.id, channel.trackingAttributionModel.persoType, channel.trackingAttributionModel.categoryId),
+                                id = CustomEvent.FORMAT_4_VALUE_UNDERSCORE.format(
+                                        channel.id,
+                                        channel.channelBanner.id,
+                                        channel.trackingAttributionModel.persoType,
+                                        channel.trackingAttributionModel.categoryId),
                                 creative = channel.channelBanner.attribution,
                                 name = PROMOTION_BANNER_NAME.format("1", channel.channelHeader.name),
                                 position = position.toString()
@@ -247,30 +172,6 @@ object MixLeftComponentTracking: BaseTracking()  {
                 .build()
     }
 
-//    fun getMixLeftBannerClick(channel: ChannelModel, position: Int, userId: String) = getBasicPromotionChannelClick(
-//            event = Event.PROMO_CLICK,
-//            eventCategory = Category.HOMEPAGE,
-//            eventAction = CLICK_MIX_LEFT_BANNER,
-//            campaignCode = channel.trackingAttributionModel.campaignCode,
-//            eventLabel = channel.id + " - " + channel.channelHeader.name,
-//            channelId = channel.id,
-//            categoryId = channel.trackingAttributionModel.categoryId,
-//            affinity = channel.trackingAttributionModel.persona,
-//            attribution = channel.trackingAttributionModel.galaxyAttribution,
-//            shopId = channel.trackingAttributionModel.brandId,
-//            screen = Screen.DEFAULT,
-//            currentSite = CurrentSite.DEFAULT,
-//            businessUnit = BusinessUnit.DEFAULT,
-//            userId = userId,
-//            promotions = listOf(
-//                    Promotion(
-//                            id = CustomEvent.FORMAT_4_VALUE_UNDERSCORE.format(channel.id, channel.channelBanner.id, channel.trackingAttributionModel.persoType, channel.trackingAttributionModel.categoryId),
-//                            creative = channel.channelBanner.attribution,
-//                            name = PROMOTION_BANNER_NAME.format("1", channel.channelHeader.name),
-//                            position = position.toString()
-//                    )
-//            )
-//    )
 
     fun getMixLeftBannerClick(channel: ChannelModel, position: Int, userId: String): Map<String, Any> {
         val trackingBuilder = BaseTrackingBuilder()
@@ -279,10 +180,13 @@ object MixLeftComponentTracking: BaseTracking()  {
                 eventCategory = Category.HOMEPAGE,
                 eventAction = CLICK_MIX_LEFT_BANNER,
                 eventLabel = channel.id + " - " + channel.channelHeader.name,
-                userId = userId,
                 promotions = listOf(
                         Promotion(
-                                id = CustomEvent.FORMAT_4_VALUE_UNDERSCORE.format(channel.id, channel.channelBanner.id, channel.trackingAttributionModel.persoType, channel.trackingAttributionModel.categoryId),
+                                id = CustomEvent.FORMAT_4_VALUE_UNDERSCORE.format(
+                                        channel.id,
+                                        channel.channelBanner.id,
+                                        channel.trackingAttributionModel.persoType,
+                                        channel.trackingAttributionModel.categoryId),
                                 creative = channel.channelBanner.attribution,
                                 name = PROMOTION_BANNER_NAME.format("1", channel.channelHeader.name),
                                 position = position.toString()

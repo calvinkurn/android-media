@@ -142,8 +142,7 @@ object LegoBannerTracking : BaseTracking() {
                 eventLabel = Value.FORMAT_2_ITEMS_DASH.format(channelModel.id, channelModel.channelHeader.name),
                 promotions = listOf(
                         channelGrid.convertToHomePromotionModel(channelModel, position)
-                ),
-                userId = "")
+                ))
                 .appendChannelId(channelModel.id)
                 .appendAffinity(channelModel.trackingAttributionModel.persona)
                 .appendCategoryId(channelModel.trackingAttributionModel.categoryPersona)
