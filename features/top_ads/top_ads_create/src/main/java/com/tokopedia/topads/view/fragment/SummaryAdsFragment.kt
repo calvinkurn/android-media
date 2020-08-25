@@ -256,6 +256,7 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
             stepperModel!!.selectedKeywords.forEachIndexed { index, _ ->
                 val key = KeywordsItem()
                 key.keywordTag = stepperModel?.selectedKeywords!![index]
+                key.keywordTypeID = stepperModel?.selectedKeywordType!![index].toString()
                 if (stepperModel?.selectedSuggestBid!![index] > 0) {
                     key.priceBid = stepperModel?.selectedSuggestBid!![index]
                 } else

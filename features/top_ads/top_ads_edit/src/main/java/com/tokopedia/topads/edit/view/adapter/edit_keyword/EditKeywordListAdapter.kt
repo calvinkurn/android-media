@@ -17,7 +17,6 @@ class EditKeywordListAdapter(val typeFactory: EditKeywordListAdapterTypeFactory)
 
     var items: MutableList<EditKeywordViewModel> = mutableListOf()
     var data: MutableList<Int> = mutableListOf()
-    var error: MutableList<Boolean> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EditKeywordViewHolder<EditKeywordViewModel> {
         val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
@@ -33,16 +32,7 @@ class EditKeywordListAdapter(val typeFactory: EditKeywordListAdapterTypeFactory)
     }
 
     override fun onBindViewHolder(holder: EditKeywordViewHolder<EditKeywordViewModel>, position: Int) {
-        holder.bind(items[position], data, error)
-    }
-
-    fun isError(): Boolean {
-        error.forEach {
-            if (it) {
-                return true
-            }
-        }
-        return false
+        holder.bind(items[position])
     }
 
     fun getCurrentItems(): List<GetKeywordResponse.KeywordsItem> {
@@ -55,8 +45,7 @@ class EditKeywordListAdapter(val typeFactory: EditKeywordListAdapterTypeFactory)
         return selected
     }
 
-    fun getBidData(list: MutableList<Int>, error: MutableList<Boolean>) {
-        this.error = error
+    fun getBidData(list: MutableList<Int>) {
         this.data = list
         notifyDataSetChanged()
     }

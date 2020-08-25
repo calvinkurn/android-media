@@ -5,15 +5,19 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.utils.Constants
 import com.tokopedia.topads.edit.view.adapter.keyword.viewmodel.KeywordItemViewModel
-import kotlinx.android.synthetic.main.topads_edit_select_layout_keyword_list_item.view.*
-import kotlinx.android.synthetic.main.topads_edit_select_layout_keyword_list_item.view.checkBox
+import com.tokopedia.unifycomponents.Label
+import kotlinx.android.synthetic.main.topads_edit_layout_keyword_list_item.view.*
 import java.lang.Exception
 
 class KeywordItemViewHolder(val view: View, private var actionSelected: ((pos: Int) -> Unit)?) : KeywordViewHolder<KeywordItemViewModel>(view) {
 
     companion object {
+        const val LOW = "low"
+        const val HIGH = "high"
+        const val MEDIUM = "mid"
+
         @LayoutRes
-        var LAYOUT = R.layout.topads_edit_select_layout_keyword_list_item
+        var LAYOUT = R.layout.topads_edit_layout_keyword_list_item
     }
 
     init {
@@ -37,6 +41,24 @@ class KeywordItemViewHolder(val view: View, private var actionSelected: ((pos: I
                 item.isChecked = isChecked
                 actionSelected?.invoke(adapterPosition)
             }
+            when (it.competition) {
+                LOW -> {
+                    view.keywordCompetition.setLabelType(Label.GENERAL_DARK_GREEN)
+                    view.keywordCompetition.setLabel(view.resources.getString(R.string.topads_common_keyword_competition_low))
+                }
+
+                MEDIUM -> {
+                    view.keywordCompetition.setLabelType(Label.GENERAL_DARK_ORANGE)
+                    view.keywordCompetition.setLabel(view.resources.getString(R.string.topads_common_keyword_competition_moderation))
+                }
+
+                HIGH -> {
+                    view.keywordCompetition.setLabelType(Label.GENERAL_DARK_RED)
+                    view.keywordCompetition.setLabel(view.resources.getString(R.string.topads_common_keyword_competition_high))
+                }
+
+            }
+
         }
     }
 

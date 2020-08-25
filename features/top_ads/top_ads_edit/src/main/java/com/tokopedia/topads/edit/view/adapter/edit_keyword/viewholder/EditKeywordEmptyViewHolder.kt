@@ -17,7 +17,7 @@ class EditKeywordEmptyViewHolder(val view: View, var actionAdd: (() -> Unit)?) :
         val LAYOUT = R.layout.topads_edit_no_keywords_layout
     }
 
-    override fun bind(item: EditKeywordEmptyViewModel, data: MutableList<Int>, error: MutableList<Boolean>) {
+    override fun bind(item: EditKeywordEmptyViewModel) {
         view.add.setOnClickListener {
             actionAdd?.invoke()
         }

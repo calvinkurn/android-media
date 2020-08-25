@@ -3,26 +3,25 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/linearLayout4"
-    android:clickable="true"
-    android:background="?attr/selectableItemBackground"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground"
+    android:clickable="true">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/keyword_name"
         style="@style/TextView.Small"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_18"
         android:layout_marginBottom="@dimen/dp_18"
         android:gravity="center_vertical"
+        android:text="@string/_0_produk"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/keyword_count"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_3"
-        android:text="@string/_0_produk"
         tools:text="@tools:sample/first_names" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -30,32 +29,42 @@
         style="@style/TextView.Micro"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_30"
         android:gravity="center_vertical"
-        android:layout_marginRight="@dimen/dp_16"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/checkBox"
+        app:layout_constraintEnd_toStartOf="@id/keywordCompetition"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_3"
         tools:text="@tools:sample/last_names" />
 
-    <CheckBox
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/keywordCompetition"
+        style="@style/TextView.Micro"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_36"
+        android:gravity="center_vertical"
+        app:labelType="general_dark_red"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/checkBox"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Tinggi" />
+
+    <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
         android:id="@+id/checkBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_16"
         android:checked="false"
         android:gravity="center_vertical"
-        android:layout_marginRight="@dimen/dp_16"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <View
+    <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/line"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#E5E7E9"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
+        android:layout_height="2dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

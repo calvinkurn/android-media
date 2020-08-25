@@ -114,7 +114,7 @@
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_weight="1"
         android:padding="@dimen/dp_16"
-        android:text="@string/topads_edit__0_kata_kunci_dipilih"
+        android:text="@string/topads_common_kata_kunci_dipilih"
         app:layout_constraintBottom_toBottomOf="@+id/btn_next"
         app:layout_constraintEnd_toStartOf="@+id/btn_next"
         app:layout_constraintStart_toStartOf="parent"

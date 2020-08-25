@@ -5,11 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ProgressBar
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loading"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -17,107 +16,137 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible" />
 
-    <androidx.core.widget.NestedScrollView
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txtInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
+        android:text="@string/topads_common_non_key_budget"
+        android:textColor="@color/topads_heading_color"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_info"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/btn_info"
+        app:typographyType="body_2"
+        app:typographyWeight="bold" />
+
+    <ImageView
+        android:id="@+id/btn_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        android:contentDescription="INFO"
+        android:padding="@dimen/dp_5"
+        app:layout_constraintStart_toEndOf="@+id/txtInfo"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/topads_create_ic_information" />
+
+    <com.tokopedia.unifycomponents.TextFieldUnify
+        android:id="@+id/budget"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginBottom="@dimen/dp_30"
-        app:layout_constraintBottom_toTopOf="@+id/bottom"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txtInfo"
+        app:text_field_input_type="number"
+        app:text_field_prepend_text="Rp"
+        tools:layout_height="100dp" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/parent"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_8"
+        android:layout_marginTop="@dimen/dp_10"
+        app:layout_constraintTop_toBottomOf="@id/budget" />
 
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/selected_keyword"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_20"
+        android:text="@string/topads_common_keyword_edit_bid_sheet_biaya_sheet_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider"
+        app:typographyType="body_2"
+        app:typographyWeight="bold" />
 
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/typography24"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:text="@string/biaya_per_klik"
-                android:textColor="@color/topads_heading_color"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@+id/btn_info"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/btn_info"
-                app:typographyType="heading_6" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/headlineList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
+        app:layout_constraintTop_toBottomOf="@id/selected_keyword">
 
-            <ImageView
-                android:id="@+id/btn_info"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_16"
-                android:contentDescription="INFO"
-                android:padding="@dimen/dp_5"
-                app:layout_constraintStart_toEndOf="@+id/typography24"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/topads_create_ic_information" />
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/txtRecommendation"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/topads_common_label_top_ads_keyword"
+            android:textAllCaps="true"
+            android:textColor="@color/topads_light_shadow"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="body_3"
+            app:typographyWeight="bold" />
 
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/txtRange"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dp_30"
+            android:text="@string/topads_common_keyword_jenis"
+            android:textAllCaps="true"
+            android:textColor="@color/topads_light_shadow"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/txtkeyCompetition"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="body_3"
+            app:typographyWeight="bold" />
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/card1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginRight="@dimen/dp_16"
-                android:orientation="vertical"
-                app:cardCornerRadius="@dimen/dp_8"
-                app:cardUseCompatPadding="true"
-                app:contentPadding="@dimen/dp_16"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btn_info">
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/txtkeyCompetition"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dp_30"
+            android:text="@string/topads_common_keyword_budget"
+            android:textAllCaps="true"
+            android:textColor="@color/topads_light_shadow"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/view1"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="body_3"
+            app:typographyWeight="bold" />
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+        <View
+            android:id="@+id/view1"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            android:background="@color/transparent"
+            android:visibility="invisible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-                <com.tokopedia.unifycomponents.TextFieldUnify
-                    android:id="@+id/budget"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:text_field_input_type="number"
-                    app:text_field_label="Biaya per klik"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:text_field_label_static="true"
-                    app:text_field_prepend_text="Rp" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-            </androidx.cardview.widget.CardView>
-
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/selected_keyword"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginTop="20dp"
-                android:text="@string/kata_kunci_count"
-                android:textColor="@color/topads_heading_color"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/card1"
-                app:typographyType="heading_6" />
-
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/bid_list"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/selected_keyword"
-                tools:itemCount="2"
-                tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:listitem="@layout/topads_create_layout_budget_list_item"
-                tools:visibility="visible">
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-            </androidx.recyclerview.widget.RecyclerView>
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.core.widget.NestedScrollView>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/bid_list"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="@dimen/dp_0"
+        app:layout_constraintBottom_toTopOf="@id/bottom"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/headlineList"
+        tools:itemCount="2"
+        tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/topads_create_layout_budget_list_item"
+        tools:visibility="visible">
+
+
+    </androidx.recyclerview.widget.RecyclerView>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -130,7 +159,7 @@
             style="@style/TextView.Micro.Green"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp_12"
+            android:layout_marginBottom="@dimen/dp_24"
             android:backgroundTint="#FFFCF5"
             android:text="@string/tip_biaya_iklan"
             android:textAllCaps="false"
@@ -144,12 +173,9 @@
             android:id="@+id/view"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_6"
-            android:layout_above="@+id/btn_submit"
-            android:layout_marginBottom="@dimen/dp_8"
             android:background="@drawable/topads_bg_shader_gray"
             app:layout_constraintTop_toBottomOf="@+id/tip_btn"
             tools:layout_editor_absoluteX="6dp" />
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -159,7 +185,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent">
-
 
         <Button
             android:id="@+id/btn_next"

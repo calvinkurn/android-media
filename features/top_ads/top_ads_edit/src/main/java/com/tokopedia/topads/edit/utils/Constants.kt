@@ -1,8 +1,13 @@
 package com.tokopedia.topads.edit.utils
 
 import android.content.Context
+import android.view.KeyEvent
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.widget.TextView
+import com.tokopedia.topads.edit.R
+import com.tokopedia.unifycomponents.SearchBarUnify
 import java.text.NumberFormat
 import java.util.*
 
@@ -10,9 +15,7 @@ object Constants {
 
     const val FAVOURED_DATA = "favouredData"
     const val SELECTED_DATA = "selectedData"
-    const val MANUAL_DATA = "manualData"
     const val ORIGINAL_LIST = "originalList"
-    const val NOT_KNOWN = "Tidak diketahui"
     const val PRODUCT_ID = "product"
     const val MIN_SUGGESTION = "minSuggestedBid"
     const val GROUP_ID = "groupId"
@@ -26,7 +29,6 @@ object Constants {
     const val RESULT_IMAGE = "resultImage"
     const val ALL = "all"
     const val ROW = 50
-    const val START = 0
     const val EXISTING_IDS = "ExistingIds"
     const val POSITION0 = 0
     const val POSITION1 = 1
@@ -55,8 +57,6 @@ object Constants {
     const val PRODUK_NAME = " Produk"
     const val KATA_KUNCI = " Kata Kunci"
     const val ATUR_NAME = " Atur"
-    const val MIN = "min"
-    const val MAX = "max"
     const val TITLE_1 = "Pencarian luas"
     const val TITLE_2 = "Pencarian Spesifik"
     const val REGEX = "^[A-Za-z0-9 ]*\$"
@@ -81,6 +81,16 @@ object Constants {
     const val priceDaily = "price_daily"
     const val groupName = "groupName"
     const val TAB_POSITION = "tab_position"
+    const val MAX_BID = "max"
+    const val MIN_BID = "min"
+    const val SUGGESTION_BID = "suggest"
+    const val KEYWORD_NAME = "keywordName"
+    const val CURRENT_KEY_TYPE = "currentKeyType"
+    const val ITEM_POSITION = "pos"
+    const val SPECIFIC_TYPE = "Spesifik"
+    const val BROAD_TYPE = "Luas"
+    const val EXACT_POSITIVE = 21
+    const val BROAD_POSITIVE = 11
 
 
     var locale = Locale("in", "ID")
@@ -96,4 +106,29 @@ object Constants {
         if (inputMethodManager?.isAcceptingText == true)
             inputMethodManager.hideSoftInputFromWindow(view?.windowToken, 0)
     }
+
+    fun setSearchListener(context: Context?, view: View, onSuccess: () -> Unit) {
+        val searchbar = view.findViewById<SearchBarUnify>(R.id.searchBar)
+        val searchTextField = searchbar?.searchBarTextField
+        val searchClearButton = searchbar?.searchBarIcon
+        searchTextField?.imeOptions = EditorInfo.IME_ACTION_SEARCH
+        searchTextField?.setOnEditorActionListener(object : TextView.OnEditorActionListener {
+
+            override fun onEditorAction(textView: TextView?, actionId: Int, even: KeyEvent?): Boolean {
+
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    onSuccess.invoke()
+                    dismissKeyboard(context, view)
+                    return true
+                }
+                return false
+            }
+        })
+        searchClearButton?.setOnClickListener {
+            searchTextField?.text?.clear()
+            onSuccess.invoke()
+            dismissKeyboard(context, view)
+        }
+    }
+
 }
