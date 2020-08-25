@@ -47,7 +47,7 @@ class FlightHomepageActivityTest {
     }
 
     @Test
-    fun validateFlightHomepage() {
+    fun validateFlightHomepageP1Tracking() {
         validateFlightHomepageBannerDisplayedAndScrollable()
         validateFlightHomepageBannerClickableAndPerformClick()
         validateFlightHomepageSearchClick()
