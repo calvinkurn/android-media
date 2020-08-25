@@ -126,4 +126,9 @@
     <string name="label_otdg_tnc"><![CDATA[S&K Berlaku]]></string>
     <string name="label_choose_shipping">Pilih Pengiriman</string>
     <string name="label_check">Cek</string>
+    <string name="content_desc_label_choose_shipping">text pilih durasi pengiriman</string>
+    <string name="content_desc_label_selected_shipping_duration">text durasi pengiriman terpilih</string>
+    <string name="content_desc_icon_chevron_choose_duration">image pilih durasi pengiriman</string>
+    <string name="content_desc_label_selected_shipping_courier">text kurir pengiriman terpilih</string>
+    <string name="content_desc_icon_chevron_choose_courier">image pilih kurir pengiriman</string>
 </resources>
