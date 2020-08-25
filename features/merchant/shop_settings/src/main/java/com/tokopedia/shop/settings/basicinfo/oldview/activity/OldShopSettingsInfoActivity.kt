@@ -10,11 +10,11 @@ import com.tokopedia.shop.settings.basicinfo.oldview.fragment.ShopSettingsInfoFr
  * Created by Zulfikar on 5/19/2016.
  * deeplink: SHOP_SETTING_INFO
  */
-class ShopSettingsInfoActivity : BaseSimpleActivity() {
+class OldShopSettingsInfoActivity : BaseSimpleActivity() {
 
     companion object {
         @JvmStatic
-        fun createIntent(context: Context) = Intent(context, ShopSettingsInfoActivity::class.java)
+        fun createIntent(context: Context) = Intent(context, OldShopSettingsInfoActivity::class.java)
     }
 
     override fun getNewFragment(): Fragment {

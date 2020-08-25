@@ -230,4 +230,6 @@ public class RemoteConfigKey {
 
     public static final String NOTIFICATION_TRAY_CLEAR = "app_notif_tray_clear";
 
+    public static final String ENABLE_NEW_SHOP_SETTINGS = "app_enable_new_shop_settings";
+
 }

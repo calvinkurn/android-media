@@ -21,7 +21,7 @@ import com.tokopedia.shop.common.constant.ShopScheduleActionDef
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.basicinfo.oldview.presenter.UpdateShopSchedulePresenter
-import com.tokopedia.shop.settings.common.olddi.DaggerShopSettingsComponent
+import com.tokopedia.shop.settings.common.olddi.DaggerOldShopSettingsComponent
 import com.tokopedia.shop.settings.common.util.*
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.activity_shop_edit_schedule.*
@@ -29,7 +29,7 @@ import kotlinx.android.synthetic.main.partial_toolbar_save_button.*
 import java.util.*
 import javax.inject.Inject
 
-class ShopEditScheduleActivity : BaseSimpleActivity(), UpdateShopSchedulePresenter.View {
+class OldShopEditScheduleActivity : BaseSimpleActivity(), UpdateShopSchedulePresenter.View {
 
     @Inject
     lateinit var updateShopSchedulePresenter: UpdateShopSchedulePresenter
@@ -51,7 +51,7 @@ class ShopEditScheduleActivity : BaseSimpleActivity(), UpdateShopSchedulePresent
             selectedEndCloseUnixTimeMs = savedInstanceState.getLong(SAVED_SELECTED_END_DATE)
         }
 
-        DaggerShopSettingsComponent.builder()
+        DaggerOldShopSettingsComponent.builder()
                 .baseAppComponent((application as BaseMainApplication).baseAppComponent)
                 .build()
                 .inject(this)
@@ -297,7 +297,7 @@ class ShopEditScheduleActivity : BaseSimpleActivity(), UpdateShopSchedulePresent
         fun createIntent(context: Context, shopBasicDataModel: ShopBasicDataModel,
                          title: String,
                          isClosedNow: Boolean): Intent {
-            val intent = Intent(context, ShopEditScheduleActivity::class.java)
+            val intent = Intent(context, OldShopEditScheduleActivity::class.java)
             intent.putExtra(EXTRA_SHOP_MODEL, shopBasicDataModel)
             intent.putExtra(EXTRA_TITLE, title)
             intent.putExtra(EXTRA_IS_CLOSED_NOW, isClosedNow)

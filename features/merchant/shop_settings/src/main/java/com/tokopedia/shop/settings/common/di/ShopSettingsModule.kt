@@ -12,6 +12,7 @@ import com.tokopedia.imageuploader.domain.GenerateHostRepository
 import com.tokopedia.imageuploader.domain.UploadImageRepository
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.imageuploader.utils.ImageUploaderUtils
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.shop.settings.basicinfo.data.UploadShopEditImageModel
 import com.tokopedia.shop.settings.common.coroutine.CoroutineDispatchers
 import com.tokopedia.shop.settings.common.coroutine.CoroutineDispatchersProvider
@@ -24,7 +25,7 @@ import dagger.Provides
  * @author by furqan on 21/03/18.
  */
 @ShopSettingsScope
-@Module(includes = [ImageUploaderModule::class, GmCommonModule::class])
+@Module(includes = [ImageUploaderModule::class, GmCommonModule::class, ShopSettingsInfoViewModelModule::class])
 class ShopSettingsModule {
 
     @Provides
@@ -42,6 +43,10 @@ class ShopSettingsModule {
     fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
     }
+
+    @Provides
+    @ShopSettingsScope
+    fun provideMultiRequestGraphqlUseCase() = GraphqlInteractor.getInstance().multiRequestGraphqlUseCase
 
     @Provides
     @ShopSettingsScope
