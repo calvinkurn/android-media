@@ -200,7 +200,7 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
 
     private fun onBankAccountLoaded(accountList: ArrayList<BankAccount>) {
         accountList.forEach lit@{ bankAccount ->
-            if (bankAccount.isDefaultBank == 1) {
+            if (bankAccount.isDefaultBank == DEFAULT_BANK_ACCOUNT_VALUE) {
                 primaryBankAccount = bankAccount
                 return@lit
             }
@@ -310,7 +310,9 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
 
     private fun isPrimaryAccountActive(): Boolean {
         primaryBankAccount?.apply {
-            return !(status == 2 || status == 3 || status == 5)
+            return !(status == BANK_STATUS_REJECTED_PENDING
+                    || status == BANK_STATUS_REJECTED_FRAUD
+                    || status == BANK_STATUS_PENDING_FRAUD_VERIFICATION)
         }
         return false
     }
@@ -661,8 +663,7 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
         loaderView.visible()
         autoWDSettingsViewModel.upsertAutoWithdrawal(autoWithdrawalUpsertRequest)
     }
-
-
+    
     private fun onAutoWithdrawalUpsertFailed(message: String) {
         loaderView.gone()
         view?.apply {
@@ -675,6 +676,12 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
         private const val AUTO_WITHDRAWAL_STATUS_NEW = 0
         private const val AUTO_WITHDRAWAL_STATUS_ENABLE = 1
         private const val AUTO_WITHDRAWAL_STATUS_DISABLE = 2
+
+        private const val DEFAULT_BANK_ACCOUNT_VALUE = 1
+
+        private const val BANK_STATUS_REJECTED_PENDING = 2
+        private const val BANK_STATUS_REJECTED_FRAUD = 3
+        private const val BANK_STATUS_PENDING_FRAUD_VERIFICATION = 5
 
         private val OTP_TYPE_ADD_BANK_ACCOUNT = 146
         private const val REQUEST_OTP_CODE = 131
