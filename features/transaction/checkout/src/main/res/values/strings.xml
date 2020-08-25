@@ -129,7 +129,7 @@
     <string name="content_desc_label_choose_shipping">text pilih pengiriman</string>
     <string name="content_desc_icon_chevron_choose_shipping">image pilih pengiriman</string>
     <string name="content_desc_label_selected_shipping_duration">text durasi pengiriman terpilih</string>
-    <string name="content_desc_icon_chevron_choose_duration">image pilih durasi pengiriman</string>
+    <string name="content_desc_icon_chevron_choose_duration">image pilih durasi</string>
     <string name="content_desc_label_selected_shipping_courier">text kurir pengiriman terpilih</string>
-    <string name="content_desc_icon_chevron_choose_courier">image pilih kurir pengiriman</string>
+    <string name="content_desc_icon_chevron_choose_courier">image pilih kurir</string>
 </resources>
