@@ -34,11 +34,6 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
         }
     }
 
-    private boolean isCacheValueValid(String cacheValue, String defaultValue) {
-        return cacheValue != null &&
-                !cacheValue.isEmpty();
-    }
-
     private boolean isDebug() {
         return GlobalConfig.isAllowDebuggingTools() && sharedPrefs != null;
     }
