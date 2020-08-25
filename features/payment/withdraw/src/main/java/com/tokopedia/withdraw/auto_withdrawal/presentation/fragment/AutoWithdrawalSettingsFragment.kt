@@ -512,7 +512,7 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
                 webView.loadData(tncTemplateStr, MIME_TYPE_TEXT_HTML, ENCODING_UTF_8)
                 bottomSheetUnify.setChild(view)
                 bottomSheetUnify.setShowListener {
-              //      view.requestFocus()
+                    view.requestFocus()
                 }
                 bottomSheetUnify.show(activity.supportFragmentManager, TAG_AUTO_WITHDRAWAL_TNC_BOTTOM_SHEET)
                 analytics.onClickViewTermsCondition()
