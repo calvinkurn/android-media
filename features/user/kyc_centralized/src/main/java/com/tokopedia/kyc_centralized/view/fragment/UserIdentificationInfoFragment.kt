@@ -1,7 +1,6 @@
 package com.tokopedia.kyc_centralized.view.fragment
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,6 +9,9 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
@@ -26,13 +28,14 @@ import com.tokopedia.kyc_centralized.analytics.UserIdentificationAnalytics
 import com.tokopedia.kyc_centralized.analytics.UserIdentificationAnalytics.Companion.createInstance
 import com.tokopedia.kyc_centralized.di.DaggerUserIdentificationCommonComponent
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationInfoActivity
-import com.tokopedia.kyc_centralized.view.listener.UserIdentificationInfo
-import com.tokopedia.kyc_centralized.view.subscriber.GetUserProjectInfoSubcriber
+import com.tokopedia.kyc_centralized.view.viewmodel.UserIdentificationViewModel
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.UnifyButton.Type.MAIN
 import com.tokopedia.unifycomponents.UnifyButton.Variant.FILLED
 import com.tokopedia.unifycomponents.UnifyButton.Variant.GHOST
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user_identification_common.KYCConstant
 import com.tokopedia.user_identification_common.KycCommonUrl
 import javax.inject.Inject
@@ -40,7 +43,7 @@ import javax.inject.Inject
 /**
  * @author by alvinatin on 02/11/18.
  */
-class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationInfo.View, GetUserProjectInfoSubcriber.GetUserProjectInfoListener, UserIdentificationInfoActivity.Listener {
+class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationInfoActivity.Listener {
     private var globalErrorView: GlobalError? = null
     private var image: ImageView? = null
     private var title: TextView? = null
@@ -59,7 +62,9 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
     private var projectId = -1
 
     @Inject
-    lateinit var presenter: UserIdentificationInfo.Presenter
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    private val viewModelFragmentProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
+    private val viewModel by lazy { viewModelFragmentProvider.get(UserIdentificationViewModel::class.java) }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val parentView = inflater.inflate(R.layout.fragment_user_identification_info, container, false)
@@ -82,13 +87,10 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
-        if (activity != null) {
-            val daggerUserIdentificationComponent = DaggerUserIdentificationCommonComponent.builder()
-                    .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-                    .build()
-            daggerUserIdentificationComponent.inject(this)
-            presenter?.attachView(this)
-        }
+        val daggerUserIdentificationComponent = DaggerUserIdentificationCommonComponent.builder()
+                .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
+                .build()
+        daggerUserIdentificationComponent.inject(this)
     }
 
     private fun initView(parentView: View) {
@@ -113,20 +115,38 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
         } else {
             toggleNotFoundView(true)
         }
+
+        initObserver()
+    }
+
+    private fun initObserver() {
+        viewModel.userProjectInfo.observe(viewLifecycleOwner, Observer {
+            when(it) {
+                is Success -> {
+                    if(it.data.kycProjectInfo.status == KYCConstant.STATUS_BLACKLISTED ||
+                            it.data.kycProjectInfo.statusName != null && it.data.kycProjectInfo.statusName == "") {
+                        onUserBlacklist()
+                    } else {
+                        onSuccessGetUserProjectInfo(it.data.kycProjectInfo.status, it.data.kycProjectInfo.reasonList)
+                    }
+                }
+                is Fail -> { onErrorGetUserProjectInfo(it.throwable) }
+            }
+        })
     }
 
     private val statusInfo: Unit
         get() {
             showLoading()
-            presenter.getInfo(projectId)
+            viewModel.getUserProjectInfo(projectId)
         }
 
-    override fun onUserBlacklist() {
+    private fun onUserBlacklist() {
         hideLoading()
         showStatusBlacklist()
     }
 
-    override fun onSuccessGetUserProjectInfo(status: Int, reasons: List<String>) {
+    private fun onSuccessGetUserProjectInfo(status: Int, reasons: List<String>) {
         hideLoading()
         statusCode = status
         when (status) {
@@ -143,18 +163,10 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
         }
     }
 
-    override fun onErrorGetUserProjectInfo(throwable: Throwable) {
+    private fun onErrorGetUserProjectInfo(throwable: Throwable) {
         if (context != null) {
             hideLoading()
             val error = ErrorHandler.getErrorMessage(context, throwable)
-            NetworkErrorHelper.showEmptyState(context, mainView, error) { statusInfo }
-        }
-    }
-
-    override fun onErrorGetUserProjectInfoWithErrorCode(errorCode: String) {
-        if (context != null) {
-            hideLoading()
-            val error = String.format("%s (%s)", context?.getString(R.string.user_identification_default_request_error_unknown), errorCode)
             NetworkErrorHelper.showEmptyState(context, mainView, error) { statusInfo }
         }
     }
@@ -249,21 +261,15 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
         button?.setOnClickListener(onGoToAccountSettingButton(KYCConstant.STATUS_BLACKLISTED))
     }
 
-    override fun showLoading() {
+    private fun showLoading() {
         mainView?.visibility = View.GONE
         progressBar?.visibility = View.VISIBLE
     }
 
-    override fun hideLoading() {
+    private fun hideLoading() {
         mainView?.visibility = View.VISIBLE
         progressBar?.visibility = View.GONE
     }
-
-    override val userProjectInfoListener: GetUserProjectInfoSubcriber.GetUserProjectInfoListener
-        get() = this
-
-    override val getContext: Context?
-        get() = context
 
     override fun onTrackBackPressed() {
         when (statusCode) {
@@ -322,11 +328,6 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
             analytics?.eventClickTermsSuccessPage()
             RouteManager.route(activity, KycCommonUrl.APPLINK_TERMS_AND_CONDITION)
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        presenter?.detachView()
     }
 
     companion object {

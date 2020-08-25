@@ -13,12 +13,10 @@ import com.tokopedia.imageuploader.utils.ImageUploaderUtils
 import com.tokopedia.kyc_centralized.domain.GetUserProjectInfoUseCase
 import com.tokopedia.kyc_centralized.view.listener.UserIdentificationInfo
 import com.tokopedia.kyc_centralized.view.listener.UserIdentificationUploadImage
-import com.tokopedia.kyc_centralized.view.presenter.UserIdentificationInfoPresenter
 import com.tokopedia.kyc_centralized.view.presenter.UserIdentificationUploadImagePresenter
 import com.tokopedia.kyc_centralized.view.viewmodel.AttachmentImageModel
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.user_identification_common.domain.usecase.GetApprovalStatusUseCase
 import com.tokopedia.user_identification_common.domain.usecase.GetKtpStatusUseCase
 import com.tokopedia.user_identification_common.domain.usecase.RegisterIdentificationUseCase
 import com.tokopedia.user_identification_common.domain.usecase.UploadIdentificationUseCase
@@ -33,6 +31,11 @@ import rx.subscriptions.CompositeSubscription
 @UserIdentificationCommonScope
 @Module(includes = [ImageUploaderModule::class])
 class UserIdentificationCommonModule {
+
+    @UserIdentificationCommonScope
+    @Provides
+    fun providesContext(@ApplicationContext context: Context): Context = context
+
     @UserIdentificationCommonScope
     @Provides
     fun provideResources(@ApplicationContext context: Context): Resources {
@@ -86,7 +89,18 @@ class UserIdentificationCommonModule {
 
     @UserIdentificationCommonScope
     @Provides
-    fun provideUserIdentificationInfoPresenter(getUserProjectInfoUseCase: GetUserProjectInfoUseCase?, getApprovalStatusUseCase: GetApprovalStatusUseCase?): UserIdentificationInfo.Presenter {
-        return UserIdentificationInfoPresenter(getUserProjectInfoUseCase, getApprovalStatusUseCase)
+    fun provideGraphQlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
+
+    @UserIdentificationCommonScope
+    @Provides
+    @IntoMap
+    @StringKey(KycConstants.QUERY_GET_KYC_PROJECT_INFO)
+    fun provideRawQueryGetKycProjectInfo(@UserIdentificationCommonScope context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.query_get_kyc_project_info)
+
+    @UserIdentificationCommonScope
+    @Provides
+    fun provideMainDispatcher(): DispatcherProvider {
+        return AppDispatcherProvider()
     }
 }
