@@ -39,14 +39,14 @@ class BottomActionPartialView(
             ivInventory.isClickable = false
             btnAction.isEnabled = false
             tvBadgeCount.gone()
-            setInventoryClickListener {  }
+            clInventory.setOnClickListener {  }
         } else {
             ivInventory.setImageResource(R.drawable.ic_play_inventory)
             ivInventory.isClickable = true
             btnAction.isEnabled = true
             tvBadgeCount.visible()
             tvBadgeCount.text = productList.size.toString()
-            setInventoryClickListener { listener.onInventoryIconClicked() }
+            clInventory.setOnClickListener { listener.onInventoryIconClicked() }
         }
     }
 
@@ -71,12 +71,6 @@ class BottomActionPartialView(
                         .addTarget(tvBadgeCount)
                         .setDuration(300)
         )
-    }
-
-    private fun setInventoryClickListener(clickListener: (View) -> Unit) {
-        clInventory.setOnClickListener(clickListener)
-        ivInventory.setOnClickListener(clickListener)
-        tvBadgeCount.setOnClickListener(clickListener)
     }
 
     interface Listener {
