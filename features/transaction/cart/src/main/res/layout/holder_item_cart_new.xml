@@ -436,7 +436,7 @@ barangnya gan!" />
             android:background="@color/unify_N75" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_similar_product_on_cart_error"
+            android:id="@+id/tv_product_unavailable_action"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="right|end"

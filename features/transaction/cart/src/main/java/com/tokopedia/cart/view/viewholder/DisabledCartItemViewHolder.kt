@@ -4,15 +4,13 @@ import android.graphics.Paint
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.cart.R
-import com.tokopedia.design.utils.CurrencyFormatUtil
-import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.cart.view.ActionListener
-import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.uimodel.DisabledCartItemHolderData
+import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
-import com.tokopedia.unifycomponents.ticker.TickerCallback
 import kotlinx.android.synthetic.main.holder_item_cart_error.view.*
 
 class DisabledCartItemViewHolder(itemView: View, val actionListener: ActionListener?) : RecyclerView.ViewHolder(itemView) {
@@ -32,7 +30,7 @@ class DisabledCartItemViewHolder(itemView: View, val actionListener: ActionListe
         renderSlashPrice(data)
         renderDeleteButton(data)
         renderWishlistButton(data)
-        renderSimilarProduct(data)
+        renderProductUnavailableAction(data)
         renderDivider(data)
     }
 
@@ -76,44 +74,6 @@ class DisabledCartItemViewHolder(itemView: View, val actionListener: ActionListe
         }
     }
 
-    // Deprecated
-    // Todo : Confirm to PO to delete
-    private fun renderTickerMessage(data: DisabledCartItemHolderData) {
-        itemView.ticker_message.apply {
-            if (data.nicotineLiteMessageData != null) {
-                val descriptionText = data.nicotineLiteMessageData!!.text
-                        .replace(REPLACE_TAG_OPEN,
-                                "<a href=\"${data.nicotineLiteMessageData!!.text}\">")
-                        .replace(REPLACE_TAG_CLOSE, LINK_TAG_CLOSE)
-                setHtmlDescription(descriptionText)
-                setDescriptionClickEvent(object : TickerCallback {
-                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                        actionListener?.onTobaccoLiteUrlClicked(data.nicotineLiteMessageData!!.url)
-                    }
-
-                    override fun onDismiss() {}
-                })
-                visibility = View.VISIBLE
-                post {
-                    measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
-                            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED))
-                    requestLayout()
-                }
-                actionListener?.onShowTickerTobacco()
-            } else if (data.tickerMessage != null) {
-                setTextDescription(data.tickerMessage!!)
-                visibility = View.VISIBLE
-                post {
-                    measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
-                            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED))
-                    requestLayout()
-                }
-            } else {
-                visibility = View.GONE
-            }
-        }
-    }
-
     private fun renderDeleteButton(data: DisabledCartItemHolderData) {
         itemView.btn_delete_cart.setOnClickListener {
             data.data?.let {
@@ -134,16 +94,23 @@ class DisabledCartItemViewHolder(itemView: View, val actionListener: ActionListe
         }
     }
 
-    private fun renderSimilarProduct(data: DisabledCartItemHolderData) {
+    private fun renderProductUnavailableAction(data: DisabledCartItemHolderData) {
         if (data.similarProduct != null) {
-            itemView.group_similar_product_on_cart_error.visibility = View.VISIBLE
-            itemView.tv_similar_product_on_cart_error.text = data.similarProduct!!.text
-            itemView.tv_similar_product_on_cart_error.setOnClickListener {
+            itemView.tv_product_unavailable_action.text = data.similarProduct!!.text
+            itemView.tv_product_unavailable_action.setOnClickListener {
                 actionListener?.onSimilarProductUrlClicked(data.similarProduct!!.url)
             }
             actionListener?.onShowTickerOutOfStock(data.productId)
+            itemView.tv_product_unavailable_action.visibility = View.VISIBLE
+        } else if (data.nicotineLiteMessageData != null) {
+            itemView.tv_product_unavailable_action.text = data.nicotineLiteMessageData!!.text
+            itemView.tv_product_unavailable_action.setOnClickListener {
+                actionListener?.onTobaccoLiteUrlClicked(data.nicotineLiteMessageData!!.url)
+            }
+            actionListener?.onShowTickerTobacco()
+            itemView.tv_product_unavailable_action.visibility = View.VISIBLE
         } else {
-            itemView.group_similar_product_on_cart_error.visibility = View.GONE
+            itemView.tv_product_unavailable_action.visibility = View.GONE
         }
     }
 

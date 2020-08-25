@@ -738,10 +738,14 @@ val RESPONSE = """
                       ],
                       "messages": [],
                       "checkbox_state": true,
-                      "similar_product_url": "tokopedia://rekomendasi/15262849?ref=cart",
+                      "similar_product_url": "",
                       "similar_product": {
-                        "text": "Lihat Produk Serupa",
-                        "url": "tokopedia://rekomendasi/15262849?ref=cart"
+                        "text": "",
+                        "url": ""
+                      },
+                      "nicotine_lite_message": {
+                        "text": "Beli lewat browser",
+                        "url": "https://m.tokopedia.com/cart"
                       }
                     }
                   ],

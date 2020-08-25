@@ -1,14 +1,12 @@
 package com.tokopedia.cart.view.viewholder
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Context
 import android.graphics.Paint
 import android.text.*
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.content.ContextCompat
@@ -135,7 +133,7 @@ class CartItemViewHolder constructor(itemView: View,
         btnDelete = itemView.findViewById(R.id.btn_delete_cart)
         btnDeleteOnCartError = itemView.findViewById(R.id.btn_delete_on_cart_error)
         vDeviderOnCartError = itemView.findViewById(R.id.v_devider_on_cart_error)
-        tvSimilarProductOnCartError = itemView.findViewById(R.id.tv_similar_product_on_cart_error)
+        tvSimilarProductOnCartError = itemView.findViewById(R.id.tv_product_unavailable_action)
 
         layoutError = itemView.findViewById(R.id.layout_error)
         tickerError = itemView.findViewById(R.id.ticker_error)
