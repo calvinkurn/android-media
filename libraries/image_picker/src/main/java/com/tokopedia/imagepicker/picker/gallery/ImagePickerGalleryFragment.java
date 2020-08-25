@@ -27,6 +27,7 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.label.LabelView;
 import com.tokopedia.imagepicker.R;
+import com.tokopedia.imagepicker.common.util.FileUtils;
 import com.tokopedia.imagepicker.picker.album.AlbumPickerActivity;
 import com.tokopedia.imagepicker.picker.gallery.adapter.AlbumMediaAdapter;
 import com.tokopedia.imagepicker.picker.gallery.internal.entity.Album;
@@ -39,6 +40,7 @@ import com.tokopedia.imagepicker.picker.gallery.widget.MediaGridInset;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerInterface;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import static com.tokopedia.imagepicker.picker.album.AlbumPickerActivity.EXTRA_ALBUM_ITEM;
@@ -317,34 +319,44 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
     @Override
     public boolean isMediaValid(MediaItem item) {
         // check if file exists
-        File file = new File(item.getRealPath());
-        if (!file.exists()) {
-            NetworkErrorHelper.showRedCloseSnackbar(getView(),
-                    galleryType == GalleryType.VIDEO_ONLY ? getString(R.string.video_not_found) :
-                            getString(R.string.image_not_found));
+        File file;
+
+        try {
+            file = FileUtils.from(getContext(), item.getRealPath());
+            if (!file.exists()) {
+                NetworkErrorHelper.showRedCloseSnackbar(getView(),
+                        galleryType == GalleryType.VIDEO_ONLY ? getString(R.string.video_not_found) :
+                                getString(R.string.image_not_found));
+                return false;
+            }
+            //check image resolution
+            if (item.isVideo() && item.getDuration() > 0) { // it is video
+                int minVideoResolution = item.getMinimumVideoResolution();
+                if ((file.length() / BYTES_IN_KB) > onImagePickerGalleryFragmentListener.getMaxFileSize()) {
+                    NetworkErrorHelper.showRedCloseSnackbar(getView(), getString(R.string.max_video_size_reached));
+                    return false;
+                }
+                if (item.getDuration() > MAX_VIDEO_DURATION_MS) {
+                    NetworkErrorHelper.showRedCloseSnackbar(getView(), getString(R.string.max_video_duration_reached));
+                    return false;
+                }
+            } else {
+                if ((file.length() / BYTES_IN_KB) > onImagePickerGalleryFragmentListener.getMaxFileSize()) {
+                    NetworkErrorHelper.showRedCloseSnackbar(getView(), imageTooLargeErrorMessage);
+                    return false;
+                }
+                if (item.getWidth(getContext()) < minImageResolution || item.getHeight(getContext()) < minImageResolution) {
+                    NetworkErrorHelper.showRedCloseSnackbar(getView(), belowMinImageResolutionErrorMessage);
+                    return false;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
             return false;
         }
-        //check image resolution
-        if (item.isVideo() && item.getDuration() > 0) { // it is video
-            int minVideoResolution = item.getMinimumVideoResolution();
-            if ((file.length() / BYTES_IN_KB) > onImagePickerGalleryFragmentListener.getMaxFileSize()) {
-                NetworkErrorHelper.showRedCloseSnackbar(getView(), getString(R.string.max_video_size_reached));
-                return false;
-            }
-            if (item.getDuration() > MAX_VIDEO_DURATION_MS) {
-                NetworkErrorHelper.showRedCloseSnackbar(getView(), getString(R.string.max_video_duration_reached));
-                return false;
-            }
-        } else {
-            if ((file.length() / BYTES_IN_KB) > onImagePickerGalleryFragmentListener.getMaxFileSize()) {
-                NetworkErrorHelper.showRedCloseSnackbar(getView(), imageTooLargeErrorMessage);
-                return false;
-            }
-            if (item.getWidth() < minImageResolution || item.getHeight() < minImageResolution) {
-                NetworkErrorHelper.showRedCloseSnackbar(getView(), belowMinImageResolutionErrorMessage);
-                return false;
-            }
-        }
+
+
+
         return true;
     }
 

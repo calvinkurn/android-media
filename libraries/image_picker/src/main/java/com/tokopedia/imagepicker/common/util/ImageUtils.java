@@ -18,14 +18,14 @@ import android.os.Build;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
-import androidx.annotation.NonNull;
-import androidx.annotation.StringDef;
-import androidx.exifinterface.media.ExifInterface;
 import android.text.TextUtils;
 import android.webkit.MimeTypeMap;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.StringDef;
+import androidx.exifinterface.media.ExifInterface;
+
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -281,6 +281,18 @@ public class ImageUtils {
 
     public static int[] getWidthAndHeight(String filePath) {
         return getWidthAndHeight(new File(filePath));
+    }
+
+    public static int[] getWidthAndHeight(Context context, Uri uri){
+        try {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            InputStream input = context.getContentResolver().openInputStream(uri);
+            BitmapFactory.decodeStream(input, null, options);  input.close();
+            return new int[]{options.outWidth, options.outHeight};
+        }
+        catch (Exception e){}
+        return new int[]{0,0};
     }
 
     public static int[] getWidthAndHeight(File file) {
