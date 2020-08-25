@@ -1064,6 +1064,13 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                         }
                         toBeRemovedData.add(obj)
                     }
+
+                    val twoBefore = cartDataList[i - 2]
+                    if (twoBefore is DisabledReasonHolderData) {
+                        if (after !is DisabledCartItemHolderData && after !is DisabledShopHolderData) {
+                            toBeRemovedData.add(twoBefore)
+                        }
+                    }
                 }
                 is DisabledItemHeaderHolderData -> disabledItemHeaderHolderData = obj
                 is CartItemTickerErrorHolderData -> cartItemTickerErrorHolderData = obj

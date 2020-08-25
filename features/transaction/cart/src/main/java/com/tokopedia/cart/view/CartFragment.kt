@@ -13,10 +13,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.CheckBox
-import android.widget.LinearLayout
-import android.widget.RelativeLayout
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -1548,7 +1545,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 cartListData.lastApplyShopGroupSimplifiedData?.let { lastApplyData ->
                     // show toaster if any promo applied has been changed
                     if (lastApplyData.additionalInfo.errorDetail.message.isNotEmpty()) {
-                        showToaster(lastApplyData.additionalInfo.errorDetail.message, isShowOk = false)
+                        showToastMessageGreen(lastApplyData.additionalInfo.errorDetail.message)
                         PromoRevampAnalytics.eventCartViewPromoMessage(lastApplyData.additionalInfo.errorDetail.message)
                     }
                     renderPromoCheckout(lastApplyData)
@@ -1660,7 +1657,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         promoCheckoutBtn.title = getString(R.string.promo_funnel_label)
         promoCheckoutBtn.desc = getString(R.string.promo_desc_no_selected_item)
         promoCheckoutBtn.setOnClickListener {
-            showToaster(getString(R.string.promo_choose_item_cart), isShowOk = false)
+            showToastMessageGreen(getString(R.string.promo_choose_item_cart))
             PromoRevampAnalytics.eventCartViewPromoMessage(getString(R.string.promo_choose_item_cart))
         }
     }
@@ -1699,7 +1696,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         promoCheckoutBtn.title = title
         promoCheckoutBtn.setOnClickListener {
             if (cartAdapter.selectedCartItemData.isEmpty()) {
-                showToaster(getString(R.string.promo_choose_item_cart), isShowOk = false)
+                showToastMessageGreen(getString(R.string.promo_choose_item_cart))
                 PromoRevampAnalytics.eventCartViewPromoMessage(getString(R.string.promo_choose_item_cart))
             } else {
                 dPresenter.doUpdateCartForPromo()
@@ -2428,6 +2425,18 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
+    override fun showToastMessageGreen(message: String, action: String, onClickListener: View.OnClickListener) {
+        val toasterInfo = Toaster
+        view?.let { v ->
+            if (action.isNotBlank()) {
+                toasterInfo.toasterCustomCtaWidth = v.resources.getDimensionPixelOffset(R.dimen.dp_100)
+                toasterInfo.make(v, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, action, onClickListener)
+            } else {
+                toasterInfo.make(v, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL)
+            }
+        }
+    }
+
     override fun renderLoadGetCartData() {
         showMainContainerLoadingInitData()
     }
@@ -2439,11 +2448,21 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         showMainContainer()
     }
 
-    override fun onDeleteCartDataSuccess(deletedCartIds: List<String>) {
-        cartAdapter.removeCartItemById(deletedCartIds, context)
-        dPresenter.reCalculateSubTotal(cartAdapter.allShopGroupDataList, cartAdapter.insuranceCartShops)
-        setToolbarShadowVisibility(cartAdapter.allAvailableCartItemData.isEmpty())
-        notifyBottomCartParent()
+    override fun onDeleteCartDataSuccess(deletedCartIds: List<String>, removeAllItems: Boolean) {
+        showToastMessageGreen("${deletedCartIds.size} barang telah dihapus", "Batalkan", View.OnClickListener { onUndoDeleteClicked(deletedCartIds) })
+        if (removeAllItems) {
+            resetRecentViewList()
+            dPresenter.processInitialGetCartData(getCartId(), false, false)
+        } else {
+            cartAdapter.removeCartItemById(deletedCartIds, context)
+            dPresenter.reCalculateSubTotal(cartAdapter.allShopGroupDataList, cartAdapter.insuranceCartShops)
+            setToolbarShadowVisibility(cartAdapter.allAvailableCartItemData.isEmpty())
+            notifyBottomCartParent()
+        }
+    }
+
+    private fun onUndoDeleteClicked(cartIds: List<String>) {
+        Toast.makeText(context, "UNDO DELETE", Toast.LENGTH_SHORT).show()
     }
 
     override fun onRefresh(view: View?) {
@@ -3027,14 +3046,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         doRenderPromoCheckoutButton(lastApplyUiModel)
         if (promoUiModel.globalSuccess) {
             setLastApplyDataToShopGroup(lastApplyUiModel)
-        }
-    }
-
-    private fun showToaster(msg: String, isShowOk: Boolean) {
-        val toasterInfo = Toaster
-        view?.let { v ->
-            if (isShowOk) toasterInfo.make(v, msg, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, ACTION_OK)
-            else toasterInfo.make(v, msg, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL)
         }
     }
 

@@ -38,12 +38,7 @@ class DeleteCartItemSubscriber(private val view: ICartListView?,
                     }
                 }
 
-                if (removeAllItems) {
-                    view.resetRecentViewList()
-                    presenter.processInitialGetCartData(view.getCartId(), false, false)
-                } else {
-                    view.onDeleteCartDataSuccess(toBeDeletedCartIds)
-                }
+                view.onDeleteCartDataSuccess(toBeDeletedCartIds, removeAllItems)
 
                 val params = view.generateGeneralParamValidateUse()
                 if ((view.checkHitValidateUseIsNeeded(params))) {

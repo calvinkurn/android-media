@@ -1,5 +1,6 @@
 package com.tokopedia.cart.view
 
+import android.view.View
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceCartDigitalProduct
@@ -63,11 +64,13 @@ interface ICartListView : CustomerView {
 
     fun showToastMessageGreen(message: String)
 
+    fun showToastMessageGreen(message: String, action: String, onClickListener: View.OnClickListener)
+
     fun renderLoadGetCartData()
 
     fun renderLoadGetCartDataFinish()
 
-    fun onDeleteCartDataSuccess(deletedCartIds: List<String>)
+    fun onDeleteCartDataSuccess(deletedCartIds: List<String>, removeAllItems: Boolean)
 
     fun stopCartPerformanceTrace()
 

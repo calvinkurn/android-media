@@ -164,6 +164,7 @@ class CartModule {
     @CartScope
     fun provideICartListPresenter(getCartListSimplifiedUseCase: GetCartListSimplifiedUseCase,
                                   deleteCartUseCase: DeleteCartUseCase,
+                                  undoDeleteCartUseCase: UndoDeleteCartUseCase,
                                   updateCartUseCase: UpdateCartUseCase,
                                   compositeSubscription: CompositeSubscription,
                                   addWishListUseCase: AddWishListUseCase,
@@ -185,7 +186,7 @@ class CartModule {
                                   validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase,
                                   schedulers: ExecutorSchedulers): ICartListPresenter {
         return CartListPresenter(getCartListSimplifiedUseCase, deleteCartUseCase,
-                updateCartUseCase, compositeSubscription,
+                undoDeleteCartUseCase, updateCartUseCase, compositeSubscription,
                 addWishListUseCase, removeWishListUseCase, updateAndReloadCartUseCase,
                 userSessionInterface, clearCacheAutoApplyStackUseCase, getRecentViewUseCase,
                 getWishlistUseCase, getRecommendationUseCase, addToCartUseCase, addToCartExternalUseCase,

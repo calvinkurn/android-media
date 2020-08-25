@@ -54,6 +54,7 @@ import kotlin.collections.HashMap
 
 class CartListPresenter @Inject constructor(private val getCartListSimplifiedUseCase: GetCartListSimplifiedUseCase?,
                                             private val deleteCartUseCase: DeleteCartUseCase?,
+                                            private val undoDeleteCartUseCase: UndoDeleteCartUseCase?,
                                             private val updateCartUseCase: UpdateCartUseCase?,
                                             private val compositeSubscription: CompositeSubscription,
                                             private val addWishListUseCase: AddWishListUseCase?,

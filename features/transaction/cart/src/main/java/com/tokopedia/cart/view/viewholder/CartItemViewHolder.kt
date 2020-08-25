@@ -74,7 +74,6 @@ class CartItemViewHolder constructor(itemView: View,
     private val etRemark: AppCompatEditText
     private val tvLabelRemarkOption: TextView
     private val btnDelete: ImageView
-    private val btnDeleteOnCartError: ImageView
     private val tvErrorFormValidation: TextView
     private val tvErrorFormRemarkValidation: TextView
 
@@ -88,10 +87,7 @@ class CartItemViewHolder constructor(itemView: View,
     private val tvEllipsize: TextView
     private val divider: View
     private val rlProductAction: RelativeLayout
-    private val llProductActionOnCartError: LinearLayout
     private val llShopNoteSection: LinearLayout
-    private val vDeviderOnCartError: View
-    private val tvSimilarProductOnCartError: Typography
 
     private var cartItemHolderData: CartItemHolderData? = null
     private var quantityTextwatcherListener: QuantityTextWatcher.QuantityTextwatcherListener? = null
@@ -131,9 +127,6 @@ class CartItemViewHolder constructor(itemView: View,
         tvLabelRemarkOption = itemView.findViewById(R.id.tv_label_remark_option)
         etRemark = itemView.findViewById(R.id.et_remark)
         btnDelete = itemView.findViewById(R.id.btn_delete_cart)
-        btnDeleteOnCartError = itemView.findViewById(R.id.btn_delete_on_cart_error)
-        vDeviderOnCartError = itemView.findViewById(R.id.v_devider_on_cart_error)
-        tvSimilarProductOnCartError = itemView.findViewById(R.id.tv_product_unavailable_action)
 
         layoutError = itemView.findViewById(R.id.layout_error)
         tickerError = itemView.findViewById(R.id.ticker_error)
@@ -145,7 +138,6 @@ class CartItemViewHolder constructor(itemView: View,
         tvEllipsize = itemView.findViewById(R.id.tv_ellipsize)
         divider = itemView.findViewById(R.id.holder_item_cart_divider)
         rlProductAction = itemView.findViewById(R.id.rl_product_action)
-        llProductActionOnCartError = itemView.findViewById(R.id.ll_product_action_on_cart_error)
         llShopNoteSection = itemView.findViewById(R.id.ll_shop_note_section)
 
         etRemark.setOnTouchListener { view, event ->
@@ -351,11 +343,6 @@ class CartItemViewHolder constructor(itemView: View,
         textProductName.setOnClickListener(getOnClickProductItemListener(adapterPosition, parentPosition, data))
 
         btnDelete.setOnClickListener {
-            if (adapterPosition != RecyclerView.NO_POSITION) {
-                actionListener?.onCartItemDeleteButtonClicked(data, adapterPosition, parentPosition)
-            }
-        }
-        btnDeleteOnCartError.setOnClickListener {
             if (adapterPosition != RecyclerView.NO_POSITION) {
                 actionListener?.onCartItemDeleteButtonClicked(data, adapterPosition, parentPosition)
             }
@@ -669,10 +656,7 @@ class CartItemViewHolder constructor(itemView: View,
 
     private fun renderErrorItemHeader(data: CartItemHolderData) {
         if (data.cartItemData?.isError == true) {
-            renderCartItemActionOnErrorProduct()
             flCartItemContainer.foreground = ContextCompat.getDrawable(flCartItemContainer.context, R.drawable.fg_disabled_item)
-
-            val similarProductData = data.cartItemData?.similarProductData
 
             if (!TextUtils.isEmpty(data.cartItemData?.errorMessageTitle)) {
                 val errorDescription = data.cartItemData?.errorMessageDescription
@@ -685,13 +669,6 @@ class CartItemViewHolder constructor(itemView: View,
                 }
             }
 
-            vDeviderOnCartError.visibility = View.GONE
-            if (similarProductData != null) {
-                vDeviderOnCartError.visibility = View.VISIBLE
-                tvSimilarProductOnCartError.text = similarProductData.text
-                tvSimilarProductOnCartError.setOnClickListener { view -> actionListener?.onCartItemSimilarProductUrlClicked(similarProductData.url) }
-                actionListener?.onCartItemShowTickerOutOfStock(data.cartItemData?.originData?.productId)
-            }
             tickerError.tickerType = Ticker.TYPE_ERROR
             tickerError.tickerShape = Ticker.SHAPE_LOOSE
             tickerError.closeButtonVisibility = View.GONE
@@ -835,18 +812,7 @@ class CartItemViewHolder constructor(itemView: View,
         }
     }
 
-    // Render special button delete and similar product button if applicable when cart item has error
-    // Hide normal delete, wishlist, plus and minus button and notes section
-    private fun renderCartItemActionOnErrorProduct() {
-        rlProductAction.visibility = View.GONE
-        llShopNoteSection.visibility = View.GONE
-        llProductActionOnCartError.visibility = View.VISIBLE
-    }
-
-    // Render normal delete, wishlist, plus and minus button, and notes section when cart item has no error
-    // Hide special delete and similar product button
     private fun rendercartItemActionOnNormalProduct() {
-        llProductActionOnCartError.visibility = View.GONE
         rlProductAction.visibility = View.VISIBLE
         llShopNoteSection.visibility = View.VISIBLE
     }
