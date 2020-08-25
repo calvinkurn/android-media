@@ -97,7 +97,9 @@ class DisabledCartItemViewHolder(itemView: View, val actionListener: ActionListe
                 if (it.code.equals("CHECKOUTBROWSER", true)) {
                     itemView.tv_product_unavailable_action.text = it.message
                     itemView.tv_product_unavailable_action.setOnClickListener {
-                        actionListener?.onTobaccoLiteUrlClicked("https://m.tokopedia.com/cart")
+                        data.nicotineLiteMessageData?.url?.let {
+                            actionListener?.onTobaccoLiteUrlClicked(it)
+                        }
                     }
                     actionListener?.onShowTickerTobacco()
                     itemView.tv_product_unavailable_action.visibility = View.VISIBLE
