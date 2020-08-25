@@ -1,17 +1,22 @@
 package com.tokopedia.flight.homepage.presentation.activity
 
+import android.app.Activity
+import android.app.Instrumentation
 import android.content.Intent
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.intent.Intents.intending
+import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.intent.rule.IntentsTestRule
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
+import com.tokopedia.analyticsdebugger.validator.core.getAnalyticsWithQuery
+import com.tokopedia.analyticsdebugger.validator.core.hasAllSuccess
 import com.tokopedia.banner.BannerViewPagerAdapter
 import com.tokopedia.flight.R
 import org.hamcrest.Matchers
@@ -38,12 +43,22 @@ class FlightHomepageActivityTest {
     @Before
     fun setup() {
         gtmLogDBSource.deleteAll().subscribe()
+        intending(anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
     }
 
     @Test
     fun validateFlightHomepage() {
         validateFlightHomepageBannerDisplayedAndScrollable()
         validateFlightHomepageBannerClickableAndPerformClick()
+        validateFlightHomepageSearchClick()
+
+        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_P1),
+                hasAllSuccess())
+    }
+
+    private fun validateFlightHomepageSearchClick() {
+        Thread.sleep(2000)
+        onView(withId(R.id.btnFlightSearch)).perform(click())
     }
 
     private fun validateFlightHomepageBannerDisplayedAndScrollable() {
