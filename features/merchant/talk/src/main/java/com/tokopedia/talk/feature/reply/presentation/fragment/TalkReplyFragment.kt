@@ -93,6 +93,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     private var shopId = ""
     private var productId = ""
     private var source = ""
+    private var didUserWriteQuestion = false
     private var adapter: TalkReplyAdapter? = null
     private var attachedProductAdapter: TalkReplyAttachedProductAdapter? = null
     private var talkPerformanceMonitoringListener: TalkPerformanceMonitoringListener? = null
@@ -399,6 +400,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         showSuccessToaster(getString(R.string.delete_toaster_success), resources.getBoolean(R.bool.reply_adjust_toaster_height))
         adapter?.clearAllElements()
         getDiscussionData()
+        didUserWriteQuestion = true
     }
 
     private fun onFailDeleteComment() {
@@ -407,7 +409,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
 
     private fun onSuccessDeleteQuestion() {
         this.activity?.let {
-            it.setResult(Activity.RESULT_OK, Intent().putExtra(QUESTION_ID, questionId))
+            it.setResult(Activity.RESULT_FIRST_USER, Intent().putExtra(QUESTION_ID, questionId))
             it.finish()
         }
     }
@@ -432,6 +434,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         adapter?.clearAllElements()
         getDiscussionData()
         showPageLoading()
+        didUserWriteQuestion = true
     }
 
     private fun onFailCreateComment(errorMessage: String?) {
@@ -717,5 +720,9 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
 
     private fun setProductId(productId: String) {
         this.productId = productId
+    }
+
+    fun getDidUserWriteQuestion(): Boolean {
+        return didUserWriteQuestion || isFromWrite()
     }
 }

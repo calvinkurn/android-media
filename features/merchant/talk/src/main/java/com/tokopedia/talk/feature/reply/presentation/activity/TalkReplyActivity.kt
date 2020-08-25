@@ -1,5 +1,6 @@
 package com.tokopedia.talk.feature.reply.presentation.activity
 
+import android.app.Activity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -25,6 +26,7 @@ class TalkReplyActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, Tal
     private var shopId = ""
     private var source = ""
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
+    private var talkReplyFragment: TalkReplyFragment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         getDataFromAppLink()
@@ -39,7 +41,8 @@ class TalkReplyActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, Tal
     }
 
     override fun getNewFragment(): Fragment? {
-        return TalkReplyFragment.createNewInstance(questionId, shopId, source)
+        talkReplyFragment = TalkReplyFragment.createNewInstance(questionId, shopId, source)
+        return talkReplyFragment
     }
 
     override fun getComponent(): TalkComponent {
@@ -122,6 +125,15 @@ class TalkReplyActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, Tal
     override fun stopRenderPerformanceMonitoring() {
         pageLoadTimePerformanceMonitoring?.let {
             it.stopRenderPerformanceMonitoring()
+        }
+    }
+
+    override fun onBackPressed() {
+        if(talkReplyFragment?.getDidUserWriteQuestion() == true) {
+            setResult(Activity.RESULT_OK)
+            finish()
+        } else {
+            super.onBackPressed()
         }
     }
 }

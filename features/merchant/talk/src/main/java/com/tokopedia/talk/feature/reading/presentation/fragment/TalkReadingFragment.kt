@@ -27,6 +27,8 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringContract
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringListener
 import com.tokopedia.talk.common.analytics.TalkTrackingConstants
@@ -51,6 +53,7 @@ import com.tokopedia.talk.feature.reading.presentation.widget.OnFinishedSelectSo
 import com.tokopedia.talk.feature.reading.presentation.widget.TalkReadingSortBottomSheet
 import com.tokopedia.talk.feature.reading.presentation.widget.ThreadListener
 import com.tokopedia.talk_old.R
+import com.tokopedia.talk_old.addtalk.view.activity.AddTalkActivity
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toPx
@@ -71,6 +74,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         const val DEFAULT_INITIAL_PAGE = 1
         const val DONT_LOAD_INITAL_DATA = false
         const val TALK_REPLY_ACTIVITY_REQUEST_CODE = 202
+        const val TALK_WRITE_ACTIVITY_REQUEST_CODE = 203
         const val LOGIN_ACTIVITY_REQUEST_CODE = 204
         const val TALK_READING_EMPTY_IMAGE_URL = "https://ecs7.tokopedia.net/android/others/talk_reading_empty_state.png"
 
@@ -85,6 +89,8 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     @Inject
     lateinit var viewModel: TalkReadingViewModel
+
+    private lateinit var remoteConfigInstance: RemoteConfigInstance
 
     private var productId: String = ""
     private var shopId: String = ""
@@ -207,10 +213,28 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when(requestCode) {
-            TALK_REPLY_ACTIVITY_REQUEST_CODE -> if(resultCode == Activity.RESULT_OK) {
-                data?.let {
-                    onSuccessDeleteQuestion(it.getStringExtra(QUESTION_ID) ?: "")
+            TALK_REPLY_ACTIVITY_REQUEST_CODE -> when (resultCode) {
+                Activity.RESULT_FIRST_USER -> {
+                    data?.let {
+                        onSuccessDeleteQuestion(it.getStringExtra(QUESTION_ID) ?: "")
+                    }
                 }
+                Activity.RESULT_OK -> {
+                    resetSortOptions()
+                    unselectCategories()
+                    (viewModel.discussionAggregate.value as? Success)?.let {
+                        talkReadingHeader.clearAllSort(
+                                TalkReadingMapper.mapDiscussionAggregateResponseToTalkReadingHeaderModel(
+                                        it.data.discussionAggregateResponse,
+                                        { showBottomSheet() },
+                                        this
+                                ), this
+                        ) { showBottomSheet() }
+                    }
+                }
+            }
+            TALK_WRITE_ACTIVITY_REQUEST_CODE -> if (resultCode == Activity.RESULT_OK) {
+                onSuccessCreateQuestion()
             }
             LOGIN_ACTIVITY_REQUEST_CODE -> if (resultCode == Activity.RESULT_OK) {
                 when (viewModel.talkLastAction) {
@@ -429,6 +453,21 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         viewModel.getDiscussionAggregate(productId, shopId)
     }
 
+    private fun onSuccessCreateQuestion() {
+        showSuccessToaster(getString(R.string.reading_create_question_toaster_success))
+        resetSortOptions()
+        unselectCategories()
+        (viewModel.discussionAggregate.value as? Success)?.let {
+            talkReadingHeader.clearAllSort(
+                    TalkReadingMapper.mapDiscussionAggregateResponseToTalkReadingHeaderModel(
+                            it.data.discussionAggregateResponse,
+                            { showBottomSheet() },
+                            this
+                    ), this
+            ) { showBottomSheet() }
+        }
+    }
+
     private fun onSuccessDeleteQuestion(questionID: String) {
         if(questionID.isNotEmpty()) {
             (adapter as? TalkReadingAdapter)?.removeQuestion(questionID)
@@ -468,9 +507,14 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     }
 
     private fun goToWriteActivity(eventAction: String) {
-        val intent = context?.let { AddTalkActivity.createIntent(it, productId, READING_SOURCE) }
+        TalkReadingTracking.eventWithoutLabel(viewModel.getUserId(), productId, eventAction)
+        if(useOldPage()) {
+            val intent = context?.let { AddTalkActivity.createIntent(it, productId, TalkConstants.READING_SOURCE) }
+            startActivityForResult(intent, TALK_WRITE_ACTIVITY_REQUEST_CODE)
+            return
+        }
+        val intent = RouteManager.getIntent(context, Uri.parse(ApplinkConstInternalGlobal.ADD_TALK).buildUpon().appendQueryParameter(TalkConstants.PARAM_PRODUCT_ID, productId).build().toString())
         startActivityForResult(intent, TALK_WRITE_ACTIVITY_REQUEST_CODE)
-        TalkReadingTracking.eventWithoutLabel(viewModel.userId, productId, eventAction)
     }
 
     private fun goToReplyActivity(questionID: String) {
@@ -516,7 +560,6 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     private fun initFab() {
         addFloatingActionButton.setOnClickListener {
-            TalkReadingTracking.eventAskNewQuestion(viewModel.getUserId(), productId)
             if(viewModel.isUserLoggedIn()) {
                 goToWriteActivity(EVENT_ACTION_CREATE_NEW_QUESTION)
             } else {
@@ -542,6 +585,17 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     private fun getSelectedCategoryDisplayName(): String {
         return viewModel.filterCategories.value?.filter { it.isSelected }?.joinToString(separator = ",") { it.displayName } ?: ""
+    }
+
+    private fun getAbTestPlatform(): AbTestPlatform? {
+        if (!::remoteConfigInstance.isInitialized) {
+            remoteConfigInstance = RemoteConfigInstance(this.activity?.application)
+        }
+        return remoteConfigInstance.abTestPlatform
+    }
+
+    private fun useOldPage(): Boolean {
+        return getAbTestPlatform()?.getString(TalkConstants.AB_TEST_WRITE_KEY).equals(TalkConstants.WRITE_OLD_FLOW)
     }
 
 }

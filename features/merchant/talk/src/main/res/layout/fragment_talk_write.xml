@@ -58,7 +58,7 @@
             android:id="@+id/writeQuestionTextArea"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/layout_lvl1"
+            android:layout_marginTop="@dimen/layout_lvl3"
             app:layout_constraintStart_toStartOf="@id/write_category_header"
             app:layout_constraintEnd_toEndOf="@id/write_category_header"
             app:text_area_label="@string/write_question_placeholder"
