@@ -21,7 +21,6 @@ dependencies {
     implementation project(rootProject.ext.features.tkpdseller)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation rootProject.ext.tkpdInternalLibDependencies.url
-    implementation project(rootProject.ext.features.productManageItem)
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components

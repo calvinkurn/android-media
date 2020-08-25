@@ -13,6 +13,7 @@ import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 import com.tokopedia.play.broadcaster.ui.model.ProductLoadingUiModel
 import com.tokopedia.play.broadcaster.util.extension.doOnPreDraw
 import com.tokopedia.play.broadcaster.view.adapter.PlayProductPreviewAdapter
+import kotlin.math.max
 import kotlin.math.min
 
 /**
@@ -67,7 +68,8 @@ class PlayEtalaseViewHolder(itemView: View, private val listener: Listener) : Ba
 
     private fun setupProductPreview(productPreviewMap: Map<Int, List<ProductContentUiModel>>, totalProduct: Int) {
         if (productPreviewMap.isEmpty()) {
-            productPreviewAdapter.setItemsAndAnimateChanges(List(min(MAX_PREVIEW, totalProduct)) { ProductLoadingUiModel })
+            val totalProductValidated = min(MAX_PREVIEW, max(MIN_PREVIEW, totalProduct))
+            productPreviewAdapter.setItemsAndAnimateChanges(List(totalProductValidated) { ProductLoadingUiModel })
         } else {
             productPreviewAdapter.setItemsAndAnimateChanges(productPreviewMap.values.flatten())
         }
@@ -75,6 +77,7 @@ class PlayEtalaseViewHolder(itemView: View, private val listener: Listener) : Ba
 
     companion object {
         private const val MAX_PREVIEW = 4
+        private const val MIN_PREVIEW = 1
 
         val LAYOUT = R.layout.item_play_etalase
     }

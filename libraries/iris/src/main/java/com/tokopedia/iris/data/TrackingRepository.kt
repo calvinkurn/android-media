@@ -73,7 +73,9 @@ class TrackingRepository(
                         IrisService.enqueueWork(context, i)
 
                         IrisAnalytics.getInstance(context).setAlarm(true, force = true)
-                        Timber.w("P1#IRIS#dbCountSend %d lines", dbCount)
+                        if (dbCount % 50 == 0) {
+                            Timber.w("P1#IRIS#dbCountSend %d lines", dbCount)
+                        }
                     }
                 }
             } catch (e: Throwable) {

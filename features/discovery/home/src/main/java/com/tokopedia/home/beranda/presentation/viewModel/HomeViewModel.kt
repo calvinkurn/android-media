@@ -887,9 +887,10 @@ open class HomeViewModel @Inject constructor(
                 if (homeDataModel?.isCache == false) {
                     _isRequestNetworkLiveData.postValue(Event(false))
                     val homeDataWithoutExternalComponentPair = evaluateInitialTopAdsBannerComponent(homeDataModel)
+                    var homeData: HomeDataModel? = homeDataWithoutExternalComponentPair.first
                     withContext(homeDispatcher.get().ui()){
-                        var homeData = evaluateGeolocationComponent(homeDataModel)
-                        homeData = evaluateAvailableComponent(homeDataModel)
+                        homeData = evaluateGeolocationComponent(homeData)
+                        homeData = evaluateAvailableComponent(homeData)
                         _homeLiveData.value = homeData
                     }
                     getPlayBannerCarousel()
@@ -985,10 +986,10 @@ open class HomeViewModel @Inject constructor(
         }
     }
 
-    fun getBusinessUnitData(tabId: Int, position: Int){
+    fun getBusinessUnitData(tabId: Int, position: Int, tabName: String){
         if(buWidgetJob?.isActive == true) return
         buWidgetJob = launchCatchError(coroutineContext, block = {
-            getBusinessUnitDataUseCase.get().setParams(tabId)
+            getBusinessUnitDataUseCase.get().setParams(tabId, position, tabName)
             val data = getBusinessUnitDataUseCase.get().executeOnBackground()
             _homeLiveData.value?.list?.withIndex()?.find { it.value is NewBusinessUnitWidgetDataModel }?.let { buModel ->
                 val oldBuData = buModel.value as NewBusinessUnitWidgetDataModel
@@ -1025,7 +1026,7 @@ open class HomeViewModel @Inject constructor(
                 data.reversed().forEach {
                     updateWidget(UpdateLiveDataModel(ACTION_ADD, it, lastIndex))
                 }
-                _trackingLiveData.postValue(Event(data))
+                _trackingLiveData.postValue(Event(data.filterIsInstance(HomeVisitable::class.java)))
             }
         }){
             updateWidget(UpdateLiveDataModel(ACTION_DELETE, dynamicChannelDataModel, position))
@@ -1048,7 +1049,7 @@ open class HomeViewModel @Inject constructor(
                 data.reversed().forEach {
                     updateWidget(UpdateLiveDataModel(ACTION_ADD, it, lastIndex))
                 }
-                _trackingLiveData.postValue(Event(data))
+                _trackingLiveData.postValue(Event(data.filterIsInstance(HomeVisitable::class.java)))
             }
         }){
             updateWidget(UpdateLiveDataModel(ACTION_DELETE, visitable, position))
@@ -1250,44 +1251,6 @@ open class HomeViewModel @Inject constructor(
         }
     }
 
-    fun getOneClickCheckout(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int){
-        val requestParams = RequestParams()
-        val quantity = if(grid.minOrder < 1) "1" else grid.minOrder.toString()
-        requestParams.putObject(AddToCartOccUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, AddToCartOccRequestParams(
-                productId = grid.id,
-                quantity = quantity,
-                shopId = grid.shop.shopId,
-                warehouseId = grid.warehouseId,
-                productName = grid.name,
-                price = grid.price
-        ))
-        getAtcUseCase.get().createObservable(requestParams)
-                .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
-                .subscribe (
-                        {
-                            if(it.status == STATUS_OK) {
-                                _oneClickCheckout.postValue(Event(
-                                        mapOf(
-                                                ATC to it,
-                                                CHANNEL to channel,
-                                                GRID to grid,
-                                                QUANTITY to quantity,
-                                                POSITION to position
-
-                                        )
-                                ))
-                            }
-                            else {
-                                _oneClickCheckout.postValue(Event(Throwable()))
-                            }
-                        },
-                        {
-                            _oneClickCheckout.postValue(Event(it))
-                        }
-                )
-    }
-
     fun getOneClickCheckoutHomeComponent(channel: ChannelModel, grid: ChannelGrid, position: Int){
         val requestParams = RequestParams()
         val quantity = if(grid.minOrder < 1) "1" else grid.minOrder.toString()
@@ -1390,6 +1353,8 @@ open class HomeViewModel @Inject constructor(
     }
 
     fun getUserId() = userSession.get().userId ?: ""
+
+    fun getUserName() = userSession.get().name ?: ""
 
 // ============================================================================================
 // ================================ Live Data Controller ======================================
