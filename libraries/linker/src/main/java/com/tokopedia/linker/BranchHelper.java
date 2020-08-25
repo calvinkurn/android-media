@@ -11,9 +11,6 @@ import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.linker.model.PaymentData;
 import com.tokopedia.linker.model.UserData;
 
-import org.json.JSONObject;
-
-import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,6 +24,7 @@ import io.branch.referral.util.BranchEvent;
 import io.branch.referral.util.ContentMetadata;
 import io.branch.referral.util.CurrencyType;
 import io.branch.referral.util.LinkProperties;
+import timber.log.Timber;
 
 public class BranchHelper {
     static Gson gson = new Gson();
@@ -196,28 +194,11 @@ public class BranchHelper {
             return;
         }
         try {
-            //{"email":"rahul.lohra@tokopedia.com","userId":"103306171","phone":""}
-            Field fieldCustomProp = branchEvent.getClass().getDeclaredField("customProperties");
-            fieldCustomProp.setAccessible(true);
-
-            Field fieldStandardProp = branchEvent.getClass().getDeclaredField("standardProperties");
-            fieldStandardProp.setAccessible(true);
-
-            Field fieldEventName = branchEvent.getClass().getDeclaredField("eventName");
-            fieldEventName.setAccessible(true);
-
-            String eventName = (String) fieldEventName.get(branchEvent);
-            JSONObject customPropJson = (JSONObject) fieldCustomProp.get(branchEvent);
-            JSONObject standPropJson = (JSONObject) fieldStandardProp.get(branchEvent);
-
-            HashMap mapCustomProp = gson.fromJson(customPropJson.toString(), type);
-            HashMap mapStandProp = gson.fromJson(standPropJson.toString(), type);
-            mapCustomProp.putAll(mapStandProp);
-
-            GtmLogger.getInstance(LinkerManager.getInstance().getContext()).save(eventName, mapCustomProp, AnalyticsSource.BRANCH_IO);
-
+            HashMap<String, Object> map = gson.fromJson(gson.toJson(branchEvent), type);
+            String eventName = (String) map.get("eventName");
+            GtmLogger.getInstance(LinkerManager.getInstance().getContext()).save(eventName, map, AnalyticsSource.BRANCH_IO);
         } catch (Throwable throwable) {
-            throwable.printStackTrace();
+            Timber.d(throwable);
         }
     }
 
