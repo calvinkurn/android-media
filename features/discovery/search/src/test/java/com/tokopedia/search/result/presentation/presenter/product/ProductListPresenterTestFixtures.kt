@@ -5,19 +5,16 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.ProductListSectionContract
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel
-import com.tokopedia.search.result.presentation.presenter.localcache.SearchLocalCacheHandler
 import com.tokopedia.search.shouldBe
 import com.tokopedia.topads.sdk.domain.model.Data
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.CapturingSlot
-import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.Before
@@ -37,15 +34,11 @@ internal open class ProductListPresenterTestFixtures {
     protected val searchProductLoadMoreUseCase = mockk<UseCase<SearchProductModel>>(relaxed = true)
     protected val getDynamicFilterUseCase = mockk<UseCase<DynamicFilterModel>>(relaxed = true)
     protected val getProductCountUseCase = mockk<UseCase<String>>(relaxed = true)
-    protected val searchLocalCacheHandler = mockk<SearchLocalCacheHandler>(relaxed = true)
     protected val recommendationUseCase = mockk<GetRecommendationUseCase>(relaxed = true)
     protected val seamlessLoginUseCase = mockk<SeamlessLoginUsecase>(relaxed = true)
     protected val topAdsUrlHitter = mockk<TopAdsUrlHitter>(relaxed = true)
     protected val userSession = mockk<UserSessionInterface>(relaxed = true)
-    protected val remoteConfig = mockk<RemoteConfig>().also {
-        // Test this toggle as false until old quick filter is not needed anymore
-        every { it.getBoolean(RemoteConfigKey.ENABLE_BOTTOM_SHEET_FILTER_REVAMP, true) } answers { false }
-    }
+    protected val remoteConfig = mockk<RemoteConfig>()
     protected val advertisingLocalCache = mockk<LocalCacheHandler>(relaxed = true)
     protected val searchOnBoardingLocalCache = mockk<LocalCacheHandler>(relaxed = true)
     protected lateinit var productListPresenter: ProductListPresenter
@@ -60,11 +53,10 @@ internal open class ProductListPresenterTestFixtures {
                 userSession,
                 advertisingLocalCache,
                 searchOnBoardingLocalCache,
-                getDynamicFilterUseCase,
-                getProductCountUseCase,
+                dagger.Lazy { getDynamicFilterUseCase },
+                dagger.Lazy { getProductCountUseCase },
                 topAdsUrlHitter,
-                searchLocalCacheHandler,
-                remoteConfig
+                dagger.Lazy { remoteConfig }
         )
         productListPresenter.attachView(productListView)
 

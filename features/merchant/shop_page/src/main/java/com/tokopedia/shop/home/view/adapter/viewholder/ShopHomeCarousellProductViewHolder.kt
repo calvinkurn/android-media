@@ -16,7 +16,7 @@ import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.R
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
-import com.tokopedia.shop.home.view.listener.ShopPageHomeProductClickListener
+import com.tokopedia.shop.home.view.listener.ShopHomeCarouselProductListener
 import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel.Companion.IS_ATC
 import com.tokopedia.shop.home.view.model.ShopHomeProductViewModel
@@ -27,7 +27,7 @@ import com.tokopedia.shop.home.view.model.ShopHomeProductViewModel
 
 class ShopHomeCarousellProductViewHolder(
         itemView: View,
-        val shopPageHomeProductClickListener: ShopPageHomeProductClickListener
+        val shopHomeCarouselProductListener: ShopHomeCarouselProductListener
 ) : AbstractViewHolder<ShopHomeCarousellProductUiModel>(itemView) {
 
     companion object {
@@ -69,7 +69,7 @@ class ShopHomeCarousellProductViewHolder(
                 show()
                 text = MethodChecker.fromHtml(shopHomeCarousellProductUiModel.header.ctaText)
                 setOnClickListener {
-                    shopPageHomeProductClickListener.onCtaClicked(shopHomeCarousellProductUiModel)
+                    shopHomeCarouselProductListener.onCtaClicked(shopHomeCarousellProductUiModel)
                 }
             } else {
                 hide()
@@ -82,6 +82,7 @@ class ShopHomeCarousellProductViewHolder(
                 productCardModelList = shopHomeProductViewModelList.map {
                     ShopPageHomeMapper.mapToProductCardModel(
                             isHasAtc(),
+                            !isHasAtc(),
                             it
                     )
                 },
@@ -89,7 +90,7 @@ class ShopHomeCarousellProductViewHolder(
                     override fun onItemAddToCart(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
                         val shopProductViewModel = shopHomeProductViewModelList.getOrNull(carouselProductCardPosition)
                                 ?: return
-                        shopPageHomeProductClickListener.onCarouselProductItemClickAddToCart(
+                        shopHomeCarouselProductListener.onCarouselProductItemClickAddToCart(
                                 adapterPosition,
                                 carouselProductCardPosition,
                                 shopHomeCarousellProductUiModel,
@@ -102,7 +103,7 @@ class ShopHomeCarousellProductViewHolder(
                     override fun onItemClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
                         val shopProductViewModel = shopHomeProductViewModelList.getOrNull(carouselProductCardPosition)
                                 ?: return
-                        shopPageHomeProductClickListener.onCarouselProductItemClicked(
+                        shopHomeCarouselProductListener.onCarouselProductItemClicked(
                                 adapterPosition,
                                 carouselProductCardPosition,
                                 shopHomeCarousellProductUiModel,
@@ -115,7 +116,7 @@ class ShopHomeCarousellProductViewHolder(
                         val shopProductViewModel = shopHomeProductViewModelList.getOrNull(carouselProductCardPosition)
                                 ?: return
 
-                        shopPageHomeProductClickListener.onCarouselProductItemImpression(
+                        shopHomeCarouselProductListener.onCarouselProductItemImpression(
                                 adapterPosition,
                                 carouselProductCardPosition,
                                 shopHomeCarousellProductUiModel,
@@ -131,7 +132,7 @@ class ShopHomeCarousellProductViewHolder(
                     override fun onItemThreeDotsClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
                         val shopProductViewModel = shopHomeProductViewModelList.getOrNull(carouselProductCardPosition)
                                 ?: return
-                        shopPageHomeProductClickListener.onThreeDotsCarouselProductItemClicked(
+                        shopHomeCarouselProductListener.onThreeDotsCarouselProductItemClicked(
                                 shopHomeCarousellProductUiModel,
                                 shopProductViewModel
                         )

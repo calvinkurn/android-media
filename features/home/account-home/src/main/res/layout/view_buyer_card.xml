@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:id="@+id/viewCardContainer"
     android:layout_height="wrap_content">
 
     <ImageView
@@ -296,6 +297,7 @@
         android:textColor="@color/Neutral_N700_68"
         android:textSize="@dimen/sp_12"
         android:textStyle="bold"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/text_profile_completion"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/text_username" />
@@ -334,7 +336,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_4"
-        android:drawableRight="@drawable/ic_system_action_arrow_right_grayscale_24"
+        app:drawableRightCompat="@drawable/ic_system_action_arrow_right_grayscale_24"
         android:ellipsize="end"
         android:gravity="center_vertical"
         android:maxLines="1"

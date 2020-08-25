@@ -60,12 +60,14 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.poll.PollAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.RecommendationCardAdapter
+import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsBannerViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel
 import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticCommissionUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticDetailType
+import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.feedcomponent.view.widget.ByMeInstastoryView
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
@@ -124,7 +126,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         FeedMultipleImageView.FeedMultipleImageViewListener,
         EmptyAffiliateViewHolder.OnEmptyItemClickedListener,
         HighlightAdapter.HighlightListener,
-        ShareBottomSheets.OnShareItemClickListener {
+        ShareBottomSheets.OnShareItemClickListener, TopAdsBannerViewHolder.TopAdsBannerListener {
 
     companion object {
         private const val PARAM_TAB_NAME = "{tab_name}"
@@ -397,6 +399,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 this,
                 this,
                 this::onOtherProfilePostItemClick,
+                this,
                 this,
                 userSession)
     }
@@ -915,6 +918,12 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun onShopItemClicked(positionInFeed: Int, adapterPosition: Int, shop: com.tokopedia.topads.sdk.domain.model.Shop) {
+        if (adapter.list[positionInFeed] is TopadsShopViewModel) {
+            val (_, dataList, _, _) = adapter.list[positionInFeed] as TopadsShopViewModel
+            if (adapterPosition != RecyclerView.NO_POSITION) {
+                presenter.doTopAdsTracker(dataList[adapterPosition].shopClickUrl, shop.id, shop.name, dataList[adapterPosition].shop.imageShop.xsEcs, true)
+            }
+        }
         context?.let {
             startActivity(getShopIntent(it, shop.id))
         }
@@ -996,6 +1005,10 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 presenter.trackPostClickUrl(tracking.viewURL)
             }
         }
+    }
+
+    override fun onTopAdsImpression(url: String, shopId: String, shopName: String, imageUrl: String) {
+        presenter.doTopAdsTracker(url, shopId, shopName, imageUrl, false)
     }
 
     override fun onHighlightItemClicked(positionInFeed: Int, item: HighlightCardViewModel) {
@@ -1876,5 +1889,9 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                             }
                         }
                 )
+    }
+
+    override fun onTopAdsViewImpression(bannerId: String, imageUrl: String) {
+
     }
 }

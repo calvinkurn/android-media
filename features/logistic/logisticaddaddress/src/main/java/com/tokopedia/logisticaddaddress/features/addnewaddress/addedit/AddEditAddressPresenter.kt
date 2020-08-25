@@ -8,6 +8,7 @@ import com.tokopedia.logisticaddaddress.domain.usecase.AutoCompleteUseCase
 import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictUseCase
 import com.tokopedia.logisticaddaddress.domain.usecase.GetZipCodeUseCase
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
+import com.tokopedia.logisticaddaddress.utils.SimpleIdlingResource
 import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
 import rx.Subscriber
 import timber.log.Timber
@@ -34,6 +35,7 @@ class AddEditAddressPresenter
 
     fun saveAddress(model: SaveAddressDataModel, typeForm: String, isFullFlow: Boolean, isLogisticLabel: Boolean) {
         val formType = if (typeForm == AddressConstants.ANA_POSITIVE) "1" else "0"
+        SimpleIdlingResource.increment()
         addAddressUseCase
                 .execute(model, formType)
                 .subscribe(object : Subscriber<AddAddressResponse>() {
@@ -53,7 +55,9 @@ class AddEditAddressPresenter
                         }
                     }
 
-                    override fun onCompleted() {}
+                    override fun onCompleted() {
+                        SimpleIdlingResource.decrement()
+                    }
 
                     override fun onError(e: Throwable) {
                         if (typeForm.equals(AddressConstants.ANA_POSITIVE, true)) {

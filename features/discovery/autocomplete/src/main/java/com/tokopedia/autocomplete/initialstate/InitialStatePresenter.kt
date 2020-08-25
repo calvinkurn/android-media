@@ -327,7 +327,6 @@ class InitialStatePresenter @Inject constructor(
     override fun onRecentSearchItemClicked(item: BaseItemInitialStateSearch, adapterPosition: Int) {
         trackEventItemClicked(item, adapterPosition)
 
-        view?.dropKeyBoard()
         view?.route(item.applink, searchParameter)
         view?.finish()
     }
