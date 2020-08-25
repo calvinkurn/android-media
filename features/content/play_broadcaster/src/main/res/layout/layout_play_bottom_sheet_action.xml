@@ -22,7 +22,6 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/play_dp_18"
             android:layout_marginEnd="@dimen/play_dp_18"
-            android:clickable="false"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -35,7 +34,6 @@
             android:layout_width="@dimen/layout_lvl2"
             android:layout_height="@dimen/layout_lvl2"
             android:background="@drawable/bg_play_selected_product_badge"
-            android:clickable="false"
             android:gravity="center"
             android:includeFontPadding="false"
             android:paddingStart="@dimen/spacing_lvl1"
@@ -52,6 +50,16 @@
             app:typographyWeight="bold"
             tools:text="10"
             tools:visibility="gone"
+            />
+
+        <FrameLayout
+            android:id="@+id/fl_inventory_click_area"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="@dimen/layout_lvl0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
