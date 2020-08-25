@@ -63,13 +63,14 @@
         <LinearLayout
             android:id="@+id/favorite_button"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_40"
+            android:layout_height="@dimen/layout_lvl6"
             android:layout_gravity="center_vertical"
             android:background="@drawable/green_button_rounded"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:visibility="gone"
-            android:padding="@dimen/dp_12"
+            android:paddingLeft="@dimen/dp_12"
+            android:paddingRight="@dimen/dp_12"
             tools:visibility="visible">
 
             <TextView

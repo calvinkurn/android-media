@@ -289,6 +289,8 @@ dependencies {
     implementation project(rootProject.ext.features.travelCountryCode)
     implementation project(rootProject.ext.features.travelPassenger)
     implementation project(rootProject.ext.features.reputation)
+    implementation project(rootProject.ext.features.inboxReputation)
+    implementation project(rootProject.ext.features.review)
     implementation project(rootProject.ext.features.sellerActiveCommon)
     implementation project(rootProject.ext.features.buyerorder)
     implementation project(rootProject.ext.features.tkpdseller)
@@ -315,8 +317,6 @@ dependencies {
     implementation project(rootProject.ext.features.cart)
     implementation project(rootProject.ext.features.logisticcart)
     implementation project(rootProject.ext.features.logisticdata)
-    implementation project(rootProject.ext.features.logisticaddaddress)
-    implementation project(rootProject.ext.features.editshipping)
     implementation project(rootProject.ext.features.chatcommon)
     implementation project(rootProject.ext.features.nps)
     if (rootProject.ext.debugToolsEnabled) {
@@ -449,7 +449,7 @@ dependencies {
     }
     implementation rootProject.ext.tkpdInternalLibDependencies.authentication
     implementation rootProject.ext.playServicesDependencies.maps
-    implementation project(rootProject.ext.libraries.playCore)
+    implementation rootProject.ext.playServicesDependencies.core
     implementation rootProject.ext.playServicesDependencies.auth
     implementation rootProject.ext.supportLibDependencies.kotlinSupport
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
@@ -576,6 +576,7 @@ dependencies {
         exclude group: 'org.hamcrest', module: 'hamcrest-core, mockito-core'
         exclude group: 'org.mockito'
     }
+    implementation rootProject.ext.testDependencies.espressoIdlingResource
     // Cloud testing
     androidTestImplementation(name: 'cloudtestingscreenshotter_lib', ext: 'aar')
     androidTestImplementation(rootProject.ext.miscDependencies.facebook) {

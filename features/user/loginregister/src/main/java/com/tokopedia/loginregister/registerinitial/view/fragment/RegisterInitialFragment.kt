@@ -948,6 +948,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
 
     private fun showRegisteredEmailDialog(email: String) {
         registerAnalytics.trackFailedClickEmailSignUpButton(RegisterAnalytics.LABEL_EMAIL_EXIST)
+        registerAnalytics.trackFailedClickEmailSignUpButtonAlreadyRegistered()
         activity?.let {
             val dialog = Dialog(activity, Dialog.Type.PROMINANCE)
             dialog.setTitle(getString(R.string.email_already_registered))
@@ -973,6 +974,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
     private fun showRegisteredPhoneDialog(phone: String) {
         registerAnalytics.trackClickPhoneSignUpButton()
         registerAnalytics.trackFailedClickPhoneSignUpButton(RegisterAnalytics.LABEL_PHONE_EXIST)
+        registerAnalytics.trackFailedClickPhoneSignUpButtonAlreadyRegistered()
         val dialog = Dialog(activity, Dialog.Type.PROMINANCE)
         dialog.setTitle(getString(R.string.phone_number_already_registered))
         dialog.setDesc(

@@ -24,7 +24,8 @@ class AddEditProductVariantViewModelTest: AddEditProductVariantViewModelTestFixt
 
         viewModel.updateSelectedVariantUnitValuesMap(0, selectedUnitValuesLevel1)
         viewModel.updateSelectedVariantUnitValuesMap(1, selectedUnitValuesLevel2)
-        viewModel.updateVariantInputModel(variantDetailsTest, listOf())
+        viewModel.setSelectedVariantDetails(variantDetailsTest)
+        viewModel.updateVariantInputModel(listOf())
 
         val selection = viewModel.productInputModel.value?.variantInputModel?.selections
         assert(selection != null && selection.isNotEmpty())

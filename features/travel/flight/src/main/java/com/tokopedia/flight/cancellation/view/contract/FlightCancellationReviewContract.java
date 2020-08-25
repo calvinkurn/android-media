@@ -1,10 +1,13 @@
 package com.tokopedia.flight.cancellation.view.contract;
 
 import android.app.Activity;
+
 import androidx.annotation.StringRes;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationWrapperModel;
+
+import java.util.List;
 
 /**
  * @author by furqan on 11/04/18.
@@ -19,7 +22,7 @@ public interface FlightCancellationReviewContract {
 
         void hideLoading();
 
-        void showEstimateValue();
+        void showEstimateValue(List<String> estimationNotes);
 
         void hideEstimateValue();
 

@@ -74,7 +74,7 @@ class InboxDetailAdapter(private val mContext: Context,
         return commentList.size
     }
 
-    inner class DetailViewHolder(view: View) : RecyclerView.ViewHolder(view), View.OnClickListener {
+    inner class DetailViewHolder(val view: View) : RecyclerView.ViewHolder(view), View.OnClickListener {
         private var ivProfile: ImageView? = null
         private var tvName: TextView? = null
         private var tvDateRecent: TextView? = null
@@ -118,7 +118,8 @@ class InboxDetailAdapter(private val mContext: Context,
             val item = commentList[position]
             if (item.createdBy != null) {
                 ImageHandler.loadImageCircle2(mContext, ivProfile, item.createdBy?.picture)
-                tvName?.text = item.createdBy?.name
+                if (isRoleAgent(item)) tvName?.text = view.context.getString(R.string.contact_us_tokopedia_care_team)
+                else tvName?.text = item.createdBy?.name
             }
             if (item.rating != null && item.rating == KEY_DIS_LIKED) {
                 ratingThumbsDown.show()
@@ -190,16 +191,14 @@ class InboxDetailAdapter(private val mContext: Context,
         }
 
         private fun sendGTMEvent(eventLabel: String) {
-            ContactUsTracking.sendGTMInboxTicket(InboxTicketTracking.Event.EventName,
+            ContactUsTracking.sendGTMInboxTicket(view.context, InboxTicketTracking.Event.EventName,
                     InboxTicketTracking.Category.EventHelpMessageInbox,
                     InboxTicketTracking.Action.EventClickCsatPerReply,
                     eventLabel)
         }
 
         private fun isRoleAgent(item: CommentsItem?): Boolean {
-            return if (item?.createdBy?.role != null) {
-                item.createdBy?.role == ROLE_TYPE_AGENT
-            } else false
+            return item?.createdBy?.role == ROLE_TYPE_AGENT
         }
 
         private fun settingRatingButtonsVisibility(visibility: Int) {

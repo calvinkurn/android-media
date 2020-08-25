@@ -24,6 +24,8 @@ class ValidatorEngine constructor(private val dao: GtmLogDBSource) {
     }
 
     suspend fun computeCo(testCases: List<Validator>, mode: String = "exact"): List<Validator> {
+        setMode(mode)
+        
         return compute(testCases, dao.getLogs())
     }
 

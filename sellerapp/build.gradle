@@ -216,7 +216,6 @@ dependencies {
     implementation project(rootProject.ext.features.tkpdcore)
     implementation project(rootProject.ext.features.sellerorder)
     implementation project(rootProject.ext.features.sellerHome)
-    implementation project(rootProject.ext.features.sellerOnboarding)
     implementation project(rootProject.ext.features.merchantLendingWidget)
     implementation project(rootProject.ext.features.goldMerchantCommon)
     implementation project(rootProject.ext.features.powerMerchantSubscribe)
@@ -230,8 +229,9 @@ dependencies {
     implementation project(rootProject.ext.features.topAdsCreate)
     implementation project(rootProject.ext.features.tkpdseller)
     implementation project(rootProject.ext.features.reputation)
+    implementation project(rootProject.ext.features.inboxReputation)
     implementation project(rootProject.ext.features.reputationCommon)
-    implementation project(rootProject.ext.features.reviewSeller)
+    implementation project(rootProject.ext.features.review)
     implementation project(rootProject.ext.features.sellerActiveCommon)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.payment)
@@ -288,7 +288,7 @@ dependencies {
     implementation project(rootProject.ext.features.attachinvoice)
     implementation project(rootProject.ext.features.attachvoucher)
 
-    implementation project(rootProject.ext.features.playBroadcaster)
+    implementation project(rootProject.ext.features.playCommon)
 
     implementation rootProject.ext.unifyDependencies.icon
     implementation rootProject.ext.unifyDependencies.components
@@ -334,10 +334,10 @@ dependencies {
     implementation(rootProject.ext.analyticsDependencies.moengage)
 
     implementation rootProject.ext.playServicesDependencies.analytics
+    implementation rootProject.ext.playServicesDependencies.core
     implementation rootProject.ext.playServicesDependencies.maps
     implementation rootProject.ext.serviceDependencies.crashlytics
 
-    implementation project(rootProject.ext.libraries.playCore)
     implementation rootProject.ext.firebase.config
     implementation rootProject.ext.firebase.messaging
 
