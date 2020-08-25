@@ -1,5 +1,6 @@
 package com.tokopedia.product.detail.view.adapter.dynamicadapter
 
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -65,13 +66,6 @@ class DynamicProductDetailAdapter(
         }
     }
 
-    fun notifyShipingInfo(shipingInfo: ProductGeneralInfoDataModel?) {
-        shipingInfo?.let {
-            val indexOfShipingInfo = list.indexOf(it)
-            notifyItemChanged(indexOfShipingInfo)
-        }
-    }
-
     fun notifyRecomAdapter(listOfData: List<ProductRecommendationDataModel>?) {
         listOfData?.run {
             forEach {
@@ -98,23 +92,24 @@ class DynamicProductDetailAdapter(
         }
     }
 
-    fun getTradeinPosition(data: ProductGeneralInfoDataModel?): Int {
-        return if (data != null) {
-            list.indexOf(data)
-        } else {
-            0
+    fun <T : DynamicPdpDataModel> notifyItemComponentSections(vararg data: T?) {
+        data.forEach {
+            it?.let {
+                val indexOfData = list.indexOf(it)
+                if (indexOfData != -1) {
+                    notifyItemChanged(indexOfData)
+                }
+            }
         }
     }
 
-    fun getShopInfoPosition(data: ProductShopInfoDataModel?): Int {
+    fun <T: DynamicPdpDataModel> getItemComponentIndex(data: T?) : Int{
         return if (data != null) {
             list.indexOf(data)
         } else {
-            -1
+            RecyclerView.NO_POSITION
         }
     }
-
-    fun getVariantPosition(data: VariantDataModel?): Int = if (data != null) list.indexOf(data) else 0
 
     fun notifyVariantSection(data: VariantDataModel?, payload: Int?) {
         data?.let {
@@ -135,16 +130,6 @@ class DynamicProductDetailAdapter(
             } else {
                 notifyItemChanged(indexOfNotifyMe)
             }
-        }
-    }
-
-    fun notifyDiscussion(productDiscussionMostHelpfulDataModel: ProductDiscussionMostHelpfulDataModel?) {
-        productDiscussionMostHelpfulDataModel?.let {
-            val indexOfDiscussion = list.indexOf(it)
-            if(indexOfDiscussion == -1) {
-                return
-            }
-            notifyItemChanged(indexOfDiscussion)
         }
     }
 

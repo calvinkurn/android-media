@@ -164,8 +164,10 @@ class AddToCartDoneBottomSheet :
 
         dialog.setOnShowListener {
             val bottomSheet = (it as BottomSheetDialog).findViewById<View>(com.google.android.material.R.id.design_bottom_sheet) as FrameLayout?
-            val behavior = BottomSheetBehavior.from(bottomSheet)
-            behavior.state = BottomSheetBehavior.STATE_EXPANDED
+            bottomSheet?.let { bs ->
+                val behavior = BottomSheetBehavior.from(bs)
+                behavior.state = BottomSheetBehavior.STATE_EXPANDED
+            }
             dialog.setCancelable(false)
             dialog.setCanceledOnTouchOutside(true)
         }

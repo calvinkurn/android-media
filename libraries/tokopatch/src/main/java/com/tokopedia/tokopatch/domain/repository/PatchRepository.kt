@@ -20,30 +20,16 @@ class PatchRepository(private val dataDao: DataDao, versionCode: String) {
     private var TAG : String = PatchRepository::class.java.simpleName
     private var client: PatchApiService = RetrofitClient.webservice
 
-    val allData: LiveData<List<DataResponse.Result>> = getDistinctAllResult(versionCode)
-
-    private fun getDistinctAllResult(versionCode: String): LiveData<List<DataResponse.Result>>
-            = dataDao.getAllResult(versionCode).getDistinct()
-
-    private fun <T> LiveData<T>.getDistinct(): LiveData<T> {
-        val distinctLiveData = MediatorLiveData<T>()
-        distinctLiveData.addSource(this, object : Observer<T> {
-            private var initialized = false
-            private var lastObj: T? = null
-            override fun onChanged(obj: T?) {
-                if (!initialized) {
-                    initialized = true
-                    lastObj = obj
-                    distinctLiveData.postValue(lastObj)
-                } else if ((obj == null && lastObj != null)
-                        || obj != lastObj) {
-                    lastObj = obj
-                    distinctLiveData.postValue(lastObj)
-                }
+    companion object {
+        fun  getInstance(dataDao: DataDao, versionCode: String): PatchRepository {
+            val instance: PatchRepository by lazy {
+                PatchRepository(dataDao, versionCode)
             }
-        })
-        return distinctLiveData
+            return instance
+        }
     }
+
+    val allData: List<DataResponse.Result> = dataDao.getAllResultList(versionCode)
 
     suspend fun flush(){
         dataDao.deleteAll()
