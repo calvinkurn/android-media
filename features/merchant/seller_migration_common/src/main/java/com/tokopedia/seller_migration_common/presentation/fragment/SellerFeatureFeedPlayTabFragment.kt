@@ -1,0 +1,3 @@
+package com.tokopedia.seller_migration_common.presentation.fragment
+
+class SellerFeatureFeedPlayTabFragment

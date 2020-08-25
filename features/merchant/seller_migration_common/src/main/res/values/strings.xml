@@ -109,6 +109,18 @@
     <string name="seller_migration_fragment_statistic_tab_market_insight_description">Khusus Power Merchant, pantau info pasar agar tokomu jadi lebih kompetitif.</string>
     <string name="title_fetured_product">Fitur Unggulan</string>
 
+    <!--    seller migration feed & play seller features-->
+    <string name="seller_migration_fragment_feed_play_tab_post_feed_title">POST FEED</string>
+    <string name="seller_migration_fragment_feed_play_tab_post_feed_description">Posting info terbaru untuk pelanggan setia tokomu.</string>
+    <string name="seller_migration_fragment_feed_play_tab_live_video_title">LIVE VIDEO</string>
+    <string name="seller_migration_fragment_feed_play_tab_live_video_description">Media streaming video untuk promo khusus secara live.</string>
+
+    <!--    seller migration layanan keuangan seller features-->
+    <string name="seller_migration_fragment_financial_service_tab_modal_toko_title">MODAL TOKO</string>
+    <string name="seller_migration_fragment_finanlcial_service_tab_post_feed_description">Tarik kredit fleksibel hingga Rp300 jt secara instan.</string>
+    <string name="seller_migration_fragment_financial_service_tab_saldo_prioritas_title">SALDO PRIORITAS</string>
+    <string name="seller_migration_fragment_feed_play_tab_live_video_description">Tarik hasil jualan tanpa tunggu transaksi selesai.</string>
+
     <!--    product add edit-->
     <string name="seller_migration_add_edit_no_variant_title">Varian Produk</string>
     <string name="seller_migration_add_edit_no_variant_description">Kelola varian warna, ukuran, dan detil lainnya secara mudah hanya di aplikasi &lt;b&gt;Tokopedia Seller&lt;/b&gt;</string>

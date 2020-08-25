@@ -135,6 +135,8 @@ sealed class SellerFeatureUiModel(
             descriptionId = R.string.seller_migration_fragment_product_tab_instagram_import_description,
             data = data)
 
+    class FeedPlayPostFeedDataUiModel
+
     override fun type(typeFactory: SellerFeatureAdapterTypeFactory): Int {
         return typeFactory.type(this)
     }
