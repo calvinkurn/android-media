@@ -9,7 +9,9 @@ import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.review.R
 import com.tokopedia.review.feature.createreputation.presentation.listener.TextAreaListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -23,6 +25,8 @@ class CreateReviewTextAreaBottomSheet : BottomSheetUnify() {
                 this.textAreaListener = textAreaListener
             }
         }
+        const val ORIGINAL_UNIFY_MARGIN = 16
+        const val HEADER_BOTTOM_MARGIN = 8
     }
 
     private var text: String = ""
@@ -55,9 +59,9 @@ class CreateReviewTextAreaBottomSheet : BottomSheetUnify() {
             }
             isKeyboardOverlap = false
             setShowListener {
+                (bottomSheetHeader.layoutParams as LinearLayout.LayoutParams).setMargins(ORIGINAL_UNIFY_MARGIN, ORIGINAL_UNIFY_MARGIN, ORIGINAL_UNIFY_MARGIN, HEADER_BOTTOM_MARGIN)
                 Handler().postDelayed( {
                     editText.requestFocus()
-                    this.dialog?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
                 }, 100)
                 editText.setText(this@CreateReviewTextAreaBottomSheet.text)
             }
