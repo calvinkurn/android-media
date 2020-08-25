@@ -137,7 +137,7 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
     private var shopRef: String = ""
     private var viewFragment: View? = null
 
-    private var productListData: MutableList<ShopSearchProductDataModel>? = null
+    private var productListData: MutableList<ShopSearchProductDataModel> = arrayListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -201,7 +201,7 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
                 redirectToProductDetailPage(model.appLink)
             }
             ShopSearchProductDataModel.Type.TYPE_SEARCH_STORE -> {
-                if(productListData?.isNotEmpty() == true) {
+                if (productListData.isNotEmpty()) {
                     shopPageTrackingShopSearchProduct.clickAutocompleteInternalShopPage(isMyShop, searchQuery, customDimensionShopPage)
                 } else {
                     shopPageTrackingShopSearchProduct.clickAutocompleteInternalShopPageProductEmpty(isMyShop, searchQuery, customDimensionShopPage)
@@ -217,7 +217,7 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
     }
 
     override fun initInjector() {
-        activity?.let{
+        activity?.let {
             DaggerShopSearchProductComponent
                     .builder()
                     .shopSearchProductModule(ShopSearchProductModule())
@@ -230,7 +230,7 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
     override fun onSearchSubmitted(keyword: String) {
         searchQuery = keyword
         if (searchQuery.isNotEmpty()) {
-            if(productListData?.isNotEmpty() == true) {
+            if (productListData.isNotEmpty()) {
                 shopPageTrackingShopSearchProduct.shopPageProductSearchResult(isMyShop, keyword, customDimensionShopPage)
             } else {
                 shopPageTrackingShopSearchProduct.shopPageProductSearchNoResult(isMyShop, keyword, customDimensionShopPage)
@@ -325,9 +325,9 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
     }
 
     private fun populateDynamicSearchResult(universeSearchResponse: UniverseSearchResponse) {
-        productListData?.clear()
+        productListData.clear()
         universeSearchResponse.universeSearch.data.firstOrNull()?.items?.forEach {
-            productListData?.add(ShopSearchProductDynamicResultDataModel(
+            productListData.add(ShopSearchProductDynamicResultDataModel(
                     it.imageUri,
                     it.keyword,
                     it.affiliateUsername,
@@ -337,9 +337,7 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
                     ShopSearchProductDataModel.Type.TYPE_PDP
             ))
         }
-        (productListData as? ArrayList<ShopSearchProductDataModel>)?.let {
-            renderList(it, false)
-        }
+        renderList(productListData, false)
     }
 
     private fun initViewNew(view: View) {
@@ -401,7 +399,7 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
 
             private fun updateListener(text: String) {
                 val myRunnable = Runnable { onSearchTextChanged(text) }
-                context?.mainLooper?.let{
+                context?.mainLooper?.let {
                     Handler(it).post(myRunnable)
                 }
             }
