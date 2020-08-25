@@ -41,10 +41,11 @@ class ViewHolderDataMapper @Inject constructor() {
                         ?: 0.toDouble(),
                 isWishlisted = cartItemHolderData.cartItemData?.originData?.isWishlisted ?: false,
                 tickerMessage = cartItemHolderData.cartItemData?.warningMessageTitle,
-                similarProduct = cartItemHolderData.cartItemData?.similarProductData,
+                similarProductUrl = cartItemHolderData.cartItemData?.similarProductUrl ?: "",
                 nicotineLiteMessageData = cartItemHolderData.cartItemData?.nicotineLiteMessageData,
                 showDivider = showDivider,
-                data = cartItemHolderData.cartItemData
+                data = cartItemHolderData.cartItemData,
+                actionsData = cartItemHolderData.actionsData
         )
     }
 }

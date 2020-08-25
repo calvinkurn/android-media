@@ -19,8 +19,8 @@ data class CartDetail(
     val product: Product = Product(),
     @SerializedName("checkbox_state")
     val isCheckboxState: Boolean = false,
-    @SerializedName("similar_product")
-    val similarProduct: SimilarProduct? = null,
+    @SerializedName("similar_product_url")
+    val similarProductUrl: String = "",
     @SerializedName("nicotine_lite_message")
     val nicotineLiteMessage: NicotineLiteMessage? = null
 )

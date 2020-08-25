@@ -744,8 +744,8 @@ val RESPONSE = """
                         "url": ""
                       },
                       "nicotine_lite_message": {
-                        "text": "Beli lewat browser",
-                        "url": "https://m.tokopedia.com/cart"
+                        "text": "",
+                        "url": "t"
                       }
                     }
                   ],
@@ -794,11 +794,6 @@ val RESPONSE = """
                   "id": 2,
                   "code": "DELETE",
                   "message": "Hapus barang"
-                },
-                {
-                  "id": 3,
-                  "code": "CHECKOUTBROWSER",
-                  "message": "Checkout di browser"
                 }
               ],
               "unavailable_group": [

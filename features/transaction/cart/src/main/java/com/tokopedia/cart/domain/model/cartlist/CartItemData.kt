@@ -1,12 +1,13 @@
 package com.tokopedia.cart.domain.model.cartlist
 
-import android.os.Parcel
 import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
 
 /**
  * @author anggaprasetiyo on 18/01/18.
  */
 
+@Parcelize
 data class CartItemData(
         var originData: OriginData? = null,
         var updatedData: UpdatedData? = null,
@@ -19,62 +20,13 @@ data class CartItemData(
         var warningMessageDescription: String? = null,
         var errorMessageTitle: String? = null,
         var errorMessageDescription: String? = null,
-        var similarProductData: SimilarProductData? = null,
+        var similarProductUrl: String = "",
         var nicotineLiteMessageData: NicotineLiteMessageData? = null,
         var isDisableAllProducts: Boolean = false,
         var isFulfillment: Boolean = false
 ) : Parcelable {
 
-    constructor(parcel: Parcel) : this(
-            parcel.readParcelable(OriginData::class.java.classLoader),
-            parcel.readParcelable(UpdatedData::class.java.classLoader),
-            parcel.readParcelable(MessageErrorData::class.java.classLoader),
-            parcel.readByte() != 0.toByte(),
-            parcel.readByte() != 0.toByte(),
-            parcel.readByte() != 0.toByte(),
-            parcel.readByte() != 0.toByte(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readParcelable(SimilarProductData::class.java.classLoader),
-            parcel.readParcelable(NicotineLiteMessageData::class.java.classLoader),
-            parcel.readByte() != 0.toByte(),
-            parcel.readByte() != 0.toByte()) {
-    }
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeParcelable(originData, flags)
-        parcel.writeParcelable(updatedData, flags)
-        parcel.writeParcelable(messageErrorData, flags)
-        parcel.writeByte(if (isSingleChild) 1 else 0)
-        parcel.writeByte(if (isParentHasErrorOrWarning) 1 else 0)
-        parcel.writeByte(if (isError) 1 else 0)
-        parcel.writeByte(if (isWarning) 1 else 0)
-        parcel.writeString(warningMessageTitle)
-        parcel.writeString(warningMessageDescription)
-        parcel.writeString(errorMessageTitle)
-        parcel.writeString(errorMessageDescription)
-        parcel.writeParcelable(similarProductData, flags)
-        parcel.writeParcelable(nicotineLiteMessageData, flags)
-        parcel.writeByte(if (isDisableAllProducts) 1 else 0)
-        parcel.writeByte(if (isFulfillment) 1 else 0)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<CartItemData> {
-        override fun createFromParcel(parcel: Parcel): CartItemData {
-            return CartItemData(parcel)
-        }
-
-        override fun newArray(size: Int): Array<CartItemData?> {
-            return arrayOfNulls(size)
-        }
-    }
-
+    @Parcelize
     data class OriginData(
             var cartId: Int = 0,
             var parentId: String? = null,
@@ -138,152 +90,14 @@ data class CartItemData(
             var slashPriceLabel: String = "",
             var initialPriceBeforeDrop: Int = 0,
             var productAlertMessage: String = ""
-    ) : Parcelable {
-        constructor(parcel: Parcel) : this(
-                parcel.readInt(),
-                parcel.readString(),
-                parcel.readString(),
-                parcel.readString(),
-                parcel.readInt(),
-                parcel.readInt(),
-                parcel.readInt(),
-                parcel.readString(),
-                parcel.readInt(),
-                parcel.readInt(),
-                parcel.readString(),
-                parcel.readDouble(),
-                parcel.readInt(),
-                parcel.readInt(),
-                parcel.readString(),
-                parcel.readString(),
-                parcel.readInt(),
-                parcel.readString(),
-                parcel.readString(),
-                parcel.readDouble(),
-                parcel.readInt(),
-                parcel.readString(),
-                parcel.readByte() != 0.toByte(),
-                parcel.readByte() != 0.toByte(),
-                parcel.readByte() != 0.toByte(),
-                parcel.readByte() != 0.toByte(),
-                parcel.readByte() != 0.toByte(),
-                parcel.readString(),
-                parcel.readString(),
-                parcel.readString(),
-                parcel.readString(),
-                parcel.readString(),
-                parcel.readString(),
-                parcel.createTypedArrayList(WholesalePriceData),
-                parcel.readString(),
-                parcel.readString(),
-                parcel.readString(),
-                parcel.readString(),
-                parcel.readString(),
-                parcel.readString(),
-                parcel.readString(),
-                parcel.readByte() != 0.toByte(),
-                parcel.readByte() != 0.toByte(),
-                parcel.readByte() != 0.toByte(),
-                parcel.readInt(),
-                parcel.readString(),
-                parcel.readString(),
-                parcel.readString(),
-                parcel.readString(),
-                parcel.readByte() != 0.toByte(),
-                parcel.readInt(),
-                parcel.readString(),
-                parcel.readString(),
-                parcel.readInt(),
-                parcel.readByte() != 0.toByte(),
-                parcel.readString()) {
-        }
+    ) : Parcelable
 
-        override fun writeToParcel(parcel: Parcel, flags: Int) {
-            parcel.writeInt(cartId)
-            parcel.writeString(parentId)
-            parcel.writeString(productId)
-            parcel.writeString(productName)
-            parcel.writeInt(minOrder)
-            parcel.writeInt(maxOrder)
-            parcel.writeInt(priceChangesState)
-            parcel.writeString(priceChangesDesc)
-            parcel.writeInt(productInvenageByUserInCart)
-            parcel.writeInt(productInvenageByUserLastStockLessThan)
-            parcel.writeString(productInvenageByUserText)
-            parcel.writeDouble(pricePlan)
-            parcel.writeInt(pricePlanInt)
-            parcel.writeInt(priceCurrency)
-            parcel.writeString(priceFormatted)
-            parcel.writeString(wholesalePriceFormatted)
-            parcel.writeInt(wholesalePrice)
-            parcel.writeString(productImage)
-            parcel.writeString(productVarianRemark)
-            parcel.writeDouble(weightPlan)
-            parcel.writeInt(weightUnit)
-            parcel.writeString(weightFormatted)
-            parcel.writeByte(if (isPreOrder) 1 else 0)
-            parcel.writeByte(if (isCod) 1 else 0)
-            parcel.writeByte(if (isFreeReturn) 1 else 0)
-            parcel.writeByte(if (isCashBack) 1 else 0)
-            parcel.writeByte(if (isFavorite) 1 else 0)
-            parcel.writeString(productCashBack)
-            parcel.writeString(cashBackInfo)
-            parcel.writeString(freeReturnLogo)
-            parcel.writeString(category)
-            parcel.writeString(categoryForAnalytics)
-            parcel.writeString(categoryId)
-            parcel.writeTypedList(wholesalePriceData)
-            parcel.writeString(trackerAttribution)
-            parcel.writeString(trackerListName)
-            parcel.writeString(originalRemark)
-            parcel.writeString(shopName)
-            parcel.writeString(shopCity)
-            parcel.writeString(shopId)
-            parcel.writeString(shopType)
-            parcel.writeByte(if (isOfficialStore) 1 else 0)
-            parcel.writeByte(if (isGoldMerchant) 1 else 0)
-            parcel.writeByte(if (isWishlisted) 1 else 0)
-            parcel.writeInt(originalQty)
-            parcel.writeString(goldMerchantLogoUrl)
-            parcel.writeString(officialStoreLogoUrl)
-            parcel.writeString(preOrderInfo)
-            parcel.writeString(cartString)
-            parcel.writeByte(if (isCheckboxState) 1 else 0)
-            parcel.writeInt(warehouseId)
-            parcel.writeString(promoCodes)
-            parcel.writeString(promoDetails)
-            parcel.writeInt(priceOriginal)
-            parcel.writeByte(if (isFreeShipping) 1 else 0)
-            parcel.writeString(freeShippingBadgeUrl)
-        }
-
-        override fun describeContents(): Int {
-            return 0
-        }
-
-        companion object CREATOR : Parcelable.Creator<OriginData> {
-            override fun createFromParcel(parcel: Parcel): OriginData {
-                return OriginData(parcel)
-            }
-
-            override fun newArray(size: Int): Array<OriginData?> {
-                return arrayOfNulls(size)
-            }
-        }
-
-    }
-
+    @Parcelize
     data class UpdatedData(
             var quantity: Int = 0,
             var remark: String? = null,
             var maxCharRemark: Int = 0
     ) : Parcelable {
-
-        constructor(parcel: Parcel) : this(
-                parcel.readInt(),
-                parcel.readString(),
-                parcel.readInt()) {
-        }
 
         fun resetQuantity() {
             quantity = 0
@@ -298,28 +112,9 @@ data class CartItemData(
             this.quantity++
         }
 
-        override fun writeToParcel(parcel: Parcel, flags: Int) {
-            parcel.writeInt(quantity)
-            parcel.writeString(remark)
-            parcel.writeInt(maxCharRemark)
-        }
-
-        override fun describeContents(): Int {
-            return 0
-        }
-
-        companion object CREATOR : Parcelable.Creator<UpdatedData> {
-            override fun createFromParcel(parcel: Parcel): UpdatedData {
-                return UpdatedData(parcel)
-            }
-
-            override fun newArray(size: Int): Array<UpdatedData?> {
-                return arrayOfNulls(size)
-            }
-        }
-
     }
 
+    @Parcelize
     data class MessageErrorData(
             var errorCheckoutPriceLimit: String? = null,
             var errorFieldBetween: String? = null,
@@ -329,42 +124,6 @@ data class CartItemData(
             var errorProductAvailableStockDetail: String? = null,
             var errorProductMaxQuantity: String? = null,
             var errorProductMinQuantity: String? = null
-    ) : Parcelable {
-        constructor(parcel: Parcel) : this(
-                parcel.readString(),
-                parcel.readString(),
-                parcel.readString(),
-                parcel.readString(),
-                parcel.readString(),
-                parcel.readString(),
-                parcel.readString(),
-                parcel.readString()) {
-        }
-
-        override fun writeToParcel(parcel: Parcel, flags: Int) {
-            parcel.writeString(errorCheckoutPriceLimit)
-            parcel.writeString(errorFieldBetween)
-            parcel.writeString(errorFieldMaxChar)
-            parcel.writeString(errorFieldRequired)
-            parcel.writeString(errorProductAvailableStock)
-            parcel.writeString(errorProductAvailableStockDetail)
-            parcel.writeString(errorProductMaxQuantity)
-            parcel.writeString(errorProductMinQuantity)
-        }
-
-        override fun describeContents(): Int {
-            return 0
-        }
-
-        companion object CREATOR : Parcelable.Creator<MessageErrorData> {
-            override fun createFromParcel(parcel: Parcel): MessageErrorData {
-                return MessageErrorData(parcel)
-            }
-
-            override fun newArray(size: Int): Array<MessageErrorData?> {
-                return arrayOfNulls(size)
-            }
-        }
-    }
+    ) : Parcelable
 
 }

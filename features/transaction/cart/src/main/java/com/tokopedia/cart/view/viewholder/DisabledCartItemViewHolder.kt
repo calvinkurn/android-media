@@ -17,10 +17,6 @@ class DisabledCartItemViewHolder(itemView: View, val actionListener: ActionListe
 
     companion object {
         val LAYOUT = R.layout.holder_item_cart_error
-
-        const val REPLACE_TAG_OPEN = "<replace>"
-        const val REPLACE_TAG_CLOSE = "</replace>"
-        const val LINK_TAG_CLOSE = "</a>"
     }
 
     var showDivider: Boolean = false
@@ -30,7 +26,7 @@ class DisabledCartItemViewHolder(itemView: View, val actionListener: ActionListe
         renderSlashPrice(data)
         renderDeleteButton(data)
         renderWishlistButton(data)
-        renderProductUnavailableAction(data)
+        renderProductAction(data)
         renderDivider(data)
     }
 
@@ -94,21 +90,26 @@ class DisabledCartItemViewHolder(itemView: View, val actionListener: ActionListe
         }
     }
 
-    private fun renderProductUnavailableAction(data: DisabledCartItemHolderData) {
-        if (data.similarProduct != null) {
-            itemView.tv_product_unavailable_action.text = data.similarProduct!!.text
-            itemView.tv_product_unavailable_action.setOnClickListener {
-                actionListener?.onSimilarProductUrlClicked(data.similarProduct!!.url)
+    private fun renderProductAction(data: DisabledCartItemHolderData) {
+        if (data.actionsData.isNotEmpty()) {
+            data.actionsData.forEach {
+                // Todo : re-check action code
+                if (it.code.equals("CHECKOUTBROWSER", true)) {
+                    itemView.tv_product_unavailable_action.text = it.message
+                    itemView.tv_product_unavailable_action.setOnClickListener {
+                        actionListener?.onTobaccoLiteUrlClicked("https://m.tokopedia.com/cart")
+                    }
+                    actionListener?.onShowTickerTobacco()
+                    itemView.tv_product_unavailable_action.visibility = View.VISIBLE
+                } else if (it.code.equals("SIMILARPRODUCT", true)) {
+                    itemView.tv_product_unavailable_action.text = it.message
+                    itemView.tv_product_unavailable_action.setOnClickListener {
+                        actionListener?.onSimilarProductUrlClicked(data.similarProductUrl)
+                    }
+                    actionListener?.onShowTickerOutOfStock(data.productId)
+                    itemView.tv_product_unavailable_action.visibility = View.VISIBLE
+                }
             }
-            actionListener?.onShowTickerOutOfStock(data.productId)
-            itemView.tv_product_unavailable_action.visibility = View.VISIBLE
-        } else if (data.nicotineLiteMessageData != null) {
-            itemView.tv_product_unavailable_action.text = data.nicotineLiteMessageData!!.text
-            itemView.tv_product_unavailable_action.setOnClickListener {
-                actionListener?.onTobaccoLiteUrlClicked(data.nicotineLiteMessageData!!.url)
-            }
-            actionListener?.onShowTickerTobacco()
-            itemView.tv_product_unavailable_action.visibility = View.VISIBLE
         } else {
             itemView.tv_product_unavailable_action.visibility = View.GONE
         }
