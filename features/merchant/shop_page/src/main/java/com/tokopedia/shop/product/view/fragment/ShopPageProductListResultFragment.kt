@@ -92,7 +92,6 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     private var shopId: String? = null
     private var shopRef: String = ""
     private var keyword: String = ""
-    private var prevAnalyticKeyword: String? = ""
     private var sortValue: String = ""
     private var attribution: String? = null
     private var selectedEtalaseList: ArrayList<ShopEtalaseItemDataModel>? = null
@@ -327,17 +326,6 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     }
 
     private fun renderProductList(productList: List<ShopProductViewModel>, hasNextPage: Boolean) {
-        shopInfo?.let {
-            if (!TextUtils.isEmpty(keyword) && prevAnalyticKeyword != keyword) {
-                shopPageTracking?.searchKeyword(viewModel.isMyShop(it.shopCore.shopID),
-                        keyword,
-                        productList.isNotEmpty(),
-                        CustomDimensionShopPage.create(it.shopCore.shopID,
-                                it.goldOS.isOfficial == 1, it.goldOS.isGold == 1))
-                prevAnalyticKeyword = keyword
-            }
-        }
-
         hideLoading()
         shopProductAdapter.clearAllNonDataElement()
         if (isLoadingInitialData) {
