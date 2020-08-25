@@ -27,8 +27,7 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
     public FirebaseRemoteConfigImpl(Context context) {
         try {
             this.firebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
-        } catch (Exception ignored) {
-        } // FirebaseApp is not intialized, ignoring the error and handle it with default value
+        } catch (Exception ignored) { } // FirebaseApp is not intialized, ignoring the error and handle it with default value
 
         if (GlobalConfig.isAllowDebuggingTools() && context != null) {
             this.sharedPrefs = context.getSharedPreferences(CACHE_NAME, Context.MODE_PRIVATE);
