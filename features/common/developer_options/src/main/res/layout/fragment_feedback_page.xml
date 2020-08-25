@@ -8,6 +8,17 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/include_loading"
+        android:layout_width="@dimen/layout_lvl6"
+        android:layout_height="@dimen/layout_lvl6"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
     <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/email"
         android:layout_width="match_parent"
@@ -49,20 +60,6 @@
     </LinearLayout>
 
     <androidx.appcompat.widget.AppCompatEditText
-        android:id="@+id/issue_description"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl4"
-        android:textSize="@dimen/fontSize_lvl4"
-        android:lines="3"
-        android:gravity="center_vertical"
-        android:inputType="text"
-        android:hint="@string/description_of_issue"
-        app:backgroundTint="@color/Green_G500"
-        app:layout_constraintTop_toBottomOf="@id/bug_layout"
-        app:layout_constraintStart_toStartOf="parent"/>
-
-    <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/affected_page"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -73,7 +70,22 @@
         android:inputType="text"
         android:hint="@string/affected_page"
         app:backgroundTint="@color/Green_G500"
-        app:layout_constraintTop_toBottomOf="@id/issue_description"
+        app:layout_constraintTop_toBottomOf="@id/bug_layout"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/issue_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:textSize="@dimen/fontSize_lvl4"
+        android:lines="5"
+        android:maxLines="10"
+        android:gravity="center_vertical"
+        android:inputType="textMultiLine"
+        android:hint="@string/description_of_issue"
+        app:backgroundTint="@color/Green_G500"
+        app:layout_constraintTop_toBottomOf="@id/affected_page"
         app:layout_constraintStart_toStartOf="parent"/>
 
     <FrameLayout
@@ -82,7 +94,7 @@
         android:layout_height="wrap_content"
         android:animateLayoutChanges="true"
         android:layout_marginTop="@dimen/dp_16"
-        app:layout_constraintTop_toBottomOf="@id/affected_page"
+        app:layout_constraintTop_toBottomOf="@id/issue_description"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 

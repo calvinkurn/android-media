@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.*
 import android.widget.AdapterView.OnItemSelectedListener
 import androidx.fragment.app.Fragment
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.developer_options.R
 import com.tokopedia.developer_options.api.*
 import com.tokopedia.developer_options.presentation.preference.Preferences
@@ -160,6 +161,9 @@ class FeedbackPageFragment: Fragment() {
     }
 
     private fun requestMapper(email: String, page: String, desc: String, issueType: String): FeedbackRequest {
+        val affectedVersion = if (GlobalConfig.isSellerApp()) "SA-$appVersion" else "MA-$appVersion"
+        Log.d("AFFECTED_VERSION", affectedVersion)
+
         return FeedbackRequest(Fields(
                 summary = "[INTERNAL-FEEDBACK] {$email} {$page}",
                 project = Project(
@@ -204,7 +208,10 @@ class FeedbackPageFragment: Fragment() {
                         id = "11144"
                 ),
                 labels = listOf("Internal-Feedback"),
-                customfield_10550 = listOf(issueType)
+                customfield_10550 = listOf(issueType),
+                versions = listOf(Version(
+                        name = affectedVersion
+                ))
         ))
     }
 }

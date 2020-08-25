@@ -14,7 +14,8 @@ data class Fields(
         var customfield_10253 : Customfield_10253,
         var customfield_10181 : Customfield_10181,
         var labels : List<String>,
-        var customfield_10550 : List<String>
+        var customfield_10550 : List<String>,
+        var versions : List<Version>
 )
 
 data class Project(
@@ -70,4 +71,8 @@ data class Customfield_10253(
 data class Customfield_10181(
         var value : String,
         var id : String
+)
+
+data class Version(
+        var name : String
 )

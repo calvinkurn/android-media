@@ -34,8 +34,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
                     android:scheme="@string/tokopedia_scheme"
-                    android:host="@string/host_setting"
-                    android:pathPrefix="@string/path_feedback_page"/>
+                    android:host="@string/internal_feedback"/>
             </intent-filter>
 
         </activity>
