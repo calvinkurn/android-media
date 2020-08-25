@@ -1,47 +1,12 @@
 {
-  "readme": "Flight Homepage Tracking",
+  "readme": "Flight Homepage Tracking with Priority P1, separated with other priority level because currently we focused the instrument test with client analytics validator for tracking with priority P0 and P1",
   "mode": "exact",
   "query": [
-    {
-      "event": "genericFlightEvent",
-      "eventAction": "select origin",
-      "eventCategory": "digital - flight",
-      "eventLabel": "{{.*}}",
-      "sessionIris": "{{.*}}"
-    },
-    {
-      "event": "genericFlightEvent",
-      "eventAction": "select destination",
-      "eventCategory": "digital - flight",
-      "eventLabel": "{{.*}}",
-      "sessionIris": "{{.*}}"
-    },
-    {
-      "event": "genericFlightEvent",
-      "eventAction": "select flight class",
-      "eventCategory": "digital - flight",
-      "eventLabel": "{{.*}}",
-      "sessionIris": "{{.*}}"
-    },
-    {
-      "event": "genericFlightEvent",
-      "eventAction": "select Passenger",
-      "eventCategory": "digital - flight",
-      "eventLabel": "{{\\d* .* - \\d* .* - \\d* .*}}",
-      "sessionIris": "{{.*}}"
-    },
     {
       "event": "clickSearch",
       "eventAction": "click search flight",
       "eventCategory": "digital - flight",
       "eventLabel": "{{flight - .*-.* - .* - \\d*-\\d*-\\d* - .* - .*}}",
-      "sessionIris": "{{.*}}"
-    },
-    {
-      "event": "genericFlightEvent",
-      "eventAction": "select trip type",
-      "eventCategory": "digital - flight",
-      "eventLabel": "{{.*}}",
       "sessionIris": "{{.*}}"
     },
     {
