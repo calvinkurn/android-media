@@ -213,7 +213,7 @@ class InboxDetailPresenterImpl(private val postMessageUseCase: PostMessageUseCas
         }
     }
 
-    private fun getStatus(): String? {
+    private fun getStatus(): String {
         val status = getTicketStatus()
         return when {
             status.equals(SOLVED, ignoreCase = true) ||
@@ -242,7 +242,7 @@ class InboxDetailPresenterImpl(private val postMessageUseCase: PostMessageUseCas
         return tId
     }
 
-    private fun getShortTime(createTime: String): String? {
+    private fun getShortTime(createTime: String): String {
         var count = 0
         var i = 0
         while (i < createTime.length) {
@@ -253,8 +253,7 @@ class InboxDetailPresenterImpl(private val postMessageUseCase: PostMessageUseCas
             }
             i++
         }
-        return createTime.substring(0, i)
-
+        return if (createTime.isNotEmpty()) createTime.substring(0, i) else ""
     }
 
     private fun addItemAtTopOfComment(commentsItems: MutableList<CommentsItem>?, topItem: CommentsItem) {
