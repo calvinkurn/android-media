@@ -2,9 +2,9 @@ package com.tokopedia.imagepicker.picker.gallery.model;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.provider.MediaStore;
 
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.picker.gallery.loader.AlbumLoader;
@@ -20,13 +20,13 @@ public class AlbumItem implements Parcelable {
     public static final String ALBUM_NAME_ALL = "All";
 
     private final String mId;
-    private final String coverPath;
+    private final Uri mCoverUri;
     private final String displayName;
     private long mCount;
 
-    public AlbumItem(String mId, String coverPath, String displayName, long mCount) {
+    public AlbumItem(String mId, Uri coverUri, String displayName, long mCount) {
         this.mId = mId;
-        this.coverPath = coverPath;
+        this.mCoverUri = coverUri;
         this.displayName = displayName;
         this.mCount = mCount;
     }
@@ -35,8 +35,8 @@ public class AlbumItem implements Parcelable {
         return mId;
     }
 
-    public String getCoverPath() {
-        return coverPath;
+    public Uri getCoverPath() {
+        return mCoverUri;
     }
 
     public String getDisplayName() {
@@ -59,14 +59,14 @@ public class AlbumItem implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.mId);
-        dest.writeString(this.coverPath);
+        dest.writeParcelable(this.mCoverUri, 0);
         dest.writeString(this.displayName);
         dest.writeLong(this.mCount);
     }
 
     protected AlbumItem(Parcel in) {
         this.mId = in.readString();
-        this.coverPath = in.readString();
+        this.mCoverUri = in.readParcelable(Uri.class.getClassLoader());
         this.displayName = in.readString();
         this.mCount = in.readLong();
     }
@@ -84,9 +84,10 @@ public class AlbumItem implements Parcelable {
     };
 
     public static AlbumItem valueOf(Cursor cursor) {
+        String clumn = cursor.getString(cursor.getColumnIndex(AlbumLoader.COLUMN_URI));
         return new AlbumItem(
                 cursor.getString(cursor.getColumnIndex(AlbumMediaLoader.BUCKET_ID)),
-                cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.DATA)),
+                Uri.parse(clumn != null ? clumn : ""),
                 cursor.getString(cursor.getColumnIndex(AlbumMediaLoader.BUCKET_DISPLAY_NAME)),
                 cursor.getLong(cursor.getColumnIndex(AlbumLoader.COLUMN_COUNT)));
     }
