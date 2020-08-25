@@ -70,7 +70,12 @@ open class TopchatProductAttachmentViewHolder constructor(
         if (payloads.isEmpty()) return
         when (payloads[0]) {
             DeferredAttachment.PAYLOAD_DEFERRED -> bindDeferredAttachment(element)
+            PAYLOAD_OCC_STATE -> bindNewOccState(element)
         }
+    }
+
+    private fun bindNewOccState(element: ProductAttachmentViewModel) {
+        bindOcc(element)
     }
 
     private fun bindDeferredAttachment(element: ProductAttachmentViewModel) {
@@ -319,7 +324,7 @@ open class TopchatProductAttachmentViewHolder constructor(
 
     private fun getOccAbTestVariant(): String {
         // TODO: impl abtest occ
-        return VARIANT_B
+        return VARIANT_A
     }
 
     private fun isEligibleOccAbTest(variant: String): Boolean {
@@ -327,7 +332,21 @@ open class TopchatProductAttachmentViewHolder constructor(
     }
 
     private fun bindOcc(product: ProductAttachmentViewModel) {
-        btnOcc?.show()
+        btnOcc?.apply {
+            if (product.hasEmptyStock()) {
+                hide()
+            } else {
+                show()
+                isLoading = product.isLoadingOcc
+                setOnClickListener {
+                    if (!product.isLoadingOcc) {
+                        product.isLoadingOcc = true
+                        isLoading = true
+                        listener.onClickOccFromProductAttachment(product, adapterPosition)
+                    }
+                }
+            }
+        }
     }
 
     private fun bindPreOrderLabel(product: ProductAttachmentViewModel) {
@@ -367,10 +386,10 @@ open class TopchatProductAttachmentViewHolder constructor(
 
     private fun bindBuy(product: ProductAttachmentViewModel) {
         btnBuy?.let {
-            it.show()
             if (product.hasEmptyStock()) {
                 it.hide()
             } else {
+                it.show()
                 it.isEnabled = true
                 it.setText(com.tokopedia.chat_common.R.string.action_buy)
                 it.setOnClickListener {
@@ -419,5 +438,7 @@ open class TopchatProductAttachmentViewHolder constructor(
         const val VARIANT_DEFAULT = "default"
         const val VARIANT_A = "a"
         const val VARIANT_B = "b"
+
+        const val PAYLOAD_OCC_STATE = "payload_occ_state"
     }
 }

@@ -20,6 +20,7 @@ open class ProductAttachmentViewModel : SendableViewModel,
     override var isError: Boolean = false
     override val id: String get() = attachmentId
 
+    var isLoadingOcc: Boolean = false
     var productId: Int = 0
         private set
     var productName: String = ""

@@ -28,6 +28,7 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
 import com.tokopedia.attachproduct.resultmodel.ResultProduct
 import com.tokopedia.attachproduct.view.activity.AttachProductActivity
 import com.tokopedia.chat_common.BaseChatFragment
@@ -209,6 +210,29 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         setupBeforeReplyTime()
         loadInitialData()
         initLoadMoreListener()
+    }
+
+    override fun onClickOccFromProductAttachment(product: ProductAttachmentViewModel, position: Int) {
+        val addToCartOccRequestParams = AddToCartOccRequestParams(
+                productId = product.productId.toString(),
+                shopId = product.shopId.toString(),
+                quantity = product.minOrder.toString(),
+                productName = product.productName,
+                category = product.category,
+                price = product.priceInt.toString()
+        )
+        presenter.addToCart(addToCartOccRequestParams, {
+            finishOccLoading(product, position)
+            RouteManager.route(context, ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT)
+        }, {
+            finishOccLoading(product, position)
+            showSnackbarError(it)
+        })
+    }
+
+    private fun finishOccLoading(product: ProductAttachmentViewModel, position: Int) {
+        product.isLoadingOcc = false
+        adapter.updateOccLoadingStatus(product, position)
     }
 
     private fun setupBeforeReplyTime() {
@@ -806,6 +830,13 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         }
     }
 
+    private fun showSnackbarError(throwable: Throwable) {
+        view?.let {
+            val errorMsg = ErrorHandler.getErrorMessage(it.context, throwable)
+            Toaster.make(it, errorMsg, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+        }
+    }
+
     override fun onStartTyping() {
         presenter.startTyping()
     }
@@ -1344,14 +1375,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         analytics.eventClickProductThumbnail(product)
     }
 
-    companion object {
-        fun createInstance(bundle: Bundle): BaseChatFragment {
-            return TopChatRoomFragment().apply {
-                arguments = bundle
-            }
-        }
-    }
-
     override fun onStickerOpened() {
         getViewState().onStickerOpened()
         toolTip.dismissOnBoarding()
@@ -1468,6 +1491,14 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     private fun showToasterError(message: String) {
         view?.let {
             Toaster.build(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
+        }
+    }
+
+    companion object {
+        fun createInstance(bundle: Bundle): BaseChatFragment {
+            return TopChatRoomFragment().apply {
+                arguments = bundle
+            }
         }
     }
 }
