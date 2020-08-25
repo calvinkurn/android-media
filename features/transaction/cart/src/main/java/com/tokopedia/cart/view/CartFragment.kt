@@ -2462,6 +2462,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun onUndoDeleteClicked(cartIds: List<String>) {
+        // Todo : hit API undo. If success, refresh cart
         Toast.makeText(context, "UNDO DELETE", Toast.LENGTH_SHORT).show()
     }
 
