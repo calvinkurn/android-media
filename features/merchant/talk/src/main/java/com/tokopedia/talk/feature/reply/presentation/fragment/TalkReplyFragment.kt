@@ -692,7 +692,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         adapter?.showEmpty(TalkReplyEmptyModel(viewModel.userId == userId.toString()))
         replyEditText.apply {
             setOnFocusChangeListener { v, hasFocus ->
-                if (hasFocus) {
+                if (hasFocus && viewModel.userId != userId.toString()) {
                     activity.let {
                         KeyboardHandler.showSoftKeyboard(it)
                     }
