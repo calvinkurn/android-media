@@ -16,9 +16,7 @@ import com.tokopedia.usecase.coroutines.Success
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import junit.framework.TestCase
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Before
 import org.junit.Rule
 import rx.Observable
@@ -70,10 +68,28 @@ abstract class ShopSettingsInfoViewModelTestFixture  {
         coVerify { checkOsMerchantUseCase.executeOnBackground() }
     }
 
+    protected fun verifySuccessUpdateShopScheduleCalled(action: Int, closeNow: Boolean, closeStart: String, closeEnd: String, closeNote: String) {
+        verify { UpdateShopScheduleUseCase.createRequestParams(action, closeNow, closeStart, closeEnd, closeNote) }
+        coVerify { updateShopScheduleUseCase.createObservable(any()) }
+    }
+
     protected fun onGetShopBasicInfo_thenReturn(shopBasicDataModel: ShopBasicDataModel) {
         every {
             getShopBasicDataUseCase.createObservable(any())
         } returns Observable.just(shopBasicDataModel)
+    }
+
+    protected fun onUpdateShopSchedule_thenReturn(result: String) {
+        every {
+            updateShopScheduleUseCase.createObservable(any())
+        } returns Observable.just(result)
+    }
+
+    protected fun verifyUpdateShopScheduleUseCaseCalled() {
+        verify {
+            getShopBasicDataUseCase.createObservable(any())
+            getShopStatusUseCase.createObservable(any())
+        }
     }
 
     protected fun onGetShopStatus_thenReturn(goldGetPmOsStatus: GoldGetPmOsStatus) {
