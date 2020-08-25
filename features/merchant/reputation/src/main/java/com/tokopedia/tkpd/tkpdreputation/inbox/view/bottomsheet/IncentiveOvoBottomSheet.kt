@@ -62,6 +62,7 @@ class IncentiveOvoBottomSheet(private val productRevIncentiveOvoDomain: ProductR
             checkBtnContinue = true
             dismiss()
         }
+        isFullpage = false
     }
 
     private fun hitContinueOrDismissTracker(checkBtnContinue: Boolean) {
