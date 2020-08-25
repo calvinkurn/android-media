@@ -94,6 +94,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     private var productId = ""
     private var source = ""
     private var didUserWriteQuestion = false
+    private var hideSuccessToaster = false
     private var adapter: TalkReplyAdapter? = null
     private var attachedProductAdapter: TalkReplyAttachedProductAdapter? = null
     private var talkPerformanceMonitoringListener: TalkPerformanceMonitoringListener? = null
@@ -495,7 +496,8 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
                         hidePageError()
                         hidePageLoading()
                         replySwipeRefresh.isRefreshing = false
-                        if(isFromWrite()) {
+                        if(isFromWrite() && !hideSuccessToaster) {
+                            hideSuccessToaster = true
                             showSuccessToaster(getString(R.string.reading_create_question_toaster_success))
                         }
                     }
