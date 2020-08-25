@@ -22,7 +22,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscriber;
 
-public class GetUserProjectInfoUseCase {
+public class GetUserProjectInfoUseCaseJava {
 
     private static final String PROJECT_ID = "projectId";
 
@@ -30,7 +30,7 @@ public class GetUserProjectInfoUseCase {
     private final Resources resources;
 
     @Inject
-    public GetUserProjectInfoUseCase(Resources resources, GraphqlUseCase graphqlUseCase) {
+    public GetUserProjectInfoUseCaseJava(Resources resources, GraphqlUseCase graphqlUseCase) {
         this.resources = resources;
         this.graphqlUseCase = graphqlUseCase;
     }
