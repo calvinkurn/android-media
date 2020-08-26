@@ -72,8 +72,6 @@
         "creative_slot": "{{.*}}",
         "item_id": "{{.*}}",
         "item_name": "{{.*}}",
-        "promo_code": "{{.*}}",
-        "promo_id": "{{.*}}",
         "creative_url": "{{.*}}"
       }],
       "businessUnit": "home & browse",
@@ -97,14 +95,11 @@
         "creative_slot": "{{.*}}",
         "item_id": "{{.*}}",
         "item_name": "{{.*}}",
-        "promo_code": "{{.*}}",
-        "promo_id": "{{.*}}",
         "creative_url": "{{.*}}"
       }],
       "affinityLabel": "{{.*}}",
       "currentSite": "tokopediamarketplace",
       "attribution": "{{.*}}",
-      "shopId": "{{.*}}",
       "event": "select_content",
       "categoryId": "{{.*}}",
       "channelId": "{{.*}}",

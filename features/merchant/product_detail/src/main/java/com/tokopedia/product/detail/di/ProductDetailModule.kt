@@ -17,6 +17,8 @@ import com.tokopedia.product.detail.view.util.DynamicProductDetailDispatcherProv
 import com.tokopedia.product.detail.view.util.DynamicProductDetailDispatcherProviderImpl
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.stickylogin.domain.usecase.StickyLoginUseCase
+import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
+import com.tokopedia.topads.sdk.repository.TopAdsRepository
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -76,5 +78,11 @@ class ProductDetailModule {
                                         graphqlUseCase: GraphqlUseCase,
                                         userSessionInterface: UserSessionInterface): GetRecommendationUseCase {
         return GetRecommendationUseCase(rawQueries[QUERY_RECOMMEN_PRODUCT]?:"", graphqlUseCase, userSessionInterface)
+    }
+
+    @ProductDetailScope
+    @Provides
+    fun provideTopAdsImageViewUseCase(userSession: UserSessionInterface): TopAdsImageViewUseCase {
+        return TopAdsImageViewUseCase(userSession.userId, TopAdsRepository())
     }
 }
