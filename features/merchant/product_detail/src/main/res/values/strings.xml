@@ -307,7 +307,6 @@
         \n• Akses accelero meter</string>
     <string name="pdp_tradein_text_request_access">Meminta Izin Akses</string>
 
-    //Content Description
     <string name="content_desc_title_info">text title informasi produk</string>
     <string name="content_desc_desc_info">text desc informasi produk</string>
     <string name="content_desc_label_see_detail_product_descr">text lihat deskripsi produk</string>
@@ -321,7 +320,7 @@
     <string name="content_desc_btn_buy_now">button beli</string>
     <string name="content_desc_btn_add_to_cart">button tambah keranjang</string>
     <string name="content_desc_img_pdp_video">image product</string>
-    <string name="content_desc_txtChipVariant">button varian</string>
-    <string name="content_desc_promoChipVariant">button varian promo</string>
+    <string name="content_desc_txtChipVariant">text varian</string>
+    <string name="content_desc_promoChipVariant">text varian promo</string>
 
 </resources>
