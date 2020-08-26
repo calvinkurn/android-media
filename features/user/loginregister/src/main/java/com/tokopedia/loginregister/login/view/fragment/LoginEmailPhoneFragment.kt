@@ -83,7 +83,6 @@ import com.tokopedia.loginregister.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.notifications.CMPushNotificationManager
-import com.tokopedia.otp.verification.domain.data.OtpConstant
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.sessioncommon.ErrorHandlerSession
@@ -879,12 +878,12 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
             dialog.setOnOkClickListener { v ->
                 analytics.eventClickYesSmartLoginDialogButton()
                 dialog.dismiss()
-                val intent = RouteManager.getIntent(context, ApplinkConst.REGISTER)
+                val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.INIT_REGISTER)
                 intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, email)
                 intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
                 intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SMART_LOGIN, true)
                 intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_PENDING, isPending)
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 it.startActivity(intent)
                 it.finish()
             }
