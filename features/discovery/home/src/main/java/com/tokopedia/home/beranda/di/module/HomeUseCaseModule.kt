@@ -179,7 +179,7 @@ class HomeUseCaseModule {
 
     private val dynamicChannelQuery : String = "query getDynamicChannel(\$groupIDs: String!, \$numOfChannel: Int!, \$token: String!){\n" +
             "    dynamicHomeChannel {\n" +
-            "        channels(groupIDs: \$groupIDs, numOfChannel: $numOfChannel, token: $token){\n" +
+            "        channels(groupIDs: \$groupIDs, numOfChannel: \$numOfChannel, token: \$token){\n" +
             "          id\n" +
             "          group_id\n" +
             "          galaxy_attribution\n" +

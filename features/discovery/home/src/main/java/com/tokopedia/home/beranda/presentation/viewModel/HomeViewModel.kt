@@ -192,7 +192,7 @@ open class HomeViewModel @Inject constructor(
 
     val isStartToRenderDynamicChannel: LiveData<Event<Boolean>>
         get() = _isStartToRenderDynamicChannel
-    private val _isStartToRenderDynamicChannel = MutableLiveData<Event<Boolean>>(null)
+    private val _isStartToRenderDynamicChannel = MutableLiveData<Event<Boolean>>(Event(false))
 
     private val _salamWidgetLiveData = MutableLiveData<Event<SalamWidget>>()
     val salamWidgetLiveData: LiveData<Event<SalamWidget>> get() = _salamWidgetLiveData
@@ -1041,7 +1041,7 @@ open class HomeViewModel @Inject constructor(
 
                 val newHomeDataModel = _homeLiveData.value?.copy(list = newList?.toList()?: listOf(), isCache = false)
 
-                _isStartToRenderDynamicChannel.value = Event(true)
+                _isStartToRenderDynamicChannel.postValue(Event(true))
                 updateWidget(UpdateLiveDataModel(
                         action = ACTION_UPDATE_HOME_DATA,
                         homeData = newHomeDataModel,
