@@ -57,6 +57,8 @@ class VerificationMethodAdapter(
 
             val spannable: Spannable
             val otpListTextHtml = MethodChecker.fromHtml(modeList.otpListText)
+            val indexNewlineN = otpListTextHtml.indexOf("\n")
+            val indexNewlineBr = otpListTextHtml.indexOf("<br>")
             spannable = SpannableString(otpListTextHtml)
             spannable.setSpan(object : ClickableSpan() {
                 override fun onClick(widget: View) {}
