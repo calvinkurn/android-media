@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.developer_options.R
 import com.tokopedia.developer_options.api.*
+import com.tokopedia.developer_options.presentation.feedbackpage.dialog.LoadingDialog
 import com.tokopedia.developer_options.presentation.preference.Preferences
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -37,8 +38,8 @@ class FeedbackPageFragment: Fragment() {
     private var androidVersion: String = ""
     private var appVersion: String = ""
 
-
     private var userSession: UserSessionInterface? = null
+    private var loadingDialog: LoadingDialog? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val mainView = inflater.inflate(R.layout.fragment_feedback_page, container, false)
@@ -57,6 +58,7 @@ class FeedbackPageFragment: Fragment() {
         feedbackApi = ApiClient.getAPIService()
         compositeSubscription = CompositeSubscription()
         myPreferences = Preferences(context)
+        loadingDialog = context?.let { LoadingDialog(it) }
 
         context?.let { ArrayAdapter.createFromResource(it,
                 R.array.bug_type_array,
@@ -137,12 +139,14 @@ class FeedbackPageFragment: Fragment() {
     }
 
     private fun submitFeedback(email: String, page: String, desc: String, issueType: String) {
+        loadingDialog?.show()
         compositeSubscription.add(
                 feedbackApi.getResponse(requestMapper(email, page, desc, issueType))
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(object : Subscriber<FeedbackResponse>() {
                             override fun onNext(t: FeedbackResponse) {
+                                loadingDialog?.dismiss()
                                 Toast.makeText(activity, t.key.toString(), Toast.LENGTH_SHORT).show()
                                 myPreferences.setSubmitFlag(email, userSession?.userId.toString())
                                 activity?.finish()
@@ -153,6 +157,7 @@ class FeedbackPageFragment: Fragment() {
                             }
 
                             override fun onError(e: Throwable?) {
+                                loadingDialog?.dismiss()
                                 Toast.makeText(activity, e.toString(), Toast.LENGTH_SHORT).show()
                             }
 
@@ -200,8 +205,11 @@ class FeedbackPageFragment: Fragment() {
                         id = "11200"
                 )),
                 customfield_10253 = Customfield_10253(
-                        value = "Release Candidate",
-                        id = "11209"
+                        /*value = "Release Candidate",
+                        id = "11209"*/
+                        //Temporary
+                        value = "In Development",
+                        id = "11208"
                 ),
                 customfield_10181 = Customfield_10181(
                         value = "Android - Minion Jorge",
