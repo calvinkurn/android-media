@@ -73,7 +73,8 @@ class HotelFilterBottomSheets : BottomSheetUnify() {
             selectedFilters = mutableListOf()
             for (i in 0 until recyclerView.childCount) {
                 val viewHolder = recyclerView.findViewHolderForAdapterPosition(i)
-                (viewHolder as HotelSearchResultFilterV2Adapter.FilterBaseViewHolder).let {
+                viewHolder?.let {
+                    it as HotelSearchResultFilterV2Adapter.FilterBaseViewHolder
                     if (it.selectedOption.values.isNotEmpty()) {
                         selectedFilters.add(it.selectedOption)
                     }
