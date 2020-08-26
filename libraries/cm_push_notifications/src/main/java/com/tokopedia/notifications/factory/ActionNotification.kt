@@ -84,6 +84,9 @@ internal class ActionNotification internal constructor(context: Context, baseNot
                 }
                 else -> remoteView.setImageViewBitmap(R.id.iv_icon_collapsed, bitmapLargeIcon)
             }
+        } else if (!TextUtils.isEmpty(baseNotificationModel.icon) && baseNotificationModel.media == null) {
+            val iconBitmap = getBitmap(baseNotificationModel.icon)
+            remoteView.setImageViewBitmap(R.id.iv_icon_collapsed, iconBitmap)
         }
 
         remoteView.setTextViewText(R.id.tv_collapse_title, CMNotificationUtils.getSpannedTextFromStr(baseNotificationModel.title))
@@ -91,11 +94,13 @@ internal class ActionNotification internal constructor(context: Context, baseNot
         remoteView.setOnClickPendingIntent(if (isCollapsed) R.id.collapseMainView else R.id.status_bar_latest_event_content, createMainPendingIntent(baseNotificationModel,
                 requestCode))
         if (baseNotificationModel.media == null || baseNotificationModel.media?.mediumQuality == null
-                || baseNotificationModel.media?.mediumQuality!!.isBlank() && !TextUtils.isEmpty(baseNotificationModel.detailMessage)) {
+                || baseNotificationModel.media?.mediumQuality!!.isBlank()) {
             remoteView.setViewVisibility(if (isCollapsed) R.id.tv_collapsed_message else R.id.tv_expanded_message, View.VISIBLE)
             remoteView.setViewVisibility(if (isCollapsed) R.id.tv_expanded_message else R.id.tv_collapsed_message, View.GONE)
             remoteView.setTextViewText(if (isCollapsed) R.id.tv_collapsed_message else R.id.tv_expanded_message,
-                    CMNotificationUtils.getSpannedTextFromStr(if (isCollapsed) baseNotificationModel.message else baseNotificationModel.detailMessage))
+                    CMNotificationUtils.getSpannedTextFromStr(if (isCollapsed) baseNotificationModel.message
+                    else if(!TextUtils.isEmpty(baseNotificationModel.detailMessage)) baseNotificationModel.detailMessage
+                    else baseNotificationModel.message))
         }
     }
 
