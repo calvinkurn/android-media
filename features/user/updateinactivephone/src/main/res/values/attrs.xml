@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <declare-styleable name="LayoutCameraView">
+    <attr format="integer" name="layoutType">
+      <enum name="selfie" value="1"/>
+      <enum name="idCard" value="2"/>
+      <enum name="savingBook" value="3"/>
+    </attr>
+  </declare-styleable>
+</resources>

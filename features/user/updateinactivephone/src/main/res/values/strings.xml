@@ -51,4 +51,37 @@
     <string name="error_invalid_email">Email ini tidak valid.</string>
 
     <string name="error_general">Terjadi gangguan di rumah Toped, silakan coba lagi nanti.</string>
+  
+    <!-- REVAMP -->
+    <string name="camera_recapture_text">Foto Ulang</string>
+    <string name="camera_next_button">Lanjut</string>
+    <string name="text_camera_description">Pastikan wajah dan kartu identitasmu terlihat jelas di dalam bingkai foto ini.</string>
+    <string name="text_camera_description_saving_book">Posisikan buku tabungan di dalam bingkai &amp; pastikan informasi terlihat jelas.</string>
+    <string name="text_title">"Ubah Nomor HP"</string>
+    <string name="text_button_camera">Kamera</string>
+    <string name="text_button_gallery">Galeri</string>
+    <string name="text_select_image">Pilih Foto</string>
+    <string name="text_title_id_card">Foto Kartu Identitas</string>
+    <string name="text_title_selfie">Foto Wajah &amp; Kartu Identitas</string>
+    <string name="text_title_saving_book">Lampirkan Buku Tabungan</string>
+    <string name="text_onboarding_button">Lanjut Ubah</string>
+    <string name="text_onboarding_correct">Benar</string>
+    <string name="text_onboarding_false">Salah</string>
+    <string name="text_onboarding_title">Mau mengubah nomor HP?</string>
+    <string name="text_onboarding_description">Kamu bisa mengajukan perubahan nomor HP dan akan diminta upload kartu identitas untuk verifikasi data diri</string>
+    <string name="text_onboarding_protected">Tokopedia menjamin keamanan &amp; privasi datamu.</string>
+    <string name="text_onboarding_id_card_description">Ikuti cara ini agar kartumu berhasil diverifikasi:
+          \n- Siapkan kartu identitas (KTP, SIM, kartu pelajar, atau paspor) yang sesuai dengan data di akun Tokopedia kamu.
+          \n- Posisikan kartu identitas di dalam bingkai foto dan pastikan informasi terlihat jelas.</string>
+    <string name="text_onboarding_selfie_description">Tunjukkan bagian depan kartu identitas dengan posisi di bawah dagu tanpa menutupi wajah.</string>
+    <string name="text_onboarding_saving_book_description">Ikuti cara ini agar datamu berhasil diverifikasi:
+      \n- Siapkan buku tabungan dari rekening yang sering kamu pakai di Tokopedia.
+      \n- Pastikan nama pemilik rekening, nomor rekening, dan nama bank terlihat jelas.</string>
+    <string name="text_onboarding_receipt_description">Kamu bisa pakai bukti pembayaran dari transaksimu di Tokopedia berupa:
+      \n- Struk transfer dari ATM
+      \n- Bukti transfer dari m-banking
+      \n- Bukti transfer dari OVO
+      \n- Struk pembayaran dari Indomaret atau Alfamart</string>
+  <string name="text_onboarding_saving_book_titile">Lampirkan buku tabungan atau bukti pembayaran</string>
+
 </resources>

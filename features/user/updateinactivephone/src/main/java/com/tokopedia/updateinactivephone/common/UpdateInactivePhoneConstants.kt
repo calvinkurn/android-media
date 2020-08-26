@@ -74,11 +74,4 @@ interface UpdateInactivePhoneConstants {
             const val QUERY_VALIDATE_USER_DATA = "validate_user_data"
         }
     }
-
-    object OnboardingType {
-        const val TYPE_ID_CARD = "typeIdCard"
-        const val TYPE_SELFIE_AND_ID_CARD = "typeSelfie"
-        const val TYPE_SAVING_BOOK = "typeSavingBook"
-        const val TYPE_RECEIPT = "typeReceipt"
-    }
 }
