@@ -1,6 +1,7 @@
 package com.tokopedia.sellerhome.view.navigator
 
 import android.content.Context
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
@@ -48,16 +49,18 @@ class SellerHomeNavigator(
     }
 
     fun showPage(@FragmentType page: Int) {
-        val transaction = fm.beginTransaction()
-        val fragment = getPageFragment(page)
+        if(isActivityResumed()) {
+            val transaction = fm.beginTransaction()
+            val fragment = getPageFragment(page)
 
-        fragment?.let {
-            hideCurrentPage(transaction)
-            showFragment(it, transaction)
-            setSelectedPage(page)
+            fragment?.let {
+                hideCurrentPage(transaction)
+                showFragment(it, transaction)
+                setSelectedPage(page)
+            }
+
+            updateFragmentVisibilityHint(fragment)
         }
-
-        updateFragmentVisibilityHint(fragment)
     }
 
     fun navigateFromAppLink(page: PageFragment) {
@@ -82,7 +85,10 @@ class SellerHomeNavigator(
                             .add(R.id.sahContainer, selectedPage, tag)
                             .commit()
                     }
-                    else -> showFragment(selectedPage, transaction)
+                    else -> {
+                        hideCurrentPage(transaction)
+                        showFragment(fragment, transaction)
+                    }
                 }
 
                 setSelectedPage(type)
@@ -163,10 +169,12 @@ class SellerHomeNavigator(
     }
 
     private fun showFragment(fragment: Fragment, transaction: FragmentTransaction) {
+        val tag = fragment::class.java.simpleName
+        val isAttached = fm.findFragmentByTag(tag) != null
         val currentState = fragment.lifecycle.currentState
         val isFragmentNotResumed = !currentState.isAtLeast(Lifecycle.State.RESUMED)
 
-        if(isFragmentNotResumed) {
+        if(isFragmentNotResumed && isAttached) {
             transaction.setMaxLifecycle(fragment, Lifecycle.State.RESUMED)
         }
 
@@ -236,5 +244,10 @@ class SellerHomeNavigator(
 
     private fun setSelectedPage(@FragmentType page: Int) {
         currentSelectedPage = page
+    }
+
+    private fun isActivityResumed(): Boolean {
+        val state = (context as? AppCompatActivity)?.lifecycle?.currentState
+        return state == Lifecycle.State.RESUMED || state == Lifecycle.State.STARTED
     }
 }
