@@ -4,12 +4,7 @@ import android.app.Activity;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
-import android.net.Uri;
 import android.os.Build;
-
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.constraintlayout.widget.ConstraintSet;
-
 import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -40,6 +35,9 @@ import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.C
 
 import java.lang.ref.WeakReference;
 import java.util.List;
+
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
 
 /**
  * @author lalit.singh
@@ -394,7 +392,7 @@ public class ViewEngine {
                 if (listener != null && !TextUtils.isEmpty(deepLink)) {
                     listener.onCMinAppDismiss(cmInApp);
                     listener.onCMinAppInteraction(cmInApp);
-                    listener.onCMInAppLinkClick(Uri.parse(deepLink), cmInApp, elementType);
+                    listener.onCMInAppLinkClick(deepLink, cmInApp, elementType);
                 }
                 if (inAppView != null)
                     ((ViewGroup) inAppView.getParent()).removeView(inAppView);

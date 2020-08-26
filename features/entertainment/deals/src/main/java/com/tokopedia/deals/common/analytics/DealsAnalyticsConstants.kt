@@ -44,8 +44,8 @@ object DealsAnalyticsConstants {
         const val CHANGE_LOCATION_HOME_PAGE = "change location - homepage"
         const val CLICK_ON_CURATED_CARD ="click on curated card"
         const val CLICK_SEARCH = "click search"
-        const val CLICK_ON_PRODUCT_CARD_HOME_PAGE = "click on product card - homepage"
-        const val CLICK_VIEW_ALL_PRODUCT_CARD_HOME_PAGE2 = "click view all product card - homepage"
+        const val CLICK_ON_PRODUCT_CARD_HOME_PAGE = "click on product card - %s"
+        const val CLICK_VIEW_ALL_PRODUCT_CARD_HOME_PAGE2 = "click view all product card - %s"
         const val CLICK_ON_ORDER_LIST = "click on order list"
         const val CHIPS_CLICK_CATEGORY_PAGE = "click on chips - category page"
         const val APPLY_FILTER_CATEGORY_PAGE = "apply filter - category page"
@@ -55,7 +55,7 @@ object DealsAnalyticsConstants {
         const val CLICK_ON_POPULAR_LANDMARK = "click on popular landmarks"
         const val IMPRESSION_ON_CURATED_CARD = "impression on curated card"
         const val IMPRESSION_ON_SEARCH_RESULT = "impression on search result"
-        const val PRODUCT_CARD_HOME_PAGE_IMPRESSION = "impression on product card - homepage"
+        const val PRODUCT_CARD_HOME_PAGE_IMPRESSION = "impression on product card - %s"
         const val CATEGORY_TAB_CATEGORY_PAGE = "click category tab - category page"
     }
 

@@ -2,7 +2,8 @@ package com.tokopedia.test.application.util
 
 import android.app.Application
 import android.content.Context
-import com.tokopedia.authentication.*
+import androidx.test.espresso.idling.CountingIdlingResource
+import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.network.refreshtoken.EncoderDecoder
 import com.tokopedia.test.application.environment.InstrumentationTestApp
 import com.tokopedia.test.application.environment.network.DataSource
@@ -14,7 +15,31 @@ import rx.schedulers.Schedulers
 import java.util.*
 
 object InstrumentationAuthHelper {
-    fun loginToAnUser(application: Application) {
+
+    fun loginInstrumentationTestUser1(context: Context) {
+        val accessToken = "ghSZU8GxoVSK3qkEqgFUrlHt3pFSS+Xtmb5peuCDaca/R0LwyqhTqwTJVcupIX78E5xicw3oliW9AdyRWr4Apg=="
+        loginWithAccessToken(context, accessToken)
+    }
+
+    private fun loginWithAccessToken(context: Context, accessToken: String) {
+        try {
+            val userSession = UserSession(context)
+            userSession.userId = "108956738"
+            userSession.email = "erick.samuel+testingtokenandroid1@tokopedia.com"
+            userSession.setToken(accessToken, "Bearer")
+            userSession.setIsLogin(true)
+        } catch (throwable: Throwable) {
+            throwable.printStackTrace()
+        }
+    }
+
+    fun loginInstrumentationTestUser2(context: Context) {
+        val accessToken = "kdxPYUwtF5yYMOuwZFxnFqFZea7GUpoX6m1eL1IGJ1pwB3crhQCTvKdMoYV6wIpiHgE5Xlghd0WAKPXW+yMp5w=="
+        loginWithAccessToken(context, accessToken)
+    }
+
+    fun loginToAnUser(application: Application, idlingResource: CountingIdlingResource? = null) {
+        idlingResource?.increment()
         val userSession = UserSession(application)
 
         val userName = "fauzanofami.luthfi+01@tokopedia.com"
@@ -108,7 +133,9 @@ object InstrumentationAuthHelper {
                     }
 
                     override fun onCompleted() {
-
+                        if (idlingResource?.isIdleNow == false) {
+                            idlingResource.decrement()
+                        }
                     }
                 })
     }

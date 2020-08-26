@@ -14,6 +14,7 @@ data class Channel(
         @Expose @SerializedName("name") val name: String,
         @Expose @SerializedName("layout") val layout: String,
         @Expose @SerializedName("campaignID") val campaignID: Int,
+        @Expose @SerializedName("campaignCode") val campaignCode: String,
         @Expose @SerializedName("grids") val grids: MutableList<Grid?>?,
         @Expose @SerializedName("galaxy_attribution") val galaxyAttribution: String = "",
         @Expose @SerializedName("persona") val persona: String = "",

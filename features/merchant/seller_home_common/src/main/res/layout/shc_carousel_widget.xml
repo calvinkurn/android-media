@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/spacing_lvl1"
+    android:layout_marginBottom="@dimen/spacing_lvl1"
+    app:cardCornerRadius="@dimen/layout_lvl1">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/llContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:descendantFocusability="blocksDescendants"
+        android:minHeight="268dp"
+        android:paddingStart="@dimen/layout_lvl1"
+        android:paddingLeft="@dimen/layout_lvl1"
+        android:paddingTop="@dimen/layout_lvl2"
+        android:paddingEnd="@dimen/layout_lvl1"
+        android:paddingRight="@dimen/layout_lvl1"
+        android:paddingBottom="@dimen/layout_lvl2">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvCarouselBannerTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/layout_lvl1"
+            android:layout_marginLeft="@dimen/layout_lvl1"
+            android:layout_marginEnd="@dimen/layout_lvl1"
+            android:layout_marginRight="@dimen/layout_lvl1"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/Neutral_N700_96"
+            android:textSize="@dimen/fontSize_lvl3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="heading_5"
+            app:typographyWeight="bold"
+            tools:text="Title of banner" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvCarouselBanner"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/shc_dimen_210dp"
+            android:layout_marginTop="12dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvCarouselBannerTitle"
+            app:layout_constraintVertical_bias="0.0"
+            tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/shc_banner_item_layout"
+            tools:orientation="horizontal" />
+
+        <com.tokopedia.unifycomponents.PageControl
+            android:id="@+id/indicatorCarouselBanner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/layout_lvl1"
+            android:layout_marginLeft="@dimen/layout_lvl1"
+            android:layout_marginTop="@dimen/layout_lvl1"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rvCarouselBanner"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/btnCarouselSeeAll"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/layout_lvl2"
+            android:layout_marginLeft="@dimen/layout_lvl2"
+            android:layout_marginTop="@dimen/layout_lvl1"
+            android:layout_marginEnd="@dimen/layout_lvl1"
+            android:layout_marginRight="@dimen/layout_lvl1"
+            android:ellipsize="end"
+            android:gravity="end"
+            android:textColor="@color/Green_G500"
+            android:textSize="@dimen/fontSize_lvl3"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/indicatorCarouselBanner"
+            app:layout_constraintTop_toBottomOf="@+id/rvCarouselBanner"
+            app:layout_constraintVertical_bias="1.0"
+            app:typographyType="body_2"
+            app:typographyWeight="reguler"
+            tools:text="Lihat Semua" />
+
+        <include
+            layout="@layout/shc_partial_common_widget_state_error"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="gone" />
+
+        <include
+            layout="@layout/shc_partial_carousel_widget_shimmering"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="gone" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.tokopedia.unifycomponents.CardUnify>

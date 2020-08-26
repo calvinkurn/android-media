@@ -6,7 +6,7 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.crashlytics.android.Crashlytics
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
@@ -29,7 +29,6 @@ const val DISCOVERY_RESULT_TRACE = "discovery_result_trace"
 const val DISCOVERY_PLT_PREPARE_METRICS = "discovery_plt_prepare_metrics"
 const val DISCOVERY_PLT_NETWORK_METRICS = "discovery_plt_network_metrics"
 const val DISCOVERY_PLT_RENDER_METRICS = "discovery_plt_render_metrics"
-const val APPLINK_TRACKING_SOURCE = "source"
 
 class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
 
@@ -44,7 +43,11 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
 
     companion object {
         const val END_POINT = "end_point"
-        const val SOURCE_QUERY = "source_query"
+        const val SOURCE_QUERY = "source"
+        const val PINNED_COMPONENT_ID = "componentID"
+        const val PINNED_ACTIVE_TAB = "activeTab"
+        const val PINNED_COMP_ID = "pinnedcompID"
+        const val PINNED_PRODUCT = "PinnedProduct"
 
         @JvmField
         var config: String = ""
@@ -123,7 +126,10 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
 
     override fun getNewFragment(): Fragment? {
         val intentData = intent?.data
-        return DiscoveryFragment.getInstance(intentData?.lastPathSegment, intentData?.getQueryParameter(APPLINK_TRACKING_SOURCE))
+        return DiscoveryFragment.getInstance(intentData?.lastPathSegment,
+                intentData?.let { it ->
+                    discoveryViewModel.getMapOfQueryParameter(it)
+                })
     }
 
     override fun getViewModelType(): Class<DiscoveryViewModel> {
@@ -145,7 +151,7 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
     override fun setLogCrash() {
         super.setLogCrash()
         this.javaClass.canonicalName?.let { className ->
-            if (!GlobalConfig.DEBUG) FirebaseCrashlytics.getInstance().log(className + " " + intent?.data?.lastPathSegment)
+            if (!GlobalConfig.DEBUG) Crashlytics.log(className + " " + intent?.data?.lastPathSegment)
         }
     }
 
@@ -157,4 +163,5 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
         super.onStop()
         preSelectedTab = -1
     }
+
 }

@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.manage.feature.cashback.presentation.fragment.ProductManageSetCashbackFragment
+import com.tokopedia.product.manage.feature.cashback.presentation.fragment.ProductManageSetCashbackFragment.Companion.EXTRA_CASHBACK_IS_DRAFTING
 import com.tokopedia.product.manage.feature.cashback.presentation.fragment.ProductManageSetCashbackFragment.Companion.EXTRA_CASHBACK_SHOP_ID
 import com.tokopedia.product.manage.feature.cashback.presentation.fragment.ProductManageSetCashbackFragment.Companion.PARAM_SET_CASHBACK_PRODUCT_PRICE
 import com.tokopedia.product.manage.feature.cashback.presentation.fragment.ProductManageSetCashbackFragment.Companion.PARAM_SET_CASHBACK_VALUE
@@ -53,8 +54,9 @@ class ProductManageSetCashbackActivity: BaseSimpleActivity() {
             }
         }
         val shopId = intent?.getStringExtra(EXTRA_CASHBACK_SHOP_ID) ?: ""
+        val isDrafting = intent?.getBooleanExtra(EXTRA_CASHBACK_IS_DRAFTING, false) ?: false
         if (shopId != "") {
-            return ProductManageSetCashbackFragment.createInstance(productId, cashback, productName, price, shopId)
+            return ProductManageSetCashbackFragment.createInstance(productId, cashback, productName, price, shopId, isDrafting)
         }
         return ProductManageSetCashbackFragment.createInstance(productId, cashback, productName, price)
     }

@@ -66,8 +66,6 @@ import com.tokopedia.home.analytics.HomePageTrackingV2.RecommendationList.getRec
 import com.tokopedia.home.analytics.HomePageTrackingV2.SprintSale.getSprintSaleImpression
 import com.tokopedia.home.analytics.v2.CategoryWidgetTracking
 import com.tokopedia.home.analytics.v2.LegoBannerTracking
-import com.tokopedia.home.analytics.v2.MixTopTracking.getMixTopViewIris
-import com.tokopedia.home.analytics.v2.MixTopTracking.mapChannelToProductTracker
 import com.tokopedia.home.analytics.v2.PopularKeywordTracking
 import com.tokopedia.home.analytics.v2.ProductHighlightTracking.getProductHighlightImpression
 import com.tokopedia.home.beranda.di.BerandaComponent
@@ -122,10 +120,13 @@ import com.tokopedia.navigation_common.listener.*
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.permissionchecker.PermissionCheckerHelper.PermissionCheckListener
 import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselItemDataModel
+import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerWidgetType
 import com.tokopedia.promogamification.common.floating.view.fragment.FloatingEggButtonFragment
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.HomeMainToolbar
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo.TickerDetail
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
@@ -249,6 +250,7 @@ open class HomeFragment : BaseDaggerFragment(),
     private lateinit var statusBarBackground: View
     private lateinit var tickerDetail: TickerDetail
     private lateinit var sharedPrefs: SharedPreferences
+    private lateinit var remoteConfigInstance: RemoteConfigInstance
     private var homeRecyclerView: NestedRecyclerView? = null
     private var homeMainToolbar: HomeMainToolbar? = null
     private var homeSnackbar: Snackbar? = null
@@ -276,6 +278,7 @@ open class HomeFragment : BaseDaggerFragment(),
     private var pageLoadTimeCallback: PageLoadTimePerformanceInterface? = null
     private var isOnRecylerViewLayoutAdded = false
     private var fragmentCreatedForFirstTime = false
+    private var shouldPausePlay = true
     private var lock = Object()
     private var autoRefreshFlag = HomeFlag()
     private var autoRefreshHandler = Handler()
@@ -370,6 +373,13 @@ open class HomeFragment : BaseDaggerFragment(),
             }
         }
         return remoteConfig
+    }
+
+    private fun getAbTestPlatform(): AbTestPlatform {
+        if (!::remoteConfigInstance.isInitialized) {
+            remoteConfigInstance = RemoteConfigInstance(activity?.application)
+        }
+        return remoteConfigInstance.abTestPlatform
     }
 
     override fun getTrackingQueueObj() : TrackingQueue?{
@@ -542,6 +552,9 @@ open class HomeFragment : BaseDaggerFragment(),
         })
         stickyLoginView?.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _  ->
             val floatingEggButtonFragment = floatingEggButtonFragment
+            if (stickyLoginView.isShowing()) {
+                positionSticky = stickyLoginView.getLocation()
+            }
             floatingEggButtonFragment?.let {
                 updateEggBottomMargin(it)
             }
@@ -586,7 +599,8 @@ open class HomeFragment : BaseDaggerFragment(),
     override fun onResume() {
         super.onResume()
         createAndCallSendScreen()
-        adapter?.onResume()
+        if(!shouldPausePlay) adapter?.onResumePlayWidget()
+        adapter?.onResumeBanner()
         conditionalViewModelRefresh()
         if (activityStateListener != null) {
             activityStateListener!!.onResume()
@@ -595,6 +609,7 @@ open class HomeFragment : BaseDaggerFragment(),
         if (isEnableToAutoRefresh(autoRefreshFlag)) {
             setAutoRefreshOnHome(autoRefreshFlag)
         }
+        shouldPausePlay = true
     }
 
     private fun conditionalViewModelRefresh(){
@@ -622,7 +637,8 @@ open class HomeFragment : BaseDaggerFragment(),
 
     override fun onPause() {
         super.onPause()
-        adapter?.onPause()
+        adapter?.onPausePlayWidget(shouldPausePlay)
+        adapter?.onPauseBanner()
         getTrackingQueueObj()?.sendAll()
         if (activityStateListener != null) {
             activityStateListener!!.onPause()
@@ -639,6 +655,7 @@ open class HomeFragment : BaseDaggerFragment(),
         adapter = null
         homeRecyclerView?.layoutManager = null
         layoutManager = null
+        getHomeViewModel().onCloseChannel()
         unRegisterBroadcastReceiverTokoCash()
     }
 
@@ -654,24 +671,21 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     private fun subscribeHome() {
-        try{
-            observeHomeData()
-            observeUpdateNetworkStatusData()
-            observeOneClickCheckout()
-            observePopupIntroOvo()
-            observeErrorEvent()
-            observeSendLocation()
-            observeStickyLogin()
-            observeTrackingData()
-            observeRequestImagePlayBanner()
-            observeViewModelInitialized()
-            observeHomeRequestNetwork()
-            observeSalamWidget()
-            observeRechargeRecommendation()
-            observePlayReminder()
-        }catch (e: Exception){
-
-        }
+        observeHomeData()
+        observeUpdateNetworkStatusData()
+        observeOneClickCheckout()
+        observePopupIntroOvo()
+        observeErrorEvent()
+        observeSendLocation()
+        observeStickyLogin()
+        observeTrackingData()
+        observeRequestImagePlayBanner()
+        observeViewModelInitialized()
+        observeHomeRequestNetwork()
+        observeSalamWidget()
+        observeRechargeRecommendation()
+        observePlayReminder()
+        observeIsNeedRefresh()
     }
           
     private fun observeIsNeedRefresh() {
@@ -996,7 +1010,8 @@ open class HomeFragment : BaseDaggerFragment(),
                 MixTopComponentCallback(this),
                 HomeReminderWidgetCallback(RechargeRecommendationCallback(context,getHomeViewModel(),this),
                         SalamWidgetCallback(context,getHomeViewModel(),this, getUserSession())),
-                ProductHighlightComponentCallback(this)
+                ProductHighlightComponentCallback(this),
+                Lego4AutoBannerComponentCallback(context, this)
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
                 .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
@@ -1204,6 +1219,9 @@ open class HomeFragment : BaseDaggerFragment(),
                 }
             }
             REQUEST_CODE_REVIEW -> {
+                if(shouldShowToaster()) {
+                    showToasterReviewSuccess()
+                }
                 adapter?.notifyDataSetChanged()
                 if (resultCode == Activity.RESULT_OK) {
                     getHomeViewModel().onRemoveSuggestedReview()
@@ -1486,10 +1504,6 @@ open class HomeFragment : BaseDaggerFragment(),
         getHomeViewModel().getDynamicChannelData(dynamicChannelDataModel, position)
     }
 
-    override fun onBuyAgainOneClickCheckOutClick(grid: DynamicHomeChannel.Grid, channel: DynamicHomeChannel.Channels, position: Int) {
-        getHomeViewModel().getOneClickCheckout(channel, grid, position)
-    }
-
     override fun onBuyAgainCloseChannelClick(channel: DynamicHomeChannel.Channels, position: Int) {
         getHomeViewModel().onCloseBuyAgain(channel.id, position)
         TrackApp.getInstance().gtm.sendGeneralEvent(getCloseClickOnDynamicListCarousel(channel, getHomeViewModel().getUserId()))
@@ -1518,6 +1532,15 @@ open class HomeFragment : BaseDaggerFragment(),
 
     override fun onPlayBannerReminderClick(playBannerCarouselItemDataModel: PlayBannerCarouselItemDataModel) {
         getHomeViewModel().setToggleReminderPlayBanner(playBannerCarouselItemDataModel.channelId, playBannerCarouselItemDataModel.remindMe)
+    }
+
+    override fun onPlayV2Click(playBannerCarouselItemDataModel: PlayBannerCarouselItemDataModel) {
+        if(playBannerCarouselItemDataModel.widgetType != PlayBannerWidgetType.UPCOMING && playBannerCarouselItemDataModel.widgetType != PlayBannerWidgetType.NONE) {
+            val intent = RouteManager.getIntent(activity, ApplinkConstInternalContent.PLAY_DETAIL, playBannerCarouselItemDataModel.channelId)
+            startActivityForResult(intent, REQUEST_CODE_PLAY_ROOM)
+        } else {
+            RouteManager.route(context, playBannerCarouselItemDataModel.applink)
+        }
     }
 
     private fun openApplink(applink: String, trackingAttribution: String) {
@@ -1574,8 +1597,8 @@ open class HomeFragment : BaseDaggerFragment(),
         getHomeViewModel().getBusinessUnitTabData(position)
     }
 
-    override fun getBusinessUnit(tabId: Int, position: Int) {
-        getHomeViewModel().getBusinessUnitData(tabId, position)
+    override fun getBusinessUnit(tabId: Int, position: Int, tabName: String) {
+        getHomeViewModel().getBusinessUnitData(tabId, position, tabName)
     }
 
     override fun getPlayChannel(position: Int) {
@@ -1613,6 +1636,7 @@ open class HomeFragment : BaseDaggerFragment(),
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
+        resetAutoPlay(isVisibleToUser)
         trackScreen(isVisibleToUser)
         conditionalViewModelRefresh()
     }
@@ -1621,6 +1645,12 @@ open class HomeFragment : BaseDaggerFragment(),
         if (isVisibleToUser && view != null && adapter != null) {
             adapter?.notifyDataSetChanged()
         }
+    }
+
+    private fun resetAutoPlay(isVisibleToUser: Boolean){
+        shouldPausePlay = !isVisibleToUser
+        if(isVisibleToUser) adapter?.onResumePlayWidget()
+        else adapter?.onPausePlayWidget(shouldPausePlay)
     }
 
     private fun trackScreen(isVisibleToUser: Boolean) {
@@ -1891,7 +1921,6 @@ open class HomeFragment : BaseDaggerFragment(),
             stickyLoginView.setContent(tickerDetail)
             stickyLoginView.show(StickyLoginConstant.Page.HOME)
             if (stickyLoginView.isShowing()) {
-                positionSticky = stickyLoginView?.getLocation()
                 stickyLoginView.tracker.viewOnPage(StickyLoginConstant.Page.HOME)
             }
         }
@@ -1959,6 +1988,7 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     override fun onOpenPlayActivity(root: View, channelId: String?) {
+        shouldPausePlay = false
         val intent = RouteManager.getIntent(activity, ApplinkConstInternalContent.PLAY_DETAIL, channelId)
         val options = ActivityOptionsCompat.makeSceneTransitionAnimation(activity!!,
                 Pair.create(root.findViewById(R.id.exo_content_frame), getString(R.string.home_transition_video))
@@ -2060,4 +2090,14 @@ open class HomeFragment : BaseDaggerFragment(),
         }
         return viewModel.get()
     }
+
+    private fun showToasterReviewSuccess() {
+        view?.let { Toaster.build(it, getString(R.string.review_create_success_toaster, getHomeViewModel().getUserName()), Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(R.string.review_oke)).show() }
+    }
+
+    private fun shouldShowToaster(): Boolean {
+        val abTestValue = getAbTestPlatform().getString(ConstantKey.RemoteConfigKey.AB_TEST_REVIEW_KEY, "")
+        return abTestValue == ConstantKey.ABtestValue.VALUE_NEW_REVIEW_FLOW
+    }
+
 }

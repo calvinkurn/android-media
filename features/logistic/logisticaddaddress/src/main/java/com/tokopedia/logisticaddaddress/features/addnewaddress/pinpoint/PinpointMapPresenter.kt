@@ -15,6 +15,7 @@ import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictUseCase.Compan
 import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictUseCase.Companion.LOCATION_NOT_FOUND_MESSAGE
 import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressUtils
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
+import com.tokopedia.logisticaddaddress.utils.SimpleIdlingResource
 import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticdata.domain.usecase.RevGeocodeUseCase
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
@@ -36,6 +37,7 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
     private var permissionCheckerHelper: PermissionCheckerHelper? = null
 
     fun getDistrict(placeId: String) {
+        SimpleIdlingResource.increment()
         getDistrictUseCase
                 .execute(placeId)
                 .subscribe(object : Subscriber<GetDistrictDataUiModel>() {
@@ -43,7 +45,9 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
                         view.onSuccessPlaceGetDistrict(model)
                     }
 
-                    override fun onCompleted() {}
+                    override fun onCompleted() {
+                        SimpleIdlingResource.decrement()
+                    }
 
                     override fun onError(e: Throwable?) {
                         Timber.d(e)
@@ -102,7 +106,7 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
         return this.saveAddressDataModel.copy(formattedAddress = fmt, selectedDistrict = fmt)
     }
 
-    fun getDistrictBoundary(districtId: Int, keroToken: String, keroUt: Int) {
+    fun getDistrictBoundary(districtId: Int, keroToken: String?, keroUt: Int) {
         districtBoundaryUseCase.setParams(districtId, keroToken, keroUt)
         districtBoundaryUseCase.execute(RequestParams.create(), object : Subscriber<GraphqlResponse>() {
             override fun onNext(t: GraphqlResponse) {

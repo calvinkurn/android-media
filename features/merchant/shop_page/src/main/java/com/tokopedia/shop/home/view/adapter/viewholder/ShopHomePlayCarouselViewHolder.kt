@@ -9,7 +9,6 @@ import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarou
 import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselItemDataModel
 import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselOverlayImageDataModel
 import com.tokopedia.shop.R
-import com.tokopedia.shop.home.view.adapter.ShopHomeAdapter
 import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
 import com.tokopedia.shop.home.view.listener.ShopPageHomePlayCarouselListener
 import com.tokopedia.shop.home.view.model.ShopHomePlayCarouselUiModel
@@ -66,18 +65,20 @@ class ShopHomePlayCarouselViewHolder(
     override fun onItemClick(dataModel: PlayBannerCarouselItemDataModel, position: Int) {
         listener.onPlayBannerClicked(
                 dataModel,
-                if(playCarouselCardDataModel?.playBannerCarouselDataModel?.isAutoPlay == true) IS_AUTO_PLAY_SUCCESS else IS_AUTO_PLAY_FAILED,
+                playCarouselCardDataModel?.playBannerCarouselDataModel?.isAutoPlay.toString(),
                 playCarouselCardDataModel?.widgetId ?: "",
-                position
+                isFoldPosition(adapterPosition),
+                position + 1
         )
     }
 
     override fun onItemImpress(dataModel: PlayBannerCarouselItemDataModel, position: Int) {
         listener.onPlayBannerImpressed(
                 dataModel,
-                if(playCarouselCardDataModel?.playBannerCarouselDataModel?.isAutoPlay == true) IS_AUTO_PLAY_SUCCESS else IS_AUTO_PLAY_FAILED,
+                playCarouselCardDataModel?.playBannerCarouselDataModel?.isAutoPlay.toString(),
                 playCarouselCardDataModel?.widgetId ?: "",
-                position
+                isFoldPosition(adapterPosition),
+                position + 1
         )
     }
 
@@ -94,11 +95,16 @@ class ShopHomePlayCarouselViewHolder(
     }
 
     override fun onOverlayImageBannerClick(dataModel: PlayBannerCarouselOverlayImageDataModel) {
-        listener.onPlayLeftBannerClicked(dataModel, playCarouselCardDataModel?.widgetId ?: "")
+        listener.onPlayLeftBannerClicked(dataModel, playCarouselCardDataModel?.widgetId ?: "", isFoldPosition(adapterPosition), 0)
     }
 
     override fun onOverlayImageBannerImpress(dataModel: PlayBannerCarouselOverlayImageDataModel) {
-        listener.onPlayLeftBannerImpressed(dataModel, playCarouselCardDataModel?.widgetId ?: "")
+        listener.onPlayLeftBannerImpressed(
+                dataModel,
+                playCarouselCardDataModel?.widgetId ?: "",
+                isFoldPosition(adapterPosition),
+                0
+        )
     }
 
     override fun onRefreshView(dataModel: PlayBannerCarouselDataModel) {
@@ -116,4 +122,6 @@ class ShopHomePlayCarouselViewHolder(
     fun onDestroy(){
         itemView.play_banner_carousel?.onDestroy()
     }
+
+    private fun isFoldPosition(position: Int) = if(position <= 2) 0 else 1
 }

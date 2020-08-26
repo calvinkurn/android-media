@@ -277,7 +277,7 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
         const val ENQUIRY_PARAM_OPERATOR_ID = "operator_id"
         const val ENQUIRY_PARAM_PRODUCT_ID = "product_id"
         const val ENQUIRY_PARAM_DEVICE_ID = "device_id"
-        const val ENQUIRY_PARAM_DEVICE_ID_DEFAULT_VALUE = "4"
+        const val ENQUIRY_PARAM_DEVICE_ID_DEFAULT_VALUE = "5"
         const val ENQUIRY_PARAM_SOURCE_TYPE = "source_type"
         const val ENQUIRY_PARAM_SOURCE_TYPE_DEFAULT_VALUE = "c20ad4d76fe977"
 
@@ -290,7 +290,7 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
         const val EXPRESS_PARAM_PRODUCT_ID = "product_id"
         const val EXPRESS_PARAM_CLIENT_NUMBER = "client_number"
         const val EXPRESS_PARAM_DEVICE_ID = "device_id"
-        const val EXPRESS_PARAM_DEVICE_ID_DEFAULT_VALUE = "4"
+        const val EXPRESS_PARAM_DEVICE_ID_DEFAULT_VALUE = "5"
         const val EXPRESS_PARAM_ADD_TO_BILLS = "add_to_my_bills"
         const val EXPRESS_PARAM_CHECK_OTP = "check_otp"
 

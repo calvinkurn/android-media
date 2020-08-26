@@ -3,6 +3,7 @@ package com.tokopedia.discovery2.data
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.discovery2.datamapper.discoveryPageData
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
+import com.tokopedia.topads.sdk.domain.model.CpmModel
 
 data class ComponentsItem(
 
@@ -43,14 +44,15 @@ data class ComponentsItem(
         var pageEndPoint: String = "",
         var pagePath: String = "",
         var parentComponentId: String = "",
-        var cpmData: DiscoveryDataMapper.CpmTopAdsData? = null,
+        var cpmData: CpmModel? = null,
         var chipSelectionData: DataItem? = null,
         var chipSelectionChange: Boolean = false,
         var couponDetailClicked: Boolean = false,
         var couponAppliedClicked: Boolean = false,
         var position: Int = 0,
         var couponViewImpression: Boolean = false,
-        var design: String = "") {
+        var design: String = "",
+        var rpc_PinnedProduct: String? = "") {
 
     private var componentsItem: List<ComponentsItem>? = null
 

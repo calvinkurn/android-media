@@ -11,17 +11,14 @@ import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.search.adapter.SearchEventViewHolder
-import com.tokopedia.entertainment.search.adapter.viewmodel.SearchEventViewModel
+import com.tokopedia.entertainment.search.adapter.viewmodel.SearchEventModel
 import com.tokopedia.entertainment.search.analytics.EventSearchPageTracking
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.loadImageRounded
-import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.model.ImpressHolder
 import kotlinx.android.synthetic.main.ent_search_event_list_item.view.*
 import kotlinx.android.synthetic.main.ent_search_event_suggestion.view.*
-import timber.log.Timber
 
-class SearchEventListViewHolder(val view: View) : SearchEventViewHolder<SearchEventViewModel>(view) {
+class SearchEventListViewHolder(val view: View) : SearchEventViewHolder<SearchEventModel>(view) {
 
     val eventListAdapter = KegiatanAdapter()
 
@@ -35,7 +32,7 @@ class SearchEventListViewHolder(val view: View) : SearchEventViewHolder<SearchEv
         }
     }
 
-    override fun bind(element: SearchEventViewModel) {
+    override fun bind(element: SearchEventModel) {
         eventListAdapter.listKegiatan = element.listEvent
         eventListAdapter.resources = element.resources
         eventListAdapter.notifyDataSetChanged()
