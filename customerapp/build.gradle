@@ -68,7 +68,7 @@ def isFirebasePerformanceLogEnabled() {
 
 project.ext {
     defaultVersionCode = 418001101;
-    defaultVersionName = "3.80";
+    defaultVersionName = "3.90";
     react = [
             nodeExecutableAndArgs: ["${nodeExecutableAndArgs}"],
             enableHermes         : true,

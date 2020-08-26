@@ -28,7 +28,6 @@ import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
 import com.tokopedia.oneclickcheckout.preference.analytics.PreferenceListAnalytics
-import com.tokopedia.oneclickcheckout.preference.edit.data.payment.ListingParam
 import com.tokopedia.oneclickcheckout.preference.edit.data.payment.PaymentListingParamRequest
 import com.tokopedia.oneclickcheckout.preference.edit.di.PreferenceEditComponent
 import com.tokopedia.oneclickcheckout.preference.edit.view.PreferenceEditParent
@@ -39,7 +38,6 @@ import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
 import java.net.ConnectException
 import java.net.SocketTimeoutException
-import java.net.URLEncoder
 import java.net.UnknownHostException
 import javax.inject.Inject
 
@@ -48,6 +46,11 @@ class PaymentMethodFragment : BaseDaggerFragment() {
     companion object {
 
         private const val ARG_IS_EDIT = "is_edit"
+
+        private const val MERCHANT_CODE = "tokopedia"
+        private const val PROFILE_CODE = "EXPRESS_SAVE"
+
+        private val URL = "${TokopediaUrl.getInstance().PAY}/v2/payment/register/listing"
 
         fun newInstance(isEdit: Boolean = false): PaymentMethodFragment {
             val paymentMethodFragment = PaymentMethodFragment()
@@ -74,8 +77,6 @@ class PaymentMethodFragment : BaseDaggerFragment() {
     private var webView: WebView? = null
     private var progressBar: LoaderUnify? = null
     private var globalError: GlobalError? = null
-
-    private var param: ListingParam? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -132,7 +133,7 @@ class PaymentMethodFragment : BaseDaggerFragment() {
     }
 
     private fun loadPaymentParams() {
-        viewModel.paymentListingParam.observe(viewLifecycleOwner, Observer {
+        viewModel.paymentListingPayload.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is OccState.Success -> {
                     loadWebView(it.data)
@@ -150,34 +151,19 @@ class PaymentMethodFragment : BaseDaggerFragment() {
             }
         })
 
-        viewModel.getPaymentListingParam(generatePaymentListingRequest())
+        viewModel.getPaymentListingPayload(generatePaymentListingRequest())
     }
 
-    private fun loadWebView(param: ListingParam) {
-        this.param = param
-        val url = "${TokopediaUrl.getInstance().PAY}/v2/payment/register/listing"
-        webView?.postUrl(url, getPayload(param).toByteArray())
+    private fun loadWebView(param: String) {
+        webView?.postUrl(URL, param.toByteArray())
         webView?.visible()
         globalError?.gone()
     }
 
-    private fun getPayload(param: ListingParam): String {
-        return "merchant_code=${getUrlEncoded(param.merchantCode)}&" +
-                "profile_code=${getUrlEncoded(param.profileCode)}&" +
-                "user_id=${getUrlEncoded(param.userId)}&" +
-                "customer_name=${getUrlEncoded(param.customerName)}&" +
-                "customer_email=${getUrlEncoded(param.customerEmail)}&" +
-                "customer_msisdn=${getUrlEncoded(param.customerMsisdn)}&" +
-                "address_id=${getUrlEncoded(param.addressId)}&" +
-                "callback_url=${getUrlEncoded(param.callbackUrl)}&" +
-                "version=${getUrlEncoded("android-${GlobalConfig.VERSION_NAME}")}&" +
-                "signature=${getUrlEncoded(param.hash)}"
-    }
-
     private fun generatePaymentListingRequest(): PaymentListingParamRequest {
-        return PaymentListingParamRequest("tokopedia",
-                "EXPRESS_SAVE",
-                "${TokopediaUrl.getInstance().PAY}/dummy/payment/listing",
+        return PaymentListingParamRequest(MERCHANT_CODE,
+                PROFILE_CODE,
+                URL,
                 getAddressId(),
                 "android-${GlobalConfig.VERSION_NAME}")
     }
@@ -188,10 +174,6 @@ class PaymentMethodFragment : BaseDaggerFragment() {
             return parent.getAddressId().toString()
         }
         return ""
-    }
-
-    private fun getUrlEncoded(valueStr: String): String {
-        return URLEncoder.encode(valueStr, "UTF-8")
     }
 
     private fun handleError(throwable: Throwable?) {
@@ -225,7 +207,7 @@ class PaymentMethodFragment : BaseDaggerFragment() {
     private fun showGlobalError(type: Int) {
         globalError?.setType(type)
         globalError?.setActionClickListener {
-            viewModel.getPaymentListingParam(generatePaymentListingRequest())
+            viewModel.getPaymentListingPayload(generatePaymentListingRequest())
         }
         globalError?.visible()
         webView?.gone()
