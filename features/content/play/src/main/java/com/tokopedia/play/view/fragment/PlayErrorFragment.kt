@@ -158,14 +158,14 @@ class PlayErrorFragment @Inject constructor(
 
     private fun handleUnknownError(error: Throwable) {
         when (error) {
-            is ConnectException, is UnknownHostException, is TimeoutException -> {
+            is ConnectException, is UnknownHostException -> {
                 globalError.setType(GlobalError.NO_CONNECTION)
                 globalError.setActionClickListener {
                     playViewModel.getChannelInfo(channelId)
                 }
             }
             else -> {
-                globalError.setType(GlobalError.SERVER_ERROR)
+                globalError.setType(GlobalError.PAGE_FULL)
                 globalError.setActionClickListener {
                     playViewModel.getChannelInfo(channelId)
                 }
