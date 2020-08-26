@@ -135,18 +135,18 @@ class PlayErrorFragment @Inject constructor(
                     }
                 }
             }
-            GlobalErrorCodeWrapper.PageFull -> {
+            GlobalErrorCodeWrapper.PageFull, GlobalErrorCodeWrapper.ServerError, GlobalErrorCodeWrapper.Unknown -> {
                 globalError.setType(GlobalError.PAGE_FULL)
                 globalError.setActionClickListener {
                     playViewModel.getChannelInfo(channelId)
                 }
             }
-            GlobalErrorCodeWrapper.ServerError, GlobalErrorCodeWrapper.Unknown -> {
-                globalError.setType(GlobalError.SERVER_ERROR)
-                globalError.setActionClickListener {
-                    playViewModel.getChannelInfo(channelId)
-                }
-            }
+//            GlobalErrorCodeWrapper.ServerError, GlobalErrorCodeWrapper.Unknown -> {
+//                globalError.setType(GlobalError.SERVER_ERROR)
+//                globalError.setActionClickListener {
+//                    playViewModel.getChannelInfo(channelId)
+//                }
+//            }
         }
         PlayAnalytics.errorState(channelId, "$ERR_STATE_GLOBAL: ${globalError.errorDescription.text}", playViewModel.channelType)
         container.show()
