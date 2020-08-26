@@ -16,7 +16,6 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
-import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
@@ -41,7 +40,6 @@ import com.tokopedia.hotel.search.presentation.viewmodel.HotelSearchResultViewMo
 import com.tokopedia.hotel.search.presentation.widget.HotelClosedSortBottomSheets
 import com.tokopedia.hotel.search.presentation.widget.HotelFilterBottomSheets
 import com.tokopedia.hotel.search.presentation.widget.SubmitFilterListener
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
@@ -230,8 +228,6 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
                     type = if (it.selected) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL)
             item.listener = {
                 item.toggleSelected()
-                quick_filter_sort_filter.indicatorCounter = 0
-                quick_filter_sort_filter.indicatorNotifView.visibility = View.GONE
             }
             return@map item
         }
@@ -241,8 +237,6 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
             item.refChipUnify.setOnClickListener {
                 item.toggleSelected()
                 refreshSelectedFilter(quickFilters)
-                quick_filter_sort_filter.indicatorCounter = 0
-                quick_filter_sort_filter.indicatorNotifView.visibility = View.GONE
             }
         }
 
