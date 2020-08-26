@@ -80,6 +80,11 @@ dependencies {
     }
     implementation rootProject.ext.unifyDependencies.datepicker
     implementation rootProject.ext.supportLibDependencies.constraintLayout
+
+    testImplementation rootProject.ext.testDependencies.mockk
+    implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.testDependencies.androidxTest
 }
 
 project.ext {
