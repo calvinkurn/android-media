@@ -1,7 +1,10 @@
 package com.tokopedia.favorite.view.viewmodel
 
-import com.tokopedia.favorite.domain.model.*
-import com.tokopedia.favorite.domain.model.TopAdsShopItem
+import com.tokopedia.favorite.domain.model.FavoriteShop
+import com.tokopedia.favorite.domain.model.FavoriteShopItem
+import com.tokopedia.favorite.domain.model.TopAdsShop
+import com.tokopedia.favorite.dummyFavoriteShopItemList
+import com.tokopedia.favorite.dummyTopAdsShopItemList
 import org.junit.Assert.*
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -9,8 +12,6 @@ import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
 class DataFavoriteMapperTest {
-
-    private val dataFavoriteMapper = DataFavoriteMapper()
 
     @Test
     fun `prepareDataFavoriteShop should return view model with correct data`() {
@@ -22,7 +23,7 @@ class DataFavoriteMapperTest {
                 isFav = true,
                 badgeUrl = "badgeUrl"
         )
-        val viewModel = dataFavoriteMapper.prepareDataFavoriteShop(item)
+        val viewModel = DataFavoriteMapper.prepareDataFavoriteShop(item)
         assertEquals(item.id, viewModel.shopId)
         assertEquals(item.name, viewModel.shopName)
         assertEquals(item.iconUri, viewModel.shopAvatarImageUrl)
@@ -34,7 +35,7 @@ class DataFavoriteMapperTest {
     @Test
     fun `prepareDataTopAdsShop with topAdsShop with null topAdsShopItemList should return topAdsShowViewModel with empty topAdsShopItem list`() {
         val topAdsShop = TopAdsShop(topAdsShopItemList = null)
-        val viewModel = dataFavoriteMapper.prepareDataTopAdsShop(topAdsShop)
+        val viewModel = DataFavoriteMapper.prepareDataTopAdsShop(topAdsShop)
         assertNotNull(viewModel.adsShopItems)
         assertTrue(viewModel.adsShopItems!!.isEmpty())
     }
@@ -43,7 +44,7 @@ class DataFavoriteMapperTest {
     fun `prepareDataTopAdsShop with topAdsShop should return topAdsShowViewModel with correct topAdsShopItem list`() {
         val numOfItems = 2
         val topAdsShop = TopAdsShop(topAdsShopItemList = dummyTopAdsShopItemList(numOfItems))
-        val viewModel = dataFavoriteMapper.prepareDataTopAdsShop(topAdsShop)
+        val viewModel = DataFavoriteMapper.prepareDataTopAdsShop(topAdsShop)
 
         assertNotNull(viewModel.adsShopItems)
         assertTrue(viewModel.adsShopItems!!.size == numOfItems)
@@ -69,7 +70,7 @@ class DataFavoriteMapperTest {
     @Test
     fun `prepareListFavoriteShop with favoriteShop's data is null should return empty list of visitables`() {
         val favoriteShop = FavoriteShop()
-        val visitables = dataFavoriteMapper.prepareListFavoriteShop(favoriteShop)
+        val visitables = DataFavoriteMapper.prepareListFavoriteShop(favoriteShop)
         assertTrue(visitables.isEmpty())
     }
 
@@ -77,50 +78,13 @@ class DataFavoriteMapperTest {
     fun `prepareListFavoriteShop should return list of visitables with isFav is true`() {
         val numOfItems = 10
         val favoriteShop = FavoriteShop(data = dummyFavoriteShopItemList(numOfItems))
-        val favoriteShopList = dataFavoriteMapper.prepareListFavoriteShop(favoriteShop)
+        val favoriteShopList = DataFavoriteMapper.prepareListFavoriteShop(favoriteShop)
 
         assertTrue(favoriteShopList.size == numOfItems)
 
         for (i in 0 until numOfItems) {
             assertTrue((favoriteShopList[i] as FavoriteShopViewModel).isFavoriteShop)
         }
-    }
-
-    private fun dummyFavoriteShopItemList(size: Int): List<FavoriteShopItem> {
-        val items = ArrayList<FavoriteShopItem>()
-        for (i in 0 until size) {
-            items.add(FavoriteShopItem(name = randomString(20), isFav = false))
-        }
-        return items
-    }
-
-    private fun randomString(length: Int): String {
-        val alphanum = ('a'..'z') + ('A'..'Z') + ('0'..'9')
-        return List(length) { alphanum.random() }.joinToString("")
-    }
-
-    private fun dummyTopAdsShopItemList(size: Int): ArrayList<TopAdsShopItem> {
-        val topAdsShopItemList = ArrayList<TopAdsShopItem>()
-        for (i in 0 until size) {
-            topAdsShopItemList.add(dummyTopAdsShopItem())
-        }
-        return topAdsShopItemList
-    }
-
-    private fun dummyTopAdsShopItem(): TopAdsShopItem {
-        return TopAdsShopItem(
-                shopId = randomString(10),
-                shopDomain = randomString(10),
-                shopName = randomString(10),
-                adRefKey = randomString(10),
-                shopClickUrl = randomString(10),
-                shopImageCover = randomString(10),
-                shopImageCoverEcs = randomString(10),
-                shopImageUrl = randomString(10),
-                shopImageEcs = randomString(10),
-                shopLocation = randomString(10),
-                isSelected = true
-        )
     }
 
 }

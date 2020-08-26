@@ -217,8 +217,10 @@ class FragmentFavoriteUsingViewModel() : BaseDaggerFragment(), FavoriteClickList
 
     private fun showErrorAddFavoriteShop() {
         NetworkErrorHelper.createSnackbarWithAction(activity) {
-            if (favoriteShopViewSelected != null && shopItemSelected != null) {
-                viewModel!!.addFavoriteShop(favoriteShopViewSelected!!, shopItemSelected!!)
+            val viewSelected = favoriteShopViewSelected
+            if (viewSelected != null && shopItemSelected != null) {
+                viewSelected.isEnabled = false
+                viewModel!!.addFavoriteShop(viewSelected, shopItemSelected!!)
             }
         }.showRetrySnackbar()
     }
@@ -326,6 +328,7 @@ class FragmentFavoriteUsingViewModel() : BaseDaggerFragment(), FavoriteClickList
     override fun onFavoriteShopClicked(view: View?, shopItemSelected: TopAdsShopItem?) {
         favoriteShopViewSelected = view
         this.shopItemSelected = shopItemSelected
+        favoriteShopViewSelected?.isEnabled = false
         viewModel!!.addFavoriteShop(favoriteShopViewSelected!!, this.shopItemSelected!!)
     }
 

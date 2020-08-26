@@ -44,7 +44,6 @@ public class FavoritePresenter
     private final ToggleFavouriteShopUseCase toggleFavouriteShopUseCase;
     private final GetAllDataFavoriteUseCase getAllDataFavoriteUseCase;
     private final GetFavoriteShopUsecase getFavoriteShopUsecase;
-    private DataFavoriteMapper favoriteMapper;
     private PagingHandler pagingHandler;
 
     @Inject
@@ -52,15 +51,13 @@ public class FavoritePresenter
                       GetTopAdsShopUseCase getTopAdsShopUseCase,
                       ToggleFavouriteShopUseCase toggleFavouriteShopUseCase,
                       GetAllDataFavoriteUseCase getAllDataFavoriteUseCase,
-                      GetFavoriteShopUsecase getFavoriteShopUsecase,
-                      DataFavoriteMapper favoriteMapper) {
+                      GetFavoriteShopUsecase getFavoriteShopUsecase) {
 
         this.getInitialDataPageUsecase = getInitialDataPageUsecase;
         this.getTopAdsShopUseCase = getTopAdsShopUseCase;
         this.toggleFavouriteShopUseCase = toggleFavouriteShopUseCase;
         this.getAllDataFavoriteUseCase = getAllDataFavoriteUseCase;
         this.getFavoriteShopUsecase = getFavoriteShopUsecase;
-        this.favoriteMapper = favoriteMapper;
 
         pagingHandler = new PagingHandler();
     }
@@ -164,7 +161,7 @@ public class FavoritePresenter
 
                         favoriteShopItem.setFav(true);
                         dataFavoriteItemList.add(
-                                favoriteMapper.prepareDataFavoriteShop(favoriteShopItem));
+                                DataFavoriteMapper.INSTANCE.prepareDataFavoriteShop(favoriteShopItem));
                     }
                 }
             }
@@ -180,8 +177,7 @@ public class FavoritePresenter
                     && dataFavorite.getTopAdsShop().getTopAdsShopItemList().size() > 0) {
 
                 dataFavoriteItemList
-                        .add(favoriteMapper
-                                .prepareDataTopAdsShop(dataFavorite.getTopAdsShop()));
+                        .add(DataFavoriteMapper.INSTANCE.prepareDataTopAdsShop(dataFavorite.getTopAdsShop()));
             }
         }
     }
@@ -289,7 +285,7 @@ public class FavoritePresenter
         public void onNext(FavoriteShop favoriteShop) {
             if (favoriteShop.isDataValid()) {
                 setNextPaging(favoriteShop.getPagingModel());
-                List<Visitable<?>> elementList = favoriteMapper.prepareListFavoriteShop(favoriteShop);
+                List<Visitable<?>> elementList = DataFavoriteMapper.INSTANCE.prepareListFavoriteShop(favoriteShop);
                 getView().showMoreDataFavoriteShop(elementList);
             } else {
                 setNextPaging(favoriteShop.getPagingModel());

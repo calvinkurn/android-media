@@ -10,7 +10,7 @@ import javax.inject.Inject
 /**
  * @author madi on 4/6/17.
  */
-class DataFavoriteMapper @Inject constructor() {
+object DataFavoriteMapper {
 
     fun prepareDataFavoriteShop(favoriteShop: FavoriteShopItem): FavoriteShopViewModel {
         val favoriteShopViewModel = FavoriteShopViewModel()
@@ -21,6 +21,18 @@ class DataFavoriteMapper @Inject constructor() {
         favoriteShopViewModel.isFavoriteShop = favoriteShop.isFav
         favoriteShopViewModel.badgeUrl = favoriteShop.badgeUrl
         return favoriteShopViewModel
+    }
+
+    fun prepareListFavoriteShop(favoriteShop: FavoriteShop): List<Visitable<*>> {
+        val elementList: MutableList<Visitable<*>> = ArrayList()
+        val data = favoriteShop.data
+        if (data != null) {
+            for (favoriteShopItem in data) {
+                favoriteShopItem.isFav = true
+                elementList.add(prepareDataFavoriteShop(favoriteShopItem))
+            }
+        }
+        return elementList
     }
 
     fun prepareDataTopAdsShop(topAdsShop: TopAdsShop): TopAdsShopViewModel {
@@ -48,17 +60,5 @@ class DataFavoriteMapper @Inject constructor() {
 
         topAdsShopViewModel.adsShopItems = viewModelTopAdsShopItemList
         return topAdsShopViewModel
-    }
-
-    fun prepareListFavoriteShop(favoriteShop: FavoriteShop): List<Visitable<*>> {
-        val elementList: MutableList<Visitable<*>> = ArrayList()
-        val data = favoriteShop.data
-        if (data != null) {
-            for (favoriteShopItem in data) {
-                favoriteShopItem.isFav = true
-                elementList.add(prepareDataFavoriteShop(favoriteShopItem))
-            }
-        }
-        return elementList
     }
 }
