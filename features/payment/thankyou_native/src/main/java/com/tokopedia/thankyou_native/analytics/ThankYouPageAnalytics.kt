@@ -6,10 +6,6 @@ import com.google.gson.Gson
 import com.google.gson.JsonArray
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.linker.LinkerConstants
-import com.tokopedia.linker.LinkerManager
-import com.tokopedia.linker.LinkerUtils
-import com.tokopedia.linker.model.LinkerCommerceData
 import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_BUSINESS_UNIT_NON_E_COMMERCE_VALUE
 import com.tokopedia.thankyou_native.data.mapper.*
 import com.tokopedia.thankyou_native.di.qualifier.CoroutineBackgroundDispatcher
@@ -20,7 +16,6 @@ import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.interfaces.ContextAnalytics
-import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -66,6 +61,7 @@ class ThankYouPageAnalytics @Inject constructor(
                     data[ParentTrackingKey.KEY_SHOP_TYPE] = shopOrder.storeType
                     data[ParentTrackingKey.KEY_LOGISTIC_TYPE] = shopOrder.logisticType
                     data[ParentTrackingKey.KEY_ECOMMERCE] = getEnhancedECommerceNode(shopOrder)
+                    data[ParentTrackingKey.IS_NEW_USER] = thanksPageData.isNewUser.toString()
                     analyticTracker.sendEnhanceEcommerceEvent(data)
                 }
             }
@@ -78,8 +74,10 @@ class ThankYouPageAnalytics @Inject constructor(
         this.thanksPageData = thanksPageData
         CoroutineScope(mainDispatcher).launchCatchError(block = {
             withContext(bgDispatcher) {
-                thanksPageData.shopOrder.forEach { shopOrder ->
-                    processDataForGTM(thanksPageData.thanksCustomization.trackingData)
+                thanksPageData.thanksCustomization?.apply {
+                    trackingData?.let {
+                        processDataForGTM(it)
+                    }
                 }
             }
         }, onError = {
@@ -306,55 +304,9 @@ class ThankYouPageAnalytics @Inject constructor(
     fun sendBranchIOEvent(thanksPageData: ThanksPageData) {
         CoroutineScope(mainDispatcher).launchCatchError(block = {
             withContext(bgDispatcher) {
-                thanksPageData.shopOrder.forEach { shopOrder ->
-                    val linkerCommerceData = LinkerCommerceData()
-                    val userSession = UserSession(LinkerManager.getInstance().context)
-                    val userData: com.tokopedia.linker.model.UserData = com.tokopedia.linker.model.UserData()
-                    userData.userId = userSession.userId
-                    userData.phoneNumber = userSession.phoneNumber
-                    userData.name = userSession.name
-                    userData.email = userSession.email
-                    linkerCommerceData.userData = userData
-                    val branchIOPayment: com.tokopedia.linker.model.PaymentData = com.tokopedia.linker.model.PaymentData()
-                    branchIOPayment.setPaymentId(thanksPageData.paymentID.toString())
-                    branchIOPayment.setOrderId(shopOrder.orderId)
-                    branchIOPayment.setShipping(shopOrder.shippingAmount.toString())
-                    branchIOPayment.setRevenue(thanksPageData.amount.toString())
-                    branchIOPayment.setProductType(when (ThankPageTypeMapper.getThankPageType(thanksPageData)) {
-                        DigitalThankPage -> LinkerConstants.PRODUCTTYPE_DIGITAL
-                        else -> LinkerConstants.PRODUCTTYPE_MARKETPLACE
-                    })
-                    branchIOPayment.isNewBuyer = thanksPageData.isNewUser
-                    branchIOPayment.isMonthlyNewBuyer = thanksPageData.isMonthlyNewUser
-                    var price = 0F
-                    shopOrder.purchaseItemList.forEach { productItem ->
-                        val product = HashMap<String, String>()
-                        product[LinkerConstants.ID] = productItem.productId
-                        product[LinkerConstants.NAME] = productItem.productName
-                        price += productItem.price
-                        product[LinkerConstants.PRICE] = productItem.price.toString()
-                        product[LinkerConstants.PRICE_IDR_TO_DOUBLE] = productItem.price.toString()
-                        product[LinkerConstants.QTY] = productItem.quantity.toString()
-                        product[LinkerConstants.CATEGORY] = getCategoryLevel1(productItem.category)
-                        branchIOPayment.setProduct(product)
-                    }
-                    branchIOPayment.setItemPrice(price.toString())
-                    linkerCommerceData.paymentData = branchIOPayment
-                    LinkerManager.getInstance()
-                            .sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_COMMERCE_VAL,
-                                    linkerCommerceData))
-
-                }
+                BranchPurchaseEvent(userSession.get(), thanksPageData).sendBranchPurchaseEvent()
             }
         }, onError = { it.printStackTrace() })
-    }
-
-    private fun getCategoryLevel1(category: String?): String {
-        return if (category.isNullOrBlank()) {
-            ""
-        } else {
-            category.split("_")[0]
-        }
     }
 
     private fun addSlashInCategory(category: String?): String {
@@ -403,6 +355,7 @@ object ParentTrackingKey {
     val KEY_ECOMMERCE = "ecommerce"
     val KEY_CURRENT_SITE = "currentSite"
     val KEY_BUSINESS_UNIT = "businessUnit"
+    const val IS_NEW_USER = "isNewUser"
     const val KEY_ID = "id"
     const val KEY_QTY = "quantity"
     const val AF_SHIPPING_PRICE = "af_shipping_price"

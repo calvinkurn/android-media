@@ -14,7 +14,7 @@ data class PinnedMessageUiModel(
 data class PinnedProductUiModel(
         val partnerName: String,
         val title: String,
-        val isPromo: Boolean
+        val hasPromo: Boolean
 ) : PinnedUiModel()
 
 object PinnedRemoveUiModel : PinnedUiModel()

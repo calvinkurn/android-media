@@ -7,8 +7,8 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.shop.open.data.model.ValidateShopDomainSuggestionResult
 import com.tokopedia.kotlin.extensions.view.inflateLayout
+import com.tokopedia.shop.common.graphql.data.shopopen.ValidateShopDomainSuggestionResult
 import com.tokopedia.shop.open.R
 import com.tokopedia.shop.open.listener.InputShopInterface
 import com.tokopedia.shop.open.presentation.view.fragment.ShopOpenRevampInputShopFragment

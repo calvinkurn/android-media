@@ -18,9 +18,9 @@
         android:id="@+id/buttonSave"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:enabled="false"
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:layout_marginBottom="@dimen/spacing_lvl4"
+        android:enabled="false"
         android:text="@string/action_variant_save" />
 
 </LinearLayout>

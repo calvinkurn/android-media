@@ -14,7 +14,6 @@ import com.tokopedia.test.application.util.setupGraphqlMockResponseWithCheck
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import java.io.File
 
 
 /**

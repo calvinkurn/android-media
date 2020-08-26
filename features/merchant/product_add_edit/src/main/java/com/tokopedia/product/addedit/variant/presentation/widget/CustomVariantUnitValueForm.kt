@@ -36,7 +36,7 @@ class CustomVariantUnitValueForm : LinearLayout {
         setupButtonSaveClickListener(layoutPosition, selectedVariantUnit, variantUnitValues, selectedVariantUnitValues)
 
         textFieldUnifyCustomValue.textFieldInput.afterTextChanged {
-            buttonSave.isEnabled = it.isNotEmpty()
+            buttonSave.isEnabled = it.isNotBlank()
         }
     }
 
@@ -46,7 +46,7 @@ class CustomVariantUnitValueForm : LinearLayout {
                                              variantUnitValues: List<UnitValue>,
                                              selectedVariantUnitValues: MutableList<UnitValue>) {
         buttonSave.setOnClickListener {
-            val customVariantUnitValueName = textFieldUnifyCustomValue.getText()
+            val customVariantUnitValueName = textFieldUnifyCustomValue.getText().trim()
             val isVariantUnitValueExist = variantUnitValues.any { variantUnitValue ->
                 variantUnitValue.value.toLowerCase() == customVariantUnitValueName.toLowerCase()
             }
@@ -57,14 +57,18 @@ class CustomVariantUnitValueForm : LinearLayout {
                 return@setOnClickListener
             } else {
                 val customVariantUnitValue = UnitValue(value = customVariantUnitValueName)
-                onCustomVariantUnitAddListener?.onCustomVariantUnitValueAdded(layoutPosition, selectedVariantUnit, customVariantUnitValue, selectedVariantUnitValues)
+                onCustomVariantUnitAddListener?.onCustomVariantUnitValueAdded(
+                        layoutPosition,
+                        selectedVariantUnit,
+                        customVariantUnitValue,
+                        selectedVariantUnitValues)
             }
         }
     }
 
     interface OnCustomVariantUnitAddListener {
         fun onCustomVariantUnitValueAdded(layoutPosition: Int,
-                                          selectedVariantUnit: Unit,
+                                          currentSelectedVariantUnit: Unit,
                                           customVariantUnitValue: UnitValue,
                                           currentSelectedVariantUnitValues: MutableList<UnitValue>)
     }

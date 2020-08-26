@@ -5,10 +5,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.notifications.R
-import com.tokopedia.notifications.data.mapper.InAppButtonMapper.mapBtnType
 import com.tokopedia.notifications.data.mapper.InAppButtonMapper.mapBtnSize
+import com.tokopedia.notifications.data.mapper.InAppButtonMapper.mapBtnType
 import com.tokopedia.notifications.data.mapper.InAppButtonMapper.mapBtnVariant
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMButton
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp
@@ -29,7 +28,6 @@ open class ActionButtonViewHolder(
 
         btnAction.text = button.getTxt()
         btnAction.setOnClickListener {
-            RouteManager.route(context, button.getAppLink())
             onClick(button, cmInApp)
         }
     }

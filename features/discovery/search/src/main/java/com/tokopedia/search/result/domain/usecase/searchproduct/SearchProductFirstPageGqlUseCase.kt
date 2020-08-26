@@ -93,6 +93,7 @@ class SearchProductFirstPageGqlUseCase(
                         }
                         related {
                             relatedKeyword
+                            position
                             otherRelated {
                                 keyword
                                 url
@@ -107,6 +108,18 @@ class SearchProductFirstPageGqlUseCase(
                                     url
                                     applink
                                     priceStr
+                                    wishlist
+                                    shop {
+                                        city
+                                    }
+                                    badges {
+                                        imageUrl
+                                        show
+                                    }
+                                    freeOngkir {
+                                        isActive
+                                        imgUrl
+                                    }
                                 }
                             }
                         }
@@ -394,6 +407,7 @@ class SearchProductFirstPageGqlUseCase(
                         title
                         type
                         position
+                        layout
                         options {
                             title
                             url
@@ -408,6 +422,7 @@ class SearchProductFirstPageGqlUseCase(
                                 count_review
                                 url
                                 applink
+                                description
                             }
                         }
                     }

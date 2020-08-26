@@ -339,7 +339,7 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
         } else {
             mViewModel.getPointData()
             mViewModel.getHomePageData(arguments?.getString(CommonConstant.ARGS_SLUG_CATEGORY),
-                    arguments?.getString(CommonConstant.ARGS_SLUG_SUB_CATEGORY), true)
+                    arguments?.getString(CommonConstant.ARGS_SLUG_SUB_CATEGORY), false)
         }
     }
 

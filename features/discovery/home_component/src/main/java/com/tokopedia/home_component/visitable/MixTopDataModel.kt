@@ -12,8 +12,8 @@ data class MixTopDataModel(
     }
 
     override fun equalsWith(b: Any?): Boolean {
-        return if (b is ChannelModel) {
-            channelModel == b
+        return if (b is MixTopDataModel) {
+            channelModel == b.channelModel
         } else false
     }
 

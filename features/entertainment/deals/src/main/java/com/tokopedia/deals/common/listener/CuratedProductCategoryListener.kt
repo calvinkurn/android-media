@@ -6,7 +6,8 @@ import com.tokopedia.deals.common.ui.dataview.ProductCardDataView
 interface CuratedProductCategoryListener {
     fun onProductClicked(
         productCardDataView: ProductCardDataView,
-        productItemPosition: Int
+        productItemPosition: Int,
+        sectionTitle: String
     )
 
     fun onSeeAllProductClicked(

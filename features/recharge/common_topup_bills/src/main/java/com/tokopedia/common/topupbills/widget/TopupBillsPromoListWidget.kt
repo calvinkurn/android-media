@@ -3,6 +3,7 @@ package com.tokopedia.common.topupbills.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -10,7 +11,6 @@ import com.tokopedia.common.topupbills.R
 import com.tokopedia.common.topupbills.data.TopupBillsPromo
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsPromoListAdapter
 import com.tokopedia.common.topupbills.view.model.TopupBillsTrackPromo
-import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import org.jetbrains.annotations.NotNull
@@ -20,7 +20,7 @@ import org.jetbrains.annotations.NotNull
  */
 class TopupBillsPromoListWidget @JvmOverloads constructor(@NotNull context: Context, attrs: AttributeSet? = null,
                                                           defStyleAttr: Int = 0)
-    : BaseCustomView(context, attrs, defStyleAttr), TopupBillsWidgetInterface {
+    : FrameLayout(context, attrs, defStyleAttr), TopupBillsWidgetInterface {
 
     private val recyclerView: RecyclerView
     private val titleWidget: TextView
@@ -97,7 +97,7 @@ class TopupBillsPromoListWidget @JvmOverloads constructor(@NotNull context: Cont
     override fun toggleTitle(value: Boolean) {
         if (value) titleWidget.show() else titleWidget.hide()
     }
-      
+
     interface ActionListener {
         fun onCopiedPromoCode(promoId: Int, voucherCode: String)
 

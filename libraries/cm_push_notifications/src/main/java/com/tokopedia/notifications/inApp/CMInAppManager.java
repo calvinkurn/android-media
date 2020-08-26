@@ -2,11 +2,11 @@ package com.tokopedia.notifications.inApp;
 
 import android.app.Activity;
 import android.app.Application;
-import android.net.Uri;
 import android.view.View;
 import android.widget.FrameLayout;
 
 import com.google.firebase.messaging.RemoteMessage;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.notifications.CMRouter;
 import com.tokopedia.notifications.R;
 import com.tokopedia.notifications.common.IrisAnalyticsEvents;
@@ -41,6 +41,7 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
     private WeakReference<Activity> currentActivity;
     private CmInAppListener cmInAppListener;
     private final Object lock = new Object();
+    private List<String> excludeScreenList;
 
     static {
         inAppManager = new CMInAppManager();
@@ -79,6 +80,8 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
     }
 
     private void showInAppNotification() {
+        if (excludeScreenList != null && excludeScreenList.contains(currentActivity.get().getClass().getName()))
+            return;
         RulesManager.getInstance().checkValidity(
                 currentActivity.get().getClass().getName(),
                 0L,
@@ -201,9 +204,9 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
         try {
             CMInApp cmInApp = CmInAppBundleConvertor.getCmInApp(remoteMessage);
             if (null != cmInApp) {
-                if (currentActivity != null && currentActivity.get() != null) {
+                if (application != null) {
                     sendEventInAppDelivered(cmInApp);
-                    new CMInAppController().downloadImagesAndUpdateDB(currentActivity.get(), cmInApp);
+                    new CMInAppController().downloadImagesAndUpdateDB(application, cmInApp);
                 }
             }
         } catch (Exception e) {
@@ -221,7 +224,12 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
     }
 
     @Override
-    public void onCMInAppLinkClick(Uri deepLinkUri, CMInApp cmInApp, ElementType elementType) {
+    public void onCMInAppLinkClick(String appLink, CMInApp cmInApp, ElementType elementType) {
+        if (getCurrentActivity() != null) {
+            Activity activity = currentActivity.get();
+            activity.startActivity(RouteManager.getIntent(activity, appLink));
+        }
+
         switch (elementType.getViewType()) {
             case ElementType.BUTTON:
                 sendPushEvent(cmInApp, IrisAnalyticsEvents.INAPP_CLICKED, elementType.getElementId());
@@ -250,5 +258,9 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
     @Override
     public void onCMInAppInflateException(CMInApp inApp) {
         RulesManager.getInstance().dataInflateError(inApp.id);
+    }
+
+    public void setExcludeScreenList(List<String> excludeScreenList) {
+        this.excludeScreenList = excludeScreenList;
     }
 }
