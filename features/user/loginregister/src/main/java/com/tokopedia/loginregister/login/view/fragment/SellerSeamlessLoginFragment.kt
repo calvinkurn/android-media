@@ -110,10 +110,10 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
                 if (taskId == getUserTaskId
                         && bundle.getString(SeamlessSellerConstant.KEY_SHOP_NAME)?.isNotEmpty() == true
                         && bundle.getString(SeamlessSellerConstant.KEY_EMAIL)?.isNotEmpty() == true) {
-                    val drawableLeft = AppCompatResources.getDrawable(seamless_fragment_shop_name.context, R.drawable.ic_shop_dark_grey)
+                    val drawableLeft = AppCompatResources.getDrawable(seamless_fragment_shop_name?.context, R.drawable.ic_shop_dark_grey)
                     ImageHandler.loadImageCircle2(activity, seamless_fragment_avatar, bundle.getString(SeamlessSellerConstant.KEY_SHOP_AVATAR))
-                    seamless_fragment_shop_name.text = bundle.getString(SeamlessSellerConstant.KEY_SHOP_NAME)
-                    seamless_fragment_shop_name.setCompoundDrawablesWithIntrinsicBounds(drawableLeft, null, null, null)
+                    seamless_fragment_shop_name?.text = bundle.getString(SeamlessSellerConstant.KEY_SHOP_NAME)
+                    seamless_fragment_shop_name?.setCompoundDrawablesWithIntrinsicBounds(drawableLeft, null, null, null)
                     seamless_fragment_name.text = bundle.getString(SeamlessSellerConstant.KEY_NAME)
                     seamless_fragment_email.text = maskEmail(bundle.getString(SeamlessSellerConstant.KEY_EMAIL, ""))
                     hideProgressBar()
