@@ -76,10 +76,10 @@ class TopAdsKeywordInsightsActivity : BaseActivity(), HasComponent<TopAdsDashboa
         topAdsInsightPresenter.getInsight(resources)
         tabUnify.getUnifyTabLayout().addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
-                view_pager.setCurrentItem(tab!!.position, true)
+                view_pager.setCurrentItem(tab?.position?:0, true)
                 var eventAction: String = ""
                 val eventLabel = currentGroupId
-                when (tab!!.position) {
+                when (tab?.position?:0) {
                     0 -> {
                         eventAction = EVENT_CLICK_KATA_KUNCI_BARU
                     }
