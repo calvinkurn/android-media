@@ -50,8 +50,8 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
         chipSelectionData?.let {
             queryParameterMap[RPC_FILTER_KEU + it.key] = it.value.toString()
         }
-        rpcPinnedProduct?.let {
-            queryParameterMap[rpc_PINNED_PRODUCT] = it
+        if (!rpcPinnedProduct.isNullOrEmpty()) {
+            queryParameterMap[rpc_PINNED_PRODUCT] = rpcPinnedProduct
         }
         return queryParameterMap
     }
