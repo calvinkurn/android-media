@@ -55,7 +55,7 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
             banners.forEach { banner ->
                 val componentName = banner.parentComponentName ?: EMPTY_STRING
                 val map = createGeneralEvent(eventName = EVENT_PROMO_VIEW,
-                        eventAction = IMPRESSION_DYNAMIC_BANNER, eventLabel = "${componentName}${if (banner.action == ACTION_NOTIFIER) " - $NOTIFIER" else ""}")
+                        eventAction = IMPRESSION_DYNAMIC_BANNER, eventLabel = "${componentName}${if (banner.action == ACTION_NOTIFIER) "-$NOTIFIER" else ""}")
                 val list = ArrayList<Map<String, Any>>()
                 val hashMap = HashMap<String, Any>()
                 banner.let {
