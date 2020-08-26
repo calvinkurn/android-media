@@ -26,18 +26,21 @@ class TalkWriteActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, Tal
 
     companion object {
         const val PARAM_PRODUCT_ID = "product_id"
-        fun createIntent(context: Context, productId: Int): Intent {
+        fun createIntent(context: Context, productId: Int, isVariantSelected: Boolean): Intent {
             val intent = Intent(context, TalkWriteActivity::class.java)
             intent.putExtra(TalkConstants.PARAM_PRODUCT_ID, productId)
+            intent.putExtra(TalkConstants.PARAM_APPLINK_IS_VARIANT_SELECTED, isVariantSelected)
             return intent
         }
     }
 
     private var productId: Int = 0
+    private var isVariantSelected: Boolean = false
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         productId = intent.getIntExtra(TalkConstants.PARAM_PRODUCT_ID, productId)
+        isVariantSelected = intent.getBooleanExtra(TalkConstants.PARAM_APPLINK_IS_VARIANT_SELECTED, isVariantSelected)
         if(productId == 0) {
             getDataFromApplink()
         }
@@ -47,7 +50,7 @@ class TalkWriteActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, Tal
     }
 
     override fun getNewFragment(): Fragment? {
-        return TalkWriteFragment.createNewInstance(productId)
+        return TalkWriteFragment.createNewInstance(productId, isVariantSelected)
     }
 
     override fun getComponent(): TalkComponent {
@@ -140,6 +143,10 @@ class TalkWriteActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, Tal
         val productIdString = uri.getQueryParameter(PARAM_PRODUCT_ID) ?: ""
         if (productIdString.isNotEmpty()) {
             this.productId = productIdString.toIntOrZero()
+        }
+        val isVariantSelectedString = uri.getQueryParameter(TalkConstants.PARAM_APPLINK_IS_VARIANT_SELECTED) ?: ""
+        if (isVariantSelectedString.isNotEmpty()) {
+            this.isVariantSelected = isVariantSelectedString.toBoolean()
         }
     }
 }

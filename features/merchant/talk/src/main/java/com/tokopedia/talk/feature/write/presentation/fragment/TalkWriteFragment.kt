@@ -11,6 +11,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.EditText
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.lifecycle.Observer
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.google.android.material.snackbar.Snackbar
@@ -53,10 +55,11 @@ class TalkWriteFragment : BaseDaggerFragment(),
         const val KEY_SELECTED_CATEGORY = "selected_category"
 
         @JvmStatic
-        fun createNewInstance(productId: Int): TalkWriteFragment {
+        fun createNewInstance(productId: Int, isVariantSelected: Boolean): TalkWriteFragment {
             return TalkWriteFragment().apply {
                 arguments = Bundle()
                 arguments?.putInt(TalkConstants.PARAM_PRODUCT_ID, productId)
+                arguments?.putBoolean(TalkConstants.PARAM_APPLINK_IS_VARIANT_SELECTED, isVariantSelected)
             }
         }
 
@@ -111,7 +114,7 @@ class TalkWriteFragment : BaseDaggerFragment(),
     }
 
     override fun onChipClicked(category: TalkWriteCategory) {
-        TalkWriteTracking.eventClickChips(viewModel.getUserId(), viewModel.getProductId().toString(), category.categoryName, category.content)
+        TalkWriteTracking.eventClickChips(viewModel.getUserId(), viewModel.getProductId().toString(), category.categoryName, category.content, viewModel.isVariantSelected)
         viewModel.toggleCategory(category)
     }
 
@@ -222,6 +225,7 @@ class TalkWriteFragment : BaseDaggerFragment(),
     private fun getDataFromArguments() {
         arguments?.let {
             viewModel.setProductId(it.getInt(TalkConstants.PARAM_PRODUCT_ID))
+            viewModel.isVariantSelected = it.getBoolean(TalkConstants.PARAM_APPLINK_IS_VARIANT_SELECTED)
         }
     }
 
@@ -341,7 +345,6 @@ class TalkWriteFragment : BaseDaggerFragment(),
                             textAreaMessage = getString(R.string.write_question_length_minimum_error)
                         }
                     }
-                    talkWriteScrollView.smoothScrollTo(0, writeTNC.top)
                 } else {
                     isError = false
                     textAreaMessage = ""

@@ -32,7 +32,7 @@ object TalkWriteTracking {
 
     }
 
-    fun eventClickChips(userId: String, productId: String, category: String, message: String) {
+    fun eventClickChips(userId: String, productId: String, category: String, message: String, isVariantSelected: Boolean) {
         with(TalkWriteTrackingConstants) {
             eventTalkWriting(userId, productId,
                     EVENT_ACTION_CLICK_CATEGORY,

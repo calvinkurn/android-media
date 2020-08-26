@@ -29,6 +29,7 @@ class TalkWriteViewModel @Inject constructor(private val dispatchers: CoroutineD
 ): BaseViewModel(dispatchers.io) {
 
     var shopId = ""
+    var isVariantSelected = false
 
     private val productId = MutableLiveData<Int>()
     val writeFormData: LiveData<Result<DiscussionGetWritingForm>> = Transformations.switchMap(productId) {

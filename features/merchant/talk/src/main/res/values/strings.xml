@@ -138,7 +138,7 @@
     <string name="toaster_report_success">Laporanmu berhasil dikirim dan akan segera ditindaklanjuti.</string>
     <string name="toaster_report_fail">Laporanmu gagal dikirim. Cek koneksi internetmu dan coba lagi, ya.</string>
 
-    <string name="write_category_title">Pilih kategori</string>
+    <string name="write_category_title">Pilih topik</string>
     <string name="write_question_title">Tulis pertanyaan</string>
     <string name="write_question_placeholder">Tulis Pertanyaanmu</string>
     <string name="write_question_error_message">Oops, sudah melebihi maks. karakter.</string>

@@ -79,11 +79,12 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         const val TALK_READING_EMPTY_IMAGE_URL = "https://ecs7.tokopedia.net/android/others/talk_reading_empty_state.png"
 
         @JvmStatic
-        fun createNewInstance(productId: String, shopId: String): TalkReadingFragment =
+        fun createNewInstance(productId: String, shopId: String, isVariantSelected: Boolean): TalkReadingFragment =
             TalkReadingFragment().apply {
                 arguments = Bundle()
                 arguments?.putString(PARAM_PRODUCT_ID, productId)
                 arguments?.putString(PARAM_SHOP_ID, shopId)
+                arguments?.putBoolean(TalkConstants.PARAM_APPLINK_IS_VARIANT_SELECTED, isVariantSelected)
             }
     }
 
@@ -94,6 +95,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     private var productId: String = ""
     private var shopId: String = ""
+    private var isVariantSelected: Boolean = false
     private var talkPerformanceMonitoringListener: TalkPerformanceMonitoringListener? = null
 
     override fun getAdapterTypeFactory(): TalkReadingAdapterTypeFactory {
@@ -500,6 +502,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         arguments?.let {
             productId = it.getString(PARAM_PRODUCT_ID, "")
             shopId = it.getString(PARAM_SHOP_ID, "")
+            isVariantSelected = it.getBoolean(TalkConstants.PARAM_APPLINK_IS_VARIANT_SELECTED)
         }
     }
 
@@ -510,7 +513,12 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
             startActivityForResult(intent, TALK_WRITE_ACTIVITY_REQUEST_CODE)
             return
         }
-        val intent = RouteManager.getIntent(context, Uri.parse(ApplinkConstInternalGlobal.ADD_TALK).buildUpon().appendQueryParameter(TalkConstants.PARAM_PRODUCT_ID, productId).build().toString())
+        val intent = RouteManager.getIntent(context, Uri.parse(
+                ApplinkConstInternalGlobal.ADD_TALK)
+                .buildUpon()
+                .appendQueryParameter(TalkConstants.PARAM_PRODUCT_ID, productId)
+                .appendQueryParameter(TalkConstants.PARAM_APPLINK_IS_VARIANT_SELECTED, isVariantSelected.toString())
+                .build().toString())
         startActivity(intent)
     }
 

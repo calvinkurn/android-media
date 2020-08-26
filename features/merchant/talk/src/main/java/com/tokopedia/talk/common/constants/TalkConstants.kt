@@ -15,4 +15,5 @@ object TalkConstants {
     const val APP_DISABLE_NEW_TALK_REMOTE_CONFIG_KEY = "android_mainapp_disable_new_talk"
     const val AB_TEST_WRITE_KEY = "Talk Writing Revamp"
     const val WRITE_OLD_FLOW = "Old Talk Form"
+    const val PARAM_APPLINK_IS_VARIANT_SELECTED = "is_variant_selected"
 }
