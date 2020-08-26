@@ -539,6 +539,11 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
     }
 
     fun addNotAvailableShop(disabledShopHolderData: DisabledShopHolderData) {
+        var showDivider = false
+        if (cartDataList[cartDataList.size - 1] !is DisabledReasonHolderData) {
+            showDivider = true
+        }
+        disabledShopHolderData.showDivider = showDivider
         cartDataList.add(disabledShopHolderData)
     }
 
@@ -1056,6 +1061,9 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                     if (before is DisabledShopHolderData) {
                         if (after !is DisabledCartItemHolderData) {
                             toBeRemovedData.add(before)
+                            if (after is DisabledShopHolderData) {
+                                after.showDivider = false
+                            }
                         }
                         toBeRemovedData.add(obj)
                     } else if (before is DisabledCartItemHolderData) {

@@ -4,22 +4,30 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/Neutral_N0"
     android:paddingLeft="@dimen/dp_16"
-    android:paddingTop="@dimen/dp_16"
-    android:paddingRight="@dimen/dp_16"
-    android:background="@color/Neutral_N0">
+    android:paddingRight="@dimen/dp_16">
+
+    <View
+        android:id="@+id/v_divider_item_cart_error"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="@dimen/dp_1"
+        android:background="@color/unify_N75"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_shop_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
         android:ellipsize="end"
         android:maxLines="1"
+        android:paddingTop="@dimen/dp_16"
         android:textColor="@color/Neutral_N700_96"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/v_divider_item_cart_error"
         app:typographyType="heading_6"
         app:typographyWeight="bold"
         tools:text="Makmur Subur Subur Subur Subur Subur Subur adalah " />

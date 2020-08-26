@@ -6,5 +6,6 @@ package com.tokopedia.cart.view.uimodel
 
 data class DisabledShopHolderData(
         var shopId: String = "",
-        var shopName: String = ""
+        var shopName: String = "",
+        var showDivider: Boolean = false
 )
