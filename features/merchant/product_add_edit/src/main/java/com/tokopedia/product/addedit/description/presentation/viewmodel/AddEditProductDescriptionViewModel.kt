@@ -37,6 +37,8 @@ class AddEditProductDescriptionViewModel @Inject constructor(
     val productInputModel: LiveData<ProductInputModel> get() = _productInputModel
     var isEditMode: Boolean = false
     var isAddMode: Boolean = false
+    var isDraftMode: Boolean = false
+    var isFirstMoved: Boolean = false
     val categoryId: String get() {
         return productInputModel.value?.detailInputModel?.categoryId.orEmpty()
     }

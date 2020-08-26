@@ -5,6 +5,7 @@ import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DiscoveryResponse
 import com.tokopedia.discovery2.data.PageInfo
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 
 
 val discoveryPageData: MutableMap<String, DiscoveryResponse> = HashMap()
@@ -43,7 +44,7 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo) {
             ComponentNames.ProductCardRevamp.componentName,
             ComponentNames.ProductCardSprintSale.componentName -> listComponents.addAll(parseProductVerticalList(component))
             ComponentNames.QuickCoupon.componentName -> {
-                if(component.isApplicable){
+                if (component.isApplicable) {
                     listComponents.add(component)
                 }
             }
@@ -101,17 +102,24 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo) {
             component.getComponentsItem()?.let {
                 listComponents.addAll(getDiscoveryComponentList(it))
             }
-            if (component.getComponentsItem()?.size?.rem(component.componentsPerPage) == 0) {
-                listComponents.add(ComponentsItem(name = ComponentNames.LoadMore.componentName).apply {
-                    pageEndPoint = component.pageEndPoint
-                    parentComponentId = component.id
-                    id = "load_more_data"
-                    discoveryPageData[this.pageEndPoint]?.componentMap?.set(this.id, this)
-
-                })
+            if (component.getComponentsItem()?.size.isMoreThanZero() && component.getComponentsItem()?.size?.rem(component.componentsPerPage) == 0) {
+                listComponents.addAll(handleProductState(component, ComponentNames.LoadMore.componentName))
+            } else if (component.getComponentsItem()?.size == 0) {
+                listComponents.addAll(handleProductState(component, ComponentNames.ProductListEmptyState.componentName))
             }
         }
         return listComponents
+    }
+
+    private fun handleProductState(component: ComponentsItem, componentName: String): ArrayList<ComponentsItem> {
+        val productState: ArrayList<ComponentsItem> = ArrayList()
+        productState.add(ComponentsItem(name = componentName).apply {
+            pageEndPoint = component.pageEndPoint
+            parentComponentId = component.id
+            id = componentName
+            discoveryPageData[this.pageEndPoint]?.componentMap?.set(this.id, this)
+        })
+        return productState
     }
 }
 

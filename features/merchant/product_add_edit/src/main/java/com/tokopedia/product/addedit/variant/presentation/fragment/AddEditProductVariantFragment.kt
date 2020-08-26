@@ -3,6 +3,7 @@ package com.tokopedia.product.addedit.variant.presentation.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,6 +30,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.EXTRA_CACHE_MANAGER_ID
 import com.tokopedia.product.addedit.common.util.HorizontalItemDecoration
+import com.tokopedia.product.addedit.common.util.RecyclerViewItemDecoration
 import com.tokopedia.product.addedit.imagepicker.view.activity.SizechartPickerAddProductActivity
 import com.tokopedia.product.addedit.imagepicker.view.activity.SizechartPickerEditPhotoActivity
 import com.tokopedia.product.addedit.imagepicker.view.activity.VariantPhotoPickerActivity
@@ -162,6 +164,7 @@ class AddEditProductVariantFragment :
         recyclerViewVariantType.adapter = variantTypeAdapter
         recyclerViewVariantValueLevel1.adapter = variantValueAdapterLevel1
         recyclerViewVariantValueLevel2.adapter = variantValueAdapterLevel2
+        recyclerViewVariantPhoto.addItemDecoration(RecyclerViewItemDecoration(requireContext()))
         recyclerViewVariantPhoto.adapter = variantPhotoAdapter
         setRecyclerViewToFlex(recyclerViewVariantType)
         setRecyclerViewToFlex(recyclerViewVariantValueLevel1)
@@ -236,10 +239,6 @@ class AddEditProductVariantFragment :
     }
 
     override fun onVariantTypeSelected(adapterPosition: Int, variantDetail: VariantDetail) {
-
-        // clear photo data if have new level structure
-        variantPhotoAdapter?.clearImageData()
-
         // track selected variant type
         viewModel.isEditMode.value?.let { isEditMode ->
             val variantTypeName = variantDetail.name
@@ -335,8 +334,6 @@ class AddEditProductVariantFragment :
     }
 
     override fun onVariantTypeDeselected(adapterPosition: Int, variantDetail: VariantDetail): Boolean {
-        // clear photo data if have new level structure
-        variantPhotoAdapter?.clearImageData()
 
         viewModel.isSingleVariantTypeIsSelected = true
         val layoutPosition = viewModel.getVariantValuesLayoutPosition(adapterPosition)
@@ -387,7 +384,7 @@ class AddEditProductVariantFragment :
             }
         }
         viewModel.hideProductVariantPhotos(variantDetail)
-        viewModel.updateSizechartFieldVisibility(variantDetail, false)
+        viewModel.updateSizechartFieldVisibility()
     }
 
     private fun setupCancellationDialog(layoutPosition: Int, adapterPosition: Int, variantDetail: VariantDetail) {
@@ -414,14 +411,12 @@ class AddEditProductVariantFragment :
                 variantValueLevel1Layout.show()
                 variantValueAdapterLevel1?.setData(selectedVariantUnitValues)
                 typographyVariantValueLevel1Title.text = variantTypeDetail.name
-                linkAddVariantValueLevel1.setTag(R.id.variant_detail, variantTypeDetail)
                 viewModel.updateVariantDataMap(VARIANT_VALUE_LEVEL_ONE_POSITION, variantTypeDetail)
             }
             VARIANT_VALUE_LEVEL_TWO_POSITION -> {
                 variantValueLevel2Layout.show()
                 variantValueAdapterLevel2?.setData(selectedVariantUnitValues)
                 typographyVariantValueLevel2Title.text = variantTypeDetail.name
-                linkAddVariantValueLevel2.setTag(R.id.variant_detail, variantTypeDetail)
                 viewModel.updateVariantDataMap(VARIANT_VALUE_LEVEL_TWO_POSITION, variantTypeDetail)
             }
         }
@@ -558,7 +553,10 @@ class AddEditProductVariantFragment :
         // update photo section state
         if (variantId == COLOUR_VARIANT_TYPE_ID) {
             variantPhotoAdapter?.removeData(position)
-            if (variantPhotoAdapter?.getData()?.size == 0) variantPhotoLayout.hide()
+            if (variantPhotoAdapter?.getData()?.size == 0) {
+                variantPhotoLayout.hide()
+                variantPhotoAdapter?.setData(emptyList())
+            }
         }
 
         // update sizechart visibility based on variant selected type
@@ -636,9 +634,16 @@ class AddEditProductVariantFragment :
         variantDataValuePicker?.overlayClickDismiss = false
         variantDataValuePicker?.showCloseIcon = true
         variantDataValuePicker?.clearContentPadding = true
-        // set the bottom sheet to full screen
         variantDataValuePicker?.setShowListener {
+            // set the bottom sheet to full screen
             variantDataValuePicker?.bottomSheet?.state = BottomSheetBehavior.STATE_EXPANDED
+            // enable the back button despite of overlayClickDismiss = false
+            variantDataValuePicker?.dialog?.setOnKeyListener { dialog, keyCode, event ->
+                if (keyCode == KeyEvent.KEYCODE_BACK) {
+                    variantDataValuePicker?.dismiss()
+                }
+                true
+            }
         }
         val variantDataValuePickerLayout = VariantDataValuePicker(requireContext(), layoutPosition, variantData, this, this, this, this)
         variantDataValuePickerLayout.setupVariantDataValuePicker(selectedVariantUnit, selectedVariantUnitValues, addedCustomVariantUnitValue, unConfirmedSelection)
@@ -665,6 +670,16 @@ class AddEditProductVariantFragment :
             variantUnitPicker?.dismiss()
             variantDataValuePicker?.dialog?.show()
         }
+        // enable the back button despite of overlayClickDismiss = false
+        variantUnitPicker?.setShowListener {
+            variantUnitPicker?.dialog?.setOnKeyListener { dialog, keyCode, event ->
+                if(keyCode == KeyEvent.KEYCODE_BACK){
+                    variantUnitPicker?.dismiss()
+                    variantDataValuePicker?.dialog?.show()
+                }
+                true
+            }
+        }
         variantUnitPicker?.setChild(variantUnitPickerLayout)
         variantUnitPicker?.show(this@AddEditProductVariantFragment.childFragmentManager, TAG_VARIANT_UNIT_PICKER)
     }
@@ -678,6 +693,15 @@ class AddEditProductVariantFragment :
         customVariantValueInputForm?.setTitle(getString(R.string.action_variant_add) + " " + variantData.name)
         customVariantValueInputForm?.overlayClickDismiss = false
         customVariantValueInputForm?.isKeyboardOverlap = false
+        // enable the back button despite of overlayClickDismiss = false
+        customVariantValueInputForm?.setShowListener {
+            customVariantValueInputForm?.dialog?.setOnKeyListener { dialog, keyCode, event ->
+                if(keyCode == KeyEvent.KEYCODE_BACK){
+                    customVariantValueInputForm?.dismiss()
+                }
+                true
+            }
+        }
         val customVariantValueInputLayout = CustomVariantUnitValueForm(requireContext(), layoutPosition, variantUnitValues, this)
         customVariantValueInputLayout.setupVariantCustomInputLayout(selectedVariantUnit, selectedVariantUnitValues)
         customVariantValueInputForm?.setChild(customVariantValueInputLayout)

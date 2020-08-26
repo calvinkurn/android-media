@@ -243,10 +243,15 @@ class AddEditProductVariantViewModel @Inject constructor(
         }
     }
 
-    fun updateSizechartFieldVisibility(variantDetail: VariantDetail, isVisible: Boolean) {
-        if (variantDetail.identifier == VARIANT_IDENTIFIER_HAS_SIZECHART) {
-            mIsVariantSizechartVisible.value = isVisible
+    fun updateSizechartFieldVisibility() {
+        val isSizeUnit = this.selectedVariantDetails.any {
+            it.identifier == VARIANT_IDENTIFIER_HAS_SIZECHART
         }
+        val isVariantValueNotEmpty = selectedVariantUnitValuesMap.any {
+            it.value.isNotEmpty()
+        }
+
+        mIsVariantSizechartVisible.value = isSizeUnit && isVariantValueNotEmpty
     }
 
     fun clearProductVariant() {
@@ -460,7 +465,14 @@ class AddEditProductVariantViewModel @Inject constructor(
         return if (variantPhoto != null && variantPhoto.imageUrlOrPath.isNotEmpty()) {
             val result = PictureVariantInputModel(
                     filePath = variantPhoto.imageUrlOrPath,
-                    urlOriginal = variantPhoto.imageUrlOrPath
+                    urlOriginal = variantPhoto.imageUrlOrPath,
+                    picID = variantPhoto.picID,
+                    description = variantPhoto.description,
+                    fileName = variantPhoto.fileName,
+                    width = variantPhoto.width,
+                    height = variantPhoto.height,
+                    isFromIG = variantPhoto.isFromIG,
+                    uploadId = variantPhoto.uploadId
             )
             listOf(result)
         } else {
@@ -526,11 +538,30 @@ class AddEditProductVariantViewModel @Inject constructor(
         colorVariant?.options?.forEachIndexed { index, optionInputModel ->
             val variantUnitValueName = optionInputModel.value
             // get variant image url
-            val photoUrl = productInputModel.variantInputModel.products.find {
+            val picture = productInputModel.variantInputModel.products.find {
                 it.combination.getOrNull(colorVariantLevel) == index
-            }?.pictures?.firstOrNull()?.urlOriginal.orEmpty()
+            }?.pictures?.firstOrNull()
 
-            variantPhotos.add(VariantPhoto(variantUnitValueName, photoUrl))
+            val photoUrl = picture?.urlOriginal.orEmpty()
+            val photoPicID = picture?.picID.orEmpty()
+            val photoDescription = picture?.description.orEmpty()
+            val photoFileName = picture?.fileName.orEmpty()
+            val photoWidth = picture?.width.orZero()
+            val photoHeight = picture?.height.orZero()
+            val photoIsFromIG = picture?.isFromIG.orEmpty()
+            val photoUploadId = picture?.uploadId.orEmpty()
+
+            variantPhotos.add(VariantPhoto(
+                    variantUnitValueName,
+                    photoUrl,
+                    photoPicID,
+                    photoDescription,
+                    photoFileName,
+                    photoWidth,
+                    photoHeight,
+                    photoIsFromIG,
+                    photoUploadId
+            ))
         }
         return variantPhotos
     }
