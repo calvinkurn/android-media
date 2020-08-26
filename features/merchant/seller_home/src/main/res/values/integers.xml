@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <item name="setting_title_letter_spacing" type="integer" format="float">0.04</item>
     <integer name="setting_shimmer_radius">40</integer>
 </resources>

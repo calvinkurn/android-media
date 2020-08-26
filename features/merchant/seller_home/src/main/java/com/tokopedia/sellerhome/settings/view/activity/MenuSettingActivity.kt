@@ -10,7 +10,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.sellerhome.R
-import com.tokopedia.sellerhome.settings.analytics.sendSettingClickBackButtonTracking
+import com.tokopedia.seller.menu.common.analytics.sendSettingClickBackButtonTracking
 import com.tokopedia.sellerhome.settings.view.fragment.MenuSettingFragment
 
 class MenuSettingActivity : BaseSimpleActivity() {
