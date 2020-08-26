@@ -319,10 +319,12 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
 
     private var requestParams: RequestParams = RequestParams.EMPTY
     private var forceRefresh: Boolean = false
+    private var enableCache: Boolean = false
 
-    suspend fun executeOnBackground(requestParams: RequestParams, forceRefresh: Boolean): ProductInfoP2UiData {
+    suspend fun executeOnBackground(requestParams: RequestParams, forceRefresh: Boolean, enableCache: Boolean): ProductInfoP2UiData {
         this.requestParams = requestParams
         this.forceRefresh = forceRefresh
+        this.enableCache = enableCache
         return executeOnBackground()
     }
 
@@ -332,7 +334,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                 ProductInfoP2Data.Response::class.java, requestParams.parameters)
 
         try {
-            val gqlResponse = graphqlRepository.getReseponse(listOf(p2DataRequest), CacheStrategyUtil.getCacheStrategy(forceRefresh))
+            val gqlResponse = graphqlRepository.getReseponse(listOf(p2DataRequest), CacheStrategyUtil.getCacheStrategy(if (enableCache) forceRefresh else true))
             val successData = gqlResponse.getData<ProductInfoP2Data.Response>(ProductInfoP2Data.Response::class.java)
             val errorData: List<GraphqlError>? = gqlResponse.getError(ProductInfoP2Data.Response::class.java)
 

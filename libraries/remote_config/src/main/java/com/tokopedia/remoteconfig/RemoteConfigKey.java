@@ -90,6 +90,7 @@ public class RemoteConfigKey {
 
     public static final String ANDROID_MAIN_APP_ENABLED_OLD_PDP = "android_main_app_enabled_old_pdp";
     public static final String ANDROID_MAIN_APP_ENABLED_CACHE_PDP = "android_main_app_enabled_cache_pdp";
+    public static final String ANDROID_MAIN_APP_ENABLED_CACHE_P2_PDP = "android_main_app_enabled_cache_p2_pdp";
 
     public static final String NONB1_TTL = "app_nonb_1_ttl";
     public static final String NONB1_DESC = "app_nonb_1_dsc";
