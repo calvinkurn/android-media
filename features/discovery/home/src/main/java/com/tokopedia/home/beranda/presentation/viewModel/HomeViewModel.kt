@@ -241,6 +241,8 @@ open class HomeViewModel @Inject constructor(
 
     private val homeRateLimit = RateLimiter<String>(timeout = 3, timeUnit = TimeUnit.MINUTES)
 
+    private var homeToken = ""
+
     init {
         _isViewModelInitialized.value = Event(true)
         initChannel()
@@ -901,7 +903,7 @@ open class HomeViewModel @Inject constructor(
                     }
                     if (isOnlyHomeHeader(homeDataModel)) {
                         updateWidget(UpdateLiveDataModel(action = ACTION_UPDATE_HOME_DATA, homeData = homeDataModel, needToEvaluateRecommendation = false))
-                        getDynamicChannelData()
+                        getDynamicChannelData(token = homeToken, numOfChannel = 2)
                     } else {
                         getPlayBannerCarousel()
                         getHeaderData()
@@ -1026,9 +1028,12 @@ open class HomeViewModel @Inject constructor(
         }
     }
 
-    fun getDynamicChannelData(){
+    fun getDynamicChannelData(token: String = "", numOfChannel: Int = 0){
         launchCatchError(coroutineContext, block = {
-            getDynamicChannelsUseCase.get().setParams()
+            getDynamicChannelsUseCase.get().setParams(
+                    token = token,
+                    numOfChannel = numOfChannel
+            )
             val data = getDynamicChannelsUseCase.get().executeOnBackground()
             if(data.isNotEmpty()){
                 val newList = _homeLiveData.value?.list?.toMutableList()
