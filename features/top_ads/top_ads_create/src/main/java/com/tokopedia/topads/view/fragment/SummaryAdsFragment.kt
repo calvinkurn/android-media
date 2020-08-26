@@ -150,9 +150,9 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
             viewModel.topAdsCreated(map, this::onSuccessActivation, this::onErrorActivation)
             sendAnalyticEvent()
         }
-        suggestion = stepperModel?.finalBidPerClick ?: 0 * MULTIPLIER
+        suggestion = (stepperModel?.finalBidPerClick ?: 0) * MULTIPLIER
         stepperModel?.dailyBudget = suggestion
-        dailyBudget = stepperModel?.finalBidPerClick ?: 0 * 40
+        dailyBudget = (stepperModel?.finalBidPerClick ?: 0) * 40
         daily_budget.textFieldInput.setText(dailyBudget.toString())
         toggle.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
