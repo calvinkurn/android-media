@@ -25,6 +25,7 @@ import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toPx
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.CommonViewHolderListener
@@ -323,8 +324,7 @@ open class TopchatProductAttachmentViewHolder constructor(
     }
 
     private fun getOccAbTestVariant(): String {
-        // TODO: impl abtest occ
-        return VARIANT_A
+        return RemoteConfigInstance.getInstance().abTestPlatform.getString(AB_TEST_KEY, VARIANT_DEFAULT);
     }
 
     private fun isEligibleOccAbTest(variant: String): Boolean {
@@ -435,9 +435,10 @@ open class TopchatProductAttachmentViewHolder constructor(
     companion object {
         val LAYOUT = R.layout.item_topchat_product_attachment
 
-        const val VARIANT_DEFAULT = "default"
-        const val VARIANT_A = "a"
-        const val VARIANT_B = "b"
+        const val VARIANT_DEFAULT = "No OCC"
+        const val VARIANT_A = "ATC OCC"
+        const val VARIANT_B = "OCC Only"
+        const val AB_TEST_KEY = "OCC at TopChat"
 
         const val PAYLOAD_OCC_STATE = "payload_occ_state"
     }
