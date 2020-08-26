@@ -163,6 +163,7 @@
             app:tabTextColor="@color/font_black_disabled_38"
             app:tabTextAppearance="@style/SearchTabLayoutTextStyle"
             app:tabIndicatorColor="@color/tkpd_main_green"
+            app:tabPaddingBottom="@dimen/dp_12"
             android:theme="@style/ThemeOverlay.AppCompat.Light"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
