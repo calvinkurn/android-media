@@ -9,7 +9,6 @@ import android.widget.FrameLayout
 import androidx.constraintlayout.widget.Group
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -43,7 +42,7 @@ class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapt
     lateinit var preferenceListAnalytics: PreferenceListAnalytics
 
     private val viewModel: ShippingDurationViewModel by lazy {
-        ViewModelProviders.of(this, viewModelFactory)[ShippingDurationViewModel::class.java]
+        ViewModelProvider(this, viewModelFactory)[ShippingDurationViewModel::class.java]
     }
 
     private val adapter = ShippingDurationItemAdapter(this)

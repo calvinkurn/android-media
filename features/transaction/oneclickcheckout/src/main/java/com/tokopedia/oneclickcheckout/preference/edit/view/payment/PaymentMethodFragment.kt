@@ -16,7 +16,6 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.google.android.play.core.splitcompat.SplitCompat
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -69,7 +68,7 @@ class PaymentMethodFragment : BaseDaggerFragment() {
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private val viewModel: PaymentMethodViewModel by lazy {
-        ViewModelProviders.of(this, viewModelFactory)[PaymentMethodViewModel::class.java]
+        ViewModelProvider(this, viewModelFactory)[PaymentMethodViewModel::class.java]
     }
 
     private var webView: WebView? = null

@@ -12,7 +12,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -53,7 +52,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
     lateinit var preferenceListAnalytics: PreferenceListAnalytics
 
     private val viewModel: PreferenceSummaryViewModel by lazy {
-        ViewModelProviders.of(this, viewModelFactory)[PreferenceSummaryViewModel::class.java]
+        ViewModelProvider(this, viewModelFactory)[PreferenceSummaryViewModel::class.java]
     }
 
     private var progressDialog: AlertDialog? = null

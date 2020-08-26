@@ -7,7 +7,6 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.common.view.model.preference.ProfilesItemModel
-import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel
 import kotlinx.android.synthetic.main.card_preference.view.*
 
 class PreferenceListViewHolder(itemView: View, private val listener: PreferenceListAdapter.PreferenceListAdapterListener) : RecyclerView.ViewHolder(itemView) {
