@@ -79,9 +79,9 @@ class HotelSearchResultViewModel @Inject constructor(
             val graphqlRequest = GraphqlRequest(searchQuery, PropertySearch.Response::class.java, params)
 
             val response = withContext(dispatcher.ui()) { graphqlRepository.getReseponse(listOf(graphqlRequest)) }
-            liveSearchResult.postValue(Success(response.getSuccessData<PropertySearch.Response>().response))
+            liveSearchResult.value = Success(response.getSuccessData<PropertySearch.Response>().response)
         }) {
-            liveSearchResult.postValue(Fail(it))
+            liveSearchResult.value = Fail(it)
         }
     }
 
@@ -105,7 +105,7 @@ class HotelSearchResultViewModel @Inject constructor(
 
     fun addFilter(filterV2: List<ParamFilterV2>) {
         searchParam.filters = filterV2.toMutableList()
-        isFilter = true
+        isFilter = filterV2.any { it.values.isNotEmpty() }
     }
 
     companion object {

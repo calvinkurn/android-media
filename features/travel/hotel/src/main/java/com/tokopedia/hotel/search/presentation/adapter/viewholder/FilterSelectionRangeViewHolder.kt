@@ -58,7 +58,8 @@ class FilterSelectionRangeViewHolder(view: View): HotelSearchResultFilterV2Adapt
             hotel_filter_selection_range_seekbar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
                 override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
                     if (filter.options.getOrNull(p1) != null) {
-                        selectedOption.values = mutableListOf(filter.options[filter.options.size - p1 - 1])
+                        if (p1 == filter.options.lastIndex) selectedOption.values = mutableListOf()
+                        else selectedOption.values = mutableListOf(filter.options[filter.options.size - p1 - 1])
                     }
                 }
 
