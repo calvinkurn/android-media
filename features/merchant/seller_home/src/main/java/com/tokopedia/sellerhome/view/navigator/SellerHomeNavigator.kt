@@ -166,10 +166,12 @@ class SellerHomeNavigator(
     }
 
     private fun showFragment(fragment: Fragment, transaction: FragmentTransaction) {
+        val tag = fragment::class.java.simpleName
+        val isAttached = fm.findFragmentByTag(tag) != null
         val currentState = fragment.lifecycle.currentState
         val isFragmentNotResumed = !currentState.isAtLeast(Lifecycle.State.RESUMED)
 
-        if(isFragmentNotResumed) {
+        if(isFragmentNotResumed && isAttached) {
             transaction.setMaxLifecycle(fragment, Lifecycle.State.RESUMED)
         }
 
