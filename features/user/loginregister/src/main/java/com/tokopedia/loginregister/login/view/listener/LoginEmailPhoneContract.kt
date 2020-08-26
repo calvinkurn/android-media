@@ -54,6 +54,8 @@ interface LoginEmailPhoneContract {
 
         fun stopTrace()
 
+        fun setLoginSuccessSellerApp()
+
         fun onErrorLoginEmail(email: String): Function1<Throwable, Unit>
 
         fun onErrorReloginAfterSQ(validateToken: String): Function1<Throwable, Unit>

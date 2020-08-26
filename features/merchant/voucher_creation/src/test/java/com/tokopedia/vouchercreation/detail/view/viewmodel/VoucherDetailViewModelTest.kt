@@ -53,6 +53,9 @@ class VoucherDetailViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
+    lateinit var mViewModel: VoucherDetailViewModel
+    lateinit var testDispatcher: TestCoroutineDispatcher
+
     @Before
     fun setup() {
         MockKAnnotations.init(this)

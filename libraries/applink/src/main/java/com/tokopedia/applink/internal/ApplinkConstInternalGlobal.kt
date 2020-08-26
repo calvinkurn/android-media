@@ -69,6 +69,8 @@ object ApplinkConstInternalGlobal {
     val PARAM_IS_SKIP_OTP = "is_skip_otp"
     @JvmField
     val PARAM_TWO_FACTOR_TYPE = "two_factor_type"
+    @JvmField
+    val KEY_REDIRECT_SEAMLESS_APPLINK = "redirect_seamless"
 
     @JvmField
     val INTERNAL_GLOBAL = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_GLOBAL}"
@@ -165,6 +167,9 @@ object ApplinkConstInternalGlobal {
     val USER_IDENTIFICATION_FORM = "$USER_IDENTIFICATION_FORM_BASE?projectId={projectId}"
     @JvmField
     val PARAM_PROJECT_ID = "projectId"
+
+    @JvmField
+    val PARAM_CALL_BACK = "callBack"
 
     // InboxTalkActivity
     // tokopedia-android-internal://global/inbox-talk
