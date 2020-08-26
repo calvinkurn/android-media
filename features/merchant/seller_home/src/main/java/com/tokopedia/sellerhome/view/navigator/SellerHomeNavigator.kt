@@ -85,7 +85,10 @@ class SellerHomeNavigator(
                             .add(R.id.sahContainer, selectedPage, tag)
                             .commit()
                     }
-                    else -> showFragment(selectedPage, transaction)
+                    else -> {
+                        hideCurrentPage(transaction)
+                        showFragment(fragment, transaction)
+                    }
                 }
 
                 setSelectedPage(type)
