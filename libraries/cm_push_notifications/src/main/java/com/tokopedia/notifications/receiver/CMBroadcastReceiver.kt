@@ -270,7 +270,7 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
         val clip = ClipData.newPlainText("Tokopedia", contents)
         clipboard.setPrimaryClip(clip)
         applyPromoCode(context, contents)
-        Toast.makeText(context, "${context.getString(R.string.cm_tv_coupon_code_copied)} $contents"
+        Toast.makeText(context, context.getString(R.string.cm_tv_coupon_code_copied)
                 , Toast.LENGTH_LONG).show()
     }
 
