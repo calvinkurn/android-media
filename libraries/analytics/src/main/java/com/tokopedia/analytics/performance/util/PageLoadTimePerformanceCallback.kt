@@ -99,13 +99,13 @@ open class PageLoadTimePerformanceCallback(
     }
 
     fun beginAsyncSystraceSection(methodName: String, cookie: Int) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2 && GlobalConfig.DEBUG) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && GlobalConfig.DEBUG) {
             Trace.beginAsyncSection(methodName, cookie)
         }
     }
 
     fun endAsyncSystraceSection(methodName: String, cookie: Int) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2 && GlobalConfig.DEBUG) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && GlobalConfig.DEBUG) {
             Trace.endAsyncSection(methodName, cookie)
         }
     }
