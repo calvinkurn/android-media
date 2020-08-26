@@ -87,6 +87,10 @@ data class ShopInfo(
         val shopStats: ShopStats = ShopStats()
 
 ) {
+    fun isShopInfoNotEmpty():Boolean {
+        return shopCore.shopID.isNotEmpty()
+    }
+
     fun mapToShopInfoData(): ShopInfoData {
         val shipmentsData = shipments.map {
             it.mapToShipmentData()

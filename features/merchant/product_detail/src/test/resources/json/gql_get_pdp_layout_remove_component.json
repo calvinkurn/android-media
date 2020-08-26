@@ -1,0 +1,756 @@
+{
+  "pdpGetLayout": {
+    "basicInfo": {
+      "alias": "calypso-frypan-super-non-stick-22cm-wajan-penggorengan-anti-lengket-hijau",
+      "blacklistMessage": {
+        "button": "",
+        "description": "",
+        "title": "",
+        "url": ""
+      },
+      "catalogID": "0",
+      "category": {
+        "breadcrumbURL": "https://www.tokopedia.com/p/dapur/peralatan-masak/wajan",
+        "detail": [
+          {
+            "breadcrumbURL": "https://www.tokopedia.com/p/dapur",
+            "id": "983",
+            "isAdult": false,
+            "name": "Dapur"
+          },
+          {
+            "breadcrumbURL": "https://www.tokopedia.com/p/dapur/peralatan-masak",
+            "id": "908",
+            "isAdult": false,
+            "name": "Peralatan Masak"
+          },
+          {
+            "breadcrumbURL": "https://www.tokopedia.com/p/dapur/peralatan-masak/wajan",
+            "id": "949",
+            "isAdult": false,
+            "name": "Wajan"
+          }
+        ],
+        "id": "949",
+        "isAdult": false,
+        "lastUpdateCategory": "17/04/2019 00:23:45",
+        "name": "Wajan",
+        "title": "Wajan"
+      },
+      "condition": "NEW",
+      "gtin": "",
+      "isBlacklisted": false,
+      "isLeasing": false,
+      "isMustInsurance": false,
+      "maxOrder": 0,
+      "menu": {
+        "id": "8805384",
+        "name": "Peralatan Dapur",
+        "url": "https://www.tokopedia.com/pamosroom-living/etalase/peralatan-dapur"
+      },
+      "minOrder": 1,
+      "needPrescription": false,
+      "productID": "518076293",
+      "shopID": "1261882",
+      "shopName": "Pamosroom Living",
+      "sku": "CLSFrypan22cmHijau",
+      "stats": {
+        "countReview": "223",
+        "countTalk": "40",
+        "rating": 4.7
+      },
+      "status": "ACTIVE",
+      "txStats": {
+        "countSold": "562",
+        "itemSoldPaymentVerified": "569",
+        "paymentVerified": "536",
+        "transactionReject": "1",
+        "transactionSuccess": "530"
+      },
+      "url": "https://www.tokopedia.com/pamosroom-living/calypso-frypan-super-non-stick-22cm-wajan-penggorengan-anti-lengket-hijau",
+      "weight": 1400,
+      "weightUnit": "GRAM"
+    },
+    "components": [
+      {
+        "data": [
+          {}
+        ],
+        "name": "product_snapshot",
+        "type": "product_snapshot"
+      },
+      {
+        "data": [
+          {
+            "media": [
+              {
+                "URL300": "https://ecs7-p.tokopedia.net/img/cache/300/product-1/2020/7/7/10614725/10614725_16b66b7e-481d-4397-809a-60fc3105a34a_1901_1901",
+                "URLOriginal": "https://ecs7-p.tokopedia.net/img/cache/700/product-1/2020/7/7/10614725/10614725_16b66b7e-481d-4397-809a-60fc3105a34a_1901_1901",
+                "URLThumbnail": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/7/7/10614725/10614725_16b66b7e-481d-4397-809a-60fc3105a34a_1901_1901",
+                "description": "",
+                "isAutoplay": false,
+                "type": "image",
+                "videoURLAndroid": "",
+                "videoURLIOS": ""
+              },
+              {
+                "URL300": "https://ecs7-p.tokopedia.net/img/cache/300/product-1/2020/7/7/10614725/10614725_d54309a3-975c-4789-a4d7-f10399abf6e8_1901_1901",
+                "URLOriginal": "https://ecs7-p.tokopedia.net/img/cache/700/product-1/2020/7/7/10614725/10614725_d54309a3-975c-4789-a4d7-f10399abf6e8_1901_1901",
+                "URLThumbnail": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/7/7/10614725/10614725_d54309a3-975c-4789-a4d7-f10399abf6e8_1901_1901",
+                "description": "",
+                "isAutoplay": false,
+                "type": "image",
+                "videoURLAndroid": "",
+                "videoURLIOS": ""
+              },
+              {
+                "URL300": "https://ecs7-p.tokopedia.net/img/cache/300/product-1/2020/7/7/10614725/10614725_1cb73106-a889-4b59-8265-ef4c5a48e05e_1901_1901",
+                "URLOriginal": "https://ecs7-p.tokopedia.net/img/cache/700/product-1/2020/7/7/10614725/10614725_1cb73106-a889-4b59-8265-ef4c5a48e05e_1901_1901",
+                "URLThumbnail": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/7/7/10614725/10614725_1cb73106-a889-4b59-8265-ef4c5a48e05e_1901_1901",
+                "description": "",
+                "isAutoplay": false,
+                "type": "image",
+                "videoURLAndroid": "",
+                "videoURLIOS": ""
+              },
+              {
+                "URL300": "https://ecs7-p.tokopedia.net/img/cache/300/product-1/2020/7/7/10614725/10614725_54bbc5e2-871f-40d5-a6da-cdd7a7e1d72f_1901_1901",
+                "URLOriginal": "https://ecs7-p.tokopedia.net/img/cache/700/product-1/2020/7/7/10614725/10614725_54bbc5e2-871f-40d5-a6da-cdd7a7e1d72f_1901_1901",
+                "URLThumbnail": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/7/7/10614725/10614725_54bbc5e2-871f-40d5-a6da-cdd7a7e1d72f_1901_1901",
+                "description": "",
+                "isAutoplay": false,
+                "type": "image",
+                "videoURLAndroid": "",
+                "videoURLIOS": ""
+              },
+              {
+                "URL300": "https://ecs7-p.tokopedia.net/img/cache/300/product-1/2020/7/7/10614725/10614725_cad67590-4813-48b5-9a51-efae1f5073b5_1901_1901",
+                "URLOriginal": "https://ecs7-p.tokopedia.net/img/cache/700/product-1/2020/7/7/10614725/10614725_cad67590-4813-48b5-9a51-efae1f5073b5_1901_1901",
+                "URLThumbnail": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/7/7/10614725/10614725_cad67590-4813-48b5-9a51-efae1f5073b5_1901_1901",
+                "description": "",
+                "isAutoplay": false,
+                "type": "image",
+                "videoURLAndroid": "",
+                "videoURLIOS": ""
+              }
+            ],
+            "pictures": [
+              {
+                "Status": 2,
+                "description": "",
+                "fileName": "10614725_16b66b7e-481d-4397-809a-60fc3105a34a_1901_1901",
+                "filePath": "product-1/2020/7/7/10614725",
+                "height": 1901,
+                "isFromIG": false,
+                "picID": "1324107524",
+                "url300": "https://ecs7-p.tokopedia.net/img/cache/300/product-1/2020/7/7/10614725/10614725_16b66b7e-481d-4397-809a-60fc3105a34a_1901_1901",
+                "urlOriginal": "https://ecs7-p.tokopedia.net/img/cache/700/product-1/2020/7/7/10614725/10614725_16b66b7e-481d-4397-809a-60fc3105a34a_1901_1901",
+                "urlThumbnail": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/7/7/10614725/10614725_16b66b7e-481d-4397-809a-60fc3105a34a_1901_1901",
+                "width": 1901
+              },
+              {
+                "Status": 1,
+                "description": "",
+                "fileName": "10614725_d54309a3-975c-4789-a4d7-f10399abf6e8_1901_1901",
+                "filePath": "product-1/2020/7/7/10614725",
+                "height": 1901,
+                "isFromIG": false,
+                "picID": "1324107525",
+                "url300": "https://ecs7-p.tokopedia.net/img/cache/300/product-1/2020/7/7/10614725/10614725_d54309a3-975c-4789-a4d7-f10399abf6e8_1901_1901",
+                "urlOriginal": "https://ecs7-p.tokopedia.net/img/cache/700/product-1/2020/7/7/10614725/10614725_d54309a3-975c-4789-a4d7-f10399abf6e8_1901_1901",
+                "urlThumbnail": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/7/7/10614725/10614725_d54309a3-975c-4789-a4d7-f10399abf6e8_1901_1901",
+                "width": 1901
+              },
+              {
+                "Status": 1,
+                "description": "",
+                "fileName": "10614725_1cb73106-a889-4b59-8265-ef4c5a48e05e_1901_1901",
+                "filePath": "product-1/2020/7/7/10614725",
+                "height": 1901,
+                "isFromIG": false,
+                "picID": "1324107526",
+                "url300": "https://ecs7-p.tokopedia.net/img/cache/300/product-1/2020/7/7/10614725/10614725_1cb73106-a889-4b59-8265-ef4c5a48e05e_1901_1901",
+                "urlOriginal": "https://ecs7-p.tokopedia.net/img/cache/700/product-1/2020/7/7/10614725/10614725_1cb73106-a889-4b59-8265-ef4c5a48e05e_1901_1901",
+                "urlThumbnail": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/7/7/10614725/10614725_1cb73106-a889-4b59-8265-ef4c5a48e05e_1901_1901",
+                "width": 1901
+              },
+              {
+                "Status": 1,
+                "description": "",
+                "fileName": "10614725_54bbc5e2-871f-40d5-a6da-cdd7a7e1d72f_1901_1901",
+                "filePath": "product-1/2020/7/7/10614725",
+                "height": 1901,
+                "isFromIG": false,
+                "picID": "1324107527",
+                "url300": "https://ecs7-p.tokopedia.net/img/cache/300/product-1/2020/7/7/10614725/10614725_54bbc5e2-871f-40d5-a6da-cdd7a7e1d72f_1901_1901",
+                "urlOriginal": "https://ecs7-p.tokopedia.net/img/cache/700/product-1/2020/7/7/10614725/10614725_54bbc5e2-871f-40d5-a6da-cdd7a7e1d72f_1901_1901",
+                "urlThumbnail": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/7/7/10614725/10614725_54bbc5e2-871f-40d5-a6da-cdd7a7e1d72f_1901_1901",
+                "width": 1901
+              },
+              {
+                "Status": 1,
+                "description": "",
+                "fileName": "10614725_cad67590-4813-48b5-9a51-efae1f5073b5_1901_1901",
+                "filePath": "product-1/2020/7/7/10614725",
+                "height": 1901,
+                "isFromIG": false,
+                "picID": "2521074605",
+                "url300": "https://ecs7-p.tokopedia.net/img/cache/300/product-1/2020/7/7/10614725/10614725_cad67590-4813-48b5-9a51-efae1f5073b5_1901_1901",
+                "urlOriginal": "https://ecs7-p.tokopedia.net/img/cache/700/product-1/2020/7/7/10614725/10614725_cad67590-4813-48b5-9a51-efae1f5073b5_1901_1901",
+                "urlThumbnail": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/7/7/10614725/10614725_cad67590-4813-48b5-9a51-efae1f5073b5_1901_1901",
+                "width": 1901
+              }
+            ],
+            "videos": [
+              {
+                "source": "youtube",
+                "url": "uJTit0URSFc"
+              }
+            ]
+          }
+        ],
+        "name": "product_media",
+        "type": "product_media"
+      },
+      {
+        "data": [],
+        "name": "ticker_info",
+        "type": "ticker_info"
+      },
+      {
+        "data": [
+          {
+            "campaign": {
+              "appLinks": "",
+              "campaignID": "-10000",
+              "campaignType": "0",
+              "campaignTypeName": "SlashPrice",
+              "discountedPrice": 200000000,
+              "endDate": "2020-12-31 20:30:00",
+              "endDateUnix": "1609421400",
+              "hideGimmick": false,
+              "isActive": true,
+              "isAppsOnly": false,
+              "isCheckImei": false,
+              "isUsingOvo": false,
+              "originalPrice": 136000,
+              "percentageAmount": 50,
+              "startDate": "2020-07-30 11:24:26",
+              "stock": 9996,
+              "stockSoldPercentage": 0,
+              "threshold": 0
+            },
+            "isCOD": false,
+            "isCashback": {
+              "percentage": 0
+            },
+            "isFreeOngkir": {
+              "imageURL": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png",
+              "isActive": true
+            },
+            "isOS": false,
+            "isPowerMerchant": true,
+            "isTradeIn": false,
+            "isWishlist": false,
+            "name": "Calypso Frypan Super Non Stick 22cm Wajan Penggorengan Anti Lengket - Hijau",
+            "preorder": {
+              "duration": 0,
+              "isActive": false,
+              "timeUnit": "UNKNOWN"
+            },
+            "price": {
+              "currency": "IDR",
+              "lastUpdateUnix": "1596082457",
+              "value": 68000
+            },
+            "stock": {
+              "stockWording": "",
+              "useStock": true,
+              "value": "9996"
+            },
+            "variant": {
+              "isVariant": false,
+              "parentID": "449682965"
+            },
+            "wholesale": []
+          }
+        ],
+        "name": "product_content",
+        "type": "product_content"
+      },
+      {
+        "data": [],
+        "name": "social_proof_mini",
+        "type": "social_proof_mini"
+      },
+      {
+        "data": [],
+        "name": "shop_info_mini",
+        "type": "shop_info_mini"
+      },
+      {
+        "data": [
+          {
+            "children": [
+              {
+                "campaignInfo": {
+                  "appLinks": "",
+                  "campaignID": "-10000",
+                  "campaignType": "0",
+                  "campaignTypeName": "SlashPrice",
+                  "discountPercentage": 50,
+                  "discountPrice": 70000,
+                  "endDateUnix": "1609421400",
+                  "hideGimmick": false,
+                  "isActive": true,
+                  "isAppsOnly": false,
+                  "isCheckImei": false,
+                  "isUsingOvo": false,
+                  "originalPrice": 140000,
+                  "startDate": "2020-07-30 11:24:26",
+                  "stock": 9999,
+                  "stockSoldPercentage": 0
+                },
+                "isCOD": false,
+                "isWishlist": false,
+                "optionID": [
+                  32988021
+                ],
+                "picture": {
+                  "url": "https://ecs7-p.tokopedia.net/img/cache/700/product-1/2020/7/7/10614725/10614725_16b66b7e-481d-4397-809a-60fc3105a34a_1901_1901",
+                  "url200": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/7/7/10614725/10614725_16b66b7e-481d-4397-809a-60fc3105a34a_1901_1901"
+                },
+                "price": 70000,
+                "priceFmt": "Rp 140.000",
+                "productID": "518076286",
+                "productName": "Calypso Frypan Super Non Stick 22cm Wajan Penggorengan Anti Lengket - Putih",
+                "productURL": "https://www.tokopedia.com/pamosroom-living/calypso-frypan-super-non-stick-22cm-wajan-penggorengan-anti-lengket-putih",
+                "sku": "CLSFrypan22cmPutih",
+                "stock": {
+                  "isBuyable": true,
+                  "minimumOrder": "1",
+                  "stock": "9999",
+                  "stockWording": "",
+                  "stockWordingHTML": ""
+                }
+              },
+              {
+                "campaignInfo": {
+                  "appLinks": "",
+                  "campaignID": "-10000",
+                  "campaignType": "0",
+                  "campaignTypeName": "SlashPrice",
+                  "discountPercentage": 50,
+                  "discountPrice": 68000,
+                  "endDateUnix": "1609421400",
+                  "hideGimmick": false,
+                  "isActive": true,
+                  "isAppsOnly": false,
+                  "isCheckImei": false,
+                  "isUsingOvo": false,
+                  "originalPrice": 136000,
+                  "startDate": "2020-07-30 11:24:26",
+                  "stock": 9997,
+                  "stockSoldPercentage": 0
+                },
+                "isCOD": false,
+                "isWishlist": false,
+                "optionID": [
+                  32988022
+                ],
+                "picture": {
+                  "url": "https://ecs7-p.tokopedia.net/img/cache/700/product-1/2020/7/7/10614725/10614725_16b66b7e-481d-4397-809a-60fc3105a34a_1901_1901",
+                  "url200": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/7/7/10614725/10614725_16b66b7e-481d-4397-809a-60fc3105a34a_1901_1901"
+                },
+                "price": 68000,
+                "priceFmt": "Rp 136.000",
+                "productID": "518076287",
+                "productName": "Calypso Frypan Super Non Stick 22cm Wajan Penggorengan Anti Lengket - Biru",
+                "productURL": "https://www.tokopedia.com/pamosroom-living/calypso-frypan-super-non-stick-22cm-wajan-penggorengan-anti-lengket-biru",
+                "sku": "CLSFrypan22cmBiru",
+                "stock": {
+                  "isBuyable": true,
+                  "minimumOrder": "1",
+                  "stock": "9997",
+                  "stockWording": "",
+                  "stockWordingHTML": ""
+                }
+              },
+              {
+                "campaignInfo": {
+                  "appLinks": "",
+                  "campaignID": "-10000",
+                  "campaignType": "0",
+                  "campaignTypeName": "SlashPrice",
+                  "discountPercentage": 50,
+                  "discountPrice": 68000,
+                  "endDateUnix": "1609421400",
+                  "hideGimmick": false,
+                  "isActive": true,
+                  "isAppsOnly": false,
+                  "isCheckImei": false,
+                  "isUsingOvo": false,
+                  "originalPrice": 136000,
+                  "startDate": "2020-07-30 11:24:26",
+                  "stock": 9996,
+                  "stockSoldPercentage": 0
+                },
+                "isCOD": false,
+                "isWishlist": false,
+                "optionID": [
+                  32988023
+                ],
+                "picture": {
+                  "url": "https://ecs7-p.tokopedia.net/img/cache/700/product-1/2020/7/7/10614725/10614725_16b66b7e-481d-4397-809a-60fc3105a34a_1901_1901",
+                  "url200": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/7/7/10614725/10614725_16b66b7e-481d-4397-809a-60fc3105a34a_1901_1901"
+                },
+                "price": 68000,
+                "priceFmt": "Rp 136.000",
+                "productID": "518076293",
+                "productName": "Calypso Frypan Super Non Stick 22cm Wajan Penggorengan Anti Lengket - Hijau",
+                "productURL": "https://www.tokopedia.com/pamosroom-living/calypso-frypan-super-non-stick-22cm-wajan-penggorengan-anti-lengket-hijau",
+                "sku": "CLSFrypan22cmHijau",
+                "stock": {
+                  "isBuyable": true,
+                  "minimumOrder": "1",
+                  "stock": "9996",
+                  "stockWording": "",
+                  "stockWordingHTML": ""
+                }
+              },
+              {
+                "campaignInfo": {
+                  "appLinks": "",
+                  "campaignID": "0",
+                  "campaignType": "0",
+                  "campaignTypeName": "",
+                  "discountPercentage": 0,
+                  "discountPrice": 0,
+                  "endDateUnix": "0",
+                  "hideGimmick": false,
+                  "isActive": false,
+                  "isAppsOnly": false,
+                  "isCheckImei": false,
+                  "isUsingOvo": false,
+                  "originalPrice": 0,
+                  "startDate": "",
+                  "stock": 0,
+                  "stockSoldPercentage": 0
+                },
+                "isCOD": false,
+                "isWishlist": false,
+                "optionID": [
+                  55843862
+                ],
+                "picture": {
+                  "url": "https://ecs7-p.tokopedia.net/img/cache/700/product-1/2020/7/7/10614725/10614725_16b66b7e-481d-4397-809a-60fc3105a34a_1901_1901",
+                  "url200": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/7/7/10614725/10614725_16b66b7e-481d-4397-809a-60fc3105a34a_1901_1901"
+                },
+                "price": 136000,
+                "priceFmt": "Rp 136.000",
+                "productID": "948021897",
+                "productName": "Calypso Frypan Super Non Stick 22cm Wajan Penggorengan Anti Lengket - Merah Muda",
+                "productURL": "https://www.tokopedia.com/pamosroom-living/calypso-frypan-super-non-stick-22cm-wajan-penggorengan-anti-lengket-merah-muda",
+                "sku": "CLSFrypan22cmPink",
+                "stock": {
+                  "isBuyable": false,
+                  "minimumOrder": "1",
+                  "stock": "4956",
+                  "stockWording": "",
+                  "stockWordingHTML": ""
+                }
+              }
+            ],
+            "defaultChild": "518076287",
+            "errorCode": 0,
+            "parentID": "449682965",
+            "sizeChart": "",
+            "variants": [
+              {
+                "identifier": "colour",
+                "name": "warna",
+                "option": [
+                  {
+                    "hex": "#1d6cbb",
+                    "picture": {
+                      "url": "",
+                      "url200": ""
+                    },
+                    "productVariantOptionID": "32988022",
+                    "value": "Biru",
+                    "variantUnitValueID": "5"
+                  },
+                  {
+                    "hex": "#ffb0b0",
+                    "picture": {
+                      "url": "",
+                      "url200": ""
+                    },
+                    "productVariantOptionID": "55843862",
+                    "value": "Merah Muda",
+                    "variantUnitValueID": "11"
+                  },
+                  {
+                    "hex": "#006400",
+                    "picture": {
+                      "url": "",
+                      "url200": ""
+                    },
+                    "productVariantOptionID": "32988023",
+                    "value": "Hijau",
+                    "variantUnitValueID": "18"
+                  },
+                  {
+                    "hex": "#ffffff",
+                    "picture": {
+                      "url": "",
+                      "url200": ""
+                    },
+                    "productVariantOptionID": "32988021",
+                    "value": "Putih",
+                    "variantUnitValueID": "1"
+                  }
+                ],
+                "productVariantID": "10807972",
+                "variantID": "1"
+              }
+            ]
+          }
+        ],
+        "name": "variant_options",
+        "type": "variant"
+      },
+      {
+        "data": [],
+        "name": "upcoming_deals",
+        "type": "teaser"
+      },
+      {
+        "data": [],
+        "name": "social_proof",
+        "type": "social_proof"
+      },
+      {
+        "data": [],
+        "name": "value_prop",
+        "type": "value_prop"
+      },
+      {
+        "data": [],
+        "name": "separator",
+        "type": "separator"
+      },
+      {
+        "data": [],
+        "name": "shop_voucher",
+        "type": "shop_voucher"
+      },
+      {
+        "data": [
+          {
+            "applink": "",
+            "content": [],
+            "icon": "",
+            "isApplink": true,
+            "title": "Kurir"
+          }
+        ],
+        "name": "shipping",
+        "type": "info"
+      },
+      {
+        "data": [
+          {
+            "applink": "",
+            "content": [],
+            "icon": "https://ecs7.tokopedia.net/pdp/info/icon/icTradeinBlue_3x.png",
+            "isApplink": true,
+            "title": "Beli dengan Tukar Tambah"
+          }
+        ],
+        "name": "tradein",
+        "type": "info"
+      },
+      {
+        "data": [
+          {
+            "applink": "",
+            "content": [],
+            "icon": "",
+            "isApplink": true,
+            "title": "Harga Grosir"
+          }
+        ],
+        "name": "wholesale",
+        "type": "info"
+      },
+      {
+        "data": [
+          {
+            "applink": "",
+            "content": [],
+            "icon": "",
+            "isApplink": true,
+            "title": "Cicilan"
+          }
+        ],
+        "name": "installment",
+        "type": "info"
+      },
+      {
+        "data": [
+          {
+            "applink": "",
+            "content": [],
+            "icon": "https://ecs7.tokopedia.net/pdp/info/icon/icFulfillment_3x.png",
+            "isApplink": false,
+            "title": "Dilayani oleh Tokopedia"
+          }
+        ],
+        "name": "fulfillment",
+        "type": "info"
+      },
+      {
+        "data": [
+          {
+            "applink": "",
+            "content": [],
+            "icon": "https://ecs7.tokopedia.net/pdp/info/icon/icProtection_3x.png",
+            "isApplink": false,
+            "title": "Proteksi Gadget"
+          }
+        ],
+        "name": "protection",
+        "type": "info"
+      },
+      {
+        "data": [
+          {
+            "applink": "",
+            "content": [],
+            "icon": "https://ecs7.tokopedia.net/pdp/info/icon/icOrderprio_3x.png",
+            "isApplink": false,
+            "title": "Order Prioritas"
+          }
+        ],
+        "name": "order_prio",
+        "type": "info"
+      },
+      {
+        "data": [],
+        "name": "separator",
+        "type": "separator"
+      },
+      {
+        "data": [
+          {
+            "content": [
+              {
+                "applink": "",
+                "subtitle": "1400 Gram",
+                "title": "Berat"
+              },
+              {
+                "applink": "",
+                "subtitle": "Baru",
+                "title": "Kondisi"
+              },
+              {
+                "applink": "",
+                "subtitle": "1 Buah",
+                "title": "Pemesanan Min"
+              },
+              {
+                "applink": "https://www.tokopedia.com/p/dapur/peralatan-masak/wajan",
+                "subtitle": "Wajan",
+                "title": "Kategori"
+              },
+              {
+                "applink": "https://www.tokopedia.com/pamosroom-living/etalase/peralatan-dapur",
+                "subtitle": "Peralatan Dapur",
+                "title": "Etalase"
+              }
+            ],
+            "row": "top"
+          },
+          {
+            "content": [
+              {
+                "applink": "",
+                "subtitle": "Calypso Frypan Super Non Stick 22cm Wajan Penggorengan Anti Lengket Tanpa Minyak\n\nKeunggulan Produk :\n1. Menggoreng tanpa menggunakan MINYAK dan hasil tidak lengket\n2. Gagang kuat\n3. Bahan wajan berbentuk seperti granit marmer\n4. Mudah dibersihkan (hanya cukup menggunakan tangan sdh bisa), tentunya menggunakan sabun ya. ^.^\n\nCara penggunaan wajan/teflon :\n1. Temperatur tidak boleh lebih dari 200 derajat Celcius.\n2. Tidak untuk digunakan dalam wajan hanya berisi minyak dengan kurun waktu yang lama / Lihat No1.\n3. Hindari penggunaan peralatan masak terbuat dari besi/tajam yang terbaik adalah menggunakan peralatan kayu.\n4. Hindari menggunakan sabut besi (steel wool) saat membersihkan.\n\nCocok di gunakan untuk :\n1. Menggoreng telur, cumi, tempe, tahu, dan lain lain\n2. Menumis makanan\n\nTersedia warna :\n1. Putih caramel\n2. BIru\n3. Hijau\n4. Pink\n\nMohon cantumkan warna yang di inginkan, Jika tidak maka akan kami kirimkan random yhaa..\n\nKami juga menyediakan biaya packing tambahan berupa dus :\nhttps://www.tokopedia.com/pamosroom-living/biaya-packing-tambahan-dus-dan-bubble-wrap\n\nFYI : Kami berkomitmen setiap barang yg dipesan, akan kami cek terlebih dahulu dan yg dikirim pasti dalam kondisi bagus. kami selalu berusaha mengutamakan kepuasan konsumen kami karena kepuasan konsumen adalah yg sangat penting bagi kami.\n\nFollow kami di :\nInstagram / Facebook : Pamosroom\n*dapatkan updated discount menarik dan GIVE AWAY\n\nHappy Shopping With Us And Don&#39;t Forget To Follow Us ^^",
+                "title": "Deskripsi"
+              }
+            ],
+            "row": "bottom"
+          }
+        ],
+        "name": "product_info",
+        "type": "product_info"
+      },
+      {
+        "data": [],
+        "name": "separator",
+        "type": "separator"
+      },
+      {
+        "data": [],
+        "name": "pdp_1",
+        "type": "product_list"
+      },
+      {
+        "data": [],
+        "name": "separator",
+        "type": "separator"
+      },
+      {
+        "data": [],
+        "name": "shop_info",
+        "type": "shop_info"
+      },
+      {
+        "data": [],
+        "name": "separator",
+        "type": "separator"
+      },
+      {
+        "data": [],
+        "name": "pdp_2",
+        "type": "product_list"
+      },
+      {
+        "data": [],
+        "name": "most_helpful_review",
+        "type": "most_helpful_review"
+      },
+      {
+        "data": [],
+        "name": "discussion",
+        "type": "discussion"
+      },
+      {
+        "data": [],
+        "name": "discussion_faq",
+        "type": "discussion_faq"
+      },
+      {
+        "data": [],
+        "name": "pdp_3",
+        "type": "product_list"
+      },
+      {
+        "data": [],
+        "name": "pdp_4",
+        "type": "product_list"
+      },{
+        "data": [],
+        "name": "byme",
+        "type": "info"
+      }
+    ],
+    "name": "Default Layout",
+    "pdpSession": "{\"ioc\":true,\"sid\":1261882,\"sd\":\"pamosroom-living\",\"ci\":949,\"pid\":449682965,\"cp\":{},\"pr\":68000,\"piv\":[518076286,518076287,518076293,948021897],\"mo\":1,\"pn\":\"Calypso Frypan Super Non Stick 22cm Wajan Penggorengan Anti Lengket - Hijau\",\"st\":9996,\"cn\":\"new\",\"crp\":[{\"s\":9996},{\"cs\":true,\"s\":9999},{\"cs\":true,\"s\":9997},{\"cs\":true,\"s\":9996},{\"s\":4956}]}",
+    "temporaryInfo": {
+      "campaignStatus": "active"
+    }
+  }
+}

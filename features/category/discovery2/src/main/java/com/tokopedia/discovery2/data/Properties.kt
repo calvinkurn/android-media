@@ -33,6 +33,9 @@ data class Properties(
         @SerializedName("design")
         val design: String,
 
+        @SerializedName("type")
+        val type: String,
+
         @SerializedName("target_id")
         val targetId: String?
 

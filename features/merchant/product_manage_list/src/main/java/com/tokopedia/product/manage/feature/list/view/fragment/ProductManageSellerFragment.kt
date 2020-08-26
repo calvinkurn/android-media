@@ -1,7 +1,6 @@
 package com.tokopedia.product.manage.feature.list.view.fragment
 
 import android.app.Activity.RESULT_OK
-import android.app.ActivityManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -23,7 +22,6 @@ import com.tokopedia.product.manage.feature.list.constant.ProductManageDataLayer
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant
 import com.tokopedia.product.manage.feature.list.di.ProductManageListInstance
 import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductDraftListCountViewModel
-import com.tokopedia.product.manage.item.main.base.view.service.UploadProductService
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterMapper
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
 import com.tokopedia.usecase.coroutines.Fail
@@ -87,17 +85,18 @@ class ProductManageSellerFragment : ProductManageFragment() {
         productDraftListCountViewModel.detachView()
     }
 
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+
+        if(!hidden) {
+            sendNormalSendScreen()
+        }
+    }
+
     override fun onResume() {
         super.onResume()
         registerDraftReceiver()
-        if (isMyServiceRunning(UploadProductService::class.java)) {
-            productDraftListCountViewModel.getAllDraftCount()
-        } else {
-            productDraftListCountViewModel.fetchAllDraftCountWithUpdateUploading()
-        }
-        if (userVisibleHint) {
-            sendNormalSendScreen()
-        }
+        productDraftListCountViewModel.getAllDraftCount()
     }
 
     override fun onPause() {
@@ -106,13 +105,6 @@ class ProductManageSellerFragment : ProductManageFragment() {
     }
 
     override fun callInitialLoadAutomatically() = false
-
-    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
-        super.setUserVisibleHint(isVisibleToUser)
-        if (isVisibleToUser) {
-            sendNormalSendScreen()
-        }
-    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
         if (resultCode == RESULT_OK) {
@@ -155,7 +147,6 @@ class ProductManageSellerFragment : ProductManageFragment() {
     }
 
     private fun onDraftCountLoadError() {
-        // delete all draft when error loading draft
         productDraftListCountViewModel.clearAllDraft()
         tvDraftProduct.visibility = View.GONE
     }
@@ -171,27 +162,10 @@ class ProductManageSellerFragment : ProductManageFragment() {
         super.setDefaultFilterOptions(filterOptions)
     }
 
-    private fun isMyServiceRunning(serviceClass: Class<*>): Boolean {
-        activity?.let {
-            val manager = it.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-            if (manager.getRunningServices(Integer.MAX_VALUE) != null) {
-                for (service in manager.getRunningServices(Integer.MAX_VALUE)) {
-                    if (serviceClass.name == service.service.className) {
-                        return true
-                    }
-                }
-                return false
-            } else {
-                return false
-            }
-        }
-        return false
-    }
-
     private fun registerDraftReceiver() {
         draftBroadCastReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
-                if (intent.action == UploadProductService.ACTION_DRAFT_CHANGED || intent.action == TkpdState.ProductService.BROADCAST_ADD_PRODUCT) {
+                if (intent.action == TkpdState.ProductService.BROADCAST_ADD_PRODUCT) {
                     productDraftListCountViewModel.getAllDraftCount()
                 }
             }
@@ -199,7 +173,6 @@ class ProductManageSellerFragment : ProductManageFragment() {
 
         activity?.let {
             val intentFilters = IntentFilter().apply {
-                addAction(UploadProductService.ACTION_DRAFT_CHANGED)
                 addAction(TkpdState.ProductService.BROADCAST_ADD_PRODUCT)
             }
             LocalBroadcastManager.getInstance(it).registerReceiver(draftBroadCastReceiver, intentFilters)

@@ -58,6 +58,7 @@ enum class ComponentNames(val componentName: String) {
     // Product Card Horizontal Sprint Sale
     ProductCardSprintSaleCarousel("product_card_sprint_sale_carousel"),
     ProductCardSprintSaleCarouselItem("product_card_sprint_sale_carousel_item"),
+    ProductListEmptyState("product_list_empty_state"),
 
     //Quick Filter
     QuickFilter("chips_filter_v2"),

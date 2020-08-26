@@ -37,9 +37,7 @@ fun MockKVerificationScope.verifyProcessingData(
     productListView.setProductList(capture(visitableListSlot))
     productListView.backToTop()
     productListView.showFreeOngkirShowCase(true)
-    productListView.initQuickFilter(any())
     productListView.addLoading()
-    productListView.setTotalSearchResultCount(any())
     productListView.stopTracePerformanceMonitoring()
 }
 

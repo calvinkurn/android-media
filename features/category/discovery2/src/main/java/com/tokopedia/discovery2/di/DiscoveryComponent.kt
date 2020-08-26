@@ -17,11 +17,14 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.quic
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.quickfilter.QuickFilterViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tokopoints.TokopointsViewModel
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
+import com.tokopedia.topads.sdk.di.TopAdsUrlHitterModule
 import dagger.Component
 
 
 @DiscoveryScope
-@Component(modules = [DiscoveryModule::class, DiscoveryViewModelModule::class], dependencies = [BaseAppComponent::class])
+@Component(modules = [DiscoveryModule::class,
+    DiscoveryViewModelModule::class,
+    TopAdsUrlHitterModule::class], dependencies = [BaseAppComponent::class])
 interface DiscoveryComponent {
     fun inject(discoveryActivity: DiscoveryActivity)
     fun inject(discoveryFragment: DiscoveryFragment)

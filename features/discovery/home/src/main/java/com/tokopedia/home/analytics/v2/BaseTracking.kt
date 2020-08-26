@@ -287,6 +287,31 @@ abstract class BaseTracking {
         return dataLayer
     }
 
+    open fun getBasicPromotionClick(
+        event: String,
+        eventCategory: String,
+        eventAction: String,
+        eventLabel: String,
+        promotions: List<Promotion>,
+        userId: String = "",
+        screen: String = "",
+        currentSite: String = "",
+        businessUnit: String = ""
+    ): Map<String, Any>{
+        val dataLayer = DataLayer.mapOf(
+                Event.KEY, event,
+                Category.KEY, eventCategory,
+                Action.KEY, eventAction,
+                Label.KEY, eventLabel,
+                Ecommerce.KEY, Ecommerce.getEcommercePromoClick(promotions)
+        )
+        if(userId.isNotBlank()) dataLayer[UserId.KEY] = userId
+        if(screen.isNotBlank()) dataLayer[Screen.KEY] = screen
+        if(currentSite.isNotBlank()) dataLayer[CurrentSite.KEY] = currentSite
+        if(businessUnit.isNotBlank()) dataLayer[BusinessUnit.KEY] = businessUnit
+        return dataLayer
+    }
+
     open fun getBasicPromotionChannelView(
             event: String,
             eventCategory: String,
@@ -439,11 +464,11 @@ abstract class BaseTracking {
         return dataLayer
     }
 
-    fun ChannelGrid.convertToHomePromotionModel(channelModel: ChannelModel, position: String) = Promotion(
+    fun ChannelGrid.convertToHomePromotionModel(channelModel: ChannelModel, position: Int) = Promotion(
             id = channelModel.id + "_" + id + "_" + channelModel.trackingAttributionModel.persoType+ "_" + channelModel.trackingAttributionModel.categoryId,
             name = channelModel.trackingAttributionModel.promoName,
             creative = attribution,
-            position = position
+            position = (position+1).toString()
     )
 
     protected fun convertRupiahToInt(rupiah: String): Int {

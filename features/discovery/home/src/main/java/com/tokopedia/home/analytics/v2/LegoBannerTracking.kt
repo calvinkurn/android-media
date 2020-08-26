@@ -112,7 +112,7 @@ object LegoBannerTracking : BaseTracking() {
             shopId = channelModel.trackingAttributionModel.brandId,
             campaignCode = channelModel.trackingAttributionModel.campaignCode,
             promotions = listOf(
-                    channelGrid.convertToHomePromotionModel(channelModel, position.toString())
+                    channelGrid.convertToHomePromotionModel(channelModel, position)
             ),
             attribution = channelModel.trackingAttributionModel.galaxyAttribution
     )
@@ -128,7 +128,7 @@ object LegoBannerTracking : BaseTracking() {
             shopId = channelModel.trackingAttributionModel.brandId,
             campaignCode = channelModel.trackingAttributionModel.campaignCode,
             promotions = listOf(
-                    channelGrid.convertToHomePromotionModel(channelModel, position.toString())
+                    channelGrid.convertToHomePromotionModel(channelModel, position)
             ),
             attribution = channelModel.trackingAttributionModel.galaxyAttribution
     )
@@ -144,7 +144,7 @@ object LegoBannerTracking : BaseTracking() {
             shopId = channelModel.trackingAttributionModel.brandId,
             campaignCode = channelModel.trackingAttributionModel.campaignCode,
             promotions = listOf(
-                    channelGrid.convertToHomePromotionModel(channelModel, position.toString())
+                    channelGrid.convertToHomePromotionModel(channelModel, position)
             ),
             attribution = channelModel.trackingAttributionModel.galaxyAttribution
     )
